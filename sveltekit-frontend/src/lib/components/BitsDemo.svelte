@@ -110,7 +110,7 @@
   }
   async function showErrorNotification() {
     try {
-      const response = await fetch('/api/v1/upload?action=health');
+      // removed unused response assignment
       if ((response as { ok?: any; json?: any }).ok) {
         addToast({
           data: {
@@ -286,7 +286,7 @@ Create New Case
     <div
       class="toast toast-{(data as { color?: any; title?: any; description?: any }).color}"
       animate:flip={{ duration: 500 }}
-      in:fly={{ duration: 150, x: '100%' }};
+      in:fly={{ duration: 150, x: '100%' }}
       out:fly={{ duration: 150, x: '100%' }}
     >
       <div class="toast-header">

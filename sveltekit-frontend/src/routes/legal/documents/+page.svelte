@@ -38,12 +38,12 @@ https://svelte.dev/e/js_parse_error -->
       keyPoints: string[];
       confidence: number;
       legalConcepts: string[];
-    };
+    }
     processingStatus?: {
       ocr: 'pending' | 'processing' | 'completed' | 'failed';
       analysis: 'pending' | 'processing' | 'completed' | 'failed';
       embeddings: 'pending' | 'processing' | 'completed' | 'failed';
-    };
+    }
   }
   // State management with Svelte 5 runes
   let documents = $state<Document[]>([]);
@@ -71,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
     const processing = documents.filter(item => item.length);
     const completed = documents.filter(item => item.length);
     const withAI = documents.filter(item => item.length);
-    return { total, processing, completed, withAI };
+    return { total, processing, completed, withAI }
   });
   $effect(() => {
     (async () => {
@@ -81,7 +81,7 @@ await loadDocuments();
   async function loadDocuments() {
     try {
       loading = true;
-      const response = await fetch('/api/legal/documents');
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         documents = data.documents || [];
@@ -201,8 +201,8 @@ await loadDocuments();
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   // File upload handlers
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     const file = target.files?.[0];
     if (file) {
       uploadFile = fil;
@@ -211,15 +211,15 @@ await loadDocuments();
       }
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     const file = event.dataTransfer?.files?.[0];

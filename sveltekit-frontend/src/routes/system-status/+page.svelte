@@ -47,11 +47,11 @@
       const options: RequestInit = {
         method: test.method || 'GET',
         headers: { 'Content-Type': 'application/json' }
-      };
+      }
       if (test.body) {
         options.body = JSON.stringify(test.body);
       }
-      const response = await fetch(test.endpoint, options);
+      // removed unused response assignment
       let data;
       try {
         data = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
@@ -61,24 +61,24 @@
       testResults[test.name] = {
         success: (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).ok,
         status: (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).status,
-        data: data
+        data: data;
         endpoint: test.endpoint,
         timestamp: new Date().toISOString();
-      };
+      }
     } catch (error) {
       testResults[test.name] = {
         success: false
         error: error instanceof Error ? error.message: 'Unknown error',
         endpoint: test.endpoint,
         timestamp: new Date().toISOString();
-      };
+      }
     }
     // Trigger reactivity
-    testResults = { ...testResults };
+    testResults = { ...testResults }
   }
   async function runAllTests() {
     isRunning = true;
-    testResults = {};
+    testResults = {}
     for (const test of tests) {
       await runTest(test);
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -87,7 +87,7 @@
   }
   async function checkAuthStatus() {
     try {
-      const response = await fetch('/api/auth/debug');
+      // removed unused response assignment
       authStatus = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
     } catch (error) {
       console.error('Auth status check failed:', error);
@@ -95,7 +95,7 @@
   }
   async function createDevSession() {
     try {
-      const response = await fetch('/api/dev-auth?seed=true');
+      // removed unused response assignment
       const result = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
       if ((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success) {
         await checkAuthStatus();
@@ -107,7 +107,7 @@
   }
   async function clearSession() {
     try {
-      const response = await fetch('/api/dev-auth', { method: 'POST' });
+      // removed unused response assignment
       const result = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
       if ((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success) {
         await checkAuthStatus();
@@ -122,6 +122,7 @@
     runAllTests();
   });
 </script>
+
 <EvidenceBoardLayout
   title="SYSTEM STATUS MONITOR"
   caseInfo="DEVELOPMENT ENVIRONMENT HEALTH CHECK"
@@ -136,8 +137,8 @@
         <div class="space-y-2">
           <EvidenceCard
             title="Auth Status"
-            description={authStatus.hasUser ? "Authenticated" : "Not Authenticated"}
-            status={authStatus.hasUser ? "active" : "pending"}
+            description={authStatus.hasUser ? 'Authenticated' : 'Not Authenticated'}
+            status={authStatus.hasUser ? 'active' : 'pending'}
             type="auth"
             connections={1}
           />
@@ -155,31 +156,12 @@
     <div class="nes-container is-rounded evidence-panel">
       <h3 class="nes-text is-warning mb-3">🚀 Quick Actions</h3>
       <div class="space-y-2">
-        <button
-          class="nes-btn is-primary w-full text-xs"
-          onclick={runAllTests}
-          disabled={isRunning}
-        >
+        <button class="nes-btn is-primary w-full text-xs" onclick={runAllTests} disabled={isRunning}>
           {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
         </button>
-        <button
-          class="nes-btn is-success w-full text-xs"
-          onclick={createDevSession}
-        >
-          🔑 Create Dev Session
-        </button>
-        <button
-          class="nes-btn is-normal w-full text-xs"
-          onclick={checkAuthStatus}
-        >
-          👤 Check Auth Status
-        </button>
-        <button
-          class="nes-btn is-error w-full text-xs"
-          onclick={clearSession}
-        >
-          🚪 Clear Session
-        </button>
+        <button class="nes-btn is-success w-full text-xs" onclick={createDevSession}> 🔑 Create Dev Session </button>
+        <button class="nes-btn is-normal w-full text-xs" onclick={checkAuthStatus}> 👤 Check Auth Status </button>
+        <button class="nes-btn is-error w-full text-xs" onclick={clearSession}> 🚪 Clear Session </button>
       </div>
     </div>
   {/snippet}
@@ -192,26 +174,36 @@
         <EvidenceCard
           title={test.name}
           description={test.description}
-          status={result?.success ? "active" : result ? "pending" : "pending"}
+          status={result?.success ? 'active' : result ? 'pending' : 'pending'}
           type="system"
           connections={result?.status || 0}
         >
           {#snippet children()}
             <div class="nes-container is-rounded bg-gray-50 p-3">
               <div class="text-xs mb-2">
-                <strong class="nes-text is-primary">{test.method || 'GET'}</strong> {test.endpoint}
+                <strong class="nes-text is-primary">{test.method || 'GET'}</strong>
+                {test.endpoint}
               </div>
               {#if result}
                 <div class="space-y-2">
                   <div class="flex justify-between items-center">
                     <span class="nes-text">Status:</span>
-                    <span class="nes-text {(result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success ? 'is-success' : 'is-error'}">
+                    <span
+                      class="nes-text {(
+                        result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }
+                      ).success
+                        ? 'is-success'
+                        : 'is-error'}"
+                    >
                       {result?.success ? '✅ PASS' : '❌ FAIL'}
                     </span>
                   </div>
                   {#if (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).error}
                     <div class="nes-container is-rounded bg-red-50 p-2">
-                      <p class="text-xs text-red-700">Error: {(result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).error}</p>
+                      <p class="text-xs text-red-700">
+                        Error: {(result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown })
+                          .error}
+                      </p>
                     </div>
                   {/if}
                   {#if (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).data && (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success && typeof (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).data === 'object'}
@@ -220,7 +212,9 @@
                     </div>
                   {/if}
                   <p class="text-xs text-gray-500">
-                    {new Date((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).timestamp).toLocaleString()}
+                    {new Date(
+                      (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).timestamp,
+                    ).toLocaleString()}
                   </p>
                 </div>
               {:else}
@@ -309,3 +303,4 @@
     </div>
   </main>
 </EvidenceBoardLayout>
+;

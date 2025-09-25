@@ -47,7 +47,7 @@
           type: 'handshake',
           clientId: sessionStorage.getItem('clientId') || generateClientId();
         }));
-      };
+      }
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -55,10 +55,10 @@
         } catch (error) {
           console.error('Failed to parse WebSocket message:', error);
         }
-      };
+      }
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
-      };
+      }
       ws.onclose = () => {
         console.log('WebSocket disconnected');
         isConnected = false;
@@ -67,7 +67,7 @@
           console.log('Attempting to reconnect...');
           connectWebSocket();
         }, 3000);
-      };
+      }
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
       isConnected = false;
@@ -124,7 +124,7 @@
           content: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response || (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).content,
           timestamp: new Date(),
           metadata: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).metadata
-        };
+        }
         messages = [...messages, message];
         isTyping = false;
         // TTS if enabled
@@ -163,9 +163,9 @@
     const userMessage: GPUChatMessage = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: inputMessage
+      content: inputMessage;
       timestamp: new Date();
-    };
+    }
     messages = [...messages, userMessage];
     const messageContent = inputMessag;
     inputMessage = '';
@@ -174,7 +174,7 @@
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
         type: 'chat',
-        content: messageContent
+        content: messageContent;
         room: currentRoom;
       }));
     } else {
@@ -196,7 +196,7 @@
           content: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response,
           timestamp: new Date(),
           metadata: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).metadata
-        };
+        }
         messages = [...messages, aiMessage];
         if (voiceEnabled && (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response) {
           speakText((data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response);
@@ -210,7 +210,7 @@
     }
   }
   // Handle document upload
-  async function handleFileUpload(event: Event) {
+  async function handleFileUpload(_event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
     const file = input.files[0];
@@ -256,7 +256,7 @@
       utterance.pitch = 1.0;
       utterance.onend = () => {
         isSpeaking = false;
-      };
+      }
       speechSynthesis.speak(utterance);
     } else if (ws && ws.readyState === WebSocket.OPEN) {
       // Request TTS from server
@@ -323,7 +323,7 @@
     messages = [...messages, {
       id: crypto.randomUUID(),
       role: 'system',
-      content: summary
+      content: summary;
       timestamp: new Date(),
       metadata: {
         batchSize: results.length
@@ -362,11 +362,11 @@
       message,
       type,
       timestamp: new Date();
-    };
+    }
     // You could store notifications in state and display them
   }
   // Handle keyboard shortcuts
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -410,6 +410,7 @@
     clearInterval(healthCheckInterval);
   });
 </script>
+
 <div class="gpu-chat-container">
   <!-- Header -->
   <header class="chat-header">
@@ -463,13 +464,9 @@
         <span>📎 Upload Document</span>
       </label>
       {#if !currentRoom}
-  <button onclick={() => joinRoom('legal-team')} class="join-room-btn">
-          Join Room
-        </button>
+        <button onclick={() => joinRoom('legal-team')} class="join-room-btn"> Join Room </button>
       {:else}
-  <button onclick={leaveRoom} class="leave-room-btn">
-          Leave Room
-        </button>
+        <button onclick={leaveRoom} class="leave-room-btn"> Leave Room </button>
       {/if}
     </div>
   </header>
@@ -544,9 +541,7 @@
           {i + 1}. {item}
         </div>
       {/each}
-  <button onclick={processBatch} class="process-batch-btn">
-        Process Batch
-      </button>
+      <button onclick={processBatch} class="process-batch-btn"> Process Batch </button>
     </div>
   {/if}
   <!-- Uploaded Files Display -->
@@ -565,27 +560,22 @@
     <textarea
       bind:value={inputMessage}
       onkeydown={handleKeyPress}
-      placeholder={batchMode ? "Type message (Shift+Enter to add to batch)..." : "Type your legal question..."}
+      placeholder={batchMode ? 'Type message (Shift+Enter to add to batch)...' : 'Type your legal question...'}
       class="message-input"
       rows="3"
-></textarea>
+    ></textarea>
     <div class="input-actions">
       {#if batchMode}
-  <button onclick={addToBatch} class="add-batch-btn">
-          ➕ Add to Batch
-        </button>
+        <button onclick={addToBatch} class="add-batch-btn"> ➕ Add to Batch </button>
       {/if}
-      <button
-        onclick={sendMessage}
-        disabled={!inputMessage.trim() || !isConnected}
-        class="send-button"
-      >
+      <button onclick={sendMessage} disabled={!inputMessage.trim() || !isConnected} class="send-button">
         <span class="send-icon">🚀</span>
         Send
       </button>
     </div>
   </div>
 </div>
+
 <style>
   .gpu-chat-container {
     display: flex;
@@ -593,7 +583,13 @@
     height: 100vh;
     background: linear-gradient(135deg, #1a1f2e 0%, #0f1419 100%);
     color: #e0e0e0;
-    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family:
+      'SF Pro Display',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
   }
   /* Header */
   .chat-header {
@@ -723,7 +719,7 @@
   .toggle:hover {
     background: rgba(255, 255, 255, 0.1);
   }
-  .toggle input[type="checkbox"] {
+  .toggle input[type='checkbox'] {
     cursor: pointer;
   }
   .file-upload {
@@ -739,10 +735,11 @@
   .file-upload:hover {
     background: rgba(255, 255, 255, 0.1);
   }
-  .file-upload input[type="file"] {
+  .file-upload input[type='file'] {
     display: none;
   }
-  .join-room-btn, .leave-room-btn {
+  .join-room-btn,
+  .leave-room-btn {
     padding: 0.25rem 1rem;
     background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
     border: none;
@@ -946,7 +943,8 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-  .send-button, .add-batch-btn {
+  .send-button,
+  .add-batch-btn {
     padding: 1rem 2rem;
     background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
     border: none;
@@ -985,7 +983,8 @@
     }
   }
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -993,7 +992,9 @@
     }
   }
   @keyframes typing {
-    0%, 60%, 100% {
+    0%,
+    60%,
+    100% {
       transform: translateY(0);
       opacity: 0.5;
     }

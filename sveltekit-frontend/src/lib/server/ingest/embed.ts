@@ -22,7 +22,7 @@ export interface EmbeddingResult {
     processingTime: number;
     inputType: 'text' | 'image' | 'audio';
     inputSize?: number;
-  };
+  }
 }
 export interface BatchEmbeddingResult {
   success: boolean;
@@ -33,7 +33,7 @@ export interface BatchEmbeddingResult {
     successCount: number;
     failureCount: number;
     totalProcessingTime: number;
-  };
+  }
 }
 /**
  * Text embedding using Gemma
@@ -43,9 +43,9 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
   if (!endpoint) {
     return {
-      success: false
+      success: false;
       error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
-    };
+    }
   }
   try {
     const inputTexts = Array.isArray(texts) ? texts : [texts];
@@ -78,7 +78,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
           failureCount: Math.max(0, inputTexts.length - embeddings.length),
           totalProcessingTime: Date.now() - startTime
         }
-      };
+      }
     } else {
       return {
         success: true
@@ -90,13 +90,13 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
           inputType: 'text',
           inputSize: texts.length
         }
-      };
+      }
     }
   } catch (error) {
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: String(error)
-    };
+    }
   }
 }
 /**
@@ -107,9 +107,9 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
   if (!endpoint) {
     return {
-      success: false
+      success: false;
       error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
-    };
+    }
   }
   try {
     // Convert buffer to base64 for JSON transport
@@ -146,12 +146,12 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
         inputType: 'image',
         inputSize: buffer.length
       }
-    };
+    }
   } catch (error) {
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: String(error)
-    };
+    }
   }
 }
 /**
@@ -162,9 +162,9 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
   if (!endpoint) {
     return {
-      success: false
+      success: false;
       error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
-    };
+    }
   }
   try {
     // Read audio file and convert to base64
@@ -202,12 +202,12 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
         inputType: 'audio',
         inputSize: audioBuffer.length
       }
-    };
+    }
   } catch (error) {
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: String(error)
-    };
+    }
   }
 }
 /**
@@ -257,9 +257,9 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
       } catch (error) {
         if (failFast) throw error;
         return {
-          success: false
+          success: false;
           error: error instanceof Error ? error.message: String(error)
-        };
+        }
       }
     });
     const batchResults = await Promise.allSettled(batchPromises);
@@ -268,7 +268,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
         results.push((result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).value);
       } else {
         results.push({
-          success: false
+          success: false;
           error: (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).reason?.message || 'Unknown error'
         });
       }
@@ -283,21 +283,21 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
   return {
     success: embeddings.length > 0,
     embeddings,
-    errors: errors.length > 0 ? errors : undefined
+    errors: errors.length > 0 ? errors : undefined;
     metadata: {
       batchSize: buffers.length,
       successCount: embeddings.length,
       failureCount: errors.length,
       totalProcessingTime: Date.now() - startTime
     }
-  };
+  }
 }
 /**
  * Unified embedding function that routes based on content type
  */
 export async function embedContent(
   content: Buffer | string
-  contentType: string
+  contentType: string;
   options: {
     audioPath?: string; // For audio content
   } = {}
@@ -322,9 +322,9 @@ export async function embedContent(
     return await embedText(text);
   }
   return {
-    success: false
+    success: false;
     error: `Unsupported content type for embedding: ${contentType}`
-  };
+  }
 }
 /**
  * Health check for Gemma embedding endpoint
@@ -334,9 +334,9 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
   if (!endpoint) {
     return {
-      healthy: false
+      healthy: false;
       error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
-    };
+    }
   }
   try {
     // Try a simple health check or small embedding
@@ -360,12 +360,12 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
       healthy: true
       responseTime: Date.now() - startTime,
       supportedModes: (result as { embeddings?: any; data?: any; embedding?: any; status?: any; value?: any; reason?: any; supportedModes?: any }).supportedModes || ['text', 'image', 'audio']
-    };
+    }
   } catch (error) {
     return {
       healthy: false
       responseTime: Date.now() - startTime,
       error: error instanceof Error ? error.message: String(error)
-    };
+    }
   }
 }

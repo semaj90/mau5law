@@ -8,7 +8,7 @@ declare global {
     rowCount?: number;
     // allow arbitrary additional properties (e.g., cursor, meta)
     [k: string]: any;
-  };
+  }
   // Minimal thread-safe Postgres surface used by middleware tests and wiring.
   interface ThreadSafePostgres {
     query: (q: string, ...args: any[]) => Promise<any>;
@@ -24,7 +24,7 @@ declare global {
     [k: string]: any;
   }
 }
-export {};
+export {}
 // src/lib/types/auto-shims.d.ts
 // Conservative, temporary shims to reduce noise during fast typecheck.
 // These should be short-lived — they convert many frequent shapes to `any`.
@@ -37,9 +37,9 @@ declare interface RowList<T = any> {
 // Note: Do NOT declare a global `vi` here; vitest/globals provides proper typings.
 // Make `performance.memory` available in tests
 interface Performance {
-  memory?: { usedJSHeapSize?: number } & { [key: string]: any };
+  memory?: { usedJSHeapSize?: number } & { [key: string]: any }
 }
-declare var performance: Performance & typeof globalThis;
+declare let performance: Performance & typeof globalThis;
 // PNG embed extractor shape (tests call instance methods that may be static in typings)
 declare class PNGEmbedExtractor {
   embedMetadata?: (...args: any[]) => Promise<any> | any;

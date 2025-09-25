@@ -5,7 +5,7 @@
 export interface SOMNode {
   id: string;
   weights: number[];
-  position: { x: number; y: number };
+  position: { x: number; y: number }
   cluster: number;
   activation: number;
   documents: string[];
@@ -14,7 +14,7 @@ export interface SOMNode {
     caseCategory?: string;
     confidence: number;
     priority: number;
-  };
+  }
 }
 export interface SOMConfig {
   mapWidth: number;
@@ -35,7 +35,7 @@ export interface BooleanCluster {
     avg_confidence: number;
     dominant_legal_type: string;
     creation_timestamp: number;
-  };
+  }
 }
 export interface DocumentEmbedding {
   id: string;
@@ -47,7 +47,7 @@ export interface DocumentEmbedding {
     legal_category?: string;
     confidence: number;
     timestamp: number;
-  };
+  }
 }
 export class SelfOrganizingMapRAG {
   private som!: SOMNode[][];
@@ -78,7 +78,7 @@ export class SelfOrganizingMapRAG {
             confidence: 0,
             priority: 0
           }
-        };
+        }
       }
     }
   }
@@ -206,7 +206,7 @@ export class SelfOrganizingMapRAG {
       testimony: 3,
       digital: 2,
       physical: 1
-    };
+    }
     const docPriority =
       priorityMap[
         document.metadata.evidence_type as keyof typeof priorityMap
@@ -303,7 +303,7 @@ export class SelfOrganizingMapRAG {
         boolean_pattern: [
           [false, false],
           [false, false]
-        ], // Will be populated later
+        ], // Will be populated later;
         metadata: {
           cluster_size: clusterNodes.length,
           avg_confidence: avgConfidence
@@ -350,7 +350,7 @@ export class SelfOrganizingMapRAG {
    */
   async semanticSearch(
     query: string
-    queryEmbedding: number[]
+    queryEmbedding: number[];
     limit: number = 10,
   ): Promise<DocumentEmbedding[]> {
     console.log(`🔍 Performing SOM-enhanced semantic search...`);
@@ -492,7 +492,7 @@ export class SelfOrganizingMapRAG {
   }
   private getMostFrequent(array: string[]): string | null {
     if (array.length === 0) return null;
-    const frequency: Record<string, number> = {};
+    const frequency: Record<string, number> = {}
     array.forEach((item) => {
       frequency[item] = (frequency[item] || 0) + 1;
     });
@@ -519,7 +519,7 @@ export class SelfOrganizingMapRAG {
       testimony: 0.3,
       digital: 0.2,
       physical: 0.1
-    };
+    }
     boost +=
       evidenceBoost[metadata.evidence_type as keyof typeof evidenceBoost] || 0;
     // Confidence boost
@@ -545,7 +545,7 @@ export class SelfOrganizingMapRAG {
       },
       total_documents: this.documentEmbeddings.size,
       export_timestamp: Date.now()
-    };
+    }
     return JSON.stringify(exportData, null, 2);
   }
   /**
@@ -584,7 +584,7 @@ export class SelfOrganizingMapRAG {
         confidence: 0.8,
         timestamp: Date.now()
       }
-    };
+    }
     // Store document embedding
     this.documentEmbeddings.set(document.id, docEmbedding);
     // Find Best Matching Unit (BMU)
@@ -705,8 +705,8 @@ export function createSOMRAGSystem(
     neighborhoodRadius: 3,
     maxEpochs: 1000,
     clusterCount: 8
-  };
-  const finalConfig = { ...defaultConfig, ...config };
+  }
+  const finalConfig = { ...defaultConfig, ...config }
   return new SelfOrganizingMapRAG(finalConfig);
 }
 export default SelfOrganizingMapRAG;

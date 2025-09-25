@@ -18,12 +18,12 @@ declare global {
     type: 'status' | 'result' | 'error';
     data: unknown;
     timestamp: Date;
-  };
+  }
   type EnhancedRAGEngine = {
     query: (input: string, options?: { limit?: number; threshold?: number }) => Promise<AIResponse>;
     embed: (text: string) => Promise<number[]>;
     similaritySearch: (query: string, options?: { limit?: number }) => Promise<unknown[]>;
-  };
+  }
   type LLMInferenceConfig = {
     model: string;
     quantization?: LLMQuantization;
@@ -32,7 +32,7 @@ declare global {
     maxTokens?: number;
     temperature?: number;
     enableFallback?: boolean;
-  };
+  }
   type LLMInferenceResult = {
     success: boolean;
     response?: string;
@@ -40,11 +40,11 @@ declare global {
     quantization?: LLMQuantization;
     fallbackUsed?: boolean;
     error?: string;
-  };
+  }
   type ErrorProcessingPipeline = {
     processErrors: (errors: Error[]) => Promise<Array<unknown>>;
     analyzeError: (error: Error) => Promise<unknown>;
-  };
+  }
 }
 // API Request/Response Types - Using proper definitions
 import type {
@@ -68,11 +68,11 @@ declare global {
     query: string;
     filters?: Record<string, unknown>;
     limit?: number;
-  };
+  }
   type CommandSearchResponse = {
     results: Array<unknown>;
     total: number;
-  };
+  }
   type BulkOperationResponse = ProperBulkOperationResponse;
   type FormSubmissionResult<T = unknown> = ProperFormSubmissionResult<T>;
 }
@@ -93,7 +93,7 @@ declare module '$lib/types/database' {
     processedAt?: Date;
     metadata: Record<string, unknown>;
     embedding?: number[];
-  };
+  }
   export type DocumentChunk = {
     id: string;
     documentId: string;
@@ -101,7 +101,7 @@ declare module '$lib/types/database' {
     content: string;
     embedding?: number[];
     metadata: Record<string, unknown>;
-  };
+  }
   export type UserAiQuery = {
     id: string;
     userId: string;
@@ -109,7 +109,7 @@ declare module '$lib/types/database' {
     response?: string;
     createdAt: Date;
     embedding?: number[];
-  };
+  }
   export type AutoTag = {
     id: string;
     entityId: string;
@@ -117,7 +117,7 @@ declare module '$lib/types/database' {
     tag: string;
     confidence: number;
     createdAt: Date;
-  };
+  }
   export type Case = CaseState;
   export type Evidence = EvidenceState;
   export type VectorSearchOptions = ProperVectorSearchOptions;
@@ -133,19 +133,19 @@ declare global {
     addDocuments?: (docs: unknown[]) => Promise<void>;
     delete?: (options?: unknown) => Promise<void>;
     [key: string]: unknown;
-  };
+  }
   type QueryResult = {
     content: string;
     score: number;
     sources?: unknown[];
-  };
+  }
 }
 // XState Types
 declare global {
   type RecommendationMachineContext = {
     userContext?: unknown;
     [key: string]: unknown;
-  };
+  }
   type ConcurrencyContext = unknown;
   type ConcurrencyTask = unknown;
   type WorkerResult = unknown;
@@ -164,11 +164,11 @@ declare global {
     repeatPenalty: number;
     stopTokens: string[];
     priority: unknown;
-  };
+  }
 }
 // Row/Database result types
 declare global {
-    interface RowList<T> {
-      rows: T;
-    }
+  interface RowList<T> {
+    rows: T;
+  }
 }

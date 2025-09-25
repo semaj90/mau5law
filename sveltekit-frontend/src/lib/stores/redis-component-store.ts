@@ -40,7 +40,7 @@ class RedisComponentStore {
   /**
    * Create a redis-backed reactive store for component state
    */
-  createRedisBackedState<T>(key: string, initialValue: T, options?: CacheOptions): Writable<T> {
+  createRedisBackedState<T>(_key: string, initialValue: T, options?: CacheOptions): Writable<T> {
     const fullKey = this.getFullKey(key);
     // Create Svelte store
     const store = writable<T>(initialValue);
@@ -53,19 +53,19 @@ class RedisComponentStore {
     });
     // Override store's set method to update cache
     const originalSet = store.set;
-    store.set = (value: T) => {
+    store.set = (_value: T) => {
       originalSet(value);
       this.saveToCache(fullKey, value, options);
-    };
+    }
     // Override store's update method to update cache
     const originalUpdate = store.update;
-    store.update = (updater: (value: T) => T) => {
+    store.update = (updater: (_value: T) => T) => {
       originalUpdate((currentValue) => {
         const newValue = updater(currentValue);
         this.saveToCache(fullKey, newValue, options);
         return newValue;
       });
-    };
+    }
     return store;
   }
   /**
@@ -110,15 +110,15 @@ class RedisComponentStore {
     const key = this.getFullKey(`theme:user:${userId}`);
     return await this.loadFromCache(key);
   }
-  private async saveToCache(key: string, data: any, options?: CacheOptions) {
-    const mergedOptions = { ...this.options, ...options };
+  private async saveToCache(_key: string, data: any, options?: CacheOptions) {
+    const mergedOptions = { ...this.options, ...options }
     const serializer = mergedOptions.serialize || JSON.stringify;
     const state: ComponentState = {
       id: key
       data,
       timestamp: Date.now(),
       ttl: mergedOptions.ttl
-    };
+    }
     // Save to local cache
     this.localCache.set(key, state);
     // Save to Redis if available
@@ -135,7 +135,7 @@ class RedisComponentStore {
       }
     }
   }
-  private async loadFromCache(key: string, fallback?: any): Promise<any> {
+  private async loadFromCache(_key: string, fallback?: any): Promise<any> {
     const deserializer = this.options.deserialize || JSON.parse;
     // Try local cache first
     const localState = this.localCache.get(key);
@@ -161,7 +161,7 @@ class RedisComponentStore {
     if (!state.ttl) return false;
     return Date.now() - state.timestamp > state.ttl * 1000;
   }
-  private getFullKey(key: string): string {
+  private getFullKey(_key: string): string {
     const prefix = this.options.keyPrefix || 'enhanced-bits';
     return `${prefix}:${key}`;
   }
@@ -195,7 +195,7 @@ class RedisComponentStore {
       localCacheSize: this.localCache.size,
       redisConnected: !!this.redis,
       stores: this.stores.size
-    };
+    }
   }
 }
 // Create singleton instance
@@ -204,7 +204,7 @@ export const redisComponentStore = new RedisComponentStore({
   ttl: 3600 // Default 1 hour TTL
 });
 // Export helper functions for easy use in components
-export function createRedisBackedState<T>(key: string, initialValue: T, ttl?: number) {
+export function createRedisBackedState<T>(_key: string, initialValue: T, ttl?: number) {
   return redisComponentStore.createRedisBackedState(key, initialValue, { ttl });
 }
 export function cacheComponentMetadata(componentName: string, metadata: any) {

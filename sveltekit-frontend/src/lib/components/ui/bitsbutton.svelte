@@ -101,14 +101,14 @@
 		// Updated to avoid deprecated typed signature of createEventDispatcher
 		const _dispatch = createEventDispatcher();
 		type Dispatch = <T extends 'click' | 'analytics' | 'cache'>(
-			type: T
+			type: T;
 			detail: T extends 'cache' ? { key: string; action: string } : ButtonAnalyticsEvent
 		) => void;
 		const dispatch = _dispatch as Dispatch;
 		// Derived state (Svelte 5 rune style)
 		let isDisabled = $derived(disabled || loading);
 		let buttonClass = $derived(cn(buttonVariants({ variant, size }), className));
-	function handleClick(event: MouseEvent) {
+	function handleClick(_event: MouseEvent) {
 		if (isDisabled) {
 			event.preventDefault();
 			return;
@@ -119,10 +119,10 @@
 			action: analyticsAction
 			label: analyticsLabel || (event.currentTarget as HTMLElement)?.textContent || '',
 			timestamp: Date.now(),
-			context: xstateContext
+			context: xstateContext;
 			variant: (variant ?? 'default') as string,
 			size: (size ?? 'default') as string;
-		};
+		}
 		if (browser) {
 			userAnalyticsStore.trackButtonClick(analyticsEvent);
 			ondispatch?.(analyticsEvent);
@@ -138,45 +138,66 @@
 		if (onclick) onclick(event);
 	}
 </script>
+
 {#if href}
-	<a
-		{href}
-		{target}
-		id={id}
-		class={buttonClass}
-		role={role}
-		tabindex="0"
-		aria-disabled={isDisabled}
-		data-testid={dataTestid || 'bits-button'}
-		onclick={handleClick}
-	>
-		{#if loading}
-			<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-				<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-			</svg>
-			{loadingText}
-		{:else}
-			{@render children?.()}
-		{/if}
-	</a>
+  <a
+    {href}
+    {target}
+    {id}
+    class={buttonClass}
+    {role}
+    tabindex="0"
+    aria-disabled={isDisabled}
+    data-testid={dataTestid || 'bits-button'}
+    onclick={handleClick}
+  >
+    {#if loading}
+      <svg
+        class="mr-2 h-4 w-4 animate-spin"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        />
+      </svg>
+      {loadingText}
+    {:else}
+      {@render children?.()}
+    {/if}
+  </a>
 {:else}
-	<button
-		id={id}
-		type={type}
-		disabled={isDisabled}
-		class={buttonClass}
-		data-testid={dataTestid || 'bits-button'}
-		onclick={handleClick}
-	>
-		{#if loading}
-			<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-				<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-			</svg>
-			{loadingText}
-		{:else}
-			{@render children?.()}
-		{/if}
-	</button>
+  <button
+    {id}
+    {type}
+    disabled={isDisabled}
+    class={buttonClass}
+    data-testid={dataTestid || 'bits-button'}
+    onclick={handleClick}
+  >
+    {#if loading}
+      <svg
+        class="mr-2 h-4 w-4 animate-spin"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        />
+      </svg>
+      {loadingText}
+    {:else}
+      {@render children?.()}
+    {/if}
+  </button>
 {/if}

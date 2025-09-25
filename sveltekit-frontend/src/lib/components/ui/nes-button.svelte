@@ -47,25 +47,26 @@
     onclick?.(e);
   }
 </script>
-<button
-  {type}
-  {disabled}
-  class={finalClass}
-  onclick={handleClick}
-  {...restProps}
->
+
+<button {type} {disabled} class={finalClass} onclick={handleClick} {...restProps}>
   {#if loading}
     <span class="loading-dots">...</span>
   {:else}
     {@render children?.()}
   {/if}
 </button>
+
 <style>
   .loading-dots {
     animation: pulse 1.5s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+0%, {}
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

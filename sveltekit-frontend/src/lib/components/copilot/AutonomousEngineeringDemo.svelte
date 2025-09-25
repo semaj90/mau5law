@@ -145,7 +145,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
         enableSelfSynthesis: selectedMode !== 'quick',
         context: {
           projectPath: process.cwd(),
-          platform: selectedPlatform
+          platform: selectedPlatform;
           urgency: selectedUrgency
           includeTests: true
           targetExtensions: ['cline', 'roo', 'copilot'];
@@ -182,11 +182,11 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          prompt: userPrompt
-          mode: selectedMode
+          prompt: userPrompt;
+          mode: selectedMode;
           options: {
             context: {
-              platform: selectedPlatform
+              platform: selectedPlatform;
               urgency: selectedUrgency
               includeTests: true;
             },
@@ -207,7 +207,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           sources: [],
           tokensUsed: 0;
         }
-      };
+      }
       processingStage = 'API call complete!';
     } catch (error) {
       console.error('API call failed:', error);
@@ -261,16 +261,13 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     }
   }
 </script>
+
 <div class="w-full space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-        Autonomous Engineering Demo
-      </h2>
-      <p class="text-gray-600 dark:text-gray-400">
-        Copilot self-prompting with comprehensive AI orchestration
-      </p>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Autonomous Engineering Demo</h2>
+      <p class="text-gray-600 dark:text-gray-400">Copilot self-prompting with comprehensive AI orchestration</p>
     </div>
     <div class="flex items-center gap-2">
       <Badge class="bg-blue-500 text-white flex items-center gap-1">
@@ -301,7 +298,9 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-2">
               <h3 class="font-semibold text-sm">{example.title}</h3>
-              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{example.mode}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                >{example.mode}</span
+              >
             </div>
             <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">
               {example.description}
@@ -311,17 +310,19 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                 <Badge class="text-xs {getPriorityColor(example.urgency)}">
                   {example.urgency}
                 </Badge>
-                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{example.platform}</span>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                  >{example.platform}</span
+                >
               </div>
-              <Button class="bits-btn"
+              <Button
+                class="bits-btn"
                 size="sm"
                 variant="ghost"
-                onclick={() =>
-executeExample(example)}
+                onclick={() => executeExample(example)}
                 disabled={isProcessing}
               >
                 Run
-</Button>
+              </Button>
             </div>
           </div>
         {/each}
@@ -405,33 +406,25 @@ executeExample(example)}
         </div>
       {/if}
       <div class="flex gap-2">
-        <Button
-          onclick={executePrompt}
-          disabled={isProcessing || !userPrompt.trim()}
-          class="flex-1 bits-btn bits-btn"
-        >
-{#if isProcessing}
+        <Button onclick={executePrompt} disabled={isProcessing || !userPrompt.trim()} class="flex-1 bits-btn bits-btn">
+          {#if isProcessing}
             <Pause class="h-4 w-4 mr-2" />
             Processing...
           {:else}
             <Play class="h-4 w-4 mr-2" />
             Analyze with Copilot AI
           {/if}
-</Button>
-        <Button class="bits-btn"
-          variant="ghost"
-          onclick={executeViaAPI}
-          disabled={isProcessing || !userPrompt.trim()}
-        >
-Via API
-</Button>
+        </Button>
+        <Button class="bits-btn" variant="ghost" onclick={executeViaAPI} disabled={isProcessing || !userPrompt.trim()}>
+          Via API
+        </Button>
         {#if currentResult}
           <Button class="bits-btn" variant="ghost" onclick={downloadResult}>
-<Download class="h-4 w-4" />
-</Button>
+            <Download class="h-4 w-4" />
+          </Button>
           <Button class="bits-btn" variant="ghost" onclick={clearResults}>
-<RefreshCw class="h-4 w-4" />
-</Button>
+            <RefreshCw class="h-4 w-4" />
+          </Button>
         {/if}
       </div>
     </div>
@@ -489,19 +482,19 @@ Via API
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
                 <span class="font-medium">Processing Time:</span>
-                <br>{formatDuration(currentResult.metadata.processingTime)}
+                <br />{formatDuration(currentResult.metadata.processingTime)}
               </div>
               <div>
                 <span class="font-medium">Confidence:</span>
-                <br>{Math.round(currentResult.metadata.confidence * 100)}%
+                <br />{Math.round(currentResult.metadata.confidence * 100)}%
               </div>
               <div>
                 <span class="font-medium">Sources:</span>
-                <br>{currentResult.metadata.sources.length}
+                <br />{currentResult.metadata.sources.length}
               </div>
               <div>
                 <span class="font-medium">Tokens Used:</span>
-                <br>{currentResult.metadata.tokensUsed}
+                <br />{currentResult.metadata.tokensUsed}
               </div>
             </div>
           </div>
@@ -521,16 +514,16 @@ Via API
               {#each currentResult.nextActions as action}
                 {@const SvelteComponent = getActionIcon(action.type)}
                 <div class="flex items-start gap-3 p-3 border rounded-lg">
-                  <SvelteComponent
-                    class="h-5 w-5 text-blue-500 mt-0.5"
-                  />
+                  <SvelteComponent class="h-5 w-5 text-blue-500 mt-0.5" />
                   <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
                       <span class="font-medium text-sm">{action.description}</span>
                       <Badge class="text-xs {getPriorityColor(action.priority)}">
                         {action.priority}
                       </Badge>
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{action.type}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        >{action.type}</span
+                      >
                     </div>
                     {#if action.commands?.length > 0}
                       <div class="mt-2">
@@ -569,7 +562,9 @@ Via API
                   <div class="flex items-center justify-between mb-2">
                     <h3 class="font-semibold text-sm">{rec.title}</h3>
                     <div class="flex items-center gap-2">
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{rec.category}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        >{rec.category}</span
+                      >
                       <Badge class="text-xs bg-blue-100 text-blue-800">
                         Priority: {rec.priority}
                       </Badge>
@@ -601,15 +596,15 @@ Via API
             <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <span class="font-medium">Total Time:</span>
-                <br>{formatDuration(currentResult.executionPlan.totalEstimatedTime * 60000)}
+                <br />{formatDuration(currentResult.executionPlan.totalEstimatedTime * 60000)}
               </div>
               <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <span class="font-medium">Parallelizable:</span>
-                <br>{currentResult.executionPlan.parallelizable ? 'Yes' : 'No'}
+                <br />{currentResult.executionPlan.parallelizable ? 'Yes' : 'No'}
               </div>
               <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                 <span class="font-medium">Phases:</span>
-                <br>{currentResult.executionPlan.phases.length}
+                <br />{currentResult.executionPlan.phases.length}
               </div>
             </div>
             <div class="space-y-3">
@@ -618,15 +613,13 @@ Via API
                   <div class="flex items-center justify-between mb-2">
                     <h4 class="font-medium">{phase.name}</h4>
                     <div class="flex items-center gap-2">
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Order: {phase.order}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        >Order: {phase.order}</span
+                      >
                       {#if phase.canRunInParallel}
-                        <Badge class="text-xs bg-green-100 text-green-800">
-                          Parallel
-                        </Badge>
+                        <Badge class="text-xs bg-green-100 text-green-800">Parallel</Badge>
                       {:else}
-                        <Badge class="text-xs bg-red-100 text-red-800">
-                          Sequential
-                        </Badge>
+                        <Badge class="text-xs bg-red-100 text-red-800">Sequential</Badge>
                       {/if}
                     </div>
                   </div>
@@ -656,6 +649,8 @@ Via API
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
 </style>
+;

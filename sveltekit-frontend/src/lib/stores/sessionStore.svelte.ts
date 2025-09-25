@@ -47,7 +47,7 @@ const createSessionStore = () => {
           isAuthenticated: !!pageData.user,
           isLoading: false,
           lastSyncAt: Date.now(),
-        };
+        }
       } else {
         // Fallback: Try to restore from persistent storage
         restoreSessionFromStorage();
@@ -61,15 +61,18 @@ const createSessionStore = () => {
         isAuthenticated: !!user,
         isLoading: false,
         lastSyncAt: Date.now(),
-      };
+      }
       // Persist to localStorage for faster subsequent loads
       if (browser && user) {
         try {
-          localStorage.setItem('legal_ai_session_cache', JSON.stringify({
-            user,
-            session,
-            cachedAt: Date.now()
-          }));
+          localStorage.setItem(
+            'legal_ai_session_cache',
+            JSON.stringify({
+              user,
+              session,
+              cachedAt: Date.now(),
+            }),
+          );
         } catch (e) {
           console.warn('Failed to cache session:', e);
         }
@@ -83,7 +86,7 @@ const createSessionStore = () => {
         isAuthenticated: false,
         isLoading: false,
         lastSyncAt: Date.now(),
-      };
+      }
       // Clear persistent storage
       if (browser) {
         try {
@@ -102,7 +105,7 @@ const createSessionStore = () => {
     refreshSession: async () => {
       sessionState.isLoading = true;
       try {
-        const response = await fetch('/api/auth/session');
+        // removed unused response assignment
         if (response.ok) {
           const data = await response.json();
           if (data?.user) {
@@ -112,7 +115,7 @@ const createSessionStore = () => {
               isAuthenticated: true,
               isLoading: false,
               lastSyncAt: Date.now(),
-            };
+            }
             return data.user;
           }
         }
@@ -123,7 +126,7 @@ const createSessionStore = () => {
           isAuthenticated: false,
           isLoading: false,
           lastSyncAt: Date.now(),
-        };
+        }
         return null;
       } catch (error) {
         console.error('Session refresh failed:', error);
@@ -134,9 +137,9 @@ const createSessionStore = () => {
     // Get current user for upload operations
     getCurrentUser: (): User | null => {
       return sessionState.user;
-    }
-  };
-};
+    },
+  }
+}
 // Fallback session restoration from various storage mechanisms
 function restoreSessionFromStorage() {
   if (!browser) return;
@@ -188,8 +191,8 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
     return {
       uploadedBy: currentUser.id,
       uploaderRole: currentUser.role || 'viewer',
-      uploaderEmail: currentUser.email || null
-    };
+      uploaderEmail: currentUser.email || null,
+    }
   }
   // Try fallback mechanisms synchronously
   if (browser) {
@@ -201,21 +204,22 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
         return {
           uploadedBy: candidate.user.id,
           uploaderRole: candidate.user.role || 'viewer',
-          uploaderEmail: candidate.user.email || null
-        };
+          uploaderEmail: candidate.user.email || null,
+        }
       }
       // Check localStorage
-      const stored = localStorage.getItem('legal_ai_session_cache') ||
-                    localStorage.getItem('session') ||
-                    localStorage.getItem('auth');
+      const stored =
+        localStorage.getItem('legal_ai_session_cache') ||
+        localStorage.getItem('session') ||
+        localStorage.getItem('auth');
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed?.user?.id) {
           return {
             uploadedBy: parsed.user.id,
             uploaderRole: parsed.user.role || 'viewer',
-            uploaderEmail: parsed.user.email || null
-          };
+            uploaderEmail: parsed.user.email || null,
+          }
         }
       }
     } catch (e) {
@@ -226,6 +230,6 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
   return {
     uploadedBy: 'anonymous',
     uploaderRole: 'viewer',
-    uploaderEmail: null
-  };
-};
+    uploaderEmail: null,
+  }
+}

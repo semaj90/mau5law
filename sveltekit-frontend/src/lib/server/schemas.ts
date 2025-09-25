@@ -1,6 +1,6 @@
 
 import { z } from "zod";
-import { URL } from "url";
+;
 export const evidenceSchema = z.object({
   id: z.string().uuid(),
   caseId: z.string().uuid(),

@@ -25,7 +25,7 @@
     class?: string;
     style?: string;
     // Events
-    onclick?: (event: MouseEvent) => void;
+    onclick?: (_event: MouseEvent) => void;
     onload?: () => void;
     children?: any;
   }
@@ -49,7 +49,7 @@
     onclick,
     onload,
     children,
-    ...restProps
+    ...restProps;
   }: Props = $props();
   let container: HTMLElement;
   let isLoaded = $state(false);
@@ -60,38 +60,38 @@
       primary: '#8B956D',    // Classic NES gray-green
       secondary: '#C4CFA1',  // Light gray-green
       accent: '#4C6026',     // Dark green
-      text: '#1A1A1A',       // Dark text
-      highlight: '#FF6B6B'   // NES red
+      text: '#1A1A1A',       // Dark text;
+      highlight: '#FF6B6B'   // NES red;
     },
     famicom: {
       primary: '#8B0000',    // Famicom red
       secondary: '#FFD700',  // Famicom gold
       accent: '#FFFFFF',     // White
-      text: '#1A1A1A',       // Dark text
-      highlight: '#FF4500'   // Orange red
+      text: '#1A1A1A',       // Dark text;
+      highlight: '#FF4500'   // Orange red;
     },
     'legal-dark': {
       primary: '#1E293B',    // Legal platform dark
       secondary: '#334155',  // Slate gray
       accent: '#00FF88',     // Legal AI green
-      text: '#F1F5F9',       // Light text
-      highlight: '#06B6D4'   // Cyan
+      text: '#F1F5F9',       // Light text;
+      highlight: '#06B6D4'   // Cyan;
     },
     evidence: {
       primary: '#7C2D12',    // Evidence brown
       secondary: '#A3A3A3',  // Neutral gray
       accent: '#FBBF24',     // Evidence yellow
-      text: '#1F2937',       // Dark gray
-      highlight: '#EF4444'   // Evidence red
+      text: '#1F2937',       // Dark gray;
+      highlight: '#EF4444'   // Evidence red;
     },
     'case-file': {
       primary: '#1F2937',    // Case file dark
       secondary: '#6B7280',  // Medium gray
       accent: '#10B981',     // Success green
-      text: '#F9FAFB',       // Light text
-      highlight: '#8B5CF6'   // Purple
+      text: '#F9FAFB',       // Light text;
+      highlight: '#8B5CF6'   // Purple;
     }
-  };
+  }
   // Evidence type icons
   const evidenceIcons = {
     document: '📄',
@@ -99,16 +99,16 @@
     physical: '🔍',
     digital: '💾',
     audio: '🎵',
-    video: '🎬'
-  };
+    video: '🎬';
+  }
   // Processing status indicators
   const statusIcons = {
     idle: '⏸️',
     processing: '⚙️',
     complete: '✅',
     error: '❌',
-    review: '👀'
-  };
+    review: '👀';
+  }
   // Dynamic classes
   let containerClasses = $derived(() => {
     const base = 'nes-container';
@@ -143,11 +143,11 @@
   let containerStyle = $derived(() => {
     const colors = nesThemes[theme];
     const baseStyle = `
-      --nes-primary: ${customColor || colors.primary};
-      --nes-secondary: ${colors.secondary};
-      --nes-accent: ${colors.accent};
-      --nes-text: ${colors.text};
-      --nes-highlight: ${colors.highlight};
+      --nes-primary: ${customColor || colors.primary}
+      --nes-secondary: ${colors.secondary}
+      --nes-accent: ${colors.accent}
+      --nes-text: ${colors.text}
+      --nes-highlight: ${colors.highlight}
       --nes-progress: ${processingProgress}%;
     `;
     return style ? `${baseStyle} ${style}` : baseStyl;
@@ -168,7 +168,7 @@
     }
     return () => {
       clearInterval(processingInterval);
-    };
+    }
   });
   // Power-on sequence
   function powerOn() {
@@ -180,7 +180,7 @@
     }, 800);
   }
   // Click handler
-  function handleClick(event: MouseEvent) {
+  function handleClick(_event: MouseEvent) {
     if (onclick) {
       // Add NES click sound effect (if available)
       try {
@@ -284,7 +284,7 @@
     overflow: hidden;
     transition: all 0.3s ease;
   }
-  /* Size variants */
+/* Size variants */ {}
   .nes-container--sm {
     min-width: 200px;
     min-height: 120px;
@@ -301,7 +301,7 @@
     min-width: 500px;
     min-height: 300px;
   }
-  /* Variant-specific styling */
+/* Variant-specific styling */ {}
   .nes-container--cartridge {
     border-radius: 8px 8px 0 0;
     background: linear-gradient(145deg, var(--nes-primary), var(--nes-secondary));
@@ -332,14 +332,14 @@
     border-radius: 0 16px 16px 0;
     background: linear-gradient(90deg, var(--nes-primary), var(--nes-secondary));
   }
-  /* Orientation */
+/* Orientation */ {}
   .nes-container--horizontal {
     flex-direction: row;
   }
   .nes-container--vertical {
     flex-direction: column;
   }
-  /* Padding variants */
+/* Padding variants */ {}
   .nes-container--padding-none .nes-container__content {
     padding: 0;
   }
@@ -355,7 +355,7 @@
   .nes-container--padding-xl .nes-container__content {
     padding: 2rem;
   }
-  /* Animation effects */
+/* Animation effects */ {}
   .nes-container--animated {
     animation: nes-container-pulse 2s ease-in-out infinite alternate;
   }
@@ -367,7 +367,7 @@
       box-shadow: 0 0 20px rgba(var(--nes-accent), 0.8);
     }
   }
-  /* Glowing effect */
+/* Glowing effect */ {}
   .nes-container--glowing {
     animation: nes-container-glow 1.5s ease-in-out infinite alternate;
   }
@@ -379,7 +379,7 @@
       box-shadow: 0 0 30px var(--nes-accent), 0 0 40px var(--nes-accent);
     }
   }
-  /* Power states */
+/* Power states */ {}
   .nes-container--powered {
     filter: brightness(1);
   }
@@ -387,7 +387,7 @@
     filter: brightness(0.3) grayscale(1);
     opacity: 0.6;
   }
-  /* Processing states */
+/* Processing states */ {}
   .nes-container--processing {
     animation: nes-container-processing 1s linear infinite;
   }
@@ -410,7 +410,7 @@
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
   }
-  /* Priority indicators */
+/* Priority indicators */ {}
   .nes-container--priority-critical {
     border-color: #ff0000;
     animation: nes-container-critical 1s ease-in-out infinite;
@@ -422,7 +422,7 @@
   .nes-container--priority-high {
     border-color: #ff8800;
   }
-  /* Evidence type styling */
+/* Evidence type styling */ {}
   .nes-container--evidence-document {
     border-style: solid;
   }
@@ -435,7 +435,7 @@
     50% { border-style: dotted; }
     100% { border-style: dashed; }
   }
-  /* Power LED */
+/* Power LED */ {}
   .nes-container__power-led {
     position: absolute;
     top: 8px;
@@ -450,7 +450,7 @@
     background: #00ff00;
     box-shadow: 0 0 8px #00ff00;
   }
-  /* Cartridge label */
+/* Cartridge label */ {}
   .nes-container__cartridge-label {
     position: absolute;
     top: 8px;
@@ -474,7 +474,7 @@
     font-size: 0.6rem;
     opacity: 0.8;
   }
-  /* Content area */
+/* Content area */ {}
   .nes-container__content {
     position: relative;
     z-index: 2;
@@ -485,7 +485,7 @@
     justify-content: center;
     align-items: center;
   }
-  /* Status bar */
+/* Status bar */ {}
   .nes-container__status-bar {
     position: absolute;
     bottom: 0;
@@ -557,19 +557,19 @@
   .nes-container__priority--low {
     color: #00ff00;
   }
-  /* Scan lines for screen variant */
+/* Scan lines for screen variant */ {}
   .nes-container__scanlines {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 255, 0, 0.1) 2px,
-      rgba(0, 255, 0, 0.1) 4px
+background: repeating-linear-gradient( {}
+0deg, {}
+transparent, {}
+transparent 2px, {}
+rgba(0, 255, 0, 0.1) 2px, {}
+rgba(0, 255, 0, 0.1) 4px {}
     );
     pointer-events: none;
     animation: nes-scanlines 0.1s linear infinite;
@@ -578,7 +578,7 @@
     0% { transform: translateY(0); }
     100% { transform: translateY(4px); }
   }
-  /* Power button for console */
+/* Power button for console */ {}
   .nes-container__power-button {
     position: absolute;
     bottom: 8px;
@@ -604,29 +604,29 @@
   .nes-container__power-button:hover {
     transform: scale(1.1);
   }
-  /* Click effect */
+/* Click effect */ {}
   .nes-container[role="button"]:active {
     transform: scale(0.98);
     filter: brightness(0.9);
   }
-  /* Accessibility */
+/* Accessibility */ {}
   @media (prefers-reduced-motion: reduce) {
-    .nes-container,
-    .nes-container__power-led,
-    .progress-fill,
+.nes-container, {}
+.nes-container__power-led, {}
+.progress-fill, {}
     .confidence-fill {
       animation: none;
       transition: none;
     }
   }
-  /* High contrast mode */
+/* High contrast mode */ {}
   @media (prefers-contrast: high) {
     .nes-container {
       border-width: 6px;
       filter: contrast(1.5);
     }
   }
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 640px) {
     .nes-container--sm {
       min-width: 150px;

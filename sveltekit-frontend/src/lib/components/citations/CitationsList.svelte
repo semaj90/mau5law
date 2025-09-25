@@ -62,7 +62,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       if (typeFilter !== 'all') params.set('type', typeFilter);
       if (verifiedFilter !== 'all') params.set('verified', verifiedFilter);
       if (searchQuery) params.set('search', searchQuery);
-      const response = await fetch(`/api/citations?${params}`);
+      // removed unused response assignment
       const result = await (response as { json?: any }).json();
       if ((result as { success?: any; citations?: any; pagination?: any; error?: any }).success) {
         citations.set(citations));
@@ -100,7 +100,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     });
   }
   // Handle citation save
-  function handleCitationSave(event: CustomEvent<Citation>) {
+  function handleCitationSave(_event: CustomEvent<Citation>) {
     const citation = event.detail;
     if (editMode === 'create') {
       citations.update(items => [citation, ...items]);
@@ -114,7 +114,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     // ondispatch removed;
   }
   // Handle citation deletion
-  function handleCitationDelete(event: CustomEvent<string>) {
+  function handleCitationDelete(_event: CustomEvent<string>) {
     const citationId = event.detail;
     citations.update.id !== citationId));
     applyClientSideSort();
@@ -250,7 +250,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       </div>
       <!-- Verified Filter -->
       <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1" for="status">Status</label><select id="status"
+        <label class="block text-xs font-medium text-gray-700 mb-1" for="status">Status</label><select id="status";
           bind:value={verifiedFilter}
           onchange={handleFilterChange}
           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

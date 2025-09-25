@@ -36,14 +36,14 @@ const GPU_TILING_CONFIG = {
     threadsPerSM: 1536,
     totalThreads: 28 * 1536,
   },
-  // SIMD Processing
+  // SIMD Processing;
   simd: {
     vectorWidth: 8, // AVX2 256-bit / 32-bit float = 8 floats
     parallelChunks: 16,
     batchProcessing: true
     useGPUAcceleration: true
   },
-};
+}
 export interface TiledEvidenceChunk {
   id: string;
   tileX: number;
@@ -58,7 +58,7 @@ export interface TiledEvidenceChunk {
     embedding?: Float32Array;
     simdProcessTime: number;
     gpuProcessTime: number;
-  };
+  }
   memoryRegion: keyof typeof GPU_TILING_CONFIG.memoryTiles;
 }
 export interface SIMDProcessingResult {
@@ -69,7 +69,7 @@ export interface SIMDProcessingResult {
     totalGPUTime: number;
     throughputMBps: number;
     parallelEfficiency: number;
-  };
+  }
   memoryUsage: Record<string, number>;
   tensorCompressionRatio: number;
 }
@@ -85,7 +85,7 @@ export class SIMDGPUTilingEngine {
     totalGPUTime: 0,
     averageThroughput: 0,
     memoryEfficiency: 0,
-  };
+  }
   constructor() {
     // Only initialize in browser context
     if (typeof window !== 'undefined') {
@@ -189,7 +189,7 @@ export class SIMDGPUTilingEngine {
       }
     `;
     const shaderModule = this.device.createShaderModule({
-      code: shaderCode
+      code: shaderCode;
       label: 'SIMD-Evidence-Tiling-Compute',
     });
     this.computePipeline = this.device.createComputePipeline({
@@ -209,7 +209,7 @@ export class SIMDGPUTilingEngine {
     evidenceId: string
     imageData: Float32Array
     width: number
-    height: number
+    height: number;
     options: {
       tileSize?: number;
       evidenceType?: 'screenshot' | 'handwriting' | 'text' | 'mixed';
@@ -236,7 +236,7 @@ export class SIMDGPUTilingEngine {
       evidenceType,
       timestamp: Date.now(),
       processing: { enableCompression, priority, generateEmbeddings },
-    };
+    }
     const simdResult = await simdRedisClient.parseJSON(metadata);
     const simdTime = performance.now() - simdStart;
     console.log(`📊 SIMD parsing: ${simdTime.toFixed(2)}ms (${simdResult.throughput_mbps?.toFixed(2) || 'N/A'} MB/s)`);
@@ -272,11 +272,11 @@ export class SIMDGPUTilingEngine {
       },
       memoryUsage: this.getMemoryUsage(),
       tensorCompressionRatio: enableCompression ? 0.3 : 1.0,
-    };
+    }
   }
   private async performGPUTiling(
     imageData: Float32Array
-    width: number
+    width: number;
     height: number
     tileSize: number
     evidenceType: string
@@ -406,7 +406,7 @@ export class SIMDGPUTilingEngine {
   }
   private async performCPUTiling(
     imageData: Float32Array
-    width: number
+    width: number;
     height: number
     tileSize: number
     evidenceType: string
@@ -492,7 +492,7 @@ export class SIMDGPUTilingEngine {
   private async storeTilesInNESMemory(tiles: TiledEvidenceChunk[], evidenceId: string): Promise<void> {
     console.log(`💾 Storing ${tiles.length} tiles in NES memory architecture...`);
     // Group tiles by memory region
-    const regionGroups: Record<string, TiledEvidenceChunk[]> = {};
+    const regionGroups: Record<string, TiledEvidenceChunk[]> = {}
     for (const tile of tiles) {
       if (!regionGroups[tile.memoryRegion]) {
         regionGroups[tile.memoryRegion] = [];
@@ -507,7 +507,7 @@ export class SIMDGPUTilingEngine {
         new Float32Array(textureData).set(tile.data);
         await textureStreamer.loadTexture(`${evidenceId}_${tile.id}`, textureData, tile.width, tile.height, {
           region: region as any
-          priority: tile.metadata.confidence * 10, // Higher confidence = higher priority
+          priority: tile.metadata.confidence * 10, // Higher confidence = higher priority;
           compress: true
           legalContext: {
             documentType: 'evidence',
@@ -573,7 +573,7 @@ export class SIMDGPUTilingEngine {
       tilesInCache: this.tileCache.size,
       estimatedRAMUsage: this.tileCache.size * 1024, // Estimate 1KB per tile metadata
       gpuMemoryEstimate: this.metrics.tilesProcessed * 256 * 256 * 4, // Estimate based on processed tiles
-    };
+    }
   }
   /**
    * Get performance metrics and statistics
@@ -588,7 +588,7 @@ export class SIMDGPUTilingEngine {
       memoryEfficiency: (this.metrics.memoryEfficiency * 100).toFixed(1) + '%',
       cacheUtilization: this.tileCache.size,
       memoryUsage: this.getMemoryUsage(),
-    };
+    }
   }
   /**
    * Shutdown and cleanup resources
@@ -627,5 +627,5 @@ export function estimateProcessingTime(
     estimatedSIMDTime: complexity * 50, // ~50ms per 1080p equivalent for SIMD
     estimatedGPUTime: complexity * 20, // ~20ms per 1080p equivalent for GPU
     estimatedTotalTime: complexity * 100, // Total with overhead
-  };
+  }
 }

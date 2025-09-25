@@ -49,21 +49,21 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
   // File handling
-  const handleFileSelect = (event: Event) => {
-    const target = event.target as HTMLInputElement;
+  const handleFileSelect = (_event: Event) => {
+    // removed unused target assignment
     const file = target.files?.[0];
     if (file) {
       validateAndSetFile(file);
     }
-  };
-  const handleDrop = (event: DragEvent) => {
+  }
+  const handleDrop = (_event: DragEvent) => {
     event.preventDefault();
     dragover = false;
     const file = event.dataTransfer?.files[0];
     if (file) {
       validateAndSetFile(file);
     }
-  };
+  }
   const validateAndSetFile = (file: File) => {
     // Type validation
     if (!allowedTypes.includes(file.type)) {
@@ -79,29 +79,29 @@ https://svelte.dev/e/js_parse_error -->
     }
     selectedFile = fil;
     evidenceId = `${caseId}-${Date.now()}-${Math.random.toString-substr(2, 9)}`;
-  };
+  }
   const startProcessing = () => {
     if (selectedFile && evidenceId && caseId) {
       processingStartTime = new Date());
       processEvidence(selectedFile, evidenceId, caseId);
     }
-  };
+  }
   const handleRetry = () => {
     retryProcessing();
-  };
+  }
   const handleReset = () => {
     resetProcessor();
     selectedFile = null;
     evidenceId = '';
     if (fileInput) fileInput.value = '';
-  };
+  }
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+  }
   const getStateIcon = (state: string) => {
     switch (state) {
       case 'validating': return AlertCircl;
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
       case 'error': return XCircl;
       default: return Upload;
     }
-  };
+  }
   const getStateColor = (state: string) => {
     switch (state) {
       case 'completed': return 'text-green-600';
@@ -123,16 +123,17 @@ https://svelte.dev/e/js_parse_error -->
       case 'uploading': return 'text-blue-600';
       default: return 'text-gray-600';
     }
-  };
+  }
   $effect(() => {
     // Cleanup on component destroy
     return () => {
       if (evidenceService) {
         evidenceService.stop();
       }
-    };
+    }
   });
 </script>
+
 <div class="evidence-upload-container p-6 border rounded-lg bg-white shadow-sm">
   <h2 class="text-2xl font-semibold mb-6 text-gray-900">Evidence Upload & Processing</h2>
   <!-- File Drop Zone -->
@@ -142,8 +143,8 @@ https://svelte.dev/e/js_parse_error -->
       class:border-blue-500={dragover}
       class:bg-blue-50={dragover}
       class:border-gray-300={!dragover}
-      on:dragover|preventDefault={() => dragover = true}
-      ondragleave={() => dragover = false}
+      on:dragover|preventDefault={() => (dragover = true)}
+      ondragleave={() => (dragover = false)}
       ondrop={handleDrop}
       role="button"
       tabindex="0"
@@ -160,14 +161,7 @@ https://svelte.dev/e/js_parse_error -->
         onchange={handleFileSelect}
         class="hidden"
       />
-      <Button
-        class="bits-btn mt-2"
-        variant="ghost"
-        onclick={() =>
-fileInput?.click()}
-      >
-        Select File
-</Button>
+      <Button class="bits-btn mt-2" variant="ghost" onclick={() => fileInput?.click()}>Select File</Button>
     </div>
   {/if}
   <!-- Selected File Info -->
@@ -182,12 +176,8 @@ fileInput?.click()}
           <p class="text-sm text-blue-600 mt-1">Evidence ID: {evidenceId}</p>
         </div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>
-Change File
-</Button>
-          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">
-Process Evidence
-</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Change File</Button>
+          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">Process Evidence</Button>
         </div>
       </div>
     </div>
@@ -198,7 +188,8 @@ Process Evidence
       <div class="mb-4">
         <div class="flex items-center justify-between mb-2">
           <h3 class="font-medium text-gray-900">Processing Evidence</h3>
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{#if state.value === 'validating'}
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+            >{#if state.value === 'validating'}
               Validating
             {:else if state.value === 'analyzing'}
               AI Analysis
@@ -206,7 +197,8 @@ Process Evidence
               Embedding Metadata
             {:else if state.value === 'uploading'}
               Uploading & Indexing
-            {/if}</span>
+            {/if}</span
+          >
         </div>
         <Progress value={progress} class="w-full" />
         <p class="text-sm text-gray-600 mt-1">{progress}% complete</p>
@@ -214,10 +206,7 @@ Process Evidence
       <!-- Processing Steps -->
       <div class="steps-list space-y-2">
         {#each processingSteps as step, index}
-          <div
-            class="flex items-center gap-2 text-sm text-green-600"
-            transitionfly={{ x: -20, delay: index * 100 }}
-          >
+          <div class="flex items-center gap-2 text-sm text-green-600" transitionfly={{ x: -20, delay: index * 100 }}>
             <CheckCircle class="w-4 h-4" />
             {step}
           </div>
@@ -237,24 +226,15 @@ Process Evidence
         <CheckCircle class="w-6 h-6 text-green-600" />
         <div>
           <h3 class="font-medium text-green-900">Evidence Processing Complete</h3>
-          <p class="text-sm text-green-700">
-            Legal AI metadata embedded and artifact indexed successfully
-          </p>
+          <p class="text-sm text-green-700">Legal AI metadata embedded and artifact indexed successfully</p>
         </div>
       </div>
       {#if artifactUrl}
         <div class="flex gap-2 mt-4">
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={() =>
-window.open(artifactUrl, '_blank')}
-          >
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => window.open(artifactUrl, '_blank')}>
             Download Artifact
-</Button>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>
-Process Another
-</Button>
+          </Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Process Another</Button>
         </div>
       {/if}
     </div>
@@ -266,17 +246,14 @@ Process Another
       <AlertDescription>
         <div class="mb-2">{error}</div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>
-Retry
-</Button>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>
-Reset
-</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>Retry</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Reset</Button>
         </div>
       </AlertDescription>
     </Alert>
   {/if}
 </div>
+
 <style>
   .drop-zone {
     cursor: pointer;

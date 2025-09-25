@@ -218,7 +218,7 @@ export class QueueManager {
       findings: ['Pattern identified', 'Metadata extracted', 'Classification complete'],
       confidence: 0.87,
       processedAt: new Date()
-    };
+    }
   }
   /**
    * Document Processing Processor (with OCR and text extraction)
@@ -234,7 +234,7 @@ export class QueueManager {
       extractedText: 'Sample extracted text...',
       classification: 'legal_contract',
       processedAt: new Date()
-    };
+    }
   }
   /**
    * Case Synthesis Processor (with LLM integration)
@@ -250,7 +250,7 @@ export class QueueManager {
       synthesis: 'Generated case synthesis...',
       recommendations: ['Review additional evidence', 'Consider expert testimony'],
       processedAt: new Date()
-    };
+    }
   }
   /**
    * Chain of Custody Update Processor (critical legal operation)
@@ -265,7 +265,7 @@ export class QueueManager {
       custodyEvent,
       integrityVerified: true
       updatedAt: new Date()
-    };
+    }
   }
   /**
    * Vector Index Rebuild Processor (high-performance operation)
@@ -280,7 +280,7 @@ export class QueueManager {
       vectorCount,
       rebuildTime: Date.now(),
       performance: 'optimized'
-    };
+    }
   }
   /**
    * Get queue statistics (Zod validated)
@@ -294,7 +294,7 @@ export class QueueManager {
       totalThroughput: this.completedJobs.size + this.failedJobs.size,
       avgProcessingTime: this.calculateAverageProcessingTime(),
       lastUpdated: new Date()
-    };
+    }
     return QueueStatsSchema.parse(stats);
   }
   /**
@@ -325,7 +325,7 @@ export class QueueManager {
     const completed = this.completedJobs.get(jobId);
     if (completed) return completed.result;
     const failed = this.failedJobs.get(jobId);
-    if (failed) return { error: failed.error.message };
+    if (failed) return { error: failed.error.message }
     return null;
   }
   /**
@@ -366,7 +366,7 @@ export class QueueManager {
     }
     const status = issues.length === 0 ? 'healthy' :
                    issues.length < 3 ? 'degraded' : 'critical';
-    return { status, stats, issues };
+    return { status, stats, issues }
   }
 }
 // Export singleton instance

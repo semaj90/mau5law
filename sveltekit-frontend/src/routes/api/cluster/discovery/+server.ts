@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
  * Integrates with cluster-manager Go service on port 8103
  */
 import { productionServiceClient } from '$lib/services/productionServiceClient'
-import { URL } from "url"
+
 interface ServiceInstance {
   id: string
   name: string
@@ -462,4 +462,4 @@ setTimeout(async () => {
   if (serviceRegistry.size === 0) {
     await discoverServices(true)
   }
-}, 1000)
+}, 1000);

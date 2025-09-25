@@ -57,22 +57,22 @@
   		processingStats: { totalFiles: 0, processed: 0, queued: 0 }
   	});
   	let contextMenu = $state({
-  		show: false
+  		show: false,
   		x: 0,
   		y: 0,
-  		item: null as any;
+  		item: null as any
   	});
   	let miniModal = $state({
-  		show: false
+  		show: false,
   		x: 0,
   		y: 0,
-  		type: '';
+  		type: ''
   	});
   	let findModal = $state({
-  		show: false
+  		show: false,
   		query: '',
   		results: [] as any[],
-  		loading: false
+  		loading: false;
   		error: '',
   		suggestions: [] as any[];
   	});
@@ -84,7 +84,7 @@
   		});
   		return () => {
   			unsubscribeEvidence();
-  		};
+  		}
   	});
   	// Enhanced system initialization
   	$effect(() => {
@@ -168,13 +168,13 @@
   			tags: [],
   			x: 100 + Math.random() * 200,
   			y: 100 + Math.random() * 200,
-  			// MinIO specific field
+  			// MinIO specific field;
   			url: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).url,
   			bucket: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).bucket,
   			hash: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).hash,
   			minioId: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).id,
   			caseId: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).metadata?.caseId
-  		};
+  		}
   		// Add to the appropriate column
   		columns = columns.map(col =>
   			col.id === columnId
@@ -188,13 +188,13 @@
   		console.error('Upload to MinIO failed:', error);
   		// You could show a notification or alert here
   	}
-  	function handleDndConsider(event: any, columnId: string) {
+  	function handleDndConsider(_event: any, columnId: string) {
   		console.log('DnD consider:', event, columnId);
   	}
-  	function handleDndFinalize(event: any, columnId: string) {
+  	function handleDndFinalize(_event: any, columnId: string) {
   		console.log('DnD finalize:', event, columnId);
   	}
-  	function handleRightClick(event: MouseEvent, item: any) {
+  	function handleRightClick(_event: MouseEvent, item: any) {
   		event.preventDefault();
   		contextMenu.show = true;
   		contextMenu.x = event.clientX;
@@ -247,7 +247,7 @@
   			aiHighlightedEvidence = [];
   		}, 3000);
   	}
-  	function handleAIActionTrigger(event: CustomEvent) {
+  	function handleAIActionTrigger(_event: CustomEvent) {
   		const { type, data } = event.detail;
   		switch (type) {
   			case 'suggestions':
@@ -287,7 +287,7 @@
   			});
   		}
   	});
-  	function handleGlobalKeydown(event: KeyboardEvent) {
+  	function handleGlobalKeydown(_event: KeyboardEvent) {
   		if (event.key === 'Escape') {
   			closeContextMenu();
   			closeFindModal();
@@ -359,7 +359,7 @@
   		findModal.loading = false;
   	}
   	// Canvas-specific handlers
-  	function handleCanvasDrop(event: DragEvent) {
+  	function handleCanvasDrop(_event: DragEvent) {
   		event.preventDefault();
   		// Handle dropping evidence onto canvas
   		const data = event.dataTransfer?.getData('text/plain');
@@ -377,13 +377,13 @@
   			}
   		}
   	}
-  	function handleCanvasDragStart(event: DragEvent, item: any) {
+  	function handleCanvasDragStart(_event: DragEvent, item: any) {
   		if (event.dataTransfer) {
   			event.dataTransfer.effectAllowed = 'move';
   			event.dataTransfer.setData('text/plain', JSON.stringify(item));
   		}
   	}
-  	function handleCanvasDragEnd(event: DragEvent, item: any) {
+  	function handleCanvasDragEnd(_event: DragEvent, item: any) {
   		// Update item position after drag
   		const rect = canvasContainer?.getBoundingClientRect();
   		if (rect) {

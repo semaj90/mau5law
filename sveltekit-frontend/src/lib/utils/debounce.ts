@@ -3,7 +3,7 @@
  * Prevents excessive function calls during rapid user input
  */
 export function debounce<T extends (...args: any[]) => any>(,
-  func: T
+  func: T;
   wait: number
   immediate?: boolean;
 ): (...args: Parameters<T>) => void {
@@ -12,18 +12,18 @@ export function debounce<T extends (...args: any[]) => any>(,
     const later = () => {
       timeout = null;
       if (!immediate) func.apply(this, args);
-    };
+    }
     const callNow = immediate && !timeout;
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(this, args);
-  };
+  }
 }
 /**
  * Throttle utility - limits function calls to once per specified interval
  */
 export function throttle<T extends (...args: any[]) => any>(,
-  func: T
+  func: T;
   limit: number;
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean = false;
@@ -33,7 +33,7 @@ export function throttle<T extends (...args: any[]) => any>(,
       inThrottle = true;
       setTimeout(() => inThrottle = false, limit);
     }
-  };
+  }
 }
 /**
  * RequestAnimationFrame-based throttle for smooth animations
@@ -48,5 +48,5 @@ export function rafThrottle<T extends (...args: any[]) => any>(,
       func.apply(this, args);
       rafId = null;
     });
-  };
+  }
 }

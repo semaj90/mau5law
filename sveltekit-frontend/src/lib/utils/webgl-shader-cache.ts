@@ -7,7 +7,7 @@ import { writable, type Writable } from 'svelte/store';
 import { cache } from '$lib/server/cache/redis';
 // Minimal placeholder interface to prevent type errors if not imported from elsewhere
 interface ComprehensiveCachingArchitecture {
-  set(key: string, value: any, options?: { ttl?: number; tags?: string[]; layers?: string[] }): Promise<void>;
+  set(_key: string, value: any, options?: { ttl?: number; tags?: string[]; layers?: string[] }): Promise<void>;
 }
 // Shader definitions for legal AI visualizations
 export const LEGAL_AI_SHADERS = {
@@ -199,7 +199,7 @@ export const LEGAL_AI_SHADERS = {
       }
     `
   }
-};
+}
 }
 export interface ShaderProgram {
   id: string;
@@ -355,7 +355,7 @@ export class WebGLShaderCache {
           description: metadata.description,
           tags: metadata.tags,
           averageExecutionTime: 0
-        };
+        }
         // Cache the compiled shader
         this.shaderPrograms.set(id, shaderProgram);
         // Cache in comprehensive caching system
@@ -532,7 +532,7 @@ export class WebGLShaderCache {
    * Setup vertex attributes for legal AI visualizations
    */
   public setupVertexAttributes(
-    program: ShaderProgram
+    program: ShaderProgram;
     attributes: Record<string, { buffer: WebGLBuffer; size: number; type?: number; normalized?: boolean; stride?: number; offset?: number }>;
   ): void {
     for (const [name, config] of Object.entries(attributes)) {
@@ -596,7 +596,7 @@ export class WebGLShaderCache {
       averageCompilationTime: this.shaderPrograms.size > 0 ?
         totalCompilationTime / this.shaderPrograms.size: 0,
       memoryUsage: this.estimateMemoryUsage()
-    };
+    }
     this.metrics.set(metrics);
   }
   /**
@@ -618,7 +618,7 @@ export class WebGLShaderCache {
       totalCompilationTime: 0,
       averageCompilationTime: 0,
       memoryUsage: 0
-    };
+    }
   }
   /**
    * Clean up shader cache
@@ -670,7 +670,7 @@ export class WebGLShaderCache {
    */;
   private generateFallbackEmbedding(shaderCode: string): number[] {
     const features = new Array(384).fill(0);
-    const lines = shaderCode.split('\n');
+    // removed unused lines assignment
     lines.forEach((line, index) => {
       const hash = this.simpleHash(line);
       const featureIndex = hash % features.length;
@@ -730,7 +730,7 @@ export class WebGLShaderCache {
           hasVertex: true
           hasFragment: true
         }
-      };
+      }
       // Store in Redis cache
       await cache.set(`webgl_shader:${shaderProgram.id}`, searchableShader, 24 * 60 * 60 * 1000);
       // Update unified search index
@@ -770,12 +770,12 @@ export class WebGLShaderCache {
         operation: 'evidence_timeline',
         tags: ['timeline', 'evidence', 'legal', 'temporal', 'importance-weighting']
       }
-    };
+    }
     return metadataMap[shaderName] || {
       description: `WebGL shader for ${shaderName}`,
-      operation: shaderName
+      operation: shaderName;
       tags: ['webgl', 'legal-ai']
-    };
+    }
   }
   // Public getters
   public getMetrics(): Writable<ShaderCacheMetrics> {

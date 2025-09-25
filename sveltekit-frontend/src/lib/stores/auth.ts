@@ -34,15 +34,15 @@ const createAuthStore = () => {
         if (response.ok) {
           const { user } = await response.json();
           set({ isAuthenticated: true, user, isLoading: false });
-          return { success: true };
+          return { success: true }
         } else {
           const { error } = await response.json();
           set({ isAuthenticated: false, user: null, isLoading: false });
-          return { success: false, error };
+          return { success: false, error }
         }
       } catch (error: any) {
         set({ isAuthenticated: false, user: null, isLoading: false });
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     logout: async () => {
@@ -56,7 +56,7 @@ const createAuthStore = () => {
     checkAuth: async () => {
       update((state) => ({ ...state, isLoading: true });
       try {
-        const response = await fetch("/api/auth/me");
+        // removed unused response assignment
         if (response.ok) {
           const { user } = await response.json();
           set({ isAuthenticated: true, user, isLoading: false });
@@ -73,8 +73,8 @@ const createAuthStore = () => {
         user: state.user ? { ...state.user, ...userData } : null
       });
     }
-  };
-};
+  }
+}
 export type AuthStore = ReturnType<typeof createAuthStore>;
 // Context key for the auth store
 const AUTH_CONTEXT_KEY = Symbol("auth");
@@ -83,7 +83,7 @@ export const setAuthContext = (): AuthStore => {
   const authStore = createAuthStore();
   setContext(AUTH_CONTEXT_KEY, authStore);
   return authStore;
-};
+}
 // Get the auth context (call this in components that need auth)
 export const getAuthContext = (): AuthStore => {
   const authStore = getContext<AuthStore>(AUTH_CONTEXT_KEY);
@@ -93,15 +93,15 @@ export const getAuthContext = (): AuthStore => {
     );
   }
   return authStore;
-};
+}
 // Utility to check if user has specific role
 export const hasRole = (user: AuthUser | null, role: string): boolean => {
   return user?.role === role;
-};
+}
 // Utility to check if user has any of the specified roles
 export const hasAnyRole = (user: AuthUser | null, roles: string[]): boolean => {
   return user ? roles.includes(user.role) : false;
-};
+}
 // Create and export default auth store
 const authStore = createAuthStore();
 export default authStore;

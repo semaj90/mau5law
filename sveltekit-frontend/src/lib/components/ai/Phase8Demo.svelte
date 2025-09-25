@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
     recentActions: ['file_upload', 'view_document', 'apply_filter'],
     userRole: 'prosecutor',
     workflowState: 'review';
-  };
+  }
   $effect(() => {
     (async () => {
 await initializePhase8System();
@@ -142,7 +142,7 @@ await initializePhase8System();
         simulateAISuggestions();
       }
       requestAnimationFrame(demoLoop);
-    };
+    }
     requestAnimationFrame(demoLoop);
   }
   function simulateViewportFocus(): void {
@@ -152,7 +152,7 @@ await initializePhase8System();
       radius: 200 + Math.random() * 100,
       aiSuggestions: ['evidence-card-1', 'analyze-btn-1'],
       confidenceScore: 0.8 + Math.random() * 0.2;
-    };
+    }
     lodSystem.updateViewportFocus(focus);
   }
   async function simulateAISuggestions(): Promise<void> {
@@ -165,7 +165,7 @@ await initializePhase8System();
           metadata: { type: 'evidence-analysis', confidence: 95 },
           originalScore: 0.8,
           rerankScore: 0,
-          confidence: 95;
+          confidence: 95,
         },
         {
           id: 'precedent-1',
@@ -173,7 +173,7 @@ await initializePhase8System();
           metadata: { type: 'case-precedent', confidence: 78 },
           originalScore: 0.6,
           rerankScore: 0,
-          confidence: 78;
+          confidence: 78,
         }
       ];
       const rerankedResults = await reranker.rerank(mockResults, sampleUserContext);
@@ -232,11 +232,10 @@ await initializePhase8System();
     }, 2000);
   }
 </script>
+
 <div class="phase8-demo {className}">
   <div class="demo-header yorha-panel p-6 mb-6">
-    <h2 class="text-2xl font-bold text-yellow-400 mb-2">
-      Phase 8: AI-Aware Matrix UI System
-    </h2>
+    <h2 class="text-2xl font-bold text-yellow-400 mb-2">Phase 8: AI-Aware Matrix UI System</h2>
     <p class="text-gray-300 mb-4">
       Complete integration of Custom Reranker + JSON UI Compiler + WebGL LOD + Predictive Prefetching
     </p>
@@ -282,10 +281,7 @@ await initializePhase8System();
       >
         Prefetcher
       </button>
-      <button
-        class="yorha-button px-3 py-1 text-sm bg-blue-600 text-white ml-4"
-        onclick={runPerformanceTest}
-      >
+      <button class="yorha-button px-3 py-1 text-sm bg-blue-600 text-white ml-4" onclick={runPerformanceTest}>
         Performance Test
       </button>
     </div>
@@ -296,12 +292,7 @@ await initializePhase8System();
     <div class="webgl-section">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">WebGL2 Rendering</h3>
       <div class="canvas-container relative bg-black border border-gray-700 rounded">
-        <canvas ;
-          bind:this={canvas as any}
-          width="600"
-          height="400"
-          class="w-full h-auto"
-        ></canvas>
+        <canvas ; bind:this={canvas as any} width="600" height="400" class="w-full h-auto"></canvas>
         <div class="overlay absolute top-2 left-2 text-xs text-green-400 font-mono">
           LOD System Active | Cubic Filter Blending | AI-Aware Rendering
         </div>
@@ -310,7 +301,8 @@ await initializePhase8System();
     <!-- UI Components Demo -->
     <div class="ui-section">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">Matrix UI Components</h3>
-      <div ;
+      <div
+        ;
         bind:this={demoContainer}
         class="ui-container relative h-96 bg-gray-900 border border-gray-700 rounded p-4 overflow-hidden"
       >
@@ -362,34 +354,31 @@ await initializePhase8System();
     {#if currentDemo === 'reranker'}
       <h4 class="text-lg font-semibold text-yellow-400 mb-2">AI Reranker Demo</h4>
       <p class="text-gray-300 text-sm">
-        Watch as the AI reranker intelligently scores legal documents based on user context,
-        role, and workflow state. The highlighted evidence card receives priority scoring
-        for prosecutor workflows.
+        Watch as the AI reranker intelligently scores legal documents based on user context, role, and workflow state.
+        The highlighted evidence card receives priority scoring for prosecutor workflows.
       </p>
     {:else if currentDemo === 'matrix'}
       <h4 class="text-lg font-semibold text-yellow-400 mb-2">Matrix Compiler Demo</h4>
       <p class="text-gray-300 text-sm">
-        The JSON UI compiler converts structured definitions into DOM elements with
-        4x4 matrix transforms. AI-enhanced components show subtle glow effects and
-        confidence-based styling.
+        The JSON UI compiler converts structured definitions into DOM elements with 4x4 matrix transforms. AI-enhanced
+        components show subtle glow effects and confidence-based styling.
       </p>
     {:else if currentDemo === 'lod'}
       <h4 class="text-lg font-semibold text-yellow-400 mb-2">LOD System Demo</h4>
       <p class="text-gray-300 text-sm">
-        Real-time Level of Detail system with cubic filter blending. Components
-        automatically adjust quality based on viewport focus, AI suggestions,
-        and GPU performance.
+        Real-time Level of Detail system with cubic filter blending. Components automatically adjust quality based on
+        viewport focus, AI suggestions, and GPU performance.
       </p>
     {:else if currentDemo === 'prefetch'}
       <h4 class="text-lg font-semibold text-yellow-400 mb-2">Predictive Prefetch Demo</h4>
       <p class="text-gray-300 text-sm">
-        Service Worker analyzes user behavior patterns to predict next actions
-        and preload resources. Legal workflow awareness enables intelligent
-        caching strategies.
+        Service Worker analyzes user behavior patterns to predict next actions and preload resources. Legal workflow
+        awareness enables intelligent caching strategies.
       </p>
     {/if}
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .phase8-demo {
@@ -414,7 +403,9 @@ await initializePhase8System();
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
   :global(.lod-demo) {
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
   }
   :global(.lod-low) {
     @apply opacity-60 scale-95;
@@ -434,7 +425,12 @@ await initializePhase8System();
     border-radius: 4px;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
 </style>

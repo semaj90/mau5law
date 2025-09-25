@@ -44,4 +44,4 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json({ error: "Failed to call Ollama Gemma3" }, { status: 500 })
   }
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

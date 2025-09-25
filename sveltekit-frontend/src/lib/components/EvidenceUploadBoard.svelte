@@ -9,7 +9,7 @@
   let analysis = $state('');
   let isAnalyzing = $state(false);
   const aiService = new AIAnalysisService();
-  async function handleFileUpload(event: Event) {
+  async function handleFileUpload(_event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) {
       files = Array.from(input.files);
@@ -29,17 +29,14 @@
     }
   }
 </script>
+
 <div class="p-6 space-y-6">
   <div class="nes-container is-dark">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Evidence Upload & AI Analysis</h3>
     </div>
     <div class="yorha-panel-content space-y-4">
-      <input
-        type="file" onchange={handleFileUpload}
-        accept=".txt,.pdf,.doc,.docx"
-        class="block w-full text-sm"
-      />
+      <input type="file" onchange={handleFileUpload} accept=".txt,.pdf,.doc,.docx" class="block w-full text-sm" />
       {#if files.length > 0}
         <div class="text-sm text-gray-600">
           Uploaded: {files[0].name}

@@ -35,7 +35,7 @@ export interface ProcessingResult {
     totalTokens: number;
     avgChunkSize: number;
     model: string;
-  };
+  }
 }
 export interface QueryResult {
   answer: string;
@@ -55,7 +55,7 @@ const DEFAULT_CONFIG: LangChainConfig = {
   maxRetrieverResults: 10,
   useCuda: true
   vectorDimensions: 384
-};
+}
 // ============================================================================
 // ENHANCED LANGCHAIN + OLLAMA SERVICE
 // ============================================================================
@@ -67,7 +67,7 @@ export class LangChainOllamaService {
   private vectorStore: MemoryVectorStore | null = null;
   private isInitialized: boolean = false;
   constructor(config: Partial<LangChainConfig> = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.config = { ...DEFAULT_CONFIG, ...config }
     this.initializeModels();
     this.initializeTextSplitter();
   }
@@ -143,7 +143,7 @@ export class LangChainOllamaService {
           avgChunkSize: Math.round(avgChunkSize),
           model: this.config.embeddingModel
         }
-      };
+      }
       console.log(`✅ Processed document: ${chunks.length} chunks in ${processingTime}ms`);
       return result;
     } catch (error: any) {
@@ -158,7 +158,7 @@ export class LangChainOllamaService {
     question: string
     context: {
       documentTypes?: string[];
-      dateRange?: { start: Date; end: Date };
+      dateRange?: { start: Date; end: Date }
       relevanceThreshold?: number;
       maxResults?: number;
     } = {}
@@ -184,7 +184,7 @@ export class LangChainOllamaService {
       // Create enhanced prompt for legal AI
       const prompt = this.createLegalPrompt(question, filteredDocs);
       // Generate response using chat model
-      const response = await this.chatModel.invoke(prompt);
+      // removed unused response assignment
       // Calculate confidence based on document relevance
       const confidence = this.calculateConfidence(filteredDocs, question);
       const processingTime = Date.now() - startTime;
@@ -197,7 +197,7 @@ export class LangChainOllamaService {
         })),
         confidence,
         processingTime
-      };
+      }
       console.log(`✅ Query processed in ${processingTime}ms with ${filteredDocs.length} sources`);
       return result;
     } catch (error: any) {
@@ -271,7 +271,7 @@ Answer:`;
       vectorStoreSize: this.vectorStore?.memoryVectors?.length || 0,
       model: this.config?.model || 'gemma3:2b',
       embeddingModel: this.config.embeddingModel
-    };
+    }
   }
   // Clear vector store and reset
   reset() {

@@ -34,7 +34,7 @@
   async function checkSystemStatus() {
     try {
       isLoading = true;
-      const response = await fetch('/api/system/check');
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -46,7 +46,7 @@
         // Legacy compatibility
         ollama: data.services?.ollama || data.ollama,
         database: data.services?.database || data.database,
-      };
+      }
     } catch (error) {
       console.error('Failed to check system status:', error);
       systemStatus = {
@@ -58,7 +58,7 @@
         // Legacy compatibility
         ollama: { status: 'error', error: 'Failed to connect' },
         database: { status: 'error', error: 'Failed to connect' },
-      };
+      }
     } finally {
       isLoading = false;
     }

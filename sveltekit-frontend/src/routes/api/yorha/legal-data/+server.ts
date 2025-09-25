@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit"
 import { db, helpers, sql, legalDocuments, cases as casesTable, evidence as evidenceTable } from "$lib/server/db"
 import crypto from "crypto"
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 // YoRHa Legal Data Management API - Production Ready
 // Enhanced CRUD operations with AI integration, vector search, and production logging
 // Integrates with PostgreSQL, Qdrant, Redis, and Gemma3-legal model

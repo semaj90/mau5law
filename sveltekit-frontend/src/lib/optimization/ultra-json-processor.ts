@@ -55,14 +55,14 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     weights2: null as Float32Array | null
     bias1: null as Float32Array | null
     bias2: null as Float32Array | null
-  };
+  }
   // Performance optimization patterns
   private optimizationPatterns = {
     smallObjects: { threshold: 1024, strategy: "direct" },
     largeObjects: { threshold: 100 * 1024, strategy: "streaming" },
     repetitiveData: { threshold: 0.7, strategy: "compression" },
     complexNested: { threshold: 10, strategy: "neural" }
-  };
+  }
   constructor(config: Partial<JSONOptimizationConfig> = {}) {
     super();
     this.config = {
@@ -73,7 +73,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       cacheSize: 1000,
       enableSIMD: true
       ...config
-    };
+    }
     this.metrics = {
       parseTime: 0,
       stringifyTime: 0,
@@ -82,7 +82,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       cacheHitRate: 0,
       simdAcceleration: false
       throughputMBps: 0
-    };
+    }
     this.initializeAsync();
   }
   /**
@@ -114,7 +114,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       getMemoryUsage: () => process.memoryUsage().heapUsed,
       optimize: () => this.optimizeParser(),
       dispose: () => this.dispose()
-    };
+    }
     // Check for SIMD support
     this.metrics.simdAcceleration = this.checkSIMDSupport();
     console.log("✅ WebAssembly JSON module loaded");
@@ -234,7 +234,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       totalSize,
       parseTime: performance.now() - startTime,
       errors
-    };
+    }
   }
   /**
    * Analyze JSON characteristics for optimization selection
@@ -305,7 +305,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       numbers,
       complexity: (maxDepth * (objects + arrays)) / input.length,
       repetition
-    };
+    }
   }
   /**
    * Select optimal parsing strategy using neural network
@@ -474,7 +474,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
         totalSize: (data as { length?: any }).length,
         parseTime,
         errors: []
-      };
+      }
     } catch (error: any) {
       const parseTime = performance.now() - startTime;
       return {
@@ -482,14 +482,14 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
         totalSize: (data as { length?: any }).length,
         parseTime,
         errors: [error instanceof Error ? error.message: String(error)]
-      };
+      }
     }
   }
   /**
    * Get performance metrics
    */;
   getMetrics(): JSONPerformanceMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   /**
    * Clear cache and optimize
@@ -515,7 +515,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
           }); const settings = { theme: "dark", notifications: true }
         }
       }))
-    };
+    }
     const jsonString = JSON.stringify(testData);
     const iterations = 100;
     // Benchmark native JSON
@@ -553,7 +553,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
         parse: nativeParseTime / ourParseTime,
         stringify: nativeStringifyTime / ourStringifyTime
       }
-    };
+    }
   }
   // Utility methods
   private generateCacheKey(input: string): string {
@@ -566,7 +566,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     }
     return hash.toString(36);
   }
-  private cacheResult(key: string, value: any): void {
+  private cacheResult(_key: string, value: any): void {
     if (this.cache.size >= this.config.cacheSize) {
       // Evict least recently used
       const oldestKey = Array.from(this.cache.keys())[0];
@@ -610,7 +610,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       hasRepeatingPatterns: this.detectRepeatingPatterns(jsonString),
       depth: this.getObjectDepth(obj),
       size: jsonString.length
-    };
+    }
   }
   private getObjectDepth(obj: any, depth = 0): number {
     if (obj === null || typeof obj !== "object") return depth;

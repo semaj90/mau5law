@@ -73,4 +73,4 @@ Return only 4 concise, actionable questions as a JSON array:
     return json({ error: 'Failed to generate suggestions' }, { status: 500 })
   }
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

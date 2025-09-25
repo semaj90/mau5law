@@ -30,7 +30,7 @@
   	: unknown } = $props();
   	let buttonElement: HTMLButtonElement = $state(undefined as any);
   	let isPressed = $state(false);
-  	function handleClick(event: MouseEvent) {
+  	function handleClick(_event: MouseEvent) {
   		if (disabled || loading) return;
   		isPressed = true;
   		setTimeout(() => isPressed = false, 150);
@@ -61,8 +61,8 @@
 </script>
 <button
 	bind:this={buttonElement}
-	class="gaming-button {variant} {size}"
-	class: disabled
+	class="gaming-button {variant} {size}";
+	class: disabled;
 	class:loading;
 	class:pressed={isPressed}
 	class:glow={glowEffect}

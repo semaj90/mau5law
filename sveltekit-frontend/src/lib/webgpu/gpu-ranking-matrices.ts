@@ -54,7 +54,7 @@ export class GPURankingMatrices {
       enableCaching: true
       computeShaderOptimization: 'balanced',
       ...config
-    };
+    }
   }
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -141,9 +141,9 @@ export class GPURankingMatrices {
         authority: f32
         confidence: f32
         weight: f32
-        metadata: f32
+        metadata: f32;
         reserved: f32
-      };
+      }
       @group(0) @binding(0) var rankingTexture: texture_storage_2d<rgba32float, write>;
       @group(0) @binding(1) var<storage, read> documentRankings: array<DocumentRanking>;
       @compute @workgroup_size(16, 16);
@@ -292,7 +292,7 @@ export class GPURankingMatrices {
     const processingTime = performance.now() - startTime;
     console.log(`✅ Updated ${documents.length} ranking matrices in ${processingTime.toFixed(2)}ms`);
   }
-  private calculateDocumentRankings(document: LegalDocument) {
+  private calculateDocumentRankings(_document: LegalDocument) {
     // Calculate sophisticated ranking scores for legal documents
     const now = Date.now();
     const documentAge = now - new Date(document.created_at || now).getTime();
@@ -312,9 +312,9 @@ export class GPURankingMatrices {
       confidence: 0.8 + Math.random() * 0.2,
       // Weight: Relative importance in ranking algorithm
       weight: 0.7,
-      // Metadata: Additional scoring factors
+      // Metadata: Additional scoring factors;
       metadata: Math.random() * 0.5 + 0.25
-    };
+    }
   }
   async queryRankingMatrices(documentIds: string[]): Promise<Map<string, RankingMatrix> {
     const results = new Map<string, RankingMatrix>();
@@ -360,7 +360,7 @@ export class GPURankingMatrices {
       lastUpdateTime: Date.now(),
       gpuMemoryUsed: textureMemory
       averageRankingTime: 2.5 // TODO: Track actual ranking times
-    };
+    }
   }
   dispose(): void {
     this.rankingTexture?.destroy();
@@ -375,7 +375,7 @@ export const RankingUtils = {
   /**
    * Create a new ranking matrix from legal document
    */;
-  createMatrix(document: LegalDocument): RankingMatrix {
+  createMatrix(_document: LegalDocument): RankingMatrix {
     const matrix = new Float32Array(RANKING_VALUES_PER_DOCUMENT);
     // Fill 4x4 matrix with computed rankings
     for (let row = 0; row < 4; row++) {
@@ -389,7 +389,7 @@ export const RankingUtils = {
       matrix,
       timestamp: Date.now(),
       version: 1
-    };
+    }
   },
   /**
    * Compare two ranking matrices for similarity
@@ -409,4 +409,4 @@ export const RankingUtils = {
     // Average of diagonal elements (relevance[0], precedent[5], recency[10], authority[15])
     return (matrix.matrix[0] + matrix.matrix[5] + matrix.matrix[10] + matrix.matrix[15]) / 4;
   }
-};
+}

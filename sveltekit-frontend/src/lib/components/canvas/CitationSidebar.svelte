@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
     ondispatch?.(citation);
   }
   // Drag and drop functionality
-  function handleDragStart(event: DragEvent, citation: Citation) {
+  function handleDragStart(_event: DragEvent, citation: Citation) {
     if (event.dataTransfer) {
       event.dataTransfer.setData("text/plain", citation.content);
       event.dataTransfer.setData("application/json", JSON.stringify(citation));

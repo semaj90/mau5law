@@ -33,7 +33,7 @@
     struct VertexOutput {
       @builtin(position) position: vec;
 4<f32>,
-      @location(0) color: vec3<f32>
+      @location(0) color: vec3<f32>;
     }
     @vertex
     fn vs_main(@builtin(vertex_index) vertexIndex: u32) -> VertexOutput {
@@ -77,7 +77,7 @@
     startRenderLoop();
     return () => {
       // Cleanup
-    };
+    }
   });
   async function initializeWebGPU(): Promise<void> {
     try {
@@ -102,7 +102,7 @@
       }
       const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
       webgpuContext.configure({
-        device: webgpuDevice
+        device: webgpuDevice;
         format: canvasFormat
         alphaMode: 'premultiplied',
       });
@@ -121,10 +121,10 @@
   async function createRenderPipeline(format: GPUTextureFormat): Promise<void> {
     if (!webgpuDevice) return;
     const vertexShader = webgpuDevice.createShaderModule({
-      code: vertexShaderSource
+      code: vertexShaderSource;
     });
     const fragmentShader = webgpuDevice.createShaderModule({
-      code: fragmentShaderSource
+      code: fragmentShaderSource;
     });
     renderPipeline = webgpuDevice.createRenderPipeline({
       layout: 'auto',
@@ -136,10 +136,11 @@
         module: fragmentShader
         entryPoint: 'fs_main',
         targets: [{,
-          format: format
+          format: format;
         }],
       },
-      primitive: {;
+      primitive: {
+;
         topology: 'triangle-list',
       },
     });
@@ -180,7 +181,7 @@
         loadOp: 'clear',
         storeOp: 'store',
       }],
-    };
+    }
     const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
     passEncoder.setPipeline(renderPipeline);
     passEncoder.draw(6, 1, 0, 0);
@@ -274,6 +275,7 @@
     }
   });
 </script>
+
 <div class="webgpu-canvas-container nes-container with-title">
   <p class="title">WebGPU Legal Visualization</p>
   <div class="canvas-info">
@@ -293,13 +295,7 @@
     </div>
   </div>
   <div class="canvas-wrapper">
-    <canvas
-      bind:this={canvas}
-      {width}
-      {height}
-      onclick={handleCanvasClick}
-      class="webgpu-canvas"
-    ></canvas>
+    <canvas bind:this={canvas} {width} {height} onclick={handleCanvasClick} class="webgpu-canvas"></canvas>
   </div>
   <div class="canvas-controls">
     <button
@@ -316,9 +312,7 @@
     >
       2D Fallback
     </button>
-    <button class="nes-btn is-warning" onclick={() => location.reload()}>
-      Reset Canvas
-    </button>
+    <button class="nes-btn is-warning" onclick={() => location.reload()}> Reset Canvas </button>
   </div>
   {#if children}
     <div class="additional-content">
@@ -326,8 +320,10 @@
     </div>
   {/if}
 </div>
+
 <style>
-  .webgpu-canvas-container {;
+  .webgpu-canvas-container {
+;
     margin: 1rem;
     padding: 1rem;
     background: var(--yorha-bg-secondary);
@@ -404,7 +400,7 @@
     background: var(--yorha-bg-tertiary);
     border: 1px solid var(--yorha-text-muted);
   }
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 768px) {
     .canvas-info {
       flex-direction: column;
@@ -418,7 +414,7 @@
       height: auto;
     }
   }
-  /* Animation for WebGPU mode */
+/* Animation for WebGPU mode */ {}
   .mode-indicator.webgpu {
     animation: webgpuGlow 2s ease-in-out infinite alternate;
   }
@@ -430,7 +426,7 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
     }
   }
-  /* Canvas loading states */
+/* Canvas loading states */ {}
   .canvas-wrapper::before {
     content: '';
     position: absolute;

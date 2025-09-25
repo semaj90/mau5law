@@ -22,7 +22,7 @@ export interface ChatMessage {
     confidence?: number;
     processingTime?: number;
     vectorResults?: VectorSearchResult[];
-  };
+  }
 }
 export interface Conversation {
   id: string;
@@ -36,7 +36,7 @@ export interface Conversation {
     totalTokens?: number;
     averageResponseTime?: number;
     contextDocuments?: string[];
-  };
+  }
 }
 export interface ChatSettings {
   model: string;
@@ -62,7 +62,7 @@ export interface VectorSearchResult {
     type?: "case_law" | "statute" | "regulation" | "document";
     date?: string;
     jurisdiction?: string;
-  };
+  }
 }
 export interface ModelInfo {
   name: string;
@@ -71,12 +71,12 @@ export interface ModelInfo {
     size?: string;
     quantization?: string;
     contextLength?: number;
-  };
+  }
   capabilities?: {
     streaming?: boolean;
     functionCalling?: boolean;
     multimodal?: boolean;
-  };
+  }
 }
 export interface ContextInjection {
   enabled: boolean;
@@ -93,7 +93,7 @@ export interface StreamingResponse {
   metadata?: {
     tokenCount?: number;
     confidence?: number;
-  };
+  }
 }
 export interface ApiResponse {
   response: string;
@@ -105,7 +105,7 @@ export interface ApiResponse {
     confidence?: number;
     references?: string[];
     vectorResults?: VectorSearchResult[];
-  };
+  }
   error?: string;
 }
 export interface ServiceStatus {
@@ -133,18 +133,18 @@ export interface EvidenceDocument {
     author?: string;
     relevance?: number;
     tags?: string[];
-  };
+  }
 }
 // UI State types
 export interface UIState {
   sidebar: {
     isOpen: boolean;
     activeTab: "conversations" | "documents" | "settings";
-  };
+  }
   modal: {
     isOpen: boolean;
     type: "settings" | "document-upload" | "context-injection" | null;
-  };
+  }
   theme: "light" | "dark" | "system";
 }
 // Error types
@@ -152,7 +152,7 @@ export interface ChatError extends Error {
   code?: string;
   type: "network" | "api" | "model" | "validation" | "unknown";
   retryable?: boolean;
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
 }
 // Configuration types
 export interface SystemConfig {
@@ -160,20 +160,20 @@ export interface SystemConfig {
     baseUrl: string;
     timeout: number;
     retries: number;
-  };
+  }
   models: {
     default: string;
     available: string[];
-  };
+  }
   features: {
     streaming: boolean;
     contextInjection: boolean;
     vectorSearch: boolean;
     multimodal: boolean;
-  };
+  }
   ui: {
     theme: "light" | "dark" | "system";
     animations: boolean;
     notifications: boolean;
-  };
+  }
 }

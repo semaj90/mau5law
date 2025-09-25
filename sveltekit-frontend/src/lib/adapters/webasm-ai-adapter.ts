@@ -16,15 +16,15 @@ interface WebLlamaResponse {
     fromCache?: boolean;
     gpuAccelerated?: boolean;
     simdUsed?: boolean;
-  };
+  }
 }
 // Fallback webLlamaService implementation
 const webLlamaService = {
   async initialize(config: any): Promise<{ success: boolean; error?: string }> {
     console.warn('[WebAssembly AI] Using fallback webLlamaService implementation');
-    return { success: true };
+    return { success: true }
   },
-  async generateText(options: any): Promise<WebLlamaResponse> {
+  async generateText(_options: any): Promise<WebLlamaResponse> {
     // Fallback to unified runtime
     try {
       const response = await unifiedRuntime.executeInference({
@@ -41,12 +41,12 @@ const webLlamaService = {
           tokensGenerated: response.metadata.tokensGenerated,
           confidence: response.metadata.confidence
         }
-      };
+      }
     } catch (error: any) {
       return {
         success: false,
         error: error.message
-      };
+      }
     }
   },
   async analyzeLegalDocument(title: string, content: string, type: string): Promise<any> {
@@ -57,24 +57,24 @@ const webLlamaService = {
       confidence: 0.5,
       processingTime: 100,
       method: 'fallback'
-    };
+    }
   },
   getHealthStatus(): any {
     return {
-      initialized: true
-      modelLoaded: true
-      webgpuAvailable: false
-      webgpuEnabled: false
-      workerEnabled: false
+      initialized: true,
+      modelLoaded: true,
+      webgpuAvailable: false,
+      webgpuEnabled: false,
+      workerEnabled: false,
       cacheSize: 0,
       threadsCount: navigator.hardwareConcurrency || 4,
       wasmSupported: typeof WebAssembly !== 'undefined'
-    };
+    }
   },
   dispose(): void {
     // No-op for fallback
   }
-};
+}
 // Fallback acceleratedSimilarity implementation
 async function acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
   // Simple cosine similarity fallback
@@ -114,7 +114,7 @@ export interface WebAssemblyAIConfig {
     quantization: 'Q4_0' | 'Q4_1' | 'Q8_0' | 'F16' | 'F32';
     threads: number;
     batchSize: number;
-  };
+  }
   // Fallback strategy (removed ONNX)
   fallbackStrategy: 'ollama' | 'python' | 'webasm' | 'auto';
   gpuDetectionTimeout: number;
@@ -130,7 +130,7 @@ export interface WebAssemblyAIResponse {
     fromCache: boolean;
     gpuAccelerated?: boolean;
     tensorAccelerationUsed?: boolean;
-  };
+  }
   conversationId?: string;
 }
 export class WebAssemblyAIAdapter {
@@ -148,9 +148,9 @@ export class WebAssemblyAIAdapter {
       // Client-side WebAssembly llama.cpp (using 270M for client performance)
       llamacppModelPath: '/models/gemma3-270m-q4_0.gguf',
       wasmPath: '/wasm/llama.wasm',
-      enableGPU: true
-      enableSIMD: true
-      enableMultiCore: true
+      enableGPU: true,
+      enableSIMD: true,
+      enableMultiCore: true,
       // Model configuration for Gemma 3
       modelConfig: {
         name: 'gemma3:270m',
@@ -166,7 +166,7 @@ export class WebAssemblyAIAdapter {
       fallbackStrategy: 'auto',
       gpuDetectionTimeout: 5000,
       ...config
-    };
+    }
   }
   /**
    * Initialize WebAssembly AI service with unified runtime abstraction
@@ -344,7 +344,7 @@ export class WebAssemblyAIAdapter {
    * Send message with hybrid inference pipeline (Ollama → Python → WebAssembly llama.cpp fallbacks)
    */
   async sendMessage(
-    message: string
+    message: string,
     options: {
       conversationHistory?: ConversationEntry[];
       useContext?: boolean;
@@ -402,14 +402,14 @@ export class WebAssemblyAIAdapter {
   }
   /**
    * Generate response using Ollama API
-   */;
+   */
   private async generateWithOllama(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
     const response = await fetch(`${this.config.ollamaEndpoint}/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: this.currentModel,
-        prompt: prompt
+        prompt: prompt,
         options: {
           num_predict: options.maxTokens || this.config.maxTokens,
           temperature: options.temperature || this.config.temperature
@@ -431,7 +431,7 @@ export class WebAssemblyAIAdapter {
         modelUsed: this.currentModel,
         fromCache: false
       }
-    };
+    }
   }
   /**
    * Generate response using Python middleware
@@ -440,8 +440,8 @@ export class WebAssemblyAIAdapter {
     const response = await fetch(`${this.config.pythonMiddlewareEndpoint}/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        prompt: prompt
+      body: JSON.stringify({
+        prompt: prompt,
         max_tokens: options.maxTokens || this.config.maxTokens,
         temperature: options.temperature || this.config.temperature,
         model: this.currentModel
@@ -461,7 +461,7 @@ export class WebAssemblyAIAdapter {
         modelUsed: this.currentModel,
         fromCache: data.from_cache || false
       }
-    };
+    }
   }
   /**
    * Generate response using unified runtime abstraction (WebGPU/WebGL2/WASM SIMD)
@@ -474,13 +474,13 @@ export class WebAssemblyAIAdapter {
       // Create inference request
       const request: InferenceRequest = {
         model: this.currentModel as 'gemma3:270m' | 'gemma3-legal:latest',
-        prompt: prompt
+        prompt: prompt,
         maxTokens: options.maxTokens || this.config.maxTokens,
         temperature: options.temperature || this.config.temperature,
-        complexity: complexity
+        complexity: complexity,
         useCase: this.determineUseCase(prompt),
         preferredRuntime: options.preferredRuntime
-      };
+      }
       // Get recommended runtime
       const recommendedRuntime = unifiedRuntime.getRecommendedRuntime(request);
       console.log(`[WebAssembly AI] Using ${recommendedRuntime} for complexity ${complexity}`);
@@ -491,15 +491,15 @@ export class WebAssemblyAIAdapter {
         content: unifiedResponse.text,
         metadata: {
           tokensGenerated: unifiedResponse.metadata.tokensGenerated,
-          processingTime: processingTime
+          processingTime: processingTime,
           confidence: unifiedResponse.metadata.confidence,
           method: unifiedResponse.metadata.runtime === 'tensorrt' ? 'webasm' : unifiedResponse.metadata.runtime,
           modelUsed: this.currentModel,
-          fromCache: false
+          fromCache: false,
           gpuAccelerated: ['webgpu', 'tensorrt'].includes(unifiedResponse.metadata.runtime),
           tensorAccelerationUsed: unifiedResponse.metadata.runtime === 'tensorrt'
         }
-      };
+      }
     } catch (error: any) {
       console.error('[WebAssembly AI] Unified runtime execution failed:', error);
       // Fallback to direct WebAssembly llama.cpp
@@ -516,8 +516,8 @@ export class WebAssemblyAIAdapter {
     try {
       const startTime = performance.now();
       // Generate response using WebAssembly llama.cpp service
-      const wasmResponse: WebLlamaResponse = await this.llamacppInstance.generateText({,
-        prompt: prompt
+      const wasmResponse: WebLlamaResponse = await this.llamacppInstance.generateText({
+        prompt: prompt,
         maxTokens: options.maxTokens || this.config.maxTokens,
         temperature: options.temperature || this.config.temperature,
         topP: 0.9,
@@ -535,7 +535,7 @@ export class WebAssemblyAIAdapter {
         content: wasmResponse.text || '',
         metadata: {
           tokensGenerated: wasmResponse.metadata?.tokensGenerated || this.estimateTokenCount(wasmResponse.text || ''),
-          processingTime: processingTime
+          processingTime: processingTime,
           confidence: wasmResponse.metadata?.confidence || 0.85, // WebAssembly llama.cpp typically good confidence
           method: 'webasm',
           modelUsed: this.currentModel,
@@ -543,7 +543,7 @@ export class WebAssemblyAIAdapter {
           gpuAccelerated: wasmResponse.metadata?.gpuAccelerated || false,
           tensorAccelerationUsed: wasmResponse.metadata?.simdUsed || false
         }
-      };
+      }
     } catch (error: any) {
       console.error('[WebAssembly AI] WebAssembly llama.cpp inference failed:', error);
       throw error;
@@ -578,7 +578,7 @@ export class WebAssemblyAIAdapter {
         ...response.metadata,
         gpuAccelerated: true
         tensorAccelerationUsed: true
-      };
+      }
       console.log(
         `[WebAssembly AI] GPU tensor acceleration enhanced response with max similarity: ${maxSimilarity.toFixed(3)}`
       );
@@ -699,7 +699,7 @@ export class WebAssemblyAIAdapter {
           options.onChunk(chunk);
         }
         // Add small delay to simulate streaming
-        await new Promise((resolve) => setTimeout(resolve, 100);
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
       if (options.onComplete) {
         options.onComplete(response);
@@ -754,7 +754,7 @@ export class WebAssemblyAIAdapter {
       initialized: this.initialized,
       currentModel: this.currentModel,
       ...wasmHealth
-    };
+    }
   }
   /**
    * Check if WebAssembly is supported
@@ -914,7 +914,7 @@ export class WebAssemblyAIAdapter {
       embedding[idx] += 1.0;
     }
     // Normalize the embedding
-    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
+    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     if (norm > 0) {
       for (let i = 0; i < dim; i++) {
         embedding[i] /= norm;

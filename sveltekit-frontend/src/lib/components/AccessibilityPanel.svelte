@@ -74,7 +74,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         largeText,
         keyboardNavigation,
         screenReaderMode,
-      };
+      }
       localStorage.setItem("accessibility-settings", JSON.stringify(settings));
     } catch (error) {
       console.warn("Failed to save accessibility settings:", error);
@@ -387,11 +387,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       summary: {
         total: totalIssues
         errors: errorCount
-        warnings: warningCount
-        info: infoCount
+        warnings: warningCount;
+        info: infoCount;
       },
-      issues: auditResults
-    };
+      issues: auditResults;
+    }
     const dataStr = JSON.stringify(report, null, 2);
     const dataBlob = new Blob([dataStr], { type: "application/json" });
     if (browser) {
@@ -431,7 +431,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 {#if showPanel}
   <div role="button" tabindex="0"
     class="mx-auto px-4 max-w-7xl"
-    onclick={(event: MouseEvent) => ) => (showPanel = false}
+    onclick={(_event: MouseEvent) => ) => (showPanel = false}
     onkeydown={(e) => e.key === 'Escape' && (showPanel = false)}
     role="dialog"
     aria-modal="true"
@@ -447,7 +447,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={(event: MouseEvent) => ) =>
+            onclick={(_event: MouseEvent) => ) =>
 (showPanel = false}
             aria-label="Close accessibility panel"
           >
@@ -463,7 +463,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={highContrast}
-                onchange={(event: Event) => applyAccessibilitySettings}
+                onchange={(_event: Event) => applyAccessibilitySettings}
               />
               <span>High Contrast</span>
             </label>
@@ -472,7 +472,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={reducedMotion}
-                onchange={(event: Event) => applyAccessibilitySettings}
+                onchange={(_event: Event) => applyAccessibilitySettings}
               />
               <span>Reduced Motion</span>
             </label>
@@ -481,7 +481,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={largeText}
-                onchange={(event: Event) => applyAccessibilitySettings}
+                onchange={(_event: Event) => applyAccessibilitySettings}
               />
               <span>Large Text</span>
             </label>
@@ -490,7 +490,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={keyboardNavigation}
-                onchange={(event: Event) => applyAccessibilitySettings}
+                onchange={(_event: Event) => applyAccessibilitySettings}
               />
               <span>Enhanced Keyboard Navigation</span>
             </label>
@@ -499,7 +499,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={screenReaderMode}
-                onchange={(event: Event) => applyAccessibilitySettings}
+                onchange={(_event: Event) => applyAccessibilitySettings}
               />
               <span>Screen Reader Optimizations</span>
             </label>
@@ -512,7 +512,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             <Button
               class="bits-btn mx-auto px-4 max-w-7xl"
               size="sm"
-              onclick={(event: MouseEvent) => ) =>
+              onclick={(_event: MouseEvent) => ) =>
 runAccessibilityAudit(}
               disabled={isAuditing}
             >
@@ -564,7 +564,7 @@ runAccessibilityAudit(}
                 variant="ghost"
                 size="sm"
                 class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-                onclick={(event: MouseEvent) => ) =>
+                onclick={(_event: MouseEvent) => ) =>
 exportAuditResults(}
               >
                 <Download class="mx-auto px-4 max-w-7xl" />

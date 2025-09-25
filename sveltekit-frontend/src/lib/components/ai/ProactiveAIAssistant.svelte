@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  const { userId: string, onCaseCreated: (caseId: string) = > void = () => } = $props();
+  let { userId, onCaseCreated: (caseId) = > void = () =>  } = $props();
 </script>
 	import { onMount } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
@@ -99,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
 			const prompt = aiPrompts[currentSuggestionIndex];
 			startTypewriter(prompt);
 			currentSuggestionIndex = (currentSuggestionIndex + 1) % aiPrompts.length;
-		};
+		}
 		// Initial delay
 		setTimeout(showPrompt, 2000);
 		// Cycle through prompts
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({,
-					title: caseTitle
+					title: caseTitle;
 					description: caseDescription
 					category,
 					priority,

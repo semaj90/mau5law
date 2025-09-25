@@ -21,7 +21,7 @@ export interface PersonOfInterest {
       country: string;
       verified: boolean;
     }>;
-  };
+  }
   // Legal Information
   legal: {
     barNumber?: string;
@@ -42,7 +42,7 @@ export interface PersonOfInterest {
       severity: 'misdemeanor' | 'felony' | 'federal';
       status: 'pending' | 'convicted' | 'acquitted' | 'dismissed';
     }>;
-  };
+  }
   // Criminal Profile (for suspects/fugitives)
   criminalProfile?: {
     aliases: string[];
@@ -55,12 +55,12 @@ export interface PersonOfInterest {
       available: boolean;
       lastUpdated: string;
       matchQuality: number;
-    };
+    }
     dna?: {
       available: boolean;
       lastUpdated: string;
       profileComplete: boolean;
-    };
+    }
     warrants: Array<{,
       id: string;
       type: 'arrest' | 'search' | 'bench';
@@ -89,7 +89,7 @@ export interface PersonOfInterest {
       methods: string[];
       timingPatterns: string[];
       weaponsUsed: string[];
-    };
+    }
     dangerLevel: 'low' | 'medium' | 'high' | 'extreme';
     armedAndDangerous: boolean;
     escapeRisk: 'low' | 'medium' | 'high';
@@ -98,8 +98,8 @@ export interface PersonOfInterest {
       date: string;
       source: 'witness' | 'surveillance' | 'arrest' | 'tip' | 'other';
       reliability: number;
-    };
-  };
+    }
+  }
   // Case Relationships
   relationships: Array<{,
     caseId: string;
@@ -134,8 +134,8 @@ export interface PersonOfInterest {
         aggressionLevel: number;
         predictability: number;
         cooperationLikelihood: number;
-      };
-    };
+      }
+    }
     // Document References
     documentReferences: Array<{,
       documentId: string;
@@ -155,8 +155,8 @@ export interface PersonOfInterest {
       }>;
       centralityScore: number;
       clusterMembership: string[];
-    };
-  };
+    }
+  }
   // Timeline and Activity
   timeline: Array<{,
     id: string;
@@ -188,7 +188,7 @@ export interface PersonOfInterest {
     criminalProfileAnalyzed: boolean;
     threatAssessmentComplete: boolean;
     watchListsChecked: boolean;
-  };
+  }
 }
 // Search and Filter Types
 export interface POIFilters {
@@ -197,8 +197,8 @@ export interface POIFilters {
   riskLevels: string[];
   caseIds: string[];
   status: string[];
-  dateRange: { start: string; end: string };
-  credibilityRange: { min: number; max: number };
+  dateRange: { start: string; end: string }
+  credibilityRange: { min: number; max: number }
   influenceLevel: string[];
   tags: string[];
   jurisdictions: string[];
@@ -222,18 +222,18 @@ export interface POIAnalytics {
     averageConnections: number;
     topInfluencers: Array<{ poiId: string; name: string; score: number }>;
     clusters: Array<{ id: string; size: number; description: string }>;
-  };
+  }
   activityMetrics: {
     recentInteractions: number;
     activeRelationships: number;
     pendingAnalysis: number;
     flaggedProfiles: number;
-  };
+  }
   trends: {
     newPOIs: Array<{ date: string; count: number }>;
     riskChanges: Array<{ date: string; increased: number; decreased: number }>;
     networkGrowth: Array<{ date: string; connections: number }>;
-  };
+  }
 }
 // XState Machine Context
 interface POIContext {
@@ -256,7 +256,7 @@ interface POIContext {
     type: 'tag' | 'status_update' | 'risk_update' | 'bulk_enhance' | 'export' | null;
     progress: number;
     total: number;
-  };
+  }
 }
 type POIEvent =
   | { type: 'LOAD_POI'; poiId: string }
@@ -270,7 +270,7 @@ type POIEvent =
   | { type: 'LOAD_ANALYTICS' }
   | { type: 'RESET' }
   | { type: 'ERROR'; error: string }
-  | { type: 'SUCCESS'; data: any };
+  | { type: 'SUCCESS'; data: any }
 // POI Management State Machine
 export const poiMachine = createMachine(
   {
@@ -568,7 +568,7 @@ function createPOIStore() {
     loadAnalytics: () => actor.send({ type: 'LOAD_ANALYTICS' }),
     bulkOperation: (operation: string, poiIds: string[]) =>
       actor.send({ type: 'BULK_OPERATION', operation, poiIds })
-  };
+  }
 }
 export const poiStore = createPOIStore();
 // Network Analysis Store
@@ -735,12 +735,12 @@ export async function analyzeAssociates(poiId: string): Promise<{,
   criminalNetwork: {
     nodes: Array<{ id: string; name: string; role: string; crimeTypes: string[] }>;
     edges: Array<{ source: string; target: string; relationship: string; strength: number }>;
-  };
+  }
   riskAssessment: {
     networkDanger: number;
     escapeRisk: number;
     violentPotential: number;
-  };
+  }
 }> {
   const response = await fetch(`/api/poi/${poiId}/associates`, {
     method: 'POST',
@@ -764,7 +764,7 @@ export async function predictBehavior(poiId: string): Promise<{,
     timePatterns: string[];
     locationPatterns: string[];
     methodPatterns: string[];
-  };
+  }
 }> {
   const response = await fetch(`/api/poi/${poiId}/behavior-prediction`, {
     method: 'POST',

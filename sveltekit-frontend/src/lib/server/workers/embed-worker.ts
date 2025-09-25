@@ -16,7 +16,7 @@ async function run() {
       model: res?.model || "unknown" // @ts-ignore - Model property access,
       backend: res.backend,
       cached: false
-    };
+    }
     parentPort?.postMessage({ ok: true, result: out });
   } catch (e: any) {
     parentPort?.postMessage({ ok: false, error: e?.message || String(e) });

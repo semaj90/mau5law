@@ -1,17 +1,21 @@
 <script lang="ts">
   import '../app.css';
   import type { Snippet } from 'svelte';
-  interface Props { children: Snippet }
+  interface Props {
+    children: Snippet;
+  }
   let { children }: Props = $props();
 </script>
+
 <div class="app">
   <header>
     <h1>YoRHa Legal AI</h1>
   </header>
   <main>
-  {@render children?.()}
+    {@render children?.()}
   </main>
 </div>
+
 <style>
   .app {
     min-height: 100vh;

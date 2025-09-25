@@ -42,7 +42,7 @@
     imageUrl,
     iconEmoji,
     stats = [],
-    tags = []
+    tags = [],
   }: Props = $props();
   let isHovered = $state(false);
   let isPressed = $state(false);
@@ -85,24 +85,24 @@
       if (isHovered) {
         animationFrame = requestAnimationFrame(animate);
       }
-    };
+    }
     animate();
   }
   // Rarity-based styling
   let rarityStyles = $derived(() => {
     switch (rarity) {
       case 'common':
-        return { color: '#8B8B8B', glow: '#CCCCCC' };
+        return { color: '#8B8B8B', glow: '#CCCCCC' }
       case 'uncommon':
-        return { color: '#1E90FF', glow: '#87CEEB' };
+        return { color: '#1E90FF', glow: '#87CEEB' }
       case 'rare':
-        return { color: '#9932CC', glow: '#DDA0DD' };
+        return { color: '#9932CC', glow: '#DDA0DD' }
       case 'epic':
-        return { color: '#FF6347', glow: '#FFA07A' };
+        return { color: '#FF6347', glow: '#FFA07A' }
       case 'legendary':
-        return { color: '#FFD700', glow: '#FFFFE0' };
+        return { color: '#FFD700', glow: '#FFFFE0' }
       default:
-        return { color: '#8B8B8B', glow: '#CCCCCC' };
+        return { color: '#8B8B8B', glow: '#CCCCCC' }
     }
   });
   let cardClasses = $derived(() => {
@@ -115,11 +115,14 @@
       pixelPerfect && 'pixel-card--pixel-perfect',
       glowEffect && 'pixel-card--glow',
       isHovered && 'pixel-card--hovered',
-      isPressed && 'pixel-card--pressed'
-    ].filter(Boolean).join(' ');
+      isPressed && 'pixel-card--pressed',
+    ]
+      .filter(Boolean)
+      .join(' ');
     return `${base} ${variantClass} ${rarityClass} ${stateClasses} ${className}`.trim();
   });
 </script>
+
 <div
   class={cardClasses}
   {style}
@@ -130,7 +133,7 @@
   onmousedown={handleMouseDown}
   onmouseup={handleMouseUp}
   onclick={handleClick}
-  onkeydown={(e) => {
+  onkeydown={e => {
     if (interactive && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
       onclick?.();
@@ -141,15 +144,12 @@
   {#if animated}
     <div
       class="pixel-card__border-animation"
-      style="--pixel-offset: {pixelOffset}px; --glow-intensity: {glowIntensity};"
+      style="--pixel-offset: {pixelOffset}px; --glow-intensity: {glowIntensity}"
     ></div>
   {/if}
   <!-- Rarity Glow Effect -->
   {#if glowEffect && (isHovered || rarity !== 'common')}
-    <div
-      class="pixel-card__glow"
-      style="--glow-color: {rarityStyles.glow};"
-    ></div>
+    <div class="pixel-card__glow" style="--glow-color: {rarityStyles.glow}"></div>
   {/if}
   <!-- Header Section -->
   {#if header || title || subtitle}
@@ -170,7 +170,7 @@
         </div>
         <!-- Rarity Indicator -->
         {#if rarity !== 'common'}
-          <div class="pixel-card__rarity" style="color: {rarityStyles.color};">
+          <div class="pixel-card__rarity" style="color: {rarityStyles.color}">
             {'★'.repeat(['uncommon', 'rare', 'epic', 'legendary'].indexOf(rarity) + 1)}
           </div>
         {/if}
@@ -180,12 +180,7 @@
   <!-- Image Section -->
   {#if imageUrl}
     <div class="pixel-card__image-container">
-      <img
-        src={imageUrl}
-        alt={title || 'Card image'}
-        class="pixel-card__image"
-        loading="lazy"
-      />
+      <img src={imageUrl} alt={title || 'Card image'} class="pixel-card__image" loading="lazy" />
     </div>
   {/if}
   <!-- Content Section -->
@@ -229,33 +224,34 @@
     <div class="pixel-card__corner pixel-card__corner--br"></div>
   </div>
 </div>
+
 <style>
   .pixel-card {
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #1A1A2E;
-    color: var(--console-foreground, #FCFCFC);
+    background: #1a1a2e;
+    color: var(--console-foreground, #fcfcfc);
     font-family: 'Courier New', monospace;
-    border: 2px solid var(--console-secondary, #0084FF);
-    box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    border: 2px solid var(--console-secondary, #0084ff);
+box-shadow: {}
+inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
       4px 4px 0 rgba(0, 0, 0, 0.5);
     transition: all 0.15s ease;
-    /* Pixel perfect rendering */
+/* Pixel perfect rendering */ {}
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
   }
   .pixel-card--pixel-perfect {
-    /* Enforce pixel boundaries */
+/* Enforce pixel boundaries */ {}
     transform-origin: top left;
   }
-  /* Variant Styles */
+/* Variant Styles */ {}
   .pixel-card--game-card {
     min-width: 200px;
     min-height: 280px;
-    background: linear-gradient(145deg, #0F0F23, #1A1A2E, #0F0F23);
+    background: linear-gradient(145deg, #0f0f23, #1a1a2e, #0f0f23);
   }
   .pixel-card--inventory-item {
     min-width: 120px;
@@ -264,55 +260,63 @@
     padding: 8px;
   }
   .pixel-card--stats-card {
-    background: #16213E;
-    border-color: var(--console-tertiary, #4CAF50);
+    background: #16213e;
+    border-color: var(--console-tertiary, #4caf50);
   }
   .pixel-card--achievement {
-    background: radial-gradient(circle, #2A1810, #1A1A2E);
-    border-color: #FFD700;
+    background: radial-gradient(circle, #2a1810, #1a1a2e);
+    border-color: #ffd700;
   }
-  /* Rarity Styles */
+/* Rarity Styles */ {}
   .pixel-card--common {
-    border-color: #8B8B8B;
+    border-color: #8b8b8b;
   }
   .pixel-card--uncommon {
-    border-color: #1E90FF;
-    background: linear-gradient(145deg, #0F1A2E, #1A1A2E, #0F1A2E);
+    border-color: #1e90ff;
+    background: linear-gradient(145deg, #0f1a2e, #1a1a2e, #0f1a2e);
   }
   .pixel-card--rare {
-    border-color: #9932CC;
-    background: linear-gradient(145deg, #1A0F2E, #1A1A2E, #1A0F2E);
+    border-color: #9932cc;
+    background: linear-gradient(145deg, #1a0f2e, #1a1a2e, #1a0f2e);
   }
   .pixel-card--epic {
-    border-color: #FF6347;
-    background: linear-gradient(145deg, #2E1A0F, #1A1A2E, #2E1A0F);
+    border-color: #ff6347;
+    background: linear-gradient(145deg, #2e1a0f, #1a1a2e, #2e1a0f);
   }
   .pixel-card--legendary {
-    border-color: #FFD700;
-    background: linear-gradient(145deg, #2E2A0F, #1A1A2E, #2E2A0F);
+    border-color: #ffd700;
+    background: linear-gradient(145deg, #2e2a0f, #1a1a2e, #2e2a0f);
     animation: legendary-shimmer 2s ease-in-out infinite alternate;
   }
   @keyframes legendary-shimmer {
-    0% { box-shadow: 0 0 5px #FFD700, inset 0 0 0 1px rgba(255, 215, 0, 0.3); }
-    100% { box-shadow: 0 0 20px #FFD700, inset 0 0 0 1px rgba(255, 215, 0, 0.6); }
+    0% {
+box-shadow: {}
+0 0 5px #ffd700, {}
+        inset 0 0 0 1px rgba(255, 215, 0, 0.3);
+    }
+    100% {
+box-shadow: {}
+0 0 20px #ffd700, {}
+        inset 0 0 0 1px rgba(255, 215, 0, 0.6);
+    }
   }
-  /* Interactive States */
+/* Interactive States */ {}
   .pixel-card--interactive {
     cursor: pointer;
   }
   .pixel-card--interactive:hover {
     transform: translateY(-2px);
-    box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+box-shadow: {}
+inset 0 0 0 1px rgba(255, 255, 255, 0.2), {}
       6px 6px 0 rgba(0, 0, 0, 0.6);
   }
   .pixel-card--pressed {
     transform: translateY(1px) scale(0.98);
-    box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+box-shadow: {}
+inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
       2px 2px 0 rgba(0, 0, 0, 0.5);
   }
-  /* Header */
+/* Header */ {}
   .pixel-card__header {
     display: flex;
     justify-content: space-betwee;
@@ -350,7 +354,7 @@
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
     filter: drop-shadow(0 0 2px currentColor);
   }
-  /* Image */
+/* Image */ {}
   .pixel-card__image-container {
     position: relative;
     width: 100%;
@@ -366,7 +370,7 @@
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
   }
-  /* Content */
+/* Content */ {}
   .pixel-card__content {
     padding: 12px;
     flex: 1;
@@ -380,7 +384,7 @@
     line-height: 1.4;
     opacity: 0.9;
   }
-  /* Stats */
+/* Stats */ {}
   .pixel-card__stats {
     display: flex;
     flex-direction: column;
@@ -400,9 +404,9 @@
   }
   .pixel-card__stat-value {
     font-weight: bold;
-    color: var(--console-tertiary, #4CAF50);
+    color: var(--console-tertiary, #4caf50);
   }
-  /* Tags */
+/* Tags */ {}
   .pixel-card__tags {
     display: flex;
     flex-wrap: wrap;
@@ -410,30 +414,30 @@
   }
   .pixel-card__tag {
     padding: 2px 6px;
-    background: var(--console-secondary, #0084FF);
+    background: var(--console-secondary, #0084ff);
     color: white;
     font-size: 0.7em;
     text-transform: uppercase;
     letter-spacing: 0.3px;
     border: 1px solid rgba(255, 255, 255, 0.3);
   }
-  /* Footer */
+/* Footer */ {}
   .pixel-card__footer {
     padding: 8px 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.2);
     font-size: 0.8em;
   }
-  /* Animation Effects */
+/* Animation Effects */ {}
   .pixel-card__border-animation {
     position: absolute;
     inset: -2px;
-    background: repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent calc(var(--pixel-offset) * 1px),
-      var(--console-primary, #E52521) calc(var(--pixel-offset) * 1px),
-      var(--console-primary, #E52521) calc((var(--pixel-offset) + 2) * 1px)
+background: repeating-linear-gradient( {}
+90deg, {}
+transparent 0px, {}
+transparent calc(var(--pixel-offset) * 1px), {}
+var(--console-primary, #e52521) calc(var(--pixel-offset) * 1px), {}
+var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
     );
     opacity: calc(var(--glow-intensity) * 0.5);
     pointer-events: none;
@@ -441,7 +445,7 @@
   .pixel-card__glow {
     position: absolute;
     inset: -4px;
-    background: var(--glow-color, #CCCCCC);
+    background: var(--glow-color, #cccccc);
     filter: blur(8px);
     opacity: 0.3;
     pointer-events: none;
@@ -452,10 +456,16 @@
     animation: pulse-glow 1s ease-in-out infinite alternate;
   }
   @keyframes pulse-glow {
-    0% { opacity: 0.3; transform: scale(1); }
-    100% { opacity: 0.6; transform: scale(1.05); }
+    0% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
   }
-  /* Pixel Corners */
+/* Pixel Corners */ {}
   .pixel-card__pixel-corners {
     position: absolute;
     inset: 0;
@@ -465,40 +475,52 @@
     position: absolute;
     width: 8px;
     height: 8px;
-    background: var(--console-tertiary, #4CAF50);
+    background: var(--console-tertiary, #4caf50);
   }
-  .pixel-card__corner--tl { top: 0; left: 0; }
-  .pixel-card__corner--tr { top: 0; right: 0; }
-  .pixel-card__corner--bl { bottom: 0; left: 0; }
-  .pixel-card__corner--br { bottom: 0; right: 0; }
-  /* Console Theme Adaptations */
+  .pixel-card__corner--tl {
+    top: 0;
+    left: 0;
+  }
+  .pixel-card__corner--tr {
+    top: 0;
+    right: 0;
+  }
+  .pixel-card__corner--bl {
+    bottom: 0;
+    left: 0;
+  }
+  .pixel-card__corner--br {
+    bottom: 0;
+    right: 0;
+  }
+/* Console Theme Adaptations */ {}
   .theme-nes .pixel-card {
-    --card-primary: #E52521;
-    --card-secondary: #0084FF;
-    --card-tertiary: #4CAF50;
+    --card-primary: #e52521;
+    --card-secondary: #0084ff;
+    --card-tertiary: #4caf50;
   }
   .theme-snes .pixel-card {
-    --card-primary: #B266FF;
-    --card-secondary: #00C8FF;
-    --card-tertiary: #FFD700;
+    --card-primary: #b266ff;
+    --card-secondary: #00c8ff;
+    --card-tertiary: #ffd700;
   }
   .theme-n64 .pixel-card {
-    --card-primary: #00AA00;
-    --card-secondary: #0055FF;
-    --card-tertiary: #FF5555;
+    --card-primary: #00aa00;
+    --card-secondary: #0055ff;
+    --card-tertiary: #ff5555;
   }
-  /* Accessibility */
+/* Accessibility */ {}
   .pixel-card:focus-visible {
-    outline: 2px solid var(--console-primary, #E52521);
+    outline: 2px solid var(--console-primary, #e52521);
     outline-offset: 2px;
   }
-  /* Responsive Design */
+/* Responsive Design */ {}
   @media (max-width: 480px) {
     .pixel-card--game-card {
       min-width: 150px;
       min-height: 200px;
     }
-    .pixel-card__header,
+.pixel-card__header, {}
     .pixel-card__content {
       padding: 8px;
     }
@@ -506,7 +528,7 @@
       font-size: 0.9em;
     }
   }
-  /* High Contrast Mode */
+/* High Contrast Mode */ {}
   @media (prefers-contrast: high) {
     .pixel-card {
       border-width: 3px;
@@ -515,10 +537,10 @@
       display: none;
     }
   }
-  /* Reduced Motion */
+/* Reduced Motion */ {}
   @media (prefers-reduced-motion: reduce) {
-    .pixel-card,
-    .pixel-card__glow,
+.pixel-card, {}
+.pixel-card__glow, {}
     .legendary-shimmer {
       animation: none;
       transition: none;

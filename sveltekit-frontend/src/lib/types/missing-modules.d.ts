@@ -58,7 +58,7 @@ declare module 'neo4j-driver' {
 }
 declare module '@xenova/transformers' {
   export class pipeline {
-    static async create(task: string, model: string): Promise<any>;
+    static async create(_task: string, model: string): Promise<any>;
   }
   export class AutoTokenizer {
     static fromPretrained(model: string): Promise<any>;
@@ -99,11 +99,11 @@ declare module '@tensorflow/tfjs-node' {
 declare module 'ioredis' {
   export default class Redis {
     constructor(options?: any);
-    get(key: string): Promise<string | null>;
-    set(key: string, value: string, ...args: any[]): Promise<string>;
-    del(key: string): Promise<number>;
-    exists(key: string): Promise<number>;
-    expire(key: string, seconds: number): Promise<number>;
+    get(_key: string): Promise<string | null>;
+    set(_key: string, value: string, ...args: any[]): Promise<string>;
+    del(_key: string): Promise<number>;
+    exists(_key: string): Promise<number>;
+    expire(_key: string, seconds: number): Promise<number>;
     pipeline(): any;
   }
 }

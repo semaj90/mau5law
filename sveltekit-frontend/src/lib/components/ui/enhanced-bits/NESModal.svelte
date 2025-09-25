@@ -29,14 +29,14 @@
     md: 'max-w-md',
     lg: 'max-w-lg',
     xl: 'max-w-2xl';
-  };
+  }
   const variantClasses = {
     default: 'nes-modal-default',
     dark: 'nes-modal-dark',
     primary: 'nes-modal-primary',
     warning: 'nes-modal-warning',
     danger: 'nes-modal-danger';
-  };
+  }
   function closeModal() {
     if (!closable) return;
     isClosing = true;
@@ -46,13 +46,13 @@
       dispatch('close');
     }, 150);
   }
-  function handleBackdropClick(event: MouseEvent) {
+  function handleBackdropClick(_event: MouseEvent) {
     if (!backdrop || !closable) return;
     if (event.target === event.currentTarget) {
       closeModal();
     }
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape' && closable) {
       event.preventDefault();
       closeModal();
@@ -85,7 +85,7 @@
       destroy() {
         node.removeEventListener('keydown', handleTabKey);
       }
-    };
+    }
   }
 </script>
 {#if open}
@@ -169,7 +169,7 @@ d;
   .nes-modal.is-closing {
     animation: modal-close 0.15s ease-out forward;
   }
-  /* Variant Styles */
+/* Variant Styles */ {}
   .nes-modal-default {
     background: theme('colors.nes.white');
     color: theme('colors.nes.black');
@@ -198,7 +198,7 @@ d;
     border-color: theme('colors.nes.red');
     box-shadow: 12px 12px 0px 0px theme('colors.nes.red');
   }
-  /* Header Styles */
+/* Header Styles */ {}
   .nes-modal-header {
     display: flex;
     align-items: center;
@@ -245,7 +245,7 @@ d;
   .nes-modal-close:active {
     transform: scale(0.95);
   }
-  /* Content Styles */
+/* Content Styles */ {}
   .nes-modal-content {
     flex: 1;
     overflow-y: auto;
@@ -253,7 +253,7 @@ d;
     font-size: 0.75rem;
     line-height: 1.5;
   }
-  /* Size Adjustments */
+/* Size Adjustments */ {}
   .max-w-sm {
     max-width: 384px;
   }
@@ -266,7 +266,7 @@ d;
   .max-w-2xl {
     max-width: 672px;
   }
-  /* Animations */
+/* Animations */ {}
   @keyframes modal-close {
     0% {
       transform: scale(1);
@@ -277,12 +277,12 @@ d;
       opacity: 0;
     }
   }
-  /* Focus styles */
+/* Focus styles */ {}
   .nes-modal:focus-visible {
     outline: 2px solid theme('colors.nes.yellow');
     outline-offset: 2px;
   }
-  /* Responsive Design */
+/* Responsive Design */ {}
   @media (max-width: 768px) {
     .nes-modal-overlay {
       padding: 0.5rem;
@@ -317,9 +317,9 @@ d;
       font-size: 0.625rem;
     }
   }
-  /* Accessibility improvements */
+/* Accessibility improvements */ {}
   @media (prefers-reduced-motion: reduce) {
-    .nes-modal,
+.nes-modal, {}
     .nes-modal-overlay {
       transition: none;
     }

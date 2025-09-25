@@ -3,16 +3,13 @@ https: //svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
-    text: string ;
-    speed: number ;
+    text: string;
+    speed: number;
   }
-  let {
-    text = '',
-    speed = 50
-  }: Props = $props();
+  let { text = '', speed = 50 }: Props = $props();
   let output = $state('');
   let i = $state(0);
-  let intervalId = $state<NodeJS.Timeout | null >(null);
+  let intervalId = $state<NodeJS.Timeout | null>(null);
   $effect(() => {
     if (text) {
       output = '';
@@ -34,9 +31,11 @@ https: //svelte.dev/e/js_parse_error -->
     }
   });
 </script>
+
 <div class="space-y-4">
   {output}
 </div>
+
 <style>
   /* @unocss-include */
   .typewriter {
@@ -46,12 +45,15 @@ https: //svelte.dev/e/js_parse_error -->
     border-right: 2px solid #007bff;
     padding-right: 5px;
     animation: blink 1s infinite;
-}
+  }
   @keyframes blink {
-    0%, 50% {
+    0%,
+    50% {
       border-color: #007bff;
-}
-    51%, 100% {
+    }
+    51%,
+    100% {
       border-color: transparent;
-}}
+    }
+  }
 </style>

@@ -74,7 +74,7 @@ export type ChatEvent =
   | { type: 'CLEAR_CHAT' }
   | { type: 'RETRY_MESSAGE'; messageId: string }
   | { type: 'UPDATE_DICTIONARY'; updates: Partial<UserDictionary> }
-  | { type: 'SYSTEM_STATUS_UPDATED'; status: Partial<SystemStatus> };
+  | { type: 'SYSTEM_STATUS_UPDATED'; status: Partial<SystemStatus> }
 /**
  * SSR QLoRA Chat Machine
  * Orchestrates the complete chat experience with multiple AI backends
@@ -295,7 +295,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     }
   }
 }, {
-  // Actions
+  // Actions;
   actions: {
     logInitialization: () => {
       console.log('🔄 SSR QLoRA Chat Machine initializing...');
@@ -388,7 +388,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
           return {
             ...context.performanceMetrics,
             cacheHitRate: (context.performanceMetrics.cacheHitRate + 1) / 2
-          };
+          }
         }
         return context.performanceMetrics;
       }
@@ -448,7 +448,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             ...context.messages.slice(0, -1),
             {
               ...lastMessage,
-              chunks: updatedChunks
+              chunks: updatedChunks;
               content: updatedChunks.join(' ')
             }
           ];
@@ -509,7 +509,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
           return {
             ...context.performanceMetrics,
             userSatisfaction: newSatisfaction
-          };
+          }
         }
         return context.performanceMetrics;
       }
@@ -531,7 +531,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     updateUserDictionary: assign({,
       userDictionary: (context, event) => {
         if (event.type === 'UPDATE_DICTIONARY') {
-          return { ...context.userDictionary, ...event.updates };
+          return { ...context.userDictionary, ...event.updates }
         }
         return context.userDictionary;
       }
@@ -539,7 +539,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     updateSystemStatus: assign({,
       systemStatus: (context, event) => {
         if (event.type === 'SYSTEM_STATUS_UPDATED') {
-          return { ...context.systemStatus, ...event.status };
+          return { ...context.systemStatus, ...event.status }
         }
         return context.systemStatus;
       }
@@ -551,7 +551,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         return {
           ...context.performanceMetrics,
           averageResponseTime: avgTime
-        };
+        }
       }
     }),
     checkSystemStatus: () => {

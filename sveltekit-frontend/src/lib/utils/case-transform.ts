@@ -54,7 +54,7 @@ export function toCamelCase<T = any>(obj: { [key: string]: any }): T {
     return obj.map(item => typeof item === 'object' ? toCamelCase(item) : item) as T;
   }
   if (typeof obj !== 'object') return obj as unknown as T;
-  const converted: { [key: string]: any } = {};
+  const converted: { [key: string]: any } = {}
   for (const [key, value] of Object.entries(obj)) {
     // Use explicit mapping first, then fallback to auto-conversion
     const camelKey = COMMON_FIELD_MAPPINGS[key as keyof typeof COMMON_FIELD_MAPPINGS] ||
@@ -77,7 +77,7 @@ export function toSnakeCase<T = any>(obj: { [key: string]: any }): T {
     return obj.map(item => typeof item === 'object' ? toSnakeCase(item) : item) as T;
   }
   if (typeof obj !== 'object') return obj as unknown as T;
-  const converted: { [key: string]: any } = {};
+  const converted: { [key: string]: any } = {}
   for (const [key, value] of Object.entries(obj)) {
     // Use explicit reverse mapping first, then fallback to auto-conversion
     const snakeKey = REVERSE_FIELD_MAPPINGS[key] ||
@@ -142,7 +142,7 @@ export function transformUserForDatabase(frontendUser: Partial<FrontendUser>): P
  * Drizzle ORM integration helpers
  */;
 export function drizzleSelect<T>(camelCaseFields: string[]): Record<string, boolean> {
-  const snakeFields: Record<string, boolean> = {};
+  const snakeFields: Record<string, boolean> = {}
   camelCaseFields.forEach(field => {
     const snakeField = REVERSE_FIELD_MAPPINGS[field] ||
                        field.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);

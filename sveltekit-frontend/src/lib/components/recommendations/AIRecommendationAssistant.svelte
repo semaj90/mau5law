@@ -31,7 +31,7 @@
       userRole?: string;
       recentSearches?: string[];
       workHistory?: string[];
-    };
+    }
   }
   let {
     open = $bindable(),
@@ -90,7 +90,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           context,
-          query: customQuery || undefined
+          query: customQuery || undefined;
           type: selectedTyp;
         })
       });
@@ -244,6 +244,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     }
   }
 </script>
+
 <DiamondModal bind:open title="🤖 AI Legal Assistant" size="large">
   <div class="ai-assistant-modal">
     <!-- Header Controls -->
@@ -254,7 +255,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           <button
             class="type-btn"
             class:active={selectedType === analysisType.value}
-            onclick={() => selectedType = analysisType.value}
+            onclick={() => (selectedType = analysisType.value)}
             title={analysisType.description}
           >
             {analysisType.label}
@@ -265,15 +266,12 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       <div class="query-section">
         <input
           type="text"
-          placeholder="Optional: Specific question or context for AI analysis...",
+          placeholder="Optional: Specific question or context for AI analysis..."
+          ,
           bind:value={customQuery}
           class="query-input"
         />
-        <button
-          class="analyze-btn"
-          onclick={generateRecommendations}
-          disabled={isLoading || isThinking}
-        >
+        <button class="analyze-btn" onclick={generateRecommendations} disabled={isLoading || isThinking}>
           {isLoading || isThinking ? '🤖 Analyzing...' : '🚀 Analyze'}
         </button>
       </div>
@@ -289,10 +287,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <div class="thinking-message">{thinkingMessage}</div>
         <div class="processing-steps">
           {#each processingSteps as step, i}
-            <div
-              class="processing-step";
-              transition:slide={{ duration: 200, delay: i * 100 }}
-            >
+            <div class="processing-step" ; transition:slide={{ duration: 200, delay: i * 100 }}>
               ✓ {step}
             </div>
           {/each}
@@ -308,7 +303,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <h3>🧠 AI Analysis</h3>
             <div
               class="confidence-badge"
-              style="background-color: {getConfidenceColor(confidence)}20; border-color: {getConfidenceColor(confidence)}"
+              style="background-color: {getConfidenceColor(confidence)}20; border-color: {getConfidenceColor(
+                confidence,
+              )}"
             >
               {Math.round(confidence * 100)}% Confidence
             </div>
@@ -321,7 +318,8 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           <div class="recommendations-grid">
             {#each recommendations as recommendation, i (recommendation.id)}
               <div
-                class="recommendation-card";
+                class="recommendation-card"
+                ;
                 transition:fly={{ y: 20, delay: i * 100, duration: 300, easing: elasticOut }}
               >
                 <div class="rec-header">
@@ -333,13 +331,17 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                   <div class="rec-stats">
                     <div
                       class="confidence-meter"
-                      style="background-color: {getConfidenceColor(recommendation.confidence)}20; border-color: {getConfidenceColor(recommendation.confidence)}"
+                      style="background-color: {getConfidenceColor(
+                        recommendation.confidence,
+                      )}20; border-color: {getConfidenceColor(recommendation.confidence)}"
                     >
                       {Math.round(recommendation.confidence * 100)}%
                     </div>
                     <div
                       class="priority-indicator"
-                      style="background-color: {getPriorityColor(recommendation.priority)}20; border-color: {getPriorityColor(recommendation.priority)}"
+                      style="background-color: {getPriorityColor(
+                        recommendation.priority,
+                      )}20; border-color: {getPriorityColor(recommendation.priority)}"
                     >
                       P{Math.round(recommendation.priority / 50)}
                     </div>
@@ -375,10 +377,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <h4>⚡ Suggested Actions ({suggestedActions.length})</h4>
             <div class="actions-list">
               {#each suggestedActions as action, i (action.action)}
-                <div
-                  class="action-card";
-                  transition:slide={{ duration: 200, delay: i * 50 }}
-                >
+                <div class="action-card" ; transition:slide={{ duration: 200, delay: i * 50 }}>
                   <div class="action-header">
                     <div class="action-info">
                       <h5 class="action-title">{action.action}</h5>
@@ -387,7 +386,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                     <div class="action-meta">
                       <span
                         class="action-priority"
-                        style="background-color: {getActionPriorityColor(action.priority)}20; border-color: {getActionPriorityColor(action.priority)}"
+                        style="background-color: {getActionPriorityColor(
+                          action.priority,
+                        )}20; border-color: {getActionPriorityColor(action.priority)}"
                       >
                         {action.priority}
                       </span>
@@ -402,11 +403,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                       {/each}
                     </div>
                   {/if}
-                  <button
-                    class="execute-btn"
-                    onclick={() => executeAction(action)}
-                    disabled={isProcessing}
-                  >
+                  <button class="execute-btn" onclick={() => executeAction(action)} disabled={isProcessing}>
                     {isProcessing ? '⏳ Processing...' : '🚀 Execute'}
                   </button>
                 </div>
@@ -420,7 +417,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <h4>🔗 Related Topics</h4>
             <div class="topics-tags">
               {#each relatedTopics as topic}
-                <button class="topic-tag" onclick={() => customQuery = topic}>
+                <button class="topic-tag" onclick={() => (customQuery = topic)}>
                   {topic}
                 </button>
               {/each}
@@ -439,6 +436,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     {/if}
   </div>
 </DiamondModal>
+
 <style>
   .ai-assistant-modal {
     max-height: 85vh;

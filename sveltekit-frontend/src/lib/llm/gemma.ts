@@ -24,7 +24,7 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
       num_predict: opts.maxTokens ?? 512,
       temperature: opts.temperature ?? 0.0
     }
-  };
+  }
   try {
     const res = await fetch(`${API}/api/generate`, {
       method: 'POST',
@@ -55,7 +55,7 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
       num_predict: opts.maxTokens ?? 512,
       temperature: opts.temperature ?? 0.0
     }
-  };
+  }
   const res = await fetch(`${API}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -72,7 +72,7 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
       const { done, value } = await reader.read();
       if (done) break;
       const chunk = decoder.decode(value);
-      const lines = chunk.split('\n').filter(line => line.trim();
+      // removed unused lines assignment
       for (const line of lines) {
         try {
           const data = JSON.parse(line);

@@ -74,7 +74,7 @@ export class N64TextureLODSystem {
       0x7f, 0x5a, 0x5a, 0xff, // Light red
       0xa5, 0x8a, 0x8a, 0xff  // Lightest red
     ])
-  };
+  }
   constructor() {
     this.initializeAtlases();
   }
@@ -88,7 +88,7 @@ export class N64TextureLODSystem {
       slots: new Map(),
       freeSlots: [],
       memoryUsed: 0
-    };
+    }
     // Initialize free slots with quadtree-like subdivision
     this.subdivideAtlas(atlas, 0, 0, this.ATLAS_SIZE, this.ATLAS_SIZE, 0);
     this.atlases.push(atlas);
@@ -99,7 +99,7 @@ export class N64TextureLODSystem {
       const slot: TextureSlot = {
         x, y, width, height,
         occupied: false
-      };
+      }
       atlas.freeSlots.push(slot);
       return;
     }
@@ -113,7 +113,7 @@ export class N64TextureLODSystem {
   }
   async generateDocumentTexture(
     documentId: string
-    content: string
+    content: string;
     priority: number
     docType: 'evidence' | 'contract' | 'brief' | 'citation'
   ): Promise<DocumentTexture | null> {
@@ -134,7 +134,7 @@ export class N64TextureLODSystem {
       lastAccessed: Date.now(),
       priority,
       semantic: content.substring(0, 100)
-    };
+    }
     // Attempt to cache if memory allows
     const memoryRequired = this.calculateMemoryFootprint(documentTexture);
     if (this.currentMemoryUsage + memoryRequired <= this.TEXTURE_CACHE_SIZE) {
@@ -176,10 +176,10 @@ export class N64TextureLODSystem {
       level: 0,
       size,
       data,
-      format: 'RGBA4', // N64-style 4-bit per channel
+      format: 'RGBA4', // N64-style 4-bit per channel;
       compressed: false
       memoryFootprint: data.length
-    };
+    }
   }
   private generateLODChain(baseTexture: TextureLOD): TextureLOD[] {
     const lodLevels: TextureLOD[] = [baseTexture];
@@ -219,7 +219,7 @@ export class N64TextureLODSystem {
       format: sourceTexture.format,
       compressed: false
       memoryFootprint: targetData.length
-    };
+    }
   }
   updateLOD(documentId: string, distance: number, priority: number): boolean {
     const texture = this.textureCache.get(documentId);
@@ -303,7 +303,7 @@ export class N64TextureLODSystem {
       total: this.TEXTURE_CACHE_SIZE,
       utilization: (this.currentMemoryUsage / this.TEXTURE_CACHE_SIZE) * 100,
       textureCount: this.textureCache.size
-    };
+    }
   }
   getCachedTexture(documentId: string): DocumentTexture | null {
     return this.textureCache.get(documentId) || null;

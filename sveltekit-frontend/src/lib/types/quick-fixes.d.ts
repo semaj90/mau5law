@@ -13,7 +13,7 @@ declare module '$lib/server/db/drizzle' {
 }
 declare module '$lib/server/redis-service' {
   const redis: any;
-  export { redis };
+  export { redis }
 }
 declare module 'node-fetch' {
   const fetch: any;
@@ -21,5 +21,11 @@ declare module 'node-fetch' {
 }
 // Removed broad App.Locals augmentation. Use locals-unify.d.ts instead.
 // Allow unknown modules used in the codebase to be imported without type errors
-declare module '*-service' { const x: any; export default x; }
-declare module '*service' { const x: any; export default x; }
+declare module '*-service' {
+  const x: any;
+  export default x;
+}
+declare module '*service' {
+  const x: any;
+  export default x;
+}

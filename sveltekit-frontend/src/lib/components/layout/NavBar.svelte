@@ -17,11 +17,7 @@
     onToggleSidebar?: () => void;
   }
 
-  let {
-    user,
-    sidebarOpen = false,
-    onToggleSidebar
-  }: Props = $props();
+  let { user, sidebarOpen = false, onToggleSidebar }: Props = $props();
 
   // Gaming theme state
   let selectedTheme = $state<ConsolePaletteName>('legal');
@@ -70,11 +66,7 @@
     <!-- Left section: Logo + Sidebar Toggle -->
     <div class="nav-left">
       {#if onToggleSidebar}
-        <button
-          class="sidebar-toggle"
-          onclick={onToggleSidebar}
-          aria-label="Toggle sidebar"
-        >
+        <button class="sidebar-toggle" onclick={onToggleSidebar} aria-label="Toggle sidebar">
           <span class="hamburger" class:open={sidebarOpen}>
             <span></span>
             <span></span>
@@ -84,10 +76,7 @@
       {/if}
 
       <div class="logo">
-        <button
-          class="logo-btn"
-          onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}
-        >
+        <button class="logo-btn" onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
           <span class="logo-icon">🎮</span>
           <span class="logo-text">Legal AI</span>
         </button>
@@ -97,35 +86,11 @@
     <!-- Center section: Main Navigation (if authenticated) -->
     {#if isAuthenticated}
       <div class="nav-center">
-        <a
-          href="/dashboard"
-          class="nav-link"
-          class:active={currentRoute === '/dashboard'}
-        >
-          🏠 Dashboard
-        </a>
-        <a
-          href="/cases"
-          class="nav-link"
-          class:active={currentRoute.startsWith('/cases')}
-        >
-          ⚖️ Cases
-        </a>
-        <a
-          href="/ai"
-          class="nav-link"
-          class:active={currentRoute.startsWith('/ai')}
-        >
-          🤖 AI Assistant
-        </a>
+        <a href="/dashboard" class="nav-link" class:active={currentRoute === '/dashboard'}> 🏠 Dashboard </a>
+        <a href="/cases" class="nav-link" class:active={currentRoute.startsWith('/cases')}> ⚖️ Cases </a>
+        <a href="/ai" class="nav-link" class:active={currentRoute.startsWith('/ai')}> 🤖 AI Assistant </a>
         {#if isAdmin}
-          <a
-            href="/admin"
-            class="nav-link admin-link"
-            class:active={currentRoute.startsWith('/admin')}
-          >
-            🔧 Admin
-          </a>
+          <a href="/admin" class="nav-link admin-link" class:active={currentRoute.startsWith('/admin')}> 🔧 Admin </a>
         {/if}
       </div>
     {/if}
@@ -136,7 +101,7 @@
       <div class="theme-selector">
         <button
           class="theme-btn"
-          onclick={() => showThemeDropdown = !showThemeDropdown}
+          onclick={() => (showThemeDropdown = !showThemeDropdown)}
           aria-label="Switch console theme"
         >
           <span class="theme-icon">🎨</span>
@@ -179,12 +144,8 @@
         </div>
       {:else}
         <div class="auth-buttons">
-          <button class="login-btn" onclick={() => goto('/login')}>
-            Login
-          </button>
-          <button class="signup-btn" onclick={() => goto('/register')}>
-            Sign Up
-          </button>
+          <button class="login-btn" onclick={() => goto('/login')}> Login </button>
+          <button class="signup-btn" onclick={() => goto('/register')}> Sign Up </button>
         </div>
       {/if}
     </div>
@@ -466,7 +427,8 @@
     gap: 0.5rem;
   }
 
-  .login-btn, .signup-btn {
+  .login-btn,
+  .signup-btn {
     padding: 0.5rem 1rem;
     border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);

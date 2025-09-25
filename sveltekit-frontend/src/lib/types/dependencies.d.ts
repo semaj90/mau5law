@@ -1,19 +1,19 @@
-import stream from "stream";
+import stream from 'stream';
 // Missing dependency types for TypeScript compatibility
 // Svelte store types
 declare module 'svelte/store' {
   export interface Readable<T> {
-    subscribe(fn: (value: T) => void): () => void;
+    subscribe(fn: (_value: T) => void): () => void;
   }
   export interface Writable<T> extends Readable<T> {
-    set(value: T): void;
-    update(fn: (value: T) => T): void;
+    set(_value: T): void;
+    update(fn: (_value: T) => T): void;
   }
 }
 // QDrant client types
 declare module '@qdrant/js-client-rest' {
   export class QdrantClient {
-    constructor(options: { url: string; apiKey?: string });
+    constructor(_options: { url: string; apiKey?: string });
     getCollection(collectionName: string): Promise<any>;
     createCollection(collectionName: string, config: any): Promise<any>;
     getCollections(): Promise<any>;
@@ -56,7 +56,7 @@ declare module '@langchain/core/utils/document' {
 declare module '@langchain/core/documents' {
   export interface Document {
     pageContent: string;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   }
 }
 // Ollama LangChain types
@@ -68,7 +68,7 @@ declare module '@langchain/ollama' {
     topP?: number;
     topK?: number;
     numPredict?: number;
-    maxTokens?: number;  // Added this missing property
+    maxTokens?: number; // Added this missing property
     stop?: string[];
     format?: string;
     keepAlive?: string;
@@ -100,21 +100,21 @@ declare module '@langchain/community/vectorstores/pgvector' {
     static fromDocuments(documents: any[], embeddings: any, config: any): Promise<PGVectorStore>;
     similaritySearch(query: string, k?: number): Promise<any[]>;
     addDocuments(documents: any[]): Promise<void>;
-    delete(options: { ids?: string[] }): Promise<void>;
+    delete(_options: { ids?: string[] }): Promise<void>;
   }
 }
 // Node.js stream types for non-Node environments
 declare global {
   interface Readable<T = any> {
-    subscribe?(fn: (value: T) => void): () => void;
-    on?(event: string, listener: (...args: any[]) => void): this;
+    subscribe?(fn: (_value: T) => void): () => void;
+    on?(_event: string, listener: (...args: any[]) => void): this;
     pipe?(destination: any): any;
     read?(size?: number): any;
   }
 }
 declare module 'stream' {
   export class Readable<T = any> {
-    on(event: string, listener: (...args: any[]) => void): this;
+    on(_event: string, listener: (...args: any[]) => void): this;
     pipe(destination: any): any;
     read(size?: number): any;
   }
@@ -147,141 +147,137 @@ declare module '@xenova/transformers' {
       onnx: {
         wasm: {
           numThreads: number;
-        };
-      };
-    };
-  };
-  export function pipeline(
-    task: string,
-    model?: string,
-    options?: PretrainedOptions
-  ): Promise<Pipeline>;
-}
-  export interface FeatureExtractionPipeline extends Pipeline {}
-  export interface TextGenerationPipeline extends Pipeline {}
-  // LokiJS types - Complete interface definitions
-  declare module 'lokijs' {
-    export interface LokiObj {
-      $loki: number;
-      meta: {
-        revision: number;
-        created: number;
-        version: number;
-      };
-    }
-    export interface LokiCollection<T = any> {
-      insert(doc: T): T & LokiObj;
-      insertOne(doc: T): T & LokiObj;
-      find(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj)[];
-      findOne(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj) | null;
-      findAndRemove(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj)[];
-      where(query: (obj: T & LokiObj) => boolean): (T & LokiObj)[];
-      remove(doc: T & LokiObj): void;
-      removeWhere(query: (obj: T & LokiObj) => boolean): void;
-      update(doc: T & LokiObj): T & LokiObj;
-      count(query?: any): number;
-      clear(): void;
-      chain(): LokiCollectionChain<T>;
-      simplesort(prop: keyof (T & LokiObj), desc?: boolean): LokiCollection<T>;
-      compoundsort(sorts: Array<[keyof (T & LokiObj), boolean?]>): LokiCollection<T>;
-      data: (T & LokiObj)[];
-    }
-    export interface LokiCollectionChain<T = any> {
-      find(query?: any): LokiCollectionChain<T>;
-      where(filter: (obj: T & LokiObj) => boolean): LokiCollectionChain<T>;
-      simplesort(property: keyof (T & LokiObj), desc?: boolean): LokiCollectionChain<T>;
-      limit(qty: number): LokiCollectionChain<T>;
-      data(): (T & LokiObj)[];
-    }
-    export interface LokiDatabase {
-      addCollection<T = any>(
-        name: string,
-        options?: {
-          unique?: string[];
-          indices?: string[];
-          asyncListeners?: boolean;
-          transactional?: boolean;
-          autoupdate?: boolean;
-          exact?: string[];
         }
-      ): LokiCollection<T>;
-      getCollection<T = any>(name: string): LokiCollection<T> | null;
-      removeCollection(name: string): void;
-      saveDatabase(callback?: (err?: any) => void): void;
-      loadDatabase(options?: any, callback?: (err?: any) => void): void;
-      serialize(): string;
-      deserialize(serializedDb: string): void;
-      listCollections(): Array<any>;
-      getName(): string;
-      close(callback?: () => void): void;
-      filename: string;
-      options: any;
+      }
     }
-    export interface LokiMemoryAdapter {
-      loadDatabase(dbname: string, callback: (data: string | null) => void): void;
-      saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-      deleteDatabase(dbname: string, callback: (err?: Error) => void): void;
-    }
-    export const LokiMemoryAdapter: new () => LokiMemoryAdapter;
-    export interface LokiFsAdapter {
-      new (): any;
-      loadDatabase(dbname: string, callback: (data: string | null) => void): void;
-      saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-      deleteDatabase(dbname: string, callback: (err?: Error) => void): void;
-    }
-    export class LokiConstructor {
-      constructor(
-        filename?: string | null,
-        options?: {
-          adapter?: any;
-          autoload?: boolean;
-          autoloadCallback?: (err?: any) => void;
-          autosave?: boolean;
-          autosaveInterval?: number;
-          persistenceMethod?: 'fs' | 'localStorage' | 'memory' | 'adapter';
-          destructureDelimiter?: string;
-          serializationMethod?: 'normal' | 'pretty' | 'destructured';
-          throttledSaves?: boolean;
-        }
-      );
-      // Database methods
-      addCollection<T = any>(
-        name: string,
-        options?: {
-          unique?: string[];
-          indices?: string[];
-          asyncListeners?: boolean;
-          transactional?: boolean;
-          autoupdate?: boolean;
-          exact?: string[];
-        }
-      ): LokiCollection<T>;
-      getCollection<T = any>(name: string): LokiCollection<T> | null;
-      removeCollection(name: string): void;
-      saveDatabase(callback?: (err?: any) => void): void;
-      loadDatabase(options?: any, callback?: (err?: any) => void): void;
-      serialize(): string;
-      deserialize(serializedDb: string): void;
-      listCollections(): Array<any>;
-      getName(): string;
-      close(callback?: () => void): void;
-      filename: string;
-      options: any;
-      // Static adapter properties
-      static LokiFsAdapter: new () => LokiFsAdapter;
-      static LokiFSAdapter: new () => LokiFsAdapter;
-      static LokiMemoryAdapter: new () => LokiMemoryAdapter;
-    }
-    const loki: typeof LokiConstructor;
-    export default loki;
   }
+  export function pipeline(_task: string, model?: string, options?: PretrainedOptions): Promise<Pipeline>;
+}
+export interface FeatureExtractionPipeline extends Pipeline {}
+export interface TextGenerationPipeline extends Pipeline {}
+// LokiJS types - Complete interface definitions
+declare module 'lokijs' {
+  export interface LokiObj {
+    $loki: number;
+    meta: {
+      revision: number;
+      created: number;
+      version: number;
+    }
+  }
+  export interface LokiCollection<T = any> {
+    insert(doc: T): T & LokiObj;
+    insertOne(doc: T): T & LokiObj;
+    find(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj)[];
+    findOne(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj) | null;
+    findAndRemove(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj)[];
+    where(query: (obj: T & LokiObj) => boolean): (T & LokiObj)[];
+    remove(doc: T & LokiObj): void;
+    removeWhere(query: (obj: T & LokiObj) => boolean): void;
+    update(doc: T & LokiObj): T & LokiObj;
+    count(query?: any): number;
+    clear(): void;
+    chain(): LokiCollectionChain<T>;
+    simplesort(prop: keyof (T & LokiObj), desc?: boolean): LokiCollection<T>;
+    compoundsort(sorts: Array<[keyof (T & LokiObj), boolean?]>): LokiCollection<T>;
+    data: (T & LokiObj)[];
+  }
+  export interface LokiCollectionChain<T = any> {
+    find(query?: any): LokiCollectionChain<T>;
+    where(filter: (obj: T & LokiObj) => boolean): LokiCollectionChain<T>;
+    simplesort(property: keyof (T & LokiObj), desc?: boolean): LokiCollectionChain<T>;
+    limit(qty: number): LokiCollectionChain<T>;
+    data(): (T & LokiObj)[];
+  }
+  export interface LokiDatabase {
+    addCollection<T = any>(
+      name: string,
+      options?: {
+        unique?: string[];
+        indices?: string[];
+        asyncListeners?: boolean;
+        transactional?: boolean;
+        autoupdate?: boolean;
+        exact?: string[];
+      },
+    ): LokiCollection<T>;
+    getCollection<T = any>(name: string): LokiCollection<T> | null;
+    removeCollection(name: string): void;
+    saveDatabase(callback?: (err?: any) => void): void;
+    loadDatabase(options?: any, callback?: (err?: any) => void): void;
+    serialize(): string;
+    deserialize(serializedDb: string): void;
+    listCollections(): Array<any>;
+    getName(): string;
+    close(callback?: () => void): void;
+    filename: string;
+    options: any;
+  }
+  export interface LokiMemoryAdapter {
+    loadDatabase(dbname: string, callback: (data: string | null) => void): void;
+    saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
+    deleteDatabase(dbname: string, callback: (err?: Error) => void): void;
+  }
+  export const LokiMemoryAdapter: new () => LokiMemoryAdapter;
+  export interface LokiFsAdapter {
+    new (): any;
+    loadDatabase(dbname: string, callback: (data: string | null) => void): void;
+    saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
+    deleteDatabase(dbname: string, callback: (err?: Error) => void): void;
+  }
+  export class LokiConstructor {
+    constructor(
+      filename?: string | null,
+      options?: {
+        adapter?: any;
+        autoload?: boolean;
+        autoloadCallback?: (err?: any) => void;
+        autosave?: boolean;
+        autosaveInterval?: number;
+        persistenceMethod?: 'fs' | 'localStorage' | 'memory' | 'adapter';
+        destructureDelimiter?: string;
+        serializationMethod?: 'normal' | 'pretty' | 'destructured';
+        throttledSaves?: boolean;
+      },
+    );
+    // Database methods
+    addCollection<T = any>(
+      name: string,
+      options?: {
+        unique?: string[];
+        indices?: string[];
+        asyncListeners?: boolean;
+        transactional?: boolean;
+        autoupdate?: boolean;
+        exact?: string[];
+      },
+    ): LokiCollection<T>;
+    getCollection<T = any>(name: string): LokiCollection<T> | null;
+    removeCollection(name: string): void;
+    saveDatabase(callback?: (err?: any) => void): void;
+    loadDatabase(options?: any, callback?: (err?: any) => void): void;
+    serialize(): string;
+    deserialize(serializedDb: string): void;
+    listCollections(): Array<any>;
+    getName(): string;
+    close(callback?: () => void): void;
+    filename: string;
+    options: any;
+    // Static adapter properties
+    static LokiFsAdapter: new () => LokiFsAdapter;
+    static LokiFSAdapter: new () => LokiFsAdapter;
+    static LokiMemoryAdapter: new () => LokiMemoryAdapter;
+  }
+  const loki: typeof LokiConstructor;
+  export default loki;
+}
 // Performance types for test environments
 declare global {
   namespace NodeJS {
     interface Global {
       performance: {
         now(): number;
-      };
+      }
       gc?: () => void;
     }
   }
@@ -328,7 +324,7 @@ declare module 'bits-ui' {
     // Duplicate removed: // Duplicate removed: export const ItemText: any
     // Duplicate removed: // Duplicate removed: export const ItemIndicator: any
     export const Input: any;
-    export const Group: any;  // Added missing Group export
+    export const Group: any; // Added missing Group export
     export const Label: any;
     export const Separator: any;
   }
@@ -396,8 +392,8 @@ declare module 'fabric' {
     }
     export class Object {
       constructor(options?: any);
-      set(key: string, value: any): Object;
-      get(key: string): any;
+      set(_key: string, value: any): Object;
+      get(_key: string): any;
       toJSON(): any;
     }
     export class Circle extends Object {

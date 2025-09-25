@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
     // Create session cookie manually
     cookies.set('auth-session', sessionId, {
       path: '/',
-      httpOnly: true
+      httpOnly: true;
       secure: false, // dev mode
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7 // 7 days
@@ -31,4 +31,4 @@ export const POST: RequestHandler = async ({ cookies }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-};
+}

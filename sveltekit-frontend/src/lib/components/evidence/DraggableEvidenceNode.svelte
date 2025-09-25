@@ -21,7 +21,7 @@
       extractedText?: string;
       confidence?: number;
       embeddings?: number[];
-    };
+    }
     connections?: string[];
     tags?: string[];
     analysis?: {
@@ -29,7 +29,7 @@
       keyTerms?: string[];
       sentiment?: number;
       importance?: number;
-    };
+    }
   }
   interface Props {
     evidence: EvidenceNod;
@@ -130,7 +130,7 @@
         ...evidence.metadata,
         embeddings: embeddingResult.embedding,
         confidence: analysis.confidence || 0.8;
-      };
+      }
       // Update store
       evidenceStore.updateEvidence(evidence.id, {
         analysis: evidence.analysis,
@@ -147,11 +147,11 @@
     }
   }
   // Connection handling
-  function handleNodeClick(event: MouseEvent) {
+  function handleNodeClick(_event: MouseEvent) {
     event.stopPropagation();
     onSelect?.(evidence.id);
   }
-  function handleConnectionDrop(event: DragEvent) {
+  function handleConnectionDrop(_event: DragEvent) {
     event.preventDefault();
     const droppedData = event.dataTransfer?.getData('text/plain');
     if (droppedData) {
@@ -167,7 +167,7 @@
     }
   }
   // Drag data for connections
-  function handleDragStart_Connection(event: DragEvent) {
+  function handleDragStart_Connection(_event: DragEvent) {
     if (event.dataTransfer) {
       event.dataTransfer.setData('text/plain', JSON.stringify({
         id: evidence.id,
@@ -186,7 +186,7 @@
     id: evidence.id,
     onDrag: handlePositionUpdate
     onDragStart: handleDragStart
-    onDragEnd: handleDragEnd
+    onDragEnd: handleDragEnd;
     handle: '.drag-handle',
     constraint: canvasContainer ? { container: canvasContainer } : undefined
   }}

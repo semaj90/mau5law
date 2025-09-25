@@ -97,7 +97,7 @@ export class LegalDocumentBinarySerializer {
   /**
    * Serialize legal document to binary format (eliminating JSON)
    */;
-  static serialize(document: any): ArrayBuffer {
+  static serialize(_document: any): ArrayBuffer {
     const buffer = new ArrayBuffer(LEGAL_DOCUMENT_BINARY_SIZE);
     const view = new DataView(buffer);
     const uint8View = new Uint8Array(buffer);
@@ -261,7 +261,7 @@ export class LegalDocumentBinarySerializer {
         flags,
         timestamp: Number(timestamp)
       }
-    };
+    }
   }
   /**
    * Ultra-fast batch serialization for multiple documents
@@ -316,11 +316,11 @@ export class LegalDocumentBinarySerializer {
   private static arrayToHash(arr: any[]): number {
     return this.stringToHash(JSON.stringify(arr.sort());
   }
-  private static calculateChecksum(document: any): number {
+  private static calculateChecksum(_document: any): number {
     // Simple CRC32-like checksum
     return this.stringToHash(JSON.stringify(document);
   }
-  private static generateFlags(document: any): number {
+  private static generateFlags(_document: any): number {
     let flags = 0;
     if (document.metadata?.hasEmbedding) flags |= 1;
     if (document.metadata?.isEncrypted) flags |= 2;
@@ -329,7 +329,7 @@ export class LegalDocumentBinarySerializer {
     if (document.metadata?.isConfidential) flags |= 16;
     return flags;
   }
-  private static generateRankingMatrix(document: any): Float32Array {
+  private static generateRankingMatrix(_document: any): Float32Array {
     const matrix = new Float32Array(16);
     // Generate legal importance-based ranking matrix
     const riskWeight = this.riskLevelToWeight(document.riskLevel);
@@ -352,7 +352,7 @@ export class LegalDocumentBinarySerializer {
       'brief': DocumentType.BRIEF,
       'citation': DocumentType.CITATION,
       'precedent': DocumentType.PRECEDENT
-    };
+    }
     return map[type] || DocumentType.EVIDENCE;
   }
   private static enumToDocumentType(enumValue: number): string {
@@ -362,7 +362,7 @@ export class LegalDocumentBinarySerializer {
       [DocumentType.BRIEF]: 'brief',
       [DocumentType.CITATION]: 'citation',
       [DocumentType.PRECEDENT]: 'precedent'
-    };
+    }
     return map[enumValue as DocumentType] || 'evidence';
   }
   private static riskLevelToEnum(risk: string): RiskLevel {
@@ -371,7 +371,7 @@ export class LegalDocumentBinarySerializer {
       'medium': RiskLevel.MEDIUM,
       'high': RiskLevel.HIGH,
       'critical': RiskLevel.CRITICAL
-    };
+    }
     return map[risk] || RiskLevel.MEDIUM;
   }
   private static enumToRiskLevel(enumValue: number): string {
@@ -380,19 +380,19 @@ export class LegalDocumentBinarySerializer {
       [RiskLevel.MEDIUM]: 'medium',
       [RiskLevel.HIGH]: 'high',
       [RiskLevel.CRITICAL]: 'critical'
-    };
+    }
     return map[enumValue as RiskLevel] || 'medium';
   }
   private static riskLevelToWeight(risk: string): number {
     const map: Record<string, number> = {
       'low': 0.25, 'medium': 0.5, 'high': 0.75, 'critical': 1.0
-    };
+    }
     return map[risk] || 0.5;
   }
   private static documentTypeToWeight(type: string): number {
     const map: Record<string, number> = {
       'evidence': 1.0, 'contract': 0.8, 'brief': 0.6, 'precedent': 0.7, 'citation': 0.4
-    };
+    }
     return map[type] || 0.5;
   }
   private static practiceAreaToEnum(area: string): number {
@@ -435,4 +435,4 @@ export class LegalDocumentBinarySerializer {
   }
 }
 // Export for use in other modules
-export { LegalDocumentBinarySerializer as BinarySerializer };
+export { LegalDocumentBinarySerializer as BinarySerializer }

@@ -12,7 +12,7 @@
     select: '',
     textarea: '',
     checkbox: false,
-    radio: ''
+    radio: '';
   });
   function handleSubmit() {
     console.log('Form submitted:', formData);
@@ -247,8 +247,7 @@ function example() {
     {@render children()}
   {/if}
 </article>
-<style>
-  /* Component-specific styles */
+<style>/* Component-specific styles */ {}
   article {
     margin: 1rem;
     max-width: 800px;

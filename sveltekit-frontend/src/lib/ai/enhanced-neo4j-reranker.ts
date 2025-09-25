@@ -75,7 +75,7 @@ export class EnhancedNeo4jReranker {
       legal_weight_multiplier: 1.5,
       audit_enabled: true
       ...config
-    };
+    }
   }
   async initialize(): Promise<void> {
     console.log("🚀 Initializing Enhanced Neo4j Reranker...");
@@ -210,8 +210,7 @@ export class EnhancedNeo4jReranker {
   /**
    * Get Neo4j path context for enhanced legal reasoning
    */
-  private async getNeo4jPathContext(
-    document: DocumentEmbedding
+  private async getNeo4jPathContext(_document: DocumentEmbedding
     userContext: any
   ): Promise<Neo4jPathContext> {
     // Mock Neo4j query - in production, this would use actual Neo4j driver
@@ -256,7 +255,7 @@ export class EnhancedNeo4jReranker {
       audit_trail: this.auditLog.filter(
         (entry) => entry.query_hash === this.hashQuery("", userContext),
       )
-    };
+    }
   }
   /**
    * Calculate boolean pattern matching for 2x2 matrix accuracy
@@ -305,8 +304,7 @@ export class EnhancedNeo4jReranker {
   /**
    * Calculate comprehensive confidence scores
    */
-  private async calculateConfidenceScores(
-    document: DocumentEmbedding
+  private async calculateConfidenceScores(_document: DocumentEmbedding
     pathContext: Neo4jPathContext
     userContext: any
   ): Promise<ConfidenceScores> {
@@ -333,7 +331,7 @@ export class EnhancedNeo4jReranker {
       chain_of_custody: chainOfCustody
       precedent_strength: precedentStrength
       overall_confidence: overallConfidence
-    };
+    }
   }
   /**
    * Apply enhanced scoring with legal context weights
@@ -417,8 +415,7 @@ export class EnhancedNeo4jReranker {
     const commonWords = queryWords.filter((word) => docWords.includes(word);
     return Math.min(commonWords.length / queryWords.length, 1.0);
   }
-  private calculateLegalRelevance(
-    document: DocumentEmbedding
+  private calculateLegalRelevance(_document: DocumentEmbedding
     userContext: any
   ): number {
     const legalTerms = [
@@ -433,8 +430,7 @@ export class EnhancedNeo4jReranker {
     const legalMatches = docWords.filter((word) => legalTerms.includes(word);
     return Math.min(legalMatches.length / 10, 1.0);
   }
-  private calculateFactualAccuracy(
-    document: DocumentEmbedding
+  private calculateFactualAccuracy(_document: DocumentEmbedding
     pathContext: Neo4jPathContext
   ): number {
     // Based on cross-references and verification chains
@@ -466,7 +462,7 @@ export class EnhancedNeo4jReranker {
       prosecutor: { evidence: 1.3, precedent: 1.2, analysis: 1.1 },
       detective: { evidence: 1.4, precedent: 1.0, analysis: 1.2 },
       admin: { evidence: 1.1, precedent: 1.1, analysis: 1.1 }
-    };
+    }
     return (
       multipliers[role as keyof typeof multipliers]?.[
         searchIntent as keyof typeof multipliers.prosecutor
@@ -480,9 +476,9 @@ export class EnhancedNeo4jReranker {
       chain_of_custody: 0.7,
       precedent_strength: 0.65,
       overall_confidence: 0.72
-    };
+    }
   }
-  private getDefaultPathContext(document: DocumentEmbedding): Neo4jPathContext {
+  private getDefaultPathContext(_document: DocumentEmbedding): Neo4jPathContext {
     return {
       document_id: document.id,
       case_id: "UNKNOWN",
@@ -491,7 +487,7 @@ export class EnhancedNeo4jReranker {
       entity_relationships: [],
       confidence_scores: this.getDefaultConfidenceScores(),
       audit_trail: []
-    };
+    }
   }
   private hashQuery(query: string, userContext: any): string {
     const data = `${query}-${userContext.user_id}-${userContext.case_id}-${Date.now()}`;
@@ -531,7 +527,7 @@ export class EnhancedNeo4jReranker {
       neo4j_enabled: this.config.enable_neo4j_paths,
       boolean_patterns_enabled: this.config.enable_boolean_patterns,
       accuracy_threshold: this.config.accuracy_threshold
-    };
+    }
   }
 }
 // Export factory function

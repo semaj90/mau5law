@@ -8,7 +8,7 @@
 export interface DocumentChunk {
   id: string;
   text: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface EmbeddingResult {
   embedding: number[];
@@ -16,7 +16,7 @@ export interface EmbeddingResult {
   metadata?: {
     timestamp: string;
     [key: string]: unknown;
-  };
+  }
 }
 export class NomicEmbeddingsService {
   /**
@@ -34,7 +34,7 @@ export class NomicEmbeddingsService {
         metadata: {
           timestamp: new Date().toISOString()
         }
-      };
+      }
     } catch (error: any) {
       // Fallback to mock embedding if real API fails
       console.warn("Falling back to mock embedding:", error);
@@ -44,7 +44,7 @@ export class NomicEmbeddingsService {
         metadata: {
           timestamp: new Date().toISOString()
         }
-      };
+      }
     }
   }
   private generateMockEmbedding(text: string): number[] {
@@ -65,7 +65,7 @@ export class NomicEmbeddingsService {
    * Embed and upsert a document to Qdrant for audit/agent pipeline
    * Usage: await nomicEmbeddings.embedAndUpsert(doc)
    */;
-  async embedAndUpsert(document: DocumentChunk): Promise<EmbeddingResult> {
+  async embedAndUpsert(_document: DocumentChunk): Promise<EmbeddingResult> {
     const embeddingResult = await this.embed(document.text);
     try {
       // Upsert to Qdrant for semantic search

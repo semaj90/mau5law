@@ -15,7 +15,7 @@ export interface FullStackWorkflowRequest {
     enableAgents?: boolean;
     priority?: 'low' | 'medium' | 'high' | 'critical';
     maxProcessingTime?: number;
-  };
+  }
 }
 export interface FullStackWorkflowResult {
   mode: string;
@@ -26,13 +26,13 @@ export interface FullStackWorkflowResult {
     multicoreAnalysis?: unknown;
     systemMetrics?: unknown;
     error?: string;
-  };
+  }
   performance: {
     totalTime: number;
     gpuUtilization: number;
     agentsUsed: number;
     multicoreWorkers: number;
-  };
+  }
   recommendations: string[];
   nextSteps: string[];
 }
@@ -40,9 +40,9 @@ export class FullStackLegalAIWorkflow {
   private isInitialized = false;
   private systemStatus = {
     orchestrator: false
-    flashattention: false
+    flashattention: false;
     multicore: false
-  };
+  }
   constructor() {
     console.log('🏗️ Initializing Full Stack Legal AI Workflow...');
   }
@@ -160,7 +160,7 @@ export class FullStackLegalAIWorkflow {
         'CSS: Unused selector warning',
         'Binding: Cannot use bind: with non-bindable property'
       ]
-    };
+    }
     // Run all analysis systems in parallel
     const analysisPromises: Promise<any>[] = [];
     // 1. Agent orchestration analysis
@@ -176,7 +176,7 @@ export class FullStackLegalAIWorkflow {
           errorAnalysis: true
           autoFix: false // Don't auto-fix, just analyze
         }
-      };
+      }
       analysisPromises.push(
         comprehensiveOrchestrator.executeComprehensiveAnalysis(orchestrationRequest)
           .then(result => ({ type: 'orchestration', result })
@@ -202,7 +202,7 @@ export class FullStackLegalAIWorkflow {
     // Execute all analyses
     const analysisResults = await Promise.allSettled(analysisPromises);
     // Process results
-    const results: any = {};
+    const results: any = {}
     let agentsUsed = 0;
     let gpuUtilization = 0;
     analysisResults.forEach((result, index) => {
@@ -237,7 +237,7 @@ export class FullStackLegalAIWorkflow {
       },
       recommendations,
       nextSteps
-    };
+    }
   }
   /**
    * Execute legal text processing workflow
@@ -259,7 +259,7 @@ export class FullStackLegalAIWorkflow {
           useMulticoreAnalysis: true
           includeContext7: true
         }
-      };
+      }
       processingPromises.push(
         comprehensiveOrchestrator.executeComprehensiveAnalysis(legalRequest)
           .then(result => ({ type: 'legal_orchestration', result })
@@ -273,7 +273,7 @@ export class FullStackLegalAIWorkflow {
         options: {
           analysisType: 'legal',
           enableGPU: request.options?.useGPU !== false,
-          useAgentOrchestration: true
+          useAgentOrchestration: true;
           priority: request.options?.priority || 'medium'
         }
       } as const;
@@ -284,7 +284,7 @@ export class FullStackLegalAIWorkflow {
     }
     const processingResults = await Promise.allSettled(processingPromises);
     // Process results
-    const results: any = {};
+    const results: any = {}
     processingResults.forEach(result => {
       if ((result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).status === 'fulfilled') {
         const { type, result: data } = (result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).value;
@@ -303,7 +303,7 @@ export class FullStackLegalAIWorkflow {
       },
       recommendations: this.generateLegalProcessingRecommendations(results),
       nextSteps: ['Review legal analysis results', 'Apply findings to case strategy']
-    };
+    }
   }
   /**
    * Execute system diagnostic workflow
@@ -312,10 +312,10 @@ export class FullStackLegalAIWorkflow {
     console.log('🔧 Running system diagnostic...');
     const diagnostics = {
       orchestrator: this.systemStatus.orchestrator ? comprehensiveOrchestrator.getSystemStatus() : null
-      flashattention: this.systemStatus.flashattention ? flashAttentionMulticoreBridge.getStatus() : null
+      flashattention: this.systemStatus.flashattention ? flashAttentionMulticoreBridge.getStatus() : null;
       multicore: this.systemStatus.multicore ? getContext7MulticoreService().getSystemStatus() : null
       systemHealth: this.getSystemHealth()
-    };
+    }
     return {
       mode: 'system_diagnostic',
       success: true
@@ -330,7 +330,7 @@ export class FullStackLegalAIWorkflow {
       },
       recommendations: this.generateDiagnosticRecommendations(diagnostics),
       nextSteps: ['Review system health', 'Apply recommended optimizations']
-    };
+    }
   }
   /**
    * Execute performance test workflow
@@ -351,7 +351,7 @@ export class FullStackLegalAIWorkflow {
       );
     }
     const testResults = await Promise.allSettled(testPromises);
-    const results: any = {};
+    const results: any = {}
     testResults.forEach(result => {
       if ((result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).status === 'fulfilled') {
         const { type, result: data } = (result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).value;
@@ -370,7 +370,7 @@ export class FullStackLegalAIWorkflow {
       },
       recommendations: this.generatePerformanceRecommendations(results),
       nextSteps: ['Review performance metrics', 'Apply optimizations']
-    };
+    }
   }
   // Helper methods for generating recommendations
   private generateErrorAnalysisRecommendations(results: any, errorData: any): string[] {
@@ -441,13 +441,13 @@ export class FullStackLegalAIWorkflow {
         processingTime: performance.now() - startTime,
         agentCount: 1,
         averageResponseTime: performance.now() - startTime
-      };
+      }
     } catch (error: any) {
       return {
-        success: false
+        success: false;
         error: error?.message ?? String(error),
         processingTime: performance.now() - startTime
-      };
+      }
     }
   }
   private async testGPUPerformance(): Promise<any> {
@@ -461,13 +461,13 @@ export class FullStackLegalAIWorkflow {
         success: true
         processingTime: performance.now() - startTime,
         utilization: (result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).systemMetrics?.gpuUtilization || 0
-      };
+      }
     } catch (error: any) {
       return {
-        success: false
+        success: false;
         error: error?.message ?? String(error),
         processingTime: performance.now() - startTime
-      };
+      }
     }
   }
   // Status and metrics methods
@@ -486,7 +486,7 @@ export class FullStackLegalAIWorkflow {
       },
       recommendations: ['Check system status and retry'],
       nextSteps: ['Review error logs', 'Initialize failed services']
-    };
+    }
   }
   private getSystemStatus() {
     const multicoreService = getContext7MulticoreService();
@@ -496,7 +496,7 @@ export class FullStackLegalAIWorkflow {
       flashattention: this.systemStatus.flashattention,
       multicore: this.systemStatus.multicore,
       multicoreWorkers: this.systemStatus.multicore ? multicoreService.getSystemStatus().workers.length: 0
-    };
+    }
   }
   private getSystemHealth(): 'excellent' | 'good' | 'degraded' | 'critical' {
     const activeServices = Object.values(this.systemStatus).filter(item => item.length);
@@ -515,7 +515,7 @@ export class FullStackLegalAIWorkflow {
         this.systemStatus.flashattention ? 'GPU Acceleration' : null
         this.systemStatus.multicore ? 'Multicore Processing' : null
       ].filter(Boolean)
-    };
+    }
   }
 }
 // Global workflow instance
@@ -527,7 +527,7 @@ export async function initializeFullStack(): Promise<void> {
 export async function runErrorAnalysis(errorData?: unknown): Promise<FullStackWorkflowResult> {
   return await fullStackWorkflow.executeWorkflow({
     mode: 'error_analysis',
-    data: errorData
+    data: errorData;
     options: { useGPU: true, enableAgents: true, priority: 'high' }
   });
 }

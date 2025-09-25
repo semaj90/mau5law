@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
       confidentiality?: string;
       caseId?: string;
       tags?: string[];
-    };
+    }
     highlights?: string[];
   }
   interface SearchOptions {
@@ -67,10 +67,10 @@ https://svelte.dev/e/js_parse_error -->
     caseItem: Scale
     evidence: Shield
     precedent: FileText
-    statute: FileText
-    criminal: Users
+    statute: FileText;
+    criminal: Users;
     document: FileText;
-  };
+  }
   const typeColors = {
     caseItem: 'text-blue-600',
     evidence: 'text-red-600',
@@ -78,7 +78,7 @@ https://svelte.dev/e/js_parse_error -->
     statute: 'text-green-600',
     criminal: 'text-orange-600',
     document: 'text-gray-600';
-  };
+  }
   // Load recent searches from localStorage
   $effect(() => {
     const stored = localStorage.getItem('legalSearchHistory');
@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
         aiSuggestions: aiSuggestions.toString(),
         includeMetadata: includeMetadata.toString();
       });
-      const response = await fetch(`/api/search/legal?${searchParams}`);
+      // removed unused response assignment
       const data = await (response as { json?: unknown }).json();
       if ((data as { toString?: unknown; success?: unknown; results?: unknown; error?: unknown; suggestions?: unknown }).success) {
         searchResults = (data as { toString?: unknown; success?: unknown; results?: unknown; error?: unknown; suggestions?: unknown }).results.map((result: unknown) => ({,
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
   // Load AI-powered search suggestions
   async function loadAISuggestions() {
     try {
-      const response = await fetch('/api/search/suggestions');
+      // removed unused response assignment
       const data = await (response as { json?: unknown }).json();
       if ((data as { toString?: unknown; success?: unknown; results?: unknown; error?: unknown; suggestions?: unknown }).success) {
         suggestions = (data as { toString?: unknown; success?: unknown; results?: unknown; error?: unknown; suggestions?: unknown }).suggestions || [];
@@ -151,8 +151,8 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Handle input changes
-  function handleInputChange(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleInputChange(_event: Event) {
+    // removed unused target assignment
     inputValue = target.valu;
     value = inputValu;
     if (inputValue) {

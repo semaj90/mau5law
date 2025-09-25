@@ -57,7 +57,7 @@
     lastError = null; canceled = false; statusMessage = '';
     try { validateFiles(files); } catch (err: any) { lastError = err.message; statusMessage = 'Validation failed'; return; }
     isUploading = true; uploadProgress = 0;
-    const summary: UploadSummary = { count: files.length, totalBytes: 0, files: [] };
+    const summary: UploadSummary = { count: files.length, totalBytes: 0, files: [] }
     for (let i = 0; i < files.length; i++) {
       const file = files[i]; if (canceled) break;
       try {
@@ -142,7 +142,7 @@
             reject(Object.assign(new Error(`Upload failed (${xhr.status})`), { statusCode: xhr.status }));
           }
         }
-      };
+      }
       xhr.onerror = () => reject(new Error('Network error'));
       xhr.onabort = () => reject(new Error('Upload aborted'));
       const form = new FormData(); form.append('file', file);
@@ -152,6 +152,7 @@
     });
   }
 </script>
+
 <input
   type="file"
   bind:this={fileInput}
@@ -164,7 +165,14 @@
   <p class="text-red-500 text-sm mt-2" role="alert">{lastError}</p>
 {/if}
 {#if minimal}
-  <button class="upload-zone px-3 py-2 border rounded text-sm" onclick={openFileDialog} title="Upload Evidence" aria-label="Upload Evidence" tabindex={0} disabled={isUploading}>
+  <button
+    class="upload-zone px-3 py-2 border rounded text-sm"
+    onclick={openFileDialog}
+    title="Upload Evidence"
+    aria-label="Upload Evidence"
+    tabindex={0}
+    disabled={isUploading}
+  >
     {#if isUploading}
       ⏳ Uploading...
     {:else}
@@ -173,15 +181,17 @@
   </button>
 {:else}
   <div
-    class="upload-zone border-2 border-dashed rounded p-6 text-center transition-colors select-none {isDragOver ? 'bg-gray-100 border-gray-400' : 'border-gray-300'}"
+    class="upload-zone border-2 border-dashed rounded p-6 text-center transition-colors select-none {isDragOver
+      ? 'bg-gray-100 border-gray-400'
+      : 'border-gray-300'}"
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     ondrop={handleDrop}
     role="button"
     aria-label="Upload Evidence Dropzone"
     tabindex={0}
-  onclick={openFileDialog}
-  onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
+    onclick={openFileDialog}
+    onkeydown={e => e.key === 'Enter' && openFileDialog()}
   >
     {#if isUploading}
       <div class="flex flex-col items-center gap-3">
@@ -190,24 +200,42 @@
           <div class="h-full bg-blue-500 transition-all" style="width: {uploadProgress}%"></div>
         </div>
         <div class="flex gap-2 items-center">
-          <button class="text-xs px-2 py-1 border rounded hover:bg-gray-100" onclick={(e) => { e.stopPropagation(); cancelUpload(); }}>Cancel</button>
+          <button
+            class="text-xs px-2 py-1 border rounded hover:bg-gray-100"
+            onclick={e => {
+              e.stopPropagation();
+              cancelUpload();
+            }}>Cancel</button
+          >
         </div>
       </div>
     {:else}
       <div class="flex flex-col items-center gap-2 text-sm">
         <p><strong>Drop files</strong> or click to browse</p>
         <p class="text-xs text-gray-500">Images, Video, Audio, PDF, DOC, TXT (≤100MB each)</p>
-        <p class="text-xs text-gray-400">Retries: {maxRetries + 1} attempts{enableEmbedding ? ' • Embeddings on' : ''}</p>
+        <p class="text-xs text-gray-400">
+          Retries: {maxRetries + 1} attempts{enableEmbedding ? ' • Embeddings on' : ''}
+        </p>
       </div>
     {/if}
   </div>
 {/if}
 <div class="sr-only" aria-live="polite">{statusMessage}</div>
-<style>
-  .upload-zone { cursor: pointer; }
-  .upload-zone:hover { background-color: rgba(0,0,0,0.03); }
-  .hidden { display: none; }
-  button[disabled] { opacity: 0.6; cursor: not-allowed; }
-</style>
 <!-- Telemetry markers (kept minimal) -->
 <!-- Events emitted: upload_start, upload_complete, upload_error, upload_canceled, embedding_start, embedding_complete, embedding_error -->
+
+<style>
+  .upload-zone {
+    cursor: pointer;
+  }
+  .upload-zone:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+  .hidden {
+    display: none;
+  }
+  button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>

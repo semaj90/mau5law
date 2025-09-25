@@ -21,7 +21,7 @@ const CreateReportSchema = z.object({
 type CreateReportData = z.infer<typeof CreateReportSchema>
 class ReportsCRUDService {
   constructor(private userId: string) {}
-  async list(options: { page: number; limit: number }) {
+  async list(_options: { page: number; limit: number }) {
     const { page, limit } = options
     const offset = (page - 1) * limit
     const [tc] = await db.select({ c: count() }).from(reports)
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           limit: validatedQuery.limit
         })
     return json({
-      success: true
+      success: true;
       data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
         page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,

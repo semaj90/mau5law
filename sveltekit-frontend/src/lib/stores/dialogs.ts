@@ -14,7 +14,7 @@ export interface Dialog {
 export interface Modal {
   id: string;
   component?: unknown;
-  props?: { [key: string]: any };
+  props?: { [key: string]: any }
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
   type?: 'default' | 'confirm' | 'alert' | 'system';
   persistent?: boolean;
@@ -34,7 +34,7 @@ function createDialogStore() {
         id,
         resolve,
         reject
-      };
+      }
       update(dialogs => [...dialogs, newDialog]);
     });
   }
@@ -163,7 +163,7 @@ function createDialogStore() {
     confirmEvidenceDelete,
     promptCaseName,
     systemAlert
-  };
+  }
 }
 function createModalStore() {
   const { subscribe, update } = writable<Modal[]>([]);
@@ -178,7 +178,7 @@ function createModalStore() {
         id,
         resolve,
         reject
-      };
+      }
       update(modals => [...modals, newModal]);
     });
   }
@@ -227,7 +227,7 @@ function createModalStore() {
     reject,
     clear,
     open
-  };
+  }
 }
 export const dialogStore = createDialogStore();
 export const modalStore = createModalStore();

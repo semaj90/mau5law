@@ -112,7 +112,7 @@ https://svelte.dev/e/attribute_duplicate -->
     enableMipMapping,
     enableFog,
     ...renderOptions
-  };
+  }
   // Create spatial audio for dialog transitions
   const playDialogSound = async (type: 'open' | 'close', duration: number = 0.4) => {
     if (!enableSpatialAudio) return;
@@ -168,7 +168,7 @@ https://svelte.dev/e/attribute_duplicate -->
     } catch (error) {
       console.warn('Could not play dialog sound:', error);
     }
-  };
+  }
   const openDialog = async () => {
     if (disabled || isAnimating) return;
     isAnimating = true;
@@ -177,7 +177,7 @@ https://svelte.dev/e/attribute_duplicate -->
     await playDialogSound('open');
     // Create portal if needed
     if (portal && browser) {
-      const target = document.querySelector(portalTarget);
+      // removed unused target assignment
       if (target) {
         portalContainer = target as HTMLElement;
       }
@@ -199,7 +199,7 @@ https://svelte.dev/e/attribute_duplicate -->
       isAnimating = false;
     }, 400);
     // ondispatch removed;
-  };
+  }
   const closeDialog = async () => {
     if (preventClose || isAnimating) return;
     isAnimating = true;
@@ -214,8 +214,8 @@ https://svelte.dev/e/attribute_duplicate -->
       }
       // ondispatch removed;
     }, 400);
-  };
-  const handleKeydown = (event: KeyboardEvent) => {
+  }
+  const handleKeydown = (_event: KeyboardEvent) => {
     if (!isVisible) return;
     if (event.key === 'Escape' && closeOnEscape) {
       event.preventDefault();
@@ -243,12 +243,12 @@ https://svelte.dev/e/attribute_duplicate -->
         }
       }
     }
-  };
-  const handleBackdropClick = (event: MouseEvent) => {
+  }
+  const handleBackdropClick = (_event: MouseEvent) => {
     if (closeOnOutsideClick && event.target === backdropElement) {
       closeDialog();
     }
-  };
+  }
   // Get material styles based on variant
   const getMaterialStyles = (variant: string, material: string) => {
     const baseColors = {
@@ -258,7 +258,7 @@ https://svelte.dev/e/attribute_duplicate -->
       warning: { base: '#452f06', highlight: '#744210', shadow: '#2d1b05', accent: '#ffc107' },
       error: { base: '#451b1b', highlight: '#742a2a', shadow: '#2d0e0e', accent: '#dc3545' },
       info: { base: '#1a202c', highlight: '#2a4365', shadow: '#0d1117', accent: '#17a2b8' }
-    };
+    }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     const materialMap = {
       basic: {
@@ -294,9 +294,9 @@ https://svelte.dev/e/attribute_duplicate -->
           0 0 0 2px rgba(255,255,255,0.05)
         `
       }
-    };
+    }
     return materialMap[material as keyof typeof materialMap] || materialMap.pbr;
-  };
+  }
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
@@ -318,7 +318,7 @@ https://svelte.dev/e/attribute_duplicate -->
       classes.push('anisotropic-4x');
     }
     return classes.join(' ');
-  };
+  }
   let materialStyles = $derived(getMaterialStyles(variant, materialType));
   // Watch for open state changes
   $effect(() => {
@@ -333,7 +333,7 @@ https://svelte.dev/e/attribute_duplicate -->
       document.addEventListener('keydown', handleKeydown);
       return () => {
         document.removeEventListener('keydown', handleKeydown);
-      };
+      }
     }
   });
 </script>
@@ -346,9 +346,9 @@ https://svelte.dev/e/attribute_duplicate -->
     role="button"
     tabindex="0"
     onclick={handleBackdropClick}
-    style="
-      --atmosphere-intensity: {atmosphereIntensity};
-      --fog-color: {effectiveRenderOptions.fogColor};
+    style=";
+      --atmosphere-intensity: {atmosphereIntensity}
+      --fog-color: {effectiveRenderOptions.fogColor}
     "
     aria-label="Close dialog"
   >
@@ -358,19 +358,19 @@ https://svelte.dev/e/attribute_duplicate -->
     <!-- Dialog -->
     <div
       bind:this={dialogElement}
-      class="n64-dialog {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()} entrance-{entranceAnimation}"
+      class="n64-dialog {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()} entrance-{entranceAnimation}";
       class: fullscree;
       class:animating={isAnimating}
-      style="
-        --material-bg: {materialStyles.background};
-        --material-border: {materialStyles.borderColor};
-        --material-shadow: {materialStyles.boxShadow};
-        --dialog-max-width: {maxWidth};
-        --dialog-max-height: {maxHeight};
+      style=";
+        --material-bg: {materialStyles.background}
+        --material-border: {materialStyles.borderColor}
+        --material-shadow: {materialStyles.boxShadow}
+        --dialog-max-width: {maxWidth}
+        --dialog-max-height: {maxHeight}
         --dialog-depth: {dialogDepth}px;
         --perspective: {perspective}px;
-        --glow-intensity: {glowIntensity};
-        --fog-color: {effectiveRenderOptions.fogColor};
+        --glow-intensity: {glowIntensity}
+        --fog-color: {effectiveRenderOptions.fogColor}
       "
       role="dialog"
       aria-modal="true"

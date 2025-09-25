@@ -17,12 +17,12 @@ export interface CHRROMPattern {
     cacheHits: number;
     lastAccessed: number;
     compressionRatio: number;
-  };
+  }
   renderData?: {
     colors: [number, number, number, number][]; // RGBA colors
     positions: [number, number][]; // Tile positions
     attributes: number[]; // Sprite attributes
-  };
+  }
 }
 export interface CHRROMCache {
   patterns: Map<string, CHRROMPattern>;
@@ -34,7 +34,7 @@ export interface CHRROMCache {
     totalRequests: number;
     averageResponseTime: number;
     bankUtilization: number[];
-  };
+  }
 }
 export interface PatternGenerationOptions {
   documentType: 'contract' | 'evidence' | 'brief' | 'citation';
@@ -67,7 +67,7 @@ export class CHRROMPatternCache {
         averageResponseTime: 0,
         bankUtilization: Array(this.MAX_BANKS).fill(0)
       }
-    };
+    }
     this.initializeBanks();
     this.startMetricsCollection();
   }
@@ -100,7 +100,7 @@ export class CHRROMPatternCache {
       5: [0x00, 0x00, 0x3C, 0x3C, 0x3C, 0x3C, 0x00, 0x00], // Small square
       6: [0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E], // Solid block
       7: [0x81, 0x42, 0x24, 0x18, 0x18, 0x24, 0x42, 0x81]  // X pattern
-    };
+    }
     const patternData = patterns[bankId] || patterns[0];
     // Each tile is 8x8, but we store it as 64 bytes for easier manipulation
     for (let row = 0; row < 8; row++) {
@@ -186,7 +186,7 @@ export class CHRROMPatternCache {
           compressionRatio: this.calculateCompressionRatio(tileData)
         },
         renderData
-      };
+      }
       // Store in CHR-ROM bank
       await this.storePattternInBank(pattern);
       // Cache in Redis with expiration
@@ -209,8 +209,7 @@ export class CHRROMPatternCache {
   /**
    * Generate legal document tile pattern (NES-style 8x8 tiles)
    */
-  private generateLegalDocumentTilePattern(
-    options: PatternGenerationOptions
+  private generateLegalDocumentTilePattern(_options: PatternGenerationOptions
     sourceDocument?: LegalDocumentJSON;
   ): Uint8Array {
     const tileData = new Uint8Array(this.PATTERN_SIZE);
@@ -220,7 +219,7 @@ export class CHRROMPatternCache {
       evidence: this.generateEvidencePattern(options.riskLevel),
       brief: this.generateBriefPattern(options.riskLevel),
       citation: this.generateCitationPattern(options.riskLevel)
-    };
+    }
     let basePattern = basePatterns[options.documentType];
     // Apply risk level modifications
     basePattern = this.applyRiskLevelModifications(basePattern, options.riskLevel);
@@ -338,7 +337,7 @@ export class CHRROMPatternCache {
         }
       }
     }
-    return { colors, positions, attributes };
+    return { colors, positions, attributes }
   }
   private getRiskColor(riskLevel: string): [number, number, number, number] {
     const colors: { [key: string]: [number, number, number, number] } = {
@@ -346,10 +345,10 @@ export class CHRROMPatternCache {
       medium: [1.0, 1.0, 0.4, 1.0] as [number, number, number, number],
       high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],
       critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number]
-    };
+    }
     return colors[riskLevel] || colors.low;
   }
-  private determinePatternType(options: PatternGenerationOptions, sourceDocument?: LegalDocumentJSON): CHRROMPattern['patternType'] {
+  private determinePatternType(_options: PatternGenerationOptions, sourceDocument?: LegalDocumentJSON): CHRROMPattern['patternType'] {
     if (sourceDocument) return 'document_layout';
     if (options.animated) return 'visualization';
     return 'ui_component';
@@ -412,7 +411,7 @@ export class CHRROMPatternCache {
     return {
       ...parsed,
       tileData: new Uint8Array(parsed.tileData) // Convert array back to Uint8Array
-    };
+    }
   }
   private startMetricsCollection(): void {
     // Collect and log metrics every 30 seconds
@@ -441,7 +440,7 @@ export class CHRROMPatternCache {
       hotPatterns: [...this.cache.hotPatterns],
       hitRate: this.cache.metrics.totalRequests > 0 ?
         this.cache.metrics.cacheHits / this.cache.metrics.totalRequests: 0
-    };
+    }
   }
   /**
    * Clear specific bank

@@ -20,8 +20,8 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
           disabled: false,
           glowEffect: true,
           hoverAnimation: true,
-          clickFeedback: true, // subtle scale on click
-          loadingState: false, // spinner when loading
+          clickFeedback: true, // subtle scale on click,
+          loadingState: false, // spinner when loading,
         },
       },
       panel: {
@@ -106,40 +106,42 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
           theme: 'cyberpunk',
         },
       },
-    };
+    }
     // Generate component gallery data
     const galleryData = {
       categories: [
+        ,
         { id: 'input', name: 'Input Components', count: 2 },
         { id: 'layout', name: 'Layout Components', count: 1 },
         { id: 'overlay', name: 'Overlay Components', count: 1 },
         { id: 'utility', name: 'Utility Components', count: 1 },
-        { id: 'display', name: 'Display Components', count: 1 }
+        { id: 'display', name: 'Display Components', count: 1 },
       ],
       components: Object.values(componentSpecs),
       totalComponents: Object.keys(componentSpecs).length,
       previewModes: [
+        ,
         { id: '3d', label: '3D Preview', icon: 'Layers' },
         { id: 'code', label: 'Code View', icon: 'Code' },
-        { id: 'config', label: 'Configuration', icon: 'Settings' }
-      ]
-    };
+        { id: 'config', label: 'Configuration', icon: 'Settings' },
+      ],
+    }
     // Generate demo code snippets
     const codeSnippets = {
-      button: `<script>
+      button: `<script>,
   import { YoRHaButton3D } from '$lib/components/three/yorha-ui';
   let buttonConfig = {
     text: 'Execute Command',
     variant: 'primary',
     size: 'medium',
-    glowEffect: true
-  };
+    glowEffect: true,
+  }
 </script>
 <YoRHaButton3D
   {...buttonConfig}
   onclick={() => console.log('YoRHa button clicked')}
 />`,
-      panel: `<script>
+      panel: `<script>,
   import { YoRHaPanel3D } from '$lib/components/three/yorha-ui';
 </script>
 <YoRHaPanel3D
@@ -151,7 +153,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
     Panel content goes here...
   </div>
 </YoRHaPanel3D>`,
-      input: `<script>
+      input: `<script>,
   import { YoRHaInput3D } from '$lib/components/three/yorha-ui';
   let inputValue = '';
 </script>
@@ -161,7 +163,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   variant="terminal"
   neuralGlow={true}
 />`,
-      modal: `<script>
+      modal: `<script>,
   import { YoRHaModal3D } from '$lib/components/three/yorha-ui';
   let showModal = false;
 </script>
@@ -174,15 +176,15 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   <div slot="content">
     Modal content...
   </div>
-</YoRHaModal3D>`
-    };
+</YoRHaModal3D>`,
+    }
     return {
       specs: componentSpecs,
       gallery: galleryData,
       codeSnippets,
       initialLoad: true,
       timestamp: new Date().toISOString(),
-    };
+    }
   } catch (error: any) {
     console.error('Error loading YoRHa components data:', error);
     return {
@@ -192,6 +194,6 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       initialLoad: false,
       timestamp: new Date().toISOString(),
       error: 'Failed to load components data',
-    };
+    }
   }
-};
+}

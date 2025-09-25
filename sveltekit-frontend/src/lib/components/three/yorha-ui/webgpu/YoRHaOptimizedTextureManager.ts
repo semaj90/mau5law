@@ -27,7 +27,7 @@ export interface TextureEntry {
     mipmapGenerationTime: number;
     compressionRatio: number;
     qualityScore: number;
-  };
+  }
 }
 export interface TextureStreamingSession {
   sessionId: string;
@@ -62,7 +62,7 @@ export class YoRHaOptimizedTextureManager {
     cacheHitRate: 0,
     bankSwitchCount: 0,
     rtxAccelerationUsed: 0
-  };
+  }
   constructor() {
     this.initializeTextureBanks();
   }
@@ -196,7 +196,7 @@ export class YoRHaOptimizedTextureManager {
           enableOptimizations: true
           rtxOptimized: bank.config.rtxOptimization,
           enableStreaming: streamingEnabled
-        };
+        }
         mipmapResult = await yorhaMipmapShaders.generateMipmapChain(sourceTexture, mipmapConfig);
       }
       // Calculate memory usage
@@ -206,7 +206,7 @@ export class YoRHaOptimizedTextureManager {
       // Create texture entry
       const textureEntry: TextureEntry = {
         id: textureId
-        texture: sourceTexture
+        texture: sourceTexture;
         mipmaps: mipmapResult ? mipmapResult.mipmapLevels: [],
         memoryBank: bankName
         lastAccessed: Date.now(),
@@ -217,7 +217,7 @@ export class YoRHaOptimizedTextureManager {
           compressionRatio: bank.config.compressionEnabled ? this.estimateCompressionRatio(sourceTexture) : 1.0,
           qualityScore: this.calculateQualityScore(mipmapResult)
         }
-      };
+      }
       // Store in bank
       bank.textures.set(textureId, textureEntry);
       bank.memoryUsed += totalMemory;
@@ -289,7 +289,7 @@ export class YoRHaOptimizedTextureManager {
       completedChunks: 0,
       memoryBudget,
       priority
-    };
+    }
     this.streamingSessions.set(sessionId, session);
     // Process chunks with memory-aware batching
     const maxConcurrentChunks = Math.floor(memoryBudget / (chunkSize * chunkSize * 4); // 4 bytes per RGBA pixel
@@ -435,11 +435,11 @@ export class YoRHaOptimizedTextureManager {
    * Get comprehensive texture management statistics
    */;
   getStatistics(): {
-    banks: { [bankName: string]: { textureCount: number; memoryUsedMB: number; memoryLimitMB: number; utilization: number } };
+    banks: { [bankName: string]: { textureCount: number; memoryUsedMB: number; memoryLimitMB: number; utilization: number } }
     overall: typeof this.stats;
-    streaming: { activeSessions: number; totalChunksProcessed: number };
+    streaming: { activeSessions: number; totalChunksProcessed: number }
   } {
-    const bankStats: { [key: string]: any } = {};
+    const bankStats: { [key: string]: any } = {}
     for (const [bankName, bank] of Array.from(this.textureBanks)) {
       const memoryUsedMB = bank.memoryUsed / 1024 / 1024;
       const memoryLimitMB = bank.config.maxMemoryMB;
@@ -448,18 +448,18 @@ export class YoRHaOptimizedTextureManager {
         memoryUsedMB: parseFloat(memoryUsedMB.toFixed(2)),
         memoryLimitMB,
         utilization: parseFloat((memoryUsedMB / memoryLimitMB * 100).toFixed(1)
-      };
+      }
     }
     const streamingStats = {
       activeSessions: this.streamingSessions.size,
       totalChunksProcessed: Array.from(this.streamingSessions.values()
         .reduce((sum, session) => sum + session.completedChunks, 0)
-    };
+    }
     return {
       banks: bankStats
       overall: this.stats,
       streaming: streamingStats
-    };
+    }
   }
   // Utility methods
   private async getWebGPUDevice(): Promise<GPUDevice | null> {

@@ -17,6 +17,7 @@ https://svelte.dev/e/js_parse_error -->
     ['nier-card-title', className].filter(Boolean).join(' ')
   );
 </script>
+
 {#if level === 1}
   <h1 class={classes} {...restProps}>
     {@render children?.()}
@@ -42,6 +43,7 @@ https://svelte.dev/e/js_parse_error -->
     {@render children?.()}
   </h6>
 {/if}
+
 <style>
   :global(.nier-card-title) {
     font-family: 'Oswald', 'Montserrat', sans-serif;

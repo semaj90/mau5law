@@ -24,7 +24,7 @@
 
   // Close dropdown when clicking outside
   $effect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(_event: MouseEvent) {
       if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
         showDropdown = false;
       }
@@ -37,7 +37,7 @@
   });
 
   // Close dropdown on escape key
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
       showDropdown = false;
     }
@@ -69,29 +69,29 @@
       name: '👤 Profile',
       description: 'Account settings and preferences',
       href: '/profile',
-      icon: '👤'
+      icon: '👤',
     },
     {
       id: 'dashboard',
       name: '🎮 Dashboard',
       description: 'Return to command center',
       href: '/dashboard',
-      icon: '🎮'
+      icon: '🎮',
     },
     {
       id: 'cases',
       name: '⚖️ My Cases',
       description: 'Your active legal cases',
       href: '/cases',
-      icon: '⚖️'
+      icon: '⚖️',
     },
     {
       id: 'settings',
       name: '⚙️ Settings',
       description: 'System preferences',
       href: '/settings',
-      icon: '⚙️'
-    }
+      icon: '⚙️',
+    },
   ]);
 
   let adminItems = $derived([
@@ -100,15 +100,15 @@
       name: '🔧 Admin Panel',
       description: 'System administration',
       href: '/admin',
-      icon: '🔧'
+      icon: '🔧',
     },
     {
       id: 'users',
       name: '👥 User Management',
       description: 'Manage system users',
       href: '/admin/users',
-      icon: '👥'
-    }
+      icon: '👥',
+    },
   ]);
 
   let isAdmin = $derived(user?.role === 'admin');
@@ -170,10 +170,7 @@
           <ul class="nav-list">
             {#each menuItems as item}
               <li>
-                <button
-                  class="nav-item"
-                  onclick={() => handleNavigation(item.href)}
-                >
+                <button class="nav-item" onclick={() => handleNavigation(item.href)}>
                   <span class="item-icon">{item.icon}</span>
                   <div class="item-content">
                     <span class="item-name">{item.name}</span>
@@ -196,10 +193,7 @@
             <ul class="nav-list">
               {#each adminItems as item}
                 <li>
-                  <button
-                    class="nav-item admin-item"
-                    onclick={() => handleNavigation(item.href)}
-                  >
+                  <button class="nav-item admin-item" onclick={() => handleNavigation(item.href)}>
                     <span class="item-icon">{item.icon}</span>
                     <div class="item-content">
                       <span class="item-name">{item.name}</span>
@@ -403,8 +397,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   .dropdown-nav {

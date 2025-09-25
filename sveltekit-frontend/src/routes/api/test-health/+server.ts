@@ -22,4 +22,4 @@ export const GET: RequestHandler = async () => {
     }, { status: 500 })
   }
 }
-export const POST: RequestHandler = GET
+export const POST: RequestHandler = GET;

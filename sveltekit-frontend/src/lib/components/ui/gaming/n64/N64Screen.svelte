@@ -15,7 +15,7 @@
   class="n64-screen {variant}"
   role="region"
   aria-label={ariaLabel}
-  style="width: {width}; height: {height};"
+  style="width: {width} height: {height}"
 >
   <div class="screen-content" tabindex="0">
 	{@render children?.()}

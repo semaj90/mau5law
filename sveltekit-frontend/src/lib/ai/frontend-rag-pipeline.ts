@@ -20,7 +20,7 @@ export interface SemanticChunk {
     source: string;
     relevance: number;
     semanticGroup: string;
-  };
+  }
 }
 export interface SIMDTensor {
   data: Float32Array;
@@ -29,7 +29,7 @@ export interface SIMDTensor {
     dotProduct: (a: Float32Array, b: Float32Array) => number;
     cosineDistance: (a: Float32Array, b: Float32Array) => number;
     normalize: (vec: Float32Array) => Float32Array;
-  };
+  }
 }
 class FrontendRAGPipeline {
   private lokiDb: any;
@@ -48,7 +48,7 @@ class FrontendRAGPipeline {
   }
   private initializeLoki() {
     this.lokiDb = new Loki('frontend-rag.db', {
-      adapter: browser ? new (Loki as any).LokiMemoryAdapter() : undefined
+      adapter: browser ? new (Loki as any).LokiMemoryAdapter() : undefined;
       autoload: true
       autoloadCallback: () => {
         this.semanticCollection = this.lokiDb.getCollection('semantic_chunks');
@@ -94,7 +94,7 @@ class FrontendRAGPipeline {
         data: this.simdProcessor.optimize(embedding),
         shape: (result as { data?: any; dims?: any }).dims,
         simdOps: this.simdProcessor.getOperations()
-      };
+      }
     } catch (error: any) {
       console.error('Frontend embedding generation failed:', error);
       throw error;
@@ -120,7 +120,7 @@ class FrontendRAGPipeline {
       );
       const contextBoost = (contextWeights.boost as any)[chunk.metadata.semanticGroup] || 1.0;
       const finalScore = similarity * contextBoost * chunk.metadata.relevance;
-      return { ...chunk, score: finalScore };
+      return { ...chunk, score: finalScore }
     });
     return scoredResults
       .sort((a: any, b: any) => b.score - a.score)
@@ -133,7 +133,7 @@ class FrontendRAGPipeline {
     pipelineStatus: {
       embedding: boolean;
       generation: boolean;
-    };
+    }
     simdOptimizations: boolean;
   } {
     return {
@@ -144,7 +144,7 @@ class FrontendRAGPipeline {
         generation: !!this.generationPipeline
       },
       simdOptimizations: this.simdProcessor.isOptimized()
-    };
+    }
   }
 }
 // Context switching for different domains
@@ -162,7 +162,7 @@ class ContextSwitcher {
       groups: ['general', 'legal', 'technical'],
       boost: { general: 1.0, legal: 1.0, technical: 1.0 }
     }
-  };
+  }
   getWeights(context: keyof typeof this.contexts) {
     return this.contexts[context] || this.contexts.general;
   }
@@ -193,7 +193,7 @@ class SIMDProcessor {
       dotProduct: this.dotProduct.bind(this),
       cosineDistance: this.cosineDistance.bind(this),
       normalize: this.normalize.bind(this)
-    };
+    }
   }
   private dotProduct(a: Float32Array, b: Float32Array): number {
     let sum = 0;
@@ -244,7 +244,7 @@ class G0llamaService {
   }
   async generate(
     query: string
-    context: string
+    context: string;
     options: {
       maxTokens?: number;
       temperature?: number;

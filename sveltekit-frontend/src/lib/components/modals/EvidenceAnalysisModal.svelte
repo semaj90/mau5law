@@ -16,7 +16,7 @@ https: //svelte.dev/e/js_parse_error -->
       admissibility: 'admissible' | 'questionable' | 'inadmissible';
       reasoning: string;
       suggestedTags: string[];
-    };
+    }
     tags?: string[];
   }
   interface Props {
@@ -54,13 +54,13 @@ https: //svelte.dev/e/js_parse_error -->
           caseId: evidence.caseId,
           content: evidence.content,
           type: evidence.type,
-          generateAnalysis: true
+          generateAnalysis: true;
           metadata: { analysisMode }
         })
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; evidence?: unknown }).success) {
-        evidence = { ...evidence, ...result.evidence };
+        evidence = { ...evidence, ...result.evidence }
         onevidenceUpdated?.();
   }
     } catch (error) {
@@ -83,7 +83,7 @@ https: //svelte.dev/e/js_parse_error -->
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; evidence?: unknown }).success) {
-        evidence = { ...evidence, tags: (result as { success?: unknown; evidence?: unknown }).evidence.tags };
+        evidence = { ...evidence, tags: (result as { success?: unknown; evidence?: unknown }).evidence.tags }
         newTags = '';
         onevidenceUpdated?.();
   }
@@ -290,4 +290,4 @@ close()}>
 onsaveAnalysis?.()}>
         Save Analysis
   {/snippet}
-</Dialog.Root>
+</Dialog.Root>;

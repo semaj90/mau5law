@@ -72,9 +72,9 @@ class EnhancedLokiDB {
       misses: 0,
       evictions: 0,
       syncOperations: 0,
-      lastSync: null
+      lastSync: null;
       collections: new Map()
-    };
+    }
     // Default cache configurations
     this.config.set('evidence', {
       ttl: 300000, // 5 minutes
@@ -252,7 +252,7 @@ class EnhancedLokiDB {
       accessCount: 0,
       lastAccess: new Date(),
       contentHash: await this.generateContentHash(evidence.description || evidence.title || '')
-    };
+    }
     const existing = col.findOne({ id: evidence.id });
     let result;
     if (existing) {
@@ -290,9 +290,9 @@ class EnhancedLokiDB {
   ) {
     const col = this.collections.get('evidence');
     if (!col) return [];
-    const query: any = { caseId };
+    const query: any = { caseId }
     if (options.minConfidence) {
-      query.confidence = { $gte: options.minConfidence };
+      query.confidence = { $gte: options.minConfidence }
     }
     let results = col.find(query);
     // Sort by confidence and recency
@@ -322,7 +322,7 @@ class EnhancedLokiDB {
       confidence: analysis.confidence || 0,
       timestamp: new Date(),
       accessCount: 0
-    };
+    }
     const result = col.insert(cacheEntry);
     this.queueSync('create', 'aiAnalysis', result);
     this.cacheStats.hits++;
@@ -331,7 +331,7 @@ class EnhancedLokiDB {
   async getAIAnalysis(evidenceId: string, analysisType?: string, model?: string) {
     const col = this.collections.get('aiAnalysis');
     if (!col) return null;
-    const query: any = { evidenceId };
+    const query: any = { evidenceId }
     if (analysisType) query.analysisType = analysisType;
     if (model) query?.model || "unknown" // @ts-ignore - Model property access = model
     const analyses = col
@@ -371,7 +371,7 @@ class EnhancedLokiDB {
       createdAt: new Date(),
       accessCount: 1,
       lastAccess: new Date()
-    };
+    }
     const result = col.insert(embeddingEntry);
     this.queueSync('create', 'embeddings', result);
     this.cacheStats.hits++;
@@ -467,7 +467,7 @@ class EnhancedLokiDB {
       visited.add(currentId);
       const query: any = {
         $or: [{ fromId: currentId }, { toId: currentId }]
-      };
+      }
       if (type) query.type = type;
       const rels = col.find(query);
       for (const rel of rels) {
@@ -477,7 +477,7 @@ class EnhancedLokiDB {
         const nextId = rel.fromId === currentId ? rel.toId: rel.fromId;
         traverse(nextId, depth + 1);
       }
-    };
+    }
     traverse(nodeId, 0);
     if (relationships.length > 0) {
       this.cacheStats.hits++;
@@ -497,21 +497,21 @@ class EnhancedLokiDB {
       this.websocket = new WebSocket(wsUrl);
       this.websocket.onopen = () => {
         console.log('Cache sync WebSocket connected');
-      };
-      this.websocket.onmessage = (event: any) => {
+      }
+      this.websocket.onmessage = (_event: any) => {
         const data = JSON.parse(event.data);
         this.handleRealtimeUpdate(data);
-      };
+      }
       this.websocket.onerror = () => {
         console.warn('WebSocket error; switching to SSE fallback');
         this.teardownWebSocket();
         this.setupSSEFallback();
-      };
+      }
       this.websocket.onclose = () => {
         console.log('Cache sync WebSocket disconnected; falling back to SSE');
         this.teardownWebSocket();
         this.setupSSEFallback();
-      };
+      }
     } catch (error: any) {
       console.warn('WebSocket setup failed, enabling SSE fallback:', error);
       this.setupSSEFallback();
@@ -532,36 +532,36 @@ class EnhancedLokiDB {
           this.sse = new EventSource(url);
           this.sse.onopen = () => {
             console.log(`Cache sync SSE connected (${url})`);
-          };
+          }
           // Default messages (no event type)
           this.sse.onmessage = (ev: MessageEvent) => {
             try {
               const data = JSON.parse(ev.data);
               if (data) this.handleRealtimeUpdate(data);
             } catch (_) {}
-          };
+          }
           // Named events: update, hello
           const updateHandler = (ev: MessageEvent) => {
             try {
               const data = JSON.parse((ev as any).data);
               if (data) this.handleRealtimeUpdate(data);
             } catch (_) {}
-          };
+          }
           this.sse.addEventListener('update', updateHandler as any);
           this.sse.addEventListener('hello', (_ev: MessageEvent) => {
             console.log('[SSE] hello event received');
           });
           this.sse.onerror = () => {
-            console.warn(`SSE error on ${url}; trying next endpoint`);
+            console.warn(`SSE error on ${url} trying next endpoint`);
             this.teardownSSE();
             // Try next candidate
             openSSE(urlIdx + 1);
-          };
+          }
         } catch (e) {
           console.warn(`Failed to open SSE ${url}:`, e);
           openSSE(urlIdx + 1);
         }
-      };
+      }
       openSSE(0);
     } catch (e) {
       console.warn('SSE fallback setup failed:', e);
@@ -598,7 +598,7 @@ class EnhancedLokiDB {
       }
       const reg = await navigator.serviceWorker.register(swPath);
       console.log('Cache sync Service Worker registered', reg.scope);
-      navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
+      navigator.serviceWorker.addEventListener('message', (_event: MessageEvent) => {
         const data = (event as any).data;
         if (data && (data.type || data.event)) {
           this.handleRealtimeUpdate(data);
@@ -640,7 +640,7 @@ class EnhancedLokiDB {
   private queueSync(
     operation: 'create' | 'update' | 'delete',
     collection: string
-    data: any
+    data: any;
     priority: number = 1;
   ) {
     const syncOp: SyncOperation = {
@@ -651,7 +651,7 @@ class EnhancedLokiDB {
       timestamp: new Date(),
       priority,
       retries: 0
-    };
+    }
     this.syncQueue.set(syncOp.id, syncOp);
   }
   private async processSyncQueue() {
@@ -779,7 +779,7 @@ class EnhancedLokiDB {
   // PUBLIC API & UTILITIES
   // ======================================================================
   getCacheStats(): CacheStats {
-    return { ...this.cacheStats };
+    return { ...this.cacheStats }
   }
   clearCache(collection?: string) {
     if (collection && this.collections.has(collection)) {
@@ -794,9 +794,9 @@ class EnhancedLokiDB {
       misses: 0,
       evictions: 0,
       syncOperations: 0,
-      lastSync: null
+      lastSync: null;
       collections: new Map()
-    };
+    }
   }
   destroy() {
     if (this.syncInterval) {
@@ -821,7 +821,7 @@ export const enhancedLokiStore = writable({
     misses: 0,
     evictions: 0,
     syncOperations: 0,
-    lastSync: null as Date | null
+    lastSync: null as Date | null;
     collections: new Map()
   }
 });
@@ -849,7 +849,7 @@ export const cacheHealthStore = derived(enhancedLokiStore, ($store) => {
             : "poor",
     lastSync: $store.stats.lastSync,
     syncOperations: $store.stats.syncOperations
-  };
+  }
 });
 // ======================================================================
 // ENHANCED LOKI SERVICE API
@@ -938,7 +938,7 @@ export const enhancedLoki = {
   destroy() {
     enhancedLokiDB.destroy();
   }
-};
+}
 // Export the original API for backward compatibility
 export { loki } from './lokiStore.js';
 export const lokiStore = enhancedLokiStore;

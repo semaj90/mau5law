@@ -67,7 +67,7 @@
   			results = {
   				...result,
   				stats: frontendRAG.getStats();
-  			};
+  			}
   			// Add to search history
   			if (!searchHistory.includes(query)) {
   				searchHistory = [query, ...searchHistory.slice(0, 9)]; // Keep last 10
@@ -80,7 +80,7 @@
   				sources: [],
   				confidence: 0,
   				generationMethod: 'error';
-  			};
+  			}
   		} finally {
   			isSearching = false;
   		}
@@ -92,7 +92,7 @@
   		query = item;
   		performSearch();
   	}
-  	function handleKeypress(event: KeyboardEvent) {
+  	function handleKeypress(_event: KeyboardEvent) {
   		if (event.key === 'Enter' && !event.shiftKey) {
   			event.preventDefault();
   			performSearch();

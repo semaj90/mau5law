@@ -53,7 +53,7 @@ export class NeuralMemoryManager extends EventEmitter {
     this.config = config;
   }
   predict(resourceType: string): MemoryPrediction {
-    return this.predictions.get(resourceType) || { nextAllocation: 1024, confidence: 0.5 };
+    return this.predictions.get(resourceType) || { nextAllocation: 1024, confidence: 0.5 }
   }
   allocate(size: number, type: string): boolean {
     // Simple allocation logic
@@ -85,7 +85,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
     const startTime = performance.now();
     try {
       if (!vscode) {
-        return { success: false, error: new Error("VS Code not available") };
+        return { success: false, error: new Error("VS Code not available") }
       }
       const result = await vscode.commands.executeCommand(commandId, ...args);
       const endTime = performance.now();
@@ -96,9 +96,9 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         timestamp: Date.now(),
         success: true
         resourceType: "json"
-      };
+      }
       this.recordMetrics(commandId, metrics);
-      return { success: true, result, metrics };
+      return { success: true, result, metrics }
     } catch (error: any) {
       const endTime = performance.now();
       const metrics: CommandMetrics = {
@@ -108,9 +108,9 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         timestamp: Date.now(),
         success: false
         resourceType: "json"
-      };
+      }
       this.recordMetrics(commandId, metrics);
-      return { success: false, error: error as Error, metrics };
+      return { success: false, error: error as Error, metrics }
     }
   }
   private recordMetrics(commandId: string, metrics: CommandMetrics): void {

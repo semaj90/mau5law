@@ -20,28 +20,26 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
   }
   function handleFileSelect(e: Event) {
-    const target = e.target as HTMLInputElement;
+    // removed unused target assignment
     if (target.files) {
       const files = Array.from(target.files);
       onFileSelected(files);
     }
   }
 </script>
+
 <div
-  class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover: border-gray-400 transition-colors";
+  class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover: border-gray-400 transition-colors"
+  ;
   class:border-blue-500={dragActive}
   class:bg-blue-50={dragActive}
   ondrop={handleDrop}
-  role="region" aria-label="Drop zone" ondragover={preventDefault(() => dragActive = true)}
-  dragleave={() => dragActive = false}
+  role="region"
+  aria-label="Drop zone"
+  ondragover={preventDefault(() => (dragActive = true))}
+  dragleave={() => (dragActive = false)}
 >
-  <input
-    bind:this={fileInput}
-    type="file"
-    {accept}
-    {multiple} onchange={handleFileSelect}
-    class="hidden"
-  />
+  <input bind:this={fileInput} type="file" {accept} {multiple} onchange={handleFileSelect} class="hidden" />
   <div class="space-y-4">
     <div class="text-4xl">📁</div>
     <div>
@@ -56,3 +54,4 @@ https://svelte.dev/e/rune_missing_parentheses -->
     </button>
   </div>
 </div>
+;

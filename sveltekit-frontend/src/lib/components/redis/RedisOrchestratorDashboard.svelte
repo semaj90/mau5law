@@ -55,11 +55,11 @@
     } finally {
       clearingCache = false;
     }
-  };
+  }
   const formatMemoryUsage = (memory: string | undefined): string => {
     if (!memory) return 'Unknown';
     return memory;
-  };
+  }
   const getStatusColor = (status: string): string => {
     switch (status) {
       case 'healthy': return '#00d800';
@@ -67,7 +67,7 @@
       case 'critical': return '#f83800';
       default: return '#7c7c7c';
     }
-  };
+  }
   const getMemoryColor = (pressure: string): string => {
     switch (pressure) {
       case 'low': return '#00d800';
@@ -76,7 +76,7 @@
       case 'critical': return '#d20000';
       default: return '#7c7c7c';
     }
-  };
+  }
 </script>
 <!-- NES-styled Redis Dashboard -->
 <div class="redis-dashboard">

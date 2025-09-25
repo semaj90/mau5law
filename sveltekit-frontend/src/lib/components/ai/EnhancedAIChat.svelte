@@ -61,19 +61,19 @@
       wsConnection.onopen = () => {
         isConnected = true;
         console.log('✅ Enhanced AI Chat connected');
-      };
+      }
       wsConnection.onmessage = (event) => {
         const data = JSON.parse(event.data);
         handleWebSocketMessage(data);
-      };
+      }
       wsConnection.onclose = () => {
         isConnected = false;
         console.log('❌ Enhanced AI Chat disconnected');
-      };
+      }
       wsConnection.onerror = (error) => {
         console.error('❌ WebSocket error:', error);
         isConnected = false;
-      };
+      }
     } catch (error) {
       console.error('Failed to initialize connection:', error);
     }
@@ -84,7 +84,7 @@
     try {
       // Placeholder for WebGPU initialization
       console.log('🚀 WebGPU acceleration enabled');
-      webgpuAccelerator = { initialized: true };
+      webgpuAccelerator = { initialized: true }
     } catch (error) {
       console.warn('WebGPU not available:', error);
       enableWebGPU = false;
@@ -120,7 +120,7 @@
             content: streamingResponse,
             timestamp: new Date(),
             confidence: data.confidence,
-            analysis: currentAnalysis
+            analysis: currentAnalysis;
           }];
           streamingResponse = '';
         }
@@ -134,8 +134,8 @@
       id: Date.now().toString(),
       role: 'user',
       content: currentMessage,
-      timestamp: new Date()
-    };
+      timestamp: new Date();
+    }
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
     currentMessage = '';
@@ -149,7 +149,7 @@
         userId,
         caseId,
         enableAnalysis: showAnalysisPanel,
-        enableWebGPU
+        enableWebGPU;
       }));
     }
     // Fallback to HTTP API if WebSocket not available
@@ -170,7 +170,7 @@
             content: data.message,
             timestamp: new Date(),
             confidence: data.confidence,
-            tokensPerSecond: data.tokensPerSecond
+            tokensPerSecond: data.tokensPerSecond;
           }];
         }
       } catch (error) {
@@ -179,7 +179,7 @@
           id: Date.now().toString(),
           role: 'assistant',
           content: 'Sorry, I encountered an error. Please try again.',
-          timestamp: new Date()
+          timestamp: new Date();
         }];
       } finally {
         isTyping = false;
@@ -192,7 +192,7 @@
     }
   }
   // Handle keyboard shortcuts
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -211,7 +211,7 @@
     userAttention = {
       focused: document.hasFocus(),
       lastActivity: Date.now();
-    };
+    }
   }
   // Initialize on mount
   $effect(() => {

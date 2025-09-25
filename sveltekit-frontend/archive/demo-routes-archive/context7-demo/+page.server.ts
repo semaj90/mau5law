@@ -7,7 +7,7 @@ import fs from "fs/promises";
 import { URL } from "url";
 
 // Load Copilot architecture context for enhanced prompting;
-async function loadCopilotContext(): Promise<Record<string, string | null> {
+async function loadCopilotContext(): Promise<Record<string, string | null>> {
   const contextFiles = [
     "markdown_files/copilot-architecture-summary.md",
     "markdown_files/copilot-context.md",

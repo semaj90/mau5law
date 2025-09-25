@@ -10,29 +10,29 @@
       status: string | null;
       tag: string | null;
       search: string | null;
-    };
+    }
     counts: {
       total: {
         config: number;
         fileBased: number;
         api: number;
-      };
+      }
       displayed: {
         config: number;
         fileBased: number;
-      };
+      }
       issues: {
         configMissingFiles: number;
         filesMissingConfig: number;
-      };
-    };
+      }
+    }
     data: {
       configRoutes: unknown[];
       fileRoutes: unknown[];
       apiEndpoints: string[];
       configMissingFiles: string[];
       filesMissingConfig: string[];
-    };
+    }
     analytics?: {
       statusBreakdown: Record<string, number>;
       categoryBreakdown: Record<string, number>;
@@ -42,9 +42,9 @@
         apiRoutes: number;
         staticPages: number;
         deepestNesting: number;
-      };
+      }
       recommendations: string[];
-    };
+    }
   }
   let routeData: RouteData | null = $state(null);
   let loading = $state(true);
@@ -89,7 +89,7 @@
 if (!browser) return;
     try {
       // Generate route data with analytics
-      const response = await fetch('/api/dev/route-data');
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`Failed to fetch route data: ${response.statusText}`);
       }
@@ -117,7 +117,7 @@ if (!browser) return;
       'api': 'bg-orange-100 text-orange-800 border-orange-200',
       'auth': 'bg-red-100 text-red-800 border-red-200',
       'public': 'bg-green-100 text-green-800 border-green-200',
-    };
+    }
     return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200';
   }
   function clearFilters() {
@@ -132,14 +132,13 @@ if (!browser) return;
     await onMount();
   }
 </script>
+
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
   <div class="container mx-auto px-6 py-8">
     <!-- Header -->
     <div class="mb-8">
       <div class="flex items-center justify-between mb-4">
-        <h1 class="text-4xl font-bold text-gray-900">
-          🗺️ Route Explorer
-        </h1>
+        <h1 class="text-4xl font-bold text-gray-900">🗺️ Route Explorer</h1>
         <button
           onclick={refreshData}
           disabled={loading}
@@ -148,9 +147,7 @@ if (!browser) return;
           {loading ? '🔄 Loading...' : '🔄 Refresh'}
         </button>
       </div>
-      <p class="text-gray-600 text-lg">
-        Interactive route management and analysis dashboard
-      </p>
+      <p class="text-gray-600 text-lg">Interactive route management and analysis dashboard</p>
     </div>
     {#if loading}
       <div class="text-center py-12">
@@ -161,10 +158,7 @@ if (!browser) return;
       <div class="bg-red-50 border border-red-200 rounded-lg p-6">
         <h2 class="text-red-800 font-semibold mb-2">Error Loading Routes</h2>
         <p class="text-red-600">{error}</p>
-        <button
-          onclick={refreshData}
-          class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-        >
+        <button onclick={refreshData} class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
           Try Again
         </button>
       </div>
@@ -222,27 +216,24 @@ if (!browser) return;
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-900">Filters</h2>
-          <button
-            onclick={clearFilters}
-            class="text-sm text-gray-600 hover:text-gray-800"
-          >
-            Clear All
-          </button>
+          <button onclick={clearFilters} class="text-sm text-gray-600 hover:text-gray-800"> Clear All </button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
             <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search</label>
             <input
-              id="search";
+              id="search"
+              ;
               bind:value={searchTerm}
               placeholder="Search routes..."
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
+            />
           </div>
           <div>
             <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
             <select
-              id="category";
+              id="category"
+              ;
               bind:value={selectedCategory}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
@@ -296,7 +287,7 @@ if (!browser) return;
             Showing {filteredRoutes.length} of {routeData.data.configRoutes.length} routes
           </p>
           <button
-            onclick={() => showAnalytics = !showAnalytics}
+            onclick={() => (showAnalytics = !showAnalytics)}
             class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           >
             {showAnalytics ? 'Hide' : 'Show'} Analytics
@@ -445,9 +436,7 @@ if (!browser) return;
             </div>
           {:else}
             <!-- Tree view would be implemented here -->
-            <div class="text-center py-8 text-gray-500">
-              Tree view coming soon...
-            </div>
+            <div class="text-center py-8 text-gray-500">Tree view coming soon...</div>
           {/if}
           {#if filteredRoutes.length === 0}
             <div class="text-center py-8">
@@ -461,3 +450,4 @@ if (!browser) return;
     {/if}
   </div>
 </div>
+;

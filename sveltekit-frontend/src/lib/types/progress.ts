@@ -20,8 +20,8 @@ export type ProgressMsg =;
   | {
       type: 'error';
       fileId: string;
-      error: { message: string; code?: string; meta?: unknown };
-    };
+      error: { message: string; code?: string; meta?: unknown }
+    }
 }
 export interface EvidenceProcessRequest {
   evidenceId: string;

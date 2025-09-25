@@ -12,7 +12,7 @@ export interface GPUTask {
 	id?: string;
 	type: GPUTaskType;
 	data: number[];
-	metadata?: { [key: string]: any };
+	metadata?: { [key: string]: any }
 	priority?: number;
 	timestamp?: string;
 	service_origin?: string;
@@ -84,7 +84,7 @@ export interface RouteRequest {
 	service: string;
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE';
 	path: string;
-	data?: { [key: string]: any };
+	data?: { [key: string]: any }
 }
 export interface BatchGPUTask {
 	tasks: GPUTask[];
@@ -106,7 +106,7 @@ export interface LegalEmbeddingTask extends GPUTask {
 		practice_area: string;
 		jurisdiction: string;
 		chunk_index?: number;
-	};
+	}
 }
 export interface LegalSimilarityTask extends GPUTask {
 	type: 'similarity';
@@ -115,7 +115,7 @@ export interface LegalSimilarityTask extends GPUTask {
 		comparison_document_id: string;
 		similarity_threshold: number;
 		practice_area: string;
-	};
+	}
 }
 export interface LegalDocumentProcessingPipeline {
 	document_id: string;
@@ -130,22 +130,22 @@ export interface ServiceProtocolConfig {
 		base_url: string;
 		timeout: number;
 		retry_attempts: number;
-	};
+	}
 	grpc?: {
 		address: string;
 		tls_enabled: boolean;
-	};
+	}
 	quic?: {
 		address: string;
 		certificate_path: string;
-	};
+	}
 	websocket?: {
 		url: string;
 		reconnect_attempts: number;
-	};
+	}
 }
 export interface GPUServiceClient {
-	submitTask: (task: GPUTask) => Promise<GPUResult>;
+	submitTask: (_task: GPUTask) => Promise<GPUResult>;
 	submitBatch: (batch: BatchGPUTask) => Promise<BatchGPUResult>;
 	getStatus: () => Promise<GPUStatus>;
 	getMetrics: () => Promise<GPUMetrics>;
@@ -159,24 +159,24 @@ export interface GPUPerformanceMetrics {
 		tasks_per_second: number;
 		embeddings_per_second: number;
 		similarity_queries_per_second: number;
-	};
+	}
 	latency: {
 		p50: number;
 		p95: number;
 		p99: number;
 		average: number;
-	};
+	}
 	resource_usage: {
 		gpu_utilization: number;
 		memory_usage: number;
 		worker_utilization: number;
 		queue_utilization: number;
-	};
+	}
 	error_rates: {
 		task_failure_rate: number;
 		service_error_rate: number;
 		timeout_rate: number;
-	};
+	}
 }
 // Configuration Types
 export interface GPUOrchestratorConfig {
@@ -192,7 +192,7 @@ export interface GPUOrchestratorConfig {
 export interface GPUServiceError {
 	code: 'GPU_UNAVAILABLE' | 'QUEUE_FULL' | 'TASK_TIMEOUT' | 'WORKER_ERROR' | 'SERVICE_DOWN';
 	message: string;
-	details?: { [key: string]: any };
+	details?: { [key: string]: any }
 	timestamp: string;
 	retry_after?: number;
 }

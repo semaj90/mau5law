@@ -7,25 +7,25 @@ export interface CHRPatternBase {
   type: CHRPatternType;
   ttlMs?: number; // default TTL on client
   createdAt: string; // ISO timestamp
-  meta?: { [key: string]: any };
+  meta?: { [key: string]: any }
 }
 export interface CHRTextPattern extends CHRPatternBase {
   type: 'text';
   payload: {
     text: string;
     style?: 'mono' | 'body' | 'small' | 'title';
-  };
+  }
 }
 export interface CHRSVGPattern extends CHRPatternBase {
   type: 'svg';
   payload: {
     svg: string; // tiny inline SVG path/group
     viewBox?: string;
-  };
+  }
 }
 export interface CHRStatePattern extends CHRPatternBase {
   type: 'state';
-  payload: { [key: string]: any }; // compact component state (ready-to-render)
+  payload: { [key: string]: any } // compact component state (ready-to-render)
 }
 export type CHRPattern = CHRTextPattern | CHRSVGPattern | CHRStatePattern;
 }
@@ -48,28 +48,28 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
   const withTimeout = async <T>(p: Promise<T>, ms = 8000): Promise<T> => {
     const t = new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms);
     return Promise.race([p, t]) as Promise<T>;
-  };
+  }
   const fetchJson = async (url: string, init?: RequestInit, ms?: number) => {
     const res = await withTimeout(fetch(url, init as any), ms ?? 8000).catch((e) => ({ ok: false, status: 0, json: async () => ({ error: String(e) }) }) as any);
     if (!(res as any).ok) {
-      try { const err = await (res as any).json(); return { ok: false, data: err, status: (res as any).status }; } catch { return { ok: false, data: null, status: (res as any).status }; }
+      try { const err = await (res as any).json(); return { ok: false, data: err, status: (res as any).status } } catch { return { ok: false, data: null, status: (res as any).status } }
     }
     const data = await (res as any).json();
     return { ok: true, data, status: (res as any).status } as const;
-  };
+  }
   // Redis L1 for cross-instance CHR pattern sharing
   let cache: null | {,
-    getJSON: <T = unknown>(key: string) => Promise<T | null>;
-    setJSON: (key: string, value: unknown, ttlSeconds?: number) => Promise<void>;
+    getJSON: <T = unknown>(_key: string) => Promise<T | null>;
+    setJSON: (_key: string, value: unknown, ttlSeconds?: number) => Promise<void>;
   } = null;
   try {
     // Lazy import only on server
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const mod = await import('$lib/server/cache/redis-cache');
-    cache = { getJSON: mod.getJSON, setJSON: mod.setJSON };
+    cache = { getJSON: mod.getJSON, setJSON: mod.setJSON }
   } catch (error) {}
-  const readThrough = async (key: string, compute: () => Promise<CHRPattern | null>, ttl = REDIS_TTL_SECONDS): Promise<CHRPattern | null> => {
+  const readThrough = async (_key: string, compute: () => Promise<CHRPattern | null>, ttl = REDIS_TTL_SECONDS): Promise<CHRPattern | null> => {
     if (cache) {
       const hit = await cache.getJSON<CHRPattern>(key);
       if (hit) return hit;
@@ -79,7 +79,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
       cache.setJSON(key, val, ttl).catch(() => {});
     }
     return val;
-  };
+  }
   // 1) Document-focused precompute (summary + glyph)
   if (ctx.docId) {
     const docKey = `doc:${ctx.docId}`;
@@ -92,7 +92,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
       max_results: 5,
       temperature: 0.2,
       include_metadata: true
-    };
+    }
     let summaryText = '';
     try {
       const rag = await fetchJson(ragUrl, {

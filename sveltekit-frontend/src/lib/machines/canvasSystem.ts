@@ -27,7 +27,7 @@ type CanvasEvent =
   | { type: "LOAD_STATE"; state: InteractiveCanvasState }
   | { type: "CLEAR_CANVAS" }
   | { type: "ERROR"; error: string }
-  | { type: "CLEAR_ERROR" };
+  | { type: "CLEAR_ERROR" }
 export const canvasSystemMachine = setup({
   types: {
     context: { [key: string]: any } as CanvasContext,
@@ -112,7 +112,7 @@ export const canvasSystemMachine = setup({
         nodes: input.nodes,
         connections: input.connections,
         viewport: { x: 0, y: 0, zoom: 1 }
-      };
+      }
       // Save to localStorage or API
       if (typeof window !== "undefined") {
         localStorage.setItem("canvasState", JSON.stringify(state);
@@ -171,7 +171,7 @@ export const canvasSystemMachine = setup({
                   nodes: [],
                   connections: [],
                   viewport: { x: 0, y: 0, zoom: 1 }
-                };
+                }
               }
               return event.state;
             }

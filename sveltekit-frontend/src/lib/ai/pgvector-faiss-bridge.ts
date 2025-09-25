@@ -30,7 +30,7 @@ export interface PgVectorDocument {
   id: string;
   content: string;
   embedding: number[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   created_at: Date;
   updated_at: Date;
 }
@@ -82,7 +82,7 @@ class FAISSGPUEngine {
                 for (let i = 0; i < this.dimension; i++) {
                   dotProduct += queryVector[i] * vector[i];
                 }
-                return { index, distance: dotProduct };
+                return { index, distance: dotProduct }
               });
               // Sort by similarity (higher is better for inner product)
               similarities.sort((a, b) => b.distance - a.distance);
@@ -90,7 +90,7 @@ class FAISSGPUEngine {
               return {
                 distances: new Float32Array(topK.map(s => s.distance)),
                 indices: new Int32Array(topK.map(s => s.index)
-              };
+              }
             }
             reset(): void {
               this.vectors = [];
@@ -151,13 +151,13 @@ class FAISSGPUEngine {
               return {
                 distances: new Float32Array(topK.map(c => c.distance)),
                 indices: new Int32Array(topK.map(c => c.index)
-              };
+              }
             }
             setNprobe(nprobe: number): void {
               this.nprobe = nprobe;
             }
           }
-        };
+        }
         this.isInitialized = true;
         console.log('✅ FAISS GPU engine initialized (simulation mode)');
         return true;
@@ -192,7 +192,7 @@ class FAISSGPUEngine {
         is_trained: indexType === 'flat',
         metric_type: metricType
         index_type: indexType
-      };
+      }
     } catch (error) {
       console.error('❌ FAISS index creation failed:', error);
       return null;
@@ -228,7 +228,7 @@ class FAISSGPUEngine {
         metadata: [],
         search_time_ms: performance.now() - startTime,
         gpu_accelerated: false
-      };
+      }
     }
     try {
       // Set nprobe for IVF index
@@ -243,7 +243,7 @@ class FAISSGPUEngine {
         metadata: [], // Will be filled by pgvector bridge
         search_time_ms: performance.now() - startTime,
         gpu_accelerated: true
-      };
+      }
     } catch (error) {
       console.error('❌ FAISS search failed:', error);
       return {
@@ -253,7 +253,7 @@ class FAISSGPUEngine {
         metadata: [],
         search_time_ms: performance.now() - startTime,
         gpu_accelerated: false
-      };
+      }
     }
   }
   reset(): void {
@@ -268,7 +268,7 @@ class PgVectorBridge {
   constructor() {
     this.dbUrl = getDatabaseUrl();
   }
-  async storeDocument(document: Omit<PgVectorDocument, 'created_at' | 'updated_at'>): Promise<boolean> {
+  async storeDocument(_document: Omit<PgVectorDocument, 'created_at' | 'updated_at'>): Promise<boolean> {
     try {
       // Store in pgvector using the existing indexer
       const result = await indexPgVector({
@@ -357,7 +357,7 @@ export class PgVectorFAISSBridge {
       hybrid_fusion: 'weighted',
       cache_results: true
       ...config
-    };
+    }
     try {
       console.log('🚀 Initializing PostgreSQL pgvector + FAISS hybrid search...');
       // Initialize FAISS GPU engine
@@ -404,7 +404,7 @@ export class PgVectorFAISSBridge {
       return false;
     }
   }
-  async addDocument(document: Omit<PgVectorDocument, 'created_at' | 'updated_at'>): Promise<boolean> {
+  async addDocument(_document: Omit<PgVectorDocument, 'created_at' | 'updated_at'>): Promise<boolean> {
     try {
       // Store in pgvector for persistence
       const pgvectorSuccess = await this.pgvectorBridge.storeDocument(document);
@@ -442,7 +442,7 @@ export class PgVectorFAISSBridge {
       pgvector_time_ms: number;
       fusion_time_ms: number;
       gpu_accelerated: boolean;
-    };
+    }
     explanation: string;
   }> {
     const startTime = performance.now();
@@ -455,7 +455,7 @@ export class PgVectorFAISSBridge {
       hybrid_fusion: 'weighted',
       cache_results: true
       ...config
-    };
+    }
     try {
       console.log(`🔍 Hybrid search: "${query.substring(0, 50)}..."`);
       // Check cache first
@@ -525,7 +525,7 @@ export class PgVectorFAISSBridge {
           fullConfig,
           totalTime
         )
-      };
+      }
       // Cache results
       if (fullConfig.cache_results) {
         await headlessUICache.set(cacheKey, result, 300000); // 5 minutes
@@ -544,7 +544,7 @@ export class PgVectorFAISSBridge {
           gpu_accelerated: false
         },
         explanation: `Search failed: ${error}`
-      };
+      }
     }
   }
   private fuseResults(
@@ -612,7 +612,7 @@ export class PgVectorFAISSBridge {
       index_loaded: this.isIndexLoaded,
       gpu_available: true, // Assume GPU available
       cache_entries: (await headlessUICache.getStats()).memoryEntries
-    };
+    }
   }
 }
 // Factory function and singleton
@@ -626,4 +626,4 @@ export function createPgVectorFAISSBridge(): PgVectorFAISSBridge {
 export const pgvectorFAISS = createPgVectorFAISSBridge();
 console.log('🚀 PostgreSQL pgvector + FAISS GPU bridge ready');
 // Export for testing and utilities
-export { FAISSGPUEngine, PgVectorBridge };
+export { FAISSGPUEngine, PgVectorBridge }

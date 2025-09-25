@@ -37,12 +37,12 @@ interface TensorProcessingJob {
     query?: number[];
     operation: 'normalize' | 'similarity' | 'compress' | 'batch_process';
     algorithm?: 'cosine' | 'euclidean' | 'dot' | 'manhattan';
-  };
+  }
   metadata: {
     priority: number;
     timestamp: number;
     source: 'rabbitmq' | 'direct_api' | 'service_worker';
-  };
+  }
 }
 interface TensorWorkerMessage {
   type: 'PROCESS_TENSOR' | 'TENSOR_PROCESSED' | 'TENSOR_ERROR';
@@ -132,7 +132,7 @@ export class RabbitMQTensorIntegration {
           timestamp: Date.now(),
           source: 'rabbitmq'
         }
-      };
+      }
       await this.processTensorJob(job);
     });
     // WASM Similarity Compute Handler
@@ -151,7 +151,7 @@ export class RabbitMQTensorIntegration {
           timestamp: Date.now(),
           source: 'rabbitmq'
         }
-      };
+      }
       const result = await this.processTensorJob(job);
       // Publish results to results queue
       if (result) {
@@ -177,7 +177,7 @@ export class RabbitMQTensorIntegration {
           timestamp: Date.now(),
           source: 'rabbitmq'
         }
-      };
+      }
       const result = await this.processTensorJob(job);
       // Forward to storage queue
       if (result && (result as { similarities?: any; processingTime?: any; acceleration?: any; vectors?: any }).vectors) {
@@ -220,7 +220,7 @@ export class RabbitMQTensorIntegration {
         reject(new Error('Tensor worker processing timeout');
       }, 30000);
       // Setup message listener
-      const messageHandler = (event: MessageEvent<TensorWorkerMessage>) => {
+      const messageHandler = (_event: MessageEvent<TensorWorkerMessage>) => {
         if (event.data.id === job.id) {
           clearTimeout(timeout);
           if (event.data.type === 'TENSOR_PROCESSED') {
@@ -229,7 +229,7 @@ export class RabbitMQTensorIntegration {
             reject(new Error(event.data.error || 'Tensor processing error');
           }
         }
-      };
+      }
       // Send job to tensor worker
       if (navigator.serviceWorker && navigator.serviceWorker.controller) {
         navigator.serviceWorker.addEventListener('message', messageHandler);
@@ -264,14 +264,14 @@ export class RabbitMQTensorIntegration {
             job.data.vectors,
             job.data.algorithm || 'cosine'
           );
-          return { similarities, acceleration: 'direct_wasm' };
+          return { similarities, acceleration: 'direct_wasm' }
         }
         break;
       case 'normalize':
       case 'batch_process':
         // Direct WASM normalization would be implemented here
         console.log('🔧 Direct WASM normalization not yet implemented, using JS fallback');
-        return { vectors: job.data.vectors, acceleration: 'javascript' };
+        return { vectors: job.data.vectors, acceleration: 'javascript' }
       default:
         throw new Error(`Unknown operation: ${job.data.operation}`);
     }
@@ -310,7 +310,7 @@ export class RabbitMQTensorIntegration {
         timestamp: Date.now(),
         source: 'direct_api'
       }
-    };
+    }
     // Process job immediately
     try {
       await this.processTensorJob(job);
@@ -333,7 +333,7 @@ export class RabbitMQTensorIntegration {
       ports: WASM_SERVICE_PORTS
       queues: WASM_QUEUE_ROUTING
       timestamp: Date.now()
-    };
+    }
   }
   /**
    * Cleanup and shutdown

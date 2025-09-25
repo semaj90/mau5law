@@ -29,7 +29,7 @@ export interface QuantizationResult {
     maxValue: number;
     meanValue: number;
     entropy: number;
-  };
+  }
 }
 export interface GemmaOutputQuantization {
   modelResponse: string;
@@ -42,7 +42,7 @@ export interface GemmaOutputQuantization {
     documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     confidence: number;
-  };
+  }
 }
 export interface CUDAThreadContext {
   threadId: number;
@@ -73,9 +73,9 @@ export class Base64FP32Quantizer {
         blockId: Math.floor(i / this.CUDA_BLOCK_SIZE),
         gridSize: Math.ceil(maxThreads / this.CUDA_BLOCK_SIZE),
         blockSize: this.CUDA_BLOCK_SIZE,
-        sharedMemory: new ArrayBuffer(48 * 1024), // 48KB shared memory per block
+        sharedMemory: new ArrayBuffer(48 * 1024), // 48KB shared memory per block;
         registers: new Map()
-      };
+      }
       this.cudaThreadPool.push(context);
     }
     console.log(`🔧 Initialized CUDA thread pool: ${this.cudaThreadPool.length} threads`);
@@ -100,7 +100,7 @@ export class Base64FP32Quantizer {
       cacheStrategy: 'aggressive',
       outputFormat: 'fp32',
       ...options
-    };
+    }
     try {
       // Step 1: Check cache first
       const cacheKey = this.generateCacheKey(base64Output, config);
@@ -111,7 +111,7 @@ export class Base64FP32Quantizer {
           ...cached,
           cacheHit: true
           processingTime: performance.now() - startTime
-        };
+        }
       }
       // Step 2: Decode Base64 to raw bytes
       const rawBytes = this.decodeBase64ToBytes(base64Output);
@@ -133,7 +133,7 @@ export class Base64FP32Quantizer {
         cudaThreadsUsed: config.cudaThreads,
         cacheHit: false
         metadata
-      };
+      }
       // Step 7: Cache the result
       await this.cacheQuantizationResult(cacheKey, result);
       console.log(`⚡ Quantized Gemma3 output in ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).processingTime.toFixed(2)}ms`);
@@ -189,7 +189,7 @@ export class Base64FP32Quantizer {
   private async quantizationKernel(
     data: Uint8Array
     blockId: number
-    threadsPerBlock: number
+    threadsPerBlock: number;
     config: QuantizationOptions;
   ): Promise<Float32Array> {
     // Simulate CUDA kernel execution
@@ -208,7 +208,7 @@ export class Base64FP32Quantizer {
     }
     return quantized;
   }
-  private quantizeValue(value: number, config: QuantizationOptions): number {
+  private quantizeValue(_value: number, config: QuantizationOptions): number {
     const maxQuantLevels = Math.pow(2, config.quantizationBits) - 1;
     // Normalize input value to [0, 1]
     const normalized = value / 255.0;
@@ -249,14 +249,14 @@ export class Base64FP32Quantizer {
     }
     return optimized;
   }
-  private layerNorm(value: number, position: number, length: number): number {
+  private layerNorm(_value: number, position: number, length: number): number {
     // Simplified layer normalization
     const mean = 0.0; // Assume zero mean after proper normalization
     const variance = 1.0; // Assume unit variance
     const epsilon = 1e-6;
     return (value - mean) / Math.sqrt(variance + epsilon);
   }
-  private applyRoPE(value: number, position: number): number {
+  private applyRoPE(_value: number, position: number): number {
     // Simplified Rotary Position Embedding
     const theta = 10000.0;
     const freq = 1.0 / Math.pow(theta, (position % 64) / 64.0);
@@ -265,7 +265,7 @@ export class Base64FP32Quantizer {
     // Apply rotation (simplified for 1D case)
     return value * cos_val + value * sin_val * 0.1;
   }
-  private applyLegalAttentionBias(value: number, position: number): number {
+  private applyLegalAttentionBias(_value: number, position: number): number {
     // Bias towards legal terminology patterns
     const legalTermBoost = 1.0 + this.LEGAL_TOKEN_BIAS * Math.sin(position * 0.1);
     return value * legalTermBoost;
@@ -331,7 +331,7 @@ export class Base64FP32Quantizer {
       maxValue: Math.max(...values),
       meanValue: values.reduce((sum, val) => sum + val, 0) / values.length,
       entropy
-    };
+    }
   }
   private calculateScalingFactor(originalLength: number, scaledLength: number): number {
     return scaledLength / originalLength;
@@ -343,7 +343,7 @@ export class Base64FP32Quantizer {
       scaling: config.scalingMethod,
       length: config.targetLength,
       format: config.outputFormat
-    };
+    }
     return btoa(JSON.stringify(keyData)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
   }
   private simpleHash(str: string): number {
@@ -420,7 +420,7 @@ export class Base64FP32Quantizer {
         perplexity,
         confidence: Math.max(0, 1 - perplexity / 100), // Rough confidence estimate
         legalClassification
-      };
+      }
       console.log(`⚖️ Processed Gemma3:legal-latest output in ${(performance.now() - startTime).toFixed(2)}ms`);
       console.log(`📊 Legal classification: ${legalClassification.documentType} (${legalClassification.riskLevel} risk)`);
       return result;
@@ -457,7 +457,7 @@ export class Base64FP32Quantizer {
     if (riskScore >= 3) riskLevel = 'critical';
     else if (riskScore >= 2) riskLevel = 'high';
     else if (riskScore >= 1) riskLevel = 'medium';
-    return { documentType, riskLevel, confidence };
+    return { documentType, riskLevel, confidence }
   }
   private generateAttentionWeights(tokens: Float32Array): Float32Array {
     const seqLength = tokens.length;
@@ -509,7 +509,7 @@ export class Base64FP32Quantizer {
       blockSize: this.CUDA_BLOCK_SIZE,
       gemmaVocabSize: this.GEMMA_VOCAB_SIZE,
       gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE
-    };
+    }
   }
   /**
    * Clear quantization cache

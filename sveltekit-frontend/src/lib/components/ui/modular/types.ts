@@ -1,5 +1,5 @@
 // TypeScript type definitions for modular UI components
-import type {     Snippet     } from 'svelte';
+import type { Snippet } from 'svelte';
 import type { HTMLAttributes, HTMLButtonAttributes, HTMLInputAttributes } from 'svelte/elements';
 // Base component props
 export interface BaseProps {
@@ -7,7 +7,17 @@ export interface BaseProps {
 }
 // Button component props
 export interface ButtonProps extends HTMLButtonAttributes, BaseProps {
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'yorha' | 'legal' | 'evidence' | 'case';
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link'
+    | 'yorha'
+    | 'legal'
+    | 'evidence'
+    | 'case';
   size?: 'default' | 'sm' | 'lg' | 'icon' | 'xs';
   loading?: boolean;
   icon?: string;
@@ -48,10 +58,10 @@ export interface InputProps extends Omit<HTMLInputAttributes, 'size'>, BaseProps
   errorMessage?: string;
   icon?: string;
   suffix?: string;
-  oninput?: (event: Event & { currentTarget: HTMLInputElement }) => void;
-  onchange?: (event: Event & { currentTarget: HTMLInputElement }) => void;
-  onfocus?: (event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
-  onblur?: (event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
+  oninput?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
+  onchange?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
+  onfocus?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
+  onblur?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
 }
 // Form component props
 export interface FormProps extends HTMLAttributes<HTMLFormElement>, BaseProps {
@@ -59,7 +69,7 @@ export interface FormProps extends HTMLAttributes<HTMLFormElement>, BaseProps {
   size?: 'sm' | 'default' | 'lg';
   header?: Snippet;
   footer?: Snippet;
-  onsubmit?: (event: SubmitEvent) => void;
+  onsubmit?: (_event: SubmitEvent) => void;
   method?: 'get' | 'post';
   action?: string;
   enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
@@ -79,7 +89,18 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement>, BaseProps
 }
 // Badge component props
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement>, BaseProps {
-  variant?: 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info' | 'outline' | 'yorha' | 'legal' | 'evidence' | 'case';
+  variant?:
+    | 'default'
+    | 'secondary'
+    | 'destructive'
+    | 'success'
+    | 'warning'
+    | 'info'
+    | 'outline'
+    | 'yorha'
+    | 'legal'
+    | 'evidence'
+    | 'case';
   size?: 'sm' | 'default' | 'lg';
   icon?: string;
   removable?: boolean;

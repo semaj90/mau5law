@@ -14,7 +14,7 @@ export interface TensorOperation {
 		practiceArea?: string;
 		jurisdiction?: string;
 		operation?: string;
-	};
+	}
 	status: 'pending' | 'processing' | 'completed' | 'error';
 	duration?: number;
 	priority?: number;
@@ -33,7 +33,7 @@ export interface StreamingResponse {
 		chunk_index?: number;
 		confidence?: number;
 		[key: string]: unknown;
-	};
+	}
 }
 export interface QUICMetrics {
 	latency: number;
@@ -55,7 +55,7 @@ export interface DocumentEmbedding {
 	documentType: string;
 	practiceArea: string;
 	jurisdiction: string;
-	metadata: { [key: string]: any };
+	metadata: { [key: string]: any }
 	timestamp: number;
 	chunkIndex?: number;
 	content?: string;
@@ -97,7 +97,7 @@ export interface SOMVisualization {
 		domain: string;
 		practiceAreas: string[];
 		totalDocuments: number;
-	};
+	}
 }
 export interface SOMNeuronViz {
 	position: [number, number];
@@ -137,12 +137,12 @@ export interface TensorMetadata {
 	embeddingModel: string;
 	processingType: 'chunk' | 'sentence' | 'paragraph' | 'document';
 	legalEntities: string[];
-	context: { [key: string]: any };
+	context: { [key: string]: any }
 	quality: {
 		completeness: number;
 		accuracy: number;
 		relevance: number;
-	};
+	}
 }
 export interface TileConfiguration {
 	tileSize: [number, number, number, number];
@@ -176,7 +176,7 @@ export interface TricubicInterpolation {
 		smoothness: number;
 		boundaryCondition: 'zero' | 'periodic' | 'mirror';
 		accuracy: 'low' | 'medium' | 'high';
-	};
+	}
 	computeTime: number;
 }
 export interface WebGPUContext {
@@ -189,12 +189,12 @@ export interface WebGPUContext {
 		maxComputeWorkgroupsPerDimension: number;
 		maxComputeInvocationsPerWorkgroup: number;
 		maxBufferSize: number;
-	};
+	}
 	memoryUsage: {
 		allocated: number;
 		available: number;
 		peak: number;
-	};
+	}
 }
 export interface GPUBufferInfo {
 	id: string;
@@ -226,14 +226,14 @@ export interface LegalDocumentAnalysis {
 		primary: string;
 		secondary: string[];
 		confidence: number;
-	};
+	}
 	jurisdictionAnalysis: {
 		primary: string;
 		applicable: string[];
 		conflicts?: string[];
-	};
+	}
 	processingTime: number;
-	metadata: { [key: string]: any };
+	metadata: { [key: string]: any }
 }
 export interface LegalEntity {
 	type: 'PERSON' | 'ORGANIZATION' | 'LOCATION' | 'DATE' | 'MONETARY' | 'LEGAL_CONCEPT';
@@ -243,7 +243,7 @@ export interface LegalEntity {
 	startIndex: number;
 	endIndex: number;
 	linkedEntities?: string[];
-	attributes?: { [key: string]: any };
+	attributes?: { [key: string]: any }
 }
 export interface RiskFactor {
 	type: 'COMPLIANCE' | 'FINANCIAL' | 'OPERATIONAL' | 'LEGAL' | 'REGULATORY';
@@ -255,7 +255,7 @@ export interface RiskFactor {
 		financial: number;
 		operational: number;
 		reputational: number;
-	};
+	}
 	probability: number;
 	timeframe: 'IMMEDIATE' | 'SHORT_TERM' | 'MEDIUM_TERM' | 'LONG_TERM';
 }
@@ -276,7 +276,7 @@ export interface SearchResult {
 	content: string;
 	score: number;
 	chunkIndex: number;
-	metadata: { [key: string]: any };
+	metadata: { [key: string]: any }
 	highlighted: string[];
 	practiceArea: string;
 	documentType: string;
@@ -294,12 +294,12 @@ export interface VectorSearchRequest {
 		dateRange?: {
 			start: number;
 			end: number;
-		};
+		}
 		confidence?: {
 			min: number;
 			max: number;
-		};
-	};
+		}
+	}
 	limit: number;
 	offset: number;
 	includeMetadata: boolean;
@@ -317,7 +317,7 @@ export interface VectorSearchResponse {
 		practiceAreas: Record<string, number>;
 		documentTypes: Record<string, number>;
 		jurisdictions: Record<string, number>;
-	};
+	}
 	suggestions?: string[];
 	relatedQueries?: string[];
 }
@@ -335,38 +335,38 @@ export interface SystemMetrics {
 		usage: number;
 		cores: number;
 		frequency: number;
-	};
+	}
 	memory: {
 		used: number;
 		available: number;
 		total: number;
 		swap: number;
-	};
+	}
 	gpu?: {
 		usage: number;
 		memory: {
 			used: number;
 			total: number;
-		};
+		}
 		temperature: number;
 		power: number;
-	};
+	}
 	network: {
 		latency: number;
 		throughput: number;
 		packetLoss: number;
-	};
+	}
 	storage: {
 		read: number;
 		write: number;
 		usage: number;
-	};
+	}
 	services: {
 		redis: 'healthy' | 'degraded' | 'down';
 		postgres: 'healthy' | 'degraded' | 'down';
 		quic: 'healthy' | 'degraded' | 'down';
 		webgpu: 'available' | 'unavailable';
-	};
+	}
 }
 // Configuration types
 export interface QUICConfig {
@@ -382,7 +382,7 @@ export interface QUICConfig {
 		initialWindow: number;
 		maxWindow: number;
 		autoTuning: boolean;
-	};
+	}
 }
 export interface WebGPUConfig {
 	enableWebGPU: boolean;
@@ -409,20 +409,20 @@ export interface QUICError extends Error {
 	streamId?: string;
 	retryable: boolean;
 	severity: 'low' | 'medium' | 'high' | 'critical';
-	context?: { [key: string]: any };
+	context?: { [key: string]: any }
 }
 export interface TensorError extends Error {
 	tensorId: string;
 	operation: string;
 	stage: 'initialization' | 'processing' | 'storage' | 'retrieval';
 	recoverable: boolean;
-	metadata?: { [key: string]: any };
+	metadata?: { [key: string]: any }
 }
 // Utility types
 export type AsyncIterableStream<T> = AsyncIterable<T> & {
 	cancel(): void;
 	closed: Promise<void>;
-};
+}
 export type StreamProcessor<T, R> = (chunk: T) => Promise<R | null>;
 export type TensorOperationType = 'create' | 'read' | 'update' | 'delete' | 'tile' | 'interpolate' | 'compress';
 export type SOMOperationType = 'train' | 'predict' | 'update' | 'visualize' | 'optimize';
@@ -435,24 +435,24 @@ export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>;
 export type RequiredBy<T, K extends keyof T> = T & Required<Pick<T, K>;
 export type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
+}
 export type ValueOf<T> = T[keyof T];
 export type NonEmptyArray<T> = [T, ...T[]];
 // Branded types for better type safety
-export type DocumentId = string & { readonly __brand: 'DocumentId' };
-export type TensorId = string & { readonly __brand: 'TensorId' };
-export type StreamId = string & { readonly __brand: 'StreamId' };
-export type SOMId = string & { readonly __brand: 'SOMId' };
+export type DocumentId = string & { readonly __brand: 'DocumentId' }
+export type TensorId = string & { readonly __brand: 'TensorId' }
+export type StreamId = string & { readonly __brand: 'StreamId' }
+export type SOMId = string & { readonly __brand: 'SOMId' }
 // Type guards
-export function isDocumentId(value: string): value is DocumentId {
+export function isDocumentId(_value: string): value is DocumentId {
 	return /^doc_[a-zA-Z0-9_-]+$/.test(value);
 }
-export function isTensorId(value: string): value is TensorId {
+export function isTensorId(_value: string): value is TensorId {
 	return /^tensor_[a-zA-Z0-9_-]+$/.test(value);
 }
-export function isStreamId(value: string): value is StreamId {
+export function isStreamId(_value: string): value is StreamId {
 	return /^stream_[a-zA-Z0-9_-]+$/.test(value);
 }
-export function isSOMId(value: string): value is SOMId {
+export function isSOMId(_value: string): value is SOMId {
 	return /^som_[a-zA-Z0-9_-]+$/.test(value);
 }

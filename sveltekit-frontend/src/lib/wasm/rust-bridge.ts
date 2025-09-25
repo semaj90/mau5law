@@ -203,12 +203,12 @@ export function getBridgeStatus(): {
       'Batch Processing'
     ] : [],
     performance: isRustBridgeAvailable()
-  };
+  }
 }
 // Performance benchmarking
 export async function benchmarkRustBridge(): Promise<any> {
   if (!isRustBridgeAvailable()) {
-    return { textProcessing: 0, vectorOperations: 0, systemAccess: 0, overallScore: 0 };
+    return { textProcessing: 0, vectorOperations: 0, systemAccess: 0, overallScore: 0 }
   }
   const startTime = performance.now();
   // Benchmark text processing
@@ -231,7 +231,7 @@ export async function benchmarkRustBridge(): Promise<any> {
     vectorOperations: vectorTime
     systemAccess: systemTime
     overallScore: 1000 / totalTime // Higher is better
-  };
+  }
 }
 // Cleanup function
 export function cleanupRustBridge(): void {

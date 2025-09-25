@@ -11,7 +11,6 @@ import { barrelStore } from './stores/barrel-functions.js';
 // Enhanced Type Definitions - Import to register module augmentations
 // import './types/drizzle-enhanced.js';  // Temporarily disabled - file does not exist
 // import './types/lokijs-enhanced.js';   // Temporarily disabled - file does not exist
-import path from "path";
 // ===== CENTRALIZED TYPES (SINGLE SOURCE OF TRUTH) =====
 export * from './types/index.js';
 // ===== TYPE GUARDS & UTILITIES =====
@@ -87,7 +86,7 @@ export const FRAMEWORK_INFO = {
   svelte: '5.x',
   typescript: '5.x',
   vite: '5.x'
-};
+}
 // ===== FEATURE FLAGS =====
 export const FEATURES = {
   GPU_ACCELERATION: true
@@ -171,12 +170,12 @@ export default {
   FEATURES,
   DEV_TOOLS,
   barrelStore
-};
+}
 // ===== TYPESCRIPT ERROR RESOLUTION UTILITIES =====
 export const typeScriptErrorResolution = {
   // Utility to enhance objects with missing properties
   enhanceWithMissingProperties: <T extends object>(obj: T, properties: Partial<T>): T => {
-    return { ...obj, ...properties };
+    return { ...obj, ...properties }
   },
   // Safe property access with type assertions
   safeAccess: <T>(obj: any, path: string, defaultValue: T): T => {
@@ -192,7 +191,7 @@ export const typeScriptErrorResolution = {
     return current;
   },
   // Type assertion with fallback
-  assertType: <T>(value: any, fallback: T): T => {
+  assertType: <T>(_value: any, fallback: T): T => {
     return value !== null && value !== undefined ? value : fallback;
   }
-};
+}

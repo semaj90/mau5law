@@ -14,12 +14,12 @@
       textContent?: string;
       interactiveElements?: number;
       realTimeUpdates?: boolean;
-    };
+    }
     type: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'case-timeline';
     title?: string;
     priority?: 'critical' | 'high' | 'medium' | 'low';
     oninteract?: (data: { type: string; position: ;
-{ x: number; y: number }; data: any }) => void;
+{ x: number; y: number } data: any }) => void;
   }
   let {
     data,
@@ -38,7 +38,7 @@
   let renderQueue: RenderOperation[] = [];
   interface RenderOperation {
     type: 'text' | 'background' | 'interaction-zone';
-    bounds: { x: number; y: number; width: number; height: number };
+    bounds: { x: number; y: number; width: number; height: number }
     content?: string;
     style?: unknown;
   }
@@ -57,7 +57,7 @@
       medium: '#0066cc',
       low: '#00cc66';
     }
-  };
+  }
   $effect(() => {
     (async () => {
 if (!canvas) return;
@@ -145,7 +145,7 @@ if (!canvas) return;
     // Content with glyph streaming (for large documents)
     ctx.fillStyle = colorPalette.yorhaWhit;
     ctx.font = '10px "Courier New", monospace';
-    const lines = doc.content.split('\n');
+    // removed unused lines assignment
     let y = 50;
     const lineHeight = 12;
     const visibleLines = Math.floor((canvas.height - 60) / lineHeight);
@@ -215,7 +215,7 @@ if (!canvas) return;
     });
     renderQueue = [];
   }
-  function cacheGlyph(key: string, text: string, x: number, y: number) {
+  function cacheGlyph(_key: string, text: string, x: number, y: number) {
     if (!ctx) return;
     // Cache rendered text as ImageData for reuse
     const tempCanvas = document.createElement('canvas');
@@ -228,7 +228,7 @@ if (!canvas) return;
     tempCtx.fillText(text, 0, 12);
     glyphCache.set(key, tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height));
   }
-  function handleCanvasClick(event: MouseEvent) {
+  function handleCanvasClick(_event: MouseEvent) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -248,13 +248,9 @@ if (!canvas) return;
     }
   });
 </script>
+
 <!-- Canvas container with accessibility -->
-<div
-  class="glyph-engine-container"
-  role="application"
-  aria-label="{title} - High performance renderer"
-  tabindex="0"
->
+<div class="glyph-engine-container" role="application" aria-label="{title} - High performance renderer" tabindex="0">
   <canvas
     bind:this={canvas as any}
     width="400"
@@ -266,13 +262,16 @@ if (!canvas) return;
   <!-- Accessibility text for screen readers -->
   <div class="sr-only">
     {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence}
-      Evidence items: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence.map.join(', ')}
+      Evidence items: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence.map.join(
+        ', ',
+      )}
     {/if}
     {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents}
       Documents: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents.map.join(', ')}
     {/if}
   </div>
 </div>
+
 <style>
   .glyph-engine-container {
     background: var(--yorha-black);

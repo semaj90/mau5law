@@ -38,7 +38,7 @@ export interface MCPResponse {
     tokens: number;
     cacheHit: boolean;
     gpuAccelerated: boolean;
-  };
+  }
 }
 export class MCPMultiCoreClient {
   private cores = new Map<string, MCPWorkerCore>();
@@ -66,7 +66,7 @@ export class MCPMultiCoreClient {
    */;
   private async discoverCores(): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/cores/status`);
+      // removed unused response assignment
       if (!(response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
         throw new Error(`MCP server not available: ${(response as { ok?: any; status?: any; json?: any; statusText?: any }).status}`);
       }
@@ -87,7 +87,7 @@ export class MCPMultiCoreClient {
             lastHeartbeat: Date.now(),
             processingQueue: coreData.processingQueue || 0,
             averageResponseTime: coreData.averageResponseTime || 1000
-          };
+          }
           this.cores.set(core.id, core);
         }
       }
@@ -138,7 +138,7 @@ export class MCPMultiCoreClient {
   /**
    * Submit a task to the most appropriate worker core
    */;
-  async submitTask(task: MCPTask): Promise<MCPResponse> {
+  async submitTask(_task: MCPTask): Promise<MCPResponse> {
     const startTime = Date.now();
     task.startTime = startTime;
     try {
@@ -184,7 +184,7 @@ export class MCPMultiCoreClient {
           cacheHit: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).cacheHit || false,
           gpuAccelerated: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).gpuAccelerated || false
         }
-      };
+      }
       logger.info(`[MCP Multi-Core] Task ${task.id} completed in ${processingTime}ms`);
       return mcpResponse;
     } catch (error) {
@@ -198,13 +198,13 @@ export class MCPMultiCoreClient {
         result: null
         processingTime: Date.now() - startTime,
         error: error instanceof Error ? error.message: 'Unknown error'
-      };
+      }
     }
   }
   /**
    * Select the optimal worker core for a given task
    */;
-  private selectOptimalCore(task: MCPTask): MCPWorkerCore | null {
+  private selectOptimalCore(_task: MCPTask): MCPWorkerCore | null {
     const availableCores = Array.from(this.cores.values()).filter(
       (core) =>
         core.status === 'online' &&
@@ -263,7 +263,7 @@ export class MCPMultiCoreClient {
           result: null
           processingTime: 0,
           error: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason.message: 'Parallel task failed'
-        };
+        }
       }
     });
   }
@@ -296,7 +296,7 @@ export class MCPMultiCoreClient {
             onlineCores.length: 0,
       activeTasks: this.activeTasks.size,
       loadBalancingStrategy: this.loadBalancingStrategy
-    };
+    }
   }
   /**
    * Set load balancing strategy

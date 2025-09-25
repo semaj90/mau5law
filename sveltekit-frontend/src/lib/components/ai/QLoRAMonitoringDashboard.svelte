@@ -40,13 +40,13 @@
 		systemLoad: 30,
 		predictorStatus: 'initializing',
 		searchEngineStatus: 'ready',
-		webgpuEnabled: false
+		webgpuEnabled: false;
 	});
 	let cacheStats = $state<CacheStatistics>({
 		hitRate: 45,
 		status: 'warming',
 		memoryUsage: 65,
-		redisConnected: false
+		redisConnected: false;
 	});
 	let isConnected = $state(false);
 	let lastUpdated = $state<Date | null>(null);
@@ -67,7 +67,7 @@ await fetchMetrics();
 	});
 	async function fetchMetrics() {
 		try {
-			const response = await fetch('/api/ai/qlora-topology');
+			// removed unused response assignment
 			if (response.ok) {
 				const data = await response.json();
 				// Update metrics from API response
@@ -82,14 +82,14 @@ await fetchMetrics();
 					systemLoad: data.systemMetrics.systemLoad || metrics.systemLoad,
 					predictorStatus: data.systemMetrics.predictorStatus || metrics.predictorStatus,
 					searchEngineStatus: data.systemMetrics.searchEngineStatus || metrics.searchEngineStatus,
-					webgpuEnabled: data.systemMetrics.webgpuEnabled || metrics.webgpuEnabled
-				};
+					webgpuEnabled: data.systemMetrics.webgpuEnabled || metrics.webgpuEnabled;
+				}
 				const newCacheStats: CacheStatistics = {
 					hitRate: data.cacheStatistics.hitRate || cacheStats.hitRate,
 					status: data.cacheStatistics.status || cacheStats.status,
 					memoryUsage: data.cacheStatistics.memoryUsage || cacheStats.memoryUsage,
 					redisConnected: data.cacheStatistics.redisConnected || cacheStats.redisConnected;
-				};
+				}
 				// Update accuracy trend (keep last 20 data points)
 				accuracyTrend = [...accuracyTrend, newMetrics.accuracy].slice(-20);
 				processingTimeTrend = [...processingTimeTrend, newMetrics.averageProcessingTime].slice(-20);
@@ -321,4 +321,4 @@ await fetchMetrics();
 			</div>
 		</div>
 	</div>
-<!-- Removed stray extra closing div -->
+<!-- Removed stray extra closing div -->;

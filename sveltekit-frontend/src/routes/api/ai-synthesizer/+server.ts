@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
 import { aiOrchestrator } from "$lib/server/ai/enhanced-ai-synthesis-orchestrator"
 import { monitoringService } from "$lib/server/ai/monitoring-service"
 import stream from "stream"
-import { URL } from "url"
+
 // SSE stream storage for real-time updates
 const activeStreams = new Map<string, any>()
 // Main synthesis endpoint
@@ -243,7 +243,7 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
 async function processStreamingRequest(
   streamId: string
   query: string
-  context: any
+  context: any;
   options: any
 ): Promise<void> {
   try {

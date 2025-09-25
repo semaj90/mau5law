@@ -41,7 +41,7 @@ if (browser) {
   async function triggerOptimization() {
     isLoading = true;
     try {
-      const response = await fetch('/api/memory/neural?action=optimize');
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; error?: unknown }).success) {
         // Reload data after optimization
@@ -56,7 +56,7 @@ if (browser) {
       isLoading = false;
     }
   }
-  function getHealthColor(value: number): string {
+  function getHealthColor(_value: number): string {
     if (value >= 0.8) return 'text-green-600';
     if (value >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
@@ -236,4 +236,4 @@ if (browser) {
     <p>Memory Optimization Dashboard - Legal AI System</p>
     <p>Last updated: {new Date().toLocaleString()}</p>
   </div>
-</div>
+</div>;

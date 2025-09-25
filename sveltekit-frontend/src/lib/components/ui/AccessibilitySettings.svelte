@@ -22,7 +22,7 @@
     accessibilityService.toggleReducedMotion();
     refresh();
   }
-  function updateConfig(key: keyof typeof config, value: unknown) {
+  function updateConfig(_key: keyof typeof config, value: unknown) {
     accessibilityService.updateConfig({ [key]: value });
     refresh();
   }

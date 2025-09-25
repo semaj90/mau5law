@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
       const r = await embedText(text, { simdParse, gpuTile });
       result = r;
     } catch (e: unknown) {
-      result = { error: e?.message || String(e) };
+      result = { error: e?.message || String(e) }
     } finally {
       runBusy = false;
     }
@@ -41,22 +41,29 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <div class="page">
   <h1>GPU Tiling + SIMD Demo (OCR → Embedding)</h1>
   <p>WebGPU: {webgpuSupported ? 'available' : 'unavailable'}</p>
   <div class="controls">
     <label>
-      <input type="checkbox" bind:checked={simdParse}>
+      <input type="checkbox" bind:checked={simdParse} />
       SIMD parse in Service Worker (zero‑copy)
     </label>
     <label>
-      <input type="checkbox" bind:checked={gpuTile} disabled={!webgpuSupported}>
+      <input type="checkbox" bind:checked={gpuTile} disabled={!webgpuSupported} />
       GPU tiling (WebGPU)
     </label>
   </div>
   <div class="inputs">
     <div>
-      <label for="pick-image-for-ocr">Pick image for OCR:</label><input id="pick-image-for-ocr" type="file" accept="image/*" onchange={onImageSelected} disabled={ocrBusy}>
+      <label for="pick-image-for-ocr">Pick image for OCR:</label><input
+        id="pick-image-for-ocr"
+        type="file"
+        accept="image/*"
+        onchange={onImageSelected}
+        disabled={ocrBusy}
+      />
       {#if ocrBusy}<span>OCR…</span>{/if}
     </div>
     <div class="text">
@@ -72,10 +79,28 @@ https://svelte.dev/e/js_parse_error -->
     <pre>{JSON.stringify(result, null, 2)}</pre>
   {/if}
 </div>
+
 <style>
-  .page { padding: 1rem; display: grid; gap: 1rem; }
-  .controls { display: flex; gap: 1.5rem; align-items: center; }
-  .inputs { display: grid; gap: .75rem; }
-  .inputs .text textarea { width: 100%; }
-  .actions { display: flex; gap: .75rem; align-items: center; }
+  .page {
+    padding: 1rem;
+    display: grid;
+    gap: 1rem;
+  }
+  .controls {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .inputs {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .inputs .text textarea {
+    width: 100%;
+  }
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
 </style>

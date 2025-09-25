@@ -65,6 +65,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <svelte:head>
   <title>Simple Login - Legal AI Platform</title>
 </svelte:head>
@@ -72,34 +73,42 @@ https://svelte.dev/e/js_parse_error -->
 <div class="min-h-screen flex items-center justify-center bg-gray-900 px-4">
   <div class="w-full max-w-md">
     <div class="bg-gray-800 p-8 rounded-lg border border-gray-700">
-      <h1 class="text-3xl font-bold text-center text-yellow-400 mb-8">
-        Legal AI Platform (Simple)
-      </h1>
+      <h1 class="text-3xl font-bold text-center text-yellow-400 mb-8">Legal AI Platform (Simple)</h1>
       {#if showRegistrationSuccess}
-        <div class="success-message bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-4" data-testid="success-message">
+        <div
+          class="success-message bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-4"
+          data-testid="success-message"
+        >
           Account registered successfully! You can now sign in.
         </div>
       {/if}
       {#if form?.error}
-        <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" data-testid="error-message">
+        <div
+          class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4"
+          data-testid="error-message"
+        >
           {form.error}
         </div>
       {/if}
       {#if form?.errors?.email}
-        <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" data-testid="error-message">
+        <div
+          class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4"
+          data-testid="error-message"
+        >
           Invalid email or password
         </div>
       {/if}
       {#if form?.errors?.password}
-        <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" data-testid="error-message">
+        <div
+          class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4"
+          data-testid="error-message"
+        >
           Invalid email or password
         </div>
       {/if}
       <form method="POST" action="?/login" class="space-y-6">
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
-            Email
-          </label>
+          <label for="email" class="block text-sm font-medium text-gray-300 mb-2"> Email </label>
           <input
             type="email"
             name="email"
@@ -110,9 +119,7 @@ https://svelte.dev/e/js_parse_error -->
           />
         </div>
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
-            Password
-          </label>
+          <label for="password" class="block text-sm font-medium text-gray-300 mb-2"> Password </label>
           <input
             type="password"
             name="password"
@@ -138,9 +145,18 @@ https://svelte.dev/e/js_parse_error -->
           class="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded transition-colors flex items-center justify-center"
         >
           {#if isAutoLoggingIn}
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg
+              class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
             Logging in...
           {:else}
@@ -156,22 +172,19 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       </div>
       <div class="mt-4 text-center">
-        <p class="text-gray-400 text-sm">
-          Demo Account: demo@legalai.gov / demo123456
-        </p>
+        <p class="text-gray-400 text-sm">Demo Account: demo@legalai.gov / demo123456</p>
         <div class="text-gray-500 text-xs mt-2 space-y-1">
           <p>⚡ Quick Login: Instant access (one-click)</p>
           <p>📝 Auto-fill: Fill form then click Sign In</p>
         </div>
       </div>
       <div class="mt-6 text-center">
-        <a href="/auth/login" class="text-yellow-400 hover:text-yellow-300 text-sm">
-          ← Back to Full Login Page
-        </a>
+        <a href="/auth/login" class="text-yellow-400 hover:text-yellow-300 text-sm"> ← Back to Full Login Page </a>
       </div>
     </div>
   </div>
 </div>
+
 <style>
   /* Inline CSS to avoid dependency on global styles */
   .min-h-screen {

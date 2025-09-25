@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 // ======================================================================
 // LIVE GPU ERROR PROCESSING ENDPOINT
 // Direct processing of live TypeScript errors with GPU acceleration

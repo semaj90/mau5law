@@ -1,10 +1,25 @@
 // Client-side CHR-ROM cache and SSE subscriber
 import { nesGPUBridge } from './nes-gpu-memory-bridge.js';
 export type CHRPatternType = 'text' | 'svg' | 'state';
-export interface CHRPatternBase { key: string; type: CHRPatternType; ttlMs?: number; createdAt: string; meta?: { [key: string]: any }; }
-export interface CHRTextPattern extends CHRPatternBase { type: 'text'; payload: { text: string; style?: 'mono'|'body'|'small'|'title' } }
-export interface CHRSVGPattern extends CHRPatternBase { type: 'svg'; payload: { svg: string; viewBox?: string } }
-export interface CHRStatePattern extends CHRPatternBase { type: 'state'; payload: { [key: string]: any } }
+export interface CHRPatternBase {
+  key: string;
+  type: CHRPatternType;
+  ttlMs?: number;
+  createdAt: string;
+  meta?: { [key: string]: any }
+}
+export interface CHRTextPattern extends CHRPatternBase {
+  type: 'text';
+  payload: { text: string; style?: 'mono' | 'body' | 'small' | 'title' }
+}
+export interface CHRSVGPattern extends CHRPatternBase {
+  type: 'svg';
+  payload: { svg: string; viewBox?: string }
+}
+export interface CHRStatePattern extends CHRPatternBase {
+  type: 'state';
+  payload: { [key: string]: any }
+}
 export type CHRPattern = CHRTextPattern | CHRSVGPattern | CHRStatePattern;
 class CHRCache {
   private map = new Map<string, { pattern: CHRPattern; expiresAt?: number }>();
@@ -32,7 +47,7 @@ class CHRCache {
       // Future: build small textures for instant rendering of lists/cards
     }
   }
-  get(key: string): CHRPattern | null {
+  get(_key: string): CHRPattern | null {
     const slot = this.map.get(key);
     if (!slot) return null;
     if (slot.expiresAt && slot.expiresAt < Date.now()) {

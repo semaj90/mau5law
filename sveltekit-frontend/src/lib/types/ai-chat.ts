@@ -16,7 +16,7 @@ export interface ChatMessage {
     tokens?: number;
     confidence?: number;
     sources?: string[];
-  };
+  }
 }
 export interface ChatSession {
   id: string;
@@ -43,7 +43,7 @@ export interface RAGContext {
   caseId?: string;
   documents: string[];
   relevantSections: Array<any>;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   recommendations?: unknown[];
   did_you_mean?: string;
 }
@@ -53,7 +53,7 @@ export interface Recommendation {
   title: string;
   description: string;
   confidence: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface StreamingResponse {
   messageId: string;
@@ -63,7 +63,7 @@ export interface StreamingResponse {
   metadata?: {
     tokens?: number;
     model?: string;
-  };
+  }
 }
 export interface UserActivity {
   userId: string;

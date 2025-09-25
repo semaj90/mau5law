@@ -42,7 +42,7 @@ interface SearchResult {
   document_id: string;
   content: string;
   similarity: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   score: number;
 }
 /**
@@ -77,7 +77,7 @@ interface DocumentSearchResult {
   document_id: string;
   content: string;
   similarity: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   searchTime: number;
 }
 /**
@@ -89,7 +89,7 @@ interface SemanticSearchResult {
     document_id: string;
     content: string;
     similarity: number;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
     source_collection: string;
   }>;
   total_results: number;
@@ -107,7 +107,7 @@ interface FullTextSearchResult {
     content: string;
     snippet: string;
     rank: number;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
     source_collection: string;
   }>;
   total_results: number;
@@ -123,7 +123,7 @@ interface HybridSearchResult {
   results: Array<{
     document_id: string;
     content: string;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
     vector_score: number;
     text_score: number;
     keyword_score: number;
@@ -137,7 +137,7 @@ interface HybridSearchResult {
     vectorWeight: number;
     textWeight: number;
     keywordWeight: number;
-  };
+  }
   cache_hit: boolean;
 }
 // SIMD JSON parser interface (using simdjson or similar)
@@ -184,7 +184,7 @@ export class MultiCoreMCPVectorServer {
     cacheHitRate: 0,
     errorCount: 0,
     startTime: 0
-  };
+  }
   constructor(config: {
     simdParser: SIMDJsonParser;
     postgresConfig: any;
@@ -267,7 +267,7 @@ export class MultiCoreMCPVectorServer {
    * Main vector index building method
    */
   async buildVectorIndex(
-    embeddings: string[], // JSON strings of embeddings
+    embeddings: string[], // JSON strings of embeddings;
     options: {
       table?: string;
       algorithm?: 'ivf_flat' | 'hnsw' | 'both';
@@ -353,7 +353,7 @@ export class MultiCoreMCPVectorServer {
         memoryPeak: process.memoryUsage().heapUsed / 1024 / 1024,
         cacheHitRate: this.metrics.cacheHitRate,
         metrics: this.metrics
-      };
+      }
       console.log(`✅ Vector index build completed: ${processedVectors.length} vectors in ${totalTime.toFixed(2)}ms`);
       return result;
     } catch (error) {
@@ -375,7 +375,7 @@ export class MultiCoreMCPVectorServer {
           vectors: batch.vectors.slice(start, end),
           metadata: batch.metadata.slice(start, end),
           chunkId: i
-        };
+        }
         const promise = this.processVectorChunk(this.workers[i], chunk);
         workerPromises.push(promise);
       }
@@ -399,7 +399,7 @@ export class MultiCoreMCPVectorServer {
         } else {
           resolve(result.processedVectors);
         }
-      };
+      }
       worker.on('message', messageHandler);
       worker.postMessage({
         type: 'PROCESS_VECTORS',
@@ -412,7 +412,7 @@ export class MultiCoreMCPVectorServer {
    */
   private async createDatabaseIndexes(
     table: string
-    algorithm: string
+    algorithm: string;
     vectors: ProcessedVector[];
   ): Promise<IndexCreationResult[]> {
     const client = await this.db.connect();
@@ -438,7 +438,7 @@ export class MultiCoreMCPVectorServer {
    * Create IVF_FLAT index with optimized parameters
    */
   private async createIVFFlatIndex(
-    client: any
+    client: any;
     table: string
     vectorCount: number;
   ): Promise<IndexCreationResult> {
@@ -461,13 +461,13 @@ export class MultiCoreMCPVectorServer {
       creationTime: createTime
       estimatedSize: vectorCount * 768 * 4 / (1024 * 1024), // MB
       useCase: 'Memory efficient, large datasets, batch processing'
-    };
+    }
   }
   /**
    * Create HNSW index with optimized parameters
    */
   private async createHNSWIndex(
-    client: any
+    client: any;
     table: string
     vectorCount: number;
   ): Promise<IndexCreationResult> {
@@ -491,14 +491,14 @@ export class MultiCoreMCPVectorServer {
       creationTime: createTime
       estimatedSize: vectorCount * 768 * 4 * 2 / (1024 * 1024), // MB (higher due to graph structure)
       useCase: 'Low latency queries, real-time search, high recall'
-    };
+    }
   }
   /**
    * Insert vectors in optimized batches
    */
   private async insertVectorsInBatches(
     client: any
-    table: string
+    table: string;
     vectors: ProcessedVector[]
     batchSize: number = 1000;
   ): Promise<void> {
@@ -537,7 +537,7 @@ export class MultiCoreMCPVectorServer {
         metadata: vector.metadata,
         norm: vector.norm,
         cached_at: Date.now()
-      };
+      }
       pipeline.setex(cacheKey, 3600, JSON.stringify(cacheData); // 1 hour TTL
     }
     await pipeline.exec();
@@ -558,7 +558,7 @@ export class MultiCoreMCPVectorServer {
           ...progress,
           timestamp: Date.now(),
           serverId: process.pid
-        };
+        }
         await this.rabbitChannel.publish(
           'legal-ai-progress',
           'vector.index.progress',
@@ -609,13 +609,13 @@ export class MultiCoreMCPVectorServer {
       memoryUsage: process.memoryUsage(),
       cpuUsage: process.cpuUsage(),
       workerCount: this.workers.length
-    };
+    }
   }
   /**
    * Simple vector search by document content
    */
   async searchDocuments(
-    query: string
+    query: string;
     options: {
       limit?: number;
       threshold?: number;
@@ -672,7 +672,7 @@ export class MultiCoreMCPVectorServer {
    * Semantic search across multiple document collections
    */
   async semanticSearch(
-    query: string
+    query: string;
     options: {
       collections?: string[];
       limit?: number;
@@ -738,7 +738,7 @@ export class MultiCoreMCPVectorServer {
             default:
               // Generic text search fallback
               searchResults = await this.sql`
-                SELECT
+                SELECT;
                   id:: text as document_id
                   ${includeContent ? this.sql`content` : this.sql`'' as content`},
                   '{}' as metadata,
@@ -784,7 +784,7 @@ export class MultiCoreMCPVectorServer {
         collections_searched: collections
         search_time: performance.now() - startTime,
         cache_hit: false
-      };
+      }
       // Cache the result
       if (useCache) {
         const cacheKey = `semantic:${this.hashQuery(query)}:${collections.join(',')}:${limit}`;
@@ -801,7 +801,7 @@ export class MultiCoreMCPVectorServer {
    * Full-text search with ranking
    */
   async fullTextSearch(
-    query: string
+    query: string;
     options: {
       collections?: string[];
       limit?: number;
@@ -877,7 +877,7 @@ export class MultiCoreMCPVectorServer {
         collections_searched: collections
         search_time: performance.now() - startTime,
         cache_hit: false
-      };
+      }
       // Cache result
       if (useCache) {
         const cacheKey = `fulltext:${this.hashQuery(query)}:${collections.join(',')}:${limit}`;
@@ -894,7 +894,7 @@ export class MultiCoreMCPVectorServer {
    * Hybrid search combining vector similarity + full-text + keyword matching
    */
   async hybridSearch(
-    query: string
+    query: string;
     options: {
       limit?: number;
       vectorWeight?: number;
@@ -941,7 +941,7 @@ export class MultiCoreMCPVectorServer {
           keyword_score: 0,
           combined_score: 0,
           search_types: []
-        };
+        }
         existing.vector_score = result.similarity;
         existing.search_types.push('vector');
         scoredResults.set(result.document_id, existing);
@@ -957,7 +957,7 @@ export class MultiCoreMCPVectorServer {
           keyword_score: 0,
           combined_score: 0,
           search_types: []
-        };
+        }
         existing.text_score = result.rank;
         existing.snippet = result.snippet;
         existing.search_types.push('fulltext');
@@ -999,7 +999,7 @@ export class MultiCoreMCPVectorServer {
         search_time: performance.now() - startTime,
         weights: { vectorWeight, textWeight, keywordWeight },
         cache_hit: false
-      };
+      }
       // Cache result
       if (useCache) {
         const cacheKey = `hybrid:${this.hashQuery(query)}:${limit}:${vectorWeight}:${textWeight}:${keywordWeight}`;
@@ -1087,7 +1087,7 @@ export class MultiCoreMCPVectorServer {
           resultsCount: filteredResults.length,
           gpuAccelerated: false
         }
-      };
+      }
       // 6. Cache result
       if (useCache) {
         const cacheKey = `search:${this.hashQuery(queryText)}:${k}:${algorithm}`;
@@ -1170,7 +1170,7 @@ export class MultiCoreMCPVectorServer {
     return docs.map(([doc, score]) => ({
       document_id: doc.metadata.document_id || 'unknown',
       content: doc.pageContent,
-      similarity: 1 - score, // Convert distance to similarity
+      similarity: 1 - score, // Convert distance to similarity;
       metadata: doc.metadata,
       score
     });
@@ -1221,7 +1221,7 @@ export class MultiCoreMCPVectorServer {
       'postgres_ivf_flat': 'postgres_ivf_flat',
       'langchain': 'langchain',
       'hybrid': 'hybrid'
-    };
+    }
     return strategyMap[algorithm] || 'postgres_hnsw';
   }
   /**
@@ -1404,4 +1404,4 @@ export {
   HybridSearchResult,
   AdvancedSearchResult,
   SearchResult
-};
+}

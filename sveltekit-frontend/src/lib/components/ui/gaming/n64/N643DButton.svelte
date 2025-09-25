@@ -89,7 +89,7 @@
     enableMipMapping,
     enableFog,
     ...renderOptions
-  };
+  }
   // Create N64-style spatial audio
   const playN64Sound = async () => {
     try {
@@ -133,13 +133,13 @@
     } catch (error) {
       console.warn('Could not play N64 sound:', error);
     }
-  };
-  const handleMouseMove = (event: MouseEvent) => {
+  }
+  const handleMouseMove = (_event: MouseEvent) => {
     if (!buttonElement || disabled) return;
     const rect = buttonElement.getBoundingClientRect();
     mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouseY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
-  };
+  }
   const handleClick = async () => {
     if (disabled || loading) return;
     isPressed = true;
@@ -153,25 +153,25 @@
     }, 150);
     onClick?.();
     // ondispatch removed;
-  };
+  }
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
     onHover?.();
     // ondispatch removed;
-  };
+  }
   const handleUnhover = () => {
     isHovered = false;
-  };
+  }
   const handleFocus = () => {
     if (disabled) return;
     isFocused = true;
     onFocus?.();
     // ondispatch removed;
-  };
+  }
   const handleBlur = () => {
     isFocused = false;
-  };
+  }
   const createParticleEffect = () => {
     // Simple particle effect using CSS animations
     const particles = 8;
@@ -200,7 +200,7 @@
         particle.remove();
       }, 800);
     }
-  };
+  }
   // Generate texture filtering CSS classes based on render options
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
@@ -225,7 +225,7 @@
       classes.push('anisotropic-4x');
     }
     return classes.join(' ');
-  };
+  }
   // Get 3D material styles based on variant and material type
   const getMaterialStyles = (variant: string, material: string) => {
     const baseColors = {
@@ -235,7 +235,7 @@
       warning: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' },
       error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' },
       info: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
-    };
+    }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     const materialMap = {
       basic: {
@@ -264,18 +264,18 @@
           0 0 0 1px rgba(255,255,255,0.1)
         `
       }
-    };
+    }
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
-  };
+  }
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { padding: '12px 20px', fontSize: '12px', minHeight: '40px' },
       medium: { padding: '16px 24px', fontSize: '14px', minHeight: '48px' },
       large: { padding: '20px 28px', fontSize: '16px', minHeight: '56px' },
       xl: { padding: '24px 32px', fontSize: '18px', minHeight: '64px' }
-    };
+    }
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
-  };
+  }
   // Dynamic 3D transformations based on mouse position and state
   let dynamicRotationX = $derived(rotationX + (isHovered ? mouseY * 10 : 0) + (isPressed ? 5 : 0));
   let dynamicRotationY = $derived(rotationY + (isHovered ? mouseX * 10 : 0));
@@ -308,7 +308,7 @@
     return () => {
       if (animationId) cancelAnimationFrame(animationId);
       style.remove();
-    };
+    }
   });
 </script>
 <BitsButton.Root
@@ -325,15 +325,15 @@
   onfocus={handleFocus}
   onblur={handleBlur}
   class="n64-3d-button {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-  style="
-    --material-bg: {materialStyles.background};
-    --material-shadow: {materialStyles.boxShadow};
-    --button-padding: {sizeStyles.padding};
-    --button-font-size: {sizeStyles.fontSize};
-    --button-min-height: {sizeStyles.minHeight};
-    --transform-3d: {transform3D};
-    --fog-color: {effectiveRenderOptions.fogColor};
-    --glow-intensity: {glowIntensity};
+  style=";
+    --material-bg: {materialStyles.background}
+    --material-shadow: {materialStyles.boxShadow}
+    --button-padding: {sizeStyles.padding}
+    --button-font-size: {sizeStyles.fontSize}
+    --button-min-height: {sizeStyles.minHeight}
+    --transform-3d: {transform3D}
+    --fog-color: {effectiveRenderOptions.fogColor}
+    --glow-intensity: {glowIntensity}
   "
 >
   {#if loading}

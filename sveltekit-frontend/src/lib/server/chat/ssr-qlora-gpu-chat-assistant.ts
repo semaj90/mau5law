@@ -50,7 +50,7 @@ export interface SSRChatContext {
     caseId: string;
     documents: string[];
     activeContext: Float32Array;
-  };
+  }
 }
 /**
  * Server-Side Rendering Chat Assistant
@@ -92,7 +92,7 @@ export class SSRQLorAGPUChatAssistant {
           size: patternBuffer.byteLength,
           confidenceLevel: 1.0,
           riskLevel: 'low' as const,
-          compressed: true
+          compressed: true;
           metadata: {
             vectorEmbedding: embeddedPattern
           }
@@ -124,7 +124,7 @@ export class SSRQLorAGPUChatAssistant {
       gpuCacheState: this.gpuCache.getStats(),
       preloadedResponses: await this.generatePreloadedResponses(userDictionary),
       currentCase: await this.getCurrentCaseContext(userId)
-    };
+    }
     // Cache context for real-time updates
     this.ssrContextCache.set(sessionId, ssrContext);
     // Generate pre-rendered HTML
@@ -135,8 +135,8 @@ export class SSRQLorAGPUChatAssistant {
       commonPatterns: Array.from(ssrContext.preloadedResponses.entries()),
       gpuCacheReady: true
       nesMemoryReady: true
-    };
-    return { ssrContext, prerenderedHTML, preloadedData };
+    }
+    return { ssrContext, prerenderedHTML, preloadedData }
   }
   /**
    * Stream chat response with chunked tokenization and real-time updates
@@ -158,7 +158,7 @@ export class SSRQLorAGPUChatAssistant {
           if (instantResponse) {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({,
               type: 'instant',
-              content: instantResponse
+              content: instantResponse;
               source: 'nes_memory'
             })}\n\n`);
           }
@@ -200,7 +200,7 @@ export class SSRQLorAGPUChatAssistant {
           if (glyphData) {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({,
               type: 'glyph',
-              content: glyphData
+              content: glyphData;
               source: 'neural_sprite'
             })}\n\n`);
           }
@@ -243,7 +243,7 @@ export class SSRQLorAGPUChatAssistant {
       domainExpertise: [],
       qloraCheckpoint: `models/qlora_${userId}.safetensors`,
       interactionHistory: []
-    };
+    }
     this.userDictionaries.set(userId, newDictionary);
     return newDictionary;
   }
@@ -314,7 +314,7 @@ export class SSRQLorAGPUChatAssistant {
    */
   private async generateQLorAResponse(
     userDictionary: UserDictionary
-    message: string
+    message: string;
     embedding: Float32Array;
   ): Promise<string> {
     // Use the QLoRA orchestrator with user-specific parameters
@@ -327,7 +327,7 @@ export class SSRQLorAGPUChatAssistant {
         confidenceLevel: 0.8,
         riskLevel: 'low',
         lastAccessed: Date.now(),
-        compressed: false
+        compressed: false;
         metadata: {
           vectorEmbedding: embedding
         }
@@ -378,7 +378,7 @@ export class SSRQLorAGPUChatAssistant {
         complexity: (response as { length?: any; json?: any; split?: any }).length / 100,
         confidence: 0.8
       }
-    };
+    }
     return glyphData;
   }
   /**
@@ -476,7 +476,7 @@ export class SSRQLorAGPUChatAssistant {
           }
         ])
       )
-    };
+    }
     await lokiRedisCache.set(`user_dict:${dictionary.userId}`, JSON.stringify(serializable);
   }
   private async getCurrentCaseContext(userId: string): Promise<SSRChatContext['currentCase']> {
@@ -516,7 +516,7 @@ export class SSRQLorAGPUChatAssistant {
       glyphGenerated: true
       processingTime: Date.now(), // Simplified
       gpuCacheHit: false // Track actual cache hits
-    };
+    }
     context.userDictionary.interactionHistory.push(interaction);
     // Keep only last 100 interactions
     if (context.userDictionary.interactionHistory.length > 100) {

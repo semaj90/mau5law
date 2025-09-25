@@ -11,7 +11,7 @@ export type {
   AnyActorRef,
   AnyEventObject,
   Observer,
-  Subscription
+  Subscription,
 } from 'xstate';
 export {
   createMachine,
@@ -24,7 +24,7 @@ export {
   fromPromise,
   fromCallback,
   fromObservable,
-  fromEventObservable
+  fromEventObservable,
 } from 'xstate';
 // Common state machine types
 export interface MachineContext {
@@ -43,7 +43,7 @@ export interface PromiseSnapshot<TOutput, TInput = unknown> {
 }
 // Actor wrapper compatibility
 export interface ActorWrapper<T = unknown> {
-  send(event: MachineEvent): void;
+  send(_event: MachineEvent): void;
   subscribe(observer: StateObserver): Subscription;
   getSnapshot(): T;
   start(): void;
@@ -51,7 +51,7 @@ export interface ActorWrapper<T = unknown> {
 }
 // Observer pattern for XState v5
 export interface StateObserver<T = unknown> {
-  next?: (value: T) => void;
+  next?: (_value: T) => void;
   error?: (error: unknown) => void;
   complete?: () => void;
 }
@@ -82,8 +82,8 @@ export interface JobDefinition {
     backoff?: {
       type: 'exponential' | 'fixed';
       delay: number;
-    };
-  };
+    }
+  }
 }
 export interface JobStatus {
   id: string;

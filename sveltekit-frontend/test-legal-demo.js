@@ -41,7 +41,7 @@ import { chromium } from 'playwright';
     console.log('🦙 Testing Ollama connection...');
     const ollamaTest = await page.evaluate(async () => {
       try {
-        const response = await fetch('http://localhost:11434/api/tags');
+        // removed unused response assignment
         return { success: true, status: response.status };
       } catch (error) {
         return { success: false, error: error.message };

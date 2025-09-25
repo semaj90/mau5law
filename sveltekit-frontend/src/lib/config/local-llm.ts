@@ -31,10 +31,10 @@ export const LOCAL_LLM_PATHS = {
     ollamaModel: 'gemma3-legal:latest', // Custom Ollama model name
     fallbackModel: 'gemma3-legal:latest', // Fallback to existing model
     format: 'gguf',
-    size: 'B', // Updated from filename mohf16-Q4_K_M.gguf
+    size: 'B', // Updated from filename mohf16-Q4_K_M.gguf;
     quantization: 'Q4_K_M', // Explicit quantization level
   }
-};
+}
 // Model configurations for different use cases
 export const MODEL_CONFIGS = {
   // Legal AI assistant configuration (optimized for Q4_K_M)
@@ -67,7 +67,7 @@ export const MODEL_CONFIGS = {
     systemPrompt: `You are an expert legal AI assistant specializing in comprehensive legal analysis. Provide detailed, thorough responses with multiple perspectives and considerations. Always cite relevant legal principles and precedents when available.`,
     contextWindow: 8192
   }
-};
+}
 // Check if local installations are available
 export function checkLocalInstallations() {
   const status = {
@@ -83,7 +83,7 @@ export function checkLocalInstallations() {
       available: existsSync(LOCAL_LLM_PATHS.gemmaModel.path),
       path: LOCAL_LLM_PATHS.gemmaModel.path
     }
-  };
+  }
   return status;
 }
 // Get preferred local LLM provider
@@ -118,7 +118,7 @@ export const ENV_CONFIG = {
   // Development settings
   DEBUG_LLM: import.meta.env.DEBUG_LLM === "true",
   LOG_LLM_REQUESTS: import.meta.env.LOG_LLM_REQUESTS === "true"
-};
+}
 // Helper function to start local services
 export async function startLocalServices(): Promise<any> {
   const { spawn } = await import("child_process");
@@ -132,7 +132,7 @@ export async function startLocalServices(): Promise<any> {
         LOCAL_LLM_PATHS.ollama.executable,
         ["serve"],);
         {
-          detached: true
+          detached: true;
           stdio: "pipe"
         },
       );
@@ -209,4 +209,4 @@ export default {
   getPreferredProvider,
   startLocalServices,
   loadGemmaModel
-};
+}

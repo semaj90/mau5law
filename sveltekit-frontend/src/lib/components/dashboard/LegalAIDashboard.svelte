@@ -71,7 +71,7 @@
           const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
           return new Date(c.updatedAt) > dayAgo;
         }).length
-      };
+      }
       // Load system health
       await loadSystemHealth();
     } catch (err: any) {
@@ -81,17 +81,17 @@
     } finally {
       loading = false;
     }
-  };
+  }
   // Load system health status
   const loadSystemHealth = async () => {
     try {
-      const healthResponse = await (apiClient as any).getHealthStatus?.() || {};
+      const healthResponse = await (apiClient as any).getHealthStatus?.() || {}
       systemHealth = {
         api: healthResponse?.status === 'healthy' ? 'healthy' : healthResponse?.status === 'error' ? 'error' : 'warning',
         database: healthResponse.services?.database || 'unknown',
         aiServices: healthResponse.services?.aiServices || 'unknown',
         jobQueue: healthResponse.services?.jobQueue || 'unknown';
-      };
+      }
     } catch (err: any) {
       console.error('Health check failed:', err);
       systemHealth = {
@@ -99,9 +99,9 @@
         database: 'unknown',
         aiServices: 'unknown',
         jobQueue: 'unknown';
-      };
+      }
     }
-  };
+  }
   const createQuickCase = async () => {
     try {
       const caseData = {
@@ -109,8 +109,8 @@
         description: 'Quick case created from dashboard',
         status: 'open' as const,
         priority: 'medium' as const;
-      };
-      const response = await (apiClient as any).createCase?.(caseData) || { success: false };
+      }
+      // removed unused response assignment
       if (response?.success) {
         toast.success('Case created successfully!');
         await loadDashboardData(); // Refresh data
@@ -119,7 +119,7 @@
       console.error('Quick case creation error:', err);
       toast.error('Failed to create case');
     }
-  };
+  }
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
@@ -127,7 +127,7 @@
       hour: '2-digit',
       minute: '2-digit';
     });
-  };
+  }
   // Priority and status colors
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -137,7 +137,7 @@
       case 'low': return 'bg-green-100 text-green-800 border-green-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
-  };
+  }
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'open': return 'bg-blue-100 text-blue-800 border-blue-200';
@@ -146,7 +146,7 @@
       case 'archived': return 'bg-purple-100 text-purple-800 border-purple-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
-  };
+  }
   const getHealthColor = (status: string) => {
     switch (status) {
       case 'healthy': return 'text-green-600';
@@ -154,7 +154,7 @@
       case 'error': return 'text-red-600';
       default: return 'text-gray-400';
     }
-  };
+  }
   // Lifecycle
   $effect(() => {
     loadDashboardData();
@@ -166,9 +166,10 @@
         clearInterval(refreshInterval as any);
         refreshInterval = null;
       }
-    };
+    }
   });
 </script>
+
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
   <header class="bg-white shadow-sm border-b border-gray-200">
@@ -179,15 +180,20 @@
           <div class="ml-4 flex items-center space-x-2">
             <!-- System Health Indicators -->
             <div class="flex items-center space-x-1 text-sm">
-              <span class="w-2 h-2 rounded-full {systemHealth.api === 'healthy' ? 'bg-green-500' : 'bg-red-500'}"></span>
+              <span class="w-2 h-2 rounded-full {systemHealth.api === 'healthy' ? 'bg-green-500' : 'bg-red-500'}"
+              ></span>
               <span class="text-gray-600">API</span>
             </div>
             <div class="flex items-center space-x-1 text-sm">
-              <span class="w-2 h-2 rounded-full {systemHealth.database === 'healthy' ? 'bg-green-500' : 'bg-yellow-500'}"></span>
+              <span
+                class="w-2 h-2 rounded-full {systemHealth.database === 'healthy' ? 'bg-green-500' : 'bg-yellow-500'}"
+              ></span>
               <span class="text-gray-600">DB</span>
             </div>
             <div class="flex items-center space-x-1 text-sm">
-              <span class="w-2 h-2 rounded-full {systemHealth.aiServices === 'healthy' ? 'bg-green-500' : 'bg-yellow-500'}"></span>
+              <span
+                class="w-2 h-2 rounded-full {systemHealth.aiServices === 'healthy' ? 'bg-green-500' : 'bg-yellow-500'}"
+              ></span>
               <span class="text-gray-600">AI</span>
             </div>
           </div>
@@ -198,8 +204,19 @@
             class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             disabled={loading}
           >
-            <svg class="w-4 h-4 mr-1" class:animate-spin={loading} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            <svg
+              class="w-4 h-4 mr-1"
+              class:animate-spin={loading}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
             </svg>
             Refresh
           </button>
@@ -208,7 +225,8 @@
             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
             </svg>
             Quick Case
           </button>
@@ -222,7 +240,7 @@
       <div class="flex space-x-8">
         {#each tabs as tab}
           <button
-            onclick={() => selectedTab = tab.id}
+            onclick={() => (selectedTab = tab.id)}
             class="py-4 px-1 border-b-2 font-medium text-sm transition-colors"
             class:border-blue-500={selectedTab === tab.id}
             class:text-blue-600={selectedTab === tab.id}
@@ -242,9 +260,18 @@
     {#if loading && !cases.length}
       <div class="flex items-center justify-center h-64">
         <div class="text-center">
-          <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg
+            class="animate-spin h-8 w-8 text-blue-600 mx-auto mb-2"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
           </svg>
           <p class="text-gray-600">Loading dashboard data...</p>
         </div>
@@ -253,7 +280,11 @@
       <div class="bg-red-50 border border-red-200 rounded-md p-4">
         <div class="flex">
           <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+              clip-rule="evenodd"
+            />
           </svg>
           <div class="ml-3">
             <h3 class="text-sm font-medium text-red-800">Error Loading Dashboard</h3>
@@ -348,14 +379,24 @@
                       <li class="py-4">
                         <div class="flex items-center space-x-4">
                           <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{caseItem?.title || 'Untitled Case'}</p>
+                            <p class="text-sm font-medium text-gray-900 truncate">
+                              {caseItem?.title || 'Untitled Case'}
+                            </p>
                             <p class="text-sm text-gray-500 truncate">{caseItem?.description || 'No description'}</p>
                           </div>
                           <div class="flex items-center space-x-2">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(caseItem?.priority || 'medium')}">
+                            <span
+                              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(
+                                caseItem?.priority || 'medium',
+                              )}"
+                            >
                               {caseItem?.priority || 'medium'}
                             </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(caseItem?.status || 'open')}">
+                            <span
+                              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(
+                                caseItem?.status || 'open',
+                              )}"
+                            >
                               {caseItem?.status || 'open'}
                             </span>
                           </div>
@@ -378,25 +419,37 @@
                           <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
                               <span class="text-sm">
-                                {item?.evidenceType === 'photo' ? '📷' :
-                                 item?.evidenceType === 'document' ? '📄' :
-                                 item?.evidenceType === 'video' ? '🎥' : '📦'}
+                                {item?.evidenceType === 'photo'
+                                  ? '📷'
+                                  : item?.evidenceType === 'document'
+                                    ? '📄'
+                                    : item?.evidenceType === 'video'
+                                      ? '🎥'
+                                      : '📦'}
                               </span>
                             </div>
                           </div>
                           <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{item?.title || 'Untitled Evidence'}</p>
+                            <p class="text-sm font-medium text-gray-900 truncate">
+                              {item?.title || 'Untitled Evidence'}
+                            </p>
                             <p class="text-sm text-gray-500 truncate">
-                              {item?.evidenceType || 'unknown'} • {item?.createdAt ? formatDate(item.createdAt) : 'No date'}
+                              {item?.evidenceType || 'unknown'} • {item?.createdAt
+                                ? formatDate(item.createdAt)
+                                : 'No date'}
                             </p>
                           </div>
                           <div>
                             {#if item?.aiSummary}
-                              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                              <span
+                                class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800"
+                              >
                                 ✓ Analyzed
                               </span>
                             {:else}
-                              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+                              <span
+                                class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800"
+                              >
                                 ⏳ Pending
                               </span>
                             {/if}
@@ -410,7 +463,7 @@
             </div>
           </div>
         </div>
-      <!-- Cases Tab -->
+        <!-- Cases Tab -->
       {:else if selectedTab === 'cases'}
         <div class="bg-white shadow rounded-lg">
           <div class="px-4 py-5 sm:p-6">
@@ -420,10 +473,18 @@
                 <thead class="bg-gray-50">
                   <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Case</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >Status</th
+                    >
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >Priority</th
+                    >
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >Updated</th
+                    >
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >Actions</th
+                    >
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -436,12 +497,20 @@
                         </div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(caseItem?.status || 'open')}">
+                        <span
+                          class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(
+                            caseItem?.status || 'open',
+                          )}"
+                        >
                           {caseItem?.status || 'open'}
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(caseItem?.priority || 'medium')}">
+                        <span
+                          class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(
+                            caseItem?.priority || 'medium',
+                          )}"
+                        >
                           {caseItem?.priority || 'medium'}
                         </span>
                       </td>
@@ -458,7 +527,7 @@
             </div>
           </div>
         </div>
-      <!-- Evidence Tab -->
+        <!-- Evidence Tab -->
       {:else if selectedTab === 'evidence'}
         <div class="bg-white shadow rounded-lg">
           <div class="px-4 py-5 sm:p-6">
@@ -470,26 +539,37 @@
                     <div class="flex-shrink-0">
                       <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                         <span class="text-lg">
-                          {item?.evidenceType === 'photo' ? '📷' :
-                           item?.evidenceType === 'document' ? '📄' :
-                           item?.evidenceType === 'video' ? '🎥' :
-                           item?.evidenceType === 'audio' ? '🎵' : '📦'}
+                          {item?.evidenceType === 'photo'
+                            ? '📷'
+                            : item?.evidenceType === 'document'
+                              ? '📄'
+                              : item?.evidenceType === 'video'
+                                ? '🎥'
+                                : item?.evidenceType === 'audio'
+                                  ? '🎵'
+                                  : '📦'}
                         </span>
                       </div>
                     </div>
                     <div class="flex-1 min-w-0">
                       <p class="text-sm font-medium text-gray-900 truncate">{item?.title || 'Untitled Evidence'}</p>
                       <p class="text-xs text-gray-500 mt-1">{item?.evidenceType || 'unknown'}</p>
-                      <p class="text-xs text-gray-400 mt-1">{item?.createdAt ? formatDate(item.createdAt) : 'No date'}</p>
+                      <p class="text-xs text-gray-400 mt-1">
+                        {item?.createdAt ? formatDate(item.createdAt) : 'No date'}
+                      </p>
                       {#if item?.aiSummary}
                         <div class="mt-2">
-                          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                          <span
+                            class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800"
+                          >
                             ✓ AI Analyzed
                           </span>
                         </div>
                       {:else}
                         <div class="mt-2">
-                          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+                          <span
+                            class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800"
+                          >
                             ⏳ Pending Analysis
                           </span>
                         </div>
@@ -501,7 +581,7 @@
             </div>
           </div>
         </div>
-      <!-- Processing Tab -->
+        <!-- Processing Tab -->
       {:else if selectedTab === 'processing'}
         <div class="space-y-6">
           <!-- System Status -->
@@ -544,8 +624,17 @@
           <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div class="flex">
               <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                <svg
+                  class="h-5 w-5 text-blue-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clip-rule="evenodd"
+                  />
                 </svg>
               </div>
               <div class="ml-3">
@@ -562,7 +651,7 @@
             </div>
           </div>
         </div>
-      <!-- Other tabs - placeholder -->
+        <!-- Other tabs - placeholder -->
       {:else}
         <div class="bg-white shadow rounded-lg">
           <div class="px-4 py-5 sm:p-6">
@@ -578,12 +667,17 @@
     {/if}
   </main>
 </div>
+
 <style>
   .animate-spin {
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>

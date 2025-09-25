@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async () => {
   return json({
     name: 'Evidence Canvas API',
@@ -9,14 +9,14 @@ export const GET: RequestHandler = async () => {
       'GET /api/evidence-canvas': 'Get API information',
       'POST /api/evidence-canvas/analyze': 'Analyze canvas content with AI',
       'POST /api/evidence-canvas/save': 'Save canvas state',
-      'GET /api/evidence-canvas/{id}': 'Load saved canvas'
+      'GET /api/evidence-canvas/{id}': 'Load saved canvas',
     },
     features: [
       'Canvas content analysis',
       'Object detection and classification',
       'Text extraction from annotations',
       'AI-powered evidence summarization',
-      'Layout analysis and optimization suggestions'
-    ]
-  })
+      'Layout analysis and optimization suggestions',
+    ],
+  });
 }

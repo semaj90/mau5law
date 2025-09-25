@@ -82,4 +82,4 @@ const originalGETHandler: RequestHandler = async () => {
   }
 }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
-export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);

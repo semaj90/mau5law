@@ -21,7 +21,7 @@ export interface ErrorReport {
     byType: Record<string, number>;
     bySeverity: Record<string, number>;
     recentTrend: { time: string; count: number }[];
-  };
+  }
 }
 class ErrorHandler {
   private errors: AppError[] = [];
@@ -44,7 +44,7 @@ class ErrorHandler {
       timestamp: new Date(),
       stack: new Error().stack,
       severity
-    };
+    }
     // Add context if available
     if (typeof window !== "undefined") {
       error.userId = localStorage.getItem("userId") || undefined;
@@ -89,8 +89,8 @@ class ErrorHandler {
    * Get error report
    */;
   getErrorReport(): ErrorReport {
-    const byType: Record<string, number> = {};
-    const bySeverity: Record<string, number> = {};
+    const byType: Record<string, number> = {}
+    const bySeverity: Record<string, number> = {}
     this.errors.forEach((error) => {
       byType[error.type] = (byType[error.type] || 0) + 1;
       bySeverity[error.severity] = (bySeverity[error.severity] || 0) + 1;
@@ -117,7 +117,7 @@ class ErrorHandler {
         bySeverity,
         recentTrend
       }
-    };
+    }
   }
   /**
    * Clear errors
@@ -132,7 +132,7 @@ class ErrorHandler {
     this.listeners.push(callback);
     return () => {
       this.listeners = this.listeners.filter((l) => l !== callback);
-    };
+    }
   }
   /**
    * Get errors by criteria
@@ -205,7 +205,7 @@ export async function withErrorHandling<T>(
  */;
 export async function safeFetch(url: string, options?: RequestInit): Promise<any> {
   try {
-    const response = await fetch(url, options);
+    // removed unused response assignment
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -281,7 +281,7 @@ export function handleAPIError(error: any, endpoint: string): Response {
  */
 export function validateForm(
   data: { [key: string]: any },
-  rules: { [key: string]: any };
+  rules: { [key: string]: any }
 ) {
   const errors: string[] = [];
   Object.entries(rules).forEach(([field, rule]) => {

@@ -14,14 +14,14 @@ interface SystemHealth {
     healthyServices: number;
     totalServices: number;
     timestamp: string;
-  };
+  }
   services: {
     databases: Record<string, { host: string; port: number; status: string }>;
     aiServices: Record<string, { host: string; port: number; status: string }>;
     gpuServices: Record<string, { status: string; vram?: string }>;
     orchestration: Record<string, { host: string; port: number; status: string }>;
     storage: Record<string, { host: string; port: number; status: string }>;
-  };
+  }
   performance: {
     systemUptime: number;
     memoryUsage: {
@@ -29,8 +29,8 @@ interface SystemHealth {
       heapTotal: number;
       external: number;
       rss: number;
-    };
-  };
+    }
+  }
   architecture: {
     platform: string;
     version: string;
@@ -38,7 +38,7 @@ interface SystemHealth {
     microservices: number;
     protocols: string[];
     features: string[];
-  };
+  }
 }
 interface SystemInfo {
   platform: string;
@@ -59,8 +59,8 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
     userId: locals.session?.user?.id ?? null,
     sessionId: locals.session?.id ?? null,
     email: locals.session?.user?.email ?? null,
-    isAuthenticated: !!locals.session?.user
-  };
+    isAuthenticated: !!locals.session?.user,
+  }
   try {
     // Mock health data for development (replaced disabled API calls)
     const systemHealth: SystemHealth = {
@@ -69,23 +69,23 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         healthScore: 100,
         healthyServices: 8,
         totalServices: 8,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       services: {
         databases: { postgres: { host: 'localhost', port: 5432, status: 'mocked' } },
         aiServices: { ollama: { host: 'localhost', port: 11434, status: 'mocked' } },
         gpuServices: { rtx3060ti: { status: 'mocked', vram: '8GB' } },
         orchestration: { sveltekit: { host: 'localhost', port: 5181, status: 'running' } },
-        storage: { minio: { host: 'localhost', port: 9000, status: 'mocked' } }
+        storage: { minio: { host: 'localhost', port: 9000, status: 'mocked' } },
       },
       performance: {
-        systemUptime: Date.now() - 1000 * 60 * 60, // 1 hour
+        systemUptime: Date.now() - 1000 * 60 * 60, // 1 hour,
         memoryUsage: {
           heapUsed: 50 * 1024 * 1024,
           heapTotal: 100 * 1024 * 1024,
           external: 10 * 1024 * 1024,
-          rss: 200 * 1024 * 1024
-        }
+          rss: 200 * 1024 * 1024,
+        },
       },
       architecture: {
         platform: 'win32',
@@ -93,9 +93,9 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         gpuArchitecture: 'RTX 3060 Ti',
         microservices: 8,
         protocols: ['HTTP', 'WebSocket'],
-        features: ['Vector Search', 'AI Analysis', 'Real-time Chat']
-      }
-    };
+        features: ['Vector Search', 'AI Analysis', 'Real-time Chat'],
+      },
+    }
     const systemInfo: SystemInfo = {
       platform: 'win32',
       arch: 'x64',
@@ -103,13 +103,13 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       gpuInfo: 'RTX 3060 Ti (8GB VRAM)',
       memoryUsage: '16GB',
       nodeVersion: '22.17.1',
-      uptime: Date.now() - 1000 * 60 * 60
-    };
+      uptime: Date.now() - 1000 * 60 * 60,
+    }
     // Initialize server-only cognitive subsystems (lightweight stubs)
     await Promise.all([
       reinforcementLearningCache.initialize(),
       multidimensionalRoutingMatrix.initialize(),
-      physicsAwareGPUOrchestrator.initialize()
+      physicsAwareGPUOrchestrator.initialize(),
     ]);
     const cognitiveMetrics: CognitiveMetrics = {
       routingEfficiency: multidimensionalRoutingMatrix.getEfficiencyScore() * 100,
@@ -117,39 +117,39 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       gpuUtilization: physicsAwareGPUOrchestrator.getGPUUtilization() * 100,
       consciousnessLevel: 12,
       quantumCoherence: 50,
-      timestamp: new Date().toISOString()
-    };
+      timestamp: new Date().toISOString(),
+    }
     // Dashboard metrics - simulated for demo (augmented with cognitive metrics)
     const dashboardStats = {
       activeCases: 42,
       evidenceItems: 1337,
       aiAnalyses: 89,
       systemUptime: systemHealth?.performance.systemUptime || 0,
-      cognitive: cognitiveMetrics
-    };
+      cognitive: cognitiveMetrics,
+    }
     // Recent activities - YoRHa themed data
     const recentActivities = [
       {
         id: '001',
         type: 'case_created',
         title: 'Corporate Espionage Investigation',
-        timestamp: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
-        priority: 'high'
+        timestamp: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago,
+        priority: 'high',
       },
       {
         id: '002',
         type: 'evidence_uploaded',
         title: 'Financial Records - Anomaly Detected',
-        timestamp: new Date(Date.now() - 1000 * 60 * 45), // 45 minutes ago
-        priority: 'medium'
+        timestamp: new Date(Date.now() - 1000 * 60 * 45), // 45 minutes ago,
+        priority: 'medium',
       },
       {
         id: '003',
         type: 'ai_analysis',
         title: 'Pattern Recognition Complete',
-        timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago
-        priority: 'low'
-      }
+        timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago,
+        priority: 'low',
+      },
     ];
     return {
       // Session data
@@ -161,8 +161,8 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       recentActivities,
       metrics: cognitiveMetrics,
       // Meta information
-      loadedAt: new Date().toISOString()
-    };
+      loadedAt: new Date().toISOString(),
+    }
   } catch (err) {
     console.error('Failed to load dashboard data:', err);
     // Return minimal fallback data instead of throwing
@@ -174,14 +174,14 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         activeCases: 0,
         evidenceItems: 0,
         aiAnalyses: 0,
-        systemUptime: 0
+        systemUptime: 0,
       },
       recentActivities: [],
       loadedAt: new Date().toISOString(),
-      error: 'Failed to load system data'
-    };
+      error: 'Failed to load system data',
+    }
   }
-};
+}
 export const actions: Actions = {
   logout: async ({ cookies }) => {
     // Clear the legal_ai_session cookie (matches Lucia v3 config)
@@ -207,14 +207,14 @@ export const actions: Actions = {
           title,
           priority,
           status: 'open',
-          created_at: new Date().toISOString()
-        }
-      };
+          created_at: new Date().toISOString(),
+        },
+      }
     } catch (err) {
       console.error('Case creation failed:', err);
       return fail(500, {
         title,
-        error: 'Failed to create case. Please try again.'
+        error: 'Failed to create case. Please try again.',
       });
     }
   },
@@ -227,13 +227,13 @@ export const actions: Actions = {
       }
       return {
         success: true,
-        refreshedAt: new Date().toISOString()
-      };
+        refreshedAt: new Date().toISOString(),
+      }
     } catch (err) {
       console.error('System refresh failed:', err);
       return fail(500, {
-        error: 'Failed to refresh system status.'
+        error: 'Failed to refresh system status.',
       });
     }
-  }
-};
+  },
+}

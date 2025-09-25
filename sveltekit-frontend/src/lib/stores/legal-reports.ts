@@ -55,7 +55,7 @@ export interface LegalReport {
     docx?: boolean;
     html?: boolean;
     markdown?: boolean;
-  };
+  }
   // Metadata
   tags: string[];
   priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -84,7 +84,7 @@ export interface ReportSection {
   content: string;
   aiGenerated: boolean;
   prompt?: string;
-  variables?: { [key: string]: any }; // Template variables
+  variables?: { [key: string]: any } // Template variables
   styling?: {
     fontSize?: string;
     fontFamily?: string;
@@ -92,7 +92,7 @@ export interface ReportSection {
     bold?: boolean;
     italic?: boolean;
     underline?: boolean;
-  };
+  }
 }
 export interface ReportComment {
   id: string;
@@ -233,7 +233,7 @@ export const filteredReports = derived(
     // Sort by priority and date
     return reports.sort((a, b) => {
       // Priority first
-      const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 };
+      const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 }
       const aPriority = priorityOrder[a.priority];
       const bPriority = priorityOrder[b.priority];
       if (aPriority !== bPriority) return bPriority - aPriority;
@@ -260,7 +260,7 @@ export const reportStats = derived(legalReports, ($reports): ReportStats => {
     overdue: 0,
     recentlyCreated: 0,
     averageWordCount: 0
-  };
+  }
   const now = Date.now();
   const recentThreshold = now - (7 * 24 * 60 * 60 * 1000); // 7 days
   let totalWordCount = 0;
@@ -367,7 +367,7 @@ class LegalReportsManager {
       createdBy: 'ai-generator',
       lastModifiedBy: 'ai-generator',
       generationHistory: []
-    };
+    }
     try {
       // Generate sections using AI
       for (const sectionDef of template.sections) {
@@ -414,7 +414,7 @@ class LegalReportsManager {
       content: sectionDef.defaultContent || '',
       aiGenerated: false
       variables
-    };
+    }
     if (aiPrompt) {
       try {
         // Process AI prompt with variables
@@ -599,7 +599,7 @@ class LegalReportsManager {
       ...comment,
       id: `comment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       createdAt: new Date()
-    };
+    }
     report.comments.push(newComment);
     await this.saveReport(report);
   }
@@ -826,7 +826,7 @@ class LegalReportsManager {
           {
             name: 'subject',
             type: 'text',
-            required: true
+            required: true;
             description: 'Subject line for memo'
           }
         ],
@@ -864,7 +864,7 @@ class LegalReportsManager {
 export const reportsManager = LegalReportsManager.getInstance();
 // Convenience functions
 export async function generateReport(
-  template: ReportTemplate
+  template: ReportTemplate;
   variables: { [key: string]: any },
   options?: any
 ): Promise<LegalReport> {

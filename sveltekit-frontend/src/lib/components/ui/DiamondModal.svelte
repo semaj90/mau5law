@@ -30,7 +30,7 @@
     medium: 'max-w-2xl',
     large: 'max-w-4xl',
     fullscreen: 'max-w-full h-full';
-  };
+  }
   onMount(() => {
     if (diamondPattern && canvasElement) {
       drawDiamondPattern();
@@ -39,7 +39,7 @@
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
-    };
+    }
   });
   function drawDiamondPattern() {
     if (!canvasElement) return;
@@ -94,7 +94,7 @@
     open = false;
     dispatch('close');
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
       closeModal();
     }

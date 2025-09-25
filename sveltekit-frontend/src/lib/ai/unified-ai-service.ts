@@ -46,7 +46,7 @@ const loadServices = async () => {
       console.warn('Vector operations not available:', error);
     }
   }
-};
+}
 }
 export interface UnifiedAIConfig {
   // Service selection
@@ -62,13 +62,13 @@ export interface UnifiedAIConfig {
     useNESCache: boolean;
     enableBinaryPipeline: boolean;
     batchSize: number;
-  };
+  }
   // Database Configuration
   dbConfig?: {
     userId: string;
     enableVectorSearch: boolean;
     cacheResults: boolean;
-  };
+  }
 }
 export interface UnifiedQueryOptions {
   query: string;
@@ -89,7 +89,7 @@ export interface UnifiedResponse {
     tokenCount?: number;
     confidence?: number;
     cacheHit?: boolean;
-  };
+  }
   error?: string;
 }
 export class UnifiedAIService {
@@ -125,7 +125,7 @@ export class UnifiedAIService {
         cacheResults: true
       },
       ...config
-    };
+    }
   }
   /**
    * Initialize the unified AI service
@@ -165,7 +165,7 @@ export class UnifiedAIService {
   /**
    * Process a query using the optimal AI service
    */;
-  async query(options: UnifiedQueryOptions): Promise<UnifiedResponse> {
+  async query(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -181,7 +181,7 @@ export class UnifiedAIService {
           ...cached.metadata,
           cacheHit: true
         }
-      };
+      }
     }
     try {
       let result: UnifiedResponse;
@@ -214,13 +214,13 @@ export class UnifiedAIService {
         mode: 'error',
         processingTime: performance.now() - startTime,
         error: error.message
-      };
+      }
     }
   }
   /**
    * Query using WASM LLM service
    */;
-  private async queryWASM(options: UnifiedQueryOptions): Promise<UnifiedResponse> {
+  private async queryWASM(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     if (!wasmLLMService) {
       throw new Error('WASM LLM service not available');
     }
@@ -239,7 +239,7 @@ export class UnifiedAIService {
           tokenCount: wasmResponse.tokens,
           confidence: wasmResponse.confidence
         }
-      };
+      }
     } catch (error: any) {
       throw new Error(`WASM query failed: ${error.message}`);
     }
@@ -247,7 +247,7 @@ export class UnifiedAIService {
   /**
    * Query using LangChain + Ollama service
    */;
-  private async queryLangChain(options: UnifiedQueryOptions): Promise<UnifiedResponse> {
+  private async queryLangChain(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     if (!langChainOllamaService) {
       console.log('Loading LangChain service...');
       await loadServices();
@@ -273,7 +273,7 @@ export class UnifiedAIService {
           model: this.config.langChainConfig?.model || 'langchain-model',
           confidence: langChainResponse.confidence
         }
-      };
+      }
     } catch (error: any) {
       throw new Error(`LangChain query failed: ${error.message}`);
     }
@@ -281,7 +281,7 @@ export class UnifiedAIService {
   /**
    * Query using GPU-accelerated search
    */;
-  private async queryGPU(options: UnifiedQueryOptions): Promise<UnifiedResponse> {
+  private async queryGPU(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     if (!nesGPUIntegration) {
       throw new Error('GPU integration not available');
     }
@@ -296,7 +296,7 @@ export class UnifiedAIService {
         }
       );
       // Format GPU results as response
-      const response = this.formatGPUResults(gpuResults, options.query);
+      // removed unused response assignment
       return {
         success: true
         response,
@@ -311,7 +311,7 @@ export class UnifiedAIService {
           model: 'gpu-accelerated',
           confidence: 0.8
         }
-      };
+      }
     } catch (error: any) {
       throw new Error(`GPU query failed: ${error.message}`);
     }
@@ -319,7 +319,7 @@ export class UnifiedAIService {
   /**
    * Hybrid query using multiple services
    */;
-  private async queryHybrid(options: UnifiedQueryOptions): Promise<UnifiedResponse> {
+  private async queryHybrid(_options: UnifiedQueryOptions): Promise<UnifiedResponse> {
     const results: UnifiedResponse[] = [];
     // Try GPU first for fast results
     if (nesGPUIntegration && this.config.enableGPUAcceleration) {
@@ -390,7 +390,7 @@ export class UnifiedAIService {
         processed,
         errors,
         processingTime: performance.now() - startTime
-      };
+      }
     } catch (error: any) {
       console.error('Document ingestion failed:', error);
       return {
@@ -398,7 +398,7 @@ export class UnifiedAIService {
         processed,
         errors: documents.length - processed,
         processingTime: performance.now() - startTime
-      };
+      }
     }
   }
   /**
@@ -409,7 +409,7 @@ export class UnifiedAIService {
       initialized: this.initialized,
       cacheSize: this.cache.size,
       config: this.config
-    };
+    }
     if (wasmLLMService) {
       stats.wasm = wasmLLMService.getStats();
     }
@@ -422,14 +422,14 @@ export class UnifiedAIService {
     return stats;
   }
   // Helper methods
-  private selectOptimalMode(options: UnifiedQueryOptions): 'wasm' | 'langchain' | 'gpu' | 'hybrid' {
+  private selectOptimalMode(_options: UnifiedQueryOptions): 'wasm' | 'langchain' | 'gpu' | 'hybrid' {
     // Simple heuristics for mode selection
     if (options.query.length < 100 && wasmLLMService) return 'wasm';
     if (options.maxResults && options.maxResults > 20 && nesGPUIntegration) return 'gpu';
     if (langChainOllamaService) return 'langchain';
     return 'hybrid';
   }
-  private generateCacheKey(options: UnifiedQueryOptions): string {
+  private generateCacheKey(_options: UnifiedQueryOptions): string {
     return `${options.query}_${options.mode || 'auto'}_${options.maxResults || 10}_${options.threshold || 0.7}`;
   }
   private formatGPUResults(documents: LegalDocument[], query: string): string {
@@ -458,7 +458,7 @@ export class UnifiedAIService {
       ...best,
       mode: 'hybrid',
       sources: results.flatMap(r => r.sources || [])
-    };
+    }
   }
   /**
    * Clear cache

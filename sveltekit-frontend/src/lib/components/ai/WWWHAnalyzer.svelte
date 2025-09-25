@@ -14,7 +14,7 @@
       const res = await fetch('/api/ai/wwwh', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: inputText })
+        body: JSON.stringify({ text: inputText }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -29,7 +29,10 @@
     }
   }
 </script>
-<div class="wwwh-analyzer uno-max-w-2xl uno-mx-auto uno-my-8 uno-p-4 uno-bg-white uno-border uno-border-gray-200 uno-rounded-lg">
+
+<div
+  class="wwwh-analyzer uno-max-w-2xl uno-mx-auto uno-my-8 uno-p-4 uno-bg-white uno-border uno-border-gray-200 uno-rounded-lg"
+>
   <h3 class="uno-font-bold uno-text-lg uno-mb-2">WWWH (Who, What, When, How) Analyzer</h3>
   <textarea
     bind:value={inputText}
@@ -60,7 +63,9 @@
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
   /* UnoCSS utility classes used above, no custom CSS needed. */
 </style>
+;

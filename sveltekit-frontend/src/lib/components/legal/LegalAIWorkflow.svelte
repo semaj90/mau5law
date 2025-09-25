@@ -26,10 +26,10 @@
             servicesHealth = await legalAIClient.healthCheck();
         } catch (err) {
             console.error('Health check failed:', err);
-            servicesHealth = { quicServer: false, recommendationEngine: false };
+            servicesHealth = { quicServer: false, recommendationEngine: false }
         }
     }
-    function handleFileSelect(event: Event) {
+    function handleFileSelect(_event: Event) {
         const input = event.target as HTMLInputElement;
         if (input.files && input.files.length > 0) {
             uploadedFile = input.files[0];
@@ -94,260 +94,261 @@
         return `${(score * 100).toFixed(0)}%`;
     }
 </script>
+
 <div class="legal-ai-workflow">
-    <!-- Header -->
-    <div class="workflow-header">
-        <h2>🏛️ Legal AI Analysis Workflow</h2>
-        <p>Upload legal documents for AI-powered analysis and recommendations</p>
-        <!-- Services Status -->
-        <div class="services-status">
-            <span class="status-label">Services:</span>
-            <span class="status-indicator {servicesHealth?.quicServer ? 'online' : 'offline'}">
-                QUIC Server {servicesHealth?.quicServer ? '🟢' : '🔴'}
-            </span>
-            <span class="status-indicator {servicesHealth?.recommendationEngine ? 'online' : 'offline'}">
-                Recommendation Engine {servicesHealth?.recommendationEngine ? '🟢' : '🔴'}
-            </span>
-            <button onclick={checkServicesHealth} class="refresh-btn">🔄</button>
-        </div>
+  <!-- Header -->
+  <div class="workflow-header">
+    <h2>🏛️ Legal AI Analysis Workflow</h2>
+    <p>Upload legal documents for AI-powered analysis and recommendations</p>
+    <!-- Services Status -->
+    <div class="services-status">
+      <span class="status-label">Services:</span>
+      <span class="status-indicator {servicesHealth?.quicServer ? 'online' : 'offline'}">
+        QUIC Server {servicesHealth?.quicServer ? '🟢' : '🔴'}
+      </span>
+      <span class="status-indicator {servicesHealth?.recommendationEngine ? 'online' : 'offline'}">
+        Recommendation Engine {servicesHealth?.recommendationEngine ? '🟢' : '🔴'}
+      </span>
+      <button onclick={checkServicesHealth} class="refresh-btn">🔄</button>
     </div>
-    <!-- Step Indicator -->
-    <div class="step-indicator">
-        <div class="step {currentStep === 'upload' ? 'active' : currentStep !== 'upload' ? 'completed' : ''}">
-            <span class="step-number">1</span>
-            <span class="step-label">Upload</span>
-        </div>
-        <div class="step {currentStep === 'analysis' ? 'active' : currentStep === 'recommendations' || currentStep === 'complete' ? 'completed' : ''}">
-            <span class="step-number">2</span>
-            <span class="step-label">Analysis</span>
-        </div>
-        <div class="step {currentStep === 'recommendations' ? 'active' : currentStep === 'complete' ? 'completed' : ''}">
-            <span class="step-number">3</span>
-            <span class="step-label">Recommendations</span>
-        </div>
-        <div class="step {currentStep === 'complete' ? 'active completed' : ''}">
-            <span class="step-number">4</span>
-            <span class="step-label">Complete</span>
-        </div>
+  </div>
+  <!-- Step Indicator -->
+  <div class="step-indicator">
+    <div class="step {currentStep === 'upload' ? 'active' : currentStep !== 'upload' ? 'completed' : ''}">
+      <span class="step-number">1</span>
+      <span class="step-label">Upload</span>
     </div>
-    <!-- Error Display -->
-    {#if error}
-        <div class="error-message">
-            <span class="error-icon">❌</span>
-            <span>{error}</span>
-            <button onclick={reset} class="retry-btn">Try Again</button>
+    <div
+      class="step {currentStep === 'analysis'
+        ? 'active'
+        : currentStep === 'recommendations' || currentStep === 'complete'
+          ? 'completed'
+          : ''}"
+    >
+      <span class="step-number">2</span>
+      <span class="step-label">Analysis</span>
+    </div>
+    <div class="step {currentStep === 'recommendations' ? 'active' : currentStep === 'complete' ? 'completed' : ''}">
+      <span class="step-number">3</span>
+      <span class="step-label">Recommendations</span>
+    </div>
+    <div class="step {currentStep === 'complete' ? 'active completed' : ''}">
+      <span class="step-number">4</span>
+      <span class="step-label">Complete</span>
+    </div>
+  </div>
+  <!-- Error Display -->
+  {#if error}
+    <div class="error-message">
+      <span class="error-icon">❌</span>
+      <span>{error}</span>
+      <button onclick={reset} class="retry-btn">Try Again</button>
+    </div>
+  {/if}
+  <!-- Upload Section -->
+  {#if currentStep === 'upload'}
+    <div class="upload-section">
+      <div class="file-input-wrapper">
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx,.txt"
+          onchange={handleFileSelect}
+          class="file-input"
+          id="file-upload"
+        />
+        <label for="file-upload" class="file-input-label">
+          {uploadedFile ? uploadedFile.name : 'Choose legal document...'}
+        </label>
+      </div>
+      <!-- Processing Options -->
+      <div class="processing-options">
+        <h3>Analysis Options</h3>
+        <label class="option">
+          <input type="checkbox" bind:checked={processingOptions.extract_entities} />
+          Extract Legal Entities
+        </label>
+        <label class="option">
+          <input type="checkbox" bind:checked={processingOptions.analyze_sentiment} />
+          Analyze Sentiment
+        </label>
+        <label class="option">
+          <input type="checkbox" bind:checked={processingOptions.classify_domain} />
+          Classify Legal Domain
+        </label>
+        <label class="option">
+          <input type="checkbox" bind:checked={processingOptions.generate_embedding} />
+          Generate Embeddings
+        </label>
+        <label class="option">
+          <input type="checkbox" bind:checked={processingOptions.find_similar} />
+          Find Similar Cases
+        </label>
+        <label class="option">
+          <input type="checkbox" bind:checked={processingOptions.risk_assessment} />
+          Risk Assessment
+        </label>
+      </div>
+      <button onclick={processDocument} disabled={!canProcess} class="process-btn">
+        {isProcessing ? 'Processing...' : 'Analyze Document'}
+      </button>
+    </div>
+  {/if}
+  <!-- Progress Display -->
+  {#if isProcessing}
+    <div class="progress-section">
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: {progressPercentage}%"></div>
+      </div>
+      <div class="progress-text">
+        {currentStep === 'analysis' ? 'Analyzing document...' : 'Getting recommendations...'}
+        {progressPercentage > 0 ? `${progressPercentage}%` : ''}
+      </div>
+    </div>
+  {/if}
+  <!-- Results Section -->
+  {#if hasResults && analysisResult}
+    <div class="results-section">
+      <h3>📄 Document Analysis Results</h3>
+      <div class="result-summary">
+        <div class="metric">
+          <span class="label">Legal Domain:</span>
+          <span class="value">{analysisResult.legal_domain || 'Unknown'}</span>
         </div>
-    {/if}
-    <!-- Upload Section -->
-    {#if currentStep === 'upload'}
-        <div class="upload-section">
-            <div class="file-input-wrapper">
-                <input
-                    type="file"
-                    accept=".pdf,.doc,.docx,.txt"
-                    onchange={handleFileSelect}
-                    class="file-input"
-                    id="file-upload"
-                />
-                <label for="file-upload" class="file-input-label">
-                    {uploadedFile ? uploadedFile.name: 'Choose legal document...'}
-                </label>
-            </div>
-            <!-- Processing Options -->
-            <div class="processing-options">
-                <h3>Analysis Options</h3>
-                <label class="option">
-                    <input type="checkbox" bind:checked={processingOptions.extract_entities} />
-                    Extract Legal Entities
-                </label>
-                <label class="option">
-                    <input type="checkbox" bind:checked={processingOptions.analyze_sentiment} />
-                    Analyze Sentiment
-                </label>
-                <label class="option">
-                    <input type="checkbox" bind:checked={processingOptions.classify_domain} />
-                    Classify Legal Domain
-                </label>
-                <label class="option">
-                    <input type="checkbox" bind:checked={processingOptions.generate_embedding} />
-                    Generate Embeddings
-                </label>
-                <label class="option">
-                    <input type="checkbox" bind:checked={processingOptions.find_similar} />
-                    Find Similar Cases
-                </label>
-                <label class="option">
-                    <input type="checkbox" bind:checked={processingOptions.risk_assessment} />
-                    Risk Assessment
-                </label>
-            </div>
-            <button
-                onclick={processDocument}
-                disabled={!canProcess}
-                class="process-btn"
-            >
-                {isProcessing ? 'Processing...' : 'Analyze Document'}
-            </button>
+        <div class="metric">
+          <span class="label">Confidence:</span>
+          <span class="value">{formatConfidence(analysisResult.confidence)}</span>
         </div>
-    {/if}
-    <!-- Progress Display -->
-    {#if isProcessing}
-        <div class="progress-section">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: {progressPercentage}%"></div>
-            </div>
-            <div class="progress-text">
-                {currentStep === 'analysis' ? 'Analyzing document...' : 'Getting recommendations...'}
-                {progressPercentage > 0 ? `${progressPercentage}%` : ''}
-            </div>
+        <div class="metric">
+          <span class="label">Complexity:</span>
+          <span class="value">{analysisResult.complexity_score}/10</span>
         </div>
-    {/if}
-    <!-- Results Section -->
-    {#if hasResults && analysisResult}
-        <div class="results-section">
-            <h3>📄 Document Analysis Results</h3>
-            <div class="result-summary">
-                <div class="metric">
-                    <span class="label">Legal Domain:</span>
-                    <span class="value">{analysisResult.legal_domain || 'Unknown'}</span>
-                </div>
-                <div class="metric">
-                    <span class="label">Confidence:</span>
-                    <span class="value">{formatConfidence(analysisResult.confidence)}</span>
-                </div>
-                <div class="metric">
-                    <span class="label">Complexity:</span>
-                    <span class="value">{analysisResult.complexity_score}/10</span>
-                </div>
-                <div class="metric">
-                    <span class="label">Processing Time:</span>
-                    <span class="value">{legalAIUtils.formatProcessingTime(analysisResult.processing_time_ms)}</span>
-                </div>
-            </div>
-            {#if analysisResult.summary}
-                <div class="summary-section">
-                    <h4>Summary</h4>
-                    <p>{analysisResult.summary}</p>
-                </div>
-            {/if}
-            {#if analysisResult.key_entities && analysisResult.key_entities.length > 0}
-                <div class="entities-section">
-                    <h4>Key Entities</h4>
-                    <div class="entity-tags">
-                        {#each analysisResult.key_entities as entity}
-                            <span class="entity-tag">{entity}</span>
-                        {/each}
-                    </div>
-                </div>
-            {/if}
-            {#if analysisResult.legal_concepts && analysisResult.legal_concepts.length > 0}
-                <div class="concepts-section">
-                    <h4>Legal Concepts</h4>
-                    <div class="concept-tags">
-                        {#each analysisResult.legal_concepts as concept}
-                            <span class="concept-tag">{concept}</span>
-                        {/each}
-                    </div>
-                </div>
-            {/if}
-            {#if analysisResult.risk_assessment}
-                <div class="risk-section">
-                    <h4>Risk Assessment</h4>
-                    <div class="risk-summary">
-                        <div class="risk-level {analysisResult.risk_assessment.risk_level}">
-                            Risk Level: {analysisResult.risk_assessment.risk_level.toUpperCase()}
-                            ({formatRiskScore(analysisResult.risk_assessment.overall_risk_score)})
-                        </div>
-                        {#if analysisResult.risk_assessment.predicted_outcome}
-                            <div class="predicted-outcome">
-                                Predicted Outcome: {analysisResult.risk_assessment.predicted_outcome}
-                                ({formatConfidence(analysisResult.risk_assessment.outcome_probability || 0)})
-                            </div>
-                        {/if}
-                    </div>
-                </div>
-            {/if}
-            {#if analysisResult.similar_cases && analysisResult.similar_cases.length > 0}
-                <div class="similar-cases-section">
-                    <h4>Similar Cases</h4>
-                    {#each analysisResult.similar_cases.slice(0, 3) as similarCase}
-                        <div class="similar-case">
-                            <div class="case-title">{similarCase.title}</div>
-                            <div class="case-details">
-                                Similarity: {formatConfidence(similarCase.similarity)} |
-                                {similarCase.jurisdiction} | {similarCase.year}
-                            </div>
-                        </div>
-                    {/each}
-                </div>
-            {/if}
+        <div class="metric">
+          <span class="label">Processing Time:</span>
+          <span class="value">{legalAIUtils.formatProcessingTime(analysisResult.processing_time_ms)}</span>
         </div>
-    {/if}
-    <!-- Recommendations Section -->
-    {#if hasRecommendations && recommendations}
-        <div class="recommendations-section">
-            <h3>🎯 AI Recommendations</h3>
-            <div class="recommendations-summary">
-                <div class="metric">
-                    <span class="label">Total Recommendations:</span>
-                    <span class="value">{recommendations.total_count}</span>
-                </div>
-                <div class="metric">
-                    <span class="label">Overall Confidence:</span>
-                    <span class="value">{formatConfidence(recommendations.confidence_score)}</span>
-                </div>
-                <div class="metric">
-                    <span class="label">Processing Time:</span>
-                    <span class="value">{legalAIUtils.formatProcessingTime(recommendations.processing_time_ms)}</span>
-                </div>
+      </div>
+      {#if analysisResult.summary}
+        <div class="summary-section">
+          <h4>Summary</h4>
+          <p>{analysisResult.summary}</p>
+        </div>
+      {/if}
+      {#if analysisResult.key_entities && analysisResult.key_entities.length > 0}
+        <div class="entities-section">
+          <h4>Key Entities</h4>
+          <div class="entity-tags">
+            {#each analysisResult.key_entities as entity}
+              <span class="entity-tag">{entity}</span>
+            {/each}
+          </div>
+        </div>
+      {/if}
+      {#if analysisResult.legal_concepts && analysisResult.legal_concepts.length > 0}
+        <div class="concepts-section">
+          <h4>Legal Concepts</h4>
+          <div class="concept-tags">
+            {#each analysisResult.legal_concepts as concept}
+              <span class="concept-tag">{concept}</span>
+            {/each}
+          </div>
+        </div>
+      {/if}
+      {#if analysisResult.risk_assessment}
+        <div class="risk-section">
+          <h4>Risk Assessment</h4>
+          <div class="risk-summary">
+            <div class="risk-level {analysisResult.risk_assessment.risk_level}">
+              Risk Level: {analysisResult.risk_assessment.risk_level.toUpperCase()}
+              ({formatRiskScore(analysisResult.risk_assessment.overall_risk_score)})
             </div>
-            <div class="recommendations-list">
-                {#each recommendations.recommendations as recommendation}
-                    <div class="recommendation-nier-bits-card">
-                        <div class="recommendation-header">
-                            <h4 class="recommendation-title">{recommendation.title}</h4>
-                            <span class="recommendation-type">{recommendation.recommendation_type}</span>
-                        </div>
-                        <p class="recommendation-description">{recommendation.description}</p>
-                        <div class="recommendation-details">
-                            <div class="detail">
-                                <span class="label">Confidence:</span>
-                                <span class="value">{formatConfidence(recommendation.confidence_score)}</span>
-                            </div>
-                            <div class="detail">
-                                <span class="label">Domain:</span>
-                                <span class="value">{recommendation.legal_domain}</span>
-                            </div>
-                            <div class="detail">
-                                <span class="label">Jurisdiction:</span>
-                                <span class="value">{recommendation.jurisdiction}</span>
-                            </div>
-                        </div>
-                        {#if recommendation.legal_concepts && recommendation.legal_concepts.length > 0}
-                            <div class="recommendation-concepts">
-                                {#each recommendation.legal_concepts as concept}
-                                    <span class="concept-tag small">{concept}</span>
-                                {/each}
-                            </div>
-                        {/if}
-                    </div>
+            {#if analysisResult.risk_assessment.predicted_outcome}
+              <div class="predicted-outcome">
+                Predicted Outcome: {analysisResult.risk_assessment.predicted_outcome}
+                ({formatConfidence(analysisResult.risk_assessment.outcome_probability || 0)})
+              </div>
+            {/if}
+          </div>
+        </div>
+      {/if}
+      {#if analysisResult.similar_cases && analysisResult.similar_cases.length > 0}
+        <div class="similar-cases-section">
+          <h4>Similar Cases</h4>
+          {#each analysisResult.similar_cases.slice(0, 3) as similarCase}
+            <div class="similar-case">
+              <div class="case-title">{similarCase.title}</div>
+              <div class="case-details">
+                Similarity: {formatConfidence(similarCase.similarity)} |
+                {similarCase.jurisdiction} | {similarCase.year}
+              </div>
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </div>
+  {/if}
+  <!-- Recommendations Section -->
+  {#if hasRecommendations && recommendations}
+    <div class="recommendations-section">
+      <h3>🎯 AI Recommendations</h3>
+      <div class="recommendations-summary">
+        <div class="metric">
+          <span class="label">Total Recommendations:</span>
+          <span class="value">{recommendations.total_count}</span>
+        </div>
+        <div class="metric">
+          <span class="label">Overall Confidence:</span>
+          <span class="value">{formatConfidence(recommendations.confidence_score)}</span>
+        </div>
+        <div class="metric">
+          <span class="label">Processing Time:</span>
+          <span class="value">{legalAIUtils.formatProcessingTime(recommendations.processing_time_ms)}</span>
+        </div>
+      </div>
+      <div class="recommendations-list">
+        {#each recommendations.recommendations as recommendation}
+          <div class="recommendation-nier-bits-card">
+            <div class="recommendation-header">
+              <h4 class="recommendation-title">{recommendation.title}</h4>
+              <span class="recommendation-type">{recommendation.recommendation_type}</span>
+            </div>
+            <p class="recommendation-description">{recommendation.description}</p>
+            <div class="recommendation-details">
+              <div class="detail">
+                <span class="label">Confidence:</span>
+                <span class="value">{formatConfidence(recommendation.confidence_score)}</span>
+              </div>
+              <div class="detail">
+                <span class="label">Domain:</span>
+                <span class="value">{recommendation.legal_domain}</span>
+              </div>
+              <div class="detail">
+                <span class="label">Jurisdiction:</span>
+                <span class="value">{recommendation.jurisdiction}</span>
+              </div>
+            </div>
+            {#if recommendation.legal_concepts && recommendation.legal_concepts.length > 0}
+              <div class="recommendation-concepts">
+                {#each recommendation.legal_concepts as concept}
+                  <span class="concept-tag small">{concept}</span>
                 {/each}
-            </div>
-        </div>
-    {/if}
-    <!-- Action Buttons -->
-    {#if currentStep === 'complete'}
-        <div class="action-buttons">
-            <button onclick={reset} class="secondary-btn">Analyze Another Document</button>
-            <button
-                onclick={() => ondispatch?.({ analysisResult, recommendations })}
-                class="primary-btn"
-            >
-                Export Results
-            </button>
-        </div>
-    {/if}
+              </div>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    </div>
+  {/if}
+  <!-- Action Buttons -->
+  {#if currentStep === 'complete'}
+    <div class="action-buttons">
+      <button onclick={reset} class="secondary-btn">Analyze Another Document</button>
+      <button onclick={() => ondispatch?.({ analysisResult, recommendations })} class="primary-btn">
+        Export Results
+      </button>
+    </div>
+  {/if}
 </div>
+
 <style>
     .legal-ai-workflow {
         max-width: 1200px;

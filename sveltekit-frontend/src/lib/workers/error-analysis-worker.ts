@@ -75,7 +75,7 @@ class ErrorAnalysisWorkerEngine {
       autoFixStrategy: this.getFixStrategy(codeNumber),
       estimatedTime: this.estimateFixTime(error),
       dependencies: this.extractDependencies(error)
-    };
+    }
   }
   private calculatePriority(error: ErrorContext): number {
     let priority = error.confidence;
@@ -176,7 +176,7 @@ class ErrorAnalysisWorkerEngine {
 // WORKER MESSAGE HANDLING
 // ======================================================================
 const analysisEngine = new ErrorAnalysisWorkerEngine();
-self.addEventListener('message', (event: MessageEvent) => {
+self.addEventListener('message', (_event: MessageEvent) => {
   const { type, errors, id } = event.data;
   try {
     switch (type) {
@@ -211,4 +211,4 @@ self.postMessage({
   type: 'worker_ready',
   timestamp: Date.now()
 });
-export {};
+export {}

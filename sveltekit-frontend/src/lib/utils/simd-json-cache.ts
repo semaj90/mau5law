@@ -46,7 +46,7 @@ class SIMDJSONCache {
       compressionThreshold: config.compressionThreshold || 1024, // 1KB
       maxKeyLength: config.maxKeyLength || 250,
       enableMetrics: config.enableMetrics !== false
-    };
+    }
     this.metrics = {
       totalParses: 0,
       simdParses: 0,
@@ -58,7 +58,7 @@ class SIMDJSONCache {
       averageNativeTime: 0,
       totalDataProcessed: 0,
       compressionRatio: 0
-    };
+    }
     this.initializeSIMD();
   }
   private async initializeSIMD(): Promise<void> {
@@ -183,7 +183,7 @@ class SIMDJSONCache {
       return compressedData;
     }
   }
-  private async getFromCache(key: string): Promise<any | null> {
+  private async getFromCache(_key: string): Promise<any | null> {
     try {
       // Check in-memory cache first
       const memoryResult = this.cache.get(key);
@@ -220,7 +220,7 @@ class SIMDJSONCache {
     if (this.config.enableMetrics) this.metrics.cacheMisses++;
     return null;
   }
-  private async setCache(key: string, data: any, ttl: number = this.config.defaultTTL): Promise<void> {
+  private async setCache(_key: string, data: any, ttl: number = this.config.defaultTTL): Promise<void> {
     try {
       const serialized = JSON.stringify(data);
       const compressed = await this.compressData(serialized);
@@ -357,16 +357,16 @@ class SIMDJSONCache {
         return {
           valid,
           error: valid ? undefined : this.simdModule.getLastErrorMessage()
-        };
+        }
       } else {
         JSON.parse(jsonString);
-        return { valid: true };
+        return { valid: true }
       }
     } catch (error) {
       return {
-        valid: false
+        valid: false;
         error: error instanceof Error ? error.message : 'Invalid JSON'
-      };
+      }
     }
   }
   public async minify(jsonString: string, useCache: boolean = true): Promise<string> {
@@ -393,7 +393,7 @@ class SIMDJSONCache {
     }
   }
   public getMetrics(): ParseMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   public getSIMDStatus(): {
     loaded: boolean;
@@ -407,7 +407,7 @@ class SIMDJSONCache {
       loaded: this.simdLoaded,
       available: this.simdModule !== null,
       performance: simdPerformance
-    };
+    }
   }
   public clearCache(): void {
     this.cache.clear();
@@ -424,7 +424,7 @@ class SIMDJSONCache {
       memoryEntries: this.cache.size,
       hitRate: Math.round(hitRate * 100) / 100,
       compressionRatio: Math.round(this.metrics.compressionRatio * 100) / 100
-    };
+    }
   }
 }
 // Singleton instance
@@ -456,5 +456,5 @@ export async function minifyJSON(jsonString: string, useCache = true): Promise<s
   return cache.minify(jsonString, useCache);
 }
 // Export types
-export type { CacheConfig, ParseMetrics, SIMDJSONModule };
-export { SIMDJSONCache };
+export type { CacheConfig, ParseMetrics, SIMDJSONModule }
+export { SIMDJSONCache }

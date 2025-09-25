@@ -17,7 +17,7 @@ export interface AgentShellContext {
     enhancedRAG: boolean;
     uploadService: boolean;
     kratosServer: boolean;
-  };
+  }
 }
 type AgentShellEvent =
   | { type: "PROMPT"; input: string; userId?: string; caseId?: string }
@@ -26,7 +26,7 @@ type AgentShellEvent =
   | { type: "RATE_SUGGESTION"; jobId: string; rating: number; userId: string; feedback?: string }
   | { type: "SEMANTIC_SEARCH"; query: string; userId: string; caseId?: string }
   | { type: "FILE_UPLOAD"; file: File; userId: string; caseId?: string }
-  | { type: "CHECK_HEALTH" };
+  | { type: "CHECK_HEALTH" }
 export const agentShellMachine = createMachine({
   id: "agentShell",
   initial: "idle",
@@ -144,7 +144,7 @@ export const agentShellServices = {
   callAgent: async ({ input, userId, caseId }: { input: string; userId?: string; caseId?: string }) => {
     try {
       // Use production service client with automatic protocol selection
-      const response = await services.queryRAG(input, { userId, caseId });
+      // removed unused response assignment
       return response.response || response.data?.response || 'No response';
     } catch (error: any) {
       console.error("Production agent call failed, falling back to legacy:", error);
@@ -165,7 +165,7 @@ export const agentShellServices = {
   performSemanticSearch: async ({ query, userId, caseId }: { query: string; userId: string; caseId?: string }) => {
     try {
       // Use production RAG service for semantic search
-      const response = await services.queryRAG(`semantic_search: ${query}`, { userId, caseId });
+      // removed unused response assignment
       return response;
     } catch (error: any) {
       console.error("Production semantic search failed, falling back:", error);
@@ -180,7 +180,7 @@ export const agentShellServices = {
   performFileUpload: async ({ file, userId, caseId }: { file: File; userId: string; caseId?: string }) => {
     try {
       // Use production upload service
-      const response = await services.uploadFile(file, { userId, caseId });
+      // removed unused response assignment
       return response;
     } catch (error: any) {
       console.error("Production upload failed, falling back:", error);
@@ -203,19 +203,19 @@ export const agentShellServices = {
       return {
         production: productionHealth
         legacy: await goServiceClient.checkServiceHealth()
-      };
+      }
     } catch (error: any) {
       console.error("Production health check failed:", error);
       // Fallback to legacy health check
       try {
-        return { legacy: await goServiceClient.checkServiceHealth() };
+        return { legacy: await goServiceClient.checkServiceHealth() }
       } catch (fallbackError) {
         console.error("All health checks failed:", fallbackError);
         throw error;
       }
     }
   }
-};
+}
 // Action implementations
 export const agentShellActions = {
   acceptPatchAction: async ({ event }: any) => {
@@ -244,4 +244,4 @@ export const agentShellActions = {
       console.error("Rating submission failed:", error);
     }
   }
-};
+}

@@ -66,12 +66,12 @@
     ctx.fillRect(0, 0, canvas!.width, canvas!.height);
   }
   function getMousePos(e: MouseEvent): { x: number, y: number } {
-    if (!canvas) return { x: 0, y: 0 };
+    if (!canvas) return { x: 0, y: 0 }
     const rect = canvas.getBoundingClientRect();
     return {
       x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
+      y: e.clientY - rect.top;
+    }
   }
   function startDrawing(e: MouseEvent) {
     if (!enableDrawing || !ctx) return;
@@ -147,21 +147,16 @@
     window.addEventListener('resize', resizeHandler);
     return () => {
       window.removeEventListener('resize', resizeHandler);
-    };
+    }
   });
 </script>
+
 <!-- Canvas Board Container -->
 <div class="yorha-canvas-board">
   <!-- Header with close button -->
   <div class="canvas-header">
     <h2 class="canvas-title">EVIDENCE BOARD</h2>
-    <button
-      class="close-btn"
-      onclick={closeBoard}
-      title="Close Evidence Board"
-    >
-      ✕
-    </button>
+    <button class="close-btn" onclick={closeBoard} title="Close Evidence Board"> ✕ </button>
   </div>
   <!-- Toolbar -->
   {#if showToolbar}
@@ -169,12 +164,7 @@
       <div class="tool-section">
         <h3>TOOLS</h3>
         <div class="tool-buttons">
-          <button
-            class="tool-btn"
-            class:active={tool === 'brush'}
-            onclick={() => setTool('brush')}
-            title="Brush Tool"
-          >
+          <button class="tool-btn" class:active={tool === 'brush'} onclick={() => setTool('brush')} title="Brush Tool">
             🖌️
           </button>
           <button
@@ -185,13 +175,7 @@
           >
             🧽
           </button>
-          <button
-            class="tool-btn"
-            onclick={clearCanvas}
-            title="Clear Canvas"
-          >
-            🗑️
-          </button>
+          <button class="tool-btn" onclick={clearCanvas} title="Clear Canvas"> 🗑️ </button>
         </div>
       </div>
       <div class="color-section">
@@ -199,9 +183,9 @@
         <div class="color-palette">
           {#each yorhaColors as yorhaColor}
             <button
-              class="color-btn"
+              class="color-btn";
               class:active={color === yorhaColor}
-              style="background-color: {yorhaColor};"
+              style="background-color: {yorhaColor}"
               onclick={() => setColor(yorhaColor)}
               title="Select {yorhaColor}"
             >
@@ -229,7 +213,7 @@
       bind:this={canvas as any}
       {width}
       {height}
-      class="yorha-canvas"
+      class="yorha-canvas";
       class:drawing
       onmousedown={startDrawing}
       onmousemove={draw}
@@ -243,11 +227,12 @@
       <div class="canvas-info">
         <div class="info-item">Tool: {tool.toUpperCase()}</div>
         <div class="info-item">Size: {brushSize}px</div>
-        <div class="info-item" style="color: {color};">●</div>
+        <div class="info-item" style="color: {color}">●</div>
       </div>
     </div>
   </div>
 </div>
+
 <style>
   .yorha-canvas-board {
     position: fixed;

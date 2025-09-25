@@ -95,7 +95,7 @@ export const YoRHaUtils = {
       gap
     });
   }
-};
+}
 // Constants for easy access to color schemes (use YORHA_COLORS directly for type safety)
 export const YoRHaThemes = {
   DEFAULT: {
@@ -122,7 +122,7 @@ export const YoRHaThemes = {
     border: 0x228b22,
     accent: 0xfaf6ed       // YORHA_COLORS.primary.white
   }
-};
+}
 // Quick setup function for common scenarios
 export const YoRHaQuickSetup = {
   /**
@@ -151,7 +151,7 @@ export const YoRHaQuickSetup = {
     container.addChild(usernameInput, { alignSelf: 'stretch' });
     container.addChild(passwordInput, { alignSelf: 'stretch' });
     container.addChild(submitButton, { alignSelf: 'center' });
-    return { container, usernameInput, passwordInput, submitButton };
+    return { container, usernameInput, passwordInput, submitButton }
   },
   /**
    * Create a confirmation dialog with yes/no buttons
@@ -183,7 +183,7 @@ export const YoRHaQuickSetup = {
     layout.addChild(messagePanel);
     layout.addChild(buttonLayout);
     modal.addContent(layout);
-    return { modal, yesButton, noButton };
+    return { modal, yesButton, noButton }
   },
   /**
    * Create a settings panel with common options
@@ -214,7 +214,7 @@ export const YoRHaQuickSetup = {
     layout.addChild(themeInput, { alignSelf: 'stretch' });
     layout.addChild(saveButton, { alignSelf: 'center' });
     panel.addContent(layout);
-    return { panel, volumeInput, themeInput, saveButton };
+    return { panel, volumeInput, themeInput, saveButton }
   },
   /**
    * Create a toolbar with common actions
@@ -232,9 +232,9 @@ export const YoRHaQuickSetup = {
       toolbar.addChild(button);
       buttons.push(button);
     });
-    return { toolbar, buttons };
+    return { toolbar, buttons }
   }
-};
+}
 // Version information
 export const YORHA_UI_VERSION = '1.0.0';
 /**

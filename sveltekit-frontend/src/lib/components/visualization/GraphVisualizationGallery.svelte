@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
       { id: 'edge-2', source: 'legal-case-1', target: 'regulation-1', type: 'references', weight: 0.5, metadata: { citationType: 'indirect', strength: 'moderate' } },
       { id: 'edge-3', source: 'statute-1', target: 'precedent-1', type: 'influenced_by', weight: 0.9, metadata: { citationType: 'foundational', strength: 'very_strong' } }
     ]
-  };
+  }
   // Use provided graph data or sample data
   // TODO: Convert to $derived: currentGraphData = graphData || sampleGraphData
   // Filtered visualizations based on algorithm
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
               edgeColor: '#ffffff',
               highlightColor: '#ff6b6b'
             }
-          };
+          }
           visualization = await visualizationEngine.generateVisualization(currentGraphData, options);
           // Cache if enabled
           if (cacheResults && multiLayerCache && visualization) {
@@ -158,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
           edgeColor: '#ffffff',
           highlightColor: '#ff6b6b'
         }
-      };
+      }
       const visualization = await visualizationEngine.generateVisualization(currentGraphData, options);
       if (visualization) {
         visualizations.update(current => {
@@ -209,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
       'bfs': 'Breadth-First Search',
       'som': 'Self-Organizing Map',
       'autoencoder': 'Auto-Encoder Compression'
-    };
+    }
     return names[algorithm] || algorithm;
   }
   function getAlgorithmDescription(algorithm: string): string {
@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
       'bfs': 'Broad exploration showing immediate legal relationships',
       'som': 'Neural decomposition clustering similar legal concepts',
       'autoencoder': 'Compressed pattern visualization with key features'
-    };
+    }
     return descriptions[algorithm] || 'Graph traversal visualization';
   }
 </script>

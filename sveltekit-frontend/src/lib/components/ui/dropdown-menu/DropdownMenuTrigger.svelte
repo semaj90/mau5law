@@ -22,10 +22,7 @@
     className
   ));
 </script>
-<DropdownMenu.Trigger
-  class={triggerClasses}
-  {disabled}
-  {asChild}
->
+
+<DropdownMenu.Trigger class={triggerClasses} {disabled} {asChild}>
   {@render children?.()}
 </DropdownMenu.Trigger>

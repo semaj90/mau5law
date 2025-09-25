@@ -4,7 +4,7 @@ import type { RequestEvent } from "@sveltejs/kit"
 import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 export async function GET({ url, locals }: RequestEvent): Promise<any> {
   try {
     if (!locals.user) {

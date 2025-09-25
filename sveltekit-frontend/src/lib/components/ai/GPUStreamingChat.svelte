@@ -154,6 +154,7 @@
     }, 300);
   }
 </script>
+
 <div class="gpu-streaming-chat">
   <!-- Memory Stats Dashboard -->
   <div class="memory-stats" transition:fade>
@@ -181,10 +182,7 @@
   <div class="chat-container">
     <div class="messages-wrapper">
       {#each visibleMessages as message, i (i)}
-        <div
-          class="message {message.role}"
-          transitionslide={{ duration: 300 }}
-        >
+        <div class="message {message.role}" transitionslide={{ duration: 300 }}>
           <div class="message-role">
             {#if message.role === 'user'}
               <span class="role-icon">👤</span>
@@ -232,7 +230,12 @@
   </div>
   <!-- Input Area -->
   <div class="input-area">
-    <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+    <form
+      onsubmit={e => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+    >
       <div class="input-wrapper">
         <textarea
           bind:value={prompt}
@@ -244,35 +247,20 @@
         />
         <div class="button-group">
           {#if isStreaming}
-            <button
-              type="button"
-              onclick={stopStreaming}
-              class="btn btn-stop"
-            >
-              Stop
-            </button>
+            <button type="button" onclick={stopStreaming} class="btn btn-stop"> Stop </button>
           {:else}
-            <button
-              type="submit"
-              disabled={!prompt.trim()}
-              class="btn btn-send"
-            >
+            <button type="submit" disabled={!prompt.trim()} class="btn btn-send">
               <Zap size={16} />
               Send
             </button>
           {/if}
-          <button
-            type="button"
-            onclick={clearChat}
-            class="btn btn-clear"
-          >
-            Clear
-          </button>
+          <button type="button" onclick={clearChat} class="btn btn-clear"> Clear </button>
         </div>
       </div>
     </form>
   </div>
 </div>
+
 <style>
   .gpu-streaming-chat {
     display: flex;

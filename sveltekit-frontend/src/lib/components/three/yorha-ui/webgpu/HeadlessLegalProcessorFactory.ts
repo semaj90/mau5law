@@ -42,7 +42,7 @@ export interface HeadlessProcessingResult {
     totalMemoryUsed: number;
     generationTime: number;
     rtxOptimized: boolean;
-  };
+  }
   // LOD cache results
   lodEntry?: LODCacheEntry;
   vectorSimilarity?: number;
@@ -53,7 +53,7 @@ export interface HeadlessProcessingResult {
     entities: Array<any>;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     summary: string;
-  };
+  }
   // Performance metrics
   metrics: {
     webgpuInitTime: number;
@@ -61,7 +61,7 @@ export interface HeadlessProcessingResult {
     memoryUsage: number;
     compressionRatio: number;
     cacheHitRate: number;
-  };
+  }
 }
 export interface OffscreenRenderTarget {
   texture: GPUTexture;
@@ -183,7 +183,7 @@ export class HeadlessLegalProcessorFactory {
       outputFormats: ['svg', 'json', 'lod'],
       saveToFile: false
       ...config
-    };
+    }
     if (!this.isInitialized) {
       const initialized = await this.initializeHeadless();
       if (!initialized) {
@@ -198,7 +198,7 @@ export class HeadlessLegalProcessorFactory {
       memoryUsage: 0,
       compressionRatio: 0,
       cacheHitRate: 0
-    };
+    }
     try {
       // Phase 1: LOD processing with caching
       const lodResult = await this.processWithLODCache(text, fullConfig);
@@ -232,7 +232,7 @@ export class HeadlessLegalProcessorFactory {
         svgVisualizations: lodResult.lodEntry.svg_summaries,
         legalAnalysis,
         metrics
-      };
+      }
       console.log(`✅ Headless processing complete in ${metrics.processingTime.toFixed(2)}ms`);
       return result;
     } catch (error) {
@@ -241,14 +241,14 @@ export class HeadlessLegalProcessorFactory {
         success: false
         processingTime: performance.now() - startTime,
         metrics
-      };
+      }
     }
   }
   /**
    * Process document through LOD cache engine
    */
   private async processWithLODCache(
-    text: string
+    text: string;
     config: HeadlessProcessingConfig;
   ): Promise<any> {
     const context = {
@@ -259,13 +259,13 @@ export class HeadlessLegalProcessorFactory {
         analysis_level: config.documentAnalysisLevel,
         generate_svg: config.generateSVGSummaries
       }
-    };
+    }
     const result = await lodCacheEngine.processLLMOutput(text, context);
     return {
       lodEntry: (result as { cache_entry?: any; instant_retrieval_key?: any; predictive_suggestions?: any }).cache_entry,
       instantRetrievalKey: (result as { cache_entry?: any; instant_retrieval_key?: any; predictive_suggestions?: any }).instant_retrieval_key,
       predictiveSuggestions: (result as { cache_entry?: any; instant_retrieval_key?: any; predictive_suggestions?: any }).predictive_suggestions
-    };
+    }
   }
   /**
    * Generate mipmap visualizations for document
@@ -316,7 +316,7 @@ export class HeadlessLegalProcessorFactory {
       width,
       height,
       format: 'rgba8unorm'
-    };
+    }
   }
   /**
    * Render document content to texture (headless)
@@ -357,7 +357,7 @@ export class HeadlessLegalProcessorFactory {
       const analysisPrompt = this.buildLegalAnalysisPrompt(text, lodEntry);
       // Call Ollama service for legal analysis
       const response = await (ollamaService as any).generateCompletion(analysisPrompt, {
-        model: 'llama3.1:8b', // Or whatever legal model is available
+        model: 'llama3.1:8b', // Or whatever legal model is available;
         stream: false
       });
       // Parse response for structured legal analysis
@@ -397,7 +397,7 @@ Format your response as structured JSON.`;
       ],
       riskLevel: 'medium' as const,
       summary: response?.content?.slice(0, 500) || 'Legal analysis completed'
-    };
+    }
   }
   /**
    * Generate fallback analysis if Ollama fails
@@ -408,7 +408,7 @@ Format your response as structured JSON.`;
       entities: [],
       riskLevel: 'medium' as const,
       summary: `Fallback analysis: Document contains ${text.length} characters. Manual review recommended.`
-    };
+    }
   }
   /**
    * Save processing outputs to files
@@ -428,7 +428,7 @@ Format your response as structured JSON.`;
    * Process multiple documents in batch
    */
   async processBatch(
-    documents: Array<any>
+    documents: Array<any>;
     config: Partial<HeadlessProcessingConfig> = {}
   ): Promise<HeadlessProcessingResult[]> {
     console.log(`📦 Processing ${documents.length} documents in headless batch mode`);
@@ -458,7 +458,7 @@ Format your response as structured JSON.`;
       hasDevice: !!this.device,
       queueLength: this.processingQueue.length,
       lodCacheStats: lodCacheEngine.getCacheStats()
-    };
+    }
   }
   /**
    * Cleanup resources
@@ -491,4 +491,4 @@ export const DEFAULT_HEADLESS_CONFIG: HeadlessProcessingConfig = {
   enablePredictiveAnalytics: true
   outputFormats: ['svg', 'json', 'lod'],
   saveToFile: false
-};
+}

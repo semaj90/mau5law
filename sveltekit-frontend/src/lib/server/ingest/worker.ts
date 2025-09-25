@@ -72,15 +72,15 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
       result,
       processingTime: Date.now() - startTime,
       workerId
-    };
+    }
     parentPort!.postMessage(response);
   } catch (error) {
     const response: WorkerJobResult = {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime,
       workerId
-    };
+    }
     parentPort!.postMessage(response);
   }
 });
@@ -179,26 +179,26 @@ async function handleImageProcessing(payload: {
       processedSize: processedBuffer.length,
       operations: payload.operations.length
     }
-  };
+  }
 }
 // Error handling
 process.on('uncaughtException', (error) => {
   const response: WorkerJobResult = {
-    success: false
+    success: false;
     error: `Uncaught exception: ${error.message}`,
     processingTime: 0,
     workerId
-  };
+  }
   parentPort!.postMessage(response);
   process.exit(1);
 });
 process.on('unhandledRejection', (reason) => {
   const response: WorkerJobResult = {
-    success: false
+    success: false;
     error: `Unhandled rejection: ${reason}`,
     processingTime: 0,
     workerId
-  };
+  }
   parentPort!.postMessage(response);
   process.exit(1);
 });

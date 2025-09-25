@@ -113,7 +113,7 @@ https://svelte.dev/e/js_parse_error -->
       enableTrilinearFiltering: true
       anisotropicLevel: 16
     }
-  };
+  }
   /**
    * Initialize texture filtering cache system
    */
@@ -233,7 +233,7 @@ https://svelte.dev/e/js_parse_error -->
         memorySize: image.width * image.height * 4,
         compressionRatio: 1.0,
         qualityScore: calculateQualityScore(renderingOptions)
-      };
+      }
     } catch (error: unknown) {
       throw new Error(`Failed to load texture: ${error.message}`);
     }
@@ -309,18 +309,18 @@ https://svelte.dev/e/js_parse_error -->
         lastTime = now;
       }
       animationId = requestAnimationFrame(updateMetrics);
-    };
+    }
     animationId = requestAnimationFrame(updateMetrics);
   }
   /**
    * Helper functions
    */
-  function determineFilteringType(options: N64RenderingOptions): 'bilinear' | 'trilinear' | 'anisotropic' {
+  function determineFilteringType(_options: N64RenderingOptions): 'bilinear' | 'trilinear' | 'anisotropic' {
     if (options.enableTrilinearFiltering) return 'trilinear';
     if (options.anisotropicLevel && options.anisotropicLevel > 1) return 'anisotropic';
     return 'bilinear';
   }
-  function calculateQualityScore(options: N64RenderingOptions): number {
+  function calculateQualityScore(_options: N64RenderingOptions): number {
   let score = $state(0.3);
     if (options.enableBilinearFiltering) score += 0.2;
     if (options.enableTrilinearFiltering) score += 0.3;
@@ -363,6 +363,7 @@ if (preloadTextures) {
     }
   });
 </script>
+
 <!-- N64 Texture Filtering Cache Component -->
 <div class="n64-texture-cache-container {filteringQualityClass}" class:debug-mode={enableDebugMode}>
   <!-- Main Canvas for GPU-accelerated rendering -->
@@ -392,9 +393,12 @@ if (preloadTextures) {
       <div class="metrics-grid">
         <div class="metric">
           <span class="metric-label">FPS</span>
-          <span class="metric-value" class:good={performanceMetrics.fps >= targetFPS * 0.9}
-                class:warning={performanceMetrics.fps >= targetFPS * 0.7 && performanceMetrics.fps < targetFPS * 0.9}
-                class:critical={performanceMetrics.fps < targetFPS * 0.7}>
+          <span
+            class="metric-value"
+            class:good={performanceMetrics.fps >= targetFPS * 0.9}
+            class:warning={performanceMetrics.fps >= targetFPS * 0.7 && performanceMetrics.fps < targetFPS * 0.9}
+            class:critical={performanceMetrics.fps < targetFPS * 0.7}
+          >
             {performanceMetrics.fps.toFixed(1)}
           </span>
         </div>
@@ -427,9 +431,7 @@ if (preloadTextures) {
     <div class="error-overlay">
       <div class="error-icon">⚠️</div>
       <div class="error-message">{errorMessage}</div>
-      <button class="retry-button" onclick={() => initializeTextureCache()}>
-        RETRY
-      </button>
+      <button class="retry-button" onclick={() => initializeTextureCache()}> RETRY </button>
     </div>
   {/if}
   <!-- Debug Information -->
@@ -449,6 +451,7 @@ if (preloadTextures) {
     </div>
   {/if}
 </div>
+
 <style>
   .n64-texture-cache-container {
     position: relative;
@@ -688,7 +691,8 @@ if (preloadTextures) {
     }
   }
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
       transform: scale(1);
     }

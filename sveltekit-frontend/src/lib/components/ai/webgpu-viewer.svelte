@@ -37,8 +37,8 @@ https://svelte.dev/e/js_parse_error -->
   const vertexShaderCode = `
   struct Uniforms {
   matrix: mat4x4<f32>
-  time: f32
-  zoom: f32
+  time: f32;
+  zoom: f32;
   }
   @group(0) @binding(0) var<uniform> uniforms: Uniform;
   @group(0) @binding(1) var<storage, read> embeddings: array<vec3<f32>;
@@ -46,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
   @builtin(position) position: vec;
 4<f32>,
   @location(0) color: vec3<f32>
-  @location(1) pointSize: f32
+  @location(1) pointSize: f32;
   }
   @vertex
   fn main(@builtin(vertex_index) vertexIndex: u32) -> VertexOutput {
@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
   const fragmentShaderCode = `
   struct FragmentInput {
   @location(0) color: vec3<f32>
-  @location(1) pointSize: f32
+  @location(1) pointSize: f32;
   }
   @fragment
   fn main(input: FragmentInput) -> @location(0) vec4<f32> {
@@ -150,7 +150,7 @@ if (!navigator.gpu) {
   updateEmbeddings(embeddings);
   // Create uniform buffer
   uniformBuffer = device.createBuffer({
-    size: 64 + 8, // mat4x4 + 2 float
+    size: 64 + 8, // mat4x4 + 2 float;
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
   });
   }
@@ -266,11 +266,11 @@ if (!navigator.gpu) {
       updateEmbeddings(data.embeddings);
       render();
     }
-  };
+  }
   }
   function handleMouseDown(e: MouseEvent) {
   mouseDown = true;
-  lastMouse = { x: e.clientX, y: e.clientY };
+  lastMouse = { x: e.clientX, y: e.clientY }
   }
   function handleMouseMove(e: MouseEvent) {
   if (!mouseDown) return;
@@ -278,7 +278,7 @@ if (!navigator.gpu) {
   const deltaY = e.clientY - lastMouse.y;
   rotation.y += deltaX * 0.01;
   rotation.x += deltaY * 0.01;
-  lastMouse = { x: e.clientX, y: e.clientY };
+  lastMouse = { x: e.clientX, y: e.clientY }
   render();
   }
   function handleMouseUp() {
@@ -298,7 +298,7 @@ if (!navigator.gpu) {
   }
   }
   function resetView() {
-  rotation = { x: 0, y: 0, z: 0 };
+  rotation = { x: 0, y: 0, z: 0 }
   zoom = 1.0;
   render();
   }
@@ -318,6 +318,7 @@ if (!navigator.gpu) {
   }
   });
 </script>
+
 <div class="webgpu-viewer">
   <div class="controls">
     <button onclick={togglePlay} class="control-btn" title={isPlaying ? 'Pause' : 'Play'}>
@@ -350,7 +351,7 @@ if (!navigator.gpu) {
     onmouseup={handleMouseUp}
     onmouseleave={handleMouseUp}
     onwheel={handleWheel}
-></canvas>
+  ></canvas>
   {#if labels.length > 0}
     <div class="labels">
       {#each labels.slice(0, 10) as label, i}
@@ -361,6 +362,7 @@ if (!navigator.gpu) {
     </div>
   {/if}
 </div>
+
 <style>
   .webgpu-viewer {
     position: relative;

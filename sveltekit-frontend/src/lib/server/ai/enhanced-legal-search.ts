@@ -20,7 +20,7 @@ type LegalDocumentType = {
   code?: string;
   sections?: string[];
   url?: string;
-};
+}
 // Load legal documents dynamically to avoid top-level await issues
 async function loadLegalDocuments(): Promise<LegalDocumentType[]> {
   try {
@@ -77,7 +77,7 @@ export interface LegalSearchConfig {
     jurisdiction: number;
     category: number;
     recency: number;
-  };
+  }
 }
 const defaultConfig: LegalSearchConfig = {
   useVector: true
@@ -91,7 +91,7 @@ const defaultConfig: LegalSearchConfig = {
     category: 1.3,
     recency: 1.2
   }
-};
+}
 // Enhanced Legal Search Result
 export interface LegalSearchResult {
   id: string;
@@ -111,8 +111,8 @@ export interface LegalSearchResult {
     exact_match: number;
     jurisdiction_match: number;
     category_match: number;
-  };
-  metadata?: { [key: string]: any };
+  }
+  metadata?: { [key: string]: any }
 }
 // Main Enhanced Legal Search Service
 export class EnhancedLegalSearchService {
@@ -122,7 +122,7 @@ export class EnhancedLegalSearchService {
   private config: LegalSearchConfig;
   constructor(config: Partial<LegalSearchConfig> = {}) {
     this.embeddings = new NomicEmbeddings();
-    this.config = { ...defaultConfig, ...config };
+    this.config = { ...defaultConfig, ...config }
     this.initializeVectorStores();
   }
   private async initializeVectorStores() {
@@ -172,7 +172,7 @@ export class EnhancedLegalSearchService {
             metadataColumnName: 'metadata'
           },
           distanceStrategy: 'cosine' as any
-        };
+        }
         // Initialize PGVector store
         this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, pgConfig);
         console.log('✅ PGVector store initialized');
@@ -183,7 +183,7 @@ export class EnhancedLegalSearchService {
   }
   // Main search method with multiple strategies
   async search(
-    query: string
+    query: string;
     options: {
       jurisdiction?: string;
       category?: string;
@@ -343,7 +343,7 @@ export class EnhancedLegalSearchService {
   }
   // Database text search (disabled - no db connection)
   private async performDatabaseTextSearch(
-    query: string
+    query: string;
     options: any;
   ): Promise<LegalSearchResult[]> {
     // Database search disabled for now - returning empty results
@@ -433,8 +433,8 @@ export class EnhancedLegalSearchService {
     return results.sort((a, b) => b.score - a.score);
   }
   // Utility methods
-  private buildMetadataFilter(options: any): { [key: string]: any } | undefined {
-    const filter: { [key: string]: any } = {};
+  private buildMetadataFilter(_options: any): { [key: string]: any } | undefined {
+    const filter: { [key: string]: any } = {}
     if (options.jurisdiction && options.jurisdiction !== 'all') {
       filter.jurisdiction = options.jurisdiction;
     }
@@ -476,7 +476,7 @@ export class EnhancedLegalSearchService {
       hybrid: 0.8,
       fuzzy: 0.7,
       fallback: 0.6
-    };
+    }
     return Math.min(baseConfidence[searchType] * score, 1.0);
   }
   private normalizeScore(score: number): number {
@@ -485,7 +485,7 @@ export class EnhancedLegalSearchService {
   }
   private deduplicateAndRankResults(
     results: LegalSearchResult[]
-    query: string
+    query: string;
     options: any;
   ): LegalSearchResult[] {
     // Remove duplicates by ID
@@ -515,7 +515,7 @@ export class EnhancedLegalSearchService {
       return {
         ...result,
         score: Math.min(boostedScore, 1.0)
-      };
+      }
     });
     // Final ranking
     return boostedResults.sort((a, b) => {
@@ -524,7 +524,7 @@ export class EnhancedLegalSearchService {
         return b.score - a.score;
       }
       // Secondary sort by search type preference
-      const typeOrder = { vector: 3, hybrid: 2, fallback: 1 };
+      const typeOrder = { vector: 3, hybrid: 2, fallback: 1 }
       return typeOrder[b.searchType] - typeOrder[a.searchType];
     });
   }

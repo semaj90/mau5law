@@ -4,7 +4,7 @@ Updated to work with proper SvelteKit data flow instead of global stores
 -->
 <script lang="ts">
   import { browser } from '$app/environment';
-  import { userDataStore } from "$lib/stores/userDataStore.svelte";
+  import { userDataStore } from '$lib/stores/userDataStore.svelte';
 
   // Props from the layout with session data from server
   interface Props {
@@ -22,7 +22,7 @@ Updated to work with proper SvelteKit data flow instead of global stores
     isAuthenticated,
     enableAutoSync = true,
     syncInterval = 5 * 60 * 1000, // 5 minutes
-    enableDebugLogging = false
+    enableDebugLogging = false,
   }: Props = $props();
 
   let syncIntervalId: number | null = null;
@@ -62,7 +62,7 @@ Updated to work with proper SvelteKit data flow instead of global stores
           syncIntervalId = null;
           debugLog('Cleared auto-sync interval');
         }
-      };
+      }
     }
   });
 
@@ -73,7 +73,7 @@ Updated to work with proper SvelteKit data flow instead of global stores
         isAuthenticated,
         userId: user?.id,
         userRole: user?.role,
-        sessionId: session?.id
+        sessionId: session?.id,
       });
     }
   });

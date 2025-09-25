@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { interruptStream } from "$lib/server/ragStreamRegistry";
+import { interruptStream } from '$lib/server/ragStreamRegistry';
 import type { RequestHandler } from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -10,4 +10,4 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (e: any) {
     return json({ ok: false, error: e.message }, { status: 500 });
   }
-};
+}

@@ -55,27 +55,27 @@
       border: '#1A8B1A',
       shadow: '#00CC00';
     }
-  };
+  }
   const sizes = {
     sm: { height: '12px', fontSize: '10px' },
     md: { height: '16px', fontSize: '12px' },
     lg: { height: '24px', fontSize: '14px' }
-  };
+  }
   let currentTheme = $derived(themes[theme]);
   let currentSize = $derived(sizes[size]);
 </script>
 <div class="n64-progress-container {className}" class: retro>
   <div
-    class="n64-progress-bar"
+    class="n64-progress-bar";
     class:animated;
     class:sparkle
-    style="
-      --bg-color: {currentTheme.bg};
-      --fill-color: {currentTheme.fill};
-      --border-color: {currentTheme.border};
-      --shadow-color: {currentTheme.shadow};
-      --bar-height: {currentSize.height};
-      --font-size: {currentSize.fontSize};
+    style=";
+      --bg-color: {currentTheme.bg}
+      --fill-color: {currentTheme.fill}
+      --border-color: {currentTheme.border}
+      --shadow-color: {currentTheme.shadow}
+      --bar-height: {currentSize.height}
+      --font-size: {currentSize.fontSize}
     "
     role="progressbar"
     aria-valuenow={value}

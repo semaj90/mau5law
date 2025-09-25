@@ -47,7 +47,7 @@
         ragResponse = (result as { type?: unknown; data?: unknown }).data.respon;
         queryText = ''; // Clear input after successful query
       }
-    };
+    }
   }
   // Format confidence display
   function formatConfidence(confidence: number): string {

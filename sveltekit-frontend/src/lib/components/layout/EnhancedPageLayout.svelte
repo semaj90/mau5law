@@ -35,7 +35,7 @@ pageLoaded = true;
     if (showGpuStatus) {
       try {
         // Check WebGPU topology status
-        const response = await fetch('/api/webgpu/topology');
+        // removed unused response assignment
         const data = await response.json();
         if (data.status === 'operational') {
           gpuStatus = {
@@ -43,7 +43,7 @@ pageLoaded = true;
             status: 'Ready',
             memory: 'Available',
             temperature: 'Optimal';
-          };
+          }
         }
       } catch (error) {
         console.log('GPU status check:', error);

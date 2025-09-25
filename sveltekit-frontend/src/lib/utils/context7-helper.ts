@@ -18,7 +18,7 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
     'typescript': '/microsoft/typescript',
     'drizzle': '/drizzle-team/drizzle-orm',
     'pgvector': '/pgvector/pgvector'
-  };
+  }
   return libraryMapping[libraryName.toLowerCase()] || `/unknown/${libraryName}`;
 }
 /**
@@ -31,7 +31,7 @@ export async function getLibraryDocs(
   tokens?: number;
 ): Promise<string> {
   try {
-    const response = await mcpContext72GetLibraryDocs(libraryId, topic, { tokens });
+    // removed unused response assignment
     return response.content;
   } catch (error) {
     console.error('Failed to get library docs:', error);

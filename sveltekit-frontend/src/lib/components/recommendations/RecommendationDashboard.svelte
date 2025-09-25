@@ -73,7 +73,7 @@
         workInProgress: work.data?.filter((w: any) => w.status === 'in-progress').length || 0,
         aiRecommendations: 12, // AI recommendation count
         loading: false;
-      };
+      }
       // Compile recent activity
       recentActivity = [
         ...(cases.data?.slice(0, 2).map((c: any) => ({,
@@ -111,7 +111,7 @@
         workInProgress: 2,
         aiRecommendations: 8,
         loading: false;
-      };
+      }
       recentActivity = [
         {
           id: 'mock-activity-001',
@@ -119,7 +119,7 @@
           title: 'Smith vs. Corporate Dynamics',
           timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
           priority: 'high',
-          confidence: 0.85;
+          confidence: 0.85,
         },
         {
           id: 'mock-activity-002',
@@ -127,7 +127,7 @@
           title: 'employment contract termination',
           timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
           priority: 'medium',
-          confidence: 0.78;
+          confidence: 0.78,
         },
         {
           id: 'mock-activity-003',
@@ -182,30 +182,39 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     }
   });
 </script>
+
 <DiamondModal bind:isOpen title="🎯 Recommendation Engine" size="xl">
   <div class="space-y-6">
     <!-- Tab Navigation -->
     <div class="flex space-x-2 p-1 bg-slate-800/50 rounded-lg border border-slate-600">
       <button
-        class="px-4 py-2 rounded transition-all {activeTab === 'overview' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
-        onclick={() => activeTab = 'overview'}
+        class="px-4 py-2 rounded transition-all {activeTab === 'overview'
+          ? 'bg-blue-600 text-white'
+          : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
+        onclick={() => (activeTab = 'overview')}
       >
         📊 Overview
       </button>
       <button
-        class="px-4 py-2 rounded transition-all {activeTab === 'search' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
-        onclick={() => activeTab = 'search'}
+        class="px-4 py-2 rounded transition-all {activeTab === 'search'
+          ? 'bg-blue-600 text-white'
+          : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
+        onclick={() => (activeTab = 'search')}
       >
         🔍 Search History
       </button>
       <button
-        class="px-4 py-2 rounded transition-all {activeTab === 'work' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
-        onclick={() => activeTab = 'work'}
+        class="px-4 py-2 rounded transition-all {activeTab === 'work'
+          ? 'bg-blue-600 text-white'
+          : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
+        onclick={() => (activeTab = 'work')}
       >
         💼 Work Activity
       </button>
       <button
-        class="px-4 py-2 rounded transition-all {activeTab === 'ai' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
+        class="px-4 py-2 rounded transition-all {activeTab === 'ai'
+          ? 'bg-blue-600 text-white'
+          : 'text-slate-300 hover:text-white hover:bg-slate-700'}"
         onclick={() => activeTab === 'ai'}
       >
         🤖 AI Assistant
@@ -244,30 +253,28 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <!-- Quick Actions -->
         <Card class="bg-slate-800/60 border-slate-600">
           <CardHeader>
-            <CardTitle class="text-white flex items-center gap-2">
-              ⚡ Quick Actions
-            </CardTitle>
+            <CardTitle class="text-white flex items-center gap-2">⚡ Quick Actions</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Button
                 variant="outline"
                 class="w-full justify-start text-slate-300 border-slate-600 hover:bg-slate-700"
-                onclick={() => showSearchModal = true}
+                onclick={() => (showSearchModal = true)}
               >
                 🔍 View Search History
               </Button>
               <Button
                 variant="outline"
                 class="w-full justify-start text-slate-300 border-slate-600 hover:bg-slate-700"
-                onclick={() => showWorkModal = true}
+                onclick={() => (showWorkModal = true)}
               >
                 💼 Work Activity
               </Button>
               <Button
                 variant="outline"
                 class="w-full justify-start text-slate-300 border-slate-600 hover:bg-slate-700"
-                onclick={() => showAIModal = true}
+                onclick={() => (showAIModal = true)}
               >
                 🤖 AI Assistant
               </Button>
@@ -277,9 +284,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <!-- Recent Activity -->
         <Card class="bg-slate-800/60 border-slate-600">
           <CardHeader>
-            <CardTitle class="text-white flex items-center gap-2">
-              📈 Recent Activity
-            </CardTitle>
+            <CardTitle class="text-white flex items-center gap-2">📈 Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
             {#if stats.loading}
@@ -288,9 +293,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                 <p class="text-slate-400 mt-2">Loading activity...</p>
               </div>
             {:else if recentActivity.length === 0}
-              <div class="text-center py-8 text-slate-400">
-                No recent activity found
-              </div>
+              <div class="text-center py-8 text-slate-400">No recent activity found</div>
             {:else}
               <div class="space-y-3">
                 {#each recentActivity as activity}
@@ -327,7 +330,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           <div class="text-center">
             <h3 class="text-xl font-bold text-white mb-4">🔍 Search History & Insights</h3>
             <p class="text-slate-300 mb-6">View your recent searches, patterns, and AI-powered search suggestions.</p>
-            <Button onclick={() => showSearchModal = true} class="bg-blue-600 hover:bg-blue-700">
+            <Button onclick={() => (showSearchModal = true)} class="bg-blue-600 hover:bg-blue-700">
               Open Search Dashboard
             </Button>
           </div>
@@ -339,8 +342,10 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <CardContent class="p-6">
           <div class="text-center">
             <h3 class="text-xl font-bold text-white mb-4">💼 Work Activity Tracker</h3>
-            <p class="text-slate-300 mb-6">Monitor your case work, time tracking, and progress across all legal matters.</p>
-            <Button onclick={() => showWorkModal = true} class="bg-green-600 hover:bg-green-700">
+            <p class="text-slate-300 mb-6">
+              Monitor your case work, time tracking, and progress across all legal matters.
+            </p>
+            <Button onclick={() => (showWorkModal = true)} class="bg-green-600 hover:bg-green-700">
               Open Work Dashboard
             </Button>
           </div>
@@ -352,8 +357,10 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <CardContent class="p-6">
           <div class="text-center">
             <h3 class="text-xl font-bold text-white mb-4">🤖 AI Recommendation Assistant</h3>
-            <p class="text-slate-300 mb-6">Get intelligent insights, case analysis, and workflow optimization from Gemma3 Legal AI.</p>
-            <Button onclick={() => showAIModal = true} class="bg-purple-600 hover:bg-purple-700">
+            <p class="text-slate-300 mb-6">
+              Get intelligent insights, case analysis, and workflow optimization from Gemma3 Legal AI.
+            </p>
+            <Button onclick={() => (showAIModal = true)} class="bg-purple-600 hover:bg-purple-700">
               Launch AI Assistant
             </Button>
           </div>

@@ -28,11 +28,12 @@ https: //svelte.dev/e/props_duplicate -->
     enableNotifications: true
     fontFamily: 'Arial',
     fontSize: '16px';
-  };
+  }
   // Bindable props with defaults
   let { isOpen = $bindable(false)  }: { isOpen = $bindable(false) : unknown } = $props();
   let { settings = $bindable<Settings>(defaultSettings)  }: { settings = $bindable<Settings>(defaultSettings) : unknown } = $props();
 </script>
+
 {#if isOpen}
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -109,3 +110,4 @@ https: //svelte.dev/e/props_duplicate -->
     </div>
   </div>
 {/if}
+;

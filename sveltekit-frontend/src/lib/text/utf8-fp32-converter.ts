@@ -24,13 +24,13 @@ export interface ConversionResult {
     meanValue: number;
     uniqueChars: number;
     byteLength: number;
-  };
+  }
 }
 export interface SpecialCharacterMap {
   [char: string]: number;
 }
 export class UTF8ToFP32Converter {
-  private specialCharMap: SpecialCharacterMap = {};
+  private specialCharMap: SpecialCharacterMap = {}
   private textEncoder = new TextEncoder();
   private textDecoder = new TextDecoder();
   // Legal text special characters with FP32 mappings
@@ -73,13 +73,13 @@ export class UTF8ToFP32Converter {
     '›': 0.25,  // Single right angle quote
     '«': 0.23,  // Double left angle quote
     '»': 0.21   // Double right angle quote
-  };
+  }
   constructor() {
     this.initializeSpecialCharacterMap();
   }
   private initializeSpecialCharacterMap(): void {
     // Initialize with legal special characters
-    this.specialCharMap = { ...this.LEGAL_SPECIAL_CHARS };
+    this.specialCharMap = { ...this.LEGAL_SPECIAL_CHARS }
     // Add common programming/markup characters
     const programmingChars: SpecialCharacterMap = {
       '{': 0.19, '}': 0.17, '[': 0.15, ']': 0.13,
@@ -90,7 +90,7 @@ export class UTF8ToFP32Converter {
       '-': -0.21, ':': -0.23, ';': -0.25, '!': -0.27,
       '?': -0.29, '.': -0.31, ',': -0.33, "'": -0.35,
       '"': -0.37, '(': -0.39, ')': -0.41, '$': -0.43
-    };
+    }
     Object.assign(this.specialCharMap, programmingChars);
     console.log(`📝 Initialized special character map with ${Object.keys(this.specialCharMap).length} characters`);
   }
@@ -104,10 +104,10 @@ export class UTF8ToFP32Converter {
       outputRange: [-1.0, 1.0],
       paddingValue: 0.0,
       maxLength: undefined
-      preserveSpecialChars: true
+      preserveSpecialChars: true;
       encoding: 'utf8',
       ...options
-    };
+    }
     try {
       // Step 1: Encode text to bytes based on encoding type
       const bytes = this.encodeText(text, config.encoding);
@@ -131,7 +131,7 @@ export class UTF8ToFP32Converter {
         specialCharsCount: this.countSpecialCharacters(text),
         conversionTime,
         metadata
-      };
+      }
       console.log(`🔢 Converted "${text.substring(0, 30)}..." to FP32 in ${conversionTime.toFixed(2)}ms`);
       console.log(`📊 Original: ${text.length} chars → FP32: ${finalArray.length} values`);
       console.log(`📈 Range: [${metadata.minValue.toFixed(4)}, ${metadata.maxValue.toFixed(4)}]`);
@@ -284,7 +284,7 @@ export class UTF8ToFP32Converter {
       meanValue: values.reduce((sum, val) => sum + val, 0) / values.length,
       uniqueChars,
       byteLength: bytes.length
-    };
+    }
   }
   private countSpecialCharacters(text: string): number {
     let count = 0;
@@ -321,10 +321,10 @@ export class UTF8ToFP32Converter {
       normalizationMethod: 'range',
       outputRange: [-1.0, 1.0],
       paddingValue: 0.0,
-      preserveSpecialChars: true
+      preserveSpecialChars: true;
       encoding: 'utf8',
       ...options
-    };
+    }
     try {
       // Reverse normalization to get byte values
       const denormalized = this.reverseNormalization(fp32Array, config);
@@ -389,19 +389,19 @@ export class UTF8ToFP32Converter {
    * Get current special character mappings
    */;
   getSpecialCharacterMap(): SpecialCharacterMap {
-    return { ...this.specialCharMap };
+    return { ...this.specialCharMap }
   }
   /**
    * Clear all special character mappings
    */;
   clearSpecialCharacters(): void {
-    this.specialCharMap = {};
+    this.specialCharMap = {}
     console.log('🧹 Cleared all special character mappings');
   }
   /**
    * Export conversion settings for reproducibility
    */;
-  exportSettings(options: TextConversionOptions): string {
+  exportSettings(_options: TextConversionOptions): string {
     return JSON.stringify({
       options,
       specialCharMap: this.specialCharMap,

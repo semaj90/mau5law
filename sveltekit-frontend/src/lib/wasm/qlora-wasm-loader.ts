@@ -34,7 +34,7 @@ interface QLoRAModelConfig {
     size: number; // in MB
     contextLength: number;
     vocabulary: number;
-  };
+  }
   adapter: {
     name: string;
     path: string;
@@ -42,18 +42,18 @@ interface QLoRAModelConfig {
     alpha: number;
     targetModules: string[];
     size: number; // in MB
-  };
+  }
   quantization: {
     enabled: boolean;
     bits: 4 | 8;
     groupSize: number;
-  };
+  }
   runtime: {
     maxThreads: number;
-    memoryLimit: number; // in MB,
+    memoryLimit: number; // in MB
     enableStreaming: boolean;
     batchSize: number;
-  };
+  }
 }
 // Inference Result
 interface QLoRAInferenceResult {
@@ -64,14 +64,14 @@ interface QLoRAInferenceResult {
     promptEval: number;
     generation: number;
     tokensPerSecond: number;
-  };
+  }
   metadata: {
     modelId: number;
     adapterId?: number;
     temperature: number;
     topP: number;
     contextUsed: number;
-  };
+  }
 }
 export class QLoRAWasmLoader {
   private wasmModule: QLoRAWasmModule | null = null;
@@ -93,7 +93,7 @@ export class QLoRAWasmLoader {
       enableStreaming: true
       batchSize: 1
     }
-  };
+  }
   constructor() {
     console.log('🧠 QLoRA WebAssembly Loader initialized');
   }
@@ -237,7 +237,7 @@ export class QLoRAWasmLoader {
    */
   async generateText(
     modelKey: string
-    prompt: string
+    prompt: string;
     options: {
       maxTokens?: number;
       temperature?: number;
@@ -303,7 +303,7 @@ export class QLoRAWasmLoader {
           topP,
           contextUsed: prompt.length + generatedText.length
         }
-      };
+      }
       console.log(`✅ Text generated: ${tokens.length} tokens in ${totalTime.toFixed(0)}ms`);
       console.log(`⚡ Speed: ${tokensPerSecond.toFixed(1)} tokens/second`);
       // Record inference for reinforcement learning
@@ -356,7 +356,7 @@ export class QLoRAWasmLoader {
       averageSpeed: 15.2, // tokens/second
       modelSize: config.baseModel.size,
       adapterSize: config.adapter.size
-    };
+    }
   }
   /**
    * Unload model to free memory
@@ -397,7 +397,7 @@ export class QLoRAWasmLoader {
         return this.mockGenerateResponse(prompt);
       },
       generateStream: (modelId: number, prompt: string, maxTokens: number, callback: (token: string) => void) => {
-        const response = this.mockGenerateResponse(prompt);
+        // removed unused response assignment
         const tokens = (response as { split?: any; length?: any }).split(' ');
         tokens.forEach((token, index) => {
           setTimeout(() => callback(token + ' '), index * 50);
@@ -426,7 +426,7 @@ export class QLoRAWasmLoader {
         console.log(`Mock: GPU acceleration ${enable ? 'enabled' : 'disabled'}`);
         return enable;
       }
-    };
+    }
   }
   /**
    * Mock response generator for development
@@ -452,7 +452,7 @@ export class QLoRAWasmLoader {
    */
   private async recordInference(
     prompt: string
-    response: string
+    response: string;
     result: QLoRAInferenceResult;
   ): Promise<void> {
     try {

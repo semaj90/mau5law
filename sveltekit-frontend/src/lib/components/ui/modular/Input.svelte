@@ -28,10 +28,10 @@ https://svelte.dev/e/js_parse_error -->
     min?: number | string;
     max?: number | string;
     // Events
-    oninput?: (event: Event & { currentTarget: HTMLInputElement }) => void;
-    onchange?: (event: Event & { currentTarget: HTMLInputElement }) => void;
-    onfocus?: (event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
-    onblur?: (event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
+    oninput?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
+    onchange?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
+    onfocus?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
+    onblur?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
     // Labels and validation
     label?: string;
     helperText?: string;
@@ -111,19 +111,16 @@ https://svelte.dev/e/js_parse_error -->
   let inputClass = $derived(cn(inputVariants({ variant, size, state }), class));
   let helperClass = $derived(helperTextVariants({ state }));
   // Handle input events
-  function handleInput(event: Event & { currentTarget: HTMLInputElement }) {
+  function handleInput(_event: Event & { currentTarget: HTMLInputElement }) {
     value = type === 'number' ? +event.currentTarget.value: event.currentTarget.valu;
     oninput?.(event);
   }
 </script>
+
 <div class="input-wrapper w-full">
   <!-- Label -->
   {#if label}
-    <label
-      for={inputId}
-      class="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-1";
-      class:required
-    >
+    <label for={inputId} class="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-1" ; class:required>
       {label}
       {#if required}
         <span class="text-red-500 ml-1">*</span>
@@ -147,9 +144,11 @@ https://svelte.dev/e/js_parse_error -->
       {disabled}
       {readonly}
       {required}
-      class={cn(inputClass, icon && 'pl-10', suffix && 'pr-12')} oninput={handleInput} onchange={onchange}
-      onfocus={onfocus}
-      onblur={onblur}
+      class={cn(inputClass, icon && 'pl-10', suffix && 'pr-12')}
+      oninput={handleInput}
+      {onchange}
+      {onfocus}
+      {onblur}
       {...restProps}
     />
     <!-- Suffix -->
@@ -170,6 +169,7 @@ https://svelte.dev/e/js_parse_error -->
     </p>
   {/if}
 </div>
+
 <style>
   /* YoRHa-specific input styling */
   .yorha-input {

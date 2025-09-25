@@ -226,4 +226,4 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       message_note: 'AI services unavailable - using intelligent pattern matching'
   })
 })
-export const POST = redisOptimized.aiChat(originalPOSTHandler)
+export const POST = redisOptimized.aiChat(originalPOSTHandler);

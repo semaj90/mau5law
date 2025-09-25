@@ -24,17 +24,17 @@ export class ClientEmbeddingGenerator {
       // Wait for worker initialization
       await new Promise((resolve, reject) => {
         const timeout: ReturnType<typeof setTimeout> = setTimeout(() => reject(new Error('Worker initialization timeout')), 30000);
-        this.worker!.onmessage = (event: any) => {
+        this.worker!.onmessage = (_event: any) => {
           if (event.data.type === 'initialized') {
             clearTimeout(timeout);
             this.initialized = true;
             resolve(true);
           }
-        };
+        }
         this.worker!.onerror = (error) => {
           clearTimeout(timeout);
           reject(error);
-        };
+        }
         this.worker!.postMessage({
           type: 'initialize',
           model: this.embedModel
@@ -62,14 +62,14 @@ export class ClientEmbeddingGenerator {
         const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
           reject(new Error('Embedding generation timeout'));
         }, 60000); // 60 second timeout
-        this.worker!.onmessage = (event: any) => {
+        this.worker!.onmessage = (_event: any) => {
           clearTimeout(timeout);
           if (event.data.success) {
             resolve(new Float32Array(event.data.embedding));
           } else {
             reject(new Error(event.data.error));
           }
-        };
+        }
         this.worker!.postMessage({
           type: 'generate_embedding',
           text: text
@@ -88,7 +88,7 @@ export class ClientEmbeddingGenerator {
   /**
    * Generate embeddings for legal documents with legal-specific preprocessing
    */;
-  async generateLegalDocumentEmbedding(document: LegalDocument): Promise<Float32Array | null> {
+  async generateLegalDocumentEmbedding(_document: LegalDocument): Promise<Float32Array | null> {
     try {
       // Construct legal-optimized text for embedding
       const embeddingText = this.prepareLegalText(document);
@@ -112,7 +112,7 @@ export class ClientEmbeddingGenerator {
         const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
           reject(new Error('Batch embedding timeout'));
         }, 120000); // 2 minute timeout for batches
-        this.worker!.onmessage = (event: any) => {
+        this.worker!.onmessage = (_event: any) => {
           clearTimeout(timeout);
           if (event.data.success) {
             const embeddings = event.data.embeddings.map((emb: number[]) =>
@@ -122,7 +122,7 @@ export class ClientEmbeddingGenerator {
           } else {
             reject(new Error(event.data.error);
           }
-        };
+        }
         this.worker!.postMessage({
           type: 'generate_batch_embeddings',
           texts: texts
@@ -154,7 +154,7 @@ export class ClientEmbeddingGenerator {
   /**
    * Prepare legal document text for optimal embedding generation
    */;
-  private prepareLegalText(document: LegalDocument): string {
+  private prepareLegalText(_document: LegalDocument): string {
     const components = [];
     // Add document title with legal emphasis
     if (document.title) {
@@ -242,7 +242,7 @@ export class ClientEmbeddingGenerator {
       model: this.embedModel,
       dimensions: dimensions
       initialized: this.initialized
-    };
+    }
   }
   /**
    * Check if the client can support embedding generation
@@ -262,12 +262,12 @@ export class ClientEmbeddingGenerator {
     try {
       return new Promise((resolve) => {
         const timeout: ReturnType<typeof setTimeout> = setTimeout(() => resolve(null), 5000);
-        this.worker!.onmessage = (event: any) => {
+        this.worker!.onmessage = (_event: any) => {
           if (event.data.type === 'memory_stats') {
             clearTimeout(timeout);
             resolve(event.data.stats);
           }
-        };
+        }
         this.worker!.postMessage({ type: 'get_memory_stats' });
       });
     } catch (error: any) {
@@ -371,7 +371,7 @@ export class EmbeddingCache {
       maxSize: this.maxCacheSize,
       hitRate: 0, // Would need to track hits/misses
       memoryUsage: this.cache.size * 384 * 4 // Approximate bytes
-    };
+    }
   }
 }
 export const embeddingCache = new EmbeddingCache();

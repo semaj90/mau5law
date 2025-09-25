@@ -47,19 +47,19 @@
       inline: 'relative rounded-lg shadow-md hover:shadow-lg border',
       compact: 'relative rounded-md shadow-sm hover:shadow-md border',
       full: 'w-full rounded-lg shadow-md hover:shadow-lg border p-4';
-    };
+    }
     const positions = {
       'bottom-right': 'bottom-6 right-6',
       'bottom-left': 'bottom-6 left-6',
       'top-right': 'top-6 right-6',
       'top-left': 'top-6 left-6'
-    };
+    }
     const statusColors = {
       idle: 'bg-yorha-bg-secondary border-yorha-border-primary text-yorha-text-primary',
       processing: 'bg-yorha-primary/10 border-yorha-primary text-yorha-primary animate-pulse',
       listening: 'bg-red-500/10 border-red-500 text-red-400 animate-pulse',
       connected: 'bg-yorha-accent-gold/10 border-yorha-accent-gold text-yorha-accent-gold';
-    };
+    }
   let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
     if (variant === 'floating') {
       classes += ` ${positions[position]}`;
@@ -95,30 +95,22 @@
       processing: { color: 'bg-yorha-primary', pulse: true },
       listening: { color: 'bg-red-500', pulse: true },
       connected: { color: 'bg-yorha-accent-gold', pulse: false }
-    };
+    }
     const config = statusConfig[aiStatus];
     return {
       class: `w-2 h-2 rounded-full ${config.color} ${config.pulse ? 'animate-pulse' : ''}`,
       title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1);
-    };
+    }
   }
 </script>
+
 <!-- Floating Variant -->
 {#if variant === 'floating'}
-  <button
-    class={buttonClasses}
-  data-status={aiStatus}
-  onclick={handleClick}
-    {disabled}
-    aria-label="Open AI Assistant"
-  >
+  <button class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled} aria-label="Open AI Assistant">
     <div class="relative p-4">
       <Brain class="w-8 h-8" />
       {#if showStatus}
-        <div
-          class="absolute -top-1 -right-1 {StatusIndicator().class}"
-          title={StatusIndicator().title}
-        ></div>
+        <div class="absolute -top-1 -right-1 {StatusIndicator().class}" title={StatusIndicator().title}></div>
       {/if}
       {#if showBadge && unreadCount > 0}
         <Badge
@@ -129,30 +121,26 @@
       {/if}
     </div>
   </button>
-<!-- Inline Variant -->
+  <!-- Inline Variant -->
 {:else if variant === 'inline'}
-  <button aria-label="Action button"
-    class={buttonClasses}
-  data-status={aiStatus}
-  onclick={handleClick}
-    {disabled}
-  >
+  <button aria-label="Action button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled}>
     <div class="flex items-center gap-3 px-4 py-3">
       <div class="relative">
         <Brain class="w-6 h-6" />
         {#if showStatus}
-          <div
-            class="absolute -bottom-1 -right-1 {StatusIndicator().class}"
-            title={StatusIndicator().title}
-          ></div>
+          <div class="absolute -bottom-1 -right-1 {StatusIndicator().class}" title={StatusIndicator().title}></div>
         {/if}
       </div>
       <div class="flex flex-col items-start">
         <span class="font-semibold text-sm">AI Assistant</span>
         <span class="text-xs text-yorha-text-secondary">
-          {aiStatus === 'connected' ? 'Ready to help' :
-           aiStatus === 'processing' ? 'Processing...' :
-           aiStatus === 'listening' ? 'Listening...' : 'Offline'}
+          {aiStatus === 'connected'
+            ? 'Ready to help'
+            : aiStatus === 'processing'
+              ? 'Processing...'
+              : aiStatus === 'listening'
+                ? 'Listening...'
+                : 'Offline'}
         </span>
       </div>
       {#if voiceEnabled}
@@ -160,8 +148,17 @@
           class="ml-auto p-1 hover:bg-yorha-bg-hover rounded inline-flex items-center justify-center cursor-pointer"
           role="button"
           tabindex="0"
-          onclick={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
-          onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
+          onclick={e => {
+            e.stopPropagation();
+            toggleVoiceInput();
+          }}
+          onkeydown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleVoiceInput();
+            }
+          }}
           aria-label={isListening ? 'Stop listening' : 'Start voice input'}
         >
           {#if isListening}
@@ -179,33 +176,25 @@
     </div>
   </button>
   <!-- Compact Variant with Tooltip -->
-  {:else if variant === 'compact'}
-    <button
-      class={buttonClasses}
-      data-status={aiStatus}
-      onclick={handleClick}
-      {disabled}
-      aria-label="AI Assistant"
-      title={`AI Assistant — Status: ${aiStatus}${unreadCount > 0 ? ` — ${unreadCount} new` : ''}`}
-    >
-      <div class="relative p-2">
-        <Brain class="w-5 h-5" />
-        {#if showStatus}
-          <div
-            class="absolute -top-0.5 -right-0.5 {StatusIndicator().class}"
-            title={StatusIndicator().title}
-          ></div>
-        {/if}
-      </div>
-    </button>
-<!-- Full Variant -->
-{:else if variant === 'full'}
-  <button aria-label="Action button"
+{:else if variant === 'compact'}
+  <button
     class={buttonClasses}
-  data-status={aiStatus}
-  onclick={handleClick}
+    data-status={aiStatus}
+    onclick={handleClick}
     {disabled}
+    aria-label="AI Assistant"
+    title={`AI Assistant — Status: ${aiStatus}${unreadCount > 0 ? ` — ${unreadCount} new` : ''}`}
   >
+    <div class="relative p-2">
+      <Brain class="w-5 h-5" />
+      {#if showStatus}
+        <div class="absolute -top-0.5 -right-0.5 {StatusIndicator().class}" title={StatusIndicator().title}></div>
+      {/if}
+    </div>
+  </button>
+  <!-- Full Variant -->
+{:else if variant === 'full'}
+  <button aria-label="Action button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled}>
     <div class="flex items-center justify-between w-full">
       <div class="flex items-center gap-4">
         <div class="relative">
@@ -229,9 +218,7 @@
               Context7 Enhanced
             </span>
             {#if aiStatus === 'connected'}
-              <span class="text-xs px-2 py-1 bg-green-500/10 text-green-400 rounded-full">
-                Online
-              </span>
+              <span class="text-xs px-2 py-1 bg-green-500/10 text-green-400 rounded-full"> Online </span>
             {/if}
           </div>
         </div>
@@ -242,8 +229,17 @@
             class="p-2 hover:bg-yorha-bg-hover rounded-lg inline-flex items-center justify-center cursor-pointer"
             role="button"
             tabindex="0"
-            onclick={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
-            onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
+            onclick={e => {
+              e.stopPropagation();
+              toggleVoiceInput();
+            }}
+            onkeydown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleVoiceInput();
+              }
+            }}
             aria-label={isListening ? 'Stop listening' : 'Start voice input'}
           >
             {#if isListening}
@@ -266,6 +262,7 @@
     </div>
   </button>
 {/if}
+
 <!-- Remove the disabled tooltip section as it's now handled in the compact variant above -->
 <style>
   .ai-assistant-btn {
@@ -279,12 +276,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(var(--yorha-accent-gold-rgb), 0.2),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(var(--yorha-accent-gold-rgb), 0.2), transparent);
     transition: left 0.5s ease;
   }
   .ai-assistant-btn:hover::before {
@@ -292,10 +284,15 @@
   }
   /* Pulse animation for processing state */
   @keyframes ai-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
-  .ai-assistant-btn[data-status="processing"] {
+  .ai-assistant-btn[data-status='processing'] {
     animation: ai-pulse 2s infinite;
   }
   /* Glowing effect for floating button */

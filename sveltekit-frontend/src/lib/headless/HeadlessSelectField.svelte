@@ -25,7 +25,7 @@
     required?: boolean;
     description?: string;
     class?: string;
-    onChange?: (event: { name: string; value: string | null }) => void;
+    onChange?: (_event: { name: string; value: string | null }) => void;
   }
   let {
     name,
@@ -73,7 +73,7 @@
     mounted = true;
     return () => {
       mounted = false;
-    };
+    }
   });
   function updateValue(v: string | null) {
     if (current === v) return;
@@ -85,16 +85,17 @@
       onChange({ name, value: v });
     }
   }
-  function handleValueChange(event: CustomEvent<string>) {
+  function handleValueChange(_event: CustomEvent<string>) {
     updateValue(event.detail);
   }
 </script>
-<FormField name={name} errors={errors}>
+
+<FormField {name} {errors}>
   {#snippet control()}
-    <div  class={className} {...rest}>
-      <SelectRoot bind:value={current} disabled={disabled} onValueChange={handleValueChange}>
+    <div class={className} {...rest}>
+      <SelectRoot bind:value={current} {disabled} onValueChange={handleValueChange}>
         <SelectTrigger>
-          <SelectValue placeholder={placeholder} />
+          <SelectValue {placeholder} />
         </SelectTrigger>
         <SelectContent>
           {#if emptyOptionLabel}
@@ -105,7 +106,8 @@
           {/each}
         </SelectContent>
       </SelectRoot>
-      <input type="hidden" name={name} value={current || ''} />
+      <input type="hidden" {name} value={current || ''} />
     </div>
   {/snippet}
 </FormField>
+;

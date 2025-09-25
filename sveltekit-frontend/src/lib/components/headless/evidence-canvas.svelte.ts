@@ -8,16 +8,16 @@ export interface EvidenceItem {
 	id: string;
 	type: 'photo' | 'document' | 'physical' | 'digital';
 	name: string;
-	position: { x: number; y: number };
+	position: { x: number; y: number }
 	rotation: number;
 	scale: number;
 	textureId?: string;
-	metadata: { [key: string]: any };
+	metadata: { [key: string]: any }
 	connections: string[];
 }
 export interface CanvasState {
 	zoom: number;
-	pan: { x: number; y: number };
+	pan: { x: number; y: number }
 	selectedItems: string[];
 	mode: 'view' | 'edit' | 'present';
 	showConnections: boolean;
@@ -37,7 +37,7 @@ export function useEvidenceCanvas() {
 		pan: { x: 0, y: 0 },
 		selectedItems: [],
 		mode: 'view',
-		showConnections: true
+		showConnections: true;
 		filter: 'all'
 	});
 	// Interaction state
@@ -62,7 +62,7 @@ export function useEvidenceCanvas() {
 			rotation: item.rotation || 0,
 			scale: item.scale || 1.0,
 			connections: item.connections || []
-		};
+		}
 		evidenceItems.set(id, evidenceItem);
 		saveToHistory();
 		return id;
@@ -89,7 +89,7 @@ export function useEvidenceCanvas() {
 	function updateEvidenceItem(itemId: string, updates: Partial<EvidenceItem>) {
 		const item = evidenceItems.get(itemId);
 		if (!item) return;
-		const updatedItem = { ...item, ...updates };
+		const updatedItem = { ...item, ...updates }
 		evidenceItems.set(itemId, updatedItem);
 		saveToHistory();
 	}
@@ -212,7 +212,7 @@ export function useEvidenceCanvas() {
 	 * Handle mouse/pointer events
 	 */;
 	function handlePointerDown(x: number, y: number, itemId?: string) {
-		dragStartPos = { x, y };
+		dragStartPos = { x, y }
 		if (itemId) {
 			if (!selectedItems.has(itemId)) {
 				selectItems([itemId]);
@@ -244,7 +244,7 @@ export function useEvidenceCanvas() {
 			// Pan canvas
 			panCanvas(deltaX, deltaY);
 		}
-		dragStartPos = { x, y };
+		dragStartPos = { x, y }
 	}
 	function handlePointerUp() {
 		isDragging = false;
@@ -305,7 +305,7 @@ export function useEvidenceCanvas() {
 			canvasState,
 			canvasSize,
 			timestamp: new Date().toISOString()
-		};
+		}
 	}
 	/**
 	 * Import canvas data
@@ -316,7 +316,7 @@ export function useEvidenceCanvas() {
 			data.evidenceItems.forEach(([id, item]: [string, EvidenceItem]) => {
 				evidenceItems.set(id, item);
 			});
-			canvasState = { ...canvasState, ...data.canvasState };
+			canvasState = { ...canvasState, ...data.canvasState }
 			if (data.canvasSize) {
 				canvasSize = data.canvasSize;
 			}
@@ -387,5 +387,5 @@ export function useEvidenceCanvas() {
 		setHoveredItem: (itemId: string | null) => { hoveredItem = itemId; },
 		setCanvasSize: (size: { width: number; height: number }) => { canvasSize = size; },
 		setViewport: (size: { width: number; height: number }) => { viewport = size; }
-	};
+	}
 }

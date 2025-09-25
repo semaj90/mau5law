@@ -9,19 +9,19 @@ function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
     timestamp: new Date().toISOString(),
     metadata: {
       version: '1.0',
-      processed: false
+      processed: false;
       tags: ['legal', 'document', 'test']
     }
   }
   switch (size) {
     case 'small':
-      return { ...baseObj, data: 'x'.repeat(100) }; // ~200 bytes
+      return { ...baseObj, data: 'x'.repeat(100) } // ~200 bytes
     case 'medium':
-      return { ...baseObj, data: 'x'.repeat(5000) }; // ~5KB
+      return { ...baseObj, data: 'x'.repeat(5000) } // ~5KB
     case 'large':
-      return { ...baseObj, data: 'x'.repeat(50000), chunks: Array(100).fill(baseObj) }; // ~50KB
+      return { ...baseObj, data: 'x'.repeat(50000), chunks: Array(100).fill(baseObj) } // ~50KB
     case 'xlarge':
-      return { ...baseObj, data: 'x'.repeat(500000), chunks: Array(1000).fill(baseObj) }; // ~500KB
+      return { ...baseObj, data: 'x'.repeat(500000), chunks: Array(1000).fill(baseObj) } // ~500KB
     default:
       return baseObj
   }

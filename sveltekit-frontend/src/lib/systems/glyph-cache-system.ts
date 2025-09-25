@@ -21,7 +21,7 @@ export interface GlyphTexture {
     height: number;
     pixelDensity: number;
     colorDepth: number;
-  };
+  }
 }
 export interface GlyphFont {
   fontName: string;
@@ -66,7 +66,7 @@ export class GlyphCacheSystem {
     renderingTime: 0,
     compressionRatio: 0,
     nesPatternEfficiency: 0
-  };
+  }
   private cacheHits = 0;
   private cacheRequests = 0;
   private cleanupInterval: number;
@@ -154,12 +154,12 @@ export class GlyphCacheSystem {
     const font: GlyphFont = {
       fontName: fontKey
       fontSize,
-      fontStyle: fontStyle as any
+      fontStyle: fontStyle as any;
       glyphs: new Map(),
       totalGlyphs: 0,
       cacheSize: 0,
       lastOptimized: Date.now()
-    };
+    }
     this.fonts.set(fontKey, font);
     console.log(`📝 Created font cache: ${fontKey}`);
   }
@@ -192,7 +192,7 @@ export class GlyphCacheSystem {
         pixelDensity: 1,
         colorDepth: 32 // RGBA
       }
-    };
+    }
     return glyph;
   }
   private generateNESPattern(char: string, fontStyle: string): Uint8Array {
@@ -222,7 +222,7 @@ export class GlyphCacheSystem {
       'D': [0x78, 0x6C, 0x66, 0x66, 0x66, 0x6C, 0x78, 0x00],
       'E': [0x7E, 0x60, 0x60, 0x78, 0x60, 0x60, 0x7E, 0x00],
       ' ': [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
-    };
+    }
     const charPattern = patterns[char] || this.generateFallbackPattern(charCode);
     // Convert to 8x8 pixel array
     for (let row = 0; row < 8; row++) {
@@ -319,9 +319,9 @@ export class GlyphCacheSystem {
     const styleColors = {
       classic: [255, 255, 255, 255], // White
       modern: [0, 255, 0, 255],      // Green
-      legal: [255, 215, 0, 255],     // Gold
+      legal: [255, 215, 0, 255],     // Gold;
       retro: [255, 0, 255, 255]      // Magenta
-    };
+    }
     const color = styleColors[fontStyle] || styleColors.legal;
     // Render pattern to image data
     for (let i = 0; i < 64; i++) {
@@ -426,18 +426,18 @@ export class GlyphCacheSystem {
   }
   private persistCache(): void {
     try {
-      const cacheData = {};
+      const cacheData = {}
       this.fonts.forEach((font, key) => {
-        const glyphData = {};
+        const glyphData = {}
         font.glyphs.forEach((glyph, char) => {
           glyphData[char] = {
             charCode: glyph.charCode,
             nesPattern: Array.from(glyph.nesPattern),
             chrRomBankId: glyph.chrRomBankId,
             accessCount: glyph.accessCount
-          };
+          }
         });
-        cacheData[key] = { ...font, glyphs: glyphData };
+        cacheData[key] = { ...font, glyphs: glyphData }
       });
       localStorage.setItem('glyph_cache_system', JSON.stringify(cacheData);
       console.log('💾 Glyph cache persisted to storage');
@@ -465,7 +465,7 @@ export class GlyphCacheSystem {
    * Get glyph cache metrics
    */;
   getMetrics(): GlyphCacheMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   /**
    * Clear entire cache
@@ -573,7 +573,7 @@ export class GlyphCacheSystem {
         synthesized: combo
         confidence: this.calculateConfidence(combo, inputGlyphs),
         didYouMean,
-        llmGenerated: true
+        llmGenerated: true;
         embeddings: embedding
       });
     }
@@ -671,7 +671,7 @@ export const glyphCacheSystem = new GlyphCacheSystem();
  * Convenience functions
  */
 export async function getCachedGlyph(
-  char: string
+  char: string;
   style: 'classic' | 'modern' | 'legal' | 'retro' = 'legal';
 ): Promise<GlyphTexture> {
   return await glyphCacheSystem.getGlyph(char, style);

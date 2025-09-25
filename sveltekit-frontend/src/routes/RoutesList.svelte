@@ -1,12 +1,13 @@
 <svelte:options runes={true} />
+
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   /* Route Discovery & Enhanced UX (Svelte 5 runes) */
   // @ts-ignore Vite glob (eager for static analysis)
-  const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as { [key: string]: any };
+  const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as { [key: string]: any }
   // Collect API endpoints separately for reference (non-page server routes)
   // @ts-ignore
-  const apiModules = import.meta.glob('/src/routes/api/**/+server.ts', { eager: true }) as { [key: string]: any };
+  const apiModules = import.meta.glob('/src/routes/api/**/+server.ts', { eager: true }) as { [key: string]: any }
   interface DiscoveredRoute { path: string; label: string; dynamic: boolean; segments: string[]; group: string; kind: 'page' | 'api' }
   interface RouteProp { path: string; label: string }
   interface Props { routes?: RouteProp[] }
@@ -34,13 +35,13 @@
       const segments = pathForLink.split.filter(Boolean);
       const group = segments[0] || 'root';
       return {
-        path: pathForLink
+        path: pathForLink,
         label: deriveLabel(pathForLink, mod),
         dynamic,
         segments,
         group,
         kind: 'page' as const;
-      };
+      }
     });
     const apis = Object.keys.map((filePath) => {
       let apiPath = filePath.replace.replace(/\/\+server\.ts$/, '');
@@ -50,13 +51,13 @@
       const segments = pathForLink.split.filter(Boolean);
       const group = segments[1] ? `api:${segments[1]}` : 'api';
       return {
-        path: pathForLink
+        path: pathForLink;
         label: `API ${humanize(segments.slice(-1)[0] || 'endpoint')}`,
         dynamic,
         segments,
         group,
         kind: 'api' as const;
-      };
+      }
     });
     // Deduplicate by path preferring page over api for same path
     const map = new Map<string, DiscoveredRoute>();
@@ -66,7 +67,7 @@
     return [...map.values()].sort((a, b) => a.path.localeCompare(b.path));
   }
   const discovered = buildDiscovered();
-  const { routes: providedRoutes } = $props() as { routes?: RouteProp[] };
+  const { routes: providedRoutes } = $props() as { routes?: RouteProp[] }
   // Merge provided routes (e.g., from server config) — don't lose labels
   const merged: DiscoveredRoute[] = (() => {
     if (!providedRoutes || providedRoutes.length === 0) return discovered;
@@ -108,19 +109,15 @@
   );
   function toggleGroup(g: string) {
     groupCollapse[g] = !groupCollapse[g];
-    groupCollapse = { ...groupCollapse };
+    groupCollapse = { ...groupCollapse }
   }
 </script>
+
 <div class="routes-panel" data-testid="routes-panel">
   <header class="panel-header">
     <h2 id="routes-heading">All Routes</h2>
     <div class="controls" aria-describedby="routes-heading">
-      <input
-        type="search"
-        placeholder="Filter routes..."
-        bind:value={search}
-        aria-label="Filter routes"
-      />
+      <input type="search" placeholder="Filter routes..." bind:value={search} aria-label="Filter routes" />
       <label class="toggle"><input type="checkbox" bind:checked={showPages} /> Pages</label>
       <label class="toggle"><input type="checkbox" bind:checked={showAPI} /> API</label>
     </div>
@@ -131,7 +128,13 @@
     <div class="groups">
       {#each Object.keys.sort() as g}
         <section class="group" aria-labelledby={`group-${g}`}>
-          <button class="group-header" type="button" onclick={() => toggleGroup(g)} aria-expanded={!groupCollapse[g]} id={`group-${g}`}>
+          <button
+            class="group-header"
+            type="button"
+            onclick={() => toggleGroup(g)}
+            aria-expanded={!groupCollapse[g]}
+            id={`group-${g}`}
+          >
             <span>{g === 'root' ? 'Root' : g}</span>
             <span class="count">{grouped[g].length}</span>
             <span class="chevron" aria-hidden="true">{groupCollapse[g] ? '▸' : '▾'}</span>
@@ -155,29 +158,152 @@
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
-  .routes-panel { margin:2rem auto; max-width:1000px; background:#fff; border-radius:0.75rem; box-shadow:0 2px 5px rgba(0,0,0,.08); padding:1.5rem 2rem; }
-  .panel-header { display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between; margin-bottom:1rem; }
-  .panel-header h2 { font-size:1.6rem; color:#111827; margin:0; }
-  .controls { display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; }
-  .controls input[type=search]{ padding:.5rem .75rem; border:1px solid #d1d5db; border-radius:.5rem; font-size:.875rem; min-width:220px; }
-  .controls input[type=search]:focus{ outline:2px solid #2563eb; outline-offset:1px; }
-  .toggle { font-size:.75rem; display:flex; gap:.35rem; align-items:center; text-transform:uppercase; letter-spacing:.05em; }
-  .groups { display:grid; gap:1rem; }
-  .group { border:1px solid #e5e7eb; border-radius:.5rem; background:#f9fafb; }
-  .group-header { width:100%; background:#f3f4f6; border:0; cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:.6rem .9rem; font-weight:600; font-size:.9rem; text-align:left; }
-  .group-header:hover{ background:#e5e7eb; }
-  .group-header .count { background:#1f2937; color:#fff; font-size:.65rem; padding:.25rem .45rem; border-radius:1rem; }
-  .chevron { font-size:.9rem; opacity:.7; }
-  .route-list { list-style:none; margin:0; padding:.35rem .75rem .75rem; display:grid; gap:.4rem; }
-  .route-item a { display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; padding:.45rem .55rem; background:#fff; border:1px solid #e5e7eb; border-radius:.4rem; text-decoration:none; font-size:.8rem; line-height:1.1; color:#1f2937; transition:background .12s,border-color .12s; }
-  .route-item a:hover { background:#f3f4f6; border-color:#cbd5e1; }
-  .route-item code { background:#1f2937; color:#f8fafc; padding:.15rem .4rem; border-radius:.35rem; font-size:.7rem; }
-  .label { font-weight:500; }
-  .badge { background:#2563eb; color:#fff; font-size:.55rem; padding:.15rem .4rem; border-radius:.4rem; text-transform:uppercase; letter-spacing:.05em; }
-  .badge.api { background:#059669; }
-  .route-.is-dynamic code { background:#92400e; }
-  .empty { padding:2rem; text-align:center; color:#6b7280; }
-  @media (min-width: 700px){ .route-list { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); } }
+  .routes-panel {
+    margin: 2rem auto;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem 2rem;
+  }
+  .panel-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .panel-header h2 {
+    font-size: 1.6rem;
+    color: #111827;
+    margin: 0;
+  }
+  .controls {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .controls input[type='search'] {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    min-width: 220px;
+  }
+  .controls input[type='search']:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 1px;
+  }
+  .toggle {
+    font-size: 0.75rem;
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .groups {
+    display: grid;
+    gap: 1rem;
+  }
+  .group {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: #f9fafb;
+  }
+  .group-header {
+    width: 100%;
+    background: #f3f4f6;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.9rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: left;
+  }
+  .group-header:hover {
+    background: #e5e7eb;
+  }
+  .group-header .count {
+    background: #1f2937;
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.45rem;
+    border-radius: 1rem;
+  }
+  .chevron {
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+  .route-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.35rem 0.75rem 0.75rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .route-item a {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.45rem 0.55rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.4rem;
+    text-decoration: none;
+    font-size: 0.8rem;
+    line-height: 1.1;
+    color: #1f2937;
+    transition:
+      background 0.12s,
+      border-color 0.12s;
+  }
+  .route-item a:hover {
+    background: #f3f4f6;
+    border-color: #cbd5e1;
+  }
+  .route-item code {
+    background: #1f2937;
+    color: #f8fafc;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    font-size: 0.7rem;
+  }
+  .label {
+    font-weight: 500;
+  }
+  .badge {
+    background: #2563eb;
+    color: #fff;
+    font-size: 0.55rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge.api {
+    background: #059669;
+  }
+  .route-.is-dynamic code {
+    background: #92400e;
+  }
+  .empty {
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+  }
+  @media (min-width: 700px) {
+    .route-list {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+  }
 </style>

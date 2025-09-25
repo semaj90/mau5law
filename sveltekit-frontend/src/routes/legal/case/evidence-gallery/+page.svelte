@@ -31,13 +31,13 @@
     title: string;
     type: 'VIDEO' | 'DOCUMENT' | 'PHOTO' | 'AUDIO';
     description: string;
-    position: { x: number; y: number };
+    position: { x: number; y: number }
     connections: string[];
     metadata?: {
       timestamp?: string;
       location?: string;
       source?: string;
-    };
+    }
   }
   $effect(() => {
     initializeEvidenceBoard();
@@ -100,7 +100,7 @@
       description: 'New evidence item',
       position: { x: Math.random() * 400 + 200, y: Math.random() * 300 + 200 },
       connections: [];
-    };
+    }
     canvasItems = [...canvasItems, newEvidence];
   }
   function startConnection(item: EvidenceCard) {
@@ -113,15 +113,15 @@
         from: selectedItem.id,
         to: (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id,
         type: 'correlation';
-      };
+      }
       connections = [...connections, newConnection];
       // Update item connections
       canvasItems = canvasItems.map(i => {
         if (i.id === selectedItem.id) {
-          return { ...i, connections: [...i.connections, (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id] };
+          return { ...i, connections: [...i.connections, (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id] }
         }
         if (i.id === (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id) {
-          return { ...i, connections: [...i.connections, selectedItem.id] };
+          return { ...i, connections: [...i.connections, selectedItem.id] }
         }
         return i;
       });
@@ -136,15 +136,15 @@
   // Drag and drop functionality
   let draggedItem = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
-  function handleMouseDown(event: MouseEvent, item: EvidenceCard) {
+  function handleMouseDown(_event: MouseEvent, item: EvidenceCard) {
     draggedItem = item;
     const rect = event.currentTarget.getBoundingClientRect();
     dragOffset = {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top;
-    };
+    }
   }
-  function handleMouseMove(event: MouseEvent) {
+  function handleMouseMove(_event: MouseEvent) {
     if (draggedItem) {
       const canvas = document.getElementById('evidence-canvas');
       const rect = canvas.getBoundingClientRect();

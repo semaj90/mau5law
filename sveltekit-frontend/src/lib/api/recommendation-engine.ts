@@ -13,7 +13,7 @@ interface RecentCaseResponse {
     highestPriority: number;
     algorithm: string;
     cacheExpiry: number;
-  };
+  }
 }
 interface RecentCase {
   id: string;
@@ -31,7 +31,7 @@ interface RecentCase {
     daysOpen: number;
     documentCount: number;
     lastActivity: string;
-  };
+  }
 }
 /**
  * Fetch recent cases from recommendation engine

@@ -16,7 +16,7 @@ export interface LibraryDocsResponse {
     version?: string;
     topic?: string;
     tokenCount: number;
-  };
+  }
   snippets?: {
     title: string;
     code: string;

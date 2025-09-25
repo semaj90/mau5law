@@ -9,7 +9,7 @@ import {
   criminals,
   personsOfInterest,
   legalDocuments,
-  notes
+  notes,
 } from './unified-schema.js';
 // Inferred types from schema
 export type Case = InferSelectModel<typeof cases>;
@@ -37,16 +37,16 @@ export type CaseWithRelations = Case & {
   notes?: Note[];
   leadProsecutor?: User;
   createdBy?: User;
-};
+}
 export type EvidenceWithRelations = Evidence & {
   case?: Case;
   uploadedBy?: User;
-};
+}
 export type ReportWithRelations = Report & {
   case?: Case;
   createdBy?: User;
   lastEditedBy?: User;
-};
+}
 // Re-export schema tables
 export {
   cases,
@@ -56,5 +56,5 @@ export {
   criminals,
   personsOfInterest,
   legalDocuments,
-  notes
+  notes,
 } from './unified-schema.js';

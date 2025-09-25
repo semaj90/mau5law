@@ -4,9 +4,9 @@
  * - Provides coarse-grained TTL and versioning
  */
 type RedisJSON = {
-  getJSON: <T = unknown>(key: string) => Promise<T | null>;
-  setJSON: (key: string, value: unknown, ttlSeconds?: number) => Promise<void>;
-};
+  getJSON: <T = unknown>(_key: string) => Promise<T | null>;
+  setJSON: (_key: string, value: unknown, ttlSeconds?: number) => Promise<void>;
+}
 let cache: RedisJSON | null = null;
 async function ensure() {
   if (cache) return cache;
@@ -20,7 +20,7 @@ async function ensure() {
   return cache;
 }
 export interface EmbeddingShard {
-  id: string; // e.g., doc:chunk: hash
+  id: string; // e.g., doc:chunk: hash;
   dim: number;
   vec: number[]; // small shards or PQ codebooks in future
   createdAt: string;
@@ -37,26 +37,32 @@ export interface CHRManifest {
   createdAt: string;
 }
 export async function putEmbeddingShard(shard: EmbeddingShard, ttlSec = 24 * 3600) {
-  const c = await ensure(); if (!c) return;
+  const c = await ensure();
+  if (!c) return;
   await c.setJSON(`index:shard:${shard.id}`, shard, ttlSec);
 }
 export async function getEmbeddingShard(id: string) {
-  const c = await ensure(); if (!c) return null;
+  const c = await ensure();
+  if (!c) return null;
   return c.getJSON<EmbeddingShard>(`index:shard:${id}`);
 }
 export async function putRankingBitmap(b: RankingBitmap, ttlSec = 3600) {
-  const c = await ensure(); if (!c) return;
+  const c = await ensure();
+  if (!c) return;
   await c.setJSON(`index:rank:${b.id}`, b, ttlSec);
 }
 export async function getRankingBitmap(id: string) {
-  const c = await ensure(); if (!c) return null;
+  const c = await ensure();
+  if (!c) return null;
   return c.getJSON<RankingBitmap>(`index:rank:${id}`);
 }
 export async function putCHRManifest(m: CHRManifest, ttlSec = 600) {
-  const c = await ensure(); if (!c) return;
+  const c = await ensure();
+  if (!c) return;
   await c.setJSON(`index:chr:${m.id}`, m, ttlSec);
 }
 export async function getCHRManifest(id: string) {
-  const c = await ensure(); if (!c) return null;
+  const c = await ensure();
+  if (!c) return null;
   return c.getJSON<CHRManifest>(`index:chr:${id}`);
 }

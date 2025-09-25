@@ -9,7 +9,12 @@ import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import crypto from 'node:crypto';
-import { evidenceUploadSchema, getFileTypeFromMime, validateFileSize, validateFileType } from '$lib/schemas/evidence-upload.js';
+import {
+  evidenceUploadSchema,
+  getFileTypeFromMime,
+  validateFileSize,
+  validateFileType,
+} from '$lib/schemas/evidence-upload.js';
 import { db, cases, evidence, helpers } from '$lib/server/db';
 import type { PageServerLoad, Actions } from './$types.js';
 export const load: PageServerLoad = async ({ locals }) => {
@@ -22,23 +27,23 @@ export const load: PageServerLoad = async ({ locals }) => {
         id: cases.id,
         title: cases.title,
         case_number: cases.case_number,
-        status: cases.status
+        status: cases.status,
       })
       .from(cases)
-  .where(helpers.eq(cases.status, 'active') as any)
+      .where(helpers.eq(cases.status, 'active') as any)
       .orderBy(cases.created_at);
     return {
       form,
-      cases: userCases
-    };
+      cases: userCases,
+    }
   } catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
-      cases: []
-    };
+      cases: [],
+    }
   }
-};
+}
 export const actions: Actions = {
   upload: async ({ request, locals }) => {
     const formData = await request.formData();
@@ -52,8 +57,8 @@ export const actions: Actions = {
       return fail(400, {
         form: {
           ...form,
-          errors: { file: ['Please select a file to upload'] }
-        }
+          errors: { file: ['Please select a file to upload'] },
+        },
       });
     }
     // Validate file size
@@ -61,12 +66,12 @@ export const actions: Actions = {
       return fail(400, {
         form: {
           ...form,
-          errors: { file: ['File size exceeds the maximum limit of 100MB'] }
-        }
+          errors: { file: ['File size exceeds the maximum limit of 100MB'] },
+        },
       });
     }
     // Determine evidence type from file if not specified
-  let evidenceType = form.data.evidence_type as any;
+    let evidenceType = form.data.evidence_type as any;
     if (evidenceType === 'UNKNOWN' || !evidenceType) {
       evidenceType = getFileTypeFromMime(file.type);
     }
@@ -75,24 +80,24 @@ export const actions: Actions = {
       return fail(400, {
         form: {
           ...form,
-          errors: { file: [`File type ${file.type} is not supported for ${evidenceType} evidence`] }
-        }
+          errors: { file: [`File type ${file.type} is not supported for ${evidenceType} evidence`] },
+        },
       });
     }
     try {
       // Verify the case exists (if case_id is provided)
-    if (form.data.case_id) {
+      if (form.data.case_id) {
         const caseRecord = await db
           .select()
           .from(cases)
-      .where(helpers.eq(cases.id, form.data.case_id) as any)
+          .where(helpers.eq(cases.id, form.data.case_id) as any)
           .limit(1);
         if (caseRecord.length === 0) {
           return fail(400, {
             form: {
               ...form,
-              errors: { case_id: ['Selected case not found'] }
-            }
+              errors: { case_id: ['Selected case not found'] },
+            },
           });
         }
       }
@@ -102,7 +107,7 @@ export const actions: Actions = {
       const randomSuffix = crypto.randomBytes(8).toString('hex');
       const storageKey = `evidence/${form.data.case_id}/${timestamp}-${randomSuffix}${fileExtension}`;
       // Create upload directory
-  const uploadDir = path.join(process.cwd(), 'uploads', 'evidence', form.data.case_id || 'default');
+      const uploadDir = path.join(process.cwd(), 'uploads', 'evidence', form.data.case_id || 'default');
       if (!existsSync(uploadDir)) {
         await mkdir(uploadDir, { recursive: true });
       }
@@ -123,7 +128,7 @@ export const actions: Actions = {
           ocrFormData.append('file', new Blob([fileBuffer], { type: file.type }), file.name);
           const ocrResponse = await fetch('/api/ocr/extract', {
             method: 'POST',
-            body: ocrFormData
+            body: ocrFormData,
           });
           if (ocrResponse.ok) {
             ocrResult = await ocrResponse.json();
@@ -132,7 +137,7 @@ export const actions: Actions = {
               pages: ocrResult.pages,
               averageConfidence: ocrResult.averageConfidence,
               legalConceptsFound: ocrResult.legalConcepts?.length || 0,
-              citationsFound: ocrResult.citations?.length || 0
+              citationsFound: ocrResult.citations?.length || 0,
             });
           } else {
             console.warn('OCR processing failed:', ocrResponse.statusText);
@@ -143,62 +148,62 @@ export const actions: Actions = {
       }
       // Generate rich metadata based on file type
       let metadata: any = {
-        kind: evidenceType
+        kind: evidenceType,
         uploadedAt: new Date().toISOString(),
         fileSize: file.size,
         processingOptions: {
           enableAiAnalysis: form.data.enableAiAnalysis,
           enableOcr: form.data.enableOcr,
           enableEmbeddings: form.data.enableEmbeddings,
-          enableSummarization: form.data.enableSummarization
-        }
-      };
+          enableSummarization: form.data.enableSummarization,
+        },
+      }
       switch (evidenceType) {
         case 'PDF':
           metadata = {
             ...metadata,
             kind: 'PDF',
             pageCount: ocrResult?.pages || 1,
-            isEncrypted: false
+            isEncrypted: false,
             title: file.name,
             extractedText: ocrResult?.text,
             legalConcepts: ocrResult?.legalConcepts || [],
             citations: ocrResult?.citations || [],
-            ocrConfidence: ocrResult?.averageConfidence
-          };
+            ocrConfidence: ocrResult?.averageConfidence,
+          }
           break;
         case 'IMAGE':
           metadata = {
             ...metadata,
             kind: 'IMAGE',
-            resolution: { width: 0, height: 0 }, // Would be extracted with sharp
+            resolution: { width: 0, height: 0 }, // Would be extracted with sharp,
             format: file.type.split('/')[1] || 'unknown',
             hasAlphaChannel: file.type === 'image/png',
             extractedText: ocrResult?.text,
-            ocrConfidence: ocrResult?.averageConfidence
-          };
+            ocrConfidence: ocrResult?.averageConfidence,
+          }
           break;
         case 'VIDEO':
           metadata = {
             kind: 'VIDEO',
-            durationSeconds: 0, // Would be extracted with ffprobe
+            durationSeconds: 0, // Would be extracted with ffprobe,
             resolution: { width: 0, height: 0 },
             codec: 'unknown',
             frameRate: 0,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString()
-          };
+            uploadedAt: new Date().toISOString(),
+          }
           break;
         case 'AUDIO':
           metadata = {
             kind: 'AUDIO',
-            durationSeconds: 0, // Would be extracted with ffprobe
+            durationSeconds: 0, // Would be extracted with ffprobe,
             codec: 'unknown',
             sampleRate: 44100,
             channels: 2,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString()
-          };
+            uploadedAt: new Date().toISOString(),
+          }
           break;
         case 'TEXT':
           // For text files, we can read the content
@@ -207,29 +212,29 @@ export const actions: Actions = {
             kind: 'TEXT',
             wordCount: textContent.split(/\s+/).filter(item => item.length),
             characterCount: textContent.length,
-            language: 'unknown', // Could detect with a language detection library
+            language: 'unknown', // Could detect with a language detection library,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString()
-          };
+            uploadedAt: new Date().toISOString(),
+          }
           break;
         default:
           metadata = {
             kind: 'UNKNOWN',
             fileSize: file.size,
-            uploadedAt: new Date().toISOString()
-          };
+            uploadedAt: new Date().toISOString(),
+          }
       }
       // Insert evidence record into database with unified schema
       const evidenceRecord = await db
         .insert(evidence)
         .values({
           case_id: form.data.case_id || null,
-          uploader_id: locals.user?.id || 'anonymous', // Assuming user session is available
+          uploader_id: locals.user?.id || 'anonymous', // Assuming user session is available,
           title: form.data.title,
           description: form.data.description || null,
-          evidence_type: evidenceType as any
-          file_url: fileUrl
-          storage_key: storageKey
+          evidence_type: evidenceType as any,
+          file_url: fileUrl,
+          storage_key: storageKey,
           file_hash: `sha256:${fileHash}`,
           file_size: file.size.toString(),
           metadata: {
@@ -242,14 +247,16 @@ export const actions: Actions = {
             collectedBy: form.data.collectedBy || 'system',
             location: form.data.location,
             chainOfCustody: form.data.chainOfCustody || [],
-            ocrResult: ocrResult ? {,
-              extractedText: ocrResult.text,
-              confidence: ocrResult.averageConfidence,
-              legalConcepts: ocrResult.legalConcepts,
-              citations: ocrResult.citations,
-              pageCount: ocrResult.pages
-            } : null
-          }
+            ocrResult: ocrResult
+              ? {
+                  extractedText: ocrResult.text,
+                  confidence: ocrResult.averageConfidence,
+                  legalConcepts: ocrResult.legalConcepts,
+                  citations: ocrResult.citations,
+                  pageCount: ocrResult.pages,
+                }
+              : null,
+          },
         })
         .returning();
       console.log('Evidence uploaded successfully:', {
@@ -257,7 +264,7 @@ export const actions: Actions = {
         title: evidenceRecord[0].title,
         type: evidenceRecord[0].evidence_type,
         size: file.size,
-        hash: fileHash.substring(0, 8) + '...'
+        hash: fileHash.substring(0, 8) + '...',
       });
       // Trigger Go Upload Service for additional processing
       try {
@@ -270,7 +277,7 @@ export const actions: Actions = {
         uploadFormData.append('evidenceType', evidenceType);
         const goServiceResponse = await fetch('http://localhost:5173/api/upload/go-service', {
           method: 'POST',
-          body: uploadFormData
+          body: uploadFormData,
         });
         if (goServiceResponse.ok) {
           const goResult = await goServiceResponse.json();
@@ -282,9 +289,9 @@ export const actions: Actions = {
               goServiceProcessing: {
                 embeddings: goResult.embeddings,
                 analysis: goResult.analysis,
-                processedAt: new Date().toISOString()
-              }
-            };
+                processedAt: new Date().toISOString(),
+              },
+            }
           }
         } else {
           console.warn('⚠️ Go upload service processing failed:', goServiceResponse.statusText);
@@ -300,11 +307,11 @@ export const actions: Actions = {
       return fail(500, {
         form: {
           ...form,
-          errors: { file: ['Failed to upload file. Please try again.'] }
-        }
+          errors: { file: ['Failed to upload file. Please try again.'] },
+        },
       });
     }
     // Redirect to evidence list or case details
     throw redirect(302, `/cases/${form.data.case_id}/evidence`);
-  }
-};
+  },
+}

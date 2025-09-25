@@ -24,7 +24,7 @@ interface DeviceCapabilities {
   cores: number;
   gpu: 'basic' | 'discrete' | 'integrated' | 'unknown';
   connection: 'slow' | 'fast' | 'unknown';
-  screenSize: { width: number; height: number };
+  screenSize: { width: number; height: number }
   pixelRatio: number;
   webgl: boolean;
   webgpu: boolean;
@@ -76,7 +76,7 @@ export class GamingEvolutionManager {
     soundEnabled: true
     particleEffects: true
     retroShaders: true
-  };
+  }
     this.initialize();
   }
   public static getInstance(config?: Partial<ProgressiveGamingConfig>): GamingEvolutionManager {
@@ -112,7 +112,7 @@ export class GamingEvolutionManager {
       pixelRatio: window.devicePixelRatio || 1,
       webgl: this.hasWebGL(),
       webgpu: await this.hasWebGPU()
-    };
+    }
     this.capabilities = capabilities;
     console.log('🎮 Detected device capabilities:', capabilities);
   }
@@ -192,7 +192,7 @@ export class GamingEvolutionManager {
           this.upgradeEra();
         }
       }
-    };
+    }
     setInterval(checkMemory, 5000); // Check every 5 seconds
   }
   private evaluatePerformance(): void {
@@ -217,7 +217,7 @@ export class GamingEvolutionManager {
     this.currentState = {
       ...this.currentState,
       performanceLevel: level
-    };
+    }
     // Auto-adjust era based on performance
     if (this.config.enableAutoEvolution) {
       if (level === 'low' && this.currentState.currentEra === 'n64') {
@@ -247,7 +247,7 @@ export class GamingEvolutionManager {
     this.currentState = {
       ...this.currentState,
       isTransitioning: true
-    };
+    }
     this.notifyListeners();
     // Wait for transition
     await new Promise(resolve => setTimeout(resolve, this.currentState.transitionDuration);
@@ -255,7 +255,7 @@ export class GamingEvolutionManager {
       ...this.currentState,
       currentEra: era
       isTransitioning: false
-    };
+    }
     this.notifyListeners();
     console.log(`🎮 Gaming era switched to: ${era}`);
   }
@@ -298,22 +298,22 @@ export class GamingEvolutionManager {
     callback(this.currentState);
     return () => {
       this.listeners.delete(callback);
-    };
+    }
   }
   private notifyListeners(): void {
     this.listeners.forEach(callback => callback(this.currentState);
   }
   public getCurrentState(): GamingThemeState {
-    return { ...this.currentState };
+    return { ...this.currentState }
   }
   public getCapabilities(): DeviceCapabilities | null {
     return this.capabilities ? { ...this.capabilities } : null;
   }
   public getConfig(): ProgressiveGamingConfig {
-    return { ...this.config };
+    return { ...this.config }
   }
   public updateConfig(updates: Partial<ProgressiveGamingConfig>): void {
-    this.config = { ...this.config, ...updates };
+    this.config = { ...this.config, ...updates }
     if (updates.enableAutoEvolution !== undefined) {
       if (updates.enableAutoEvolution) {
         this.setupPerformanceMonitoring();

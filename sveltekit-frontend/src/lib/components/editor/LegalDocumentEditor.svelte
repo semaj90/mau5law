@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({,
-          question: query
+          question: query;
           context: { content, documentType, caseId },
           options: { includeReferences: true },
         }),
@@ -128,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
           "Content-Type": "application/json",
         },
         body: JSON.stringify(length),
-          isDirty: hasUnsavedChanges
+          isDirty: hasUnsavedChanges;
         }),
       });
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
       if (autoSaveTimer) {
         clearTimeout(autoSaveTimer);
   }
-    };
+    }
   });
   // Reactive statement to trigger auto-save when content changes
   // TODO: Convert to $derived: if (content && documentId && !loadingDocument) {
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
   }}
   // Custom animation function for dialog
   function flyAndScale(
-    node: Element
+    node: Element;
     params: { duration?: number; y?: number; start?: number } = ) {
     const style = getComputedStyle(node);
     const transform = style.transform === "none" ? "" : style.transform;
@@ -271,15 +271,15 @@ https://svelte.dev/e/js_parse_error -->
       const percentage = (valueA - minA) / (maxA - minA);
       const valueB = percentage * (maxB - minB) + minB;
       return valueB;
-    };
+    }
     const styleToString = (
       style: Record<string, number | string | undefined>
     ): string => {
       return Object.keys.reduce((str, key) => {
         if (style[key] === undefined) return str;
-        return str + `${key}:${style[key]};`;
+        return str + `${key}:${style[key]}`;
       }, "");
-    };
+    }
     return {
       duration: params.duration ?? 150,
       delay: 0,
@@ -291,23 +291,19 @@ https://svelte.dev/e/js_parse_error -->
           opacity: t * opacity,
         });
       },
-      easing: quintOut
-    };
+      easing: quintOut;
+    }
   }
 </script>
+
 <!-- Main Document Editor Container -->
 <div class="container mx-auto px-4">
   <!-- Header with semantic styling -->
-  <header
-    class="container mx-auto px-4"
-  >
+  <header class="container mx-auto px-4">
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <div class="container mx-auto px-4">
-          <svelte:component
-            this={getDocumentTypeIcon()}
-            class="container mx-auto px-4"
-          />
+          <svelte:component this={getDocumentTypeIcon()} class="container mx-auto px-4" />
           <div>
             <h1 class="container mx-auto px-4">{title}</h1>
             <p class="container mx-auto px-4">
@@ -323,15 +319,10 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Document Actions Dropdown -->
         <div class="container mx-auto px-4">
-          <button
-            class="container mx-auto px-4"
-            aria-label="Help"
-          >
+          <button class="container mx-auto px-4" aria-label="Help">
             <AlertCircle class="container mx-auto px-4" />
           </button>
-          <button
-            class="container mx-auto px-4"
-          >
+          <button class="container mx-auto px-4">
             <Settings class="container mx-auto px-4" />
             <span>Actions</span>
             <ChevronDown class="container mx-auto px-4" />
@@ -359,9 +350,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="container mx-auto px-4">
         <!-- Document Editor (2/3 width) -->
         <div class="container mx-auto px-4">
-          <div
-            class="container mx-auto px-4"
-          >
+          <div class="container mx-auto px-4">
             <div class="container mx-auto px-4">
               <div class="container mx-auto px-4">
                 <div class="container mx-auto px-4">
@@ -375,13 +364,8 @@ https://svelte.dev/e/js_parse_error -->
                     <u>U</u>
                   </button>
                   <span class="container mx-auto px-4">|</span>
-                  <button class="container mx-auto px-4" title="Insert Citation">
-                    📚
-                  </button>
-                  <button
-                    class="container mx-auto px-4"
-                    title="AI Assistant"
-                  >
+                  <button class="container mx-auto px-4" title="Insert Citation"> 📚 </button>
+                  <button class="container mx-auto px-4" title="AI Assistant">
                     <Brain class="container mx-auto px-4" />
                   </button>
                 </div>
@@ -393,32 +377,19 @@ https://svelte.dev/e/js_parse_error -->
             <!-- Text Editor Area -->
             <div class="container mx-auto px-4">
               {#if loadingDocument}
-                <div
-                  class="container mx-auto px-4"
-                >
+                <div class="container mx-auto px-4">
                   <div class="container mx-auto px-4">
-                    <Loader2
-                      class="container mx-auto px-4"
-                    />
+                    <Loader2 class="container mx-auto px-4" />
                     <p class="container mx-auto px-4">Loading document...</p>
                   </div>
                 </div>
               {:else if documentLoadError}
-                <div
-                  class="container mx-auto px-4"
-                >
+                <div class="container mx-auto px-4">
                   <div class="container mx-auto px-4">
                     <AlertCircle class="container mx-auto px-4" />
-                    <p class="container mx-auto px-4">
-                      Failed to load document
-                    </p>
+                    <p class="container mx-auto px-4">Failed to load document</p>
                     <p class="container mx-auto px-4">{documentLoadError}</p>
-                    <button
-                      class="container mx-auto px-4"
-                      onclick={() => loadDocument()}
-                    >
-                      Try Again
-                    </button>
+                    <button class="container mx-auto px-4" onclick={() => loadDocument()}> Try Again </button>
                   </div>
                 </div>
               {:else}
@@ -436,13 +407,9 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Sidebar (1/3 width) -->
         <div class="container mx-auto px-4">
           <!-- Citations Panel -->
-          <div
-            class="container mx-auto px-4"
-          >
+          <div class="container mx-auto px-4">
             <div class="container mx-auto px-4">
-              <h3
-                class="container mx-auto px-4"
-              >
+              <h3 class="container mx-auto px-4">
                 <BookOpen class="container mx-auto px-4" />
                 Citations
               </h3>
@@ -467,9 +434,9 @@ https://svelte.dev/e/js_parse_error -->
                 onclick={() =>
                   insertCitation({
                     id: Math.random.toString(),
-                    text: "Sample Citation",
-                    source: "Smith v. Jones, 123 F.3d 456 (2023)",
-                    type: "case",
+                    text: 'Sample Citation',
+                    source: 'Smith v. Jones, 123 F.3d 456 (2023)',
+                    type: 'case',
                   })}
               >
                 Add Citation
@@ -479,9 +446,7 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Document Info -->
           <div class="container mx-auto px-4">
             <div class="container mx-auto px-4">
-              <h3 class="container mx-auto px-4">
-                Document Info
-              </h3>
+              <h3 class="container mx-auto px-4">Document Info</h3>
             </div>
             <div class="container mx-auto px-4">
               <div class="container mx-auto px-4">
@@ -516,28 +481,16 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 <!-- AI Assistant Dialog -->
 {#if $aiOpen}
-  <div >
-    <div
-      class="container mx-auto px-4"
-      transitifade={{ duration: 150 }}
-    ></div>
-    <div
-      class="container mx-auto px-4"
-      transitiflyAndScale={{ duration: 150, y: 8, start: 0.96 }}
-    >
+  <div>
+    <div class="container mx-auto px-4" transitifade={{ duration: 150 }}></div>
+    <div class="container mx-auto px-4" transitiflyAndScale={{ duration: 150, y: 8, start: 0.96 }}>
       <div class="container mx-auto px-4">
-        <h2
-          class="container mx-auto px-4"
-        >
+        <h2 class="container mx-auto px-4">
           <Brain class="container mx-auto px-4" />
           AI Legal Assistant
         </h2>
-        <p  class="container mx-auto px-4">
-          Ask for help with legal research, drafting, or analysis
-        </p>
-        <button
-          class="container mx-auto px-4"
-        >
+        <p class="container mx-auto px-4">Ask for help with legal research, drafting, or analysis</p>
+        <button class="container mx-auto px-4">
           <X class="container mx-auto px-4" />
         </button>
       </div>
@@ -552,12 +505,7 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
         <div class="container mx-auto px-4">
           <div>
-            <label
-              for="ai-query"
-              class="container mx-auto px-4"
-            >
-              What would you like help with?
-            </label>
+            <label for="ai-query" class="container mx-auto px-4"> What would you like help with? </label>
             <textarea
               id="ai-query"
               bind:value={query}
@@ -567,12 +515,7 @@ https://svelte.dev/e/js_parse_error -->
             ></textarea>
           </div>
           <div class="container mx-auto px-4">
-            <button
-              class="container mx-auto px-4"
-              disabled={isProcessingAI}
-            >
-              Cancel
-            </button>
+            <button class="container mx-auto px-4" disabled={isProcessingAI}> Cancel </button>
             <button
               onclick={() => handleAIRequest()}
               class="container mx-auto px-4"
@@ -594,25 +537,17 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 <!-- Actions Dropdown Menu -->
 {#if $actionsOpen}
-  <div
-    class="container mx-auto px-4"
-  >
-    <button
-      class="container mx-auto px-4"
-    >
+  <div class="container mx-auto px-4">
+    <button class="container mx-auto px-4">
       <Eye class="container mx-auto px-4" />
       Preview
     </button>
-    <button
-      class="container mx-auto px-4"
-    >
+    <button class="container mx-auto px-4">
       <Share2 class="container mx-auto px-4" />
       Share
     </button>
     <div class="container mx-auto px-4"></div>
-    <button
-      class="container mx-auto px-4"
-    >
+    <button class="container mx-auto px-4">
       <X class="container mx-auto px-4" />
       Delete
     </button>
@@ -620,13 +555,11 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 <!-- Help Tooltip -->
 {#if $helpOpen}
-  <div
-    class="container mx-auto px-4"
-  >
-    Use the AI assistant for legal research and drafting help. Click the
-    citation button to add references.
+  <div class="container mx-auto px-4">
+    Use the AI assistant for legal research and drafting help. Click the citation button to add references.
   </div>
 {/if}
+
 <style>
   /* @unocss-include */
   .toolbar-btn {
@@ -635,20 +568,20 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid #d1d5db;
     border-radius: 0.25rem;
     transition: background-color 0.2;
-}
+  }
   .toolbar-btn:hover {
     background-color: #f9fafb;
-}
+  }
   .toolbar-separator {
     color: #d1d5db;
     margin: 0 0.5rem;
-}
+  }
   .ai-button {
     background-color: #eff6ff;
     border-color: #93c5fd;
     color: #1d4ed8;
-}
+  }
   .ai-button:hover {
     background-color: #dbeaf;
-}
+  }
 </style>

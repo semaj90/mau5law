@@ -24,7 +24,7 @@ interface SIMDLangExtractResponse {
   embedding: number[]
   cached: boolean
   model: string
-  tags: string[]
+  tags: string[];
   type: string
   // Enhanced SIMD fields
   simd_results: {
@@ -269,7 +269,7 @@ async function getStandardEmbedding(
 }
 // Batch processing endpoint
 export async function handleBatchProcessing(
-  texts: Array<any>
+  texts: Array<any>;
   config: Partial<TextTileConfig>
 ): Promise<any[]> {
   console.log(`🚀 SIMD batch processing: ${texts.length} texts`)

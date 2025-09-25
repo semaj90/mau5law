@@ -28,7 +28,7 @@ interface SemanticChunk {
   embedding?: number[]
   metadata: {
     wordCount: number
-    sentenceCount: number
+    sentenceCount: number;
     complexity: number
     entities?: string[]
     keyTerms?: string[]
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 }
 async function performSemanticChunking(
-  text: string
+  text: string;
   options: {
     chunkSize: number
     chunkOverlap: number
@@ -287,7 +287,7 @@ async function performParagraphAwareChunking(
   return chunks
 }
 async function performBasicChunking(
-  text: string
+  text: string;
   options: {
     chunkSize: number
     chunkOverlap: number

@@ -13,7 +13,7 @@ export interface WorkerMessage {
   id: string;
   type: 'embeddings' | 'similarity' | 'chunking' | 'processing';
   data: any;
-  options?: { [key: string]: any };
+  options?: { [key: string]: any }
 }
 export interface WorkerResponse {
   id: string;
@@ -21,7 +21,7 @@ export interface WorkerResponse {
   data?: unknown;
   error?: string;
   progress?: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface EmbeddingTask {
   texts: string[];
@@ -33,7 +33,7 @@ export interface ChunkingTask {
   content: string;
   chunkSize: number;
   overlap: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface SimilarityTask {
   queryEmbedding: number[];
@@ -51,7 +51,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       self.addEventListener('message', this.handleMessage.bind(this));
       console.log('🔧 Embedding Worker initialized');
     }
-    private async handleMessage(event: MessageEvent<WorkerMessage>): Promise<void> {
+    private async handleMessage(_event: MessageEvent<WorkerMessage>): Promise<void> {
       const { id, type, data, options } = event.data;
       try {
         let result: any;
@@ -73,18 +73,18 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         }
         this.postResponse({
           id,
-          success: true
+          success: true;
           data: result
         });
       } catch (error: any) {
         this.postResponse({
           id,
-          success: false
+          success: false;
           error: error instanceof Error ? error.message: 'Unknown error'
         });
       }
     }
-    private async processEmbeddings(task: EmbeddingTask, taskId: string): Promise<BatchEmbeddingResult> {
+    private async processEmbeddings(_task: EmbeddingTask, taskId: string): Promise<BatchEmbeddingResult> {
       const { texts, batchSize, model, dimensions } = task;
       const results: EmbeddingResult[] = [];
       const errors: any[] = [];
@@ -129,9 +129,9 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           cacheHits: 0,
           cacheMisses: texts.length
         }
-      };
+      }
     }
-    private async processChunking(task: ChunkingTask, taskId: string): Promise<DocumentChunk[]> {
+    private async processChunking(_task: ChunkingTask, taskId: string): Promise<DocumentChunk[]> {
       const { content, chunkSize, overlap, metadata } = task;
       const chunks = this.splitTextIntoChunks(content, chunkSize, overlap);
       const documentChunks: DocumentChunk[] = [];
@@ -160,7 +160,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       });
       return documentChunks;
     }
-    private async processSimilarity(task: SimilarityTask, taskId: string): Promise<Array<any>> {
+    private async processSimilarity(_task: SimilarityTask, taskId: string): Promise<Array<any>> {
       const { queryEmbedding, targetEmbeddings, threshold, maxResults } = task;
       const similarities: Array<any> = [];
       for (let i = 0; i < targetEmbeddings.length; i++) {
@@ -202,7 +202,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return texts.map((text: any) => ({,
         id: this.generateId(),
         embedding: new Array(dimensions).fill(0).map(() => Math.random() - 0.5),
-        content: text
+        content: text;
         metadata: {
           tokenCount: Math.ceil(text.length / 4),
           processingTime: Math.random() * 100
@@ -260,7 +260,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         readabilityScore: this.calculateReadabilityScore(words, sentences),
         keyPhrases: this.extractKeyPhrases(text),
         sentiment: this.analyzeSentiment(text)
-      };
+      }
     }
     private async performVectorOperations(data: any): Promise<any> {
       const { operation, vectors } = data;
@@ -314,7 +314,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     private extractKeyPhrases(text: string): string[] {
       // Simple key phrase extraction
       const words = text.toLowerCase().split(/\s+/);
-      const phrases: Record<string, number> = {};
+      const phrases: Record<string, number> = {}
       // Extract 2-word and 3-word phrases
       for (let i = 0; i < words.length - 1; i++) {
         const phrase2 = words.slice(i, i + 2).join(' ');
@@ -374,8 +374,8 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
     }
     private flattenObject(obj: any, prefix = ''): { [key: string]: any } {
-      const flattened: { [key: string]: any } = {};
-      Object.keys(obj).forEach((key: any) => {
+      const flattened: { [key: string]: any } = {}
+      Object.keys(obj).forEach((_key: any) => {
         const value = obj[key];
         const newKey = prefix ? `${prefix}.${key}` : key;
         if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
@@ -388,7 +388,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     }
     private groupData(data: any[]): Record<string, unknown[]> {
       // Simple grouping by first property
-      const grouped: Record<string, unknown[]> = {};
+      const grouped: Record<string, unknown[]> = {}
       data.forEach((item: any) => {
         const key = Object.values(item)[0] as string;
         if (!grouped[key]) {
@@ -416,7 +416,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 export class EmbeddingWorkerManager {
   private worker: Worker | null = null;
   private pendingTasks = new Map<string, {
-    resolve: (value: any) => void;
+    resolve: (_value: any) => void;
     reject: (error: Error) => void;
     onProgress?: (progress: number, data?: unknown) => void
   }>();
@@ -436,7 +436,7 @@ export class EmbeddingWorkerManager {
       this.worker.addEventListener('error', this.handleWorkerError.bind(this));
     }
   }
-  private handleWorkerMessage(event: MessageEvent<WorkerResponse>): void {
+  private handleWorkerMessage(_event: MessageEvent<WorkerResponse>): void {
     const { id, success, data, error, progress } = event.data;
     const task = this.pendingTasks.get(id);
     if (!task) return;
@@ -451,7 +451,7 @@ export class EmbeddingWorkerManager {
     }
     this.pendingTasks.delete(id);
   }
-  private handleWorkerError(event: ErrorEvent): void {
+  private handleWorkerError(_event: ErrorEvent): void {
     console.error('Worker error:', event.error);
     // Reject all pending tasks
     for (const [id, task] of this.pendingTasks) {
@@ -459,26 +459,23 @@ export class EmbeddingWorkerManager {
     }
     this.pendingTasks.clear();
   }
-  public async processEmbeddings(
-    task: EmbeddingTask
+  public async processEmbeddings(_task: EmbeddingTask
     onProgress?: (progress: number, data?: unknown) => void
   ): Promise<BatchEmbeddingResult> {
     return this.executeTask('embeddings', task, onProgress);
   }
-  public async processChunking(
-    task: ChunkingTask
+  public async processChunking(_task: ChunkingTask
     onProgress?: (progress: number, data?: unknown) => void
   ): Promise<DocumentChunk[]> {
     return this.executeTask('chunking', task, onProgress);
   }
-  public async processSimilarity(
-    task: SimilarityTask
+  public async processSimilarity(_task: SimilarityTask
     onProgress?: (progress: number, data?: unknown) => void
   ): Promise<Array<any>> {
     return this.executeTask('similarity', task, onProgress);
   }
   public async processGeneral(
-    data: any
+    data: any;
     options: any
     onProgress?: (progress: number, data?: unknown) => void
   ): Promise<any> {

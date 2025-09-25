@@ -1,13 +1,5 @@
-import {
-  canvasStates,
-  cases,
-  criminals,
-  evidence,
-  reports,
-  statutes,
-  users
-} from '../server/db/schema-postgres.js';
-import type { InferInsertModel, InferSelectModel } from "drizzle-orm/table";
+import { canvasStates, cases, criminals, evidence, reports, statutes, users } from '../server/db/schema-postgres.js';
+import type { InferInsertModel, InferSelectModel } from 'drizzle-orm/table';
 // Core database types
 export type Case = InferSelectModel<typeof cases>;
 export type NewCase = InferInsertModel<typeof cases>;
@@ -26,9 +18,8 @@ export interface ExtendedUser extends User {
 export function extendUser(user: User): ExtendedUser {
   return {
     ...user,
-    username:
-      user.name || user.email || `${user.firstName} ${user.lastName}`.trim()
-  };
+    username: user.name || user.email || `${user.firstName} ${user.lastName}`.trim(),
+  }
 }
 export type Evidence = InferSelectModel<typeof evidence>;
 export type NewEvidence = InferInsertModel<typeof evidence>;
@@ -43,10 +34,10 @@ export interface ExtendedEvidence extends Evidence {
 export function extendEvidence(evidence: Evidence): ExtendedEvidence {
   return {
     ...evidence,
-    status: evidence.isAdmissible ? "approved" : "pending",
+    status: evidence.isAdmissible ? 'approved' : 'pending',
     type: evidence.evidenceType,
-    createdAt: evidence.collectedAt || evidence.uploadedAt
-  };
+    createdAt: evidence.collectedAt || evidence.uploadedAt,
+  }
 }
 // Enhanced Report Builder types
 export type Report = InferSelectModel<typeof reports>;
@@ -61,7 +52,7 @@ export interface CitationPoint {
   tags: string[];
   caseId?: string;
   reportId?: string;
-  type: "statute" | "case_law" | "evidence" | "expert_opinion" | "testimony";
+  type: 'statute' | 'case_law' | 'evidence' | 'expert_opinion' | 'testimony';
   aiSummary?: string;
   relevanceScore?: number;
   createdAt: Date;
@@ -75,7 +66,7 @@ export interface NewCitationPoint {
   tags?: string[];
   caseId?: string;
   reportId?: string;
-  type: "statute" | "case_law" | "evidence" | "expert_opinion" | "testimony";
+  type: 'statute' | 'case_law' | 'evidence' | 'expert_opinion' | 'testimony';
   aiSummary?: string;
   relevanceScore?: number;
 }
@@ -88,7 +79,7 @@ export type SessionUser = {
   email?: string | null;
   image?: string | null;
   role?: string | null;
-};
+}
 // Extended Case type with Case Books functionality
 export interface CaseWithBooks extends Case {
   reports?: Report[];
@@ -106,17 +97,13 @@ export interface Book {
   metadata: {
     tags: string[];
     category: string;
-    priority: "low" | "medium" | "high" | "critical";
-    confidentialityLevel:
-      | "public"
-      | "restricted"
-      | "confidential"
-      | "top-secret";
+    priority: 'low' | 'medium' | 'high' | 'critical';
+    confidentialityLevel: 'public' | 'restricted' | 'confidential' | 'top-secret';
     jurisdiction: string;
     createdDate: string;
     lastModified: string;
-    completionStatus: "draft" | "review" | "final" | "archived";
-  };
+    completionStatus: 'draft' | 'review' | 'final' | 'archived';
+  }
   aiSummary?: string;
   aiTags: string[];
   createdBy: string;
@@ -129,12 +116,12 @@ export interface ReportSection {
   title: string;
   content: string; // HTML content from contenteditable,
   order: number;
-  type: "text" | "evidence" | "citation" | "canvas";
+  type: 'text' | 'evidence' | 'citation' | 'canvas';
   metadata?: {
     citations: string[]; // CitationPoint IDs,
     evidenceRefs: string[]; // Evidence IDs
     canvasStateId?: string; // CanvasState ID if type is 'canvas'
-  };
+  }
 }
 export interface ReportWithSections extends Report {
   sections: ReportSection[];
@@ -145,17 +132,12 @@ export interface ReportWithSections extends Report {
 export interface AIAnalysis {
   id: string;
   reportId: string;
-  analysisType:
-    | "summary"
-    | "keyword_extraction"
-    | "sentiment"
-    | "citation_suggestion"
-    | "legal_precedent";
+  analysisType: 'summary' | 'keyword_extraction' | 'sentiment' | 'citation_suggestion' | 'legal_precedent';
   result: {
     content: string;
     confidence: number;
-    metadata: { [key: string]: any };
-  };
+    metadata: { [key: string]: any }
+  }
   timestamp: Date;
 }
 export interface CitationSuggestion {
@@ -169,13 +151,13 @@ export interface CitationSuggestion {
 // Fabric.js Canvas types
 export interface CanvasObject {
   id: string;
-  type: "text" | "image" | "arrow" | "shape" | "highlight" | "evidence-marker";
-  properties: { [key: string]: any }; // Fabric.js object properties
+  type: 'text' | 'image' | 'arrow' | 'shape' | 'highlight' | 'evidence-marker';
+  properties: { [key: string]: any } // Fabric.js object properties
   metadata?: {
     evidenceId?: string;
     citationId?: string;
     annotations?: string[];
-  };
+  }
 }
 export interface CanvasStateData {
   objects: CanvasObject[];
@@ -183,19 +165,19 @@ export interface CanvasStateData {
   dimensions: {
     width: number;
     height: number;
-  };
+  }
   viewport: {
     zoom: number;
     panX: number;
     panY: number;
-  };
+  }
   metadata: {
     title?: string;
     description?: string;
     tags: string[];
     evidenceIds: string[];
     citationIds: string[];
-  };
+  }
 }
 // Search and filtering types
 export interface SearchFilters {
@@ -205,7 +187,7 @@ export interface SearchFilters {
   dateRange?: {
     start: Date;
     end: Date;
-  };
+  }
   tags?: string[];
   jurisdiction?: string;
   confidentialityLevel?: string[];
@@ -213,16 +195,16 @@ export interface SearchFilters {
 }
 export interface SearchResult {
   id: string;
-  type: "report" | "citation" | "evidence" | "case";
+  type: 'report' | 'citation' | 'evidence' | 'case';
   title: string;
   excerpt: string;
   relevanceScore: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   highlights: string[];
 }
 // Export types
 export interface ExportOptions {
-  format: "pdf" | "docx" | "html" | "json";
+  format: 'pdf' | 'docx' | 'html' | 'json';
   includeCanvases: boolean;
   includeCitations: boolean;
   includeMetadata: boolean;
@@ -230,7 +212,7 @@ export interface ExportOptions {
   headerFooter?: {
     header: string;
     footer: string;
-  };
+  }
 }
 export interface ExportResult {
   success: boolean;
@@ -240,7 +222,7 @@ export interface ExportResult {
     fileSize: number;
     pageCount?: number;
     generatedAt: Date;
-  };
+  }
 }
 // Legacy support for Loki.js (offline/local storage)
 export interface LegacyCitationPoint {
@@ -252,7 +234,7 @@ export interface LegacyCitationPoint {
   tags: string[];
   caseId?: string;
   reportId?: string;
-  type: "statute" | "case_law" | "evidence" | "expert_opinion" | "testimony";
+  type: 'statute' | 'case_law' | 'evidence' | 'expert_opinion' | 'testimony';
   aiSummary?: string;
   relevanceScore?: number;
   createdAt: string; // ISO string for Loki.js compatibility,
@@ -264,20 +246,20 @@ export interface EditorState {
   activeCanvasId?: string;
   selectedCitations: string[];
   clipboardContent?: {
-    type: "text" | "citation" | "canvas-object";
+    type: 'text' | 'citation' | 'canvas-object';
     data: any;
-  };
+  }
   autoSaveEnabled: boolean;
   lastSaved?: Date;
   isDirty: boolean;
 }
 export interface SidebarState {
-  activeTab: "citations" | "evidence" | "ai-suggestions" | "canvas-tools";
+  activeTab: 'citations' | 'evidence' | 'ai-suggestions' | 'canvas-tools';
   citationFilters: {
     type?: string;
     tags?: string[];
     searchQuery?: string;
-  };
+  }
   collapsed: boolean;
 }
 // Real-time collaboration types (future feature)
@@ -288,20 +270,20 @@ export interface CollaborationState {
     cursor?: {
       x: number;
       y: number;
-    };
+    }
     selection?: {
       reportId: string;
       sectionId: string;
       range: {
         start: number;
         end: number;
-      };
-    };
+      }
+    }
   }[];
   changes: {
     id: string;
     userId: string;
-    type: "text" | "canvas" | "citation";
+    type: 'text' | 'canvas' | 'citation';
     timestamp: Date;
     data: any;
   }[];
@@ -314,12 +296,12 @@ export interface AIResponse {
   suggestions?: string[];
   actions?: Array<any>;
   metadata?: {
-    provider: "local" | "hybrid" | "cloud";
+    provider: 'local' | 'hybrid' | 'cloud';
     model: string;
     confidence: number;
     executionTime: number;
     fromCache: boolean;
-  };
+  }
 }
 // Gemma3 Configuration types
 export interface Gemma3Config {
@@ -349,7 +331,7 @@ export interface ApiResponse {
 export interface ConversationHistory {
   id: string;
   sessionId?: string;
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   metadata?: {
@@ -357,5 +339,5 @@ export interface ConversationHistory {
     model?: string;
     confidence?: number;
     contextUsed?: boolean;
-  };
+  }
 }

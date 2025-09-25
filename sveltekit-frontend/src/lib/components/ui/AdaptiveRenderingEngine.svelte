@@ -144,7 +144,7 @@ function create8BitConfig(): QualityConfig {
     antiAliasing: false
     particleEffects: false
     advancedLighting: false;
-  };
+  }
 }
 function create16BitConfig(): QualityConfig {
   return {
@@ -157,7 +157,7 @@ function create16BitConfig(): QualityConfig {
     antiAliasing: true
     particleEffects: true
     advancedLighting: false;
-  };
+  }
 }
 function create64BitConfig(): QualityConfig {
   return {
@@ -170,7 +170,7 @@ function create64BitConfig(): QualityConfig {
     antiAliasing: true
     particleEffects: true
     advancedLighting: true;
-  };
+  }
 }
 function startPerformanceMonitoring(): void {
   isMonitoring = true;
@@ -217,7 +217,7 @@ function updateSystemMetrics(): void {
     cacheHitRate: getCacheHitRate(),
     gpuUtilization: estimateGPUUtilization(),
     drawCalls: estimateDrawCalls();
-  };
+  }
 }
 function getMemoryUsage(): number {
   if ('memory' in performance) {
@@ -242,7 +242,7 @@ function estimateDrawCalls(): number {
     '8-BIT_NES': 50,
     '16-BIT_SNES': 150,
     '64-BIT_N64': 300
-  };
+  }
   return baseDrawCalls[currentQuality.tier] + Math.random() * 50;
 }
 function evaluateQualityAdjustment(): void {
@@ -291,7 +291,7 @@ function analyzePerformance(): {
   const confidence = Math.min(1, Math.max(0,
     (avgFps / 60 + (100 - systemMetrics.memoryUsage) / 100 + systemMetrics.cacheHitRate / 100) / 3
   ));
-  return { shouldUpgrade, shouldDowngrade, confidence };
+  return { shouldUpgrade, shouldDowngrade, confidence }
 }
 function upgradeQuality(): void {
   switch (currentQuality.tier) {
@@ -436,7 +436,7 @@ export function getPerformanceMetrics() {
     systemMetrics,
     currentQuality,
     isMonitoring
-  };
+  }
 }
 // Quality control API
 export function setQuality(tier: QualityTier) {

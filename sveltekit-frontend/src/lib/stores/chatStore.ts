@@ -17,7 +17,7 @@ export interface ChatMessage {
     references?: string[];
     confidence?: number;
     legalContext?: unknown;
-  };
+  }
 }
 export interface Conversation {
   id: string;
@@ -29,7 +29,7 @@ export interface Conversation {
     caseType?: string;
     jurisdiction?: string;
     precedents?: string[];
-  };
+  }
 }
 export interface ChatSettings {
   model: string;
@@ -65,7 +65,7 @@ export interface ChatContext {
     vectorResults: unknown[];
     precedents?: string[];
     caseContext?: unknown;
-  };
+  }
 }
 // === HELPERS ===
 const randomId = (): string => {
@@ -81,7 +81,7 @@ const randomId = (): string => {
     n = Math.floor(Math.random() * 1e9);
   }
   return `${n.toString(36)}${Date.now().toString(36)}`;
-};
+}
 // === INITIAL STATE ===
 const initialState: ChatContext = {
   messages: [],
@@ -110,7 +110,7 @@ const initialState: ChatContext = {
     precedents: [],
     caseContext: null
   }
-};
+}
 // === MAIN STORE ===
 export const chatStore = writable<ChatContext>(initialState);
 // === SERVICE STATUS ===
@@ -155,7 +155,7 @@ export const chatActions = {
         jurisdiction: "federal",
         precedents: []
       }
-    };
+    }
     chatStore.update((state) => ({
       ...state,
       currentConversation: conversation,
@@ -172,7 +172,7 @@ export const chatActions = {
         ...state,
         currentConversation: conversation || null
         messages: conversation?.messages || []
-      };
+      }
     });
   },
   // Add message
@@ -195,7 +195,7 @@ export const chatActions = {
             jurisdiction: "federal",
             precedents: []
           }
-        };
+        }
         state.currentConversation = conversation;
         state.conversations = [conversation, ...state.conversations];
       }
@@ -206,7 +206,7 @@ export const chatActions = {
         timestamp: new Date(),
         conversationId: state.currentConversation!.id,
         metadata
-      };
+      }
       const updatedMessages = [...state.messages, message];
       state.currentConversation!.messages = updatedMessages;
       state.currentConversation!.updated = new Date();
@@ -217,7 +217,7 @@ export const chatActions = {
       return {
         ...state,
         messages: updatedMessages
-      };
+      }
     });
   },
   // Send message with streaming support
@@ -282,7 +282,7 @@ export const chatActions = {
         conversations,
         currentConversation,
         messages: currentConversation?.messages || []
-      };
+      }
     });
   },
   // Update settings
@@ -332,7 +332,7 @@ export const chatActions = {
   checkModelStatus: async () => {
     chatStore.update((state) => ({ ...state, modelStatus: "loading" }));
     try {
-      const response = await fetch("/api/ai/model-status");
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         chatStore.update((state) => ({
@@ -372,11 +372,11 @@ export const chatActions = {
   setStreaming: (streaming: boolean) => {
     chatStore.update((state) => ({ ...state, isStreaming: streaming }));
   }
-};
+}
 // === SERVICE ACTIONS ===
 export const serviceActions = {
   updateStatus: (,
-    service: keyof ServiceStatus
+    service: keyof ServiceStatus;
     status: ServiceStatus[keyof ServiceStatus]
   ) => {
     serviceStatus.update((current) => ({ ...current, [service]: status }));
@@ -416,7 +416,7 @@ export const serviceActions = {
       serviceActions.updateStatus("qdrant", "error");
     }
   }
-};
+}
 // === HELPER FUNCTIONS ===
 function getCurrentConversationId(): string | undefined {
   let currentId: string | undefined;
@@ -465,7 +465,7 @@ async function handleStreamingResponse(response: Response): Promise<void> {
           messages[messages.length - 1] = {
             ...lastMessage,
             content: assistantMessage
-          };
+          }
         } else {
           messages.push({
             id: randomId(),
@@ -475,7 +475,7 @@ async function handleStreamingResponse(response: Response): Promise<void> {
             conversationId: state.currentConversation?.id
           });
         }
-        return { ...state, messages };
+        return { ...state, messages }
       });
     }
   } catch (error: unknown) {
@@ -492,7 +492,7 @@ export interface XStateCompatibleState {
   matches: (state: string) => boolean;
 }
 export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateCompatibleState => ({
-  context: $chatStore
+  context: $chatStore;
   matches: (state: string) => {
     switch (state) {
       case "loading":
@@ -511,7 +511,7 @@ export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateComp
 export function useChatActor() {
   return {
     state: readonly(xstateCompatibleStore)
-  };
+  }
 }
 // === PERSISTENCE ===
 export const persistenceHelpers = {
@@ -537,7 +537,7 @@ export const persistenceHelpers = {
       const asDate = (v: unknown): Date => (typeof v === "string" || typeof v === "number") ? new Date(v) : new Date();
       const coerceMessage = (u: unknown): ChatMessage => {
         if (!isRecord(u)) {
-          return { id: randomId(), content: "", role: "assistant", timestamp: new Date() };
+          return { id: randomId(), content: "", role: "assistant", timestamp: new Date() }
         }
         const role = u["role"];
         const roleVal: ChatMessage["role"] = role === "user" || role === "assistant" || role === "system" ? role : "assistant";
@@ -546,10 +546,10 @@ export const persistenceHelpers = {
           content: typeof u["content"] === "string" ? (u["content"] as string) : "",
           role: roleVal
           timestamp: asDate(u["timestamp"]),
-          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined
+          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined;
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
         } as ChatMessage;
-      };
+      }
       const coerceConversation = (u: unknown): Conversation => {
         if (!isRecord(u)) {
           return {
@@ -558,7 +558,7 @@ export const persistenceHelpers = {
             messages: [],
             created: new Date(),
             updated: new Date()
-          };
+          }
         }
         const msgsUnknown = isRecord(u) ? (u["messages"] as unknown) : undefined;
         const msgs: ChatMessage[] = Array.isArray(msgsUnknown) ? msgsUnknown.map(coerceMessage) : [];
@@ -570,7 +570,7 @@ export const persistenceHelpers = {
           updated: asDate(u["updated"]),
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
         } as Conversation;
-      };
+      }
       chatStore.update((state) => {
         let conversations = state.conversations;
         if (conversationsStr) {
@@ -583,7 +583,7 @@ export const persistenceHelpers = {
         if (settingsStr) {
           const parsedSettings = JSON.parse(settingsStr) as unknown;
           if (isRecord(parsedSettings)) {
-            newSettings = { ...state.settings };
+            newSettings = { ...state.settings }
             if (typeof parsedSettings["model"] === "string") newSettings.model = parsedSettings["model"] as string;
             if (typeof parsedSettings["temperature"] === "number") newSettings.temperature = parsedSettings["temperature"] as number;
             if (typeof parsedSettings["maxTokens"] === "number") newSettings.maxTokens = parsedSettings["maxTokens"] as number;
@@ -595,13 +595,13 @@ export const persistenceHelpers = {
             if (typeof parsedSettings["citationMode"] === "boolean") newSettings.citationMode = parsedSettings["citationMode"] as boolean;
           }
         }
-        return { ...state, conversations, settings: newSettings };
+        return { ...state, conversations, settings: newSettings }
       });
     } catch (error: unknown) {
       console.warn("Failed to load chat data from localStorage:", error);
     }
   }
-};
+}
 // Initialize persistence on client-side
 if (typeof window !== "undefined") {
   persistenceHelpers.loadFromStorage();

@@ -1,8 +1,8 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';
 export const load: PageServerLoad = async () => {
-  return {};
-};
+  return {}
+}
 export const actions: Actions = {
   login: async ({ request, cookies }) => {
     const data = await request.formData();
@@ -22,7 +22,7 @@ export const actions: Actions = {
           httpOnly: true,
           secure: false, // Set to true in production with HTTPS
           sameSite: 'lax',
-          maxAge: 60 * 60 * 24 * 30 // 30 days
+          maxAge: 60 * 60 * 24 * 30, // 30 days
         });
         console.log('✅ Demo login successful for:', email);
         // Redirect to home page instead of missing dashboard
@@ -38,5 +38,5 @@ export const actions: Actions = {
       console.error('Login error:', error.message);
       return fail(400, { error: error.message || 'Login failed' });
     }
-  }
-};
+  },
+}

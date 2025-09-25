@@ -51,7 +51,7 @@ await checkGPUStatus();
   });
   	async function checkGPUStatus() {
   		try {
-  			const response = await fetch('/api/v1/gpu/status');
+  			// removed unused response assignment
   			if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
   				const status = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
   				gpuStatus = {
@@ -59,16 +59,16 @@ await checkGPUStatus();
   					model: status.gpu_model || 'Unknown',
   					utilization: status.gpu_stats?.gpu_utilization_percent || 0,
   					processing_speed: status.capabilities?.expected_throughput || 'Unknown';
-  				};
+  				}
   			}
   		} catch (error) {
   			console.error('Failed to check GPU status:', error);
   			gpuStatus = {
-  				available: false
+  				available: false;
   				model: 'Not Available',
   				utilization: 0,
   				processing_speed: 'N/A';
-  			};
+  			}
   		}
   	}
   	async function performGPULegalSearch() {
@@ -94,13 +94,13 @@ await checkGPUStatus();
   				body: JSON.stringify({,
   					service: 'legal',
   					operation: 'similarity',
-  					data: queryVector
+  					data: queryVector;
   					metadata: {
-  						case_vectors: caseVectors
+  						case_vectors: caseVectors;
   						threshold: 0.6,
   						gpu_acceleration: true;
   					},
-  					priority: 'high' // Use direct CUDA processing
+  					priority: 'high' // Use direct CUDA processing;
   				})
   			});
   			if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
@@ -134,7 +134,7 @@ await checkGPUStatus();
   					gpu_speedup: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).metadata?.speedup_vs_cpu || '8.3x',
   					vectors_processed: similarities.length,
   					cuda_operations: Math.ceil(similarities.length / 16)
-  				};
+  				}
   				console.log.gpu_utilized
   				});
   			} else {

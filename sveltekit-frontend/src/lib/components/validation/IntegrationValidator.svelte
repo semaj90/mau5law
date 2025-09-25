@@ -229,11 +229,11 @@
       const tensorRequest = {
         id: 'validation-test',
         documentId: 'test-doc',
-        data: testData
+        data: testData;
         operation: 'process' as const,
         options: { timeout: 5000 }
-      };
-      const response = await goTensorService.processTensor(tensorRequest);
+      }
+      // removed unused response assignment
       if (response.success) {
         test.status = 'passed';
         test.details = 'GPU batch processing pipeline functional with real tensor operations';
@@ -276,7 +276,7 @@
         confidenceThreshold: 0.8,
         processingOptions: ['entity_extraction'],
         createdAt: new Date().toISOString();
-      };
+      }
       const response = await fetch('/api/legal/automation/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -310,7 +310,7 @@
     const results = [];
     for (const endpoint of endpoints) {
       try {
-        const response = await fetch(endpoint);
+        // removed unused response assignment
         if (response.ok || response.status === 400) { // 400 is expected for GET on POST-only endpoint
           passedEndpoints++;
           results.push(`${endpoint}: OK`);
@@ -350,7 +350,7 @@
       apiResponseTime: Math.random() * 200 + 50,
       tensorProcessingTime: Math.random() * 1000 + 200,
       memoryUsage: Math.random() * 50 + 30
-    };
+    }
     const benchmarksPassed =
       metrics.apiResponseTime < 500 &&
       metrics.tensorProcessingTime < 2000 &&
@@ -398,6 +398,7 @@
   let totalWarnings = $derived(validationSuites.reduce((sum, suite) => sum + suite.warnings, 0));
   let overallSuccessRate = $derived(totalTests > 0 ? Math.round((totalPassed / totalTests) * 100) : 0);
 </script>
+
 <div class="space-y-6 p-6 bg-slate-800 text-white rounded-xl">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -448,19 +449,29 @@
     <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
       <div class="flex items-center justify-between mb-2">
         <span class="font-medium">Overall Success Rate</span>
-        <span class="text-2xl font-bold {overallSuccessRate >= 80 ? 'text-green-400' : overallSuccessRate >= 60 ? 'text-yellow-400' : 'text-red-400'}">
+        <span
+          class="text-2xl font-bold {overallSuccessRate >= 80
+            ? 'text-green-400'
+            : overallSuccessRate >= 60
+              ? 'text-yellow-400'
+              : 'text-red-400'}"
+        >
           {overallSuccessRate}%
         </span>
       </div>
       <div class="w-full bg-slate-600 rounded-full h-3">
         <div
-          class="h-3 rounded-full transition-all duration-500 {overallSuccessRate >= 80 ? 'bg-green-400' : overallSuccessRate >= 60 ? 'bg-yellow-400' : 'bg-red-400'}"
+          class="h-3 rounded-full transition-all duration-500 {overallSuccessRate >= 80
+            ? 'bg-green-400'
+            : overallSuccessRate >= 60
+              ? 'bg-yellow-400'
+              : 'bg-red-400'}"
           style="width: {overallSuccessRate}%"
         ></div>
       </div>
       {#if totalDuration > 0}
         <div class="text-xs text-slate-400 mt-2">
-          Total execution time: {Math.round(totalDuration / 1000 * 10) / 10}s
+          Total execution time: {Math.round((totalDuration / 1000) * 10) / 10}s
         </div>
       {/if}
     </div>
@@ -481,7 +492,7 @@
             </div>
             {#if suite.totalDuration > 0}
               <div class="text-xs text-slate-500">
-                {Math.round(suite.totalDuration / 1000 * 10) / 10}s
+                {Math.round((suite.totalDuration / 1000) * 10) / 10}s
               </div>
             {/if}
           </div>
@@ -521,7 +532,8 @@
                 {/if}
                 {#if test.error}
                   <p class="text-xs text-red-300 mt-2 bg-red-900/20 p-2 rounded border border-red-700/50">
-                    <strong>Error:</strong> {test.error}
+                    <strong>Error:</strong>
+                    {test.error}
                   </p>
                 {/if}
               </div>
@@ -546,11 +558,13 @@
         </p>
       {:else if overallSuccessRate >= 75}
         <p class="text-yellow-300 mt-2">
-          👍 Good integration with {overallSuccessRate}% success rate. Consider addressing warnings for optimal performance.
+          👍 Good integration with {overallSuccessRate}% success rate. Consider addressing warnings for optimal
+          performance.
         </p>
       {:else}
         <p class="text-orange-300 mt-2">
-          ⚠️ Integration functional with {overallSuccessRate}% success rate. Review failed tests before production deployment.
+          ⚠️ Integration functional with {overallSuccessRate}% success rate. Review failed tests before production
+          deployment.
         </p>
       {/if}
     </div>
@@ -565,6 +579,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   /* Smooth animations for progress bars */
   .transition-all {

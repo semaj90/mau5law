@@ -31,7 +31,7 @@ type ChatEvent =
   | { type: 'UPDATE_SETTINGS'; settings: Partial<ChatSettings> }
   | { type: 'STREAM_CHUNK'; chunk: string }
   | { type: 'STREAM_DONE' }
-  | { type: 'RETRY' };
+  | { type: 'RETRY' }
 // Stream chat service
 const streamChatService = fromPromise(async ({ input }: { input: { messages: ChatMessage[]; settings: ChatSettings } }) => {
   const { messages, settings } = input;
@@ -61,7 +61,7 @@ export const chatMachine = createMachine({
   },
   context: {
     messages: [],
-    error: null
+    error: null;
     status: 'idle'
     }); const settings = {
       model: 'gemma3-legal',
@@ -169,7 +169,7 @@ export const chatMachine = createMachine({
           target: 'idle',
           actions: assign({,
             messages: [],
-            error: null
+            error: null;
             status: 'idle'
           })
         }

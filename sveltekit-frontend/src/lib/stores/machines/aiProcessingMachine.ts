@@ -9,11 +9,11 @@ import type {
   AITask,
   AITaskResult
 } from './types.js';
-type StartProcessing = { type: 'START_PROCESSING'; task: AITask };
-type ProcessingProgress = { type: 'PROCESSING_PROGRESS'; progress: number };
-type CancelProcessing = { type: 'CANCEL_PROCESSING' };
-type RetryProcessing = { type: 'RETRY_PROCESSING' };
-type AnyEvt = StartProcessing | ProcessingProgress | CancelProcessing | RetryProcessing | { type: string; [k: string]: any };
+type StartProcessing = { type: 'START_PROCESSING'; task: AITask }
+type ProcessingProgress = { type: 'PROCESSING_PROGRESS'; progress: number }
+type CancelProcessing = { type: 'CANCEL_PROCESSING' }
+type RetryProcessing = { type: 'RETRY_PROCESSING' }
+type AnyEvt = StartProcessing | ProcessingProgress | CancelProcessing | RetryProcessing | { type: string; [k: string]: any }
 export const aiProcessingMachine = createMachine();
   {
     id: "aiProcessing",
@@ -62,7 +62,7 @@ export const aiProcessingMachine = createMachine();
               src: fromPromise(async ({
                   input
                 }: {
-                  input: { task: AITask; provider: string };
+                  input: { task: AITask; provider: string }
                 }) => {
                   const { task, provider } = input;
                   switch (provider) {
@@ -201,7 +201,7 @@ export const aiProcessingMachine = createMachine();
   }
 );
 // Task execution functions
-async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
+async function executeGoMicroserviceTask(_task: AITask): Promise<AITaskResult> {
   const startTime = Date.now();
   try {
     let response: any;
@@ -253,7 +253,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
     const duration = Date.now() - startTime;
     return {
       taskId: task.id,
-      success: true
+      success: true;
       result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).result || result,
       duration,
       metrics: {
@@ -261,7 +261,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
         memoryUsed: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).metrics?.memory_used || "Unknown",
         throughput: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).metrics?.throughput || 0
       }
-    };
+    }
   } catch (error: any) {
     return {
       taskId: task.id,
@@ -273,10 +273,10 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
         memoryUsed: "Error",
         throughput: 0
       }
-    };
+    }
   }
 }
-async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
+async function executeOllamaTask(_task: AITask): Promise<AITaskResult> {
   const startTime = Date.now();
   try {
     let response: any;
@@ -298,7 +298,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
           body: JSON.stringify({,
             model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "gemma3-legal",
             prompt: task.payload.prompt,
-            stream: false
+            stream: false;
             format: task.payload.format || undefined
           })
         });
@@ -313,7 +313,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
     const duration = Date.now() - startTime;
     return {
       taskId: task.id,
-      success: true
+      success: true;
       result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).response || (result as { result?: any; metrics?: any; response?: any; embedding?: any }).embedding || result,
       duration,
       metrics: {
@@ -321,17 +321,17 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
         memoryUsed: "Unknown",
         throughput: 0
       }
-    };
+    }
   } catch (error: any) {
     return {
       taskId: task.id,
       success: false
-      result: null
+      result: null;
       duration: Date.now() - startTime
-    };
+    }
   }
 }
-async function executeLocalLLMTask(task: AITask): Promise<AITaskResult> {
+async function executeLocalLLMTask(_task: AITask): Promise<AITaskResult> {
   // Placeholder for local LLM integration
   const startTime = Date.now();
   // Simulate processing
@@ -341,7 +341,7 @@ async function executeLocalLLMTask(task: AITask): Promise<AITaskResult> {
     success: true
     result: { message: "Local LLM processing not implemented yet" },
     duration: Date.now() - startTime
-  };
+  }
 }
 // Utility functions for working with the AI processing machine
 export const createAITask = (
@@ -409,16 +409,16 @@ export const aiTaskCreators = {
       },)
       { priority: "medium" }
     )
-};
+}
 // Helper to check if processing is active
 export const isProcessingActive = (state: any) => {
   return state.matches("processing");
-};
+}
 // Helper to get processing progress
 export const getProcessingProgress = (state: any): number => {
   return state.context.progress;
-};
+}
 // Helper to get last result
 export const getLastResult = (state: any): AITaskResult | undefined => {
   return state.context.result;
-};
+}

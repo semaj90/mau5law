@@ -21,8 +21,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     Star,
     User as UserIcon,
     Video,
-  } from "lucide-svelte";
-  import { onMount } from "svelte";
+  } from 'lucide-svelte';
+  import { onMount } from 'svelte';
   interface HelpArticle {
     id: string;
     title: string;
@@ -37,61 +37,61 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     type: string;
   }
   // Help state
-  let activeCategory = $state("getting-started");
-  let searchQuery = $state("");
-  let filteredArticles = $state<HelpArticle[] >([]);
+  let activeCategory = $state('getting-started');
+  let searchQuery = $state('');
+  let filteredArticles = $state<HelpArticle[]>([]);
   // Help categories
   const categories = [
     {
-      id: "getting-started",
-      title: "Getting Started",
+      id: 'getting-started',
+      title: 'Getting Started',
       icon: Star,
-      description: "New to the system? Start here",
+      description: 'New to the system? Start here',
     },
     {
-      id: "cases",
-      title: "Case Management",
+      id: 'cases',
+      title: 'Case Management',
       icon: Book,
-      description: "Managing and organizing cases",
+      description: 'Managing and organizing cases',
     },
     {
-      id: "evidence",
-      title: "Evidence Handling",
+      id: 'evidence',
+      title: 'Evidence Handling',
       icon: Search,
-      description: "Evidence collection and analysis",
+      description: 'Evidence collection and analysis',
     },
     {
-      id: "ai-assistant",
-      title: "AI Assistant",
+      id: 'ai-assistant',
+      title: 'AI Assistant',
       icon: MessageSquare,
-      description: "Using AI features effectively",
+      description: 'Using AI features effectively',
     },
     {
-      id: "advanced",
-      title: "Advanced Features",
+      id: 'advanced',
+      title: 'Advanced Features',
       icon: UserIcon,
-      description: "Power user features and tips",
+      description: 'Power user features and tips',
     },
     {
-      id: "troubleshooting",
-      title: "Troubleshooting",
+      id: 'troubleshooting',
+      title: 'Troubleshooting',
       icon: AlertTriangle,
-      description: "Common issues and solutions",
+      description: 'Common issues and solutions',
     },
   ];
   // Help articles
   const articles = [
     // Getting Started
     {
-      id: "quick-start",
-      category: "getting-started",
-      title: "Quick Start Guide",
-      description: "Get up and running in 5 minutes",
-      type: "article",
-      duration: "5 min read",
+      id: 'quick-start',
+      category: 'getting-started',
+      title: 'Quick Start Guide',
+      description: 'Get up and running in 5 minutes',
+      type: 'article',
+      duration: '5 min read',
       popularity: 5,
-      tags: ["getting-started", "tutorial", "basics"],
-      lastUpdated: "2024-01-15",
+      tags: ['getting-started', 'tutorial', 'basics'],
+      lastUpdated: '2024-01-15',
       content: `
   # Quick Start Guide
   Welcome to the Legal Case Management System! This guide will help you get started quickly.
@@ -122,15 +122,15 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   			`,
     },
     {
-      id: "navigation-tour",
-      category: "getting-started",
-      title: "System Navigation Tour",
-      description: "Learn how to navigate the interface",
-      type: "interactive",
-      duration: "10 min",
+      id: 'navigation-tour',
+      category: 'getting-started',
+      title: 'System Navigation Tour',
+      description: 'Learn how to navigate the interface',
+      type: 'interactive',
+      duration: '10 min',
       popularity: 4,
       tags: [],
-      lastUpdated: "2024-01-15",
+      lastUpdated: '2024-01-15',
       content: `
   # System Navigation Tour
   ## Main Navigation
@@ -156,15 +156,15 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   			`,
     },
     {
-      id: "first-case",
-      category: "getting-started",
-      title: "Creating Your First Case",
-      description: "Step-by-step case creation walkthrough",
-      type: "video",
-      duration: "8 min",
+      id: 'first-case',
+      category: 'getting-started',
+      title: 'Creating Your First Case',
+      description: 'Step-by-step case creation walkthrough',
+      type: 'video',
+      duration: '8 min',
       popularity: 5,
       tags: [],
-      lastUpdated: "2024-01-15",
+      lastUpdated: '2024-01-15',
       content: `
   # Creating Your First Case
   ## Video Tutorial
@@ -193,12 +193,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     },
     // Case Management
     {
-      id: "case-organization",
-      category: "cases",
-      title: "Case Organization Best Practices",
-      description: "How to structure and organize cases effectively",
-      type: "article",
-      duration: "7 min read",
+      id: 'case-organization',
+      category: 'cases',
+      title: 'Case Organization Best Practices',
+      description: 'How to structure and organize cases effectively',
+      type: 'article',
+      duration: '7 min read',
       popularity: 4,
       tags: [],
       content: `
@@ -231,12 +231,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     },
     // Evidence
     {
-      id: "evidence-best-practices",
-      category: "evidence",
-      title: "Evidence Handling Best Practices",
-      description: "Proper evidence collection and management",
-      type: "article",
-      duration: "10 min read",
+      id: 'evidence-best-practices',
+      category: 'evidence',
+      title: 'Evidence Handling Best Practices',
+      description: 'Proper evidence collection and management',
+      type: 'article',
+      duration: '10 min read',
       popularity: 5,
       tags: [],
       content: `
@@ -268,12 +268,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     },
     // AI Assistant
     {
-      id: "ai-prompting",
-      category: "ai-assistant",
-      title: "Effective AI Prompting Techniques",
-      description: "How to get better results from the AI assistant",
-      type: "article",
-      duration: "8 min read",
+      id: 'ai-prompting',
+      category: 'ai-assistant',
+      title: 'Effective AI Prompting Techniques',
+      description: 'How to get better results from the AI assistant',
+      type: 'article',
+      duration: '8 min read',
       popularity: 4,
       tags: [],
       content: `
@@ -302,12 +302,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     },
     // Troubleshooting
     {
-      id: "common-issues",
-      category: "troubleshooting",
-      title: "Common Issues and Solutions",
-      description: "Solutions to frequently encountered problems",
-      type: "article",
-      duration: "6 min read",
+      id: 'common-issues',
+      category: 'troubleshooting',
+      title: 'Common Issues and Solutions',
+      description: 'Solutions to frequently encountered problems',
+      type: 'article',
+      duration: '6 min read',
       popularity: 3,
       tags: [],
       content: `
@@ -346,29 +346,25 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   // FAQ items
   const faqs = [
     {
-      question: "How do I reset my password?",
-      answer:
-        "Go to Settings > Security > Change Password. Enter your current password and new password twice.",
+      question: 'How do I reset my password?',
+      answer: 'Go to Settings > Security > Change Password. Enter your current password and new password twice.',
     },
     {
-      question: "Can I export my case data?",
-      answer:
-        "Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.",
+      question: 'Can I export my case data?',
+      answer: 'Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.',
     },
     {
-      question: "How do I use keyboard shortcuts?",
+      question: 'How do I use keyboard shortcuts?',
       answer:
-        "Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.",
+        'Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.',
     },
     {
-      question: "What file types are supported for evidence?",
-      answer:
-        "Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.",
+      question: 'What file types are supported for evidence?',
+      answer: 'Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.',
     },
     {
-      question: "How do I collaborate with team members?",
-      answer:
-        "Add participants to cases, use shared notes, and enable notifications to keep everyone informed.",
+      question: 'How do I collaborate with team members?',
+      answer: 'Add participants to cases, use shared notes, and enable notifications to keep everyone informed.',
     },
   ];
   $effect(() => {
@@ -377,19 +373,17 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   function filterArticles() {
     let results = article;
     // Filter by category
-    if (activeCategory !== "all") {
-      results = results.filter(
-        (article) => article.category === activeCategory
-      );
+    if (activeCategory !== 'all') {
+      results = results.filter(article => article.category === activeCategory);
     }
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       results = results.filter(
-        (article) =>
+        article =>
           article.title.toLowerCase().includes(query) ||
           article.description.toLowerCase().includes(query) ||
-          article.content.toLowerCase().includes(query)
+          article.content.toLowerCase().includes(query),
       );
     }
     // Sort by popularity
@@ -398,9 +392,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   }
   function getTypeIcon(type: string) {
     switch (type) {
-      case "video":
+      case 'video':
         return Video;
-      case "interactive":
+      case 'interactive':
         return Play;
       default:
         return Book;
@@ -408,43 +402,35 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   }
   function getTypeColor(type: string) {
     switch (type) {
-      case "video":
-        return "text-red-600";
-      case "interactive":
-        return "text-blue-600";
+      case 'video':
+        return 'text-red-600';
+      case 'interactive':
+        return 'text-blue-600';
       default:
-        return "text-gray-600";
+        return 'text-gray-600';
     }
   }
   // TODO: Convert to $derived
   // filterArticles()
 </script>
+
 <svelte:head>
   <title>Help & Support - Legal Case Management</title>
-  <meta
-    name="description"
-    content="Help documentation, tutorials, and support resources"
-  />
+  <meta name="description" content="Help documentation, tutorials, and support resources" />
 </svelte:head>
 <div class="container mx-auto p-6 max-w-7xl">
   <!-- Header -->
-  <div
-    class="bg-gradient-to-r from-green-600 to-teal-600 text-white p-6 rounded-lg mb-6"
-  >
+  <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white p-6 rounded-lg mb-6">
     <h1 class="text-3xl font-bold mb-2 flex items-center gap-3">
       <HelpCircle class="h-8 w-8" />
       Help & Support
     </h1>
-    <p class="text-green-100">
-      Documentation, tutorials, and support resources to help you succeed
-    </p>
+    <p class="text-green-100">Documentation, tutorials, and support resources to help you succeed</p>
   </div>
   <!-- Search -->
   <div class="bg-white rounded-lg shadow-md p-6 mb-6">
     <div class="relative max-w-2xl mx-auto">
-      <Search
-        class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
-      />
+      <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
       <input
         type="text"
         bind:value={searchQuery}
@@ -461,11 +447,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <nav class="space-y-2">
           <button
             type="button"
-            class="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors";
-            class:bg-green-100={activeCategory === "all"}
-            class:text-green-700={activeCategory === "all"}
-            class:hover:bg-gray-100={activeCategory !== "all"}
-            onclick={() => (activeCategory = "all")}
+            class="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors"
+            ;
+            class:bg-green-100={activeCategory === 'all'}
+            class:text-green-700={activeCategory === 'all'}
+            class:hover:bg-gray-100={activeCategory !== 'all'}
+            onclick={() => (activeCategory = 'all')}
           >
             <Book class="h-5 w-5" />
             <div>
@@ -499,17 +486,17 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <h3 class="text-lg font-semibold mb-4">Need More Help?</h3>
         <div class="space-y-3">
           <Button variant="ghost" class="w-full justify-start bits-btn bits-btn">
-<MessageSquare class="h-4 w-4 mr-2" />
+            <MessageSquare class="h-4 w-4 mr-2" />
             Contact Support
-</Button>
+          </Button>
           <Button variant="ghost" class="w-full justify-start bits-btn bits-btn">
-<Video class="h-4 w-4 mr-2" />
+            <Video class="h-4 w-4 mr-2" />
             Video Tutorials
-</Button>
+          </Button>
           <Button variant="ghost" class="w-full justify-start bits-btn bits-btn">
-<Download class="h-4 w-4 mr-2" />
+            <Download class="h-4 w-4 mr-2" />
             User Manual (PDF)
-</Button>
+          </Button>
         </div>
       </div>
     </div>
@@ -519,14 +506,10 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="bg-gray-50 border-b border-gray-200 p-4">
           <h2 class="text-lg font-semibold">
-            {activeCategory === "all"
-              ? "All Articles"
-              : categories.find((c) => c.id === activeCategory)?.title}
+            {activeCategory === 'all' ? 'All Articles' : categories.find(c => c.id === activeCategory)?.title}
           </h2>
           <p class="text-sm text-gray-600 mt-1">
-            {filteredArticles.length} article{filteredArticles.length !== 1
-              ? "s"
-              : ""} found
+            {filteredArticles.length} article{filteredArticles.length !== 1 ? 's' : ''} found
           </p>
         </div>
         {#if filteredArticles.length > 0}
@@ -545,9 +528,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     <p class="text-gray-600 text-sm mb-3">
                       {article.description}
                     </p>
-                    <div
-                      class="flex items-center gap-4 text-sm text-gray-500 mb-4"
-                    >
+                    <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
                       <div class="flex items-center gap-1">
                         <Clock class="h-4 w-4" />
                         {article.duration}
@@ -562,15 +543,13 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     </div>
                     <!-- Article preview -->
                     <div class="prose prose-sm max-w-none text-gray-700 mb-4">
-                      {@html article.content
-                        .split.slice(0, 3)
-                        .join.substring(0, 200)}...
+                      {@html article.content.split.slice(0, 3).join.substring(0, 200)}...
                     </div>
                     <Button class="bits-btn" variant="ghost" size="sm">
-<Book class="h-4 w-4 mr-2" />
+                      <Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
-</Button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -579,12 +558,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {:else}
           <div class="p-12 text-center">
             <Search class="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 class="text-lg font-medium text-gray-900 mb-2">
-              No articles found
-            </h3>
-            <p class="text-gray-600">
-              Try adjusting your search terms or browse different categories
-            </p>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No articles found</h3>
+            <p class="text-gray-600">Try adjusting your search terms or browse different categories</p>
           </div>
         {/if}
       </div>
@@ -601,9 +576,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                 class="flex justify-between items-center w-full p-4 text-left bg-gray-50 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
               >
                 <span class="font-medium text-gray-900">{faq.question}</span>
-                <ArrowRight
-                  class="h-5 w-5 text-gray-400 group-open:rotate-90 transition-transform"
-                />
+                <ArrowRight class="h-5 w-5 text-gray-400 group-open:rotate-90 transition-transform" />
               </summary>
               <div class="mt-3 p-4 text-gray-700 bg-gray-50 rounded-lg">
                 {faq.answer}
@@ -619,18 +592,17 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           <div>
             <h3 class="font-medium text-blue-900 mb-2">Still need help?</h3>
             <p class="text-blue-700 text-sm mb-4">
-              Can't find what you're looking for? Our support team is here to
-              help you succeed.
+              Can't find what you're looking for? Our support team is here to help you succeed.
             </p>
             <div class="flex gap-3">
               <Button class="bits-btn" variant="ghost" size="sm">
-<MessageSquare class="h-4 w-4 mr-2" />
+                <MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
-</Button>
+              </Button>
               <Button class="bits-btn" variant="ghost" size="sm">
-<ExternalLink class="h-4 w-4 mr-2" />
+                <ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
-</Button>
+              </Button>
             </div>
           </div>
         </div>
@@ -638,6 +610,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .prose {

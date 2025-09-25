@@ -43,7 +43,7 @@ https: //svelte.dev/e/block_unexpected_character -->
     fileSize?: number;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-   };
+   }
                   export const showPreview = true;
   // Melt UI component creation removed - replace with bits-ui declarative components
   const getIcon = (type: Evidence["type"]) => { switch (type) {
@@ -60,13 +60,13 @@ https: //svelte.dev/e/block_unexpected_character -->
       default:
         return FileText;
      }
-  };
+  }
   const formatFileSize = (bytes: number): string => { if (bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-   };
+   }
   const fileSize = evidence.metadata?.size || evidence.fileSize || 0;
   let isHovered = false;
   let IconComponent = $derived(getIcon(
@@ -110,7 +110,7 @@ https: //svelte.dev/e/block_unexpected_character -->
       class:text-orange-700={ evidence.evidenceType === 'audio' || evidence.type === 'audio' }
       class:border-orange-200={ evidence.evidenceType === 'audio' || evidence.type === 'audio' }
       class:bg-indigo-50={ evidence.evidenceType === 'link' || evidence.type === 'link' }
-      class:text-indigo-700={ evidence.evidenceType === 'link' || evidence.type === 'link' };
+      class:text-indigo-700={ evidence.evidenceType === 'link' || evidence.type === 'link' }
       class:border-indigo-200={ evidence.evidenceType === 'link' || evidence.type === 'link' }
       data-type={ evidence.evidenceType || evidence.type }
     >
@@ -161,7 +161,7 @@ https: //svelte.dev/e/block_unexpected_character -->
           loading="lazy"
           class="w-full h-auto max-h-48 object-cover"
           onerror={ (e) => {
-            const target = e.currentTarget as HTMLImageElement;
+            // removed unused target assignment
             target.style.display = "none";
            }}
         />
@@ -235,4 +235,4 @@ https: //svelte.dev/e/block_unexpected_character -->
     </div>
   { /if }
 </div>
-<!-- Tooltip section removed - replaced with native title attributes -->
+<!-- Tooltip section removed - replaced with native title attributes -->;

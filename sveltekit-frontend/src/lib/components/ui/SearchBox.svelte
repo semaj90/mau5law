@@ -46,8 +46,8 @@
 		} finally {
 			isLoading = false;
 		}
-	};
-	const handleKeydown = (event: KeyboardEvent) => {
+	}
+	const handleKeydown = (_event: KeyboardEvent) => {
 		if (event.key === 'Enter') {
 			performSearch();
 		} else if (event.key === 'Escape') {
@@ -56,119 +56,110 @@
 			isExpanded = false;
 			searchInput?.blur();
 		}
-	};
+	}
 	const selectResult = (result: any) => {
 		query = result.content?.substring(0, 100) + "..." || result.title || "";
 		results = [];
 		isExpanded = false;
 		onResults([result]);
-	};
+	}
 	const clearSearch = () => {
 		query = "";
 		results = [];
 		isExpanded = false;
 		searchInput?.focus();
-	};
+	}
 	$effect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
+		const handleClickOutside = (_event: MouseEvent) => {
 			if (!event.target || !(event.target as Element).closest('.search-container')) {
 				isExpanded = false;
 			}
-		};
+		}
 		document.addEventListener('click', handleClickOutside);
 		return () => document.removeEventListener('click', handleClickOutside);
 	});
 </script>
+
 <div class="search-container {className}">
-	<div class="nes-field search-field">
-		<label for="search-input" class="search-label">
-			<i class="nes-icon trophy"></i> Legal AI Search
-		</label>
-		<div class="search-input-wrapper">
-			<input
-				bind:this={searchInput}
-				bind:value={query}
-				onkeydown={handleKeydown}
-				oninput={performSearch}
-				id="search-input"
-				type="text"
-				class="nes-input search-input"
-				{placeholder}
-				autocomplete="off"
-			/>
-			{#if query}
-				<button
-					onclick={clearSearch}
-					class="nes-btn is-error clear-btn"
-					type="button"
-					title="Clear search"
-				>
-					×
-				</button>
-			{/if}
-			{#if isLoading}
-				<div class="loading-indicator">
-					<i class="nes-icon coin"></i>
-				</div>
-			{/if}
-		</div>
-	</div>
-	{#if isExpanded && (results.length > 0 || isLoading)}
-		<div class="nes-container is-rounded results-container">
-			{#if isLoading}
-				<div class="loading-message">
-					<i class="nes-icon coin"></i>
-					<span>Searching legal documents...</span>
-				</div>
-			{:else if results.length > 0}
-				<div class="results-header">
-					<i class="nes-icon star"></i>
-					<span>Found {results.length} results</span>
-				</div>
-				<div class="results-list">
-					{#each results as result, index}
-						<button
-							onclick={() => selectResult(result)}
-							class="nes-container result-item"
-							type="button"
-						>
-							<div class="result-content">
-								<div class="result-title">
-									{result.title || `Document ${index + 1}`}
-								</div>
-								{#if result.content}
-									<div class="result-snippet">
-										{result.content.substring(0, 120)}...
-									</div>
-								{/if}
-								{#if result.metadata}
-									<div class="result-metadata">
-										{#if result.metadata.caseId}
-											<span class="case-tag">Case: {result.metadata.caseId}</span>
-										{/if}
-										{#if result.metadata.documentType}
-											<span class="type-tag">{result.metadata.documentType}</span>
-										{/if}
-									</div>
-								{/if}
-								{#if result.similarity}
-									<div class="similarity-score">
-										Relevance: {Math.round(result.similarity * 100)}%
-									</div>
-								{/if}
-							</div>
-						</button>
-					{/each}
-				</div>
-			{:else}
-				<div class="no-results">
-					<i class="nes-icon is-medium heart"></i>
-					<span>No documents found for "{query}"</span>
-				</div>
-			{/if}
-		</div>
-	{/if}
+  <div class="nes-field search-field">
+    <label for="search-input" class="search-label">
+      <i class="nes-icon trophy"></i> Legal AI Search
+    </label>
+    <div class="search-input-wrapper">
+      <input
+        bind:this={searchInput}
+        bind:value={query}
+        onkeydown={handleKeydown}
+        oninput={performSearch}
+        id="search-input"
+        type="text"
+        class="nes-input search-input"
+        {placeholder}
+        autocomplete="off"
+      />
+      {#if query}
+        <button onclick={clearSearch} class="nes-btn is-error clear-btn" type="button" title="Clear search"> × </button>
+      {/if}
+      {#if isLoading}
+        <div class="loading-indicator">
+          <i class="nes-icon coin"></i>
+        </div>
+      {/if}
+    </div>
+  </div>
+  {#if isExpanded && (results.length > 0 || isLoading)}
+    <div class="nes-container is-rounded results-container">
+      {#if isLoading}
+        <div class="loading-message">
+          <i class="nes-icon coin"></i>
+          <span>Searching legal documents...</span>
+        </div>
+      {:else if results.length > 0}
+        <div class="results-header">
+          <i class="nes-icon star"></i>
+          <span>Found {results.length} results</span>
+        </div>
+        <div class="results-list">
+          {#each results as result, index}
+            <button onclick={() => selectResult(result)} class="nes-container result-item" type="button">
+              <div class="result-content">
+                <div class="result-title">
+                  {result.title || `Document ${index + 1}`}
+                </div>
+                {#if result.content}
+                  <div class="result-snippet">
+                    {result.content.substring(0, 120)}...
+                  </div>
+                {/if}
+                {#if result.metadata}
+                  <div class="result-metadata">
+                    {#if result.metadata.caseId}
+                      <span class="case-tag">Case: {result.metadata.caseId}</span>
+                    {/if}
+                    {#if result.metadata.documentType}
+                      <span class="type-tag">{result.metadata.documentType}</span>
+                    {/if}
+                  </div>
+                {/if}
+                {#if result.similarity}
+                  <div class="similarity-score">
+                    Relevance: {Math.round(result.similarity * 100)}%
+                  </div>
+                {/if}
+              </div>
+            </button>
+          {/each}
+        </div>
+      {:else}
+        <div class="no-results">
+          <i class="nes-icon is-medium heart"></i>
+          <span>No documents found for "{query}"</span>
+        </div>
+      {/if}
+    </div>
+  {/if}
 </div>
+
 <style>
 	.search-container {
 		position: relative;

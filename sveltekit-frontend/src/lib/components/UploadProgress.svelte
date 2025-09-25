@@ -29,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     progress: 0,
     status: 'pending',
     metrics: ,
-    error: null as string | null
+    error: null as string | null;
   });
   // Tensor processing results
   let tensorResults = writable({
@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
       socket?.emit.toISOString(),
         metadata,
       });
-    };
+    }
     // Focus/blur tracking
     const focusHandler = () => trackEvent('focus');
     const blurHandler = () => trackEvent('blur');
@@ -189,7 +189,7 @@ https://svelte.dev/e/js_parse_error -->
           scrollX: window.scrollX,
         });
       }, 100);
-    };
+    }
     window.addEventListener('scroll', scrollHandler, { passive: true });
     attentionListeners.push(() => {
       window.removeEventListener('scroll', scrollHandler);
@@ -200,9 +200,9 @@ https://svelte.dev/e/js_parse_error -->
       trackEvent('click', {
         x: e.clientX,
         y: e.clientY,
-        target: e.target instanceof Element ? e.target.tagName: null
+        target: e.target instanceof Element ? e.target.tagName: null;
       });
-    };
+    }
     document.addEventListener('click', clickHandler);
     attentionListeners.push(() => document.removeEventListener('click', clickHandler));
   }
@@ -243,14 +243,19 @@ https://svelte.dev/e/js_parse_error -->
     return `${minutes}m ${remainingSeconds.toFixed(0)}s`;
   }
 </script>
+
 <!-- Connection Status -->
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
   <div class="flex items-center justify-between mb-4">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-      Upload Progress
-    </h3>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Progress</h3>
     <div class="flex items-center gap-2">
-      <div class="w-3 h-3 rounded-full {$connectionStatus === 'connected' ? 'bg-green-500' : $connectionStatus === 'connecting' ? 'bg-yellow-500' : 'bg-red-500'}"></div>
+      <div
+        class="w-3 h-3 rounded-full {$connectionStatus === 'connected'
+          ? 'bg-green-500'
+          : $connectionStatus === 'connecting'
+            ? 'bg-yellow-500'
+            : 'bg-red-500'}"
+      ></div>
       <span class="text-sm text-gray-600 dark:text-gray-400 capitalize">
         {$connectionStatus}
       </span>
@@ -273,9 +278,7 @@ https://svelte.dev/e/js_parse_error -->
       ></div>
     </div>
     <div class="flex justify-between items-center mt-2">
-      <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">,
-        Status: {$progressData.status}
-      </span>
+      <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">, Status: {$progressData.status} </span>
       {#if $progressData.error}
         <span class="text-xs text-red-500">
           Error: {$progressData.error}
@@ -314,9 +317,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Tensor Processing Results -->
 {#if showTensorMetrics && Object.keys(errors).length > 0}
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-      Tensor Processing Results
-    </h3>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tensor Processing Results</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
         <div class="text-sm text-blue-600 dark:text-blue-400 mb-1">SOM Clusters</div>
@@ -340,9 +341,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Detailed Metrics -->
     {#if Object.keys(errors).length > 0}
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Processing Metrics
-        </h4>
+        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Processing Metrics</h4>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
           {#each Object.entries($tensorResults.metrics) as [key, value]}
             <div class="bg-gray-50 dark:bg-gray-700 rounded px-2 py-1">
@@ -358,26 +357,22 @@ https://svelte.dev/e/js_parse_error -->
 <!-- AI Context Suggestions -->
 {#if $aiSuggestions.suggestions.length > 0}
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-      AI Context Suggestions
-    </h3>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">AI Context Suggestions</h3>
     <div class="space-y-3">
       {#each $aiSuggestions.suggestions as suggestion}
         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
           <div class="text-sm text-gray-900 dark:text-white">
             {suggestion.text}
           </div>
-          <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">,
-            Confidence: {Math.round(suggestion.confidence * 100)}%
+          <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            , Confidence: {Math.round(suggestion.confidence * 100)}%
           </div>
         </div>
       {/each}
     </div>
     {#if $aiSuggestions.relevantDocuments.length > 0}
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Relevant Documents
-        </h4>
+        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Relevant Documents</h4>
         <div class="space-y-2">
           {#each $aiSuggestions.relevantDocuments as doc}
             <div class="text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
@@ -389,6 +384,7 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 {/if}
+
 <style>
   /* Add any custom styles here */
   .transition-all {

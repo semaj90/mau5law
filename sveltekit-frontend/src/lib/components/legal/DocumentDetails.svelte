@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
     loadingSource.set('server');
     console.log('🌐 Fetching from server with full analysis...');
     const url = `/api/document/${docId}${includeGPU ? '?gpu=true' : ''}`;
-    const response = await fetch(url);
+    // removed unused response assignment
     if (!response.ok) {
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
@@ -96,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
       hash: data.document.content_hash || `hash_${Date.now()}`,
       lastAccessed: new Date(),
       cacheSize: JSON.stringify(length)
-    };
+    }
     // Store in IndexedDB with error handling
     try {
       await legalDB.documentCache.put(cacheEntry);
@@ -155,6 +155,7 @@ https://svelte.dev/e/js_parse_error -->
     return `${(ms / 1000).toFixed(2)}s`;
   }
 </script>
+
 <!-- Document Details Modal -->
 {#if isVisible}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -175,11 +176,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </p>
         </div>
-        <button
-          onclick={onClose}
-          class="text-white hover:text-blue-200 text-2xl font-bold"
-          aria-label="Close"
-        >
+        <button onclick={onClose} class="text-white hover:text-blue-200 text-2xl font-bold" aria-label="Close">
           ×
         </button>
       </div>
@@ -249,7 +246,9 @@ https://svelte.dev/e/js_parse_error -->
                     </button>
                     <button
                       onclick={toggleGPUAnalysis}
-                      class="text-sm {showGPUAnalysis ? 'bg-purple-100 text-purple-700' : 'bg-gray-100'} hover:bg-purple-200 px-3 py-1 rounded"
+                      class="text-sm {showGPUAnalysis
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'bg-gray-100'} hover:bg-purple-200 px-3 py-1 rounded"
                     >
                       {showGPUAnalysis ? '🧠 GPU Active' : '⚡ GPU Analysis'}
                     </button>
@@ -270,7 +269,10 @@ https://svelte.dev/e/js_parse_error -->
                     <span class="font-medium text-gray-700">Content:</span>
                     <div class="mt-2 p-4 bg-gray-50 rounded-lg max-h-96 overflow-y-auto">
                       <pre class="whitespace-pre-wrap text-sm text-gray-800">
-                        {$documentData.content ? $documentData.content.substring(0, 2000) + ($documentData.content.length > 2000 ? '...' : '') : 'No content available'}
+                        {$documentData.content
+                          ? $documentData.content.substring(0, 2000) +
+                            ($documentData.content.length > 2000 ? '...' : '')
+                          : 'No content available'}
                       </pre>
                     </div>
                   </div>
@@ -302,9 +304,18 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="mt-4">
                       <h4 class="font-medium text-purple-700 mb-2">Legal Analysis:</h4>
                       <div class="bg-white rounded p-3 text-sm">
-                        <p><strong>Relevance:</strong> {($gpuAnalysis.legalAnalysis.relevanceScore * 100).toFixed(1)}%</p>
-                        <p><strong>Entities:</strong> {$gpuAnalysis.legalAnalysis.legalEntities?.join(', ') || 'None detected'}</p>
-                        <p><strong>Concepts:</strong> {$gpuAnalysis.legalAnalysis.conceptClusters?.join(', ') || 'None detected'}</p>
+                        <p>
+                          <strong>Relevance:</strong>
+                          {($gpuAnalysis.legalAnalysis.relevanceScore * 100).toFixed(1)}%
+                        </p>
+                        <p>
+                          <strong>Entities:</strong>
+                          {$gpuAnalysis.legalAnalysis.legalEntities?.join(', ') || 'None detected'}
+                        </p>
+                        <p>
+                          <strong>Concepts:</strong>
+                          {$gpuAnalysis.legalAnalysis.conceptClusters?.join(', ') || 'None detected'}
+                        </p>
                       </div>
                     </div>
                   {/if}
@@ -394,7 +405,11 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                     <div class="flex justify-between">
                       <span class="text-gray-600">Vector Embedding:</span>
-                      <span class="font-medium {$processingMetrics.has_vector_embedding ? 'text-green-600' : 'text-red-600'}">
+                      <span
+                        class="font-medium {$processingMetrics.has_vector_embedding
+                          ? 'text-green-600'
+                          : 'text-red-600'}"
+                      >
                         {$processingMetrics.has_vector_embedding ? '✅ Available' : '❌ Missing'}
                       </span>
                     </div>
@@ -429,6 +444,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
+
 <style>
   .line-clamp-2 {
     display: -webkit-box;

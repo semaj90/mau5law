@@ -74,7 +74,7 @@ export class CitationsManager {
     this.subscribers.push(callback);
     return () => {
       this.subscribers = this.subscribers.filter(cb => cb !== callback);
-    };
+    }
   }
   private notifySubscribers(): void {
     this.subscribers.forEach(callback => callback(this.currentUser);
@@ -91,7 +91,7 @@ export class CitationsManager {
         userId: this.currentUser!.id,
         collection,
         isPrivate: true
-      };
+      }
       const savedCitations = this.getSavedCitations();
       const existingIndex = savedCitations.findIndex(c => c.id === citation.id);
       if (existingIndex !== -1) {
@@ -158,7 +158,7 @@ export class CitationsManager {
       createdAt: new Date(),
       updatedAt: new Date(),
       isShared: false
-    };
+    }
     const collections = this.getCollections();
     collections.push(collection);
     this.storeCollections(collections);
@@ -405,5 +405,5 @@ export const useCitationsManager = () => {
     createCollection: citationsManager.createCollection.bind(citationsManager),
     getCollections: citationsManager.getCollections.bind(citationsManager),
     exportCitations: citationsManager.exportCitations.bind(citationsManager)
-  };
-};
+  }
+}

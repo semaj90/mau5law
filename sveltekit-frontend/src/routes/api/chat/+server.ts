@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 prompt: enrichedQuery
                 sessionId: currentSessionId
                 includeReasoning: true
-                includeRecommendations: true
+                includeRecommendations: true;
                 stream: true
               }
             })
@@ -427,7 +427,7 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
       // Task completed successfully
       const result = resultData.result
       return {
-        success: true
+        success: true;
         response: (result as { text?: any; tokens_per_second?: any }).text || 'Generated response',
         confidence: 0.8, // Mock confidence
         tokensPerSecond: (result as { text?: any; tokens_per_second?: any }).tokens_per_second || 0,

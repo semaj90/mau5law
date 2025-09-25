@@ -9,7 +9,7 @@ export interface ComponentState {
   loading: boolean;
   error: string | null;
   data: any;
-  meta: { [key: string]: any };
+  meta: { [key: string]: any }
 }
 export interface UIProps {
   variant?: string;
@@ -27,7 +27,7 @@ export interface ComponentAdapter<TData = any> {
     reset: () => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
-  };
+  }
 }
 /**
  * Base Component Adapter Factory
@@ -38,13 +38,13 @@ export function createComponentAdapter<TData = any>(
   options: {
     loading?: boolean;
     error?: string | null;
-    meta?: { [key: string]: any };
+    meta?: { [key: string]: any }
   } = {}
 ): ComponentAdapter<TData> {
   const state = writable<ComponentState>({
     loading: options.loading ?? false,
     error: options.error ?? null,
-    data: initialData
+    data: initialData;
     meta: options.meta ?? {}
   });
   const props = writable<UIProps>({
@@ -66,7 +66,7 @@ export function createComponentAdapter<TData = any>(
         state.set({
           loading: false
           error: null
-          data: initialData
+          data: initialData;
           meta: { [key: string]: any }
         });
       },
@@ -77,7 +77,7 @@ export function createComponentAdapter<TData = any>(
         state.update(current => ({ ...current, error });
       }
     }
-  };
+  }
 }
 /**
  * Chat Component Adapter
@@ -116,11 +116,11 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
     setConnectionStatus: (status: ChatData['connectionStatus']) => {
       adapter.actions.update({ connectionStatus: status });
     }
-  };
+  }
   return {
     ...adapter,
     actions: chatActions
-  };
+  }
 }
 /**
  * Search Component Adapter
@@ -129,12 +129,12 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
 export interface SearchData {
   query: string;
   results: any[];
-  filters: { [key: string]: any };
+  filters: { [key: string]: any }
   pagination: {
     page: number;
     limit: number;
     total: number;
-  };
+  }
   sortBy: string;
   sortOrder: 'asc' | 'desc';
 }
@@ -159,7 +159,7 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
       });
     },
     updateFilters: (filters: Partial<SearchData['filters']>) => {
-      const currentFilters = adapter.state.subscribe(s => s.data.filters)[0]?.filters || {};
+      const currentFilters = adapter.state.subscribe(s => s.data.filters)[0]?.filters || {}
       adapter.actions.update({ filters: { ...currentFilters, ...filters } });
     },
     setPage: (page: number) => {
@@ -168,11 +168,11 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
         pagination: { ...currentPagination, page }
       });
     }
-  };
+  }
   return {
     ...adapter,
     actions: searchActions
-  };
+  }
 }
 /**
  * Upload Component Adapter
@@ -186,7 +186,7 @@ export interface UploadData {
   allowedTypes: string[];
   multiple: boolean;
 }
-export function createUploadAdapter(options: {
+export function createUploadAdapter(_options: {
     maxFileSize?: number;
     allowedTypes?: string[];
     multiple?: boolean;
@@ -204,10 +204,10 @@ export function createUploadAdapter(options: {
     ...adapter.actions,
     addFiles: (newFiles: File[]) => {
       const currentFiles = adapter.state.subscribe(s => s.data.files)[0]?.files || [];
-      const currentProgress = adapter.state.subscribe(s => s.data.uploadProgress)[0]?.uploadProgress || {};
-      const currentStatus = adapter.state.subscribe(s => s.data.uploadStatus)[0]?.uploadStatus || {};
-      const updatedProgress = { ...currentProgress };
-      const updatedStatus = { ...currentStatus };
+      const currentProgress = adapter.state.subscribe(s => s.data.uploadProgress)[0]?.uploadProgress || {}
+      const currentStatus = adapter.state.subscribe(s => s.data.uploadStatus)[0]?.uploadStatus || {}
+      const updatedProgress = { ...currentProgress }
+      const updatedStatus = { ...currentStatus }
       newFiles.forEach(file => {
         updatedProgress[file.name] = 0;
         updatedStatus[file.name] = 'pending';
@@ -219,13 +219,13 @@ export function createUploadAdapter(options: {
       });
     },
     updateProgress: (fileName: string, progress: number) => {
-      const currentProgress = adapter.state.subscribe(s => s.data.uploadProgress)[0]?.uploadProgress || {};
+      const currentProgress = adapter.state.subscribe(s => s.data.uploadProgress)[0]?.uploadProgress || {}
       adapter.actions.update({
         uploadProgress: { ...currentProgress, [fileName]: progress }
       });
     },
     updateStatus: (fileName: string, status: UploadData['uploadStatus'][string]) => {
-      const currentStatus = adapter.state.subscribe(s => s.data.uploadStatus)[0]?.uploadStatus || {};
+      const currentStatus = adapter.state.subscribe(s => s.data.uploadStatus)[0]?.uploadStatus || {}
       adapter.actions.update({
         uploadStatus: { ...currentStatus, [fileName]: status }
       });
@@ -234,8 +234,8 @@ export function createUploadAdapter(options: {
       const current = adapter.state.subscribe(s => s.data)[0];
       if (!current) return;
       const updatedFiles = current.files.filter(f => f.name !== fileName);
-      const updatedProgress = { ...current.uploadProgress };
-      const updatedStatus = { ...current.uploadStatus };
+      const updatedProgress = { ...current.uploadProgress }
+      const updatedStatus = { ...current.uploadStatus }
       delete updatedProgress[fileName];
       delete updatedStatus[fileName];
       adapter.actions.update({
@@ -244,18 +244,18 @@ export function createUploadAdapter(options: {
         uploadStatus: updatedStatus
       });
     }
-  };
+  }
   return {
     ...adapter,
     actions: uploadActions
-  };
+  }
 }
 /**
  * Form Component Adapter
  * Simplifies complex form component state
  */;
 export interface FormData {
-  values: { [key: string]: any };
+  values: { [key: string]: any }
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   isSubmitting: boolean;
@@ -263,7 +263,7 @@ export interface FormData {
 }
 export function createFormAdapter(
   initialValues: { [key: string]: any } = {},
-  validationRules: Record<string, (value: any) => string | null> = {}
+  validationRules: Record<string, (_value: any) => string | null> = {}
 ): ComponentAdapter<FormData> {
   const adapter = createComponentAdapter<FormData>({
     values: initialValues
@@ -277,10 +277,10 @@ export function createFormAdapter(
     setValue: (field: string, value: any) => {
       const current = adapter.state.subscribe(s => s.data)[0];
       if (!current) return;
-      const newValues = { ...current.values, [field]: value };
-      const newTouched = { ...current.touched, [field]: true };
+      const newValues = { ...current.values, [field]: value }
+      const newTouched = { ...current.touched, [field]: true }
       // Validate field if rules exist
-      const errors = { ...current.errors };
+      const errors = { ...current.errors }
       if (validationRules[field]) {
         const error = validationRules[field](value);
         if (error) {
@@ -290,7 +290,7 @@ export function createFormAdapter(
         }
       }
       adapter.actions.update({
-        values: newValues
+        values: newValues;
         touched: newTouched
         errors,
         isValid: Object.keys(errors).length === 0
@@ -299,7 +299,7 @@ export function createFormAdapter(
     setError: (field: string, error: string) => {
       const current = adapter.state.subscribe(s => s.data)[0];
       if (!current) return;
-      const newErrors = { ...current.errors, [field]: error };
+      const newErrors = { ...current.errors, [field]: error }
       adapter.actions.update({
         errors: newErrors
         isValid: Object.keys(newErrors).length === 0
@@ -314,11 +314,11 @@ export function createFormAdapter(
     setSubmitting: (isSubmitting: boolean) => {
       adapter.actions.update({ isSubmitting });
     }
-  };
+  }
   return {
     ...adapter,
     actions: formActions
-  };
+  }
 }
 /**
  * Component Adapter Registry
@@ -349,7 +349,7 @@ export const componentRegistry = new ComponentAdapterRegistry();
 export const svelte5Utils = {
   // Safe prop access for Svelte 5 components
   safeProps: <T extends { [key: string]: any }(props: T, defaults: Partial<T>): T => {
-    return { ...defaults, ...props };
+    return { ...defaults, ...props }
   },
   // Convert complex state to simple props
   stateToProps: (state: ComponentState): UIProps => {
@@ -360,17 +360,17 @@ export const svelte5Utils = {
       'data-error': state.error,
       'aria-busy': state.loading,
       'aria-invalid': !!state.error
-    };
+    }
   },
   // Event handler factory for simplified components
   createHandler: <T extends (...args: any[]) => void>(,
-    fn: T
+    fn: T;
     options: { preventDefault?: boolean; stopPropagation?: boolean } = {}
   ) => {
-    return (event: Event, ...args: Parameters<T>) => {
+    return (_event: Event, ...args: Parameters<T>) => {
       if (options.preventDefault) event.preventDefault();
       if (options.stopPropagation) event.stopPropagation();
       fn(...args);
-    };
+    }
   }
-};
+}

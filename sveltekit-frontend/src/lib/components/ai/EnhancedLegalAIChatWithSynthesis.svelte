@@ -113,7 +113,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     legalBERT: 'unknown',
     rag: 'unknown',
     synthesis: 'unknown',
-    lastCheck: null
+    lastCheck: null;
   });
   // Reactive derived stores
   const hasAdvancedFeatures = derived(messages, ($messages) =>
@@ -160,7 +160,7 @@ if (browser) {
   // System status check using production health endpoint
   async function checkSystemStatus() {
     try {
-      const response = await fetch('/api/health');
+      // removed unused response assignment
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
         const status = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
         systemStatus = {
@@ -168,7 +168,7 @@ if (browser) {
           rag: status.checks?.database ? 'active' : 'inactive',
           synthesis: status.checks?.server ? 'active' : 'inactive',
           lastCheck: new Date().toISOString(),
-        };
+        }
       }
     } catch (error) {
       console.warn('System status check failed:', error);
@@ -192,7 +192,7 @@ if (browser) {
           enableRAG: settings.enableRAG,
           enableInputSynthesis: settings.enableInputSynthesis
         }
-      };
+      }
       const response = await fetch('/api/v1/chat/sessions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -216,7 +216,7 @@ if (browser) {
   async function loadChatHistory() {
     if (!currentSessionId || !persistConversation) return;
     try {
-      const response = await fetch(`/api/v1/chat/sessions/${currentSessionId}/messages`);
+      // removed unused response assignment
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
         const chatHistory = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
         // Convert database messages to component format
@@ -229,7 +229,7 @@ if (browser) {
           legalAnalysis: msg.legal_analysis,
           ragResults: msg.rag_results,
           confidence: msg.confidence ? parseFloat(msg.confidence) : undefined
-          processingTime: msg.processing_time ? parseInt(msg.processing_time) : undefined
+          processingTime: msg.processing_time ? parseInt(msg.processing_time) : undefined;
           metadata: msg.ai_metadata;
         }));
         messages.set(loadedMessages);
@@ -256,7 +256,7 @@ if (browser) {
         confidence: message.confidence?.toString() || null,
         processingTime: message.processingTime?.toString() || null,
         aiMetadata: message.metadata || null;
-      };
+      }
       const response = await fetch('/api/v1/chat/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -277,7 +277,7 @@ if (browser) {
   async function loadRelatedReports() {
     if (!reportId) return;
     try {
-      const response = await fetch(`/api/v1/reports/${reportId}/related`);
+      // removed unused response assignment
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
         const reports = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
         relatedReports = reports.slice(0, 5); // Limit to top 5 related reports
@@ -317,7 +317,7 @@ if (browser) {
         body: JSON.stringify({
           query,
           userId,
-          caseId: caseId || null
+          caseId: caseId || null;
           limit: 5;
         })
       });
@@ -424,8 +424,8 @@ if (browser) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           model: 'gemma3-legal',
-          prompt: enhancedPrompt
-          stream: true, // Enable streaming
+          prompt: enhancedPrompt;
+          stream: true, // Enable streaming;
           options: {
             temperature: 0.4,
             num_ctx: 4096,
@@ -445,7 +445,7 @@ if (browser) {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value);
-          const lines = chunk.split.filter(line => line.trim());
+          // removed unused lines assignment
           for (const line of lines) {
             try {
               const data = JSON.parse(line);
@@ -490,7 +490,7 @@ if (browser) {
             synthesis: settings.enableInputSynthesi;
           }
         }
-      };
+      }
     } catch (error) {
       console.error('Streaming AI processing failed:', error);
       // Fallback to non-streaming
@@ -505,7 +505,7 @@ if (browser) {
       role: 'user',
       content: currentInput.trim(),
       timestamp: Date.now(),
-    };
+    }
     // Add user message
     messages.update((msgs) => [...msgs, userMessage]);
     // Save user message to database
@@ -547,7 +547,7 @@ if (browser) {
         confidence: processingResult.confidence || 0.5,
         processingTime: processingResult.processingTime || 0,
         metadata: processingResult.metadata,
-      };
+      }
       messages.update((msgs) => [...msgs, assistantMessage]);
       // Start typewriter streaming effect for AI response
       if (settings.enableTypewriterEffect && processingResult.response) {
@@ -560,7 +560,7 @@ if (browser) {
           const finalMessage = {
             ...assistantMessage,
             content: processingResult.response ;
-          };
+          }
           await saveMessageToDatabase(finalMessage);
         }
       } else {
@@ -573,7 +573,7 @@ if (browser) {
       currentAnalysis = {
         query,
         ...processingResult,
-      };
+      }
     } catch (error) {
       console.error('Enhanced AI processing failed:', error);
       const errorMessage: EnhancedMessage = {
@@ -582,7 +582,7 @@ if (browser) {
         content: `⚠️ I encountered an error processing your request: ${error.message}. Please try again or contact support if the issue persists.`,
         timestamp: Date.now(),
         confidence: 0.1,
-      };
+      }
       messages.update((msgs) => [...msgs, errorMessage]);
     } finally {
       isProcessing = false;
@@ -611,8 +611,8 @@ if (browser) {
       },
       body: JSON.stringify({,
         model: 'gemma3-legal',
-        prompt: enhancedPrompt
-        stream: false
+        prompt: enhancedPrompt;
+        stream: false;
         options: {
           temperature: 0.4,
           num_ctx: 4096,
@@ -630,7 +630,7 @@ if (browser) {
       entities: [userRole, caseId].filter(Boolean),
       concepts: ['legal_analysis', context.enhancementLevel],
       complexity: { legalComplexity: 0.7 }
-    };
+    }
     return {
       response: (result as { response?: any }).response || 'Response generated successfully',
       confidence: 0.85,
@@ -654,7 +654,7 @@ if (browser) {
           synthesis: settings.enableInputSynthesi;
         }
       }
-    };
+    }
   }
   // Command handling
   async function handleCommand(command: string) {
@@ -712,7 +712,7 @@ if (browser) {
   5. Recommendations for ${userRole}
   Text to analyze: "${text}"
   Provide a structured analysis:`,
-          stream: false
+          stream: false;
           options: {
             temperature: 0.2,
             num_ctx: 4096;
@@ -761,7 +761,7 @@ if (browser) {
   4. Practical implications
   5. Recommendations
   Topic: ${topic}`,
-          stream: false
+          stream: false;
           options: {
             temperature: 0.3,
             num_ctx: 2048;
@@ -833,13 +833,13 @@ if (browser) {
       role: 'system',
       content,
       timestamp: Date.now(),
-    };
+    }
     messages.update((msgs) => [...msgs, systemMessage]);
     await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates
     scrollToBottom();
   }
   // Input handling
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -926,7 +926,7 @@ if (browser) {
           streamEnabled: settings.enableStreamingResponse,
           typewriterEnabled: settings.enableTypewriterEffect;
         }
-      };
+      }
     } catch (error) {
       console.error('AI processing error:', error);
       return {
@@ -937,7 +937,7 @@ if (browser) {
         confidence: 0.1,
         processingTime: Date.now() - startTime,
         metadata: { error: true }
-      };
+      }
     }
   }
   // Generate streaming response from Ollama
@@ -950,7 +950,7 @@ if (browser) {
         body: JSON.stringify({,
           model: 'gemma3-legal',
           prompt,
-          stream: true
+          stream: true;
           options: {
             temperature: 0.3,
             num_ctx: 4096,
@@ -970,7 +970,7 @@ if (browser) {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value);
-        const lines = chunk.split.filter(line => line.trim());
+        // removed unused lines assignment
         for (const line of lines) {
           try {
             const data = JSON.parse(line);
@@ -1121,7 +1121,7 @@ if (browser) {
                   <input
                     type="range"
                     min="10"
-                    max="100"
+                    max="100";
                     bind:value={settings.typewriterSpeed}
                     class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   />

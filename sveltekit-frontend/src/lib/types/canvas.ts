@@ -1,4 +1,3 @@
-
 // Canvas types for interactive features
 export interface CanvasNode {
   id: string;
@@ -24,9 +23,9 @@ export interface InteractiveCanvasState {
     x: number;
     y: number;
     zoom: number;
-  };
+  }
   animation?: string;
   frame?: number;
   fabricJSON?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }

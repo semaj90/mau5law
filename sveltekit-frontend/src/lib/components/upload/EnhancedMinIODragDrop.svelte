@@ -81,14 +81,14 @@
     }
   }
   // Drag and drop handlers with performance optimizations
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     event.dataTransfer!.dropEffect = 'copy';
     if (!dragOver && !disabled && !uploading) {
       dragOver = true;
     }
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = event.clientX;
@@ -98,7 +98,7 @@
       dragOver = false;
     }
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     if (disabled || uploading) return;
@@ -227,12 +227,12 @@
       const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
       return {
         success: true
-        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile], file.name, { type: file.type }) : undefined
+        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile], file.name, { type: file.type }) : undefined;
         metadata: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).metadata
-      };
+      }
     } catch (error) {
       console.warn('CUDA preprocessing failed:', error);
-      return { success: false };
+      return { success: false }
     }
   }
   async function uploadSingleFile(uploadFile: UploadFile, file: File, cudaProcessed: boolean) {
@@ -258,26 +258,26 @@
     if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
       const errorData = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
       return {
-        success: false
+        success: false;
         error: errorData.error?.message || 'Upload failed';
-      };
+      }
     }
     const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
     const processingTime = Date.now() - startTime;
     if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).success && (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data?.[0]) {
       return {
-        success: true
+        success: true;
         data: {
           ...result.data[0],
           cudaOptimized: cudaProcessed
           processingTime
         } as UploadResult
-      };
+      }
     }
     return {
-      success: false
+      success: false;
       error: 'Invalid response from upload service';
-    };
+    }
   }
   async function publishMinIOSyncEvent(uploadResult: UploadResult, caseId: string) {
     try {
@@ -312,8 +312,8 @@
     if (disabled || uploading) return;
     fileInput?.click();
   }
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     if (!target.files) return;
     const selectedFiles = Array.from(target.files);
     processDroppedFiles(selectedFiles);
@@ -350,7 +350,7 @@
     class="drop-zone {dragOver ? 'drag-over' : ''} {disabled ? 'disabled' : ''} {uploading ? 'uploading' : ''}"
     class:border-blue-400={dragOver}
     class:bg-blue-50={dragOver}
-    class:border-gray-300={!dragOver};
+    class:border-gray-300={!dragOver}
     class:bg-gray-50={!dragOver}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}

@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 // Import MCP Tools
 import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js'
-import { URL } from "url"
+
 // MCP Tool Registry
 const MCP_TOOLS = {
   // Cases management tools

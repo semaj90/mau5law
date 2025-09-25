@@ -166,7 +166,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         return {
           ...doc,
           texture: texture!;
-        };
+        }
       }).filter(doc => doc.texture); // Filter out failed textures
       if (documentsWithTextures.length === 0) {
         throw new Error('No textures could be created');
@@ -181,7 +181,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         memoryUsed: 0,
         rtxAcceleration: true
         streamingUsed: false
-        batchProcessing: true
+        batchProcessing: true;
         timestamp: new Date();
       }, ...processingResults.slice(0, 9)];
       // Update metrics
@@ -191,7 +191,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         averageProcessingTime: batchResult.totalProcessingTime / batchResult.processedDocuments,
         memoryEfficiency: batchResult.memoryOptimized ? 95 : performanceMetrics.memoryEfficiency,
         rtxAccelerationUsage: performanceMetrics.rtxAccelerationUsage + 1
-      };
+      }
       // Update system stats
       systemStats = yorhaTextureManager.getStatistics();
       console.log(`✅ Batch processing completed: ${batchResult.processedDocuments} documents, ${batchResult.mipmapsGenerated} total mipmaps`);
@@ -225,7 +225,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         memoryUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed,
         rtxAcceleration: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
         streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
-        demo: true
+        demo: true;
         timestamp: new Date();
       }, ...processingResults.slice(0, 9)];
       console.log.mipmapLevels.length} levels generated in ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime.toFixed(2)}ms`);
@@ -244,7 +244,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       averageProcessingTime: (performanceMetrics.averageProcessingTime * (performanceMetrics.totalTexturesProcessed - 1) + (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).processingTime) / performanceMetrics.totalTexturesProcessed,
       memoryEfficiency: Math.min.memoryUsed > 0 ? 5 : 0)),
       rtxAccelerationUsage: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration ? performanceMetrics.rtxAccelerationUsage + 1 : performanceMetrics.rtxAccelerationUsage
-    };
+    }
   }
   // Format file size
   function formatBytes(bytes: number): string {
@@ -338,7 +338,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </div>
           <div class="flex items-center gap-2">
             <input
-              type="checkbox"
+              type="checkbox";
               bind:checked={mipmapConfig.enableStreaming}
               id="streaming"
               disabled={isProcessing}

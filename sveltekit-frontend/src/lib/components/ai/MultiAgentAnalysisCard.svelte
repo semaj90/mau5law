@@ -23,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
     caseSynthesis?: unknown;
     caseId?: string;
     timestamp?: string;
-  };
+  }
   // Extract data with fallbacks
   let evidence = $derived(analysisData?.evidenceAnalysis ?? );
   let persons = $derived(analysisData?.personsData?.persons ?? []);
@@ -42,15 +42,14 @@ https://svelte.dev/e/js_parse_error -->
     victim: 'bg-purple-100 text-purple-800',
     associate: 'bg-orange-100 text-orange-800',
     unknown: 'bg-gray-100 text-gray-800';
-  };
+  }
   let showDetails = $state(false);
 </script>
+
 <div class="w-full max-w-4xl nes-container">
   <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
-      <h3 class="nes-text is-primary text-xl font-semibold">
-        Multi-Agent Evidence Analysis
-      </h3>
+      <h3 class="nes-text is-primary text-xl font-semibold">Multi-Agent Evidence Analysis</h3>
       {#if synthesis.caseStrength}
         <Badge class="px-3 py-1 font-medium {strengthColor}">
           Case Strength: {synthesis.caseStrength?.toUpperCase()}
@@ -69,7 +68,9 @@ https://svelte.dev/e/js_parse_error -->
       <div>
         <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
           📄 Evidence Analysis
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{evidence.documentType}</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+            >{evidence.documentType}</span
+          >
         </h3>
         {#if evidence.keyFacts?.length}
           <div class="mb-4">
@@ -109,7 +110,9 @@ https://svelte.dev/e/js_parse_error -->
       <div>
         <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
           👥 Persons of Interest
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{persons.length} identified</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+            >{persons.length} identified</span
+          >
         </h3>
         <div class="grid gap-3 md:grid-cols-2">
           {#each persons.slice(0, 4) as person}
@@ -133,10 +136,7 @@ https://svelte.dev/e/js_parse_error -->
               {#if person.confidence}
                 <div class="mt-2 flex items-center gap-2">
                   <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                    <div
-                      class="bg-blue-500 h-1.5 rounded-full"
-                      style="width: {person.confidence * 100}%"
-                    ></div>
+                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: {person.confidence * 100}%"></div>
                   </div>
                   <span class="text-xs text-gray-500">{Math.round(person.confidence * 100)}%</span>
                 </div>
@@ -212,23 +212,12 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
     <!-- Action Buttons -->
     <div class="flex items-center gap-3 pt-4 border-t">
-      <Button class="bits-btn"
-        variant="ghost"
-        size="sm"
-        onclick={() =>
-showDetails = !showDetails}
-      >
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showDetails = !showDetails)}>
         {showDetails ? 'Hide' : 'Show'} Full Analysis
-</Button>
-      <Button class="bits-btn" variant="ghost" size="sm">
-📊 View Timeline
-</Button>
-      <Button class="bits-btn" variant="ghost" size="sm">
-🕸️ Relationship Graph
-</Button>
-      <Button class="bits-btn" size="sm">
-📝 Generate Report
-</Button>
+      </Button>
+      <Button class="bits-btn" variant="ghost" size="sm">📊 View Timeline</Button>
+      <Button class="bits-btn" variant="ghost" size="sm">🕸️ Relationship Graph</Button>
+      <Button class="bits-btn" size="sm">📝 Generate Report</Button>
     </div>
     <!-- Detailed View -->
     {#if showDetails}
@@ -241,6 +230,7 @@ showDetails = !showDetails}
     {/if}
   </div>
 </div>
+
 <style>
   /* Custom scrollbar for JSON display */
   pre::-webkit-scrollbar {

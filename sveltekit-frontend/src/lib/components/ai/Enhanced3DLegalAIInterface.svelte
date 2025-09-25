@@ -58,7 +58,7 @@
     networkLatency: 0,
     cacheHitRate: 0,
     aiResponseTime: 0;
-  };
+  }
   // Bit-encoding streaming state
   let streamingChunks: Array = [];
   let totalBytesTransferred = 0;
@@ -300,7 +300,7 @@ if (!browser) return;
       // Update streaming visualizations
       updateStreamingVisualizations();
       animationFrame = requestAnimationFrame(animate);
-    };
+    }
     animationFrame = requestAnimationFrame(animate);
   }
   function render3DScene(time: number) {
@@ -413,9 +413,9 @@ if (!browser) return;
       if (neo4jEngine) {
         recommendations = await neo4jEngine.getRecommendations({
           userId: 'demo_user',
-          context: message
+          context: message;
           type: 'expert_insights',
-          useAI: true
+          useAI: true;
           limit: 3;
         });
         if (recommendations.length > 0) {
@@ -431,13 +431,13 @@ if (!browser) return;
           temperature: 0.1,
           maxTokens: 500,
           stream: true
-          useCache: true
+          useCache: true;
           priority: 'high';
-        };
+        }
         // Add streaming chunk visualization
         streamingChunks.push({
           id: streamRequest.id,
-          data: new ArrayBuffer(1024), // Mock data
+          data: new ArrayBuffer(1024), // Mock data;
           progress: 0,
           status: 'streaming';
         });
@@ -508,21 +508,12 @@ if (!browser) return;
     }
   }
 </script>
+
 <div class="enhanced-3d-legal-ai-interface" class:yorha={theme === 'yorha'} bind:this={containerRef}>
   <!-- 3D Visualization Canvas -->
-  <canvas
-    bind:this={canvasRef}
-    class="visualization-canvas"
-    width="800"
-    height="400"
-  ></canvas>
+  <canvas bind:this={canvasRef} class="visualization-canvas" width="800" height="400"></canvas>
   <!-- Progress Animation Canvas -->
-  <canvas
-    bind:this={progressCanvasRef}
-    class="progress-canvas"
-    width="800"
-    height="100"
-  ></canvas>
+  <canvas bind:this={progressCanvasRef} class="progress-canvas" width="800" height="100"></canvas>
   <!-- System Status Panel -->
   <div class="status-panel">
     <div class="status-header">
@@ -571,7 +562,11 @@ if (!browser) return;
     <h4>QUIC Streaming Chunks</h4>
     <div class="chunks-container">
       {#each streamingChunks as chunk}
-        <div class="chunk" class:streaming={chunk.status === 'streaming'} class:completed={chunk.status === 'completed'}>
+        <div
+          class="chunk"
+          class:streaming={chunk.status === 'streaming'}
+          class:completed={chunk.status === 'completed'}
+        >
           <div class="chunk-id">{chunk.id.substring(0, 8)}</div>
           <div class="chunk-progress">
             <div class="chunk-progress-bar">
@@ -593,7 +588,12 @@ if (!browser) return;
     </div>
     <div class="chat-messages">
       {#each chatMessages as message}
-        <div class="message" class:user={message.type === 'user'} class:ai={message.type === 'ai'} class:system={message.type === 'system'}>
+        <div
+          class="message"
+          class:user={message.type === 'user'}
+          class:ai={message.type === 'ai'}
+          class:system={message.type === 'system'}
+        >
           <div class="message-type">{message.type.toUpperCase()}</div>
           <div class="message-content">{message.content}</div>
           <div class="message-time">{new Date(message.timestamp).toLocaleTimeString()}</div>
@@ -604,7 +604,7 @@ if (!browser) return;
       <input
         bind:value={userInput}
         placeholder="Enter legal query or document text..."
-        onkeydown={(e) => e.key === 'Enter' && handleUserInput()}
+        onkeydown={e => e.key === 'Enter' && handleUserInput()}
         disabled={!isInitialized || isProcessing}
       />
       <button onclick={handleUserInput} disabled={!isInitialized || isProcessing}>
@@ -632,6 +632,7 @@ if (!browser) return;
     </div>
   {/if}
 </div>
+
 <style>
   .enhanced-3d-legal-ai-interface {
     display: grid;

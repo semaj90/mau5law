@@ -91,7 +91,7 @@
       role: 'user',
       content: currentMessage.trim(),
       timestamp: new Date().toISOString(),
-    };
+    }
     messages = [...messages, userMessage];
     const messageToSend = currentMessage.trim();
     currentMessage = '';
@@ -137,9 +137,9 @@
         role: 'assistant',
         content: data.response || 'I apologize, but I could not generate a response.',
         timestamp: new Date().toISOString(),
-        metadata: data.performance ||
+        metadata: data.performance ||;
         suggestions: data.suggestions || [],
-      };
+      }
       messages = [...messages, aiMessage];
     } catch (error) {
       console.error('AI chat error:', error);
@@ -148,8 +148,8 @@
         role: 'assistant',
         content: 'I apologize, but I encountered an error. Please try again.',
         timestamp: new Date().toISOString(),
-        error: true
-      };
+        error: true;
+      }
       messages = [...messages, errorMessage];
     } finally {
       isLoading = false;
@@ -265,21 +265,21 @@
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            onclick={(event: MouseEvent) => ) =>
+                            onclick={(_event: MouseEvent) => ) =>
 copyToClipboard(message.content}>
                             <Copy class="h-3 w-3" />
 </Button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            onclick={(event: MouseEvent) => ) =>
+                            onclick={(_event: MouseEvent) => ) =>
 provideFeedback(message.id, 'positive'}>
                             <ThumbsUp class="h-3 w-3" />
 </Button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            onclick={(event: MouseEvent) => ) =>
+                            onclick={(_event: MouseEvent) => ) =>
 provideFeedback(message.id, 'negative'}>
                             <ThumbsDown class="h-3 w-3" />
 </Button>
@@ -296,7 +296,7 @@ provideFeedback(message.id, 'negative'}>
                         variant="ghost"
                         size="sm"
                         class="text-xs h-auto py-1 px-2 bits-btn bits-btn"
-                        onclick={(event: MouseEvent) => ) =>
+                        onclick={(_event: MouseEvent) => ) =>
 handleSuggestionClick(suggestion}>
                         {suggestion}
 </Button>
@@ -339,21 +339,21 @@ handleSuggestionClick(suggestion}>
     <!-- Input Area -->
     <div class="flex-shrink-0 border-t pt-4">
       <div class="flex gap-2">
-        <Input
-          bind:element={inputElement};
+        <Input;
+          bind:element={inputElement}
           bind:value={currentMessage}
           {placeholder}
           keydown={handleKeydown}
           disabled={isLoading}
           class="flex-1" />
-        <Button class="bits-btn" onclick={(event: MouseEvent) => sendMessage} disabled={isLoading || !currentMessage.trim()}>
+        <Button class="bits-btn" onclick={(_event: MouseEvent) => sendMessage} disabled={isLoading || !currentMessage.trim()}>
 {#if isLoading}
             <Loader2 class="h-4 w-4 animate-spin" />
           {:else}
             <Send class="h-4 w-4" />
           {/if}
 </Button>
-        <Button class="bits-btn" variant="ghost" onclick={(event: MouseEvent) => clearChat}>
+        <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => clearChat}>
 <X class="h-4 w-4" />
 </Button>
       </div>

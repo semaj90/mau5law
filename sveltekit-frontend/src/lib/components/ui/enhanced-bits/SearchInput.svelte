@@ -91,7 +91,7 @@
         ai: enableAISearch.toString();
       });
       // In real implementation, this would be your vector search endpoint
-      const response = await fetch(`/api/search/vector?${searchParams}`);
+      // removed unused response assignment
       const data = await response.json();
       if (data.success) {
         suggestions = data.results || [];
@@ -106,8 +106,8 @@
     }
   }
   // Handle input changes with debouncing
-  function handleInput(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleInput(_event: Event) {
+    // removed unused target assignment
     value = target.valu;
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
@@ -134,27 +134,28 @@
     onfilter?.(filters);
   }
   // Close suggestions when clicking outside
-  function handleClickOutside(event: MouseEvent) {
+  function handleClickOutside(_event: MouseEvent) {
     if (!event.target || !(event.target as Element).closest('.search-container')) {
       showSuggestions = false;
       showFilters = false;
     }
   }
   // Keyboard navigation
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
       showSuggestions = false;
       showFilters = false;
     }
   }
 </script>
+
 <svelte:window onclick={handleClickOutside} onkeydown={handleKeydown} />
 <div class="{containerClasses} search-container">
   <!-- Main Search Input -->
   <div class="relative">
     <input
       bind:this={inputElement}
-      bind:value={value}
+      bind:value
       class={inputClasses}
       {placeholder}
       oninput={handleInput}
@@ -184,7 +185,7 @@
     {#if filters.length > 0}
       <button
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        onclick={() => showFilters = !showFilters}
+        onclick={() => (showFilters = !showFilters)}
         class:text-blue-600={filters.some(f => f.active)}
       >
         <Filter class={iconSizes[size]} />
@@ -217,11 +218,7 @@
       </div>
       <div class="flex flex-wrap gap-2">
         {#each filters as filter, index}
-          <button
-            class="nes-btn is-small";
-            class:is-primary={filter.active}
-            onclick={() => toggleFilter(index)}
-          >
+          <button class="nes-btn is-small" ; class:is-primary={filter.active} onclick={() => toggleFilter(index)}>
             {filter.label}
           </button>
         {/each}
@@ -230,7 +227,9 @@
   {/if}
   <!-- Suggestions Dropdown -->
   {#if showSuggestions && (suggestions.length > 0 || searchHistory.length > 0)}
-    <div class="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-40 max-h-80 overflow-y-auto">
+    <div
+      class="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-40 max-h-80 overflow-y-auto"
+    >
       {#if suggestions.length > 0}
         <div class="p-2">
           <div class="flex items-center gap-2 px-2 py-1 text-xs text-gray-600 font-medium">
@@ -274,7 +273,10 @@
           {#each searchHistory.slice(0, 3) as historyItem}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-              onclick={() => { value = historyItem; performSearch(historyItem); }}
+              onclick={() => {
+                value = historyItem;
+                performSearch(historyItem);
+              }}
             >
               <div class="text-sm text-gray-700">{historyItem}</div>
             </button>
@@ -284,6 +286,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   /* Enhanced NES.css input styling */
   .nes-input:focus {
@@ -295,8 +298,13 @@
     animation: pulse 2s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
   /* Suggestion hover animation */
   .hover\:bg-gray-100:hover {

@@ -9,7 +9,7 @@ export interface StreamEvent {
   data: any;
 }
 export interface StreamSubscriber {
-  callback: (event: StreamEvent) => void;
+  callback: (_event: StreamEvent) => void;
   subscribed: number;
 }
 export interface StreamingOptions {
@@ -17,7 +17,7 @@ export interface StreamingOptions {
     query: string;
     context?: unknown;
     options?: unknown;
-  };
+  }
   onProgress?: (stage: string, progress: number, data?: unknown) => void;
   onStage?: (stage: string, data: any) => void;
   onSource?: (source: any) => void;
@@ -42,14 +42,14 @@ class StreamingService extends EventEmitter {
   /**
    * Subscribe to a stream
    */;
-  subscribe(streamId: string, callback: (event: StreamEvent) => void): () => void {
+  subscribe(streamId: string, callback: (_event: StreamEvent) => void): () => void {
     if (!this.streams.has(streamId)) {
       this.streams.set(streamId, []);
     }
     const subscriber: StreamSubscriber = {
       callback,
       subscribed: Date.now()
-    };
+    }
     this.streams.get(streamId).push(subscriber);
     // Send any buffered events
     const buffer = this.streamBuffer.get(streamId);
@@ -74,12 +74,12 @@ class StreamingService extends EventEmitter {
         }
       }
       logger.debug(`[StreamingService] Subscriber removed from stream ${streamId}`);
-    };
+    }
   }
   /**
    * Synthesize with progressive streaming updates
    */;
-  async synthesizeWithProgress(options: StreamingOptions): Promise<any> {
+  async synthesizeWithProgress(_options: StreamingOptions): Promise<any> {
     const streamId = `stream_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     try {
       logger.info(`[StreamingService] Starting progressive synthesis for stream ${streamId}`);
@@ -302,7 +302,7 @@ class StreamingService extends EventEmitter {
       intent: 'legal_query',
       entities: [],
       complexity: 0.7
-    };
+    }
   }
   /**
    * Stream retrieval with source-by-source updates
@@ -322,7 +322,7 @@ class StreamingService extends EventEmitter {
         content: `Content of document ${i + 1}...`,
         relevanceScore: Math.random(),
         type: 'document'
-      };
+      }
       sources.push(source);
       onSource(source, i + 1, totalSources);
     }
@@ -347,7 +347,7 @@ class StreamingService extends EventEmitter {
    * Construct prompt with progress updates
    */
   private async constructPromptWithProgress(
-    input: any
+    input: any;
     sources: any[]
     onProgress: (progress: number) => void;
   ): Promise<string> {
@@ -383,7 +383,7 @@ class StreamingService extends EventEmitter {
       subscribers: subscribers?.length || 0,
       startTime: processing?.startTime,
       duration: processing?.duration
-    };
+    }
   }
   /**
    * Get all active streams
@@ -441,7 +441,7 @@ class StreamingService extends EventEmitter {
       const event: StreamEvent = {
         type: 'error',
         data: { message: 'Service shutting down' }
-      };
+      }
       for (const subscriber of subscribers) {
         try {
           subscriber.callback(event);
@@ -470,7 +470,7 @@ export class OllamaStreamingAdapter {
    * Stream from Ollama with progressive updates
    */
   async streamFromOllama(
-    model: string
+    model: string;
     prompt: string
     onToken: (token: string) => void,
     onComplete: (response: string) => void;
@@ -497,7 +497,7 @@ export class OllamaStreamingAdapter {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim();
+        // removed unused lines assignment
         for (const line of lines) {
           try {
             const data = JSON.parse(line);
@@ -523,7 +523,7 @@ export class OllamaStreamingAdapter {
    */;
   async checkAvailability(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.ollamaUrl}/api/tags`);
+      // removed unused response assignment
       return (response as { ok?: any; statusText?: any; body?: any }).ok;
     } catch (error: any) {
       return false;

@@ -13,7 +13,7 @@ export interface DocumentChunk {
   chunkIndex: number;
   text: string;
   embedding?: number[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface IngestionJob {
   id: string;
@@ -28,7 +28,7 @@ export interface IngestionJob {
     priority: 'low' | 'medium' | 'high' | 'urgent';
     tags?: string[];
     confidenceThreshold?: number;
-  };
+  }
   state: 'queued' | 'processing' | 'chunking' | 'embedding' | 'storing' | 'caching' | 'completed' | 'failed';
   progress: number;
   retryCount: number;
@@ -61,7 +61,7 @@ export interface IngestionContext {
     averageProcessingTime: number;
     totalEmbeddings: number;
     cacheHitRate: number;
-  };
+  }
   // Worker configuration
   concurrency: number;
   batchSize: number;
@@ -82,7 +82,7 @@ export type IngestionEvent =
   | { type: 'PAUSE_PROCESSING' }
   | { type: 'RESUME_PROCESSING' }
   | { type: 'SET_CONCURRENCY'; concurrency: number }
-  | { type: 'RESET_STATS' };
+  | { type: 'RESET_STATS' }
 const initialContext: IngestionContext = {
   currentJob: null
   jobQueue: [],
@@ -102,7 +102,7 @@ const initialContext: IngestionContext = {
   batchSize: 10,
   error: null
   isRetrying: false
-};
+}
 export const ingestionWorkflowMachine = setup({
   types: { [key: string]: any } as {
     context: IngestionContext;
@@ -134,7 +134,7 @@ export const ingestionWorkflowMachine = setup({
           ...context.currentJob,
           progress: (event as any).progress || context.currentJob.progress,
           state: (event as any).state || context.currentJob.state
-        };
+        }
       }
     }),
     completeJob: assign({,
@@ -146,7 +146,7 @@ export const ingestionWorkflowMachine = setup({
           progress: 100,
           completedAt: new Date().toISOString(),
           results: (event as any).results
-        };
+        }
       },
       completedJobs: ({ context }) => {
         return context.currentJob ? [...context.completedJobs, context.currentJob] : context.completedJobs;
@@ -165,7 +165,7 @@ export const ingestionWorkflowMachine = setup({
           state: 'failed' as const,
           error: (event as any).error || 'Processing failed',
           completedAt: new Date().toISOString()
-        };
+        }
       },
       failedJobs: ({ context }) => {
         return context.currentJob ? [...context.failedJobs, context.currentJob] : context.failedJobs;
@@ -219,13 +219,13 @@ export const ingestionWorkflowMachine = setup({
                 documentId: job.documentId,
                 chunkIndex: i + index,
                 text,
-                embedding: cached
+                embedding: cached;
                 metadata: {
                   ...job.metadata,
                   fromCache: true
                   chunkId
                 }
-              };
+              }
             }
             // Generate embedding
             console.log(`🔄 Generating embedding for chunk ${chunkId}`);
@@ -247,7 +247,7 @@ export const ingestionWorkflowMachine = setup({
                 chunkId,
                 confidence: Math.random() * 0.3 + 0.7 // Mock confidence score
               }
-            };
+            }
           })
         );
         chunks.push(...batchResults);
@@ -263,7 +263,7 @@ export const ingestionWorkflowMachine = setup({
         totalChunks: chunks.length,
         embeddedChunks: chunks.filter(item => item.length),
         averageConfidence: chunks.reduce((sum, c) => sum + (c.metadata.confidence || 0), 0) / chunks.length
-      };
+      }
     }),
     // Store processed chunks in database using Drizzle ORM
     storeChunks: fromPromise(async ({ input }: { input: any }) => {
@@ -294,7 +294,7 @@ export const ingestionWorkflowMachine = setup({
         return {
           stored: (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).inserted,
           errors: (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).errors || []
-        };
+        }
       } catch (error) {
         console.error(`❌ Storage failed for job ${jobId}:`, error);
         throw error;
@@ -311,7 +311,7 @@ export const ingestionWorkflowMachine = setup({
           queuedAt: new Date().toISOString()
         });
         console.log(`📤 Published job ${job.id} to RabbitMQ`);
-        return { backend: 'rabbitmq', jobId: job.id };
+        return { backend: 'rabbitmq', jobId: job.id }
       } catch (error) {
         console.warn('RabbitMQ unavailable, using Redis fallback:', error);
         // Fallback to Redis
@@ -320,7 +320,7 @@ export const ingestionWorkflowMachine = setup({
           queuedAt: new Date().toISOString()
         });
         console.log(`📤 Published job ${job.id} to Redis`);
-        return { backend: 'redis', jobId: job.id };
+        return { backend: 'redis', jobId: job.id }
       }
     }),
     // Find similar documents for the processed job
@@ -608,7 +608,7 @@ export function startIngestionWorkflow(options?: { concurrency?: number; batchSi
 // Utility functions
 export function createIngestionJob(
   documentId: string
-  chunks: string[]
+  chunks: string[];
   metadata: Partial<IngestionJob['metadata']>;
 ): IngestionJob {
   return {
@@ -629,6 +629,6 @@ export function createIngestionJob(
     progress: 0,
     retryCount: 0,
     maxRetries: 3
-  };
+  }
 }
 export default ingestionWorkflowMachine;

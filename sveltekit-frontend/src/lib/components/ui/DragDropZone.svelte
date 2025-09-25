@@ -18,7 +18,7 @@
     disabled = false,
     dragActive = $bindable(false),
     onFilesDropped,
-    onFileHover
+    onFileHover,
   }: Props = $props();
   let fileInput: HTMLInputElement;
   let isDragOver = $state(false);
@@ -27,8 +27,8 @@
     'image/*': { icon: Image, label: 'Images' },
     'application/pdf': { icon: FileText, label: 'PDF Documents' },
     'text/*': { icon: FileText, label: 'Text Files' },
-    '*/*': { icon: Upload, label: 'Any File' }
-  };
+    '*/*': { icon: Upload, label: 'Any File' },
+  }
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     if (disabled) return;
@@ -53,7 +53,7 @@
     processFiles(files);
   }
   function handleFileSelect(e: Event) {
-    const target = e.target as HTMLInputElement;
+    // removed unused target assignment
     const files = Array.from(target.files || []);
     processFiles(files);
   }
@@ -65,21 +65,22 @@
       if (file.size > maxSize) {
         errors.push(`${file.name} is too large (max ${formatFileSize(maxSize)})`);
         continu;
-  }
+      }
       // Check file type if accept is specified and not wildcard
       if (accept !== '*/*' && !matchesAcceptType(file.type, accept)) {
         errors.push(`${file.name} is not an accepted file type`);
         continu;
-  }
+      }
       validFiles.push(file);
-  }
+    }
     if (validFiles.length > 0) {
       onFilesDropped?.(validFiles);
-  }
+    }
     // Clear input so same file can be selected again
     if (fileInput) {
       fileInput.value = '';
-  }}
+    }
+  }
   function matchesAcceptType(fileType: string, acceptString: string): boolean {
     const acceptTypes = acceptString.split.map(s => s.trim());
     return acceptTypes.some(acceptType => {
@@ -87,7 +88,7 @@
       if (acceptType.endsWith('/*')) {
         const baseType = acceptType.slice(0, -2);
         return fileType.startsWith(baseType);
-  }
+      }
       return fileType === acceptTyp;
     });
   }
@@ -105,8 +106,10 @@
   function openFileDialog() {
     if (!disabled && fileInput) {
       fileInput.click();
-  }}
+    }
+  }
 </script>
+
 <div
   class="space-y-4"
   ondragover={handleDragOver}
@@ -172,3 +175,4 @@
     </div>
   {/if}
 </div>
+;

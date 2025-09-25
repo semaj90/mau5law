@@ -29,7 +29,7 @@ export const CaseCreationSchema = z.object({
   assignedTo: z.string().uuid().optional(),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   tags: z.array(z.string()).default([]),
-  estimatedDuration: z.number().min(1).max(365).optional(), // days
+  estimatedDuration: z.number().min(1).max(365).optional(), // days;
   budget: z.number().min(0).optional()
 });
 export const SearchQuerySchema = z.object({
@@ -94,7 +94,7 @@ export interface SearchContext {
     page: number;
     pageSize: number;
     total: number;
-  };
+  }
   analytics: {
     searchTime: number;
     resultCount: number;
@@ -453,7 +453,7 @@ export const caseCreationMachine = createMachine();
                     {}
                   );
                 }
-                return {};
+                return {}
               }
             })
           }
@@ -592,7 +592,7 @@ export const searchMachine = createMachine();
                     {}
                   );
                 }
-                return {};
+                return {}
               }
             })
           }
@@ -711,7 +711,7 @@ export const searchMachine = createMachine();
         return data;
       }),
       loadMoreResults: fromPromise(async ({ input }: { input: any }) => {
-        const query = input?.query || {};
+        const query = input?.query || {}
         const page = input?.page || 1;
         const response = await fetch('/api/search/vector', {
           method: 'POST',
@@ -775,7 +775,7 @@ export const aiAnalysisMachine = createMachine();
                     {}
                   );
                 }
-                return {};
+                return {}
               }
             })
           }
@@ -858,7 +858,7 @@ export const aiAnalysisMachine = createMachine();
         return {
           ...data,
           processingTime: Date.now() - startTime
-        };
+        }
       })
     }
   }

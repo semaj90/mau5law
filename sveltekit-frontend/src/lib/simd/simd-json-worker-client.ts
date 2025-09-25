@@ -18,7 +18,7 @@ export class SIMDJSONWorkerClient {
   private worker: Worker | null = null;
   private messageId = 0;
   private pendingRequests = new Map<string, {
-    resolve: (value: any) => void;
+    resolve: (_value: any) => void;
     reject: (error: Error) => void;
     timeout?: NodeJS.Timeout;
   }>();
@@ -213,7 +213,7 @@ export class SIMDJSONWorkerClient {
         avgTime: 0,
         errors: 0,
         simdReady: false
-      };
+      }
     }
     try {
       const result = await this.sendMessage('GET_STATS');

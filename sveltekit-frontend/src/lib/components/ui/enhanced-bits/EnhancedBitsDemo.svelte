@@ -290,7 +290,7 @@ evidenceDialogOpen = true}>
 </Button>
         </div>
         <!-- Case Management Dialog -->
-        <Dialog
+        <Dialog;
           bind:open={dialogOpen}
           size="lg"
           legal
@@ -353,7 +353,7 @@ Create Case
                           {/snippet}
         </Dialog>
         <!-- Evidence Upload Dialog -->
-        <Dialog
+        <Dialog;
           bind:open={evidenceDialogOpen}
           size="md"
           legal

@@ -21,7 +21,7 @@
     ollamaHost: 'http://localhost:11434',
     embedModel: 'nomic-embed-text',
     legalModel: 'gemma3-legal'
-  };
+  }
   // Initialize component
   $effect(() => {
     (async () => {
@@ -202,7 +202,7 @@ await loadDocuments();
       precedent: 'bg-yellow-100 text-yellow-800',
       motion: 'bg-indigo-100 text-indigo-800',
       brief: 'bg-pink-100 text-pink-800';
-    };
+    }
     return colors[label as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
   // Analyze document with gemma3-legal

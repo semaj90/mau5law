@@ -21,7 +21,7 @@
     // Data filtering
     userId?: string;
     caseId?: string;
-    filters?: { [key: string]: any };
+    filters?: { [key: string]: any }
     // Event handlers
     onSelect?: (item: unknown, type: string) => void;
     onSearchChange?: (query: string) => void;
@@ -55,38 +55,38 @@
   let searchTimeout = $state<number | null >(null);
   const iconMap = {
     cases: Gavel
-    evidence: FileText
-    documents: FileText
+    evidence: FileText;
+    documents: FileText;
     people: User;
-  };
+  }
   const labelMap = {
     cases: 'Cases',
     evidence: 'Evidence',
     documents: 'Documents',
     people: 'People';
-  };
+  }
   async function performSearch(searchQuery: string) {
     if (searchQuery.length < minQueryLength) {
-      searchResults = { cases: [], evidence: [], documents: [], people: [] };
+      searchResults = { cases: [], evidence: [], documents: [], people: [] }
       totalResults = 0;
       return;
     }
     isSearching = true;
     try {
       const searchParams: CommandSearchRequest = {
-        query: searchQuery
-        types: searchTypes
+        query: searchQuery;
+        types: searchTypes;
         limit: searchLimit
         userId;
-      };
-      const response = await reactiveApiClient.commandSearch(searchParams);
+      }
+      // removed unused response assignment
       if ((response as { success?: unknown; data?: unknown }).success && (response as { success?: unknown; data?: unknown }).data) {
-        searchResults = (response as { success?: unknown; data?: unknown }).data.results || { cases: [], evidence: [], documents: [], people: [] };
+        searchResults = (response as { success?: unknown; data?: unknown }).data.results || { cases: [], evidence: [], documents: [], people: [] }
         totalResults = (response as { success?: unknown; data?: unknown }).data.totalResults || 0;
       }
     } catch (error) {
       console.error('Command search failed:', error);
-      searchResults = { cases: [], evidence: [], documents: [], people: [] };
+      searchResults = { cases: [], evidence: [], documents: [], people: [] }
       totalResults = 0;
     } finally {
       isSearching = false;
@@ -105,7 +105,7 @@
         performSearch(newQuery.trim());
       }, debounceMs) as any;
     } else {
-      searchResults = { cases: [], evidence: [], documents: [], people: [] };
+      searchResults = { cases: [], evidence: [], documents: [], people: [] }
       totalResults = 0;
     }
   }
@@ -120,7 +120,7 @@
     if (!newOpen) {
       // Clear search when closed
       query = '';
-      searchResults = { cases: [], evidence: [], documents: [], people: [] };
+      searchResults = { cases: [], evidence: [], documents: [], people: [] }
       totalResults = 0;
     }
   }
@@ -158,7 +158,7 @@
       if (searchTimeout) {
         clearTimeout(searchTimeout);
       }
-    };
+    }
   });
 </script>
 <Command.Root

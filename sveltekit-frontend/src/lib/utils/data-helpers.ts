@@ -9,7 +9,7 @@ import type { UserSession } from "$lib/stores/sessionStore.svelte";
 class DataCache {
   private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
   private maxSize = 100;
-  set(key: string, data: any, ttlMs: number = 5 * 60 * 1000): void {
+  set(_key: string, data: any, ttlMs: number = 5 * 60 * 1000): void {
     // Remove oldest entries if cache is full
     if (this.cache.size >= this.maxSize) {
       const oldestKey = Array.from(this.cache.keys())[0];
@@ -21,7 +21,7 @@ class DataCache {
       ttl: ttlMs
     });
   }
-  get(key: string): any | null {
+  get(_key: string): any | null {
     const entry = this.cache.get(key);
     if (!entry) return null;
     const isExpired = Date.now() - entry.timestamp > entry.ttl;
@@ -72,14 +72,14 @@ export class ApiClient {
       timeout = 10000,
       signal,
       ...fetchOptions
-    } = options || {};
+    } = options || {}
     const url = `${this.baseUrl}${endpoint}`;
     const cacheKey = `${fetchOptions.method || 'GET'}:${url}:${JSON.stringify(fetchOptions.body || {})}`;
     // Check cache first
     if (cache && !signal) {
       const cached = dataCache.get(cacheKey);
       if (cached) {
-        return { data: cached, success: true };
+        return { data: cached, success: true }
       }
     }
     let lastError: any;
@@ -90,7 +90,7 @@ export class ApiClient {
         const finalSignal = signal || controller.signal;
         const response = await fetch(url, {
           ...fetchOptions,
-          signal: finalSignal
+          signal: finalSignal;
           headers: {
             'Content-Type': 'application/json',
             ...fetchOptions.headers
@@ -106,7 +106,7 @@ export class ApiClient {
         if (cache) {
           dataCache.set(cacheKey, data, cacheTtl);
         }
-        return { data, success: true };
+        return { data, success: true }
       } catch (error: any) {
         lastError = error;
         // Don't retry on abort
@@ -121,9 +121,9 @@ export class ApiClient {
     }
     return {
       data: null as T
-      success: false
+      success: false;
       error: lastError?.message || 'Request failed'
-    };
+    }
   }
   async get<T = any>(endpoint: string, options?: ApiOptions): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, { method: 'GET', ...options });
@@ -153,7 +153,7 @@ export interface ValidationRule {
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
-  custom?: (value: any) => boolean | string;
+  custom?: (_value: any) => boolean | string;
 }
 export interface ValidationSchema {
   [key: string]: ValidationRule;
@@ -163,7 +163,7 @@ export interface ValidationResult {
   errors: Record<string, string>;
 }
 export function validateData(data: any, schema: ValidationSchema): ValidationResult {
-  const errors: Record<string, string> = {};
+  const errors: Record<string, string> = {}
   for (const [field, rules] of Object.entries(schema)) {
     const value = data[field];
     if (rules.required && (value === undefined || value === null || value === '')) {
@@ -195,7 +195,7 @@ export function validateData(data: any, schema: ValidationSchema): ValidationRes
   return {
     isValid: Object.keys(errors).length === 0,
     errors
-  };
+  }
 }
 // Common validation schemas
 export const validationSchemas = {
@@ -219,15 +219,15 @@ export const validationSchemas = {
     email: {
       required: true
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      custom: (value: string) => value.includes('@') || 'Invalid email format'
+      custom: (_value: string) => value.includes('@') || 'Invalid email format'
     },
     name: { minLength: 2, maxLength: 100 },
     role: { required: true }
   }
-};
+}
 // Local storage helpers with error handling
 export const storage = {
-  get<T = any>(key: string, defaultValue?: T): T | null {
+  get<T = any>(_key: string, defaultValue?: T): T | null {
     if (!browser) return defaultValue || null;
     try {
       const item = localStorage.getItem(key);
@@ -237,7 +237,7 @@ export const storage = {
       return defaultValue || null;
     }
   },
-  set(key: string, value: any): boolean {
+  set(_key: string, value: any): boolean {
     if (!browser) return false;
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -247,7 +247,7 @@ export const storage = {
       return false;
     }
   },
-  remove(key: string): boolean {
+  remove(_key: string): boolean {
     if (!browser) return false;
     try {
       localStorage.removeItem(key);
@@ -267,7 +267,7 @@ export const storage = {
       return false;
     }
   }
-};
+}
 // File handling utilities
 export function isValidFileType(file: File, allowedTypes: string[]): boolean {
   return allowedTypes.some(type => {
@@ -292,12 +292,12 @@ export function formatFileType(mimeType: string): string {
     'audio/wav': 'WAV Audio',
     'text/plain': 'Text File',
     'application/json': 'JSON File'
-  };
+  }
   return typeMap[mimeType] || mimeType.split('/')[1]?.toUpperCase() || 'Unknown';
 }
 // Data transformation helpers
 export function normalizeData<T>(data: any, schema: { [key: string]: any }): T {
-  const normalized: any = {};
+  const normalized: any = {}
   for (const [key, type] of Object.entries(schema)) {
     const value = data[key];
     if (value === undefined || value === null) {
@@ -339,7 +339,7 @@ export function buildQueryString(params: { [key: string]: any }): string {
   return filtered.length > 0 ? `?${filtered.join('&')}` : '';
 }
 export function parseQueryString(search: string): Record<string, string | string[]> {
-  const params: Record<string, string | string[]> = {};
+  const params: Record<string, string | string[]> = {}
   const urlParams = new URLSearchParams(search);
   for (const [key, value] of urlParams.entries()) {
     if (params[key]) {
@@ -367,7 +367,7 @@ export function createError(code: string, message: string, details?: any): AppEr
     message,
     details,
     timestamp: new Date()
-  };
+  }
 }
 export function handleApiError(error: any): AppError {
   if (error.name === 'AbortError') {
@@ -423,7 +423,7 @@ export const performanceMonitor = new PerformanceMonitor();
 export class DataSync {
   private syncQueue = new Map<string, any>();
   private syncing = false;
-  queue(key: string, data: any): void {
+  queue(_key: string, data: any): void {
     this.syncQueue.set(key, { data, timestamp: Date.now() });
     this.processQueue();
   }

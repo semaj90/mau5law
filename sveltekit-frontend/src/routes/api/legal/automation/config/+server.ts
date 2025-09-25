@@ -245,7 +245,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     })
   } catch (error) {
     return json({
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: 'Delete failed'
     }, { status: 500 })
   }

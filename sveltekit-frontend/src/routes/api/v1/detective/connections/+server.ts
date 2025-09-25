@@ -226,7 +226,7 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
       label: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).title || `Evidence ${index + 1}`,
       type: 'evidence',
       subtype: semanticData?.classification || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).evidenceType || 'unknown',
-      size: importance
+      size: importance;
       color: getNodeColor('evidence', semanticData?.classification || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).evidenceType),
       metadata: {
         originalId: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).id,
@@ -534,7 +534,7 @@ function getEdgeColor(strength: number): string {
   if (strength > 0.4) return '#DC2626'; // Weak - red
   return '#9CA3AF'; // Predicted - gray
 }
-function getClusterColor(index: number): string {
+function getClusterColor(_index: number): string {
   const colors = ['#FEF3C7', '#DBEAFE', '#FCE7F3', '#D1FAE5', '#E0E7FF', '#FED7D7']
   return colors[index % colors.length]
 }

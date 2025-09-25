@@ -24,12 +24,12 @@
     open = false;
     onclose?.();
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape' && closeOnEscape) {
       handleClose();
   }
   }
-  function handleOutsideClick(event: MouseEvent) {
+  function handleOutsideClick(_event: MouseEvent) {
     if (closeOnOutsideClick && event.target === modalElement) {
       handleClose();
   }
@@ -37,11 +37,11 @@
   $effect(() => {
     const handleGlobalKeydown = (e: CustomEvent<any>) => {
       if (open) handleKeydown(e);
-    };
+    }
     document.addEventListener('keydown', handleGlobalKeydown);
     return () => {
       document.removeEventListener('keydown', handleGlobalKeydown);
-    };
+    }
   });
   let sizeClasses = $derived({
     sm: 'max-w-md',

@@ -222,4 +222,4 @@ Create Case
       </div>
     </div>
   </section>
-</div>
+</div>;

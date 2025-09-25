@@ -22,14 +22,14 @@ export class RabbitMQServiceWorker {
     errors: 0,
     startTime: Date.now(),
     avgProcessingTime: 0
-  };
+  }
   constructor(config: ServiceWorkerConfig = {}) {
     this.config = {
       enableLogging: config.enableLogging ?? true,
       maxRetries: config.maxRetries ?? 3,
       processingTimeout: config.processingTimeout ?? 30000,
       enableN64Logging: config.enableN64Logging ?? false
-    };
+    }
   }
   static getInstance(config?: ServiceWorkerConfig): RabbitMQServiceWorker {
     if (!RabbitMQServiceWorker.instance) {
@@ -234,7 +234,7 @@ export class RabbitMQServiceWorker {
       ...this.processingStats,
       uptime: Date.now() - this.processingStats.startTime,
       isRunning: this.isRunning
-    };
+    }
   }
   /**
    * Health check for the service worker
@@ -246,7 +246,7 @@ export class RabbitMQServiceWorker {
       status: this.isRunning && rabbitmqHealth.status === 'healthy' ? 'healthy' : 'unhealthy',
       stats,
       rabbitmq: rabbitmqHealth
-    };
+    }
   }
   /**
    * Publish a message to a queue (convenience method)
@@ -285,4 +285,4 @@ export async function startRabbitMQWorker(config?: ServiceWorkerConfig): Promise
 export async function stopRabbitMQWorker(): Promise<void> {
   await rabbitmqServiceWorker.stop();
 }
-export { {} };
+export { {} }

@@ -6,7 +6,7 @@ import { json } from '@sveltejs/kit'
 import { evidence } from "$lib/server/db/schema-postgres"
 import { and, desc, ilike, or, sql } from "drizzle-orm"
 import { db } from "$lib/server/db/index"
-import { URL } from "url"
+
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get("q")

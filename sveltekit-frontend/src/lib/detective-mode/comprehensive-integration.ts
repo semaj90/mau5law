@@ -12,16 +12,16 @@ interface DetectiveSystemStatus {
     connected: boolean;
     caseScoringAvailable: boolean;
     streamingActive: boolean;
-  };
+  }
   evidence: {
     totalItems: number;
     processingQueue: number;
     lastSync: Date | null;
-  };
+  }
   realTime: {
     activeConnections: number;
     lastHeartbeat: Date | null;
-  };
+  }
 }
 export class ComprehensiveIntegration {
   private initialized = false;
@@ -40,7 +40,7 @@ export class ComprehensiveIntegration {
       activeConnections: 0,
       lastHeartbeat: null
     }
-  };
+  }
   private streamingCleanup: (() => void)[] = [];
   /**
    * Initialize the comprehensive integration system with Phase 5-7 enhancements
@@ -197,7 +197,7 @@ export class ComprehensiveIntegration {
           case_complexity: 0.6,
           resource_requirements: 0.5
         }
-      };
+      }
       const result = await caseScoringServiceGrpc.scoreCase(scoringRequest);
       console.log('✅ Case scored:', {
         caseId: caseData.id,

@@ -93,7 +93,7 @@ and performance monitoring across N64 and YoRHa gaming components
     return () => {
       if (demoTimer) clearInterval(demoTimer);
       if (metricsTimer) clearInterval(metricsTimer);
-    };
+    }
   });
   /**
    * Initialize demo data and test scenarios
@@ -304,7 +304,7 @@ and performance monitoring across N64 and YoRHa gaming components
           wasmAccelerationGain: wasmStats.simdAccelerationRate,
           averageResponseTime: wasmStats.averageExecutionTime,
           cacheEfficiency: (gpuStats.textureCache?.hitRate ?? 0 + gpuStats.shaderCache?.hitRate ?? 0) / 2
-        };
+        }
         // Update demo stats
         demoStats = {
           totalOperations: gpuStats.totalOperations ?? 0 + wasmStats.totalOperations,
@@ -315,7 +315,7 @@ and performance monitoring across N64 and YoRHa gaming components
           cacheMisses: demoStats.totalOperations - demoStats.cacheHits,
           wasmAcceleratedOps: Math.floor(wasmStats.totalOperations * (wasmStats.simdAccelerationRate / 100)),
           memoryUsedMB: invalidationStats.memoryMetrics.usedMemoryMB
-        };
+        }
         // Add to performance history
         performanceHistory.push({
           timestamp: Date.now(),
@@ -400,7 +400,7 @@ and performance monitoring across N64 and YoRHa gaming components
             width: texture.data.width,
             height: texture.data.height;
           }
-        };
+        }
         const startTime = performance.now();
         const cachedEntry = await enhancedGPUCacheService.cacheN64Texture(
           `${texture.id}-${filterType}`,
@@ -432,14 +432,14 @@ and performance monitoring across N64 and YoRHa gaming components
       for (const quality of scenario.qualities) {
         const aaConfig: AntiAliasingConfig = {
           type: scenario.shaders[Math.floor(Math.random() * scenario.shaders.length)] as any,
-          quality: quality as any
+          quality: quality as any;
           samples: quality === 'quality' ? 8 : quality === 'balanced' ? 4 : 2,
           enableTemporalAccumulation: quality !== 'fast',
           customParams: {
             edgeThreshold: 0.1,
             subpixelQuality: quality === 'quality' ? 0.85 : 0.5
           }
-        };
+        }
         const startTime = performance.now();
         const cachedShader = await enhancedGPUCacheService.cacheYoRHaAAShader(
           `${shader.id}-${aaConfig.type}-${quality}`,
@@ -516,7 +516,7 @@ and performance monitoring across N64 and YoRHa gaming components
       key: `entry-${i}`,
       size: Math.random() * 10 * 1024 * 1024, // 0-10MB
       accessCount: Math.floor(Math.random() * 100),
-      lastAccessed: Date.now() - Math.random() * 24 * 60 * 60 * 1000 // Last 24 hour
+      lastAccessed: Date.now() - Math.random() * 24 * 60 * 60 * 1000 // Last 24 hour;
     }));
     await wasmCacheOps.analyzeCachePerformance(cacheEntries);
     // Trigger memory defragmentation
@@ -562,7 +562,7 @@ and performance monitoring across N64 and YoRHa gaming components
       cacheMisses: 0,
       wasmAcceleratedOps: 0,
       memoryUsedMB: 0
-    };
+    }
     performanceHistory = [];
     console.log('[Gaming Cache Demo] All caches cleared');
   }

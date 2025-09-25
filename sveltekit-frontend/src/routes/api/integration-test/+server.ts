@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js'
 // import { mcpTools } from '../../../mcp/index.js'; // Temporarily disabled due to dependency issues
 import bcrypt from 'bcrypt'
 import crypto from "crypto"
-import { URL } from "url"
+
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('type') || 'all'
   const results: { [key: string]: any } = {}

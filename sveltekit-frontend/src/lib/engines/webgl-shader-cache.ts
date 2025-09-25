@@ -22,7 +22,7 @@ export interface SpriteTransforms {
     matrix: Float32Array;
     opacity: number;
     blend: string;
-  };
+  }
   css3d?: string;
 }
 export class ShaderCache {
@@ -185,8 +185,8 @@ export class ShaderCache {
       return null;
     }
     // Cache uniform and attribute locations
-    const uniforms: Record<string, WebGLUniformLocation> = {};
-    const attributes: Record<string, number> = {};
+    const uniforms: Record<string, WebGLUniformLocation> = {}
+    const attributes: Record<string, number> = {}
     const uniformCount = this.gl.getProgramParameter(
       program,
       this.gl.ACTIVE_UNIFORMS,
@@ -217,7 +217,7 @@ export class ShaderCache {
       attributes,
       lastUsed: Date.now(),
       complexity: this.calculateComplexity(vertexSource, fragmentSource)
-    };
+    }
     this.programs.set(id, shaderProgram);
     this.evictOldPrograms();
     // Clean up individual shaders
@@ -352,6 +352,6 @@ export class ShaderCache {
       programCount: this.programs.size,
       cacheHits: this.persistentCache.size,
       memoryUsage: this.programs.size * 1024, // Rough estimate
-    };
+    }
   }
 }

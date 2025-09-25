@@ -16,12 +16,12 @@ export interface SessionContext {
     isValid: boolean;
     warningCount: number;
     lastHealthCheck: Date | null;
-  };
+  }
   analyticsData: {
     loginTime: Date | null;
     activityCount: number;
     featuresUsed: string[];
-  };
+  }
 }
 // Session events
 type SessionEvent =
@@ -34,7 +34,7 @@ type SessionEvent =
   | { type: "PERMISSION_CHECK"; permission: string }
   | { type: "EXTEND_SESSION" }
   | { type: "ELEVATE_SECURITY"; reason: string }
-  | { type: "HEALTH_CHECK" };
+  | { type: "HEALTH_CHECK" }
 export const sessionMachine = createMachine({
   id: "sessionManager",
   initial: "unauthenticated",
@@ -308,7 +308,7 @@ export const sessionServices = {
         expiresAt: expiresAt.toISOString(),
         permissions,
         valid: true
-      };
+      }
     } catch (error: any) {
       console.error('Session validation failed:', error);
       throw error;
@@ -322,7 +322,7 @@ export const sessionServices = {
       });
       return {
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-      };
+      }
     } catch (error: any) {
       console.error('Session refresh failed:', error);
       throw error;
@@ -339,7 +339,7 @@ export const sessionServices = {
       });
       return {
         expiresAt: new Date(Date.now() + requestedDuration).toISOString()
-      };
+      }
     } catch (error: any) {
       console.error('Session extension failed:', error);
       throw error;
@@ -355,7 +355,7 @@ export const sessionServices = {
     if (!hasPermission) {
       throw new Error(`Permission denied: ${permission}`);
     }
-    return { valid: true };
+    return { valid: true }
   },
   elevateSecurityLevel: async ({ sessionId, reason, currentLevel }: {
     sessionId: string;
@@ -370,7 +370,7 @@ export const sessionServices = {
       });
       return {
         newLevel: 'elevated' as const
-      };
+      }
     } catch (error: any) {
       console.error('Security elevation failed:', error);
       throw error;
@@ -388,7 +388,7 @@ export const sessionServices = {
     if (lastActivity && (now.getTime() - lastActivity.getTime()) > 4 * 60 * 60 * 1000) {
       throw new Error('Session inactive too long');
     }
-    return { valid: true };
+    return { valid: true }
   },
   performSecurityCheck: async ({ user, deviceFingerprint, sessionHealth }: {
     user: User;
@@ -404,7 +404,7 @@ export const sessionServices = {
       return {
         warningCount: 0,
         secure: true
-      };
+      }
     } catch (error: any) {
       console.error('Security check failed:', error);
       throw error;
@@ -420,12 +420,12 @@ export const sessionServices = {
         analytics: analyticsData
       });
       return {
-        healthy: true
+        healthy: true;
         metrics: result
-      };
+      }
     } catch (error: any) {
       console.error('Health check failed:', error);
-      return { healthy: false };
+      return { healthy: false }
     }
   },
   performLogout: async ({ sessionId, user, sessionDuration }: {
@@ -439,13 +439,13 @@ export const sessionServices = {
         userId: user.id,
         duration: sessionDuration
       });
-      return { success: true };
+      return { success: true }
     } catch (error: any) {
       console.error('Logout failed:', error);
-      return { success: false };
+      return { success: false }
     }
   }
-};
+}
 // Action implementations
 export const sessionActions = {
   clearSessionData: () => {
@@ -466,7 +466,7 @@ export const sessionActions = {
       route: event.route,
       action: event.action,
       timestamp: new Date()
-    };
+    }
     // Log activity for analytics
     console.log('User activity:', activity);
   },
@@ -491,7 +491,7 @@ export const sessionActions = {
   logSessionExpired: ({ context }: { context: SessionContext }) => {
     console.log('Session expired for user:', context.user?.email);
   }
-};
+}
 // Helper function to get user permissions based on role
 function getUserPermissions(role: string): string[] {
   const permissions = {
@@ -501,6 +501,6 @@ function getUserPermissions(role: string): string[] {
     investigator: ['view_cases', 'add_evidence', 'view_evidence'],
     analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],
     viewer: ['view_cases', 'view_evidence']
-  };
+  }
   return permissions[role as keyof typeof permissions] || permissions.viewer;
 }

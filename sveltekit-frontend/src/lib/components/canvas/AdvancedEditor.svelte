@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
             return childText;
   }}
       return '';
-    };
+    }
     return nodes.map.join('');
   }
   // Convert markdown to ContentNode array (simplified)
@@ -63,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
       return [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
   }
     // Basic markdown parsing - in production, use a proper parser
-    const lines = markdown.split('\n');
+    // removed unused lines assignment
     const nodes: ContentNode[] = [];
   let currentParagraph = $state<ContentNode | null >(null);
     for (const line of lines) {
@@ -108,11 +108,11 @@ https://svelte.dev/e/js_parse_error -->
         currentParagraph = {
           type: 'paragraph',
           children: [];
-        };
+        }
   }
       // Basic inline formatting
       let text = li;
-      const textNode: ContentNode = { type: 'text', text };
+      const textNode: ContentNode = { type: 'text', text }
       // Bold
       if (text.includes('**')) {
         textNode.bold = true;
@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
           const reader = new FileReader();
           reader.onload = (e) => {
             callback(e.target?.result as string, 'Uploaded image');
-          };
+          }
           reader.readAsDataURL(blob);
   }}
     });
@@ -256,79 +256,81 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <div bind:this={editorElement} class="space-y-4"></div>
+
 <style>
   /* @unocss-include */
   .advanced-editor {
     width: 100%;
     height: 100%;
-}
+  }
   :global(.toastui-editor-defaultUI) {
     border: none !important;
-}
+  }
   :global(.toastui-editor-toolbar) {
     background-color: #f8fafc !important;
     border-bottom: 1px solid #e5e7eb !important;
-}
+  }
   :global(.toastui-editor-md-container) {
     background-color: white !important;
-}
+  }
   :global(.toastui-editor-preview-container) {
     background-color: #fafafa !important;
-}
+  }
   :global(.toastui-editor-contents) {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     font-size: 14px !important;
     line-height: 1.6 !important;
-}
+  }
   :global(.toastui-editor-contents h1) {
     color: #1f2937 !important;
     font-weight: 700 !important;
-}
+  }
   :global(.toastui-editor-contents h2) {
     color: #374151 !important;
     font-weight: 600 !important;
-}
+  }
   :global(.toastui-editor-contents h3) {
     color: #4b5563 !important;
     font-weight: 600 !important;
-}
+  }
   :global(.toastui-editor-contents p) {
     color: #1f2937 !important;
     margin-bottom: 16px !important;
-}
+  }
   :global(.toastui-editor-contents blockquote) {
     border-left: 4px solid #3b82f6 !important;
     background-color: #f1f5f9 !important;
     padding: 12px 16px !important;
     margin: 16px 0 !important;
-}
+  }
   :global(.toastui-editor-contents code) {
     background-color: #f1f5f9 !important;
     color: #be185d !important;
     padding: 2px 4px !important;
     border-radius: 4px !important;
-}
+  }
   :global(.toastui-editor-contents pre) {
     background-color: #1f2937 !important;
     color: #f9fafb !important;
     padding: 16px !important;
     border-radius: 8px !important;
     overflow-x: auto !important;
-}
+  }
   :global(.toastui-editor-contents table) {
     border-collapse: collapse !important;
     width: 100% !important;
     margin: 16px 0 !important;
-}
+  }
   :global(.toastui-editor-contents th),
   :global(.toastui-editor-contents td) {
     border: 1px solid #e5e7eb !important;
     padding: 8px 12px !important;
     text-align: left !important;
-}
+  }
   :global(.toastui-editor-contents th) {
     background-color: #f8fafc !important;
     font-weight: 600 !important;
-}
+  }
 </style>

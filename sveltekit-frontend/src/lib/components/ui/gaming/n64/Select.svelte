@@ -107,7 +107,7 @@
     enableMipMapping,
     enableFog,
     ...renderOptions
-  };
+  }
   // Derived state
   let hasError = $derived(!!error);
   let hasSuccess = $derived(!!success);
@@ -163,7 +163,7 @@
     } catch (error) {
       console.warn('Could not play select sound:', error);
     }
-  };
+  }
   const openDropdown = async () => {
     if (disabled || loading) return;
     isOpen = true;
@@ -173,7 +173,7 @@
     if (searchable && searchInputElement) {
       searchInputElement.focus();
     }
-  };
+  }
   const closeDropdown = async () => {
     isOpen = false;
     selectedIndex = -1;
@@ -182,44 +182,44 @@
     if (selectElement) {
       selectElement.focus();
     }
-  };
+  }
   const selectOption = async (option: SelectOption) => {
     if (option.disabled) return;
     value = option.valu;
     await playSelectSound(660, 0.2);
     await closeDropdown();
     ondispatch?.({ value: option.value, option });
-  };
+  }
   const clearSelection = async () => {
     if (!clearable || disabled) return;
     value = '';
     await playSelectSound(330, 0.15);
     ondispatch?.({ value: '', option: null });
-  };
+  }
   const handleToggle = () => {
     if (isOpen) {
       closeDropdown();
     } else {
       openDropdown();
     }
-  };
+  }
   const handleFocus = () => {
     if (disabled) return;
     isFocused = true;
     playSelectSound(500, 0.1);
-  };
+  }
   const handleBlur = () => {
     isFocused = false;
-  };
+  }
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
     playSelectSound(480, 0.08);
-  };
+  }
   const handleUnhover = () => {
     isHovered = false;
-  };
-  const handleKeyDown = (event: KeyboardEvent) => {
+  }
+  const handleKeyDown = (_event: KeyboardEvent) => {
     if (disabled) return;
     switch (event.key) {
       case 'Enter':
@@ -268,18 +268,18 @@
         }
         break;
     }
-  };
-  const handleSearchInput = (event: Event) => {
-    const target = event.target as HTMLInputElement;
+  }
+  const handleSearchInput = (_event: Event) => {
+    // removed unused target assignment
     searchTerm = target.valu;
     selectedIndex = -1;
     playSelectSound(480 + Math.random() * 100, 0.05);
-  };
-  const handleOutsideClick = (event: MouseEvent) => {
+  }
+  const handleOutsideClick = (_event: MouseEvent) => {
     if (isOpen && selectElement && !selectElement.contains(event.target as Node)) {
       closeDropdown();
     }
-  };
+  }
   // Get material styles based on state and variant
   const getMaterialStyles = (variant: string, material: string) => {
     const baseColors = {
@@ -289,7 +289,7 @@
       warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', border: '#ffc107' },
       error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', border: '#dc3545' },
       info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', border: '#17a2b8' }
-    };
+    }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     if (hasError) {
       return baseColors.error;
@@ -326,18 +326,18 @@
           0 0 0 1px rgba(255,255,255,0.05)
         `
       }
-    };
+    }
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
-  };
+  }
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { padding: '12px 16px', fontSize: '12px', minHeight: '40px' },
       medium: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },
       large: { padding: '20px 24px', fontSize: '16px', minHeight: '56px' },
       xl: { padding: '24px 28px', fontSize: '18px', minHeight: '64px' }
-    };
+    }
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
-  };
+  }
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
@@ -359,7 +359,7 @@
       classes.push('anisotropic-4x');
     }
     return classes.join(' ');
-  };
+  }
   let sizeStyles = $derived(getSizeStyles(size));
   let materialStyles = $derived(getMaterialStyles(variant, materialType));
   let dynamicScale = $derived(isFocused ? 1.02 : isHovered ? 1.01 : 1);
@@ -372,7 +372,7 @@
       document.addEventListener('click', handleOutsideClick);
       return () => {
         document.removeEventListener('click', handleOutsideClick);
-      };
+      }
     }
   });
 </script>
@@ -386,16 +386,16 @@
     class: disabled;
     class:error={hasError}
     class:success={hasSuccess}
-    style="
-      --material-bg: {materialStyles.background};
-      --material-border: {materialStyles.borderColor};
-      --material-shadow: {materialStyles.boxShadow};
-      --select-padding: {sizeStyles.padding};
-      --select-font-size: {sizeStyles.fontSize};
-      --select-min-height: {sizeStyles.minHeight};
-      --transform-3d: {transform3D};
-      --fog-color: {effectiveRenderOptions.fogColor};
-      --glow-intensity: {glowIntensity};
+    style=";
+      --material-bg: {materialStyles.background}
+      --material-border: {materialStyles.borderColor}
+      --material-shadow: {materialStyles.boxShadow}
+      --select-padding: {sizeStyles.padding}
+      --select-font-size: {sizeStyles.fontSize}
+      --select-min-height: {sizeStyles.minHeight}
+      --transform-3d: {transform3D}
+      --fog-color: {effectiveRenderOptions.fogColor}
+      --glow-intensity: {glowIntensity}
       --select-depth: {depth}px;
       --dropdown-depth: {dropdownDepth}px;
     "

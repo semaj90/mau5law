@@ -34,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
     medium: { label: 'Medium', class: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
     high: { label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' },
     urgent: { label: 'Urgent', class: 'bg-red-100 text-red-800 border-red-200' }
-  };
+  }
   // Status options with colors
   const statusConfig = {
     open: { label: 'Open', class: 'bg-blue-100 text-blue-800 border-blue-200' },
@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     trial: { label: 'Trial', class: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
     closed: { label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },
     dismissed: { label: 'Dismissed', class: 'bg-slate-100 text-slate-800 border-slate-200' }
-  };
+  }
   // Load cases on mount
   $effect(() => {
     (async () => {
@@ -54,7 +54,7 @@ await loadCases();
     loading.set(true);
     error.set('');
     try {
-      const response = await legalPlatformClient.getAllCases();
+      // removed unused response assignment
       if (response.success && response.data) {
         cases.set(response.data);
       } else {
@@ -78,7 +78,7 @@ await loadCases();
       loading.set(true);
       error.set('');
       try {
-        const response = await legalPlatformClient.searchCases(query);
+        // removed unused response assignment
         if (response.success && response.data) {
           cases.set(response.data);
         } else {
@@ -101,7 +101,7 @@ await loadCases();
     loading.set(true);
     error.set('');
     try {
-      const response = await legalPlatformClient.createCase(data as CaseData);
+      // removed unused response assignment
       if (response.success) {
         isCreateDialogOpen.set(false);
         formData.set({
@@ -132,7 +132,7 @@ await loadCases();
     loading.set(true);
     error.set('');
     try {
-      const response = await legalPlatformClient.updateCase(selected.id, data);
+      // removed unused response assignment
       if (response.success) {
         isEditDialogOpen.set(false);
         selectedCase.set(null);
@@ -154,7 +154,7 @@ await loadCases();
     loading.set(true);
     error.set('');
     try {
-      const response = await legalPlatformClient.deleteCase(caseId);
+      // removed unused response assignment
       if (response.success) {
         await loadCases();
         error.set('Case deleted successfully');
@@ -189,6 +189,7 @@ await loadCases();
   // Reactive search
   // TODO: Convert to $derived: $searchQuery, handleSearch()
 </script>
+
 <!-- Main Container -->
 <div class="legal-case-manager p-6 max-w-7xl mx-auto bg-gray-50 min-h-screen">
   <!-- Header -->
@@ -211,7 +212,8 @@ await loadCases();
     <div class="flex flex-col sm:flex-row gap-4">
       <div class="flex-1">
         <input
-          type="text" ;
+          type="text"
+          ;
           bind:value={$searchQuery}
           placeholder="Search cases by title, description, or case number..."
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -232,18 +234,23 @@ await loadCases();
         <div class="flex">
           <div class="flex-shrink-0">
             <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clip-rule="evenodd"
+              />
             </svg>
           </div>
           <div class="ml-3">
             <p class="text-sm text-red-800">{$error}</p>
           </div>
-          <button
-            class="ml-auto flex-shrink-0"
-            onclick={() => error.set('')}
-          >
+          <button class="ml-auto flex-shrink-0" onclick={() => error.set('')}>
             <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
             </svg>
           </button>
         </div>
@@ -261,7 +268,9 @@ await loadCases();
   {#if !$loading}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
       {#each $cases as caseData (caseData.id)}
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+        <div
+          class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+        >
           <!-- Card Header -->
           <div class="p-6 pb-4">
             <div class="flex justify-between items-start mb-3">
@@ -272,10 +281,20 @@ await loadCases();
             </div>
             <!-- Badges -->
             <div class="flex gap-2 mb-3">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass('priority', caseData.priority || 'medium')}">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
+                  'priority',
+                  caseData.priority || 'medium',
+                )}"
+              >
                 {priorityConfig[caseData.priority || 'medium']?.label}
               </span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass('status', caseData.status || 'open')}">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
+                  'status',
+                  caseData.status || 'open',
+                )}"
+              >
                 {statusConfig[caseData.status || 'open']?.label}
               </span>
             </div>
@@ -288,8 +307,18 @@ await loadCases();
               {#if caseData.location}
                 <div class="flex items-center">
                   <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
                   </svg>
                   {caseData.location}
                 </div>
@@ -297,7 +326,12 @@ await loadCases();
               {#if caseData.incidentDate}
                 <div class="flex items-center">
                   <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    ></path>
                   </svg>
                   {new Date(caseData.incidentDate).toLocaleDateString()}
                 </div>
@@ -335,7 +369,12 @@ await loadCases();
     <div class="text-center py-12">
       <div class="max-w-md mx-auto">
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M34 40h10v-4a6 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971 0 00-.712-3.714M14 40H4v-4a6 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A10.003 10.003 0 0124 26c4.21 0 7.814 2.602 9.288 6.286" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M34 40h10v-4a6 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971 0 00-.712-3.714M14 40H4v-4a6 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A10.003 10.003 0 0124 26c4.21 0 7.814 2.602 9.288 6.286"
+          />
         </svg>
         <h3 class="mt-2 text-lg font-medium text-gray-900">No cases found</h3>
         <p class="mt-1 text-gray-500">
@@ -357,8 +396,14 @@ await loadCases();
 </div>
 <!-- Create Case Modal -->
 {#if $isCreateDialogOpen}
-  <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" onclick={() => isCreateDialogOpen.set(false)}>
-    <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white" click|stopPropagation>
+  <div
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+    onclick={() => isCreateDialogOpen.set(false)}
+  >
+    <div
+      class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white"
+      click|stopPropagation
+    >
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Create New Case</h3>
         <form onsubmit|preventDefault={createCase} class="space-y-4">
@@ -366,7 +411,7 @@ await loadCases();
             <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
             <input
               type="text"
-              id="title"
+              id="title";
               bind:value={$formData.title}
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -376,7 +421,8 @@ await loadCases();
           <div>
             <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea
-              id="description";
+              id="description"
+              ;
               bind:value={$formData.description}
               rows="3"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -387,7 +433,8 @@ await loadCases();
             <div>
               <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
               <select
-                id="priority";
+                id="priority"
+                ;
                 bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
@@ -414,7 +461,7 @@ await loadCases();
               <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
               <input
                 type="text"
-                id="location"
+                id="location";
                 bind:value={$formData.location}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Incident location"
@@ -424,7 +471,8 @@ await loadCases();
               <label for="incidentDate" class="block text-sm font-medium text-gray-700 mb-1">Incident Date</label>
               <input
                 type="date"
-                id="incidentDate";
+                id="incidentDate"
+                ;
                 bind:value={$formData.incidentDate}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -453,8 +501,14 @@ await loadCases();
 {/if}
 <!-- Edit Case Modal -->
 {#if $isEditDialogOpen}
-  <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" onclick={() => isEditDialogOpen.set(false)}>
-    <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white" click|stopPropagation>
+  <div
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+    onclick={() => isEditDialogOpen.set(false)}
+  >
+    <div
+      class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white"
+      click|stopPropagation
+    >
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Case</h3>
         <form onsubmit|preventDefault={updateCase} class="space-y-4">
@@ -462,7 +516,7 @@ await loadCases();
             <label for="edit-title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
             <input
               type="text"
-              id="edit-title"
+              id="edit-title";
               bind:value={$formData.title}
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -472,7 +526,8 @@ await loadCases();
           <div>
             <label for="edit-description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea
-              id="edit-description";
+              id="edit-description"
+              ;
               bind:value={$formData.description}
               rows="3"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -483,7 +538,8 @@ await loadCases();
             <div>
               <label for="edit-priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
               <select
-                id="edit-priority";
+                id="edit-priority"
+                ;
                 bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
@@ -510,7 +566,7 @@ await loadCases();
               <label for="edit-location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
               <input
                 type="text"
-                id="edit-location"
+                id="edit-location";
                 bind:value={$formData.location}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Incident location"
@@ -520,7 +576,8 @@ await loadCases();
               <label for="edit-incidentDate" class="block text-sm font-medium text-gray-700 mb-1">Incident Date</label>
               <input
                 type="date"
-                id="edit-incidentDate";
+                id="edit-incidentDate"
+                ;
                 bind:value={$formData.incidentDate}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -547,6 +604,7 @@ await loadCases();
     </div>
   </div>
 {/if}
+
 <style>
   .line-clamp-2 {
     display: -webkit-box;

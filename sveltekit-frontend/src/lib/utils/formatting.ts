@@ -51,7 +51,7 @@ export function formatLegalTimestamp(date: Date | string): string {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    timeZoneName: 'short'
+    timeZoneName: 'short',
   });
 }
 // ===== TEXT TRUNCATION =====
@@ -106,17 +106,27 @@ export function formatFileSize(bytes: number): string {
  */
 export function getFileIcon(type: string): string {
   switch (type.toLowerCase()) {
-    case 'image': return '🖼️';
+    case 'image':
+      return '🖼️';
     case 'document':
-    case 'pdf': return '📄';
-    case 'audio': return '🎵';
-    case 'video': return '🎬';
-    case 'text': return '📝';
-    case 'spreadsheet': return '📊';
-    case 'presentation': return '📋';
-    case 'archive': return '🗜️';
-    case 'code': return '💻';
-    default: return '📎';
+    case 'pdf':
+      return '📄';
+    case 'audio':
+      return '🎵';
+    case 'video':
+      return '🎬';
+    case 'text':
+      return '📝';
+    case 'spreadsheet':
+      return '📊';
+    case 'presentation':
+      return '📋';
+    case 'archive':
+      return '🗜️';
+    case 'code':
+      return '💻';
+    default:
+      return '📎';
   }
 }
 /**
@@ -168,11 +178,16 @@ export function detectFileType(filename: string): string {
  */
 export function getPriorityColor(priority: string): string {
   switch (priority.toLowerCase()) {
-    case 'critical': return 'is-error';
-    case 'high': return 'is-warning';
-    case 'medium': return 'is-primary';
-    case 'low': return 'is-success';
-    default: return 'is-disabled';
+    case 'critical':
+      return 'is-error';
+    case 'high':
+      return 'is-warning';
+    case 'medium':
+      return 'is-primary';
+    case 'low':
+      return 'is-success';
+    default:
+      return 'is-disabled';
   }
 }
 /**
@@ -182,14 +197,20 @@ export function getStatusColor(status: string): string {
   switch (status.toLowerCase()) {
     case 'active':
     case 'open':
-    case 'in_progress': return 'is-primary';
+    case 'in_progress':
+      return 'is-primary';
     case 'completed':
-    case 'closed': return 'is-success';
-    case 'pending': return 'is-warning';
+    case 'closed':
+      return 'is-success';
+    case 'pending':
+      return 'is-warning';
     case 'cancelled':
-    case 'rejected': return 'is-error';
-    case 'draft': return 'is-disabled';
-    default: return '';
+    case 'rejected':
+      return 'is-error';
+    case 'draft':
+      return 'is-disabled';
+    default:
+      return '';
   }
 }
 // ===== LEGAL SPECIFIC UTILITIES =====
@@ -214,13 +235,20 @@ export function formatJurisdiction(jurisdiction: string): string {
  */
 export function formatCourtLevel(level: string): string {
   switch (level.toLowerCase()) {
-    case 'district': return 'District Court';
-    case 'appellate': return 'Court of Appeals';
-    case 'supreme': return 'Supreme Court';
-    case 'federal': return 'Federal Court';
-    case 'state': return 'State Court';
-    case 'local': return 'Local Court';
-    default: return level.charAt(0).toUpperCase() + level.slice(1);
+    case 'district':
+      return 'District Court';
+    case 'appellate':
+      return 'Court of Appeals';
+    case 'supreme':
+      return 'Supreme Court';
+    case 'federal':
+      return 'Federal Court';
+    case 'state':
+      return 'State Court';
+    case 'local':
+      return 'Local Court';
+    default:
+      return level.charAt(0).toUpperCase() + level.slice(1);
   }
 }
 // ===== UTILITY CONSTANTS =====
@@ -229,7 +257,7 @@ export const MINI_TEXT_LENGTHS = {
   TITLE: 40,
   DESCRIPTION: 50,
   NOTE: 60,
-  SUMMARY: 100
+  SUMMARY: 100,
 } as const;
 export const TIME_CONSTANTS = {
   MINUTE: 60 * 1000,
@@ -237,5 +265,5 @@ export const TIME_CONSTANTS = {
   DAY: 24 * 60 * 60 * 1000,
   WEEK: 7 * 24 * 60 * 60 * 1000,
   MONTH: 30 * 24 * 60 * 60 * 1000,
-  YEAR: 365 * 24 * 60 * 60 * 1000
+  YEAR: 365 * 24 * 60 * 60 * 1000,
 } as const;

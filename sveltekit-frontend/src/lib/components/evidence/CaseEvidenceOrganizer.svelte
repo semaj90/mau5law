@@ -123,7 +123,7 @@ await loadCaseEvidence();
     if (!caseId) return;
     isLoading = true;
     try {
-      const response = await fetch(`/api/v1/evidence/by-case/${caseId}?includeAnalysis=true&limit=1000`);
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         evidenceList = data.data.evidence || [];
@@ -191,13 +191,13 @@ await loadCaseEvidence();
         wsManager.send.toISOString(),
           data: {
             action: 'reorganized',
-            mode: organizationMode
+            mode: organizationMode;
             structure: organizationStructur;
           }
         });
       }
       ondispatch?.({
-        mode: organizationMode
+        mode: organizationMode;
         structure: organizationStructur;
       });
     } catch (error) {
@@ -210,7 +210,7 @@ await loadCaseEvidence();
    * Organize evidence by category
    */
   async function organizeByCategory() {
-    const categories = {};
+    const categories = {}
     filteredEvidence.forEach(evidence => {
       const category = evidence.evidenceType || 'uncategorized';
       if (!categories[category]) {
@@ -219,7 +219,7 @@ await loadCaseEvidence();
           evidence: [],
           count: 0,
           priority: calculateCategoryPriority(category);
-        };
+        }
       }
       categories[category].evidence.push(evidence);
       categories[category].count++;
@@ -227,7 +227,7 @@ await loadCaseEvidence();
     organizationStructure = {
       type: 'category',
       categories: Object.values.sort((a, b) => b.priority - a.priority);
-    };
+    }
   }
   /**
    * Organize evidence by timeline
@@ -240,7 +240,7 @@ await loadCaseEvidence();
         return dateB.getTime() - dateA.getTime();
       });
     // Group by time periods
-    const periods = {};
+    const periods = {}
     timeline.forEach(evidence => {
       const date = new Date(evidence.collected_at || evidence.uploaded_at);
       const periodKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -248,12 +248,12 @@ await loadCaseEvidence();
       if (!periods[periodKey]) {
         periods[periodKey] = {
           key: periodKey
-          label: periodLabel
+          label: periodLabel;
           evidence: [],
           count: 0,
           startDate: date
           endDate: dat;
-        };
+        }
       }
       periods[periodKey].evidence.push(evidence);
       periods[periodKey].count++;
@@ -264,7 +264,7 @@ await loadCaseEvidence();
       type: 'timeline',
       periods: Object.values.sort((a, b) => b.startDate.getTime() - a.startDate.getTime()),
       uncategorized: filteredEvidence.filter(e => !e.collected_at && !e.uploaded_at);
-    };
+    }
   }
   /**
    * Organize evidence by priority
@@ -276,7 +276,7 @@ await loadCaseEvidence();
       medium: { name: 'Medium', evidence: [], color: '#d97706' },
       low: { name: 'Low', evidence: [], color: '#65a30d' },
       unknown: { name: 'Unknown', evidence: [], color: '#6b7280' }
-    };
+    }
     filteredEvidence.forEach(evidence => {
       const priority = evidence.metadata?.priority ||
                       calculateEvidencePriority(evidence) ||
@@ -294,7 +294,7 @@ await loadCaseEvidence();
     organizationStructure = {
       type: 'priority',
       priorities: Object.values.filter(p => p.count > 0);
-    };
+    }
   }
   /**
    * Organize evidence using AI clustering with Gemma embeddings
@@ -316,13 +316,13 @@ await loadCaseEvidence();
       clusteringProgress = 100;
       organizationStructure = {
         type: 'ai_clusters',
-        clusters: organizedClusters
+        clusters: organizedClusters;
         metadata: {
           totalClusters: organizedClusters.length,
           clusteringMethod: 'gemma_embeddings',
           generatedAt: new Date().toISOString()
         }
-      };
+      }
       aiClusters = organizedCluster;
     } catch (error) {
       console.error('AI clustering failed:', error);
@@ -337,7 +337,7 @@ await loadCaseEvidence();
    * Organize evidence by chain of custody
    */
   async function organizeByChainOfCustody() {
-    const custodyChains = {};
+    const custodyChains = {}
     filteredEvidence.forEach(evidence => {
       const custody = evidence.chain_of_custody || [];
       const chainId = custody.length > 0 ? custody[0].officer_id || 'unknown' : 'no_chain';
@@ -347,9 +347,9 @@ await loadCaseEvidence();
           id: chainId
           officer: custody[0]?.officer_name || 'Unknown Officer',
           evidence: [],
-          status: chainStatus
+          status: chainStatus;
           completeness: 0;
-        };
+        }
       }
       custodyChains[chainId].evidence.push({
         ...evidence,
@@ -365,7 +365,7 @@ await loadCaseEvidence();
     organizationStructure = {
       type: 'chain_custody',
       chains: Object.values.sort((a, b) => b.completeness - a.completeness);
-    };
+    }
   }
   /**
    * Get embeddings for evidence using MCP server
@@ -470,7 +470,7 @@ await loadCaseEvidence();
       'video': 6,
       'audio': 5,
       'other': 1
-    };
+    }
     return priorities[category] || 3;
   }
   /**
@@ -518,7 +518,7 @@ await loadCaseEvidence();
         validateChainOfCustody(e.chain_of_custody) === 'complete'
       ).length,
       aiAnalyzed: evidenceList.filter(item => item.length);
-    };
+    }
   }
   /**
    * Handle organization mode change
@@ -544,7 +544,7 @@ await loadCaseEvidence();
   function performSimpleClustering(evidenceWithEmbeddings: unknown[]) {
     // Simple fallback clustering
     return [{
-      evidence: evidenceWithEmbeddings
+      evidence: evidenceWithEmbeddings;
       name: 'All Evidence',
       averageSimilarity: 0.5;
     }];
@@ -557,18 +557,19 @@ await loadCaseEvidence();
     // Extract common keywords from evidence titles and descriptions
     const allText = evidence.map(e => (e.title + ' ' + (e.description || '')).toLowerCase()).join(' ');
     const words = allText.split.filter(word => word.length > 3);
-    const wordCounts = {};
+    const wordCounts = {}
     words.forEach(word => {
       wordCounts[word] = (wordCounts[word] || 0) + 1;
     });
     return Object.entries.sort((a, b) => b[1] - a[1])
       .slice.map(([word]) => word);
   }
-  function getClusterColor(index: number): string {
+  function getClusterColor(_index: number): string {
     const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'];
     return colors[index % colors.length];
   }
 </script>
+
 <!-- Case Evidence Organizer UI -->
 <div class="case-evidence-organizer">
   <!-- Header with controls -->
@@ -625,12 +626,7 @@ await loadCaseEvidence();
     <!-- Search and filters -->
     <div class="filters-panel">
       <div class="search-box">
-        <input
-          type="text"
-          placeholder="Search evidence..."
-          bind:value={searchQuery}
-          class="search-input"
-        />
+        <input type="text" placeholder="Search evidence..." bind:value={searchQuery} class="search-input" />
       </div>
       <div class="filter-controls">
         <select bind:value={filterCriteria.evidenceType}>
@@ -827,13 +823,17 @@ await loadCaseEvidence();
     {/if}
   </main>
 </div>
+
 <style>
   .case-evidence-organizer {
     display: flex;
     flex-direction: column;
     height: 100vh;
     background: #f8fafc;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
   .organizer-header {
     background: white;
@@ -981,8 +981,12 @@ await loadCaseEvidence();
     margin: 1rem auto;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   .organization-display {
     flex: 1;
@@ -1024,10 +1028,22 @@ await loadCaseEvidence();
     font-weight: 500;
     text-transform: uppercase;
   }
-  .priority-critical { background: #fef2f2; color: #991b1b; }
-  .priority-high { background: #fff7ed; color: #9a3412; }
-  .priority-medium { background: #fffbeb; color: #92400e; }
-  .priority-low { background: #f0fdf4; color: #166534; }
+  .priority-critical {
+    background: #fef2f2;
+    color: #991b1b;
+  }
+  .priority-high {
+    background: #fff7ed;
+    color: #9a3412;
+  }
+  .priority-medium {
+    background: #fffbeb;
+    color: #92400e;
+  }
+  .priority-low {
+    background: #f0fdf4;
+    color: #166534;
+  }
   .evidence-description {
     margin: 0 0 0.75rem 0;
     color: #64748b;
@@ -1222,11 +1238,26 @@ await loadCaseEvidence();
     font-size: 0.75rem;
     font-weight: 500;
   }
-  .completeness-0 { background: #fef2f2; color: #991b1b; }
-  .completeness-1 { background: #fff7ed; color: #9a3412; }
-  .completeness-2 { background: #fffbeb; color: #92400e; }
-  .completeness-3 { background: #f0fdf4; color: #166534; }
-  .completeness-4 { background: #dcfce7; color: #166534; }
+  .completeness-0 {
+    background: #fef2f2;
+    color: #991b1b;
+  }
+  .completeness-1 {
+    background: #fff7ed;
+    color: #9a3412;
+  }
+  .completeness-2 {
+    background: #fffbeb;
+    color: #92400e;
+  }
+  .completeness-3 {
+    background: #f0fdf4;
+    color: #166534;
+  }
+  .completeness-4 {
+    background: #dcfce7;
+    color: #166534;
+  }
   .custody-status {
     padding: 0.125rem 0.5rem;
     border-radius: 0.25rem;
@@ -1234,10 +1265,22 @@ await loadCaseEvidence();
     font-weight: 500;
     text-transform: uppercase;
   }
-  .status-complete { background: #dcfce7; color: #166534; }
-  .status-incomplete { background: #fffbeb; color: #92400e; }
-  .status-missing { background: #fef2f2; color: #991b1b; }
-  .status-invalid { background: #fef2f2; color: #991b1b; }
+  .status-complete {
+    background: #dcfce7;
+    color: #166534;
+  }
+  .status-incomplete {
+    background: #fffbeb;
+    color: #92400e;
+  }
+  .status-missing {
+    background: #fef2f2;
+    color: #991b1b;
+  }
+  .status-invalid {
+    background: #fef2f2;
+    color: #991b1b;
+  }
   .custody-timeline {
     margin-top: 0.75rem;
     padding-top: 0.75rem;

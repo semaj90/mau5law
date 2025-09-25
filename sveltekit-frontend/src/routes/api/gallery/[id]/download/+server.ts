@@ -10,12 +10,12 @@ import path from 'path'
 import { db } from '$lib/server/database'
 import { evidence, cases } from '$lib/server/db/schema'
 import { eq } from 'drizzle-orm'
-import { URL } from "url"
+
 interface DownloadLog {
   itemId: string
   userId?: string
   userAgent: string
-  ip: string
+  ip: string;
   timestamp: Date
   fileSize: number
   downloadType: 'view' | 'download'
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     const headers = new Headers({
       'Content-Type': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream',
       'Content-Length': stats.size.toString(),
-      'Content-Disposition': `${disposition}; filename="${encodeURIComponent(filename)}"`,
+      'Content-Disposition': `${disposition} filename="${encodeURIComponent(filename)}"`,
       'Cache-Control': 'private, max-age=3600', // Cache for 1 hour
       'Last-Modified': stats.mtime.toUTCString(),
       'X-File-ID': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,

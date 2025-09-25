@@ -61,24 +61,24 @@
       layers.forEach(layer => {
         layer.offsetY = -scrollY * layer.speed;
       });
-    };
+    }
     window.addEventListener('scroll', handleScroll, { passive: true });
     // Smooth scroll animation loop
     const animateScroll = () => {
       rafId = requestAnimationFrame(animateScroll);
-    };
+    }
     animateScroll();
     return () => {
       window.removeEventListener('scroll', handleScroll);
       if (rafId) cancelAnimationFrame(rafId);
-    };
+    }
   });
   function initSmoothScroll() {
     // Override default scroll behavior for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', (e) => {
         e.preventDefault();
-        const target = document.querySelector(anchor.getAttribute('href')!);
+        // removed unused target assignment
         if (target) {
           smoothScrollTo(target as HTMLElement);
         }
@@ -137,14 +137,14 @@
   {#each layers as layer (layer.id)}
     <div
       class="parallax-layer"
-      style="
+      style=";
         transform: translateY({layer.offsetY}px) translateZ({layer.depth * -10}px);
-        opacity: {layer.opacity};
-        background-image: {generatePattern(layer.pattern || '')};
+        opacity: {layer.opacity}
+        background-image: {generatePattern(layer.pattern || '')}
         background-size: {layer.pattern === 'dots' ? '40px 40px' :
                          layer.pattern === 'grid' ? '50px 50px' :
-                         layer.pattern === 'circuit' ? '100px 100px' : '60px 60px'};
-        z-index: {layer.depth};
+                         layer.pattern === 'circuit' ? '100px 100px' : '60px 60px'}
+        z-index: {layer.depth}
       "
     ></div>
   {/each}

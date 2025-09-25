@@ -102,7 +102,7 @@
     enableMipMapping,
     enableFog,
     ...renderOptions
-  };
+  }
   // Create spatial audio feedback
   const playInputSound = async (frequency: number, duration: number = 0.1) => {
     if (!enableSpatialAudio) return;
@@ -132,34 +132,34 @@
     } catch (error) {
       console.warn('Could not play input sound:', error);
     }
-  };
-  const handleInput = (event: Event) => {
-    const target = event.target as HTMLInputElement;
+  }
+  const handleInput = (_event: Event) => {
+    // removed unused target assignment
     value = target.valu;
     hasContent = target.value.length > 0;
     // Play typing sound
     playInputSound(440 + Math.random() * 200, 0.05);
     ondispatch?.({ value: target.value, event });
-  };
+  }
   const handleFocus = () => {
     isFocused = true;
     playInputSound(660, 0.15);
     // ondispatch removed;
-  };
+  }
   const handleBlur = () => {
     isFocused = false;
     playInputSound(440, 0.1);
     // ondispatch removed;
-  };
+  }
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
     playInputSound(550, 0.08);
-  };
+  }
   const handleUnhover = () => {
     isHovered = false;
-  };
-  const handleKeyDown = (event: KeyboardEvent) => {
+  }
+  const handleKeyDown = (_event: KeyboardEvent) => {
     // Play different sounds for different key types
     if (event.key === 'Enter') {
       playInputSound(880, 0.2);
@@ -167,7 +167,7 @@
       playInputSound(330, 0.1);
     }
     ondispatch?.({ event });
-  };
+  }
   // Get material styles based on state and variant
   const getMaterialStyles = (variant: string, material: string, state: string) => {
     const baseColors = {
@@ -177,7 +177,7 @@
       warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', border: '#ffc107' },
       error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', border: '#dc3545' },
       info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', border: '#17a2b8' }
-    };
+    }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     // Modify colors based on state
     if (hasError) {
@@ -215,18 +215,18 @@
           0 0 0 1px rgba(255,255,255,0.05)
         `
       }
-    };
+    }
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
-  };
+  }
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { padding: '12px 16px', fontSize: '12px', minHeight: '40px' },
       medium: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },
       large: { padding: '20px 24px', fontSize: '16px', minHeight: '56px' },
       xl: { padding: '24px 28px', fontSize: '18px', minHeight: '64px' }
-    };
+    }
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
-  };
+  }
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
@@ -248,7 +248,7 @@
       classes.push('anisotropic-4x');
     }
     return classes.join(' ');
-  };
+  }
   let sizeStyles = $derived(getSizeStyles(size));
   let materialStyles = $derived(getMaterialStyles(variant, materialType, isFocused ? 'focused' : 'default'));
   let dynamicRotationX = $derived(rotationX + (isFocused ? -2 : 0) + (isHovered ? 1 : 0));
@@ -262,6 +262,7 @@
     hasContent = effectiveValue.length > 0;
   });
 </script>
+
 <div class="n64-input-container {className}">
   <div class="n64-input-wrapper">
     <input
@@ -285,16 +286,16 @@
       onmouseleave={handleUnhover}
       onkeydown={handleKeyDown}
       class="n64-input {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-      style="
-        --material-bg: {materialStyles.background};
-        --material-border: {materialStyles.borderColor};
-        --material-shadow: {materialStyles.boxShadow};
-        --input-padding: {sizeStyles.padding};
-        --input-font-size: {sizeStyles.fontSize};
-        --input-min-height: {sizeStyles.minHeight};
-        --transform-3d: {transform3D};
-        --fog-color: {effectiveRenderOptions.fogColor};
-        --glow-intensity: {glowIntensity};
+      style=";
+        --material-bg: {materialStyles.background}
+        --material-border: {materialStyles.borderColor}
+        --material-shadow: {materialStyles.boxShadow}
+        --input-padding: {sizeStyles.padding}
+        --input-font-size: {sizeStyles.fontSize}
+        --input-min-height: {sizeStyles.minHeight}
+        --transform-3d: {transform3D}
+        --fog-color: {effectiveRenderOptions.fogColor}
+        --glow-intensity: {glowIntensity}
         --input-depth: {depth}px;
       "
       aria-invalid={hasError}
@@ -316,14 +317,12 @@
     </div>
   {/if}
   {#if error || success}
-    <div
-      class="input-message {hasError ? 'error' : 'success'}"
-      id="{id || name}-message"
-    >
+    <div class="input-message {hasError ? 'error' : 'success'}" id="{id || name}-message">
       {error || success}
     </div>
   {/if}
 </div>
+
 <style>
   .n64-input-container {
     position: relative;

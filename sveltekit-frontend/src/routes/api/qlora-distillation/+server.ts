@@ -38,7 +38,7 @@ const qloraWasmLoader = {
   async loadDistilledModel(config: any) {
     return `model_${Date.now()}`
   },
-  async generateText(key: string, input: string, opts: any) {
+  async generateText(_key: string, input: string, opts: any) {
     return { text: `Generated response for: ${input}` }
   }
 }
@@ -64,7 +64,7 @@ interface DistillationRequest {
 // Distillation status response
 interface DistillationStatus {
   jobId: string
-  status: 'queued' | 'preparing' | 'training' | 'validating' | 'deploying' | 'completed' | 'failed'
+  status: 'queued' | 'preparing' | 'training' | 'validating' | 'deploying' | 'completed' | 'failed';
   progress: number; // 0-100,
   currentPhase: string
   estimatedTimeRemaining: number; // milliseconds

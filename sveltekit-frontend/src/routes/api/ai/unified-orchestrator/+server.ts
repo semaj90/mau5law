@@ -338,4 +338,4 @@ export const OPTIONS: RequestHandler = async () => {
 }
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
-export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler)
+export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler);

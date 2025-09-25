@@ -3,25 +3,15 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { browser } from "$app/environment";
-  import { UiTooltip as Tooltip } from "$lib/components/ui";
+  import { browser } from '$app/environment';
+  import { UiTooltip as Tooltip } from '$lib/components/ui';
   import Button from '$lib/components/ui/enhanced-bits';
-  import { notifications } from "$lib/stores/notification";
-  import {
-    AlertCircle,
-    CheckCircle,
-    Database,
-    Download,
-    Eye,
-    FileText,
-    Upload,
-    Users,
-    X,
-  } from "lucide-svelte";
-  import { onMount } from "svelte";
+  import { notifications } from '$lib/stores/notification';
+  import { AlertCircle, CheckCircle, Database, Download, Eye, FileText, Upload, Users, X } from 'lucide-svelte';
+  import { onMount } from 'svelte';
   // Import state
   let importFile: File | null = $state(null);
-  let importType = $state("all");
+  let importType = $state('all');
   let overwriteExisting = $state(false);
   let isImporting = $state(false);
   let importResults: {
@@ -33,23 +23,23 @@ https://svelte.dev/e/js_parse_error -->
       updated: number;
       skipped: number;
       errors: string[];
-    };
+    }
     error?: string;
   } | null = $state(null);
-  type CsvPreview = { type: 'csv'; data: string[] };
-  type JsonPreview = { type: 'json'; data: unknown };
-  type XmlPreview = { type: 'xml'; data: string };
-  type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string };
+  type CsvPreview = { type: 'csv'; data: string[] }
+  type JsonPreview = { type: 'json'; data: unknown }
+  type XmlPreview = { type: 'xml'; data: string }
+  type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string }
   let filePreview: (BasePreview & (CsvPreview | JsonPreview | XmlPreview)) | null = $state(null);
   let dragActive = $state(false);
   // File input reference
   let fileInput: HTMLInputElement = $state();
   // Supported file types
   const supportedTypes = [
-    { value: "all", label: "Complete Export (All Data)", icon: Database },
-    { value: "cases", label: "Cases Only", icon: FileText },
-    { value: "evidence", label: "Evidence Only", icon: FileText },
-    { value: "participants", label: "Participants Only", icon: Users },
+    { value: 'all', label: 'Complete Export (All Data)', icon: Database },
+    { value: 'cases', label: 'Cases Only', icon: FileText },
+    { value: 'evidence', label: 'Evidence Only', icon: FileText },
+    { value: 'participants', label: 'Participants Only', icon: Users },
   ];
   // Example data formats
   const exampleFormats = {
@@ -82,20 +72,20 @@ https://svelte.dev/e/js_parse_error -->
   "case-uuid","document","Contract document","/files/contract.pdf"
   "case-uuid","photo","Crime scene photo","/files/scene.jpg"`,
     },
-  };
+  }
   $effect(() => {
     // Add drag and drop event listeners
     if (browser) {
-      document.addEventListener("dragover", handleDragOver);
-      document.addEventListener("drop", handleDrop);
-      document.addEventListener("dragleave", handleDragLeave);
+      document.addEventListener('dragover', handleDragOver);
+      document.addEventListener('drop', handleDrop);
+      document.addEventListener('dragleave', handleDragLeave);
       return () => {
-        document.removeEventListener("dragover", handleDragOver);
-        document.removeEventListener("drop", handleDrop);
-        document.removeEventListener("dragleave", handleDragLeave);
-      };
-  }
-    return () => {}; // Return empty cleanup function if not in browser
+        document.removeEventListener('dragover', handleDragOver);
+        document.removeEventListener('drop', handleDrop);
+        document.removeEventListener('dragleave', handleDragLeave);
+      }
+    }
+    return () => {} // Return empty cleanup function if not in browser
   });
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
@@ -105,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
     e.preventDefault();
     if (!e.relatedTarget) {
       dragActive = false;
-  }
+    }
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
@@ -113,77 +103,72 @@ https://svelte.dev/e/js_parse_error -->
     const files = e.dataTransfer?.file;
     if (files && files.length > 0) {
       handleFileSelect(files[0]);
-  }
+    }
   }
   function handleFileInput(e: Event) {
-    const target = e.target as HTMLInputElement;
+    // removed unused target assignment
     const file = target.files?.[0];
     if (file) {
       handleFileSelect(file);
-  }
+    }
   }
   async function handleFileSelect(file: File) {
     importFile = fil;
     importResults = null;
     // Validate file type
-    const validTypes = [
-      "application/json",
-      "text/csv",
-      "application/xml",
-      "text/xml",
-    ];
+    const validTypes = ['application/json', 'text/csv', 'application/xml', 'text/xml'];
     if (
       !validTypes.includes(file.type) &&
-      !file.name.endsWith(".json") &&
-      !file.name.endsWith(".csv") &&
-      !file.name.endsWith(".xml")
+      !file.name.endsWith('.json') &&
+      !file.name.endsWith('.csv') &&
+      !file.name.endsWith('.xml')
     ) {
       notifications.add({
-        type: "error",
-        title: "Invalid File Type",
-        message: "Please select a JSON, CSV, or XML file",
+        type: 'error',
+        title: 'Invalid File Type',
+        message: 'Please select a JSON, CSV, or XML file',
       });
       importFile = null;
       return;
-  }
+    }
     // Generate file preview
     try {
       const content = await file.text();
-      if (file.type === "application/json" || file.name.endsWith(".json")) {
+      if (file.type === 'application/json' || file.name.endsWith('.json')) {
         filePreview = {
           name: file.name,
           size: file.size,
-          type: "json",
+          type: 'json',
           data: JSON.parse(content),
-          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
-        };
-      } else if (file.type === "text/csv" || file.name.endsWith(".csv")) {
-        const lines = content.split('\n').slice(0, 5);
+          raw: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
+        }
+      } else if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+        // removed unused lines assignment
         filePreview = {
           name: file.name,
           size: file.size,
-          type: "csv",
+          type: 'csv',
           data: lines,
-          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
-        };
+          raw: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
+        }
       } else {
         filePreview = {
           name: file.name,
           size: file.size,
-          type: "xml",
-          data: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
-          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
-        };
-  }
+          type: 'xml',
+          data: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
+          raw: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
+        }
+      }
     } catch (error) {
       notifications.add({
-        type: "error",
-        title: "Parse Error",
-        message: "Failed to parse file. Please check the format.",
+        type: 'error',
+        title: 'Parse Error',
+        message: 'Failed to parse file. Please check the format.',
       });
       importFile = null;
       filePreview = null;
-  }
+    }
   }
   async function performImport() {
     if (!importFile) return;
@@ -191,49 +176,49 @@ https://svelte.dev/e/js_parse_error -->
     importResults = null;
     try {
       const formData = new FormData();
-      formData.append("file", importFile);
-      formData.append("type", importType);
-      formData.append("overwrite", overwriteExisting.toString());
-      const response = await fetch("/api/import", {
-        method: "POST",
-        body: formData
+      formData.append('file', importFile);
+      formData.append('type', importType);
+      formData.append('overwrite', overwriteExisting.toString());
+      const response = await fetch('/api/import', {
+        method: 'POST',
+        body: formData,
       });
       const result = await (response as { json?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; ok?: unknown }).ok) {
         importResults = result;
         notifications.add({
           type: 'success',
-          message: 'Import completed successfully'
+          message: 'Import completed successfully',
         });
       } else {
-        throw new Error((result as { message?: unknown; error?: unknown }).error || "Import failed");
-  }
+        throw new Error((result as { message?: unknown; error?: unknown }).error || 'Import failed');
+      }
     } catch (error) {
-      console.error("Import error:", error);
+      console.error('Import error:', error);
       notifications.add({
-        type: "error",
-        title: "Import Failed",
-        message: error instanceof Error ? error.message: "Import failed",
+        type: 'error',
+        title: 'Import Failed',
+        message: error instanceof Error ? error.message : 'Import failed',
       });
     } finally {
       isImporting = false;
-  }
+    }
   }
   function clearImport() {
     importFile = null;
     filePreview = null;
     importResults = null;
-    if (fileInput) fileInput.value = "";
+    if (fileInput) fileInput.value = '';
   }
   function downloadExampleTemplate(type: string, format: string) {
     const data = exampleFormats[type as keyof typeof exampleFormats];
     if (!data) return;
     const content = data[format as keyof typeof data];
     const blob = new Blob([content], {
-      type: format === "json" ? "application/json" : "text/csv",
+      type: format === 'json' ? 'application/json' : 'text/csv',
     });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = `example-${type}.${format}`;
     document.body.appendChild(a);
@@ -242,25 +227,19 @@ https://svelte.dev/e/js_parse_error -->
     URL.revokeObjectURL(url);
   }
 </script>
+
 <svelte:head>
   <title>Data Import - Legal Case Management</title>
-  <meta
-    name="description"
-    content="Import cases, evidence, and participant data from JSON, CSV, or XML files"
-  />
+  <meta name="description" content="Import cases, evidence, and participant data from JSON, CSV, or XML files" />
 </svelte:head>
 <div class="space-y-4">
   <!-- Header -->
-  <div
-    class="space-y-4"
-  >
+  <div class="space-y-4">
     <h1 class="space-y-4">
       <Upload class="space-y-4" />
       Data Import
     </h1>
-    <p class="space-y-4">
-      Import cases, evidence, and participant data from JSON, CSV, or XML files
-    </p>
+    <p class="space-y-4">Import cases, evidence, and participant data from JSON, CSV, or XML files</p>
   </div>
   <div class="space-y-4">
     <!-- Main Import Panel -->
@@ -285,28 +264,22 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="space-y-4">
                   <p class="space-y-4">{importFile.name}</p>
                   <p class="space-y-4">
-                    {(importFile.size / 1024).toFixed(1)} KB • {importFile.type ||
-                      "Unknown type"}
+                    {(importFile.size / 1024).toFixed(1)} KB • {importFile.type || 'Unknown type'}
                   </p>
                 </div>
               </div>
               <div class="space-y-4">
                 <Tooltip content="Preview file contents">
                   <Button class="bits-btn" variant="ghost" size="sm" disabled={!filePreview}>
-<Eye class="space-y-4" />
+                    <Eye class="space-y-4" />
                     Preview
-</Button>
+                  </Button>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
-                  <Button class="bits-btn"
-                    variant="ghost"
-                    size="sm"
-                    onclick={() =>
-clearImport()}
-                  >
+                  <Button class="bits-btn" variant="ghost" size="sm" onclick={() => clearImport()}>
                     <X class="space-y-4" />
                     Remove
-</Button>
+                  </Button>
                 </Tooltip>
               </div>
             </div>
@@ -314,15 +287,10 @@ clearImport()}
             <div class="space-y-4">
               <Upload class="space-y-4" />
               <div>
-                <p class="space-y-4">
-                  Drop your file here
-                </p>
+                <p class="space-y-4">Drop your file here</p>
                 <p class="space-y-4">or click to browse</p>
               </div>
-              <Button class="bits-btn" variant="ghost" onclick={() =>
-fileInput?.click()}>
-                Select File
-</Button>
+              <Button class="bits-btn" variant="ghost" onclick={() => fileInput?.click()}>Select File</Button>
             </div>
           {/if}
         </div>
@@ -340,32 +308,16 @@ fileInput?.click()}>
         {#if importFile}
           <div class="space-y-4">
             <div>
-              <label
-                for="import-type"
-                class="space-y-4"
-              >
-                Import Type
-              </label>
-              <select
-                id="import-type"
-                bind:value={importType}
-                class="space-y-4"
-              >
+              <label for="import-type" class="space-y-4"> Import Type </label>
+              <select id="import-type" bind:value={importType} class="space-y-4">
                 {#each supportedTypes as type}
                   <option value={type.value}>{type.label}</option>
                 {/each}
               </select>
             </div>
             <div class="space-y-4">
-              <input
-                id="overwrite"
-                type="checkbox"
-                bind:checked={overwriteExisting}
-                class="space-y-4"
-              />
-              <label for="overwrite" class="space-y-4">
-                Overwrite existing records with same ID
-              </label>
+              <input id="overwrite" type="checkbox" bind:checked={overwriteExisting} class="space-y-4" />
+              <label for="overwrite" class="space-y-4"> Overwrite existing records with same ID </label>
               <Tooltip
                 content="If enabled, existing records with matching IDs will be updated. Otherwise, they will be skipped."
               >
@@ -382,23 +334,20 @@ fileInput?.click()}>
             <Eye class="space-y-4" />
             File Preview
           </h3>
-          {#if filePreview.type === "json"}
+          {#if filePreview.type === 'json'}
             <div class="space-y-4">
-              <pre
-                class="space-y-4">{JSON.stringify(substring)(0, 1000)}{JSON.stringify(length) > 1000
-                  ? "\n..."
-                  : ""}</pre>
+              <pre class="space-y-4">{JSON.stringify(substring)(0, 1000)}{JSON.stringify(length) > 1000
+                  ? '\n...'
+                  : ''}</pre>
             </div>
-    {:else if filePreview.type === "csv"}
+          {:else if filePreview.type === 'csv'}
             <div class="space-y-4">
               <table class="space-y-4">
                 <tbody>
-      {#each (filePreview.data as unknown as string[]) as row, i}
+                  {#each filePreview.data as unknown as string[] as row, i}
                     <tr class:bg-white={i % 2 === 0}>
-                      {#each row.split(",") as cell}
-                        <td class="space-y-4"
-                          >{cell.replace(/"/g, "")}</td
-                        >
+                      {#each row.split(',') as cell}
+                        <td class="space-y-4">{cell.replace(/"/g, '')}</td>
                       {/each}
                     </tr>
                   {/each}
@@ -407,8 +356,7 @@ fileInput?.click()}>
             </div>
           {:else}
             <div class="space-y-4">
-              <pre
-                class="space-y-4">{(filePreview as any)?.raw ?? ""}</pre>
+              <pre class="space-y-4">{(filePreview as any)?.raw ?? ''}</pre>
             </div>
           {/if}
         </div>
@@ -465,27 +413,20 @@ fileInput?.click()}>
       {#if importFile}
         <div class="space-y-4">
           <div class="space-y-4">
-            <Button class="bits-btn space-y-4"
-              onclick={() =>
-performImport()}
-              disabled={isImporting}
-            >
+            <Button class="bits-btn space-y-4" onclick={() => performImport()} disabled={isImporting}>
               {#if isImporting}
-                <div
-                  class="space-y-4"
-                ></div>
+                <div class="space-y-4"></div>
                 Importing...
               {:else}
                 <Upload class="space-y-4" />
                 Import Data
               {/if}
-</Button>
+            </Button>
             <Tooltip content="Clear current import and start over">
-              <Button class="bits-btn" variant="ghost" onclick={() =>
-clearImport()}>
+              <Button class="bits-btn" variant="ghost" onclick={() => clearImport()}>
                 <X class="space-y-4" />
                 Cancel
-</Button>
+              </Button>
             </Tooltip>
           </div>
         </div>
@@ -504,24 +445,24 @@ clearImport()}>
             <h4 class="space-y-4">Cases</h4>
             <div class="space-y-4">
               <Tooltip content="Download JSON example for cases">
-                <Button class="bits-btn"
+                <Button
+                  class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() =>
-downloadExampleTemplate("cases", "json")}
+                  onclick={() => downloadExampleTemplate('cases', 'json')}
                 >
                   JSON
-</Button>
+                </Button>
               </Tooltip>
               <Tooltip content="Download CSV example for cases">
-                <Button class="bits-btn"
+                <Button
+                  class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() =>
-downloadExampleTemplate("cases", "csv")}
+                  onclick={() => downloadExampleTemplate('cases', 'csv')}
                 >
                   CSV
-</Button>
+                </Button>
               </Tooltip>
             </div>
           </div>
@@ -529,24 +470,24 @@ downloadExampleTemplate("cases", "csv")}
             <h4 class="space-y-4">Evidence</h4>
             <div class="space-y-4">
               <Tooltip content="Download JSON example for evidence">
-                <Button class="bits-btn"
+                <Button
+                  class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() =>
-downloadExampleTemplate("evidence", "json")}
+                  onclick={() => downloadExampleTemplate('evidence', 'json')}
                 >
                   JSON
-</Button>
+                </Button>
               </Tooltip>
               <Tooltip content="Download CSV example for evidence">
-                <Button class="bits-btn"
+                <Button
+                  class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() =>
-downloadExampleTemplate("evidence", "csv")}
+                  onclick={() => downloadExampleTemplate('evidence', 'csv')}
                 >
                   CSV
-</Button>
+                </Button>
               </Tooltip>
             </div>
           </div>
@@ -554,9 +495,7 @@ downloadExampleTemplate("evidence", "csv")}
       </div>
       <!-- Format Guidelines -->
       <div class="space-y-4">
-        <h3 class="space-y-4">
-          Import Guidelines
-        </h3>
+        <h3 class="space-y-4">Import Guidelines</h3>
         <ul class="space-y-4">
           <li>• Use JSON for complex data with nested objects</li>
           <li>• Use CSV for simple tabular data</li>
@@ -572,28 +511,30 @@ downloadExampleTemplate("evidence", "csv")}
         <div class="space-y-4">
           <a href="/export" class="space-y-4">
             <Button variant="ghost" class="space-y-4 bits-btn bits-btn">
-<Download class="space-y-4" />
+              <Download class="space-y-4" />
               Export Data
-</Button>
+            </Button>
           </a>
           <a href="/cases" class="space-y-4">
             <Button variant="ghost" class="space-y-4 bits-btn bits-btn">
-<Database class="space-y-4" />
+              <Database class="space-y-4" />
               View Cases
-</Button>
+            </Button>
           </a>
           <a href="/evidence" class="space-y-4">
             <Button variant="ghost" class="space-y-4 bits-btn bits-btn">
-<FileText class="space-y-4" />
+              <FileText class="space-y-4" />
               View Evidence
-</Button>
+            </Button>
           </a>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   /* Custom drag and drop styles */
 </style>
+;

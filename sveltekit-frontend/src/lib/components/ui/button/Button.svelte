@@ -35,6 +35,7 @@
     className
   ].filter(Boolean).join(' '));
 </script>
+
 {#if to}
   <a class={classes} data-button-root href={to} {...restProps}>
     {#if icon && iconPosition === 'left'}
@@ -51,12 +52,7 @@
     {/if}
   </a>
 {:else}
-  <button
-    class={classes}
-    disabled={loading}
-    data-button-root
-    {...restProps}
-  >
+  <button class={classes} disabled={loading} data-button-root {...restProps}>
     {#if icon && iconPosition === 'left'}
       <i class={icon} aria-hidden="true"></i>
     {/if}
@@ -71,34 +67,94 @@
     {/if}
   </button>
 {/if}
-<style>:global(.nier-btn[disabled]),
+
+<style>:global(.nier-btn[disabled]), {}
   :global(.nier-btn.btn-loading) {
     opacity: 0.6;
     cursor: not-allowed;
     background: #23272;
     color: #bcbcbc;
   }
-/* Variant styles */
-  :global(.btn-default) { background: linear-gradient(90deg, #23272e 0%, #393e46 100%); color: #fff; }
-  :global(.btn-primary) { background: linear-gradient(90deg, #23272e 0%, #393e46 100%); color: #fff; }
-  :global(.btn-secondary) { background: #f3f3f3; color: #23272e; border: 1px solid #393e46; }
-  :global(.btn-outline) { background: transparent; color: #23272e; border: 1.5px solid #393e46; }
-  :global(.btn-danger) { background: #e53935; color: #fff; }
-  :global(.btn-destructive) { background: #e53935; color: #fff; }
-  :global(.btn-success) { background: #43a047; color: #fff; }
-  :global(.btn-warning) { background: #fbc02d; color: #23272e; }
-  :global(.btn-info) { background: #1976d2; color: #fff; }
-  :global(.btn-ghost) { background: transparent; color: #23272e; border: none; }
-  :global(.btn-ghost:hover) { background: rgba(35, 39, 46, 0.1); }
-  :global(.btn-nier) { background: linear-gradient(90deg, #181a1b 0%, #393e46 100%); color: #e0e0e0; }
-  :global(.btn-crimson) { background: linear-gradient(90deg, #8B0000 0%, #DC143C 100%); color: #fff; }
-  :global(.btn-gold) { background: linear-gradient(90deg, #B8860B 0%, #FFD700 100%); color: #000; }
-/* Size styles */
-  :global(.btn-xs) { font-size: 0.75rem; padding: 0.25rem 0.75rem; }
-  :global(.btn-sm) { font-size: 0.875rem; padding: 0.375rem 1rem; }
-  :global(.btn-md) { font-size: 1rem; padding: 0.5rem 1.25rem; }
-  :global(.btn-lg) { font-size: 1.125rem; padding: 0.75rem 1.5rem; }
-  :global(.btn-xl) { font-size: 1.25rem; padding: 1rem 2rem; }
+/* Variant styles */ {}
+  :global(.btn-default) {
+    background: linear-gradient(90deg, #23272e 0%, #393e46 100%);
+    color: #fff;
+  }
+  :global(.btn-primary) {
+    background: linear-gradient(90deg, #23272e 0%, #393e46 100%);
+    color: #fff;
+  }
+  :global(.btn-secondary) {
+    background: #f3f3f3;
+    color: #23272e;
+    border: 1px solid #393e46;
+  }
+  :global(.btn-outline) {
+    background: transparent;
+    color: #23272e;
+    border: 1.5px solid #393e46;
+  }
+  :global(.btn-danger) {
+    background: #e53935;
+    color: #fff;
+  }
+  :global(.btn-destructive) {
+    background: #e53935;
+    color: #fff;
+  }
+  :global(.btn-success) {
+    background: #43a047;
+    color: #fff;
+  }
+  :global(.btn-warning) {
+    background: #fbc02d;
+    color: #23272e;
+  }
+  :global(.btn-info) {
+    background: #1976d2;
+    color: #fff;
+  }
+  :global(.btn-ghost) {
+    background: transparent;
+    color: #23272e;
+    border: none;
+  }
+  :global(.btn-ghost:hover) {
+    background: rgba(35, 39, 46, 0.1);
+  }
+  :global(.btn-nier) {
+    background: linear-gradient(90deg, #181a1b 0%, #393e46 100%);
+    color: #e0e0e0;
+  }
+  :global(.btn-crimson) {
+    background: linear-gradient(90deg, #8b0000 0%, #dc143c 100%);
+    color: #fff;
+  }
+  :global(.btn-gold) {
+    background: linear-gradient(90deg, #b8860b 0%, #ffd700 100%);
+    color: #000;
+  }
+/* Size styles */ {}
+  :global(.btn-xs) {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+  }
+  :global(.btn-sm) {
+    font-size: 0.875rem;
+    padding: 0.375rem 1rem;
+  }
+  :global(.btn-md) {
+    font-size: 1rem;
+    padding: 0.5rem 1.25rem;
+  }
+  :global(.btn-lg) {
+    font-size: 1.125rem;
+    padding: 0.75rem 1.5rem;
+  }
+  :global(.btn-xl) {
+    font-size: 1.25rem;
+    padding: 1rem 2rem;
+  }
   .loader {
     width: 1rem;
     height: 1rem;
@@ -109,5 +165,9 @@
     display: inline-block;
     vertical-align: middl;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 </style>

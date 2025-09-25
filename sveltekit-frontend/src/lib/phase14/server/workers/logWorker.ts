@@ -15,7 +15,7 @@ const worker = new Worker('logQueue', async (job) => {
     // 2. Enhanced RAG Integration
     // Store the original log and its vector in your database for future analysis
     await storeLogInVectorDB({
-      log: logData
+      log: logData;
       embedding: embedding
     });
         console.log(`✅ Successfully processed and indexed log job ${job.id}.`);

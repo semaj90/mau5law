@@ -97,7 +97,7 @@ export class SearchExamples {
         limit: 6,
         vectorWeight: 0.4,    // 40% vector similarity
         textWeight: 0.35,     // 35% full-text ranking
-        keywordWeight: 0.25,  // 25% keyword matching
+        keywordWeight: 0.25,  // 25% keyword matching;
         threshold: 0.6,
         useCache: true
       }
@@ -130,7 +130,7 @@ export class SearchExamples {
       {
         k: 7,
         algorithm: 'hybrid',
-        useCache: true
+        useCache: true;
         threshold: 0.75,
         includeMetadata: true
       }
@@ -156,7 +156,7 @@ export class SearchExamples {
   async exampleSearchComparison() {
     console.log('📊 Running search performance comparison...');
     const query = 'criminal defense attorney client privilege';
-    const results = {};
+    const results = {}
     // Test all search methods with the same query
     const startTime = performance.now();
     try {
@@ -166,35 +166,35 @@ export class SearchExamples {
       results.document = {
         count: docResults.length,
         time: performance.now() - docStart
-      };
+      }
       // Semantic search
       const semStart = performance.now();
       const semResults = await this.server.semanticSearch(query, { limit: 5, useCache: false });
       results.semantic = {
         count: semResults.total_results,
         time: performance.now() - semStart
-      };
+      }
       // Full-text search
       const textStart = performance.now();
       const textResults = await this.server.fullTextSearch(query, { limit: 5, useCache: false });
       results.fulltext = {
         count: textResults.total_results,
         time: performance.now() - textStart
-      };
+      }
       // Hybrid search
       const hybridStart = performance.now();
       const hybridResults = await this.server.hybridSearch(query, { limit: 5, useCache: false });
       results.hybrid = {
         count: hybridResults.total_results,
         time: performance.now() - hybridStart
-      };
+      }
       // Advanced vector search
       const vectorStart = performance.now();
       const vectorResults = await this.server.advancedVectorSearch(query, { k: 5, useCache: false });
       results.vector = {
         count: vectorResults.results.length,
         time: performance.now() - vectorStart
-      };
+      }
     } catch (error) {
       console.error('Search comparison error:', error);
     }

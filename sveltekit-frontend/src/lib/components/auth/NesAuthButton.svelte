@@ -12,13 +12,7 @@
     icon?: string;
     form?: any;
   }
-  let {
-    text = 'Retro Auth',
-    variant = 'primary',
-    size = 'medium',
-    icon = '🎮',
-    form
-  }: Props = $props();
+  let { text = 'Retro Auth', variant = 'primary', size = 'medium', icon = '🎮', form }: Props = $props();
   let isModalOpen = $state(false);
   function openModal() {
     isModalOpen = true;
@@ -53,23 +47,18 @@
     return classe;
   });
 </script>
+
 <svelte:head>
   <!-- Import nes.css for the button styling -->
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
 </svelte:head>
-<button
-  type="button"
-  class={buttonClasses}
-  onclick={openModal}
->
-  {#if icon}{icon} {/if}{text}
+<button type="button" class={buttonClasses} onclick={openModal}>
+  {#if icon}{icon}
+  {/if}{text}
 </button>
-<NesAuthModal
-  bind:isOpen={isModalOpen}
-  {form}
-  close={closeModal}
-/>
+<NesAuthModal bind:isOpen={isModalOpen} {form} close={closeModal} />
+
 <style>
   /* Custom button size classes */
   :global(.nes-btn-small) {

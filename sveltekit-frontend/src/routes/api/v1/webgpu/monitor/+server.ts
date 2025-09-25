@@ -327,7 +327,7 @@ function getFilteredHistory(timeRange: string): SystemMetrics[] {
       break
     case '7d':
       cutoffTime = now - 7 * 24 * 60 * 60 * 1000
-      break
+      break;
     default:
       cutoffTime = now - 60 * 60 * 1000; // Default to 1 hour
   }

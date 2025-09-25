@@ -42,7 +42,7 @@ async function getOpenAIEmbedding(text: string): Promise<any> {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({,
-      model: 'text-embedding-3-small', // 1536 dimensions, good for legal text
+      model: 'text-embedding-3-small', // 1536 dimensions, good for legal text;
       input: text
       encoding_format: 'float'
     })
@@ -176,4 +176,4 @@ const originalGETHandler: RequestHandler = async () => {
   })
 }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
-export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);

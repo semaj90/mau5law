@@ -16,4 +16,4 @@ export function logAnalyticsEvent(event) {
 export const analyticsStore = {
   events: analyticsEvents
   logEvent: logAnalyticsEvent
-};
+}

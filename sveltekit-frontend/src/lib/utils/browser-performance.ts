@@ -43,7 +43,7 @@ export class BrowserPerformanceMonitor {
   }
   private initializePerformanceMonitoring(): void {
     if (typeof window === 'undefined' || !window.PerformanceObserver) return;
-    this.performanceObserver = new PerformanceObserver((list) => {
+    this.performanceObserver = new PerformanceObserver(list => {
       for (const entry of list.getEntries()) {
         // Track paint metrics for Chrome Windows
         if (entry.entryType === 'paint') {
@@ -53,9 +53,7 @@ export class BrowserPerformanceMonitor {
         if (entry.entryType === 'layout-shift') {
           const value = (entry as any).value;
           if (value) {
-            this.metrics.set('cumulative-layout-shift',
-              (this.metrics.get('cumulative-layout-shift') || 0) + value
-            );
+            this.metrics.set('cumulative-layout-shift', (this.metrics.get('cumulative-layout-shift') || 0) + value);
           }
         }
       }
@@ -63,7 +61,7 @@ export class BrowserPerformanceMonitor {
     // Observe paint and layout metrics
     try {
       this.performanceObserver.observe({
-        entryTypes: ['paint', 'layout-shift']
+        entryTypes: ['paint', 'layout-shift'],
       });
     } catch (error: any) {
       console.warn('Performance monitoring not available:', error);
@@ -77,9 +75,7 @@ export class BrowserPerformanceMonitor {
     const firstPaint = this.metrics.get('first-paint');
     const firstContentfulPaint = this.metrics.get('first-contentful-paint');
     // Good hardware acceleration should have fast paint times
-    return (firstPaint && firstPaint < 100) ||
-           (firstContentfulPaint && firstContentfulPaint < 300) ||
-           false;
+    return (firstPaint && firstPaint < 100) || (firstContentfulPaint && firstContentfulPaint < 300) || false;
   }
   dispose(): void {
     this.performanceObserver?.disconnect();
@@ -95,27 +91,27 @@ export class BrowserErrorHandler {
   private initializeErrorHandling(): void {
     if (typeof window === 'undefined') return;
     // Global error handler
-    window.addEventListener('error', (event: any) => {
+    window.addEventListener('error', (_event: any) => {
       this.logError({
         message: event.message,
         source: event.filename || 'unknown',
         line: event.lineno || 0,
         column: event.colno || 0,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     });
     // Promise rejection handler
-    window.addEventListener('unhandledrejection', (event: any) => {
+    window.addEventListener('unhandledrejection', (_event: any) => {
       this.logError({
         message: `Unhandled Promise Rejection: ${event.reason}`,
         source: 'promise',
         line: 0,
         column: 0,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     });
   }
-  private logError(error: typeof this.errors[0]): void {
+  private logError(error: (typeof this.errors)[0]): void {
     this.errors.push(error);
     // Keep only last 10 errors
     if (this.errors.length > 10) {
@@ -155,8 +151,8 @@ export class BrowserErrorHandler {
       gpuSupport: supportsGPUAcceleration(),
       hardwareAcceleration: isChromeWindows(),
       errors: this.errors.length,
-      recommendations
-    };
+      recommendations,
+    }
   }
 }
 // Singleton instances

@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     maxCacheSize?: number;
     // Visual settings
     renderToCanvas?: boolean;
-    canvasSize?: { width: number; height: number };
+    canvasSize?: { width: number; height: number }
     enableDebugMode?: boolean;
     showShaderMetrics?: boolean;
     // Event handlers
@@ -302,7 +302,7 @@ https://svelte.dev/e/js_parse_error -->
         return weight;
       }
     `
-  };
+  }
   /**
    * Initialize shader cache system
    */
@@ -326,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
         gpuContext = canvasElement.getContext('webgpu');
         if (gpuContext) {
           gpuContext.configure({
-            device: gpuDevice
+            device: gpuDevice;
             format: 'bgra8unorm',
             size: canvasSiz;
           });
@@ -399,7 +399,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const shaderSource = getShaderSource(aaConfig.type);
       const shaderModule = gpuDevice.createShaderModule({
-        code: shaderSource
+        code: shaderSource;
         label: `${shaderId}_${aaConfig.type}_shader`
       });
       compilationTime = performance.now() - startTime;
@@ -417,7 +417,7 @@ https://svelte.dev/e/js_parse_error -->
         uniforms: ,
         lastCompiled: Date.now(),
         useCount: 1;
-      };
+      }
       currentAAType = aaConfig.typ;
     } catch (error: unknown) {
       throw new Error(`Failed to compile shader: ${error.message}`);
@@ -529,7 +529,7 @@ https://svelte.dev/e/js_parse_error -->
         lastTime = now;
       }
       animationId = requestAnimationFrame(updateMetrics);
-    };
+    }
     animationId = requestAnimationFrame(updateMetrics);
   }
   /**
@@ -628,6 +628,7 @@ if (preloadShaders) {
     currentAAType === 'smaa' ? '#0088ff' :
     currentAAType === 'msaa' ? '#ff8800' : '#ffffff'
 </script>
+
 <!-- YoRHa Anti-Aliasing Shader Cache Component -->
 <div class="yorha-aa-cache-container {aaQualityClass}" class:debug-mode={enableDebugMode}>
   <!-- Rendering Canvas (if enabled) -->
@@ -663,17 +664,23 @@ if (preloadShaders) {
         </div>
         <div class="metric-row">
           <span class="metric-label">Cache Hit Rate</span>
-          <span class="metric-value" class:good={cacheHitRate > 0.8}
-                class:warning={cacheHitRate > 0.5 && cacheHitRate <= 0.8}
-                class:poor={cacheHitRate <= 0.5}>
+          <span
+            class="metric-value"
+            class:good={cacheHitRate > 0.8}
+            class:warning={cacheHitRate > 0.5 && cacheHitRate <= 0.8}
+            class:poor={cacheHitRate <= 0.5}
+          >
             {(cacheHitRate * 100).toFixed(1)}%
           </span>
         </div>
         <div class="metric-row">
           <span class="metric-label">FPS</span>
-          <span class="metric-value" class:good={performanceMetrics.fps >= targetFPS * 0.9}
-                class:warning={performanceMetrics.fps >= targetFPS * 0.7}
-                class:poor={performanceMetrics.fps < targetFPS * 0.7}>
+          <span
+            class="metric-value"
+            class:good={performanceMetrics.fps >= targetFPS * 0.9}
+            class:warning={performanceMetrics.fps >= targetFPS * 0.7}
+            class:poor={performanceMetrics.fps < targetFPS * 0.7}
+          >
             {performanceMetrics.fps.toFixed(1)}
           </span>
         </div>
@@ -721,13 +728,9 @@ if (preloadShaders) {
       <div class="error-title">SHADER ERROR</div>
       <div class="error-message">{errorMessage}</div>
       <div class="error-actions">
-        <button class="retry-button" onclick={() => initializeShaderCache()}>
-          RETRY COMPILATION
-        </button>
+        <button class="retry-button" onclick={() => initializeShaderCache()}> RETRY COMPILATION </button>
         {#if enableHotReload}
-          <button class="hotreload-button" onclick={hotReloadShader}>
-            HOT RELOAD
-          </button>
+          <button class="hotreload-button" onclick={hotReloadShader}> HOT RELOAD </button>
         {/if}
       </div>
     </div>
@@ -756,13 +759,12 @@ if (preloadShaders) {
   <!-- Hot Reload Controls -->
   {#if enableHotReload && enableDebugMode}
     <div class="hotreload-controls">
-      <button class="hotreload-trigger" onclick={hotReloadShader}>
-        🔥 HOT RELOAD
-      </button>
+      <button class="hotreload-trigger" onclick={hotReloadShader}> 🔥 HOT RELOAD </button>
       <div class="hotreload-count">{shaderHotReloadCount}</div>
     </div>
   {/if}
 </div>
+
 <style>
   .yorha-aa-cache-container {
     position: relative;

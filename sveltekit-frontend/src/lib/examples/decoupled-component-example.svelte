@@ -72,7 +72,7 @@
     closeDialog: () => dialogOpen = false,
     clearChat: () => chatAdapter.actions.reset(),
     focusInput: () => chatInput?.focus()
-  };
+  }
   // Computed ARIA state (derived from logic)
   let ariaProps = $derived({
     expanded: dialogOpen
@@ -116,7 +116,7 @@
     <!-- Process Button with Accessibility Action -->
     <button
       use:accessibleClick={{,
-        handler: processDocument
+        handler: processDocument;
         label: ariaProps.label,
         disabled: ariaProps.disabled;
       }}
@@ -224,7 +224,7 @@
           />
           <button
             use:accessibleClick={{,
-              handler: sendMessage
+              handler: sendMessage;
               label: 'Send message',
               disabled: $chatState.data.isTyping || !$chatState.data.currentInput.trim();
             }}

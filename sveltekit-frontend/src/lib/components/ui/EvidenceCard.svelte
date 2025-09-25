@@ -10,7 +10,7 @@
     connections = 0,
     onclick = () => {},
     children,
-    icon = undefined
+    icon = undefined,
   } = $props();
   // Visual effects state
   let isHovered = $state(false);
@@ -19,13 +19,13 @@
   let statusConfig = $derived(() => {
     switch (status) {
       case 'active':
-        return { color: 'is-success', bgClass: 'bg-green-50', borderClass: 'border-green-400' };
+        return { color: 'is-success', bgClass: 'bg-green-50', borderClass: 'border-green-400' }
       case 'pending':
-        return { color: 'is-warning', bgClass: 'bg-yellow-50', borderClass: 'border-yellow-400' };
+        return { color: 'is-warning', bgClass: 'bg-yellow-50', borderClass: 'border-yellow-400' }
       case 'completed':
-        return { color: 'is-primary', bgClass: 'bg-blue-50', borderClass: 'border-blue-400' };
+        return { color: 'is-primary', bgClass: 'bg-blue-50', borderClass: 'border-blue-400' }
       default:
-        return { color: 'is-dark', bgClass: 'bg-gray-50', borderClass: 'border-gray-400' };
+        return { color: 'is-dark', bgClass: 'bg-gray-50', borderClass: 'border-gray-400' }
     }
   });
   function handleClick() {
@@ -33,17 +33,19 @@
     onclick();
   }
 </script>
+
 <!-- Evidence Card (matching Evidence Board style) -->
 <div
-  class="evidence-card nes-container is-rounded cursor-pointer transition-all duration-300 {statusConfig?.bgClass || 'bg-gray-50'} {statusConfig?.borderClass || 'border-gray-400'}"
+  class="evidence-card nes-container is-rounded cursor-pointer transition-all duration-300 {statusConfig?.bgClass ||
+    'bg-gray-50'} {statusConfig?.borderClass || 'border-gray-400'}"
   class:selected={isSelected}
   class:hovered={isHovered}
-  onmouseenter={() => isHovered = true}
-  onmouseleave={() => isHovered = false}
+  onmouseenter={() => (isHovered = true)}
+  onmouseleave={() => (isHovered = false)}
   onclick={handleClick}
   role="button"
   tabindex="0"
-  onkeydown={(e) => e.key === 'Enter' && handleClick()}
+  onkeydown={e => e.key === 'Enter' && handleClick()}
 >
   <!-- Card Header -->
   <div class="flex items-center justify-between mb-3">
@@ -91,6 +93,7 @@
     <div class="absolute -inset-1 bg-blue-200 opacity-20 rounded-lg -z-10"></div>
   {/if}
 </div>
+
 <style>
   .evidence-card {
     position: relative;
@@ -101,16 +104,16 @@
   }
   .evidence-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
   .evidence-card.selected {
     border-width: 4px;
-    box-shadow: 0 0 20px rgba(0,123,255,0.4);
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.4);
   }
   .evidence-card.hovered {
     border-color: #007bff !important;
   }
-  /* Connection lines effect */
+/* Connection lines effect */ {}
   .evidence-card.selected::after {
     content: '';
     position: absolute;
@@ -121,23 +124,23 @@
     background: #007bff;
     border-radius: 1px;
   }
-  /* Truncate text with modern CSS fallbacks */
+/* Truncate text with modern CSS fallbacks */ {}
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsi;
-    /* Modern CSS fallback for browsers that don't support line-clamp */
+/* Modern CSS fallback for browsers that don't support line-clamp */ {}
     max-height: calc(1.2em * 2); /* Assuming line-height of 1.2 */
     line-height: 1.2;
-    /* Container query support */
+/* Container query support */ {}
     @supports not (-webkit-line-clamp: 2) {
       max-height: 2.4em;
       overflow: hidden;
       position: relative;
     }
-    /* Gradient fade for better UX */
+/* Gradient fade for better UX */ {}
     @supports not (-webkit-line-clamp: 2) {
       &::after {
         content: '';

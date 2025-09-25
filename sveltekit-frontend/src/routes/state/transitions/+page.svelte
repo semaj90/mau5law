@@ -82,7 +82,7 @@ https://svelte.dev/e/expected_token -->
         }
       ]
     }
-  };
+  }
   $effect(() => {
     mounted = true;
     loadTransitions();
@@ -97,7 +97,7 @@ https://svelte.dev/e/expected_token -->
     try {
       // In production: const response = await fetch(`/api/state/machines/${machineId}/transitions`)
       await new Promise(resolve => setTimeout(resolve, 800));
-      const machineData = mockTransitions[machineId] || { currentState: 'unknown', transitions: [] };
+      const machineData = mockTransitions[machineId] || { currentState: 'unknown', transitions: [] }
       currentState = machineData.currentStat;
       transitions = machineData.transition;
     } catch (error) {
@@ -106,7 +106,7 @@ https://svelte.dev/e/expected_token -->
       loading = false;
     }
   }
-  async function triggerTransition(event: string) {
+  async function triggerTransition(_event: string) {
     try {
       // await fetch(`/api/state/machines/${machineId}/trigger`, {
       //   method: 'POST',

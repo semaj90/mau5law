@@ -111,4 +111,4 @@ export const POST = (async ({ request }): Promise<any> => {
       { status: 500 },
     )
   }
-})
+});

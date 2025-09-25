@@ -11,7 +11,7 @@
     size?: 'sm' | 'md' | 'lg';
     loadingText?: string;
     children?: import('svelte').Snippet;
-    onclick?: (event: MouseEvent) => void;
+    onclick?: (_event: MouseEvent) => void;
   }
   let {
     loading = false,
@@ -37,7 +37,7 @@
     loading ? 'loading-button--loading' : '',
     className
   ].filter(Boolean).join(' '));
-  function handleClick(event: MouseEvent) {
+  function handleClick(_event: MouseEvent) {
     if (isDisabled) {
       event.preventDefault();
       return;
@@ -45,6 +45,7 @@
     onclick?.(event);
   }
 </script>
+
 <button
   {type}
   class={buttonClasses}
@@ -58,20 +59,8 @@
     {#if loading}
       <span class="loading-button__spinner {spinnerClass}" aria-hidden="true">
         <svg viewBox="0 0 24 24" class="spinner-icon" fill="none">
-          <circle
-            class="spinner-circle"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="2"
-            fill="none"
-          />
-          <path
-            class="spinner-path"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"
-          />
+          <circle class="spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+          <path class="spinner-path" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z" />
         </svg>
       </span>
     {/if}
@@ -86,6 +75,7 @@
     </span>
   </div>
 </button>
+
 <style>
   .loading-button {
     position: relative;
@@ -127,7 +117,7 @@
   .loading-button__text--loading {
     opacity: 0.8;
   }
-  /* Size variants */
+/* Size variants */ {}
   .loading-button--sm {
     padding: 0.25rem 0.75rem;
     font-size: 0.875rem;
@@ -151,7 +141,7 @@
     width: 1.25rem;
     height: 1.25rem;
   }
-  /* Color variants */
+/* Color variants */ {}
   .loading-button--primary {
     background-color: rgb(59, 130, 246);
     color: white;
@@ -189,7 +179,7 @@
   .loading-button--ghost:hover:not(.loading-button--disabled) {
     background-color: rgb(249, 250, 251);
   }
-  /* Disabled state */
+/* Disabled state */ {}
   .loading-button--disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -198,7 +188,7 @@
   .loading-button--loading {
     cursor: wait;
   }
-  /* Spin animation */
+/* Spin animation */ {}
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -207,17 +197,18 @@
       transform: rotate(360deg);
     }
   }
-  /* Focus styles */
+/* Focus styles */ {}
   .loading-button:focus-visible {
     outline: 2px solid rgb(59, 130, 246);
     outline-offset: 2px;
   }
-  /* Loading state animation */
+/* Loading state animation */ {}
   .loading-button--loading .loading-button__content {
     animation: loadingPulse 1.5s ease-in-out infinite;
   }
   @keyframes loadingPulse {
-    0%, 100% {
+0%, {}
+    100% {
       opacity: 1;
     }
     50% {

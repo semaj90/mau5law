@@ -6,7 +6,6 @@ import type { DynamicRouteConfig, GeneratedRoute } from './dynamic-route-generat
 import type { RouteDefinition } from '$lib/data/routes-config';
 import { getAllDynamicRoutes } from './dynamic-route-generator.js';
 import { registerDynamicRoute, getRoute } from './route-registry.js';
-import path from "path";
 // Core route generation
 export {
   DynamicRouteGenerator,
@@ -97,7 +96,7 @@ export type {
 /**
  * Initialize the complete routing system
  */;
-export async function initializeRouting(options: {
+export async function initializeRouting(_options: {
   enableGuards?: boolean;
   enableNavigation?: boolean;
   globalGuards?: string[];
@@ -125,7 +124,7 @@ export async function initializeRouting(options: {
  * Route builder utility for creating dynamic routes with type safety
  */;
 export class RouteBuilder {
-  private config: Partial<DynamicRouteConfig> = {};
+  private config: Partial<DynamicRouteConfig> = {}
   private routeId: string = '';
   private routePath: string = '';
   constructor(id: string, path: string) {
@@ -191,7 +190,7 @@ export class RouteBuilder {
         ssr: this.config.ssr || true,
         hydrate: this.config.hydrate || true
       }
-    };
+    }
     return registerDynamicRoute(this.routeId, this.routePath, this.config);
   }
   /**
@@ -202,7 +201,7 @@ export class RouteBuilder {
       pattern: this.routePath,
       template: 'dynamic',
       ...this.config
-    };
+    }
   }
 }
 /**
@@ -216,7 +215,7 @@ export function createRoute(id: string, path: string): RouteBuilder {
  */;
 export function registerRoutes(routes: Array<): GeneratedRoute[] {
   return routes.map(route => {
-    const config = route.config || {};
+    const config = route.config || {}
     return registerDynamicRoute(route.id, route.path, config);
   });
 }
@@ -224,15 +223,15 @@ export function registerRoutes(routes: Array<): GeneratedRoute[] {
  * Route pattern matching utility
  */
 export function matchRoute(
-  pattern: string
+  pattern: string;
   path: string;
 ): { match: boolean; params: Record<string, string> } {
   const patternParts = pattern.split('/').filter(Boolean);
   const pathParts = path.split('/').filter(Boolean);
   if (patternParts.length !== pathParts.length) {
-    return { match: false, params: { [key: string]: any } };
+    return { match: false, params: { [key: string]: any } }
   }
-  const params: Record<string, string> = {};
+  const params: Record<string, string> = {}
   for (let i = 0; i < patternParts.length; i++) {
     const patternPart = patternParts[i];
     const pathPart = pathParts[i];
@@ -244,10 +243,10 @@ export function matchRoute(
       params[name] = pathPart;
     } else if (patternPart !== pathPart) {
       // Static segment mismatch
-      return { match: false, params: { [key: string]: any } };
+      return { match: false, params: { [key: string]: any } }
     }
   }
-  return { match: true, params };
+  return { match: true, params }
 }
 /**
  * Route URL generation utility
@@ -307,7 +306,7 @@ export function validateRoute(route: GeneratedRoute | RouteDefinition): {
   return {
     valid: errors.length === 0,
     errors
-  };
+  }
 }
 /**
  * Route debugging utility
@@ -340,7 +339,7 @@ export function debugRoutes(): {
     staticRoutes: staticRoutesFromRegistry.length,
     dynamicRoutes: dynamicRoutes.length,
     routeList
-  };
+  }
 }
 /**
  * Export types and constants

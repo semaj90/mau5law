@@ -205,7 +205,7 @@ async function processCPUVectorOperation(params: {
           case 3: return 1.0 / (1.0 + manhattanDistance(vectorA, vector))
           default: return 0
         }
-      })
+      });
     default:
       throw new Error(`Unknown operation: ${operation}`)
   }

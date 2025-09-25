@@ -21,7 +21,7 @@ export interface FormAuditResult {
     level: 'poor' | 'basic' | 'good' | 'excellent';
     issues: FormIssue[];
     recommendations: string[];
-  };
+  }
 }
 export interface FormIssue {
   type: 'critical' | 'warning' | 'info';
@@ -74,7 +74,7 @@ export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
   highlightRequiredFields: true
   showCharacterCounts: false, // For text fields with limits
   enableKeyboardShortcuts: false // For power users
-};
+}
 // Form audit functions
 export function auditFormElement(formElement: HTMLFormElement): FormAuditResult {
   const result: FormAuditResult = {
@@ -98,7 +98,7 @@ export function auditFormElement(formElement: HTMLFormElement): FormAuditResult 
       issues: [],
       recommendations: []
     }
-  };
+  }
   // Calculate compliance score and generate recommendations
   calculateComplianceScore(result);
   generateRecommendations(result);
@@ -249,7 +249,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
     level,
     issues,
     recommendations: []
-  };
+  }
 }
 function generateRecommendations(result: FormAuditResult): void {
   const recommendations: string[] = [];
@@ -318,11 +318,11 @@ ${(result as { hasFormElement?: any; hasActionAttribute?: any; hasMethodAttribut
 }
 // Progressive enhancement validator for Svelte components
 export function createProgressiveForm(config: Partial<ProgressiveEnhancementConfig> = {}) {
-  const finalConfig = { ...DEFAULT_PE_CONFIG, ...config };
+  const finalConfig = { ...DEFAULT_PE_CONFIG, ...config }
   return {
     config: finalConfig
     // Form validation helpers
-    validateRequired: (value: any, fieldName: string) => {
+    validateRequired: (_value: any, fieldName: string) => {
       if (!value || (typeof value === 'string' && !value.trim())) {
         return `${fieldName} is required`;
       }
@@ -335,7 +335,7 @@ export function createProgressiveForm(config: Partial<ProgressiveEnhancementConf
       }
       return null;
     },
-    validateLength: (value: string, min: number, max?: number) => {
+    validateLength: (_value: string, min: number, max?: number) => {
       if (value.length < min) {
         return `Must be at least ${min} characters long`;
       }
@@ -363,9 +363,9 @@ export function createProgressiveForm(config: Partial<ProgressiveEnhancementConf
         isSubmitting: false
         hasSubmitted: false
         isDirty: false
-      };
+      }
     }
-  };
+  }
 }
 // Utility to check if JavaScript is available
 export function supportsJavaScript(): boolean {

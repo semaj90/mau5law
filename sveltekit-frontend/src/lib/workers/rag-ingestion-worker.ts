@@ -20,7 +20,7 @@ interface DocumentProcessingPayload {
     performAnalysis: boolean;
     cacheResults: boolean;
     priority: 'low' | 'medium' | 'high' | 'critical';
-  };
+  }
 }
 interface EmbeddingPayload {
   text: string;
@@ -29,7 +29,7 @@ interface EmbeddingPayload {
     dimensions: number;
     normalize: boolean;
     quantization: 'FP32' | 'FP16' | 'INT8';
-  };
+  }
 }
 interface SIMDParsePayload {
   buffer: ArrayBuffer;
@@ -38,7 +38,7 @@ interface SIMDParsePayload {
     useSimd: boolean;
     extractMetadata: boolean;
     performOCR: boolean;
-  };
+  }
 }
 interface VectorIndexPayload {
   documentId: string;
@@ -48,7 +48,7 @@ interface VectorIndexPayload {
     riskLevel: string;
     keywords: string[];
     entities: any[];
-  };
+  }
   nesBank: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
 }
 // WebAssembly SIMD text processor
@@ -98,7 +98,7 @@ class SIMDTextProcessor {
       metadata: { pages: 1, creator: 'SIMD Parser' },
       pages: 1,
       extractionTime: 0
-    };
+    }
   }
   private async parsePDFFallback(buffer: ArrayBuffer): Promise<any> {
     // JavaScript fallback for PDF parsing
@@ -108,7 +108,7 @@ class SIMDTextProcessor {
       metadata: { pages: 1, creator: 'Fallback Parser' },
       pages: 1,
       extractionTime: 0
-    };
+    }
   }
   async parseText(text: string, options: { useSimd: boolean }): Promise<any> {
     const startTime = performance.now();
@@ -126,7 +126,7 @@ class SIMDTextProcessor {
       tokens,
       entities,
       processingTime: performance.now()
-    };
+    }
   }
   private async parseTextFallback(text: string): Promise<any> {
     const tokens = text.split(/\s+/);
@@ -135,7 +135,7 @@ class SIMDTextProcessor {
       tokens,
       entities,
       processingTime: performance.now()
-    };
+    }
   }
   private extractEntitiesSIMD(text: string): any[] {
     // SIMD-accelerated named entity recognition
@@ -172,7 +172,7 @@ class VectorEmbeddingCache {
   private gpuBuffers = new Map<string, ArrayBuffer>();
   private maxCacheSize = 1000;
   private compressionEnabled = true;
-  async store(key: string, embedding: Float32Array, options: {
+  async store(_key: string, embedding: Float32Array, options: {
     quantization?: 'FP32' | 'FP16' | 'INT8';
     nesBank?: string;
   } = {}): Promise<void> {
@@ -193,7 +193,7 @@ class VectorEmbeddingCache {
     }
     console.log(`💾 Cached embedding for ${key} (${finalEmbedding.length}D, ${options.quantization || 'FP32'})`);
   }
-  async retrieve(key: string): Promise<Float32Array | null> {
+  async retrieve(_key: string): Promise<Float32Array | null> {
     return this.cache.get(key) || null;
   }
   async search(queryEmbedding: Float32Array, options: {
@@ -263,7 +263,7 @@ class VectorEmbeddingCache {
       cacheSize: this.cache.size,
       memoryUsage,
       hitRate: 0.85 // Placeholder - would track actual hit rate
-    };
+    }
   }
 }
 // Main RAG ingestion worker
@@ -349,13 +349,13 @@ class RAGIngestionWorker {
         embeddings,
         entities,
         processingTime
-      };
+      }
     } catch (error) {
       return {
         success: false
         documentId: payload.documentId,
         processingTime: performance.now() - startTime
-      };
+      }
     }
   }
   private async generateEmbeddings(payload: EmbeddingPayload): Promise<Float32Array> {
@@ -447,7 +447,7 @@ class RAGIngestionWorker {
       initialized: this.isInitialized,
       vectorCache: this.vectorCache.getStats(),
       timestamp: Date.now()
-    };
+    }
   }
 }
 // Global worker instance
@@ -465,7 +465,7 @@ self.addEventListener('message', async (event) => {
   } catch (error) {
     self.postMessage({
       id: message.id,
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -477,4 +477,4 @@ ragWorker.initialize().then(() => {
     timestamp: Date.now()
   });
 });
-export {};
+export {}

@@ -72,7 +72,7 @@
       version: number;
       wordCount: number;
       completionScore: number;
-    };
+    }
     aiSuggestions: AISuggestion[];
     status: 'draft' | 'review' | 'finalized';
     collaborators: string[];
@@ -146,12 +146,12 @@ r;
     try {
       const request = {
         documentType: selectedDocumentType
-        template: selectedTemplate || undefined
+        template: selectedTemplate || undefined;
         title: documentTitle
         caseContext: caseContext || undefined
         draftingMode,
         aiAssistanceLevel;
-      };
+      }
       const response = await fetch('/api/ai/document-drafting', {
         method: 'POST',
         headers: {
@@ -184,7 +184,7 @@ r;
           caseContext,
           assistanceLevel: aiAssistanceLevel
         }
-      };
+      }
       const response = await fetch('/api/ai/document-drafting/generate', {
         method: 'POST',
         headers: {
@@ -211,9 +211,9 @@ r;
     try {
       const request = {
         documentId: currentDocument.id,
-        content: documentContent
+        content: documentContent;
         title: documentTitl;
-      };
+      }
       const response = await fetch('/api/ai/document-drafting/save', {
         method: 'POST',
         headers: {
@@ -555,7 +555,7 @@ r;
           <div class="editor-toolbar">
             <div class="toolbar-left">
               <input
-                type="text"
+                type="text";
                 bind:value={documentTitle}
                 placeholder="Document Title"
                 class="title-input"

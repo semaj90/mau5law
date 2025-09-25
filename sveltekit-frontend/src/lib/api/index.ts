@@ -20,7 +20,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
     limit: number;
     total: number;
     hasMore: boolean;
-  };
+  }
 }
 export interface ApiLegalDocument {
   id: string;
@@ -33,7 +33,7 @@ export interface ApiLegalDocument {
   uploadedAt: string;
   processedAt?: string;
   embeddings?: number[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface SemanticSearchQuery {
   query: string;
@@ -43,9 +43,9 @@ export interface SemanticSearchQuery {
     documentType?: string[];
     jurisdiction?: string;
     caseId?: string;
-    dateRange?: { start: Date; end: Date };
+    dateRange?: { start: Date; end: Date }
     confidenceThreshold?: number;
-  };
+  }
   includeEmbeddings?: boolean;
   rerank?: boolean;
 }
@@ -61,7 +61,7 @@ export interface ChatMessage {
     processingTime?: number;
     tokenCount?: number;
     model?: string;
-  };
+  }
 }
 // =====================================
 // Authentication & User Management
@@ -82,11 +82,11 @@ export interface UserPreferences {
     email: boolean;
     browser: boolean;
     mobile: boolean;
-  };
+  }
   dashboard: {
     layout: "grid" | "list";
     widgets: string[];
-  };
+  }
 }
 export interface LoginCredentials {
   email: string;
@@ -107,7 +107,7 @@ export interface DocumentUploadOptions {
   documentType: ApiLegalDocument["documentType"];
   title?: string;
   jurisdiction?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   processImmediately?: boolean;
   generateEmbeddings?: boolean;
 }
@@ -122,13 +122,13 @@ export interface DocumentProcessingResult {
     model: string;
     dimensions: number;
     vectors: number[];
-  };
+  }
   analysis?: {
     entities: Array<any>;
     summary: string;
     topics: string[];
-    sentiment?: { score: number; label: "positive" | "negative" | "neutral" };
-  };
+    sentiment?: { score: number; label: "positive" | "negative" | "neutral" }
+  }
 }
 // =====================================
 // Vector Search & Embeddings
@@ -139,14 +139,14 @@ export interface VectorSearchOptions {
   collection: "documents" | "cases" | "precedents";
   topK?: number;
   threshold?: number;
-  metadataFilters?: { [key: string]: any };
+  metadataFilters?: { [key: string]: any }
   includePayload?: boolean;
   includeVectors?: boolean;
 }
 export interface VectorSearchResult {
   id: string;
   score: number;
-  payload?: { [key: string]: any };
+  payload?: { [key: string]: any }
   vector?: number[];
   document?: Partial<ApiLegalDocument>;
 }
@@ -185,7 +185,7 @@ export interface StreamingChatResponse {
     processingTime?: number;
     ragContext?: Array<any>;
     error?: string;
-  };
+  }
   done: boolean;
 }
 // =====================================
@@ -207,7 +207,7 @@ export interface LegalCase {
   evidence: Evidence[];
   notes: CaseNote[];
   timeline: CaseTimelineEntry[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface Evidence {
   id: string;
@@ -223,7 +223,7 @@ export interface Evidence {
     findings: string[];
     confidence: number;
     methodology: string;
-  };
+  }
   files: Array<any>;
 }
 export interface CaseNote {
@@ -251,7 +251,7 @@ export interface CaseTimelineEntry {
   description: string;
   actorId: string;
   timestamp: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface ChainOfCustodyEntry {
   id: string;
@@ -277,14 +277,14 @@ export interface ApiClientConfig {
     request?: Array<(config: any) => any>;
     response?: Array<(response: any) => any>;
     error?: Array<(error: any) => any>;
-  };
+  }
 }
 export interface ServiceEndpoints {
   sveltekit: {
     baseUrl: string;
     port: number;
     healthCheck: string;
-  };
+  }
   goMicroservice: {
     baseUrl: string;
     port: number;
@@ -295,8 +295,8 @@ export interface ServiceEndpoints {
       search: string;
       embeddings: string;
       chat: string;
-    };
-  };
+    }
+  }
   ollama: {
     baseUrl: string;
     port: number;
@@ -306,14 +306,14 @@ export interface ServiceEndpoints {
       chat: string;
       embeddings: string;
       models: string;
-    };
-  };
+    }
+  }
   redis: {
     host: string;
     port: number;
     password?: string;
     db?: number;
-  };
+  }
   postgresql: {
     host: string;
     port: number;
@@ -321,7 +321,7 @@ export interface ServiceEndpoints {
     username: string;
     password: string;
     ssl?: boolean;
-  };
+  }
   qdrant?: {
     baseUrl: string;
     port: number;
@@ -330,8 +330,8 @@ export interface ServiceEndpoints {
       documents: string;
       cases: string;
       precedents: string;
-    };
-  };
+    }
+  }
 }
 // =====================================
 // Barrel Exports - API Services
@@ -518,7 +518,7 @@ export const DEFAULT_CONFIG: ServiceEndpoints = {
       precedents: "legal_precedents"
     }
   }
-};
+}
 // =====================================
 // Runtime Environment Detection
 // =====================================
@@ -534,4 +534,4 @@ export default {
   HTTP_STATUS,
   DEFAULT_CONFIG,
   RUNTIME_ENV
-};
+}

@@ -84,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
           status: "complete",
         });
       }
-    };
+    }
     ws.onerror = () => {
       messages.push({
         role: "system",
@@ -92,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
         timestamp: new Date(),
         status: "error",
       });
-    };
+    }
   }
   async function handleSubmit() {
     if (!input.trim() || isLoading) return;
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
       content: input
       timestamp: new Date(),
       status: "complete",
-    };
+    }
     messages.push(userMessage);
     // Handle commands
     if (input.startsWith("/")) {
@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
       content: "",
       timestamp: new Date(),
       status: "pending",
-    };
+    }
     messages.push(assistantMessage);
     try {
       // Get embeddings
@@ -143,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify({,
           model: "gemma:3b",
           prompt: userMessage.content,
-          stream: true
+          stream: true;
         }),
       });
       if (!response.ok || !response.body) {
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n");
+        // removed unused lines assignment
         for (const line of lines) {
           if (line.trim()) {
             try {

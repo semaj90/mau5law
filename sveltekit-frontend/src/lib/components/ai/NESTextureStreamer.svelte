@@ -59,7 +59,7 @@
       1: 'Medium Detail (32x32)',
       2: 'Low Detail (16x16)',
       3: 'Minimal Detail (8x8)'
-    };
+    }
     return descriptions[currentLOD] || 'Unknown';
   });
   $effect(() => {
@@ -155,8 +155,8 @@ lodManager = new N64LODManager();
   }
   function setupScrollListener(): void {
     let scrollTimeout: number;
-    const handleScroll = (event: Event) => {
-      const target = event.target as HTMLElement;
+    const handleScroll = (_event: Event) => {
+      // removed unused target assignment
       const newScrollPosition = target.scrollTop;
       const now = Date.now();
       // Calculate scroll speed
@@ -174,7 +174,7 @@ lodManager = new N64LODManager();
           streamSpecificLOD(targetLOD());
         }
       }, 150);
-    };
+    }
     viewerElement?.addEventListener('scroll', handleScroll);
   }
   function startPerformanceMonitoring(): void {
@@ -244,6 +244,7 @@ lodManager = new N64LODManager();
     return canvas.toDataURL();
   }
 </script>
+
 <SSRWebGPULoader requireWebGPU={false}>
   {#snippet children({ hasWebGPU })}
     <div class="nes-texture-streamer">
@@ -291,19 +292,12 @@ lodManager = new N64LODManager();
         </div>
       </div>
       <!-- Main viewer area -->
-      <div
-        class="texture-viewer"
-        bind:this={viewerElement}
-        style="transform: scale({zoomLevel})"
-      >
+      <div class="texture-viewer" bind:this={viewerElement} style="transform: scale({zoomLevel})">
         {#if isStreaming}
           <div class="streaming-overlay" transition:fade>
             <div class="nes-loading">
               <div class="loading-bar">
-                <div
-                  class="loading-progress"
-                  style="width: {streamingProgress}%"
-                ></div>
+                <div class="loading-progress" style="width: {streamingProgress}%"></div>
               </div>
               <p>Streaming NES texture chunks... {streamingProgress.toFixed(0)}%</p>
             </div>
@@ -311,11 +305,7 @@ lodManager = new N64LODManager();
         {/if}
         {#if currentTexture}
           <div class="texture-display" transition:scale>
-            <img
-              src={getTextureDisplayData()}
-              alt="Streamed texture LOD {currentLOD}"
-              class="texture-image"
-            />
+            <img src={getTextureDisplayData()} alt="Streamed texture LOD {currentLOD}" class="texture-image" />
             <div class="texture-overlay">
               <div class="lod-indicator">
                 LOD {currentLOD}: {lodDescription}
@@ -371,6 +361,7 @@ lodManager = new N64LODManager();
     </div>
   {/snippet}
 </SSRWebGPULoader>
+
 <style>
   .nes-texture-streamer {
     background: #0f0f0f;

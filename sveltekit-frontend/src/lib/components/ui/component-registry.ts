@@ -293,5 +293,5 @@ export const LEGAL_AI_RECOMMENDATIONS = {
   userInterface: ['Navigation Menu', 'Avatar', 'Tooltip', 'Alert Dialog'],
   dataEntry: ['Checkbox', 'Radio Group', 'Select', 'PIN Input', 'Calendar', 'Time Field'],
   workflow: ['Progress', 'Toolbar', 'Switch', 'Slider']
-};
+}
 export default BITS_UI_COMPONENTS;

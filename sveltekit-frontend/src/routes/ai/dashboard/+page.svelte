@@ -8,6 +8,7 @@
     accuracy: 94.7;
   });
 </script>
+
 <svelte:head>
   <title>AI Dashboard - YoRHa Legal AI</title>
 </svelte:head>
@@ -66,6 +67,7 @@
     </div>
   </div>
 </div>
+
 <style>
   .ai-dashboard {
     max-width: 1200px;

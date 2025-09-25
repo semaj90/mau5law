@@ -10,7 +10,7 @@
   import { fly } from "svelte/transition";
   const contextMenu = (getContext("contextMenu") as any) || {
     elements: { menu: { subscribe: () => } },
-  };
+  }
   const { elements } = contextMenu;
   const { menu } = element;
 </script>

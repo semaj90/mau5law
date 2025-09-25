@@ -48,24 +48,24 @@ export const mockAIModelOutput: AIModelOutput = {
   analysis: "Document is relevant to case.",
   summary: "Summary of document.",
   nextSteps: ["Review evidence", "Contact witness"]
-};
+}
 export const mockUserHistory: UserHistory = {
   actions: ["uploaded document", "requested summary", "added note"],
   feedback: ["summary was helpful", "fixes were accurate"]
-};
+}
 export const mockUploadedFile: UploadedFile = {
   name: "evidence.pdf",
   textContent: "This is the content of the uploaded file."
-};
+}
 export const mockMCPServerData: MCPServerData = {
   serverId: "mcp-001",
   dataSummary: "Server processed 10 documents."
-};
+}
 export const mockSynthesisOptions: SynthesisOptions = {
   cacheEnabled: true
   autoEncode: true
   trainOnFeedback: false
-};
+}
 // --- Phase 10: Context7 Semantic Search, Logging, Agent Integration Types ---
 // Semantic search audit result structure (for /api/audit/semantic and UI)
 export interface SemanticAuditResult {
@@ -121,11 +121,10 @@ export interface Context7SearchResult {
   sourceType: "code" | "documentation" | "legal_doc" | "evidence";
   filePath?: string;
   lineNumber?: number;
-  context: { [key: string]: any };
+  context: { [key: string]: any }
 }
 // Real Context7 semantic search implementation
-export async function performContext7Search(
-  options: Context7SearchOptions;
+export async function performContext7Search(_options: Context7SearchOptions;
 ): Promise<Context7SearchResult[]> {
   try {
     // Use the semantic search from mcp-helpers
@@ -183,7 +182,7 @@ export class Context7AgentOrchestrator {
         default:
           throw new Error(`Unknown action: ${trigger.action}`);
       }
-      const completedTrigger = { ...trigger, status: "done" as const, result };
+      const completedTrigger = { ...trigger, status: "done" as const, result }
       this.triggers.set(trigger.todoId, completedTrigger);
       // Log the completion
       this.logAuditEntry({
@@ -199,7 +198,7 @@ export class Context7AgentOrchestrator {
         ...trigger,
         status: "done" as const,
         result: `Error: ${error}`
-      };
+      }
       this.triggers.set(trigger.todoId, failedTrigger);
       this.logAuditEntry({
         timestamp: new Date().toISOString(),
@@ -217,7 +216,7 @@ export class Context7AgentOrchestrator {
       tool: "analyze-stack",
       component: "typescript",
       context: "legal-ai"
-    };
+    }
     const prompt = generateMCPPrompt(analysisRequest);
     const codebaseAnalysis = await mcpCodebaseAnalyze(
       `Code review for ${todoId}: ${prompt}`
@@ -236,7 +235,7 @@ export class Context7AgentOrchestrator {
       autoFixResult = {
         summary: { totalIssues: 1, filesFixed: 0, filesProcessed: 0 },
         fixes: { imports: [], svelte5: [], typeScript: [] }
-      };
+      }
       // If auto-fix found issues, also run orchestrator for additional analysis
       if (autoFixResult.summary.totalIssues > 0) {
         const options: OrchestrationOptions = {
@@ -245,7 +244,7 @@ export class Context7AgentOrchestrator {
           useSemanticSearch: true
           agents: ["autogen", "claude"],
           synthesizeOutputs: true
-        };
+        }
         const orchestratorResult = await copilotOrchestrator(
           `Analyze auto-fix results for ${todoId}`,
           options
@@ -268,7 +267,7 @@ ${orchestratorResult.selfPrompt}`;
         useSemanticSearch: true
         agents: ["autogen", "claude"],
         synthesizeOutputs: true
-      };
+      }
       const result = await copilotOrchestrator(
         `Fix issues identified in ${todoId}`,
         options
@@ -298,7 +297,7 @@ ${orchestratorResult.selfPrompt}`;
           recommendations: [
             "Auto-fix module not available - manual review recommended"
           ]
-        };
+        }
       } catch (error: any) {
         console.error("Error in auto-fix simulation:", error);
         result = {
@@ -311,7 +310,7 @@ ${orchestratorResult.selfPrompt}`;
           fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
           recommendations: ["Error in auto-fix - manual review required"],
           configImprovements: ["Manual review required"]
-        };
+        }
       }
       return `Auto-Fix Completed for ${todoId}:
 Files Processed: ${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).summary.filesProcessed}
@@ -368,7 +367,7 @@ ${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; p
       performance: results[2]
       security: results[3]
       timestamp: new Date().toISOString()
-    };
+    }
   }
   logAuditEntry(entry: AuditLogEntry): void {
     this.auditLog.push(entry);
@@ -428,7 +427,7 @@ export class Context7SemanticAuditor {
             todoId: (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).todoId,
             action: "analyze",
             status: "pending"
-          };
+          }
           // Trigger agent asynchronously
           this.orchestrator.triggerAgent(trigger).then(() => {
             (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).agentTriggered = true;
@@ -450,7 +449,7 @@ export class Context7SemanticAuditor {
       tool: "analyze-stack",
       component: component
       context: "legal-ai"
-    };
+    }
     const prompt = generateMCPPrompt(analysisRequest);
     return await mcpCodebaseAnalyze(prompt);
   }
@@ -464,7 +463,7 @@ export class Context7SemanticAuditor {
         const bestPracticesRequest: MCPToolRequest = {
           tool: "generate-best-practices",
           area: area
-        };
+        }
         const prompt = generateMCPPrompt(bestPracticesRequest);
         const practices = await mcpCodebaseAnalyze(prompt);
         // Mock evaluation - in real implementation, would compare against actual code
@@ -476,7 +475,7 @@ export class Context7SemanticAuditor {
         issues.push(`Failed to check ${area} best practices: ${error}`);
       }
     }
-    return { issues };
+    return { issues }
   }
   private async checkSemanticIntegration(
     component: string;
@@ -493,7 +492,7 @@ export class Context7SemanticAuditor {
           status: "ok",
           message: `Semantic search integration working for ${component}`,
           agentTriggered: false
-        };
+        }
       } else {
         return {
           step: `semantic_integration_${component}`,
@@ -502,7 +501,7 @@ export class Context7SemanticAuditor {
           suggestedFix: "Configure semantic search indexing and API endpoints",
           todoId: `semantic_${component}_${Date.now()}`,
           agentTriggered: false
-        };
+        }
       }
     } catch (error: any) {
       return {
@@ -510,7 +509,7 @@ export class Context7SemanticAuditor {
         status: "error",
         message: `Semantic integration check failed: ${error}`,
         agentTriggered: false
-      };
+      }
     }
   }
   getOrchestrator(): Context7AgentOrchestrator {

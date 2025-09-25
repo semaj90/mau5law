@@ -95,7 +95,7 @@ export const shaderUserPatterns = pgTable("shader_user_patterns", {
   // Reinforcement learning features
   reward: decimal("reward", { precision: 7, scale: 4 }), // calculated reward for this access
   prediction: jsonb("prediction").default("{}"), // ML model prediction data
-  actualOutcome: jsonb("actual_outcome").default("{}"), // actual user behavior for training
+  actualOutcome: jsonb("actual_outcome").default("{}"), // actual user behavior for training;
   metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   // Indexes for ML queries
@@ -151,7 +151,7 @@ export const shaderPreloadQueue = pgTable("shader_preload_queue", {
   // Accuracy tracking for model improvement
   wasUsed: boolean("was_used"), // did user actually use this shader?
   usedAtTimestamp: timestamp("used_at_timestamp"),
-  actualDelay: integer("actual_delay"), // ms between preload and actual use
+  actualDelay: integer("actual_delay"), // ms between preload and actual use;
   metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   userIdIdx: index("preload_user_id_idx").on(table.userId),
@@ -270,6 +270,6 @@ export interface PredictionResult {
   shaderCacheId: string;
   confidence: number;
   model: string;
-  features: { [key: string]: any };
+  features: { [key: string]: any }
   priority: number;
 }

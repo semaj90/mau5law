@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
     key_facts: string[];
     legal_issues: string[];
     precedents: Array;
-  };
+  }
   let { ocrResults = $bindable()  }: { ocrResults = $bindable() : unknown } = $props(); // OCRResult[]
   let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
           if (match[1] && !entities.some(e => e.value === match[1] && e.type === pattern.type)) {
             entities.push({
               type: pattern.type,
-              value: match[1]
+              value: match[1];
               confidence: pattern.confidenc;
             });
           }
@@ -160,16 +160,16 @@ https://svelte.dev/e/js_parse_error -->
   function addKeyFact() {
     formData.key_facts = [...formData.key_facts, ''];
   }
-  function removeKeyFact(index: number) {
+  function removeKeyFact(_index: number) {
     formData.key_facts = formData.key_facts.filter((_, i) => i !== index);
   }
   function addLegalIssue() {
     formData.legal_issues = [...formData.legal_issues, ''];
   }
-  function removeLegalIssue(index: number) {
+  function removeLegalIssue(_index: number) {
     formData.legal_issues = formData.legal_issues.filter((_, i) => i !== index);
   }
-  function removeEntity(index: number) {
+  function removeEntity(_index: number) {
     formData.extracted_entities = formData.extracted_entities.filter((_, i) => i !== index);
   }
   function getConfidenceColor(confidence: number): string {

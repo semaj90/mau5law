@@ -24,7 +24,7 @@ export async function buildIntentAwareRetrieval(input: RAGInputs): Promise<any> 
   const lastUser = [...recent].reverse().find((m) => m.role === "user");
   const queryText = lastUser?.content || "";
   if (!queryText.trim()) {
-    return { chunks: [], confidence: 0, intent: "unknown" };
+    return { chunks: [], confidence: 0, intent: "unknown" }
   }
   try {
     // Get embeddings for the query
@@ -42,10 +42,10 @@ export async function buildIntentAwareRetrieval(input: RAGInputs): Promise<any> 
       confidence,
       intent,
       queryText
-    };
+    }
   } catch (error: any) {
     console.error("Error in buildIntentAwareRetrieval:", error);
-    return { chunks: [], confidence: 0, intent: "error" };
+    return { chunks: [], confidence: 0, intent: "error" }
   }
 }
 function detectIntent(queryText: string): string {
@@ -82,9 +82,9 @@ export class SOMGrid {
       for (let j = 0; j < width; j++) {
         this.grid[i][j] = {
           x: j
-          y: i
+          y: i;
           intent: "unknown"
-        };
+        }
       }
     }
   }

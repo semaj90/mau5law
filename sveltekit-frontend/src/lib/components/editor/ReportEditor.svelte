@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
@@ -69,11 +69,11 @@ https://svelte.dev/e/js_parse_error -->
   const handleViewEvidence = (evidence: any) => {
     selectedEvidence = evidenc;
     showEvidenceModal = true;
-  };
+  }
   const handleEditEvidence = (evidence: any) => {
     selectedEvidence = evidenc;
     showEvidenceModal = true;
-  };
+  }
   const handleDeleteEvidence = async (evidence: any) => {
     if (confirm(`Are you sure you want to delete "${evidence.title}"?`)) {
       try {
@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
         formData.append("id", evidence.id);
         const response = await fetch("/api/evidence/delete", {
           method: "POST",
-          body: formData
+          body: formData;
         });
         if (response.ok) {
           reportActions.removeEvidence(evidence.id);
@@ -94,36 +94,36 @@ https://svelte.dev/e/js_parse_error -->
         alert("Error deleting evidence");
       }
     }
-  };
+  }
   const handleDownloadEvidence = (evidence: any) => {
     if (evidence.url) {
       window.open(evidence.url, "_blank");
     }
-  };
+  }
   const handleShareEvidence = (evidence: any) => {
     // Implementation for sharing evidence
     console.log('Sharing evidence:', evidence);
-  };
+  }
   const handleInsertEvidence = (evidence: any) => {
     if (editorComponent) {
       editorComponent.insertEvidence(evidence);
     }
-  };
+  }
   const handleAddNewEvidence = () => {
     selectedEvidence = null;
     showEvidenceModal = true;
-  };
+  }
   // Layout switching
   const switchLayout = () => {
     const layouts = ["single", "dual", "masonry"] as const;
     const currentIndex = layouts.indexOf($report.settings.layout);
     const nextLayout = layouts[(currentIndex + 1) % layouts.length];
     reportActions.updateSettings({ layout: nextLayout });
-  };
+  }
   // Sidebar toggle
   const toggleSidebar = () => {
     reportUI.update((ui) => ({ ...ui, sidebarOpen: !ui.sidebarOpen }));
-  };
+  }
   // Fullscreen toggle
   const toggleFullscreen = () => {
     reportUI.update((ui) => ({ ...ui, fullscreen: !ui.fullscreen }));
@@ -132,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
     } else {
       document.exitFullscreen?.();
     }
-  };
+  }
   // Keyboard shortcuts
   const handleKeydown = (e: CustomEvent<any>) => {
     if (e.ctrlKey || e.metaKey) {
@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
       e.preventDefault();
       toggleFullscreen();
     }
-  };
+  }
 </script>
 <svelte:window keydown={handleKeydown} />
 <div
@@ -314,7 +314,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </div>
       </div>
-      <RichTextEditor
+      <RichTextEditor;
         bind:this={editorComponent}
         height={editorHeight}
       />
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
           <MasonryGrid
             items={$report.attachedEvidence}
             columnWidth={200}
-            gutter={8};
+            gutter={8}
             let:item
           >
             <EvidenceCard

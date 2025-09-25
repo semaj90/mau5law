@@ -10,7 +10,7 @@ export type OllamaOptions = {
   num_ctx?: number; // context window
   // Add more options as needed per Ollama spec
   [key: string]: unknown;
-};
+}
 export interface OllamaGenerateRequest {
   model: string;
   prompt: string;
@@ -53,7 +53,7 @@ function getDefaultHost(): string {
   if (typeof window !== 'undefined' && window.ollamaHost) {
     return window.ollamaHost;
   }
-  return 'http://localhost:11434'
+  return 'http://localhost:11434';
 }
 async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
   const host = getDefaultHost();
@@ -69,11 +69,11 @@ async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
   return res.json() as Promise<T>;
 }
 export async function generate(req: OllamaGenerateRequest): Promise<OllamaGenerateResponse> {
-  const body = { model: req.model, prompt: req.prompt, stream: false, options: req.options };
+  const body = { model: req.model, prompt: req.prompt, stream: false, options: req.options }
   return jsonFetch<OllamaGenerateResponse>('/api/generate', body);
 }
 export async function* generateStream(
-  req: Omit<OllamaGenerateRequest, 'stream'>
+  req: Omit<OllamaGenerateRequest, 'stream'>,
 ): AsyncGenerator<OllamaGenerateResponse, void, unknown> {
   const host = getDefaultHost();
   const res = await fetch(`${host}/api/generate`, {
@@ -118,11 +118,11 @@ export async function* generateStream(
   }
 }
 export async function chat(req: OllamaChatRequest): Promise<OllamaChatResponseChunk> {
-  const body = { model: req.model, messages: req.messages, stream: false, options: req.options };
+  const body = { model: req.model, messages: req.messages, stream: false, options: req.options }
   return jsonFetch<OllamaChatResponseChunk>('/api/chat', body);
 }
 export async function* chatStream(
-  req: Omit<OllamaChatRequest, 'stream'>
+  req: Omit<OllamaChatRequest, 'stream'>,
 ): AsyncGenerator<OllamaChatResponseChunk, void, unknown> {
   const host = getDefaultHost();
   const res = await fetch(`${host}/api/chat`, {
@@ -167,7 +167,7 @@ export async function* chatStream(
   }
 }
 export async function embeddings(req: OllamaEmbeddingsRequest): Promise<OllamaEmbeddingsResponse> {
-  const body = { model: req.model, prompt: req.prompt };
+  const body = { model: req.model, prompt: req.prompt }
   return jsonFetch<OllamaEmbeddingsResponse>('/api/embeddings', body);
 }
 export async function listModels(): Promise<{ models: Array<{ name: string }> }> {
@@ -183,4 +183,4 @@ export const Ollama = {
   chatStream,
   embeddings,
   listModels,
-};
+}

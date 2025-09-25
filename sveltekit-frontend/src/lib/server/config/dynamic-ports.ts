@@ -203,7 +203,7 @@ export class DynamicPortManager {
   }
   // Get environment variables with dynamic ports
   getEnvConfig(): Record<string, string> {
-    const config: Record<string, string> = {};
+    const config: Record<string, string> = {}
     this.services.forEach((service, name) => {
       const port = service.currentPort || service.basePort;
       const envName = name.toUpperCase().replace(/-/g, '_') + '_PORT';
@@ -213,7 +213,7 @@ export class DynamicPortManager {
   }
   // Generate service URLs
   getServiceUrls(): Record<string, string> {
-    const urls: Record<string, string> = {};
+    const urls: Record<string, string> = {}
     this.services.forEach((service, name) => {
       const port = service.currentPort || service.basePort;
       // Determine protocol based on service type

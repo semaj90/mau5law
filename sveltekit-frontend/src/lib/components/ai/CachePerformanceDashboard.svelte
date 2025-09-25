@@ -73,10 +73,10 @@
   });
   let performanceGrade = $derived(() => {
     const hitRate = totalHitRate();
-    if (hitRate >= 80) return { grade: 'A', color: 'text-green-500' };
-    if (hitRate >= 60) return { grade: 'B', color: 'text-yellow-500' };
-    if (hitRate >= 40) return { grade: 'C', color: 'text-orange-500' };
-    return { grade: 'D', color: 'text-red-500' };
+    if (hitRate >= 80) return { grade: 'A', color: 'text-green-500' }
+    if (hitRate >= 60) return { grade: 'B', color: 'text-yellow-500' }
+    if (hitRate >= 40) return { grade: 'C', color: 'text-orange-500' }
+    return { grade: 'D', color: 'text-red-500' }
   });
   $effect(() => {
     // Load initial data
@@ -141,7 +141,7 @@
         throughputQPS: 15 + Math.random() * 10,
         errorRate: Math.random() * 2
       }
-    };
+    }
   }
   async function updateNintendoStats() {
     performance.mark('function-start');
@@ -154,7 +154,7 @@
       activeStreams: Math.floor(Math.random() * 5),
       evictions: Math.floor(Math.random() * 10),
       bankSwitches: Math.floor(Math.random() * 3);
-    };
+    }
   }
   async function updateRecentQueries() {
     performance.mark('function-start');
@@ -199,13 +199,14 @@
   function getHealthIcon() {
     performance.mark('function-start');
     switch (systemHealth) {
-      case 'healthy': return { icon: CheckCircle, color: 'text-green-500' };
-      case 'warning': return { icon: AlertTriangle, color: 'text-yellow-500' };
-      case 'critical': return { icon: AlertTriangle, color: 'text-red-500' };
-      default: return { icon: AlertTriangle, color: 'text-gray-500' };
+      case 'healthy': return { icon: CheckCircle, color: 'text-green-500' }
+      case 'warning': return { icon: AlertTriangle, color: 'text-yellow-500' }
+      case 'critical': return { icon: AlertTriangle, color: 'text-red-500' }
+      default: return { icon: AlertTriangle, color: 'text-gray-500' }
     }
   }
 </script>
+
 <div class="cache-dashboard">
   <!-- Header -->
   <header class="dashboard-header">
@@ -220,22 +221,25 @@
           <span>System {systemHealth.toUpperCase()}</span>
         </div>
         <div class="control-buttons">
-          <button aria-label="Action button"
-            onclick={(event: MouseEvent) => refreshMetrics}
+          <button
+            aria-label="Action button"
+            onclick={(_event: MouseEvent) => refreshMetrics}
             disabled={isRefreshing}
             class="refresh-btn"
           >
             <RefreshCw size={16} class={isRefreshing ? 'animate-spin' : ''} />
             Refresh
           </button>
-          <button aria-expanded="false" aria-label="Action button"
-            onclick={(event: MouseEvent) => toggleAutoRefresh}
+          <button
+            aria-expanded="false"
+            aria-label="Action button"
+            onclick={(_event: MouseEvent) => toggleAutoRefresh}
             class="auto-refresh-btn {autoRefresh ? 'active' : ''}"
           >
             <Target size={16} />
             Auto: {autoRefresh ? 'ON' : 'OFF'}
           </button>
-          <button aria-label="Action button" onclick={(event: MouseEvent) => clearCache} class="clear-cache-btn">
+          <button aria-label="Action button" onclick={(_event: MouseEvent) => clearCache} class="clear-cache-btn">
             <Database size={16} />
             Clear Cache
           </button>
@@ -367,7 +371,10 @@
         <div class="nintendo-stats">
           <div class="memory-overview">
             <div class="memory-bar">
-              <div class="memory-fill" style="width: {(nintendoStats.memoryUsage / nintendoStats.maxMemory) * 100}%"></div>
+              <div
+                class="memory-fill"
+                style="width: {(nintendoStats.memoryUsage / nintendoStats.maxMemory) * 100}%"
+              ></div>
             </div>
             <p>{(nintendoStats.memoryUsage / 1024).toFixed(1)}KB / {(nintendoStats.maxMemory / 1024).toFixed(1)}KB</p>
           </div>
@@ -473,6 +480,7 @@
     </div>
   </main>
 </div>
+
 <style>
   .cache-dashboard {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
@@ -876,13 +884,27 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   /* Text color utilities */
-  .text-green-500 { color: #22c55e; }
-  .text-yellow-500 { color: #eab308; }
-  .text-orange-500 { color: #f97316; }
-  .text-red-500 { color: #ef4444; }
-  .text-gray-500 { color: #6b7280; }
+  .text-green-500 {
+    color: #22c55e;
+  }
+  .text-yellow-500 {
+    color: #eab308;
+  }
+  .text-orange-500 {
+    color: #f97316;
+  }
+  .text-red-500 {
+    color: #ef4444;
+  }
+  .text-gray-500 {
+    color: #6b7280;
+  }
 </style>

@@ -28,7 +28,7 @@ export interface LockOptions {
   timeout?: number;          // Lock timeout in milliseconds
   userId?: string;          // User requesting the lock
   sessionId?: string;       // Session identifier
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface LockInfo {
   lockId: string;
@@ -39,7 +39,7 @@ export interface LockInfo {
   sessionId?: string;
   acquiredAt: Date;
   expiresAt?: Date;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export class AdvisoryLockService {
   private locks = new Map<string, LockInfo>();
@@ -111,7 +111,7 @@ export class AdvisoryLockService {
         acquiredAt: new Date(),
         expiresAt: timeout ? new Date(Date.now() + timeout) : undefined
         metadata
-      };
+      }
       // Store lock info for tracking
       this.locks.set(lockKey, lockInfo);
       console.log(`✅ Acquired ${mode} lock for ${entityType} ${entityId}`);
@@ -268,7 +268,7 @@ export class AdvisoryLockService {
     if (cleaned > 0) {
       console.log(`🧹 Cleaned up ${cleaned} expired locks`);
     }
-    return { active, expired, cleaned };
+    return { active, expired, cleaned }
   }
 }
 // Export singleton instance

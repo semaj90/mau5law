@@ -14,14 +14,14 @@ https://svelte.dev/e/js_parse_error -->
   import { graphTextureManager } from '../webgpu/graph-texture-layout';
   import { unifiedDimensionalStore } from '../storage/unified-dimensional-store';
   import { vectorQuantization } from '../storage/vector-quantization';
-  type Viewport = { x: number; y: number; width: number; height: number };
+  type Viewport = { x: number; y: number; width: number; height: number }
   type GraphNode = {
     nodeId: string;
     label: string;
-    position?: { x: number; y: number };
-    metadata?: { confidence?: number; documentType?: string; [k: string]: any };
+    position?: { x: number; y: number }
+    metadata?: { confidence?: number; documentType?: string; [k: string]: any }
     [k: string]: any;
-  };
+  }
   type SearchResult = {
     id: string | number;
     content: string;
@@ -29,23 +29,23 @@ https://svelte.dev/e/js_parse_error -->
     metadata: {
       documentType?: string;
       source?: string;
-      legalAnalysis?: { riskLevel: 'low' | 'medium' | 'high' };
+      legalAnalysis?: { riskLevel: 'low' | 'medium' | 'high' }
       [k: string]: any;
-    };
-  };
+    }
+  }
   type ChatMessage = {
     role: 'user' | 'assistant' | 'system';
     content: string;
     timestamp?: Date;
     metadata?: any;
-  };
+  }
   // ========================================================================
   // REACTIVE STATE
   // ========================================================================
   // Reactive queries from Dexie - automatically update UI
   let messages = $derived((($chatHistory as ChatMessage[] | undefined) ?? []).map((m) => ({
     ...m,
-    timestamp: m.timestamp ? new Date(m.timestamp) : new Date()
+    timestamp: m.timestamp ? new Date(m.timestamp) : new Date();
   })));
   let nodes = $derived((($graphNodes as GraphNode[] | undefined) ?? []));
   // Component state
@@ -112,10 +112,10 @@ https://svelte.dev/e/js_parse_error -->
           legalContext: {
             documentType: 'contract',
             jurisdiction: 'california',
-            practiceArea: 'corporate'
+            practiceArea: 'corporate';
           }
         },
-        timestamp: new Date()
+        timestamp: new Date();
       });
       // Add sample graph node
       await db.addGraphNode({
@@ -123,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
         label: 'Sample Legal Node',
         position: {
           x: Math.random() * viewport.width,
-          y: Math.random() * viewport.height
+          y: Math.random() * viewport.height;
         },
         embedding: Array.from({ length: 384 }, () => Math.random() * 2 - 1),
         rankingMatrix: Array.from({ length: 16 }, () => Math.random()),
@@ -133,9 +133,9 @@ https://svelte.dev/e/js_parse_error -->
           jurisdiction: 'california',
           practiceArea: 'corporate',
           confidence: 0.85,
-          lastUpdated: new Date()
+          lastUpdated: new Date();
         },
-        connections: []
+        connections: [];
       });
       console.log('✅ Sample data added');
       await updatePerformanceStats();
@@ -153,18 +153,18 @@ https://svelte.dev/e/js_parse_error -->
       // Add search to chat history
       await db.addChatMessage({
         role: 'user',
-        content: searchQuery
+        content: searchQuery;
         metadata: {
           legalContext: {
             documentType: 'search',
             practiceArea: 'general'
           }
         },
-        timestamp: new Date()
+        timestamp: new Date();
       });
       // Perform integrated search
       const result: any = await integratedSearch.search({,
-        text: searchQuery
+        text: searchQuery;
         filters: {
           confidenceThreshold: 0.7
         },
@@ -186,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
             documentType: 'search_results'
           }
         },
-        timestamp: new Date()
+        timestamp: new Date();
       });
       console.log('Search completed:', result);
     } catch (error: unknown) {
@@ -195,7 +195,7 @@ https://svelte.dev/e/js_parse_error -->
       await db.addChatMessage({
         role: 'system',
         content: `Search failed: ${message}`,
-        timestamp: new Date()
+        timestamp: new Date();
       });
     } finally {
       isSearching = false;
@@ -209,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
     await graphTextureManager.updateViewport(viewport);
     await updatePerformanceStats();
   }
-  function handleCanvasInteraction(event: MouseEvent) {
+  function handleCanvasInteraction(_event: MouseEvent) {
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -248,9 +248,9 @@ https://svelte.dev/e/js_parse_error -->
         database: dbStats
         search: searchStats
         gpu: gpuStats
-        storage: storageStats
-        quantization: quantizationStats
-      };
+        storage: storageStats;
+        quantization: quantizationStats;
+      }
     } catch (error) {
       console.error('Failed to update performance stats:', error);
     }
@@ -311,46 +311,32 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <div class="graph-explorer">
   <header class="controls">
     <div class="search-section">
       <input
         bind:value={searchQuery}
-        onkeypress={(e) => e.key === 'Enter' && handleSearch()}
+        onkeypress={e => e.key === 'Enter' && handleSearch()}
         placeholder="Search legal documents, cases, precedents..."
         class="search-input"
         disabled={isSearching}
       />
-      <button
-        onclick={handleSearch}
-        disabled={isSearching || !searchQuery.trim()}
-        class="search-btn"
-      >
+      <button onclick={handleSearch} disabled={isSearching || !searchQuery.trim()} class="search-btn">
         {isSearching ? 'Searching...' : 'Search'}
       </button>
     </div>
     <div class="actions">
-      <button onclick={addSampleData} class="action-btn">
-        Add Sample Data
-      </button>
-      <button onclick={() => updatePerformanceStats()} class="action-btn">
-        Refresh Stats
-      </button>
-      <button onclick={clearAllData} class="action-btn danger">
-        Clear All
-      </button>
+      <button onclick={addSampleData} class="action-btn"> Add Sample Data </button>
+      <button onclick={() => updatePerformanceStats()} class="action-btn"> Refresh Stats </button>
+      <button onclick={clearAllData} class="action-btn danger"> Clear All </button>
     </div>
   </header>
   <main class="main-content">
     <!-- Graph Visualization Canvas -->
     <section class="graph-section">
       <h3>Interactive Graph ({nodes.length} nodes)</h3>
-      <canvas
-        bind:this={canvas}
-        onclick={handleCanvasInteraction}
-        width="800"
-        height="600"
-        class="graph-canvas"
+      <canvas bind:this={canvas} onclick={handleCanvasInteraction} width="800" height="600" class="graph-canvas"
       ></canvas>
       {#if selectedNode}
         <div class="node-details">
@@ -452,6 +438,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </aside>
 </div>
+
 <!-- ============================================================================ -->
 <!-- COMPONENT STYLES -->
 <!-- ============================================================================ -->
@@ -462,9 +449,9 @@ https://svelte.dev/e/js_parse_error -->
     grid-template-columns: 1fr 300px;
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
-      "controls controls"
-      "main stats"
-      "main chat";
+      'controls controls'
+      'main stats'
+      'main chat';
     height: 100vh;
     gap: 1rem;
     padding: 1rem;
@@ -479,7 +466,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1rem;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   .search-section {
     display: flex;
@@ -543,7 +530,7 @@ https://svelte.dev/e/js_parse_error -->
     background: white;
     border-radius: 8px;
     padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   .graph-canv.node-details {
     margin-top: 1rem;
@@ -556,7 +543,7 @@ https://svelte.dev/e/js_parse_error -->
     background: white;
     border-radius: 8px;
     padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   .results-grid {
     display: grid;
@@ -598,15 +585,24 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 11px;
     color: #495057;
   }
-  .risk-low { background: #d4edda; color: #155724; }
-  .risk-medium { background: #fff3cd; color: #856404; }
-  .risk-high { background: #f8d7da; color: #721c24; }
+  .risk-low {
+    background: #d4edda;
+    color: #155724;
+  }
+  .risk-medium {
+    background: #fff3cd;
+    color: #856404;
+  }
+  .risk-high {
+    background: #f8d7da;
+    color: #721c24;
+  }
   .stats-panel {
     grid-area: stat;
     background: white;
     border-radius: 8px;
     padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     font-size: 13px;
   }
   .stat-group {
@@ -628,7 +624,7 @@ https://svelte.dev/e/js_parse_error -->
     background: white;
     border-radius: 8px;
     padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     max-height: 400px;
     overflow-y: auto;
   }

@@ -45,32 +45,32 @@
       name: string;
       credentials: string;
       department: string;
-    };
+    }
     evidence: {
       itemNumber: string;
       description: string
       chainOfCustody: string[];
       dateCollected: string
       location: string;
-    };
+    }
     methodology: {
       procedures: string[];
       tools: string[];
       standards: string[];
-    };
+    }
     findings: {
       summary: string
       keyPoints: string[];
       confidence: number;
       limitations: string[];
-    };
+    }
     legalImplications: {
       charges: string[];
       precedents: string[];
       challengePoints: string[];
-    };
+    }
     attachments: {
-      id: string
+      id: string;
       name: string;
       type: string;
       size: number;
@@ -176,6 +176,7 @@
     URL.revokeObjectURL(url);
   }
 </script>
+
 <div class="evidence-report-summary space-y-6">
   <!-- Report Header -->
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
@@ -189,30 +190,18 @@
           <div class="flex items-center gap-4 text-sm text-gray-600">
             <span>Case: {caseId}</span>
             <span>Evidence: {reportData.evidence.itemNumber}</span>
-            <span
-              >Updated: {new Date(
-                reportData.updatedAt
-              ).toLocaleDateString()}</span
-            >
+            <span>Updated: {new Date(reportData.updatedAt).toLocaleDateString()}</span>
           </div>
         </div>
       </div>
       <div class="flex items-center gap-3">
         <div class="text-right">
           <div class="flex items-center gap-2 mb-1">
-            <span
-              class="px-3 py-1 rounded-full text-sm font-medium {getStatusColor(
-                reportData.status
-              )}"
-            >
+            <span class="px-3 py-1 rounded-full text-sm font-medium {getStatusColor(reportData.status)}">
               {reportData.status.replace.toUpperCase()}
             </span>
           </div>
-          <div
-            class="px-3 py-1 border rounded-full text-sm font-medium {getPriorityColor(
-              reportData.priority
-            )}"
-          >
+          <div class="px-3 py-1 border rounded-full text-sm font-medium {getPriorityColor(reportData.priority)}">
             {reportData.priority.toUpperCase()} PRIORITY
           </div>
         </div>
@@ -228,9 +217,7 @@
       </div>
     </div>
     <!-- Quick Stats -->
-    <div
-      class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg"
-    >
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
       <div class="text-center">
         <div class="text-lg font-semibold text-gray-900">
           {Math.round(reportData.findings.confidence * 100)}%
@@ -261,9 +248,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Evidence Information -->
     <div class="bg-white border border-gray-200 rounded-lg p-6">
-      <h3
-        class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"
-      >
+      <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
         <Eye class="w-5 h-5" />
         Evidence Details
       </h3>
@@ -279,9 +264,7 @@
           <p class="mt-1 text-gray-900">{reportData.evidence.description}</p>
         </div>
         <div>
-          <label class="text-sm font-medium text-gray-700"
-            >Collection Details</label
-          >
+          <label class="text-sm font-medium text-gray-700">Collection Details</label>
           <div class="mt-1 text-sm text-gray-900">
             <p>
               <strong>Date:</strong>
@@ -291,15 +274,11 @@
           </div>
         </div>
         <div>
-          <label class="text-sm font-medium text-gray-700"
-            >Chain of Custody</label
-          >
+          <label class="text-sm font-medium text-gray-700">Chain of Custody</label>
           <div class="mt-2 space-y-2">
             {#each reportData.evidence.chainOfCustody as custodian, index}
               <div class="flex items-center gap-2">
-                <span
-                  class="flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-600 text-xs rounded-full"
-                >
+                <span class="flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-600 text-xs rounded-full">
                   {index + 1}
                 </span>
                 <span class="text-sm text-gray-900">{custodian}</span>
@@ -311,9 +290,7 @@
     </div>
     <!-- Analyst Information -->
     <div class="bg-white border border-gray-200 rounded-lg p-6">
-      <h3
-        class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"
-      >
+      <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
         <Target class="w-5 h-5" />
         Analysis Details
       </h3>
@@ -343,10 +320,7 @@
               <p class="text-sm font-medium text-gray-600">Tools</p>
               <div class="mt-1 flex flex-wrap gap-1">
                 {#each reportData.methodology.tools as tool}
-                  <span
-                    class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
-                    >{tool}</span
-                  >
+                  <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">{tool}</span>
                 {/each}
               </div>
             </div>
@@ -356,17 +330,13 @@
     </div>
     <!-- Legal Impact -->
     <div class="bg-white border border-gray-200 rounded-lg p-6">
-      <h3
-        class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"
-      >
+      <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
         <Scale class="w-5 h-5" />
         Legal Implications
       </h3>
       <div class="space-y-4">
         <div>
-          <label class="text-sm font-medium text-gray-700"
-            >Potential Charges</label
-          >
+          <label class="text-sm font-medium text-gray-700">Potential Charges</label>
           <div class="mt-2 space-y-1">
             {#each reportData.legalImplications.charges as charge}
               <div class="flex items-center gap-2">
@@ -377,29 +347,21 @@
           </div>
         </div>
         <div>
-          <label class="text-sm font-medium text-gray-700"
-            >Challenge Points</label
-          >
+          <label class="text-sm font-medium text-gray-700">Challenge Points</label>
           <div class="mt-2 space-y-1">
             {#each reportData.legalImplications.challengePoints as challenge}
               <div class="flex items-start gap-2">
-                <AlertTriangle
-                  class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5"
-                />
+                <AlertTriangle class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" />
                 <span class="text-sm text-gray-900">{challenge}</span>
               </div>
             {/each}
           </div>
         </div>
         <div>
-          <label class="text-sm font-medium text-gray-700"
-            >Relevant Precedents</label
-          >
+          <label class="text-sm font-medium text-gray-700">Relevant Precedents</label>
           <div class="mt-2 space-y-1">
             {#each reportData.legalImplications.precedents as precedent}
-              <div
-                class="text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
-              >
+              <div class="text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
                 {precedent}
               </div>
             {/each}
@@ -419,19 +381,14 @@
         </p>
         <div class="mt-4">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700"
-              >Confidence Level</span
-            >
-            <span class="text-sm font-semibold text-gray-900"
-              >{Math.round(reportData.findings.confidence * 100)}%</span
-            >
+            <span class="text-sm font-medium text-gray-700">Confidence Level</span>
+            <span class="text-sm font-semibold text-gray-900">{Math.round(reportData.findings.confidence * 100)}%</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2">
             <div
               class="h-2 rounded-full transition-all duration-300"
               class:bg-green-500={reportData.findings.confidence >= 0.8}
-              class:bg-yellow-500={reportData.findings.confidence >= 0.6 &&
-                reportData.findings.confidence < 0.8}
+              class:bg-yellow-500={reportData.findings.confidence >= 0.6 && reportData.findings.confidence < 0.8}
               class:bg-red-500={reportData.findings.confidence < 0.6}
               style="width: {reportData.findings.confidence * 100}%"
             ></div>
@@ -443,9 +400,7 @@
         <ul class="space-y-2">
           {#each reportData.findings.keyPoints as point}
             <li class="flex items-start gap-2">
-              <CheckCircle
-                class="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5"
-              />
+              <CheckCircle class="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
               <span class="text-gray-700">{point}</span>
             </li>
           {/each}
@@ -456,9 +411,7 @@
             <ul class="space-y-2">
               {#each reportData.findings.limitations as limitation}
                 <li class="flex items-start gap-2">
-                  <AlertTriangle
-                    class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5"
-                  />
+                  <AlertTriangle class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <span class="text-gray-700">{limitation}</span>
                 </li>
               {/each}
@@ -474,9 +427,7 @@
       <h3 class="text-lg font-semibold text-gray-900 mb-4">Attachments</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each reportData.attachments as attachment}
-          <div
-            class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-          >
+          <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center gap-3">
               <div class="p-2 bg-blue-100 rounded-lg">
                 <FileText class="w-5 h-5 text-blue-600" />
@@ -497,18 +448,14 @@
   {/if}
   <!-- AI Summary Reader -->
   <div class="mt-8">
-    <AISummaryReader
-      documentId={evidenceId}
-      {caseId}
-      initialContent={analysisContent}
-      documentType="evidence"
-    />
+    <AISummaryReader documentId={evidenceId} {caseId} initialContent={analysisContent} documentType="evidence" />
   </div>
 </div>
+
 <style>
   .evidence-report-summary {
     max-width: 80rem;
-    margin-left: auto
+    margin-left: auto;
     margin-right: auto;
   }
 </style>

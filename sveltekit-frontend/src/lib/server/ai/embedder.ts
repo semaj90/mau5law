@@ -7,7 +7,7 @@ const EMBEDDING_CONFIG = {
   nomicApiKey: process.env.NOMIC_API_KEY,
   nomicUrl: process.env.NOMIC_URL,
   defaultModel: process.env.EMBEDDING_MODEL || 'nomic-embed-text-v1.5'
-};
+}
 // Nomic library stub note:
 // The project previously depended on '@langchain/nomic' which is currently not installed.
 // To unblock builds we avoid a hard dependency and provide a lightweight fallback.
@@ -23,7 +23,7 @@ async function embedWithLocal(text: string): Promise<number[]> {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({,
-        text: text
+        text: text;
         model: EMBEDDING_CONFIG.defaultModel
       })
     });
@@ -143,7 +143,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({,
-          texts: texts
+          texts: texts;
           model: model || EMBEDDING_CONFIG.defaultModel
         })
       });
@@ -199,10 +199,10 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
     activeService = 'nomic';
   }
   return {
-    local: localAvailable
+    local: localAvailable;
     nomic: nomicAvailable
     activeService
-  };
+  }
 }
 /**
  * Utility to calculate cosine similarity between two vectors
@@ -226,4 +226,4 @@ export default {
   embedTexts,
   getEmbeddingServiceStatus,
   cosineSimilarity
-};
+}

@@ -29,9 +29,9 @@ async function runGpuTile(embedding: number[]) {
       gpuMeta: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).gpuMeta,
       tilingMeta: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).tilingMeta,
       performance: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).performanceMetrics
-    };
+    }
   } catch (e: any) {
-    return { op: 'simdGpuTiling', error: e?.message || String(e) };
+    return { op: 'simdGpuTiling', error: e?.message || String(e) }
   }
 }
 export async function embedText(text: string, opts?: { simdParse?: boolean; gpuTile?: boolean }) {
@@ -55,7 +55,7 @@ export async function embedText(text: string, opts?: { simdParse?: boolean; gpuT
         Promise.resolve(gpuPromise)
           .then((gpuMeta) => resolve({ ...data, tensorMeta: ev.data, gpuMeta })
           .catch(() => resolve({ ...data, tensorMeta: ev.data });
-      };
+      }
       const payload = tensor.buffer;
       navigator.serviceWorker.controller!.postMessage()
         { type: 'SIMD_PARSE_TENSOR', payload },
@@ -67,7 +67,7 @@ export async function embedText(text: string, opts?: { simdParse?: boolean; gpuT
   // If only GPU tiling is requested
   if (opts?.gpuTile) {
     const gpuMeta = await gpuPromise;
-    return { ...data, gpuMeta };
+    return { ...data, gpuMeta }
   }
   return data;
 }

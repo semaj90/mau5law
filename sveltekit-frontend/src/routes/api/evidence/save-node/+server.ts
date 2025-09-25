@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit"
 import { z } from "zod"
 import type { RequestHandler } from './$types.js'
 import crypto from "crypto"
-import { URL } from "url"
+
 // Validation schemas
 const evidenceNodeSchema = z.object({
   id: z.string(),

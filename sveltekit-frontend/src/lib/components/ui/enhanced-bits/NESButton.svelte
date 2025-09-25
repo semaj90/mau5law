@@ -29,14 +29,14 @@
     sm: 'px-3 py-1 text-xs',
     md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-base';
-  };
+  }
   const variantClasses = {
     default: 'nes-button',
     primary: 'nes-button-primary',
     success: 'nes-button-success',
     warning: 'nes-button-warning',
     danger: 'nes-button-danger';
-  };
+  }
   function handleClick() {
     if (disabled || loading) return;
     // Visual press effect
@@ -47,7 +47,7 @@
     dispatch('click');
     onclick?.();
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       handleClick();
@@ -61,6 +61,7 @@
     // audio.play().catch(() => {})
   }
 </script>
+
 <button
   bind:this={buttonElement}
   class="nes-btn {variantClasses[variant]} {sizeClasses[size]}"
@@ -72,8 +73,8 @@
   {disabled}
   onclick={handleClick}
   onkeydown={handleKeydown}
-  onmouseenter={() => isHovered = true}
-  onmouseleave={() => isHovered = false}
+  onmouseenter={() => (isHovered = true)}
+  onmouseleave={() => (isHovered = false)}
   {...restProps}
 >
   {#if loading}
@@ -81,6 +82,7 @@
   {/if}
   {@render children?.()}
 </button>
+
 <style>
   .nes-btn {
     position: relative;
@@ -95,7 +97,7 @@
     cursor: pointer;
     transition: all 0.1s ease;
     user-select: none;
-    /* Base NES styling */
+/* Base NES styling */ {}
     background: theme('colors.nes.white');
     color: theme('colors.nes.black');
     border: 4px solid theme('colors.nes.black');
@@ -105,7 +107,7 @@
     transform: translateY(-1px);
     box-shadow: 5px 5px 0px 0px theme('colors.nes.black');
   }
-  .nes-btn: active
+.nes-btn: active {}
   .nes-btn.is-pressed {
     transform: translate(2px, 2px);
     box-shadow: 2px 2px 0px 0px theme('colors.nes.black');
@@ -118,7 +120,7 @@
     border-color: theme('colors.nes.gray');
     color: theme('colors.nes.gray');
   }
-  /* Variant Styles */
+/* Variant Styles */ {}
   .nes-button-primary {
     background: theme('colors.nes.blue');
     color: theme('colors.nes.white');
@@ -147,23 +149,23 @@
   .nes-button-danger:hover:not(.is-disabled) {,
     background: theme('colors.nes.pink');
   }
-  /* Loading Animation */
+/* Loading Animation */ {}
   .loading-spinner {
     animation: nes-blink 0.5s step-end infinite;
   }
   .is-loading {
     cursor: wait;
   }
-  /* Rounded Variant */
+/* Rounded Variant */ {}
   .is-rounded {
     border-radius: 8px;
   }
-  /* Focus styles */
+/* Focus styles */ {}
   .nes-btn:focus-visible {
     outline: 2px solid theme('colors.nes.yellow');
     outline-offset: 2px;
   }
-  /* Size adjustments */
+/* Size adjustments */ {}
   .nes-btn.px-3 {
     min-height: 32px;
   }

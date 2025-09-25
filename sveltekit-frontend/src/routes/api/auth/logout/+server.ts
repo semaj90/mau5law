@@ -64,4 +64,4 @@ export const OPTIONS = async () => new Response(null, {
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400'
   }
-})
+});

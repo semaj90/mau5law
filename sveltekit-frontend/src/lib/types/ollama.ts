@@ -1,4 +1,3 @@
-
 export interface EmbeddingResponse {
   embedding: number[];
 }
@@ -32,7 +31,7 @@ export interface OllamaModel {
     families: string[];
     parameter_size: string;
     quantization_level: string;
-  };
+  }
 }
 export interface OllamaTagsResponse {
   models: OllamaModel[];
@@ -45,17 +44,17 @@ export interface DocumentChunk {
     totalChunks: number;
     documentId?: string;
     [key: string]: unknown;
-  };
+  }
 }
 export interface EmbeddingMetadata {
   model: string;
   dimension: number;
   timestamp: Date;
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
 }
 export interface AnalysisResult {
   type: 'summary' | 'entities' | 'sentiment' | 'classification';
   content: string;
   confidence?: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }

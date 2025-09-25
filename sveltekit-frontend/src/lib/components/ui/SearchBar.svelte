@@ -42,29 +42,32 @@
     handleFilterChange();
   }
 </script>
+
 <div class="searchbar-container">
   <!-- Main Search Input -->
   <div class="search-input-container">
-    <input
-      type="text"
-      {placeholder}
-      bind:value
-      class="search-input"
-      aria-label="Search"
-    />
+    <input type="text" {placeholder} bind:value class="search-input" aria-label="Search" />
     <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+      <path
+        fill-rule="evenodd"
+        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+        clip-rule="evenodd"
+      />
     </svg>
   </div>
   <!-- Advanced Filters Toggle -->
   {#if showAdvancedFilters}
     <button
       class="filter-toggle"
-      onclick={() => showAdvancedFilters = !showAdvancedFilters}
+      onclick={() => (showAdvancedFilters = !showAdvancedFilters)}
       aria-label="Toggle filters"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="filter-icon" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+        <path
+          fill-rule="evenodd"
+          d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+          clip-rule="evenodd"
+        />
       </svg>
     </button>
   {/if}
@@ -74,12 +77,7 @@
   <div class="filters-panel">
     <div class="filter-group">
       <label for="document-type">Document Type:</label>
-      <select
-        id="document-type"
-        bind:value={selectedType}
-        onchange={handleFilterChange}
-        class="filter-select"
-      >
+      <select id="document-type" bind:value={selectedType} onchange={handleFilterChange} class="filter-select">
         <option value="">All Types</option>
         <option value="contract">Contract</option>
         <option value="evidence">Evidence</option>
@@ -99,26 +97,15 @@
           aria-label="From date"
         />
         <span class="date-separator">to</span>
-        <input
-          type="date"
-          bind:value={dateTo}
-          onchange={handleFilterChange}
-          class="date-input"
-          aria-label="To date"
-        />
+        <input type="date" bind:value={dateTo} onchange={handleFilterChange} class="date-input" aria-label="To date" />
       </div>
     </div>
     <div class="filter-actions">
-      <button
-        type="button"
-        class="clear-button"
-        onclick={clearFilters}
-      >
-        Clear Filters
-      </button>
+      <button type="button" class="clear-button" onclick={clearFilters}> Clear Filters </button>
     </div>
   </div>
 {/if}
+
 <style>
   .searchbar-container {
     display: flex;
@@ -139,7 +126,9 @@
     border-radius: 8px;
     font-size: 1rem;
     background: #fff;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
   .search-input:focus {
     outline: none;

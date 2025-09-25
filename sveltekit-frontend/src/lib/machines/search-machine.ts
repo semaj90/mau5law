@@ -10,17 +10,17 @@ export interface SearchContext {
     dateRange?: {
       from?: string;
       to?: string;
-    };
+    }
     priority?: string[];
     tags?: string[];
-  };
+  }
   results: any[];
   searchHistory: string[];
   analytics: {
     totalResults: number;
     searchTime: number;
     relevanceScore: number;
-  };
+  }
   validationErrors: Record<string, string[]>;
   error: string | null;
   isLoading: boolean;
@@ -105,7 +105,7 @@ export const searchMachine = createMachine({
       invoke: {
         id: 'validateSearch',
         src: fromPromise(async ({ input }: { input: SearchContext }) => {
-          const errors: Record<string, string[]> = {};
+          const errors: Record<string, string[]> = {}
           if (!input.query?.trim() && !Object.keys(input.filters).length) {
             errors.query = ['Please enter a search query or select filters'];
           }
@@ -121,9 +121,9 @@ export const searchMachine = createMachine({
             }
           }
           if (Object.keys(errors).length > 0) {
-            throw { validationErrors: errors };
+            throw { validationErrors: errors }
           }
-          return { query: input.query, filters: input.filters };
+          return { query: input.query, filters: input.filters }
         }),
         input: ({ context }) => context,
         onDone: {
@@ -185,7 +185,7 @@ export const searchMachine = createMachine({
               searchTime,
               relevanceScore: data.averageRelevance || 0
             }
-          };
+          }
         }),
         input: ({ context }) => context,
         onDone: {
@@ -260,7 +260,7 @@ export const searchMachine = createMachine({
         CLEAR_RESULTS: {
           target: 'idle',
           actions: assign({,
-            error: null
+            error: null;
             results: []
           })
         }

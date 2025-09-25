@@ -18,7 +18,7 @@ export interface AIComputationContext {
     suggestions: string[];
     didYouMean: string[];
     othersSearched: string[];
-  };
+  }
   computationResults: any[];
   errorMessage?: string;
 }
@@ -36,7 +36,7 @@ export type AIComputationEvent =
   | { type: 'GET_RECOMMENDATIONS'; context: string }
   | { type: 'APPLY_RECOMMENDATION'; recommendation: DimensionalArray }
   | { type: 'RESUME_FROM_IDLE' }
-  | { type: 'PICK_UP_WHERE_LEFT_OFF' };
+  | { type: 'PICK_UP_WHERE_LEFT_OFF' }
 // Async services for computations
 const perform3DComputation = fromPromise(async ({ input }: {
   input: { data: number[]; shape: number[]; attentionWeights: number[]; userId: string }
@@ -58,9 +58,9 @@ const perform3DComputation = fromPromise(async ({ input }: {
   await new Promise((resolve) => setTimeout(resolve, 1000);
   return {
     result: dimensionalArray
-    processed: true
+    processed: true;
     timestamp: Date.now()
-  };
+  }
 });
 const getRecommendations = fromPromise(async ({ input }: {
   input: { userId: string; context: string }
@@ -82,7 +82,7 @@ const processRabbitMQQueue = fromPromise(async ({ input }: {
           () =>;
             resolve({
               computation,
-              processed: true
+              processed: true;
               timestamp: Date.now()
             }),
           500
@@ -198,9 +198,9 @@ export const aiComputationMachine = createMachine({
               shape: event.data.shape,
               attentionWeights: event.data.attentionWeights,
               userId: context.userId
-            };
+            }
           }
-          return { data: [], shape: [], attentionWeights: [], userId: context.userId };
+          return { data: [], shape: [], attentionWeights: [], userId: context.userId }
         },
         onDone: {
           target: 'idle',
@@ -318,9 +318,9 @@ export const aiComputationMachine = createMachine({
             return {
               userId: context.userId,
               context: event.context
-            };
+            }
           }
-          return { userId: context.userId, context: 'default' };
+          return { userId: context.userId, context: 'default' }
         },
         onDone: {
           target: 'idle',

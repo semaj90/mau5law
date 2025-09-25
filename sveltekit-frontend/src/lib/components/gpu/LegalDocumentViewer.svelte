@@ -51,7 +51,7 @@ https://svelte.dev/e/expected_token -->
   }: Props = $props();
   // Enhanced document type with NES-GPU integration
   type EnhancedLegalDocument = LegalDocument & {
-    renderPosition?: { x: number; y: number; z: number };
+    renderPosition?: { x: number; y: number; z: number }
     vertexBufferId?: string;
     bankAssignment?: string;
     gpuTextureSlot?: number;
@@ -59,7 +59,7 @@ https://svelte.dev/e/expected_token -->
     compressionRatio?: number;
     nesTexture?: NESTextur;
     quantizationLevel?: 'FP32' | 'FP16' | 'INT8';
-  };
+  }
   // GPU Infrastructure with NES integration
   let canvas: HTMLCanvasElement;
   let device: GPUDevice | null = null;
@@ -187,7 +187,7 @@ https://svelte.dev/e/expected_token -->
         @location(5) bankId: f32
         @location(6) riskLevel: f32
         @location(7) compressionRatio: f32
-        @location(8) quantizationLevel: f32
+        @location(8) quantizationLevel: f32;
       }
       struct VertexOutput {
         @builtin(position) position: vec;
@@ -199,7 +199,7 @@ https://svelte.dev/e/expected_token -->
         @location(4) bankId: f32
         @location(5) riskLevel: f32
         @location(6) compressionRatio: f32
-        @location(7) quantizationLevel: f32
+        @location(7) quantizationLevel: f32;
       }
       struct Uniforms {
         viewMatrix: mat4x4f
@@ -209,7 +209,7 @@ https://svelte.dev/e/expected_token -->
         highlightOpacity: f32
         animationPhase: f32
         nesMemoryMode: f32
-        visualMemoryPalace: f32
+        visualMemoryPalace: f32;
       }
       @group(0) @binding(0) var<uniform> uniforms: Uniform;
       @vertex
@@ -272,7 +272,7 @@ https://svelte.dev/e/expected_token -->
         @location(4) bankId: f32
         @location(5) riskLevel: f32
         @location(6) compressionRatio: f32
-        @location(7) quantizationLevel: f32
+        @location(7) quantizationLevel: f32;
       }
       struct Uniforms {
         viewMatrix: mat4x4f
@@ -282,7 +282,7 @@ https://svelte.dev/e/expected_token -->
         highlightOpacity: f32
         animationPhase: f32
         nesMemoryMode: f32
-        visualMemoryPalace: f32
+        visualMemoryPalace: f32;
       }
       @group(0) @binding(0) var<uniform> uniforms: Uniform;
       @group(0) @binding(1) var documentTexture: texture_2d_array<f32>;
@@ -492,7 +492,7 @@ https://svelte.dev/e/expected_token -->
               confidenceLevel: doc.confidenceLevel || 0.5,
               riskIndicator: doc.riskLevel === 'critical' || doc.riskLevel === 'high'
             }
-          };
+          }
           doc.gpuTextureSlot = index;
         }
       } catch (error) {
@@ -597,7 +597,7 @@ https://svelte.dev/e/expected_token -->
           binarySize: estimateBinarySize(doc),
           compressionRatio: calculateDocumentCompression(doc),
           quantizationLevel: quantLevel
-        };
+        }
       });
       const searchTime = performance.now() - startTime;
       console.log(`🔍🏛️ NES-GPU search completed in ${searchTime.toFixed(2)}ms (${enhancedResults.length} results)`);
@@ -621,7 +621,7 @@ https://svelte.dev/e/expected_token -->
         autoProcess: autoProcessUploads
         priority: 200,
         caseId,
-        documentType: 'brief' // Default type, will be auto-detected
+        documentType: 'brief' // Default type, will be auto-detected;
       });
       uploadedFiles = [...uploadedFiles, ...uploadedMinIOFiles];
       // Process through RAG ingestion worker for vector embeddings
@@ -695,19 +695,19 @@ https://svelte.dev/e/expected_token -->
         compressionRatio: calculateCompressionFromMinIO(file),
         nesTexture: undefined, // Will be loaded on demand
         quantizationLevel: quantLevel
-      };
+      }
     });
   }
   // Drag and drop handlers
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dragOverUpload = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     dragOverUpload = false;
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dragOverUpload = false;
     if (!enableFileUpload) return;
@@ -720,11 +720,11 @@ https://svelte.dev/e/expected_token -->
   function handleUploadProgress(progress: UploadProgress) {
     uploadProgress.set(progress.filename, progress);
   }
-  function handleUploadComplete(event: CustomEvent) {
+  function handleUploadComplete(_event: CustomEvent) {
     console.log(`✅ Upload completed: ${event.detail.file.filename}`);
     uploadProgress.delete(event.detail.file.filename);
   }
-  function handleUploadError(event: CustomEvent) {
+  function handleUploadError(_event: CustomEvent) {
     console.error(`❌ Upload error: ${event.detail.error}`, event.detail.file?.name);
     if (event.detail.file) {
       uploadProgress.delete(event.detail.file.name);
@@ -845,15 +845,15 @@ https://svelte.dev/e/expected_token -->
       x: radius * Math.cos(angle) + bankOffset.x * 0.5,
       y: bankOffset.y + riskBoost,
       z: radius * Math.sin(angle) + bankOffset.z;
-    };
+    }
   }
   function getBankLayoutOffset(bankAssignment: string): { x: number; y: number; z: number } {
     switch (bankAssignment) {
-      case 'INTERNAL_RAM': return { x: -0.8, y: 0.8, z: 0.2 };
-      case 'CHR_ROM': return { x: 0.8, y: 0.8, z: 0.1 };
-      case 'PRG_ROM': return { x: 0.0, y: 0.0, z: 0.0 };
-      case 'SAVE_RAM': return { x: -0.8, y: -0.8, z: 0.15 };
-      default: return { x: 0.0, y: 0.0, z: 0.0 };
+      case 'INTERNAL_RAM': return { x: -0.8, y: 0.8, z: 0.2 }
+      case 'CHR_ROM': return { x: 0.8, y: 0.8, z: 0.1 }
+      case 'PRG_ROM': return { x: 0.0, y: 0.0, z: 0.0 }
+      case 'SAVE_RAM': return { x: -0.8, y: -0.8, z: 0.15 }
+      default: return { x: 0.0, y: 0.0, z: 0.0 }
     }
   }
   function getBankId(bankAssignment: string): number {
@@ -953,9 +953,9 @@ https://svelte.dev/e/expected_token -->
       memoryBankStatus[bank as keyof typeof memoryBankStatus] = {
         used: 0,
         capacity: memoryBankStatus[bank as keyof typeof memoryBankStatus].capacity,
-        active: false
+        active: false;
         documents: [];
-      };
+      }
     }
     // Calculate usage
     currentDocs.forEach(doc => {
@@ -1016,7 +1016,7 @@ https://svelte.dev/e/expected_token -->
       'CHR_ROM': 'CHR (8KB)',
       'PRG_ROM': 'PRG (32KB)',
       'SAVE_RAM': 'SAVE (8KB)'
-    };
+    }
     return labels[bank as keyof typeof labels] || bank;
   }
   // Reactive updates
@@ -1105,7 +1105,7 @@ const success = await initializeGPU();
     </div>
     <div class="flex gap-2 items-center">
       <input
-        type="text"
+        type="text";
         bind:value={searchQuery}
         onkeydown={(e) => e.key === 'Enter' && searchDocuments(searchQuery)}
         placeholder="Search legal documents..."

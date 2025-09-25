@@ -17,7 +17,7 @@ import { logger } from '$lib/logging/structured-logger.js'
 import { z } from 'zod'
 import path from "path"
 import crypto from "crypto"
-import { URL } from "url"
+
 // ============================================================================
 // REQUEST VALIDATION SCHEMAS
 // ============================================================================
@@ -451,7 +451,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       error: errorMessage
       metadata: {
         requestId,
-        processingTime: duration
+        processingTime: duration;
         timestamp: new Date().toISOString()
       }
     }, { status: statusCode })

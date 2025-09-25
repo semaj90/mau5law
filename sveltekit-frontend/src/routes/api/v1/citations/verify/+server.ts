@@ -227,7 +227,7 @@ async function verifyWithLegalDatabases(citationText: string): Promise<any> {
   const sources = Object.entries(mockResults)
     .filter(([_, result]) => (result as { found?: any; confidence?: any; url?: any }).found)
     .map(([source, result]) => ({
-      database: source
+      database: source;
       confidence: (result as { found?: any; confidence?: any; url?: any }).confidence,
       url: (result as { found?: any; confidence?: any; url?: any }).url,
       verified: true

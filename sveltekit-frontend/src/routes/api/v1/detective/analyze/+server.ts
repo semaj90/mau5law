@@ -274,7 +274,7 @@ function analyzeTimeline(evidence: any[]): any {
       id: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).id,
       timestamp: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).createdAt,
       type: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).evidenceType,
-      significance: Math.random() * 0.5 + 0.5, // Mock significance score
+      significance: Math.random() * 0.5 + 0.5, // Mock significance score;
       description: `Evidence item: ${(item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).title}`
     })),
     patterns: [

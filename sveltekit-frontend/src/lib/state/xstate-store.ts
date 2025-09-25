@@ -53,7 +53,7 @@ class XStateStoreManager {
       logTransitions: browser && import.meta.env.NODE_ENV === 'development',
       syncAcrossTabs: true
       ...config
-    };
+    }
     if (browser) {
       this.initializeBrowserFeatures();
     }
@@ -71,7 +71,7 @@ class XStateStoreManager {
     // Set up cross-tab synchronization
     if (this.config.syncAcrossTabs) {
       this.syncChannel = new BroadcastChannel('xstate-sync');
-      this.syncChannel.addEventListener('message', (event: any) => {
+      this.syncChannel.addEventListener('message', (_event: any) => {
         this.handleCrossTabSync(event.data);
       });
     }
@@ -101,7 +101,7 @@ class XStateStoreManager {
   public initializeApp(): {
     appStore: Readable<any>;
     appActor: ActorRef<any>;
-    send: (event: AppEvents) => void;
+    send: (_event: AppEvents) => void;
     selectors: typeof appSelectors;
   } {
     if (this.appActor) {
@@ -112,7 +112,7 @@ class XStateStoreManager {
     // Create app actor with persistence
     this.appActor = createActor(appMachine, {
       snapshot: persistedState?.appState,
-      // Add devtools inspection
+      // Add devtools inspection;
       inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined
     });
     // Create reactive Svelte store
@@ -136,21 +136,21 @@ class XStateStoreManager {
       // Cleanup subscription
       return () => {
         subscription.unsubscribe();
-      };
+      }
     });
     // Send function for dispatching events
-    const send = (event: AppEvents) => {
+    const send = (_event: AppEvents) => {
       if (this.config.logTransitions) {
         console.log('📤 App Event:', event);
       }
       this.appActor?.send(event);
-    };
+    }
     return {
       appStore: { subscribe },
       appActor: this.appActor,
       send,
       selectors: appSelectors
-    };
+    }
   }
   /**
    * Initialize the legal case machine and store
@@ -158,7 +158,7 @@ class XStateStoreManager {
   public initializeLegalCase(): {
     legalCaseStore: Readable<any>;
     legalCaseActor: ActorRef<any>;
-    send: (event: any) => void;
+    send: (_event: any) => void;
     selectors: typeof legalCaseSelectors;
   } {
     if (this.legalCaseActor) {
@@ -192,21 +192,21 @@ class XStateStoreManager {
       // Cleanup subscription
       return () => {
         subscription.unsubscribe();
-      };
+      }
     });
     // Send function for dispatching events
-    const send = (event: any) => {
+    const send = (_event: any) => {
       if (this.config.logTransitions) {
         console.log('📤 Legal Case Event:', event);
       }
       this.legalCaseActor?.send(event);
-    };
+    }
     return {
       legalCaseStore: { subscribe },
       legalCaseActor: this.legalCaseActor,
       send,
       selectors: legalCaseSelectors
-    };
+    }
   }
   /**
    * Create derived stores for specific state slices
@@ -235,12 +235,12 @@ class XStateStoreManager {
       // Navigation
       currentRoute: derived(appStore, ($app) => appSelectors.getCurrentRoute($app)),
       breadcrumbs: derived(appStore, ($app) => appSelectors.getBreadcrumbs($app)
-    };
+    }
   }
   /**
    * Create utility functions for state management
    */;
-  public createUtilities(appSend: (event: AppEvents) => void) {
+  public createUtilities(appSend: (_event: AppEvents) => void) {
     return {
       // Notification helpers
       notify: {
@@ -278,7 +278,7 @@ class XStateStoreManager {
         start: (message?: string) => appSend({ type: 'GLOBAL_LOADING', message }),
         stop: () => appSend({ type: 'GLOBAL_LOADING_COMPLETE' })
       },
-      // Navigation helpers
+      // Navigation helpers;
       navigate: (path: string, title?: string) =>
         appSend({ type: 'NAVIGATE', path, title }),
       // Settings helpers
@@ -287,7 +287,7 @@ class XStateStoreManager {
           appSend({ type: 'UPDATE_SETTINGS', settings }),
         reset: () => appSend({ type: 'RESET_SETTINGS' })
       }
-    };
+    }
   }
   // Private helper methods
   private createDevtoolsInspector(machineId: string) {
@@ -306,7 +306,7 @@ class XStateStoreManager {
             break;
         }
       }
-    };
+    }
   }
   private persistState(): void {
     if (!this.config.persist || !browser) return;
@@ -315,7 +315,7 @@ class XStateStoreManager {
         appState: this.appActor?.getSnapshot(),
         legalCaseState: this.legalCaseActor?.getSnapshot(),
         timestamp: Date.now()
-      };
+      }
       localStorage.setItem(this.config.persistKey!, JSON.stringify(state);
     } catch (error: any) {
       console.warn('Failed to persist XState store:', error);
@@ -419,7 +419,7 @@ export function initializeStores(config?: XStateStoreConfig) {
     ...utilities,
     // Store manager for advanced usage
     storeManager
-  };
+  }
 }
 // Type exports for better TypeScript support
 export type XStateStores = ReturnType<typeof initializeStores>;

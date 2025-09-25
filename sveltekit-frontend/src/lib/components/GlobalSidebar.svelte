@@ -5,7 +5,14 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { userCases, userEvidence, userCitations, userReports, userAIConversations, userStats } from "$lib/stores/userDataStore.svelte";
+  import {
+    userCases,
+    userEvidence,
+    userCitations,
+    userReports,
+    userAIConversations,
+    userStats,
+  } from '$lib/stores/userDataStore.svelte';
   import {
     formatRelativeTime,
     formatDetailedTimestamp,
@@ -15,7 +22,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     getFileIcon,
     getPriorityColor,
     getStatusColor,
-    MINI_TEXT_LENGTHS
+    MINI_TEXT_LENGTHS,
   } from '$lib/utils/formatting';
   // Props for sidebar configuration and user data
   let {
@@ -24,7 +31,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     isOpen = true,
     defaultSection = 'dashboard',
     showQuickActions = true,
-    compactMode = false
+    compactMode = false,
   }: {
     user: any;
     session: any;
@@ -50,32 +57,44 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   let stats = $derived(userStats);
   // Filtered data based on search
   let filteredCases = $derived(
-    userCases.filter(c =>
-      c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (c.description && c.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (c.caseNumber && c.caseNumber.toLowerCase().includes(searchQuery.toLowerCase()))
-    ).slice(0, 10)
+    userCases
+      .filter(
+        c =>
+          c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (c.description && c.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (c.caseNumber && c.caseNumber.toLowerCase().includes(searchQuery.toLowerCase())),
+      )
+      .slice(0, 10),
   );
   let filteredEvidence = $derived(
-    userEvidence.filter(e =>
-      e.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (e.notes && e.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      e.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    ).slice(0, 10)
+    userEvidence
+      .filter(
+        e =>
+          e.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (e.notes && e.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          e.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())),
+      )
+      .slice(0, 10),
   );
   let filteredCitations = $derived(
-    userCitations.filter(c =>
-      c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (c.notes && c.notes.toLowerCase().includes(searchQuery.toLowerCase()))
-    ).slice(0, 10)
+    userCitations
+      .filter(
+        c =>
+          c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (c.notes && c.notes.toLowerCase().includes(searchQuery.toLowerCase())),
+      )
+      .slice(0, 10),
   );
   let filteredReports = $derived(
-    userReports.filter(r =>
-      r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    ).slice(0, 10)
+    userReports
+      .filter(
+        r =>
+          r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          r.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          r.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())),
+      )
+      .slice(0, 10),
   );
   // Initialize sidebar when component mounts
   onMount(() => {
@@ -109,6 +128,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     navigateTo('/reports/create');
   }
 </script>
+
 <aside class="global-sidebar" class:collapsed={isCollapsed} class:closed={!isOpen}>
   <!-- User Profile Section -->
   {#if authenticated && currentUser}
@@ -123,7 +143,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         </div>
         <button
           class="nes-btn is-small collapse-btn"
-          onclick={() => isCollapsed = !isCollapsed}
+          onclick={() => (isCollapsed = !isCollapsed)}
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {isCollapsed ? '→' : '←'}
@@ -136,7 +156,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         <p class="nes-text">Please sign in to access your legal workspace</p>
         <a href="/auth/login" class="nes-btn is-primary">Sign In</a>
       {:else}
-        <button class="nes-btn is-small" onclick={() => isCollapsed = false}>⚡</button>
+        <button class="nes-btn is-small" onclick={() => (isCollapsed = false)}>⚡</button>
       {/if}
     </div>
   {/if}
@@ -179,18 +199,10 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       <div class="quick-actions nes-container is-dark with-title">
         <p class="title">⚡ Quick Actions</p>
         <div class="action-buttons">
-          <button class="nes-btn is-small is-primary" onclick={createQuickCase}>
-            📁 New Case
-          </button>
-          <button class="nes-btn is-small is-success" onclick={uploadEvidence}>
-            📤 Upload Evidence
-          </button>
-          <button class="nes-btn is-small is-warning" onclick={createReport}>
-            📋 New Report
-          </button>
-          <button class="nes-btn is-small" onclick={() => openAIAssistant()}>
-            🤖 AI Assistant
-          </button>
+          <button class="nes-btn is-small is-primary" onclick={createQuickCase}> 📁 New Case </button>
+          <button class="nes-btn is-small is-success" onclick={uploadEvidence}> 📤 Upload Evidence </button>
+          <button class="nes-btn is-small is-warning" onclick={createReport}> 📋 New Report </button>
+          <button class="nes-btn is-small" onclick={() => openAIAssistant()}> 🤖 AI Assistant </button>
         </div>
       </div>
     {/if}
@@ -248,7 +260,10 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         <div class="section-content">
           {#if filteredEvidence.length > 0}
             {#each filteredEvidence as evidence (evidence.id)}
-              <div class="item evidence-item" onclick={() => navigateTo(`/cases/${evidence.caseId}/evidence/${evidence.id}`)}>
+              <div
+                class="item evidence-item"
+                onclick={() => navigateTo(`/cases/${evidence.caseId}/evidence/${evidence.id}`)}
+              >
                 <div class="item-header">
                   <span class="file-icon">{getFileIcon(evidence.fileType)}</span>
                   <span class="item-title" title={evidence.filename}>
@@ -259,7 +274,10 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                   <span class="nes-text is-disabled mini-text">
                     {evidence.fileSize ? (evidence.fileSize / 1024).toFixed(1) + 'KB' : 'Unknown size'}
                   </span>
-                  <span class="nes-text is-disabled mini-text" title={formatDetailedTimestamp(evidence.uploadedAt, evidence.uploadedBy)}>
+                  <span
+                    class="nes-text is-disabled mini-text"
+                    title={formatDetailedTimestamp(evidence.uploadedAt, evidence.uploadedBy)}
+                  >
                     {formatRelativeTime(evidence.uploadedAt)}
                   </span>
                 </div>
@@ -388,7 +406,10 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                 </div>
                 <div class="item-meta">
                   <span class="nes-text is-disabled mini-text">{conversation.messageCount} messages</span>
-                  <span class="nes-text is-disabled mini-text" title={formatDetailedTimestamp(conversation.lastMessageAt)}>
+                  <span
+                    class="nes-text is-disabled mini-text"
+                    title={formatDetailedTimestamp(conversation.lastMessageAt)}
+                  >
                     {formatRelativeTime(conversation.lastMessageAt)}
                   </span>
                 </div>
@@ -408,6 +429,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
   {/if}
 </aside>
+
 <style>
   .global-sidebar {
     width: 320px;

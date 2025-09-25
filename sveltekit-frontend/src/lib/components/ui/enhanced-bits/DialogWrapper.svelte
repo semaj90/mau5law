@@ -6,7 +6,7 @@
     open?: boolean;
     title?: string;
     description?: string;
-    analyticsLog?: (event: unknown) => void;
+    analyticsLog?: (_event: unknown) => void;
     onClose?: () => void;
   }
   let { children,
@@ -20,6 +20,7 @@
     if (open) analyticsLog({ event: 'dialog_opened', title, timestamp: Date.now() });
   });
 </script>
+
 {#if $dialogOpen}
   <div use:overlay class="modal-overlay"></div>
   <div use:content class="modal-content">
@@ -35,6 +36,7 @@
     <button use:close class="modal-close">×</button>
   </div>
 {/if}
+
 <style>
   .modal-overlay {
     @apply fixed inset-0 bg-black/60 z-40;

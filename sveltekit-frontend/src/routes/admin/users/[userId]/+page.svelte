@@ -74,8 +74,28 @@
     return true;
   }
 </script>
+
 <svelte:head>
-  <title>User Details - {(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.firstName} {(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.lastName} - YoRHa Legal AI</title>
+  <title
+    >User Details - {(
+      data as {
+        user?: unknown;
+        stats?: unknown;
+        recentCases?: unknown;
+        recentAIInteractions?: unknown;
+        activeSessions?: unknown;
+      }
+    ).user.firstName}
+    {(
+      data as {
+        user?: unknown;
+        stats?: unknown;
+        recentCases?: unknown;
+        recentAIInteractions?: unknown;
+        activeSessions?: unknown;
+      }
+    ).user.lastName} - YoRHa Legal AI</title
+  >
 </svelte:head>
 <div class="min-h-screen bg-black text-amber-300 font-mono">
   <!-- YoRHa Header -->
@@ -103,21 +123,70 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">USER ID</div>
-          <div class="font-mono text-amber-400">#{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id.toString.padStart(6, '0')}</div>
+          <div class="font-mono text-amber-400">
+            #{(
+              data as {
+                user?: unknown;
+                stats?: unknown;
+                recentCases?: unknown;
+                recentAIInteractions?: unknown;
+                activeSessions?: unknown;
+              }
+            ).user.id.toString.padStart(6, '0')}
+          </div>
         </div>
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">EMAIL</div>
-          <div class="text-amber-100">{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.email}</div>
+          <div class="text-amber-100">
+            {(
+              data as {
+                user?: unknown;
+                stats?: unknown;
+                recentCases?: unknown;
+                recentAIInteractions?: unknown;
+                activeSessions?: unknown;
+              }
+            ).user.email}
+          </div>
         </div>
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">FULL NAME</div>
           <div class="text-amber-100">
-            {(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.firstName} {(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.lastName}
+            {(
+              data as {
+                user?: unknown;
+                stats?: unknown;
+                recentCases?: unknown;
+                recentAIInteractions?: unknown;
+                activeSessions?: unknown;
+              }
+            ).user.firstName}
+            {(
+              data as {
+                user?: unknown;
+                stats?: unknown;
+                recentCases?: unknown;
+                recentAIInteractions?: unknown;
+                activeSessions?: unknown;
+              }
+            ).user.lastName}
           </div>
         </div>
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">MEMBER SINCE</div>
-          <div class="text-amber-100">{formatDate((data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.created_at)}</div>
+          <div class="text-amber-100">
+            {formatDate(
+              (
+                data as {
+                  user?: unknown;
+                  stats?: unknown;
+                  recentCases?: unknown;
+                  recentAIInteractions?: unknown;
+                  activeSessions?: unknown;
+                }
+              ).user.created_at,
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -126,19 +195,59 @@
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
-        <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).stats.casesCount}</div>
+        <div class="text-3xl font-bold text-amber-300 mb-2">
+          {(
+            data as {
+              user?: unknown;
+              stats?: unknown;
+              recentCases?: unknown;
+              recentAIInteractions?: unknown;
+              activeSessions?: unknown;
+            }
+          ).stats.casesCount}
+        </div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">TOTAL CASES</div>
       </div>
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
-        <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).stats.evidenceCount}</div>
+        <div class="text-3xl font-bold text-amber-300 mb-2">
+          {(
+            data as {
+              user?: unknown;
+              stats?: unknown;
+              recentCases?: unknown;
+              recentAIInteractions?: unknown;
+              activeSessions?: unknown;
+            }
+          ).stats.evidenceCount}
+        </div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">EVIDENCE ITEMS</div>
       </div>
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
-        <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).stats.aiHistoryCount}</div>
+        <div class="text-3xl font-bold text-amber-300 mb-2">
+          {(
+            data as {
+              user?: unknown;
+              stats?: unknown;
+              recentCases?: unknown;
+              recentAIInteractions?: unknown;
+              activeSessions?: unknown;
+            }
+          ).stats.aiHistoryCount}
+        </div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">AI INTERACTIONS</div>
       </div>
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
-        <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).stats.sessionsCount}</div>
+        <div class="text-3xl font-bold text-amber-300 mb-2">
+          {(
+            data as {
+              user?: unknown;
+              stats?: unknown;
+              recentCases?: unknown;
+              recentAIInteractions?: unknown;
+              activeSessions?: unknown;
+            }
+          ).stats.sessionsCount}
+        </div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">ACTIVE SESSIONS</div>
       </div>
     </div>
@@ -150,26 +259,32 @@
         </div>
         <div class="p-4 space-y-4">
           <button
-            onclick={() => showProfileModal = true}
+            onclick={() => (showProfileModal = true)}
             class="w-full px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors text-left"
           >
             [EDIT PROFILE] Update name and details
           </button>
           <button
-            onclick={() => showPasswordModal = true}
+            onclick={() => (showPasswordModal = true)}
             class="w-full px-4 py-2 bg-orange-900 text-amber-300 border-2 border-orange-500 hover:bg-orange-800 transition-colors text-left"
           >
             [RESET PASSWORD] Force password change
           </button>
           <div class="grid grid-cols-2 gap-2">
             <button
-              onclick={() => goto(`/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/cases`)}
+              onclick={() =>
+                goto(
+                  `/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/cases`,
+                )}
               class="px-4 py-2 bg-blue-900 text-amber-300 border-2 border-blue-500 hover:bg-blue-800 transition-colors text-center"
             >
               [VIEW CASES]
             </button>
             <button
-              onclick={() => goto(`/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/ai-history`)}
+              onclick={() =>
+                goto(
+                  `/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/ai-history`,
+                )}
               class="px-4 py-2 bg-purple-900 text-amber-300 border-2 border-purple-500 hover:bg-purple-800 transition-colors text-center"
             >
               [AI HISTORY]
@@ -253,9 +368,7 @@
               </tr>
             {:else}
               <tr>
-                <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                  No AI interactions found
-                </td>
+                <td colspan="6" class="px-4 py-8 text-center text-gray-500"> No AI interactions found </td>
               </tr>
             {/each}
           </tbody>
@@ -273,8 +386,7 @@
             <div>
               <div class="text-sm font-mono text-amber-400">Session: {session.id.substring(0, 8)}...</div>
               <div class="text-xs text-gray-400">
-                Created: {formatDate(session.created_at)} |
-                Expires: {formatDate(session.expires_at)}
+                Created: {formatDate(session.created_at)} | Expires: {formatDate(session.expires_at)}
               </div>
             </div>
             <button
@@ -298,15 +410,22 @@
       <div class="border-b border-amber-300 pb-4 mb-4">
         <h2 class="text-xl font-bold">EDIT PROFILE</h2>
       </div>
-      <form method="POST" action="?/updateProfile" use:enhance={() => {
-        formLoading = true;
-        return ({ result }) => {
-          formLoading = false;
-          if ((result as { type?: unknown; status?: unknown }).type === 'success' || (result as { type?: unknown; status?: unknown }).status === 200) {
-            showProfileModal = false;
+      <form
+        method="POST"
+        action="?/updateProfile";
+        use:enhance={() => {
+          formLoading = true;
+          return ({ result }) => {
+            formLoading = false;
+            if (
+              (result as { type?: unknown; status?: unknown }).type === 'success' ||
+              (result as { type?: unknown; status?: unknown }).status === 200
+            ) {
+              showProfileModal = false;
+            }
           }
-        };
-      }}>
+        }}
+      >
         <div class="space-y-4">
           <div>
             <label for="firstName" class="block text-sm font-bold mb-2">FIRST NAME</label>
@@ -324,7 +443,8 @@
             <input
               id="lastName"
               name="lastName"
-              type="text";
+              type="text"
+              ;
               bind:value={profileForm.lastName}
               required
               class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none focus:border-amber-400"
@@ -334,7 +454,7 @@
         <div class="flex justify-end gap-3 mt-6">
           <button
             type="button"
-            onclick={() => showProfileModal = false}
+            onclick={() => (showProfileModal = false)}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [CANCEL]
@@ -360,22 +480,27 @@
       </div>
       <div class="bg-red-900/20 border border-red-500 p-4 mb-4">
         <p class="text-red-300 font-bold mb-2">WARNING</p>
-        <p class="text-gray-300 text-sm">
-          This will reset the user's password and revoke all active sessions.
-        </p>
+        <p class="text-gray-300 text-sm">This will reset the user's password and revoke all active sessions.</p>
       </div>
-      <form method="POST" action="?/resetPassword" use:enhance={() => {
-        if (!validatePasswordForm()) return false;
-        formLoading = true;
-        return ({ result }) => {
-          formLoading = false;
-          if ((result as { type?: unknown; status?: unknown }).type === 'success' || (result as { type?: unknown; status?: unknown }).status === 200) {
-            showPasswordModal = false;
-            passwordForm.newPassword = '';
-            passwordForm.confirmPassword = '';
+      <form
+        method="POST"
+        action="?/resetPassword";
+        use:enhance={() => {
+          if (!validatePasswordForm()) return false;
+          formLoading = true;
+          return ({ result }) => {
+            formLoading = false;
+            if (
+              (result as { type?: unknown; status?: unknown }).type === 'success' ||
+              (result as { type?: unknown; status?: unknown }).status === 200
+            ) {
+              showPasswordModal = false;
+              passwordForm.newPassword = '';
+              passwordForm.confirmPassword = '';
+            }
           }
-        };
-      }}>
+        }}
+      >
         <div class="space-y-4">
           <div>
             <label for="newPassword" class="block text-sm font-bold mb-2">NEW PASSWORD</label>
@@ -394,7 +519,8 @@
             <input
               id="confirmPassword"
               name="confirmPassword"
-              type="password";
+              type="password"
+              ;
               bind:value={passwordForm.confirmPassword}
               required
               minlength="8"
@@ -405,7 +531,7 @@
         <div class="flex justify-end gap-3 mt-6">
           <button
             type="button"
-            onclick={() => showPasswordModal = false}
+            onclick={() => (showPasswordModal = false)}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [CANCEL]
@@ -436,15 +562,22 @@
             This will immediately terminate session {selectedSession.id.substring(0, 8)}... and log the user out.
           </p>
         </div>
-        <form method="POST" action="?/revokeSession" use:enhance={() => {
-          formLoading = true;
-          return ({ result }) => {
-            formLoading = false;
-            if ((result as { type?: unknown; status?: unknown }).type === 'success' || (result as { type?: unknown; status?: unknown }).status === 200) {
-              closeSessionModal();
+        <form
+          method="POST"
+          action="?/revokeSession";
+          use:enhance={() => {
+            formLoading = true;
+            return ({ result }) => {
+              formLoading = false;
+              if (
+                (result as { type?: unknown; status?: unknown }).type === 'success' ||
+                (result as { type?: unknown; status?: unknown }).status === 200
+              ) {
+                closeSessionModal();
+              }
             }
-          };
-        }}>
+          }}
+        >
           <input type="hidden" name="sessionId" value={selectedSession.id} />
           <div class="flex justify-end gap-3 mt-6">
             <button
@@ -467,6 +600,7 @@
     </div>
   </div>
 {/if}
+
 <style>
   /* YoRHa cyberpunk aesthetic */
   :global(body) {

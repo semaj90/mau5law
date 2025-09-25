@@ -9,13 +9,9 @@
     centered?: boolean;
     children?: any;
   }
-  let {
-    title,
-    subtitle,
-    centered = true,
-    children
-  }: Props = $props();
+  let { title, subtitle, centered = true, children }: Props = $props();
 </script>
+
 <div class="profile-header" class:centered>
   {#if children}
     {@render children()}
@@ -28,6 +24,7 @@
     {/if}
   {/if}
 </div>
+
 <style>
   .profile-header {
     margin-bottom: 32px;

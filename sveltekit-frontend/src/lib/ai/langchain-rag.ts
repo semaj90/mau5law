@@ -10,7 +10,7 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 // Note: formatDocumentsAsString may need to be implemented locally
 const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
   return documents.map((doc) => doc.pageContent).join('\n\n');
-};
+}
 // Note: QdrantVectorStore and QdrantClient may need to be installed separately
 // import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant"
 // import { QdrantClient } from "@qdrant/js-client-rest"
@@ -59,7 +59,7 @@ export interface RAGResult {
     usedCompression: boolean;
     enhancedSemanticSearch?: boolean; // New field for tracking enhanced search usage
     semanticProcessingTime?: number; // Processing time from semantic search API
-  };
+  }
 }
 /**
  * Advanced Legal RAG System with LangChain.js
@@ -124,7 +124,7 @@ Generate 3 different search queries that would help find relevant legal informat
 2. A query focusing on specific legal terms and definitions
 3. A query focusing on practical applications and implications
 Only return the queries, one per line.`)
-  };
+  }
   constructor(config: LegalRAGConfig) {
     this.config = config;
     this.llm = new ChatOpenAI({
@@ -293,7 +293,7 @@ Only return the queries, one per line.`)
                   enhancedSemanticSearch: true
                   semanticProcessingTime: semanticData.processingTime || 0
                 }
-              };
+              }
             }
           }
         } catch (error) {
@@ -378,7 +378,7 @@ Only return the queries, one per line.`)
           usedThinkingMode: thinkingMode
           usedCompression: useCompression
         }
-      };
+      }
     } catch (error: any) {
       console.error('Error in RAG query:', error);
       return {
@@ -392,7 +392,7 @@ Only return the queries, one per line.`)
           usedCompression: useCompression
           // Note: error property not included in interface
         }
-      };
+      }
     }
   }
   /**
@@ -432,7 +432,7 @@ Only return the queries, one per line.`)
    */;
   async summarizeWithContext(documentId: string, options: RAGQueryOptions = {}): Promise<string> {
     const summaryQuery = `Provide a comprehensive summary of the key legal points, parties, obligations, and risks in this document.`;
-    const filter = { documentId };
+    const filter = { documentId }
     const result = await this.query(summaryQuery, {
       ...options,
       maxRetrievedDocs: 10, // Get more context for summarization
@@ -494,7 +494,7 @@ Only return the queries, one per line.`)
         match: { value: practiceArea }
       });
     }
-    return must.length ? { must } : { [key: string]: any };
+    return must.length ? { must } : { [key: string]: any }
   }
   /**
    * Calculate confidence score based on retrieved documents
@@ -523,13 +523,13 @@ Only return the queries, one per line.`)
         vectorStoreConnected: !!this.vectorStore,
         collectionExists,
         documentsCount: (info as any)?.result?.points_count || 0
-      };
+      }
     } catch (error: any) {
       return {
         status: 'unhealthy',
         vectorStoreConnected: !!this.vectorStore,
         collectionExists: false
-      };
+      }
     }
   }
   /**
@@ -541,7 +541,7 @@ Only return the queries, one per line.`)
       caseId?: string;
       documentType?: string;
       title?: string;
-      metadata?: { [key: string]: any };
+      metadata?: { [key: string]: any }
       file?: File; // Browser File object for client-side uploads
       content?: string; // Direct content for server-side processing
     }
@@ -618,7 +618,7 @@ Only return the queries, one per line.`)
         filePath,
         caseId: options?.caseId,
         title: options?.title || this.generateDocumentTitle(documentContent, fileName)
-      };
+      }
       // Index the document using enhanced processing
       const chunkIds = await this.indexDocument(documentContent, metadata);
       const processingTime = Date.now() - startTime;
@@ -645,7 +645,7 @@ Only return the queries, one per line.`)
           processingTime,
           chunksCreated: chunkIds.length
         }
-      };
+      }
     } catch (error: any) {
       return {
         success: false
@@ -656,7 +656,7 @@ Only return the queries, one per line.`)
           processingTime: Date.now() - startTime,
           chunksCreated: 0
         }
-      };
+      }
     }
   }
   /**
@@ -950,7 +950,7 @@ Only return the queries, one per line.`)
    */;
   private generateDocumentTitle(content: string, fileName: string): string {
     // Try to extract title from content
-    const lines = content.split('\n').filter((line) => line.trim().length > 0);
+    // removed unused lines assignment
     if (lines.length > 0) {
       const firstLine = lines[0].trim();
       if (firstLine.length > 10 && firstLine.length < 100) {
@@ -975,7 +975,7 @@ Only return the queries, one per line.`)
       html: 'text/html',
       htm: 'text/html',
       rtf: 'application/rtf'
-    };
+    }
     return mimeTypes[extension || ''] || 'application/octet-stream';
   }
   /**
@@ -1010,7 +1010,7 @@ Only return the queries, one per line.`)
         averageResponseTime: 200, // Would track response times
         indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
         uptime: Date.now() - process.uptime() * 1000
-      };
+      }
     } catch (error: any) {
       console.error('Failed to get system stats:', error);
       return {
@@ -1021,7 +1021,7 @@ Only return the queries, one per line.`)
         averageResponseTime: 0,
         indexStatus: 'error',
         uptime: 0
-      };
+      }
     }
   }
 }

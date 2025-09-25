@@ -58,7 +58,7 @@
       // Return unregister function
       return () => {
         shortcuts.update(current => current.filter(s => s.id !== shortcut.id));
-      };
+      }
     },
     unregisterShortcut: (id: string) => {
       shortcuts.update(current => current.filter(s => s.id !== id));
@@ -75,7 +75,7 @@
       isHelpOpen.update(open => !open);
     },
     isHelpOpen
-  };
+  }
   // Set context for child components
   setContext('keyboardContext', keyboardContext);
   // Initialize custom shortcuts
@@ -85,7 +85,7 @@
     });
   });
   // Handle help panel keyboard shortcut
-  function handleHelpShortcut(event: CustomEvent) {
+  function handleHelpShortcut(_event: CustomEvent) {
     isHelpOpen.update(open => !open);
   }
   // Current shortcuts for display
@@ -117,7 +117,7 @@
 <!-- Help Panel -->
 {#if enableHelpPanel}
   <KeyboardHelp
-    shortcuts={currentShortcuts};
+    shortcuts={currentShortcuts}
     bind:open={helpOpen}
   />
 {/if}
@@ -126,7 +126,7 @@
 <!-- Expose context for TypeScript -->
 <script lang="ts" generics="T">
   // Export context type for external use
-  export type { KeyboardContext };
+  export type { KeyboardContext }
   // Helper function to get keyboard context
   export function getKeyboardContext(): KeyboardContext {
     return keyboardContext;

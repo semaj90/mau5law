@@ -15,15 +15,15 @@ https://svelte.dev/e/js_parse_error -->
       breakdown?: {
         webgpu: number;
         webgl: number;
-      };
-    };
+      }
+    }
   }
   interface ShaderStats {
     totalShaders: {
       total: number;
       webgpu: number;
       webgl: number;
-    };
+    }
     topOperations: Array;
     averagePerformance: number;
     totalUsage: number;
@@ -52,18 +52,18 @@ if (!browser) return;
   });
   async function loadStats() {
     try {
-      const response = await fetch('/api/shaders/unified');
+      // removed unused response assignment
       const data = await response.json();
       stats = {
         totalShaders: {
           total: data.totalShaders.total,
           webgpu: data.totalShaders.webgpu,
-          webgl: data.totalShaders.webgl
+          webgl: data.totalShaders.webgl;
         },
         topOperations: data.supportedOperations.map((op: string) => ({ operation: op, count: 0 })),
         averagePerformance: 0,
         totalUsage: 0
-      };
+      }
       availableOperations = data.supportedOperation;
     } catch (error) {
       console.error('Failed to load stats:', error);
@@ -94,12 +94,12 @@ if (!browser) return;
     try {
       const query: ShaderSearchQuery = {
         text: searchQuery.trim() || undefined,
-        operation: selectedOperation || undefined
+        operation: selectedOperation || undefined;
         tags: selectedTags.length > 0 ? selectedTags : undefined
         shaderType: selectedShaderType
         sortBy,
         limit;
-      };
+      }
       const response = await fetch('/api/shaders/unified', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -159,7 +159,7 @@ if (!browser) return;
         }
       })),
       timestamp: new Date().toISOString();
-    };
+    }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -169,9 +169,13 @@ if (!browser) return;
     URL.revokeObjectURL(url);
   }
 </script>
+
 <svelte:head>
   <title>Shader Search - WebGPU Shader Cache</title>
-  <meta name="description" content="Search and explore cached WebGPU shaders using semantic similarity and advanced filters" />
+  <meta
+    name="description"
+    content="Search and explore cached WebGPU shaders using semantic similarity and advanced filters"
+  />
 </svelte:head>
 <div class="container">
   <header>
@@ -205,7 +209,7 @@ if (!browser) return;
           <h3>Top Operations</h3>
           <div class="operation-tags">
             {#each stats.topOperations as op}
-              <span class="operation-tag" onclick={() => selectedOperation = op.operation}>
+              <span class="operation-tag" onclick={() => (selectedOperation = op.operation)}>
                 {op.operation} ({op.count})
               </span>
             {/each}
@@ -222,7 +226,7 @@ if (!browser) return;
           type="text"
           placeholder="Search shaders by description, operation, or WGSL code..."
           bind:value={searchQuery}
-          onkeydown={(e) => e.key === 'Enter' && performSearch()}
+          onkeydown={e => e.key === 'Enter' && performSearch()}
           class="search-input"
         />
         <button onclick={performSearch} disabled={isSearching} class="search-button">
@@ -269,11 +273,7 @@ if (!browser) return;
           <label>Tags:</label>
           <div class="tag-filters">
             {#each availableTags as tag}
-              <button
-                class="tag-button"
-                class:selected={selectedTags.includes(tag)}
-                onclick={() => toggleTag(tag)}
-              >
+              <button class="tag-button" class:selected={selectedTags.includes(tag)} onclick={() => toggleTag(tag)}>
                 {tag}
               </button>
             {/each}
@@ -323,8 +323,7 @@ if (!browser) return;
     {:else}
       <div class="results-grid">
         {#each searchResults as shader}
-          <div class="shader-nier-bits-card" role="button" tabindex="0"
-                onclick={() => selectedShader = shader}>
+          <div class="shader-nier-bits-card" role="button" tabindex="0" onclick={() => (selectedShader = shader)}>
             <div class="shader-header">
               <h3>{shader.id}</h3>
               <div class="shader-badges">
@@ -334,17 +333,21 @@ if (!browser) return;
             </div>
             <div class="shader-meta">
               <div class="meta-item">
-                <strong>Operation:</strong> {shader.metadata.operation}
+                <strong>Operation:</strong>
+                {shader.metadata.operation}
               </div>
               <div class="meta-item">
-                <strong>Usage:</strong> {shader.metadata.usageCount} times
+                <strong>Usage:</strong>
+                {shader.metadata.usageCount} times
               </div>
               <div class="meta-item">
-                <strong>Performance:</strong> {formatExecutionTime(shader.metadata.averageExecutionTime)}
+                <strong>Performance:</strong>
+                {formatExecutionTime(shader.metadata.averageExecutionTime)}
               </div>
               {#if shader.relevanceScore}
                 <div class="meta-item">
-                  <strong>Relevance:</strong> {formatRelevanceScore(shader.relevanceScore)}
+                  <strong>Relevance:</strong>
+                  {formatRelevanceScore(shader.relevanceScore)}
                 </div>
               {/if}
             </div>
@@ -366,13 +369,11 @@ if (!browser) return;
   </section>
   <!-- Shader Detail Modal -->
   {#if selectedShader}
-    <div class="modal-backdrop" role="button" tabindex="0"
-                onclick={() => selectedShader = null}>
-      <div class="modal" role="button" tabindex="0"
-                onclick={(e) => e.stopPropagation()}>
+    <div class="modal-backdrop" role="button" tabindex="0" onclick={() => (selectedShader = null)}>
+      <div class="modal" role="button" tabindex="0" onclick={e => e.stopPropagation()}>
         <div class="modal-header">
           <h2>{selectedShader.id}</h2>
-          <button onclick={() => selectedShader = null} class="close-button">×</button>
+          <button onclick={() => (selectedShader = null)} class="close-button">×</button>
         </div>
         <div class="modal-content">
           <div class="shader-details">
@@ -382,7 +383,10 @@ if (!browser) return;
                 <div><strong>Type:</strong> {selectedShader.config.type}</div>
                 <div><strong>Operation:</strong> {selectedShader.metadata.operation}</div>
                 <div><strong>Usage Count:</strong> {selectedShader.metadata.usageCount}</div>
-                <div><strong>Performance:</strong> {formatExecutionTime(selectedShader.metadata.averageExecutionTime)}</div>
+                <div>
+                  <strong>Performance:</strong>
+                  {formatExecutionTime(selectedShader.metadata.averageExecutionTime)}
+                </div>
                 <div><strong>Compiled:</strong> {selectedShader.metadata.compiledAt}</div>
                 <div><strong>Last Used:</strong> {selectedShader.metadata.lastUsed}</div>
                 {#if selectedShader.relevanceScore}
@@ -408,9 +412,7 @@ if (!browser) return;
             <div class="detail-group">
               <div class="code-header">
                 <h3>WGSL Code</h3>
-                <button onclick={() => copyShaderCode(selectedShader!)} class="copy-button">
-                  📋 Copy Code
-                </button>
+                <button onclick={() => copyShaderCode(selectedShader!)} class="copy-button"> 📋 Copy Code </button>
               </div>
               <div class="code-container">
                 <pre><code>{selectedShader.wgsl}</code></pre>
@@ -422,6 +424,7 @@ if (!browser) return;
     </div>
   {/if}
 </div>
+
 <style>
   .container {
     max-width: 1400px;
@@ -446,7 +449,7 @@ if (!browser) return;
   }
   .stats-grid {
     display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
   }
@@ -632,8 +635,12 @@ if (!browser) return;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   .no-results {
     text-align: center;
@@ -695,7 +702,7 @@ if (!browser) return;
   }
   .shader-meta {
     display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 0.5rem;
     margin-bottom: 1rem;
     font-size: 0.9rem;
@@ -787,7 +794,7 @@ if (!browser) return;
   }
   .detail-grid {
     display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
   .code-header {

@@ -5,15 +5,15 @@ const BASE_URL = (typeof process !== 'undefined' && process.env?.SECURITY_ORCH_U
 }
 export interface SecurityValidationRequestClient {
   task: 'security_validation';
-  fingerprint: { [key: string]: any };
-  user: { email: string; username: string; requestedRole?: string; referralCode?: string } & { [key: string]: any };
-  context?: { [key: string]: any };
+  fingerprint: { [key: string]: any }
+  user: { email: string; username: string; requestedRole?: string; referralCode?: string } & { [key: string]: any }
+  context?: { [key: string]: any }
 }
 export interface SecurityValidationResponseClient {
   requestId: string;
   riskScore: number;
   securityScore: number;
-  verification: { [key: string]: any };
+  verification: { [key: string]: any }
   signals: Array<any>;
   status: 'allow' | 'review' | 'deny';
   modelVersion: string;
@@ -54,7 +54,7 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
     modelVersion: 'enhanced-rag-v1',
     durationMs: apiResponse.processingTime || 0,
     timestamp: new Date().toISOString()
-  };
+  }
 }
 export function connectProgress(onMessage: (msg: any) => void): WebSocket {
   // Use our SvelteKit WebSocket progress endpoint
@@ -63,6 +63,6 @@ export function connectProgress(onMessage: (msg: any) => void): WebSocket {
   const ws = new WebSocket(wsUrl);
   ws.onmessage = (e) => {
     try { onMessage(JSON.parse(e.data); } catch { /* ignore */ }
-  };
+  }
   return ws;
 }

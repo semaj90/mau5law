@@ -14,7 +14,7 @@ export interface DimensionalArray {
     lastAccessed: number;
     computationHash: string;
     attentionWeights: Float32Array;
-  };
+  }
 }
 export interface KernelAttentionSlice {
   startIndex: number;
@@ -32,7 +32,7 @@ export interface CacheEntry {
     userId: string;
     sessionId: string;
     behaviorPattern: string;
-  };
+  }
 }
 export class DimensionalCacheEngine {
   private cache = new Map<string, CacheEntry>();
@@ -69,14 +69,13 @@ export class DimensionalCacheEngine {
         computationHash: this.generateHash(flatData, shape),
         attentionWeights: attention
       }
-    };
+    }
     return dimensionalArray;
   }
   /**
    * Cache dimensional array with intelligent eviction
    */
-  async cacheDimensionalArray(
-    key: string
+  async cacheDimensionalArray(_key: string
     dimensionalArray: DimensionalArray
     userContext: { userId: string; sessionId: string; behaviorPattern: string }
   ): Promise<void> {
@@ -89,7 +88,7 @@ export class DimensionalCacheEngine {
       ttl: Date.now() + this.defaultTTL,
       priority: this.calculatePriority(dimensionalArray, userContext),
       userContext
-    };
+    }
     this.cache.set(key, entry);
     // Store computation history for recommendations
     const userId = userContext.userId;
@@ -199,7 +198,7 @@ export class DimensionalCacheEngine {
       suggestions: suggestions.slice(0, limit),
       didYouMean: didYouMean.slice(0, limit),
       othersSearched: othersSearched.slice(0, limit)
-    };
+    }
   }
   /**
    * Calculate similarity between context and computation
@@ -338,7 +337,7 @@ export class DimensionalCacheEngine {
       avgAttentionScore,
       totalComputations: Array.from(this.computationHistory.values()
         .reduce((total, computations) => total + computations.length, 0)
-    };
+    }
   }
 }
 // Export singleton instance

@@ -58,7 +58,7 @@ Compact AI recommendations component for sidebar/dashboard use
     }
     return () => {
       if (refreshTimer) clearInterval(refreshTimer);
-    };
+    }
   });
   async function loadRecommendations() {
     if (isLoading) return;
@@ -67,7 +67,7 @@ Compact AI recommendations component for sidebar/dashboard use
       const result = await vectorIntelligenceService.generateRecommendations({
         context,
         userProfile: {
-          role: userRole
+          role: userRole;
           experience: 'senior',
           specialization: ['legal-analysis', 'case-management'];
         },

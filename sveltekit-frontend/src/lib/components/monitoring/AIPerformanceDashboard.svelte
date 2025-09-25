@@ -59,7 +59,7 @@
    */
   async function performHealthCheck() {
     try {
-      const response = await fetch('/api/ai/health');
+      // removed unused response assignment
       const healthData = await response.json();
       lastHealthCheck = Date.now();
       // Update backend availability based on health check
@@ -100,7 +100,7 @@
     performanceHistory = [
       ...performanceHistory.slice(-19), // Keep last 19 entries
       {
-        timestamp: now
+        timestamp: now;
         latency: { ...backendLatency },
         requests: recentMessages.length,
         error;
@@ -128,7 +128,7 @@
         cacheHitRate,
         totalRequests: analytics.totalMessages,
         errorRate
-      };
+      }
     } catch (error) {
       console.error('Failed to update system metrics:', error);
     }
@@ -183,7 +183,7 @@
   /**
    * Format percentage
    */
-  function formatPercentage(value: number): string {
+  function formatPercentage(_value: number): string {
     return `${value.toFixed(1)}%`;
   }
   /**
@@ -204,7 +204,7 @@
       cacheHitRate: 0,
       totalRequests: 0,
       errorRate: 0
-    };
+    }
   }
   /**
    * Export metrics
@@ -217,7 +217,7 @@
       backendLatency,
       currentBackend,
       totalMessages: messages.length;
-    };
+    }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

@@ -81,7 +81,7 @@ export class CacheFirstFormManager {
       step: 1,
       isDraft: true
       ...initialData
-    };
+    }
     // Store in cache
     this.formCache.set(formId, defaultData);
     this.updateActiveForm(formId);
@@ -135,7 +135,7 @@ export class CacheFirstFormManager {
       loadDraft: (draftId: string) => this.loadFormDraft(formId, draftId),
       // Progress tracking
       progress: derived([this.formProgress], ([$progress]) => $progress[formId] || 0)
-    };
+    }
   }
   // ===== EVIDENCE UPLOAD FORM =====
   createEvidenceUploadForm(caseId: string, initialData?: Partial<EvidenceUploadForm>) {
@@ -152,7 +152,7 @@ export class CacheFirstFormManager {
       chain_of_custody: [],
       file: null as any, // Will be set by file input
       ...initialData
-    };
+    }
     this.formCache.set(formId, defaultData);
     this.updateActiveForm(formId);
     const form = superForm(
@@ -191,7 +191,7 @@ export class CacheFirstFormManager {
       uploadProgress: derived([this.formProgress], ([$progress]) => $progress[formId] || 0),
       addToChainOfCustody: (action: string, handler: string, notes?: string) =>
         this.addChainOfCustodyEntry(formId, action, handler, notes)
-    };
+    }
   }
   // ===== FORM STEP MANAGEMENT =====
   private nextStep(formId: string) {
@@ -316,7 +316,7 @@ export class CacheFirstFormManager {
       });
       xhr.addEventListener('load', () => {
         if (xhr.status === 200) {
-          const response = JSON.parse(xhr.responseText);
+          // removed unused response assignment
           resolve((response as { fileUrl?: any }).fileUrl);
         } else {
           reject(new Error(`Upload failed: ${xhr.statusText}`);

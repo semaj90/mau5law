@@ -2,17 +2,17 @@
 declare module 'ioredis' {
   class Redis {
     // common methods used in repo
-    get(key: string): Promise<any>;
-    set(key: string, value: any, ...rest: any[]): Promise<any>;
-    setex(key: string, seconds: number, value: any): Promise<any>;
+    get(_key: string): Promise<any>;
+    set(_key: string, value: any, ...rest: any[]): Promise<any>;
+    setex(_key: string, seconds: number, value: any): Promise<any>;
     psubscribe(pattern: string, listener?: (...args: any[]) => void): Promise<any>;
     publish(channel: string, message: string): Promise<any>;
     subscribe(channel: string, listener?: (...args: any[]) => void): Promise<any>;
     disconnect(): void;
-    on(event: string, cb: (...args: any[]) => void): void;
-    lpush(key: string, ...values: any[]): Promise<any>;
-    rpush(key: string, ...values: any[]): Promise<any>;
-    exists(key: string): Promise<number>;
+    on(_event: string, cb: (...args: any[]) => void): void;
+    lpush(_key: string, ...values: any[]): Promise<any>;
+    rpush(_key: string, ...values: any[]): Promise<any>;
+    exists(_key: string): Promise<number>;
     // fallback index signature
     [k: string]: any;
   }

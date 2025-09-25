@@ -8,12 +8,7 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte';
   import { NesCard } from '$lib/components/ui/nes-ui';
@@ -29,10 +24,10 @@ https://svelte.dev/e/expected_token -->
       words: trimmed ? trimmed.split(/\s+/).length : 0,
       characters: editorValue.length,
       charactersNoSpaces: editorValue.replace(/\s+/g, '').length,
-      paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0
-    };
+      paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0,
+    }
   });
-  function handleEditorChange(value: string) {
+  function handleEditorChange(_value: string) {
     editorValue = value;
     isModified = true;
   }
@@ -55,7 +50,7 @@ https://svelte.dev/e/expected_token -->
     if (navigator.share) {
       navigator.share({
         title: documentTitle,
-        text: editorValue
+        text: editorValue,
       });
     } else {
       // Fallback: copy to clipboard
@@ -64,6 +59,7 @@ https://svelte.dev/e/expected_token -->
     }
   }
 </script>
+
 <svelte:head>
   <title>Text Editor - Legal AI Platform</title>
   <meta name="description" content="NieR-themed rich text editor for legal document creation and investigation notes" />
@@ -96,12 +92,7 @@ https://svelte.dev/e/expected_token -->
     </div>
     <!-- Document Title -->
     <div class="document-title-section">
-      <input
-        bind:value={documentTitle}
-        class="document-title-input"
-        placeholder="Document title..."
-        type="text"
-      />
+      <input bind:value={documentTitle} class="document-title-input" placeholder="Document title..." type="text" />
       {#if lastSaved}
         <span class="save-status">Last saved: {lastSaved.toLocaleTimeString()}</span>
       {/if}
@@ -146,6 +137,7 @@ https://svelte.dev/e/expected_token -->
     </div>
   </div>
 </div>
+
 <style>
   .editor-page-container {
     min-height: 100vh;

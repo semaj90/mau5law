@@ -8,8 +8,8 @@ https://svelte.dev/e/js_parse_error -->
   interface LegalPrecedent {
     id: string
     caseTitle: string
-    citation: string
-    court: string
+    citation: string;
+    court: string;
     year: number;
     jurisdiction: string;
     summary: string
@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
     court: '',
     yearFrom: null
     yearTo: null;
-  };
+  }
   let precedents: LegalPrecedent[] = [];
   let loading = false;
   let error = '';
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
       if (searchFilters.court) params.set('court', searchFilters.court);
       if (searchFilters.yearFrom) params.set('yearFrom', searchFilters.yearFrom.toString());
       if (searchFilters.yearTo) params.set('yearTo', searchFilters.yearTo.toString());
-      const response = await fetch(`/api/legal/precedents?${params}`);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`);
       }
@@ -92,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
       court: '',
       yearFrom: null
       yearTo: null;
-    };
+    }
     precedents = [];
     totalCount = 0;
     currentPage = 1;
@@ -105,32 +105,30 @@ https://svelte.dev/e/js_parse_error -->
   let startItem = $derived((currentPage - 1) * itemsPerPage + 1;
   let endItem = $derived(Math.min(currentPage * itemsPerPage, totalCount));
 </script>
+
 <div class="space-y-6">
   <div class="bg-white p-6 border border-gray-200 rounded-lg">
     <h2 class="text-xl font-semibold mb-4">Legal Precedent Search</h2>
     <!-- Search Form -->
     <div class="space-y-4">
       <div>
-        <label for="query" class="block text-sm font-medium mb-2">
-          Search Query
-        </label>
+        <label for="query" class="block text-sm font-medium mb-2"> Search Query </label>
         <input
           id="query"
           type="text"
           bind:value={searchFilters.query}
           placeholder="Enter legal concepts, case names, or keywords..."
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onkeydown={(e) => e.key === 'Enter' && searchPrecedents()}
+          onkeydown={e => e.key === 'Enter' && searchPrecedents()}
         />
       </div>
       <!-- Filter Row -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
-          <label for="jurisdiction" class="block text-sm font-medium mb-2">
-            Jurisdiction
-          </label>
+          <label for="jurisdiction" class="block text-sm font-medium mb-2"> Jurisdiction </label>
           <select
-            id="jurisdiction";
+            id="jurisdiction"
+            ;
             bind:value={searchFilters.jurisdiction}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -141,9 +139,7 @@ https://svelte.dev/e/js_parse_error -->
           </select>
         </div>
         <div>
-          <label for="court" class="block text-sm font-medium mb-2">
-            Court
-          </label>
+          <label for="court" class="block text-sm font-medium mb-2"> Court </label>
           <select
             id="court"
             bind:value={searchFilters.court}
@@ -156,12 +152,10 @@ https://svelte.dev/e/js_parse_error -->
           </select>
         </div>
         <div>
-          <label for="year-from" class="block text-sm font-medium mb-2">
-            Year From
-          </label>
+          <label for="year-from" class="block text-sm font-medium mb-2"> Year From </label>
           <input
             id="year-from"
-            type="number"
+            type="number";
             bind:value={searchFilters.yearFrom}
             placeholder="1900"
             min="1900"
@@ -170,12 +164,11 @@ https://svelte.dev/e/js_parse_error -->
           />
         </div>
         <div>
-          <label for="year-to" class="block text-sm font-medium mb-2">
-            Year To
-          </label>
+          <label for="year-to" class="block text-sm font-medium mb-2"> Year To </label>
           <input
             id="year-to"
-            type="number";
+            type="number"
+            ;
             bind:value={searchFilters.yearTo}
             placeholder="2024"
             min="1900"
@@ -256,9 +249,12 @@ https://svelte.dev/e/js_parse_error -->
             </div>
             <div class="text-sm text-gray-600 mb-2">
               <span class="font-medium">{precedent.citation}</span>
-              {#if precedent.court} • {precedent.court}{/if}
-              {#if precedent.year} • {precedent.year}{/if}
-              {#if precedent.jurisdiction} • {precedent.jurisdiction}{/if}
+              {#if precedent.court}
+                • {precedent.court}{/if}
+              {#if precedent.year}
+                • {precedent.year}{/if}
+              {#if precedent.jurisdiction}
+                • {precedent.jurisdiction}{/if}
             </div>
             {#if precedent.summary}
               <p class="text-sm text-gray-700 mb-3">{precedent.summary}</p>
@@ -322,3 +318,4 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+;

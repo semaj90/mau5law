@@ -17,7 +17,7 @@
   const mockCommands = [
     {
       group: 'Cases',
-      icon: Gavel
+      icon: Gavel;
       items: [
         { id: 'case-1', title: 'State v. Johnson', description: 'Active criminal case', keywords: ['criminal', 'theft', 'johnson'] },
         { id: 'case-2', title: 'Smith v. Corporation', description: 'Civil litigation', keywords: ['civil', 'corporate', 'smith'] },
@@ -26,7 +26,7 @@
     },
     {
       group: 'Evidence',
-      icon: FileText
+      icon: FileText;
       items: [
         { id: 'evidence-1', title: 'Security Footage 2024-01-15', description: 'Video evidence', keywords: ['video', 'security', 'footage'] },
         { id: 'evidence-2', title: 'Financial Records', description: 'Bank statements', keywords: ['financial', 'bank', 'records'] },
@@ -35,7 +35,7 @@
     },
     {
       group: 'People',
-      icon: Users
+      icon: Users;
       items: [
         { id: 'person-1', title: 'John Smith', description: 'Defendant in case #2024-001', keywords: ['defendant', 'smith'] },
         { id: 'person-2', title: 'Detective Rodriguez', description: 'Lead investigator', keywords: ['detective', 'rodriguez', 'investigator'] },
@@ -44,7 +44,7 @@
     },
     {
       group: 'Documents',
-      icon: FileText
+      icon: FileText;
       items: [
         { id: 'doc-1', title: 'Motion to Dismiss', description: 'Filed 2024-01-20', keywords: ['motion', 'dismiss', 'filing'] },
         { id: 'doc-2', title: 'Search Warrant', description: 'Authorized 2024-01-18', keywords: ['warrant', 'search', 'authorized'] },
@@ -61,43 +61,52 @@
     onOpenChange?.(newOpen);
   }
 </script>
+
 <Command.Root
   bind:open
   openChange={handleOpenChange}
   class={cn(
     'legal-command-palette',
     'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
-    className
+    className,
   )}
 >
   <div class="flex items-center border-b px-3 legal-command-header">
     <Search class="mr-2 h-4 w-4 shrink-0 opacity-50" />
     <Command.Input
-      placeholder={placeholder}
+      {placeholder}
       class="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:nes-text is-disabled disabled:cursor-not-allowed disabled:opacity-50 font-mono"
     />
   </div>
   <Command.List class="max-h-[300px] overflow-y-auto overflow-x-hidden legal-command-list">
-    <Command.Empty class="py-6 text-center text-sm nes-text is-disabled font-mono">
-      No results found.
-    </Command.Empty>
+    <Command.Empty class="py-6 text-center text-sm nes-text is-disabled font-mono">No results found.</Command.Empty>
     {#each mockCommands as group}
       <Command.Group class="legal-command-group">
-        <Command.GroupHeading class="px-2 py-1.5 text-xs font-medium nes-text is-disabled font-mono uppercase tracking-wider flex items-center gap-2">
+        <Command.GroupHeading
+          class="px-2 py-1.5 text-xs font-medium nes-text is-disabled font-mono uppercase tracking-wider flex items-center gap-2"
+        >
           <group.icon class="h-3 w-3" />
           {group.group}
         </Command.GroupHeading>
         {#each group.items as item}
           <Command.Item
-            value={(item as { title?: unknown; description?: unknown; keywords?: unknown }).title + ' ' + (item as { title?: unknown; description?: unknown; keywords?: unknown }).description + ' ' + (item as { title?: unknown; description?: unknown; keywords?: unknown }).keywords.join(' ')}
+            value={(item as { title?: unknown; description?: unknown; keywords?: unknown }).title +
+              ' ' +
+              (item as { title?: unknown; description?: unknown; keywords?: unknown }).description +
+              ' ' +
+              (item as { title?: unknown; description?: unknown; keywords?: unknown }).keywords.join(' ')}
             select={() => handleSelect(item)}
             class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 legal-command-item font-mono"
           >
             <div class="flex items-start gap-3 w-full">
               <group.icon class="h-4 w-4 mt-0.5 nes-text is-disabled flex-shrink-0" />
               <div class="flex flex-col gap-1 min-w-0 flex-1">
-                <div class="font-medium text-sm">{(item as { title?: unknown; description?: unknown; keywords?: unknown }).title}</div>
-                <div class="text-xs nes-text is-disabled">{(item as { title?: unknown; description?: unknown; keywords?: unknown }).description}</div>
+                <div class="font-medium text-sm">
+                  {(item as { title?: unknown; description?: unknown; keywords?: unknown }).title}
+                </div>
+                <div class="text-xs nes-text is-disabled">
+                  {(item as { title?: unknown; description?: unknown; keywords?: unknown }).description}
+                </div>
               </div>
             </div>
           </Command.Item>
@@ -106,6 +115,7 @@
     {/each}
   </Command.List>
 </Command.Root>
+
 <style>
   /* Legal AI Command Palette Styling */
   :global(.legal-command-palette) {
@@ -125,7 +135,7 @@
     @apply hover:bg-yorha-bg-hover text-yorha-text-primary;
     @apply transition-colors duration-150;
   }
-  :global(.legal-command-item[aria-selected="true"]) {
+  :global(.legal-command-item[aria-selected='true']) {
     @apply bg-yorha-accent text-yorha-text-accent;
   }
 </style>

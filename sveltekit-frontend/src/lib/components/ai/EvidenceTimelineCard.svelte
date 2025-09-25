@@ -58,7 +58,7 @@
       icon: '📞',
       label: 'Communication';
     }
-  };
+  }
   // Format date for display
   function formatDate(dateStr: string): string {
     const date = new Date(dateStr);

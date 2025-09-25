@@ -27,14 +27,14 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
     node.setAttribute('aria-describedby', description);
   }
   // This function will be our keyboard event listener.
-  const onKeyDown = (event: KeyboardEvent) => {
+  const onKeyDown = (_event: KeyboardEvent) => {
     // Buttons should be activatable with Enter or Space.
     if (event.key === 'Enter' || event.key === ' ') {
       // Prevent the default action (e.g., scrolling the page on Space press).
       event.preventDefault();
       handler(event);
     }
-  };
+  }
   // Attach the event listener for keyboard interaction.
   node.addEventListener('keydown', onKeyDown);
   // The 'destroy' function is called when the element is removed from the DOM.
@@ -59,18 +59,16 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
       } else {
         node.removeAttribute('aria-describedby');
       }
-    }
-  };
-};
+    },
+  }
+}
 /**
  * Specialized variant for button-like interactions
- */;
-export function accessibleButton(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
+ */ export function accessibleButton(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
   return accessibleClick(element, { role: 'button', ...params });
 }
 /**
  * Specialized variant for menu items
- */;
-export function accessibleMenuItem(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
+ */ export function accessibleMenuItem(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
   return accessibleClick(element, { role: 'menuitem', ...params });
 }

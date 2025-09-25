@@ -47,7 +47,7 @@
     return hasEmail && hasPassword;
   });
   // Form submission with AI-powered analytics
-  async function handleSubmit(event: Event) {
+  async function handleSubmit(_event: Event) {
     const form = event.target as HTMLFormElement;
     const formDataObj = new FormData(form);
     loading = true;
@@ -60,7 +60,7 @@
         email: formData.email,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent;
-      };
+      }
       // Trigger AI analysis for suspicious login patterns
       const securityAnalysis = await mcpGPUOrchestrator.routeAPIRequest(
         '/api/security/analyze-login',
@@ -95,7 +95,7 @@
             confirmPassword: '',
             firstName: '',
             lastName: '';
-          };
+          }
           open = false;
           onSuccess?.((result as { message?: any; user?: any; error?: any }).user);
         }, 1000);

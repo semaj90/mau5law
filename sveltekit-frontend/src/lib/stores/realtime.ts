@@ -42,7 +42,7 @@ export function connectRealtime(url = 'ws://localhost:8080') {
 		ws.onclose = () => {
 			connectionStatus.set('disconnected');
 			setTimeout(() => connectRealtime(url), 3000);
-		};
+		}
 		ws.onerror = () => connectionStatus.set('error');
 		ws.onmessage = (ev) => {
 			try {
@@ -51,7 +51,7 @@ export function connectRealtime(url = 'ws://localhost:8080') {
 			} catch {
 				// Ignore parse errors
 			}
-		};
+		}
 	} catch {
 		connectionStatus.set('error');
 	}
@@ -71,16 +71,16 @@ function pushRecent(evt: any) {
 function handleEvent(wrapper: any) {
 	// wrapper shape { type, msg }
 	const type = wrapper?.type;
-	const msg = wrapper?.msg || {};
+	const msg = wrapper?.msg || {}
 	pushRecent({ type, msg, at: Date.now() });
 	if (type === 'ai.response') {
 		const { id, stage, final } = msg;
 		if (!id) return;
 		stages.update(map => {
-			const next: Record<string, StageStatus> = { ...map };
-			const curr: StageStatus = next[id] || { id };
+			const next: Record<string, StageStatus> = { ...map }
+			const curr: StageStatus = next[id] || { id }
 			const now = Date.now();
-			if (!curr.stageTimestamps) curr.stageTimestamps = {};
+			if (!curr.stageTimestamps) curr.stageTimestamps = {}
 			if (stage) {
 				// Only record first time we see this stage to avoid double counting
 				if (!curr.stageTimestamps[stage as PipelineStage]) {
@@ -137,9 +137,9 @@ function handleEvent(wrapper: any) {
 		const id = msg?.traceId;
 		if (id) {
 			stages.update(map => {
-				const next: Record<string, StageStatus> = { ...map };
+				const next: Record<string, StageStatus> = { ...map }
 				if (!next[id]) {
-					next[id] = { id, receivedAt: Date.now() };
+					next[id] = { id, receivedAt: Date.now() }
 				}
 				return next;
 			});
@@ -160,7 +160,7 @@ if (typeof window !== 'undefined') {
 	connectRealtime();
 }
 export default {
-	connect: connectRealtime
+	connect: connectRealtime;
 	disconnect: disconnectRealtime
 	connectionStatus,
 	stages,
@@ -168,4 +168,4 @@ export default {
 	recentEvents,
 	activePipelines,
 	completedPipelines
-};
+}

@@ -1,12 +1,10 @@
 <script lang="ts">
   // Minimal settings implementation - SSR friendly
 </script>
+
 <svelte:head>
   <title>Settings - WardenNet Legal</title>
-  <meta
-    name="description"
-    content="Application settings and user preferences"
-  />
+  <meta name="description" content="Application settings and user preferences" />
 </svelte:head>
 <div class="min-h-screen bg-gray-900 text-white">
   <main class="container mx-auto p-4">

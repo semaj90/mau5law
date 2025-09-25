@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
   let selectedFiles = $state<File[]>([]);
   let fileInput: HTMLInputElement;
   // Drag and drop event handlers
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     if (disabled || isProcessing) return;
@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     isDragOver = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     // Only hide drag state if leaving the drop zone completely
@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
       isDragOver = false;
     }
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     isDragOver = false;
@@ -65,8 +65,8 @@ https://svelte.dev/e/js_parse_error -->
     processFiles(files);
   }
   // File input handler
-  function handleFileInput(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileInput(_event: Event) {
+    // removed unused target assignment
     if (!target.files) return;
     const files = Array.from(target.files);
     processFiles(files);
@@ -133,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   }
-  function removeFile(index: number) {
+  function removeFile(_index: number) {
     selectedFiles = selectedFiles.filter((_, i) => i !== index);
   }
   function openFileDialog() {

@@ -8,15 +8,13 @@
     padding?: string;
     children?: any;
   }
-  let {
-    maxWidth = "800px",
-    padding = "24px",
-    children
-  }: Props = $props();
+  let { maxWidth = '800px', padding = '24px', children }: Props = $props();
 </script>
-<div class="profile-container" style="max-width: {maxWidth}; padding: {padding};">
+
+<div class="profile-container" style="max-width: {maxWidth} padding: {padding}">
   {@render children?.()}
 </div>
+
 <style>
   .profile-container {
     margin: 0 auto;

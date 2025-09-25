@@ -17,9 +17,9 @@ Automatically handles server upload with localStorage fallback
     accept?: string;
     maxSize?: number; // MB
     forceLocalStorage?: boolean;
-    onupload?: (event: { results: UploadResponse[] }) => void;
-    onerror?: (event: { error: string }) => void;
-    onprogress?: (event: { completed: number; total: number; file: string }) => void;
+    onupload?: (_event: { results: UploadResponse[] }) => void;
+    onerror?: (_event: { error: string }) => void;
+    onprogress?: (_event: { completed: number; total: number; file: string }) => void;
   }
   let {
     caseId,
@@ -101,7 +101,7 @@ Automatically handles server upload with localStorage fallback
   /**
    * Handle drag and drop
    */
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
     const files = event.dataTransfer?.file;
@@ -109,7 +109,7 @@ Automatically handles server upload with localStorage fallback
       handleFileSelect(files);
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     isDragOver = true;
   }
@@ -202,7 +202,7 @@ Automatically handles server upload with localStorage fallback
     {multiple}
     style="display: none"
     onchange={(e) => {
-      const target = e.target as HTMLInputElement;
+      // removed unused target assignment
       if (target?.files) handleFileSelect(target.files);
     }}
   />

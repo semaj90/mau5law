@@ -29,7 +29,7 @@ export interface ChatMessage {
     confidence?: number;
     sources?: string[];
     ragContext?: boolean;
-  };
+  }
 }
 export interface DocumentCache {
   id?: number;
@@ -47,7 +47,7 @@ export interface DocumentCache {
     riskLevel?: string;
     jurisdiction?: string;
     documentType?: string;
-  };
+  }
 }
 export interface SearchHistory {
   id?: number;
@@ -60,9 +60,9 @@ export interface SearchHistory {
   filters?: {
     evidenceType?: string[];
     priority?: string[];
-    dateRange?: { start: Date; end: Date };
+    dateRange?: { start: Date; end: Date }
     jurisdiction?: string[];
-  };
+  }
 }
 export interface VectorSearchCache {
   id?: number;
@@ -84,7 +84,7 @@ export interface UserAnnotation {
     start: number;
     end: number;
     page?: number;
-  };
+  }
   tags: string[];
   importance: 'low' | 'medium' | 'high' | 'critical';
   userId?: string;
@@ -109,7 +109,7 @@ export interface LegalEntity {
     dates?: string[];
     role?: string;
     importance?: number;
-  };
+  }
   lastUpdated: Date;
 }
 export interface GraphVisualizationData {
@@ -122,8 +122,8 @@ export interface GraphVisualizationData {
     algorithm: string;
     parameters: any;
     dimensions: 2 | 3;
-  };
-  cameraPosition?: { x: number; y: number; z: number };
+  }
+  cameraPosition?: { x: number; y: number; z: number }
   createdAt: Date;
   lastAccessed: Date;
   computationTime: number;
@@ -151,20 +151,20 @@ export interface UserPreferences {
       maxDocuments: number;
       maxSearchResults: number;
       cacheExpiry: number; // hours
-    };
+    }
     visualization: {
       defaultGraphType: string;
       showLabels: boolean;
       enablePhysics: boolean;
       colorScheme: string;
-    };
+    }
     ai: {
       preferredModel: string;
       temperature: number;
       includeAnalysis: boolean;
       autoSummarize: boolean;
-    };
-  };
+    }
+  }
   lastUpdated: Date;
 }
 // ============================================================================
@@ -255,7 +255,7 @@ export class LegalDBUtils {
       totalRecords: 0,
       storageUsed: 'Unknown',
       tables: [] as Array<
-    };
+    }
     // Count records in each table
     const tables = [
       'chatHistory',

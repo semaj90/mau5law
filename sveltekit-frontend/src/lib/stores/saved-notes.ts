@@ -7,17 +7,17 @@ import { derived, writable } from "svelte/store";
 const Fuse: any = (globalThis as any).Fuse || class {
   list: any[]; keys: any[]; constructor(list: any[], options: any) { this.list = list; this.keys = options.keys?.map((k: any) => k.name) || []; }
   search(term: string) { const lower = term.toLowerCase(); return this.list.filter(item => this.keys.some(k => String((item as any)[k] ?? '').toLowerCase().includes(lower))).map(i => ({ item: i }); }
-};
+}
 // Placeholder indexedDB utilities
 const idbUtils = {
-  del: async (key: string) => localStorage.removeItem(key),
-  get: async (key: string) => {
+  del: async (_key: string) => localStorage.removeItem(key),
+  get: async (_key: string) => {
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : null;
   },
   keys: async () => Object.keys(localStorage).filter(k => k.startsWith('note:')),
-  set: async (key: string, value: any) => localStorage.setItem(key, JSON.stringify(value)
-};
+  set: async (_key: string, value: any) => localStorage.setItem(key, JSON.stringify(value)
+}
 }
 export interface SavedNote {
   id: string;
@@ -111,7 +111,7 @@ class NotesManager {
     const noteWithTimestamp: SavedNote = {
       ...note,
       savedAt: new Date()
-    };
+    }
     // Update store
     savedNotes.update((notes) => {
       const existingIndex = notes.findIndex((n) => n.id === note.id);

@@ -60,8 +60,8 @@
       }
       const presentationFormat = navigator.gpu!.getPreferredCanvasFormat();
       context.configure({
-        device: gpu
-        format: presentationFormat
+        device: gpu;
+        format: presentationFormat;
       });
       isInitialized = true;
       console.log(`🎮 WebGPU visualization initialized successfully (${capabilities.supportLevel} support)`);
@@ -122,7 +122,7 @@
           if (Math.random() > 0.3) { // 70% connection probability
             connections.push({
               from: current
-              to: next
+              to: next;
               weight: Math.random(),
               active: Math.random() > 0.5;
             });
@@ -294,7 +294,7 @@
           storeOp: 'store',
         },
       ],
-    };
+    }
     const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
     // Add actual rendering commands here
     passEncoder.end();
@@ -468,4 +468,4 @@
       </div>
     {/if}
   </div>
-</div>
+</div>;

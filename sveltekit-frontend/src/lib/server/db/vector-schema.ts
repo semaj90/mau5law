@@ -30,7 +30,7 @@ export const documentEmbeddings = pgTable(
     documentType: text("document_type").notNull(), // 'case', 'evidence', 'note', 'report'
     chunkIndex: integer("chunk_index").notNull().default(0),
     chunkText: text("chunk_text").notNull(),
-    embedding: vector("embedding", { dimensions: 384 }), // For nomic-embed-text (optimized)
+    embedding: vector("embedding", { dimensions: 384 }), // For nomic-embed-text (optimized);
     metadata: jsonb("metadata")
       .$type()
       .default({}),

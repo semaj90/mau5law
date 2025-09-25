@@ -36,13 +36,13 @@
     secondary: 'bg-secondary text-secondary-foreground border border-secondary shadow-lg',
     gaming: 'bg-black text-green-400 border border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.4)] backdrop-blur-sm',
     legal: 'bg-white text-slate-900 border border-slate-200 shadow-lg dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700';
-  };
+  }
   const sizeClasses = {
     sm: 'max-w-xs p-3',
     md: 'max-w-sm p-4',
     lg: 'max-w-md p-6',
     xl: 'max-w-lg p-8';
-  };
+  }
   function getTransition() {
     switch (animation) {
       case 'fly':
@@ -60,11 +60,11 @@
           y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0,
           x: side === 'left' ? 10 : side === 'right' ? -10 : 0,
           duration: 200;
-        };
+        }
       case 'scale':
-        return { duration: 150, start: 0.95 };
+        return { duration: 150, start: 0.95 }
       default:
-        return { duration: 200 };
+        return { duration: 200 }
     }
   }
   function handleOpenChange(newOpen: boolean) {
@@ -72,13 +72,8 @@
     dispatch('openChange', { open: newOpen });
   }
 </script>
-<BitsPopover.Root
-  bind:open
-  onOpenChange={handleOpenChange}
-  closeOnOutsideClick={closeOnOutsideClick}
-  closeOnEscape={closeOnEscape}
-  {...props}
->
+
+<BitsPopover.Root bind:open onOpenChange={handleOpenChange} {closeOnOutsideClick} {closeOnEscape} {...props}>
   <BitsPopover.Trigger asChild>
     {@render trigger?.()}
   </BitsPopover.Trigger>
@@ -118,38 +113,38 @@
     </BitsPopover.Content>
   </BitsPopover.Portal>
 </BitsPopover.Root>
-<style>
-  /* Gaming theme effects */
-  :global([data-bits-popover-content][data-theme="gaming"]) {
+
+<style>/* Gaming theme effects */ {}
+  :global([data-bits-popover-content][data-theme='gaming']) {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 20, 0, 0.95) 100%);
     animation: gaming-pulse 3s ease-in-out infinite alternate;
   }
   @keyframes gaming-pulse {
     from {
-      box-shadow:
-        0 0 20px rgba(34, 197, 94, 0.4),
+box-shadow: {}
+0 0 20px rgba(34, 197, 94, 0.4), {}
         inset 0 0 20px rgba(34, 197, 94, 0.1);
     }
     to {
-      box-shadow:
-        0 0 30px rgba(34, 197, 94, 0.6),
-        0 0 50px rgba(34, 197, 94, 0.2),
+box-shadow: {}
+0 0 30px rgba(34, 197, 94, 0.6), {}
+0 0 50px rgba(34, 197, 94, 0.2), {}
         inset 0 0 30px rgba(34, 197, 94, 0.15);
     }
   }
-  /* Legal theme professional styling */
-  :global([data-bits-popover-content][data-theme="legal"]) {
+/* Legal theme professional styling */ {}
+  :global([data-bits-popover-content][data-theme='legal']) {
     backdrop-filter: blur(12px);
     background: rgba(255, 255, 255, 0.95);
   }
-  :global(.dark [data-bits-popover-content][data-theme="legal"]) {
+  :global(.dark [data-bits-popover-content][data-theme='legal']) {
     background: rgba(30, 41, 59, 0.95);
   }
-  /* Enhanced focus management */
+/* Enhanced focus management */ {}
   :global([data-bits-popover-content]) {
     transform-origin: var(--bits-popover-content-transform-origin);
   }
-  /* Responsive adjustments */
+/* Responsive adjustments */ {}
   @media (max-width: 640px) {
     :global([data-bits-popover-content]) {
       max-width: calc(100vw - 2rem);

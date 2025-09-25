@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
  * Production Health Check API
  * Comprehensive system status for all services
  */
-import { URL } from "url"
+
 }
 export interface ServiceStatus {
   name: string

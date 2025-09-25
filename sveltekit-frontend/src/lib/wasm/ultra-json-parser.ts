@@ -63,7 +63,7 @@ export class UltraJSONParser {
       citationPatternMatching: true
       bulkProcessingMode: false
       ...config
-    };
+    }
     this.capabilities = {
       wasmSIMD: false
       webgpuCompute: false
@@ -71,7 +71,7 @@ export class UltraJSONParser {
       atomics: false
       bigInt64Array: false
       supportLevel: 'none'
-    };
+    }
     if (browser) {
       this.initialize();
     }
@@ -180,7 +180,7 @@ export class UltraJSONParser {
       enableSIMD: this.config.enableBrowserSIMD,
       enableGPU: this.config.enableWebGPUAcceleration,
       ...options
-    };
+    }
     try {
       let result: T;
       // Check performance cache first
@@ -218,7 +218,7 @@ export class UltraJSONParser {
         throughputMBps: (jsonString.length / 1024 / 1024) / (parseTime / 1000),
         operationsPerSecond: 1000 / parseTime,
         memoryEfficiency: 0.85 // Would calculate actual memory efficiency
-      };
+      }
       if (opts.cacheKey) {
         this.performanceCache.set(opts.cacheKey, metrics);
       }
@@ -328,7 +328,7 @@ export class UltraJSONParser {
       statutes: /"\d+\s+U\.S\.C\.\s+�?\s*\d+"/g,
       courts: /"(?:Supreme Court|District Court|Circuit Court)"/g,
       dates: /"\d{4}-\d{2}-\d{2}"/g
-    };
+    }
     let optimizedJson = jsonString;
     // Pre-index legal entities for faster parsing
     for (const [type, pattern] of Object.entries(patterns)) {
@@ -382,7 +382,7 @@ export class UltraJSONParser {
       enableGPU: this.config.enableWebGPUAcceleration,
       enableCompression: false
       ...options
-    };
+    }
     try {
       let result: string;
       // Select strategy based on object size and type
@@ -475,7 +475,7 @@ export class UltraJSONParser {
       batchSize: 50,
       enableClustering: this.config.enableClusteringWASM,
       ...options
-    };
+    }
     const results: T[] = [];
     const batchSize = opts.batchSize;
     for (let i = 0; i < documents.length; i += batchSize) {
@@ -546,7 +546,7 @@ export class UltraJSONParser {
         enableWebGPUAcceleration: this.capabilities.webgpuCompute,
         bulkProcessingMode: this.capabilities.supportLevel === 'optimal'
       }
-    };
+    }
   }
   /**
    * Clear performance cache
@@ -570,4 +570,4 @@ export const fastStringify = (obj: any, space?: number) =>
 export const bulkParse = <T = any>(documents: string[]) =>
   ultraJSONParser.bulkProcess<T>(documents);
 // Export types for external use
-export type { UltraJSONConfig, UltraJSONMetrics, BrowserSIMDCapabilities };
+export type { UltraJSONConfig, UltraJSONMetrics, BrowserSIMDCapabilities }

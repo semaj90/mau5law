@@ -23,11 +23,13 @@ https://svelte.dev/e/js_parse_error -->
   }
   });
 </script>
+
 <div bind:this={editorContainer} class="space-y-4" aria-label="Monaco code editor" tabindex={0}></div>
+
 <style>
   /* @unocss-include */
-/* Ensure the Monaco editor fills the container */
-:global(.monaco-editor) {
-  border-radius: 0.5rem;
-}
+  /* Ensure the Monaco editor fills the container */
+  :global(.monaco-editor) {
+    border-radius: 0.5rem;
+  }
 </style>

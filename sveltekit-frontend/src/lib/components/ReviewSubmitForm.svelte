@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
   let sectionScores = writable<Record<string, number>( );
   function calculateQualityScore() {
     let totalScore = 0;
-    const scores: Record<string, number> = {};
+    const scores: Record<string, number> = {}
     qualityCriteria.forEach(criterion => {
       let score = 0;
       switch (criterion.id) {
@@ -133,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
       onSubmit?.({
         step: 'review',
         data: formData
-        allData: allFormData
+        allData: allFormData;
         success: true;
       });
     } catch (error) {
@@ -167,6 +167,7 @@ https://svelte.dev/e/js_parse_error -->
   // Calculate quality score on component mount and when data changes
   // TODO: Convert to $derived: if (allFormData) calculateQualityScore()
 </script>
+
 <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Review & Submit</h2>
@@ -184,7 +185,11 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="bg-gray-200 rounded-full h-4 mb-4">
         <div
-          class="h-4 rounded-full transition-all duration-1000 {formData.quality_score >= 80 ? 'bg-green-500' : formData.quality_score >= 60 ? 'bg-yellow-500' : 'bg-red-500'}"
+          class="h-4 rounded-full transition-all duration-1000 {formData.quality_score >= 80
+            ? 'bg-green-500'
+            : formData.quality_score >= 60
+              ? 'bg-yellow-500'
+              : 'bg-red-500'}"
           style="width: {formData.quality_score}%"
         ></div>
       </div>
@@ -215,12 +220,18 @@ https://svelte.dev/e/js_parse_error -->
         {/each}
       </div>
       <!-- Completeness Check -->
-      <div class="mt-4 p-3 rounded-lg {formData.completeness_check ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}">
+      <div
+        class="mt-4 p-3 rounded-lg {formData.completeness_check
+          ? 'bg-green-50 border border-green-200'
+          : 'bg-red-50 border border-red-200'}"
+      >
         <div class="flex items-center">
           <span class="text-xl mr-3">{formData.completeness_check ? '✅' : '❌'}</span>
           <div>
             <p class="text-sm font-medium {formData.completeness_check ? 'text-green-800' : 'text-red-800'}">
-              {formData.completeness_check ? 'Case is ready for submission' : 'Case requires additional work before submission'}
+              {formData.completeness_check
+                ? 'Case is ready for submission'
+                : 'Case requires additional work before submission'}
             </p>
             {#if !formData.completeness_check}
               <p class="text-xs {formData.completeness_check ? 'text-green-600' : 'text-red-600'} mt-1">
@@ -250,8 +261,14 @@ https://svelte.dev/e/js_parse_error -->
       <div class="bg-green-50 border border-green-200 rounded-lg p-4">
         <h4 class="font-medium text-green-900 mb-3">📄 Documents</h4>
         <div class="space-y-2 text-sm">
-          <div><span class="font-medium">Files:</span> {allFormData.documents?.uploaded_files?.length || 0} uploaded</div>
-          <div><span class="font-medium">OCR Results:</span> {allFormData.documents?.ocr_results?.length || 0} processed</div>
+          <div>
+            <span class="font-medium">Files:</span>
+            {allFormData.documents?.uploaded_files?.length || 0} uploaded
+          </div>
+          <div>
+            <span class="font-medium">OCR Results:</span>
+            {allFormData.documents?.ocr_results?.length || 0} processed
+          </div>
           <div><span class="font-medium">Status:</span> {allFormData.documents?.processing_status || 'Pending'}</div>
         </div>
       </div>
@@ -259,9 +276,18 @@ https://svelte.dev/e/js_parse_error -->
       <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <h4 class="font-medium text-yellow-900 mb-3">🔍 Evidence</h4>
         <div class="space-y-2 text-sm">
-          <div><span class="font-medium">Entities:</span> {allFormData.evidence?.extracted_entities?.length || 0} identified</div>
-          <div><span class="font-medium">Key Facts:</span> {allFormData.evidence?.key_facts?.length || 0} documented</div>
-          <div><span class="font-medium">Legal Issues:</span> {allFormData.evidence?.legal_issues?.length || 0} identified</div>
+          <div>
+            <span class="font-medium">Entities:</span>
+            {allFormData.evidence?.extracted_entities?.length || 0} identified
+          </div>
+          <div>
+            <span class="font-medium">Key Facts:</span>
+            {allFormData.evidence?.key_facts?.length || 0} documented
+          </div>
+          <div>
+            <span class="font-medium">Legal Issues:</span>
+            {allFormData.evidence?.legal_issues?.length || 0} identified
+          </div>
         </div>
       </div>
       <!-- AI Analysis -->
@@ -269,8 +295,14 @@ https://svelte.dev/e/js_parse_error -->
         <h4 class="font-medium text-purple-900 mb-3">🤖 AI Analysis</h4>
         <div class="space-y-2 text-sm">
           <div><span class="font-medium">Strength:</span> {allFormData.ai_analysis?.case_strength_score || 0}/100</div>
-          <div><span class="font-medium">Outcome:</span> {allFormData.ai_analysis?.predicted_outcome || 'Not analyzed'}</div>
-          <div><span class="font-medium">Recommendations:</span> {allFormData.ai_analysis?.recommendations?.length || 0} provided</div>
+          <div>
+            <span class="font-medium">Outcome:</span>
+            {allFormData.ai_analysis?.predicted_outcome || 'Not analyzed'}
+          </div>
+          <div>
+            <span class="font-medium">Recommendations:</span>
+            {allFormData.ai_analysis?.recommendations?.length || 0} provided
+          </div>
         </div>
       </div>
     </div>
@@ -284,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
           Comprehensive Case Review *
         </label>
         <textarea
-          id="final_review"
+          id="final_review";
           bind:value={formData.final_review}
           rows="6"
           placeholder="Provide a comprehensive review of the case, including your assessment of the evidence, potential strategies, and any additional considerations..."
@@ -299,7 +331,8 @@ https://svelte.dev/e/js_parse_error -->
           Submission Notes (Optional)
         </label>
         <textarea
-          id="submission_notes";
+          id="submission_notes"
+          ;
           bind:value={formData.submission_notes}
           rows="3"
           placeholder="Any additional notes or special instructions for case processing..."

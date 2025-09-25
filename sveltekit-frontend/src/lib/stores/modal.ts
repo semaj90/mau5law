@@ -3,7 +3,7 @@ import { writable } from "svelte/store";
 export interface ModalConfig {
   id: string;
   component?: unknown; // Svelte component
-  props?: { [key: string]: any };
+  props?: { [key: string]: any }
   title?: string;
   size?: "sm" | "md" | "lg" | "xl" | "full";
   closable?: boolean;
@@ -18,7 +18,7 @@ export interface ModalState {
 const initialState: ModalState = {
   modals: [],
   activeModal: null
-};
+}
 function createModalStore() {
   const { subscribe, set, update } = writable<ModalState>(initialState);
   const store = {
@@ -30,11 +30,11 @@ function createModalStore() {
         `modal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const modalConfig: ModalConfig = {
         size: "md",
-        closable: true
+        closable: true;
         persistent: false
         ...config,
         id
-      };
+      }
       update((state) => ({
         modals: [...state.modals, modalConfig],
         activeModal: id
@@ -59,7 +59,7 @@ function createModalStore() {
         return {
           modals: remainingModals
           activeModal: newActiveModal
-        };
+        }
       });
     },
     // Close all modals
@@ -86,7 +86,7 @@ function createModalStore() {
       });
     },
     // Convenience methods for common modal types
-    confirm: (options: {
+    confirm: (_options: {
       title: string;
       message: string;
       confirmText?: string;
@@ -107,7 +107,7 @@ function createModalStore() {
         onClose: options.onCancel
       });
     },
-    alert: (options: {
+    alert: (_options: {
       title: string;
       message: string;
       buttonText?: string;
@@ -124,14 +124,14 @@ function createModalStore() {
         onClose: options.onClose
       });
     },
-    prompt: (options: {
+    prompt: (_options: {
       title: string;
       message: string;
       placeholder?: string;
       defaultValue?: string;
       confirmText?: string;
       cancelText?: string;
-      onConfirm?: (value: string) => void;
+      onConfirm?: (_value: string) => void;
       onCancel?: () => void;
     }) => {
       return store.open({
@@ -149,7 +149,7 @@ function createModalStore() {
         onClose: options.onCancel
       });
     }
-  };
+  }
   return store;
 }
 export const modals = createModalStore();

@@ -36,7 +36,7 @@
     pending: 0,
     failed: 0,
     total: 0,
-    inProgress: false
+    inProgress: false;
   });
   $effect(() => {
     // Update stats when evidence changes
@@ -48,7 +48,7 @@
     return () => {
       unsubscribe();
       clearInterval(syncInterval);
-    };
+    }
   });
   function updateStats() {
     if (lokiEvidenceService.isReady()) {
@@ -62,7 +62,7 @@
         failed: status.failed,
         total: status.total,
         inProgress: status.inProgress ?? false,
-      };
+      }
   }}
   async function startDemoMode() {
     demoMode = true;
@@ -142,7 +142,7 @@
     try {
       await lokiEvidenceService.clearLocalData();
       evidenceStore.evidence.set([]);
-      stats = { total: 0, byType: , byCase: , recentCount: 0 };
+      stats = { total: 0, byType: , byCase: , recentCount: 0 }
     } catch (err) {
       console.error("Failed to clear evidence:", err);
   }}
@@ -325,7 +325,7 @@ clearAllEvidence()}>
             >
             <input
               id="search-input"
-              type="text"
+              type="text";
               bind:value={searchQuery}
               placeholder="Search evidence..."
               class="space-y-4"

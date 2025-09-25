@@ -151,7 +151,7 @@ try {
       type: 'custom',
       confidence: 0,
       relationships: [];
-    };
+    }
     // Add to state machine for processing
     machines.evidenceActor.send({
       type: 'ADD_EVIDENCE',

@@ -15,7 +15,7 @@ async function initLoki(): Promise<any> {
     const Loki = (await import("lokijs")).default;
     lokiDb = new Loki("canvas-cache.db", {
       autoload: true
-      autoloadCallback: databaseInitialize
+      autoloadCallback: databaseInitialize;
       autosave: true
       autosaveInterval: 5000
     } as any);
@@ -114,7 +114,7 @@ export const loki = {
         reportId,
         canvasData,
         lastModified: new Date().toISOString()
-      };
+      }
       if (existing) {
         canvasStateCollection.update({ ...existing, ...stateData });
       } else {
@@ -235,4 +235,4 @@ export const loki = {
       notes: []
     });
   }
-};
+}

@@ -1,6 +1,5 @@
-
 import type { User } from './user.js';
-import type { InferInsertModel, InferSelectModel } from "drizzle-orm/table";
+import type { InferInsertModel, InferSelectModel } from 'drizzle-orm/table';
 import {
   cases,
   criminals,
@@ -9,8 +8,8 @@ import {
   legal_documents,
   documentChunks,
   userAiQueries,
-  autoTags
-} from "$lib/server/db/schema-postgres";
+  autoTags,
+} from '$lib/server/db/schema-postgres';
 // Database model types (inferred from schema)
 export type DatabaseCase = InferSelectModel<typeof cases>;
 export type NewCase = InferInsertModel<typeof cases>;
@@ -44,8 +43,7 @@ export interface Profile {
   createdAt: Date;
   updatedAt: Date;
 }
-export interface NewProfile
-  extends Omit<Profile, "id" | "createdAt" | "updatedAt"> {
+export interface NewProfile extends Omit<Profile, 'id' | 'createdAt' | 'updatedAt'> {
   id?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -56,7 +54,7 @@ export interface Session {
   expiresAt: Date;
   createdAt: Date;
 }
-export interface NewSession extends Omit<Session, "createdAt"> {
+export interface NewSession extends Omit<Session, 'createdAt'> {
   createdAt?: Date;
 }
 // Extended user types for better type safety
@@ -85,30 +83,13 @@ export interface UserSession {
   expires: Date | null;
 }
 // Role-based type safety
-export type UserRole =
-  | "prosecutor"
-  | "detective"
-  | "admin"
-  | "analyst"
-  | "viewer";
+export type UserRole = 'prosecutor' | 'detective' | 'admin' | 'analyst' | 'viewer';
 // Case status types for better type safety
-export type CaseStatus =
-  | "open"
-  | "closed"
-  | "pending"
-  | "archived"
-  | "under_review";
+export type CaseStatus = 'open' | 'closed' | 'pending' | 'archived' | 'under_review';
 // Evidence types for better categorization
-export type EvidenceType =
-  | "document"
-  | "image"
-  | "video"
-  | "audio"
-  | "physical"
-  | "digital"
-  | "testimony";
+export type EvidenceType = 'document' | 'image' | 'video' | 'audio' | 'physical' | 'digital' | 'testimony';
 // Priority levels
-export type Priority = "low" | "medium" | "high" | "urgent";
+export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 // Case with related data
 export interface CaseWithRelations extends DatabaseCase {
   criminal?: Criminal;
@@ -124,8 +105,7 @@ export interface UserWithProfile {
   profile?: Profile;
 }
 // Evidence with metadata (using intersection to avoid conflicts)
-export interface EvidenceWithMetadata
-  extends Omit<DatabaseEvidence, "uploadedBy"> {
+export interface EvidenceWithMetadata extends Omit<DatabaseEvidence, 'uploadedBy'> {
   uploadedBy?: UserWithProfile; // Replace string ID with full User object
   uploadedById?: string; // Keep the original ID for reference
   case?: DatabaseCase;

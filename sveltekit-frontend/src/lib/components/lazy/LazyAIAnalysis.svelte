@@ -77,7 +77,7 @@ https://svelte.dev/e/bindable_invalid_location -->
           temperature,
           maxTokens
         }
-      };
+      }
       analysisResult = result;
       updateProgress(100, 'Analysis complete');
       if (onAnalysisComplete) {
@@ -105,8 +105,8 @@ https://svelte.dev/e/bindable_invalid_location -->
       type: analysisType
       model,
       timestamp: new Date().toISOString(),
-      processingTime: Math.floor(Math.random() * 5000) + 1000, // 1-6 second
-    };
+      processingTime: Math.floor(Math.random() * 5000) + 1000, // 1-6 second;
+    }
     switch (analysisType) {
       case 'legal':
         return {
@@ -123,7 +123,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Potential statute of limitations issue',
             'Strong evidence for damages claim'
           ];
-        };
+        }
       case 'evidence':
         return {
           ...baseResult,
@@ -141,7 +141,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Consider additional forensic analysis',
             'Document chain of custody thoroughly'
           ];
-        };
+        }
       case 'document':
         return {
           ...baseResult,
@@ -158,7 +158,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             { text: 'ABC Corporation', type: 'Organization', confidence: 0.95 },
             { text: 'New York', type: 'Location', confidence: 0.88 }
           ]
-        };
+        }
       case 'case':
         return {
           ...baseResult,
@@ -177,7 +177,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Witness credibility questions',
             'Jurisdictional issues'
           ]
-        };
+        }
       default:
         return baseResult;
     }
@@ -188,9 +188,10 @@ https://svelte.dev/e/bindable_invalid_location -->
     evidence: { icon: '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' },
     document: { icon: '📄', color: '#dc2626', bgColor: 'rgba(220, 38, 38, 0.1)' },
     caseItem: { icon: '📁', color: '#7c2d12', bgColor: 'rgba(124, 45, 18, 0.1)' }
-  };
+  }
   const config = analysisConfig[analysisType];
 </script>
+
 <LazyLoader
   preset="HEAVY_COMPONENT"
   placeholderHeight={height}
@@ -202,11 +203,11 @@ https://svelte.dev/e/bindable_invalid_location -->
   bind:lazyState
   {...lazyOptions}
 >
-  <div class="analysis-wrapper" style="height: {height}; width: {width};">
+  <div class="analysis-wrapper" style="height: {height} width: {width}">
     {#if loadError}
       <!-- Error state with AI-specific styling -->
-      <div class="analysis-error" style="background: {config.bgColor};">
-        <div class="error-icon" style="color: {config.color};">🤖❌</div>
+      <div class="analysis-error" style="background: {config.bgColor}">
+        <div class="error-icon" style="color: {config.color}">🤖❌</div>
         <p>AI Analysis Failed</p>
         <small>{loadError.message}</small>
         <button
@@ -222,18 +223,15 @@ https://svelte.dev/e/bindable_invalid_location -->
       </div>
     {:else if isAnalyzing}
       <!-- Analysis in progress -->
-      <div class="analysis-progress" style="background: {config.bgColor};">
+      <div class="analysis-progress" style="background: {config.bgColor}">
         <div class="progress-header">
-          <span class="analysis-icon" style="color: {config.color};">
+          <span class="analysis-icon" style="color: {config.color}">
             {config.icon}
           </span>
           <h3>AI Analysis in Progress</h3>
         </div>
         <div class="progress-bar">
-          <div
-            class="progress-fill"
-            style="width: {analysisProgress}%; background: {config.color};"
-          ></div>
+          <div class="progress-fill" style="width: {analysisProgress}%; background: {config.color}"></div>
         </div>
         <div class="progress-info">
           <span class="progress-step">{analysisStep}</span>
@@ -241,13 +239,16 @@ https://svelte.dev/e/bindable_invalid_location -->
         </div>
         <div class="analysis-meta">
           <div class="meta-item">
-            <span>Type:</span> {analysisType.charAt.toUpperCase() + analysisType.slice(1)}
+            <span>Type:</span>
+            {analysisType.charAt.toUpperCase() + analysisType.slice(1)}
           </div>
           <div class="meta-item">
-            <span>Model:</span> {model}
+            <span>Model:</span>
+            {model}
           </div>
           <div class="meta-item">
-            <span>Temperature:</span> {temperature}
+            <span>Temperature:</span>
+            {temperature}
           </div>
         </div>
       </div>
@@ -257,13 +258,13 @@ https://svelte.dev/e/bindable_invalid_location -->
         <!-- Replace this with your actual analysis component -->
         <!-- <svelte:component this={analysisComponent.component} {...analysisComponent.props} /> -->
         <!-- Mock results display -->
-        <div class="analysis-results" style="border-color: {config.color};">
-          <header class="results-header" style="background: {config.bgColor};">
-            <span class="header-icon" style="color: {config.color};">
+        <div class="analysis-results" style="border-color: {config.color}">
+          <header class="results-header" style="background: {config.bgColor}">
+            <span class="header-icon" style="color: {config.color}">
               {config.icon}
             </span>
             <h3>{analysisType.charAt.toUpperCase() + analysisType.slice(1)} Analysis Results</h3>
-            <span class="confidence-badge" style="background: {config.color};">
+            <span class="confidence-badge" style="background: {config.color}">
               {Math.round((analysisResult.confidence || 0.5) * 100)}% Confidence
             </span>
           </header>
@@ -272,8 +273,8 @@ https://svelte.dev/e/bindable_invalid_location -->
               <h4>Summary</h4>
               <p>
                 {analysisResult.summary ||
-                 analysisResult.legalOpinion ||
-                 `${analysisType} analysis completed successfully with ${Object.keys(errors).length} data points.`}
+                  analysisResult.legalOpinion ||
+                  `${analysisType} analysis completed successfully with ${Object.keys(errors).length} data points.`}
               </p>
             </div>
             {#if analysisResult.keyFindings}
@@ -318,13 +319,9 @@ https://svelte.dev/e/bindable_invalid_location -->
     {/if}
   </div>
   <!-- Custom placeholder for AI analysis -->
-  <div
-    class="ai-placeholder-content"
-    slot="placeholder"
-    style="height: {height}; background: {config.bgColor};"
-  >
+  <div class="ai-placeholder-content" slot="placeholder" style="height: {height} background: {config.bgColor}">
     <div class="placeholder-ai-brain">
-      <div class="brain-icon" style="color: {config.color};">🧠</div>
+      <div class="brain-icon" style="color: {config.color}">🧠</div>
       <div class="brain-waves">
         <div class="wave wave-1"></div>
         <div class="wave wave-2"></div>
@@ -337,6 +334,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     </div>
   </div>
 </LazyLoader>
+
 <style>
   .lazy-ai-analysis {
     border-radius: 12px;

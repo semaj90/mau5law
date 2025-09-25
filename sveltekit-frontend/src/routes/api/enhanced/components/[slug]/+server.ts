@@ -220,7 +220,7 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
   return {
     component: 'document-insights',
     variant,
-    data: insights
+    data: insights;
     meta: {
       generated_at: new Date().toISOString()
     }

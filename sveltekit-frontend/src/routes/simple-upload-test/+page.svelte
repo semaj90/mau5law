@@ -25,12 +25,22 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify({
           query: searchQuery,
           searchType: 'semantic',
-          limit: 5
-        })
+          limit: 5,
+        }),
       });
       if ((response as { ok?: unknown; json?: unknown; text?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown; text?: unknown }).json();
-        searchResults = (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).results || [];
+        searchResults =
+          (
+            result as {
+              results?: unknown;
+              filename?: unknown;
+              title?: unknown;
+              similarity?: unknown;
+              content?: unknown;
+              metadata?: unknown;
+            }
+          ).results || [];
         console.log('Search results:', result);
       } else {
         console.error.text();
@@ -42,6 +52,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <svelte:head>
   <title>Simple RAG Upload Test - Legal AI System</title>
 </svelte:head>
@@ -61,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
         bind:value={searchQuery}
         placeholder="Search uploaded documents..."
         class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        keydown={(e) => e.key === 'Enter' && performSearch()}
+        keydown={e => e.key === 'Enter' && performSearch()}
       />
       <button
         onclick={performSearch}
@@ -76,11 +87,57 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="font-medium">Search Results:</h3>
         {#each searchResults as result}
           <div class="border rounded-lg p-4">
-            <div class="font-medium">{(result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).filename || (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).title || 'Unknown Document'}</div>
+            <div class="font-medium">
+              {(
+                result as {
+                  results?: unknown;
+                  filename?: unknown;
+                  title?: unknown;
+                  similarity?: unknown;
+                  content?: unknown;
+                  metadata?: unknown;
+                }
+              ).filename ||
+                (
+                  result as {
+                    results?: unknown;
+                    filename?: unknown;
+                    title?: unknown;
+                    similarity?: unknown;
+                    content?: unknown;
+                    metadata?: unknown;
+                  }
+                ).title ||
+                'Unknown Document'}
+            </div>
             {#if (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).similarity}
-              <div class="text-sm text-gray-600">Similarity: {((result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).similarity * 100).toFixed(1)}%</div>
+              <div class="text-sm text-gray-600">
+                Similarity: {(
+                  (
+                    result as {
+                      results?: unknown;
+                      filename?: unknown;
+                      title?: unknown;
+                      similarity?: unknown;
+                      content?: unknown;
+                      metadata?: unknown;
+                    }
+                  ).similarity * 100
+                ).toFixed(1)}%
+              </div>
             {/if}
-            <div class="text-sm mt-2">{(result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).content}</div>
+            <div class="text-sm mt-2">
+              {(
+                result as {
+                  results?: unknown;
+                  filename?: unknown;
+                  title?: unknown;
+                  similarity?: unknown;
+                  content?: unknown;
+                  metadata?: unknown;
+                }
+              ).content}
+            </div>
             {#if (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).metadata}
               <div class="text-xs text-gray-500 mt-2">
                 {JSON.stringify(metadata)}
@@ -112,13 +169,19 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="font-medium mb-2">Quick API Tests</h3>
     <div class="flex gap-2 flex-wrap">
       <button
-        onclick={() => fetch('/api/rag/status').then(r => r.json()).then(console.log)}
+        onclick={() =>
+          fetch('/api/rag/status')
+            .then(r => r.json())
+            .then(console.log)}
         class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
       >
         Test Status API
       </button>
       <button
-        onclick={() => fetch('/api/ai/embeddings').then(r => r.json()).then(console.log)}
+        onclick={() =>
+          fetch('/api/ai/embeddings')
+            .then(r => r.json())
+            .then(console.log)}
         class="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600"
       >
         Test Embeddings API
@@ -127,6 +190,7 @@ https://svelte.dev/e/js_parse_error -->
     <p class="text-xs text-gray-600 mt-2">Check browser console for results</p>
   </div>
 </div>
+
 <style>
   pre {
     white-space: pre-wrap;

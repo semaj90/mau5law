@@ -4,11 +4,11 @@ export interface OCRResult {
   confidence: number;
   processing_time?: number;
   pages?: Array<any>;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface OCRWord {
   text: string;
   confidence?: number;
-  boundingBox?: { x: number; y: number; width: number; height: number };
+  boundingBox?: { x: number; y: number; width: number; height: number }
 }
 export default OCRResult;

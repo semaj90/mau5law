@@ -45,7 +45,7 @@ export const Default: Story = {
     enableAI: true
     showStats: true
   }
-};
+}
 export const GridView: Story = {
   args: {
     viewMode: 'grid',
@@ -61,7 +61,7 @@ export const GridView: Story = {
       }
     }
   }
-};
+}
 export const Timeline: Story = {
   args: {
     viewMode: 'timeline',
@@ -77,7 +77,7 @@ export const Timeline: Story = {
       }
     }
   }
-};
+}
 export const KanbanBoard: Story = {
   args: {
     viewMode: 'kanban',
@@ -93,7 +93,7 @@ export const KanbanBoard: Story = {
       }
     }
   }
-};
+}
 export const AssignedCases: Story = {
   args: {
     viewMode: 'list',
@@ -109,7 +109,7 @@ export const AssignedCases: Story = {
       }
     }
   }
-};
+}
 export const ClosedCases: Story = {
   args: {
     viewMode: 'grid',
@@ -125,4 +125,4 @@ export const ClosedCases: Story = {
       }
     }
   }
-};
+}

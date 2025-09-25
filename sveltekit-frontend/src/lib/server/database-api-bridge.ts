@@ -11,7 +11,7 @@ export interface LegalDocument {
   content: string;
   document_type: 'contract' | 'brief' | 'evidence' | 'statute' | 'regulation' | 'case_law';
   jurisdiction: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   embeddings?: number[];
   created_at: Date;
   updated_at: Date;
@@ -29,7 +29,7 @@ export interface LegalCase {
   client_id: string;
   created_at: Date;
   updated_at: Date;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   priority: 'low' | 'medium' | 'high' | 'urgent';
 }
 export interface EvidenceItem {
@@ -38,7 +38,7 @@ export interface EvidenceItem {
   description: string;
   evidence_type: 'document' | 'testimony' | 'physical' | 'digital' | 'expert_opinion';
   file_path?: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   case_id: string;
   relevance_score: number;
   admissibility_status: 'unknown' | 'admissible' | 'inadmissible' | 'pending';
@@ -50,7 +50,7 @@ export interface ConversationRecord {
   user_id: string;
   title: string;
   case_id?: string;
-  context: { [key: string]: any };
+  context: { [key: string]: any }
   created_at: Date;
   updated_at: Date;
   message_count: number;
@@ -64,7 +64,7 @@ export interface MessageRecord {
   model?: string;
   token_count?: number;
   processing_time?: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   created_at: Date;
 }
 // Database connection and operations
@@ -82,7 +82,7 @@ export class LegalDatabaseBridge {
     console.log('Initializing database connection...');
   }
   // Legal Documents Operations
-  async createLegalDocument(document: Partial<LegalDocument>): Promise<LegalDocument> {
+  async createLegalDocument(_document: Partial<LegalDocument>): Promise<LegalDocument> {
     const id = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date();
     const newDocument: LegalDocument = {
@@ -97,7 +97,7 @@ export class LegalDatabaseBridge {
       case_id: document.case_id,
       client_id: document.client_id,
       status: document.status || 'draft'
-    };
+    }
     try {
       // Use the existing SSR helper for JSONB operations
       await this.executeQuery(
@@ -213,7 +213,7 @@ export class LegalDatabaseBridge {
       updated_at: now
       metadata: caseData.metadata || {},
       priority: caseData.priority || 'medium'
-    };
+    }
     try {
       await this.executeQuery(
         `INSERT INTO legal_cases (id, title, description, case_type, jurisdiction, status, client_id, metadata, priority, created_at, updated_at)
@@ -272,7 +272,7 @@ export class LegalDatabaseBridge {
       admissibility_status: evidenceData.admissibility_status || 'unknown',
       created_at: now
       updated_at: now
-    };
+    }
     try {
       await this.executeQuery(
         `INSERT INTO evidence_items (id, title, description, evidence_type, file_path, metadata, case_id, relevance_score, admissibility_status, created_at, updated_at)
@@ -323,7 +323,7 @@ export class LegalDatabaseBridge {
       updated_at: now
       message_count: 0,
       last_activity: now
-    };
+    }
     try {
       await this.executeQuery(
         `INSERT INTO conversations (id, user_id, title, case_id, context, created_at, updated_at, message_count, last_activity)
@@ -359,7 +359,7 @@ export class LegalDatabaseBridge {
       processing_time: messageData.processing_time,
       metadata: messageData.metadata || {},
       created_at: now
-    };
+    }
     try {
       // Insert message
       await this.executeQuery(
@@ -419,7 +419,7 @@ export class LegalDatabaseBridge {
       case_id: row.case_id,
       client_id: row.client_id,
       status: row.status
-    };
+    }
   }
   private mapRowToCase(row: any): LegalCase {
     return {
@@ -434,7 +434,7 @@ export class LegalDatabaseBridge {
       updated_at: new Date(row.updated_at),
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
       priority: row.priority
-    };
+    }
   }
   private mapRowToEvidence(row: any): EvidenceItem {
     return {
@@ -449,7 +449,7 @@ export class LegalDatabaseBridge {
       admissibility_status: row.admissibility_status,
       created_at: new Date(row.created_at),
       updated_at: new Date(row.updated_at)
-    };
+    }
   }
   private mapRowToMessage(row: any): MessageRecord {
     return {
@@ -462,7 +462,7 @@ export class LegalDatabaseBridge {
       processing_time: row.processing_time,
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
       created_at: new Date(row.created_at)
-    };
+    }
   }
   // Execute query helper (would integrate with actual PostgreSQL client)
   private async executeQuery(query: string, params: any[] = []): Promise<any> {
@@ -473,7 +473,7 @@ export class LegalDatabaseBridge {
     return {
       rows: [],
       rowCount: 0
-    };
+    }
   }
   // Health check
   async isConnected(): Promise<boolean> {
@@ -493,14 +493,14 @@ export class LegalDatabaseBridge {
         evidence_items: await this.executeQuery('SELECT COUNT(*) FROM evidence_items'),
         conversations: await this.executeQuery('SELECT COUNT(*) FROM conversations'),
         messages: await this.executeQuery('SELECT COUNT(*) FROM messages')
-      };
+      }
       return Object.entries(stats).reduce((acc, [table, result]) => {
         acc[table] = (result as { rows?: any }).rows?.[0]?.count || 0;
         return acc;
       }, {} as Record<string, number>);
     } catch (error) {
       console.error('Failed to get database stats:', error);
-      return {};
+      return {}
     }
   }
 }
@@ -515,10 +515,10 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       data: document
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false
+        cached: false;
         source: 'api'
       }
-    };
+    }
   } catch (error) {
     return {
       success: false
@@ -529,7 +529,7 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
         source: 'api'
       },
       error: error instanceof Error ? error.message: 'Document creation failed'
-    };
+    }
   }
 }
 export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRResponse<LegalCase> {
@@ -540,10 +540,10 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       data: legalCase
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false
+        cached: false;
         source: 'api'
       }
-    };
+    }
   } catch (error) {
     return {
       success: false
@@ -554,7 +554,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
         source: 'api'
       },
       error: error instanceof Error ? error.message: 'Case creation failed'
-    };
+    }
   }
 }
 export async function apiSearchDocuments(
@@ -568,10 +568,10 @@ export async function apiSearchDocuments(
       data: documents
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false
+        cached: false;
         source: 'api'
       }
-    };
+    }
   } catch (error) {
     return {
       success: false
@@ -582,6 +582,6 @@ export async function apiSearchDocuments(
         source: 'api'
       },
       error: error instanceof Error ? error.message: 'Document search failed'
-    };
+    }
   }
 }

@@ -1,4 +1,3 @@
-
 // Advanced Type Patches for Complex Services
 declare global {
   namespace Fuse {
@@ -40,4 +39,4 @@ declare global {
     resultCount: number;
   }
 }
-export {};
+export {}

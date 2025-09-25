@@ -14,7 +14,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   const finalConfig: RedisOptions = {
     ...config,
     ...options
-  };
+  }
   const client = new Redis(finalConfig);
   // Enhanced error handling and logging
   client.on('connect', () => {
@@ -90,7 +90,7 @@ export async function getRedisInfo(): Promise<any> {
     const client = getRedisClient();
     // Best-effort readiness check (types may not expose status)
     const isReady = (client as any)?.status ? (client as any).status === 'ready' : true;
-    if (!isReady) return { connected: false };
+    if (!isReady) return { connected: false }
     const [info, memory, stats] = await Promise.all([
       (client as any).info?.() ?? '',
       (client as any).info?.('memory') ?? '',
@@ -101,17 +101,17 @@ export async function getRedisInfo(): Promise<any> {
       info: parseRedisInfo(info),
       memory: parseRedisInfo(memory),
       stats: parseRedisInfo(stats)
-    };
+    }
   } catch (error) {
     console.error('❌ Failed to get Redis info:', error);
-    return { connected: false };
+    return { connected: false }
   }
 }
 /**
  * Parse Redis INFO response into key-value pairs
  */;
 function parseRedisInfo(infoString: string): Record<string, string> {
-  const info: Record<string, string> = {};
+  const info: Record<string, string> = {}
   infoString.split('\r\n').forEach((line) => {
     if (line && !line.startsWith('#')) {
       const [key, value] = line.split(':');

@@ -81,7 +81,7 @@ export class SOMGrid {
   }
   project(v: number[]) {
     const b = this.bmu(v);
-    return { x: b % this.w, y: Math.floor(b / this.w), index: b };
+    return { x: b % this.w, y: Math.floor(b / this.w), index: b }
   }
 }
 export function normalize(vec: number[]) {
@@ -90,7 +90,7 @@ export function normalize(vec: number[]) {
 }
 export function buildIntentMap(points: IntentPoint[], cfg: SOMGridConfig) {
   if (!points.length)
-    return { som: null, clusters: new Map<number, string[]>() };
+    return { som: null, clusters: new Map<number, string[]>() }
   const dim = points[0].vector.length;
   const som = new SOMGrid(dim, cfg);
   som.trainBatch(
@@ -104,5 +104,5 @@ export function buildIntentMap(points: IntentPoint[], cfg: SOMGridConfig) {
     list.push(p.id);
     clusters.set(index, list);
   }
-  return { som, clusters };
+  return { som, clusters }
 }

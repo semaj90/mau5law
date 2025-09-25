@@ -19,7 +19,7 @@ import { fetchMinioObject } from './minio.js';
 export interface ExtractionResult {
   success: boolean;
   extractedText?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   error?: string;
   processingTime: number;
 }
@@ -95,16 +95,16 @@ export async function extractTextFromImage(buffer: Buffer, options: {
           imageOptimization: 'greyscale_sharpen'
         },
         processingTime: Date.now() - startTime
-      };
+      }
     } finally {
       await worker.terminate();
     }
   } catch (error) {
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
-    };
+    }
   }
 }
 /**
@@ -125,10 +125,10 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractionResu
     });
   } catch (error) {
     return {
-      success: false
+      success: false;
       error: `PDF extraction failed: ${error}`,
       processingTime: Date.now() - startTime
-    };
+    }
   }
 }
 /**
@@ -186,15 +186,15 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
       duration: audioInfo.duration,
       sampleRate: audioInfo.sampleRate,
       processingTime: Date.now() - startTime
-    };
+    }
   } catch (error) {
     // Cleanup on error
     if (outputPath) await cleanupTempFile(outputPath);
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
-    };
+    }
   } finally {
     // Cleanup input file
     if (inputPath) await cleanupTempFile(inputPath);
@@ -268,13 +268,13 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
         frameResolution: '1280x720'
       },
       processingTime: Date.now() - startTime
-    };
+    }
   } catch (error) {
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
-    };
+    }
   } finally {
     // Cleanup
     if (inputPath) await cleanupTempFile(inputPath);
@@ -303,7 +303,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
             jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length: 0
           },
           processingTime: Date.now() - startTime
-        };
+        }
       } catch (simdjsonError) {
         // Fallback to native JSON.parse
         console.warn('simdjson-wasm failed, falling back to JSON.parse: ', simdjsonError);
@@ -320,13 +320,13 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
         jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length: 0
       },
       processingTime: Date.now() - startTime
-    };
+    }
   } catch (error) {
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
-    };
+    }
   }
 }
 /**
@@ -420,7 +420,7 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
           encoding: 'utf-8'
         },
         processingTime: Date.now() - startTime
-      };
+      }
     }
     if (contentType === 'application/json') {
       const jsonText = buffer.toString('utf-8');
@@ -437,18 +437,18 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
           requiresSpecialProcessing: true
         },
         processingTime: Date.now() - startTime
-      };
+      }
     }
     return {
-      success: false
+      success: false;
       error: `Unsupported content type for text extraction: ${contentType}`,
       processingTime: Date.now() - startTime
-    };
+    }
   } catch (error) {
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
-    };
+    }
   }
 }

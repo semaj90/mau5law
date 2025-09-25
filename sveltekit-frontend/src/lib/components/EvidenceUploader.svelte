@@ -4,7 +4,7 @@
   interface Props {
     caseId: string;
     maxFileSize?: number;
-    onuploaded?: (event: { file: File; evidence: unknown }) => void;
+    onuploaded?: (_event: { file: File; evidence: unknown }) => void;
   }
   // Svelte 5 props with event handlers
   let { caseId, maxFileSize = 50 * 1024 * 1024, onuploaded }: Props = $props();
@@ -20,7 +20,7 @@
     videos: ['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/wmv'],
     documents: ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
     audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac'];
-  };
+  }
   const allAllowedTypes = Object.values.flat();
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
@@ -142,7 +142,7 @@
 <div class="evidence-uploader">
   <div
     class="upload-zone"
-    class:drag-active={dragActive};
+    class:drag-active={dragActive}
     class:uploading
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}

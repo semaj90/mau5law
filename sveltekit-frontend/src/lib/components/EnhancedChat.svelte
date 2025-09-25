@@ -46,7 +46,7 @@
   			isTyping: false
   			isLoading: false
   			session: null as ChatSession | null
-  			error: null as string | null
+  			error: null as string | null;
   			confidence: 0,
   			model: 'gemma3-legal';
   		},
@@ -81,7 +81,7 @@
   			},
   			sending: {
   				entry: assign({
-  					isLoading: true
+  					isLoading: true;
   					error: null;
   				}),
   				invoke: {
@@ -157,7 +157,7 @@
   						userAgent: navigator.userAgent,
   						context: 'legal-ai-chat';
   					}
-  				};
+  				}
   				// Initialize session in database
   				try {
   					await fetch('/api/chat/session', {
@@ -177,7 +177,7 @@
   					role: 'user',
   					timestamp: new Date(),
   					sessionId: context.session?.id;
-  				};
+  				}
   				// Direct Ollama API call with streaming disabled for now
   				const response = await fetch('http://localhost:11434/api/generate', {
   					method: 'POST',
@@ -185,7 +185,7 @@
   					body: JSON.stringify({,
   						model: context.model,
   						prompt: event.message,
-  						stream: false
+  						stream: false;
   						options: {
   							temperature: 0.7,
   							max_tokens: 1000,
@@ -212,12 +212,12 @@
   						promptEvalCount: data.prompt_eval_count,
   						evalCount: data.eval_count;
   					}
-  				};
+  				}
   				return {
   					userMessage,
   					aiResponse,
   					confidence: data.confidence || 0.8;
-  				};
+  				}
   			}
   		}
   	});

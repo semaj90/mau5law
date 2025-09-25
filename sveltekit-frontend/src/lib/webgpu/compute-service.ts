@@ -11,7 +11,7 @@ export interface WebGPUComputeResult {
   performance?: {
     executionTime: number;
     memoryUsed?: number;
-  };
+  }
 }
 class WebGPUComputeService {
   private initialized = false;
@@ -36,7 +36,7 @@ class WebGPUComputeService {
         performance: {
           executionTime: performance.now() - startTime
         }
-      };
+      }
       return result;
     } catch (error) {
       return {
@@ -45,7 +45,7 @@ class WebGPUComputeService {
         performance: {
           executionTime: performance.now() - startTime
         }
-      };
+      }
     }
   }
   async isWebGPUSupported(): Promise<boolean> {

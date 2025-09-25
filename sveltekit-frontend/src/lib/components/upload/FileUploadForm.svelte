@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   interface Props {
-    data: { form: unknown };
+    data: { form: unknown }
     caseId?: string;
   }
 
@@ -69,8 +69,8 @@ https://svelte.dev/e/js_parse_error -->
     video: Film,
     audio: Music,
     physical: HardDrive,
-    digital: Binary
-  };
+    digital: Binary;
+  }
   // Handle file changes from FileUpload component
   function handleFilesChange(files: UploadFile[]) {
     uploadFiles = files;
@@ -113,7 +113,7 @@ https://svelte.dev/e/js_parse_error -->
           uploadFiles = [...uploadFiles];
         }
       }, 100);
-    };
+    }
     file.status = 'uploading';
     file.progress = 0;
     uploadFiles = [...uploadFiles];
@@ -217,7 +217,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if !caseId}
           <Input
             id="caseId"
-            name="caseId"
+            name="caseId";
             bind:value={$form.caseId}
             variant="legal"
             label="Case ID"

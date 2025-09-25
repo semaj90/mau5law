@@ -45,7 +45,7 @@
         success: 'border-green-500 focus-visible:ring-green-500',
         warning: 'border-amber-500 focus-visible:ring-amber-500',
         error: 'border-red-500 focus-visible:ring-red-500 bg-red-50 dark:bg-red-950';
-      };
+      }
       classes.push(error ? variantClasses.error: variantClasses[variant] || variantClasses.default);
     }
     if (fullWidth) classes.push('!w-full');
@@ -62,12 +62,10 @@
     return classes.join(' ');
   });
 </script>
+
 <div class="input-wrapper" class:w-full={fullWidth}>
   {#if label}
-    <label
-      for={id}
-      class={nesStyle ? 'nes-label' : 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}
-    >
+    <label for={id} class={nesStyle ? 'nes-label' : 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}>
       {label}
       {#if required}
         <span class="text-red-500 ml-1">*</span>
@@ -116,6 +114,7 @@
     </p>
   {/if}
 </div>
+
 <style>
   .input-wrapper {
     @apply space-y-1;

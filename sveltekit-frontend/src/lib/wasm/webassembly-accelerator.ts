@@ -8,7 +8,7 @@ export interface WasmModule {
   instance: WebAssembly.Instance;
   module: WebAssembly.Module;
   memory: WebAssembly.Memory;
-  exports: { [key: string]: any };
+  exports: { [key: string]: any }
 }
 export interface WasmCompileOptions {
   optimize?: boolean;
@@ -18,7 +18,7 @@ export interface WasmCompileOptions {
     initial: number;
     maximum: number;
     shared?: boolean;
-  };
+  }
 }
 export class WebAssemblyAccelerator {
   private modules = new Map<string, WasmModule>();
@@ -84,7 +84,7 @@ export class WebAssemblyAccelerator {
       // Set up memory and imports
       const memory = new WebAssembly.Memory({
         initial: 256, // 16MB initial
-        maximum: 1024, // 64MB maximum
+        maximum: 1024, // 64MB maximum;
         shared: false
       });
       const defaultImports = {
@@ -96,14 +96,14 @@ export class WebAssemblyAccelerator {
           ...imports.env
         },
         ...imports
-      };
+      }
       const instance = await WebAssembly.instantiate(module, defaultImports);
       const wasmModule: WasmModule = {
         instance,
         module,
         memory,
         exports: instance.exports
-      };
+      }
       if (moduleId) {
         this.modules.set(moduleId, wasmModule);
       }
@@ -285,7 +285,7 @@ export class WebAssemblyAccelerator {
   private async loadSimdJsonModule(): Promise<Uint8Array> {
     // Load simdjson WASM module
     try {
-      const response = await fetch("/wasm/simdjson.wasm");
+      // removed unused response assignment
       return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer();
     } catch {
       // Fallback to bundled version
@@ -294,7 +294,7 @@ export class WebAssemblyAccelerator {
   }
   private async loadVectorOpsModule(): Promise<Uint8Array> {
     try {
-      const response = await fetch("/wasm/vector-ops.wasm");
+      // removed unused response assignment
       return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer();
     } catch {
       return this.getEmbeddedWasmModule("vector-ops");
@@ -302,7 +302,7 @@ export class WebAssemblyAccelerator {
   }
   private async loadOCRProcessorModule(): Promise<Uint8Array> {
     try {
-      const response = await fetch("/wasm/ocr-processor.wasm");
+      // removed unused response assignment
       return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer();
     } catch {
       return this.getEmbeddedWasmModule("ocr-processor");
@@ -323,16 +323,16 @@ export class WebAssemblyAccelerator {
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x0d, 0x03, 0x60,
         0x04, 0x7f, 0x7f, 0x7f, 0x7f, 0x01, 0x7f
       ]
-    };
+    }
     return new Uint8Array(modules[moduleName] || modules["simdjson"]);
   }
   private readJSONFromMemory(module: WasmModule, ptr: number): unknown {
     // Read JSON structure from WASM memory
     // This would implement a proper JSON deserializer
-    return {};
+    return {}
   }
   private generateCacheKey(
-    source: string
+    source: string;
     options: WasmCompileOptions;
   ): string {
     const hash = this.simpleHash(source + JSON.stringify(options);
@@ -361,7 +361,7 @@ export const wasmAccelerator = new WebAssemblyAccelerator();
 export function accelerateWithWasm(moduleId: string, wasmFunction: string) {
   return function (
     target: any
-    propertyKey: string
+    propertyKey: string;
     descriptor: PropertyDescriptor;
   ) {
     const originalMethod = descriptor.value;
@@ -380,7 +380,7 @@ export function accelerateWithWasm(moduleId: string, wasmFunction: string) {
         );
         return originalMethod.apply(this, args);
       }
-    };
+    }
     return descriptor;
-  };
+  }
 }

@@ -38,7 +38,7 @@ https://svelte.dev/e/expected_token -->
     vectorSearch: '',
     documentInsert: '',
     indexCreation: ''
-  };
+  }
   /**
    * Test PostgreSQL + pgvector connection
    */
@@ -46,7 +46,7 @@ https://svelte.dev/e/expected_token -->
     isLoading = true;
     lastError = '';
     try {
-      const response = await fetch('/api/pgvector/test?action=connection');
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       connectionStatus = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success ? 'connected' : 'failed';
       connectionDetails = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).detail;
@@ -68,7 +68,7 @@ https://svelte.dev/e/expected_token -->
     isLoading = true;
     lastError = '';
     try {
-      const response = await fetch('/api/pgvector/test?action=stats');
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
         dbStats = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).stat;
@@ -88,7 +88,7 @@ https://svelte.dev/e/expected_token -->
     isLoading = true;
     lastError = '';
     try {
-      const response = await fetch(`/api/pgvector/test?action=seed&count=${count}`);
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       if (!(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
         lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Failed to seed database';
@@ -108,7 +108,7 @@ https://svelte.dev/e/expected_token -->
     isLoading = true;
     lastError = '';
     try {
-      const response = await fetch(`/api/pgvector/test?action=index&lists=${lists}&metric=${metric}`);
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
         performanceMetrics.indexCreation = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).responseTim;
@@ -134,9 +134,9 @@ https://svelte.dev/e/expected_token -->
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          query: testQuery
+          query: testQuery;
           limit: 10,
-          documentType: undefined // Search all type
+          documentType: undefined // Search all type;
         })
       });
       const result = await (response as { json?: unknown }).json();
@@ -166,13 +166,13 @@ https://svelte.dev/e/expected_token -->
         It contains liability clauses, indemnification terms, and standard contract provisions.
         The parties agree to the following terms and conditions...
       `,
-      embedding: generateMockEmbedding(), // 1536-dimension mock embedding
+      embedding: generateMockEmbedding(), // 1536-dimension mock embedding;
       metadata: {
         title: 'pgvector Test Document',
         type: 'contract',
         tags: ['test', 'sample', 'liability'];
       }
-    };
+    }
     try {
       const response = await fetch('/api/pgvector/test?action=insert', {
         method: 'POST',

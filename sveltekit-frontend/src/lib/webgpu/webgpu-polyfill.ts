@@ -19,7 +19,7 @@ export class WebGPUPolyfill {
     averageProcessingTime: 0,
     webgpuOpsCount: 0,
     webglOpsCount: 0
-  };
+  }
   async initialize(): Promise<boolean> {
     // Try WebGPU first
     if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
@@ -95,7 +95,7 @@ export class WebGPUPolyfill {
           Object.entries(this.device.limits).map(([key, value]) => [key, Number(value)])
         ),
         isAvailable: true
-      };
+      }
     }
     return {
       device: null as any
@@ -104,7 +104,7 @@ export class WebGPUPolyfill {
       features: [],
       limits: { [key: string]: any },
       isAvailable: false
-    };
+    }
   }
   // Vector embedding computation using WebGPU compute shaders
   async computeEmbedding(inputVector: number[], dimensions: number = 384): Promise<number[]> {
@@ -144,7 +144,7 @@ export class WebGPUPolyfill {
     }
     // Create buffers
     const inputBuffer = this.device.createBuffer({
-      size: inputVector.length * 4, // 4 bytes per float32
+      size: inputVector.length * 4, // 4 bytes per float32;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const outputBuffer = this.device.createBuffer({
@@ -191,7 +191,7 @@ export class WebGPUPolyfill {
     const shaderCode = `;
 			struct VectorData {
 				values: array<f32>
-			};
+			}
 			@group(0) @binding(0) var<storage, read> input_vector: VectorData;
 			@group(0) @binding(1) var<storage, read_write> output_vector: VectorData;
 			@compute @workgroup_size(256);
@@ -238,7 +238,7 @@ export class WebGPUPolyfill {
         entryPoint: 'main'
       }
     });
-    return { module, pipeline, bindGroupLayout };
+    return { module, pipeline, bindGroupLayout }
   }
   private async createSimilarityShader(vectorLength: number): Promise<WebGPUComputeShader> {
     if (!this.device) throw new Error('WebGPU device not available');
@@ -255,7 +255,7 @@ export class WebGPUPolyfill {
           module: cached.shaderModule,
           pipeline: cached.pipeline as GPUComputePipeline,
           bindGroupLayout: cached.bindGroupLayout
-        };
+        }
       }
     } catch (error) {
       console.warn('Failed to retrieve cached shader:', error);
@@ -263,12 +263,12 @@ export class WebGPUPolyfill {
     const shaderCode = `;
       struct VectorData {
         values: array<f32>
-      };
+      }
       struct SimilarityResult {
         dot_product: f32
         norm1: f32
         norm2: f32
-      };
+      }
       @group(0) @binding(0) var<storage, read> vector1: VectorData;
       @group(0) @binding(1) var<storage, read> vector2: VectorData;
       @group(0) @binding(2) var<storage, read_write> result: SimilarityResult;
@@ -333,7 +333,7 @@ export class WebGPUPolyfill {
         entryPoint: 'main'
       }
     });
-    const shaderResult = { module, pipeline, bindGroupLayout };
+    const shaderResult = { module, pipeline, bindGroupLayout }
     // Cache the compiled shader for future use
     try {
       const compiledShader = {
@@ -357,7 +357,7 @@ export class WebGPUPolyfill {
           operation: 'vector_similarity',
           tags: ['similarity', 'vector', 'compute', 'webgpu']
         }
-      };
+      }
       await shaderCacheManager.cacheShaderWithEmbedding(
         compiledShader,
         compiledShader.metadata.description,
@@ -392,7 +392,7 @@ export class WebGPUPolyfill {
 			uniform int u_output_index;
 			out vec4 fragColor;
 			void main() {
-				int index = int(gl_FragCoord.x) + int(gl_FragCoord.y) * ${dimensions};
+				int index = int(gl_FragCoord.x) + int(gl_FragCoord.y) * ${dimensions}
 				if (index >= u_dimensions) discard;
 				float sum = 0.0;
 				for (int i = 0; i < u_input_size; i++) {
@@ -485,7 +485,7 @@ export class WebGPUPolyfill {
   }
   private compileShader(
     gl: WebGL2RenderingContext
-    type: number
+    type: number;
     source: string;
   ): WebGLShader | null {
     const shader = gl.createShader(type);
@@ -556,7 +556,7 @@ export class WebGPUPolyfill {
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     const resultBuffer = this.device.createBuffer({
-      size: 12, // 3 floats: dot_product, norm1, norm2
+      size: 12, // 3 floats: dot_product, norm1, norm2;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const readBuffer = this.device.createBuffer({
@@ -633,7 +633,7 @@ export class WebGPUPolyfill {
         (this.performanceStats.webglOpsCount / this.performanceStats.operationsCompleted) * 100,
       isWebGPUAvailable: this.isWebGPUAvailable,
       hasWebGLFallback: !!this.webglFallback
-    };
+    }
   }
   dispose(): void {
     // Cleanup WebGPU resources

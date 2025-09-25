@@ -76,7 +76,7 @@ await initializeQuantumVisualization();
       camera.position.set(0, 0, 8);
       // Setup renderer with WebGL2 for better performance
       renderer = new THREE.WebGLRenderer({
-        antialias: true
+        antialias: true;
         alpha: false
         powerPreference: 'high-performance';
       });
@@ -95,7 +95,7 @@ await initializeQuantumVisualization();
           quantumCoherence: consciousness.awakening,
           entanglementStrength: 0.6,
           waveFunction: 'superposition',
-          uncertaintyPrinciple: true
+          uncertaintyPrinciple: true;
           dimensions: 8;
         },
         consciousness: {
@@ -155,7 +155,7 @@ await initializeQuantumVisualization();
         realityMetrics = quantumEffects.getRealityMetrics();
       }
       setTimeout(updateMetrics, 1000); // Update every second
-    };
+    }
     updateMetrics();
   }
   function updateVisualization() {

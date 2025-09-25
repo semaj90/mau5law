@@ -30,7 +30,7 @@ export interface WorkflowContext {
   currentStep: string;
   progress: number;
   errors: string[];
-  data: { [key: string]: any };
+  data: { [key: string]: any }
 }
 export interface UserWorkflowContext extends WorkflowContext {
   user?: User;
@@ -45,14 +45,14 @@ export interface UserWorkflowContext extends WorkflowContext {
     totalSteps: number;
     startedAt?: Date;
     completedAt?: Date;
-  };
+  }
   collaborators: User[];
   notifications: Array<any>;
   preferences: {
     autoSave: boolean;
     notifications: boolean;
     collaborationMode: 'real-time' | 'async';
-  };
+  }
 }
 export type UserWorkflowEvent =
   | { type: 'LOGIN'; user: User }
@@ -73,7 +73,7 @@ export type UserWorkflowEvent =
   | { type: 'UPDATE_PREFERENCES'; preferences: Partial<UserWorkflowContext['preferences']> }
   | { type: 'ERROR'; error: string }
   | { type: 'RETRY' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 export const userWorkflowMachine = createMachine({
   id: 'userWorkflow',
   types: {
@@ -463,7 +463,7 @@ function getWorkflowSteps(workflowType: UserWorkflowContext['workflow']['type'])
       'close_case_record',
       'case_closed'
     ]
-  };
+  }
   return workflowSteps[workflowType] || ['unknown_workflow'];
 }
 export type UserWorkflowMachine = typeof userWorkflowMachine;

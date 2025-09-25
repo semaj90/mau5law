@@ -55,7 +55,7 @@ export const apiResponses = {
   created: <T>(data: T) => apiSuccess(data, 201),
   accepted: <T>(data: T) => apiSuccess(data, 202),
   noContent: () => new Response(null, { status: 204 })
-};
+}
 /**
  * Legal AI specific response helpers
  */;
@@ -92,7 +92,7 @@ export const legalApiResponses = {
     apiSuccess({ analysis: result, message: 'Evidence processed successfully' }, 200),
   aiAnalysisComplete: (analysis: any) =>
     apiSuccess({ analysis, message: 'AI analysis completed' }, 200)
-};
+}
 /**
  * Middleware to wrap API handlers with standardized error handling
  */;
@@ -118,7 +118,7 @@ export function withErrorHandling(handler: Function) {
           ? error.message: 'Internal server error'
       );
     }
-  };
+  }
 }
 /**
  * Request validation helper
@@ -138,7 +138,7 @@ export function validateRequest(
 export function paginatedResponse<T>(
   data: T[]
   total: number
-  page: number
+  page: number;
   limit: number;
 ) {
   return apiSuccess({

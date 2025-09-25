@@ -30,7 +30,7 @@ declare module '$env/dynamic/private' {
     GOOGLE_API_KEY?: string;
     NODE_ENV?: string;
     [key: string]: string | undefined;
-  };
+  }
 }
 declare module '$env/dynamic/public' {
   export const env: Record<string, string | undefined>;
@@ -117,26 +117,26 @@ export interface EnhancedEnv {
 // Environment helper functions
 export const envHelper = {
   // Get environment variable with fallback
-  get: (key: string, defaultValue: string = ''): string => {
+  get: (_key: string, defaultValue: string = ''): string => {
     if (typeof process !== 'undefined' && process.env) {
       return process.env[key] || defaultValue;
     }
     return defaultValue;
   },
   // Get boolean environment variable
-  getBool: (key: string, defaultValue: boolean = false): boolean => {
+  getBool: (_key: string, defaultValue: boolean = false): boolean => {
     const value = envHelper.get(key);
     if (!value) return defaultValue;
     return value.toLowerCase() === 'true' || value === '1';
   },
   // Get number environment variable
-  getNumber: (key: string, defaultValue: number = 0): number => {
+  getNumber: (_key: string, defaultValue: number = 0): number => {
     const value = envHelper.get(key);
     const parsed = parseInt(value, 10);
     return isNaN(parsed) ? defaultValue : parsed;
   },
   // Get required environment variable (throws if missing)
-  getRequired: (key: string): string => {
+  getRequired: (_key: string): string => {
     const value = envHelper.get(key);
     if (!value) {
       throw new Error(`Required environment variable ${key} is not set`);
@@ -145,21 +145,20 @@ export const envHelper = {
   },
   // Get database URL with validation
   getDatabaseUrl: (): string => {
-    return envHelper.get('DATABASE_URL') ||
+    return (
+      envHelper.get('DATABASE_URL') ||
       envHelper.get('POSTGRES_URL') ||
-           `postgresql://postgres:postgres@localhost:5433/legal_ai_db`
+      `postgresql://postgres:postgres@localhost:5433/legal_ai_db`
+    );
   },
   // Get Redis URL with validation
   getRedisUrl: (): string => {
-    return envHelper.get('REDIS_URL') ||
-           `redis://localhost:6379`
+    return envHelper.get('REDIS_URL') || `redis://localhost:6379`;
   },
   // Get Ollama URL with validation
   getOllamaUrl: (): string => {
-    return envHelper.get('OLLAMA_URL') ||
-      envHelper.get('PUBLIC_OLLAMA_URL') ||
-           `http://localhost:11434`
-  }
-};
+    return envHelper.get('OLLAMA_URL') || envHelper.get('PUBLIC_OLLAMA_URL') || `http://localhost:11434`;
+  },
+}
 // Export types
-export type { EnhancedEnv };
+export type { EnhancedEnv }

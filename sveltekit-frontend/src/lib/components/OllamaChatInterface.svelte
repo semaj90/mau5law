@@ -71,13 +71,13 @@ await checkOllamaHealth();
     // Auto-scroll setup
     return () => {
       // Cleanup if needed
-    };
+    }
     })();
   });
   // Health check function
   async function checkOllamaHealth() {
     try {
-      const response = await fetch("/api/chat", { method: "GET" });
+      // removed unused response assignment
       const data = await response.json();
       ollamaStatus = data.status === "healthy" ? "healthy" : "unhealthy";
       if (data.models) {
@@ -100,7 +100,7 @@ await checkOllamaHealth();
     chatHistory.push({
       id: messageId
       type: "user",
-      content: userMessage
+      content: userMessage;
       timestamp: new Date(),
     });
     // Clear input and set loading
@@ -115,7 +115,7 @@ await checkOllamaHealth();
         stream: streamMode
         caseId,
         useRAG,
-      };
+      }
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -207,7 +207,7 @@ await checkOllamaHealth();
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   }
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -226,8 +226,8 @@ await checkOllamaHealth();
       timestamp: new Date().toISOString(),
       model,
       caseId,
-      messages: chatHistory
-    };
+      messages: chatHistory;
+    }
     const blob = new Blob([JSON.stringify(chatData, null, 2)], {
       type: "application/json",
     });
@@ -246,6 +246,7 @@ await checkOllamaHealth();
     }
   });
 </script>
+
 <!-- Chat Interface -->
 <div class="ollama-chat-interface {className}">
   <!-- Header with Status -->
@@ -255,9 +256,7 @@ await checkOllamaHealth();
         <h3 class="nes-text is-primary flex items-center gap-2">
           <Brain class="w-5 h-5" />
           Legal AI Assistant
-          <Badge
-            variant={ollamaStatus === "healthy" ? "default" : "destructive"}
-          >
+          <Badge variant={ollamaStatus === 'healthy' ? 'default' : 'destructive'}>
             {ollamaStatus}
           </Badge>
         </h3>
@@ -269,23 +268,13 @@ await checkOllamaHealth();
             {/each}
           </select>
           <!-- Settings Toggle -->
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={() =>
-(showSettings = !showSettings)}
-          >
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
-</Button>
+          </Button>
           <!-- Health Check -->
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={checkOllamaHealth}
-            disabled={isLoading}
-          >
-<RefreshCw class="w-4 h-4" />
-</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={checkOllamaHealth} disabled={isLoading}>
+            <RefreshCw class="w-4 h-4" />
+          </Button>
         </div>
       </div>
       <!-- Performance Metrics -->
@@ -309,7 +298,8 @@ await checkOllamaHealth();
       <div class="yorha-panel-content pt-0 border-t">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-medium" for="temperature">Temperature</label><input id="temperature"
+            <label class="text-sm font-medium" for="temperature">Temperature</label><input
+              id="temperature"
               type="range"
               min="0"
               max="1"
@@ -332,25 +322,16 @@ await checkOllamaHealth();
     {/if}
   </div>
   <!-- Token Usage Manager -->
-  <TokenUsageManager
-    bind:this={tokenManager}
-    currentModel={model}
-    class="mb-4"
-    data-testid="token-usage-manager"
-  />
+  <TokenUsageManager bind:this={tokenManager} currentModel={model} class="mb-4" data-testid="token-usage-manager" />
   <!-- Status Messages -->
   {#if errorMessage}
-    <div
-      class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2"
-    >
+    <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
       <AlertCircle class="w-4 h-4 text-red-600" />
       <span class="text-red-800">{errorMessage}</span>
     </div>
   {/if}
   {#if successMessage}
-    <div
-      class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2"
-    >
+    <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
       <CheckCircle class="w-4 h-4 text-green-600" />
       <span class="text-green-800">{successMessage}</span>
     </div>
@@ -362,9 +343,7 @@ await checkOllamaHealth();
         <div class="text-center nes-text is-disabled py-8">
           <MessageSquare class="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>Start a conversation with the Legal AI Assistant</p>
-          <p class="text-sm mt-2">
-            Ask about legal procedures, case analysis, or research questions
-          </p>
+          <p class="text-sm mt-2">Ask about legal procedures, case analysis, or research questions</p>
         </div>
       {:else}
         {#each chatHistory as msg}
@@ -377,13 +356,11 @@ await checkOllamaHealth();
               class="inline-block max-w-[85%] {msg.type === 'user'
                 ? 'bg-blue-600 text-white rounded-2xl rounded-br-md shadow-md'
                 : 'bg-gray-50 text-gray-900 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm'} px-6 py-4"
-              data-testid={msg.type === "assistant"
-                ? "chat-response"
-                : "chat-message"}
+              data-testid={msg.type === 'assistant' ? 'chat-response' : 'chat-message'}
             >
               <div class="whitespace-pre-wrap text-[15px] leading-relaxed">{msg.content}</div>
               <!-- Performance Info for Assistant Messages -->
-              {#if msg.type === "assistant" && msg.performance}
+              {#if msg.type === 'assistant' && msg.performance}
                 <div class="text-xs opacity-60 mt-3 pt-2 border-t border-gray-300">
                   <span class="font-mono">{msg.performance.duration}ms</span> •
                   <span class="font-mono">{msg.performance.tokens} tokens</span> •
@@ -399,11 +376,10 @@ await checkOllamaHealth();
                     class="bits-btn text-xs"
                     variant="ghost"
                     size="sm"
-                    onclick={() =>
-selectSuggestion(suggestion)}
+                    onclick={() => selectSuggestion(suggestion)}
                   >
                     {suggestion}
-</Button>
+                  </Button>
                 {/each}
               </div>
             {/if}
@@ -437,40 +413,28 @@ selectSuggestion(suggestion)}
         bind:value={message}
         placeholder="Type your legal question here..."
         keypress={handleKeyPress}
-        disabled={isLoading || ollamaStatus !== "healthy"}
+        disabled={isLoading || ollamaStatus !== 'healthy'}
         class="h-12 text-[15px] px-4 border-2 border-gray-200 focus:border-blue-500 rounded-xl"
         data-testid="chat-input"
       />
     </div>
     <Button
       onclick={sendMessage}
-      disabled={!canSend || ollamaStatus !== "healthy"}
+      disabled={!canSend || ollamaStatus !== 'healthy'}
       class="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium bits-btn bits-btn"
       data-testid="send-button"
     >
-{#if isLoading}
+      {#if isLoading}
         <Loader2 class="w-5 h-5 animate-spin mr-2" />
         <span>Sending...</span>
       {:else}
         <Send class="w-5 h-5 mr-2" />
         <span>Send</span>
       {/if}
-</Button>
+    </Button>
     <!-- Additional Actions -->
-    <Button class="bits-btn"
-      variant="ghost"
-      onclick={clearChat}
-      disabled={chatHistory.length === 0}
-    >
-Clear
-</Button>
-    <Button class="bits-btn"
-      variant="ghost"
-      onclick={exportChat}
-      disabled={chatHistory.length === 0}
-    >
-Export
-</Button>
+    <Button class="bits-btn" variant="ghost" onclick={clearChat} disabled={chatHistory.length === 0}>Clear</Button>
+    <Button class="bits-btn" variant="ghost" onclick={exportChat} disabled={chatHistory.length === 0}>Export</Button>
   </div>
   <!-- Chat Stats -->
   {#if messageCount > 0}
@@ -481,6 +445,7 @@ Export
     </div>
   {/if}
 </div>
+
 <style>
   .ollama-chat-interface {
     display: flex;

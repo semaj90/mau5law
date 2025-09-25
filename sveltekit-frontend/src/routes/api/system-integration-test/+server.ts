@@ -211,7 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'end-to-end':
         return await runEndToEndTest(data)
       case 'cleanup':
-        return await cleanupTestData()
+        return await cleanupTestData();
       default:
         return json({ success: false, error: 'Unknown action' }, { status: 400 })
     }
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: false, error: msg }, { status: 500 })
   }
 }
-async function runStressTest(options: any = {}): Promise<Response> {
+async function runStressTest(_options: any = {}): Promise<Response> {
   const { iterations = 100, concurrent = 10 } = options
   const results = []
   console.log(`🔥 Running stress test: ${iterations} iterations, ${concurrent} concurrent`)
@@ -235,7 +235,7 @@ async function runStressTest(options: any = {}): Promise<Response> {
     stressTest: {
       iterations,
       concurrent,
-      results: workerResults
+      results: workerResults;
       summary: {
         avgResponseTime:
           workerResults.reduce((sum, r) => sum + r.avgTime, 0) / workerResults.length,
@@ -270,7 +270,7 @@ async function stressTestWorker(iterations: number, workerId: number): Promise<a
     avgTime: totalResponseTime / iterations
   }
 }
-async function runEndToEndTest(options: any = {}): Promise<Response> {
+async function runEndToEndTest(_options: any = {}): Promise<Response> {
   const testId = `e2e-${Date.now()}`
   const results: { steps: string[]; errors: string[]; success: boolean } = {
     steps: [],

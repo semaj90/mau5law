@@ -61,7 +61,7 @@ mcp<script lang="ts">
         error: 400,
         warning: 600,
         info: 500,
-      };
+      }
       oscillator.frequency.setValueAtTime(
         frequencies[type],
         audioContext.currentTime
@@ -95,7 +95,7 @@ mcp<script lang="ts">
       destroy() {
         notificationElements.delete(notificationId);
       },
-    };
+    }
   }
   function getNotificationIcon(type: Notification["type"]) {
     switch (type) {
@@ -161,7 +161,7 @@ mcp<script lang="ts">
       enter: `transition-all duration-300 ease-out transform ${enterFrom} opacity-0`,
       enterActive: "transform translate-y-0 opacity-100",
       exit: `transition-all duration-200 ease-in transform ${enterFrom} opacity-0`,
-    };
+    }
   }
 </script>
 <div

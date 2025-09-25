@@ -1,15 +1,4 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  integer,
-  boolean,
-  jsonb,
-  uuid,
-  varchar,
-  serial,
-  real
-} from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, integer, boolean, jsonb, uuid, varchar, serial, real } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 // Enhanced Legal AI Database Schema with pgvector support
 export const casesTable = pgTable('legal_cases', {
@@ -20,7 +9,7 @@ export const casesTable = pgTable('legal_cases', {
   priority: varchar('priority', { length: 20 }).default('medium'),
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow()
+  updated_at: timestamp('updated_at').defaultNow(),
 });
 export const documentsTable = pgTable('legal_documents', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -33,13 +22,13 @@ export const documentsTable = pgTable('legal_documents', {
   // Vector embeddings for semantic search
   embedding: vector('embedding', { dimensions: 1536 }), // OpenAI embedding dimensions
   summary_embedding: vector('summary_embedding', { dimensions: 768 }), // Sentence transformer
-  // JSONB for complex metadata
+  // JSONB for complex metadata;
   metadata: jsonb('metadata'),
   // Full-text search
   search_vector: text('search_vector'), // tsvector equivalent
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
-  processed_at: timestamp('processed_at')
+  processed_at: timestamp('processed_at'),
 });
 export const evidenceTable = pgTable('evidence_items', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -56,10 +45,10 @@ export const evidenceTable = pgTable('evidence_items', {
   character_offset: integer('character_offset'),
   // Vector similarity for related evidence
   embedding: vector('embedding', { dimensions: 1536 }),
-  // Evidence-specific metadata
+  // Evidence-specific metadata;
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow()
+  updated_at: timestamp('updated_at').defaultNow(),
 });
 export const timelineEventsTable = pgTable('timeline_events', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -73,7 +62,7 @@ export const timelineEventsTable = pgTable('timeline_events', {
   related_documents: jsonb('related_documents'),
   related_evidence: jsonb('related_evidence'),
   metadata: jsonb('metadata'),
-  created_at: timestamp('created_at').defaultNow()
+  created_at: timestamp('created_at').defaultNow(),
 });
 // Vector similarity search materialized view for performance
 export const vectorSimilarityView = pgTable('vector_similarity_cache', {
@@ -83,7 +72,7 @@ export const vectorSimilarityView = pgTable('vector_similarity_cache', {
   similarity_score: real('similarity_score').notNull(),
   similarity_type: varchar('similarity_type', { length: 50 }), // 'document', 'evidence', 'case'
   created_at: timestamp('created_at').defaultNow(),
-  expires_at: timestamp('expires_at')
+  expires_at: timestamp('expires_at'),
 });
 // Cache table for frequently accessed queries
 export const queryCache = pgTable('query_cache', {
@@ -97,7 +86,7 @@ export const queryCache = pgTable('query_cache', {
   access_count: integer('access_count').default(0),
   last_accessed: timestamp('last_accessed').defaultNow(),
   created_at: timestamp('created_at').defaultNow(),
-  expires_at: timestamp('expires_at').notNull()
+  expires_at: timestamp('expires_at').notNull(),
 });
 // Analytics and metrics
 export const analyticsEvents = pgTable('analytics_events', {
@@ -111,7 +100,7 @@ export const analyticsEvents = pgTable('analytics_events', {
   response_time_ms: integer('response_time_ms'),
   cache_hit: boolean('cache_hit'),
   cache_layer: varchar('cache_layer', { length: 50 }),
-  created_at: timestamp('created_at').defaultNow()
+  created_at: timestamp('created_at').defaultNow(),
 });
 // Full-text search configuration
 export const searchConfigTable = pgTable('search_config', {
@@ -124,7 +113,7 @@ export const searchConfigTable = pgTable('search_config', {
   // Fuse.js configuration
   fuzzy_config: jsonb('fuzzy_config'),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow()
+  updated_at: timestamp('updated_at').defaultNow(),
 });
 // Types for enhanced type safety
 export type Case = typeof casesTable.$inferSelect;

@@ -33,7 +33,7 @@
     medium: 'w-96 h-80',
     large: 'w-[32rem] h-96',
     fullscreen: 'w-[90vw] h-[80vh]';
-  };
+  }
   const typeColors = {
     menu: 'from-blue-900/90 to-blue-800/90',
     dialog: 'from-purple-900/90 to-purple-800/90',
@@ -41,16 +41,16 @@
     shop: 'from-green-900/90 to-green-800/90',
     inventory: 'from-amber-900/90 to-amber-800/90',
     status: 'from-cyan-900/90 to-cyan-800/90';
-  };
+  }
   const cornerClasses = {
     classic: 'ff-corner-classic',
     modern: 'ff-corner-modern',
     hybrid: 'ff-corner-hybrid';
-  };
+  }
   function handleClose() {
     // ondispatch removed;
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
       handleClose();
     }
@@ -61,6 +61,7 @@
     }
   });
 </script>
+
 {#if isOpen}
   <!-- Final Fantasy Style Backdrop -->
   <div
@@ -72,7 +73,7 @@
     aria-labelledby="modal-title"
     onclick={handleClose}
     keydown={handleKeydown}
-    tabindex="-1"
+    tabindex="-1";
     bind:this={modalElement}
   >
     <!-- FF-Style Modal Container -->
@@ -80,7 +81,7 @@
       class="relative {sizeClasses[size]} bg-gradient-to-br {typeColors[type]}
              border-2 border-amber-400/80 shadow-2xl overflow-hidden
              {cornerClasses[cornerStyle]}"
-      transitiscale={{ duration: 400, easing: quintOut, start: 0.8 }};
+      transitiscale="{{ duration: 400, easing: quintOut, start: 0.8 }}"
       bind:this={contentElement}
     >
       <!-- FF-Style Corner Decorations -->
@@ -92,10 +93,15 @@
       {/if}
       <!-- FF-Style Title Bar -->
       {#if title}
-        <div class="relative px-6 py-3 bg-gradient-to-r from-amber-600/90 to-yellow-500/90
-                    border-b border-amber-400/50">
-          <h2 id="modal-title" class="text-lg font-bold text-white tracking-wider uppercase
-                                   text-shadow-lg shadow-black/50">
+        <div
+          class="relative px-6 py-3 bg-gradient-to-r from-amber-600/90 to-yellow-500/90
+                    border-b border-amber-400/50"
+        >
+          <h2
+            id="modal-title"
+            class="text-lg font-bold text-white tracking-wider uppercase
+                                   text-shadow-lg shadow-black/50"
+          >
             {title}
           </h2>
           <button
@@ -114,8 +120,10 @@
       </div>
       <!-- FF-Style Action Bar (if actions snippet provided) -->
       {#if actions}
-        <div class="px-6 py-4 bg-gradient-to-r from-slate-800/90 to-slate-700/90
-                    border-t border-amber-400/30">
+        <div
+          class="px-6 py-4 bg-gradient-to-r from-slate-800/90 to-slate-700/90
+                    border-t border-amber-400/30"
+        >
           <div class="flex justify-end space-x-3">
             {@render actions()}
           </div>
@@ -124,8 +132,19 @@
     </div>
   </div>
 {/if}
-<style>/* Final Fantasy Corner Styles */ .ff-corner-classic {
-clip-path: polygon( 0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px) );
+
+<style>/* Final Fantasy Corner Styles */ {}
+  .ff-corner-classic {
+clip-path: polygon( {}
+0% 8px, {}
+8px 0%, {}
+calc(100% - 8px) 0%, {}
+100% 8px, {}
+100% calc(100% - 8px), {}
+calc(100% - 8px) 100%, {}
+8px 100%, {}
+0% calc(100% - 8px) {}
+    );
   }
   .ff-corner-modern {
     border-radius: 0.5rem;
@@ -140,10 +159,20 @@ clip-path: polygon( 0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100
     z-index: -1;
   }
   .ff-corner-hybrid {
-clip-path: polygon( 0% 12px, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px) );
+clip-path: polygon( {}
+0% 12px, {}
+12px 0%, {}
+calc(100% - 12px) 0%, {}
+100% 12px, {}
+100% calc(100% - 12px), {}
+calc(100% - 12px) 100%, {}
+12px 100%, {}
+0% calc(100% - 12px) {}
+    );
     border-radius: 0.25rem;
   }
-/* Custom Scrollbar */ .custom-scrollbar::-webkit-scrollbar {
+/* Custom Scrollbar */ {}
+  .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -157,12 +186,19 @@ clip-path: polygon( 0% 12px, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #f59e0b, #b45309);
   }
-/* Text Shadow Utility */ .text-shadow-lg {
+/* Text Shadow Utility */ {}
+  .text-shadow-lg {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   }
-/* FF-Style Animations */ @keyframes ff-shimmer {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 1; }
+/* FF-Style Animations */ {}
+  @keyframes ff-shimmer {
+0%, {}
+    100% {
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 1;
+    }
   }
   .ff-corner-classic::after {
     content: '';

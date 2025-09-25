@@ -11,7 +11,7 @@ const RABBITMQ_CONFIG = {
   password: import.meta.env.RABBITMQ_PASSWORD || 'guest',
   vhost: import.meta.env.RABBITMQ_VHOST || '/',
   heartbeat: 60
-};
+}
 // Queue configurations
 const QUEUES = {
   DOCUMENT_PROCESSING: 'document.processing',
@@ -55,12 +55,12 @@ export class RabbitMQService {
     if (!this.channel) return;
     // Queue options that match existing configurations to prevent conflicts
     const queueOptions = {
-      durable: true
+      durable: true;
       arguments: {
         'x-message-ttl': 3600000, // 1 hour TTL to match existing queues
         'x-max-length': 10000     // Max 10k messages
       }
-    };
+    }
     for (const queue of Object.values(QUEUES)) {
       await this.channel.assertQueue(queue, queueOptions);
     }
@@ -93,17 +93,17 @@ export class RabbitMQService {
   async healthCheck(): Promise<any> {
     try {
       if (!this.isConnected || !this.connection) {
-        return { status: 'unhealthy', details: { error: 'Not connected' } };
+        return { status: 'unhealthy', details: { error: 'Not connected' } }
       }
       return {
         status: 'healthy',
         details: { connected: this.isConnected, queues: Object.keys(QUEUES).length }
-      };
+      }
     } catch (error: any) {
       return {
         status: 'unhealthy',
         details: { error: error instanceof Error ? error.message: 'Unknown error' }
-      };
+      }
     }
   }
   async disconnect(): Promise<void> {
@@ -114,4 +114,4 @@ export class RabbitMQService {
   }
 }
 export const rabbitmqService = RabbitMQService.getInstance();
-export { QUEUES };
+export { QUEUES }

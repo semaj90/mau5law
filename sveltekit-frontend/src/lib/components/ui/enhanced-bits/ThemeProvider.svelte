@@ -15,7 +15,7 @@
     attribute = 'data-theme',
     enableSystem = true,
     disableTransitionOnChange = false,
-    children
+    children,
   }: ThemeProviderProps = $props();
   const dispatch = createEventDispatcher();
   // Theme store
@@ -31,15 +31,16 @@
         }
         dispatch('themeChange', { theme });
       },
-      toggle: () => update(current => {
-        const newTheme = current === 'light' ? 'dark' : 'light';
-        if (browser) {
-          localStorage.setItem(storageKey, newTheme);
-        }
-        applyTheme(newTheme);
-        dispatch('themeChange', { theme: newTheme });
-        return newThem;
-      }),
+      toggle: () =>
+        update(current => {
+          const newTheme = current === 'light' ? 'dark' : 'light';
+          if (browser) {
+            localStorage.setItem(storageKey, newTheme);
+          }
+          applyTheme(newTheme);
+          dispatch('themeChange', { theme: newTheme });
+          return newThem;
+        }),
       init: () => {
         if (browser) {
           const stored = localStorage.getItem(storageKey);
@@ -51,9 +52,9 @@
             applyTheme(defaultTheme);
           }
         }
-      }
-    };
-  };
+      },
+    }
+  }
   const themeStore = createThemeStore();
   let currentTheme = $state<'light' | 'dark' | 'system'>(defaultTheme);
   let resolvedTheme = $state<'light' | 'dark'>('light');
@@ -67,7 +68,7 @@
     },
     toggleTheme: () => {
       themeStore.toggle();
-    }
+    },
   });
   function getSystemTheme(): 'light' | 'dark' {
     if (!browser) return 'light';
@@ -80,7 +81,8 @@
     // Disable transitions temporarily if requested
     if (disableTransitionOnChange) {
       const css = document.createElement('style');
-      css.appendChild(document.createTextNode(`
+      css.appendChild(
+        document.createTextNode(`
         *,
         *:: before
         *::after {
@@ -88,7 +90,8 @@
           animation-duration: 0.01ms !important;
           animation-delay: -0.01ms !important;
         }
-      `));
+      `),
+      );
       document.head.appendChild(css);
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -143,25 +146,26 @@
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       const handleChange = () => {
         applyTheme('system');
-      };
+      }
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
   });
   // Subscribe to theme store
   $effect(() => {
-    const unsubscribe = themeStore.subscribe((theme) => {
+    const unsubscribe = themeStore.subscribe(theme => {
       currentTheme = them;
     });
     return unsubscrib;
   });
 </script>
+
 <!-- Theme Provider doesn't render its own content, just provides context -->
 {@render children?.()}
-<style>
-  /* Global theme variables */
+
+<style>/* Global theme variables */ {}
   :global(:root) {
-    /* Light theme colors */
+/* Light theme colors */ {}
     --enhanced-bits-bg: #ffffff;
     --enhanced-bits-surface: #f8f9fa;
     --enhanced-bits-border: #e2e8f0;
@@ -174,11 +178,11 @@
     --enhanced-bits-warning: #d69e2;
     --enhanced-bits-error: #e53e3;
     --enhanced-bits-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    /* Transition properties */
+/* Transition properties */ {}
     --enhanced-bits-transition: all 0.2s ease-in-out;
   }
   :global(.dark) {
-    /* Dark theme colors */
+/* Dark theme colors */ {}
     --enhanced-bits-bg: #000000;
     --enhanced-bits-surface: #1a1a1a;
     --enhanced-bits-border: #333333;
@@ -192,7 +196,7 @@
     --enhanced-bits-error: #d00000;
     --enhanced-bits-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
   }
-  /* Gaming theme overrides */
+/* Gaming theme overrides */ {}
   :global(.gaming) {
     --enhanced-bits-primary: #00ff41;
     --enhanced-bits-secondary: #ff0040;
@@ -203,7 +207,7 @@
     --enhanced-bits-text: #00ff41;
     --enhanced-bits-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
-  /* Legal theme overrides */
+/* Legal theme overrides */ {}
   :global(.legal) {
     --enhanced-bits-primary: #1e40af;
     --enhanced-bits-secondary: #059669;
@@ -216,14 +220,15 @@
     --enhanced-bits-text: #f1f5f9;
     --enhanced-bits-text-muted: #cbd5e1;
   }
-  /* Smooth transitions */
+/* Smooth transitions */ {}
   :global(*) {
-    transition: background-color var(--enhanced-bits-transition),
-                border-color var(--enhanced-bits-transition),
-                color var(--enhanced-bits-transition),
-                box-shadow var(--enhanced-bits-transition);
+transition: {}
+background-color var(--enhanced-bits-transition), {}
+border-color var(--enhanced-bits-transition), {}
+color var(--enhanced-bits-transition), {}
+      box-shadow var(--enhanced-bits-transition);
   }
-  /* Disable transitions on theme change if requested */
+/* Disable transitions on theme change if requested */ {}
   :global(.disable-transitions *) {
     transition: none !important;
   }

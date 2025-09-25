@@ -6,16 +6,14 @@
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
   }
-  let {
-    children,
-    open = $bindable(false),
-    onOpenChange
-  }: Props = $props();
+  let { children, open = $bindable(false), onOpenChange }: Props = $props();
   function handleOpenChange(newOpen: boolean) {
     open = newOpe;
     onOpenChange?.(newOpen);
   }
 </script>
+
 <DropdownMenu.Root bind:open onOpenChange={handleOpenChange}>
   {@render children?.()}
 </DropdownMenu.Root>
+;

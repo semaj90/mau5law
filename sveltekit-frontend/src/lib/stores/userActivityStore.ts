@@ -73,9 +73,9 @@ class UserActivityDetector {
     // Create activity event
     const activityEvent: ActivityEvent = {
       type: eventType
-      timestamp: now
+      timestamp: now;
       target: event?.target ? (event.target as Element).tagName: undefined
-    };
+    }
     // Add to history
     this.eventHistory.push(activityEvent);
     if (this.eventHistory.length > this.maxEventHistory) {
@@ -91,7 +91,7 @@ class UserActivityDetector {
         interactionCount: metrics.interactionCount + 1,
         activityScore: this.calculateActivityScore(),
         isActive: true
-      };
+      }
     });
     // Send to GPU bridge
     this.sendActivityToGPUBridge('USER_ACTIVITY', { timestamp: now });
@@ -122,7 +122,7 @@ class UserActivityDetector {
           ...metrics,
           idleTimeMs: idleTime
           isActive
-        };
+        }
       });
     }, 1000); // Update every second
   }
@@ -150,22 +150,22 @@ class UserActivityDetector {
       this.wsConnection = new WebSocket(this.gpuBridgeUrl);
       this.wsConnection.onopen = () => {
         console.log('📡 Connected to GPU bridge for activity tracking');
-      };
+      }
       this.wsConnection.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type === 'metrics') {
           // Handle GPU metrics updates
           console.log('📊 GPU metrics update:', data.data);
         }
-      };
+      }
       this.wsConnection.onclose = () => {
         console.log('📡 Disconnected from GPU bridge, attempting reconnect...');
         // Attempt reconnection after 5 seconds
         setTimeout(() => this.connectToGPUBridge(), 5000);
-      };
+      }
       this.wsConnection.onerror = (error) => {
         console.error('❌ GPU bridge connection error:', error);
-      };
+      }
     } catch (error) {
       console.warn('⚠️ Could not connect to GPU bridge:', error);
     }
@@ -173,10 +173,10 @@ class UserActivityDetector {
   private sendActivityToGPUBridge(eventType: string, data?: any): void {
     if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
       const message = {
-        type: eventType
+        type: eventType;
         timestamp: Date.now(),
         ...data
-      };
+      }
       this.wsConnection.send(JSON.stringify(message);
     }
   }
@@ -189,7 +189,7 @@ class UserActivityDetector {
   }
   // Public methods
   public getActivityStore() {
-    return { subscribe: this.activityStore.subscribe };
+    return { subscribe: this.activityStore.subscribe }
   }
   public getDerivedStores() {
     return {
@@ -205,7 +205,7 @@ class UserActivityDetector {
       sessionDuration: derived(this.activityStore, $activity =>
         Date.now() - $activity.sessionStartTime
       )
-    };
+    }
   }
   public forceActivity(): void {
     this.recordActivity('manual_trigger');
@@ -226,7 +226,7 @@ class UserActivityDetector {
       recentEventCount: recentActivity.length,
       recentEventTypes: [...new Set(recentActivity.map(e => e.type))],
       connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected'
-    };
+    }
   }
   public destroy(): void {
     // Clean up event listeners
@@ -259,4 +259,4 @@ export const setIdleThreshold = (ms: number) => userActivityDetector.setIdleThre
 export const getActivitySummary = () => userActivityDetector.getActivitySummary();
 export const getRecentActivity = (minutes?: number) => userActivityDetector.getRecentActivity(minutes);
 // Export types
-export type { UserActivityMetrics, ActivityEvent };
+export type { UserActivityMetrics, ActivityEvent }

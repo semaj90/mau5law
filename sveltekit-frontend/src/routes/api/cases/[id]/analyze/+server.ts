@@ -19,7 +19,7 @@ interface AnalysisResult {
   complianceStatus: 'compliant' | 'non-compliant' | 'needs-review',
   timeline: Array<{
     event: string
-    date: string
+    date: string;
     importance: 'low' | 'medium' | 'high'
   }>
 }

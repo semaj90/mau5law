@@ -8,8 +8,10 @@
   }
   let { children, class: className = '', ...rest }: Props = $props();
 </script>
+
 <Select.Trigger class="space-y-4 {className}" {...rest}>
   {@render children?.()}
   <!-- No {#snippet children()} usage to avoid slot/snippet conflict -->
 </Select.Trigger>
-<style>/* @unocss-include */ </style>
+
+<style>/* @unocss-include */ {}</style>

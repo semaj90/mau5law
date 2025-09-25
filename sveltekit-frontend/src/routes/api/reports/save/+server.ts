@@ -3,7 +3,7 @@ import { db } from '$lib/server/db/index'
 import { and, eq } from 'drizzle-orm'
 import { randomUUID } from 'node:crypto'
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const {

@@ -21,12 +21,12 @@ declare global {
   interface Navigator {
     gpu?: {
       requestAdapter(): Promise<GPUAdapter | null>;
-    };
+    }
   }
   namespace WebAssembly {
     const SIMD: {
       supported: boolean;
-    };
+    }
   }
 }
 export interface RuntimeCapabilities {
@@ -36,30 +36,30 @@ export interface RuntimeCapabilities {
     device?: GPUDevice;
     features: string[];
     limits: Record<string, number>;
-  };
+  }
   webgl2: {
     available: boolean;
     context?: WebGL2RenderingContext;
     extensions: string[];
     maxTextureSize: number;
-  };
+  }
   wasmSIMD: {
     available: boolean;
     supportedInstructions: string[];
     threadCount: number;
-  };
+  }
   tensorRT: {
     available: boolean;
     endpoint?: string;
     models: string[];
-  };
+  }
   chrRomCache: {
     available: boolean;
     redisConnected: boolean;
     patterns: number;
     hitRate: number;
     avgResponseTime: number;
-  };
+  }
 }
 export interface InferenceRequest {
   model: 'gemma3:270m' | 'gemma3-legal:latest' | 'embeddinggemma:latest';
@@ -84,7 +84,7 @@ export interface InferenceResponse {
     deviceInfo?: string;
     fromCHRROMCache?: boolean;
     cacheHitPattern?: string;
-  };
+  }
 }
 export class UnifiedRuntimeAbstraction {
   private capabilities: RuntimeCapabilities;
@@ -100,7 +100,7 @@ export class UnifiedRuntimeAbstraction {
       wasmSIMD: { available: false, supportedInstructions: [], threadCount: 0 },
       tensorRT: { available: false, models: [] },
       chrRomCache: { available: false, redisConnected: false, patterns: 0, hitRate: 0, avgResponseTime: 0 }
-    };
+    }
   }
   /**
    * Initialize all runtime capabilities with Dawn's automatic driver selection
@@ -163,7 +163,7 @@ export class UnifiedRuntimeAbstraction {
         limits: Object.fromEntries(
           Object.entries(adapter.limits).map(([key, value]) => [key, Number(value)])
         )
-      };
+      }
       // Log WebGPU initialization
       console.log('[Runtime] WebGPU initialized with Dawn backend');
     } catch (error) {
@@ -179,7 +179,7 @@ export class UnifiedRuntimeAbstraction {
       const gl = canvas.getContext('webgl2', {
         powerPreference: 'high-performance',
         antialias: false
-        depth: false
+        depth: false;
         stencil: false
       });
       if (!gl) {
@@ -189,10 +189,10 @@ export class UnifiedRuntimeAbstraction {
       this.webgl2Context = gl;
       this.capabilities.webgl2 = {
         available: true
-        context: gl
+        context: gl;
         extensions: gl.getSupportedExtensions() || [],
         maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE)
-      };
+      }
       console.log('[Runtime] WebGL2 initialized:', {
         extensions: this.capabilities.webgl2.extensions.length,
         maxTextureSize: this.capabilities.webgl2.maxTextureSize
@@ -230,9 +230,9 @@ export class UnifiedRuntimeAbstraction {
         available: true
         supportedInstructions,
         threadCount: navigator.hardwareConcurrency || 4
-      };
+      }
       console.log('[Runtime] WASM SIMD initialized:', {
-        instructions: supportedInstructions
+        instructions: supportedInstructions;
         threads: this.capabilities.wasmSIMD.threadCount
       });
     } catch (error) {
@@ -254,7 +254,7 @@ export class UnifiedRuntimeAbstraction {
           available: true
           endpoint: this.tensorRTEndpoint,
           models: data.models || ['gemma3-legal:latest']
-        };
+        }
         console.log('[Runtime] TensorRT available:', {
           endpoint: this.tensorRTEndpoint,
           models: this.capabilities.tensorRT.models
@@ -281,7 +281,7 @@ export class UnifiedRuntimeAbstraction {
           patterns: cacheStatus.pattern_count || 0,
           hitRate: cacheStatus.hit_rate || 0,
           avgResponseTime: cacheStatus.avg_response_time || 0
-        };
+        }
         console.log('[Runtime] CHR-ROM cache available:', {
           patterns: this.capabilities.chrRomCache.patterns,
           hitRate: `${(this.capabilities.chrRomCache.hitRate * 100).toFixed(1)}%`,
@@ -424,7 +424,7 @@ export class UnifiedRuntimeAbstraction {
         confidence: data.metadata?.confidence || 0.8,
         deviceInfo: this.webgl2Context.getParameter(this.webgl2Context.RENDERER)
       }
-    };
+    }
   }
   /**
    * Execute using WASM SIMD
@@ -462,7 +462,7 @@ export class UnifiedRuntimeAbstraction {
         confidence: data.confidence || 0.9,
         deviceInfo: 'RTX-3060Ti-TensorRT'
       }
-    };
+    }
   }
   /**
    * Fallback execution when primary runtime fails
@@ -511,7 +511,7 @@ export class UnifiedRuntimeAbstraction {
    * Get current runtime capabilities
    */;
   getCapabilities(): RuntimeCapabilities {
-    return { ...this.capabilities };
+    return { ...this.capabilities }
   }
   /**
    * Get recommended runtime for a specific request
@@ -540,14 +540,14 @@ export class UnifiedRuntimeAbstraction {
         if (cached.data) {
           return {
             text: cached.data.text,
-            embedding: cached.data.embedding ? new Float32Array(cached.data.embedding) : undefined
+            embedding: cached.data.embedding ? new Float32Array(cached.data.embedding) : undefined;
             metadata: {
               ...cached.data.metadata,
               fromCHRROMCache: true
               cacheHitPattern: cached.pattern_id,
               executionTime: 0.5 // CHR-ROM cache typical response time
             }
-          };
+          }
         }
       }
     } catch (error) {

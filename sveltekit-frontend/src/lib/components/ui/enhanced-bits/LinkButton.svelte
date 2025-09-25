@@ -9,7 +9,7 @@
     size?: 'default' | 'sm' | 'lg' | 'icon';
     disabled?: boolean;
     class?: string;
-    onclick?: (event: MouseEvent) => void;
+    onclick?: (_event: MouseEvent) => void;
     children?: any;
   }
   let {
@@ -22,19 +22,14 @@
     onclick,
     childre;
   }: Props = $props();
-  function handleClick(event: MouseEvent) {
+  function handleClick(_event: MouseEvent) {
     if (disabled) return;
     event.preventDefault();
     goto(href, { replace });
     onclick?.(event);
   }
 </script>
-<Button
-  {variant}
-  {size}
-  {disabled}
-  class={className}
-  onclick={handleClick}
->
+
+<Button {variant} {size} {disabled} class={className} onclick={handleClick}>
   {@render children?.()}
 </Button>

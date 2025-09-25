@@ -131,7 +131,7 @@ await loadSystemHealth();
     searchResults = [];
     try {
       const results = await vectorIntelligenceService.semanticSearch({
-        query: searchQuery
+        query: searchQuery;
         threshold: 0.7,
         limit: 10,
         includeMetadata: true
@@ -157,13 +157,13 @@ await loadSystemHealth();
       const result = await vectorIntelligenceService.generateRecommendations({
         context: recommendationContext
         userProfile: {
-          role: selectedUserRole
+          role: selectedUserRole;
           experience: 'senior',
           specialization: ['legal-analysis', 'case-management'];
         },
         currentCase: {
           id: 'DEMO-2024-001',
-          type: selectedCaseType
+          type: selectedCaseType;
           priority: 'high',
           status: 'active';
         },
@@ -937,4 +937,4 @@ showAdvancedOptions = !showAdvancedOptions}
 </div>
 <style>
   /* @unocss-include */
-</style>
+</style>;

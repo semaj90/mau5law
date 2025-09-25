@@ -49,7 +49,7 @@
 </script>
 <button aria-label="Action button"
   class="space-y-4"
-  onclick={(event: MouseEvent) => ) => getSummary(text}
+  onclick={(_event: MouseEvent) => ) => getSummary(text}
   disabled={loading}
 >
   {#if loading}

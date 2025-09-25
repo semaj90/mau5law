@@ -142,7 +142,7 @@ async function makeServiceRequest(
     return {
       success: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).ok,
       status: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).status,
-      data: responseData
+      data: responseData;
       headers: Object.fromEntries((response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.entries())
     }
   } catch (err: any) {

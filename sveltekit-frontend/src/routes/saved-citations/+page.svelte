@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
         savedAt: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      }
       // In a real app, this would POST to /api/user/saved-citations
       savedCitations = [...savedCitations, citation];
       // Reset form
@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
         category: 'general',
         tags: '',
         notes: '',
-      };
+      }
       showAddDialog = false;
     } catch (error) {
       console.error('Error saving citation:', error);
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
     navigator.clipboard.writeText(citationText);
   }
   function editCitation(citation: unknown) {
-    editingCitation = { ...citation };
+    editingCitation = { ...citation }
     editingCitation.tags = citation.tags.join(', ');
   }
   async function updateCitation() {
@@ -129,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
           ? editingCitation.tags: (editingCitation.tags as any as string)
               ?.split.map((tag: string) => tag.trim())
               .filter((tag: string) => tag.length > 0),
-      };
+      }
       const index = savedCitations.findIndex((c) => c.id === updated.id);
       if (index >= 0) {
         savedCitations[index] = updated;
@@ -499,4 +499,4 @@ updateCitation()}
 {/if}
 <style>
   /* @unocss-include */
-</style>
+</style>;

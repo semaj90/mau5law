@@ -42,7 +42,7 @@ class GPUTensorWorker {
     averageProcessingTime: 0,
     webgpuSupported: false
     lastProcessedTime: 0
-  };
+  }
   private goServiceUrl = 'http://localhost:8095'; // GPU tensor service
     async initialize(): Promise<boolean> {
     try {
@@ -111,7 +111,7 @@ class GPUTensorWorker {
   }
   private async testGoServiceConnection(): Promise<void> {
     try {
-      const response = await fetch(`${this.goServiceUrl}/health`);
+      // removed unused response assignment
       if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Go service health check failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}`);
       }
@@ -232,7 +232,7 @@ class GPUTensorWorker {
     });
     // Create uniform buffers for shape and metadata
     const shapeBuffer = this.gpuDevice.createBuffer({
-      size: 16, // 4 * 4 bytes for int32 array
+      size: 16, // 4 * 4 bytes for int32 array;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
@@ -242,7 +242,7 @@ class GPUTensorWorker {
     }
     shapeBuffer.unmap();
     const metadataBuffer = this.gpuDevice.createBuffer({
-      size: 16, // 4 * 4 bytes for vec4<i32>
+      size: 16, // 4 * 4 bytes for vec4<i32>;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
@@ -295,7 +295,7 @@ class GPUTensorWorker {
       data: processedData
       layout: 'webgpu_processed',
       timestamp: Date.now()
-    };
+    }
   }
   private async processWithGoService(tensorData: MultiDimArray): Promise<MultiDimArray> {
     try {
@@ -318,7 +318,7 @@ class GPUTensorWorker {
       return {
         ...result.data,
         timestamp: Date.now()
-      };
+      }
     } catch (error: any) {
       throw new Error(`Go service communication failed: ${error.message}`);
     }
@@ -330,7 +330,7 @@ class GPUTensorWorker {
       this.tensorCache.delete(oldestKey);
     }
     this.tensorCache.set(cacheKey, {
-      data: result
+      data: result;
       timestamp: Date.now()
     });
   }
@@ -351,7 +351,7 @@ class GPUTensorWorker {
       ...this.stats,
       cacheHitRate: Math.round(this.stats.cacheHitRate * 10000) / 100, // Convert to percentage with 2 decimals
       averageProcessingTime: Math.round(this.stats.averageProcessingTime * 100) / 100 // Round to 2 decimals
-    };
+    }
   }
   private clearCache(): void {
     this.tensorCache.clear();
@@ -412,6 +412,6 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
       error: error instanceof Error ? error.message: String(error)
     });
   }
-};
+}
 // Export types for TypeScript
-export type { WorkerMessage, WorkerResponse, MultiDimArray, GPUProcessingStats };
+export type { WorkerMessage, WorkerResponse, MultiDimArray, GPUProcessingStats }

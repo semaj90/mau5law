@@ -4,7 +4,7 @@
   import { cn } from '$lib/utils';
   interface Props {
     columns?: number;
-    gap?: "none" | "sm" | "md" | "lg" | "xl";
+    gap?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
     responsive?: boolean;
     minHeight?: string;
     maxHeight?: string;
@@ -12,11 +12,11 @@
   }
   let {
     columns = 12,
-    gap = "md",
+    gap = 'md',
     responsive = true,
-    minHeight = "auto",
-    maxHeight = "none",
-    children
+    minHeight = 'auto',
+    maxHeight = 'none',
+    children,
   }: Props = $props();
   export interface GridItemProps {
     colSpan?: number;
@@ -28,23 +28,23 @@
   }
   export const resizable: boolean = false;
   const gapClasses = {
-    none: "gap-0",
-    sm: "gap-2",
-    md: "gap-4",
-    lg: "gap-6",
-    xl: "gap-8",
-  };
+    none: 'gap-0',
+    sm: 'gap-2',
+    md: 'gap-4',
+    lg: 'gap-6',
+    xl: 'gap-8',
+  }
   // Responsive breakpoints
-  let gridClass = $derived(responsive
-    ? `grid-cols-1 sm:grid-cols-2 md:grid-cols-${Math.min(columns, 6)} lg:grid-cols-${Math.min(columns, 8)} xl:grid-cols-${columns}`
-    : `grid-cols-${columns}`);
+  let gridClass = $derived(
+    responsive
+      ? `grid-cols-1 sm:grid-cols-2 md:grid-cols-${Math.min(columns, 6)} lg:grid-cols-${Math.min(columns, 8)} xl:grid-cols-${columns}`
+      : `grid-cols-${columns}`,
+  );
 </script>
-<div
-  class={cn("grid w-full", gridClass, gapClasses[gap])}
-  style:min-height={minHeight}
-  style:max-height={maxHeight}
->
+
+<div class={cn('grid w-full', gridClass, gapClasses[gap])} style:min-height={minHeight} style:max-height={maxHeight}>
   {#if children}
     {@render children()}
   {/if}
 </div>
+;

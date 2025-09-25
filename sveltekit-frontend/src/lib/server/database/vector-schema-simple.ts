@@ -1,89 +1,80 @@
-
 // Simplified Vector Schema - Production Ready
-import {
-  jsonb,
-  pgTable,
-  real,
-  text,
-  timestamp,
-  uuid,
-  varchar
-} from "drizzle-orm/pg-core";
+import { jsonb, pgTable, real, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 // Chat embeddings table for AI conversations
-export const chatEmbeddings = pgTable("chat_embeddings", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  conversationId: uuid("conversation_id").notNull(),
-  role: varchar("role", { length: 20 }).notNull(),
-  content: text("content").notNull(),
-  embedding: jsonb("embedding").notNull(),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+export const chatEmbeddings = pgTable('chat_embeddings', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  conversationId: uuid('conversation_id').notNull(),
+  role: varchar('role', { length: 20 }).notNull(),
+  content: text('content').notNull(),
+  embedding: jsonb('embedding').notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 // Evidence embeddings table
-export const evidenceVectors = pgTable("evidence_vectors", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  evidenceId: uuid("evidence_id").notNull(),
-  content: text("content").notNull(),
-  embedding: jsonb("embedding").notNull(),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+export const evidenceVectors = pgTable('evidence_vectors', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  evidenceId: uuid('evidence_id').notNull(),
+  content: text('content').notNull(),
+  embedding: jsonb('embedding').notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 // Case embeddings table
-export const caseEmbeddings = pgTable("case_embeddings", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  caseId: uuid("case_id").notNull(),
-  fieldName: varchar("field_name", { length: 100 }).notNull(),
-  content: text("content").notNull(),
-  embedding: jsonb("embedding").notNull(),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+export const caseEmbeddings = pgTable('case_embeddings', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  caseId: uuid('case_id').notNull(),
+  fieldName: varchar('field_name', { length: 100 }).notNull(),
+  content: text('content').notNull(),
+  embedding: jsonb('embedding').notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 // User embeddings table
-export const userEmbeddings = pgTable("user_embeddings", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").notNull(),
-  contentType: varchar("content_type", { length: 50 }).notNull(),
-  content: text("content").notNull(),
-  embedding: jsonb("embedding").notNull(),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+export const userEmbeddings = pgTable('user_embeddings', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull(),
+  contentType: varchar('content_type', { length: 50 }).notNull(),
+  content: text('content').notNull(),
+  embedding: jsonb('embedding').notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 // Document embeddings table
-export const documentEmbeddings = pgTable("document_embeddings", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  documentId: uuid("document_id").notNull(),
-  documentType: varchar("document_type", { length: 50 }).notNull(),
-  chunkText: text("chunk_text").notNull(),
-  embedding: jsonb("embedding").notNull(),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+export const documentEmbeddings = pgTable('document_embeddings', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  documentId: uuid('document_id').notNull(),
+  documentType: varchar('document_type', { length: 50 }).notNull(),
+  chunkText: text('chunk_text').notNull(),
+  embedding: jsonb('embedding').notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 // Vector similarity table
-export const vectorSimilarity = pgTable("vector_similarity", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  sourceId: uuid("source_id").notNull(),
-  targetId: uuid("target_id").notNull(),
-  sourceType: varchar("source_type", { length: 50 }).notNull(),
-  targetType: varchar("target_type", { length: 50 }).notNull(),
-  similarity: real("similarity").notNull(),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow()
+export const vectorSimilarity = pgTable('vector_similarity', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  sourceId: uuid('source_id').notNull(),
+  targetId: uuid('target_id').notNull(),
+  sourceType: varchar('source_type', { length: 50 }).notNull(),
+  targetType: varchar('target_type', { length: 50 }).notNull(),
+  similarity: real('similarity').notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 // Semantic search cache
-export const semanticSearchCache = pgTable("semantic_search_cache", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  queryHash: varchar("query_hash", { length: 64 }).notNull(),
-  query: text("query").notNull(),
-  results: jsonb("results").notNull(),
-  embedding: jsonb("embedding").notNull(),
-  metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow(),
-  expiresAt: timestamp("expires_at")
+export const semanticSearchCache = pgTable('semantic_search_cache', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  queryHash: varchar('query_hash', { length: 64 }).notNull(),
+  query: text('query').notNull(),
+  results: jsonb('results').notNull(),
+  embedding: jsonb('embedding').notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  expiresAt: timestamp('expires_at'),
 });
 // Export types for use in services
 export type ChatEmbedding = typeof chatEmbeddings.$inferSelect;
@@ -104,13 +95,13 @@ export type NewSemanticSearchCache = typeof semanticSearchCache.$inferInsert;
 export interface EmbeddingOptions {
   caseId?: string;
   userId?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface VectorSearchResult {
   id: string;
   content: string;
   similarity: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 // Aliases for backward compatibility
 export const searchQueries = semanticSearchCache;

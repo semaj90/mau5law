@@ -117,7 +117,7 @@ export const evidence = pgTable(
     dateAnalyzed: timestamp('date_analyzed'),
     // Metadata and custom fields
     metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
-    // Archive status
+    // Archive status;
     archived: boolean('archived').notNull().default(false),
     // Audit fields
     createdBy: uuid('created_by'),

@@ -10,13 +10,13 @@
     children
   } = $props();
   // Handle escape key
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape' && showModal) {
       onClose();
     }
   }
   // Handle backdrop click
-  function handleBackdrop(event: MouseEvent) {
+  function handleBackdrop(_event: MouseEvent) {
     if (event.target === event.currentTarget) {
       onClose();
     }
@@ -26,9 +26,10 @@
     document.addEventListener('keydown', handleEscape);
     return () => {
       document.removeEventListener('keydown', handleEscape);
-    };
+    }
   });
 </script>
+
 {#if showModal}
   <!-- Modal Backdrop -->
   <div
@@ -45,9 +46,7 @@
       <!-- Header -->
       <div class="modal-header">
         <h2 id="modal-title" class="modal-title">{title}</h2>
-        <button class="modal-close" onclick={onClose} aria-label="Close modal">
-          &time;
-        </button>
+        <button class="modal-close" onclick={onClose} aria-label="Close modal"> &time; </button>
       </div>
       <!-- Content -->
       <div class="modal-content">
@@ -58,6 +57,7 @@
     </div>
   </div>
 {/if}
+
 <style>
   .modal-backdrop {
     position: fixed;

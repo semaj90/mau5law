@@ -53,19 +53,19 @@ export const createRedisInstance = () => {
   const opts = buildRedisOptions();
   (opts as any).url = url;
   return new Redis(opts as any);
-};
+}
 // Thin interface describing only commands we actually use broadly
 export interface RedisBasicCommands {
-  get(key: string): Promise<string | null>;
-  set(key: string, value: string): Promise<'OK' | null>;
-  del(key: string | string[]): Promise<number>;
-  setex?(key: string, seconds: number, value: string): Promise<'OK'>;
-  expire?(key: string, seconds: number): Promise<number>;
+  get(_key: string): Promise<string | null>;
+  set(_key: string, value: string): Promise<'OK' | null>;
+  del(_key: string | string[]): Promise<number>;
+  setex?(_key: string, seconds: number, value: string): Promise<'OK'>;
+  expire?(_key: string, seconds: number): Promise<number>;
   ping?(): Promise<string>;
   publish?(channel: string, message: string): Promise<number>;
   psubscribe?(...patterns: string[]): Promise<number>;
   subscribe?(...channels: string[]): Promise<number>;
-  on(event: string, listener: (...args: any[]) => void): any;
+  on(_event: string, listener: (...args: any[]) => void): any;
   quit(): Promise<'OK'>;
 }
 // Multi-client factory for pub/sub correctness
@@ -94,7 +94,7 @@ export function createRedisClientSet(): RedisClientSet {
         [primary.quit(), subscriber.quit(), publisher.quit()].map((p) => p.catch(() => {})
       );
     }
-  };
+  }
 }
 let legacyClient: Redis | null = null;
 export async function createRedisClient(): Promise<Redis> {
@@ -102,7 +102,7 @@ export async function createRedisClient(): Promise<Redis> {
   legacyClient = redis;
   return legacyClient;
 }
-export async function getFromCache(key: string): Promise<string | null> {
+export async function getFromCache(_key: string): Promise<string | null> {
   try {
     const client = await createRedisClient();
     return await client.get(key);
@@ -111,8 +111,7 @@ export async function getFromCache(key: string): Promise<string | null> {
     return null;
   }
 }
-export async function setCache(
-  key: string
+export async function setCache(_key: string
   value: string
   expireInSeconds?: number;
 ): Promise<boolean> {
@@ -130,7 +129,7 @@ export async function setCache(
     return false;
   }
 }
-export async function deleteFromCache(key: string): Promise<boolean> {
+export async function deleteFromCache(_key: string): Promise<boolean> {
   try {
     const client = await createRedisClient();
     await client.del(key);

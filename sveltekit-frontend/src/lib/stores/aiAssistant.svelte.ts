@@ -21,13 +21,13 @@ export interface AIAssistantState {
     primary: boolean;
     secondary: boolean;
     embeddings: boolean;
-  };
+  }
   context7Analysis?: Context7Analysis;
   usage: {
     totalQueries: number;
     totalTokens: number;
     averageResponseTime: number;
-  };
+  }
   streamingActive: boolean;
   streamBuffer: string;
 }
@@ -42,7 +42,7 @@ export interface ConversationEntry {
     responseTime: number;
     tokenCount: number;
     context7Used: boolean;
-  };
+  }
 }
 export interface Context7Analysis {
   suggestions: string[];
@@ -76,7 +76,7 @@ const aiAssistantState = $state<AIAssistantState>({
 });
 // Create XState actor for AI assistant
 const aiAssistantActor = browser ? createActor(aiAssistantMachine, {
-  services: aiAssistantServices
+  services: aiAssistantServices;
   actions: aiAssistantActions
 }) : null;
 export class AIAssistantManager {
@@ -229,7 +229,7 @@ export class AIAssistantManager {
           tokenCount: message.split(' ').length * 1.5,
           context7Used: options?.useContext7 || false
         }
-      };
+      }
       const assistantEntry: ConversationEntry = {
         id: crypto.randomUUID(),
         type: 'assistant',
@@ -242,7 +242,7 @@ export class AIAssistantManager {
           tokenCount: response.metadata.tokensGenerated,
           context7Used: false
         }
-      };
+      }
       aiAssistantState.conversationHistory.push(userEntry, assistantEntry);
       // Update state
       aiAssistantState.response = response.content;
@@ -305,7 +305,7 @@ export class AIAssistantManager {
           tokenCount: message.split(' ').length * 1.5,
           context7Used: options?.useContext7 || false
         }
-      };
+      }
       const assistantEntry: ConversationEntry = {
         id: crypto.randomUUID(),
         type: 'assistant',
@@ -318,7 +318,7 @@ export class AIAssistantManager {
           tokenCount: ragResult.answer.split(' ').length * 1.3,
           context7Used: false
         }
-      };
+      }
       aiAssistantState.conversationHistory.push(userEntry, assistantEntry);
       // Update state
       aiAssistantState.response = ragResult.answer;
@@ -459,7 +459,7 @@ export class AIAssistantManager {
       totalTokens: aiAssistantState.usage.totalTokens,
       conversationDuration: history.length > 0 ?
         Date.now() - history[0].timestamp.getTime() : 0
-    };
+    }
   }
   // Export conversation to JSON
   exportConversation() {
@@ -469,9 +469,9 @@ export class AIAssistantManager {
       model: aiAssistantState.model || 'unknown',
       temperature: aiAssistantState.temperature,
       conversation: aiAssistantState.conversationHistory,
-      statistics: stats
+      statistics: stats;
       usage: aiAssistantState.usage
-    };
+    }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: 'application/json'
     });
@@ -526,7 +526,7 @@ export class AIAssistantManager {
       status: healthyCount === totalCount ? 'all_healthy' :
               healthyCount > 0 ? 'partial' : 'all_down',
       details: health
-    };
+    }
   }
   // Get available models from cluster and WebAssembly
   async getAvailableModels() {
@@ -557,7 +557,7 @@ export class AIAssistantManager {
   }
   // Analyze legal document using WebAssembly if available
   async analyzeLegalDocument(
-    title: string
+    title: string;
     content: string
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive';
   ) {
@@ -618,7 +618,7 @@ export const aiUsage = () => aiAssistantState.usage;
 // Convenience functions
 export const sendAIMessage = (message: string, options?: unknown) => {
   aiAssistantManager.sendMessage(message, options);
-};
+}
 export const setAIModel = (model: string) => aiAssistantManager.setModel(model);
 export const setAITemperature = (temp: number) => aiAssistantManager.setTemperature(temp);
 export const clearAIConversation = () => aiAssistantManager.clearConversation();

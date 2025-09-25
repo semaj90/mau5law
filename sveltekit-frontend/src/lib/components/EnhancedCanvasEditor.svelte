@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
       selection: !readOnly,
       isDrawingMode: false
       preserveObjectStacking: true
-      enableRetinaScaling: true
+      enableRetinaScaling: true;
     });
     // Canvas event listeners
     canvas.on("object:added", handleObjectAdded);
@@ -167,8 +167,8 @@ https://svelte.dev/e/js_parse_error -->
     const searchOptions = {
       keys: ["title", "description", "evidenceType", "tags"],
       threshold: 0.3,
-      includeMatches: true
-    };
+      includeMatches: true;
+    }
     searchEngine = new Fuse(evidenceItems, searchOptions);
   }
   function updateSearchEngine() {
@@ -222,7 +222,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   }
-  function handleMouseDown(event: TEvent) {
+  function handleMouseDown(_event: TEvent) {
     const state = get(canvasState);
     if (!canvas) return;
     const pointer = canvas.getPointer(event.e);
@@ -244,10 +244,10 @@ https://svelte.dev/e/js_parse_error -->
         break;
     }
   }
-  function handleMouseMove(event: TEvent) {
+  function handleMouseMove(_event: TEvent) {
     // Handle drawing modes
   }
-  function handleMouseUp(event: TEvent) {
+  function handleMouseUp(_event: TEvent) {
     // Finalize drawing operations
   }
   function createRectangle(pointer: fabric.Point) {
@@ -299,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
       {
         stroke: "#ef4444",
         strokeWidth: 2,
-        selectable: true
+        selectable: true;
       }
     );
     canvas.add(line);
@@ -371,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
       left: 100,
       top: 100,
       hasControls: true
-      hasBorders: true
+      hasBorders: true;
     });
     // Store evidence data
     group.set("evidenceData", evidence);
@@ -538,10 +538,10 @@ https://svelte.dev/e/js_parse_error -->
     scheduleAutoSave();
     saveState();
   }
-  function handleSelectionCreated(options: unknown) {
+  function handleSelectionCreated(_options: unknown) {
     updateSelection();
   }
-  function handleSelectionUpdated(options: unknown) {
+  function handleSelectionUpdated(_options: unknown) {
     updateSelection();
   }
   function handleSelectionCleared() {
@@ -624,7 +624,7 @@ https://svelte.dev/e/js_parse_error -->
         },
         timestamp: new Date(),
         version: Date.now(),
-      };
+      }
       // Save to Loki.js
       const existing = canvasCollection.findOne({ id: canvasData.id });
       if (existing) {
@@ -656,7 +656,7 @@ https://svelte.dev/e/js_parse_error -->
         return;
       }
       // Fallback to server
-      const response = await fetch(`/api/canvas/${caseId}`);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const serverData = await (response as { ok?: unknown; json?: unknown }).json();
         canvas?.loadFromJSON(serverData.data, () => {
@@ -783,7 +783,7 @@ https://svelte.dev/e/js_parse_error -->
               img.scale(0.5);
               canvas?.add(img);
               canvas?.renderAll();
-            };
+            }
             reader.readAsDataURL(blob);
           });
         }
@@ -913,34 +913,19 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <div class="mx-auto px-4 max-w-7xl">
   <!-- Main Toolbar -->
-  <div
-    class="mx-auto px-4 max-w-7xl"
-  >
+  <div class="mx-auto px-4 max-w-7xl">
     <!-- File Operations -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button
-        class="mx-auto px-4 max-w-7xl"
-        onclick={() => saveCanvas()}
-        title="Save Canvas"
-      >
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => saveCanvas()} title="Save Canvas">
         <Save size="18" />
       </button>
-      <button
-        class="mx-auto px-4 max-w-7xl"
-        onclick={() => undo()}
-        disabled={!state.canUndo}
-        title="Undo"
-      >
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => undo()} disabled={!state.canUndo} title="Undo">
         <Undo size="18" />
       </button>
-      <button
-        class="mx-auto px-4 max-w-7xl"
-        onclick={() => redo()}
-        disabled={!state.canRedo}
-        title="Redo"
-      >
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => redo()} disabled={!state.canRedo} title="Redo">
         <Redo size="18" />
       </button>
     </div>
@@ -993,11 +978,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl"></div>
     <!-- AI Features -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button
-        class="mx-auto px-4 max-w-7xl"
-        onclick={() => generateAISummary()}
-        title="Generate AI Summary"
-      >
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => generateAISummary()} title="Generate AI Summary">
         <FileText size="18" />
       </button>
     </div>
@@ -1008,9 +989,9 @@ https://svelte.dev/e/js_parse_error -->
         <Download size="18" />
       </button>
       <div class="mx-auto px-4 max-w-7xl">
-        <button onclick={() => exportCanvas("png")}>Export as PNG</button>
-        <button onclick={() => exportCanvas("svg")}>Export as SVG</button>
-        <button onclick={() => exportCanvas("json")}>Export as JSON</button>
+        <button onclick={() => exportCanvas('png')}>Export as PNG</button>
+        <button onclick={() => exportCanvas('svg')}>Export as SVG</button>
+        <button onclick={() => exportCanvas('json')}>Export as JSON</button>
       </div>
     </div>
     <div class="mx-auto px-4 max-w-7xl"></div>
@@ -1029,8 +1010,8 @@ https://svelte.dev/e/js_parse_error -->
           <input
             type="text"
             placeholder="Search evidence..."
-            bind:value={state.searchQuery} oninput={(e) =>
-              searchEvidence((e.target as HTMLInputElement).value)}
+            bind:value={state.searchQuery}
+            oninput={e => searchEvidence((e.target as HTMLInputElement).value)}
             class="mx-auto px-4 max-w-7xl"
           />
         </div>
@@ -1040,8 +1021,7 @@ https://svelte.dev/e/js_parse_error -->
             <div
               class="mx-auto px-4 max-w-7xl"
               onclick={() => addEvidenceToCanvas(evidence)}
-              keydown={(e) =>
-                e.key === "Enter" && addEvidenceToCanvas(evidence)}
+              keydown={e => e.key === 'Enter' && addEvidenceToCanvas(evidence)}
               role="button"
               tabindex={0}
             >
@@ -1054,31 +1034,19 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl">
         <h3 class="mx-auto px-4 max-w-7xl">Quick Add</h3>
         <div class="mx-auto px-4 max-w-7xl">
-          <button
-            class="mx-auto px-4 max-w-7xl"
-            onclick={() => addTimelineToCanvas()}
-          >
+          <button class="mx-auto px-4 max-w-7xl" onclick={() => addTimelineToCanvas()}>
             <Clock size="16" class="mx-auto px-4 max-w-7xl" />
             Timeline
           </button>
-          <button
-            class="mx-auto px-4 max-w-7xl"
-            onclick={() => addPersonToCanvas()}
-          >
+          <button class="mx-auto px-4 max-w-7xl" onclick={() => addPersonToCanvas()}>
             <Users size="16" class="mx-auto px-4 max-w-7xl" />
             Person
           </button>
-          <button
-            class="mx-auto px-4 max-w-7xl"
-            onclick={() => addLocationToCanvas()}
-          >
+          <button class="mx-auto px-4 max-w-7xl" onclick={() => addLocationToCanvas()}>
             <MapPin size="16" class="mx-auto px-4 max-w-7xl" />
             Location
           </button>
-          <button
-            class="mx-auto px-4 max-w-7xl"
-            onclick={() => setTool("note")}
-          >
+          <button class="mx-auto px-4 max-w-7xl" onclick={() => setTool('note')}>
             <FileText size="16" class="mx-auto px-4 max-w-7xl" />
             Note
           </button>
@@ -1091,6 +1059,8 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
+<!-- Props migrated to Svelte 5 $props() pattern -->
+
 <style>
   .canvas-editor-container {
     background: #f9fafb;
@@ -1180,9 +1150,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .canvas-area {
     background:
-      linear-gradient(to right, #e5e7eb 1px, transparent 1px),
-      linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+      linear-gradient(to right, #e5e7eb 1px, transparent 1px), linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
     background-size: 20px 20px;
   }
 </style>
-<!-- Props migrated to Svelte 5 $props() pattern -->

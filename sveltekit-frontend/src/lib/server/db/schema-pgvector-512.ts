@@ -90,7 +90,7 @@ export const legalDocumentChunks = pgTable(
     keyTerms: jsonb("key_terms").default([]),
     sentimentScore: real("sentiment_score"),
     complexityScore: real("complexity_score"),
-    // Cache and deduplication
+    // Cache and deduplication;
     model: text("model").notNull().default("embeddinggemma:latest"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()

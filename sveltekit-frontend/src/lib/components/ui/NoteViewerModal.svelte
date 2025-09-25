@@ -97,11 +97,11 @@
   function removeTag(tag: string) {
     editedTags = editedTags.filter((t) => t !== tag);
   }
-  function handleEditorSave(event: CustomEvent) {
+  function handleEditorSave(_event: CustomEvent) {
     const {
       html: newHtml
-      markdown: newMarkdown
-      json: newJson
+      markdown: newMarkdown;
+      json: newJson;
     } = event.detail;
     const updatedNote = {
       id: noteId
@@ -114,7 +114,7 @@
       tags: editedTags
       userId,
       caseId,
-    };
+    }
     onSave?.(updatedNote);
     localMode = "view";
     // Update local data

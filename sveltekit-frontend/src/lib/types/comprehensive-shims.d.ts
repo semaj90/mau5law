@@ -73,7 +73,7 @@ declare global {
   // Redis fixes
   namespace IORedis {
     interface Redis {
-      hset(key: string, field: string, value: any): Promise<number>;
+      hset(_key: string, field: string, value: any): Promise<number>;
     }
   }
   // Training service fixes
@@ -87,16 +87,16 @@ declare global {
   }
 }
 // Module augmentations
-declare module "$lib/server/messaging/rabbitmq-service.js" {
+declare module '$lib/server/messaging/rabbitmq-service.js' {
   export const QUEUES: Record<string, string>;
 }
-declare module "$lib/utils/webgpu-array-utils" {
+declare module '$lib/utils/webgpu-array-utils' {
   export function adaptiveQuantization(data: any): any;
 }
-declare module "./webgpu-rag-service" {
+declare module './webgpu-rag-service' {
   export interface GPUSearchMetrics {
     searchTime: number;
     resultCount: number;
   }
 }
-export {};
+export {}

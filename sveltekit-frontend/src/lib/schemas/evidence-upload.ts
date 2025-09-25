@@ -21,7 +21,7 @@ type EvidenceMetadata = {
   // Additional optional properties for different file types
   pageCount?: number;
   isEncrypted?: boolean;
-  resolution?: { width: number; height: number };
+  resolution?: { width: number; height: number }
   format?: any;
   hasAlphaChannel?: boolean;
   durationSeconds?: number;
@@ -31,7 +31,7 @@ type EvidenceMetadata = {
   channels?: number;
   wordCount?: number;
   characterCount?: number;
-};
+}
 // File validation constants
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -48,7 +48,7 @@ const EVIDENCE_TYPE_MAPPINGS = {
   TEXT: ALLOWED_TEXT_TYPES
   LINK: [], // No file upload for links
   UNKNOWN: [...ALLOWED_PDF_TYPES, ...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES, ...ALLOWED_AUDIO_TYPES, ...ALLOWED_TEXT_TYPES]
-};
+}
 // Additional types from existing file-upload.ts for compatibility
 export const legacyEvidenceTypeEnum = z.enum([
   'physical_evidence',
@@ -210,7 +210,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
   const baseMetadata = {
     fileSize: file.size,
     uploadedAt: new Date().toISOString()
-  };
+  }
   switch (evidenceType) {
     case 'PDF':
       return {
@@ -231,7 +231,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             hasAlphaChannel: file.type === 'image/png' || file.type === 'image/gif',
             ...baseMetadata
           } as EvidenceMetadata);
-        };
+        }
         img.onerror = () => {
           resolve({
             kind: 'IMAGE',
@@ -240,7 +240,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             hasAlphaChannel: false
             ...baseMetadata
           } as EvidenceMetadata);
-        };
+        }
         img.src = URL.createObjectURL(file as any);
       });
     case 'VIDEO':
@@ -255,7 +255,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             frameRate: 0, // Will be determined by server-side processing
             ...baseMetadata
           } as EvidenceMetadata);
-        };
+        }
         video.onerror = () => {
           resolve({
             kind: 'VIDEO',
@@ -265,7 +265,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             frameRate: 0,
             ...baseMetadata
           } as EvidenceMetadata);
-        };
+        }
         video.src = URL.createObjectURL(file as any);
       });
     case 'AUDIO':
@@ -276,11 +276,11 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             kind: 'AUDIO',
             durationSeconds: audio.duration || 0,
             codec: 'unknown', // Will be determined by server-side processing
-            sampleRate: 44100, // Default, will be determined by server-side processing
+            sampleRate: 44100, // Default, will be determined by server-side processing;
             channels: 2, // Default, will be determined by server-side processing
             ...baseMetadata
           } as EvidenceMetadata);
-        };
+        }
         audio.onerror = () => {
           resolve({
             kind: 'AUDIO',
@@ -290,7 +290,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             channels: 2,
             ...baseMetadata
           } as EvidenceMetadata);
-        };
+        }
         audio.src = URL.createObjectURL(file as any);
       });
     case 'TEXT':
@@ -306,7 +306,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             language: 'unknown', // Could be enhanced with language detection
             ...baseMetadata
           } as EvidenceMetadata);
-        };
+        }
         reader.onerror = () => {
           resolve({
             kind: 'TEXT',
@@ -314,7 +314,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             characterCount: 0,
             ...baseMetadata
           } as EvidenceMetadata);
-        };
+        }
         reader.readAsText(file);
       });
     default:
@@ -332,7 +332,7 @@ export const validationMessages = {
   file: 'Please select a file to upload',
   file_size: `File size must be less than ${MAX_FILE_SIZE / 1024 / 1024}MB`,
   file_type: 'File type is not supported for the selected evidence type'
-};
+}
 // Export types for use in components
 export type EvidenceUploadData = z.infer<typeof evidenceUploadSchema>;
 export type EnhancedEvidenceUploadData = z.infer<typeof enhancedEvidenceUploadSchema>;

@@ -62,10 +62,10 @@ https://svelte.dev/e/js_parse_error -->
     enableEntityMapping: true
     enableTimelineAnalysis: true
     confidenceThreshold: 7,
-  };
+  }
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null;
-  let networkLayout: unknown = {};
+  let networkLayout: unknown = {}
   $effect(() => {
     (async () => {
       await loadEvidence();
@@ -107,7 +107,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           fileName: 'mock_contract.pdf',
           fileSize: 245760,
           mimeType: 'application/pdf',
-          analyzed: true
+          analyzed: true;
           confidence: 0.85,
           tags: ['contract', 'legal', 'mock'],
           mockData: true
@@ -121,7 +121,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           fileName: 'mock_email.eml',
           fileSize: 32768,
           mimeType: 'message/rfc822',
-          analyzed: false
+          analyzed: false;
           confidence: 0.72,
           tags: ['email', 'communication', 'mock'],
           mockData: true
@@ -177,7 +177,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             }
           ]
         }
-      };
+      }
       // Build connection map for mock data
       buildConnectionMap(detectiveInsights);
     } finally {
@@ -268,13 +268,13 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     });
   }
   // Handle drag and drop for evidence connections
-  function handleDragStart(event: DragEvent, evidenceId: string) {
+  function handleDragStart(_event: DragEvent, evidenceId: string) {
     if (!event.dataTransfer) return;
     draggedEvidence = evidenceId;
     event.dataTransfer.setData('text/plain', evidenceId);
     event.dataTransfer.effectAllowed = 'link';
   }
-  function handleDrop(event: DragEvent, targetEvidenceId: string) {
+  function handleDrop(_event: DragEvent, targetEvidenceId: string) {
     event.preventDefault();
     if (draggedEvidence && draggedEvidence !== targetEvidenceId) {
       createEvidenceConnection(draggedEvidence, targetEvidenceId);
@@ -367,6 +367,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     setTimeout(() => renderNetworkView(), 0); });
   }
 </script>
+
 <!-- Evidence Board UI -->
 <div class="evidence-board" class:detective-mode={detectiveMode}>
   <!-- Header Controls -->
@@ -398,7 +399,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <button
           class="view-btn"
           class:active={viewMode === 'grid'}
-          onclick={() => viewMode = 'grid'}
+          onclick={() => (viewMode = 'grid')}
           title="Grid View"
         >
           <Archive class="w-4 h-4" />
@@ -406,7 +407,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <button
           class="view-btn"
           class:active={viewMode === 'timeline'}
-          onclick={() => viewMode = 'timeline'}
+          onclick={() => (viewMode = 'timeline')}
           title="Timeline View"
         >
           <Clock class="w-4 h-4" />
@@ -414,7 +415,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <button
           class="view-btn"
           class:active={viewMode === 'network'}
-          onclick={() => viewMode = 'network'}
+          onclick={() => (viewMode = 'network')}
           title="Network View"
         >
           <Network class="w-4 h-4" />
@@ -456,7 +457,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       <button
         class="filter-toggle"
         class:active={showFilters}
-        onclick={() => showFilters = !showFilters}
+        onclick={() => (showFilters = !showFilters)}
         title="Toggle Filters"
       >
         <Filter class="w-4 h-4" />
@@ -489,24 +490,15 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           <label>Detective Analysis:</label>
           <div class="checkbox-group">
             <label class="checkbox-label">
-              <input
-                type="checkbox"
-                bind:checked={detectiveConfig.enableSuspiciousPatternDetection}
-              />
+              <input type="checkbox" bind:checked={detectiveConfig.enableSuspiciousPatternDetection} />
               Pattern Detection
             </label>
             <label class="checkbox-label">
-              <input
-                type="checkbox"
-                bind:checked={detectiveConfig.enableCrossReferenceAnalysis}
-              />
+              <input type="checkbox" bind:checked={detectiveConfig.enableCrossReferenceAnalysis} />
               Cross References
             </label>
             <label class="checkbox-label">
-              <input
-                type="checkbox"
-                bind:checked={detectiveConfig.enableEntityMapping}
-              />
+              <input type="checkbox" bind:checked={detectiveConfig.enableEntityMapping} />
               Entity Mapping
             </label>
           </div>
@@ -519,10 +511,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     <div class="insights-panel">
       <div class="insights-header">
         <h3>🕵️ Detective Insights</h3>
-        <button
-          class="insights-toggle"
-          onclick={() => showInsights = !showInsights}
-        >
+        <button class="insights-toggle" onclick={() => (showInsights = !showInsights)}>
           {showInsights ? 'Hide' : 'Show'} Insights
         </button>
       </div>
@@ -648,12 +637,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     {:else if viewMode === 'network'}
       <!-- Network View -->
       <div class="network-view">
-        <canvas
-          bind:this={canvas as any}
-          class="network-canvas"
-          width="800"
-          height="600"
-        ></canvas>
+        <canvas bind:this={canvas as any} class="network-canvas" width="800" height="600"></canvas>
         <div class="network-legend">
           <div class="legend-item">
             <div class="legend-color entity"></div>
@@ -672,6 +656,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     {/if}
   </div>
 </div>
+
 <style>
   .evidence-board {
     display: flex;

@@ -77,7 +77,7 @@
     isAnalyzingStore.set(true);
     try {
       const query: RAGQuery = {
-        query: queryText
+        query: queryText;
         filters: {
           entityTypes: selectedEntityTypes
           confidenceThreshold,
@@ -87,9 +87,9 @@
           expandConcepts: useSemanticExpansion
           includeRelated: true
         },
-      };
+      }
       ragQueryStore.set(query);
-      const response = await semanticAnalyzer.enhancedQuery(query);
+      // removed unused response assignment
       ragResponseStore.set(response);
       console.log('RAG Query Response:', response);
     } catch (error) {
@@ -119,7 +119,7 @@
       LEGAL_CONCEPT: 'bg-red-100 text-red-800',
       CASE_REF: 'bg-indigo-100 text-indigo-800',
       STATUTE: 'bg-gray-100 text-gray-800',
-    };
+    }
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
   $effect(() => {
@@ -350,7 +350,7 @@
                   type="range"
                   min="0.1"
                   max="1.0"
-                  step="0.1"
+                  step="0.1";
                   bind:value={confidenceThreshold}
                   class="w-full" />
               </div>

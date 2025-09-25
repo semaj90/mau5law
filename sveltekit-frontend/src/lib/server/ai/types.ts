@@ -9,7 +9,7 @@ export interface OllamaConfig {
   fallbackModels?: {
     legal: string;
     general: string;
-  };
+  }
   timeout: number;
   maxRetries: number;
   streamEnabled: boolean;
@@ -39,13 +39,7 @@ export interface FeaturesConfig {
 }
 export interface ModelConfig {
   name: string;
-  type:
-    | 'local'
-    | 'legal-fallback'
-    | 'general-fallback'
-    | 'embedding'
-    | 'embedding-fallback'
-    | 'fallback';
+  type: 'local' | 'legal-fallback' | 'general-fallback' | 'embedding' | 'embedding-fallback' | 'fallback';
   capabilities: string[];
   contextWindow: number;
   embeddingDimension?: number;
@@ -53,7 +47,7 @@ export interface ModelConfig {
   topP?: number;
   topK?: number;
   systemPrompt?: string;
-  options?: { [key: string]: any };
+  options?: { [key: string]: any }
 }
 export interface OllamaGenerateRequest {
   model: string;
@@ -74,7 +68,7 @@ export interface OllamaGenerateRequest {
     num_gpu?: number;
     num_thread?: number;
     repeat_penalty?: number;
-  };
+  }
 }
 export interface OllamaEmbeddingRequest {
   model: string;
@@ -107,7 +101,7 @@ export interface DocumentChunk {
     section?: string;
     timestamp: Date;
     documentType?: string;
-  };
+  }
   embedding?: number[];
   relevanceScore?: number;
 }
@@ -129,7 +123,7 @@ export interface ProcessingPipeline {
     indexing: boolean;
     somTraining: boolean;
     caching: boolean;
-  };
+  }
   error?: string;
   startTime: Date;
   endTime?: Date;
@@ -138,7 +132,7 @@ export interface ProcessingPipeline {
     chunksGenerated: number;
     embeddingsCreated: number;
     processingTimeMs: number;
-  };
+  }
 }
 export interface LegalDocument {
   id: string;
@@ -154,10 +148,10 @@ export interface LegalDocument {
     caseNumber?: string;
     parties?: string[];
     tags?: string[];
-  };
+  }
   chunks: DocumentChunk[];
   embedding?: number[];
-  somCoordinates?: { x: number; y: number };
+  somCoordinates?: { x: number; y: number }
   relevanceScore?: number;
 }
 export interface AnalysisResult {
@@ -170,7 +164,7 @@ export interface AnalysisResult {
     dates: string[];
     locations: string[];
     legalConcepts: string[];
-  };
+  }
   sentiment: 'positive' | 'negative' | 'neutral';
   riskFactors?: string[];
   recommendations?: string[];
@@ -183,7 +177,7 @@ export interface AnalysisResult {
     modelUsed?: string;
     timestamp?: string;
     [key: string]: unknown;
-  };
+  }
 }
 export interface UserQuery {
   id: string;
@@ -194,13 +188,13 @@ export interface UserQuery {
     previousQueries?: string[];
     activeDocument?: string;
     sessionId: string;
-  };
+  }
   response?: {
     text: string;
     sources: string[];
     confidence: number;
     processingTimeMs: number;
-  };
+  }
 }
 export interface CacheEntry {
   key: string;

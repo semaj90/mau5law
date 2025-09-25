@@ -17,7 +17,7 @@
     required?: boolean;
     name?: string;
     class?: string;
-    onValueChange?: (value: string | undefined) => void;
+    onValueChange?: (_value: string | undefined) => void;
   }
   let {
     options = [],
@@ -36,13 +36,8 @@
   // Find selected option for display
   let selectedOption = $derived(options.find(option => option.value === value));
 </script>
-<SelectRoot
-  bind:selected={value}
-  onSelectedChange={handleValueChange}
-  {disabled}
-  {required}
-  {name}
->
+
+<SelectRoot bind:selected={value} onSelectedChange={handleValueChange} {disabled} {required} {name}>
   <!-- Select Trigger -->
   <SelectTrigger
     className={cn(
@@ -50,10 +45,10 @@
       'legal-select-trigger',
       'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
       'hover:bg-yorha-bg-secondary focus:ring-yorha-primary',
-      className
+      className,
     )}
   >
-    <SelectValue class="text-sm font-mono" placeholder={placeholder}>
+    <SelectValue class="text-sm font-mono" {placeholder}>
       {selectedOption?.label || placeholder}
     </SelectValue>
     <ChevronDown class="h-4 w-4 opacity-50" />
@@ -69,7 +64,7 @@
           class={cn(
             'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50',
             'legal-select-item',
-            'text-yorha-text-primary hover:bg-yorha-bg-tertiary data-[highlighted]:bg-yorha-primary data-[highlighted]:text-yorha-bg-primary font-mono'
+            'text-yorha-text-primary hover:bg-yorha-bg-tertiary data-[highlighted]:bg-yorha-primary data-[highlighted]:text-yorha-bg-primary font-mono',
           )}
           value={option.value}
           disabled={option.disabled}
@@ -89,6 +84,7 @@
     <Select.Input {name} />
   {/if}
 </SelectRoot>
+
 <style>
   /* Legal AI App Specific Styling */
   :global(.legal-select-trigger) {

@@ -7,7 +7,7 @@ declare global {
   interface Navigator {
     gpu?: {
       requestAdapter(): Promise<GPUAdapter | null>;
-    };
+    }
   }
   interface GPUAdapter {}
 }
@@ -19,33 +19,33 @@ export interface IntegrationStatus {
     available: boolean;
     simdSupport: boolean;
     runtimeConnected: boolean;
-  };
+  }
   sveltekit: {
     version: string;
     svelte5Patterns: boolean;
     ssrReady: boolean;
-  };
+  }
   database: {
     drizzleOrm: boolean;
     pgvectorSupport: boolean;
     postgresqlReady: boolean;
-  };
+  }
   ui: {
     enhancedBitsComponents: boolean;
     unoCSS: boolean;
     nesCSS: boolean;
     gamingTheme: boolean;
-  };
+  }
   webgpu: {
     available: boolean;
     dawnBackend: boolean;
     unifiedRuntime: boolean;
-  };
+  }
   cache: {
     chrRomCache: boolean;
     redisConnected: boolean;
     wasmCache: boolean;
-  };
+  }
 }
 export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
   const status: IntegrationStatus = {
@@ -80,7 +80,7 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
       redisConnected: false
       wasmCache: true
     }
-  };
+  }
   if (!browser) return status;
   try {
     // Check WebAssembly support
@@ -120,14 +120,14 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
     // Check database connection (simplified - would need actual endpoint check)
     try {
       // In a real scenario, this would ping a health check endpoint
-      const response = await fetch('/api/health', { method: 'HEAD' });
+      // removed unused response assignment
       status.database.postgresqlReady = response.ok;
     } catch (e) {
       // Database connection not available in client-only check
     }
     // Check cache connection
     try {
-      const response = await fetch('/api/cache/status', { method: 'HEAD' });
+      // removed unused response assignment
       status.cache.redisConnected = response.ok;
     } catch (e) {
       // Cache connection not available
@@ -178,4 +178,4 @@ export function formatStatusReport(status: IntegrationStatus): string {
 export const integrationChecker = {
   checkIntegrationStatus,
   formatStatusReport
-};
+}

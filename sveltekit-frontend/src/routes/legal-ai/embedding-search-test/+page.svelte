@@ -30,7 +30,7 @@ await checkSystemHealth();
   });
   async function checkSystemHealth() {
     try {
-      const response = await fetch(`${API_BASE}/health`);
+      // removed unused response assignment
       systemHealth = await response.json();
     } catch (error) {
       console.error('Health check failed:', error);
@@ -38,16 +38,16 @@ await checkSystemHealth();
   }
   async function checkCUDAStatus() {
     try {
-      const response = await fetch(`${CUDA_BASE}/health`);
+      // removed unused response assignment
       cudaStatus = await response.json();
     } catch (error) {
       console.error('CUDA health check failed:', error);
-      cudaStatus = { status: 'unavailable' };
+      cudaStatus = { status: 'unavailable' }
     }
   }
   async function loadSearchStats() {
     try {
-      const response = await fetch(`${API_BASE}/stats`);
+      // removed unused response assignment
       searchStats = await response.json();
     } catch (error) {
       console.error('Failed to load search stats:', error);
@@ -97,13 +97,13 @@ await checkSystemHealth();
     searchResults = [];
     try {
       const searchParams = new URLSearchParams({
-        q: searchQuery
+        q: searchQuery;
         limit: searchLimit.toString();
       });
       if (caseId.trim()) {
         searchParams.append('caseId', caseId);
       }
-      const response = await fetch(`${API_BASE}/search?${searchParams}`);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -126,12 +126,12 @@ await checkSystemHealth();
     searchResults = [];
     try {
       const requestBody = {
-        query: searchQuery
-        limit: searchLimit
+        query: searchQuery;
+        limit: searchLimit;
         metadata: {
           documentType: 'legal_contract'
         }
-      };
+      }
       if (caseId.trim()) {
         requestBody.caseId = caseId;
       }
@@ -167,7 +167,7 @@ await checkSystemHealth();
           type: 'embedding',
           priority: 5,
           payload: {
-            text: embeddingText
+            text: embeddingText;
             dimension: 768;
           },
           metadata: {
@@ -219,11 +219,14 @@ await checkSystemHealth();
     return text.substring(0, maxLength) + '...';
   }
 </script>
+
 <div class="legal-ai-test-container max-w-6xl mx-auto p-6 space-y-8">
   <!-- Header -->
   <div class="text-center">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">Legal AI Embedding & Search Test</h1>
-    <p class="text-gray-600">End-to-end testing of Ollama embeddings, PostgreSQL vector storage, and CUDA acceleration</p>
+    <p class="text-gray-600">
+      End-to-end testing of Ollama embeddings, PostgreSQL vector storage, and CUDA acceleration
+    </p>
   </div>
   <!-- System Status Dashboard -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -233,15 +236,15 @@ await checkSystemHealth();
       <div class="space-y-1 text-sm">
         <div class="flex justify-between">
           <span>Status:</span>
-          <span class="{getStatusColor(systemHealth.status)}">{systemHealth.status || 'checking...'}</span>
+          <span class={getStatusColor(systemHealth.status)}>{systemHealth.status || 'checking...'}</span>
         </div>
         <div class="flex justify-between">
           <span>Database:</span>
-          <span class="{getStatusColor(systemHealth.database)}">{systemHealth.database || 'checking...'}</span>
+          <span class={getStatusColor(systemHealth.database)}>{systemHealth.database || 'checking...'}</span>
         </div>
         <div class="flex justify-between">
           <span>Ollama:</span>
-          <span class="{getStatusColor(systemHealth.ollama)}">{systemHealth.ollama || 'checking...'}</span>
+          <span class={getStatusColor(systemHealth.ollama)}>{systemHealth.ollama || 'checking...'}</span>
         </div>
         <div class="flex justify-between">
           <span>Embeddings:</span>
@@ -255,7 +258,7 @@ await checkSystemHealth();
       <div class="space-y-1 text-sm">
         <div class="flex justify-between">
           <span>Status:</span>
-          <span class="{getStatusColor(cudaStatus.status)}">{cudaStatus.status || 'checking...'}</span>
+          <span class={getStatusColor(cudaStatus.status)}>{cudaStatus.status || 'checking...'}</span>
         </div>
         <div class="flex justify-between">
           <span>GPU Model:</span>
@@ -304,21 +307,23 @@ await checkSystemHealth();
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Case ID</label>
           <input
-            type="text";
+            type="text"
+            ;
             bind:value={caseId}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="e.g., CASE_2024_001"
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Status:
-            <span class="{getStatusColor(embeddingStatus)}">{embeddingStatus}</span>
+          <label class="block text-sm font-medium text-gray-700 mb-2"
+            >Status:
+            <span class={getStatusColor(embeddingStatus)}>{embeddingStatus}</span>
           </label>
         </div>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Legal Document Text</label>
-        <textarea
+        <textarea;
           bind:value={embeddingText}
           rows="4"
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -351,7 +356,8 @@ await checkSystemHealth();
         <div class="md:col-span-2">
           <label class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
           <input
-            type="text";
+            type="text"
+            ;
             bind:value={searchQuery}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="e.g., intellectual property patent"
@@ -360,7 +366,8 @@ await checkSystemHealth();
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Limit</label>
           <input
-            type="number";
+            type="number"
+            ;
             bind:value={searchLimit}
             min="1"
             max="20"
@@ -451,6 +458,7 @@ await checkSystemHealth();
     </div>
   </div>
 </div>
+
 <style>
   code {
     font-family: 'Courier New', monospace;

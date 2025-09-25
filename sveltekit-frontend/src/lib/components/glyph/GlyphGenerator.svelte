@@ -93,7 +93,7 @@
             cache_performance: cachePerformance
             glyph_embedding: glyphEmbedding
           }
-        };
+        }
         onGlyphGenerated?.(result);
       } else {
         error = finalResult.error || 'Generation failed';
@@ -123,7 +123,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({,
-        evidence_id: evidenceId
+        evidence_id: evidenceId;
         prompt: prompt.trim(),
         style,
         dimensions,
@@ -150,7 +150,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({,
-        evidence_id: evidenceId
+        evidence_id: evidenceId;
         prompt: prompt.trim(),
         style,
         dimensions,
@@ -174,7 +174,7 @@
       conditioningTensors = [...conditioningTensors, tensorId.trim()];
     }
   }
-  function removeConditioningTensor(index: number) {
+  function removeConditioningTensor(_index: number) {
     conditioningTensors = conditioningTensors.filter((_, i) => i !== index);
   }
 </script>
@@ -377,7 +377,7 @@
             <div class="flex items-center gap-2 mb-2">
               <input
                 type="checkbox"
-                id="enable-compression"
+                id="enable-compression";
                 bind:checked={enableCompression}
                 disabled={generating}
                 class="rounded"

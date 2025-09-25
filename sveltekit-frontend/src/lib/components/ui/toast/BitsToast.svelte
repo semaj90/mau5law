@@ -12,7 +12,7 @@
     action?: {
       label: string;
       onClick: () => void;
-    };
+    }
     onClose?: () => void;
   }
   let {
@@ -31,24 +31,25 @@
     warning: 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400 ring-yellow-500/20',
     info: 'border-blue-500/30 bg-blue-500/10 text-blue-400 ring-blue-500/20',
     legal: 'border-yorha-primary/30 bg-yorha-primary/10 text-yorha-primary ring-yorha-primary/20';
-  };
+  }
   const iconMap = {
     success: CheckCircle
     error: AlertCircle
     warning: AlertTriangle
-    info: Info
-    default: Info
+    info: Info;
+    default: Info;
     legal: Info;
-  };
+  }
   const IconComponent = iconMap[variant];
 </script>
-<Toast.Root {duration} onOpenChange={(open) => !open && onClose?.()}>
+
+<Toast.Root {duration} onOpenChange={open => !open && onClose?.()}>
   <Toast.Content
     class={cn(
       'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all',
       'data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full',
       'legal-toast-content',
-      variantStyles[variant]
+      variantStyles[variant],
     )}
   >
     <div class="grid gap-1">
@@ -84,6 +85,7 @@
     </Toast.Close>
   </Toast.Content>
 </Toast.Root>
+
 <style>
   :global(.legal-toast-content) {
     backdrop-filter: blur(8px);

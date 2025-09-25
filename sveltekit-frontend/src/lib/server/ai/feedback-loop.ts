@@ -35,7 +35,7 @@ class FeedbackLoop {
       sourcePreferences: new Map(),
       strategyEffectiveness: new Map(),
       userSatisfaction: new Map()
-    };
+    }
     this.initialize();
   }
   private async initialize(): Promise<void> {
@@ -173,7 +173,7 @@ class FeedbackLoop {
         preferredStrategies: this.getPreferredStrategies(userInteractions),
         averageComplexity: this.calculateAverageComplexity(userInteractions),
         peakUsageTimes: this.findPeakUsageTimes(userInteractions)
-      };
+      }
       // Generate recommendations
       const recommendations = {
         suggestedStrategies: this.suggestStrategies(patterns),
@@ -184,7 +184,7 @@ class FeedbackLoop {
           defaultDiversityLambda: patterns.preferredStrategies.includes('diverse') ? 0.6 : 0.4,
           enableAdvancedFeatures: patterns.averageComplexity > 0.8
         }
-      };
+      }
       return recommendations;
     } catch (error: any) {
       logger.error('[FeedbackLoop] Failed to get personalized recommendations:', error);
@@ -212,7 +212,7 @@ class FeedbackLoop {
         sourcePreferences: this.learningMetrics.sourcePreferences.size,
         strategyEffectiveness: Array.from(this.learningMetrics.strategyEffectiveness.entries()
       }
-    };
+    }
   }
   // === PRIVATE HELPER METHODS ===
   private async loadModelWeights(): Promise<void> {
@@ -267,7 +267,7 @@ class FeedbackLoop {
     }
   }
   private async reinforcePositivePatterns(
-    interaction: InteractionData
+    interaction: InteractionData;
     feedback: FeedbackData;
   ): Promise<void> {
     // Increase weights for strategies that led to high satisfaction
@@ -287,7 +287,7 @@ class FeedbackLoop {
     }
   }
   private async adjustNegativePatterns(
-    interaction: InteractionData
+    interaction: InteractionData;
     feedback: FeedbackData;
   ): Promise<void> {
     // Decrease weights for strategies that led to low satisfaction
@@ -414,7 +414,7 @@ class FeedbackLoop {
       isProcedural: false
       hasCase: false
       hasStatute: false
-    };
+    }
     const queryLower = query.toLowerCase();
     // Check for complexity indicators
     if (queryLower.includes('precedent') || queryLower.includes('jurisdiction') ||;

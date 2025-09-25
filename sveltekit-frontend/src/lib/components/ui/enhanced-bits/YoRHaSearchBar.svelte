@@ -158,10 +158,10 @@
       loading: 'text-blue-600 dark:text-blue-400',
       glow: 'shadow-lg';
     }
-  };
+  }
   const styles = $derived(themeConfig[theme]);
-  function handleInput(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleInput(_event: Event) {
+    // removed unused target assignment
     value = target.valu;
     showSuggestions = value.length > 0 || isFocused;
     selectedIndex = -1;
@@ -187,7 +187,7 @@
     }, 200);
     dispatch('blur');
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (!showSuggestions) return;
     switch (event.key) {
       case 'ArrowDown':
@@ -229,8 +229,8 @@
   function handleSearch() {
     if (!value.trim()) return;
     dispatch('search', {
-      query: value
-      terms: searchTerms
+      query: value;
+      terms: searchTerms;
       timestamp: new Date().toISOString();
     });
     // Add to recent searches if not a command
@@ -276,6 +276,7 @@
     !isFocused && value === '' ? fullPlaceholder.slice(0, placeholderIndex) + '▊' : placeholder
   );
 </script>
+
 <div class="relative w-full max-w-2xl mx-auto">
   <!-- Main Search Container -->
   <div
@@ -290,9 +291,7 @@
     <!-- Search Icon -->
     <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
       {#if loading}
-        <div class={`${styles.loading} animate-spin`}>
-          ⟳
-        </div>
+        <div class={`${styles.loading} animate-spin`}>⟳</div>
       {:else}
         <div class={`text-xl ${styles.icon}`}>
           {theme === 'yorha' ? '◉' : '🔍'}
@@ -376,26 +375,32 @@
                 {suggestion.text}
               </span>
               {#if suggestion.type === 'command'}
-                <span class={`
+                <span
+                  class={`
                   text-xs px-2 py-1 rounded opacity-75
                   ${theme === 'yorha' ? 'bg-green-400/10 text-green-400' : 'bg-gray-100 dark:bg-gray-800'}
-                `}>
+                `}
+                >
                   CMD
                 </span>
               {:else if suggestion.type === 'recent'}
-                <span class={`
+                <span
+                  class={`
                   text-xs px-2 py-1 rounded opacity-75
                   ${theme === 'yorha' ? 'bg-green-400/10 text-green-400' : 'bg-gray-100 dark:bg-gray-800'}
-                `}>
+                `}
+                >
                   RECENT
                 </span>
               {/if}
             </div>
             {#if suggestion.description}
-              <div class={`
+              <div
+                class={`
                 text-sm opacity-75 truncate
                 ${theme === 'yorha' ? 'text-green-400/70' : 'text-gray-600 dark:text-gray-400'}
-              `}>
+              `}
+              >
                 {suggestion.description}
               </div>
             {/if}
@@ -421,6 +426,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   /* Custom scrollbar for suggestions */
   .overflow-y-auto {
@@ -446,13 +452,21 @@
       box-shadow: 0 0 40px rgba(0, 255, 65, 0.4);
     }
     to {
-      box-shadow: 0 0 60px rgba(0, 255, 65, 0.6), 0 0 100px rgba(0, 255, 65, 0.2);
+      box-shadow:
+        0 0 60px rgba(0, 255, 65, 0.6),
+        0 0 100px rgba(0, 255, 65, 0.2);
     }
   }
   /* Typing cursor animation */
   @keyframes cursor-blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
   }
   input::placeholder {
     animation: cursor-blink 1s infinite;

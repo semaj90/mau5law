@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
     isLoading?: boolean;
     selectedIndex?: number;
     onloadMore?: () => void;
-    onitemClick?: (event: { item: unknown; type: string }) => void;
+    onitemClick?: (_event: { item: unknown; type: string }) => void;
   }
   let {
     items = $bindable([]),
@@ -105,6 +105,7 @@ https://svelte.dev/e/js_parse_error -->
       : text;
   }
 </script>
+
 <div
   class="infinite-scroll-container"
   bind:this={scrollContainer}
@@ -115,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if displayedItems.length === 0 && !isLoading}
     <div class="empty-state" transitionfade={{ duration: 200 }}>
       <div class="empty-icon">
-        <svelte:component this={getItemIcon( )} size={48} />
+        <svelte:component this={getItemIcon()} size={48} />
       </div>
       <p class="empty-text">No {itemType} found</p>
     </div>
@@ -126,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
           class="list-item"
           transitionslide={{ duration: 300, easing: quintOut }}
           onclick={() => handleItemClick(item)}
-          onkeydown={(e) => e.key === "Enter" && handleItemClick(item)}
+          onkeydown={e => e.key === 'Enter' && handleItemClick(item)}
           role="option"
           tabindex={0}
           aria-label="{itemType} item"
@@ -138,27 +139,196 @@ https://svelte.dev/e/js_parse_error -->
           <div class="item-content">
             <div class="item-header">
               <h4 class="item-title">
-                {#if itemType === "evidence"}
-                  {(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).fileName || (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).title || "Untitled Evidence"}
-                {:else if itemType === "notes"}
-                  {(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).title || "Untitled Note"}
+                {#if itemType === 'evidence'}
+                  {(
+                    item as {
+                      fileType?: unknown;
+                      type?: unknown;
+                      id?: unknown;
+                      fileName?: unknown;
+                      title?: unknown;
+                      name?: unknown;
+                      lastModified?: unknown;
+                      createdAt?: unknown;
+                      updatedAt?: unknown;
+                      description?: unknown;
+                      content?: unknown;
+                      objectCount?: unknown;
+                      tags?: unknown;
+                    }
+                  ).fileName ||
+                    (
+                      item as {
+                        fileType?: unknown;
+                        type?: unknown;
+                        id?: unknown;
+                        fileName?: unknown;
+                        title?: unknown;
+                        name?: unknown;
+                        lastModified?: unknown;
+                        createdAt?: unknown;
+                        updatedAt?: unknown;
+                        description?: unknown;
+                        content?: unknown;
+                        objectCount?: unknown;
+                        tags?: unknown;
+                      }
+                    ).title ||
+                    'Untitled Evidence'}
+                {:else if itemType === 'notes'}
+                  {(
+                    item as {
+                      fileType?: unknown;
+                      type?: unknown;
+                      id?: unknown;
+                      fileName?: unknown;
+                      title?: unknown;
+                      name?: unknown;
+                      lastModified?: unknown;
+                      createdAt?: unknown;
+                      updatedAt?: unknown;
+                      description?: unknown;
+                      content?: unknown;
+                      objectCount?: unknown;
+                      tags?: unknown;
+                    }
+                  ).title || 'Untitled Note'}
                 {:else}
-                  {(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).name || `Canvas ${formatDate((item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).lastModified)}`}
+                  {(
+                    item as {
+                      fileType?: unknown;
+                      type?: unknown;
+                      id?: unknown;
+                      fileName?: unknown;
+                      title?: unknown;
+                      name?: unknown;
+                      lastModified?: unknown;
+                      createdAt?: unknown;
+                      updatedAt?: unknown;
+                      description?: unknown;
+                      content?: unknown;
+                      objectCount?: unknown;
+                      tags?: unknown;
+                    }
+                  ).name ||
+                    `Canvas ${formatDate((item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).lastModified)}`}
                 {/if}
               </h4>
               <span class="item-date">
                 {formatDate(
-                  (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).createdAt || (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).lastModified || (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).updatedAt
+                  (
+                    item as {
+                      fileType?: unknown;
+                      type?: unknown;
+                      id?: unknown;
+                      fileName?: unknown;
+                      title?: unknown;
+                      name?: unknown;
+                      lastModified?: unknown;
+                      createdAt?: unknown;
+                      updatedAt?: unknown;
+                      description?: unknown;
+                      content?: unknown;
+                      objectCount?: unknown;
+                      tags?: unknown;
+                    }
+                  ).createdAt ||
+                    (
+                      item as {
+                        fileType?: unknown;
+                        type?: unknown;
+                        id?: unknown;
+                        fileName?: unknown;
+                        title?: unknown;
+                        name?: unknown;
+                        lastModified?: unknown;
+                        createdAt?: unknown;
+                        updatedAt?: unknown;
+                        description?: unknown;
+                        content?: unknown;
+                        objectCount?: unknown;
+                        tags?: unknown;
+                      }
+                    ).lastModified ||
+                    (
+                      item as {
+                        fileType?: unknown;
+                        type?: unknown;
+                        id?: unknown;
+                        fileName?: unknown;
+                        title?: unknown;
+                        name?: unknown;
+                        lastModified?: unknown;
+                        createdAt?: unknown;
+                        updatedAt?: unknown;
+                        description?: unknown;
+                        content?: unknown;
+                        objectCount?: unknown;
+                        tags?: unknown;
+                      }
+                    ).updatedAt,
                 )}
               </span>
             </div>
             <p class="item-description">
-              {#if itemType === "evidence"}
-                {truncateText((item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).description)}
-              {:else if itemType === "notes"}
-                {truncateText((item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).content)}
+              {#if itemType === 'evidence'}
+                {truncateText(
+                  (
+                    item as {
+                      fileType?: unknown;
+                      type?: unknown;
+                      id?: unknown;
+                      fileName?: unknown;
+                      title?: unknown;
+                      name?: unknown;
+                      lastModified?: unknown;
+                      createdAt?: unknown;
+                      updatedAt?: unknown;
+                      description?: unknown;
+                      content?: unknown;
+                      objectCount?: unknown;
+                      tags?: unknown;
+                    }
+                  ).description,
+                )}
+              {:else if itemType === 'notes'}
+                {truncateText(
+                  (
+                    item as {
+                      fileType?: unknown;
+                      type?: unknown;
+                      id?: unknown;
+                      fileName?: unknown;
+                      title?: unknown;
+                      name?: unknown;
+                      lastModified?: unknown;
+                      createdAt?: unknown;
+                      updatedAt?: unknown;
+                      description?: unknown;
+                      content?: unknown;
+                      objectCount?: unknown;
+                      tags?: unknown;
+                    }
+                  ).content,
+                )}
               {:else}
-                Canvas state with {(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).objectCount || 0} objects
+                Canvas state with {(
+                  item as {
+                    fileType?: unknown;
+                    type?: unknown;
+                    id?: unknown;
+                    fileName?: unknown;
+                    title?: unknown;
+                    name?: unknown;
+                    lastModified?: unknown;
+                    createdAt?: unknown;
+                    updatedAt?: unknown;
+                    description?: unknown;
+                    content?: unknown;
+                    objectCount?: unknown;
+                    tags?: unknown;
+                  }
+                ).objectCount || 0} objects
               {/if}
             </p>
             {#if (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags && (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags.length > 0}
@@ -167,7 +337,25 @@ https://svelte.dev/e/js_parse_error -->
                   <span class="tag">{tag}</span>
                 {/each}
                 {#if (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags.length > 3}
-                  <span class="tag-more">+{(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags.length - 3}</span>
+                  <span class="tag-more"
+                    >+{(
+                      item as {
+                        fileType?: unknown;
+                        type?: unknown;
+                        id?: unknown;
+                        fileName?: unknown;
+                        title?: unknown;
+                        name?: unknown;
+                        lastModified?: unknown;
+                        createdAt?: unknown;
+                        updatedAt?: unknown;
+                        description?: unknown;
+                        content?: unknown;
+                        objectCount?: unknown;
+                        tags?: unknown;
+                      }
+                    ).tags.length - 3}</span
+                  >
                 {/if}
               </div>
             {/if}
@@ -188,13 +376,15 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   .infinite-scroll-container {
     flex: 1;
     overflow-y: auto;
     padding: 0;
     background: var(--pico-background-color);
-}
+  }
   .empty-state {
     display: flex;
     flex-direction: column;
@@ -204,18 +394,18 @@ https://svelte.dev/e/js_parse_error -->
     text-align: center;
     color: var(--pico-muted-color);
     min-height: 200px;
-}
+  }
   .empty-icon {
     margin-bottom: 1rem;
     opacity: 0.5;
-}
+  }
   .empty-text {
     margin: 0;
     font-size: 0.875rem;
-}
+  }
   .items-list {
     padding: 0.5rem;
-}
+  }
   .list-item {
     display: flex;
     align-items: flex-start;
@@ -226,20 +416,20 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease;
     border: 1px solid transparent;
     margin-bottom: 0.5rem;
-}
+  }
   .list-item:hover {
     background: var(--pico-secondary-background);
     border-color: var(--pico-muted-border-color);
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+  }
   .list-item:focus {
     outline: 2px solid var(--pico-primary);
     outline-offset: 2px;
-}
+  }
   .list-item:active {
     transform: translateY(0);
-}
+  }
   .item-icon {
     display: flex;
     align-items: center;
@@ -250,18 +440,18 @@ https://svelte.dev/e/js_parse_error -->
     background: var(--pico-primary-background);
     color: var(--pico-primary);
     flex-shrink: 0;
-}
+  }
   .item-content {
     flex: 1;
     min-width: 0;
-}
+  }
   .item-header {
     display: flex;
     align-items: center;
     justify-content: space-betwee;
     gap: 0.5rem;
     margin-bottom: 0.25rem;
-}
+  }
   .item-title {
     margin: 0;
     font-size: 0.875rem;
@@ -271,12 +461,12 @@ https://svelte.dev/e/js_parse_error -->
     text-overflow: ellipsi;
     white-space: nowrap;
     flex: 1;
-}
+  }
   .item-date {
     font-size: 0.75rem;
     color: var(--pico-muted-color);
     flex-shrink: 0;
-}
+  }
   .item-description {
     margin: 0 0 0.5rem;
     font-size: 0.8rem;
@@ -288,13 +478,13 @@ https://svelte.dev/e/js_parse_error -->
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
-}
+  }
   .item-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
     margin-top: 0.5rem;
-}
+  }
   .tag {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
@@ -302,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
     color: var(--pico-primary);
     border-radius: 12px;
     border: 1px solid var(--pico-primary);
-}
+  }
   .tag-more {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
@@ -310,7 +500,7 @@ https://svelte.dev/e/js_parse_error -->
     color: var(--pico-muted-color);
     border-radius: 12px;
     border: 1px solid var(--pico-muted-border-color);
-}
+  }
   .loading-indicator {
     display: flex;
     flex-direction: column;
@@ -318,7 +508,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1rem;
     color: var(--pico-muted-color);
     gap: 0.5rem;
-}
+  }
   .spinner {
     width: 20px;
     height: 20px;
@@ -327,32 +517,32 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-.end-indicator {
+  .end-indicator {
     text-align: center;
     padding: 1rem;
     color: var(--pico-muted-color);
     font-size: 0.875rem;
-}
+  }
   @keyframes spin {
     0% {
       transform: rotate(0deg);
-}
+    }
     100% {
       transform: rotate(360deg);
-}}
+    }
+  }
   /* Custom scrollbar */
   .infinite-scroll-container::-webkit-scrollbar {
     width: 6px;
-}
+  }
   .infinite-scroll-container::-webkit-scrollbar-track {
     background: var(--pico-background-color);
-}
+  }
   .infinite-scroll-container::-webkit-scrollbar-thumb {
     background: var(--pico-muted-border-color);
     border-radius: 3px;
-}
+  }
   .infinite-scroll-container::-webkit-scrollbar-thumb:hover {
     background: var(--pico-primary);
-}
+  }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

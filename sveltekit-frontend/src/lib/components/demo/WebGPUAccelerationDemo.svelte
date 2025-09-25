@@ -52,14 +52,14 @@
     testVectors = {
       vectorA: generateRandomVector(vectorDimensions),
       vectorB: generateRandomVector(vectorDimensions, 0.7), // Similar vector
-    };
+    }
     // Generate data points for clustering
     testDataPoints = generateClusteredData(numDataPoints, vectorDimensions, numClusters);
     // Generate matrices for multiplication
     testMatrices = {
       matrixA: generateRandomMatrix(matrixSize, matrixSize),
       matrixB: generateRandomMatrix(matrixSize, matrixSize),
-    };
+    }
   }
   /**
    * Generate random vector with optional similarity to base vector
@@ -86,7 +86,7 @@
    */
   function generateClusteredData(
     numPoints: number
-    dimensions: number
+    dimensions: number;
     clusters: number
   ): Float32Array {
     const data = new Float32Array(numPoints * dimensions);
@@ -139,19 +139,19 @@
       results = {
         type: 'similarity',
         gpu: {
-          similarity: gpuSimilarity
-          time: gpuTime
+          similarity: gpuSimilarity;
+          time: gpuTime;
         },
         cpu: {
-          similarity: cpuSimilarity
-          time: cpuTime
+          similarity: cpuSimilarity;
+          time: cpuTime;
         },
         speedup: cpuTime / gpuTime,
         vectorDimensions,
-      };
+      }
     } catch (error) {
       console.error('Similarity computation failed:', error);
-      results = { type: 'similarity', error: error.message };
+      results = { type: 'similarity', error: error.message }
     } finally {
       isProcessing = false;
     }
@@ -182,10 +182,10 @@
         numDataPoints,
         numClusters,
         vectorDimensions,
-      };
+      }
     } catch (error) {
       console.error('Clustering computation failed:', error);
-      results = { type: 'clustering', error: error.message };
+      results = { type: 'clustering', error: error.message }
     } finally {
       isProcessing = false;
     }
@@ -223,14 +223,14 @@
           resultSize: matrixResult.length,
         },
         cpu: {
-          time: cpuTime
+          time: cpuTime;
         },
         speedup,
         matrixSize: `${matrixSize}x${matrixSize}`,
-      };
+      }
     } catch (error) {
       console.error('Matrix multiplication failed:', error);
-      results = { type: 'matrix', error: error.message };
+      results = { type: 'matrix', error: error.message }
     } finally {
       isProcessing = false;
     }

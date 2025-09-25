@@ -69,7 +69,7 @@ export function createRAGConfig(): RAGConfiguration {
     timeoutMs: env.RAG_TIMEOUT_MS,
     cacheEnabled: env.RAG_ENABLE_CACHING,
     cacheTtl: env.RAG_CACHE_TTL
-};
+}
 }
 // === UTILITY FUNCTIONS ===
 /**
@@ -236,7 +236,7 @@ class CircuitBreaker {
       state: this.state,
       failures: this.failures,
       lastFailureTime: this.lastFailureTime
-    };
+    }
   }
 }
 // Create circuit breakers for external services
@@ -244,7 +244,7 @@ export const circuitBreakers = {
   ollama: new CircuitBreaker(5, 60000, 'Ollama'),
   database: new CircuitBreaker(3, 30000, 'Database'),
   redis: new CircuitBreaker(3, 30000, 'Redis')
-};
+}
 /**
  * Performance metrics collector
  */;
@@ -274,7 +274,7 @@ class MetricsCollector {
     return this.counters.get(name) || 0;
   }
   getAllMetrics(): { [key: string]: any } {
-    const result: { [key: string]: any } = {};
+    const result: { [key: string]: any } = {}
     // Timing metrics
     for (const [operation, timings] of this.metrics.entries()) {
       if (timings.length > 0) {
@@ -317,7 +317,7 @@ export function measureTime(operation: string) {
         throw error;
       }
     } as T;
-  };
+  }
 }
 /**
  * Validates document size before processing
@@ -370,23 +370,23 @@ export interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'degraded';
   responseTime?: number;
   error?: string;
-  details?: { [key: string]: any };
+  details?: { [key: string]: any }
 }
 export async function checkServiceHealth(name: string, checkFn: () => Promise<any>): Promise<HealthStatus> {
   const start = Date.now();
   try {
     await withTimeout(checkFn(), 5000, `${name} health check timed out`);
     return {
-      service: name
+      service: name;
       status: 'healthy',
       responseTime: Date.now() - start
-};
+}
   } catch (error: any) {
     return {
       service: name
       status: 'unhealthy',
       responseTime: Date.now() - start,
       error: error instanceof Error ? error.message: 'Unknown error'
-};
+}
   }
 }

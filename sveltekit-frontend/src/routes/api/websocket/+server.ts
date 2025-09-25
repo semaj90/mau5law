@@ -1,6 +1,6 @@
 
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 // ======================================================================
 // REAL-TIME WEBSOCKET HANDLER FOR ENHANCED LEGAL AI SYSTEM
 // Supporting streaming updates, live processing results, and system monitoring

@@ -15,28 +15,28 @@ export interface EvidencePhoto {
     photographer?: string;
     equipment?: string;
     chainOfCustody: string[];
-  };
+  }
   analysis?: {
     bloodspatter?: boolean;
     fingerprints?: boolean;
     weapons?: boolean;
     faces?: number;
     objects?: string[];
-  };
+  }
 }
 export interface DocumentScan {
   id: string;
   caseId: string;
   documentType: 'contract' | 'evidence' | 'testimony' | 'exhibit' | 'motion';
   pages: number;
-  resolution: { width: number; height: number };
+  resolution: { width: number; height: number }
   ocrText?: string;
   metadata: {
     scanDate: Date;
     originalFormat: string;
     quality: 'low' | 'medium' | 'high';
     classification: string;
-  };
+  }
 }
 export interface CaseVisualization {
   id: string;
@@ -48,13 +48,13 @@ export interface CaseVisualization {
     lastModified: Date;
     author: string;
     version: string;
-  };
+  }
 }
 export interface VisualizationElement {
   id: string;
   type: 'evidence' | 'person' | 'location' | 'event' | 'document';
-  position: { x: number; y: number; z?: number };
-  properties: { [key: string]: any };
+  position: { x: number; y: number; z?: number }
+  properties: { [key: string]: any }
   connections: string[];
 }
 export interface CourtroomDisplay {
@@ -68,7 +68,7 @@ export interface CourtroomDisplay {
     zoom: number;
     annotations: boolean;
     highlightMode: 'none' | 'evidence' | 'testimony' | 'critical';
-  };
+  }
 }
 /**
  * Legal Document Texture Pipeline
@@ -126,7 +126,7 @@ export class LegalDocumentTexturePipeline {
         ...scan.metadata,
         pageNumber: pageIndex + 1,
         totalPages: scan.pages
-      };
+      }
       textures.push(enhancedTexture);
       this.documentCache.set(`${scan.id}_page_${pageIndex + 1}`, enhancedTexture);
       // Queue for OCR and analysis
@@ -189,7 +189,7 @@ export class LegalDocumentTexturePipeline {
         enhancement: 'forensic',
         analysisApplied: photo.analysis
       }
-    };
+    }
   }
   /**
    * Apply document enhancement for legal clarity
@@ -207,7 +207,7 @@ export class LegalDocumentTexturePipeline {
         enhancement: 'document_clarity',
         originalQuality: scan.metadata.quality
       }
-    };
+    }
   }
   /**
    * Create N64-style 3D scene visualization
@@ -238,7 +238,7 @@ export class LegalDocumentTexturePipeline {
         timestamp: new Date(),
         visualization: visualization.metadata
       }
-    };
+    }
   }
   /**
    * Create timeline visualization
@@ -270,7 +270,7 @@ export class LegalDocumentTexturePipeline {
         evidenceType: 'timeline',
         timestamp: new Date()
       }
-    };
+    }
   }
   /**
    * Create relationship map
@@ -285,7 +285,7 @@ export class LegalDocumentTexturePipeline {
     // Draw connections first
     visualization.elements.forEach(element => {
       element.connections.forEach(targetId => {
-        const target = visualization.elements.find(el => el.id === targetId);
+        // removed unused target assignment
         if (target) {
           this.drawConnection(ctx, element.position, target.position);
         }
@@ -308,7 +308,7 @@ export class LegalDocumentTexturePipeline {
         evidenceType: 'relationship_map',
         timestamp: new Date()
       }
-    };
+    }
   }
   /**
    * Create evidence flow visualization
@@ -338,7 +338,7 @@ export class LegalDocumentTexturePipeline {
         evidenceType: 'evidence_flow',
         timestamp: new Date()
       }
-    };
+    }
   }
   /**
    * Optimize texture for courtroom display
@@ -357,7 +357,7 @@ export class LegalDocumentTexturePipeline {
         courtroomSettings: settings
         optimized: true
       }
-    };
+    }
   }
   /**
    * Enhance forensic visibility in image data
@@ -642,7 +642,7 @@ export class LegalDocumentTexturePipeline {
       cachedDocuments: this.documentCache.size,
       queueLength: this.streamingQueue.length,
       isProcessing: this.isProcessing
-    };
+    }
   }
   /**
    * Clear pipeline cache

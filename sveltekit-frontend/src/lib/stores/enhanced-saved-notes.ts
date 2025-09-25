@@ -33,7 +33,7 @@ export interface LegalNote {
     ocrBoundingBoxes?: Array<{
       text: string;
       confidence: number;
-      bbox: { x: number; y: number; width: number; height: number };
+      bbox: { x: number; y: number; width: number; height: number }
     }>;
     // Embeddings & Semantic Search
     embeddings?: number[][];
@@ -80,7 +80,7 @@ export interface LegalNote {
       size: number;
       minioPath?: string;
     }>;
-  };
+  }
 }
 export interface NoteFilters {
   search: string;
@@ -176,7 +176,7 @@ export const filteredNotes = derived(
       if (a.metadata.starred && !b.metadata.starred) return -1;
       if (!a.metadata.starred && b.metadata.starred) return 1;
       // Then by priority
-      const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 };
+      const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 }
       const aPriority = priorityOrder[a.metadata.priority || 'low'];
       const bPriority = priorityOrder[b.metadata.priority || 'low'];
       if (aPriority !== bPriority) return bPriority - aPriority;
@@ -196,7 +196,7 @@ export const noteStats = derived(legalNotes, ($legalNotes): NoteStats => {
     totalTags: 0,
     averageConfidence: 0,
     recentlyUpdated: 0
-  };
+  }
   const recentThreshold = Date.now() - (7 * 24 * 60 * 60 * 1000); // 7 days
   let totalConfidence = 0;
   let confidenceCount = 0;
@@ -254,7 +254,7 @@ class EnhancedNotesManager {
         ...note.metadata,
         lastProcessed: now
       }
-    };
+    }
     // Process with AI if content has changed and it's not already AI-generated
     if (!note.metadata.aiGenerated && note.content) {
       try {
@@ -431,7 +431,7 @@ class EnhancedNotesManager {
         processingJobId: ocrResult.jobId,
         processingStatus: 'completed'
       }
-    };
+    }
     await this.saveNote(note);
     return note;
   }
@@ -460,7 +460,7 @@ class EnhancedNotesManager {
         processingJobId: analysis.jobId,
         processingStatus: 'completed'
       }
-    };
+    }
     await this.saveNote(note);
     return note;
   }
@@ -488,7 +488,7 @@ class EnhancedNotesManager {
           queryEmbedding.data.embeddings[0],
           note.metadata.embeddings![0]
         );
-        return { note, similarity };
+        return { note, similarity }
       });
       // Sort by similarity and return top results
       return similarities

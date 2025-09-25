@@ -88,7 +88,7 @@ type Details = {
   ai_summarize_checks: AISummarizeChecks
 }
 type CachePayload = {
-  ok: boolean
+  ok: boolean;
   details: Details
   message?: string
 }

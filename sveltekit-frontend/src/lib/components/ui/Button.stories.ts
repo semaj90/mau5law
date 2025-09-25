@@ -46,7 +46,7 @@ export const Default: Story = {
   args: {
     children: 'Button'
   }
-};
+}
 export const Legal: Story = {
   args: {
     variant: 'legal',
@@ -59,7 +59,7 @@ export const Legal: Story = {
       }
     }
   }
-};
+}
 export const Evidence: Story = {
   args: {
     variant: 'evidence',
@@ -72,7 +72,7 @@ export const Evidence: Story = {
       }
     }
   }
-};
+}
 export const Case: Story = {
   args: {
     variant: 'case',
@@ -85,7 +85,7 @@ export const Case: Story = {
       }
     }
   }
-};
+}
 export const Destructive: Story = {
   args: {
     variant: 'destructive',
@@ -98,7 +98,7 @@ export const Destructive: Story = {
       }
     }
   }
-};
+}
 export const Outline: Story = {
   args: {
     variant: 'outline',
@@ -111,25 +111,25 @@ export const Outline: Story = {
       }
     }
   }
-};
+}
 export const Small: Story = {
   args: {
     size: 'sm',
     children: 'Small Button'
   }
-};
+}
 export const Large: Story = {
   args: {
     size: 'lg',
     children: 'Large Button'
   }
-};
+}
 export const Disabled: Story = {
   args: {
-    disabled: true
+    disabled: true;
     children: 'Disabled Button'
   }
-};
+}
 export const Loading: Story = {
   args: {
     loading: true
@@ -142,4 +142,4 @@ export const Loading: Story = {
       }
     }
   }
-};
+}

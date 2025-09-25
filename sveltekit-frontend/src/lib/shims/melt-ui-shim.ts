@@ -32,4 +32,4 @@ export default {
   createCombobox,
   createToolbar,
   createResizable
-};
+}

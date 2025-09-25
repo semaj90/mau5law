@@ -24,12 +24,8 @@
     }) : ""
   );
 </script>
-<div
-  class="chat-message"
-  class:user={isUser}
-  class:assistant={isAssistant}
-  data-role={message.role}
->
+
+<div class="chat-message" class:user={isUser} class:assistant={isAssistant} data-role={message.role}>
   <div class="message-wrapper">
     {#if showAvatar}
       <div class="avatar">
@@ -43,7 +39,7 @@
     <div class="message-content">
       <div class="message-header">
         <span class="sender-name">
-          {isUser ? "You" : "AI Assistant"}
+          {isUser ? 'You' : 'AI Assistant'}
         </span>
         {#if showTimestamp && formattedTime}
           <span class="timestamp">{formattedTime}</span>
@@ -74,6 +70,7 @@
     </div>
   </div>
 </div>
+
 <style>
   .chat-message {
     display: flex;
@@ -214,10 +211,10 @@
       background-color: var(--muted, #334155);
       color: var(--muted-foreground, #94a3b8);
     }
-  .message-body :global(code) {
+    .message-body :global(code) {
       background-color: rgba(255, 255, 255, 0.1);
     }
-  .message-body :global(pre) {
+    .message-body :global(pre) {
       background-color: rgba(255, 255, 255, 0.05);
     }
   }

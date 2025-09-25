@@ -26,7 +26,7 @@ type FetchResult = {
   config: GPUConfig
 } | {
   ok: false
-  source: 'shim' | 'cache'
+  source: 'shim' | 'cache';
   config: GPUConfig
   reason?: string
 }

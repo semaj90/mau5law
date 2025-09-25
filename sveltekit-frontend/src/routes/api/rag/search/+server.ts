@@ -48,7 +48,7 @@ async function generateQueryEmbedding(
 // Perform vector similarity search
 async function vectorSearch(
   queryEmbedding: number[]
-  limit: number
+  limit: number;
   threshold: number
   filters?: {
     caseId?: string
@@ -111,7 +111,7 @@ async function vectorSearch(
 }
 // Perform text-based search
 async function textSearch(
-  query: string
+  query: string;
   limit: number
   filters?: {
     caseId?: string

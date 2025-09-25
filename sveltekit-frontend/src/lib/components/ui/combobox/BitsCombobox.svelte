@@ -10,7 +10,7 @@
     description?: string;
     category?: string;
     disabled?: boolean;
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   }
   export interface ComboboxProps {
     options: ComboboxOption[];
@@ -27,7 +27,7 @@
     description?: string;
     error?: string;
     class?: string;
-    onValueChange?: (value: string | string[] | undefined) => void;
+    onValueChange?: (_value: string | string[] | undefined) => void;
     onCreateOption?: (inputValue: string) => ComboboxOption | Promise<ComboboxOption>;
   }
   let {

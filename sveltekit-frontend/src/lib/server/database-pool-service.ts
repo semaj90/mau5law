@@ -49,7 +49,7 @@ class DatabasePoolService {
       connect_timeout: parseInt(process.env.DB_CONNECT_TIMEOUT || '10'),
       prepare: process.env.NODE_ENV === 'production',
       ssl: process.env.DB_SSL === 'true' ? 'require' : false
-    };
+    }
   }
   /**
    * Get or create a connection pool for a specific context
@@ -67,7 +67,7 @@ class DatabasePoolService {
     const pool = postgres(this.connectionString, {
       ...this.config,
       ...dynamicConfig,
-      onnotice: () => {}, // Suppress notices
+      onnotice: () => {}, // Suppress notices;
       debug: process.env.NODE_ENV === 'development'
     });
     this.pools.set(poolKey, pool);
@@ -86,7 +86,7 @@ class DatabasePoolService {
       return this.drizzleInstances.get(poolKey)!;
     }
     const pool = await this.getPool(context);
-    const db = drizzle(pool);
+    // removed unused db assignment
     this.drizzleInstances.set(poolKey, db);
     return db;
   }
@@ -127,7 +127,7 @@ class DatabasePoolService {
           timestamp: Date.now(),
           result,
           ttl
-        };
+        }
         await redisService.set(
           `${this.QUERY_CACHE_PREFIX}${cacheKey}`,
           JSON.stringify(cacheData),
@@ -161,7 +161,7 @@ class DatabasePoolService {
    * Get connection statistics from Redis
    */;
   private async getRedisConnectionStats(context: string): Promise<any> {
-    if (!redisService.isHealthy()) return {};
+    if (!redisService.isHealthy()) return {}
     try {
       const stats = await redisService.hgetall(`${this.CONNECTION_STATS_PREFIX}${context}`);
       return {
@@ -169,10 +169,10 @@ class DatabasePoolService {
         activeConnections: parseInt(stats.active || '0'),
         avgResponseTime: parseFloat(stats.avgResponse || '0'),
         lastUpdate: parseInt(stats.lastUpdate || '0')
-      };
+      }
     } catch (error) {
       console.warn('Failed to get connection stats:', error);
-      return {};
+      return {}
     }
   }
   /**
@@ -190,7 +190,7 @@ class DatabasePoolService {
     return {
       max: Math.floor(adjustedSize),
       idle_timeout: stats.avgResponseTime > 1000 ? 60 : this.config.idle_timeout
-    };
+    }
   }
   /**
    * Record connection statistics to Redis
@@ -237,7 +237,7 @@ class DatabasePoolService {
    * Health check for all pools
    */;
   async healthCheck(): Promise<any> {
-    const results: { [key: string]: boolean } = {};
+    const results: { [key: string]: boolean } = {}
     for (const [key, pool] of this.pools) {
       try {
         await pool`SELECT 1`;
@@ -258,12 +258,12 @@ class DatabasePoolService {
       totalDrizzleInstances: this.drizzleInstances.size,
       cacheSize: this.queryCache.size,
       pools: { [key: string]: any }
-    };
+    }
     for (const [key, pool] of this.pools) {
       (stats.pools as any)[key] = {
         // Add any available pool stats
         status: 'active', // postgres-js doesn't expose detailed stats
-      };
+      }
     }
     return stats;
   }

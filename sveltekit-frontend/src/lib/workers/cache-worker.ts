@@ -38,14 +38,14 @@ class CacheWorker {
       this.simdSupport = false;
     }
   }
-  private async handleMessage(event: MessageEvent<WorkerMessage>): Promise<void> {
+  private async handleMessage(_event: MessageEvent<WorkerMessage>): Promise<void> {
     const { type, id, data, config, operations } = event.data;
     try {
       let result: any;
       switch (type) {
         case 'init':
           this.config = config!;
-          result = { initialized: true, simdSupport: this.simdSupport };
+          result = { initialized: true, simdSupport: this.simdSupport }
           break;
         case 'compress':
           result = await this.compressData(data);
@@ -233,19 +233,19 @@ class CacheWorker {
   /**
    * JSON replacer for optimized serialization
    */
-  private jsonReplacer(key: string, value: any): any {
+  private jsonReplacer(_key: string, value: any): any {
     // Handle special types that JSON can't serialize natively
     if (value instanceof Float32Array) {
       return {
         __type: 'Float32Array',
         __data: Array.from(value)
-      };
+      }
     }
     if (value instanceof ArrayBuffer) {
       return {
         __type: 'ArrayBuffer',
         __data: Array.from(new Uint8Array(value))
-      };
+      }
     }
     return value;
   }
@@ -260,7 +260,7 @@ class CacheWorker {
   /**
    * JSON reviver for optimized deserialization
    */
-  private jsonReviver(key: string, value: any): any {
+  private jsonReviver(_key: string, value: any): any {
     if (value && typeof value === 'object' && value.__type) {
       switch (value.__type) {
         case 'Float32Array':

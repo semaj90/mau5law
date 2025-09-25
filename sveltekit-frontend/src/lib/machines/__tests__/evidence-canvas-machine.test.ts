@@ -36,7 +36,7 @@ const evidenceCanvasMachine = createMachine({
               protocol: 'HTTP',
               operation: 'canvas_initialization'
             }
-          };
+          }
         }),
         input: ({ event }) => ({
           sessionId: event.sessionId,
@@ -117,7 +117,7 @@ const evidenceCanvasMachine = createMachine({
               result = await mockServices.createEvidenceConnection(input.canvasId, input.connection);
               break;
             default:
-              result = { success: true };
+              result = { success: true }
           }
           const duration = performance.now() - startTime;
           return {
@@ -127,7 +127,7 @@ const evidenceCanvasMachine = createMachine({
               protocol: 'HTTP',
               operation: input.type.toLowerCase()
             }
-          };
+          }
         }),
         input: ({ event, context }) => ({
           type: event.type,
@@ -169,7 +169,7 @@ const evidenceCanvasMachine = createMachine({
               protocol: 'WebSocket',
               operation: 'real_time_sync'
             }
-          };
+          }
         }),
         input: ({ event, context }) => ({
           canvasId: context.canvasId,
@@ -204,7 +204,7 @@ const evidenceCanvasMachine = createMachine({
               protocol: 'HTTP',
               operation: 'canvas_persistence'
             }
-          };
+          }
         }),
         input: ({ context }) => ({ canvasId: context.canvasId }),
         onDone: {
@@ -410,7 +410,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
         ],
         version: 1,
         timestamp: Date.now()
-      };
+      }
       canvasActor.send({
         type: 'UPDATE_FABRIC_STATE',
         fabricState

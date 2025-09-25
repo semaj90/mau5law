@@ -19,12 +19,12 @@ export interface CaseWorkflowContext {
     total_steps: number;
     completed_steps: number;
     current_action: string;
-  };
+  }
   }); const settings = {
     auto_analyze: boolean;
     notification_level: 'minimal' | 'normal' | 'detailed';
     ai_assistance_level: 'basic' | 'enhanced' | 'proactive';
-  };
+  }
 }
 export const caseWorkflowMachine = createMachine({
   id: 'caseWorkflow',
@@ -98,7 +98,7 @@ export const caseWorkflowMachine = createMachine({
             (result as { case_id?: any }).case_id,
             user_id
           );
-          return { ...result, memory_context: memoryContext };
+          return { ...result, memory_context: memoryContext }
         }),
         onDone: {
           target: 'caseReady',
@@ -228,7 +228,7 @@ export const caseWorkflowMachine = createMachine({
               }
             });
           }
-          return { processed: true, auto_analysis: false };
+          return { processed: true, auto_analysis: false }
         }),
         onDone: [;
           {
@@ -296,7 +296,7 @@ export const caseWorkflowMachine = createMachine({
               metadata: { analysis_id: analysis.id }
             }
           );
-          return { analysis, recommendations };
+          return { analysis, recommendations }
         }),
         onDone: {
           target: 'reviewingRecommendations',
@@ -386,7 +386,7 @@ export const caseWorkflowMachine = createMachine({
               execution_result: result
             }
           });
-          return { recommendation_id, result };
+          return { recommendation_id, result }
         }),
         onDone: {
           target: 'reviewingRecommendations',

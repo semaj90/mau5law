@@ -15,19 +15,19 @@ export interface UploadContext {
     fileSize: number;
     contentType: string;
     expiresAt: Date;
-  };
+  }
   jobIds: {
     extraction?: string;
     embedding?: string;
     tensor?: string;
     indexing?: string;
-  };
+  }
   results: {
     extractedText?: string;
     embeddings?: number[][];
     tensorProcessing?: unknown;
     indexingComplete?: boolean;
-  };
+  }
 }
 // Event types
 type UploadEvent =
@@ -43,7 +43,7 @@ type UploadEvent =
   | { type: 'PROCESSING_FAILED'; stage: string; error: string }
   | { type: 'INDEXING_COMPLETE'; result: any }
   | { type: 'RETRY' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 // Upload and processing state machine
 export const uploadMachine = createMachine(
   {
@@ -367,7 +367,7 @@ export const uploadMachine = createMachine(
         async ({
           input,
         }: {
-          input: { files: File[]; presignedUrls: string[]; uploadId: string };
+          input: { files: File[]; presignedUrls: string[]; uploadId: string }
         }) => {
           const { files, presignedUrls, uploadId } = input;
           const file = files[0];
@@ -378,7 +378,7 @@ export const uploadMachine = createMachine(
             const chunk = file.slice(start, end);
             const response = await fetch(url, {
               method: 'PUT',
-              body: chunk
+              body: chunk;
               headers: {
                 'Content-Type': file.type,
               },
@@ -479,7 +479,7 @@ export const uploadMachine = createMachine(
         async ({
           input,
         }: {
-          input: { uploadId: string; embeddings: number[][]; metadata: any };
+          input: { uploadId: string; embeddings: number[][]; metadata: any }
         }) => {
           const { uploadId, embeddings, metadata } = input;
           const response = await fetch('/api/processing/index', {
@@ -516,6 +516,6 @@ function createUploadStore() {
     subscribe,
     send: actor.send.bind(actor),
     getSnapshot: actor.getSnapshot.bind(actor)
-  };
+  }
 }
 export const uploadStore = createUploadStore();

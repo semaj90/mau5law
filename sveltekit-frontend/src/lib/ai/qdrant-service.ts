@@ -46,21 +46,21 @@ export interface LegalDocumentMetadata {
     jurisdiction: string;
     confidentialityLevel: string;
     tags: string[];
-  };
+  }
   extractedData?: {
     parties?: string[];
     dates?: string[];
     amounts?: string[];
     legalCitations?: string[];
     keyTerms?: string[];
-  };
+  }
   fileMetadata: {
     size: number;
     mimeType: string;
     pageCount?: number;
     wordCount?: number;
     language?: string;
-  };
+  }
   [key: string]: unknown;
 }
 export interface QdrantServiceConfig {
@@ -99,12 +99,12 @@ export class QdrantService {
   ): Promise<void> {
     await this.ensureCollection();
     await this.client.upsert(this.collectionName, {
-      wait: true
+      wait: true;
       points: points
     });
   }
   async searchSimilar(
-    vector: number[]
+    vector: number[];
     limit: number = 10,
     filter?: { [key: string]: any },
   ): Promise<Array<any> {
@@ -124,7 +124,7 @@ export class QdrantService {
   }
   async deletePoints(ids: string[]): Promise<void> {
     await this.client.delete(this.collectionName, {
-      wait: true
+      wait: true;
       points: ids
     });
   }

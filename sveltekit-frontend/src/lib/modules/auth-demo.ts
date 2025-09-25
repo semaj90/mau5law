@@ -72,7 +72,7 @@ export class AuthDemo {
       name: userData.name,
       role: userData.role,
       isAuthenticated: true
-    };
+    }
     this.demoUsers.push(newUser);
     return newUser;
   }
@@ -120,5 +120,5 @@ export const useAuthDemo = () => {
     getCurrentUser: authDemo.getCurrentUser.bind(authDemo),
     isAuthenticated: authDemo.isAuthenticated.bind(authDemo),
     getDemoUsers: authDemo.getDemoUsers.bind(authDemo)
-  };
-};
+  }
+}

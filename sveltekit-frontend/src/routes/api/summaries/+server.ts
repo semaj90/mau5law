@@ -12,7 +12,7 @@ import Fuse from 'fuse.js'
 import { interpret } from 'xstate'
 import { aiSummaryMachine } from '$lib/machines/aiSummaryMachine'
 import { ollamaService } from '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
-import { URL } from 'url'
+
 // Request payload for summary generation
 export interface SummaryRequest {
   type: 'case' | 'evidence' | 'legal_document' | 'cross_analysis',

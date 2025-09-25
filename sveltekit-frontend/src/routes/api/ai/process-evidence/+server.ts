@@ -316,4 +316,4 @@ async function logAnalysis(data: any): Promise<any> {
     console.warn('Failed to log analysis:', error)
   }
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

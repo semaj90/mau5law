@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js'
 import { json, error } from '@sveltejs/kit'
 import { ensureError } from '$lib/utils/ensure-error'
 import crypto from 'crypto'
-import { URL } from 'url'
+
 const QUIC_AI_STREAM_CONFIG = {
   primaryPort: 8447, // QUIC HTTP/3
   fallbackPort: 8448, // HTTP/2

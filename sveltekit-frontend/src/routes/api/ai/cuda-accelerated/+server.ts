@@ -365,4 +365,4 @@ export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler)
 export const PUT = redisOptimized.aiAnalysis(originalPUTHandler)
-export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler)
+export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

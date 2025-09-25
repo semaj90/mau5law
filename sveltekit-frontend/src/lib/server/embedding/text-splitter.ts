@@ -28,7 +28,7 @@ export function splitText(raw: string, opts: SplitterOptions = {}): TextChunk[] 
     if (slice.length < minChunkSize) break;
     const chunkText = slice.join(' ').trim();
     chunks.push({
-      index: idx
+      index: idx;
       text: chunkText
       startWord: start
       endWord: start + slice.length - 1,

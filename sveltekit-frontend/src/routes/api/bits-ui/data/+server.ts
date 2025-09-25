@@ -143,4 +143,4 @@ export const POST: RequestHandler = withSSRHandler(async ({ request, locals }) =
     status: 'processed'
   }
   return createSSRResponse(processedData, { status: 201 })
-})
+});

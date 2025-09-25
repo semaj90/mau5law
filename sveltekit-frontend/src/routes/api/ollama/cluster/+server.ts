@@ -6,13 +6,13 @@ import { json } from '@sveltejs/kit'
  * Integrates with multi-core-ollama service on port 8125
  */
 import { productionServiceClient } from '$lib/services/productionServiceClient'
-import { URL } from "url"
+
 interface OllamaInstance {
   id: string
   host: string
   port: number
   status: 'healthy' | 'unhealthy' | 'loading' | 'offline'
-  models: string[]
+  models: string[];
   load: number; // 0-100
   memory: {
     used: string
@@ -460,7 +460,7 @@ async function executeModelOperation(operation: ModelOperation): Promise<any> {
     })()
   return {
     success: true
-    data: baseResult
+    data: baseResult;
     instances: affectedInstances
   }
 }

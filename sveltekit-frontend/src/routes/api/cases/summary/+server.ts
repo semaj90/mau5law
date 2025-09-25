@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit"
 import type { Case } from "$lib/types"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 // Type definitions
 export interface CaseSummaryRequest {
   caseId: string

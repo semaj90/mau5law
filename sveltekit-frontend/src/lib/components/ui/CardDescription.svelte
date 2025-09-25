@@ -6,7 +6,8 @@
   }
   let { className = '', children }: Props = $props();
 </script>
-<p class={"text-sm text-muted-foreground " + className}>
+
+<p class={'text-sm text-muted-foreground ' + className}>
   {#if children}
     {@render children()}
   {/if}

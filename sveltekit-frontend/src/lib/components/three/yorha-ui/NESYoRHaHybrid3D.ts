@@ -119,7 +119,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       transparent: (this.hybridStyle.opacity || 1) < 1,
       metalness: 0, // No metallic for 8-bit look
       roughness: 1, // Completely rough for matte finish
-    };
+    }
     // Apply NES-style material enhancements
     if (this.hybridStyle.crtEffect) {
       this.material = this.createCRTMaterial(materialProps);
@@ -705,7 +705,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         yorhaVariant: this.hybridStyle.variant,
         cacheRegion: 'CHR_ROM'
       }
-    };
+    }
     // Cache using NES orchestrator
     await nesCacheOrchestrator.cacheCanvasStateAsSprite(
       'hybrid_component',
@@ -736,7 +736,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
           pixelPerfect: this.hybridStyle.pixelPerfect
         }
       }]
-    };
+    }
     return JSON.stringify(fabricData);
   }
   private setupPredictiveCaching(): void {
@@ -756,7 +756,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
           predictive: true
           variant
         }
-      };
+      }
       if (predictiveState.id) {
         this.nesStateCache.set(predictiveState.id, predictiveState);
       }
@@ -769,7 +769,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       accent: NES_YORHA_PALETTE.hybridAccent,
       hover: NES_YORHA_PALETTE.nesLightGray,
       active: NES_YORHA_PALETTE.nesSuccess
-    };
+    }
     const baseJSON = JSON.parse(this.serializeToFabricJSON();
     if (baseJSON.objects?.[0]) {
       baseJSON.objects[0].fill = `#${(colorMap[variant as keyof typeof colorMap] || NES_YORHA_PALETTE.yorhaBeige).toString(16)}`;
@@ -805,7 +805,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         this.syncDOMPosition();
         this.syncAnimationFrame = requestAnimationFrame(syncLoop);
       }
-    };
+    }
     syncLoop();
   }
   // =============================================================================
@@ -849,7 +849,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       this.switchToNESState(frameId);
       currentFrame = (currentFrame + 1) % frames.length;
       setTimeout(frameLoop, duration);
-    };
+    }
     frameLoop();
   }
   // =============================================================================
@@ -914,7 +914,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 // =============================================================================
 // FACTORY FUNCTIONS FOR COMMON COMPONENTS
 // =============================================================================
-export function createNESButton(options: {
+export function createNESButton(_options: {
   text: string;
   variant?: 'is-primary' | 'is-success' | 'is-warning' | 'is-error';
   size?: 'small' | 'normal' | 'large';
@@ -932,7 +932,7 @@ export function createNESButton(options: {
     animationStyle: 'hybrid-morphing'
   });
 }
-export function createNESContainer(options: {
+export function createNESContainer(_options: {
   title?: string;
   rounded?: boolean;
   dark?: boolean;
@@ -953,7 +953,7 @@ export function createNESContainer(options: {
     pixelPerfect: true
   });
 }
-export function createNESProgressBar(options: {
+export function createNESProgressBar(_options: {
   value: number;
   max?: number;
   variant?: 'is-primary' | 'is-success' | 'is-warning' | 'is-error' | 'is-pattern';

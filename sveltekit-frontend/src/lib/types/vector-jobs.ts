@@ -8,7 +8,7 @@ export interface VectorJob {
 	ownerId: string;
 	event: 'upsert' | 'delete' | 'reembed' | 'cluster';
 	vector?: number[];
-	payload?: { [key: string]: any };
+	payload?: { [key: string]: any }
 	priority: 'high' | 'medium' | 'low';
 	status: 'pending' | 'queued' | 'processing' | 'completed' | 'failed' | 'cancelled';
 	createdAt: Date;
@@ -30,7 +30,7 @@ export interface VectorJobResult {
 		vectorDimension: number;
 		operationType: string;
 		timestamp: number;
-	};
+	}
 	error?: string;
 }
 export interface CUDAProcessingStatus {
@@ -60,7 +60,7 @@ export interface VectorOperationRequest {
 		webgpuOptions?: WebGPUProcessingOptions;
 		timeout?: number;
 		retryAttempts?: number;
-	};
+	}
 }
 export interface VectorOperationResponse {
 	jobId: string;
@@ -93,7 +93,7 @@ export interface VectorOutboxEntry {
 	ownerId: string;
 	event: string;
 	vector?: number[];
-	payload?: { [key: string]: any };
+	payload?: { [key: string]: any }
 	attempts: number;
 	processedAt?: Date;
 	createdAt: Date;
@@ -140,7 +140,7 @@ export interface WASMLLMResponse {
 		promptTokens: number;
 		completionTokens: number;
 		totalTokens: number;
-	};
+	}
 }
 // Legal AI specific vector types
 export interface LegalVectorEmbedding {
@@ -157,7 +157,7 @@ export interface LegalVectorEmbedding {
 		confidence: number;
 		extractedAt: Date;
 		modelVersion: string;
-	};
+	}
 }
 export interface LegalSimilarityResult {
 	sourceId: string;
@@ -175,25 +175,25 @@ export interface VectorServiceMetrics {
 		similarities: number;
 		indexing: number;
 		clustering: number;
-	};
+	}
 	processingStats: {
 		totalProcessed: number;
 		averageProcessingTimeMs: number;
 		successRate: number;
 		errorRate: number;
-	};
+	}
 	resourceUsage: {
 		cudaUtilization: number;
 		webgpuUtilization: number;
 		memoryUsage: number;
 		redisConnections: number;
-	};
+	}
 	performance: {
 		cudaOpsPerSecond: number;
 		webgpuOpsPerSecond: number;
 		vectorsPerSecond: number;
 		throughputMBps: number;
-	};
+	}
 }
 export interface VectorHealthStatus {
 	overall: 'healthy' | 'degraded' | 'unhealthy';
@@ -203,14 +203,14 @@ export interface VectorHealthStatus {
 		rabbitmq: 'connected' | 'disconnected' | 'error';
 		cuda: 'available' | 'unavailable' | 'error';
 		webgpu: 'available' | 'unavailable' | 'not_supported';
-	};
+	}
 	queues: {
 		[queueName: string]: {
 			depth: number;
 			consumers: number;
 			processingRate: number;
-		};
-	};
+		}
+	}
 	lastHealthCheck: Date;
 }
 // Error types for vector processing

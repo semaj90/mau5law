@@ -38,16 +38,16 @@ export async function safeFetch<T = unknown>(
   options?: RequestInit
 ): Promise<{ data?: T; error?: string; success: boolean }> {
   try {
-    const response = await fetch(url, options);
+    // removed unused response assignment
     if (!response.ok) {
       throw new ApiError(`HTTP error! status: ${response.status}`, response.status, url);
     }
     const data = await response.json();
-    return { data, success: true };
+    return { data, success: true }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('API call failed:', error);
-    return { error: errorMessage, success: false };
+    return { error: errorMessage, success: false }
   }
 }
 // Safe JSON parsing
@@ -57,15 +57,15 @@ export function safeJsonParse<T = unknown>(
 ): { data?: T; error?: string; success: boolean } {
   try {
     const data = JSON.parse(json) as T;
-    return { data, success: true };
+    return { data, success: true }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'JSON parsing failed';
     console.error('JSON parsing error:', error);
     return {
       data: fallback
-      error: errorMessage
+      error: errorMessage;
       success: false
-    };
+    }
   }
 }
 // Error boundary hook for Svelte 5
@@ -108,10 +108,10 @@ export function createErrorBoundary() {
     captureError,
     clearError,
     withErrorBoundary,
-  };
+  }
 }
 // Validation helpers
-export function validateRequired<T>(value: T, fieldName: string): T {
+export function validateRequired<T>(_value: T, fieldName: string): T {
   if (value === null || value === undefined || value === '') {
     throw new ValidationError(`${fieldName} is required`, fieldName, value);
   }
@@ -124,7 +124,7 @@ export function validateEmail(email: string): string {
   }
   return email;
 }
-export function validateType<T>(value: unknown, type: string, fieldName: string): T {
+export function validateType<T>(_value: unknown, type: string, fieldName: string): T {
   if (typeof value !== type) {
     throw new ValidationError(`${fieldName} must be of type ${type}`, fieldName, value);
   }

@@ -1,25 +1,24 @@
-
 // Vector search types and interfaces
 export interface SearchResult {
   id: string;
   score: number;
   payload?: unknown;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
-  filter?: { [key: string]: any };
+  filter?: { [key: string]: any }
 }
 export interface EmbeddingOptions {
-  model?: "openai" | "local";
+  model?: 'openai' | 'local';
   cache?: boolean;
   maxTokens?: number;
 }
 export interface VectorPoint {
   id: string;
   vector: number[];
-  payload?: { [key: string]: any };
+  payload?: { [key: string]: any }
 }
 export interface QdrantSearchParams {
   collection_name: string;
@@ -32,7 +31,7 @@ export interface QdrantSearchParams {
 export interface QdrantSearchResult {
   id: string;
   score: number;
-  payload?: { [key: string]: any };
+  payload?: { [key: string]: any }
   vector?: number[];
 }
 export interface QdrantResponse {
@@ -48,7 +47,7 @@ export interface AIResponse {
   embedding?: number[];
 }
 export interface ChatMessage {
-  role: "system" | "user" | "assistant";
+  role: 'system' | 'user' | 'assistant';
   content: string;
   timestamp?: Date;
 }

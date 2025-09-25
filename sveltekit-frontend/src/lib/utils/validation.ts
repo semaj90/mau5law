@@ -12,7 +12,7 @@ export interface ValidationResult {
 }
 export interface ValidationRule<T> {
   name: string;
-  validate: (value: T) => ValidationResult | boolean;
+  validate: (_value: T) => ValidationResult | boolean;
   message?: string;
   severity?: "error" | "warning";
 }
@@ -31,10 +31,9 @@ export function createValidationResult(
   warnings: string[] = [],
   value?: unknown
 ): ValidationResult {
-  return { isValid, errors, warnings, value };
+  return { isValid, errors, warnings, value }
 }
-export function validateField(
-  value: any
+export function validateField(_value: any
   config: FormFieldConfig
 ): ValidationResult {
   const errors: string[] = [];
@@ -144,7 +143,7 @@ export interface FileValidationConfig {
   requireHash?: boolean;
 }
 export function validateFile(
-  file: File
+  file: File;
   config: FileValidationConfig
 ): ValidationResult {
   const errors: string[] = [];
@@ -189,7 +188,7 @@ export function validateCaseData(data: any): ValidationResult {
       custom: [;
         {
           name: "title-format",
-          validate: (value: string) => !value.includes("<script>"),
+          validate: (_value: string) => !value.includes("<script>"),
           message: "Title contains invalid characters"
         }
       ]
@@ -200,28 +199,28 @@ export function validateCaseData(data: any): ValidationResult {
       maxLength: 5000
     },
     status: {
-      required: true
+      required: true;
       custom: [;
         {
           name: "valid-status",
-          validate: (value: string) =>
+          validate: (_value: string) =>
             ["Open", "In-Progress", "Closed", "Archived"].includes(value),
           message: "Invalid status value"
         }
       ]
     },
     priority: {
-      required: true
+      required: true;
       custom: [;
         {
           name: "valid-priority",
-          validate: (value: string) =>
+          validate: (_value: string) =>
             ["High", "Medium", "Low"].includes(value),
           message: "Invalid priority value"
         }
       ]
     }
-  };
+  }
   const errors: string[] = [];
   const warnings: string[] = [];
   for (const [field, fieldConfig] of Object.entries(config)) {
@@ -370,7 +369,7 @@ export class FormValidator {
     this.warnings.clear();
   }
   getValues(): { [key: string]: any } {
-    const result: { [key: string]: any } = {};
+    const result: { [key: string]: any } = {}
     for (const [key, value] of this.values) {
       result[key] = value;
     }
@@ -393,7 +392,7 @@ export function sanitizeFilename(filename: string): string {
 }
 // Data structure validation
 export function validateObject(
-  obj: any
+  obj: any;
   schema: Record<string, FormFieldConfig>,
 ): ValidationResult {
   const errors: string[] = [];

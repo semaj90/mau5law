@@ -4,8 +4,7 @@ declare global {
   /**
    * Represents a lightweight result wrapper returned by various DB helpers in this codebase.
    * Keep properties optional to avoid accidental strict conflicts with library types.
-   */;
-  interface RowList<T = any> {
+   */ interface RowList<T = any> {
     rows?: T;
     rowCount?: number;
     error?: any;
@@ -13,4 +12,4 @@ declare global {
     [key: string]: any;
   }
 }
-export {};
+export {}

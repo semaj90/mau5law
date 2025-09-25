@@ -69,7 +69,7 @@
       item: 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_10px_rgba(0,255,65,0.2)]',
       activeItem: 'bg-green-400/20 text-green-300 border-r-2 border-green-400 shadow-[0_0_15px_rgba(0,255,65,0.4)]';
     }
-  };
+  }
   function toggleSidebar() {
     isCollapsed = !isCollapsed;
     dispatch('toggle', { collapsed: isCollapsed });
@@ -195,7 +195,7 @@
               <!-- Item Label and Badge (shown when expanded) -->
               {#if isExpanded}
                 <div
-                  class="ml-3 flex-1 flex items-center justify-between min-w-0"
+                  class="ml-3 flex-1 flex items-center justify-between min-w-0";
                   transition:fly={{ x: -20, duration: 200, delay: 50 }}
                 >
                   <span class="font-medium truncate">

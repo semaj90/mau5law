@@ -43,7 +43,7 @@ https: //svelte.dev/e/js_parse_error -->
       dateCreated: string;
       author: string
       relevanceScore: number;
-    };
+    }
   }
   interface EvidenceReport {
     id: string
@@ -53,8 +53,8 @@ https: //svelte.dev/e/js_parse_error -->
     priority: string
     createdAt: string
     updatedAt: string
-    analyst: unknown
-    evidence: unknown
+    analyst: unknown;
+    evidence: unknown;
     methodology: unknown;
     findings: unknown
     legalImplications: unknown;
@@ -108,7 +108,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   interface RiskAnalysis {
     challengePoints: {
-      issue: string
+      issue: string;
       likelihood: number;
       impact: number;
       mitigation: string;
@@ -118,8 +118,8 @@ https: //svelte.dev/e/js_parse_error -->
   interface Recommendation {
     priority: 'immediate' | 'high' | 'medium' | 'low';
     category: 'evidence' | 'legal' | 'procedural' | 'strategic';
-    action: string
-    rationale: string
+    action: string;
+    rationale: string;
     timeline: string;
   }
   const synthesisMachine = createMachine<SynthesisContext>({
@@ -133,7 +133,7 @@ https: //svelte.dev/e/js_parse_error -->
       synthesisMode: 'thematic',
       synthesisResult: null
       progressStage: 'selecting',
-      error: null
+      error: null;
       loading: false;
     },
     states: {
@@ -422,6 +422,7 @@ https: //svelte.dev/e/js_parse_error -->
     URL.revokeObjectURL(url);
   }
 </script>
+
 <div class="case-synthesis-workflow max-w-7xl mx-auto space-y-6">
   <!-- Header -->
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
@@ -455,12 +456,15 @@ https: //svelte.dev/e/js_parse_error -->
       <div class="w-full bg-gray-200 rounded-full h-2">
         <div
           class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-          style="width: {
-            $state.context.progressStage === 'selecting' ? '25%' :
-            $state.context.progressStage === 'analyzing' ? '50%' :
-            $state.context.progressStage === 'synthesizing' ? '75%' :
-            $state.context.progressStage === 'complete' ? '100%' : '0%'
-          }"
+          style="width: {$state.context.progressStage === 'selecting'
+            ? '25%'
+            : $state.context.progressStage === 'analyzing'
+              ? '50%'
+              : $state.context.progressStage === 'synthesizing'
+                ? '75%'
+                : $state.context.progressStage === 'complete'
+                  ? '100%'
+                  : '0%'}"
         ></div>
       </div>
     </div>
@@ -600,25 +604,39 @@ https: //svelte.dev/e/js_parse_error -->
             <div class="text-sm text-gray-600">Overall</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold {getScoreColor($state.context.synthesisResult.strengthAssessment.evidenceQuality)}">
+            <div
+              class="text-2xl font-bold {getScoreColor(
+                $state.context.synthesisResult.strengthAssessment.evidenceQuality,
+              )}"
+            >
               {Math.round($state.context.synthesisResult.strengthAssessment.evidenceQuality * 100)}%
             </div>
             <div class="text-sm text-gray-600">Evidence</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold {getScoreColor($state.context.synthesisResult.strengthAssessment.legalBasis)}">
+            <div
+              class="text-2xl font-bold {getScoreColor($state.context.synthesisResult.strengthAssessment.legalBasis)}"
+            >
               {Math.round($state.context.synthesisResult.strengthAssessment.legalBasis * 100)}%
             </div>
             <div class="text-sm text-gray-600">Legal Basis</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold {getScoreColor($state.context.synthesisResult.strengthAssessment.witnessCredibility)}">
+            <div
+              class="text-2xl font-bold {getScoreColor(
+                $state.context.synthesisResult.strengthAssessment.witnessCredibility,
+              )}"
+            >
               {Math.round($state.context.synthesisResult.strengthAssessment.witnessCredibility * 100)}%
             </div>
             <div class="text-sm text-gray-600">Witnesses</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold {getScoreColor($state.context.synthesisResult.strengthAssessment.expertOpinions)}">
+            <div
+              class="text-2xl font-bold {getScoreColor(
+                $state.context.synthesisResult.strengthAssessment.expertOpinions,
+              )}"
+            >
               {Math.round($state.context.synthesisResult.strengthAssessment.expertOpinions * 100)}%
             </div>
             <div class="text-sm text-gray-600">Experts</div>
@@ -693,11 +711,12 @@ https: //svelte.dev/e/js_parse_error -->
                 {new Date(event.date).toLocaleDateString()}
               </div>
               <div class="flex-shrink-0">
-                <div class="w-4 h-4 rounded-full mt-1"
-                     class:bg-red-500={event.significance === 'critical'}
-                     class:bg-orange-500={event.significance === 'high'}
-                     class:bg-yellow-500={event.significance === 'medium'}
-                     class:bg-gray-500={event.significance === 'low'}
+                <div
+                  class="w-4 h-4 rounded-full mt-1"
+                  class:bg-red-500={event.significance === 'critical'}
+                  class:bg-orange-500={event.significance === 'high'}
+                  class:bg-yellow-500={event.significance === 'medium'}
+                  class:bg-gray-500={event.significance === 'low'}
                 ></div>
               </div>
               <div class="flex-1">
@@ -740,7 +759,9 @@ https: //svelte.dev/e/js_parse_error -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           {#each $state.context.synthesisResult.nextSteps as step, index}
             <div class="flex items-start gap-3">
-              <span class="flex items-center justify-center w-6 h-6 bg-green-600 text-white text-sm rounded-full flex-shrink-0">
+              <span
+                class="flex items-center justify-center w-6 h-6 bg-green-600 text-white text-sm rounded-full flex-shrink-0"
+              >
                 {index + 1}
               </span>
               <span class="text-green-800">{step}</span>
@@ -767,3 +788,4 @@ https: //svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+;

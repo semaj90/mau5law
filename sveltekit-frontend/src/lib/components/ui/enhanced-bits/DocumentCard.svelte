@@ -52,7 +52,7 @@
     brief: '⚖️',
     evidence: '🔍',
     citation: '📚';
-  };
+  }
   const fileTypeColors = {
     pdf: 'text-red-500',
     doc: 'text-blue-500',
@@ -64,18 +64,18 @@
     brief: 'text-indigo-600',
     evidence: 'text-yellow-600',
     citation: 'text-cyan-600';
-  };
+  }
   const confidentialityColors = {
     public: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
     internal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     confidential: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
     restricted: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-  };
+  }
   const sizeClasses = {
     sm: 'w-32 h-40',
     md: 'w-40 h-48',
     lg: 'w-48 h-56';
-  };
+  }
   const themeClasses = {
     default: `
       bg-white dark:bg-gray-800
@@ -92,7 +92,7 @@
       hover:shadow-[0_0_20px_rgba(0,255,65,0.3)];
       hover:border-green-400/50
     `;
-  };
+  }
   function handleCardClick() {
     if (onClick) {
       onClick();
@@ -101,17 +101,17 @@
     }
     dispatch('click', { title, fileType });
   }
-  function handleDownload(event: Event) {
+  function handleDownload(_event: Event) {
     event.stopPropagation();
     onDownload?.();
     dispatch('download', { title, fileType });
   }
-  function handleDelete(event: Event) {
+  function handleDelete(_event: Event) {
     event.stopPropagation();
     onDelete?.();
     dispatch('delete', { title, fileType });
   }
-  function handleEdit(event: Event) {
+  function handleEdit(_event: Event) {
     event.stopPropagation();
     onEdit?.();
     dispatch('edit', { title, fileType });

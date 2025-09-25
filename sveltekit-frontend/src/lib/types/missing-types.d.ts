@@ -2,8 +2,8 @@
 // This file resolves many TS2304 "Cannot find name" errors
 // Engine/Graphics types
 declare class ShaderCache {
-  static get(key: string): any;
-  static set(key: string, value: any): void;
+  static get(_key: string): any;
+  static set(_key: string, value: any): void;
 }
 declare class MatrixTransformLib {
   static createTransform(): any;
@@ -19,30 +19,30 @@ declare interface RAGSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 declare interface TextChunk {
   text: string;
   index: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 declare interface RAGDocument {
   id: string;
   content: string;
   embedding?: number[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 // Store types
 declare const enhancedRAGStore: {
   search: (query: string) => Promise<RAGSearchResult[]>;
   add: (doc: RAGDocument) => Promise<void>;
-};
+}
 declare const documentVectors: any;
 // Routing types
 declare interface DynamicRouteConfig {
   path: string;
   component: any;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 declare interface GeneratedRoute {
   path: string;
@@ -94,7 +94,7 @@ declare module '@langchain/community/vectorstores/pgvector' {
   export enum DistanceStrategy {
     EUCLIDEAN = 'euclidean',
     COSINE = 'cosine',
-    INNER_PRODUCT = 'innerProduct'
+    INNER_PRODUCT = 'innerProduct',
   }
 }
 declare module '@langchain/community/vectorstores/neo4j_vector' {
@@ -107,24 +107,24 @@ declare module '@langchain/community/vectorstores/neo4j_vector' {
 // XState v5 compatibility stubs
 declare module 'xstate' {
   export interface StateId {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   export interface MetaObject {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   export interface TransitionConfig<TContext = any, TEvent = any, TResolvedEvent = any, TEventType = any> {
     cond?: any;
     actions?: any;
     target?: any;
   }
   export interface Actor<T = any> {
-    send(event: any): void;
+    send(_event: any): void;
     getSnapshot(): T;
-    subscribe(callback: (snapshot: T) => void): { unsubscribe(): void };
+    subscribe(callback: (snapshot: T) => void): { unsubscribe(): void }
     stop(): void;
-    onTransition?: (listener: (snapshot: T) => void) => { unsubscribe(): void };
-    onDone?: (listener: (event: any) => void) => { unsubscribe(): void };
-    onStop?: (listener: () => void) => { unsubscribe(): void };
+    onTransition?: (listener: (snapshot: T) => void) => { unsubscribe(): void }
+    onDone?: (listener: (_event: any) => void) => { unsubscribe(): void }
+    onStop?: (listener: () => void) => { unsubscribe(): void }
     withConfig?: (config: any) => any;
   }
   export function createActor<T>(machine: any): Actor<T>;
@@ -133,23 +133,23 @@ declare module 'xstate' {
 declare module 'ioredis' {
   export default class Redis {
     constructor(config?: any);
-    get(key: string): Promise<string | null>;
-    set(key: string, value: string): Promise<'OK'>;
-    del(key: string): Promise<number>;
-  /** Set key with expire (seconds) */
-  setex(key: string, seconds: number, value: string): Promise<'OK'>;
-  /** Subscribe to patterns */
-  psubscribe(...patterns: string[]): Promise<number>;
-  /** Subscribe to channels */
-  subscribe(...channels: string[]): Promise<number>;
-  /** Basic event listener, e.g. 'pmessage', 'message', 'ready', 'error' */
-  on(event: string, listener: (...args: any[]) => void): this;
-  /** Connect/Disconnect lifecycle */
-  connect(): Promise<void>;
-  disconnect(): void;
-  quit(): Promise<'OK' | void>;
-  /** Ping server */
-  ping(message?: string): Promise<string>;
+    get(_key: string): Promise<string | null>;
+    set(_key: string, value: string): Promise<'OK'>;
+    del(_key: string): Promise<number>;
+    /** Set key with expire (seconds) */
+    setex(_key: string, seconds: number, value: string): Promise<'OK'>;
+    /** Subscribe to patterns */
+    psubscribe(...patterns: string[]): Promise<number>;
+    /** Subscribe to channels */
+    subscribe(...channels: string[]): Promise<number>;
+    /** Basic event listener, e.g. 'pmessage', 'message', 'ready', 'error' */
+    on(_event: string, listener: (...args: any[]) => void): this;
+    /** Connect/Disconnect lifecycle */
+    connect(): Promise<void>;
+    disconnect(): void;
+    quit(): Promise<'OK' | void>;
+    /** Ping server */
+    ping(message?: string): Promise<string>;
   }
 }
 // Utility stubs for production
@@ -178,7 +178,7 @@ export interface MetricData {
   metric: string;
   value: number;
   timestamp: Date;
-  labels?: { [key: string]: any };
+  labels?: { [key: string]: any }
   source?: string;
   level?: string;
   category?: string;

@@ -75,7 +75,7 @@
 					x: worldX
 					y: quantizedHeight
 					z: worldZ
-					u: x / (gridSize - 1), // UV coordinates
+					u: x / (gridSize - 1), // UV coordinates;
 					v: z / (gridSize - 1),
 					color: {
 						r: Math.floor((x / gridSize) * 255),
@@ -113,7 +113,7 @@
 			x: ay * bz - az * by,
 			y: az * bx - ax * bz,
 			z: ax * by - ay * bx;
-		};
+		}
 	}
 	function updatePerformanceMetrics() {
 		const currentTime = performance.now();
@@ -264,13 +264,13 @@
 				{#each faces.slice(0, Math.min(faces.length, 800)) as face, i}
 					<div
 						class="surface-polygon {lightingModel}"
-						style="
-							--face-index: {i};
-							--normal-x: {face.normal.x};
-							--normal-y: {face.normal.y};
-							--normal-z: {face.normal.z};
-							animation-delay: {i * 0.001};
-							z-index: {enableZBuffer ? Math.floor(100 - (face.vertices.reduce((sum, vi) => sum + vertices[vi].z, 0) / 3) * 0.1) : 'auto'};
+						style=";
+							--face-index: {i}
+							--normal-x: {face.normal.x}
+							--normal-y: {face.normal.y}
+							--normal-z: {face.normal.z}
+							animation-delay: {i * 0.001}
+							z-index: {enableZBuffer ? Math.floor(100 - (face.vertices.reduce((sum, vi) => sum + vertices[vi].z, 0) / 3) * 0.1) : 'auto'}
 						"
 					>
 						<!-- Triangle visualization -->
@@ -288,7 +288,7 @@
 								left: {20 + (i * 15) % 80}%;
 								top: {30 + (i * 7) % 40}%;
 								transform: rotate({i * 45}deg);
-								animation-delay: {i * 0.1};
+								animation-delay: {i * 0.1}
 							"
 						></div>
 					{/each}
@@ -304,7 +304,7 @@
 								left: {50 + vertex.x * 0.1}%;
 								top: {50 - vertex.y * 0.1}%;
 								background-color: rgb({vertex.color.r}, {vertex.color.g}, {vertex.color.b});
-								z-index: {enableZBuffer ? Math.floor(100 + vertex.z * 0.1) : 'auto'};
+								z-index: {enableZBuffer ? Math.floor(100 + vertex.z * 0.1) : 'auto'}
 							"
 						></div>
 					{/each}

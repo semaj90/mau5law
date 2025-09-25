@@ -81,7 +81,7 @@ export class VectorWasmWrapper {
    */
   async computeBatchSimilarities(
     query: Float32Array
-    vectors: Float32Array[]
+    vectors: Float32Array[];
     algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine';
   ): Promise<Float32Array> {
     if (!this.module) {
@@ -113,7 +113,7 @@ export class VectorWasmWrapper {
       new Float32Array(this.module.memory.buffer, queryPtr, query.length).set(query);
       new Float32Array(this.module.memory.buffer, vectorsPtr, flatVectors.length).set(flatVectors);
       // Map algorithm name to number
-      const algorithmMap = { cosine: 0, euclidean: 1, dot: 2, manhattan: 3 };
+      const algorithmMap = { cosine: 0, euclidean: 1, dot: 2, manhattan: 3 }
       const algNum = algorithmMap[algorithm];
       // Call WASM function
       this.module.computeBatchSimilarity(
@@ -197,7 +197,7 @@ export class VectorWasmWrapper {
     return {
       pages,
       bytes: this.module.memory.buffer.byteLength
-    };
+    }
   }
   /**
    * Force garbage collection

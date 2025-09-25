@@ -14,7 +14,7 @@ export interface JobState {
   progress?: number;
   result?: any;
   error?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   createdAt: number;
   updatedAt: number;
 }
@@ -112,7 +112,7 @@ export class GlobalLokiStore {
       createdAt: now
       updatedAt: now
       ...jobMeta
-    };
+    }
   // Update local collection
     try {
       const existing = this.coll.by('id', job.id);
@@ -141,7 +141,7 @@ export class GlobalLokiStore {
       ...existing,
       ...patch,
       updatedAt: Date.now()
-    };
+    }
   // Update local collection
     try {
       Object.assign(existing, updated);
@@ -228,8 +228,8 @@ export class GlobalLokiStore {
     byType: Record<string, number>;
   } {
     const jobs = this.getAllJobs();
-    const byState: Record<string, number> = {};
-    const byType: Record<string, number> = {};
+    const byState: Record<string, number> = {}
+    const byType: Record<string, number> = {}
     for (const job of jobs) {
       byState[job.state] = (byState[job.state] || 0) + 1;
       byType[job.type] = (byType[job.type] || 0) + 1;
@@ -238,7 +238,7 @@ export class GlobalLokiStore {
       total: jobs.length,
       byState,
       byType
-    };
+    }
   }
   /**
    * Clear old completed jobs

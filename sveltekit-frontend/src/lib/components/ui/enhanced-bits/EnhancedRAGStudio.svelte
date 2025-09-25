@@ -45,30 +45,23 @@
     }
   }
 </script>
+
 <div class="nes-container is-rounded p-4 {className}" {...restProps}>
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-xl font-bold">Enhanced RAG Studio</h2>
     <div class="flex gap-2">
-      <button
-        class="nes-btn is-small"
-        class:is-primary={activeTab === 'search'}
-        onclick={() => activeTab = 'search'}
-      >
+      <button class="nes-btn is-small" class:is-primary={activeTab === 'search'} onclick={() => (activeTab = 'search')}>
         <Search class="w-4 h-4" />
         Search
       </button>
-      <button
-        class="nes-btn is-small"
-        class:is-primary={activeTab === 'upload'}
-        onclick={() => activeTab = 'upload'}
-      >
+      <button class="nes-btn is-small" class:is-primary={activeTab === 'upload'} onclick={() => (activeTab = 'upload')}>
         <Database class="w-4 h-4" />
         Upload
       </button>
       <button
         class="nes-btn is-small"
         class:is-primary={activeTab === 'settings'}
-        onclick={() => activeTab = 'settings'}
+        onclick={() => (activeTab = 'settings')}
       >
         <Settings class="w-4 h-4" />
         Settings
@@ -83,13 +76,9 @@
           type="text"
           placeholder="Enter search query..."
           bind:value={searchQuery}
-          onkeydown={(e) => e.key === 'Enter' && handleSearch()}
+          onkeydown={e => e.key === 'Enter' && handleSearch()}
         />
-        <button
-          class="nes-btn is-success"
-          onclick={handleSearch}
-          disabled={isLoading || !searchQuery.trim()}
-        >
+        <button class="nes-btn is-success" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
           {#if isLoading}
             <RefreshCw class="w-4 h-4 animate-spin" />
           {:else}
@@ -130,7 +119,7 @@
         <input
           class="nes-input w-full"
           type="file"
-          onchange={(e) => uploadFile = e.target?.files?.[0] || null}
+          onchange={e => (uploadFile = e.target?.files?.[0] || null)}
           accept=".pdf,.txt,.md,.docx"
         />
       </div>
@@ -145,11 +134,7 @@
           </div>
         </div>
       {/if}
-      <button
-        class="nes-btn is-success"
-        onclick={handleUpload}
-        disabled={!uploadFile || isLoading}
-      >
+      <button class="nes-btn is-success" onclick={handleUpload} disabled={!uploadFile || isLoading}>
         {#if isLoading}
           <RefreshCw class="w-4 h-4 animate-spin" />
         {:else}
@@ -172,12 +157,17 @@
     </div>
   {/if}
 </div>
+
 <style>
   .animate-spin {
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>

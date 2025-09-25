@@ -51,9 +51,9 @@
     if (!inputMessage.trim() || isLoading) return;
     const userMessage = {
       role: 'user' as const,
-      content: inputMessage
+      content: inputMessage;
       timestamp: new Date().toLocaleTimeString();
-    };
+    }
     // Add user message immediately
     messages = [...messages, userMessage];
     const currentInput = inputMessag;
@@ -79,7 +79,7 @@
           confidence: data.confidence,
           tokensPerSecond: data.tokensPerSecond,
           taskId: data.taskId;
-        };
+        }
         messages = [...messages, assistantMessage];
       } else {
         // Error response
@@ -87,7 +87,7 @@
           role: 'assistant' as const,
           content: `Error: ${data.error || 'Unknown error'}`,
           timestamp: new Date().toLocaleTimeString();
-        };
+        }
         messages = [...messages, errorMessage];
       }
     } catch (error) {
@@ -96,13 +96,13 @@
         role: 'assistant' as const,
         content: `Network error: ${error.message}`,
         timestamp: new Date().toLocaleTimeString();
-      };
+      }
       messages = [...messages, errorMessage];
     } finally {
       isLoading = false;
     }
   }
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -128,6 +128,7 @@
     }
   }
 </script>
+
 <div class="w-full max-w-4xl mx-auto h-[600px] flex flex-col nes-container">
   <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
@@ -138,9 +139,7 @@
           {getStatusText()}
         </Badge>
       </h3>
-      <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>
-        Clear Chat
-      </Button>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>Clear Chat</Button>
     </div>
   </div>
   <div class="yorha-panel-content flex-1 flex flex-col gap-4 overflow-hidden">
@@ -149,11 +148,11 @@
       <div class="space-y-4">
         {#each messages as message}
           <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
-            <div class="max-w-[70%] p-3 rounded-lg {
-              message.role === 'user'
+            <div
+              class="max-w-[70%] p-3 rounded-lg {message.role === 'user'
                 ? 'bg-primary text-primary-foreground ml-auto'
-                : 'bg-muted text-muted-foreground'
-            }">
+                : 'bg-muted text-muted-foreground'}"
+            >
               <div class="text-sm font-medium mb-1">
                 {message.role === 'user' ? '👤 You' : '🤖 AI Assistant'}
                 <span class="text-xs opacity-70 ml-2">{message.timestamp}</span>
@@ -161,12 +160,18 @@
               <div class="whitespace-pre-wrap">{message.content}</div>
               {#if message.role === 'assistant' && message.confidence}
                 <div class="flex gap-2 mt-2 text-xs opacity-70">
-                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {Math.round(message.confidence * 100)}%</span>
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                    >Confidence: {Math.round(message.confidence * 100)}%</span
+                  >
                   {#if message.tokensPerSecond}
-                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.tokensPerSecond)} tok/s</span>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                      >{Math.round(message.tokensPerSecond)} tok/s</span
+                    >
                   {/if}
                   {#if message.taskId}
-                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Task: {message.taskId.slice(-8)}</span>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                      >Task: {message.taskId.slice(-8)}</span
+                    >
                   {/if}
                 </div>
               {/if}
@@ -200,7 +205,8 @@
         disabled={isLoading || connectionStatus !== 'connected'}
         class="flex-1"
       />
-      <Button class="bits-btn"
+      <Button
+        class="bits-btn"
         onclick={sendMessage}
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >
@@ -209,9 +215,7 @@
     </div>
     <!-- Status Info -->
     <div class="text-xs nes-text is-disabled flex justify-between items-center">
-      <span>
-        GPU: RTX 3060 Ti • Model: Gemma3-Legal • Port: 8096
-      </span>
+      <span> GPU: RTX 3060 Ti • Model: Gemma3-Legal • Port: 8096 </span>
       <span>
         {messages.length} messages
       </span>
@@ -225,12 +229,14 @@
     <pre class="mt-2 overflow-auto">{JSON.stringify(lastResponse, null, 2)}</pre>
   </details>
 {/if}
+
 <style>
   .animate-bounce {
     animation: bounce 1s infinite;
   }
   @keyframes bounce {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(-25%);
       animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
     }

@@ -44,7 +44,7 @@ export class WebGPUTensorAccelerator {
     averageLatency: 0,
     totalOperations: 0,
     errorCount: 0
-  };
+  }
   private isInitialized = false;
   private operationQueue: TensorOperation[] = [];
   private processingQueue = false;
@@ -56,7 +56,7 @@ export class WebGPUTensorAccelerator {
       maxBufferSize: 256 * 1024 * 1024, // 256MB
       shaderCacheEnabled: true
       ...config
-    };
+    }
   }
   async initialize(): Promise<boolean> {
     try {
@@ -95,7 +95,7 @@ export class WebGPUTensorAccelerator {
       });
       this.queue = this.device.queue;
       // Set up error handling
-      this.device.addEventListener('uncapturederror', (event: any) => {
+      this.device.addEventListener('uncapturederror', (_event: any) => {
         this.metrics.errorCount++;
         this.metrics.lastError = event.error.message;
         console.error('WebGPU Error:', event.error);
@@ -247,7 +247,7 @@ export class WebGPUTensorAccelerator {
 					}
 				}
 			`
-    };
+    }
     for (const [name, source] of Object.entries(shaders)) {
       const shader = this.device.createShaderModule({
         label: `${name}Shader`,
@@ -398,7 +398,7 @@ export class WebGPUTensorAccelerator {
               return acc;
             }, {}),
             simdMetrics: tilingResults.simdMetrics
-          };
+          }
           // Enhance similarity score with tiling confidence
           const confidenceBoost = Math.min(0.1, tilingMeta.avgConfidence * 0.05); // Max 10% boost
           const enhancedSimilarity = standardSimilarity * (1 + confidenceBoost);
@@ -421,7 +421,7 @@ export class WebGPUTensorAccelerator {
               gpuTime,
               throughput: combinedData.byteLength / 1024 / 1024 / (totalTime / 1000), // MB/s
             }
-          };
+          }
         } catch (tilingError) {
           console.warn('SIMD GPU tiling failed, using standard similarity:', tilingError);
           simdTime = performance.now() - simdStart;
@@ -441,7 +441,7 @@ export class WebGPUTensorAccelerator {
           gpuTime,
           throughput: (vectorA.byteLength + vectorB.byteLength) / 1024 / 1024 / (totalTime / 1000), // MB/s
         }
-      };
+      }
     } catch (error: any) {
       this.metrics.errorCount++;
       this.metrics.lastError = error.message;
@@ -582,7 +582,7 @@ export class WebGPUTensorAccelerator {
     }, 1000);
   }
   getMetrics(): GPUMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   getCapabilities(): Record<string, unknown> {
     return {
@@ -592,7 +592,7 @@ export class WebGPUTensorAccelerator {
       limits: this.adapter?.limits || null,
       features: this.adapter ? Array.from(this.adapter.features) : [],
       shaderCacheSize: this.shaderCache.size
-    };
+    }
   }
   async cleanup(): Promise<void> {
     if (this.device) {
@@ -626,7 +626,7 @@ export function getWebGPUAccelerator(): WebGPUTensorAccelerator | null {
   return tensorAccelerator;
 }
 // Export singleton instance and compatibility functions
-export { tensorAccelerator };
+export { tensorAccelerator }
 export async function acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
   const accelerator = getWebGPUAccelerator();
   if (!accelerator) {

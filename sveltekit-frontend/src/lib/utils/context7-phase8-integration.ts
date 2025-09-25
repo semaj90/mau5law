@@ -12,7 +12,7 @@ export interface MatrixUINode {
     priority?: string;
     confidence?: number;
     [key: string]: unknown;
-  };
+  }
   [key: string]: unknown;
 }
 // Type definitions
@@ -49,7 +49,7 @@ export interface Phase8Recommendation {
     code?: string;
     dependencies?: string[];
     timeEstimate?: string;
-  };
+  }
   benefits: string[];
   risks: string[];
   relatedStates?: string[];
@@ -62,7 +62,7 @@ export interface RerankResult {
     priority: string;
     confidence: number;
     component: string;
-  };
+  }
   originalScore: number;
   rerankScore: number;
   confidence: number;
@@ -280,7 +280,7 @@ const adaptiveLOD = {
   low: { vertexCount: 100, shaderComplexity: 'basic' },
   mid: { vertexCount: 500, shaderComplexity: 'standard' },
   high: { vertexCount: 1000, shaderComplexity: 'advanced' }
-};`,
+}`,
           timeEstimate: "4-6 hours"
         },
         benefits: [
@@ -352,7 +352,7 @@ const adaptiveLOD = {
       recentActions: ["analyze_component", "request_recommendations"],
       userRole: "admin",
       workflowState: query.currentState === "review" ? "review" : "draft"
-    };
+    }
     try {
       // Try to use advanced reranking if available, otherwise use fallback
       let reranked = rerankInput;
@@ -370,7 +370,7 @@ const adaptiveLOD = {
             aiConfidence: rerankedItem
               ? Math.round(rerankedItem.rerankScore * 100)
               : rec.aiConfidence
-          };
+          }
         })
         .sort((a, b) => b.aiConfidence - a.aiConfidence);
     } catch (error: any) {
@@ -498,7 +498,7 @@ export const commonContext7Phase8Queries = {
     feature: "ai-enhancement",
     requirements
   })
-};
+}
 // Export singleton instance
 export const context7Phase8Integrator = new Context7Phase8Integrator();
 export default Context7Phase8Integrator;

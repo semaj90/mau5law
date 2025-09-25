@@ -160,7 +160,7 @@
       activeButton: 'bg-green-400/25 text-green-300 shadow-[0_0_18px_rgba(0,255,65,0.5)] border border-green-400/50',
       dropdown: 'bg-black border-2 border-green-400/50 shadow-[0_0_25px_rgba(0,255,65,0.4)] backdrop-blur-sm';
     }
-  };
+  }
   function handleAction(action: ToolbarAction) {
     if (action.disabled) return;
     if (action.type === 'toggle') {
@@ -179,7 +179,7 @@
     dispatch('dropdownSelect', { action, option });
     activeDropdown = null;
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     // Handle keyboard shortcuts
     const shortcut = `${event.ctrlKey ? 'Ctrl+' : ''}${event.altKey ? 'Alt+' : ''}${event.shiftKey ? 'Shift+' : ''}${event.key.toUpperCase()}`;
     for (const group of toolbarGroups) {
@@ -193,12 +193,13 @@
     }
   }
   // Close dropdown when clicking outside
-  function handleClickOutside(event: MouseEvent) {
+  function handleClickOutside(_event: MouseEvent) {
     if (activeDropdown && !(event.target as Element).closest('.toolbar-dropdown')) {
       activeDropdown = null;
     }
   }
 </script>
+
 <svelte:window onkeydown={handleKeydown} onclick={handleClickOutside} />
 <div
   class={`
@@ -216,11 +217,13 @@
       <div class="flex items-center space-x-1">
         {#each group.actions as action (action.id)}
           {#if action.type === 'separator'}
-            <div class={`
+            <div
+              class={`
               w-px h-6 mx-2
               ${themeClasses[theme].group}
               bg-current opacity-20
-            `}></div>
+            `}
+            ></div>
           {:else if action.type === 'dropdown'}
             <div class="relative toolbar-dropdown">
               <button
@@ -236,10 +239,12 @@
                 `}
                 title={action.label}
               >
-                <span class={`
+                <span
+                  class={`
                   text-sm font-semibold
                   ${theme === 'yorha' ? 'filter drop-shadow-[0_0_6px_currentColor]' : ''}
-                `}>
+                `}
+                >
                   {action.icon}
                 </span>
                 {#if showLabels && !compact}
@@ -291,10 +296,12 @@
                   `}
                   title={`${action.label}${action.shortcut ? ` (${action.shortcut})` : ''}`}
                 >
-                  <span class={`
+                  <span
+                    class={`
                     text-sm font-semibold
                     ${theme === 'yorha' ? 'filter drop-shadow-[0_0_6px_currentColor]' : ''}
-                  `}>
+                  `}
+                  >
                     {action.icon}
                   </span>
                   {#if showLabels && !compact}
@@ -308,21 +315,25 @@
       </div>
       <!-- Group Separator -->
       {#if group !== toolbarGroups[toolbarGroups.length - 1]}
-        <div class={`
+        <div
+          class={`
           w-px h-8 mx-4
           ${themeClasses[theme].group}
           bg-current opacity-30
-        `}></div>
+        `}
+        ></div>
       {/if}
     </div>
   {/each}
   <!-- Custom Actions -->
   {#if customActions.length > 0}
-    <div class={`
+    <div
+      class={`
       w-px h-8 mx-4
       ${themeClasses[theme].group}
       bg-current opacity-30
-    `}></div>
+    `}
+    ></div>
     <div class="flex items-center space-x-1">
       {#each customActions as action (action.id)}
         <Button
@@ -332,7 +343,8 @@
           disabled={action.disabled}
           onclick={() => handleAction(action)}
         >
-          {action.icon} {showLabels ? action.label : ''}
+          {action.icon}
+          {showLabels ? action.label : ''}
         </Button>
       {/each}
     </div>
@@ -342,28 +354,13 @@
   <!-- Right-side Actions -->
   <div class="flex items-center space-x-2">
     {#if theme === 'yorha'}
-      <div class="text-xs text-green-400/50 font-mono">
-        LEGAL_AI_SYSTEM_ACTIVE
-      </div>
+      <div class="text-xs text-green-400/50 font-mono">LEGAL_AI_SYSTEM_ACTIVE</div>
     {/if}
-    <Button
-      {theme}
-      variant="ghost"
-      size={compact ? 'sm' : 'md'}
-      onclick={() => dispatch('help')}
-    >
-      ❓
-    </Button>
-    <Button
-      {theme}
-      variant="ghost"
-      size={compact ? 'sm' : 'md'}
-      onclick={() => dispatch('settings')}
-    >
-      ⚙️
-    </Button>
+    <Button {theme} variant="ghost" size={compact ? 'sm' : 'md'} onclick={() => dispatch('help')}>❓</Button>
+    <Button {theme} variant="ghost" size={compact ? 'sm' : 'md'} onclick={() => dispatch('settings')}>⚙️</Button>
   </div>
 </div>
+
 <style>
   /* Ensure toolbar scrolls horizontally on mobile */
   .overflow-x-auto {
@@ -389,7 +386,9 @@
       box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
     }
     to {
-      box-shadow: 0 0 40px rgba(0, 255, 65, 0.3), 0 0 60px rgba(0, 255, 65, 0.1);
+      box-shadow:
+        0 0 40px rgba(0, 255, 65, 0.3),
+        0 0 60px rgba(0, 255, 65, 0.1);
     }
   }
 </style>

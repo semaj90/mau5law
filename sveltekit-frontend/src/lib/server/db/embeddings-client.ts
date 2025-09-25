@@ -15,7 +15,7 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000
 });
-export const db = drizzle(pool);
+export // removed unused db assignment
 // Utility functions for embedding operations
 export class EmbeddingsService {
   /**
@@ -106,4 +106,4 @@ export class EmbeddingsService {
   }
 }
 // Export the database instance for other uses
-export { db as embeddingsDb };
+export { db as embeddingsDb }

@@ -260,7 +260,7 @@ This research provides a foundation for further legal analysis and case preparat
   }
 }
 function generateResearchRecommendations(
-  topic: string
+  topic: string;
   results: LegalResearchResult[]
   userRole?: string
 ): string[] {
@@ -348,4 +348,4 @@ function extractSearchTerms(topic: string): string[] {
     .filter((word: string) => word.length > 3)
     .filter((word) => !['the', 'and', 'for', 'with', 'from'].includes(word))
 }
-export const POST = redisOptimized.aiSearch(originalPOSTHandler)
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);

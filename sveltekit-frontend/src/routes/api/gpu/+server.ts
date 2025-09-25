@@ -252,7 +252,7 @@ async function processBatchTasks(batchData: any): Promise<Response> {
 	const maxConcurrent = 10
 	const tasks = batchData.tasks.slice(0, maxConcurrent)
 	const results = await Promise.allSettled(
-		tasks.map((task: any) => processGPUTask(task)
+		tasks.map((_task: any) => processGPUTask(task)
 	)
 	const successful = results
 		.filter(r => r.status === 'fulfilled')

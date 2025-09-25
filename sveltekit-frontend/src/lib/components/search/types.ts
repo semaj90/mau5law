@@ -14,7 +14,7 @@ export interface SearchResult {
     confidentiality?: string;
     caseId?: string;
     tags?: string[];
-  };
+  }
   highlights?: string[];
   createdAt?: string;
 }

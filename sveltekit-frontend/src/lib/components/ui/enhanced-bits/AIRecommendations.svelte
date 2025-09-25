@@ -2,18 +2,23 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { UiCard as Card, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiCardContent as CardContent } from '$lib/index.js';
+  import {
+    UiCard as Card,
+    UiCardHeader as CardHeader,
+    UiCardTitle as CardTitle,
+    UiCardContent as CardContent,
+  } from '$lib/index.js';
   interface Props {
     userContext?: unknown;
     neo4jContext?: unknown;
-    analyticsLog?: (event: unknown) => void;
+    analyticsLog?: (_event: unknown) => void;
     onRecommendations?: (results: unknown) => void;
   }
   const {
     userContext = null,
     neo4jContext = null,
     analyticsLog = () => {},
-    onRecommendations = () => {}
+    onRecommendations = () => {},
   }: Props = $props();
   let recommendations = $state<unknown[]>([]);
   let loading = $state(false);
@@ -24,7 +29,7 @@
       const res = await fetch('/api/recommendations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userContext, neo4jContext })
+        body: JSON.stringify({ userContext, neo4jContext }),
       });
       const data = await res.json();
       recommendations = data.recommendations || [];
@@ -38,6 +43,7 @@
   }
   $effect(fetchRecommendations);
 </script>
+
 <div class="w-full nes-container">
   <div class="yorha-panel-header">
     <h3 class="nes-text is-primary">AI Recommendations</h3>
@@ -60,3 +66,4 @@
     {/if}
   </div>
 </div>
+;

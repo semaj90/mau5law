@@ -8,7 +8,7 @@ export interface RedisRateLimitOptions {
   key: string; // unique key (user id scoped)
   redis?: Redis; // optional external client
 }
-const singleton = { client: null as Redis | null };
+const singleton = { client: null as Redis | null }
 function getClient(): Redis {
   if (singleton.client) return singleton.client;
   // Use centralized Redis configuration for rate limiting
@@ -74,7 +74,7 @@ export async function redisRateLimit(opts: RedisRateLimitOptions): Promise<any> 
         `[redisRateLimit] ${opts.key}: ${count}/${opts.limit} requests in ${opts.windowSec}s window, allowed: ${allowed}`
       );
     }
-    return { allowed, count, retryAfter, remaining, resetTime };
+    return { allowed, count, retryAfter, remaining, resetTime }
   } catch (e: any) {
     console.error('[redisRateLimit] ❌ Rate limit check failed:', e.message);
     // Graceful degradation - allow request but log error
@@ -90,7 +90,7 @@ export async function redisRateLimit(opts: RedisRateLimitOptions): Promise<any> 
       retryAfter: 0,
       remaining: Math.max(0, (opts?.limit ?? 1) - 1),
       resetTime: 0
-    };
+    }
   }
 }
 export async function closeRedisRateLimit(): Promise<any> {
@@ -109,16 +109,16 @@ export function createRateLimitConfig(
 ): Pick<RedisRateLimitOptions, 'limit' | 'windowSec'> {
   switch (policy) {
     case 'admin':
-      return { limit: 600, windowSec: 60 };
+      return { limit: 600, windowSec: 60 }
     case 'auth':
-      return { limit: 30, windowSec: 60 };
+      return { limit: 30, windowSec: 60 }
     case 'search':
-      return { limit: 120, windowSec: 60 };
+      return { limit: 120, windowSec: 60 }
     case 'public':
-      return { limit: 60, windowSec: 60 };
+      return { limit: 60, windowSec: 60 }
     case 'api':
     default:
-      return { limit: 120, windowSec: 60 };
+      return { limit: 120, windowSec: 60 }
   }
 }
 /**
@@ -138,13 +138,13 @@ export async function rateLimitHealthCheck(): Promise<any> {
     } catch {
       scriptLoaded = false;
     }
-    return { redis: pong === 'PONG', latencyMs, scriptLoaded, timestamp: new Date().toISOString() };
+    return { redis: pong === 'PONG', latencyMs, scriptLoaded, timestamp: new Date().toISOString() }
   } catch {
     return {
       redis: false
       latencyMs: Date.now() - start,
-      scriptLoaded: false
+      scriptLoaded: false;
       timestamp: new Date().toISOString()
-    };
+    }
   }
 }

@@ -15,7 +15,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
     summary_type: 'executive' | 'detailed' | 'bullet_points' | 'legal_analysis';
     max_length: number;
     focus: string[];
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   }
   interface SummarizationResponse {
     document_id: string;
@@ -28,7 +28,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
       legal_implications: string[];
       recommendations: string[];
       executive_summary: string;
-    };
+    }
     processing_time: number;
     model: string;
     quality: {
@@ -36,8 +36,8 @@ Enhanced-bits UI integration with real-time progress and quality metrics
       completeness_score: number;
       clarity_score: number;
       overall_rating: string;
-    };
-    metadata: { [key: string]: any };
+    }
+    metadata: { [key: string]: any }
   }
   // Component props
   interface Props {
@@ -96,7 +96,7 @@ await checkServiceHealth();
   // Check if summarization service is available
   async function checkServiceHealth(): Promise<void> {
     try {
-      const response = await fetch(`${serviceUrl}/health`);
+      // removed unused response assignment
       if (response.ok) {
         const health = await response.json();
         serviceHealth = health.status === 'healthy' ? 'healthy' : 'degraded';
@@ -135,14 +135,14 @@ await checkServiceHealth();
         content: documentContent
         document_type: documentType
         summary_type: summaryType
-        max_length: maxLength
-        focus: focusAreas
+        max_length: maxLength;
+        focus: focusAreas;
         metadata: {
           generated_at: new Date().toISOString(),
           user_agent: navigator.userAgent,
           content_length: documentContent.length
         }
-      };
+      }
       const response = await fetch(`${serviceUrl}/summarize`, {
         method: 'POST',
         headers: {

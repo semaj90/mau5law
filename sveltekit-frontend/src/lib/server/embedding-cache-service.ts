@@ -25,16 +25,16 @@ interface CacheStats {
     hits: number;
     misses: number;
     size: number;
-  };
+  }
   queries: {
     hits: number;
     misses: number;
     size: number;
-  };
+  }
   sessions: {
     active: number;
     total: number;
-  };
+  }
 }
 class EmbeddingCacheService {
   // Cache prefixes
@@ -56,7 +56,7 @@ class EmbeddingCacheService {
    */
   async cacheEmbedding(
     text: string
-    embedding: number[]
+    embedding: number[];
     model: string = 'nomic-embed-text';
   ): Promise<void> {
     if (!redisService.isHealthy() || !text || !embedding.length) return;
@@ -69,14 +69,14 @@ class EmbeddingCacheService {
         timestamp: Date.now(),
         accessCount: 0,
         lastAccessed: Date.now()
-      };
+      }
       // Store with compression for large embeddings
       const compressed = this.compressEmbedding(embedding);
       const cacheData = {
         ...entry,
-        embedding: compressed
+        embedding: compressed;
         compressed: true
-      };
+      }
       await redisService.set(
         `${this.EMBEDDING_PREFIX}${key}`,
         JSON.stringify(cacheData),
@@ -138,7 +138,7 @@ class EmbeddingCacheService {
    */
   async cacheQuery(
     query: string
-    results: any[]
+    results: any[];
     metadata: any = {},
     customTTL?: number;
   ): Promise<void> {
@@ -156,7 +156,7 @@ class EmbeddingCacheService {
         },
         timestamp: Date.now(),
         ttl
-      };
+      }
       await redisService.set(`${this.QUERY_PREFIX}${key}`, JSON.stringify(entry), ttl);
       await this.updateStats('queries', 'store');
       console.log(`📊 Cached query results (${results.length} items, TTL: ${ttl}s)`);
@@ -225,7 +225,7 @@ class EmbeddingCacheService {
           accessCount: 0,
           lastAccessed: Date.now(),
           compressed: true
-        };
+        }
         await redisService.set(
           `${this.EMBEDDING_PREFIX}${key}`,
           JSON.stringify(entry),
@@ -243,7 +243,7 @@ class EmbeddingCacheService {
    * Invalidate cache patterns
    */
   async invalidate(
-    pattern: string
+    pattern: string;
     type: 'embeddings' | 'queries' | 'sessions' | 'all' = 'all';
   ): Promise<void> {
     if (!redisService.isHealthy()) return;
@@ -279,7 +279,7 @@ class EmbeddingCacheService {
       embeddings: { hits: 0, misses: 0, size: 0 },
       queries: { hits: 0, misses: 0, size: 0 },
       sessions: { active: 0, total: 0 }
-    };
+    }
     if (!redisService.isHealthy()) return defaultStats;
     try {
       const stats = await redisService.hgetall(`${this.STATS_PREFIX}all`);
@@ -298,7 +298,7 @@ class EmbeddingCacheService {
           active: parseInt(stats['session_active'] || '0'),
           total: parseInt(stats['session_total'] || '0')
         }
-      };
+      }
     } catch (error) {
       console.warn('Stats retrieval error:', error);
       return defaultStats;

@@ -6,12 +6,12 @@ export interface ClaudeAgentExecutionInput {
     includeContext7?: boolean;
     autoFix?: boolean;
     area?: string;
-  };
+  }
 }
 export interface ClaudeAgentExecutionResult {
   output: string;
   score: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 class ClaudeAgentStub {
   async execute(input: ClaudeAgentExecutionInput): Promise<ClaudeAgentExecutionResult> {
@@ -20,13 +20,13 @@ class ClaudeAgentStub {
       output: `[ClaudeStub] Response synthesized for: ${prompt.slice(0,120)}...` + (options?.includeContext7 ? ' (ctx7)' : ''),
       score: 0.72,
       metadata: {
-        simulated: true
+        simulated: true;
         length: prompt.length,
         includeContext7: !!options?.includeContext7,
         autoFix: !!options?.autoFix,
         contextKeys: context ? Object.keys(context) : []
       }
-    };
+    }
   }
 }
 export const claudeAgent = new ClaudeAgentStub();

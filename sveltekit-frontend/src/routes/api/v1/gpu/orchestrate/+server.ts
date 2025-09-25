@@ -146,7 +146,7 @@ async function handleClusterStatus(): Promise<any> {
   })
 }
 // Helper functions for legal processing
-function extractLegalEntities(document: string) {
+function extractLegalEntities(_document: string) {
   const entities = {
     parties: [],
     dates: [],

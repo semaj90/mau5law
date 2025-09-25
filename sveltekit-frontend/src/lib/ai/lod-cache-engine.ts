@@ -58,7 +58,7 @@ interface ProcessLLMOutputResult {
     vector_clusters: number[];
     topology_features: number[];
     contextual_anchors: string[];
-  };
+  }
 }
 interface LODCacheStats {
   total_entries: number;
@@ -84,7 +84,7 @@ interface LODCacheEntry {
     block: Uint8Array;      // 35 bytes - paragraph level (5 tiles)
     section: Uint8Array;    // 175 bytes - section level (25 tiles),
     document: Uint8Array;   // 875 bytes - full document level (125 tiles)
-  };
+  }
   // SVG summarizations for each LOD level
   svg_summaries: {
     glyph: string;          // Single glyph SVG
@@ -92,7 +92,7 @@ interface LODCacheEntry {
     block: string;          // Small diagram SVG (64x64)
     section: string;        // Medium visualization SVG (256x256),
     document: string;       // Full document map SVG (512x512)
-  };
+  }
   // Vector metadata for enhanced RAG
   vector_metadata: {
     embeddings: Float32Array[];     // Semantic embeddings per LOD level
@@ -100,7 +100,7 @@ interface LODCacheEntry {
     semantic_clusters: number[];    // Cluster IDs for related content
     retrieval_scores: number[];     // Predictive relevance scores,
     context_anchors: string[];      // Key terms for contextual prompting
-  };
+  }
   // Caching metadata
   cache_metadata: {
     created_at: number;
@@ -114,8 +114,8 @@ interface LODCacheEntry {
       compressed_size: number;
       compression_ratio: number;
       semantic_preservation: number;
-    };
-  };
+    }
+  }
 }
 interface LODProcessingConfig {
   enable_background_processing: boolean;
@@ -146,10 +146,10 @@ class LODCacheEngine {
     predictive_analytics_enabled: true
     max_cache_entries: 10000,
     retention_policy: 'predictive'
-  };
+  }
   constructor(customConfig?: Partial<LODProcessingConfig>) {
     if (customConfig) {
-      this.config = { ...this.config, ...customConfig };
+      this.config = { ...this.config, ...customConfig }
     }
     this.svgProcessor = new SVGSummarizationProcessor(this.config.svg_generation_quality);
     this.vectorEncoder = new VectorMetadataEncoder(this.config.vector_dimensions, this);
@@ -205,7 +205,7 @@ class LODCacheEngine {
   /**
    * Centralized shader resource retrieval with caching.
    */;
-  private async getOrLoadShaderResources(key: string, loader: () => Promise<ShaderResources | null>): Promise<ShaderResources | null> {
+  private async getOrLoadShaderResources(_key: string, loader: () => Promise<ShaderResources | null>): Promise<ShaderResources | null> {
     const cached = this.shaderResources.get(key);
     if (cached) return cached;
     const loaded = await loader();
@@ -317,7 +317,7 @@ class LODCacheEngine {
         processing_backend: this.activeBackend,
         compression_stats: this.calculateCompressionStats(text, compressedData)
       }
-    };
+    }
     // Store in cache with intelligent eviction
     await this.storeCacheEntry(cacheEntry);
     // Background: Start predictive pre-caching for related content
@@ -366,7 +366,7 @@ class LODCacheEngine {
           contextual_prompt: contextualPrompt
           svg_visualization: svgVisualization
           vector_similarity: match.vector_similarity
-        };
+        }
       })
     );
     // Phase 4: Generate enhanced context and predictive suggestions
@@ -378,7 +378,7 @@ class LODCacheEngine {
       results: enhancedResults
       enhanced_context: enhancedContext
       predictive_next_queries: predictiveQueries
-    };
+    }
   }
   /**
    * Generate 7-bit compressed data at all LOD levels
@@ -397,7 +397,7 @@ class LODCacheEngine {
       block: await this.compressTileGroup(simdResult.compressedTiles.slice(0, 5)),
       section: await this.compressTileGroup(simdResult.compressedTiles.slice(0, 25)),
       document: await this.compressFullDocument(simdResult)
-    };
+    }
   }
   /**
    * Generate SVG summaries at each LOD level
@@ -412,7 +412,7 @@ class LODCacheEngine {
       block: await this.svgProcessor.generateBlockSVG(compressedData.block, text.slice(0, 200)),
       section: await this.svgProcessor.generateSectionSVG(compressedData.section, text.slice(0, 1000)),
       document: await this.svgProcessor.generateDocumentSVG(compressedData.document, text)
-    };
+    }
   }
   /**
    * Extract vector metadata for enhanced RAG
@@ -432,7 +432,7 @@ class LODCacheEngine {
       semantic_clusters: semanticClusters
       retrieval_scores: retrievalScores
       context_anchors: contextAnchors
-    };
+    }
   }
   // Helper methods for multi-level processing
   private extractHierarchicalSegments(text: string) {
@@ -443,7 +443,7 @@ class LODCacheEngine {
       block: words.slice(0, 15).join(' '),
       section: words.slice(0, 75).join(' '),
       document: text
-    };
+    }
   }
   private async compressToGlyph(char: string): Promise<Uint8Array> {
     const glyph = new Uint8Array(7);
@@ -482,7 +482,7 @@ class LODCacheEngine {
     // Simple semantic weighting based on character properties
     const weights: Record<string, number> = {
       ' ': 10, '.': 50, '!': 80, '?': 80, ',': 30, ';': 40, ':': 40
-    };
+    }
     return weights[char] || (char.match(/[a-zA-Z]/) ? 20 : char.match(/[0-9]/) ? 35 : 15);
   }
   private calculateVisualComplexity(char: string): number {
@@ -492,7 +492,7 @@ class LODCacheEngine {
       'o': 30, 'O': 30, '0': 30,
       'm': 80, 'M': 80, 'W': 80, 'w': 80,
       '@': 100, '#': 90, '%': 95, '&': 85
-    };
+    }
     return complexity[char] || 40;
   }
   private calculateFrequencyScore(char: string): number {
@@ -500,7 +500,7 @@ class LODCacheEngine {
     const frequencies: Record<string, number> = {
       'e': 127, 't': 91, 'a': 82, 'o': 75, 'i': 70, 'n': 67, 's': 63, 'h': 61,
       'r': 60, 'd': 43, 'l': 40, 'c': 28, 'u': 28, 'm': 24, 'w': 24, 'f': 22
-    };
+    }
     return frequencies[char.toLowerCase()] || 10;
   }
   private calculateContextualRelevance(char: string): number {
@@ -516,7 +516,7 @@ class LODCacheEngine {
     // Predictive value for next character/word suggestions
     const predictiveWeights: Record<string, number> = {
       't': 80, 'h': 75, 'e': 70, 'r': 65, 's': 60, 'n': 55, 'a': 50, 'i': 45
-    };
+    }
     return predictiveWeights[char.toLowerCase()] || 25;
   }
   private calculateCompressionChecksum(bytes: Uint8Array): number {
@@ -568,7 +568,7 @@ class LODCacheEngine {
       compressed_size: compressedSize
       compression_ratio: originalSize / compressedSize,
       semantic_preservation: 0.9 // Would calculate actual semantic preservation
-    };
+    }
   }
   private async storeCacheEntry(entry: LODCacheEntry): Promise<void> {
     // Intelligent cache eviction if at capacity
@@ -579,11 +579,11 @@ class LODCacheEngine {
     console.log(`💾 Stored LOD cache entry ${entry.id} (${this.cache.size}/${this.config.max_cache_entries})`);
   }
   private async evictLeastValueableEntry(): Promise<void> {
-    let leastValuable = { id: '', score: Infinity };
+    let leastValuable = { id: '', score: Infinity }
     for (const [id, entry] of this.cache.entries()) {
       const valueScore = entry.cache_metadata.retrieval_priority * entry.cache_metadata.prediction_confidence;
       if (valueScore < leastValuable.score) {
-        leastValuable = { id, score: valueScore };
+        leastValuable = { id, score: valueScore }
       }
     }
     if (leastValuable.id) {
@@ -603,7 +603,7 @@ class LODCacheEngine {
         topology_features: Array.from(entry.vector_metadata.topology_features),
         contextual_anchors: entry.vector_metadata.context_anchors
       }
-    };
+    }
   }
   // Background processing and worker initialization
   private initializeBackgroundWorker(): void {
@@ -681,7 +681,7 @@ class LODCacheEngine {
         average_compression_ratio: 0,
         cache_hit_rate: 0,
         config: this.config
-      };
+      }
     }
     return {
       total_entries: this.cache.size,
@@ -690,10 +690,10 @@ class LODCacheEngine {
       average_compression_ratio: entries.reduce((sum, e) => sum + e.cache_metadata.compression_stats.compression_ratio, 0) / entries.length,
       cache_hit_rate: entries.reduce((sum, e) => sum + e.cache_metadata.access_count, 0) / entries.length,
       config: this.config
-    };
+    }
   }
   updateConfig(newConfig: Partial<LODProcessingConfig>) {
-    this.config = { ...this.config, ...newConfig };
+    this.config = { ...this.config, ...newConfig }
     console.log('🔧 LOD Cache Engine config updated');
   }
   clearCache() {
@@ -1096,7 +1096,7 @@ LODCacheEngine.prototype.createWebGPUEmbeddingShader = function(): string {
         embeddings[embeddingIndex] = value;
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGPUClusteringShader = function(): string {
   return `
       @group(0) @binding(0) var<storage, read> embeddings: array<f32>;
@@ -1129,7 +1129,7 @@ LODCacheEngine.prototype.createWebGPUClusteringShader = function(): string {
         clusters[embeddingId] = bestCluster;
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGPUSimilarityShader = function(): string {
   return `
       @group(0) @binding(0) var<storage, read> queryEmbedding: array<f32>;
@@ -1167,7 +1167,7 @@ LODCacheEngine.prototype.createWebGPUSimilarityShader = function(): string {
         similarities[docId] = similarity;
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGL2ComputeVertexShader = function(): string {
   return `#version 300 es
       in vec2 a_position;
@@ -1178,7 +1178,7 @@ LODCacheEngine.prototype.createWebGL2ComputeVertexShader = function(): string {
         v_index = a_index;
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGL2EmbeddingFragmentShader = function(): string {
   return `#version 300 es
       precision highp float;
@@ -1211,7 +1211,7 @@ LODCacheEngine.prototype.createWebGL2EmbeddingFragmentShader = function(): strin
         fragColor = generateEmbedding(segmentId, dimIndex);
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGL2ClusteringFragmentShader = function(): string {
   return `#version 300 es
       precision highp float;
@@ -1244,7 +1244,7 @@ LODCacheEngine.prototype.createWebGL2ClusteringFragmentShader = function(): stri
         fragColor = vec4(bestCluster / clusterCount, 0.0, 0.0, 1.0);
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGL2SimilarityFragmentShader = function(): string {
   return `#version 300 es
       precision highp float;
@@ -1280,7 +1280,7 @@ LODCacheEngine.prototype.createWebGL2SimilarityFragmentShader = function(): stri
         fragColor = vec4(similarity, 0.0, 0.0, 1.0);
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGL1ComputeVertexShader = function(): string {
   return `
       attribute vec2 a_position;
@@ -1291,7 +1291,7 @@ LODCacheEngine.prototype.createWebGL1ComputeVertexShader = function(): string {
         v_index = a_index;
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGL1EmbeddingFragmentShader = function(): string {
   return `
       precision mediump float;
@@ -1305,7 +1305,7 @@ LODCacheEngine.prototype.createWebGL1EmbeddingFragmentShader = function(): strin
         gl_FragColor = vec4(value, 0.0, 0.0, 1.0);
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGL1ClusteringFragmentShader = function(): string {
   return `
       precision mediump float;
@@ -1318,7 +1318,7 @@ LODCacheEngine.prototype.createWebGL1ClusteringFragmentShader = function(): stri
         gl_FragColor = vec4(cluster / 3.0, 0.0, 0.0, 1.0);
       }
     `;
-};
+}
 LODCacheEngine.prototype.createWebGL1SimilarityFragmentShader = function(): string {
   return `
       precision mediump float;
@@ -1336,8 +1336,8 @@ LODCacheEngine.prototype.createWebGL1SimilarityFragmentShader = function(): stri
         gl_FragColor = vec4(similarity, 0.0, 0.0, 1.0);
       }
     `;
-};
+}
 // (Legacy in-class shader methods removed; prototype-based implementations above are authoritative.)
 // Export singleton instance
 export const lodCacheEngine = new LODCacheEngine();
-export type { LODLevel, LODCacheEntry, LODProcessingConfig };
+export type { LODLevel, LODCacheEntry, LODProcessingConfig }

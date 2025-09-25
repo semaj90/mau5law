@@ -24,7 +24,7 @@ class InMemoryQueue extends EventEmitter {
       retryDelay: 1000,
       concurrency: 5,
       ...options
-    };
+    }
   }
   // Redis-compatible methods
   async lpush(queueName: string, data: string): Promise<number> {
@@ -34,7 +34,7 @@ class InMemoryQueue extends EventEmitter {
       timestamp: Date.now(),
       attempts: 0,
       maxAttempts: this.options.maxRetries || 3
-    };
+    }
     if (!this.messages.has(queueName)) {
       this.messages.set(queueName, []);
       this.stats.set(queueName, { processed: 0, failed: 0 });
@@ -50,7 +50,7 @@ class InMemoryQueue extends EventEmitter {
       timestamp: Date.now(),
       attempts: 0,
       maxAttempts: this.options.maxRetries || 3
-    };
+    }
     if (!this.messages.has(queueName)) {
       this.messages.set(queueName, []);
       this.stats.set(queueName, { processed: 0, failed: 0 });
@@ -79,7 +79,7 @@ class InMemoryQueue extends EventEmitter {
           // Timeout after specified seconds
           setTimeout(() => resolve(null), timeout * 1000);
         }
-      };
+      }
       tryPop();
     });
   }
@@ -120,7 +120,7 @@ class InMemoryQueue extends EventEmitter {
       }
       // Continue processing
       setImmediate(processMessage);
-    };
+    }
     processMessage();
   }
   private async ack(queueName: string, message: any): Promise<void> {
@@ -155,9 +155,9 @@ class InMemoryQueue extends EventEmitter {
         pending: this.messages.get(queueName)?.length || 0,
         deadLetter: this.deadLetter.get(queueName)?.length || 0,
         stats: this.stats.get(queueName) || { processed: 0, failed: 0 }
-      };
+      }
     }
-    const allStats: any = {};
+    const allStats: any = {}
     for (const [name] of this.messages) {
       allStats[name] = this.getStats(name);
     }
@@ -179,13 +179,13 @@ const messageQueue = new InMemoryQueue({
 });
 // Redis-compatible interface
 export const cache = {
-  async set(key: string, value: any, ttlSeconds?: number): Promise<string> {
+  async set(_key: string, value: any, ttlSeconds?: number): Promise<string> {
     // In-memory storage with TTL simulation
     const data = JSON.stringify(value);
     console.log(`📝 Cache SET: ${key} (TTL: ${ttlSeconds}s)`);
     return 'OK';
   },
-  async get(key: string): Promise<any> {
+  async get(_key: string): Promise<any> {
     console.log(`📖 Cache GET: ${key}`);
     return null; // Simulate cache miss for now
   },
@@ -196,19 +196,19 @@ export const cache = {
   async close(): Promise<void> {
     await messageQueue.close();
   }
-};
+}
 // RabbitMQ-compatible interface
 export const rabbit = {
   async connect(): Promise<any> {
     console.log('🐰 RabbitMQ (in-memory) connected');
-    return { createChannel: () => messageQueue };
+    return { createChannel: () => messageQueue }
   },
   publish: messageQueue.publish.bind(messageQueue),
   consume: messageQueue.consume.bind(messageQueue),
   async close(): Promise<void> {
     await messageQueue.close();
   }
-};
+}
 // Enhanced message queue with workflow support
 export class WorkflowQueue extends InMemoryQueue {
   private workflows: Map<string, any> = new Map();

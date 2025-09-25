@@ -73,8 +73,8 @@ https://svelte.dev/e/js_parse_error -->
   let hasWarnings = $derived(warnings.length > 0);
   let showErrorState = $derived(showValidation && isDirty && hasErrors);
   let showSuccessState = $derived(showValidation && isDirty && isValid && !hasErrors && value.trim() !== "");
-  function handleInput(event: Event) {
-    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+  function handleInput(_event: Event) {
+    // removed unused target assignment
     value = target.value;
     isDirty = true;
     validateField();
@@ -83,8 +83,8 @@ https://svelte.dev/e/js_parse_error -->
       validation: { isValid, errors, warnings, value },
     });
   }
-  function handleChange(event: Event) {
-    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+  function handleChange(_event: Event) {
+    // removed unused target assignment
     value = target.value;
     isDirty = true;
     validateField();
@@ -140,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
       inputElement.focus();
   }}
   // Expose focus method
-  export { focusInput as focus };
+  export { focusInput as focus }
   // Reactive validation
   // TODO: Convert to $derived: if (value !== undefined) {
     validateField()

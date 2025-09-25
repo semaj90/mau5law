@@ -148,8 +148,8 @@ export class Report {
   toJSON() {
     let currentTitle = "";
     let currentContent: ContentNode[] = [];
-    let currentPosition = { x: 0, y: 0 };
-    let currentSize = { width: 0, height: 0 };
+    let currentPosition = { x: 0, y: 0 }
+    let currentSize = { width: 0, height: 0 }
     let currentVersion = 0;
     // Get current values from stores
     this.title.subscribe((value) => (currentTitle = value))();
@@ -171,7 +171,7 @@ export class Report {
       updatedAt: this.updatedAt,
       createdBy: this.createdBy,
       lastModifiedBy: this.lastModifiedBy
-    };
+    }
   }
   /**
    * Create a Report instance from database data
@@ -206,7 +206,7 @@ export class Report {
           return "";
         })
         .join("");
-    };
+    }
     let content = "";
     this.content.subscribe((value) => {
       content = extractText(value);

@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js'
 import { gpuServiceIntegration, GPUServiceUtils, type GPUProcessingTask, type GPUServiceStatus } from '$lib/services/gpu-service-integration'
 import { llvmWasmBridge, initializeLLVMIntegration, type LLVMWASMBridge } from '$lib/wasm/llvm-wasm-bridge'
 import { flashAttention2Service, gpuErrorProcessor, type GPUErrorContext } from '$lib/services/flashattention2-rtx3060'
-import { URL } from "url"
+
 export interface IntegrationStatus {
   gpuService: {
     available: boolean

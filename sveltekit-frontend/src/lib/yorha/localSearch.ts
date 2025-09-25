@@ -7,7 +7,7 @@ export interface LocalLegalDoc {
   content?: string;
   type?: string;
   status?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 let fuse: Fuse<LocalLegalDoc> | null = null;
 let documents: LocalLegalDoc[] = [];
@@ -20,12 +20,12 @@ const options: any = {
     { name: 'metadata.summary', weight: 0.2 },
     { name: 'type', weight: 0.1 }
   ],
-  includeScore: true
+  includeScore: true;
   threshold: 0.38,
   ignoreLocation: true
   minMatchCharLength: 3,
   useExtendedSearch: true
-};
+}
 export function isLocalIndexReady() {
   return !!fuse;
 }
@@ -91,7 +91,7 @@ export function clearLocalIndex() {
   fuse = new Fuse([], options);
   void idbSet(cacheKey, documents);
 }
-export function wasLoadedFromCache() { return loadedFromCache; };
+export function wasLoadedFromCache() { return loadedFromCache; }
 // Merge helper: combine local + remote results with weighting & dedupe
 export interface HybridResult extends LocalLegalDoc { relevance: number; source: 'local' | 'remote' | 'hybrid'; }
 export function mergeResults(local: any[], remote: any[], localWeight = 0.6, remoteWeight = 0.4): HybridResult[] {

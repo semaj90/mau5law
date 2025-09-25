@@ -61,7 +61,7 @@ export class EmbeddingBackfillWorker {
         success: 0,
         failed: 0,
         errors: []
-      };
+      }
       // Process in batches to avoid overwhelming the system
       for (let i = 0; i < evidenceFiles.length; i += this.batchSize) {
         const batch = evidenceFiles.slice(i, i + this.batchSize);
@@ -140,7 +140,7 @@ export class EmbeddingBackfillWorker {
         try {
           // Get file from MinIO and extract text
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
-          const response = await fetch(fileUrl);
+          // removed unused response assignment
           const fileText = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).text();
           textContent += '\n\n' + fileText;
         } catch (error) {
@@ -150,7 +150,7 @@ export class EmbeddingBackfillWorker {
       case 'application/json':
         try {
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
-          const response = await fetch(fileUrl);
+          // removed unused response assignment
           const jsonData = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).json();
           textContent += '\n\n' + JSON.stringify(jsonData, null, 2);
         } catch (error) {
@@ -173,7 +173,7 @@ export class EmbeddingBackfillWorker {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({,
         text: text.substring(0, 50000), // Limit text length
-        model: 'mock', // Use mock for testing - change to 'openai' or 'nomic' when ready
+        model: 'mock', // Use mock for testing - change to 'openai' or 'nomic' when ready;
         dimensions: 768
       })
     });
@@ -218,7 +218,7 @@ export class EmbeddingBackfillWorker {
       withEmbeddings,
       withoutEmbeddings,
       percentage: Math.round(percentage * 100) / 100
-    };
+    }
   }
 }
 // Export singleton instance

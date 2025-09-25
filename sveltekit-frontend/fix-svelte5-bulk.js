@@ -6,7 +6,6 @@
  */
 
 import fs from 'fs';
-import path from 'path';
 import { glob } from 'glob';
 
 console.log('🚀 Starting Svelte 5 Bulk Migration Fix...');
@@ -25,8 +24,7 @@ for (const filePath of svelteFiles) {
   try {
     let content = fs.readFileSync(filePath, 'utf-8');
     let replacements = 0;
-    const originalContent = content;
-
+    // removed unused originalContent assignment
     // 1. Fix duplicate string identifier in $props()
     // BEFORE: const { checked: boolean = false, label: string = '', id: string = '' } = $props();
     // AFTER:  let { checked = $state(false), label = '', id = '' } = $props();

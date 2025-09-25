@@ -55,7 +55,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       submitting: 'step-4',
       success: 'step-4',
       error: 'step-4';
-    };
+    }
     return stateMapping[stateValue as keyof typeof stateMapping] || 'step-1';
   }
   $effect(() => {
@@ -117,7 +117,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       submitting: 'border-orange-400 bg-orange-900/20',
       success: 'border-green-400 bg-green-900/20',
       error: 'border-red-400 bg-red-900/20';
-    };
+    }
     return classes[state as keyof typeof classes] || 'border-gray-400 bg-gray-900/20';
   }
   async function setupPredictivePrefetching(): Promise<void> {
@@ -128,7 +128,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       recentActions: ['open_form', 'start_evidence_upload'],
       userRole: 'prosecutor',
       workflowState: 'draft';
-    };
+    }
     // Predict and prefetch based on current state
     const intentPrediction = await prefetcher.predictIntent({
       currentPage: '/cases/new',
@@ -148,8 +148,8 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     return 'night';
   }
   // Event handlers with AI awareness
-  function handleFileUpload(event: Event): void {
-    const target = event.target as HTMLInputElement;
+  function handleFileUpload(_event: Event): void {
+    // removed unused target assignment
     const files = Array.from(target.files || []);
     send({ type: 'UPLOAD_EVIDENCE', files });
     // Update matrix UI based on file types
@@ -160,7 +160,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   function handleCaseDetailsUpdate(): void {
     send({
       type: 'UPDATE_CASE_DETAILS',
-      title: caseTitle
+      title: caseTitle;
       description: caseDescription ;
     });
     // Update matrix UI
@@ -178,7 +178,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
         recentActions: ['form_interaction', action],
         userRole: 'prosecutor',
         workflowState: 'draft'
-      };
+      }
       // Use enhanced search with custom reranker
       const query = context.join(' ');
       const results = await enhancedSearch(query, userContext, 5);
@@ -357,7 +357,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-case-description-">
                   Case Description
-                </label><textarea id="-case-description-"
+                </label><textarea id="-case-description-";
                   bind:value={caseDescription}
                   onblur={handleCaseDetailsUpdate}
                   rows="4"

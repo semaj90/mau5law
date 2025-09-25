@@ -34,7 +34,7 @@ export const Default: Story = {
     variant: 'default',
     size: 'default'
   }
-};
+}
 export const Legal: Story = {
   args: {
     variant: 'legal',
@@ -47,7 +47,7 @@ export const Legal: Story = {
       }
     }
   }
-};
+}
 export const Evidence: Story = {
   args: {
     variant: 'evidence',
@@ -60,7 +60,7 @@ export const Evidence: Story = {
       }
     }
   }
-};
+}
 export const Case: Story = {
   args: {
     variant: 'case',
@@ -73,7 +73,7 @@ export const Case: Story = {
       }
     }
   }
-};
+}
 export const Elevated: Story = {
   args: {
     variant: 'elevated',
@@ -86,7 +86,7 @@ export const Elevated: Story = {
       }
     }
   }
-};
+}
 export const Outlined: Story = {
   args: {
     variant: 'outlined',
@@ -99,28 +99,28 @@ export const Outlined: Story = {
       }
     }
   }
-};
+}
 export const Large: Story = {
   args: {
     variant: 'default',
     size: 'lg'
   }
-};
+}
 export const ExtraLarge: Story = {
   args: {
     variant: 'default',
     size: 'xl'
   }
-};
+}
 export const SmallPadding: Story = {
   args: {
     variant: 'default',
     padding: 'sm'
   }
-};
+}
 export const LargePadding: Story = {
   args: {
     variant: 'default',
     padding: 'lg'
   }
-};
+}

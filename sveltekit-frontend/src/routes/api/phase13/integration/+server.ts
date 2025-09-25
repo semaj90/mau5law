@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-import { URL } from "url"
+
 /*
  * Phase 13 Full Integration API Endpoint
  * Comprehensive system integration management with Context7 MCP guidance

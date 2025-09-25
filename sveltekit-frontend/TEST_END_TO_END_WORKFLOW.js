@@ -59,14 +59,14 @@ class EndToEndTester {
     );
 
     await this.test('PostgreSQL Connection', async () => {
-      const response = await fetch('http://localhost:5173/api/health/database');
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (!data.postgresql) throw new Error('PostgreSQL not healthy');
     });
 
     await this.test('Redis Connection', async () => {
-      const response = await fetch('http://localhost:5173/api/health/redis');
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (!data.redis) throw new Error('Redis not healthy');
@@ -91,14 +91,14 @@ class EndToEndTester {
     );
 
     await this.test('Ollama Primary Health', async () => {
-      const response = await fetch('http://localhost:11434/api/version');
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (!data.version) throw new Error('Ollama version not available');
     });
 
     await this.test('Enhanced RAG Service', async () => {
-      const response = await fetch('http://localhost:8094/health');
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (data.service !== 'gpu-orchestrator')
@@ -106,7 +106,7 @@ class EndToEndTester {
     });
 
     await this.test('Upload Service', async () => {
-      const response = await fetch('http://localhost:8093/health');
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (!data.services) throw new Error('Upload service not healthy');
@@ -171,7 +171,7 @@ class EndToEndTester {
     });
 
     await this.test('API Route Integration', async () => {
-      const response = await fetch('http://localhost:5173/api/health');
+      // removed unused response assignment
       if (!response) {
         // Try alternative health check
         const altResponse = await fetch('http://localhost:5173/');
@@ -274,7 +274,7 @@ class EndToEndTester {
 
       for (const test of tests) {
         const startTime = Date.now();
-        const response = await fetch(test.url);
+        await fetch(test.url);
         const responseTime = Date.now() - startTime;
 
         console.log(`   📊 ${test.name}: ${responseTime}ms`);

@@ -53,7 +53,7 @@ https://svelte.dev/e/expected_token -->
           performance_tier: selectedTier
           ...customSettings
         }
-      };
+      }
       console.log('🎨 Generating SIMD glyph:', request);
       const response = await fetch('/api/glyph/simd-embeds', {
         method: 'POST',
@@ -78,7 +78,7 @@ https://svelte.dev/e/expected_token -->
           tensor_count: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).data.tensor_ids.length,
           cache_hits: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).data.cache_hits,
           metadata: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).metadata
-        };
+        }
         results = [newResult, ...results.slice(0, 9)]; // Keep last 10 results
         // Update processing stats
         updateProcessingStats(newResult);

@@ -27,7 +27,7 @@ export interface AuthContext {
     language?: string;
     timezone?: string;
     securityScore?: number;
-  };
+  }
   loginAttempts: number;
   maxLoginAttempts: number;
   lastLoginAttempt?: Date;
@@ -56,7 +56,7 @@ type AuthEvent =
   | { type: 'UNLOCK_ACCOUNT' }
   | { type: 'UPDATE_PROFILE'; data: any }
   | { type: 'PROFILE_UPDATED' }
-  | { type: 'RETRY' };
+  | { type: 'RETRY' }
 }
 export interface LoginData {
   email: string;
@@ -79,7 +79,7 @@ export interface RegistrationData {
 }
 const initialContext: AuthContext = {
   user: null
-  session: null
+  session: null;
   error: undefined
   isLoading: false
   deviceInfo: undefined
@@ -89,7 +89,7 @@ const initialContext: AuthContext = {
   lockoutUntil: undefined
   twoFactorRequired: false
   registrationData: undefined
-};
+}
 export const authMachine = setup({
   types: { [key: string]: any } as {
     context: AuthContext;
@@ -175,7 +175,7 @@ export const authMachine = setup({
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
             fresh: true
           }
-        };
+        }
       } catch (error: any) {
         throw new Error(error instanceof Error ? error.message: 'Authentication failed');
       }
@@ -202,7 +202,7 @@ export const authMachine = setup({
             department: input.department,
             permissions: []
           }
-        };
+        }
       } catch (error: any) {
         throw new Error(error instanceof Error ? error.message: 'Registration failed');
       }
@@ -212,11 +212,11 @@ export const authMachine = setup({
       const authService = new AuthService();
       try {
         await (authService as any).logout();
-        return { success: true };
+        return { success: true }
       } catch (error: any) {
         // Log error but still return success for logout
         console.warn('Logout warning:', error);
-        return { success: true };
+        return { success: true }
       }
     }),
     resetPassword: fromPromise(async ({ input }: { input: { email: string } }) => {
@@ -224,7 +224,7 @@ export const authMachine = setup({
       const authService = new AuthService();
       try {
         await (authService as any).requestPasswordReset(input.email);
-        return { success: true };
+        return { success: true }
       } catch (error: any) {
         throw new Error(error instanceof Error ? error.message: 'Password reset failed');
       }

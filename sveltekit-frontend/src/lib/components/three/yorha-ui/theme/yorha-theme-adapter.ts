@@ -29,7 +29,7 @@ const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string; text: string;
   terminal: { bg: 'gothic-bg-secondary', border: 'gothic-border-primary', text: 'gothic-text-primary' },
   alert: { bg: 'yorha-error', border: 'yorha-border', text: 'yorha-text-primary' },
   confirm: { bg: 'yorha-success', border: 'yorha-border', text: 'yorha-text-primary' }
-};
+}
 // Cache of resolved tokens to numeric hex for Three.js
 const resolvedCache = new Map<string, number>();
 // Simple hex validator
@@ -101,8 +101,8 @@ export interface VariantResolvedStyle {
   backgroundColor: number;
   borderColor: number;
   textColor: number;
-  hover?: { backgroundColor?: number; textColor?: number; opacity?: number };
-  glow?: { enabled: boolean; color?: number; intensity?: number };
+  hover?: { backgroundColor?: number; textColor?: number; opacity?: number }
+  glow?: { enabled: boolean; color?: number; intensity?: number }
   opacity?: number;
   borderWidth?: number;
 }
@@ -113,7 +113,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
   const textColor = resolveColorToken(role.text, YORHA_COLORS.primary.black);
   const glow = options?.enableGlow ? {
     enabled: true
-    color: backgroundColor
+    color: backgroundColor;
     intensity: 0.35
   } : undefined;
   // Derive simple hover (lighten by adding small value) – naive approach
@@ -124,7 +124,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
     textColor,
     glow,
     hover: { backgroundColor: hoverColor }
-  };
+  }
 }
 // Central exported theme adapter
 export const yoRHaThemeAdapter = {
@@ -132,5 +132,5 @@ export const yoRHaThemeAdapter = {
   resolveColorToken,
   NES_PALETTE,
   TOKEN_ROLE_MAP
-};
+}
 export default yoRHaThemeAdapter;

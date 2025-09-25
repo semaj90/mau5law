@@ -76,9 +76,9 @@ export function validateFileType(file: File): {
   const maxSize = 100 * 1024 * 1024; // 100MB
   if (file.size > maxSize) {
     return {
-      valid: false
+      valid: false;
       error: `File size must be less than ${formatFileSize(maxSize)}`
-    };
+    }
   }
   const allowedTypes = [
     // Images
@@ -108,9 +108,9 @@ export function validateFileType(file: File): {
     "video/webm"
   ];
   if (!allowedTypes.includes(file.type)) {
-    return { valid: false, error: `File type ${file.type} is not supported` };
+    return { valid: false, error: `File type ${file.type} is not supported` }
   }
-  return { valid: true };
+  return { valid: true }
 }
 export function createFilePreview(file: File): Promise<string | null> {
   return new Promise((resolve) => {
@@ -166,7 +166,7 @@ export function generateThumbnail(
       canvas.height = height;
       ctx?.drawImage(img, 0, 0, width, height);
       resolve(canvas.toDataURL("image/jpeg", 0.8);
-    };
+    }
     img.onerror = () => resolve(null);
     img.src = URL.createObjectURL(file);
   });

@@ -9,9 +9,11 @@
     childre;
   }: CardHeaderProps = $props();
 </script>
+
 <div class={cn('shadcn-card-header', className)}>
   {@render children?.()}
 </div>
+
 <style>
   :global(.shadcn-card-header) {
     padding: 1.5rem 1.5rem 0;

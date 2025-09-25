@@ -117,7 +117,7 @@ export const N64_QUICK_START_CONFIG = {
   animationStyle: 'smooth' as const,
   perspective: 1000,
   glowIntensity: 0.4
-};
+}
 /**
  * Performance Presets
  *
@@ -160,7 +160,7 @@ export const N64_PERFORMANCE_PRESETS = {
     glowIntensity: 0.2,
     perspective: 800
   }
-};
+}
 /**
  * Theme Variants
  *
@@ -191,7 +191,7 @@ export const N64_THEME_VARIANTS = {
     secondary: { base: '#8b4513', highlight: '#a0611a', shadow: '#6d3410' },
     accent: { base: '#cd853f', highlight: '#d4a374', shadow: '#a36a32' }
   }
-};
+}
 /**
  * Accessibility Helpers
  *
@@ -199,11 +199,11 @@ export const N64_THEME_VARIANTS = {
  */;
 export const N64_A11Y_HELPERS = {
   // ARIA label generators
-  generateProgressLabel: (value: number, max: number) =>
+  generateProgressLabel: (_value: number, max: number) =>
     `Progress: ${value} of ${max} (${Math.round((value / max) * 100)}%)`,
   generateSwitchLabel: (checked: boolean, label: string) =>
     `${label}: ${checked ? 'On' : 'Off'}`,
-  generateSelectLabel: (value: string, options: Array<) => {
+  generateSelectLabel: (_value: string, options: Array<) => {
     const option = options.find(opt => opt.value === value);
     return option ? `Selected: ${option.label}` : 'No selection';
   },
@@ -220,7 +220,7 @@ export const N64_A11Y_HELPERS = {
   prefersReducedMotion: () =>
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
-};
+}
 /**
  * Utility Functions
  *
@@ -264,7 +264,7 @@ export const N64_UTILS = {
     if (isLowEnd) return N64_PERFORMANCE_PRESETS.performance;
     return N64_PERFORMANCE_PRESETS.balanced;
   }
-};
+}
 /**
  * CSS Class Generators
  *
@@ -272,7 +272,7 @@ export const N64_UTILS = {
  */;
 export const N64_CSS_GENERATORS = {
   // Generate texture filtering classes
-  getTextureClasses: (options: Partial<N64RenderingOptions>) => {
+  getTextureClasses: (_options: Partial<N64RenderingOptions>) => {
     const classes: string[] = [];
     if (options.textureQuality === 'ultra') classes.push('texture-ultra');
     if (options.enableBilinearFiltering) classes.push('filtering-bilinear');
@@ -296,7 +296,7 @@ export const N64_CSS_GENERATORS = {
       .map(([state, _]) => `state-${state}`)
       .join(' ');
   }
-};
+}
 // Default export for convenient importing
 export default {
   components: {
@@ -333,4 +333,4 @@ export default {
   utils: N64_UTILS
   a11y: N64_A11Y_HELPERS
   css: N64_CSS_GENERATORS
-};
+}

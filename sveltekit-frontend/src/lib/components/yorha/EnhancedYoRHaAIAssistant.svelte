@@ -52,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
       role,
       content,
       timestamp: new Date(),
-    };
+    }
     chatMessages = [...chatMessages, message];
     // Auto-scroll to bottom
     setTimeout(() => {
@@ -128,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
       setTimeout(() => evidenceEditorRef.focus(), 100);
     }
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       handleSearch();
@@ -140,12 +140,12 @@ https://svelte.dev/e/js_parse_error -->
   function addEvidence(file?: File) {
     const evidenceId = crypto.randomUUID();
     const evidence = {
-      id: evidenceId
+      id: evidenceId;
       name: file?.name || `Evidence-${evidenceItems.length + 1}`,
       type: file?.type || 'document',
       content: 'Evidence content will be processed...',
       tags: ['new', userRole],
-    };
+    }
     evidenceItems = [...evidenceItems, evidence];
     // Simulate processing
     setTimeout(() => {
@@ -162,8 +162,8 @@ https://svelte.dev/e/js_parse_error -->
       userRole,
       evidenceCount: evidenceItems.length,
       evidence: evidenceItems
-      chatHistory: chatMessages
-    };
+      chatHistory: chatMessages;
+    }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -224,8 +224,8 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Search Bar - Golden Ratio Positioned -->
       <div class="search-section">
         <div class="search-container">
-          <input
-            bind:this={searchBarRef};
+          <input;
+            bind:this={searchBarRef}
             bind:value={searchQuery}
             class="search-input"
             placeholder={currentMode === 'chat'

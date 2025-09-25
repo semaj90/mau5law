@@ -89,7 +89,7 @@
     try {
       isLoading = true;
       error = null;
-      const response = await fetch('/api/persons-of-interest');
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         persons = (data as { persons?: unknown }).persons || persons; // Fallback to mock data

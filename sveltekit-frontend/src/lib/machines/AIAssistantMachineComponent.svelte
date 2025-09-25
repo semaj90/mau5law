@@ -28,7 +28,7 @@
       response: '',
       conversationHistory: [],
       sessionId: `session-${Date.now()}`,
-      isProcessing: false
+      isProcessing: false;
       model: 'gemma3-legal',
       temperature: 0.7,
       maxTokens: 2048,
@@ -115,13 +115,13 @@
     send({ type: 'TOGGLE_STREAMING' });
   }
   // Handle suggestion selection
-  function handleSuggestionSelect(event: CustomEvent) {
+  function handleSuggestionSelect(_event: CustomEvent) {
     const { suggestion } = event.detail;
     queryInput = suggestion.term || suggestion.suggestion || suggestion.text || '';
     showSuggestions = false;
   }
   // Handle task selection
-  function handleTaskSelect(event: CustomEvent) {
+  function handleTaskSelect(_event: CustomEvent) {
     const { task } = event.detail;
     queryInput = task.task;
     showSuggestions = false;
@@ -155,6 +155,7 @@
   let currentState = $derived(state.value as string);
   let context = $derived(state.context);
 </script>
+
 <div class="ai-assistant-machine-demo max-w-4xl mx-auto p-6 space-y-6">
   <!-- Machine Status Header -->
   <div class="bg-gray-900 text-white p-4 rounded-lg">
@@ -165,7 +166,13 @@
       </h1>
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
-          <div class="w-3 h-3 rounded-full {currentState === 'idle' ? 'bg-green-500' : currentState === 'processing' ? 'bg-yellow-500' : 'bg-red-500'}"></div>
+          <div
+            class="w-3 h-3 rounded-full {currentState === 'idle'
+              ? 'bg-green-500'
+              : currentState === 'processing'
+                ? 'bg-yellow-500'
+                : 'bg-red-500'}"
+          ></div>
           <span class="text-sm font-mono uppercase">{currentState}</span>
         </div>
         <div class="text-sm">
@@ -202,7 +209,9 @@
             </div>
             <div class="text-sm space-y-1">
               <div>Phase: <span class="text-green-300 capitalize">{userLearningInsights.learningPhase}</span></div>
-              <div>Confidence: <span class="text-blue-300">{Math.round(userLearningInsights.confidenceLevel * 100)}%</span></div>
+              <div>
+                Confidence: <span class="text-blue-300">{Math.round(userLearningInsights.confidenceLevel * 100)}%</span>
+              </div>
             </div>
           </div>
         {/if}
@@ -261,8 +270,8 @@
               placeholder="Enter your legal AI query... (AI will suggest and learn)"
               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={isProcessing}
-              onkeydown={(e) => e.key === 'Enter' && submitQuery()}
-              oninput={() => showSuggestions = queryInput.length >= 2}
+              onkeydown={e => e.key === 'Enter' && submitQuery()}
+              oninput={() => (showSuggestions = queryInput.length >= 2)}
             />
             <!-- AI Suggestions Dropdown -->
             {#if showSuggestions && enableAIEnhancements && queryInput.length >= 2}
@@ -306,16 +315,10 @@
         {/if}
       </div>
       <div class="flex gap-2">
-        <button
-          onclick={toggleStreaming}
-          class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
-        >
+        <button onclick={toggleStreaming} class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
           {isStreaming ? 'Disable' : 'Enable'} Streaming
         </button>
-        <button
-          onclick={clearConversation}
-          class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-        >
+        <button onclick={clearConversation} class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
           Clear History
         </button>
       </div>
@@ -347,8 +350,20 @@
       <h2 class="text-xl font-semibold mb-4">Conversation History</h2>
       <div class="space-y-4 max-h-96 overflow-y-auto">
         {#each context.conversationHistory as entry}
-          <div class="flex gap-3 p-3 rounded-lg {entry.type === 'user' ? 'bg-blue-50' : entry.type === 'ai' ? 'bg-green-50' : 'bg-red-50'}">
-            <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center {entry.type === 'user' ? 'bg-blue-600 text-white' : entry.type === 'ai' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}">
+          <div
+            class="flex gap-3 p-3 rounded-lg {entry.type === 'user'
+              ? 'bg-blue-50'
+              : entry.type === 'ai'
+                ? 'bg-green-50'
+                : 'bg-red-50'}"
+          >
+            <div
+              class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center {entry.type === 'user'
+                ? 'bg-blue-600 text-white'
+                : entry.type === 'ai'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-red-600 text-white'}"
+            >
               {entry.type === 'user' ? 'U' : entry.type === 'ai' ? 'AI' : '!'}
             </div>
             <div class="flex-1">
@@ -390,12 +405,26 @@
               {doc.contentType} • {(doc.size / 1024).toFixed(1)} KB
             </div>
             <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full {doc.status === 'analyzed' ? 'bg-green-500' : doc.status === 'analyzing' ? 'bg-yellow-500' : 'bg-gray-400'}"></div>
+              <div
+                class="w-2 h-2 rounded-full {doc.status === 'analyzed'
+                  ? 'bg-green-500'
+                  : doc.status === 'analyzing'
+                    ? 'bg-yellow-500'
+                    : 'bg-gray-400'}"
+              ></div>
               <span class="text-sm capitalize">{doc.status}</span>
             </div>
             {#if doc.aiAnalysis}
               <div class="mt-3 text-sm">
-                <div class="font-medium">Risk Level: <span class="px-2 py-1 rounded text-xs {doc.aiAnalysis.riskLevel === 'low' ? 'bg-green-100 text-green-800' : doc.aiAnalysis.riskLevel === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}">{doc.aiAnalysis.riskLevel}</span></div>
+                <div class="font-medium">
+                  Risk Level: <span
+                    class="px-2 py-1 rounded text-xs {doc.aiAnalysis.riskLevel === 'low'
+                      ? 'bg-green-100 text-green-800'
+                      : doc.aiAnalysis.riskLevel === 'medium'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'}">{doc.aiAnalysis.riskLevel}</span
+                  >
+                </div>
                 <div class="mt-1">Confidence: {Math.round(doc.aiAnalysis.confidence * 100)}%</div>
                 {#if doc.aiAnalysis.keyTerms}
                   <div class="mt-2">
@@ -422,7 +451,7 @@
         {#each context.collaborationUsers as user}
           <div class="flex items-center gap-3 p-3 border rounded-lg">
             <div class="w-8 h-8 rounded-full bg-gray-600 text-white flex items-center justify-center text-sm font-bold">
-              {user.name.split.map-join('')}
+              {user.name.split.map - join('')}
             </div>
             <div>
               <div class="font-medium">{user.name}</div>
@@ -471,6 +500,7 @@
     </div>
   </details>
 </div>
+
 <style>
   .ai-assistant-machine-demo {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

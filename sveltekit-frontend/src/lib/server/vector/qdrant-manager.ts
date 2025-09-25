@@ -10,7 +10,7 @@ export class QdrantManager {
     evidence: 'evidence_items',
     chat_history: 'chat_messages',
     embeddings_cache: 'embedding_cache'
-  };
+  }
   constructor(url = 'http://localhost:6333') {
     this.client = new QdrantClient({ url });
   }
@@ -80,7 +80,7 @@ export class QdrantManager {
         score_threshold: params.scoreThreshold || 0.7,
         with_payload: true
         with_vector: false
-      };
+      }
       // Add metadata filters if provided
       if (params.filters) {
         searchRequest.filter = this.buildQdrantFilter(params.filters);
@@ -113,7 +113,7 @@ export class QdrantManager {
           response_time_ms: responseTime
           total_results: results.length
         }
-      };
+      }
     } catch (error: any) {
       console.error('Qdrant hybrid search error:', error);
       throw new Error(`Qdrant search failed: ${error.message}`);
@@ -128,7 +128,7 @@ export class QdrantManager {
   }) {
     const filters: any = {
       must: [{ key: 'user_id', match: { value: params.userId } }]
-    };
+    }
     if (params.sessionId) {
       filters.must.push({
         key: 'session_id',
@@ -144,7 +144,7 @@ export class QdrantManager {
       score_threshold: 0.6,
       filter: filters
       with_payload: true
-    };
+    }
     const results = await this.client.search(this.collections.chat_history, searchRequest);
     return results.map((r) => ({
       content: r.payload?.content,
@@ -166,7 +166,7 @@ export class QdrantManager {
     for (const batch of batches) {
       try {
         await this.client.upsert(collectionName, {
-          wait: false
+          wait: false;
           points: batch
         });
         totalUpserted += batch.length;
@@ -175,10 +175,10 @@ export class QdrantManager {
         console.error(`❌ Batch upsert failed for ${collectionName}:`, error);
       }
     }
-    return { upserted: totalUpserted };
+    return { upserted: totalUpserted }
   }
   // Document embedding storage with metadata
-  async storeDocument(document: {
+  async storeDocument(_document: {
     id: string;
     title: string;
     content: string;
@@ -200,9 +200,9 @@ export class QdrantManager {
         created_at: new Date().toISOString(),
         ...document.metadata
       }
-    };
+    }
     await this.client.upsert(this.collections.documents, {
-      wait: true
+      wait: true;
       points: [point]
     });
   }
@@ -219,7 +219,7 @@ export class QdrantManager {
         must_not: [{ key: 'evidence_id', match: { value: evidenceId } }]
       },
       with_payload: true
-    };
+    }
     const results = await this.client.search(this.collections.evidence, searchRequest);
     return results
       .filter((r) => r.id !== evidenceId)
@@ -232,7 +232,7 @@ export class QdrantManager {
       });
   }
   // Vector similarity caching for performance
-  async cacheEmbedding(key: string, embedding: number[], metadata: any) {
+  async cacheEmbedding(_key: string, embedding: number[], metadata: any) {
     const point: any = { // Changed from PointStruct,
       id: key
       vector: {
@@ -244,13 +244,13 @@ export class QdrantManager {
         expires_at: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
         ...metadata
       }
-    };
+    }
     await this.client.upsert(this.collections.embeddings_cache, {
-      wait: false
+      wait: false;
       points: [point]
     });
   }
-  async getCachedEmbedding(key: string) {
+  async getCachedEmbedding(_key: string) {
     try {
       const results = await this.client.search(this.collections.embeddings_cache, {
         vector: {
@@ -281,7 +281,7 @@ export class QdrantManager {
         segments_count: info.segments_count || 0,
         status: info.status,
         optimizer_status: info.optimizer_status
-      };
+      }
     } catch (error: any) {
       console.error(`Failed to get collection info for ${collection}:`, error);
       return null;
@@ -298,13 +298,13 @@ export class QdrantManager {
           vectors: c.vectors_count || 0
         })),
         timestamp: new Date().toISOString()
-      };
+      }
     } catch (error: any) {
       return {
         status: 'unhealthy',
         error: error.message,
         timestamp: new Date().toISOString()
-      };
+      }
     }
   }
   // Helper methods
@@ -323,7 +323,7 @@ export class QdrantManager {
         });
       }
     }
-    return { must: conditions };
+    return { must: conditions }
   }
   private calculateRelationshipStrength(
     score: number;

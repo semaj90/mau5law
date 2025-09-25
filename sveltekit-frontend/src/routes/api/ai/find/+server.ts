@@ -47,22 +47,22 @@ export interface AutoMCPSuggestion {
 // Mock database imports for testing without DB connection
 // { db } from '$lib/server/db'
 import { or, like, desc, sql, and, gte } from "drizzle-orm"
-import { URL } from "url"
+
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 // Mock Redis for testing without Redis connection
 // import { Redis } from 'ioredis'
 // Mock Redis implementation
 const redis = {
-  async incr(key: string): Promise<number> {
+  async incr(_key: string): Promise<number> {
     return 1; // Always allow for testing
   },
-  async expire(key: string, seconds: number): Promise<void> {
+  async expire(_key: string, seconds: number): Promise<void> {
     // No-op for testing
   },
-  async get(key: string): Promise<string | null> {
+  async get(_key: string): Promise<string | null> {
     return null; // Always cache miss for testing
   },
-  async setex(key: string, seconds: number, value: string): Promise<void> {
+  async setex(_key: string, seconds: number, value: string): Promise<void> {
     // No-op for testing
   },
   async ping(): Promise<string> {
@@ -125,7 +125,7 @@ const RATE_LIMIT = {
 /*
  * Check rate limiting using Redis
  */
-async function checkRateLimit(key: string): Promise<any> {
+async function checkRateLimit(_key: string): Promise<any> {
   try {
     const current = await redis.incr(`rate_limit:${key}`)
     if (current === 1) {

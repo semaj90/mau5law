@@ -8,7 +8,7 @@ export type EncodingFormat = 'json' | 'msgpack' | 'protobuf' | 'binary' | 'cbor'
 import type { RequestEvent } from '@sveltejs/kit';
 import { json, error as svelteError } from '@sveltejs/kit';
 import { dev } from '$app/environment';
-import { URL } from "url";
+;
 // ===== TYPES AND INTERFACES =====
 }
 export interface RouteConfig {
@@ -23,7 +23,7 @@ export interface RouteConfig {
   timeout?: number;
   retries?: number;
 }
-export type RouteHandler = (event: RequestEvent, context: RouteContext) => Promise<Response>;
+export type RouteHandler = (_event: RequestEvent, context: RouteContext) => Promise<Response>;
 }
 export interface RouteContext {
   params: Record<string, string>;
@@ -34,7 +34,7 @@ export interface RouteContext {
   requestId: string;
   encoding: EncodingFormat;
 }
-export type Middleware = (event: RequestEvent, context: RouteContext, next: () => Promise<Response>) => Promise<Response>;
+export type Middleware = (_event: RequestEvent, context: RouteContext, next: () => Promise<Response>) => Promise<Response>;
 }
 export interface RateLimitConfig {
   windowMs: number;
@@ -44,7 +44,7 @@ export interface RateLimitConfig {
 }
 export interface CacheConfig {
   ttl: number; // seconds
-  key?: (event: RequestEvent) => string;
+  key?: (_event: RequestEvent) => string;
   vary?: string[];
 }
 export interface User {
@@ -57,7 +57,7 @@ export interface Session {
   id: string;
   userId: string;
   expiresAt: Date;
-  data: { [key: string]: any };
+  data: { [key: string]: any }
 }
 export interface APIResponse<T = any> {
   success: boolean;
@@ -111,7 +111,7 @@ export class UnifiedAPIRouter {
   /**
    * Main request handler - called from SvelteKit API routes
    */;
-  async handle(event: RequestEvent): Promise<Response> {
+  async handle(_event: RequestEvent): Promise<Response> {
     const startTime = Date.now();
     const requestId = this.generateRequestId();
     try {
@@ -122,7 +122,7 @@ export class UnifiedAPIRouter {
         startTime,
         requestId,
         encoding: this.detectEncoding(event)
-      };
+      }
       // Find matching route
       const route = this.findRoute(event.url.pathname, event.request.method as any);
       if (!route) {
@@ -163,7 +163,7 @@ export class UnifiedAPIRouter {
   // ===== MIDDLEWARE EXECUTION =====
   private async executeMiddleware(
     middleware: Middleware[]
-    event: RequestEvent
+    event: RequestEvent;
     context: RouteContext
     finalHandler: () => Promise<Response>;
   ): Promise<Response> {
@@ -174,7 +174,7 @@ export class UnifiedAPIRouter {
       }
       const currentMiddleware = middleware[index++];
       return currentMiddleware(event, context, next);
-    };
+    }
     return next();
   }
   // ===== UTILITY METHODS =====
@@ -209,7 +209,7 @@ export class UnifiedAPIRouter {
   private createRouteKey(path: string, method: string): string {
     return `${method.toUpperCase()}:${path}`;
   }
-  private detectEncoding(event: RequestEvent): EncodingFormat {
+  private detectEncoding(_event: RequestEvent): EncodingFormat {
     const accept = event.request.headers.get('accept') || '';
     const contentType = event.request.headers.get('content-type') || '';
     if (accept.includes('application/octet-stream') || contentType.includes('application/octet-stream')) {
@@ -226,13 +226,13 @@ export class UnifiedAPIRouter {
   private generateRequestId(): string {
     return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
-  private checkRateLimit(event: RequestEvent, config: RateLimitConfig): boolean {
+  private checkRateLimit(_event: RequestEvent, config: RateLimitConfig): boolean {
     const clientId = this.getClientId(event);
     const now = Date.now();
     const windowStart = now - config.windowMs;
     let tracker = this.rateLimit.get(clientId);
     if (!tracker) {
-      tracker = { requests: [], windowMs: config.windowMs };
+      tracker = { requests: [], windowMs: config.windowMs }
       this.rateLimit.set(clientId, tracker);
     }
     // Clean old requests
@@ -245,13 +245,13 @@ export class UnifiedAPIRouter {
     tracker.requests.push(now);
     return true;
   }
-  private getClientId(event: RequestEvent): string {
+  private getClientId(_event: RequestEvent): string {
     // Use IP address or authenticated user ID
     const forwarded = event.request.headers.get('x-forwarded-for');
     const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown';
     return ip;
   }
-  private getCachedResponse(event: RequestEvent, config?: CacheConfig): Response | null {
+  private getCachedResponse(_event: RequestEvent, config?: CacheConfig): Response | null {
     if (!config) return null;
     const cacheKey = config.key ? config.key(event) : event.url.pathname + event.url.search;
     const cached = this.cache.get(cacheKey);
@@ -267,7 +267,7 @@ export class UnifiedAPIRouter {
     }
     return null;
   }
-  private setCachedResponse(event: RequestEvent, config: CacheConfig, response: Response): void {
+  private setCachedResponse(_event: RequestEvent, config: CacheConfig, response: Response): void {
     const cacheKey = config.key ? config.key(event) : event.url.pathname + event.url.search;
     // Don't cache if response is not ok
     if (!response.ok) return;
@@ -291,7 +291,7 @@ export class UnifiedAPIRouter {
         encoding: context.encoding || 'json',
         version: '2.0.0'
       }
-    };
+    }
     return new Response(JSON.stringify(response), {
       status,
       headers: {
@@ -300,7 +300,7 @@ export class UnifiedAPIRouter {
       }
     });
   }
-  private logRequest(event: RequestEvent, context: RouteContext, response: Response, duration: number): void {
+  private logRequest(_event: RequestEvent, context: RouteContext, response: Response, duration: number): void {
     if (dev) {
       console.log(
         `[UnifiedAPIRouter] ${event.request.method} ${event.url.pathname} - ` +
@@ -312,7 +312,7 @@ export class UnifiedAPIRouter {
   private initializeDefaultMiddleware(): void {
     // CORS middleware
     this.use(async (event, context, next) => {
-      const response = await next();
+      // removed unused response assignment
       if (event.request.method === 'OPTIONS') {
         return new Response(null, {
           status: 200,
@@ -329,7 +329,7 @@ export class UnifiedAPIRouter {
     });
     // Request ID middleware
     this.use(async (event, context, next) => {
-      const response = await next();
+      // removed unused response assignment
       response.headers.set('x-request-id', context.requestId);
       return response;
     });
@@ -355,7 +355,7 @@ export class UnifiedAPIRouter {
           timestamp: new Date().toISOString(),
           services: await this.services.getHealthStatus(),
           version: '2.0.0'
-        };
+        }
         return json({ success: true, data: health });
       }
     });
@@ -403,7 +403,7 @@ export interface CachedResponse {
 class ServiceRegistry {
   private services: Map<string, ServiceInfo> = new Map();
   async getHealthStatus(): Promise<Record<string, string> {
-    const health: Record<string, string> = {};
+    const health: Record<string, string> = {}
     for (const [name, info] of this.services.entries()) {
       try {
         const response = await fetch(`${info.url}/health`, {
@@ -448,7 +448,7 @@ export const unifiedAPIRouter = new UnifiedAPIRouter({
  * Create a standardized API response
  */
 export function createAPIResponse<T>(
-  data: T
+  data: T;
   success: boolean = true,
   message?: string
   meta?: Partial<ResponseMetadata>;
@@ -466,12 +466,12 @@ export function createAPIResponse<T>(
       version: '2.0.0',
       ...meta
     }
-  };
+  }
 }
 /**
  * Middleware factory for authentication
  */;
-export function createAuthMiddleware(options: { required?: boolean } = {}): Middleware {
+export function createAuthMiddleware(_options: { required?: boolean } = {}): Middleware {
   return async (event, context, next) => {
     const authHeader = event.request.headers.get('authorization');
     if (!authHeader && options.required) {
@@ -483,7 +483,7 @@ export function createAuthMiddleware(options: { required?: boolean } = {}): Midd
     // TODO: Implement actual authentication logic
     // For now, just pass through
     return next();
-  };
+  }
 }
 /**
  * Middleware factory for request validation
@@ -503,6 +503,6 @@ export function createValidationMiddleware<T>(schema: any): Middleware {
         { status: 400, headers: { 'content-type': 'application/json' } }
       );
     }
-  };
+  }
 }
 export default unifiedAPIRouter;

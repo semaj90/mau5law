@@ -36,7 +36,7 @@ export class FlatBufferLegalProcessor {
    * Store large legal document using FlatBuffer for efficient access
    * Integrates with your Go microservice search-embedder-service
    */;
-  async storeLegalDocument(document: {
+  async storeLegalDocument(_document: {
     id: string;
     title: string;
     content: string | Uint8Array;
@@ -122,7 +122,7 @@ export class FlatBufferLegalProcessor {
   async semanticSearch(query: {
     text: string;
     embedding?: Float32Array;
-    filters?: { [key: string]: any };
+    filters?: { [key: string]: any }
     limit?: number;
   }): Promise<Array<any> {
     try {
@@ -294,7 +294,7 @@ export class FlatBufferLegalProcessor {
           endPos: 13
         }
       ]
-    };
+    }
   }
   private parseSearchResultsFromFlatBuffer(buffer: Uint8Array): Array<any> {
     // Mock parsing - would use generated FlatBuffer classes
@@ -312,7 +312,7 @@ export class FlatBufferLegalProcessor {
     return {
       documentId,
       entities: []
-    };
+    }
   }
 }
 // Performance monitoring for FlatBuffer operations
@@ -323,7 +323,7 @@ export class FlatBufferPerformanceMonitor {
     return () => {
       const duration = performance.now() - startTime;
       this.recordMetric(operation, duration);
-    };
+    }
   }
   private recordMetric(operation: string, duration: number): void {
     if (!this.metrics.has(operation)) {
@@ -336,14 +336,14 @@ export class FlatBufferPerformanceMonitor {
     return times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length: 0;
   }
   getPerformanceReport(): Record<string, { avg: number; min: number; max: number; count: number }> {
-    const report: { [key: string]: any } = {};
+    const report: { [key: string]: any } = {}
     for (const [operation, times] of this.metrics.entries()) {
       report[operation] = {
         avg: this.getAverageTime(operation),
         min: Math.min(...times),
         max: Math.max(...times),
         count: times.length
-      };
+      }
     }
     return report;
   }

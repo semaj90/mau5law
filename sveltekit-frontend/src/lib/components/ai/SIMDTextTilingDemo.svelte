@@ -69,7 +69,7 @@ https://svelte.dev/e/expected_token -->
         ui_target: 'component',
         enable_vertex_caching: true
         compression_target: compressionTarget
-      };
+      }
       const apiEndpoint = selectedMode === 'direct-simd'
         ? '/api/ocr/simd-langextract'
         : '/api/v1/webgpu/langextract';
@@ -110,7 +110,7 @@ https://svelte.dev/e/expected_token -->
             // Performance stats
             memoryEfficiency: calculateMemoryEfficiency(sample.text.length, simdData),
             cacheHits: simdData.processing_stats?.cache_hits || 0;
-          };
+          }
           results = [newResult, ...results.slice(0, 9)]; // Keep last 10 results
           updateSystemStats(newResult);
           if (enableInstantUI && simdData.ui_components?.instant_render) {
@@ -192,7 +192,7 @@ https://svelte.dev/e/expected_token -->
         css: (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).cssOptimized,
         html: generateLiveHTML(result),
         timestamp: Date.now();
-      };
+      }
       liveRenderedComponents = [liveComponent, ...liveRenderedComponents.slice(0, 4)]; // Keep last 5
       // Inject CSS dynamically
       injectCSS(liveComponent.css, liveComponent.id);
@@ -257,7 +257,7 @@ https://svelte.dev/e/expected_token -->
       instantComponentsGenerated: 0,
       gpuUtilizationAverage: 0,
       memoryEfficiencyAverage: 0
-    };
+    }
   }
   $effect(() => {
     addLog('🧬 SIMD Text Tiling Demo initialized');

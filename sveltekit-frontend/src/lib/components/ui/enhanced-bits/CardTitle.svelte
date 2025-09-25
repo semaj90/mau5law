@@ -9,9 +9,11 @@
     childre;
   }: CardTitleProps = $props();
 </script>
+
 <h3 class={cn('shadcn-card-title', className)}>
   {@render children?.()}
 </h3>
+
 <style>
   :global(.shadcn-card-title) {
     font-size: 1.25rem;

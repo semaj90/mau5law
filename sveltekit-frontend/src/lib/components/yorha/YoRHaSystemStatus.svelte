@@ -55,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
       case 'excellent': return 'text-green-400';
     }
   }
-  function getProgressBarColor(value: number): string {
+  function getProgressBarColor(_value: number): string {
     if (value > 85) return 'bg-red-500';
     if (value > 70) return 'bg-yellow-500';
     return 'bg-green-500';
@@ -82,13 +82,20 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
 </script>
+
 <!-- System Status Bar -->
 <div class="yorha-status-bar flex items-center justify-between text-xs text-yorha-light bg-yorha-darker p-4 font-mono">
   <!-- Left Section - System Metrics -->
   <div class="status-left flex items-center space-x-6">
     <!-- System Status Indicator -->
     <div class="flex items-center space-x-2">
-      <div class="status-dot w-2 h-2 rounded-full animate-pulse {systemStatus === 'normal' ? 'bg-green-400' : systemStatus === 'warning' ? 'bg-yellow-400' : 'bg-red-400'}"></div>
+      <div
+        class="status-dot w-2 h-2 rounded-full animate-pulse {systemStatus === 'normal'
+          ? 'bg-green-400'
+          : systemStatus === 'warning'
+            ? 'bg-yellow-400'
+            : 'bg-red-400'}"
+      ></div>
       <span class="uppercase font-bold {getStatusColor(systemStatus)}">
         {systemStatus}
       </span>
@@ -142,7 +149,10 @@ https://svelte.dev/e/js_parse_error -->
       <span class="metric-value {getStatusColor(networkStatus)}">
         {networkLatency}ms
       </span>
-      <div class="network-indicator w-1 h-1 rounded-full {getStatusColor(networkStatus)?.replace('text-', 'bg-') || 'bg-gray-400'}"></div>
+      <div
+        class="network-indicator w-1 h-1 rounded-full {getStatusColor(networkStatus)?.replace('text-', 'bg-') ||
+          'bg-gray-400'}"
+      ></div>
     </div>
     <!-- Active Connections -->
     <div class="metric-group flex items-center space-x-2">
@@ -179,11 +189,14 @@ https://svelte.dev/e/js_parse_error -->
       </span>
     </div>
     <!-- YoRHa System Identifier -->
-    <div class="system-id flex items-center space-x-2 px-3 py-1 bg-yorha-accent-warm/10 border border-yorha-accent-warm/30 rounded">
+    <div
+      class="system-id flex items-center space-x-2 px-3 py-1 bg-yorha-accent-warm/10 border border-yorha-accent-warm/30 rounded"
+    >
       <span class="text-yorha-accent-warm font-bold">YORHA-AI-001</span>
     </div>
   </div>
 </div>
+
 <style>
   .yorha-status-bar {
     --yorha-primary: #c4b49a;
@@ -248,8 +261,13 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Animation for critical status */
   @keyframes pulse-critical {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
   .status-dot.bg-red-400 {
     animation: pulse-critical 1s infinite;

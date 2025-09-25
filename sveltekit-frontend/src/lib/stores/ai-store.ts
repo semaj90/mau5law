@@ -19,7 +19,7 @@ export interface Gemma3Config {
 }
 // SSR-safe storage utilities
 const SSR_SAFE_STORAGE = {
-  getItem: (key: string): string | null => {
+  getItem: (_key: string): string | null => {
     if (!browser) return null;
     try {
       return localStorage.getItem(key);
@@ -27,7 +27,7 @@ const SSR_SAFE_STORAGE = {
       return null;
     }
   },
-  setItem: (key: string, value: string): void => {
+  setItem: (_key: string, value: string): void => {
     if (!browser) return;
     try {
       localStorage.setItem(key, value);
@@ -35,7 +35,7 @@ const SSR_SAFE_STORAGE = {
       // Silently fail in SSR or if storage is unavailable
     }
   },
-  removeItem: (key: string): void => {
+  removeItem: (_key: string): void => {
     if (!browser) return;
     try {
       localStorage.removeItem(key);
@@ -43,7 +43,7 @@ const SSR_SAFE_STORAGE = {
       // Silently fail
     }
   }
-};
+}
 // AI conversation state interface
 export interface AIConversationState {
   id: string;
@@ -54,7 +54,7 @@ export interface AIConversationState {
       confidence: number;
       executionTime: number;
       fromCache: boolean;
-    };
+    }
   }>;
   isActive: boolean;
   lastUpdated: number;
@@ -85,7 +85,7 @@ const DEFAULT_CONVERSATION: AIConversationState = {
   messages: [],
   isActive: false
   lastUpdated: 0
-};
+}
 const DEFAULT_SETTINGS: AISettingsState = {
   preferredProvider: "auto",
   gemma3Config: {
@@ -104,7 +104,7 @@ const DEFAULT_SETTINGS: AISettingsState = {
   maxHistoryLength: 50,
   autoSave: true
   uiTheme: "auto"
-};
+}
 const DEFAULT_STATUS: AIStatusState = {
   isLoading: false
   isInitializing: false
@@ -114,9 +114,9 @@ const DEFAULT_STATUS: AIStatusState = {
   currentModel: null
   error: null
   lastHealthCheck: null
-};
+}
 // Create SSR-safe stores with persistence
-function createPersistedStore<T>(key: string, defaultValue: T) {
+function createPersistedStore<T>(_key: string, defaultValue: T) {
   // Initialize with default value (SSR-safe)
   const { subscribe, set, update } = writable<T>(defaultValue);
   // Load from localStorage on hydration (browser only)
@@ -134,13 +134,13 @@ function createPersistedStore<T>(key: string, defaultValue: T) {
   }
   return {
     subscribe,
-    set: (value: T) => {
+    set: (_value: T) => {
       set(value);
       if (browser) {
         SSR_SAFE_STORAGE.setItem(key, JSON.stringify(value);
       }
     },
-    update: (updater: (value: T) => T) => {
+    update: (updater: (_value: T) => T) => {
       update((currentValue) => {
         const newValue = updater(currentValue);
         if (browser) {
@@ -149,7 +149,7 @@ function createPersistedStore<T>(key: string, defaultValue: T) {
         return newValue;
       });
     }
-  };
+  }
 }
 // Main AI stores (restored from backup - removing corruption)
 export const aiConversation = createPersistedStore<AIConversationState>(
@@ -232,7 +232,7 @@ export const aiStore = {
   },
   // Send message to AI
   async sendMessage(
-    content: string
+    content: string;
     options: {
       includeHistory?: boolean;
       maxSources?: number;
@@ -246,7 +246,7 @@ export const aiStore = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({,
-          query: content
+          query: content;
           context: [],
           includeHistory: options.includeHistory ?? true,
           maxSources: options.maxSources ?? 5,
@@ -270,7 +270,7 @@ export const aiStore = {
           role: "user" as const,
           content,
           timestamp: new Date()
-        };
+        }
         const assistantMessage = {
           id: `${messageId}_assistant`,
           role: "assistant" as const,
@@ -284,7 +284,7 @@ export const aiStore = {
             executionTime: aiResponse.metadata.executionTime,
             fromCache: aiResponse.metadata.fromCache
           }
-        };
+        }
         return {
           id: conversation.id || `conv_${Date.now()}`,
           messages: [...conversation.messages, userMessage, assistantMessage],
@@ -361,7 +361,7 @@ export const aiStore = {
             conversation.messages[conversation.messages.length - 1]?.metadata
               ?.model || "unknown"
         }
-      };
+      }
       const newHistory = [newConversation, ...history];
       // Limit history length
       const maxLength = get(aiSettings).maxHistoryLength;
@@ -381,7 +381,7 @@ export const aiStore = {
       });
     }
   }
-};
+}
 // Auto-initialize on browser mount
 if (browser) {
   // Initialize with a small delay to ensure proper hydration
@@ -394,5 +394,5 @@ export {
   aiConversation as conversation,
   aiSettings as settings,
   aiStatus as status
-};
+}
 export default aiStore;

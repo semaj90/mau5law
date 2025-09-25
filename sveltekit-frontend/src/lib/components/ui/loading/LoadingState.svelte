@@ -17,25 +17,28 @@
     loadingMessage = 'Loading...',
     skeleton = 'card',
     children,
-    fallback
+    fallback,
   }: Props = $props();
 </script>
+
 <!-- Error State -->
 {#if error}
   <div class="flex flex-col items-center justify-center p-golden-xl text-center">
     <div class="w-16 h-16 mb-golden-lg bg-red-500/20 rounded-full flex items-center justify-center">
       <svg class="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        <path
+          fill-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+          clip-rule="evenodd"
+        />
       </svg>
     </div>
-    <h3 class="text-lg font-bold text-red-400 uppercase tracking-wide mb-golden-sm">
-      Error Loading Data
-    </h3>
+    <h3 class="text-lg font-bold text-red-400 uppercase tracking-wide mb-golden-sm">Error Loading Data</h3>
     <p class="text-nier-text-secondary max-w-md">
       {error}
     </p>
   </div>
-<!-- Loading State -->
+  <!-- Loading State -->
 {:else if loading}
   <div class="space-y-golden-lg">
     <!-- Loading Header -->
@@ -44,7 +47,9 @@
         <!-- YoRHa Loading Spinner -->
         <div class="relative">
           <div class="w-8 h-8 border-2 border-nier-accent-warm border-t-transparent rounded-full animate-spin"></div>
-          <div class="absolute inset-1 border-2 border-nier-accent-cool border-b-transparent rounded-full animate-spin animation-delay-150"></div>
+          <div
+            class="absolute inset-1 border-2 border-nier-accent-cool border-b-transparent rounded-full animate-spin animation-delay-150"
+          ></div>
         </div>
         <span class="text-nier-text-secondary font-mono uppercase tracking-wide">
           {loadingMessage}
@@ -138,31 +143,36 @@
       {@render fallback()}
     {/if}
   </div>
-<!-- Empty State -->
+  <!-- Empty State -->
 {:else if empty}
   <div class="flex flex-col items-center justify-center p-golden-xl text-center">
     <div class="w-16 h-16 mb-golden-lg bg-nier-bg-tertiary rounded-full flex items-center justify-center">
       <svg class="w-8 h-8 text-nier-text-muted" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm8 0a1 1 0 011-1h6a1 1 0 011 1v2a1 1 0 01-1 1h-6a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h6a1 1 0 011 1v2a1 1 0 01-1 1h-6a1 1 0 01-1-1v-2z" clip-rule="evenodd" />
+        <path
+          fill-rule="evenodd"
+          d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm8 0a1 1 0 011-1h6a1 1 0 011 1v2a1 1 0 01-1 1h-6a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h6a1 1 0 011 1v2a1 1 0 01-1 1h-6a1 1 0 01-1-1v-2z"
+          clip-rule="evenodd"
+        />
       </svg>
     </div>
-    <h3 class="text-lg font-bold text-nier-text-primary uppercase tracking-wide mb-golden-sm">
-      No Data Available
-    </h3>
+    <h3 class="text-lg font-bold text-nier-text-primary uppercase tracking-wide mb-golden-sm">No Data Available</h3>
     <p class="text-nier-text-secondary max-w-md">
       {emptyMessage}
     </p>
   </div>
-<!-- Content State -->
+  <!-- Content State -->
 {:else}
   {@render children?.()}
 {/if}
+
 <style>
   .animation-delay-150 {
     animation-delay: 150m;
   }
-/* Custom YoRHa pulse animation */ @keyframes yorha-pulse {
-    0%, 100% {
+/* Custom YoRHa pulse animation */ {}
+  @keyframes yorha-pulse {
+0%, {}
+    100% {
       opacity: 1;
     }
     50% {
@@ -172,10 +182,23 @@
   .animate-pulse {
     animation: yorha-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-/* Staggered animation for skeleton items */ .animate-pulse:nth-child(1) { animation-delay: 0ms; }
-  .animate-pulse:nth-child(2) { animation-delay: 100ms; }
-  .animate-pulse:nth-child(3) { animation-delay: 200ms; }
-  .animate-pulse:nth-child(4) { animation-delay: 300ms; }
-  .animate-pulse:nth-child(5) { animation-delay: 400ms; }
-  .animate-pulse:nth-child(6) { animation-delay: 500ms; }
+/* Staggered animation for skeleton items */ {}
+  .animate-pulse:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  .animate-pulse:nth-child(2) {
+    animation-delay: 100ms;
+  }
+  .animate-pulse:nth-child(3) {
+    animation-delay: 200ms;
+  }
+  .animate-pulse:nth-child(4) {
+    animation-delay: 300ms;
+  }
+  .animate-pulse:nth-child(5) {
+    animation-delay: 400ms;
+  }
+  .animate-pulse:nth-child(6) {
+    animation-delay: 500ms;
+  }
 </style>

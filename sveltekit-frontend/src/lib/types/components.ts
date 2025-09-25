@@ -26,14 +26,14 @@ export interface ButtonProps extends ComponentPropsBase {
   size?: 'default' | 'sm' | 'lg' | 'xl';
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset';
-  onclick?: (event: MouseEvent) => void;
+  onclick?: (_event: MouseEvent) => void;
 }
 export interface DialogProps extends ComponentPropsBase {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 export interface DropdownMenuItemProps extends ComponentPropsBase {
-  onclick?: (event: MouseEvent) => void;
+  onclick?: (_event: MouseEvent) => void;
   disabled?: boolean;
 }
 export interface FileUploadProps extends ComponentPropsBase {
@@ -56,19 +56,18 @@ export interface LegalDocumentExtended {
   created: string;
   updated?: string;
   content?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 // (Removed global Document augmentation to avoid DOM conflicts)
 // =====================================================
 // EVENT HANDLER FIXES
 // =====================================================
-export type EventHandler<T = Event> = (event: T) => void;
-export type ClickHandler = (event: MouseEvent) => void;
-export type InputHandler = (event: Event & { currentTarget: HTMLInputElement }) => void;
-export type ChangeHandler = (
-  event: Event & { currentTarget: HTMLSelectElement | HTMLInputElement }
+export type EventHandler<T = Event> = (_event: T) => void;
+export type ClickHandler = (_event: MouseEvent) => void;
+export type InputHandler = (_event: Event & { currentTarget: HTMLInputElement }) => void;
+export type ChangeHandler = (_event: Event & { currentTarget: HTMLSelectElement | HTMLInputElement }
 ) => void;
-export type SubmitHandler = (event: Event & { currentTarget: HTMLFormElement }) => void;
+export type SubmitHandler = (_event: Event & { currentTarget: HTMLFormElement }) => void;
 // =====================================================
 // CUSTOM EVENT TYPES
 // =====================================================
@@ -76,7 +75,7 @@ export type SubmitHandler = (event: Event & { currentTarget: HTMLFormElement }) 
 export interface CustomEventDetail<T = any> {
   detail: T;
 }
-export type CustomEventHandler<T = any> = (event: CustomEvent<T>) => void;
+export type CustomEventHandler<T = any> = (_event: CustomEvent<T>) => void;
 // =====================================================
 // FORM STATE FIXES
 // =====================================================
@@ -92,7 +91,7 @@ export interface FormValidationState {
   isSubmitting: boolean;
   errors: Record<string, string>;
   touched: Record<string, boolean>;
-  values: { [key: string]: any };
+  values: { [key: string]: any }
 }
 // =====================================================
 // SIDEBAR & LAYOUT STATE FIXES
@@ -118,7 +117,7 @@ export interface SearchFilters {
   dateRange?: {
     start: string;
     end: string;
-  };
+  }
   status?: string[];
   tags?: string[];
 }
@@ -135,7 +134,7 @@ export interface AIModel {
   name: string;
   type: 'chat' | 'embedding' | 'completion';
   available: boolean;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface TokenUsage {
   prompt_tokens: number;

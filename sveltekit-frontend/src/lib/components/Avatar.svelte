@@ -26,14 +26,14 @@ https://svelte.dev/e/props_duplicate -->
   			fileInput.click();
   		}
   	}
-  	function handleFileSelect(event: Event) {
-  		const target = event.target as HTMLInputElement;
+  	function handleFileSelect(_event: Event) {
+  		// removed unused target assignment
   		const file = target.files?.[0];
   		if (file) {
   			uploadFile(file);
   		}
   	}
-  	function handleDrop(event: DragEvent) {
+  	function handleDrop(_event: DragEvent) {
   		event.preventDefault();
   		dragOver = false;
   		const files = event.dataTransfer?.file;
@@ -41,11 +41,11 @@ https://svelte.dev/e/props_duplicate -->
   			uploadFile(files[0]);
   		}
   	}
-  	function handleDragOver(event: DragEvent) {
+  	function handleDragOver(_event: DragEvent) {
   		event.preventDefault();
   		dragOver = true;
   	}
-  	function handleDragLeave(event: DragEvent) {
+  	function handleDragLeave(_event: DragEvent) {
   		event.preventDefault();
   		dragOver = false;
   	}
@@ -72,80 +72,78 @@ https://svelte.dev/e/props_duplicate -->
   		}
   	}
 </script>
+
 <div class="mx-auto px-4 max-w-7xl" class:clickable class:drag-over={dragOver}>
-	<div
-		class="mx-auto px-4 max-w-7xl"
-		style="width: {avatarSize}; height: {avatarSize};"
-		onclick={() => handleAvatarClick()}
-		onkeydown={(e) => {
-			if (e.key === 'Enter' || e.key === ' ') {
-				e.preventDefault();
-				handleAvatarClick();
-			}
-		}}
-		ondrop={handleDrop}
-		ondragover={handleDragOver}
-		ondragleave={handleDragLeave}
-		role="button"
-		tabindex={clickable ? 0 : -1}
-		aria-label="Upload or change avatar"
-	>
-		{#if $avatarStore.isUploading}
-			<div class="mx-auto px-4 max-w-7xl">
-				<div class="mx-auto px-4 max-w-7xl"></div>
-			</div>
-		{:else}
-			<img
-				src={$avatarStore.url || '/images/default-avatar.svg'}
-				alt="User Avatar"
-				class="mx-auto px-4 max-w-7xl"
-				loading="lazy"
-			/>
-		{/if}
-		{#if clickable}
-			<div class="mx-auto px-4 max-w-7xl">
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-					<polyline points="7,10 12,15 17,10"/>
-					<line x1="12" y1="15" x2="12" y2="3"/>
-				</svg>
-			</div>
-		{/if}
-	</div>
-	{#if showUploadButton}
-		<div class="mx-auto px-4 max-w-7xl">
-			<button
-				type="button"
-				class="mx-auto px-4 max-w-7xl"
-				onclick={() => fileInput?.click()}
-				disabled={$avatarStore.isUploading}
-			>
-				{$avatarStore.isUploading ? 'Uploading...' : 'Change Avatar'}
-			</button>
-			{#if $avatarStore.url && $avatarStore.url !== '/images/default-avatar.svg'}
-				<button
-					type="button"
-					class="mx-auto px-4 max-w-7xl"
-					onclick={() => handleRemoveAvatar()}
-				>
-					Remove
-				</button>
-			{/if}
-		</div>
-	{/if}
-	{#if $avatarStore.error}
-		<div class="mx-auto px-4 max-w-7xl">
-			{$avatarStore.error}
-			<button type="button" onclick={() => avatarStore.clearError()} class="mx-auto px-4 max-w-7xl">×</button>
-		</div>
-	{/if}
+  <div
+    class="mx-auto px-4 max-w-7xl"
+    style="width: {avatarSize} height: {avatarSize}"
+    onclick={() => handleAvatarClick()}
+    onkeydown={e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleAvatarClick();
+      }
+    }}
+    ondrop={handleDrop}
+    ondragover={handleDragOver}
+    ondragleave={handleDragLeave}
+    role="button"
+    tabindex={clickable ? 0 : -1}
+    aria-label="Upload or change avatar"
+  >
+    {#if $avatarStore.isUploading}
+      <div class="mx-auto px-4 max-w-7xl">
+        <div class="mx-auto px-4 max-w-7xl"></div>
+      </div>
+    {:else}
+      <img
+        src={$avatarStore.url || '/images/default-avatar.svg'}
+        alt="User Avatar"
+        class="mx-auto px-4 max-w-7xl"
+        loading="lazy"
+      />
+    {/if}
+    {#if clickable}
+      <div class="mx-auto px-4 max-w-7xl">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7,10 12,15 17,10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+      </div>
+    {/if}
+  </div>
+  {#if showUploadButton}
+    <div class="mx-auto px-4 max-w-7xl">
+      <button
+        type="button"
+        class="mx-auto px-4 max-w-7xl"
+        onclick={() => fileInput?.click()}
+        disabled={$avatarStore.isUploading}
+      >
+        {$avatarStore.isUploading ? 'Uploading...' : 'Change Avatar'}
+      </button>
+      {#if $avatarStore.url && $avatarStore.url !== '/images/default-avatar.svg'}
+        <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => handleRemoveAvatar()}> Remove </button>
+      {/if}
+    </div>
+  {/if}
+  {#if $avatarStore.error}
+    <div class="mx-auto px-4 max-w-7xl">
+      {$avatarStore.error}
+      <button type="button" onclick={() => avatarStore.clearError()} class="mx-auto px-4 max-w-7xl">×</button>
+    </div>
+  {/if}
 </div>
 <input
-	bind:this={fileInput}
-	type="file"
-	accept="image/jpeg,image/png,image/gif,image/svg+xml,image/webp" onchange={handleFileSelect}
-	style="display: none;"
+  bind:this={fileInput}
+  type="file"
+  accept="image/jpeg,image/png,image/gif,image/svg+xml,image/webp"
+  onchange={handleFileSelect}
+  style="display: none;"
 />
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
 	.avatar-container {
 		position: relative;
@@ -247,4 +245,3 @@ https://svelte.dev/e/props_duplicate -->
 		margin-left: 8px;
 	}
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

@@ -38,7 +38,7 @@ export interface HybridPredictionResult {
       cacheKey: string;
       preloadStrategy: 'immediate' | 'background' | 'ondemand';
     }>;
-  };
+  }
   // Fusion Intelligence
   fusedInsights: {
     primaryRecommendation: string;
@@ -46,7 +46,7 @@ export interface HybridPredictionResult {
     cognitiveReasoning: string[];     // Human-readable reasoning
     predictiveAccuracy: number;       // Historical accuracy for this pattern,
     adaptiveStrategy: 'aggressive' | 'conservative' | 'balanced';
-  };
+  }
   // Performance Metrics
   performance: {
     semanticQueryTime: number;        // Gemma embedding search time
@@ -54,7 +54,7 @@ export interface HybridPredictionResult {
     fusionProcessingTime: number;     // Fusion algorithm time
     totalResponseTime: number;        // End-to-end time,
     cacheHitRate: number;            // Percentage of cache hits
-  };
+  }
   // Visual Cache Patterns (CHR-ROM style)
   chrRomPatterns: Array<{,
     cacheKey: string;
@@ -72,13 +72,13 @@ export interface LegalContext {
     type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence';
     domain: string;
     complexity: number;
-  };
+  }
   workflowStage: 'intake' | 'analysis' | 'research' | 'drafting' | 'review';
   systemMetrics: {
     fps: number;
     memoryUsage: number;
     gpuUtilization?: number;
-  };
+  }
 }
 export class HybridGemmaBitmapEngine {
   private db: Pool;
@@ -92,7 +92,7 @@ export class HybridGemmaBitmapEngine {
     avgBehavioralTime: 0,
     avgFusionTime: 0,
     overallAccuracy: 0.75, // Starting accuracy
-  };
+  }
   constructor(db?: Pool, redis?: IORedis) {
     this.db = db || new Pool({ connectionString: process.env.DATABASE_URL });
     this.redis = redis || createRedisInstance();
@@ -115,7 +115,7 @@ export class HybridGemmaBitmapEngine {
    * Main prediction method combining semantic + behavioral intelligence
    */
   async predictWithContext(
-    query: string
+    query: string;
     context: LegalContext;
   ): Promise<HybridPredictionResult> {
     const startTime = Date.now();
@@ -162,7 +162,7 @@ export class HybridGemmaBitmapEngine {
         cacheHitRate: await this.calculateCacheHitRate()
       },
       chrRomPatterns
-    };
+    }
     // Cache result for future rapid access
     await this.cacheHybridResult(query, context, result);
     return result;
@@ -171,7 +171,7 @@ export class HybridGemmaBitmapEngine {
    * Semantic search using Gemma embeddings
    */
   private async performSemanticSearch(
-    query: string
+    query: string;
     context: LegalContext;
   ): Promise<{ matches: any[]; queryTime: number }> {
     const startTime = Date.now();
@@ -182,7 +182,7 @@ export class HybridGemmaBitmapEngine {
       return {
         matches: JSON.parse(cached),
         queryTime: Date.now() - startTime
-      };
+      }
     }
     // Generate Gemma embedding for query
     const queryEmbedding = await this.generateGemmaEmbedding(query);
@@ -219,7 +219,7 @@ export class HybridGemmaBitmapEngine {
       return {
         matches,
         queryTime: Date.now() - startTime
-      };
+      }
     } finally {
       client.release();
     }
@@ -249,14 +249,14 @@ export class HybridGemmaBitmapEngine {
       nextStates,
       recommendedAssets,
       predictionTime: Date.now() - startTime
-    };
+    }
   }
   /**
    * Fusion intelligence: combine semantic + behavioral insights
    */
   private async fusionIntelligence(
     semanticResults: any
-    behavioralResults: any
+    behavioralResults: any;
     context: LegalContext;
   ): Promise<any> {
     const semanticConfidence = semanticResults.matches[0]?.similarity || 0;
@@ -290,7 +290,7 @@ export class HybridGemmaBitmapEngine {
       cognitiveReasoning: reasoning
       predictiveAccuracy: this.performanceMetrics.overallAccuracy * 100,
       adaptiveStrategy
-    };
+    }
   }
   /**
    * Generate Gemma embedding via Ollama
@@ -344,7 +344,7 @@ export class HybridGemmaBitmapEngine {
         svgPattern: this.generateSVGPattern(asset.type, asset.priority, qualityTier),
         qualityTier,
         renderPriority
-      };
+      }
     });
   }
   /**
@@ -360,7 +360,7 @@ export class HybridGemmaBitmapEngine {
       '8-BIT_NES': ['#ff6b6b', '#4ecdc4', '#45b7d1'],
       '16-BIT_SNES': ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4ecdc4'],
       '64-BIT_N64': ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4ecdc4', '#a8e6cf', '#d4a5ff']
-    };
+    }
     const colorPalette = colors[qualityTier as keyof typeof colors];
     const color = colorPalette[priority % colorPalette.length];
     const letter = assetType.charAt(0).toUpperCase();
@@ -384,7 +384,7 @@ export class HybridGemmaBitmapEngine {
       research: 0.8,
       drafting: 0.5,
       review: 0.6
-    };
+    }
     return stageWeights[context.workflowStage] || 0.5;
   }
   private calculateBehavioralWeight(context: LegalContext): number {
@@ -395,12 +395,12 @@ export class HybridGemmaBitmapEngine {
       research: 0.2,
       drafting: 0.5,
       review: 0.4
-    };
+    }
     return stageWeights[context.workflowStage] || 0.5;
   }
   private generateCognitiveReasoning(
     semantic: any
-    behavioral: any
+    behavioral: any;
     context: LegalContext;
   ): string[] {
     const reasoning = [];
@@ -421,7 +421,7 @@ export class HybridGemmaBitmapEngine {
     return reasoning;
   }
   private determineAdaptiveStrategy(
-    confidence: number
+    confidence: number;
     metrics: { fps: number; memoryUsage: number }
   ): 'aggressive' | 'conservative' | 'balanced' {
     if (confidence > 85 && metrics.fps > 55 && metrics.memoryUsage < 70) {
@@ -433,7 +433,7 @@ export class HybridGemmaBitmapEngine {
   }
   private synthesizePrimaryRecommendation(
     semantic: any
-    behavioral: any
+    behavioral: any;
     context: LegalContext;
   ): string {
     const semanticAction = semantic.matches[0]?.legalDomain || 'document analysis';
@@ -441,7 +441,7 @@ export class HybridGemmaBitmapEngine {
     return `Based on ${context.workflowStage} workflow: combine ${semanticAction} insights with predicted ${behavioralAction}`;
   }
   private determinePreloadStrategy(
-    priority: number
+    priority: number;
     context: LegalContext;
   ): 'immediate' | 'background' | 'ondemand' {
     if (priority > 80 && context.systemMetrics.fps > 55) {
@@ -473,7 +473,7 @@ export class HybridGemmaBitmapEngine {
   }
   private async cacheHybridResult(
     query: string
-    context: LegalContext
+    context: LegalContext;
     result: HybridPredictionResult;
   ): Promise<void> {
     const cacheKey = `hybrid:${this.hashQuery(query)}:${context.sessionId}`;
@@ -498,7 +498,7 @@ export class HybridGemmaBitmapEngine {
   private async loadPerformanceMetrics(): Promise<void> {
     const cached = await this.redis.get('hybrid:performance:metrics');
     if (cached) {
-      this.performanceMetrics = { ...this.performanceMetrics, ...JSON.parse(cached) };
+      this.performanceMetrics = { ...this.performanceMetrics, ...JSON.parse(cached) }
     }
   }
   /**
@@ -522,14 +522,14 @@ export class HybridGemmaBitmapEngine {
         'Legal domain specialization with workflow optimization',
         'Real-time adaptive quality based on system performance'
       ]
-    };
+    }
   }
   /**
    * Public API: Train the system with user feedback
    */
   async trainWithFeedback(
     actualOutcome: string
-    prediction: HybridPredictionResult
+    prediction: HybridPredictionResult;
     context: LegalContext;
   ): Promise<void> {
     // Update behavioral model

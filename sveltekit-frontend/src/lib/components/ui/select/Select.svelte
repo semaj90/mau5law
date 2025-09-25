@@ -20,4 +20,5 @@
     [key: string]: unknown;
   } = $props();
 </script>
+
 <EnhancedSelect {value} {options} {placeholder} {...props} />

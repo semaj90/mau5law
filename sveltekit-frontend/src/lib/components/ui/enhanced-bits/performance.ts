@@ -124,13 +124,13 @@ export class VirtualScrollManager {
   private scrollTop = 0;
   private containerHeight = 0;
   private totalItems = 0;
-  constructor(options: VirtualScrollOptions) {
+  constructor(_options: VirtualScrollOptions) {
     this.options = {
       bufferSize: 5,
       overscan: 3,
       scrollElement: document.documentElement,
       ...options
-    };
+    }
   }
   updateScrollPosition(scrollTop: number, containerHeight: number): void {
     this.scrollTop = scrollTop;
@@ -153,7 +153,7 @@ export class VirtualScrollManager {
       start: visibleStart
       end: visibleEnd
       offset
-    };
+    }
   }
   getTotalHeight(): number {
     return this.totalItems * this.options.itemHeight;
@@ -188,7 +188,7 @@ export function createDebouncedSearch<T>(
         }
       }, delay);
     });
-  };
+  }
 }
 /**
  * Memoization utility for expensive computations
@@ -206,7 +206,7 @@ export function memoize<Args extends unknown[], Return>(
     const result = fn(...args);
     cache.set(key, result);
     return result;
-  };
+  }
 }
 /**
  * Intersection Observer for lazy loading evidence cards
@@ -214,7 +214,7 @@ export function memoize<Args extends unknown[], Return>(
 export class LazyLoadManager {
   private observer: IntersectionObserver;
   private loadingCallbacks = new Map<Element, () => void>();
-  constructor(options: IntersectionObserverInit = {}) {
+  constructor(_options: IntersectionObserverInit = {}) {
     this.observer = new IntersectionObserver(
       this.handleIntersection.bind(this),
       {
@@ -301,7 +301,7 @@ export class ResourcePool<T> {
       inUse: this.inUse.size,
       total: this.available.length + this.inUse.size,
       maxSize: this.maxSize
-    };
+    }
   }
 }
 /**
@@ -358,7 +358,7 @@ export function analyzeBundleSize(): BundleAnalysis {
       "Optimize lucide-svelte imports to reduce duplication",
       "Use dynamic imports for non-critical components"
     ]
-  };
+  }
 }
 /**
  * Performance monitoring utilities

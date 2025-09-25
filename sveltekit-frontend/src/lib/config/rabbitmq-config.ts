@@ -14,14 +14,14 @@ export interface RabbitMQConfig {
     heartbeat?: number;
     connection_timeout?: number;
     channel_max?: number;
-  };
+  }
   exchanges: {
     name: string;
     type: 'direct' | 'topic' | 'fanout' | 'headers';
     options?: {
       durable?: boolean;
       autoDelete?: boolean;
-    };
+    }
   }[];
   queues: {
     name: string;
@@ -35,7 +35,7 @@ export interface RabbitMQConfig {
       maxLength?: number;
       deadLetterExchange?: string;
       deadLetterRoutingKey?: string;
-    };
+    }
   }[];
 }
 // Environment-based configuration
@@ -298,7 +298,7 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
     retryAttempts: 3,
     retryDelay: 5000,
     exponentialBackoff: true
-  };
+  }
   // Queue-specific configurations
   switch (queueName) {
     case QUEUES.DOCUMENT_EMBEDDING: case QUEUES.CASE_EMBEDDING:;
@@ -306,7 +306,7 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
         ...baseConfig,
         concurrency: 2, // Embedding generation is CPU intensive
         prefetchCount: 5
-      };
+      }
     case QUEUES.DOCUMENT_ANALYSIS: case QUEUES.AI_SUMMARIZATION:;
       return {
         ...baseConfig,
@@ -314,33 +314,33 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
         prefetchCount: 2,
         retryAttempts: 2,
         retryDelay: 30000 // 30 seconds
-      };
+      }
     case QUEUES.VECTOR_SEARCH_UPDATE: return {
         ...baseConfig,
         concurrency: 5, // Fast database operations
         prefetchCount: 20
-      };
+      }
     case QUEUES.AI_ENTITY_EXTRACTION: case QUEUES.AI_CLASSIFICATION:;
       return {
         ...baseConfig,
         concurrency: 2,
         prefetchCount: 5,
         retryAttempts: 2
-      };
+      }
     default:
       return baseConfig;
   }
-};
+}
 // Connection URL helper
 export const getRabbitMQConnectionURL = (): string => {
   const config = getRabbitMQConfig();
   const { protocol, hostname, port, username, password, vhost } = config.connection;
   const encodedVhost = encodeURIComponent(vhost);
   return `${protocol}://${username}:${password}@${hostname}:${port}${encodedVhost !== '%2F' ? `/${encodedVhost}` : ''}`
-};
+}
 // Health check configuration
 export const HEALTH_CHECK = {
   interval: 30000, // 30 seconds
-  timeout: 5000,   // 5 seconds
+  timeout: 5000,   // 5 seconds;
   retries: 3
 } as const;

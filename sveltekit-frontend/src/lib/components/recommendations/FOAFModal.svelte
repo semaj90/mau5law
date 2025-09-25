@@ -39,7 +39,7 @@ if (open && personId && !foafData) {
       loading = true;
       error = null;
       try {
-        const response = await fetch(`/api/foaf/${personId}?limit=5`);
+        // removed unused response assignment
         if (!response.ok) throw new Error('Failed to load recommendations');
         foafData = await response.json();
       } catch (err) {

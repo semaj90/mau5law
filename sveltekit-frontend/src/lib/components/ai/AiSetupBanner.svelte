@@ -19,11 +19,11 @@ https: //svelte.dev/e/js_parse_error -->
     ok: boolean;
     message?: string;
     details?: {
-      ai_summarize_checks?: { gpu: boolean; ollama: boolean; model: boolean };
-      ollama?: { ok: boolean; models_count?: number; required_model?: string; model_present?: boolean };
-      go_service?: { ok: boolean; endpoint?: string };
-    };
-  };
+      ai_summarize_checks?: { gpu: boolean; ollama: boolean; model: boolean }
+      ollama?: { ok: boolean; models_count?: number; required_model?: string; model_present?: boolean }
+      go_service?: { ok: boolean; endpoint?: string }
+    }
+  }
   async function load() {
     performance.mark('function-start');
     try {
@@ -35,7 +35,7 @@ https: //svelte.dev/e/js_parse_error -->
   } catch (error) {
     console.error('API call failed:', error);
     throw error;
-  };
+  }
       data = awaitawait (async () => {
       try {
         return await  res.json());
@@ -107,7 +107,7 @@ https: //svelte.dev/e/js_parse_error -->
             {/if}
           </span>
           {#if data.details?.ollama?.required_model && !data.details?.ai_summarize_checks?.model}
-            <button class="pull" onclick={(event: MouseEvent) => pullModel} aria-label="Pull required model">Pull model</button>
+            <button class="pull" onclick={(_event: MouseEvent) => pullModel} aria-label="Pull required model">Pull model</button>
           {/if}
         </div>
       </div>

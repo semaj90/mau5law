@@ -19,7 +19,7 @@ import type { RequestHandler } from './$types.js'
 // Enhanced Legal AI Search API with LangChain.js, Nomic Embed, and Vector Search
 // Provides advanced semantic search with multiple strategies and intelligent ranking
 import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/server/ai/enhanced-legal-search.js'
-import { URL } from "url"
+
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 // Rate limiting configuration
 // Simple rate limiter stub that returns the expected format
@@ -272,4 +272,4 @@ export const OPTIONS: RequestHandler = async () => {
   })
 }
 export const GET = redisOptimized.aiSearch(originalGETHandler)
-export const POST = redisOptimized.aiSearch(originalPOSTHandler)
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);

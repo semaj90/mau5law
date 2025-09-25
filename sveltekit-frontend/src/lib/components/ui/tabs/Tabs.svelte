@@ -4,7 +4,7 @@
   import { writable } from 'svelte/store';
   interface Props {
     value: string;
-    onValueChange?: (value: string) => void;
+    onValueChange?: (_value: string) => void;
     children: unknown;
   }
   let { value, onValueChange, children }: Props = $props();
@@ -16,12 +16,13 @@
       if (onValueChange) {
         onValueChange(newValue);
       }
-    }
+    },
   });
   $effect(() => {
     activeTab.set(value);
   });
 </script>
+
 <div class="w-full">
   {@render children()}
 </div>

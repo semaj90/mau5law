@@ -40,7 +40,7 @@ export interface AISummaryContext {
     userActivityComplete: boolean;
     fusejsComplete: boolean;
     finalSynthesisComplete: boolean;
-  };
+  }
   // Reading state
   currentSection: number;
   sections: SummarySection[];
@@ -122,7 +122,7 @@ export type AISummaryEvent =
   | { type: "UPDATE_PROGRESS"; progress: number }
   | { type: "UPDATE_PREFERENCES"; preferences: Partial<AISummaryContext> }
   | { type: "RETRY" }
-  | { type: "RESET" };
+  | { type: "RESET" }
 const initialContext: AISummaryContext = {
   documentId: null
   caseId: null
@@ -151,12 +151,12 @@ const initialContext: AISummaryContext = {
   synthesisData: null
   error: null
   loading: false
-  isPlaying: false
+  isPlaying: false;
   progress: 0,
   voiceEnabled: false
   highlightMode: "key_points",
   readingMode: "sequential"
-};
+}
 export const aiSummaryMachine = createMachine({
   types: { [key: string]: any } as {
     context: AISummaryContext;

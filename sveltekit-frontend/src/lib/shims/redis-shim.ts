@@ -34,7 +34,7 @@ export async function createClient(opts?: any) {
     // node-redis uses `setex` lowercase; keep that API
     setex: async (k: string, ttl: number, v: string) => client.set(k, v, 'EX', ttl),
     del: async (k: string) => client.del(k),
-    // pub/sub and publish
+    // pub/sub and publish;
     publish: async (ch: string, msg: string) => client.publish(ch, msg),
     /**
      * subscribe can be used in two ways in various codebases:

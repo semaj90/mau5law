@@ -13,7 +13,7 @@ export type TypingEvent =
   | { type: 'USER_RETURNED'; timestamp: number }
   | { type: 'TYPING_TIMEOUT' }
   | { type: 'PROCESS_CONTEXT'; text: string }
-  | { type: 'ANALYTICS_UPDATE'; data: any };
+  | { type: 'ANALYTICS_UPDATE'; data: any }
 }
 export interface TypingContext {
   currentText: string;
@@ -31,14 +31,14 @@ export interface TypingContext {
     avgPauseTime: number;   // ms between typing bursts,
     patternRecognition: string[];
     contextualHints: string[];
-  };
+  }
   analytics: {
     sessionDuration: number;
     totalInteractions: number;
     typingPatterns: Array<any>;
     contextSwitches: number;
     userEngagement: 'low' | 'medium' | 'high';
-  };
+  }
   mcpWorkerStatus: 'idle' | 'processing' | 'ready';
   lastProcessedText: string;
   contextualPrompts: string[];
@@ -66,7 +66,7 @@ const processContextualContent = fromPromise(async ({ input }: { input: { text: 
       suggestions: (result as { hints?: any; suggestions?: any; intent?: any; confidence?: any }).suggestions || [],
       userIntent: (result as { hints?: any; suggestions?: any; intent?: any; confidence?: any }).intent || 'unknown',
       confidence: (result as { hints?: any; suggestions?: any; intent?: any; confidence?: any }).confidence || 0
-    };
+    }
   } catch (error) {
     console.error('Contextual processing error:', error);
     return {
@@ -74,7 +74,7 @@ const processContextualContent = fromPromise(async ({ input }: { input: { text: 
       suggestions: [],
       userIntent: 'unknown',
       confidence: 0
-    };
+    }
   }
 });
 export const userTypingStateMachine = createMachine({
@@ -188,7 +188,7 @@ export const userTypingStateMachine = createMachine({
               return {
                 ...context.userBehavior,
                 avgTypingSpeed: (context.userBehavior.avgTypingSpeed + typingSpeed) / 2
-              };
+              }
             },
             analytics: ({ context }) => ({
               ...context.analytics,
@@ -407,7 +407,7 @@ export const userTypingStateMachine = createMachine({
     }
   }
 }, {
-  // State machine configuration
+  // State machine configuration;
   delays: {
     TYPING_TIMEOUT: 2000,
     INACTIVITY_TIMEOUT: 30000,

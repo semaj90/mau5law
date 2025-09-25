@@ -27,14 +27,14 @@ export interface AIAnalysis {
 }
 // Pure logic functions - no UI dependencies
 export class LegalAILogic {
-  static processDocument(document: LegalDocument): AIAnalysis {
+  static processDocument(_document: LegalDocument): AIAnalysis {
     // Pure AI processing logic
     return {
       confidence: Math.random(),
       entities: [],
       themes: [],
       summary: `Analysis of ${document.title}`
-    };
+    }
   }
   static categorizeEvidence(evidence: EvidenceItem[]): Record<string, EvidenceItem[]> {
     // Pure categorization logic

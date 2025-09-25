@@ -41,14 +41,14 @@ export class Phase13IntegrationManager {
       enablePerformanceOptimization: true, // Performance features enabled
       dockerServicesEnabled: false, // Native Windows deployment
       ...config
-    };
+    }
     this.serviceHealth = {
       database: false
       redis: false
       ollama: false
-      qdrant: false
+      qdrant: false;
       docker: false
-    };
+    }
   }
   /**
    * Initialize full system integration
@@ -72,10 +72,10 @@ export class Phase13IntegrationManager {
       recommendations,
       performance: {
         database: dbConfig
-        ai: aiConfig
+        ai: aiConfig;
         optimization: perfConfig
       }
-    };
+    }
   }
   /**
    * Enhanced service detection with intelligent fallbacks and optimization
@@ -237,7 +237,7 @@ export class Phase13IntegrationManager {
         primary: this.serviceHealth.database ? 'postgresql://localhost:5433/legal_ai_db' : 'development-mode',
         vector: this.serviceHealth.qdrant ? 'http://localhost:6333' : 'embedded-vector-store'
       }
-    };
+    }
     console.log('🗄️ Database configuration:', dbConfig);
     return dbConfig;
   }
@@ -299,7 +299,7 @@ export class Phase13IntegrationManager {
         productionMode: enhancedRAGAvailable || this.serviceHealth.ollama,
         fallbackIntelligence: true
       }
-    };
+    }
     // Test upload service
     try {
       const uploadResponse = await fetch('http://localhost:8093/health', {
@@ -362,7 +362,7 @@ export class Phase13IntegrationManager {
         aiResponseTimes: true
         databaseQueries: true
       }
-    };
+    }
     console.log('⚡ Performance configuration:', perfConfig);
     return perfConfig;
   }
@@ -480,7 +480,7 @@ export class Phase13IntegrationManager {
       services: this.serviceHealth,
       status: integrationLevel > 80 ? 'production' : integrationLevel > 50 ? 'development' : 'fallback',
       recommendations: integrationLevel < 100 ? 'optimization-available' : 'fully-integrated'
-    };
+    }
   }
   /**
    * Apply Context7 MCP auto-suggestions
@@ -506,14 +506,14 @@ export class Phase13IntegrationManager {
         success: true
         action: `Applied ${suggestion.type} suggestion`,
         result: orchestrationResult
-      };
+      }
     } catch (error: any) {
       console.error('Failed to apply suggestion:', error);
       return {
         success: false
         action: `Failed to apply ${suggestion.type} suggestion`,
         result: error instanceof Error ? error.message: 'Unknown error'
-      };
+      }
     }
   }
 }
@@ -559,5 +559,5 @@ export async function getSystemHealth(): Promise<any> {
       timestamp: new Date().toISOString()
     },
     recommendations
-  };
+  }
 }

@@ -62,7 +62,7 @@
     isPinned = !isPinned;
     sidebarStore.update((state) => ({ ...state, open: isPinned }));
   }
-  function handleSearch(event: CustomEvent) {
+  function handleSearch(_event: CustomEvent) {
     searchQuery = event.detail.query;
   }
   function handleItemClick(item: unknown) {

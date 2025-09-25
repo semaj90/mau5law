@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Validate input
         if (!documentId || !chunks || !Array.isArray(chunks)) {
           return json({
-            success: false
+            success: false;
             error: 'Missing required fields: documentId, chunks'
           }, { status: 400 })
         }
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({ success: false, error: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).error }, { status: 404 })
         }
         return json({
-          success: true
+          success: true;
           job: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).job,
           workflow: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).workflow
         })
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'get_dashboard': {
         const dashboardData = ingestionService.getDashboardData()
         return json({
-          success: true
+          success: true;
           dashboard: dashboardData
         })
       }
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({ success: false, error: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).error }, { status: 400 })
         }
         return json({
-          success: true
+          success: true;
           message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         })
       }
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({ success: false, error: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).error }, { status: 400 })
         }
         return json({
-          success: true
+          success: true;
           message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         })
       }
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { concurrency } = params
         if (!concurrency) {
           return json({
-            success: false
+            success: false;
             error: 'Concurrency is required'
           }, { status: 400 })
         }
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({ success: false, error: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).error }, { status: 400 })
         }
         return json({
-          success: true
+          success: true;
           message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         })
       }

@@ -21,7 +21,7 @@ export type RAGEvent =
   | { type: "RETRY" }
   | { type: "OPTIMIZE" }
   | { type: "CACHE_HIT"; results: any[] }
-  | { type: "RESET" };
+  | { type: "RESET" }
 export const ragStateMachine = createMachine({
   id: "ragSystem",
   initial: "idle",

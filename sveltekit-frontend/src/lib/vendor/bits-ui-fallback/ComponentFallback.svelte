@@ -38,21 +38,15 @@ https://svelte.dev/e/js_parse_error -->
     'bits-ui-fallback'
   ].filter(Boolean).join(' ')
 </script>
-<div
-  {id}
-  class={fallbackClasses}
-  bind:this={ref}
-  {role}
-  aria-label={ariaLabel}
-  {style}
-  {disabled}
-  {...restProps}
->
+
+<div {id} class={fallbackClasses} bind:this={ref} {role} aria-label={ariaLabel} {style} {disabled} {...restProps}>
   {#if children}
     {@render children()}
   {/if}
 </div>
-<style>/* Enhanced fallback styling for better compatibility */ :global(.bits-ui-fallback) {
+
+<style>
+/* Enhanced fallback styling for better compatibility */ :global(.bits-ui-fallback) {
     display: content;
   }
   :global(.bits-ui-fallback.variant-outline) {

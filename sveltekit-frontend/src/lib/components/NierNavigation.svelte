@@ -8,20 +8,21 @@
     links?: Array;
   }
   let {
-    brand = "YORHA LEGAL AI",
-    version = "v4.0.0",
+    brand = 'YORHA LEGAL AI',
+    version = 'v4.0.0',
     links = [
-      { href: "/cases", label: "CASES", icon: "📁" },
-      { href: "/evidence", label: "EVIDENCE", icon: "📋" },
-      { href: "/reports", label: "REPORTS", icon: "📊" },
-      { href: "/analytics", label: "ANALYTICS", icon: "📈" }
-    ]
+      { href: '/cases', label: 'CASES', icon: '📁' },
+      { href: '/evidence', label: 'EVIDENCE', icon: '📋' },
+      { href: '/reports', label: 'REPORTS', icon: '📊' },
+      { href: '/analytics', label: 'ANALYTICS', icon: '📈' },
+    ],
   }: NavigationProps = $props();
   let currentPath = $derived(page.url.pathname);
   function isActive(href: string): boolean {
     return currentPath === href || (href !== '/' && currentPath.startsWith(href));
   }
 </script>
+
 <nav class="yorha-nav">
   <div class="yorha-nav-container">
     <div class="yorha-brand">
@@ -65,6 +66,7 @@
     </div>
   </div>
 </nav>
+
 <style>
   /* @unocss-include */
 .yorha-nav {

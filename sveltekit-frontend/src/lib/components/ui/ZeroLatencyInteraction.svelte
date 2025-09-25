@@ -30,10 +30,10 @@ https://svelte.dev/e/js_parse_error -->
     cacheMisses: 0,
     averageResponseTime: 0,
     zeroLatencyHits: 0
-  };
+  }
   // Interactive elements tracking
   let trackedElements = new Set<HTMLElement>();
-  let mousePosition = { x: 0, y: 0 };
+  let mousePosition = { x: 0, y: 0 }
   $effect(() => {
     initializeZeroLatencySystem();
   });
@@ -105,9 +105,9 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Handle zero-latency interaction with CHR-ROM pattern lookup
    */
-  async function handleZeroLatencyInteraction(event: Event, elementId: string) {
+  async function handleZeroLatencyInteraction(_event: Event, elementId: string) {
     const startTime = performance.now();
-    const target = event.target as HTMLElement;
+    // removed unused target assignment
     interactionStats.totalInteractions++;
     try {
       // Step 1: Immediate CHR-ROM cache lookup (0ms response time)
@@ -252,7 +252,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Track mouse position for tooltip positioning
    */
-  function trackMousePosition(event: MouseEvent) {
+  function trackMousePosition(_event: MouseEvent) {
     mousePosition.x = event.clientX;
     mousePosition.y = event.clientY;
   }
@@ -276,8 +276,8 @@ https://svelte.dev/e/js_parse_error -->
         type: pattern.type || 'summary_card',
         priority: 4, // High priority for recently accessed patterns
         compressedData: new TextEncoder().encode(pattern.renderableHTML),
-        bankId: 1 // Store in fast access bank
-      };
+        bankId: 1 // Store in fast access bank;
+      }
       await nesGPUBridge.storeCHRROMPattern(patternId, chrRomPattern);
     } catch (error) {
       console.warn('Failed to store pattern in CHR-ROM:', error);
@@ -290,12 +290,12 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Store in CHR-ROM
       const chrRomPattern = {
-        renderableHTML: html
+        renderableHTML: html;
         type: 'summary_card',
         priority: 3,
         compressedData: new TextEncoder().encode(html),
         bankId: 2;
-      };
+      }
       await nesGPUBridge.storeCHRROMPattern(`${patternPrefix}_${elementId}`, chrRomPattern);
       // Also store in pre-computation service for cross-session caching
       // This would integrate with the CHR-ROM service
@@ -343,7 +343,7 @@ https://svelte.dev/e/js_parse_error -->
         (interactionStats.cacheHits / interactionStats.totalInteractions) * 100 : 0,
       zeroLatencyRate: interactionStats.totalInteractions > 0 ?
         (interactionStats.zeroLatencyHits / interactionStats.totalInteractions) * 100 : 0
-    };
+    }
   }
 </script>
 <!-- Debug Panel -->

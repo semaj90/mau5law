@@ -8,9 +8,10 @@
   $effect(() => {
     pageLoaded = true;
     // Auto-hide welcome after 3 seconds
-    setTimeout(() => showWelcome = false, 3000);
+    setTimeout(() => (showWelcome = false), 3000);
   });
 </script>
+
 <svelte:head>
   <title>Evidence Board - Legal AI Assistant</title>
   <meta name="description" content="AI-powered evidence management with Ollama integration" />
@@ -21,34 +22,28 @@
       <div variant="evidence" hoverable fullWidth class="nes-container">
         <div class="nier-bits-yorha-panel-header">
           <h3 class="nier-bits-nes-text is-primary">🎯 Evidence Board Ready</h3>
-          <p class="nier-bits-nes-text">
-            AI-powered evidence management with RTX 3060 Ti acceleration
-          </p>
+          <p class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
         </div>
         <div class="nier-bits-yorha-panel-content">
-        <div class="welcome-stats">
-          <div class="stat">
-            <span class="stat-label">GPU</span>
-            <span class="stat-value">Active</span>
+          <div class="welcome-stats">
+            <div class="stat">
+              <span class="stat-label">GPU</span>
+              <span class="stat-value">Active</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">WebGPU</span>
+              <span class="stat-value">Ready</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">pgvector</span>
+              <span class="stat-value">Connected</span>
+            </div>
           </div>
-          <div class="stat">
-            <span class="stat-label">WebGPU</span>
-            <span class="stat-value">Ready</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">pgvector</span>
-            <span class="stat-value">Connected</span>
-          </div>
-        </div>
         </div>
         <div class="nier-bits-yorha-panel-content">
-        <button class="nes-btn"
-          variant="ghost"
-          size="sm"
-          onclick={() => showWelcome = false}
-        >
-          Get Started →
-        </button>
+          <button class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>
+            Get Started →
+          </button>
         </div>
       </div>
     </div>
@@ -63,6 +58,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .evidence-page-container {
     min-height: 100vh;
@@ -137,7 +133,11 @@
     margin-bottom: 16px;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>

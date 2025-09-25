@@ -24,6 +24,6 @@ export class AIAssistant {
     }
   }
   getStores() {
-    return { isLoading: this.isLoading, response: this.response };
+    return { isLoading: this.isLoading, response: this.response }
   }
 }

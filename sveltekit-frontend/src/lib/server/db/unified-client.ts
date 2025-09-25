@@ -26,22 +26,22 @@ interface DatabaseConfig {
   runtime: {
     url: string;
     poolSize: number;
-  };
+  }
   admin: {
     url: string;
     poolSize: number;
-  };
+  }
   qdrant?: {
     url: string;
     apiKey?: string;
-  };
+  }
   environment: 'development' | 'production';
 }
 interface VectorSearchOptions {
   collection?: string;
   limit?: number;
   threshold?: number;
-  filter?: { [key: string]: any };
+  filter?: { [key: string]: any }
   usePostgreSQL?: boolean;
   useQdrant?: boolean;
 }
@@ -51,7 +51,7 @@ interface HybridSearchResult {
     postgresqlTime?: number;
     qdrantTime?: number;
     totalTime: number;
-  };
+  }
 }
 // ============================================================================
 // ENVIRONMENT CONFIGURATION
@@ -69,9 +69,9 @@ const config: DatabaseConfig = {
   qdrant: process.env.QDRANT_URL ? {,
     url: process.env.QDRANT_URL,
     apiKey: process.env.QDRANT_API_KEY
-  } : undefined
+  } : undefined;
   environment: isDev ? 'development' : 'production'
-};
+}
 // ============================================================================
 // SINGLETON CONNECTION MANAGEMENT
 // ============================================================================
@@ -295,7 +295,7 @@ class DatabaseManager {
           results.push({
             id: row.id,
             score: row.similarity,
-            document: row as DocumentMetadata
+            document: row as DocumentMetadata;
             source: 'postgresql'
           });
         }
@@ -325,7 +325,7 @@ class DatabaseManager {
           // Get corresponding PostgreSQL records
           const qdrantIds = qdrantResults.map((r) => r.id.toString());
           if (qdrantIds.length > 0) {
-            const db = this.getRuntimeDb();
+            // removed unused db assignment
             const pgDocuments = await db
               .select()
               .from(schema.documentMetadata)
@@ -360,13 +360,13 @@ class DatabaseManager {
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
     return {
-      results: finalResults
+      results: finalResults;
       performance: {
         postgresqlTime,
         qdrantTime,
         totalTime: Date.now() - startTime
       }
-    };
+    }
   }
   // ============================================================================
   // HEALTH CHECKS
@@ -374,13 +374,13 @@ class DatabaseManager {
   async healthCheck(): Promise<any> {
     const health = {
       postgresql: false
-      qdrant: false
+      qdrant: false;
       pgvector: false
       overallHealth: false
-    };
+    }
     try {
       // Test PostgreSQL
-      const db = this.getRuntimeDb();
+      // removed unused db assignment
       await db.execute(sql`SELECT 1`);
       health.postgresql = true;
       // Test pgvector
@@ -430,7 +430,7 @@ if (!isDev) {
   dbManager.initialize().catch(console.error);
 }
 // Main exports - replaces all scattered db imports
-export const db = dbManager.getRuntimeDb();
+export // removed unused db assignment
 export const adminDb = dbManager.getAdminDb();
 export const qdrant = dbManager.getQdrantClient();
 export const postgres = dbManager.getRawPostgres();
@@ -450,7 +450,7 @@ export const unifiedDb = {
     dbManager.hybridVectorSearch(embedding, options),
   ensureCollection: (name: string, size?: number, distance?: 'Cosine' | 'Dot' | 'Euclid') =>
     dbManager.ensureQdrantCollection(name, size, distance)
-};
+}
 // Re-export schema for convenience
 export * from './schema-unified.js';
 // Re-export types
@@ -459,5 +459,5 @@ export type {
   VectorSearchOptions,
   HybridSearchResult,
   DocumentMetadata
-};
+}
 export default unifiedDb;

@@ -14,9 +14,18 @@ Features:
   import * as Card from '$lib/components/ui/card';
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import {
-    Upload, FileText, Clock, Link, Brain,
-    Zap, CheckCircle, AlertCircle, Eye,
-    Download, BarChart3, Network
+    Upload,
+    FileText,
+    Clock,
+    Link,
+    Brain,
+    Zap,
+    CheckCircle,
+    AlertCircle,
+    Eye,
+    Download,
+    BarChart3,
+    Network,
   } from 'lucide-svelte';
 
   // Reactive state
@@ -39,7 +48,7 @@ Features:
     generateSummary: true,
     parallelProcessing: true,
     confidenceThreshold: 0.7,
-    maxConcurrency: 4
+    maxConcurrency: 4,
   });
 
   // File upload handling
@@ -52,17 +61,17 @@ Features:
       size: file.size,
       type: getDocumentType(file.name),
       content: null,
-      analyzed: false
+      analyzed: false,
     }));
     uploadedFiles = [...uploadedFiles, ...newFiles];
 
     // Read file contents
     newFiles.forEach(fileObj => {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         fileObj.content = e.target.result;
         fileObj.analyzed = false;
-      };
+      }
       reader.readAsText(fileObj.file);
     });
   }
@@ -78,8 +87,8 @@ Features:
       jpeg: 'image',
       png: 'image',
       mp4: 'video',
-      mp3: 'audio'
-    };
+      mp3: 'audio',
+    }
     return typeMap[ext] || 'other';
   }
 
@@ -103,8 +112,8 @@ Features:
           type: file.type,
           metadata: {
             fileSize: file.size,
-            uploadDate: new Date().toISOString()
-          }
+            uploadDate: new Date().toISOString(),
+          },
         }));
 
       // Progress simulation
@@ -116,13 +125,13 @@ Features:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-test-mode': 'true'
+          'x-test-mode': 'true',
         },
         body: JSON.stringify({
           caseId,
           files: filesToAnalyze,
-          analysisOptions
-        })
+          analysisOptions,
+        }),
       });
 
       clearInterval(progressInterval);
@@ -146,7 +155,6 @@ Features:
       });
 
       currentTab = 'results';
-
     } catch (error) {
       console.error('Batch analysis failed:', error);
       alert(`Analysis failed: ${error.message}`);
@@ -167,7 +175,7 @@ Features:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-test-mode': 'true'
+          'x-test-mode': 'true',
         },
         body: JSON.stringify({
           caseId,
@@ -177,9 +185,9 @@ Features:
             includeImpliedDates: true,
             confidenceThreshold: analysisOptions.confidenceThreshold,
             maxEvents: 50,
-            enableEntityLinking: true
-          }
-        })
+            enableEntityLinking: true,
+          },
+        }),
       });
 
       if (response.ok) {
@@ -194,7 +202,7 @@ Features:
   // Citations discovery
   async function discoverCitations() {
     try {
-      const response = await fetch(`/api/v1/citations?caseId=${caseId}&test-mode=true`);
+      // removed unused response assignment
       if (response.ok) {
         const result = await response.json();
         citationsData = result.data;
@@ -218,11 +226,11 @@ Features:
       batchAnalysis: batchAnalysisResults,
       timeline: timelineData,
       citations: citationsData,
-      canvas: canvasData
-    };
+      canvas: canvasData,
+    }
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -274,36 +282,46 @@ Features:
     <div class="max-w-7xl mx-auto px-6">
       <div class="flex space-x-8">
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'upload' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => currentTab = 'upload'}
+          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'upload'
+            ? 'border-blue-500 text-blue-600'
+            : 'border-transparent text-gray-500 hover:text-gray-700'}"
+          onclick={() => (currentTab = 'upload')}
         >
           <Upload class="w-4 h-4 inline mr-2" />
           Upload & Configure
         </button>
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'results' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => currentTab = 'results'}
+          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'results'
+            ? 'border-blue-500 text-blue-600'
+            : 'border-transparent text-gray-500 hover:text-gray-700'}"
+          onclick={() => (currentTab = 'results')}
         >
           <BarChart3 class="w-4 h-4 inline mr-2" />
           Analysis Results
         </button>
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'timeline' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => currentTab = 'timeline'}
+          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'timeline'
+            ? 'border-blue-500 text-blue-600'
+            : 'border-transparent text-gray-500 hover:text-gray-700'}"
+          onclick={() => (currentTab = 'timeline')}
         >
           <Clock class="w-4 h-4 inline mr-2" />
           Timeline
         </button>
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'citations' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => currentTab = 'citations'}
+          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'citations'
+            ? 'border-blue-500 text-blue-600'
+            : 'border-transparent text-gray-500 hover:text-gray-700'}"
+          onclick={() => (currentTab = 'citations')}
         >
           <Link class="w-4 h-4 inline mr-2" />
           Citations
         </button>
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'canvas' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => currentTab = 'canvas'}
+          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'canvas'
+            ? 'border-blue-500 text-blue-600'
+            : 'border-transparent text-gray-500 hover:text-gray-700'}"
+          onclick={() => (currentTab = 'canvas')}
         >
           <Eye class="w-4 h-4 inline mr-2" />
           Evidence Canvas
@@ -325,9 +343,7 @@ Features:
                 <FileText class="w-5 h-5 mr-2" />
                 Evidence Files
               </Card.Title>
-              <Card.Description>
-                Upload multiple evidence files for batch analysis
-              </Card.Description>
+              <Card.Description>Upload multiple evidence files for batch analysis</Card.Description>
             </Card.Header>
             <Card.Content>
               <div class="space-y-4">
@@ -345,9 +361,7 @@ Features:
                     <Upload class="w-12 h-12 mx-auto text-gray-400 mb-4" />
                     <p class="text-lg font-medium">Upload Evidence Files</p>
                     <p class="text-gray-500">Drag & drop or click to browse</p>
-                    <p class="text-sm text-gray-400 mt-2">
-                      Supports: PDF, DOC, TXT, Images, Audio, Video
-                    </p>
+                    <p class="text-sm text-gray-400 mt-2">Supports: PDF, DOC, TXT, Images, Audio, Video</p>
                   </label>
                 </div>
 
@@ -368,7 +382,9 @@ Features:
                           {:else if file.content}
                             <AlertCircle class="w-4 h-4 text-blue-500" />
                           {:else}
-                            <div class="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+                            <div
+                              class="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"
+                            ></div>
                           {/if}
                         </div>
                       </div>
@@ -392,45 +408,29 @@ Features:
             <Card.Content class="space-y-4">
               <div class="space-y-3">
                 <label class="flex items-center">
-                  <input
-                    type="checkbox"
-                    bind:checked={analysisOptions.enableCrossDocumentAnalysis}
-                    class="mr-2"
-                  />
+                  <input type="checkbox" bind:checked={analysisOptions.enableCrossDocumentAnalysis} class="mr-2" />
                   <span class="text-sm">Cross-document analysis</span>
                 </label>
 
                 <label class="flex items-center">
-                  <input
-                    type="checkbox"
-                    bind:checked={analysisOptions.extractTimelines}
-                    class="mr-2"
-                  />
+                  <input type="checkbox" bind:checked={analysisOptions.extractTimelines} class="mr-2" />
                   <span class="text-sm">Timeline extraction</span>
                 </label>
 
                 <label class="flex items-center">
-                  <input
-                    type="checkbox"
-                    bind:checked={analysisOptions.detectRelationships}
-                    class="mr-2"
-                  />
+                  <input type="checkbox" bind:checked={analysisOptions.detectRelationships} class="mr-2" />
                   <span class="text-sm">Relationship detection</span>
                 </label>
 
                 <label class="flex items-center">
-                  <input
-                    type="checkbox"
-                    bind:checked={analysisOptions.parallelProcessing}
-                    class="mr-2"
-                  />
+                  <input type="checkbox" bind:checked={analysisOptions.parallelProcessing} class="mr-2" />
                   <span class="text-sm">Parallel processing</span>
                 </label>
               </div>
 
               <button
                 class="text-sm text-blue-600 hover:text-blue-800"
-                onclick={() => showAdvancedOptions = !showAdvancedOptions}
+                onclick={() => (showAdvancedOptions = !showAdvancedOptions)}
               >
                 {showAdvancedOptions ? 'Hide' : 'Show'} Advanced Options
               </button>
@@ -467,14 +467,12 @@ Features:
                 </div>
               {/if}
 
-              <Button
-                onclick={startBatchAnalysis}
-                disabled={isAnalyzing || uploadedFiles.length === 0}
-                class="w-full"
-              >
+              <Button onclick={startBatchAnalysis} disabled={isAnalyzing || uploadedFiles.length === 0} class="w-full">
                 {#if isAnalyzing}
                   <div class="flex items-center">
-                    <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    <div
+                      class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"
+                    ></div>
                     Analyzing... ({analysisProgress}%)
                   </div>
                 {:else}
@@ -486,7 +484,6 @@ Features:
           </Card.Root>
         </div>
       </div>
-
     {:else if currentTab === 'results'}
       <!-- Analysis Results Tab -->
       {#if batchAnalysisResults}
@@ -538,7 +535,11 @@ Features:
             <Card.Content>
               <div class="space-y-4">
                 {#each batchAnalysisResults.individual_results as result}
-                  <div class="border rounded-lg p-4 {result.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+                  <div
+                    class="border rounded-lg p-4 {result.success
+                      ? 'border-green-200 bg-green-50'
+                      : 'border-red-200 bg-red-50'}"
+                  >
                     <div class="flex items-center justify-between mb-2">
                       <h4 class="font-medium">{result.filename}</h4>
                       {#if result.success}
@@ -618,7 +619,6 @@ Features:
           <p class="text-gray-500">Upload files and run analysis to see results here.</p>
         </div>
       {/if}
-
     {:else if currentTab === 'timeline'}
       <!-- Timeline Tab -->
       {#if timelineData}
@@ -628,9 +628,7 @@ Features:
               <Clock class="w-5 h-5 mr-2" />
               Extracted Timeline
             </Card.Title>
-            <Card.Description>
-              Chronological events extracted from evidence
-            </Card.Description>
+            <Card.Description>Chronological events extracted from evidence</Card.Description>
           </Card.Header>
           <Card.Content>
             <div class="space-y-4">
@@ -639,7 +637,9 @@ Features:
                 <h4 class="font-medium text-blue-900 mb-2">Timeline Summary</h4>
                 <div class="text-sm text-blue-800">
                   <p>Total Events: {timelineData.events.length}</p>
-                  <p>Date Range: {timelineData.summary.date_range.earliest} to {timelineData.summary.date_range.latest}</p>
+                  <p>
+                    Date Range: {timelineData.summary.date_range.earliest} to {timelineData.summary.date_range.latest}
+                  </p>
                   <p>Confidence: {(timelineData.summary.confidence.overall_confidence * 100).toFixed(1)}%</p>
                 </div>
               </div>
@@ -679,12 +679,9 @@ Features:
           <Clock class="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <h3 class="text-lg font-medium text-gray-900 mb-2">No Timeline Data</h3>
           <p class="text-gray-500 mb-4">Timeline extraction requires completed analysis.</p>
-          <Button onclick={extractUnifiedTimeline} disabled={!batchAnalysisResults}>
-            Extract Timeline
-          </Button>
+          <Button onclick={extractUnifiedTimeline} disabled={!batchAnalysisResults}>Extract Timeline</Button>
         </div>
       {/if}
-
     {:else if currentTab === 'citations'}
       <!-- Citations Tab -->
       <Card.Root>
@@ -693,22 +690,17 @@ Features:
             <Link class="w-5 h-5 mr-2" />
             Legal Citations
           </Card.Title>
-          <Card.Description>
-            Discovered legal citations and references
-          </Card.Description>
+          <Card.Description>Discovered legal citations and references</Card.Description>
         </Card.Header>
         <Card.Content>
           <div class="text-center py-8">
             <Link class="w-16 h-16 mx-auto text-gray-400 mb-4" />
             <h3 class="text-lg font-medium text-gray-900 mb-2">Citations Discovery</h3>
             <p class="text-gray-500 mb-4">Discover legal citations from analyzed documents.</p>
-            <Button onclick={discoverCitations}>
-              Discover Citations
-            </Button>
+            <Button onclick={discoverCitations}>Discover Citations</Button>
           </div>
         </Card.Content>
       </Card.Root>
-
     {:else if currentTab === 'canvas'}
       <!-- Evidence Canvas Tab -->
       <Card.Root>
@@ -717,17 +709,10 @@ Features:
             <Eye class="w-5 h-5 mr-2" />
             Evidence Canvas
           </Card.Title>
-          <Card.Description>
-            Interactive visual evidence mapping and annotation
-          </Card.Description>
+          <Card.Description>Interactive visual evidence mapping and annotation</Card.Description>
         </Card.Header>
         <Card.Content>
-          <FabricCanvas
-            {caseId}
-            width={1000}
-            height={600}
-            onSave={handleCanvasSave}
-          />
+          <FabricCanvas {caseId} width={1000} height={600} onSave={handleCanvasSave} />
         </Card.Content>
       </Card.Root>
     {/if}

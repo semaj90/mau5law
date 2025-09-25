@@ -24,9 +24,9 @@ export async function safeFetchJson<T=any>(url: string, options: FetchOptions = 
       const text = await res.text();
       try { data = text ? JSON.parse(text) : undefined; } catch { data = text as any; }
       if (!acceptable) {
-        return { ok: false, status: res.status, data, error: `Unexpected status ${res.status}` };
+        return { ok: false, status: res.status, data, error: `Unexpected status ${res.status}` }
       }
-      return { ok: true, status: res.status, data };
+      return { ok: true, status: res.status, data }
     } catch (err: any) {
       clearTimeout(timer);
       lastError = err;
@@ -35,5 +35,5 @@ export async function safeFetchJson<T=any>(url: string, options: FetchOptions = 
     }
     attempt++;
   }
-  return { ok: false, status: 0, error: lastError?.message || 'fetch failed' };
+  return { ok: false, status: 0, error: lastError?.message || 'fetch failed' }
 }

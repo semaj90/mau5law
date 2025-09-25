@@ -19,7 +19,7 @@
     minCharactersForSuggestion = 10,
     suggestionDelay = 800,
     maxSuggestions = 3,
-    class: className = ''
+    class: className = '';
   }: {
     value?: string;
     placeholder?: string;
@@ -40,7 +40,7 @@
     replacement?: string;
     confidence: number;
     reasoning: string;
-    range?: { start: number; end: number };
+    range?: { start: number; end: number }
   }
   // State management using Svelte 5 runes
   let editorElement: HTMLDivElement;
@@ -114,7 +114,7 @@
             type: 'completion' as const,
             text: completion
             confidence: 0.8,
-            reasoning: 'AI-generated text completion'
+            reasoning: 'AI-generated text completion';
           })));
         }
       } catch (error) {
@@ -145,7 +145,7 @@
             replacement: suggestion.replacement,
             confidence: suggestion.confidence || 0.7,
             reasoning: suggestion.reasoning || 'Grammar/style improvement',
-            range: suggestion.range
+            range: suggestion.range;
           })));
         }
       } catch (error) {
@@ -157,7 +157,7 @@
       try {
         const semanticTask = createAITask('embed', {
           text: context.contextBefore,
-          model: 'nomic-embed-text'
+          model: 'nomic-embed-text';
         }, { priority: 'medium' });
         aiActor.send({ type: 'START_PROCESSING', task: semanticTask });
         const embeddingResult = await waitForAIResult(semanticTask.id);
@@ -215,19 +215,19 @@
     const editorRect = editorElement.getBoundingClientRect();
     cursorPosition = {
       x: rect.left - editorRect.left,
-      y: rect.bottom - editorRect.top + 5
-    };
+      y: rect.bottom - editorRect.top + 5;
+    }
   }
   // Handle input events
-  function handleInput(event: InputEvent) {
-    const target = event.target as HTMLDivElement;
+  function handleInput(_event: InputEvent) {
+    // removed unused target assignment
     value = target.textContent || '';
     const selection = window.getSelection();
     const cursorPos = selection ? selection.anchorOffset : 0;
     generateSuggestions(value, cursorPos);
   }
   // Handle keyboard navigation in suggestions
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (!isShowingSuggestions || currentSuggestions.length === 0) return;
     switch (event.key) {
       case 'ArrowDown':
@@ -286,7 +286,7 @@
     selectedSuggestionIndex = -1;
   }
   // Handle clicks outside to hide suggestions
-  function handleClickOutside(event: MouseEvent) {
+  function handleClickOutside(_event: MouseEvent) {
     if (suggestionPopup && !suggestionPopup.contains(event.target as Node)) {
       hideSuggestions();
     }
@@ -296,13 +296,14 @@
     document.addEventListener('click', handleClickOutside);
     return () => {
       document.removeEventListener('click', handleClickOutside);
-    };
+    }
   });
   onDestroy(() => {
     aiActor.stop();
     generateSuggestions.cancel();
   });
 </script>
+
 <!-- Main Editor Container -->
 <div class={`enhanced-inline-editor ${className}`}>
   <!-- Editor Input Area -->
@@ -316,10 +317,12 @@
     {placeholder}
     oninput={handleInput}
     onkeydown={handleKeyDown}
-  >{value}</div>
+  >
+    {value}
+  </div>
   <!-- AI Suggestions Popup -->
   {#if isShowingSuggestions && currentSuggestions.length > 0}
-    <div
+    <div;
       bind:this={suggestionPopup}
       class="suggestions-popup"
       style="left: {cursorPosition.x}px; top: {cursorPosition.y}px;"
@@ -354,6 +357,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .enhanced-inline-editor {
     position: relative;
@@ -411,8 +415,13 @@
     animation: pulse 1s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
   .suggestions-list {
     max-height: 240px;

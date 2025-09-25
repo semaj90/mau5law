@@ -11,7 +11,7 @@
     data: Uint8Array;
     latent: number[];
     position: ;
-{ x: number; y: number; z: number };
+{ x: number; y: number; z: number }
     documentId: string;
     priority: number;
     timestamp: number;
@@ -43,7 +43,7 @@
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
-    };
+    }
   });
   async function initializeMemoryPalace() {
     // Initialize neural autoencoder for glyph compression
@@ -58,7 +58,7 @@
       sharingPolicy: 'exclusive',
       updateFrequency: 'realtime',
       priority: 220,
-      estimatedUsage: 256 * 1024 // 256KB
+      estimatedUsage: 256 * 1024 // 256KB;
     });
     // Initialize default rooms
     rooms = [
@@ -67,28 +67,28 @@
         name: 'Evidence Chamber',
         glyphs: [],
         theme: 'evidence',
-        capacity: MAX_GLYPHS_PER_ROOM
+        capacity: MAX_GLYPHS_PER_ROOM;
       },
       {
         id: 'contracts-room',
         name: 'Contract Archive',
         glyphs: [],
         theme: 'contracts',
-        capacity: MAX_GLYPHS_PER_ROOM
+        capacity: MAX_GLYPHS_PER_ROOM;
       },
       {
         id: 'cases-room',
         name: 'Case Gallery',
         glyphs: [],
         theme: 'cases',
-        capacity: MAX_GLYPHS_PER_ROOM
+        capacity: MAX_GLYPHS_PER_ROOM;
       },
       {
         id: 'research-room',
         name: 'Research Lab',
         glyphs: [],
         theme: 'research',
-        capacity: MAX_GLYPHS_PER_ROOM
+        capacity: MAX_GLYPHS_PER_ROOM;
       }
     ];
     selectedRoom = rooms[0];
@@ -131,18 +131,18 @@
       documentId,
       priority,
       timestamp: Date.now(),
-      semantic: documentContent.substring(0, 100) // First 100 chars as semantic hint
-    };
+      semantic: documentContent.substring(0, 100) // First 100 chars as semantic hint;
+    }
   }
   function calculateSpatialPosition(
-    latent: number[]
+    latent: number[];
     priority: number
   ): { x: number; y: number; z: number } {
     // Use latent space to determine spatial position
     const x = latent[0] * 200 - 100;
     const y = priority / 255 * 100; // Height based on priority
     const z = latent[1] * 200 - 100;
-    return { x, y, z };
+    return { x, y, z }
   }
   async function addDocumentToMemoryPalace(
     documentContent: string
@@ -278,19 +278,16 @@
       ctx.fillText('Processing...', 10, 70);
     }
   }
-  function selectRoom(room: MemoryPalaceRoom) {
+  function selectRoom(_room: MemoryPalaceRoom) {
     selectedRoom = room;
   }
 </script>
+
 <div class="visual-memory-palace">
   <!-- Room selector -->
   <div class="room-selector">
     {#each rooms as room (room.id)}
-      <button
-        class="room-btn"
-        class:active={selectedRoom?.id === room.id}
-        onclick={() => selectRoom(room)}
-      >
+      <button class="room-btn" class:active={selectedRoom?.id === room.id} onclick={() => selectRoom(room)}>
         <span class="room-icon">
           {#if room.theme === 'evidence'}📊
           {:else if room.theme === 'contracts'}📜
@@ -304,12 +301,7 @@
   </div>
   <!-- 3D visualization canvas -->
   <div class="palace-viewport">
-    <canvas
-      bind:this={canvas}
-      width={800}
-      height={600}
-      class="palace-canvas"
-    ></canvas>
+    <canvas bind:this={canvas} width={800} height={600} class="palace-canvas"></canvas>
     <!-- Overlay controls -->
     <div class="palace-controls">
       <button class="control-btn" title="Zoom In">🔍+</button>
@@ -330,10 +322,11 @@
     </div>
     <div class="info-stat">
       <span>Memory Used:</span>
-      <span class="stat-value">{(glyphCache.size * GLYPH_SIZE * GLYPH_SIZE * 4 / 1024).toFixed(1)}KB</span>
+      <span class="stat-value">{((glyphCache.size * GLYPH_SIZE * GLYPH_SIZE * 4) / 1024).toFixed(1)}KB</span>
     </div>
   </div>
 </div>
+
 <style>
   .visual-memory-palace {
     display: grid;

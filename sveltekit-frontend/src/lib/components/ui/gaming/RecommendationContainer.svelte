@@ -51,13 +51,13 @@
     legal: '⚖️',
     evidence: '📋',
     ai: '🤖';
-  };
+  }
   const priorityColors = {
     low: '#10B981',
     medium: '#F59E0B',
     high: '#EF4444',
     critical: '#DC2626';
-  };
+  }
   // Group recommendations by type
   let groupedRecommendations = $derived(() => {
     const groups = recommendations.reduce((acc, rec) => {
@@ -68,7 +68,7 @@
     // Sort by priority within each group
     Object.keys.forEach(type => {
       groups[type].sort((a, b) => {
-        const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+        const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 }
         return priorityOrder[b.priority] - priorityOrder[a.priority];
       });
     });
@@ -174,7 +174,7 @@
         queries: [],
         feedback: [];
       }
-    };
+    }
   }
   // Enhanced Feedback Functions with Integration Service
   async function submitFeedback(
@@ -296,7 +296,7 @@
   }
   async function updateRecommendationContext(newContext: Partial<RecommendationContext>) {
     if (enableEnhancedMode && enhancedRecommendationIntegration) {
-      recommendationContext = { ...recommendationContext, ...newContext };
+      recommendationContext = { ...recommendationContext, ...newContext }
       await enhancedRecommendationIntegration.updateRecommendationContext(
         recommendationContext,
         userProfile || createDefaultUserProfile()
@@ -341,6 +341,7 @@
     }
   });
 </script>
+
 {#if showContainer && recommendations.length > 0}
   <div
     bind:this={containerRef}
@@ -351,14 +352,9 @@
   >
     <Collapsible.Root bind:open={isOpen} class="w-full">
       <!-- Trigger/Header -->
-      <Collapsible.Trigger asChild >
+      <Collapsible.Trigger asChild>
         {#snippet children({ builder })}
-                <button
-            use:builder.action
-            {...builder}
-            class="container-trigger"
-            onclick={toggleContainer}
-          >
+          <button use:builder.action {...builder} class="container-trigger" onclick={toggleContainer}>
             <div class="trigger-content">
               <div class="trigger-left">
                 <span class="trigger-icon">🎯</span>
@@ -367,21 +363,15 @@
                 </span>
                 <!-- Enhanced Mode Status -->
                 {#if enableEnhancedMode && enhancedModeActive}
-                  <Badge.Root class="enhanced-badge" variant="ghost">
-                    QLoRA
-                  </Badge.Root>
+                  <Badge.Root class="enhanced-badge" variant="ghost">QLoRA</Badge.Root>
                 {/if}
                 <!-- Loading Indicator -->
                 {#if loadingEnhancedRecommendations}
-                  <Badge.Root class="loading-badge" variant="ghost">
-                    ⚡ Processing
-                  </Badge.Root>
+                  <Badge.Root class="loading-badge" variant="ghost">⚡ Processing</Badge.Root>
                 {/if}
                 <!-- Error Indicator -->
                 {#if recommendationError}
-                  <Badge.Root class="error-badge" variant="error">
-                    ⚠️ Error
-                  </Badge.Root>
+                  <Badge.Root class="error-badge" variant="error">⚠️ Error</Badge.Root>
                 {/if}
                 {#if criticalCount > 0}
                   <Badge.Root class="critical-badge" variant="error">
@@ -400,14 +390,11 @@
               </div>
             </div>
           </button>
-                      {/snippet}
-            </Collapsible.Trigger>
+        {/snippet}
+      </Collapsible.Trigger>
       <!-- Collapsible Content -->
       <Collapsible.Content class="collapsible-content">
-        <div
-          class="recommendations-grid"
-          transitionfly={{ y: -20, duration: 300, easing: quintOut }}
-        >
+        <div class="recommendations-grid" transitionfly={{ y: -20, duration: 300, easing: quintOut }}>
           {#each Object.entries(groupedRecommendations) as [type, recs]}
             <div.Root class="recommendation-nier-bits-card {type}">
               <div.Header class="nier-bits-yorha-panel-header">
@@ -432,9 +419,9 @@
                       <!-- RL Feedback Buttons -->
                       <div class="feedback-controls">
                         <Tooltip.Root>
-                          <Tooltip.Trigger asChild >
+                          <Tooltip.Trigger asChild>
                             {#snippet children({ builder })}
-                                                        <button
+                              <button
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'positive', rec.feedback)}
@@ -443,8 +430,8 @@
                               >
                                 👍
                               </button>
-                                                                                  {/snippet}
-                                                    </Tooltip.Trigger>
+                            {/snippet}
+                          </Tooltip.Trigger>
                           <Tooltip.Content side="top">
                             <div class="feedback-tooltip">
                               {rec.feedback === 'positive' ? 'Helpful recommendation!' : 'Mark as helpful'}
@@ -452,9 +439,9 @@
                           </Tooltip.Content>
                         </Tooltip.Root>
                         <Tooltip.Root>
-                          <Tooltip.Trigger asChild >
+                          <Tooltip.Trigger asChild>
                             {#snippet children({ builder })}
-                                                        <button
+                              <button
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'negative', rec.feedback)}
@@ -463,8 +450,8 @@
                               >
                                 👎
                               </button>
-                                                                                  {/snippet}
-                                                    </Tooltip.Trigger>
+                            {/snippet}
+                          </Tooltip.Trigger>
                           <Tooltip.Content side="top">
                             <div class="feedback-tooltip">
                               {rec.feedback === 'negative' ? 'Marked as unhelpful' : 'Mark as unhelpful'}
@@ -481,17 +468,9 @@
                   {/if}
                 </div>
                 <div class="nier-bits-card-actions">
-                  <button
-                    class="view-all-btn"
-                    onclick={() => openModal(type)}
-                  >
-                    View All
-                  </button>
+                  <button class="view-all-btn" onclick={() => openModal(type)}> View All </button>
                   {#if recs[0]}
-                    <button
-                      class="quick-action-btn {recs[0].priority}"
-                      onclick={() => recs[0].action?.()}
-                    >
+                    <button class="quick-action-btn {recs[0].priority}" onclick={() => recs[0].action?.()}>
                       Quick Action
                     </button>
                   {/if}
@@ -502,10 +481,7 @@
           <!-- View All Recommendations -->
           <div.Root class="view-all-nier-bits-card">
             <div.Content class="view-all-content">
-              <button
-                class="view-all-recommendations"
-                onclick={() => openModal()}
-              >
+              <button class="view-all-recommendations" onclick={() => openModal()}>
                 <span class="view-all-icon">📋</span>
                 <span class="view-all-text">View All Recommendations</span>
                 <span class="view-all-count">({recommendations.length})</span>
@@ -526,6 +502,7 @@
   onClose={closeModal}
   sound={true}
 />
+
 <style>
   .recommendation-container {
     position: fixed;

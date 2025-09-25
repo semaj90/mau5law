@@ -1,7 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import { gpuPerformanceOptimizer, type GPUPerformanceMetrics, type PerformanceAlert } from '$lib/services/gpu-performance-optimizer';
+  import {
+    gpuPerformanceOptimizer,
+    type GPUPerformanceMetrics,
+    type PerformanceAlert,
+  } from '$lib/services/gpu-performance-optimizer';
   // Reactive state from performance optimizer
   let metrics: GPUPerformanceMetrics = $state(undefined as any);
   let alerts = $state<PerformanceAlert[]>([]);
@@ -15,15 +19,15 @@
   let maxDataPoints = 50;
   // Performance grade calculation
   let performanceGrade = $derived(() => {
-    if (!metrics) return { grade: 'N/A', score: 0, color: 'text-gray-400' };
+    if (!metrics) return { grade: 'N/A', score: 0, color: 'text-gray-400' }
     const factors = [
       { value: 100 - metrics.gpu.utilization, weight: 0.2 }, // Lower utilization = better for headroom
-      { value: (1 - (metrics.gpu.memoryUsed / metrics.gpu.memoryTotal)) * 100, weight: 0.25 }, // Memory availability
+      { value: (1 - metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, weight: 0.25 }, // Memory availability
       { value: Math.max(0, 100 - metrics.gpu.temperature), weight: 0.15 }, // Temperature (inverse)
-      { value: Math.max(0, 100 - (metrics.tensor.averageLatency / 10)), weight: 0.25 }, // Latency performance
-      { value: metrics.cache.hitRate, weight: 0.15 } // Cache performance
+      { value: Math.max(0, 100 - metrics.tensor.averageLatency / 10), weight: 0.25 }, // Latency performance
+      { value: metrics.cache.hitRate, weight: 0.15 }, // Cache performance
     ];
-    const score = factors.reduce((sum, factor) => sum + (factor.value * factor.weight), 0);
+    const score = factors.reduce((sum, factor) => sum + factor.value * factor.weight, 0);
     let grade: string;
     let color: string;
     if (score >= 85) {
@@ -45,7 +49,7 @@
       grade = 'D';
       color = 'text-red-400';
     }
-    return { grade, score: Math.round(score), color };
+    return { grade, score: Math.round(score), color }
   });
   // Available optimization profiles
   let availableProfiles = $state<any[]>([]);
@@ -107,7 +111,7 @@
     let path = '';
     data.forEach((value, index) => {
       const x = padding + index * stepX;
-      const y = height - padding - ((value / maxY) * (height - padding * 2));
+      const y = height - padding - (value / maxY) * (height - padding * 2);
       if (index === 0) {
         path += `M ${x} ${y}`;
       } else {
@@ -140,14 +144,20 @@
   }
   function getSeverityColor(severity: string) {
     switch (severity) {
-      case 'critical': return 'text-red-400 bg-red-400/20 border-red-400/50';
-      case 'high': return 'text-orange-400 bg-orange-400/20 border-orange-400/50';
-      case 'medium': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/50';
-      case 'low': return 'text-blue-400 bg-blue-400/20 border-blue-400/50';
-      default: return 'text-gray-400 bg-gray-400/20 border-gray-400/50';
+      case 'critical':
+        return 'text-red-400 bg-red-400/20 border-red-400/50';
+      case 'high':
+        return 'text-orange-400 bg-orange-400/20 border-orange-400/50';
+      case 'medium':
+        return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/50';
+      case 'low':
+        return 'text-blue-400 bg-blue-400/20 border-blue-400/50';
+      default:
+        return 'text-gray-400 bg-gray-400/20 border-gray-400/50';
     }
   }
 </script>
+
 <div class="space-y-6 p-6 bg-slate-800 text-white rounded-xl">
   <!-- Header with Performance Grade -->
   <div class="flex items-center justify-between">
@@ -169,7 +179,9 @@
     <!-- Monitoring Controls -->
     <div class="flex items-center gap-3">
       <button
-        class="px-3 py-2 rounded-lg {isMonitoring ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 hover:bg-gray-700'} text-white transition-colors"
+        class="px-3 py-2 rounded-lg {isMonitoring
+          ? 'bg-green-600 hover:bg-green-700'
+          : 'bg-gray-600 hover:bg-gray-700'} text-white transition-colors"
         onclick={handleToggleMonitoring}
       >
         {isMonitoring ? '⏹️ Stop' : '▶️ Start'} Monitoring
@@ -178,7 +190,7 @@
       <select
         class="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
         bind:value={currentProfile}
-        onchange={(e) => handleProfileChange(e.target.value)}
+        onchange={e => handleProfileChange(e.target.value)}
       >
         {#each availableProfiles as profile}
           <option value={profile.name.toLowerCase.replace(/\s+/g, '-')}>
@@ -225,7 +237,12 @@
             <span class="text-xl">💾</span>
             <span class="text-white font-medium">GPU Memory</span>
           </div>
-          <span class="text-2xl font-bold {getStatusColor((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, { warning: 75, critical: 90 })}">
+          <span
+            class="text-2xl font-bold {getStatusColor((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, {
+              warning: 75,
+              critical: 90,
+            })}"
+          >
             {Math.round((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100)}%
           </span>
         </div>
@@ -236,13 +253,16 @@
               stroke="currentColor"
               stroke-width="2"
               fill="none"
-              class={getStatusColor((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, { warning: 75, critical: 90 })}
+              class={getStatusColor((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, {
+                warning: 75,
+                critical: 90,
+              })}
             />
           </svg>
         {/if}
         <div class="flex justify-between text-xs text-slate-400 mt-2">
-          <span>{Math.round(metrics.gpu.memoryUsed / (1024*1024*1024))}GB</span>
-          <span>/ {Math.round(metrics.gpu.memoryTotal / (1024*1024*1024))}GB</span>
+          <span>{Math.round(metrics.gpu.memoryUsed / (1024 * 1024 * 1024))}GB</span>
+          <span>/ {Math.round(metrics.gpu.memoryTotal / (1024 * 1024 * 1024))}GB</span>
         </div>
       </div>
       <!-- Temperature -->
@@ -423,9 +443,18 @@
             <tr class="border-b border-slate-700">
               <td class="py-2 text-white">GPU Utilization</td>
               <td class="text-right text-blue-400">{Math.round(metrics.gpu.utilization)}%</td>
-              <td class="text-right text-slate-300">{Math.round(gpuUtilizationHistory.reduce((a, b) => a + b, 0) / Math.max(gpuUtilizationHistory.length, 1))}%</td>
+              <td class="text-right text-slate-300"
+                >{Math.round(
+                  gpuUtilizationHistory.reduce((a, b) => a + b, 0) / Math.max(gpuUtilizationHistory.length, 1),
+                )}%</td
+              >
               <td class="text-right">
-                <span class="px-2 py-1 rounded-full text-xs {getStatusBg(metrics.gpu.utilization, { warning: 75, critical: 90 })}">
+                <span
+                  class="px-2 py-1 rounded-full text-xs {getStatusBg(metrics.gpu.utilization, {
+                    warning: 75,
+                    critical: 90,
+                  })}"
+                >
                   {metrics.gpu.utilization < 75 ? 'optimal' : metrics.gpu.utilization < 90 ? 'high' : 'critical'}
                 </span>
               </td>
@@ -445,7 +474,12 @@
               <td class="text-right text-blue-400">{Math.round(metrics.cache.hitRate)}%</td>
               <td class="text-right text-slate-300">{Math.round(metrics.cache.hitRate)}%</td>
               <td class="text-right">
-                <span class="px-2 py-1 rounded-full text-xs {getStatusBg(100 - metrics.cache.hitRate, { warning: 25, critical: 40 })}">
+                <span
+                  class="px-2 py-1 rounded-full text-xs {getStatusBg(100 - metrics.cache.hitRate, {
+                    warning: 25,
+                    critical: 40,
+                  })}"
+                >
                   {metrics.cache.hitRate > 80 ? 'excellent' : metrics.cache.hitRate > 60 ? 'good' : 'needs improvement'}
                 </span>
               </td>
@@ -453,9 +487,18 @@
             <tr>
               <td class="py-2 text-white">GPU Temperature</td>
               <td class="text-right text-blue-400">{Math.round(metrics.gpu.temperature)}°C</td>
-              <td class="text-right text-slate-300">{Math.round(temperatureHistory.reduce((a, b) => a + b, 0) / Math.max(temperatureHistory.length, 1))}°C</td>
+              <td class="text-right text-slate-300"
+                >{Math.round(
+                  temperatureHistory.reduce((a, b) => a + b, 0) / Math.max(temperatureHistory.length, 1),
+                )}°C</td
+              >
               <td class="text-right">
-                <span class="px-2 py-1 rounded-full text-xs {getStatusBg(metrics.gpu.temperature, { warning: 75, critical: 85 })}">
+                <span
+                  class="px-2 py-1 rounded-full text-xs {getStatusBg(metrics.gpu.temperature, {
+                    warning: 75,
+                    critical: 85,
+                  })}"
+                >
                   {metrics.gpu.temperature < 75 ? 'optimal' : metrics.gpu.temperature < 85 ? 'warm' : 'hot'}
                 </span>
               </td>
@@ -474,6 +517,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   /* Custom scrollbar styling */
   .overflow-x-auto::-webkit-scrollbar {

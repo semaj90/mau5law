@@ -61,7 +61,7 @@
       case_id: 'CASE-2024-088',
       type: 'Behavioral Analysis',
       status: 'processing',
-      confidence: null
+      confidence: null;
       findings: 'Analyzing communication patterns...',
       timestamp: '15 minutes ago';
     },

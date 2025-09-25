@@ -42,7 +42,7 @@ class RedisService {
     keepAlive: 30000,
     family: 4,
     keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:'
-  };
+  }
   /**
    * Initialize Redis connection pool
    */;
@@ -72,7 +72,7 @@ class RedisService {
           lazyConnect: false
           connectionName: 'legal-ai-publisher'
         })
-      };
+      }
       // Set up event handlers
       this.setupEventHandlers(this.pool.primary, 'primary');
       this.setupEventHandlers(this.pool.subscriber, 'subscriber');
@@ -211,7 +211,7 @@ class RedisService {
         ...this.config,
         password: this.config.password ? '[REDACTED]' : undefined
       }
-    };
+    }
   }
   /**
    * Get Redis memory and keyspace info
@@ -222,13 +222,13 @@ class RedisService {
     }
     try {
       const info = await (this.pool.primary as any).info();
-      const lines = info.split('\r\n');
-      const result: any = {};
+      // removed unused lines assignment
+      const result: any = {}
       let section = 'general';
       for (const line of lines) {
         if (line.startsWith('#')) {
           section = line.substring(2).toLowerCase();
-          result[section] = {};
+          result[section] = {}
         } else if (line.includes(':')) {
           const [key, value] = line.split(':', 2);
           result[section][key] = isNaN(Number(value)) ? value : Number(value);
@@ -243,7 +243,7 @@ class RedisService {
   /**
    * Cache operations with intelligent TTL for legal AI workloads
    */;
-  async set(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
+  async set(_key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -282,7 +282,7 @@ class RedisService {
       return false;
     }
   }
-  async get<T = any>(key: string): Promise<T | null> {
+  async get<T = any>(_key: string): Promise<T | null> {
     const client = this.getClient();
     if (!client) return null;
     try {
@@ -298,7 +298,7 @@ class RedisService {
       return null;
     }
   }
-  async del(key: string): Promise<boolean> {
+  async del(_key: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -309,7 +309,7 @@ class RedisService {
       return false;
     }
   }
-  async exists(key: string): Promise<boolean> {
+  async exists(_key: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -333,7 +333,7 @@ class RedisService {
   /**
    * Hash operations
    */;
-  async hget(key: string, field: string): Promise<string | null> {
+  async hget(_key: string, field: string): Promise<string | null> {
     const client = this.getClient();
     if (!client) return null;
     try {
@@ -343,7 +343,7 @@ class RedisService {
       return null;
     }
   }
-  async hset(key: string, field: string, value: string): Promise<boolean> {
+  async hset(_key: string, field: string, value: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -354,17 +354,17 @@ class RedisService {
       return false;
     }
   }
-  async hgetall(key: string): Promise<any> {
+  async hgetall(_key: string): Promise<any> {
     const client = this.getClient();
-    if (!client) return {};
+    if (!client) return {}
     try {
-      return (await (client as any).hgetall(key)) || {};
+      return (await (client as any).hgetall(key)) || {}
     } catch (error) {
       console.error(`[RedisService] Failed to hgetall ${key}:`, error);
-      return {};
+      return {}
     }
   }
-  async hincrby(key: string, field: string, increment: number): Promise<number> {
+  async hincrby(_key: string, field: string, increment: number): Promise<number> {
     const client = this.getClient();
     if (!client) return 0;
     try {
@@ -374,7 +374,7 @@ class RedisService {
       return 0;
     }
   }
-  async expire(key: string, seconds: number): Promise<boolean> {
+  async expire(_key: string, seconds: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -405,7 +405,7 @@ class RedisService {
       metadata,
       cached_at: new Date().toISOString(),
       dimension: embedding.length
-    };
+    }
     return await this.set(key, data);
   }
   async getCachedEmbedding(documentId: string): Promise<any> {
@@ -420,7 +420,7 @@ class RedisService {
       results,
       cached_at: new Date().toISOString(),
       result_count: results.length
-    };
+    }
     return await this.set(key, data, ttl);
   }
   async getCachedSearch(query: string): Promise<any> {
@@ -436,7 +436,7 @@ class RedisService {
       input_size: input.byteLength,
       result: Buffer.from(result).toString('base64'),
       cached_at: new Date().toISOString()
-    };
+    }
     return await this.set(key, data);
   }
   async getCachedWasmTensor(operation: string, input: ArrayBuffer): Promise<ArrayBuffer | null> {
@@ -456,7 +456,7 @@ class RedisService {
       compression_ratio: vectors.byteLength / quantized.byteLength,
       quantized: Buffer.from(quantized).toString('base64'),
       cached_at: new Date().toISOString()
-    };
+    }
     return await this.set(key, data);
   }
   async getQuantizedVectors(batchId: string): Promise<Int8Array | null> {
@@ -468,7 +468,7 @@ class RedisService {
     return null;
   }
   // Redis Streams methods
-  async xAdd(key: string, id: string, fields: { [key: string]: any }): Promise<string> {
+  async xAdd(_key: string, id: string, fields: { [key: string]: any }): Promise<string> {
     const client = this.getClient();
     if (!client) throw new Error('Redis not connected');
     try {
@@ -479,7 +479,7 @@ class RedisService {
       throw error;
     }
   }
-  async xInfoStream(key: string): Promise<any> {
+  async xInfoStream(_key: string): Promise<any> {
     const client = this.getClient();
     if (!client) throw new Error('Redis not connected');
     try {
@@ -489,9 +489,8 @@ class RedisService {
       throw error;
     }
   }
-  async xRevRange(
-    key: string
-    end: string
+  async xRevRange(_key: string
+    end: string;
     start: string
     options?: { COUNT: number }
   ): Promise<any[]> {

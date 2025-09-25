@@ -39,7 +39,7 @@ export interface RAGResponse {
 // Import the Go microservice manager
 import { goServiceManager } from '$lib/services/goMicroservice'
 import crypto from 'crypto'
-import { URL } from 'url'
+
 /*
  * GET /api/v1/quic/rag-proxy - RAG proxy health and metrics
  */

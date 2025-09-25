@@ -63,7 +63,7 @@ export class WebASMRankingCache {
     avgServiceWorkerTime: 0,
     cacheSize: 0,
     memoryUsage: 0
-  };
+  }
   constructor(private config: WASMCacheConfig) {}
   async initialize(): Promise<boolean> {
     try {
@@ -102,7 +102,7 @@ export class WebASMRankingCache {
             rankings: this.deserializeRankings(cached.rankings, cached.summary),
             cached: true
             processingTime: performance.now() - startTime
-          };
+          }
         }
       }
       this.metrics.misses++;
@@ -183,7 +183,7 @@ export class WebASMRankingCache {
    */;
   async decodeFromQUICCache(hash: string): Promise<RankingResponse | null> {
     try {
-      const response = await fetch(`/api/quic/rankings/decode/${hash}`);
+      // removed unused response assignment
       if (response.ok) {
         const buffer = await response.arrayBuffer();
         const decoded = this.deserializeFromQUIC(buffer);
@@ -268,7 +268,7 @@ export class WebASMRankingCache {
         cached: false
         processingTime: performance.now() - startTime,
         wasmTime
-      };
+      }
       // Non-blocking QUIC publish
       this.publishToQUICCache(cacheKey, response).catch(console.warn);
       return response;
@@ -279,7 +279,7 @@ export class WebASMRankingCache {
       cached: false
       processingTime: performance.now() - startTime,
       wasmTime
-    };
+    }
   }
   private async batchRankWithServiceWorker(
     requests: RankingRequest[];
@@ -302,7 +302,7 @@ export class WebASMRankingCache {
         } else if (type === 'batch-ranking-error') {
           reject(new Error(error);
         }
-      };
+      }
       // Send batch ranking request to service worker
       this.serviceWorker.active.postMessage({
         type: 'batch-ranking-request',
@@ -400,8 +400,7 @@ export class WebASMRankingCache {
     }
     return `rank_${Math.abs(hash).toString(16)}`;
   }
-  private createCacheEntry(
-    key: string
+  private createCacheEntry(_key: string
     rankings: Array<any>
     vectorData: Float32Array;
   ): WASMRankingEntry {
@@ -421,9 +420,9 @@ export class WebASMRankingCache {
       confidence: rankings.length > 0 ? rankings[0].score: 0,
       timestamp: Date.now(),
       crc32: this.calculateCRC32(rankingsArray.buffer)
-    };
+    }
   }
-  private getCachedResult(key: string): WASMRankingEntry | null {
+  private getCachedResult(_key: string): WASMRankingEntry | null {
     const entry = this.cache.get(key);
     if (!entry) return null;
     // Check TTL
@@ -440,7 +439,7 @@ export class WebASMRankingCache {
     }
     return entry;
   }
-  private setCachedResult(key: string, entry: WASMRankingEntry): void {
+  private setCachedResult(_key: string, entry: WASMRankingEntry): void {
     // Implement LRU eviction
     if (this.cache.size >= this.config.maxEntries) {
       const oldestKey = this.cache.keys().next().value;
@@ -449,13 +448,13 @@ export class WebASMRankingCache {
     this.cache.set(key, entry);
   }
   private deserializeRankings(
-    rankings: Uint16Array
+    rankings: Uint16Array;
     summary: Float32Array;
   ): Array< {
     const results: Array<any> = [];
     for (let i = 0; i < rankings.length; i += 2) {
       results.push({
-        index: rankings[i]
+        index: rankings[i];
         score: rankings[i + 1] / 10000
       });
     }
@@ -503,7 +502,7 @@ export class WebASMRankingCache {
       rankings,
       cached,
       processingTime
-    };
+    }
   }
   private calculateCRC32(buffer: ArrayBuffer): number {
     // Simple CRC32 implementation
@@ -549,7 +548,7 @@ export class WebASMRankingCache {
         topK: 2,
         threshold: 0.0,
         useCache: false
-      };
+      }
       await this.rank(testRequest);
       console.log('🔥 WebASM Ranking Cache warmed up successfully');
     } catch (error) {
@@ -558,7 +557,7 @@ export class WebASMRankingCache {
   }
   // ============ Public API ============
   getMetrics(): CacheMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   clearCache(): void {
     this.cache.clear();
@@ -567,7 +566,7 @@ export class WebASMRankingCache {
   }
   async getQUICMetrics(): Promise<any> {
     try {
-      const response = await fetch('/api/quic/rankings/metrics');
+      // removed unused response assignment
       if (response.ok) {
         return await response.json();
       }

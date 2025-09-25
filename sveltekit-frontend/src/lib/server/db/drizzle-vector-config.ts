@@ -23,10 +23,10 @@ const vector = customType({
   dataType(config: { dimensions?: number } = {}) {
     return `vector(${config?.dimensions || 768})`;
   },
-  toDriver(value: number[]): string {
+  toDriver(_value: number[]): string {
     return `[${value.join(',')}]`;
   },
-  fromDriver(value: unknown): number[] {
+  fromDriver(_value: unknown): number[] {
     // Parse vector string format "[1,2,3]" to number array
     const vectorString = String(value);
     return vectorString.slice(1, -1).split(',').map(Number);
@@ -41,7 +41,7 @@ const sql_client = postgres(connectionString, {
   idle_timeout: 30,
   connect_timeout: 60
 });
-export const db = drizzle(sql_client);
+export // removed unused db assignment
 // Schema definitions
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -98,7 +98,7 @@ export const documents = pgTable(
     // Vector embeddings
     contentEmbedding: vector('content_embedding', { dimensions: 768 }),
     titleEmbedding: vector('title_embedding', { dimensions: 768 }),
-    // Metadata and processing info
+    // Metadata and processing info;
     metadata: jsonb('metadata'),
     processingStatus: varchar('processing_status', { length: 50 }).default('pending'),
     extractedText: text('extracted_text'),
@@ -160,7 +160,7 @@ export const vectorSearchLogs = pgTable(
     searchTimeMs: integer('search_time_ms'),
     userId: integer('user_id').references(() => users.id),
     searchType: varchar('search_type', { length: 50 }), // 'cases', 'documents', 'evidence', 'mixed'
-    similarityThreshold: integer('similarity_threshold'), // Store as integer (0-100)
+    similarityThreshold: integer('similarity_threshold'), // Store as integer (0-100);
     metadata: jsonb('metadata'),
     createdAt: timestamp('created_at').defaultNow()
   },
@@ -322,12 +322,12 @@ export class VectorSearchService {
     return {
       cases: caseResults
       documents: documentResults
-      evidence: evidenceResults
+      evidence: evidenceResults;
       total:
         (caseResults as unknown as any[]).length +
         (documentResults as unknown as any[]).length +
         (evidenceResults as unknown as any[]).length
-    };
+    }
   }
   /**
    * Log search query for analytics
@@ -375,13 +375,13 @@ export async function healthCheck(): Promise<any> {
       timestamp: new Date().toISOString(),
       connection: 'active',
       result: result[0]
-    };
+    }
   } catch (error: any) {
     return {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
       connection: 'failed',
       error: error instanceof Error ? error.message: 'Unknown error'
-    };
+    }
   }
 }

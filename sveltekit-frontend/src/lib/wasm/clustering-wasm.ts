@@ -46,7 +46,7 @@ export class WebAssemblyClusteringService {
   }
   async performKMeansClustering(
     embeddings: number[][]
-    k: number
+    k: number;
     config: any;
   ): Promise<any> {
     if (this.wasmInstance && this.isWasmSupported) {
@@ -60,7 +60,7 @@ export class WebAssemblyClusteringService {
           clusters,
           centroids,
           iterations: config.maxIterations || 100
-        };
+        }
       } catch (error: any) {
         console.warn('WASM K-Means failed, falling back to JavaScript:', error);
       }
@@ -69,7 +69,7 @@ export class WebAssemblyClusteringService {
     return this.jsKMeansClustering(embeddings, k, config);
   }
   async performSOMTraining(
-    embeddings: number[][]
+    embeddings: number[][];
     config: any;
   ): Promise<any> {
     if (this.wasmInstance && this.isWasmSupported) {
@@ -78,7 +78,7 @@ export class WebAssemblyClusteringService {
         // Mock WASM SOM implementation
         const weights = this.mockSOMWeights(config.width, config.height, embeddings[0].length);
         const clusters = this.mockSOMClustering(embeddings, weights);
-        return { weights, clusters };
+        return { weights, clusters }
       } catch (error: any) {
         console.warn('WASM SOM failed, falling back to JavaScript:', error);
       }
@@ -134,7 +134,7 @@ export class WebAssemblyClusteringService {
   // JavaScript fallback implementations
   private async jsKMeansClustering(
     embeddings: number[][]
-    k: number
+    k: number;
     config: any;
   ): Promise<any> {
     console.log('Using JavaScript K-Means clustering fallback...');
@@ -145,16 +145,16 @@ export class WebAssemblyClusteringService {
       clusters,
       centroids,
       iterations: config.maxIterations || 100
-    };
+    }
   }
   private async jsSOMTraining(
-    embeddings: number[][]
+    embeddings: number[][];
     config: any;
   ): Promise<any> {
     console.log('Using JavaScript SOM training fallback...');
     const weights = this.mockSOMWeights(config.width, config.height, embeddings[0].length);
     const clusters = this.mockSOMClustering(embeddings, weights);
-    return { weights, clusters };
+    return { weights, clusters }
   }
   getPerformanceMetrics(): {
     wasmSupported: boolean;
@@ -168,7 +168,7 @@ export class WebAssemblyClusteringService {
         // Recommend WASM for larger datasets (>1000 documents)
         return this.isWasmSupported && this.wasmInstance !== null && dataSize > 1000;
       }
-    };
+    }
   }
 }
 // Singleton instance

@@ -9,7 +9,7 @@ export interface MCPRequest {
 export interface MCPToolRequest {
   method?: string; // optional when inferring default
   tool: string;
-  args?: { [key: string]: any };
+  args?: { [key: string]: any }
   component?: string;
   context?: string;
   area?: string;
@@ -35,10 +35,10 @@ export async function copilotOrchestrator(
       ? { method: 'prompt', params: { prompt: request } }
       : (request as MCPRequest);
   return {
-    success: true
+    success: true;
     result: null
     selfPrompt: typeof request === 'string' ? request : undefined
-  };
+  }
 }
 export async function semanticSearch(query: string, options?: unknown): Promise<any> {
   // Implementation placeholder
@@ -46,11 +46,11 @@ export async function semanticSearch(query: string, options?: unknown): Promise<
 }
 export async function mcpMemoryReadGraph(): Promise<any> {
   // Implementation placeholder
-  return { nodes: [], edges: [] };
+  return { nodes: [], edges: [] }
 }
 export async function mcpCodebaseAnalyze(path: string): Promise<any> {
   // Implementation placeholder
-  return { files: [], analysis: { [key: string]: any } };
+  return { files: [], analysis: { [key: string]: any } }
 }
 export function generateMCPPrompt(context: any): string {
   // Implementation placeholder
@@ -64,7 +64,7 @@ export const commonMCPQueries = {
   analyzeDrizzle: () => 'analyze-drizzle',
   performanceBestPractices: () => 'performance-best-practices',
   securityBestPractices: () => 'security-best-practices'
-};
+}
 export default {
   copilotOrchestrator,
   semanticSearch,
@@ -72,4 +72,4 @@ export default {
   mcpCodebaseAnalyze,
   generateMCPPrompt,
   commonMCPQueries
-};
+}

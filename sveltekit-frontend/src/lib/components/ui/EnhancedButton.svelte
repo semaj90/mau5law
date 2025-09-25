@@ -237,8 +237,7 @@ https://svelte.dev/e/js_parse_error -->
 			{/if}
 		</button>
 	{/if}
-<style>
-	/* YoRHa terminal-style button animations */
+<style>/* YoRHa terminal-style button animations */ {}
 	:global([data-variant="yorha"]) {
 		position: relative;
 		overflow: hidden;
@@ -256,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
 	:global($1) {
 		left: 100%;
 	}
-	/* Enhanced focus states for accessibility */
+/* Enhanced focus states for accessibility */ {}
 	:global([data-testid="enhanced-button"]:focus-visible) {
 		outline: 2px solid currentColor;
 		outline-offset: 2px;

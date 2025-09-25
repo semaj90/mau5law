@@ -119,14 +119,14 @@ https://svelte.dev/e/js_parse_error -->
       enabled: enableOCR
       webgpuEnabled: false
       accelerateOCR: true
-      accelerateEmbedding: true
+      accelerateEmbedding: true;
     },
     rag: {
       enabled: enableRAG
       extractText: true
       generateEmbeddings: true
       storeVectors: true
-      updateIndex: true
+      updateIndex: true;
     },
     ocr: { enabled: enableOCR, engines: ['tesseract'], languages: ['eng'] },
     yolo: { enabled: false },
@@ -134,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
   const uploadMachineActor = createActor(createUploadMachine(basePipeline));
   uploadMachineActor.start();
   // File upload handler with real RAG processing
-  async function handleFileUpload(event: Event) {
+  async function handleFileUpload(_event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     const incoming: File[] = Array.from(input.files);
@@ -298,38 +298,26 @@ connectStatusSocket();
   uploadMachineActor.subscribe((sn) => { machineState.value = sn; });
   function getEntries() { return machineState.value?.context?.files || []; }
 </script>
+
 <div class="enhanced-file-upload {className}">
   <!-- System Status -->
   <div class="system-status mb-4 grid grid-cols-2 md:grid-cols-4 gap-2">
-    <div
-      class="status-item {systemStatus.ocr
-        ? 'bg-green-50 border-green-200'
-        : 'bg-red-50 border-red-200'}">
+    <div class="status-item {systemStatus.ocr ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
       <span class="text-xs font-medium {systemStatus.ocr ? 'text-green-800' : 'text-red-800'}">
         OCR {systemStatus.ocr ? '✓' : '✗'}
       </span>
     </div>
-    <div
-      class="status-item {systemStatus.embeddings
-        ? 'bg-green-50 border-green-200'
-        : 'bg-red-50 border-red-200'}">
-      <span
-        class="text-xs font-medium {systemStatus.embeddings ? 'text-green-800' : 'text-red-800'}">
+    <div class="status-item {systemStatus.embeddings ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
+      <span class="text-xs font-medium {systemStatus.embeddings ? 'text-green-800' : 'text-red-800'}">
         Embeddings {systemStatus.embeddings ? '✓' : '✗'}
       </span>
     </div>
-    <div
-      class="status-item {systemStatus.search
-        ? 'bg-green-50 border-green-200'
-        : 'bg-red-50 border-red-200'}">
+    <div class="status-item {systemStatus.search ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
       <span class="text-xs font-medium {systemStatus.search ? 'text-green-800' : 'text-red-800'}">
         Search {systemStatus.search ? '✓' : '✗'}
       </span>
     </div>
-    <div
-      class="status-item {systemStatus.storage
-        ? 'bg-green-50 border-green-200'
-        : 'bg-red-50 border-red-200'}">
+    <div class="status-item {systemStatus.storage ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
       <span class="text-xs font-medium {systemStatus.storage ? 'text-green-800' : 'text-red-800'}">
         Storage {systemStatus.storage ? '✓' : '✗'}
       </span>
@@ -337,18 +325,11 @@ connectStatusSocket();
   </div>
   <!-- Upload Area -->
   <div class="upload-area">
-    <input
-      type="file"
-      {accept}
-      multiple onchange={handleFileUpload}
-      class="hidden"
-      id="file-input" />
+    <input type="file" {accept} multiple onchange={handleFileUpload} class="hidden" id="file-input" />
     <label for="file-input" class="upload-label">
       <Upload class="w-12 h-12 mb-4 text-gray-400" />
       <p class="text-lg font-medium">Drop files here or click to upload</p>
-      <p class="text-sm text-gray-500 mt-2">
-        Supports: PDF, DOCX, TXT, Images with real OCR processing
-      </p>
+      <p class="text-sm text-gray-500 mt-2">Supports: PDF, DOCX, TXT, Images with real OCR processing</p>
       <p class="text-xs text-gray-400 mt-1">
         Max size: {formatFileSize(maxSize)}
       </p>
@@ -384,8 +365,8 @@ connectStatusSocket();
           <div class="w-full bg-gray-200 rounded-full h-2">
             <div
               class="{getProgressColor(state.progress)} h-2 rounded-full transition-all duration-300"
-              style="width: {Math.max(0, state.progress)}%">
-            </div>
+              style="width: {Math.max(0, state.progress)}%"
+            ></div>
           </div>
         </div>
       {/each}
@@ -397,14 +378,17 @@ connectStatusSocket();
       <h3 class="text-lg font-semibold mb-4">Semantic Document Search</h3>
       <div class="flex space-x-2">
         <input
-          type="text";
+          type="text"
+          ;
           bind:value={searchQuery}
           placeholder="Search uploaded documents with AI..."
-          class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <button
           onclick={handleSearch}
           disabled={isSearching || !searchQuery.trim()}
-          class="px-6 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50 hover:bg-blue-600 flex items-center gap-2">
+          class="px-6 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50 hover:bg-blue-600 flex items-center gap-2"
+        >
           {#if isSearching}
             <Loader2 class="w-4 h-4 animate-spin" />
           {:else}
@@ -422,21 +406,94 @@ connectStatusSocket();
               <div class="result-item p-4 border rounded-lg hover:bg-gray-50">
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
-                    <p class="font-medium">{(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).filename}</p>
+                    <p class="font-medium">
+                      {(
+                        result as {
+                          successfulUploads?: any;
+                          totalFiles?: any;
+                          results?: any;
+                          success?: any;
+                          error?: any;
+                          filename?: any;
+                          excerpt?: any;
+                          similarity?: any;
+                          searchType?: any;
+                          matchedBy?: any;
+                        }
+                      ).filename}
+                    </p>
                     <p class="text-sm text-gray-600 mt-1">
-                      {(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).excerpt}
+                      {(
+                        result as {
+                          successfulUploads?: any;
+                          totalFiles?: any;
+                          results?: any;
+                          success?: any;
+                          error?: any;
+                          filename?: any;
+                          excerpt?: any;
+                          similarity?: any;
+                          searchType?: any;
+                          matchedBy?: any;
+                        }
+                      ).excerpt}
                     </p>
                     <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                      <span>Similarity: {((result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).similarity * 100).toFixed(1)}%</span>
-                      <span>Type: {(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).searchType}</span>
+                      <span
+                        >Similarity: {(
+                          (
+                            result as {
+                              successfulUploads?: any;
+                              totalFiles?: any;
+                              results?: any;
+                              success?: any;
+                              error?: any;
+                              filename?: any;
+                              excerpt?: any;
+                              similarity?: any;
+                              searchType?: any;
+                              matchedBy?: any;
+                            }
+                          ).similarity * 100
+                        ).toFixed(1)}%</span
+                      >
+                      <span
+                        >Type: {(
+                          result as {
+                            successfulUploads?: any;
+                            totalFiles?: any;
+                            results?: any;
+                            success?: any;
+                            error?: any;
+                            filename?: any;
+                            excerpt?: any;
+                            similarity?: any;
+                            searchType?: any;
+                            matchedBy?: any;
+                          }
+                        ).searchType}</span
+                      >
                       {#if (result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).matchedBy}
-                        <span>Matched by: {(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).matchedBy.join(', ')}</span>
+                        <span
+                          >Matched by: {(
+                            result as {
+                              successfulUploads?: any;
+                              totalFiles?: any;
+                              results?: any;
+                              success?: any;
+                              error?: any;
+                              filename?: any;
+                              excerpt?: any;
+                              similarity?: any;
+                              searchType?: any;
+                              matchedBy?: any;
+                            }
+                          ).matchedBy.join(', ')}</span
+                        >
                       {/if}
                     </div>
                   </div>
-                  <button class="text-sm text-blue-500 hover:text-blue-700 ml-4">
-                    View Details
-                  </button>
+                  <button class="text-sm text-blue-500 hover:text-blue-700 ml-4"> View Details </button>
                 </div>
               </div>
             {/each}
@@ -446,6 +503,7 @@ connectStatusSocket();
     </div>
   {/if}
 </div>
+
 <style>
   .enhanced-file-upload {
     padding: 1.5rem;

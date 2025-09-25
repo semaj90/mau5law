@@ -54,14 +54,14 @@
     lg: "max-w-2xl w-full mx-4",
     xl: "max-w-4xl w-full mx-4",
     fullscreen: "w-screen h-screen max-w-none mx-0",
-  };
-  function handleKeydown(event: KeyboardEvent) {
+  }
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === "Escape" && closeOnEscape && !persistent) {
       event.preventDefault();
       handleClose();
     }
   }
-  function handleBackdropClick(event: MouseEvent) {
+  function handleBackdropClick(_event: MouseEvent) {
     if (
       event.target === event.currentTarget &&
       closeOnBackdrop &&
@@ -99,7 +99,7 @@
     }
     return () => {
       document.body.style.overflow = "";
-    };
+    }
   });
 </script>
 {#if open}

@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types.js'
  * Provides rating collection, user pattern analysis, and training data management
  */
 import { feedbackLoopService } from '$lib/services/feedback-loop-service'
-import { URL } from "url"
+
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action')

@@ -7,7 +7,7 @@ export async function summarizeWithQueue(content: string, documentId: string): P
     const connection = await connect(RABBITMQ_URL);
     const channel = await connection.createChannel();
     await channel.assertQueue(QUEUE_NAME, { durable: true });
-    const task = { documentId, content };
+    const task = { documentId, content }
     channel.sendToQueue(QUEUE_NAME, Buffer.from(JSON.stringify(task)), {
       persistent: true
     });
@@ -22,7 +22,7 @@ export async function summarizeWithQueue(content: string, documentId: string): P
   }
   await setCache(documentId, { status: "processing" });
   return {
-    success: true
+    success: true;
     message: "Summarization task queued (or marked processing)."
-  };
+  }
 }

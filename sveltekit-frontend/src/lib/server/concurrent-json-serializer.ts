@@ -33,7 +33,7 @@ interface SerializationResult {
     processingTime: number;
     method: 'cpu' | 'gpu' | 'worker';
     chunks?: number;
-  };
+  }
   error?: string;
 }
 // Worker thread pool for CPU-intensive serialization
@@ -81,7 +81,7 @@ class WorkerPool {
               }
               // Handle special types
               if (value instanceof Date) {
-                return { _type: 'Date', value: value.toISOString() };
+                return { _type: 'Date', value: value.toISOString() }
               }
               if (value instanceof Buffer) {
                 return options.preserveBuffers ?
@@ -100,7 +100,7 @@ class WorkerPool {
                 processingTime,
                 method: 'worker'
               }
-            };
+            }
           } catch (error) {
             return {
               error: error.message,
@@ -111,7 +111,7 @@ class WorkerPool {
                 processingTime: performance.now() - start,
                 method: 'worker'
               }
-            };
+            }
           }
         }
       }
@@ -124,7 +124,7 @@ class WorkerPool {
     worker.on('message', (result: SerializationResult) => {
       this.handleWorkerResult(worker, result);
     });
-    worker.on('error', (error) => {
+    worker.on('error', error => {
       console.error('Worker error:', error);
       this.replaceWorker(worker);
     });
@@ -133,7 +133,8 @@ class WorkerPool {
   private handleWorkerResult(worker: Worker, result: SerializationResult) {
     // Find the task that matches this result
     const taskIndex = this.taskQueue.findIndex(
-      item => (item as { task?: any }).task.id === (result as { id?: any; metadata?: any; error?: any; serialized?: any }).id
+      item =>
+        (item as { task?: any }).task.id === (result as { id?: any; metadata?: any; error?: any; serialized?: any }).id,
     );
     if (taskIndex !== -1) {
       const { resolve } = this.taskQueue[taskIndex];
@@ -156,7 +157,7 @@ class WorkerPool {
       }
     }
   }
-  async execute(task: SerializationTask): Promise<SerializationResult> {
+  async execute(_task: SerializationTask): Promise<SerializationResult> {
     return new Promise((resolve, reject) => {
       this.taskQueue.push({ task, resolve, reject });
       this.processNextTask();
@@ -168,7 +169,7 @@ class WorkerPool {
     }
     // Sort by priority
     this.taskQueue.sort((a, b) => {
-      const priorities = { critical: 4, high: 3, medium: 2, low: 1 };
+      const priorities = { critical: 4, high: 3, medium: 2, low: 1 }
       return priorities[b.task.priority] - priorities[a.task.priority];
     });
     const worker = this.availableWorkers.pop()!;
@@ -176,7 +177,7 @@ class WorkerPool {
     worker.postMessage({
       id: task.id,
       data: task.data,
-      options: task.options
+      options: task.options,
     });
   }
   terminate() {
@@ -185,8 +186,7 @@ class WorkerPool {
 }
 /**
  * Main concurrent JSON serialization service
- */;
-export class ConcurrentJSONSerializer {
+ */ export class ConcurrentJSONSerializer {
   private static instance: ConcurrentJSONSerializer;
   private workerPool: WorkerPool;
   private gpuContext?: GPUDevice;
@@ -234,7 +234,7 @@ export class ConcurrentJSONSerializer {
       },
       priority: this.determinePriority(data, options),
       timestamp: Date.now(),
-    };
+    }
     // Determine optimal serialization method
     const dataSize = this.estimateDataSize(data);
     if (options.gpuAccelerated && this.gpuContext && dataSize > 100 * 1024) {
@@ -247,7 +247,7 @@ export class ConcurrentJSONSerializer {
   }
   /**
    * GPU-accelerated serialization for large datasets
-   */ private async serializeWithGPU(task: SerializationTask): Promise<SerializationResult> {
+   */ private async serializeWithGPU(_task: SerializationTask): Promise<SerializationResult> {
     const start = performance.now();
     try {
       if (!this.gpuContext) {
@@ -281,7 +281,7 @@ export class ConcurrentJSONSerializer {
   }
   /**
    * Synchronous serialization for small data
-   */ private async serializeSync(task: SerializationTask): Promise<SerializationResult> {
+   */ private async serializeSync(_task: SerializationTask): Promise<SerializationResult> {
     const start = performance.now();
     try {
       const seen = new WeakSet();
@@ -310,14 +310,14 @@ export class ConcurrentJSONSerializer {
           }
           // Handle special types
           if (value instanceof Date) {
-            return { _type: 'Date', value: value.toISOString() };
+            return { _type: 'Date', value: value.toISOString() }
           }
           if (value instanceof Buffer) {
             return task.options.preserveBuffers ? { _type: 'Buffer', value: value.toString('base64') } : '[Buffer]';
           }
           return value;
         },
-        task.options.compress ? 0 : 2
+        task.options.compress ? 0 : 2,
       );
       const processingTime = performance.now() - start;
       return {
@@ -330,7 +330,7 @@ export class ConcurrentJSONSerializer {
           processingTime,
           method: 'cpu',
         },
-      };
+      }
     } catch (error) {
       const processingTime = performance.now() - start;
       return {
@@ -344,7 +344,7 @@ export class ConcurrentJSONSerializer {
           method: 'cpu',
         },
         error: error instanceof Error ? error.message : 'Unknown serialization error',
-      };
+      }
     }
   }
   /**
@@ -354,7 +354,7 @@ export class ConcurrentJSONSerializer {
     const batchOptions = {
       ...options,
       priority: 'medium' as const,
-    };
+    }
     // Process in parallel with worker pool
     const promises = items.map((item, index) => {
       return this.serialize(item, {
@@ -434,7 +434,7 @@ export class ConcurrentJSONSerializer {
       totalProcessed: this.taskCounter,
       averageProcessingTime: 0, // Could be enhanced with metrics
       gpuEnabled: !!this.gpuContext,
-    };
+    }
   }
   /**
    * Cleanup resources
@@ -454,12 +454,12 @@ export async function serializeForAPI<T>(data: T, options?: Partial<Serializatio
   });
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(
-      `API serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`
+      `API serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`,
     );
   }
   return (result as { id?: any; metadata?: any; error?: any; serialized?: any }).serialized;
 }
-export async function serializeLegalDocument<T>(document: T, options?: Partial<SerializationOptions>): Promise<string> {
+export async function serializeLegalDocument<T>(_document: T, options?: Partial<SerializationOptions>): Promise<string> {
   const result = await concurrentSerializer.serialize(document, {
     legalDocumentMode: true,
     compress: false,
@@ -469,14 +469,14 @@ export async function serializeLegalDocument<T>(document: T, options?: Partial<S
   });
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(
-      `Legal document serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`
+      `Legal document serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`,
     );
   }
   return (result as { id?: any; metadata?: any; error?: any; serialized?: any }).serialized;
 }
 export async function serializeBatchForCache<T>(
   items: T[],
-  options?: Partial<SerializationOptions>
+  options?: Partial<SerializationOptions>,
 ): Promise<SerializationResult[]> {
   return await concurrentSerializer.serializeBatch(items, {
     compress: true,

@@ -100,9 +100,9 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({,
-            model: 'gemma3-legal:latest', // Updated to latest model
+            model: 'gemma3-legal:latest', // Updated to latest model;
             prompt: `As a legal AI assistant, please provide accurate and helpful information about: ${input.prompt}`,
-            stream: false
+            stream: false;
             options: {
               temperature: 0.3, // Lower temperature for more consistent legal advice
               max_tokens: 2048,  // Increased for detailed legal responses
@@ -116,7 +116,7 @@
           throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
         }
         const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-        return { response: (data as { response?: any }).response };
+        return { response: (data as { response?: any }).response }
       }
     }
   });
@@ -152,7 +152,7 @@
     promptInput = '';
   }
   // Keyboard shortcuts (best practices)
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       event.preventDefault();
       handleQuery();

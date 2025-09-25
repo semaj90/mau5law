@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
  * Production Evidence Processing API
  * Smart detection and analysis pipeline
  */
-import { URL } from "url"
+
 }
 export interface EvidenceItem {
   id: string

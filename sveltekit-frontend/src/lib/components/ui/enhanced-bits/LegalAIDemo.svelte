@@ -108,20 +108,21 @@
     selectedEvidence = evidenc;
     showAnalysis = true;
   }
-  function handleSearch(event: CustomEvent) {
+  function handleSearch(_event: CustomEvent) {
     console.log('Search performed:', event.detail);
     searchResults = event.detail.result;
   }
-  function handleSearchSelect(event: CustomEvent<VectorSearchResult>) {
+  function handleSearchSelect(_event: CustomEvent<VectorSearchResult>) {
     console.log('Search result selected:', event.detail);
   }
-  function handleBoardItemMove(event: CustomEvent) {
+  function handleBoardItemMove(_event: CustomEvent) {
     console.log('Board item moved:', event.detail);
   }
-  function handleBoardSave(event: CustomEvent) {
+  function handleBoardSave(_event: CustomEvent) {
     console.log('Board saved:', event.detail);
   }
 </script>
+
 <div class="p-6 space-y-6 bg-gray-50 min-h-screen">
   <div class="text-center mb-8">
     <h1 class="text-3xl font-bold mb-2">Enhanced Bits Legal AI Demo</h1>
@@ -188,7 +189,7 @@
     <!-- Evidence Board -->
     <Card class="p-4">
       <h2 class="text-xl font-semibold mb-4">📋 Evidence Board</h2>
-      <Board
+      <Board;
         bind:items={boardItems}
         layoutMode="freeform"
         showGrid={true}
@@ -205,21 +206,11 @@
   <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">⚡ Quick Actions</h2>
     <div class="flex flex-wrap gap-3">
-      <Button variant="primary" onclick={() => showAnalysis = true}>
-        Run AI Analysis
-      </Button>
-      <Button variant="secondary" onclick={() => console.log('Export case')}>
-        Export Case
-      </Button>
-      <Button variant="success" onclick={() => console.log('Generate report')}>
-        Generate Report
-      </Button>
-      <Button variant="warning" onclick={() => console.log('Flag critical')}>
-        Flag Critical
-      </Button>
-      <Button variant="error" onclick={() => console.log('Archive case')}>
-        Archive Case
-      </Button>
+      <Button variant="primary" onclick={() => (showAnalysis = true)}>Run AI Analysis</Button>
+      <Button variant="secondary" onclick={() => console.log('Export case')}>Export Case</Button>
+      <Button variant="success" onclick={() => console.log('Generate report')}>Generate Report</Button>
+      <Button variant="warning" onclick={() => console.log('Flag critical')}>Flag Critical</Button>
+      <Button variant="error" onclick={() => console.log('Archive case')}>Archive Case</Button>
     </div>
   </Card>
   <!-- Component Stats -->
@@ -286,4 +277,5 @@
       </div>
     </details>
   </Card>
-</div>;
+</div>
+;

@@ -24,21 +24,21 @@ export interface Phase13Context {
     negativeVotes: number;
     confidence: number;
     lastUpdate: number;
-  };
+  }
   // Stateless API coordination
   apiCoordination: {
     redisNodes: string[];
     natsChannels: string[];
     activeConnections: number;
     queueDepth: number;
-  };
+  }
   // Context7 MCP integration
   mcpContext: {
     semanticSearchResults: any[];
     memoryGraphNodes: any[];
     agentRecommendations: any[];
     bestPractices: string[];
-  };
+  }
   // Neural sprite engine integration
   spriteEngine?: NeuralSpriteEngine;
   currentSprite: string;
@@ -50,7 +50,7 @@ export interface Phase13Context {
     memoryUsed: number;
     temperature: number;
     shaderPrograms: number;
-  };
+  }
   // Compiler Feedback Loop system
   compilerFeedback: {
     isActive: boolean;
@@ -64,29 +64,29 @@ export interface Phase13Context {
       successfulPatches: number;
       averageProcessingTime: number;
       clusterCount: number;
-    };
-  };
+    }
+  }
   // Multi-core processing
   workerThreads: {
     active: number;
     completed: number;
     failed: number;
     queue: string[];
-  };
+  }
   // Performance metrics
   performance: {
     frameRate: number;
     latency: number;
     throughput: number;
     errorRate: number;
-  };
+  }
   // AI recommendations with confidence
   aiState: {
     currentModel: string;
     confidence: number;
     suggestions: string[];
     nextActions: { action: string; confidence: number }[];
-  };
+  }
 }
 export type Phase13Event =
   | { type: "INITIALIZE_WEBGL"; canvas: HTMLCanvasElement }
@@ -114,10 +114,10 @@ export type Phase13Event =
   | { type: "COMPILER_FEEDBACK_START" }
   | { type: "COMPILER_FEEDBACK_STOP" }
   | { type: "RESET_SYSTEM" }
-  | { type: "EMERGENCY_SHUTDOWN" };
+  | { type: "EMERGENCY_SHUTDOWN" }
 // WebGL vertex streaming service
 const webglVertexStreamingService = fromCallback(({ sendBack, receive, input }) => {
-  const { context } = input as { context: Phase13Context };
+  const { context } = input as { context: Phase13Context }
   if (!context.webglContext) {
     sendBack({ type: "ERROR", error: "WebGL context not initialized" });
     return;
@@ -152,14 +152,14 @@ const webglVertexStreamingService = fromCallback(({ sendBack, receive, input }) 
         memoryUsed: (performance as any).memory?.usedJSHeapSize || 0,
         bufferCount: context.vertexBuffers.length,
         streamingActive
-      };
+      }
       sendBack({ type: "PERFORMANCE_UPDATE", performance: performanceData });
     }
     requestAnimationFrame(streamLoop);
-  };
+  }
   streamLoop();
   // Cleanup on stop
-  receive((event: any) => {
+  receive((_event: any) => {
     if (event.type === "STOP_STREAMING") {
       streamingActive = false;
       if (vertexBuffer) {
@@ -174,7 +174,7 @@ const enhancedRAGService = fromPromise(async ({ input }) => {
     query: string;
     context: any;
     pageRankScores: Map<string, number>
-  };
+  }
   try {
     // Use copilot orchestrator for Context7 MCP integration
     const orchestrationResult = await copilotOrchestrator(
@@ -201,7 +201,7 @@ const enhancedRAGService = fromPromise(async ({ input }) => {
       pageRankApplied: true
       orchestrationData: orchestrationResult
       processingTime: Date.now()
-    };
+    }
   } catch (error: any) {
     throw new Error(`Enhanced RAG query failed: ${error}`);
   }
@@ -211,7 +211,7 @@ const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
   let coordinationActive = false;
   let redisConnections: any[] = [];
   let natsChannels: any[] = [];
-  receive((event: any) => {
+  receive((_event: any) => {
     switch (event.type) {
       case "API_COORDINATION_START":
         coordinationActive = true;
@@ -264,7 +264,7 @@ export const phase13StateMachine = setup({
           const gl = event.canvas.getContext("webgl2", {
             powerPreference: "high-performance",
             preserveDrawingBuffer: true
-            antialias: false
+            antialias: false;
             alpha: false
           }) as WebGL2RenderingContext;
           // Initialize WebGL state
@@ -316,14 +316,14 @@ export const phase13StateMachine = setup({
             positiveVotes: current.positiveVotes + 1,
             confidence: Math.min(current.confidence + 0.1, 1.0),
             lastUpdate: Date.now()
-          };
+          }
         } else if (event.type === "FEEDBACK_NEGATIVE") {
           return {
             ...current,
             negativeVotes: current.negativeVotes + 1,
             confidence: Math.max(current.confidence - 0.1, 0.0),
             lastUpdate: Date.now()
-          };
+          }
         }
         return current;
       }
@@ -334,12 +334,12 @@ export const phase13StateMachine = setup({
           return {
             ...context.mcpContext,
             semanticSearchResults: [], // Will be populated by service
-          };
+          }
         } else if (event.type === "MCP_MEMORY_UPDATE") {
           return {
             ...context.mcpContext,
             memoryGraphNodes: event.nodes
-          };
+          }
         }
         return context.mcpContext;
       }
@@ -604,7 +604,7 @@ export const phase13Stores = {
   apiCoordination: writable({ active: false, connections: 0 }),
   performanceMetrics: writable({ frameRate: 60, latency: 0, throughput: 0 }),
   aiRecommendations: writable<string[]>([])
-};
+}
 // Derived stores for computed values
 export const phase13Derived = {
   systemHealth: derived(
@@ -617,9 +617,9 @@ export const phase13Derived = {
       return {
         overall: webglScore + apiScore + perfScore + latencyScore,
         webgl: webglScore
-        api: apiScore
+        api: apiScore;
         performance: perfScore + latencyScore
-      };
+      }
     }
   ),
   realTimeMetrics: derived(
@@ -631,7 +631,7 @@ export const phase13Derived = {
       averagePageRank: Array.from($pageRank.values()).reduce((a, b) => a + b, 0) / $pageRank.size || 0
     })
   )
-};
+}
 // Helper functions for Phase 13 integration
 export function createPhase13Integration(canvas: HTMLCanvasElement) {
   const actor = createActor(phase13StateMachine);
@@ -643,7 +643,7 @@ export function createPhase13Integration(canvas: HTMLCanvasElement) {
   return {
     actor,
     machine: phase13StateMachine
-    stores: phase13Stores
+    stores: phase13Stores;
     derived: phase13Derived
     // Convenience methods
     startVertexStreaming: (vertices: Float32Array) => {
@@ -664,6 +664,6 @@ export function createPhase13Integration(canvas: HTMLCanvasElement) {
     stopAPICoordination: () => {
       actor.send({ type: "API_COORDINATION_STOP" });
     }
-  };
+  }
 }
 export default phase13StateMachine;

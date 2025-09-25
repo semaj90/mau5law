@@ -122,7 +122,7 @@ if (!browser) return;
         processingTime,
         memoryUsage: estimateMemoryUsage(results),
         qloraDataSize: results.metadata.distilled_size
-      };
+      }
       addLog(`✅ Analysis complete: ${results.chunks.length} chunks, ${analysisMetrics.totalElements} elements`);
       addLog(`📊 Processing time: ${processingTime.toFixed(2)}ms`);
       addLog(`🧮 QLoRA data prepared: ${results.metadata.distilled_size} training examples`);
@@ -141,7 +141,7 @@ if (!browser) return;
       avgSpeed: 65 + Math.random() * 20, // 65-85 WPM
       commonWords: ['contract', 'legal', 'case', 'document', 'evidence', 'court', 'plaintiff', 'defendant'],
       specialization: ['legal', 'litigation', 'document_review'];
-    };
+    }
     intelligentWebAnalyzer.updateUserContext(userAnalytics);
     addLog('📝 Updated typing patterns for legal specialization');
   }
@@ -162,7 +162,7 @@ if (!browser) return;
         'Confidentiality Agreement',
         'Risk Assessment Report'
       ]
-    };
+    }
     intelligentWebAnalyzer.updateUserContext(userAnalytics);
     addLog('⚖️ Updated case context with active litigation matters');
   }
@@ -221,14 +221,14 @@ if (!browser) return;
       processingTime: 0,
       memoryUsage: 0,
       qloraDataSize: 0
-    };
+    }
     liveInteractions = {
       clickCount: 0,
       keystrokes: 0,
       scrollDistance: 0,
       focusChanges: 0,
       lastActivity: Date.now();
-    };
+    }
     addLog('🗑️ Cleared all analysis data');
   }
   /**
@@ -270,7 +270,7 @@ if (!browser) return;
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          texts: testTexts
+          texts: testTexts;
           model: 'nomic-text',
           source: 'batch_test';
         })
@@ -310,6 +310,7 @@ if (!browser) return;
       : '0'
   );
 </script>
+
 <div class="intelligent-analysis-demo">
   <div class="demo-header">
     <h2>🧠 Intelligent Web Analysis Pipeline</h2>
@@ -330,33 +331,19 @@ if (!browser) return;
     <div class="panel control-panel">
       <h3>🎛️ Control Panel</h3>
       <div class="controls">
-        <button
-          class="primary"
-          onclick={analyzeCurrentPage}
-          disabled={!isInitialized || isAnalyzing}
-        >
+        <button class="primary" onclick={analyzeCurrentPage} disabled={!isInitialized || isAnalyzing}>
           {#if isAnalyzing}
             🔄 Analyzing...
           {:else}
             🔍 Analyze Page
           {/if}
         </button>
-        <button onclick={simulateTypingPatterns} disabled={isAnalyzing}>
-          📝 Simulate Typing
-        </button>
-        <button onclick={updateCaseContext} disabled={isAnalyzing}>
-          ⚖️ Update Case Context
-        </button>
-        <button onclick={testBatchProcessing} disabled={isAnalyzing}>
-          🚀 Test Batch Processing
-        </button>
-        <button onclick={clearAll} disabled={isAnalyzing}>
-          🗑️ Clear All
-        </button>
+        <button onclick={simulateTypingPatterns} disabled={isAnalyzing}> 📝 Simulate Typing </button>
+        <button onclick={updateCaseContext} disabled={isAnalyzing}> ⚖️ Update Case Context </button>
+        <button onclick={testBatchProcessing} disabled={isAnalyzing}> 🚀 Test Batch Processing </button>
+        <button onclick={clearAll} disabled={isAnalyzing}> 🗑️ Clear All </button>
         {#if analysisResults}
-          <button class="export" onclick={exportQLoRAData}>
-            📥 Export QLoRA Data
-          </button>
+          <button class="export" onclick={exportQLoRAData}> 📥 Export QLoRA Data </button>
         {/if}
       </div>
       <!-- Settings -->
@@ -386,10 +373,7 @@ if (!browser) return;
       {#if isAnalyzing && analysisState.progress > 0}
         <div class="progress-section">
           <div class="progress-bar">
-            <div
-              class="progress-fill"
-              style="width: {analysisState.progress}%"
-            ></div>
+            <div class="progress-fill" style="width: {analysisState.progress}%"></div>
           </div>
           <p class="progress-text">{analysisState.currentStep}</p>
         </div>
@@ -496,6 +480,7 @@ if (!browser) return;
     </div>
   </div>
 </div>
+
 <style>
   .intelligent-analysis-demo {
     max-width: 1400px;

@@ -15,7 +15,7 @@ export interface RateLimitOptions {
 }
 export function checkRateLimit(opts: RateLimitOptions) {
   const now = Date.now();
-  const bucket = buckets.get(opts.key) || { tokens: 0, updated: now };
+  const bucket = buckets.get(opts.key) || { tokens: 0, updated: now }
   const elapsed = now - bucket.updated;
   if (opts.refillStrategy === 'fixed') {
     if (elapsed > opts.windowMs) {
@@ -33,11 +33,11 @@ export function checkRateLimit(opts: RateLimitOptions) {
   if (bucket.tokens >= opts.limit) {
     buckets.set(opts.key, bucket);
     const retryAfter = Math.ceil((opts.windowMs - (elapsed % opts.windowMs)) / 1000);
-    return { allowed: false, retryAfter };
+    return { allowed: false, retryAfter }
   }
   bucket.tokens += 1;
   buckets.set(opts.key, bucket);
-  return { allowed: true };
+  return { allowed: true }
 }
 // Test utility: clear all buckets (not for production runtime usage)
 export function __resetRateLimiter() {

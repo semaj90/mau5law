@@ -12,8 +12,9 @@
     // @ts-ignore
     if (typeof navigator !== 'undefined' && (navigator as any).gpu) return false;
     return false;
-  };
+  }
 </script>
+
 {#if shouldUseCanvas()}
   <EvidenceCanvas {caseFiles} />
 {:else}

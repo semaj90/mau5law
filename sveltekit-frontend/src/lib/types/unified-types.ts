@@ -34,7 +34,7 @@ export interface OllamaModel {
     families?: string[];
     parameter_size: string;
     quantization_level: string;
-  };
+  }
   modified_at: string;
 }
 export interface OllamaHealthCheck {
@@ -52,8 +52,8 @@ export interface RAGQuery {
   filters?: {
     documentType?: string;
     jurisdiction?: string;
-    dateRange?: { start: Date; end: Date };
-  };
+    dateRange?: { start: Date; end: Date }
+  }
   limit?: number;
   threshold?: number;
 }
@@ -69,7 +69,7 @@ export interface RAGSource {
     jurisdiction?: string;
     confidence?: number;
     tags?: string[];
-  };
+  }
 }
 export interface RAGResult {
   source: RAGSource;
@@ -118,7 +118,7 @@ export interface Evidence {
     sentiment?: string;
     confidence?: number;
     tags?: string[];
-  };
+  }
   createdAt: Date;
   createdBy: string;
   chainOfCustody?: ChainOfCustodyEntry[];
@@ -157,7 +157,7 @@ export interface LegalEntity {
   startPos: number;
   endPos: number;
   confidence: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface LegalClause {
   id: string;
@@ -196,11 +196,11 @@ export interface UserPreferences {
     email: boolean;
     push: boolean;
     sms: boolean;
-  };
+  }
   ui: {
     density: 'compact' | 'comfortable' | 'spacious';
     sidebarCollapsed: boolean;
-  };
+  }
 }
 export interface AuthSession {
   id: string;
@@ -231,7 +231,7 @@ export interface PaginatedResponse<T = any> {
     pages: number;
     hasNext: boolean;
     hasPrev: boolean;
-  };
+  }
 }
 export interface ValidationError {
   field: string;
@@ -251,27 +251,27 @@ export interface ApiError {
 }
 export interface SearchOptions {
   query?: string;
-  filters?: { [key: string]: any };
+  filters?: { [key: string]: any }
   sort?: {
     field: string;
     direction: 'asc' | 'desc';
-  };
+  }
   pagination?: {
     page: number;
     limit: number;
-  };
+  }
 }
 export interface SearchResult<T = any> {
   item: T;
   score?: number;
   highlights?: string[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface SearchResponse<T = any> {
   results: SearchResult<T>[];
   total: number;
   query: string;
-  filters?: { [key: string]: any };
+  filters?: { [key: string]: any }
   processingTime: number;
   suggestions?: string[];
 }
@@ -287,7 +287,7 @@ export interface CacheEntry<T = any> {
     lastAccessed: Date;
     size: number;
     tags?: string[];
-  };
+  }
 }
 export interface CacheStats {
   totalEntries: number;
@@ -306,12 +306,12 @@ export interface AIAnalysisRequest {
     caseId?: string;
     documentType?: string;
     jurisdiction?: string;
-  };
+  }
   options?: {
     model?: string;
     temperature?: number;
     maxTokens?: number;
-  };
+  }
 }
 export interface AIAnalysisResponse {
   result: string | object;
@@ -324,10 +324,10 @@ export interface AIAnalysisResponse {
     sentiment?: {
       score: number;
       label: 'positive' | 'negative' | 'neutral';
-    };
+    }
     riskScore?: number;
     tags?: string[];
-  };
+  }
 }
 // ===== XSTATE & WORKFLOW TYPES =====
 }
@@ -337,7 +337,7 @@ export interface WorkflowContext {
   currentStep: string;
   progress: number;
   errors: string[];
-  data: { [key: string]: any };
+  data: { [key: string]: any }
   aiRecommendations?: string[];
   confidence?: number;
 }
@@ -351,8 +351,8 @@ export interface WorkflowEvent {
 }
 export interface MCPRequest {
   tool: string;
-  parameters: { [key: string]: any };
-  context?: { [key: string]: any };
+  parameters: { [key: string]: any }
+  context?: { [key: string]: any }
 }
 export interface MCPResponse<T = any> {
   success: boolean;
@@ -362,7 +362,7 @@ export interface MCPResponse<T = any> {
     processingTime: number;
     model?: string;
     tokens?: number;
-  };
+  }
 }
 export interface Context7Integration {
   stackAnalysis: boolean;
@@ -385,12 +385,12 @@ export interface FormField {
     max?: number;
     minLength?: number;
     maxLength?: number;
-  };
+  }
   options?: { value: string; label: string }[];
 }
 export interface FormSchema {
   fields: FormField[];
-  validation?: { [key: string]: any };
+  validation?: { [key: string]: any }
 }
 // ===== COMPONENT PROPS TYPES =====
 }

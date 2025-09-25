@@ -340,4 +340,4 @@ function getLegalCacheTTL(searchType: string): number {
   return ttlMap[searchType as keyof typeof ttlMap] || 1800
 }
 export const POST = redisOptimized.aiSearch(originalPOSTHandler)
-export const GET = redisOptimized.aiSearch(originalGETHandler)
+export const GET = redisOptimized.aiSearch(originalGETHandler);

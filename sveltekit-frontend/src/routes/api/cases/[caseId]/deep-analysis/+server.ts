@@ -166,7 +166,7 @@ ws ::= ([ \t\n]*)
             // The output should be valid JSON because of the grammar
             const parsedResponse = JSON.parse((data as { response?: any; choices?: any; detail?: any }).response)
             analysisResults.firm_ai = {
-              output: parsedResponse
+              output: parsedResponse;
               source: "Local LLM (JSON)"
             }
           } catch (e: any) {

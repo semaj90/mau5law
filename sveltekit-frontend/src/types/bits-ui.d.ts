@@ -30,6 +30,6 @@ declare module 'bits-ui' {
     Avatar: ComponentCtor;
     Menu: ComponentCtor;
     ScrollAreaViewport: ComponentCtor;
-  };
+  }
   export default _default;
 }

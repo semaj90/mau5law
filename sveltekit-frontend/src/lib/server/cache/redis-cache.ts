@@ -19,7 +19,7 @@ async function ensureClient() {
     return null;
   }
 }
-export async function getJSON<T = unknown>(key: string): Promise<T | null> {
+export async function getJSON<T = unknown>(_key: string): Promise<T | null> {
   const c = await ensureClient();
   if (!c) return null;
   try {
@@ -30,7 +30,7 @@ export async function getJSON<T = unknown>(key: string): Promise<T | null> {
     return null;
   }
 }
-export async function setJSON(key: string, value: unknown, ttlSeconds = 60): Promise<void> {
+export async function setJSON(_key: string, value: unknown, ttlSeconds = 60): Promise<void> {
   const c = await ensureClient();
   if (!c) return;
   try {
@@ -42,12 +42,12 @@ export async function setJSON(key: string, value: unknown, ttlSeconds = 60): Pro
   }
 }
 // Simple anti-stampede: coalesce concurrent misses per key in-process.
-export async function withCache<T>(key: string, ttlSeconds: number, compute: () => Promise<T>): Promise<any> {
+export async function withCache<T>(_key: string, ttlSeconds: number, compute: () => Promise<T>): Promise<any> {
   const hit = await getJSON<T>(key);
-  if (hit != null) return { value: hit, cached: true };
+  if (hit != null) return { value: hit, cached: true }
   if (pending.has(key)) {
     const v = await pending.get(key)!;
-    return { value: v as T, cached: false };
+    return { value: v as T, cached: false }
   }
   const p = (async () => {
     const v = await compute();
@@ -58,7 +58,7 @@ export async function withCache<T>(key: string, ttlSeconds: number, compute: () 
   pending.set(key, p);
   try {
     const v = await p;
-    return { value: v as T, cached: false };
+    return { value: v as T, cached: false }
   } finally {
     pending.delete(key);
   }

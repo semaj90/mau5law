@@ -62,7 +62,7 @@ if (!browser) return;
         backgroundColor: "#f8fafc",
         selection: !readonly,
         preserveObjectStacking: true
-        enableRetinaScaling: true
+        enableRetinaScaling: true;
     })();
   });
       fabricLoaded = true;
@@ -413,107 +413,83 @@ if (!browser) return;
       saveCanvasState();
   }}
 </script>
+
 <div class="space-y-4">
   <!-- Toolbar -->
-  <div
-    class="space-y-4"
-  >
+  <div class="space-y-4">
     <div class="space-y-4">
       <!-- Tool Selection -->
-      <div
-        class="space-y-4"
-      >
-        <Button class="bits-btn"
-          variant={selectedTool === "select" ? "primary" : "outline"}
+      <div class="space-y-4">
+        <Button
+          class="bits-btn"
+          variant={selectedTool === 'select' ? 'primary' : 'outline'}
           size="sm"
-          onclick={() =>
-selectTool("select")}
+          onclick={() => selectTool('select')}
           disabled={readonly}
         >
           <Move class="space-y-4" />
-</Button>
-        <Button class="bits-btn"
-          variant={selectedTool === "draw" ? "primary" : "outline"}
+        </Button>
+        <Button
+          class="bits-btn"
+          variant={selectedTool === 'draw' ? 'primary' : 'outline'}
           size="sm"
-          onclick={() =>
-selectTool("draw")}
+          onclick={() => selectTool('draw')}
           disabled={readonly}
         >
           ✏️
-</Button>
-        <Button class="bits-btn"
-          variant={selectedTool === "text" ? "primary" : "outline"}
+        </Button>
+        <Button
+          class="bits-btn"
+          variant={selectedTool === 'text' ? 'primary' : 'outline'}
           size="sm"
-          onclick={() =>
-selectTool("text")}
+          onclick={() => selectTool('text')}
           disabled={readonly}
         >
           <Type class="space-y-4" />
-</Button>
+        </Button>
       </div>
       <!-- Shapes -->
       {#if !readonly}
-        <div
-          class="space-y-4"
-        >
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={() =>
-addShape("rectangle")}
-          >
+        <div class="space-y-4">
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => addShape('rectangle')}>
             <Square class="space-y-4" />
-</Button>
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={() =>
-addShape("circle")}
-          >
+          </Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => addShape('circle')}>
             <Circle class="space-y-4" />
-</Button>
+          </Button>
         </div>
       {/if}
       <!-- History -->
-      <div
-        class="space-y-4"
-      >
-        <Button class="bits-btn"
+      <div class="space-y-4">
+        <Button
+          class="bits-btn"
           variant="ghost"
           size="sm"
-          onclick={() =>
-undo()}
+          onclick={() => undo()}
           disabled={readonly || historyIndex <= 0}
         >
           <Undo class="space-y-4" />
-</Button>
-        <Button class="bits-btn"
+        </Button>
+        <Button
+          class="bits-btn"
           variant="ghost"
           size="sm"
-          onclick={() =>
-redo()}
+          onclick={() => redo()}
           disabled={readonly || historyIndex >= canvasHistory.length - 1}
         >
           <Redo class="space-y-4" />
-</Button>
+        </Button>
       </div>
       <!-- Zoom -->
       <div class="space-y-4">
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-zoomOut()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => zoomOut()}>
           <ZoomOut class="space-y-4" />
-</Button>
-        <span class="space-y-4"
-          >{Math.round(zoom * 100)}%</span
-        >
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-zoomIn()}>
+        </Button>
+        <span class="space-y-4">{Math.round(zoom * 100)}%</span>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => zoomIn()}>
           <ZoomIn class="space-y-4" />
-</Button>
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-resetZoom()}
-          >Reset</Button
-        >
+        </Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => resetZoom()}>Reset</Button>
       </div>
     </div>
     <!-- Actions -->
@@ -521,34 +497,25 @@ resetZoom()}
       {#if !readonly}
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() => deleteSelected()}>
           <Trash2 class="space-y-4" />
-</Button>
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-saveCanvas()}>
+        </Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => saveCanvas()}>
           <Save class="space-y-4" />
           Save
-</Button>
+        </Button>
       {/if}
-      <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-exportCanvas()}>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => exportCanvas()}>
         <Download class="space-y-4" />
         Export
-</Button>
+      </Button>
     </div>
   </div>
   <!-- Canvas Container -->
   <div class="space-y-4">
-    <div
-      bind:this={canvasContainer}
-      class="space-y-4"
-    ></div>
+    <div bind:this={canvasContainer} class="space-y-4"></div>
     {#if !fabricLoaded}
-      <div
-        class="space-y-4"
-      >
+      <div class="space-y-4">
         <div class="space-y-4">
-          <div
-            class="space-y-4"
-          ></div>
+          <div class="space-y-4"></div>
           <p class="space-y-4">Loading canvas...</p>
         </div>
       </div>
@@ -556,17 +523,15 @@ exportCanvas()}>
   </div>
   <!-- Instructions -->
   {#if fabricLoaded && evidenceItems.length === 0}
-    <div
-      class="space-y-4"
-    >
+    <div class="space-y-4">
       <Image class="space-y-4" />
       <p class="space-y-4">Evidence Board</p>
-      <p class="space-y-4">
-        Add evidence items to start building your case visualization
-      </p>
+      <p class="space-y-4">Add evidence items to start building your case visualization</p>
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
 </style>
+;

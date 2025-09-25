@@ -171,13 +171,13 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   // Upload query with high precision
   const queryBuffer = await uploader.uploadBuffer(queryDocument, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    quantization: 'legal_critical', // High precision for query
+    quantization: 'legal_critical', // High precision for query;
     label: 'similarity-query'
   });
   // Upload corpus with compression
   const corpusBuffers = await uploader.uploadBatch(documentCorpus.slice(0, 10), { // Just first 10 for demo
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    quantization: 'legal_compressed', // Compressed for bulk storage
+    quantization: 'legal_compressed', // Compressed for bulk storage;
     label: 'similarity-corpus',
     debugMode: false
   });
@@ -321,4 +321,4 @@ export default {
   debugAndAnalysisExample,
   realWorldLegalAIPipeline,
   runAllExamples
-};
+}

@@ -16,7 +16,7 @@ const connectionConfig = {
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000
-};
+}
 // PostgreSQL Connection Pool with Error Handling
 export class PgVectorService {
   private pool: Pool;
@@ -78,7 +78,7 @@ export class PgVectorService {
             waitingCount: this.pool.waitingCount
           }
         }
-      };
+      }
     } catch (error) {
       return {
         success: false
@@ -86,7 +86,7 @@ export class PgVectorService {
           error: error.message,
           connectionConfig: { ...connectionConfig, password: '***' }
         }
-      };
+      }
     }
   }
   /**
@@ -96,7 +96,7 @@ export class PgVectorService {
   async insertDocumentWithEmbedding(
     documentId: string
     content: string
-    embedding: number[]
+    embedding: number[];
     metadata: any = {}
   ): Promise<any> {
     try {
@@ -126,9 +126,9 @@ export class PgVectorService {
         const docId = docResult.rows[0].id;
         await client.query('COMMIT');
         return {
-          success: true
+          success: true;
           id: docId
-        };
+        }
       } catch (error) {
         await client.query('ROLLBACK');
         throw error;
@@ -137,9 +137,9 @@ export class PgVectorService {
       }
     } catch (error) {
       return {
-        success: false
+        success: false;
         error: error.message
-      };
+      }
     }
   }
   /**
@@ -204,7 +204,7 @@ export class PgVectorService {
         const result = await client.query(query, queryParams);
         const searchTime = Date.now() - startTime;
         return {
-          success: true
+          success: true;
           results: (result as { rows?: any; rowCount?: any }).rows,
           metadata: {
             searchTime: `${searchTime}ms`,
@@ -213,15 +213,15 @@ export class PgVectorService {
             threshold,
             query: query.replace(/\$\d+/g, '?')
           }
-        };
+        }
       } finally {
         client.release();
       }
     } catch (error) {
       return {
-        success: false
+        success: false;
         error: error.message
-      };
+      }
     }
   }
   /**
@@ -277,7 +277,7 @@ export class PgVectorService {
           success: true
           inserted,
           errors: errors.length > 0 ? errors : undefined
-        };
+        }
       } catch (error) {
         await client.query('ROLLBACK');
         throw error;
@@ -286,16 +286,16 @@ export class PgVectorService {
       }
     } catch (error) {
       return {
-        success: false
+        success: false;
         errors: [error.message]
-      };
+      }
     }
   }
   /**
    * Create IVFFLAT index for vector similarity search optimization
    * Best Practice: Index creation for production performance
    */;
-  async createVectorIndex(options: {
+  async createVectorIndex(_options: {
       lists?: number;
       metric?: 'cosine' | 'euclidean' | 'inner_product';
       tableName?: string;
@@ -313,7 +313,7 @@ export class PgVectorService {
         cosine: 'vector_cosine_ops',
         euclidean: 'vector_l2_ops',
         inner_product: 'vector_ip_ops'
-      };
+      }
       const indexName = `idx_${tableName}_${columnName}_${metric}`;
       const opClass = metricMapping[metric];
       const client = await this.pool.connect();
@@ -343,15 +343,15 @@ export class PgVectorService {
             creationTime: `${indexTime}ms`,
             query: indexQuery.trim()
           }
-        };
+        }
       } finally {
         client.release();
       }
     } catch (error) {
       return {
-        success: false
+        success: false;
         error: error.message
-      };
+      }
     }
   }
   /**
@@ -433,15 +433,15 @@ export class PgVectorService {
               waiting: this.pool.waitingCount
             }
           }
-        };
+        }
       } finally {
         client.release();
       }
     } catch (error) {
       return {
-        success: false
+        success: false;
         error: error.message
-      };
+      }
     }
   }
   /**

@@ -9,7 +9,7 @@
     { value: 'personal-injury', label: 'Personal Injury' },
     { value: 'criminal', label: 'Criminal Defense' },
     { value: 'family', label: 'Family Law' },
-    { value: 'corporate', label: 'Corporate Law' }
+    { value: 'corporate', label: 'Corporate Law' },
   ];
   // Component state
   let selectedCaseType = $state('');
@@ -17,15 +17,16 @@
   let searchQuery = $state('');
   let urgentCaseOnly = $state(false);
   // Event handlers
-  function handleSearch(event: CustomEvent<string>) {
+  function handleSearch(_event: CustomEvent<string>) {
     console.log('Search query:', event.detail);
   }
-  function handleFilter(event: CustomEvent) {
+  function handleFilter(_event: CustomEvent) {
     console.log('Filter applied:', event.detail);
   }
   // Computed validation
   // TODO: Convert to $derived: isFormValid = selectedCaseType && acceptTerms && searchQuery.length > 0
 </script>
+
 <div class="validation-container">
   <h2>Phase 1 Component Integration Validation</h2>
   <div class="component-section">
@@ -41,19 +42,11 @@
   </div>
   <div class="component-section">
     <h3>✅ Checkbox Component</h3>
-    <Checkbox
-      bind:checked={acceptTerms}
-      label="I accept the terms and conditions"
-      id="terms-checkbox"
-    />
-    <Checkbox
-      bind:checked={urgentCaseOnly}
-      label="Urgent cases only"
-      id="urgent-checkbox"
-    />
+    <Checkbox bind:checked={acceptTerms} label="I accept the terms and conditions" id="terms-checkbox" />
+    <Checkbox bind:checked={urgentCaseOnly} label="Urgent cases only" id="urgent-checkbox" />
     <p class="status">
-      Terms: <strong>{acceptTerms ? 'Accepted' : 'Not accepted'}</strong> |
-      Urgent: <strong>{urgentCaseOnly ? 'Yes' : 'No'}</strong>
+      Terms: <strong>{acceptTerms ? 'Accepted' : 'Not accepted'}</strong> | Urgent:
+      <strong>{urgentCaseOnly ? 'Yes' : 'No'}</strong>
     </p>
   </div>
   <div class="component-section">
@@ -88,11 +81,12 @@
   </div>
   {#if isFormValid}
     <div class="success-message">
-      ✅ <strong>PHASE 1 VALIDATION COMPLETE</strong><br>
+      ✅ <strong>PHASE 1 VALIDATION COMPLETE</strong><br />
       All critical UI components are functional and ready for legal workflows!
     </div>
   {/if}
 </div>
+
 <style>
   .validation-container {
     max-width: 800px;

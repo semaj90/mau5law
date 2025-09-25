@@ -41,7 +41,7 @@
     // Advanced effects
     enableParticles?: boolean;
     // Event handler
-    ondispatch?: (event: { checked: boolean; value?: string }) => void;
+    ondispatch?: (_event: { checked: boolean; value?: string }) => void;
     glowIntensity?: number;
     enableSpatialAudio?: boolean;
     enableToggleGlow?: boolean;
@@ -103,7 +103,7 @@
     enableMipMapping,
     enableFog,
     ...renderOptions
-  };
+  }
   // Create spatial audio for switch actions
   const playSwitchSound = async (isOn: boolean) => {
     if (!enableSpatialAudio) return;
@@ -171,7 +171,7 @@
     } catch (error) {
       console.warn('Could not play switch sound:', error);
     }
-  };
+  }
   const handleToggle = async () => {
     if (disabled || readonly || loading) return;
     isPressed = true;
@@ -188,28 +188,28 @@
       isAnimating = false;
     }, animationDuration);
     ondispatch?.({ checked: newValue, value });
-  };
+  }
   const handleFocus = () => {
     if (disabled) return;
     isFocused = true;
-  };
+  }
   const handleBlur = () => {
     isFocused = false;
-  };
+  }
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
-  };
+  }
   const handleUnhover = () => {
     isHovered = false;
-  };
-  const handleKeyDown = (event: KeyboardEvent) => {
+  }
+  const handleKeyDown = (_event: KeyboardEvent) => {
     if (disabled || readonly) return;
     if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault();
       handleToggle();
     }
-  };
+  }
   const createSwitchParticles = () => {
     const particles = 6;
     const container = switchElement?.parentElement;
@@ -221,7 +221,7 @@
         position: absolute;
         width: 3px;
         height: 3px;
-        background: ${checked ? '#4a90e2' : '#6c757d'};
+        background: ${checked ? '#4a90e2' : '#6c757d'}
         border-radius: 50%;
         pointer-events: none;
         animation: switchParticleExplosion 0.6s ease-out forward;
@@ -237,7 +237,7 @@
         particle.remove();
       }, 600);
     }
-  };
+  }
   // Get material styles based on state and variant
   const getMaterialStyles = (variant: string, material: string, isOn: boolean) => {
     const baseColors = {
@@ -265,7 +265,7 @@
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
         on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
-    };
+    }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     const stateColors = isOn ? colors.on: colors.off;
     const materialMap = {
@@ -301,18 +301,18 @@
           0 0 0 1px rgba(255,255,255,0.1)
         `
       }
-    };
+    }
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
-  };
+  }
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' },
       medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
       large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },
       xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
-    };
+    }
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
-  };
+  }
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
@@ -334,7 +334,7 @@
       classes.push('anisotropic-4x');
     }
     return classes.join(' ');
-  };
+  }
   let sizeStyles = $derived(getSizeStyles(size));
   let materialStyles = $derived(getMaterialStyles(variant, materialType, checked));
   let knobTranslateX = $derived(checked ? sizeStyles.width - sizeStyles.knobSize - 4 : 2);
@@ -367,13 +367,13 @@
     return () => {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
       style.remove();
-    };
+    }
   });
 </script>
 <div class="n64-switch-container {className}">
   <div
     bind:this={switchElement}
-    class="n64-switch {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
+    class="n64-switch {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}";
     class: checked;
     class:focused={isFocused}
     class:hovered={isHovered}
@@ -381,20 +381,20 @@
     class:animating={isAnimating}
     class: disabled;
     class:readonly
-    style="
-      --track-bg: {materialStyles.trackBackground};
-      --knob-bg: {materialStyles.knobBackground};
-      --knob-shadow: {materialStyles.knobShadow};
+    style=";
+      --track-bg: {materialStyles.trackBackground}
+      --knob-bg: {materialStyles.knobBackground}
+      --knob-shadow: {materialStyles.knobShadow}
       --switch-width: {sizeStyles.width}px;
       --switch-height: {sizeStyles.height}px;
       --knob-size: {sizeStyles.knobSize}px;
-      --switch-font-size: {sizeStyles.fontSize};
-      --transform-3d: {transform3D};
-      --knob-transform: {knobTransform};
-      --fog-color: {effectiveRenderOptions.fogColor};
-      --glow-intensity: {glowIntensity};
+      --switch-font-size: {sizeStyles.fontSize}
+      --transform-3d: {transform3D}
+      --knob-transform: {knobTransform}
+      --fog-color: {effectiveRenderOptions.fogColor}
+      --glow-intensity: {glowIntensity}
       --animation-duration: {animationDuration}m;
-      --spring-tension: {springTension};
+      --spring-tension: {springTension}
     "
     role="switch"
     tabindex={disabled ? -1 : 0}

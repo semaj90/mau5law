@@ -144,7 +144,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (pattern) {
       // Clear specific pattern - would need implementation
       return json({
-        success: true
+        success: true;
         message: `Cache pattern "${pattern}" clear not implemented - use full clear`,
         cleared_keys: 0
       })

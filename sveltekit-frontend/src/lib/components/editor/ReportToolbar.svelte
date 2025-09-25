@@ -36,27 +36,27 @@ https://svelte.dev/e/js_parse_error -->
   // Actions
   const handleSave = () => {
     reportActions.save();
-  };
+  }
   const handleExport = () => {
     // TODO: Implement export functionality
     console.log("Export report");
-  };
+  }
   const handlePreview = () => {
     // TODO: Implement preview functionality
     console.log("Preview report");
-  };
+  }
   const toggleSidebar = () => {
     reportUI.update((ui) => ({ ...ui, sidebarOpen: !ui.sidebarOpen }));
-  };
+  }
   const toggleFullscreen = () => {
     reportUI.update((ui) => ({ ...ui, fullscreen: !ui.fullscreen }));
-  };
+  }
   const toggleLayout = () => {
     const layouts = ["single", "dual", "masonry"] as const;
     const currentIndex = layouts.indexOf($report.settings.layout);
     const nextLayout = layouts[(currentIndex + 1) % layouts.length];
     reportActions.updateSettings({ layout: nextLayout });
-  };
+  }
 </script>
 <div class="container mx-auto px-4">
   <!-- Main Menu Bar -->

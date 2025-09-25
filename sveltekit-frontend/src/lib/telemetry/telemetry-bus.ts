@@ -16,7 +16,7 @@ export interface TelemetryBaseEvent<T extends TelemetryEventType = TelemetryEven
   meta?: Record<string, unknown>;
 }
 export interface TelemetrySubscriber {
-  (event: TelemetryBaseEvent): void;
+  (_event: TelemetryBaseEvent): void;
 }
 class TelemetryBus {
   private subs: Set<TelemetrySubscriber> = new Set();
@@ -26,12 +26,16 @@ class TelemetryBus {
     this.subs.add(fn);
     return () => this.subs.delete(fn);
   }
-  publish<T extends TelemetryEventType>(event: Omit<TelemetryBaseEvent<T>, 'ts'> & { ts?: number }): void {
+  publish<T extends TelemetryEventType>(_event: Omit<TelemetryBaseEvent<T>, 'ts'> & { ts?: number }): void {
     const full: TelemetryBaseEvent = { ...event, ts: event.ts ?? performance.now() } as TelemetryBaseEvent;
     this.buffer.push(full);
     if (this.buffer.length > this.bufferLimit) this.buffer.shift();
     for (const sub of this.subs) {
-      try { sub(full); } catch (_) { /* swallow */ }
+      try {
+        sub(full);
+      } catch (_) {
+        /* swallow */
+      }
     }
   }
   getRecent(limit = 100): TelemetryBaseEvent[] {

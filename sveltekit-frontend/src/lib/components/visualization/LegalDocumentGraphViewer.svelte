@@ -119,7 +119,7 @@ try {
     if (!adapter) throw new Error('No WebGPU adapter found');
     const device = await adapter.requestDevice();
     tensorStore = new DimensionalTensorStore(device, {
-      documents: maxNodes
+      documents: maxNodes;
       chunks: 100,
       representations: 8,
       maxLOD: 4;
@@ -161,7 +161,7 @@ try {
       if (graphEngine) {
         $performanceStats = graphEngine.getPerformanceStats();
       }
-    };
+    }
     // Update performance stats every second
     const perfInterval = setInterval(updatePerformance, 1000);
     // Start WebGPU render loop
@@ -172,7 +172,7 @@ try {
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
-    };
+    }
     // Store cleanup reference
     onDestroy(cleanup);
   }
@@ -186,7 +186,7 @@ try {
     // Mouse events
     canvas.addEventListener('mousedown', (e) => {
       isDragging = true;
-      lastMousePos = { x: e.clientX, y: e.clientY };
+      lastMousePos = { x: e.clientX, y: e.clientY }
       canvas.style.cursor = 'grabbing';
     });
     canvas.addEventListener('mousemove', (e) => {
@@ -202,7 +202,7 @@ try {
           state.cameraPosition[2]
         ]
       }));
-      lastMousePos = { x: e.clientX, y: e.clientY };
+      lastMousePos = { x: e.clientX, y: e.clientY }
     });
     canvas.addEventListener('mouseup', (e) => {
       if (isDragging) {
@@ -227,7 +227,7 @@ try {
   let touchStart = $state({ x: 0, y: 0 });
     canvas.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
-      touchStart = { x: touch.clientX, y: touch.clientY };
+      touchStart = { x: touch.clientX, y: touch.clientY }
     });
     canvas.addEventListener('touchmove', (e) => {
       e.preventDefault();
@@ -242,7 +242,7 @@ try {
           state.cameraPosition[2]
         ]
       }));
-      touchStart = { x: touch.clientX, y: touch.clientY };
+      touchStart = { x: touch.clientX, y: touch.clientY }
     });
     // Resize observer
     resizeObserver = new ResizeObserver(entries => {
@@ -266,7 +266,7 @@ try {
    * Handle node clicks - The Hybrid Cache-First Strategy Implementation
    * This is the core of our "Fast Path / Slow Path" architecture
    */
-  async function handleNodeClick(event: MouseEvent): Promise<void> {
+  async function handleNodeClick(_event: MouseEvent): Promise<void> {
     if (!graphEngine || !$canInteract) return;
     const clickStartTime = performance.now();
     // 1. Convert mouse coordinates to WebGL/WebGPU coordinates
@@ -359,8 +359,8 @@ try {
     // Simplified animation
     renderState.update(state => ({
       ...state,
-      cameraPosition: [0, 0, 8], // Move closer
-      zoom: 1.2 // Slight zoom i
+      cameraPosition: [0, 0, 8], // Move closer;
+      zoom: 1.2 // Slight zoom i;
     }));
   }
   /**
@@ -445,8 +445,8 @@ try {
       const graphData: GraphVisualizationData = {
         graphId,
         graphType: 'legal-entities',
-        nodes: [], // Would get from engine
-        edges: [], // Would get from engi
+        nodes: [], // Would get from engine;
+        edges: [], // Would get from engi;
         layout: {
           algorithm: 'force-directed',
           parameters: ,
@@ -460,7 +460,7 @@ try {
         createdAt: new Date(),
         lastAccessed: new Date(),
         computationTime: 0
-      };
+      }
       await legalDB.graphVisualizationData.put(graphData);
       console.log('[Graph Viewer] Graph state saved to database');
     } catch (err) {
@@ -493,6 +493,7 @@ try {
     // This would need implementation in the engine
   }
 </script>
+
 <!-- ============================================================================ -->
 <!-- COMPONENT TEMPLATE -->
 <!-- ============================================================================ -->
@@ -514,13 +515,7 @@ try {
     </div>
   {/if}
   <!-- WebGPU Canvas -->
-  <canvas
-    bind:this={canvas as any}
-    class="graph-canvas"
-    class:interactive={$canInteract}
-    {width}
-    {height}
-  ></canvas>
+  <canvas bind:this={canvas as any} class="graph-canvas" class:interactive={$canInteract} {width} {height}></canvas>
   <!-- Performance HUD -->
   {#if $isInitialized && !$error}
     <div class="performance-hud">
@@ -545,15 +540,14 @@ try {
   <!-- Controls Panel -->
   {#if $canInteract}
     <div class="controls-panel">
-      <button onclick={resetCamera} title="Reset Camera">
-        🎯
-      </button>
-      <button onclick={togglePhysics} title="Toggle Physics" class:active={enablePhysics}>
-        ⚡
-      </button>
-      <button onclick={() => $renderState.autoRotate = !$renderState.autoRotate}
-              title="Auto Rotate" ;
-              class:active={$renderState.autoRotate}>
+      <button onclick={resetCamera} title="Reset Camera"> 🎯 </button>
+      <button onclick={togglePhysics} title="Toggle Physics" class:active={enablePhysics}> ⚡ </button>
+      <button
+        onclick={() => ($renderState.autoRotate = !$renderState.autoRotate)}
+        title="Auto Rotate"
+        ;
+        class:active={$renderState.autoRotate}
+      >
         🔄
       </button>
       <select bind:value={$renderState.filterType} title="Filter Nodes">
@@ -563,20 +557,21 @@ try {
         <option value="entity">Entities</option>
         <option value="precedent">Precedents</option>
       </select>
-      <button onclick={saveGraphState} title="Save State">
-        💾
-      </button>
-      <button onclick={async () => {
-        const blob = await exportImage();
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `legal-graph-${graphId}.png`;
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-      }} title="Export Image">
+      <button onclick={saveGraphState} title="Save State"> 💾 </button>
+      <button
+        onclick={async () => {
+          const blob = await exportImage();
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `legal-graph-${graphId}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        }}
+        title="Export Image"
+      >
         📷
       </button>
     </div>
@@ -598,13 +593,14 @@ try {
   documentId={$documentDetailsState.selectedDocumentId || ''}
   isVisible={$documentDetailsState.isVisible}
   onClose={closeDocumentDetails}
-  relatedDocumentsLoaded={(event) => {
+  relatedDocumentsLoaded={event => {
     // Update graph visualization when related documents are loaded
     if ($documentDetailsState.selectedDocumentId) {
       updateGraphWithRelations($documentDetailsState.selectedDocumentId, event.detail.relatedDocuments);
     }
   }}
 />
+
 <!-- ============================================================================ -->
 <!-- COMPONENT STYLES -->
 <!-- ============================================================================ -->
@@ -644,8 +640,12 @@ try {
     margin-bottom: 16px;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   .error-overlay {
     text-align: center;

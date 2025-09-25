@@ -48,7 +48,7 @@ export class NESGPUMemoryBridge {
     cudaKernelTime: 0,
     memoryBandwidth: 0,
     cacheMissRate: 0.0
-  };
+  }
   // FlatBuffer binary data cache
   private binaryCache: Map<string, ArrayBuffer> = new Map();
   private textureCache: Map<string, GPUTextureMatrix> = new Map();
@@ -134,7 +134,7 @@ export class NESGPUMemoryBridge {
    * Convert legal document data to FlatBuffer binary format
    * 8x faster than JSON.stringify/parse for large datasets
    */;
-  async createFlatBufferFromDocument(document: LegalDocument): Promise<ArrayBuffer> {
+  async createFlatBufferFromDocument(_document: LegalDocument): Promise<ArrayBuffer> {
     const startTime = performance.now();
     try {
       // Calculate total buffer size
@@ -220,7 +220,7 @@ export class NESGPUMemoryBridge {
       while (offset % 4 !== 0) offset++;
       // Read metadata
       const metadataLength = view.getUint32(offset, true); offset += 4;
-      let metadata: any = {};
+      let metadata: any = {}
       if (metadataLength > 0) {
         const metadataBytes = uint8View.slice(offset, offset + metadataLength);
         const metadataJson = new TextDecoder().decode(metadataBytes);
@@ -250,7 +250,7 @@ export class NESGPUMemoryBridge {
         bankId,
         compressed,
         metadata
-      };
+      }
       return document;
     } catch (error: any) {
       console.error('❌ FlatBuffer parsing failed:', error);
@@ -319,7 +319,7 @@ export class NESGPUMemoryBridge {
         gpuBuffer: buffer
         texture,
         bindGroup
-      };
+      }
       // Cache the texture
       this.textureCache.set(documentId, textureMatrix);
       this.rankingTextures.set(documentId, textureMatrix);
@@ -410,7 +410,7 @@ export class NESGPUMemoryBridge {
   }
   // Helper methods for binary encoding
   private getDocumentTypeCode(type: LegalDocument['type']): number {
-    const codes = { contract: 1, evidence: 2, brief: 3, citation: 4, precedent: 5 };
+    const codes = { contract: 1, evidence: 2, brief: 3, citation: 4, precedent: 5 }
     return codes[type] || 0;
   }
   private getDocumentTypeFromCode(code: number): LegalDocument['type'] {
@@ -418,7 +418,7 @@ export class NESGPUMemoryBridge {
     return types[code - 1] || 'contract';
   }
   private getRiskLevelCode(level: LegalDocument['riskLevel']): number {
-    const codes = { low: 1, medium: 2, high: 3, critical: 4 };
+    const codes = { low: 1, medium: 2, high: 3, critical: 4 }
     return codes[level] || 1;
   }
   private getRiskLevelFromCode(code: number): LegalDocument['riskLevel'] {
@@ -437,7 +437,7 @@ export class NESGPUMemoryBridge {
       cudaRegionsMapped: Array.from(this.cudaRegions.values()).filter(item => item.length),
       memoryEfficiencyRatio: this.performanceMetrics.flatBufferParseTime > 0 ?
         this.performanceMetrics.jsonParseTime / this.performanceMetrics.flatBufferParseTime: 0
-    };
+    }
   }
   /**
    * CHR-ROM Pattern Cache Integration
@@ -515,7 +515,7 @@ export class NESGPUMemoryBridge {
       textureId: cachedPattern.textureId,
       bankId: cachedPattern.bankId,
       priority: cachedPattern.priority
-    };
+    }
   }
   /**
    * Create GPU texture for visual pattern elements
@@ -597,21 +597,21 @@ export class NESGPUMemoryBridge {
     const bankStats = new Map<number, { count: number; size: number }>();
     // Count patterns per bank
     for (const cached of this.chrRomPatterns.values()) {
-      const current = bankStats.get(cached.bankId) || { count: 0, size: 0 };
+      const current = bankStats.get(cached.bankId) || { count: 0, size: 0 }
       current.count++;
       current.size += cached.pattern.compressedData.length;
       bankStats.set(cached.bankId, current);
     }
     // Generate bank status
     return Array.from({ length: 8 }, (_, bankId) => {
-      const stats = bankStats.get(bankId) || { count: 0, size: 0 };
+      const stats = bankStats.get(bankId) || { count: 0, size: 0 }
       return {
         bankId,
         name: this.getBankNameForId(bankId),
         patternCount: stats.count,
         memoryUsage: stats.size,
         accessSpeed: bankId <= 1 ? 'fastest' : bankId <= 3 ? 'fast' : bankId <= 5 ? 'normal' : 'slow'
-      };
+      }
     });
   }
   /**

@@ -17,12 +17,12 @@
     caseId?: string;
     priority?: number;
     processingOptions?: ProcessingOption;
-    onFilesSelected?: (event: { files: FileList }) => void;
-    onUploadStart?: (event: { files: File[] }) => void;
-    onUploadProgress?: (event: { progress: UploadProgress }) => void;
-    onUploadComplete?: (event: { file: MinIOFile }) => void;
-    onUploadError?: (event: { error: string; file?: File }) => void;
-    onAllUploadsComplete?: (event: { files: MinIOFile[] }) => void;
+    onFilesSelected?: (_event: { files: FileList }) => void;
+    onUploadStart?: (_event: { files: File[] }) => void;
+    onUploadProgress?: (_event: { progress: UploadProgress }) => void;
+    onUploadComplete?: (_event: { file: MinIOFile }) => void;
+    onUploadError?: (_event: { error: string; file?: File }) => void;
+    onAllUploadsComplete?: (_event: { files: MinIOFile[] }) => void;
     children?: import('svelte').Snippet<[{
       selectFiles: () => void;
       uploadFiles: (files: FileList | File[]) => Promise<MinIOFile[]>;
@@ -77,7 +77,7 @@
       mounted = false;
       // Cleanup any ongoing uploads
       currentUploads.clear();
-    };
+    }
   });
   /**
    * Programmatically trigger file selection
@@ -101,7 +101,7 @@
       queueLength: uploadQueue.length,
       completedCount: completedUploads.length,
       progressMap: uploadProgress
-    };
+    }
   }
   /**
    * Clear completed uploads and reset state
@@ -114,8 +114,8 @@
     isUploading = false;
   }
   // Handle file selection
-  async function handleFileSelection(event: Event): Promise<void> {
-    const target = event.target as HTMLInputElement;
+  async function handleFileSelection(_event: Event): Promise<void> {
+    // removed unused target assignment
     const files = target.file;
     if (!files || files.length === 0) return;
     // Validate files
@@ -210,12 +210,12 @@
     const handleProgress = (progress: UploadProgress) => {
       uploadProgress.set(uploadId, progress);
       onUploadProgress?.({ progress });
-    };
+    }
     minioService.onUploadProgress(uploadId, handleProgress);
     return () => {
       minioService.offUploadProgress(uploadId);
       uploadProgress.delete(uploadId);
-    };
+    }
   }
   // Detect document type from file
   function detectDocumentType(file: File): string {
@@ -231,6 +231,7 @@
     return 'brief';
   }
 </script>
+
 <!-- Headless file input (hidden) -->
 <input
   bind:this={fileInput}
@@ -250,6 +251,6 @@
     isUploading,
     uploadQueue,
     completedUploads,
-    uploadProgress
+    uploadProgress,
   })}
 {/if}

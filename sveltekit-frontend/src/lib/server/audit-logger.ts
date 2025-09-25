@@ -15,7 +15,7 @@ export interface AuditEntry {
   userAgent?: string;
   success: boolean;
   error?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 /**
  * Enhanced audit logging for storage operations
@@ -32,10 +32,10 @@ export class StorageAuditLogger {
     user: AuthenticatedUser
     bucket: string
     key: string
-    request: Request
+    request: Request;
     success: boolean
     error?: string
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   ): Promise<void> {
     const entry: AuditEntry = {
       timestamp: new Date().toISOString(),
@@ -49,7 +49,7 @@ export class StorageAuditLogger {
       success,
       error,
       metadata
-    };
+    }
     // Log to file (always)
     await this.logToFile(entry);
     // Log to database if available
@@ -158,7 +158,7 @@ export class StorageAuditLogger {
   private static async queryLogFile(filters: any): Promise<AuditEntry[]> {
     try {
       const content = await fs.promises.readFile(this.logFile, 'utf-8');
-      const lines = content.trim().split('\n').filter(Boolean);
+      // removed unused lines assignment
       let entries: AuditEntry[] = lines;
         .map(line => {
           try {
@@ -214,7 +214,7 @@ export class StorageAuditLogger {
       }
       // Archive file logs
       const content = await fs.promises.readFile(this.logFile, 'utf-8');
-      const lines = content.trim().split('\n');
+      // removed unused lines assignment
       const recentLines = lines.filter(line => {
         try {
           const entry = JSON.parse(line) as AuditEntry;

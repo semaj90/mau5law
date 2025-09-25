@@ -4,12 +4,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import {
     Activity,
     Cpu,
@@ -56,11 +51,11 @@
       await fetchClusterStatus();
       // Setup real-time updates via Server-Sent Events
       eventSource = new EventSource('/api/admin/cluster/events');
-      eventSource.onopen=() => {
+      eventSource.onopen = () => {
         isConnected = true;
         console.log('🔗 Connected to cluster monitoring');
-      };
-      eventSource.onmessage = (event) => {
+      }
+      eventSource.onmessage = event => {
         const data = JSON.parse(event.data);
         if (data.type === 'health') {
           clusterHealth = data.payload;
@@ -68,11 +63,11 @@
           workerMetrics = data.payload;
         }
         lastUpdate = new Date().toLocaleTimeString();
-      };
+      }
       eventSource.onerror = () => {
         isConnected = false;
         console.error('❌ Cluster monitoring connection lost');
-      };
+      }
       // Fallback polling
       updateInterval = setInterval(fetchClusterStatus, 10000);
     } catch (error) {
@@ -81,7 +76,7 @@
   }
   async function fetchClusterStatus() {
     try {
-      const response = await fetch('/api/admin/cluster/status');
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         clusterHealth = data.health;
@@ -116,11 +111,7 @@
   }
   async function rollingRestart() {
     if (isRestarting) return;
-    if (
-      !confirm(
-        'Are you sure you want to perform a rolling restart? This will restart all workers one by one.'
-      )
-    ) {
+    if (!confirm('Are you sure you want to perform a rolling restart? This will restart all workers one by one.')) {
       return;
     }
     isRestarting = true;
@@ -169,25 +160,21 @@
   }
   // Reactive computations
   let healthRatio = $derived(
-    clusterHealth.totalWorkers > 0 ? clusterHealth.healthyWorkers / clusterHealth.totalWorkers: 0
+    clusterHealth.totalWorkers > 0 ? clusterHealth.healthyWorkers / clusterHealth.totalWorkers : 0,
   );
   let memoryUsagePercent = $derived(
-    clusterHealth.memoryUsage.average > 0
-      ? (clusterHealth.memoryUsage.average / (512 * 1024 * 1024)) * 100
-      : 0
+    clusterHealth.memoryUsage.average > 0 ? (clusterHealth.memoryUsage.average / (512 * 1024 * 1024)) * 100 : 0,
   );
   let errorRateStatus = $derived(
-    clusterHealth.errors.rate > 10 ? 'high' : clusterHealth.errors.rate > 5 ? 'medium' : 'low'
+    clusterHealth.errors.rate > 10 ? 'high' : clusterHealth.errors.rate > 5 ? 'medium' : 'low',
   );
 </script>
+
 <svelte:head>
   <title>Node.js Cluster Management - Legal AI Admin</title>
-  <meta
-    name="description"
-    content="Real-time monitoring and management for Node.js cluster architecture" />
+  <meta name="description" content="Real-time monitoring and management for Node.js cluster architecture" />
 </svelte:head>
-<div
-  class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
   <!-- Header -->
   <div class="max-w-7xl mx-auto mb-8">
     <div class="flex justify-between items-center mb-6">
@@ -286,13 +273,15 @@
             class="p-2 rounded-lg"
             class:bg-red-100={errorRateStatus === 'high'}
             class:bg-yellow-100={errorRateStatus === 'medium'}
-            class:bg-green-100={errorRateStatus === 'low'}>
+            class:bg-green-100={errorRateStatus === 'low'}
+          >
             <AlertTriangle
               class="h-5 w-5 {errorRateStatus === 'high'
                 ? 'text-red-600'
                 : errorRateStatus === 'medium'
                   ? 'text-yellow-600'
-                  : 'text-green-600'}" />
+                  : 'text-green-600'}"
+            />
           </div>
           <div>
             <h3 class="font-semibold text-white">Errors/min</h3>
@@ -311,18 +300,22 @@
         </h3>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-2" for="target-workers">Target Workers</label><input id="target-workers"
-              type="number";
+            <label class="block text-sm font-medium mb-2" for="target-workers">Target Workers</label><input
+              id="target-workers"
+              type="number"
+              ;
               bind:value={targetWorkers}
               min="1"
               max="16"
-              class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-white" />
+              class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-white"
+            />
           </div>
           <div class="flex gap-2">
-            <Button class="bits-btn flex-1"
-              onclick={() =>
-scaleCluster(targetWorkers)}
-              disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}>
+            <Button
+              class="bits-btn flex-1"
+              onclick={() => scaleCluster(targetWorkers)}
+              disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}
+            >
               {#if isScaling}
                 <RefreshCw class="h-4 w-4 mr-2 animate-spin" />
                 Scaling...
@@ -331,19 +324,22 @@ scaleCluster(targetWorkers)}
                 Scale
               {/if}
             </Button>
-            <Button class="bits-btn px-3"
+            <Button
+              class="bits-btn px-3"
               onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
-              variant="ghost">
+              variant="ghost"
+            >
               +1
-</Button>
-            <Button class="bits-btn px-3"
-              onclick={() =>
-scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
+            </Button>
+            <Button
+              class="bits-btn px-3"
+              onclick={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
-              variant="ghost">
+              variant="ghost"
+            >
               -1
-</Button>
+            </Button>
           </div>
         </div>
       </div>
@@ -357,19 +353,20 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
           <Button
             onclick={rollingRestart}
             disabled={isRestarting}
-            class="w-full bg-orange-600 hover:bg-orange-700 bits-btn bits-btn">
-{#if isRestarting}
+            class="w-full bg-orange-600 hover:bg-orange-700 bits-btn bits-btn"
+          >
+            {#if isRestarting}
               <RefreshCw class="h-4 w-4 mr-2 animate-spin" />
               Restarting...
             {:else}
               <RefreshCw class="h-4 w-4 mr-2" />
               Rolling Restart
             {/if}
-</Button>
+          </Button>
           <Button onclick={fetchClusterStatus} variant="ghost" class="w-full bits-btn bits-btn">
-<RefreshCw class="h-4 w-4 mr-2" />
+            <RefreshCw class="h-4 w-4 mr-2" />
             Refresh Status
-</Button>
+          </Button>
         </div>
       </div>
       <!-- Health Summary -->
@@ -390,7 +387,8 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
                 ? 'text-red-400'
                 : memoryUsagePercent > 60
                   ? 'text-yellow-400'
-                  : 'text-green-400'}>
+                  : 'text-green-400'}
+            >
               {memoryUsagePercent.toFixed(1)}%
             </span>
           </div>
@@ -401,7 +399,8 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
                 ? 'text-red-400'
                 : errorRateStatus === 'medium'
                   ? 'text-yellow-400'
-                  : 'text-green-400'}>
+                  : 'text-green-400'}
+            >
               {errorRateStatus.toUpperCase()}
             </span>
           </div>
@@ -448,15 +447,15 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
                 <td class="py-3 px-4">{worker.connections}</td>
                 <td class="py-3 px-4">{worker.requestsHandled.toLocaleString()}</td>
                 <td class="py-3 px-4">{formatBytes(worker.memoryUsage.heapUsed)}</td>
-                <td class="py-3 px-4"
-                  >{formatCpuTime(worker.cpuUsage.user + worker.cpuUsage.system)}</td>
+                <td class="py-3 px-4">{formatCpuTime(worker.cpuUsage.user + worker.cpuUsage.system)}</td>
                 <td class="py-3 px-4">
                   <span
                     class={worker.errors > 10
                       ? 'text-red-400'
                       : worker.errors > 5
                         ? 'text-yellow-400'
-                        : 'text-gray-400'}>
+                        : 'text-gray-400'}
+                  >
                     {worker.errors}
                   </span>
                 </td>
@@ -464,9 +463,7 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               </tr>
             {:else}
               <tr>
-                <td colspan="9" class="py-8 text-center text-gray-400">
-                  No worker data available
-                </td>
+                <td colspan="9" class="py-8 text-center text-gray-400"> No worker data available </td>
               </tr>
             {/each}
           </tbody>
@@ -475,6 +472,7 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
     </div>
   </div>
 </div>
+
 <style>
   /* Custom scrollbar for tables */
   .overflow-x-auto::-webkit-scrollbar {

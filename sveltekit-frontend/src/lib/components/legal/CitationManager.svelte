@@ -40,7 +40,7 @@
       pending: number;
       byType: Record<string, number>;
       byJurisdiction: Record<string, number>;
-    };
+    }
   }
   interface Props {
     citations?: Citation[];
@@ -135,7 +135,7 @@
       pending: citationData.citations.filter(c => !c.verified).length,
       byType: {} as Record<string, number>,
       byJurisdiction: {} as Record<string, number>
-    };
+    }
     citationData.citations.forEach(citation => {
       stats.byType[citation.type] = (stats.byType[citation.type] || 0) + 1;
       stats.byJurisdiction[citation.jurisdiction] = (stats.byJurisdiction[citation.jurisdiction] || 0) + 1;
@@ -253,7 +253,7 @@
       tags: [],
       status: 'pending',
       dateAdded: new Date().toISOString();
-    };
+    }
     citationData.citations.unshift(newCitation);
     showAddForm = false;
   }
@@ -269,7 +269,7 @@
       constitutional: '🏛️',
       secondary: '📚',
       foreign: '🌍';
-    };
+    }
     return icons[type] || '📄';
   }
   function getStatusColor(status: Citation['status']) {
@@ -278,7 +278,7 @@
       superseded: '#f59e0b',
       overruled: '#ef4444',
       pending: '#6b7280';
-    };
+    }
     return colors[status] || colors.pending;
   }
   function getAccuracyColor(accuracy: number) {
@@ -291,8 +291,8 @@
   <!-- Citation Manager Header -->
   <Card
     style="
-      border-color: {citationBuilder.styling.colors.primary};
-      border-width: {citationBuilder.styling.nes.borderWidth};
+      border-color: {citationBuilder.styling.colors.primary}
+      border-width: {citationBuilder.styling.nes.borderWidth}
     "
   >
     <CardHeader>
@@ -311,7 +311,7 @@
         <div class="citation-actions">
           <Button
             onclick={() => showAddForm = !showAddForm}
-            style="background: {citationBuilder.styling.colors.evidence};"
+            style="background: {citationBuilder.styling.colors.evidence}"
           >
             ➕ Add Citation
           </Button>
@@ -450,8 +450,8 @@
       <div class="citation-list">
         {#each filteredCitations as citation (citation.id)}
           <div
-            class="citation-item"
-            class:selected={selectedCitations.has(citation.id)};
+            class="citation-item";
+            class:selected={selectedCitations.has(citation.id)}
             transition:scale={citationBuilder.animations.enter}
           >
             <div class="citation-header">
@@ -470,7 +470,7 @@
               <div class="citation-status">
                 <div
                   class="status-badge"
-                  style="color: {getStatusColor(citation.status)}; border-color: {getStatusColor(citation.status)};"
+                  style="color: {getStatusColor(citation.status)} border-color: {getStatusColor(citation.status)}"
                 >
                   {citation.status}
                 </div>
@@ -558,9 +558,9 @@
                   <div class="metric-bar">
                     <div
                       class="metric-fill"
-                      style="
+                      style=";
                         width: {citation.relevanceScore * 100}%;
-                        background: {citationBuilder.styling.colors.evidence};
+                        background: {citationBuilder.styling.colors.evidence}
                       "
                     ></div>
                   </div>
@@ -575,7 +575,7 @@
                       class="metric-fill"
                       style="
                         width: {citation.accuracy * 100}%;
-                        background: {getAccuracyColor(citation.accuracy)};
+                        background: {getAccuracyColor(citation.accuracy)}
                       "
                     ></div>
                   </div>

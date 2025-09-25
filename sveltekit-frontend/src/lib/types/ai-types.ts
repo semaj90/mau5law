@@ -34,7 +34,7 @@ export interface EnhancedSearchOptions {
   dateRange?: {
     from: Date;
     to: Date;
-  };
+  }
   maxResults?: number;
   limit?: number;
   minSimilarity?: number;
@@ -47,7 +47,7 @@ export interface EnhancedSearchOptions {
   includeContext?: boolean;
   filters?: {
     [key: string]: unknown;
-  };
+  }
 }
 export interface EnhancedSearchResult {
   id: string;
@@ -65,7 +65,7 @@ export interface EnhancedSearchResult {
     citations?: string[];
     createdAt?: Date;
     updatedAt?: Date;
-  };
+  }
   highlights?: {
     field: string;
     matches: string[];
@@ -76,7 +76,7 @@ export interface EnhancedSearchResult {
     keyInsights?: string[];
     risks?: string[];
     recommendations?: string[];
-  };
+  }
 }
 export interface AIAnalysisResult {
   summary: string;
@@ -92,14 +92,14 @@ export interface VectorSearchOptions {
   embedding?: number[];
   limit?: number;
   threshold?: number;
-  filters?: { [key: string]: any };
+  filters?: { [key: string]: any }
   includeMetadata?: boolean;
 }
 export interface VectorSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 // Enhanced AI Processing Types
 export interface EnhancedProcessingOptions {
@@ -141,7 +141,7 @@ export interface LegalDocumentAnalysis {
     locations: string[];
     dates: string[];
     amounts: string[];
-  };
+  }
   legalConcepts: string[];
   citations: string[];
   riskFactors: string[];

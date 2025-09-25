@@ -10,22 +10,22 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
       {
         id: 'ca-civil-code',
         title: 'California Civil Code',
-        description: 'California\'s comprehensive civil laws covering contracts, property, and personal rights',
+        description: "California's comprehensive civil laws covering contracts, property, and personal rights",
         jurisdiction: 'california',
         category: 'civil',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Civil+Code',
         fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Civil+Code',
-        code: 'CIV'
+        code: 'CIV',
       },
       {
         id: 'ca-penal-code',
         title: 'California Penal Code',
-        description: 'California\'s criminal laws, penalties, and criminal procedures',
+        description: "California's criminal laws, penalties, and criminal procedures",
         jurisdiction: 'california',
         category: 'criminal',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Penal+Code',
         fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Penal+Code',
-        code: 'PEN'
+        code: 'PEN',
       },
       {
         id: 'ca-evidence-code',
@@ -35,7 +35,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         category: 'procedural',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Evidence+Code',
         fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Evidence+Code',
-        code: 'EVID'
+        code: 'EVID',
       },
       {
         id: 'ca-corporations-code',
@@ -45,7 +45,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         category: 'corporate',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Corporations+Code',
         fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Corporations+Code',
-        code: 'CORP'
+        code: 'CORP',
       },
       {
         id: 'federal-constitution',
@@ -55,7 +55,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         category: 'constitutional',
         url: 'https://constitution.congress.gov/constitution/',
         fullTextUrl: 'https://constitution.congress.gov/constitution/',
-        code: 'CONST'
+        code: 'CONST',
       },
       {
         id: 'federal-criminal-code',
@@ -65,7 +65,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         category: 'criminal',
         url: 'https://uscode.house.gov/browse/prelim@title18&edition=prelim',
         fullTextUrl: 'https://uscode.house.gov/browse/prelim@title18&edition=prelim',
-        code: '18USC'
+        code: '18USC',
       },
       {
         id: 'ca-family-code',
@@ -75,7 +75,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         category: 'family',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Family+Code',
         fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Family+Code',
-        code: 'FAM'
+        code: 'FAM',
       },
       {
         id: 'ca-government-code',
@@ -85,7 +85,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         category: 'administrative',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Government+Code',
         fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Government+Code',
-        code: 'GOV'
+        code: 'GOV',
       },
       {
         id: 'ca-health-safety-code',
@@ -95,21 +95,21 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         category: 'regulatory',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Health+and+Safety+Code',
         fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Health+and+Safety+Code',
-        code: 'HSC'
-      }
+        code: 'HSC',
+      },
     ];
     // Default search results (empty until user searches)
-  const laws: any[] = [];
+    const laws: any[] = [];
     return {
       quickLinks,
       laws,
       meta: {
         title: 'Legal Resources - Laws & Regulations',
-        description: 'Browse California and state laws with AI-powered search and summaries'
-      }
-    };
+        description: 'Browse California and state laws with AI-powered search and summaries',
+      },
+    }
   } catch (err: any) {
     console.error('Failed to load laws page data:', err);
     error(500, 'Failed to load page data');
   }
-};
+}

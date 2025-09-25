@@ -1,9 +1,16 @@
-import stream from "stream";
+import stream from 'stream';
 import type { RequestHandler } from './$types.js';
 // SSE streaming endpoint with streamId + interrupt + optional summary
-import { createStream, recordToken, removeStream, generateSummary, getStream, cachedSummary } from '$lib/server/ragStreamRegistry';
+import {
+  createStream,
+  recordToken,
+  removeStream,
+  generateSummary,
+  getStream,
+  cachedSummary,
+} from '$lib/server/ragStreamRegistry';
 // Use process.env directly (avoids type issues if $env modules not generated)
-const privateEnv: Record<string, string | undefined> = (process as any).env || {};
+const privateEnv: Record<string, string | undefined> = (process as any).env || {}
 const EXTERNAL_SUMMARIZE = '/api/rag?action=summarize';
 // Placeholder token generator simulating model output
 // Real model pipeline placeholder: replace with integration to backend model / inference server
@@ -15,7 +22,7 @@ async function* modelPipeline(query: string, signal: AbortSignal) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query }),
-      signal
+      signal,
     });
     if (resp.ok && resp.body) {
       const reader = resp.body.getReader();
@@ -45,7 +52,7 @@ async function* modelPipeline(query: string, signal: AbortSignal) {
   ).split(/\s+/);
   for (const w of fallback) {
     if (signal.aborted) return;
-    await new Promise((r) => setTimeout(r, 50));
+    await new Promise(r => setTimeout(r, 50));
     yield w + ' ';
   }
 }
@@ -54,7 +61,7 @@ async function externalSummarize(text: string, fetchFn: typeof fetch): Promise<s
     const res = await fetchFn(EXTERNAL_SUMMARIZE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, length: 'short' })
+      body: JSON.stringify({ text, length: 'short' }),
     });
     if (!res.ok) return undefined;
     const j = await res.json();
@@ -73,7 +80,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       'Content-Type': 'text/event-stream; charset=utf-8',
       'Cache-Control': 'no-cache, no-transform',
       Connection: 'keep-alive',
-      'x-stream-id': stream.id
+      'x-stream-id': stream.id,
     });
     const readable = new ReadableStream({
       async start(controller) {
@@ -95,16 +102,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             if (!sum) sum = generateSummary(stream.id, 3);
             if (sum && meta) {
               meta.summarySent = true;
-              controller.enqueue(
-                encoder.encode(`event: summary\ndata: ${sum.replace(/\n/g, ' ')}\n\n`)
-              );
+              controller.enqueue(encoder.encode(`event: summary\ndata: ${sum.replace(/\n/g, ' ')}\n\n`));
             }
           } catch (summaryErr) {
             // Non-fatal; proceed to done
             controller.enqueue(
-              encoder.encode(`event: error\ndata: summary_failed: ${
-                  (summaryErr as any)?.message || 'unknown'
-                }\n\n`)
+              encoder.encode(`event: error\ndata: summary_failed: ${(summaryErr as any)?.message || 'unknown'}\n\n`),
             );
           }
           controller.enqueue(encoder.encode(`event: done\ndata: end\n\n`));
@@ -118,11 +121,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           removeStream(stream.id);
           controller.close();
         }
-      }
+      },
     });
     return new Response(readable, { status: 200, headers });
   } catch (e: any) {
     return new Response(`error: ${e.message}`, { status: 500 });
   }
-};
+}
 // removed unused recordedText helper (was causing noUnusedLocals error)

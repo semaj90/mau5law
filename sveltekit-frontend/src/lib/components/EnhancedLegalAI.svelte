@@ -11,7 +11,7 @@
     document_type: string;
     practice_area?: string;
     jurisdiction: string;
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
     use_gpu?: boolean;
   }
   interface DocumentResponse {
@@ -36,7 +36,7 @@
   interface VectorSearchRequest {
     query: string;
     limit?: number;
-    filters?: { [key: string]: any };
+    filters?: { [key: string]: any }
     use_gpu?: boolean;
     model?: string;
   }
@@ -50,7 +50,7 @@
     id: string;
     content: string;
     score: number;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   }
   // Component state
   let serviceStatus = $state({
@@ -102,7 +102,7 @@
   async function checkServiceHealth() {
     try {
       serviceStatus.loading = true;
-      const response = await fetch(`${API_BASE}/health`);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).ok) {
         const health = await (response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).json();
         serviceStatus = {
@@ -110,8 +110,8 @@
           loading: false
           services: health.services ||
           version: health.version || "",
-          config: health.config ||
-        };
+          config: health.config ||;
+        }
       } else {
         throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).status}`);
       }
@@ -123,7 +123,7 @@
         services: ,
         version: "",
         config: ,
-      };
+      }
     }
   }
   async function processDocument() {
@@ -137,15 +137,15 @@
       const request: DocumentRequest = {
         content: documentContent
         document_type: selectedDocumentType
-        practice_area: selectedPracticeArea
+        practice_area: selectedPracticeArea;
         jurisdiction: selectedJurisdiction
-        use_gpu: useGPU
+        use_gpu: useGPU;
         metadata: {
           timestamp: new Date().toISOString(),
           user_id: "demo-user",
           session_id: "demo-session",
         },
-      };
+      }
       const response = await fetch(`${API_BASE}/process`, {
         method: "POST",
         headers: {
@@ -176,13 +176,13 @@
       const request: VectorSearchRequest = {
         query: searchQuery
         limit: searchLimit
-        use_gpu: useGPU
+        use_gpu: useGPU;
         model: "gemma3-legal",
         filters: {
           jurisdiction: selectedJurisdiction
-          practice_area: selectedPracticeArea
+          practice_area: selectedPracticeArea;
         },
-      };
+      }
       const response = await fetch(`${API_BASE}/vector-search`, {
         method: "POST",
         headers: {
@@ -398,7 +398,7 @@
               >Search Limit</label
             >
             <input
-              type="number"
+              type="number";
               bind:value={searchLimit}
               min="1"
               max="50"

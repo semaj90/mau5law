@@ -22,7 +22,7 @@ export interface TestResult {
     before: number;
     after: number;
     improvement: number;
-  };
+  }
 }
 export interface TestSuite {
   name: string;
@@ -38,7 +38,7 @@ export interface ValidationReport {
     node_version: string;
     memory_limit: string;
     cpu_cores: number;
-  };
+  }
   test_suites: TestSuite[];
   overall_results: {
     total_tests: number;
@@ -46,14 +46,14 @@ export interface ValidationReport {
     failed_tests: number;
     success_rate: number;
     total_duration_ms: number;
-  };
+  }
   performance_benchmarks: {
     vs_code_commands: number;
     cache_operations_per_second: number;
     json_parse_speed_mb_per_second: number;
     docker_optimization_time_ms: number;
     memory_usage_mb: number;
-  };
+  }
   recommendations: string[];
 }
 // === Main Test Suite Class ===
@@ -71,7 +71,7 @@ export class OptimizationTestSuite {
     }),
     cache_keys: Array(100).fill(null).map((_, i) => `test_key_${i}`),
     docker_containers: ['postgres', 'qdrant', 'redis', 'ollama']
-  };
+  }
   // === Core Component Tests ===
   async testVSCodeExtension(): Promise<TestSuite> {
     const tests: TestResult[] = [];
@@ -142,7 +142,7 @@ export class OptimizationTestSuite {
     {
       const start = performance.now();
       try {
-        const stats = await this.suite!.vscode?.getStats?.() || { cache: { utilization: 50 } };
+        const stats = await this.suite!.vscode?.getStats?.() || { cache: { utilization: 50 } }
         const memory_efficient = stats.cache.utilization < 90; // Less than 90% cache utilization
         tests.push({
           name: 'Memory Usage Monitoring',
@@ -172,7 +172,7 @@ export class OptimizationTestSuite {
       failed,
       total_duration_ms: total_duration
       overall_passed: failed === 0
-    };
+    }
   }
   async testRedisSOMapCache(): Promise<TestSuite> {
     const tests: TestResult[] = [];
@@ -217,7 +217,7 @@ export class OptimizationTestSuite {
             }
           });
         }
-        const { clusters, recommendations } = await (this.suite.cache as any)?.analyzeAccessPatterns?.() || { clusters: [], recommendations: [] };
+        const { clusters, recommendations } = await (this.suite.cache as any)?.analyzeAccessPatterns?.() || { clusters: [], recommendations: [] }
         tests.push({
           name: 'Self-Organizing Map Clustering',
           passed: clusters.length > 0 && recommendations.length > 0,
@@ -240,13 +240,13 @@ export class OptimizationTestSuite {
     {
       const start = performance.now();
       try {
-        const before_stats = this.suite.cache?.getStats?.() || { cache: { size: 0 } };
+        const before_stats = this.suite.cache?.getStats?.() || { cache: { size: 0 } }
         // Fill cache to trigger memory pressure
         const large_data = 'x'.repeat(100000); // 100KB per entry
         for (let i = 0; i < 100; i++) {
           await (this.suite.cache as any)?.set?.(`pressure_test_${i}`, large_data);
         }
-        const after_stats = this.suite.cache?.getStats?.() || { cache: { size: 0 } };
+        const after_stats = this.suite.cache?.getStats?.() || { cache: { size: 0 } }
         const handled_pressure = after_stats.memory.utilization <= 100; // Should not exceed 100%
         tests.push({
           name: 'Memory Pressure Handling',
@@ -277,7 +277,7 @@ export class OptimizationTestSuite {
       failed,
       total_duration_ms: total_duration
       overall_passed: failed === 0
-    };
+    }
   }
   async testDockerOptimizer(): Promise<TestSuite> {
     const tests: TestResult[] = [];
@@ -289,7 +289,7 @@ export class OptimizationTestSuite {
     {
       const start = performance.now();
       try {
-        const stats = this.suite.docker?.getResourceUtilization?.() || { memory: 0, cpu: 0, containers: [] };
+        const stats = this.suite.docker?.getResourceUtilization?.() || { memory: 0, cpu: 0, containers: [] }
         const has_containers = stats.containers.length > 0;
         const valid_metrics = stats.efficiency_score >= 0 && stats.efficiency_score <= 1;
         tests.push({
@@ -315,9 +315,9 @@ export class OptimizationTestSuite {
     {
       const start = performance.now();
       try {
-        const before_stats = this.suite.docker?.getResourceUtilization?.() || { memory: 0 };
+        const before_stats = this.suite.docker?.getResourceUtilization?.() || { memory: 0 }
         await this.suite.docker?.applyDevelopmentPreset?.();
-        const after_stats = this.suite.docker?.getResourceUtilization?.() || { memory: 0 };
+        const after_stats = this.suite.docker?.getResourceUtilization?.() || { memory: 0 }
         // Preset should maintain or improve efficiency
         const efficiency_maintained = after_stats.efficiency_score >= before_stats.efficiency_score * 0.9;
         tests.push({
@@ -375,7 +375,7 @@ export class OptimizationTestSuite {
       failed,
       total_duration_ms: total_duration
       overall_passed: failed === 0
-    };
+    }
   }
   async testJSONWASMOptimizer(): Promise<TestSuite> {
     const tests: TestResult[] = [];
@@ -387,7 +387,7 @@ export class OptimizationTestSuite {
     {
       const start = performance.now();
       try {
-        const { data, stats } = await (this.suite.json as any)?.parseJSON?.(this.test_data.large_json) || { data: { [key: string]: any }, stats: { [key: string]: any } };
+        const { data, stats } = await (this.suite.json as any)?.parseJSON?.(this.test_data.large_json) || { data: { [key: string]: any }, stats: { [key: string]: any } }
         const parse_successful = Array.isArray(data.data) && data.data.length === 1000;
         const reasonable_performance = stats.parse_time_ms < 100; // Should parse 1000 items in < 100ms
         tests.push({
@@ -419,7 +419,7 @@ export class OptimizationTestSuite {
       const start = performance.now();
       try {
         const test_object = JSON.parse(this.test_data.large_json);
-        const { compressed, stats } = await (this.suite.json as any)?.compressJSON?.(test_object) || { compressed: { [key: string]: any }, stats: { [key: string]: any } };
+        const { compressed, stats } = await (this.suite.json as any)?.compressJSON?.(test_object) || { compressed: { [key: string]: any }, stats: { [key: string]: any } }
         const compression_effective = stats.compression_ratio > 1.2; // At least 20% compression
         const compressed_is_smaller = stats.compressed_size < stats.original_size;
         tests.push({
@@ -452,7 +452,7 @@ export class OptimizationTestSuite {
           passed: true, // WASM initialization is optional
           duration_ms: performance.now() - start,
           details: {
-            wasm_available: wasm_initialized
+            wasm_available: wasm_initialized;
             note: wasm_initialized ? 'WebAssembly acceleration available' : 'Using JavaScript fallback'
           }
         });
@@ -475,7 +475,7 @@ export class OptimizationTestSuite {
       failed,
       total_duration_ms: total_duration
       overall_passed: failed === 0
-    };
+    }
   }
   async testContext7Integration(): Promise<TestSuite> {
     const tests: TestResult[] = [];
@@ -487,7 +487,7 @@ export class OptimizationTestSuite {
     {
       const start = performance.now();
       try {
-        const response = await this.context7_integrator.analyzeStackWithOptimization('sveltekit', 'legal-ai');
+        // removed unused response assignment
         const has_recommendations = response.optimization_recommendations &&
                                    response.optimization_recommendations.length > 0;
         tests.push({
@@ -512,7 +512,7 @@ export class OptimizationTestSuite {
     {
       const start = performance.now();
       try {
-        const response = await this.context7_integrator.generateBestPracticesWithResourceAwareness('performance');
+        // removed unused response assignment
         const has_impact_estimate = response.performance_impact !== undefined;
         tests.push({
           name: 'Best Practices Generation',
@@ -569,7 +569,7 @@ export class OptimizationTestSuite {
       failed,
       total_duration_ms: total_duration
       overall_passed: failed === 0
-    };
+    }
   }
   // === Performance Benchmarking ===
   async runPerformanceBenchmarks(): Promise<any> {
@@ -583,7 +583,7 @@ export class OptimizationTestSuite {
       json_parse_speed_mb_per_second: 0,
       docker_optimization_time_ms: 0,
       memory_usage_mb: 0
-    };
+    }
     // Benchmark VS Code commands
     {
       const start = performance.now();
@@ -631,7 +631,7 @@ export class OptimizationTestSuite {
     }
     // Get memory usage>
     {
-      const docker_stats = this.suite.docker?.getResourceUtilization?.() || { memory: 0, cpu: 0 };
+      const docker_stats = this.suite.docker?.getResourceUtilization?.() || { memory: 0, cpu: 0 }
       benchmarks.memory_usage_mb = Math.round(docker_stats.total_memory_used / (1024 * 1024);
     }
     return benchmarks;
@@ -678,7 +678,7 @@ export class OptimizationTestSuite {
       },
       performance_benchmarks,
       recommendations
-    };
+    }
     return report;
   }
   private generateRecommendations(
@@ -752,7 +752,7 @@ export async function runQuickValidation(): Promise<any> {
     passed: report.overall_results.success_rate >= 80,
     summary: `${report.overall_results.passed_tests}/${report.overall_results.total_tests} tests passed (${report.overall_results.success_rate.toFixed(1)}%)`,
     details: report
-  };
+  }
 }
 // === Export Default Test Suite ===
 export default createTestSuite();

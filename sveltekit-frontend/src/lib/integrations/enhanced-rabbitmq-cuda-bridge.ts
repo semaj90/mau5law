@@ -14,7 +14,7 @@ export const rabbitMQCudaState = writable({
   cudaHealthy: false
   activeJobs: 0,
   completedJobs: 0,
-  lastError: null
+  lastError: null;
   performance: {
     averageProcessingTime: 0,
     cudaAcceleration: true
@@ -102,7 +102,7 @@ class EnhancedRabbitMQCudaBridge {
     ];
     for (const queueName of queues) {
       await this.channel.assertQueue(queueName, {
-        durable: true
+        durable: true;
         arguments: {
           'x-max-priority': 10, // Enable message priority
           'x-message-ttl': 300000 // 5 minute TTL
@@ -187,7 +187,7 @@ class EnhancedRabbitMQCudaBridge {
     } catch (error) {
       console.error('❌ Tensor job processing failed:', error);
       await this.publishResult(job?.id || 'unknown', {
-        success: false
+        success: false;
         error: error.message,
         processingTime: Date.now() - startTime
       });
@@ -222,7 +222,7 @@ class EnhancedRabbitMQCudaBridge {
       }
       const processingTime = Date.now() - startTime;
       await this.publishResult(job.id, {
-        success: true
+        success: true;
         result: { similarities, algorithm, vectorCount: candidateVectors.length },
         processingTime,
         cudaAccelerated: this.cudaHealthy && candidateVectors.length > 100
@@ -230,7 +230,7 @@ class EnhancedRabbitMQCudaBridge {
     } catch (error) {
       console.error('❌ Vector similarity job failed:', error);
       await this.publishResult(job?.id || 'unknown', {
-        success: false
+        success: false;
         error: error.message,
         processingTime: Date.now() - startTime
       });
@@ -264,7 +264,7 @@ class EnhancedRabbitMQCudaBridge {
       }
       const processingTime = Date.now() - startTime;
       await this.publishResult(job.id, {
-        success: true
+        success: true;
         result: { embeddings: normalizedEmbeddings, count: embeddings.length },
         processingTime,
         cudaAccelerated: this.cudaHealthy
@@ -272,7 +272,7 @@ class EnhancedRabbitMQCudaBridge {
     } catch (error) {
       console.error('❌ Embedding normalization failed:', error);
       await this.publishResult(job?.id || 'unknown', {
-        success: false
+        success: false;
         error: error.message,
         processingTime: Date.now() - startTime
       });
@@ -331,7 +331,7 @@ class EnhancedRabbitMQCudaBridge {
     console.log('🔄 Using WebAssembly fallback for tensor computation');
     // Implement WebAssembly tensor operations
     await new Promise(resolve => setTimeout(resolve, 100); // Simulate processing
-    return { computed: true, fallback: 'wasm' };
+    return { computed: true, fallback: 'wasm' }
   }
   /**
    * Fallback vector similarity using WebAssembly
@@ -369,13 +369,13 @@ class EnhancedRabbitMQCudaBridge {
       jobId,
       timestamp: Date.now(),
       ...result
-    };
+    }
     await this.channel.publish(
       'legal-ai-cuda',
       'legal_cuda_results',
       Buffer.from(JSON.stringify(message)),
       {
-        priority: (result as { success?: any }).success ? 5 : 8, // Higher priority for errors
+        priority: (result as { success?: any }).success ? 5 : 8, // Higher priority for errors;
         persistent: true
       }
     );
@@ -392,14 +392,14 @@ class EnhancedRabbitMQCudaBridge {
       payload,
       priority,
       createdAt: Date.now()
-    };
+    }
     // Route to appropriate queue
     const routingKeyMap = {
       'tensor_compute': 'legal_cuda_tensor_compute',
       'vector_similarity': 'legal_cuda_vector_similarity',
       'embedding_normalize': 'legal_cuda_embedding_normalize',
       'batch_process': 'legal_cuda_batch_process'
-    };
+    }
     const routingKey = routingKeyMap[type];
     await this.channel.publish(
       'legal-ai-cuda',
@@ -407,7 +407,7 @@ class EnhancedRabbitMQCudaBridge {
       Buffer.from(JSON.stringify(job)),
       {
         priority,
-        persistent: true
+        persistent: true;
         headers: {
           'x-job-type': type
           'x-cuda-preferred': this.cudaHealthy ? 'true' : 'false'
@@ -437,7 +437,7 @@ class EnhancedRabbitMQCudaBridge {
         'cpu_processing',
         'basic_vector_operations'
       ]
-    };
+    }
   }
   /**
    * Shutdown the bridge

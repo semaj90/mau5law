@@ -1,6 +1,6 @@
 // Type definitions for predictor API endpoints
 import type { RequestEvent } from '@sveltejs/kit'
-export type RequestHandler = (event: RequestEvent) => Response | Promise<Response>
+export type RequestHandler = (_event: RequestEvent) => Response | Promise<Response>
 }
 export interface PredictionResult {
   action: string

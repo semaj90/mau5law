@@ -1,10 +1,9 @@
-
 /**
  * XState v5 Actor Wrapper - Fixes UnknownActorLogic issues
  * Proper fromPromise usage with typed context and error handling
  */
-import { fromPromise, createActor, type ActorRefFrom } from "xstate";
-import { fetchWithTimeout } from "$lib/utils";
+import { fromPromise, createActor, type ActorRefFrom } from 'xstate';
+import { fetchWithTimeout } from '$lib/utils';
 // ===== EMBEDDING ACTOR =====
 export interface EmbeddingActorInput {
   text: string;
@@ -25,12 +24,12 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
     const response = await fetchWithTimeout('/api/ai/embed', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         text: input.text,
         documentId: input.documentId,
-        caseId: input.caseId
+        caseId: input.caseId,
       }),
-      timeout: 30000
+      timeout: 30000,
     });
     if (!response.ok) {
       throw new Error(`Embedding failed: ${response.statusText}`);
@@ -41,7 +40,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
       dimensions: data.dimensions || 768,
       model: data?.model || 'nomic-embed-text',
       processingTime: Date.now() - startTime,
-      tokenCount: data.tokenCount
+      tokenCount: data.tokenCount,
     } as EmbeddingActorOutput;
   } catch (error: any) {
     throw new Error(`Embedding actor failed: ${error.message}`);
@@ -58,36 +57,35 @@ export interface DocumentProcessingOutput {
   documentId: string;
   summary?: string;
   entities?: Array<any>;
-  embeddings?: { chunks: number; dimensions: number };
+  embeddings?: { chunks: number; dimensions: number }
   processingTime: number;
   success: boolean;
 }
 export const documentProcessingActor = fromPromise(async ({ input }: { input: DocumentProcessingInput }) => {
-    const startTime = Date.now();
-    try {
-      const response = await fetchWithTimeout('/api/ai/process-document', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(input),
-        timeout: 60000, // 60s timeout for document processing
-      });
-      if (!response.ok) {
-        throw new Error(`Document processing failed: ${response.statusText}`);
-      }
-      const data = await response.json();
-      return {
-        documentId: input.documentId,
-        summary: data.summary,
-        entities: data.entities,
-        embeddings: data.embeddings,
-        processingTime: Date.now() - startTime,
-        success: data.success || true
-      } as DocumentProcessingOutput;
-    } catch (error: any) {
-      throw new Error(`Document processing actor failed: ${error.message}`);
+  const startTime = Date.now();
+  try {
+    const response = await fetchWithTimeout('/api/ai/process-document', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input),
+      timeout: 60000, // 60s timeout for document processing
+    });
+    if (!response.ok) {
+      throw new Error(`Document processing failed: ${response.statusText}`);
     }
+    const data = await response.json();
+    return {
+      documentId: input.documentId,
+      summary: data.summary,
+      entities: data.entities,
+      embeddings: data.embeddings,
+      processingTime: Date.now() - startTime,
+      success: data.success || true,
+    } as DocumentProcessingOutput;
+  } catch (error: any) {
+    throw new Error(`Document processing actor failed: ${error.message}`);
   }
-);
+});
 // ===== LEGAL ANALYSIS ACTOR =====
 export interface LegalAnalysisInput {
   content: string;
@@ -110,7 +108,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
-      timeout: 45000
+      timeout: 45000,
     });
     if (!response.ok) {
       throw new Error(`Legal analysis failed: ${response.statusText}`);
@@ -122,7 +120,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
       recommendations: data.recommendations || [],
       precedents: data.precedents || [],
       confidence: data.confidence || 0.5,
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     } as LegalAnalysisOutput;
   } catch (error: any) {
     throw new Error(`Legal analysis actor failed: ${error.message}`);
@@ -149,7 +147,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
-      timeout: 30000
+      timeout: 30000,
     });
     if (!response.ok) {
       throw new Error(`RAG search failed: ${response.statusText}`);
@@ -159,26 +157,22 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
       results: data.results || [],
       totalResults: data.totalResults || 0,
       processingTime: Date.now() - startTime,
-      model: data?.model || 'unknown'
+      model: data?.model || 'unknown',
     } as RAGSearchOutput;
   } catch (error: any) {
     throw new Error(`RAG search actor failed: ${error.message}`);
   }
 });
 // ===== ACTOR FACTORY FUNCTIONS =====
-export function createEmbeddingActor(
-  input: EmbeddingActorInput
-): ActorRefFrom<typeof embeddingActor> {
+export function createEmbeddingActor(input: EmbeddingActorInput): ActorRefFrom<typeof embeddingActor> {
   return createActor(embeddingActor, { input });
 }
 export function createDocumentProcessingActor(
-  input: DocumentProcessingInput
+  input: DocumentProcessingInput,
 ): ActorRefFrom<typeof documentProcessingActor> {
   return createActor(documentProcessingActor, { input });
 }
-export function createLegalAnalysisActor(
-  input: LegalAnalysisInput
-): ActorRefFrom<typeof legalAnalysisActor> {
+export function createLegalAnalysisActor(input: LegalAnalysisInput): ActorRefFrom<typeof legalAnalysisActor> {
   return createActor(legalAnalysisActor, { input });
 }
 export function createRAGSearchActor(input: RAGSearchInput): ActorRefFrom<typeof ragSearchActor> {
@@ -190,14 +184,14 @@ export interface WorkflowInput {
   parallel?: boolean;
 }
 export interface WorkflowOutput {
-  results: { [key: string]: any };
+  results: { [key: string]: any }
   totalTime: number;
   success: boolean;
   errors: Array<any>;
 }
 export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInput }) => {
   const startTime = Date.now();
-  const results: { [key: string]: any } = {};
+  const results: { [key: string]: any } = {}
   const errors: Array<any> = [];
   try {
     if (input.parallel) {
@@ -285,7 +279,7 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
       results,
       totalTime: Date.now() - startTime,
       success: errors.length === 0,
-      errors
+      errors,
     } as WorkflowOutput;
   } catch (error: any) {
     throw new Error(`Workflow actor failed: ${error.message}`);
@@ -298,16 +292,16 @@ export function createWorkflowActor(input: WorkflowInput): ActorRefFrom<typeof w
 export async function runActor<T>(actor: ActorRefFrom<any>): Promise<T> {
   return new Promise((resolve, reject) => {
     const subscription = actor.subscribe({
-      next: (snapshot) => {
+      next: snapshot => {
         if (snapshot.status === 'done') {
           subscription.unsubscribe();
           resolve(snapshot.output as T);
         }
       },
-      error: (error) => {
+      error: error => {
         subscription.unsubscribe();
         reject(error);
-      }
+      },
     });
     actor.start();
   });

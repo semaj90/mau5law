@@ -24,9 +24,9 @@
   let showFullSummary = $state(false);
   // Confidence level styling
   let confidenceLevel = $derived(() => {
-    if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High', bg: 'bg-green-100' };
-    if (analysis.confidence > 0.6) return { color: 'text-yellow-600', level: 'Medium', bg: 'bg-yellow-100' };
-    return { color: 'text-red-600', level: 'Low', bg: 'bg-red-100' };
+    if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High', bg: 'bg-green-100' }
+    if (analysis.confidence > 0.6) return { color: 'text-yellow-600', level: 'Medium', bg: 'bg-yellow-100' }
+    return { color: 'text-red-600', level: 'Low', bg: 'bg-red-100' }
   });
   // Sort entities by confidence
   let sortedEntities = $derived(analysis.entities
@@ -50,7 +50,7 @@
       evidenceTitle: evidence.title,
       analysis,
       exportedAt: new Date().toISOString()
-    };
+    }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -62,6 +62,7 @@
     URL.revokeObjectURL(url);
   }
 </script>
+
 <Card class="nes-container is-rounded bg-white {className}" {...restProps}>
   <!-- Header -->
   <div class="yorha-panel-header pb-3 mb-4">
@@ -87,13 +88,7 @@
           </button>
         {/if}
         {#if showExport}
-          <button
-            class="nes-btn is-small is-success"
-            onclick={exportAnalysis}
-            title="Export Analysis"
-          >
-            Export
-          </button>
+          <button class="nes-btn is-small is-success" onclick={exportAnalysis} title="Export Analysis"> Export </button>
         {/if}
       </div>
     </div>
@@ -134,10 +129,7 @@
             {analysis.summary}
           {:else}
             {analysis.summary.substring(0, 200)}...
-            <button
-              class="text-blue-600 hover:text-blue-800 ml-1"
-              onclick={() => showFullSummary = true}
-            >
+            <button class="text-blue-600 hover:text-blue-800 ml-1" onclick={() => (showFullSummary = true)}>
               Read more
             </button>
           {/if}
@@ -231,11 +223,18 @@
     {/if}
   </div>
 </Card>
+
 <style>
   /* Confidence indicator animations */
-  .yorha-panel-content .bg-green-100 { border-left: 4px solid #10b981; }
-  .yorha-panel-content .bg-yellow-100 { border-left: 4px solid #f59e0b; }
-  .yorha-panel-content .bg-red-100 { border-left: 4px solid #ef4444; }
+  .yorha-panel-content .bg-green-100 {
+    border-left: 4px solid #10b981;
+  }
+  .yorha-panel-content .bg-yellow-100 {
+    border-left: 4px solid #f59e0b;
+  }
+  .yorha-panel-content .bg-red-100 {
+    border-left: 4px solid #ef4444;
+  }
   /* Theme weight bar animations */
   .bg-orange-500 {
     transition: width 0.8s ease-in-out;

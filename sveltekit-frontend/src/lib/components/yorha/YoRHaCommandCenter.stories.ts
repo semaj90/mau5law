@@ -40,7 +40,7 @@ export const Default: Story = {
       networkLatency: 45
     }
   }
-};
+}
 // High load scenario
 export const HighLoad: Story = {
   args: {
@@ -62,7 +62,7 @@ export const HighLoad: Story = {
       }
     }
   }
-};
+}
 // Critical system state
 export const Critical: Story = {
   args: {
@@ -84,7 +84,7 @@ export const Critical: Story = {
       }
     }
   }
-};
+}
 // Low activity scenario
 export const LowActivity: Story = {
   args: {
@@ -106,7 +106,7 @@ export const LowActivity: Story = {
       }
     }
   }
-};
+}
 // Empty state
 export const EmptyState: Story = {
   args: {
@@ -128,7 +128,7 @@ export const EmptyState: Story = {
       }
     }
   }
-};
+}
 // Interactive demo with actions
 export const Interactive: Story = {
   args: {
@@ -159,4 +159,4 @@ export const Interactive: Story = {
       await expect(canvas.getByText('CREATE NEW CASE')).toBeInTheDocument();
     });
   }
-};
+}

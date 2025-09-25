@@ -87,13 +87,13 @@
     ondispatch?.({ mode: newMode });
   }
   // Event handlers
-  function handleEvidenceUploaded(event: CustomEvent) {
+  function handleEvidenceUploaded(_event: CustomEvent) {
     console.log('📁 Evidence uploaded:', event.detail);
     // Sync canvases after evidence upload
     setTimeout(syncCanvasBoards, 500);
     ondispatch?.(event.detail);
   }
-  function handleAnalysisComplete(event: CustomEvent) {
+  function handleAnalysisComplete(_event: CustomEvent) {
     console.log('🔍 Analysis complete:', event.detail);
     // Update canvas state with analysis results
     canvasState.update(state => ({
@@ -102,7 +102,7 @@
     }));
     ondispatch?.(event.detail);
   }
-  function handleYoRHaDrawing(event: CustomEvent) {
+  function handleYoRHaDrawing(_event: CustomEvent) {
     console.log('🎨 YoRHa drawing update:', event.detail);
     // Sync canvases after drawing
     if (syncCanvases) {
@@ -110,7 +110,7 @@
     }
     ondispatch?.(event.detail);
   }
-  function handleNeuralEngineReady(event: CustomEvent) {
+  function handleNeuralEngineReady(_event: CustomEvent) {
     console.log('🧠 Neural engine ready:', event.detail);
     ondispatch?.(event.detail);
   }
@@ -144,7 +144,7 @@
         lastSync: Date.now(),
         version: '1.0';
       }
-    };
+    }
     ondispatch?.(state);
     return stat;
   }
@@ -156,7 +156,7 @@
       const syncInterval = setInterval(syncCanvasBoards, 5000);
       return () => {
         clearInterval(syncInterval);
-      };
+      }
     }
   });
 </script>

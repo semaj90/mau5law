@@ -72,7 +72,7 @@ export class EmbeddingService {
    * Generate embeddings for multiple texts in batch
    */
   async generateBatchEmbeddings(
-    texts: string[]
+    texts: string[];
     options: EmbeddingOptions = {}
   ): Promise<number[][]> {
     const embeddings = await Promise.all(
@@ -136,7 +136,7 @@ export class EmbeddingService {
       }
       // Add preferences if it's an object
       if (user.preferences && typeof user.preferences === 'object') {
-        const prefs = user.preferences as { [key: string]: any };
+        const prefs = user.preferences as { [key: string]: any }
         Object.entries(prefs).forEach(([key, value]) => {
           if (typeof value === 'string') {
             preferenceParts.push(`${key}: ${value}`);
@@ -169,7 +169,7 @@ export class EmbeddingService {
    * Generate document embedding and store in database
    */
   async generateDocumentEmbedding(
-    content: string
+    content: string;
     metadata: {
       documentId?: string;
       evidenceId?: string;
@@ -211,7 +211,7 @@ export class EmbeddingService {
       await db.insert(caseEmbeddings).values({
         caseId,
         content,
-        embedding: `[${embedding.join(',')}]`, // Store as vector string
+        embedding: `[${embedding.join(',')}]`, // Store as vector string;
         metadata: { [key: string]: any }
       });
       console.log(`Generated and stored case embedding for case ${caseId}`);
@@ -266,7 +266,7 @@ export class EmbeddingService {
       const end = Math.min(start + chunkSize, text.length);
       const chunk = text.slice(start, end);
       chunks.push({
-        text: chunk
+        text: chunk;
         index: index++
       });
       // Move start position considering overlap
@@ -283,7 +283,7 @@ export class EmbeddingService {
    */;
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/tags`);
+      // removed unused response assignment
       return response.ok;
     } catch (error: any) {
       console.error('Ollama health check failed:', error);
@@ -295,7 +295,7 @@ export class EmbeddingService {
    */;
   async getAvailableModels(): Promise<string[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/tags`);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error('Failed to fetch models');
       }

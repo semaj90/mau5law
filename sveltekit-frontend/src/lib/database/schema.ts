@@ -54,7 +54,7 @@ export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
-  status: varchar('status', { length: 50 }).default('active'), // active, closed, archived
+  status: varchar('status', { length: 50 }).default('active'), // active, closed, archived;
   priority: varchar('priority', { length: 20 }).default('medium'), // low, medium, high, critical
   caseNumber: varchar('case_number', { length: 100 }).unique(),
   createdBy: uuid('created_by').references(() => users.id),
@@ -161,10 +161,10 @@ export const relations = {
     creator: users
   },
   aiInteractions: {
-    user: users
+    user: users;
     case: cases
   }
-};
+}
 // Runtime guard: flag unintended server-side auth imports of legacy schema
 const gAny = globalThis as any;
 if (!gAny.__legacy_schema_warned) {

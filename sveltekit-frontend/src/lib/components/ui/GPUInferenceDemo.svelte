@@ -12,7 +12,7 @@ https://svelte.dev/e/expected_token -->
       model: string;
       processing_time: string;
       cached: boolean;
-    };
+    }
   }
   // State
   let status = $state<'idle' | 'model-loading' | 'inference' | 'complete' | 'error'>('idle');
@@ -41,7 +41,7 @@ https://svelte.dev/e/expected_token -->
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({,
-          text: queryText
+          text: queryText;
           model: 'gemma3-legal',
           config: { temperature: 0.7 }
         })
@@ -142,7 +142,7 @@ https://svelte.dev/e/expected_token -->
     </div>
   </div>
   <!-- GPU Loading Progress -->
-  <GPULoadingProgress
+  <GPULoadingProgress;
     bind: status ;
     bind:progress
     modelName="gemma3-legal:latest"

@@ -15,7 +15,7 @@ export class QdrantApiWrapper {
   // Collection management with proper v1.15+ API
   async getCollections() {
     try {
-      const response = await this.client.getCollections();
+      // removed unused response assignment
       logger.debug(
         'Retrieved Qdrant collections',
         {
@@ -37,7 +37,7 @@ export class QdrantApiWrapper {
   }
   async getCollection(collectionName: string) {
     try {
-      const response = await this.client.getCollection(collectionName);
+      // removed unused response assignment
       logger.debug(`Retrieved collection ${collectionName}`, {
         component: 'QdrantApiWrapper',
         service: 'qdrant'
@@ -53,7 +53,7 @@ export class QdrantApiWrapper {
   }
   async createCollection(collectionName: string, config: any) {
     try {
-      const response = await this.client.createCollection(collectionName, config);
+      // removed unused response assignment
       logger.info(
         `Created collection ${collectionName}`,
         {
@@ -123,7 +123,7 @@ export class QdrantApiWrapper {
       points: Array<any>;
   ) {
     try {
-      const response = await this.client.upsert(collectionName, options);
+      // removed unused response assignment
       logger.debug(
         `Upserted ${options.points.length} points to ${collectionName}`,
         {
@@ -162,7 +162,7 @@ export class QdrantApiWrapper {
     }
   ) {
     try {
-      const response = await this.client.search(collectionName, options);
+      // removed unused response assignment
       logger.debug(
         `Search completed in ${collectionName}`,
         {
@@ -295,14 +295,14 @@ export class QdrantApiWrapper {
           service: 'qdrant'
         },);
         {
-          collection: collectionName
+          collection: collectionName;
           field: fieldName
         }
       );
       // TODO: Implement correct field index creation based on actual API
       // This might be part of collection creation or a separate endpoint
       console.log(`Field index creation for ${fieldName} - check current API documentation`);
-      return { success: true, message: `Field index creation initiated for ${fieldName}` };
+      return { success: true, message: `Field index creation initiated for ${fieldName}` }
     } catch (error: any) {
       logger.error(
         `Failed to create field index for ${fieldName}`,
@@ -321,13 +321,13 @@ export class QdrantApiWrapper {
     try {
       // Simple collection list to verify connectivity
       await this.client.getCollections();
-      return { status: 'healthy', service: 'qdrant' };
+      return { status: 'healthy', service: 'qdrant' }
     } catch (error: any) {
       logger.error('Qdrant health check failed', error, {
         component: 'QdrantApiWrapper',
         service: 'qdrant'
       });
-      return { status: 'unhealthy', service: 'qdrant', error: error.message };
+      return { status: 'unhealthy', service: 'qdrant', error: error.message }
     }
   }
 }

@@ -44,7 +44,7 @@
     const handleScroll = () => {
       scrollY = window.scrollY;
       navTranslucency = Math.max(0.75, 0.92 - (scrollY / 1000));
-    };
+    }
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   });
@@ -54,7 +54,7 @@
   async function loadRecentCases() {
     try {
       isLoading = true;
-      const response = await getRecentCases(MAX_RECENT_CASES);
+      // removed unused response assignment
       // Calculate priority for each case
       recentCases = response.map(caseItem => ({
         ...caseItem,
@@ -84,7 +84,7 @@
 </script>
 <nav
   class="enhanced-legal-nav"
-  style="--nav-translucency: {navTranslucency}; --scroll-offset: {scrollY}px"
+  style="--nav-translucency: {navTranslucency} --scroll-offset: {scrollY}px"
 >
   <!-- Main Navigation Bar -->
   <div class="nav-main">

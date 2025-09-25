@@ -13,11 +13,11 @@
   			level: number;
   			experience: number
   			maxExperience: number;
-  		};
+  		}
   		stats?: {
   			documentsAnalyzed: number
   			accuracyScore: number
-  		};
+  		}
   		navigation?: {
   			label: string;
   			href: string
@@ -57,84 +57,87 @@
   		return currentPath === href || (href !== '/' && currentPath.startsWith(href));
   	}
 </script>
+
 <div class="gaming-layout">
-	<!-- Gaming HUD -->
-	{#if showHUD}
-		<GamingHUD
-			userLevel={user.level}
-			experience={user.experience}
-			maxExperience={user.maxExperience}
-			currentCase={page.data?.currentCase || "CASE-2024-001"}
-			documentsAnalyzed={stats.documentsAnalyzed}
-			accuracyScore={stats.accuracyScore}
-		/>
-	{/if}
-	<!-- Main Container -->
-	<div class="main-container" class:hud-offset={showHUD}>
-		<!-- Gaming Sidebar -->
-		<div class="sidebar" class:collapsed={sidebarCollapsed}>
-			<!-- Sidebar Header -->
-			<div class="sidebar-header">
-				<div class="logo-section">
-					<div class="logo-icon">⚖️</div>
-					{#if !sidebarCollapsed}
-						<div class="logo-text">
-							<div class="app-name">{title}</div>
-							<div class="app-subtitle">{subtitle}</div>
-						</div>
-					{/if}
-				</div>
-				<button
-					class="collapse-button"
-					onclick={toggleSidebar}
-					aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-				>
-					{sidebarCollapsed ? '▶' : '◀'}
-				</button>
-			</div>
-			<!-- Navigation Menu -->
-			<nav class="navigation">
-				{#each navigation as navItem}
-					<a
-						href={navItem.href}
-						class="nav-item";
-						class:active={isActiveRoute(navItem.href)}
-						data-sveltekit-preload-data="hover"
-					>
-						<span class="nav-icon">{navItem.icon}</span>
-						{#if !sidebarCollapsed}
-							<span class="nav-label">{navItem.label}</span>
-						{/if}
-						{#if isActiveRoute(navItem.href)}
-							<div class="active-indicator"></div>
-						{/if}
-					</a>
-				{/each}
-			</nav>
-			<!-- Sidebar Footer -->
-			<div class="sidebar-footer">
-				{#if !sidebarCollapsed}
-					<div class="system-status">
-						<div class="status-item">
-							<div class="status-dot online"></div>
-							<span>AI Online</span>
-						</div>
-						<div class="status-item">
-							<div class="status-dot online"></div>
-							<span>DB Connected</span>
-						</div>
-					</div>
-				{/if}
-			</div>
-		</div>
-		<!-- Main Content Area -->
-		<main class="content-area" class:sidebar-collapsed={sidebarCollapsed}>
-			{@render children()}
-		</main>
-	</div>
-	<!-- Gaming Effects -->
-	<div class="scan-overlay"></div>
+  <!-- Gaming HUD -->
+  {#if showHUD}
+    <GamingHUD
+      userLevel={user.level}
+      experience={user.experience}
+      maxExperience={user.maxExperience}
+      currentCase={page.data?.currentCase || 'CASE-2024-001'}
+      documentsAnalyzed={stats.documentsAnalyzed}
+      accuracyScore={stats.accuracyScore}
+    />
+  {/if}
+  <!-- Main Container -->
+  <div class="main-container" class:hud-offset={showHUD}>
+    <!-- Gaming Sidebar -->
+    <div class="sidebar" class:collapsed={sidebarCollapsed}>
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <div class="logo-section">
+          <div class="logo-icon">⚖️</div>
+          {#if !sidebarCollapsed}
+            <div class="logo-text">
+              <div class="app-name">{title}</div>
+              <div class="app-subtitle">{subtitle}</div>
+            </div>
+          {/if}
+        </div>
+        <button
+          class="collapse-button"
+          onclick={toggleSidebar}
+          aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {sidebarCollapsed ? '▶' : '◀'}
+        </button>
+      </div>
+      <!-- Navigation Menu -->
+      <nav class="navigation">
+        {#each navigation as navItem}
+          <a
+            href={navItem.href}
+            class="nav-item"
+            ;
+            class:active={isActiveRoute(navItem.href)}
+            data-sveltekit-preload-data="hover"
+          >
+            <span class="nav-icon">{navItem.icon}</span>
+            {#if !sidebarCollapsed}
+              <span class="nav-label">{navItem.label}</span>
+            {/if}
+            {#if isActiveRoute(navItem.href)}
+              <div class="active-indicator"></div>
+            {/if}
+          </a>
+        {/each}
+      </nav>
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        {#if !sidebarCollapsed}
+          <div class="system-status">
+            <div class="status-item">
+              <div class="status-dot online"></div>
+              <span>AI Online</span>
+            </div>
+            <div class="status-item">
+              <div class="status-dot online"></div>
+              <span>DB Connected</span>
+            </div>
+          </div>
+        {/if}
+      </div>
+    </div>
+    <!-- Main Content Area -->
+    <main class="content-area" class:sidebar-collapsed={sidebarCollapsed}>
+      {@render children()}
+    </main>
+  </div>
+  <!-- Gaming Effects -->
+  <div class="scan-overlay"></div>
 </div>
+
 <style>
 	.gaming-layout {
 position: relative;

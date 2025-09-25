@@ -26,41 +26,41 @@ declare global {
     destroy(): void;
   }
   interface GPUComputePipeline {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   interface GPUShaderModule {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   interface GPUCommandEncoder {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   interface GPUQueue {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   interface GPURequestAdapterOptions {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   interface GPUDeviceDescriptor {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   interface GPUBufferDescriptor {
     size: number;
     usage: GPUBufferUsageFlags;
   }
   interface GPUShaderModuleDescriptor {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   interface GPUComputePipelineDescriptor {
-  [key: string]: any;
-}
+    [key: string]: any;
+  }
   type GPUMapModeFlags = number;
   type GPUBufferUsageFlags = number;
   const GPUBufferUsage: {
     STORAGE: number;
     COPY_SRC: number;
     COPY_DST: number;
-  };
+  }
   const GPUMapMode: {
     READ: number;
-  };
+  }
 }

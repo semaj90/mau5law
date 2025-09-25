@@ -12,10 +12,10 @@ declare global {
     interface Element extends React.ReactElement {}
     interface ElementClass extends React.Component {}
     interface ElementAttributesProperty {
-      props: { [key: string]: any };
+      props: { [key: string]: any }
     }
     interface ElementChildrenAttribute {
-      children: { [key: string]: any };
+      children: { [key: string]: any }
     }
   }
 }

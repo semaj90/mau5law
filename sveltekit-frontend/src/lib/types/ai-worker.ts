@@ -15,7 +15,7 @@ export interface LLMModel {
     tokensPerSecond: number;
     memoryUsage: string;
     responseTime: number;
-  };
+  }
   capabilities: string[];
   endpoint: string;
 }
@@ -26,7 +26,7 @@ export interface AITask {
   model: string;
   prompt: string;
   systemPrompt?: string;
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
   timestamp: number;
   priority: "low" | "medium" | "high" | "critical";
   // Generation parameters
@@ -51,12 +51,12 @@ export interface AIResponse {
   model: string;
   tokensUsed: number;
   responseTime: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   error?: {
     name: string;
     message: string;
     code?: string;
-  };
+  }
 }
 export interface WorkerMessage {
   type:
@@ -148,12 +148,12 @@ export interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
   timestamp: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface AgentWorkflowTask extends AITask {
   type: "agent_workflow";
   workflowId: string;
-  inputs: { [key: string]: any };
+  inputs: { [key: string]: any }
   agents: string[];
   coordination: "sequential" | "parallel" | "hierarchical";
 }
@@ -161,7 +161,7 @@ export interface MultiLLMOrchestrationConfig {
   coordinatorModel: string;
   specialistModels: {
     [specialization: string]: string;
-  };
+  }
   consensusThreshold: number;
   maxIterations: number;
   votingStrategy: "majority" | "weighted" | "expert";
@@ -191,7 +191,7 @@ export interface WorkerPool {
 }
 export interface AIServiceWorkerManager {
   initialize(): Promise<void>;
-  submitTask(task: AITask): Promise<string>;
+  submitTask(_task: AITask): Promise<string>;
   cancelTask(taskId: string): Promise<void>;
   getStatus(): Promise<WorkerStatus>;
   shutdown(): Promise<void>;

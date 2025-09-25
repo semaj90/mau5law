@@ -33,7 +33,7 @@ export interface LegalCase {
     costToDate: number;
     billingRate: number;
     timeSpent: number; // hours
-  };
+  }
   // AI insights
   aiInsights: {
     riskScore: number; // 0-100
@@ -45,7 +45,7 @@ export interface LegalCase {
       similarity: number;
       outcome: string;
     }>;
-  };
+  }
   // System fields
   createdAt: string;
   updatedAt: string;
@@ -79,13 +79,13 @@ export interface CrossSystemInsights {
     keyInfluencers: Array<{ poiId: string; influence: number }>;
     citationClusters: Array<{ caseIds: string[]; commonCitations: string[] }>;
     reportThemes: Array<{ theme: string; reportIds: string[]; frequency: number }>;
-  };
+  }
   // Temporal analysis
   temporalInsights: {
     citationTrends: Array<{ period: string; count: number; types: Record<string, number> }>;
     reportGeneration: Array<{ period: string; count: number; templates: Record<string, number> }>;
     poiActivity: Array<{ period: string; interactions: number; newPOIs: number }>;
-  };
+  }
 }
 // Integration Context
 interface PlatformContext {
@@ -102,7 +102,7 @@ interface PlatformContext {
     reports: 'synced' | 'syncing' | 'error';
     poi: 'synced' | 'syncing' | 'error';
     documents: 'synced' | 'syncing' | 'error';
-  };
+  }
   // AI processing queue
   aiQueue: Array<{,
     id: string;
@@ -126,7 +126,7 @@ type PlatformEvent =
   | { type: 'AI_PROCESS'; type: string; entityIds: string[] }
   | { type: 'BULK_CASE_OPERATION'; operation: string; caseIds: string[] }
   | { type: 'RESET' }
-  | { type: 'ERROR'; error: string };
+  | { type: 'ERROR'; error: string }
 // Legal Platform Integration Machine
 export const legalPlatformMachine = createMachine(
   {
@@ -338,7 +338,7 @@ export const legalPlatformMachine = createMachine(
           const citations = citationsRes.ok ? await citationsRes.json() : [];
           const reports = reportsRes.ok ? await reportsRes.json() : [];
           const pois = poisRes.ok ? await poisRes.json() : [];
-          return { citations, reports, pois };
+          return { citations, reports, pois }
         }
       ),
       // Create new legal case
@@ -440,7 +440,7 @@ function createLegalPlatformStore() {
     syncSystems: () => actor.send({ type: 'SYNC_ALL_SYSTEMS' }),
     processAI: (type: string, entityIds: string[]) =>
       actor.send({ type: 'AI_PROCESS', type, entityIds })
-  };
+  }
 }
 export const legalPlatformStore = createLegalPlatformStore();
 // Unified Dashboard Store

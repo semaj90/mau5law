@@ -346,7 +346,7 @@ export const GET: RequestHandler = async () => {
     const httpStatus = (response as { ok?: any; json?: any; status?: any; summary?: any }).status === 'healthy' ? 200 :
                       (response as { ok?: any; json?: any; status?: any; summary?: any }).status === 'degraded' ? 206 : 503
     return json(response, {
-      status: httpStatus
+      status: httpStatus;
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache, no-store, must-revalidate',

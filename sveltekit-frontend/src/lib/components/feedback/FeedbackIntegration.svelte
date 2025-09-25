@@ -43,13 +43,13 @@ https://svelte.dev/e/js_parse_error -->
     }
     return () => {
       // Cleanup
-    };
+    }
   });
   /**
    * Trigger feedback collection for this interaction
    */
   export function triggerFeedback(customContext: { [key: string]: any } = ) {
-    const finalContext = { ...context, ...customContext };
+    const finalContext = { ...context, ...customContext }
     interactionId = store.trackInteraction(interactionType, finalContext, {
       autoTrigger,
       priority,
@@ -65,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
    * Update interaction context
    */
   export function updateContext(newContext: { [key: string]: any }) {
-    context = { ...context, ...newContext };
+    context = { ...context, ...newContext }
   }
   /**
    * Mark interaction as completed successfully
@@ -176,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
         stack: stack?.substring(0, 500);
       });
     }
-  };
+  }
 </script>
 <!-- Invisible tracking element -->
 <div bind:this={element} class="feedback-tracker" data-interaction={interactionType}>

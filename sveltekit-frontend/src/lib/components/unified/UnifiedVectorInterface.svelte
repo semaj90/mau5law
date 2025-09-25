@@ -48,7 +48,7 @@
   }
   async function checkHealth() {
     try {
-      const response = await fetch('/api/unified-vector?action=health');
+      // removed unused response assignment
       const data = await (response as { json?: unknown }).json();
       health.set(health) || );
       const healthStatus = (data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).allSystemsOperational ? 'All systems operational' : 'Some systems offline';
@@ -59,7 +59,7 @@
   }
   async function loadAnalytics() {
     try {
-      const response = await fetch('/api/unified-vector?action=analytics');
+      // removed unused response assignment
       const data = await (response as { json?: unknown }).json();
       analytics.set(analytics) || );
       addLog('Analytics updated');
@@ -76,10 +76,10 @@
     addLog(`Starting ${selectedOperation} operation...`);
     try {
       const request: UnifiedVectorRequest = {
-        type: selectedOperation
+        type: selectedOperation;
         payload: {
           text: inputText || undefined
-          documents: selectedOperation === 'ingest' ? sampleDocuments : undefined
+          documents: selectedOperation === 'ingest' ? sampleDocuments : undefined;
           query: selectedOperation === 'search' ? inputText : undefined
           userId,
           sessionId,
@@ -93,7 +93,7 @@
             cacheResults
           }
         }
-      };
+      }
       const response = await fetch('/api/unified-vector', {
         method: 'POST',
         headers: {
@@ -135,6 +135,7 @@
     return () => clearInterval(interval);
   });
 </script>
+
 <!-- YoRHa-themed UI -->
 <div class="unified-vector-interface bg-black text-green-400 font-mono min-h-screen p-6">
   <!-- Header -->
@@ -153,7 +154,7 @@
         {#each Object.entries($health) as [system, status]}
           <div class="flex justify-between">
             <span class="capitalize">{system.replace(/([A-Z])/g, ' $1')}</span>
-            <span class="{status ? 'text-green-400' : 'text-red-400'}">
+            <span class={status ? 'text-green-400' : 'text-red-400'}>
               {status ? '●' : '○'}
             </span>
           </div>
@@ -191,7 +192,9 @@
       <h2 class="text-lg mb-4 text-green-300">CONTROL PANEL</h2>
       <!-- Operation Selection -->
       <div class="mb-4">
-        <label class="block text-sm mb-2" for="operation">OPERATION</label><select id="operation" ;
+        <label class="block text-sm mb-2" for="operation">OPERATION</label><select
+          id="operation"
+          ;
           bind:value={selectedOperation}
           class="w-full bg-black border border-green-400 text-green-400 p-2 text-sm"
         >
@@ -205,7 +208,8 @@
       <!-- Text Input -->
       {#if selectedOperation !== 'ingest'}
         <div class="mb-4">
-          <label class="block text-sm mb-2" for="input-text">INPUT TEXT</label><textarea id="input-text"
+          <label class="block text-sm mb-2" for="input-text">INPUT TEXT</label><textarea
+            id="input-text"
             bind:value={inputText}
             placeholder="Enter your legal text for analysis..."
             class="w-full bg-black border border-green-400 text-green-400 p-2 text-sm h-24 resize-none"
@@ -215,13 +219,16 @@
       <!-- User Context -->
       <div class="grid grid-cols-2 gap-2 mb-4">
         <div>
-          <label class="block text-xs mb-1" for="user-id">USER ID</label><input id="user-id"
+          <label class="block text-xs mb-1" for="user-id">USER ID</label><input
+            id="user-id";
             bind:value={userId}
             class="w-full bg-black border border-green-400 text-green-400 p-1 text-xs"
           />
         </div>
         <div>
-          <label class="block text-xs mb-1" for="session-id">SESSION ID</label><input id="session-id";
+          <label class="block text-xs mb-1" for="session-id">SESSION ID</label><input
+            id="session-id"
+            ;
             bind:value={sessionId}
             class="w-full bg-black border border-green-400 text-green-400 p-1 text-xs"
           />
@@ -289,9 +296,11 @@
           <div class="border border-green-600 p-3">
             <div class="text-green-200 mb-2">OPERATION: {$results.type.toUpperCase()}</div>
             <div class="grid grid-cols-2 gap-2 text-xs">
-              <div>Status: <span class="{$results.success ? 'text-green-400' : 'text-red-400'}">
-                {$results.success ? 'SUCCESS' : 'FAILED'}
-              </span></div>
+              <div>
+                Status: <span class={$results.success ? 'text-green-400' : 'text-red-400'}>
+                  {$results.success ? 'SUCCESS' : 'FAILED'}
+                </span>
+              </div>
               <div>Processing: {$results.results.processingTime}ms</div>
               <div>Confidence: {($results.results.confidence * 100).toFixed(1)}%</div>
               <div>Components: {$results.metadata.componentsUsed.length}</div>
@@ -329,8 +338,15 @@
               <div class="space-y-1 text-xs max-h-32 overflow-y-auto">
                 {#each $results.results.vectorResults.slice(0, 5) as result}
                   <div class="border-l-2 border-green-700 pl-2">
-                    <div class="text-green-300">{(result as { metadata?: unknown; id?: unknown; score?: unknown }).metadata?.title || (result as { metadata?: unknown; id?: unknown; score?: unknown }).id}</div>
-                    <div class="text-green-500">Score: {((result as { metadata?: unknown; id?: unknown; score?: unknown }).score * 100).toFixed(1)}%</div>
+                    <div class="text-green-300">
+                      {(result as { metadata?: unknown; id?: unknown; score?: unknown }).metadata?.title ||
+                        (result as { metadata?: unknown; id?: unknown; score?: unknown }).id}
+                    </div>
+                    <div class="text-green-500">
+                      Score: {((result as { metadata?: unknown; id?: unknown; score?: unknown }).score * 100).toFixed(
+                        1,
+                      )}%
+                    </div>
                   </div>
                 {/each}
               </div>
@@ -343,7 +359,9 @@
                 {#each $results.results.recommendations.slice(0, 3) as rec}
                   <div class="border-l-2 border-green-700 pl-2">
                     <div class="text-green-300">{rec.title}</div>
-                    <div class="text-green-500">Priority: {rec.priority} | Confidence: {(rec.confidence * 100).toFixed(1)}%</div>
+                    <div class="text-green-500">
+                      Priority: {rec.priority} | Confidence: {(rec.confidence * 100).toFixed(1)}%
+                    </div>
                   </div>
                 {/each}
               </div>
@@ -367,6 +385,7 @@
     </div>
   </div>
 </div>
+
 <style>
   .unified-vector-interface {
     background-image:
@@ -374,10 +393,14 @@
       linear-gradient(90deg, rgba(0, 255, 0, 0.03) 1px, transparent 1px);
     background-size: 20px 20px;
   }
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     outline: none;
   }
-  input:focus, textarea:focus, select:focus {
+  input:focus,
+  textarea:focus,
+  select:focus {
     box-shadow: inset 0 0 0 1px theme('colors.green.400');
   }
   button:disabled {

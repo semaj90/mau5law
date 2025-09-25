@@ -17,15 +17,15 @@ export interface SystemHealth {
 }
 
 // Simple reactive system health store using Svelte 5 runes
-let healthState = $state<SystemHealth>({
+const healthState = $state<SystemHealth>({
   overall: 'healthy',
   services: [
     { name: 'Database', status: 'online' },
     { name: 'AI Service', status: 'online' },
     { name: 'File Storage', status: 'online' },
-    { name: 'Vector Search', status: 'online' }
+    { name: 'Vector Search', status: 'online' },
   ],
-  lastUpdate: new Date()
+  lastUpdate: new Date(),
 });
 
 export const systemHealthStore = {
@@ -71,5 +71,5 @@ export const systemHealthStore = {
     // Mock health check for development
     await new Promise(resolve => setTimeout(resolve, 500));
     healthState.lastUpdate = new Date();
-  }
-};
+  },
+}

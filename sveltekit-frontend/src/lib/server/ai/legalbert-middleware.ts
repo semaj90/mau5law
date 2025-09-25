@@ -19,7 +19,7 @@ const metrics = {
   increment: (name: string, value: number = 1) => console.log(`[METRIC] ${name}: +${value}`),
   gauge: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}`),
   histogram: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}ms`)
-};
+}
 // Utility functions
 async function withRetry<T>(fn: () => Promise<T>, retries: number = 3): Promise<T> {
   for (let i = 0; i < retries; i++) {
@@ -53,7 +53,7 @@ const LEGALBERT_MODELS = {
     apiKey: process.env.OPENAI_API_KEY,
     baseUrl: 'https://api.openai.com/v1'
   }
-};
+}
 // Legal domain-specific entity types
 const LEGAL_ENTITY_TYPES = {
   CASE_CITATION: 'case_citation',
@@ -77,18 +77,18 @@ export interface LegalBertAnalysisResult {
     polarity: number; // -1 to 1
     confidence: number;
     classification: 'positive' | 'neutral' | 'negative';
-  };
+  }
   complexity: {
     readabilityScore: number;
     legalComplexity: number;
     technicalTerms: number;
-  };
+  }
   keyPhrases: Array<any>;
   summary: {
     abstractive: string;
     extractive: string[];
     keyPoints: string[];
-  };
+  }
 }
 // LegalBERT embedding result
 export interface LegalEmbeddingResult {
@@ -101,7 +101,7 @@ export interface LegalEmbeddingResult {
     textLength: number;
     legalTerms: number;
     complexity: number;
-  };
+  }
 }
 // Legal document classification
 export interface LegalClassificationResult {
@@ -177,7 +177,7 @@ export class LegalBERTMiddleware {
           legalTerms,
           complexity
         }
-      };
+      }
       // Cache result
       this.cache.set(`embedding_${textHash}`, result);
       metrics.increment('legalbert_embeddings_generated');
@@ -199,7 +199,7 @@ export class LegalBERTMiddleware {
           legalTerms: 0,
           complexity: 0.5
         }
-      };
+      }
     }
   }
   /**
@@ -230,7 +230,7 @@ export class LegalBERTMiddleware {
         complexity,
         keyPhrases,
         summary
-      };
+      }
       // Cache result
       this.cache.set(`analysis_${textHash}`, result);
       metrics.histogram('legalbert_analysis_time', Date.now() - startTime);
@@ -277,14 +277,14 @@ export class LegalBERTMiddleware {
           structural,
           legal_concepts
         }
-      };
+      }
     } catch (error: any) {
       logger.error('[LegalBERT] Similarity calculation failed:', error);
       return {
         similarity: 0.5,
         confidence: 0.3,
         factors: { semantic: 0.5, structural: 0.5, legal_concepts: 0.5 }
-      };
+      }
     }
   }
   // === PRIVATE HELPER METHODS ===
@@ -306,7 +306,7 @@ export class LegalBERTMiddleware {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({,
-          inputs: text
+          inputs: text;
           options: { wait_for_model: true }
         })
       });
@@ -414,7 +414,7 @@ export class LegalBERTMiddleware {
       corporate: ['corporation', 'shareholder', 'director', 'fiduciary', 'merger'],
       property: ['property', 'real estate', 'ownership', 'title', 'deed'],
       employment: ['employment', 'discrimination', 'wrongful termination', 'wages', 'benefits']
-    };
+    }
     const textLower = text.toLowerCase();
     for (const [category, terms] of Object.entries(legalConcepts)) {
       let relevance = 0;
@@ -464,7 +464,7 @@ export class LegalBERTMiddleware {
       polarity,
       confidence: Math.min(totalScore / 10, 1.0),
       classification: polarity > 0.1 ? 'positive' : polarity < -0.1 ? 'negative' : 'neutral'
-    };
+    }
   }
   private calculateTextComplexity(text: string): LegalBertAnalysisResult['complexity'] {
     const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
@@ -498,7 +498,7 @@ export class LegalBERTMiddleware {
       readabilityScore,
       legalComplexity,
       technicalTerms
-    };
+    }
   }
   private async extractKeyPhrases(text: string): Promise<LegalBertAnalysisResult['keyPhrases']> {
     const phrases: LegalBertAnalysisResult['keyPhrases'] = [];
@@ -540,7 +540,7 @@ export class LegalBERTMiddleware {
       abstractive: `Legal document summary: ${extractive[0]?.substring(0, 200) || 'No summary available'}...`,
       extractive,
       keyPoints
-    };
+    }
   }
   private async performDocumentClassification(text: string): Promise<LegalClassificationResult> {
     const textLower = text.toLowerCase();
@@ -571,7 +571,7 @@ export class LegalBERTMiddleware {
       practiceArea: this.extractPracticeArea(text),
       urgency: this.assessUrgency(text),
       recommendations: ['Review for accuracy', 'Check citations', 'Verify jurisdiction']
-    };
+    }
   }
   // === UTILITY METHODS ===
   private hashText(text: string): string {
@@ -693,7 +693,7 @@ export class LegalBERTMiddleware {
       criminal: ['criminal', 'felony', 'misdemeanor'],
       corporate: ['corporation', 'merger', 'securities'],
       employment: ['employment', 'discrimination', 'wrongful termination']
-    };
+    }
     const textLower = text.toLowerCase();
     for (const [area, terms] of Object.entries(practiceAreas)) {
       if (terms.some((term) => textLower.includes(term))) {
@@ -724,7 +724,7 @@ export class LegalBERTMiddleware {
         extractive: [text.substring(0, 100) + '...'],
         keyPoints: ['Document requires manual review']
       }
-    };
+    }
   }
   private generateFallbackClassification(text: string): LegalClassificationResult {
     return {
@@ -735,7 +735,7 @@ export class LegalBERTMiddleware {
       practiceArea: 'general',
       urgency: 'medium',
       recommendations: ['Manual classification required', 'Review document type']
-    };
+    }
   }
   // === PUBLIC API METHODS ===
   /**
@@ -747,7 +747,7 @@ export class LegalBERTMiddleware {
       cacheSize: this.cache.size,
       model: this.modelConfig,
       // Basic metrics structure (no getAllMetrics available)
-    };
+    }
   }
   /**
    * Clear cache
@@ -770,7 +770,7 @@ export class LegalBERTMiddleware {
           confidence: testResult.confidence,
           cacheSize: this.cache.size
         }
-      };
+      }
     } catch (error: any) {
       return {
         status: 'unhealthy',
@@ -778,7 +778,7 @@ export class LegalBERTMiddleware {
           error: error.message,
           model: this.modelConfig.embedding
         }
-      };
+      }
     }
   }
 }

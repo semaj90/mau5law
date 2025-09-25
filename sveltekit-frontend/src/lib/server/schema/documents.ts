@@ -57,7 +57,7 @@ export const document_chunks = pgTable('document_chunks', {
   chunk_index: integer('chunk_index').notNull(), // Order within document
   chunk_text: text('chunk_text').notNull(),
   chunk_size: integer('chunk_size').notNull(),
-  // Vector embedding for the chunk
+  // Vector embedding for the chunk;
   embedding: customVector('embedding', { dimensions: 384 }).notNull(),
   // Chunk metadata
   start_position: integer('start_position'),
@@ -109,7 +109,7 @@ export const vectors = pgTable('vectors', {
   id: uuid('id').primaryKey().defaultRandom(),
   entity_type: varchar('entity_type', { length: 50 }).notNull(), // 'document', 'chunk', 'case', 'user'
   entity_id: uuid('entity_id').notNull(),
-  vector_type: varchar('vector_type', { length: 50 }).notNull(), // 'content', 'title', 'summary'
+  vector_type: varchar('vector_type', { length: 50 }).notNull(), // 'content', 'title', 'summary';
   embedding: customVector('embedding', { dimensions: 384 }).notNull(),
   // Metadata for vector
   model_name: varchar('model_name', { length: 100 }).default('nomic-embed-text'),

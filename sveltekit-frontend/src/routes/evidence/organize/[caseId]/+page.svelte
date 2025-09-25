@@ -41,7 +41,7 @@ if (!caseId) {
    */
   async function loadCaseData() {
     try {
-      const response = await fetch(`/api/v1/cases/${caseId}`);
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         caseData = data.data;
@@ -68,7 +68,7 @@ if (!caseId) {
   /**
    * Handle evidence reorganization
    */
-  function handleEvidenceReorganized(event: CustomEvent) {
+  function handleEvidenceReorganized(_event: CustomEvent) {
     const { evidence, organization } = event.detail;
     // Add to organization history
     organizationHistory = [{
@@ -82,7 +82,7 @@ if (!caseId) {
   /**
    * Handle evidence selection
    */
-  function handleEvidenceSelected(event: CustomEvent) {
+  function handleEvidenceSelected(_event: CustomEvent) {
     const { evidence, context } = event.detail;
     if (selectedEvidence.find(e => e.id === evidence.id)) {
       selectedEvidence = selectedEvidence.filter(e => e.id !== evidence.id);
@@ -94,7 +94,7 @@ if (!caseId) {
   /**
    * Handle organization mode changes
    */
-  function handleOrganizationChanged(event: CustomEvent) {
+  function handleOrganizationChanged(_event: CustomEvent) {
     const { mode, structure } = event.detail;
     // Update organization stats
     organizationStats = {
@@ -102,7 +102,7 @@ if (!caseId) {
       currentMode: mode
       lastUpdate: new Date().toISOString(),
       structure: structur;
-    };
+    }
     console.log('[Organization Change] Mode changed to:', mode);
   }
   /**
@@ -121,8 +121,8 @@ if (!caseId) {
         structure: organizationStats.structure,
         selectedEvidence,
         exportedAt: new Date().toISOString(),
-        exportedBy: 'user' // Would be actual user ID in productio
-      };
+        exportedBy: 'user' // Would be actual user ID in productio;
+      }
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -184,9 +184,13 @@ if (!caseId) {
     window.location.reload();
   }
 </script>
+
 <svelte:head>
   <title>Evidence Organization - Case {caseId}</title>
-  <meta name="description" content="Organize and manage evidence for case {caseId} using AI-powered clustering and multiple organization methods" />
+  <meta
+    name="description"
+    content="Organize and manage evidence for case {caseId} using AI-powered clustering and multiple organization methods"
+  />
 </svelte:head>
 {#if isLoading}
   <div class="loading-container">
@@ -217,21 +221,13 @@ if (!caseId) {
           {#if selectedEvidence.length > 0}
             <div class="selection-info">
               <span class="selection-count">{selectedEvidence.length} selected</span>
-              <button type="button" onclick={clearSelections} class="clear-btn">
-                Clear Selection
-              </button>
+              <button type="button" onclick={clearSelections} class="clear-btn"> Clear Selection </button>
             </div>
           {/if}
           <div class="action-buttons">
-            <button type="button" onclick={exportOrganization} class="export-btn">
-              📥 Export Organization
-            </button>
-            <button type="button" onclick={generateReport} class="report-btn">
-              📊 Generate Report
-            </button>
-            <a href="/cases/{caseId}" class="view-case-btn">
-              👁️ View Case
-            </a>
+            <button type="button" onclick={exportOrganization} class="export-btn"> 📥 Export Organization </button>
+            <button type="button" onclick={generateReport} class="report-btn"> 📊 Generate Report </button>
+            <a href="/cases/{caseId}" class="view-case-btn"> 👁️ View Case </a>
           </div>
         </div>
       </div>
@@ -294,15 +290,9 @@ if (!caseId) {
             {/each}
           </div>
           <div class="selection-actions">
-            <button type="button" class="bulk-action-btn">
-              🏷️ Bulk Tag
-            </button>
-            <button type="button" class="bulk-action-btn">
-              📋 Create Report
-            </button>
-            <button type="button" class="bulk-action-btn">
-              🔗 Link Evidence
-            </button>
+            <button type="button" class="bulk-action-btn"> 🏷️ Bulk Tag </button>
+            <button type="button" class="bulk-action-btn"> 📋 Create Report </button>
+            <button type="button" class="bulk-action-btn"> 🔗 Link Evidence </button>
           </div>
         </div>
       {/if}
@@ -322,9 +312,7 @@ if (!caseId) {
                     {attempt.evidenceCount} items
                   </span>
                 </div>
-                <button type="button" class="restore-btn" title="Restore this organization">
-                  ↺
-                </button>
+                <button type="button" class="restore-btn" title="Restore this organization"> ↺ </button>
               </div>
             {/each}
           </div>
@@ -362,8 +350,10 @@ if (!caseId) {
     <a href="/cases" class="back-link">Back to Cases</a>
   </div>
 {/if}
+
 <style>
-  .loading-container, .error-container {
+  .loading-container,
+  .error-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -381,13 +371,18 @@ if (!caseId) {
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   .error-icon {
     font-size: 3rem;
   }
-  .error-container button, .back-link {
+  .error-container button,
+  .back-link {
     padding: 0.5rem 1rem;
     background: #3b82f6;
     color: white;
@@ -397,14 +392,15 @@ if (!caseId) {
     cursor: pointer;
     font-weight: 500;
   }
-  .error-container button:hover, .back-link:hover {
+  .error-container button:hover,
+  .back-link:hover {
     background: #2563eb;
   }
   .evidence-organization-page {
     display: grid;
     grid-template-areas:
-      "header header"
-      "main sidebar";
+      'header header'
+      'main sidebar';
     grid-template-columns: 1fr 350px;
     grid-template-rows: auto 1fr;
     height: 100vh;
@@ -453,9 +449,18 @@ if (!caseId) {
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  .status-active { background: #dcfce7; color: #166534; }
-  .status-closed { background: #fef2f2; color: #991b1b; }
-  .status-pending { background: #fef3c7; color: #92400e; }
+  .status-active {
+    background: #dcfce7;
+    color: #166534;
+  }
+  .status-closed {
+    background: #fef2f2;
+    color: #991b1b;
+  }
+  .status-pending {
+    background: #fef3c7;
+    color: #92400e;
+  }
   .page-actions {
     display: flex;
     flex-direction: column;
@@ -489,7 +494,8 @@ if (!caseId) {
     gap: 0.75rem;
     flex-wrap: wrap;
   }
-  .action-buttons button, .action-buttons a {
+  .action-buttons button,
+  .action-buttons a {
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
     font-weight: 500;
@@ -667,7 +673,8 @@ if (!caseId) {
     font-weight: 600;
     color: #1e293b;
   }
-  .history-time, .history-count {
+  .history-time,
+  .history-count {
     font-size: 0.75rem;
     color: #6b7280;
   }
@@ -715,8 +722,8 @@ if (!caseId) {
   @media (max-width: 1024px) {
     .evidence-organization-page {
       grid-template-areas:
-        "header"
-        "main";
+        'header'
+        'main';
       grid-template-columns: 1fr;
     }
     .sidebar {

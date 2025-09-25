@@ -18,7 +18,7 @@ export interface DiscoveredRoute {
     description?: string;
     icon?: string;
     tags?: string[];
-  };
+  }
 }
 /**
  * The 37 consolidatable routes identified for integration
@@ -144,7 +144,7 @@ export function determinePriority(category: DiscoveredRoute['category']): Discov
     'demo-games': 'demo',
     'infrastructure': 'production',
     'other': 'other'
-  };
+  }
   return categoryPriorityMap[category] || 'other';
 }
 /**
@@ -163,7 +163,7 @@ export function generateRouteMetadata(path: string, category: DiscoveredRoute['c
     'demo-games': '🎮',
     'infrastructure': '🏗️',
     'other': '📄'
-  };
+  }
   const pathSegments = path.split('/').filter(Boolean);
   const title = pathSegments
     .map(segment => segment.replace(/[-_]/g, ' '))
@@ -193,7 +193,7 @@ export function generateRouteMetadata(path: string, category: DiscoveredRoute['c
     description: `${category.replace('-', ' ')} route - ${title}`,
     icon: icons[category]
     tags
-  };
+  }
 }
 /**
  * Convert discovered route to RouteDefinition format
@@ -211,7 +211,7 @@ export function convertToRouteDefinition(discovered: DiscoveredRoute): RouteDefi
             discovered.priority === 'testing' ? 'beta' :
             discovered.priority === 'demo' ? 'experimental' : 'development',
     tags: metadata.tags || ['auto-discovered']
-  };
+  }
 }
 /**
  * Map discovery categories to RouteDefinition categories
@@ -229,7 +229,7 @@ function mapCategoryToRouteDefinitionCategory(category: DiscoveredRoute['categor
     'demo-games': 'demo',
     'infrastructure': 'system',
     'other': 'utilities'
-  };
+  }
   return categoryMap[category] || 'utilities';
 }
 /**
@@ -246,10 +246,10 @@ export function getConsolidatableRoutes(): RouteDefinition[] {
       category,
       priority,
       hasServer: false, // Would need file system check in real implementation
-      hasLayout: false, // Would need file system check in real implementation
+      hasLayout: false, // Would need file system check in real implementation;
       framework: 'sveltekit',
       metadata
-    };
+    }
     return convertToRouteDefinition(discovered);
   });
 }
@@ -263,7 +263,7 @@ export function getRouteStatistics() {
     byCategory: {} as Record<string, number>,
     byPriority: {} as Record<string, number>,
     byStatus: {} as Record<string, number>
-  };
+  }
   routes.forEach(route => {
     stats.byCategory[route.category] = (stats.byCategory[route.category] || 0) + 1;
     stats.byPriority[route.status] = (stats.byPriority[route.status] || 0) + 1;
@@ -285,5 +285,5 @@ export function enhanceRouteDiscovery() {
     statistics: getRouteStatistics(),
     categories: [...new Set(getConsolidatableRoutes().map(r => r.category))],
     isEnhanced: true
-  };
+  }
 }

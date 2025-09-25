@@ -16,9 +16,9 @@
     showResetButton?: boolean;
     loading?: boolean;
     formApi?: unknown; // Add bindable formApi prop
-    onsubmit?: (event: { values: { [key: string]: any }; isValid: boolean }) => void;
+    onsubmit?: (_event: { values: { [key: string]: any } isValid: boolean }) => void;
     onreset?: () => void;
-    onchange?: (event: { values: { [key: string]: any } }) => void;
+    onchange?: (_event: { values: { [key: string]: any } }) => void;
   }
   let { children,
     options = ,
@@ -51,7 +51,7 @@
       onchange?.({ values: $form.values });
     }
   });
-  async function handleSubmit(event: SubmitEvent) {
+  async function handleSubmit(_event: SubmitEvent) {
     event.preventDefault();
     const isValid = await form.submit();
     if (!isValid) {
@@ -77,7 +77,7 @@
         removeField: form.removeField,
         values: form.values,
         errors: form.errors,
-      };
+      }
     }
   });
 </script>
@@ -132,4 +132,4 @@
       </div>
     </div>
   {/if}
-</form>
+</form>;

@@ -49,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
     return () => {
       subscription.unsubscribe();
       clearInterval(healthCheckInterval);
-    };
+    }
   });
   onDestroy(() => {
     gpuActor.stop();
@@ -59,8 +59,8 @@ https://svelte.dev/e/js_parse_error -->
     if (!newDocumentContent.trim()) return;
     const document: DocumentInput = {
       documentId: `doc_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
-      content: newDocumentContent
-      title: newDocumentTitle || undefined
+      content: newDocumentContent;
+      title: newDocumentTitle || undefined;
       options: {
         processType: processType as any
         priority,
@@ -68,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
         retries: 3,
         batchSize: 1;
       }
-    };
+    }
     gpuActor.send({ type: 'PROCESS_DOCUMENT', ...document });
     // Clear form
     newDocumentContent = '';
@@ -99,6 +99,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <div class="gpu-orchestrator">
   <!-- Header -->
   <div class="orchestrator-header">
@@ -144,26 +145,16 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Controls -->
   <div class="control-panel">
     <div class="control-group">
-      <button
-        class="btn nes-btn is-primary"
-        onclick={processBatch}
-        disabled={documents.length === 0}
-      >
+      <button class="btn nes-btn is-primary" onclick={processBatch} disabled={documents.length === 0}>
         🚀 Start Batch Processing
       </button>
       {#if isProcessing}
-        <button class="btn btn-warning" onclick={pauseProcessing}>
-          ⏸️ Pause
-        </button>
+        <button class="btn btn-warning" onclick={pauseProcessing}> ⏸️ Pause </button>
       {/if}
       {#if isPaused}
-        <button class="btn btn-success" onclick={resumeProcessing}>
-          ▶️ Resume
-        </button>
+        <button class="btn btn-success" onclick={resumeProcessing}> ▶️ Resume </button>
       {/if}
-      <button class="btn btn-danger" onclick={clearQueue}>
-        🗑️ Clear Queue
-      </button>
+      <button class="btn btn-danger" onclick={clearQueue}> 🗑️ Clear Queue </button>
       {#if errorDocuments.length > 0}
         <button class="btn btn-info" onclick={retryFailed}>
           🔄 Retry Failed ({errorDocuments.length})
@@ -175,19 +166,10 @@ https://svelte.dev/e/js_parse_error -->
   <div class="add-document-form">
     <h3>📄 Add Legal Document</h3>
     <div class="form-group">
-      <input
-        type="text"
-        bind:value={newDocumentTitle}
-        placeholder="Document title (optional)"
-        class="form-input"
-      />
+      <input type="text" bind:value={newDocumentTitle} placeholder="Document title (optional)" class="form-input" />
     </div>
     <div class="form-group">
-      <textarea
-        bind:value={newDocumentContent}
-        placeholder="Document content..."
-        class="form-textarea"
-        rows="4"
+      <textarea bind:value={newDocumentContent} placeholder="Document content..." class="form-textarea" rows="4"
       ></textarea>
     </div>
     <div class="form-row">
@@ -197,47 +179,25 @@ https://svelte.dev/e/js_parse_error -->
         <option value="analyze">Legal Analysis</option>
         <option value="vectorize">Vectorization Only</option>
       </select>
-      <input
-        type="range" ;
-        bind:value={priority}
-        min="1"
-        max="10"
-        class="priority-slider"
-      />
+      <input type="range" ; bind:value={priority} min="1" max="10" class="priority-slider" />
       <span class="priority-label">Priority: {priority}</span>
     </div>
-    <button
-      class="btn nes-btn is-primary"
-      onclick={addDocument}
-      disabled={!newDocumentContent.trim()}
-    >
+    <button class="btn nes-btn is-primary" onclick={addDocument} disabled={!newDocumentContent.trim()}>
       ➕ Add to Queue
     </button>
   </div>
   <!-- Tabs -->
   <div class="tabs">
-    <button
-      class="tab {selectedTab === 'queue' ? 'active' : ''}"
-      onclick={() => selectedTab = 'queue'}
-    >
+    <button class="tab {selectedTab === 'queue' ? 'active' : ''}" onclick={() => (selectedTab = 'queue')}>
       📋 Queue ({processingQueue.length})
     </button>
-    <button
-      class="tab {selectedTab === 'active' ? 'active' : ''}"
-      onclick={() => selectedTab = 'active'}
-    >
+    <button class="tab {selectedTab === 'active' ? 'active' : ''}" onclick={() => (selectedTab = 'active')}>
       ⚙️ Processing ({activeProcessing.size})
     </button>
-    <button
-      class="tab {selectedTab === 'completed' ? 'active' : ''}"
-      onclick={() => selectedTab = 'completed'}
-    >
+    <button class="tab {selectedTab === 'completed' ? 'active' : ''}" onclick={() => (selectedTab = 'completed')}>
       ✅ Completed ({completedDocuments.length})
     </button>
-    <button
-      class="tab {selectedTab === 'errors' ? 'active' : ''}"
-      onclick={() => selectedTab = 'errors'}
-    >
+    <button class="tab {selectedTab === 'errors' ? 'active' : ''}" onclick={() => (selectedTab = 'errors')}>
       ❌ Errors ({errorDocuments.length})
     </button>
   </div>
@@ -260,9 +220,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
         {#if processingQueue.length === 0}
-          <div class="empty-state">
-            📭 No documents in queue
-          </div>
+          <div class="empty-state">📭 No documents in queue</div>
         {/if}
       </div>
     {/if}
@@ -284,9 +242,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
         {#if activeProcessing.size === 0}
-          <div class="empty-state">
-            🔄 No active processing jobs
-          </div>
+          <div class="empty-state">🔄 No active processing jobs</div>
         {/if}
       </div>
     {/if}
@@ -297,16 +253,48 @@ https://svelte.dev/e/js_parse_error -->
             <div class="document-info">
               <h4>Document Completed</h4>
               <div class="result-summary">
-                ✅ Processed in {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).processingTime}ms
+                ✅ Processed in {(
+                  result as {
+                    documentId?: unknown;
+                    processingTime?: unknown;
+                    result?: unknown;
+                    timestamp?: unknown;
+                    error?: unknown;
+                  }
+                ).processingTime}ms
                 {#if (result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result?.extractedText}
-                  <br/>📄 Extracted {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result.extractedText.length} characters
+                  <br />📄 Extracted {(
+                    result as {
+                      documentId?: unknown;
+                      processingTime?: unknown;
+                      result?: unknown;
+                      timestamp?: unknown;
+                      error?: unknown;
+                    }
+                  ).result.extractedText.length} characters
                 {/if}
                 {#if (result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result?.embeddings}
-                  <br/>🔢 Generated {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result.embeddings.length} embeddings
+                  <br />🔢 Generated {(
+                    result as {
+                      documentId?: unknown;
+                      processingTime?: unknown;
+                      result?: unknown;
+                      timestamp?: unknown;
+                      error?: unknown;
+                    }
+                  ).result.embeddings.length} embeddings
                 {/if}
               </div>
               <div class="timestamp">
-                Completed: {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).timestamp.toLocaleString()}
+                Completed: {(
+                  result as {
+                    documentId?: unknown;
+                    processingTime?: unknown;
+                    result?: unknown;
+                    timestamp?: unknown;
+                    error?: unknown;
+                  }
+                ).timestamp.toLocaleString()}
               </div>
             </div>
             <div class="document-status">
@@ -315,9 +303,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
         {#if completedDocuments.length === 0}
-          <div class="empty-state">
-            📋 No completed documents
-          </div>
+          <div class="empty-state">📋 No completed documents</div>
         {/if}
       </div>
     {/if}
@@ -327,9 +313,27 @@ https://svelte.dev/e/js_parse_error -->
           <div class="document-item error" in:fade={{ duration: 300 }}>
             <div class="document-info">
               <h4>Processing Failed</h4>
-              <p class="error-message">❌ {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).error}</p>
+              <p class="error-message">
+                ❌ {(
+                  result as {
+                    documentId?: unknown;
+                    processingTime?: unknown;
+                    result?: unknown;
+                    timestamp?: unknown;
+                    error?: unknown;
+                  }
+                ).error}
+              </p>
               <div class="timestamp">
-                Failed: {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).timestamp.toLocaleString()}
+                Failed: {(
+                  result as {
+                    documentId?: unknown;
+                    processingTime?: unknown;
+                    result?: unknown;
+                    timestamp?: unknown;
+                    error?: unknown;
+                  }
+                ).timestamp.toLocaleString()}
               </div>
             </div>
             <div class="document-status">
@@ -338,14 +342,13 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
         {#if errorDocuments.length === 0}
-          <div class="empty-state">
-            🎉 No processing errors
-          </div>
+          <div class="empty-state">🎉 No processing errors</div>
         {/if}
       </div>
     {/if}
   </div>
 </div>
+
 <style>
   .gpu-orchestrator {
     max-width: 1200px;
@@ -435,16 +438,41 @@ https://svelte.dev/e/js_parse_error -->
     opacity: 0.6;
     cursor: not-allowed;
   }
-  .btn-primary { background: #007bff; color: white; }
-  .btn-primary:hover:not(:disabled) { background: #0056b3; }
-  .btn-warning { background: #ffc107; color: #212529; }
-  .btn-warning:hover:not(:disabled) { background: #e0a800; }
-  .btn-success { background: #28a745; color: white; }
-  .btn-success:hover:not(:disabled) { background: #1e7e34; }
-  .btn-danger { background: #dc3545; color: white; }
-  .btn-danger:hover:not(:disabled) { background: #c82333; }
-  .btn-info { background: #17a2b8; color: white; }
-  .btn-info:hover:not(:disabled) { background: #138496; }
+  .btn-primary {
+    background: #007bff;
+    color: white;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: #0056b3;
+  }
+  .btn-warning {
+    background: #ffc107;
+    color: #212529;
+  }
+  .btn-warning:hover:not(:disabled) {
+    background: #e0a800;
+  }
+  .btn-success {
+    background: #28a745;
+    color: white;
+  }
+  .btn-success:hover:not(:disabled) {
+    background: #1e7e34;
+  }
+  .btn-danger {
+    background: #dc3545;
+    color: white;
+  }
+  .btn-danger:hover:not(:disabled) {
+    background: #c82333;
+  }
+  .btn-info {
+    background: #17a2b8;
+    color: white;
+  }
+  .btn-info:hover:not(:disabled) {
+    background: #138496;
+  }
   .add-document-form {
     background: #f8f9fa;
     padding: 1.5rem;
@@ -458,7 +486,9 @@ https://svelte.dev/e/js_parse_error -->
   .form-group {
     margin-bottom: 1rem;
   }
-  .form-input, .form-textarea, .form-select {
+  .form-input,
+  .form-textarea,
+  .form-select {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ddd;
@@ -552,7 +582,8 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.9rem;
     margin: 0.5rem 0;
   }
-  .document-meta, .timestamp {
+  .document-meta,
+  .timestamp {
     font-size: 0.8rem;
     color: #888;
   }
@@ -572,8 +603,12 @@ https://svelte.dev/e/js_parse_error -->
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   .result-summary {
     color: #28a745;
@@ -592,10 +627,22 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: 600;
     text-transform: uppercase;
   }
-  .status-badge.queued { background: #e9ecef; color: #495057; }
-  .status-badge.processing { background: #fff3cd; color: #856404; }
-  .status-badge.completed { background: #d4edda; color: #155724; }
-  .status-badge.error { background: #f8d7da; color: #721c24; }
+  .status-badge.queued {
+    background: #e9ecef;
+    color: #495057;
+  }
+  .status-badge.processing {
+    background: #fff3cd;
+    color: #856404;
+  }
+  .status-badge.completed {
+    background: #d4edda;
+    color: #155724;
+  }
+  .status-badge.error {
+    background: #f8d7da;
+    color: #721c24;
+  }
   .empty-state {
     text-align: center;
     color: #666;

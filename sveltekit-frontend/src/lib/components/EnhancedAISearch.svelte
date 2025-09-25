@@ -41,7 +41,7 @@
     useCache: true
     useGPU: true
     ragMode: "enhanced",
-    includeContext: true
+    includeContext: true;
   });
   // Practice areas options with proper mapping
   const practiceAreas = [
@@ -61,7 +61,7 @@
     { value: "healthcare_law", label: "Healthcare Law" }
   ];
   // Helper function to get practice area label
-  function getPracticeAreaLabel(value: PracticeArea): string {
+  function getPracticeAreaLabel(_value: PracticeArea): string {
     const area = practiceAreas.find(p => p.value === value);
     return area?.label || value.replace('_', ' ');
   }
@@ -78,7 +78,7 @@
     { value: "AU", label: "Australia" }
   ];
   // Helper function to get jurisdiction label
-  function getJurisdictionLabel(value: Jurisdiction): string {
+  function getJurisdictionLabel(_value: Jurisdiction): string {
     const jurisdiction = jurisdictions.find(j => j.value === value);
     return jurisdiction?.label || valu;
   }
@@ -91,7 +91,7 @@
     { value: "keyword", label: "Keyword Search" }
   ];
   // Helper function to get RAG mode label
-  function getRagModeLabel(value: string): string {
+  function getRagModeLabel(_value: string): string {
     const mode = ragModes.find(m => m.value === value);
     return mode?.label || valu;
   }
@@ -105,7 +105,7 @@
       const searchResults = await enhancedAiPipeline.semanticSearch(query, {
         ...searchOptions,
         practiceArea: selectedPracticeArea
-        jurisdiction: selectedJurisdiction
+        jurisdiction: selectedJurisdiction;
       });
       const endTime = performance.now();
       searchTime = Math.round(endTime - startTime);
@@ -119,7 +119,7 @@
     }
   }
   // Handle Enter key
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       performSearch();
@@ -146,28 +146,26 @@
     return highlighted;
   }
 </script>
+
 <div class="enhanced-ai-search {className}">
   <!-- Search Header -->
   <div
     class="flex flex-col space-y-4 p-6 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700"
   >
     <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-        🤖 Enhanced Legal AI Search
-      </h2>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">🤖 Enhanced Legal AI Search</h2>
       <Button
         class="bits-btn flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-        onclick={() =>
-(showAdvanced = !showAdvanced)}
+        onclick={() => (showAdvanced = !showAdvanced)}
       >
         <span class="i-tabler-settings w-4 h-4"></span>
         Advanced
-</Button>
+      </Button>
     </div>
     <!-- Search Input -->
     <div class="flex gap-3">
       <div class="flex-1 relative">
-        <input
+        <input;
           bind:value={query}
           keydown={handleKeydown}
           placeholder="Search legal documents with AI..."
@@ -179,9 +177,7 @@
         />
         {#if loading}
           <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <div
-              class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
-            ></div>
+            <div class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         {/if}
       </div>
@@ -198,15 +194,9 @@
     </div>
     <!-- Advanced Options -->
     {#if showAdvanced}
-      <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
-      >
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
         <div>
-          <label
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Practice Area
-          </label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> Practice Area </label>
           <SelectRoot bind:value={selectedPracticeArea}>
             <SelectTrigger
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
@@ -217,10 +207,7 @@
               class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg"
             >
               {#each practiceAreas as area}
-                <SelectItem
-                  value={area.value}
-                  class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
+                <SelectItem value={area.value} class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                   {area.label}
                 </SelectItem>
               {/each}
@@ -228,11 +215,7 @@
           </SelectRoot>
         </div>
         <div>
-          <label
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Jurisdiction
-          </label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> Jurisdiction </label>
           <SelectRoot bind:value={selectedJurisdiction}>
             <SelectTrigger
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
@@ -243,10 +226,7 @@
               class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg"
             >
               {#each jurisdictions as jurisdiction}
-                <SelectItem
-                  value={jurisdiction.value}
-                  class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
+                <SelectItem value={jurisdiction.value} class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                   {jurisdiction.label}
                 </SelectItem>
               {/each}
@@ -254,25 +234,18 @@
           </SelectRoot>
         </div>
         <div>
-          <label
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            RAG Mode
-          </label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> RAG Mode </label>
           <SelectRoot bind:value={searchOptions.ragMode}>
             <SelectTrigger
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
             >
-              <span>{getRagModeLabel(searchOptions.ragMode || "enhanced")}</span>
+              <span>{getRagModeLabel(searchOptions.ragMode || 'enhanced')}</span>
             </SelectTrigger>
             <SelectContent
               class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg"
             >
               {#each ragModes as mode}
-                <SelectItem
-                  value={mode.value}
-                  class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
+                <SelectItem value={mode.value} class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                   {mode.label}
                 </SelectItem>
               {/each}
@@ -283,16 +256,14 @@
     {/if}
     <!-- Search Status -->
     {#if results.length > 0 || error}
-      <div
-        class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400"
-      >
+      <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
         {#if results.length > 0}
           <span>
             Found {results.length} results in {searchTime}ms
           </span>
           <span class="flex items-center gap-2">
             <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-            {searchOptions.useGPU ? "GPU Accelerated" : "CPU"} •
+            {searchOptions.useGPU ? 'GPU Accelerated' : 'CPU'} •
             {searchOptions.ragMode?.toUpperCase()} Mode
           </span>
         {/if}
@@ -315,70 +286,121 @@
           <!-- Result Header -->
           <div class="flex items-start justify-between mb-3">
             <div class="flex-1">
-              <h3
-                class="text-lg font-semibold text-gray-900 dark:text-white mb-1"
-              >
-                {(result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).title || `Document ${(result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).id}`}
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                {(
+                  result as {
+                    title?: unknown;
+                    id?: unknown;
+                    documentType?: unknown;
+                    practiceArea?: unknown;
+                    jurisdiction?: unknown;
+                    similarity?: unknown;
+                    content?: unknown;
+                    analysisResults?: unknown;
+                  }
+                ).title ||
+                  `Document ${(result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).id}`}
               </h3>
-              <div
-                class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400"
-              >
-                <span
-                  class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full"
-                >
-                  {(result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).documentType}
+              <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+                  {(
+                    result as {
+                      title?: unknown;
+                      id?: unknown;
+                      documentType?: unknown;
+                      practiceArea?: unknown;
+                      jurisdiction?: unknown;
+                      similarity?: unknown;
+                      content?: unknown;
+                      analysisResults?: unknown;
+                    }
+                  ).documentType}
                 </span>
                 {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).practiceArea}
                   <span
                     class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full"
                   >
-                    {(result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).practiceArea.replace("_", " ")}
+                    {(
+                      result as {
+                        title?: unknown;
+                        id?: unknown;
+                        documentType?: unknown;
+                        practiceArea?: unknown;
+                        jurisdiction?: unknown;
+                        similarity?: unknown;
+                        content?: unknown;
+                        analysisResults?: unknown;
+                      }
+                    ).practiceArea.replace('_', ' ')}
                   </span>
                 {/if}
-                <span
-                  class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full"
-                >
-                  {(result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).jurisdiction}
+                <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
+                  {(
+                    result as {
+                      title?: unknown;
+                      id?: unknown;
+                      documentType?: unknown;
+                      practiceArea?: unknown;
+                      jurisdiction?: unknown;
+                      similarity?: unknown;
+                      content?: unknown;
+                      analysisResults?: unknown;
+                    }
+                  ).jurisdiction}
                 </span>
               </div>
             </div>
             <div class="text-right">
               <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                {formatScore((result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).similarity)}
+                {formatScore(
+                  (
+                    result as {
+                      title?: unknown;
+                      id?: unknown;
+                      documentType?: unknown;
+                      practiceArea?: unknown;
+                      jurisdiction?: unknown;
+                      similarity?: unknown;
+                      content?: unknown;
+                      analysisResults?: unknown;
+                    }
+                  ).similarity,
+                )}
               </div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">
-                relevance
-              </div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">relevance</div>
             </div>
           </div>
           <!-- Content Preview -->
           <div class="prose dark:prose-invert max-w-none">
             <p class="text-gray-700 dark:text-gray-300 line-clamp-3">
               {@html highlightContent(
-                (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).content.substring(0, 300) + "...",
-                query
+                (
+                  result as {
+                    title?: unknown;
+                    id?: unknown;
+                    documentType?: unknown;
+                    practiceArea?: unknown;
+                    jurisdiction?: unknown;
+                    similarity?: unknown;
+                    content?: unknown;
+                    analysisResults?: unknown;
+                  }
+                ).content.substring(0, 300) + '...',
+                query,
               )}
             </p>
           </div>
           <!-- Analysis Results -->
           {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults}
-            <div
-              class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
-            >
+            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.keyInsights?.length}
                   <div>
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">
-                      Key Insights
-                    </h4>
+                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Key Insights</h4>
                     <ul class="space-y-1">
                       {#each (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.keyInsights.slice(0, 3) as insight}
-                        <li
-                          class="text-gray-600 dark:text-gray-400 flex items-start gap-2"
-                        >
-                          <span
-                            class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"
-                          ></span>
+                        <li class="text-gray-600 dark:text-gray-400 flex items-start gap-2">
+                          <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
                           {insight}
                         </li>
                       {/each}
@@ -387,17 +409,11 @@
                 {/if}
                 {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.risks?.length}
                   <div>
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">
-                      Risk Factors
-                    </h4>
+                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Risk Factors</h4>
                     <ul class="space-y-1">
                       {#each (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.risks.slice(0, 3) as risk}
-                        <li
-                          class="text-red-600 dark:text-red-400 flex items-start gap-2"
-                        >
-                          <span
-                            class="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0"
-                          ></span>
+                        <li class="text-red-600 dark:text-red-400 flex items-start gap-2">
+                          <span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0"></span>
                           {risk}
                         </li>
                       {/each}
@@ -409,19 +425,11 @@
           {/if}
           <!-- Actions -->
           <div class="mt-4 flex gap-2">
-            <Button.Root
-              variant="ghost"
-              size="sm"
-              class="flex items-center gap-2 bits-btn bits-btn"
-            >
+            <Button.Root variant="ghost" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
               <span class="i-tabler-eye w-4 h-4"></span>
               View Details
             </Button.Root>
-            <Button.Root
-              variant="ghost"
-              size="sm"
-              class="flex items-center gap-2 bits-btn bits-btn"
-            >
+            <Button.Root variant="ghost" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
               <span class="i-tabler-download w-4 h-4"></span>
               Export
             </Button.Root>
@@ -440,6 +448,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .line-clamp-3 {
     display: -webkit-box;

@@ -40,9 +40,9 @@ export const NES_COLOR_PALETTE: NESColorPalette & {,
   // Status colors (NES-compatible)
   success: '#92cc41',    // Green
   warning: '#f7d51d',    // Yellow
-  error: '#f83800',      // Red
+  error: '#f83800',      // Red;
   info: '#3cbcfc'        // Blue
-};
+}
 // SNES Color Palette (enhanced 16-bit)
 export const SNES_COLOR_PALETTE: SNESColorPalette = {
   background: [
@@ -88,7 +88,7 @@ export const SNES_COLOR_PALETTE: SNESColorPalette = {
   // Gradient definitions for SNES-style depth
   primaryGradient: ['#3cbcfc', '#0084ff', '#0050cc'],
   secondaryGradient: ['#f7d51d', '#cc8800', '#996600']
-};
+}
 // N64 Texture and Rendering Presets (Enhanced)
 export const N64_TEXTURE_PRESETS = {
   // Low-poly optimized settings
@@ -160,19 +160,19 @@ export const N64_TEXTURE_PRESETS = {
     enableReflections: true
     shadowMapSize: 2048
   } as N64RenderingOptions
-};
+}
 // Responsive gaming breakpoints
 export const GAMING_BREAKPOINTS = {
   // Screen sizes that impact gaming component rendering
   handheld: '(max-width: 320px)',     // Game Boy size
-  nes: '(max-width: 480px)',          // NES TV resolution equivalent
+  nes: '(max-width: 480px)',          // NES TV resolution equivalent;
   snes: '(max-width: 768px)',         // SNES enhanced resolution
   n64: '(min-width: 769px)',          // N64 and above
   // Performance-based breakpoints
   lowPerformance: '(max-device-memory: 2)',
   mediumPerformance: '(max-device-memory: 4)',
   highPerformance: '(min-device-memory: 5)'
-};
+}
 // Gaming era specifications with advanced memory optimization
 export const GAMING_ERA_SPECS = {
   '8bit': {
@@ -269,7 +269,7 @@ export const GAMING_ERA_SPECS = {
       memoryThreshold: 0.85  // Switch LOD at 85% memory usage
     }
   }
-};
+}
 // CSS Custom Properties for theming
 export const GAMING_CSS_VARS = {
   // NES Era
@@ -302,7 +302,7 @@ export const GAMING_CSS_VARS = {
   '--gaming-transition-fast': '100ms',
   '--gaming-transition-normal': '200ms',
   '--gaming-transition-slow': '400ms'
-};
+}
 // Component size mappings
 export const GAMING_COMPONENT_SIZES = {
   small: {
@@ -325,7 +325,7 @@ export const GAMING_COMPONENT_SIZES = {
     fontSize: '16px',
     minHeight: 'calc(var(--gaming-unit) * 10)'
   }
-};
+}
 // Retro effect presets
 export const RETRO_EFFECTS = {
   scanlines: {
@@ -351,7 +351,7 @@ export const RETRO_EFFECTS = {
     animation: 'glitch 2s infinite',
     performance: 'high'
   }
-};
+}
 // Gaming sound effect mappings
 export const GAMING_SOUND_EFFECTS = {
   '8bit': {
@@ -372,7 +372,7 @@ export const GAMING_SOUND_EFFECTS = {
     error: '/sounds/n64/error.wav',
     success: '/sounds/n64/success.wav'
   }
-};
+}
 // Enhanced bit-level caching architecture with multi-tier storage
 export const ENHANCED_MEMORY_CACHING = {
   // Tier 1: JavaScript Redis-style in-memory cache,
@@ -507,7 +507,7 @@ export const ENHANCED_MEMORY_CACHING = {
     adaptiveTuning: {
       enabled: true
       adjustmentInterval: 30000, // Adjust every 30 seconds
-      aggressiveness: 0.5,       // Tuning aggressiveness (0-1)
+      aggressiveness: 0.5,       // Tuning aggressiveness (0-1);
       thresholds: {
         lowMemory: 0.8,          // Switch to aggressive mode at 80%
         criticalMemory: 0.95,    // Emergency cleanup at 95%
@@ -515,7 +515,7 @@ export const ENHANCED_MEMORY_CACHING = {
       }
     }
   }
-};
+}
 // Predictive UI Analytics with YOLO and SSR Recognition - LOD Optimized for Local LLM Processing
 export const PREDICTIVE_UI_ANALYTICS = {
   // YOLO-based object detection for UI element recognition - Local LLM optimized
@@ -598,4 +598,4 @@ export const PREDICTIVE_UI_ANALYTICS = {
       }
     }
   }
-};
+}

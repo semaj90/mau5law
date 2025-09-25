@@ -23,7 +23,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
   private options: YoRHaPanel3DOptions;
   private isMinimized = false;
   private scrollOffset = 0;
-  constructor(options: YoRHaPanel3DOptions = {}) {
+  constructor(_options: YoRHaPanel3DOptions = {}) {
     const style = YoRHaPanel3D.getVariantStyle(options.variant || 'default');
     super({
       ...style,
@@ -101,7 +101,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       bevelSegments: 2,
       bevelSize: radius * 0.05,
       bevelThickness: depth * 0.1
-    };
+    }
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
   }
   private createHeader(): void {
@@ -162,7 +162,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
           this.closeButtonMesh.material.color.setHex(YORHA_COLORS.status.error);
         }
       }
-    };
+    }
     this.add(this.closeButtonMesh);
   }
   private createScrollContainer(): void {
@@ -219,7 +219,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     resizeHandle.userData = {
       interactive: true
       onDrag: (deltaX: number, deltaY: number) => this.onResize(deltaX, deltaY)
-    };
+    }
     this.add(resizeHandle);
   }
   private static getVariantStyle(variant: string): Partial<YoRHaStyle> {
@@ -262,7 +262,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
           intensity: 0.3
         }
       }
-    };
+    }
     return variantStyles[variant as keyof typeof variantStyles] || variantStyles.default;
   }
   // Public methods

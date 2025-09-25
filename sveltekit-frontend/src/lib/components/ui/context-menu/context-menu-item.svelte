@@ -10,7 +10,7 @@
   interface ContextMenuContext {
     close: () => void;
   }
-  const { close } = getContext<ContextMenuContext>('context-menu') || { close: () => };
+  const { close } = getContext<ContextMenuContext>('context-menu') || { close: () => }
   function handleClick() {
     if (!disabled) {
       onclick?.();
@@ -18,6 +18,7 @@
     }
   }
 </script>
+
 <button
   class="space-y-4"
   class:disabled
@@ -28,7 +29,9 @@
 >
   {@render children?.()}
 </button>
-<style>/* @unocss-include */ .context-menu-item {
+
+<style>/* @unocss-include */ {}
+  .context-menu-item {
     display: flex;
     align-items: center;
     width: 100%;
@@ -40,16 +43,16 @@
     cursor: pointer;
     transition: background-color 0.15;
     text-align: left;
-}
+  }
   .context-menu-item:hover:not(.disabled) {
     background-color: #f3f4f6;
-}
+  }
   .context-menu-item:focus {
     outline: 2px solid #3b82f6;
     outline-offset: -2px;
-}
+  }
   .context-menu-.disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
+  }
 </style>

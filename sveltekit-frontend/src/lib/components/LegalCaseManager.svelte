@@ -1,7 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https: //svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-/// <reference types="vite/client" />
 <!-- @migration-task Error while migrating Svelte code: Identifier 'caseId' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
@@ -311,6 +307,11 @@ https://svelte.dev/e/js_parse_error -->
     loadFormData();
   });
 </script>
+
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+https: //svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+/// <reference types="vite/client" />
 <div class="legal-case-manager">
   <!-- Component content placeholder -->
 </div>
@@ -322,15 +323,9 @@ https://svelte.dev/e/js_parse_error -->
     </h1>
     <ProgressIndicator
       currentStep={$currentStep}
-      totalSteps={totalSteps}
-      stepTitles={[
-        'Case Information',
-        'Document Upload',
-        'Evidence Analysis',
-        'AI Analysis',
-        'Review & Submit'
-      ]}
-      stepclick={(e) => goToStep(e.detail)}
+      {totalSteps}
+      stepTitles={['Case Information', 'Document Upload', 'Evidence Analysis', 'AI Analysis', 'Review & Submit']}
+      stepclick={e => goToStep(e.detail)}
     />
   </div>
   <!-- Loading Overlay -->
@@ -344,17 +339,13 @@ https://svelte.dev/e/js_parse_error -->
   <div class="form-container" class:loading={$isLoading}>
     {#if $currentStep === 1}
       <div transitislide={{ duration: 300, easing: cubicOut }}>
-        <CaseInfoForm
-          bind:data={$formData.caseInfo}
-          next={nextStep}
-          isValid={$stepValidation}
-        />
+        <CaseInfoForm bind:data={$formData.caseInfo} next={nextStep} isValid={$stepValidation} />
       </div>
     {:else if $currentStep === 2}
       <div transitislide={{ duration: 300, easing: cubicOut }}>
         <DocumentUploadForm
           bind:data={$formData.documents}
-          process={(e) => processDocuments(e.detail)}
+          process={e => processDocuments(e.detail)}
           next={nextStep}
           prev={prevStep}
           isValid={$stepValidation}
@@ -386,7 +377,8 @@ https://svelte.dev/e/js_parse_error -->
       <div transitislide={{ duration: 300, easing: cubicOut }}>
         <ReviewSubmitForm
           bind:data={$formData.review}
-          fullCaseData={$formData} onsubmit={submitForm}
+          fullCaseData={$formData}
+          onsubmit={submitForm}
           prev={prevStep}
           isValid={$stepValidation}
         />
@@ -403,6 +395,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+
 <style>
   .legal-case-manager {
     max-width: 1200px;

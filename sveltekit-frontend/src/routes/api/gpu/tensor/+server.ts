@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js'
 import { ensureError } from '$lib/utils/ensure-error'
 import { json, error } from '@sveltejs/kit'
 import { dev } from '$app/environment'
-import { URL } from "url"
+
 // GPU service pool for load balancing
 const gpuServicePool = [
   'http://localhost:8095',  // Primary GPU service
@@ -200,12 +200,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     updateProcessingStats(processingTime, (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).cache_hit || false)
     stats.successfulRequests++
     return json({
-      success: true
+      success: true;
       data: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).data,
       metadata: {
         processingTime,
         cacheHit: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).cache_hit || false,
-        service: targetService
+        service: targetService;
         route: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).route || generateRouteHash(cacheKey),
         requestId: enhancedTensorData.requestId,
         tensorStats: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).metadata?.tensorStats,
@@ -256,7 +256,7 @@ export const GET: RequestHandler = async ({ url }) => {
           services: serviceManager.getHealthStats(),
           timestamp: Date.now()
         })
-      case 'full':
+      case 'full':;
       default:
         // Get detailed stats from primary GPU service
         const primaryService = gpuServicePool[0]
@@ -357,7 +357,7 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
           'User-Agent': tensorData.userAgent || 'SvelteKit-API'
         },
         body: JSON.stringify(tensorData),
-        // Add timeout
+        // Add timeout;
         signal: AbortSignal.timeout(30000) // 30 second timeout
       })
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {

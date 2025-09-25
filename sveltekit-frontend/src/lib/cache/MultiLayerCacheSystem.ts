@@ -36,7 +36,7 @@ export class MultiLayerCacheSystem {
     misses: { l1: 0, l2: 0, l3: 0, l4: 0 },
     evictions: 0,
     writes: 0
-  };
+  }
   // Configuration
   private readonly config = {
     l1MaxSize: 10 * 1024 * 1024,  // 10MB memory cache
@@ -44,7 +44,7 @@ export class MultiLayerCacheSystem {
     l3MaxSize: 100 * 1024 * 1024, // 100MB Redis
     defaultTTL: 3600,              // 1 hour default TTL
     evictionPolicy: 'lru' as 'lru' | 'lfu' | 'fifo'
-  };
+  }
   constructor() {
     // Initialize Loki.js in-memory database
     this.lokiDB = new Loki('legal-ai-cache.db', {
@@ -74,20 +74,20 @@ export class MultiLayerCacheSystem {
       request.onerror = () => {
         console.error('Failed to open IndexedDB');
         reject(request.error);
-      };
+      }
       request.onsuccess = () => {
         this.indexedDB = request.result;
         console.log('✅ IndexedDB initialized');
         resolve();
-      };
+      }
       request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+        // removed unused db assignment
         if (!db.objectStoreNames.contains('cache')) {
           const store = db.createObjectStore('cache', { keyPath: 'key' });
           store.createIndex('timestamp', 'timestamp', { unique: false });
           store.createIndex('priority', 'priority', { unique: false });
         }
-      };
+      }
     });
   }
   /**
@@ -99,13 +99,13 @@ export class MultiLayerCacheSystem {
       threshold: 0.3,
       includeScore: true
       minMatchCharLength: 2
-    };
+    }
     this.fuseIndex = new Fuse([], options);
   }
   /**
    * Multi-layer cache GET operation
    */
-  async get<T>(key: string): Promise<T | null> {
+  async get<T>(_key: string): Promise<T | null> {
     // Layer 1: Check Loki.js memory cache
     const memoryEntry = this.memoryCollection.findOne({ key });
     if (memoryEntry && !this.isExpired(memoryEntry)) {
@@ -139,8 +139,7 @@ export class MultiLayerCacheSystem {
   /**
    * Multi-layer cache SET operation
    */
-  async set<T>(
-    key: string
+  async set<T>(_key: string
     value: T
     ttl: number = this.config.defaultTTL,
     priority: number = 100
@@ -171,7 +170,7 @@ export class MultiLayerCacheSystem {
         priority,
         accessCount: 0,
         sizeBytes
-      };
+      }
       this.fuseIndex.add(entry);
     }
   }
@@ -188,8 +187,7 @@ export class MultiLayerCacheSystem {
   /**
    * Set in Loki.js memory cache with eviction
    */
-  private async setInMemory<T>(
-    key: string
+  private async setInMemory<T>(_key: string
     value: T
     ttl: number
     priority: number
@@ -208,7 +206,7 @@ export class MultiLayerCacheSystem {
       priority,
       accessCount: 1,
       sizeBytes
-    };
+    }
     // Remove existing entry if present
     const existing = this.memoryCollection.findOne({ key });
     if (existing) {
@@ -219,8 +217,7 @@ export class MultiLayerCacheSystem {
   /**
    * Set in IndexedDB
    */
-  private async setInIndexedDB<T>(
-    key: string
+  private async setInIndexedDB<T>(_key: string
     value: T
     ttl: number
     priority: number
@@ -237,7 +234,7 @@ export class MultiLayerCacheSystem {
         priority,
         accessCount: 1,
         sizeBytes: this.estimateSize(value)
-      };
+      }
       const request = store.put(entry);
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
@@ -246,8 +243,7 @@ export class MultiLayerCacheSystem {
   /**
    * Set in Redis simulation
    */
-  private setInRedis<T>(
-    key: string
+  private setInRedis<T>(_key: string
     value: T
     ttl: number
     priority: number
@@ -260,7 +256,7 @@ export class MultiLayerCacheSystem {
       priority,
       accessCount: 1,
       sizeBytes: this.estimateSize(value)
-    };
+    }
     this.redisSimulation.set(key, entry);
     // Simulate Redis TTL
     setTimeout(() => {
@@ -270,7 +266,7 @@ export class MultiLayerCacheSystem {
   /**
    * Get from IndexedDB
    */
-  private async getFromIndexedDB<T>(key: string): Promise<CacheEntry<T> | null> {
+  private async getFromIndexedDB<T>(_key: string): Promise<CacheEntry<T> | null> {
     if (!this.indexedDB) return null;
     return new Promise((resolve, reject) => {
       const transaction = this.indexedDB!.transaction(['cache'], 'readonly');
@@ -278,10 +274,10 @@ export class MultiLayerCacheSystem {
       const request = store.get(key);
       request.onsuccess = () => {
         resolve(request.result as CacheEntry<T> || null);
-      };
+      }
       request.onerror = () => {
         reject(request.error);
-      };
+      }
     });
   }
   /**
@@ -325,7 +321,7 @@ export class MultiLayerCacheSystem {
   /**
    * Estimate size of value in bytes
    */
-  private estimateSize(value: any): number {
+  private estimateSize(_value: any): number {
     const str = JSON.stringify(value);
     return new Blob([str]).size;
   }
@@ -414,7 +410,7 @@ export class MultiLayerCacheSystem {
       hitRate: totalHits / (totalHits + totalMisses) || 0,
       evictions: this.stats.evictions,
       writes: this.stats.writes
-    };
+    }
   }
 }
 // Export singleton instance

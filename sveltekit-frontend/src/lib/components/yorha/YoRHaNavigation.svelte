@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
       admin: routes.filter(r =>
         ['dev-tools', 'security', 'settings', 'profile', 'help'].includes(r.id)
       );
-    };
+    }
     return section;
   });
   // Filter routes based on search
@@ -78,6 +78,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
+
 <!-- Navigation Container -->
 <div class="yorha-3d-panel nes-legal-container h-full flex flex-col">
   <!-- Search Bar (when not collapsed) -->
@@ -89,9 +90,7 @@ https://svelte.dev/e/js_parse_error -->
           placeholder="Search operations..."
           class="nes-legal-priority-medium yorha-3d-button w-full"
         />
-        <div class="neural-sprite-active absolute right-3 top-2.5">
-          🔍
-        </div>
+        <div class="neural-sprite-active absolute right-3 top-2.5">🔍</div>
       </div>
       {#if searchQuery}
         <div class="nes-legal-priority-low mt-2 text-xs">
@@ -107,10 +106,12 @@ https://svelte.dev/e/js_parse_error -->
       <div class="search-results p-2">
         {#each filteredRoutes as route}
           <button
-            class="nes-nav-item nes-legal-priority-medium yorha-3d-button w-full text-left {isRouteActive(route.route) ? 'nes-legal-priority-high neural-sprite-active' : ''}"
+            class="nes-nav-item nes-legal-priority-medium yorha-3d-button w-full text-left {isRouteActive(route.route)
+              ? 'nes-legal-priority-high neural-sprite-active'
+              : ''}"
             onclick={() => navigateToRoute(route.route)}
-            onmouseenter={() => hoveredRoute = route.id}
-            onmouseleave={() => hoveredRoute = null}
+            onmouseenter={() => (hoveredRoute = route.id)}
+            onmouseleave={() => (hoveredRoute = null)}
           >
             <div class="flex items-center gap-3">
               <span class="neural-sprite-active text-lg">{route.icon}</span>
@@ -140,7 +141,11 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
               {#if !collapsed}
-                <span class="text-yorha-muted transition-transform duration-200 {expandedSections.has(sectionId) ? 'rotate-90' : ''}">
+                <span
+                  class="text-yorha-muted transition-transform duration-200 {expandedSections.has(sectionId)
+                    ? 'rotate-90'
+                    : ''}"
+                >
                   ▶
                 </span>
               {/if}
@@ -150,9 +155,13 @@ https://svelte.dev/e/js_parse_error -->
               <div class="section-routes ml-2 mt-1">
                 {#each sectionRoutes as route}
                   <button
-                    class="nav-item w-full text-left p-3 mb-1 rounded border border-transparent hover:border-yorha-accent-warm/50 hover:bg-yorha-accent-warm/10 transition-all duration-200 {isRouteActive(route.route) ? 'active bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-accent-warm' : 'text-yorha-light'}"
+                    class="nav-item w-full text-left p-3 mb-1 rounded border border-transparent hover:border-yorha-accent-warm/50 hover:bg-yorha-accent-warm/10 transition-all duration-200 {isRouteActive(
+                      route.route,
+                    )
+                      ? 'active bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-accent-warm'
+                      : 'text-yorha-light'}"
                     onclick={() => navigateToRoute(route.route)}
-                    onmouseenter={() => hoveredRoute = route.id}
+                    onmouseenter={() => (hoveredRoute = route.id)}
                     onmouseleave={title}
                   >
                     <div class="flex items-center gap-3">
@@ -205,6 +214,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+
 <style>
   .yorha-navigation {
     --yorha-primary: #c4b49a;
@@ -265,8 +275,12 @@ https://svelte.dev/e/js_parse_error -->
     animation: glow 2s ease-in-out infinite alternate;
   }
   @keyframes glow {
-    from { opacity: 0.3; }
-    to { opacity: 0.7; }
+    from {
+      opacity: 0.3;
+    }
+    to {
+      opacity: 0.7;
+    }
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {

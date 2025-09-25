@@ -22,7 +22,7 @@ function createLoadingStore() {
     subscribe,
     startOperation: (,
       id: string
-      title: string
+      title: string;
       operation: LoadingOperation['operation'] = 'processing',
       description?: string
       estimatedTime?: number;
@@ -37,7 +37,7 @@ function createLoadingStore() {
           operation,
           startTime: Date.now(),
           estimatedTime
-        };
+        }
         state.operations.set(id, newOperation);
         state.isAnyLoading = state.operations.size > 0;
         return state;
@@ -112,7 +112,7 @@ function createLoadingStore() {
       });
       return operation;
     }
-  };
+  }
 }
 export const loadingStore = createLoadingStore();
 // Convenience functions for common operations
@@ -123,7 +123,7 @@ export const aiLoading = {
     loadingStore.updateProgress(id, progress, description),
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
     loadingStore.completeOperation(id, status)
-};
+}
 export const gpuLoading = {
   start: (id: string, title: string, description?: string) =>
     loadingStore.startOperation(id, title, 'gpu', description),
@@ -131,7 +131,7 @@ export const gpuLoading = {
     loadingStore.updateProgress(id, progress, description),
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
     loadingStore.completeOperation(id, status)
-};
+}
 export const uploadLoading = {
   start: (id: string, title: string, description?: string) =>
     loadingStore.startOperation(id, title, 'upload', description),
@@ -139,12 +139,12 @@ export const uploadLoading = {
     loadingStore.updateProgress(id, progress, description),
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
     loadingStore.completeOperation(id, status)
-};
+}
 // Auto-cleanup for long-running operations
 export function withLoadingTimeout<T>(
   promise: Promise<T>
   id: string
-  title: string
+  title: string;
   operation: LoadingOperation['operation'] = 'processing',
   timeoutMs: number = 30000;
 ): Promise<T> {

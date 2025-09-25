@@ -181,7 +181,7 @@ const publisher = new Redis({
 async function notifyDocumentUpdate(docId: string, operation: string) {
   const message = JSON.stringify({
     documentId: docId
-    operation, // 'create', 'update', 'delete'
+    operation, // 'create', 'update', 'delete';
     timestamp: Date.now()
   })
   await publisher.publish(\`legal-ai:document:\${docId}\`, message)
@@ -281,7 +281,7 @@ interface CacheDocument {
 }
 class TypedRedisService {
   constructor(private redis: Redis) {}
-  async setDocument(key: string, doc: CacheDocument, ttl?: number): Promise<boolean> {
+  async setDocument(_key: string, doc: CacheDocument, ttl?: number): Promise<boolean> {
     try {
       const serialized = JSON.stringify(doc)
       if (ttl) {
@@ -295,7 +295,7 @@ class TypedRedisService {
       return false
     }
   }
-  async getDocument(key: string): Promise<CacheDocument | null> {
+  async getDocument(_key: string): Promise<CacheDocument | null> {
     try {
       const value = await this.redis.get(key)
       if (!value) return null
@@ -305,10 +305,10 @@ class TypedRedisService {
       return null
     }
   }
-  async incrementCounter(key: string, by: number = 1): Promise<number> {
+  async incrementCounter(_key: string, by: number = 1): Promise<number> {
     return await this.redis.incrby(key, by)
   }
-  async addToSet(key: string, member: string): Promise<number> {
+  async addToSet(_key: string, member: string): Promise<number> {
     return await this.redis.sadd(key, member)
   }
 }
@@ -769,7 +769,7 @@ interface CachedDocument {
     confidenceLevel: number
   }
   cacheTimestamp: number
-  accessCount: number
+  accessCount: number;
   compressed: boolean
 }
 class LegalDocumentCache {
@@ -1078,7 +1078,7 @@ const getRedisConfig = () => {
   primary: new Redis({ connectionName: 'legal-ai-primary' }),
   subscriber: new Redis({ connectionName: 'legal-ai-subscriber' }),
   publisher: new Redis({ connectionName: 'legal-ai-publisher' })
-};`,
+}`,
             description: 'Separate Redis connections for different purposes'
           },
           {

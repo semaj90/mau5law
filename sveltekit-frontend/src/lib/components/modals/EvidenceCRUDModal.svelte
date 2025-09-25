@@ -18,7 +18,7 @@
     case_id?: string;
     extracted_text?: string;
     embeddings?: number[];
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
     tags?: string[];
     x?: number;
     y?: number;
@@ -76,13 +76,13 @@
     if (!evidenceId) return;
     isLoading = true;
     try {
-      const response = await fetch(`/api/evidence/${evidenceId}`);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error('Failed to load evidence');
       }
       const data = await response.json();
-      evidence = { ...data };
-      originalEvidence = { ...data };
+      evidence = { ...data }
+      originalEvidence = { ...data }
     } catch (error) {
       console.error('❌ Failed to load evidence:', error);
       showError('Failed to load evidence');
@@ -99,15 +99,15 @@
       tags: [],
       x: 100,
       y: 100;
-    };
+    }
     originalEvidence = null;
     uploadedFile = null;
     tagInput = '';
-    errors = {};
+    errors = {}
   }
   // Validation
   function validateForm(): boolean {
-    errors = {};
+    errors = {}
     if (!evidence.title.trim()) {
       errors.title = 'Title is required';
     }
@@ -123,14 +123,14 @@
     return Object.keys(errors).length === 0;
   }
   // File handling
-  function handleFileUpload(event: Event) {
+  function handleFileUpload(_event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (file) {
       processFile(file);
     }
   }
-  function handleFileDrop(event: DragEvent) {
+  function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     const file = event.dataTransfer?.files[0];
@@ -173,7 +173,7 @@
   function removeTag(tagToRemove: string) {
     evidence.tags = evidence.tags?.filter(tag => tag !== tagToRemove) || [];
   }
-  function handleTagKeydown(event: KeyboardEvent) {
+  function handleTagKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       addTag();
@@ -191,7 +191,7 @@
         ...evidence.metadata,
         embedding_dimension: result.dimension,
         analyzed_at: new Date().toISOString()
-      };
+      }
       showSuccess('AI analysis completed');
     } catch (error) {
       console.error('❌ AI analysis failed:', error);
@@ -246,7 +246,7 @@
           embeddings: evidence.embeddings,
           x: evidence.x,
           y: evidence.y;
-        };
+        }
         const response = await fetch(`/api/evidence/${evidenceId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -306,7 +306,7 @@
     }, 200);
   }
   // Keyboard handling
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
       handleClose();
     } else if (event.key === 's' && (event.ctrlKey || event.metaKey)) {
@@ -318,10 +318,10 @@
   const typeIcons = {
     document: FileText
     image: Image
-    video: Video
-    audio: Mic
+    video: Video;
+    audio: Mic;
     transcript: FileText;
-  };
+  }
 </script>
 <!-- Modal Backdrop -->
 {#if isOpen}
@@ -469,8 +469,8 @@
                 <div>
                   <Label>File Upload</Label>
                   <div
-                    class="border-2 border-dashed rounded-lg p-6 text-center transition-colors"
-                    class:border-primary={dragOver};
+                    class="border-2 border-dashed rounded-lg p-6 text-center transition-colors";
+                    class:border-primary={dragOver}
                     class:bg-primary/5={dragOver}
                     ondrop={handleFileDrop}
                     ondragover={(e) => { e.preventDefault(); dragOver = true; }}

@@ -25,6 +25,6 @@ export const LegalComponents = {
   Button: ButtonBitsComponent
   Card: CardBitsComponent
   Dialog: DialogBitsComponent
-};
+}
 // === UTILITY FUNCTIONS ===
 export { cn } from '$lib/utils';

@@ -21,7 +21,7 @@
   interface CaseData {
     id: string
     title: string
-    description?: string
+    description?: string;
     status: 'active' | 'pending' | 'closed' | 'archived',
     priority: 'critical' | 'high' | 'medium' | 'low';
     created: Date | string
@@ -31,8 +31,8 @@
       avatar?: string;
     }
     stats: {
-      evidence: number
-      witnesses: number
+      evidence: number;
+      witnesses: number;
       documents: number;
     }
     tags?: string[]

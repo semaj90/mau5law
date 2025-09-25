@@ -193,7 +193,7 @@ function buildCudaCommand(
   }
   return args.join(' ')
 }
-function buildOptimizationsList(options: CudaPreprocessOptions): string[] {
+function buildOptimizationsList(_options: CudaPreprocessOptions): string[] {
   const optimizations: string[] = ['cuda-acceleration']
   if (options.useClangOptimizations) {
     optimizations.push('clang-llvm')

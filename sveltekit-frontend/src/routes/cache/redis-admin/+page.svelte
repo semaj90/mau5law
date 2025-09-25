@@ -44,7 +44,7 @@
     data.connectionStatus === 'connected' ? 'text-green-600' : 'text-red-600'
   );
   // Performance metrics colors
-  function getMetricColor(value: number, threshold: number): string {
+  function getMetricColor(_value: number, threshold: number): string {
     return value >= threshold ? 'text-green-600' : 'text-yellow-600';
   }
   function getMemoryColor(efficiency: number): string {
@@ -71,11 +71,11 @@
     isLoading = false;
   }
   // Key management
-  async function viewKeyDetails(key: string) {
+  async function viewKeyDetails(_key: string) {
     selectedKey = key;
     isLoading = true;
     try {
-      const response = await fetch(`/api/redis/key/${encodeURIComponent(key)}`);
+      // removed unused response assignment
       if (response.ok) {
         keyDetails = await response.json();
       }
@@ -296,7 +296,7 @@
         </NesCardHeader>
         <div.Content class="space-y-4 nes-container">
           <!-- Search Filter -->
-          <Input
+          <Input;
             bind:value={keyFilter}
             placeholder="Filter keys..."
             class="max-w-md"
@@ -353,7 +353,7 @@
                 placeholder="Key name"
                 required
               />
-              <Input
+              <Input;
                 bind:value={newValue}
                 name="value"
                 placeholder="Value"

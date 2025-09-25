@@ -139,7 +139,7 @@ const FXAAShader = {
       gl_FragColor = vec4(FxaaPixelShader(vUv, tDiffuse, 1.0 / resolution), 1.0);
     }
   `
-};
+}
 // Enhanced Temporal Anti-Aliasing (TAA) Shader
 export const TAAShader = {
   uniforms: {
@@ -233,7 +233,7 @@ export const TAAShader = {
       gl_FragColor = vec4(result, 1.0);
     }
   `
-};
+}
 // Advanced SMAA (Enhanced Subpixel Morphological Antialiasing) Shader
 export const SMAAShader = {
   uniforms: {
@@ -334,7 +334,7 @@ export const SMAAShader = {
       gl_FragColor = weights;
     }
   `
-};
+}
 // Enhanced Anti-Aliasing Shader for geometry
 const EnhancedAAShader = {
   uniforms: {
@@ -451,7 +451,7 @@ const EnhancedAAShader = {
       gl_FragColor = vec4(color, 1.0);
     }
   `
-};
+}
 // TAA (Temporal Anti-Aliasing) Manager
 class TAAManager {
   private history: THREE.WebGLRenderTarget[] = [];
@@ -478,7 +478,7 @@ class TAAManager {
       this.jitterPattern.push(new THREE.Vector2(x, y);
     }
   }
-  private haltonSequence(index: number, base: number): number {
+  private haltonSequence(_index: number, base: number): number {
     let result = 0;
     let f = 1;
     let i = index;
@@ -532,7 +532,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       adaptiveQuality: true
       performanceTarget: 60,
       ...config
-    };
+    }
   }
   private initializeAntiAliasing(): void {
     if (!this.aaConfig.enabled) return;
@@ -574,7 +574,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       transparent: true
     });
     // Configure FXAA quality based on settings
-    const qualityMap = { low: 10, medium: 15, high: 25, ultra: 39 };
+    const qualityMap = { low: 10, medium: 15, high: 25, ultra: 39 }
     this.fxaaPass.uniforms.qualityPreset.value = qualityMap[this.aaConfig.quality || 'high'];
     this.fxaaPass.uniforms.edgeThreshold.value = this.aaConfig.edgeThreshold || 0.166;
   }
@@ -627,7 +627,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
   }
   private createEnhancedMaterial(): void {
     const style = this.style as YoRHaAAStyle;
-    const shaderEnhancements = style.shaderEnhancements || {};
+    const shaderEnhancements = style.shaderEnhancements || {}
     this.enhancedMaterial = new THREE.ShaderMaterial({
       uniforms: THREE.UniformsUtils.clone(EnhancedAAShader.uniforms),
       vertexShader: EnhancedAAShader.vertexShader,
@@ -643,7 +643,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     this.enhancedMaterial.uniforms.supersampleFactor.value = shaderEnhancements.customAASamples || 2.0;
   }
   private getAAStrength(): number {
-    const qualityMap = { low: 0.5, medium: 1.0, high: 1.5, ultra: 2.0 };
+    const qualityMap = { low: 0.5, medium: 1.0, high: 1.5, ultra: 2.0 }
     return qualityMap[this.aaConfig.quality || 'high'];
   }
   protected createMaterial(): void {
@@ -705,13 +705,13 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       this.enhancedMaterial.uniforms.aaStrength.value = this.getAAStrength();
     }
     if (this.fxaaPass) {
-      const qualityMap = { low: 10, medium: 15, high: 25, ultra: 39 };
+      const qualityMap = { low: 10, medium: 15, high: 25, ultra: 39 }
       this.fxaaPass.uniforms.qualityPreset.value = qualityMap[this.aaConfig.quality || 'high'];
     }
   }
   // Public API for AA configuration
   public setAntiAliasingConfig(config: Partial<AntiAliasingConfig>): void {
-    this.aaConfig = { ...this.aaConfig, ...config };
+    this.aaConfig = { ...this.aaConfig, ...config }
     // Reinitialize if type changed
     if (config.type && config.type !== this.aaConfig.type) {
       this.disposeAntiAliasing();
@@ -721,7 +721,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     }
   }
   public getAntiAliasingConfig(): AntiAliasingConfig {
-    return { ...this.aaConfig };
+    return { ...this.aaConfig }
   }
   public enableAntiAliasing(enabled: boolean = true): void {
     this.aaConfig.enabled = enabled;
@@ -765,7 +765,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       samples: this.aaConfig.samples || 0,
       estimatedFPS: this.estimateFPS(),
       memoryUsage: this.estimateMemoryUsage()
-    };
+    }
   }
   private estimateMemoryUsage(): number {
     let usage = 0;
@@ -812,7 +812,7 @@ export const AntiAliasingUtils = {
       enabled: true
       adaptiveQuality: true
       performanceTarget: targetFPS
-    };
+    }
   },
   createAAPreset(preset: 'performance' | 'balanced' | 'quality'): AntiAliasingConfig {
     const presets = {
@@ -837,7 +837,7 @@ export const AntiAliasingUtils = {
         adaptiveQuality: false
         performanceTarget: 30
       }
-    };
+    }
     return {
       enabled: true
       edgeThreshold: 0.166,
@@ -845,6 +845,6 @@ export const AntiAliasingUtils = {
       temporalSamples: 8,
       jitterPattern: 'halton',
       ...presets[preset]
-    };
+    }
   }
-};
+}

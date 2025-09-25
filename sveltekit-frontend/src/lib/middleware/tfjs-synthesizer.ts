@@ -99,7 +99,7 @@ export interface SemanticMap {
   conceptNodes: ConceptNode[];
   relationshipEdges: RelationshipEdge[];
   clusters: ConceptCluster[];
-  centrality: { [concept: string]: number };
+  centrality: { [concept: string]: number }
 }
 export interface ConceptNode {
   id: string;
@@ -178,7 +178,7 @@ export class TensorFlowSynthesizer {
       parallelProcessing: true
       cachingStrategy: 'memory',
       ...config
-    };
+    }
   }
   /**
    * Initialize the synthesizer middleware
@@ -260,7 +260,7 @@ export class TensorFlowSynthesizer {
       pipeline.push({
         name: 'synthesize-insights',
         processingTime: performance.now() - startTime,
-        success: true
+        success: true;
         output: { insightsGenerated: Object.keys(synthesizedInsights).length }
       });
       // Stage 3: Generate enhanced response
@@ -274,7 +274,7 @@ export class TensorFlowSynthesizer {
       pipeline.push({
         name: 'enhanced-response',
         processingTime: performance.now() - startTime,
-        success: true
+        success: true;
         output: { responseLength: enhancedResponse.primaryResponse.length }
       });
       // Stage 4: Calculate quality metrics
@@ -287,7 +287,7 @@ export class TensorFlowSynthesizer {
       pipeline.push({
         name: 'quality-metrics',
         processingTime: performance.now() - startTime,
-        success: true
+        success: true;
         output: qualityMetrics
       });
       const totalProcessingTime = performance.now() - startTime;
@@ -304,7 +304,7 @@ export class TensorFlowSynthesizer {
           optimizationsApplied: ['caching', 'parallel-processing']
         },
         qualityMetrics
-      };
+      }
       // Cache the result
       if (this.config.cachingStrategy === 'memory') {
         this.analysisCache.set(cacheKey, result);
@@ -365,7 +365,7 @@ export class TensorFlowSynthesizer {
           relevance: 0,
           userSatisfactionPrediction: 0.1
         }
-      };
+      }
     }
   }
   /**
@@ -373,7 +373,7 @@ export class TensorFlowSynthesizer {
    */
   private async runParallelAnalysis(
     text: string
-    pipeline: PipelineStage[]
+    pipeline: PipelineStage[];
     callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void;
   ): Promise<void> {
     const analysisPromises: Promise<any>[] = [];
@@ -405,7 +405,7 @@ export class TensorFlowSynthesizer {
     });
     // Extract results
     let resultIndex = 0;
-    const analysisResults: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {};
+    const analysisResults: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {}
     if (this.config.enableLegalBERT) {
       const result = results[resultIndex++];
       if ((result as { status?: any; value?: any }).status === 'fulfilled' && (result as { status?: any; value?: any }).value) {
@@ -425,10 +425,10 @@ export class TensorFlowSynthesizer {
    */
   private async runSequentialAnalysis(
     text: string
-    pipeline: PipelineStage[]
+    pipeline: PipelineStage[];
     callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void;
   ): Promise<void> {
-    const results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {};
+    const results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {}
     if (this.config.enableLegalBERT) {
       const stageStartTime = performance.now();
       try {
@@ -436,14 +436,14 @@ export class TensorFlowSynthesizer {
         pipeline.push({
           name: 'legal-bert-analysis',
           processingTime: performance.now() - stageStartTime,
-          success: true
+          success: true;
           output: { entitiesFound: results.legalBERT.entities.length }
         });
       } catch (error: any) {
         pipeline.push({
           name: 'legal-bert-analysis',
           processingTime: performance.now() - stageStartTime,
-          success: false
+          success: false;
           error: error.message
         });
       }
@@ -455,14 +455,14 @@ export class TensorFlowSynthesizer {
         pipeline.push({
           name: 'language-extraction',
           processingTime: performance.now() - stageStartTime,
-          success: true
+          success: true;
           output: { conceptsExtracted: results.languageExtraction.extractedConcepts.length }
         });
       } catch (error: any) {
         pipeline.push({
           name: 'language-extraction',
           processingTime: performance.now() - stageStartTime,
-          success: false
+          success: false;
           error: error.message
         });
       }
@@ -496,14 +496,14 @@ export class TensorFlowSynthesizer {
       recommendedActions,
       semanticMap,
       crossReferences
-    };
+    }
   }
   /**
    * Generate enhanced response using WebAssembly AI
    */
   private async generateEnhancedResponse(
     text: string
-    query: string | undefined
+    query: string | undefined;
     insights: SynthesizedInsights
     legalBERTResults?: LegalBERTAnalysis
     languageExtractionResults?: AdvancedExtractionResult;
@@ -527,7 +527,7 @@ export class TensorFlowSynthesizer {
         sources.push({
           type: 'webassembly',
           content: primaryResponse
-          confidence: confidenceLevel
+          confidence: confidenceLevel;
           relevance: 0.9
         });
       } else {
@@ -538,7 +538,7 @@ export class TensorFlowSynthesizer {
         sources.push({
           type: 'webassembly',
           content: primaryResponse
-          confidence: confidenceLevel
+          confidence: confidenceLevel;
           relevance: 0.8
         });
       }
@@ -576,7 +576,7 @@ export class TensorFlowSynthesizer {
         nextSteps,
         confidenceLevel,
         sources
-      };
+      }
     } catch (error: any) {
       console.error('[TF Synthesizer] Enhanced response generation failed:', error);
       return {
@@ -587,7 +587,7 @@ export class TensorFlowSynthesizer {
         nextSteps: [],
         confidenceLevel: 0.1,
         sources: []
-      };
+      }
     }
   }
   // Helper methods for synthesis
@@ -646,7 +646,7 @@ export class TensorFlowSynthesizer {
     // Risk assessment from Legal-BERT classification
     if (legalBERTResults) {
       const riskLevel = legalBERTResults.classification.riskLevel;
-      const riskMapping = { LOW: 0.2, MEDIUM: 0.5, HIGH: 0.8, CRITICAL: 1.0 };
+      const riskMapping = { LOW: 0.2, MEDIUM: 0.5, HIGH: 0.8, CRITICAL: 1.0 }
       overallRiskScore = Math.max(overallRiskScore, riskMapping[riskLevel]);
     }
     // Risk assessment from sentiment and language patterns
@@ -678,7 +678,7 @@ export class TensorFlowSynthesizer {
       mitigationStrategies: this.generateMitigationStrategies(risks),
       complianceGaps: [],
       urgencyScore: overallRiskScore
-    };
+    }
   }
   private synthesizeComplianceProfile(
     legalBERTResults?: LegalBERTAnalysis
@@ -704,7 +704,7 @@ export class TensorFlowSynthesizer {
       gapAnalysis: [],
       recommendedActions: [],
       jurisdictionalComplexity: 0.5
-    };
+    }
   }
   private generateActionRecommendations(
     riskAssessment: RiskProfile
@@ -744,7 +744,7 @@ export class TensorFlowSynthesizer {
         relationshipEdges: [],
         clusters: [],
         centrality: { [key: string]: any }
-      };
+      }
     }
     const conceptNodes: ConceptNode[] = languageExtractionResults.extractedConcepts.map((concept, index) => ({
       id: `concept_${index}`,
@@ -765,7 +765,7 @@ export class TensorFlowSynthesizer {
       relationshipEdges,
       clusters: [],
       centrality: { [key: string]: any }
-    };
+    }
   }
   private extractCrossReferences(text?: string, legalBERTResults?: LegalBERTAnalysis): CrossReferenceMap[] {
     if (!text) return [];
@@ -902,7 +902,7 @@ export class TensorFlowSynthesizer {
       coherence,
       relevance,
       userSatisfactionPrediction: overallQuality * 0.9 // Slightly conservative
-    };
+    }
   }
   private generateCacheKey(text: string, query?: string): string {
     const textHash = text.substring(0, 100).replace(/\s+/g, '');
@@ -918,7 +918,7 @@ export class TensorFlowSynthesizer {
     languageExtractionReady: boolean;
     webAssemblyReady: boolean;
     cacheSize: number;
-    tfMemoryUsage: { numTensors: number; numBytes: number };
+    tfMemoryUsage: { numTensors: number; numBytes: number }
   } {
     return {
       initialized: this.initialized,
@@ -927,7 +927,7 @@ export class TensorFlowSynthesizer {
       webAssemblyReady: webAssemblyAIAdapter.getHealthStatus().initialized,
       cacheSize: this.analysisCache.size,
       tfMemoryUsage: tf.memory()
-    };
+    }
   }
   /**
    * Clear cache

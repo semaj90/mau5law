@@ -41,7 +41,7 @@ export interface ConversationContext {
     seasonalTrends: string[];
     timeBasedIntents: Map<string, number[]>; // Intent -> time slots when most active
     workflowPatterns: string[]; // Common task sequences
-  };
+  }
   contextualMemory: {
     topicsDiscussed: string[];
     documentsReferenced: string[];
@@ -54,15 +54,15 @@ export interface ConversationContext {
       stress_level: number; // 0 to 1,
       confidence: number; // 0 to 1
       engagement: number; // 0 to 1
-    };
-  };
+    }
+  }
   learningProfile: {
     expertise_level: 'novice' | 'intermediate' | 'expert';
     preferred_explanation_style: 'detailed' | 'concise' | 'examples';
     common_mistakes: string[];
     learning_velocity: number;
     knowledge_gaps: string[];
-  };
+  }
 }
 export class ContextualEngineeringMachine {
   private testResults: ContextualTestResult[] = [];
@@ -79,7 +79,7 @@ export class ContextualEngineeringMachine {
     coherenceIndex: 0,
     predictionAccuracy: 0,
     contextualRelevance: 0
-  };
+  }
   private conversationContexts = new Map<string, ConversationContext>();
   private memoryDecayFactor = 0.95; // How fast old memories fade
   private learningThreshold = 0.7; // Minimum confidence to consider as learning
@@ -1234,7 +1234,7 @@ export class ContextualEngineeringMachine {
    * Get current system metrics
    */;
   getMetrics(): ContextualEngineMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   /**
    * Get test results
@@ -1260,5 +1260,5 @@ export async function validateContextualSystem(): Promise<any> {
   const results = await contextualEngineeringMachine.runFullSystemTest();
   const metrics = contextualEngineeringMachine.getMetrics();
   const success = results.every(result => (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).success);
-  return { success, results, metrics };
+  return { success, results, metrics }
 }

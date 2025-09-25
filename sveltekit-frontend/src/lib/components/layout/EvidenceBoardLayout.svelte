@@ -8,7 +8,7 @@
     demoMode = true,
     showGrid = true,
     children,
-    rightPanel = undefined
+    rightPanel = undefined,
   }: {
     title?: string;
     caseInfo?: string;
@@ -26,6 +26,7 @@
     }, 1000);
   });
 </script>
+
 <!-- Full Evidence Board Layout -->
 <div class="min-h-screen bg-gray-100 relative overflow-hidden">
   <!-- Background Grid Pattern (matching Evidence Board) -->
@@ -77,8 +78,11 @@
     </div>
   </div>
   <!-- Hidden NES.css Elements Showcase - Prevents unused CSS selector warnings -->
-  <div class="nes-elements-showcase" style="position: absolute;
-e; left: -9999px; top: -9999px; visibility: hidden;">
+  <div
+    class="nes-elements-showcase"
+    style="position: absolute;
+e; left: -9999px; top: -9999px; visibility: hidden;"
+  >
     <!-- Containers -->
     <div class="nes-container">Basic container</div>
     <div class="nes-container is-dark">Dark container</div>
@@ -115,19 +119,19 @@ e; left: -9999px; top: -9999px; visibility: hidden;">
     <!-- Input Fields -->
     <div class="nes-field">
       <label for="name_field">Your name</label>
-      <input type="text" id="name_field" class="nes-input" placeholder="Enter your name">
+      <input type="text" id="name_field" class="nes-input" placeholder="Enter your name" />
     </div>
     <div class="nes-field">
       <label for="success_field">Success</label>
-      <input type="text" id="success_field" class="nes-input is-success" value="Success!">
+      <input type="text" id="success_field" class="nes-input is-success" value="Success!" />
     </div>
     <div class="nes-field">
       <label for="warning_field">Warning</label>
-      <input type="text" id="warning_field" class="nes-input is-warning" value="Warning!">
+      <input type="text" id="warning_field" class="nes-input is-warning" value="Warning!" />
     </div>
     <div class="nes-field">
       <label for="error_field">Error</label>
-      <input type="text" id="error_field" class="nes-input is-error" value="Error!">
+      <input type="text" id="error_field" class="nes-input is-error" value="Error!" />
     </div>
     <!-- Textarea -->
     <div class="nes-field">
@@ -210,7 +214,7 @@ e; left: -9999px; top: -9999px; visibility: hidden;">
     </div>
     <!-- Avatars -->
     <div class="nes-avatar">
-      <img alt="Avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+      <img alt="Avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
     </div>
     <!-- Kirby -->
     <div class="nes-kirby"></div>
@@ -220,14 +224,15 @@ e; left: -9999px; top: -9999px; visibility: hidden;">
     <div class="nes-pokeball"></div>
   </div>
 </div>
+
 <style>
   .bg-grid-pattern {
-    background-image:
-      linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
+background-image: {}
+linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px), {}
+      linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
   }
-  /* NES.css enhancements for Evidence Board look */
+/* NES.css enhancements for Evidence Board look */ {}
   .nes-container.evidence-panel {
     background: white;
     border: 4px solid #212529;
@@ -242,15 +247,18 @@ e; left: -9999px; top: -9999px; visibility: hidden;">
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%),
-                linear-gradient(-45deg, #f8f9fa 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #f8f9fa 75%),
-                linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+background: {}
+linear-gradient(45deg, #f8f9fa 25%, transparent 25%), linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), {}
+      linear-gradient(45deg, transparent 75%, #f8f9fa 75%), linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
     background-size: 4px 4px;
-    background-position:  0, 0 2px, 2px -2px, -2px 0px;
+background-position: {}
+0, {}
+0 2px, {}
+2px -2px, {}
+      -2px 0px;
     z-index: -1;
   }
-  /* Interactive elements styling */
+/* Interactive elements styling */ {}
   .evidence-item {
     padding: 1rem;
     cursor: pointer;
@@ -261,7 +269,7 @@ e; left: -9999px; top: -9999px; visibility: hidden;">
   }
   .evidence-item:hover {
     border-color: #007bff;
-    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
     transform: translateY(-2px);
   }
   .evidence-item.active {

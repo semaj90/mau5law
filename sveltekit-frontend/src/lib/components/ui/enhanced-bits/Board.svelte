@@ -56,7 +56,7 @@
       dark: 'bg-gray-900 text-white',
       blueprint: 'bg-blue-100',
       legal: 'bg-gray-50';
-    };
+    }
     return [
       base,
       themes[background],
@@ -80,7 +80,7 @@
     return Math.round(coord / gridSize) * gridSiz;
   }
   // Handle item drag start
-  function handleDragStart(event: MouseEvent, item: BoardItem) {
+  function handleDragStart(_event: MouseEvent, item: BoardItem) {
     if (!enableDragging) return;
     event.preventDefault();
     isDragging = true;
@@ -89,11 +89,11 @@
     dragOffset = {
       x: event.clientX - rect.left - (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).x,
       y: event.clientY - rect.top - (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).y
-    };
+    }
     ondispatch?.({ item });
   }
   // Handle mouse move for dragging
-  function handleMouseMove(event: MouseEvent) {
+  function handleMouseMove(_event: MouseEvent) {
     if (!isDragging || !draggedItem) return;
     const rect = boardElement.getBoundingClientRect();
     const newX = snapToGridFn((event.clientX - rect.left - dragOffset.x) / zoomLevel);
@@ -101,7 +101,7 @@
     // Update item position
     const itemIndex = items.findIndex(i => i.id === draggedItem!.id);
     if (itemIndex !== -1) {
-      items[itemIndex] = { ...items[itemIndex], x: newX, y: newY };
+      items[itemIndex] = { ...items[itemIndex], x: newX, y: newY }
       ondispatch?.({ item: items[itemIndex], newX, newY });
     }
   }
@@ -135,7 +135,7 @@
         currentY += maxHeight + padding;
         maxHeight = 0;
       }
-      const newItem = { ...item, x: currentX, y: currentY };
+      const newItem = { ...item, x: currentX, y: currentY }
       currentX += itemWidth + padding;
       maxHeight = Math.max(maxHeight, itemHeight);
       return newItem;
@@ -151,11 +151,11 @@
     const fromCenter = {
       x: from.x + (from.width || 100) / 2,
       y: from.y + (from.height || 80) / 2;
-    };
+    }
     const toCenter = {
       x: to.x + (to.width || 100) / 2,
       y: to.y + (to.height || 80) / 2;
-    };
+    }
     // Simple straight line for now - could be enhanced with curved paths
     return `M ${fromCenter.x} ${fromCenter.y} L ${toCenter.x} ${toCenter.y}`;
   }
@@ -228,9 +228,9 @@
   <div
     bind:this={boardElement}
     class={boardClasses}
-    style="
-      width: {typeof width === 'number' ? width + 'px' : width};
-      height: {typeof height === 'number' ? height + 'px' : height};
+    style=";
+      width: {typeof width === 'number' ? width + 'px' : width}
+      height: {typeof height === 'number' ? height + 'px' : height}
       transform: scale({zoomLevel});
       transform-origin: top left;
       {gridPattern}
@@ -264,8 +264,8 @@
         style="
           left: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).x}px;
           top: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).y}px;
-          width: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).width || 'auto'};
-          height: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).height || 'auto'};
+          width: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).width || 'auto'}
+          height: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).height || 'auto'}
         "
         onmousedown={(e) => handleDragStart(e, item)}
         role="button"
@@ -324,22 +324,21 @@
     </div>
   </div>
 </div>
-<style>
-  /* Grid pattern */
+<style>/* Grid pattern */ {}
   .bg-grid-pattern {
-    background-image:
-      linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+background-image: {}
+linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), {}
       linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
   }
-  /* Dragging cursor */
+/* Dragging cursor */ {}
   .cursor-move:active {
     cursor: grabbing;
   }
-  /* Smooth transitions for zoom */
+/* Smooth transitions for zoom */ {}
   div[style*="transform: scale"] {,
     transition: transform 0.2s ease-out;
   }
-  /* Connection lines animation */
+/* Connection lines animation */ {}
   svg path {
     animation: dash 5s linear infinite;
   }
@@ -348,7 +347,7 @@
       stroke-dashoffset: -10;
     }
   }
-  /* Fullscreen styles */
+/* Fullscreen styles */ {}
   :global($1) {
     background: white;
     padding: 20px;

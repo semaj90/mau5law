@@ -19,7 +19,7 @@ export interface CacheEntry<T = any> {
     lastAccess: number;
     source: 'server' | 'client' | 'hybrid';
     computeCost: number; // Relative cost to regenerate
-  };
+  }
 }
 export interface CacheStrategy {
   // Memory tiers (fastest to slowest)
@@ -70,7 +70,7 @@ export class HeadlessUICache {
         conflictResolution: 'server'
       },
       ...config
-    };
+    }
     this.initialize();
   }
   private async initialize(): Promise<void> {
@@ -100,22 +100,22 @@ export class HeadlessUICache {
       request.onsuccess = () => {
         this.db = request.result;
         resolve();
-      };
+      }
       request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+        // removed unused db assignment
         if (!db.objectStoreNames.contains('cache')) {
           const store = db.createObjectStore('cache', { keyPath: 'key' });
           store.createIndex('timestamp', 'timestamp');
           store.createIndex('version', 'version');
           store.createIndex('lastAccess', 'metadata.lastAccess');
         }
-      };
+      }
     });
   }
   /**
    * Get cached data with semantic similarity fallback
    */;
-  async get<T>(key: string, semanticQuery?: string): Promise<T | null> {
+  async get<T>(_key: string, semanticQuery?: string): Promise<T | null> {
     this.totalRequests++;
     // 1. Check memory cache first (fastest)
     if (this.config.strategy.memory) {
@@ -165,8 +165,7 @@ export class HeadlessUICache {
   /**
    * Set cached data with optional semantic embedding
    */
-  async set<T>(
-    key: string
+  async set<T>(_key: string
     data: T
     ttl?: number
     source: 'client' | 'server' | 'hybrid' = 'client',
@@ -185,7 +184,7 @@ export class HeadlessUICache {
         source,
         computeCost: this.estimateComputeCost(data)
       }
-    };
+    }
     // Generate semantic embedding if text provided
     if (semanticText && this.config.strategy.semantic) {
       try {
@@ -317,7 +316,7 @@ export class HeadlessUICache {
       console.error('[HeadlessCache] Server sync failed:', error);
     }
   }
-  private async fetchFromServer<T>(key: string): Promise<T | null> {
+  private async fetchFromServer<T>(_key: string): Promise<T | null> {
     try {
       const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
         method: 'GET',
@@ -331,11 +330,11 @@ export class HeadlessUICache {
       return null;
     }
   }
-  private queueServerSync(key: string, entry: CacheEntry): void {
+  private queueServerSync(_key: string, entry: CacheEntry): void {
     // Queue for async server sync (implement with a proper queue)
     setTimeout(() => this.syncEntryToServer(key, entry), 100);
   }
-  private async syncEntryToServer(key: string, entry: CacheEntry): Promise<void> {
+  private async syncEntryToServer(_key: string, entry: CacheEntry): Promise<void> {
     try {
       await fetch('/api/cache', {
         method: 'PUT',
@@ -393,7 +392,7 @@ export class HeadlessUICache {
     this.hitRatio = this.totalRequests > 0 ? this.cacheHits / this.totalRequests: 0;
   }
   // IndexedDB helpers
-  private async getFromIndexedDB<T>(key: string): Promise<CacheEntry<T> | null> {
+  private async getFromIndexedDB<T>(_key: string): Promise<CacheEntry<T> | null> {
     if (!this.db) return null;
     return new Promise((resolve) => {
       const transaction = this.db!.transaction(['cache'], 'readonly');
@@ -407,7 +406,7 @@ export class HeadlessUICache {
         } else {
           resolve(null);
         }
-      };
+      }
       request.onerror = () => resolve(null);
     });
   }
@@ -454,7 +453,7 @@ export class HeadlessUICache {
         } else {
           resolve(bestMatch);
         }
-      };
+      }
       request.onerror = () => resolve(null);
     });
   }
@@ -470,7 +469,7 @@ export class HeadlessUICache {
       memorySize: this.calculateMemorySize(),
       maxMemorySize: this.config.maxMemorySize,
       lastSync: this.syncTimer ? 'active' : 'inactive'
-    };
+    }
   }
   /**
    * Clear all caches
@@ -516,7 +515,7 @@ export function cached(ttl?: number, semanticKey?: string) {
       // Cache the result
       await headlessUICache.set(cacheKey, result, ttl, 'client', semanticKey);
       return result;
-    };
+    }
     return descriptor;
-  };
+  }
 }

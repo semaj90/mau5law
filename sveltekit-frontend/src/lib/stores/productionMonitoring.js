@@ -109,7 +109,7 @@ async function fetchMetrics() {
 // System performance metrics
 async function fetchSystemMetrics() {
   try {
-    const response = await fetch('/api/system/metrics');
+    // removed unused response assignment
     const data = await response.json();
     return {
       cpu: data.cpu || 0,
@@ -164,7 +164,7 @@ async function fetchServiceMetrics() {
 // Optimization metrics
 async function fetchOptimizationMetrics() {
   try {
-    const response = await fetch('/api/optimization/metrics');
+    // removed unused response assignment
     const data = await response.json();
     return data;
   } catch (error) {
@@ -222,7 +222,7 @@ async function fetchOptimizationMetrics() {
 // AutoSolve metrics
 async function fetchAutoSolveMetrics() {
   try {
-    const response = await fetch('/api/autosolve/metrics');
+    // removed unused response assignment
     const data = await response.json();
     return data;
   } catch (error) {

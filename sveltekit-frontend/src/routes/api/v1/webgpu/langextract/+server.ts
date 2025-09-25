@@ -122,7 +122,7 @@ async function handleSingleDocumentProcessing(request: WebGPULangExtractRequest)
   console.log(`📄 Processing single document: ${request.text.length} chars`)
   const result = await processLegalDocumentWithWebGPU(request.text, config)
   return {
-    processing: result
+    processing: result;
     optimizations: {
       webgpuUtilized: (result as { performance?: any; embeddings?: any; extraction?: any }).performance.webgpuUtilized,
       cacheHit: (result as { performance?: any; embeddings?: any; extraction?: any }).embeddings.cacheHit,

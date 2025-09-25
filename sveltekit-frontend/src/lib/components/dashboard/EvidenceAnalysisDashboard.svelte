@@ -116,14 +116,14 @@
       isAnalyzing.set(false);
     }
   }
-  async function handleFileUpload(event: Event) {
+  async function handleFileUpload(_event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       uploadedFile = input.files[0];
       await processUploadedFile(uploadedFile);
     }
   }
-  async function handleDrop(event: DragEvent) {
+  async function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dropZoneActive = false;
     if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
@@ -156,7 +156,7 @@
       ],
       createdAt: new Date(),
       updatedAt: new Date()
-    };
+    }
     evidenceItems.update(items => [...items, newEvidence]);
     await analyzeEvidence(newEvidence);
   }
@@ -167,11 +167,11 @@
     if (file.type.includes('pdf') || file.type.includes('document')) return 'document';
     return 'digital';
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dropZoneActive = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     dropZoneActive = false;
   }
@@ -189,14 +189,11 @@
     linkElement.click();
   }
 </script>
+
 <div class="evidence-dashboard">
   <header class="dashboard-header">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
-      AI-Powered Evidence Analysis
-    </h1>
-    <p class="text-gray-600 dark:text-gray-400">
-      Analyze legal evidence using advanced AI models with Gemma 3 Legal
-    </p>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">AI-Powered Evidence Analysis</h1>
+    <p class="text-gray-600 dark:text-gray-400">Analyze legal evidence using advanced AI models with Gemma 3 Legal</p>
   </header>
   <div class="dashboard-grid">
     <!-- Evidence List Panel -->
@@ -212,20 +209,17 @@
           ondragover={handleDragOver}
           on:dragleave={handleDragLeave}
         >
-          <input
-            type="file"
-            id="file-upload"
-            class="hidden"
-            onchange={handleFileUpload}
-          />
+          <input type="file" id="file-upload" class="hidden" onchange={handleFileUpload} />
           <label for="file-upload" class="upload-label">
             <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              />
             </svg>
-            <span class="upload-text">
-              Drop evidence files here or click to upload
-            </span>
+            <span class="upload-text"> Drop evidence files here or click to upload </span>
           </label>
         </div>
         <!-- Evidence List -->
@@ -233,7 +227,7 @@
           {#each $evidenceItems as evidence}
             <button
               class="evidence-item {$selectedEvidence?.id === evidence.id ? 'selected' : ''}"
-              onclick={() => analyzeEvidence(evidence)};
+              onclick="{() => analyzeEvidence(evidence)}"
               transition:fly={{ x: -20, duration: 300 }}
             >
               <span class="evidence-icon">{getEvidenceIcon(evidence.type)}</span>
@@ -260,23 +254,14 @@
       {#if $isAnalyzing}
         <div class="loading-state" transition:fade>
           <div class="loading-spinner"></div>
-          <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">
-            Analyzing Evidence...
-          </h2>
-          <p class="text-gray-500 dark:text-gray-400">
-            Using Gemma 3 Legal AI to process evidence
-          </p>
+          <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Analyzing Evidence...</h2>
+          <p class="text-gray-500 dark:text-gray-400">Using Gemma 3 Legal AI to process evidence</p>
         </div>
       {:else if $currentAnalysis}
         <div class="analysis-content" transition:fade>
           <div class="analysis-actions">
-            <Button onclick={exportAnalysis} variant="secondary">
-              Export Analysis
-            </Button>
-            <Button
-              onclick={() => $selectedEvidence && analyzeEvidence($selectedEvidence)}
-              variant="primary"
-            >
+            <Button onclick={exportAnalysis} variant="secondary">Export Analysis</Button>
+            <Button onclick={() => $selectedEvidence && analyzeEvidence($selectedEvidence)} variant="primary">
               Re-analyze
             </Button>
           </div>
@@ -285,20 +270,21 @@
       {:else}
         <div class="empty-state">
           <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            />
           </svg>
-          <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">
-            Select Evidence to Analyze
-          </h2>
-          <p class="text-gray-500 dark:text-gray-400">
-            Choose an evidence item from the list or upload a new file
-          </p>
+          <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Select Evidence to Analyze</h2>
+          <p class="text-gray-500 dark:text-gray-400">Choose an evidence item from the list or upload a new file</p>
         </div>
       {/if}
     </div>
   </div>
 </div>
+
 <style>
   .evidence-dashboard {
     @apply min-h-screen bg-gray-50 dark:bg-gray-900 p-6;

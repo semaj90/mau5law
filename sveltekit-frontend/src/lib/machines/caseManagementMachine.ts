@@ -16,8 +16,8 @@ export interface CaseManagementContext {
   filters: {
     status?: string;
     priority?: string;
-    dateRange?: { from: Date; to: Date };
-  };
+    dateRange?: { from: Date; to: Date }
+  }
   // UI state
   selectedCaseId: string | null;
   isLoading: boolean;
@@ -27,7 +27,7 @@ export interface CaseManagementContext {
     page: number;
     limit: number;
     totalCount: number;
-  };
+  }
   // User context
   userId: string;
 }
@@ -44,7 +44,7 @@ type CaseManagementEvent =
   | { type: 'SET_PAGE'; page: number }
   | { type: 'SELECT_CASE'; caseId: string | null }
   | { type: 'CLEAR_ERROR' }
-  | { type: 'RETRY' };
+  | { type: 'RETRY' }
 // Machine Services (MCP Tool Calls) - XState v5 pattern
 const caseManagementServices = {
   loadCase: async ({ input }: { input: { context: CaseManagementContext; event: any } }) => {
@@ -161,7 +161,7 @@ const caseManagementServices = {
     }
     return await response.json();
   }
-};
+}
 // XState Machine Definition
 export const caseManagementMachine = createMachine({
   id: 'caseManagement',

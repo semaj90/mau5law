@@ -4,50 +4,50 @@
  */
 export function createEventListener<T extends keyof HTMLElementEventMap>(
   element: HTMLElement
-  event: T
-  handler: (event: HTMLElementEventMap[T]) => void,
+  event: T;
+  handler: (_event: HTMLElementEventMap[T]) => void,
   options?: AddEventListenerOptions;
 ) {
   element.addEventListener(event, handler, options);
   return () => {
     element.removeEventListener(event, handler, options);
-  };
+  }
 }
 export function createInterval(callback: () => void, delay: number) {
   const intervalId = setInterval(callback, delay);
   return () => {
     clearInterval(intervalId);
-  };
+  }
 }
 export function createTimeout(callback: () => void, delay: number) {
   const timeoutId = setTimeout(callback, delay);
   return () => {
     clearTimeout(timeoutId);
-  };
+  }
 }
 export function createWebSocket(url: string, protocols?: string | string[]) {
   const ws = new WebSocket(url, protocols);
   return {
-    socket: ws
+    socket: ws;
     cleanup: () => {
       if (ws.readyState === WebSocket.OPEN) {
         ws.close();
       }
     }
-  };
+  }
 }
 export function createResizeObserver(
-  callback: ResizeObserverCallback
+  callback: ResizeObserverCallback;
   element: Element;
 ) {
   const observer = new ResizeObserver(callback);
   observer.observe(element);
   return () => {
     observer.disconnect();
-  };
+  }
 }
 export function createIntersectionObserver(
-  callback: IntersectionObserverCallback
+  callback: IntersectionObserverCallback;
   element: Element
   options?: IntersectionObserverInit;
 ) {
@@ -55,23 +55,23 @@ export function createIntersectionObserver(
   observer.observe(element);
   return () => {
     observer.disconnect();
-  };
+  }
 }
 export function createAnimationFrame(callback: FrameRequestCallback) {
   const rafId = requestAnimationFrame(callback);
   return () => {
     cancelAnimationFrame(rafId);
-  };
+  }
 }
 export function createMediaQuery(query: string, callback: (matches: boolean) => void) {
   const mediaQuery = window.matchMedia(query);
-  const handler = (event: MediaQueryListEvent) => callback(event.matches);
+  const handler = (_event: MediaQueryListEvent) => callback(event.matches);
   // Initial call
   callback(mediaQuery.matches);
   mediaQuery.addEventListener('change', handler);
   return () => {
     mediaQuery.removeEventListener('change', handler);
-  };
+  }
 }
 export function createAbortController() {
   const controller = new AbortController();
@@ -79,7 +79,7 @@ export function createAbortController() {
     signal: controller.signal,
     abort: () => controller.abort(),
     cleanup: () => controller.abort()
-  };
+  }
 }
 // Utility for combining multiple cleanup functions
 export function combineCleanups(...cleanupFns: (() => void)[]): () => void {
@@ -91,14 +91,14 @@ export function combineCleanups(...cleanupFns: (() => void)[]): () => void {
         console.error('Cleanup error:', error);
       }
     });
-  };
+  }
 }
 // Hook-like pattern for Svelte 5
 export function useCleanup() {
   const cleanupFunctions: (() => void)[] = [];
   const addCleanup = (cleanup: () => void) => {
     cleanupFunctions.push(cleanup);
-  };
+  }
   const cleanup = () => {
     cleanupFunctions.forEach(fn => {
       try {
@@ -108,6 +108,6 @@ export function useCleanup() {
       }
     });
     cleanupFunctions.length = 0;
-  };
-  return { addCleanup, cleanup };
+  }
+  return { addCleanup, cleanup }
 }

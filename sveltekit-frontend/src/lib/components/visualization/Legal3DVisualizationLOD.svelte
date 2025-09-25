@@ -27,15 +27,15 @@
     id: string;
     type: 'person' | 'organization' | 'document' | 'location' | 'event';
     position: ;
-{ x: number; y: number; z: number };
-    scale: { x: number; y: number; z: number };
-    rotation: { x: number; y: number; z: number };
+{ x: number; y: number; z: number }
+    scale: { x: number; y: number; z: number }
+    rotation: { x: number; y: number; z: number }
     importance: number; // 0-1, affects LOD visibility and mesh detail
     connections: string[];
     meshType: 'cube' | 'sphere' | 'pyramid' | 'cylinder' | 'complex';
-    color: { r: number; g: number; b: number; a: number };
+    color: { r: number; g: number; b: number; a: number }
     label: string;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   }
   interface MeshLODLevel {
     vertices: Float32Array;
@@ -50,20 +50,20 @@
     target: string;
     type: 'legal' | 'business' | 'personal' | 'temporal';
     strength: number; // 0-1, affects line thickness and visibility
-    color: { r: number; g: number; b: number; a: number };
+    color: { r: number; g: number; b: number; a: number }
   }
   interface Camera3D {
     position: ;
-{ x: number; y: number; z: number };
-    target: { x: number; y: number; z: number };
-    up: { x: number; y: number; z: number };
+{ x: number; y: number; z: number }
+    target: { x: number; y: number; z: number }
+    up: { x: number; y: number; z: number }
     fov: number;
     near: number;
     far: number;
   }
   interface Legal3DVisualizationLODProps {
     caseId: string;
-    sceneData?: { entities: Legal3DEntity[]; connections: Legal3DConnection[] };
+    sceneData?: { entities: Legal3DEntity[]; connections: Legal3DConnection[] }
     enableWebGPU?: boolean;
     initialCamera?: Camera3D;
     onEntityClick?: (entity: Legal3DEntity) => void;
@@ -152,7 +152,7 @@
       description: 'Low Poly (N64 Style)',
       renderComplexity: 0.2;
     }
-  };
+  }
   // Derived values for automatic LOD calculation
   let averageEntityDistance = $derived(() => {
     if (visibleEntities.length === 0) return 0;
@@ -183,7 +183,7 @@
       fogDistance: `${config?.fogStart}-${config?.fogEnd}`,
       renderComplexity: config?.renderComplexity || 0.2,
       memoryUsage: calculateMemoryUsage()
-    };
+    }
   });
   // Initialize 3D scene
   $effect(() => {
@@ -227,7 +227,7 @@ if (!browser) return;
     context = canvasElement.getContext('webgpu');
     if (!context) throw new Error('WebGPU context creation failed');
     context.configure({
-      device: gpuDevice
+      device: gpuDevice;
       format: 'bgra8unorm',
       alphaMode: 'premultiplied',
       usage: GPUTextureUsage.RENDER_ATTACHMENT;
@@ -330,7 +330,7 @@ if (!browser) return;
     });
     // Create uniform buffer
     uniformBuffer = gpuDevice.createBuffer({
-      size: 4 * 16 + 4 * 4, // mat4x4 + 4 float
+      size: 4 * 16 + 4 * 4, // mat4x4 + 4 float;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
     });
     // Create bind group
@@ -353,7 +353,7 @@ if (!browser) return;
     isLoading = true;
     try {
       // Load 3D scene data from API
-      const response = await fetch(`/api/v1/cases/${caseId}/3d-visualization`);
+      // removed unused response assignment
       const data = await response.json();
       allEntities = data.entities || sceneData.entities || [];
       allConnections = data.connections || sceneData.connections || [];
@@ -434,7 +434,7 @@ if (!browser) return;
       vertexCount: cubeVertices.length / 7,
       triangleCount: cubeIndices.length / 3,
       complexity;
-    };
+    }
   }
   function generateSphereMesh(complexity: number): MeshLODLevel {
     // N64-style sphere with variable subdivision
@@ -472,7 +472,7 @@ if (!browser) return;
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
       complexity;
-    };
+    }
   }
   function generatePyramidMesh(complexity: number): MeshLODLevel {
     // Simple pyramid - complexity doesn't affect this much
@@ -497,7 +497,7 @@ if (!browser) return;
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
       complexity;
-    };
+    }
   }
   function generateCylinderMesh(complexity: number): MeshLODLevel {
     // N64-style cylinder with variable sides
@@ -530,7 +530,7 @@ if (!browser) return;
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
       complexity;
-    };
+    }
   }
   function applyLODFiltering(): void {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
@@ -567,7 +567,7 @@ if (!browser) return;
       }
       renderScene();
       requestAnimationFrame(render);
-    };
+    }
     render();
   }
   async function renderScene(): Promise<void> {
@@ -640,27 +640,27 @@ if (!browser) return;
       x: Math.sin(horizontalRad) * Math.cos(verticalRad) * distance,
       y: Math.sin(verticalRad) * distance,
       z: Math.cos(horizontalRad) * Math.cos(verticalRad) * distanc;
-    };
+    }
     onCameraChange?.(camera);
   }
   // Event handlers
-  function handleMouseDown(event: MouseEvent): void {
+  function handleMouseDown(_event: MouseEvent): void {
     isDragging = true;
-    lastMousePos = { x: event.clientX, y: event.clientY };
+    lastMousePos = { x: event.clientX, y: event.clientY }
   }
-  function handleMouseMove(event: MouseEvent): void {
+  function handleMouseMove(_event: MouseEvent): void {
     if (!isDragging) return;
     const deltaX = event.clientX - lastMousePos.x;
     const deltaY = event.clientY - lastMousePos.y;
     cameraRotation.horizontal += deltaX * 0.5;
     cameraRotation.vertical = Math.max(-80, Math.min(80, cameraRotation.vertical - deltaY * 0.5));
     updateCameraFromControls();
-    lastMousePos = { x: event.clientX, y: event.clientY };
+    lastMousePos = { x: event.clientX, y: event.clientY }
   }
   function handleMouseUp(): void {
     isDragging = false;
   }
-  function handleWheel(event: WheelEvent): void {
+  function handleWheel(_event: WheelEvent): void {
     event.preventDefault();
     cameraDistance = Math.max(5, Math.min(100, cameraDistance + event.deltaY * 0.01));
     updateCameraFromControls();
@@ -675,7 +675,7 @@ if (!browser) return;
   }
   function handleResetCamera(): void {
     cameraDistance = 15;
-    cameraRotation = { horizontal: 0, vertical: 20 };
+    cameraRotation = { horizontal: 0, vertical: 20 }
     updateCameraFromControls();
   }
   function handleLODChange(): void {
@@ -745,6 +745,7 @@ if (!browser) return;
     applyLODFiltering();
   }
 </script>
+
 <div class="legal-3d-visualization-lod nes-container with-title">
   <p class="title">🎲 3D Legal Data Visualization</p>
   <!-- 3D Controls -->
@@ -768,11 +769,7 @@ if (!browser) return;
       </label>
     </div>
     <div class="lod-controls">
-      <select
-        class="nes-select"
-        bind:value={currentLOD}
-        onchange={handleLODChange}
-      >
+      <select class="nes-select" bind:value={currentLOD} onchange={handleLODChange}>
         {#each Object.entries(lodConfig) as [level, config]}
           <option value={parseInt(level)}>
             LOD {level}: {config.description}
@@ -808,9 +805,7 @@ if (!browser) return;
     {/if}
     <!-- Controls overlay -->
     <div class="controls-overlay">
-      <div class="control-hint">
-        🖱️ Drag to rotate • 🔄 Scroll to zoom • 🎮 N64-style LOD
-      </div>
+      <div class="control-hint">🖱️ Drag to rotate • 🔄 Scroll to zoom • 🎮 N64-style LOD</div>
     </div>
   </div>
   <!-- Entity Details Panel -->
@@ -826,7 +821,11 @@ if (!browser) return;
         </span>
       </div>
       <div class="entity-position">
-        <span>Position: ({selectedEntity.position.x.toFixed(1)}, {selectedEntity.position.y.toFixed(1)}, {selectedEntity.position.z.toFixed(1)})</span>
+        <span
+          >Position: ({selectedEntity.position.x.toFixed(1)}, {selectedEntity.position.y.toFixed(1)}, {selectedEntity.position.z.toFixed(
+            1,
+          )})</span
+        >
       </div>
       <div class="entity-connections">
         <span>Connections: {selectedEntity.connections.length}</span>
@@ -864,6 +863,7 @@ if (!browser) return;
     </div>
   </div>
 </div>
+
 <style>
   .legal-3d-visualization-lod {
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);
@@ -989,8 +989,12 @@ if (!browser) return;
   }
   /* N64-style animations */
   @keyframes indeterminate {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
   .nes-progress-bar.indeterminate {
     animation: indeterminate 1.5s linear infinite;

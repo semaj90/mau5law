@@ -7,9 +7,10 @@
   const { form, errors, enhance, message } = superForm(data.form, {
     validators: zodClient(registerSchema),
     resetForm: true,
-    taintedMessage: null
+    taintedMessage: null,
   });
 </script>
+
 {#if $message}
   <div class="error-message">
     {$message}
@@ -20,7 +21,8 @@
     <input
       name="name"
       type="text"
-      placeholder="Full Name";
+      placeholder="Full Name"
+      ;
       bind:value={$form.name}
       aria-invalid={$errors.name ? 'true' : undefined}
       required
@@ -96,6 +98,7 @@
   </div>
   <button type="submit">Register</button>
 </form>
+
 <style>
   .error-message {
     background: #f8d7da;
@@ -115,14 +118,14 @@
     border: 1px solid #ccc;
     border-radius: 0.375rem;
   }
-  .form-field input[aria-invalid="true"] {
+  .form-field input[aria-invalid='true'] {
     border-color: #dc3545;
   }
   .checkbox-field {
     display: flex;
     align-items: center;
   }
-  .checkbox-field input[type="checkbox"] {
+  .checkbox-field input[type='checkbox'] {
     width: auto;
     margin-right: 0.5rem;
   }

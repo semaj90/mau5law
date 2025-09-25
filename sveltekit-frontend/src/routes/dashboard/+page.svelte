@@ -1,12 +1,10 @@
 <script lang="ts">
   // Minimal dashboard implementation - SSR friendly
 </script>
+
 <svelte:head>
   <title>Dashboard - WardenNet Legal</title>
-  <meta
-    name="description"
-    content="Legal AI dashboard with real-time analytics and system monitoring"
-  />
+  <meta name="description" content="Legal AI dashboard with real-time analytics and system monitoring" />
 </svelte:head>
 <div class="min-h-screen bg-gray-900 text-white">
   <main class="container mx-auto p-4">
@@ -34,4 +32,5 @@
       <button class="nes-btn is-primary">View Full Dashboard</button>
     </div>
   </main>
-</div>;
+</div>
+;

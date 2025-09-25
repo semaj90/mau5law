@@ -54,7 +54,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
   private quantumOptions: QuantumFieldOptions;
   private consciousnessOptions: ConsciousnessVisualizationOptions;
   private realityOptions: RealityDistortionOptions;
-  constructor(options: {
+  constructor(_options: {
     quantum?: Partial<QuantumFieldOptions>;
     consciousness?: Partial<ConsciousnessVisualizationOptions>;
     reality?: Partial<RealityDistortionOptions>;
@@ -77,7 +77,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       enableTunneling: true
       dimensions: 8,
       ...options.quantum
-    };
+    }
     this.consciousnessOptions = {
       awarenessLevel: 0.3,
       thoughtPatterns: 'fractal',
@@ -87,7 +87,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       emergentProperties: true
       selfAwareness: false
       ...options.consciousness
-    };
+    }
     this.realityOptions = {
       matrixGlitchIntensity: 0.2,
       temporalDistortion: 0.1,
@@ -96,7 +96,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       paradoxResolution: 'branch',
       realityStability: 0.85,
       ...options.reality
-    };
+    }
   }
   protected async createGeometry(): Promise<THREE.BufferGeometry> {
     // Create container geometry
@@ -146,7 +146,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         collapsed: false
         spin: Math.random() * Math.PI * 2,
         phase: Math.random() * Math.PI * 2
-      };
+      }
       // Set entanglement partners
       if (particle.entangled && i > 0) {
         const partnerIndex = Math.floor(Math.random() * i);
@@ -207,7 +207,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         awareness: Math.random() * this.consciousnessOptions.awarenessLevel,
         firing: false
         lastFired: 0
-      };
+      }
       // Create connections to nearby nodes
       const connectionCount = Math.floor(Math.random() * 5) + 2;
       for (let j = 0; j < connectionCount; j++) {
@@ -348,7 +348,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         this.quantumField.geometry.attributes.color.needsUpdate = true;
       }
       requestAnimationFrame(simulateQuantum);
-    };
+    }
     simulateQuantum();
   }
   private startConsciousnessSimulation(): void {
@@ -400,7 +400,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         });
       }
       requestAnimationFrame(simulateConsciousness);
-    };
+    }
     simulateConsciousness();
   }
   private startRealityDistortion(): void {
@@ -428,7 +428,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         this.mesh.rotation.z += (Math.random() - 0.5) * instability * 0.01;
       }
       requestAnimationFrame(distortReality);
-    };
+    }
     distortReality();
   }
   // Quantum state update methods
@@ -637,7 +637,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       entanglement: entangled / this.quantumParticles.length,
       collapsed: collapsed / this.quantumParticles.length,
       tunneling: this.quantumOptions.enableTunneling ? 1 : 0
-    };
+    }
   }
   public getConsciousnessMetrics(): {
     awareness: number;
@@ -651,7 +651,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       activity: totalActivity / this.consciousnessNodes.length,
       selfAware: this.consciousnessOptions.selfAwareness,
       networkComplexity: this.consciousnessOptions.neuralNetworkComplexity
-    };
+    }
   }
   public getRealityMetrics(): {
     stability: number;
@@ -664,7 +664,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       glitchLevel: this.realityOptions.matrixGlitchIntensity,
       temporalDistortion: this.realityOptions.temporalDistortion,
       paradoxes: this.realityOptions.causalityLoop ? 1 : 0
-    };
+    }
   }
   dispose(): void {
     super.dispose();
@@ -693,4 +693,4 @@ class Complex {
     return new Complex(this.real + other.real, this.imaginary + other.imaginary);
   }
 }
-export { Complex };
+export { Complex }

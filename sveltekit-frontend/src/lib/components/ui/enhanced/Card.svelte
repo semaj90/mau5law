@@ -21,27 +21,34 @@
   		className
   	].filter(Boolean).join(' '));
 </script>
-<div
-	class={cardClasses}
-	{...props}
->
-	{@render children?.()}
+
+<div class={cardClasses} {...props}>
+  {@render children?.()}
 </div>
-<style>/* Enhanced Card with NieR styling */ .yorha-card {
-/* Base styles from UnoCSS shortcuts */ position: relative;
-	}
-	.yorha-card::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 2px;
-background: linear-gradient(90deg, transparent 0%, var(--color-nier-border-primary) 10%, var(--color-nier-border-primary) 90%, transparent 100% );
-		opacity: 0;
-		transition: opacity 0.3s ease;
-	}
-	.yorha-card:hover::before {
-		opacity: 0.3;
-	}
+
+<style>/* Enhanced Card with NieR styling */ {}
+  .yorha-card {
+/* Base styles from UnoCSS shortcuts */ {}
+    position: relative;
+  }
+  .yorha-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+background: linear-gradient( {}
+90deg, {}
+transparent 0%, {}
+var(--color-nier-border-primary) 10%, {}
+var(--color-nier-border-primary) 90%, {}
+transparent 100% {}
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .yorha-card:hover::before {
+    opacity: 0.3;
+  }
 </style>

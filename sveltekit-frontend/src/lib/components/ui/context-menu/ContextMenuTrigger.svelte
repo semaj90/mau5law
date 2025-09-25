@@ -5,6 +5,7 @@
   }
   let { children }: Props = $props();
 </script>
+
 <ContextMenu.Trigger>
   {@render children?.()}
 </ContextMenu.Trigger>

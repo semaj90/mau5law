@@ -7,7 +7,7 @@
 /**
  * Calculate cosine similarity between two vectors
  * Returns value between -1 (opposite) and 1 (identical)
- */;
+ */
 export function cosineSimilarity(aPtr: usize, bPtr: usize, length: i32): f32 {
   if (length <= 0) return 0.0;
   let dotProduct: f32 = 0.0;
@@ -25,7 +25,7 @@ export function cosineSimilarity(aPtr: usize, bPtr: usize, length: i32): f32 {
 }
 /**
  * Calculate Euclidean distance between two vectors
- */;
+ */
 export function euclideanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
   if (length <= 0) return f32.POSITIVE_INFINITY;
   let sum: f32 = 0.0;
@@ -39,7 +39,7 @@ export function euclideanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
 }
 /**
  * Calculate dot product of two vectors
- */;
+ */
 export function dotProduct(aPtr: usize, bPtr: usize, length: i32): f32 {
   if (length <= 0) return 0.0;
   let result: f32 = 0.0;
@@ -52,7 +52,7 @@ export function dotProduct(aPtr: usize, bPtr: usize, length: i32): f32 {
 }
 /**
  * Calculate Manhattan (L1) distance between two vectors
- */;
+ */
 export function manhattanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
   if (length <= 0) return f32.POSITIVE_INFINITY;
   let sum: f32 = 0.0;
@@ -66,7 +66,7 @@ export function manhattanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
 // === Vector Normalization ===
 /**
  * Normalize vector in place (unit length)
- */;
+ */
 export function normalize(vectorPtr: usize, length: i32): void {
   if (length <= 0) return;
   let norm: f32 = 0.0;
@@ -86,7 +86,7 @@ export function normalize(vectorPtr: usize, length: i32): void {
 }
 /**
  * Z-score normalization with tanh activation
- */;
+ */
 export function zScoreNormalize(vectorPtr: usize, length: i32): void {
   if (length <= 0) return;
   // Calculate mean
@@ -149,7 +149,7 @@ export function computeBatchSimilarity(
 }
 /**
  * Batch normalize multiple vectors in place
- */;
+ */
 export function batchNormalizeVectors(vectorsPtr: usize, numVectors: i32, vectorLength: i32): void {
   for (let v = 0; v < numVectors; v++) {
     const vectorOffset = v * vectorLength * 4;
@@ -190,13 +190,13 @@ export function hashEmbedding(
 // === Memory Management Utilities ===
 /**
  * Allocate aligned memory for vector operations
- */;
+ */
 export function allocateVectorMemory(length: i32): usize {
   return heap.alloc(length * 4); // 4 bytes per f32
 }
 /**
  * Free allocated vector memory
- */;
+ */
 export function freeVectorMemory(ptr: usize): void {
   heap.free(ptr);
 }
@@ -204,7 +204,7 @@ export function freeVectorMemory(ptr: usize): void {
 /**
  * SIMD-optimized dot product for 4-element chunks
  * Falls back to scalar if SIMD not available
- */;
+ */
 export function dotProductSIMD(aPtr: usize, bPtr: usize, length: i32): f32 {
   let result: f32 = 0.0;
   // Process 4 elements at a time with SIMD when possible
@@ -230,7 +230,7 @@ export function dotProductSIMD(aPtr: usize, bPtr: usize, length: i32): f32 {
 }
 /**
  * SIMD-optimized cosine similarity
- */;
+ */
 export function cosineSimilaritySIMD(aPtr: usize, bPtr: usize, length: i32): f32 {
   if (length <= 0) return 0.0;
   let dotProduct: f32 = 0.0;
@@ -275,14 +275,14 @@ export function cosineSimilaritySIMD(aPtr: usize, bPtr: usize, length: i32): f32
 /**
  * Prepare vector data for CUDA server processing
  * Converts WebAssembly memory to JSON-serializable format
- */;
+ */
 export function prepareVectorForServer(vectorPtr: usize, length: i32): void {
   // This function is called from JavaScript to prepare data for server transfer
   // The actual serialization is handled by the JavaScript wrapper
 }
 /**
  * Process server response and store in WebAssembly memory
- */;
+ */
 export function processServerResponse(responsePtr: usize, resultPtr: usize, length: i32): void {
   // Copy server response data back into WebAssembly memory
   for (let i = 0; i < length; i++) {
@@ -424,26 +424,26 @@ export function shouldUseServer(
 // === JavaScript-Friendly Wrappers ===
 /**
  * JS-callable cosine similarity wrapper with server routing
- */;
+ */
 export function cosineSimJS(aPtr: usize, bPtr: usize, length: i32): f32 {
   const useServer = shouldUseServer(0, length, 10);
   return hybridCosineSimilarity(aPtr, bPtr, length, useServer);
 }
 /**
  * JS-callable dot product wrapper
- */;
+ */
 export function dotProductJS(aPtr: usize, bPtr: usize, length: i32): f32 {
   return dotProduct(aPtr, bPtr, length);
 }
 /**
  * JS-callable SIMD cosine similarity wrapper
- */;
+ */
 export function cosineSimSIMDJS(aPtr: usize, bPtr: usize, length: i32): f32 {
   return cosineSimilaritySIMD(aPtr, bPtr, length);
 }
 /**
  * Get memory usage statistics
- */;
+ */
 export function getMemoryStats(): i32 {
   return memory.size() * 65536; // Pages to bytes
 }

@@ -121,13 +121,13 @@ export class WasmGpuInitService {
       vectorSearchOptimization: true
       embeddingCacheSize: 512, // 512MB for embeddings
       ...config
-    };
+    }
     this.context = {
       computePipelines: new Map(),
       bufferPool: [],
       isInitialized: false
       performanceCounters: new Map()
-    };
+    }
     this.metrics = {
       initializationTime: 0,
       memoryAllocated: 0,
@@ -138,7 +138,7 @@ export class WasmGpuInitService {
       gpuUtilization: 0,
       wasmOverhead: 0,
       totalOperations: 0
-    };
+    }
     if (browser) {
       this.initialize();
     }
@@ -209,7 +209,7 @@ export class WasmGpuInitService {
           }
         },
         gpu: {
-          // GPU callback functions
+          // GPU callback functions;
           log: (level: number, message: number) => this.wasmLog(level, message),
           allocateBuffer: (size: number) => this.allocateGpuBuffer(size),
           releaseBuffer: (bufferId: number) => this.releaseGpuBuffer(bufferId)
@@ -453,7 +453,7 @@ export class WasmGpuInitService {
     });
     this.context.gpuQueue = this.context.gpuDevice.queue;
     // Setup error handling
-    this.context.gpuDevice.addEventListener('uncapturederror', (event: any) => {
+    this.context.gpuDevice.addEventListener('uncapturederror', (_event: any) => {
       console.error('WebGPU uncaptured error:', event.error);
       this.resourceStatus.update((status: any) => ({ ...status, errorCount: status.errorCount + 1 });
     });
@@ -800,7 +800,7 @@ export class WasmGpuInitService {
       limits: adapter?.limits ? Object.fromEntries(Object.entries(adapter.limits)) : { [key: string]: any },
       isRtx3060: adapterInfo?.device?.toLowerCase().includes('3060') || false,
       wasmCompatible: true
-    };
+    }
   }
   /**
    * WebAssembly logging callback
@@ -930,16 +930,16 @@ export class WasmGpuInitService {
    * Get system status
    */;
   public getStatus(): { initialized: boolean; ready: boolean; deviceInfo?: GpuDeviceInfo } {
-    let currentStatus = { initialized: false, ready: false };
+    let currentStatus = { initialized: false, ready: false }
     let deviceInfo: GpuDeviceInfo | undefined;
     this.initStatus.subscribe((s: any) => {
       currentStatus = {
         initialized: this.isInitialized,
         ready: s.phase === 'ready'
-      };
+      }
       deviceInfo = s.deviceInfo;
     })();
-    return { ...currentStatus, deviceInfo };
+    return { ...currentStatus, deviceInfo }
   }
   /**
    * Cleanup resources
@@ -1003,7 +1003,7 @@ export function createWasmGpuService(config?: Partial<WasmGpuConfig>) {
     computeVectorSimilarity: service.computeVectorSimilarity.bind(service),
     getStatus: service.getStatus.bind(service),
     cleanup: service.cleanup.bind(service)
-  };
+  }
 }
 // Helper utilities
 export const WasmGpuHelpers = {
@@ -1042,5 +1042,5 @@ export const WasmGpuHelpers = {
       return false;
     }
   }
-};
+}
 export default WasmGpuInitService;

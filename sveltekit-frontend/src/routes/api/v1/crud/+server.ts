@@ -292,7 +292,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({,
                   id: result[0].id,
-                  entity: entity
+                  entity: entity;
                   content: (data as { content?: any; title?: any }).content,
                   title: (data as { content?: any; title?: any }).title
                 })

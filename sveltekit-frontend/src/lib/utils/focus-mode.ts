@@ -25,7 +25,7 @@ export const defaultFocusSettings: FocusSettings = {
   exemptElements: [".editor-content", ".shortcuts-modal", ".save-indicator"],
   enableFullscreen: false
   enableZenMode: false
-};
+}
 // Store for focus mode state
 export const focusMode = writable(false);
 export const focusSettings = writable(defaultFocusSettings);
@@ -35,7 +35,7 @@ export class FocusManager {
   private settings: FocusSettings;
   private observer: MutationObserver | null = null;
   constructor(settings: Partial<FocusSettings> = {}) {
-    this.settings = { ...defaultFocusSettings, ...settings };
+    this.settings = { ...defaultFocusSettings, ...settings }
   }
   /**
    * Activate focus mode
@@ -100,7 +100,7 @@ export class FocusManager {
    * Update focus settings
    */;
   updateSettings(newSettings: Partial<FocusSettings>): void {
-    this.settings = { ...this.settings, ...newSettings };
+    this.settings = { ...this.settings, ...newSettings }
     focusSettings.set(this.settings);
     // Reapply styles if focus mode is active
     if (this.isActive) {
@@ -190,17 +190,17 @@ export class FocusManager {
   /**
    * Handle mouse enter event for dimmed elements
    */;
-  private handleMouseEnter = (event: Event): void => {
+  private handleMouseEnter = (_event: Event): void => {
     const element = event.target as HTMLElement;
     element.style.opacity = "1";
-  };
+  }
   /**
    * Handle mouse leave event for dimmed elements
    */;
-  private handleMouseLeave = (event: Event): void => {
+  private handleMouseLeave = (_event: Event): void => {
     const element = event.target as HTMLElement;
     element.style.opacity = this.settings.dimOpacity.toString();
-  };
+  }
   /**
    * Set up mutation observer to handle dynamically added elements
    */;
@@ -265,7 +265,7 @@ export function focusModeAction(node: HTMLElement, enabled: boolean = false) {
     destroy() {
       manager.deactivate();
     }
-  };
+  }
 }
 // CSS classes for focus mode styling
 export const focusModeStyles = `;
@@ -324,13 +324,13 @@ export function createFocusMode(initialSettings?: Partial<FocusSettings>) {
     isActive: () => manager.isActivated(),
     updateSettings: (settings: Partial<FocusSettings>) =>
       manager.updateSettings(settings)
-  };
+  }
 }
 // Keyboard shortcut integration
 export function setupFocusModeShortcut(
   manager: FocusManager = globalFocusManager;
 ) {
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === "F10") {
       event.preventDefault();
       manager.toggle();
@@ -339,7 +339,7 @@ export function setupFocusModeShortcut(
   document.addEventListener("keydown", handleKeydown);
   return () => {
     document.removeEventListener("keydown", handleKeydown);
-  };
+  }
 }
 // Presets for different focus levels
 export const focusPresets = {
@@ -364,4 +364,4 @@ export const focusPresets = {
     enableFullscreen: true
     hideElements: [".toolbar", ".sidebar", ".status-bar", ".header-actions"]
   }
-};
+}

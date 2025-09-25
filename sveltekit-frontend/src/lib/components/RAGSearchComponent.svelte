@@ -23,7 +23,7 @@
   let searchConfig = $state({
     limit: 5,
     threshold: 0.7,
-    includeRAGResponse: true
+    includeRAGResponse: true;
   });
   $effect(() => {
     (async () => {
@@ -53,7 +53,7 @@
           query: searchQuery,
           limit: searchConfig.limit,
           threshold: searchConfig.threshold,
-          // Optional filters can be added her
+          // Optional filters can be added her;
           filters: {}
         })
       });
@@ -71,7 +71,7 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({,
                 query: searchQuery
-                mode: 'semantic_search', // Use our enhanced semantic search mod
+                mode: 'semantic_search', // Use our enhanced semantic search mod;
                 limit: searchConfig.limit,
                 threshold: searchConfig.threshold;
               })
@@ -116,7 +116,7 @@
     fileInput.type = 'file';
     fileInput.accept = '.txt,.pdf,.doc,.docx';
     fileInput.onchange= async (event) => {
-      const target = event.target as HTMLInputElement;
+      // removed unused target assignment
       const file = target.files?.[0];
       if (!file) return;
       try {
@@ -144,7 +144,7 @@
       } catch (error) {
         errorMessage = `Document ingestion failed: ${(error as Error).message}`;
       }
-    };
+    }
     fileInput.click();
   }
   function formatTimestamp(date: Date) {
@@ -164,6 +164,7 @@
     'legal procedures'
   ];
 </script>
+
 <svelte:head>
   <title>RAG Search - Legal AI Platform</title>
 </svelte:head>
@@ -171,14 +172,18 @@
   <header class="flex justify-between items-center">
     <div>
       <h1 class="text-3xl font-bold text-nier-accent-warm">RAG Search</h1>
-      <p class="text-nier-text-secondary">
-        Vector search with AI-powered responses
-      </p>
+      <p class="text-nier-text-secondary">Vector search with AI-powered responses</p>
     </div>
     <!-- System Status -->
     {#if systemStatus}
       <div class="flex items-center gap-2 text-sm">
-        <div class="w-3 h-3 rounded-full {systemStatus.healthScore > 80 ? 'bg-green-500' : systemStatus.healthScore > 60 ? 'bg-yellow-500' : 'bg-red-500'}"></div>
+        <div
+          class="w-3 h-3 rounded-full {systemStatus.healthScore > 80
+            ? 'bg-green-500'
+            : systemStatus.healthScore > 60
+              ? 'bg-yellow-500'
+              : 'bg-red-500'}"
+        ></div>
         <span class="font-mono">Health: {systemStatus.healthScore}%</span>
         <span class="text-nier-text-muted">
           ({systemStatus.services.filter(item => item.length)}/{systemStatus.services.length} services)
@@ -193,7 +198,7 @@
       <div class="flex gap-4">
         <InputBits
           bind:value={searchQuery}
-          onkeydown={(e) => e.key === 'Enter' && performSearch()}
+          onkeydown={e => e.key === 'Enter' && performSearch()}
           placeholder="Search legal documents and cases..."
           label="Legal Document Search"
           variant="outlined"
@@ -220,12 +225,7 @@
             {/if}
           {/snippet}
         </ButtonBits>
-        <ButtonBits
-          onclick={ingestDocument}
-          variant="ghost"
-          size="lg"
-          class="border-blue-500 text-blue-400"
-        >
+        <ButtonBits onclick={ingestDocument} variant="ghost" size="lg" class="border-blue-500 text-blue-400">
           {#snippet children()}
             📄 Ingest Doc
           {/snippet}
@@ -235,7 +235,10 @@
       <div class="flex gap-4 text-sm">
         <label class="flex items-center gap-2">
           <span>Results:</span>
-          <select bind:value={searchConfig.limit} class="bg-nier-bg-primary border border-nier-border-muted rounded px-2 py-1">
+          <select
+            bind:value={searchConfig.limit}
+            class="bg-nier-bg-primary border border-nier-border-muted rounded px-2 py-1"
+          >
             <option value={3}>3</option>
             <option value={5}>5</option>
             <option value={10}>10</option>
@@ -243,14 +246,17 @@
         </label>
         <label class="flex items-center gap-2">
           <span>Threshold:</span>
-          <select bind:value={searchConfig.threshold} class="bg-nier-bg-primary border border-nier-border-muted rounded px-2 py-1">
+          <select;
+            bind:value={searchConfig.threshold}
+            class="bg-nier-bg-primary border border-nier-border-muted rounded px-2 py-1"
+          >
             <option value={0.5}>0.5</option>
             <option value={0.7}>0.7</option>
             <option value={0.8}>0.8</option>
           </select>
         </label>
         <label class="flex items-center gap-2">
-          <input type="checkbox" bind:checked={searchConfig.includeRAGResponse} class="rounded">
+          <input type="checkbox" bind:checked={searchConfig.includeRAGResponse} class="rounded" />
           <span>Include AI Response</span>
         </label>
       </div>
@@ -259,7 +265,9 @@
         <span class="text-sm text-nier-text-muted">Try:</span>
         {#each searchSuggestions as suggestion}
           <ButtonBits
-            onclick={() => { searchQuery = suggestion; }}
+            onclick={() => {
+              searchQuery = suggestion;
+            }}
             variant="ghost"
             size="xs"
             class="text-xs bg-nier-bg-tertiary border border-nier-border-muted hover:bg-nier-bg-primary"
@@ -288,9 +296,7 @@
           <CheckCircle class="w-5 h-5 text-green-400" />
           AI Response
         </h3>
-        <div class="text-xs text-nier-text-muted font-mono">
-          Generated by: gemma3-legal
-        </div>
+        <div class="text-xs text-nier-text-muted font-mono">Generated by: gemma3-legal</div>
       </div>
       <div class="prose prose-invert max-w-none">
         <div class="text-nier-text-primary whitespace-pre-wrap leading-relaxed">
@@ -307,7 +313,11 @@
       </h3>
       <div class="space-y-4">
         {#each searchResults as result}
-          <CardBits variant="outlined" padding="md" class="bg-nier-bg-primary border border-nier-border-muted legal-search-result">
+          <CardBits
+            variant="outlined"
+            padding="md"
+            class="bg-nier-bg-primary border border-nier-border-muted legal-search-result"
+          >
             <div class="flex justify-between items-start mb-3">
               <div class="flex items-center gap-3">
                 <span class="font-mono text-sm bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
@@ -335,9 +345,7 @@
       <div class="text-center text-nier-text-muted">
         <div class="text-4xl mb-2">🔍</div>
         <div class="text-lg font-semibold mb-2">No Results Found</div>
-        <div class="text-sm">
-          Try adjusting your search query or lowering the similarity threshold
-        </div>
+        <div class="text-sm">Try adjusting your search query or lowering the similarity threshold</div>
       </div>
     </CardBits>
   {/if}
@@ -348,7 +356,9 @@
       <div class="space-y-2">
         {#each searchHistory as historyItem}
           <ButtonBits
-            onclick={() => { searchQuery = historyItem.query; }}
+            onclick={() => {
+              searchQuery = historyItem.query;
+            }}
             variant="ghost"
             class="w-full text-left p-3 bg-nier-bg-primary border border-nier-border-muted hover:bg-nier-bg-tertiary"
             fullWidth
@@ -371,6 +381,7 @@
     </CardBits>
   {/if}
 </div>
+
 <style>
   /* Enhanced bits-ui styling for legal AI search */
   :global(.legal-ai-search-input) {

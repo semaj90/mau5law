@@ -108,8 +108,8 @@
     setupZoomAndPan();
     // Wire up worker message handler separately
     if (evidenceWorker) {
-      evidenceWorker.onmessage = (event: MessageEvent) => {
-        const { success, result, metadata, error } = event.data || {};
+      evidenceWorker.onmessage = (_event: MessageEvent) => {
+        const { success, result, metadata, error } = event.data || {}
         if (success) {
           console.log('📊 Recursive evidence analysis complete:', metadata);
           // set the values into ensured stores
@@ -123,7 +123,7 @@
           console.error('❌ Evidence processing failed:', error ?? event.data);
           processingStatusStore.set('error');
         }
-      };
+      }
     }
   }
   async function loadCaseEvidenceHierarchy() {
@@ -131,7 +131,7 @@
     (processingStatus as any).set('processing');
     try {
       // Get root evidence items for the case
-      const response = await fetch(`/api/v1/evidence/cases/${caseId}`);
+      // removed unused response assignment
       const caseData = await response.json();
       const rootEvidenceIds = Array.isArray(caseData?.evidenceItems)
         ? caseData.evidenceItems.map((item: any) => item.id)
@@ -149,7 +149,7 @@
     if (!evidenceWorker) return;
     evidenceWorker.postMessage({
       type: 'PROCESS_EVIDENCE_CHAIN',
-      evidenceId: rootEvidenceId
+      evidenceId: rootEvidenceId;
       options: {
         maxDepth: 25,
         includeWeakCorrelations: true
@@ -175,7 +175,7 @@
       connectionsDrawn: connectionLines.length,
       renderTime,
       layoutTime: layout.computeTime || 0
-    };
+    }
     if (typeof fabricCanvas.renderAll === 'function') {
       fabricCanvas.renderAll();
     }
@@ -195,7 +195,7 @@
       case 'force':
         return calculateForceDirectedLayout(hierarchy, positions);
       default:
-        return { positions, computeTime: performance.now() - startTime };
+        return { positions, computeTime: performance.now() - startTime }
     }
   }
   function calculateTreeLayout(hierarchy: any, positions: Map<string, { x: number; y: number }>) {
@@ -219,7 +219,7 @@
     return {
       positions,
       computeTime: performance.now() - startTime
-    };
+    }
   }
   function calculateRadialLayout(hierarchy: any, positions: Map<string, { x: number; y: number }>) {
     const startTime = performance.now();
@@ -241,7 +241,7 @@
     return {
       positions,
       computeTime: performance.now() - startTime
-    };
+    }
   }
   function calculateForceDirectedLayout(hierarchy: any, positions: Map<string, { x: number; y: number }>) {
     const startTime = performance.now();
@@ -267,12 +267,12 @@
     });
     // Simple force simulation placeholder
     for (let iteration = 0; iteration < 50; iteration++) {
-      // no-op: placeholder for a real force simulatio
+      // no-op: placeholder for a real force simulatio;
     }
     return {
       positions,
       computeTime: performance.now() - startTime
-    };
+    }
   }
   function renderEvidenceNodes(hierarchy: any, layout: any) {
     if (!fabricCanvas) return;
@@ -319,7 +319,7 @@
     const integrityColor = chainIntegrity > 0.8 ? '#10b981' : chainIntegrity > 0.6 ? '#f59e0b' : '#ef4444';
     const integrityIndicator = new (fabric.Circle as any)({
       radius: 6,
-      fill: integrityColor
+      fill: integrityColor;
       top: 15,
       left: cardWidth - 20;
     });
@@ -372,7 +372,7 @@
       top: position.y - cardHeight / 2,
       selectable: enableInteraction
       hasControls: false
-      hasBorders: enableInteraction
+      hasBorders: enableInteraction;
       data: {
         evidenceId: node?.evidenceId,
         type: 'recursive-evidence-node',
@@ -396,7 +396,7 @@
           stroke: getRelationshipColor(child?.relationships),
           strokeWidth: getRelationshipWidth(child?.relationships),
           strokeDashArray: getRelationshipDash(child?.relationships),
-          selectable: false
+          selectable: false;
           evented: false;
         });
         fabricCanvas.add(line);
@@ -409,7 +409,7 @@
           fill: getRelationshipStrengthColor(child?.relationships),
           left: midX - 4,
           top: midY - 4,
-          selectable: false
+          selectable: false;
           evented: false;
         });
         fabricCanvas.add(strengthIndicator);

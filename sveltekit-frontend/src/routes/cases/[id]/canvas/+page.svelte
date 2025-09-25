@@ -17,8 +17,8 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 		EvidenceNode: null
 		DragDropZone: null
 		DetectiveBoard: null
-		loaded: false
-		loading: false
+		loaded: false;
+		loading: false;
 		error: null;
 	});
 	let canvasData = $state({
@@ -45,10 +45,10 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 				EvidenceNode: nodeModule.default,
 				DragDropZone: dragModule.default,
 				DetectiveBoard: boardModule.default,
-				loaded: true
-				loading: false
+				loaded: true;
+				loading: false;
 				error: null;
-			};
+			}
 			console.log(' Canvas components loaded successfully');
 			// Initialize canvas data
 			await loadCaseEvidence();
@@ -99,10 +99,10 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 			EvidenceNode: null
 			DragDropZone: null
 			DetectiveBoard: null
-			loaded: false
-			loading: false
+			loaded: false;
+			loading: false;
 			error: null;
-		};
+		}
 		loadCanvasComponents();
 	}
 </script>

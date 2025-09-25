@@ -20,7 +20,7 @@ interface JsonbDocument {
     accessCount: number;
     gpuProcessed: boolean;
     threadId?: string;
-  };
+  }
 }
 
 // Thread-safe connection pool configuration
@@ -31,7 +31,7 @@ const pool = new Pool({
   password: '123456',
   database: 'legal_ai_db',
   // Enhanced for concurrent operations
-  max: 20, // Maximum connections
+  max: 20, // Maximum connections;
   min: 5,  // Minimum connections
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
@@ -40,8 +40,7 @@ const pool = new Pool({
   query_timeout: 30000
 });
 
-export const db = drizzle(pool, { schema });
-
+export // removed unused db assignment
 // Thread synchronization primitives
 interface QueryLock {
   id: string;
@@ -85,7 +84,7 @@ export class ThreadSafePostgres {
             acquired: false,
             waitingQueries: [],
             lastAccessed: Date.now()
-          };
+          }
           queryLocks.set(queryId, lock);
         }
 
@@ -105,13 +104,13 @@ export class ThreadSafePostgres {
                 queryLocks.delete(queryId);
               }
             }
-          };
+          }
           
           resolve(release);
         } else {
           lock.waitingQueries.push(tryAcquire);
         }
-      };
+      }
 
       tryAcquire();
     });
@@ -505,7 +504,7 @@ export class ThreadSafePostgres {
             avgQueryTime: 0, // Could be enhanced with metrics
             totalQueries: 0
           }
-        };
+        }
       } finally {
         client.release();
       }
@@ -519,7 +518,7 @@ export class ThreadSafePostgres {
           avgQueryTime: 0,
           totalQueries: 0
         }
-      };
+      }
     }
   }
 
@@ -611,7 +610,7 @@ export interface LegalQueryParams {
   caseId?: string;
   jurisdiction?: string;
   court?: string;
-  dateRange?: { from: Date; to: Date };
+  dateRange?: { from: Date; to: Date }
   practiceArea?: string;
   documentType?: string;
 }
@@ -628,7 +627,7 @@ export async function searchLegalDocuments(
     includeEmbeddings?: boolean;
   } = {}
 ): Promise<any[]> {
-  const conditions: Record<string, any> = {};
+  const conditions: Record<string, any> = {}
   
   if (params.caseId) conditions.case_id = params.caseId;
   if (params.jurisdiction) conditions.jurisdiction = params.jurisdiction;
@@ -641,7 +640,7 @@ export async function searchLegalDocuments(
     operator: '@>' as const,
     value: params.practiceArea ? [params.practiceArea] : undefined,
     conditions
-  };
+  }
 
   return await safeJsonbQuery(
     'legal_documents',
@@ -658,8 +657,7 @@ export async function searchLegalDocuments(
 /**
  * Store legal document with thread-safe JSONB operations
  */
-export async function storeLegalDocument(
-  document: any,
+export async function storeLegalDocument(_document: any,
   options: {
     generateEmbedding?: boolean;
     gpuAccelerated?: boolean;

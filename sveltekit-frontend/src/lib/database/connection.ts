@@ -13,9 +13,9 @@ const sql = postgres(DATABASE_URL, {
   connect_timeout: 2
 });
 // Create Drizzle instance with schema
-export const db = drizzle(sql, { schema });
+export // removed unused db assignment
 // Export sql connection for direct queries
-export { sql };
+export { sql }
 export const pool = sql; // alias for consistency (postgres.js instance)
 // Connection health check
 export async function testDatabaseConnection(): Promise<any> {
@@ -34,7 +34,7 @@ export async function testDatabaseConnection(): Promise<any> {
         poolSize: 'n/a',
         timestamp: new Date().toISOString()
       }
-    };
+    }
   } catch (error: any) {
     return {
       success: false
@@ -43,7 +43,7 @@ export async function testDatabaseConnection(): Promise<any> {
         error: (error as Error).stack,
         timestamp: new Date().toISOString()
       }
-    };
+    }
   }
 }
 // Vector similarity search helper
@@ -72,14 +72,14 @@ export async function vectorSimilaritySearch(
       success: true
       results: result
       count: Array.isArray(result) ? (result as { length?: any }).length: 0
-    };
+    }
   } catch (error: any) {
     return {
       success: false
       error: (error as Error).message,
       results: [],
       count: 0
-    };
+    }
   }
 }
 // Hybrid semantic search combining multiple tables
@@ -143,7 +143,7 @@ export async function hybridSemanticSearch(
       count: Array.isArray(result) ? (result as { length?: any }).length: 0,
       query,
       queryEmbedding: queryEmbedding.slice(0, 5)
-    };
+    }
   } catch (error: any) {
     return {
       success: false
@@ -151,7 +151,7 @@ export async function hybridSemanticSearch(
       results: [],
       count: 0,
       query
-    };
+    }
   }
 }
 // Initialize database with extensions and basic setup
@@ -177,7 +177,7 @@ export async function initializeDatabase(): Promise<any> {
     return {
       success: false
       message: `Initialization failed: ${(error as Error).message}`
-    };
+    }
   }
 }
 // Graceful shutdown
@@ -194,8 +194,8 @@ export async function closeDatabaseConnection(): Promise<any> {
 export async function executeSQL(query: string, params: any[] = []) {
   try {
     const result = await pool.unsafe(query, params);
-    return { success: true, data: result, rowCount: Array.isArray(result) ? (result as { length?: any }).length: 0 };
+    return { success: true, data: result, rowCount: Array.isArray(result) ? (result as { length?: any }).length: 0 }
   } catch (error: any) {
-    return { success: false, error: error.message };
+    return { success: false, error: error.message }
   }
 }

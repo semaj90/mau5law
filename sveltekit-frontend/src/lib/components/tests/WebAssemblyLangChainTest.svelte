@@ -76,7 +76,7 @@
         timestamp: new Date().toLocaleTimeString(),
         success: !aiAssistant.error,
         accelerationMetric;
-      };
+      }
       testResults = [result, ...testResults];
       console.log(`[Test] ${method.name} completed in ${duration}ms`);
     } catch (error: unknown) {
@@ -90,7 +90,7 @@
         timestamp: new Date().toLocaleTimeString(),
         success: false
         accelerationMetrics: null;
-      };
+      }
       testResults = [result, ...testResults];
       console.error(`[Test] ${method.name} failed:`, error);
     }
@@ -125,7 +125,7 @@
     return {
       response: enhancedResult.enhancedResponse,
       metrics: enhancedResult.acceleratedResults.processingMetric;
-    };
+    }
   }
   // Run all tests sequentially
   async function runAllTests() {
@@ -180,10 +180,10 @@
           simdProcessorAvailable: !!simdVectorProcessor,
           legalSimilarityEngineAvailable: !!legalSimilarityWebGPU
         }
-      };
+      }
     } catch (error: unknown) {
       console.error('[Test] Health check failed:', error);
-      return { error: error instanceof Error ? error.message: String(error) };
+      return { error: error instanceof Error ? error.message: String(error) }
     }
   }
   // Sample legal queries
@@ -195,16 +195,17 @@
     'What are the main considerations for data privacy compliance in contracts?'
   ];
 </script>
+
 <div class="webassembly-langchain-test max-w-6xl mx-auto p-6">
   <div class="mb-8">
     <h1 class="text-3xl font-bold mb-4">WebAssembly + LangChain Integration Test</h1>
     <p class="text-gray-600 mb-4">
-      Test suite for the integrated WebAssembly llama.cpp + LangChain RAG system.
-      Compare different processing methods and evaluate performance.
+      Test suite for the integrated WebAssembly llama.cpp + LangChain RAG system. Compare different processing methods
+      and evaluate performance.
     </p>
     <!-- Health Status Toggle -->
     <button
-      onclick={() => showHealthStatus = !showHealthStatus}
+      onclick={() => (showHealthStatus = !showHealthStatus)}
       class="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
     >
       {showHealthStatus ? 'Hide' : 'Show'} Health Status
@@ -270,7 +271,7 @@
     <label for="testQuery" class="block text-sm font-medium mb-2">Test Query:</label>
     <div class="flex gap-2 mb-2">
       <input
-        id="testQuery"
+        id="testQuery";
         bind:value={testQuery}
         placeholder="Enter your legal AI test query..."
         class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -282,10 +283,7 @@
       >
         {aiAssistant.isLoading ? 'Testing...' : 'Run All Tests'}
       </button>
-      <button
-        onclick={clearResults}
-        class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-      >
+      <button onclick={clearResults} class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
         Clear
       </button>
     </div>
@@ -295,7 +293,7 @@
       <div class="flex flex-wrap gap-2 mt-1">
         {#each sampleQueries as query}
           <button
-            onclick={() => testQuery = query}
+            onclick={() => (testQuery = query)}
             class="px-2 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200 text-xs"
           >
             {query.substring(0, 50)}...
@@ -307,7 +305,11 @@
   <!-- Individual Test Buttons -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
     {#each testMethods as method}
-      <div class="border rounded-lg p-4 {method.options.useAcceleration ? 'border-green-300 bg-green-50' : 'border-gray-200'}">
+      <div
+        class="border rounded-lg p-4 {method.options.useAcceleration
+          ? 'border-green-300 bg-green-50'
+          : 'border-gray-200'}"
+      >
         <div class="flex items-center gap-2 mb-2">
           <h3 class="font-semibold text-sm">{method.name}</h3>
           {#if method.options.useAcceleration}
@@ -336,8 +338,8 @@
           disabled={aiAssistant.isLoading}
           class="w-full px-3 py-2 rounded text-sm transition-colors
             {method.options.useAcceleration
-              ? 'bg-green-600 text-white hover:bg-green-700'
-              : 'bg-blue-600 text-white hover:bg-blue-700'};
+            ? 'bg-green-600 text-white hover:bg-green-700'
+            : 'bg-blue-600 text-white hover:bg-blue-700'}
             disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {aiAssistant.isLoading ? 'Running...' : 'Test'}
@@ -362,28 +364,146 @@
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold">Test Results</h2>
       {#each testResults as result}
-        <div class="border rounded-lg p-4 {(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+        <div
+          class="border rounded-lg p-4 {(
+            result as {
+              success?: unknown;
+              method?: unknown;
+              description?: unknown;
+              timestamp?: unknown;
+              duration?: unknown;
+              query?: unknown;
+              response?: unknown;
+              error?: unknown;
+            }
+          ).success
+            ? 'border-green-200 bg-green-50'
+            : 'border-red-200 bg-red-50'}"
+        >
           <div class="flex justify-between items-start mb-3">
             <div>
-              <h3 class="font-semibold {(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).success ? 'text-green-800' : 'text-red-800'}">
-                {(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).method} {(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).success ? '✅' : '❌'}
+              <h3
+                class="font-semibold {(
+                  result as {
+                    success?: unknown;
+                    method?: unknown;
+                    description?: unknown;
+                    timestamp?: unknown;
+                    duration?: unknown;
+                    query?: unknown;
+                    response?: unknown;
+                    error?: unknown;
+                  }
+                ).success
+                  ? 'text-green-800'
+                  : 'text-red-800'}"
+              >
+                {(
+                  result as {
+                    success?: unknown;
+                    method?: unknown;
+                    description?: unknown;
+                    timestamp?: unknown;
+                    duration?: unknown;
+                    query?: unknown;
+                    response?: unknown;
+                    error?: unknown;
+                  }
+                ).method}
+                {(
+                  result as {
+                    success?: unknown;
+                    method?: unknown;
+                    description?: unknown;
+                    timestamp?: unknown;
+                    duration?: unknown;
+                    query?: unknown;
+                    response?: unknown;
+                    error?: unknown;
+                  }
+                ).success
+                  ? '✅'
+                  : '❌'}
               </h3>
-              <p class="text-sm text-gray-600">{(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).description}</p>
+              <p class="text-sm text-gray-600">
+                {(
+                  result as {
+                    success?: unknown;
+                    method?: unknown;
+                    description?: unknown;
+                    timestamp?: unknown;
+                    duration?: unknown;
+                    query?: unknown;
+                    response?: unknown;
+                    error?: unknown;
+                  }
+                ).description}
+              </p>
             </div>
             <div class="text-right text-sm text-gray-500">
-              <div>{(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).timestamp}</div>
-              <div>{(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).duration}ms</div>
+              <div>
+                {(
+                  result as {
+                    success?: unknown;
+                    method?: unknown;
+                    description?: unknown;
+                    timestamp?: unknown;
+                    duration?: unknown;
+                    query?: unknown;
+                    response?: unknown;
+                    error?: unknown;
+                  }
+                ).timestamp}
+              </div>
+              <div>
+                {(
+                  result as {
+                    success?: unknown;
+                    method?: unknown;
+                    description?: unknown;
+                    timestamp?: unknown;
+                    duration?: unknown;
+                    query?: unknown;
+                    response?: unknown;
+                    error?: unknown;
+                  }
+                ).duration}ms
+              </div>
             </div>
           </div>
           <div class="mb-3">
             <h4 class="font-medium text-sm mb-1">Query:</h4>
-            <p class="text-sm text-gray-700 bg-gray-100 p-2 rounded">{(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).query}</p>
+            <p class="text-sm text-gray-700 bg-gray-100 p-2 rounded">
+              {(
+                result as {
+                  success?: unknown;
+                  method?: unknown;
+                  description?: unknown;
+                  timestamp?: unknown;
+                  duration?: unknown;
+                  query?: unknown;
+                  response?: unknown;
+                  error?: unknown;
+                }
+              ).query}
+            </p>
           </div>
           {#if (result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).success && (result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).response}
             <div class="mb-3">
               <h4 class="font-medium text-sm mb-1">Response:</h4>
               <div class="text-sm bg-white p-3 rounded border max-h-48 overflow-y-auto">
-                {(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).response}
+                {(
+                  result as {
+                    success?: unknown;
+                    method?: unknown;
+                    description?: unknown;
+                    timestamp?: unknown;
+                    duration?: unknown;
+                    query?: unknown;
+                    response?: unknown;
+                    error?: unknown;
+                  }
+                ).response}
               </div>
             </div>
           {/if}
@@ -395,31 +515,51 @@
                   <div>
                     <span class="font-medium">Total Time:</span>
                     <br />
-                    {((result as { accelerationMetrics?: { totalProcessingTime?: unknown } }).accelerationMetrics?.totalProcessingTime || 0).toFixed(1)}ms
+                    {(
+                      (result as { accelerationMetrics?: { totalProcessingTime?: unknown } }).accelerationMetrics
+                        ?.totalProcessingTime || 0
+                    ).toFixed(1)}ms
                   </div>
                   <div>
                     <span class="font-medium">SIMD Time:</span>
                     <br />
-                    {((result as { accelerationMetrics?: { simdPreprocessingTime?: unknown } }).accelerationMetrics?.simdPreprocessingTime || 0).toFixed(1)}ms
+                    {(
+                      (result as { accelerationMetrics?: { simdPreprocessingTime?: unknown } }).accelerationMetrics
+                        ?.simdPreprocessingTime || 0
+                    ).toFixed(1)}ms
                   </div>
                   <div>
                     <span class="font-medium">GPU Time:</span>
                     <br />
-                    {((result as { accelerationMetrics?: { webgpuComputeTime?: unknown } }).accelerationMetrics?.webgpuComputeTime || 0).toFixed(1)}ms
+                    {(
+                      (result as { accelerationMetrics?: { webgpuComputeTime?: unknown } }).accelerationMetrics
+                        ?.webgpuComputeTime || 0
+                    ).toFixed(1)}ms
                   </div>
                   <div>
                     <span class="font-medium">Vectors:</span>
                     <br />
-                    {(result as { accelerationMetrics?: { vectorsProcessed?: unknown } }).accelerationMetrics?.vectorsProcessed || 0}
+                    {(result as { accelerationMetrics?: { vectorsProcessed?: unknown } }).accelerationMetrics
+                      ?.vectorsProcessed || 0}
                   </div>
                   <div>
                     <span class="font-medium">Acceleration:</span>
                     <br />
-                    <span class="px-1 py-0.5 rounded text-white text-xs
-                      {(result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics?.accelerationUsed === 'hybrid' ? 'bg-green-600' :
-                        (result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics?.accelerationUsed === 'gpu' ? 'bg-blue-600' :
-                        (result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics?.accelerationUsed === 'cpu' ? 'bg-orange-600' : 'bg-gray-600'}">
-                      {(result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics?.accelerationUsed || 'none'}
+                    <span
+                      class="px-1 py-0.5 rounded text-white text-xs
+                      {(result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics
+                        ?.accelerationUsed === 'hybrid'
+                        ? 'bg-green-600'
+                        : (result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics
+                              ?.accelerationUsed === 'gpu'
+                          ? 'bg-blue-600'
+                          : (result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics
+                                ?.accelerationUsed === 'cpu'
+                            ? 'bg-orange-600'
+                            : 'bg-gray-600'}"
+                    >
+                      {(result as { accelerationMetrics?: { accelerationUsed?: unknown } }).accelerationMetrics
+                        ?.accelerationUsed || 'none'}
                     </span>
                   </div>
                 </div>
@@ -429,7 +569,20 @@
           {#if (result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).error}
             <div>
               <h4 class="font-medium text-sm mb-1">Error:</h4>
-              <p class="text-sm text-red-700 bg-red-100 p-2 rounded">{(result as { success?: unknown; method?: unknown; description?: unknown; timestamp?: unknown; duration?: unknown; query?: unknown; response?: unknown; error?: unknown }).error}</p>
+              <p class="text-sm text-red-700 bg-red-100 p-2 rounded">
+                {(
+                  result as {
+                    success?: unknown;
+                    method?: unknown;
+                    description?: unknown;
+                    timestamp?: unknown;
+                    duration?: unknown;
+                    query?: unknown;
+                    response?: unknown;
+                    error?: unknown;
+                  }
+                ).error}
+              </p>
             </div>
           {/if}
         </div>
@@ -441,6 +594,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .webassembly-langchain-test {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

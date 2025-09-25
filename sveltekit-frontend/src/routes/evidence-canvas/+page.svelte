@@ -5,6 +5,7 @@
   let title = $state('Evidence Canvas - Legal AI Platform');
   let description = $state('Interactive evidence analysis and annotation canvas with AI-powered analysis capabilities');
 </script>
+
 <svelte:head>
   <title>{title}</title>
   <meta name="description" content={description} />
@@ -19,6 +20,7 @@
     <FabricCanvas />
   </main>
 </div>
+
 <style>
   .evidence-canvas-page {
     min-height: 100vh;

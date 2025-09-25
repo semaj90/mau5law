@@ -154,7 +154,7 @@ async function performKeywordSearch(
   mode: 'boolean' | 'phrase',
   filters: any
   sort: string
-  page: number
+  page: number;
   limit: number
 ) {
   const startTime = Date.now()

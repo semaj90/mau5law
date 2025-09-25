@@ -22,11 +22,11 @@ export interface StoreMetadata {
 export interface BarrelStoreEntry<T = any> {
   store: Writable<T> | Readable<T>;
   metadata: StoreMetadata;
-  validator?: (value: T) => boolean;
+  validator?: (_value: T) => boolean;
   serializer?: {
-    serialize: (value: T) => string;
-    deserialize: (value: string) => T;
-  };
+    serialize: (_value: T) => string;
+    deserialize: (_value: string) => T;
+  }
 }
 export interface StoreConfig<T> {
   id: string;
@@ -34,7 +34,7 @@ export interface StoreConfig<T> {
   persistent?: boolean;
   cacheable?: boolean;
   ttl?: number;
-  validator?: (value: T) => boolean;
+  validator?: (_value: T) => boolean;
   dependencies?: string[];
   computed?: (stores: { [key: string]: any }) => T;
 }
@@ -85,17 +85,17 @@ export class BarrelStoreManager {
       dependencies,
       cacheable,
       ttl: cacheable ? ttl : undefined
-    };
+    }
     // Store entry
     const entry: BarrelStoreEntry<T> = {
       store,
       metadata,
       validator,
       serializer: {
-        serialize: (value: T) => JSON.stringify(value),
-        deserialize: (value: string) => JSON.parse(value)
+        serialize: (_value: T) => JSON.stringify(value),
+        deserialize: (_value: string) => JSON.parse(value)
       }
-    };
+    }
     this.stores.set(id, entry);
     // Set up validation
     if (validator) {
@@ -111,7 +111,7 @@ export class BarrelStoreManager {
    * Create a computed store that depends on other stores
    */
   createComputed<T>(
-    id: string
+    id: string;
     dependencies: string[]
     computeFn: (values: any[]) => T,
     options?: { cacheable?: boolean; ttl?: number }
@@ -157,7 +157,7 @@ export class BarrelStoreManager {
    * Get all stores (useful for debugging and introspection)
    */;
   getAllStores(): { [key: string]: any } {
-    const allStores: { [key: string]: any } = {};
+    const allStores: { [key: string]: any } = {}
     for (const [id, entry] of this.stores) {
       allStores[id] = entry.store;
     }
@@ -170,13 +170,13 @@ export class BarrelStoreManager {
    * Export store values for persistence or debugging
    */;
   async exportStores(): Promise<{ [key: string]: any } {
-    const exports: { [key: string]: any } = {};
+    const exports: { [key: string]: any } = {}
     for (const [id, entry] of this.stores) {
       const currentValue = await this.getCurrentValue(entry.store);
       exports[id] = {
-        value: currentValue
+        value: currentValue;
         metadata: entry.metadata
-      };
+      }
     }
     return exports;
   }
@@ -206,7 +206,7 @@ export class BarrelStoreManager {
    */
   subscribeToStore<T>(
     storeId: string
-    callback: (value: T) => void,
+    callback: (_value: T) => void,
     options?: { immediate?: boolean }
   ): () => void {
     const entry = this.stores.get(storeId);
@@ -238,7 +238,7 @@ export class BarrelStoreManager {
         ...entry.metadata,
         ...updates,
         lastUpdated: Date.now()
-      };
+      }
     }
   }
   /**
@@ -275,7 +275,7 @@ export class BarrelStoreManager {
     });
   }
   private setupCaching<T>(
-    store: Writable<T> | Readable<T>
+    store: Writable<T> | Readable<T>;
     id: string
     ttl?: number;
   ): void {
@@ -333,7 +333,7 @@ export const legalAIStores = {
       autoSave: true
       notifications: true
     },
-    persistent: true
+    persistent: true;
     validator: (prefs) => {
       return (
         typeof prefs === "object" &&
@@ -364,7 +364,7 @@ export const legalAIStores = {
     },
     cacheable: true
   })
-};
+}
 // Computed stores for complex derived state
 export const legalAIComputed = {
   // Case completion percentage
@@ -391,7 +391,7 @@ export const legalAIComputed = {
         processing,
         remaining: total - processed,
         progress: total > 0 ? (processed / total) * 100 : 0
-      };
+      }
     }
   ),
   // Application readiness
@@ -402,7 +402,7 @@ export const legalAIComputed = {
       return !appState.loading && !appState.error && preferences !== null;
     }
   )
-};
+}
 // Utility functions for store management
 export const storeUtils = {
   /**
@@ -440,6 +440,6 @@ export const storeUtils = {
   async debug(): Promise<{ [key: string]: any } {
     return await barrelStore.exportStores();
   }
-};
+}
 // Export barrel store instance for advanced usage
-export { barrelStore as default };
+export { barrelStore as default }

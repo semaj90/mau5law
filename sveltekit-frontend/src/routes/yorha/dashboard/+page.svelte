@@ -62,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
         memoryHistory: generateHistoryData(systemMetrics.backend.memoryUsage),
         networkHistory: generateHistoryData(systemMetrics.database.latency),
         timestamp: Date.now();
-      };
+      }
       isLoading = false;
     } catch (error) {
       console.error('Failed to load system data:', error);
@@ -74,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
         memoryHistory: generateHistoryData(62),
         networkHistory: generateHistoryData(23),
         timestamp: Date.now();
-      };
+      }
       isLoading = false;
     }
   }
@@ -99,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
             latency: Math.max(10, Math.min(100, systemMetrics.database.latency + (Math.random() - 0.5) * 5)),
             queryCount: systemMetrics.database.queryCount + Math.floor(Math.random() * 5);
           }
-        };
+        }
         lastUpdate = new Date();
       }
     }, 5000);
@@ -110,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
         memoryHistory: [...realtimeData.memoryHistory.slice(-29), systemMetrics.backend.memoryUsage],
         networkHistory: [...realtimeData.networkHistory.slice(-29), systemMetrics.database.latency],
         timestamp: Date.now();
-      };
+      }
     }, 2000);
   }
   function generateHistoryData(baseValue: number, points = 30): number[] {
@@ -122,13 +122,13 @@ https://svelte.dev/e/js_parse_error -->
   function mockSystemMetrics() {
     return {
       database: {
-        connected: true
+        connected: true;
         latency: 23,
         activeConnections: 12,
         queryCount: 15847;
       },
       backend: {
-        healthy: true
+        healthy: true;
         uptime: 98.7,
         activeServices: 8,
         cpuUsage: 45,
@@ -140,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
         activeComponents: 89,
         webGPUEnabled: true
       }
-    };
+    }
   }
   function mockGraphData() {
     return {
@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
           latency: 34;
         }
       ]
-    };
+    }
   }
   function getStatusIcon(status: string) {
     switch (status) {
@@ -228,6 +228,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <svelte:head>
   <title>YoRHa Dashboard - System Monitoring</title>
 </svelte:head>
@@ -397,8 +398,10 @@ https://svelte.dev/e/js_parse_error -->
       </h2>
       <div class="yorha-graph-container">
         {#each graphData.nodes as node}
-          <div class="yorha-graph-node yorha-node-{node.type}"
-               style="left: {node.position.x * 200 + 100}px; top: {node.position.y * 150 + 50}px;">
+          <div
+            class="yorha-graph-node yorha-node-{node.type}"
+            style="left: {node.position.x * 200 + 100}px; top: {node.position.y * 150 + 50}px;"
+          >
             <div class="yorha-node-icon">
               {#if node.type === 'database'}
                 <Database size={20} />
@@ -421,6 +424,7 @@ https://svelte.dev/e/js_parse_error -->
     </section>
   {/if}
 </div>
+
 <style>
   .yorha-dashboard-page {
     @apply space-y-8 pb-16;
@@ -566,7 +570,9 @@ https://svelte.dev/e/js_parse_error -->
     @apply bg-red-400;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
   /* Responsive */
   @media (max-width: 768px) {

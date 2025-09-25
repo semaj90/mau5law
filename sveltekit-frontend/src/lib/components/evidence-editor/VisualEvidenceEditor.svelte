@@ -26,10 +26,10 @@ https://svelte.dev/e/js_parse_error -->
     currentSelectedNode = node;
   });
   });
-  function handleNodeSelect(event: CustomEvent) {
+  function handleNodeSelect(_event: CustomEvent) {
     selectedNode.set(event.detail);
   }
-  function handleNodeSave(event: CustomEvent) {
+  function handleNodeSave(_event: CustomEvent) {
     // Handle saving node data
     const nodeData = event.detail;
     console.log('Saving node:', nodeData);
@@ -37,12 +37,13 @@ https://svelte.dev/e/js_parse_error -->
     // await fetch('/api/evidence', { method: 'POST', body: JSON.stringify(nodeData) })
   }
 </script>
+
 <div class="space-y-4">
   <!-- Golden Ratio Layout: 61.8% main canvas, 19.1% inspector, 19.1% AI assistant -->
   <div class="space-y-4">
     <!-- Main Canvas Area -->
     <div class="space-y-4">
-      <CanvasEditor
+      <CanvasEditor;
         bind:this={canvasComponent}
         {caseId}
         {readOnly}
@@ -52,17 +53,13 @@ https://svelte.dev/e/js_parse_error -->
     </div>
     <!-- Inspector Panel -->
     <div class="space-y-4">
-      <InspectorPanel
-        selectedNode={currentSelectedNode}
-        {readOnly}
-        onsave={handleNodeSave}
-      />
+      <InspectorPanel selectedNode={currentSelectedNode} {readOnly} onsave={handleNodeSave} />
     </div>
     <!-- AI Assistant Panel -->
     <div class="space-y-4">
       <AIAssistantPanel
         selectedNode={currentSelectedNode}
-        ontagsupdate={(e) => {
+        ontagsupdate={e => {
           if (currentSelectedNode) {
             currentSelectedNode.aiTags = e.detail;
             selectedNode.update(n => ({ ...n, aiTags: e.detail }));
@@ -72,16 +69,17 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .visual-evidence-editor {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
+  }
   /* Responsive adjustments */
   @media (max-width: 768px) {
-  .visual-evidence-editor :global(.grid) {
+    .visual-evidence-editor :global(.grid) {
       grid-template-columns: 1fr;
       grid-template-rows: 60% 20% 20%;
-}
-}
+    }
+  }
 </style>

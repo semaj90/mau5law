@@ -20,19 +20,19 @@ export interface ConsolePalette {
     classification: string;
     confidence: string;
     priority: string;
-  };
+  }
   gradients: {
     main: string;
     modal: string;
     card: string;
     evidence: string;
     priority: string;
-  };
+  }
   constraints: {
     maxColors: number;
     bitDepth: number;
     memoryKB: number;
-  };
+  }
   cssVariables: Record<string, string>;
 }
 // NES (Nintendo Entertainment System) - 1985
@@ -40,40 +40,40 @@ export const NES_PALETTE: ConsolePalette = {
   name: 'NES Classic',
   era: '8-bit',
   colors: {
-    primary: '#E52521',      // Nintendo Red
-    secondary: '#0084FF',    // Classic Blue
-    tertiary: '#4CAF50',     // Green
-    success: '#5CB85C',      // Light Green
-    warning: '#FFC107',      // Yellow
-    error: '#DC3545',        // Red
-    background: '#000000',   // Black
-    foreground: '#FCFCFC',   // White
-    evidence: '#8B4513',     // Saddle brown
+    primary: '#E52521', // Nintendo Red
+    secondary: '#0084FF', // Classic Blue
+    tertiary: '#4CAF50', // Green
+    success: '#5CB85C', // Light Green
+    warning: '#FFC107', // Yellow
+    error: '#DC3545', // Red
+    background: '#000000', // Black
+    foreground: '#FCFCFC', // White
+    evidence: '#8B4513', // Saddle brown
     classification: '#6B8E23', // Olive drab
-    confidence: '#32CD32',   // Lime green
-    priority: '#FF6347',     // Tomato
+    confidence: '#32CD32', // Lime green
+    priority: '#FF6347', // Tomato
     accent: [
-      '#7C7C7C',  // Gray
-      '#0000FC',  // Blue
-      '#BC0000',  // Dark Red
-      '#BC00BC',  // Purple
-      '#00BC00',  // Green
-      '#00BCBC',  // Cyan
-      '#BCBC00',  // Yellow
-      '#BCBCBC',  // Light Gray
-    ]
+      '#7C7C7C', // Gray
+      '#0000FC', // Blue
+      '#BC0000', // Dark Red
+      '#BC00BC', // Purple
+      '#00BC00', // Green
+      '#00BCBC', // Cyan
+      '#BCBC00', // Yellow
+      '#BCBCBC', // Light Gray
+    ],
   },
   gradients: {
     main: 'linear-gradient(0deg, #000000, #1C1C1C, #383838)',
     modal: 'linear-gradient(135deg, #000000, #0000FC, #000000)',
     card: 'linear-gradient(45deg, #1C1C1C, #383838)',
     evidence: 'linear-gradient(90deg, #8B4513, #CD853F)',
-    priority: 'linear-gradient(45deg, #FF6347, #DC3545)'
+    priority: 'linear-gradient(45deg, #FF6347, #DC3545)',
   },
   constraints: {
     maxColors: 54,
     bitDepth: 2,
-    memoryKB: 2
+    memoryKB: 2,
   },
   cssVariables: {
     '--nes-primary': '#E52521',
@@ -87,48 +87,48 @@ export const NES_PALETTE: ConsolePalette = {
     '--nes-evidence': '#8B4513',
     '--nes-classification': '#6B8E23',
     '--nes-confidence': '#32CD32',
-    '--nes-priority': '#FF6347'
-  }
-};
+    '--nes-priority': '#FF6347',
+  },
+}
 // SNES (Super Nintendo) - 1990
 export const SNES_PALETTE: ConsolePalette = {
   name: 'SNES Mode 7',
   era: '16-bit',
   colors: {
-    primary: '#B266FF',      // Purple
-    secondary: '#00C8FF',    // Cyan
-    tertiary: '#FFD700',     // Gold
-    success: '#00FF00',      // Bright Green
-    warning: '#FFAA00',      // Orange
-    error: '#FF0066',        // Hot Pink
-    background: '#1A0033',   // Deep Purple
-    foreground: '#F8F8F8',   // Off White
-    evidence: '#9C88FF',     // Light purple
+    primary: '#B266FF', // Purple
+    secondary: '#00C8FF', // Cyan
+    tertiary: '#FFD700', // Gold
+    success: '#00FF00', // Bright Green
+    warning: '#FFAA00', // Orange
+    error: '#FF0066', // Hot Pink
+    background: '#1A0033', // Deep Purple
+    foreground: '#F8F8F8', // Off White
+    evidence: '#9C88FF', // Light purple
     classification: '#706FD3', // Medium light purple
-    confidence: '#00D2D3',   // Cyan
-    priority: '#FF5252',     // Red
+    confidence: '#00D2D3', // Cyan
+    priority: '#FF5252', // Red
     accent: [
-      '#FF6B9D',  // Pink
-      '#C44569',  // Rose
-      '#524A7B',  // Dark Purple
-      '#2D3561',  // Navy
-      '#0E7490',  // Teal
-      '#FFC857',  // Amber
-      '#119DA4',  // Ocean
-      '#6A0572',  // Violet
-    ]
+      '#FF6B9D', // Pink
+      '#C44569', // Rose
+      '#524A7B', // Dark Purple
+      '#2D3561', // Navy
+      '#0E7490', // Teal
+      '#FFC857', // Amber
+      '#119DA4', // Ocean
+      '#6A0572', // Violet
+    ],
   },
   gradients: {
     main: 'linear-gradient(180deg, #1A0033, #524A7B, #B266FF)',
     modal: 'linear-gradient(135deg, #1A0033 0%, #524A7B 50%, #B266FF 100%)',
     card: 'radial-gradient(circle, #524A7B, #1A0033)',
     evidence: 'linear-gradient(135deg, #9C88FF, #706FD3)',
-    priority: 'linear-gradient(90deg, #FF5252, #FF0066)'
+    priority: 'linear-gradient(90deg, #FF5252, #FF0066)',
   },
   constraints: {
     maxColors: 32768,
     bitDepth: 15,
-    memoryKB: 128
+    memoryKB: 128,
   },
   cssVariables: {
     '--snes-primary': '#B266FF',
@@ -142,48 +142,48 @@ export const SNES_PALETTE: ConsolePalette = {
     '--snes-evidence': '#9C88FF',
     '--snes-classification': '#706FD3',
     '--snes-confidence': '#00D2D3',
-    '--snes-priority': '#FF5252'
-  }
-};
+    '--snes-priority': '#FF5252',
+  },
+}
 // PS1 (PlayStation) - 1994
 export const PS1_PALETTE: ConsolePalette = {
   name: 'PlayStation Classic',
   era: '32-bit',
   colors: {
-    primary: '#003791',      // PlayStation Blue
-    secondary: '#FF3131',    // PSX Red
-    tertiary: '#00BF63',     // PSX Green
-    success: '#00D452',      // Success Green
-    warning: '#FFB800',      // Warning Gold
-    error: '#FF1744',        // Error Red
-    background: '#0A0E27',   // Dark Blue
-    foreground: '#E7F6F2',   // Light Cyan
-    evidence: '#8B5CF6',     // Violet
+    primary: '#003791', // PlayStation Blue
+    secondary: '#FF3131', // PSX Red
+    tertiary: '#00BF63', // PSX Green
+    success: '#00D452', // Success Green
+    warning: '#FFB800', // Warning Gold
+    error: '#FF1744', // Error Red
+    background: '#0A0E27', // Dark Blue
+    foreground: '#E7F6F2', // Light Cyan
+    evidence: '#8B5CF6', // Violet
     classification: '#EC4899', // Pink
-    confidence: '#10B981',   // Emerald
-    priority: '#F59E0B',     // Amber
+    confidence: '#10B981', // Emerald
+    priority: '#F59E0B', // Amber
     accent: [
-      '#2196F3',  // Light Blue
-      '#00BCD4',  // Cyan
-      '#009688',  // Teal
-      '#4CAF50',  // Green
-      '#8BC34A',  // Light Green
-      '#CDDC39',  // Lime
-      '#FFC107',  // Amber
-      '#FF5722',  // Deep Orange
-    ]
+      '#2196F3', // Light Blue
+      '#00BCD4', // Cyan
+      '#009688', // Teal
+      '#4CAF50', // Green
+      '#8BC34A', // Light Green
+      '#CDDC39', // Lime
+      '#FFC107', // Amber
+      '#FF5722', // Deep Orange
+    ],
   },
   gradients: {
     main: 'linear-gradient(90deg, #0A0E27, #003791, #2196F3)',
     modal: 'linear-gradient(135deg, #003791 0%, #2196F3 50%, #00BCD4 100%)',
     card: 'linear-gradient(180deg, #0A0E27, #003791)',
     evidence: 'linear-gradient(45deg, #8B5CF6, #EC4899)',
-    priority: 'linear-gradient(90deg, #F59E0B, #FF1744)'
+    priority: 'linear-gradient(90deg, #F59E0B, #FF1744)',
   },
   constraints: {
     maxColors: 16777216,
     bitDepth: 24,
-    memoryKB: 2048
+    memoryKB: 2048,
   },
   cssVariables: {
     '--ps1-primary': '#003791',
@@ -197,48 +197,48 @@ export const PS1_PALETTE: ConsolePalette = {
     '--ps1-evidence': '#8B5CF6',
     '--ps1-classification': '#EC4899',
     '--ps1-confidence': '#10B981',
-    '--ps1-priority': '#F59E0B'
-  }
-};
+    '--ps1-priority': '#F59E0B',
+  },
+}
 // N64 (Nintendo 64) - 1996
 export const N64_PALETTE: ConsolePalette = {
   name: 'N64 Ultra',
   era: '64-bit',
   colors: {
-    primary: '#00AA00',      // N64 Green
-    secondary: '#0055FF',    // N64 Blue
-    tertiary: '#FF5555',     // N64 Red
-    success: '#00FF00',      // Bright Green
-    warning: '#FFFF00',      // Yellow
-    error: '#FF0000',        // Pure Red
-    background: '#1E1E1E',   // Dark Gray
-    foreground: '#F0F0F0',   // Light Gray
-    evidence: '#CD853F',     // Peru
+    primary: '#00AA00', // N64 Green
+    secondary: '#0055FF', // N64 Blue
+    tertiary: '#FF5555', // N64 Red
+    success: '#00FF00', // Bright Green
+    warning: '#FFFF00', // Yellow
+    error: '#FF0000', // Pure Red
+    background: '#1E1E1E', // Dark Gray
+    foreground: '#F0F0F0', // Light Gray
+    evidence: '#CD853F', // Peru
     classification: '#D2691E', // Chocolate
-    confidence: '#32CD32',   // Lime green
-    priority: '#FF6347',     // Tomato
+    confidence: '#32CD32', // Lime green
+    priority: '#FF6347', // Tomato
     accent: [
-      '#AA00FF',  // Purple
-      '#FF00AA',  // Magenta
-      '#00AAFF',  // Sky Blue
-      '#FFAA00',  // Orange
-      '#AA5500',  // Brown
-      '#5500AA',  // Indigo
-      '#00AA55',  // Sea Green
-      '#FF55AA',  // Pink
-    ]
+      '#AA00FF', // Purple
+      '#FF00AA', // Magenta
+      '#00AAFF', // Sky Blue
+      '#FFAA00', // Orange
+      '#AA5500', // Brown
+      '#5500AA', // Indigo
+      '#00AA55', // Sea Green
+      '#FF55AA', // Pink
+    ],
   },
   gradients: {
     main: 'linear-gradient(45deg, #1E1E1E, #00AA00, #0055FF, #FF5555)',
     modal: 'conic-gradient(from 180deg, #00AA00, #0055FF, #FF5555, #AA00FF, #00AA00)',
     card: 'linear-gradient(135deg, #1E1E1E, #00AA00, #1E1E1E)',
     evidence: 'linear-gradient(90deg, #CD853F, #D2691E)',
-    priority: 'linear-gradient(45deg, #FF6347, #FF0000)'
+    priority: 'linear-gradient(45deg, #FF6347, #FF0000)',
   },
   constraints: {
     maxColors: 32768,
     bitDepth: 15,
-    memoryKB: 4096
+    memoryKB: 4096,
   },
   cssVariables: {
     '--n64-primary': '#00AA00',
@@ -252,48 +252,48 @@ export const N64_PALETTE: ConsolePalette = {
     '--n64-evidence': '#CD853F',
     '--n64-classification': '#D2691E',
     '--n64-confidence': '#32CD32',
-    '--n64-priority': '#FF6347'
-  }
-};
+    '--n64-priority': '#FF6347',
+  },
+}
 // PS2 (PlayStation 2) - 2000
 export const PS2_PALETTE: ConsolePalette = {
   name: 'PS2 Emotion',
   era: '128-bit',
   colors: {
-    primary: '#1B3A6B',      // PS2 Navy
-    secondary: '#3A7BC8',    // PS2 Blue
-    tertiary: '#67B3CC',     // PS2 Cyan
-    success: '#4ECDC4',      // Teal
-    warning: '#F7B731',      // Gold
-    error: '#FC5C65',        // Coral
-    background: '#0C1929',   // Midnight Blue
-    foreground: '#DFE6ED',   // Silver
-    evidence: '#A55EEA',     // Purple
+    primary: '#1B3A6B', // PS2 Navy
+    secondary: '#3A7BC8', // PS2 Blue
+    tertiary: '#67B3CC', // PS2 Cyan
+    success: '#4ECDC4', // Teal
+    warning: '#F7B731', // Gold
+    error: '#FC5C65', // Coral
+    background: '#0C1929', // Midnight Blue
+    foreground: '#DFE6ED', // Silver
+    evidence: '#A55EEA', // Purple
     classification: '#8854D0', // Deep Purple
-    confidence: '#0FB9B1',   // Turquoise
-    priority: '#FC5C65',     // Red
+    confidence: '#0FB9B1', // Turquoise
+    priority: '#FC5C65', // Red
     accent: [
-      '#A55EEA',  // Purple
-      '#8854D0',  // Deep Purple
-      '#3867D6',  // Royal Blue
-      '#2D98DA',  // Sky Blue
-      '#0FB9B1',  // Turquoise
-      '#20BF6B',  // Emerald
-      '#FED330',  // Yellow
-      '#FC5C65',  // Red
-    ]
+      '#A55EEA', // Purple
+      '#8854D0', // Deep Purple
+      '#3867D6', // Royal Blue
+      '#2D98DA', // Sky Blue
+      '#0FB9B1', // Turquoise
+      '#20BF6B', // Emerald
+      '#FED330', // Yellow
+      '#FC5C65', // Red
+    ],
   },
   gradients: {
     main: 'linear-gradient(120deg, #0C1929, #1B3A6B, #3A7BC8, #67B3CC)',
     modal: 'linear-gradient(45deg, #1B3A6B 0%, #3A7BC8 25%, #67B3CC 50%, #4ECDC4 75%, #A55EEA 100%)',
     card: 'radial-gradient(ellipse at top, #3A7BC8, #1B3A6B, #0C1929)',
     evidence: 'linear-gradient(135deg, #A55EEA, #8854D0)',
-    priority: 'linear-gradient(90deg, #FC5C65, #F7B731)'
+    priority: 'linear-gradient(90deg, #FC5C65, #F7B731)',
   },
   constraints: {
     maxColors: 16777216,
     bitDepth: 32,
-    memoryKB: 32768
+    memoryKB: 32768,
   },
   cssVariables: {
     '--ps2-primary': '#1B3A6B',
@@ -307,48 +307,48 @@ export const PS2_PALETTE: ConsolePalette = {
     '--ps2-evidence': '#A55EEA',
     '--ps2-classification': '#8854D0',
     '--ps2-confidence': '#0FB9B1',
-    '--ps2-priority': '#FC5C65'
-  }
-};
+    '--ps2-priority': '#FC5C65',
+  },
+}
 // Legal AI Professional Theme
 export const LEGAL_AI_PALETTE: ConsolePalette = {
   name: 'Legal AI Professional',
   era: 'Modern',
   colors: {
-    primary: '#1E293B',      // Slate 800
-    secondary: '#334155',    // Slate 700
-    tertiary: '#00FF88',     // Legal AI green
-    success: '#10B981',      // Emerald 500
-    warning: '#F59E0B',      // Amber 500
-    error: '#EF4444',        // Red 500
-    background: '#0F172A',   // Slate 900
-    foreground: '#F8FAFC',   // Slate 50
-    evidence: '#8B5CF6',     // Violet 500
+    primary: '#1E293B', // Slate 800
+    secondary: '#334155', // Slate 700
+    tertiary: '#00FF88', // Legal AI green
+    success: '#10B981', // Emerald 500
+    warning: '#F59E0B', // Amber 500
+    error: '#EF4444', // Red 500
+    background: '#0F172A', // Slate 900
+    foreground: '#F8FAFC', // Slate 50
+    evidence: '#8B5CF6', // Violet 500
     classification: '#EC4899', // Pink 500
-    confidence: '#10B981',   // Emerald 500
-    priority: '#F59E0B',     // Amber 500
+    confidence: '#10B981', // Emerald 500
+    priority: '#F59E0B', // Amber 500
     accent: [
-      '#06B6D4',  // Cyan 500
-      '#8B5CF6',  // Violet 500
-      '#EC4899',  // Pink 500
-      '#10B981',  // Emerald 500
-      '#F59E0B',  // Amber 500
-      '#EF4444',  // Red 500
-      '#6366F1',  // Indigo 500
-      '#84CC16',  // Lime 500
-    ]
+      '#06B6D4', // Cyan 500
+      '#8B5CF6', // Violet 500
+      '#EC4899', // Pink 500
+      '#10B981', // Emerald 500
+      '#F59E0B', // Amber 500
+      '#EF4444', // Red 500
+      '#6366F1', // Indigo 500
+      '#84CC16', // Lime 500
+    ],
   },
   gradients: {
     main: 'linear-gradient(135deg, #0F172A, #1E293B, #00FF88)',
     modal: 'linear-gradient(45deg, #1E293B 0%, #334155 50%, #00FF88 100%)',
     card: 'linear-gradient(180deg, #1E293B, #0F172A)',
     evidence: 'linear-gradient(90deg, #8B5CF6, #EC4899)',
-    priority: 'linear-gradient(45deg, #F59E0B, #EF4444)'
+    priority: 'linear-gradient(45deg, #F59E0B, #EF4444)',
   },
   constraints: {
     maxColors: 16777216,
     bitDepth: 32,
-    memoryKB: 65536
+    memoryKB: 65536,
   },
   cssVariables: {
     '--legal-primary': '#1E293B',
@@ -362,9 +362,9 @@ export const LEGAL_AI_PALETTE: ConsolePalette = {
     '--legal-evidence': '#8B5CF6',
     '--legal-classification': '#EC4899',
     '--legal-confidence': '#10B981',
-    '--legal-priority': '#F59E0B'
-  }
-};
+    '--legal-priority': '#F59E0B',
+  },
+}
 // Console palette collection
 export const CONSOLE_PALETTES = {
   nes: NES_PALETTE,
@@ -372,7 +372,7 @@ export const CONSOLE_PALETTES = {
   ps1: PS1_PALETTE,
   n64: N64_PALETTE,
   ps2: PS2_PALETTE,
-  legal: LEGAL_AI_PALETTE
+  legal: LEGAL_AI_PALETTE,
 } as const;
 export type ConsolePaletteName = keyof typeof CONSOLE_PALETTES;
 // Helper function to apply console palette to CSS variables
@@ -433,11 +433,7 @@ export function getConstrainedColor(color: string, bitDepth: number): string {
   return `#${qr.toString(16).padStart(2, '0')}${qg.toString(16).padStart(2, '0')}${qb.toString(16).padStart(2, '0')}`;
 }
 // Generate palette-aware gradient with memory constraints
-export function generateConstrainedGradient(
-  colors: string[],
-  memoryKB: number,
-  angle = 45
-): string {
+export function generateConstrainedGradient(colors: string[], memoryKB: number, angle = 45): string {
   // Reduce colors based on memory constraints
   const maxStops = Math.min(colors.length, Math.floor(memoryKB / 8));
   const selectedColors = colors.slice(0, maxStops);
@@ -463,28 +459,30 @@ export function createThemeCSS(paletteName: ConsolePaletteName): string {
   return `
 /* ${palette.name} - ${palette.era} Theme */
 :root.theme-${paletteName} {
-${Object.entries(palette.cssVariables).map(([key, value]) => `  ${key}: ${value};`).join('\n')}
+${Object.entries(palette.cssVariables)
+  .map(([key, value]) => `  ${key}: ${value}`)
+  .join('\n')}
   /* Generic console variables */
-  --console-primary: ${palette.colors.primary};
-  --console-secondary: ${palette.colors.secondary};
-  --console-tertiary: ${palette.colors.tertiary};
-  --console-success: ${palette.colors.success};
-  --console-warning: ${palette.colors.warning};
-  --console-error: ${palette.colors.error};
-  --console-bg: ${palette.colors.background};
-  --console-fg: ${palette.colors.foreground};
-  --console-evidence: ${palette.colors.evidence};
-  --console-classification: ${palette.colors.classification};
-  --console-confidence: ${palette.colors.confidence};
-  --console-priority: ${palette.colors.priority};
+  --console-primary: ${palette.colors.primary}
+  --console-secondary: ${palette.colors.secondary}
+  --console-tertiary: ${palette.colors.tertiary}
+  --console-success: ${palette.colors.success}
+  --console-warning: ${palette.colors.warning}
+  --console-error: ${palette.colors.error}
+  --console-bg: ${palette.colors.background}
+  --console-fg: ${palette.colors.foreground}
+  --console-evidence: ${palette.colors.evidence}
+  --console-classification: ${palette.colors.classification}
+  --console-confidence: ${palette.colors.confidence}
+  --console-priority: ${palette.colors.priority}
   /* Gradients */
-  --console-gradient-main: ${palette.gradients.main};
-  --console-gradient-modal: ${palette.gradients.modal};
-  --console-gradient-card: ${palette.gradients.card};
-  --console-gradient-evidence: ${palette.gradients.evidence};
-  --console-gradient-priority: ${palette.gradients.priority};
+  --console-gradient-main: ${palette.gradients.main}
+  --console-gradient-modal: ${palette.gradients.modal}
+  --console-gradient-card: ${palette.gradients.card}
+  --console-gradient-evidence: ${palette.gradients.evidence}
+  --console-gradient-priority: ${palette.gradients.priority}
   /* Accent colors */
-${palette.colors.accent.map((color, index) => `  --console-accent-${index}: ${color};`).join('\n')}
+${palette.colors.accent.map((color, index) => `  --console-accent-${index}: ${color}`).join('\n')}
 }
 `;
 }

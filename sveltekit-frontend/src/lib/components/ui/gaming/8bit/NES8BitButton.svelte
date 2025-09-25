@@ -89,7 +89,7 @@
     } catch (error) {
       console.warn('Could not play button sound:', error);
     }
-  };
+  }
   const handleClick = async () => {
     if (disabled || loading) return;
     isPressed = true;
@@ -99,17 +99,17 @@
     }, 100);
     onClick?.();
     // ondispatch removed;
-  };
+  }
   const handleHover = () => {
     if (disabled) return;
     onHover?.();
     // ondispatch removed;
-  };
+  }
   const handleFocus = () => {
     if (disabled) return;
     onFocus?.();
     // ondispatch removed;
-  };
+  }
   // Get NES color based on variant
   const getVariantColor = (variant: string, nesVariant: string) => {
     const colorMap = {
@@ -119,22 +119,23 @@
       'warning': NES_COLOR_PALETTE.yellow,
       'error': NES_COLOR_PALETTE.red,
       'info': NES_COLOR_PALETTE.blue
-    };
+    }
     return colorMap[variant as keyof typeof colorMap] || NES_COLOR_PALETTE.blu;
-  };
+  }
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { padding: '8px 12px', fontSize: '10px', minHeight: '32px' },
       medium: { padding: '12px 16px', fontSize: '12px', minHeight: '40px' },
       large: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },
       xl: { padding: '20px 24px', fontSize: '16px', minHeight: '56px' }
-    };
+    }
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
-  };
+  }
   let sizeStyles = $derived(getSizeStyles(size));
   let variantColor = $derived(getVariantColor(variant, nesVariant));
   let pressTransform = $derived(isPressed ? `translateY(${pressDepth}px)` : 'translateY(0px)');
 </script>
+
 <BitsButton.Root
   bind:el={buttonElement}
   {type}
@@ -151,12 +152,12 @@
   onmouseenter={handleHover}
   onfocus={handleFocus}
   class="nes-8bit-button nes-btn {nesVariant} {className}"
-  style="
-    --button-color: {variantColor};
-    --button-padding: {sizeStyles.padding};
-    --button-font-size: {sizeStyles.fontSize};
-    --button-min-height: {sizeStyles.minHeight};
-    --press-transform: {pressTransform};
+  style=";
+    --button-color: {variantColor}
+    --button-padding: {sizeStyles.padding}
+    --button-font-size: {sizeStyles.fontSize}
+    --button-min-height: {sizeStyles.minHeight}
+    --press-transform: {pressTransform}
   "
 >
   {#if loading}
@@ -167,6 +168,7 @@
     {@render children?.()}
   {/if}
 </BitsButton.Root>
+
 <style>
   :global(.nes-8bit-button) {
 /* Base NES button styling */ font-family: 'Press Start 2P', 'Courier New', monospace !important;

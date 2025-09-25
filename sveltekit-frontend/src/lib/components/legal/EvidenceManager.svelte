@@ -24,7 +24,7 @@
     authenticity: 'verified' | 'pending' | 'disputed' | 'invalid';
     privileged: boolean;
     redacted: boolean;
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   }
   interface Props {
     evidence?: EvidenceItem[];
@@ -59,8 +59,8 @@
       tags: ['communication', 'dispute', 'payment'],
       relevanceScore: 0.92,
       authenticity: 'verified',
-      privileged: false
-      redacted: false
+      privileged: false;
+      redacted: false;
       metadata: {
         from: 'john.doe@company.com',
         to: 'legal@contractor.com',
@@ -79,8 +79,8 @@
       tags: ['financial', 'payment', 'fraud'],
       relevanceScore: 0.88,
       authenticity: 'verified',
-      privileged: true
-      redacted: true
+      privileged: true;
+      redacted: true;
       metadata: {
         account: '****-1234',
         amount: '$25,000.00',
@@ -99,8 +99,8 @@
       tags: ['meeting', 'decision', 'contractor'],
       relevanceScore: 0.85,
       authenticity: 'pending',
-      privileged: true
-      redacted: false
+      privileged: true;
+      redacted: false;
       metadata: {
         attendees: 7,
         duration: '2h 15m',
@@ -152,7 +152,7 @@
       privileged: evidenceData.filter(e => e.privileged).length,
       redacted: evidenceData.filter(e => e.redacted).length,
       byType: stat;
-    };
+    }
   });
   function toggleSelection(evidenceId: string) {
     const newSelection = new Set(selectedEvidence);
@@ -200,7 +200,7 @@
       document: '📄',
       audio: '🎵',
       video: '🎥';
-    };
+    }
     return icons[type] || '📎';
   }
   function getAuthenticityStyle(authenticity: EvidenceItem['authenticity']) {
@@ -209,11 +209,11 @@
       pending: { color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)' },
       disputed: { color: '#ef4444', background: 'rgba(239, 68, 68, 0.1)' },
       invalid: { color: '#6b7280', background: 'rgba(107, 114, 128, 0.1)' }
-    };
+    }
     return styles[authenticity] || styles.pending;
   }
-  async function handleFileUpload(event: Event) {
-    const target = event.target as HTMLInputElement;
+  async function handleFileUpload(_event: Event) {
+    // removed unused target assignment
     if (target.files && onUpload) {
       try {
         await onUpload(target.files);
@@ -224,12 +224,13 @@
     }
   }
 </script>
+
 <div class="evidence-manager">
   <!-- Evidence Manager Header -->
   <Card
     style="
-      border-color: {evidenceBuilder.styling.colors.primary};
-      border-width: {evidenceBuilder.styling.nes.borderWidth};
+      border-color: {evidenceBuilder.styling.colors.primary}
+      border-width: {evidenceBuilder.styling.nes.borderWidth}
     "
   >
     <CardHeader>
@@ -247,25 +248,17 @@
         </div>
         <div class="evidence-actions">
           <Button
-            onclick={() => showUpload = !showUpload}
-            style="background: {evidenceBuilder.styling.colors.evidence};"
+            onclick={() => (showUpload = !showUpload)}
+            style="background: {evidenceBuilder.styling.colors.evidence}"
           >
             📤 Upload Evidence
           </Button>
           {#if selectedEvidence.size > 0}
             <div class="bulk-actions" transition:fade>
-              <Button
-                onclick={() => exportSelected('pdf')}
-                variant="outline"
-              >
+              <Button onclick={() => exportSelected('pdf')} variant="outline">
                 📄 Export PDF ({selectedEvidence.size})
               </Button>
-              <Button
-                onclick={() => exportSelected('json')}
-                variant="outline"
-              >
-                🔧 Export JSON
-              </Button>
+              <Button onclick={() => exportSelected('json')} variant="outline">🔧 Export JSON</Button>
             </div>
           {/if}
         </div>
@@ -321,9 +314,7 @@
           <Button onclick={selectAll} size="sm" variant="outline">
             Select All ({filteredEvidence.length})
           </Button>
-          <Button onclick={clearSelection} size="sm" variant="outline">
-            Clear Selection
-          </Button>
+          <Button onclick={clearSelection} size="sm" variant="outline">Clear Selection</Button>
         </div>
       </div>
       <!-- Evidence Statistics -->
@@ -363,10 +354,7 @@
                 <span class="type-label">{evidence.type.toUpperCase()}</span>
               </div>
               <div class="evidence-status">
-                <div
-                  class="authenticity-badge"
-                  style={getAuthenticityStyle(evidence.authenticity)}
-                >
+                <div class="authenticity-badge" style={getAuthenticityStyle(evidence.authenticity)}>
                   {evidence.authenticity}
                 </div>
                 {#if evidence.privileged}
@@ -415,9 +403,9 @@
                   <div class="relevance-bar">
                     <div
                       class="relevance-fill"
-                      style="
+                      style=";
                         width: {evidence.relevanceScore * 100}%;
-                        background: {evidenceBuilder.styling.colors.evidence};
+                        background: {evidenceBuilder.styling.colors.evidence}
                       "
                     ></div>
                   </div>
@@ -426,11 +414,7 @@
                   </span>
                 </div>
                 <div class="evidence-actions">
-                  <Button
-                    onclick={() => analyzeEvidence(evidence.id)}
-                    disabled={isAnalyzing}
-                    size="sm"
-                  >
+                  <Button onclick={() => analyzeEvidence(evidence.id)} disabled={isAnalyzing} size="sm">
                     {isAnalyzing ? '🔄' : '🔍'} Analyze
                   </Button>
                   <Button size="sm" variant="outline">📥 Download</Button>
@@ -461,7 +445,12 @@
             <span class="no-evidence-icon">🔍</span>
             <h3>No Evidence Found</h3>
             <p>No evidence matches your current search and filter criteria.</p>
-            <Button onclick={() => { searchTerm = ''; filterType = 'all'; }}>
+            <Button
+              onclick={() => {
+                searchTerm = '';
+                filterType = 'all';
+              }}
+            >
               Clear Filters
             </Button>
           </div>
@@ -470,6 +459,7 @@
     </CardContent>
   </Card>
 </div>
+
 <style>
   .evidence-manager {
     max-width: 1400px;
@@ -502,7 +492,9 @@
     margin-top: 0.5rem;
     font-size: 0.875rem;
   }
-  .total-count, .verified-count, .privileged-count {
+  .total-count,
+  .verified-count,
+  .privileged-count {
     padding: 0.25rem 0.5rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
@@ -571,7 +563,8 @@
     flex: 1;
     min-width: 300px;
   }
-  .type-filter, .sort-control {
+  .type-filter,
+  .sort-control {
     background: var(--enhanced-bits-background);
     border: 2px solid var(--enhanced-bits-border);
     color: var(--enhanced-bits-foreground);
@@ -671,7 +664,9 @@
     gap: 0.5rem;
     margin-left: auto;
   }
-  .authenticity-badge, .privilege-badge, .redacted-badge {
+  .authenticity-badge,
+  .privilege-badge,
+  .redacted-badge {
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;

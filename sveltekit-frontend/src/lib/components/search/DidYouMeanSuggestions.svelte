@@ -46,7 +46,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     maxSuggestions?: number;
     showUserProfile?: boolean;
     onSelect?: (suggestion: Suggestion) => void;
-    onTaskSelect?: (task: TaskSuggestion) => void;
+    onTaskSelect?: (_task: TaskSuggestion) => void;
     onSearch?: (query: string) => void;
   }
   let {
@@ -97,7 +97,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     }
     return () => {
       if (debounceTimer) clearTimeout(debounceTimer);
-    };
+    }
   });
   async function performSearch(searchQuery: string) {
     if (!searchQuery || searchQuery.length < 2) {
@@ -117,7 +117,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         body: JSON.stringify({,
           query: searchQuery
           userId,
-          context: contextType
+          context: contextType;
           limit: maxSuggestions
           includeTaskSuggestions,
           includeAI;
@@ -133,7 +133,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       metadata = {
         took_ms: data.took_ms,
         cached: data.cached ;
-      };
+      }
       onSearch?.(searchQuery);
     } catch (err) {
       console.error('Search error:', err);
@@ -152,7 +152,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     onSelect?.(suggestion);
     open.set(false);
   }
-  function handleTaskSelection(task: TaskSuggestion) {
+  function handleTaskSelection(_task: TaskSuggestion) {
     onTaskSelect?.(task);
     open.set(false);
   }
@@ -177,13 +177,13 @@ https://svelte.dev/e/attribute_invalid_name -->
   function getSourceBadge(source?: string): { color: string; text: string } {
     switch (source) {
       case 'ai':
-        return { color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', text: 'AI' };
+        return { color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', text: 'AI' }
       case 'semantic':
-        return { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', text: 'Semantic' };
+        return { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', text: 'Semantic' }
       case 'lexical':
-        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Lexical' };
+        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Lexical' }
       default:
-        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Auto' };
+        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Auto' }
     }
   }
   function getConfidenceColor(confidence: number): string {

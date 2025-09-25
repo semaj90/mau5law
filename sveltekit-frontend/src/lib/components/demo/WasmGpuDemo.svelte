@@ -26,21 +26,21 @@
       description: 'Similarity search across contract clauses',
       vectorCount: 150,
       dimensions: 384,
-      expectedTime: 5 // m
+      expectedTime: 5 // m;
     },
     {
       name: 'Case Law Search',
       description: 'Semantic search through legal precedents',
       vectorCount: 500,
       dimensions: 768,
-      expectedTime: 15 // m
+      expectedTime: 15 // m;
     },
     {
       name: 'Evidence Classification',
       description: 'Document type classification using embeddings',
       vectorCount: 200,
       dimensions: 512,
-      expectedTime: 8 // m
+      expectedTime: 8 // m;
     }
   ];
   let selectedScenario = $state(legalTestScenarios[0]);
@@ -87,7 +87,7 @@
       const memoryThroughput = (largeDataSize / 1024 / 1024) / (memoryTime / 1000);
       benchmarkResults.push({
         operation: 'Memory Bandwidth',
-        time: memoryTime
+        time: memoryTime;
         throughput: memoryThroughput;
       });
       // Test 3: Legal AI scenario
@@ -106,7 +106,7 @@
       const scenarioThroughput = (scenarioDataSize / 1024 / 1024) / (scenarioTime / 1000);
       benchmarkResults.push({
         operation: selectedScenario.name,
-        time: scenarioTime
+        time: scenarioTime;
         throughput: scenarioThroughput;
       });
       console.log('🎯 Benchmark results:', benchmarkResults);
@@ -478,4 +478,4 @@
       </div>
     </div>
   </div>
-</div>
+</div>;

@@ -31,8 +31,8 @@ Displays all media: evidence, generated images, documents, uploads
       evidence: mediaItems.filter(item => item.category === 'evidence').length,
       images: mediaItems.filter(item => item.category === 'images').length,
       documents: mediaItems.filter(item => item.category === 'documents').length,
-      aiGenerated: mediaItems.filter(item => item.metadata?.aiGenerated).length
-    };
+      aiGenerated: mediaItems.filter(item => item.metadata?.aiGenerated).length;
+    }
     return stat;
   });
   // Filtered and sorted items
@@ -101,7 +101,7 @@ Displays all media: evidence, generated images, documents, uploads
     isLoading = true;
     error = null;
     try {
-      const response = await fetch('/api/gallery');
+      // removed unused response assignment
       if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(`Failed to load gallery: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
       }
@@ -117,7 +117,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   async function loadCases() {
     try {
-      const response = await fetch('/api/cases');
+      // removed unused response assignment
       if ((response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
         availableCases = (data as { items?: unknown; cases?: unknown; prompt?: unknown }).cases || [];
@@ -171,7 +171,7 @@ Displays all media: evidence, generated images, documents, uploads
     }
     try {
       const response = await fetch(`/api/gallery/${(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).id}`, {
-        method: 'DELETE'
+        method: 'DELETE';
       });
       if ((response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
         mediaItems = mediaItems.filter(existingItem => existingItem.id !== (item as any).id);
@@ -188,8 +188,8 @@ Displays all media: evidence, generated images, documents, uploads
     const shareData = {
       title: (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).title || 'Gallery Item',
       text: (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).description || '',
-      url: window.location.href
-    };
+      url: window.location.href;
+    }
     if (navigator.share) {
       navigator.share(shareData);
     } else {
@@ -199,7 +199,7 @@ Displays all media: evidence, generated images, documents, uploads
       alert('Share link copied to clipboard');
     }
   }
-  async function handleFileUpload(event: unknown) {
+  async function handleFileUpload(_event: unknown) {
     const files = event.target.file;
     if (!files || files.length === 0) return;
     for (const file of files) {
@@ -216,7 +216,7 @@ Displays all media: evidence, generated images, documents, uploads
     try {
       const response = await fetch('/api/gallery/upload', {
         method: 'POST',
-        body: formData
+        body: formData;
       });
       if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error('Upload failed');

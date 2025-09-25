@@ -37,8 +37,8 @@ export interface YoRHaGridColumn {
   editable?: boolean;
   type?: 'text' | 'number' | 'date' | 'boolean' | 'select' | 'action';
     options?: Array<any>;
-    formatter?: (value: any, row: any) => string;
-    validator?: (value: any) => boolean | string;
+    formatter?: (_value: any, row: any) => string;
+    validator?: (_value: any) => boolean | string;
   }
 // (presets and utilities omitted for brevity in this quick fix)
 export const yorhaTablePresets = {} as const;
@@ -49,7 +49,7 @@ export const statusFormatters = {
     priority: (p: string) => p?.toUpperCase() || 'NORMAL',
     evidenceType: (t: string) => t?.toUpperCase() || 'OTHER',
     userRole: (r: string) => r?.toUpperCase() || 'USER'
-  };
+  }
 // Import stores used in convenience object
 import {
   tableManager as importedTableManager,
@@ -64,4 +64,4 @@ export const YoRHa = {
   yorhaTablePresets,
   yorhaGridPresets,
   statusFormatters
-};
+}

@@ -43,7 +43,7 @@ class SIMDBodyParser {
   /**
    * Fast body reader with SIMD acceleration for hot endpoints
    */;
-  async readBodyFast<T = any>(event: RequestEvent): Promise<T | null> {
+  async readBodyFast<T = any>(_event: RequestEvent): Promise<T | null> {
     const startTime = performance.now();
     const endpoint = event.url.pathname;
     try {
@@ -99,7 +99,7 @@ class SIMDBodyParser {
   /**
    * Batch body parser for multiple documents
    */;
-  async readBatchBodyFast<T = any>(event: RequestEvent): Promise<T[]> {
+  async readBatchBodyFast<T = any>(_event: RequestEvent): Promise<T[]> {
     const startTime = performance.now();
     const endpoint = event.url.pathname;
     try {
@@ -138,7 +138,7 @@ class SIMDBodyParser {
   /**
    * Streaming body parser for large legal documents
    */;
-  async readStreamingBodyFast<T = any>(event: RequestEvent): Promise<AsyncGenerator<T, void, unknown> {
+  async readStreamingBodyFast<T = any>(_event: RequestEvent): Promise<AsyncGenerator<T, void, unknown> {
     const endpoint = event.url.pathname;
     const shouldUseSIMD = this.simdEnabled && this.isHotEndpoint(endpoint);
     return this.createStreamingParser<T>(event.request.body, shouldUseSIMD);
@@ -217,7 +217,7 @@ class SIMDBodyParser {
   /**
    * Legal document-specific body parser with entity extraction
    */;
-  async readLegalDocumentFast(event: RequestEvent): Promise<{,
+  async readLegalDocumentFast(_event: RequestEvent): Promise<{,
     document: any;
     entities: Array<any>;
     citations: Array<any>;
@@ -236,7 +236,7 @@ class SIMDBodyParser {
         entities,
         citations,
         parseTime
-      };
+      }
     } catch (error) {
       console.error('Legal document parsing failed:', error);
       return null;
@@ -347,7 +347,7 @@ class SIMDBodyParser {
       ? standardMetrics.reduce((sum, m) => sum + m.parseTime, 0) / standardMetrics.length: 0;
     const speedup = avgStandardTime > 0 ? avgStandardTime / avgSimdTime : 1;
     // Count usage per endpoint
-    const endpointUsage: Record<string, number> = {};
+    const endpointUsage: Record<string, number> = {}
     this.metrics.forEach(m => {
       endpointUsage[m.endpoint] = (endpointUsage[m.endpoint] || 0) + 1;
     });
@@ -357,7 +357,7 @@ class SIMDBodyParser {
       averageParseTime: total > 0 ? this.metrics.reduce((sum, m) => sum + m.parseTime, 0) / total : 0,
       simdSpeedup: speedup
       hotEndpointUsage: endpointUsage
-    };
+    }
   }
   /**
    * Toggle SIMD on/off at runtime
@@ -385,14 +385,14 @@ class SIMDBodyParser {
 // Export singleton instance
 export const simdBodyParser = new SIMDBodyParser();
 // Convenience functions for use in API routes
-export const readBodyFast = <T = any>(event: RequestEvent): Promise<T | null> =>
+export const readBodyFast = <T = any>(_event: RequestEvent): Promise<T | null> =>
   simdBodyParser.readBodyFast<T>(event);
-export const readBatchBodyFast = <T = any>(event: RequestEvent): Promise<T[]> =>
+export const readBatchBodyFast = <T = any>(_event: RequestEvent): Promise<T[]> =>
   simdBodyParser.readBatchBodyFast<T>(event);
-export const readStreamingBodyFast = <T = any>(event: RequestEvent) =>
+export const readStreamingBodyFast = <T = any>(_event: RequestEvent) =>
   simdBodyParser.readStreamingBodyFast<T>(event);
-export const readLegalDocumentFast = (event: RequestEvent) =>
+export const readLegalDocumentFast = (_event: RequestEvent) =>
   simdBodyParser.readLegalDocumentFast(event);
 // Export types
-export type { BodyParseMetrics };
-export { type RequestEvent };
+export type { BodyParseMetrics }
+export { type RequestEvent }

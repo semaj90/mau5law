@@ -11,7 +11,7 @@ interface EmbeddingVector {
   id: string;
   content: string;
   embedding: number[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   similarity?: number;
 }
 /**
@@ -86,7 +86,7 @@ export async function vectorSearch(
         model: 'gemma',
         format: 'float32'
       }
-    };
+    }
   } catch (error) {
     console.error('Vector search error:', error);
     throw new Error(`Vector search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -113,7 +113,7 @@ export async function getVectorSearchStats() {
       indexType: 'ivfflat',
       similarityFunction: 'cosine',
       vectorType: 'vector(768)' // Gemma embedding dimension
-    };
+    }
   } catch (error) {
     console.error('Vector stats error:', error);
     throw new Error(`Failed to get vector statistics: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -127,7 +127,7 @@ export async function batchInsertEmbeddings(
     id: string;
     content: string;
     embedding: number[];
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   }>
 ) {
   try {
@@ -151,7 +151,7 @@ export async function batchInsertEmbeddings(
         updated_at = NOW()
     `;
     await db.execute(insertQuery);
-    return { success: true, inserted: documents.length };
+    return { success: true, inserted: documents.length }
   } catch (error) {
     console.error('Batch insert error:', error);
     throw new Error(`Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -179,7 +179,7 @@ export async function optimizeVectorIndex() {
       indexType: 'ivfflat',
       lists: 100,
       operation: 'cosine_similarity'
-    };
+    }
   } catch (error) {
     console.error('Index optimization error:', error);
     throw new Error(`Index optimization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -211,14 +211,14 @@ export async function vectorSearchHealthCheck() {
         'inner_product',
         'ivfflat_indexing'
       ]
-    };
+    }
   } catch (error) {
     console.error('Vector health check failed:', error);
     return {
-      healthy: false
+      healthy: false;
       error: error instanceof Error ? error.message : 'Unknown error',
       vectorExtension: 'unknown',
       extensionLoaded: false
-    };
+    }
   }
 }

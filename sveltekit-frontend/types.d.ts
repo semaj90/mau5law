@@ -34,7 +34,7 @@ interface OllamaStreamChunk {
 declare global {
   interface GPUDevice {
     // Example: experimental tensor compute extension
-    createTensorPipeline?: (options: unknown) => unknown;
+    createTensorPipeline?: (_options: unknown) => unknown;
   }
 }
 

@@ -1,7 +1,7 @@
 import Fuse from "fuse.js";
 import Loki from '$lib/compat/lokijs';
 // 1. Initialize LokiJS Database
-const db = new Loki('fuzzy.db');
+// removed unused db assignment
 const items = db.addCollection('items');
 // 2. Sample Data (replace with your actual data)
 items.insert([
@@ -13,7 +13,7 @@ items.insert([
 const options = {
   includeScore: true
   keys: ['title', 'type']
-};
+}
 const fuse = new Fuse(items.data, options);
 // 4. Fuzzy Search Function
 export function fuzzySearch(query: string) {

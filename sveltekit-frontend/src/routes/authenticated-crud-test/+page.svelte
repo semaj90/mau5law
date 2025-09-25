@@ -3,12 +3,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/Button.svelte';
   // Type definitions
   interface User {
@@ -50,8 +45,8 @@
       test: true,
       pgvector: true,
       authenticated: true,
-      timestamp: Date.now()
-    }
+      timestamp: Date.now(),
+    },
   });
   // Derived state for test summary
   let testSummary = $derived(() => {
@@ -64,18 +59,18 @@
       passed,
       failed,
       warnings,
-      successRate: total > 0 ? (passed / total * 100).toFixed(1) : '0'
-    };
+      successRate: total > 0 ? ((passed / total) * 100).toFixed(1) : '0',
+    }
   });
   function addResult(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
-    const icons = { info: '📝', success: '✅', error: '❌', warning: '⚠️' };
+    const icons = { info: '📝', success: '✅', error: '❌', warning: '⚠️' }
     const timestamp = new Date().toLocaleTimeString();
     testResults = [...testResults, `[${timestamp}] ${icons[type]} ${message}`];
   }
   // Check authentication status
   async function checkAuth() {
     try {
-      const response = await fetch('/api/test-cases?limit=1') as HttpRespon;
+      // removed unused response assignment
       const data = await response.json();
       if (response.status === 401) {
         isAuthenticated = false;
@@ -93,7 +88,7 @@
       return false;
     } catch (error) {
       authError = 'Failed to check authentication';
-      addResult(`Authentication check error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
+      addResult(`Authentication check error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
       return false;
     }
   }
@@ -133,13 +128,16 @@
         const singleResponse = await fetch(`/api/test-cases?id=${testCaseId}`);
         const singleData = await singleResponse.json();
         if (singleResponse.ok && singleData.success) {
-          addResult(`GET specific case - Success with ${singleData.data.documents?.length || 0} docs, ${singleData.data.activities?.length || 0} activities`, 'success');
+          addResult(
+            `GET specific case - Success with ${singleData.data.documents?.length || 0} docs, ${singleData.data.activities?.length || 0} activities`,
+            'success',
+          );
         } else {
           addResult(`GET specific case - Failed: ${singleData.error}`, 'error');
         }
       }
     } catch (error) {
-      addResult(`GET operations error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
+      addResult(`GET operations error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
     isLoading = false;
   }
@@ -157,8 +155,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newCase,
-          caseNumber: `AUTH-${Date.now()}` // Unique case number
-        })
+          caseNumber: `AUTH-${Date.now()}`, // Unique case number
+        }),
       });
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
@@ -166,21 +164,71 @@
         isAuthenticated = false;
         return null;
       }
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).ok && (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).success) {
-        addResult(`POST /api/test-cases - Success (ID: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.id})`, 'success');
-        addResult(`Embedding generated: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.hasEmbedding ? 'Yes' : 'No'}`, 'info');
-        addResult(`Created by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.createdBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.createdBy?.email}`, 'info');
+      if (
+        (response as { json?: unknown; status?: unknown; ok?: unknown }).ok &&
+        (
+          data as {
+            user?: unknown;
+            documents?: unknown;
+            activities?: unknown;
+            success?: unknown;
+            data?: unknown;
+            message?: unknown;
+            error?: unknown;
+            details?: unknown;
+          }
+        ).success
+      ) {
+        addResult(
+          `POST /api/test-cases - Success (ID: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.id})`,
+          'success',
+        );
+        addResult(
+          `Embedding generated: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.hasEmbedding ? 'Yes' : 'No'}`,
+          'info',
+        );
+        addResult(
+          `Created by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.createdBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.createdBy?.email}`,
+          'info',
+        );
         // Refresh cases list
         await testAuthenticatedGET();
-        return (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data.id;
+        return (
+          data as {
+            user?: unknown;
+            documents?: unknown;
+            activities?: unknown;
+            success?: unknown;
+            data?: unknown;
+            message?: unknown;
+            error?: unknown;
+            details?: unknown;
+          }
+        ).data.id;
       } else {
-        addResult(`POST /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`, 'error');
-        if ((data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).details) {
+        addResult(
+          `POST /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`,
+          'error',
+        );
+        if (
+          (
+            data as {
+              user?: unknown;
+              documents?: unknown;
+              activities?: unknown;
+              success?: unknown;
+              data?: unknown;
+              message?: unknown;
+              error?: unknown;
+              details?: unknown;
+            }
+          ).details
+        ) {
           addResult(`   Details: ${JSON.stringify(details)}`, 'error');
         }
       }
     } catch (error) {
-      addResult(`POST operation error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
+      addResult(`POST operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
     isLoading = false;
     return null;
@@ -208,13 +256,13 @@
         metadata: {
           updated: true,
           timestamp: Date.now(),
-          updatedViaTest: true
-        }
-      };
+          updatedViaTest: true,
+        },
+      }
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
@@ -226,18 +274,44 @@
         addResult('PUT operation failed - access denied (not case owner)', 'error');
         return;
       }
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).ok && (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).success) {
+      if (
+        (response as { json?: unknown; status?: unknown; ok?: unknown }).ok &&
+        (
+          data as {
+            user?: unknown;
+            documents?: unknown;
+            activities?: unknown;
+            success?: unknown;
+            data?: unknown;
+            message?: unknown;
+            error?: unknown;
+            details?: unknown;
+          }
+        ).success
+      ) {
         addResult(`PUT /api/test-cases - Success`, 'success');
-        addResult(`New embedding generated: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.hasNewEmbedding ? 'Yes' : 'No'}`, 'info');
-        addResult(`Updated by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.updatedBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.updatedBy?.email}`, 'info');
-        addResult(`Changed fields: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.changedFields?.join(', ')}`, 'info');
+        addResult(
+          `New embedding generated: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.hasNewEmbedding ? 'Yes' : 'No'}`,
+          'info',
+        );
+        addResult(
+          `Updated by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.updatedBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.updatedBy?.email}`,
+          'info',
+        );
+        addResult(
+          `Changed fields: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.changedFields?.join(', ')}`,
+          'info',
+        );
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
-        addResult(`PUT /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`, 'error');
+        addResult(
+          `PUT /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`,
+          'error',
+        );
       }
     } catch (error) {
-      addResult(`PUT operation error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
+      addResult(`PUT operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
     isLoading = false;
   }
@@ -256,7 +330,7 @@
     addResult(`🗑️ Testing authenticated DELETE operation on case ${targetId}...`);
     try {
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
@@ -268,17 +342,40 @@
         addResult('DELETE operation failed - access denied (not case owner or admin)', 'error');
         return;
       }
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).ok && (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).success) {
+      if (
+        (response as { json?: unknown; status?: unknown; ok?: unknown }).ok &&
+        (
+          data as {
+            user?: unknown;
+            documents?: unknown;
+            activities?: unknown;
+            success?: unknown;
+            data?: unknown;
+            message?: unknown;
+            error?: unknown;
+            details?: unknown;
+          }
+        ).success
+      ) {
         addResult(`DELETE /api/test-cases - Success`, 'success');
-        addResult(`Deleted by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.deletedBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.deletedBy?.email}`, 'info');
-        addResult(`Related data cleaned: timeline(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.timeline}), activities(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.activities}), docs(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.documents})`, 'info');
+        addResult(
+          `Deleted by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.deletedBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.deletedBy?.email}`,
+          'info',
+        );
+        addResult(
+          `Related data cleaned: timeline(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.timeline}), activities(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.activities}), docs(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.documents})`,
+          'info',
+        );
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
-        addResult(`DELETE /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`, 'error');
+        addResult(
+          `DELETE /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`,
+          'error',
+        );
       }
     } catch (error) {
-      addResult(`DELETE operation error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
+      addResult(`DELETE operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
     isLoading = false;
   }
@@ -318,17 +415,20 @@
   // Initialize on mount
   $effect(() => {
     (async () => {
-await checkAuth();
-    if (isAuthenticated) {
-      await testAuthenticatedGET();
-    }
+      await checkAuth();
+      if (isAuthenticated) {
+        await testAuthenticatedGET();
+      }
     })();
   });
 </script>
+
 <div class="container mx-auto p-6 space-y-6">
   <div class="text-center">
     <h1 class="text-3xl font-bold mb-2">Authenticated CRUD Operations Test</h1>
-    <p class="text-gray-600">Testing authenticated CRUD operations with PostgreSQL, pgvector embeddings, and user sessions</p>
+    <p class="text-gray-600">
+      Testing authenticated CRUD operations with PostgreSQL, pgvector embeddings, and user sessions
+    </p>
   </div>
   <!-- Authentication Status -->
   <div class="nes-container">
@@ -367,32 +467,53 @@ await checkAuth();
     </div>
     <div class="yorha-panel-content">
       <div class="flex flex-wrap gap-3">
-  <Button class="bits-btn" onclick={runAuthenticatedCRUDTest} disabled={isLoading || !isAuthenticated} variant="default">
+        <Button
+          class="bits-btn"
+          onclick={runAuthenticatedCRUDTest}
+          disabled={isLoading || !isAuthenticated}
+          variant="default"
+        >
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
         </Button>
-  <Button class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
+        <Button class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
           🔍 Check Auth
         </Button>
-  <Button class="bits-btn" onclick={testAuthenticatedGET} disabled={isLoading || !isAuthenticated} variant="secondary">
+        <Button
+          class="bits-btn"
+          onclick={testAuthenticatedGET}
+          disabled={isLoading || !isAuthenticated}
+          variant="secondary"
+        >
           📋 Test GET
         </Button>
-  <Button class="bits-btn" onclick={testAuthenticatedPOST} disabled={isLoading || !isAuthenticated} variant="secondary">
+        <Button
+          class="bits-btn"
+          onclick={testAuthenticatedPOST}
+          disabled={isLoading || !isAuthenticated}
+          variant="secondary"
+        >
           📝 Test POST
         </Button>
-  <Button class="bits-btn" onclick={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary">
+        <Button
+          class="bits-btn"
+          onclick={() => testAuthenticatedPUT()}
+          disabled={isLoading || !isAuthenticated}
+          variant="secondary"
+        >
           ✏️ Test PUT
         </Button>
-  <Button class="bits-btn" onclick={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary">
+        <Button
+          class="bits-btn"
+          onclick={() => testAuthenticatedDELETE()}
+          disabled={isLoading || !isAuthenticated}
+          variant="secondary"
+        >
           🗑️ Test DELETE
         </Button>
-  <Button class="bits-btn" onclick={clearResults} variant="ghost">
-          🧹 Clear Results
-        </Button>
+        <Button class="bits-btn" onclick={clearResults} variant="ghost">🧹 Clear Results</Button>
       </div>
       {#if !isAuthenticated}
-        <p class="text-sm text-gray-500 mt-2">
-          ⚠️ Authentication required to run tests. Please log in first.
-        </p>
+        <p class="text-sm text-gray-500 mt-2">⚠️ Authentication required to run tests. Please log in first.</p>
       {/if}
     </div>
   </div>
@@ -477,12 +598,15 @@ await checkAuth();
       {:else}
         <div class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm max-h-96 overflow-y-auto space-y-1">
           {#each testResults as result}
-            <div class={
-              (result as { includes?: unknown }).includes('❌') ? 'text-red-400' :
-              (result as { includes?: unknown }).includes('⚠️') ? 'text-yellow-400' :
-              (result as { includes?: unknown }).includes('✅') ? 'text-green-400' :
-              'text-gray-300'
-            }>
+            <div
+              class={(result as { includes?: unknown }).includes('❌')
+                ? 'text-red-400'
+                : (result as { includes?: unknown }).includes('⚠️')
+                  ? 'text-yellow-400'
+                  : (result as { includes?: unknown }).includes('✅')
+                    ? 'text-green-400'
+                    : 'text-gray-300'}
+            >
               {result}
             </div>
           {/each}
@@ -491,3 +615,4 @@ await checkAuth();
     </div>
   </div>
 </div>
+;

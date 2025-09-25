@@ -70,9 +70,9 @@
   // System health indicators using Svelte 5 $derived
   let systemHealth = $derived(() => {
     const avgLoad = (systemData.systemLoad + systemData.gpuUtilization + systemData.memoryUsage) / 3;
-    if (avgLoad > 85) return { status: 'critical', color: 'red', message: 'System under heavy load' };
-    if (avgLoad > 70) return { status: 'warning', color: 'yellow', message: 'Elevated resource usage' };
-    return { status: 'optimal', color: 'green', message: 'All systems operational' };
+    if (avgLoad > 85) return { status: 'critical', color: 'red', message: 'System under heavy load' }
+    if (avgLoad > 70) return { status: 'warning', color: 'yellow', message: 'Elevated resource usage' }
+    return { status: 'optimal', color: 'green', message: 'All systems operational' }
   });
   // Animation cycle with error handling
   $effect(() => {
@@ -96,7 +96,7 @@
       }, 300);
     }
   }
-  function handleCaseCreated(event: unknown) {
+  function handleCaseCreated(_event: unknown) {
     const newCase = event.detail.ca;
     showCaseModal = false;
     // Update recent activity
@@ -113,18 +113,18 @@
     // Update system data (for reactive updates)
     systemData.activeCases = systemData.activeCases + 1;
   }
-  function handleCaseError(event: unknown) {
+  function handleCaseError(_event: unknown) {
     console.error('Case creation error:', event.detail.message);
     // You could add a notification system here
   }
   // Modal event handlers for superforms integration
-  function handleCaseCreationSuccess(event: unknown) {
+  function handleCaseCreationSuccess(_event: unknown) {
     return handleCaseCreated(event);
   }
-  function handleCaseCreationError(event: unknown) {
+  function handleCaseCreationError(_event: unknown) {
     return handleCaseError(event);
   }
-  function handleModalBackdropClick(event: unknown) {
+  function handleModalBackdropClick(_event: unknown) {
     if (event.target === event.currentTarget) {
       showCaseModal = false;
     }

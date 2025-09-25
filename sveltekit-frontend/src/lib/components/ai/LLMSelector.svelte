@@ -13,39 +13,39 @@
     Zap,
     Database,
     Globe,
-    Settings
-  } from 'lucide-svelte'
+    Settings,
+  } from 'lucide-svelte';
   // LLM Provider Types
   interface LLMModel {
-    id: string
-    name: string
-    displayName: string
-    provider: 'ollama' | 'autogen' | 'crewai' | 'langchain'
-    size: string
-    specialization: 'general' | 'legal' | 'code' | 'reasoning' | 'embedding'
+    id: string;
+    name: string;
+    displayName: string;
+    provider: 'ollama' | 'autogen' | 'crewai' | 'langchain';
+    size: string;
+    specialization: 'general' | 'legal' | 'code' | 'reasoning' | 'embedding';
     status: 'online' | 'offline' | 'loading' | 'error';
     performance: {
-      tokensPerSecond: number
-      memoryUsage: string
-      responseTime: number
+      tokensPerSecond: number;
+      memoryUsage: string;
+      responseTime: number;
     }
-    capabilities: string[]
+    capabilities: string[];
     endpoint: string;
   }
   interface Props {
-    selectedModel?: LLMModel
-    onModelChange?: (model: LLMModel) => void
-    showMetrics?: boolean
-    allowMultiSelect?: boolean
-    filterBy?: 'all' | 'legal' | 'general' | 'code'
+    selectedModel?: LLMModel;
+    onModelChange?: (model: LLMModel) => void;
+    showMetrics?: boolean;
+    allowMultiSelect?: boolean;
+    filterBy?: 'all' | 'legal' | 'general' | 'code';
   }
   let {
     selectedModel = $bindable(),
     onModelChange = () => {},
     showMetrics = true,
     allowMultiSelect = false,
-    filterBy = 'all'
-  }: Props = $props()
+    filterBy = 'all',
+  }: Props = $props();
   // Available LLM Models
   let availableModels = $state<LLMModel[]>([
     {
@@ -59,10 +59,10 @@
       performance: {
         tokensPerSecond: 25,
         memoryUsage: '6.8GB',
-        responseTime: 1200
+        responseTime: 1200,
       },
       capabilities: ['legal-analysis', 'case-research', 'document-review'],
-      endpoint: 'http://localhost:11434'
+      endpoint: 'http://localhost:11434',
     },
     {
       id: 'llama3-instruct',
@@ -75,10 +75,10 @@
       performance: {
         tokensPerSecond: 35,
         memoryUsage: '4.2GB',
-        responseTime: 800
+        responseTime: 800,
       },
       capabilities: ['general-chat', 'reasoning', 'summarization'],
-      endpoint: 'http://localhost:11434'
+      endpoint: 'http://localhost:11434',
     },
     {
       id: 'codellama-code',
@@ -91,10 +91,10 @@
       performance: {
         tokensPerSecond: 40,
         memoryUsage: '3.5GB',
-        responseTime: 600
+        responseTime: 600,
       },
       capabilities: ['code-generation', 'debugging', 'refactoring'],
-      endpoint: 'http://localhost:11434'
+      endpoint: 'http://localhost:11434',
     },
     {
       id: 'nomic-embed',
@@ -107,17 +107,16 @@
       performance: {
         tokensPerSecond: 500,
         memoryUsage: '512MB',
-        responseTime: 100
+        responseTime: 100,
       },
       capabilities: ['text-embedding', 'similarity-search', 'vector-generation'],
-      endpoint: 'http://localhost:11434'
-    }
-  ])
+      endpoint: 'http://localhost:11434',
+    },
+  ]);
   // Filter models based on criteria
   let filteredModels = $derived(
-    filterBy === 'all' ? availableModels :
-    availableModels.filter(model => model.specialization === filterBy)
-  )
+    filterBy === 'all' ? availableModels : availableModels.filter(model => model.specialization === filterBy),
+  );
   // Melt UI Select Setup
   // const {
   //   elements: { trigger, menu, option, label },
@@ -132,10 +131,10 @@
   //   }
   // })
   // Mock implementations for now
-  const trigger = {};
-  const menu = {};
+  const trigger = {}
+  const menu = {}
   const option = () => ({});
-  const label = {};
+  const label = {}
   const selectedLabel = 'Select Model';
   const open = false;
   const selected = null;
@@ -143,31 +142,46 @@
   // Provider Icons
   const getProviderIcon = (provider: string) => {
     switch (provider) {
-      case 'ollama': return Cpu
-      case 'autogen': return Brain
-      case 'crewai': return Database
-      case 'langchain': return Globe
-      default: return Setting;
+      case 'ollama':
+        return Cpu;
+      case 'autogen':
+        return Brain;
+      case 'crewai':
+        return Database;
+      case 'langchain':
+        return Globe;
+      default:
+        return Setting;
     }
   }
   // Status Colors
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'online': return 'text-green-400'
-      case 'offline': return 'text-red-400'
-      case 'loading': return 'text-yellow-400'
-      case 'error': return 'text-red-500'
-      default: return 'text-gray-400';
+      case 'online':
+        return 'text-green-400';
+      case 'offline':
+        return 'text-red-400';
+      case 'loading':
+        return 'text-yellow-400';
+      case 'error':
+        return 'text-red-500';
+      default:
+        return 'text-gray-400';
     }
   }
   // Status Icons
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'online': return CheckCircle
-      case 'offline': return AlertCircle
-      case 'loading': return Loader2
-      case 'error': return AlertCircl;
-      default: return AlertCircl;
+      case 'online':
+        return CheckCircle;
+      case 'offline':
+        return AlertCircle;
+      case 'loading':
+        return Loader2;
+      case 'error':
+        return AlertCircl;
+      default:
+        return AlertCircl;
     }
   }
   // State for dropdown
@@ -191,49 +205,48 @@
       try {
         const response = await fetch(`${model.endpoint}/api/tags`, {
           method: 'GET',
-          signal: AbortSignal.timeout(2000)
-        })
+          signal: AbortSignal.timeout(2000),
+        });
         if (response.ok) {
-          const data = await response.json()
-          const isModelLoaded = data.models?.some((m: any) => m.name === model.name)
-          model.status = isModelLoaded ? 'online' : 'offline'
+          const data = await response.json();
+          const isModelLoaded = data.models?.some((m: any) => m.name === model.name);
+          model.status = isModelLoaded ? 'online' : 'offline';
         } else {
-          model.status = 'offline'
+          model.status = 'offline';
         }
       } catch (error) {
-        model.status = 'error'
+        model.status = 'error';
       }
     }
     // Trigger reactivity
-    availableModels = [...availableModels]
+    availableModels = [...availableModels];
   }
   async function loadModel(model: LLMModel) {
-    if (model.status === 'online') return
-    model.status = 'loading'
-    availableModels = [...availableModels]
+    if (model.status === 'online') return;
+    model.status = 'loading';
+    availableModels = [...availableModels];
     try {
       const response = await fetch(`${model.endpoint}/api/pull`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: model.name })
-      })
+        body: JSON.stringify({ name: model.name }),
+      });
       if (response.ok) {
-        model.status = 'online'
+        model.status = 'online';
       } else {
-        model.status = 'error'
+        model.status = 'error';
       }
     } catch (error) {
-      model.status = 'error'
+      model.status = 'error';
     }
-    availableModels = [...availableModels]
+    availableModels = [...availableModels];
   }
 </script>
+
 <!-- LLM Selector Component -->
 <div class="w-full max-w-md">
   <!-- Label -->
-  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-    AI Model Selection
-  </label>
+  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> AI Model Selection </label>
   <!-- Trigger Button -->
   <button
     onclick={() => (isOpen = !isOpen)}
@@ -250,13 +263,13 @@
         {@const SvelteComponent = getProviderIcon(selectedModel.provider)}
         {@const SvelteComponent_1 = getStatusIcon(selectedModel.status)}
         <div class="flex items-center gap-2">
-          <SvelteComponent
-            class="h-4 w-4 text-blue-500"
-          />
+          <SvelteComponent class="h-4 w-4 text-blue-500" />
           <span class="font-medium">{selectedModel.displayName}</span>
           <div class="flex items-center gap-1">
             <SvelteComponent_1
-              class="h-3 w-3 {getStatusColor(selectedModel.status)} {selectedModel.status === 'loading' ? 'animate-spin' : ''}"
+              class="h-3 w-3 {getStatusColor(selectedModel.status)} {selectedModel.status === 'loading'
+                ? 'animate-spin'
+                : ''}"
             />
             <span class="text-xs {getStatusColor(selectedModel.status)}">
               {selectedModel.status.toUpperCase()}
@@ -274,7 +287,8 @@
     <div
       class="z-50 mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-700
              bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5
-             max-h-96 overflow-auto";
+             max-h-96 overflow-auto"
+      ;
       in:fade={{ duration: 150 }}
       out:fade={{ duration: 100 }}
     >
@@ -284,10 +298,12 @@
           {@const SvelteComponent_3 = getStatusIcon(model.status)}
           <button
             onclick={() => selectModel(model)}
-            class="flex w-full items-center justify-between px-4 py-3 text-sm
+            class="flex w-full items-center justify-between px-4 py-3 text-sm;
                    hover: bg-gray-100 dark:hover:bg-gray-700;
                    focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none
-                   {selectedModel?.id === model.id ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-gray-100'}"
+                   {selectedModel?.id === model.id
+              ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+              : 'text-gray-900 dark:text-gray-100'}"
           >
             <div class="flex items-center gap-3 flex-1 min-w-0">
               <!-- Provider Icon -->
@@ -300,8 +316,10 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
                   <span class="font-medium truncate">{model.displayName}</span>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                              bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                              bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+                  >
                     {model.specialization}
                   </span>
                 </div>
@@ -315,8 +333,10 @@
                 <!-- Capabilities -->
                 <div class="flex flex-wrap gap-1 mt-2">
                   {#each model.capabilities.slice(0, 3) as capability}
-                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs
-                                bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                    <span
+                      class="inline-flex items-center px-1.5 py-0.5 rounded text-xs
+                                bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                    >
                       {capability}
                     </span>
                   {/each}
@@ -336,9 +356,9 @@
                 <!-- Load Button -->
                 {#if model.status === 'offline'}
                   <button
-                    onclick={(e) => {
-                      e.stopPropagation()
-                      loadModel(model)
+                    onclick={e => {
+                      e.stopPropagation();
+                      loadModel(model);
                     }}
                     class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover: bg-blue-700 ;
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
@@ -380,6 +400,8 @@
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
 </style>
+;

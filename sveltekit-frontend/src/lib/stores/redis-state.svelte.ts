@@ -37,11 +37,11 @@ class RedisStateStore {
   // Derived connection status
   connectionStatus = $derived(() => {
     if (this.state.isConnected) {
-      return { status: 'connected', color: 'green', text: 'Connected' };
+      return { status: 'connected', color: 'green', text: 'Connected' }
     } else if (this.state.connectionAttempts > 0) {
-      return { status: 'reconnecting', color: 'yellow', text: 'Reconnecting...' };
+      return { status: 'reconnecting', color: 'yellow', text: 'Reconnecting...' }
     } else {
-      return { status: 'disconnected', color: 'red', text: 'Disconnected' };
+      return { status: 'disconnected', color: 'red', text: 'Disconnected' }
     }
   });
   // Connection health indicator
@@ -77,7 +77,7 @@ class RedisStateStore {
       lastMinute: lastMinute.length,
       lastHour: lastHour.length,
       total: this.recentMessages.length
-    };
+    }
   });
   constructor() {
     this.setupReactiveEffects();
@@ -154,7 +154,7 @@ class RedisStateStore {
       data,
       timestamp: Date.now(),
       userId
-    };
+    }
     this.recentMessages = [...this.recentMessages.slice(-99), message]; // Keep last 100
     this.state.messageCount++;
   }
@@ -197,7 +197,7 @@ export function useRedisState() {
     lastError: () => redisStateStore.lastError,
     activeChannels: () => redisStateStore.activeChannels,
     messageCount: () => redisStateStore.messageCount
-  };
+  }
 }
 // Integration helper for existing Redis service
 export function createRedisStateIntegration(redisService: any) {
@@ -229,5 +229,5 @@ export function createRedisStateIntegration(redisService: any) {
     onCacheMiss: () => {
       redisStateStore.recordCacheMiss();
     }
-  };
+  }
 }

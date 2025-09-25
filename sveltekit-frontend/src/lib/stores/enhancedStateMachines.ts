@@ -54,7 +54,7 @@ export interface VectorMatch {
   evidenceId: string;
   similarity: number;
   content: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   rank: number;
 }
 export interface AIAnalysis {
@@ -69,7 +69,7 @@ export interface GraphNode {
   id: string;
   type: 'evidence' | 'person' | 'location' | 'event' | 'concept';
   label: string;
-  properties: { [key: string]: any };
+  properties: { [key: string]: any }
   connections: GraphConnection[];
 }
 export interface GraphConnection {
@@ -77,7 +77,7 @@ export interface GraphConnection {
   type: string;
   strength: number;
   bidirectional: boolean;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface StreamingUpdate {
   id: string;
@@ -108,7 +108,7 @@ type EvidenceEvent =
   | { type: 'RETRY_FAILED'; evidenceId: string }
   | { type: 'CLEAR_ERRORS' }
   | { type: 'HEALTH_CHECK' }
-  | { type: 'SYNC_CACHE' };
+  | { type: 'SYNC_CACHE' }
 // ======================================================================
 // EVIDENCE PROCESSING STATE MACHINE
 // ======================================================================
@@ -157,13 +157,13 @@ export const evidenceProcessingMachine = setup({
         // Extract results, handling potential failures
         const embeddings =
           embeddingResponse.status === 'fulfilled'
-            ? embeddingResponse.value:  { vector: [], confidence: 0 };
+            ? embeddingResponse.value:  { vector: [], confidence: 0 }
         const tags =
           taggingResponse.status === 'fulfilled'
-            ? taggingResponse.value:  { tags: [], confidence: 0 };
+            ? taggingResponse.value:  { tags: [], confidence: 0 }
         const analysis =
           analysisResponse.status === 'fulfilled'
-            ? analysisResponse.value:  { analysis: { [key: string]: any }, confidence: 0 };
+            ? analysisResponse.value:  { analysis: { [key: string]: any }, confidence: 0 }
         const processingTime = Date.now() - startTime;
         return {
           evidenceId: input.evidence.id,
@@ -177,7 +177,7 @@ export const evidenceProcessingMachine = setup({
             analysis.confidence || 0
           ),
           timestamp: new Date()
-        };
+        }
       } catch (error: any) {
         throw new Error(`AI processing failed: ${(error as Error).message}`);
       }
@@ -198,7 +198,7 @@ export const evidenceProcessingMachine = setup({
           return await (response as { ok?: any; json?: any }).json();
         } catch (error: any) {
           // Return empty results on failure
-          return { matches: [] };
+          return { matches: [] }
         }
       }
     ),
@@ -217,7 +217,7 @@ export const evidenceProcessingMachine = setup({
         return await (response as { ok?: any; json?: any }).json();
       } catch (error: any) {
         // Return empty relationships on failure
-        return { nodes: [], connections: [] };
+        return { nodes: [], connections: [] }
       }
     }),
     // Health monitoring
@@ -244,19 +244,19 @@ export const evidenceProcessingMachine = setup({
           : checks.some((check) => check.status === 'fulfilled' && check.value.status === 'healthy')
             ? 'degraded'
             : 'critical';
-        return { health: healthStatus, details: checks };
+        return { health: healthStatus, details: checks }
       } catch (error: any) {
-        return { health: 'critical', details: [], error: (error as Error).message };
+        return { health: 'critical', details: [], error: (error as Error).message }
       }
     }),
     syncCache: fromPromise(async () => {
       try {
-        const response = await fetch('/api/cache/sync', { method: 'POST' });
+        // removed unused response assignment
         if (!(response as { ok?: any; json?: any }).ok) throw new Error('Cache sync failed');
         const result = await (response as { ok?: any; json?: any }).json();
-        return { cacheOperations: (result as { operations?: any }).operations || 0 };
+        return { cacheOperations: (result as { operations?: any }).operations || 0 }
       } catch (error: any) {
-        return { cacheOperations: 0, error: (error as Error).message };
+        return { cacheOperations: 0, error: (error as Error).message }
       }
     })
   },
@@ -393,7 +393,7 @@ export const evidenceProcessingMachine = setup({
               return {
                 embeddings: context.embeddings.get(currentEvidence.id) || [],
                 limit: 15
-              };
+              }
             },
             onDone: {
               target: 'relationshipDiscovery',
@@ -618,7 +618,7 @@ export const streamingStore = writable({
   isStreaming: false
   streamType: null as string | null
   progress: 0,
-  data: null as any
+  data: null as any;
   error: null as string | null
 });
 // ======================================================================
@@ -641,7 +641,7 @@ export async function initializeEnhancedMachines(): Promise<any> {
     evidenceActor.start();
     return {
       evidenceActor
-    };
+    }
   } catch (error: any) {
     console.error('Failed to initialize enhanced machines:', error);
     throw error;

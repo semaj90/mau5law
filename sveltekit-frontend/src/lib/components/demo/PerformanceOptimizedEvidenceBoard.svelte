@@ -5,7 +5,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { createRedisBackedState, getCacheStats } from '$lib/stores/redis-component-store';
-  import { componentLoader, loadLegalComponent, preloadEssentialComponents } from '$lib/components/ui/enhanced-bits/index.optimized';
+  import {
+    componentLoader,
+    loadLegalComponent,
+    preloadEssentialComponents,
+  } from '$lib/components/ui/enhanced-bits/index.optimized';
   import { componentMetadataCache } from '$lib/stores/component-metadata-cache';
   import { evidenceAnalysisCacheService, getCachedAnalysis, cacheAnalysis } from '$lib/stores/evidence-cache-service';
   // Performance-optimized state with Redis backing
@@ -40,22 +44,22 @@
       title: 'Contract Document Alpha',
       content: 'Legal contract with specific clauses...',
       confidence: 0.92,
-      priority: 'high'
+      priority: 'high',
     },
     {
       id: 'ev-002',
       title: 'Email Correspondence Beta',
       content: 'Email chain discussing terms...',
       confidence: 0.78,
-      priority: 'medium'
+      priority: 'medium',
     },
     {
       id: 'ev-003',
       title: 'Financial Records Gamma',
       content: 'Bank statements and transactions...',
       confidence: 0.95,
-      priority: 'critical'
-    }
+      priority: 'critical',
+    },
   ];
   // Performance-optimized component loading
   async function loadComponents() {
@@ -63,9 +67,13 @@
     try {
       // Load components in parallel with different priorities
       const componentPromises = [
-        loadLegalComponent('EvidenceCard').then(comp => EvidenceCard = comp),
-        componentLoader.loadComponent('SearchInput', { category: 'advanced', priority: 'immediate' }).then(comp => SearchInput = comp),
-        componentLoader.loadComponent('LoadingSpinner', { category: 'gaming', priority: 'background' }).then(comp => LoadingSpinner = comp)
+        loadLegalComponent('EvidenceCard').then(comp => (EvidenceCard = comp)),
+        componentLoader
+          .loadComponent('SearchInput', { category: 'advanced', priority: 'immediate' })
+          .then(comp => (SearchInput = comp)),
+        componentLoader
+          .loadComponent('LoadingSpinner', { category: 'gaming', priority: 'background' })
+          .then(comp => (LoadingSpinner = comp)),
       ];
       // Show loading progress
       for (let i = 0; i < componentPromises.length; i++) {
@@ -109,14 +117,14 @@
         keyTerms: ['contract', 'agreement', 'legal'],
         summary: `Analysis of ${evidence.title}`,
         recommendations: ['Review clause 3.2', 'Verify signatures'],
-        timestamp: Date.now()
-      };
+        timestamp: Date.now(),
+      }
       const processingTime = performance.now() - startTime;
       // Cache the result
       await cacheAnalysis(evidence.id, 'classification', analysisResult, {
         confidence: evidence.confidence,
         processingTime,
-        metadata: { source: 'enhanced-bits-demo' }
+        metadata: { source: 'enhanced-bits-demo' },
       });
       evidence.analysis = analysisResult;
       return analysisResult;
@@ -144,7 +152,7 @@
       cacheHitRate: cacheStats.hitRate || 0,
       totalAnalysisCached: cacheStats.hitCount || 0,
       bundleSize: await componentMetadataCache.calculateBundleSize('EvidenceBoard'),
-    };
+    }
   }
   // Initialize on mount
   onMount(async () => {
@@ -162,7 +170,7 @@
     const metricsInterval = setInterval(updatePerformanceMetrics, 5000);
     return () => {
       clearInterval(metricsInterval);
-    };
+    }
   });
   // Optimized search with debouncing
   let searchTimeout: ReturnType<typeof setTimeout>;
@@ -177,12 +185,14 @@
   // Filtered evidence based on search
   let filteredEvidence = $derived(() => {
     if (!$searchQuery) return $evidenceList;
-    return $evidenceList.filter(evidence =>
-      evidence.title.toLowerCase().includes($searchQuery.toLowerCase()) ||
-      evidence.content.toLowerCase().includes($searchQuery.toLowerCase())
+    return $evidenceList.filter(
+      evidence =>
+        evidence.title.toLowerCase().includes($searchQuery.toLowerCase()) ||
+        evidence.content.toLowerCase().includes($searchQuery.toLowerCase()),
     );
   });
 </script>
+
 <svelte:head>
   <title>Performance-Optimized Evidence Board | Enhanced-Bits Demo</title>
 </svelte:head>
@@ -232,15 +242,10 @@
               this={SearchInput}
               placeholder="Search evidence..."
               value={$searchQuery}
-              oninput={(e) => handleSearch(e.target.value)}
+              oninput={e => handleSearch(e.target.value)}
             />
           {/if}
-          <button
-            class="analyze-all-btn"
-            onclick={analyzeAllEvidence}
-          >
-            🤖 Analyze All Evidence
-          </button>
+          <button class="analyze-all-btn" onclick={analyzeAllEvidence}> 🤖 Analyze All Evidence </button>
         </div>
       </header>
       <!-- Evidence Grid -->
@@ -260,9 +265,7 @@
                 <h3>{evidence.title}</h3>
                 <p>Confidence: {Math.round(evidence.confidence * 100)}%</p>
                 <p>Priority: {evidence.priority}</p>
-                <button onclick={() => analyzeEvidence(evidence)}>
-                  Analyze
-                </button>
+                <button onclick={() => analyzeEvidence(evidence)}> Analyze </button>
               </div>
             {/if}
           </div>
@@ -289,6 +292,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .evidence-board-container {
     max-width: 1400px;

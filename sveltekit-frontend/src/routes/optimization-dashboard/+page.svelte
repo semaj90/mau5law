@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
       currentUsage: 0,
       efficiency: 0,
       predictions: [],
-      lodLevel: 'medium' as const
+      lodLevel: 'medium' as const;
     },
     mlCaching: {
       hitRate: 0,
@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
       systemHealth: 'healthy' as const,
       queuedJobs: 0
     } as WorkerStats,
-    recommendations: [] as string[]
+    recommendations: [] as string[];
   });
   let isMonitoring = $state(false);
   let lastUpdate = $state(new Date());
@@ -51,8 +51,8 @@ https://svelte.dev/e/js_parse_error -->
         currentUsage: enhancedRAGStore.neuralMemory.getCurrentMemoryUsage(),
         efficiency: memoryReport.memoryEfficiency,
         predictions: [],
-        lodLevel: "medium" as const
-      };
+        lodLevel: "medium" as const;
+      }
       // Get caching metrics
       const ragState = enhancedRAGStore.stat;
       systemStatus.mlCaching = ragState.cacheMetric;
@@ -66,11 +66,11 @@ https://svelte.dev/e/js_parse_error -->
       const now = new Date();
       performanceChart.memoryUsage.push({
         time: now,
-        value: systemStatus.neuralMemory.currentUsag
+        value: systemStatus.neuralMemory.currentUsag;
       });
       performanceChart.cacheHitRate.push({
         time: now,
-        value: systemStatus.mlCaching.hitRat
+        value: systemStatus.mlCaching.hitRat;
       });
       // Keep only last 20 data points
       if (performanceChart.memoryUsage.length > 20) {
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
             metadata: { source: 'test' }
           },
           options: { maxLength: 100, style: 'brief' },
-          priority: 'high'
+          priority: 'high';
         })
       });
       if (jobResponse.ok) {
@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     } catch (error) {
       console.error('Worker system test failed:', error);
-      testJobResult = { error: 'Test failed: ' + error.message };
+      testJobResult = { error: 'Test failed: ' + error.message }
     } finally {
       isSubmittingJob = false;
     }
@@ -158,6 +158,7 @@ https://svelte.dev/e/js_parse_error -->
     updateSystemMetrics();
   });
 </script>
+
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-6">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
@@ -166,7 +167,8 @@ https://svelte.dev/e/js_parse_error -->
         🧠 Advanced Optimization Dashboard
       </h1>
       <p class="text-slate-300">
-        Real-time monitoring of neural memory prediction, ML-based caching, adaptive resource management, and specialized workers
+        Real-time monitoring of neural memory prediction, ML-based caching, adaptive resource management, and
+        specialized workers
       </p>
       <div class="flex gap-4 mt-4">
         <button
@@ -184,9 +186,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <!-- Neural Memory Status -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
-        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-          🧠 Neural Memory
-        </h3>
+        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">🧠 Neural Memory</h3>
         <div class="space-y-3">
           <div class="flex justify-between">
             <span class="text-slate-300">Usage:</span>
@@ -204,9 +204,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- ML Caching Status -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
-        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-          ⚡ ML Caching
-        </h3>
+        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">⚡ ML Caching</h3>
         <div class="space-y-3">
           <div class="flex justify-between">
             <span class="text-slate-300">Hit Rate:</span>
@@ -224,9 +222,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Worker System Status -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
-        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-          🏗️ Worker System
-        </h3>
+        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">🏗️ Worker System</h3>
         <div class="space-y-3">
           <div class="flex justify-between">
             <span class="text-slate-300">Health:</span>
@@ -244,9 +240,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Performance Overview -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
-        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-          📊 Performance
-        </h3>
+        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">📊 Performance</h3>
         <div class="space-y-3">
           <div class="flex justify-between">
             <span class="text-slate-300">Avg Response:</span>
@@ -291,9 +285,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Cache Optimization -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
         <h3 class="text-lg font-semibold mb-4">⚡ Cache Optimization</h3>
-        <p class="text-slate-300 text-sm mb-4">
-          Trigger ML-based cache optimization and memory rebalancing
-        </p>
+        <p class="text-slate-300 text-sm mb-4">Trigger ML-based cache optimization and memory rebalancing</p>
         <button
           onclick={optimizeCache}
           class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
@@ -304,9 +296,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Worker System Test -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
         <h3 class="text-lg font-semibold mb-4">🏗️ Test Worker System</h3>
-        <p class="text-slate-300 text-sm mb-4">
-          Submit a test job to the specialized worker system
-        </p>
+        <p class="text-slate-300 text-sm mb-4">Submit a test job to the specialized worker system</p>
         <button
           onclick={testWorkerSystem}
           disabled={isSubmittingJob}
@@ -402,6 +392,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
+
 <style>
   /* Custom scrollbar for webkit browsers */
   ::-webkit-scrollbar {

@@ -4,42 +4,33 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/Button.svelte';
-  import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
-  import { formatFileSize } from "$lib/utils/file-utils";
-  import {
-    AlertCircle,
-    CheckCircle,
-    File,
-    Loader2,
-    Upload,
-    X,
-  } from "lucide-svelte";
+  import { uploadActions, uploadModal } from '$lib/stores/evidence-store';
+  import { formatFileSize } from '$lib/utils/file-utils';
+  import { AlertCircle, CheckCircle, File, Loader2, Upload, X } from 'lucide-svelte';
   let fileInput: HTMLInputElement;
   let dragActive = $state(false);
   let isOpen = $derived($uploadModal.isOpen);
   let files = $derived($uploadModal.files || []);
-  let activeUploads = $derived(files.filter(
-    (f) => f?.status === "uploading" || f?.status === "processing"
-  ));
-  let completedUploads = $derived(files.filter((f) => f?.status === "completed"));
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  let activeUploads = $derived(files.filter(f => f?.status === 'uploading' || f?.status === 'processing'));
+  let completedUploads = $derived(files.filter(f => f?.status === 'completed'));
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     if (target.files && target.files.length > 0) {
       uploadActions.addFiles(Array.from(target.files));
     }
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dragActive = false;
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
       uploadActions.addFiles(Array.from(event.dataTransfer.files));
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dragActive = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     dragActive = false;
   }
@@ -51,6 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     // ondispatch removed;
   }
 </script>
+
 {#if isOpen}
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -60,10 +52,9 @@ https://svelte.dev/e/js_parse_error -->
           <Upload class="container mx-auto px-4" />
           <h2 class="container mx-auto px-4">Upload Evidence</h2>
         </div>
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-closeModal()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => closeModal()}>
           <X class="container mx-auto px-4" />
-</Button>
+        </Button>
       </div>
       <!-- Body -->
       <div class="container mx-auto px-4">
@@ -78,26 +69,21 @@ closeModal()}>
           ondragover={handleDragOver}
           ondragleave={handleDragLeave}
           onclick={() => fileInput?.click()}
-          keydown={(e) =>
-            (e.key === "Enter" || e.key === " ") && fileInput?.click()}
+          keydown={e => (e.key === 'Enter' || e.key === ' ') && fileInput?.click()}
         >
           <Upload class="container mx-auto px-4" />
-          <h3 class="container mx-auto px-4">
-            Drop files here or click to browse
-          </h3>
+          <h3 class="container mx-auto px-4">Drop files here or click to browse</h3>
           <p id="evidence-dropzone-instructions" class="container mx-auto px-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button class="bits-btn" variant="ghost" onclick={() =>
-fileInput?.click()}>
-            Choose Files
-</Button>
+          <Button class="bits-btn" variant="ghost" onclick={() => fileInput?.click()}>Choose Files</Button>
           <input
             bind:this={fileInput}
             type="file"
             multiple
             class="container mx-auto px-4"
-            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls" onchange={handleFileSelect}
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls"
+            onchange={handleFileSelect}
           />
         </div>
         <!-- File List -->
@@ -112,11 +98,11 @@ fileInput?.click()}>
                   <div class="container mx-auto px-4">
                     <div class="container mx-auto px-4">
                       <div class="container mx-auto px-4">
-                        {#if file.status === "completed"}
+                        {#if file.status === 'completed'}
                           <CheckCircle class="container mx-auto px-4" />
-                        {:else if file.status === "error"}
+                        {:else if file.status === 'error'}
                           <AlertCircle class="container mx-auto px-4" />
-                        {:else if file.status === "uploading" || file.status === "processing"}
+                        {:else if file.status === 'uploading' || file.status === 'processing'}
                           <Loader2 class="container mx-auto px-4" />
                         {:else}
                           <File class="container mx-auto px-4" />
@@ -124,28 +110,23 @@ fileInput?.click()}>
                       </div>
                       <div class="container mx-auto px-4">
                         <p class="container mx-auto px-4">
-                          {file.file?.name || "Unknown file"}
+                          {file.file?.name || 'Unknown file'}
                         </p>
                         <p class="container mx-auto px-4">
-                          {file.file?.size
-                            ? formatFileSize(file.file.size)
-                            : "Unknown size"}
-                          {#if file.status === "uploading"}
+                          {file.file?.size ? formatFileSize(file.file.size) : 'Unknown size'}
+                          {#if file.status === 'uploading'}
                             • {Math.round(file.progress || 0)}% uploaded
-                          {:else if file.status === "processing"}
+                          {:else if file.status === 'processing'}
                             • Processing...
-                          {:else if file.status === "error"}
+                          {:else if file.status === 'error'}
                             • Upload failed
-                          {:else if file.status === "completed"}
+                          {:else if file.status === 'completed'}
                             • Upload complete
                           {/if}
                         </p>
-                        {#if file.status === "uploading" && file.progress && file.progress > 0}
+                        {#if file.status === 'uploading' && file.progress && file.progress > 0}
                           <div class="container mx-auto px-4">
-                            <div
-                              class="container mx-auto px-4"
-                              style="width: {file.progress}%"
-                            ></div>
+                            <div class="container mx-auto px-4" style="width: {file.progress}%"></div>
                           </div>
                         {/if}
                         {#if file.error}
@@ -154,14 +135,9 @@ fileInput?.click()}>
                       </div>
                     </div>
                     <div class="container mx-auto px-4">
-                      <Button class="bits-btn"
-                        variant="ghost"
-                        size="sm"
-                        onclick={() =>
-removeFile(file.id)}
-                      >
+                      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => removeFile(file.id)}>
                         <X class="container mx-auto px-4" />
-</Button>
+                      </Button>
                     </div>
                   </div>
                 {/if}
@@ -174,30 +150,23 @@ removeFile(file.id)}
       <div class="container mx-auto px-4">
         <div class="container mx-auto px-4">
           {#if activeUploads.length > 0}
-            Processing {activeUploads.length} file{activeUploads.length !== 1
-              ? "s"
-              : ""}...
+            Processing {activeUploads.length} file{activeUploads.length !== 1 ? 's' : ''}...
           {:else if completedUploads.length > 0}
-            {completedUploads.length} file{completedUploads.length !== 1
-              ? "s"
-              : ""} uploaded successfully
+            {completedUploads.length} file{completedUploads.length !== 1 ? 's' : ''} uploaded successfully
           {:else}
             Ready to upload files
           {/if}
         </div>
         <div class="container mx-auto px-4">
-          <Button class="bits-btn" variant="ghost" onclick={() =>
-closeModal()}>
-            {activeUploads.length > 0 ? "Continue in Background" : "Close"}
-</Button>
+          <Button class="bits-btn" variant="ghost" onclick={() => closeModal()}>
+            {activeUploads.length > 0 ? 'Continue in Background' : 'Close'}
+          </Button>
           {#if completedUploads.length > 0}
-            <Button class="bits-btn" onclick={() =>
-ondispatch?.(completedUploads)}>
-              View Evidence
-</Button>
+            <Button class="bits-btn" onclick={() => ondispatch?.(completedUploads)}>View Evidence</Button>
           {/if}
         </div>
       </div>
     </div>
   </div>
 {/if}
+;

@@ -44,7 +44,7 @@ export interface AdaptiveEncodingResult {
     avgCompressionRatio: number;
     gpuUtilization: number;
     memoryEfficiency: number;
-  };
+  }
 }
 export class VectorMetadataEncoder {
   private config: VectorEncodingConfig;
@@ -63,7 +63,7 @@ export class VectorMetadataEncoder {
       compressionTarget: Math.min(Math.max(config.compressionTarget || 0.5, 0.1), 0.9),
       adaptiveDimensions: config.adaptiveDimensions ?? true,
       batchSize: Math.max(config.batchSize || 32, 1)
-    };
+    }
     this.gpuContext = gpuContext;
     this.initializeGPUResources();
   }
@@ -71,13 +71,13 @@ export class VectorMetadataEncoder {
    * Encode single vector with adaptive scaling
    */
   async encodeVector(
-    vector: Float32Array
+    vector: Float32Array;
     id: string = this.generateId();
   ): Promise<VectorMetadata> {
     return measureAsync('vector_encode_single', async () => {
       const startTime = performance.now();
       // Apply adaptive scaling if enabled
-      let workingConfig = { ...this.config };
+      let workingConfig = { ...this.config }
       if (this.config.adaptiveDimensions) {
         workingConfig = this.adaptConfigurationForPerformance();
       }
@@ -102,11 +102,11 @@ export class VectorMetadataEncoder {
         encodedDimensions: workingConfig.dimensions,
         quantization: workingConfig.quantization,
         compressionRatio,
-        encoding: encoded
+        encoding: encoded;
         timestamp: Date.now(),
         processingTime,
         gpuAccelerated: !!this.gpuContext
-      };
+      }
       return metadata;
     }, 'VectorEncoder');
   }
@@ -150,7 +150,7 @@ export class VectorMetadataEncoder {
         avgCompressionRatio,
         gpuUtilization: await this.getGPUUtilization(),
         memoryEfficiency: this.calculateMemoryEfficiency(batch.totalSize, encoded)
-      };
+      }
       // Update performance history
       this.updatePerformanceHistory({
         renderTime: totalTime
@@ -167,7 +167,7 @@ export class VectorMetadataEncoder {
         scalingApplied,
         recommendedConfig: this.generateRecommendedConfig(metrics),
         metrics
-      };
+      }
     }, 'VectorEncoder');
   }
   /**
@@ -194,7 +194,7 @@ export class VectorMetadataEncoder {
         ? Math.min(Math.max(newConfig.compressionTarget, 0.1), 0.9)
         : this.config.compressionTarget,
       batchSize: newConfig.batchSize ? Math.max(newConfig.batchSize, 1) : this.config.batchSize
-    };
+    }
     // Re-initialize GPU resources if dimensions changed
     if (newConfig.dimensions) {
       this.initializeGPUResources();
@@ -210,7 +210,7 @@ export class VectorMetadataEncoder {
       l1GpuUsage: number;
       l2RamUsage: number;
       totalVectors: number;
-    };
+    }
   } {
     return {
       currentConfig: { ...this.config },
@@ -220,7 +220,7 @@ export class VectorMetadataEncoder {
         l2RamUsage: this.estimateRAMUsage(),
         totalVectors: this.performanceHistory.length
       }
-    };
+    }
   }
   // Private methods
   private async initializeGPUResources(): Promise<void> {
@@ -272,7 +272,7 @@ export class VectorMetadataEncoder {
       backend: this.gpuContext.getBackendType(),
       compute: computeShader
       entryPoint: 'main'
-    };
+    }
   }
   private async preprocessVector(
     vector: Float32Array
@@ -291,7 +291,7 @@ export class VectorMetadataEncoder {
     return expanded;
   }
   private async encodeVectorGPU(
-    vector: Float32Array
+    vector: Float32Array;
     config: VectorEncodingConfig;
   ): Promise<Float32Array | Int8Array | Uint8Array> {
     if (!this.gpuContext || !this.shaderBundle) {
@@ -302,7 +302,7 @@ export class VectorMetadataEncoder {
     return this.encodeVectorCPU(vector, config);
   }
   private encodeVectorCPU(
-    vector: Float32Array
+    vector: Float32Array;
     config: VectorEncodingConfig;
   ): Float32Array | Int8Array | Uint8Array {
     switch (config.quantization) {
@@ -350,7 +350,7 @@ export class VectorMetadataEncoder {
         encoding: encoded
         processingTime,
         compressionRatio: encoded.byteLength / (vector.length * 4)
-      };
+      }
     });
   }
   private async decodeVectorGPU(metadata: VectorMetadata): Promise<Float32Array> {
@@ -448,7 +448,7 @@ export class VectorMetadataEncoder {
         ...this.config,
         dimensions: decision.recommendedDimensions,
         quantization: decision.recommendedQuantization
-      };
+      }
     }
     return this.config;
   }
@@ -463,7 +463,7 @@ export class VectorMetadataEncoder {
         dimensions: 256 as VectorDimensions,
         quantization: 'int4' as QuantizationLevel,
         batchSize: Math.max(16, Math.floor(this.config.batchSize / 2)
-      };
+      }
     }
     return this.config;
   }
@@ -498,7 +498,7 @@ export class VectorMetadataEncoder {
       contextSwitches: avg.contextSwitches / count,
       frameRate: avg.frameRate / count,
       lastMeasurement: avg.lastMeasurement
-    };
+    }
   }
   private updatePerformanceHistory(metrics: GPUPerformanceMetrics): void {
     this.performanceHistory.push(metrics);
@@ -524,6 +524,6 @@ export class VectorMetadataEncoder {
     return {
       dimensions: metrics.avgCompressionRatio < 0.5 ? 1024 as VectorDimensions : 512 as VectorDimensions,
       quantization: metrics.memoryEfficiency < 50 ? 'int4' as QuantizationLevel : 'int8' as QuantizationLevel
-    };
+    }
   }
 }

@@ -5,14 +5,13 @@
 import type { RouteDefinition } from '$lib/data/routes-config';
 import { allRoutes } from '$lib/data/routes-config';
 import { error } from '@sveltejs/kit';
-import path from "path";
 }
 export interface DynamicRouteConfig {
   pattern: string;
   template: string;
   component?: string;
   layout?: string;
-  params?: { [key: string]: any };
+  params?: { [key: string]: any }
   preload?: boolean;
   ssr?: boolean;
   hydrate?: boolean;
@@ -22,7 +21,7 @@ export interface GeneratedRoute {
   path: string;
   component: string;
   layout?: string;
-  params: { [key: string]: any };
+  params: { [key: string]: any }
   metadata: {
     category: string;
     status: string;
@@ -30,7 +29,7 @@ export interface GeneratedRoute {
     preload: boolean;
     ssr: boolean;
     hydrate: boolean;
-  };
+  }
 }
 /**
  * Dynamic Route Generator Class
@@ -53,7 +52,7 @@ export class DynamicRouteGenerator {
       component: 'routes/demo/[slug]/+page.svelte',
       layout: 'routes/demo/+layout.svelte',
       preload: true
-      ssr: true
+      ssr: true;
       hydrate: true
     });
     // AI route pattern
@@ -63,7 +62,7 @@ export class DynamicRouteGenerator {
       component: 'routes/ai/[feature]/+page.svelte',
       layout: 'routes/ai/+layout.svelte',
       preload: true
-      ssr: false
+      ssr: false;
       hydrate: true
     });
     // Legal route pattern
@@ -73,7 +72,7 @@ export class DynamicRouteGenerator {
       component: 'routes/legal/[type]/[[id]]/+page.svelte',
       layout: 'routes/legal/+layout.svelte',
       preload: true
-      ssr: true
+      ssr: true;
       hydrate: true
     });
     // Admin route pattern
@@ -83,7 +82,7 @@ export class DynamicRouteGenerator {
       component: 'routes/admin/[section]/+page.svelte',
       layout: 'routes/admin/+layout.svelte',
       preload: false
-      ssr: true
+      ssr: true;
       hydrate: true
     });
     // Dev tools pattern
@@ -93,7 +92,7 @@ export class DynamicRouteGenerator {
       component: 'routes/dev/[tool]/+page.svelte',
       layout: 'routes/dev/+layout.svelte',
       preload: false
-      ssr: false
+      ssr: false;
       hydrate: true
     });
   }
@@ -126,7 +125,7 @@ export class DynamicRouteGenerator {
         ssr: config?.ssr ?? true,
         hydrate: config?.hydrate ?? true
       }
-    };
+    }
   }
   /**
    * Find matching pattern for a route
@@ -158,7 +157,7 @@ export class DynamicRouteGenerator {
    * Extract parameters from route path
    */;
   private extractParams(route: string): { [key: string]: any } {
-    const params: { [key: string]: any } = {};
+    const params: { [key: string]: any } = {}
     const matches = route.match(/\[([^\]]+)\]/g);
     if (matches) {
       matches.forEach(match => {
@@ -166,9 +165,9 @@ export class DynamicRouteGenerator {
         const isOptional = paramName.startsWith('...');
         const name = isOptional ? paramName.slice(3) : paramName;
         params[name] = {
-          optional: isOptional
+          optional: isOptional;
           type: 'string'
-        };
+        }
       });
     }
     return params;
@@ -196,7 +195,7 @@ export class DynamicRouteGenerator {
       ssr: options.ssr ?? true,
       hydrate: options.hydrate ?? true,
       ...options
-    };
+    }
     const route: GeneratedRoute = {
       id,
       path,
@@ -211,7 +210,7 @@ export class DynamicRouteGenerator {
         ssr: config.ssr!,
         hydrate: config.hydrate!
       }
-    };
+    }
     this.routes.set(id, route);
     return route;
   }
@@ -261,7 +260,7 @@ export class DynamicRouteGenerator {
    * Get route manifest for SvelteKit
    */;
   public getRouteManifest(): { [key: string]: any } {
-    const manifest: { [key: string]: any } = {};
+    const manifest: { [key: string]: any } = {}
     for (const route of this.getAllRoutes()) {
       manifest[route.path] = {
         id: route.id,
@@ -269,7 +268,7 @@ export class DynamicRouteGenerator {
         layout: route.layout,
         params: route.params,
         metadata: route.metadata
-      };
+      }
     }
     return manifest;
   }
@@ -284,8 +283,8 @@ export class DynamicRouteGenerator {
     if (layoutPath) {
       loader += `export const layout = () => import('${layoutPath}');\n`;
     }
-    loader += `export const metadata = ${JSON.stringify(route.metadata, null, 2)};\n`;
-    loader += `export const params = ${JSON.stringify(route.params, null, 2)};\n`;
+    loader += `export const metadata = ${JSON.stringify(route.metadata, null, 2)}\n`;
+    loader += `export const params = ${JSON.stringify(route.params, null, 2)}\n`;
     return loader;
   }
   /**
@@ -300,9 +299,9 @@ export class DynamicRouteGenerator {
         for (const [paramName, paramConfig] of Object.entries(route.params)) {
           const optional = (paramConfig as any).optional ? '?' : '';
           const type = (paramConfig as any).type || 'string';
-          types += `    ${paramName}${optional}: ${type};\n`;
+          types += `    ${paramName}${optional}: ${type}\n`;
         }
-        types += '  };\n';
+        types += '  }\n';
       }
     }
     types += '}\n\n';
@@ -321,7 +320,7 @@ export class DynamicRouteGenerator {
 export const dynamicRouteGenerator = new DynamicRouteGenerator();
 // Export helper functions
 export function generateDynamicRoute(
-  id: string
+  id: string;
   path: string
   options?: Partial<DynamicRouteConfig>;
 ): GeneratedRoute {
@@ -346,7 +345,7 @@ export function hasDynamicRoute(id: string): boolean {
  * Route middleware for handling dynamic routes
  */;
 export function createDynamicRouteHandler(route: GeneratedRoute) {
-  return async (event: any) => {
+  return async (_event: any) => {
     const { params } = event;
     // Validate required parameters
     for (const [paramName, paramConfig] of Object.entries(route.params)) {
@@ -358,8 +357,8 @@ export function createDynamicRouteHandler(route: GeneratedRoute) {
     // Return route data
     return {
       route: route
-      params: params
+      params: params;
       metadata: route.metadata
-    };
-  };
+    }
+  }
 }

@@ -125,10 +125,10 @@ export const CaseFormSteps = {
     tags: true
   }),
   step4: CaseFormSchema.pick({,
-    aiSummary: true
+    aiSummary: true;
     metadata: true
   })
-};
+}
 export const EvidenceFormSteps = {
   step1: EvidenceFormSchema.pick({,
     title: true
@@ -156,10 +156,10 @@ export const EvidenceFormSteps = {
   step5: EvidenceFormSchema.pick({,
     aiAnalysis: true
     aiTags: true
-    aiSummary: true
+    aiSummary: true;
     summary: true
   })
-};
+}
 export const CriminalFormSteps = {
   step1: CriminalFormSchema.pick({,
     firstName: true
@@ -194,10 +194,10 @@ export const CriminalFormSteps = {
   }),
   step6: CriminalFormSchema.pick({,
     associatedCases: true
-    notes: true
+    notes: true;
     metadata: true
   })
-};
+}
 // Database operations
 const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string; data: any } }) => {
     const { formType, data } = input;
@@ -213,7 +213,7 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
               updatedAt: new Date()
             })
             .returning();
-          return { success: true, id: newCase.id, data: newCase };
+          return { success: true, id: newCase.id, data: newCase }
         case "evidence":
           const [newEvidence] = await db
             .insert(evidence);
@@ -224,7 +224,7 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
               updatedAt: new Date()
             })
             .returning();
-          return { success: true, id: newEvidence.id, data: newEvidence };
+          return { success: true, id: newEvidence.id, data: newEvidence }
         case "criminal":
           const [newCriminal] = await db
             // TODO: verify correct table name; placeholder symbol 'criminals' was likely corrupted
@@ -237,7 +237,7 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
               updatedAt: new Date()
             })
             .returning();
-          return { success: true, id: newCriminal.id, data: newCriminal };
+          return { success: true, id: newCriminal.id, data: newCriminal }
         default:
           throw new Error(`Unknown form type: ${formType}`);
       }
@@ -272,7 +272,7 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
           text: searchableContent
           metadata: {
             id,
-            type: formType
+            type: formType;
             timestamp: new Date().toISOString()
           }
         })
@@ -281,10 +281,10 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
         throw new Error("Failed to generate embeddings");
       }
       const embeddings = await response.json();
-      return { success: true, embeddings };
+      return { success: true, embeddings }
     } catch (error: any) {
       console.error("Embedding generation error:", error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message }
     }
   },
 );
@@ -295,8 +295,8 @@ export const multiStepFormMachine = setup({
       formType: "case" | "evidence" | "criminal";
       currentStep: number;
       totalSteps: number;
-      formData: { [key: string]: any };
-      stepData: { [key: string]: any };
+      formData: { [key: string]: any }
+      stepData: { [key: string]: any }
       errors: Record<string, string[]>;
       isValid: boolean;
       isSubmitting: boolean;
@@ -428,7 +428,7 @@ export const multiStepFormMachine = setup({
               return true;
             } catch (error: any) {
               if (error instanceof z.ZodError) {
-                const fieldErrors: Record<string, string[]> = {};
+                const fieldErrors: Record<string, string[]> = {}
                 error.errors.forEach((err) => {
                   const field = err.path.join(".");
                   if (!fieldErrors[field]) {
@@ -472,10 +472,10 @@ export const multiStepFormMachine = setup({
                   break;
               }
               stepSchema.parse(stepData);
-              return { isValid: true, errors: { [key: string]: any } };
+              return { isValid: true, errors: { [key: string]: any } }
             } catch (error: any) {
               if (error instanceof z.ZodError) {
-                const fieldErrors: Record<string, string[]> = {};
+                const fieldErrors: Record<string, string[]> = {}
                 error.errors.forEach((err) => {
                   const field = err.path.join(".");
                   if (!fieldErrors[field]) {
@@ -483,12 +483,12 @@ export const multiStepFormMachine = setup({
                   }
                   fieldErrors[field].push(err.message);
                 });
-                return { isValid: false, errors: fieldErrors };
+                return { isValid: false, errors: fieldErrors }
               }
               return {
                 isValid: false
                 errors: { general: ["Validation failed"] }
-              };
+              }
             }
           })
         }
@@ -639,14 +639,14 @@ export type MultiStepFormContext = {
   formType: "case" | "evidence" | "criminal";
   currentStep: number;
   totalSteps: number;
-  formData: { [key: string]: any };
-  stepData: { [key: string]: any };
+  formData: { [key: string]: any }
+  stepData: { [key: string]: any }
   errors: Record<string, string[]>;
   isValid: boolean;
   isSubmitting: boolean;
   submitResult: any;
   userId: string;
-};
+}
 export type CaseFormData = z.infer<typeof CaseFormSchema>;
 export type EvidenceFormData = z.infer<typeof EvidenceFormSchema>;
 export type CriminalFormData = z.infer<typeof CriminalFormSchema>;

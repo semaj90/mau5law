@@ -14,7 +14,7 @@ export interface DatabaseConfig {
     ssl: boolean;
     timeout: number;
     retryAttempts: number;
-  };
+  }
   redis: {
     url: string;
     fallbackUrl?: string;
@@ -22,21 +22,21 @@ export interface DatabaseConfig {
     connectTimeout: number;
     commandTimeout: number;
     keepAlive: number;
-  };
+  }
   neo4j: {
     url: string;
     username: string;
     password: string;
     maxConnectionPoolSize: number;
     connectionTimeout: number;
-  };
+  }
   qdrant: {
     url: string;
     apiKey?: string;
     timeout: number;
     retries: number;
     windowsOptimized: boolean;
-  };
+  }
 }
 export interface AIConfig {
   ollama: {
@@ -45,21 +45,21 @@ export interface AIConfig {
       legal: string;
       embedding: string;
       chat: string;
-    };
+    }
     timeout: number;
     maxConcurrent: number;
     gpuLayers: number;
-  };
+  }
   openai?: {
     apiKey: string;
     model: string;
     maxTokens: number;
-  };
+  }
   embedding: {
     dimensions: number;
     batchSize: number;
     cacheEnabled: boolean;
-  };
+  }
 }
 export interface ServiceConfig {
   enhancedRAG: {
@@ -67,13 +67,13 @@ export interface ServiceConfig {
     timeout: number;
     retries: number;
     batchSize: number;
-  };
+  }
   uploadService: {
     url: string;
     maxFileSize: number;
     allowedTypes: string[];
     timeout: number;
-  };
+  }
   clusterManager: {
     url: string;
     workers: {
@@ -81,15 +81,15 @@ export interface ServiceConfig {
       ai: number;
       vector: number;
       database: number;
-    };
+    }
     ports: {
       basePort: number;
       legalBase: number;
       aiBase: number;
       vectorBase: number;
       databaseBase: number;
-    };
-  };
+    }
+  }
 }
 export interface WindowsConfig {
   platform: 'win32' | 'linux' | 'darwin';
@@ -100,19 +100,19 @@ export interface WindowsConfig {
     serviceUser: string;
     dataPath: string;
     logPath: string;
-  };
+  }
   performance: {
     maxMemoryMB: number;
     cpuCores: number;
     ioOptimization: boolean;
     networkKeepAlive: number;
-  };
+  }
 }
 export interface SecurityConfig {
   cors: {
     origins: string[];
     credentials: boolean;
-  };
+  }
   rateLimit: {
     windowSec: number;
     limits: {
@@ -121,13 +121,13 @@ export interface SecurityConfig {
       enterprise: number;
       api: number;
       admin: number;
-    };
-  };
+    }
+  }
   auth: {
     sessionTimeout: number;
     jwtSecret: string;
     bcryptRounds: number;
-  };
+  }
 }
 export interface LoggingConfig {
   level: 'debug' | 'info' | 'warn' | 'error';
@@ -138,7 +138,7 @@ export interface LoggingConfig {
     maxSize: string;
     maxFiles: number;
     rotate: boolean;
-  };
+  }
   structured: boolean;
   includeStack: boolean;
 }
@@ -159,13 +159,13 @@ export interface UnifiedConfig {
       enabled: boolean;
       webhookUrl?: string;
       channels: string[];
-    };
-  };
+    }
+  }
 }
 // Configuration loading and validation
 class ConfigManager {
   private config: UnifiedConfig | null = null;
-  private configOverrides: Partial<UnifiedConfig> = {};
+  private configOverrides: Partial<UnifiedConfig> = {}
   constructor() {
     this.loadConfiguration();
   }
@@ -323,7 +323,7 @@ class ConfigManager {
           channels: (env.ALERTING_CHANNELS || '').split(',').filter(Boolean)
         }
       }
-    };
+    }
     // Apply any runtime overrides
     if (Object.keys(this.configOverrides).length > 0) {
       this.config = this.mergeDeep(this.config, this.configOverrides);
@@ -360,7 +360,7 @@ class ConfigManager {
     return result;
   }
   private mergeDeep(target: any, source: any): any {
-    const result = { ...target };
+    const result = { ...target }
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
         result[key] = this.mergeDeep(target[key] || {}, source[key]);
@@ -414,7 +414,7 @@ class ConfigManager {
     if (!this.config) {
       throw new Error('Configuration not initialized');
     }
-    return { ...this.config };
+    return { ...this.config }
   }
   public get<T extends keyof UnifiedConfig>(section: T): UnifiedConfig[T] {
     if (!this.config) {
@@ -423,7 +423,7 @@ class ConfigManager {
     return this.config[section];
   }
   public override(overrides: Partial<UnifiedConfig>): void {
-    this.configOverrides = { ...this.configOverrides, ...overrides };
+    this.configOverrides = { ...this.configOverrides, ...overrides }
     this.loadConfiguration(); // Reload with overrides
   }
   public isDevelopment(): boolean {
@@ -452,7 +452,7 @@ class ConfigManager {
   }
   // Health check for configuration
   public async healthCheck(): Promise<any> {
-    const checks: Record<string, boolean> = {};
+    const checks: Record<string, boolean> = {}
     try {
       // Check if configuration is loaded
       checks.configLoaded = !!this.config;
@@ -482,13 +482,13 @@ class ConfigManager {
         status,
         checks,
         timestamp: new Date().toISOString()
-      };
+      }
     } catch (error: any) {
       return {
         status: 'unhealthy',
         checks,
         timestamp: new Date().toISOString()
-      };
+      }
     }
   }
   // Export configuration for debugging (development only)
@@ -497,7 +497,7 @@ class ConfigManager {
       throw new Error('Configuration export is only available in development');
     }
     // Redact sensitive information
-    const exportConfig = { ...this.config };
+    const exportConfig = { ...this.config }
     if (exportConfig?.security?.auth?.jwtSecret) {
       exportConfig.security.auth.jwtSecret = '[REDACTED]';
     }

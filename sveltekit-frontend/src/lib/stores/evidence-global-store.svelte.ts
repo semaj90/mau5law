@@ -9,7 +9,7 @@ export interface EvidenceNode {
   content: string;
   type: 'document' | 'photo' | 'testimony' | 'physical' | 'digital';
   tags: string[];
-  position: { x: number; y: number };
+  position: { x: number; y: number }
   connections: string[]; // IDs of connected nodes,
   metadata: {
     dateCreated: number;
@@ -21,8 +21,8 @@ export interface EvidenceNode {
       keyTerms: string[];
       confidence: number;
       suggestedConnections: string[];
-    };
-  };
+    }
+  }
   status: 'pending' | 'reviewed' | 'verified' | 'flagged';
   assignedTo?: string;
 }
@@ -46,7 +46,7 @@ export interface LegalCase {
     lastModified: number;
     status: 'active' | 'archived' | 'completed';
     priority: 'low' | 'medium' | 'high' | 'urgent';
-  };
+  }
 }
 export interface UIState {
   selectedNodeIds: string[];
@@ -59,7 +59,7 @@ export interface UIState {
     type?: string;
     status?: string;
     tags?: string[];
-  };
+  }
   viewMode: 'grid' | 'timeline' | 'network';
   aiProcessing: boolean;
 }
@@ -119,7 +119,7 @@ class EvidenceGlobalStore {
         status: 'active',
         priority: 'medium'
       }
-    };
+    }
     this.cases[caseId] = newCase;
     this.currentCaseId = caseId;
     this.persistState();
@@ -143,7 +143,7 @@ class EvidenceGlobalStore {
           ...this.cases[caseId].metadata,
           lastModified: Date.now()
         }
-      };
+      }
       this.persistState();
     }
   }
@@ -161,7 +161,7 @@ class EvidenceGlobalStore {
         dateCreated: Date.now(),
         lastModified: Date.now()
       }
-    };
+    }
     this.currentCase.nodes.push(newNode);
     this.updateCaseMetadata();
     this.stats.totalNodes++;
@@ -181,7 +181,7 @@ class EvidenceGlobalStore {
         ...this.currentCase.nodes[nodeIndex].metadata,
         lastModified: Date.now()
       }
-    };
+    }
     this.updateCaseMetadata();
     // Re-analyze if content changed
     if (updates.content || updates.title) {
@@ -239,7 +239,7 @@ class EvidenceGlobalStore {
       relationship,
       strength: aiGenerated ? 0.7 : 1.0,
       aiGenerated
-    };
+    }
     this.currentCase.connections.push(connection);
     // Update node connections arrays
     const fromNode = this.currentCase.nodes.find(n => n.id === fromNodeId);
@@ -379,10 +379,10 @@ class EvidenceGlobalStore {
             console.log(`🧠 AI analysis completed for node: ${nodeId}`);
           }
         }
-      };
+      }
       this.aiWorker.onerror = (error) => {
         console.error('AI Worker error:', error);
-      };
+      }
     }
   }
   // === Filtering and Search ===
@@ -405,10 +405,10 @@ class EvidenceGlobalStore {
     this.ui.filterBy = {
       ...this.ui.filterBy,
       [filterType]: value
-    };
+    }
   }
   clearFilters() {
-    this.ui.filterBy = {};
+    this.ui.filterBy = {}
   }
   setViewMode(mode: UIState['viewMode']) {
     this.ui.viewMode = mode;
@@ -435,7 +435,7 @@ class EvidenceGlobalStore {
         cases: this.cases,
         currentCaseId: this.currentCaseId,
         stats: this.stats
-      };
+      }
       localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave);
       this.stats.lastSync = Date.now();
     } catch (error) {
@@ -447,9 +447,9 @@ class EvidenceGlobalStore {
       const saved = localStorage.getItem('evidence-global-store');
       if (saved) {
         const state = JSON.parse(saved);
-        this.cases = state.cases || {};
+        this.cases = state.cases || {}
         this.currentCaseId = state.currentCaseId || null;
-        this.stats = { ...this.stats, ...state.stats };
+        this.stats = { ...this.stats, ...state.stats }
       }
     } catch (error) {
       console.error('Failed to load persisted evidence store state:', error);
@@ -522,7 +522,7 @@ export function createEvidenceNode(
     tags: [],
     position,
     status: 'pending'
-  };
+  }
 }
 export function getNodesByType(type: EvidenceNode['type']): EvidenceNode[] {
   return evidenceStore.currentNodes.filter(node => node.type === type);

@@ -208,32 +208,32 @@ export class DynamicNavigation {
    * Check if navigation is allowed
    */
   private async checkNavigationGuards(
-    to: string
+    to: string;
     from: string;
   ): Promise<any> {
     for (const guard of this.guards.values()) {
       const allowed = await guard.condition(to, from);
       if (!allowed) {
         if (guard.action === 'redirect' && guard.redirectTo) {
-          return { allowed: true, redirectTo: guard.redirectTo };
+          return { allowed: true, redirectTo: guard.redirectTo }
         }
         if (guard.action === 'confirm' && guard.message) {
           const confirmed = browser ? confirm(guard.message) : false;
           if (!confirmed) {
-            return { allowed: false };
+            return { allowed: false }
           }
         } else {
-          return { allowed: false };
+          return { allowed: false }
         }
       }
     }
-    return { allowed: true };
+    return { allowed: true }
   }
   /**
    * Update current path and navigation state
    */
   private updateCurrentPath(
-    path: string
+    path: string;
     params: Record<string, string> = {},
     routeId?: string;
   ): void {
@@ -246,7 +246,7 @@ export class DynamicNavigation {
         breadcrumbs,
         canGoBack: this.historyIndex > 0 || state.navigationHistory.length > 1,
         canGoForward: this.historyIndex < state.navigationHistory.length - 1
-      };
+      }
     });
   }
   /**
@@ -259,7 +259,7 @@ export class DynamicNavigation {
         timestamp: Date.now(),
         routeId,
         state
-      };
+      }
       const newHistory = [...navState.navigationHistory];
       // Remove entries after current index if we're not at the end
       if (this.historyIndex < newHistory.length - 1) {
@@ -278,7 +278,7 @@ export class DynamicNavigation {
         navigationHistory: newHistory
         canGoBack: this.historyIndex > 0,
         canGoForward: false
-      };
+      }
     });
   }
   /**
@@ -337,14 +337,14 @@ export class DynamicNavigation {
   /**
    * Handle browser popstate event
    */;
-  private handlePopState(event: PopStateEvent): void {
+  private handlePopState(_event: PopStateEvent): void {
     const currentState = get(this.state);
     this.updateCurrentPath(window.location.pathname);
   }
   /**
    * Handle beforeunload event
    */;
-  private handleBeforeUnload(event: BeforeUnloadEvent): string | void {
+  private handleBeforeUnload(_event: BeforeUnloadEvent): string | void {
     // Check if there are any guards that might prevent navigation
     for (const guard of this.guards.values()) {
       if (guard.action === 'confirm' && guard.message) {
@@ -458,5 +458,5 @@ export function createRouteAwareNavigation(routeId: string) {
       if (!route) return '#';
       return 'route' in route ? route.route: route.path;
     })
-  };
+  }
 }

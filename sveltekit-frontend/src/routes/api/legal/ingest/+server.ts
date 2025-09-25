@@ -389,7 +389,7 @@ function performFactChecking(entities: LegalEntity[], jurisdiction: string): Fac
 function calculateProsecutionScore(
     entities: LegalEntity[]
     factChecks: FactCheck[]
-    jurisdiction: string
+    jurisdiction: string;
     chunks: DocumentChunk[]
 ): number {
     let score = 0.3; // Base score

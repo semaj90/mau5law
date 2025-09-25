@@ -18,7 +18,7 @@
 import { json } from "@sveltejs/kit"
 import { ollamaService } from "$lib/services/ollama-service"
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 // Environment variables fallback
 const env = process.env || {}
@@ -179,7 +179,7 @@ Instructions:
 - Use appropriate legal terminology
 - Be concise but thorough`
         const response = await ollamaService.generate(query, {
-          system: systemPrompt
+          system: systemPrompt;
           temperature: 0.7,
           maxTokens: 512
         })
@@ -330,4 +330,4 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   }
 }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
-export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);

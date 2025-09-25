@@ -14,7 +14,7 @@
     documents?: string[];
     location?: string;
     priority?: 'low' | 'medium' | 'high' | 'critical';
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   }
   export interface CaseTimelineProps {
     caseId: string;
@@ -23,7 +23,7 @@
     showFutureEvents?: boolean;
     compactMode?: boolean;
     interactive?: boolean;
-    onEventClick?: (event: TimelineEvent) => void;
+    onEventClick?: (_event: TimelineEvent) => void;
     onAddEvent?: () => void;
     class?: string;
   }
@@ -55,14 +55,14 @@
     deadline: { icon: AlertCircle, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
     decision: { icon: CheckCircle, color: 'text-yorha-primary', bg: 'bg-yorha-primary/10', border: 'border-yorha-primary/20' },
     milestone: { icon: Calendar, color: 'text-yorha-accent', bg: 'bg-yorha-accent/10', border: 'border-yorha-accent/20' }
-  };
+  }
   // Status configurations
   const statusConfig = {
     completed: { label: 'Completed', class: 'bg-green-500/20 text-green-400 border-green-500/30' },
     pending: { label: 'Pending', class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
     overdue: { label: 'Overdue', class: 'bg-red-500/20 text-red-400 border-red-500/30' },
     cancelled: { label: 'Cancelled', class: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
-  };
+  }
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -84,13 +84,12 @@
     return date < new Date());
   }
 </script>
+
 <div className={cn('case-timeline w-full space-y-4', className)}>
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h3 class="text-lg font-semibold text-yorha-text-primary font-mono">
-        Case Timeline
-      </h3>
+      <h3 class="text-lg font-semibold text-yorha-text-primary font-mono">Case Timeline</h3>
       <p class="text-sm text-yorha-text-secondary font-mono">
         {caseName} • {sortedEvents.length} events
       </p>
@@ -112,10 +111,7 @@
         <Calendar class="w-12 h-12 mx-auto mb-4 opacity-50" />
         <p>No timeline events recorded</p>
         {#if onAddEvent}
-          <button
-            onclick={onAddEvent}
-            class="mt-2 text-yorha-primary hover:text-yorha-accent transition-colors"
-          >
+          <button onclick={onAddEvent} class="mt-2 text-yorha-primary hover:text-yorha-accent transition-colors">
             Add the first event
           </button>
         {/if}
@@ -129,69 +125,70 @@
           {@const status = statusConfig[event.status]}
           {@const IconComponent = config.icon}
           <div
-            class={cn(
-              'relative flex items-start gap-4',
-              interactive && 'cursor-pointer group',
-              compactMode && 'gap-3'
-            )}
+            class={cn('relative flex items-start gap-4', interactive && 'cursor-pointer group', compactMode && 'gap-3')}
             onclick={() => interactive && onEventClick?.(event)}
           >
             <!-- Timeline Node -->
-            <div class={cn(
-              'relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-2',
-              config.bg,
-              config.border,
-              interactive && 'group-hover:scale-110 transition-transform'
-            )}>
+            <div
+              class={cn(
+                'relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-2',
+                config.bg,
+                config.border,
+                interactive && 'group-hover:scale-110 transition-transform',
+              )}
+            >
               <IconComponent class={cn('w-5 h-5', config.color)} />
             </div>
             <!-- Event Content -->
-            <div class={cn(
-              'flex-1 min-w-0 pb-6',
-              compactMode && 'pb-4'
-            )}>
-              <div class={cn(
-                'bg-yorha-bg-secondary border border-yorha-border rounded-lg p-4',
-                interactive && 'group-hover:border-yorha-primary/30 group-hover:bg-yorha-bg-tertiary transition-colors',
-                compactMode && 'p-3'
-              )}>
+            <div class={cn('flex-1 min-w-0 pb-6', compactMode && 'pb-4')}>
+              <div
+                class={cn(
+                  'bg-yorha-bg-secondary border border-yorha-border rounded-lg p-4',
+                  interactive &&
+                    'group-hover:border-yorha-primary/30 group-hover:bg-yorha-bg-tertiary transition-colors',
+                  compactMode && 'p-3',
+                )}
+              >
                 <!-- Event Header -->
                 <div class="flex items-start justify-between mb-2">
                   <div class="flex-1">
-                    <h4 class={cn(
-                      'font-semibold text-yorha-text-primary font-mono',
-                      compactMode ? 'text-sm' : 'text-base'
-                    )}>
+                    <h4
+                      class={cn(
+                        'font-semibold text-yorha-text-primary font-mono',
+                        compactMode ? 'text-sm' : 'text-base',
+                      )}
+                    >
                       {event.title}
                     </h4>
                     <div class="flex items-center gap-3 mt-1">
-                      <span class={cn(
-                        'font-mono text-yorha-text-secondary',
-                        compactMode ? 'text-xs' : 'text-sm',
-                        isToday(event.date) && 'text-yorha-accent font-medium'
-                      )}>
+                      <span
+                        class={cn(
+                          'font-mono text-yorha-text-secondary',
+                          compactMode ? 'text-xs' : 'text-sm',
+                          isToday(event.date) && 'text-yorha-accent font-medium',
+                        )}
+                      >
                         {formatDate(event.date)} • {formatTime(event.date)}
                         {#if isToday(event.date)}
                           <span class="ml-1 text-yorha-accent">TODAY</span>
                         {/if}
                       </span>
                       {#if event.priority && event.priority !== 'medium'}
-                        <span class={cn(
-                          'px-2 py-0.5 text-xs font-mono rounded',
-                          event.priority === 'critical' && 'bg-red-500/20 text-red-400 border border-red-500/30',
-                          event.priority === 'high' && 'bg-orange-500/20 text-orange-400 border border-orange-500/30',
-                          event.priority === 'low' && 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
-                        )}>
+                        <span
+                          class={cn(
+                            'px-2 py-0.5 text-xs font-mono rounded',
+                            event.priority === 'critical' && 'bg-red-500/20 text-red-400 border border-red-500/30',
+                            event.priority === 'high' && 'bg-orange-500/20 text-orange-400 border border-orange-500/30',
+                            event.priority === 'low' && 'bg-gray-500/20 text-gray-400 border border-gray-500/30',
+                          )}
+                        >
                           {event.priority.toUpperCase()}
                         </span>
                       {/if}
                     </div>
                   </div>
                   <!-- Status Badge -->
-                  <span className={cn(
-                    'px-2 py-1 text-xs font-mono rounded border',
-                    status.className
-                  )}>
+                  <span className={cn('px-2 py-1 text-xs font-mono rounded border', status.className)}>
                     {status.label}
                   </span>
                 </div>
@@ -242,6 +239,7 @@
     {/if}
   </div>
 </div>
+
 <style>
   .case-timeline {
     --timeline-line-color: rgb(var(--yorha-border));

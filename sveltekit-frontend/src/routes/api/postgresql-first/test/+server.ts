@@ -15,7 +15,7 @@ import { eq, sql } from 'drizzle-orm'
 import { v4 as uuidv4 } from 'uuid'
 import { createClient } from 'redis'
 import { postgresqlQdrantSync } from '$lib/services/postgresql-qdrant-sync.js'
-import { URL } from "url"
+
 // Test data for demonstration
 const SAMPLE_EVIDENCE = {
   title: 'Test Contract Document',

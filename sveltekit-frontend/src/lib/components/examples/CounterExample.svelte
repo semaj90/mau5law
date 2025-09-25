@@ -29,7 +29,7 @@ export default ;
 <script lang="ts">
   // Svelte 5 with runes
   let {
-    initialCount = 0
+    initialCount = 0,
   }: {
     initialCount?: number;
   } = $props();
@@ -41,7 +41,7 @@ export default ;
   // Effect rune replaces reactive statements with side effects
   $effect(() => {
     if (count > 10) {
-      console.log("Count is getting high!");
+      console.log('Count is getting high!');
     }
   });
   // Effect rune for updating history
@@ -55,6 +55,7 @@ export default ;
     count = initialCount;
   }
 </script>
+
 <div class="counter-container">
   <h2>Svelte 5 Counter with Runes</h2>
   <div class="display">
@@ -67,6 +68,7 @@ export default ;
     <button onclick={reset}>Reset</button>
   </div>
 </div>
+
 <style>
   .counter-container {
     padding: 2rem;

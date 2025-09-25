@@ -89,7 +89,7 @@ and AI-powered verification features.
     return () => {
       custodyActor.stop();
       closeWebSocketConnection();
-    };
+    }
   });
   function startWorkflow() {
     custodyActor.send({
@@ -121,7 +121,7 @@ and AI-powered verification features.
     if (transferReason.trim()) {
       custodyActor.send({
         type: 'TRANSFER_CUSTODY',
-        newCustodian: userId
+        newCustodian: userId;
         reason: transferReaso;
       });
       showTransferDialog = false;
@@ -147,7 +147,7 @@ and AI-powered verification features.
       wsConnection = new WebSocket(`ws://localhost:3000/api/websocket?room=custody-${evidenceId}`)
       wsConnection.onopen = () => {
         console.log('WebSocket connected for custody workflow');
-      };
+      }
       wsConnection.onmessage = (event) => {
         const data = JSON.parse(event.data);
         // Handle real-time collaboration updates
@@ -155,10 +155,10 @@ and AI-powered verification features.
           // Update collaboration state based on WebSocket messages
           handleCollaborationUpdate(data);
         }
-      };
+      }
       wsConnection.onerror = (error) => {
         console.error('WebSocket error:', error);
-      };
+      }
       wsConnection.onclose = () => {
         console.log('WebSocket connection closed');
         // Attempt to reconnect after a delay
@@ -167,7 +167,7 @@ and AI-powered verification features.
             setupWebSocketConnection();
           }
         }, 5000);
-      };
+      }
     } catch (error) {
       console.error('Failed to establish WebSocket connection:', error);
     }

@@ -16,7 +16,7 @@ export interface SearchResult {
   path?: string;
   score: number;
   matches: SearchMatch[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   tags: string[];
 }
 export interface SearchMatch {
@@ -40,7 +40,7 @@ export interface SearchFilter {
   dateRange?: {
     start: Date;
     end: Date;
-  };
+  }
 }
 export interface SearchState {
   query: string;

@@ -14,7 +14,7 @@ export async function fetchSSRData<T>(
     body?: any;
   }
 ): Promise<APIResponse<T>> {
-  const { params, method = 'GET', body } = options || {};
+  const { params, method = 'GET', body } = options || {}
   const url = new URL(endpoint, window.location.origin);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
@@ -66,7 +66,7 @@ export function createSSRStore<T>(
     } finally {
       loading = false;
     }
-  };
+  }
   // Auto-refresh setup
   let refreshInterval: ReturnType<typeof setInterval> | undefined;
   if (options?.autoRefresh) {
@@ -81,13 +81,13 @@ export function createSSRStore<T>(
     get loading() { return loading; },
     get error() { return error; },
     load,
-    refresh: load
+    refresh: load;
     destroy: () => {
       if (refreshInterval) {
         clearInterval(refreshInterval);
       }
     }
-  };
+  }
 }
 /**
  * Form submission helper for Bits UI forms with SSR
@@ -101,7 +101,7 @@ export async function submitForm<T>(
     onError?: (error: string) => void;
   }
 ): Promise<APIResponse<T>> {
-  const { method = 'POST', onSuccess, onError } = options || {};
+  const { method = 'POST', onSuccess, onError } = options || {}
   try {
     const response = await fetchSSRData<T>(endpoint, {
       method,
@@ -129,7 +129,7 @@ export async function loadBatchData<T extends { [key: string]: any }>(
 ): Promise<Record<keyof T, any>> {
   const promises = Object.entries(endpoints).map(async ([key, endpoint]) => {
     try {
-      const response = await fetchSSRData(endpoint);
+      // removed unused response assignment
       return [key, response.success ? response.data: null];
     } catch {
       return [key, null];
@@ -142,7 +142,7 @@ export async function loadBatchData<T extends { [key: string]: any }>(
  * Type-safe data validator for runtime checks
  */
 export function validateSSRData<T>(
-  data: any
+  data: any;
   validator: (data: any) => data is T
 ): T | null {
   return validator(data) ? data : null;
@@ -180,13 +180,13 @@ export function createDebouncedSearch<T>(
         searching = false;
       }
     }, delay);
-  };
+  }
   return {
     get query() { return currentQuery; },
     get results() { return results; },
     get searching() { return searching; },
     search
-  };
+  }
 }
 /**
  * SSR-aware error boundary for Bits UI components
@@ -230,12 +230,12 @@ export function createOptimisticStore<T>(initialData: T) {
     } finally {
       pending = false;
     }
-  };
+  }
   return {
     get data() { return data; },
     get pending() { return pending; },
     get error() { return error; },
     update,
     set: (newData: T) => { data = newData; }
-  };
+  }
 }

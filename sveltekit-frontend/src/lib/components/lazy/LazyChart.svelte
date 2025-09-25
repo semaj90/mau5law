@@ -42,9 +42,9 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
           // Mock component for now - replace with actual chart import
           chartComponent = {
             // This would be your actual chart component
-            component: null
+            component: null;
             props: { data, config, height, width }
-          };
+          }
           break;
         case 'pie':
           // Example: const module = await import('$lib/components/charts/PieChart.svelte')
@@ -66,8 +66,8 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   function generatePlaceholderBars() {
     const barCount = Math.min(data.length || 5, 10);
     return Array.from({ length: barCount }, (_, i) => ({
-      height: Math.random() * 60 + 20, // 20-80% height
-      delay: i * 0.1 // Staggered animatio
+      height: Math.random() * 60 + 20, // 20-80% height;
+      delay: i * 0.1 // Staggered animatio;
     }));
   }
   const placeholderBars = generatePlaceholderBars();
@@ -83,7 +83,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   bind:lazyState
   {...lazyOptions}
 >
-  <div class="chart-wrapper" style="height: {height}; width: {width};">
+  <div class="chart-wrapper" style="height: {height} width: {width}">
     {#if loadError}
       <!-- Error state with chart-specific styling -->
       <div class="chart-error">
@@ -96,7 +96,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
       <div class="chart-content" data-chart-type={chartType}>
         <!-- Replace this with your actual chart component rendering -->
         <!-- <svelte:component this={chartComponent.component} {...chartComponent.props} /> -->
-        <div class="mock-chart" style="height: {height};">
+        <div class="mock-chart" style="height: {height}">
           <div class="chart-title">
             {chartType.charAt(0).toUpperCase() + chartType.slice(1)} Chart
           </div>
@@ -113,7 +113,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   <div
     class="chart-placeholder-content"
     slot="placeholder"
-    style="height: {height};"
+    style="height: {height}"
   >
     <div class="placeholder-chart">
       <div class="placeholder-title"></div>

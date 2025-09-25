@@ -14,6 +14,7 @@
     console.log(`Analyzing case ${caseFile.id} risk ${riskScore}`);
   }
 </script>
+
 <Card class="nes-container is-dark with-title">
   <CardHeader>
     <CardTitle class="title">{caseFile.title}</CardTitle>
@@ -25,9 +26,7 @@
       {@render children()}
     {/if}
     <div class="flex justify-end">
-      <Button class="nes-btn is-primary" onclick={handleAnalyzeClick}>
-        Analyze
-      </Button>
+      <Button class="nes-btn is-primary" onclick={handleAnalyzeClick}>Analyze</Button>
     </div>
   </CardContent>
 </Card>

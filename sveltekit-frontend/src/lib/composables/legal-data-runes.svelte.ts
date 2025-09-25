@@ -12,7 +12,7 @@ export interface LegalCase {
   createdAt: string;
   updatedAt: string;
   description?: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface Evidence {
   id: string;
@@ -25,7 +25,7 @@ export interface Evidence {
   tags: string[];
   createdAt: string;
   updatedAt: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface PersonOfInterest {
   id: string;
@@ -34,11 +34,11 @@ export interface PersonOfInterest {
   type: 'suspect' | 'witness' | 'victim' | 'person_of_interest';
   status: 'active' | 'inactive' | 'cleared';
   caseIds: string[];
-  contactInfo?: { [key: string]: any };
+  contactInfo?: { [key: string]: any }
   notes?: string;
   createdAt: string;
   updatedAt: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 // Legal case composable
 export function useLegalCase(initialCaseId?: string) {
@@ -56,7 +56,7 @@ export function useLegalCase(initialCaseId?: string) {
   let casesCount = $derived(cases.length);
   // Case status summary
   let statusSummary = $derived(() => {
-    const summary: Record<string, number> = {};
+    const summary: Record<string, number> = {}
     cases.forEach(c => {
       summary[c.status] = (summary[c.status] || 0) + 1;
     });
@@ -64,7 +64,7 @@ export function useLegalCase(initialCaseId?: string) {
   });
   // Priority distribution
   let priorityDistribution = $derived(() => {
-    const distribution: Record<string, number> = {};
+    const distribution: Record<string, number> = {}
     cases.forEach(c => {
       distribution[c.priority] = (distribution[c.priority] || 0) + 1;
     });
@@ -81,7 +81,7 @@ export function useLegalCase(initialCaseId?: string) {
     isLoading = true;
     error = null;
     try {
-      const response = await fetch(`/api/cases/${caseId}`);
+      // removed unused response assignment
       if (!response.ok) throw new Error(`Failed to load case: ${response.statusText}`);
       currentCase = await response.json();
       lastFetched = Date.now();
@@ -96,7 +96,7 @@ export function useLegalCase(initialCaseId?: string) {
     isLoading = true;
     error = null;
     try {
-      const response = await fetch('/api/cases');
+      // removed unused response assignment
       if (!response.ok) throw new Error(`Failed to load cases: ${response.statusText}`);
       cases = await response.json();
       lastFetched = Date.now();
@@ -155,7 +155,7 @@ export function useLegalCase(initialCaseId?: string) {
     loadCases,
     updateCase,
     clearCurrentCase
-  };
+  }
 }
 // Evidence composable
 export function useEvidence(caseId?: string) {
@@ -170,7 +170,7 @@ export function useEvidence(caseId?: string) {
   let isUploading = $derived(uploadProgress.size > 0);
   // Evidence by type
   let evidenceByType = $derived(() => {
-    const byType: Record<string, Evidence[]> = {};
+    const byType: Record<string, Evidence[]> = {}
     evidence.forEach(e => {
       if (!byType[e.type]) byType[e.type] = [];
       byType[e.type].push(e);
@@ -192,7 +192,7 @@ export function useEvidence(caseId?: string) {
     isLoading = true;
     error = null;
     try {
-      const response = await fetch(`/api/cases/${targetCaseId}/evidence`);
+      // removed unused response assignment
       if (!response.ok) throw new Error(`Failed to load evidence: ${response.statusText}`);
       evidence = await response.json();
     } catch (err: any) {
@@ -267,7 +267,7 @@ export function useEvidence(caseId?: string) {
     deleteEvidence,
     selectEvidence,
     clearSelection
-  };
+  }
 }
 // Person of Interest composable
 export function usePersonsOfInterest() {
@@ -290,7 +290,7 @@ export function usePersonsOfInterest() {
   });
   // Persons by type
   let personsByType = $derived(() => {
-    const byType: Record<string, PersonOfInterest[]> = {};
+    const byType: Record<string, PersonOfInterest[]> = {}
     persons.forEach(p => {
       if (!byType[p.type]) byType[p.type] = [];
       byType[p.type].push(p);
@@ -303,7 +303,7 @@ export function usePersonsOfInterest() {
     isLoading = true;
     error = null;
     try {
-      const response = await fetch('/api/persons-of-interest');
+      // removed unused response assignment
       if (!response.ok) throw new Error(`Failed to load persons: ${response.statusText}`);
       persons = await response.json();
     } catch (err: any) {
@@ -387,7 +387,7 @@ export function usePersonsOfInterest() {
     selectPerson,
     clearSelection,
     setSearchQuery
-  };
+  }
 }
 // Unified legal data composable
 export function useLegalData(caseId?: string) {
@@ -421,5 +421,5 @@ export function useLegalData(caseId?: string) {
     isAnyLoading,
     hasAnyError,
     initializeAll
-  };
+  }
 }

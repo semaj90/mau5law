@@ -26,7 +26,7 @@ export type CacheEvent =
   | { type: 'CACHE_STORE'; key: string; data: any; semanticText?: string }
   | { type: 'CACHE_INVALIDATE'; key?: string; pattern?: string }
   | { type: 'CACHE_SYNC' }
-  | { type: 'COMPUTE_REQUIRED'; cost: number };
+  | { type: 'COMPUTE_REQUIRED'; cost: number }
 /**
  * XState Cache Actor - manages caching operations
  */;
@@ -40,7 +40,7 @@ export const cacheActor = fromPromise(async ({
       semanticQuery?: string;
       semanticText?: string;
       pattern?: string;
-    };
+    }
   }) => {
     const startTime = performance.now();
     try {
@@ -60,7 +60,7 @@ export const cacheActor = fromPromise(async ({
                 hitRatio: headlessUICache.getStats().hitRatio,
                 responseTime
               }
-            };
+            }
           } else {
             return {
               success: false
@@ -72,7 +72,7 @@ export const cacheActor = fromPromise(async ({
                 hitRatio: headlessUICache.getStats().hitRatio,
                 responseTime
               }
-            };
+            }
           }
         }
         case 'set': {
@@ -88,10 +88,10 @@ export const cacheActor = fromPromise(async ({
           );
           return {
             success: true
-            stored: true
+            stored: true;
             key: input.key,
             responseTime: performance.now() - startTime
-          };
+          }
         }
         case 'invalidate': {
           if (input.key) {
@@ -105,29 +105,29 @@ export const cacheActor = fromPromise(async ({
             await headlessUICache.clear();
           }
           return {
-            success: true
+            success: true;
             invalidated: true
             responseTime: performance.now() - startTime
-          };
+          }
         }
         case 'sync': {
           // Trigger cache sync with server
           console.log('[Cache] Syncing with server...');
           return {
-            success: true
+            success: true;
             synced: true
             responseTime: performance.now() - startTime
-          };
+          }
         }
         default:
           throw new Error(`Unknown cache operation: ${input.operation}`);
       }
     } catch (error: any) {
       return {
-        success: false
+        success: false;
         error: error.message,
         responseTime: performance.now() - startTime
-      };
+      }
     }
   }
 );
@@ -148,7 +148,7 @@ export function withCache<TContext extends { [key: string]: any }(
       cacheMetadata: null
       computationCost: 0
     } as CacheContext
-  };
+  }
 }
 /**
  * Cache actions for XState machines
@@ -167,7 +167,7 @@ export const cacheActions = {
           cacheHit: true
           cacheMetadata: event.metadata
         }
-      };
+      }
     } else if (event.type === 'CACHE_MISS') {
       return {
         ...context,
@@ -177,7 +177,7 @@ export const cacheActions = {
           cacheHit: false
           cacheMetadata: null
         }
-      };
+      }
     }
     return context;
   }),
@@ -193,7 +193,7 @@ export const cacheActions = {
           cacheKey: event.key,
           semanticQuery: event.semanticQuery
         }
-      };
+      }
     }
     return context;
   }),
@@ -208,7 +208,7 @@ export const cacheActions = {
           ...context.cache,
           computationCost: event.cost
         }
-      };
+      }
     }
     return context;
   }),
@@ -225,7 +225,7 @@ export const cacheActions = {
       computationCost: 0
     }
   }))
-};
+}
 /**
  * Cache guards for XState machines
  */;
@@ -250,7 +250,7 @@ export const cacheGuards = {
     const ageMs = Date.now() - context.cache.cacheMetadata.timestamp;
     return ageMs < 5 * 60 * 1000; // 5 minutes
   }
-};
+}
 /**
  * Example cached machine state definition
  */;
@@ -265,7 +265,7 @@ export const createCachedMachineStates = () => ({
     checkingCache: {
       entry: ['setCacheKey'],
       invoke: {
-        src: cacheActor
+        src: cacheActor;
         input: ({ context, event }: { context: any; event: any }) => ({
           operation: 'get' as const,
           key: context.cache.cacheKey,
@@ -302,11 +302,11 @@ export const createCachedMachineStates = () => ({
     computing: {
       entry: ['trackComputationCost'],
       invoke: {
-        // Your actual computation logic here
+        // Your actual computation logic here;
         src: fromPromise(async ({ input }) => {
           // Simulate computation
           await new Promise((resolve) => setTimeout(resolve, 1000);
-          return { result: 'computed data' };
+          return { result: 'computed data' }
         }),
         onDone: {
           target: 'cachingResult',
@@ -351,7 +351,7 @@ export function withNeuralSpriteCache(spriteConfig: any) {
     cache: {
       enabled: true
       strategy: 'semantic',
-      ttl: 30 * 60 * 1000, // 30 minutes
+      ttl: 30 * 60 * 1000, // 30 minutes;
       priority: 'high'
     },
     // Add cache-aware lifecycle methods
@@ -360,9 +360,9 @@ export function withNeuralSpriteCache(spriteConfig: any) {
       const cached = await headlessUICache.get(cacheKey);
       if (cached) {
         console.log(`[NeuralSprite] Cache hit for sprite ${context.spriteId}`);
-        return { cached: true, result: cached };
+        return { cached: true, result: cached }
       }
-      return { cached: false };
+      return { cached: false }
     },
     afterCompute: async function (context: any, result: any) {
       const cacheKey = `neural-sprite:${context.spriteId}:${JSON.stringify(context.inputs)}`;
@@ -375,7 +375,7 @@ export function withNeuralSpriteCache(spriteConfig: any) {
       );
       console.log(`[NeuralSprite] Cached result for sprite ${context.spriteId}`);
     }
-  };
+  }
 }
 // Export cache statistics for monitoring
 export function getCacheStats() {
@@ -386,4 +386,4 @@ export const cacheControl = {
   clear: () => headlessUICache.clear(),
   getStats: () => headlessUICache.getStats(),
   dispose: () => headlessUICache.dispose()
-};
+}

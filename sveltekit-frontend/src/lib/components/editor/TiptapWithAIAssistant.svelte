@@ -79,10 +79,10 @@ await initializeEditor();
   // ============================================================================
   async function initializeEditor() {
     editor = new Editor({
-      element: editorElement
+      element: editorElement;
       extensions: [
         StarterKit.configure({
-          history: false, // We'll handle our own history with collaboratio
+          history: false, // We'll handle our own history with collaboratio;
         }),
         // Add collaboration extensions if needed
         // Collaboration.configure({
@@ -92,7 +92,7 @@ await initializeEditor();
         //   provider,
         // }),
       ],
-      content: initialContent
+      content: initialContent;
       editable: !readOnly,
       editorProps: {
         attributes: {
@@ -122,7 +122,7 @@ await initializeEditor();
   // ============================================================================
   // EVENT HANDLERS
   // ============================================================================
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     userTyping = true;
     // Send user activity to state machine
     send({ type: 'USER_ACTIVITY', activity: 'typing' });
@@ -170,7 +170,7 @@ await initializeEditor();
     recommendationPosition = {
       x: pos.left,
       y: pos.top;
-    };
+    }
     // Check if selection contains recommended text
     checkForRecommendationAtSelection(selection);
   }

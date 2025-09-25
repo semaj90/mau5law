@@ -13,7 +13,7 @@ export interface EmbedGatewayResult {
 // Backend-agnostic embedding gateway: tries New Embedder -> FastAPI -> vLLM -> Ollama -> Go
 export async function getEmbeddingViaGate(
   fetchFn: typeof fetch
-  text: string
+  text: string;
   opts: EmbedGatewayOptions = {}
 ): Promise<EmbedGatewayResult> {
   const model =
@@ -32,7 +32,7 @@ export async function getEmbeddingViaGate(
         embedding,
         backend: status.activeService === 'local' ? 'ollama' : ('fastapi' as BackendId),
         model
-      };
+      }
     }
   } catch (error) {
     console.warn('New embedder service failed, trying fallback services...', error);
@@ -49,7 +49,7 @@ export async function getEmbeddingViaGate(
       if (resp.ok) {
         const data = await resp.json();
         if (Array.isArray(data?.embedding)) {
-          return { embedding: data.embedding, backend: 'fastapi', model };
+          return { embedding: data.embedding, backend: 'fastapi', model }
         }
       }
     } catch (error) {}
@@ -67,7 +67,7 @@ export async function getEmbeddingViaGate(
         const vJson = await vResp.json();
         const emb: number[] | undefined = vJson?.data?.[0]?.embedding as number[] | undefined;
         if (Array.isArray(emb) && emb.length > 0) {
-          return { embedding: emb, backend: 'vllm', model };
+          return { embedding: emb, backend: 'vllm', model }
         }
       }
     } catch (error) {}
@@ -84,7 +84,7 @@ export async function getEmbeddingViaGate(
       const oJson = await oResp.json();
       const emb: number[] | undefined = (oJson?.embedding as number[] | undefined) ?? (oJson?.data?.[0]?.embedding as number[] | undefined);
       if (Array.isArray(emb) && emb.length > 0) {
-        return { embedding: emb, backend: 'ollama', model };
+        return { embedding: emb, backend: 'ollama', model }
       }
     }
   } catch (error) {}
@@ -95,7 +95,7 @@ export async function getEmbeddingViaGate(
       documentId: `doc:${Date.now()}`,
       data: [] as number[],
       options: { timeout: 5000 }
-    };
+    }
     const goResp = await fetchFn('/api/tensor', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -105,7 +105,7 @@ export async function getEmbeddingViaGate(
       const goJson = await goResp.json();
       const emb = goJson?.data?.result?.embeddings as number[] | undefined;
       if (Array.isArray(emb) && emb.length > 0) {
-        return { embedding: emb, backend: 'go', model };
+        return { embedding: emb, backend: 'go', model }
       }
     }
   } catch (error) {}
@@ -122,5 +122,5 @@ export async function embedText(fetchFn: typeof fetch, texts: string[], model?: 
     lastModel = res?.model || "unknown" // @ts-ignore - Model property access
     out.push(res.embedding);
   }
-  return { embeddings: out, backend, model: lastModel };
+  return { embeddings: out, backend, model: lastModel }
 }

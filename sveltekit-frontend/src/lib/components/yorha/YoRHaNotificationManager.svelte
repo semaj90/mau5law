@@ -19,9 +19,9 @@
   let notifications = $state<Notification[]>([]);
   // Avoid TS union issues by creating a typed alias
   const notificationStore = notificationStoreExport as unknown as {
-    subscribe: (run: (value: Notification[]) => void) => () => void;
+    subscribe: (run: (_value: Notification[]) => void) => () => void;
     remove: (id: string) => void;
-  };
+  }
   $effect(() => {
     const unsubscribe = notificationStore.subscribe((value) => {
       notifications = valu;
@@ -44,6 +44,7 @@
   }
   const groupedNotifications = $derived(groupNotificationsByPosition(notifications));
 </script>
+
 <!-- Render notifications grouped by position -->
 {#each Object.entries(groupedNotifications) as [position, notificationGroup]}
   <div class="notification-group notification-group-{position}">
@@ -55,6 +56,7 @@
     {/each}
   </div>
 {/each}
+
 <style>
   .notification-group {
     position: fixed;

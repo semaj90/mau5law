@@ -27,7 +27,7 @@ class ProductionServiceClient {
           ...options.headers
         },
         signal: AbortSignal.timeout(options.timeout || 5000)
-      };
+      }
       // Handle body data
       if (options.body) {
         if (typeof options.body === 'string') {
@@ -36,7 +36,7 @@ class ProductionServiceClient {
           fetchOptions.body = JSON.stringify(options.body);
         }
       }
-      const response = await fetch(url, fetchOptions);
+      // removed unused response assignment
       const latency = performance.now() - startTime;
       let data: any;
       try {
@@ -47,7 +47,7 @@ class ProductionServiceClient {
           error: 'Non-JSON response',
           text: await (response as { json?: any; text?: any; status?: any; headers?: any }).text(),
           parseError: parseError.message
-        };
+        }
       }
       return {
         data,
@@ -56,7 +56,7 @@ class ProductionServiceClient {
         protocol: 'HTTP/1.1',
         service: this.extractServiceFromEndpoint(endpoint),
         latency
-      };
+      }
     } catch (error) {
       const latency = performance.now() - startTime;
       // Handle network errors, timeouts, etc.
@@ -71,7 +71,7 @@ class ProductionServiceClient {
         protocol: 'HTTP/1.1',
         service: this.extractServiceFromEndpoint(endpoint),
         latency
-      };
+      }
     }
   }
   private extractServiceFromEndpoint(endpoint: string): string {
@@ -98,7 +98,7 @@ class ProductionServiceClient {
   // Health check for service availability
   async checkServiceHealth(servicePath: string = '/health'): Promise<boolean> {
     try {
-      const response = await this.get(servicePath);
+      // removed unused response assignment
       return (response as { json?: any; text?: any; status?: any; headers?: any }).status >= 200 && (response as { json?: any; text?: any; status?: any; headers?: any }).status < 300;
     } catch (error) {
       return false;
@@ -106,7 +106,7 @@ class ProductionServiceClient {
   }
   // Bulk health check for multiple services
   async checkServicesHealth(services: string[]): Promise<Record<string, boolean> {
-    const results: Record<string, boolean> = {};
+    const results: Record<string, boolean> = {}
     await Promise.all(services.map(async (service) => {
         results[service] = await this.checkServiceHealth(`/${service}/health`));
       })
@@ -131,10 +131,10 @@ class ProductionServiceClient {
       maxLatency: Math.max(...latencies),
       successRate: successCount / iterations,
       results
-    };
+    }
   }
 }
 // Export singleton instance for tests
 export const productionServiceClient = new ProductionServiceClient();
 // Export class for custom instances
-export { ProductionServiceClient };
+export { ProductionServiceClient }

@@ -19,7 +19,7 @@
       processingTime: number;
       recursionPath: string[];
       analysisTimestamp: string;
-    };
+    }
   }
   interface Props {
     evidence: EvidenceNod;
@@ -108,7 +108,7 @@
       'documentary': '📄',
       'financial': '💰',
       'communication': '💬'
-    };
+    }
     return icons[type] || '🔗';
   }
   function getLegalImplicationIcon(implication: string): string {
@@ -148,7 +148,7 @@
 <!-- Evidence node container -->
 <div
   class="evidence-node"
-  class:circular-reference={isCircular};
+  class:circular-reference={isCircular}
   class:max-depth={isMaxDepth}
   data-depth={depth}
   data-evidence-id={evidence.evidenceId}

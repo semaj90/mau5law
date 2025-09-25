@@ -30,7 +30,7 @@ export interface UserIntent {
     userExpertise: 'novice' | 'intermediate' | 'expert';
     timeOfDay: string;
     sessionLength: number;
-  };
+  }
 }
 export interface ModelPerformanceMetrics {
   modelId: string;
@@ -80,7 +80,7 @@ export class CudaCacheSOMOptimizer {
   }
   private findBestMatchingUnit(input: Float32Array): { x: number; y: number } {
     let minDistance = Infinity;
-    let winner = { x: 0, y: 0 };
+    let winner = { x: 0, y: 0 }
     for (let x = 0; x < Math.sqrt(this.somSize); x++) {
       for (let y = 0; y < Math.sqrt(this.somSize); y++) {
         const neuronIndex = (x * Math.sqrt(this.somSize) + y) * 128;
@@ -91,7 +91,7 @@ export class CudaCacheSOMOptimizer {
         }
         if (distance < minDistance) {
           minDistance = distance;
-          winner = { x, y };
+          winner = { x, y }
         }
       }
     }
@@ -176,7 +176,7 @@ export class CudaCacheSOMOptimizer {
       layout,
       totalMemoryUsed: totalMemory
       fragmentationRatio
-    };
+    }
   }
   private estimateModelMemorySize(modelId: string): number {
     const sizeMap: Record<string, number> = {
@@ -185,7 +185,7 @@ export class CudaCacheSOMOptimizer {
       'legal-bert': 256,
       'langextract-onnx': 512,
       'fastapi-endpoint': 256
-    };
+    }
     return sizeMap[modelId] || 1024;
   }
   private calculateFragmentation(layout: Map<string, { offset: number; size: number }>): number {
@@ -226,7 +226,7 @@ export class SelfPromptingIntelligence {
         timeOfDay: new Date().getHours().toString(),
         sessionLength: context.sessionLength || 0
       }
-    };
+    }
     this.userContextHistory.push(intent);
     return intent;
   }
@@ -477,7 +477,7 @@ export class IntelligentModelOrchestrator {
   }
   // Main method: Intelligently handle user query
   async processQuery(
-    query: string
+    query: string;
     context: any = {},
     userBehavior?: UserBehaviorPattern
   ): Promise<any> {
@@ -518,7 +518,7 @@ export class IntelligentModelOrchestrator {
       suggestions,
       shouldPreload,
       cacheOptimization: memoryOptimization
-    };
+    }
   }
   private generateQueryEmbedding(query: string): Float32Array {
     // Mock embedding generation - would use actual embedding service
@@ -557,7 +557,7 @@ export class IntelligentModelOrchestrator {
   }
   private calculatePerformanceBenefit(
     current: ModelVariant
-    target: ModelVariant
+    target: ModelVariant;
     intent: UserIntent
   ): number {
     // Calculate expected performance improvement
@@ -575,13 +575,13 @@ export class IntelligentModelOrchestrator {
       'gemma3-legal': 3,    // Legal specialized complex
       'langextract-onnx': 2,// Text extraction moderate
       'fastapi-endpoint': 1 // Simple API processing
-    };
+    }
     const complexityScores = {
       'simple': 1,
       'moderate': 2,
       'complex': 3,
       'expert': 4
-    };
+    }
     const modelScore = modelComplexityMap[model.type] || 2;
     const taskScore = complexityScores[complexity as keyof typeof complexityScores] || 2;
     // Perfect match gets high score, over/under-engineering gets penalty
@@ -629,7 +629,7 @@ export class IntelligentModelOrchestrator {
       'moderate': 1.0,
       'complex': 1.4,
       'expert': 2.0
-    };
+    }
     const multiplier = complexityMultiplier[intent.complexity] || 1.0;
     // Add context switch penalty if model not loaded
     const switchPenalty = model.isLoaded ? 0 : model.warmupTime;
@@ -712,7 +712,7 @@ export class IntelligentModelOrchestrator {
       models,
       memoryUsage: this.cudaOptimizer.optimizeCudaMemoryLayout(this.getActiveModelIds()),
       recommendations: this.generateOptimizationRecommendations(models)
-    };
+    }
   }
   private generateOptimizationRecommendations(metrics: ModelPerformanceMetrics[]): string[] {
     const recommendations: string[] = [];

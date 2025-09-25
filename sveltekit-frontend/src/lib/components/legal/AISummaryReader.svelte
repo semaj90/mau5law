@@ -108,7 +108,7 @@ https: //svelte.dev/e/js_parse_error -->
       );
     }
   }
-  function jumpToSection(index: number) {
+  function jumpToSection(_index: number) {
     send({ type: "JUMP_TO_SECTION", sectionIndex: index });
     if ($state.context.voiceEnabled && isPlaying) {
       setTimeout(() => speakSection($state.context.sections[index]), 100);
@@ -127,7 +127,7 @@ https: //svelte.dev/e/js_parse_error -->
       } else {
         stopReading();
       }
-    };
+    }
     speechSynthesis.speak(currentUtterance);
   }
   function analyzeDocument() {
@@ -226,7 +226,7 @@ https: //svelte.dev/e/js_parse_error -->
         </div>
       {:else if error}
         <div
-          class="bg-red-50 border border-red-200 rounded-lg p-4"
+          class="bg-red-50 border border-red-200 rounded-lg p-4";
           transition:fade
         >
           <div class="flex items-center gap-2">
@@ -413,7 +413,7 @@ https: //svelte.dev/e/js_parse_error -->
                           "person",
                           "date",
                           "organization",
-                        ].includes(entity.type)};
+                        ].includes(entity.type)}
                         class:text-gray-800={![
                           "legal_term",
                           "person",
@@ -624,7 +624,7 @@ https: //svelte.dev/e/js_parse_error -->
   .ai-summary-reader {
     width: 100%;
     max-width: 72rem;
-    margin-left: auto
+    margin-left: auto;
     margin-right: auto;
   }
   .ai-summary-reader.compact {
@@ -633,7 +633,7 @@ https: //svelte.dev/e/js_parse_error -->
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical
+    -webkit-box-orient: vertical;
     overflow: hidden;
   }
   .prose p {

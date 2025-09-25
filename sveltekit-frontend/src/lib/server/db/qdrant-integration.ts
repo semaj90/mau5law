@@ -148,7 +148,7 @@ export class QdrantPostgreSQLService {
           operationId,
           operationType: 'sync',
           entityType: 'document',
-          entityId: documentId
+          entityId: documentId;
           status: 'processing'
         },
         contentHash: operationId
@@ -181,7 +181,7 @@ export class QdrantPostgreSQLService {
           created_at: doc.createdAt?.toISOString(),
           metadata: doc.metadata
         }
-      };
+      }
       // Upsert to Qdrant
       await this.qdrant.upsert(doc.qdrantCollection || 'legal_documents', {
         points: [point]
@@ -234,12 +234,12 @@ export class QdrantPostgreSQLService {
   // ============================================================================
   async hybridSearch(
     query: string
-    queryEmbedding: number[]
+    queryEmbedding: number[];
     options: {
       collection?: string;
       limit?: number;
       threshold?: number;
-      filter?: { [key: string]: any };
+      filter?: { [key: string]: any }
       usePostgreSQL?: boolean;
       useQdrant?: boolean;
     } = {}
@@ -249,7 +249,7 @@ export class QdrantPostgreSQLService {
       postgresqlTime?: number;
       qdrantTime?: number;
       totalTime: number;
-    };
+    }
   }> {
     const startTime = Date.now();
     const {
@@ -282,7 +282,7 @@ export class QdrantPostgreSQLService {
           results.push({
             id: row.id,
             score: row.similarity,
-            document: row as LegalDocument
+            document: row as LegalDocument;
             source: 'postgresql'
           });
         }
@@ -298,7 +298,7 @@ export class QdrantPostgreSQLService {
           vector: queryEmbedding
           limit,
           score_threshold: threshold
-          with_payload: true
+          with_payload: true;
           filter:
             Object.keys(filter).length > 0;
               ? {
@@ -346,13 +346,13 @@ export class QdrantPostgreSQLService {
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
     return {
-      results: finalResults
+      results: finalResults;
       performance: {
         postgresqlTime,
         qdrantTime,
         totalTime: Date.now() - startTime
       }
-    };
+    }
   }
   // ============================================================================
   // BATCH OPERATIONS
@@ -361,7 +361,7 @@ export class QdrantPostgreSQLService {
     entityType: 'document' | 'case',
     batchSize: number = 100;
   ): Promise<any> {
-    const results = { synced: 0, failed: 0, errors: [] as string[] };
+    const results = { synced: 0, failed: 0, errors: [] as string[] }
     try {
       let offset = 0;
       let hasMore = true;
@@ -425,7 +425,7 @@ export class QdrantPostgreSQLService {
       console.error('Qdrant health check failed:', error);
     }
     // Get sync status
-    const syncStatus = { totalDocuments: 0, syncedDocuments: 0, pendingSyncs: 0 };
+    const syncStatus = { totalDocuments: 0, syncedDocuments: 0, pendingSyncs: 0 }
     try {
       const totalResult = await this.postgres`
         SELECT COUNT(*) as count
@@ -450,7 +450,7 @@ export class QdrantPostgreSQLService {
       qdrant,
       collections,
       syncStatus
-    };
+    }
   }
   // ============================================================================
   // CLEANUP
@@ -471,13 +471,13 @@ export const createQdrantService = (
     port: parseInt(import.meta.env.QDRANT_PORT || '6333'),
     apiKey: import.meta.env.QDRANT_API_KEY,
     ...qdrantConfig
-  };
+  }
   const defaultPostgresConfig: PostgreSQLConfig = {
     connectionString:
       import.meta.env.DATABASE_URL ||
       `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5433'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db'}`,
     ...postgresConfig
-  };
+  }
   return new QdrantPostgreSQLService(defaultQdrantConfig, defaultPostgresConfig);
-};
+}
 export default QdrantPostgreSQLService;

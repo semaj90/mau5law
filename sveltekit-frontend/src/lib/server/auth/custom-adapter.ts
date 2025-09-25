@@ -15,11 +15,11 @@ interface DatabaseSession {
   user_id?: string; // For DB compatibility
   expiresAt: Date; // Main property used in code
   expires_at?: Date; // For DB compatibility
-  attributes: { [key: string]: any };
+  attributes: { [key: string]: any }
 }
 interface DatabaseUser {
   id: string;
-  attributes: { [key: string]: any };
+  attributes: { [key: string]: any }
 }
 import { db } from '$lib/server/db/drizzle';
 import { sessions, users } from '$lib/server/db/schema-postgres';
@@ -54,7 +54,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         .select({
           // User fields
           user: users
-          // Session fields
+          // Session fields;
           session: sessions
         })
         .from(sessions)
@@ -76,7 +76,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
           session_context: session.session_context,
           created_at: session.created_at
         }
-      };
+      }
       const databaseUser: DatabaseUser = {
         id: user.id,
         attributes: {
@@ -85,10 +85,10 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
           lastName: null
           role: 'user',
           isActive: true
-          avatarUrl: null
+          avatarUrl: null;
           name: null
         }
-      };
+      }
       return [databaseSession, databaseUser];
     } catch (error) {
       console.error('[AUTH] Error in getSessionAndUser:', error);

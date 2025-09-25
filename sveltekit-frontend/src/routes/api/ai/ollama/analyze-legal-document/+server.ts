@@ -218,4 +218,4 @@ async function performOCR(buffer: ArrayBuffer): Promise<string> {
   // You could use Tesseract.js or similar
   return '[OCR not implemented]'
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

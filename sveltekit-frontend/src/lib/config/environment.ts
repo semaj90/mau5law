@@ -8,22 +8,22 @@ export interface EnvironmentConfig {
     baseUrl: string;
     port: number;
     isDetected: boolean;
-  };
+  }
   redis: {
     url: string;
     host: string;
     port: number;
-  };
+  }
   postgres: {
     url: string;
     host: string;
     port: number;
-  };
+  }
   development: {
     isDev: boolean;
     debug: boolean;
     verbose: boolean;
-  };
+  }
 }
 /**
  * Detect and configure Ollama environment
@@ -35,7 +35,7 @@ async function detectOllamaConfig(): Promise<any> {
     try {
       const url = new URL(envUrl.startsWith('http') ? envUrl : `http://${envUrl}`)
       const port = parseInt(url.port) || 11434;
-      return { baseUrl: envUrl, port, isDetected: true };
+      return { baseUrl: envUrl, port, isDetected: true }
     } catch (error) {
       console.warn('Invalid OLLAMA_URL in environment:', envUrl);
     }
@@ -52,7 +52,7 @@ async function detectOllamaConfig(): Promise<any> {
           signal: AbortSignal.timeout(1000)
         });
         if (response.ok) {
-          return { baseUrl, port, isDetected: true };
+          return { baseUrl, port, isDetected: true }
         }
       }
     } catch (error) {
@@ -64,7 +64,7 @@ async function detectOllamaConfig(): Promise<any> {
     baseUrl: 'http://localhost:11434',
     port: 11434,
     isDetected: false
-  };
+  }
 }
 /**
  * Initialize environment configuration
@@ -88,7 +88,7 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
       debug: process.env.DEBUG === 'true' || process.env.VITE_DEBUG === 'true',
       verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true'
     }
-  };
+  }
 }
 /**
  * Get Ollama configuration with runtime detection
@@ -102,7 +102,7 @@ export function getOllamaConfig(): { baseUrl: string; port: number } {
       return {
         baseUrl: envUrl
         port: parseInt(url.port) || 11434
-      };
+      }
     } catch (error) {
       console.warn('Invalid OLLAMA_URL format:', envUrl);
     }
@@ -111,7 +111,7 @@ export function getOllamaConfig(): { baseUrl: string; port: number } {
   return {
     baseUrl: 'http://localhost:11434',
     port: 11434
-  };
+  }
 }
 /**
  * Set Ollama environment variables
@@ -152,5 +152,5 @@ export const ENV_CONFIG = {
   get IS_SERVER() {
     return typeof process !== 'undefined' && process.versions?.node;
   }
-};
+}
 export default ENV_CONFIG;

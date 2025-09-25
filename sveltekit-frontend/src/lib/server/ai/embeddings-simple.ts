@@ -1,13 +1,13 @@
 // Redis cache imports - using local interfaces to avoid missing module errors
 export interface CacheInterface {
-  getCachedEmbedding: (key: string) => Promise<number[] | null>;
-  cacheEmbedding: (key: string, embedding: number[], ttl?: number) => Promise<void>;
+  getCachedEmbedding: (_key: string) => Promise<number[] | null>;
+  cacheEmbedding: (_key: string, embedding: number[], ttl?: number) => Promise<void>;
 }
 // Mock cache implementation
 const cache: CacheInterface = {
-  getCachedEmbedding: async (key: string) => null,
-  cacheEmbedding: async (key: string, embedding: number[], ttl?: number) => {}
-};
+  getCachedEmbedding: async (_key: string) => null,
+  cacheEmbedding: async (_key: string, embedding: number[], ttl?: number) => {}
+}
 const getCachedEmbedding = cache.getCachedEmbedding;
 const cacheEmbedding = cache.cacheEmbedding;
 // Simplified AI embedding service - Production ready
@@ -37,7 +37,7 @@ export interface EmbeddingOptions {
   maxTokens?: number;
 }
 export async function generateEmbedding(
-  text: string
+  text: string;
   options: EmbeddingOptions = {}
 ): Promise<number[] | null> {
   const { model = "local", cache = true, maxTokens = 8000 } = options;
@@ -97,7 +97,7 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({,
-      input: text
+      input: text;
       model: 'text-embedding-3-small', // 1536 dimensions, fast and cost-effective
     })
   });
@@ -156,7 +156,7 @@ async function generateCpuEmbedding(text: string): Promise<number[]> {
 }
 // Batch embedding generation for efficiency
 export async function generateBatchEmbeddings(
-  texts: string[]
+  texts: string[];
   options: EmbeddingOptions = {}
 ): Promise<(number[] | null)[]> {
   const { model = 'openai' } = options;
@@ -211,7 +211,7 @@ async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[]
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({,
-      input: texts
+      input: texts;
       model: 'text-embedding-3-small'
     })
   });
@@ -271,9 +271,9 @@ async function generateNomicBatchEmbeddings(
 export const embeddings = {
   generate: generateEmbedding
   generateBatch: generateBatchEmbeddings
-};
+}
 // For backward compatibility
 export const embedAndSearch = {
   generateEmbedding,
   generateBatchEmbeddings
-};
+}

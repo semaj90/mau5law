@@ -20,8 +20,8 @@ https://svelte.dev/e/attribute_invalid_name -->
         tags?: string[];
         tagsString?: string;
         type?: string;
-      };
-    };
+      }
+    }
     open?: boolean;
   } = $props();
   let form = $state<any >(null);

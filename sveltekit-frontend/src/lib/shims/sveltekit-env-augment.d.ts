@@ -19,3 +19,4 @@ declare module '$env/static/public' {
   export const PUBLIC_ASSET_PATH: string | undefined;
   // Duplicate removed: // Duplicate removed: export const __ENV__: Record<string, string | undefined>
 }
+;

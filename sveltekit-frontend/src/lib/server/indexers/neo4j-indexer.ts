@@ -15,8 +15,8 @@ export async function indexNeo4j(doc: { id: string; text: string; embedding: num
     );
     await session.close();
     await driver.close();
-    return { ok: true };
+    return { ok: true }
   } catch (e) {
-    return { ok: false, error: String(e) };
+    return { ok: false, error: String(e) }
   }
 }

@@ -43,23 +43,23 @@ https://svelte.dev/e/js_parse_error -->
       riskAssessment: {
         level: "low" | "medium" | "high";
         factors: string[];
-      };
+      }
       timeline: Array;
       evidence: {
         total: number;
         admissible: number;
         questionable: number;
         inadmissible: number;
-      };
+      }
       nextSteps: string[];
-    };
+    }
     metrics?: {
       evidenceCount: number;
       documentsReviewed: number;
       witnessesInterviewed: number;
       daysActive: number;
       completionPercentage: number;
-    };
+    }
   } | null = null;
   let { useDrawer = $bindable()  }: { useDrawer = $bindable() : unknown } = $props(); // boolean = false
   let isGeneratingSummary = $state(false);
@@ -80,7 +80,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; summary?: unknown }).success) {
-        caseData = { ...caseData, summary: (result as { success?: unknown; summary?: unknown }).summary };
+        caseData = { ...caseData, summary: (result as { success?: unknown; summary?: unknown }).summary }
         ondispatch?.(caseData);
   }
     } catch (error) {

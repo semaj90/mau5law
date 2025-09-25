@@ -46,4 +46,4 @@ export const GET: RequestHandler = async () => {
     }, { status: 500 })
   }
 }
-export const prerender = false
+export const prerender = false;

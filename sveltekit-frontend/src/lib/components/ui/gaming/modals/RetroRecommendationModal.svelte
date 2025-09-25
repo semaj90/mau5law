@@ -104,7 +104,7 @@ https://svelte.dev/e/attribute_duplicate -->
       fontFamily: '"Rajdhani", sans-serif',
       shadow: '0 0 40px rgba(212, 175, 55, 0.4)';
     }
-  };
+  }
   let currentTheme = $derived(consoleThemes[consoleStyle]);
   // Sound effects for retro feel
   function playSound(type: 'open' | 'select' | 'confirm' | 'close') {
@@ -112,9 +112,9 @@ https://svelte.dev/e/attribute_duplicate -->
     const frequencies = {
       open: [523, 659, 784],      // C-E-G chord
       select: [440],              // A not
-      confirm: [523, 659],        // C-E
-      close: [440, 349]           // A-F
-    };
+      confirm: [523, 659],        // C-E;
+      close: [440, 349]           // A-F;
+    }
     frequencies[type].forEach((freq, i) => {
       setTimeout(() => {
         const oscillator = audioContext.createOscillator();
@@ -131,7 +131,7 @@ https://svelte.dev/e/attribute_duplicate -->
     });
   }
   // Handle keyboard navigation
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (!show) return;
     switch (event.key) {
       case 'ArrowUp':
@@ -175,7 +175,7 @@ https://svelte.dev/e/attribute_duplicate -->
       medium: '◆',
       high: '▲',
       critical: '⚠';
-    };
+    }
     return icons[priority as keyof typeof icons] || '●';
   }
   function getTypeColor(type: string) {
@@ -184,7 +184,7 @@ https://svelte.dev/e/attribute_duplicate -->
       legal: '#10B981',
       evidence: '#F59E0B',
       ai: '#8B5CF6';
-    };
+    }
     return colors[type as keyof typeof colors] || currentTheme.colors.text;
   }
   $effect(() => {
@@ -201,7 +201,7 @@ https://svelte.dev/e/attribute_duplicate -->
     return () => {
       document.removeEventListener('keydown', handleKeydown);
       if (closeTimer) clearTimeout(closeTimer);
-    };
+    }
   });
   $effect(() => {
     if (show && sound) {
@@ -212,6 +212,7 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   });
 </script>
+
 {#if show}
   <!-- Backdrop -->
   <div
@@ -238,11 +239,7 @@ https://svelte.dev/e/attribute_duplicate -->
   >
     <!-- Header -->
     <div class="modal-header" style:border-bottom-color={currentTheme.colors.border}>
-      <h2
-        id="modal-title"
-        class="modal-title"
-        style:color={currentTheme.colors.text}
-      >
+      <h2 id="modal-title" class="modal-title" style:color={currentTheme.colors.text}>
         {title}
       </h2>
       <button
@@ -267,10 +264,14 @@ https://svelte.dev/e/attribute_duplicate -->
             <div
               class="recommendation-item"
               class:selected={index === selectedIndex}
-              style:border-color={index === selectedIndex ? currentTheme.colors.selected: 'transparent'};
+              style:border-color="{index === selectedIndex ? currentTheme.colors.selected : 'transparent'}"
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
               role="button"
-                onclick={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
+              onclick={() => {
+                selectedIndex = index;
+                rec.action?.();
+                handleClose();
+              }}
               tabindex={index === selectedIndex ? 0 : -1}
               transitionscale={{ duration: 200, delay: index * 50 }}
             >
@@ -284,37 +285,22 @@ https://svelte.dev/e/attribute_duplicate -->
               <!-- Content -->
               <div class="rec-content">
                 <div class="rec-header">
-                  <span
-                    class="rec-type"
-                    style:color={getTypeColor(rec.type)}
-                  >
+                  <span class="rec-type" style:color={getTypeColor(rec.type)}>
                     [{rec.type.toUpperCase()}]
                   </span>
-                  <span
-                    class="rec-confidence"
-                    style:color={currentTheme.colors.text}
-                  >
+                  <span class="rec-confidence" style:color={currentTheme.colors.text}>
                     {(rec.confidence * 100).toFixed(0)}%
                   </span>
                 </div>
-                <h3
-                  class="rec-title"
-                  style:color={currentTheme.colors.text}
-                >
+                <h3 class="rec-title" style:color={currentTheme.colors.text}>
                   {rec.title}
                 </h3>
-                <p
-                  class="rec-description"
-                  style:color={currentTheme.colors.text}
-                >
+                <p class="rec-description" style:color={currentTheme.colors.text}>
                   {rec.description}
                 </p>
               </div>
               <!-- Action Indicator -->
-              <div
-                class="action-indicator"
-                style:color={currentTheme.colors.selected}
-              >
+              <div class="action-indicator" style:color={currentTheme.colors.selected}>
                 {#if index === selectedIndex}
                   →
                 {/if}
@@ -334,6 +320,7 @@ https://svelte.dev/e/attribute_duplicate -->
     </div>
   </div>
 {/if}
+
 <style>
   .modal-backdrop {
     position: fixed;

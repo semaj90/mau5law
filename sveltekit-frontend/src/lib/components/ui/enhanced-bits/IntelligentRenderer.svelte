@@ -19,7 +19,7 @@
       textContent?: string;
       interactiveElements?: number;
       realTimeUpdates?: boolean;
-    };
+    }
     type: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'case-timeline';
     title?: string;
     priority?: 'critical' | 'high' | 'medium' | 'low';
@@ -37,7 +37,7 @@
     }
     return data;
   })();
-  function handleInteraction(event: CustomEvent) {
+  function handleInteraction(_event: CustomEvent) {
     // Pure event handling logic
     console.log('User interaction:', event.detail);
   }

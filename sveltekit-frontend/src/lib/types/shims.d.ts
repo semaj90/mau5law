@@ -57,13 +57,13 @@ declare module '$lib/services/embedding-service' {
 // Provide a minimal Redis shape for methods that were flagged (setex, psubscribe, disconnect, on)
 declare module 'redis' {
   export class Redis {
-    set(key: string, value: string, ...rest: any[]): Promise<any>;
-    setex?(key: string, ttl: number, value: string): Promise<any>;
+    set(_key: string, value: string, ...rest: any[]): Promise<any>;
+    setex?(_key: string, ttl: number, value: string): Promise<any>;
     psubscribe?(...patterns: string[]): Promise<any>;
-    on?(event: string, handler: (...args: any[]) => void): void;
+    on?(_event: string, handler: (...args: any[]) => void): void;
     disconnect?(): Promise<void>;
-  status?: string;
-  info?(section?: string): Promise<string>;
+    status?: string;
+    info?(section?: string): Promise<string>;
   }
   export function createClient(...opts: any[]): Redis;
   const client: Redis;
@@ -139,7 +139,7 @@ type PoolConfig = any;
 type Pool = any;
 type PoolClient = any;
 // TensorFlow and AI processing types
-declare interface ActivationIdentifier extends String {
+declare interface ActivationIdentifier extends string {
   readonly __brand: 'ActivationIdentifier';
 }
 declare interface TensorSlice {
@@ -147,7 +147,7 @@ declare interface TensorSlice {
   dimensions: number[];
 }
 declare interface SOMConfig {
-  gridSize: { width: number; height: number };
+  gridSize: { width: number; height: number }
   learningRate: number;
   neighborhoodRadius: number;
   epochs: number;

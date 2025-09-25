@@ -19,8 +19,8 @@ export type Job = {
   filename?: string;
   userId: string;
   contentType?: string;
-  metadata?: { [key: string]: any };
-};
+  metadata?: { [key: string]: any }
+}
 export class WorkerPool {
   pool: Worker[] = [];
   queue: Job[] = [];
@@ -82,7 +82,7 @@ export class WorkerPool {
       freeWorkers: this.free.filter(item => item.length),
       queuedJobs: this.queue.length,
       pendingCallbacks: this.jobCallbacks.size
-    };
+    }
   }
   async shutdown(): Promise<void> {
     // Terminate all workers

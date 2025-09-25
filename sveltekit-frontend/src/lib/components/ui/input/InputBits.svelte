@@ -33,12 +33,12 @@
     default: "bg-slate-800/60 border border-slate-600/50 focus:border-amber-500 focus:ring-amber-500/20",
     filled: "bg-slate-800/80 border-0 focus:ring-amber-500/30",
     outlined: "bg-transparent border-2 border-slate-600/50 focus:border-amber-500";
-  };
+  }
   const sizeClasses = {
     sm: "px-3 py-2 text-sm rounded-md",
     md: "px-4 py-3 text-base rounded-lg",
     lg: "px-6 py-4 text-lg rounded-xl";
-  };
+  }
   const stateClasses = error
     ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
     : success
@@ -58,6 +58,7 @@
   const descriptionId = description ? `${inputId}-description` : undefined;
   const errorId = errorMessage ? `${inputId}-error` : undefined;
 </script>
+
 <div class="legal-ai-input-group space-y-2">
   {#if label}
     <label for={inputId} class="block text-sm font-semibold text-slate-300">
@@ -91,7 +92,11 @@
   {#if error && errorMessage}
     <p id={errorId} class="text-sm text-red-400 flex items-center gap-1">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        <path
+          fill-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+          clip-rule="evenodd"
+        />
       </svg>
       {errorMessage}
     </p>
@@ -99,12 +104,17 @@
   {#if success}
     <p class="text-sm text-green-400 flex items-center gap-1">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        <path
+          fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+          clip-rule="evenodd"
+        />
       </svg>
       Input is valid
     </p>
   {/if}
 </div>
+
 <style>
   :global(.legal-ai-input) {
     font-family: var(--legal-ai-font-family-sans);

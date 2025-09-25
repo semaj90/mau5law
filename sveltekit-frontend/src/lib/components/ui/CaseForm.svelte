@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
       tags: "",
     },
     validators: {
-      title: (value: string) => {
+      title: (_value: string) => {
         if (!value || value.trim.length < 3) {
           return "Title must be at least 3 characters long";
   }
@@ -30,19 +30,19 @@ https://svelte.dev/e/js_parse_error -->
   }
         return null;
       },
-      description: (value: string) => {
+      description: (_value: string) => {
         if (!value || value.trim.length < 10) {
           return "Description must be at least 10 characters long";
   }
         return null;
       },
-      priority: (value: string) => {
+      priority: (_value: string) => {
         if (!["low", "medium", "high", "urgent"].includes(value)) {
           return "Please select a valid priority level";
   }
         return null;
       },
-      dueDate: (value: string) => {
+      dueDate: (_value: string) => {
         if (value && new Date(value) < new Date()) {
           return "Due date cannot be in the past";
   }
@@ -50,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
       },
     },
     requiredFields: ["title", "description", "priority"],
-  };
+  }
   let formApi: unknown;
   let isSubmitting = $state(false);
   // Store form state
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
   let isFormValid = $state(false);
   let isFormDirty = $state(false);
   // Handle form changes
-  function handleFormChange(event: CustomEvent) {
+  function handleFormChange(_event: CustomEvent) {
     const { values } = event.detail;
     formValues = value;
     // Auto-save draft or other real-time updates
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
   // TODO: Convert to $derived: if (formApi) {
     // You can access formApi methods here if needed
   }
-  async function handleSubmit(event: CustomEvent) {
+  async function handleSubmit(_event: CustomEvent) {
     const { values, isValid } = event.detail
     if (!isValid) {
       return;
@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
     );
   }
   // Keyboard shortcuts
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.ctrlKey || event.metaKey) {
       if (event.key === "s") {
         event.preventDefault();
@@ -160,8 +160,8 @@ https://svelte.dev/e/js_parse_error -->
         slot="default"
         let: form
         let:formApi
-        let: values
-        let: errors
+        let: values;
+        let: errors;
         let:isValid;
         let:isDirty
       >

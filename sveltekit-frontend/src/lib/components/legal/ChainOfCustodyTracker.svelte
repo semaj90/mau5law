@@ -67,7 +67,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     biological: { icon: Shield, color: 'text-red-400', bg: 'bg-red-500/10' },
     chemical: { icon: Shield, color: 'text-purple-400', bg: 'bg-purple-500/10' },
     other: { icon: Shield, color: 'text-gray-400', bg: 'bg-gray-500/10' }
-  };
+  }
   // Condition configurations
   const conditionConfig = {
     excellent: { label: 'Excellent', class: 'bg-green-500/20 text-green-400' },
@@ -75,7 +75,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     fair: { label: 'Fair', class: 'bg-yellow-500/20 text-yellow-400' },
     poor: { label: 'Poor', class: 'bg-orange-500/20 text-orange-400' },
     damaged: { label: 'Damaged', class: 'bg-red-500/20 text-red-400' }
-  };
+  }
   function formatDateTime(date: Date): string {
     return date.toLocaleString('en-US', {
       year: 'numeric',
@@ -99,12 +99,15 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     }
   }
 </script>
+
 <div className={cn('chain-of-custody w-full space-y-4', className)}>
   <!-- Evidence Header -->
-  <div class={cn(
-    'bg-yorha-bg-secondary border rounded-lg p-4',
-    evidence.compromised ? 'border-red-500/30 bg-red-500/5' : 'border-yorha-border'
-  )}>
+  <div
+    class={cn(
+      'bg-yorha-bg-secondary border rounded-lg p-4',
+      evidence.compromised ? 'border-red-500/30 bg-red-500/5' : 'border-yorha-border',
+    )}
+  >
     <div class="flex items-start justify-between mb-3">
       <div class="flex items-center gap-3">
         {@const config = categoryConfig[evidence.category]}
@@ -154,10 +157,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
       <div>
         <span class="text-yorha-text-secondary">Condition:</span>
-        <span className={cn(
-          'inline-block px-2 py-0.5 rounded text-xs',
-          conditionConfig[evidence.condition].className
-        )}>
+        <span className={cn('inline-block px-2 py-0.5 rounded text-xs', conditionConfig[evidence.condition].className)}>
           {conditionConfig[evidence.condition].label}
         </span>
       </div>
@@ -193,9 +193,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   <!-- Chain of Custody History -->
   <div class="bg-yorha-bg-secondary border border-yorha-border rounded-lg p-4">
     <div class="flex items-center justify-between mb-4">
-      <h4 class="text-base font-semibold text-yorha-text-primary font-mono">
-        Chain of Custody History
-      </h4>
+      <h4 class="text-base font-semibold text-yorha-text-primary font-mono">Chain of Custody History</h4>
       <span class="text-sm text-yorha-text-secondary font-mono">
         {evidence.chainOfCustody.length} transfer{evidence.chainOfCustody.length !== 1 ? 's' : ''}
       </span>
@@ -213,18 +211,17 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <div class="space-y-4">
           {#each showFullHistory ? sortedTransfers : sortedTransfers.slice(0, 3) as transfer, index (transfer.id)}
             <div
-              class={cn(
-                'relative flex items-start gap-4',
-                interactive && 'cursor-pointer group'
-              )}
+              class={cn('relative flex items-start gap-4', interactive && 'cursor-pointer group')}
               onclick={() => interactive && onViewDetails?.(transfer)}
             >
               <!-- Timeline Node -->
-              <div class={cn(
-                'relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-2',
-                transfer.verified ? 'bg-green-500/10 border-green-500/30' : 'bg-yellow-500/10 border-yellow-500/30',
-                interactive && 'group-hover:scale-110 transition-transform'
-              )}>
+              <div
+                class={cn(
+                  'relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-2',
+                  transfer.verified ? 'bg-green-500/10 border-green-500/30' : 'bg-yellow-500/10 border-yellow-500/30',
+                  interactive && 'group-hover:scale-110 transition-transform',
+                )}
+              >
                 {#if transfer.verified}
                   <FileCheck class="w-5 h-5 text-green-400" />
                 {:else}
@@ -233,10 +230,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               </div>
               <!-- Transfer Content -->
               <div class="flex-1 min-w-0">
-                <div class={cn(
-                  'bg-yorha-bg-tertiary border border-yorha-border rounded-lg p-4',
-                  interactive && 'group-hover:border-yorha-primary/30 transition-colors'
-                )}>
+                <div
+                  class={cn(
+                    'bg-yorha-bg-tertiary border border-yorha-border rounded-lg p-4',
+                    interactive && 'group-hover:border-yorha-primary/30 transition-colors',
+                  )}
+                >
                   <!-- Transfer Header -->
                   <div class="flex items-start justify-between mb-3">
                     <div>
@@ -254,12 +253,14 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                       </div>
                     </div>
                     <!-- Verification Status -->
-                    <span class={cn(
-                      'px-2 py-1 text-xs font-mono rounded border',
-                      transfer.verified
-                        ? 'bg-green-500/20 text-green-400 border-green-500/30'
-                        : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-                    )}>
+                    <span
+                      class={cn(
+                        'px-2 py-1 text-xs font-mono rounded border',
+                        transfer.verified
+                          ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                          : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+                      )}
+                    >
                       {transfer.verified ? 'VERIFIED' : 'UNVERIFIED'}
                     </span>
                   </div>
@@ -278,10 +279,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     </div>
                     <div>
                       <span class="text-yorha-text-secondary">Condition:</span>
-                      <span className={cn(
-                        'inline-block px-1.5 py-0.5 rounded',
-                        conditionConfig[transfer.condition].className
-                      )}>
+                      <span
+                        className={cn(
+                          'inline-block px-1.5 py-0.5 rounded',
+                          conditionConfig[transfer.condition].className,
+                        )}
+                      >
                         {conditionConfig[transfer.condition].label}
                       </span>
                     </div>
@@ -290,7 +293,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                       <div class="text-yorha-text-primary">
                         {transfer.signature}
                         {#if transfer.witnessSignature}
-                          <br><span class="text-yorha-text-secondary">Witness:</span> {transfer.witnessSignature}
+                          <br /><span class="text-yorha-text-secondary">Witness:</span> {transfer.witnessSignature}
                         {/if}
                       </div>
                     </div>
@@ -311,7 +314,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {#if !showFullHistory && sortedTransfers.length > 3}
           <div class="text-center mt-4">
             <button
-              onclick={() => showFullHistory = true}
+              onclick={() => (showFullHistory = true)}
               class="text-sm font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
             >
               Show {sortedTransfers.length - 3} more transfer{sortedTransfers.length - 3 !== 1 ? 's' : ''}
@@ -322,6 +325,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     {/if}
   </div>
 </div>
+
 <style>
   .chain-of-custody {
     --custody-line-color: rgb(var(--yorha-border));

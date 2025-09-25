@@ -4,15 +4,15 @@
 // This intentionally widens types; narrowing will follow once components export events.
 declare namespace svelteHTML {
   interface HTMLAttributes<T> {
-    onclick?: (event: MouseEvent) => any;
-    ondblclick?: (event: MouseEvent) => any;
-    onkeydown?: (event: KeyboardEvent) => any;
-    onkeyup?: (event: KeyboardEvent) => any;
-    onkeypress?: (event: KeyboardEvent) => any;
-    onchange?: (event: Event) => any;
-    oninput?: (event: InputEvent | Event) => any;
-    onsubmit?: (event: Event) => any;
-    onfocus?: (event: FocusEvent) => any;
-    onblur?: (event: FocusEvent) => any;
+    onclick?: (_event: MouseEvent) => any;
+    ondblclick?: (_event: MouseEvent) => any;
+    onkeydown?: (_event: KeyboardEvent) => any;
+    onkeyup?: (_event: KeyboardEvent) => any;
+    onkeypress?: (_event: KeyboardEvent) => any;
+    onchange?: (_event: Event) => any;
+    oninput?: (_event: InputEvent | Event) => any;
+    onsubmit?: (_event: Event) => any;
+    onfocus?: (_event: FocusEvent) => any;
+    onblur?: (_event: FocusEvent) => any;
   }
 }

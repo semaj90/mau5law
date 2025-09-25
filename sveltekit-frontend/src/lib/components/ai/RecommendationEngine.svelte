@@ -77,7 +77,7 @@
   interface ContextData {
     type: string;
     id: string;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
     entities: string[];
     current_status: string;
     constraints: string[];
@@ -125,11 +125,11 @@
     try {
       const request = {
         query: contextId || 'legal case analysis',
-        case_id: contextId
+        case_id: contextId;
         jurisdiction: 'Federal',
-        practice_area: categoryFilter === 'all' ? 'Contract Law' : categoryFilter
+        practice_area: categoryFilter === 'all' ? 'Contract Law' : categoryFilter;
         limit: 10;
-      };
+      }
       const response = await fetch('http://localhost:8095/api/v1/recommend', {
         method: 'POST',
         headers: {
@@ -248,7 +248,7 @@
     filtered = filtered.filter(rec => rec.confidence >= confidenceThreshold);
     // Sort by priority and confidence
     filtered.sort((a, b) => {
-      const priorityOrder = { high: 3, medium: 2, low: 1 };
+      const priorityOrder = { high: 3, medium: 2, low: 1 }
       const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
       if (priorityDiff !== 0) return priorityDiff;
       return b.confidence - a.confidenc;

@@ -85,7 +85,7 @@ export class LegalSimilarityWebGPU {
         struct SimilarityResult {
           query_index: u32
           document_index: u32
-          similarity: f32
+          similarity: f32;
           confidence: f32
           legal_score: f32
           risk_assessment: f32
@@ -215,7 +215,7 @@ export class LegalSimilarityWebGPU {
         struct TopKUniforms {
           total_results: u32
           k: u32
-          batch_size: u32
+          batch_size: u32;
           padding: u32
         }
         @group(0) @binding(0) var<storage, read_write> results: array<SimilarityResult>;
@@ -323,7 +323,7 @@ export class LegalSimilarityWebGPU {
       similarityThreshold: 0.3,
       useNESMemory: true
       ...options
-    };
+    }
     console.log('🚀 Starting legal similarity computation on WebGPU');
     const startTime = performance.now();
     try {
@@ -487,13 +487,13 @@ export class LegalSimilarityWebGPU {
     const resultsSize = totalResults * 6 * 4; // 6 floats * 4 bytes per float
     this.resultsBuffer = this.device.createBuffer({
       label: 'Similarity Results Buffer',
-      size: resultsSize
+      size: resultsSize;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     // Uniforms buffer
     this.uniformsBuffer = this.device.createBuffer({
       label: 'Compute Uniforms Buffer',
-      size: 32, // 8 floats * 4 bytes
+      size: 32, // 8 floats * 4 bytes;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     console.log(`📊 Created WebGPU buffers: queries=${this.formatBytes(queryData.byteLength)}, docs=${this.formatBytes(documentData.byteLength)}, results=${this.formatBytes(resultsSize)}`);
@@ -516,7 +516,7 @@ export class LegalSimilarityWebGPU {
     const topKResultsSize = k * 6 * 4; // k results * 6 floats * 4 bytes
     const topKResultsBuffer = this.device.createBuffer({
       label: 'Top-K Results Buffer',
-      size: topKResultsSize
+      size: topKResultsSize;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     // Initialize top-K buffer with invalid results
@@ -625,5 +625,5 @@ export function prepareLegalEmbeddingsForWebGPU(
     documentEmbeddings,
     queryMetadata,
     documentMetadata
-  };
+  }
 }

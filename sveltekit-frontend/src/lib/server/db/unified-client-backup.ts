@@ -28,7 +28,7 @@ interface VectorSearchOptions {
   collection?: string;
   limit?: number;
   threshold?: number;
-  filter?: { [key: string]: any };
+  filter?: { [key: string]: any }
   usePostgreSQL?: boolean;
   useQdrant?: boolean;
 }
@@ -38,7 +38,7 @@ interface HybridSearchResult {
     postgresqlTime?: number;
     qdrantTime?: number;
     totalTime: number;
-  };
+  }
 }
 // ============================================================================
 // CONFIGURATION & UTILITIES
@@ -157,7 +157,7 @@ async function hybridVectorSearch(
         results.push({
           id: row.id,
           score: row.similarity,
-          document: row as DocumentMetadata
+          document: row as DocumentMetadata;
           source: 'postgresql'
         });
       }
@@ -185,7 +185,7 @@ async function hybridVectorSearch(
       // Get corresponding PostgreSQL records
       const qdrantIds = qdrantResults.map((r) => r.id.toString());
       if (qdrantIds.length > 0) {
-        const db = await getDrizzleDb();
+        // removed unused db assignment
         const pgDocuments = await db
           .select()
           .from(schema.documentMetadata)
@@ -219,13 +219,13 @@ async function hybridVectorSearch(
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
   return {
-    results: finalResults
+    results: finalResults;
     performance: {
       postgresqlTime,
       qdrantTime,
       totalTime: Date.now() - startTime
     }
-  };
+  }
 }
 // ============================================================================
 // HEALTH CHECKS
@@ -233,13 +233,13 @@ async function hybridVectorSearch(
 async function healthCheck(): Promise<any> {
   const health = {
     postgresql: false
-    qdrant: false
+    qdrant: false;
     pgvector: false
     overallHealth: false
-  };
+  }
   try {
     // Test PostgreSQL
-    const db = await getDrizzleDb();
+    // removed unused db assignment
     await db.execute(sql`SELECT 1`);
     health.postgresql = true;
     // Test pgvector
@@ -270,7 +270,7 @@ async function healthCheck(): Promise<any> {
 // EXPORTS - Unified Interface
 // ============================================================================
 // Main exports - uses centralized connection manager
-export const db = () => getDrizzleDb();
+export // removed unused db assignment
 export const postgres = () => getPostgresJsClient();
 export const qdrant = () => qdrantClient;
 // Unified operations
@@ -285,7 +285,7 @@ export const unifiedDb = {
   // Vector operations
   vectorSearch: hybridVectorSearch
   ensureCollection: ensureQdrantCollection
-};
+}
 // Re-export schema for convenience
 export * from './schema-unified.js';
 // Re-export types
@@ -293,5 +293,5 @@ export type {
   VectorSearchOptions,
   HybridSearchResult,
   DocumentMetadata
-};
+}
 export default unifiedDb;

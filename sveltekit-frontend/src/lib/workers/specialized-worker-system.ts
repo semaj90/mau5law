@@ -21,7 +21,7 @@ export interface SpecializedJob {
     userId?: string;
     source?: string;
     confidential?: boolean;
-  };
+  }
 }
 export interface WorkerResult {
   jobId: string;
@@ -34,7 +34,7 @@ export interface WorkerResult {
     type: string;
     version: string;
     capabilities: string[];
-  };
+  }
 }
 export interface WorkerStats {
   totalJobs: number;
@@ -65,7 +65,7 @@ export class JobOrchestrator extends EventEmitter {
     activeWorkers: 0,
     systemHealth: 'healthy',
     lastUpdate: new Date()
-  };
+  }
   constructor(private rabbitmqUrl: string = 'amqp://localhost') {
     super();
   }
@@ -100,7 +100,7 @@ export class JobOrchestrator extends EventEmitter {
       ...job,
       id: jobId
       createdAt: new Date()
-    };
+    }
     this.jobQueue.set(jobId, fullJob);
     this.stats.totalJobs++;
     this.stats.queuedJobs++;
@@ -110,7 +110,7 @@ export class JobOrchestrator extends EventEmitter {
         queueName,
         Buffer.from(JSON.stringify(fullJob)),
         {
-          persistent: true
+          persistent: true;
           priority: this.getPriorityNumber(job.priority)
         }
       );
@@ -135,7 +135,7 @@ export class JobOrchestrator extends EventEmitter {
         } else {
           setTimeout(checkResult, 100);
         }
-      };
+      }
       checkResult();
     });
   }
@@ -152,7 +152,7 @@ export class JobOrchestrator extends EventEmitter {
     } else {
       this.stats.systemHealth = 'healthy';
     }
-    return { ...this.stats };
+    return { ...this.stats }
   }
   registerWorker(worker: SpecializedWorker): void {
     this.workers.set(worker.getId(), worker);
@@ -191,11 +191,11 @@ export class JobOrchestrator extends EventEmitter {
       'GENERATE_EMBEDDING': 'embedding_jobs',
       'ANALYZE_EVIDENCE': 'analysis_jobs',
       'LEGAL_RESEARCH': 'research_jobs'
-    };
+    }
     return queueMap[type];
   }
   private getPriorityNumber(priority: string): number {
-    const priorityMap = { 'low': 1, 'medium': 5, 'high': 8, 'urgent': 10 };
+    const priorityMap = { 'low': 1, 'medium': 5, 'high': 8, 'urgent': 10 }
     return priorityMap[priority as keyof typeof priorityMap] || 1;
   }
   async dispose(): Promise<void> {
@@ -270,7 +270,7 @@ export abstract class SpecializedWorker extends EventEmitter {
               version: this.version,
               capabilities: this.capabilities
             }
-          };
+          }
           await this.sendResult(workerResult);
           this.channel?.ack(msg);
           console.log(`✅ Worker ${this.workerId} completed job ${job.id} in ${processingTime}ms`);
@@ -294,7 +294,7 @@ export abstract class SpecializedWorker extends EventEmitter {
               version: this.version,
               capabilities: this.capabilities
             }
-          };
+          }
           await this.sendResult(errorResult);
           this.channel?.ack(msg);
           console.error(`❌ Worker ${this.workerId} failed to process job:`, error);
@@ -350,7 +350,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
         summaryLength: summary.length,
         compressionRatio: summary.length / document.content.length
       }
-    };
+    }
   }
   private async generateSummary(content: string, options: any): Promise<string> {
     // Placeholder for LLM integration
@@ -388,7 +388,7 @@ export class CaseLawWorker extends SpecializedWorker {
         searchTime: new Date(),
         relevanceThreshold: 0.7
       }
-    };
+    }
   }
   private async searchCaseLaw(query: string, options: any): Promise<any[]> {
     // Placeholder for case law search — use the query to compute a deterministic relevance and include it in the returned data
@@ -435,7 +435,7 @@ export class EmbeddingWorker extends SpecializedWorker {
       metadata: {
         textLength: text.length
       }
-    };
+    }
   }
   private async generateEmbedding(text: string, model: string, options: any): Promise<number[]> {
     // Deterministic pseudo-embedding generator for testing (keeps behavior reproducible)
@@ -452,7 +452,7 @@ export class EmbeddingWorker extends SpecializedWorker {
     const seededRandom = (n: number) => {
       const x = Math.sin(seed + n) * 10000;
       return x - Math.floor(x);
-    };
+    }
     const embedding = new Array(dimensions);
     for (let i = 0; i < dimensions; i++) {
       embedding[i] = seededRandom(i) * 2 - 1;
@@ -481,5 +481,5 @@ export async function createSpecializedWorkerSystem(
   await workers[1].startProcessing('case_law_jobs');
   await workers[2].startProcessing('embedding_jobs');
   console.log('🏗️ Specialized Worker System fully initialized');
-  return { orchestrator, workers };
+  return { orchestrator, workers }
 }

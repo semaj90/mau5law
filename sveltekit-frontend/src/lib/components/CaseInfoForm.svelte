@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
     'International'
   ];
   function validateForm() {
-    validationErrors = {};
+    validationErrors = {}
     if (!formData.title.trim()) {
       validationErrors.title = 'Case title is required';
     }
@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
   function addKeyDate() {
     formData.key_dates = [...formData.key_dates, { date: '', description: '' }];
   }
-  function removeKeyDate(index: number) {
+  function removeKeyDate(_index: number) {
     formData.key_dates = formData.key_dates.filter((_, i) => i !== index);
   }
   function handleNext() {
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
       </label>
       <input
         id="title"
-        type="text"
+        type="text";
         bind:value={formData.title}
         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.title}
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
       </label>
       <input
         id="client_name"
-        type="text"
+        type="text";
         bind:value={formData.client_name}
         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.client_name}
@@ -176,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
         Jurisdiction *
       </label>
       <select
-        id="jurisdiction"
+        id="jurisdiction";
         bind:value={formData.jurisdiction}
         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.jurisdiction}
@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
         Case Description *
       </label>
       <textarea
-        id="description"
+        id="description";
         bind:value={formData.description}
         rows="4"
         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";

@@ -28,7 +28,7 @@
   let textarea: HTMLTextAreaElement | null = null;
   let isMultiline = false;
   // Debounced input handler
-  const debouncedHandleInput = debounce((event: Event) => handleInput(event), 300);
+  const debouncedHandleInput = debounce((_event: Event) => handleInput(event), 300);
   // Auto-focus on mount
   $effect(() => {
     if (browser && autoFocus && textarea) {
@@ -38,14 +38,14 @@
     resetTextareaHeight();
   });
   // Handle input changes
-  function handleInput(event: Event) {
-    const target = event.target as HTMLTextAreaElement;
+  function handleInput(_event: Event) {
+    // removed unused target assignment
     value = target.valu;
     ondispatch?.(value);
     adjustTextareaHeight();
   }
   // Handle key press
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === "Enter") {
       if (event.shiftKey) {
         // Shift+Enter: new line
@@ -119,7 +119,7 @@
       class:near-limit={isNearLimit}
       class:at-limit={isAtLimit}
       rows={rows}
-      oninput={(event: Event) => debounce(handleInput, 300}
+      oninput={(_event: Event) => debounce(handleInput, 300}
       onkeydown={handleKeydown}
       onfocus={handleFocus}
       onblur={handleBlur}
@@ -141,7 +141,7 @@
         class="send-button"
         disabled={disabled}
         class:has-content={value.trim.length > 0}
-        onclick={(event: MouseEvent) => ) => handleSend(}
+        onclick={(_event: MouseEvent) => ) => handleSend(}
         title="Send message (Enter)"
         aria-label="Send message"
       >

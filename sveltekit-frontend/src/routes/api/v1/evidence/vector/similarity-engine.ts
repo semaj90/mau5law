@@ -6,7 +6,7 @@
 }
 export interface PerformSimilaritySearchArgs {
   query: string
-  evidenceIds: string[]
+  evidenceIds: string[];
   algorithms: string[]
   clustering?: boolean
   threshold?: number; // 0..1
@@ -19,7 +19,7 @@ interface ClusterResult {
 interface SimilaritySearchResult {
   clusters?: ClusterResult[]
   algorithms: string[]
-  totalEvidence: number
+  totalEvidence: number;
   timings: { totalMs: number }
 }
 export class AdvancedSimilarityEngine {

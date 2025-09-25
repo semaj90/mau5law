@@ -214,9 +214,9 @@ export function wsHealthCheck(): { local: number; redis: boolean } {
     0
   );
   return {
-    local: localConnections
+    local: localConnections;
     redis: redis?.status === 'ready'
-  };
+  }
 }
 // Graceful shutdown
 export async function closeWsBroker(): Promise<void> {

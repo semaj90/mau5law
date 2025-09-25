@@ -71,7 +71,7 @@ export class BrowserCapabilities {
     let estimatedMemory = 2048; // Default 2GB
     if ('memory' in performance && 'usedJSHeapSize' in (performance as any).memory) {
       const memory = (performance as any).memory;
-      estimatedMemory = Math.floor((memory.jsHeapSizeLimit - memory.usedJSHeapSize) / (1024 * 1024);
+      estimatedMemory = Math.floor((memory.jsHeapSizeLimit - memory.usedJSHeapSize) / (1024 * 1024));
     }
     return {
       webgpu,
@@ -79,7 +79,7 @@ export class BrowserCapabilities {
       sharedArrayBuffer,
       webworkers,
       estimatedMemory
-    };
+    }
   }
   static canRunModel(modelSizeMB: number, capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>): boolean {
     const requiredMemory = modelSizeMB * 1.5; // 50% overhead
@@ -106,16 +106,16 @@ export class BrowserLocalAI {
     averageInferenceTime: 0,
     averageEmbeddingTime: 0,
     cacheHits: 0
-  };
+  }
   constructor(config: Partial<LocalModelConfig> = {}) {
     this.config = {
       modelId: 'gemma3-270m-q4', // Quantized 270M model
-      quantized: true
+      quantized: true,
       device: 'wasm', // Will be auto-detected
       maxTokens: 512,
       temperature: 0.3,
       ...config
-    };
+    }
   }
   async initialize(): Promise<boolean> {
     try {
@@ -167,16 +167,16 @@ export class BrowserLocalAI {
         return {
           generated_text: `[Local AI Response] Based on the legal context: "${prompt}", here are the key considerations...`,
           num_tokens: Math.floor(Math.random() * 100) + 50
-        };
+        }
       }
-    };
+    }
     this.embeddingModel = {
       // Mock embedding model
       encode: async (texts: string[]) => {
         await new Promise(resolve => setTimeout(resolve, 50 * texts.length);
         return texts.map(() => new Float32Array(384).map(() => Math.random() - 0.5);
       }
-    };
+    }
     this.modelLoaded = true;
     console.log('✅ Local AI models loaded');
   }
@@ -190,7 +190,7 @@ export class BrowserLocalAI {
     if (this.inferenceCache.has(cacheKey)) {
       this.metrics.cacheHits++;
       const cached = this.inferenceCache.get(cacheKey)!;
-      return { ...cached, fromCache: true };
+      return { ...cached, fromCache: true }
     }
     try {
       // Prepare prompt with system context
@@ -211,7 +211,7 @@ export class BrowserLocalAI {
         device: this.config.device,
         confidence: 0.8 + Math.random() * 0.2, // Simulated confidence
         fromCache: false
-      };
+      }
       // Cache the result
       this.inferenceCache.set(cacheKey, inferenceResult);
       this.cleanupCache();
@@ -263,7 +263,7 @@ export class BrowserLocalAI {
         processingTime,
         device: this.config.device,
         dimensions: embeddings[0]?.length || 384
-      };
+      }
     } catch (error) {
       console.error('❌ Local embedding generation failed:', error);
       throw error;
@@ -349,7 +349,7 @@ export class BrowserLocalAI {
         embeddings: this.embeddingCache.size
       },
       config: this.config
-    };
+    }
   }
   clearCache(): void {
     this.inferenceCache.clear();

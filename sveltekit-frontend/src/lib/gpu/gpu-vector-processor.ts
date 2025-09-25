@@ -43,7 +43,7 @@ export class GPUVectorProcessor {
     webgl2: 320,
     webgl1: 256,
     cpu: 192
-  };
+  }
   // Stability / upscale tracking
   private successWindow: { ts: number; backend: string }[] = [];
   private upscaleCooldownMs = 45000; // wait 45s between upscale attempts
@@ -57,7 +57,7 @@ export class GPUVectorProcessor {
     program: WebGLProgram;
     vbo: WebGLBuffer;
     attribLocation: number;
-    uniforms: { uTex: WebGLUniformLocation | null; uPass: WebGLUniformLocation | null; uTotal: WebGLUniformLocation | null };
+    uniforms: { uTex: WebGLUniformLocation | null; uPass: WebGLUniformLocation | null; uTotal: WebGLUniformLocation | null }
     texSize: number; // last texSize used (for potential viewport reuse)
   } | null = null;
   // WebGL1 pooled resources keyed by texSize + floatMode
@@ -224,7 +224,7 @@ export class GPUVectorProcessor {
       executeTime: 0,
       readbackTime: 0,
       reduction: null
-    };
+    }
     this.webgpuCache.set(cacheKey, cache);
     // Emit telemetry for program caching
     telemetryBus.publish({
@@ -257,8 +257,8 @@ export class GPUVectorProcessor {
     }
     try {
       const WG = 128;
-  const partialWGSL = `struct Cfg { dim: u32, segments: u32 }; struct Partial { sum: f32, sumSq: f32, sumAbs: f32, count: u32 }; @group(0) @binding(0) var<storage, read> data: array<f32>; @group(0) @binding(1) var<storage, read_write> partials: array<Partial>; @group(0) @binding(2) var<uniform> cfg: Cfg; @compute @workgroup_size(${WG}) fn main(@builtin(local_invocation_id) lid: vec3<u32>, @builtin(workgroup_id) wid: vec3<u32>) { let dim = cfg.dim; let segs = cfg.segments; let seg = wid.x; if (seg >= segs) { return; } var sum: f32 = 0.0; var sumSq: f32 = 0.0; var sumAbs: f32 = 0.0; var i: u32 = lid.x; let base = seg * dim; while (i < dim) { let v = data[base + i]; sum += v; sumSq += v * v; sumAbs += abs(v); i += ${WG}u; } var<workgroup> wSum: array<f32, ${WG}>; var<workgroup> wSumSq: array<f32, ${WG}>; var<workgroup> wSumAbs: array<f32, ${WG}>; wSum[lid.x] = sum; wSumSq[lid.x] = sumSq; wSumAbs[lid.x] = sumAbs; workgroupBarrier(); var off: u32 = ${WG/2}u; while (off > 0u) { if (lid.x < off) { wSum[lid.x] = wSum[lid.x] + wSum[lid.x + off]; wSumSq[lid.x] = wSumSq[lid.x] + wSumSq[lid.x + off]; wSumAbs[lid.x] = wSumAbs[lid.x] + wSumAbs[lid.x + off]; } workgroupBarrier(); off = off / 2u; } if (lid.x == 0u) { partials[seg].sum = wSum[0]; partials[seg].sumSq = wSumSq[0]; partials[seg].sumAbs = wSumAbs[0]; partials[seg].count = dim; } }`;
-  const finalWGSL = `struct Cfg { dim: u32, segments: u32 }; struct Partial { sum: f32, sumSq: f32, sumAbs: f32, count: u32 }; struct Stat { mean: f32, std: f32, energy: f32 }; @group(0) @binding(0) var<storage, read> partials: array<Partial>; @group(0) @binding(1) var<storage, read_write> stats: array<Stat>; @group(0) @binding(2) var<uniform> cfg: Cfg; @compute @workgroup_size(64) fn main(@builtin(global_invocation_id) gid: vec3<u32>) { let seg = gid.x; if (seg >= cfg.segments) { return; } let p = partials[seg]; let n = f32(p.count); let mean = p.sum / n; let variance = max(0.0, p.sumSq / n - mean * mean); let energy = p.sumAbs / n; stats[seg].mean = mean; stats[seg].std = sqrt(variance + 1e-6); stats[seg].energy = energy; }`;
+  const partialWGSL = `struct Cfg { dim: u32, segments: u32 } struct Partial { sum: f32, sumSq: f32, sumAbs: f32, count: u32 } @group(0) @binding(0) var<storage, read> data: array<f32>; @group(0) @binding(1) var<storage, read_write> partials: array<Partial>; @group(0) @binding(2) var<uniform> cfg: Cfg; @compute @workgroup_size(${WG}) fn main(@builtin(local_invocation_id) lid: vec3<u32>, @builtin(workgroup_id) wid: vec3<u32>) { let dim = cfg.dim; let segs = cfg.segments; let seg = wid.x; if (seg >= segs) { return; } var sum: f32 = 0.0; var sumSq: f32 = 0.0; var sumAbs: f32 = 0.0; var i: u32 = lid.x; let base = seg * dim; while (i < dim) { let v = data[base + i]; sum += v; sumSq += v * v; sumAbs += abs(v); i += ${WG}u; } var<workgroup> wSum: array<f32, ${WG}>; var<workgroup> wSumSq: array<f32, ${WG}>; var<workgroup> wSumAbs: array<f32, ${WG}>; wSum[lid.x] = sum; wSumSq[lid.x] = sumSq; wSumAbs[lid.x] = sumAbs; workgroupBarrier(); var off: u32 = ${WG/2}u; while (off > 0u) { if (lid.x < off) { wSum[lid.x] = wSum[lid.x] + wSum[lid.x + off]; wSumSq[lid.x] = wSumSq[lid.x] + wSumSq[lid.x + off]; wSumAbs[lid.x] = wSumAbs[lid.x] + wSumAbs[lid.x + off]; } workgroupBarrier(); off = off / 2u; } if (lid.x == 0u) { partials[seg].sum = wSum[0]; partials[seg].sumSq = wSumSq[0]; partials[seg].sumAbs = wSumAbs[0]; partials[seg].count = dim; } }`;
+  const finalWGSL = `struct Cfg { dim: u32, segments: u32 } struct Partial { sum: f32, sumSq: f32, sumAbs: f32, count: u32 } struct Stat { mean: f32, std: f32, energy: f32 } @group(0) @binding(0) var<storage, read> partials: array<Partial>; @group(0) @binding(1) var<storage, read_write> stats: array<Stat>; @group(0) @binding(2) var<uniform> cfg: Cfg; @compute @workgroup_size(64) fn main(@builtin(global_invocation_id) gid: vec3<u32>) { let seg = gid.x; if (seg >= cfg.segments) { return; } let p = partials[seg]; let n = f32(p.count); let mean = p.sum / n; let variance = max(0.0, p.sumSq / n - mean * mean); let energy = p.sumAbs / n; stats[seg].mean = mean; stats[seg].std = sqrt(variance + 1e-6); stats[seg].energy = energy; }`;
       const partialModule = device.createShaderModule({ code: partialWGSL });
       const finalModule = device.createShaderModule({ code: finalWGSL });
       const layoutEntries: GPUBindGroupLayoutEntry[] = [
@@ -288,7 +288,7 @@ export class GPUVectorProcessor {
         { binding: 1, resource: { buffer: statsBuf } },
         { binding: 2, resource: { buffer: cfgBuffer } }
       ]});
-      (cache as any).reduction = { partialPipeline, finalPipeline, partialBuffer: partialBuf, statsBuffer: statsBuf, statsReadBuffer: statsRead, partialBindGroup: partialBG, finalBindGroup: finalBG, segmentCapacity: segmentCount, segmentDim, cfgBuffer };
+      (cache as any).reduction = { partialPipeline, finalPipeline, partialBuffer: partialBuf, statsBuffer: statsBuf, statsReadBuffer: statsRead, partialBindGroup: partialBG, finalBindGroup: finalBG, segmentCapacity: segmentCount, segmentDim, cfgBuffer }
       return true;
     } catch (e) {
       console.warn('⚠️ Reduction pipeline creation failed', e);
@@ -299,7 +299,7 @@ export class GPUVectorProcessor {
   private async runWebGPUCompute(input: Record<string, ArrayBufferView>): Promise<Record<string, ArrayBufferView>> {
     const start = performance.now();
     const firstKey = Object.keys(input)[0];
-    if (!firstKey) return {};
+    if (!firstKey) return {}
     const arr = input[firstKey];
     const floatArray =
       arr instanceof Float32Array
@@ -314,7 +314,7 @@ export class GPUVectorProcessor {
         type: 'gpu.vector.webgpu.compute' as any,
         meta: { backend: 'webgpu', durationMs: 0, reason: 'no-device' }
       });
-      return { ...input };
+      return { ...input }
     }
     const device = cache.device;
     try {
@@ -432,7 +432,7 @@ export class GPUVectorProcessor {
       const out: Record<string, ArrayBufferView> = {
         [firstKey]: transformed
         transform: transformed
-      };
+      }
       if (stats) out['stats'] = stats; // [mean0,std0,energy0, mean1,std1,energy1, ...]
       return out;
     } catch (e) {
@@ -440,7 +440,7 @@ export class GPUVectorProcessor {
         type: 'gpu.vector.webgpu.compute' as any,
         meta: { backend: 'webgpu', error: (e as Error).message }
       });
-      return { ...input };
+      return { ...input }
     }
   }
   /** Manual override helpers for dashboard */
@@ -452,7 +452,7 @@ export class GPUVectorProcessor {
     telemetryBus.publish({ type: 'gpu.backend.override' as any, meta: { action: 'force-promote', target } });
     await (gpuContextProvider as any).forceBackend?.(target);
   }
-  async run(options: VectorProcessOptions): Promise<VectorProcessResult> {
+  async run(_options: VectorProcessOptions): Promise<VectorProcessResult> {
     const start = performance.now();
     const backend = gpuContextProvider.getActiveBackend();
     telemetryBus.publish({ type: 'gpu.vector.process.start' as any, meta: { pipeline: options.pipeline, backend, label: options.label } });
@@ -460,7 +460,7 @@ export class GPUVectorProcessor {
     if (!shaderResources) {
       const durationMs = performance.now() - start;
       telemetryBus.publish({ type: 'gpu.vector.process.miss' as any, meta: { pipeline: options.pipeline, backend, durationMs } });
-      return { backend, durationMs, outputs: null, shaderType: null, success: false, error: 'Shader resources not loaded' };
+      return { backend, durationMs, outputs: null, shaderType: null, success: false, error: 'Shader resources not loaded' }
     }
     let shaderCode: string | undefined;
     let shaderType: string | null = null;
@@ -472,7 +472,7 @@ export class GPUVectorProcessor {
     if (!shaderCode) {
       const durationMs = performance.now() - start;
       telemetryBus.publish({ type: 'gpu.vector.process.typeMismatch' as any, meta: { pipeline: options.pipeline, backend, expected: options.expected } });
-      return { backend, durationMs, outputs: null, shaderType: null, success: false, error: 'Shader type mismatch' };
+      return { backend, durationMs, outputs: null, shaderType: null, success: false, error: 'Shader type mismatch' }
     }
     let outputs: Record<string, ArrayBufferView> | null = null;
     let success = false;
@@ -511,7 +511,7 @@ export class GPUVectorProcessor {
     telemetryBus.publish({ type: 'gpu.vector.process.end' as any, meta: { pipeline: options.pipeline, backend, durationMs, success, shaderType } });
     gpuTelemetryService.record({ pipeline: options.pipeline, backend, durationMs, success, shaderType, timestamp: Date.now() });
   if (success) this.checkForUpscaleOpportunity(backend);
-    return { backend, durationMs, outputs, shaderType, success, error: success ? undefined : lastError };
+    return { backend, durationMs, outputs, shaderType, success, error: success ? undefined : lastError }
   }
   /** Convenience wrapper for embedding-generation batch returning structured GpuRunResult */
   async runEmbeddingBatch(batched: Float32Array, label = 'embed-batch'): Promise<GpuRunResult | null> {
@@ -524,7 +524,7 @@ export class GPUVectorProcessor {
     const stats = res.outputs.stats as Float32Array | undefined;
     const dim = this.embeddingDimension;
     const segments = dim > 0 ? Math.floor(transformed.length / dim) : 0;
-    return { backend, data: transformed, stats, durationMs: performance.now() - start, dimension: dim, segments };
+    return { backend, data: transformed, stats, durationMs: performance.now() - start, dimension: dim, segments }
   }
   private trackFailure(backend: string) {
     const now = performance.now();
@@ -544,7 +544,7 @@ export class GPUVectorProcessor {
     if (now - this.lastDemotionAt < this.demotionCooldownMs) return;
   const failures = this.failureWindow.length;
   if (failures < 3) return;
-    const target = backend === 'webgpu' ? 'webgl2' : 'webgl1';
+    // removed unused target assignment
     telemetryBus.publish({ type: 'gpu.backend', meta: { demotion: true, from: backend, to: target, reason: 'failure-threshold' } });
     gpuTelemetryService.recordDemotion({ from: backend, to: target, reason: 'failure-threshold', timestamp: Date.now() });
     this.lastDemotionAt = now;
@@ -570,7 +570,7 @@ export class GPUVectorProcessor {
     }
   }
   private applyAdaptiveEmbeddingDimension(newBackend: string, previousBackend: string) {
-    const target = this.dimensionSteps[newBackend] ?? this.embeddingDimension;
+    // removed unused target assignment
     if (target < this.embeddingDimension) {
       const oldDim = this.embeddingDimension;
       this.embeddingDimension = Math.max(target, this.minDimension);
@@ -658,7 +658,7 @@ export class GPUVectorProcessor {
     program: WebGLProgram;
     vao: WebGLVertexArrayObject;
     attribLoc: number;
-    uniforms: { uScale: WebGLUniformLocation | null; uPass: WebGLUniformLocation | null };
+    uniforms: { uScale: WebGLUniformLocation | null; uPass: WebGLUniformLocation | null }
     outBuffer: WebGLBuffer; // base sized buffer reused / resized,
     capacity: number; // float capacity
   } | null = null;
@@ -685,7 +685,7 @@ export class GPUVectorProcessor {
     this.disposeWebGL2Cache();
     const vsSrc = `#version 300 es\nin float a_value;out float v_value;uniform float uScale;uniform float uPass;void main(){float x=a_value*(1.0+0.0005*uPass)+sin(a_value*0.5+uPass)*0.0003;v_value=x*uScale;gl_Position=vec4( (float(gl_VertexID)/1000.0)*0.0, 0.0, 0.0, 1.0);}`;
     const fsSrc = `#version 300 es\nprecision highp float;in float v_value;out vec4 fragColor;void main(){fragColor=vec4(v_value,0.0,0.0,1.0);}`; // not used (TF discards raster if we enable RASTERIZER_DISCARD)
-    const compile = (type: number, src: string) => { const sh = gl.createShader(type)!; gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { const info = gl.getShaderInfoLog(sh); gl.deleteShader(sh); throw new Error('webgl2 shader compile: '+info); } return sh; };
+    const compile = (type: number, src: string) => { const sh = gl.createShader(type)!; gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { const info = gl.getShaderInfoLog(sh); gl.deleteShader(sh); throw new Error('webgl2 shader compile: '+info); } return sh; }
     const vs = compile(gl.VERTEX_SHADER, vsSrc);
     const fs = compile(gl.FRAGMENT_SHADER, fsSrc);
     const prog = gl.createProgram()!; gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.transformFeedbackVaryings(prog, ['v_value'], gl.INTERLEAVED_ATTRIBS); gl.linkProgram(prog);
@@ -693,9 +693,9 @@ export class GPUVectorProcessor {
     gl.deleteShader(vs); gl.deleteShader(fs);
     const vao = gl.createVertexArray()!; gl.bindVertexArray(vao);
     const attribLoc = gl.getAttribLocation(prog, 'a_value');
-    const uniforms = { uScale: gl.getUniformLocation(prog, 'uScale'), uPass: gl.getUniformLocation(prog, 'uPass') };
+    const uniforms = { uScale: gl.getUniformLocation(prog, 'uScale'), uPass: gl.getUniformLocation(prog, 'uPass') }
     const outBuffer = gl.createBuffer()!; gl.bindBuffer(gl.ARRAY_BUFFER, outBuffer); gl.bufferData(gl.ARRAY_BUFFER, neededFloats * 4, gl.DYNAMIC_COPY);
-    this.webgl2Cache = { program: prog, vao, attribLoc, uniforms, outBuffer, capacity: neededFloats };
+    this.webgl2Cache = { program: prog, vao, attribLoc, uniforms, outBuffer, capacity: neededFloats }
     return this.webgl2Cache;
   }
   private async simulateWebGL2TransformFeedback(_shaders: ShaderResources, input: Record<string, ArrayBufferView>): Promise<Record<string, ArrayBufferView>> {
@@ -705,10 +705,10 @@ export class GPUVectorProcessor {
     const gl: WebGL2RenderingContext | null = ctxType === 'webgl2' ? hybrid.webgl2Context : null;
     if (!gl) {
       telemetryBus.publish({ type: 'gpu.vector.webgl2.compute' as any, meta: { backend: 'webgl2', durationMs: 0, reason: 'no-context' } });
-      return { ...input };
+      return { ...input }
     }
     const firstKey = Object.keys(input)[0];
-    if (!firstKey) return {};
+    if (!firstKey) return {}
     const arr = input[firstKey];
     const floatArray = arr instanceof Float32Array ? arr : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
     const count = floatArray.length;
@@ -749,11 +749,11 @@ export class GPUVectorProcessor {
       gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
       const durationMs = performance.now() - start;
       telemetryBus.publish({ type: 'gpu.vector.webgl2.compute' as any, meta: { backend: 'webgl2', durationMs, count, passes, reused: !!this.webgl2Cache } });
-      return { [firstKey]: result };
+      return { [firstKey]: result }
     } catch (e) {
       const durationMs = performance.now() - start;
       telemetryBus.publish({ type: 'gpu.vector.webgl2.compute' as any, meta: { backend: 'webgl2', durationMs, error: (e as Error).message } });
-      return { ...input };
+      return { ...input }
     }
   }
   // Simulation of WebGL1 framebuffer/texture pipeline (placeholder)
@@ -770,11 +770,11 @@ export class GPUVectorProcessor {
             : null;
       if (!gl) {
         telemetryBus.publish({ type: 'gpu.vector.webgl1.compute' as any, meta: { backend: 'webgl1', durationMs: 0, passes: 0, floatMode: 'unavailable', reason: 'no-gl-context' } });
-        return { ...input }; // fallback echo
+        return { ...input } // fallback echo
       }
       // Derive a primary input buffer
       const firstKey = Object.keys(input)[0];
-      if (!firstKey) return {};
+      if (!firstKey) return {}
       const arr = input[firstKey];
       const floatArray = arr instanceof Float32Array ? arr : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
       const valueCount = floatArray.length;
@@ -801,7 +801,7 @@ export class GPUVectorProcessor {
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, texSize, texSize, 0, gl.RGBA, gl.UNSIGNED_BYTE, data as any);
         }
         return t;
-      };
+      }
       // Pack data into Float32 RGBA or Uint8 RGBA
       let floatMode: 'fp32' | 'byte-pack' = canFloatRTT ? 'fp32' : 'byte-pack';
       let initialData: Float32Array | Uint8Array;
@@ -828,7 +828,7 @@ export class GPUVectorProcessor {
       if (!this.webgl1Cache) {
         const vsSrc = `attribute vec2 a_pos;varying vec2 v_uv;void main(){v_uv=(a_pos+1.0)*0.5;gl_Position=vec4(a_pos,0.0,1.0);}`;
         const fsSrc = `precision highp float;varying vec2 v_uv;uniform sampler2D u_tex;uniform float u_pass;uniform float u_total;void main(){vec4 c=texture2D(u_tex,v_uv);c = c* (1.0 + 0.002*u_pass) + 0.0005*vec4(sin(u_pass+v_uv.x),cos(u_pass+v_uv.y),sin(u_pass*0.5),1.0);gl_FragColor=c;}`;
-        const compile = (type: number, src: string) => { const sh = gl.createShader(type)!; gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { const info = gl.getShaderInfoLog(sh); gl.deleteShader(sh); throw new Error('shader-compile: '+info); } return sh; };
+        const compile = (type: number, src: string) => { const sh = gl.createShader(type)!; gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { const info = gl.getShaderInfoLog(sh); gl.deleteShader(sh); throw new Error('shader-compile: '+info); } return sh; }
         const vs = compile(gl.VERTEX_SHADER, vsSrc);
         const fs = compile(gl.FRAGMENT_SHADER, fsSrc);
         const prog = gl.createProgram()!; gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
@@ -836,8 +836,8 @@ export class GPUVectorProcessor {
         const quad = new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]);
         const vbo = gl.createBuffer()!; gl.bindBuffer(gl.ARRAY_BUFFER, vbo); gl.bufferData(gl.ARRAY_BUFFER, quad, gl.STATIC_DRAW);
         const attribLocation = gl.getAttribLocation(prog, 'a_pos');
-        const uniforms = { uTex: gl.getUniformLocation(prog, 'u_tex'), uPass: gl.getUniformLocation(prog, 'u_pass'), uTotal: gl.getUniformLocation(prog, 'u_total') };
-        this.webgl1Cache = { program: prog, vbo, attribLocation, uniforms, texSize: texSize };
+        const uniforms = { uTex: gl.getUniformLocation(prog, 'u_tex'), uPass: gl.getUniformLocation(prog, 'u_pass'), uTotal: gl.getUniformLocation(prog, 'u_total') }
+        this.webgl1Cache = { program: prog, vbo, attribLocation, uniforms, texSize: texSize }
       }
       const { program: prog, vbo, attribLocation, uniforms } = this.webgl1Cache;
       gl.useProgram(prog);
@@ -879,11 +879,11 @@ export class GPUVectorProcessor {
   telemetryBus.publish({ type: 'gpu.vector.webgl1.pool' as any, meta: { action: 'release', key: `${texSize}-${floatMode}` } });
       const durationMs = performance.now() - start;
       telemetryBus.publish({ type: 'gpu.vector.webgl1.compute' as any, meta: { backend: 'webgl1', durationMs, passes, texSize, values: valueCount, floatMode } });
-      return { [firstKey]: trimmed };
+      return { [firstKey]: trimmed }
     } catch (e) {
       const durationMs = performance.now() - start;
       telemetryBus.publish({ type: 'gpu.vector.webgl1.compute' as any, meta: { backend: 'webgl1', durationMs, passes: 0, floatMode: 'error', error: (e as Error).message } });
-      return { ...input }; // fallback echo on error
+      return { ...input } // fallback echo on error
     }
   }
   private disposeWebGL1Cache() {
@@ -911,13 +911,13 @@ export class GPUVectorProcessor {
     const key = `${texSize}-${isFloat ? 'fp32' : 'u8'}`;
     let bucket = this.webgl1Pool.get(key);
     if (!bucket) {
-      bucket = { free: [], inUse: 0 };
+      bucket = { free: [], inUse: 0 }
       this.webgl1Pool.set(key, bucket);
     }
     if (bucket.free.length > 0) {
       const entry = bucket.free.pop()!;
       bucket.inUse++;
-      return { ...entry, created: false };
+      return { ...entry, created: false }
     }
     // Create new pair
     const textures: WebGLTexture[] = [gl.createTexture()!, gl.createTexture()!];
@@ -944,7 +944,7 @@ export class GPUVectorProcessor {
     }
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     bucket.inUse++;
-    return { textures, framebuffers, created: true };
+    return { textures, framebuffers, created: true }
   }
   private releaseWebGL1Resources(texSize: number, isFloat: boolean, textures: WebGLTexture[], framebuffers: WebGLFramebuffer[]) {
     const key = `${texSize}-${isFloat ? 'fp32' : 'u8'}`;
@@ -995,7 +995,7 @@ export class GPUVectorProcessor {
       cachedPipelines: Array.from(((lodCacheEngine as any).shaderResources?.keys?.() || []) as any),
       recentTelemetry: gpuTelemetryService.getRecent(10),
       aggregates: gpuTelemetryService.getAggregates()
-    };
+    }
   }
 }
 export const gpuVectorProcessor = new GPUVectorProcessor();

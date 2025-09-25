@@ -299,4 +299,4 @@ function extractKeywords(text: string): string[] {
     .filter((word: string) => word.length > 3 && !commonWords.includes(word)
   return [...new Set(words)].slice(0, 5)
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

@@ -46,7 +46,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     const sessionCookie = lucia.createSessionCookie(session.id);
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       path: '/',
-      ...sessionCookie.attributes
+      ...sessionCookie.attributes,
     });
   }
   // If session is invalid, clear the session cookie
@@ -54,7 +54,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     const sessionCookie = lucia.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       path: '/',
-      ...sessionCookie.attributes
+      ...sessionCookie.attributes,
     });
   }
   // Attach user and session to locals for use in load functions and routes
@@ -71,9 +71,9 @@ export const handle: Handle = async ({ event, resolve }) => {
             | 'investigator'
             | 'analyst'
             | 'viewer'
-            | 'user') || 'user'
+            | 'user') || 'user',
       }
     : null;
   event.locals.session = session;
   return resolve(event);
-};
+}

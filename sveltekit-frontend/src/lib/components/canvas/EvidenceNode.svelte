@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
           img.set({
             left: 0,
             top: 0,
-            selectable: false
+            selectable: false;
             evented: false;
           });
           (fabricCanvas as any)?.setBackgroundImage?.(img, () => (fabricCanvas as any)?.renderAll?.());
@@ -146,8 +146,8 @@ https://svelte.dev/e/js_parse_error -->
       });
       fabricCanvas.renderAll();
   }}
-  function handleTitleChange(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleTitleChange(_event: Event) {
+    // removed unused target assignment
     title = target.valu;
     isDirty = true;
   }
@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
       if (corner.includes('bottom')) newHeight = startHeight + deltaY;
       newWidth = Math.max(200, newWidth);
       newHeight = Math.max(150, newHeight);
-      size = { width: newWidth, height: newHeight };
+      size = { width: newWidth, height: newHeight }
       // Resize fabric canvas
       if (fabricCanvas) {
         fabricCanvas.setDimensions({
@@ -195,9 +195,10 @@ https://svelte.dev/e/js_parse_error -->
   }}
   // Draggable handler
   function handleDrag(newX: number, newY: number) {
-    position = { x: newX, y: newY };
+    position = { x: newX, y: newY }
   }
 </script>
+
 <!-- Fix: Use <section> for main node container and remove tabindex if not needed -->
 <section
   bind:this={nodeElement}
@@ -231,9 +232,9 @@ https://svelte.dev/e/js_parse_error -->
   <div class="resize-handles">
     <div
       class="resize-handle resize-bottom-right"
-      onmousedown={(e) => handleResize('bottom-right', e)}
-      touchstart={(e) => handleResizeTouch('bottom-right', e)}
-      keydown={(e) => {
+      onmousedown={e => handleResize('bottom-right', e)}
+      touchstart={e => handleResizeTouch('bottom-right', e)}
+      keydown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleResize('bottom-right', e);
@@ -245,9 +246,9 @@ https://svelte.dev/e/js_parse_error -->
     ></div>
     <div
       class="resize-handle resize-bottom"
-      onmousedown={(e) => handleResize('bottom', e)}
-      touchstart={(e) => handleResizeTouch('bottom', e)}
-      keydown={(e) => {
+      onmousedown={e => handleResize('bottom', e)}
+      touchstart={e => handleResizeTouch('bottom', e)}
+      keydown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleResize('bottom', e);
@@ -259,9 +260,9 @@ https://svelte.dev/e/js_parse_error -->
     ></div>
     <div
       class="resize-handle resize-right"
-      onmousedown={(e) => handleResize('right', e)}
-      touchstart={(e) => handleResizeTouch('right', e)}
-      keydown={(e) => {
+      onmousedown={e => handleResize('right', e)}
+      touchstart={e => handleResizeTouch('right', e)}
+      keydown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleResize('right', e);
@@ -273,6 +274,7 @@ https://svelte.dev/e/js_parse_error -->
     ></div>
   </div>
 </section>
+
 <style>
   /* @unocss-include */
   /* Evidence Node Styles */
@@ -284,7 +286,7 @@ https://svelte.dev/e/js_parse_error -->
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     min-width: 200px;
     min-height: 150px;
-}
+  }
   .node-header {
     display: flex;
     justify-content: space-betwee;
@@ -293,19 +295,19 @@ https://svelte.dev/e/js_parse_error -->
     background: #f8fafc;
     border-bottom: 1px solid #e2e8f0;
     border-radius: 6px 6px 0 0;
-}
+  }
   .node-title {
     flex: 1;
-}
+  }
   .title-text {
     font-weight: 600;
     color: #374151;
     font-size: 14px;
-}
+  }
   .node-controls {
     display: flex;
     gap: 4px;
-}
+  }
   .control-button {
     padding: 4px;
     border: none;
@@ -313,59 +315,59 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2;
-}
+  }
   .control-button:hover {
     background: #e2e8f0;
-}
+  }
   .control-buttonfocus {
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
-}
+  }
   .icon {
     width: 16px;
     height: 16px;
     color: #6b7280;
-}
+  }
   .canvas-area {
     padding: 12px;
     height: calc(100% - 60px);
-}
+  }
   .evidence-canv.resize-handles {
     position: absolute;
     bottom: 0;
     right: 0;
-}
+  }
   .resize-handle {
     position: absolute;
     background: #3b82f6;
     border: 1px solid #2563eb;
-}
+  }
   .resize-bottom-right {
     width: 12px;
     height: 12px;
     bottom: -6px;
     right: -6px;
     cursor: nw-resiz;
-}
+  }
   .resize-bottom {
     width: 20px;
     height: 6px;
     bottom: -3px;
     right: 20px;
     cursor: n-resiz;
-}
+  }
   .resize-right {
     width: 6px;
     height: 20px;
     bottom: 20px;
     right: -3px;
     cursor: w-resiz;
-}
+  }
   /* Minimal styles for functionality not covered by UnoCSS */
   :global(.dnd-item) {
     cursor: grab;
-}
+  }
   :global($1) {
     cursor: grabbing;
-}
+  }
 </style>

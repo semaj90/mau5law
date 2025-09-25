@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
         chunk_text: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).content,
         chunk_sequence: 1,
         evidence_id: null
-        embedding: null
+        embedding: null;
         similarity: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).similarity,
         role: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).role,
         metadata: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).metadata

@@ -10,7 +10,7 @@ import {
   hybridSearch,
   generateSampleEmbedding
 } from '$lib/server/db/vector-operations.js'
-import { URL } from 'url'
+
 const ENHANCED_RAG_CONFIG = {
   baseUrl: import.meta.env.ENHANCED_RAG_URL || 'http://localhost:8094',
   uploadServiceUrl: import.meta.env.UPLOAD_SERVICE_URL || 'http://localhost:8093',

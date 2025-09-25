@@ -28,7 +28,7 @@ type AIEvent =;
   }
   | { type: "SAVE_SUMMARY" }
   | { type: "RETRY" }
-  | { type: "RESET" };
+  | { type: "RESET" }
 export const aiGlobalMachine = setup({
   types: {
     context: { [key: string]: any } as AIContext,
@@ -36,7 +36,7 @@ export const aiGlobalMachine = setup({
   },
   actions: {
     setContext: assign(({ event }) => {
-      if (event.type !== "SUMMARIZE") return {};
+      if (event.type !== "SUMMARIZE") return {}
       const cacheKey = `${event.caseId}:${hashEvidence(event.evidence)}:${event?.model || "unknown" // @ts-ignore - Model property access}`
       return {
         caseId: event.caseId,
@@ -47,7 +47,7 @@ export const aiGlobalMachine = setup({
         loading: true
         error: "",
         stream: ""
-      };
+      }
     }),
     setSuccess: assign(({ event }) => {
       if ((event as any).type === "xstate.done.actor.summarizeEvidence") {
@@ -58,18 +58,18 @@ export const aiGlobalMachine = setup({
           loading: false
           stream: "",
           error: ""
-        };
+        }
       }
-      return {};
+      return {}
     }),
     setError: assign(({ event }) => {
       if ((event as any).type === "xstate.error.actor.summarizeEvidence") {
         return {
           error: ((event as any).error as Error)?.message || "Error generating summary.",
           loading: false
-        };
+        }
       }
-      return {};
+      return {}
     }),
     setSaving: assign({ saving: true, error: "" }),
     setSaveSuccess: assign({ saving: false }),
@@ -105,7 +105,7 @@ export const aiGlobalMachine = setup({
       const result = {
         summary: data.summary,
         sources: data.sources || []
-      };
+      }
       summaryCache.set(input.cacheKey, result);
       return result;
     }),
@@ -238,7 +238,7 @@ export const aiGlobalActions = {
   summarize: (,
     caseId: string
     evidence: any[]
-    userId: string
+    userId: string;
     model: string = "gemma3-legal:latest";
   ) => {
     aiGlobalActor.send({
@@ -258,5 +258,5 @@ export const aiGlobalActions = {
   reset: () => {
     aiGlobalActor.send({ type: "RESET" });
   }
-};
+}
 export default aiGlobalStore;

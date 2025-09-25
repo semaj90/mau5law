@@ -18,7 +18,7 @@
 import { json } from '@sveltejs/kit'
 import { getCache, deleteCache, redisTTL, memoryStats } from '$lib/server/summarizeCache'
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 // Introspection + invalidation route
 // GET /api/ai/summarize/cache/:key -> metadata & (optionally) summary
@@ -61,4 +61,4 @@ const originalDELETEHandler: RequestHandler = async ({ params }) => {
   return json({ success: true, deleted: key, timestamp: new Date().toISOString() })
 }
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
-export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler)
+export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

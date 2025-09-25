@@ -252,7 +252,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         return json({
           action: 'update_prediction',
-          result: updateResult
+          result: updateResult;
           timestamp: new Date().toISOString()
         })
       case 'batch_train':

@@ -48,7 +48,7 @@ export class WebASMLlamaCppEngine {
       batchSize: config.batchSize || 512,
       useGPU: config.useGPU ?? true,
       quantization: config.quantization || 'q4_0'
-    };
+    }
   }
   /**
    * Initialize WebAssembly module and GPU acceleration
@@ -78,14 +78,14 @@ export class WebASMLlamaCppEngine {
    * Load WebAssembly module with optimization flags
    */;
   private async loadWasmModule(wasmUrl: string): Promise<any> {
-    const response = await fetch(wasmUrl);
+    // removed unused response assignment
     const wasmBytes = await response.arrayBuffer();
     // Compile with optimizations for RTX 3060 Ti
     const wasmModule = await WebAssembly.compile(wasmBytes);
     // Instantiate with memory and GPU bindings
     const memory = new WebAssembly.Memory({
       initial: 256,  // 16MB initial
-      maximum: 2048, // 128MB maximum
+      maximum: 2048, // 128MB maximum;
       shared: true   // Enable SharedArrayBuffer for threading
     });
     const instance = await WebAssembly.instantiate(wasmModule, {
@@ -214,13 +214,13 @@ export class WebASMLlamaCppEngine {
       // Update performance metrics
       this.updateMetrics(outputTokens.length, processingTime);
       return {
-        text: outputText
+        text: outputText;
         tokens: outputTokens.length,
         processingTime,
         tokensPerSecond,
         memoryUsage: this.getMemoryUsage(),
         gpuUtilization: await this.getGPUUtilization()
-      };
+      }
     } catch (error) {
       console.error('Inference failed:', error);
       throw error;
@@ -345,7 +345,7 @@ export class WebASMLlamaCppEngine {
   // Model caching
   private async getCachedModel(modelPath: string): Promise<ArrayBuffer | null> {
     try {
-      const db = await this.openIndexedDB();
+      // removed unused db assignment
       const transaction = db.transaction(['models'], 'readonly');
       const store = transaction.objectStore('models');
       const result = await this.promisifyRequest(store.get(modelPath);
@@ -356,7 +356,7 @@ export class WebASMLlamaCppEngine {
   }
   private async cacheModel(modelPath: string, data: ArrayBuffer): Promise<void> {
     try {
-      const db = await this.openIndexedDB();
+      // removed unused db assignment
       const transaction = db.transaction(['models'], 'readwrite');
       const store = transaction.objectStore('models');
       await this.promisifyRequest(store.put({ path: modelPath, data });
@@ -370,9 +370,9 @@ export class WebASMLlamaCppEngine {
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
       request.onupgradeneeded = () => {
-        const db = request.result;
+        // removed unused db assignment
         db.createObjectStore('models', { keyPath: 'path' });
-      };
+      }
     });
   }
   private promisifyRequest(request: IDBRequest): Promise<any> {
@@ -397,7 +397,7 @@ export class WebASMLlamaCppEngine {
       averageLatency: this.averageLatency,
       tokensPerSecond: this.averageLatency > 0 ? 1000 / this.averageLatency: 0,
       memoryUsage: this.getMemoryUsage()
-    };
+    }
   }
   /**
    * Cleanup resources
@@ -423,7 +423,7 @@ export const llamaCppEngine = new WebASMLlamaCppEngine({
 });
 // Convenience function for quick inference
 export async function runQuickInference(
-  prompt: string
+  prompt: string;
   options: Partial<InferenceRequest> = {}
 ): Promise<InferenceResult> {
   if (!llamaCppEngine) {

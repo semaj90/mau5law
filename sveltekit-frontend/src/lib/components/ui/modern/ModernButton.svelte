@@ -14,7 +14,7 @@
     tooltip?: string;
     icon?: import('svelte').Snippet;
     children?: import('svelte').Snippet;
-    onclick?: (event: MouseEvent) => void;
+    onclick?: (_event: MouseEvent) => void;
   }
   let {
     variant = 'primary',
@@ -47,18 +47,18 @@
       outline: 'bg-transparent text-yorha-accent-gold border-yorha-accent-gold hover:bg-yorha-accent-gold hover:text-yorha-bg-primary',
       danger: 'bg-yorha-error text-white border-yorha-error hover:bg-red-600',
       success: 'bg-yorha-success text-yorha-bg-primary border-yorha-success hover:bg-green-400';
-    };
+    }
     const sizes = {
       xs: 'px-golden-sm py-golden-xs text-xs rounded-md',
       sm: 'px-golden-md py-golden-sm text-sm rounded-md',
       md: 'px-golden-lg py-golden-sm text-base rounded-lg',
       lg: 'px-golden-xl py-golden-md text-lg rounded-lg',
       xl: 'px-golden-2xl py-golden-lg text-xl rounded-xl';
-    };
+    }
     const state = disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
     return `${base} ${variants[variant]} ${sizes[size]} ${state} border`;
   });
-  function handleClick(event: MouseEvent) {
+  function handleClick(_event: MouseEvent) {
     if (disabled || loading) {
       event.preventDefault();
       return;
@@ -66,6 +66,7 @@
     onclick?.(event);
   }
 </script>
+
 {#if href}
   <a
     {href}
@@ -86,12 +87,7 @@
     </span>
   </a>
 {:else}
-  <Button.Root
-    {type}
-    {disabled}
-    class={buttonClasses}
-    onclick={handleClick}
-  >
+  <Button.Root {type} {disabled} class={buttonClasses} onclick={handleClick}>
     <span class="button-content">
       {#if loading}
         <div class="loading-spinner"></div>
@@ -107,6 +103,7 @@
 {#if tooltip && $open}
   <div class="tooltip">{tooltip}</div>
 {/if}
+
 <style>
   .modern-btn {
     position: relative;
@@ -164,11 +161,13 @@
     text-transform: none;
     letter-spacing: normal;
   }
-/* Hover effects */ .modern-btn: hover:not(:disabled) {
+/* Hover effects */ {}
+  .modern-btn: hover:not(:disabled) {
     box-shadow: var(--yorha-shadow-md);
     transform: translateY(-1px);
   }
-/* Golden ratio responsive sizing */ @media (max-width: 768px) {
+/* Golden ratio responsive sizing */ {}
+  @media (max-width: 768px) {
     .modern-btn {
       font-size: 0.875rem;
     }

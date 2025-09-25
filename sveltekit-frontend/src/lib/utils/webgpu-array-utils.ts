@@ -69,7 +69,7 @@ export function quantizeToFP16(input: Float32Array): ArrayConversionResult {
     compressedSize: fp16Data.length * 2, // 16-bit values
     compressionRatio: 2.0,
     quantizationConfig: { precision: 'fp16' }
-  };
+  }
 }
 /**
  * Quantizes Float32Array to INT8 with dynamic range calculation
@@ -103,7 +103,7 @@ export function quantizeToINT8(
       minValue: minVal
       maxValue: maxVal
     }
-  };
+  }
 }
 /**
  * Dequantizes INT8 back to Float32Array using stored quantization parameters
@@ -139,7 +139,7 @@ export function dequantizeFP16(fp16Data: Uint16Array): Float32Array {
  */
 export function createWebGPUBuffer(
   device: GPUDevice
-  data: SupportedArrayTypes
+  data: SupportedArrayTypes;
   usage: GPUBufferUsageFlags
   quantization?: QuantizationConfig;
 ): { buffer: GPUBuffer; conversionResult?: ArrayConversionResult } {
@@ -170,7 +170,7 @@ export function createWebGPUBuffer(
           compressedSize: processedData.length * 1,
           compressionRatio: 4.0,
           quantizationConfig: quantization
-        };
+        }
         break;
       default:
         processedData = float32Data;
@@ -196,14 +196,14 @@ export function createWebGPUBuffer(
     new Uint16Array(mappedRange).set(processedData);
   }
   buffer.unmap();
-  return { buffer, conversionResult };
+  return { buffer, conversionResult }
 }
 /**
  * Batch processor for multiple arrays with consistent quantization
  * Useful for model weights, embeddings, and activation tensors
  */
 export function batchProcessArrays(
-  device: GPUDevice
+  device: GPUDevice;
   arrays: { name: string; data: SupportedArrayTypes; usage: GPUBufferUsageFlags }[],
   quantization?: QuantizationConfig;
 ): Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }> {
@@ -215,7 +215,7 @@ export function batchProcessArrays(
   return results;
 }
 // Helper functions for FP16 conversion
-function floatToHalf(value: number): number {
+function floatToHalf(_value: number): number {
   const floatView = new Float32Array(1);
   const int32View = new Int32Array(floatView.buffer);
   floatView[0] = value;
@@ -238,7 +238,7 @@ function floatToHalf(value: number): number {
   bits += m & 1;
   return bits;
 }
-function halfToFloat(value: number): number {
+function halfToFloat(_value: number): number {
   const s = (value & 0x8000) >> 15;
   const e = (value & 0x7c00) >> 10;
   const f = value & 0x03ff;
@@ -253,7 +253,7 @@ function halfToFloat(value: number): number {
  * Memory usage analyzer for optimization decisions
  */
 export function analyzeMemoryUsage(
-  original: SupportedArrayTypes
+  original: SupportedArrayTypes;
   quantizations: QuantizationConfig[] = [
     { precision: 'fp32' },
     { precision: 'fp16' },
@@ -289,6 +289,6 @@ export function analyzeMemoryUsage(
       sizeBytes,
       compressionRatio: originalSize / sizeBytes,
       estimatedAccuracyLoss
-    };
+    }
   });
 }

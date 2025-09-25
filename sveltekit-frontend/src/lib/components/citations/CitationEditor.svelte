@@ -119,7 +119,7 @@ try {
   }
   // Validate form data
   function validateForm(): boolean {
-    const newErrors: Record<string, string> = {};
+    const newErrors: Record<string, string> = {}
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
     }
@@ -152,7 +152,7 @@ try {
         caseId,
         publicationDate: formData.publicationDate ? new Date(formData.publicationDate) : null
         ...(mode === 'edit' && { id: citation?.id })
-      };
+      }
       const response = await fetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -194,7 +194,7 @@ try {
     }
   }
   // Add tag
-  function addTag(event: KeyboardEvent) {
+  function addTag(_event: KeyboardEvent) {
     if (event.key === 'Enter' && event.target) {
       event.preventDefault();
       const input = event.target as HTMLInputElement;
@@ -253,7 +253,7 @@ try {
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-citation-type-">
           Citation Type *
-        </label><select id="-citation-type-"
+        </label><select id="-citation-type-";
           bind:value={formData.citationType}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -321,7 +321,7 @@ try {
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-doi-">
           DOI
         </label><input id="-doi-"
-          type="text"
+          type="text";
           bind:value={formData.doi}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"

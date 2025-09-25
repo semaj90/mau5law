@@ -23,7 +23,7 @@ export interface CaseCreationRequest {
     timestamp?: string;
     userId?: string;
     sessionId?: string;
-  };
+  }
 }
 export interface CaseResponse {
   id: string;
@@ -47,12 +47,12 @@ export interface WorkerTriggerResponse {
     triggerType: string;
     action: string;
     caseId?: string;
-  };
+  }
   metadata: {
     timestamp: string;
     worker: string;
     version: string;
-  };
+  }
 }
 export class EnhancedCaseAPI {
   /**
@@ -93,7 +93,7 @@ export class EnhancedCaseAPI {
         success: false
         error: error instanceof Error ? error.message: String(error),
         data: undefined
-      };
+      }
     }
   }
   /**
@@ -138,7 +138,7 @@ export class EnhancedCaseAPI {
         success: false
         error: error instanceof Error ? error.message: String(error),
         data: undefined
-      };
+      }
     }
   }
   /**
@@ -201,7 +201,7 @@ export class EnhancedCaseAPI {
    * Get case analytics with clustering data
    */;
   async getCaseAnalytics(params: {
-    dateRange?: { start: string; end: string };
+    dateRange?: { start: string; end: string }
     caseType?: string[];
     priority?: string[];
     includeClusterData?: boolean;

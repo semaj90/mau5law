@@ -2,11 +2,13 @@
   import { Select } from 'bits-ui';
   interface Props {
     value?: string;
-    onValueChange?: (value: string) => void;
+    onValueChange?: (_value: string) => void;
     children?: unknown;
   }
   let { value = $bindable(), onValueChange, children, ...restProps }: Props = $props();
 </script>
+
 <Select.Root bind:value {onValueChange} {...restProps}>
   {@render children?.()}
 </Select.Root>
+;

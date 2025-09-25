@@ -157,4 +157,4 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
     })
     return createSSRResponse(userData)
   // Error handling is now handled by withSSRHandler wrapper
-})
+});

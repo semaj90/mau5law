@@ -24,9 +24,9 @@
   }: Props = $props();
   interface UploadResult {
     success: boolean
-    documentId: string
+    documentId: string;
     url: string
-    objectName: string
+    objectName: string;
     message: string;
   }
   // Superforms setup
@@ -87,15 +87,15 @@
     }
   });
   // File handling
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     const file = target.files?.[0];
     if (file) {
       $form.file = fil;
       generatePreview(file);
     }
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     const files = event.dataTransfer?.file;
@@ -104,7 +104,7 @@
       generatePreview(files[0]);
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
@@ -116,7 +116,7 @@
       const reader = new FileReader();
       reader.onload = (e) => {
         previewUrl = e.target?.result as string;
-      };
+      }
       reader.readAsDataURL(file);
     } else {
       previewUrl = null;
@@ -153,7 +153,7 @@
         uploadStatus = 'error';
         uploadProgress = 0;
       }
-    };
+    }
   }
   // Format file size
   function formatFileSize(bytes: number): string {
@@ -185,6 +185,7 @@
     { value: 'urgent', label: 'Urgent' }
   ];
 </script>
+
 <div class="minio-upload-container">
   <form method="POST" action="?/upload" use:enhance={handleSubmit} enctype="multipart/form-data">
     <!-- Case ID Input -->
@@ -218,7 +219,7 @@
         ondragover={handleDragOver}
         ondragleave={handleDragLeave}
         onclick={() => fileInput?.click()}
-        onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
+        onkeydown={e => e.key === 'Enter' && fileInput?.click()}
       >
         <input
           bind:this={fileInput}
@@ -239,9 +240,7 @@
             <div class="file-info">
               <div class="file-name">{$form.file.name}</div>
               <div class="file-size">{formatFileSize($form.file.size)}</div>
-              <button type="button" class="remove-file" onclick={removeFile}>
-                ✕ Remove
-              </button>
+              <button type="button" class="remove-file" onclick={removeFile}> ✕ Remove </button>
             </div>
           </div>
         {:else}
@@ -348,11 +347,7 @@
     {/if}
     <!-- Submit Button -->
     <div class="form-actions">
-      <button
-        type="submit"
-        disabled={disabled || $submitting || !$form.file || !$form.caseId}
-        class="submit-button"
-      >
+      <button type="submit" disabled={disabled || $submitting || !$form.file || !$form.caseId} class="submit-button">
         {#if $submitting}
           Uploading...
         {:else}
@@ -368,6 +363,7 @@
     {/if}
   </form>
 </div>
+
 <style>
   .minio-upload-container {
     max-width: 600px;

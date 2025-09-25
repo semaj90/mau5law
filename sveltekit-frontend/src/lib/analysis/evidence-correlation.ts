@@ -44,7 +44,7 @@ interface CorrelationVisualization {
     nodes?: NetworkNode[];
     edges?: NetworkEdge[];
     timeline?: TimelineEvent[];
-  };
+  }
 }
 interface NetworkNode {
   id: string;
@@ -52,7 +52,7 @@ interface NetworkNode {
   type: string;
   size: number;
   color: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 interface NetworkEdge {
   source: string;
@@ -206,7 +206,7 @@ export class EvidenceCorrelationEngine {
           ]
         }
       }
-    };
+    }
   }
   // Semantic correlation analysis
   static analyzeSemanticCorrelation(
@@ -240,7 +240,7 @@ export class EvidenceCorrelationEngine {
         'Similar legal implications',
         'Potential for joint analysis'
       ]
-    };
+    }
   }
   // Entity correlation analysis
   static analyzeEntityCorrelation(
@@ -269,7 +269,7 @@ export class EvidenceCorrelationEngine {
         'Potential witness overlap',
         'Shared jurisdiction or venue'
       ]
-    };
+    }
   }
   // Causal correlation analysis
   static analyzeCausalCorrelation(
@@ -302,7 +302,7 @@ export class EvidenceCorrelationEngine {
         'Chain of events evidence',
         'Timeline reconstruction support'
       ]
-    };
+    }
   }
   // Pattern detection
   static detectPatterns(evidence: EvidenceItem[], patternTypes: string[]): PatternMatch[] {
@@ -431,7 +431,7 @@ export class EvidenceCorrelationEngine {
   }
   // Network analysis for entity relationships
   static buildEvidenceNetwork(
-    evidence: EvidenceItem[]
+    evidence: EvidenceItem[];
     correlations: CorrelationResult[];
   ): {
     nodes: NetworkNode[];
@@ -462,7 +462,7 @@ export class EvidenceCorrelationEngine {
     const communities = this.detectCommunities(nodes, edges);
     // Find central nodes (high degree)
     const centralNodes = this.findCentralNodes(nodes, edges);
-    return { nodes, edges, communities, centralNodes };
+    return { nodes, edges, communities, centralNodes }
   }
   // Helper methods
   static calculateJaccardSimilarity(setA: string[], setB: string[]): number {
@@ -528,7 +528,7 @@ export class EvidenceCorrelationEngine {
     evidence: EvidenceItem[]
     windowHours: number;
   ): Record<string, EvidenceItem[]> {
-    const windows: Record<string, EvidenceItem[]> = {};
+    const windows: Record<string, EvidenceItem[]> = {}
     evidence.forEach((e) => {
       const date = new Date(e.uploadedAt);
       const windowStart = new Date(date);
@@ -544,7 +544,7 @@ export class EvidenceCorrelationEngine {
   static calculateMonthlyEvidenceVolume(
     evidence: EvidenceItem[];
   ): { month: string; count: number }[] {
-    const monthlyCounts: Record<string, number> = {};
+    const monthlyCounts: Record<string, number> = {}
     evidence.forEach((e) => {
       const date = new Date(e.uploadedAt);
       const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
@@ -558,7 +558,7 @@ export class EvidenceCorrelationEngine {
     slope: number;
     direction: string;
   } {
-    if (data.length < 2) return { slope: 0, direction: 'flat' };
+    if (data.length < 2) return { slope: 0, direction: 'flat' }
     // Simple linear regression
     const n = data.length;
     const sumX = data.reduce((sum, _, i) => sum + i, 0);
@@ -567,7 +567,7 @@ export class EvidenceCorrelationEngine {
     const sumXX = data.reduce((sum, _, i) => sum + i * i, 0);
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     const direction = slope > 0.1 ? 'increasing' : slope < -0.1 ? 'decreasing' : 'flat';
-    return { slope, direction };
+    return { slope, direction }
   }
   static getNodeColor(type: string): string {
     const colors = {
@@ -576,7 +576,7 @@ export class EvidenceCorrelationEngine {
       video: '#F59E0B',
       audio: '#8B5CF6',
       other: '#6B7280'
-    };
+    }
     return colors[type as keyof typeof colors] || colors.other;
   }
   static detectCommunities(nodes: NetworkNode[], edges: NetworkEdge[]): string[][] {
@@ -628,4 +628,4 @@ export {
   type NetworkEdge,
   type EntityRelationship,
   type CausalChain
-};
+}

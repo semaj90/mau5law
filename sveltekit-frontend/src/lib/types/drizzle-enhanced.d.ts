@@ -44,7 +44,7 @@ declare module 'drizzle-orm' {
     raw<T = any>(query: string): T;
     empty(): any;
     fromList<T = any>(list: T[]): T;
-  };
+  }
   // Enhanced query operators
   export function eq<T, U>(left: T, right: U): any;
   export function ne<T, U>(left: T, right: U): any;
@@ -104,16 +104,22 @@ declare module 'drizzle-orm' {
 }
 declare module 'drizzle-orm/node-postgres' {
   import type { PostgresJsDatabase } from 'drizzle-orm/node-postgres';
-  export function drizzle<T = any>(client: any, config?: {
-    schema?: T;
-    logger?: boolean | any;
-  }): PostgresJsDatabase<T>;
+  export function drizzle<T = any>(
+    client: any,
+    config?: {
+      schema?: T;
+      logger?: boolean | any;
+    },
+  ): PostgresJsDatabase<T>;
 }
 declare module 'drizzle-orm/node-postgres' {
-  export function drizzle<T = any>(client: any, config?: {
-    schema?: T;
-    logger?: boolean | any;
-  }): any;
+  export function drizzle<T = any>(
+    client: any,
+    config?: {
+      schema?: T;
+      logger?: boolean | any;
+    },
+  ): any;
 }
 // Enhanced type for better IntelliSense
 export type DrizzleTable<T extends { [key: string]: any } = { [key: string]: any }> = T;
@@ -186,5 +192,5 @@ export type {
   DrizzleUpdate,
   DrizzleDelete,
   DrizzleSelect,
-  DrizzleDatabase
-};
+  DrizzleDatabase,
+}

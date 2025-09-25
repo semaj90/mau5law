@@ -31,7 +31,7 @@
       start: string;
       end: string;
       duration: string;
-    };
+    }
     entities: PatternEntity[];
     evidence: string[];
     correlations: PatternCorrelation[];
@@ -86,7 +86,7 @@
         timeRange,
         confidenceThreshold: confidenceThreshold / 100,
         patternTypes: patternTypeFilter === 'all' ? undefined : [patternTypeFilter]
-      };
+      }
       const response = await fetch('/api/ai/pattern-detection', {
         method: 'POST',
         headers: {

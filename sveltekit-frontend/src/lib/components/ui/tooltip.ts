@@ -7,7 +7,7 @@ export { default as TooltipProvider } from './tooltip/TooltipProvider.svelte.js'
 // Export types
 export type TooltipProps = {
   content?: string;
-  placement?: "top" | "bottom" | "left" | "right";
+  placement?: 'top' | 'bottom' | 'left' | 'right';
   disabled?: boolean;
   children?: import('svelte').Snippet;
-};
+}

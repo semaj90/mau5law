@@ -11,7 +11,7 @@ export interface CaseStoreData {
     priority: string;
     sort?: string;
     order?: string;
-  };
+  }
 }
 const initialData: CaseStoreData = {
   cases: [],
@@ -23,7 +23,7 @@ const initialData: CaseStoreData = {
     sort: "openedAt",
     order: "desc"
   }
-};
+}
 export const casesStore = writable<CaseStoreData>(initialData);
 // Computed stores for easy access
 export const activeCases = writable<any[]>([]);
@@ -71,4 +71,4 @@ export const casesActions = {
       cases
     });
   }
-};
+}

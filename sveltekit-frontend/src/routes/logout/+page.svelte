@@ -9,8 +9,8 @@
         const response = await fetch('/api/auth/logout', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         });
         if (response.ok) {
           // Invalidate all data and redirect to home
@@ -29,6 +29,7 @@
     })();
   });
 </script>
+
 <svelte:head>
   <title>Logging out... - WardenNet</title>
 </svelte:head>

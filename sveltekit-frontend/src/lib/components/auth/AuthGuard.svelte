@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
   // AuthGuard component - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
   import { goto } from '$app/navigation';
@@ -19,7 +19,7 @@
     requiredPermission,
     redirectTo = '/auth/login',
     fallback,
-    showLoading = true
+    showLoading = true,
   }: Props = $props();
   let isAuthorized = $derived(() => {
     if (authStore.isLoading) return null; // Loading state
@@ -43,6 +43,7 @@
     }
   });
 </script>
+
 {#if isAuthorized === null && showLoading}
   <div class="auth-loading" role="status" aria-label="Loading authentication">
     <div class="loading-spinner"></div>
@@ -55,6 +56,7 @@
 {:else if isAuthorized === false && fallback}
   {@render fallback()}
 {/if}
+
 <style>
   .auth-loading {
     display: flex;

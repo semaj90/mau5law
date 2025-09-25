@@ -94,7 +94,7 @@ export class N64TextureLODSystem {
       currentLOD: 3, // Start with lowest quality
       priority,
       lastAccessed: Date.now()
-    };
+    }
     // Load lowest LOD immediately (4KB)
     await this.loadLODLevel(asset, 3);
     this.textureCache.set(textureId, asset);
@@ -325,7 +325,7 @@ export class N64TextureLODSystem {
       totalKB: this.TEXTURE_CACHE_SIZE / 1024,
       textureCount: this.textureCache.size,
       activeTextureCount: this.activeTextures.size
-    };
+    }
   }
   /**
    * Clean up resources

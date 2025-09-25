@@ -52,7 +52,7 @@ export class MatrixTransformLib {
       return result;
     } catch (error: any) {
       console.warn("Failed to generate transforms from sprite:", error);
-      return {};
+      return {}
     }
   }
   /**
@@ -75,7 +75,7 @@ export class MatrixTransformLib {
       rotation,
       skewX,
       skewY
-    };
+    }
     return this.computeTransforms(transform);
   }
   /**
@@ -164,7 +164,7 @@ export class MatrixTransformLib {
       rotation: this.lerpAngle(from.rotation, to.rotation, t),
       skewX: this.lerp(from.skewX, to.skewX, t),
       skewY: this.lerp(from.skewY, to.skewY, t)
-    };
+    }
     return this.computeTransforms(interpolated);
   }
   private extractTransformFromSprite(spriteData: any): Transform2D {
@@ -179,7 +179,7 @@ export class MatrixTransformLib {
         rotation: 0,
         skewX: 0,
         skewY: 0
-      };
+      }
     }
     // For legal documents, often we want the transform of the primary object
     const primaryObject = objects[0];
@@ -191,13 +191,13 @@ export class MatrixTransformLib {
       rotation: (primaryObject.angle || 0) * MatrixTransformLib.DEG_TO_RAD,
       skewX: primaryObject.skewX || 0,
       skewY: primaryObject.skewY || 0
-    };
+    }
   }
   private computeTransforms(transform: Transform2D): TransformResult {
     const matrix = this.transformTo2DMatrix(transform);
     const result: TransformResult = {
       matrix2d: matrix
-    };
+    }
     if (this.config.optimizeForCSS) {
       (result as { css3d?: any; webgl?: any }).css3d = this.matrixToCSS(matrix);
     }
@@ -239,7 +239,7 @@ export class MatrixTransformLib {
     // Extract skew
     const skewX = Math.atan2(a * d + b * e, scaleX * scaleX);
     const skewY = 0; // Simplified for most use cases
-    return { x, y, scaleX, scaleY, rotation, skewX, skewY };
+    return { x, y, scaleX, scaleY, rotation, skewX, skewY }
   }
   private lerp(a: number, b: number, t: number): number {
     return a + (b - a) * t;
@@ -254,7 +254,7 @@ export class MatrixTransformLib {
     }
     return a + diff * t;
   }
-  private roundToPrecision(value: number, decimals: number): number {
+  private roundToPrecision(_value: number, decimals: number): number {
     const factor = Math.pow(10, decimals);
     return Math.round(value * factor) / factor;
   }
@@ -304,7 +304,7 @@ export class MatrixTransformLib {
       cacheEnabled: this.config.cacheTransforms,
       gpuAcceleration: this.config.enableGPUAcceleration,
       cssOptimization: this.config.optimizeForCSS
-    };
+    }
   }
   /**
    * Clear transform cache

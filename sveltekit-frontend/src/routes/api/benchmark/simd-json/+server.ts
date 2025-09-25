@@ -189,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true
           scenario: 'comparison',
           data: {
-            scenarios: comparisonResults
+            scenarios: comparisonResults;
             summary: {
               totalTests: scenarios.length,
               avgSpeedup: Object.values(comparisonResults).reduce((sum: number, result: any) =>

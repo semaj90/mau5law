@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
           prompt,
           caseId,
           userId: 'current-user', // This should come from auth context
-          sessionType: analysisType
+          sessionType: analysisType;
           context: {
             caseDetails: caseId ? { id: caseId } : undefined
             evidenceIds: evidenceId ? [evidenceId] : undefined
@@ -87,15 +87,14 @@ https://svelte.dev/e/js_parse_error -->
     resetDialog();
   }
 </script>
+
 <Dialog.Root bind:isOpen title="Legal AI Analysis" onClose={closeDialog}>
   <div class="space-y-6">
     {#if !analysis}
       <!-- Analysis Input Form -->
       <div class="space-y-4">
         <div>
-          <label for="analysis-type" class="block text-sm font-medium mb-2">
-            Analysis Type
-          </label>
+          <label for="analysis-type" class="block text-sm font-medium mb-2"> Analysis Type </label>
           <select
             id="analysis-type"
             bind:value={analysisType}
@@ -107,9 +106,7 @@ https://svelte.dev/e/js_parse_error -->
           </select>
         </div>
         <div>
-          <label for="prompt" class="block text-sm font-medium mb-2">
-            Analysis Prompt
-          </label>
+          <label for="prompt" class="block text-sm font-medium mb-2"> Analysis Prompt </label>
           <textarea
             id="prompt"
             bind:value={prompt}
@@ -217,3 +214,4 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </Dialog.Root>
+;

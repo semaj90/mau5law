@@ -7,7 +7,7 @@
   let toasts = $state<Toast[]>([]);
   let unsubscribe: (() => void) | null = null;
   $effect(() => {
-    unsubscribe = toastService.subscribe((newToasts) => {
+    unsubscribe = toastService.subscribe(newToasts => {
       toasts = newToast;
     });
   });
@@ -16,22 +16,34 @@
   });
   function getToastIcon(type: Toast['type']) {
     switch (type) {
-      case 'success': return CheckCircl;
-      case 'error': return AlertCircl;
-      case 'warning': return AlertTriangl;
-      case 'info': return Info;
-      case 'upload': return Upload;
-      default: return Info;
+      case 'success':
+        return CheckCircl;
+      case 'error':
+        return AlertCircl;
+      case 'warning':
+        return AlertTriangl;
+      case 'info':
+        return Info;
+      case 'upload':
+        return Upload;
+      default:
+        return Info;
     }
   }
   function getToastClass(type: Toast['type']): string {
     switch (type) {
-      case 'success': return 'is-success';
-      case 'error': return 'is-error';
-      case 'warning': return 'is-warning';
-      case 'info': return 'is-primary';
-      case 'upload': return 'is-dark';
-      default: return 'is-primary';
+      case 'success':
+        return 'is-success';
+      case 'error':
+        return 'is-error';
+      case 'warning':
+        return 'is-warning';
+      case 'info':
+        return 'is-primary';
+      case 'upload':
+        return 'is-dark';
+      default:
+        return 'is-primary';
     }
   }
   function dismissToast(id: string) {
@@ -41,6 +53,7 @@
     action.action();
   }
 </script>
+
 <!-- Toast Container -->
 <div class="toast-container" role="region" aria-label="Notifications">
   {#each toasts as toast (toast.id)}
@@ -95,7 +108,11 @@
             {#each toast.actions as action}
               <button
                 type="button"
-                class="nes-btn {action.style === 'primary' ? 'is-primary' : action.style === 'danger' ? 'is-error' : ''}"
+                class="nes-btn {action.style === 'primary'
+                  ? 'is-primary'
+                  : action.style === 'danger'
+                    ? 'is-error'
+                    : ''}"
                 onclick={() => executeAction(action)}
               >
                 {#if action.label === 'Retry'}
@@ -116,6 +133,7 @@
     </div>
   {/each}
 </div>
+
 <style>
   .toast-container {
     position: fixed;
@@ -284,7 +302,7 @@ d;
     height: 20px;
   }
   /* Hide default progress styling and add pixel styling */
-  .nes-progress: :-webkit-progress-bar {
+  .nes-progress::-webkit-progress-bar {
     background-color: #e5e7eb;
     border: 1px solid #212529;
   }
@@ -299,7 +317,7 @@ d;
     background-color: #92cc41;
   }
   /* Firefox */
-  .nes-progress: :-moz-progress-bar {
+  .nes-progress::-moz-progress-bar {
     background-color: #92cc41;
     border: 1px solid #212529;
   }

@@ -80,4 +80,4 @@ export const POST: RequestHandler = (async ({ request, locals }) => {
     return json({ error: "Database insert failed", details: String(e) }, { status: 500 })
   }
   return json(newEvidence, { status: 201 })
-})
+});

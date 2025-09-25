@@ -162,7 +162,7 @@
       citations: [],
       wordCount: 0,
       status: 'draft';
-    };
+    }
     briefData.sections.push(newSection);
     selectedSection = newSection.id;
   }
@@ -182,7 +182,7 @@
       shortForm: '',
       verified: false
       relevanceScore: 0;
-    };
+    }
     const sectionIndex = briefData.sections.findIndex(s => s.id === selectedSection);
     if (sectionIndex >= 0) {
       briefData.sections[sectionIndex].citations.push(newCitation);
@@ -196,7 +196,7 @@
       argument: '⚖️',
       conclusion: '🏁',
       signature: '✍️';
-    };
+    }
     return icons[type] || '📄';
   }
   function getCitationIcon(type: Citation['type']): string {
@@ -205,7 +205,7 @@
       statute: '📜',
       regulation: '📋',
       secondary: '📚';
-    };
+    }
     return icons[type] || '📄';
   }
   function getStatusColor(status: string) {
@@ -214,7 +214,7 @@
       review: '#f59e0b',
       approved: '#10b981',
       filed: '#3b82f6';
-    };
+    }
     return colors[status as keyof typeof colors] || colors.draft;
   }
   // Auto-save effect
@@ -228,12 +228,13 @@
     }, 2000);
   });
 </script>
+
 <div class="brief-editor">
   <!-- Brief Header -->
   <Card
     style="
-      border-color: {briefBuilder.styling.colors.primary};
-      border-width: {briefBuilder.styling.nes.borderWidth};
+      border-color: {briefBuilder.styling.colors.primary}
+      border-width: {briefBuilder.styling.nes.borderWidth}
     "
   >
     <CardHeader>
@@ -244,7 +245,7 @@
             <h2>{briefData.title}</h2>
             <div class="brief-meta">
               <span class="brief-type">{briefData.type.replace('_', ' ').toUpperCase()}</span>
-              <span class="brief-status" style="color: {getStatusColor(briefData.status)};">
+              <span class="brief-status" style="color: {getStatusColor(briefData.status)}">
                 {briefData.status.toUpperCase()}
               </span>
               <span class="version-info">v{briefData.version}</span>
@@ -266,16 +267,11 @@
           <Button
             onclick={saveBrief}
             disabled={isAutoSaving}
-            style="background: {briefBuilder.styling.colors.evidence};"
+            style="background: {briefBuilder.styling.colors.evidence}"
           >
             {isAutoSaving ? '💾 Saving...' : '💾 Save Brief'}
           </Button>
-          <Button
-            onclick={() => citationPanel = !citationPanel}
-            variant="outline"
-          >
-            📚 Citations
-          </Button>
+          <Button onclick={() => (citationPanel = !citationPanel)} variant="outline">📚 Citations</Button>
         </div>
       </CardTitle>
     </CardHeader>
@@ -311,24 +307,20 @@
     <div class="section-nav">
       <div class="nav-header">
         <h3>Brief Sections</h3>
-        <Button onclick={addSection} size="sm">
-          ➕ Add Section
-        </Button>
+        <Button onclick={addSection} size="sm">➕ Add Section</Button>
       </div>
       <div class="section-list">
         {#each briefData.sections as section (section.id)}
           <button
             class="section-item"
             class:active={selectedSection === section.id}
-            onclick={() => selectedSection = section.id};
+            onclick="{() => (selectedSection = section.id)}"
             transition:fade
           >
             <div class="section-header">
               <span class="section-icon">{getSectionIcon(section.type)}</span>
               <span class="section-title">{section.title}</span>
-              <span class="section-status" style="color: {getStatusColor(section.status)};">
-                ●
-              </span>
+              <span class="section-status" style="color: {getStatusColor(section.status)}"> ● </span>
             </div>
             <div class="section-meta">
               <span class="word-count">{section.wordCount} words</span>
@@ -347,18 +339,14 @@
             <span class="section-type">{currentSection.type.replace('_', ' ').toUpperCase()}</span>
           </div>
           <div class="editor-tools">
-            <Button onclick={() => getAISuggestions(currentSection.id)} size="sm">
-              🤖 AI Suggestions
-            </Button>
-            <Button onclick={checkCitations} size="sm" variant="outline">
-              🔍 Check Citations
-            </Button>
+            <Button onclick={() => getAISuggestions(currentSection.id)} size="sm">🤖 AI Suggestions</Button>
+            <Button onclick={checkCitations} size="sm" variant="outline">🔍 Check Citations</Button>
           </div>
         </div>
         <div class="editor-content">
           <textarea
             value={currentSection.content}
-            oninput={(e) => updateSectionContent(currentSection.id, (e.target as HTMLTextAreaElement).value)}
+            oninput={e => updateSectionContent(currentSection.id, (e.target as HTMLTextAreaElement).value)}
             placeholder="Start writing your brief section..."
             class="content-textarea"
           ></textarea>
@@ -378,9 +366,7 @@
         <div class="section-citations">
           <div class="citations-header">
             <h4>Citations ({currentSection.citations.length})</h4>
-            <Button onclick={addCitation} size="sm">
-              ➕ Add Citation
-            </Button>
+            <Button onclick={addCitation} size="sm">➕ Add Citation</Button>
           </div>
           <div class="citations-list">
             {#each currentSection.citations as citation (citation.id)}
@@ -393,22 +379,10 @@
                   </span>
                 </div>
                 <div class="citation-content">
-                  <Input
-                    value={citation.citation}
-                    placeholder="Enter full citation..."
-                    class="citation-input"
-                  />
-                  <Input
-                    value={citation.shortForm}
-                    placeholder="Short form..."
-                    class="citation-short"
-                  />
+                  <Input value={citation.citation} placeholder="Enter full citation..." class="citation-input" />
+                  <Input value={citation.shortForm} placeholder="Short form..." class="citation-short" />
                   {#if citation.pinpoint}
-                    <Input
-                      value={citation.pinpoint}
-                      placeholder="Pinpoint citation..."
-                      class="citation-pinpoint"
-                    />
+                    <Input value={citation.pinpoint} placeholder="Pinpoint citation..." class="citation-pinpoint" />
                   {/if}
                 </div>
                 <div class="citation-metrics">
@@ -433,7 +407,7 @@
       <div class="citation-panel" transition:fly={{ x: 300, duration: 300 }}>
         <div class="panel-header">
           <h3>📚 All Citations</h3>
-          <Button onclick={() => citationPanel = false} size="sm">✕</Button>
+          <Button onclick={() => (citationPanel = false)} size="sm">✕</Button>
         </div>
         <div class="panel-content">
           {#each briefData.sections as section}
@@ -459,6 +433,7 @@
     {/if}
   </div>
 </div>
+
 <style>
   .brief-editor {
     max-width: 1600px;

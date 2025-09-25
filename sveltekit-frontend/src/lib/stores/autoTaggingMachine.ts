@@ -11,7 +11,7 @@ export type AutoTagEvent =
   | { type: "DROP_FILE"; node: any }
   | { type: "SELECT_NODE"; node: any }
   | { type: "RETRY" }
-  | { type: "RESET" };
+  | { type: "RESET" }
 export const autoTaggingMachine = createMachine();
   {
     id: "autoTagging",

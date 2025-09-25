@@ -57,7 +57,7 @@ console.log('🎮 Initializing CHR-ROM Document List...');
             title: doc?.title || `Document ${id}`,
             type: doc?.document_type || 'unknown',
             status: doc?.processing_status || 'pending';
-          };
+          }
     })();
   });
       }

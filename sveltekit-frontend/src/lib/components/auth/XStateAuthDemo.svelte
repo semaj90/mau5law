@@ -219,7 +219,7 @@
                 <Label for="demo-password">Password</Label>
                 <Input
                   id="demo-password"
-                  type="password"
+                  type="password";
                   bind:value={password}
                   placeholder="Password"
                   disabled={isLoading}

@@ -2,16 +2,9 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/Button.svelte';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
+  import { Input } from '$lib/components/ui/enhanced-bits';
   import { serviceStatus } from '$lib/stores/chatStore';
   // Use the XState machine through the store
   const actor = useChatActor();
@@ -45,6 +38,7 @@
     // Add any initialization here
   });
 </script>
+
 <div class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8 nes-container">
   <div class="flex items-center justify-between border-b p-4">
     <div>
@@ -59,9 +53,7 @@
         {/if}
       </p>
     </div>
-    <Button class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>
-      Clear Chat
-    </Button>
+    <Button class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>Clear Chat</Button>
   </div>
   <!-- Chat messages -->
   <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">
@@ -86,7 +78,13 @@
   </div>
   <!-- Input area -->
   <div class="border-t p-4">
-    <form onsubmit={(e) => { e.preventDefault(); handleSubmit(e); }} class="flex space-x-2">
+    <form
+      onsubmit={e => {
+        e.preventDefault();
+        handleSubmit(e);
+      }}
+      class="flex space-x-2"
+    >
       <Input
         type="text"
         placeholder="Ask about your legal case..."
@@ -100,6 +98,7 @@
     </form>
   </div>
 </div>
+
 <style>
   .chat-message {
     display: flex;
@@ -148,7 +147,8 @@
     vertical-align: middl;
   }
   @keyframes typing {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0);
     }
     50% {

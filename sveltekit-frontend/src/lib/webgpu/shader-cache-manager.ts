@@ -30,7 +30,7 @@ export interface CompiledShader {
     description: string;
     tags: string[];
     operation: string;
-  };
+  }
   embedding?: number[]; // Semantic embedding for search
 }
 export interface ShaderSearchQuery {
@@ -85,7 +85,7 @@ export class ShaderCacheManager {
   }
   private async compileShader(
     id: string
-    wgsl: string
+    wgsl: string;
     config: ShaderConfig
     startTime: number;
   ): Promise<CompiledShader> {
@@ -154,7 +154,7 @@ export class ShaderCacheManager {
           compileTime,
           cacheHit
         }
-      };
+      }
       // Store in memory cache
       this.shaders.set(id, compiled);
       // Cache on server-side
@@ -268,7 +268,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    * Execute tensor operation on GPU
    */
   async executeTensorOperation(
-    shader: CompiledShader
+    shader: CompiledShader;
     inputs: GPUBuffer[]
     outputSize: number;
   ): Promise<GPUBuffer> {
@@ -277,7 +277,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     }
     // Create output buffer
     const outputBuffer = this.device.createBuffer({
-      size: outputSize
+      size: outputSize;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     // Create bind group
@@ -311,9 +311,9 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const logData = {
       shader_id: id
       cache_type: type
-      compile_time_ms: duration
+      compile_time_ms: duration;
       timestamp: Date.now()
-    };
+    }
     // Send to Loki.js for observability
     if (typeof window !== 'undefined') {
       console.log('🔧 Shader:', logData);
@@ -329,7 +329,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       error_message: error.message,
       error_stack: error.stack,
       timestamp: Date.now()
-    };
+    }
     console.error('❌ Shader compilation failed:', errorData);
     // TODO: Send to actual Loki.js endpoint
   }
@@ -372,7 +372,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    */;
   private generateFallbackEmbedding(wgsl: string): number[] {
     const features = new Array(384).fill(0);
-    const lines = wgsl.split('\n');
+    // removed unused lines assignment
     lines.forEach((line, index) => {
       const hash = this.simpleHash(line);
       const featureIndex = hash % features.length;
@@ -502,7 +502,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   async cacheShaderWithEmbedding(
     shader: CompiledShader
     description: string
-    operation: string
+    operation: string;
     tags: string[] = [];
   ): Promise<void> {
     try {
@@ -556,7 +556,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     totalUsage: number;
   }> {
     const shaderIndex = await cache.get<string[]>('webgpu_shader_index') || [];
-    const operations: Record<string, number> = {};
+    const operations: Record<string, number> = {}
     let totalPerformance = 0;
     let totalUsage = 0;
     let performanceCount = 0;
@@ -581,7 +581,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       topOperations,
       averagePerformance: performanceCount > 0 ? totalPerformance / performanceCount : 0,
       totalUsage
-    };
+    }
   }
   /**
    * Clean up resources

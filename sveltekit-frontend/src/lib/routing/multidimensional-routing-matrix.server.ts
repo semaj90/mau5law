@@ -24,19 +24,18 @@ class MultidimensionalRoutingMatrix {
   private efficiencyScore = 0.92; // Mock efficiency score
   private routingHistory: Array<any> = [];
   constructor() {
-    console.log("MultidimensionalRoutingMatrix (server-only) instance created.");
+    console.log('MultidimensionalRoutingMatrix (server-only) instance created.');
   }
   /**
    * Initializes the matrix, loading routing data from a source.
-   */;
-  async initialize(): Promise<void> {
+   */ async initialize(): Promise<void> {
     if (this.isInitialized) return;
-    console.log("Initializing Multidimensional Routing Matrix (server-only)...");
+    console.log('Initializing Multidimensional Routing Matrix (server-only)...');
     // In a real implementation, this would load a configuration file,
     // query a database, or get data from a service discovery endpoint.
     await this.loadProductionData();
     this.isInitialized = true;
-    console.log("Multidimensional Routing Matrix (server-only) initialized.");
+    console.log('Multidimensional Routing Matrix (server-only) initialized.');
   }
   private async loadProductionData(): Promise<void> {
     // Simulate loading from external source
@@ -49,7 +48,7 @@ class MultidimensionalRoutingMatrix {
         latency: 500,
         quality: 0.95,
         throughput: 100,
-        reliability: 0.98
+        reliability: 0.98,
       },
       {
         tool: 'legal-document-analyzer-rest-api',
@@ -57,7 +56,7 @@ class MultidimensionalRoutingMatrix {
         latency: 1500,
         quality: 0.85,
         throughput: 50,
-        reliability: 0.95
+        reliability: 0.95,
       },
       {
         tool: 'legal-document-analyzer-quic',
@@ -65,8 +64,8 @@ class MultidimensionalRoutingMatrix {
         latency: 200,
         quality: 0.97,
         throughput: 200,
-        reliability: 0.99
-      }
+        reliability: 0.99,
+      },
     ]);
     // Vector Search Routes
     this.matrix.set('vector_search', [
@@ -74,9 +73,9 @@ class MultidimensionalRoutingMatrix {
         tool: 'postgresql-pgvector',
         cost: 0.01,
         latency: 100,
-        quality: 0.90,
+        quality: 0.9,
         throughput: 500,
-        reliability: 0.99
+        reliability: 0.99,
       },
       {
         tool: 'qdrant-vector-db',
@@ -84,7 +83,7 @@ class MultidimensionalRoutingMatrix {
         latency: 50,
         quality: 0.95,
         throughput: 1000,
-        reliability: 0.97
+        reliability: 0.97,
       },
       {
         tool: 'redis-vector-search',
@@ -92,8 +91,8 @@ class MultidimensionalRoutingMatrix {
         latency: 30,
         quality: 0.85,
         throughput: 800,
-        reliability: 0.98
-      }
+        reliability: 0.98,
+      },
     ]);
     // Evidence Processing Routes
     this.matrix.set('process_evidence', [
@@ -101,17 +100,17 @@ class MultidimensionalRoutingMatrix {
         tool: 'tesseract-ocr-wasm',
         cost: 0.001, // Client-side processing
         latency: 2000,
-        quality: 0.80,
+        quality: 0.8,
         throughput: 10,
-        reliability: 0.95
+        reliability: 0.95,
       },
       {
         tool: 'gpu-accelerated-ocr',
-        cost: 0.10,
+        cost: 0.1,
         latency: 300,
         quality: 0.95,
         throughput: 100,
-        reliability: 0.98
+        reliability: 0.98,
       },
       {
         tool: 'cloud-vision-api',
@@ -119,8 +118,8 @@ class MultidimensionalRoutingMatrix {
         latency: 800,
         quality: 0.98,
         throughput: 200,
-        reliability: 0.99
-      }
+        reliability: 0.99,
+      },
     ]);
     // Case Management Routes
     this.matrix.set('case_management', [
@@ -130,7 +129,7 @@ class MultidimensionalRoutingMatrix {
         latency: 50,
         quality: 0.95,
         throughput: 1000,
-        reliability: 0.99
+        reliability: 0.99,
       },
       {
         tool: 'neo4j-graph-queries',
@@ -138,14 +137,13 @@ class MultidimensionalRoutingMatrix {
         latency: 200,
         quality: 0.98,
         throughput: 300,
-        reliability: 0.97
-      }
+        reliability: 0.97,
+      },
     ]);
   }
   /**
    * Finds the optimal route for a given task based on constraints.
-   */;
-  getOptimalRoute(task: string, constraints: RouteConstraints): Route | undefined {
+   */ getOptimalRoute(_task: string, constraints: RouteConstraints): Route | undefined {
     const routes = this.matrix.get(task);
     if (!routes || routes.length === 0) return undefined;
     // Filter routes based on hard constraints
@@ -186,11 +184,10 @@ class MultidimensionalRoutingMatrix {
   }
   /**
    * Calculate a multi-criteria score for a route
-   */;
-  private calculateRouteScore(route: Route): number {
+   */ private calculateRouteScore(route: Route): number {
     // Normalize and weight different factors
-    const normalizedCost = 1 - (route.cost / 0.20); // Assuming max cost of 0.20
-    const normalizedLatency = 1 - (route.latency / 3000); // Assuming max latency of 3000ms
+    const normalizedCost = 1 - route.cost / 0.2; // Assuming max cost of 0.20
+    const normalizedLatency = 1 - route.latency / 3000; // Assuming max latency of 3000ms
     const normalizedQuality = route.quality;
     const normalizedThroughput = route.throughput / 1000; // Normalize by max expected throughput
     const normalizedReliability = route.reliability;
@@ -199,19 +196,18 @@ class MultidimensionalRoutingMatrix {
       normalizedCost * 0.15 +
       normalizedLatency * 0.25 +
       normalizedQuality * 0.25 +
-      normalizedThroughput * 0.20 +
+      normalizedThroughput * 0.2 +
       normalizedReliability * 0.15
     );
   }
   /**
    * Record a routing decision for learning and analytics
-   */;
-  private recordRoutingDecision(task: string, route: Route, success: boolean): void {
+   */ private recordRoutingDecision(_task: string, route: Route, success: boolean): void {
     this.routingHistory.push({
       task,
       route,
       timestamp: Date.now(),
-      success
+      success,
     });
     // Keep only recent history (last 1000 decisions)
     if (this.routingHistory.length > 1000) {
@@ -222,27 +218,24 @@ class MultidimensionalRoutingMatrix {
   }
   /**
    * Update efficiency score based on recent routing decisions
-   */;
-  private updateEfficiencyScore(): void {
+   */ private updateEfficiencyScore(): void {
     const recentDecisions = this.routingHistory.slice(-100); // Last 100 decisions
     if (recentDecisions.length === 0) return;
     const successRate = recentDecisions.filter(item => item.success).length / recentDecisions.length;
     const averageLatency = recentDecisions.reduce((sum, d) => sum + d.route.latency, 0) / recentDecisions.length;
     const averageQuality = recentDecisions.reduce((sum, d) => sum + d.route.quality, 0) / recentDecisions.length;
     // Calculate efficiency score (0-1)
-    const latencyScore = Math.max(0, 1 - (averageLatency / 2000)); // 2000ms as baseline
-    this.efficiencyScore = (successRate * 0.4) + (latencyScore * 0.3) + (averageQuality * 0.3);
+    const latencyScore = Math.max(0, 1 - averageLatency / 2000); // 2000ms as baseline
+    this.efficiencyScore = successRate * 0.4 + latencyScore * 0.3 + averageQuality * 0.3;
   }
   /**
    * Get current routing efficiency score
-   */;
-  getEfficiencyScore(): number {
+   */ getEfficiencyScore(): number {
     return Math.round(this.efficiencyScore * 100) / 100; // Round to 2 decimal places
   }
   /**
    * Get routing statistics and analytics
-   */;
-  getRoutingStats(): {
+   */ getRoutingStats(): {
     totalRoutes: number;
     totalDecisions: number;
     efficiencyScore: number;
@@ -250,8 +243,8 @@ class MultidimensionalRoutingMatrix {
     averageLatencyByTool: Record<string, number>;
   } {
     const totalRoutes = Array.from(this.matrix.values()).reduce((sum, routes) => sum + routes.length, 0);
-    const routeDistribution: Record<string, number> = {};
-    const latencyByTool: Record<string, number[]> = {};
+    const routeDistribution: Record<string, number> = {}
+    const latencyByTool: Record<string, number[]> = {}
     // Analyze routing history
     for (const decision of this.routingHistory) {
       const tool = decision.route.tool;
@@ -262,7 +255,7 @@ class MultidimensionalRoutingMatrix {
       latencyByTool[tool].push(decision.route.latency);
     }
     // Calculate average latencies
-    const averageLatencyByTool: Record<string, number> = {};
+    const averageLatencyByTool: Record<string, number> = {}
     for (const [tool, latencies] of Object.entries(latencyByTool)) {
       averageLatencyByTool[tool] = latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length;
     }
@@ -271,26 +264,23 @@ class MultidimensionalRoutingMatrix {
       totalDecisions: this.routingHistory.length,
       efficiencyScore: this.efficiencyScore,
       routeDistribution,
-      averageLatencyByTool
-    };
+      averageLatencyByTool,
+    }
   }
   /**
    * Get all available routes for a specific task
-   */;
-  getAvailableRoutes(task: string): Route[] {
+   */ getAvailableRoutes(_task: string): Route[] {
     return this.matrix.get(task) || [];
   }
   /**
    * Add or update routes for a task
-   */;
-  updateRoutes(task: string, routes: Route[]): void {
+   */ updateRoutes(_task: string, routes: Route[]): void {
     this.matrix.set(task, routes);
     console.log(`Updated routes for task: ${task}, count: ${routes.length}`);
   }
   /**
    * Health check - verify all routes are accessible
-   */;
-  async healthCheck(): Promise<any> {
+   */ async healthCheck(): Promise<any> {
     let availableRoutes = 0;
     let totalRoutes = 0;
     const issues: string[] = [];
@@ -315,11 +305,11 @@ class MultidimensionalRoutingMatrix {
       status,
       availableRoutes,
       totalRoutes,
-      issues
-    };
+      issues,
+    }
   }
 }
 // Export a singleton instance for use across the server
 export const multidimensionalRoutingMatrix = new MultidimensionalRoutingMatrix();
 // Also export the class type if needed for dependency injection
-export { MultidimensionalRoutingMatrix };
+export { MultidimensionalRoutingMatrix }

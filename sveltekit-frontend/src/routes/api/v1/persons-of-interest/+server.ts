@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           limit: validatedQuery.limit
         })
     return json({
-      success: true
+      success: true;
       data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
         page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,

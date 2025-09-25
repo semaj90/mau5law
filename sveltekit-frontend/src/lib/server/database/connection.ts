@@ -190,13 +190,13 @@ export async function checkDatabaseHealth() {
       connected: true
       pgvector: extensions.length > 0,
       timestamp: new Date().toISOString()
-    };
+    }
   } catch (error: any) {
     return {
       connected: false
       error: error.message,
       timestamp: new Date().toISOString()
-    };
+    }
   }
 }
 // Import sql helper for complex queries

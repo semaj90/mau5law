@@ -32,7 +32,7 @@
   // TinyMCE configuration
   const editorConfig = {
     height,
-    menubar: true
+    menubar: true;
     plugins: [
       'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
       'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
@@ -146,7 +146,7 @@
         editorState.update(s => ({ ...s, isEditing: false }));
       });
   }
-  };
+  }
   // Reactive updates
   $effect(() => {
     if (editorInstance && $report.content !== editorInstance.getContent()) {
@@ -255,7 +255,7 @@
     pollingInterval = setInterval(async () => {
       if (!jobId) return;
       try {
-        const response = await fetch(`/api/v1/ai/job-status/${jobId}`);
+        // removed unused response assignment
         if ((response as { ok?: unknown; json?: unknown }).ok) {
           const result = await (response as { ok?: unknown; json?: unknown }).json();
           if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).status === 'completed') {
@@ -347,7 +347,7 @@
       </div>
     `;
     insertContent(evidenceHtml);
-  };
+  }
   function getWordCount() {
     return editorInstance?.plugins.wordcount?.getCount() || 0;
   }
@@ -365,6 +365,7 @@
     }
   });
 </script>
+
 <!-- AI-Powered Editor with Status UI -->
 <div class="space-y-4">
   <!-- Status Header - Shows AI processing status -->
@@ -372,14 +373,21 @@
     <div class="flex items-center gap-4">
       <!-- Auto-save Status -->
       <div class="flex items-center gap-2">
-        <div class="w-2 h-2 rounded-full" class:bg-green-500={autoSaveStatus === 'saved'}
-             class:bg-yellow-500={autoSaveStatus === 'saving'}
-             class:bg-red-500={autoSaveStatus === 'error'}
-             class:bg-gray-300={autoSaveStatus === 'idle'}></div>
+        <div
+          class="w-2 h-2 rounded-full"
+          class:bg-green-500={autoSaveStatus === 'saved'}
+          class:bg-yellow-500={autoSaveStatus === 'saving'}
+          class:bg-red-500={autoSaveStatus === 'error'}
+          class:bg-gray-300={autoSaveStatus === 'idle'}
+        ></div>
         <span class="text-sm font-medium">
-          {autoSaveStatus === 'saved' ? 'Draft Saved' :
-           autoSaveStatus === 'saving' ? 'Saving...' :
-           autoSaveStatus === 'error' ? 'Save Error' : 'Ready'}
+          {autoSaveStatus === 'saved'
+            ? 'Draft Saved'
+            : autoSaveStatus === 'saving'
+              ? 'Saving...'
+              : autoSaveStatus === 'error'
+                ? 'Save Error'
+                : 'Ready'}
         </span>
       </div>
       <!-- AI Processing Status -->
@@ -408,18 +416,19 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <!-- Editor Panel (2/3 width on large screens) -->
     <div class="lg:col-span-2">
-      <Editor
-        {disabled}
-        bind:value={$report.content}
-        init={editorConfig}
-      />
+      <Editor {disabled} bind:value={$report.content} init={editorConfig} />
     </div>
     <!-- AI Insights Panel (1/3 width on large screens) -->
     <div class="lg:col-span-1">
       <div class="bg-white border border-gray-200 rounded-lg p-4 h-full">
         <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
           <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            ></path>
           </svg>
           AI Insights
         </h3>
@@ -461,7 +470,12 @@
         {:else}
           <div class="py-8 text-center text-gray-500">
             <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
             </svg>
             <p class="text-sm">AI analysis will appear here</p>
             <p class="text-xs mt-1">Start typing to generate insights</p>
@@ -489,61 +503,66 @@
     </div>
   </div>
 </div>
+<!-- Removed forced error test block after pipeline validation -->
+
 <style>
   /* @unocss-include */
   .tinymce-container {
     position: relative;
     width: 100%;
-}
+  }
   :global(.tox) {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-}
+    font-family:
+      'Inter',
+      -apple-system,
+      BlinkMacSystemFont,
+      sans-serif !important;
+  }
   :global(.tox-toolbar) {
-    background: #F8FAFC !important;
-    border-bottom: 1px solid #E2E8F0 !important;
-}
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
   :global(.tox-menubar) {
-    background: #FFFFFF !important;
-    border-bottom: 1px solid #E2E8F0 !important;
-}
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
   :global(.tox-edit-area) {
     border: none !important;
-}
+  }
   :global(.tox-edit-area__iframe) {
-    background: #FFFFFF !important;
-}
+    background: #ffffff !important;
+  }
   /* Evidence block styling */
   :global(.evidence-block) {
-    background: #EFF6FF;
-    border: 1px solid #DBEAFE;
-    border-left: 4px solid #3B82F6;
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    border-left: 4px solid #3b82f6;
     padding: 1em;
     margin: 1em 0;
     border-radius: 6px;
-}
+  }
   :global(.evidence-header) {
     display: flex;
     align-items: center;
     gap: 0.5em;
     margin-bottom: 0.5em;
-}
+  }
   :global(.evidence-type) {
-    background: #3B82F6;
+    background: #3b82f6;
     color: white;
     padding: 0.2em 0.5em;
     border-radius: 12px;
     font-size: 0.8em;
     font-weight: 500;
-}
+  }
   :global(.evidence-description) {
     margin: 0.5em 0;
-    color: #4B5563;
+    color: #4b5563;
     font-style: italic;
-}
+  }
   /* Dark theme support */
-  :global([data-theme="dark"]) :global(.tox) {
+  :global([data-theme='dark']) :global(.tox) {
     --tox-collection-toolbar-button-active-background: #374151;
-    --tox-collection-toolbar-button-hover-background: #4B5563;
-}
+    --tox-collection-toolbar-button-hover-background: #4b5563;
+  }
 </style>
-<!-- Removed forced error test block after pipeline validation -->

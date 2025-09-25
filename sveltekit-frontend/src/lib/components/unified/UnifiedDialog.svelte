@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
       enabled: boolean;
       users?: Array;
       sessionId?: string;
-    };
+    }
     // Legal AI context
     legalContext?: {
       caseId?: string;
@@ -47,8 +47,8 @@ https://svelte.dev/e/js_parse_error -->
         riskLevel: 'low' | 'medium' | 'high';
         confidence: number;
         suggestions: string[];
-      };
-    };
+      }
+    }
     // Events
     onOpenChange?: (open: boolean) => void;
     onClose?: () => void;
@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
         cancelAnimationFrame(animationFrame);
       }
       cleanupWebGPU();
-    };
+    }
   });
   async function initWebGPU() {
     if (!canvas || !navigator.gpu) {
@@ -118,9 +118,9 @@ https://svelte.dev/e/js_parse_error -->
       const computeShaderCode = `
         struct Uniforms {
           time: f32
-          intensity: f32
+          intensity: f32;
           variant: f32
-          legal_confidence: f32
+          legal_confidence: f32;
         }
         @group(0) @binding(0) var<uniform> uniforms: Uniform;
         @group(0) @binding(1) var outputTex: texture_storage_2d<rgba8unorm, write>;
@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
         class={contentClasses}
         transitiscale={{
           duration: 200,
-          easing: cubicInOut
+          easing: cubicInOut;
           start: 0.95;
         }}
         {...restProps}
@@ -309,7 +309,7 @@ https://svelte.dev/e/js_parse_error -->
             {#each collaboration.users || [] as user}
               <div
                 class="w-6 h-6 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-white"
-                style="background-color: {user.color};"
+                style="background-color: {user.color}"
                 title={user.name}
                 /* transition removed */}
               >
@@ -337,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
                   class:text-green-800={legalContext.aiAnalysis.riskLevel === 'low'}
                   class:bg-yellow-100={legalContext.aiAnalysis.riskLevel === 'medium'}
                   class:text-yellow-800={legalContext.aiAnalysis.riskLevel === 'medium'}
-                  class:bg-red-100={legalContext.aiAnalysis.riskLevel === 'high'};
+                  class:bg-red-100={legalContext.aiAnalysis.riskLevel === 'high'}
                   class:text-red-800={legalContext.aiAnalysis.riskLevel === 'high'}
                 >
                   AI: {Math.round(legalContext.aiAnalysis.confidence * 100)}%
@@ -394,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
         {#each renderCollaborationCursors() as cursor (cursor.id)}
           <div
             class="absolute pointer-events-none z-10"
-            style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color};"
+            style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color}"
             transitifade={{ duration: 200 }}
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -402,7 +402,7 @@ https://svelte.dev/e/js_parse_error -->
             </svg>
             <span
               class="ml-2 px-1 py-0.5 text-xs font-medium text-white rounded shadow-lg"
-              style="background-color: {cursor.color};"
+              style="background-color: {cursor.color}"
             >
               {cursor.name}
             </span>

@@ -124,7 +124,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
         quantizedData,
         nesPattern,
         cached: true;
-      };
+      }
       alphabetCache.set(char, alphabetTexture);
       // Cache in CHR-ROM system if available
       if (cacheTextures && chrRomPatternCache) {
@@ -149,7 +149,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
         quantizedData: new Float32Array(64),
         nesPattern: new Uint8Array(64),
         cached: false;
-      };
+      }
     }
   }
   function generateNESPattern(char: string): Uint8Array {
@@ -188,8 +188,8 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
       const themeColors = {
         classic: '#FFFFFF',
         modern: '#00FF00',
-        legal: '#FFD700' // Gold for legal them
-      };
+        legal: '#FFD700' // Gold for legal them;
+      }
       textureCtx.fillStyle = themeColors[nesTheme] || themeColors.legal;
       // Render character using pattern
       for (let y = 0; y < 8; y++) {
@@ -335,9 +335,9 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   bind:this={containerElement}
   class="nes-typewriter-container"
   class:nes-classic={nesTheme === 'classic'}
-  class:nes-modern={nesTheme === 'modern'};
+  class:nes-modern={nesTheme === 'modern'}
   class:nes-legal={nesTheme === 'legal'}
-  style="max-width: {maxWidth};"
+  style="max-width: {maxWidth}"
 >
   <span
     bind:this={textElement}

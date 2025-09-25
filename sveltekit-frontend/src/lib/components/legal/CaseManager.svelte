@@ -58,7 +58,7 @@ await loadCases();
     loading.set(true);
     error.set('');
     try {
-      const response = await legalPlatformClient.getAllCases();
+      // removed unused response assignment
       if (response.success && response.data) {
         cases.set(response.data);
       } else {
@@ -79,7 +79,7 @@ await loadCases();
     loading.set(true);
     error.set('');
     try {
-      const response = await legalPlatformClient.searchCases(query);
+      // removed unused response assignment
       if (response.success && response.data) {
         cases.set(response.data);
       } else {
@@ -101,7 +101,7 @@ await loadCases();
     loading.set(true);
     error.set('');
     try {
-      const response = await legalPlatformClient.createCase(data as CaseData);
+      // removed unused response assignment
       if (response.success) {
         isCreateDialogOpen.set(false);
         formData.set({
@@ -130,7 +130,7 @@ await loadCases();
     loading.set(true);
     error.set('');
     try {
-      const response = await legalPlatformClient.updateCase(selected.id, data);
+      // removed unused response assignment
       if (response.success) {
         isEditDialogOpen.set(false);
         selectedCase.set(null);
@@ -150,7 +150,7 @@ await loadCases();
     loading.set(true);
     error.set('');
     try {
-      const response = await legalPlatformClient.deleteCase(caseId);
+      // removed unused response assignment
       if (response.success) {
         await loadCases();
       } else {

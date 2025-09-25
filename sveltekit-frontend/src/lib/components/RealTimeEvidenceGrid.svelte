@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => {
     const init = async () => {
       await initializeRealTimeEvidence();
-    };
+    }
     init();
     // Update connection status
     const unsubscribe = evidenceStore.isConnected.subscribe((connected) => {
@@ -132,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
       unsubscribe();
       clearInterval(syncInterval);
       evidenceStore.disconnect();
-    };
+    }
   });
   async function initializeRealTimeEvidence() {
     try {
@@ -170,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
       const endpoint = caseId
         ? `/api/evidence?caseId=${caseId}`
         : "/api/evidence";
-      const response = await fetch(endpoint);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const serverEvidence = await (response as { ok?: unknown; json?: unknown }).json();
         await lokiEvidenceService.syncWithServer(serverEvidence);
@@ -198,7 +198,7 @@ https://svelte.dev/e/js_parse_error -->
         type: "document",
         caseId: caseId || "default-case",
         tags: [],
-      };
+      }
       const evidenceId = await evidenceStore.createEvidence(newEvidence);
       editingEvidence = evidenceId;
     } catch (err) {
@@ -372,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Type Filter -->
       <select
-        multiple
+        multiple;
         bind:value={selectedTypes}
         class="mx-auto px-4 max-w-7xl"
       >
@@ -610,7 +610,7 @@ https://svelte.dev/e/js_parse_error -->
                 <input
                   type="checkbox"
                   onchange={(e) => {
-                    const target = e.target as HTMLInputElement;
+                    // removed unused target assignment
                     target.checked ? selectAll() : clearSelection();
                   }}
                   class="mx-auto px-4 max-w-7xl"

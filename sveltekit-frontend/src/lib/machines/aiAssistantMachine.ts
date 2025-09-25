@@ -77,7 +77,7 @@ export interface RAGQuery {
     useEmbeddings: boolean;
     expandConcepts: boolean;
     includeRelated: boolean;
-  };
+  }
 }
 export interface RAGResponse {
   response: string;
@@ -208,7 +208,7 @@ type AIAssistantEvent =
   | { type: "COLLABORATION_USER_LEFT"; user: any }
   | { type: "CACHE_CLEAR" }
   | { type: "PERFORMANCE_RESET" }
-  | { type: "ERROR_RECOVER"; errorId?: string };
+  | { type: "ERROR_RECOVER"; errorId?: string }
 }
 export interface Context7Analysis {
   suggestions: string[];
@@ -228,7 +228,7 @@ export interface ImageAnalysis {
     entities: string[];
     classification: string;
     relevanceScore: number;
-  };
+  }
 }
 export interface ProcessingJob {
   id: string;
@@ -244,11 +244,11 @@ export interface ProcessingJob {
   updatedAt: Date;
 }
 export interface ServiceHealthStatus {
-  database: { postgres: boolean; qdrant: boolean; neo4j: boolean; redis: boolean };
-  ai: { ollama: boolean; enhanced_rag: boolean; context7: boolean };
-  microservices: { available: number; total: number; failing: string[] };
-  messaging: { nats: boolean; websockets: boolean };
-  storage: { minio: boolean; filesystem: boolean };
+  database: { postgres: boolean; qdrant: boolean; neo4j: boolean; redis: boolean }
+  ai: { ollama: boolean; enhanced_rag: boolean; context7: boolean }
+  microservices: { available: number; total: number; failing: string[] }
+  messaging: { nats: boolean; websockets: boolean }
+  storage: { minio: boolean; filesystem: boolean }
 }
 export interface CollaborationUser {
   id: string;
@@ -256,7 +256,7 @@ export interface CollaborationUser {
   role: string;
   lastActive: Date;
   currentDocument?: string;
-  cursor?: { line: number; column: number };
+  cursor?: { line: number; column: number }
 }
 export interface PerformanceMetrics {
   totalQueries: number;
@@ -341,7 +341,7 @@ export interface AIAssistantAnalysisResult {
     level: 'low' | 'medium' | 'high' | 'critical';
     factors: string[];
     score: number;
-  };
+  }
   recommendations: string[];
 }
 export interface EvidenceItem {
@@ -373,7 +373,7 @@ export interface ModelDefinition {
 }
 export interface DatabaseMetrics {
   queryLatency: number;
-  connectionPool: { active: number; idle: number; waiting: number };
+  connectionPool: { active: number; idle: number; waiting: number }
   indexEfficiency: number;
   cacheHitRatio: number;
 }
@@ -396,7 +396,7 @@ export interface LayerCacheStats {
   maxSize: number;
 }
 export interface IWebWorkerPool {
-  executeTask(task: any): Promise<any>;
+  executeTask(_task: any): Promise<any>;
   terminate(): void;
 }
 export interface LoadBalancerState {
@@ -426,9 +426,9 @@ export interface ResourceMetrics {
 }
 export interface BenchmarkSuite {
   lastRun: Date;
-  vectorSearchBenchmark: { averageLatency: number; throughput: number };
-  aiInferenceBenchmark: { averageLatency: number; throughput: number };
-  databaseBenchmark: { averageLatency: number; throughput: number };
+  vectorSearchBenchmark: { averageLatency: number; throughput: number }
+  aiInferenceBenchmark: { averageLatency: number; throughput: number }
+  databaseBenchmark: { averageLatency: number; throughput: number }
   overallScore: number;
 }
 export interface LegalGraphState {
@@ -618,7 +618,7 @@ class MultiLayerCache {
     }
     return MultiLayerCache.instance;
   }
-  async get(key: string): Promise<any> {
+  async get(_key: string): Promise<any> {
     // L1 Cache (Memory) - fastest
     if (this.l1Cache.has(key)) {
       return this.l1Cache.get(key);
@@ -635,7 +635,7 @@ class MultiLayerCache {
     }
     return null;
   }
-  async set(key: string, value: any, ttl: number = 3600000): Promise<void> {
+  async set(_key: string, value: any, ttl: number = 3600000): Promise<void> {
     // Store in L1
     this.l1Cache.set(key, value);
     // Store in L2 (IndexedDB)
@@ -649,12 +649,12 @@ class MultiLayerCache {
       this.evictFromL1();
     }
   }
-  private async getFromIndexedDB(key: string): Promise<any> {
+  private async getFromIndexedDB(_key: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('ai-assistant-cache', 1);
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
-        const db = request.result;
+        // removed unused db assignment
         const transaction = db.transaction(['cache'], 'readonly');
         const store = transaction.objectStore('cache');
         const getRequest = store.get(key);
@@ -665,23 +665,23 @@ class MultiLayerCache {
           } else {
             resolve(null);
           }
-        };
+        }
         getRequest.onerror = () => reject(getRequest.error);
-      };
+      }
       request.onupgradeneeded = () => {
-        const db = request.result;
+        // removed unused db assignment
         if (!db.objectStoreNames.contains('cache')) {
           db.createObjectStore('cache', { keyPath: 'key' });
         }
-      };
+      }
     });
   }
-  private async setInIndexedDB(key: string, value: any, ttl: number): Promise<void> {
+  private async setInIndexedDB(_key: string, value: any, ttl: number): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('ai-assistant-cache', 1);
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
-        const db = request.result;
+        // removed unused db assignment
         const transaction = db.transaction(['cache'], 'readwrite');
         const store = transaction.objectStore('cache');
         const data = {
@@ -689,11 +689,11 @@ class MultiLayerCache {
           value,
           expires: Date.now() + ttl,
           created: Date.now()
-        };
+        }
         const putRequest = store.put(data);
         putRequest.onsuccess = () => resolve();
         putRequest.onerror = () => reject(putRequest.error);
-      };
+      }
     });
   }
   private evictFromL1(): void {
@@ -720,13 +720,13 @@ class MultiLayerCache {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('ai-assistant-cache', 1);
       request.onsuccess = () => {
-        const db = request.result;
+        // removed unused db assignment
         const transaction = db.transaction(['cache'], 'readwrite');
         const store = transaction.objectStore('cache');
         const clearRequest = store.clear();
         clearRequest.onsuccess = () => resolve();
         clearRequest.onerror = () => reject(clearRequest.error);
-      };
+      }
       request.onerror = () => reject(request.error);
     });
   }
@@ -735,7 +735,7 @@ class MultiLayerCache {
       l1Size: this.l1Cache.size,
       l1MaxSize: 1000,
       l2Available: 'indexedDB' in window
-    };
+    }
   }
 }
 // Performance and utility functions
@@ -753,7 +753,7 @@ function safeNow() {
 class MemoryManager {
   private static instance: MemoryManager;
   private bufferPool: Map<string, ArrayBuffer[]> = new Map();
-  private gcMetrics = { collections: 0, totalMemoryFreed: 0, lastGC: 0 };
+  private gcMetrics = { collections: 0, totalMemoryFreed: 0, lastGC: 0 }
   static getInstance(): MemoryManager {
     if (!MemoryManager.instance) {
       MemoryManager.instance = new MemoryManager();
@@ -809,7 +809,7 @@ class WebWorkerPool {
   constructor(maxWorkers: number = navigator.hardwareConcurrency || 4) {
     this.maxWorkers = Math.min(maxWorkers, 8); // Reasonable limit
   }
-  async executeTask(task: any): Promise<any> {
+  async executeTask(_task: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.taskQueue.push({ task, resolve, reject });
       this.processQueue();
@@ -823,20 +823,20 @@ class WebWorkerPool {
     const { task, resolve, reject } = this.taskQueue.shift()!;
     this.activeWorkers.add(worker);
     worker.postMessage(task);
-    const handleMessage = (event: MessageEvent) => {
+    const handleMessage = (_event: MessageEvent) => {
       worker.removeEventListener('message', handleMessage);
       worker.removeEventListener('error', handleError);
       this.activeWorkers.delete(worker);
       resolve(event.data);
       this.processQueue(); // Process next task
-    };
+    }
     const handleError = (error: ErrorEvent) => {
       worker.removeEventListener('message', handleMessage);
       worker.removeEventListener('error', handleError);
       this.activeWorkers.delete(worker);
       reject(error);
       this.processQueue(); // Process next task
-    };
+    }
     worker.addEventListener('message', handleMessage);
     worker.addEventListener('error', handleError);
   }
@@ -865,7 +865,7 @@ class WebWorkerPool {
             default:
               self.postMessage({ type: 'error', message: 'Unknown task type' });
           }
-        };
+        }
       `;
       const blob = new Blob([workerCode], { type: 'application/javascript' });
       const worker = new Worker(URL.createObjectURL(blob);
@@ -1122,7 +1122,7 @@ export const aiAssistantMachine = createMachine({
             connectionPool: { active: 0, idle: 0, waiting: 0 },
             indexEfficiency: 0,
             cacheHitRatio: 0
-          };
+          }
           try {
             const dbHealthStart = safeNow();
             const dbResponse = await fetch('/api/health/database');
@@ -1130,7 +1130,7 @@ export const aiAssistantMachine = createMachine({
             if (databaseConnected) {
               const dbData = await dbResponse.json();
               databaseMetrics.queryLatency = safeNow() - dbHealthStart;
-              databaseMetrics.connectionPool = dbData.connectionPool || { active: 5, idle: 10, waiting: 0 };
+              databaseMetrics.connectionPool = dbData.connectionPool || { active: 5, idle: 10, waiting: 0 }
               databaseMetrics.indexEfficiency = dbData.indexEfficiency || 0.95;
               databaseMetrics.cacheHitRatio = dbData.cacheHitRatio || 0.85;
               console.log(`🗄️  PostgreSQL connected (${databaseMetrics.queryLatency.toFixed(2)}ms latency)`);
@@ -1158,7 +1158,7 @@ export const aiAssistantMachine = createMachine({
             indexSize: 0,
             lastUpdate: new Date(),
             rebuildProgress: 0
-          };
+          }
           try {
             const qdrantResponse = await fetch('http://localhost:6333/health', {
               signal: AbortSignal.timeout(5000)
@@ -1215,7 +1215,7 @@ export const aiAssistantMachine = createMachine({
             diskSpaceWarning: false
             networkCongestion: false
             thermalState: 'nominal'
-          };
+          }
           // Setup circuit breakers for critical services
           const circuitBreakers = new Map<string, CircuitBreakerState>();
           ['enhanced-rag', 'upload-service', 'postgresql', 'qdrant'].forEach(service => {
@@ -1249,7 +1249,7 @@ export const aiAssistantMachine = createMachine({
             resourceMetrics,
             circuitBreakers,
             initialization_time: initializationTime
-          };
+          }
         }),
         onDone: {
           target: "idle",
@@ -1283,7 +1283,7 @@ export const aiAssistantMachine = createMachine({
                   minio: health.services?.['minio'] || false,
                   filesystem: true
                 }
-              };
+              }
             },
             natsConnected: ({ event }) => (event as any).output.natsConnected,
             databaseConnected: ({ event }) => (event as any).output.databaseConnected,
@@ -1343,7 +1343,7 @@ export const aiAssistantMachine = createMachine({
             docsAvailable: !!(docs.implementation || docs.analysis),
             migrationSqlPresent: !!docs.migration,
             timestamp: Date.now()
-          };
+          }
         })
       },
     after: {
@@ -1484,7 +1484,7 @@ export const aiAssistantMachine = createMachine({
                 type: 'user',
                 content: query
                 timestamp: new Date()
-              };
+              }
               let enhancedQuery = query;
               let context7Analysis: Context7Analysis | undefined;
               let caseContext: CaseContext | undefined;
@@ -1529,7 +1529,7 @@ export const aiAssistantMachine = createMachine({
                     libraries: ['svelte', 'bits-ui', 'xstate'].filter(item => item.includes)(lib)
                     ),
                     apiEndpoints: []
-                  };
+                  }
                   if (context7Analysis.documentation) {
                     enhancedQuery = `${query}\n\nContext7 Documentation:\n${context7Analysis.documentation.substring(0, 1000)}`;
                   }
@@ -1544,7 +1544,7 @@ export const aiAssistantMachine = createMachine({
                 context7Analysis,
                 caseContext,
                 processingTime
-              };
+              }
             }),
             input: ({ context, event }) => ({
               query: context.currentQuery,
@@ -1620,7 +1620,7 @@ export const aiAssistantMachine = createMachine({
                 protocol: selectedProtocol
                 url: serviceUrl
                 isLegalQuery
-              };
+              }
             }),
             input: ({ context }) => ({
               query: context.currentQuery,
@@ -1663,7 +1663,7 @@ export const aiAssistantMachine = createMachine({
                   conversationHistory: conversationHistory.slice(-10),
                   caseContext: caseContext || undefined
                   protocol_hint: protocol
-                };
+                }
                 let response;
                 // Use appropriate client based on protocol
                 switch (protocol) {
@@ -1713,7 +1713,7 @@ export const aiAssistantMachine = createMachine({
                     semanticScore: responseData.semanticScore || 0,
                     legalRelevance: responseData.legalRelevance || 0
                   }
-                };
+                }
                 // Store interaction in database if connected
                 const aiInteraction: Partial<AIInteraction> = {
                   sessionId: input.sessionId,
@@ -1728,7 +1728,7 @@ export const aiAssistantMachine = createMachine({
                     service,
                     caseId: caseContext?.caseId
                   }
-                };
+                }
                 return {
                   response: assistantEntry.content,
                   assistantEntry,
@@ -1737,7 +1737,7 @@ export const aiAssistantMachine = createMachine({
                   aiInteraction,
                   semanticAnalysis: responseData.semanticAnalysis,
                   legalAnalysis: responseData.legalAnalysis
-                };
+                }
               } catch (error: any) {
                 console.error('AI response generation failed:', error);
                 throw new Error(`AI generation failed: ${error}`);
@@ -1847,7 +1847,7 @@ export const aiAssistantMachine = createMachine({
             fileSize: file.size,
             extractedText: uploadResult.extractedText,
             analysisId: uploadResult.analysisId
-          };
+          }
         }),
         input: ({ event }) => ({
           file: (event as any).file,
@@ -1931,7 +1931,7 @@ export const aiAssistantMachine = createMachine({
             extractedText,
             ocrConfidence,
             url: uploadResult.url
-          };
+          }
         }),
         input: ({ event }) => ({
           file: (event as any).file,
@@ -1984,7 +1984,7 @@ export const aiAssistantMachine = createMachine({
           }
           const document = await documentResponse.json();
           const content = document.extractedText || document.content || '';
-          let analysisResult: any = {};
+          let analysisResult: any = {}
           switch (analysisType) {
             case 'semantic':
               analysisResult = await semanticAnalyzer.analyzeDocument(content, documentId);
@@ -2017,7 +2017,7 @@ export const aiAssistantMachine = createMachine({
               analysisResult = {
                 semantic: semantic.status === 'fulfilled' ? semantic.value: null
                 legal: legal.status === 'fulfilled' ? legal.value : null
-              };
+              }
               break;
           }
           return {
@@ -2025,7 +2025,7 @@ export const aiAssistantMachine = createMachine({
             analysisType,
             result: analysisResult
             timestamp: new Date()
-          };
+          }
         }),
         input: ({ event }) => ({
           documentId: (event as any).documentId,
@@ -2074,7 +2074,7 @@ export const aiAssistantMachine = createMachine({
               expandConcepts: true
               includeRelated: true
             }
-          };
+          }
           const result = await semanticAnalyzer.enhancedQuery(ragQuery);
           return result;
         }),
@@ -2118,7 +2118,7 @@ export const aiAssistantMachine = createMachine({
             limit: 20,
             with_payload: true
             score_threshold: filters?.confidenceThreshold || 0.7
-          };
+          }
           const response = await fetch('http://localhost:6333/collections/legal_documents/points/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2173,7 +2173,7 @@ export const aiAssistantMachine = createMachine({
             category: category || 'general',
             includePrecedents: true
             includeStatutes: true
-          };
+          }
           const response = await fetch('http://localhost:8202/api/search/legal', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2259,7 +2259,7 @@ export const aiAssistantMachine = createMachine({
             documents,
             evidence,
             timeline
-          };
+          }
         }),
         input: ({ context }) => ({
           caseId: context.currentCaseId
@@ -2332,7 +2332,7 @@ export const aiAssistantMachine = createMachine({
               minio: false, // TODO: implement MinIO health check
               filesystem: true
             }
-          };
+          }
         }),
         onDone: {
           target: "idle",
@@ -2381,7 +2381,7 @@ export const aiAssistantMachine = createMachine({
               libraries: ['svelte', 'bits-ui', 'xstate'].filter(item => item.includes)(lib) || validResponses.some(r => r.content?.toLowerCase().includes(lib)
               ),
               apiEndpoints: validResponses.flatMap(response => (response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).apiEndpoints || [])
-            };
+            }
             return analysis;
           } catch (error: any) {
             console.error('Context7 analysis failed:', error);
@@ -2420,7 +2420,7 @@ export const aiAssistantMachine = createMachine({
           if (!connected) {
             throw new Error('Failed to connect to NATS server');
           }
-          return { connected: true };
+          return { connected: true }
         }),
         onDone: {
           target: "idle",
@@ -2459,7 +2459,7 @@ export const aiAssistantMachine = createMachine({
         id: "disconnectNATS",
         src: fromPromise(async () => {
           await natsMessaging.disconnect();
-          return { disconnected: true };
+          return { disconnected: true }
         }),
         onDone: {
           target: "idle",
@@ -2506,8 +2506,8 @@ export const aiAssistantMachine = createMachine({
               stream: true
               session_id: input.sessionId
             });
-          };
-          ws.onmessage = (event: any) => {
+          }
+          ws.onmessage = (_event: any) => {
             try {
               const data = JSON.parse(event.data);
               if ((data as { content?: any; chunk?: any; done?: any; error?: any }).chunk) {
@@ -2520,17 +2520,17 @@ export const aiAssistantMachine = createMachine({
             } catch (error: any) {
               console.error('Stream parsing error:', error);
             }
-          };
+          }
           ws.onerror = (error) => {
             console.error('WebSocket error:', error);
             sendBack({ type: 'STREAM_END' });
-          };
+          }
           // Cleanup function
           return () => {
             if (ws.readyState === WebSocket.OPEN) {
               ws.close();
             }
-          };
+          }
         }),
         input: ({ context }) => ({
           query: context.currentQuery,
@@ -2604,7 +2604,7 @@ export const aiAssistantMachine = createMachine({
             aiInferenceBenchmark: { averageLatency: 0, throughput: 0 },
             databaseBenchmark: { averageLatency: 0, throughput: 0 },
             overallScore: 0
-          };
+          }
           // Vector Search Benchmark
           const vectorStartTime = safeNow();
           try {
@@ -2718,7 +2718,7 @@ export const aiAssistantMachine = createMachine({
             memoryFreed: 50000000, // Estimate 50MB freed
             cacheOptimized: true
             gpuOptimized: gpuProcessor.isAvailable()
-          };
+          }
         }),
         onDone: {
           target: "idle",
@@ -2774,7 +2774,7 @@ export const aiAssistantMachine = createMachine({
                 });
               } catch (error: any) {
                 console.error(`Failed to analyze document ${documentId}:`, error);
-                return { documentId, error: error.message };
+                return { documentId, error: error.message }
               }
             });
             const batchResults = await Promise.allSettled(batchPromises);
@@ -2792,7 +2792,7 @@ export const aiAssistantMachine = createMachine({
             failureCount,
             results,
             analysisType
-          };
+          }
         }),
         input: ({ event }) => ({
           documentIds: (event as any).documentIds,
@@ -2852,7 +2852,7 @@ export const aiAssistantMachine = createMachine({
             aggressive,
             memoryFreed,
             timestamp: Date.now()
-          };
+          }
         }),
         input: ({ event }) => ({
           aggressive: (event as any).aggressive || false
@@ -2988,7 +2988,7 @@ export const aiAssistantActions = {
       ).catch(err => console.warn('Failed to publish to NATS:', err);
     }
   }
-};
+}
 // Helper function for service URL resolution
 function getLocalServiceUrl(serviceName: string, protocol: 'http' | 'grpc' | 'quic' | 'websocket' = 'http'): string {
   const service = productionServiceRegistry.getServiceByName(serviceName);
@@ -3001,7 +3001,7 @@ function getLocalServiceUrl(serviceName: string, protocol: 'http' | 'grpc' | 'qu
     grpc: 'grpc',
     quic: 'quic',
     websocket: 'ws'
-  };
+  }
   return `${protocolMap[protocol]}://localhost:${service.port}`
 }
 // Minimal placeholder; concrete services are inlined in machine invokes.

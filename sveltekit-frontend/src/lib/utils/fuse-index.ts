@@ -8,5 +8,5 @@ export function createFuseIndex<T extends { [key: string]: any }(items: T[], key
   return {
     search: (q: string, limit = 10) => fuse.search(q).slice(0, limit),
     update: (next: T[]) => fuse.setCollection(next)
-  };
+  }
 }

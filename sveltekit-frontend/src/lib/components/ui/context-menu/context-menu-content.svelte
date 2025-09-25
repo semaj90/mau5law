@@ -11,12 +11,12 @@ https://svelte.dev/e/js_parse_error -->
     close: () => void;
   }>('context-menu');
   let menuElement = $state<HTMLDivElement | null >(null);
-  function handleClickOutside(event: MouseEvent) {
+  function handleClickOutside(_event: MouseEvent) {
     if (menuElement && !menuElement.contains(event.target as Node)) {
       close();
     }
   }
-  function handleEscape(event: KeyboardEvent) {
+  function handleEscape(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
       close();
     }

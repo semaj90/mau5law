@@ -197,4 +197,4 @@ function detectLegalDomain(content: string): string | undefined {
   }
   return undefined
 }
-export const POST = redisOptimized.aiChat(originalPOSTHandler)
+export const POST = redisOptimized.aiChat(originalPOSTHandler);

@@ -145,13 +145,13 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     displayName: 'Viewer',
     description: 'Read-only access for supervisors and auditors',
     hierarchyLevel: 10,
-    canDelegate: false
+    canDelegate: false;
     permissions: [
       'view_case', 'view_evidence', 'view_report',
       'view_users', 'view_criminals'
     ]
   }
-};
+}
 // Permission categories for UI organization
 export const PERMISSION_CATEGORIES = {
   case_management: {
@@ -186,7 +186,7 @@ export const PERMISSION_CATEGORIES = {
     name: 'Data Export',
     permissions: ['export_data'] as Permission[]
   }
-};
+}
 // Access control utility functions
 export class AccessControl {
   /**
@@ -304,7 +304,7 @@ export class AccessControl {
       configure_system: 'Configure system settings and parameters',
       view_audit_logs: 'View system audit logs and activity',
       manage_integrations: 'Manage external system integrations'
-    };
+    }
     return descriptions[permission] || permission.replace(/_/g, ' ').toLowerCase();
   }
   /**
@@ -333,7 +333,7 @@ export const DEFAULT_PERMISSIONS = {
   PUBLIC: ['view_case', 'view_evidence', 'view_report'] as Permission[],
   AUTHENTICATED: ['view_case', 'view_evidence', 'view_report', 'ai_analysis'] as Permission[],
   STAFF: ['view_case', 'view_evidence', 'view_report', 'ai_analysis', 'vector_search'] as Permission[]
-};
+}
 // Role hierarchy for UI display
 export const ROLE_HIERARCHY: UserRole[] = [
   'admin',

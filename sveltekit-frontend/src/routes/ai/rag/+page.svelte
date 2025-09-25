@@ -48,22 +48,22 @@ TODO: Implement RAG functionality, vector search, document context
 	}
 	const features = [
 		{
-			icon: Brain
+			icon: Brain;
 			title: 'Intelligent Search',
 			description: 'AI-powered document retrieval with semantic understanding';
 		},
 		{
-			icon: FileText
+			icon: FileText;
 			title: 'Context Aware',
 			description: 'Retrieves relevant legal documents based on case context';
 		},
 		{
-			icon: Search
+			icon: Search;
 			title: 'Vector Search',
 			description: 'Advanced vector similarity search across legal corpus';
 		},
 		{
-			icon: Zap
+			icon: Zap;
 			title: 'Fast Results',
 			description: 'Sub-second response times with cached embeddings';
 		}

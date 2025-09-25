@@ -44,12 +44,12 @@ try {
         limit: 20,
         threshold: 0.1,
         filters: {
-          documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType: undefined
+          documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType: undefined;
           jurisdiction: selectedFilters.jurisdiction.length > 0 ? selectedFilters.jurisdiction : undefined
           riskLevel: selectedFilters.riskLevel.length > 0 ? selectedFilters.riskLevel : undefined
           minimumConfidence: selectedFilters.minimumConfidenc;
         }
-      };
+      }
       searchResults = await vectorSearchIndex.search(query);
     } catch (error) {
       console.error('Search failed:', error);
@@ -58,7 +58,7 @@ try {
       isSearching = false;
     }
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       performSearch();
@@ -78,20 +78,21 @@ try {
       medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
       high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
       critical: 'bg-red-500/20 text-red-400 border-red-500/30';
-    };
+    }
     return classes[riskLevel as keyof typeof classes] || classes.medium;
   }
   function formatScore(score: number): string {
     return (score * 100).toFixed(1) + '%';
   }
 </script>
+
 <!-- Vector Search Interface -->
-<div class="border-2 border-cyan-400/20 rounded-lg bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 p-6 text-gray-200 font-mono">
+<div
+  class="border-2 border-cyan-400/20 rounded-lg bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 p-6 text-gray-200 font-mono"
+>
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
-    <h2 class="text-2xl font-bold text-cyan-400 tracking-wider uppercase">
-      🔍 Vector Search Engine
-    </h2>
+    <h2 class="text-2xl font-bold text-cyan-400 tracking-wider uppercase">🔍 Vector Search Engine</h2>
     {#if searchStats}
       <div class="text-sm text-gray-400">
         {searchStats.totalDocuments} documents indexed
@@ -123,7 +124,9 @@ try {
   <div class="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Ranking Strategy -->
     <div>
-      <label class="block text-sm font-medium text-cyan-400 mb-2" for="ranking-strategy">Ranking Strategy</label><select id="ranking-strategy";
+      <label class="block text-sm font-medium text-cyan-400 mb-2" for="ranking-strategy">Ranking Strategy</label><select
+        id="ranking-strategy"
+        ;
         bind:value={rankingStrategy}
         class="w-full bg-gray-800/50 border border-cyan-400/30 rounded-lg px-3 py-2 text-gray-200 focus:border-cyan-400 focus:outline-none"
       >
@@ -135,7 +138,7 @@ try {
     <!-- Filter Toggle -->
     <div class="flex items-end">
       <ModernButton
-        onclick={() => showFilters = !showFilters}
+        onclick={() => (showFilters = !showFilters)}
         variant="ghost"
         class="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10"
       >
@@ -203,7 +206,8 @@ try {
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2" for="-min-confidence-sele">
             Min Confidence: {(selectedFilters.minimumConfidence * 100).toFixed(0)}%
-          </label><input id="-min-confidence-sele"
+          </label><input
+            id="-min-confidence-sele"
             type="range"
             min="0"
             max="1"
@@ -339,6 +343,7 @@ try {
     </div>
   {/if}
 </div>
+
 <style>
   .line-clamp-3 {
     display: -webkit-box;

@@ -26,10 +26,7 @@
     formData?: FormData;
     evidenceData?: EvidenceData;
   }
-  let {
-    formData = {},
-    evidenceData = {}
-  }: Props = $props();
+  let { formData = {}, evidenceData = {} }: Props = $props();
   let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
@@ -41,7 +38,7 @@
     'Partial Victory',
     'Settlement Negotiations',
     'Court Loss',
-    'Uncertain'
+    'Uncertain',
   ];
   async function startAnalysis() {
     if (isAnalyzing) return;
@@ -55,11 +52,11 @@
         'Analyzing legal precedents...',
         'Calculating case strength...',
         'Finding similar cases...',
-        'Generating recommendations...'
+        'Generating recommendations...',
       ];
       for (let i = 0; i < steps.length; i++) {
         currentAnalysisStep.set(steps[i]);
-        analysisProgress.set((i + 1) / steps.length * 100);
+        analysisProgress.set(((i + 1) / steps.length) * 100);
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
       // Mock results
@@ -70,18 +67,16 @@
         recommendations: ['Gather additional witnesses', 'Review similar precedents'],
         similar_cases: [
           { id: '1', title: 'Similar Case A', similarity: 0.85 },
-          { id: '2', title: 'Similar Case B', similarity: 0.78 }
+          { id: '2', title: 'Similar Case B', similarity: 0.78 },
         ],
         extracted_entities: [
           { type: 'Person', value: 'John Doe', confidence: 0.95 },
-          { type: 'Date', value: '2024-01-15', confidence: 0.92 }
+          { type: 'Date', value: '2024-01-15', confidence: 0.92 },
         ],
         key_facts: ['Incident occurred on company premises', 'Multiple witnesses present'],
         legal_issues: ['Liability determination', 'Damages calculation'],
-        precedents: [
-          { case_name: 'Smith v. Company', relevance: 0.88, summary: 'Similar liability case' }
-        ]
-      };
+        precedents: [{ case_name: 'Smith v. Company', relevance: 0.88, summary: 'Similar liability case' }],
+      }
       analysisResults.set(mockResults);
       ondispatch?.(mockResults);
     } catch (error) {
@@ -92,6 +87,7 @@
     }
   }
 </script>
+
 <div class="ai-analysis-form p-6 bg-white rounded-lg shadow-lg">
   <h3 class="text-xl font-bold mb-4">AI Legal Analysis</h3>
   <div class="mb-6">
@@ -100,8 +96,8 @@
       disabled={isAnalyzing}
       class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg disabled:opacity-50 bits-btn bits-btn"
     >
-{isAnalyzing ? 'Analyzing...' : 'Start AI Analysis'}
-</Button>
+      {isAnalyzing ? 'Analyzing...' : 'Start AI Analysis'}
+    </Button>
   </div>
   {#if isAnalyzing}
     <div class="analysis-progress mb-6" transition:slide>
@@ -150,6 +146,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .ai-analysis-form {
     max-width: 800px;

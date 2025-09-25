@@ -10,20 +10,20 @@ export type WebGPUDiagResult = {
   timings: {
     requestAdapterMs?: number;
     requestDeviceMs?: number;
-  };
+  }
   adapter?: {
     // Not all browsers expose name/label; keep optional
     label?: string;
     features: string[];
     limits: Record<string, number>;
     isFallbackAdapter?: boolean;
-  };
+  }
   deviceLimits?: Record<string, number>;
   recommendedActions: string[];
-};
+}
 async function tryRequestAdapter(powerPreference: 'high-performance' | 'low-power' | 'default') {
   // Some implementations don't accept 'default'; handle separately
-  const opts = powerPreference === 'default' ? {} : { powerPreference };
+  const opts = powerPreference === 'default' ? {} : { powerPreference }
   // @ts-ignore - types allow this in modern libs; safe to pass
   return navigator.gpu.requestAdapter(opts as any);
 }
@@ -38,10 +38,10 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       deviceCreated: false,
       error: 'Navigator is undefined (SSR or non-browser context).',
       warnings,
-      powerPreferenceTried: tried
+      powerPreferenceTried: tried;
       timings: { [key: string]: any },
       recommendedActions: ['Run diagnostics in a browser context (client-side).']
-    };
+    }
   }
   // Basic support check
   // @ts-ignore
@@ -57,10 +57,10 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       deviceCreated: false,
       error: 'WebGPU not supported by this browser.',
       warnings,
-      powerPreferenceTried: tried
+      powerPreferenceTried: tried;
       timings: { [key: string]: any },
       recommendedActions: recommended
-    };
+    }
   }
   let adapter: GPUAdapter | null = null;
   let device: GPUDevice | null = null;
@@ -101,7 +101,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
               Object.entries((device.limits as any) || {}).map(([k, v]) => [k, Number(v as any)])
             ),
             recommendedActions: recommended
-          };
+          }
           // Heuristics and suggestions
           if ((adapter as any).isFallbackAdapter) {
             warnings.push('Browser reports a fallback adapter (likely no native GPU path).');
@@ -146,5 +146,5 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
         }
       : undefined
     recommendedActions: recommended
-  };
+  }
 }

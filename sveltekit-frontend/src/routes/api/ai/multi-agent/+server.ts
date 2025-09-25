@@ -16,7 +16,7 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 import { json } from "@sveltejs/kit"
-import { URL } from "url"
+
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { LegalAnalysisRequest } from '$lib/ai/autogen-legal-agents'
 import type { RequestHandler } from './$types.js'
@@ -488,4 +488,4 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   }
 }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
-export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);

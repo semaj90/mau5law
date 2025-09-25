@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
   const stream = new ReadableStream({
     async start(controller) {
       // Subscribe to stream updates
-      const unsubscribe = streamingService.subscribe(streamId, (event: any) => {
+      const unsubscribe = streamingService.subscribe(streamId, (_event: any) => {
         const data = `event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`
         controller.enqueue(encoder.encode(data)
         // Close stream on completion or error

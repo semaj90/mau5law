@@ -31,7 +31,7 @@ interface Job {
   filename?: string;
   userId: string;
   contentType?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 if (!parentPort) {
   throw new Error("This script must be run as a worker thread");
@@ -54,7 +54,7 @@ parentPort.on("message", async (job: Job) => {
     let textContent = "";
     let embedding: number[] | null = null;
     let modality = "text";
-    let processingMetadata: { [key: string]: any } = {};
+    let processingMetadata: { [key: string]: any } = {}
     if (["png", "jpg", "jpeg", "webp", "bmp"].includes(ext)) {
       // Image processing: OCR + image embedding
       modality = "image";
@@ -146,7 +146,7 @@ parentPort.on("message", async (job: Job) => {
           processingMetadata.videoEmbedding = {
             frameCount: embeddings.length,
             poolingMethod: 'mean'
-          };
+          }
         }
       }
     } else if (["json"].includes(ext)) {
@@ -193,7 +193,7 @@ parentPort.on("message", async (job: Job) => {
           ...job.metadata
         }),
         createdAt: new Date()
-      };
+      }
       const [result] = await db.insert(userDocuments).values(documentData).returning();
       parentPort!.postMessage({
         jobId: job.id,

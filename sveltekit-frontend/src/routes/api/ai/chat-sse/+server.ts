@@ -207,4 +207,4 @@ export const OPTIONS: RequestHandler = async () =>
       'Access-Control-Allow-Headers': 'Content-Type'
     }
   })
-export const POST = redisOptimized.aiChat(originalPOSTHandler)
+export const POST = redisOptimized.aiChat(originalPOSTHandler);

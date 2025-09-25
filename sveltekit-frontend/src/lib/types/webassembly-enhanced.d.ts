@@ -24,16 +24,14 @@ export const webAssemblyGPUUtils = {
       env: {
         memory: new WebAssembly.Memory({ initial: 10, maximum: 100 }),
         getGPUDevice: () => device,
-        ...additionalImports
+        ...additionalImports,
       },
-      ...additionalImports
-    };
+      ...additionalImports,
+    }
   },
   // Type assertion helper for GPU device conversion
   assertGPUDevice: (device: unknown): device is GPUDevice => {
-    return device !== null &&
-      typeof device === 'object' &&
-           'createBuffer' in (device as any);
+    return device !== null && typeof device === 'object' && 'createBuffer' in (device as any);
   },
   // Safe type conversion for analysis results
   convertAnalysisResult: (analysis: unknown): any => {
@@ -47,8 +45,8 @@ export const webAssemblyGPUUtils = {
         confidence: (analysis as any).confidence || 0,
         processingTime: (analysis as any).processingTime || 0,
         method: (analysis as any).method || 'unknown',
-        ...analysis
-      };
+        ...analysis,
+      }
     }
     return {
       summary: 'Analysis failed',
@@ -58,10 +56,10 @@ export const webAssemblyGPUUtils = {
       recommendations: [],
       confidence: 0,
       processingTime: 0,
-      method: 'error'
-    };
-  }
-};
+      method: 'error',
+    }
+  },
+}
 // Module declaration for WebAssembly enhancements
 declare module 'webassembly' {
   interface ImportValue {
@@ -80,11 +78,11 @@ declare global {
         memory?: WebAssembly.Memory;
         getGPUDevice?: () => GPUDevice;
         [key: string]: any;
-      };
+      }
       gpu?: {
         device?: GPUDevice;
         [key: string]: any;
-      };
+      }
       [key: string]: any;
     }
   }
@@ -93,9 +91,9 @@ declare global {
     // Ensure destroy method is available
     destroy(): void;
     // Event target methods
-    addEventListener(type: string, listener: (event: any) => void): void;
-    removeEventListener(type: string, listener: (event: any) => void): void;
-    dispatchEvent(event: any): boolean;
+    addEventListener(type: string, listener: (_event: any) => void): void;
+    removeEventListener(type: string, listener: (_event: any) => void): void;
+    dispatchEvent(_event: any): boolean;
   }
 }
-export { webAssemblyGPUUtils };
+export { webAssemblyGPUUtils }

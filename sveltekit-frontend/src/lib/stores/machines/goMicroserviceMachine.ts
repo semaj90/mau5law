@@ -21,7 +21,7 @@ const initialContext: GoMicroserviceContext = {
   endpoint: 'http://localhost:8080',
   connectionStatus: 'disconnected',
   healthCheck: { lastCheck: 0, status: 'unhealthy' }
-};
+}
 type GoMicroserviceEvents =
   | MakeRequestEvent
   | HealthCheckEvent
@@ -38,7 +38,7 @@ export const goMicroserviceMachine = createMachine({
       invoke: {
         id: 'initialConnect',
         src: fromPromise(async ({ input }) => {
-          const { endpoint } = input as { endpoint: string };
+          const { endpoint } = input as { endpoint: string }
           const start = Date.now();
           const res = await fetch(`${endpoint}/health`);
           if (!res.ok) throw new Error('health check failed');
@@ -80,7 +80,7 @@ export const goMicroserviceMachine = createMachine({
           invoke: {
             id: 'doRequest',
             src: fromPromise(async ({ input }) => {
-              const { request, endpoint } = input as { request: GoServiceRequest; endpoint: string };
+              const { request, endpoint } = input as { request: GoServiceRequest; endpoint: string }
               if (!request) throw new Error('No request provided');
               const start = Date.now();
               const res = await fetch(`${endpoint}${request.path}`, {
@@ -112,7 +112,7 @@ export const goMicroserviceMachine = createMachine({
           invoke: {
             id: 'periodicHealth',
             src: fromPromise(async ({ input }) => {
-              const { endpoint } = input as { endpoint: string };
+              const { endpoint } = input as { endpoint: string }
               const start = Date.now();
               const res = await fetch(`${endpoint}/health`);
               if (!res.ok) throw new Error('health check failed');
@@ -198,7 +198,7 @@ export const goMicroserviceServices = {
     request: { method: 'GET' as const, path: '/metrics' }
   }),
   healthCheck: () => ({ type: 'HEALTH_CHECK' as const })
-};
+}
 // Simple selectors
 export const isServiceReady = (state: any) => state.matches('connected.idle') && state.context.healthCheck.status === 'healthy';
 export const getLastResponse = (state: any): GoServiceResponse | undefined => state.context.response;

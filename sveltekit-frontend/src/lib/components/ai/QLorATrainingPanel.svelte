@@ -90,7 +90,7 @@ https://svelte.dev/e/attribute_duplicate -->
       // Show error notification
     }
   }
-  function handleFileDrop(event: DragEvent) {
+  function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
     dragActive = false;
     const files = Array.from(event.dataTransfer?.files || []);
@@ -107,12 +107,12 @@ https://svelte.dev/e/attribute_duplicate -->
       }
     }
   }
-  function handleFileInput(event: Event) {
+  function handleFileInput(_event: Event) {
     const input = event.target as HTMLInputElement;
     const files = Array.from(input.files || []);
     selectedFiles = [...selectedFiles, ...files];
   }
-  function removeFile(index: number) {
+  function removeFile(_index: number) {
     selectedFiles = selectedFiles.filter((_, i) => i !== index);
   }
   function formatFileSize(bytes: number): string {

@@ -62,7 +62,7 @@ export class WebGPUTextTileRenderer {
       maxConcurrentTiles: 1024,
       gpuMemoryPool: 256, // 256MB
       ...config
-    };
+    }
     if (canvas) {
       this.canvas = canvas;
     }
@@ -200,7 +200,7 @@ struct VertexOutput {
   @location(2) nesColor: vec3<f32>
 }
 struct Uniforms {
-  resolution: vec2<f32>
+  resolution: vec2<f32>;
   time: f32
   qualityTier: f32, // 0=NES, 1=SNES, 2=N64
   tileSize: f32
@@ -436,7 +436,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       interactionHandlers,
       renderTime: 0, // Will be set by caller
       gpuUtilization: 0 // Will be set by caller
-    };
+    }
   }
   /**
    * Infer component type from pattern analysis
@@ -478,7 +478,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 }
 @keyframes nes-flicker-${tile.id} {
   0%, 100% { opacity: 1; }
-  50% { opacity: ${(tile.tileMetadata.semanticDensity * 0.3 + 0.7).toFixed(2)}; }
+  50% { opacity: ${(tile.tileMetadata.semanticDensity * 0.3 + 0.7).toFixed(2)} }
 }`;
   }
   /**
@@ -574,7 +574,7 @@ document.querySelector('.text-tile-${tile.id}').addEventListener('click', functi
         qualityTiers: ['nes', 'snes', 'n64'],
         maxResolution: [this.config.canvasWidth, this.config.canvasHeight]
       }
-    };
+    }
   }
   /**
    * Cleanup resources

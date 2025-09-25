@@ -76,7 +76,7 @@ function initializeWebSocket() {
     socket.on(
       'user-attention',
       (data: {
-        type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing'
+        type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing';
         timestamp: string
         metadata?: unknown
       }) => {

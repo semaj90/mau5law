@@ -2,7 +2,7 @@
 // Handles server-side authentication and authorization for admin routes
 import type { LayoutLoad } from './$types.js';
 import { redirect } from '@sveltejs/kit';
-import { URL } from "url";
+;
 export const load: LayoutLoad = async ({ fetch, url, depends }) => {
   depends('app:auth');
   try {
@@ -11,7 +11,7 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     const AccessControl: any = rolesModule?.AccessControl ?? rolesModule?.default ?? rolesModule;
     // Check current session
     const sessionResponse = await fetch('/api/auth/session', {
-      credentials: 'include'
+      credentials: 'include',
     });
     if (!sessionResponse.ok) {
       throw redirect(302, `/login?redirect=${encodeURIComponent(url.pathname)}`);
@@ -21,18 +21,15 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
       throw redirect(302, `/login?redirect=${encodeURIComponent(url.pathname)}`);
     }
     // Check if user has admin panel access
-    const hasAdminAccess = AccessControl?.hasPermission?.(
-      sessionData.user.role,
-      'access_admin_panel'
-    );
+    const hasAdminAccess = AccessControl?.hasPermission?.(sessionData.user.role, 'access_admin_panel');
     if (!hasAdminAccess) {
       throw redirect(302, '/unauthorized');
     }
     return {
       user: sessionData.user,
       session: sessionData.session,
-      permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? []
-    };
+      permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? [],
+    }
   } catch (error: any) {
     // Re-throw SvelteKit HTTP/redirect-like errors so the framework can handle them
     if (error && typeof (error as any).status === 'number') {
@@ -41,4 +38,4 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     console.error('Admin layout load error:', error);
     throw redirect(302, '/login');
   }
-};
+}

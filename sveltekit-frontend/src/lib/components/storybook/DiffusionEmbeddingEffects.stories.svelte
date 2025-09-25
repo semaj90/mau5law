@@ -23,14 +23,14 @@ https://svelte.dev/e/expected_token -->
 		dynamicParallax: true
 		anisotropicSim: false
 		webgpuAccel: false
-	};
+	}
 	// LOD system
 	let lodLevel = 'medium'; // low, medium, high
 	let deviceCapabilities = {
 		memory: navigator.deviceMemory || 4,
 		cores: navigator.hardwareConcurrency || 4,
 		gpu: 'unknown';
-	};
+	}
 	$effect(() => {
     (async () => {
 await detectCapabilities();
@@ -132,8 +132,8 @@ await detectCapabilities();
 			}
 			nomicEmbeddings.push({
 				id: i
-				vector: embedding
-				cluster: cluster
+				vector: embedding;
+				cluster: cluster;
 				similarity: Math.random();
 			});
 		}

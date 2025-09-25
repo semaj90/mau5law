@@ -160,13 +160,13 @@ function generateFallbackTimeline(content: string, documentType: string) {
       extraction_quality: 'fallback',
       missing_context: ['AI analysis unavailable'],
     },
-  };
+  }
 }
 
 // GPU detection helper
 async function detectGPU(): Promise<boolean> {
   try {
-    const response = await fetch('http://localhost:8096/health');
+    // removed unused response assignment
     return response.ok;
   } catch {
     return false;
@@ -231,7 +231,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           message: 'Invalid timeline extraction request',
           details: error.errors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -240,10 +240,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         message: 'Timeline extraction failed',
         details: error.message || 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
-};
+}
 
 /**
  * GET /api/v1/timeline - Get case timeline
@@ -295,7 +295,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         event_types: ['incident', 'investigation'],
         confidence: 0.85,
       },
-    };
+    }
 
     // Apply filters
     let filteredEvents = mockTimeline.events;
@@ -323,7 +323,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         ...mockTimeline.summary,
         total_events: filteredEvents.length,
       },
-    };
+    }
 
     return json({
       success: true,
@@ -338,7 +338,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           message: 'Invalid timeline query',
           details: error.errors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -347,7 +347,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         message: 'Timeline query failed',
         details: error.message || 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
-};
+}

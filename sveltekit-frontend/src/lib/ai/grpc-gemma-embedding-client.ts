@@ -105,7 +105,7 @@ export class GRPCGemmaEmbeddingClient {
     avgLatency: 0,
     throughput: 0,
     connectionRetries: 0
-  };
+  }
   constructor(config: {
     grpcEndpoint: string;
     dbConfig: any;
@@ -165,7 +165,7 @@ export class GRPCGemmaEmbeddingClient {
           return cached;
         }
         // Make gRPC call
-        const response = await this.grpcGenerateEmbedding(request);
+        // removed unused response assignment
         // Cache result if requested
         if (request.options.cache_result && response.status.code === 0) {
           await this.redis.setex(cacheKey, 3600, JSON.stringify(response); // 1 hour TTL
@@ -409,7 +409,7 @@ export class GRPCGemmaEmbeddingClient {
         updated_rows: updatedRows
         jsonb_compression_ratio: originalSize / compressedSize,
         index_update_time: insertTime
-      };
+      }
     } catch (error) {
       await client.query('ROLLBACK');
       throw error;
@@ -443,7 +443,7 @@ export class GRPCGemmaEmbeddingClient {
       avg_processing_time: avgProcessingTime
       total_batch_time: batchTime
       throughput_per_second: throughput
-    };
+    }
   }
   /**
    * Update performance metrics
@@ -469,7 +469,7 @@ export class GRPCGemmaEmbeddingClient {
       successRate: this.metrics.successfulRequests / this.metrics.totalRequests,
       connectionPoolSize: this.connectionPool.length,
       circuitBreakerState: this.circuitBreaker.getState()
-    };
+    }
   }
   /**
    * Health check for gRPC service
@@ -478,7 +478,7 @@ export class GRPCGemmaEmbeddingClient {
     try {
       const healthRequest = {
         service: 'GemmaEmbeddingService'
-      };
+      }
       return new Promise((resolve) => {
         this.client.Check(healthRequest, { deadline: Date.now() + 5000 }, (error: any, response: any) => {
           if (error) {
@@ -517,7 +517,7 @@ class CircuitBreaker {
   private config: {
     failureThreshold: number;
     recoveryTimeout: number;
-  };
+  }
   constructor(config: { failureThreshold: number; recoveryTimeout: number }) {
     this.config = config;
   }
@@ -558,4 +558,4 @@ export {
   EmbeddingOptions,
   BatchOptions,
   PostgreSQLBatchResult
-};
+}

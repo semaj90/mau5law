@@ -56,12 +56,12 @@ https://svelte.dev/e/js_parse_error -->
   		'aria-describedby'?: string;
   		'data-testid'?: string;
   		// Event handlers
-  		oninput?: (event: Event & { currentTarget: HTMLInputElement }) => void;
-  		onchange?: (event: Event & { currentTarget: HTMLInputElement }) => void;
-  		onfocus?: (event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
-  		onblur?: (event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
-  		onkeydown?: (event: KeyboardEvent & { currentTarget: HTMLInputElement }) => void;
-  		onkeyup?: (event: KeyboardEvent & { currentTarget: HTMLInputElement }) => void;
+  		oninput?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
+  		onchange?: (_event: Event & { currentTarget: HTMLInputElement }) => void;
+  		onfocus?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
+  		onblur?: (_event: FocusEvent & { currentTarget: HTMLInputElement }) => void;
+  		onkeydown?: (_event: KeyboardEvent & { currentTarget: HTMLInputElement }) => void;
+  		onkeyup?: (_event: KeyboardEvent & { currentTarget: HTMLInputElement }) => void;
   	}
   	let {
   		value = $bindable(''),
@@ -96,31 +96,33 @@ https://svelte.dev/e/js_parse_error -->
   	let inputClass = $derived(cn(inputVariants({ variant, size }), class));
   	type $$Props = Prop;
 </script>
+
 <input
-	bind:value
-	{type}
-	{placeholder}
-	{disabled}
-	{readonly}
-	{required}
-	{pattern}
-	{minlength}
-	{maxlength}
-	{min}
-	{max}
-	{step}
-	{name}
-	{id}
-	{form}
-	class={inputClass}
-	aria-label={ariaLabel}
-	aria-labelledby={ariaLabelledBy}
-	aria-describedby={ariaDescribedBy}
-	data-testid={testId || "melt-input"}
-	{oninput}
-	{onchange}
-	{onfocus}
-	{onblur}
-	{onkeydown}
-	{onkeyup}
+  bind:value
+  {type}
+  {placeholder}
+  {disabled}
+  {readonly}
+  {required}
+  {pattern}
+  {minlength}
+  {maxlength}
+  {min}
+  {max}
+  {step}
+  {name}
+  {id}
+  {form}
+  class={inputClass}
+  aria-label={ariaLabel}
+  aria-labelledby={ariaLabelledBy}
+  aria-describedby={ariaDescribedBy}
+  data-testid={testId || 'melt-input'}
+  {oninput}
+  {onchange}
+  {onfocus}
+  {onblur}
+  {onkeydown}
+  {onkeyup}
 />
+;

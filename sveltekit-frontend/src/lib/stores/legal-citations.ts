@@ -26,7 +26,7 @@ export interface LegalCitation {
     defendant: string[];
     appellant?: string[];
     appellee?: string[];
-  };
+  }
   // Statute-specific
   code?: string;
   section?: string;
@@ -70,7 +70,7 @@ export interface LegalCitation {
     googleScholar?: string;
     courtListener?: string;
     justia?: string;
-  };
+  }
 }
 export interface CitationFilters {
   search: string;
@@ -186,7 +186,7 @@ export const citationStats = derived(legalCitations, ($citations): CitationStats
     bookmarked: 0,
     averageRelevance: 0,
     recentlyAdded: 0
-  };
+  }
   const recentThreshold = Date.now() - (7 * 24 * 60 * 60 * 1000); // 7 days
   let totalRelevance = 0;
   let relevanceCount = 0;
@@ -297,14 +297,14 @@ class LegalCitationsManager {
       extractionSource: sourceDocId
       contextSnippet: this.extractContext(sourceText, extracted.fullCitation),
       relevanceScore: extracted.relevance || 0.5,
-      bookmarked: false
+      bookmarked: false;
       tags: extracted.tags || [],
       verificationStatus: 'unverified',
       createdAt: new Date(),
       updatedAt: new Date(),
       createdBy: 'ai-extraction',
       processingStatus: 'completed'
-    };
+    }
     // Generate embeddings
     await this.enhanceCitationWithAI(citation);
     return citation;
@@ -485,7 +485,7 @@ class LegalCitationsManager {
           queryEmbedding.data.embeddings[0],
           citation.embeddings![0]
         );
-        return { citation, similarity };
+        return { citation, similarity }
       });
       // Return top results
       return similarities
@@ -505,7 +505,7 @@ class LegalCitationsManager {
     try {
       const citation = await this.getCitation(citationId);
       if (!citation) {
-        return { valid: false, error: 'Citation not found' };
+        return { valid: false, error: 'Citation not found' }
       }
       // Use external validation service
       const response = await fetch('/api/citations/validate', {
@@ -521,10 +521,10 @@ class LegalCitationsManager {
         await this.saveCitation(citation);
         return result;
       }
-      return { valid: false, error: 'Validation service unavailable' };
+      return { valid: false, error: 'Validation service unavailable' }
     } catch (error) {
       console.error('Citation validation failed:', error);
-      return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' }
     }
   }
   // Get citation by ID
@@ -578,7 +578,7 @@ class LegalCitationsManager {
   }
   // Bulk import citations
   async importCitations(citationsData: any[]): Promise<{ success: number; failed: number; errors: string[] }> {
-    const result = { success: 0, failed: 0, errors: [] as string[] };
+    const result = { success: 0, failed: 0, errors: [] as string[] }
     for (const data of citationsData) {
       try {
         const citation = await this.createCitationFromImport(data);
@@ -611,14 +611,14 @@ class LegalCitationsManager {
       legalPrinciples: data.legalPrinciples || [],
       precedentialValue: data.precedentialValue || 'informational',
       aiExtracted: false
-      bookmarked: false
+      bookmarked: false;
       tags: data.tags || [],
       verificationStatus: 'unverified',
       createdAt: new Date(),
       updatedAt: new Date(),
       createdBy: 'import',
       processingStatus: 'completed'
-    };
+    }
   }
 }
 // Export singleton

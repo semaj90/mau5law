@@ -36,7 +36,7 @@ export interface EvidenceCustodyContext {
     digitalSignatureValid: boolean;
     aiAnalysisScore: number;
     riskAssessment: string;
-  };
+  }
   // AI analysis and recommendations
   aiAnalysis?: {
     authenticity: number;
@@ -45,7 +45,7 @@ export interface EvidenceCustodyContext {
     riskLevel: "low" | "medium" | "high" | "critical";
     recommendations: string[];
     flaggedAnomalies: string[];
-  };
+  }
   // Collaboration state
   activeCollaborators: string[];
   collaborationSession?: {
@@ -90,7 +90,7 @@ export type EvidenceCustodyEvent =;
   | { type: "RETRY" }
   | { type: "CANCEL_WORKFLOW" }
   | { type: "FORCE_COMPLETE" }
-  | { type: "UPDATE_PROGRESS"; progress: number; stage: string };
+  | { type: "UPDATE_PROGRESS"; progress: number; stage: string }
 // Service implementations
 const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(
@@ -128,13 +128,13 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
         timestamp: new Date().toISOString(),
         eventType: "intake"
       })
-    };
+    }
     return {
       evidenceData,
       currentHash,
       integrityStatus: hashMatch ? "verified" : "compromised",
       custodyEvent
-    };
+    }
   }
 );
 const integrityVerificationService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
@@ -149,7 +149,7 @@ const integrityVerificationService = fromPromise(async ({ input }: { input: Evid
       digitalSignatureValid: await verifyDigitalSignature(input.evidenceData!),
       aiAnalysisScore: 0,
       riskAssessment: "pending"
-    };
+    }
     // AI-powered integrity analysis
     try {
       const aiResponse = await fetch("/api/ai/analyze-evidence", {
@@ -204,12 +204,12 @@ const integrityVerificationService = fromPromise(async ({ input }: { input: Evid
         timestamp: new Date().toISOString(),
         eventType: "verification"
       })
-    };
+    }
     return {
       verificationResults,
       integrityStatus,
       custodyEvent
-    };
+    }
   }
 );
 const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
@@ -243,7 +243,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
       riskLevel: analysisResult.riskLevel || "medium",
       recommendations: analysisResult.recommendations || [],
       flaggedAnomalies: analysisResult.anomalies || []
-    };
+    }
     // Create analysis event
     const custodyEvent = {
       id: crypto.randomUUID(),
@@ -264,11 +264,11 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
         timestamp: new Date().toISOString(),
         eventType: "analysis"
       })
-    };
+    }
     return {
       aiAnalysis,
       custodyEvent
-    };
+    }
   }
 );
 const collaborationService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
@@ -294,7 +294,7 @@ const collaborationService = fromPromise(async ({ input }: { input: EvidenceCust
       ],
       chatHistory: input.collaborationSession?.chatHistory || [],
       annotations: input.collaborationSession?.annotations || []
-    };
+    }
     // Notify other participants via WebSocket
     await notifyCollaborators(sessionId, {
       type: "user-joined",
@@ -304,7 +304,7 @@ const collaborationService = fromPromise(async ({ input }: { input: EvidenceCust
     });
     return {
       collaborationSession
-    };
+    }
   }
 );
 const custodyTransferService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
@@ -334,12 +334,12 @@ const custodyTransferService = fromPromise(async ({ input }: { input: EvidenceCu
         timestamp: new Date().toISOString(),
         eventType: "transfer"
       })
-    };
+    }
     return {
       transferEvent,
       newCustodian: input.userId,
       previousCustodian: input.currentCustodian
-    };
+    }
   }
 );
 const custodyFinalizationService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
@@ -362,7 +362,7 @@ const custodyFinalizationService = fromPromise(async ({ input }: { input: Eviden
       totalProcessingTime: Date.now() - input.startTime,
       finalizedBy: input.userId,
       finalizedAt: new Date().toISOString()
-    };
+    }
     // Store final custody report
     await storeCustodyReport(custodyReport);
     // Create finalization event
@@ -382,7 +382,7 @@ const custodyFinalizationService = fromPromise(async ({ input }: { input: Eviden
         timestamp: new Date().toISOString(),
         eventType: "finalization"
       })
-    };
+    }
     // Close collaboration session
     if (input.collaborationSession) {
       await closeCollaborationSession(input.collaborationSession.sessionId);
@@ -390,7 +390,7 @@ const custodyFinalizationService = fromPromise(async ({ input }: { input: Eviden
     return {
       custodyReport,
       finalizationEvent
-    };
+    }
   }
 );
 // Main Evidence Chain of Custody state machine
@@ -827,7 +827,7 @@ async function generateEvidenceHash(evidence: Evidence): Promise<string> {
   const hashArray = Array.from(new Uint8Array(buffer);
   return hashArray.map((b: any) => b.toString(16).padStart(2, "0")).join("");
 }
-async function generateEventSignature(event: {
+async function generateEventSignature(_event: {
   evidenceId: string;
   userId: string;
   timestamp: string;
@@ -892,33 +892,33 @@ export const createEvidenceCustodyActor = (
       // Custom guards can be added here
     }
   });
-};
+}
 // State machine utility functions
 export const isCustodyWorkflowActive = (state: any): boolean => {
   return !["idle", "completed", "failed", "rejected", "cancelled"].includes(
     state.value
   );
-};
+}
 export const getCustodyProgress = (state: any): number => {
   return state.context.progress;
-};
+}
 export const getCustodyStage = (state: any): string => {
   return state.context.workflowStage;
-};
+}
 export const getIntegrityStatus = (state: any): string => {
   return state.context.integrityStatus;
-};
+}
 export const getActiveCollaborators = (state: any): string[] => {
   return state.context.activeCollaborators;
-};
+}
 export const getCustodyEvents = (
   state: any;
 ): EvidenceCustodyContext["custodyEvents"] => {
   return state.context.custodyEvents;
-};
+}
 export const requiresApproval = (state: any): boolean => {
   return state.context.requiresApproval;
-};
+}
 export const getApprovalStatus = (state: any): string | undefined => {
   return state.context.approvalStatus;
-};
+}

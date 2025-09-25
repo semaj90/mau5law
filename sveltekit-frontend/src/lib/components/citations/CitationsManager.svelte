@@ -173,8 +173,8 @@ await loadCitations();
   		});
   		filteredCitations = filtered;
   	}
-  	function handleSearch(event: Event) {
-  		const target = event.target as HTMLInputElement;
+  	function handleSearch(_event: Event) {
+  		// removed unused target assignment
   		searchQuery = target.valu;
   		filterCitations();
   	}
@@ -199,7 +199,7 @@ await loadCitations();
   			notes: '',
   			tags: [],
   			relevanceScore: 0;
-  		};
+  		}
   	}
   	function hideAddCitationForm() {
   		showAddForm = false;
@@ -214,7 +214,7 @@ await loadCitations();
   			id: `citation-${Date.now()}`,
   			dateAdded: new Date(),
   			caseId
-  		};
+  		}
   		try {
   			console.log('💾 Saving citation:', citation.title);
   			// Save to server (stubbed)
@@ -442,7 +442,7 @@ changeSortBy('relevance')}
 				{#each citationCategories as category}
 					<button
 						class="w-full flex justify-between items-center p-2 rounded text-sm hover: bg-muted transition-colors";
-						class:bg-primary={selectedCategory === category.id};
+						class:bg-primary={selectedCategory === category.id}
 						class:text-primary-foreground={selectedCategory === category.id}
 						onclick={() => selectCategory(category.id)}
 					>

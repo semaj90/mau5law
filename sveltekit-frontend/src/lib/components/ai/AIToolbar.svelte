@@ -51,7 +51,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          query: aiSearchQuery
+          query: aiSearchQuery;
           jurisdiction: 'all',
           category: 'all',
           maxResults: 10,
@@ -102,7 +102,7 @@
           query: aiSearchQuery
           jurisdiction: 'all',
           category: 'all',
-          useAI: true
+          useAI: true;
         }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -134,7 +134,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          message: aiChatMessage
+          message: aiChatMessage;
           temperature: 0.7,
         }));
     if (!response.ok) {
@@ -171,7 +171,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          text: summarizeText
+          text: summarizeText;
           type: 'legal',
           options: { max_tokens: 500 },
         }));
@@ -248,7 +248,7 @@
               class="pl-10" />
           </div>
           <Button class="bits-btn"
-            onclick={(event: MouseEvent) => performAISearch}
+            onclick={(_event: MouseEvent) => performAISearch}
             disabled={disabled || isAISearching || !aiSearchQuery.trim()}
             size="sm">
 {#if isAISearching}
@@ -292,7 +292,7 @@
             rows="2"
             class="resize-none" />
           <Button
-            onclick={(event: MouseEvent) => performAIChat}
+            onclick={(_event: MouseEvent) => performAIChat}
             disabled={disabled || isAIChatting || !aiChatMessage.trim()}
             size="sm"
             class="w-full bits-btn bits-btn">
@@ -332,7 +332,7 @@
             rows="2"
             class="resize-none" />
           <Button
-            onclick={(event: MouseEvent) => performAISummarization}
+            onclick={(_event: MouseEvent) => performAISummarization}
             disabled={disabled || isSummarizing || !summarizeText.trim()}
             size="sm"
             class="w-full bits-btn bits-btn">
@@ -358,7 +358,7 @@
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <Button class="bits-btn" variant="ghost" onclick={(event: MouseEvent) => clearResults} size="sm">
+      <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => clearResults} size="sm">
 Clear All Results
 </Button>
     </div>
@@ -368,7 +368,7 @@ Clear All Results
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
-      onclick={(event: MouseEvent) => ) =>
+      onclick={(_event: MouseEvent) => ) =>
 {
         aiSearchQuery = 'California murder laws';
         performAISearch();
@@ -380,7 +380,7 @@ Clear All Results
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
-      onclick={(event: MouseEvent) => ) =>
+      onclick={(_event: MouseEvent) => ) =>
 {
         aiChatMessage = 'What are the elements of a valid contract?';
         performAIChat();
@@ -392,7 +392,7 @@ Clear All Results
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
-      onclick={(event: MouseEvent) => ) =>
+      onclick={(_event: MouseEvent) => ) =>
 {
         aiSearchQuery = 'evidence admissibility rules';
         performAISearch();

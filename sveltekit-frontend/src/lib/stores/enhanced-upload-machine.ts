@@ -16,7 +16,7 @@ export interface EnhancedUploadContext {
     contentType: string;
     expiresAt: Date;
     documentType?: 'legal_brief' | 'evidence' | 'contract' | 'deposition' | 'other';
-  };
+  }
   jobIds: {
     extraction?: string;
     ocr?: string;
@@ -26,7 +26,7 @@ export interface EnhancedUploadContext {
     neo4j?: string;
     rag?: string;
     rabbitMQ?: string;
-  };
+  }
   results: {
     extractedText?: string;
     ocrText?: string;
@@ -41,13 +41,13 @@ export interface EnhancedUploadContext {
     ragSummary?: string;
     ragKeyPoints?: string[];
     pgvectorId?: string;
-  };
+  }
   rabbitMQ: {
     queueName?: string;
     messageIds?: string[];
     processingStatus?: 'queued' | 'processing' | 'completed' | 'failed';
     routingKey?: string;
-  };
+  }
   aiAssistant: {
     sessionId?: string;
     chatHistory?: any[];
@@ -55,13 +55,13 @@ export interface EnhancedUploadContext {
     confidence?: number;
     analysis?: string;
     recommendations?: string[];
-  };
+  }
   database: {
     postgresqlId?: string;
     neo4jNodeId?: string;
     pgvectorIndex?: string;
     ragDocumentId?: string;
-  };
+  }
 }
 // Enhanced Event types with OCR and AI processing
 type EnhancedUploadEvent =
@@ -85,7 +85,7 @@ type EnhancedUploadEvent =
   | { type: 'RABBITMQ_QUEUED'; messageId: string }
   | { type: 'INDEXING_COMPLETE'; result: any }
   | { type: 'RETRY' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 // Enhanced Upload and processing state machine with comprehensive legal AI pipeline
 export const enhancedUploadMachine = createMachine({
   id: 'enhanced-upload',
@@ -649,7 +649,7 @@ export const enhancedUploadMachine = createMachine({
           uploadId,
           text: combinedText
           model: model, // embeddinggemma: latest
-          chunkSize: 512, // Optimal for legal documents
+          chunkSize: 512, // Optimal for legal documents;
           overlap: 50,
           normalizeEmbeddings: true
           includeMetadata: true
@@ -859,7 +859,7 @@ export const enhancedUploadMachine = createMachine({
     uploadFileChunks: fromPromise(async ({
       input
     }: {
-      input: { files: File[]; presignedUrls: string[]; uploadId: string };
+      input: { files: File[]; presignedUrls: string[]; uploadId: string }
     }) => {
       const { files, presignedUrls, uploadId } = input;
       const file = files[0];
@@ -870,7 +870,7 @@ export const enhancedUploadMachine = createMachine({
         const chunk = file.slice(start, end);
         const response = await fetch(url, {
           method: 'PUT',
-          body: chunk
+          body: chunk;
           headers: {
             'Content-Type': file.type
           }
@@ -940,6 +940,6 @@ function createEnhancedUploadStore() {
     subscribe,
     send: actor.send.bind(actor),
     getSnapshot: actor.getSnapshot.bind(actor)
-  };
+  }
 }
 export const enhancedUploadStore = createEnhancedUploadStore();

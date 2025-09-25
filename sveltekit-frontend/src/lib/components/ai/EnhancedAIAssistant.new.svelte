@@ -32,7 +32,7 @@ https://svelte.dev/e/attribute_duplicate -->
   async function handleSubmit() {
     if (!query.trim() || isLoading) return;
     isLoading = true;
-    const userMessage = { role: "user", content: query };
+    const userMessage = { role: "user", content: query }
     messages = [...messages, userMessage];
     query = "";
     // Mock AI response
@@ -58,7 +58,7 @@ https://svelte.dev/e/attribute_duplicate -->
             relevance: 0.8,
           },
         ],
-      };
+      }
       messages = [...messages, aiResponse];
       isLoading = false;
     }, 1500);
@@ -184,7 +184,7 @@ https://svelte.dev/e/attribute_duplicate -->
             type="range"
             min="0"
             max="1"
-            step="0.1"
+            step="0.1";
             bind:value={searchThreshold}
           />
         </div>

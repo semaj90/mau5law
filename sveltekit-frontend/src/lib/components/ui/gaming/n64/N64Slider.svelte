@@ -11,7 +11,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		step?: number;
   		disabled?: boolean;
   		audioEnabled?: boolean;
-  		spatialPosition?: { x: number; y: number; z: number };
+  		spatialPosition?: { x: number; y: number; z: number }
   		label?: string;
   		class?: string;
   	}
@@ -48,7 +48,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		maxDistance: 1000,
   		refDistance: 1,
   		panningModel: 'HRTF' as PanningModelType
-  	};
+  	}
   	// Computed values
   	let percentage = $derived(((value - min) / (max - min)) * 100);
   	let normalizedValue = $derived((value - min) / (max - min));
@@ -113,8 +113,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		oscillator.stop(now + duration / 1000);
   	}
   	// Handle slider input
-  	function handleInput(event: Event) {
-  		const target = event.target as HTMLInputElement;
+  	function handleInput(_event: Event) {
+  		// removed unused target assignment
   		const newValue = parseFloat(target.value);
   		value = newValu;
   		// Calculate frequency based on slider position
@@ -155,7 +155,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		}
   	}
   	// Keyboard navigation
-  	function handleKeydown(event: KeyboardEvent) {
+  	function handleKeydown(_event: KeyboardEvent) {
   		if (disabled) return;
   		let newValue = valu;
   		const stepSize = step;
@@ -240,12 +240,12 @@ mounted = true;
 	class="n64-slider {className}"
 	class: disabled;
 	class:interacting={isInteracting}
-	style="
+	style=";
 		--slider-percentage: {percentage}%;
 		--vertex-jitter-x: {vertexJitter.x}px;
 		--vertex-jitter-y: {vertexJitter.y}px;
 		--pixel-drift: {pixelDrift}px;
-		--color-bleed: {colorBleed};
+		--color-bleed: {colorBleed}
 	"
 >
 	{#if label}
@@ -264,14 +264,14 @@ mounted = true;
 				class="n64-slider-thumb"
 			></div>
 		</div>
-		<input
+		<input;
 			bind:this={sliderElement}
 			type="range"
 			id="n64-slider"
 			{min}
 			{max}
 			{step}
-			{disabled};
+			{disabled}
 			bind:value
 			oninput={handleInput}
 			onmousedown={handleInteractionStart}

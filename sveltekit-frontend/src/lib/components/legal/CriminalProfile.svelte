@@ -36,19 +36,19 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       eyeColor?: string;
       hairColor?: string;
       distinguishingMarks?: string[];
-    };
+    }
     identification: {
       ssn?: string;
       driverLicense?: string;
       passport?: string;
       mugshots?: string[];
       biometrics?: BiometricData;
-    };
+    }
     address: {
       current?: string;
       previous?: string[];
       knownAssociates?: string[];
-    };
+    }
     criminalHistory: CriminalRecord[];
     riskAssessment: {
       riskLevel: 'low' | 'medium' | 'high' | 'extreme';
@@ -56,7 +56,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       violentHistory: boolean;
       reoffenseRisk: number; // 0-100
       lastUpdated: Date;
-    };
+    }
     currentStatus: 'at_large' | 'incarcerated' | 'on_parole' | 'probation' | 'deceased' | 'cleared';
     warrants?: Array;
     notes?: string;
@@ -87,7 +87,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     medium: { label: 'Medium Risk', class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
     high: { label: 'High Risk', class: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
     extreme: { label: 'Extreme Risk', class: 'bg-red-500/20 text-red-400 border-red-500/30' }
-  };
+  }
   // Status configurations
   const statusConfig = {
     at_large: { label: 'At Large', class: 'bg-red-500/20 text-red-400', icon: AlertTriangle },
@@ -96,7 +96,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     probation: { label: 'Probation', class: 'bg-blue-500/20 text-blue-400', icon: FileText },
     deceased: { label: 'Deceased', class: 'bg-gray-500/20 text-gray-400', icon: User },
     cleared: { label: 'Cleared', class: 'bg-green-500/20 text-green-400', icon: Shield }
-  };
+  }
   // Disposition configurations
   const dispositionConfig = {
     convicted: { label: 'Convicted', class: 'bg-red-500/20 text-red-400' },
@@ -104,7 +104,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     dismissed: { label: 'Dismissed', class: 'bg-blue-500/20 text-blue-400' },
     pending: { label: 'Pending', class: 'bg-yellow-500/20 text-yellow-400' },
     sealed: { label: 'Sealed', class: 'bg-gray-500/20 text-gray-400' }
-  };
+  }
   // Calculate age
   let age = $derived(() => {
     const today = new Date());
@@ -144,16 +144,16 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     return `${firstName} ${lastName}`;
   }
 </script>
-<div className={cn(
-  'criminal-profile bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
-  profile.currentStatus === 'at_large' && 'border-red-500/30',
-  className
-)}>
+
+<div
+  className={cn(
+    'criminal-profile bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
+    profile.currentStatus === 'at_large' && 'border-red-500/30',
+    className,
+  )}
+>
   <!-- Profile Header -->
-  <div class={cn(
-    'p-4 border-b border-yorha-border',
-    profile.currentStatus === 'at_large' && 'bg-red-500/5'
-  )}>
+  <div class={cn('p-4 border-b border-yorha-border', profile.currentStatus === 'at_large' && 'bg-red-500/5')}>
     <div class="flex items-start gap-4">
       <!-- Profile Photo/Mugshot -->
       <div class="shrink-0">
@@ -162,12 +162,16 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             onclick={() => onViewMugshot?.(profile.identification.mugshots[0])}
             class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded overflow-hidden hover:border-yorha-primary/30 transition-colors group"
           >
-            <div class="w-full h-full flex items-center justify-center text-yorha-text-secondary group-hover:text-yorha-primary">
+            <div
+              class="w-full h-full flex items-center justify-center text-yorha-text-secondary group-hover:text-yorha-primary"
+            >
               <Camera class="w-6 h-6" />
             </div>
           </button>
         {:else}
-          <div class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded flex items-center justify-center">
+          <div
+            class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded flex items-center justify-center"
+          >
             <User class="w-8 h-8 text-yorha-text-secondary" />
           </div>
         {/if}
@@ -206,17 +210,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <div class="flex items-center gap-4 text-xs font-mono">
           <div class="flex items-center gap-2">
             <span class="text-yorha-text-secondary">Risk Level:</span>
-            <span className={cn(
-              'px-2 py-0.5 rounded border',
-              riskConfig[profile.riskAssessment.riskLevel].className
-            )}>
+            <span className={cn('px-2 py-0.5 rounded border', riskConfig[profile.riskAssessment.riskLevel].className)}>
               {riskConfig[profile.riskAssessment.riskLevel].label}
             </span>
           </div>
           {#if profile.riskAssessment.flightRisk}
-            <span class="px-2 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded">
-              FLIGHT RISK
-            </span>
+            <span class="px-2 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded"> FLIGHT RISK </span>
           {/if}
           {#if profile.riskAssessment.violentHistory}
             <span class="px-2 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded">
@@ -246,9 +245,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     <!-- Personal Information -->
     {#if viewMode === 'full' || viewMode === 'identification'}
       <div>
-        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3 uppercase">
-          Personal Information
-        </h3>
+        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3 uppercase">Personal Information</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm font-mono">
           <div>
             <span class="text-yorha-text-secondary">Date of Birth:</span>
@@ -295,7 +292,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             <span class="text-xs text-yorha-text-secondary font-mono">Distinguishing Marks:</span>
             <div class="flex flex-wrap gap-2 mt-1">
               {#each profile.personalInfo.distinguishingMarks as mark}
-                <span class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-primary rounded border border-yorha-border">
+                <span
+                  class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-primary rounded border border-yorha-border"
+                >
                   {mark}
                 </span>
               {/each}
@@ -307,9 +306,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     <!-- Identification -->
     {#if viewMode === 'full' || viewMode === 'identification'}
       <div>
-        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3 uppercase">
-          Identification
-        </h3>
+        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3 uppercase">Identification</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm font-mono">
           {#if profile.identification.ssn}
             <div>
@@ -337,7 +334,10 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               <div class="flex items-center gap-2">
                 <Fingerprint class="w-4 h-4 text-yorha-text-secondary" />
                 <span class="text-yorha-text-primary">
-                  {profile.identification.biometrics.fingerprints.length} fingerprint record{profile.identification.biometrics.fingerprints.length !== 1 ? 's' : ''}
+                  {profile.identification.biometrics.fingerprints.length} fingerprint record{profile.identification
+                    .biometrics.fingerprints.length !== 1
+                    ? 's'
+                    : ''}
                 </span>
               </div>
             {/if}
@@ -381,10 +381,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                       {/if}
                     </div>
                   </div>
-                  <span className={cn(
-                    'px-2 py-1 text-xs font-mono rounded border',
-                    dispositionConfig[record.disposition].className
-                  )}>
+                  <span
+                    className={cn(
+                      'px-2 py-1 text-xs font-mono rounded border',
+                      dispositionConfig[record.disposition].className,
+                    )}
+                  >
                     {dispositionConfig[record.disposition].label}
                   </span>
                 </div>
@@ -417,9 +419,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     <!-- Additional Notes -->
     {#if profile.notes && viewMode === 'full'}
       <div>
-        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3 uppercase">
-          Notes
-        </h3>
+        <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3 uppercase">Notes</h3>
         <div class="bg-yorha-bg-tertiary border border-yorha-border rounded p-3">
           <p class="text-sm text-yorha-text-primary font-mono whitespace-pre-wrap">
             {profile.notes}
@@ -442,6 +442,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     </div>
   {/if}
 </div>
+
 <style>
   .criminal-profile {
     transition: all 0.2s ease;

@@ -20,7 +20,7 @@ class LazyLoadManager {
   private callbacks = new Map<Element, LazyLoadCallback>();
   private options: LazyLoadOptions;
   private fallbackTimeouts = new Map<Element, number>();
-  constructor(options: LazyLoadOptions = {}) {
+  constructor(_options: LazyLoadOptions = {}) {
     this.options = {
       root: null
       rootMargin: '50px',
@@ -28,7 +28,7 @@ class LazyLoadManager {
       once: true
       fallbackDelay: 2000,
       ...options
-    };
+    }
     this.createObserver();
   }
   private createObserver() {
@@ -57,7 +57,7 @@ class LazyLoadManager {
           isIntersecting: entry.isIntersecting,
           intersectionRatio: entry.intersectionRatio,
           target: entry.target
-        };
+        }
         callback(lazyEntry);
         // If it's a one-time observation and element is intersecting, stop observing
         if (this.options.once && entry.isIntersecting) {
@@ -123,7 +123,7 @@ export function getLazyLoader(options?: LazyLoadOptions): LazyLoadManager {
 }
 // Svelte action for easy component integration
 export function lazyLoad(
-  element: Element
+  element: Element;
   options: LazyLoadOptions & { ,
     onIntersect: LazyLoadCallback;
   }
@@ -135,7 +135,7 @@ export function lazyLoad(
     destroy() {
       loader.unobserve(element);
     }
-  };
+  }
 }
 // Svelte store for reactive lazy loading state
 import { writable } from 'svelte/store';
@@ -169,11 +169,11 @@ export function createLazyStore(initialState: Partial<LazyComponentState> = {}) 
         intersectionRatio: 0
       });
     }
-  };
+  }
 }
 // Utility functions for common lazy loading patterns
 export function createComponentLazyLoader(
-  element: Element
+  element: Element;
   options: LazyLoadOptions = {}
 ): Promise<LazyLoadEntry> {
   return new Promise((resolve) => {
@@ -207,7 +207,7 @@ class LazyLoadProfiler {
     totalLoaded: 0,
     averageLoadTime: 0,
     loadTimes: []
-  };
+  }
   private loadStartTimes = new Map<Element, number>();
   startObserving(element: Element): void {
     this.metrics.totalObserved++;
@@ -226,7 +226,7 @@ class LazyLoadProfiler {
     }
   }
   getMetrics(): LazyLoadMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   reset(): void {
     this.metrics = {
@@ -234,7 +234,7 @@ class LazyLoadProfiler {
       totalLoaded: 0,
       averageLoadTime: 0,
       loadTimes: []
-    };
+    }
     this.loadStartTimes.clear();
   }
 }

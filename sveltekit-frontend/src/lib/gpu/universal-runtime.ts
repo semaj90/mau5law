@@ -268,7 +268,7 @@ class WebGPUBackend extends BaseBackend {
       shape,
       backend: 'webgpu',
       id: this.generateId()
-    };
+    }
     this.tensors.set(tensor.id, tensor);
     return tensor;
   }
@@ -538,7 +538,7 @@ class WebGL2Backend extends BaseBackend {
       shape,
       backend: 'webgl2',
       id: this.generateId()
-    };
+    }
     this.tensors.set(tensor.id, tensor);
     return tensor;
   }
@@ -603,7 +603,7 @@ class WebGL2Backend extends BaseBackend {
       shape: { rows: M, cols: N },
       backend: 'webgl2',
       id: this.generateId()
-    };
+    }
     this.tensors.set(result.id, result);
     return result;
   }
@@ -622,13 +622,13 @@ class WebGL2Backend extends BaseBackend {
         shape: { rows: a.shape.rows, cols: a.shape.cols },
         backend: 'webgl2',
         id: `${a.id}_batch_${i}`
-      };
+      }
       const sliceB: Tensor = {
         data: b.data,
         shape: { rows: b.shape.rows, cols: b.shape.cols },
         backend: 'webgl2',
         id: `${b.id}_batch_${i}`
-      };
+      }
       results.push(await this.matMul(sliceA, sliceB);
     }
     // Combine results (simplified)
@@ -766,7 +766,7 @@ class WASMSIMDBackend extends BaseBackend {
             }
           }
         }
-      };
+      }
       this.initialized = true;
       console.log('✅ WASM SIMD backend initialized');
     } catch (error) {
@@ -786,7 +786,7 @@ class WASMSIMDBackend extends BaseBackend {
       shape,
       backend: 'wasm-simd',
       id: this.generateId()
-    };
+    }
     this.tensors.set(tensor.id, { ...tensor, ptr });
     return tensor;
   }
@@ -917,7 +917,7 @@ class TensorRTBackend extends BaseBackend {
   }
   private async loadAvailableEngines(): Promise<void> {
     try {
-      const response = await fetch(`${this.cudaServiceUrl}/api/v1/tensorrt/engines`);
+      // removed unused response assignment
       if (response.ok) {
         const engines = await response.json();
         for (const engine of engines.available_engines) {
@@ -964,7 +964,7 @@ class TensorRTBackend extends BaseBackend {
       shape,
       backend: 'tensorrt',
       id: tensorId
-    };
+    }
     this.tensors.set(tensor.id, tensor);
     return tensor;
   }
@@ -1029,7 +1029,7 @@ class TensorRTBackend extends BaseBackend {
         shape: { rows: M, cols: N },
         backend: 'tensorrt',
         id: this.generateId()
-      };
+      }
       this.tensors.set(resultTensor.id, resultTensor);
       return resultTensor;
     } catch (error) {
@@ -1076,7 +1076,7 @@ class TensorRTBackend extends BaseBackend {
         shape: { rows: M, cols: N, batch },
         backend: 'tensorrt',
         id: this.generateId()
-      };
+      }
       this.tensors.set(resultTensor.id, resultTensor);
       return resultTensor;
     } catch (error) {
@@ -1147,7 +1147,7 @@ class CPUJSBackend extends BaseBackend {
       shape,
       backend: 'cpu-js',
       id: this.generateId()
-    };
+    }
     this.tensors.set(tensor.id, tensor);
     return tensor;
   }
@@ -1373,7 +1373,7 @@ export class UniversalGPURuntime {
       backend: this.backendType,
       matmulTime: avgTime
       throughput
-    };
+    }
   }
 }
 // Export singleton instance for convenience
@@ -1399,4 +1399,4 @@ export {
   WASMSIMDBackend,
   CPUJSBackend,
   BackendDetector
-};
+}

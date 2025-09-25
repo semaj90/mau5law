@@ -86,4 +86,4 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
     return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 })
   }
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

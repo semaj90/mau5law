@@ -92,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
   		} catch {
   			return 'offline';
   		}
-  	};
+  	}
   	const updateProviderStatuses = async () => {
   		const currentProviders = $provider;
   		for (let i = 0; i < currentProviders.length; i++) {
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
   			}
   		}
   		providers.set(currentProviders);
-  	};
+  	}
   	$effect(() => {
   		// Initial status check
   		updateProviderStatuses();
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
   		statusCheckInterval = setInterval(updateProviderStatuses, 10000);
   		return () => {
   			clearInterval(statusCheckInterval);
-  		};
+  		}
   	});
   	// Melt UI Select setup
   	const {
@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
   		forceVisible: true
   		positioning: {
   			placement: 'bottom',
-  			fitViewport: true
+  			fitViewport: true;
   		}
   	});
   	// Reactive selection handling
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
   			case 'loading': return 'bg-yorha-accent text-yorha-bg-primary animate-pulse';
   			default: return 'bg-yorha-text-secondary text-yorha-bg-primary';
   		}
-  	};
+  	}
   	const getTypeIcon = (type: string) => {
   		switch (type) {
   			case 'ollama': return '🦙';
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
   			case 'crewai': return '👥';
   			default: return '🔧';
   		}
-  	};
+  	}
 </script>
 <div class="llm-provider-selector">
 	<!-- Label -->
@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
 				<div
 					class="relative cursor-default select-none rounded-sm px-2 py-2 text-sm outline-none transition-colors duration-150"
 				 class:bg-yorha-bg-secondary={$isSelected(provider)}
-				 class:text-yorha-text-primary={$isSelected(provider)};
+				 class:text-yorha-text-primary={$isSelected(provider)}
 					class:hover:bg-yorha-bg-tertiary={!$isSelected(provider)}
 				>
 					<div class="border-none bg-transparent nes-container">

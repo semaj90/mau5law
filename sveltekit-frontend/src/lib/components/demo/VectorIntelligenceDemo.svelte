@@ -49,7 +49,7 @@ await context7Service.initialize();
   async function performSearch() {
     if (!searchQuery.trim()) return;
     await context7Service.vectorSearch(searchQuery, {
-      filters: selectedFilters
+      filters: selectedFilters;
       limit: 10;
     });
     // Add to search history

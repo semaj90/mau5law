@@ -32,7 +32,7 @@ await loadSystemCapabilities();
   });
   async function loadSystemCapabilities() {
     try {
-      const response = await fetch('/api/v1/webgpu/cache-demo');
+      // removed unused response assignment
       const data = await (response as { json?: unknown }).json();
       if ((data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).success) {
         systemCapabilities = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).capabilitie;
@@ -50,7 +50,7 @@ await loadSystemCapabilities();
     demoResults = null;
     try {
       const requestData = {
-        operation: selectedOperation
+        operation: selectedOperation;
         data: {
           batchSize: config.batchSize,
           iterations: config.iterations,
@@ -63,7 +63,7 @@ await loadSystemCapabilities();
           enableCompression: true
           parallelProcessing: true
         }
-      };
+      }
       const response = await fetch('/api/v1/webgpu/cache-demo', {
         method: 'POST',
         headers: {

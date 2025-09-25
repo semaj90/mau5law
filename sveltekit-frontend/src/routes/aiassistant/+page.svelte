@@ -12,8 +12,8 @@ https://svelte.dev/e/js_parse_error -->
     start(): void;
     stop(): void;
     abort(): void;
-    onresult: (event: SpeechRecognitionEvent) => void;
-    onerror: (event: SpeechRecognitionErrorEvent) => void;
+    onresult: (_event: SpeechRecognitionEvent) => void;
+    onerror: (_event: SpeechRecognitionErrorEvent) => void;
     onend: () => void;
   }
   interface SpeechRecognitionEvent extends Event {
@@ -226,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
       type: 'user',
       content: currentMessage,
       timestamp: new Date(),
-    };
+    }
     chatMessages = [...chatMessages, userMessage];
     const messageToSend = currentMessag;
     currentMessage = '';
@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
           const searchResults = await performSearch(messageToSend, {
             categories: ['cases', 'evidence', 'precedents'],
             vectorSearch: true,
-            includeAI: true
+            includeAI: true;
           });
           enhancedContext = {
             ...enhancedContext,
@@ -249,9 +249,9 @@ https://svelte.dev/e/js_parse_error -->
             searchMetadata: {
               query: messageToSend,
               timestamp: new Date(),
-              resultCount: searchResults.length
+              resultCount: searchResults.length;
             }
-          };
+          }
         } catch (searchError) {
           console.warn('Search enhancement failed:', searchError);
         }
@@ -274,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
           timestamp: new Date(),
           suggestions: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).suggestions || [],
           metadata: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).metadata,
-        };
+        }
         chatMessages = [...chatMessages, assistantMessage];
         aiSuggestions = (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).suggestions || [];
         aiService.send('RESPONSE_COMPLETE');
@@ -288,7 +288,7 @@ https://svelte.dev/e/js_parse_error -->
         type: 'system',
         content: 'Sorry, I encountered an error. Please try again.',
         timestamp: new Date(),
-      };
+      }
       chatMessages = [...chatMessages, errorMessage];
       aiService.send('ERROR');
     } finally {
@@ -300,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
       recentReports: reports.slice(0, 3),
       recentSummaries: summaries.slice(0, 3),
       topCitations: citations.sort((a, b) => b.relevance - a.relevance).slice(0, 5),
-    };
+    }
   }
   async function startVoiceInput() {
     if (!voiceEnabled) return;
@@ -322,11 +322,11 @@ https://svelte.dev/e/js_parse_error -->
         isListening = false;
         aiService.send('VOICE_COMPLETE');
         sendMessage();
-      };
+      }
       recognition.onerror = () => {
         isListening = false;
         aiService.send('VOICE_CANCEL');
-      };
+      }
       recognition.start();
     } catch (error) {
       console.error('Voice input error:', error);
@@ -352,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
   async function switchContext(contextId: string) {
     aiService.send('CONTEXT_SWITCH');
     try {
-      const response = await fetch(`/api/context/${contextId}`);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const contextData = await (response as { ok?: unknown; json?: unknown }).json();
         // Update relevant panels with new context
@@ -383,7 +383,7 @@ https://svelte.dev/e/js_parse_error -->
       messages: chatMessages,
       timestamp: new Date(),
       context: getRelevantContext(),
-    };
+    }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

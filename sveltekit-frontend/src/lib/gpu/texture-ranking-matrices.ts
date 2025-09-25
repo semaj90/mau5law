@@ -30,7 +30,7 @@ export interface RankingResult {
     readonly processingTime: number;
     readonly cacheHit: boolean;
     readonly bankId: number;
-  };
+  }
 }
 export interface ComputePipelineWrapper {
   readonly pipeline: GPUComputePipeline;
@@ -83,7 +83,7 @@ export class TextureRankingMatrices {
     cacheHitRate: 0.0,
     averageLatency: 0,
     gpuMemoryUsed: 0
-  };
+  }
   // Result cache with NES-style priority eviction
   private rankingCache: Map<string, { result: RankingResult[]; timestamp: number; priority: number }> = new Map();
   private readonly MAX_CACHE_SIZE = 50;
@@ -175,7 +175,7 @@ export class TextureRankingMatrices {
             entries: []
           }),
           workgroupCount: dimension.workgroupSize
-        };
+        }
         this.computePipelines.set(dimension.name, pipelineWrapper);
         console.log(`✅ Created compute pipeline for ${dimension.name}`);
       } catch (error: any) {
@@ -465,7 +465,7 @@ export class TextureRankingMatrices {
       .join(',');
     return `ranking_${dataHash}_${queryHash.length}`;
   }
-  private addToCache(key: string, results: RankingResult[], priority: number): void {
+  private addToCache(_key: string, results: RankingResult[], priority: number): void {
     // NES-style priority eviction
     if (this.rankingCache.size >= this.MAX_CACHE_SIZE) {
       const entries = Array.from(this.rankingCache.entries();
@@ -595,7 +595,7 @@ export class TextureRankingMatrices {
       cacheSize: this.rankingCache.size,
       pipelinesCreated: this.computePipelines.size,
       texturesActive: this.rankingTextures.size
-    };
+    }
   }
   /**
    * Cleanup GPU resources
@@ -763,7 +763,7 @@ export class NESSGPUBinaryRankingPipeline {
       nodes,
       edges: [], // Could add citation relationships
       checksum: this.calculateChecksum(documents)
-    };
+    }
   }
   private getBankIdForDocument(doc: LegalDocumentBinaryLayout): number {
     // Map document characteristics to bank IDs
@@ -868,7 +868,7 @@ export class NESSGPUBinaryRankingPipeline {
       textureRanking: this.textureRanking.getPerformanceMetrics(),
       nesMemory: (this.nesMemory as any).getStats?.() || {},
       gpuAvailable: !!this.gpuDevice
-    };
+    }
   }
   /**
    * Cleanup all resources

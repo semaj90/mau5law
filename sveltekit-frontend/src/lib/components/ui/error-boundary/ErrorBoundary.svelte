@@ -24,14 +24,14 @@
       timestamp: new Date().toISOString(),
       userAgent: globalThis.navigator?.userAgent,
       context;
-    };
+    }
     console.error('YoRHa Error Boundary:', errorData);
     // In production, send to error tracking service
     // fetch('/api/errors', { method: 'POST', body: JSON.stringify(errorData) })
     onError?.(err, errorData);
   }
   // Global error handler
-  function handleGlobalError(event: ErrorEvent) {
+  function handleGlobalError(_event: ErrorEvent) {
     if (!hasError) {
       const err = new Error(event.message);
       err.stack = `${event.filename}:${event.lineno}:${event.colno}`;
@@ -42,7 +42,7 @@
     }
   }
   // Unhandled promise rejection handler
-  function handleUnhandledRejection(event: PromiseRejectionEvent) {
+  function handleUnhandledRejection(_event: PromiseRejectionEvent) {
     if (!hasError) {
       const err = new Error(event.reason?.message || 'Unhandled promise rejection');
       hasError = true;
@@ -68,9 +68,10 @@
     return () => {
       globalThis.removeEventListener('error', handleGlobalError);
       globalThis.removeEventListener('unhandledrejection', handleUnhandledRejection);
-    };
+    }
   });
 </script>
+
 {#if hasError && error}
   <!-- Error State -->
   <div class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg">
@@ -80,7 +81,11 @@
           <!-- YoRHa Error Icon -->
           <div class="w-16 h-16 mx-auto bg-red-500/20 rounded-full flex items-center justify-center">
             <svg class="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
             </svg>
           </div>
         </div>
@@ -94,9 +99,7 @@
       <div.Content class="space-y-golden-lg nes-container">
         <!-- Error Details -->
         <div class="bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md">
-          <h3 class="text-sm font-bold text-nier-accent-warm uppercase tracking-wide mb-golden-sm">
-            Error Details
-          </h3>
+          <h3 class="text-sm font-bold text-nier-accent-warm uppercase tracking-wide mb-golden-sm">Error Details</h3>
           <div class="font-mono text-sm space-y-golden-xs">
             <div class="grid grid-cols-4 gap-2">
               <span class="text-nier-text-secondary">ID:</span>
@@ -113,10 +116,13 @@
         <!-- Stack Trace (Development) -->
         {#if error.stack && globalThis.location?.hostname === 'localhost'}
           <details class="bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md">
-            <summary class="text-sm font-bold text-nier-text-secondary uppercase tracking-wide cursor-pointer hover:text-nier-accent-warm transition-colors">
+            <summary
+              class="text-sm font-bold text-nier-text-secondary uppercase tracking-wide cursor-pointer hover:text-nier-accent-warm transition-colors"
+            >
               Stack Trace (Development)
             </summary>
-            <pre class="font-mono text-xs text-nier-text-primary mt-golden-sm overflow-x-auto whitespace-pre-wrap">{error.stack}</pre>
+            <pre
+              class="font-mono text-xs text-nier-text-primary mt-golden-sm overflow-x-auto whitespace-pre-wrap">{error.stack}</pre>
           </details>
         {/if}
         <!-- Action Buttons -->
@@ -158,7 +164,9 @@
 {:else}
   {@render children()}
 {/if}
-<style>/* Ensure error boundary styles don't interfere with global styles */ details summary::-webkit-details-marker {
+
+<style>/* Ensure error boundary styles don't interfere with global styles */ {}
+  details summary::-webkit-details-marker {
     display: none;
   }
   details summary::before {

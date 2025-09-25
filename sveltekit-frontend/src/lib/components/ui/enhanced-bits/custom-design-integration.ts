@@ -17,12 +17,12 @@ export interface AnimationConfig {
     fast: string;
     normal: string;
     slow: string;
-  };
+  }
   easing: {
     easeIn: string;
     easeOut: string;
     easeInOut: string;
-  };
+  }
   transitions: Record<string, string>;
 }
 export interface BreakpointConfig {
@@ -112,7 +112,7 @@ export const NESDesignSystem: DesignSystem = {
     xl: '1280px',
     '2xl': '1536px',
   }
-};
+}
 export const MinimalDesignSystem: DesignSystem = {
   name: 'Minimal Clean',
   tokens: {
@@ -190,13 +190,13 @@ export const MinimalDesignSystem: DesignSystem = {
     xl: '1280px',
     '2xl': '1536px',
   }
-};
+}
 // ======================================================================
 // DESIGN SYSTEM UTILITIES
 // ======================================================================
 export function createDesignSystem(
   name: string
-  customTokens: Partial<CustomDesignTokens>
+  customTokens: Partial<CustomDesignTokens>;
   options: {
     baseSystem?: DesignSystem;
     animations?: Partial<AnimationConfig>;
@@ -216,24 +216,24 @@ export function createDesignSystem(
     components: { ...baseSystem.components },
     animations: { ...baseSystem.animations, ...options.animations },
     breakpoints: { ...baseSystem.breakpoints, ...options.breakpoints },
-  };
+  }
 }
 export function generateCSSVariables(designSystem: DesignSystem): string {
   const { tokens, cssVariables } = designSystem;
   let css = ':root {\n';
   // Add design tokens as CSS variables
   Object.entries(tokens.colors).forEach(([key, value]) => {
-    css += `  --enhanced-bits-${key}: ${value};\n`;
+    css += `  --enhanced-bits-${key}: ${value}\n`;
   });
   Object.entries(tokens.spacing).forEach(([key, value]) => {
-    css += `  --enhanced-bits-spacing-${key}: ${value};\n`;
+    css += `  --enhanced-bits-spacing-${key}: ${value}\n`;
   });
   Object.entries(tokens.typography.fontSize).forEach(([key, value]) => {
-    css += `  --enhanced-bits-text-${key}: ${value};\n`;
+    css += `  --enhanced-bits-text-${key}: ${value}\n`;
   });
   // Add pre-defined CSS variables
   Object.entries(cssVariables).forEach(([key, value]) => {
-    css += `  ${key}: ${value};\n`;
+    css += `  ${key}: ${value}\n`;
   });
   css += '}\n';
   return css;
@@ -274,12 +274,12 @@ export function createComponentVariant(
       boxShadow: 'var(--minimal-shadow, 0 1px 3px 0 rgba(0, 0, 0, 0.1))',
     },
     custom: {}
-  };
+  }
   return {
     ...baseStyles,
     ...variantStyles[variant],
     ...customStyles
-  };
+  }
 }
 export function withResponsiveStyles(
   baseStyles: Record<string, string>,
@@ -289,14 +289,14 @@ export function withResponsiveStyles(
   let css = '';
   // Base styles
   Object.entries(baseStyles).forEach(([property, value]) => {
-    css += `${property}: ${value}; `;
+    css += `${property}: ${value} `;
   });
   // Responsive styles
   Object.entries(responsiveStyles).forEach(([breakpoint, styles]) => {
     if (breakpoints[breakpoint as keyof BreakpointConfig]) {
       css += `@media (min-width: ${breakpoints[breakpoint as keyof BreakpointConfig]}) { `;
       Object.entries(styles).forEach(([property, value]) => {
-        css += `${property}: ${value}; `;
+        css += `${property}: ${value} `;
       });
       css += '} ';
     }
@@ -331,7 +331,7 @@ export function createAccessibleColorPalette(baseColor: string): {
     700: `color-mix(in srgb, ${baseColor} 60%, black)`,
     800: `color-mix(in srgb, ${baseColor} 40%, black)`,
     900: `color-mix(in srgb, ${baseColor} 20%, black)`,
-  };
+  }
 }
 export function validateAccessibility(designSystem: DesignSystem): {
   isValid: boolean;
@@ -355,7 +355,7 @@ export function validateAccessibility(designSystem: DesignSystem): {
     isValid: errors.length === 0,
     warnings,
     errors
-  };
+  }
 }
 // ======================================================================
 // SSR-SAFE THEME PROVIDER
@@ -391,8 +391,8 @@ export function createThemeContext(initialSystem: DesignSystem = NESDesignSystem
           ...currentSystem.tokens,
           ...tokens
         }
-      };
+      }
       applyDesignSystemToDocument(currentSystem);
     }
-  };
+  }
 }

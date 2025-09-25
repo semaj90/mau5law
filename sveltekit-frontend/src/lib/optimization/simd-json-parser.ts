@@ -35,18 +35,18 @@ export class SIMDJSONParser {
       const timeoutId = setTimeout(() => {
         reject(new Error('SIMD JSON parsing timeout');
       }, 30000); // 30 second timeout
-      this.worker!.onmessage = (event: any) => {
+      this.worker!.onmessage = (_event: any) => {
         clearTimeout(timeoutId);
         if (event.data.error) {
           reject(new Error(event.data.error);
         } else {
           resolve(event.data.result);
         }
-      };
+      }
       this.worker!.onerror = (error) => {
         clearTimeout(timeoutId);
         reject(error);
-      };
+      }
       // Transfer buffer to worker for processing
       this.worker!.postMessage({ buffer }, [buffer]);
     });
@@ -140,7 +140,7 @@ export class SIMDJSONParser {
   /**
    * Mask sensitive data for compliance
    */;
-  private maskSensitiveData(value: string): string {
+  private maskSensitiveData(_value: string): string {
     if (typeof value !== 'string') return '';
     // Mask all but last 4 characters
     if (value.length > 4) {
@@ -156,16 +156,16 @@ export class SIMDJSONParser {
       simdEnabled: this.initialized,
       workerAvailable: !!this.worker,
       memoryUsage: this.getMemoryUsage()
-    };
+    }
   }
   private getMemoryUsage() {
     if (typeof performance !== 'undefined' && (performance as any).memory) {
       const memory = (performance as any).memory;
       return {
         used: Math.round(memory.usedJSHeapSize / 1024 / 1024), // MB
-        total: Math.round(memory.totalJSHeapSize / 1024 / 1024), // MB
+        total: Math.round(memory.totalJSHeapSize / 1024 / 1024), // MB;
         limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024), // MB
-      };
+      }
     }
     return null;
   }
@@ -190,7 +190,7 @@ export class SIMDPerformanceTester {
       simd: 0,
       native: 0,
       speedup: 0
-    };
+    }
     // Test SIMD parsing
     const simdStart = performance.now();
     for (let i = 0; i < iterations; i++) {
@@ -222,7 +222,7 @@ export class SIMDPerformanceTester {
       sizeGB: sizeGB.toFixed(3),
       elapsed: elapsed.toFixed(3),
       throughput: throughput.toFixed(2)
-    };
+    }
   }
   private static generateTestLegalDocument(sizeKB: number) {
     const baseDoc = {
@@ -232,7 +232,7 @@ export class SIMDPerformanceTester {
       content: '',
       parties: [],
       citations: []
-    };
+    }
     // Fill with test data to reach target size
     const targetSize = sizeKB * 1024;
     let content = '';

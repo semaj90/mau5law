@@ -24,15 +24,15 @@ class DockerResourceOptimizer {
   constructor(config?: any) {
     // Mock implementation - no actual Docker optimization
   }
-  async cacheWithCompression(key: string, data: any) {
+  async cacheWithCompression(_key: string, data: any) {
     // Simple compression mock
     const jsonData = JSON.stringify(data);
     return {
       key,
       data: jsonData
-      compressed: true
+      compressed: true;
       size: jsonData.length * 0.7 // Simulate 30% compression
-    };
+    }
   }
   dispose() {
     // Mock cleanup
@@ -302,8 +302,7 @@ export class AdvancedMemoryOptimizer {
   /**
    * Intelligent cache layer selection based on data type and access patterns
    */
-  async selectOptimalCacheLayer(
-    key: string
+  async selectOptimalCacheLayer(_key: string
     dataType: string
     size: number
     accessFrequency: number;
@@ -327,7 +326,7 @@ export class AdvancedMemoryOptimizer {
       score += layer.hitRate * 10;
       // Response time factor (inverse)
       score += Math.max(0, 100 - layer.avgResponseTime);
-      return { layer, score };
+      return { layer, score }
     });
     // Return top 3 layers
     return scoredLayers
@@ -362,7 +361,7 @@ export class AdvancedMemoryOptimizer {
    * K-means clustering using worker threads for CPU-intensive operations
    */
   async performKMeansClustering(
-    data: any[]
+    data: any[];
     k: number = 5;
   ): Promise<ClusterMetrics[]> {
     console.log(
@@ -382,7 +381,7 @@ export class AdvancedMemoryOptimizer {
    * Perform k-means clustering using worker thread
    */
   private async performKMeansWithWorker(
-    data: any[]
+    data: any[];
     k: number;
   ): Promise<ClusterMetrics[]> {
     const worker = await this.getKMeansWorker();
@@ -395,7 +394,7 @@ export class AdvancedMemoryOptimizer {
         if (message.type === "progress") {
           console.log(`📊 K-means progress: iteration ${message.iteration}`);
         }
-      };
+      }
       // Set up result handler
       const messageHandler = (message: any) => {
         try {
@@ -421,7 +420,7 @@ export class AdvancedMemoryOptimizer {
           clearTimeout(timeout);
           reject(error);
         }
-      };
+      }
       worker.on("message", progressHandler);
       worker.on("message", messageHandler);
       // Send clustering task to worker
@@ -440,7 +439,7 @@ export class AdvancedMemoryOptimizer {
    * Original in-process k-means for smaller datasets
    */
   private async performKMeansInProcess(
-    data: any[]
+    data: any[];
     k: number;
   ): Promise<ClusterMetrics[]> {
     // Keep original implementation for small datasets
@@ -576,7 +575,7 @@ export class AdvancedMemoryOptimizer {
         confidence: request.priority || 0.5,
         timestamp: Date.now()
       }
-    };
+    }
     // Use semantic search to find optimal cluster
     const searchResults = await this.somNetwork.semanticSearch(
       request.content || "",
@@ -676,7 +675,7 @@ export class AdvancedMemoryOptimizer {
    * K-means clustering using worker threads for parallel processing
    */
   async performKMeansClusteringWithWorkers(
-    data: any[]
+    data: any[];
     k: number = 5;
   ): Promise<ClusterMetrics[]> {
     console.log(
@@ -713,7 +712,7 @@ export class AdvancedMemoryOptimizer {
             separability: cluster.separability || 0,
             memoryUsage: cluster.memoryUsage,
             processingTime: processingTime / k
-          };
+          }
           this.clusters.set(`cluster_${index}`, metrics);
           return metrics;
         }
@@ -736,7 +735,7 @@ export class AdvancedMemoryOptimizer {
   private sendWorkerMessage(worker: Worker, message: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const messageId = crypto.randomUUID();
-      const messageWithId = { ...message, messageId };
+      const messageWithId = { ...message, messageId }
       const timeout = setTimeout(() => {
         worker.off("message", messageHandler);
         reject(new Error("Worker timeout");
@@ -751,7 +750,7 @@ export class AdvancedMemoryOptimizer {
             resolve(response);
           }
         }
-      };
+      }
       worker.on("message", messageHandler);
       worker.postMessage(messageWithId);
     });
@@ -1006,7 +1005,7 @@ export class AdvancedMemoryOptimizer {
   }
   private async allocateToPool(
     poolId: string
-    request: any
+    request: any;
     size: number;
   ): Promise<void> {
     const pool = this.memoryPools.get(poolId);
@@ -1028,7 +1027,7 @@ export class AdvancedMemoryOptimizer {
     return cluster.cohesion;
   }
   private async preloadToLayer(
-    layer: CacheLayer
+    layer: CacheLayer;
     cluster: ClusterMetrics;
   ): Promise<void> {
     // Implementation depends on layer type
@@ -1212,7 +1211,7 @@ export class AdvancedMemoryOptimizer {
       })),
       clusters: Array.from(this.clusters.values()),
       cacheLayers: Array.from(this.cacheLayers.values())
-    };
+    }
   }
   /**
    * Cleanup resources including worker threads
@@ -1274,7 +1273,7 @@ export class AdvancedMemoryOptimizer {
           memoryPool,
           processedAt: Date.now(),
           simdOptimized: true
-        };
+        }
         return doc;
       })
     );

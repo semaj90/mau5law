@@ -98,7 +98,7 @@ export default ;
     enableOcr: false
     enableEmbeddings: false
     enableSummarization: false
-    isAdmissible: false
+    isAdmissible: false;
   });
   let errors = $state<Record<string, string[]>([]) >( );
   // Options
@@ -128,23 +128,23 @@ export default ;
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   // File handling
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     if (!disabled) isDragOver = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
     if (disabled) return;
     const files = Array.from(event.dataTransfer?.files || []);
     addFiles(files);
   }
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     if (target.files) addFiles(Array.from(target.files));
   }
   function addFiles(files: File[]) {
@@ -161,7 +161,7 @@ export default ;
         const reader = new FileReader();
         reader.onload = (e) => {
           previews[file.name] = e.target?.result as string;
-        };
+        }
         reader.readAsDataURL(file);
       }
     });
@@ -209,15 +209,15 @@ export default ;
       for (const file of selectedFiles) {
         currentUploadFile = file.nam;
         uploadProgress[file.name] = 0;
-        const fileData: FileUpload = { ...formState, file };
+        const fileData: FileUpload = { ...formState, file }
         await simulateUpload(file.name); // replace with actual upload logic later
         formDataArray.push(fileData);
       }
       onupload?.({ files: selectedFiles, formData: formDataArray });
       // reset
       selectedFiles = [];
-      previews = {};
-      uploadProgress = {};
+      previews = {}
+      uploadProgress = {}
       if (fileInput) fileInput.value = "";
     } catch (err) {
       console.error("Upload failed:", err);
@@ -281,7 +281,7 @@ export default ;
       class="border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer border-muted-foreground border-opacity-25 hover: border-primary hover:border-opacity-50";
       class:border-primary={isDragOver}
       class:bg-primary/5={isDragOver}
-      class:opacity-50={disabled};
+      class:opacity-50={disabled}
       class:cursor-not-allowed={disabled}
       ondragover={handleDragOver}
       ondragleave={handleDragLeave}

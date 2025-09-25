@@ -28,7 +28,7 @@
   const modelStatusDisplay = derived(
     [currentModelInfo, performanceMetrics],
     ([$model, $metrics]) => ({
-      current: $model
+      current: $model;
       metrics: $metrics
       isHealthy: $model && $metrics.some(m => m.modelId === $model.id && m.successRate > 0.7);
     })
@@ -64,7 +64,7 @@
             console.log('🔧 Cache optimized:', data || payload);
             break;
         }
-      };
+      }
       // Initialize the worker
       worker.postMessage({ type: 'INIT_WASM' });
     } catch (error) {
@@ -174,12 +174,11 @@
     }
   }
 </script>
+
 <div class="intelligent-orchestrator-dashboard min-h-screen bg-gray-50 p-6">
   <!-- Header -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">
-      🧠 Intelligent Model Orchestrator
-    </h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">🧠 Intelligent Model Orchestrator</h1>
     <p class="text-gray-600">
       Multi-model AI system with auto-switching, predictive loading, and self-prompting intelligence
     </p>
@@ -190,7 +189,7 @@
     <div class="flex gap-4 mb-4">
       <input
         bind:value={queryInput}
-        onkeydown={(e) => e.key === 'Enter' && processQuery()}
+        onkeydown={e => e.key === 'Enter' && processQuery()}
         placeholder="Ask me anything... (the system will intelligently select the best model)"
         class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         disabled={isProcessing}
@@ -213,7 +212,8 @@
         <h3 class="text-lg font-medium text-gray-800 mb-3">🎯 Processing Results</h3>
         {#if $results.error}
           <div class="text-red-600">
-            <strong>Error:</strong> {$results.error}
+            <strong>Error:</strong>
+            {$results.error}
           </div>
         {:else}
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -223,7 +223,9 @@
             </div>
             <div>
               <div class="text-sm text-gray-600">Estimated Latency:</div>
-              <div class="text-lg font-semibold {$results.estimatedLatency < 500 ? 'text-green-600' : 'text-yellow-600'}">
+              <div
+                class="text-lg font-semibold {$results.estimatedLatency < 500 ? 'text-green-600' : 'text-yellow-600'}"
+              >
                 {formatLatency($results.estimatedLatency)}
               </div>
             </div>
@@ -413,7 +415,11 @@
                     ✗ Reject
                   </button>
                 {:else}
-                  <span class="px-3 py-1 rounded text-xs {$userFeedback.get(suggestion.id) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                  <span
+                    class="px-3 py-1 rounded text-xs {$userFeedback.get(suggestion.id)
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'}"
+                  >
                     {$userFeedback.get(suggestion.id) ? '✓ Accepted' : '✗ Rejected'}
                   </span>
                 {/if}
@@ -451,7 +457,13 @@
                 <td class="px-4 py-2 font-medium">{metric.modelId}</td>
                 <td class="px-4 py-2 text-center">{formatLatency(metric.averageLatency)}</td>
                 <td class="px-4 py-2 text-center">
-                  <span class="px-2 py-1 rounded text-xs {metric.successRate > 0.8 ? 'bg-green-100 text-green-800' : metric.successRate > 0.6 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}">
+                  <span
+                    class="px-2 py-1 rounded text-xs {metric.successRate > 0.8
+                      ? 'bg-green-100 text-green-800'
+                      : metric.successRate > 0.6
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'}"
+                  >
                     {(metric.successRate * 100).toFixed(1)}%
                   </span>
                 </td>
@@ -468,17 +480,28 @@
     </div>
   {/if}
 </div>
+
 <style>
   .intelligent-orchestrator-dashboard {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family:
+      'Inter',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
   }
   /* Responsive animations */
   .animate-spin {
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   /* Custom scrollbar for overflow areas */
   .overflow-x-auto::-webkit-scrollbar {

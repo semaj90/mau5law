@@ -22,7 +22,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
   private iconMesh?: THREE.Mesh;
   private loadingSpinner?: THREE.Group;
   private options: YoRHaButton3DOptions;
-  constructor(options: YoRHaButton3DOptions = {}) {
+  constructor(_options: YoRHaButton3DOptions = {}) {
     const style = YoRHaButton3D.getVariantStyle(options.variant || 'primary', options.size || 'medium');
     super({
       ...style,
@@ -112,7 +112,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       bevelSegments: 4,
       bevelSize: radius * 0.1,
       bevelThickness: depth * 0.1
-    };
+    }
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
   }
   private createText(): void {
@@ -250,7 +250,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       glow: resolved.glow,
       opacity: resolved.opacity,
       borderWidth: resolved.borderWidth || (variant === 'ghost' ? 0.03 : 0.02)
-    };
+    }
   }
   // Public methods
   public setText(text: string): void {

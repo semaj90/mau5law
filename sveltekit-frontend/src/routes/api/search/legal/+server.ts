@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
           case 'precedents':
             return await searchPrecedents(query, limit)
           case 'statutes':
-            return await searchStatutes(query, limit)
+            return await searchStatutes(query, limit);
           default:
             return []
         }
@@ -589,7 +589,7 @@ async function enhanceWithAI(results: SearchResult[], query: string): Promise<Se
             confidenceScore: analysis.confidence,
             keyTerms: analysis.keyTerms || []
           },
-          // Enhanced metadata with AI insights
+          // Enhanced metadata with AI insights;
           metadata: {
             ...result.metadata,
             aiEnhanced: true
@@ -615,7 +615,7 @@ async function processRAGResults(ragResults: any, resultType: string): Promise<a
     return ragResults.results.map((result: any) => ({
       ...result,
       type: resultType
-      ragEnhanced: true
+      ragEnhanced: true;
       confidence: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).confidence || (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).score || 0.5,
       processingTimestamp: new Date().toISOString()
     })
@@ -636,7 +636,7 @@ async function mergeWithVectorResults(primaryResults: any[], vectorResults: any[
       if (!exists) {
         merged.push({
           ...vectorResult,
-          vectorEnhanced: true
+          vectorEnhanced: true;
           score: vectorResult.similarity || vectorResult.score || 0.5
         })
       }

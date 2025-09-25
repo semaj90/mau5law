@@ -14,13 +14,13 @@ export interface TodoEntry {
   title: string;
   description: string;
   stackTrace?: string;
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
   llmAttempts?: number;
   memoryUsage?: {
     heapUsed: number;
     heapTotal: number;
     external: number;
-  };
+  }
 }
 export interface LLMMisfireData {
   model: string;
@@ -73,7 +73,7 @@ class TodoAutogen {
         timestamp: Date.now(),
         memoryUsage: this.getMemoryUsage()
       }
-    };
+    }
     await this.saveTodo(todo, 'llm-misfires');
     // Auto-queue for CrewAI review if critical
     if (todo.severity === 'critical') {
@@ -92,13 +92,13 @@ class TodoAutogen {
       category: 'typescript',
       severity: error.includes('error TS') ? 'high' : 'medium',
       title: `TypeScript Error: ${file}${lineNumber ? `:${lineNumber}` : ''}`,
-      description: error
+      description: error;
       context: {
         file,
         lineNumber,
         memoryUsage: this.getMemoryUsage()
       }
-    };
+    }
     await this.saveTodo(todo, 'typescript');
     return id;
   }
@@ -119,7 +119,7 @@ class TodoAutogen {
         ...context,
         memoryUsage: this.getMemoryUsage()
       }
-    };
+    }
     await this.saveTodo(todo, 'runtime');
     return id;
   }
@@ -140,7 +140,7 @@ class TodoAutogen {
         details,
         memoryUsage: this.getMemoryUsage()
       }
-    };
+    }
     await this.saveTodo(todo, 'performance');
     return id;
   }
@@ -167,7 +167,7 @@ class TodoAutogen {
       priority: todo.severity,
       timestamp: new Date().toISOString(),
       instructions: this.generateReviewInstructions(todo)
-    };
+    }
     try {
       await writeFile(queueFile, JSON.stringify(queueEntry, null, 2);
       console.log(`🤖 Queued for ${agent} review: ${todo.id}`);
@@ -199,7 +199,7 @@ class TodoAutogen {
     if (typeof process !== 'undefined' && process.memoryUsage) {
       return process.memoryUsage();
     }
-    return { heapUsed: 0, heapTotal: 0, external: 0 };
+    return { heapUsed: 0, heapTotal: 0, external: 0 }
   }
 }
 // Singleton instance
@@ -209,7 +209,7 @@ export const todoAutogen = new TodoAutogen();
  */
 export async function retryLLMCall<T>(
   llmCall: () => Promise<T>,
-  model: string
+  model: string;
   prompt: string
   maxRetries = 3;
 ): Promise<T> {
@@ -224,7 +224,7 @@ export async function retryLLMCall<T>(
       if (attempt >= 2) {
         await todoAutogen.logLLMMisfire({
           model,
-          prompt: prompt.substring(0, 500) + '...', // Truncate for logging
+          prompt: prompt.substring(0, 500) + '...', // Truncate for logging;
           error: error.message,
           retryCount: attempt
         });

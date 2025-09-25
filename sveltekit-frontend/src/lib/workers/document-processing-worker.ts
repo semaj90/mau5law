@@ -35,7 +35,7 @@ export interface DocumentChunk {
     startPosition: number;
     endPosition: number;
     wordCount: number;
-  };
+  }
 }
 export interface EmbeddingResult {
   chunkId: string;
@@ -132,11 +132,11 @@ class DocumentProcessingWorker {
       processingType: 'full_analysis',
       priority: 5,
       timestamp: new Date().toISOString()
-    };
+    }
     await this.processJob(job);
   }
   private async processJob(job: DocumentProcessingJob): Promise<void> {
-    const context: ProcessingContext = { job };
+    const context: ProcessingContext = { job }
     try {
       console.log(`📄 Processing document: ${job.documentId} (${job.originalName})`);
       // Update status to processing
@@ -239,7 +239,7 @@ class DocumentProcessingWorker {
       const chunkId = uuidv4();
       chunks.push({
         id: chunkId
-        content: chunkContent
+        content: chunkContent;
         metadata: {
           chunkIndex: chunks.length,
           startPosition: i
@@ -303,7 +303,7 @@ class DocumentProcessingWorker {
         embedding_model: embedding ? embedding?.model || "unknown" // @ts-ignore - Model property access : null
         created_at: new Date(),
         updated_at: new Date()
-      };
+      }
       try {
         await db.insert(schemaAny.document_chunks).values(values);
       } catch (err) {

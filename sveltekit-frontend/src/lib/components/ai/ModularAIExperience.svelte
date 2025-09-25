@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
             result: `Processed: ${t5Text.substring(0, 50)}... (${t5Task})`,
             processingTime: Math.random() * 100 + 50,
             recommendations: ['Use WebGPU for faster processing', 'Try different T5 tasks'];
-          };
+          }
         }
       } else {
         // Dimensional Array Processing
@@ -123,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
             processingTime: Math.random() * 50 + 20,
             gpuMemoryUsed: dataArray.byteLength,
             recommendations: ['Enable WebGPU for GPU acceleration', 'Try different kernel sizes'];
-          };
+          }
         }
       }
       processingTime = performance.now() - startTime;
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
     recommendations = {
       ...recommendations,
       ...modularRecs
-    };
+    }
   }
   function switchModule(moduleName: string) {
     if (!enableModularSwitching) return;
@@ -211,6 +211,7 @@ https://svelte.dev/e/js_parse_error -->
     return String(arr);
   }
 </script>
+
 <div class="modular-ai-container p-6 max-w-6xl mx-auto">
   <div class="header mb-6">
     <h1 class="text-3xl font-bold text-gray-800 mb-2">🧠 Modular AI Experience</h1>
@@ -251,7 +252,9 @@ https://svelte.dev/e/js_parse_error -->
       {#if !useT5}
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-2" for="input-data-commasepa">Input Data (comma-separated)</label><input id="input-data-commasepa"
+            <label class="block text-sm font-medium mb-2" for="input-data-commasepa">Input Data (comma-separated)</label
+            ><input
+              id="input-data-commasepa"
               type="text"
               bind:value={inputData}
               class="w-full p-3 border border-gray-300 rounded-lg"
@@ -259,7 +262,8 @@ https://svelte.dev/e/js_parse_error -->
             />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2" for="attention-weights">Attention Weights</label><input id="attention-weights"
+            <label class="block text-sm font-medium mb-2" for="attention-weights">Attention Weights</label><input
+              id="attention-weights"
               type="text"
               bind:value={attentionWeights}
               class="w-full p-3 border border-gray-300 rounded-lg"
@@ -267,13 +271,8 @@ https://svelte.dev/e/js_parse_error -->
             />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2" for="kernel-size-kernelsi">Kernel Size: {kernelSize}</label><input id="kernel-size-kernelsi"
-              type="range"
-              bind:value={kernelSize}
-              min="2"
-              max="16"
-              class="w-full"
-            />
+            <label class="block text-sm font-medium mb-2" for="kernel-size-kernelsi">Kernel Size: {kernelSize}</label
+            ><input id="kernel-size-kernelsi" type="range" bind:value={kernelSize} min="2" max="16" class="w-full" />
           </div>
         </div>
       {:else}
@@ -287,7 +286,8 @@ https://svelte.dev/e/js_parse_error -->
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2" for="input-text">Input Text</label><textarea id="input-text"
+            <label class="block text-sm font-medium mb-2" for="input-text">Input Text</label><textarea
+              id="input-text"
               bind:value={t5Text}
               rows="4"
               class="w-full p-3 border border-gray-300 rounded-lg"
@@ -364,10 +364,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if computationHistory.length > 0}
         <div class="recommendation-nier-bits-card bg-green-50 p-4 rounded-lg border border-green-200">
           <h4 class="font-semibold text-green-800 mb-2">🔄 Resume</h4>
-          <button
-            onclick={pickUpWhereLeftOff}
-            class="text-sm text-green-700 hover:text-green-900 underline"
-          >
+          <button onclick={pickUpWhereLeftOff} class="text-sm text-green-700 hover:text-green-900 underline">
             Pick up where you left off?
           </button>
         </div>
@@ -432,12 +429,15 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+
 <style>
   .modular-ai-container {
     font-family: 'Inter', system-ui, sans-serif;
   }
   .recommendation-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
   .recommendation-card:hover {
     transform: translateY(-2px);

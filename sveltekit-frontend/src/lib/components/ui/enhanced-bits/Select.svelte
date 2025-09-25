@@ -25,7 +25,7 @@
     /** Selected value */
     value?: string;
     /** Callback when value changes */
-    onValueChange?: (value: string) => void;
+    onValueChange?: (_value: string) => void;
     /** Available options */
     options: SelectOption[];
     /** Placeholder text */
@@ -76,7 +76,7 @@
   let groupedOptions = $derived((() => {
     const hasCategories = options.some(option => option.category);
     if (!hasCategories) {
-      return { '': options };
+      return { '': options }
     }
     return options.reduce((acc, option) => {
       const category = option.category || 'Other';
@@ -125,6 +125,7 @@
     options.find(option => option.value === value)?.label || placeholder
   );
 </script>
+
 <div class="select-wrapper" class:w-full={fullWidth}>
   <SelectRoot {value} valuechange={handleValueChange} {disabled} type="single">
     <SelectTrigger class={triggerClasses}>
@@ -171,15 +172,12 @@
   <SelectItem
     value={option.value}
     disabled={option.disabled}
-    class={cn(
-      'bits-select-item',
-      {
-        'yorha-priority-high': evidenceCategory && option.value.includes('critical'),
-        'yorha-priority-medium': evidenceCategory && option.value.includes('evidence'),
-        'opacity-50 cursor-not-allowed': option.disabled,
-        'font-gothic': legal
-      }
-    )}
+    class={cn('bits-select-item', {
+      'yorha-priority-high': evidenceCategory && option.value.includes('critical'),
+      'yorha-priority-medium': evidenceCategory && option.value.includes('evidence'),
+      'opacity-50 cursor-not-allowed': option.disabled,
+      'font-gothic': legal,
+    })}
   >
     <div class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <Check class="h-4 w-4" />
@@ -196,10 +194,13 @@
     </div>
   </SelectItem>
 {/snippet}
-<style>/* @unocss-include */ .select-wrapper {
+
+<style>/* @unocss-include */ {}
+  .select-wrapper {
     position: relative;
   }
-/* Enhanced select animations for legal AI context */ :global(.bits-select-content) {
+/* Enhanced select animations for legal AI context */ {}
+  :global(.bits-select-content) {
     animation: select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes select-content-show {
@@ -212,8 +213,9 @@
       transform: scale(1) translateY(0);
     }
   }
-/* Legal AI specific styling */ :global(.nier-bits-select) {
-background: linear-gradient( 135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100% );
+/* Legal AI specific styling */ {}
+  :global(.nier-bits-select) {
+    background: linear-gradient(135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100%);
     border: 2px solid var(--color-nier-border-secondary);
     transition: all 0.2s ease;
   }
@@ -222,9 +224,13 @@ background: linear-gradient( 135deg, var(--color-nier-bg-primary) 0%, var(--colo
     box-shadow: 0 0 0 1px var(--color-nier-border-primary);
   }
   :global(.nier-panel-elevated) {
-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+box-shadow: {}
+0 10px 15px -3px rgba(0, 0, 0, 0.1), {}
+0 4px 6px -2px rgba(0, 0, 0, 0.05), {}
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-/* Evidence category specific styling */ :global([data-evidence-category] .bits-select-item) {
+/* Evidence category specific styling */ {}
+  :global([data-evidence-category] .bits-select-item) {
     position: relative;
   }
   :global($1) {
@@ -243,16 +249,21 @@ box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.
   :global([data-evidence-category] .bits-select-item[data-highlighted]::before) {
     opacity: 1;
   }
-/* Case type specific styling */ :global([data-case-type] .bits-select-content) {
-background-image: radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(58, 55, 47, 0.05) 0%, transparent 50%);
+/* Case type specific styling */ {}
+  :global([data-case-type] .bits-select-content) {
+background-image: {}
+radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, transparent 50%), {}
+      radial-gradient(circle at 80% 20%, rgba(58, 55, 47, 0.05) 0%, transparent 50%);
   }
-/* AI recommendations styling */ :global([data-ai-recommendations] .bits-select-item) {
+/* AI recommendations styling */ {}
+  :global([data-ai-recommendations] .bits-select-item) {
     transition: all 0.2s ease;
   }
   :global($1) {
-background: linear-gradient( 90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100% );
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);
   }
-/* Enhanced focus states for accessibility */ :global($1) {
+/* Enhanced focus states for accessibility */ {}
+  :global($1) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: 2px;
   }
@@ -260,7 +271,8 @@ background: linear-gradient( 90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: -2px;
   }
-/* Responsive adjustments */ @media (max-width: 640px) {
+/* Responsive adjustments */ {}
+  @media (max-width: 640px) {
     :global(.bits-select-content) {
       max-height: 60vh;
     }

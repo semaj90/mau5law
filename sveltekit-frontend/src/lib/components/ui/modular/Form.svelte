@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
     children?: import('svelte').Snippet;
     header?: import('svelte').Snippet;
     footer?: import('svelte').Snippet;
-    onsubmit?: (event: SubmitEvent) => void;
+    onsubmit?: (_event: SubmitEvent) => void;
     // Form attributes
     method?: 'get' | 'post';
     action?: string;
@@ -68,10 +68,11 @@ https://svelte.dev/e/js_parse_error -->
   // Computed class names
   let formClass = $derived(cn(formVariants({ variant, size }), class));
   // Handle form submission
-  function handleSubmit(event: SubmitEvent) {
+  function handleSubmit(_event: SubmitEvent) {
     onsubmit?.(event);
   }
 </script>
+
 <form
   class={formClass}
   {method}
@@ -79,7 +80,8 @@ https://svelte.dev/e/js_parse_error -->
   {enctype}
   {target}
   {novalidate}
-  {autocomplete} onsubmit={handleSubmit}
+  {autocomplete}
+  onsubmit={handleSubmit}
   {...restProps}
 >
   <!-- Form Header -->
@@ -101,21 +103,30 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </form>
-<style>/* YoRHa-specific styling */ :global(.yorha-form input), :global(.yorha-form textarea), :global(.yorha-form select) {
+
+<style>/* YoRHa-specific styling */ {}
+:global(.yorha-form input), {}
+:global(.yorha-form textarea), {}
+  :global(.yorha-form select) {
     background-color: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(212, 175, 55, 0.6);
     color: rgb(212, 175, 55);
     font-family: 'JetBrains Mono', monospace;
   }
-:global(.yorha-form input:focus), :global(.yorha-form textarea:focus), :global(.yorha-form select:focus) {
+:global(.yorha-form input:focus), {}
+:global(.yorha-form textarea:focus), {}
+  :global(.yorha-form select:focus) {
     border-color: rgb(212, 175, 55);
     box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
   }
-/* Legal form styling */ :global(.legal-form label) {
+/* Legal form styling */ {}
+  :global(.legal-form label) {
     color: rgb(29, 78, 216);
     font-weight: 600;
   }
-:global(.legal-form input[required] + label::after), :global(.legal-form textarea[required] + label::after), :global($1) {
+:global(.legal-form input[required] + label::after), {}
+:global(.legal-form textarea[required] + label::after), {}
+  :global($1) {
     content: ' *';
     color: rgb(239, 68, 68);
   }

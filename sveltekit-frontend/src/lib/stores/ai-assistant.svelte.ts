@@ -52,7 +52,7 @@ export class AIAssistantStore {
       'ollama': this.calculateBackendScore('ollama', complexity, hasLegalContext, requiresSpeed, healthScores.ollama),
       'webasm': this.calculateBackendScore('webasm', complexity, hasLegalContext, requiresSpeed, healthScores.webasm),
       'go-micro': this.calculateBackendScore('go-micro', complexity, hasLegalContext, requiresSpeed, healthScores['go-micro'])
-    };
+    }
     // Select backend with highest score
     const optimalBackend = Object.entries(backendScores).reduce((a, b) =>
       backendScores[a[0] as Backend] > backendScores[b[0] as Backend] ? a : b
@@ -90,12 +90,12 @@ export class AIAssistantStore {
           backend,
           legalContext: options?.legalContext
         }
-      };
+      }
       // Add to messages and cache
       this.messages.push(userMessage);
       this.cacheMessage(userMessage);
       // Send to backend
-      const response = await this.sendToBackend(backend, [...contextMessages, userMessage]);
+      // removed unused response assignment
       // Create assistant message
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -110,7 +110,7 @@ export class AIAssistantStore {
           processingTime: performance.now() - startTime,
           confidence: (response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).confidence
         }
-      };
+      }
       // Add to messages and cache
       this.messages.push(assistantMessage);
       this.cacheMessage(assistantMessage);
@@ -178,7 +178,7 @@ export class AIAssistantStore {
       if (message.content.toLowerCase().includes(queryLower)) {
         results.push({
           item: message
-          score: 0.5, // Simple scoring
+          score: 0.5, // Simple scoring;
           matches: []
         });
       }
@@ -211,7 +211,7 @@ export class AIAssistantStore {
       'ollama': '/api/ai/chat',
       'webasm': '/api/ai/webasm-chat',
       'go-micro': '/api/ai/go-micro-chat'
-    };
+    }
     return endpoints[backend];
   }
   /**
@@ -222,14 +222,14 @@ export class AIAssistantStore {
       messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
       temperature: this.config.temperature,
       model: this.config?.model || "unknown" // @ts-ignore - Model property access
-    };
+    }
     switch (backend) {
       case 'vllm':
-        return { ...basePayload, openaiModel: 'mistralai/Mistral-7B-Instruct-v0.3' };
+        return { ...basePayload, openaiModel: 'mistralai/Mistral-7B-Instruct-v0.3' }
       case 'webasm':
-        return { ...basePayload, useWASM: true, enableGPU: true };
+        return { ...basePayload, useWASM: true, enableGPU: true }
       case 'go-micro':
-        return { ...basePayload, service: 'legal-analysis', priority: 'high' };
+        return { ...basePayload, service: 'legal-analysis', priority: 'high' }
       default:
         return basePayload;
     }
@@ -242,28 +242,28 @@ export class AIAssistantStore {
       text: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).text || (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).response || (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).choices?.[0]?.message?.content || '',
       model: data?.model || "unknown" // @ts-ignore - Model property access || this.config?.model || "unknown" // @ts-ignore - Model property access,
       backend
-    };
+    }
     switch (backend) {
       case 'vllm':
         return {
           ...baseResponse,
           tokenCount: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).usage?.total_tokens,
           confidence: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).confidence
-        };
+        }
       case 'webasm':
         return {
           ...baseResponse,
           tokenCount: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).tokensGenerated,
           confidence: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).confidence,
           processingPath: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).processingPath
-        };
+        }
       case 'go-micro':
         return {
           ...baseResponse,
           tokenCount: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).tokens,
           confidence: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).confidence,
           processingNodes: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).processingNodes
-        };
+        }
       default:
         return baseResponse;
     }
@@ -331,7 +331,7 @@ export class AIAssistantStore {
    * Calculate backend score for selection algorithm
    */
   private calculateBackendScore(
-    backend: Backend
+    backend: Backend;
     complexity: string
     hasLegalContext: boolean
     requiresSpeed: boolean
@@ -344,16 +344,16 @@ export class AIAssistantStore {
       'ollama': { simple: 0.9, medium: 0.8, complex: 0.9 },
       'webasm': { simple: 1.0, medium: 0.6, complex: 0.3 },
       'go-micro': { simple: 0.6, medium: 0.8, complex: 1.0 }
-    };
+    }
     score += complexityScores[backend][complexity as keyof typeof complexityScores[Backend]] * 0.3;
     // Legal context bonus
     if (hasLegalContext) {
-      const legalBonuses = { 'vllm': 0.2, 'ollama': 0.3, 'webasm': 0.1, 'go-micro': 0.3 };
+      const legalBonuses = { 'vllm': 0.2, 'ollama': 0.3, 'webasm': 0.1, 'go-micro': 0.3 }
       score += legalBonuses[backend];
     }
     // Speed requirement scoring
     if (requiresSpeed) {
-      const speedScores = { 'vllm': 0.6, 'ollama': 0.8, 'webasm': 1.0, 'go-micro': 0.7 };
+      const speedScores = { 'vllm': 0.6, 'ollama': 0.8, 'webasm': 1.0, 'go-micro': 0.7 }
       score += speedScores[backend] * 0.2;
     }
     // Latency penalty
@@ -373,10 +373,10 @@ export class AIAssistantStore {
         'ollama': healthData.backends?.ollama?.version ? 1.0 : 0.0,
         'webasm': healthData.backends?.webasm?.loaded ? 1.0 : 0.0,
         'go-micro': healthData.backends?.['go-micro']?.healthy ? 1.0 : 0.0
-      };
+      }
     } catch {
       // Default scores if health check fails
-      return { 'vllm': 0.8, 'ollama': 0.9, 'webasm': 0.7, 'go-micro': 0.6 };
+      return { 'vllm': 0.8, 'ollama': 0.9, 'webasm': 0.7, 'go-micro': 0.6 }
     }
   }
   /**
@@ -407,7 +407,7 @@ export class AIAssistantStore {
       exportedAt: new Date().toISOString(),
       totalMessages: this.messages.length,
       backends: [...new Set(this.messages.map(m => m.metadata?.backend).filter(Boolean))]
-    };
+    }
     switch (format) {
       case 'json':
         return JSON.stringify(conversation, null, 2);
@@ -460,7 +460,7 @@ export class AIAssistantStore {
    * Update configuration
    */;
   updateConfig(newConfig: Partial<AssistantConfig>) {
-    this.config = { ...this.config, ...newConfig };
+    this.config = { ...this.config, ...newConfig }
   }
 }
 // Create singleton instance

@@ -58,7 +58,7 @@ class WebGPUCudaBridge {
 					maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
 					maxBufferSize: adapter.limits.maxBufferSize
 				} as GPUDeviceCapabilities
-			};
+			}
 			console.log('✅ WebGPU initialized successfully');
 			console.log('GPU Device:', {
 				vendor: adapter.info?.vendor || 'Unknown',
@@ -80,13 +80,13 @@ class WebGPUCudaBridge {
 				await this.processNextTask();
 			}
 			setTimeout(processLoop, 100); // Check every 100ms
-		};
+		}
 		processLoop();
 	}
-	async addTask(task: CudaProcessingTask): Promise<string> {
+	async addTask(_task: CudaProcessingTask): Promise<string> {
 		task.id = task.id || `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 		// Insert task based on priority
-		const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+		const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 }
 		const insertIndex = this.processingQueue.findIndex(
 			t => priorityOrder[t.priority] > priorityOrder[task.priority]
 		);
@@ -143,13 +143,13 @@ class WebGPUCudaBridge {
 			this.isProcessing = false;
 		}
 	}
-	private async processInference(task: CudaProcessingTask): Promise<any> {
+	private async processInference(_task: CudaProcessingTask): Promise<any> {
 		const { data, config } = task;
 		// Try WebGPU-accelerated processing first
 		if (this.webgpuDevice?.isInitialized) {
 			try {
 				const result = await this.runWebGPUInference(data, config);
-				return { source: 'webgpu', result };
+				return { source: 'webgpu', result }
 			} catch (error) {
 				console.warn('⚠️ WebGPU inference failed, falling back to Ollama:', error);
 			}
@@ -237,7 +237,7 @@ class WebGPUCudaBridge {
 		});
 		// Create bind group
 		const bindGroup = device.createBindGroup({
-			layout: bindGroupLayout
+			layout: bindGroupLayout;
 			entries: [
 				{ binding: 0, resource: { buffer: inputBuffer } },
 				{ binding: 1, resource: { buffer: outputBuffer } },
@@ -301,7 +301,7 @@ class WebGPUCudaBridge {
 				throw new Error(`Ollama API error: ${(response as { ok?: any; status?: any; json?: any }).status}`);
 			}
 			const result = await (response as { ok?: any; status?: any; json?: any }).json();
-			return { source: 'ollama', result: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).response };
+			return { source: 'ollama', result: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).response }
 		} catch (error) {
 			// Final fallback to Go microservice
 			return await this.runCudaMicroservice(data, config);
@@ -341,12 +341,12 @@ class WebGPUCudaBridge {
 				gpu_metrics: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).gpu_metrics,
 				grpo: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).grpo,
 				thinking: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).thinking_content
-			};
+			}
 		} catch (error) {
 			throw new Error(`Enhanced CUDA server failed: ${error}`);
 		}
 	}
-	private async processEmbedding(task: CudaProcessingTask): Promise<any> {
+	private async processEmbedding(_task: CudaProcessingTask): Promise<any> {
 		const { data, config } = task;
 		// For embeddings, we primarily use Ollama or the Go microservice
 		try {
@@ -361,7 +361,7 @@ class WebGPUCudaBridge {
 			});
 			if ((response as { ok?: any; status?: any; json?: any }).ok) {
 				const result = await (response as { ok?: any; status?: any; json?: any }).json();
-				return { source: 'ollama', embeddings: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).embedding };
+				return { source: 'ollama', embeddings: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).embedding }
 			}
 		} catch (error) {
 			console.warn('⚠️ Ollama embedding failed, trying CUDA microservice:', error);
@@ -387,9 +387,9 @@ class WebGPUCudaBridge {
 			embeddings: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).matches,
 			processing_time_ms: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).processing_time_ms,
 			gpu_metrics: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).gpu_metrics
-		};
+		}
 	}
-	private async processTensorOperations(task: CudaProcessingTask): Promise<any> {
+	private async processTensorOperations(_task: CudaProcessingTask): Promise<any> {
 		const { data, config } = task;
 		if (this.webgpuDevice?.isInitialized) {
 			// Use WebGPU for tensor operations
@@ -432,7 +432,7 @@ class WebGPUCudaBridge {
 				return Array.from(inputArray);
 		}
 	}
-	private async processImageOperations(task: CudaProcessingTask): Promise<any> {
+	private async processImageOperations(_task: CudaProcessingTask): Promise<any> {
 		const { data, config } = task;
 		// Image processing operations
 		if (this.webgpuDevice?.isInitialized) {
@@ -442,11 +442,11 @@ class WebGPUCudaBridge {
 	}
 	private async runWebGPUImageProcessing(data: BufferLike, config: any): Promise<any> {
 		// WebGPU-based image processing (placeholder)
-		return { processed: true, source: 'webgpu' };
+		return { processed: true, source: 'webgpu' }
 	}
 	private async runCPUImageProcessing(data: BufferLike, config: any): Promise<any> {
 		// CPU-based image processing (placeholder)
-		return { processed: true, source: 'cpu' };
+		return { processed: true, source: 'cpu' }
 	}
 	getStatus(): any {
 		return {
@@ -462,7 +462,7 @@ class WebGPUCudaBridge {
 				ollama: this.ollamaEndpoint,
 				cudaService: this.cudaServiceEndpoint
 			}
-		};
+		}
 	}
 	cleanup(): void {
 		console.log('🧹 Cleaning up WebGPU to CUDA Bridge');
@@ -477,7 +477,7 @@ class WebGPUCudaBridge {
 // Initialize the bridge
 const bridge = new WebGPUCudaBridge();
 // Handle messages from main thread
-self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
+self.onmessage = async (_event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 	const { type, payload, requestId } = event.data;
 	try {
 		switch (type) {
@@ -486,7 +486,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 				self.postMessage({
 					type: 'init-complete',
 					requestId,
-					success: initialized
+					success: initialized;
 					status: bridge.getStatus()
 				});
 				break;
@@ -522,6 +522,6 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 			error: error instanceof Error ? error.message: String(error)
 		});
 	}
-};
+}
 // Export for TypeScript
 export default bridge;

@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
       transition={scale}
       transitionConfig={{
         duration: 200,
-        easing: quintOut
+        easing: quintOut;
         start: 0.95;
       }}
     >

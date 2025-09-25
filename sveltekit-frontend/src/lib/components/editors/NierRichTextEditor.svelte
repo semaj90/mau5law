@@ -33,7 +33,7 @@ https://svelte.dev/e/attribute_duplicate -->
   	});
   	let nieRTheme = $state({
   		mode: 'android', // 'android' | 'yorha' | 'machine'
-  		glitchEnabled: true
+  		glitchEnabled: true;
   		scanlines: true
   		typingSound: true;
   	});
@@ -80,15 +80,15 @@ https://svelte.dev/e/attribute_duplicate -->
   	function enableScanlines() {
   		// Scanlines are handled via CSS
   	}
-  	function handleInput(event: Event) {
-  		const target = event.target as HTMLElement;
+  	function handleInput(_event: Event) {
+  		// removed unused target assignment
   		editorContent = target.innerHTML;
   		updateStats();
   		if (nieRTheme.typingSound) {
   			playTypingSound();
   		}
   	}
-  	function handleKeyDown(event: KeyboardEvent) {
+  	function handleKeyDown(_event: KeyboardEvent) {
   		// Handle keyboard shortcuts
   		if (event.ctrlKey || event.metaKey) {
   			switch (event.key) {
@@ -388,7 +388,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	<!-- Main Editor Area -->
 	<div class="flex-1 nier-editor-main nes-container">
 		<div class="yorha-panel-content p-0 h-full">
-			<div
+			<div;
 				bind:this={editorContainer}
 				class="w-full h-full p-4 prose prose-sm max-w-none focus: outline-none nier-editor-content";
 				class:scanlines={nieRTheme.scanlines}

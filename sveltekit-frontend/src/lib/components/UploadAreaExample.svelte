@@ -8,36 +8,36 @@
   let autoUpload = $state(false);
   let maxFiles = $state(5);
   let maxFileSize = $state(10 * 1024 * 1024); // 10MB
-  function handleUploadStart(event: CustomEvent) {
+  function handleUploadStart(_event: CustomEvent) {
     uploadStatus = `Starting upload of ${event.detail.files.length} files...`;
     console.log('Upload started:', event.detail);
   }
-  function handleUploadProgress(event: CustomEvent) {
+  function handleUploadProgress(_event: CustomEvent) {
     uploadStatus = `Upload progress: ${Math.round(event.detail.progress)}%`;
     console.log('Upload progress:', event.detail);
   }
-  function handleUploadComplete(event: CustomEvent) {
+  function handleUploadComplete(_event: CustomEvent) {
     uploadStatus = `Successfully uploaded ${event.detail.files.length} files!`;
     uploadedFiles = [...uploadedFiles, ...event.detail.results];
     console.log('Upload completed:', event.detail);
   }
-  function handleUploadError(event: CustomEvent) {
+  function handleUploadError(_event: CustomEvent) {
     uploadStatus = `Upload failed: ${event.detail.error}`;
     console.error('Upload error:', event.detail);
   }
-  function handleFileStart(event: CustomEvent) {
+  function handleFileStart(_event: CustomEvent) {
     console.log('File upload started:', event.detail.file.name);
   }
-  function handleFileSuccess(event: CustomEvent) {
+  function handleFileSuccess(_event: CustomEvent) {
     console.log('File uploaded successfully:', event.detail.file.name);
   }
-  function handleFileError(event: CustomEvent) {
+  function handleFileError(_event: CustomEvent) {
     console.error('File upload failed:', event.detail.file.name, event.detail.error);
   }
-  function handleFilesSelected(event: CustomEvent) {
+  function handleFilesSelected(_event: CustomEvent) {
     console.log('Files selected:', event.detail.files.length);
   }
-  function handleValidationError(event: CustomEvent) {
+  function handleValidationError(_event: CustomEvent) {
     console.warn('Validation errors:', event.detail.errors);
   }
   function clearStatus() {
@@ -45,6 +45,7 @@
     uploadedFiles = [];
   }
 </script>
+
 <div class="space-y-4">
   <div class="space-y-4">
     <div class="space-y-4">
@@ -58,47 +59,27 @@
           <div class="space-y-4">
             <div class="space-y-4">
               <div class="space-y-4">
-                <input
-                  class="space-y-4"
-                  type="checkbox"
-                  id="showProgress"
-                  bind:checked={showProgress}
-                >
-                <label class="space-y-4" for="showProgress">
-                  Show Progress
-                </label>
+                <input class="space-y-4" type="checkbox" id="showProgress" bind:checked={showProgress} />
+                <label class="space-y-4" for="showProgress"> Show Progress </label>
               </div>
               <div class="space-y-4">
-                <input
-                  class="space-y-4"
-                  type="checkbox"
-                  id="autoUpload"
-                  bind:checked={autoUpload}
-                >
-                <label class="space-y-4" for="autoUpload">
-                  Auto Upload
-                </label>
+                <input class="space-y-4" type="checkbox" id="autoUpload" bind:checked={autoUpload} />
+                <label class="space-y-4" for="autoUpload"> Auto Upload </label>
               </div>
             </div>
             <div class="space-y-4">
               <div class="space-y-4">
                 <label for="maxFiles" class="space-y-4">Max Files:</label>
-                <input
-                  type="number"
-                  class="space-y-4"
-                  id="maxFiles";
-                  bind:value={maxFiles}
-                  min="1"
-                  max="20"
-                >
+                <input type="number" class="space-y-4" id="maxFiles" ; bind:value={maxFiles} min="1" max="20" />
               </div>
               <div class="space-y-4">
                 <label for="maxSize" class="space-y-4">Max Size (MB):</label>
                 <input
                   type="number"
                   class="space-y-4"
-                  id="maxSize" oninput={(e) => {
-                    const target = e.target as HTMLInputElement;
+                  id="maxSize"
+                  oninput={e => {
+                    // removed unused target assignment
                     if (target) {
                       maxFileSize = parseInt(target.value) * 1024 * 1024;
                     }
@@ -106,7 +87,7 @@
                   value={Math.round(maxFileSize / 1024 / 1024)}
                   min="1"
                   max="100"
-                >
+                />
               </div>
             </div>
           </div>
@@ -125,9 +106,15 @@
         acceptedTypes=".pdf,.jpg,.jpeg,.png,.mp4,.avi,.mov,.mp3,.wav"
         allowedMimeTypes={[
           'application/pdf',
-          'image/jpeg', 'image/jpg', 'image/png',
-          'video/mp4', 'video/avi', 'video/mov',
-          'audio/mp3', 'audio/wav', 'audio/mpeg'
+          'image/jpeg',
+          'image/jpg',
+          'image/png',
+          'video/mp4',
+          'video/avi',
+          'video/mov',
+          'audio/mp3',
+          'audio/wav',
+          'audio/mpeg',
         ]}
         upload-start={handleUploadStart}
         upload-progress={handleUploadProgress}
@@ -144,12 +131,7 @@
         <div class="space-y-4" role="status">
           <i class="space-y-4"></i>
           {uploadStatus}
-          <button
-            type="button"
-            class="space-y-4"
-            aria-label="Clear status"
-            onclick={() => clearStatus()}
-          ></button>
+          <button type="button" class="space-y-4" aria-label="Clear status" onclick={() => clearStatus()}></button>
         </div>
       {/if}
     </div>
@@ -158,13 +140,7 @@
         <div class="space-y-4">
           <h5>Upload Results</h5>
           {#if uploadedFiles.length > 0}
-            <button
-              type="button"
-              class="space-y-4"
-              onclick={() => clearStatus()}
-            >
-              Clear
-            </button>
+            <button type="button" class="space-y-4" onclick={() => clearStatus()}> Clear </button>
           {/if}
         </div>
         <div class="space-y-4">
@@ -219,6 +195,7 @@
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .container {

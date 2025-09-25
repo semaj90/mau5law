@@ -149,7 +149,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   							console.error(error);
   							break;
   					}
-  				};
+  				}
   				// Initialize the bridge
   				webgpuBridge.postMessage({
   					type: 'init',
@@ -168,7 +168,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   	async function loadConversationHistory() {
   		if (caseId) {
   			try {
-  				const response = await fetch(`/api/legal/conversations/${caseId}`);
+  				// removed unused response assignment
   				if ((response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).ok) {
   					const history = await (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).json();
   					messages = history.messages || [];
@@ -187,7 +187,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   			content: currentMessage.trim(),
   			timestamp: new Date().toISOString(),
   			caseId;
-  		};
+  		}
   		messages = [...messages, userMessage];
   		const messageToSend = currentMessage.trim();
   		currentMessage = '';
@@ -195,7 +195,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   		await scrollToBottom();
   		try {
   			const startTime = Date.now();
-  			const response = await processAIRequest(messageToSend);
+  			// removed unused response assignment
   			const processingTime = Date.now() - startTime;
   			const aiMessage = {
   				id: `msg-${Date.now()}-assistant`,
@@ -206,7 +206,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   				backend: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).backend,
   				tokensPerSecond: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).tokensPerSecond || 0,
   				caseId
-  			};
+  			}
   			messages = [...messages, aiMessage];
   			// Update performance metrics
   			performanceMetrics.responseTime = processingTim;
@@ -223,7 +223,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   				timestamp: new Date().toISOString(),
   				isError: true
   				caseId;
-  			};
+  			}
   			messages = [...messages, errorMessage];
   			await scrollToBottom();
   		} finally {
@@ -307,8 +307,8 @@ console.log('🤖 Initializing Unified AI Assistant');
   		return {
   			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).choices?.[0]?.message?.content || 'No response',
   			backend: 'vLLM',
-  			tokensPerSecond: 0 // vLLM doesn't provide this directly
-  		};
+  			tokensPerSecond: 0 // vLLM doesn't provide this directly;
+  		}
   	}
   	async function processWithOllama(context: string): Promise<any> {
   		const response = await fetch(`${aiBackends.ollama.endpoint}/api/chat`, {
@@ -317,7 +317,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   			body: JSON.stringify({,
   				model: assistantConfig.model,
   				messages: [{ role: 'user', content: context }],
-  				stream: false
+  				stream: false;
   				options: {
   					temperature: assistantConfig.temperature,
   					num_predict: assistantConfig.maxToken;
@@ -332,7 +332,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).message?.content || 'No response',
   			backend: 'Ollama',
   			tokensPerSecond: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).eval_duration ? ((result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).eval_count || 0) / ((result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).eval_duration / 1000000000) : 0
-  		};
+  		}
   	}
   	async function processWithWebASM(context: string): Promise<any> {
   		// WebASM LLaMA.cpp processing (placeholder implementation)
@@ -361,7 +361,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).data?.content || (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).data?.response || 'No response',
   			backend: 'Go Microservice',
   			tokensPerSecond: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).metadata?.tokensPerSecond || 0
-  		};
+  		}
   	}
   	async function saveConversation() {
   		if (caseId) {
@@ -371,7 +371,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   					headers: { 'Content-Type': 'application/json' },
   					body: JSON.stringify({
   						caseId,
-  						messages: messages.slice(-20), // Save last 20 message
+  						messages: messages.slice(-20), // Save last 20 message;
   						timestamp: new Date().toISOString();
   					})
   				});
@@ -387,7 +387,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   			content,
   			timestamp: new Date().toISOString(),
   			isSystem: true;
-  		};
+  		}
   		messages = [...messages, systemMessage];
   	}
   	async function scrollToBottom() {
@@ -396,7 +396,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   			chatContainer.scrollTop = chatContainer.scrollHeight;
   		}
   	}
-  	function handleKeyPress(event: KeyboardEvent) {
+  	function handleKeyPress(_event: KeyboardEvent) {
   		if (event.key === 'Enter' && !event.shiftKey) {
   			event.preventDefault();
   			sendMessage();
@@ -410,11 +410,11 @@ console.log('🤖 Initializing Unified AI Assistant');
   			voiceRecording.isRecording = true;
   			voiceRecording.mediaRecorder.ondataavailable = (event) => {
   				voiceRecording.audioChunks.push(event.data);
-  			};
+  			}
   			voiceRecording.mediaRecorder.onstop = async () => {
   				const audioBlob = new Blob(voiceRecording.audioChunks, { type: 'audio/wav' });
   				await processVoiceInput(audioBlob);
-  			};
+  			}
   			voiceRecording.mediaRecorder.start();
   		} catch (error) {
   			console.error('❌ Voice recording failed:', error);
@@ -443,7 +443,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   			messages,
   			timestamp: new Date().toISOString(),
   			performanceMetric;
-  		};
+  		}
   		const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
   		const url = URL.createObjectURL(blob);
   		const a = document.createElement('a');
@@ -459,243 +459,244 @@ console.log('🤖 Initializing Unified AI Assistant');
   		goMicroserviceClient.cleanup();
   	});
 </script>
+
 <!-- Unified AI Assistant Interface -->
 <div class="h-full flex flex-col bg-background">
-	<!-- Header -->
-	<div class="mb-4 nes-container">
-		<div class="yorha-panel-header pb-3">
-			<div class="flex justify-between items-center">
-				<div class="flex items-center gap-4">
-					<div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
-						<Bot class="w-5 h-5 text-primary" />
-					</div>
-					<div>
-						<h3 class="nes-text is-primary text-xl">Legal AI Assistant</h3>
-						<p class="text-sm nes-text is-disabled">Powered by multiple AI backends with GPU acceleration</p>
-					</div>
-				</div>
-				<div class="flex items-center gap-2">
-					<!-- Backend Status -->
-					<div class="flex gap-1">
-						<Badge variant={aiBackends.vllm.available ? "default" : "outline"} class="text-xs">
-							vLLM
-						</Badge>
-						<Badge variant={aiBackends.ollama.available ? "default" : "outline"} class="text-xs">
-							Ollama
-						</Badge>
-						<Badge variant={aiBackends.webgpu.available ? "default" : "outline"} class="text-xs">
-							WebGPU
-						</Badge>
-						<Badge variant={aiBackends.goMicroservice.available ? "default" : "outline"} class="text-xs">
-							Go µS
-						</Badge>
-					</div>
-					<Button class="bits-btn" variant="ghost" size="sm" onclick={exportConversation}>
-<Download class="w-4 h-4 mr-1" />
-						Export
-</Button>
-					<Button class="bits-btn" variant="ghost" size="sm" onclick={clearConversation}>
-<Square class="w-4 h-4 mr-1" />
-						Clear
-</Button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Performance Metrics -->
-	<div class="mb-4 nes-container">
-		<div class="yorha-panel-content py-3">
-			<div class="flex justify-between items-center text-sm">
-				<div class="flex gap-6">
-					<span class="flex items-center gap-1">
-						<Activity class="w-3 h-3 text-blue-500" />
-						Response: {performanceMetrics.responseTime}ms
-					</span>
-					<span class="flex items-center gap-1">
-						<Zap class="w-3 h-3 text-yellow-500" />
-						Speed: {performanceMetrics.tokensPerSecond.toFixed(1)} tok/s
-					</span>
-					<span class="flex items-center gap-1">
-						<MessageSquare class="w-3 h-3 text-green-500" />
-						Context: {performanceMetrics.contextLength}
-					</span>
-					<span class="flex items-center gap-1">
-						<Cpu class="w-3 h-3 text-purple-500" />
-						GPU: {performanceMetrics.gpuUtilization.toFixed(1)}%
-					</span>
-				</div>
-				<div class="text-xs nes-text is-disabled">
-					Model: {assistantConfig.model} | Temp: {assistantConfig.temperature}
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Chat Messages -->
-	<div class="flex-1 mb-4 nes-container">
-		<div class="yorha-panel-content p-0 h-full">
-			<div
-				bind:this={chatContainer}
-				class="h-full overflow-y-auto p-4 space-y-4"
-			>
-				{#each messages as message}
-					<div
-						class="flex items-start gap-3"
-						class:flex-row-reverse={message.role === 'user'}
-					>
-						<div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-							 class:bg-primary={message.role === 'user'}
-							 class:bg-muted={message.role === 'assistant' || message.role === 'system'}
-							 class:text-primary-foreground={message.role === 'user'}
-						>
-							{#if message.role === 'user'}
-								👤
-							{:else if message.role === 'system'}
-								⚙️
-							{:else}
-								🤖
-							{/if}
-						</div>
-						<div
-							class="max-w-[70%] p-3 rounded-lg"
-							class:bg-primary={message.role === 'user'}
-							class:text-primary-foreground={message.role === 'user'}
-							class:bg-muted={message.role === 'assistant' || message.role === 'system'}
-							class:border-red-200={message.isError}
-							class:bg-red-50={message.isError}
-						>
-							<div class="prose prose-sm max-w-none">
-								{message.content}
-							</div>
-							<div class="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
-								<div class="text-xs opacity-70">
-									{new Date(message.timestamp).toLocaleTimeString()}
-								</div>
-								{#if message.backend}
-									<div class="flex items-center gap-1 text-xs">
-										<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.backend}</span>
-										{#if message.processingTime}
-											<span class="opacity-70">{message.processingTime}ms</span>
-										{/if}
-										{#if message.tokensPerSecond > 0}
-											<span class="opacity-70">{message.tokensPerSecond.toFixed(1)} tok/s</span>
-										{/if}
-									</div>
-								{/if}
-							</div>
-						</div>
-					</div>
-				{/each}
-				{#if isProcessing}
-					<div class="flex items-start gap-3">
-						<div class="w-8 h-8 rounded-full flex items-center justify-center bg-muted">
-							🤖
-						</div>
-						<div class="bg-muted p-3 rounded-lg">
-							<div class="flex items-center gap-2 text-sm nes-text is-disabled">
-								<div class="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
-								Processing your request...
-							</div>
-						</div>
-					</div>
-				{/if}
-			</div>
-		</div>
-	</div>
-	<!-- Input Area -->
-	<div class="nes-container">
-		<div class="yorha-panel-content p-4">
-			<div class="flex items-center gap-2">
-				<div class="flex-1 relative">
-					<Input
-						bind:this={messageInput}
-						bind:value={currentMessage}
-						placeholder="Ask about your case, evidence, or legal questions..."
-						onkeypress={handleKeyPress}
-						disabled={readonly || isProcessing}
-						class="pr-12"
-					/>
-					{#if 'mediaDevices' in navigator}
-						<Button
-							variant="ghost"
-							size="sm"
-							onclick={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
-							class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bits-btn bits-btn"
-							disabled={readonly}
-						>
-{#if voiceRecording.isRecording}
-								<MicOff class="w-4 h-4 text-red-500" />
-							{:else}
-								<Mic class="w-4 h-4" />
-							{/if}
-</Button>
-					{/if}
-				</div>
-				<Button class="bits-btn"
-					onclick={sendMessage}
-					disabled={!currentMessage.trim() || isProcessing || readonly}
-				>
-<Send class="w-4 h-4 mr-1" />
-					Send
-</Button>
-			</div>
-			<!-- Quick Actions -->
-			<div class="flex gap-2 mt-3 flex-wrap">
-				<Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-currentMessage = 'Analyze the evidence in this case'}>
-					🔍 Analyze Evidence
-</Button>
-				<Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-currentMessage = 'What are the key legal issues?'}>
-					⚖️ Legal Issues
-</Button>
-				<Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-currentMessage = 'Generate a case summary'}>
-					📋 Case Summary
-</Button>
-				<Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-currentMessage = 'Find relevant precedents'}>
-					📚 Find Precedents
-</Button>
-			</div>
-		</div>
-	</div>
+  <!-- Header -->
+  <div class="mb-4 nes-container">
+    <div class="yorha-panel-header pb-3">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
+            <Bot class="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h3 class="nes-text is-primary text-xl">Legal AI Assistant</h3>
+            <p class="text-sm nes-text is-disabled">Powered by multiple AI backends with GPU acceleration</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Backend Status -->
+          <div class="flex gap-1">
+            <Badge variant={aiBackends.vllm.available ? 'default' : 'outline'} class="text-xs">vLLM</Badge>
+            <Badge variant={aiBackends.ollama.available ? 'default' : 'outline'} class="text-xs">Ollama</Badge>
+            <Badge variant={aiBackends.webgpu.available ? 'default' : 'outline'} class="text-xs">WebGPU</Badge>
+            <Badge variant={aiBackends.goMicroservice.available ? 'default' : 'outline'} class="text-xs">Go µS</Badge>
+          </div>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={exportConversation}>
+            <Download class="w-4 h-4 mr-1" />
+            Export
+          </Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearConversation}>
+            <Square class="w-4 h-4 mr-1" />
+            Clear
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Performance Metrics -->
+  <div class="mb-4 nes-container">
+    <div class="yorha-panel-content py-3">
+      <div class="flex justify-between items-center text-sm">
+        <div class="flex gap-6">
+          <span class="flex items-center gap-1">
+            <Activity class="w-3 h-3 text-blue-500" />
+            Response: {performanceMetrics.responseTime}ms
+          </span>
+          <span class="flex items-center gap-1">
+            <Zap class="w-3 h-3 text-yellow-500" />
+            Speed: {performanceMetrics.tokensPerSecond.toFixed(1)} tok/s
+          </span>
+          <span class="flex items-center gap-1">
+            <MessageSquare class="w-3 h-3 text-green-500" />
+            Context: {performanceMetrics.contextLength}
+          </span>
+          <span class="flex items-center gap-1">
+            <Cpu class="w-3 h-3 text-purple-500" />
+            GPU: {performanceMetrics.gpuUtilization.toFixed(1)}%
+          </span>
+        </div>
+        <div class="text-xs nes-text is-disabled">
+          Model: {assistantConfig.model} | Temp: {assistantConfig.temperature}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Chat Messages -->
+  <div class="flex-1 mb-4 nes-container">
+    <div class="yorha-panel-content p-0 h-full">
+      <div bind:this={chatContainer} class="h-full overflow-y-auto p-4 space-y-4">
+        {#each messages as message}
+          <div class="flex items-start gap-3" class:flex-row-reverse={message.role === 'user'}>
+            <div
+              class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+              class:bg-primary={message.role === 'user'}
+              class:bg-muted={message.role === 'assistant' || message.role === 'system'}
+              class:text-primary-foreground={message.role === 'user'}
+            >
+              {#if message.role === 'user'}
+                👤
+              {:else if message.role === 'system'}
+                ⚙️
+              {:else}
+                🤖
+              {/if}
+            </div>
+            <div
+              class="max-w-[70%] p-3 rounded-lg"
+              class:bg-primary={message.role === 'user'}
+              class:text-primary-foreground={message.role === 'user'}
+              class:bg-muted={message.role === 'assistant' || message.role === 'system'}
+              class:border-red-200={message.isError}
+              class:bg-red-50={message.isError}
+            >
+              <div class="prose prose-sm max-w-none">
+                {message.content}
+              </div>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
+                <div class="text-xs opacity-70">
+                  {new Date(message.timestamp).toLocaleTimeString()}
+                </div>
+                {#if message.backend}
+                  <div class="flex items-center gap-1 text-xs">
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                      >{message.backend}</span
+                    >
+                    {#if message.processingTime}
+                      <span class="opacity-70">{message.processingTime}ms</span>
+                    {/if}
+                    {#if message.tokensPerSecond > 0}
+                      <span class="opacity-70">{message.tokensPerSecond.toFixed(1)} tok/s</span>
+                    {/if}
+                  </div>
+                {/if}
+              </div>
+            </div>
+          </div>
+        {/each}
+        {#if isProcessing}
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-muted">🤖</div>
+            <div class="bg-muted p-3 rounded-lg">
+              <div class="flex items-center gap-2 text-sm nes-text is-disabled">
+                <div class="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                Processing your request...
+              </div>
+            </div>
+          </div>
+        {/if}
+      </div>
+    </div>
+  </div>
+  <!-- Input Area -->
+  <div class="nes-container">
+    <div class="yorha-panel-content p-4">
+      <div class="flex items-center gap-2">
+        <div class="flex-1 relative">
+          <Input
+            bind:this={messageInput}
+            bind:value={currentMessage}
+            placeholder="Ask about your case, evidence, or legal questions..."
+            onkeypress={handleKeyPress}
+            disabled={readonly || isProcessing}
+            class="pr-12"
+          />
+          {#if 'mediaDevices' in navigator}
+            <Button
+              variant="ghost"
+              size="sm"
+              onclick={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
+              class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bits-btn bits-btn"
+              disabled={readonly}
+            >
+              {#if voiceRecording.isRecording}
+                <MicOff class="w-4 h-4 text-red-500" />
+              {:else}
+                <Mic class="w-4 h-4" />
+              {/if}
+            </Button>
+          {/if}
+        </div>
+        <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing || readonly}>
+          <Send class="w-4 h-4 mr-1" />
+          Send
+        </Button>
+      </div>
+      <!-- Quick Actions -->
+      <div class="flex gap-2 mt-3 flex-wrap">
+        <Button
+          class="bits-btn"
+          variant="ghost"
+          size="sm"
+          onclick={() => (currentMessage = 'Analyze the evidence in this case')}
+        >
+          🔍 Analyze Evidence
+        </Button>
+        <Button
+          class="bits-btn"
+          variant="ghost"
+          size="sm"
+          onclick={() => (currentMessage = 'What are the key legal issues?')}
+        >
+          ⚖️ Legal Issues
+        </Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (currentMessage = 'Generate a case summary')}>
+          📋 Case Summary
+        </Button>
+        <Button
+          class="bits-btn"
+          variant="ghost"
+          size="sm"
+          onclick={() => (currentMessage = 'Find relevant precedents')}
+        >
+          📚 Find Precedents
+        </Button>
+      </div>
+    </div>
+  </div>
 </div>
+
 <style>
-	/* Custom scrollbar for chat container */
-	.overflow-y-auto {
-		scrollbar-width: thi;
-		scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
-	}
-	.overflow-y-auto::-webkit-scrollbar {
-		width: 6px;
-	}
-	.overflow-y-auto::-webkit-scrollbar-track {
-		background: hsl(var(--muted));
-	}
-	.overflow-y-auto::-webkit-scrollbar-thumb {
-		background: hsl(var(--muted-foreground));
-		border-radius: 3px;
-	}
-	/* Message animation */
-	.flex.items-start {
-		animation: slideIn 0.3s ease-out;
-	}
-	@keyframes slideIn {
-		from {
-			opacity: 0;
-			transform: translateY(10px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-	/* Processing indicator animation */
-	.animate-spin {
-		animation: spin 1s linear infinite;
-	}
-	@keyframes spin {
-		from { transform: rotate(0deg); }
-		to { transform: rotate(360deg); }
-	}
+  /* Custom scrollbar for chat container */
+  .overflow-y-auto {
+    scrollbar-width: thi;
+    scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
+  }
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 6px;
+  }
+  .overflow-y-auto::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground));
+    border-radius: 3px;
+  }
+  /* Message animation */
+  .flex.items-start {
+    animation: slideIn 0.3s ease-out;
+  }
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  /* Processing indicator animation */
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 </style>

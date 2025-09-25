@@ -89,7 +89,7 @@ class MarkovPredictorWithRedis {
   }
   // Enhanced prediction with SIMD-accelerated similarity
   async predictNextWithSimilarity(
-    prev: Action
+    prev: Action;
     context: { docId?: string; query?: string },
     topK = 3;
   ): Promise<PredictionResult[]> {
@@ -110,7 +110,7 @@ class MarkovPredictorWithRedis {
     return basepredictions.slice(0, topK);
   }
   private async enhancePredictionsWithSimilarity(
-    predictions: PredictionResult[]
+    predictions: PredictionResult[];
     context: { docId?: string; query?: string },
     topK: number;
   ): Promise<PredictionResult[]> {
@@ -129,7 +129,7 @@ class MarkovPredictorWithRedis {
       return {
         ...pred,
         p: pred.p * boost
-      };
+      }
     });
     // Re-sort and normalize
     enhanced.sort((a, b) => b.p - a.p);
@@ -207,7 +207,7 @@ class MarkovPredictorWithRedis {
       lastSync: this.lastSync,
       pendingUpdates: this.pendingUpdates,
       redisConnected
-    };
+    }
   }
   // Cleanup method
   async cleanup() {
@@ -218,8 +218,8 @@ class MarkovPredictorWithRedis {
 export const predictor = new MarkovPredictorWithRedis();
 export function mapActionToCHRContext(a: Action): { docId?: string; query?: string } {
   // Simple mapping conventions
-  if (a.startsWith('open:doc:')) return { docId: a.split(':')[2] };
-  if (a.startsWith('hover:doc:')) return { docId: a.split(':')[2] };
-  if (a.startsWith('search:term:')) return { query: decodeURIComponent(a.substring('search:term:'.length)) };
-  return {};
+  if (a.startsWith('open:doc:')) return { docId: a.split(':')[2] }
+  if (a.startsWith('hover:doc:')) return { docId: a.split(':')[2] }
+  if (a.startsWith('search:term:')) return { query: decodeURIComponent(a.substring('search:term:'.length)) }
+  return {}
 }

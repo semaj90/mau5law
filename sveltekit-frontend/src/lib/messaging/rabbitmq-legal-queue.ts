@@ -35,7 +35,7 @@ export interface LegalDocumentMessage {
     readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
     readonly bankPreference?: string;
     readonly requiresGPU?: boolean;
-  };
+  }
   readonly timestamp: number;
   readonly retryCount: number;
 }
@@ -44,7 +44,7 @@ export interface QueueConfiguration {
   readonly durable: boolean;
   readonly exclusive: boolean;
   readonly autoDelete: boolean;
-  readonly arguments: { [key: string]: any };
+  readonly arguments: { [key: string]: any }
   readonly maxRetries: number;
   readonly messageTTL: number;
 }
@@ -77,7 +77,7 @@ export class RabbitMQLegalQueue {
     errorRate: 0,
     gpuJobsProcessed: 0,
     nesMemoryEvents: 0
-  };
+  }
   // Legal AI specific queues
   private readonly queueConfigs: Map<string, QueueConfiguration> = new Map([;
     ['document.processing', {
@@ -122,7 +122,7 @@ export class RabbitMQLegalQueue {
       name: 'legal_ranking_jobs',
       durable: true
       exclusive: false
-      autoDelete: false
+      autoDelete: false;
       arguments: {
         'x-message-ttl': 300000, // 5 minutes TTL
         'x-max-priority': 255
@@ -149,18 +149,18 @@ export class RabbitMQLegalQueue {
       this.connection = new WebSocket(url, ['v12.stomp']);
       this.connection.onopen = () => {
         this.handleConnectionOpen();
-      };
-      this.connection.onmessage = (event: any) => {
+      }
+      this.connection.onmessage = (_event: any) => {
         this.handleMessage(event);
-      };
+      }
       this.connection.onerror = (error) => {
         console.error('❌ RabbitMQ connection error:', error);
         this.handleConnectionError();
-      };
+      }
       this.connection.onclose = () => {
         console.warn('⚠️ RabbitMQ connection closed');
         this.handleConnectionClose();
-      };
+      }
     } catch (error: any) {
       console.error('❌ Failed to initialize RabbitMQ connection:', error);
       this.scheduleReconnect();
@@ -219,8 +219,7 @@ export class RabbitMQLegalQueue {
   /**
    * Publish legal document processing message to queue
    */
-  async publishDocumentMessage(
-    document: LegalDocument
+  async publishDocumentMessage(_document: LegalDocument
     operation: LegalDocumentMessage['operation'],
     options: {
       priority?: number;
@@ -253,7 +252,7 @@ export class RabbitMQLegalQueue {
         },
         timestamp: Date.now(),
         retryCount: 0
-      };
+      }
       // Determine target queue based on operation
       const queueName = this.getQueueForOperation(operation, options.requiresGPU);
       // Publish message
@@ -287,7 +286,7 @@ export class RabbitMQLegalQueue {
           if (allocated) {
             const storedDoc = nesMemory.getDocument(document.id);
             bankId = storedDoc?.bankId;
-            result = { allocated: true, bankId };
+            result = { allocated: true, bankId }
           }
           break;
         case 'analyze':
@@ -296,11 +295,11 @@ export class RabbitMQLegalQueue {
             confidence: message.metadata.confidenceLevel,
             risk: message.metadata.riskLevel,
             analysis: 'Legal document analyzed successfully'
-          };
+          }
           break;
         case 'store':
           // Persistent storage operation
-          result = { stored: true, timestamp: Date.now() };
+          result = { stored: true, timestamp: Date.now() }
           break;
         case 'retrieve':
           // Retrieve document from memory
@@ -409,7 +408,7 @@ export class RabbitMQLegalQueue {
     }
   }
   // Helper methods
-  private async createBinaryMessage(document: LegalDocument): Promise<ArrayBuffer> {
+  private async createBinaryMessage(_document: LegalDocument): Promise<ArrayBuffer> {
     // Create a simple binary representation
     const docString = JSON.stringify(document);
     return new TextEncoder().encode(docString).buffer;
@@ -439,7 +438,7 @@ export class RabbitMQLegalQueue {
       computationCompleted: true
       gpuTime: Math.random() * 10 + 5, // 5-15ms
       result: `GPU computation result for ${message.documentId}`
-    };
+    }
   }
   private async computeRankings(message: LegalDocumentMessage): Promise<RankingResult[]> {
     // Placeholder for ranking computation
@@ -484,9 +483,9 @@ export class RabbitMQLegalQueue {
     return frame;
   }
   private parseSTOMPFrame(data: string): { command: string; headers: Record<string, string>; body: string } {
-    const lines = data.split('\n');
+    // removed unused lines assignment
     const command = lines[0];
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = {}
     let bodyStart = 1;
     for (let i = 1; i < lines.length; i++) {
       if (lines[i] === '') {
@@ -499,7 +498,7 @@ export class RabbitMQLegalQueue {
       }
     }
     const body = lines.slice(bodyStart).join('\n').replace(/\x00$/, '');
-    return { command, headers, body };
+    return { command, headers, body }
   }
   private async declareQueue(config: QueueConfiguration): Promise<void> {
     // Send queue declaration frame
@@ -538,7 +537,7 @@ export class RabbitMQLegalQueue {
     });
     this.connection?.send(frame);
   }
-  private handleMessage(event: MessageEvent): void {
+  private handleMessage(_event: MessageEvent): void {
     try {
       const frameData = event.data.toString();
       const frame = this.parseSTOMPFrame(frameData);
@@ -592,7 +591,7 @@ export class RabbitMQLegalQueue {
       queueCount: this.queueConfigs.size,
       handlerCount: this.messageHandlers.size,
       processingQueueLength: this.processingQueue.size
-    };
+    }
   }
   /**
    * Cleanup and close connections

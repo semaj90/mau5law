@@ -9,8 +9,8 @@ export interface HybridInitOptions {
   refreshIntervalMs?: number;
   maxDocs?: number;
 }
-export function getLastRefresh() { return lastRefresh; };
-export function isRefreshing() { return refreshing; };
+export function getLastRefresh() { return lastRefresh; }
+export function isRefreshing() { return refreshing; }
 export async function initHybridLayer(opts: HybridInitOptions = {}): Promise<any> {
   if (typeof window === 'undefined') return;
   const { refreshIntervalMs = 5 * 60_000, maxDocs = 750 } = opts;
@@ -59,7 +59,7 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
 export async function reRankWithPgVector(query: string, current: any[], endpoint = '/api/ai/vector-search'): Promise<any> {
   if (!query.trim() || current.length === 0) return current;
   try {
-    const payload: any = { query, limit: current.length };
+    const payload: any = { query, limit: current.length }
     if (current[0]?.id) payload.documentIds = current.map(r => r.id).slice(0, 64);
     const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (!res.ok) return current;
@@ -75,14 +75,14 @@ export async function reRankWithPgVector(query: string, current: any[], endpoint
       const raw = scoreMap.get((item as { id?: any; source?: any }).id);
       if (raw == null) return item;
       const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw);
-      return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid' };
+      return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid' }
     }).sort((a, b) => b.relevance - a.relevance);
   } catch (e: any) {
     console.warn('[HybridSearch] re-rank failed', e);
     return current;
   }
 }
-export function getLokiCount() { return lokiCollection ? lokiCollection.count() : 0; };
+export function getLokiCount() { return lokiCollection ? lokiCollection.count() : 0; }
 export function queryLokiTitle(term: string, limit = 25) {
   if (!lokiCollection || !term.trim()) return [];
   const lower = term.toLowerCase();

@@ -29,7 +29,7 @@ export interface LegalDocumentContext {
     complianceStatus: any;
     recommendedActions: string[];
     legalPrecedents: any[];
-  };
+  }
   // Context7 MCP results
   mcpAnalysis?: unknown;
   stackRecommendations?: string[];
@@ -49,7 +49,7 @@ export interface LegalDocumentContext {
     storeInQdrant: boolean;
     useContext7: boolean;
     useSemanticSearch: boolean;
-  };
+  }
 }
 // Events for the state machine
 export type LegalDocumentEvent =
@@ -64,13 +64,13 @@ export type LegalDocumentEvent =
   | { type: 'STORAGE_COMPLETE'; documentId: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
-  | { type: 'ERROR'; error: string };
+  | { type: 'ERROR'; error: string }
 // Services for async operations
 const services = {
   extractContent: async (context: LegalDocumentContext) => {
     // Simulate content extraction (OCR, PDF parsing, etc.)
     await new Promise((resolve: any) => setTimeout(resolve, 1000);
-    return { content: context.content, title: context.title };
+    return { content: context.content, title: context.title }
   },
   analyzeWithAI: async (context: LegalDocumentContext) => {
     // This would integrate with your Ollama service
@@ -79,7 +79,7 @@ const services = {
       complianceStatus: { gdpr: 'Under Review', contractLaw: 'Requires Review' },
       recommendedActions: ['Legal review recommended', 'Compliance verification needed'],
       legalPrecedents: []
-    };
+    }
     await new Promise((resolve: any) => setTimeout(resolve, 2000);
     return mockAnalysis;
   },
@@ -92,7 +92,7 @@ const services = {
       clauses: ['Section 3.1', 'Clause 7.2'],
       jurisdictions: [context.jurisdiction],
       caseTypes: [context.caseType]
-    };
+    }
     await new Promise((resolve: any) => setTimeout(resolve, 1500);
     return mockEntities;
   },
@@ -114,7 +114,7 @@ const services = {
     const riskScore = hasLiability ? 85 : 35;
     const confidenceScore = 0.87;
     await new Promise((resolve: any) => setTimeout(resolve, 800);
-    return { riskScore, confidenceScore };
+    return { riskScore, confidenceScore }
   },
   analyzWithMCP: async (context: LegalDocumentContext) => {
     // This would integrate with your Context7 MCP service
@@ -129,20 +129,20 @@ const services = {
         'Cache frequently accessed legal precedents',
         'Use parallel processing for entity extraction'
       ]
-    };
+    }
     await new Promise((resolve: any) => setTimeout(resolve, 1200);
     return {
       mcpAnalysis: mockMCPAnalysis
       recommendations: mockMCPAnalysis.legalSpecificRecommendations
-    };
+    }
   },
   storeDocument: async (context: LegalDocumentContext) => {
     // This would integrate with your database and Qdrant services
     const documentId = `legal_doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     await new Promise((resolve: any) => setTimeout(resolve, 800);
-    return { documentId };
+    return { documentId }
   }
-};
+}
 // Legal Document Processing State Machine
 export const legalDocumentProcessingMachine = createMachine({
   id: 'legalDocumentProcessing',
@@ -481,7 +481,7 @@ export const legalDocumentProcessingMachine = createMachine({
     }
   }
 }, {
-  // Guards
+  // Guards;
   guards: {
     hasContent: ({ context }) => !!context.content && context.content.length > 0,
     canRetry: ({ context }) => context.retryCount < context.maxRetries,
@@ -537,7 +537,7 @@ export const selectors = {
     return 'Unknown';
   },
   getAnalysisProgress: (state: any) => {
-    if (!state.matches('analyzing')) return {};
+    if (!state.matches('analyzing')) return {}
     return {
       aiAnalysis: state.context.aiAnalysis ? 'completed' : 'processing',
       entityExtraction: state.context.entities ? 'completed' : 'processing',
@@ -545,6 +545,6 @@ export const selectors = {
       embeddingGeneration: state.context.embedding ? 'completed' : 'processing',
       riskAssessment: state.context.riskScore !== undefined ? 'completed' : 'processing',
       mcpAnalysis: state.context.mcpAnalysis ? 'completed' : 'processing'
-    };
+    }
   }
-};
+}

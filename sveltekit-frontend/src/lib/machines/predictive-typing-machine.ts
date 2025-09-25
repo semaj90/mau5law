@@ -41,7 +41,7 @@ interface PredictiveTypingContext {
     enableTopologyNavigation: boolean;
     enableGlyphCompression: boolean;
     confidenceThreshold: number;
-  };
+  }
   // Error handling
   error: string | null;
   retryCount: number;
@@ -61,7 +61,7 @@ type PredictiveTypingEvent =
   | { type: 'ANALYTICS_SUCCESS'; results: PredictiveAnalyticsResult }
   | { type: 'ANALYTICS_ERROR'; error: string }
   | { type: 'RETRY' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 // Machine actor for predictive analytics
 const predictiveAnalyticsActor = fromPromise(async ({
   input;
@@ -179,7 +179,7 @@ const feedbackLearningActor = fromPromise(async ({
     return learningResults;
   } catch (error: any) {
     console.warn('Learning from feedback failed:', error);
-    return { learning_applied: false, model_updates: [], confidence_adjustments: [], topology_updates: [] };
+    return { learning_applied: false, model_updates: [], confidence_adjustments: [], topology_updates: [] }
   }
 });
 // Main predictive typing XState machine
@@ -331,7 +331,7 @@ export const predictiveTypingMachine = setup({
           suggestionsAvailable: context.suggestions.length,
           confidence: context.suggestions.length > 0 ?
             context.suggestions[0].confidence : 0
-        };
+        }
         return [...context.interactionPatterns, pattern].slice(-50); // Keep last 50 interactions
       }
     })
@@ -570,7 +570,7 @@ export const predictiveTypingMachine = setup({
               target: 'learningFromFeedback'
             }
           },
-          // Auto-refresh suggestions after some time
+          // Auto-refresh suggestions after some time;
           after: {
             5000: [;
               {
@@ -635,7 +635,7 @@ export const predictiveTypingMachine = setup({
               target: 'waiting'
             }
           },
-          // Auto-retry after delay
+          // Auto-retry after delay;
           after: {
             2000: [;
               {
@@ -686,4 +686,4 @@ export function createPredictiveTypingMachine(
   });
 }
 // Export context type for external use
-export type { PredictiveTypingContext, PredictiveTypingEvent };
+export type { PredictiveTypingContext, PredictiveTypingEvent }

@@ -9,9 +9,9 @@ let formData = $state({
     caseNumber: '',
     title: '',
     description: '',
-    priority: 'medium'
+    priority: 'medium';
 });
-async function handleSubmit(event: Event) {
+async function handleSubmit(_event: Event) {
     event.preventDefault();
     isSubmitting = true;
     submitResult = '';
@@ -41,7 +41,7 @@ async function handleSubmit(event: Event) {
 // Test database connectivity
 async function testDatabaseConnection() {
     try {
-      const response = await fetch('/api/test-case');
+      // removed unused response assignment
       const result = await (response as { json?: unknown; ok?: unknown }).json();
       console.log('✅ Database connection test:', result);
       submitResult = `✅ Database connection working: ${(result as { id?: unknown; error?: unknown; status?: unknown }).status}`;
@@ -51,6 +51,7 @@ async function testDatabaseConnection() {
     }
 }
 </script>
+
 <svelte:head>
   <title>Simple Test Case - Database & API Integration</title>
 </svelte:head>
@@ -60,7 +61,12 @@ async function testDatabaseConnection() {
     <p style="color: #666; margin: 0;">Testing database save and API integration without UI library dependencies</p>
   </div>
   {#if submitResult}
-    <div class="result" style="padding: 15px; margin-bottom: 20px; border-radius: 8px; border: 1px solid; {submitResult.includes('✅') ? 'background: #f0f9f0; border-color: #4caf50; color: #2e7d32;' : 'background: #fff3f3; border-color: #f44336; color: #c62828;'}">
+    <div
+      class="result"
+      style="padding: 15px; margin-bottom: 20px; border-radius: 8px; border: 1px solid; {submitResult.includes('✅')
+        ? 'background: #f0f9f0; border-color: #4caf50; color: #2e7d32;'
+        : 'background: #fff3f3; border-color: #f44336; color: #c62828;'}"
+    >
       <strong>{submitResult}</strong>
     </div>
   {/if}
@@ -133,14 +139,23 @@ async function testDatabaseConnection() {
         <button
           type="submit"
           disabled={isSubmitting || !formData.caseNumber || !formData.title}
-          style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: {isSubmitting || !formData.caseNumber || !formData.title ? 'not-allowed' : 'pointer'}; font-size: 14px; opacity: {isSubmitting || !formData.caseNumber || !formData.title ? '0.6' : '1'};"
+          style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: {isSubmitting ||
+          !formData.caseNumber ||
+          !formData.title
+            ? 'not-allowed'
+            : 'pointer'} font-size: 14px; opacity: {isSubmitting || !formData.caseNumber || !formData.title
+            ? '0.6'
+            : '1'}"
         >
           {isSubmitting ? '⏳ Creating...' : '💾 Create Case'}
         </button>
       </div>
     </form>
   </div>
-  <div class="info" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+  <div
+    class="info"
+    style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;"
+  >
     <h3 style="margin-top: 0; color: #333;">✅ Testing Complete Integration</h3>
     <ul style="margin: 0; color: #666;">
       <li><strong>Frontend:</strong> Svelte 5 form handling and state management</li>

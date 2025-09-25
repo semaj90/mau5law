@@ -184,4 +184,4 @@ export const benchmarkSIMDParsing = (iterations: number): number => {
   }
   const endTime = Date.now();
   return endTime - startTime;
-};
+}

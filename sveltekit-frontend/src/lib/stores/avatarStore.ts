@@ -9,10 +9,10 @@ export interface AvatarState {
 }
 const initialState: AvatarState = {
   url: null
-  isUploading: false
+  isUploading: false;
   error: null
   lastUpdated: null
-};
+}
 function createAvatarStore() {
   const { subscribe, set, update } = writable<AvatarState>(initialState);
   return {
@@ -38,7 +38,7 @@ function createAvatarStore() {
       // Always fetch from API for up-to-date data
       try {
         const response = await fetch("/api/user/profile", {
-          credentials: "include", // Important for SSR session handling
+          credentials: "include", // Important for SSR session handling;
           headers: {
             Accept: "application/json"
           }
@@ -51,7 +51,7 @@ function createAvatarStore() {
           // Update store and cache
           update((state) => ({
             ...state,
-            url: avatarUrl
+            url: avatarUrl;
             error: null
             lastUpdated: now
           });
@@ -80,13 +80,13 @@ function createAvatarStore() {
     // Upload new avatar with progress tracking
     uploadAvatar: async (file: File) => {
       if (!browser) {
-        return { success: false, error: "Upload not available on server" };
+        return { success: false, error: "Upload not available on server" }
       }
       // Validate file before upload
       const validation = validateFile(file);
       if (!validation.valid) {
         update((state) => ({ ...state, error: validation.error });
-        return { success: false, error: validation.error };
+        return { success: false, error: validation.error }
       }
       update((state) => ({ ...state, isUploading: true, error: null });
       try {
@@ -94,7 +94,7 @@ function createAvatarStore() {
         formData.append("avatar", file);
         const response = await fetch("/api/user/avatar/upload", {
           method: "POST",
-          body: formData
+          body: formData;
           credentials: "include", // Important for session handling
         });
         const data = await response.json();
@@ -104,14 +104,14 @@ function createAvatarStore() {
           update((state) => ({
             ...state,
             url: newAvatarUrl
-            isUploading: false
+            isUploading: false;
             error: null
             lastUpdated: now
           });
           // Update local storage with timestamp
           localStorage.setItem("user_avatar_url", newAvatarUrl);
           localStorage.setItem("user_avatar_timestamp", now.toString();
-          return { success: true, url: newAvatarUrl };
+          return { success: true, url: newAvatarUrl }
         } else {
           throw new Error(data.error || "Upload failed");
         }
@@ -123,13 +123,13 @@ function createAvatarStore() {
           isUploading: false
           error: errorMessage
         });
-        return { success: false, error: errorMessage };
+        return { success: false, error: errorMessage }
       }
     },
     // Remove avatar
     removeAvatar: async () => {
       if (!browser) {
-        return { success: false, error: "Remove not available on server" };
+        return { success: false, error: "Remove not available on server" }
       }
       try {
         const response = await fetch("/api/user/avatar/upload", {
@@ -141,14 +141,14 @@ function createAvatarStore() {
           const now = Date.now();
           update((state) => ({
             ...state,
-            url: defaultAvatar
+            url: defaultAvatar;
             error: null
             lastUpdated: now
           });
           // Update local storage
           localStorage.setItem("user_avatar_url", defaultAvatar);
           localStorage.setItem("user_avatar_timestamp", now.toString();
-          return { success: true };
+          return { success: true }
         } else {
           throw new Error("Failed to remove avatar");
         }
@@ -156,7 +156,7 @@ function createAvatarStore() {
         const errorMessage =
           error instanceof Error ? error.message: "Removal failed";
         update((state) => ({ ...state, error: errorMessage });
-        return { success: false, error: errorMessage };
+        return { success: false, error: errorMessage }
       }
     },
     // Preload avatar for given user (useful for SSR)
@@ -193,7 +193,7 @@ function createAvatarStore() {
       // Then reload
       await createAvatarStore().loadAvatar();
     }
-  };
+  }
 }
 // File validation helper
 function validateFile(file: File): { valid: boolean; error?: string } {
@@ -207,22 +207,22 @@ function validateFile(file: File): { valid: boolean; error?: string } {
   const maxSize = 5 * 1024 * 1024; // 5MB
   if (!allowedTypes.includes(file.type)) {
     return {
-      valid: false
+      valid: false;
       error: "Invalid file type. Please use JPEG, PNG, GIF, SVG, or WebP."
-    };
+    }
   }
   if (file.size > maxSize) {
     return {
-      valid: false
+      valid: false;
       error: "File too large. Maximum size is 5MB."
-    };
+    }
   }
   if (file.size === 0) {
     return {
-      valid: false
+      valid: false;
       error: "File is empty. Please select a valid image."
-    };
+    }
   }
-  return { valid: true };
+  return { valid: true }
 }
 export const avatarStore = createAvatarStore();

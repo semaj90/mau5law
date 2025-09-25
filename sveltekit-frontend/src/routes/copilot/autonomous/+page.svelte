@@ -46,7 +46,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   });
   async function checkSystemStatus() {
     try {
-      const response = await fetch('/api/copilot/self-prompt?mode=status');
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         systemStatus = {
@@ -56,7 +56,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
           multiAgent: (data as { status?: unknown; services?: unknown }).services?.multiAgent || false,
           autonomousEngineering: (data as { status?: unknown; services?: unknown }).services?.autonomousEngineering || false,
           serviceWorkers: (data as { status?: unknown; services?: unknown }).services?.serviceWorkers || false
-        };
+        }
       }
     } catch (error) {
       console.error('Failed to check system status:', error);
@@ -108,7 +108,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
       description: 'Direct integration with GitHub Copilot for enhanced suggestions',
       code: `// In VS Code, Copilot can now leverage our autonomous system
   await copilotSelfPrompt("Fix TypeScript errors", {
-  useAutonomousEngineering: true
+  useAutonomousEngineering: true;
   context: { platform: "webapp", urgency: "high" }
   });`
     },
@@ -157,25 +157,25 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     {
       title: 'Automated Bug Fixing',
       description: 'Autonomous identification and resolution of software bugs',
-      icon: Code
+      icon: Code;
       benefits: ['Faster resolution', 'Pattern recognition', 'Preventive analysis'];
     },
     {
       title: 'Performance Optimization',
       description: 'Cross-platform performance analysis and optimization',
-      icon: Zap
+      icon: Zap;
       benefits: ['Multi-threaded analysis', 'Comprehensive profiling', 'Automated tuning'];
     },
     {
       title: 'Security Auditing',
       description: 'Multi-agent security analysis and vulnerability assessment',
-      icon: Globe
+      icon: Globe;
       benefits: ['Expert coordination', 'Comprehensive coverage', 'Risk prioritization'];
     },
     {
       title: 'Architecture Review',
       description: 'Intelligent architectural analysis and recommendations',
-      icon: Settings
+      icon: Settings;
       benefits: ['Best practices', 'Scalability analysis', 'Modernization guidance'];
     }
   ];
@@ -419,4 +419,4 @@ showIntegration = !showIntegration}>
   </div>
 <style>
   /* @unocss-include */
-</style>
+</style>;

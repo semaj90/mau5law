@@ -24,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
   let showDetails = $state(false);
   // Computed values
   let p99Badge = $derived(() => {
-    if (!state) return { count: 0, status: 'normal' };
+    if (!state) return { count: 0, status: 'normal' }
     const count = state.sustained_counters.p99_breache;
     const budget = state.daily_budgets.max_p99_breache;
     const ratio = count / budget;
@@ -33,10 +33,10 @@ https://svelte.dev/e/js_parse_error -->
       budget,
       ratio,
       status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal';
-    };
+    }
   });
   let errorBadge = $derived(() => {
-    if (!state) return { count: 0, status: 'normal' };
+    if (!state) return { count: 0, status: 'normal' }
     const count = state.sustained_counters.error_spike;
     const budget = state.daily_budgets.max_error_spike;
     const ratio = count / budget;
@@ -45,10 +45,10 @@ https://svelte.dev/e/js_parse_error -->
       budget,
       ratio,
       status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal';
-    };
+    }
   });
   let anomalyBadge = $derived(() => {
-    if (!state) return { count: 0, status: 'normal' };
+    if (!state) return { count: 0, status: 'normal' }
     const count = state.sustained_counters.anomaly_spike;
     const budget = state.daily_budgets.max_anomaly_spike;
     const ratio = count / budget;
@@ -57,12 +57,12 @@ https://svelte.dev/e/js_parse_error -->
       budget,
       ratio,
       status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal';
-    };
+    }
   });
   // Functions
   async function loadState() {
     try {
-      const response = await fetch('/api/v1/observability/state');
+      // removed unused response assignment
       if (response.ok) {
         state = await response.json();
       }
@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
       ws.onopen=() => {
         isConnected = true;
         console.log('[observability-panel] WebSocket connected');
-      };
+      }
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
               severity: data.severity || 'info',
               value: data.value,
               threshold: data.threshold;
-            };
+            }
             alerts = [alert, ...alerts].slice(0, 100); // Keep last 100 alerts
             // Auto-scroll if enabled
             if (autoScroll) {
@@ -102,22 +102,22 @@ https://svelte.dev/e/js_parse_error -->
               }, 10);
             }
           } else if (data.type === 'observability.state_update') {
-            state = { ...state, ...data.state };
+            state = { ...state, ...data.state }
           }
         } catch (error) {
           console.error('[observability-panel] Failed to parse WebSocket message:', error);
         }
-      };
+      }
       ws.onclose=() => {
         isConnected = false;
         console.log('[observability-panel] WebSocket disconnected');
         // Reconnect after 5 seconds
         setTimeout(connectWebSocket, 5000);
-      };
+      }
       ws.onerror = (error) => {
         console.error('[observability-panel] WebSocket error:', error);
         isConnected = false;
-      };
+      }
     } catch (error) {
       console.error('[observability-panel] Failed to connect WebSocket:', error);
       setTimeout(connectWebSocket, 5000);
@@ -151,7 +151,7 @@ await loadState();
     const stateInterval = setInterval(loadState, 30000);
     return () => {
       clearInterval(stateInterval);
-    };
+    }
     })();
   });
   onDestroy(() => {
@@ -160,6 +160,7 @@ await loadState();
     }
   });
 </script>
+
 <div class="observability-panel">
   <!-- Header -->
   <div class="panel-header">
@@ -169,7 +170,7 @@ await loadState();
         <span class="status-indicator {isConnected ? 'connected' : 'disconnected'}"></span>
         {isConnected ? 'Live' : 'Disconnected'}
       </div>
-      <button class="btn-toggle" onclick={() => showDetails = !showDetails}>
+      <button class="btn-toggle" onclick={() => (showDetails = !showDetails)}>
         {showDetails ? 'Hide' : 'Show'} Details
       </button>
     </div>
@@ -199,28 +200,28 @@ await loadState();
     </div>
   </div>
   {#if showDetails && state}
-  <!-- Detailed State -->
-  <div class="details-section">
-    <h4>Current Baselines</h4>
-    <div class="baselines-grid">
-      <div class="baseline-item">
-        <span class="label">P99 Latency:</span>
-        <span class="value">{state.baselines.p99_latency_ms}ms</span>
+    <!-- Detailed State -->
+    <div class="details-section">
+      <h4>Current Baselines</h4>
+      <div class="baselines-grid">
+        <div class="baseline-item">
+          <span class="label">P99 Latency:</span>
+          <span class="value">{state.baselines.p99_latency_ms}ms</span>
+        </div>
+        <div class="baseline-item">
+          <span class="label">Error Rate:</span>
+          <span class="value">{state.baselines.error_rate_percent}%</span>
+        </div>
+        <div class="baseline-item">
+          <span class="label">Connections:</span>
+          <span class="value">{state.baselines.connection_count}</span>
+        </div>
       </div>
-      <div class="baseline-item">
-        <span class="label">Error Rate:</span>
-        <span class="value">{state.baselines.error_rate_percent}%</span>
-      </div>
-      <div class="baseline-item">
-        <span class="label">Connections:</span>
-        <span class="value">{state.baselines.connection_count}</span>
+      <div class="metadata">
+        <small>Last calculated: {formatTimestamp(state.baselines.last_calculated)}</small>
+        <small>Last reset: {formatTimestamp(state.sustained_counters.last_reset)}</small>
       </div>
     </div>
-    <div class="metadata">
-      <small>Last calculated: {formatTimestamp(state.baselines.last_calculated)}</small>
-      <small>Last reset: {formatTimestamp(state.sustained_counters.last_reset)}</small>
-    </div>
-  </div>
   {/if}
   <!-- Alert Stream -->
   <div class="alerts-section">
@@ -257,6 +258,7 @@ await loadState();
     </div>
   </div>
 </div>
+
 <style>
   .observability-panel {
     background: var(--bg-secondary, #1a1a2e);

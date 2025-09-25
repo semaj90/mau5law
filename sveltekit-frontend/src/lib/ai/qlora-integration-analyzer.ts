@@ -26,13 +26,13 @@ interface UserBehaviorProfile {
     positiveRatio: number;
     avgResponseTime: number;
     preferredFeatures: string[];
-  };
+  }
   contextualPreferences: {
     accuracy_weight: number;
     completeness_weight: number;
     clarity_weight: number;
     speed_weight: number;
-  };
+  }
 }
 interface ModelPerformanceInsights {
   modelId: string;
@@ -43,13 +43,13 @@ interface ModelPerformanceInsights {
     parameter_efficiency: number;
     context_utilization: number;
     response_quality: number;
-  };
+  }
   recommendedAdjustments: {
     rank: number;
     alpha: number;
     target_modules: string[];
     learning_rate: number;
-  };
+  }
 }
 interface TopologyRecommendations {
   optimalArchitecture: {
@@ -57,7 +57,7 @@ interface TopologyRecommendations {
     hidden_size: number;
     attention_heads: number;
     intermediate_size: number;
-  };
+  }
   specializationPoints: {
     layer_index: number;
     module_name: string;
@@ -68,7 +68,7 @@ interface TopologyRecommendations {
     prune_ratio: number;
     target_components: string[];
     expected_speedup: number;
-  };
+  }
 }
 interface DistillationPlan {
   planId: string;
@@ -80,19 +80,19 @@ interface DistillationPlan {
     negative_examples: number;
     neutral_examples: number;
     domain_coverage: string[];
-  };
+  }
   expectedMetrics: {
     size_reduction: number;
     speed_improvement: number;
     quality_retention: number;
     domain_accuracy: Map<string, number>;
-  };
+  }
   timeline: {
     data_preparation: number;
     model_training: number;
     validation: number;
     deployment: number;
-  };
+  }
 }
 export class QLoRAIntegrationAnalyzer {
   private soraMoogle: ProductionSoraService;
@@ -175,7 +175,7 @@ export class QLoRAIntegrationAnalyzer {
         interactionVelocity: 1.5,
         qualityExpectation: 0.9,
         timeConstraints: 0.5
-      };
+      }
       const performanceReq = this.extractPerformanceRequirements(feedbackBatch);
       const topologyInsights = await this.topologyPredictor.predictOptimalTopology(
         mockDocument,
@@ -190,7 +190,7 @@ export class QLoRAIntegrationAnalyzer {
         topologyRecommendations: this.generateTopologyRecommendations(topologyInsights),
         distillationPlan: await this.createDistillationPlan(feedbackBatch, topologyInsights),
         confidence: this.calculateAnalysisConfidence(behaviorPatterns, userJourneyGraphs)
-      };
+      }
       // Store analysis for future reference
       this.analysisHistory.push(analysis);
       // Update user profiles and model insights
@@ -259,10 +259,10 @@ export class QLoRAIntegrationAnalyzer {
       timeline: {
         data_preparation: 3600000, // 1 hour
         model_training: 7200000, // 2 hours
-        validation: 1800000, // 30 minutes
+        validation: 1800000, // 30 minutes;
         deployment: 900000, // 15 minutes
       }
-    };
+    }
     return plan;
   }
   // Helper methods
@@ -310,7 +310,7 @@ export class QLoRAIntegrationAnalyzer {
       minimum_accuracy: Math.max(positiveRatio * 0.95, 0.8),
       memory_constraint: 512,
       concurrent_requests: 10
-    };
+    }
   }
   private async getCurrentResourceConstraints(): Promise<any> {
     return {
@@ -318,7 +318,7 @@ export class QLoRAIntegrationAnalyzer {
       cpu_cores: 8,
       ram: 16384,
       storage: 100000
-    };
+    }
   }
   private synthesizeUserBehaviorProfile(feedbackBatch: any[], patterns: any): UserBehaviorProfile {
     const userIds = [...new Set(feedbackBatch.map((f) => f.userId))];
@@ -348,7 +348,7 @@ export class QLoRAIntegrationAnalyzer {
         clarity_weight: 0.2,
         speed_weight: 0.1
       }
-    };
+    }
   }
   private extractModelInsights(
     feedbackBatch: any[]
@@ -376,7 +376,7 @@ export class QLoRAIntegrationAnalyzer {
         target_modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
         learning_rate: 2e-5
       }
-    };
+    }
   }
   private generateTopologyRecommendations(insights: any): TopologyRecommendations {
     return {
@@ -399,7 +399,7 @@ export class QLoRAIntegrationAnalyzer {
         target_components: ['intermediate_layers', 'attention_heads'],
         expected_speedup: 1.5
       }
-    };
+    }
   }
   private calculateAnalysisConfidence(patterns: any, graphs: any): number {
     const patternConfidence = patterns.coherence || 0.7;

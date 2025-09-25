@@ -25,57 +25,57 @@
     Cpu,
     Monitor,
     Zap,
-    Brain
+    Brain,
   } from 'lucide-svelte';
   // Dashboard data
   let stats = $state({
     activeCases: 3,
     evidenceItems: 27,
     personsOfInterest: 8,
-    recentActivity: 12
+    recentActivity: 12,
   });
   let activeCases = $state([
     {
       id: 1,
-      title: "CORPORATE ESPIONAGE INVESTIGATION",
+      title: 'CORPORATE ESPIONAGE INVESTIGATION',
       items: 8,
-      timeAgo: "2 hours ago",
-      priority: "high",
-      status: "active";
+      timeAgo: '2 hours ago',
+      priority: 'high',
+      status: 'active',
     },
     {
       id: 2,
-      title: "MISSING PERSON: DR. SARAH CHEN",
+      title: 'MISSING PERSON: DR. SARAH CHEN',
       items: 15,
-      timeAgo: "4 hours ago",
-      priority: "high",
-      status: "active";
+      timeAgo: '4 hours ago',
+      priority: 'high',
+      status: 'active',
     },
     {
       id: 3,
-      title: "FINANCIAL FRAUD ANALYSIS",
+      title: 'FINANCIAL FRAUD ANALYSIS',
       items: 4,
-      timeAgo: "1 day ago",
-      priority: "medium",
-      status: "pending";
-    }
+      timeAgo: '1 day ago',
+      priority: 'medium',
+      status: 'pending',
+    },
   ]);
   let systemStatus = $state([
     {
-      message: "System backup completed successfully",
-      time: "10 minutes ago",
-      type: "success";
+      message: 'System backup completed successfully',
+      time: '10 minutes ago',
+      type: 'success',
     },
     {
-      message: "Evidence analysis queue processing slowly",
-      time: "1 hour ago",
-      type: "warning";
+      message: 'Evidence analysis queue processing slowly',
+      time: '1 hour ago',
+      type: 'warning',
     },
     {
-      message: "New facial recognition matches found",
-      time: "2 hours ago",
-      type: "success";
-    }
+      message: 'New facial recognition matches found',
+      time: '2 hours ago',
+      type: 'success',
+    },
   ]);
   $effect(() => {
     console.log('YoRHa Legal AI Detective Interface initialized');
@@ -90,6 +90,7 @@
     goto('/cases');
   }
 </script>
+
 <svelte:head>
   <title>YoRHa Legal AI Detective Interface</title>
 </svelte:head>
@@ -98,22 +99,14 @@
   <div class="yorha-bg-secondary border-b border-gray-700 p-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
-        <div class="text-sm yorha-text-muted">
-          YoRHa Detective Interface • 8/20/2025 16:08:30
-        </div>
+        <div class="text-sm yorha-text-muted">YoRHa Detective Interface • 8/20/2025 16:08:30</div>
       </div>
       <div class="flex items-center space-x-3">
-        <button
-          class="yorha-btn yorha-nes-btn is-primary"
-          onclick={handleNewCase}
-        >
+        <button class="yorha-btn yorha-nes-btn is-primary" onclick={handleNewCase}>
           <Plus class="w-4 h-4 mr-2" />
           NEW CASE
         </button>
-        <button
-          class="yorha-btn yorha-nes-btn"
-          onclick={handleGlobalSearch}
-        >
+        <button class="yorha-btn yorha-nes-btn" onclick={handleGlobalSearch}>
           <Search class="w-4 h-4 mr-2" />
           GLOBAL SEARCH
         </button>
@@ -221,17 +214,16 @@
           <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-slide-in">
             <div class="yorha-nier-bits-yorha-panel-header flex items-center justify-between">
               <h2 class="yorha-nier-bits-nes-text is-primary">ACTIVE CASES</h2>
-              <button
-                class="yorha-btn yorha-nes-btn text-sm"
-                onclick={handleViewAll}
-              >
+              <button class="yorha-btn yorha-nes-btn text-sm" onclick={handleViewAll}>
                 VIEW ALL
                 <ChevronRight class="w-4 h-4 ml-1" />
               </button>
             </div>
             <div class="space-y-4">
               {#each activeCases as caseItem}
-                <div class="border border-gray-700 rounded-lg p-4 hover:bg-gray-800 transition-colors cursor-pointer yorha-fade-in">
+                <div
+                  class="border border-gray-700 rounded-lg p-4 hover:bg-gray-800 transition-colors cursor-pointer yorha-fade-in"
+                >
                   <div class="flex items-center justify-between mb-2">
                     <h3 class="font-medium yorha-text-primary">{caseItem.title}</h3>
                     <div class="flex space-x-2">
@@ -333,6 +325,7 @@
     </main>
   </div>
 </div>
+
 <style>
   /* Additional component-specific styles */
   .col-span-2 {

@@ -103,7 +103,7 @@ https://svelte.dev/e/expected_token -->
     camera.position.set(0, 0, 10);
     // Renderer setup with NES-style pixelation
     renderer = new THREE.WebGLRenderer({
-      antialias: false, // Keep pixels sharp for NES aesthetic
+      antialias: false, // Keep pixels sharp for NES aesthetic;
       alpha: true ;
     });
     renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
@@ -139,7 +139,7 @@ https://svelte.dev/e/expected_token -->
       renderMode: 'hybrid-sync',
       backgroundColor: NES_YORHA_PALETTE.nesBlack,
       pixelPerfect: true
-      crtEffect: true
+      crtEffect: true;
       scanlines: true;
     });
     statusPanel.position.set(0, -2, 0);
@@ -234,8 +234,8 @@ https://svelte.dev/e/expected_token -->
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({,
             content: doc
-            model: embeddingModel
-            backend: vectorBackend
+            model: embeddingModel;
+            backend: vectorBackend;
             options: {
               store: true
               documentId: `doc_${i}_${Date.now()}`
@@ -275,7 +275,7 @@ https://svelte.dev/e/expected_token -->
               (Math.random() - 0.5) * 10,
               (Math.random() - 0.5) * 5
             );
-          };
+          }
           analysisData = [...analysisData, result];
           // Update 3D visualization
           if (enable3DVisualization) {
@@ -316,7 +316,7 @@ https://svelte.dev/e/expected_token -->
           medium: NES_YORHA_PALETTE.nesWarning,
           high: NES_YORHA_PALETTE.nesError,
           critical: NES_YORHA_PALETTE.nesError;
-        };
+        }
         material.color.setHex.riskLevel]);
       }
       // Add confidence scaling
@@ -331,7 +331,7 @@ https://svelte.dev/e/expected_token -->
     const clusters = performKMeansClustering(embeddings, Math.min(3, Math.ceil(embeddings.length / 2)));
     documentClusters = clusters.map((cluster, index) => ({
       id: index
-      documents: cluster
+      documents: cluster;
       center: calculateClusterCenter(cluster),
       color: [NES_YORHA_PALETTE.yorhaGold, NES_YORHA_PALETTE.nesSuccess, NES_YORHA_PALETTE.nesInfo][index % 3];
     }));
@@ -381,7 +381,7 @@ https://svelte.dev/e/expected_token -->
       high: ['penalty', 'fine', 'liability', 'dispute'],
       medium: ['notice', 'cure period', 'default'],
       low: ['standard', 'typical', 'routine'];
-    };
+    }
     const lowerText = text.toLowerCase();
     if (riskTerms.critical.some(term => lowerText.includes(term))) return 'critical';
     if (riskTerms.high.some(term => lowerText.includes(term))) return 'high';
@@ -396,7 +396,7 @@ https://svelte.dev/e/expected_token -->
       'Employment Law': ['employee', 'employment', 'workplace', 'discrimination'],
       'Real Estate': ['property', 'lease', 'landlord', 'tenant', 'real estate'],
       'Litigation': ['lawsuit', 'court', 'judge', 'trial', 'settlement']
-    };
+    }
     const lowerText = text.toLowerCase();
     for (const [area, keywords] of Object.entries(practiceAreas)) {
       if (keywords.some(keyword => lowerText.includes(keyword))) {
@@ -482,7 +482,7 @@ https://svelte.dev/e/expected_token -->
   }
 </script>
 <!-- Main Container -->
-<div class="hybrid-legal-analysis-container" style="height: {height};">
+<div class="hybrid-legal-analysis-container" style="height: {height}">
   <!-- Header Controls -->
   <div class="nes-container with-title analysis-header">
     <p class="title">🎮 NES + YoRHa Hybrid Legal AI Analysis Engine</p>

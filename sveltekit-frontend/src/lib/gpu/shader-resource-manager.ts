@@ -61,7 +61,7 @@ export interface ShaderExecutionContext {
   workgroupSize?: [number, number, number];
   dispatchSize?: [number, number, number];
   bindGroups: string[];
-  uniforms?: { [key: string]: any };
+  uniforms?: { [key: string]: any }
   inputBuffers: string[];
   outputBuffers: string[];
   startTime: number;
@@ -98,7 +98,7 @@ export class ShaderResourceManager {
           deallocations: 0
         },
         maxMemoryBudget: this.config.memoryBudget.l1GpuBudget
-      };
+      }
       this.pools.set(backend, pool);
       this.isInitialized = true;
       trackGPU({
@@ -124,7 +124,7 @@ export class ShaderResourceManager {
    * Compile and register shader from bundle
    */
   async compileShader(
-    bundle: ShaderBundle
+    bundle: ShaderBundle;
     backend: GPUBackend = 'webgpu';
   ): Promise<CompiledShader> {
     const pool = this.pools.get(backend);
@@ -178,7 +178,7 @@ export class ShaderResourceManager {
     id: string
     size: number
     usage: string[] = ['storage'],
-    data?: ArrayBuffer
+    data?: ArrayBuffer;
     backend: GPUBackend = 'webgpu';
   ): Promise<TrackedBuffer> {
     const pool = this.pools.get(backend);
@@ -220,7 +220,7 @@ export class ShaderResourceManager {
         size,
         backend,
         resource
-      };
+      }
       pool.buffers.set(id, trackedBuffer);
       pool.memoryUsage.allocatedBytes += size;
       pool.memoryUsage.allocations++;
@@ -275,7 +275,7 @@ export class ShaderResourceManager {
         const device = this.deviceContext as GPUDevice;
         resource = device.createTexture({
           size: { width, height },
-          format: format as GPUTextureFormat
+          format: format as GPUTextureFormat;
           usage: this.mapTextureUsageToWebGPU(usage)
         });
       } else if (backend === 'webgl2' || backend === 'webgl1') {
@@ -296,7 +296,7 @@ export class ShaderResourceManager {
         webgpuTexture: backend === 'webgpu' ? resource : undefined
         webglTexture: backend !== 'webgpu' ? resource : undefined
         lastAccessed: Date.now()
-      };
+      }
       pool.textures.set(id, trackedTexture);
       pool.memoryUsage.allocatedBytes += size;
       pool.memoryUsage.allocations++;
@@ -319,7 +319,7 @@ export class ShaderResourceManager {
       workgroupSize?: [number, number, number];
       dispatchSize?: [number, number, number];
       bindGroups?: string[];
-      uniforms?: { [key: string]: any };
+      uniforms?: { [key: string]: any }
       inputBuffers?: string[];
       outputBuffers?: string[];
     },
@@ -339,7 +339,7 @@ export class ShaderResourceManager {
       inputBuffers: params.inputBuffers || [],
       outputBuffers: params.outputBuffers || [],
       startTime: performance.now()
-    };
+    }
     this.activeContext = context;
     try {
       if (backend === 'webgpu') {
@@ -410,7 +410,7 @@ export class ShaderResourceManager {
       pools: poolStats
       totalMemoryUsed,
       totalMemoryBudget
-    };
+    }
   }
   /**
    * Clean up unused resources
@@ -507,7 +507,7 @@ export class ShaderResourceManager {
       isCompiled: true
       compilationTime: 0, // Will be set by caller
       lastUsed: Date.now()
-    };
+    }
   }
   private async compileWebGLShader(bundle: ShaderBundle, id: string, backend: GPUBackend): Promise<CompiledShader> {
     const gl = this.deviceContext as WebGL2RenderingContext;
@@ -531,7 +531,7 @@ export class ShaderResourceManager {
       isCompiled: true
       compilationTime: 0,
       lastUsed: Date.now()
-    };
+    }
   }
   private createWebGLShader(gl: WebGL2RenderingContext, type: number, source: string): WebGLShader {
     const shader = gl.createShader(type)!;

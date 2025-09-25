@@ -104,25 +104,25 @@ export interface UserAnalytics {
     averageFileSize: number;
     preferredFormats: string[];
     commonUploadTimes: string[];
-  };
+  }
   interactionMetrics: {
     typingSpeed: number;
     clickPatterns: ClickPattern[];
-    scrollBehavior: { depth: number; speed: number };
+    scrollBehavior: { depth: number; speed: number }
     focusTime: number;
-  };
+  }
   contextualPreferences: {
     preferredAIPromptStyle: 'concise' | 'detailed' | 'technical';
     helpLevel: 'minimal' | 'moderate' | 'extensive';
     autoSuggestions: boolean;
     proactiveInsights: boolean;
-  };
+  }
   caseContext: {
     activeCases: string[];
     currentCaseId?: string;
     workflowStage: 'intake' | 'discovery' | 'preparation' | 'trial' | 'appeal';
     expertise: 'paralegal' | 'associate' | 'senior' | 'partner';
-  };
+  }
 }
 export interface ClickPattern {
   x: number;
@@ -153,16 +153,16 @@ export interface UploadResult {
     confidenceScore?: number;
     privileged?: boolean;
     evidenceType?: string;
-  };
+  }
   metadata?: EvidenceMetadata;
 }
 export interface PipelineStatus {
-  fileValidation: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
-  fileUpload: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
-  aiAnalysis: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
-  indexing: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
-  vectorEmbedding: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
-  dbStorage: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number };
+  fileValidation: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number }
+  fileUpload: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number }
+  aiAnalysis: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number }
+  indexing: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number }
+  vectorEmbedding: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number }
+  dbStorage: { status: 'pending' | 'processing' | 'completed' | 'failed'; progress?: number }
 }
 // Validation Schemas
 const FileSchema = z.object({
@@ -200,7 +200,7 @@ export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input:
         updatedAnalytics: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).analytics,
         insights: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).insights,
         behaviorScore: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).score
-      };
+      }
     } catch (error) {
       console.warn('Production behavior analysis unavailable, using fallback');
       // Enhanced fallback with legal-specific patterns
@@ -209,7 +209,7 @@ export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input:
         intermediate: ['moderate_guidance', 'context_aware'],
         expert: ['minimal_guidance', 'efficiency_focused'],
         power_user: ['advanced_features', 'shortcuts_preferred']
-      };
+      }
       return {
         updatedAnalytics: {
           ...input.userAnalytics,
@@ -221,7 +221,7 @@ export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input:
           urgencyAwareness: input.context.legalContext?.urgency || 'medium'
         },
         behaviorScore: 0.75
-      };
+      }
     }
   }
 );
@@ -332,7 +332,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
               details: `Uploaded via legal AI system with ${(result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).confidence}% confidence`
             }]
           }
-        };
+        }
       });
       return await Promise.all(analysisPromises);
     } catch (error) {
@@ -432,7 +432,7 @@ export function generateUserInsights(context: UploadContext): any {
     legalExpertise: analytics.caseContext.expertise,
     workflowOptimization: engagementScore > 0.8 ? 'excellent' : 'room_for_improvement',
     recommendations: [] as string[]
-  };
+  }
   // Generate legal-specific recommendations
   if (analytics.uploadHistory.successRate < 0.7) {
     legalInsights.recommendations.push('Consider document preparation training');

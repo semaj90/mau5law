@@ -19,7 +19,7 @@ export interface AIMessage {
     tokenCount?: number;
     processingTime?: number;
     legalContext?: string;
-  };
+  }
 }
 export interface CaseAIContext {
   caseId: string;
@@ -36,7 +36,7 @@ export interface CaseAIContext {
     isActive: boolean;
     lastActivity: number;
     activeEvidenceId?: string;
-  };
+  }
   insights: Array<{,
     id: string;
     type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
@@ -130,7 +130,7 @@ class AIAssistantGlobalStore {
           lastActivity: Date.now()
         },
         insights: []
-      };
+      }
     }
   }
   setCurrentCase(caseId: string) {
@@ -147,7 +147,7 @@ class AIAssistantGlobalStore {
       ...message,
       id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       timestamp: Date.now()
-    };
+    }
     this.cases[caseId].messages.push(newMessage);
     this.cases[caseId].currentSession.lastActivity = Date.now();
     // Cache the message
@@ -209,7 +209,7 @@ class AIAssistantGlobalStore {
           processingTime: performance.now() - startTime,
           confidence: response.confidence
         }
-      };
+      }
       // Add assistant message
       await this.addMessage(caseId, assistantMessage);
       // Update metrics
@@ -250,7 +250,7 @@ class AIAssistantGlobalStore {
       'ollama': this.calculateBackendScore('ollama', complexity, hasLegalContext, requiresSpeed),
       'webasm': this.calculateBackendScore('webasm', complexity, hasLegalContext, requiresSpeed),
       'go-micro': this.calculateBackendScore('go-micro', complexity, hasLegalContext, requiresSpeed)
-    };
+    }
     // Select highest scoring backend
     const optimal = Object.entries(scores).reduce((a, b) =>
       scores[a[0] as Backend] > scores[b[0] as Backend] ? a : b
@@ -259,7 +259,7 @@ class AIAssistantGlobalStore {
     return optimal;
   }
   private calculateBackendScore(
-    backend: Backend
+    backend: Backend;
     complexity: string
     hasLegalContext: boolean
     requiresSpeed: boolean;
@@ -271,16 +271,16 @@ class AIAssistantGlobalStore {
       'ollama': { simple: 0.9, medium: 0.8, complex: 0.9 },
       'webasm': { simple: 1.0, medium: 0.6, complex: 0.3 },
       'go-micro': { simple: 0.6, medium: 0.8, complex: 1.0 }
-    };
+    }
     score += complexityScores[backend][complexity as keyof typeof complexityScores[Backend]] * 0.3;
     // Legal context bonus
     if (hasLegalContext) {
-      const legalBonuses = { 'vllm': 0.2, 'ollama': 0.3, 'webasm': 0.1, 'go-micro': 0.3 };
+      const legalBonuses = { 'vllm': 0.2, 'ollama': 0.3, 'webasm': 0.1, 'go-micro': 0.3 }
       score += legalBonuses[backend];
     }
     // Speed optimization
     if (requiresSpeed) {
-      const speedScores = { 'vllm': 0.6, 'ollama': 0.8, 'webasm': 1.0, 'go-micro': 0.7 };
+      const speedScores = { 'vllm': 0.6, 'ollama': 0.8, 'webasm': 1.0, 'go-micro': 0.7 }
       score += speedScores[backend] * 0.2;
     }
     // Latency penalty
@@ -334,7 +334,7 @@ class AIAssistantGlobalStore {
         device: result.device,
         fromCache: result.fromCache
       }
-    };
+    }
   }
   private async sendWithCUDAService(content: string, contextMessages: AIMessage[]) {
     // Import CUDA service dynamically
@@ -372,7 +372,7 @@ class AIAssistantGlobalStore {
         precision: result.precision,
         tensorrtVersion: result.metadata.tensorrtVersion
       }
-    };
+    }
   }
   private async sendWithSIMDWebGPU(content: string, contextMessages: AIMessage[]) {
     // Import existing SIMD + WebGPU acceleration
@@ -408,7 +408,7 @@ class AIAssistantGlobalStore {
       confidence: 0.9,
       tokenCount: acceleratedResult.enhancedResponse.length / 4, // Rough estimate
       accelerationMetrics: acceleratedResult.acceleratedResults.processingMetrics
-    };
+    }
   }
   // === Context and History Management ===
   private async buildSmartContext(caseId: string, query: string, legalContext?: string): Promise<AIMessage[]> {
@@ -460,7 +460,7 @@ class AIAssistantGlobalStore {
       'ollama': '/api/ai/chat',
       'webasm': '/api/ai/webasm-chat',
       'go-micro': '/api/ai/go-micro-chat'
-    };
+    }
     return endpoints[backend];
   }
   private formatBackendPayload(backend: Backend, messages: AIMessage[]) {
@@ -468,14 +468,14 @@ class AIAssistantGlobalStore {
       messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
       temperature: this.config.temperature,
       model: this.config.model
-    };
+    }
     switch (backend) {
       case 'vllm':
-        return { ...basePayload, openaiModel: 'mistralai/Mistral-7B-Instruct-v0.3' };
+        return { ...basePayload, openaiModel: 'mistralai/Mistral-7B-Instruct-v0.3' }
       case 'webasm':
-        return { ...basePayload, useWASM: true, enableGPU: true };
+        return { ...basePayload, useWASM: true, enableGPU: true }
       case 'go-micro':
-        return { ...basePayload, service: 'legal-analysis', priority: 'high' };
+        return { ...basePayload, service: 'legal-analysis', priority: 'high' }
       default:
         return basePayload;
     }
@@ -487,7 +487,7 @@ class AIAssistantGlobalStore {
       tokenCount: data.tokenCount || data.usage?.total_tokens,
       confidence: data.confidence,
       backend
-    };
+    }
   }
   // === Analysis Methods ===
   private analyzeMessageComplexity(message: string): 'simple' | 'medium' | 'complex' {
@@ -520,14 +520,14 @@ class AIAssistantGlobalStore {
     if (typeof window === 'undefined') return;
     setInterval(async () => {
       try {
-        const response = await fetch('/api/ai/health');
+        // removed unused response assignment
         const healthData = await response.json();
         this.backendHealth = {
           'vllm': healthData.backends?.vllm?.reachable ? 1.0 : 0.0,
           'ollama': healthData.backends?.ollama?.version ? 1.0 : 0.0,
           'webasm': healthData.backends?.webasm?.loaded ? 1.0 : 0.0,
           'go-micro': healthData.backends?.['go-micro']?.healthy ? 1.0 : 0.0
-        };
+        }
         this.availableBackends = Object.entries(this.backendHealth)
           .filter(([_, score]) => score > 0.1)
           .map(([backend]) => backend as Backend);
@@ -545,7 +545,7 @@ class AIAssistantGlobalStore {
         currentCaseId: this.currentCaseId,
         config: this.config,
         metrics: this.metrics
-      };
+      }
       localStorage.setItem('ai-assistant-unified-state', JSON.stringify(stateToSave);
     } catch (error) {
       console.error('Failed to persist AI assistant state:', error);
@@ -556,10 +556,10 @@ class AIAssistantGlobalStore {
       const saved = localStorage.getItem('ai-assistant-unified-state');
       if (saved) {
         const state = JSON.parse(saved);
-        this.cases = state.cases || {};
+        this.cases = state.cases || {}
         this.currentCaseId = state.currentCaseId;
-        this.config = { ...this.config, ...state.config };
-        this.metrics = { ...this.metrics, ...state.metrics };
+        this.config = { ...this.config, ...state.config }
+        this.metrics = { ...this.metrics, ...state.metrics }
       }
     } catch (error) {
       console.error('Failed to load persisted AI assistant state:', error);
@@ -574,14 +574,14 @@ class AIAssistantGlobalStore {
     this.persistState();
   }
   clearAllHistory() {
-    this.cases = {};
+    this.cases = {}
     this.currentCaseId = undefined;
     this.messageCache.clear();
     this.contextCache.clear();
     this.persistState();
   }
   updateConfig(newConfig: Partial<AssistantConfig>) {
-    this.config = { ...this.config, ...newConfig };
+    this.config = { ...this.config, ...newConfig }
     this.persistState();
   }
   exportConversation(caseId: string, format: 'json' | 'markdown' = 'json') {
@@ -594,7 +594,7 @@ class AIAssistantGlobalStore {
       insights: caseData.insights,
       exportedAt: new Date().toISOString(),
       totalMessages: caseData.messages.length
-    };
+    }
     if (format === 'markdown') {
       return this.convertToMarkdown(conversation);
     }
@@ -621,20 +621,20 @@ export const aiAssistant = new AIAssistantGlobalStore();
 // Export derived stores for compatibility with existing components
 export const currentCase = {
   get: () => aiAssistant.currentCase
-};
+}
 export const currentCaseMessages = {
   get: () => aiAssistant.currentMessages
-};
+}
 export const isProcessing = {
   get: () => aiAssistant.isProcessing
-};
+}
 export const currentResponse = {
   get: () => {
     const messages = aiAssistant.currentMessages;
     const lastAssistantMessage = messages.findLast(m => m.role === 'assistant');
     return lastAssistantMessage?.content || '';
   }
-};
+}
 export const aiError = {
   get: () => aiAssistant.error
-};
+}

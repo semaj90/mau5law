@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
   let { candidateIds }: string[] = [];
   let { chosenId }: string | null = null;
   let sending = $state(false);
-  let lastResp = $state<any >(null);
+  let lastResp = $state<any>(null);
   async function sendFeedback(reward: number) {
     sending = true;
     try {
@@ -26,12 +26,13 @@ https://svelte.dev/e/js_parse_error -->
       });
       lastResp = await res.json();
     } catch (e) {
-      lastResp = { ok: false, error: String(e) };
+      lastResp = { ok: false, error: String(e) }
     } finally {
       sending = false;
     }
   }
 </script>
+
 <div class="feedback-buttons">
   <button class="up" onclick={() => sendFeedback(1)} disabled={sending}>👍 Helpful</button>
   <button class="down" onclick={() => sendFeedback(0)} disabled={sending}>👎 Not helpful</button>
@@ -41,6 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     <span>status: {String(lastResp.ok)}</span>
   {/if}
 </div>
+
 <style>
   .feedback-buttons {
     display: flex;

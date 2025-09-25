@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         length: body.text.length,
         processingMode: 'headless-webgpu'
       },
-      // WebGPU results
+      // WebGPU results;
       webgpu: {
         mipmapGenerated: !!(result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain,
         mipmapLevels: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain?.levels || 0,

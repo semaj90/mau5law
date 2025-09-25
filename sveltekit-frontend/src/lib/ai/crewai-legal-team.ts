@@ -21,7 +21,7 @@ export interface Task {
   dependencies: string[];
   priority: "low" | "medium" | "high" | "critical";
   estimatedDuration: number;
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
 }
 export interface CrewConfig {
   name: string;
@@ -327,7 +327,7 @@ class CrewAILegalTeam {
     }
   }
   private async runCrewWorkflow(
-    crew: CrewConfig
+    crew: CrewConfig;
     context: { [key: string]: any },
     workflowId: string
   ): Promise<Omit<WorkflowResult, "crewId" | "workflowName" | "totalTime"> {
@@ -362,9 +362,9 @@ class CrewAILegalTeam {
         status: "completed",
         results,
         finalDeliverable,
-        insights: [...new Set(insights)], // Remove duplicates
+        insights: [...new Set(insights)], // Remove duplicates;
         recommendations: [...new Set(recommendations)], // Remove duplicates
-      };
+      }
     } catch (error: any) {
       console.error(`Crew workflow failed:`, error);
       return {
@@ -373,7 +373,7 @@ class CrewAILegalTeam {
         finalDeliverable: `Workflow failed: ${error}`,
         insights,
         recommendations
-      };
+      }
     }
   }
   private async executeSequentialTasks(
@@ -399,7 +399,7 @@ class CrewAILegalTeam {
           output: r.output
         })),
         task: task
-      };
+      }
       const output = await this.executeAgentTask(agent, task, taskContext);
       const executionTime = Date.now() - startTime;
       results.push({
@@ -434,7 +434,7 @@ class CrewAILegalTeam {
       dependencies: [],
       priority: "critical",
       estimatedDuration: 60000
-    };
+    }
     const workPlan = await this.executeAgentTask(
       manager,
       planningTask,
@@ -448,7 +448,7 @@ class CrewAILegalTeam {
       const agent = subordinates.find((a) => a.id === task.assignedAgent);
       if (!agent) return null;
       const startTime = Date.now();
-      const taskContext = { ...context, workPlan, task };
+      const taskContext = { ...context, workPlan, task }
       const output = await this.executeAgentTask(agent, task, taskContext);
       return {
         taskId: task.id,
@@ -460,7 +460,7 @@ class CrewAILegalTeam {
           Date.now() - startTime,
           task.estimatedDuration,
         )
-      };
+      }
     });
     const subordinateResults = (await Promise.all(taskPromises)).filter(
       (r) => r !== null,
@@ -475,7 +475,7 @@ class CrewAILegalTeam {
       dependencies: subordinateTasks.map((t) => t.id),
       priority: "critical",
       estimatedDuration: 90000
-    };
+    }
     const finalReview = await this.executeAgentTask(manager, reviewTask, {
       ...context,
       subordinateResults: subordinateResults
@@ -530,7 +530,7 @@ class CrewAILegalTeam {
   }
   private async executeAgentTask(
     agent: CrewMember
-    task: Task
+    task: Task;
     context: { [key: string]: any },
   ): Promise<string> {
     const prompt = this.buildAgentPrompt(agent, task, context);
@@ -563,7 +563,7 @@ class CrewAILegalTeam {
   }
   private buildAgentPrompt(
     agent: CrewMember
-    task: Task
+    task: Task;
     context: { [key: string]: any },
   ): string {
     return `You are ${agent.name}, a ${agent.role}.
@@ -642,7 +642,7 @@ Final synthesis:`;
       }
       // Sort by priority within executable tasks
       canExecute.sort((a, b) => {
-        const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+        const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 }
         return priorityOrder[b.priority] - priorityOrder[a.priority];
       });
       const next = canExecute[0];
@@ -653,7 +653,7 @@ Final synthesis:`;
   }
   private async buildConsensus(
     agentOutputs: Array<any>
-    task: Task
+    task: Task;
     context: { [key: string]: any },
   ): Promise<string> {
     const consensusPrompt = `Build consensus from the following agent outputs for task: ${task.description}
@@ -773,4 +773,4 @@ Consensus output:`;
 }
 export {
   CrewAILegalTeam
-};
+}

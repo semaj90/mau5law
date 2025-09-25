@@ -134,7 +134,7 @@ TODO: Implement document upload, AI summarization, export functionality
 							{#each summaryTypes as type}
 								<label class="flex items-center gap-3 cursor-pointer">
 									<input
-										type="radio"
+										type="radio";
 										bind:group={summaryType}
 										value={type.value}
 										class="nes-radio"

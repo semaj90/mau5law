@@ -37,7 +37,7 @@ export const mockUsers = [;
     practiceAreas: ['criminal_defense'],
     barNumber: null
     firmName: 'Mitchell & Associates',
-    profileEmbedding: null
+    profileEmbedding: null;
     metadata: {
       clearance_level: 'confidential',
       years_experience: 5
@@ -254,7 +254,7 @@ export const mockChatMessages = [;
     role: 'assistant',
     content: 'Based on my analysis of the financial records, I\'ve identified several key patterns: 1) 23 wire transfers totaling $2.3M over 18 months, 2) All transfers occurred on Fridays after business hours, 3) Receiving accounts are linked to offshore entities in tax havens. This pattern strongly suggests systematic embezzlement.',
     clientMessageId: 'msg_002',
-    contentEmbedding: null
+    contentEmbedding: null;
     metadata: {
       ai_confidence: 0.92,
       analysis_type: 'financial_pattern_recognition',
@@ -343,7 +343,7 @@ export const mockApiResponses = {
       }
     }
   }
-};
+}
 // Helper function to generate embeddings (mock implementation)
 export function generateMockEmbedding(dimensions: number = 384): number[] {
   return Array.from({ length: dimensions }, () => Math.random() * 2 - 1);
@@ -373,5 +373,5 @@ export function initializeMockDataWithEmbeddings() {
       ...msg,
       contentEmbedding: msg.contentEmbedding || generateMockEmbedding(384)
     })
-  };
+  }
 }

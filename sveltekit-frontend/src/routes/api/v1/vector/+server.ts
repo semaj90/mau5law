@@ -78,7 +78,7 @@ async function routeVectorRequest(
   }
 }
 async function determineProcessingPath(
-  request: VectorOperationRequest
+  request: VectorOperationRequest;
   operation: string
 ): Promise<'cuda' | 'webgpu' | 'wasm' | 'default'> {
   // Check service availability and request preferences

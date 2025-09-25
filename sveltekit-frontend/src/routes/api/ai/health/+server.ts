@@ -72,4 +72,4 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
           : "Ollama service not available"
     }
     return apiSuccess(healthData, undefined, requestId)
-})
+});

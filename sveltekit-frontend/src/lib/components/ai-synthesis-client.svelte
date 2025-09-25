@@ -1,6 +1,3 @@
-
-// lib/components/ai-synthesis-client.svelte
-// Frontend client for AI synthesis with real-time streaming
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
@@ -116,7 +113,7 @@
         'ranking': 0.7,
         'prompt_construction': 0.85,
         'quality_assessment': 1.0
-      };
+      }
       const baseProgress = stageProgress[(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).stage] || 0;
       const stageContribution = (data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).progress / 100 * 0.2; // Each stage contributes 20%
       progress.set((baseProgress - 0.2 + stageContribution) * 100);
@@ -148,7 +145,7 @@
       }
     });
     eventSource.addEventListener('error', (event) => {
-      const data = event.data ? JSON.parse(event.data) : { error: 'Stream error' };
+      const data = event.data ? JSON.parse(event.data) : { error: 'Stream error' }
       error.set(error) || 'Stream error');
       processing.set(false);
       if (eventSource) {
@@ -198,7 +195,7 @@
    */
   async function checkHealth() {
     try {
-      const response = await fetch('/api/ai-synthesizer');
+      // removed unused response assignment
       const health = await (response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).json();
       console.log('Health status:', health);
       return health;
@@ -215,7 +212,7 @@
   function addToHistory(query: string, response: any) {
     conversationHistory.push({
       role: 'user',
-      content: query
+      content: query;
       timestamp: new Date();
     });
     if ((response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).enhancedPrompt) {
@@ -231,6 +228,8 @@
     }
   });
 </script>
+
+// lib/components/ai-synthesis-client.svelte // Frontend client for AI synthesis with real-time streaming
 <div class="ai-synthesis-client">
   <div class="config-panel">
     <h3>Configuration</h3>
@@ -257,17 +256,8 @@
   </div>
   <div class="query-panel">
     <h3>Query</h3>
-    <textarea
-      bind:value={query}
-      placeholder="Enter your legal query..."
-      disabled={$processing}
-      rows="4"
-></textarea>
-    <button
-      onclick={submitQuery}
-      disabled={$processing || !query}
-      class="submit-btn"
-    >
+    <textarea bind:value={query} placeholder="Enter your legal query..." disabled={$processing} rows="4"></textarea>
+    <button onclick={submitQuery} disabled={$processing || !query} class="submit-btn">
       {$processing ? 'Processing...' : 'Submit Query'}
     </button>
   </div>
@@ -301,30 +291,125 @@
       <h3>Synthesis Result</h3>
       <div class="metadata">
         <h4>Metadata</h4>
-        <p>Request ID: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.requestId}</p>
-        <p>Processing Time: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.processingTime}ms</p>
-        <p>Confidence: {($(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.confidence * 100).toFixed(1)}%</p>
-        <p>Quality Score: {($(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.qualityScore * 100).toFixed(1)}%</p>
-        <p>Cached: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.cached ? 'Yes' : 'No'}</p>
+        <p>
+          Request ID: {$(
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+          ).metadata.requestId}
+        </p>
+        <p>
+          Processing Time: {$(
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+          ).metadata.processingTime}ms
+        </p>
+        <p>
+          Confidence: {(
+            $(
+              result as {
+                set?: any;
+                metadata?: any;
+                processedQuery?: any;
+                retrievedContext?: any;
+                enhancedPrompt?: any;
+              },
+            ).metadata.confidence * 100
+          ).toFixed(1)}%
+        </p>
+        <p>
+          Quality Score: {(
+            $(
+              result as {
+                set?: any;
+                metadata?: any;
+                processedQuery?: any;
+                retrievedContext?: any;
+                enhancedPrompt?: any;
+              },
+            ).metadata.qualityScore * 100
+          ).toFixed(1)}%
+        </p>
+        <p>
+          Cached: {$(
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+          ).metadata.cached
+            ? 'Yes'
+            : 'No'}
+        </p>
       </div>
       <div class="processed-query">
         <h4>Processed Query</h4>
-        <p><strong>Original:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.original}</p>
-        <p><strong>Enhanced:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.enhanced}</p>
-        <p><strong>Intent:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.intent}</p>
-        <p><strong>Complexity:</strong> {($(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.complexity * 100).toFixed(0)}%</p>
+        <p>
+          <strong>Original:</strong>
+          {$(
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+          ).processedQuery.original}
+        </p>
+        <p>
+          <strong>Enhanced:</strong>
+          {$(
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+          ).processedQuery.enhanced}
+        </p>
+        <p>
+          <strong>Intent:</strong>
+          {$(
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+          ).processedQuery.intent}
+        </p>
+        <p>
+          <strong>Complexity:</strong>
+          {(
+            $(
+              result as {
+                set?: any;
+                metadata?: any;
+                processedQuery?: any;
+                retrievedContext?: any;
+                enhancedPrompt?: any;
+              },
+            ).processedQuery.complexity * 100
+          ).toFixed(0)}%
+        </p>
         {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.legalConcepts.length > 0}
-          <p><strong>Legal Concepts:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.legalConcepts.join(', ')}</p>
+          <p>
+            <strong>Legal Concepts:</strong>
+            {$(
+              result as {
+                set?: any;
+                metadata?: any;
+                processedQuery?: any;
+                retrievedContext?: any;
+                enhancedPrompt?: any;
+              },
+            ).processedQuery.legalConcepts.join(', ')}
+          </p>
         {/if}
       </div>
       <div class="retrieved-context">
         <h4>Retrieved Context</h4>
-        <p>Total Sources: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.totalSources}</p>
-        <p>Strategies: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.searchStrategies.join(', ')}</p>
+        <p>
+          Total Sources: {$(
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+          ).retrievedContext.totalSources}
+        </p>
+        <p>
+          Strategies: {$(
+            result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any },
+          ).retrievedContext.searchStrategies.join(', ')}
+        </p>
         {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary}
           <div class="summary">
             <h5>Summary</h5>
-            <p>{$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary.abstractive}</p>
+            <p>
+              {$(
+                result as {
+                  set?: any;
+                  metadata?: any;
+                  processedQuery?: any;
+                  retrievedContext?: any;
+                  enhancedPrompt?: any;
+                },
+              ).retrievedContext.summary.abstractive}
+            </p>
             {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary.keyPoints.length > 0}
               <h5>Key Points</h5>
               <ul>
@@ -353,11 +438,27 @@
         <h4>Enhanced Prompt</h4>
         <details>
           <summary>System Prompt</summary>
-          <pre>{$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).enhancedPrompt.systemPrompt}</pre>
+          <pre>{$(
+              result as {
+                set?: any;
+                metadata?: any;
+                processedQuery?: any;
+                retrievedContext?: any;
+                enhancedPrompt?: any;
+              },
+            ).enhancedPrompt.systemPrompt}</pre>
         </details>
         <details>
           <summary>Context Prompt</summary>
-          <pre>{$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).enhancedPrompt.contextPrompt}</pre>
+          <pre>{$(
+              result as {
+                set?: any;
+                metadata?: any;
+                processedQuery?: any;
+                retrievedContext?: any;
+                enhancedPrompt?: any;
+              },
+            ).enhancedPrompt.contextPrompt}</pre>
         </details>
         <details>
           <summary>Instructions</summary>
@@ -405,12 +506,13 @@
     </details>
   {/if}
 </div>
+
 <style>
   .ai-synthesis-client {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   .config-panel {
     background: #f5f5f5;

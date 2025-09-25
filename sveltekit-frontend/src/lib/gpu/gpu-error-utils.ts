@@ -22,10 +22,10 @@ export function classifyGPUError(err: unknown): ClassifiedGPUError {
   const retryable = category === 'execution' || category === 'resource';
   return {
     category,
-    message: msg
+    message: msg;
     original: err
     retryable,
-  };
+  }
 }
 export interface RetryPolicyConfig {
   maxAttempts: number;
@@ -38,7 +38,7 @@ export const DEFAULT_RETRY_POLICY: RetryPolicyConfig = {
   baseDelayMs: 40,
   maxDelayMs: 500,
   jitter: true
-};
+}
 export function computeBackoff(attempt: number, policy: RetryPolicyConfig = DEFAULT_RETRY_POLICY): number {
   const exp = Math.min(policy.maxDelayMs, policy.baseDelayMs * Math.pow(2, attempt));
   if (!policy.jitter) return exp;

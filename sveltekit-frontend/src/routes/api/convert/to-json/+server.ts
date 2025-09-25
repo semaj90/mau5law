@@ -85,7 +85,7 @@ function extractSections(text: string): unknown[] {
         sections.push({ ...currentSection, endLine: i })
       }
       currentSection = {
-        title: line
+        title: line;
         content: '',
         startLine: i
       }
@@ -200,7 +200,7 @@ function identifyDocumentSections(text: string): unknown[] {
     })
     .map(section => ({
       name: section
-      found: true
+      found: true;
       position: text.toLowerCase().indexOf(section.toLowerCase()
     })
     .sort((a, b) => a.position - b.position)
@@ -216,7 +216,7 @@ function generateTableOfContents(text: string): unknown[] {
   const headings = extractHeadings(text)
   return headings.map((heading, index) => ({
     level: determineHeadingLevel(heading),
-    title: heading
+    title: heading;
     order: index + 1
   })
 }

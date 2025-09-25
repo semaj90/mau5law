@@ -38,7 +38,7 @@ export interface GraphNode {
     importance: number;
     connections: number;
     lastAccessed: number;
-  };
+  }
 }
 export interface GraphEdge {
   source: number; // Node index,
@@ -100,7 +100,7 @@ export class WebGPULegalDocumentGraph {
       renderDistance: 1000,
       lodLevels: 4,
       ...config
-    };
+    }
     this.renderState = {
       nodeCount: 0,
       edgeCount: 0,
@@ -111,7 +111,7 @@ export class WebGPULegalDocumentGraph {
       highlightedNodes: new Set(),
       filterType: 'all',
       timeRange: [0, Date.now()]
-    };
+    }
   }
   /**
    * Initialize WebGPU device and resources
@@ -160,26 +160,26 @@ export class WebGPULegalDocumentGraph {
         force: vec3<f32>
         mass: f32
         size: f32
-        color: vec4<f32>
+        color: vec4<f32>;
         metadata: vec4<f32>, // type, importance, connections, lastAccessed
-      };
+      }
       struct Edge {
         source: u32
         target: u32
         weight: f32
-        strength: f32
+        strength: f32;
         color: vec4<f32>
-      };
+      }
       struct Uniforms {
         nodeCount: u32
         edgeCount: u32
         deltaTime: f32
         damping: f32
-        repulsion: f32
+        repulsion: f32;
         attraction: f32
         centerForce: f32
         minDistance: f32
-      };
+      }
       @group(0) @binding(0) var<storage, read_write> nodes: array<Node>;
       @group(0) @binding(1) var<storage, read> edges: array<Edge>;
       @group(0) @binding(2) var<uniform> uniforms: Uniforms;
@@ -247,21 +247,21 @@ export class WebGPULegalDocumentGraph {
         @location(1) size: f32
         @location(2) color: vec4<f32>
         @location(3) nodeType: f32
-      };
+      }
       struct VertexOutput {
         @builtin(position) position: vec4<f32>
         @location(0) color: vec4<f32>
         @location(1) size: f32
         @location(2) nodeType: f32
-      };
+      }
       struct Uniforms {
         viewProjectionMatrix: mat4x4<f32>
         cameraPosition: vec3<f32>
-        zoom: f32
+        zoom: f32;
         time: f32
         selectedNode: f32
         filterType: f32
-      };
+      }
       @group(0) @binding(0) var<uniform> uniforms: Uniforms;
       @vertex;
       fn vs_main(input: VertexInput, @builtin(instance_index) instanceIndex: u32) -> VertexOutput {
@@ -285,7 +285,7 @@ export class WebGPULegalDocumentGraph {
         @location(0) color: vec4<f32>
         @location(1) size: f32
         @location(2) nodeType: f32
-      };
+      }
       @fragment;
       fn fs_main(input: FragmentInput) -> @location(0) vec4<f32> {
         // Create circular nodes with type-based styling
@@ -353,17 +353,17 @@ export class WebGPULegalDocumentGraph {
     const metadataBufferSize = this.config.maxNodes * 16 * 4; // 16 floats per metadata
     // Create node buffer (positions, velocities, forces, properties)
     const nodeBuffer = this.device.createBuffer({
-      size: nodeBufferSize
+      size: nodeBufferSize;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC
     });
     // Create edge buffer (connections and properties)
     const edgeBuffer = this.device.createBuffer({
-      size: edgeBufferSize
+      size: edgeBufferSize;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     // Create metadata buffer (titles, timestamps, importance scores)
     const metadataBuffer = this.device.createBuffer({
-      size: metadataBufferSize
+      size: metadataBufferSize;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     // Create position texture for advanced rendering techniques
@@ -391,10 +391,10 @@ export class WebGPULegalDocumentGraph {
       positionTexture,
       colorTexture,
       adjacencyTexture
-    };
+    }
     // Create uniform buffer for render parameters
     this.uniformBuffer = this.device.createBuffer({
-      size: 256, // Sufficient for view matrices and parameters
+      size: 256, // Sufficient for view matrices and parameters;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     console.log('[WebGPU Legal Graph] Tensor stores created successfully');
@@ -493,7 +493,7 @@ export class WebGPULegalDocumentGraph {
           type: this.parseEdgeType(edge.type),
           strength: 1.0,
           color: this.parseColor(edge.color)
-        };
+        }
       });
       // Calculate connection counts
       this.nodes.forEach((node, index) => {
@@ -575,7 +575,7 @@ export class WebGPULegalDocumentGraph {
       this.updatePhysics(this.frameTime * 0.001); // Convert to seconds
       this.render();
       this.animationId = requestAnimationFrame(renderFrame);
-    };
+    }
     this.animationId = requestAnimationFrame(renderFrame);
     console.log('[WebGPU Legal Graph] Render loop started');
   }
@@ -663,7 +663,7 @@ export class WebGPULegalDocumentGraph {
       'case': 'case',
       'entity': 'entity',
       'precedent': 'precedent'
-    };
+    }
     return typeMap[typeString] || 'document';
   }
   private parseEdgeType(typeString: string): GraphEdge['type'] {
@@ -672,7 +672,7 @@ export class WebGPULegalDocumentGraph {
       'similarity': 'similarity',
       'reference': 'reference',
       'temporal': 'temporal'
-    };
+    }
     return typeMap[typeString] || 'reference';
   }
   private encodeNodeType(type: GraphNode['type']): number {
@@ -681,7 +681,7 @@ export class WebGPULegalDocumentGraph {
       'case': 1.0,
       'entity': 2.0,
       'precedent': 3.0
-    };
+    }
     return typeMap[type];
   }
   /**
@@ -700,7 +700,7 @@ export class WebGPULegalDocumentGraph {
       nodeCount: this.renderState.nodeCount,
       edgeCount: this.renderState.edgeCount,
       gpuMemoryUsage: 0 // Would need WebGPU memory tracking
-    };
+    }
   }
   /**
    * Cleanup resources

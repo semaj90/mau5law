@@ -18,7 +18,7 @@ export interface IngestionTask {
     documentType: 'legal_document' | 'evidence' | 'contract' | 'case_file';
     tags?: string[];
     description?: string;
-  };
+  }
   options: {
     generateEmbeddings: boolean;
     enableSOMClustering: boolean;
@@ -26,7 +26,7 @@ export interface IngestionTask {
     chunkSize: number;
     overlap: number;
     bucket?: string;
-  };
+  }
 }
 export interface IngestionResult {
   taskId: string;
@@ -36,18 +36,18 @@ export interface IngestionResult {
     documentEmbeddings: number;
     chunkEmbeddings: number;
     processingTime: number;
-  };
+  }
   somClustering?: {
     clusters: number;
     quality: number;
     processingTime: number;
-  };
+  }
   rtxCompression?: {
     originalSize: number;
     compressedSize: number;
     ratio: string;
     processingTime: number;
-  };
+  }
   totalProcessingTime: number;
   error?: string;
 }
@@ -74,7 +74,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       self.addEventListener('message', this.handleMessage.bind(this);
       console.log('=� Document Ingestion Worker initialized');
     }
-    private async handleMessage(event: MessageEvent<WorkerMessage>): Promise<void> {
+    private async handleMessage(_event: MessageEvent<WorkerMessage>): Promise<void> {
       const { type, data, taskId } = event.data;
       try {
         this.currentTask = taskId;
@@ -100,20 +100,20 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         }
         this.postResponse({
           taskId,
-          success: true
+          success: true;
           data: result
         });
       } catch (error: any) {
         this.postResponse({
           taskId,
-          success: false
+          success: false;
           error: error instanceof Error ? error.message: 'Unknown error'
         });
       } finally {
         this.currentTask = null;
       }
     }
-    private async processIngestion(task: IngestionTask): Promise<IngestionResult> {
+    private async processIngestion(_task: IngestionTask): Promise<IngestionResult> {
       const startTime = performance.now();
       const { id, files, metadata, options } = task;
       this.postResponse({
@@ -143,11 +143,11 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         });
       }
       const result: IngestionResult = {
-        taskId: id
+        taskId: id;
         success: true
         uploadResults,
         totalProcessingTime: 0
-      };
+      }
       // Step 2: Generate embeddings if requested
       if (options.generateEmbeddings) {
         this.postResponse({
@@ -203,7 +203,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     }
     private async simulateMinIOUpload(
       file: File | Buffer
-      originalName: string
+      originalName: string;
       options: any;
     ): Promise<UploadResult> {
       // Simulate MinIO upload process
@@ -228,7 +228,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           uploadedBy: options.uploadedBy,
           caseId: options.caseId
         }
-      };
+      }
     }
     private async generateEmbeddingsForFiles(uploadResults: UploadResult[], options: any) {
       const startTime = performance.now();
@@ -256,7 +256,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         documentEmbeddings,
         chunkEmbeddings,
         processingTime: performance.now() - startTime
-      };
+      }
     }
     private async performSOMClustering(uploadResults: UploadResult[]) {
       const startTime = performance.now();
@@ -270,7 +270,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         clusters,
         quality: 0.75 + Math.random() * 0.2, // Mock quality score
         processingTime: performance.now() - startTime
-      };
+      }
     }
     private async applyRTXCompression(uploadResults: UploadResult[]) {
       const startTime = performance.now();
@@ -290,7 +290,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         compressedSize,
         ratio: `${Math.floor(originalSize / compressedSize)}:1`,
         processingTime: performance.now() - startTime
-      };
+      }
     }
     private async processEmbeddingGeneration(data: any) {
       const { texts, options } = data;
@@ -307,7 +307,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           }
         });
       }
-      return { embeddings, count: embeddings.length };
+      return { embeddings, count: embeddings.length }
     }
     private async processSOMClustering(data: any) {
       const { embeddings, config } = data;
@@ -316,9 +316,9 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return {
         clusters: Math.floor(Math.random() * 10) + 2,
         quality: 0.8 + Math.random() * 0.15,
-        convergence: true
+        convergence: true;
         epochs: Math.floor(Math.random() * 50) + 25
-      };
+      }
     }
     private async processRTXCompression(data: any) {
       const { documents, compressionRatio } = data;
@@ -335,7 +335,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         compressedSize: totalCompressed
         ratio: `${Math.floor(totalOriginal / totalCompressed)}:1`,
         quality: 0.98 + Math.random() * 0.02
-      };
+      }
     }
     private async performHealthCheck() {
       return {
@@ -345,7 +345,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         cacheSize: this.cache.size,
         memoryUsage: this.getMemoryUsage(),
         timestamp: new Date().toISOString()
-      };
+      }
     }
     private generateMockContent(fileName: string): string {
       const templates = [
@@ -375,7 +375,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         txt: 'text/plain',
         json: 'application/json'
-      };
+      }
       return mimeTypes[ext || ''] || 'application/octet-stream';
     }
     private determineFileType(fileName: string): string {
@@ -393,7 +393,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           used: Math.round(memory.usedJSHeapSize / 1024 / 1024),
           total: Math.round(memory.totalJSHeapSize / 1024 / 1024),
           limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024)
-        };
+        }
       }
       return null;
     }
@@ -410,7 +410,7 @@ export class IngestionWorkerManager {
   private pendingTasks = new Map<
     string,>;
     {
-      resolve: (value: any) => void;
+      resolve: (_value: any) => void;
       reject: (error: Error) => void;
       onProgress?: (progress: number, stage?: string, data?: any) => void
     }
@@ -431,7 +431,7 @@ export class IngestionWorkerManager {
       }
     }
   }
-  private handleWorkerMessage(event: MessageEvent<WorkerResponse>): void {
+  private handleWorkerMessage(_event: MessageEvent<WorkerResponse>): void {
     const { taskId, success, data, error, progress, stage } = event.data;
     const task = this.pendingTasks.get(taskId);
     if (!task) return;
@@ -446,28 +446,27 @@ export class IngestionWorkerManager {
     }
     this.pendingTasks.delete(taskId);
   }
-  private handleWorkerError(event: ErrorEvent): void {
+  private handleWorkerError(_event: ErrorEvent): void {
     console.error('Ingestion worker error:', event.error);
     for (const [taskId, task] of this.pendingTasks) {
       task.reject(new Error(`Worker error: ${event.error?.message || 'Unknown error'}`);
     }
     this.pendingTasks.clear();
   }
-  public async processIngestion(
-    task: IngestionTask
+  public async processIngestion(_task: IngestionTask
     onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<IngestionResult> {
     return this.executeTask('ingestion', task, onProgress);
   }
   public async generateEmbeddings(
-    texts: string[]
+    texts: string[];
     options: EmbeddingOptions = {},
     onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<any> {
     return this.executeTask('embedding', { texts, options }, onProgress);
   }
   public async performSOMClustering(
-    embeddings: number[][]
+    embeddings: number[][];
     config: SOMConfig
     onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<any> {

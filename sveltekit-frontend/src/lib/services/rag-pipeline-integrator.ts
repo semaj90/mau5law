@@ -7,7 +7,7 @@ import type { LegalDocument } from './types/legal.js';
 export interface SearchResult {
   document: LegalDocument;
   score: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   // Additional properties used throughout the codebase
   id: string;
   title: string;
@@ -44,7 +44,7 @@ export interface RAGPipelineResult {
     summaryGenerated: boolean;
     rerankingApplied: boolean;
     cacheHit: boolean;
-  };
+  }
   confidence: number;
 }
 export class RAGPipelineIntegrator {
@@ -61,10 +61,10 @@ export class RAGPipelineIntegrator {
       cacheResults: true
       enableStreaming: true
       ...config
-    };
+    }
   }
   async processRAGQuery(
-    query: string
+    query: string;
     documents: LegalDocument[]
     request?: Partial<SummaryRequest>;
   ): Promise<RAGPipelineResult> {
@@ -137,7 +137,7 @@ export class RAGPipelineIntegrator {
           cacheHit: false
         },
         confidence: this.calculateOverallConfidence(rerankedResults, summaryGenerated)
-      };
+      }
       // Cache result
       if (this.config.cacheResults) {
         this.resultCache.set(cacheKey, result);
@@ -173,11 +173,11 @@ export class RAGPipelineIntegrator {
           cacheHit: false
         },
         confidence: 0.3
-      };
+      }
     }
   }
   async processRAGQueryStreaming(
-    query: string
+    query: string;
     documents: LegalDocument[]
     request?: Partial<SummaryRequest>;
   ): Promise<ReadableStream<string> {
@@ -210,11 +210,11 @@ export class RAGPipelineIntegrator {
               rerankingApplied: false
               cacheHit: false
             }
-          };
+          }
           // Send initial state
           controller.enqueue(JSON.stringify({
               type: 'progress',
-              data: progress
+              data: progress;
               timestamp: Date.now()
             }) + '\n'
           );
@@ -224,7 +224,7 @@ export class RAGPipelineIntegrator {
             progress.progress = 20;
             controller.enqueue(JSON.stringify({
                 type: 'progress',
-                data: progress
+                data: progress;
                 timestamp: Date.now()
               }) + '\n'
             );
@@ -236,7 +236,7 @@ export class RAGPipelineIntegrator {
           progress.progress = 40;
           controller.enqueue(JSON.stringify({
               type: 'progress',
-              data: progress
+              data: progress;
               timestamp: Date.now()
             }) + '\n'
           );
@@ -257,7 +257,7 @@ export class RAGPipelineIntegrator {
             progress.progress = 60;
             controller.enqueue(JSON.stringify({
                 type: 'progress',
-                data: progress
+                data: progress;
                 timestamp: Date.now()
               }) + '\n'
             );
@@ -272,7 +272,7 @@ export class RAGPipelineIntegrator {
             progress.progress = 80;
             controller.enqueue(JSON.stringify({
                 type: 'progress',
-                data: progress
+                data: progress;
                 timestamp: Date.now()
               }) + '\n'
             );
@@ -293,7 +293,7 @@ export class RAGPipelineIntegrator {
           progress.metadata.documentsProcessed = progress.documents.length;
           controller.enqueue(JSON.stringify({
               type: 'complete',
-              data: progress
+              data: progress;
               timestamp: Date.now()
             }) + '\n'
           );
@@ -337,7 +337,7 @@ export class RAGPipelineIntegrator {
     }
   }
   private async generateMMRSummary(
-    query: string
+    query: string;
     documents: LegalDocument[]
     request?: Partial<SummaryRequest>;
   ): Promise<any> {
@@ -347,15 +347,15 @@ export class RAGPipelineIntegrator {
         maxSummaryLength: request?.maxLength || this.config.maxSummaryLength,
         maxSentences: 5,
         lambda: 0.7
-      };
+      }
       const result = await generateMMRSummary(documents, query, config);
-      return { summary: (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).summary };
+      return { summary: (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).summary }
     } catch (error: any) {
       console.warn('[RAGPipeline] MMR summarization failed, using fallback:', error);
-      return { summary: this.generateFallbackSummary(documents as SearchResult[], query) };
+      return { summary: this.generateFallbackSummary(documents as SearchResult[], query) }
     }
   }
-  private calculateInitialScore(document: LegalDocument, query: string): number {
+  private calculateInitialScore(_document: LegalDocument, query: string): number {
     const queryTerms = query.toLowerCase().split(/\s+/);
     const docText = (document.content + ' ' + (document.title || '')).toLowerCase();
     let score = 0;
@@ -408,12 +408,12 @@ export class RAGPipelineIntegrator {
     return {
       size: this.resultCache.size,
       keys: Array.from(this.resultCache.keys()).slice(0, 10)
-    };
+    }
   }
 }
 // Convenience functions
 export async function processLegalQuery(
-  query: string
+  query: string;
   documents: LegalDocument[]
   config?: Partial<RAGPipelineConfig>;
 ): Promise<RAGPipelineResult> {
@@ -421,7 +421,7 @@ export async function processLegalQuery(
   return pipeline.processRAGQuery(query, documents);
 }
 export async function processLegalQueryStreaming(
-  query: string
+  query: string;
   documents: LegalDocument[]
   config?: Partial<RAGPipelineConfig>;
 ): Promise<ReadableStream<string> {

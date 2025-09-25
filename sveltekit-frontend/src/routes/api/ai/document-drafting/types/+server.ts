@@ -132,4 +132,4 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     )
   }
 }
-export const GET = redisOptimized.documentProcessing(originalGETHandler)
+export const GET = redisOptimized.documentProcessing(originalGETHandler);

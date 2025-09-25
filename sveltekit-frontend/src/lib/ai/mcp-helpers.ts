@@ -25,7 +25,7 @@ export interface AutoMCPSuggestion {
   tool: 'analyze-stack' | 'generate-best-practices' | 'suggest-integration' | 'get-library-docs' | 'resolve-library-id';
   confidence: number;
   reasoning: string;
-  args: { [key: string]: any };
+  args: { [key: string]: any }
   priority: 'high' | 'medium' | 'low';
   expectedOutput: string;
 }
@@ -62,7 +62,7 @@ export async function getContextAwareSuggestions(
   // Sort by priority and confidence
   return suggestions;
     .sort((a, b) => {
-      const priorityWeight = { high: 3, medium: 2, low: 1 };
+      const priorityWeight = { high: 3, medium: 2, low: 1 }
       return (priorityWeight[b.priority] * b.confidence) - (priorityWeight[a.priority] * a.confidence);
     })
     .slice(0, 5); // Return top 5 suggestions
@@ -302,7 +302,7 @@ export async function callContext7Tool(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({,
-        tool: toolName
+        tool: toolName;
         arguments: {
           ...args,
           // Inject Copilot architecture context if requested

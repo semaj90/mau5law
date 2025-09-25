@@ -7,7 +7,7 @@ export const loadAIComponents = {
       import('$lib/components/detective/DetectiveBoard.svelte'),
       import('$lib/components/detective/EvidenceCard.svelte')
     ]);
-    return { DetectiveBoard: DetectiveBoard.default, EvidenceCard: EvidenceCard.default };
+    return { DetectiveBoard: DetectiveBoard.default, EvidenceCard: EvidenceCard.default }
   },
   async qloraMonitoring() {
     const { default: QLoRAMonitoringDashboard } = await import('$lib/components/ai/QLoRAMonitoringDashboard.svelte');
@@ -27,7 +27,7 @@ export const loadAIComponents = {
       import('$lib/components/upload/OptimizedMinIOUpload.svelte'),
       import('$lib/components/upload/N64MinIOUpload.svelte')
     ]);
-    return { MinIOUpload: MinIOUpload.default, N64Upload: N64Upload.default };
+    return { MinIOUpload: MinIOUpload.default, N64Upload: N64Upload.default }
   },
   // WebGPU components
   async webgpu() {
@@ -35,9 +35,9 @@ export const loadAIComponents = {
       import('$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte'),
       import('$lib/components/examples/NESTextureStreamingExample.svelte')
     ]);
-    return { WebGPULoader: WebGPULoader.default, TextureStreaming: TextureStreaming.default };
+    return { WebGPULoader: WebGPULoader.default, TextureStreaming: TextureStreaming.default }
   }
-};
+}
 // Service workers for heavy AI processing
 export const loadAIServices = {
   async embeddingWorker() {
@@ -60,12 +60,12 @@ export const loadAIServices = {
     const { simdGPUTilingEngine } = await import('$lib/evidence/simd-gpu-tiling-engine');
     return simdGPUTilingEngine;
   }
-};
+}
 // Utilities for managing dynamic imports
 export class ComponentLoader {
   private loadedComponents = new Map<string, any>();
   private loadingPromises = new Map<string, Promise<any>();
-  async load<T>(key: string, loader: () => Promise<T>): Promise<T> {
+  async load<T>(_key: string, loader: () => Promise<T>): Promise<T> {
     // Return already loaded component
     if (this.loadedComponents.has(key)) {
       return this.loadedComponents.get(key);
@@ -87,13 +87,13 @@ export class ComponentLoader {
     this.loadingPromises.set(key, loadingPromise);
     return loadingPromise;
   }
-  isLoaded(key: string): boolean {
+  isLoaded(_key: string): boolean {
     return this.loadedComponents.has(key);
   }
-  isLoading(key: string): boolean {
+  isLoading(_key: string): boolean {
     return this.loadingPromises.has(key);
   }
-  preload(key: string, loader: () => Promise<any>): void {
+  preload(_key: string, loader: () => Promise<any>): void {
     if (!this.isLoaded(key) && !this.isLoading(key)) {
       this.load(key, loader).catch(() => {
         // Silently fail preloading
@@ -150,7 +150,7 @@ export const preloadStrategies = {
         { key: 'qloraMonitoring', loader: loadAIComponents.qloraMonitoring },
         { key: 'webgpu', loader: loadAIComponents.webgpu }
       ]
-    };
+    }
     const componentsToLoad = routeComponentMap[routeId] || [];
     return Promise.all(
       componentsToLoad.map(({ key, loader }) =>
@@ -158,7 +158,7 @@ export const preloadStrategies = {
       )
     );
   }
-};
+}
 // Bundle analysis helper
 export function getBundleStats() {
   return {
@@ -166,5 +166,5 @@ export function getBundleStats() {
     loadingComponents: componentLoader['loadingPromises'].size,
     componentsInMemory: Array.from(componentLoader['loadedComponents'].keys()),
     currentlyLoading: Array.from(componentLoader['loadingPromises'].keys()
-  };
+  }
 }

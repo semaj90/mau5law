@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
@@ -81,14 +81,14 @@ https://svelte.dev/e/js_parse_error -->
   // Handle drag and drop
   const handleDndConsider = (e: CustomEvent) => {
     items = e.detail.item;
-  };
+  }
   const handleDndFinalize = (e: CustomEvent) => {
     items = e.detail.item;
     // Trigger layout update after reordering
     setTimeout(() => {
       masonry?.layout();
     }, 100);
-  };
+  }
   // Auto-resize functionality
   let resizeTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
   const handleResize = () => {
@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
     resizeTimeout = setTimeout(() => {
       masonry?.layout();
     }, 150);
-  };
+  }
   $effect(() => {
     if (resize) {
       window.addEventListener('resize', handleResize);
@@ -105,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
     return () => {
       window.removeEventListener('resize', handleResize);
       if (resizeTimeout) clearTimeout(resizeTimeout);
-    };
+    }
   });
 </script>
 <div

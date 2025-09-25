@@ -39,7 +39,7 @@ export class ReinforcementLearningCache {
   // RNN-like sequence learning for component prediction
   private componentTransitionMatrix = new Map<string, Map<string, number>();
   private animationTriggerPatterns = new Map<string, number[]>();
-  async get(key: string) {
+  async get(_key: string) {
     const has = this.store.has(key);
     if (has) {
       this.hits++;
@@ -48,11 +48,11 @@ export class ReinforcementLearningCache {
     this.misses++;
     return null;
   }
-  async set(key: string, value: any) {
+  async set(_key: string, value: any) {
     this.store.set(key, value);
     return true;
   }
-  async invalidate(key: string) {
+  async invalidate(_key: string) {
     this.store.delete(key);
     return true;
   }
@@ -78,7 +78,7 @@ export class ReinforcementLearningCache {
       animationsPredicted: this.animationPredictions.size,
       assetSearchAccuracy: this.calculateSearchAccuracy(),
       sequenceModelAccuracy: this.calculateSequencePredictionAccuracy()
-    };
+    }
   }
   // ===============================
   // 3D COMPONENT PREDICTION SYSTEM
@@ -117,7 +117,7 @@ export class ReinforcementLearningCache {
       easing: this.selectOptimalEasing(animationType),
       triggerProbability: this.calculateTriggerProbability(componentId),
       preRenderedFrames: []
-    };
+    }
     // Pre-compute key animation frames (autoencoder compression)
     const frames = await this.computeAnimationFrames(prediction);
     prediction.preRenderedFrames = frames;
@@ -187,7 +187,7 @@ export class ReinforcementLearningCache {
           animationType: this.predictAnimationType(componentType),
           renderPriority: this.calculateRenderPriority(componentType),
           predictedUsage: this.calculateUsageProbability(componentType, context)
-        };
+        }
         predictions.push(prediction);
       }
     }
@@ -202,7 +202,7 @@ export class ReinforcementLearningCache {
       'morph': 'path("M0,0 L100,0 L100,100 L0,100 Z") -> path("M0,50 L150,25 L120,120 L20,80 Z")',
       'physics': 'drop-bounce-settle',
       'particle': 'emit-spread-fade'
-    };
+    }
     return paths[animationType as keyof typeof paths] || 'linear-transform';
   }
   private predictAnimationDuration(animationType: string): number {
@@ -211,7 +211,7 @@ export class ReinforcementLearningCache {
       'morph': 600,
       'physics': 1200,
       'particle': 2000
-    };
+    }
     return durations[animationType as keyof typeof durations] || 500;
   }
   private selectOptimalEasing(animationType: string): string {
@@ -220,7 +220,7 @@ export class ReinforcementLearningCache {
       'morph': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       'physics': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
       'particle': 'linear'
-    };
+    }
     return easings[animationType as keyof typeof easings] || 'ease-in-out';
   }
   private calculateTriggerProbability(componentId: string): number {
@@ -304,7 +304,7 @@ export class ReinforcementLearningCache {
       'animation': 'medium',
       'particle': 'high',
       'physics': 'high'
-    };
+    }
     return complexityMap[componentType] || 'medium';
   }
   private predictAnimationType(componentType: string): 'transform' | 'morph' | 'physics' | 'particle' {
@@ -313,7 +313,7 @@ export class ReinforcementLearningCache {
       'document': 'morph',
       'interaction': 'physics',
       'effect': 'particle'
-    };
+    }
     return typeMap[componentType] || 'transform';
   }
   private calculateRenderPriority(componentType: string): number {
@@ -322,7 +322,7 @@ export class ReinforcementLearningCache {
       'content': 8,
       'animation': 6,
       'effect': 4
-    };
+    }
     return priorityMap[componentType] || 5;
   }
   private calculateUsageProbability(componentType: string, context: string): number {

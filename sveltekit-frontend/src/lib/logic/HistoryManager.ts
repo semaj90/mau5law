@@ -22,7 +22,7 @@ export class HistoryManager {
   /**
    * Add a new snapshot to history
    */;
-  addSnapshot(value: ContentNode[]): void {
+  addSnapshot(_value: ContentNode[]): void {
     // Remove any history after current index (when making changes after undo)
     this.history = this.history.slice(0, this.currentIndex + 1);
     // Add new snapshot
@@ -91,6 +91,6 @@ export class HistoryManager {
       currentIndex: this.currentIndex,
       canUndo: this.canUndo(),
       canRedo: this.canRedo()
-    };
+    }
   }
 }

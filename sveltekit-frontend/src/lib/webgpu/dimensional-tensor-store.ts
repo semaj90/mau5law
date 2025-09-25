@@ -80,7 +80,7 @@ export class DimensionalTensorStore {
   private compressionPipeline: CompressionPipeline | null = null;
   constructor(
     device: GPUDevice
-    dimensions: TensorDimensions
+    dimensions: TensorDimensions;
     config: Partial<StreamingConfig> = {}
   ) {
     this.device = device;
@@ -93,7 +93,7 @@ export class DimensionalTensorStore {
       preloadRadius: 50.0,
       evictionStrategy: 'hybrid',
       ...config
-    };
+    }
     this.lodLevels = this.generateLODLevels();
     this.lodManager = new LODManager(this.lodLevels, this.streamingConfig);
     this.initializeMemoryLayout();
@@ -118,7 +118,7 @@ export class DimensionalTensorStore {
       alignment,
       totalSize,
       fragmentCount: Math.ceil(totalElements / 1024) // 1024 elements per fragment
-    };
+    }
     console.log('[Tensor Store] Memory layout initialized:', this.memoryLayout);
   }
   /**
@@ -145,7 +145,7 @@ export class DimensionalTensorStore {
    */
   async createTensorTexture(
     axis: 1 | 2 | 3,
-    lodLevel: number
+    lodLevel: number;
     format: GPUTextureFormat = 'rgba32float';
   ): Promise<string> {
     const textureKey = `tensor_axis${axis}_lod${lodLevel}`;
@@ -183,19 +183,19 @@ export class DimensionalTensorStore {
           width: Math.ceil(Math.sqrt(documents) * scale),
           height: Math.ceil(Math.sqrt(documents) * scale),
           depth: 1
-        };
+        }
       case 2: // Chunks axis
         return {
           width: Math.ceil(chunks * scale),
           height: Math.ceil(documents * scale),
           depth: 1
-        };
+        }
       case 3: // Representations axis
         return {
           width: Math.ceil(representations * scale),
           height: Math.ceil(documents * scale),
           depth: Math.ceil(chunks * scale)
-        };
+        }
       default:
         throw new Error(`Invalid axis: ${axis}`);
     }
@@ -255,7 +255,7 @@ export class DimensionalTensorStore {
    */
   private async uploadTextureData(
     texture: GPUTexture
-    data: Float32Array
+    data: Float32Array;
     position: [number, number, number];
   ): Promise<void> {
     const bytesPerPixel = 16; // 4 floats * 4 bytes for rgba32float
@@ -351,7 +351,7 @@ export class DimensionalTensorStore {
       'rgba16float': 8,
       'rgba8unorm': 4,
       'r32float': 4
-    };
+    }
     const bytesPerPixel = formatSizes[texture.format] || 4;
     const totalPixels = texture.width * texture.height * (texture.depthOrArrayLayers || 1);
     const mipMemory = Math.floor(totalPixels * bytesPerPixel * 1.33); // ~33% for mips
@@ -361,7 +361,7 @@ export class DimensionalTensorStore {
    * Create bind group for tensor access in shaders
    */
   createTensorBindGroup(
-    layout: GPUBindGroupLayout
+    layout: GPUBindGroupLayout;
     axis: 1 | 2 | 3,
     lodLevel: number;
   ): GPUBindGroup | null {
@@ -407,7 +407,7 @@ export class DimensionalTensorStore {
       cacheHitRatio: totalAccesses > 0 ? cacheHits / totalAccesses : 0,
       averageLOD: this.tensorTextures.size > 0 ? lodSum / this.tensorTextures.size: 0,
       streamingQueueSize: this.streamingQueue.size
-    };
+    }
   }
   /**
    * Cleanup all resources

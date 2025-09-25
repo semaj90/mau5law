@@ -17,7 +17,7 @@ export const legalDocuments = pgTable('legal_documents', {
   // Vector embeddings from gemma3-legal:latest (512 dimensions),
   embedding: vector('embedding', { dimensions: 512 }).notNull(),
   // Legal metadata
-  practiceArea: text('practice_area'), // 'corporate', 'litigation', 'ip', 'employment'
+  practiceArea: text('practice_area'), // 'corporate', 'litigation', 'ip', 'employment';
   jurisdiction: text('jurisdiction'),
   caseId: text('case_id'),
   clientId: text('client_id'),
@@ -64,7 +64,7 @@ export const vectorSimilarityQueries = pgTable('vector_similarity_queries', {
   topResults: jsonb('top_results'),
   // Analytics
   queryIntent: text('query_intent'), // 'research', 'analysis', 'template', 'precedent'
-  userSatisfaction: real('user_satisfaction'), // 1-5 rating
+  userSatisfaction: real('user_satisfaction'), // 1-5 rating;
   timestamp: timestamp('timestamp').defaultNow()
 }, (table) => ({
   userIdIndex: index('user_id_idx').on(table.userId),

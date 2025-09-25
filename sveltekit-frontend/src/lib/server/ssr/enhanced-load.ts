@@ -8,7 +8,7 @@ import { checkDatabaseHealth } from '../db/health-check.js';
 // Temporary stub classes until the actual operations are implemented
 class CaseOperations {
   static async search(params: any) {
-    return { cases: [], total: 0 };
+    return { cases: [], total: 0 }
   }
   static async getWithRelations(id: string) {
     return null;
@@ -16,13 +16,13 @@ class CaseOperations {
 }
 class EvidenceOperations {
   static async search(params: any) {
-    return { evidence: [], total: 0 };
+    return { evidence: [], total: 0 }
   }
 }
 import { CommonErrors } from '../api/response.js';
 import type { User } from '../db/schema-postgres.js';
 import { cases, evidence } from '../db/schema-postgres.js';
-import { URL } from 'url';
+;
 type Case = typeof cases.$inferSelect;
 type Evidence = typeof evidence.$inferSelect;
 // Performance monitoring for SSR
@@ -36,13 +36,13 @@ export interface SSRMetrics {
 class SSRCache {
   private static cache = new Map<string, { data: any; expires: number }>();
   private static readonly DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes
-  static set(key: string, data: any, ttl = SSRCache.DEFAULT_TTL): void {
+  static set(_key: string, data: any, ttl = SSRCache.DEFAULT_TTL): void {
     this.cache.set(key, {
       data,
       expires: Date.now() + ttl
     });
   }
-  static get(key: string): any | null {
+  static get(_key: string): any | null {
     const entry = this.cache.get(key);
     if (!entry) return null;
     if (Date.now() > entry.expires) {
@@ -59,9 +59,9 @@ class SSRCache {
       size: this.cache.size,
       entries: Array.from(this.cache.values()).filter((entry) => Date.now() <= entry.expires)
         .length
-    };
+    }
   }
-  static delete(key: string): boolean {
+  static delete(_key: string): boolean {
     return this.cache.delete(key);
   }
 }
@@ -69,7 +69,7 @@ class SSRCache {
 export const createEnhancedLayoutLoad = () => {
   return async ({ locals, url, request }) => {
     const startTime = Date.now();
-    const metrics: SSRMetrics = { loadTime: 0, dbQueries: 0, cacheHits: 0, errors: [] };
+    const metrics: SSRMetrics = { loadTime: 0, dbQueries: 0, cacheHits: 0, errors: [] }
     try {
       // Check user session
       const user = locals.user as User | null;
@@ -86,7 +86,7 @@ export const createEnhancedLayoutLoad = () => {
           user,
           hydrationContext: createHydrationContext(url, request, user),
           _metrics: { ...metrics, loadTime: Date.now() - startTime }
-        };
+        }
       }
       // Database health check (cached globally)
       let dbHealth = SSRCache.get('db_health');
@@ -112,7 +112,7 @@ export const createEnhancedLayoutLoad = () => {
           pgvectorEnabled: dbHealth.pgvectorEnabled,
           aiServicesOnline: false
         }
-      };
+      }
       // Load user-specific data if authenticated
       if (user) {
         try {
@@ -158,7 +158,7 @@ export const createEnhancedLayoutLoad = () => {
         user,
         hydrationContext: createHydrationContext(url, request, user),
         _metrics: metrics
-      };
+      }
     } catch (error: any) {
       console.error('Layout load error:', error);
       metrics.errors.push(error instanceof Error ? error.message: 'Layout load failed');
@@ -180,15 +180,15 @@ export const createEnhancedLayoutLoad = () => {
         hydrationContext: createHydrationContext(url, request, locals.user),
         _metrics: metrics
         _error: error instanceof Error ? error.message: 'Unknown error'
-      };
+      }
     }
-  };
-};
+  }
+}
 // Enhanced page load factory for cases
 export const createEnhancedCasePageLoad = () => {
   return async ({ params, locals, url, parent }) => {
     const startTime = Date.now();
-    const metrics: SSRMetrics = { loadTime: 0, dbQueries: 0, cacheHits: 0, errors: [] };
+    const metrics: SSRMetrics = { loadTime: 0, dbQueries: 0, cacheHits: 0, errors: [] }
     try {
       // Ensure user is authenticated
       const user = locals.user as User;
@@ -211,7 +211,7 @@ export const createEnhancedCasePageLoad = () => {
           ...parentData,
           ...cachedData,
           _metrics: metrics
-        };
+        }
       }
       // Load case with relations
       const caseWithRelations = await CaseOperations.getWithRelations(caseId);
@@ -227,11 +227,11 @@ export const createEnhancedCasePageLoad = () => {
       });
       metrics.dbQueries++;
       const caseData = {
-        case: caseWithRelations
+        case: caseWithRelations;
         evidence: caseEvidence
         canEdit:
           caseWithRelations.createdBy === user.id || caseWithRelations.leadProsecutor === user.id
-      };
+      }
       // Cache the case data
       SSRCache.set(cacheKey, caseData, 180000); // 3 minute cache
       metrics.loadTime = Date.now() - startTime;
@@ -239,15 +239,15 @@ export const createEnhancedCasePageLoad = () => {
         ...parentData,
         ...caseData,
         _metrics: metrics
-      };
+      }
     } catch (error: any) {
       console.error('Case page load error:', error);
       metrics.errors.push(error instanceof Error ? error.message: 'Case load failed');
       metrics.loadTime = Date.now() - startTime;
       throw error; // Re-throw to trigger SvelteKit error handling
     }
-  };
-};
+  }
+}
 // Helper function to create hydration context
 function createHydrationContext(url: URL, request: Request, user: User | null) {
   return {
@@ -281,7 +281,7 @@ function createHydrationContext(url: URL, request: Request, user: User | null) {
     },
     // Cache statistics for debugging
     cacheStats: SSRCache.getStats()
-  };
+  }
 }
 // Helper function to get case statistics
 async function getCaseStatistics(userId: string): Promise<any> {
@@ -293,7 +293,7 @@ async function getCaseStatistics(userId: string): Promise<any> {
       open: 8,
       investigating: 4,
       closed: 3
-    };
+    }
   } catch (error: any) {
     console.error('Error getting case statistics:', error);
     return {
@@ -301,7 +301,7 @@ async function getCaseStatistics(userId: string): Promise<any> {
       open: 0,
       investigating: 0,
       closed: 0
-    };
+    }
   }
 }
 // Cache management utilities
@@ -314,6 +314,6 @@ export const SSRCacheUtils = {
   invalidateCase: (caseId: string, userId: string) => {
     SSRCache.delete(`case_${caseId}_${userId}`);
   }
-};
+}
 // Export the SSRCache for external use
-export { SSRCache };
+export { SSRCache }

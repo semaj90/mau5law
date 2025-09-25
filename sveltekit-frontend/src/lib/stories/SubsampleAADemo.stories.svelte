@@ -27,7 +27,7 @@ let demoState: DemoState = {
   benchmarkResults: null
   tensorCoreActive: false
   flashAttention2Active: false
-};
+}
 let canvasRef: HTMLCanvasElement;
 let animationFrame: number;
 let startTime = Date.now();
@@ -42,14 +42,14 @@ let demoConfig = {
   compressionLevel: 50,
   flashAttention2: true
   quantization: '4bit' as const;
-};
+}
 let performanceMetrics = {
   avgFrameTime: 0,
   minFrameTime: Infinity
   maxFrameTime: 0,
   memoryUsage: 0,
   tensorCoreUtilization: 0
-};
+}
 $effect(() => {
   console.log('🎮 Initializing RTX 3060 Ti SubsampleAA Demo...');
   (async () => {

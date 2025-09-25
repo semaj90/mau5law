@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documentIds, force } = params
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
-              success: false
+              success: false;
               error: 'Document IDs array required'
             },)
             { status: 400 }
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documentIds, types } = params
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
-              success: false
+              success: false;
               error: 'Document IDs array required'
             },)
             { status: 400 }

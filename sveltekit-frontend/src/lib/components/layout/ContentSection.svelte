@@ -30,21 +30,21 @@
       card: "nes-legal-priority-medium yorha-3d-button rounded-lg",
       panel: "yorha-3d-panel neural-sprite-active border border-yellow-400/30",
       grid: "grid-responsive";
-    };
+    }
     const paddingClasses = {
       none: "p-0",
       sm: "p-2",
       md: "p-4",
       lg: "p-6",
       xl: "p-8";
-    };
+    }
     const gapClasses = {
       none: "gap-0",
       sm: "gap-2",
       md: "gap-4",
       lg: "gap-6",
       xl: "gap-8";
-    };
+    }
     const columnClasses = variant === 'grid' ? {
       1: "grid-cols-1",
       2: "grid-cols-1 md:grid-cols-2",
@@ -88,6 +88,7 @@
     );
   });
 </script>
+
 <section class={sectionClass} {...restProps}>
   {#if title || subtitle}
     <header class={headerClass}>
@@ -120,9 +121,8 @@
            - Admin panels
            - Demo components
       -->
-      <div class="nes-text is-disabled text-center p-8">
-        Content section ready for children components
-      </div>
+      <div class="nes-text is-disabled text-center p-8">Content section ready for children components</div>
     {/if}
   </div>
 </section>
+;

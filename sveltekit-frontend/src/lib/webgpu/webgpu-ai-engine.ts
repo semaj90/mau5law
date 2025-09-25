@@ -53,17 +53,17 @@ export class WebGPUAIEngine {
       this.initPromise = this.initializeWebGPU();
     } else if (typeof navigator === 'undefined') {
       // SSR environment – mark unsupported but defer real detection to client
-      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } };
+      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
     } else if (!(navigator as any).gpu) {
       console.log('⚠️ WebGPU not available in this browser context yet – will remain in CPU fallback');
-      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } };
+      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
     }
   }
   /** public lazy initialization */;
   init(): Promise<void> {
     if (!this.initPromise) {
       if (typeof navigator === 'undefined' || !(navigator as any).gpu) {
-        this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } };
+        this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
         this.initPromise = Promise.resolve();
       } else {
         this.initPromise = this.initializeWebGPU();
@@ -93,7 +93,7 @@ export class WebGPUAIEngine {
   async initializeWebGPU(): Promise<void> {
     if (typeof navigator === 'undefined' || !(navigator as any).gpu) {
     // Not in a browser / not supported
-      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } };
+      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
       return;
     }
     try {
@@ -123,9 +123,9 @@ export class WebGPUAIEngine {
         isSupported: true
         adapter,
         device,
-        features: featureList
+        features: featureList;
         limits: adapter.limits as any
-      };
+      }
       this.isInitialized = true;
       console.log('🎮 WebGPU initialized successfully');
       console.log('Features:', this.capabilities.features);
@@ -135,7 +135,7 @@ export class WebGPUAIEngine {
       }
     } catch (error: any) {
       console.error('WebGPU initialization failed:', error);
-      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } };
+      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: { error: String(error) } });
       }
@@ -151,7 +151,7 @@ export class WebGPUAIEngine {
         outputSize: u32
         kernelSize: u32
         attentionHeads: u32
-      };
+      }
       @group(0) @binding(0) var<storage, read> input: array<f32>;
       @group(0) @binding(1) var<storage, read> attentionWeights: array<f32>;
       @group(0) @binding(2) var<storage, read_write> output: array<f32>;
@@ -186,7 +186,7 @@ export class WebGPUAIEngine {
         hiddenSize: u32
         numHeads: u32
         headDim: u32
-      };
+      }
       @group(0) @binding(0) var<storage, read> input: array<f32>;
       @group(0) @binding(1) var<storage, read> queryWeights: array<f32>;
       @group(0) @binding(2) var<storage, read> keyWeights: array<f32>;
@@ -219,7 +219,7 @@ export class WebGPUAIEngine {
    * Process dimensional array with kernel attention
    */
   async processDimensionalArray(
-    data: BufferLike
+    data: BufferLike;
     shape: number[]
     attentionWeights: BufferLike
     kernelSize = 8;
@@ -326,7 +326,7 @@ export class WebGPUAIEngine {
         'Use batch processing for multiple arrays',
         'Enable caching for repeated computations'
       ]
-    };
+    }
   }
   /**
    * Process T5 transformer inference
@@ -423,7 +423,7 @@ export class WebGPUAIEngine {
         'Add layer normalization',
         'Enable mixed precision for speed'
       ]
-    };
+    }
   }
   /**
    * Get modular AI recommendations
@@ -465,7 +465,7 @@ export class WebGPUAIEngine {
         'Adaptive kernel sizing',
         'Self-optimizing attention weights'
       ]
-    };
+    }
   }
   /**
    * Create custom AI library components
@@ -508,7 +508,7 @@ export class WebGPUAIEngine {
           console.log(`🔄 Switching to module: ${moduleName}`);
           this.activeModule = moduleName;
           // Hot-swappable module loading
-          return { switched: true, module: moduleName, config };
+          return { switched: true, module: moduleName, config }
         }
         static getActive() {
           return this.activeModule;
@@ -524,7 +524,7 @@ export class WebGPUAIEngine {
           return await self.processT5Inference(tokens, text.length);
         }
       }
-    };
+    }
   }
   /**
    * Get engine capabilities and stats
@@ -549,7 +549,7 @@ export class WebGPUAIEngine {
         'Consider batching multiple computations',
         'Use memory pools to reduce allocation overhead'
       ]
-    };
+    }
   }
 }
 // Export singleton instance

@@ -26,7 +26,7 @@ export const REDIS_BASE_CONFIG: RedisOptions = {
   enableReadyCheck: true
   // Connection pooling for high concurrency
   maxLoadingTimeout: 5000
-};
+}
 // Development-specific optimizations
 export const REDIS_DEV_CONFIG: RedisOptions = {
   ...REDIS_BASE_CONFIG,
@@ -39,7 +39,7 @@ export const REDIS_DEV_CONFIG: RedisOptions = {
     }
     return Math.min(times * 500, 1500);
   }
-};
+}
 // Production-specific optimizations
 export const REDIS_PROD_CONFIG: RedisOptions = {
   ...REDIS_BASE_CONFIG,
@@ -59,7 +59,7 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
   // Production connection pooling
   lazyConnect: false
   enableAutoPipelining: true
-};
+}
 // Database assignments for different services
 export const REDIS_DATABASES = {
   CACHE: 0,           // General caching (redis-service.ts)
@@ -154,7 +154,7 @@ export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOpt
     return {
       ...baseConfig,
       ...SERVICE_CONFIGS[service]
-    };
+    }
   }
   return baseConfig;
 }
@@ -163,7 +163,7 @@ export function getRedisUrl(database?: number): string {
   const host = process.env.REDIS_HOST || 'localhost';
   const port = process.env.REDIS_PORT || '6379';
   const password = process.env.REDIS_PASSWORD;
-  const db = database ?? 0;
+  // removed unused db assignment
   const auth = password ? `:${password}@` : '';
   return `redis://${auth}${host}:${port}/${db}`
 }
@@ -172,7 +172,7 @@ export const HEALTH_CHECK_CONFIG = {
   timeout: 5000,
   retries: 3,
   interval: 30000, // Check every 30 seconds
-};
+}
 // Cache TTL configurations by data type
 export const CACHE_TTL = {
   // Session management
@@ -211,7 +211,7 @@ export const KEY_PATTERNS = {
   WORKER_QUEUE: (type: string) => `worker:queue:${type}`,
   WORKER_STATUS: (workerId: string) => `worker:status:${workerId}`,
   // GPU cache orchestration
-  GPU_CACHE: (key: string) => `gpu:cache:${key}`,
+  GPU_CACHE: (_key: string) => `gpu:cache:${key}`,
   GPU_METRICS: (nodeId: string) => `gpu:metrics:${nodeId}`,
   // Analytics
   USER_BEHAVIOR: (userId: string) => `analytics:user:${userId}`,
@@ -306,7 +306,7 @@ export const MONITORING_CONFIG = {
     slowQueries: 100,             // Alert if > 100 slow queries/min
     responseTime: 1000,           // Alert if > 1000ms average response time
   }
-};
+}
 // Export everything for easy importing
 export default {
   REDIS_CONFIG,
@@ -319,4 +319,4 @@ export default {
   getRedisConfig,
   createServiceConfig,
   getRedisUrl
-};
+}

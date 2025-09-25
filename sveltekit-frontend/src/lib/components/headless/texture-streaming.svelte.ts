@@ -177,7 +177,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	 * Update configuration
 	 */;
 	function updateConfig(newConfig: Partial<TextureStreamingConfig>) {
-		activeConfig = { ...activeConfig, ...newConfig };
+		activeConfig = { ...activeConfig, ...newConfig }
 		if (pipeline) {
 			// Reinitialize with new config if needed
 			if (canvasElement) {
@@ -200,7 +200,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 				qualityLevel: pipelineStats.adaptiveQualityLevel,
 				hasWebGL: pipelineStats.hasWebGL,
 				hasWASM: pipelineStats.hasWASM
-			};
+			}
 		}
 	}
 	/**
@@ -264,5 +264,5 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 		updateConfig,
 		clearCache,
 		dispose
-	};
+	}
 }

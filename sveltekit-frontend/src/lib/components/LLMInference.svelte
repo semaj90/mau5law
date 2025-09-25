@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { getAvailableModels, runInference } from "$lib/llm/tauri-llm";
+  import { getAvailableModels, runInference } from '$lib/llm/tauri-llm';
   let models: string[] = $state([]);
   let selectedModel = $state('');
   let prompt = $state('');
@@ -10,12 +10,12 @@
   let error = $state('');
   $effect(() => {
     (async () => {
-try {
-      models = await getAvailableModels();
-      if (models.length > 0) selectedModel = models[0];
-    } catch (e) {
-      error = 'Failed to load models.';
-  }
+      try {
+        models = await getAvailableModels();
+        if (models.length > 0) selectedModel = models[0];
+      } catch (e) {
+        error = 'Failed to load models.';
+      }
     })();
   });
   async function handleInference() {
@@ -29,8 +29,10 @@ try {
       error = 'Inference failed.';
     } finally {
       loading = false;
-  }}
+    }
+  }
 </script>
+
 <div class="space-y-4">
   <h2>Local LLM Inference (Tauri Desktop)</h2>
   <div class="space-y-4">
@@ -58,61 +60,64 @@ try {
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
-.llm-inference-container {
-  max-width: 500px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-.model-select, .prompt-input {
-  margin-bottom: 1.5rem;
-}
-label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-select, textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-}
-.run-btn {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2;
-}
-.run-btn:disabled {
-  background: #b0c4d;
-  cursor: not-allowed;
-}
-.run-btn:not(:disabled):hover {
-  background: #0056b3;
-}
-.result {
-  margin-top: 2rem;
-  background: #f8f9fa;
-  border-radius: 6px;
-  padding: 1rem;
-  font-size: 1rem;
-}
-.error {
-  color: #b30000;
-  margin-top: 1rem;
-  font-weight: 600;
-}
+  .llm-inference-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  .model-select,
+  .prompt-input {
+    margin-bottom: 1.5rem;
+  }
+  label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .run-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2;
+  }
+  .run-btn:disabled {
+    background: #b0c4d;
+    cursor: not-allowed;
+  }
+  .run-btn:not(:disabled):hover {
+    background: #0056b3;
+  }
+  .result {
+    margin-top: 2rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  .error {
+    color: #b30000;
+    margin-top: 1rem;
+    font-weight: 600;
+  }
 </style>

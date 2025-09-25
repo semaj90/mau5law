@@ -10,7 +10,7 @@ export interface PageData {
     gpuUtilization: number;
     memoryUsage: number;
     networkLatency: number;
-  };
+  }
   recentCases: Array<any>;
   recentEvidence: Array<any>;
   user: {
@@ -18,6 +18,6 @@ export interface PageData {
     firstName: string | null;
     lastName: string | null;
     role: string;
-  };
+  }
 }
-export type { PageServerLoad };
+export type { PageServerLoad }

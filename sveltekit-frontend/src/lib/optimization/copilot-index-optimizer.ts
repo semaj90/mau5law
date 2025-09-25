@@ -88,7 +88,7 @@ export class CopilotIndexOptimizer {
     cacheHits: 0,
     totalOptimizations: 0,
     patternMatches: 0
-  };
+  }
   constructor(config: Partial<OptimizationConfig> = {}) {
     this.config = {
       enableContext7Boost: true
@@ -99,7 +99,7 @@ export class CopilotIndexOptimizer {
       maxCacheSize: 1000,
       compressionRatio: 0.7,
       ...config
-    };
+    }
   }
   /**
    * Optimize the copilot.md content for enhanced suggestions
@@ -129,7 +129,7 @@ export class CopilotIndexOptimizer {
           lastUpdated: Date.now()
         },
         clusters: semanticClusters
-      };
+      }
       // Integrate with Enhanced RAG store
       await this.integrateWithRAG();
       this.performanceMetrics.optimizationTime = performance.now() - startTime;
@@ -144,7 +144,7 @@ export class CopilotIndexOptimizer {
    * Enhanced semantic search with Context7 pattern boosting
    */
   async enhancedSemanticSearch(
-    query: string
+    query: string;
     options: {
       limit?: number;
       includePatterns?: boolean;
@@ -253,7 +253,7 @@ export class CopilotIndexOptimizer {
         lastUpdated: Date.now()
       },
       clusters: []
-    };
+    }
   }
   /**
    * Extract sections from copilot.md content
@@ -293,7 +293,7 @@ export class CopilotIndexOptimizer {
       sections.push({
         id: `code_${sectionId++}`,
         title: `Code: ${language}`,
-        content: code
+        content: code;
         priority: this.determineCodePriority(language, code),
         language
       });
@@ -433,7 +433,7 @@ export class CopilotIndexOptimizer {
     }
     // Sort by relevance and priority
     entries.sort((a, b) => {
-      const priorityWeight = { high: 3, medium: 2, low: 1 };
+      const priorityWeight = { high: 3, medium: 2, low: 1 }
       const aScore = a.metadata.relevanceScore + (priorityWeight[a.metadata.priority] * 0.1);
       const bScore = b.metadata.relevanceScore + (priorityWeight[b.metadata.priority] * 0.1);
       return bScore - aScore;
@@ -478,7 +478,7 @@ export class CopilotIndexOptimizer {
    * Analyze code context for suggestions
    */;
   private analyzeCodeContext(code: string, cursor: { line: number; character: number }, language: string) {
-    const lines = code.split('\n');
+    // removed unused lines assignment
     const currentLine = lines[cursor.line] || '';
     const previousLines = lines.slice(Math.max(0, cursor.line - 5), cursor.line);
     const nextLines = lines.slice(cursor.line + 1, cursor.line + 6);
@@ -489,7 +489,7 @@ export class CopilotIndexOptimizer {
       nextLines,
       cursorPosition: cursor
       fullContext: code
-    };
+    }
   }
   /**
    * Find relevant patterns for current context
@@ -570,7 +570,7 @@ export class CopilotIndexOptimizer {
     const suggestions = [];
     if (context.currentLine.includes('export') && context.language === 'typescript') {
       suggestions.push({
-        text: 'export const load: PageServerLoad = async ({ params }) => {\n  return {\n    // data\n  };\n};',
+        text: 'export const load: PageServerLoad = async ({ params }) => {\n  return {\n    // data\n  }\n}',
         priority: 0.85,
         category: 'sveltekit',
         confidence: 0.9,
@@ -665,7 +665,7 @@ export class CopilotIndexOptimizer {
           tags: [entry.metadata.priority, entry.metadata.source]
         },
         version: '1.0'
-      };
+      }
       await enhancedRAGStore.addDocument(ragDocument);
     }
   }
@@ -678,7 +678,7 @@ export class CopilotIndexOptimizer {
       cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalOptimizations, 1),
       avgOptimizationTime: this.performanceMetrics.optimizationTime / Math.max(this.performanceMetrics.totalOptimizations, 1),
       avgSearchTime: this.performanceMetrics.searchTime / Math.max(this.performanceMetrics.totalOptimizations, 1)
-    };
+    }
   }
   /**
    * Clear caches and reset
@@ -692,7 +692,7 @@ export class CopilotIndexOptimizer {
       cacheHits: 0,
       totalOptimizations: 0,
       patternMatches: 0
-    };
+    }
   }
 }
 // Export singleton instance

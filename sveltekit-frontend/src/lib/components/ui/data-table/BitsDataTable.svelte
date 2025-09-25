@@ -10,7 +10,7 @@
     label: string;
     sortable?: boolean;
     filterable?: boolean;
-    render?: (value: unknown, row: T) => string;
+    render?: (_value: unknown, row: T) => string;
     class?: string;
     width?: string;
   }
@@ -82,7 +82,7 @@
     }
     currentPage = 0; // Reset to first page when sorting
   }
-  function toggleRowSelection(index: number) {
+  function toggleRowSelection(_index: number) {
     if (selectedRows.has(index)) {
       selectedRows.delete(index);
     } else {

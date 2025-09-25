@@ -496,7 +496,7 @@ async function generateComplianceAnalysis(request: DocumentDraftingRequest): Pro
   return analysisPoints.join('\n')
 }
 function calculateDraftingConfidence(
-  request: DocumentDraftingRequest
+  request: DocumentDraftingRequest;
   assistance: DraftingAssistance
 ): number {
   let confidence = 0.5; // Base confidence
@@ -552,4 +552,4 @@ function generateDraftingRecommendations(
   recommendations.push('Plan for regular stakeholder review and feedback')
   return recommendations
 }
-export const POST = redisOptimized.documentProcessing(originalPOSTHandler)
+export const POST = redisOptimized.documentProcessing(originalPOSTHandler);

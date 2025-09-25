@@ -82,7 +82,7 @@ Provide detailed, practical feedback based on legal best practices.`,
 - Admissibility under evidence rules
 - Impact on case strategy
 Focus on factual analysis and legal implications.`
-};
+}
 export const GEMMA3_INFERENCE_SETTINGS = {
   quick_response: {
     temperature: 0.3,
@@ -112,7 +112,7 @@ export const GEMMA3_INFERENCE_SETTINGS = {
     repeatPenalty: 1.05,
     maxTokens: 512
 }
-};
+}
 export function selectOptimalGemmaModel(
   contextLength: number
   availableMemory: number

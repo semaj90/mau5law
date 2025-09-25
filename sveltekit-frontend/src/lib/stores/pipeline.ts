@@ -18,16 +18,16 @@ function createPipelineStore(){
     socket.onopen = () => {
       // Optionally emit system event
       events.update(list => [...list, { type:'system.open', ts:Date.now(), raw:{ message:'ws open'} }]);
-    };
+    }
     socket.onmessage = (ev) => {
       try {
         const data = JSON.parse(ev.data);
         const evt: PipelineEvent = { type: data.type, ts: Date.now(), raw: data.msg, llmResult: data.msg?.llmResult } as any;
         events.update(list => [...list.slice(-199), evt]);
       } catch (e: any){ /* swallow */ }
-    };
+    }
     socket.onclose = () => scheduleReconnect();
-    socket.onerror = () => { try { socket?.close(); } catch (error) {}; };
+    socket.onerror = () => { try { socket?.close(); } catch (error) {} }
   }
   function scheduleReconnect(){
     if (reconnectTimer) return;
@@ -36,6 +36,6 @@ function createPipelineStore(){
   connect();
   const latest = derived(events, ($e) => $e[$e.length-1]);
   const llmResponses = derived(events, ($e) => $e.filter(e => e.type==='ai.response');
-  return { events, latest, llmResponses };
+  return { events, latest, llmResponses }
 }
 export const pipeline = createPipelineStore();

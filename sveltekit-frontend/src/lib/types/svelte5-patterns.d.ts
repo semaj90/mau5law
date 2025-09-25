@@ -10,7 +10,7 @@ export interface EnhancedButtonProps extends HTMLButtonAttributes {
   loading?: boolean;
   disabled?: boolean;
   children?: Snippet;
-  onclick?: (event: MouseEvent) => void;
+  onclick?: (_event: MouseEvent) => void;
 }
 // Enhanced Input Component Props (replaces generic Input any type)
 export interface EnhancedInputProps extends HTMLInputAttributes {
@@ -20,9 +20,9 @@ export interface EnhancedInputProps extends HTMLInputAttributes {
   helperText?: string;
   required?: boolean;
   value?: string;
-  oninput?: (event: Event) => void;
-  onfocus?: (event: FocusEvent) => void;
-  onblur?: (event: FocusEvent) => void;
+  oninput?: (_event: Event) => void;
+  onfocus?: (_event: FocusEvent) => void;
+  onblur?: (_event: FocusEvent) => void;
 }
 // Form Component Props (replaces generic Form any type)
 export interface FormProps {
@@ -31,7 +31,7 @@ export interface FormProps {
   enhance?: boolean;
   loading?: boolean;
   errors?: Record<string, string[]>;
-  onsubmit?: (event: SubmitEvent) => void | Promise<void>;
+  onsubmit?: (_event: SubmitEvent) => void | Promise<void>;
   children?: Snippet;
 }
 // === REACTIVE STATE PATTERNS ===
@@ -45,7 +45,7 @@ export interface UserState {
     avatarUrl?: string;
     role: 'attorney' | 'paralegal' | 'investigator' | 'admin';
     specializations: string[];
-  };
+  }
 }
 // Case Management State (replaces generic Case any type)
 export interface CaseState {
@@ -74,7 +74,7 @@ export interface EvidenceState {
     extractedText?: string;
     ocrConfidence?: number;
     tags: string[];
-  };
+  }
 }
 // === AI SERVICE TYPES ===
 // AI Task Interface (replaces generic AITask any type)
@@ -86,12 +86,12 @@ export interface AITask {
     query?: string;
     document?: string;
     context?: Record<string, unknown>;
-  };
+  }
   output?: {
     result: unknown;
     confidence?: number;
     processingTime?: number;
-  };
+  }
   providerId?: string;
   model?: string;
   createdAt: Date;
@@ -106,7 +106,7 @@ export interface AIResponse<T = unknown> {
     code: string;
     message: string;
     details?: Record<string, unknown>;
-  };
+  }
   metadata: {
     taskId: string;
     processingTime: number;
@@ -114,8 +114,8 @@ export interface AIResponse<T = unknown> {
     tokens?: {
       input: number;
       output: number;
-    };
-  };
+    }
+  }
 }
 // Worker Status Interface (replaces generic WorkerStatus any type)
 export interface WorkerStatus {
@@ -127,7 +127,7 @@ export interface WorkerStatus {
     averageResponseTime: number;
     successRate: number;
     totalProcessed: number;
-  };
+  }
   lastActivity: Date;
 }
 // === API REQUEST/RESPONSE TYPES ===
@@ -150,7 +150,7 @@ export interface CaseSearchRequest {
   dateRange?: {
     start: Date;
     end: Date;
-  };
+  }
   limit?: number;
   offset?: number;
 }
@@ -161,7 +161,7 @@ export interface CaseSearchResponse {
   pagination: {
     limit: number;
     offset: number;
-  };
+  }
 }
 // Evidence API Types
 export interface EvidenceCreateRequest {
@@ -179,7 +179,7 @@ export interface EvidenceSearchRequest {
   dateRange?: {
     start: Date;
     end: Date;
-  };
+  }
   limit?: number;
   offset?: number;
 }
@@ -226,12 +226,12 @@ export type EnhancedComponent<TProps = Record<string, never>> = Component<TProps
 export type ExtractProps<TComponent> = TComponent extends Component<infer TProps> ? TProps : never;
 // Event Handler Types
 export interface ComponentEventHandlers {
-  onClick?: (event: MouseEvent) => void;
-  onSubmit?: (event: SubmitEvent) => void;
-  onInput?: (event: Event) => void;
-  onFocus?: (event: FocusEvent) => void;
-  onBlur?: (event: FocusEvent) => void;
-  onChange?: (value: unknown) => void;
+  onClick?: (_event: MouseEvent) => void;
+  onSubmit?: (_event: SubmitEvent) => void;
+  onInput?: (_event: Event) => void;
+  onFocus?: (_event: FocusEvent) => void;
+  onBlur?: (_event: FocusEvent) => void;
+  onChange?: (_value: unknown) => void;
 }
 // Snippet with Parameters
 export type ParameterizedSnippet<TParams extends readonly unknown[]> = Snippet<TParams>;
@@ -239,9 +239,9 @@ export type ParameterizedSnippet<TParams extends readonly unknown[]> = Snippet<T
 // Shared State Pattern for Svelte 5
 export interface SharedState<T> {
   value: T;
-  subscribe: (callback: (value: T) => void) => () => void;
-  update: (updater: (value: T) => T) => void;
-  set: (value: T) => void;
+  subscribe: (callback: (_value: T) => void) => () => void;
+  update: (updater: (_value: T) => T) => void;
+  set: (_value: T) => void;
 }
 // Store State Types
 export interface StoreState {
@@ -251,17 +251,17 @@ export interface StoreState {
     sidebarOpen: boolean;
     loading: boolean;
     notifications: Array<unknown>;
-  };
+  }
   cases: {
     current?: CaseState;
     list: CaseState[];
     loading: boolean;
     error?: string;
-  };
+  }
   evidence: {
     items: EvidenceState[];
     loading: boolean;
     uploadProgress: Record<string, number>;
-  };
+  }
 }
 // (Removed invalid default export of types; types should be imported individually)

@@ -63,7 +63,7 @@ https://svelte.dev/e/attribute_duplicate -->
     return () => {
       unsubscribe();
       unsubscribeFiltered();
-    };
+    }
   });
   // Derived values
   let items = $derived(gridData?.items || []);
@@ -78,8 +78,8 @@ https://svelte.dev/e/attribute_duplicate -->
   $effect(() => {
     evidenceActions.loadEvidence(caseId);
   });
-  function handleSearch(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleSearch(_event: Event) {
+    // removed unused target assignment
     evidenceActions.setSearchQuery(target.value);
   }
   function toggleViewMode() {
@@ -131,7 +131,7 @@ https://svelte.dev/e/attribute_duplicate -->
   async function downloadEvidence(item: Evidence) {
     if (!(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileUrl) return;
     try {
-      const response = await fetch((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileUrl);
+      // removed unused response assignment
       const blob = await (response as { blob?: unknown }).blob();
       // Native browser download without file-saver library
       const url = window.URL.createObjectURL(blob);
@@ -159,7 +159,7 @@ https://svelte.dev/e/attribute_duplicate -->
     selectedItem = item;
     // You can implement a preview modal here
   }
-  function showContextMenu(event: MouseEvent, item: Evidence) {
+  function showContextMenu(_event: MouseEvent, item: Evidence) {
     // Simple context menu implementation - could be enhanced with a proper context menu component
     event.preventDefault();
     selectedItem = item;

@@ -123,7 +123,7 @@
 			isLoading = false;
 		}
 	}
-	function handleKeydown(event: KeyboardEvent) {
+	function handleKeydown(_event: KeyboardEvent) {
 		if (event.key === 'Enter' && !event.shiftKey) {
 			event.preventDefault();
 			handleSendMessage();

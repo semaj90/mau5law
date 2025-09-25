@@ -15,7 +15,7 @@ const defaultContextMenuState: ContextMenuState = {
   x: 0,
   y: 0,
   item: null
-};
+}
 export const contextMenuStore: Writable<ContextMenuState> = writable({
   ...defaultContextMenuState
 });
@@ -29,7 +29,7 @@ export const contextMenuActions = {
   update: (state: Partial<ContextMenuState>) => {
     contextMenuStore.update((s) => ({ ...s, ...state });
   }
-};
+}
 // Theme system
 export const theme = writable<"light" | "dark" | "auto">("auto");
 export const colorScheme = writable<"blue" | "green" | "purple" | "orange">("blue");
@@ -38,10 +38,10 @@ export type NotificationData = {
   title: string;
   message: string;
   duration?: number;
-};
+}
 export type Notification = NotificationData & {
   id: string;
-};
+}
 // UI State stores
 export const notifications = writable<Notification[]>([]);
 export const modals = writable({});
@@ -74,15 +74,15 @@ export type FormField = {
   error?: string;
   touched?: boolean;
   isRequired?: boolean;
-};
+}
 export type FormState = {
   fields: Record<string, FormField>;
   isDirty: boolean;
   isValid: boolean;
   submitCount: number;
   errors: Record<string, string>;
-  values: { [key: string]: any };
-};
+  values: { [key: string]: any }
+}
 // Store actions
 export const uiStore = {
   // Notifications
@@ -96,7 +96,7 @@ export const uiStore = {
       }
       return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
     })();
-    const fullNotification: Notification = { ...notification, id };
+    const fullNotification: Notification = { ...notification, id }
     notifications.update((list) => [...list, fullNotification]);
     if ((notification as { duration?: any }).duration !== 0) {
       setTimeout(() => {
@@ -116,7 +116,7 @@ export const uiStore = {
     modals.update((state) => ({ ...state, [modalId]: false });
   },
   // Loading states
-  setLoading: (key: string, isLoading: boolean) => {
+  setLoading: (_key: string, isLoading: boolean) => {
     loading.update((state) => ({ ...state, [key]: isLoading });
   },
   // Sidebar
@@ -130,5 +130,5 @@ export const uiStore = {
       [formId]: { ...state[formId], ...updates }
     });
   }
-};
+}
 export default uiStore;

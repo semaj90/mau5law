@@ -63,7 +63,7 @@ try {
         pageRankIterations: 20,
         cacheHitRatio: Math.random() * 0.3 + 0.1,
         totalProcessingTime: performance.now() - startTime
-      };
+      }
       processingTime = performanceMetrics.totalProcessingTim;
     } catch (error) {
       console.error('Error processing npm output:', error);
@@ -73,7 +73,7 @@ try {
     }
   }
   function extractErrorsFromOutput(output: string): NPMError[] {
-    const lines = output.trim.split('\n');
+    // removed unused lines assignment
     const extractedErrors: NPMError[] = [];
     lines.forEach(line => {
       const match = line.match(/(.+\.tsx?)\((\d+),\d+\): (.+)/);
@@ -139,11 +139,10 @@ try {
   );
   let uniqueCategories = $derived([...new Set(todos.map(todo => todo.category))]);
 </script>
+
 <div class="p-6 max-w-7xl mx-auto">
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">
-      🧠 SOM-based Intelligent Todo Generator
-    </h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">🧠 SOM-based Intelligent Todo Generator</h1>
     <p class="text-gray-600 mb-4">
       Advanced semantic analysis using Self-Organizing Maps, WebGPU acceleration, and real-time PageRank prioritization
     </p>
@@ -157,15 +156,11 @@ try {
       </div>
       <div class="flex items-center space-x-2">
         <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-        <span class="text-sm font-medium">
-          SOM Network: 8×8 Grid
-        </span>
+        <span class="text-sm font-medium"> SOM Network: 8×8 Grid </span>
       </div>
       <div class="flex items-center space-x-2">
         <div class="w-3 h-3 rounded-full bg-purple-500"></div>
-        <span class="text-sm font-medium">
-          PageRank: Real-time
-        </span>
+        <span class="text-sm font-medium"> PageRank: Real-time </span>
       </div>
     </div>
   </div>
@@ -246,7 +241,7 @@ try {
       </div>
       <div class="flex items-center space-x-4">
         <label class="flex items-center space-x-2">
-          <input type="checkbox" bind:checked={showDetails} class="rounded">
+          <input type="checkbox" bind:checked={showDetails} class="rounded" />
           <span class="text-sm">Show Details</span>
         </label>
         <div class="text-sm text-gray-600">
@@ -265,7 +260,9 @@ try {
                   <h3 class="text-lg font-semibold text-gray-900">
                     {index + 1}. {todo.title}
                   </h3>
-                  <div class={`px-3 py-1 rounded-full text-xs font-medium ${getSeverityColor(todo.tags.find(t => ['low', 'medium', 'high', 'critical'].includes(t)) || 'medium')}`}>
+                  <div
+                    class={`px-3 py-1 rounded-full text-xs font-medium ${getSeverityColor(todo.tags.find(t => ['low', 'medium', 'high', 'critical'].includes(t)) || 'medium')}`}
+                  >
                     {todo.category}
                   </div>
                 </div>
@@ -368,13 +365,16 @@ try {
           <div class="text-sm text-gray-600">Categories Found</div>
         </div>
         <div>
-          <div class="text-2xl font-bold text-orange-600">{todos.reduce((sum, todo) => sum + todo.related_errors.length, 0)}</div>
+          <div class="text-2xl font-bold text-orange-600">
+            {todos.reduce((sum, todo) => sum + todo.related_errors.length, 0)}
+          </div>
           <div class="text-sm text-gray-600">Total Error Clusters</div>
         </div>
       </div>
     </div>
   {/if}
 </div>
+
 <style>
   :global(body) {
     background-color: #f8fafc;

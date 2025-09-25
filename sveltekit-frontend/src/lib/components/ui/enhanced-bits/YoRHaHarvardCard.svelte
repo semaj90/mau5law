@@ -22,14 +22,18 @@
     ...restProps
   }: YoRHaHarvardCardProps = $props();
 
-  let cardClasses = $derived([
-    'yorha-harvard-card',
-    `yorha-harvard-card--${variant}`,
-    glowing && 'harvard-glow',
-    scanLines && 'gaming-scan-lines',
-    bordered && 'gaming-border',
-    onclick && 'interactive'
-  ].filter(Boolean).join(' '));
+  let cardClasses = $derived(
+    [
+      'yorha-harvard-card',
+      `yorha-harvard-card--${variant}`,
+      glowing && 'harvard-glow',
+      scanLines && 'gaming-scan-lines',
+      bordered && 'gaming-border',
+      onclick && 'interactive',
+    ]
+      .filter(Boolean)
+      .join(' '),
+  );
 </script>
 
 <div
@@ -37,12 +41,14 @@
   {onclick}
   role={onclick ? 'button' : undefined}
   tabindex={onclick ? 0 : undefined}
-  onkeydown={onclick ? (e) => {
-    if (e.code === 'Enter' || e.code === 'Space') {
-      e.preventDefault();
-      onclick();
-    }
-  } : undefined}
+  onkeydown={onclick
+    ? e => {
+        if (e.code === 'Enter' || e.code === 'Space') {
+          e.preventDefault();
+          onclick();
+        }
+      }
+    : undefined}
   {...restProps}
 >
   {#if variant === 'gaming'}
@@ -142,7 +148,12 @@
 
   .yorha-harvard-card--legal:before {
     height: 4px;
-    background: linear-gradient(90deg, var(--enhanced-accent), var(--enhanced-accent-secondary), var(--enhanced-accent));
+background: linear-gradient( {}
+90deg, {}
+var(--enhanced-accent), {}
+var(--enhanced-accent-secondary), {}
+var(--enhanced-accent) {}
+    );
   }
 
   .yorha-harvard-card--academic {
@@ -169,10 +180,12 @@
     left: 0;
     right: 0;
     height: 6px;
-    background: linear-gradient(90deg,
-      var(--enhanced-accent) 0%,
-      var(--enhanced-accent-secondary) 50%,
-      var(--enhanced-accent) 100%);
+background: linear-gradient( {}
+90deg, {}
+var(--enhanced-accent) 0%, {}
+var(--enhanced-accent-secondary) 50%, {}
+var(--enhanced-accent) 100% {}
+    );
     animation: pulse-glow 2s ease-in-out infinite alternate;
   }
 
@@ -197,9 +210,15 @@
     border-radius: 50%;
   }
 
-  .terminal-dot--red { background: #ff4444; }
-  .terminal-dot--yellow { background: #ffaa00; }
-  .terminal-dot--green { background: var(--yorha-matrix-green); }
+  .terminal-dot--red {
+    background: #ff4444;
+  }
+  .terminal-dot--yellow {
+    background: #ffaa00;
+  }
+  .terminal-dot--green {
+    background: var(--yorha-matrix-green);
+  }
 
   .terminal-title {
     color: var(--enhanced-accent-secondary);
@@ -292,12 +311,12 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 2px,
-      rgba(196, 30, 58, 0.05) 2px,
-      rgba(196, 30, 58, 0.05) 4px
+background: repeating-linear-gradient( {}
+0deg, {}
+transparent 0px, {}
+transparent 2px, {}
+rgba(196, 30, 58, 0.05) 2px, {}
+rgba(196, 30, 58, 0.05) 4px {}
     );
     pointer-events: none;
     z-index: 1;
@@ -315,10 +334,12 @@
     left: -1px;
     right: -1px;
     bottom: -1px;
-    background: linear-gradient(45deg,
-      var(--enhanced-accent),
-      var(--enhanced-accent-secondary),
-      var(--enhanced-accent));
+background: linear-gradient( {}
+45deg, {}
+var(--enhanced-accent), {}
+var(--enhanced-accent-secondary), {}
+var(--enhanced-accent) {}
+    );
     z-index: -1;
     opacity: 0.2;
   }
@@ -341,8 +362,7 @@
       filter: brightness(1.2);
     }
   }
-
-  /* Grey Variant Styles */
+/* Grey Variant Styles */ {}
   .yorha-harvard-card--grey {
     background: var(--enhanced-bg-secondary);
     border: 1px solid var(--enhanced-accent-grey);
@@ -355,17 +375,13 @@
   }
 
   .yorha-harvard-card--crimson-grey {
-    background: linear-gradient(135deg,
-      var(--enhanced-bg-secondary) 0%,
-      rgba(196, 30, 58, 0.05) 100%);
+    background: linear-gradient(135deg, var(--enhanced-bg-secondary) 0%, rgba(196, 30, 58, 0.05) 100%);
     border: 1px solid var(--enhanced-accent-grey);
     color: var(--enhanced-text-primary);
   }
 
   .yorha-harvard-card--crimson-grey:hover {
     border-color: var(--enhanced-accent);
-    background: linear-gradient(135deg,
-      rgba(106, 106, 106, 0.1) 0%,
-      rgba(196, 30, 58, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(106, 106, 106, 0.1) 0%, rgba(196, 30, 58, 0.1) 100%);
   }
 </style>

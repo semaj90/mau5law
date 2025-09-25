@@ -54,7 +54,7 @@ export const users = pgTable(
     firmName: varchar('firm_name', { length: 200 }),
     // Profile embedding for AI recommendations
     profileEmbedding: vector('profile_embedding', { dimensions: 384 }),
-    // Metadata and timestamps
+    // Metadata and timestamps;
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -69,11 +69,11 @@ export const users = pgTable(
     jurisdictionIdx: index('users_jurisdiction_idx').on(table.jurisdiction),
     profileEmbeddingIdx: index('users_profile_embedding_idx').using(
       'hnsw',
-      table.profileEmbedding.op('vector_cosine_ops')
+      table.profileEmbedding.op('vector_cosine_ops'),
     ),
     createdAtIdx: index('users_created_at_idx').on(table.createdAt),
     isActiveIdx: index('users_is_active_idx').on(table.isActive),
-  })
+  }),
 );
 // ============================================================================
 // USER SESSIONS TABLE
@@ -100,7 +100,7 @@ export const userSessions = pgTable(
     userIdIdx: index('user_sessions_user_id_idx').on(table.userId),
     expiresAtIdx: index('user_sessions_expires_at_idx').on(table.expiresAt),
     isActiveIdx: index('user_sessions_is_active_idx').on(table.isActive),
-  })
+  }),
 );
 // ============================================================================
 // USER PROFILES TABLE (Extended Information)
@@ -131,7 +131,7 @@ export const userProfiles = pgTable(
   },
   table => ({
     userIdIdx: uniqueIndex('user_profiles_user_id_idx').on(table.userId),
-  })
+  }),
 );
 // ============================================================================
 // USER ACTIVITY LOG TABLE
@@ -157,7 +157,7 @@ export const userActivityLog = pgTable(
     success: boolean('success').notNull().default(true),
     errorMessage: text('error_message'),
     // Timing
-      duration: serial('duration'), // milliseconds
+    duration: serial('duration'), // milliseconds;
     timestamp: timestamp('timestamp').notNull().defaultNow(),
   },
   table => ({
@@ -165,7 +165,7 @@ export const userActivityLog = pgTable(
     actionIdx: index('user_activity_log_action_idx').on(table.action),
     timestampIdx: index('user_activity_log_timestamp_idx').on(table.timestamp),
     sessionIdIdx: index('user_activity_log_session_id_idx').on(table.sessionId),
-  })
+  }),
 );
 // ============================================================================
 // ZONT SCHEMAS FOR VALIDATION
@@ -201,13 +201,13 @@ export type NewUserProfile = typeof userProfiles.$inferInsert;
 export type UserActivity = typeof userActivityLog.$inferSelect;
 export type NewUserActivity = typeof userActivityLog.$inferInsert;
 // Enhanced types for API responses
-export type UserWithProfile = User & { profile?: UserProfile };
-export type UserWithSessions = User & { sessions?: UserSession[] };
+export type UserWithProfile = User & { profile?: UserProfile }
+export type UserWithSessions = User & { sessions?: UserSession[] }
 export type FullUserProfile = User & {
   profile?: UserProfile;
   sessions?: UserSession[];
   recentActivity?: UserActivity[];
-};
+}
 // ============================================================================
 // DATABASE RELATIONS (for Drizzle Relational Queries)
 // ============================================================================

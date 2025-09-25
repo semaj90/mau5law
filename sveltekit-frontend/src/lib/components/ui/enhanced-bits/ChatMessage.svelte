@@ -5,7 +5,7 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
   interface Props {
     message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string }
-    analyticsLog?: (event: unknown) => void;
+    analyticsLog?: (_event: unknown) => void;
   }
   let {
     message,
@@ -17,7 +17,9 @@ https://svelte.dev/e/expected_token -->
     }
   });
 </script>
-<div class="flex items-start gap-2 py-2 px-3 rounded-lg mb-2"
+
+<div
+  class="flex items-start gap-2 py-2 px-3 rounded-lg mb-2"
   class:bg-gray-100={message.role === 'user'}
   class:bg-nier-surface-light={message.role === 'assistant'}
   class:bg-red-100={message.role === 'error'}
@@ -38,3 +40,4 @@ https://svelte.dev/e/expected_token -->
     {/if}
   </div>
 </div>
+;

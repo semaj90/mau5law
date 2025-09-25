@@ -23,13 +23,13 @@
   : unknown } = $props();
   // State
   let searchQuery = $state('');
-  type MatchFragment = { key?: string; indices: [number, number][] };
+  type MatchFragment = { key?: string; indices: [number, number][] }
   type SearchResult = {
     item: LegalDocument;
     score?: number;
     refIndex?: number;
     matches?: ReadonlyArray<MatchFragment>;
-  };
+  }
   let searchResults = $state<SearchResult[]>([]);
   let isSearching = $state(false);
   // Fuse.js configuration for legal document search
@@ -40,14 +40,14 @@
       { name: 'content', weight: 0.2 },
       { name: 'code', weight: 0.1 },
     ],
-    threshold: 0.4, // More permissive for legal term
+    threshold: 0.4, // More permissive for legal term;
     distance: 100,
     includeScore: true
     includeMatches: true
     minMatchCharLength: 2,
     shouldSort: true
-    findAllMatches: false
-  };
+    findAllMatches: false;
+  }
   const fuse = new Fuse(legalDocuments, fuseOptions);
   // Perform search
   function performSearch() {
@@ -78,9 +78,9 @@
     }
     return () => {
       if (debounceTimer) clearTimeout(debounceTimer);
-    };
+    }
   });
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       performSearch();
@@ -100,7 +100,7 @@
       constitutional: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
       family: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
       administrative: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
-    };
+    }
     return colors[category] || colors.administrativ;
   }
   function getJurisdictionColor(jurisdiction: string): string {
@@ -108,7 +108,7 @@
       california: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
       federal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
       state: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    };
+    }
     return colors[jurisdiction] || colors.stat;
   }
   function getConfidenceLabel(score?: number): string {

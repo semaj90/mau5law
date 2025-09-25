@@ -11,7 +11,7 @@ export interface TransactionOptions {
   timeout?: number;
   userId?: string;
   sessionId?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface TransactionContext {
   transactionId: string;
@@ -19,7 +19,7 @@ export interface TransactionContext {
   userId?: string;
   sessionId?: string;
   locks: Array<any>;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export class TransactionManager {
   private activeTransactions = new Map<string, TransactionContext>();
@@ -45,7 +45,7 @@ export class TransactionManager {
       sessionId,
       locks: [],
       metadata
-    };
+    }
     this.activeTransactions.set(transactionId, context);
     console.log(`📝 Starting transaction ${transactionId} with ${isolationLevel} isolation`);
     try {
@@ -111,7 +111,7 @@ export class TransactionManager {
   ): Promise<T> {
     return this.withTransactionAndLock('evidence', evidenceId, fn, LOCK_MODES.EXCLUSIVE, {
       ...options,
-      isolationLevel: 'SERIALIZABLE', // Highest isolation for custody
+      isolationLevel: 'SERIALIZABLE', // Highest isolation for custody;
       metadata: {
         ...options.metadata,
         operationType: 'chain_of_custody',
@@ -172,7 +172,7 @@ export class TransactionManager {
     return this.withTransactionAndLock('vector_index', indexName, fn, LOCK_MODES.EXCLUSIVE, {
       ...options,
       isolationLevel: 'SERIALIZABLE',
-      timeout: 60000, // Vector operations can take longer
+      timeout: 60000, // Vector operations can take longer;
       metadata: {
         ...options.metadata,
         operationType: 'vector_index_update',
@@ -285,14 +285,14 @@ export class TransactionManager {
       const age = now - ctx.startTime.getTime();
       totalLocks += ctx.locks.length;
       if (!oldestTransaction || age > oldestTransaction.age) {
-        oldestTransaction = { id, age };
+        oldestTransaction = { id, age }
       }
     }
     return {
       activeTransactions: transactions.length,
       oldestTransaction,
       locksHeld: totalLocks
-    };
+    }
   }
 }
 // Export singleton instance

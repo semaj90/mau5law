@@ -16,7 +16,7 @@ export interface ParsedLegalDocument {
   caseNumber?: string;
   documentType: string;
   content: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   embeddings?: Float32Array;
   chunks?: TextChunk[];
   parseTime: number;
@@ -28,7 +28,7 @@ export interface TextChunk {
   startIndex: number;
   endIndex: number;
   embedding?: Float32Array;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export class SIMDJSONParser {
   private batchSize: number;
@@ -40,7 +40,7 @@ export class SIMDJSONParser {
   private textBuffer: Uint8Array;
   private chunkIndices: Uint32Array;
   private embeddingBuffer: Float32Array;
-  constructor(options: SIMDParseOptions = {}) {
+  constructor(_options: SIMDParseOptions = {}) {
     this.batchSize = options.batchSize || 1024;
     this.enableSIMD = options.enableSIMD ?? true;
     this.memoryLimit = options.memoryLimit || 512 * 1024 * 1024; // 512MB
@@ -129,7 +129,7 @@ export class SIMDJSONParser {
       metadata: rawData.metadata || {},
       parseTime: 0,
       size: 0
-    };
+    }
     // SIMD-style text chunking using typed arrays
     if (document.content && this.enableSIMD) {
       document.chunks = await this.simdTextChunking(document.content);
@@ -241,7 +241,7 @@ export class SIMDJSONParser {
         startIndex: position
         endIndex: end
         metadata: {
-          streamChunk: true
+          streamChunk: true;
           index: chunkIndex
         }
       });
@@ -343,7 +343,7 @@ export class SIMDJSONParser {
       metadata: { parsedWithFallback: true },
       parseTime: performance.now() - startTime,
       size: jsonString.length
-    };
+    }
   }
   /**
    * Get parser statistics
@@ -361,7 +361,7 @@ export class SIMDJSONParser {
         memoryLimit: this.memoryLimit,
         parallelChunks: this.parallelChunks
       }
-    };
+    }
   }
   /**
    * Cleanup resources

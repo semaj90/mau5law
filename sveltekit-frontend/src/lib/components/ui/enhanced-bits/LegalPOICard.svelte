@@ -33,11 +33,11 @@
   });
   let statusBadge = $derived(() => {
     switch (poi.status) {
-      case 'wanted': return { text: '🔍 WANTED', color: 'var(--enhanced-bits-error)' };
-      case 'in_custody': return { text: '🔒 IN CUSTODY', color: 'var(--enhanced-bits-warning)' };
-      case 'deceased': return { text: '💀 DECEASED', color: 'var(--enhanced-bits-text)' };
-      case 'flagged': return { text: '⚠️ FLAGGED', color: 'var(--enhanced-bits-warning)' };
-      default: return { text: '✅ ACTIVE', color: 'var(--enhanced-bits-success)' };
+      case 'wanted': return { text: '🔍 WANTED', color: 'var(--enhanced-bits-error)' }
+      case 'in_custody': return { text: '🔒 IN CUSTODY', color: 'var(--enhanced-bits-warning)' }
+      case 'deceased': return { text: '💀 DECEASED', color: 'var(--enhanced-bits-text)' }
+      case 'flagged': return { text: '⚠️ FLAGGED', color: 'var(--enhanced-bits-warning)' }
+      default: return { text: '✅ ACTIVE', color: 'var(--enhanced-bits-success)' }
     }
   });
   // Action handlers
@@ -46,7 +46,7 @@
       try {
         const posterBlob = await createWantedPoster(poi.id, {
           priority: poi.metadata.riskLevel,
-          reward: 10000, // Could be dynamic
+          reward: 10000, // Could be dynamic;
           charges: poi.criminalProfile.warrants.flatMap(w => w.charges),
           dangerWarning: poi.criminalProfile.armedAndDangerous ?
             'ARMED AND DANGEROUS - DO NOT APPROACH' : undefined;
@@ -87,24 +87,22 @@
     }
   }
 </script>
-<Card
-  class="poi-card {compact ? 'compact' : ''} {poi.status}"
-  style="border-left: 4px solid {riskColor};"
->
+
+<Card class="poi-card {compact ? 'compact' : ''} {poi.status}" style="border-left: 4px solid {riskColor}">
   <CardHeader>
     <div class="poi-header">
       <div class="poi-identity">
-        <CardTitle style="color: {roleColor};">
+        <CardTitle style="color: {roleColor}">
           {poi.name}
           {#if poi.aliases.length > 0}
             <span class="aliases">({poi.aliases.slice(0, 2).join(', ')})</span>
           {/if}
         </CardTitle>
-        <div class="poi-role" style="color: {roleColor};">
+        <div class="poi-role" style="color: {roleColor}">
           {poi.role.toUpperCase()} | {poi.entityType}
         </div>
       </div>
-      <div class="status-badge" style="background: {statusBadge.color};">
+      <div class="status-badge" style="background: {statusBadge.color}">
         {statusBadge.text}
       </div>
     </div>
@@ -115,16 +113,14 @@
       <div class="poi-details">
         <!-- Risk Assessment -->
         <div class="risk-section">
-          <div class="risk-level" style="color: {riskColor};">
+          <div class="risk-level" style="color: {riskColor}">
             Risk Level: {poi.metadata.riskLevel.toUpperCase()}
             {#if poi.metadata.threatLevel}
               | Threat: {poi.metadata.threatLevel}
             {/if}
           </div>
           {#if poi.metadata.publicSafetyRisk}
-            <div class="public-safety-warning">
-              ⚠️ PUBLIC SAFETY RISK
-            </div>
+            <div class="public-safety-warning">⚠️ PUBLIC SAFETY RISK</div>
           {/if}
         </div>
         <!-- Criminal Profile (if suspect/fugitive) -->
@@ -192,8 +188,9 @@
             </div>
             {#if poi.metadata.personality.psychologicalProfile}
               <div class="psych-profile">
-                Stability: {Math.round(poi.metadata.personality.psychologicalProfile.stability * 100)}% |
-                Cooperation: {Math.round(poi.metadata.personality.psychologicalProfile.cooperationLikelihood * 100)}%
+                Stability: {Math.round(poi.metadata.personality.psychologicalProfile.stability * 100)}% | Cooperation: {Math.round(
+                  poi.metadata.personality.psychologicalProfile.cooperationLikelihood * 100,
+                )}%
               </div>
             {/if}
           </div>
@@ -202,28 +199,18 @@
       <!-- Action Buttons -->
       <div class="poi-actions">
         {#if poi.role === 'suspect' || poi.role === 'fugitive'}
-          <Button onclick={handleCreateWantedPoster} variant="destructive" size="sm">
-            📋 Create Wanted Poster
-          </Button>
-          <Button onclick={handleAddToFBIMostWanted} variant="outline" size="sm">
-            🎯 Add to FBI Most Wanted
-          </Button>
-          <Button onclick={handleRecordSighting} variant="outline" size="sm">
-            👁️ Record Sighting
-          </Button>
+          <Button onclick={handleCreateWantedPoster} variant="destructive" size="sm">📋 Create Wanted Poster</Button>
+          <Button onclick={handleAddToFBIMostWanted} variant="outline" size="sm">🎯 Add to FBI Most Wanted</Button>
+          <Button onclick={handleRecordSighting} variant="outline" size="sm">👁️ Record Sighting</Button>
         {/if}
-        <Button onclick={() => onEdit?.(poi)} variant="outline" size="sm">
-          ✏️ Edit
-        </Button>
-        <Button onclick={() => onDelete?.(poi.id)} variant="destructive" size="sm">
-          🗑️ Delete
-        </Button>
+        <Button onclick={() => onEdit?.(poi)} variant="outline" size="sm">✏️ Edit</Button>
+        <Button onclick={() => onDelete?.(poi.id)} variant="destructive" size="sm">🗑️ Delete</Button>
       </div>
     {:else}
       <!-- Compact view for lists -->
       <div class="poi-compact">
         <div class="compact-info">
-          <div class="role-badge" style="background: {roleColor};">
+          <div class="role-badge" style="background: {roleColor}">
             {poi.role}
           </div>
           {#if poi.criminalProfile && poi.criminalProfile.warrants.length > 0}
@@ -239,6 +226,7 @@
     {/if}
   </CardContent>
 </Card>
+
 <style>
   .poi-card {
     position: relative;
@@ -345,7 +333,7 @@
     font-size: 0.75rem;
     font-weight: bold;
   }
-  .watch-list-badge[data-priority="critical"] {
+  .watch-list-badge[data-priority='critical'] {
     background: var(--enhanced-bits-critical);
     animation: pulse 2s infinite;
   }
@@ -439,7 +427,12 @@
     margin-bottom: 0.5rem;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
 </style>

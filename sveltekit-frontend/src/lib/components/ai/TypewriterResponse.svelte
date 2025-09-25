@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
   			'Preparing citation references...',
   			'Finalizing response...'
   		];
-  	};
+  	}
   	// Intervals and timeouts
   let typingInterval = $state({}) {
   		if (autoStart) {
@@ -106,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
   		if (cacheKey && text) {
   			await advancedCache.set(`typewriter_${cacheKey}`, text, {
   				priority: 'high',
-  				ttl: 10 * 60 * 1000, // 10 minute
+  				ttl: 10 * 60 * 1000, // 10 minute;
   				tags: ['typewriter', 'responses'];
   			});
   		}
@@ -139,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
   					// ondispatch removed;
   					resolve();
   				}
-  			};
+  			}
   			type();
   		});
   	}
@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
   				} else if (thinkingState.progress > 66 && phaseIndex < 2) {
   					phaseIndex = 2;
   				}
-  			};
+  			}
   			// Simulate thinking time (2-4 seconds)
   			const thinkingDuration = 2000 + Math.random() * 2000;
   			const updateInterval = thinkingDuration / 10;
@@ -220,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
   				}
   				activityIndex++;
   				activityTimeout = setTimeout(replayNext, scaledDuration);
-  			};
+  			}
   			replayNext();
   		});
   	}
@@ -265,7 +265,7 @@ https://svelte.dev/e/js_parse_error -->
   		if (cacheKey && userActivity.length > 0) {
   			await advancedCache.set(`activity_${cacheKey}`, userActivity, {
   				priority: 'medium',
-  				ttl: 30 * 60 * 1000, // 30 minute
+  				ttl: 30 * 60 * 1000, // 30 minute;
   				tags: ['user-activity', 'replay'];
   			});
   		}
@@ -283,13 +283,13 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	});
   	// Export functions for external control
-  	export { pause, resume, stop, restart, setSpeed, setReplaySpeed };
+  	export { pause, resume, stop, restart, setSpeed, setReplaySpeed }
 </script>
 <!-- Thinking Animation (shown while LLM loads) -->
 {#if enableThinking && thinkingState.phase !== 'complete' && isTyping && !displayedText}
 	<div
 		class="thinking-container"
-		in:fade={{ duration: 300 }};
+		in:fade={{ duration: 300 }}
 		out:fade={{ duration: 200 }}
 	>
 		<div class="thinking-indicator">

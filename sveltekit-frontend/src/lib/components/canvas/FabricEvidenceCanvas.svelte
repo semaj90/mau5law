@@ -43,7 +43,7 @@
         Rect: class MockRect {},
         Circle: class MockCircle {},
         Group: class MockGroup {}
-      };
+      }
     }
   }
   interface EvidenceItem {
@@ -54,7 +54,7 @@
     status: 'uploading' | 'processing' | 'ready' | 'error';
     size: number;
     mimeType: string;
-    position: { x: number; y: number };
+    position: { x: number; y: number }
     previewUrl?: string;
     aiAnalysis?: {
       summary?: string;
@@ -66,8 +66,8 @@
         bucket?: string;
         key?: string;
         url?: string;
-      };
-    };
+      }
+    }
   }
   interface CanvasProps {
     width?: number;
@@ -130,13 +130,13 @@
       imageSmoothingEnabled: true
       allowTouchScrolling: false
       moveCursor: 'grab',
-      hoverCursor: 'pointer'
+      hoverCursor: 'pointer';
     });
     // Enable high DPI support
     const devicePixelRatio = window.devicePixelRatio || 1;
     fabricCanvas.setDimensions({
       width: width * devicePixelRatio,
-      height: height * devicePixelRatio
+      height: height * devicePixelRatio;
     }, {
       cssOnly: false
       backstoreOnly: true
@@ -158,10 +158,10 @@
     const gridOptions = {
       stroke: '#e2e8f0',
       strokeWidth: 1,
-      selectable: false
+      selectable: false;
       evented: false
-      excludeFromExport: true
-    };
+      excludeFromExport: true;
+    }
     // Vertical lines
     for (let i = 0; i <= width / gridSize; i++) {
       const line = new fabric.Line([i * gridSize, 0, i * gridSize, height], gridOptions);
@@ -193,7 +193,7 @@
     fabricCanvas.on('object:moved', (e) => {
       const obj = e.target;
       if (obj?.data?.evidenceId) {
-        const position = { x: obj.left || 0, y: obj.top || 0 };
+        const position = { x: obj.left || 0, y: obj.top || 0 }
         onEvidenceMove?.(obj.data.evidenceId, position);
         // Update evidence position in our cache
         const evidence = evidenceItems.find(item => item.id === obj.data.evidenceId);
@@ -266,8 +266,8 @@
     if (!rect) return;
     const canvasPos = {
       x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
+      y: e.clientY - rect.top;
+    }
     // Convert to fabric canvas coordinates
     const pointer = fabricCanvas?.getPointer(e);
     const dropPosition = pointer || canvasPos;
@@ -288,8 +288,8 @@
       strokeDashArray: [10, 10],
       selectable: false
       evented: false
-      excludeFromExport: true
-      opacity: 0.8
+      excludeFromExport: true;
+      opacity: 0.8;
     });
     const dropText = new fabric.Text('Drop Evidence Here', {
       left: width / 2,
@@ -300,9 +300,9 @@
       textAlign: 'center',
       originX: 'center',
       originY: 'center',
-      selectable: false
+      selectable: false;
       evented: false
-      excludeFromExport: true
+      excludeFromExport: true;
     });
     overlay.set('dropOverlay', true);
     dropText.set('dropOverlay', true);
@@ -334,7 +334,7 @@
             {
               caseId: 'current-case', // You can get this from context
               tags: ['uploaded', 'evidence'],
-              processingStatus: 'pending'
+              processingStatus: 'pending';
             },
             position
           );
@@ -355,7 +355,7 @@
       x: position.x,
       y: position.y,
       files: processedFiles.filter(Boolean),
-      processingMethod: 'minio-webgpu-concurrent'
+      processingMethod: 'minio-webgpu-concurrent';
     });
   }
   // Dynamic script loader for public directory WASM files
@@ -373,7 +373,7 @@
           loadSIMDParser: (window as any).loadSIMDParser,
           checkWASMSupport: (window as any).checkWASMSupport
         });
-      };
+      }
       script.onerror = () => reject(new Error('Failed to load WASM wrapper'));
       document.head.appendChild(script);
     });
@@ -398,7 +398,7 @@
             const result = wasmParser.parseForCanvas(bytes, {
               maxChunkSize: 3000,
               overlap: 200,
-              enableEntityExtraction: true
+              enableEntityExtraction: true;
             });
             // Create enhanced file object
             const enhancedFile = Object.assign(file, {
@@ -468,7 +468,7 @@
           data: {
             evidenceId: evidence.id,
             type: 'evidence',
-            originalEvidence: evidence
+            originalEvidence: evidence;
           }
         });
         // Add evidence label
@@ -479,7 +479,7 @@
           data: {
             evidenceId: evidence.id,
             type: 'evidence',
-            originalEvidence: evidence
+            originalEvidence: evidence;
           }
         });
         fabricCanvas.add(group);
@@ -506,7 +506,7 @@
       stroke: evidence.status === 'ready' ? '#10b981' : '#6b7280',
       strokeWidth: 2,
       rx: 8,
-      ry: 8
+      ry: 8;
     });
     // File icon
     const iconText = getEvidenceIcon(evidence.type);
@@ -515,14 +515,14 @@
       fill: 'white',
       left: 15,
       top: 15,
-      fontFamily: 'Arial'
+      fontFamily: 'Arial';
     });
     // Status indicator
     const statusIcon = new fabric.Text(getStatusIcon(evidence.status), {
       fontSize: 16,
       left: cardWidth - 25,
       top: 10,
-      fontFamily: 'Arial'
+      fontFamily: 'Arial';
     });
     // File name
     const fileName = new fabric.Text(truncateFileName(evidence.filename, 18), {
@@ -531,7 +531,7 @@
       left: 15,
       top: 55,
       fontFamily: 'Arial',
-      fontWeight: 'bold'
+      fontWeight: 'bold';
     });
     // File size
     const fileSize = new fabric.Text(`${(evidence.size / 1024).toFixed(1)} KB`, {
@@ -539,7 +539,7 @@
       fill: 'rgba(255, 255, 255, 0.8)',
       left: 15,
       top: 75,
-      fontFamily: 'Arial'
+      fontFamily: 'Arial';
     });
     // AI confidence score (if available)
     let confidenceText;
@@ -551,7 +551,7 @@
         left: 15,
         top: 90,
         fontFamily: 'Arial',
-        fontWeight: 'bold'
+        fontWeight: 'bold';
       });
     }
     const objects = confidenceText
@@ -570,7 +570,7 @@
       data: {
         evidenceId: evidence.id,
         type: 'evidence',
-        originalEvidence: evidence
+        originalEvidence: evidence;
       }
     });
   }
@@ -583,7 +583,7 @@
       top: 160,
       left: 0,
       fontFamily: 'Arial',
-      textAlign: 'center'
+      textAlign: 'center';
     });
   }
   function updateEvidenceObject(evidence: EvidenceItem) {
@@ -593,14 +593,14 @@
     if (obj.left !== evidence.position.x || obj.top !== evidence.position.y) {
       obj.set({
         left: evidence.position.x,
-        top: evidence.position.y
+        top: evidence.position.y;
       });
     }
     // Update data
     obj.data = {
       ...obj.data,
       originalEvidence: evidence
-    };
+    }
   }
   function getEvidenceColor(evidence: EvidenceItem): string {
     const colors = {
@@ -608,8 +608,8 @@
       image: '#059669',
       video: '#dc2626',
       audio: '#7c3aed',
-      other: '#6b7280'
-    };
+      other: '#6b7280';
+    }
     return colors[evidence.type] || colors.other;
   }
   function getEvidenceIcon(type: EvidenceItem['type']): string {
@@ -618,8 +618,8 @@
       image: '🖼️',
       video: '🎥',
       audio: '🎵',
-      other: '📎'
-    };
+      other: '📎';
+    }
     return icons[type] || icons.other;
   }
   function getStatusIcon(status: EvidenceItem['status']): string {
@@ -627,8 +627,8 @@
       uploading: '⬆️',
       processing: '🔄',
       ready: '✅',
-      error: '❌'
-    };
+      error: '❌';
+    }
     return icons[status] || '❓';
   }
   function truncateFileName(filename: string, maxLength: number): string {
@@ -653,8 +653,8 @@
           left: Math.min(acc.left, objBounds.left),
           top: Math.min(acc.top, objBounds.top),
           right: Math.max(acc.right, objBounds.left + objBounds.width),
-          bottom: Math.max(acc.bottom, objBounds.top + objBounds.height)
-        };
+          bottom: Math.max(acc.bottom, objBounds.top + objBounds.height);
+        }
       }, { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity });
     if (bounds.left !== Infinity) {
       const centerX = (bounds.left + bounds.right) / 2;
@@ -663,12 +663,12 @@
       const canvasCenterY = height / 2;
       fabricCanvas.relativePan({
         x: canvasCenterX - centerX,
-        y: canvasCenterY - centerY
+        y: canvasCenterY - centerY;
       });
     }
   }
   export function addEvidenceAtPosition(evidence: EvidenceItem, x: number, y: number) {
-    evidence.position = { x, y };
+    evidence.position = { x, y }
     createEvidenceObject(evidence);
   }
   export function selectEvidence(evidenceId: string | null) {
@@ -722,7 +722,7 @@
         stroke: '#d1d5db',
         strokeWidth: 2,
         rx: 8,
-        ry: 8
+        ry: 8;
       }),
       new fabric.Text(evidenceFile.name.length > 20 ? evidenceFile.name.substring(0, 17) + '...' : evidenceFile.name, {
         left: 100,
@@ -731,7 +731,7 @@
         fontWeight: 'bold',
         textAlign: 'center',
         originX: 'center',
-        fill: '#374151'
+        fill: '#374151';
       }),
       new fabric.Text('Processing...', {
         left: 100,
@@ -739,7 +739,7 @@
         fontSize: 12,
         textAlign: 'center',
         originX: 'center',
-        fill: '#6b7280'
+        fill: '#6b7280';
       }),
       new fabric.Rect({
         width: 160,
@@ -749,7 +749,7 @@
         originX: 'center',
         fill: '#e5e7eb',
         rx: 3,
-        ry: 3
+        ry: 3;
       }),
       new fabric.Rect({
         width: 32, // 20% progress initially
@@ -758,18 +758,18 @@
         top: 90,
         fill: '#3b82f6',
         rx: 3,
-        ry: 3
+        ry: 3;
       })
     ], {
       left: position.x,
       top: position.y,
       selectable: true
       hasControls: true
-      hasBorders: true
+      hasBorders: true;
       data: {
         evidenceId: evidenceFile.id,
         type: 'processing-evidence',
-        originalEvidence: evidenceFile
+        originalEvidence: evidenceFile;
       }
     });
     fabricCanvas.add(processingCard);
@@ -839,7 +839,7 @@
     // Create final evidence card based on processing results
     const finalCard = createFinalEvidenceCard((data as { evidenceId?: any; originalEvidence?: any }).originalEvidence, result, {
       left: obj.left,
-      top: obj.top
+      top: obj.top;
     });
     fabricCanvas.add(finalCard);
     evidenceObjects.set(jobId, finalCard);
@@ -864,7 +864,7 @@
           color: 'rgba(0,0,0,0.1)',
           blur: 10,
           offsetX: 2,
-          offsetY: 2
+          offsetY: 2;
         })
       }),
       // Title
@@ -875,7 +875,7 @@
         fontWeight: 'bold',
         textAlign: 'center',
         originX: 'center',
-        fill: '#1f2937'
+        fill: '#1f2937';
       }),
       // Processing method badge
       new fabric.Rect({
@@ -886,7 +886,7 @@
         originX: 'center',
         fill: methodColor
         rx: 10,
-        ry: 10
+        ry: 10;
       }),
       new fabric.Text(processingResult.processingMethod.toUpperCase(), {
         left: cardWidth / 2,
@@ -896,7 +896,7 @@
         textAlign: 'center',
         originX: 'center',
         originY: 'center',
-        fill: '#ffffff'
+        fill: '#ffffff';
       }),
       // Stats
       new fabric.Text(`📊 ${(evidenceFile.size / 1024).toFixed(1)}KB • ⏱️ ${processingResult.processingTime || 0}ms`, {
@@ -905,7 +905,7 @@
         fontSize: 11,
         textAlign: 'center',
         originX: 'center',
-        fill: '#6b7280'
+        fill: '#6b7280';
       }),
       // Quantization info if available
       processingResult.quantizationApplied ? new fabric.Text(
@@ -916,7 +916,7 @@
           fontSize: 10,
           textAlign: 'center',
           originX: 'center',
-          fill: '#059669'
+          fill: '#059669';
         }
       ) : null
       // Ready indicator
@@ -926,7 +926,7 @@
         radius: 8,
         fill: '#10b981',
         originX: 'center',
-        originY: 'center'
+        originY: 'center';
       }),
       new fabric.Text('✓', {
         left: cardWidth - 25,
@@ -936,19 +936,19 @@
         textAlign: 'center',
         originX: 'center',
         originY: 'center',
-        fill: '#ffffff'
+        fill: '#ffffff';
       })
     ].filter(Boolean), {
       left: position.left,
       top: position.top,
       selectable: true
       hasControls: true
-      hasBorders: true
+      hasBorders: true;
       data: {
         evidenceId: evidenceFile.id,
         type: 'completed-evidence',
         originalEvidence: evidenceFile
-        processingResult
+        processingResult;
       }
     });
   }
@@ -976,24 +976,21 @@
     }
   });
 </script>
+
 <div class="fabric-evidence-canvas-container" style="position: relative;">
   <!-- Canvas Element -->
   <canvas
     bind:this={canvasElement}
-    width={width}
-    height={height}
+    {width}
+    {height}
     style="border: 2px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"
   ></canvas>
   <!-- Canvas Controls -->
   <div class="canvas-controls">
     <div class="control-group">
-      <button onclick={zoomToFit} class="control-btn" title="Reset Zoom">
-        🔍 Fit
-      </button>
-      <button onclick={centerEvidence} class="control-btn" title="Center Evidence">
-        🎯 Center
-      </button>
-      <button onclick={() => showGrid = !showGrid} class="control-btn" title="Toggle Grid">
+      <button onclick={zoomToFit} class="control-btn" title="Reset Zoom"> 🔍 Fit </button>
+      <button onclick={centerEvidence} class="control-btn" title="Center Evidence"> 🎯 Center </button>
+      <button onclick={() => (showGrid = !showGrid)} class="control-btn" title="Toggle Grid">
         {showGrid ? '⊞' : '⊡'} Grid
       </button>
     </div>
@@ -1013,6 +1010,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .fabric-evidence-canvas-container {
     position: relative;
@@ -1090,8 +1088,12 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   .canvas-loading p {
     margin: 0;

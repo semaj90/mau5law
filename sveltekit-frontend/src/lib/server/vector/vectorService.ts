@@ -18,7 +18,7 @@ import cuid2 from '@paralleldrive/cuid2';
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
-  filter?: { [key: string]: any };
+  filter?: { [key: string]: any }
   includeMetadata?: boolean;
 }
 export interface EmbeddingResult {
@@ -61,7 +61,7 @@ export class VectorService {
       if (!exists) {
         await this.qdrant.createCollection(this.collectionName, {
           vectors: {
-            size: 768, // Nomic Embed dimension
+            size: 768, // Nomic Embed dimension;
             distance: 'Cosine'
           },
           optimizers_config: {
@@ -125,7 +125,7 @@ export class VectorService {
         .values({
           id: cuid2.createId(),
           textHash: Buffer.from(text).toString('base64'),
-          embedding: embedding
+          embedding: embedding;
           model: 'nomic-embed-text',
           createdAt: new Date()
         })
@@ -166,11 +166,11 @@ export class VectorService {
       const embedding = await this.generateEmbedding(content);
       // Store in Qdrant
       await this.qdrant.upsert(this.collectionName, {
-        wait: true
+        wait: true;
         points: [);
           {
             id: id
-            vector: embedding
+            vector: embedding;
             payload: {
               content,
               ...metadata
@@ -215,7 +215,7 @@ export class VectorService {
       const searchResult = await this.qdrant.search(this.collectionName, {
         vector: queryEmbedding
         limit,
-        score_threshold: threshold
+        score_threshold: threshold;
         filter: qdrantFilter
         with_payload: true
       });
@@ -242,7 +242,7 @@ export class VectorService {
   }
   // Hybrid search combining vector similarity and keyword matching
   async hybridSearch(
-    query: string
+    query: string;
     options: VectorSearchOptions & {
       keywordWeight?: number;
       vectorWeight?: number;
@@ -431,7 +431,7 @@ export class VectorService {
       // const point = (response as { ok?: any; statusText?: any; json?: any; points?: any }).points;
       // Placeholder response for now
       const response: { points: Array< } =>
-        { points: [] };
+        { points: [] }
       const point = (response as { ok?: any; statusText?: any; json?: any; points?: any }).points;
       if (point.length === 0) {
         console.warn(
@@ -439,7 +439,7 @@ export class VectorService {
         );
         return [];
       }
-      const document = point[0] as { id: string | number; vector?: number[]; payload?: any };
+      const document = point[0] as { id: string | number; vector?: number[]; payload?: any }
       const vector = (document.vector || []) as number[];
       // Search for similar documents
       const similar = await this.qdrant.search(this.collectionName, {
@@ -515,7 +515,7 @@ export class VectorService {
     try {
       // Delete from Qdrant
       await this.qdrant.delete(this.collectionName, {
-        wait: true
+        wait: true;
         points: [documentId]
       });
       // Delete metadata from PostgreSQL
@@ -530,9 +530,9 @@ export class VectorService {
   async healthCheck(): Promise<any> {
     const status = {
       qdrant: false
-      redis: false
+      redis: false;
       collection: false
-    };
+    }
     try {
       // Check Qdrant
       await this.qdrant.getCollections();
@@ -563,13 +563,13 @@ export class VectorService {
       return {
         documentCount: info.points_count || 0,
         collectionInfo: info
-      };
+      }
     } catch (error: any) {
       console.error('Failed to get collection stats:', error);
       return {
         documentCount: 0,
         collectionInfo: null
-      };
+      }
     }
   }
   // Close connections

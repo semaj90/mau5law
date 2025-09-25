@@ -27,10 +27,10 @@
       criminalHistory?: string[];
       notes?: string;
       photo?: string;
-    };
+    }
     tags: string[];
     caseIds: string[];
-    position: { x?: number; y?: number; z?: number };
+    position: { x?: number; y?: number; z?: number }
     createdBy?: string;
     createdAt: string;
     updatedAt: string;
@@ -66,7 +66,7 @@
         contactInfo: 'marcus.chen@techcorp.com, (555) 012-3456',
         criminalHistory: ['Computer Fraud - 2019', 'Identity Theft - 2020'],
         notes: 'Highly skilled in cybersecurity. Potential access to sensitive systems.',
-        photo: 'https://ui-avatars.com/api/?name=MC&background=dc2626&color=fff&size=200'
+        photo: 'https://ui-avatars.com/api/?name=MC&background=dc2626&color=fff&size=200';
       },
       tags: ['cybercrime', 'fraud', 'high-tech'],
       caseIds: ['case-2024-001', 'case-2024-007'],
@@ -93,7 +93,7 @@
         contactInfo: 'i.santos@financegroup.com, (555) 987-6543',
         criminalHistory: [],
         notes: 'Cooperative witness. Has valuable information about financial transactions.',
-        photo: 'https://ui-avatars.com/api/?name=IS&background=059669&color=fff&size=200'
+        photo: 'https://ui-avatars.com/api/?name=IS&background=059669&color=fff&size=200';
       },
       tags: ['finance', 'witness', 'cooperative'],
       caseIds: ['case-2024-003'],
@@ -120,7 +120,7 @@
         contactInfo: 'Multiple burner phones',
         criminalHistory: ['Organized Crime - 2010', 'Arms Trafficking - 2015', 'Racketeering - 2018'],
         notes: 'EXTREMELY DANGEROUS. Do not approach alone. Armed and dangerous.',
-        photo: 'https://ui-avatars.com/api/?name=VK&background=991b1b&color=fff&size=200'
+        photo: 'https://ui-avatars.com/api/?name=VK&background=991b1b&color=fff&size=200';
       },
       tags: ['organized-crime', 'dangerous', 'armed'],
       caseIds: ['case-2024-001', 'case-2024-004', 'case-2024-008'],
@@ -170,7 +170,7 @@
           comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
           break;
         case 'threat':
-          const threatOrder = { 'low': 1, 'medium': 2, 'high': 3, 'critical': 4 };
+          const threatOrder = { 'low': 1, 'medium': 2, 'high': 3, 'critical': 4 }
           comparison = threatOrder[a.threatLevel] - threatOrder[b.threatLevel];
           break;
       }
@@ -321,7 +321,7 @@
           </div>
           <!-- Relationship Filter -->
           <div>
-            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="relationship">Relationship</label><select id="relationship"
+            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="relationship">Relationship</label><select id="relationship";
               bind:value={selectedRelationship}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >

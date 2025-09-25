@@ -27,13 +27,13 @@ https://svelte.dev/e/props_duplicate -->
     leadProsecutor: case_?.leadProsecutor || user?.id || "",
     assignedTeam: case_?.assignedTeam || [],
     tags: case_?.tags || [],
-    metadata: case_?.metadata ||
+    metadata: case_?.metadata ||;
   });
   let loading = $state(false);
   let errors = $state<Record<string, string>('') >( );
   // Form validation
   function validateForm() {
-    errors = {};
+    errors = {}
     if (!formData.title.trim()) {
       errors.title = "Title is required";
   }
@@ -84,7 +84,7 @@ https://svelte.dev/e/props_duplicate -->
           formVersion: "2.0",
           lastModified: new Date().toISOString(),
         },
-      };
+      }
       // Defensive: always check for valid API data before fetch
       if (!apiData.title || !apiData.caseNumber) {
         throw new Error("Missing required fields");
@@ -420,8 +420,8 @@ https://svelte.dev/e/props_duplicate -->
       border-color 0.2s,
       box-shadow 0.2;
 }
-  input: focus
-  select: focus
+  input: focus;
+  select: focus;
   textarea:focus {
     outline: none;
     border-color: #3b82f6;

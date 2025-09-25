@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       hasUppercase: /[A-Z]/.test(password),
       hasLowercase: /[a-z]/.test(password),
       hasNumbers: /\d/.test(password),
-      hasSpecialChars: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+      hasSpecialChars: /[!@#$%^&*()_+\-=\[\]{}':"\\|,.<>\/?]/.test(password)
     }
     const passwordStrength = Object.values(passwordChecks).filter(item => item.length)
     if (passwordStrength < 3) {

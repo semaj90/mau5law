@@ -12,5 +12,5 @@ export interface ChatMessageData {
   content: string;
   timestamp: Date;
   status?: MessageStatus;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }

@@ -19,14 +19,14 @@
   onMount(async () => {
     // Load upload configuration
     try {
-      const response = await fetch('/api/documents/upload-enhanced');
+      // removed unused response assignment
       uploadConfig = await response.json();
     } catch (error) {
       console.error('Failed to load upload config:', error);
     }
   });
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     selectedFile = target.files?.[0] || null;
     errorMessage = '';
     uploadResult = null;
@@ -53,7 +53,7 @@
       if (title) formData.append('title', title);
       const response = await fetch('/api/documents/upload-enhanced', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
       const result = await response.json();
       const typedResult = result as UploadResponse;
@@ -82,6 +82,7 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
+
 <div class="enhanced-upload-container">
   <div class="upload-header">
     <h2>📄 Enhanced Document Upload</h2>
@@ -118,7 +119,7 @@
       <label for="file-input" class="file-input-label">
         <span class="file-icon">📎</span>
         <span class="file-text">
-          {selectedFile ? selectedFile.name: 'Choose legal document to upload'}
+          {selectedFile ? selectedFile.name : 'Choose legal document to upload'}
         </span>
       </label>
       <input
@@ -180,11 +181,7 @@
     </div>
     <!-- Upload Button -->
     <div class="upload-actions">
-      <ModernButton
-        onclick={uploadDocument}
-        disabled={!selectedFile || uploading}
-        variant="primary"
-      >
+      <ModernButton onclick={uploadDocument} disabled={!selectedFile || uploading} variant="primary">
         {uploading ? '🔄 Processing...' : '🚀 Upload & Process'}
       </ModernButton>
     </div>
@@ -205,20 +202,25 @@
       </div>
       <div class="result-details">
         <div class="detail-item">
-          <strong>Document ID:</strong> {uploadResult.documentId}
+          <strong>Document ID:</strong>
+          {uploadResult.documentId}
         </div>
         <div class="detail-item">
-          <strong>Semantic Chunks:</strong> {uploadResult.chunks}
+          <strong>Semantic Chunks:</strong>
+          {uploadResult.chunks}
         </div>
         {#if uploadResult.processingDetails}
           <div class="detail-item">
-            <strong>Processing Time:</strong> {uploadResult.processingDetails.processingTime}ms
+            <strong>Processing Time:</strong>
+            {uploadResult.processingDetails.processingTime}ms
           </div>
           <div class="detail-item">
-            <strong>Extracted Text:</strong> {uploadResult.processingDetails.extractedLength} characters
+            <strong>Extracted Text:</strong>
+            {uploadResult.processingDetails.extractedLength} characters
           </div>
           <div class="detail-item">
-            <strong>File Size:</strong> {formatFileSize(uploadResult.processingDetails.fileSize)}
+            <strong>File Size:</strong>
+            {formatFileSize(uploadResult.processingDetails.fileSize)}
           </div>
         {/if}
       </div>
@@ -237,6 +239,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .enhanced-upload-container {
     max-width: 800px;
@@ -356,7 +359,8 @@
     color: #00ff41;
     font-weight: bold;
   }
-  .file-size, .file-type {
+  .file-size,
+  .file-type {
     color: #888;
     font-size: 0.8rem;
   }
@@ -372,7 +376,8 @@
     color: #ccc;
     font-size: 0.9rem;
   }
-  .form-input, .form-select {
+  .form-input,
+  .form-select {
     width: 100%;
     padding: 0.75rem;
     background: #222;
@@ -381,7 +386,8 @@
     color: #fff;
     font-family: inherit;
   }
-  .form-input:focus, .form-select:focus {
+  .form-input:focus,
+  .form-select:focus {
     outline: none;
     border-color: #00ff41;
   }
@@ -389,7 +395,8 @@
     margin-top: 1.5rem;
     text-align: center;
   }
-  .error-message, .success-result {
+  .error-message,
+  .success-result {
     padding: 1rem;
     border-radius: 8px;
     margin-top: 1rem;

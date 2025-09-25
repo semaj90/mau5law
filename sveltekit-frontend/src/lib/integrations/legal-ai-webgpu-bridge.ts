@@ -22,7 +22,7 @@ export interface LegalAIProcessingResult {
     compressedSize: number;
     compressionRatio: number;
     spaceSavings: string;
-  };
+  }
   processingTime: number;
   profile: LegalAIProfile;
   cacheHit: boolean;
@@ -102,7 +102,7 @@ export class LegalAIWebGPUBridge {
       processingTime,
       profile,
       cacheHit: false // TODO: Implement cache hit detection
-    };
+    }
   }
   /**
    * Batch process multiple legal documents with optimal resource management
@@ -118,7 +118,7 @@ export class LegalAIWebGPUBridge {
     const startTime = performance.now();
     // Sort documents by priority for optimal processing order
     const sortedDocuments = [...documents].sort((a, b) => {
-      const priorityOrder = { high: 0, medium: 1, low: 2 };
+      const priorityOrder = { high: 0, medium: 1, low: 2 }
       const aPriority = priorityOrder[a.priority || 'medium'];
       const bPriority = priorityOrder[b.priority || 'medium'];
       return aPriority - bPriority;
@@ -186,7 +186,7 @@ export class LegalAIWebGPUBridge {
         corpus: corpusResults.reduce((sum, r) => sum + r.compressionStats.compressedSize, 0),
         total: queryResult.compressionStats.compressedSize + corpusResults.reduce((sum, r) => sum + r.compressionStats.compressedSize, 0)
       }
-    };
+    }
     if (options.debugMode) {
       console.log(`🔍 Legal similarity search setup complete:`, processingStats);
     }
@@ -194,7 +194,7 @@ export class LegalAIWebGPUBridge {
       queryBuffer: queryResult.buffer,
       corpusBuffers: corpusResults.map(r => r.buffer),
       processingStats
-    };
+    }
   }
   /**
    * Get performance and cache statistics
@@ -207,7 +207,7 @@ export class LegalAIWebGPUBridge {
       cacheStats: this.uploader.getCacheStats(),
       isWebGPUAvailable: this.isInitialized,
       bridgeStatus: this.isInitialized ? 'ready' : 'offline'
-    };
+    }
   }
   /**
    * Clear all cached buffers and reset performance counters
@@ -232,7 +232,7 @@ export class LegalAIWebGPUBridge {
     this.uploader = null;
   }
   // Private helper methods
-  private selectOptimalProfile(options: LegalDocumentProcessingOptions): LegalAIProfile {
+  private selectOptimalProfile(_options: LegalDocumentProcessingOptions): LegalAIProfile {
     // If profile explicitly specified, use it
     if (options.profile) {
       return options.profile;

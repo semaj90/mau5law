@@ -49,7 +49,7 @@ export class YoRHaLayout3D extends THREE.Group {
   private children3D: Array<any> = [];
   private bounds = new THREE.Box3();
   private needsLayout = true;
-  constructor(options: YoRHaLayoutOptions) {
+  constructor(_options: YoRHaLayoutOptions) {
     super();
     this.options = options;
   }
@@ -246,7 +246,7 @@ export class YoRHaLayout3D extends THREE.Group {
       left: padding?.left || 0,
       front: padding?.front || 0,
       back: padding?.back || 0
-    };
+    }
   }
   private getStartPosition(availableMain: number, totalMainSize: number, padding: Required<YoRHaPadding3D>): number {
     const containerBounds = this.getContainerBounds();
@@ -324,7 +324,7 @@ export class YoRHaLayout3D extends THREE.Group {
   public setChildLayout(component: YoRHa3DComponent, layout: YoRHaChildLayout): void {
     const child = this.children3D.find(c => c.component === component);
     if (child) {
-      child.layout = { ...child.layout, ...layout };
+      child.layout = { ...child.layout, ...layout }
       this.needsLayout = true;
     }
   }

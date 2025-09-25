@@ -11,7 +11,7 @@
     'Establishing Connection to Command Center...',
     'Activating Detective Support System...',
     'AI Assistant 9S Online...',
-    'Investigation Interface Ready.'
+    'Investigation Interface Ready.',
   ];
   // Boot sequence simulation
   setTimeout(() => {
@@ -28,6 +28,7 @@
     }, 800);
   }, 500);
 </script>
+
 <svelte:head>
   <title>YoRHa Detective Interface | Enhanced-Bits Gaming UI</title>
   <meta name="description" content="Cyberpunk detective interface using Enhanced-Bits components" />
@@ -44,10 +45,7 @@
       </div>
       <div class="boot-progress">
         <div class="progress-bar">
-          <div
-            class="progress-fill"
-            style="width: {(bootProgress / bootSequence.length) * 100}%"
-          ></div>
+          <div class="progress-fill" style="width: {(bootProgress / bootSequence.length) * 100}%"></div>
         </div>
         <div class="progress-text">
           {Math.round((bootProgress / bootSequence.length) * 100)}% Complete
@@ -55,10 +53,7 @@
       </div>
       <div class="boot-messages">
         {#each bootMessages as message, index}
-          <div
-            class="boot-message"
-            transition:fade={{ delay: 200 }}
-          >
+          <div class="boot-message" transition:fade={{ delay: 200 }}>
             <span class="message-prefix">[{(index + 1).toString().padStart(2, '0')}]</span>
             <span class="message-text">{message}</span>
             <span class="message-status">✓</span>
@@ -75,9 +70,7 @@
         {/if}
       </div>
       <div class="boot-footer">
-        <div class="system-info">
-          YoRHa OS v2.0 | Neural Network Active | Enhanced-Bits Framework
-        </div>
+        <div class="system-info">YoRHa OS v2.0 | Neural Network Active | Enhanced-Bits Framework</div>
       </div>
     </div>
   </div>
@@ -86,6 +79,7 @@
     <YorHADetectiveInterface />
   </div>
 {/if}
+
 <style>
   .boot-screen {
     position: fixed;
@@ -209,20 +203,33 @@
     line-height: 1.5;
   }
   @keyframes glow-pulse {
-    0%, 100% {
+    0%,
+    100% {
       text-shadow: 0 0 20px #00ff41;
       transform: scale(1);
     }
     50% {
-      text-shadow: 0 0 30px #00ff41, 0 0 40px #00ff41;
+      text-shadow:
+        0 0 30px #00ff41,
+        0 0 40px #00ff41;
       transform: scale(1.05);
     }
   }
   @keyframes loading-dots {
-    0%, 20% { opacity: 0; }
-    40% { opacity: 1; }
-    60% { opacity: 1; }
-    80%, 100% { opacity: 0; }
+    0%,
+    20% {
+      opacity: 0;
+    }
+    40% {
+      opacity: 1;
+    }
+    60% {
+      opacity: 1;
+    }
+    80%,
+    100% {
+      opacity: 0;
+    }
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {

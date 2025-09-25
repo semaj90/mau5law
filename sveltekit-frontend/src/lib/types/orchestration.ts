@@ -56,7 +56,7 @@ export interface ServiceStatusDetail {
 	error_count?: number;
 	instances?: ServiceInstance[];
 	error?: string;
-	metadata?: { [key: string]: any };
+	metadata?: { [key: string]: any }
 }
 export interface ServiceInstance {
 	id: string;
@@ -128,13 +128,13 @@ export interface SystemMetrics {
 		usage_percent: number;
 		load_average: number[];
 		cores: number;
-	};
+	}
 	memory: {
 		total_mb: number;
 		used_mb: number;
 		free_mb: number;
 		usage_percent: number;
-	};
+	}
 	disk: {
 		total_gb: number;
 		used_gb: number;
@@ -142,13 +142,13 @@ export interface SystemMetrics {
 		usage_percent: number;
 		io_read_mbps: number;
 		io_write_mbps: number;
-	};
+	}
 	network: {
 		rx_mbps: number;
 		tx_mbps: number;
 		connections: number;
 		errors: number;
-	};
+	}
 }
 export interface NetworkHealth {
 	connectivity: boolean;
@@ -210,7 +210,7 @@ export interface EmergencyRecoveryContext {
 	failure_type: 'service_crash' | 'network_partition' | 'resource_exhaustion' | 'cascade_failure' | 'unknown';
 	failure_timestamp: string;
 	affected_services: string[];
-	failure_details: { [key: string]: any };
+	failure_details: { [key: string]: any }
 	recovery_priority: 'low' | 'normal' | 'high' | 'critical';
 	auto_recovery_enabled: boolean;
 }
@@ -224,7 +224,7 @@ export interface RecoveryStrategy {
 export interface RecoveryAction {
 	action_type: 'restart_service' | 'scale_up' | 'failover' | 'traffic_redirect' | 'resource_cleanup';
 	target_service?: string;
-	parameters: { [key: string]: any };
+	parameters: { [key: string]: any }
 	timeout_ms: number;
 	required: boolean;
 }
@@ -257,7 +257,7 @@ export interface RegisteredService {
 	port: number;
 	protocol: 'http' | 'https' | 'grpc' | 'tcp';
 	health_check_url?: string;
-	metadata: { [key: string]: any };
+	metadata: { [key: string]: any }
 	tags: string[];
 	registered_at: string;
 	last_heartbeat: string;
@@ -284,7 +284,7 @@ export interface Alert {
 	timestamp: string;
 	acknowledged: boolean;
 	resolved: boolean;
-	metadata: { [key: string]: any };
+	metadata: { [key: string]: any }
 }
 // Deployment Types
 }
@@ -309,7 +309,7 @@ export interface DeploymentStage {
 export interface DeploymentAction {
 	action_type: 'stop_service' | 'start_service' | 'update_config' | 'health_check' | 'smoke_test';
 	service_name?: string;
-	parameters: { [key: string]: any };
+	parameters: { [key: string]: any }
 	timeout_ms: number;
 }
 export interface SuccessCriteria {
@@ -330,7 +330,7 @@ export interface ConfigurationTemplate {
 	template_name: string;
 	service_type: string;
 	parameters: ConfigParameter[];
-	default_values: { [key: string]: any };
+	default_values: { [key: string]: any }
 	validation_rules: ValidationRule[];
 }
 export interface ConfigParameter {
@@ -348,7 +348,7 @@ export interface ValidationRule {
 }
 export interface ServiceConfiguration {
 	service_name: string;
-	configuration: { [key: string]: any };
+	configuration: { [key: string]: any }
 	version: string;
 	applied_at: string;
 	applied_by: string;
@@ -361,7 +361,7 @@ export interface OrchestrationEvent {
 	event_type: 'service_start' | 'service_stop' | 'deployment' | 'scaling' | 'health_check' | 'alert';
 	service_name?: string;
 	timestamp: string;
-	details: { [key: string]: any };
+	details: { [key: string]: any }
 	severity: 'debug' | 'info' | 'warning' | 'error';
 }
 export interface OrchestrationLog {
@@ -370,7 +370,7 @@ export interface OrchestrationLog {
 	level: 'debug' | 'info' | 'warning' | 'error';
 	service: string;
 	message: string;
-	metadata: { [key: string]: any };
+	metadata: { [key: string]: any }
 }
 // Utility Types
 export type OrchestrationResult<T = any> = {
@@ -379,8 +379,8 @@ export type OrchestrationResult<T = any> = {
 	error?: string;
 	timestamp: string;
 	duration_ms?: number;
-	metadata?: { [key: string]: any };
-};
+	metadata?: { [key: string]: any }
+}
 export type ServiceHealthStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
 export type OperationStatus = 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
 }

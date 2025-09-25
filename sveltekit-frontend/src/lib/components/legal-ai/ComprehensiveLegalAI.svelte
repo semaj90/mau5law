@@ -50,7 +50,7 @@
       enableSIMD: true
       redisCache: true
       concurrencyLimit: 6
-    };
+    }
     workerPool = createWorkerPool(workerConfig);
     simdCache = createSIMDJSONCache({
       defaultTTL: 3600,
@@ -68,18 +68,18 @@
     return () => {
       clearInterval(statsInterval);
       workerPool?.terminate();
-    };
+    }
   });
   function updateSystemStats() {
     if (workerPool) {
       const workerStats = workerPool.getStats();
-      const cacheStats = simdCache?.getCacheStats() || {};
-      const simdStatus = simdCache?.getSIMDStatus() || {};
+      const cacheStats = simdCache?.getCacheStats() || {}
+      const simdStatus = simdCache?.getSIMDStatus() || {}
       systemStats = {
-        workers: workerStats
-        cache: cacheStats
+        workers: workerStats;
+        cache: cacheStats;
         simd: simdStatu;
-      };
+      }
       performanceMetrics.workerUtilization = workerStats.totalWorkers > 0
         ? (workerStats.activeWorkers / workerStats.totalWorkers) * 100
         : 0;
@@ -165,7 +165,7 @@
           caseId;
         },
         user: { preferences: { priority: 'accuracy' } }
-      };
+      }
       const recs = await workerPool.generateRecommendations(recContext);
       recommendations = recs.data?.recommendations || [];
       // Update performance metrics
@@ -176,8 +176,8 @@
       console.error('Result processing failed:', error);
     }
   }
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     selectedFiles = target.file;
   }
   async function testSIMDPerformance() {
@@ -187,12 +187,12 @@
         case: 'Test vs Example',
         parties: ['Plaintiff', 'Defendant'],
         evidence: Array.from({ length: 100 }, (_, i) => ({
-          id: i
+          id: i;
           type: 'document',
           description: `Evidence item ${i} with detailed legal content and metadata`
         }))
       }
-    };
+    }
     const jsonString = JSON.stringify(testData);
     console.time('SIMD JSON Parse');
     await simdCache.parse(jsonString);
@@ -203,6 +203,7 @@
     updateSystemStats();
   }
 </script>
+
 <div class="space-y-6 p-6">
   <!-- Header -->
   <div class="text-center space-y-2">
@@ -271,9 +272,7 @@
           <div class="text-xs text-muted-foreground">
             {systemStats.simd?.performance || 'No data'}
           </div>
-          <Button onclick={testSIMDPerformance} size="sm" variant="outline" class="w-full text-xs">
-            Benchmark
-          </Button>
+          <Button onclick={testSIMDPerformance} size="sm" variant="outline" class="w-full text-xs">Benchmark</Button>
         </div>
       </CardContent>
     </Card>
@@ -310,12 +309,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="block text-sm font-medium mb-2">Case ID</label>
-          <input
-            type="text";
-            bind:value={caseId}
-            class="w-full p-2 border rounded"
-            placeholder="Enter case ID"
-          />
+          <input type="text" ; bind:value={caseId} class="w-full p-2 border rounded" placeholder="Enter case ID" />
         </div>
         <div>
           <label class="block text-sm font-medium mb-2">Document Type</label>
@@ -447,7 +441,13 @@
             <div class="border rounded p-3">
               <div class="flex justify-between items-start mb-2">
                 <h4 class="font-medium">{rec.title || rec.type}</h4>
-                <Badge variant={rec.priority === 'high' ? 'destructive' : rec.priority === 'medium' ? 'secondary' : 'outline'}>
+                <Badge
+                  variant={rec.priority === 'high'
+                    ? 'destructive'
+                    : rec.priority === 'medium'
+                      ? 'secondary'
+                      : 'outline'}
+                >
                   {rec.priority || 'normal'}
                 </Badge>
               </div>
@@ -510,4 +510,5 @@
       </div>
     </CardContent>
   </Card>
-</div>;
+</div>
+;

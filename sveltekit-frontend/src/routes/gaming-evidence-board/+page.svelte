@@ -8,6 +8,7 @@
     isLoading = false;
   }, 1500);
 </script>
+
 <svelte:head>
   <title>Gaming Evidence Board | Enhanced-Bits Demo</title>
   <meta name="description" content="Gaming interface recreation using Enhanced-Bits + WebGPU" />
@@ -28,6 +29,7 @@
     <GamingEvidenceBoard />
   </div>
 {/if}
+
 <style>
   .loading-screen {
     position: fixed;
@@ -75,11 +77,20 @@
     box-shadow: 0 0 10px #00ff41;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
   @keyframes loading-progress {
-    0% { width: 0%; }
-    100% { width: 100%; }
+    0% {
+      width: 0%;
+    }
+    100% {
+      width: 100%;
+    }
   }
 </style>

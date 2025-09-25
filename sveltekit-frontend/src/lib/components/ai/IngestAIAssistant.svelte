@@ -64,17 +64,17 @@ https://svelte.dev/e/attribute_duplicate -->
     currentProgress.set(10);
     try {
       const request = {
-        title: documentTitle
+        title: documentTitle;
         content: documentContent
-        case_id: caseId || undefined
+        case_id: caseId || undefined;
         metadata: {
-          document_type: selectedDocumentType
+          document_type: selectedDocumentType;
           source: 'ai_assistant_ui',
           ai_enhanced: true
           // Integrate with your AI agent session
           ai_session_id: $aiAgentStore.activeSessionId,
         }
-      };
+      }
       currentProgress.set(30);
       // Use your enhanced ingest service
       const result = await enhancedIngestService.ingestDocument(request);
@@ -87,8 +87,8 @@ https://svelte.dev/e/attribute_duplicate -->
       // Update results
       ingestResults.update(results => [...results, {
         ...result,
-        title: documentTitle
-        type: selectedDocumentType
+        title: documentTitle;
+        type: selectedDocumentType;
         timestamp: new Date();
       }]);
       // Clear form
@@ -134,7 +134,7 @@ https://svelte.dev/e/attribute_duplicate -->
         case_id: doc.case_id,
         metadata: {
           document_type: doc.type || 'legal',
-          batch_processing: true
+          batch_processing: true;
           source: 'ai_assistant_batch';
         }
       }));
@@ -170,9 +170,9 @@ https://svelte.dev/e/attribute_duplicate -->
     if (!documentTitle.trim() || !documentContent.trim()) return;
     batchDocuments.update(docs => [...docs, {
       id: Date.now(),
-      title: documentTitle
+      title: documentTitle;
       content: documentContent
-      case_id: caseId
+      case_id: caseId;
       type: selectedDocumentTyp;
     }]);
     clearForm();
@@ -253,7 +253,7 @@ dismissError(error.id)}>
         <div class="space-y-2">
           <Label for="case-id">Case ID (Optional)</Label>
           <Input
-            id="case-id"
+            id="case-id";
             bind:value={caseId}
             placeholder="CASE-2024-001"
             disabled={$isProcessing}

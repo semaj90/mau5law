@@ -58,7 +58,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   // Determine options from preset or custom
   const options = $derived.by(() => {
     const baseOptions = LAZY_LOAD_PRESETS[preset] || LAZY_LOAD_PRESETS.NORMAL;
-    return { ...baseOptions, ...customOptions };
+    return { ...baseOptions, ...customOptions }
   });
   // Handle intersection
   function handleIntersection(entry: unknown) {
@@ -106,7 +106,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   The use:lazyLoad action handles all the intersection logic
 -->
 <div;
-  bind:this={containerElement};
+  bind:this={containerElement}
   use:lazyLoad={{
     ...options,
     onIntersect: handleIntersection

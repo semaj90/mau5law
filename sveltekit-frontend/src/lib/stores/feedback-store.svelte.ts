@@ -58,7 +58,7 @@ class FeedbackStore {
           height: window.innerHeight
         }
       }
-    };
+    }
     this.state.activeSession = session;
     this.state.userContext.userId = userId;
     this.state.userContext.sessionId = session.id;
@@ -86,7 +86,7 @@ class FeedbackStore {
         page: window.location.pathname,
         sessionTime: Date.now() - this.state.activeSession.startTime.getTime()
       }
-    };
+    }
     this.state.activeSession.interactions.push(interaction);
     this.state.analytics.totalInteractions++;
     // Auto-trigger feedback collection based on interaction type
@@ -227,7 +227,7 @@ class FeedbackStore {
       'document_analysis': 'ai_accuracy',
       'page_load': 'performance',
       'feature_use': 'ui_experience'
-    };
+    }
     return typeMap[interactionType] || 'response_quality';
   }
   private getDefaultDelay(interactionType: string): number {
@@ -238,7 +238,7 @@ class FeedbackStore {
       'document_analysis': 3000, // 3 seconds after analysis
       'page_load': 10000,      // 10 seconds after page load
       'feature_use': 5000      // 5 seconds after feature use
-    };
+    }
     return delayMap[interactionType] || 3000;
   }
   private getPriorityValue(priority: string): number {

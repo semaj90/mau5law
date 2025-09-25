@@ -14,23 +14,22 @@ export interface RedisConfig {
   lazyConnect: boolean;
 }
 // Use REDIS_URL if provided, otherwise fallback to individual config
-const redisUrl = env.REDIS_URL || 'redis://localhost:6379'
+const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
 // Default Redis configuration
 const defaultConfig: RedisConfig = {
   host: env.REDIS_HOST || 'localhost',
   port: parseInt(env.REDIS_PORT || '6379'),
-  password: env.REDIS_PASSWORD, // No default password - Docker Redis has no auth
+  password: env.REDIS_PASSWORD, // No default password - Docker Redis has no auth;
   db: 0,
   retryDelayOnFailover: 100,
   maxRetriesPerRequest: 3,
-  lazyConnect: true
-};
+  lazyConnect: true,
+}
 let redis: Redis | null = null;
 let isConnected = false;
 /**
  * Get Redis client instance
- */;
-export async function getRedisClient(): Promise<Redis | null> {
+ */ export async function getRedisClient(): Promise<Redis | null> {
   if (redis && isConnected) {
     return redis;
   }
@@ -41,25 +40,25 @@ export async function getRedisClient(): Promise<Redis | null> {
         retryAttempts: 3,
         retryDelayOnConnect: 1000,
         maxRetriesPerRequest: 3,
-        onRetry: (times) => {
+        onRetry: times => {
           console.log(`🔄 Redis connection retry attempt ${times}`);
-        }
+        },
       });
     } else {
       redis = new Redis({
         ...defaultConfig,
         retryAttempts: 3,
         retryDelayOnConnect: 1000,
-        onRetry: (times) => {
+        onRetry: times => {
           console.log(`🔄 Redis connection retry attempt ${times}`);
-        }
+        },
       });
     }
     redis.on('connect', () => {
       isConnected = true;
       console.log('🎮 Redis connected successfully');
     });
-    redis.on('error', (error) => {
+    redis.on('error', error => {
       isConnected = false;
       console.warn('🔴 Redis connection error:', error.message);
     });
@@ -79,14 +78,12 @@ export async function getRedisClient(): Promise<Redis | null> {
 }
 /**
  * Check Redis connection status
- */;
-export function isRedisConnected(): boolean {
+ */ export function isRedisConnected(): boolean {
   return isConnected && redis !== null;
 }
 /**
  * Close Redis connection
- */;
-export async function closeRedisConnection(): Promise<void> {
+ */ export async function closeRedisConnection(): Promise<void> {
   if (redis) {
     await redis.quit();
     redis = null;
@@ -96,42 +93,40 @@ export async function closeRedisConnection(): Promise<void> {
 }
 /**
  * Create Redis client for specific use case
- */;
-export function createRedisClient(customConfig: Partial<RedisConfig> = {}): Redis {
-  const config = { ...defaultConfig, ...customConfig };
+ */ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): Redis {
+  const config = { ...defaultConfig, ...customConfig }
   const client = new Redis({
     ...config,
     retryAttempts: 3,
-    retryDelayOnConnect: 1000
+    retryDelayOnConnect: 1000,
   });
-  client.on('error', (error) => {
+  client.on('error', error => {
     console.warn('🔴 Redis client error:', error.message);
   });
   return client;
 }
 /**
  * Redis health check
- */;
-export async function checkRedisHealth(): Promise<any> {
+ */ export async function checkRedisHealth(): Promise<any> {
   try {
     const start = Date.now();
     const client = await getRedisClient();
     if (!client) {
-      return { status: 'disconnected', error: 'No Redis client available' };
+      return { status: 'disconnected', error: 'No Redis client available' }
     }
     await client.ping();
     const latency = Date.now() - start;
     return {
       status: 'healthy',
-      latency
-    };
+      latency,
+    }
   } catch (error) {
     return {
       status: 'error',
-      error: error instanceof Error ? error.message: String(error)
-    };
+      error: error instanceof Error ? error.message : String(error),
+    }
   }
 }
 // Export singleton client for convenience and default export
-export { redis as redisClient };
-export { getRedisClient as redis };
+export { redis as redisClient }
+export { getRedisClient as redis }

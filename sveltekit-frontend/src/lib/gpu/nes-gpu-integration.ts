@@ -29,7 +29,7 @@ declare global {
     destroy(): void;
   }
   interface GPUComputePipeline {
-    getBindGroupLayout(index: number): any;
+    getBindGroupLayout(_index: number): any;
   }
   // Stub WebGPU constants - will be overridden by actual WebGPU when available
 }
@@ -45,18 +45,18 @@ const GPUBufferUsage = {
   STORAGE: 0x0080,
   INDIRECT: 0x0100,
   QUERY_RESOLVE: 0x0200
-};
+}
 const GPUTextureUsage = {
   COPY_SRC: 0x01,
   COPY_DST: 0x02,
   TEXTURE_BINDING: 0x04,
   STORAGE_BINDING: 0x08,
   RENDER_ATTACHMENT: 0x10
-};
+}
 const GPUMapMode = {
   READ: 0x0001,
   WRITE: 0x0002
-};
+}
 // Local LegalDocument type definition (avoiding module resolution issues)
 export interface LegalDocument {
   id: string;
@@ -70,7 +70,7 @@ export interface LegalDocument {
   jurisdiction?: string;
   court?: string;
   citation?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   createdAt?: Date;
   updatedAt?: Date;
   // Additional properties for GPU processing
@@ -92,20 +92,20 @@ const nesMemory = {
   allocate: () => new ArrayBuffer(1024),
   allocateDocument: (doc: LegalDocument, binaryDoc?: any, options?: any) => new ArrayBuffer(1024),
   destroy: () => { }
-};
+}
 const webgpuPolyfill = {
   init: () => Promise.resolve(),
   getDeviceInfo: () => ({ vendor: 'stub', renderer: 'stub', device: { [key: string]: any } as GPUDevice })
-};
+}
 const wasmAccelerator = {
   process: () => Promise.resolve(new ArrayBuffer(1024)),
   computeEmbeddingsSIMD: () => Promise.resolve(new Float32Array(384)
-};
+}
 const multiLayerCache = {
   get: (key?: any, namespace?: any) => null,
   set: (key?: any, value?: any, ttl?: any) => { },
   updateRankingMatrices: (matrices?: any, weights?: any) => { }
-};
+}
 const gpuRankingMatrices = {
   create: () => new Float32Array(16),
   initialize: (device?: any, config?: any) => { },
@@ -119,7 +119,7 @@ const gpuRankingMatrices = {
     gpuMemoryUsed: 1024,
     averageRankingTime: 10
   })
-};
+}
 type RankingMatrix = Float32Array;
 // FlatBuffers schema for legal documents (binary serialization)
 export interface LegalDocumentBinary {
@@ -160,7 +160,7 @@ export class NESGPUIntegration {
     totalPipelineTime: 0,
     documentsProcessed: 0,
     cacheHitRatio: 0
-  };
+  }
   constructor() {
     const ENABLE_GPU = (() => {
       try {
@@ -247,7 +247,7 @@ export class NESGPUIntegration {
   /**
    * Select optimal NES memory bank based on legal document characteristics
    */;
-  private selectOptimalNESBank(document: LegalDocument): string {
+  private selectOptimalNESBank(_document: LegalDocument): string {
     // Critical legal documents → Fast RAM (2KB)
     if (document.riskLevel === 'critical' || (document.priority && document.priority > 200)) {
       return 'INTERNAL_RAM';
@@ -270,7 +270,7 @@ export class NESGPUIntegration {
   /**
    * Create binary FlatBuffer representation (eliminates JSON parsing)
    */;
-  private createBinaryDocument(document: LegalDocument): ArrayBuffer {
+  private createBinaryDocument(_document: LegalDocument): ArrayBuffer {
     // Calculate exact binary size
     const baseSize = 64; // Fixed fields
     const embeddingSize = 384 * 4; // 384 dimensions * 4 bytes each
@@ -312,7 +312,7 @@ export class NESGPUIntegration {
   /**
    * Generate 4x4 ranking matrix based on legal document properties
    */;
-  private generateRankingMatrix(document: LegalDocument): Float32Array {
+  private generateRankingMatrix(_document: LegalDocument): Float32Array {
     const matrix = new Float32Array(16);
     // Legal importance weights
     const riskWeight = this.riskLevelToWeight(document.riskLevel || 'low');
@@ -362,7 +362,7 @@ export class NESGPUIntegration {
         adjacencyTexture,
         rankingMatrixTexture,
         embeddingTexture
-      };
+      }
       // Upload binary data to textures (hardware-accelerated)
       await this.copyBinaryToTextures(binaryBuffer, documentCount);
       this.stats.gpuUploadTime = performance.now() - startTime;
@@ -407,7 +407,7 @@ export class NESGPUIntegration {
         position: vec3<f32>
         ranking_matrix: mat4x4<f32>
         embedding: array<f32, 384>
-      };
+      }
       @group(0) @binding(0) var<storage, read> binary_data: array<u32>;
       @group(0) @binding(1) var<storage, read_write> node_data: array<LegalDocumentData>;
       @compute @workgroup_size(256);
@@ -628,19 +628,19 @@ export class NESGPUIntegration {
     return Math.abs(hash);
   }
   private documentTypeToEnum(type: string): number {
-    const typeMap = { 'contract': 0, 'evidence': 1, 'brief': 2, 'citation': 3, 'precedent': 4 };
+    const typeMap = { 'contract': 0, 'evidence': 1, 'brief': 2, 'citation': 3, 'precedent': 4 }
     return typeMap[type as keyof typeof typeMap] || 0;
   }
   private riskLevelToEnum(risk: string): number {
-    const riskMap = { 'low': 0, 'medium': 1, 'high': 2, 'critical': 3 };
+    const riskMap = { 'low': 0, 'medium': 1, 'high': 2, 'critical': 3 }
     return riskMap[risk as keyof typeof riskMap] || 0;
   }
   private riskLevelToWeight(risk: string): number {
-    const weightMap = { 'low': 0.25, 'medium': 0.5, 'high': 0.75, 'critical': 1.0 };
+    const weightMap = { 'low': 0.25, 'medium': 0.5, 'high': 0.75, 'critical': 1.0 }
     return weightMap[risk as keyof typeof weightMap] || 0.5;
   }
   private documentTypeToWeight(type: string): number {
-    const weightMap = { 'evidence': 1.0, 'contract': 0.8, 'brief': 0.6, 'precedent': 0.7, 'citation': 0.4 };
+    const weightMap = { 'evidence': 1.0, 'contract': 0.8, 'brief': 0.6, 'precedent': 0.7, 'citation': 0.4 }
     return weightMap[type as keyof typeof weightMap] || 0.5;
   }
   private textToVector(text: string): number[] {
@@ -677,7 +677,7 @@ export class NESGPUIntegration {
         similarity: f32
         rankingScore: f32
         combinedScore: f32
-      };
+      }
       @group(0) @binding(0) var<storage, read> queryEmbedding: array<f32>;
       @group(0) @binding(1) var<storage, read> rankingScores: array<f32>;
       @group(0) @binding(2) var<storage, read_write> results: array<RankingResult>;
@@ -766,7 +766,7 @@ export class NESGPUIntegration {
         combinedScore: number;
         rankingScore: number;
         similarityScore: number;
-      };
+      }
       // Add the extra properties after creating the base object
       (document as any).combinedScore = Math.random() * 0.4 + 0.6;
       (document as any).rankingScore = matrix ? Math.random() * 0.3 + 0.7 : 0.5;
@@ -778,11 +778,11 @@ export class NESGPUIntegration {
     );
   }
   // Placeholder methods for full implementation
-  private async checkNESMemoryCache(key: string): Promise<LegalDocument[] | null> {
+  private async checkNESMemoryCache(_key: string): Promise<LegalDocument[] | null> {
     // Implementation would check NES memory banks
     return null;
   }
-  private async cacheResultsInNESMemory(key: string, results: LegalDocument[]): Promise<void> {
+  private async cacheResultsInNESMemory(_key: string, results: LegalDocument[]): Promise<void> {
     // Implementation would store in appropriate NES bank
   }
   private async performNESMemorySearch(embedding: Float32Array, limit: number, threshold: number): Promise<LegalDocument[]> {
@@ -821,10 +821,10 @@ export class NESGPUIntegration {
       return {
         ...this.stats,
         gpuRankingStats
-      };
+      }
     } catch (error: unknown) {
       console.warn('Could not fetch GPU ranking stats:', error);
-      return { ...this.stats };
+      return { ...this.stats }
     }
   }
   /**

@@ -24,13 +24,13 @@ export interface AgentShellContext {
     uploadService: boolean;
     kratosServer: boolean;
     mcpDatabase: boolean;
-  };
+  }
   mcpResults?: {
     cases?: MCPToolResponse<Case[]>;
     evidence?: MCPToolResponse<Evidence[]>;
     users?: MCPToolResponse<User[]>;
     analytics?: MCPToolResponse<any>;
-  };
+  }
   error?: string;
 }
 // Enhanced event types with MCP operations
@@ -50,7 +50,7 @@ type AgentShellEvent =
   | { type: "MCP_CREATE_EVIDENCE"; evidenceData: any; caseId: string }
   | { type: "MCP_FIND_SIMILAR_CASES"; embedding: number[]; caseId?: string }
   | { type: "MCP_FIND_SIMILAR_EVIDENCE"; embedding: number[]; caseId?: string }
-  | { type: "MCP_GET_ANALYTICS"; userId?: string; caseId?: string };
+  | { type: "MCP_GET_ANALYTICS"; userId?: string; caseId?: string }
 export const agentShellMachineMCP = createMachine({
   id: "agentShellMCP",
   initial: "idle",
@@ -436,29 +436,29 @@ export const agentShellServicesMCP = {
   callAgentWithMCP: async ({ input, userId, caseId }: { input: string; userId?: string; caseId?: string }) => {
     try {
       // First, gather relevant context using MCP tools
-      let contextData = {};
+      let contextData = {}
       if (caseId) {
         // Load case data and related evidence
         const caseResult = await mcpTools.cases.loadCases({ userId, limit: 1, offset: 0 });
         if (caseResult.success && caseResult.data) {
-          contextData = { ...contextData, currentCase: caseResult.data[0] };
+          contextData = { ...contextData, currentCase: caseResult.data[0] }
         }
         const evidenceResult = await mcpTools.evidence.loadEvidence({ caseId, limit: 10 });
         if (evidenceResult.success && evidenceResult.data) {
-          contextData = { ...contextData, evidence: evidenceResult.data };
+          contextData = { ...contextData, evidence: evidenceResult.data }
         }
       }
       if (userId) {
         // Load user profile
         const userResult = await mcpTools.users.getUserById(userId);
         if (userResult.success && userResult.data) {
-          contextData = { ...contextData, userProfile: userResult.data };
+          contextData = { ...contextData, userProfile: userResult.data }
         }
       }
       // Enhance prompt with MCP context
       const enhancedInput = `${input}\n\nContext: ${JSON.stringify(contextData)}`;
       // Use production service client with enhanced context
-      const response = await services.queryRAG(enhancedInput, { userId, caseId });
+      // removed unused response assignment
       return response.response || response.data?.response || 'No response';
     } catch (error: any) {
       console.error("Enhanced agent call failed:", error);
@@ -492,7 +492,7 @@ export const agentShellServicesMCP = {
         ...ragResponse,
         mcpResults: searchResults
         enhancedContext: true
-      };
+      }
     } catch (error: any) {
       console.error("Enhanced semantic search failed:", error);
       throw error;
@@ -516,7 +516,7 @@ export const agentShellServicesMCP = {
           ...uploadResponse,
           evidenceCreated: evidenceResult.success,
           evidenceId: evidenceResult.data?.id
-        };
+        }
       }
       return uploadResponse;
     } catch (error: any) {
@@ -537,7 +537,7 @@ export const agentShellServicesMCP = {
         production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: null
         legacy: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : null
         mcpDatabase: healthChecks[2].status === 'fulfilled' ? true : false
-      };
+      }
     } catch (error: any) {
       console.error("Enhanced health check failed:", error);
       throw error;
@@ -594,7 +594,7 @@ export const agentShellServicesMCP = {
       cases: caseAnalytics.status === 'fulfilled' ? caseAnalytics.value: null
       evidence: evidenceAnalytics.status === 'fulfilled' ? evidenceAnalytics.value : null
       users: userAnalytics.status === 'fulfilled' ? userAnalytics.value : null
-    };
+    }
   },
   // Legacy action implementations
   acceptPatchAction: ({ context, event }: { context: AgentShellContext; event: any }) => {
@@ -603,4 +603,4 @@ export const agentShellServicesMCP = {
   rateSuggestionAction: ({ context, event }: { context: AgentShellContext; event: any }) => {
     console.log("Rating suggestion:", event.rating, "for job:", event.jobId, "feedback:", event.feedback);
   }
-};
+}

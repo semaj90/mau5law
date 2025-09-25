@@ -3,10 +3,7 @@
     onOpenChange?: (open: boolean) => void;
     children: unknown;
   }
-  let {
-    onOpenChange = undefined,
-    children
-  }: Props = $props();
+  let { onOpenChange = undefined, children }: Props = $props();
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
   const isOpen = writable(false);
@@ -22,13 +19,16 @@
       position.set({ x, y });
       isOpen.set(true);
       onOpenChange?.(true);
-    }
+    },
   });
 </script>
+
 <div class="space-y-4">
   {@render children()}
 </div>
-<style>/* @unocss-include */ .context-menu-root {
+
+<style>/* @unocss-include */ {}
+  .context-menu-root {
     position: relative;
-}
+  }
 </style>

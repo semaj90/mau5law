@@ -89,8 +89,8 @@ https://svelte.dev/e/expected_token -->
     }
     const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
     context.configure({
-      device: webgpuDevice
-      format: presentationFormat
+      device: webgpuDevice;
+      format: presentationFormat;
     });
     // Create texture from tiled data
     const tiledData = glyphResult.simd_shader_data.tiled_data;
@@ -178,7 +178,7 @@ https://svelte.dev/e/expected_token -->
         ctx.fillText(`Processing: ${glyphResult.simd_shader_data.performance_stats.total_optimization_time_ms}ms`, 8, 50);
       }
       console.log('✅ Canvas 2D rendered with glyph image');
-    };
+    }
     img.src = glyphResult.glyph_url;
   }
   function renderLoop() {
@@ -208,7 +208,7 @@ https://svelte.dev/e/expected_token -->
         loadOp: 'clear',
         storeOp: 'store',
       }],
-    };
+    }
     const renderPass = commandEncoder.beginRenderPass(renderPassDescriptor);
     // Add actual rendering commands here
     renderPass.end();

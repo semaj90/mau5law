@@ -2,6 +2,7 @@
   import '../app.css';
   const { children } = $props();
 </script>
+
 <div class="app-layout">
   <header class="app-header">
     <h1>Legal AI Platform</h1>
@@ -11,6 +12,7 @@
     {@render children?.()}
   </main>
 </div>
+
 <style>
   .app-layout {
     min-height: 100vh;

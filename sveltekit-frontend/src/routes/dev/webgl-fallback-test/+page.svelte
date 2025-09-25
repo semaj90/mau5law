@@ -15,7 +15,7 @@
     log = '';
     try {
       append('🚀 Starting WebGL2/WebGPU Acceleration Test...');
-      append('📱 Browser: ' + navigator.userAgent.split.slice-join(' '));
+      append('📱 Browser: ' + navigator.userAgent.split.slice - join(' '));
       // Test WebGPU support
       if ('gpu' in navigator) {
         append('✅ WebGPU API detected');
@@ -76,6 +76,7 @@
     append('📋 This test validates WebGPU → WebGL2 → WebGL1 → WASM fallback chain');
   });
 </script>
+
 <div class="container mx-auto p-6 max-w-4xl">
   <Card>
     <CardHeader>
@@ -84,20 +85,10 @@
     </CardHeader>
     <CardContent class="space-y-4">
       <div class="flex gap-2">
-        <Button
-          onclick={runTest}
-          disabled={isRunning}
-          variant="default"
-        >
+        <Button onclick={runTest} disabled={isRunning} variant="default">
           {isRunning ? '🔄 Testing...' : '🚀 Run Test'}
         </Button>
-        <Button
-          onclick={() => log = ''}
-          disabled={isRunning}
-          variant="ghost"
-        >
-          🗑️ Clear Log
-        </Button>
+        <Button onclick={() => (log = '')} disabled={isRunning} variant="ghost">🗑️ Clear Log</Button>
       </div>
       {#if log}
         <Alert>

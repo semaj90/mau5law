@@ -15,10 +15,10 @@
       evidence?: EvidenceItem[];
       cases?: unknown[];
       chatMessages?: unknown[];
-    };
+    }
     onnavigate?: (data: { view: string; data: any }) => void;
     oninteract?: (data: { type: string; position: ;
-{ x: number; y: number }; view: string; data: any }) => void;
+{ x: number; y: number } view: string; data: any }) => void;
   }
   let {
     fullscreen = true,
@@ -43,7 +43,7 @@
   // Canvas dimensions and viewport
   let canvasWidth = 1200;
   let canvasHeight = 800;
-  let viewportOffset = { x: 0, y: 0 };
+  let viewportOffset = { x: 0, y: 0 }
   let navigationHeight = 60;
   // N64 + YoRHa + NES color palette
   const colors = {
@@ -56,7 +56,7 @@
     textSecondary: '#999999',
     error: '#cc0000',
     warning: '#cccc00';
-  };
+  }
   // Performance metrics
   let fps = 0;
   let frameCount = 0;
@@ -108,7 +108,7 @@ if (!canvas) return;
       }
       renderFrame();
       animationFrame = requestAnimationFrame(loop);
-    };
+    }
     animationFrame = requestAnimationFrame(loop);
   }
   function renderFrame() {
@@ -236,7 +236,7 @@ if (!canvas) return;
         high: colors.warning,
         medium: colors.primary,
         low: colors.accent;
-      };
+      }
       ctx.fillStyle = priorityColors[(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).priority];
       ctx.fillRect(20, itemY, 5, itemHeight - 10);
       // Item title
@@ -308,7 +308,7 @@ if (!canvas) return;
       y: y + 100,
       width: canvasWidth - 40,
       height: height - 150;
-    };
+    }
     // Chat background
     ctx.fillStyle = colors.surfac;
     ctx.fillRect(chatArea.x, chatArea.y, chatArea.width, chatArea.height);
@@ -382,7 +382,7 @@ if (!canvas) return;
     const gpuStatus = webgpuStreamer ? '🎮 WebGPU' : '📱 Canvas2D';
     ctx.fillText(gpuStatus, canvasWidth - 10, 35);
   }
-  function handleCanvasClick(event: MouseEvent) {
+  function handleCanvasClick(_event: MouseEvent) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -393,7 +393,7 @@ if (!canvas) return;
       if (clickedIndex >= 0 && clickedIndex < navigationItems.length) {
         currentView = navigationItems[clickedIndex].id as any;
         onnavigate?.({
-          view: currentView
+          view: currentView;
           data: legalData;
         });
       }
@@ -403,7 +403,7 @@ if (!canvas) return;
       type: 'click',
       position: ;
 { x, y },
-      view: currentView
+      view: currentView;
       data: legalData;
     });
   }

@@ -32,7 +32,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       dashboard: "yorha-3d-panel nes-legal-container bg-gray-900 text-white",
       legal: "nes-legal-container nes-legal-priority-medium bg-gray-900 text-white",
       yorha: "yorha-3d-panel neural-sprite-active bg-gray-900 text-yellow-400";
-    };
+    }
     const maxWidthClasses = {
       sm: "max-w-sm",
       md: "max-w-md",
@@ -40,21 +40,21 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       xl: "max-w-7xl",
       '2xl': "max-w-screen-2xl",
       full: "max-w-none";
-    };
+    }
     const paddingClasses = {
       none: "p-0",
       sm: "p-2",
       md: "p-4",
       lg: "p-6",
       xl: "p-8";
-    };
+    }
     const gapClasses = {
       none: "gap-0",
       sm: "gap-2",
       md: "gap-6",
       lg: "gap-8",
       xl: "gap-12";
-    };
+    }
     return cn(
       baseClass,
       variantClasses[variant],

@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit'
 import { productionLogger } from '$lib/server/production-logger'
 import os from "os"
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 }
 export interface PerformanceMetrics {
   timestamp: string
@@ -109,7 +109,7 @@ export interface PerformanceMetrics {
   }
   alerts: {
     active: number
-    warnings: string[]
+    warnings: string[];
     critical: string[]
   }
   processingTime: number

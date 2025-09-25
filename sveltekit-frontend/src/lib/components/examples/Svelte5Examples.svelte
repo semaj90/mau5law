@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type {     Snippet     } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { useIsMobile, useIsTablet, useIsDesktop, useIsDark } from '$lib/utils/media-query.svelte';
   // Props using Svelte 5 children pattern
   interface Props {
@@ -10,13 +10,7 @@
     sidebar?: Snippet;
     footer?: Snippet;
   }
-  let {
-    title = 'Svelte 5 Example',
-    children,
-    header,
-    sidebar,
-    footer
-  }: Props = $props();
+  let { title = 'Svelte 5 Example', children, header, sidebar, footer }: Props = $props();
   // Reactive media queries using Svelte 5 runes
   const mobile = useIsMobile();
   const tablet = useIsTablet();
@@ -36,9 +30,10 @@
     isTablet: tablet.matches,
     isDesktop: desktop.matches,
     isDark: darkMode.matches,
-    currentBreakpoint: mobile.matches ? 'mobile' : tablet.matches ? 'tablet' : 'desktop'
+    currentBreakpoint: mobile.matches ? 'mobile' : tablet.matches ? 'tablet' : 'desktop',
   }));
 </script>
+
 <!-- Responsive layout using media query reactivity -->
 <div class="responsive-container {layoutClass} {themeClass}">
   <!-- Header with snippet parameters -->
@@ -100,6 +95,7 @@
     </footer>
   {/if}
 </div>
+
 <style>
   .responsive-container {
     min-height: 100vh;
@@ -163,7 +159,8 @@
     border-top: 1px solid var(--border-color);
     text-align: center;
   }
-/* Responsive layouts */ .layout-mobile .main-content {
+/* Responsive layouts */ {}
+  .layout-mobile .main-content {
     grid-template-columns: 1fr;
     padding: 0.5rem;
   }
@@ -173,7 +170,8 @@
   .layout-desktop .main-content {
     grid-template-columns: 250px 1fr;
   }
-/* Theme variations */ .theme-light {
+/* Theme variations */ {}
+  .theme-light {
     --border-color: #e5e5e5;
     --accent-color: #3b82f6;
     --accent-bg: #dbeaf;

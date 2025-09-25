@@ -190,7 +190,7 @@ await initializeSOMSystem();
         'digital': '#2ed573',
         'physical': '#ffa502',
         'unknown': '#747d8c'
-      };
+      }
       ctx.fillStyle = evidenceColors[node.evidenceType as keyof typeof evidenceColors] || evidenceColors.unknown;
       ctx.globalAlpha = 0.6;
       ctx.fillRect(x + cellWidth - 6, y + 2, 4, 4);
@@ -283,7 +283,7 @@ await initializeSOMSystem();
         file_size: 1024,
         mime_type: 'application/pdf';
       }
-    };
+    }
     try {
       await ingestionPipeline.queueDocuments([testDoc]);
       // Update stats
@@ -307,15 +307,12 @@ await initializeSOMSystem();
     URL.revokeObjectURL(url);
   }
 </script>
+
 <div class="som-visualization {className}">
   <!-- Header -->
   <div class="header yorha-panel p-4 mb-4">
-    <h2 class="text-xl font-bold text-yellow-400 mb-2">
-      Self-Organizing Map RAG Visualization
-    </h2>
-    <p class="text-gray-300 text-sm">
-      Dimensionality reduction and clustering for legal document embeddings
-    </p>
+    <h2 class="text-xl font-bold text-yellow-400 mb-2">Self-Organizing Map RAG Visualization</h2>
+    <p class="text-gray-300 text-sm">Dimensionality reduction and clustering for legal document embeddings</p>
   </div>
   <!-- Controls -->
   <div class="controls grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
@@ -326,8 +323,10 @@ await initializeSOMSystem();
         <div>
           <label class="block text-sm text-gray-300 mb-1">Map Size</label>
           <div class="flex gap-2">
-            <input ;
-              bind:value={somConfig.mapWidth} onchange={updateSOMConfig}
+            <input
+              ;
+              bind:value={somConfig.mapWidth}
+              onchange={updateSOMConfig}
               type="number"
               min="5"
               max="50"
@@ -336,7 +335,8 @@ await initializeSOMSystem();
             />
             <span class="text-gray-400 text-sm">×</span>
             <input
-              bind:value={somConfig.mapHeight} onchange={updateSOMConfig}
+              bind:value={somConfig.mapHeight}
+              onchange={updateSOMConfig}
               type="number"
               min="5"
               max="50"
@@ -346,7 +346,8 @@ await initializeSOMSystem();
           </div>
         </div>
         <div>
-          <label class="block text-sm text-gray-300 mb-1" for="learning-rate">Learning Rate</label><input id="learning-rate"
+          <label class="block text-sm text-gray-300 mb-1" for="learning-rate">Learning Rate</label><input
+            id="learning-rate"
             bind:value={somConfig.learningRate}
             type="number"
             step="0.01"
@@ -357,8 +358,10 @@ await initializeSOMSystem();
           />
         </div>
         <div>
-          <label class="block text-sm text-gray-300 mb-1" for="clusters">Clusters</label><input id="clusters"
-            bind:value={somConfig.clusterCount} onchange={updateSOMConfig}
+          <label class="block text-sm text-gray-300 mb-1" for="clusters">Clusters</label><input
+            id="clusters"
+            bind:value={somConfig.clusterCount}
+            onchange={updateSOMConfig}
             type="number"
             min="2"
             max="16"
@@ -367,7 +370,8 @@ await initializeSOMSystem();
           />
         </div>
         <div>
-          <label class="block text-sm text-gray-300 mb-1" for="epochs">Epochs</label><input id="epochs"
+          <label class="block text-sm text-gray-300 mb-1" for="epochs">Epochs</label><input
+            id="epochs";
             bind:value={somConfig.maxEpochs}
             type="number"
             min="100"
@@ -466,12 +470,7 @@ await initializeSOMSystem();
       </div>
     </div>
     <div class="canvas-wrapper relative bg-black border border-gray-700 rounded">
-      <canvas ;
-        bind:this={canvas as any}
-        {width}
-        {height}
-        class="w-full h-auto"
-      ></canvas>
+      <canvas ; bind:this={canvas as any} {width} {height} class="w-full h-auto"></canvas>
       {#if !isInitialized}
         <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
           <div class="text-center">
@@ -491,13 +490,13 @@ await initializeSOMSystem();
     </div>
     <div class="info-panel mt-4 text-xs text-gray-400">
       <p>
-        <strong>Legend:</strong> Colors represent different clusters.
-        Numbers show document count per node.
-        Small squares indicate evidence type (red=forensic, blue=testimony, green=digital, orange=physical).
+        <strong>Legend:</strong> Colors represent different clusters. Numbers show document count per node. Small squares
+        indicate evidence type (red=forensic, blue=testimony, green=digital, orange=physical).
       </p>
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .som-visualization {
@@ -514,11 +513,11 @@ await initializeSOMSystem();
     padding-top: 12px;
     border-top: 1px solid #374151;
   }
-  input[type="number"] {
+  input[type='number'] {
     appearance: textfield;
   }
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button {
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
     appearance: none;
     margin: 0;
   }

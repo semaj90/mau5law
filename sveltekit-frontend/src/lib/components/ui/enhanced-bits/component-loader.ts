@@ -17,7 +17,7 @@ const componentCache = new Map<string, Promise<ComponentType | null>>();
  * Dynamically load a Svelte component
  */
 export async function loadComponent(
-  name: string
+  name: string;
   options: LoadComponentOptions = {}
 ): Promise<ComponentType | null> {
   const { fallback = null, retryAttempts = 3, timeout = 5000 } = options;
@@ -38,7 +38,7 @@ export async function loadComponent(
 }
 async function loadComponentWithRetry(
   name: string
-  retryAttempts: number
+  retryAttempts: number;
   timeout: number
 ): Promise<ComponentType | null> {
   for (let attempt = 1; attempt <= retryAttempts; attempt++) {

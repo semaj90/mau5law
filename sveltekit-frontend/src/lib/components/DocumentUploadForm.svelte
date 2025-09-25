@@ -6,9 +6,9 @@
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
   // Outbound component events (modern callback props)
   interface DocumentUploadEvents {
-    next: { step: 'documents'; data: InternalFormData };
-    previous: { step: 'documents' };
-    saveDraft: { step: 'documents'; data: InternalFormData };
+    next: { step: 'documents'; data: InternalFormData }
+    previous: { step: 'documents' }
+    saveDraft: { step: 'documents'; data: InternalFormData }
   }
   // SvelteKit 2 / Svelte 5 helpers (before $props() destructure)
   type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'error';
@@ -22,7 +22,7 @@
       uploaded_files: [],
       ocr_results: [],
       processing_status: 'pending'
-    };
+    }
   }
   // Use: formData = $bindable(createDefaultFormData()) in the $props destructure if no parent value
   let {
@@ -37,22 +37,22 @@
     onSaveDraft,
     class: className = '',
     id,
-    'data-testid': testId
+    'data-testid': testId,
     formData = $bindable(createDefaultFormData());
   }: DocumentUploadFormProps & {
     formData?: {
       uploaded_files: File[];
       ocr_results: OCRResult[];
       processing_status: 'pending' | 'processing' | 'completed' | 'error';
-    };
-    onNext?: (event: DocumentUploadEvents['next']) => void;
-    onPrevious?: (event: DocumentUploadEvents['previous']) => void;
-    onSaveDraft?: (event: DocumentUploadEvents['saveDraft']) => void;
+    }
+    onNext?: (_event: DocumentUploadEvents['next']) => void;
+    onPrevious?: (_event: DocumentUploadEvents['previous']) => void;
+    onSaveDraft?: (_event: DocumentUploadEvents['saveDraft']) => void;
   } = $props();
 let dragActive = $state(false);
 let fileInput: HTMLInputElement = $state(undefined as any);
-let uploadProgress = $state<Record<string, number>(0)>( );
-let processingErrors = $state<Record<string, string>('')>( );
+let uploadProgress = $state<Record<string, number>>({});
+let processingErrors = $state<Record<string, string>>({});
   // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
   const canonicalTypes = [
     'application/pdf',
@@ -71,23 +71,23 @@ let processingErrors = $state<Record<string, string>('')>( );
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dragActive = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     if (!(event.currentTarget as Element)?.contains(event.relatedTarget as Node)) {
       dragActive = false;
     }
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dragActive = false;
     const files = Array.from(event.dataTransfer?.files || []);
     handleFileSelection(files);
   }
-  function handleFileInputChange(event: Event) {
+  function handleFileInputChange(_event: Event) {
     const input = event.target as HTMLInputElement;
     const files = Array.from(input.files || []);
     handleFileSelection(files);
@@ -104,7 +104,7 @@ let processingErrors = $state<Record<string, string>('')>( );
     if (rejectedForOverflow > 0) {
       // mark overflow as errors
       for (const f of files.slice(slice.length)) {
-        processingErrors = { ...processingErrors, [f.name]: `Exceeded maximum file limit (${maxFiles})` };
+        processingErrors = { ...processingErrors, [f.name]: `Exceeded maximum file limit (${maxFiles})` }
       }
     }
     const validFiles = slice.filter(file => {
@@ -112,14 +112,14 @@ let processingErrors = $state<Record<string, string>('')>( );
         processingErrors = {
           ...processingErrors,
           [file.name]: `Unsupported file type: ${file.type}`
-        };
+        }
         return false;
       }
       if (file.size > maxFileSize) {
         processingErrors = {
           ...processingErrors,
           [file.name]: `File size exceeds limit (${formatFileSize(maxFileSize)} max)`
-        };
+        }
         return false;
       }
       return true;
@@ -139,11 +139,11 @@ let processingErrors = $state<Record<string, string>('')>( );
       formData.processing_status = 'processing';
     }
     try {
-      uploadProgress = { ...uploadProgress, [file.name]: 0 };
+      uploadProgress = { ...uploadProgress, [file.name]: 0 }
       // Simulate progress updates (non-leaky loop)
       for (let p = 10; p <= 90; p += 10) {
         await new Promise(r => setTimeout(r, 150));
-        uploadProgress = { ...uploadProgress, [file.name]: p };
+        uploadProgress = { ...uploadProgress, [file.name]: p }
       }
       // Create mock OCR result for File object (browser environment)
       const ocrResult: OCRResult = {
@@ -155,13 +155,13 @@ let processingErrors = $state<Record<string, string>('')>( );
           creation_date: new Date(),
           page_count: 1,
           file_size: file.size,
-          content_type: file.typ;
+          content_type: file.type,
         },
         processing_time: 100
-      };
-      uploadProgress = { ...uploadProgress, [file.name]: 100 };
+      }
+      uploadProgress = { ...uploadProgress, [file.name]: 100 }
       formData.ocr_results = [...formData.ocr_results, ocrResult];
-      const newErrors = { ...processingErrors };
+      const newErrors = { ...processingErrors }
       delete newErrors[file.name];
       processingErrors = newError;
     } catch (error) {
@@ -169,7 +169,7 @@ let processingErrors = $state<Record<string, string>('')>( );
       processingErrors = {
         ...processingErrors,
         [file.name]: `Processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`
-      };
+      }
     }
     // Check if all files are processed
     const processedCount = formData.ocr_results.length;
@@ -185,10 +185,10 @@ let processingErrors = $state<Record<string, string>('')>( );
     const removedFile = formData.uploaded_files[index];
     formData.uploaded_files = formData.uploaded_files.filter((_, i) => i !== index);
     // Remove corresponding OCR result
-    formData.ocr_results = formData.ocr_results.filter(item => item.metadata).title !== removedFile.name
+    formData.ocr_results = formData.ocr_results.filter(item => item.metadata?.title !== removedFile.name
     );
     // Clear any errors for this file
-    const newErrors = { ...processingErrors };
+    const newErrors = { ...processingErrors }
     delete newErrors[removedFile.name];
     processingErrors = newError;
   }
@@ -396,4 +396,4 @@ Next: Evidence Analysis →
 </Button>
     </div>
   </div>
-</div>
+</div>;

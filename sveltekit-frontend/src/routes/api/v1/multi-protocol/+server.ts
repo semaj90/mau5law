@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js'
  */
 import { json, error } from '@sveltejs/kit'
 import { ensureError } from '$lib/utils/ensure-error'
-import { URL } from "url"
+
 // Protocol types and priorities
 type ProtocolType = 'quic' | 'grpc' | 'http' | 'websocket'
 type ProtocolPriority = 1 | 2 | 3 | 4

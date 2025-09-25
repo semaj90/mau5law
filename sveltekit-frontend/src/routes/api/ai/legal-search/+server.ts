@@ -111,7 +111,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
     let reorderedLaws = [...laws]
     if (aiAnalysis.rankings && Array.isArray(aiAnalysis.rankings)) {
       try {
-        reorderedLaws = aiAnalysis.rankings.map((index: number) => laws[index]).filter(Boolean)
+        reorderedLaws = aiAnalysis.rankings.map((_index: number) => laws[index]).filter(Boolean)
       } catch {
         reorderedLaws = laws
       }
@@ -213,4 +213,4 @@ function generateLawInsights(law: any, query: string): string {
     return 'Relevant to your search query - consider context and application'
   }
 }
-export const POST = redisOptimized.aiSearch(originalPOSTHandler)
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);

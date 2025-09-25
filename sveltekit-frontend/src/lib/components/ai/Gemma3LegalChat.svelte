@@ -61,7 +61,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       confidence?: number;
       entities?: string[];
       citations?: string[];
-    };
+    }
   }
   interface Source {
     id: string;
@@ -162,7 +162,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         });
         await gemma3Bridge.initialize();
         gpuStatus.set({
-          available: true
+          available: true;
           layers: 35,
           memory: 8192;
         });
@@ -214,7 +214,7 @@ https://svelte.dev/e/attribute_invalid_name -->
                   sources,
                   ...result.analysis
                 }
-              };
+              }
             } else {
               // Fallback to server API
               const response = await fetch('/api/ai/gemma3-chat', {
@@ -273,9 +273,9 @@ https://svelte.dev/e/attribute_invalid_name -->
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: userInput
+      content: userInput;
       timestamp: new Date();
-    };
+    }
     messages.update(m => [...m, userMessage]);
     isProcessing.set(true);
     const startTime = performance.now();
@@ -331,7 +331,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       content: '',
       timestamp: new Date(),
       metadata: { model: 'gemma3-legal' }
-    };
+    }
     messages.update(m => [...m, assistantMessage]);
     while (true) {
       const { done, value } = await reader.read();
@@ -347,7 +347,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         return [...m];
       });
     }
-    return { content: fullContent };
+    return { content: fullContent }
   }
   function subscribeToUpdates() {
     if (!natsConnection) return;

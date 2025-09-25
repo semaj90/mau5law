@@ -141,7 +141,7 @@ https://svelte.dev/e/expected_token -->
       'case-management-machine': 'Case Management',
       'rag-pipeline-machine': 'RAG Pipeline',
       'gpu-allocation-machine': 'GPU Allocation'
-    };
+    }
     return names[machineId] || machineId;
   }
 </script>

@@ -51,7 +51,7 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
     const Tesseract = (await import('tesseract.js')).default || (await import('tesseract.js');
     const imageData = await toImageData(source);
     const { data } = await Tesseract.recognize(imageData, lang);
-    return { text: data?.text || '', confidence: data?.confidence, engine: 'tesseract' };
+    return { text: data?.text || '', confidence: data?.confidence, engine: 'tesseract' }
   } catch {
     // ignore, try server
   }
@@ -76,11 +76,11 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
     form.append('lang', lang);
     const res = await fetch('/api/ocr', { method: 'POST', body: form });
     if (res.ok) {
-      const json = (await res.json()) as { text: string; confidence?: number };
-      return { text: json.text || '', confidence: json.confidence, engine: 'server' };
+      const json = (await res.json()) as { text: string; confidence?: number }
+      return { text: json.text || '', confidence: json.confidence, engine: 'server' }
     }
   } catch {
     // ignore
   }
-  return { text: '', engine: 'none' };
+  return { text: '', engine: 'none' }
 }

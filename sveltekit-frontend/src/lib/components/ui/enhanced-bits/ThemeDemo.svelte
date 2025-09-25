@@ -70,25 +70,32 @@
     console.log(`${action} action for:`, doc.title);
   }
 </script>
+
 <ThemeProvider defaultTheme="light" enableSystem={true}>
-  <div class={`
+  <div
+    class={`
     min-h-screen p-6 transition-colors
     bg-[var(--enhanced-bits-bg)] text-[var(--enhanced-bits-text)]
-  `}>
+  `}
+  >
     <!-- Header with Theme Toggle -->
     <div class="flex justify-between items-center mb-8">
       <div>
-        <h1 class={`
+        <h1
+          class={`
           text-3xl font-bold mb-2
           ${theme === 'gaming' ? 'text-green-400 font-mono' : ''}
           ${theme === 'legal' ? 'text-slate-900 dark:text-slate-100' : ''}
-        `}>
+        `}
+        >
           Enhanced-Bits Theme Demo
         </h1>
-        <p class={`
+        <p
+          class={`
           text-lg
           ${theme === 'gaming' ? 'text-green-400/70 font-mono' : 'text-[var(--enhanced-bits-text-muted)]'}
-        `}>
+        `}
+        >
           Light/Dark theme system with document cards
         </p>
       </div>
@@ -109,31 +116,21 @@
           />
         </div>
         <div class="flex space-x-2">
-          <Button {theme} variant="primary">
-            Upload Document
-          </Button>
-          <Button {theme} variant="outline">
-            Create New
-          </Button>
-          <Button {theme} variant="ghost">
-            Export All
-          </Button>
+          <Button {theme} variant="primary">Upload Document</Button>
+          <Button {theme} variant="outline">Create New</Button>
+          <Button {theme} variant="ghost">Export All</Button>
         </div>
       </div>
       <!-- Tabs -->
-      <Tabs
-        {theme}
-        items={tabItems}
-        bind:value={currentTab}
-        variant="underline"
-        size="md"
-      >
+      <Tabs {theme} items={tabItems} bind:value={currentTab} variant="underline" size="md">
         {#snippet children(item)}
           <div class="py-4">
-            <h3 class={`
+            <h3
+              class={`
               text-lg font-semibold mb-4
               ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text)]'}
-            `}>
+            `}
+            >
               {item.label} Content
             </h3>
             {#if item.value === 'documents'}
@@ -158,28 +155,37 @@
               </div>
             {:else}
               <!-- Placeholder content for other tabs -->
-              <div class={`
+              <div
+                class={`
                 p-8 text-center rounded-lg border-2 border-dashed
-                ${theme === 'gaming'
-                  ? 'border-green-400/30 bg-green-400/5'
-                  : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
+                ${
+                  theme === 'gaming'
+                    ? 'border-green-400/30 bg-green-400/5'
+                    : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
                 }
-              `}>
-                <div class={`
+              `}
+              >
+                <div
+                  class={`
                   text-4xl mb-4
                   ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text-muted)]'}
-                `}>
+                `}
+                >
                   {item.icon}
                 </div>
-                <h3 class={`
+                <h3
+                  class={`
                   text-lg font-semibold mb-2
                   ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text)]'}
-                `}>
+                `}
+                >
                   {item.label} View
                 </h3>
-                <p class={`
+                <p
+                  class={`
                   ${theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}
-                `}>
+                `}
+                >
                   Content for {item.label.toLowerCase()} would be displayed here.
                 </p>
               </div>
@@ -189,59 +195,76 @@
       </Tabs>
     </div>
     <!-- Theme Info Panel -->
-    <div class={`
+    <div
+      class={`
       mt-12 p-6 rounded-lg border
-      ${theme === 'gaming'
-        ? 'border-green-400/30 bg-green-400/5'
-        : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
+      ${
+        theme === 'gaming'
+          ? 'border-green-400/30 bg-green-400/5'
+          : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
       }
-    `}>
-      <h2 class={`
+    `}
+    >
+      <h2
+        class={`
         text-xl font-semibold mb-4
         ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text)]'}
-      `}>
+      `}
+      >
         Theme System Features
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div>
-          <h3 class={`
+          <h3
+            class={`
             font-medium mb-2
             ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text)]'}
-          `}>
+          `}
+          >
             🌓 Automatic Detection
           </h3>
-          <p class={`
+          <p
+            class={`
             text-sm
             ${theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}
-          `}>
+          `}
+          >
             Respects system preference and remembers user choice
           </p>
         </div>
         <div>
-          <h3 class={`
+          <h3
+            class={`
             font-medium mb-2
             ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text)]'}
-          `}>
+          `}
+          >
             🎨 CSS Variables
           </h3>
-          <p class={`
+          <p
+            class={`
             text-sm
             ${theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}
-          `}>
+          `}
+          >
             Dynamic theming with CSS custom properties
           </p>
         </div>
         <div>
-          <h3 class={`
+          <h3
+            class={`
             font-medium mb-2
             ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text)]'}
-          `}>
+          `}
+          >
             ⚡ Performance
           </h3>
-          <p class={`
+          <p
+            class={`
             text-sm
             ${theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}
-          `}>
+          `}
+          >
             Smooth transitions without layout shifts
           </p>
         </div>
@@ -249,9 +272,13 @@
     </div>
   </div>
 </ThemeProvider>
+
 <style>
   /* Ensure smooth theme transitions */
   :global(*) {
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
 </style>

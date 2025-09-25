@@ -22,7 +22,7 @@
   }
   interface SelectProps {
     value?: string;
-    onValueChange?: (value: string) => void;
+    onValueChange?: (_value: string) => void;
     options: SelectOption[];
     placeholder?: string;
     label?: string;
@@ -59,7 +59,7 @@
   let groupedOptions = $derived((() => {
     const hasCategories = options.some(option => option.category);
     if (!hasCategories) {
-      return { '': options };
+      return { '': options }
     }
     return options.reduce((acc, option) => {
       const category = option.category || 'Other';
@@ -108,6 +108,7 @@
     options.find(option => option.value === value)?.label || placeholder
   );
 </script>
+
 <div class="select-wrapper" class:w-full={fullWidth}>
   <SelectRoot {value} onValueChange={handleValueChange} {disabled}>
     <SelectTrigger class={triggerClasses}>
@@ -154,15 +155,12 @@
   <SelectItem
     value={option.value}
     disabled={option.disabled}
-    class={cn(
-      'bits-select-item',
-      {
-        'yorha-priority-high': evidenceCategory && option.value.includes('critical'),
-        'yorha-priority-medium': evidenceCategory && option.value.includes('evidence'),
-        'opacity-50 cursor-not-allowed': option.disabled,
-        'font-gothic': legal
-      }
-    )}
+    class={cn('bits-select-item', {
+      'yorha-priority-high': evidenceCategory && option.value.includes('critical'),
+      'yorha-priority-medium': evidenceCategory && option.value.includes('evidence'),
+      'opacity-50 cursor-not-allowed': option.disabled,
+      'font-gothic': legal,
+    })}
   >
     <div class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <Check class="h-4 w-4" />
@@ -179,6 +177,7 @@
     </div>
   </SelectItem>
 {/snippet}
+
 <style>
   .select-wrapper {
     position: relative;
@@ -206,7 +205,10 @@
     box-shadow: 0 0 0 1px var(--color-nier-border-primary);
   }
   :global(.nier-panel-elevated) {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+box-shadow: {}
+0 10px 15px -3px rgba(0, 0, 0, 0.1), {}
+0 4px 6px -2px rgba(0, 0, 0, 0.05), {}
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   :global($1) {
     outline: 2px solid var(--color-nier-border-primary);

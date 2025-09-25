@@ -152,7 +152,7 @@ export const GET: RequestHandler = async ({ url }) => {
       .xRevRange(streamName, '+', '-', { COUNT: 10 })
       .catch(() => [])
     // Parse events
-    const events = (recentEvents as any[]).map((event: any) => ({,
+    const events = (recentEvents as any[]).map((_event: any) => ({,
       id: event.id,
       timestamp: new Date(parseInt(event.message.timestamp)).toISOString(),
       type: event.message.type,

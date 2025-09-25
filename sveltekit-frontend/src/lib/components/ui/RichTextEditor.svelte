@@ -157,11 +157,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Public methods
   export function getContent() {
-    if (!editor || !isReady) return { html: "", markdown: "", json: null };
+    if (!editor || !isReady) return { html: "", markdown: "", json: null }
     const html = editor.getHTML();
     const json = editor.getJSON();
     const markdown = htmlToMarkdown(html);
-    return { html, markdown, json };
+    return { html, markdown, json }
   }
   export function setContent(;
     newContent: string
@@ -180,15 +180,11 @@ https://svelte.dev/e/js_parse_error -->
     editor?.commands.clearContent();
   }
 </script>
+
 {#if showToolbar && editable}
-  <div
-    class="space-y-4"
-  >
+  <div class="space-y-4">
     <!-- Heading Dropdown -->
-    <select
-      class="space-y-4" onchange={(e) =>
-        setHeading(parseInt((e.target as HTMLInputElement).value))}
-    >
+    <select class="space-y-4" onchange={e => setHeading(parseInt((e.target as HTMLInputElement).value))}>
       <option value="0">Normal</option>
       <option value="1">Heading 1</option>
       <option value="2">Heading 2</option>
@@ -196,115 +192,83 @@ https://svelte.dev/e/js_parse_error -->
     </select>
     <div class="space-y-4"></div>
     <!-- Text Formatting -->
-    <button
-      type="button"
-      class="space-y-4"
-      onclick={() => toggleBold()}
-      title="Bold"
-    >
+    <button type="button" class="space-y-4" onclick={() => toggleBold()} title="Bold">
       <Bold class="space-y-4" />
     </button>
-    <button
-      type="button"
-      class="space-y-4"
-      onclick={() => toggleItalic()}
-      title="Italic"
-    >
+    <button type="button" class="space-y-4" onclick={() => toggleItalic()} title="Italic">
       <Italic class="space-y-4" />
     </button>
     <div class="space-y-4"></div>
     <!-- Lists -->
-    <button
-      type="button"
-      class="space-y-4"
-      onclick={() => toggleBulletList()}
-      title="Bullet List"
-    >
+    <button type="button" class="space-y-4" onclick={() => toggleBulletList()} title="Bullet List">
       <List class="space-y-4" />
     </button>
-    <button
-      type="button"
-      class="space-y-4"
-      onclick={() => toggleOrderedList()}
-      title="Numbered List"
-    >
+    <button type="button" class="space-y-4" onclick={() => toggleOrderedList()} title="Numbered List">
       <ListOrdered class="space-y-4" />
     </button>
     <div class="space-y-4"></div>
     <!-- Image -->
-    <button
-      type="button"
-      class="space-y-4"
-      onclick={() => addImage()}
-      title="Add Image"
-    >
+    <button type="button" class="space-y-4" onclick={() => addImage()} title="Add Image">
       <ImageIcon class="space-y-4" />
     </button>
     <div class="space-y-4"></div>
     <!-- Save Button -->
-    <button
-      type="button"
-      class="space-y-4"
-      onclick={() => saveContent()}
-      title="Save Content"
-    >
+    <button type="button" class="space-y-4" onclick={() => saveContent()} title="Save Content">
       <Save class="space-y-4" />
       Save
     </button>
   </div>
 {/if}
-<div
-  bind:this={element}
-  class="space-y-4"
-></div>
+<div bind:this={element} class="space-y-4"></div>
+
 <style>
   /* @unocss-include */
   :global(.ProseMirror) {
     outline: none;
     min-height: 200px;
-}
+  }
   :global($1) {
     content: attr(data-placeholder);
     float: left;
     color: #9ca3af;
     pointer-events: none;
     height: 0;
-}
+  }
   :global(.ProseMirror img) {
     max-width: 100%;
     height: auto;
     border-radius: 0.5rem;
     margin: 0.5rem 0;
-}
+  }
   :global(.ProseMirror h1) {
     font-size: 1.875rem;
     font-weight: 700;
     margin: 1rem 0 0.5rem 0;
     line-height: 1.2;
-}
+  }
   :global(.ProseMirror h2) {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 1rem 0 0.5rem 0;
     line-height: 1.3;
-}
+  }
   :global(.ProseMirror h3) {
     font-size: 1.25rem;
     font-weight: 600;
     margin: 0.75rem 0 0.5rem 0;
     line-height: 1.4;
-}
+  }
   :global(.ProseMirror ul, .ProseMirror ol) {
     margin: 0.5rem 0;
     padding-left: 1.5rem;
-}
+  }
   :global(.ProseMirror li) {
     margin: 0.25rem 0;
-}
+  }
   :global(.ProseMirror strong) {
     font-weight: 600;
-}
+  }
   :global(.ProseMirror em) {
     font-style: italic;
-}
+  }
 </style>

@@ -52,7 +52,7 @@ await loadDemoData();
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
-  					aiSummary: null
+  					aiSummary: null;
   					summary: null
   					isAdmissible: true
   					confidentialityLevel: 'standard',
@@ -83,7 +83,7 @@ await loadDemoData();
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
-  					aiSummary: null
+  					aiSummary: null;
   					summary: null
   					isAdmissible: true
   					confidentialityLevel: 'standard',
@@ -114,7 +114,7 @@ await loadDemoData();
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
-  					aiSummary: null
+  					aiSummary: null;
   					summary: null
   					isAdmissible: true
   					confidentialityLevel: 'standard',
@@ -155,142 +155,131 @@ await loadDemoData();
   		activeTab = 'canvas';
   }
 </script>
+
 <svelte:head>
-	<title>Report Builder - Prosecutor's Case Management</title>
-	<meta name="description" content="AI-powered report builder for legal case analysis" />
+  <title>Report Builder - Prosecutor's Case Management</title>
+  <meta name="description" content="AI-powered report builder for legal case analysis" />
 </svelte:head>
 <div class="space-y-4">
-	<!-- Header -->
-	<header class="space-y-4">
-		<div class="space-y-4">
-			<h1>📝 Report Builder</h1>
-			<p class="space-y-4">AI-powered case analysis and report generation</p>
-			<div class="space-y-4">
-				<button class="space-y-4" onclick={() => createNewReport()}>
-					📄 New Report
-				</button>
-				<button class="space-y-4" onclick={() => createNewCanvas()}>
-					🎨 New Canvas
-				</button>
-			</div>
-		</div>
-	</header>
-	<!-- Error Message -->
-	{#if error}
-		<div class="space-y-4">
-			❌ {error}
-			<button onclick={() => error = ''} class="space-y-4">×</button>
-		</div>
-	{/if}
-	<!-- Loading State -->
-	{#if isLoading}
-		<div class="space-y-4">
-			<div class="space-y-4">⏳</div>
-			<p>Loading demo data...</p>
-		</div>
-	{:else}
-		<!-- Tab Navigation -->
-		<div class="space-y-4">
-			<button
-				class="space-y-4"
-			 class:active={activeTab === 'editor'}
-				onclick={() => activeTab = 'editor'}
-			>
-				📝 Report Editor
-			</button>
-			<button
-				class="space-y-4";
-			 class:active={activeTab === 'canvas'}
-				onclick={() => activeTab = 'canvas'}
-			>
-				🎨 Interactive Canvas
-			</button>
-		</div>
-		<!-- Main Content -->
-		<main class="space-y-4">
-			{#if activeTab === 'editor'}
-				<!-- Report Editor Tab -->
-				<div class="space-y-4">
-					<div class="space-y-4">
-						<h2>Prosecutor's Report</h2>
-						<p>Write, edit, and analyze case reports with AI assistance</p>
-					</div>
-					<ReportEditor
-						report={currentReport}
-						{caseId}
-						save={handleReportSave}
-						autoSaveEnabled={true}
-					/>
-				</div>
-			{:else if activeTab === 'canvas'}
-				<!-- Canvas Editor Tab -->
-				<div class="space-y-4">
-					<div class="space-y-4">
-						<h2>Interactive Evidence Canvas</h2>
-						<p>Visualize evidence, create diagrams, and annotate with AI insights</p>
-					</div>
-					<CanvasEditor
-						canvasState={currentCanvasState}
-						reportId={currentReport?.id || 'temp-report-id'}
-						{evidence}
-						{citationPoints}
-						save={handleCanvasSave}
-					/>
-				</div>
-			{/if}
-		</main>
-		<!-- Sidebar with Features Overview -->
-		<aside class="space-y-4">
-			<div class="space-y-4">
-				<h3>🤖 AI Features</h3>
-				<ul class="space-y-4">
-					<li>✨ Auto-complete suggestions</li>
-					<li>📊 Case analysis insights</li>
-					<li>🔍 Citation recommendations</li>
-					<li>📝 Content summarization</li>
-				</ul>
-			</div>
-			<div class="space-y-4">
-				<h3>📚 Citation Library</h3>
-				<p class="space-y-4">{citationPoints.length} citations available</p>
-				<div class="space-y-4">
-					{#each citationPoints.slice(0, 3) as citation}
-						<div class="space-y-4">
-							<div class="space-y-4">{citation.source}</div>
-							<div class="space-y-4">{citation.text.substring(0, 60)}...</div>
-						</div>
-					{/each}
-				</div>
-			</div>
-			<div class="space-y-4">
-				<h3>📋 Evidence Repository</h3>
-				<p class="space-y-4">{evidence.length} pieces of evidence</p>
-				<div class="space-y-4">
-					{#each evidence as item}
-						<div class="space-y-4">
-							<div class="space-y-4">{(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).title}</div>
-							<div class="space-y-4">{(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).evidenceType || (item as { title?: unknown; evidenceType?: unknown; type?: unknown }).type || 'unknown'}</div>
-						</div>
-					{/each}
-				</div>
-			</div>
-			<div class="space-y-4">
-				<h3>⚡ Quick Actions</h3>
-				<div class="space-y-4">
-					<button class="space-y-4">📤 Export PDF</button>
-					<button class="space-y-4">💾 Save Template</button>
-					<button class="space-y-4">🔄 Sync Offline</button>
-				</div>
-			</div>
-		</aside>
-	{/if}
+  <!-- Header -->
+  <header class="space-y-4">
+    <div class="space-y-4">
+      <h1>📝 Report Builder</h1>
+      <p class="space-y-4">AI-powered case analysis and report generation</p>
+      <div class="space-y-4">
+        <button class="space-y-4" onclick={() => createNewReport()}> 📄 New Report </button>
+        <button class="space-y-4" onclick={() => createNewCanvas()}> 🎨 New Canvas </button>
+      </div>
+    </div>
+  </header>
+  <!-- Error Message -->
+  {#if error}
+    <div class="space-y-4">
+      ❌ {error}
+      <button onclick={() => (error = '')} class="space-y-4">×</button>
+    </div>
+  {/if}
+  <!-- Loading State -->
+  {#if isLoading}
+    <div class="space-y-4">
+      <div class="space-y-4">⏳</div>
+      <p>Loading demo data...</p>
+    </div>
+  {:else}
+    <!-- Tab Navigation -->
+    <div class="space-y-4">
+      <button class="space-y-4" class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}>
+        📝 Report Editor
+      </button>
+      <button class="space-y-4" ; class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
+        🎨 Interactive Canvas
+      </button>
+    </div>
+    <!-- Main Content -->
+    <main class="space-y-4">
+      {#if activeTab === 'editor'}
+        <!-- Report Editor Tab -->
+        <div class="space-y-4">
+          <div class="space-y-4">
+            <h2>Prosecutor's Report</h2>
+            <p>Write, edit, and analyze case reports with AI assistance</p>
+          </div>
+          <ReportEditor report={currentReport} {caseId} save={handleReportSave} autoSaveEnabled={true} />
+        </div>
+      {:else if activeTab === 'canvas'}
+        <!-- Canvas Editor Tab -->
+        <div class="space-y-4">
+          <div class="space-y-4">
+            <h2>Interactive Evidence Canvas</h2>
+            <p>Visualize evidence, create diagrams, and annotate with AI insights</p>
+          </div>
+          <CanvasEditor
+            canvasState={currentCanvasState}
+            reportId={currentReport?.id || 'temp-report-id'}
+            {evidence}
+            {citationPoints}
+            save={handleCanvasSave}
+          />
+        </div>
+      {/if}
+    </main>
+    <!-- Sidebar with Features Overview -->
+    <aside class="space-y-4">
+      <div class="space-y-4">
+        <h3>🤖 AI Features</h3>
+        <ul class="space-y-4">
+          <li>✨ Auto-complete suggestions</li>
+          <li>📊 Case analysis insights</li>
+          <li>🔍 Citation recommendations</li>
+          <li>📝 Content summarization</li>
+        </ul>
+      </div>
+      <div class="space-y-4">
+        <h3>📚 Citation Library</h3>
+        <p class="space-y-4">{citationPoints.length} citations available</p>
+        <div class="space-y-4">
+          {#each citationPoints.slice(0, 3) as citation}
+            <div class="space-y-4">
+              <div class="space-y-4">{citation.source}</div>
+              <div class="space-y-4">{citation.text.substring(0, 60)}...</div>
+            </div>
+          {/each}
+        </div>
+      </div>
+      <div class="space-y-4">
+        <h3>📋 Evidence Repository</h3>
+        <p class="space-y-4">{evidence.length} pieces of evidence</p>
+        <div class="space-y-4">
+          {#each evidence as item}
+            <div class="space-y-4">
+              <div class="space-y-4">{(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).title}</div>
+              <div class="space-y-4">
+                {(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).evidenceType ||
+                  (item as { title?: unknown; evidenceType?: unknown; type?: unknown }).type ||
+                  'unknown'}
+              </div>
+            </div>
+          {/each}
+        </div>
+      </div>
+      <div class="space-y-4">
+        <h3>⚡ Quick Actions</h3>
+        <div class="space-y-4">
+          <button class="space-y-4">📤 Export PDF</button>
+          <button class="space-y-4">💾 Save Template</button>
+          <button class="space-y-4">🔄 Sync Offline</button>
+        </div>
+      </div>
+    </aside>
+  {/if}
 </div>
+
 <style>
   /* @unocss-include */
   .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 </style>

@@ -38,20 +38,13 @@
     }
   });
 </script>
+
 <div class="auth-layout">
   <!-- Navigation Bar -->
-  <NavBar
-    {user}
-    {sidebarOpen}
-    onToggleSidebar={toggleSidebar}
-  />
+  <NavBar {user} {sidebarOpen} onToggleSidebar={toggleSidebar} />
 
   <!-- Sidebar -->
-  <Sidebar
-    open={sidebarOpen}
-    {user}
-    theme={selectedTheme}
-  />
+  <Sidebar open={sidebarOpen} {user} theme={selectedTheme} />
 
   <!-- Main Content Area -->
   <main class="main-content" class:sidebar-open={sidebarOpen}>
@@ -62,6 +55,7 @@
     </div>
   </main>
 </div>
+
 <style>
   .auth-layout {
     display: flex;
@@ -89,8 +83,7 @@
     margin: 0 auto;
     min-height: 100%;
   }
-
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 1024px) {
     .main-content.sidebar-open {
       margin-left: 0;
@@ -102,15 +95,13 @@
       padding: 1rem;
     }
   }
-
-  /* Gaming theme integration */
+/* Gaming theme integration */ {}
   :global(body) {
     font-family: var(--console-font, 'Inter', sans-serif);
     background: var(--console-bg, #0f0f23);
     color: var(--console-fg, white);
   }
-
-  /* Scrollbar styling */
+/* Scrollbar styling */ {}
   .main-content::-webkit-scrollbar {
     width: 8px;
   }

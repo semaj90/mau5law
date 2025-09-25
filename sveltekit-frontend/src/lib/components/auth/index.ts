@@ -16,14 +16,14 @@ export { authStore, useAuth } from '$lib/stores/auth-store.svelte';
 export type AuthComponentProps = {
   children?: import('svelte').Snippet;
   fallback?: import('svelte').Snippet;
-};
+}
 export type GuardProps = AuthComponentProps & {
   requiredRole?: string;
   requiredPermission?: string;
   roles?: string | string[];
   permissions?: string | string[];
   requireAll?: boolean;
-};
+}
 export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
 export type AuthProviderType = 'email' | 'google' | 'github' | 'microsoft';
 }

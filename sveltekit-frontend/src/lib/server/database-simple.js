@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 // Simplified database configuration for production
 // Environment variables with fallbacks
 const config = {
@@ -11,9 +11,12 @@ const config = {
   password: import.meta.env.POSTGRES_PASSWORD || '123456',
 };
 // Connection string
-const connectionString = import.meta.env.DATABASE_URL ||
-  `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`
-console.log(`[Database] Connecting to: postgresql://${config.user}:***@${config.host}:${config.port}/${config.database}`)
+const connectionString =
+  import.meta.env.DATABASE_URL ||
+  `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`;
+console.log(
+  `[Database] Connecting to: postgresql://${config.user}:***@${config.host}:${config.port}/${config.database}`,
+);
 // Create connection with error handling
 let sql;
 let db;
@@ -31,7 +34,7 @@ try {
   // Create mock db for development
   db = {
     execute: async () => ({ rows: [] }),
-    insert: () => ({ values: () => ({ returning: () => [{ id: 'mock-id' }] }) })
+    insert: () => ({ values: () => ({ returning: () => [{ id: 'mock-id' }] }) }),
   };
 }
 // Table schemas (simplified)

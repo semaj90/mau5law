@@ -26,5 +26,5 @@ export async function queryPgvector(vec: number[], limit = 200, temperature = 0.
       metadata: r.metadata ?? {},
       embedding: r.embedding
     }))
-  };
+  }
 }

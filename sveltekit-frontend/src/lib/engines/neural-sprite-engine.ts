@@ -23,7 +23,7 @@ export interface CanvasSprite {
     complexity: number;
     duration?: number; // How long this frame should display
     triggers?: string[]; // What user actions can trigger this state
-  };
+  }
   embedding?: number[]; // Vector embedding for AI similarity search
   createdAt: number;
   usageCount: number;
@@ -49,7 +49,7 @@ export interface AnimationSequence {
 // Self-Organizing Map Node
 export interface SOMNode {
   id: string;
-  position: { x: number; y: number };
+  position: { x: number; y: number }
   weights: Float32Array;
   activationHistory: number[];
   connectedSprites: string[];
@@ -88,7 +88,7 @@ type LocalCollection<T> = {
   insert(doc: T): T;
   update(doc: T): void;
   count(): number;
-};
+}
 // Performance Analytics
 export interface PerformanceMetrics {
   frameRate: number;
@@ -107,7 +107,7 @@ type CanvasLike = {
   getElement?: () => HTMLCanvasElement;
   loadFromJSON?: (json: string, callback: () => void) => void;
   renderAll?: () => void;
-};
+}
 // Main Self-Organizing Neural Sprite Engine class
 export class NeuralSpriteEngine {
   private db: Loki = new Loki('neural-sprites.db');
@@ -121,7 +121,7 @@ export class NeuralSpriteEngine {
   private somGridSize: { width: number; height: number } = {
     width: 10,
     height: 10,
-  };
+  }
   private globalLearningRate = 0.1;
   private neighborhoodDecay = 0.95;
   // Multi-core processing system
@@ -280,7 +280,7 @@ export class NeuralSpriteEngine {
           connectedSprites: [],
           learningRate: this.globalLearningRate,
           neighborhoodRadius: Math.min(this.somGridSize.width, this.somGridSize.height) / 2,
-        };
+        }
         // Initialize weights randomly
         for (let i = 0; i < node.weights.length; i++) {
           node.weights[i] = Math.random() * 0.5 - 0.25;
@@ -373,7 +373,7 @@ export class NeuralSpriteEngine {
                 features: processSprite((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite),
                 complexity: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.metadata.complexity,
                 timestamp: Date.now()
-              };
+              }
               break;
             case 'som_update':
               result = {
@@ -384,21 +384,21 @@ export class NeuralSpriteEngine {
                   (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).learningRate,
                   (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).neighborhoodRadius
                 )
-              };
+              }
               break;
             case 'prediction':
               result = {
                 spriteId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.id,
                 predictedStates: predictNextStates((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite, (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).recentActivities),
                 confidence: 0.7 + Math.random() * 0.2
-              };
+              }
               break;
             case 'optimization':
               // Optimize sprite loading order based on usage patterns
               result = {
                 optimizedOrder: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprites.sort((a, b) => b.usageCount - a.usageCount),
                 cacheRecommendations: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprites.slice(0, 10).map((s: any) => s.id)
-              };
+              }
               break;
             default:
               throw new Error('Unknown task type: ' + type);
@@ -407,7 +407,7 @@ export class NeuralSpriteEngine {
         } catch (error: any) {
           self.postMessage({ id, result: null, error: error.message });
         }
-      };
+      }
     `;
     const workerBlob = new Blob([workerCode], {
       type: 'application/javascript',
@@ -426,14 +426,14 @@ export class NeuralSpriteEngine {
         }
         this.activeWorkers--;
         this.processNextTask(); // Process next queued task
-      };
+      }
       this.workerPool.push(worker);
     }
     URL.revokeObjectURL(workerUrl);
     console.log(`✅ Worker pool initialized with ${this.workerPool.length} workers`);
   }
   /** Submit task to worker pool */
-  private submitTask(task: ProcessingTask): void {
+  private submitTask(_task: ProcessingTask): void {
     task.startTime = Date.now();
     this.taskQueue.push(task);
     this.processNextTask();
@@ -652,7 +652,7 @@ export class NeuralSpriteEngine {
       },
       createdAt: Date.now(),
       usageCount: 0,
-    };
+    }
     this.sprites.insert(sprite);
     // Submit sprite analysis task to worker pool for SOM processing
     this.submitTask({
@@ -827,7 +827,7 @@ export class NeuralSpriteEngine {
         const totalDuration = Date.now() - animationStartTime;
         console.log(`🎯 Animation finished: ${sequenceName} (${totalDuration}ms total)`);
       }
-    };
+    }
     // Start animation with initial frame
     playFrame();
   }
@@ -841,7 +841,7 @@ export class NeuralSpriteEngine {
       timestamp: Date.now(),
       canvasState: currentCanvasState
       sequence: this.activities.count(),
-    };
+    }
     this.activities.insert(activity);
     // Submit activity analysis to worker pool for pattern recognition
     const recentActivities = this.getRecentActivities(10);
@@ -871,12 +871,12 @@ export class NeuralSpriteEngine {
     console.log(`👤 User activity logged: ${action} in state ${currentCanvasState} (sequence: ${activity.sequence})`);
   }
   // AI worker message handling
-  private handleAIWorkerMessage(event: MessageEvent): void {
+  private handleAIWorkerMessage(_event: MessageEvent): void {
     const { type, data } = event.data;
     switch (type) {
       case 'EMBEDDING_GENERATED':
         {
-          const d = data as { spriteId: string; embedding: number[] };
+          const d = data as { spriteId: string; embedding: number[] }
           this.updateSpriteEmbedding(d.spriteId, d.embedding);
         }
         break;
@@ -885,7 +885,7 @@ export class NeuralSpriteEngine {
         break;
       case 'CACHE_RECOMMENDATION':
         {
-          const d = data as { stateIds: string[] };
+          const d = data as { stateIds: string[] }
           this.preCacheRecommendedStates(d.stateIds || []);
         }
         break;
@@ -899,8 +899,8 @@ export class NeuralSpriteEngine {
               fps?: number;
               triggers?: string[];
               confidence?: number;
-            };
-          };
+            }
+          }
           this.registerAIGeneratedSequence(d.sequence);
         }
         break;
@@ -923,7 +923,7 @@ export class NeuralSpriteEngine {
       fps: sequenceData.fps || 24,
       triggers: sequenceData.triggers || [],
       confidence: sequenceData.confidence || 0.7,
-    };
+    }
     this.sequences.insert(sequence);
   }
   // Predictive caching based on AI analysis
@@ -1015,7 +1015,7 @@ export class NeuralSpriteEngine {
       hits: this.cacheHits,
       misses: this.cacheMisses,
       hitRate: isNaN(hitRate) ? 1.0 : hitRate
-    };
+    }
   }
   // Enhanced cleanup with multi-core system shutdown
   public destroy(): void {
@@ -1151,5 +1151,5 @@ export function createPerformanceStores(engine: NeuralSpriteEngine) {
         )
       })
     )
-  };
+  }
 }

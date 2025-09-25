@@ -1,31 +1,22 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
-  import SearchInput from "./SearchInput.svelte";
-  import type { User } from "$lib/types/user";
-  import {
-    FolderOpen,
-    Home,
-    LogOut,
-    MoreVertical,
-    Palette,
-    Settings,
-    Shield,
-    User as UserIcon,
-  } from "lucide-svelte";
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import SearchInput from './SearchInput.svelte';
+  import type { User } from '$lib/types/user';
+  import { FolderOpen, Home, LogOut, MoreVertical, Palette, Settings, Shield, User as UserIcon } from 'lucide-svelte';
   interface Props {
     user?: User | null;
   }
   let { user = null }: Props = $props();
   let searchQuery = $state('');
   let userMenuOpen = $state(false);
-  function handleSearch(event: CustomEvent) {
+  function handleSearch(_event: CustomEvent) {
     searchQuery = event.detail.query;
     // Handle global search
-    console.log("Global search:", searchQuery);
+    console.log('Global search:', searchQuery);
   }
   function handleLogout() {
-    goto("/logout");
+    goto('/logout');
   }
   function handleNavigation(path: string) {
     goto(path);
@@ -38,7 +29,7 @@
     userMenuOpen = false;
   }
   // Progressive enhancement: Close menu on Escape key
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (event.key === 'Escape' && userMenuOpen) {
       closeUserMenu();
     }
@@ -48,16 +39,13 @@
     return page.url.pathname === path || page.url.pathname.startsWith(path + '/');
   }
 </script>
+
 <svelte:window keydown={handleKeyDown} />
 <header class="app-header">
   <div class="header-content">
     <!-- Logo and Brand -->
     <div class="brand-section">
-      <button
-        class="brand-button"
-        onclick={() => handleNavigation("/")}
-        aria-label="Go to homepage"
-      >
+      <button class="brand-button" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
         <Palette size={24} aria-hidden="true" />
         <span class="brand-text">Prosecutor Canvas</span>
       </button>
@@ -67,7 +55,7 @@
       <button
         class="nav-button"
         class:active={isActiveRoute('/dashboard')}
-        onclick={() => handleNavigation("/dashboard")}
+        onclick={() => handleNavigation('/dashboard')}
         aria-label="Dashboard"
         aria-current={isActiveRoute('/dashboard') ? 'page' : undefined}
       >
@@ -77,7 +65,7 @@
       <button
         class="nav-button"
         class:active={isActiveRoute('/cases')}
-        onclick={() => handleNavigation("/cases")}
+        onclick={() => handleNavigation('/cases')}
         aria-label="Cases"
         aria-current={isActiveRoute('/cases') ? 'page' : undefined}
       >
@@ -85,9 +73,9 @@
         <span>Cases</span>
       </button>
       <button
-        class="nav-button"
+        class="nav-button";
         class:active={isActiveRoute('/interactive-canvas')}
-        onclick={() => handleNavigation("/interactive-canvas")}
+        onclick={() => handleNavigation('/interactive-canvas')}
         aria-label="Interactive Canvas"
         aria-current={isActiveRoute('/interactive-canvas') ? 'page' : undefined}
       >
@@ -95,9 +83,10 @@
         <span>Canvas</span>
       </button>
       <button
-        class="nav-button";
+        class="nav-button"
+        ;
         class:active={isActiveRoute('/evidence/hash')}
-        onclick={() => handleNavigation("/evidence/hash")}
+        onclick={() => handleNavigation('/evidence/hash')}
         aria-label="Hash Verification"
         aria-current={isActiveRoute('/evidence/hash') ? 'page' : undefined}
         title="Verify evidence file integrity"
@@ -108,11 +97,7 @@
     </nav>
     <!-- Search -->
     <div class="search-section">
-      <SearchInput
-        placeholder="Search cases, evidence, notes..."
-        value={searchQuery}
-        search={handleSearch}
-      />
+      <SearchInput placeholder="Search cases, evidence, notes..." value={searchQuery} search={handleSearch} />
     </div>
     <!-- User Menu -->
     <div class="user-section">
@@ -130,7 +115,7 @@
                 <img src={user.avatarUrl} alt="" />
               {:else}
                 <span class="avatar-fallback">
-                  {user.name?.charAt(0)?.toUpperCase() || "U"}
+                  {user.name?.charAt(0)?.toUpperCase() || 'U'}
                 </span>
               {/if}
             </div>
@@ -139,31 +124,16 @@
           </button>
           {#if userMenuOpen}
             <div class="user-menu" role="menu" aria-labelledby="user-button">
-              <button
-                class="menu-item"
-                onclick={() => handleNavigation("/profile")}
-                role="menuitem"
-                tabindex="0"
-              >
+              <button class="menu-item" onclick={() => handleNavigation('/profile')} role="menuitem" tabindex="0">
                 <UserIcon size={16} aria-hidden="true" />
                 Profile
               </button>
-              <button
-                class="menu-item"
-                onclick={() => handleNavigation("/settings")}
-                role="menuitem"
-                tabindex="0"
-              >
+              <button class="menu-item" onclick={() => handleNavigation('/settings')} role="menuitem" tabindex="0">
                 <Settings size={16} aria-hidden="true" />
                 Settings
               </button>
               <hr class="menu-separator" />
-              <button
-                class="menu-item"
-                onclick={handleLogout}
-                role="menuitem"
-                tabindex="0"
-              >
+              <button class="menu-item" onclick={handleLogout} role="menuitem" tabindex="0">
                 <LogOut size={16} aria-hidden="true" />
                 Sign Out
               </button>
@@ -171,11 +141,7 @@
           {/if}
         </div>
       {:else}
-        <button
-          class="sign-in-button"
-          onclick={() => handleNavigation("/login")}
-          aria-label="Sign in"
-        >
+        <button class="sign-in-button" onclick={() => handleNavigation('/login')} aria-label="Sign in">
           Sign In
         </button>
       {/if}
@@ -187,12 +153,13 @@
   <div
     class="menu-overlay"
     onclick={closeUserMenu}
-    keydown={(e) => e.key === "Escape" && closeUserMenu()}
+    keydown={e => e.key === 'Escape' && closeUserMenu()}
     role="button"
     tabindex="-1"
     aria-label="Close user menu"
   ></div>
 {/if}
+
 <style lang="postcss">
   /* @unocss-include */
   .app-header {

@@ -33,7 +33,7 @@ export type AIAssistantEvent =
   // Analytics and monitoring
   | { type: "START_MONITORING"; metrics?: string[] }
   | { type: "STOP_MONITORING" }
-  | { type: "EXPORT_ANALYTICS"; timeRange?: TimeRange; format?: 'csv' | 'json' | 'pdf' };
+  | { type: "EXPORT_ANALYTICS"; timeRange?: TimeRange; format?: 'csv' | 'json' | 'pdf' }
 // AI Assistant Context - Enterprise Grade
 export interface AIAssistantContext {
   // Core query state
@@ -161,7 +161,7 @@ export interface ModelDefinition {
     temperature: number;
     topP?: number;
     topK?: number;
-  };
+  }
   capabilities: string[];
   status: 'available' | 'loading' | 'unavailable';
   performance: ModelPerformance;

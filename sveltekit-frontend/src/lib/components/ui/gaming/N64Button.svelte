@@ -21,9 +21,9 @@
     class?: string;
     style?: string;
     // Events
-    onclick?: (event: MouseEvent) => void;
-    onmousedown?: (event: MouseEvent) => void;
-    onmouseup?: (event: MouseEvent) => void;
+    onclick?: (_event: MouseEvent) => void;
+    onmousedown?: (_event: MouseEvent) => void;
+    onmouseup?: (_event: MouseEvent) => void;
     children?: any;
   }
   let {
@@ -44,37 +44,37 @@
     onmousedown,
     onmouseup,
     children,
-    ...restProps
+    ...restProps;
   }: Props = $props();
   const dispatch = createEventDispatcher();
   // N64 button color scheme
   const buttonColors = {
-    'a': '#0066ff', // Blue A button
-    'b': '#00cc00', // Green B button
+    a: '#0066ff', // Blue A button
+    b: '#00cc00', // Green B button
     'c-up': '#ffff00', // Yellow C buttons
     'c-down': '#ffff00',
     'c-left': '#ffff00',
     'c-right': '#ffff00',
-    'start': '#ff0000', // Red start button
-    'z': '#666666', // Gray Z trigger
-    'l': '#666666', // Gray L shoulder
-    'r': '#666666', // Gray R shoulder
-    'custom': customColor || '#0066ff'
-  };
+    start: '#ff0000', // Red start button
+    z: '#666666', // Gray Z trigger
+    l: '#666666', // Gray L shoulder
+    r: '#666666', // Gray R shoulder;
+    custom: customColor || '#0066ff',
+  }
   // Button labels
   const buttonLabels = {
-    'a': 'A',
-    'b': 'B',
+    a: 'A',
+    b: 'B',
     'c-up': '↑',
     'c-down': '↓',
     'c-left': '←',
     'c-right': '→',
-    'start': 'START',
-    'z': 'Z',
-    'l': 'L',
-    'r': 'R',
-    'custom': ''
-  };
+    start: 'START',
+    z: 'Z',
+    l: 'L',
+    r: 'R',
+    custom: '',
+  }
   // Dynamic classes
   let buttonClasses = $derived(() => {
     const base = 'n64-button';
@@ -94,13 +94,15 @@
       glowClass,
       priorityClass,
       evidenceClass,
-      className
-    ].filter(Boolean).join(' ');
+      className,
+    ]
+      .filter(Boolean)
+      .join(' ');
   });
   // Button styling
   let buttonStyle = $derived(() => {
     const color = buttonColors[variant];
-    const baseStyle = `--n64-color: ${color}; --n64-color-dark: ${darkenColor(color, 0.3)};`;
+    const baseStyle = `--n64-color: ${color} --n64-color-dark: ${darkenColor(color, 0.3)}`;
     return style ? `${baseStyle} ${style}` : baseStyl;
   });
   // Sound effects
@@ -110,8 +112,8 @@
       const soundMap = {
         press: '/sounds/n64-button-press.mp3',
         release: '/sounds/n64-button-release.mp3',
-        error: '/sounds/n64-error.mp3'
-      };
+        error: '/sounds/n64-error.mp3',
+      }
       const audio = new Audio(soundMap[type]);
       audio.volume = 0.4;
       audio.play().catch(() => {
@@ -127,7 +129,7 @@
     navigator.vibrate(pattern);
   }
   // Event handlers
-  function handleMouseDown(event: MouseEvent) {
+  function handleMouseDown(_event: MouseEvent) {
     if (disabled) {
       playSound('error');
       return;
@@ -138,14 +140,14 @@
     dispatch('mousedown', event);
     onmousedown?.(event);
   }
-  function handleMouseUp(event: MouseEvent) {
+  function handleMouseUp(_event: MouseEvent) {
     if (disabled) return;
     pressed = false;
     playSound('release');
     dispatch('mouseup', event);
     onmouseup?.(event);
   }
-  function handleClick(event: MouseEvent) {
+  function handleClick(_event: MouseEvent) {
     if (disabled) return;
     // Special handling for evidence actions
     if (evidenceAction) {
@@ -167,6 +169,7 @@
     return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
   }
 </script>
+
 <button
   class={buttonClasses}
   style={buttonStyle}
@@ -209,6 +212,7 @@
     {/if}
   </div>
 </button>
+
 <style>
   .n64-button {
     position: relative;
@@ -246,7 +250,7 @@
     color: white;
     text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
   }
-  /* Size variants */
+/* Size variants */ {}
   .n64-button--sm .n64-button__surface {
     width: 2.5rem;
     height: 2.5rem;
@@ -275,40 +279,40 @@
   .n64-button--xl .n64-button__label {
     font-size: 1.5rem;
   }
-  /* Button-specific shapes */
+/* Button-specific shapes */ {}
   .n64-button--start .n64-button__surface {
     border-radius: 8px;
     width: 4rem;
     height: 1.5rem;
   }
-  .n64-button--z .n64-button__surface,
-  .n64-button--l .n64-button__surface,
+.n64-button--z .n64-button__surface, {}
+.n64-button--l .n64-button__surface, {}
   .n64-button--r .n64-button__surface {
     border-radius: 12px;
     width: 3rem;
     height: 1.2rem;
   }
-  /* C-button cluster styling */
-  .n64-button--c-up .n64-button__surface,
-  .n64-button--c-down .n64-button__surface,
-  .n64-button--c-left .n64-button__surface,
+/* C-button cluster styling */ {}
+.n64-button--c-up .n64-button__surface, {}
+.n64-button--c-down .n64-button__surface, {}
+.n64-button--c-left .n64-button__surface, {}
   .n64-button--c-right .n64-button__surface {
     width: 2rem;
     height: 2rem;
   }
-  /* Pressed state */
+/* Pressed state */ {}
   .n64-button--pressed .n64-button__surface {
     background: var(--n64-color-dark);
     transform: scale(0.95) translateY(2px);
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.4);
   }
-  /* Disabled state */
+/* Disabled state */ {}
   .n64-button--disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
   }
-  /* Glowing effect */
+/* Glowing effect */ {}
   .n64-button--glowing .n64-button__surface {
     animation: n64-glow 2s ease-in-out infinite alternate;
     box-shadow: 0 0 20px var(--n64-color);
@@ -318,10 +322,12 @@
       box-shadow: 0 0 10px var(--n64-color);
     }
     to {
-      box-shadow: 0 0 30px var(--n64-color), 0 0 40px var(--n64-color);
+box-shadow: {}
+0 0 30px var(--n64-color), {}
+        0 0 40px var(--n64-color);
     }
   }
-  /* Priority indicators */
+/* Priority indicators */ {}
   .n64-button--priority-high .n64-button__surface {
     border-color: #ff8800;
   }
@@ -330,7 +336,8 @@
     animation: critical-pulse 1s ease-in-out infinite;
   }
   @keyframes critical-pulse {
-    0%, 100% {
+0%, {}
+    100% {
       border-color: #ff0000;
       box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4);
     }
@@ -360,7 +367,7 @@
       transform: scale(1.2);
     }
   }
-  /* Evidence action styling */
+/* Evidence action styling */ {}
   .n64-button--evidence-analyze .n64-button__surface {
     border-color: #00aaff;
   }
@@ -373,7 +380,7 @@
   .n64-button--evidence-submit .n64-button__surface {
     border-color: #00ff00;
   }
-  /* Confidence indicator */
+/* Confidence indicator */ {}
   .n64-button__confidence {
     position: absolute;
     top: -8px;
@@ -386,7 +393,7 @@
     font-weight: normal;
     z-index: 3;
   }
-  /* Evidence action icon */
+/* Evidence action icon */ {}
   .n64-button__evidence-icon {
     position: absolute;
     bottom: -8px;
@@ -401,19 +408,19 @@
     font-size: 0.7rem;
     z-index: 3;
   }
-  /* Hover effects */
+/* Hover effects */ {}
   .n64-button:hover:not(.n64-button--disabled) .n64-button__surface {
     filter: brightness(1.1);
     transform: translateY(-1px);
   }
-  /* Active state */
+/* Active state */ {}
   .n64-button:active:not(.n64-button--disabled) .n64-button__surface {
     transform: scale(0.95) translateY(2px);
     background: var(--n64-color-dark);
   }
-  /* Accessibility */
+/* Accessibility */ {}
   @media (prefers-reduced-motion: reduce) {
-    .n64-button,
+.n64-button, {}
     .n64-button__surface {
       transition: none;
     }
@@ -424,7 +431,7 @@
       animation: none;
     }
   }
-  /* High contrast mode */
+/* High contrast mode */ {}
   @media (prefers-contrast: high) {
     .n64-button__surface {
       border-width: 6px;
@@ -435,7 +442,7 @@
       text-shadow: 3px 3px 0 #000000;
     }
   }
-  /* Print styles */
+/* Print styles */ {}
   @media print {
     .n64-button {
       display: none;

@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, slide } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
   // Authentication mode state
-  let authMode = $state<'login' | 'register' >('login');
+  let authMode = $state<'login' | 'register'>('login');
   let isLoading = $state(false);
   let error = $state('');
   let success = $state('');
@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
     jurisdiction: '',
     badgeNumber: '',
     agreeToTerms: false,
-    agreeToPrivacy: false
+    agreeToPrivacy: false,
   });
   // Toggle between login and register
   function toggleAuthMode() {
@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
     success = '';
   }
   // Handle form submission
-  async function handleSubmit(event: Event) {
+  async function handleSubmit(_event: Event) {
     event.preventDefault();
     isLoading = true;
     error = '';
@@ -55,13 +55,13 @@ https://svelte.dev/e/js_parse_error -->
         form.append('department', formData.department);
         form.append('jurisdiction', formData.jurisdiction);
         form.append('badgeNumber', formData.badgeNumber);
-  form.append('agreeToTerms', formData.agreeToTerms.toString());
-  form.append('agreeToPrivacy', formData.agreeToPrivacy.toString());
+        form.append('agreeToTerms', formData.agreeToTerms.toString());
+        form.append('agreeToPrivacy', formData.agreeToPrivacy.toString());
       }
       const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
       const response = await fetch(endpoint, {
         method: 'POST',
-        body: form
+        body: form,
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         success = authMode === 'login' ? 'Login successful! Redirecting...' : 'Registration successful! Redirecting...';
@@ -86,7 +86,8 @@ https://svelte.dev/e/js_parse_error -->
     if (authMode === 'login') {
       isFormValid = !!formData.email && !!formData.password;
     } else {
-      isFormValid = !!formData.email &&
+      isFormValid =
+        !!formData.email &&
         !!formData.password &&
         formData.password === formData.confirmPassword &&
         !!formData.firstName &&
@@ -98,6 +99,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
+
 <svelte:head>
   <title>{authMode === 'login' ? 'Login' : 'Register'} - Legal AI Platform</title>
   <meta name="description" content="Access the Legal AI Platform - Unified authentication experience" />
@@ -107,12 +109,8 @@ https://svelte.dev/e/js_parse_error -->
     <div class="bg-gray-800 p-8 rounded-lg border border-gray-700 shadow-2xl">
       <!-- Header -->
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-yellow-400 mb-2">
-          Legal AI Platform
-        </h1>
-        <p class="text-gray-400 text-sm">
-          Advanced evidence processing with AI-powered analysis
-        </p>
+        <h1 class="text-3xl font-bold text-yellow-400 mb-2">Legal AI Platform</h1>
+        <p class="text-gray-400 text-sm">Advanced evidence processing with AI-powered analysis</p>
       </div>
       <!-- Auth Mode Toggle -->
       <div class="flex bg-gray-700 rounded-lg p-1 mb-6">
@@ -121,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
           class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'login'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
-          onclick={() => authMode = 'login'}
+          onclick={() => (authMode = 'login')}
         >
           🔐 Login
         </button>
@@ -130,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
           class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'register'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
-          onclick={() => authMode = 'register'}
+          onclick={() => (authMode = 'register')}
         >
           📝 Register
         </button>
@@ -150,9 +148,7 @@ https://svelte.dev/e/js_parse_error -->
       <form onsubmit={handleSubmit} class="space-y-4">
         <!-- Common Fields -->
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
-            Email Address
-          </label>
+          <label for="email" class="block text-sm font-medium text-gray-300 mb-2"> Email Address </label>
           <input
             type="email"
             id="email"
@@ -166,12 +162,10 @@ https://svelte.dev/e/js_parse_error -->
         {#if authMode === 'register'}
           <div class="grid grid-cols-2 gap-3" transitislide={{ duration: 300, easing: cubicOut }}>
             <div>
-              <label for="firstName" class="block text-sm font-medium text-gray-300 mb-2">
-                First Name
-              </label>
+              <label for="firstName" class="block text-sm font-medium text-gray-300 mb-2"> First Name </label>
               <input
                 type="text"
-                id="firstName"
+                id="firstName";
                 bind:value={formData.firstName}
                 required
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
@@ -179,12 +173,10 @@ https://svelte.dev/e/js_parse_error -->
               />
             </div>
             <div>
-              <label for="lastName" class="block text-sm font-medium text-gray-300 mb-2">
-                Last Name
-              </label>
+              <label for="lastName" class="block text-sm font-medium text-gray-300 mb-2"> Last Name </label>
               <input
                 type="text"
-                id="lastName"
+                id="lastName";
                 bind:value={formData.lastName}
                 required
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
@@ -194,9 +186,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
-            Password
-          </label>
+          <label for="password" class="block text-sm font-medium text-gray-300 mb-2"> Password </label>
           <input
             type="password"
             id="password"
@@ -209,15 +199,17 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Register-specific: Confirm Password -->
         {#if authMode === 'register'}
           <div transitislide={{ duration: 300, easing: cubicOut }}>
-            <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-2">
-              Confirm Password
-            </label>
+            <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-2"> Confirm Password </label>
             <input
               type="password"
               id="confirmPassword"
               bind:value={formData.confirmPassword}
               required
-              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors {formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword ? 'border-red-500' : ''}"
+              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors {formData.password &&
+              formData.confirmPassword &&
+              formData.password !== formData.confirmPassword
+                ? 'border-red-500'
+                : ''}"
               placeholder="Confirm your password"
             />
             {#if formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword}
@@ -227,11 +219,9 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Professional Details -->
           <div class="space-y-3" transitislide={{ duration: 300, easing: cubicOut }}>
             <div>
-              <label for="role" class="block text-sm font-medium text-gray-300 mb-2">
-                Role
-              </label>
+              <label for="role" class="block text-sm font-medium text-gray-300 mb-2"> Role </label>
               <select
-                id="role"
+                id="role";
                 bind:value={formData.role}
                 required
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
@@ -243,12 +233,11 @@ https://svelte.dev/e/js_parse_error -->
               </select>
             </div>
             <div>
-              <label for="department" class="block text-sm font-medium text-gray-300 mb-2">
-                Department
-              </label>
+              <label for="department" class="block text-sm font-medium text-gray-300 mb-2"> Department </label>
               <input
                 type="text"
-                id="department";
+                id="department"
+                ;
                 bind:value={formData.department}
                 required
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
@@ -256,12 +245,11 @@ https://svelte.dev/e/js_parse_error -->
               />
             </div>
             <div>
-              <label for="jurisdiction" class="block text-sm font-medium text-gray-300 mb-2">
-                Jurisdiction
-              </label>
+              <label for="jurisdiction" class="block text-sm font-medium text-gray-300 mb-2"> Jurisdiction </label>
               <input
                 type="text"
-                id="jurisdiction";
+                id="jurisdiction"
+                ;
                 bind:value={formData.jurisdiction}
                 required
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
@@ -274,7 +262,8 @@ https://svelte.dev/e/js_parse_error -->
               </label>
               <input
                 type="text"
-                id="badgeNumber";
+                id="badgeNumber"
+                ;
                 bind:value={formData.badgeNumber}
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
                 placeholder="Badge number"
@@ -285,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="space-y-3" transitislide={{ duration: 300, easing: cubicOut }}>
             <label class="flex items-start space-x-3 cursor-pointer">
               <input
-                type="checkbox"
+                type="checkbox";
                 bind:checked={formData.agreeToTerms}
                 required
                 class="mt-0.5 h-4 w-4 text-yellow-500 bg-gray-700 border-gray-600 rounded focus:ring-yellow-500 focus:ring-2"
@@ -296,7 +285,8 @@ https://svelte.dev/e/js_parse_error -->
             </label>
             <label class="flex items-start space-x-3 cursor-pointer">
               <input
-                type="checkbox";
+                type="checkbox"
+                ;
                 bind:checked={formData.agreeToPrivacy}
                 required
                 class="mt-0.5 h-4 w-4 text-yellow-500 bg-gray-700 border-gray-600 rounded focus:ring-yellow-500 focus:ring-2"
@@ -315,9 +305,18 @@ https://svelte.dev/e/js_parse_error -->
         >
           {#if isLoading}
             <span class="flex items-center justify-center">
-              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg
+                class="animate-spin -ml-1 mr-3 h-5 w-5 text-black"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               {authMode === 'login' ? 'Signing In...' : 'Creating Account...'}
             </span>
@@ -329,15 +328,13 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Demo Notice -->
       {#if authMode === 'login'}
         <div class="mt-6 text-center">
-          <p class="text-gray-400 text-sm">
-            Demo: Use any email and password to login
-          </p>
+          <p class="text-gray-400 text-sm">Demo: Use any email and password to login</p>
         </div>
       {/if}
       <!-- Alternative Action -->
       <div class="mt-6 text-center">
         <p class="text-gray-400 text-sm">
-          {authMode === 'login' ? "Don't have an account?" : "Already have an account?"}
+          {authMode === 'login' ? "Don't have an account?" : 'Already have an account?'}
           <button
             type="button"
             onclick={toggleAuthMode}
@@ -350,9 +347,10 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
+
 <style>
   /* Custom checkbox styling for better visibility */
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     accent-color: #eab308;
   }
 </style>

@@ -1,4 +1,3 @@
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   /**
@@ -42,7 +41,7 @@
       portableArtifact?: PortableArtifactInfo;
       minioStorage?: MinioStorageInfo;
       processingTimeMs?: number;
-    };
+    }
     value: string;
     matches: (state: string) => boolean;
   }
@@ -75,7 +74,7 @@
     context: ,
     value: 'idle',
     matches: (_: string) => false;
-  };
+  }
   // Local snapshot (augmented)
   let currentState: EvidenceActorState = {
     ...initialSnapshot,
@@ -102,7 +101,7 @@
     url: import.meta.env.VITE_RABBITMQ_WS_URL || 'ws://localhost:15674/ws',
     exchange: 'evidence.processing',
     routingKey: evidenceId;
-  };
+  }
   let rabbitClient: unknown = null;
   let rabbitSubscription: unknown = null;
   async function connectRabbitMQ() {
@@ -134,19 +133,19 @@
             console.error('RabbitMQ message parse error', e);
           }
         });
-      };
+      }
       rabbitClient.onStompError = (frame: IFrame) => {
         actor.send({
           type: 'ANALYSIS_ERROR',
           error: frame.headers['message'] || 'RabbitMQ STOMP error';
         });
-      };
+      }
       rabbitClient.onWebSocketClose = () => {
         if (!eventSource) {
           console.warn('RabbitMQ closed, falling back to SSE');
           useRabbitMQ = false;
         }
-      };
+      }
       rabbitClient.activate();
     } catch (e) {
       console.warn('RabbitMQ unavailable, using SSE only:', e);
@@ -173,7 +172,7 @@
     predictive_frames: 3,
     ui_layout_compression: false
     target_compression_ratio: 50
-  };
+  }
   // Reactive values with safe fallbacks
   // Derived replacements
   let progress = 0;
@@ -229,21 +228,21 @@
     return () => {
       subscription?.unsubscribe && subscription.unsubscribe();
       disconnectStream();
-    };
+    }
   });
   onDestroy(() => {
     actor?.stop && actor.stop();
     disconnectStream();
   });
   // File handling
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     const files = target.file;
     if (files && files.length > 0) {
       selectedFile = files[0];
     }
   }
-  function handleFileDrop(event: DragEvent) {
+  function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     const files = event.dataTransfer?.file;
@@ -251,11 +250,11 @@
       selectedFile = files[0];
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
   }
@@ -304,12 +303,12 @@
           const e = err instanceof Error ? err : new Error(String(err));
           console.error('Failed to parse SSE data:', e);
         }
-      };
+      }
       eventSource.onerror = (ev: Event) => {
         console.error('SSE connection error:', ev);
         actor.send({ type: 'ANALYSIS_ERROR', error: 'Connection lost' });
         disconnectStream();
-      };
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message: String(err);
       console.error('Failed to start processing:', err);
@@ -367,6 +366,7 @@
     if (url) window.open(url, '_blank');
   }
 </script>
+
 <div class="w-full max-w-4xl mx-auto nes-container">
   <div class="yorha-panel-header">
     <h3 class="nes-text is-primary flex items-center gap-2">
@@ -397,18 +397,11 @@
           <div class="text-4xl">📄</div>
           <div>
             <h3 class="text-lg font-medium">Upload Legal Evidence</h3>
-            <p class="text-sm text-gray-600 mt-1">
-              Drag and drop a file here, or click to select
-            </p>
+            <p class="text-sm text-gray-600 mt-1">Drag and drop a file here, or click to select</p>
           </div>
           <!-- wrap the input inside the label to avoid separate id/for and potential attribute duplication -->
           <label class="cursor-pointer inline-flex items-center justify-center px-4 py-2 rounded bg-white border">
-            <input
-              type="file"
-              onchange={handleFileSelect}
-              accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
-              class="hidden"
-            />
+            <input type="file" onchange={handleFileSelect} accept=".pdf,.docx,.txt,.png,.jpg,.jpeg" class="hidden" />
             <span class="text-sm">Select a file</span>
           </label>
         </div>
@@ -427,9 +420,7 @@
           </div>
         </div>
         {#if !isProcessing && !isCompleted}
-          <button type="button" class="bits-btn" onclick={resetWorkflow}>
-            Change File
-          </button>
+          <button type="button" class="bits-btn" onclick={resetWorkflow}> Change File </button>
         {/if}
       </div>
     {/if}
@@ -443,12 +434,8 @@
             bind:checked={neuralSpriteConfig.enable_compression}
             class="rounded"
           />
-            <label for="enable-neural-sprite" class="text-sm font-medium">
-            🧬 Enable Neural Sprite Optimization
-          </label>
-          <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
-            ADVANCED
-          </span>
+          <label for="enable-neural-sprite" class="text-sm font-medium"> 🧬 Enable Neural Sprite Optimization </label>
+          <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full"> ADVANCED </span>
         </div>
         {#if neuralSpriteConfig.enable_compression}
           <div class="space-y-3 ml-6 border-l-2 border-purple-200 pl-4">
@@ -483,13 +470,11 @@
             <div class="flex items-center gap-2">
               <input
                 type="checkbox"
-                id="ui-layout-compression"
+                id="ui-layout-compression";
                 bind:checked={neuralSpriteConfig.ui_layout_compression}
                 class="rounded"
               />
-              <label for="ui-layout-compression" class="text-sm">
-                UI Layout Compression Demo
-              </label>
+              <label for="ui-layout-compression" class="text-sm"> UI Layout Compression Demo </label>
             </div>
           </div>
         {/if}
@@ -511,14 +496,11 @@
           <span class="text-sm text-gray-600">{progress}% Complete</span>
         </div>
         <div class="w-full bg-gray-200 rounded-full h-2">
-          <div
-            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            style="width: {progress}%"
-          ></div>
+          <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {progress}%"></div>
         </div>
         <!-- Current Step Display -->
         <div class="space-y-2">
-          {#each (currentState.context.streamingUpdates || []) as update}
+          {#each currentState.context.streamingUpdates || [] as update}
             <div class="flex items-center justify-between text-sm">
               <div class="flex items-center gap-2">
                 {#if update.status === 'completed'}
@@ -543,9 +525,7 @@
         </div>
         {#if canCancel}
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" onclick={cancelProcessing}>
-              Cancel Processing
-            </button>
+            <button type="button" class="bits-btn" onclick={cancelProcessing}> Cancel Processing </button>
           </div>
         {/if}
       </div>
@@ -558,17 +538,13 @@
           <h3 class="font-medium text-red-800">Processing Error</h3>
         </div>
         <div class="space-y-1">
-          {#each (currentState.context.errors || []) as error}
+          {#each currentState.context.errors || [] as error}
             <p class="text-sm text-red-700">{error}</p>
           {/each}
         </div>
         <div class="flex gap-2 mt-3">
-          <button type="button" class="bits-btn" onclick={retryProcessing}>
-            Retry
-          </button>
-          <button type="button" class="bits-btn" onclick={resetWorkflow}>
-            Reset
-          </button>
+          <button type="button" class="bits-btn" onclick={retryProcessing}> Retry </button>
+          <button type="button" class="bits-btn" onclick={resetWorkflow}> Reset </button>
         </div>
       </div>
     {/if}
@@ -586,21 +562,11 @@
             <div class="space-y-3">
               <div class="flex items-center justify-center gap-4">
                 <!-- ensure each element has unique attributes and no duplicate handlers -->
-                <button
-                  type="button"
-                  class="bits-btn px-4 py-2"
-                  onclick={openPortableArtifact}
-                >
+                <button type="button" class="bits-btn px-4 py-2" onclick={openPortableArtifact}>
                   📦 Download Portable Artifact
                 </button>
                 {#if currentState.context.minioStorage}
-                  <button
-                    type="button"
-                    class="bits-btn"
-                    onclick={openMinioStorage}
-                  >
-                    🗄️ View in Archive
-                  </button>
+                  <button type="button" class="bits-btn" onclick={openMinioStorage}> 🗄️ View in Archive </button>
                 {/if}
               </div>
               {#if currentState.context.portableArtifact?.compressionRatio}
@@ -611,9 +577,7 @@
             </div>
           {/if}
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" onclick={resetWorkflow}>
-              Process Another Evidence
-            </button>
+            <button type="button" class="bits-btn" onclick={resetWorkflow}> Process Another Evidence </button>
           </div>
         </div>
       </div>
@@ -626,12 +590,11 @@
           <h3 class="font-medium text-yellow-800">Processing Cancelled</h3>
           <p class="text-sm text-yellow-700">Workflow was cancelled by user</p>
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" onclick={resetWorkflow}>
-              Start New Workflow
-            </button>
+            <button type="button" class="bits-btn" onclick={resetWorkflow}> Start New Workflow </button>
           </div>
         </div>
       </div>
     {/if}
   </div>
-</div>;
+</div>
+;

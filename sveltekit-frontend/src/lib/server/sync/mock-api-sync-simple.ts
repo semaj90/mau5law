@@ -6,9 +6,9 @@
 const mockDb = {
   async query(sql: string): Promise<any> {
     console.log(`Mock DB Query: ${sql}`);
-    return { rows: [] };
+    return { rows: [] }
   }
-};
+}
 // Mock data generators
 export const mockDataGenerators = {
   /**
@@ -38,7 +38,7 @@ export const mockDataGenerators = {
         embedding: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         createdAt: new Date(),
         updatedAt: new Date()
-      };
+      }
       mockDocs.push(doc);
     }
     return mockDocs;
@@ -82,7 +82,7 @@ export const mockDataGenerators = {
           quantizationBits: [4, 8][Math.floor(Math.random() * 2)]
         },
         performanceHistory: []
-      };
+      }
       states.push(state);
     }
     return states;
@@ -131,7 +131,7 @@ export const mockDataGenerators = {
         totalConfidence: 0.75 + Math.random() * 0.25,
         predictionLatencyMs: 5 + Math.random() * 20,
         cacheHitRatio: 0.6 + Math.random() * 0.4
-      };
+      }
       predictions.push(prediction);
     }
     return predictions;
@@ -149,7 +149,7 @@ export const mockDataGenerators = {
         compressionRatio: 0.2 + Math.random() * 0.3,
         cacheState: ['active', 'stale', 'pending'][Math.floor(Math.random() * 3)],
         createdAt: new Date().toISOString()
-      };
+      }
       shards.push(shard);
     }
     return shards;
@@ -170,12 +170,12 @@ export const mockDataGenerators = {
         keys: [`chr_key_${i}_1`, `chr_key_${i}_2`, `chr_key_${i}_3`],
         ttlSec: 300 + Math.random() * 3600,
         createdAt: new Date().toISOString()
-      };
+      }
       manifests.push(manifest);
     }
     return manifests;
   }
-};
+}
 // Database sync operations (simplified mock)
 export const databaseSync = {
   /**
@@ -189,10 +189,10 @@ export const databaseSync = {
       await mockDb.query(`INSERT INTO legal_documents VALUES (...)`);
       await mockDb.query(`INSERT INTO vector_embeddings VALUES (...)`);
       console.log(`✅ Synced ${mockDocs.length} mock legal documents with vector embeddings`);
-      return { success: true, count: mockDocs.length };
+      return { success: true, count: mockDocs.length }
     } catch (error: any) {
       console.error('❌ Failed to sync mock legal documents:', error);
-      return { success: false, error: error.message, count: 0 };
+      return { success: false, error: error.message, count: 0 }
     }
   },
   /**
@@ -205,10 +205,10 @@ export const databaseSync = {
       // Simulate database operations
       await mockDb.query(`INSERT INTO qlora_training_jobs VALUES (...)`);
       console.log(`✅ Synced ${mockStates.length} QLoRA training jobs`);
-      return { success: true, count: mockStates.length };
+      return { success: true, count: mockStates.length }
     } catch (error: any) {
       console.error('❌ Failed to sync QLoRA training data:', error);
-      return { success: false, error: error.message, count: 0 };
+      return { success: false, error: error.message, count: 0 }
     }
   },
   /**
@@ -221,13 +221,13 @@ export const databaseSync = {
       // Simulate database operations
       await mockDb.query(`INSERT INTO predictive_asset_cache VALUES (...)`);
       console.log(`✅ Synced ${mockPredictions.length} predictive asset cache entries`);
-      return { success: true, count: mockPredictions.length };
+      return { success: true, count: mockPredictions.length }
     } catch (error: any) {
       console.error('❌ Failed to sync predictive asset cache:', error);
-      return { success: false, error: error.message, count: 0 };
+      return { success: false, error: error.message, count: 0 }
     }
   }
-};
+}
 // Vector search operations (simplified mock)
 export const vectorSearch = {
   /**
@@ -272,7 +272,7 @@ export const vectorSearch = {
       throw error;
     }
   }
-};
+}
 // Comprehensive sync orchestrator
 export const syncOrchestrator = {
   /**
@@ -285,7 +285,7 @@ export const syncOrchestrator = {
       qloraTraining: await databaseSync.syncQLoRATrainingData(),
       predictiveCache: await databaseSync.syncPredictiveAssetCache(),
       timestamp: new Date().toISOString()
-    };
+    }
     const totalSynced = Object.values(results)
       .filter(r => typeof r === 'object' && r !== null && 'success' in r && r.success)
       .reduce((sum, r: any) => sum + (r.count || 0), 0);
@@ -293,13 +293,13 @@ export const syncOrchestrator = {
     return {
       success: true
       totalRecords: totalSynced
-      breakdown: results
+      breakdown: results;
       performance: {
         syncDuration: '~2-5 seconds',
         cachePrewarmed: true
         vectorIndexReady: true
       }
-    };
+    }
   },
   /**
    * Health check for all integrated systems
@@ -308,28 +308,28 @@ export const syncOrchestrator = {
     const checks = {
       database: true, // Mock as working
       pgvector: true, // Mock as working
-      drizzle: true, // Mock as working
+      drizzle: true, // Mock as working;
       redis: true, // Mock as working
       mockDataReady: true // Always true for mock
-    };
+    }
     try {
       // Mock health checks
       await new Promise(resolve => setTimeout(resolve, 100); // Simulate async check
       return {
         status: Object.values(checks).every(Boolean) ? 'healthy' : 'partial',
         checks,
-        mockSystem: true
+        mockSystem: true;
         timestamp: new Date().toISOString()
-      };
+      }
     } catch (error: any) {
       console.error('❌ Health check failed:', error);
       return {
         status: 'error',
         checks,
         error: error.message,
-        mockSystem: true
+        mockSystem: true;
         timestamp: new Date().toISOString()
-      };
+      }
     }
   }
-};
+}

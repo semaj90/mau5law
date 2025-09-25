@@ -38,9 +38,9 @@ async function* streamQLoRAResponse(
 ): AsyncGenerator<StreamingResponse> {
   const { query, topologyType = 'general', accuracyTarget = 90, streamBinary = true } = request;
   try {
-    yield { type: 'status', message: 'Initializing QLoRA predictor...' };
+    yield { type: 'status', message: 'Initializing QLoRA predictor...' }
     const orch = await getOrchestrator();
-    yield { type: 'status', message: 'Generating topology prediction...' };
+    yield { type: 'status', message: 'Generating topology prediction...' }
     // Process with unified intelligence
     const startTime = Date.now();
     const result = await orch.processWithUnifiedIntelligence({
@@ -102,7 +102,7 @@ async function* streamQLoRAResponse(
       }
     });
     const processingTime = Date.now() - startTime;
-    yield { type: 'status', message: 'Fetching system metrics...' };
+    yield { type: 'status', message: 'Fetching system metrics...' }
     // Get system metrics
     const metrics = await orch.getSystemMetrics();
     const cacheStats = await orch.getCacheStatistics();
@@ -142,9 +142,9 @@ async function* streamQLoRAResponse(
         compressedSize: 0,
         encoding: 'gzip'
       }
-    };
+    }
     if (streamBinary) {
-      yield { type: 'status', message: 'Compressing binary response...' };
+      yield { type: 'status', message: 'Compressing binary response...' }
       // Encode to binary with compression
       const binaryData = QLoRABinaryCodec.encode(qloraResponse);
       const compressionStats = QLoRABinaryCodec.getCompressionStats(qloraResponse, binaryData);
@@ -152,10 +152,10 @@ async function* streamQLoRAResponse(
       qloraResponse.binaryMetadata = {
         ...compressionStats,
         encoding: 'gzip'
-      };
+      }
       yield {
         type: 'binary',
-        data: binaryData
+        data: binaryData;
         metadata: {
           compressionRatio: compressionStats.compressionRatio,
           originalSize: compressionStats.originalSize,
@@ -163,27 +163,27 @@ async function* streamQLoRAResponse(
           cacheHit: (result as { cacheMetrics?: any }).cacheMetrics.totalCacheHitRate > 0,
           processingTime
         }
-      };
+      }
     } else {
       // Stream as JSON tokens for demonstration
       const responseText = `QLoRA Prediction: ${(result as any).accuracy}% accuracy, ${(result as { cacheMetrics?: any }).cacheMetrics.totalCacheHitRate > 0 ? 'cache hit' : 'cache miss'}, ${processingTime}ms processing time. Topology: ${qloraResponse.topology.structure} structure with ${qloraResponse.prediction.topology.nodes} nodes.`;
       const tokens = responseText.split(' ');
       for (const token of tokens) {
         await new Promise((resolve) => setTimeout(resolve, 50); // Simulate streaming
-        yield { type: 'token', value: token + ' ' };
+        yield { type: 'token', value: token + ' ' }
       }
     }
     yield {
       type: 'end',
       message: 'QLoRA processing complete',
       metadata: { accuracy: (result as any).accuracy, processingTime }
-    };
+    }
   } catch (error: any) {
     console.error('[WebSocket] QLoRA streaming error:', error);
     yield {
       type: 'error',
       message: `QLoRA processing failed: ${(error as any)?.message || 'Unknown error'}`
-    };
+    }
   }
 }
 export function createWebSocketServer() {

@@ -5,7 +5,6 @@
  */
 
 import fs from 'fs';
-import path from 'path';
 
 // Files that need fixing based on comprehensive TypeScript error search
 const filesToFix = [

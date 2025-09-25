@@ -109,7 +109,7 @@ export interface VectorCollection {
   metric: 'cosine' | 'euclidean' | 'dot_product';
   vectorCount: number;
   indexType: 'ivfflat' | 'hnsw' | 'exact';
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   created: string;
   updated: string;
 }
@@ -117,7 +117,7 @@ export interface VectorIndex {
   name: string;
   collection: string;
   type: 'ivfflat' | 'hnsw' | 'exact';
-  parameters: { [key: string]: any };
+  parameters: { [key: string]: any }
   performance: IndexPerformance;
 }
 export interface IndexPerformance {
@@ -161,7 +161,7 @@ export interface ChainComponent {
   id: string;
   type: 'llm' | 'prompt' | 'memory' | 'tool' | 'parser' | 'retriever';
   name: string;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
   inputs: string[];
   outputs: string[];
   dependencies: string[];
@@ -185,7 +185,7 @@ export interface ChainMemory {
   memoryKey: string;
   aiPrefix: string;
   humanPrefix: string;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface ChainTool {
   name: string;
@@ -394,7 +394,7 @@ export interface NamedEntity {
   confidence: number;
   startChar: number;
   endChar: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export type EntityLabel =
   | 'PERSON'
@@ -430,7 +430,7 @@ export interface ProcessingError {
   message: string;
   code: string;
   timestamp: string;
-  context: { [key: string]: any };
+  context: { [key: string]: any }
   resolved: boolean;
 }
 export interface LegalAnalysis {
@@ -849,7 +849,7 @@ export interface ErrorEvent {
   service: string;
   message: string;
   stack?: string;
-  context: { [key: string]: any };
+  context: { [key: string]: any }
   resolved: boolean;
 }
 export interface UsageMetrics {
@@ -893,7 +893,7 @@ export interface Alert {
   timestamp: string;
   acknowledged: boolean;
   resolved: boolean;
-  details: { [key: string]: any };
+  details: { [key: string]: any }
 }
 export type AlertSeverity = 'info' | 'warning' | 'error' | 'critical';
 // Configuration Types
@@ -940,19 +940,19 @@ export interface ChainConfiguration {
   prompt: string;
   memory: string;
   tools: string[];
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface MemoryConfiguration {
   type: string;
   maxTokens: number;
   persistence: boolean;
   compression: boolean;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface ToolConfiguration {
   name: string;
   enabled: boolean;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
   permissions: string[];
   rateLimits: RateLimit[];
 }
@@ -960,7 +960,7 @@ export interface CallbackConfiguration {
   name: string;
   enabled: boolean;
   events: string[];
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface AIPerformanceConfiguration {
   gpu: GPUConfiguration;
@@ -1071,7 +1071,7 @@ export interface BackupConfiguration {
 }
 export interface BackupDestination {
   type: 's3' | 'gcs' | 'azure' | 'local';
-  config: { [key: string]: any };
+  config: { [key: string]: any }
   priority: number;
 }
 export interface CacheConfiguration {
@@ -1146,7 +1146,7 @@ export interface AuthProvider {
   name: string;
   type: 'local' | 'oauth' | 'saml' | 'ldap';
   enabled: boolean;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
   priority: number;
 }
 export interface SessionConfig {
@@ -1165,7 +1165,7 @@ export interface MFAConfig {
 export interface MFAMethod {
   type: 'totp' | 'sms' | 'email' | 'hardware';
   enabled: boolean;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface PasswordPolicy {
   minLength: number;
@@ -1228,7 +1228,7 @@ export interface KeyManagementConfig {
   provider: 'local' | 'aws_kms' | 'azure_keyvault' | 'gcp_kms';
   rotation: boolean;
   rotationInterval: number;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface AuditConfig {
   enabled: boolean;
@@ -1247,7 +1247,7 @@ export interface AuditStorage {
   type: 'database' | 'file' | 'external';
   encryption: boolean;
   compression: boolean;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface ComplianceConfig {
   standards: ComplianceStandard[];
@@ -1308,7 +1308,7 @@ export interface LoggingConfig {
 }
 export interface LogOutput {
   type: 'console' | 'file' | 'syslog' | 'elasticsearch' | 'external';
-  config: { [key: string]: any };
+  config: { [key: string]: any }
   filters: LogFilter[];
 }
 export interface LogFilter {
@@ -1336,7 +1336,7 @@ export interface AlertingConfig {
 export interface AlertChannel {
   name: string;
   type: 'email' | 'slack' | 'webhook' | 'sms' | 'pagerduty';
-  config: { [key: string]: any };
+  config: { [key: string]: any }
   enabled: boolean;
 }
 export interface AlertRule {
@@ -1372,7 +1372,7 @@ export interface DashboardPanel {
   type: 'graph' | 'table' | 'stat' | 'gauge' | 'heatmap';
   query: string;
   position: PanelPosition;
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface PanelPosition {
   x: number;
@@ -1743,7 +1743,7 @@ export interface APIResponse<T = any> {
 export interface APIError {
   code: string;
   message: string;
-  details?: { [key: string]: any };
+  details?: { [key: string]: any }
   timestamp: string;
   requestId: string;
   stack?: string;
@@ -1942,7 +1942,7 @@ export type StepType =
 }
 export interface StepConfig {
   template?: string;
-  parameters: { [key: string]: any };
+  parameters: { [key: string]: any }
   resources: ResourceRequirement[];
   permissions: string[];
 }
@@ -1963,12 +1963,12 @@ export interface StepOutput {
   name: string;
   type: string;
   destination: 'variable' | 'database' | 'file' | 'api';
-  destinationConfig?: { [key: string]: any };
+  destinationConfig?: { [key: string]: any }
   transformation?: TransformationRule[];
 }
 export interface TransformationRule {
   type: 'map' | 'filter' | 'reduce' | 'format' | 'validate';
-  config: { [key: string]: any };
+  config: { [key: string]: any }
   script?: string;
 }
 export interface StepCondition {
@@ -1999,7 +1999,7 @@ export interface ErrorHandlingConfig {
 export interface ErrorHandler {
   errorType: string;
   action: 'retry' | 'skip' | 'rollback' | 'notify' | 'custom';
-  config: { [key: string]: any };
+  config: { [key: string]: any }
 }
 export interface WorkflowLoggingConfig {
   level: 'debug' | 'info' | 'warning' | 'error';
@@ -2043,7 +2043,7 @@ export type ExecutionStatus = 'pending' | 'running' | 'completed' | 'failed' | '
 export interface ExecutionTrigger {
   type: string;
   source: string;
-  data: { [key: string]: any };
+  data: { [key: string]: any }
   timestamp: string;
 }
 export interface StepExecution {
@@ -2052,8 +2052,8 @@ export interface StepExecution {
   startTime: string;
   endTime?: string;
   duration?: number;
-  inputs: { [key: string]: any };
-  outputs: { [key: string]: any };
+  inputs: { [key: string]: any }
+  outputs: { [key: string]: any }
   error?: StepError;
   retries: number;
   logs: LogEntry[];
@@ -2062,12 +2062,12 @@ export interface StepError {
   type: string;
   message: string;
   code?: string;
-  details?: { [key: string]: any };
+  details?: { [key: string]: any }
   stack?: string;
   recoverable: boolean;
 }
 export interface ExecutionContext {
-  variables: { [key: string]: any };
+  variables: { [key: string]: any }
   environment: string;
   user?: string;
   permissions: string[];
@@ -2084,7 +2084,7 @@ export interface ExecutionError {
   message: string;
   step?: string;
   code?: string;
-  details?: { [key: string]: any };
+  details?: { [key: string]: any }
   stack?: string;
   timestamp: string;
 }
@@ -2092,7 +2092,7 @@ export interface LogEntry {
   timestamp: string;
   level: string;
   message: string;
-  context: { [key: string]: any };
+  context: { [key: string]: any }
   source: string;
 }
 // All types are already exported individually above - no namespace needed

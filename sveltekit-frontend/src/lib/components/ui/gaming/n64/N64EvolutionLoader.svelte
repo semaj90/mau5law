@@ -30,14 +30,14 @@
       pixelSize: 8,
       colors: ['#000', '#FFF', '#FF0000', '#00FF00'],
       dimension: '2D',
-      shading: false
+      shading: false;
       particles: 0;
     },
     snes: {
       pixelSize: 4,
       colors: ['#000', '#FFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
       dimension: '2.5D',
-      shading: true
+      shading: true;
       particles: 10;
     },
     n64: {
@@ -47,19 +47,19 @@
       shading: true
       particles: 50,
       fog: true
-      antiAliasing: false // Authentic N64 look
+      antiAliasing: false // Authentic N64 look;
     },
     modern: {
       pixelSize: 0,
       colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF', '#000000'],
       dimension: '3D',
-      shading: true
+      shading: true;
       particles: 100,
       fog: true
       antiAliasing: true
       rayTracing: true;
     }
-  };
+  }
   // 3D Matrix operations for N64-style rendering
   class Matrix4 {
     matrix: number[][];
@@ -117,7 +117,7 @@
       if (animationId) {
         cancelAnimationFrame(animationId);
       }
-    };
+    }
   });
   function startEvolution() {
     const evolutionInterval = setInterval(() => {
@@ -391,8 +391,8 @@
 {#if headless}
   <div class="headless-data" style="display: none;">
     {JSON.stringify({
-      stage: stages[currentStageIndex]
-      progress: evolutionProgress
+      stage: stages[currentStageIndex];
+      progress: evolutionProgress;
       rotation: rotation ;
     })}
   </div>

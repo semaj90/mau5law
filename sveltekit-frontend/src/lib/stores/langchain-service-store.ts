@@ -40,20 +40,20 @@ export interface ChatState {
 const langchainState = writable<LangChainState>({
   isProcessing: false
   isAvailable: false
-  error: null
+  error: null;
   models: []
 });
 const documentProcessingState = writable<DocumentProcessingState>({
   isProcessing: false
   progress: 0,
-  result: null
+  result: null;
   error: null
   sessionId: null
   documentId: null
 });
 const chatState = writable<ChatState>({
   messages: [],
-  isTyping: false
+  isTyping: false;
   error: null
 });
 /**
@@ -141,7 +141,7 @@ class LangChainServiceLogic {
       documentProcessingState.set({
         isProcessing: false
         progress: 0,
-        result: null
+        result: null;
         error: error instanceof Error ? error.message: 'Document processing failed',
         sessionId: null
         documentId: null
@@ -156,7 +156,7 @@ class LangChainServiceLogic {
       error: null
     });
     try {
-      const response = await fetch(`/api/legal-processing?sessionId=${sessionId}&limit=10`);
+      // removed unused response assignment
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).ok) {
         throw new Error(`Failed to load session: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).statusText}`);
       }
@@ -202,7 +202,7 @@ class LangChainServiceLogic {
             ...state,
             result: null
             documentId: null
-          };
+          }
         }
         return state;
       });
@@ -217,12 +217,12 @@ class LangChainServiceLogic {
     chatState.update(state => ({
       ...state,
       messages: [...state.messages, { role: 'user', content: message }],
-      isTyping: true
+      isTyping: true;
       error: null
     });
     try {
       // Simple request - no complex callback managers
-      const response = await langExtractService.generateLegalSummary(message, 'case');
+      // removed unused response assignment
       chatState.update(state => ({
         ...state,
         messages: [...state.messages, { role: 'assistant', content: (response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).summary }],
@@ -240,14 +240,14 @@ class LangChainServiceLogic {
     documentProcessingState.set({
       isProcessing: false
       progress: 0,
-      result: null
+      result: null;
       error: null
     });
   }
   clearChat(): void {
     chatState.set({
       messages: [],
-      isTyping: false
+      isTyping: false;
       error: null
     });
   }
@@ -257,13 +257,13 @@ export const langchainServiceLogic = new LangChainServiceLogic();
 // Read-only stores for UI consumption
 export const langchainService: Readable<LangChainState> = {
   subscribe: langchainState.subscribe
-};
+}
 export const documentProcessing: Readable<DocumentProcessingState> = {
   subscribe: documentProcessingState.subscribe
-};
+}
 export const chatService: Readable<ChatState> = {
   subscribe: chatState.subscribe
-};
+}
 // Derived computed states
 export const isLangChainReady = derived(
   langchainService,

@@ -8,15 +8,13 @@
     gap?: string;
     children?: any;
   }
-  let {
-    columns = 2,
-    gap = "16px",
-    children
-  }: Props = $props();
+  let { columns = 2, gap = '16px', children }: Props = $props();
 </script>
-<div class="form-grid" style="--columns: {columns}; --gap: {gap};">
+
+<div class="form-grid" style="--columns: {columns} --gap: {gap}">
   {@render children?.()}
 </div>
+
 <style>
   .form-grid {
     display: grid;

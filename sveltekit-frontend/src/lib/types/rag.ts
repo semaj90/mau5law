@@ -9,13 +9,13 @@ export interface DocumentType {
   title: string;
   content: string;
   type: 'legal' | 'case' | 'evidence' | 'research' | 'document';
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface RAGSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   type: DocumentType['type'];
   // Additional properties expected by optimization files
   document?: RAGDocument;
@@ -29,7 +29,7 @@ export interface RAGSearchResult {
     precedential: number;
     jurisdictional: number;
     confidence: number;
-  };
+  }
   relevanceScore?: number;
   rank?: number;
   snippet?: string;
@@ -54,7 +54,7 @@ export interface OptimizedRAGDocument {
   content: string;
   type: ExtendedDocumentType;
   embedding?: number[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 // Type guards for safe type checking
 export function isValidDocumentType(type: string): type is DocumentType['type'] {
@@ -70,14 +70,14 @@ export interface DocumentChunk {
   documentId: string;
   content: string;
   embedding: number[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   chunkIndex: number;
 }
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
   includeMetadata?: boolean;
-  filters?: { [key: string]: any };
+  filters?: { [key: string]: any }
 }
 export interface EmbeddingConfig {
   model: string;
@@ -101,7 +101,7 @@ export interface RAGDocument {
     fileSize: number;
     language: string;
     tags: string[];
-  };
+  }
   createdAt?: Date;
   updatedAt?: Date;
   version?: string;
@@ -111,14 +111,14 @@ export interface SearchResult {
   content: string;
   score: number;
   type: DocumentType['type'];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface TextChunk {
   id: string;
   content: string;
   documentId: string;
   index: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   // Additional properties for optimization compatibility
   startIndex?: number;
   endIndex?: number;

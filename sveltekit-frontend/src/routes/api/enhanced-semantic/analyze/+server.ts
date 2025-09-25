@@ -1,4 +1,4 @@
-import { URL } from "url"
+
 import type { RequestHandler } from './$types.js'
 export const GET: RequestHandler = async ({ url }) => {
 	try {

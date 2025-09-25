@@ -33,7 +33,7 @@
   async function testCaseList() {
     isLoading = true;
     try {
-      const response = await fetch('/api/cases');
+      // removed unused response assignment
       const result = await (response as { json?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; ok?: unknown }).ok) {
         testResult = `✅ Cases retrieved successfully!\nTotal: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.length}\nFirst few cases:\n${JSON.stringify(data).slice(0, 3), null, 2)}`;
@@ -47,6 +47,7 @@
     }
   }
 </script>
+
 <div class="test-page p-8 bg-gray-900 text-green-400 min-h-screen font-mono">
   <h1 class="text-3xl font-bold mb-8 text-yellow-400">YoRHa Detective API Test</h1>
   <div class="space-y-4 mb-8">
@@ -81,3 +82,4 @@
     </ul>
   </div>
 </div>
+;

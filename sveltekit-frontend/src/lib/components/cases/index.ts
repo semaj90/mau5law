@@ -14,5 +14,5 @@ export interface CaseFilterOptions {
   dateRange?: {
     start: Date;
     end: Date;
-  };
+  }
 }

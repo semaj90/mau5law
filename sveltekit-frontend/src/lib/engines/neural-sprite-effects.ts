@@ -30,7 +30,7 @@ export class NeuralSpriteEffects {
         width: canvasWidth
         height: 2,
         fill: `rgba(0, 0, 0, ${intensity})`,
-        selectable: false
+        selectable: false;
         evented: false
         excludeFromExport: true
       });
@@ -72,7 +72,7 @@ export class NeuralSpriteEffects {
         fontFamily: "monospace",
         fill: color
         opacity: Math.random() * 0.8 + 0.2,
-        selectable: false
+        selectable: false;
         evented: false
       });
       rainDrops.push(raindrop);
@@ -89,10 +89,10 @@ export class NeuralSpriteEffects {
         }
       });
       this.canvas.renderAll();
-    };
+    }
     const rainInterval = setInterval(animateRain, 100);
     this.activeEffects.set("matrix-rain", {
-      interval: rainInterval
+      interval: rainInterval;
       drops: rainDrops
     });
   }
@@ -115,7 +115,7 @@ export class NeuralSpriteEffects {
         setTimeout(() => {
             obj.set({
               left: originalLeft
-              top: originalTop
+              top: originalTop;
               opacity: originalOpacity
             });
             this.canvas.renderAll();
@@ -138,7 +138,7 @@ export class NeuralSpriteEffects {
         radius: 5 + Math.random() * 10,
         fill: "#00ff88",
         opacity: 0.7,
-        selectable: false
+        selectable: false;
         evented: false
       });
       nodes.push(node);
@@ -161,7 +161,7 @@ export class NeuralSpriteEffects {
               stroke: "#00aaff",
               strokeWidth: 2,
               opacity: 0.3,
-              selectable: false
+              selectable: false;
               evented: false
             },
           );
@@ -181,7 +181,7 @@ export class NeuralSpriteEffects {
         connection.set("opacity", newOpacity);
       });
       this.canvas.renderAll();
-    };
+    }
     const neuralInterval = setInterval(animateNeural, 200);
     this.activeEffects.set("neural-network", {
       interval: neuralInterval
@@ -206,7 +206,7 @@ export class NeuralSpriteEffects {
         stroke: color
         strokeWidth: 3,
         opacity: 0,
-        selectable: false
+        selectable: false;
         evented: false
       });
       this.canvas.add(glow);
@@ -220,7 +220,7 @@ export class NeuralSpriteEffects {
           onChange: () => this.canvas.renderAll(),
           onComplete: animateHighlight
         });
-      };
+      }
       animateHighlight();
     });
   }
@@ -257,7 +257,7 @@ export class NeuralSpriteEffects {
       shape.set({
         left: Math.random() * this.canvas.getWidth(),
         top: Math.random() * this.canvas.getHeight(),
-        selectable: false
+        selectable: false;
         evented: false
       });
       stressObjects.push(shape);
@@ -280,10 +280,10 @@ export class NeuralSpriteEffects {
         }
       });
       this.canvas.renderAll();
-    };
+    }
     const stressInterval = setInterval(animateStress, 16); // ~60 FPS
     this.activeEffects.set("stress-test", {
-      interval: stressInterval
+      interval: stressInterval;
       objects: stressObjects
     });
   }
@@ -299,7 +299,7 @@ export class NeuralSpriteEffects {
         radius: 2 + Math.random() * 4,
         fill: `hsl(${120 + Math.random() * 120}, 80%, 60%)`,
         opacity: 0.8,
-        selectable: false
+        selectable: false;
         evented: false
       });
       // Add velocity properties
@@ -333,7 +333,7 @@ export class NeuralSpriteEffects {
         }
       });
       this.canvas.renderAll();
-    };
+    }
     const particleInterval = setInterval(animateParticles, 33); // ~30 FPS
     this.activeEffects.set("particles", {
       interval: particleInterval

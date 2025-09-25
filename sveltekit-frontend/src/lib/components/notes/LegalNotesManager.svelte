@@ -88,7 +88,7 @@
       unsubscribeNotes();
       unsubscribeStats();
       unsubscribeFilters();
-    };
+    }
   });
   // Filter management
   function applyFilters() {
@@ -127,7 +127,7 @@
         aiGenerated: false
         processingStatus: 'completed';
       }
-    };
+    }
     await saveLegalNote(note);
     resetNewNoteForm();
     showCreateNote = false;
@@ -141,11 +141,11 @@
       caseId: '',
       priority: 'medium',
       riskLevel: 'low';
-    };
+    }
   }
   // Note editing
   function startEditNote(note: LegalNote) {
-    editingNote = { ...note };
+    editingNote = { ...note }
   }
   async function saveEditedNote() {
     if (!editingNote) return;
@@ -167,7 +167,7 @@
         ...note.metadata,
         starred: !note.metadata.starred;
       }
-    };
+    }
     await saveLegalNote(updated);
   }
   async function deleteNote(noteId: string) {
@@ -215,7 +215,7 @@
       'ocr_extracted': 'bg-cyan-500',
       'todo': 'bg-yellow-500',
       'general': 'bg-gray-500'
-    };
+    }
     return colors[noteType] || 'bg-gray-500';
   }
   function addTag(tag: string) {
@@ -223,10 +223,11 @@
       newNote.tags = [...newNote.tags, tag.trim()];
     }
   }
-  function removeTag(index: number) {
+  function removeTag(_index: number) {
     newNote.tags = newNote.tags.filter((_, i) => i !== index);
   }
 </script>
+
 <div class="space-y-6 p-6">
   <!-- Header -->
   <div class="flex justify-between items-center">
@@ -235,16 +236,14 @@
         <FileText class="h-8 w-8 text-blue-600" />
         Legal Notes Manager
       </h1>
-      <p class="text-muted-foreground">
-        AI-Enhanced Legal Documentation with OCR, Embeddings & Graph Relations
-      </p>
+      <p class="text-muted-foreground">AI-Enhanced Legal Documentation with OCR, Embeddings & Graph Relations</p>
     </div>
     <div class="flex gap-2">
-      <Button onclick={() => showCreateNote = !showCreateNote} variant="outline">
+      <Button onclick={() => (showCreateNote = !showCreateNote)} variant="outline">
         <Plus class="h-4 w-4 mr-2" />
         New Note
       </Button>
-      <Button onclick={() => showFilters = !showFilters} variant="outline">
+      <Button onclick={() => (showFilters = !showFilters)} variant="outline">
         <Filter class="h-4 w-4 mr-2" />
         Filters
       </Button>
@@ -305,9 +304,7 @@
         <div class="text-2xl font-bold">
           {(stats.byRiskLevel?.high || 0) + (stats.byRiskLevel?.critical || 0)}
         </div>
-        <div class="text-xs text-muted-foreground">
-          Require attention
-        </div>
+        <div class="text-xs text-muted-foreground">Require attention</div>
       </CardContent>
     </Card>
   </div>
@@ -324,9 +321,9 @@
         <div class="flex-1">
           <Input
             type="text"
-            placeholder="Search notes, content, citations..."
+            placeholder="Search notes, content, citations...";
             bind:value={searchQuery}
-            onkeydown={(e) => e.key === 'Enter' && applyFilters()}
+            onkeydown={e => e.key === 'Enter' && applyFilters()}
           />
         </div>
         <Button onclick={applyFilters}>
@@ -337,9 +334,7 @@
           <Brain class="h-4 w-4 mr-2" />
           Semantic
         </Button>
-        <Button onclick={clearAllFilters} variant="ghost">
-          Clear
-        </Button>
+        <Button onclick={clearAllFilters} variant="ghost">Clear</Button>
       </div>
       {#if showFilters}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
@@ -405,19 +400,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-2">Title</label>
-            <Input
-              type="text"
-              placeholder="Note title";
-              bind:value={newNote.title}
-            />
+            <Input type="text" placeholder="Note title" ; bind:value={newNote.title} />
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Case ID</label>
-            <Input
-              type="text"
-              placeholder="Optional case ID"
-              bind:value={newNote.caseId}
-            />
+            <Input type="text" placeholder="Optional case ID" bind:value={newNote.caseId} />
           </div>
           <div>
             <label class="block text-sm font-medium mb-2">Type</label>
@@ -452,11 +439,7 @@
         </div>
         <div>
           <label class="block text-sm font-medium mb-2">Content</label>
-          <Textarea
-            placeholder="Note content...";
-            bind:value={newNote.content}
-            rows={6}
-          />
+          <Textarea placeholder="Note content..." ; bind:value={newNote.content} rows={6} />
         </div>
         <div>
           <label class="block text-sm font-medium mb-2">Tags</label>
@@ -473,7 +456,7 @@
           <Input
             type="text"
             placeholder="Add tag and press Enter"
-            onkeydown={(e) => {
+            onkeydown={e => {
               if (e.key === 'Enter') {
                 addTag(e.currentTarget.value);
                 e.currentTarget.value = '';
@@ -486,9 +469,7 @@
             <Save class="h-4 w-4 mr-2" />
             Save Note
           </Button>
-          <Button onclick={() => showCreateNote = false} variant="outline">
-            Cancel
-          </Button>
+          <Button onclick={() => (showCreateNote = false)} variant="outline">Cancel</Button>
         </div>
       </CardContent>
     </Card>
@@ -500,7 +481,7 @@
         <CardTitle class="flex items-center gap-2">
           <Brain class="h-5 w-5" />
           Semantic Search Results
-          <Button onclick={() => showSemanticSearch = false} variant="ghost" size="sm">
+          <Button onclick={() => (showSemanticSearch = false)} variant="ghost" size="sm">
             <X class="h-4 w-4" />
           </Button>
         </CardTitle>
@@ -542,23 +523,14 @@
           {#if editingNote?.id === note.id}
             <!-- Edit Mode -->
             <div class="space-y-4">
-              <Input
-                type="text"
-                bind:value={editingNote.title}
-                class="font-semibold"
-              />
-              <Textarea
-                bind:value={editingNote.content}
-                rows={6}
-              />
+              <Input type="text" bind:value={editingNote.title} class="font-semibold" />
+              <Textarea bind:value={editingNote.content} rows={6} />
               <div class="flex gap-2">
                 <Button onclick={saveEditedNote} size="sm">
                   <Save class="h-4 w-4 mr-2" />
                   Save
                 </Button>
-                <Button onclick={cancelEdit} variant="outline" size="sm">
-                  Cancel
-                </Button>
+                <Button onclick={cancelEdit} variant="outline" size="sm">Cancel</Button>
               </div>
             </div>
           {:else}
@@ -631,22 +603,14 @@
                   </div>
                 </div>
                 <div class="flex gap-2">
-                  <Button
-                    onclick={() => toggleStar(note)}
-                    variant="ghost"
-                    size="sm"
-                  >
+                  <Button onclick={() => toggleStar(note)} variant="ghost" size="sm">
                     {#if note.metadata.starred}
                       <Star class="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     {:else}
                       <StarOff class="h-4 w-4" />
                     {/if}
                   </Button>
-                  <Button
-                    onclick={() => startEditNote(note)}
-                    variant="ghost"
-                    size="sm"
-                  >
+                  <Button onclick={() => startEditNote(note)} variant="ghost" size="sm">
                     <Edit3 class="h-4 w-4" />
                   </Button>
                   <Button
@@ -689,7 +653,7 @@
               : 'Create your first note to get started.'}
           </p>
           {#if !showCreateNote}
-            <Button onclick={() => showCreateNote = true}>
+            <Button onclick={() => (showCreateNote = true)}>
               <Plus class="h-4 w-4 mr-2" />
               Create Note
             </Button>
@@ -698,4 +662,5 @@
       </Card>
     {/if}
   </div>
-</div>;
+</div>
+;

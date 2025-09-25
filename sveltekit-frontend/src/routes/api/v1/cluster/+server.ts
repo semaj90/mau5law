@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
  */
 import { productionServiceClient } from '$lib/services/productionServiceClient'
 import http from "http"
-import { URL } from "url"
+
 // GET handler multiplexes sub-endpoints based on trailing path segment (health|services|metrics|root)
 export const GET: RequestHandler = async ({ url }) => {
     const endpoint = url.pathname.split('/').pop()
