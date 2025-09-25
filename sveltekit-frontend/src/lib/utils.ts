@@ -48,9 +48,9 @@ export function generateId(): string {
 /**
  * Debounce function
  */
-export function debounce<T extends (...args: any[]) => any>(,
-  func: T
-  delay: number;
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
@@ -61,9 +61,9 @@ export function debounce<T extends (...args: any[]) => any>(,
 /**
  * Throttle function
  */
-export function throttle<T extends (...args: any[]) => any>(,
-  func: T
-  delay: number;
+export function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
 ): (...args: Parameters<T>) => void {
   let lastCall = 0;
   return (...args: Parameters<T>) => {
@@ -199,7 +199,7 @@ export function formatProcessingTime(ms: number): string {
 export function getInitials(name: string): string {
   return name
     .split(' ')
-    .map(part => part.charAt(0)
+    .map(part => part.charAt(0))
     .join('')
     .toUpperCase()
     .slice(0, 2);

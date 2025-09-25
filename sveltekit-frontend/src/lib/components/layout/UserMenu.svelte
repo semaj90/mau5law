@@ -114,7 +114,7 @@
   let isAdmin = $derived(user?.role === 'admin');
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="user-menu" bind:this={dropdownElement}>
   <!-- User trigger button -->

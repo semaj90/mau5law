@@ -10,7 +10,7 @@ https://svelte.dev/e/js_parse_error -->
   interface Props {
     open?: boolean;
   }
-  let { open = $bindable(false)  }: Props = $props();
+  let { open = $bindable(false) }: Props = $props();
   // Define the command item type
   interface CommandItem {
     id: string;
@@ -28,8 +28,9 @@ https://svelte.dev/e/js_parse_error -->
   let searchQuery = $state('');
   let selectedIndex = $state(0);
   let filteredItems = $derived(searchQuery
-    ? allItems.filter(item => item.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).description.toLowerCase().includes(searchQuery.toLowerCase())
+    ? allItems.filter(item =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : allItems);
   const allItems: CommandItem[] = [
@@ -38,74 +39,71 @@ https://svelte.dev/e/js_parse_error -->
       id: 'nav-dashboard',
       title: 'Dashboard',
       description: 'Overview of cases and evidence',
-      icon: Search
+      icon: Search,
       category: 'Navigation',
       href: '/',
-      shortcut: ['⌘', 'H'];
+      shortcut: ['⌘', 'H']
     },
     {
       id: 'nav-evidence',
       title: 'Evidence Management',
       description: 'Upload and analyze evidence',
-      icon: File
+      icon: File,
       category: 'Navigation',
       href: '/evidence',
-      shortcut: ['⌘', 'E'];
+      shortcut: ['⌘', 'E']
     },
     {
       id: 'nav-cases',
       title: 'Case Management',
       description: 'Manage legal cases and documents',
-      icon: Briefcase
+      icon: Briefcase,
       category: 'Navigation',
       href: '/cases',
-      shortcut: ['⌘', 'C'];
+      shortcut: ['⌘', 'C']
     },
     // Actions
     {
       id: 'action-new-case',
       title: 'Create New Case',
       description: 'Start a new legal case',
-      icon: Briefcase
+      icon: Briefcase,
       category: 'Actions',
       action: () => console.log('Create new case'),
-      shortcut: ['⌘', 'N'];
+      shortcut: ['⌘', 'N']
     },
     {
       id: 'action-upload-evidence',
       title: 'Upload Evidence',
       description: 'Add new evidence to a case',
-      icon: File
+      icon: File,
       category: 'Actions',
       action: () => console.log('Upload evidence'),
-      shortcut: ['⌘', 'U'];
+      shortcut: ['⌘', 'U']
     },
     // Settings
     {
       id: 'settings-profile',
       title: 'Profile Settings',
       description: 'Manage your user profile',
-      icon: UserIcon
+      icon: UserIcon,
       category: 'Settings',
-      href: '/profile';
+      href: '/profile'
     },
     {
       id: 'settings-system',
       title: 'System Settings',
       description: 'Configure system preferences',
-      icon: Settings
+      icon: Settings,
       category: 'Settings',
-      href: '/settings';
+      href: '/settings'
   }
   ];
   $effect(() => {
     if (open && searchInput) {
       searchInput.focus();
-  }
+    }
   });
-  // TODO: Convert to $derived: if (open && searchInput) {
-    searchInput.focus()
-  }
   function handleKeydown(e: KeyboardEvent) {
     if (!open) return;
     switch (e.key) {
@@ -125,17 +123,16 @@ https://svelte.dev/e/js_parse_error -->
         e.preventDefault();
         if (filteredItems[selectedIndex]) {
           selectItem(filteredItems[selectedIndex]);
-  }
+        }
         break;
   }
   }
-  function selectItem(item: unknown) {
-    onSelect?.({ item });
-    if ((item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).href) {
-      window.location.href = (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).href;
-    } else if ((item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).action) {
-      (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).action();
-  }
+  function selectItem(item: CommandItem) {
+    if (item.href) {
+      window.location.href = item.href;
+    } else if (item.action) {
+      item.action();
+    }
     close();
   }
   function close() {
@@ -168,11 +165,12 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex items-center border-b border-nier-gray px-4">
           <Search class="h-5 w-5 nes-text is-disabled mr-3" />
           <input
-            bind:this={searchInput};
+            bind:this={searchInput}
             bind:value={searchQuery}
             type="text"
             placeholder="Search commands, cases, evidence..."
-            class="flex-1 bg-transparent border-none outline-none py-4 text-foreground placeholder:nes-text is-disabled" oninput={() => selectedIndex = 0}
+            class="flex-1 bg-transparent border-none outline-none py-4 text-foreground placeholder:nes-text is-disabled"
+            oninput={() => selectedIndex = 0}
           />
           <div class="flex items-center gap-1 text-xs nes-text is-disabled">
             <kbd class="px-1.5 py-0.5 bg-nier-surface-light rounded border border-nier-gray">
@@ -186,10 +184,10 @@ https://svelte.dev/e/js_parse_error -->
           {#if filteredItems.length > 0}
             {#each Object.entries(
               filteredItems.reduce((acc: Record<string, CommandItem[]>, item) => {
-                if (!acc[(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).category]) acc[(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).category] = [];
-                acc[(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).category].push(item);
+                if (!acc[item.category]) acc[item.category] = [];
+                acc[item.category].push(item);
                 return acc;
-              }, )
+              }, {})
             ) as entry, categoryIndex}
               {@const [category, items] = entry as [string, CommandItem[]]}
               <div class="px-2 py-2">
@@ -210,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
                   >
                     <div class="flex items-center">
                       <svelte:component
-                        this={(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).icon}
+                        this={item.icon}
                         class={cn(
                           "h-4 w-4 mr-3",
                           globalIndex === selectedIndex ? "text-white" : "text-muted-foreground"
@@ -221,19 +219,19 @@ https://svelte.dev/e/js_parse_error -->
                           "text-sm font-medium",
                           globalIndex === selectedIndex ? "text-white" : "text-foreground"
                         )}>
-                          {(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).title}
+                          {item.title}
                         </div>
                         <div class={cn(
                           "text-xs",
                           globalIndex === selectedIndex ? "text-white/70" : "text-muted-foreground"
                         )}>
-                          {(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).description}
+                          {item.description}
                         </div>
                       </div>
                     </div>
-                    {#if (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).shortcut}
+                    {#if item.shortcut}
                       <div class="flex items-center gap-1">
-                        {#each (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).shortcut as key}
+                        {#each item.shortcut as key}
                           <kbd class={cn(
                             "px-1.5 py-0.5 text-xs rounded border",
                             globalIndex === selectedIndex
@@ -295,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
     background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold));
     border-radius: inherit;
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclud;
+    mask-composite: exclude;
     opacity: 0.4;
 }
 </style>

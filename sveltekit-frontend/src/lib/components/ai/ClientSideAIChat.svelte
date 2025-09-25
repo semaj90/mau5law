@@ -18,16 +18,16 @@
   let { collapsed = false, showStatus = true }: Props = $props();
   // State
   let chatInput = $state('');
-  let messages = $state<any[]>([]) => []);
+  let messages = $state<any[]>([]);
   let isProcessing = $state(false);
   let isInitialized = $state(false);
   let error = $state<string | null>(null);
   // System status
   let systemStatus = $state({
-    webgpu: false
-    webasm: false
-    model: false
-    adapter: false;
+    webgpu: false,
+    webasm: false,
+    model: false,
+    adapter: false
   });
   // Quick prompts
   let quickPrompts = [
@@ -46,7 +46,7 @@
           webgpu: health.webgpuEnabled || false,
           webasm: health.wasmSupported || false,
           model: health.modelLoaded || false,
-          adapter: health.initialized || false;
+          adapter: health.initialized || false
         };
         isInitialized = true;
         console.log('✅ Client-side AI ready:', health);
@@ -55,7 +55,7 @@
           id: 'welcome',
           role: 'assistant',
           content: 'Hello! I\'m running locally in your browser using WebAssembly and the Gemma 270MB model. Ask me anything about legal AI, compliance, or contract analysis.',
-          timestamp: Date.now();
+          timestamp: Date.now()
         });
       } else {
         throw new Error('Failed to initialize AI adapter');
@@ -71,8 +71,8 @@
     const userMessage = {
       id: `user_${Date.now()}`,
       role: 'user' as const,
-      content: message
-      timestamp: Date.now();
+      content: message,
+      timestamp: Date.now()
     };
     messages.push(userMessage);
     messages = [...messages]; // Trigger reactivity
@@ -82,23 +82,24 @@
     if (!prompt) chatInput = '';
     try {
       console.log('🚀 Processing:', message);
-      const response = await webAssemblyAIAdapter.sendMessage.map(msg => ({
+      const response = await webAssemblyAIAdapter.sendMessage(message, {
+        conversationHistory: messages.map(msg => ({
           type: msg.role,
           content: msg.content,
-          timestamp: msg.timestamp;
+          timestamp: msg.timestamp
         }))
       });
       const assistantMessage = {
         id: `assistant_${Date.now()}`,
         role: 'assistant' as const,
         content: response.content,
-        timestamp: Date.now();
+        timestamp: Date.now()
       };
       messages.push(assistantMessage);
       messages = [...messages]; // Trigger reactivity
       console.log('✅ Response generated:', {
         method: response.metadata?.method,
-        processingTime: response.metadata?.processingTim;
+        processingTime: response.metadata?.processingTime
       });
     } catch (err) {
       error = err instanceof Error ? err.message: 'Failed to process message';
@@ -112,7 +113,7 @@
       id: 'welcome',
       role: 'assistant',
       content: 'Chat cleared. How can I help you with legal AI questions?',
-      timestamp: Date.now();
+      timestamp: Date.now()
     }];
     error = null;
   }
@@ -281,7 +282,7 @@
     max-width: 200px;
   }
   .messages-container {
-    scrollbar-width: thi;
+    scrollbar-width: thin;
     scrollbar-color: #4B5563 transparent;
   }
   .messages-container::-webkit-scrollbar {
@@ -365,7 +366,7 @@
     font-size: 10px;
     transition: all 0.2s ease;
   }
-  .quick-prompts button:hover:not(:disabled) {,
+  .quick-prompts button:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }

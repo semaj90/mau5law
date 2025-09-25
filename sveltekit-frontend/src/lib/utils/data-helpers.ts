@@ -4,7 +4,7 @@
  * Supporting global components and user session persistence
  */
 import { browser } from '$app/environment';
-import type { UserSession } from '$lib/stores/sessionStore';
+import type { UserSession } from "$lib/stores/sessionStore.svelte";
 // Cache management for performance
 class DataCache {
   private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();

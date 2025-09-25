@@ -12,7 +12,7 @@
   import {
     user as currentUser,
     isAuthenticated
-  } from '$lib/stores/sessionStore.svelte';
+  } from "$lib/stores/sessionStore.svelte";
   import { cn } from '$lib/utils';
   import {
     FileText, Folder, Clock, User, Settings, Search,

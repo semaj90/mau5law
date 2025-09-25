@@ -259,7 +259,7 @@ Features:
             />
           </div>
           {#if batchAnalysisResults}
-            <Button on:click={exportResults} variant="outline">
+            <Button onclick={exportResults} variant="outline">
               <Download class="w-4 h-4 mr-2" />
               Export Results
             </Button>
@@ -275,35 +275,35 @@ Features:
       <div class="flex space-x-8">
         <button
           class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'upload' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          on:click={() => currentTab = 'upload'}
+          onclick={() => currentTab = 'upload'}
         >
           <Upload class="w-4 h-4 inline mr-2" />
           Upload & Configure
         </button>
         <button
           class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'results' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          on:click={() => currentTab = 'results'}
+          onclick={() => currentTab = 'results'}
         >
           <BarChart3 class="w-4 h-4 inline mr-2" />
           Analysis Results
         </button>
         <button
           class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'timeline' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          on:click={() => currentTab = 'timeline'}
+          onclick={() => currentTab = 'timeline'}
         >
           <Clock class="w-4 h-4 inline mr-2" />
           Timeline
         </button>
         <button
           class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'citations' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          on:click={() => currentTab = 'citations'}
+          onclick={() => currentTab = 'citations'}
         >
           <Link class="w-4 h-4 inline mr-2" />
           Citations
         </button>
         <button
           class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'canvas' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
-          on:click={() => currentTab = 'canvas'}
+          onclick={() => currentTab = 'canvas'}
         >
           <Eye class="w-4 h-4 inline mr-2" />
           Evidence Canvas
@@ -337,7 +337,7 @@ Features:
                     type="file"
                     multiple
                     accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.mp4,.mp3"
-                    on:change={handleFileUpload}
+                    onchange={handleFileUpload}
                     class="hidden"
                     id="file-upload"
                   />
@@ -430,7 +430,7 @@ Features:
 
               <button
                 class="text-sm text-blue-600 hover:text-blue-800"
-                on:click={() => showAdvancedOptions = !showAdvancedOptions}
+                onclick={() => showAdvancedOptions = !showAdvancedOptions}
               >
                 {showAdvancedOptions ? 'Hide' : 'Show'} Advanced Options
               </button>
@@ -468,7 +468,7 @@ Features:
               {/if}
 
               <Button
-                on:click={startBatchAnalysis}
+                onclick={startBatchAnalysis}
                 disabled={isAnalyzing || uploadedFiles.length === 0}
                 class="w-full"
               >
@@ -679,7 +679,7 @@ Features:
           <Clock class="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <h3 class="text-lg font-medium text-gray-900 mb-2">No Timeline Data</h3>
           <p class="text-gray-500 mb-4">Timeline extraction requires completed analysis.</p>
-          <Button on:click={extractUnifiedTimeline} disabled={!batchAnalysisResults}>
+          <Button onclick={extractUnifiedTimeline} disabled={!batchAnalysisResults}>
             Extract Timeline
           </Button>
         </div>
@@ -702,7 +702,7 @@ Features:
             <Link class="w-16 h-16 mx-auto text-gray-400 mb-4" />
             <h3 class="text-lg font-medium text-gray-900 mb-2">Citations Discovery</h3>
             <p class="text-gray-500 mb-4">Discover legal citations from analyzed documents.</p>
-            <Button on:click={discoverCitations}>
+            <Button onclick={discoverCitations}>
               Discover Citations
             </Button>
           </div>
