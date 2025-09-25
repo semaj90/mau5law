@@ -1,6 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { ButtonBits, CardBits, InputBits, SelectBits, TabsBits, TooltipBits } from '$lib/components/ui/bits-ui';
+  import ButtonBits from '$lib/components/ui/bits-ui/ButtonBits.svelte';
+  import CardBits from '$lib/components/ui/bits-ui/CardBits.svelte';
+  import InputBits from '$lib/components/ui/bits-ui/InputBits.svelte';
+  import SelectBits from '$lib/components/ui/bits-ui/SelectBits.svelte';
+  import TabsBits from '$lib/components/ui/bits-ui/TabsBits.svelte';
+  import TooltipBits from '$lib/components/ui/bits-ui/TooltipBits.svelte';
   // Form state using Svelte 5 runes
   let formData = $state({
     caseTitle: '',

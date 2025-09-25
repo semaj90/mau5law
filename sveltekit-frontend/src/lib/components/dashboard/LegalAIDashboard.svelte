@@ -30,7 +30,7 @@
     api: 'unknown',
     database: 'unknown',
     aiServices: 'unknown',
-    jobQueue: 'unknown';
+    jobQueue: 'unknown',
   });
   // Tabs configuration
   const tabs = [

@@ -79,7 +79,7 @@ let uploadProgress = $state(new Map<string, number>());
       width,
       height,
       backgroundColor: '#f8fafc',
-      selection: !readOnly;
+      selection: !readOnly,
     });
     if (gridEnabled) {
       drawGrid(fabric);
@@ -97,11 +97,11 @@ let uploadProgress = $state(new Map<string, number>());
     const gridSize = 25;
     const lines: any[] = [];
     for (let i = 0; i < (width / gridSize); i++) {
-      const distance = i * gridSiz;
+      const distance = i * gridSize;
       lines.push(new fabric.Line([ distance, 0, distance, height ], { stroke: '#edf2f7', selectable: false, evented: false }));
     }
     for (let j = 0; j < (height / gridSize); j++) {
-      const distance = j * gridSiz;
+      const distance = j * gridSize;
       lines.push(new fabric.Line([ 0, distance, width, distance ], { stroke: '#edf2f7', selectable: false, evented: false }));
     }
     lines.forEach(line => fabricCanvas.add(line));
@@ -111,7 +111,7 @@ let uploadProgress = $state(new Map<string, number>());
         const obj = e.target;
         obj.set({
           left: Math.round(obj.left / gridSize) * gridSize,
-          top: Math.round(obj.top / gridSize) * gridSiz;
+          top: Math.round(obj.top / gridSize) * gridSize,
         });
       });
     }
@@ -158,7 +158,7 @@ let uploadProgress = $state(new Map<string, number>());
       // Load evidence items for this case
       // removed unused response assignment
       const evidence = await (response as { ok?: any; json?: any }).json();
-      evidenceItems = evidenc;
+      evidenceItems = evidence;
       // Add evidence to canvas
       for (const item of evidenceItems) {
         await addEvidenceToCanvas(item);
@@ -180,7 +180,7 @@ let uploadProgress = $state(new Map<string, number>());
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           bucket: evidence.metadata.bucket,
-          fileName: evidence.metadata.fileNam;
+          fileName: evidence.metadata.fileNam,
         })
       });
       if ((response as { ok?: any; json?: any }).ok) {
@@ -211,7 +211,7 @@ let uploadProgress = $state(new Map<string, number>());
             scaleY: 0.5,
             selectable: !readOnly,
             evidenceId: evidence.id,
-            evidenceType: evidence.typ;
+            evidenceType: evidence.type,
           });
           fabricCanvas.add(img);
           fabricCanvas.renderAll();
@@ -233,7 +233,7 @@ let uploadProgress = $state(new Map<string, number>());
           strokeWidth: 2,
           selectable: !readOnly,
           evidenceId: evidence.id,
-          evidenceType: evidence.typ;
+          evidenceType: evidence.type,
         });
         const text = new fabric.Text(evidence.title, {
           left: evidence.x + 10,
@@ -241,14 +241,14 @@ let uploadProgress = $state(new Map<string, number>());
           fontSize: 12,
           fontFamily: 'Arial',
           fill: '#1f2937',
-          selectable: false;
+          selectable: false,
         });
         const group = new fabric.Group([rect, text], {
           left: evidence.x,
           top: evidence.y,
           selectable: !readOnly,
           evidenceId: evidence.id,
-          evidenceType: evidence.typ;
+          evidenceType: evidence.type,
         });
         fabricCanvas.add(group);
         fabricCanvas.renderAll();
@@ -278,14 +278,14 @@ let uploadProgress = $state(new Map<string, number>());
       // Try MinIO upload first, fallback to demo endpoint
       let uploadResponse = await fetch('/api/v1/minio/upload?bucket=evidence-files', {
         method: 'POST',
-        body: formData;
+        body: formData,
       });
       // If MinIO fails (connection issues), try demo endpoint
       if (!uploadResponse.ok) {
         console.log('🔄 MinIO upload failed, trying demo endpoint...');
         uploadResponse = await fetch('/api/evidence/demo', {
           method: 'POST',
-          body: formData;
+          body: formData,
         });
       }
       if (!uploadResponse.ok) {
@@ -306,7 +306,7 @@ let uploadProgress = $state(new Map<string, number>());
           fileType: file.type,
           uploadDate: new Date().toISOString(),
           bucket: uploadResult.bucket || 'demo',
-          fileName: uploadResult.fileName || uploadResult.filenam;
+          fileName: uploadResult.fileName || uploadResult.filename,
         }
       }
       evidenceItems = [...evidenceItems, evidence];
@@ -338,7 +338,7 @@ let uploadProgress = $state(new Map<string, number>());
         backgroundColor: '#fef2f2',
         padding: 8,
         selectable: !readOnly,
-        editable: !readOnly;
+        editable: !readOnly,
       });
       fabricCanvas.add(text);
       fabricCanvas.setActiveObject(text);
@@ -391,7 +391,7 @@ let uploadProgress = $state(new Map<string, number>());
       scaleX: obj.scaleX,
       scaleY: obj.scaleY,
       evidenceId: obj.evidenceId,
-      evidenceType: obj.evidenceTyp;
+      evidenceType: obj.evidenceType,
     }));
   }
   function exportCanvas() {
@@ -399,7 +399,7 @@ let uploadProgress = $state(new Map<string, number>());
     const dataURL = fabricCanvas.toDataURL({
       format: 'png',
       quality: 1,
-      multiplier: 2;
+      multiplier: 2,
     });
     // Create download link
     const link = document.createElement('a');
