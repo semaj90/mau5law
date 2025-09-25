@@ -12,7 +12,7 @@
     select: '',
     textarea: '',
     checkbox: false,
-    radio: '';
+    radio: ''
   });
   function handleSubmit() {
     console.log('Form submitted:', formData);
@@ -95,10 +95,10 @@
     <section id="section3">
       <h2>Code Elements</h2>
       <p>Inline <code>code element</code> and <kbd>keyboard input</kbd> and <samp>sample output</samp>.</p>
-      <pre><code>// Preformatted code block
+      <pre><code>{`// Preformatted code block
 function example() {
   return "Hello World";
-}</code></pre>
+}`}</code></pre>
     </section>
     <section>
       <h2>Media Elements</h2>

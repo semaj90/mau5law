@@ -12,7 +12,7 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';
   import { Search, Bot, Sparkles, FileText, Users, Clock, Tags } from 'lucide-svelte';
-  import { onMount,   } from "svelte";
+  import { onMount } from "svelte";
   import Fuse from 'fuse.js';
   interface Props {
     selectedNode?: unknown;

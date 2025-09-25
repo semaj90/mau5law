@@ -38,10 +38,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
         const aiResponse = await fetch('http://localhost:11434/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             model: 'gemma3-legal',
             prompt: `Analyze this legal search query: "${search}". Provide insights about document types, jurisdictions, and relevance factors.`,
-            stream: false
+            stream: false,
             options: { temperature: 0.1, num_ctx: 1024 }
           })
         })
@@ -63,10 +63,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
         const vectorResponse = await fetch('http://localhost:6333/collections/legal_documents/points/search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             vector: search, // This would need embedding conversion
-            limit: limit
-            with_payload: true
+            limit: limit,
+            with_payload: true,
             with_vector: false
           })
         })
@@ -192,13 +192,13 @@ export const GET: RequestHandler = async ({ url, request }) => {
       yorha_timestamp: item.createdAt || item.uploadDate || new Date()
     }))
     return json({
-      success: true
+      success: true,
       results: formattedData, // Changed from 'data' to 'results' to match frontend expectations
-      totalResults: totalCount
+      totalResults: totalCount,
       pagination: {
         page,
         limit,
-        total: totalCount
+        total: totalCount,
         totalPages: Math.ceil(totalCount / limit),
         hasNextPage: page * limit < totalCount,
         hasPrevPage: page > 1
@@ -210,7 +210,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         order,
         processedAt: new Date(),
         processingTime: Date.now() - startTime,
-        aiAnalysis: aiMetadata
+        aiAnalysis: aiMetadata,
         service: "yorha-legal-data-api",
         version: "4.0.0"
       },
@@ -226,7 +226,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
   } catch (error: any) {
     console.error("YoRHa legal data fetch error:", error)
     return json({
-        success: false
+        success: false,
         error: error.message || "Failed to fetch legal data",
         service: "yorha-legal-data-api"
       },
@@ -291,15 +291,15 @@ export const POST: RequestHandler = async ({ request }) => {
         throw new Error(`Unknown data type: ${dataType}`)
     }
     return json({
-      success: true
-      data: result[0]
+      success: true,
+      data: result[0],
       message: `${dataType} created successfully`,
       service: "yorha-legal-data-api"
     })
   } catch (error: any) {
     console.error("YoRHa legal data creation error:", error)
     return json({
-        success: false
+        success: false,
         error: error.message || "Failed to create legal data",
         service: "yorha-legal-data-api"
       },
@@ -358,15 +358,15 @@ export const PUT: RequestHandler = async ({ request }) => {
       )
     }
     return json({
-      success: true
-      data: result[0]
+      success: true,
+      data: result[0],
       message: `${dataType} updated successfully`,
       service: "yorha-legal-data-api"
     })
   } catch (error: any) {
     console.error("YoRHa legal data update error:", error)
     return json({
-        success: false
+        success: false,
         error: error.message || "Failed to update legal data",
         service: "yorha-legal-data-api"
       },
@@ -413,14 +413,14 @@ export const DELETE: RequestHandler = async ({ request }) => {
       )
     }
     return json({
-      success: true
+      success: true,
       message: `${dataType} deleted successfully`,
       service: "yorha-legal-data-api"
     })
   } catch (error: any) {
     console.error("YoRHa legal data deletion error:", error)
     return json({
-        success: false
+        success: false,
         error: error.message || "Failed to delete legal data",
         service: "yorha-legal-data-api"
       },

@@ -140,7 +140,7 @@ export class AcceleratedLegalAssistant {
         const gpuStart = performance.now();
         similarities = await legalSimilarityWebGPU.computeLegalSimilarity(
           processedQueryEmbeddings,
-          processedDocumentEmbeddings,);
+          processedDocumentEmbeddings,
           {
             maxResults: options.maxResults,
             similarityThreshold: options.similarityThreshold,
@@ -192,9 +192,9 @@ export class AcceleratedLegalAssistant {
     }
   }
   private async computeCPUSimilarity(
-    queryEmbeddings: Float32Array[]
-    documentEmbeddings: Float32Array[]
-    options: any;
+    queryEmbeddings: Float32Array[],
+    documentEmbeddings: Float32Array[],
+    options: any
   ): Promise<LegalSimilarityResult[]> {
     const results: LegalSimilarityResult[] = [];
     for (let qIdx = 0; qIdx < queryEmbeddings.length; qIdx++) {
@@ -207,7 +207,7 @@ export class AcceleratedLegalAssistant {
       for (const result of similarityResults) {
         if (result.similarity >= options.similarityThreshold) {
           results.push({
-            queryIndex: qIdx
+            queryIndex: qIdx,
             documentIndex: result.index,
             similarity: result.similarity,
             confidence: result.confidence,
@@ -219,10 +219,10 @@ export class AcceleratedLegalAssistant {
     return results.slice(0, options.maxResults);
   }
   private async generateRecommendations(
-    similarities: LegalSimilarityResult[]
-    caseDocuments: any[]
-    evidenceDocuments: any[]
-    options: any;
+    similarities: LegalSimilarityResult[],
+    caseDocuments: any[],
+    evidenceDocuments: any[],
+    options: any
   ): Promise<AcceleratedAnalysisResult['recommendations']> {
     const recommendations: AcceleratedAnalysisResult['recommendations'] = [];
     // Top similarity matches
@@ -273,14 +273,14 @@ export class AcceleratedLegalAssistant {
     return implications;
   }
   private performRiskAssessment(
-    similarities: LegalSimilarityResult[]
-    riskLevel: 'low' | 'medium' | 'high';
+    similarities: LegalSimilarityResult[],
+    riskLevel: 'low' | 'medium' | 'high'
   ): AcceleratedAnalysisResult['riskAssessment'] {
     const riskThresholds = {
       low: 0.3,
       medium: 0.5,
       high: 0.7
-    }
+    };
     const threshold = riskThresholds[riskLevel];
     const highRiskMatches = similarities.filter(s => s.riskAssessment > threshold);
     const overallRisk = Math.min(
@@ -327,10 +327,10 @@ export class AcceleratedLegalAssistant {
 export const acceleratedLegalAssistant = new AcceleratedLegalAssistant();
 // Utility functions for integration with existing AI components
 export async function enhanceAIResponse(
-  query: string
-  caseDocuments: any[]
-  evidenceDocuments: any[]
-  options?: AcceleratedAnalysisRequest['analysisOptions'];
+  query: string,
+  caseDocuments: any[],
+  evidenceDocuments: any[],
+  options?: AcceleratedAnalysisRequest['analysisOptions']
 ): Promise<{
   enhancedResponse: string;
   acceleratedResults: AcceleratedAnalysisResult;

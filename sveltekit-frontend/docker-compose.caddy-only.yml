@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  # Just Caddy with QUIC - proxies to your existing local dev server
+  caddy:
+    image: caddy:2.8-alpine
+    container_name: legal-ai-caddy-quic
+    ports:
+      - "5178:5178"   # QUIC-enabled proxy port
+      - "8082:8082"   # Health check
+    volumes:
+      - ./Caddyfile.local-proxy:/etc/caddy/Caddyfile
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+networks:
+  legal-ai-network:
+    driver: bridge

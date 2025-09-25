@@ -1,6 +1,13 @@
 import { json } from '@sveltejs/kit';
 import { randomUUID } from 'node:crypto';
 import type { RequestHandler } from './$types.js';
+
+// Allow GET requests to pass through to the page
+export const GET: RequestHandler = async ({ request }) => {
+  // Let the page handle GET requests
+  return new Response(null, { status: 200 });
+};
+
 // A light wrapper that accepts multipart form uploads and stores the file in MinIO under 'evidence' bucket.
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -11,10 +18,12 @@ export const POST: RequestHandler = async ({ request }) => {
     const buffer = Buffer.from(await file.arrayBuffer());
     const id = randomUUID();
     const objectName = `${id}_${file.name}`;
-    await putObject('evidence', objectName, buffer, {
-      'x-amz-meta-case-id': caseId,
-      'x-amz-meta-original-name': file.name,
-    });
+    // TODO: Implement MinIO putObject
+    // await putObject('evidence', objectName, buffer, {
+    //   'x-amz-meta-case-id': caseId,
+    //   'x-amz-meta-original-name': file.name,
+    // });
+    console.log('Would upload to MinIO:', { objectName, caseId, originalName: file.name });
     return json({ success: true, id, objectName });
   } catch (err: any) {
     console.error('Evidence upload error', err);

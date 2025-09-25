@@ -12,8 +12,8 @@ export const POST: RequestHandler = async ({ request }) => {
   const results: any = {
       timestamp: new Date(),
       action,
-      results: { [key: string]: any },
-      success: true
+      results: {} as { [key: string]: any },
+      success: true,
       service: "yorha-db-test"
     }
     switch (action) {
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Test basic database connectivity
         const connectionTest = await db.execute(sql`SELECT version(), current_database(), current_user`)
         results.results.connection = {
-          database: connectionTest[0]
+          database: connectionTest[0],
           status: "connected"
         }
         break
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         } catch (error: any) {
           results.results.pgvector = {
-            installed: false
+            installed: false,
             error: error.message,
             status: "error"
           }
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
           keywords: ["yorha", "test", "integration", "legal-ai"],
           topics: ["system-testing", "database-integration"],
           metadata: {
-            testRun: true
+            testRun: true,
             timestamp: new Date(),
             version: "4.0.0",
             system: "yorha-legal-ai"
@@ -83,8 +83,8 @@ export const POST: RequestHandler = async ({ request }) => {
           WHERE id = ${insertResult[0].id}
         `)
         results.results.json = {
-          inserted: insertResult[0]
-          jsonQuery: jsonTest[0]
+          inserted: insertResult[0],
+          jsonQuery: jsonTest[0],
           status: "success"
         }
         break
@@ -115,8 +115,8 @@ export const POST: RequestHandler = async ({ request }) => {
             LIMIT 3
           `)
           results.results.vector = {
-            inserted: vectorInsert[0]
-            similarities: similarityTest
+            inserted: vectorInsert[0],
+            similarities: similarityTest,
             vectorLength: testVector.length,
             status: "success"
           }
@@ -170,8 +170,8 @@ export const POST: RequestHandler = async ({ request }) => {
           LIMIT 5
         `)
         fullStackResults.json = {
-          document: jsonDoc[0]
-          analytics: complexQuery[0]
+          document: jsonDoc[0],
+          analytics: complexQuery[0],
           search: searchTest
         }
         // 5. Performance test
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
         results.results.cleanup = {
           deletedRows:
             (cleanupResult as any)?.rowCount ??
-            (Array.isArray(cleanupResult) ? cleanupResult.length: 0),
+            (Array.isArray(cleanupResult) ? cleanupResult.length : 0),
           status: 'completed'
         }
         break
@@ -206,9 +206,8 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(results)
   } catch (error: any) {
     console.error("YoRHa DB test error:", error)
-    return json()
-      {
-        success: false
+    return json({
+        success: false,
         error: error.message || "Database test failed",
         timestamp: new Date(),
         service: "yorha-db-test"
@@ -234,10 +233,10 @@ export const GET: RequestHandler = async () => {
       FROM legal_documents
     `)
     return json({
-      success: true
+      success: true,
       status: "healthy",
-      database: healthCheck[0]
-      statistics: tableCheck[0]
+      database: healthCheck[0],
+      statistics: tableCheck[0],
       availableTests: [
         "test-connection",
         "test-pgvector",
@@ -250,10 +249,10 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-        success: false
+        success: false,
         error: error.message || "Health check failed",
         service: "yorha-db-test"
-      },)
+      },
       { status: 500 }
     )
   }

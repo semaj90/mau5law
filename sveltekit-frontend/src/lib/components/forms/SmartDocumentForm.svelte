@@ -5,10 +5,10 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount  } from "svelte";
-  	// Updated to use melt-ui components
+  	// Updated to use bits-ui components
   	import Button from '$lib/components/ui/Button.svelte';
   	import Card from '$lib/components/ui/MeltCard.svelte';
-  	// TODO: Replace with melt-ui equivalents when available
+  	// TODO: Replace with bits-ui equivalents when available
   	// import { CardContent, CardHeader, CardTitle } from 'bits-ui'
   	// import { Badge } from 'bits-ui'
   	// import { Progress } from 'bits-ui'

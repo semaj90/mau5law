@@ -87,7 +87,7 @@ function substring(str: string, start: i32, end: i32 = -1): string {
   if (start >= end) return "";
   let result = "";
   for (let i = start; i < end; i++) {
-    result += String.fromCharCode(str.charCodeAt(i);
+    result += String.fromCharCode(str.charCodeAt(i));
   }
   return result;
 }
@@ -270,7 +270,7 @@ export function parseDocuments(jsonPtr: usize, jsonLength: i32): bool {
   // Convert memory to string
   let jsonText = "";
   for (let i = 0; i < jsonLength; i++) {
-    jsonText += String.fromCharCode(load<u8>(jsonPtr + i);
+    jsonText += String.fromCharCode(load<u8>(jsonPtr + i));
   }
   // Basic validation
   if (jsonText.length == 0) {

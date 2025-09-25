@@ -128,7 +128,7 @@
   let currentResponse = $derived(snapshot.context.response);
   let errorMessage = $derived(snapshot.context.error);
   let canSubmit = $derived(promptInput.trim.length > 0 && !isLoading);
-  // Simple notification state (replacing melt-ui toaster)
+  // Simple notification state (using native implementation)
   let notifications = $state([]);
   function showNotification(title: string, description: string) {
     const id = Date.now();

@@ -1,6 +1,6 @@
 // Global Authentication Store - Svelte 5 with runes integration
-import { writable, derived } from 'svelte/store';
-import type { User, Session } from '$lib/db';
+import { writable, derived } from "svelte/store";
+import type { User, Session } from "$lib/db";
 
 // User and session state
 export const currentUser = writable<User | null>(null);
@@ -18,57 +18,54 @@ export const isAuthenticated = derived(
     const now = new Date();
     const expiresAt = new Date($session.expiresAt);
     return expiresAt > now;
-  }
+  },
 );
 
 export const userRole = derived(
   [currentUser],
-  ([$user]) => $user?.role || 'guest'
+  ([$user]) => $user?.role || "guest",
 );
 
-export const userPermissions = derived(
-  [userRole],
-  ([$role]) => {
-    switch ($role) {
-      case 'admin':
-        return {
-          canCreateCases: true,
-          canDeleteCases: true,
-          canManageUsers: true,
-          canViewAllCases: true,
-          canAnalyzeEvidence: true,
-          canAccessAI: true
-        };
-      case 'detective':
-        return {
-          canCreateCases: true,
-          canDeleteCases: false,
-          canManageUsers: false,
-          canViewAllCases: true,
-          canAnalyzeEvidence: true,
-          canAccessAI: true
-        };
-      case 'user':
-        return {
-          canCreateCases: false,
-          canDeleteCases: false,
-          canManageUsers: false,
-          canViewAllCases: false,
-          canAnalyzeEvidence: true,
-          canAccessAI: false
-        };
-      default:
-        return {
-          canCreateCases: false,
-          canDeleteCases: false,
-          canManageUsers: false,
-          canViewAllCases: false,
-          canAnalyzeEvidence: false,
-          canAccessAI: false
-        };
-    }
+export const userPermissions = derived([userRole], ([$role]) => {
+  switch ($role) {
+    case "admin":
+      return {
+        canCreateCases: true,
+        canDeleteCases: true,
+        canManageUsers: true,
+        canViewAllCases: true,
+        canAnalyzeEvidence: true,
+        canAccessAI: true,
+      };
+    case "detective":
+      return {
+        canCreateCases: true,
+        canDeleteCases: false,
+        canManageUsers: false,
+        canViewAllCases: true,
+        canAnalyzeEvidence: true,
+        canAccessAI: true,
+      };
+    case "user":
+      return {
+        canCreateCases: false,
+        canDeleteCases: false,
+        canManageUsers: false,
+        canViewAllCases: false,
+        canAnalyzeEvidence: true,
+        canAccessAI: false,
+      };
+    default:
+      return {
+        canCreateCases: false,
+        canDeleteCases: false,
+        canManageUsers: false,
+        canViewAllCases: false,
+        canAnalyzeEvidence: false,
+        canAccessAI: false,
+      };
   }
-);
+});
 
 // Authentication actions
 export const authActions = {
@@ -78,10 +75,10 @@ export const authActions = {
     authError.set(null);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
@@ -94,11 +91,11 @@ export const authActions = {
         return true;
       } else {
         const error = await response.text();
-        authError.set(error || 'Login failed');
+        authError.set(error || "Login failed");
         return false;
       }
     } catch (error) {
-      authError.set(error instanceof Error ? error.message : 'Login failed');
+      authError.set(error instanceof Error ? error.message : "Login failed");
       return false;
     } finally {
       isLoading.set(false);
@@ -106,15 +103,20 @@ export const authActions = {
   },
 
   // Register new user
-  async register(userData: { email: string; password: string; name: string; role?: string }): Promise<boolean> {
+  async register(userData: {
+    email: string;
+    password: string;
+    name: string;
+    role?: string;
+  }): Promise<boolean> {
     isLoading.set(true);
     authError.set(null);
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
       });
 
       if (response.ok) {
@@ -127,11 +129,13 @@ export const authActions = {
         return true;
       } else {
         const error = await response.text();
-        authError.set(error || 'Registration failed');
+        authError.set(error || "Registration failed");
         return false;
       }
     } catch (error) {
-      authError.set(error instanceof Error ? error.message : 'Registration failed');
+      authError.set(
+        error instanceof Error ? error.message : "Registration failed",
+      );
       return false;
     } finally {
       isLoading.set(false);
@@ -145,11 +149,11 @@ export const authActions = {
     try {
       // Call both local and QUIC logout
       await Promise.all([
-        fetch('/api/auth/logout', { method: 'POST' }),
-        this.logoutFromQuicAuth()
+        fetch("/api/auth/logout", { method: "POST" }),
+        this.logoutFromQuicAuth(),
       ]);
     } catch (error) {
-      console.warn('Logout error:', error);
+      console.warn("Logout error:", error);
     } finally {
       // Clear local state regardless of API response
       currentUser.set(null);
@@ -165,7 +169,7 @@ export const authActions = {
   // Validate current session
   async validateSession(): Promise<boolean> {
     try {
-      const response = await fetch('/api/auth/validate');
+      const response = await fetch("/api/auth/validate");
 
       if (response.ok) {
         const { user, session } = await response.json();
@@ -179,7 +183,7 @@ export const authActions = {
         return false;
       }
     } catch (error) {
-      console.error('Session validation failed:', error);
+      console.error("Session validation failed:", error);
       currentUser.set(null);
       currentSession.set(null);
       return false;
@@ -189,13 +193,13 @@ export const authActions = {
   // Sync with QUIC authentication server
   async syncWithQuicAuth(user: User, session: Session): Promise<void> {
     try {
-      await fetch('/api/auth/sync-quic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user, session })
+      await fetch("/api/auth/sync-quic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user, session }),
       });
     } catch (error) {
-      console.warn('QUIC auth sync failed:', error);
+      console.warn("QUIC auth sync failed:", error);
       // Continue anyway, local auth is working
     }
   },
@@ -203,21 +207,21 @@ export const authActions = {
   // Logout from QUIC auth server
   async logoutFromQuicAuth(): Promise<void> {
     try {
-      await fetch('/api/auth/logout-quic', { method: 'POST' });
+      await fetch("/api/auth/logout-quic", { method: "POST" });
     } catch (error) {
-      console.warn('QUIC logout failed:', error);
+      console.warn("QUIC logout failed:", error);
     }
   },
 
   // Clear localStorage cache
   clearLocalStorage(): void {
     try {
-      localStorage.removeItem('session');
-      localStorage.removeItem('auth');
-      localStorage.removeItem('legal_ai_session');
-      localStorage.removeItem('user');
+      localStorage.removeItem("session");
+      localStorage.removeItem("auth");
+      localStorage.removeItem("legal_ai_session");
+      localStorage.removeItem("user");
     } catch (error) {
-      console.warn('Failed to clear localStorage:', error);
+      console.warn("Failed to clear localStorage:", error);
     }
   },
 
@@ -229,7 +233,9 @@ export const authActions = {
     if (!isValid) {
       // Check for persisted session in localStorage as fallback
       try {
-        const stored = localStorage.getItem('legal_ai_session') || localStorage.getItem('session');
+        const stored =
+          localStorage.getItem("legal_ai_session") ||
+          localStorage.getItem("session");
         if (stored) {
           const { user, session } = JSON.parse(stored);
 
@@ -246,7 +252,7 @@ export const authActions = {
           }
         }
       } catch (error) {
-        console.warn('Failed to restore session from localStorage:', error);
+        console.warn("Failed to restore session from localStorage:", error);
         this.clearLocalStorage();
       }
     }
@@ -255,10 +261,10 @@ export const authActions = {
   // Update user profile
   async updateProfile(updates: Partial<User>): Promise<boolean> {
     try {
-      const response = await fetch('/api/auth/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
+      const response = await fetch("/api/auth/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updates),
       });
 
       if (response.ok) {
@@ -268,13 +274,13 @@ export const authActions = {
       }
       return false;
     } catch (error) {
-      console.error('Profile update failed:', error);
+      console.error("Profile update failed:", error);
       return false;
     }
-  }
+  },
 };
 
 // Auto-initialize auth when store is imported
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   authActions.initializeAuth();
 }

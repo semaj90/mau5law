@@ -9,7 +9,6 @@ import { eq } from "drizzle-orm";
 // ============================================================================
 // AGENT DEFINITIONS & TYPES
 // ============================================================================
-}
 export interface LegalAgent {
   id: string;
   name: string;
@@ -48,7 +47,7 @@ export interface AgentResponse {
 // ============================================================================
 // LEGAL DOCUMENT REVIEW AGENTS
 // ============================================================================
-export const legalAgents: LegalAgent[] = [;
+export const legalAgents: LegalAgent[] = [
   {
     id: 'contract-analyst',
     name: 'Contract Analysis Specialist',
@@ -106,7 +105,7 @@ export class CrewAILegalReviewSystem {
       this.agents.set(agent.id, agent);
     });
   }
-  async reviewDocument(_task: DocumentReviewTask): Promise<AgentResponse[]> {
+  async reviewDocument(task: DocumentReviewTask): Promise<AgentResponse[]> {
     this.activeJobs.set(task.taskId, task);
     const responses: AgentResponse[] = [];
     const assignedAgents = task.assignedAgents.length > 0
@@ -123,7 +122,7 @@ export class CrewAILegalReviewSystem {
         } else {
           console.error(`Agent ${assignedAgents[index]} failed:`, (result as { status?: any; value?: any; reason?: any }).reason);
           responses.push({
-            agentId: assignedAgents[index]
+            agentId: assignedAgents[index],
             taskId: task.taskId,
             reviewSummary: 'Agent processing failed',
             findings: [],
@@ -137,13 +136,13 @@ export class CrewAILegalReviewSystem {
       });
       // Store results and trigger document update loop
       await this.storeResults(task, responses);
-      documentUpdateLoop.queueDocumentUpdate(task.documentId, JSON.stringify(responses);
+      documentUpdateLoop.queueDocumentUpdate(task.documentId, JSON.stringify(responses));
       return responses;
     } finally {
       this.activeJobs.delete(task.taskId);
     }
   }
-  private async processWithAgent(_task: DocumentReviewTask, agentId: string): Promise<AgentResponse> {
+  private async processWithAgent(task: DocumentReviewTask, agentId: string): Promise<AgentResponse> {
     const agent = this.agents.get(agentId);
     if (!agent) {
       throw new Error(`Agent ${agentId} not found`);
@@ -165,7 +164,7 @@ Document Review Task:
 - Context: ${JSON.stringify(task.context, null, 2)}
 Document Content:
 ${task.documentContent}
-Please provide your analysis in the following JSON format:;
+Please provide your analysis in the following JSON format:
 {
   "summary": "Brief overview of the document",
   "findings": ["Key finding 1", "Key finding 2", ...],
@@ -175,7 +174,7 @@ Please provide your analysis in the following JSON format:;
 }
         `)
       ];
-      // removed unused response assignment
+      const response = await ollama.invoke(messages);
       const responseText = (response as { content?: any }).content.toString();
       // Parse structured response
       const analysis = this.parseAgentResponse(responseText);
@@ -188,7 +187,7 @@ Please provide your analysis in the following JSON format:;
         riskLevel: analysis.riskLevel,
         confidence: analysis.confidence,
         processingTime: Date.now() - startTime
-      }
+      };
     } catch (error: any) {
       console.error(`Error processing with agent ${agentId}:`, error);
       return {
@@ -201,7 +200,7 @@ Please provide your analysis in the following JSON format:;
         confidence: 0,
         processingTime: Date.now() - startTime,
         errors: [error instanceof Error ? error.message: String(error)]
-      }
+      };
     }
   }
   private parseAgentResponse(responseText: string) {
@@ -223,10 +222,10 @@ Please provide your analysis in the following JSON format:;
       confidence: 0.5
     }
   }
-  private async storeResults(_task: DocumentReviewTask, responses: AgentResponse[]) {
+  private async storeResults(task: DocumentReviewTask, responses: AgentResponse[]) {
     try {
       // Store in ai_history table
-      // removed unused db assignment
+      const { db } = await import('$lib/db');
       await db.insert(aiHistory).values({
         userId: 'system', // TODO: Get from context
         prompt: `Legal document review: ${task.reviewType}`,
@@ -246,13 +245,13 @@ Please provide your analysis in the following JSON format:;
     }
   }
   getActiveJobs(): DocumentReviewTask[] {
-    return Array.from(this.activeJobs.values();
+    return Array.from(this.activeJobs.values());
   }
   getAgentInfo(agentId: string): LegalAgent | undefined {
     return this.agents.get(agentId);
   }
   getAllAgents(): LegalAgent[] {
-    return Array.from(this.agents.values();
+    return Array.from(this.agents.values());
   }
 }
 // ============================================================================

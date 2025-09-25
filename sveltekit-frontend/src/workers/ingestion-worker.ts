@@ -8,7 +8,6 @@ import { minioService, type FileMetadata, type UploadResult } from '$lib/server/
 declare const WorkerGlobalScope: any;
 import { embeddingService, type EmbeddingOptions } from '$lib/server/embedding-service';
 import type { SOMNeuralNetwork, SOMConfig } from '$lib/ai/som-neural-network';
-}
 export interface IngestionTask {
   id: string;
   files: File[] | Buffer[];

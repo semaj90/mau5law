@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  	import { onMount,   } from "svelte";
+  	import { onMount } from "svelte";
   	import { writable, derived, get } from 'svelte/store';
   	import { browser } from '$app/environment';
   	// Enhanced types for comprehensive integration

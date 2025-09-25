@@ -2,26 +2,26 @@
  * Evidence Ingestion API - Handles file uploads and processing
  * POST /api/evidence/ingest - Integrates with QUIC/HTTP3 AI pipeline
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/db';
-import { evidence, timeline } from '$lib/db/schema';
-import { quicClient } from '$lib/services/quicClient';
-import type { Evidence } from '$lib/types';
+import { json } from "@sveltejs/kit";
+import type { RequestHandler } from "./$types";
+import { db } from "$lib/db";
+import { evidence, timeline } from "$lib/db/schema";
+import { quicClient } from "$lib/services/quicClient";
+import type { Evidence } from "$lib/types";
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
-    const file = formData.get('file') as File;
-    const caseId = formData.get('caseId') as string;
-    const uploadedBy = formData.get('uploadedBy') as string;
+    const file = formData.get("file") as File;
+    const caseId = formData.get("caseId") as string;
+    const uploadedBy = formData.get("uploadedBy") as string;
 
     if (!file) {
-      return json({ error: 'No file provided' }, { status: 400 });
+      return json({ error: "No file provided" }, { status: 400 });
     }
 
     if (!caseId) {
-      return json({ error: 'Case ID required' }, { status: 400 });
+      return json({ error: "Case ID required" }, { status: 400 });
     }
 
     // Generate unique filename
@@ -30,16 +30,16 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Determine file type
     const mimeType = file.type;
-    let evidenceType: Evidence['type'] = 'document';
+    let evidenceType: Evidence["type"] = "document";
 
-    if (mimeType.startsWith('image/')) {
-      evidenceType = 'image';
-    } else if (mimeType.startsWith('audio/')) {
-      evidenceType = 'audio';
-    } else if (mimeType.startsWith('video/')) {
-      evidenceType = 'video';
-    } else if (mimeType === 'text/plain') {
-      evidenceType = 'text';
+    if (mimeType.startsWith("image/")) {
+      evidenceType = "image";
+    } else if (mimeType.startsWith("audio/")) {
+      evidenceType = "audio";
+    } else if (mimeType.startsWith("video/")) {
+      evidenceType = "video";
+    } else if (mimeType === "text/plain") {
+      evidenceType = "text";
     }
 
     // TODO: Integrate with your existing MinIO upload logic
@@ -47,8 +47,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const minioUrl = `/uploads/${filename}`;
 
     // TODO: Extract text content based on file type
-    let extractedText = '';
-    if (evidenceType === 'text') {
+    let extractedText = "";
+    if (evidenceType === "text") {
       extractedText = await file.text();
     }
 
@@ -60,15 +60,15 @@ export const POST: RequestHandler = async ({ request }) => {
       type: evidenceType,
       minioUrl,
       uploadedAt: new Date(),
-      uploadedBy: uploadedBy || 'unknown',
+      uploadedBy: uploadedBy || "unknown",
       metadata: {
         size: file.size,
         mimeType,
         checksum: await generateChecksum(file),
-        extractedText: extractedText || undefined
+        extractedText: extractedText || undefined,
       },
       tags: [],
-      notes: ''
+      notes: "",
     };
 
     // TODO: Save to database
@@ -78,12 +78,11 @@ export const POST: RequestHandler = async ({ request }) => {
     // await queueProcessingJob(evidence.id);
 
     return json(evidence);
-
   } catch (error) {
-    console.error('Evidence upload error:', error);
+    console.error("Evidence upload error:", error);
     return json(
-      { error: 'Upload failed: ' + (error as Error).message },
-      { status: 500 }
+      { error: "Upload failed: " + (error as Error).message },
+      { status: 500 },
     );
   }
 };
@@ -91,17 +90,17 @@ export const POST: RequestHandler = async ({ request }) => {
 // Generate file checksum
 async function generateChecksum(file: File): Promise<string> {
   const buffer = await file.arrayBuffer();
-  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 // GET endpoint for retrieving evidence
 export const GET: RequestHandler = async ({ url }) => {
-  const caseId = url.searchParams.get('caseId');
+  const caseId = url.searchParams.get("caseId");
 
   if (!caseId) {
-    return json({ error: 'Case ID required' }, { status: 400 });
+    return json({ error: "Case ID required" }, { status: 400 });
   }
 
   try {
@@ -112,12 +111,8 @@ export const GET: RequestHandler = async ({ url }) => {
     const evidence: Evidence[] = [];
 
     return json(evidence);
-
   } catch (error) {
-    console.error('Evidence fetch error:', error);
-    return json(
-      { error: 'Failed to fetch evidence' },
-      { status: 500 }
-    );
+    console.error("Evidence fetch error:", error);
+    return json({ error: "Failed to fetch evidence" }, { status: 500 });
   }
 };

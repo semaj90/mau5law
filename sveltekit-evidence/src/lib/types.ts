@@ -8,7 +8,7 @@ export interface Case {
   description?: string;
   createdAt: Date;
   updatedAt: Date;
-  status: 'open' | 'closed' | 'under_investigation';
+  status: "open" | "closed" | "under_investigation";
   assignedTo?: string;
 }
 
@@ -19,14 +19,14 @@ export interface Crime {
   description: string;
   location?: string;
   timestamp?: Date;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
 }
 
 export interface Evidence {
   id: string;
   caseId: string;
   filename: string;
-  type: 'image' | 'document' | 'audio' | 'video' | 'text';
+  type: "image" | "document" | "audio" | "video" | "text";
   minioUrl: string;
   uploadedAt: Date;
   uploadedBy: string;
@@ -51,8 +51,8 @@ export interface Report {
   createdAt: Date;
   updatedAt?: Date;
   createdBy: string;
-  type: 'investigation' | 'forensic' | 'witness' | 'summary';
-  status: 'draft' | 'final' | 'reviewed';
+  type: "investigation" | "forensic" | "witness" | "summary";
+  status: "draft" | "final" | "reviewed";
 }
 
 export interface TimelineItem {
@@ -61,14 +61,18 @@ export interface TimelineItem {
   timestamp: Date;
   title: string;
   description: string;
-  type: 'evidence_added' | 'crime_logged' | 'report_created' | 'investigation_update';
+  type:
+    | "evidence_added"
+    | "crime_logged"
+    | "report_created"
+    | "investigation_update";
   relatedItemId?: string; // evidence ID, crime ID, etc.
   createdBy: string;
 }
 
 export interface BoardObject {
   id: string;
-  type: 'image' | 'text' | 'note' | 'connection';
+  type: "image" | "text" | "note" | "connection";
   position: {
     x: number;
     y: number;
@@ -87,7 +91,7 @@ export interface BoardObject {
 export interface ChatMessage {
   id: string;
   caseId: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp: Date;
   context?: {
@@ -106,7 +110,7 @@ export interface EmbeddingResult {
 export interface IngestionJob {
   id: string;
   evidenceId: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
+  status: "pending" | "processing" | "completed" | "failed";
   progress: number;
   result?: {
     extractedText?: string;

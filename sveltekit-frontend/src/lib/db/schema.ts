@@ -8,6 +8,89 @@ import { vector } from "pgvector/drizzle-orm";
 import { relations } from 'drizzle-orm';
 import { createSelectSchema, createUpdateSchema, createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
+
+// Base Users table
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  email: text('email').unique().notNull(),
+  username: text('username').unique().notNull(),
+  password_hash: text('password_hash').notNull(),
+  firstName: text('first_name'),
+  lastName: text('last_name'),
+  role: text('role').default('user'),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
+}, (table) => ({
+  emailIndex: index('users_email_idx').on(table.email),
+  usernameIndex: index('users_username_idx').on(table.username)
+}));
+
+// Cases table
+export const cases = pgTable('cases', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  title: text('title').notNull(),
+  description: text('description'),
+  status: text('status').default('active'),
+  caseNumber: text('case_number').unique(),
+  jurisdiction: text('jurisdiction'),
+  practiceArea: text('practice_area'),
+  priority: text('priority').default('medium'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  metadata: jsonb('metadata').default('{}')
+}, (table) => ({
+  userIdIndex: index('cases_user_id_idx').on(table.user_id),
+  statusIndex: index('cases_status_idx').on(table.status),
+  caseNumberIndex: index('cases_case_number_idx').on(table.caseNumber)
+}));
+
+// Documents table
+export const documents = pgTable('documents', {
+  id: text('id').primaryKey().default('doc_' + new Date().getTime()),
+  user_id: integer('user_id').references(() => users.id).notNull(),
+  title: text('title').notNull(),
+  description: text('description'),
+  content_text: text('content_text'),
+  file_path: text('file_path'),
+  file_type: text('file_type'),
+  file_size: integer('file_size'),
+  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text
+  tags: text('tags').array(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+  metadata: jsonb('metadata').default('{}')
+}, (table) => ({
+  userIdIndex: index('documents_user_id_idx').on(table.user_id),
+  fileTypeIndex: index('documents_file_type_idx').on(table.file_type),
+  embeddingIndex: index('documents_embedding_idx').using('hnsw', table.embedding)
+}));
+
+// Evidence table
+export const evidence = pgTable('evidence', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  case_id: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }).notNull(),
+  user_id: integer('user_id').references(() => users.id).notNull(),
+  title: text('title').notNull(),
+  description: text('description'),
+  evidenceType: text('evidence_type'),
+  source: text('source'),
+  dateCollected: timestamp('date_collected'),
+  relevanceScore: numeric('relevance_score', { precision: 3, scale: 2 }),
+  confidentialityLevel: text('confidentiality_level').default('standard'),
+  fileUrl: text('file_url'),
+  embedding: vector('embedding', { dimensions: 384 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  metadata: jsonb('metadata').default('{}')
+}, (table) => ({
+  caseIdIndex: index('evidence_case_id_idx').on(table.case_id),
+  userIdIndex: index('evidence_user_id_idx').on(table.user_id),
+  evidenceTypeIndex: index('evidence_type_idx').on(table.evidenceType),
+  embeddingIndex: index('evidence_embedding_idx').using('hnsw', table.embedding)
+}));
+
 // Legal Documents with vector embeddings from gemma3-legal:latest
 export const legalDocuments = pgTable('legal_documents', {
   id: serial('id').primaryKey(),
@@ -17,7 +100,7 @@ export const legalDocuments = pgTable('legal_documents', {
   // Vector embeddings from gemma3-legal:latest (512 dimensions),
   embedding: vector('embedding', { dimensions: 512 }).notNull(),
   // Legal metadata
-  practiceArea: text('practice_area'), // 'corporate', 'litigation', 'ip', 'employment';
+  practiceArea: text('practice_area'), // 'corporate', 'litigation', 'ip', 'employment'
   jurisdiction: text('jurisdiction'),
   caseId: text('case_id'),
   clientId: text('client_id'),
@@ -98,19 +181,6 @@ export const legalAnalysisCache = pgTable('legal_analysis_cache', {
   analysisTypeIndex: index('analysis_type_idx').on(table.analysisType),
   lastAccessedIndex: index('last_accessed_idx').on(table.lastAccessedAt),
   expiresAtIndex: index('expires_at_idx').on(table.expiresAt)
-});
-  user_id: integer("user_id").references(() => users.id).notNull(),
-  title: text("title").notNull(),
-  description: text("description"),
-  content_text: text("content_text"),
-  file_path: text("file_path"),
-  file_type: text("file_type"),
-  file_size: integer("file_size"),
-  embedding: vector("embedding", { dimensions: 384 }), // nomic-embed-text
-  tags: text("tags").array(),
-  created_at: timestamp("created_at").defaultNow().notNull(),
-  updated_at: timestamp("updated_at").defaultNow().notNull(),
-  metadata: jsonb("metadata").default('{}')
 });
 // Document chunks for RAG (chunked documents with embeddings)
 export const document_chunks = pgTable("document_chunks", {
@@ -285,3 +355,79 @@ export const usersSelectZodSchema = extractZodSchema(usersSelectSchema);
 export const casesUpdateZodSchema = extractZodSchema(casesUpdateSchema);
 export const casesInsertZodSchema = extractZodSchema(casesInsertSchema);
 export const casesSelectZodSchema = extractZodSchema(casesSelectSchema);
+
+// RAG Documents table for uploaded documents
+export const ragDocuments = pgTable('rag_documents', {
+  id: serial('id').primaryKey(),
+  filename: text('filename').notNull(),
+  contentHash: text('content_hash').unique().notNull(),
+  fileType: text('file_type'),
+  fileSize: integer('file_size'),
+  content: text('content'),
+  metadata: jsonb('metadata').default('{}'),
+  embedding: vector('embedding', { dimensions: 768 }), // Gemma embeddings
+  processedAt: timestamp('processed_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
+}, (table) => ({
+  embeddingIndex: index('rag_embedding_idx').using('hnsw', table.embedding),
+  contentHashIndex: index('rag_content_hash_idx').on(table.contentHash)
+}));
+
+// Knowledge Base table (unified semantic chunks from various sources)
+export const knowledgeBase = pgTable('knowledge_base', {
+  id: serial('id').primaryKey(),
+  chunkId: text('chunk_id').unique().notNull(),
+  content: text('content').notNull(),
+  embedding: vector('embedding', { dimensions: 768 }),
+  metadata: jsonb('metadata').default('{}'),
+  chunkType: text('chunk_type').notNull(), // 'rag_document', 'component_overview', 'api_endpoint', etc.
+  sourceFile: text('source_file'),
+  createdAt: timestamp('created_at').defaultNow()
+}, (table) => ({
+  embeddingIndex: index('kb_embedding_idx').using('hnsw', table.embedding),
+  chunkTypeIndex: index('kb_chunk_type_idx').on(table.chunkType),
+  sourceFileIndex: index('kb_source_file_idx').on(table.sourceFile)
+}));
+
+// Code Embeddings table for agentic programming
+export const codeEmbeddings = pgTable('code_embeddings', {
+  id: serial('id').primaryKey(),
+  path: text('path').unique().notNull(),
+  contentHash: text('content_hash').notNull(),
+  embedding: vector('embedding', { dimensions: 768 }),
+  metadata: jsonb('metadata').default('{}'),
+  errorPatterns: text('error_patterns').array(),
+  repairSuggestions: text('repair_suggestions').array(),
+  confidenceScore: real('confidence_score'),
+  lastUpdated: timestamp('last_updated').defaultNow()
+}, (table) => ({
+  embeddingIndex: index('code_embedding_idx').using('hnsw', table.embedding),
+  pathIndex: index('code_path_idx').on(table.path),
+  contentHashIndex: index('code_content_hash_idx').on(table.contentHash)
+}));
+
+// RAG document relations
+export const ragDocumentsRelations = relations(ragDocuments, ({ many }) => ({
+  knowledgeChunks: many(knowledgeBase)
+}));
+
+export const knowledgeBaseRelations = relations(knowledgeBase, ({ one }) => ({
+  ragDocument: one(ragDocuments, {
+    fields: [knowledgeBase.sourceFile],
+    references: [ragDocuments.filename]
+  })
+}));
+
+// Type exports for RAG tables
+export type RagDocument = typeof ragDocuments.$inferSelect;
+export type NewRagDocument = typeof ragDocuments.$inferInsert;
+export type KnowledgeBase = typeof knowledgeBase.$inferSelect;
+export type NewKnowledgeBase = typeof knowledgeBase.$inferInsert;
+export type CodeEmbedding = typeof codeEmbeddings.$inferSelect;
+export type NewCodeEmbedding = typeof codeEmbeddings.$inferInsert;
+
+// Zod schemas for RAG tables
+export const ragDocumentsSelectSchema = createSelectSchema(ragDocuments);
+export const ragDocumentsInsertSchema = createInsertSchema(ragDocuments);
+export const knowledgeBaseSelectSchema = createSelectSchema(knowledgeBase);
+export const knowledgeBaseInsertSchema = createInsertSchema(knowledgeBase);

@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 /*
  * Module Management API
  * Hot-swappable AI modules with zero-downtime updates
@@ -54,14 +55,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { moduleId } = body
         if (!moduleId) {
           return json({
-            success: false
+            success: false,
             error: 'Module ID is required'
           }, { status: 400 })
         }
         const module = moduleRegistry.get(moduleId)
         if (!module) {
           return json({
-            success: false
+            success: false,
             error: `Module not found: ${moduleId}`
           }, { status: 404 })
         }
@@ -83,14 +84,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { moduleId } = body
         if (!moduleId) {
           return json({
-            success: false
+            success: false,
             error: 'Module ID is required'
           }, { status: 400 })
         }
         const module = moduleRegistry.get(moduleId)
         if (!module) {
           return json({
-            success: false
+            success: false,
             error: `Module not found: ${moduleId}`
           }, { status: 404 })
         }
@@ -108,7 +109,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { userId, fromModule, toModule, preserveSession = true } = body
         if (!userId || !fromModule || !toModule) {
           return json({
-            success: false
+            success: false,
             error: 'userId, fromModule, and toModule are required'
           }, { status: 400 })
         }

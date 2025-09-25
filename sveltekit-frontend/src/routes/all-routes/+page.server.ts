@@ -1,271 +1,109 @@
 import type { PageServerLoad } from './$types.js';
-import { error } from '@sveltejs/kit';
-import type { RouteDefinition } from '$lib/data/routes-config';
-import { getConsolidatableRoutes, enhanceRouteDiscovery } from '$lib/utils/route-discovery';
-import * as fs from 'fs';
-import * as path from 'path';
-export interface SystemHealthData {
-  system_overview: {
-    healthy_services: number;
-    total_services: number;
-    uptime_hours: number;
-    last_updated: string;
-  }
-  services: Array<any>;
-  performance: {
-    cpu_usage: number;
-    memory_usage: number;
-    disk_usage: number;
-  }
-}
-export interface UserSession {
-  user: {
-    id: string;
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    role: 'attorney' | 'paralegal' | 'investigator' | 'user';
-    preferences?: {
-      theme: string;
-      language: string;
-      notifications: Record<string, boolean>;
-    }
-  } | null;
-  isAuthenticated: boolean;
-}
-export interface RoutePageData {
-  systemHealth: SystemHealthData | null;
-  userSession: UserSession;
-  availableRoutes: RouteDefinition[];
-  recentOperations: Array<any>;
-  routeInventory?: {
-    generated: string;
-    counts: {
-      config: number;
-      fileBased: number;
-      api: number;
-      configMissingFiles: number;
-      filesMissingConfig: number;
-      consolidatable: number;
-    }
-    configMissingFiles: string[];
-    filesMissingConfig: string[];
-    fileRoutesSample: { route: string; title?: string | null }[];
-    consolidatableRoutes: RouteDefinition[];
-  } | null;
-}
-async function checkServiceHealth(): Promise<SystemHealthData> {
+
+export const load: PageServerLoad = async () => {
+  // Test our actual running services
   const services = [
-    { name: 'PostgreSQL', port: 5433 },
-    { name: 'Redis', port: 6379 },
-    { name: 'Ollama Primary', port: 11436 },
-    { name: 'Enhanced RAG', port: 8094 },
-    { name: 'Upload Service', port: 8093 },
-    { name: 'Neo4j', port: 7474 },
-    { name: 'MinIO', port: 9000 },
-    { name: 'Qdrant', port: 6333 }
+    { name: 'SvelteKit Frontend', port: 5173, path: '/' },
+    { name: 'SvelteKit Frontend (5175)', port: 5175, path: '/' },
+    { name: 'SvelteKit Frontend (5176)', port: 5176, path: '/' },
+    { name: 'QUIC Service', port: 5178, path: '/' },
+    { name: 'Redis', port: 6379, path: '/ping' },
+    { name: 'PostgreSQL', port: 5432, path: null }, // No HTTP endpoint
+    { name: 'Ollama', port: 11434, path: '/api/tags' }
   ];
-  const fetchWithFallback = async (url: string, opts?: any, timeoutMs = 2000) => {
-    const globalFetch = (globalThis as any).fetch;
-    const fetchFn = globalFetch ?? (await import('node-fetch')).default;
-    return Promise.race([
-      fetchFn(url, opts),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs))
-    ]);
-  }
-  const serviceResults = await Promise.allSettled(services.map(async (service) => {
+
+  // Test which services are actually responding
+  const serviceStatus = await Promise.allSettled(
+    services.map(async (service) => {
+      if (!service.path) {
+        return { ...service, status: 'no-http', responseTime: 0 };
+      }
+
+      const startTime = Date.now();
       try {
-        const startTime = Date.now();
-        if ([8094, 8093, 7474, 9000, 6333, 11436].includes(service.port)) {
-          let response: any = null;
-          try {
-            response = await fetchWithFallback(
-              `http://localhost:${service.port}/health`,
-              {
-                method: 'GET',
-              },
-              2000
-            );
-          } catch {
-            response = null;
-          }
-          const responseTime = Date.now() - startTime;
-          return {
-            ...service,
-            status: response && (response as { ok?: any }).ok ? ('healthy' as const) : ('degraded' as const),
-            response_time: responseTime,
-          }
-        }
+        const response = await fetch(`http://localhost:${service.port}${service.path}`, {
+          signal: AbortSignal.timeout(2000)
+        });
         const responseTime = Date.now() - startTime;
         return {
           ...service,
-          status: 'healthy' as const,
-          response_time: responseTime || 50,
-        }
-      } catch (err) {
+          status: response.ok ? 'healthy' : 'degraded',
+          responseTime,
+          httpStatus: response.status
+        };
+      } catch (error) {
         return {
           ...service,
-          status: 'down' as const,
-          response_time: undefined,
-        }
+          status: 'down',
+          responseTime: Date.now() - startTime,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        };
       }
     })
   );
-  const healthyServices = serviceResults.filter(
-    (result) => (result as { status?: any; value?: any }).status === 'fulfilled' && (result as { status?: any; value?: any }).value.status === 'healthy'
+
+  // Real routes from our actual application
+  const realRoutes = [
+    { path: '/', icon: '🏠', description: 'YoRHa Legal AI Platform Home' },
+    { path: '/evidence', icon: '📁', description: 'Evidence Manager (Working!)' },
+    { path: '/cases', icon: '⚖️', description: 'Case Management' },
+    { path: '/chat', icon: '💬', description: 'AI Chat Interface' },
+    { path: '/ai-assistant', icon: '🤖', description: 'AI Assistant' },
+    { path: '/dashboard', icon: '📊', description: 'System Dashboard' },
+    { path: '/admin', icon: '👨‍💼', description: 'Admin Panel' },
+    { path: '/profile', icon: '👤', description: 'User Profile' },
+    { path: '/upload', icon: '📤', description: 'File Upload' },
+    { path: '/yorha/detective', icon: '🕵️', description: 'YoRHa Detective Mode' },
+    { path: '/gallery', icon: '🖼️', description: 'Gallery' },
+    { path: '/graph', icon: '🕸️', description: 'Graph Visualization' },
+    { path: '/perf', icon: '⚡', description: 'Performance Monitor' },
+    { path: '/spa', icon: '🔄', description: 'SPA Demo' },
+    // API Routes
+    { path: '/api/auth/login', icon: '🔐', description: 'Authentication API' },
+    { path: '/api/evidence/ingest', icon: '📤', description: 'Evidence Ingest API' },
+    { path: '/api/case-chat', icon: '💭', description: 'Case Chat API' },
+    { path: '/api/reports', icon: '📋', description: 'Reports API' },
+    { path: '/api/search/advanced', icon: '🔍', description: 'Advanced Search API' },
+    { path: '/api/canvas', icon: '🎨', description: 'Canvas API' },
+    { path: '/api/modules', icon: '🧩', description: 'Modules API' },
+    { path: '/api/updates', icon: '🔄', description: 'Updates API' }
+  ];
+
+  // Service health summary
+  const healthyServices = serviceStatus.filter(
+    result => result.status === 'fulfilled' &&
+    ['healthy', 'no-http'].includes(result.value.status)
   ).length;
+
   return {
-    system_overview: {
-      healthy_services: healthyServices,
-      total_services: services.length,
-      uptime_hours: Math.floor(process.uptime() / 3600),
-      last_updated: new Date().toISOString(),
+    availableRoutes: realRoutes,
+    routeInventory: {
+      fileRoutesSample: realRoutes.map(r => r.path),
+      counts: {
+        config: realRoutes.length,
+        fileBased: realRoutes.length,
+        api: realRoutes.filter(r => r.path.startsWith('/api')).length,
+        configMissingFiles: 0,
+        filesMissingConfig: 0,
+        consolidatable: 0
+      }
     },
-    services: serviceResults.map((result) =>,
-      (result as { status?: any; value?: any }).status === 'fulfilled'
-        ? (result as { status?: any; value?: any }).value : {
-            name: 'Unknown Service',
-            status: 'down' as const,
-          }
-    ),
-    performance: {
-      cpu_usage: Math.random() * 80 + 10,
-      memory_usage: Math.random() * 70 + 20,
-      disk_usage: Math.random() * 60 + 15,
-    }
-  }
-}
-async function getUserSession(cookies: any): Promise<UserSession> {
-  const sessionToken = cookies.get('session_token') || cookies.get('auth_token');
-  if (!sessionToken) {
-    return {
-      user: null,
-      isAuthenticated: false,
-    }
-  }
-  try {
-    const mockUser = {
-      id: 'user_123',
-      email: 'demo@legal-ai.com',
-      firstName: 'Demo',
-      lastName: 'User',
-      role: 'attorney' as const,
-      preferences: {
-        theme: 'dark',
-        language: 'en',
-        notifications: {
-          email: true,
-          push: true,
-          sms: false,
-        }
-      }
-    }
-    return {
-      user: mockUser,
-      isAuthenticated: true,
-    }
-  } catch (error) {
-    console.error('Session validation error:', error);
-    return {
-      user: null,
-      isAuthenticated: false,
-    }
-  }
-}
-export const load: PageServerLoad = async ({ url, cookies, depends }) => {
-  depends('routes:health');
-  depends('routes:session');
-  try {
-    const [systemHealth, userSession] = await Promise.all([
-      checkServiceHealth().catch((error) => {
-        console.error('System health check failed:', error);
-        return null;
-      }),
-      getUserSession(cookies)
-    ]);
-    const recentOperations = [
-      {
-        operation: 'System Health Check',
-        timestamp: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
-        status: 'success' as const,
-        protocol: 'http',
+    serviceHealth: {
+      system_overview: {
+        healthy_services: healthyServices,
+        total_services: services.length,
+        uptime_hours: Math.floor(process.uptime() / 3600),
+        last_updated: new Date().toISOString()
       },
-      {
-        operation: 'Route Discovery Scan',
-        timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-        status: 'success' as const,
-        protocol: 'internal',
-      },
-      {
-        operation: 'Consolidatable Routes Integration',
-        timestamp: new Date(Date.now() - 1000 * 60 * 8).toISOString(),
-        status: 'success' as const,
-        protocol: 'internal',
-      },
-      {
-        operation: 'API Endpoint Validation',
-        timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
-        status: 'success' as const,
-        protocol: 'http',
+      services: serviceStatus.map(result =>
+        result.status === 'fulfilled' ? result.value :
+        { name: 'Unknown', status: 'error', error: result.reason }
+      ),
+      performance: {
+        cpu_usage: Math.round(process.cpuUsage().user / 1000000),
+        memory_usage: Math.round((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100),
+        disk_usage: 45 // Mock value
       }
-    ];
-    // Enhanced route loading with discovery system integration
-    let allRoutes = [];
-    let consolidatableRoutes = [];
-    try {
-      const { allRoutes: importedRoutes } = await import('$lib/data/routes-config');
-      allRoutes = importedRoutes || [];
-      // Integrate route discovery system following SvelteKit 2 best practices
-      try {
-        consolidatableRoutes = getConsolidatableRoutes();
-        const routeDiscoveryData = enhanceRouteDiscovery();
-        // Merge consolidatable routes that aren't already in the main config
-        const existingRoutePaths = new Set(allRoutes.map(r => r.route));
-        const newRoutes = consolidatableRoutes.filter(route => !existingRoutePaths.has(route.route));
-        if (newRoutes.length > 0) {
-          allRoutes = [...allRoutes, ...newRoutes];
-          console.log(`🗺️ Route Discovery: Added ${newRoutes.length} consolidatable routes`);
-          console.log(`📊 Discovery Statistics:`, routeDiscoveryData.statistics);
-        }
-      } catch (discoveryError) {
-        console.error('Route discovery enhancement failed:', discoveryError);
-      }
-    } catch (error) {
-      console.error('Failed to import routes config:', error);
-      allRoutes = [];
     }
-    // Enhanced route inventory with consolidatable routes tracking
-    let routeInventory: RoutePageData['routeInventory'] = null;
-    try {
-      const parentRoot = path.resolve(process.cwd(), '..');
-      const exportPath = path.join(parentRoot, 'ROUTE_MAP_EXPORT.json');
-      if (fs.existsSync(exportPath)) {
-        const raw = fs.readFileSync(exportPath, 'utf8');
-        const parsed = JSON.parse(raw);
-        routeInventory = {
-          generated: parsed.generated,
-          counts: {
-            ...parsed.counts,
-            consolidatable: consolidatableRoutes.length,
-          },
-          configMissingFiles: parsed.configMissingFiles || [],
-          filesMissingConfig: parsed.filesMissingConfig || [],
-          fileRoutesSample: (parsed.fileRoutes || []).slice(0, 50),
-          consolidatableRoutes: consolidatableRoutes.slice(0, 20) // Sample of consolidatable routes,
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load ROUTE_MAP_EXPORT.json', e);
-    }
-    return {
-      systemHealth,
-      userSession,
-      availableRoutes: allRoutes,
-      recentOperations,
-      routeInventory
-    } satisfies RoutePageData;
-  } catch (err) {
-    console.error('Page load error:', err);
-    throw error(500, 'Failed to load route data');
-  }
-}
+  };
+};

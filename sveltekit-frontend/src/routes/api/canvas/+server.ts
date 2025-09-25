@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { canvasStates } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
-;
+
 import type { RequestHandler } from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {

@@ -3,7 +3,7 @@ export interface Evidence {
   id: string;
   caseId: string;
   filename: string; // Match the component usage
-  type: 'image' | 'document' | 'audio' | 'video' | 'text';
+  type: "image" | "document" | "audio" | "video" | "text";
   filePath: string;
   minioUrl: string; // URL for file access
   uploadedAt: Date | string;
@@ -31,8 +31,8 @@ export interface Case {
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
-  status: 'open' | 'investigating' | 'closed';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: "open" | "investigating" | "closed";
+  priority: "low" | "medium" | "high" | "critical";
   evidence: Evidence[];
   tags: string[];
   metadata?: Record<string, any>;
@@ -42,7 +42,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'user' | 'detective';
+  role: "admin" | "user" | "detective";
   createdAt: Date;
   lastLogin?: Date;
 }
@@ -56,7 +56,7 @@ export interface Session {
 
 export interface BoardElement {
   id: string;
-  type: 'evidence' | 'note' | 'connection';
+  type: "evidence" | "note" | "connection";
   position: { x: number; y: number };
   data: any;
 }
@@ -64,7 +64,7 @@ export interface BoardElement {
 export interface AIAnalysis {
   id: string;
   evidenceId: string;
-  analysisType: 'similarity' | 'classification' | 'entity_extraction';
+  analysisType: "similarity" | "classification" | "entity_extraction";
   results: Record<string, any>;
   confidence: number;
   createdAt: Date;
@@ -78,8 +78,8 @@ export interface Crime {
   description: string;
   location?: string;
   timestamp?: Date | string;
-  status: 'reported' | 'investigating' | 'resolved';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  status: "reported" | "investigating" | "resolved";
+  severity: "low" | "medium" | "high" | "critical";
   metadata?: Record<string, any>;
 }
 
@@ -87,11 +87,11 @@ export interface Report {
   id: string;
   caseId: string;
   title: string;
-  type: 'incident' | 'evidence' | 'analysis' | 'summary';
+  type: "incident" | "evidence" | "analysis" | "summary";
   content: string;
   createdBy: string;
   createdAt: Date | string;
-  status: 'draft' | 'review' | 'approved' | 'published';
+  status: "draft" | "review" | "approved" | "published";
   metadata?: Record<string, any>;
 }
 
@@ -101,7 +101,12 @@ export interface TimelineItem {
   timestamp: Date | string;
   title: string;
   description: string;
-  type: 'evidence_added' | 'crime_logged' | 'report_created' | 'note_added' | 'status_changed';
+  type:
+    | "evidence_added"
+    | "crime_logged"
+    | "report_created"
+    | "note_added"
+    | "status_changed";
   relatedItemId?: string;
   createdBy: string;
   metadata?: Record<string, any>;
@@ -109,7 +114,7 @@ export interface TimelineItem {
 
 export interface BoardObject {
   id: string;
-  type: 'image' | 'text' | 'note' | 'connection';
+  type: "image" | "text" | "note" | "connection";
   position: { x: number; y: number };
   size?: { width: number; height: number };
   url?: string; // For images

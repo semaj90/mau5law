@@ -4,7 +4,7 @@
   let systemInfo = $state({
     uptime: '6 hours, 23 minutes',
     activeServices: 7,
-    lastSync: '2 minutes ago';
+    lastSync: '2 minutes ago'
   });
   $effect(() => {
     console.log('YoRHa Legal AI Platform loaded');

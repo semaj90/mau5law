@@ -149,7 +149,7 @@
     return filtered;
   });
   function openPatternDetails(pattern: DetectedPattern) {
-    selectedPattern = patter;
+    selectedPattern = pattern;
     showPatternDetails = true;
   }
   function formatDuration(duration: string): string {

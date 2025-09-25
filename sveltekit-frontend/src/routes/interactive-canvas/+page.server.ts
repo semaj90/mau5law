@@ -3,7 +3,7 @@ import { helpers } from '$lib/server/db';
 import type { PageServerLoad } from './$types.js';
 import { redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db/index';
-;
+
 export const load: PageServerLoad = async ({ locals, url }) => {
   if (!locals.user) {
     throw redirect(302, '/login');

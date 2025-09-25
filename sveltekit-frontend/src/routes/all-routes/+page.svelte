@@ -40,11 +40,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       if (pathParts.length >= 3) {
         // /api/v1/service or /api/service
         const potentialService = pathParts[2];
-        serviceName = potentialServic;
+        serviceName = potentialService;
       } else if (pathParts.length >= 2) {
         // /api/service (unversioned)
         const potentialService = pathParts[1];
-        serviceName = potentialServic;
+        serviceName = potentialService;
       }
       // Further clustering by semantic similarity
       if (route.path.includes('auth') || route.path.includes('login') || route.path.includes('user')) {
@@ -76,7 +76,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       }
       clusters[serviceName].push(route);
     });
-    return cluster;
+    return clusters;
   }
   // Clustered API routes
   let clusteredAPIs = $derived(() => {
@@ -267,11 +267,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         stats.sections.other++;
       }
     });
-    return stat;
+    return stats;
   });
   // Enhanced filtering with section and category support
   let filteredRoutes = $derived(() => {
-    let routes = allRoute;
+    let routes = allRoutes;
     // Filter by section
     if (selectedSection !== 'all') {
       routes = routes.filter(route => {
@@ -295,10 +295,10 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           route.description?.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
-    return route;
+    return routes;
   });
   function openRouteModal(route: unknown) {
-    selectedRoute = rout;
+    selectedRoute = route;
     showModal = true;
   }
   function closeModal() {
@@ -438,7 +438,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         <!-- Section Filter -->
         <div class="lg:w-48">
           <label class="block text-sm font-medium text-gray-700 mb-2">📂 Section</label>
-          <select;
+          <select
             bind:value={selectedSection}
             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
           >
@@ -453,7 +453,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         <!-- Category Filter -->
         <div class="lg:w-64">
           <label class="block text-sm font-medium text-gray-700 mb-2">🎯 Category</label>
-          <select;
+          <select
             bind:value={selectedCategory}
             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
           >
@@ -638,7 +638,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           🔗 API Service Clusters
           <span class="text-sm font-normal text-gray-600"
-            >({Object.keys(errors).length} services, {Object.values.flat().length} endpoints)</span
+            >({Object.keys(clusteredAPIs).length} services, {Object.values(clusteredAPIs).flat().length} endpoints)</span
           >
         </h3>
         <!-- Enhanced SSR-optimized API service cluster grid -->
@@ -1142,7 +1142,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   .service-cluster .endpoint-item {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 0.5rem 0.75rem;
     margin-bottom: 0.5rem;
     background: #f9fafb;

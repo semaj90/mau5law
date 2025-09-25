@@ -61,7 +61,7 @@
     tags: [] as string[],
     caseId: '',
     priority: 'medium' as const,
-    riskLevel: 'low' as const;
+    riskLevel: 'low' as const
   });
   // Stats and filters reactive
   let stats = $state<any>({});

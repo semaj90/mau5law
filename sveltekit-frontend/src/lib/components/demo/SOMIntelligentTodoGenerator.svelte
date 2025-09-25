@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount,  } from 'svelte';
+  import { onMount } from 'svelte';
   import { WebGPUSOMCache, type IntelligentTodo, type NPMError, initializeSOMCache } from '$lib/webgpu/som-webgpu-cache.js';
   let somCache: WebGPUSOMCach;
   let isLoading = $state(false);

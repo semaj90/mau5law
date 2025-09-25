@@ -17,7 +17,7 @@
     enableAI = true,
     enableCitation = true
   }: Props = $props();
-  import { onMount,   } from "svelte";
+  import { onMount } from "svelte";
   import * as Dialog from 'bits-ui';
   import { writable } from 'svelte/store';
   import type {     Writable     } from 'svelte/store';

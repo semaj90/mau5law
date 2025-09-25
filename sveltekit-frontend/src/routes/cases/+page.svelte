@@ -39,7 +39,7 @@
     status: z.enum(['low', 'medium', 'high']).default('open'),
     incidentDate: z.string().optional(),
     location: z.string().optional(),
-    jurisdiction: z.string().optional();
+    jurisdiction: z.string().optional()
   });
   const addEvidenceSchema = z.object({
     caseId: z.string().min(1, 'Case ID is required'),

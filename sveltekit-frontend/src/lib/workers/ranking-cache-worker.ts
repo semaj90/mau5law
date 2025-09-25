@@ -154,12 +154,43 @@ function unpackRankingSetJS(packed: Uint8Array): RankingSet {
 }
 function computeDocDelta(cur:string, prev:string){ if(!prev) return parseInt(cur)||0; return (parseInt(cur)||0)-(parseInt(prev)||0); }
 function applyDocDelta(prev:string, delta:number){ if(!prev) return delta.toString(); return ((parseInt(prev)||0)+delta).toString(); }
-function computeSummaryHash(s:string){ let h=0; for(let i=0;i<s.length;i++){ h=((h<<5)-h+s.charCodeAt(i)) & 0x3FFFFF;} return h; }
-function writeVarint(view:DataView, offset:number, value:number){ while(value>=0x80){ view.setUint8(offset++, (value & 0xFF)|0x80); value>=7;} view.setUint8(offset++, value & 0xFF); return offset; }
-function readVarint(view:DataView, offset:number){ let v=0, shift=0; while(true){ const b=view.getUint8(offset++); v|=(b&0x7F)<<shift; if((b&0x80)===0) break; shift+=7;} return { value:v, newOffset: offset} }
+function computeSummaryHash(s:string){
+  let h=0;
+  for(let i=0;i<s.length;i++){
+    h=((h<<5)-h+s.charCodeAt(i)) & 0x3FFFFF;
+  }
+  return h;
+}
+function writeVarint(view:DataView, offset:number, value:number){
+  while(value>=0x80){
+    view.setUint8(offset++, (value & 0xFF)|0x80);
+    value>>=7;
+  }
+  view.setUint8(offset++, value & 0xFF);
+  return offset;
+}
+function readVarint(view:DataView, offset:number){
+  let v=0, shift=0;
+  while(true){
+    const b=view.getUint8(offset++);
+    v|=(b&0x7F)<<shift;
+    if((b&0x80)===0) break;
+    shift+=7;
+  }
+  return { value:v, newOffset: offset};
+}
 function write22Bits(view:DataView, offset:number, value:number){ value &=0x3FFFFF; view.setUint8(offset++, (value>>16)&0xFF); view.setUint8(offset++, (value>>8)&0xFF); view.setUint8(offset++, value & 0xFF); return offset; }
 function read22Bits(view:DataView, offset:number){ const b0=view.getUint8(offset++), b1=view.getUint8(offset++), b2=view.getUint8(offset++); return { value: (b0<<16)|(b1<<8)|b2, newOffset: offset} }
 function writeString(view:DataView, offset:number, str:string){ const bytes=new TextEncoder().encode(str); offset=writeVarint(view, offset, bytes.length); for(let i=0;i<bytes.length;i++){ view.setUint8(offset++, bytes[i]); } return offset; }
-function readString(view:DataView, offset:number){ const lenRes=readVarint(view, offset); const len=lenRes.value; offset = lenRes.newOffset; const bytes=new Uint8Array(len); for(let i=0;i<len;i++){ bytes[i]=view.getUint8(offset++);} return { value: new TextDecoder().decode(bytes), newOffset: offset} }
+function readString(view:DataView, offset:number){
+  const lenRes=readVarint(view, offset);
+  const len=lenRes.value;
+  offset = lenRes.newOffset;
+  const bytes=new Uint8Array(len);
+  for(let i=0;i<len;i++){
+    bytes[i]=view.getUint8(offset++);
+  }
+  return { value: new TextDecoder().decode(bytes), newOffset: offset};
+}
 function computeCRC32(data:Uint8Array){ let crc=0xFFFFFFFF; for(let i=0;i<data.length;i++){ crc^=data[i]; for(let j=0;j<8;j++){ crc = (crc>1) ^ (crc & 1 ? 0xEDB88320:0); } } return (~crc)>0; }
 export {}

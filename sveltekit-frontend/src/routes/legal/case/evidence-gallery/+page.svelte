@@ -136,15 +136,15 @@
   // Drag and drop functionality
   let draggedItem = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
-  function handleMouseDown(_event: MouseEvent, item: EvidenceCard) {
+  function handleMouseDown(event: MouseEvent, item: EvidenceCard) {
     draggedItem = item;
     const rect = event.currentTarget.getBoundingClientRect();
     dragOffset = {
       x: event.clientX - rect.left,
-      y: event.clientY - rect.top;
+      y: event.clientY - rect.top
     }
   }
-  function handleMouseMove(_event: MouseEvent) {
+  function handleMouseMove(event: MouseEvent) {
     if (draggedItem) {
       const canvas = document.getElementById('evidence-canvas');
       const rect = canvas.getBoundingClientRect();

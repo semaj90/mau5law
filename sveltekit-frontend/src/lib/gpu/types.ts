@@ -84,9 +84,9 @@ export function normalizePerformanceProfile(input: string | undefined): 'auto' |
       return 'auto';
   }
 }
-export function clampMemoryMB(_value: number, min = 64, max = 8192): number {
-  if (Number.isNaN(_value) || _value <= 0) return 512;
-  return Math.min(Math.max(_value, min), max);
+export function clampMemoryMB(value: number, min = 64, max = 8192): number {
+  if (Number.isNaN(value) || value <= 0) return 512;
+  return Math.min(Math.max(value, min), max);
 }
 // Enhanced interfaces for production use
 export interface AdaptiveGPUConfig extends GPUContextFactoryConfig {

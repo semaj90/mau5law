@@ -76,4 +76,4 @@ export const handle: Handle = async ({ event, resolve }) => {
     : null;
   event.locals.session = session;
   return resolve(event);
-}
+};

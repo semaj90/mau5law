@@ -7,7 +7,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   Uses quantized cached text with Nintendo-inspired styling
 -- // Svelte 5 runes are auto-imported -->
   <script lang="ts">
-  import { onLoad, onDestroy } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import type { Writable } from 'svelte/store';
   import { base64FP32Quantizer } from '../../text/base64-fp32-quantizer';
@@ -139,7 +139,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
           }
         );
       }
-      return alphabetTextur;
+      return alphabetTexture;
     } catch (error) {
       console.error(`❌ Failed to cache texture for '${char}':`, error);
       // Return fallback texture
@@ -177,7 +177,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
         }
       }
     }
-    return patter;
+    return pattern;
   }
   function renderCharacterTexture(char: string, pattern: Uint8Array): ImageData | null {
     if (!textureCtx) return null;
@@ -210,7 +210,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   function initializeAudioSystem(): void {
     if (!enableSound || typeof window === 'undefined') return;
     try {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       generateTypingSoundBuffer();
       console.log('🔊 NES audio system initialized');
     } catch (error) {
@@ -219,14 +219,14 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   }
   function generateTypingSoundBuffer(): void {
     if (!audioContext) return;
-    const sampleRate = audioContext.sampleRat;
+    const sampleRate = audioContext.sampleRate;
     const duration = 0.1; // 100ms sound
     const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
     const channelData = buffer.getChannelData(0);
     // Generate NES-style square wave typing sound
     for (let i = 0; i < channelData.length; i++) {
       const frequency = 800; // High pitch typing sound
-      const time = i / sampleRat;
+      const time = i / sampleRate;
       const wave = Math.sin(2 * Math.PI * frequency * time);
       const envelope = Math.exp(-time * 10); // Quick decay
       channelData[i] = wave * envelope * 0.1; // Low volume
@@ -240,7 +240,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
       source.buffer = typingSoundBuffer;
       // Add slight pitch variation
       const pitchVariation = 0.9 + Math.random() * 0.2; // 0.9 to 1.1
-      source.playbackRate.value = pitchVariatio;
+      source.playbackRate.value = pitchVariation;
       source.connect(audioContext.destination);
       source.start(0);
     } catch (error) {

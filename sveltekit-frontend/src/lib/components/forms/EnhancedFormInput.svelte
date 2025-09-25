@@ -73,40 +73,31 @@ https://svelte.dev/e/js_parse_error -->
   let hasWarnings = $derived(warnings.length > 0);
   let showErrorState = $derived(showValidation && isDirty && hasErrors);
   let showSuccessState = $derived(showValidation && isDirty && isValid && !hasErrors && value.trim() !== "");
-  function handleInput(_event: Event) {
-    // removed unused target assignment
+  function handleInput(event: Event) {
+    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
     value = target.value;
     isDirty = true;
     validateField();
-    ondispatch?.({
-      value,
-      validation: { isValid, errors, warnings, value },
-    });
   }
-  function handleChange(_event: Event) {
-    // removed unused target assignment
+  function handleChange(event: Event) {
+    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
     value = target.value;
     isDirty = true;
     validateField();
-    ondispatch?.({
-      value,
-      validation: { isValid, errors, warnings, value },
-    });
   }
   function handleFocus() {
-    ondispatch?.({ name });
+    // Focus event handled
   }
   function handleBlur() {
     isDirty = true;
     validateField();
-    ondispatch?.({ name });
   }
   function validateField() {
     if (validator && config) {
       const result = validator.setValue(name, value);
-      errors = (result as { errors?: unknown; warnings?: unknown; isValid?: unknown }).error;
-      warnings = (result as { errors?: unknown; warnings?: unknown; isValid?: unknown }).warning;
-      isValid = (result as { errors?: unknown; warnings?: unknown; isValid?: unknown }).isValid;
+      errors = Array.isArray((result as any)?.errors) ? (result as any).errors : [];
+      warnings = Array.isArray((result as any)?.warnings) ? (result as any).warnings : [];
+      isValid = Boolean((result as any)?.isValid);
     } else if (config) {
       // Standalone validation
       import("$lib/utils/validation.js").then(({ validateField }) => {
@@ -114,15 +105,15 @@ https://svelte.dev/e/js_parse_error -->
         if (result && typeof result === "object" && "then" in result) {
           (result as unknown as Promise<ValidationResult>).then(
             (validationResult) => {
-              errors = validationResult.error;
-              warnings = validationResult.warning;
-              isValid = validationResult.isValid;
+              errors = Array.isArray(validationResult.errors) ? validationResult.errors : [];
+              warnings = Array.isArray(validationResult.warnings) ? validationResult.warnings : [];
+              isValid = Boolean(validationResult.isValid);
   }
           );
         } else {
-          errors = (result as { errors?: unknown; warnings?: unknown; isValid?: unknown }).error;
-          warnings = (result as { errors?: unknown; warnings?: unknown; isValid?: unknown }).warning;
-          isValid = (result as { errors?: unknown; warnings?: unknown; isValid?: unknown }).isValid;
+          errors = Array.isArray((result as any)?.errors) ? (result as any).errors : [];
+          warnings = Array.isArray((result as any)?.warnings) ? (result as any).warnings : [];
+          isValid = Boolean((result as any)?.isValid);
   }
       });
     } else {
@@ -142,9 +133,11 @@ https://svelte.dev/e/js_parse_error -->
   // Expose focus method
   export { focusInput as focus }
   // Reactive validation
-  // TODO: Convert to $derived: if (value !== undefined) {
-    validateField()
-  }
+  $effect(() => {
+    if (value !== undefined) {
+      validateField();
+    }
+  });
 </script>
 <div class="container mx-auto px-4">
   <!-- Label -->
@@ -309,17 +302,16 @@ https://svelte.dev/e/js_parse_error -->
   .textarea-error {
     border-color: #ef4444;
 }
-  .input-error: focus
+  .input-error:focus,
   .textarea-error:focus {
     border-color: #ef4444;
-}
+  }
   .input-success,
   .textarea-success {
     border-color: #10b981;
 }
-  .input-success: focus
+  .input-success:focus,
   .textarea-success:focus {
     border-color: #10b981;
-}
+  }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

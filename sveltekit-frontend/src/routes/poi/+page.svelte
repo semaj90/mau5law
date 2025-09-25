@@ -17,7 +17,7 @@
       address: '123 Main St, City',
       status: 'Person of Interest',
       caseIds: ['case-001', 'case-003'],
-      lastUpdated: new Date().toISOString();
+      lastUpdated: new Date().toISOString()
     },
     {
       id: '2',
@@ -27,7 +27,7 @@
       address: '456 Oak Ave, Town',
       status: 'Witness',
       caseIds: ['case-002'],
-      lastUpdated: new Date().toISOString();
+      lastUpdated: new Date().toISOString()
     }
   ]);
   let filteredPersons = $derived(persons.filter(item => item.includes(searchQuery.toLowerCase()) ||

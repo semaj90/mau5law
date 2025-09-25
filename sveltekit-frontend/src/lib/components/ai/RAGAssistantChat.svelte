@@ -30,7 +30,7 @@
 		how: '',
 		priority: 'medium',
 		category: 'criminal',
-		urgency: 'normal';
+		urgency: 'normal'
 	});
 	// RAG ingestion state using $state
 	let isIngesting = $state(false);
@@ -41,37 +41,37 @@
 			key: 'what',
 			question: "What happened? Please describe the incident or situation in detail.",
 			icon: '🔍',
-			placeholder: "Describe what occurred, the nature of the incident, key events...";
+			placeholder: "Describe what occurred, the nature of the incident, key events..."
 		},
 		{
 			key: 'who',
 			question: "Who was involved? Identify all parties, witnesses, and key individuals.",
 			icon: '👥',
-			placeholder: "List suspects, victims, witnesses, law enforcement, experts...";
+			placeholder: "List suspects, victims, witnesses, law enforcement, experts..."
 		},
 		{
 			key: 'when',
 			question: "When did this occur? Provide timeline details and chronology.",
 			icon: '⏰',
-			placeholder: "Dates, times, sequence of events, duration...";
+			placeholder: "Dates, times, sequence of events, duration..."
 		},
 		{
 			key: 'where',
 			question: "Where did it happen? Specify all relevant locations.",
 			icon: '📍',
-			placeholder: "Crime scene, addresses, jurisdictions, related locations...";
+			placeholder: "Crime scene, addresses, jurisdictions, related locations..."
 		},
 		{
 			key: 'why',
 			question: "Why did this happen? What was the motive or underlying cause?",
 			icon: '💭',
-			placeholder: "Motive, intent, circumstances, contributing factors...";
+			placeholder: "Motive, intent, circumstances, contributing factors..."
 		},
 		{
 			key: 'how',
 			question: "How was it carried out? Describe the method and execution.",
 			icon: '⚙️',
-			placeholder: "Method of operation, tools used, sequence of actions...";
+			placeholder: "Method of operation, tools used, sequence of actions..."
 		}
 	];
 	// AI Assistant responses

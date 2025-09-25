@@ -95,7 +95,7 @@
   	}
   		// Svelte 5: allow parent to bind sidebarOpen
   		// This enables: <Navigation bind:sidebarOpen={sidebarOpen} />
-  		let { sidebarOpen = $bindable()  }: { sidebarOpen = $bindable() : unknown } = $props();
+  		let { sidebarOpen = $bindable(false) } = $props();
 </script>
 <nav class="nes-legal-header yorha-3d-panel">
 	<div class="container-nes-main">

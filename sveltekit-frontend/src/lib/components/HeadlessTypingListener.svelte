@@ -12,7 +12,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { createActor } from 'xstate';
-  import { onMount, onDestroy,   } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { userTypingStateMachine, type TypingContext, type TypingState } from '$lib/machines/userTypingStateMachine.js';
   // Props
   interface Props {

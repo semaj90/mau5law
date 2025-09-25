@@ -1,19 +1,23 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
+    evidence: any;
+    disabled?: boolean;
     onedit?: (event?: any) => void;
     ondelete?: (event?: any) => void;
     onview?: (event?: any) => void;
     ondownload?: (event?: any) => void;
   }
-  let { evidence,
-    disabled = false
-   }: { evidence,
-    disabled = false
-  : any } = $props();
+  let {
+    evidence,
+    disabled = false,
+    onedit,
+    ondelete,
+    onview,
+    ondownload
+  }: Props = $props();
+
   import { formatDistanceToNow } from "date-fns";
   import {
     Archive,
@@ -27,18 +31,19 @@ https://svelte.dev/e/js_parse_error -->
     Trash2,
     Video,
   } from "lucide-svelte";
+
   function getEvidenceIcon(type: string) {
     switch (type) {
       case "document":
         return FileText;
       case "photo":
-        return Imag;
+        return Image;
       case "video":
         return Video;
       case "audio":
-        return Headphone;
+        return Headphones;
       case "physical":
-        return Archiv;
+        return Archive;
       case "digital":
         return FileText;
       case "testimony":
@@ -47,6 +52,7 @@ https://svelte.dev/e/js_parse_error -->
         return FileText;
     }
   }
+
   function getTypeColor(type: string) {
     switch (type) {
       case "document":
@@ -67,25 +73,30 @@ https://svelte.dev/e/js_parse_error -->
         return "bg-gray-100 text-gray-800";
     }
   }
+
   let evidenceIcon = $derived(getEvidenceIcon(evidence.evidenceType || evidence.type));
-  let formattedDate = $derived(formatDistanceToNow(new Date(evidence.createdAt || evidence.dateCollected || Date.now()), {);
+  let formattedDate = $derived(formatDistanceToNow(new Date(evidence.createdAt || evidence.dateCollected || Date.now()), {
     addSuffix: true
-  });
+  }));
+
   function handleEdit() {
     if (!disabled) {
       onedit?.();
     }
   }
+
   function handleDelete() {
     if (!disabled) {
       ondelete?.();
     }
   }
+
   function handleView() {
     if (!disabled) {
       onview?.();
     }
   }
+
   function handleDownload() {
     if (!disabled) {
       ondownload?.();
@@ -94,8 +105,7 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 <div
-  class="bg-white rounded-lg shadow-sm border p-4 transition-all hover: shadow-md"
-  ;
+  class="bg-white rounded-lg shadow-sm border p-4 transition-all hover:shadow-md"
   class:opacity-60={disabled}
   class:pointer-events-none={disabled}
 >

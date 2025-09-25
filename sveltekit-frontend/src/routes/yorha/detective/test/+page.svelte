@@ -12,10 +12,10 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           title: 'Test Case from YoRHa Detective',
           description: 'This is a test case created from the YoRHa Detective interface',
-          priority: 'medium';
+          priority: 'medium'
         })
       });
       const result = await (response as { json?: unknown; ok?: unknown }).json();

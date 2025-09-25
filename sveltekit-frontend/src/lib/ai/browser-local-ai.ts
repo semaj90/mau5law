@@ -81,7 +81,7 @@ export class BrowserCapabilities {
       estimatedMemory
     }
   }
-  static canRunModel(modelSizeMB: number, capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>): boolean {
+  static canRunModel(modelSizeMB: number, capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>>): boolean {
     const requiredMemory = modelSizeMB * 1.5; // 50% overhead
     const hasRequiredTech = capabilities.wasm || capabilities.webgpu;
     return hasRequiredTech && capabilities.estimatedMemory > requiredMemory;
@@ -91,7 +91,7 @@ export class BrowserCapabilities {
 export class BrowserLocalAI {
   private initialized = false;
   private modelLoaded = false;
-  private capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect> | null = null;
+  private capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>> | null = null;
   private config: LocalModelConfig;
   // Model instances (would be actual transformers.js instances)
   private textModel: any = null;
@@ -159,11 +159,11 @@ export class BrowserLocalAI {
     //   quantized: this.config.quantized
     // })
     // For now, simulate successful loading
-    await new Promise(resolve => setTimeout(resolve, 2000);
+    await new Promise(resolve => setTimeout(resolve, 2000));
     this.textModel = {
       // Mock model interface
       generate: async (prompt: string, options: any) => {
-        await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200);
+        await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
         return {
           generated_text: `[Local AI Response] Based on the legal context: "${prompt}", here are the key considerations...`,
           num_tokens: Math.floor(Math.random() * 100) + 50
@@ -173,8 +173,8 @@ export class BrowserLocalAI {
     this.embeddingModel = {
       // Mock embedding model
       encode: async (texts: string[]) => {
-        await new Promise(resolve => setTimeout(resolve, 50 * texts.length);
-        return texts.map(() => new Float32Array(384).map(() => Math.random() - 0.5);
+        await new Promise(resolve => setTimeout(resolve, 50 * texts.length));
+        return texts.map(() => new Float32Array(384).map(() => Math.random() - 0.5));
       }
     }
     this.modelLoaded = true;
@@ -294,7 +294,7 @@ export class BrowserLocalAI {
       text: request.documents[index].text,
       similarity,
       metadata: request.documents[index].metadata
-    });
+    }));
   }
   // Utility methods
   private cosineSimilarity(a: Float32Array, b: Float32Array): number {
@@ -306,7 +306,7 @@ export class BrowserLocalAI {
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
   private getCacheKey(request: LocalInferenceRequest): string {
     return `${request.prompt}-${request.maxTokens}-${request.temperature}-${request.systemPrompt}`;
@@ -314,12 +314,12 @@ export class BrowserLocalAI {
   private cleanupCache(): void {
     // Limit cache size to prevent memory issues
     if (this.inferenceCache.size > 100) {
-      const keys = Array.from(this.inferenceCache.keys();
-      keys.slice(0, 50).forEach(key => this.inferenceCache.delete(key);
+      const keys = Array.from(this.inferenceCache.keys());
+      keys.slice(0, 50).forEach(key => this.inferenceCache.delete(key));
     }
     if (this.embeddingCache.size > 500) {
-      const keys = Array.from(this.embeddingCache.keys();
-      keys.slice(0, 250).forEach(key => this.embeddingCache.delete(key);
+      const keys = Array.from(this.embeddingCache.keys());
+      keys.slice(0, 250).forEach(key => this.embeddingCache.delete(key));
     }
   }
   private updateInferenceMetrics(processingTime: number): void {
@@ -338,7 +338,7 @@ export class BrowserLocalAI {
   isInitialized(): boolean {
     return this.initialized && this.modelLoaded;
   }
-  getCapabilities(): Awaited<ReturnType<typeof BrowserCapabilities.detect> | null {
+  getCapabilities(): Awaited<ReturnType<typeof BrowserCapabilities.detect>> | null {
     return this.capabilities;
   }
   getMetrics() {
@@ -367,7 +367,7 @@ export class BrowserLocalAI {
 // Singleton instance for the application
 export const browserLocalAI = new BrowserLocalAI({
   modelId: 'gemma3-270m-q4',
-  quantized: true
+  quantized: true,
   temperature: 0.2,
   maxTokens: 512
 });
@@ -379,7 +379,7 @@ export class LegalLocalAI {
     toId: string;
     relationship: string;
     confidence: number;
-  }> {
+  }>> {
     const suggestions = [];
     // Generate embeddings for all evidence
     const texts = evidenceNodes.map(node => `${node.title}: ${node.content}`);
@@ -398,7 +398,7 @@ export class LegalLocalAI {
 2. ${evidenceNodes[j].title}: ${evidenceNodes[j].content.substring(0, 200)}
 Describe their relationship in one concise phrase:`;
           const result = await this.ai.generateText({
-            prompt: relationshipPrompt
+            prompt: relationshipPrompt,
             maxTokens: 50,
             systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.'
           });
@@ -425,8 +425,8 @@ Suggest 3 additional bullet points that should be added to the notes:`;
     // Parse suggestions from the response
     return result.text
       .split('\n')
-      .filter(line => line.trim().startsWith('-') || line.trim().startsWith('•')
-      .map(line => line.trim().replace(/^[-•]\s*/, '')
+      .filter(line => line.trim().startsWith('-') || line.trim().startsWith('•'))
+      .map(line => line.trim().replace(/^[-•]\s*/, ''))
       .filter(line => line.length > 10)
       .slice(0, 3);
   }
@@ -447,7 +447,7 @@ Suggest 3 additional bullet points that should be added to the notes:`;
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
 }
 // Export legal-specific instance

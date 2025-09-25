@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   const { caseId: string, citation: Partial<Citation> | null = null, mode: 'create' | 'edit' = 'create', disabled = false } = $props();
-  import { onMount,   } from "svelte";
+  import { onMount } from "svelte";
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
   // Props

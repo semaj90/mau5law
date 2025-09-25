@@ -364,7 +364,11 @@
       "Bash(xxd:*)",
       "Bash(PORT=5174 npm run dev:quic:local)",
       "Bash(./tensorrt-bridge.exe)",
-      "Bash(set PORT=8100)"
+      "Bash(set PORT=8100)",
+      "Bash(npm view:*)",
+      "Bash(.launch-vscode-optimized.bat)",
+      "Bash(MCP_PORT=3002 CONTEXT7_GPU_ENABLED=true CONTEXT7_MULTICORE=true node scripts/mcp-multicore-server.mjs)",
+      "Bash(set NODE_OPTIONS=--max-old-space-size=28672)"
     ],
     "deny": [],
     "ask": []

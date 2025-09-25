@@ -23,7 +23,7 @@
     ollama: false,
     enhancedRAG: false,
     postgres: false,
-    neo4j: false;
+    neo4j: false
   });
   // POI Timeline State
   let poiTimelineData = $state([]);
@@ -54,7 +54,7 @@
         ollama: data?.services?.ollama === 'healthy',
         enhancedRAG: data?.services?.enhancedRAG === 'running',
         postgres: data?.services?.postgres === 'connected',
-        neo4j: data?.services?.neo4j === 'active';
+        neo4j: data?.services?.neo4j === 'active'
       }
     } catch (e: unknown) {
       console.error('Health check error:', e);
@@ -70,7 +70,7 @@
         ollama: false,
         enhancedRAG: false,
         postgres: false,
-        neo4j: false;
+        neo4j: false
       }
       error = 'System health check failed - using mock status';
     }

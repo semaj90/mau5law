@@ -259,7 +259,7 @@ export const storage = {
   set: (_key: string, value: any) => {
     if (!isBrowser()) return;
     try {
-      localStorage.setItem(key, JSON.stringify(value);
+      localStorage.setItem(key, JSON.stringify(value));
     } catch (error: any) {
       console.error('Failed to save to localStorage:', error);
     }

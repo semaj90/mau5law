@@ -35,7 +35,7 @@
 
 <div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
-    <NavBar bind:sidebarOpen {user} variant={autoVariant} />
+    <NavBar bin sidebarOpen {user} variant={autoVariant} />
   {/if}
   <!-- Skip Navigation Link for Accessibility -->
   <a href="#main-content" class="skip-nav"> Skip to main content </a>

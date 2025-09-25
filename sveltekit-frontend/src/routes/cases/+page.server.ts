@@ -8,7 +8,7 @@ import { CaseOperations } from '$lib/server/db/enhanced-operations';
 import { vectorOps } from '$lib/server/db/enhanced-vector-operations';
 import { apiError, apiSuccess, CommonErrors } from '$lib/server/api/response';
 import { cuid } from '$lib/utils/cuid';
-;
+
 // Validation schemas
 const createCaseSchema = z.object({
   title: z.string().min(1, 'Case title is required').max(500, 'Case title too long'),

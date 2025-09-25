@@ -16,7 +16,7 @@ export interface RAGResponse {
   response: string;
   sources: Array<{
     id: string;
-    type: 'evidence' | 'report' | 'case';
+    type: "evidence" | "report" | "case";
     relevance: number;
     excerpt?: string;
   }>;
@@ -30,10 +30,10 @@ export interface RAGResponse {
 export async function queryLLM(ragQuery: RAGQuery): Promise<RAGResponse> {
   try {
     // TODO: This would integrate with your Ollama setup
-    const response = await fetch('/api/llm/query', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(ragQuery)
+    const response = await fetch("/api/llm/query", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(ragQuery),
     });
 
     if (!response.ok) {
@@ -42,9 +42,8 @@ export async function queryLLM(ragQuery: RAGQuery): Promise<RAGResponse> {
 
     const data = await response.json();
     return data;
-
   } catch (error) {
-    console.error('LLM query error:', error);
+    console.error("LLM query error:", error);
     throw error;
   }
 }
@@ -55,20 +54,20 @@ export async function queryLLM(ragQuery: RAGQuery): Promise<RAGResponse> {
 export async function generateCaseSummary(caseId: string): Promise<string> {
   try {
     const ragQuery: RAGQuery = {
-      query: 'Provide a comprehensive summary of this case, including key evidence, timeline of events, and important findings.',
+      query:
+        "Provide a comprehensive summary of this case, including key evidence, timeline of events, and important findings.",
       caseId,
       maxTokens: 1000,
       temperature: 0.3,
       includeEvidence: true,
-      includeReports: true
+      includeReports: true,
     };
 
     const response = await queryLLM(ragQuery);
     return response.response;
-
   } catch (error) {
-    console.error('Case summary generation error:', error);
-    return 'Failed to generate case summary. Please try again.';
+    console.error("Case summary generation error:", error);
+    return "Failed to generate case summary. Please try again.";
   }
 }
 
@@ -78,60 +77,67 @@ export async function generateCaseSummary(caseId: string): Promise<string> {
 export async function analyzeEvidencePatterns(caseId: string): Promise<string> {
   try {
     const ragQuery: RAGQuery = {
-      query: 'Analyze the evidence in this case for patterns, connections, and inconsistencies. Identify key relationships between different pieces of evidence.',
+      query:
+        "Analyze the evidence in this case for patterns, connections, and inconsistencies. Identify key relationships between different pieces of evidence.",
       caseId,
       maxTokens: 800,
       temperature: 0.2,
-      includeEvidence: true
+      includeEvidence: true,
     };
 
     const response = await queryLLM(ragQuery);
     return response.response;
-
   } catch (error) {
-    console.error('Evidence pattern analysis error:', error);
-    return 'Failed to analyze evidence patterns. Please try again.';
+    console.error("Evidence pattern analysis error:", error);
+    return "Failed to analyze evidence patterns. Please try again.";
   }
 }
 
 /**
  * Generate investigation recommendations
  */
-export async function generateInvestigationTips(caseId: string): Promise<string[]> {
+export async function generateInvestigationTips(
+  caseId: string,
+): Promise<string[]> {
   try {
     const ragQuery: RAGQuery = {
-      query: 'Based on the current evidence and case details, suggest next steps for the investigation. What additional evidence should be collected? What lines of inquiry should be pursued?',
+      query:
+        "Based on the current evidence and case details, suggest next steps for the investigation. What additional evidence should be collected? What lines of inquiry should be pursued?",
       caseId,
       maxTokens: 600,
       temperature: 0.4,
       includeEvidence: true,
-      includeReports: true
+      includeReports: true,
     };
 
     const response = await queryLLM(ragQuery);
 
     // Parse response into array of recommendations
     const recommendations = response.response
-      .split('\n')
-      .filter(line => line.trim())
-      .map(line => line.replace(/^\d+\.\s*|^-\s*|^\*\s*/, '').trim())
-      .filter(line => line.length > 0);
+      .split("\n")
+      .filter((line) => line.trim())
+      .map((line) => line.replace(/^\d+\.\s*|^-\s*|^\*\s*/, "").trim())
+      .filter((line) => line.length > 0);
 
     return recommendations;
-
   } catch (error) {
-    console.error('Investigation tips generation error:', error);
-    return ['Failed to generate investigation recommendations. Please try again.'];
+    console.error("Investigation tips generation error:", error);
+    return [
+      "Failed to generate investigation recommendations. Please try again.",
+    ];
   }
 }
 
 /**
  * Smart search with natural language queries
  */
-export async function smartSearch(query: string, caseId: string): Promise<{
+export async function smartSearch(
+  query: string,
+  caseId: string,
+): Promise<{
   results: Array<{
     id: string;
-    type: 'evidence' | 'report';
+    type: "evidence" | "report";
     title: string;
     relevance: number;
     snippet: string;
@@ -140,14 +146,14 @@ export async function smartSearch(query: string, caseId: string): Promise<{
 }> {
   try {
     // First, get semantic search results using embeddings
-    const searchResponse = await fetch('/api/search/semantic', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, caseId })
+    const searchResponse = await fetch("/api/search/semantic", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, caseId }),
     });
 
     if (!searchResponse.ok) {
-      throw new Error('Search failed');
+      throw new Error("Search failed");
     }
 
     const searchResults = await searchResponse.json();
@@ -157,21 +163,20 @@ export async function smartSearch(query: string, caseId: string): Promise<{
       query: `The user searched for: "${query}". Based on the search results and case context, provide a brief interpretation of what the user might be looking for and how the results relate to their query.`,
       caseId,
       maxTokens: 300,
-      temperature: 0.3
+      temperature: 0.3,
     };
 
     const interpretationResponse = await queryLLM(ragQuery);
 
     return {
       results: searchResults.results || [],
-      interpretation: interpretationResponse.response
+      interpretation: interpretationResponse.response,
     };
-
   } catch (error) {
-    console.error('Smart search error:', error);
+    console.error("Smart search error:", error);
     return {
       results: [],
-      interpretation: 'Search failed. Please try a different query.'
+      interpretation: "Search failed. Please try a different query.",
     };
   }
 }
@@ -187,27 +192,26 @@ export async function extractEntities(text: string): Promise<{
   other: string[];
 }> {
   try {
-    const response = await fetch('/api/nlp/entities', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
+    const response = await fetch("/api/nlp/entities", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
     });
 
     if (!response.ok) {
-      throw new Error('Entity extraction failed');
+      throw new Error("Entity extraction failed");
     }
 
     const entities = await response.json();
     return entities;
-
   } catch (error) {
-    console.error('Entity extraction error:', error);
+    console.error("Entity extraction error:", error);
     return {
       people: [],
       locations: [],
       dates: [],
       organizations: [],
-      other: []
+      other: [],
     };
   }
 }
@@ -215,30 +219,35 @@ export async function extractEntities(text: string): Promise<{
 /**
  * Generate questions for further investigation
  */
-export async function generateInvestigationQuestions(caseId: string): Promise<string[]> {
+export async function generateInvestigationQuestions(
+  caseId: string,
+): Promise<string[]> {
   try {
     const ragQuery: RAGQuery = {
-      query: 'Based on the current evidence and case information, generate a list of important questions that need to be answered to advance this investigation. Focus on gaps in the evidence and areas that need clarification.',
+      query:
+        "Based on the current evidence and case information, generate a list of important questions that need to be answered to advance this investigation. Focus on gaps in the evidence and areas that need clarification.",
       caseId,
       maxTokens: 500,
       temperature: 0.5,
       includeEvidence: true,
-      includeReports: true
+      includeReports: true,
     };
 
     const response = await queryLLM(ragQuery);
 
     // Parse response into questions
     const questions = response.response
-      .split('\n')
-      .filter(line => line.trim())
-      .map(line => line.replace(/^\d+\.\s*|^-\s*|^\*\s*/, '').trim())
-      .filter(line => line.length > 0 && line.includes('?'));
+      .split("\n")
+      .filter((line) => line.trim())
+      .map((line) => line.replace(/^\d+\.\s*|^-\s*|^\*\s*/, "").trim())
+      .filter((line) => line.length > 0 && line.includes("?"));
 
     return questions;
-
   } catch (error) {
-    console.error('Question generation error:', error);
-    return ['What additional evidence needs to be collected?', 'What witnesses should be interviewed?'];
+    console.error("Question generation error:", error);
+    return [
+      "What additional evidence needs to be collected?",
+      "What witnesses should be interviewed?",
+    ];
   }
 }

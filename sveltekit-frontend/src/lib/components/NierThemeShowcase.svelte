@@ -10,7 +10,7 @@
   let activeTab = $state('overview');
   let inputValue = $state('');
   let selectedStatus = $state('active');
-  // Create melt-ui dialog
+  // Create bits-ui dialog
   // const {
   //   elements: { trigger, overlay, content, title, description, close },
   //   states: { open }

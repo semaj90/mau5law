@@ -45,12 +45,12 @@ export default class MultiTierCache<V = unknown> {
 	try {
 	  const ls = (globalThis as any).localStorage;
 	  if (!ls) return null;
-	  const raw = ls.getItem(this.storageKey(key);
+	  const raw = ls.getItem(this.storageKey(key));
 	  if (!raw) return null;
 	  const parsed = JSON.parse(raw) as PersistedEntry;
 	  if (this.isExpired(parsed.expiresAt ?? null)) {
 		// remove stale item
-		ls.removeItem(this.storageKey(key);
+		ls.removeItem(this.storageKey(key));
 		return null;
 	  }
 	  return { value: parsed.value as V, expiresAt: parsed.expiresAt ?? null }
@@ -63,8 +63,8 @@ export default class MultiTierCache<V = unknown> {
 	try {
 	  const ls = (globalThis as any).localStorage;
 	  if (!ls) return;
-	  const toStore: PersistedEntry = { value, expiresAt: expiresAt ?? null }
-	  ls.setItem(this.storageKey(key), JSON.stringify(toStore);
+	  const toStore: PersistedEntry = { value, expiresAt: expiresAt ?? null };
+	  ls.setItem(this.storageKey(_key), JSON.stringify(toStore));
 	} catch {
 	  // ignore storage errors (quota, serialization)
 	}
@@ -74,7 +74,7 @@ export default class MultiTierCache<V = unknown> {
 	try {
 	  const ls = (globalThis as any).localStorage;
 	  if (!ls) return;
-	  ls.removeItem(this.storageKey(key);
+	  ls.removeItem(this.storageKey(_key));
 	} catch {
 	  // ignore
 	}

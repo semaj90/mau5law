@@ -49,8 +49,8 @@ export const ensureFloat32Array = (data: BufferCompatible): Float32Array => {
  * Fixes: GPUBuffer | null compatibility issues
  */
 export const createWebGPUBuffer = (
-  device: GPUDevice
-  data: BufferCompatible;
+  device: GPUDevice,
+  data: BufferCompatible,
   usage: GPUBufferUsageFlags = GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST;
 ): GPUBuffer => {
   const compatibleData = ensureBufferCompatibility(data);
@@ -66,10 +66,10 @@ export const createWebGPUBuffer = (
  * Fixes: Object is possibly 'null' errors
  */
 export const safeWriteBuffer = (
-  device: GPUDevice
-  buffer: GPUBuffer | null
-  data: BufferCompatible;
-  offset: number = 0;
+  device: GPUDevice,
+  buffer: GPUBuffer | null,
+  data: BufferCompatible,
+  offset: number = 0
 ): boolean => {
   try {
     if (!buffer) {
@@ -146,8 +146,8 @@ export interface LegalDocumentBuffer {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 export const createLegalDocumentBuffer = (
-  device: GPUDevice;
-  doc: LegalDocumentBuffer;
+  device: GPUDevice,
+  doc: LegalDocumentBuffer
 ): { buffer: GPUBuffer; byteLength: number } => {
   const embeddingData = ensureBufferCompatibility(doc.embeddings);
   const buffer = createWebGPUBuffer(device, embeddingData, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);

@@ -6,7 +6,7 @@ export interface Context7CategoryAnalysisItem {
   estimated_fixes: number;
   multicore_analysis?: {
     context?: string;
-  }
+  };
 }
 export interface Context7ErrorAnalysisResult {
   total_estimated_errors: number;
@@ -51,5 +51,5 @@ export async function analyzeCurrentErrors(): Promise<Context7ErrorAnalysisResul
       'Normalize component prop naming consistency',
       'Purge unused CSS to reduce bundle size',
     ],
-  }
+  };
 }

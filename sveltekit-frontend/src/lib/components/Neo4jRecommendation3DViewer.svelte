@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha'  }: { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' : unknown } = $props();
-  import { onMount, onDestroy,   } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { useMachine } from '@xstate/svelte';
   import { idleDetectionMachine } from '$lib/machines/idle-detection-rabbitmq-machine.js';
   import { neo4j3DEngine, type RecommendationGraph, type Neo4jNode } from '$lib/services/neo4j-3d-recommendation-engine.js';

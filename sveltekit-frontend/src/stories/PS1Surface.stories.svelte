@@ -19,25 +19,25 @@
 			id: 'wireframe',
 			name: '= Wireframe',
 			desc: 'Classic PS1 wireframe rendering',
-			className: 'ps1-wireframe';
+			className: 'ps1-wireframe'
 		},
 		{
 			id: 'flat',
 			name: '=7 Flat Shaded',
 			desc: 'Flat polygon surfaces, no smoothing',
-			className: 'ps1-flat-shaded';
+			className: 'ps1-flat-shaded'
 		},
 		{
 			id: 'textured',
 			name: '<� Low-Res Textured',
 			desc: 'Pixelated textures with UV mapping',
-			className: 'ps1-textured-low';
+			className: 'ps1-textured-low'
 		},
 		{
 			id: 'vertex',
 			name: '< Vertex Colored',
 			desc: 'Per-vertex color interpolation',
-			className: 'ps1-vertex-colored';
+			className: 'ps1-vertex-colored'
 		}
 	];
 	// Performance metrics

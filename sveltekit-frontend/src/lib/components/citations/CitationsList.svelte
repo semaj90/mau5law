@@ -13,7 +13,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   const { caseId: string, detectiveMode = false, readonly = false } = $props();
-  import { onMount,   } from "svelte";
+  import { onMount } from "svelte";
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
   import CitationEditor from './CitationEditor.svelte';
@@ -264,7 +264,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <div>
         <label class="block text-xs font-medium text-gray-700 mb-1">Sort by</label>
         <div class="flex space-x-1">
-          <select;
+          <select
             bind:value={sortBy}
             onchange={handleSortChange}
             class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"

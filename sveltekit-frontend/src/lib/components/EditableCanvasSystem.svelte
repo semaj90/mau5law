@@ -15,7 +15,7 @@ https: //svelte.dev/e/js_parse_error -->
     readonly = false,
     maxNodes = 100
   }: Props = $props();
-  import { onMount, onDestroy,   } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { writable, derived } from 'svelte/store';
   import type { EditableNode, CanvasState } from '$lib/components/types';
   import type { Evidence } from '$lib/types';

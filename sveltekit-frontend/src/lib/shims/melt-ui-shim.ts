@@ -1,11 +1,11 @@
-// Temporary shim to replace '@melt-ui/svelte' during migration to Bits UI.
+// Legacy shim for '@melt-ui/svelte' - kept for backward compatibility.
 // Provides no-op creators to avoid runtime failures where Melt utilities were imported.
-// Remove this file after all imports are migrated to Bits UI or native components.
+// All active components should now use Bits UI or native implementations.
 // Generic creator that returns minimal state and actions
 function createPrimitive() {
   return {
-    open: false
-    options: { [key: string]: any },
+    open: false,
+    options: {} as { [key: string]: any },
     openModal: () => {},
     closeModal: () => {},
     toggle: () => {}

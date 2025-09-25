@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   interface Props {
     variant?: 'full' | 'minimal' | 'demo';
     showQuickLinks?: boolean;
@@ -9,7 +9,7 @@
   let { variant = 'full', showQuickLinks = true }: Props = $props();
   let currentYear = new Date().getFullYear();
   let currentPath = $derived($page.url.pathname);
-  let isDemoRoute = $derived(currentPath.startsWith('/demo'));
+  let isDemoRoute = $derived(currentPath?.startsWith('/demo') ?? false);
   const quickLinks = [
     { path: '/help', label: 'Help', icon: '❓' },
     { path: '/privacy', label: 'Privacy', icon: '🔒' },
@@ -105,7 +105,7 @@
             © {currentYear} YoRHa Legal AI Platform. All rights reserved.
           </p>
           <p class="version-info nes-text is-disabled">
-            Version 2.0.0 | Build: {Date.now.toString - slice(-6)}
+            Version 2.0.0 | Build: {String(Date.now()).slice(-6)}
           </p>
         </div>
         <div class="tech-stack">
@@ -158,7 +158,7 @@
       var(--nier-bg-tertiary, #0f1419)
     ) !important;
     border-top: 3px solid var(--n64-primary, #4a90e2) !important;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
   }
   .footer-content {
     max-width: 1200px;
@@ -254,18 +254,17 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-  .resource-link {
-    display: flex;
-!important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    padding: 0.25rem 0.5rem !important;
-    font-size: 0.5rem !important;
-    text-decoration: none !important;
-  }
-  .resource-icon {
-    margin-right: 0.5rem;
-    font-size: 0.75rem;
+.resource-link {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.5rem !important;
+  text-decoration: none !important;
+}
+.resource-icon {
+  margin-right: 0.5rem;
+  font-size: 0.75rem;
   }
   .resource-label {
     font-size: 0.5rem;
@@ -274,16 +273,11 @@
   .footer-bottom {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
     padding-top: 0.5rem;
     border-top: 1px solid var(--n64-secondary, #7ed321);
-  }
-  .copyright-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
   }
   .copyright-text,
   .version-info {
@@ -302,13 +296,11 @@
   /* Minimal Footer */
   .minimal-footer {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
     padding: 0.5rem 0;
-  }
-  .minimal-copyright {
     font-size: 0.5rem !important;
     margin: 0 !important;
   }

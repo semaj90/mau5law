@@ -12,7 +12,7 @@
 		avatar: '👩‍⚖️',
 		cases: 47,
 		evidenceAnalyzed: 1284,
-		convictionRate: 94.2;
+		convictionRate: 94.2
 	}
 	// Demo state
 	let activeView = $state('dashboard');

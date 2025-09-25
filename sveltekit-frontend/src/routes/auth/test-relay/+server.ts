@@ -8,13 +8,13 @@ export const POST: RequestHandler = async ({ cookies }) => {
     // Create session cookie manually
     cookies.set('auth-session', sessionId, {
       path: '/',
-      httpOnly: true;
+      httpOnly: true,
       secure: false, // dev mode
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7 // 7 days
     });
     return new Response(JSON.stringify({
-      success: true
+      success: true,
       sessionId,
       message: 'Test session created without database',
       redirectTo: '/dashboard'
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
   } catch (error: any) {
     console.error('Test relay error:', error);
     return new Response(JSON.stringify({
-      error: 'Test failed: ' + (error instanceof Error ? error.message: 'Unknown error')
+      error: 'Test failed: ' + (error instanceof Error ? error.message : 'Unknown error')
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

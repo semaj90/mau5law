@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount, onDestroy } from 'svelte';
   import { derived } from 'svelte/store';
   import { debounce } from 'lodash-es';
-  // TODO: Replace with melt-ui equivalent when available
+  // TODO: Replace with bits-ui equivalent when available
   // import { Combobox } from 'bits-ui'
   import * as Command from '$lib/components/ui/command/index.js';
   // Real-time search service

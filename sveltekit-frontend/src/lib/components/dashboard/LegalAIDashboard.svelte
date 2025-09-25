@@ -98,7 +98,7 @@
         api: 'error',
         database: 'unknown',
         aiServices: 'unknown',
-        jobQueue: 'unknown';
+        jobQueue: 'unknown',
       }
     }
   }
@@ -108,7 +108,7 @@
         title: `New Case - ${new Date().toLocaleDateString()}`,
         description: 'Quick case created from dashboard',
         status: 'open' as const,
-        priority: 'medium' as const;
+        priority: 'medium' as const
       }
       // removed unused response assignment
       if (response?.success) {

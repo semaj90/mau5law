@@ -4,6 +4,8 @@
   import Avatar from '$lib/components/Avatar.svelte';
   import { avatarStore } from '$lib/stores/avatarStore';
   import { onMount } from 'svelte';
+  import DocumentUpload from '$lib/components/rag/DocumentUpload.svelte';
+
   let user = $state(page.data.user);
   let userStats = $state(page.data.userStats);
   let profileForm = $state({
@@ -14,6 +16,8 @@
   });
   let isUpdating = $state(false);
   let updateMessage = $state('');
+  let ragUploadResults = $state<any>(null);
+  let showRagUpload = $state(false);
   $effect(() => {
     if (user) {
       profileForm = {
@@ -49,6 +53,17 @@
     } finally {
       isUpdating = false;
     }
+  }
+
+  function handleRagUploadComplete(result: any) {
+    ragUploadResults = result;
+    updateMessage = `✅ ${result.message} - ${result.totalFiles} files processed`;
+    console.log('📚 RAG Upload Complete:', result);
+  }
+
+  function handleRagUploadError(error: string) {
+    updateMessage = `❌ RAG Upload Failed: ${error}`;
+    console.error('📚 RAG Upload Error:', error);
   }
 </script>
 
@@ -128,6 +143,62 @@
           </div>
         </form>
       </div>
+
+      <!-- RAG Document Upload Section -->
+      <div class="space-y-4">
+        <div class="rag-section-header">
+          <h2>🧠 AI Knowledge Base</h2>
+          <button
+            class="rag-toggle-button"
+            onclick={() => showRagUpload = !showRagUpload}
+          >
+            {showRagUpload ? '▼ Hide Upload' : '▶ Upload Documents'}
+          </button>
+        </div>
+
+        <p class="rag-description">
+          Upload documents to enhance AI understanding for better case analysis and recommendations.
+          Supports text files, PDFs, Markdown, JSON, and CSV formats.
+        </p>
+
+        {#if showRagUpload}
+          <div class="rag-upload-container">
+            <DocumentUpload
+              multiple={true}
+              maxSize={10}
+              acceptedTypes={['.txt', '.md', '.pdf', '.docx', '.json', '.csv']}
+              uploadEndpoint="/api/rag/upload"
+              onUploadComplete={handleRagUploadComplete}
+              onError={handleRagUploadError}
+            />
+          </div>
+        {/if}
+
+        {#if ragUploadResults}
+          <div class="rag-results-summary">
+            <h3>📊 Recent Upload Results</h3>
+            <div class="rag-stats">
+              <div class="rag-stat">
+                <span class="stat-value">{ragUploadResults.totalFiles}</span>
+                <span class="stat-label">Files Processed</span>
+              </div>
+              <div class="rag-stat">
+                <span class="stat-value">
+                  {ragUploadResults.results?.reduce((sum: number, r: any) => sum + (r.result.chunks || 0), 0) || 0}
+                </span>
+                <span class="stat-label">Semantic Chunks</span>
+              </div>
+              <div class="rag-stat">
+                <span class="stat-value">
+                  {ragUploadResults.results?.reduce((sum: number, r: any) => sum + (r.result.embeddings || 0), 0) || 0}
+                </span>
+                <span class="stat-label">Embeddings Generated</span>
+              </div>
+            </div>
+          </div>
+        {/if}
+      </div>
+
       <div class="space-y-4"></div>
       <!-- Account Stats -->
       <div class="space-y-4">
@@ -230,6 +301,90 @@
     margin: 32px auto;
     max-width: 400px;
   }
+
+  /* RAG Upload Styles */
+  .rag-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .rag-section-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary, #111827);
+    margin: 0;
+  }
+
+  .rag-toggle-button {
+    background: var(--primary-color, #3b82f6);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+  }
+
+  .rag-toggle-button:hover {
+    background: var(--primary-hover, #2563eb);
+  }
+
+  .rag-description {
+    color: var(--text-secondary, #6b7280);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .rag-upload-container {
+    margin: 20px 0;
+  }
+
+  .rag-results-summary {
+    background: var(--success-bg, #f0f9ff);
+    border: 1px solid var(--success-border, #0ea5e9);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .rag-results-summary h3 {
+    margin: 0 0 16px 0;
+    color: var(--success-text, #0369a1);
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .rag-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .rag-stat {
+    text-align: center;
+    padding: 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, #e5e7eb);
+  }
+
+  .rag-stat .stat-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary-color, #3b82f6);
+    margin-bottom: 4px;
+  }
+
+  .rag-stat .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary, #6b7280);
+    font-weight: 500;
+  }
+
   /* Responsive */
   @media (max-width: 768px) {
     .form-grid {
@@ -238,6 +393,14 @@
     .avatar-display {
       flex-direction: column;
       text-align: center;
+    }
+    .rag-section-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+    .rag-stats {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 </style>

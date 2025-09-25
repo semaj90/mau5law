@@ -149,27 +149,28 @@
           console.error('Cache metrics error:', error);
         }
       // Simulate realistic cache metrics based on performance optimization principles
-      const mockData = {
-        hits: Math.floor(Math.random() * 50000) + 10000,
-        misses: Math.floor(Math.random() * 5000) + 1000,
-        hitRate: 0.85 + Math.random() * 0.14, // 85-99% hit rate
-        evictions: Math.floor(Math.random() * 200),
-        size: Math.floor(Math.random() * 1024 * 1024 * 100), // Up to 100MB
-        maxSize: 1024 * 1024 * 256, // 256MB max;
-        entries: Math.floor(Math.random() * 10000) + 1000,
-        types: {
-          'function-results': Math.floor(Math.random() * 3000),
-          'compiled-wasm': Math.floor(Math.random() * 100),
-          'database-queries': Math.floor(Math.random() * 2000),
-          'api-responses': Math.floor(Math.random() * 1500)
+      try {
+        const mockData = {
+          hits: Math.floor(Math.random() * 50000) + 10000,
+          misses: Math.floor(Math.random() * 5000) + 1000,
+          hitRate: 0.85 + Math.random() * 0.14, // 85-99% hit rate
+          evictions: Math.floor(Math.random() * 200),
+          size: Math.floor(Math.random() * 1024 * 1024 * 100), // Up to 100MB
+          maxSize: 1024 * 1024 * 256, // 256MB max
+          entries: Math.floor(Math.random() * 10000) + 1000,
+          types: {
+            'function-results': Math.floor(Math.random() * 3000),
+            'compiled-wasm': Math.floor(Math.random() * 100),
+            'database-queries': Math.floor(Math.random() * 2000),
+            'api-responses': Math.floor(Math.random() * 1500)
+          }
         }
-      }
-      cacheMetrics.set(mockData);
-      cacheHitSeries.push(mockData.hitRate * 100);
-      cacheEvictionSeries.push(mockData.evictions);
-      if (cacheHitSeries.length > 300) cacheHitSeries.shift();
-      if (cacheEvictionSeries.length > 300) cacheEvictionSeries.shift();
-    } catch (e) {
+        cacheMetrics.set(mockData);
+        cacheHitSeries.push(mockData.hitRate * 100);
+        cacheEvictionSeries.push(mockData.evictions);
+        if (cacheHitSeries.length > 300) cacheHitSeries.shift();
+        if (cacheEvictionSeries.length > 300) cacheEvictionSeries.shift();
+      } catch (e) {
       console.warn('Cache metrics unavailable:', e);
     }
   }

@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
       currentUsage: 0,
       efficiency: 0,
       predictions: [],
-      lodLevel: 'medium' as const;
+      lodLevel: 'medium' as const
     },
     mlCaching: {
       hitRate: 0,
@@ -51,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
         currentUsage: enhancedRAGStore.neuralMemory.getCurrentMemoryUsage(),
         efficiency: memoryReport.memoryEfficiency,
         predictions: [],
-        lodLevel: "medium" as const;
+        lodLevel: "medium" as const
       }
       // Get caching metrics
       const ragState = enhancedRAGStore.stat;

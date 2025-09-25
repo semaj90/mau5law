@@ -6,6 +6,17 @@
   import SelectBits from '$lib/components/ui/bits-ui/SelectBits.svelte';
   import TabsBits from '$lib/components/ui/bits-ui/TabsBits.svelte';
   import TooltipBits from '$lib/components/ui/bits-ui/TooltipBits.svelte';
+
+  // Cast imported Svelte components to constructor types so TS sees them as constructors
+  import type { SvelteComponent } from 'svelte';
+  type SvelteConstructor = new (...args: any) => SvelteComponent;
+  const CardBitsCtor = CardBits as unknown as SvelteConstructor;
+  const TabsBitsCtor = TabsBits as unknown as SvelteConstructor;
+  const InputBitsCtor = InputBits as unknown as SvelteConstructor;
+  const SelectBitsCtor = SelectBits as unknown as SvelteConstructor;
+  const TooltipBitsCtor = TooltipBits as unknown as SvelteConstructor;
+  const ButtonBitsCtor = ButtonBits as unknown as SvelteConstructor;
+
   // Form state using Svelte 5 runes
   let formData = $state({
     caseTitle: '',
@@ -128,247 +139,266 @@
       formData.clientName.trim() &&
       formData.practiceArea &&
       formData.jurisdiction &&
-      formData.deadline
-    );
-  });
-  // Progress calculation
-  let formProgress = $derived(() => {
-    const totalFields = 12;
-    const filledFields = Object.values(formData).filter(value => String(value).trim()).length;
-    return Math.round((filledFields / totalFields) * 100);
-  });
-</script>
-
-<CardBits variant="elevated" padding="lg" class="legal-case-form">
-  <div class="form-header">
-    <h2 class="form-title">⚖️ Create New Legal Case</h2>
-    <div class="form-progress">
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: {formProgress}%"></div>
+<svelte:component this={CardBitsCtor} variant="elevated" padding="lg">
+  <div class="legal-case-form">
+    <div class="form-header">
+      <h2 class="form-title">⚖️ Create New Legal Case</h2>
+      <div class="form-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: {formProgress}%"></div>
+        </div>
+        <span class="progress-text">{formProgress}% Complete</span>
       </div>
-      <span class="progress-text">{formProgress}% Complete</span>
     </div>
-  </div>
-  <TabsBits tabs={tabItems} bind:value={activeTab} variant="underline" size="md" class="form-tabs">
-    {#if activeTab === 'basic'}
-      <div class="tab-content">
-        <div class="form-grid">
-          <div class="form-field">
-            <InputBits
-              label="📋 Case Title"
-              placeholder="Enter case title..."
-              bind:value={formData.caseTitle}
-              error={!!formErrors.caseTitle}
-              errorMessage={formErrors.caseTitle}
-              description="A descriptive title for the legal case"
-              required
-            />
-          </div>
-          <div class="form-field">
-            <InputBits
-              label="🔢 Case Number"
-              placeholder="CASE-2024-001"
-              bind:value={formData.caseNumber}
-              description="Optional internal case tracking number"
-            />
-          </div>
-          <div class="form-field">
-            <InputBits
-              label="👤 Client Name"
-              placeholder="Enter client name..."
-              bind:value={formData.clientName}
-              error={!!formErrors.clientName}
-              errorMessage={formErrors.clientName}
-              description="Primary client or organization name"
-              required
-            />
-          </div>
-          <div class="form-field">
-            <SelectBits
-              label="⚖️ Practice Area"
-              placeholder="Select practice area..."
-              options={practiceAreas}
-              bind:selected={formData.practiceArea}
-              error={!!formErrors.practiceArea}
-              errorMessage={formErrors.practiceArea}
-              description="Primary area of law for this case"
-            />
-          </div>
-        </div>
-      </div>
-    {:else if activeTab === 'details'}
-      <div class="tab-content">
-        <div class="form-grid">
-          <div class="form-field">
-            <SelectBits
-              label="🏛️ Jurisdiction"
-              placeholder="Select jurisdiction..."
-              options={jurisdictions}
-              bind:selected={formData.jurisdiction}
-              error={!!formErrors.jurisdiction}
-              errorMessage={formErrors.jurisdiction}
-              description="Legal jurisdiction for the case"
-            />
-          </div>
-          <div class="form-field">
-            <SelectBits
-              label="⚖️ Court Level"
-              placeholder="Select court level..."
-              options={courtLevels}
-              bind:selected={formData.courtLevel}
-              description="Court level if applicable"
-            />
-          </div>
-          <div class="form-field">
-            <SelectBits
-              label="🚨 Priority Level"
-              placeholder="Select priority..."
-              options={priorities}
-              bind:selected={formData.priority}
-              description="Case priority and urgency level"
-            />
-          </div>
-          <div class="form-field full-width">
-            <label for="description" class="field-label">📄 Case Description</label>
-            <textarea
-              id="description"
-              bind:value={formData.description}
-              placeholder="Provide a detailed description of the case..."
-              class="form-textarea"
-              rows="4"
-            ></textarea>
-            <p class="field-description">Comprehensive description of the legal matter</p>
-          </div>
-        </div>
-      </div>
-    {:else if activeTab === 'assignment'}
-      <div class="tab-content">
-        <div class="form-grid">
-          <div class="form-field">
-            <SelectBits
-              label="👨‍💼 Assigned Attorney"
-              placeholder="Select attorney..."
-              options={attorneys}
-              bind:selected={formData.assignedAttorney}
-              description="Primary attorney responsible for the case"
-            />
-          </div>
-          <div class="form-field">
-            <InputBits
-              label="⏱️ Estimated Hours"
-              placeholder="Enter estimated hours..."
-              bind:value={formData.estimatedHours}
-              type="number"
-              description="Estimated total hours for case completion"
-            />
-          </div>
-          <div class="form-field">
-            <InputBits
-              label="💰 Budget"
-              placeholder="Enter budget amount..."
-              bind:value={formData.budget}
-              type="number"
-              description="Total budget allocated for the case"
-            />
-          </div>
-          <div class="form-field">
-            <InputBits
-              label="📅 Deadline"
-              bind:value={formData.deadline}
-              type="date"
-              error={!!formErrors.deadline}
-              errorMessage={formErrors.deadline}
-              description="Final deadline for case completion"
-              required
-            />
-          </div>
-        </div>
-      </div>
-    {:else if activeTab === 'review'}
-      <div class="tab-content">
-        <div class="review-section">
-          <h3 class="review-title">📋 Case Summary</h3>
-          <div class="review-grid">
-            <div class="review-item">
-              <strong>Case Title:</strong>
-              <span>{formData.caseTitle || 'Not specified'}</span>
-            </div>
-            <div class="review-item">
-              <strong>Client:</strong>
-              <span>{formData.clientName || 'Not specified'}</span>
-            </div>
-            <div class="review-item">
-              <strong>Practice Area:</strong>
-              <span>{practiceAreas.find(area => area.value === formData.practiceArea)?.label || 'Not selected'}</span>
-            </div>
-            <div class="review-item">
-              <strong>Jurisdiction:</strong>
-              <span>{jurisdictions.find(j => j.value === formData.jurisdiction)?.label || 'Not selected'}</span>
-            </div>
-            <div class="review-item">
-              <strong>Priority:</strong>
-              <span>{priorities.find(p => p.value === formData.priority)?.label || 'Not selected'}</span>
-            </div>
-            <div class="review-item">
-              <strong>Deadline:</strong>
-              <span>{formData.deadline || 'Not specified'}</span>
+
+    <div class="form-tabs">
+      <svelte:component this={TabsBitsCtor} tabs={tabItems} bind:value={activeTab} variant="underline" size="md">
+        {#if activeTab === 'basic'}
+          <div class="tab-content">
+            <div class="form-grid">
+              <div class="form-field">
+                <svelte:component
+                  this={InputBitsCtor}
+                  label="📋 Case Title"
+                  placeholder="Enter case title..."
+                  bind:value={formData.caseTitle}
+                  error={!!formErrors.caseTitle}
+                  errorMessage={formErrors.caseTitle}
+                  description="A descriptive title for the legal case"
+                  required
+                />
+              </div>
+              <div class="form-field">
+                <svelte:component
+                  this={InputBitsCtor}
+                  label="🔢 Case Number"
+                  placeholder="CASE-2024-001"
+                  bind:value={formData.caseNumber}
+                  description="Optional internal case tracking number"
+                />
+              </div>
+              <div class="form-field">
+                <svelte:component
+                  this={InputBitsCtor}
+                  label="👤 Client Name"
+                  placeholder="Enter client name..."
+                  bind:value={formData.clientName}
+                  error={!!formErrors.clientName}
+                  errorMessage={formErrors.clientName}
+                  description="Primary client or organization name"
+                  required
+                />
+              </div>
+              <div class="form-field">
+                <svelte:component
+                  this={SelectBitsCtor}
+                  label="⚖️ Practice Area"
+                  placeholder="Select practice area..."
+                  options={practiceAreas}
+                  bind:selected={formData.practiceArea}
+                  error={!!formErrors.practiceArea}
+                  errorMessage={formErrors.practiceArea}
+                  description="Primary area of law for this case"
+                />
+              </div>
             </div>
           </div>
-          {#if formData.description}
-            <div class="review-description">
-              <strong>Description:</strong>
-              <p>{formData.description}</p>
+        {:else if activeTab === 'details'}
+          <div class="tab-content">
+            <div class="form-grid">
+              <div class="form-field">
+                <svelte:component
+                  this={SelectBitsCtor}
+                  label="🏛️ Jurisdiction"
+                  placeholder="Select jurisdiction..."
+                  options={jurisdictions}
+                  bind:selected={formData.jurisdiction}
+                  error={!!formErrors.jurisdiction}
+                  errorMessage={formErrors.jurisdiction}
+                  description="Legal jurisdiction for the case"
+                />
+              </div>
+              <div class="form-field">
+                <svelte:component
+                  this={SelectBitsCtor}
+                  label="⚖️ Court Level"
+                  placeholder="Select court level..."
+                  options={courtLevels}
+                  bind:selected={formData.courtLevel}
+                  description="Court level if applicable"
+                />
+              </div>
+              <div class="form-field">
+                <svelte:component
+                  this={SelectBitsCtor}
+                  label="🚨 Priority Level"
+                  placeholder="Select priority..."
+                  options={priorities}
+                  bind:selected={formData.priority}
+                  description="Case priority and urgency level"
+                />
+              </div>
+              <div class="form-field full-width">
+                <label for="description" class="field-label">📄 Case Description</label>
+                <textarea
+                  id="description"
+                  bind:value={formData.description}
+                  placeholder="Provide a detailed description of the case..."
+                  class="form-textarea"
+                  rows="4"
+                ></textarea>
+                <p class="field-description">Comprehensive description of the legal matter</p>
+              </div>
             </div>
-          {/if}
-          <div class="validation-status">
-            {#if isFormValid}
-              <div class="status-valid">✅ Form is complete and ready for submission</div>
-            {:else}
-              <div class="status-invalid">⚠️ Please complete all required fields before submitting</div>
-            {/if}
           </div>
-        </div>
-      </div>
-    {/if}
-  </TabsBits>
-  <div class="form-actions">
-    <div class="action-buttons">
-      <TooltipBits content="Clear all form data">
-        <ButtonBits
-          variant="ghost"
-          onclick={() => {
-            if (confirm('Are you sure you want to clear all form data?')) {
-              formData = {
-                caseTitle: '',
-                caseNumber: '',
-                clientName: '',
-                practiceArea: '',
-                jurisdiction: '',
-                courtLevel: '',
-                priority: '',
-                description: '',
-                assignedAttorney: '',
-                estimatedHours: '',
-                budget: '',
-                deadline: '',
+        {:else if activeTab === 'assignment'}
+          <div class="tab-content">
+            <div class="form-grid">
+              <div class="form-field">
+                <svelte:component
+                  this={SelectBitsCtor}
+                  label="👨‍💼 Assigned Attorney"
+                  placeholder="Select attorney..."
+                  options={attorneys}
+                  bind:selected={formData.assignedAttorney}
+                  description="Primary attorney responsible for the case"
+                />
+              </div>
+              <div class="form-field">
+                <svelte:component
+                  this={InputBitsCtor}
+                  label="⏱️ Estimated Hours"
+                  placeholder="Enter estimated hours..."
+                  bind:value={formData.estimatedHours}
+                  type="number"
+                  description="Estimated total hours for case completion"
+                />
+              </div>
+              <div class="form-field">
+                <svelte:component
+                  this={InputBitsCtor}
+                  label="💰 Budget"
+                  placeholder="Enter budget amount..."
+                  bind:value={formData.budget}
+                  type="number"
+                  description="Total budget allocated for the case"
+                />
+              </div>
+              <div class="form-field">
+                <svelte:component
+                  this={InputBitsCtor}
+                  label="📅 Deadline"
+                  bind:value={formData.deadline}
+                  type="date"
+                  error={!!formErrors.deadline}
+                  errorMessage={formErrors.deadline}
+                  description="Final deadline for case completion"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        {:else if activeTab === 'review'}
+          <div class="tab-content">
+            <div class="review-section">
+              <h3 class="review-title">📋 Case Summary</h3>
+              <div class="review-grid">
+                <div class="review-item">
+                  <strong>Case Title:</strong>
+                  <span>{formData.caseTitle || 'Not specified'}</span>
+                </div>
+                <div class="review-item">
+                  <strong>Client:</strong>
+                  <span>{formData.clientName || 'Not specified'}</span>
+                </div>
+                <div class="review-item">
+                  <strong>Practice Area:</strong>
+                  <span>{practiceAreas.find(area => area.value === formData.practiceArea)?.label || 'Not selected'}</span>
+                </div>
+                <div class="review-item">
+                  <strong>Jurisdiction:</strong>
+                  <span>{jurisdictions.find(j => j.value === formData.jurisdiction)?.label || 'Not selected'}</span>
+                </div>
+                <div class="review-item">
+                  <strong>Priority:</strong>
+                  <span>{priorities.find(p => p.value === formData.priority)?.label || 'Not selected'}</span>
+                </div>
+                <div class="review-item">
+                  <strong>Deadline:</strong>
+                  <span>{formData.deadline || 'Not specified'}</span>
+                </div>
+              </div>
+              {#if formData.description}
+                <div class="review-description">
+                  <strong>Description:</strong>
+                  <p>{formData.description}</p>
+                </div>
+              {/if}
+              <div class="validation-status">
+                {#if isFormValid}
+                  <div class="status-valid">✅ Form is complete and ready for submission</div>
+                {:else}
+                  <div class="status-invalid">⚠️ Please complete all required fields before submitting</div>
+                {/if}
+              </div>
+            </div>
+          </div>
+        {/if}
+      </svelte:component>
+    </div>
+
+    <div class="form-actions">
+      <div class="action-buttons">
+        <svelte:component this={TooltipBitsCtor} content="Clear all form data">
+          <svelte:component
+            this={ButtonBitsCtor}
+            variant="ghost"
+            onclick={() => {
+              if (confirm('Are you sure you want to clear all form data?')) {
+                formData = {
+                  caseTitle: '',
+                  caseNumber: '',
+                  clientName: '',
+                  practiceArea: '',
+                  jurisdiction: '',
+                  courtLevel: '',
+                  priority: '',
+                  description: '',
+                  assignedAttorney: '',
+                  estimatedHours: '',
+                  budget: '',
+                  deadline: '',
+                }
+                formErrors = {}
               }
-              formErrors = {}
-            }
-          }}
-        >
-          🗑️ Clear Form
-        </ButtonBits>
-      </TooltipBits>
-      <TooltipBits content={isFormValid ? 'Submit the legal case' : 'Complete required fields first'}>
-        <ButtonBits
-          variant="primary"
-          loading={isSubmitting}
-          disabled={!isFormValid || isSubmitting}
-          onclick={handleSubmit}
-        >
-          {isSubmitting ? '⏳ Creating Case...' : '⚖️ Create Case'}
-        </ButtonBits>
-      </TooltipBits>
+            }}
+          >
+            🗑️ Clear Form
+          </svelte:component>
+        </svelte:component>
+        <svelte:component this={TooltipBitsCtor} content={isFormValid ? 'Submit the legal case' : 'Complete required fields first'}>
+          <svelte:component
+            this={ButtonBitsCtor}
+            variant="primary"
+            loading={isSubmitting}
+            disabled={!isFormValid || isSubmitting}
+            onclick={handleSubmit}
+          >
+          >
+            🗑️ Clear Form
+          </ButtonBits>
+        </TooltipBits>
+        <TooltipBits content={isFormValid ? 'Submit the legal case' : 'Complete required fields first'}>
+          <ButtonBits
+            variant="primary"
+            loading={isSubmitting}
+            disabled={!isFormValid || isSubmitting}
+            onclick={handleSubmit}
+          >
+            {isSubmitting ? '⏳ Creating Case...' : '⚖️ Create Case'}
+          </ButtonBits>
+        </TooltipBits>
+      </div>
     </div>
   </div>
 </CardBits>

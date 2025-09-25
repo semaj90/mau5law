@@ -31,7 +31,7 @@ Displays all media: evidence, generated images, documents, uploads
       evidence: mediaItems.filter(item => item.category === 'evidence').length,
       images: mediaItems.filter(item => item.category === 'images').length,
       documents: mediaItems.filter(item => item.category === 'documents').length,
-      aiGenerated: mediaItems.filter(item => item.metadata?.aiGenerated).length;
+      aiGenerated: mediaItems.filter(item => item.metadata?.aiGenerated).length
     }
     return stat;
   });

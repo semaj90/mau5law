@@ -111,7 +111,7 @@
       const trigger = {
         todoId: `test_${Date.now()}`,
         action: 'analyze' as const,
-        status: 'pending' as const;
+        status: 'pending' as const
       }
       const result = await context7AgentOrchestrator.triggerAgent(trigger);
       console.log('[Context7 Test] Agent orchestration completed:', result);

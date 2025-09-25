@@ -6,7 +6,34 @@ import { z } from 'zod';
 import { simpleAuthService } from '$lib/server/auth-simple';
 import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
 import { db, users, helpers } from '$lib/server/db';
-// Melt UI component creation removed - replace with bits-ui declarative components
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6)
+});
+
+export const load: PageServerLoad = async () => {
+  const form = await superValidate(zod(loginSchema));
+  return { form };
+};
+
+export const actions: Actions = {
+  default: async ({ request, cookies }) => {
+    const form = await superValidate(request, zod(loginSchema));
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    try {
+      const { email, password } = form.data;
+
+      // Authenticate user
+      const userRecord = await simpleAuthService.authenticate(email, password);
+
+      // Create session
+      const { sessionId, expiresAt } = await createUserSession(userRecord.id);
+
       // Set session cookie
       setSessionCookie(cookies, sessionId, expiresAt);
       console.log('✅ Session created successfully for:', userRecord.email);
@@ -32,4 +59,4 @@ import { db, users, helpers } from '$lib/server/db';
     // Redirect to dashboard or intended page
     throw redirect(302, '/dashboard');
   }
-}
+};
