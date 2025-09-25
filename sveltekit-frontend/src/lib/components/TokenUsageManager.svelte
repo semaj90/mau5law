@@ -1,7 +1,7 @@
 <!-- TokenUsageManager.svelte - Advanced Token Management with Slider -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount,   } from "svelte";
+  import { onMount} from "svelte";
   import { writable, derived } from 'svelte/store';
   import {
     Button,

@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null  }: { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null : any } = $props();
-  import { onMount,   } from "svelte";
+  import { onMount } from "svelte";
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment';
   import { page } from '$app/state';

@@ -23,15 +23,15 @@ export interface BatchEmbeddingResult {
 export async function embedText(text: string): Promise<EmbeddingResult> {
   try {
     if (!text.trim()) {
-      return { success: false, error: 'Empty text provided' };
+      return { success: false, error: "Empty text provided" };
     }
 
     // TODO: Integrate with your existing Gemma embedding service
     // This would connect to your embedding API endpoint
-    const response = await fetch('/api/embeddings/text', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
+    const response = await fetch("/api/embeddings/text", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
     });
 
     if (!response.ok) {
@@ -43,14 +43,13 @@ export async function embedText(text: string): Promise<EmbeddingResult> {
     return {
       success: true,
       embedding: data.embedding,
-      dimensions: data.embedding?.length || 0
+      dimensions: data.embedding?.length || 0,
     };
-
   } catch (error) {
-    console.error('Text embedding error:', error);
+    console.error("Text embedding error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -61,14 +60,14 @@ export async function embedText(text: string): Promise<EmbeddingResult> {
 export async function embedImage(imageUrl: string): Promise<EmbeddingResult> {
   try {
     if (!imageUrl) {
-      return { success: false, error: 'No image URL provided' };
+      return { success: false, error: "No image URL provided" };
     }
 
     // TODO: Integrate with your existing image embedding service
-    const response = await fetch('/api/embeddings/image', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageUrl })
+    const response = await fetch("/api/embeddings/image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageUrl }),
     });
 
     if (!response.ok) {
@@ -80,14 +79,13 @@ export async function embedImage(imageUrl: string): Promise<EmbeddingResult> {
     return {
       success: true,
       embedding: data.embedding,
-      dimensions: data.embedding?.length || 0
+      dimensions: data.embedding?.length || 0,
     };
-
   } catch (error) {
-    console.error('Image embedding error:', error);
+    console.error("Image embedding error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -95,16 +93,18 @@ export async function embedImage(imageUrl: string): Promise<EmbeddingResult> {
 /**
  * Generate embeddings for multiple texts in batch
  */
-export async function embedTextBatch(texts: string[]): Promise<BatchEmbeddingResult> {
+export async function embedTextBatch(
+  texts: string[],
+): Promise<BatchEmbeddingResult> {
   try {
     if (!texts.length) {
-      return { success: false, errors: ['No texts provided'] };
+      return { success: false, errors: ["No texts provided"] };
     }
 
-    const response = await fetch('/api/embeddings/text/batch', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ texts })
+    const response = await fetch("/api/embeddings/text/batch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ texts }),
     });
 
     if (!response.ok) {
@@ -116,14 +116,13 @@ export async function embedTextBatch(texts: string[]): Promise<BatchEmbeddingRes
     return {
       success: true,
       embeddings: data.embeddings,
-      dimensions: data.embeddings?.[0]?.length || 0
+      dimensions: data.embeddings?.[0]?.length || 0,
     };
-
   } catch (error) {
-    console.error('Batch text embedding error:', error);
+    console.error("Batch text embedding error:", error);
     return {
       success: false,
-      errors: [error instanceof Error ? error.message : 'Unknown error']
+      errors: [error instanceof Error ? error.message : "Unknown error"],
     };
   }
 }
@@ -131,9 +130,12 @@ export async function embedTextBatch(texts: string[]): Promise<BatchEmbeddingRes
 /**
  * Calculate cosine similarity between two embeddings
  */
-export function cosineSimilarity(embedding1: number[], embedding2: number[]): number {
+export function cosineSimilarity(
+  embedding1: number[],
+  embedding2: number[],
+): number {
   if (embedding1.length !== embedding2.length) {
-    throw new Error('Embeddings must have the same dimensions');
+    throw new Error("Embeddings must have the same dimensions");
   }
 
   let dotProduct = 0;
@@ -162,15 +164,15 @@ export function findSimilarEmbeddings(
   queryEmbedding: number[],
   candidateEmbeddings: { id: string; embedding: number[]; metadata?: any }[],
   limit = 5,
-  threshold = 0.5
+  threshold = 0.5,
 ): Array<{ id: string; similarity: number; metadata?: any }> {
   const similarities = candidateEmbeddings
-    .map(candidate => ({
+    .map((candidate) => ({
       id: candidate.id,
       similarity: cosineSimilarity(queryEmbedding, candidate.embedding),
-      metadata: candidate.metadata
+      metadata: candidate.metadata,
     }))
-    .filter(result => result.similarity >= threshold)
+    .filter((result) => result.similarity >= threshold)
     .sort((a, b) => b.similarity - a.similarity)
     .slice(0, limit);
 
@@ -181,13 +183,15 @@ export function findSimilarEmbeddings(
  * Normalize embedding vector
  */
 export function normalizeEmbedding(embedding: number[]): number[] {
-  const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+  const magnitude = Math.sqrt(
+    embedding.reduce((sum, val) => sum + val * val, 0),
+  );
 
   if (magnitude === 0) {
     return embedding;
   }
 
-  return embedding.map(val => val / magnitude);
+  return embedding.map((val) => val / magnitude);
 }
 
 /**
@@ -195,28 +199,28 @@ export function normalizeEmbedding(embedding: number[]): number[] {
  */
 export async function embedFileContent(
   content: string,
-  fileType: string
+  fileType: string,
 ): Promise<EmbeddingResult> {
   try {
     let textToEmbed = content;
 
     // Pre-process content based on file type
     switch (fileType) {
-      case 'image':
+      case "image":
         // For images, use image embedding
         return await embedImage(content); // content would be image URL
 
-      case 'document':
-      case 'text':
+      case "document":
+      case "text":
         // Use text content directly
         break;
 
-      case 'audio':
+      case "audio":
         // content would be transcript from speech-to-text
         textToEmbed = `Audio transcript: ${content}`;
         break;
 
-      case 'video':
+      case "video":
         // content would be combined transcript and visual description
         textToEmbed = `Video content: ${content}`;
         break;
@@ -226,12 +230,11 @@ export async function embedFileContent(
     }
 
     return await embedText(textToEmbed);
-
   } catch (error) {
-    console.error('File content embedding error:', error);
+    console.error("File content embedding error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -249,7 +252,7 @@ export async function createRAGContext(
     metadata?: any;
   }>,
   maxContextLength = 4000,
-  similarityThreshold = 0.6
+  similarityThreshold = 0.6,
 ): Promise<{
   context: string;
   sources: Array<{ id: string; type: string; similarity: number }>;
@@ -257,17 +260,17 @@ export async function createRAGContext(
   // Find most relevant documents
   const relevantDocs = findSimilarEmbeddings(
     queryEmbedding,
-    availableDocuments.map(doc => ({
+    availableDocuments.map((doc) => ({
       id: doc.id,
       embedding: doc.embedding,
-      metadata: { content: doc.content, type: doc.type, ...doc.metadata }
+      metadata: { content: doc.content, type: doc.type, ...doc.metadata },
     })),
     10, // Get top 10 most relevant
-    similarityThreshold
+    similarityThreshold,
   );
 
   // Build context string within token limit
-  let context = '';
+  let context = "";
   const sources: Array<{ id: string; type: string; similarity: number }> = [];
 
   for (const doc of relevantDocs) {
@@ -282,7 +285,7 @@ export async function createRAGContext(
       sources.push({
         id: doc.id,
         type: docType,
-        similarity: doc.similarity
+        similarity: doc.similarity,
       });
     } else {
       break;

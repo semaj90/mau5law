@@ -17,7 +17,7 @@
       { value: 'family', label: 'Family Law' },
       { value: 'corporate', label: 'Corporate Law' }
     ],
-    useLibrary = 'melt-ui',
+    useLibrary = 'bits-ui',
     class: className = '',
     id,
     'data-testid': testId;
@@ -52,11 +52,11 @@
       const response = await fetch('/api/cases', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           title: 'Demo Case ' + Date.now(),
           description: 'Demonstration case created from BitsDemo component',
           priority: 'medium',
-          status: 'open';
+          status: 'open'
         })
       });
       if ((response as { ok?: any; json?: any }).ok) {
@@ -84,7 +84,7 @@
   async function showWarningNotification() {
     try {
       const response = await fetch('/api/comprehensive-integration', {
-        method: 'GET';
+        method: 'GET'
       });
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
@@ -135,7 +135,7 @@
   async function showInfoNotification() {
     try {
       const response = await fetch('/api/v1/quic/metrics', {
-        method: 'GET';
+        method: 'GET'
       });
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
@@ -168,9 +168,9 @@
 </script>
 <div class="mx-auto px-4 max-w-7xl">
   <h2 class="mx-auto px-4 max-w-7xl">Bits UI Components Demo</h2>
-  <!-- Melt-UI Notification Demo Section -->
+  <!-- Bits-UI Notification Demo Section -->
   <div class="mx-auto px-4 max-w-7xl">
-    <h3 class="mx-auto px-4 max-w-7xl">Melt-UI Notifications Demo</h3>
+    <h3 class="mx-auto px-4 max-w-7xl">Bits-UI Notifications Demo</h3>
     <div class="mx-auto px-4 max-w-7xl">
       <button class="mx-auto px-4 max-w-7xl" onclick={() => showSuccessNotification()}>
         Success Notification
@@ -276,7 +276,7 @@ Create New Case
   <div class="mx-auto px-4 max-w-7xl">
     <p class="mx-auto px-4 max-w-7xl">
       <strong>Demo:</strong> Bits UI components provide accessible, unstyled components.
-      Melt-UI notifications provide toast/alert functionality.
+      Bits-UI notifications provide toast/alert functionality.
     </p>
   </div>
 </div>
@@ -371,7 +371,6 @@ Create New Case
   /* Toast/Notification Styles */
   .toast-container {
     position: fixed;
-d;
     top: var(--spacing-lg);
     right: var(--spacing-lg);
     z-index: 100;
@@ -407,7 +406,7 @@ d;
   }
   .toast-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: flex-start;
     margin-bottom: var(--spacing-xs);
   }
@@ -438,7 +437,7 @@ d;
     transition: all var(--transition-fast);
     flex-shrink: 0;
   }
-  .toast-close: hover {
+  .toast-close:hover {
     background-color: var(--color-surface);
     color: var(--color-text);
   }
@@ -467,7 +466,6 @@ d;
   }
   :global(.dialog-overlay) {
     position: fixed;
-d;
     inset: 0;
     z-index: 50;
     background-color: rgb(0 0 0 / 0.5);

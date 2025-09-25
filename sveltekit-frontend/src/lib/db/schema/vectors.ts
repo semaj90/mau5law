@@ -21,7 +21,7 @@ export const documentVectors = pgTable("document_vectors", {
   embedding: vector("embedding", { dimensions: 384 }).notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow().notNull()
-}, (table: any) => ({,
+}, (table: any) => ({
   embeddingIdx: index("document_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   documentIdx: index("document_vectors_document_idx").on(table.documentId)
 });
@@ -33,7 +33,7 @@ export const caseSummaryVectors = pgTable("case_summary_vectors", {
   embedding: vector("embedding", { dimensions: 384 }).notNull(),
   confidence: real("confidence").default(1.0),
   lastUpdated: timestamp("last_updated").defaultNow().notNull()
-}, (table: any) => ({,
+}, (table: any) => ({
   embeddingIdx: index("case_summary_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops"))
 });
 // Evidence vectors for evidence search
@@ -46,7 +46,7 @@ export const evidenceVectors = pgTable("evidence_vectors", {
   analysisType: text("analysis_type"), // summary, entities, sentiment, classification;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow().notNull()
-}, (table: any) => ({,
+}, (table: any) => ({
   embeddingIdx: index("evidence_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   evidenceIdx: index("evidence_vectors_evidence_idx").on(table.evidenceId)
 });
@@ -59,7 +59,7 @@ export const queryVectors = pgTable("query_vectors", {
   resultCount: integer("result_count").default(0),
   clickedResults: jsonb("clicked_results"),
   createdAt: timestamp("created_at").defaultNow().notNull()
-}, (table: any) => ({,
+}, (table: any) => ({
   embeddingIdx: index("query_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   userIdx: index("query_vectors_user_idx").on(table.userId)
 });
@@ -73,7 +73,7 @@ export const knowledgeNodes = pgTable("knowledge_nodes", {
   properties: jsonb("properties"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
-}, (table: any) => ({,
+}, (table: any) => ({
   embeddingIdx: index("knowledge_nodes_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   nodeTypeIdx: index("knowledge_nodes_type_idx").on(table.nodeType)
 });
@@ -86,7 +86,7 @@ export const knowledgeEdges = pgTable("knowledge_edges", {
   weight: real("weight").default(1.0),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow().notNull()
-}, (table: any) => ({,
+}, (table: any) => ({
   sourceIdx: index("knowledge_edges_source_idx").on(table.sourceId),
   targetIdx: index("knowledge_edges_target_idx").on(table.targetId),
   relationshipIdx: index("knowledge_edges_relationship_idx").on(table.relationship)
@@ -100,7 +100,7 @@ export const recommendationCache = pgTable("recommendation_cache", {
   score: real("score").default(0),
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()
-}, (table: any) => ({,
+}, (table: any) => ({
   userTypeIdx: index("recommendation_cache_user_type_idx").on(table.userId, table.recommendationType)
 });
 // Import required types from main schema

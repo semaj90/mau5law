@@ -1,4 +1,4 @@
-;
+
 import { reports } from '$lib/server/db/schema';
 import { db } from '$lib/server/db/index';
 import type { RequestHandler } from './$types.js';

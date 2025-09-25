@@ -20,7 +20,7 @@
     children,
     header,
     footer,
-    ...restProps;
+    ...restProps
   }: CardProps = $props();
   let cardClasses = $derived.by(() => {
     const classes = [];

@@ -40,7 +40,7 @@
         dynamic,
         segments,
         group,
-        kind: 'page' as const;
+        kind: 'page' as const
       }
     });
     const apis = Object.keys.map((filePath) => {
@@ -51,12 +51,12 @@
       const segments = pathForLink.split.filter(Boolean);
       const group = segments[1] ? `api:${segments[1]}` : 'api';
       return {
-        path: pathForLink;
+        path: pathForLink,
         label: `API ${humanize(segments.slice(-1)[0] || 'endpoint')}`,
         dynamic,
         segments,
         group,
-        kind: 'api' as const;
+        kind: 'api' as const
       }
     });
     // Deduplicate by path preferring page over api for same path

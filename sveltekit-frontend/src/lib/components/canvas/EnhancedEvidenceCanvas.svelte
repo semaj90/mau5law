@@ -10,7 +10,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   import { browser } from "$app/environment";
   import { onMount, onDestroy } from "svelte";
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
   import {
     Circle,
@@ -62,7 +62,7 @@ if (!browser) return;
         backgroundColor: "#f8fafc",
         selection: !readonly,
         preserveObjectStacking: true
-        enableRetinaScaling: true;
+        enableRetinaScaling: true,
     })();
   });
       fabricLoaded = true;

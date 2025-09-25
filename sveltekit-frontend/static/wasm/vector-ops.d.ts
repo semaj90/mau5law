@@ -104,10 +104,10 @@ export declare function dotProductSIMD(aPtr: number, bPtr: number, length: numbe
 export declare function cosineSimilaritySIMD(aPtr: number, bPtr: number, length: number): number;
 /**
  * src/wasm/vector-operations/prepareVectorForServer
- * @param vectorPtr `usize`
- * @param length `i32`
+ * @param _vectorPtr `usize`
+ * @param _length `i32`
  */
-export declare function prepareVectorForServer(vectorPtr: number, length: number): void;
+export declare function prepareVectorForServer(_vectorPtr: number, _length: number): void;
 /**
  * src/wasm/vector-operations/processServerResponse
  * @param responsePtr `usize`

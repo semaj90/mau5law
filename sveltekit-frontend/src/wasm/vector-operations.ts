@@ -276,7 +276,7 @@ export function cosineSimilaritySIMD(aPtr: usize, bPtr: usize, length: i32): f32
  * Prepare vector data for CUDA server processing
  * Converts WebAssembly memory to JSON-serializable format
  */
-export function prepareVectorForServer(vectorPtr: usize, length: i32): void {
+export function prepareVectorForServer(_vectorPtr: usize, _length: i32): void {
   // This function is called from JavaScript to prepare data for server transfer
   // The actual serialization is handled by the JavaScript wrapper
 }

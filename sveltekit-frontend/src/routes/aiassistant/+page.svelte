@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
           const searchResults = await performSearch(messageToSend, {
             categories: ['cases', 'evidence', 'precedents'],
             vectorSearch: true,
-            includeAI: true;
+            includeAI: true
           });
           enhancedContext = {
             ...enhancedContext,

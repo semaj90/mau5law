@@ -1,4 +1,4 @@
-<!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->
+<!-- Enhanced Chat Component with bits-ui, shadcn-svelte integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy, tick } from 'svelte';
@@ -30,7 +30,7 @@
 	onDestroy(() => {
 		machineUnsub?.();
 	});
-	// Available models (kept simple — no melt-ui / shadcn-svelte dependencies)
+	// Available models (kept simple — no shadcn-svelte dependencies)
 	const models = [
 		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
 		{ value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },

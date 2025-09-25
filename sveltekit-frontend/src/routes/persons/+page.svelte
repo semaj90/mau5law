@@ -249,7 +249,7 @@
             <Filter class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">FILTERS</span>
           </button>
-          <select;
+          <select
             bind:value={viewMode}
             class="nes-legal-priority-medium yorha-3d-button bg-transparent"
           >
@@ -336,7 +336,7 @@
           <div>
             <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Sort By</label>
             <div class="flex gap-2">
-              <select;
+              <select
                 bind:value={sortBy}
                 class="flex-1 p-3 bg-gray-800 border border-yellow-600 rounded text-white text-sm"
               >

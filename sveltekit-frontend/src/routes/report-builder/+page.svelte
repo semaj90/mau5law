@@ -52,9 +52,9 @@ await loadDemoData();
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
-  					aiSummary: null;
-  					summary: null
-  					isAdmissible: true
+  					aiSummary: null,
+  					summary: null,
+  					isAdmissible: true,
   					confidentialityLevel: 'standard',
   					canvasPosition: ,
   					uploadedBy: '1',
@@ -83,9 +83,9 @@ await loadDemoData();
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
-  					aiSummary: null;
-  					summary: null
-  					isAdmissible: true
+  					aiSummary: null,
+  					summary: null,
+  					isAdmissible: true,
   					confidentialityLevel: 'standard',
   					canvasPosition: ,
   					uploadedBy: '1',
@@ -114,9 +114,9 @@ await loadDemoData();
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
-  					aiSummary: null;
-  					summary: null
-  					isAdmissible: true
+  					aiSummary: null,
+  					summary: null,
+  					isAdmissible: true,
   					confidentialityLevel: 'standard',
   					canvasPosition: ,
   					uploadedBy: '1',

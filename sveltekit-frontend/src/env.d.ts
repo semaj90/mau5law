@@ -51,14 +51,14 @@ declare global {
       showGPUStats: () => void;
       exportTelemetry: () => Promise<Blob>;
       resetMemoryBanks: () => void;
-    }
+    };
     // Performance Monitoring
     __PERFORMANCE_OBSERVER__?: PerformanceObserver;
     __MEMORY_TRACKER__?: {
       l1GpuUsage: number;
       l2RamUsage: number;
       l3RedisUsage: number;
-    }
+    };
   }
   // Nintendo Memory Architecture Types
   namespace Nintendo {
@@ -104,4 +104,4 @@ declare global {
     }
   }
 }
-export {}
+export {};

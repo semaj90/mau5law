@@ -991,7 +991,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="pl-10 pr-4 py-2 bg-black/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:border-amber-400 focus:outline-none"
               />
             </div>
-            <select;
+            <select
               bind:value={filterStatus}
               class="px-3 py-2 bg-black/50 border border-gray-600 rounded-lg text-gray-200 focus:border-amber-400 focus:outline-none"
             >

@@ -5,7 +5,7 @@
   import { Bot, User } from "lucide-svelte";
   import "./chat-message.css";
   interface Props {
-    message: ChatMessag;
+    message: ChatMessage;
     showTimestamp?: boolean;
     showAvatar?: boolean;
   }
@@ -20,7 +20,7 @@
   let formattedTime = $derived(() =>
     message.timestamp ? new Date(message.timestamp).toLocaleTimeString([], {
       hour: "2-digit",
-      minute: "2-digit";
+      minute: "2-digit"
     }) : ""
   );
 </script>

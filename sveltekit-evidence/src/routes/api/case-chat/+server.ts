@@ -2,15 +2,15 @@
  * Case Chat API - Handles RAG queries with case context
  * POST /api/case-chat
  */
-import { json } from '@sveltejs/kit';
-import type { ChatMessage } from '$lib/types';
+import { json } from "@sveltejs/kit";
+import type { ChatMessage } from "$lib/types";
 
 export async function POST({ request }: { request: Request }) {
   try {
     const { caseId, query, userId } = await request.json();
 
     if (!caseId || !query) {
-      return json({ error: 'Case ID and query required' }, { status: 400 });
+      return json({ error: "Case ID and query required" }, { status: 400 });
     }
 
     // TODO: Implement RAG pipeline
@@ -34,14 +34,14 @@ The system would integrate with your local LLM (like Ollama) to provide intellig
     const chatMessage: ChatMessage = {
       id: crypto.randomUUID(),
       caseId,
-      role: 'assistant',
+      role: "assistant",
       content: response,
       timestamp: new Date(),
       context: {
         evidenceIds: [], // TODO: Include relevant evidence IDs
         reportIds: [], // TODO: Include relevant report IDs
-        queryEmbedding: [] // TODO: Include query embedding
-      }
+        queryEmbedding: [], // TODO: Include query embedding
+      },
     };
 
     // TODO: Save chat message to database
@@ -50,23 +50,19 @@ The system would integrate with your local LLM (like Ollama) to provide intellig
     return json({
       message: chatMessage,
       sources: [], // TODO: Include source documents
-      confidence: 0.85 // TODO: Calculate confidence score
+      confidence: 0.85, // TODO: Calculate confidence score
     });
-
   } catch (error) {
-    console.error('Case chat error:', error);
-    return json(
-      { error: 'Chat query failed' },
-      { status: 500 }
-    );
+    console.error("Case chat error:", error);
+    return json({ error: "Chat query failed" }, { status: 500 });
   }
 }
 
 export async function GET({ url }: { url: URL }) {
-  const caseId = url.searchParams.get('caseId');
+  const caseId = url.searchParams.get("caseId");
 
   if (!caseId) {
-    return json({ error: 'Case ID required' }, { status: 400 });
+    return json({ error: "Case ID required" }, { status: 400 });
   }
 
   try {
@@ -77,12 +73,8 @@ export async function GET({ url }: { url: URL }) {
     const messages: ChatMessage[] = [];
 
     return json(messages);
-
   } catch (error) {
-    console.error('Chat history fetch error:', error);
-    return json(
-      { error: 'Failed to fetch chat history' },
-      { status: 500 }
-    );
+    console.error("Chat history fetch error:", error);
+    return json({ error: "Failed to fetch chat history" }, { status: 500 });
   }
 }

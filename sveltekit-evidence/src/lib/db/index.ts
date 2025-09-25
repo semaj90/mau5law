@@ -1,12 +1,13 @@
 // Database connection and Drizzle setup
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from './schema';
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import * as schema from "./schema";
 // Use process.env for database URL
 const DATABASE_URL = process.env.DATABASE_URL;
 
 // Create the connection
-const connectionString = DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
+const connectionString =
+  DATABASE_URL || "postgresql://legal_admin:123456@localhost:5433/legal_ai_db";
 export const connection = postgres(connectionString);
 
 // Create the drizzle instance with schema

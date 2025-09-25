@@ -3,18 +3,17 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
-</script>
-  import Button from '$lib/components/ui/enhanced-bits';
+  import type { Snippet } from 'svelte';
   import * as Card from '$lib/components/ui/card';
-  import { onMount } from 'svelte';
+
   interface Props {
     title: string;
     description?: string;
     showGpuStatus?: boolean;
     showWelcome?: boolean;
-    children: import('svelte').Snippet;
+    children: Snippet;
   }
+
   let {
     title,
     description = '',
@@ -22,51 +21,57 @@ https://svelte.dev/e/expected_token -->
     showWelcome = false,
     children
   }: Props = $props();
+
   let pageLoaded = $state(false);
   let gpuStatus = $state({
     gpu: 'RTX 3060 Ti',
     status: 'Active',
     memory: '7.0GB/8.0GB',
-    temperature: '51°C';
+    temperature: '51°C'
   });
+
   $effect(() => {
     (async () => {
-pageLoaded = true;
-    if (showGpuStatus) {
-      try {
-        // Check WebGPU topology status
-        // removed unused response assignment
-        const data = await response.json();
-        if (data.status === 'operational') {
-          gpuStatus = {
-            gpu: 'WebGPU',
-            status: 'Ready',
-            memory: 'Available',
-            temperature: 'Optimal';
+      pageLoaded = true;
+      if (showGpuStatus) {
+        try {
+          // Try to fetch a runtime GPU status; fallback to initial gpuStatus if the endpoint is missing
+          const response = await fetch('/api/gpu/status').catch(() => null);
+          if (response) {
+            const data = await response.json();
+            if (data?.status === 'operational') {
+              gpuStatus = {
+                gpu: 'WebGPU',
+                status: 'Ready',
+                memory: 'Available',
+                temperature: 'Optimal'
+              };
+            }
           }
+        } catch (error) {
+          console.log('GPU status check:', error);
         }
-      } catch (error) {
-        console.log('GPU status check:', error);
       }
-    }
     })();
   });
 </script>
+
 <svelte:head>
   <title>{title} - Legal AI Platform</title>
   {#if description}
     <meta name="description" content={description} />
   {/if}
 </svelte:head>
+
 <div class="enhanced-page-layout">
   <!-- GPU Status Indicator -->
   {#if showGpuStatus && pageLoaded}
     <div class="gpu-status-overlay">
-      <div.Root class="gpu-status-nier-bits-card">
-        <div.Header>
-          <div.Title class="gpu-title">🚀 {gpuStatus.gpu}</div.Title>
-        </div.Header>
-        <div.Content>
+      <Card.Root class="gpu-status-nier-bits-card">
+        <Card.Header>
+          <Card.Title class="gpu-title">🚀 {gpuStatus.gpu}</Card.Title>
+        </Card.Header>
+        <Card.Content>
           <div class="gpu-metrics">
             <div class="metric">
               <span class="label">Status</span>
@@ -81,21 +86,22 @@ pageLoaded = true;
               <span class="value">{gpuStatus.temperature}</span>
             </div>
           </div>
-        </div.Content>
-      </div.Root>
+        </Card.Content>
+      </Card.Root>
     </div>
   {/if}
+
   <!-- Welcome Banner -->
   {#if showWelcome && pageLoaded}
     <div class="welcome-overlay">
-      <div.Root class="welcome-nier-bits-card animate-slide-in">
-        <div.Header>
-          <div.Title>✨ {title}</div.Title>
+      <Card.Root class="welcome-nier-bits-card animate-slide-in">
+        <Card.Header>
+          <Card.Title>✨ {title}</Card.Title>
           {#if description}
-            <div.Description>{description}</div.Description>
+            <Card.Description>{description}</Card.Description>
           {/if}
-        </div.Header>
-        <div.Content>
+        </Card.Header>
+        <Card.Content>
           <div class="welcome-features">
             <div class="feature">
               <span class="feature-icon">⚡</span>
@@ -110,15 +116,17 @@ pageLoaded = true;
               <span>Vector Search</span>
             </div>
           </div>
-        </div.Content>
-      </div.Root>
+        </Card.Content>
+      </Card.Root>
     </div>
   {/if}
+
   <!-- Page Content -->
   <main class="page-content" class:with-overlays={showGpuStatus || showWelcome}>
     {@render children()}
   </main>
 </div>
+
 <style>
   .enhanced-page-layout {
     position: relative;
@@ -126,11 +134,12 @@ pageLoaded = true;
   }
   .gpu-status-overlay {
     position: fixed;
-d;
     top: 20px;
     left: 20px;
     z-index: 1000;
   }
+  /* support both the original names and nicer semantic card class names */
+  .gpu-status-nier-bits-card,
   .gpu-status-card {
     width: 240px;
     background: rgba(0, 0, 0, 0.9);
@@ -164,16 +173,16 @@ d;
     font-weight: bold;
     margin-top: 2px;
   }
-.status-active, .status-ready {
+  .status-active, .status-ready {
     color: #00ff41;
   }
   .welcome-overlay {
     position: fixed;
-d;
     top: 20px;
     right: 20px;
     z-index: 999;
   }
+  .welcome-nier-bits-card,
   .welcome-card {
     width: 300px;
     background: rgba(0, 0, 0, 0.95);
@@ -207,7 +216,7 @@ d;
   .feature-icon {
     font-size: 18px;
   }
-  .feature span: last-child {
+  .feature span:last-child {
     font-size: 10px;
     color: #ccc;
     text-align: center;
@@ -220,14 +229,18 @@ d;
     padding-top: 20px;
   }
   @media (max-width: 768px) {
-.gpu-status-overlay, .welcome-overlay {
+    .gpu-status-overlay,
+    .welcome-overlay {
       position: relative;
       top: auto;
       left: auto;
       right: auto;
       margin: 10px;
     }
-.gpu-status-card, .welcome-card {
+    .gpu-status-card,
+    .welcome-card,
+    .gpu-status-nier-bits-card,
+    .welcome-nier-bits-card {
       width: 100%;
       max-width: none;
     }

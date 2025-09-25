@@ -73,7 +73,11 @@ export class GlobalLokiStore {
       }
     } catch (e) {
       // Fallback simple try-insert
-      try {(this.jobs as any).insert({ ...doc, updatedAt: Date.now() });} catch (error) {}
+      try {
+        (this.jobs as any).insert({ ...doc, updatedAt: Date.now() });
+      } catch (error) {
+        // Silently ignore duplicate key errors
+      }
     }
   }
   applyRemoteUpdate(update: any) {

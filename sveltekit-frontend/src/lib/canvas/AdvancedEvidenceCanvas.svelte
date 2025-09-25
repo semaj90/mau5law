@@ -140,7 +140,8 @@ https://svelte.dev/e/expected_token -->
           canvasNodes = node;
     } catch (error) {
       console.error('Effect error:', error);
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
+      errorMessage = error instanceof Error ? error.message : 'An error occurred';
+    }
   });
   // Selection change effect
   $effect(() => {
@@ -148,7 +149,8 @@ https://svelte.dev/e/expected_token -->
           onNodeSelect?.(selectedNode);
     } catch (error) {
       console.error('Effect error:', error);
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
+      errorMessage = error instanceof Error ? error.message : 'An error occurred';
+    }
   });
   function initCanvas(): void {
     if (!canvas || !ctx) return;

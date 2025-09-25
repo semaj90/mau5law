@@ -19,7 +19,7 @@
     title: '',
     description: '',
     priority: 'medium' as const,
-    status: 'open' as const;
+    status: 'open' as const
   });
   let searchQuery = $state('');
   let userId = $state('demo-user-123');

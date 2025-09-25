@@ -68,12 +68,12 @@ const { fabric } = await import("fabric");
       // removed unused response assignment
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        evidenceList = ((data as { evidence?: any }).evidence || []).map((item: any) => ({,
+        evidenceList = ((data as { evidence?: any }).evidence || []).map((item: any) => ({
           id: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).id || crypto.randomUUID(),
           name: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).title || (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).name || 'Evidence Item',
           type: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).type || (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).evidenceType || 'document',
           uploadedAt: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).createdAt || new Date().toISOString(),
-          status: 'uploaded' as const;
+          status: 'uploaded' as const
         }));
         // Add visual representations to canvas
         evidenceList.forEach((item, index) => {
@@ -97,7 +97,7 @@ const { fabric } = await import("fabric");
         name: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).name,
         type: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).type,
         uploadedAt: new Date().toISOString(),
-        status: 'uploaded' as const;
+        status: 'uploaded' as const
       }
       evidenceList.push(evidenceItem);
       addEvidenceToCanvas(evidenceItem, index, (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).color);
@@ -254,7 +254,7 @@ const { fabric } = await import("fabric");
         name: file.name,
         type: getFileType(file.type),
         uploadedAt: new Date().toISOString(),
-        status: 'uploading' as const;
+        status: 'uploading' as const
       }
       evidenceList.push(evidenceItem);
       try {

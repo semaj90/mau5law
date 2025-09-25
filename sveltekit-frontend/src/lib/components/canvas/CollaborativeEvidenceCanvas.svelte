@@ -17,15 +17,15 @@
     try {
       const mod: any = await import('fabric');
       fabricInstance = mod.fabric ?? mod.default ?? mod;
-      return fabricInstanc;
+      return fabricInstance;
     } catch (error) {
       console.error('Failed to load fabric.js:', error);
       // Return mock fabric for fallback
       return {
         Canvas: class MockCanvas {
           constructor(element: any, options: any) {
-            this.element = element;
-            this.options = option;
+            this.elements = elements;
+            this.options = options;
           }
           add() {}
           remove() {}

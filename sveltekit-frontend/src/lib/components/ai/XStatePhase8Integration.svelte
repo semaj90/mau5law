@@ -29,7 +29,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   let matrixCompiler: MatrixUICompiler;
   let reranker: LegalAIReranker;
   let prefetcher: PredictivePrefetcher;
-  // Simple accordion state management (replaced melt-ui)
+  // Simple accordion state management (using bits-ui patterns)
   let activeAccordionItem = $state('step-1');
   // Reactive state calculations
   let currentStateDescription = $derived(getStateDescription($state.value);

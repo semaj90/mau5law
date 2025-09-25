@@ -12,7 +12,7 @@
     documents: [] as LegalDocument[],
     evidence: [] as EvidenceItem[],
     cases: [],
-    chatMessages: [];
+    chatMessages: []
   }
   let currentView: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
   let isLoading = true;

@@ -1,8 +1,8 @@
 /**
  * Case Store - Manages current case data, crimes, evidence, reports, and timeline
  */
-import { writable } from 'svelte/store';
-import type { Case, Crime, Evidence, Report, TimelineItem } from '$lib/types';
+import { writable } from "svelte/store";
+import type { Case, Crime, Evidence, Report, TimelineItem } from "$lib/types";
 
 // Current case state
 export const currentCase = writable<Case | null>(null);
@@ -27,16 +27,21 @@ export const caseActions = {
     try {
       // Load case details
       const caseResponse = await fetch(`/api/cases/${caseId}`);
-      if (!caseResponse.ok) throw new Error('Failed to load case');
+      if (!caseResponse.ok) throw new Error("Failed to load case");
       const caseData = await caseResponse.json();
       currentCase.set(caseData);
 
       // Load related data in parallel
-      const [crimesResponse, evidenceResponse, reportsResponse, timelineResponse] = await Promise.all([
+      const [
+        crimesResponse,
+        evidenceResponse,
+        reportsResponse,
+        timelineResponse,
+      ] = await Promise.all([
         fetch(`/api/cases/${caseId}/crimes`),
         fetch(`/api/cases/${caseId}/evidence`),
         fetch(`/api/cases/${caseId}/reports`),
-        fetch(`/api/cases/${caseId}/timeline`)
+        fetch(`/api/cases/${caseId}/timeline`),
       ]);
 
       if (crimesResponse.ok) {
@@ -58,9 +63,8 @@ export const caseActions = {
         const timeline = await timelineResponse.json();
         timelineItems.set(timeline);
       }
-
     } catch (err) {
-      error.set(err instanceof Error ? err.message : 'Unknown error occurred');
+      error.set(err instanceof Error ? err.message : "Unknown error occurred");
     } finally {
       isLoading.set(false);
     }
@@ -68,65 +72,74 @@ export const caseActions = {
 
   // Add new evidence to the current case
   async addEvidence(evidence: Evidence) {
-    currentEvidence.update(items => [...items, evidence]);
+    currentEvidence.update((items) => [...items, evidence]);
 
     // Add timeline entry
     const timelineEntry: TimelineItem = {
       id: crypto.randomUUID(),
       caseId: evidence.caseId,
       timestamp: new Date(),
-      title: 'Evidence Added',
+      title: "Evidence Added",
       description: `New evidence uploaded: ${evidence.filename}`,
-      type: 'evidence_added',
+      type: "evidence_added",
       relatedItemId: evidence.id,
-      createdBy: evidence.uploadedBy
+      createdBy: evidence.uploadedBy,
     };
 
-    timelineItems.update(items => [...items, timelineEntry].sort((a, b) =>
-      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    ));
+    timelineItems.update((items) =>
+      [...items, timelineEntry].sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      ),
+    );
   },
 
   // Add new crime to the current case
   async addCrime(crime: Crime) {
-    currentCrimes.update(items => [...items, crime]);
+    currentCrimes.update((items) => [...items, crime]);
 
     // Add timeline entry
     const timelineEntry: TimelineItem = {
       id: crypto.randomUUID(),
       caseId: crime.caseId,
       timestamp: new Date(),
-      title: 'Crime Logged',
+      title: "Crime Logged",
       description: `${crime.type}: ${crime.description}`,
-      type: 'crime_logged',
+      type: "crime_logged",
       relatedItemId: crime.id,
-      createdBy: 'system'
+      createdBy: "system",
     };
 
-    timelineItems.update(items => [...items, timelineEntry].sort((a, b) =>
-      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    ));
+    timelineItems.update((items) =>
+      [...items, timelineEntry].sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      ),
+    );
   },
 
   // Add new report to the current case
   async addReport(report: Report) {
-    currentReports.update(items => [...items, report]);
+    currentReports.update((items) => [...items, report]);
 
     // Add timeline entry
     const timelineEntry: TimelineItem = {
       id: crypto.randomUUID(),
       caseId: report.caseId,
       timestamp: new Date(),
-      title: 'Report Created',
+      title: "Report Created",
       description: `${report.type} report: ${report.title}`,
-      type: 'report_created',
+      type: "report_created",
       relatedItemId: report.id,
-      createdBy: report.createdBy
+      createdBy: report.createdBy,
     };
 
-    timelineItems.update(items => [...items, timelineEntry].sort((a, b) =>
-      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    ));
+    timelineItems.update((items) =>
+      [...items, timelineEntry].sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      ),
+    );
   },
 
   // Clear all case data
@@ -137,11 +150,11 @@ export const caseActions = {
     currentReports.set([]);
     timelineItems.set([]);
     error.set(null);
-  }
+  },
 };
 
 // Derived stores for computed values
-import { derived } from 'svelte/store';
+import { derived } from "svelte/store";
 
 export const caseStats = derived(
   [currentEvidence, currentCrimes, currentReports],
@@ -149,14 +162,14 @@ export const caseStats = derived(
     evidenceCount: $evidence.length,
     crimeCount: $crimes.length,
     reportCount: $reports.length,
-    imageCount: $evidence.filter(e => e.type === 'image').length,
-    documentCount: $evidence.filter(e => e.type === 'document').length,
-    audioCount: $evidence.filter(e => e.type === 'audio').length,
-    videoCount: $evidence.filter(e => e.type === 'video').length
-  })
+    imageCount: $evidence.filter((e) => e.type === "image").length,
+    documentCount: $evidence.filter((e) => e.type === "document").length,
+    audioCount: $evidence.filter((e) => e.type === "audio").length,
+    videoCount: $evidence.filter((e) => e.type === "video").length,
+  }),
 );
 
 export const recentActivity = derived(
   [timelineItems],
-  ([$timeline]) => $timeline.slice(0, 5) // Most recent 5 items
+  ([$timeline]) => $timeline.slice(0, 5), // Most recent 5 items
 );

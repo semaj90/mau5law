@@ -1,18 +1,18 @@
 // Authentication endpoint - integrates with QUIC server
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/db';
-import { users, sessions } from '$lib/db/schema';
-import { eq } from 'drizzle-orm';
-import { quicClient } from '$lib/services/quicClient';
-import bcrypt from 'bcrypt';
+import { json } from "@sveltejs/kit";
+import type { RequestHandler } from "./$types";
+import { db } from "$lib/db";
+import { users, sessions } from "$lib/db/schema";
+import { eq } from "drizzle-orm";
+import { quicClient } from "$lib/services/quicClient";
+import bcrypt from "bcrypt";
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     const { email, password } = await request.json();
 
     if (!email || !password) {
-      return json({ error: 'Email and password required' }, { status: 400 });
+      return json({ error: "Email and password required" }, { status: 400 });
     }
 
     // Find user in local database
@@ -23,14 +23,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       .limit(1);
 
     if (!user) {
-      return json({ error: 'Invalid credentials' }, { status: 401 });
+      return json({ error: "Invalid credentials" }, { status: 401 });
     }
 
     // Verify password
     if (user.passwordHash) {
       const isValid = await bcrypt.compare(password, user.passwordHash);
       if (!isValid) {
-        return json({ error: 'Invalid credentials' }, { status: 401 });
+        return json({ error: "Invalid credentials" }, { status: 401 });
       }
     }
 
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       .values({
         id: sessionId,
         userId: user.id,
-        expiresAt
+        expiresAt,
       })
       .returning();
 
@@ -55,17 +55,17 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         quicClient.setSession(quicAuth.session.token);
       }
     } catch (error) {
-      console.warn('QUIC auth sync failed:', error);
+      console.warn("QUIC auth sync failed:", error);
       // Continue with local auth
     }
 
     // Set session cookie
-    cookies.set('session', sessionId, {
-      path: '/',
+    cookies.set("session", sessionId, {
+      path: "/",
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 30 * 24 * 60 * 60 // 30 days
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 30 * 24 * 60 * 60, // 30 days
     });
 
     // Update last login
@@ -79,15 +79,15 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        role: user.role
+        role: user.role,
       },
       session: {
         id: session.id,
-        expiresAt: session.expiresAt
-      }
+        expiresAt: session.expiresAt,
+      },
     });
   } catch (error) {
-    console.error('Login error:', error);
-    return json({ error: 'Login failed' }, { status: 500 });
+    console.error("Login error:", error);
+    return json({ error: "Login failed" }, { status: 500 });
   }
 };

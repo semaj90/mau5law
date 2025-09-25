@@ -78,7 +78,7 @@ https://svelte.dev/e/js_parse_error -->
         newCaseData = {
           title: '',
           description: '',
-          priority: 'medium';
+          priority: 'medium'
         }
         // Show success notification
         addNotification('success', `Case "${(result as { title?: unknown }).title}" created successfully`, 5000);

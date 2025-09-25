@@ -20,7 +20,7 @@
     Eye, Edit3, Trash2, Archive, Star, AlertCircle,
     Calendar, Tag, Paperclip, MessageSquare, Brain
   } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   // Props
   interface Props {
     collapsed?: boolean;

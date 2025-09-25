@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ cookies, getClientAddress, request 
     console.log('✅ Demo user auto-login successful:', user.email);
     // Return success response instead of redirect for API endpoint
     return new Response(JSON.stringify({
-      success: true
+      success: true,
       user: {
         id: user.id,
         email: user.email,

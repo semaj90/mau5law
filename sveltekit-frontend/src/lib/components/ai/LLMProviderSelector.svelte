@@ -12,8 +12,8 @@ https://svelte.dev/e/js_parse_error -->
     PerformanceMetrics
   } from '$lib/types/component-props.js';
   	import * as Select from 'bits-ui';
-  	// Updated to use melt-ui components
-  	// TODO: Replace with melt-ui equivalents when available
+  	// Updated to use bits-ui components
+  	// TODO: Replace with bits-ui equivalents when available
   	// import { Badge } from 'bits-ui'
   	import { writable, derived, type Writable } from 'svelte/store';
   	import { onMount  } from "svelte";

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  // Svelte 5 - createEventDispatcher removed
 
   interface YoRHaHarvardButtonProps {
     variant?: 'primary' | 'secondary' | 'gaming' | 'terminal' | 'badge' | 'grey' | 'crimson-grey';
@@ -24,7 +24,7 @@
     ...restProps
   }: YoRHaHarvardButtonProps = $props();
 
-  const dispatch = createEventDispatcher();
+  // Svelte 5 - no longer need dispatcher
 
   let isPressed = $state(false);
   let isHovered = $state(false);
@@ -54,18 +54,18 @@
       isPressed = false;
     }, 150);
 
-    dispatch('click');
+    // Svelte 5 - use onclick prop directly
     onclick?.();
   }
 
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.code === 'Space' || event.code === 'Enter') {
       event.preventDefault();
       handleClick();
     }
   }
 
-  $: buttonClasses = [
+  let buttonClasses = $derived([
     'yorha-harvard-btn',
     variantClasses[variant],
     sizeClasses[size],
@@ -76,16 +76,16 @@
     loading && 'loading',
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(' '));
 </script>
 
 <button
   class={buttonClasses}
   {disabled}
-  on:click={handleClick}
-  on:keydown={handleKeydown}
-  on:mouseenter={() => (isHovered = true)}
-  on:mouseleave={() => (isHovered = false)}
+  onclick={handleClick}
+  onkeydown={handleKeydown}
+  onmouseenter={() => (isHovered = true)}
+  onmouseleave={() => (isHovered = false)}
   {...restProps}
 >
   {#if loading}

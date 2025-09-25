@@ -3,7 +3,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount,   } from "svelte";
+  import { onMount } from "svelte";
   // Svelte 5 props interface
   interface Props {
     value?: string;

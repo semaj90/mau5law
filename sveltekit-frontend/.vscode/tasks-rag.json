@@ -1,0 +1,129 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "filePath",
+      "description": "Path to file to upload",
+      "default": "${file}",
+      "type": "promptString"
+    },
+    {
+      "id": "searchQuery",
+      "description": "Search query for RAG knowledge base",
+      "default": "typescript error handling patterns",
+      "type": "promptString"
+    },
+    {
+      "id": "aiQuestion",
+      "description": "Question to ask AI with RAG context",
+      "default": "How do I implement error handling in this project?",
+      "type": "promptString"
+    }
+  ],
+  "tasks": [
+    {
+      "label": "📝 Upload Current File to RAG",
+      "type": "shell",
+      "command": "echo",
+      "args": [
+        "Uploading file to RAG: ${file}",
+        "&&",
+        "echo",
+        "File would be processed for semantic chunking and embedding generation"
+      ],
+      "group": "test",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "detail": "Upload the currently open file to RAG knowledge base"
+    },
+    {
+      "label": "🔍 Search RAG Knowledge Base",
+      "type": "shell",
+      "command": "echo",
+      "args": [
+        "Searching RAG for:",
+        "${input:searchQuery}"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "detail": "Semantic search through uploaded RAG documents"
+    },
+    {
+      "label": "🤖 AI Chat with RAG Context",
+      "type": "shell",
+      "command": "echo",
+      "args": [
+        "AI Chat Question:",
+        "${input:aiQuestion}",
+        "&&",
+        "echo",
+        "AI would search relevant documents and provide contextual response"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "detail": "Ask questions to AI with context from uploaded RAG documents"
+    },
+    {
+      "label": "🧠 Build RAG Knowledge Base",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/knowledge-base-builder.mjs"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "problemMatcher": [],
+      "detail": "Build comprehensive semantic knowledge base with embeddings"
+    },
+    {
+      "label": "🎯 Test RAG Components",
+      "type": "shell",
+      "command": "node",
+      "args": ["test-rag-components.mjs"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "detail": "Run comprehensive test of all RAG components and integration"
+    }
+  ]
+}

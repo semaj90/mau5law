@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { User } from '$lib/types';
-  import { onMount,   } from "svelte";
+  import { onMount } from "svelte";
   import { Search, File, Briefcase, User as UserIcon, Settings, Command } from "lucide-svelte";
   import { cn } from '$lib/utils';
   interface Props {
@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Search,
       category: 'Navigation',
       href: '/',
-      shortcut: ['⌘', 'H'];
+      shortcut: ['⌘', 'H']
     },
     {
       id: 'nav-evidence',
@@ -51,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: File,
       category: 'Navigation',
       href: '/evidence',
-      shortcut: ['⌘', 'E'];
+      shortcut: ['⌘', 'E']
     },
     {
       id: 'nav-cases',
@@ -60,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Briefcase,
       category: 'Navigation',
       href: '/cases',
-      shortcut: ['⌘', 'C'];
+      shortcut: ['⌘', 'C']
     },
     // Actions
     {
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Briefcase,
       category: 'Actions',
       action: () => console.log('Create new case'),
-      shortcut: ['⌘', 'N'];
+      shortcut: ['⌘', 'N']
     },
     {
       id: 'action-upload-evidence',
@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: File,
       category: 'Actions',
       action: () => console.log('Upload evidence'),
-      shortcut: ['⌘', 'U'];
+      shortcut: ['⌘', 'U']
     },
     // Settings
     {
@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
       description: 'Manage your user profile',
       icon: UserIcon,
       category: 'Settings',
-      href: '/profile';
+      href: '/profile'
     },
     {
       id: 'settings-system',
@@ -96,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
       description: 'Configure system preferences',
       icon: Settings,
       category: 'Settings',
-      href: '/settings';
+      href: '/settings'
   }
   ];
   $effect(() => {
@@ -139,9 +139,11 @@ https://svelte.dev/e/js_parse_error -->
     open = false;
     // ondispatch removed;
   }
-  // TODO: Convert to $derived: if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
-    selectedIndex = 0
-  }
+  $effect(() => {
+    if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
+      selectedIndex = 0;
+    }
+  });
 </script>
 
 <svelte:window keydown={handleKeydown} />
@@ -158,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
       <div
         class="bg-nier-surface border border-nier-gray rounded-lg shadow-2xl nier-border-glow"
-        onclick
+        onclick={e => e.stopPropagation()}
         role="dialog"
         tabindex="0"
       >
@@ -284,7 +286,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 
 <style>
   /* @unocss-include */

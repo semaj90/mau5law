@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy,   } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { aiSummarizationService } from "$lib/services/aiSummarizationService";
   import { evidenceStore } from "$lib/stores/evidenceStore";
   import * as fabric from "fabric";

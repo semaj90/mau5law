@@ -330,7 +330,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     let dictSize = 256;
     // Initialize dictionary
     for (let i = 0; i < 256; i++) {
-      dictionary.set(i, String.fromCharCode(i);
+      dictionary.set(i, String.fromCharCode(i));
     }
     let result = '';
     let w = String.fromCharCode(codes[0]);

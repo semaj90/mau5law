@@ -29,7 +29,7 @@ try {
         method: 'GET',
         headers: { 'Accept': 'application/json' },
         signal: controller.signal,
-        cache: 'no-store';
+        cache: 'no-store'
     })();
   });
         clearTimeout(timer);

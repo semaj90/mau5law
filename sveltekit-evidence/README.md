@@ -55,12 +55,14 @@ sveltekit-evidence/
 ### Installation
 
 1. **Install dependencies**:
+
    ```bash
    cd sveltekit-evidence
    npm install
    ```
 
 2. **Start development server**:
+
    ```bash
    npm run dev
    ```
@@ -90,8 +92,8 @@ npm run preview
 Configure local LLM endpoints in `src/lib/utils/rag.ts`:
 
 ```typescript
-const LLM_BASE_URL = 'http://localhost:11434'; // Ollama default
-const EMBEDDING_URL = 'http://localhost:8080'; // Your embedding service
+const LLM_BASE_URL = "http://localhost:11434"; // Ollama default
+const EMBEDDING_URL = "http://localhost:8080"; // Your embedding service
 ```
 
 ### Canvas Settings
@@ -99,10 +101,10 @@ const EMBEDDING_URL = 'http://localhost:8080'; // Your embedding service
 Adjust Fabric.js canvas options in `src/lib/components/EvidenceBoard.svelte`:
 
 ```typescript
-const canvas = new fabric.Canvas('evidence-canvas', {
+const canvas = new fabric.Canvas("evidence-canvas", {
   width: 1200,
   height: 800,
-  backgroundColor: '#000'
+  backgroundColor: "#000",
 });
 ```
 

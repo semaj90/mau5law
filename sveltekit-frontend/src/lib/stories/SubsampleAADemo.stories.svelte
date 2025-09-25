@@ -38,14 +38,14 @@ let demoConfig = {
   antiAliasing: 'tensor-core',
   qualityMode: 'ultra-high',
   realTimeUpscaling: true
-  neuralSprites: true
+  neuralSprites: true,
   compressionLevel: 50,
-  flashAttention2: true
-  quantization: '4bit' as const;
+  flashAttention2: true,
+  quantization: '4bit' as const
 }
 let performanceMetrics = {
   avgFrameTime: 0,
-  minFrameTime: Infinity
+  minFrameTime: Infinity,
   maxFrameTime: 0,
   memoryUsage: 0,
   tensorCoreUtilization: 0

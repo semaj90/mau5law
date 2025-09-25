@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: legal-ai-redis-dev
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass redis
+    volumes:
+      - redis-dev-data:/data
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+  # PostgreSQL with pgvector for embeddings
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: legal-ai-postgres-dev
+    environment:
+      POSTGRES_DB: legal_ai_db
+      POSTGRES_USER: legal_admin
+      POSTGRES_PASSWORD: 123456
+      PGUSER: legal_admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+      - ./src/lib/server/db/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U legal_admin -d legal_ai_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Ollama for Gemma3 local LLM
+  ollama:
+    image: ollama/ollama:latest
+    container_name: legal-ai-ollama-dev
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-dev-data:/root/.ollama
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+    environment:
+      - OLLAMA_GPU_LAYERS=35
+      - CUDA_VISIBLE_DEVICES=0
+    # Note: For GPU support, add runtime: nvidia and deploy.resources.reservations.devices
+
+  # SvelteKit development server
+  vite-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: legal-ai-vite-dev
+    ports:
+      - "5174:5174"
+      - "24678:24678" # HMR WebSocket
+    volumes:
+      - ./src:/app/src
+      - ./static:/app/static
+      - ./scripts:/app/scripts
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      - ./vite.config.js:/app/vite.config.js
+      - ./svelte.config.js:/app/svelte.config.js
+      - ./tailwind.config.ts:/app/tailwind.config.ts
+      - ./tsconfig.json:/app/tsconfig.json
+    environment:
+      - NODE_ENV=development
+      - REDIS_PASSWORD=redis
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - OLLAMA_URL=http://ollama:11434
+      - ENABLE_GPU=true
+      - RTX_3060_OPTIMIZATION=true
+      - CONTEXT7_MULTICORE=true
+      - OLLAMA_GPU_LAYERS=30
+    networks:
+      - legal-ai-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      ollama:
+        condition: service_started
+    restart: unless-stopped
+    command: npm run dev:docker
+
+  # Caddy reverse proxy with QUIC/HTTP3 support
+  caddy:
+    image: caddy:2.8-alpine
+    container_name: legal-ai-caddy-dev
+    ports:
+      - "80:80"
+      - "443:443"
+      - "5178:5178"   # Development QUIC port
+      - "5179:5179"   # Alternative port
+      - "8082:8082"   # Health check
+    volumes:
+      - ./Caddyfile.docker:/etc/caddy/Caddyfile
+      - caddy-dev-data:/data
+      - caddy-dev-config:/config
+    networks:
+      - legal-ai-network
+    depends_on:
+      - vite-dev
+    restart: unless-stopped
+    environment:
+      - CADDY_INGRESS_NETWORKS=legal-ai-network
+
+  # MinIO for document storage (optional)
+  minio:
+    image: minio/minio:latest
+    container_name: legal-ai-minio-dev
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-dev-data:/data
+    networks:
+      - legal-ai-network
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+
+volumes:
+  redis-dev-data:
+  postgres-dev-data:
+  ollama-dev-data:
+  caddy-dev-data:
+  caddy-dev-config:
+  minio-dev-data:
+
+networks:
+  legal-ai-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

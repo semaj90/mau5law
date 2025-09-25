@@ -28,7 +28,7 @@
 					case: 'nes-legal-priority-high yorha-3d-button',
 					success: 'btn-nes-success',
 					yorha: 'yorha-3d-button bg-black/80 text-yellow-400 border-2 border-yellow-400',
-					neural: 'neural-sprite-active bg-gradient-to-r from-purple-600 to-blue-600 text-white border-2 border-purple-400';
+					neural: 'neural-sprite-active bg-gradient-to-r from-purple-600 to-blue-600 text-white border-2 border-purple-400'
 				},
 				size: {
 					default: 'h-10 px-4 py-2',
@@ -37,12 +37,12 @@
 					icon: 'h-8 w-8',
 				icon_sm: 'h-6 w-6',
 				icon_lg: 'h-12 w-12',
-					xs: 'h-8 rounded px-2 text-xs';
+				xs: 'h-8 rounded px-2 text-xs'
 				}
 			},
 			defaultVariants: {
 				variant: 'default',
-				size: 'default';
+				size: 'default'
 			}
 		}
 	);
@@ -106,14 +106,14 @@
 		searchKeywords = [],
 		cacheKey,
 		role = 'button',
-		'data-testid': testId
+		'data-testid': testId,
 		// Accessibility props (explicit so we can reference directly in runes mode)
-		'aria-label': ariaLabel
-		'aria-describedby': ariaDescribedby
-		'aria-expanded': ariaExpanded
-		'aria-controls': ariaControls
+		'aria-label': ariaLabel,
+		'aria-describedby': ariaDescribedby,
+		'aria-expanded': ariaExpanded,
+		'aria-controls': ariaControls,
 		srOnlyText,
-		...restProp;
+		...restProps
 	}: Props = $props();
 	// Build proper aria-describedby string including loading announcement
 	let finalAriaDescribedby = $derived(() => {
@@ -132,19 +132,19 @@
 	let onCache: ((p: { key: string; action: string }) => void) | null = null;
 	let onClickAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null;
 	// Enhanced click handler with analytics and XState integration
-	function handleClick(_event: MouseEvent) {
+	function handleClick(event: MouseEvent) {
 		if (isDisabled || loading) return;
 		// Analytics tracking
-				const analyticsEvent: ButtonAnalyticsEvent = {
-					id,
-					category: analyticsCategory
-					action: analyticsAction
-					label: analyticsLabel || (event.target as HTMLElement)?.textContent || '',
-					timestamp: Date.now(),
-					context: xstateContext;
-					variant: variant ?? undefined,
-					size: size ?? undefined;
-				}
+		const analyticsEvent: ButtonAnalyticsEvent = {
+			id,
+			category: analyticsCategory,
+			action: analyticsAction,
+			label: analyticsLabel || (event.target as HTMLElement)?.textContent || '',
+			timestamp: Date.now(),
+			context: xstateContext,
+			variant: variant ?? undefined,
+			size: size ?? undefined
+		};
 		// Store analytics
 		if (browser) {
 			userAnalyticsStore.trackButtonClick(analyticsEvent);
@@ -166,11 +166,11 @@
 		if (browser && searchKeywords.length > 0) {
 			searchableButtonIndex.addButton({
 				id,
-				keywords: searchKeywords
+				keywords: searchKeywords,
 				variant,
 				size,
-				label: analyticsLabel;
-				element: document.getElementById(id);
+				label: analyticsLabel,
+				element: document.getElementById(id)
 			});
 		}
 	});
@@ -185,11 +185,11 @@
     tabindex="0"
     aria-disabled={isDisabled}
     aria-label={ariaLabel}
-    aria-describedby={finalAriaDescribedby}
+    aria-describedby={finalAriaDescribedby()}
     aria-expanded={ariaExpanded}
     aria-controls={ariaControls}
     aria-busy={loading}
-    data-testid="button"
+    data-testid={testId || 'button'}
     {...restProps}
   >
     {#if loading}
@@ -221,11 +221,11 @@
     disabled={isDisabled}
     class={buttonClass}
     aria-label={ariaLabel}
-    aria-describedby={finalAriaDescribedby}
+    aria-describedby={finalAriaDescribedby()}
     aria-expanded={ariaExpanded}
     aria-controls={ariaControls}
     aria-busy={loading}
-    data-testid="button"
+    data-testid={testId || 'button'}
     onclick={handleClick}
     {...restProps}
   >

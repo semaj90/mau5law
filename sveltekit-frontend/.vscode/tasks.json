@@ -1,5 +1,25 @@
 {
   "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "filePath",
+      "description": "Path to file to upload",
+      "default": "${file}",
+      "type": "promptString"
+    },
+    {
+      "id": "searchQuery",
+      "description": "Search query for RAG knowledge base",
+      "default": "typescript error handling patterns",
+      "type": "promptString"
+    },
+    {
+      "id": "aiQuestion",
+      "description": "Question to ask AI with RAG context",
+      "default": "How do I implement error handling in this project?",
+      "type": "promptString"
+    }
+  ],
   "tasks": [
     {
       "label": "TypeScript Check - Optimized",
@@ -61,6 +81,521 @@
         "focus": false,
         "panel": "new"
       }
+    },
+    {
+      "label": "🤖 Agentic Code Repair - Full Analysis",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "scripts/enhanced-agentic-orchestrator.mjs",
+        "src/**/*.{ts,svelte,js}",
+        "--verbose"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "problemMatcher": {
+        "owner": "agentic",
+        "fileLocation": ["relative", "${workspaceFolder}/sveltekit-frontend"],
+        "pattern": {
+          "regexp": "^(ERROR|WARNING|INFO):\\s+(.*)\\s+in\\s+(.*):(\\d+):(\\d+)$",
+          "severity": 1,
+          "message": 2,
+          "file": 3,
+          "line": 4,
+          "column": 5
+        }
+      }
+    },
+    {
+      "label": "🔍 Agentic Code Repair - Dry Run",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "scripts/enhanced-agentic-orchestrator.mjs",
+        "src/**/*.{ts,svelte,js}",
+        "--dry-run",
+        "--verbose"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      }
+    },
+    {
+      "label": "⚡ Agentic Code Repair - Incremental",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "scripts/enhanced-agentic-orchestrator.mjs",
+        "src/**/*.{ts,svelte,js}",
+        "--use-checkpointing",
+        "--workers=8"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      }
+    },
+    {
+      "label": "🎯 Fix Current File",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "scripts/enhanced-agentic-orchestrator.mjs",
+        "${file}",
+        "--single-file"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      }
+    },
+    {
+      "label": "🔧 Claude Code Repair Loop",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "scripts/claude-repair-loop.mjs",
+        "--watch",
+        "--auto-fix"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "claude-repair",
+        "fileLocation": ["relative", "${workspaceFolder}/sveltekit-frontend"],
+        "pattern": {
+          "regexp": "^\\[REPAIR\\]\\s+(\\w+):\\s+(.*)\\s+in\\s+(.*):(\\d+)$",
+          "severity": 1,
+          "message": 2,
+          "file": 3,
+          "line": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\[REPAIR-LOOP\\] Starting watch mode",
+          "endsPattern": "^\\[REPAIR-LOOP\\] Iteration complete"
+        }
+      }
+    },
+    {
+      "label": "🧠 Build Agentic Knowledge Base",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/knowledge-base-builder.mjs"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "problemMatcher": [],
+      "detail": "Build comprehensive semantic knowledge base with embeddings (10k+ chunks)"
+    },
+    {
+      "label": "🤖 Run Agentic Controller",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/agentic-controller.mjs"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "problemMatcher": [],
+      "detail": "Autonomously detect and repair TypeScript/Svelte errors using Gemma3"
+    },
+    {
+      "label": "🔍 Test Agentic Database",
+      "type": "shell",
+      "command": "node",
+      "args": ["test-agentic-db.mjs"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "problemMatcher": [],
+      "detail": "Test PostgreSQL pgvector + Redis + Gemma embeddings integration"
+    },
+    {
+      "label": "🚀 Start Ollama Gemma3 Legal",
+      "type": "shell",
+      "command": "ollama",
+      "args": ["run", "gemma3:legal-latest"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "detail": "Start Ollama with Gemma3 legal model for code analysis"
+    },
+    {
+      "label": "⚡ Start TensorRT-LLM Service",
+      "type": "shell",
+      "command": "wsl",
+      "args": ["bash", "-c", "cd ~/legal-ai-ubuntu-deployment && source trt_env/bin/activate && python tensorrt_service.py"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "detail": "Start TensorRT-LLM inference service on WSL2 Ubuntu for 2-10x speedup"
+    },
+    {
+      "label": "💾 Check Redis Status",
+      "type": "shell",
+      "command": "redis-cli",
+      "args": ["-a", "redis", "ping"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Check Redis server status and connectivity"
+    },
+    {
+      "label": "🐘 Check PostgreSQL Status",
+      "type": "shell",
+      "command": "PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -c \"\\dt\"",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Check PostgreSQL database tables and pgvector extension"
+    },
+    {
+      "label": "🎯 Full Agentic Workflow",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "💾 Check Redis Status",
+        "🐘 Check PostgreSQL Status",
+        "🚀 Start Ollama Gemma3 Legal",
+        "🧠 Build Agentic Knowledge Base",
+        "🤖 Run Agentic Controller",
+        "TypeScript Check - Optimized"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "detail": "Complete agentic programming workflow: Check services → Build KB → Repair code → Verify results"
+    },
+    {
+      "label": "⚡ GPU Accelerated Workflow",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "⚡ Start TensorRT-LLM Service",
+        "💾 Check Redis Status",
+        "🐘 Check PostgreSQL Status",
+        "🧠 Build Agentic Knowledge Base",
+        "🤖 Run Agentic Controller"
+      ],
+      "group": "build",
+      "detail": "GPU-accelerated agentic workflow using TensorRT-LLM for 2-10x faster inference"
+    },
+    {
+      "label": "📊 Open Agentic Dashboard",
+      "type": "shell",
+      "command": "code",
+      "args": [
+        "--new-window",
+        "scripts/knowledge-base-builder.mjs",
+        "scripts/agentic-controller.mjs",
+        "test-agentic-db.mjs",
+        "scripts/ast-worker.mjs"
+      ],
+      "group": "test",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "detail": "Open agentic programming scripts in new VS Code window for monitoring"
+    },
+    {
+      "label": "📚 Upload Document to RAG",
+      "type": "shell",
+      "command": "node",
+      "args": ["-e", "require('./scripts/upload-to-rag.mjs').uploadFile('${input:filePath}')"],
+      "group": "test",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "detail": "Upload current file or specified file to RAG knowledge base"
+    },
+    {
+      "label": "📝 Upload Current File to RAG",
+      "type": "shell",
+      "command": "node",
+      "args": ["-e", `
+        const fs = require('fs');
+        const path = require('path');
+        const FormData = require('form-data');
+        const fetch = require('node-fetch');
+
+        async function uploadCurrentFile() {
+          const filePath = '${file}';
+          const fileName = path.basename(filePath);
+          const fileContent = fs.readFileSync(filePath, 'utf-8');
+
+          console.log('📚 Uploading current file to RAG:', fileName);
+
+          const formData = new FormData();
+          formData.append('file', fileContent, { filename: fileName });
+
+          try {
+            const response = await fetch('http://localhost:5173/api/rag/upload', {
+              method: 'POST',
+              body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              console.log('✅ Upload successful:', result);
+              console.log(\`📊 Generated \${result.chunks} chunks and \${result.embeddings} embeddings\`);
+            } else {
+              console.error('❌ Upload failed:', result);
+            }
+          } catch (error) {
+            console.error('❌ Upload error:', error.message);
+          }
+        }
+
+        uploadCurrentFile();
+      `],
+      "group": "test",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "detail": "Upload the currently open file to RAG knowledge base for AI enhancement"
+    },
+    {
+      "label": "🔍 Search RAG Knowledge Base",
+      "type": "shell",
+      "command": "node",
+      "args": ["-e", `
+        const fetch = require('node-fetch');
+
+        async function searchRAG() {
+          const query = '\${input:searchQuery}';
+          console.log('🔍 Searching RAG knowledge base for:', query);
+
+          try {
+            const response = await fetch('http://localhost:5173/api/search/advanced', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                query: query,
+                filters: { chunk_type: 'rag_document' },
+                limit: 5
+              })
+            });
+
+            const results = await response.json();
+
+            if (response.ok && results.results) {
+              console.log(\`✅ Found \${results.results.length} relevant documents:\`);
+              results.results.forEach((result, index) => {
+                console.log(\`\n\${index + 1}. \${result.source_file}\`);
+                console.log(\`   Similarity: \${(result.similarity * 100).toFixed(1)}%\`);
+                console.log(\`   Content preview: \${result.content.slice(0, 200)}...\`);
+              });
+            } else {
+              console.log('❌ Search failed or no results found');
+            }
+          } catch (error) {
+            console.error('❌ Search error:', error.message);
+          }
+        }
+
+        searchRAG();
+      `],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "detail": "Semantic search through uploaded RAG documents"
+    },
+    {
+      "label": "🤖 AI Chat with RAG Context",
+      "type": "shell",
+      "command": "node",
+      "args": ["-e", `
+        const fetch = require('node-fetch');
+
+        async function chatWithRAG() {
+          const question = '\${input:aiQuestion}';
+          console.log('🤖 AI Chat with RAG context:', question);
+
+          try {
+            // First, search for relevant context
+            const searchResponse = await fetch('http://localhost:5173/api/search/advanced', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                query: question,
+                filters: { chunk_type: 'rag_document' },
+                limit: 3
+              })
+            });
+
+            const searchResults = await searchResponse.json();
+            let context = '';
+
+            if (searchResults.results && searchResults.results.length > 0) {
+              context = searchResults.results.map(r => r.content).join('\\n\\n');
+              console.log(\`📚 Using context from \${searchResults.results.length} documents\`);
+            }
+
+            // Then ask AI with context
+            const aiResponse = await fetch('http://localhost:11434/api/generate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                model: 'gemma3:legal-latest',
+                prompt: \`Context from uploaded documents:\\n\${context}\\n\\nQuestion: \${question}\\n\\nAnswer based on the context:\`,
+                stream: false
+              })
+            });
+
+            const aiResult = await aiResponse.json();
+
+            if (aiResponse.ok) {
+              console.log('\\n🤖 AI Response:');
+              console.log(aiResult.response);
+            } else {
+              console.error('❌ AI request failed');
+            }
+
+          } catch (error) {
+            console.error('❌ Error:', error.message);
+          }
+        }
+
+        chatWithRAG();
+      `],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "detail": "Ask questions to AI with context from uploaded RAG documents"
     }
   ]
 }

@@ -25,6 +25,8 @@ https://svelte.dev/e/js_parse_error -->
   import { Switch } from '$lib/components/ui/switch';
   import { Textarea } from '$lib/components/ui/textarea';
   import { fileUploadSchema } from '$lib/schemas/upload';
+  import Form from '$lib/components/ui/Form.svelte';
+  import FileUpload from '$lib/components/ui/modular/FileUpload.svelte';
   import {
     Binary,
     CheckCircle,
@@ -69,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
     video: Film,
     audio: Music,
     physical: HardDrive,
-    digital: Binary;
+    digital: Binary
   }
   // Handle file changes from FileUpload component
   function handleFilesChange(files: UploadFile[]) {
@@ -217,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if !caseId}
           <Input
             id="caseId"
-            name="caseId";
+            name="caseId"
             bind:value={$form.caseId}
             variant="legal"
             label="Case ID"

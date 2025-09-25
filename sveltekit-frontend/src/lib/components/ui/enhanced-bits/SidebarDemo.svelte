@@ -73,7 +73,7 @@
       fileSize: '2.4 MB',
       lastModified: '2024-01-15',
       tags: ['dispute', 'contract', 'commercial'],
-      confidentialityLevel: 'confidential' as const;
+      confidentialityLevel: 'confidential' as const
     },
     {
       title: 'Evidence Package - Email Discovery',
@@ -81,7 +81,7 @@
       fileSize: '1.2 MB',
       lastModified: '2024-01-14',
       tags: ['email', 'discovery', 'evidence'],
-      confidentialityLevel: 'restricted' as const;
+      confidentialityLevel: 'restricted' as const
     },
     {
       title: 'Motion for Preliminary Injunction',
@@ -89,7 +89,7 @@
       fileSize: '896 KB',
       lastModified: '2024-01-13',
       tags: ['motion', 'injunction', 'urgent'],
-      confidentialityLevel: 'public' as const;
+      confidentialityLevel: 'public' as const
     },
     {
       title: 'Case Law Research - Precedents',
@@ -97,7 +97,7 @@
       fileSize: '654 KB',
       lastModified: '2024-01-12',
       tags: ['research', 'precedent', 'analysis'],
-      confidentialityLevel: 'internal' as const;
+      confidentialityLevel: 'internal' as const
     }
   ];
   function handleSidebarItemClick(_event: CustomEvent) {

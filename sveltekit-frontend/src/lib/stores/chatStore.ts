@@ -17,6 +17,7 @@ export interface ChatMessage {
     references?: string[];
     confidence?: number;
     legalContext?: unknown;
+    executionTime?: number;
   }
 }
 export interface Conversation {

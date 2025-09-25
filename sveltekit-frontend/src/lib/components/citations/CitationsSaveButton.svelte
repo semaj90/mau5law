@@ -3,7 +3,7 @@
   import { ButtonBits } from '$lib/components/ui/bits-ui';
   import { citationsManager, type Citation, type CitationCollection } from '$lib/modules/citations-manager';
   interface Props {
-    citation: Citatio;
+    citation: Citation;
     size?: 'sm' | 'md' | 'lg';
     variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
     showText?: boolean;

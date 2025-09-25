@@ -44,7 +44,7 @@ await loadEngineData();
         query: queryInput,
         result,
         timestamp: new Date(),
-        executionTime;
+        executionTime
       });
       // Keep only last 5 queries in history
       if (queryHistory.length > 5) {

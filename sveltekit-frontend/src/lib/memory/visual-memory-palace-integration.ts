@@ -220,7 +220,7 @@ export class VisualMemoryPalaceManager {
         (result as { push?: any; join?: any }).push(reverseDict.get(value)!);
       } else {
         // Direct character mapping
-        (result as { push?: any; join?: any }).push(String.fromCharCode(value);
+        (result as { push?: any; join?: any }).push(String.fromCharCode(value));
       }
     }
     return (result as { push?: any; join?: any }).join(' ');

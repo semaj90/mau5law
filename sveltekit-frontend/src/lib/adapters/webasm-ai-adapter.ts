@@ -553,8 +553,8 @@ export class WebAssemblyAIAdapter {
    * Enhance response with WebGPU tensor acceleration for similarity search
    */
   private async enhanceWithTensorAcceleration(
-    response: WebAssemblyAIResponse
-    conversationHistory: ConversationEntry[];
+    response: WebAssemblyAIResponse,
+    conversationHistory: ConversationEntry[]
   ): Promise<WebAssemblyAIResponse> {
     try {
       // Generate high-quality embedding for the response using embedding service
@@ -576,7 +576,7 @@ export class WebAssemblyAIAdapter {
       // Add GPU metadata with detailed metrics
       response.metadata = {
         ...response.metadata,
-        gpuAccelerated: true
+        gpuAccelerated: true,
         tensorAccelerationUsed: true
       }
       console.log(
@@ -655,9 +655,9 @@ export class WebAssemblyAIAdapter {
    * Analyze legal document using WebAssembly Gemma 3 Legal
    */
   async analyzeLegalDocument(
-    title: string
-    content: string
-    analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive';
+    title: string,
+    content: string,
+    analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
   ): Promise<{
     risks: Array<any>;
     recommendations: string[];
@@ -680,7 +680,7 @@ export class WebAssemblyAIAdapter {
    * Stream response (simulated chunked responses for WebAssembly)
    */
   async streamMessage(
-    message: string
+    message: string,
     options: {
       conversationHistory?: ConversationEntry[];
       onChunk?: (chunk: string) => void;
@@ -870,7 +870,7 @@ export class WebAssemblyAIAdapter {
         body: JSON.stringify({
           text,
           model: 'embeddinggemma:latest',
-          useCUDA: true
+          useCUDA: true,
           normalize: true
         })
       });

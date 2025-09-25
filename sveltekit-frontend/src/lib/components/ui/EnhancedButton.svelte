@@ -49,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
   		loading?: boolean;
   		loadingText?: string;
   		class?: string;
-  		useMelt?: boolean; // Option to use melt-ui enhancements
+  		useMelt?: boolean; // Option to use bits-ui enhancements
   		useBits?: boolean; // Option to use bits-ui
   	}
   	let {
@@ -68,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
   	}: Props = $props();
   	let isDisabled = $derived(disabled || loading);
   	let buttonClass = $derived(cn(buttonVariants({ variant, size }), class));
-  	// Create melt-ui button for enhanced accessibility and interactions - conditionally
+  	// Create bits-ui button for enhanced accessibility and interactions - conditionally
   	const meltButtonBuilder = useMelt ? createButton({
   		disabled: isDisabled;
   	}) : null;
@@ -200,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
 			{/if}
 		</button>
 	{:else}
-		<!-- Standard button without melt-ui -->
+		<!-- Standard button without bits-ui -->
 		<button
 			{type}
 			disabled={isDisabled}

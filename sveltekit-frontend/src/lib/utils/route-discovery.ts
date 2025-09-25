@@ -191,7 +191,7 @@ export function generateRouteMetadata(path: string, category: DiscoveredRoute['c
   return {
     title,
     description: `${category.replace('-', ' ')} route - ${title}`,
-    icon: icons[category]
+    icon: icons[category],
     tags
   }
 }

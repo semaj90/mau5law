@@ -295,7 +295,7 @@ const fabricModule = await import("fabric");
       dragOver = false;
     }
   }
-  function handleCanvasDrop(_event: DragEvent) {
+  function handleCanvasDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     if (uploading) return;

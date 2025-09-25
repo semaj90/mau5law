@@ -1,4 +1,4 @@
-<!-- Simple Textarea component using Svelte 5 runes, no melt-ui dependency -->
+<!-- Simple Textarea component using Svelte 5 runes, no external dependencies -->
 <script lang="ts">
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
@@ -118,4 +118,3 @@
   {onkeydown}
   {onkeyup}
 ></textarea>
-;

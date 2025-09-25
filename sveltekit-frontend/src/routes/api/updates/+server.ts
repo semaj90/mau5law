@@ -2,7 +2,7 @@
 import type { RequestHandler } from './$types.js';
 // Server-Sent Events API route for SSR-safe real-time updates
 import { createClient } from 'redis';
-;
+
 // SSE connection manager
 class SSEConnectionManager {
   private connections: Map<string, Response> = new Map();
