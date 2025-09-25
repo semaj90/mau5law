@@ -128,7 +128,7 @@
   }
   function getEvidenceColor(evidenceType: string): string {
     switch (evidenceType) {
-      case 'forensic': return currentTheme.succes;
+      case 'forensic': return currentTheme.success;
       case 'document': return currentTheme.accent;
       case 'witness': return currentTheme.warning;
       case 'digital': return '#00ccff';
@@ -138,7 +138,7 @@
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'verified': return currentTheme.succes;
+      case 'verified': return currentTheme.success;
       case 'pending': return currentTheme.warning;
       case 'disputed': return currentTheme.danger;
       case 'archived': return currentTheme.border;
@@ -200,7 +200,7 @@
       ctx.fillRect(padding, y, width - padding * 2, itemHeight - 5);
       // Risk indicator bar
       const riskWidth = ((width - padding * 2) * risk) / 100;
-      let riskColor = currentTheme.succes;
+      let riskColor = currentTheme.success;
       if (risk > 75) riskColor = currentTheme.danger;
       else if (risk > 50) riskColor = currentTheme.warning;
       ctx.fillStyle = riskColor + '60';
@@ -290,7 +290,7 @@
       pending: caseFiles.filter(f => f.status === 'pending').length,
       disputed: caseFiles.filter(f => f.status === 'disputed').length,
       highRisk: caseFiles.filter(f => (f.riskScore || calculateRiskScore(f)) > 75).length,
-      chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length;
+      chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length,
     }
     // Stats background
     ctx.fillStyle = currentTheme.background + 'E0';
@@ -306,7 +306,7 @@
     let statsY = 45;
     ctx.fillText(`Total Files: ${stats.total}`, width - 190, statsY);
     statsY += 12;
-    ctx.fillStyle = currentTheme.succes;
+    ctx.fillStyle = currentTheme.success;
     ctx.fillText(`Verified: ${stats.verified}`, width - 190, statsY);
     statsY += 12;
     ctx.fillStyle = currentTheme.warning;
@@ -317,7 +317,7 @@
     statsY += 12;
     ctx.fillText(`High Risk: ${stats.highRisk}`, width - 190, statsY);
     statsY += 12;
-    ctx.fillStyle = currentTheme.succes;
+    ctx.fillStyle = currentTheme.success;
     ctx.fillText(`Chain CoC: ${stats.chainOfCustody}`, width - 190, statsY);
   }
   function getFileAtPosition(x: number, y: number): CaseFile | null {
@@ -337,7 +337,7 @@
     mousePos = { x, y }
     const file = getFileAtPosition(x, y);
     if (file !== hoveredFile) {
-      hoveredFile = fil;
+      hoveredFile = file;
       onFileHover?.(file);
       canvas.style.cursor = file ? 'pointer' : 'default';
     }
@@ -375,7 +375,7 @@
           chainOfCustody: true,
           confidentialityLevel: 'restricted',
           fileSize: 15728640,
-          createdAt: new Date('2024-01-15');
+          createdAt: new Date('2024-01-15'),
         },
         {
           id: 'EV002',

@@ -13,6 +13,8 @@
 			"terminal.foreground": "#d4d4d4"
 		},
 		"git.ignoreLimitWarning": true,
-		"powershell.cwd": "deeds-web-app"
+		"powershell.cwd": "deeds-web-app",
+		"files.autoSave": "afterDelay",
+		"files.autoSaveDelay": 1000
 	}
 }

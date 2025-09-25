@@ -70,6 +70,10 @@
   "editor.suggest.showStatusBar": false,
   "editor.inlineSuggest.enabled": false,
 
+  // Auto Save Configuration
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+
   // File Associations
   "files.associations": {
     "*.svelte": "svelte"
