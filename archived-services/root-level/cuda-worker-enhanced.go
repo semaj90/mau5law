@@ -1,3 +1,6 @@
+//go:build archived
+// +build archived
+
 // Universal Document Accelerator (UDA) Worker - Production Architecture
 // SvelteKit → MinIO → Go UDA Worker ↔ Redis ↔ Python GPU Service (gRPC)
 

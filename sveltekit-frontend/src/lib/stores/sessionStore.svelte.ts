@@ -1,8 +1,7 @@
 /**
- * Global Session Store - Lucia v3 Integration (Svelte 5 Runes)
+ * Global Session Store - Lucia v3 Integration (Svelte 5)
  * Provides app-wide session management with persistent storage and fallback mechanisms
  */
-import { page } from '$app/stores';
 import { browser } from '$app/environment';
 // Types based on Lucia v3 and app.d.ts
 export interface User {
@@ -23,109 +22,120 @@ export interface SessionState {
   isLoading: boolean;
   lastSyncAt: number;
 }
-// Create reactive session state using Svelte 5 runes
-export const sessionState = $state<SessionState>({
-  user: null,
-  session: null,
-  isAuthenticated: false,
-  isLoading: true,
-  lastSyncAt: 0
-});
-// Derived stores for common use cases (as functions)
-export const getUser = () => sessionState.user;
-export const getIsAuthenticated = () => sessionState.isAuthenticated;
-export const getIsLoading = () => sessionState.isLoading;
-export const getCurrentUser = () => sessionState.user;
-// Session management functions
-export const sessionActions = {
-  // Initialize session from page store or fallback mechanisms
-  init(pageData?: any) {
-    if (pageData?.user && pageData?.session) {
-      // Primary: Use SvelteKit page data (most reliable)
-      sessionState.user = pageData.user;
-      sessionState.session = pageData.session;
-      sessionState.isAuthenticated = !!pageData.user;
-      sessionState.isLoading = false;
-      sessionState.lastSyncAt = Date.now();
-    } else {
-      // Fallback: Try to restore from persistent storage
-      restoreSessionFromStorage();
-    }
-  },
-  // Update session state
-  setSession(user: User | null, session: Session | null) {
-    sessionState.user = user;
-    sessionState.session = session;
-    sessionState.isAuthenticated = !!user;
-    sessionState.isLoading = false;
-    sessionState.lastSyncAt = Date.now();
-    // Persist to localStorage for faster subsequent loads
-    if (browser && user) {
-      try {
-        localStorage.setItem('legal_ai_session_cache', JSON.stringify({
-          user,
-          session,
-          cachedAt: Date.now()
-        }));
-      } catch (e) {
-        console.warn('Failed to cache session:', e);
+// Create reactive session store using Svelte 5 runes
+const createSessionStore = () => {
+  // Initialize with empty state using $state
+  let sessionState = $state<SessionState>({
+    user: null,
+    session: null,
+    isAuthenticated: false,
+    isLoading: true,
+    lastSyncAt: 0,
+  });
+  return {
+    // Getter for reactive access
+    get state() {
+      return sessionState;
+    },
+    // Initialize session from page store or fallback mechanisms
+    init: (pageData?: any) => {
+      if (pageData?.user && pageData?.session) {
+        // Primary: Use SvelteKit page data (most reliable)
+        sessionState = {
+          user: pageData.user,
+          session: pageData.session,
+          isAuthenticated: !!pageData.user,
+          isLoading: false,
+          lastSyncAt: Date.now(),
+        };
+      } else {
+        // Fallback: Try to restore from persistent storage
+        restoreSessionFromStorage();
       }
-    }
-  },
-  // Clear session
-  clearSession() {
-    sessionState.user = null;
-    sessionState.session = null;
-    sessionState.isAuthenticated = false;
-    sessionState.isLoading = false;
-    sessionState.lastSyncAt = Date.now();
-    // Clear persistent storage
-    if (browser) {
-      try {
-        localStorage.removeItem('legal_ai_session_cache');
-        // Clear any global session objects
-        const win = window as any;
-        delete win.__PERSISTED_SESSION;
-        delete win.__SESSION;
-        delete win.__LUCIA_SESSION;
-      } catch (e) {
-        console.warn('Failed to clear session cache:', e);
-      }
-    }
-  },
-  // Force refresh from server
-  async refreshSession() {
-    sessionState.isLoading = true;
-    try {
-      const response = await fetch('/api/auth/session');
-      if (response.ok) {
-        const data = await response.json();
-        if (data?.user) {
-          sessionState.user = data.user;
-          sessionState.session = data.session || { id: 'server', user: data.user };
-          sessionState.isAuthenticated = true;
-          sessionState.isLoading = false;
-          sessionState.lastSyncAt = Date.now();
-          return data.user;
+    },
+    // Update session state
+    setSession: (user: User | null, session: Session | null) => {
+      sessionState = {
+        user,
+        session,
+        isAuthenticated: !!user,
+        isLoading: false,
+        lastSyncAt: Date.now(),
+      };
+      // Persist to localStorage for faster subsequent loads
+      if (browser && user) {
+        try {
+          localStorage.setItem('legal_ai_session_cache', JSON.stringify({
+            user,
+            session,
+            cachedAt: Date.now()
+          }));
+        } catch (e) {
+          console.warn('Failed to cache session:', e);
         }
       }
-      // No valid session found
-      sessionState.user = null;
-      sessionState.session = null;
-      sessionState.isAuthenticated = false;
-      sessionState.isLoading = false;
-      sessionState.lastSyncAt = Date.now();
-      return null;
-    } catch (error) {
-      console.error('Session refresh failed:', error);
-      sessionState.isLoading = false;
-      return null;
+    },
+    // Clear session
+    clearSession: () => {
+      sessionState = {
+        user: null,
+        session: null,
+        isAuthenticated: false,
+        isLoading: false,
+        lastSyncAt: Date.now(),
+      };
+      // Clear persistent storage
+      if (browser) {
+        try {
+          localStorage.removeItem('legal_ai_session_cache');
+          // Clear any global session objects
+          const win = window as any;
+          delete win.__PERSISTED_SESSION;
+          delete win.__SESSION;
+          delete win.__LUCIA_SESSION;
+        } catch (e) {
+          console.warn('Failed to clear session cache:', e);
+        }
+      }
+    },
+    // Force refresh from server
+    refreshSession: async () => {
+      sessionState.isLoading = true;
+      try {
+        const response = await fetch('/api/auth/session');
+        if (response.ok) {
+          const data = await response.json();
+          if (data?.user) {
+            sessionState = {
+              user: data.user,
+              session: data.session || { id: 'server', user: data.user },
+              isAuthenticated: true,
+              isLoading: false,
+              lastSyncAt: Date.now(),
+            };
+            return data.user;
+          }
+        }
+        // No valid session found
+        sessionState = {
+          user: null,
+          session: null,
+          isAuthenticated: false,
+          isLoading: false,
+          lastSyncAt: Date.now(),
+        };
+        return null;
+      } catch (error) {
+        console.error('Session refresh failed:', error);
+        sessionState.isLoading = false;
+        return null;
+      }
+    },
+    // Get current user for upload operations
+    getCurrentUser: (): User | null => {
+      return sessionState.user;
     }
-  },
-  // Get current user for upload operations
-  getCurrentUser(): User | null {
-    return sessionState.user;
-  }
+  };
 };
 // Fallback session restoration from various storage mechanisms
 function restoreSessionFromStorage() {
@@ -138,7 +148,7 @@ function restoreSessionFromStorage() {
       const cacheAge = Date.now() - (parsedCache.cachedAt || 0);
       // Use cache if less than 5 minutes old
       if (cacheAge < 5 * 60 * 1000 && parsedCache.user) {
-        sessionActions.setSession(parsedCache.user, parsedCache.session);
+        sessionStore.setSession(parsedCache.user, parsedCache.session);
         return;
       }
     }
@@ -146,7 +156,7 @@ function restoreSessionFromStorage() {
     const win = window as any;
     const candidate = win?.__PERSISTED_SESSION || win?.__SESSION || win?.__LUCIA_SESSION;
     if (candidate?.user?.id) {
-      sessionActions.setSession(candidate.user, candidate.session || { id: 'global', user: candidate.user });
+      sessionStore.setSession(candidate.user, candidate.session || { id: 'global', user: candidate.user });
       return;
     }
     // 3) Check other localStorage keys
@@ -154,20 +164,26 @@ function restoreSessionFromStorage() {
     if (altSession) {
       const parsed = JSON.parse(altSession);
       if (parsed?.user?.id) {
-        sessionActions.setSession(parsed.user, parsed.session);
+        sessionStore.setSession(parsed.user, parsed.session);
         return;
       }
     }
     // 4) Last resort: Try server refresh
-    sessionActions.refreshSession();
+    sessionStore.refreshSession();
   } catch (error) {
     console.warn('Session restoration failed:', error);
-    sessionActions.clearSession();
+    sessionStore.clearSession();
   }
 }
+// Export singleton store
+export const sessionStore = createSessionStore();
+// Helper functions for accessing reactive state
+export const getUser = () => sessionStore.state.user;
+export const getIsAuthenticated = () => sessionStore.state.isAuthenticated;
+export const getIsLoading = () => sessionStore.state.isLoading;
 // Utility functions for upload operations
 export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; uploaderEmail: string | null } => {
-  const currentUser = sessionActions.getCurrentUser();
+  const currentUser = sessionStore.getCurrentUser();
   if (currentUser?.id) {
     return {
       uploadedBy: currentUser.id,
@@ -212,14 +228,4 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
     uploaderRole: 'viewer',
     uploaderEmail: null
   };
-};
-// Legacy exports for backward compatibility
-export const sessionStore = {
-  subscribe: (fn: (value: SessionState) => void) => {
-    // Create a reactive subscription that runs when sessionState changes
-    $effect(() => {
-      fn(sessionState);
-    });
-  },
-  ...sessionActions
 };

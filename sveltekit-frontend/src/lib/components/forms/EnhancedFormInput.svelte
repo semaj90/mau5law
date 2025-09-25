@@ -13,35 +13,53 @@ https://svelte.dev/e/js_parse_error -->
     type ValidationResult,
   } from "$lib/utils/validation";
   import { AlertCircle, CheckCircle, Eye, EyeOff, Info } from "lucide-svelte";
-  let { name = $bindable()  }: { name = $bindable() : unknown } = $props(); // string
-  let { label = $bindable()  }: { label = $bindable() : unknown } = $props(); // string
-  let { type = $bindable()  }: { type = $bindable() : unknown } = $props(); //
-    | "text"
-    | "email"
-    | "password"
-    | "url"
-    | "tel"
-    | "number"
-    | "date"
-    | "textarea" = "text";
-  let { value = $bindable()  }: { value = $bindable() : unknown } = $props(); // string = ""
-  let { placeholder = $bindable()  }: { placeholder = $bindable() : unknown } = $props(); // string = ""
-  let { required = $bindable()  }: { required = $bindable() : unknown } = $props(); // boolean = false
-  let { disabled = $bindable()  }: { disabled = $bindable() : unknown } = $props(); // boolean = false
-  let { readonly = $bindable()  }: { readonly = $bindable() : unknown } = $props(); // boolean = false
-  let { autocomplete = $bindable()  }: { autocomplete = $bindable() : unknown } = $props(); // string = ""
-  let { maxlength = $bindable()  }: { maxlength = $bindable() : unknown } = $props(); // number | undefined = undefined
-  let { minlength = $bindable()  }: { minlength = $bindable() : unknown } = $props(); // number | undefined = undefined
-  let { pattern = $bindable()  }: { pattern = $bindable() : unknown } = $props(); // string | undefined = undefined
-  let { step = $bindable()  }: { step = $bindable() : unknown } = $props(); // string | undefined = undefined
-  let { min = $bindable()  }: { min = $bindable() : unknown } = $props(); // string | undefined = undefined
-  let { max = $bindable()  }: { max = $bindable() : unknown } = $props(); // string | undefined = undefined
-  let { rows = $bindable()  }: { rows = $bindable() : unknown } = $props(); // number = 3
-  let { validator = $bindable()  }: { validator = $bindable() : unknown } = $props(); // FormValidator | null = null
-  let { config = $bindable()  }: { config = $bindable() : unknown } = $props(); // FormFieldConfig | null = null
-  let { helpText = $bindable()  }: { helpText = $bindable() : unknown } = $props(); // string = ""
-  let { showValidation = $bindable()  }: { showValidation = $bindable() : unknown } = $props(); // boolean = true
-  let { showPasswordToggle = $bindable()  }: { showPasswordToggle = $bindable() : unknown } = $props(); // boolean = true
+  interface Props {
+    name: string;
+    label: string;
+    type?: "text" | "email" | "password" | "url" | "tel" | "number" | "date" | "textarea";
+    value?: string;
+    placeholder?: string;
+    required?: boolean;
+    disabled?: boolean;
+    readonly?: boolean;
+    autocomplete?: string;
+    maxlength?: number;
+    minlength?: number;
+    pattern?: string;
+    step?: string;
+    min?: string;
+    max?: string;
+    rows?: number;
+    validator?: FormValidator | null;
+    config?: FormFieldConfig | null;
+    helpText?: string;
+    showValidation?: boolean;
+    showPasswordToggle?: boolean;
+  }
+
+  let {
+    name,
+    label,
+    type = "text",
+    value = $bindable(""),
+    placeholder = "",
+    required = false,
+    disabled = false,
+    readonly = false,
+    autocomplete = "",
+    maxlength = undefined,
+    minlength = undefined,
+    pattern = undefined,
+    step = undefined,
+    min = undefined,
+    max = undefined,
+    rows = 3,
+    validator = null,
+    config = null,
+    helpText = "",
+    showValidation = true,
+    showPasswordToggle = true
+  }: Props = $props();
   // Local validation state
   let errors = $state<string[] >([]);
   let warnings = $state<string[] >([]);
@@ -57,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   let showSuccessState = $derived(showValidation && isDirty && isValid && !hasErrors && value.trim() !== "");
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-    value = target.valu;
+    value = target.value;
     isDirty = true;
     validateField();
     ondispatch?.({
@@ -67,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleChange(event: Event) {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-    value = target.valu;
+    value = target.value;
     isDirty = true;
     validateField();
     ondispatch?.({

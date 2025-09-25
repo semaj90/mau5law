@@ -4,8 +4,7 @@
   import NESElementsShowcase from './NESElementsShowcase.svelte';
 </script>
 <!-- Hidden showcase that activates all CSS selectors -->
-<div style="position: absolute;
-e; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;" aria-hidden="true">
+<div style="position: absolute; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;" aria-hidden="true">
   <NESElementsShowcase visible={true} />
   <!-- Additional elements to ensure all selectors are covered -->
   <div class="nes-container">
@@ -119,10 +118,8 @@ e; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;" aria-
   <!-- Links -->
   <a href="#" style="opacity: 0;">Link</a>
   <a style="opacity: 0;">Link without href</a>
-  <!-- All HTML elements that might be styled globally -->
-  <html style="opacity: 0;">
-    <body style="opacity: 0;">
-      <article><h1>H1</h1></article>
+  <!-- Content elements that might be styled globally -->
+  <article style="opacity: 0;"><h1>H1</h1></article>
       <aside><h2>H2</h2></aside>
       <figure><figcaption>Caption</figcaption></figure>
       <footer><h3>H3</h3></footer>
@@ -146,14 +143,11 @@ e; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;" aria-
         <abbr title="Abbreviation">Abbr</abbr>
         <abbr data-original-title="Abbreviation">Abbr</abbr>
       </section>
-    </body>
-  </html>
 </div>
 <style>
   /* Ensure this component doesn't affect layout */
   :global(.css-activator-hidden) {
-    position: absolute;
-!important;
+    position: absolute !important;
     left: -9999px !important;
     top: -9999px !important;
     visibility: hidden !important;
@@ -161,7 +155,6 @@ e; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;" aria-
     opacity: 0 !important;
     width: 1px !important;
     height: 1px !important;
-    overflow: hidden;
-!important;
+    overflow: hidden !important;
   }
 </style>

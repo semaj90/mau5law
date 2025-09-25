@@ -1,27 +1,8 @@
-
-<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression or a `{get, set}` pair
-https://svelte.dev/e/bind_invalid_expression -->
-<!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
+  import { Button, Input, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge/index.js';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
-  import { Separator } from '$lib/components/ui/separator/index.js';
-  import { Select } from '$lib/components/ui/select/index.js';
-  import { Slider } from '$lib/components/ui/slider/index.js';
   import { Switch } from '$lib/components/ui/switch/index.js';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import {
@@ -38,497 +19,479 @@ https://svelte.dev/e/bind_invalid_expression -->
     aiUsage
   } from '$lib/stores/aiAssistant.svelte.js';
   import { unifiedAIService } from '$lib/ai/unified-ai-service.js';
-  import type { UnifiedQueryOptions, UnifiedResponse } from '$lib/ai/unified-ai-service.js';
-  // Component props
+  import type { UnifiedQueryOptions } from '$lib/ai/unified-ai-service.js';
+
+  // Component props using Svelte 5 $props()
   interface Props {
     height?: string;
     showSettings?: boolean;
     enableContext7?: boolean;
     autoFocus?: boolean;
   }
+
   let {
     height = '600px',
     showSettings = true,
     enableContext7 = true,
     autoFocus = true
   }: Props = $props();
+
   // Reactive state using Svelte 5 runes
   let currentMessage = $state('');
-  let isLoading = $state(false);
   let errorMessage = $state('');
   let useContext7 = $state(false);
   let showSettingsDialog = $state(false);
   let showExportDialog = $state(false);
-  let messageInput: HTMLTextAreaElement = $state(undefined as any);
-  let chatContainer: HTMLDivElement = $state(undefined as any);
+  let messageInput: HTMLTextAreaElement = $state(null!);
+  let chatContainer: HTMLDivElement = $state(null!);
   let availableModels = $state<string[]>(['gemma3-legal', 'nomic-embed-text', 'deeds-web']);
-  let useUnifiedService = $state(true);
+  let useUnifiedService = $state(false);
   let selectedMode = $state<'auto' | 'wasm' | 'langchain' | 'gpu'>('auto');
-  // Derived state for UI
-  let canSend = $derived(() => currentMessage.trim.length > 0 && !isProcessing());
-  let hasConversation = $derived(() => conversationHistory().length > 0);
-  let clusterStatus = $derived(() => {
-    const health = clusterHealth();
-    const healthyCount = Object.values.filter-length;
+
+  // Derived state for UI using proper store access (use functions instead of $derived)
+  let canSend = () => currentMessage.trim().length > 0 && !$isProcessing;
+  let hasConversation = () => $conversationHistory.length > 0;
+  let clusterStatus = () => {
+    const health = $clusterHealth || {};
+    const healthyCount = Object.values(health).filter(Boolean).length;
+    const total = Object.keys(health).length;
     return {
-      healthy: healthyCount === Object.keys(errors).length,
-      count: healthyCount
-      total: Object.keys(errors).length;
+      healthy: total > 0 ? healthyCount === total : false,
+      count: healthyCount,
+      total
     };
-  });
+  };
+
   // Component lifecycle
   $effect(() => {
     (async () => {
-// Focus input if enabled
-    if (autoFocus && messageInput) {
-      messageInput.focus();
-    }
-    // Initialize unified AI service
-    try {
-      await unifiedAIService.initialize();
-      console.log('✅ Unified AI Service ready');
-    } catch (error) {
-      console.error('Failed to initialize Unified AI Service:', error);
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
-    // Load available models
-    try {
-      availableModels = await aiAssistantManager.getAvailableModels();
-    } catch (error) {
-      console.warn('Failed to load available models:', error);
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
-    // Check cluster health
-    aiAssistantManager.checkClusterHealth();
+      // Focus input if enabled
+      if (autoFocus && messageInput) {
+        messageInput.focus();
+      }
+
+      // Initialize unified AI service
+      try {
+        await unifiedAIService.initialize();
+        console.log('✅ Unified AI Service ready');
+      } catch (error) {
+        console.error('Failed to initialize Unified AI Service:', error);
+        errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      }
+
+      // Load available models
+      try {
+        availableModels = await aiAssistantManager.getAvailableModels();
+      } catch (error) {
+        console.warn('Failed to load available models:', error);
+      }
+
+      // Check cluster health
+      aiAssistantManager.checkClusterHealth();
     })();
   });
+
   // Effect to scroll to bottom when conversation updates
   $effect(() => {
-    if (conversationHistory().length > 0 && chatContainer) {
+    if ($conversationHistory.length > 0 && chatContainer) {
       setTimeout(() => {
         chatContainer.scrollTop = chatContainer.scrollHeight;
       }, 100);
     }
   });
+
   // Send message to AI
   async function sendMessage() {
-    performance.mark('function-start');
-    if (!canSend) return;
+    if (!canSend()) return;
+
     const message = currentMessage.trim();
     currentMessage = '';
+
     try {
       if (useUnifiedService) {
         // Use unified AI service
         const options: UnifiedQueryOptions = {
-          query: message
-          mode: selectedMode === 'auto' ? undefined : selectedMode
-          useContext7: enableContext7 && useContext7
+          query: message,
+          mode: selectedMode === 'auto' ? undefined : selectedMode,
+          useContext7: enableContext7 && useContext7,
           maxResults: 10,
-          threshold: 0.7;
+          threshold: 0.7
         };
+
         const response = await unifiedAIService.query(options);
         if (response.success) {
-          // Add to conversation history manually since we're bypassing the store
-          const entry = {
-            id: crypto.randomUUID(),
-            type: 'assistant' as const,
-            content: response.response,
-            timestamp: new Date(),
-            metadata: {
-              model: response.metadata?.model || selectedMode,
-              temperature: currentTemperature(),
-              responseTime: response.processingTime,
-              tokenCount: response.metadata?.tokenCount || 0,
-              context7Used: useContext7;
-            }
-          };
-          // Add user message first
-          const userEntry = {
-            id: crypto.randomUUID(),
-            type: 'user' as const,
-            content: message
-            timestamp: new Date();
-          };
           console.log('📝 Unified AI Response:', response);
+          // Handle unified service response
         } else {
           console.error('Unified AI query failed:', response.error);
           // Fall back to regular AI assistant
           await aiAssistantManager.sendMessage(message, {
-            useContext7: enableContext7 && useContext7
-            model: currentModel(),
-            temperature: currentTemperature();
+            useContext7: enableContext7 && useContext7,
+            model: $currentModel,
+            temperature: $currentTemperature
           });
         }
       } else {
         // Use regular AI assistant manager
         await aiAssistantManager.sendMessage(message, {
-          useContext7: enableContext7 && useContext7
-          model: currentModel(),
-          temperature: currentTemperature();
+          useContext7: enableContext7 && useContext7,
+          model: $currentModel,
+          temperature: $currentTemperature
         });
       }
     } catch (error) {
       console.error('Failed to send message:', error);
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
+      errorMessage = error instanceof Error ? error.message : 'An error occurred';
+    }
+
     // Focus back to input
     if (messageInput) {
       messageInput.focus();
     }
   }
+
   // Handle keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
-    performance.mark('function-start');
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
+
   // Format timestamp
   function formatTime(date: Date): string {
-    return new Intl.DateTimeFormat.format(date);
+    return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
   }
+
   // Get message role color
   function getRoleColor(role: string): string {
     switch (role) {
-      case 'user': return 'bg-blue-100 border-blue-200';
-      case 'assistant': return 'bg-green-100 border-green-200';
-      case 'system': return 'bg-gray-100 border-gray-200';
-      default: return 'bg-gray-100 border-gray-200';
+      case 'user': return 'bg-blue-100 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800';
+      case 'assistant': return 'bg-green-100 border-green-200 dark:bg-green-900/20 dark:border-green-800';
+      case 'system': return 'bg-gray-100 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800';
+      default: return 'bg-gray-100 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800';
     }
   }
+
   // Clear conversation
   function clearConversation() {
-    performance.mark('function-start');
     aiAssistantManager.clearConversation();
   }
+
   // Export conversation
   function exportConversation() {
-    performance.mark('function-start');
     aiAssistantManager.exportConversation();
   }
+
   // Stop generation
   function stopGeneration() {
-    performance.mark('function-start');
     aiAssistantManager.stopGeneration();
   }
+
   // Retry last message
   function retryLast() {
-    performance.mark('function-start');
     aiAssistantManager.retryLast();
   }
 </script>
-<div class="w-full nes-container">
-  <div class="yorha-panel-header p-4 border-b">
-    <div class="flex items-center justify-between">
-      <h3 class="nes-text is-primary flex items-center gap-2">
-        <span class="text-lg font-semibold">Legal AI Assistant</span>
-        <Badge variant={clusterStatus.healthy ? 'default' : 'destructive'} class="text-xs">
-          {clusterStatus.healthy ? 'Online' : `${clusterStatus.count}/${clusterStatus.total} Healthy`}
-        </Badge>
+
+<div class="w-full h-full flex flex-col bg-white dark:bg-gray-900 border rounded-lg shadow-sm">
+  <!-- Header -->
+  <div class="flex items-center justify-between p-4 border-b dark:border-gray-700">
+    <div class="flex items-center gap-3">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Legal AI Assistant
       </h3>
-      <div class="flex items-center gap-2">
-        {#if showSettings}
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={(event: MouseEvent) => ) =>
-showSettingsDialog = true}
-          >
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-</Button>
-        {/if}
-        {#if hasConversation}
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={(event: MouseEvent) => ) =>
-showExportDialog = true}
-          >
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-</Button>
-        {/if}
-      </div>
+      <Badge
+        variant={clusterStatus().healthy ? 'default' : 'destructive'}
+        class="text-xs"
+      >
+        {clusterStatus().healthy ? 'Online' : `${clusterStatus().count}/${clusterStatus().total} Healthy`}
+      </Badge>
+    </div>
+
+    <div class="flex items-center gap-2">
+      {#if showSettings}
+        <Button
+          variant="ghost"
+          size="sm"
+          onclick={() => showSettingsDialog = true}
+          class="bits-btn"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </Button>
+      {/if}
+
+      {#if hasConversation()}
+        <Button
+          variant="ghost"
+          size="sm"
+          onclick={() => showExportDialog = true}
+          class="bits-btn"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </Button>
+      {/if}
     </div>
   </div>
-  <main style="height: calc({height} - 80px);">
-    <!-- Chat Messages -->
-    <div
-      bind:this={chatContainer}
-      class="flex-1 overflow-y-auto p-4 space-y-4"
-    >
-      {#if conversationHistory().length === 0}
-        <div class="text-center text-gray-500 mt-8">
-          <div class="text-lg font-medium mb-2">Welcome to Legal AI Assistant</div>
-          <p class="text-sm">Ask me about legal documents, case analysis, or get help with your legal research.</p>
-          {#if enableContext7}
-            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div class="text-sm font-medium text-blue-800 mb-1">Context7 Enhanced</div>
-              <p class="text-xs text-blue-600">Get suggestions powered by the latest documentation and best practices.</p>
-            </div>
-          {/if}
-        </div>
-      {:else}
-        {#each conversationHistory() as entry (entry.id)}
-          <div class="flex flex-col gap-1">
-            <div class="flex items-center gap-2 text-xs text-gray-500">
-              <span class="font-medium capitalize">{entry.type}</span>
-              <span>{formatTime(entry.timestamp)}</span>
-              {#if entry.metadata?.model}
-                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{entry.metadata.model}</span>
-              {/if}
-              {#if entry.metadata?.context7Used}
-                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Context7</span>
-              {/if}
-            </div>
-            <div class="p-3 rounded-lg border {getRoleColor(entry.type)}">
-              <div class="whitespace-pre-wrap text-sm">{entry.content}</div>
-              {#if entry.metadata?.responseTime}
-                <div class="text-xs text-gray-500 mt-2">
-                  Response time: {entry.metadata.responseTime}ms
-                  {#if entry.metadata.tokenCount}
-                    • Tokens: {entry.metadata.tokenCount}
-                  {/if}
-                </div>
-              {/if}
-            </div>
+
+  <!-- Chat Messages -->
+  <div
+    bind:this={chatContainer}
+    class="flex-1 overflow-y-auto p-4 space-y-4 min-h-0"
+    style="height: calc({height} - 200px);"
+  >
+    {#if $conversationHistory.length === 0}
+      <div class="text-center text-gray-500 dark:text-gray-400 mt-8">
+        <div class="text-lg font-medium mb-2">Welcome to Legal AI Assistant</div>
+        <p class="text-sm">Ask me about legal documents, case analysis, or get help with your legal research.</p>
+        {#if enableContext7}
+          <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div class="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">Context7 Enhanced</div>
+            <p class="text-xs text-blue-600 dark:text-blue-300">Get suggestions powered by the latest documentation and best practices.</p>
           </div>
-        {/each}
-      {/if}
-      {#if isProcessing()}
-        <div class="flex items-center gap-2 text-gray-500">
-          <div class="animate-spin h-4 w-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
-          <span class="text-sm">AI is thinking...</span>
-        </div>
-      {/if}
-      {#if aiError()}
-        <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
-          <div class="text-sm text-red-800 font-medium">Error</div>
-          <div class="text-sm text-red-600 mt-1">{aiError()}</div>
-          <Button
-            variant="ghost"
-            size="sm"
-            class="mt-2 bits-btn bits-btn"
-            onclick={(event: MouseEvent) => retryLast}
-          >
-Retry
-</Button>
-        </div>
-      {/if}
-    </div>
-    <!-- Input Area -->
-    <div class="border-t p-4">
-      <!-- Unified AI Service Controls -->
-      <div class="flex items-center gap-2 mb-3">
-        <Switch
-          bind:checked={useUnifiedService}
-          disabled={isProcessing()}
-        />
-        <label class="text-sm font-medium">
-          Use Unified AI Service (WASM + LangChain + GPU)
-        </label>
-        {#if useUnifiedService}
-          <select
-            bind:value={selectedMode}
-            disabled={isProcessing()}
-            class="px-2 py-1 text-xs border rounded"
-          >
-            <option value="auto">Auto Select</option>
-            <option value="wasm">WASM Mode</option>
-            <option value="langchain">LangChain Mode</option>
-            <option value="gpu">GPU Mode</option>
-          </select>
         {/if}
       </div>
-      {#if enableContext7}
-        <div class="flex items-center gap-2 mb-3">
-          <Switch
-            bind:checked={useContext7}
-            disabled={isProcessing()}
-          />
-          <label class="text-sm font-medium">
-            Use Context7 Enhancement
-          </label>
-          {#if context7Analysis() && useContext7}
-            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {Math.round((context7Analysis()?.confidence || 0) * 100)}%</span>
-          {/if}
-        </div>
-      {/if}
-      <div class="flex gap-2">
-        <Textarea
-          bind:this={messageInput}
-          bind:value={currentMessage}
-          keydown={handleKeydown}
-          placeholder="Ask about legal documents, cases, or research..."
-          disabled={isProcessing()}
-          class="flex-1 min-h-[40px] max-h-[120px] resize-none"
-        />
-        <div class="flex flex-col gap-1">
-          <Button
-            onclick={(event: MouseEvent) => sendMessage}
-            disabled={!canSend}
-            class="px-4 bits-btn bits-btn"
-          >
-{#if isProcessing()}
-              <div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-            {:else}
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
+    {:else}
+      {#each $conversationHistory as entry (entry.id)}
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <span class="font-medium capitalize">{entry.type}</span>
+            <span>{formatTime(entry.timestamp)}</span>
+            {#if entry.metadata?.model}
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">{entry.metadata.model}</span>
             {/if}
-</Button>
-          {#if isProcessing()}
-            <Button class="bits-btn"
-              variant="ghost"
-              size="sm"
-              onclick={(event: MouseEvent) => stopGeneration}
-            >
-<svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect x="6" y="6" width="12" height="12" />
-              </svg>
-</Button>
-          {/if}
+            {#if entry.metadata?.context7Used}
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Context7</span>
+            {/if}
+          </div>
+          <div class="p-3 rounded-lg border {getRoleColor(entry.type)}">
+            <div class="whitespace-pre-wrap text-sm text-gray-900 dark:text-gray-100">{entry.content}</div>
+            {#if entry.metadata?.responseTime}
+              <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                Response time: {entry.metadata.responseTime}ms
+                {#if entry.metadata.tokenCount}
+                  • Tokens: {entry.metadata.tokenCount}
+                {/if}
+              </div>
+            {/if}
+          </div>
         </div>
+      {/each}
+    {/if}
+
+    {#if $isProcessing}
+      <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+        <div class="animate-spin h-4 w-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
+        <span class="text-sm">AI is thinking...</span>
       </div>
-      <!-- Usage Stats -->
-      {#if aiUsage().totalQueries > 0}
-        <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
-          <span>Queries: {aiUsage().totalQueries}</span>
-          <span>Tokens: {aiUsage().totalTokens.toLocaleString()}</span>
-          <span>Avg Response: {Math.round.averageResponseTime)}ms</span>
-        </div>
+    {/if}
+
+    {#if $aiError}
+      <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+        <div class="text-sm text-red-800 dark:text-red-200 font-medium">Error</div>
+        <div class="text-sm text-red-600 dark:text-red-300 mt-1">{$aiError}</div>
+        <Button
+          variant="ghost"
+          size="sm"
+          class="mt-2 bits-btn"
+          onclick={retryLast}
+        >
+          Retry
+        </Button>
+      </div>
+    {/if}
+  </div>
+
+  <!-- Input Area -->
+  <div class="border-t dark:border-gray-700 p-4">
+    <!-- Unified AI Service Controls -->
+    <div class="flex items-center gap-2 mb-3">
+      <Switch bind:checked={useUnifiedService} disabled={$isProcessing} />
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Use Unified AI Service (WASM + LangChain + GPU)
+      </label>
+      {#if useUnifiedService}
+        <select
+          bind:value={selectedMode}
+          disabled={$isProcessing}
+          class="px-2 py-1 text-xs border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+        >
+          <option value="auto">Auto Select</option>
+          <option value="wasm">WASM Mode</option>
+          <option value="langchain">LangChain Mode</option>
+          <option value="gpu">GPU Mode</option>
+        </select>
       {/if}
+    </div>
+
+    {#if enableContext7}
+      <div class="flex items-center gap-2 mb-3">
+        <Switch bind:checked={useContext7} disabled={$isProcessing} />
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Use Context7 Enhancement
+        </label>
+        {#if $context7Analysis && useContext7}
+          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+            Confidence: {Math.round(($context7Analysis?.confidence || 0) * 100)}%
+          </span>
+        {/if}
+      </div>
+    {/if}
+
+    <div class="flex gap-2">
+      <Textarea
+        bind:this={messageInput}
+        bind:value={currentMessage}
+        onkeydown={handleKeydown}
+        placeholder="Ask about legal documents, cases, or research..."
+        disabled={$isProcessing}
+        class="flex-1 min-h-[40px] max-h-[120px] resize-none"
+      />
+      <div class="flex flex-col gap-1">
+        <Button
+          onclick={sendMessage}
+          disabled={!canSend()}
+          class="px-4 bits-btn"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </Button>
+
+        {#if $isProcessing}
+          <Button
+            class="bits-btn"
+            variant="ghost"
+            size="sm"
+            onclick={stopGeneration}
+          >
+            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="6" y="6" width="12" height="12" />
+            </svg>
+          </Button>
+        {/if}
+
+        {#if $aiUsage.totalQueries > 0}
+          <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+            <div>Tokens: {$aiUsage.totalTokens.toLocaleString()}</div>
+            <div>Avg: {Math.round($aiUsage.averageResponseTime || 0)}ms</div>
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 </div>
+
 <!-- Settings Dialog -->
-<Dialog.Root open={showSettingsDialog} openchange={(open) => showSettingsDialog = open}>
-  <Dialog.Portal>
-    <Dialog.Overlay class="fixed inset-0 z-50 bg-black/80" />
-    <Dialog.Content class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg">
-      <Dialog.Title class="text-lg font-semibold">AI Assistant Settings</Dialog.Title>
-      <div class="space-y-4">
-        <!-- Model Selection -->
+{#if showSettingsDialog}
+  <div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <Card class="w-full max-w-lg">
+      <CardHeader>
+        <CardTitle>AI Assistant Settings</CardTitle>
+      </CardHeader>
+      <CardContent class="space-y-4">
         <div class="space-y-2">
-          <label class="text-sm font-medium">Model</label>
-          <SelectRoot bind:value={currentModel()}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select model" />
-            </SelectTrigger>
-            <SelectContent>
-              {#each availableModels as model}
-                <SelectItem value={model}>{model}</SelectItem>
-              {/each}
-            </SelectContent>
-          </SelectRoot>
+          <label class="text-sm font-medium">Model: {$currentModel}</label>
+          <div class="text-xs text-gray-500">Available: {availableModels.join(', ')}</div>
         </div>
-        <!-- Temperature Slider -->
+
         <div class="space-y-2">
-          <label class="text-sm font-medium">
-            Temperature: {currentTemperature()}
-          </label>
-          <Slider;
-            bind:value={[currentTemperature()]}
-            min={0}
-            max={2}
-            step={0.1}
-            valuechange={(values) => aiAssistantManager.setTemperature(values[0])}
-          />
-          <p class="text-xs text-gray-500">
-            Lower values make responses more focused, higher values more creative
-          </p>
+          <label class="text-sm font-medium">Temperature: {$currentTemperature}</label>
         </div>
-        <!-- Cluster Health -->
+
         <div class="space-y-2">
           <label class="text-sm font-medium">Cluster Health</label>
           <div class="grid grid-cols-3 gap-2">
             <div class="flex items-center gap-2">
-              <div class={`w-2 h-2 rounded-full ${clusterHealth().primary ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <div class={`w-2 h-2 rounded-full ${$clusterHealth?.primary ? 'bg-green-500' : 'bg-red-500'}`}></div>
               <span class="text-sm">Primary</span>
             </div>
             <div class="flex items-center gap-2">
-              <div class={`w-2 h-2 rounded-full ${clusterHealth().secondary ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <div class={`w-2 h-2 rounded-full ${$clusterHealth?.secondary ? 'bg-green-500' : 'bg-red-500'}`}></div>
               <span class="text-sm">Secondary</span>
             </div>
             <div class="flex items-center gap-2">
-              <div class={`w-2 h-2 rounded-full ${clusterHealth().embeddings ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <div class={`w-2 h-2 rounded-full ${$clusterHealth?.embeddings ? 'bg-green-500' : 'bg-red-500'}`}></div>
               <span class="text-sm">Embeddings</span>
             </div>
           </div>
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={(event: MouseEvent) => ) =>
-aiAssistantManager.checkClusterHealth(}
-          >
-            Refresh Health
-</Button>
         </div>
-      </div>
-      <div class="flex justify-between gap-2">
-        <Button class="bits-btn"
-          variant="error"
-          onclick={(event: MouseEvent) => clearConversation}
-          disabled={!hasConversation}
-        >
-Clear Chat
-</Button>
-        <Button class="bits-btn" onclick={(event: MouseEvent) => ) =>
-showSettingsDialog = false}>
-          Close
-</Button>
-      </div>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+
+        <div class="flex justify-between gap-2 pt-4">
+          <Button
+              variant="destructive"
+              onclick={clearConversation}
+              disabled={!hasConversation()}
+              class="bits-btn"
+            >
+              Clear Chat
+            </Button>
+          <Button class="bits-btn" onclick={() => showSettingsDialog = false}>
+            Close
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+{/if}
+
 <!-- Export Dialog -->
-<Dialog.Root open={showExportDialog} openchange={(open) => showExportDialog = open}>
-  <Dialog.Portal>
-    <Dialog.Overlay class="fixed inset-0 z-50 bg-black/80" />
-    <Dialog.Content class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg">
-      <Dialog.Title class="text-lg font-semibold">Export Conversation</Dialog.Title>
-      <div class="space-y-4">
-        <p class="text-sm text-gray-600">
+{#if showExportDialog}
+  <div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <Card class="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Export Conversation</CardTitle>
+      </CardHeader>
+      <CardContent class="space-y-4">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
           Export your conversation history as a JSON file for backup or analysis.
         </p>
         <div class="space-y-2">
           <div class="text-sm">
-            <strong>Messages:</strong> {conversationHistory().length}
+            <strong>Messages:</strong> {$conversationHistory.length}
           </div>
           <div class="text-sm">
-            <strong>Total Queries:</strong> {aiUsage().totalQueries}
+            <strong>Total Queries:</strong> {$aiUsage.totalQueries}
           </div>
           <div class="text-sm">
-            <strong>Total Tokens:</strong> {aiUsage().totalTokens.toLocaleString()}
+            <strong>Total Tokens:</strong> {$aiUsage.totalTokens.toLocaleString()}
           </div>
         </div>
-      </div>
-      <div class="flex justify-end gap-2">
-        <Button class="bits-btn"
-          variant="ghost"
-          onclick={(event: MouseEvent) => ) =>
-showExportDialog = false}
-        >
-          Cancel
-</Button>
-        <Button class="bits-btn" onclick={(event: MouseEvent) => ) =>
-{
-          exportConversation();
-          showExportDialog = false;
-        }}>
-          Export JSON
-</Button>
-      </div>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+        <div class="flex justify-end gap-2">
+          <Button
+            variant="ghost"
+            onclick={() => showExportDialog = false}
+            class="bits-btn"
+          >
+            Cancel
+          </Button>
+          <Button
+            class="bits-btn"
+            onclick={() => { exportConversation(); showExportDialog = false; }}
+          >
+            Export JSON
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+{/if}
+
 <style>
-  /* Component-specific styles */
   :global(.animate-spin) {
     animation: spin 1s linear infinite;
   }
+
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }

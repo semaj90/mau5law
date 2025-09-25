@@ -13,7 +13,7 @@
   import KeyboardShortcutProvider from '$lib/components/KeyboardShortcutProvider.svelte';
   // Stores and Utilities
   // Note: sessionStore may not be available, using mock data instead
-  // import { sessionActions, user, isAuthenticated } from '$lib/stores/sessionStore.svelte'
+  // import { sessionActions, user, isAuthenticated } from "$lib/stores/sessionStore.svelte";
   import { auth } from '$lib/stores/auth.svelte.ts';
   import { evidence } from '$lib/stores/evidence.ts';
   import {

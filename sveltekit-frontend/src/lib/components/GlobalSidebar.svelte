@@ -5,8 +5,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { user, isAuthenticated } from '$lib/stores/sessionStore.svelte';
-  import { userDataActions, userCases, userEvidence, userCitations, userReports, userAIConversations, userStats } from '$lib/stores/userDataStore.svelte.js';
+  import { userCases, userEvidence, userCitations, userReports, userAIConversations, userStats } from "$lib/stores/userDataStore.svelte";
   import {
     formatRelativeTime,
     formatDetailedTimestamp,
@@ -18,13 +17,17 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     getStatusColor,
     MINI_TEXT_LENGTHS
   } from '$lib/utils/formatting';
-  // Props for sidebar configuration
+  // Props for sidebar configuration and user data
   let {
+    user,
+    session,
     isOpen = true,
     defaultSection = 'dashboard',
     showQuickActions = true,
     compactMode = false
   }: {
+    user: any;
+    session: any;
     isOpen?: boolean;
     defaultSection?: string;
     showQuickActions?: boolean;
@@ -85,7 +88,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     if (activeSection === section) {
       isCollapsed = !isCollapsed;
     } else {
-      activeSection = sectio;
+      activeSection = section;
       isCollapsed = false;
     }
   }
@@ -418,7 +421,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     overflow-y: auto;
     transition: all 0.3s ease;
     position: fixed;
-d;
     left: 0;
     top: 0;
     z-index: 1000;
@@ -513,7 +515,7 @@ d;
   .section .title {
     cursor: pointer;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin: 0;
     padding: 0.5rem;
@@ -537,7 +539,7 @@ d;
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .item: hover {
+  .item:hover {
     border-color: #007bff;
     background: rgba(0, 123, 255, 0.1);
   }
@@ -618,7 +620,7 @@ d;
     background: #495057;
     border-radius: 3px;
   }
-  .global-sidebar::-webkit-scrollbar-thumb: hover
+  .global-sidebar::-webkit-scrollbar-thumb:hover,
   .section-content::-webkit-scrollbar-thumb:hover {
     background: #6c757d;
   }

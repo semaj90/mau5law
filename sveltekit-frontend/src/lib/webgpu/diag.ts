@@ -33,9 +33,9 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
   const tried: Array<'high-performance' | 'low-power' | 'default'> = [];
   if (typeof navigator === 'undefined') {
     return {
-      supported: false
-      adapterFound: false
-      deviceCreated: false
+      supported: false,
+      adapterFound: false,
+      deviceCreated: false,
       error: 'Navigator is undefined (SSR or non-browser context).',
       warnings,
       powerPreferenceTried: tried
@@ -52,9 +52,9 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       'Update GPU drivers (NVIDIA/AMD/Intel).'
     );
     return {
-      supported: false
-      adapterFound: false
-      deviceCreated: false
+      supported: false,
+      adapterFound: false,
+      deviceCreated: false,
       error: 'WebGPU not supported by this browser.',
       warnings,
       powerPreferenceTried: tried

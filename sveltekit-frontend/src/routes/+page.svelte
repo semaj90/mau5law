@@ -382,11 +382,13 @@
               aria-label={`${action.title}: ${action.description}`}
             >
               <div class="relative z-10">
-                <div class="flex items-center justify-between mb-4">
+{#if action.icon}
                   {@const IconComponent = action.icon}
-                  <IconComponent class="w-8 h-8" />
-                  <div class="text-xs opacity-75 font-medium">{action.stats}</div>
-                </div>
+                  <div class="flex items-center justify-between mb-4">
+                    <IconComponent class="w-8 h-8" />
+                    <div class="text-xs opacity-75 font-medium">{action.stats}</div>
+                  </div>
+                {/if}
                 <h3 class="font-bold text-lg mb-2">{action.title}</h3>
                 <p class="text-sm opacity-90">{action.description}</p>
               </div>
@@ -471,10 +473,12 @@
           <div class="space-y-4">
             {#each recentActivity as activity}
               <div class="flex items-start gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-600 hover:border-yellow-600/50 transition-colors">
-                <div class="p-2 bg-gray-700 rounded-lg">
+{#if activity.icon}
                   {@const IconComponent = activity.icon}
-                  <IconComponent class="w-4 h-4 {getPriorityColor(activity.priority)}" />
-                </div>
+                  <div class="p-2 bg-gray-700 rounded-lg">
+                    <IconComponent class="w-4 h-4 {getPriorityColor(activity.priority)}" />
+                  </div>
+                {/if}
                 <div class="flex-1">
                   <p class="text-white text-sm font-medium mb-1">{activity.title}</p>
                   <div class="flex items-center gap-2 text-xs text-gray-400">
@@ -839,7 +843,6 @@
         </div>
       </div>
     </div>
-    </section>
     {/snippet}
   </EvidenceBoardLayout>
   <style>

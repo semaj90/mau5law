@@ -360,7 +360,11 @@
       "Bash(REDIS_PASSWORD=\"redis\" timeout 10s npm run dev -- --port 5173 --host 127.0.0.1)",
       "Bash(rg:*)",
       "Bash(vite build)",
-      "WebFetch(domain:localhost)"
+      "WebFetch(domain:localhost)",
+      "Bash(xxd:*)",
+      "Bash(PORT=5174 npm run dev:quic:local)",
+      "Bash(./tensorrt-bridge.exe)",
+      "Bash(set PORT=8100)"
     ],
     "deny": [],
     "ask": []

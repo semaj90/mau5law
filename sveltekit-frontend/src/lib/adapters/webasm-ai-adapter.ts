@@ -35,7 +35,7 @@ const webLlamaService = {
         useCase: 'chat'
       });
       return {
-        success: true
+        success: true,
         text: response.text,
         metadata: {
           tokensGenerated: response.metadata.tokensGenerated,
@@ -44,7 +44,7 @@ const webLlamaService = {
       };
     } catch (error: any) {
       return {
-        success: false
+        success: false,
         error: error.message
       };
     }

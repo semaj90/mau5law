@@ -1,3 +1,6 @@
+//go:build archived
+// +build archived
+
 // Gemma3 Legal Document Summarization Service
 // Converts 200-page legal documents into concise readable summaries
 // Essential for UX - nobody wants to read entire legal PDFs

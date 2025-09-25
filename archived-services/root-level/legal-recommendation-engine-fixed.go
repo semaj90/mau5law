@@ -1,3 +1,6 @@
+//go:build archived
+// +build archived
+
 package main
 
 import (

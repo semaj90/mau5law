@@ -38,8 +38,12 @@ https://svelte.dev/e/js_parse_error -->
   } from 'lucide-svelte';
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
-  let { data }: { data: unknown } = $props(); // { form: unknown }
-  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string = ''
+  interface Props {
+    data: { form: unknown };
+    caseId?: string;
+  }
+
+  let { data, caseId = '' }: Props = $props();
   const { form, errors, enhance, submitting, delayed, message } = superForm(data.form, {
     validators: zodClient(fileUploadSchema),
     multipleSubmits: 'prevent',
@@ -53,21 +57,23 @@ https://svelte.dev/e/js_parse_error -->
   let uploadFiles: UploadFile[] = $state([]);
   let uploadProgress = $state(0);
   // Initialize form with caseId if provided
-  // TODO: Convert to $derived: if (caseId) {
-    $form.caseId = caseId
-  }
+  $effect(() => {
+    if (caseId) {
+      $form.caseId = caseId;
+    }
+  });
   // File type icons
   const fileTypeIcons = {
-    document: FileText
-    image: Image
-    video: Film
-    audio: Music
-    physical: HardDrive
+    document: FileText,
+    image: Image,
+    video: Film,
+    audio: Music,
+    physical: HardDrive,
     digital: Binary
   };
   // Handle file changes from FileUpload component
   function handleFilesChange(files: UploadFile[]) {
-    uploadFiles = file;
+    uploadFiles = files;
     if (files.length > 0) {
       const file = files[0];
       // Auto-detect file type
@@ -96,10 +102,10 @@ https://svelte.dev/e/js_parse_error -->
   async function handleFileUpload(file: UploadFile): Promise<void> {
     // Simulate upload progress
     const simulateProgress = () => {
-  let progress = $state(0);
+      let progress = 0;
       const interval = setInterval(() => {
         progress += 10;
-        file.progress = progres;
+        file.progress = progress;
         uploadFiles = [...uploadFiles]; // Trigger reactivity
         if (progress >= 100) {
           clearInterval(interval);
@@ -211,7 +217,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if !caseId}
           <Input
             id="caseId"
-            name="caseId";
+            name="caseId"
             bind:value={$form.caseId}
             variant="legal"
             label="Case ID"

@@ -11,8 +11,8 @@
     text: '',
     select: '',
     textarea: '',
-    checkbox: false
-    radio: '';
+    checkbox: false,
+    radio: ''
   });
   function handleSubmit() {
     console.log('Form submitted:', formData);

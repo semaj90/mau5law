@@ -1,3 +1,6 @@
+//go:build archived
+// +build archived
+
 // Sequential Knowledge Graph Service
 // Implements: LangExtract → GemmaEmbeds → LangExtract pipeline
 // For converting unstructured legal text into structured knowledge graphs

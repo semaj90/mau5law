@@ -1,3 +1,6 @@
+//go:build archived
+// +build archived
+
 // Legal Entity Extraction Service with langextract-go
 // Runs in parallel with CUDA+Redis for complete document processing
 

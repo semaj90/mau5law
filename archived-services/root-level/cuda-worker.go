@@ -1,3 +1,6 @@
+//go:build archived
+// +build archived
+
 // Universal Document Accelerator (UDA) Worker
 // Go-based orchestrator with CUDA ML delegation
 // Hybrid architecture: Go performance + CUDA ML power

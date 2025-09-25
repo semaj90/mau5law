@@ -34,10 +34,10 @@
 
 <div
   class={cardClasses}
-  on:click={onclick}
+  {onclick}
   role={onclick ? 'button' : undefined}
   tabindex={onclick ? 0 : undefined}
-  on:keydown={onclick ? (e) => {
+  onkeydown={onclick ? (e) => {
     if (e.code === 'Enter' || e.code === 'Space') {
       e.preventDefault();
       onclick();

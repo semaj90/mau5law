@@ -56,27 +56,27 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 {#if open}
   <!-- Modal Backdrop -->
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
     role="dialog"
     aria-modal="true"
   >
     <!-- Modal Content -->
     <div
       class="relative w-full {sizeClasses[size]} max-h-[90vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200"
-      on:click|stopPropagation
+      onclick={(e) => e.stopPropagation()}
       {...restProps}
     >
       <Card class="enhanced-modal {variantClasses[variant]} border-2">
         <!-- Close Button -->
         <button
           class="absolute top-4 right-4 z-10 p-2 rounded-md bg-enhanced-bg-secondary/80 hover:bg-enhanced-bg-secondary text-enhanced-text-secondary hover:text-enhanced-text-primary transition-colors nes-btn is-small"
-          on:click={closeModal}
+          onclick={closeModal}
           aria-label="Close modal"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -93,7 +93,7 @@
 <!-- SSR-safe Dialog rendering with proper hydration -->
 {#if open}
   <div class="dialog-overlay" onclick={handleClose} role="presentation">
-    <div class="dialog-content" on:click|stopPropagation role="dialog" aria-modal="true">
+    <div class="dialog-content" onclick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
       {@render children?.()}
     </div>
   </div>
