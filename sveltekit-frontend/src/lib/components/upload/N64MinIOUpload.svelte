@@ -80,7 +80,7 @@
       theme: string;
       sparkle: boolean;
       animated: boolean;
-    };
+    }
   }
   let files = $state<File[]>([]);
   let fileStates = $state<FileState[]>([]);
@@ -111,7 +111,7 @@
     snes: { theme: 'blue', sparkle: true },
     n64: { theme: 'gold', sparkle: true },
     modern: { theme: 'green', sparkle: true }
-  };
+  }
   // Session persistence
   const STORAGE_KEY = 'n64-minio-upload-session';
   const enablePersistence = true;
@@ -124,7 +124,7 @@
       status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,
       attempts: f.attempts || 0,
       nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null,
-      gamingProgress: f.gamingProgress
+      gamingProgress: f.gamingProgress;
     }));
     if (pending.length === 0) {
       try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) { /* ignore */ }
@@ -134,7 +134,7 @@
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
         ts: Date.now(),
         files: pending,
-        evolutionStage: evolutionStage
+        evolutionStage: evolutionStage;
       }));
     } catch(e) { /* ignore */ }
   function restoreSession() {
@@ -177,7 +177,7 @@
       const idx = fileStates.findIndex(ps => ps.placeholder && ps.file.name === f.name && ps.originalSize === f.size);
       if (idx !== -1) {
         const prev = fileStates[idx];
-        fileStates[idx] = { ...prev, file: f, placeholder: false };
+        fileStates[idx] = { ...prev, file: f, placeholder: false }
       }
     }
   }
@@ -272,7 +272,7 @@
           status: 'canceled',
           progress: fs.status === 'uploading' ? fs.progress: 0,
           controller: null;
-        };
+        }
       }
       return f;
     });
@@ -286,25 +286,25 @@
     telemetry.emit('upload_batch_canceled_all', { remaining: fileStates.length });
   }
   // Drag and drop handlers
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     if (disabled || uploading) return;
     dragOver = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     if (disabled || uploading) return;
     dragOver = false;
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     if (disabled || uploading) return;
     dragOver = false;
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     processFiles(droppedFiles);
   }
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     const selectedFiles = Array.from(target.files || []);
     processFiles(selectedFiles);
   }
@@ -328,7 +328,7 @@
     for (const f of validFiles) {
       if (![...fileStates].some(fs => fs.file === f)) {
         fileStates = [...fileStates, {
-          file: f
+          file: f;
           status: 'pending',
           progress: 0,
           gamingProgress: n64Themes[evolutionStage];
@@ -338,9 +338,9 @@
     fileStates = fileStates.filter(fs => files.includes(fs.file));
     serializeSession();
   }
-  function removeFile(index: number) {
+  function removeFile(_index: number) {
     if (uploading) return;
-    const target = fileStates[index];
+    // removed unused target assignment
     if (target && target.status === 'uploading') return;
     if (target?.retryTimeoutId) {
       try { clearTimeout(target.retryTimeoutId); } catch ;
@@ -349,7 +349,7 @@
     fileStates = fileStates.filter((_, i) => i !== index);
     serializeSession();
   }
-  function cancelUpload(index: number) {
+  function cancelUpload(_index: number) {
     const fs = fileStates[index];
     if (!fs || fs.status !== 'uploading') return;
     try { fs.controller?.abort(); } catch if (fs.retryTimeoutId) {
@@ -364,7 +364,7 @@
     serializeSession();
     telemetry.emit('upload_canceled', { file: fs.file.name });
   }
-  function retryFile(index: number) {
+  function retryFile(_index: number) {
     const fs = fileStates[index];
     if (!fs || (fs.status !== 'error' && fs.status !== 'canceled')) return;
     fs.status = 'pending';
@@ -436,7 +436,7 @@
           averageUploadTime: 0,
           totalUploadTime: 0,
           gpuTasksSubmitted: 0
-        };
+        }
       }, 2500);
     }
   }
@@ -533,18 +533,18 @@
     });
     // Update gaming progress theme based on file type
     if (file.type.startsWith('image/')) {
-      fs.gamingProgress = { theme: 'blue', sparkle: true, animated: true };
+      fs.gamingProgress = { theme: 'blue', sparkle: true, animated: true }
     } else if (file.type === 'application/pdf') {
-      fs.gamingProgress = { theme: 'gold', sparkle: true, animated: true };
+      fs.gamingProgress = { theme: 'gold', sparkle: true, animated: true }
     } else {
-      fs.gamingProgress = { theme: 'green', sparkle: false, animated: true };
+      fs.gamingProgress = { theme: 'green', sparkle: false, animated: true }
     }
     if (enableToastNotifications) {
       fs.toastId = toastService.upload(
         `🎮 ${file.name}`,
         'Starting N64-style upload...',
         {
-          dismissible: false
+          dismissible: false;
           actions: [{,
             label: 'Cancel',
             action: () => {
@@ -574,7 +574,7 @@
         if (e.lengthComputable) {
           fs.progress = Math.min(90, Math.round((e.loaded / e.total) * 90));
         }
-      };
+      }
       const abortHandler = () => xhr.abort();
       controller.signal.addEventListener('abort', abortHandler);
       const resultPromise = new Promise<UploadResult[]>((resolve, reject) => {
@@ -591,7 +591,7 @@
               reject(Object.assign(new Error(xhr.responseText || 'Upload failed'), { statusCode: xhr.status }));
             }
           }
-        };
+        }
         xhr.onerror = () => reject(new Error('Network error'));
         xhr.onabort = () => reject(new Error('Upload aborted'));
       });
@@ -797,7 +797,7 @@ restoreSession();
 <!-- N64 Gaming Style MinIO Upload Zone -->
 <div class="n64-upload-container" class:retro>
   <!-- Hidden file input -->
-  <input
+  <input;
     bind:this={fileInput}
     type="file"
     {accept}

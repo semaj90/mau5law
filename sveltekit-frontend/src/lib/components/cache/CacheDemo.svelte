@@ -50,7 +50,7 @@
   // ============================================================================
   async function loadCacheStats() {
     try {
-      const response = await fetch('/api/cache?action=stats');
+      // removed unused response assignment
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
         cacheStats.set(stats));
@@ -61,7 +61,7 @@
   }
   async function loadHealthStatus() {
     try {
-      const response = await fetch('/api/cache?action=health');
+      // removed unused response assignment
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
         healthStatus.set(health));
@@ -82,11 +82,11 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          key: cacheKey
-          value: cacheValue
+          key: cacheKey;
+          value: cacheValue;
           options: {
-            ttl: parseInt(selectedTTL) * 1000, // Convert to millisecond
-            priority: selectedPriority
+            ttl: parseInt(selectedTTL) * 1000, // Convert to millisecond;
+            priority: selectedPriority;
             tags: tags.length > 0 ? tags : undefined;
           }
         })
@@ -113,7 +113,7 @@
     }
     isLoading.set(true);
     try {
-      const response = await fetch(`/api/cache?action=get&key=${encodeURIComponent(cacheKey)}`);
+      // removed unused response assignment
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
         if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).cached) {
@@ -188,7 +188,7 @@
       for (let i = 0; i < testSize; i++) {
         testData.push.toString(36)}`,
           options: {
-            ttl: 300000, // 5 minute
+            ttl: 300000, // 5 minute;
             priority: i % 3 === 0 ? 'high' : 'medium',
             tags: [`test`, `batch-${Math.floor(i / 10)}`]
           }
@@ -239,7 +239,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          key: testKey
+          key: testKey;
           value: 'test_data_for_hit_test',
           options: { ttl: 60000 }
         })
@@ -283,7 +283,7 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  function formatPercentage(value: number): string {
+  function formatPercentage(_value: number): string {
     return `${(value * 100).toFixed(1)}%`;
   }
   // ============================================================================
@@ -340,7 +340,7 @@
             </div>
             <div>
               <label class="block text-sm font-medium mb-2">Cache Value</label>
-              <Input
+              <Input;
                 bind:value={cacheValue}
                 placeholder="Enter cache value"
                 class="w-full"

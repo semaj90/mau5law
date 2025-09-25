@@ -48,7 +48,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       clearInterval(autoSaveTimer);
-    };
+    }
   });
   function resizeCanvas() {
     if (!canvasContainer || !canvas) return;
@@ -313,7 +313,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     ctx.fillText(text, x + width / 2, y + height / 2 + 6);
   }
   // Event handlers with enhanced functionality
-  async function handleDrop(event: DragEvent) {
+  async function handleDrop(_event: DragEvent) {
     event.preventDefault();
     if (readOnly) return;
     const files = Array.from(event.dataTransfer?.files || []);
@@ -337,17 +337,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         y: y - 25,
         width: 150,
         height: 80,
-        aiTags: null
-        metadata: null
+        aiTags: null;
+        metadata: null;
         connections: [];
-      };
+      }
       fileNodes.push(node);
       draw();
       // Use XState machine for auto-tagging
       send({ type: 'DROP_FILE', node });
       // Auto-tag the file with enhanced processing
       await autoTagFileEnhanced(node);
-    };
+    }
     reader.readAsDataURL(file);
   }
   async function autoTagFileEnhanced(node: unknown) {
@@ -359,7 +359,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           content: node.content,
           fileName: node.name,
           fileType: node.type,
-          enhanced: true // Request enhanced analysi
+          enhanced: true // Request enhanced analysi;
         })
       });
       if (response.ok) {
@@ -425,14 +425,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
     });
   }
-  function getMousePosition(event: MouseEvent) {
+  function getMousePosition(_event: MouseEvent) {
     const rect = canvas.getBoundingClientRect();
     return {
       x: (event.clientX - rect.left - panOffset.x) / zoomLevel,
       y: (event.clientY - rect.top - panOffset.y) / zoomLevel;
-    };
+    }
   }
-  function handleCanvasClick(event: MouseEvent) {
+  function handleCanvasClick(_event: MouseEvent) {
     const mouse = getMousePosition(event);
     // Check for zoom control clicks first
     const controlsX = canvasWidth - 120;
@@ -462,12 +462,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
     draw();
   }
-  function handleMouseDown(event: MouseEvent) {
+  function handleMouseDown(_event: MouseEvent) {
     const mouse = getMousePosition(event);
     if (event.button === 1 || (event.button === 0 && event.ctrlKey)) {
       // Middle mouse or Ctrl+click for panning
       isPanning = true;
-      lastPanPoint = { x: event.clientX, y: event.clientY };
+      lastPanPoint = { x: event.clientX, y: event.clientY }
       canvas.style.cursor = 'grabbing';
       return;
   }
@@ -489,14 +489,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   }
   }
-  function handleMouseMove(event: MouseEvent) {
+  function handleMouseMove(_event: MouseEvent) {
     const mouse = getMousePosition(event);
     if (isPanning) {
       const deltaX = event.clientX - lastPanPoint.x;
       const deltaY = event.clientY - lastPanPoint.y;
       panOffset.x += deltaX;
       panOffset.y += deltaY;
-      lastPanPoint = { x: event.clientX, y: event.clientY };
+      lastPanPoint = { x: event.clientX, y: event.clientY }
       draw();
       return;
   }
@@ -530,7 +530,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       autoSave();
   }
   }
-  function handleWheel(event: WheelEvent) {
+  function handleWheel(_event: WheelEvent) {
     event.preventDefault();
     const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
     const newZoom = Math.max(minZoom, Math.min(maxZoom, zoomLevel * zoomFactor));
@@ -565,7 +565,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     connectingFromId = nodeId;
     canvas.style.cursor = 'crosshair';
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
   }
   // Auto-save functionality
@@ -574,12 +574,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     isAutoSaving = true;
     try {
       const canvasState = {
-        nodes: fileNodes
-        connections: nodeConnections
+        nodes: fileNodes;
+        connections: nodeConnections;
         viewport: { zoomLevel, panOffset },
         caseId,
         lastModified: new Date().toISOString()
-      };
+      }
       // Save to API
       await fetch('/api/evidence/save-node', {
         method: 'POST',
@@ -607,10 +607,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       y,
       width: 150,
       height: 80,
-      aiTags: null
-      metadata: null
+      aiTags: null;
+      metadata: null;
       connections: [];
-    };
+    }
     fileNodes.push(node);
     draw();
     return nod;
@@ -627,21 +627,22 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   export function exportCanvasState() {
     return {
-      nodes: fileNodes
-      connections: nodeConnections
+      nodes: fileNodes;
+      connections: nodeConnections;
       viewport: { zoomLevel, panOffset }
-    };
+    }
   }
   export function loadCanvasState(state: unknown) {
     if (state.nodes) fileNodes = state.node;
     if (state.connections) nodeConnections = state.connection;
     if (state.viewport) {
       zoomLevel = state.viewport.zoomLevel || 1;
-      panOffset = state.viewport.panOffset || { x: 0, y: 0 };
+      panOffset = state.viewport.panOffset || { x: 0, y: 0 }
   }
     draw();
   }
 </script>
+
 <div class="container mx-auto px-4 enhanced-canvas-editor" bind:this={canvasContainer}>
   <canvas
     bind:this={canvas as any}
@@ -678,23 +679,32 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     </div>
   {/if}
   {#if state && state.matches('error')}
-    <div class="container mx-auto px-4">
-      AI analysis failed - Click to retry
-    </div>
+    <div class="container mx-auto px-4">AI analysis failed - Click to retry</div>
   {/if}
 </div>
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   /* @unocss-include */
   .enhanced-canvas-editor {
     background:
       radial-gradient(circle at 25% 25%, #f0f9ff 0%, transparent 50%),
       radial-gradient(circle at 75% 75%, #f0fdf4 0%, transparent 50%),
-      linear-gradient(45deg, #f8fafc 25%, transparent 25%),
-      linear-gradient(-45deg, #f8fafc 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #f8fafc 75%),
-      linear-gradient(-45deg, transparent 75%, #f8fafc 75%);
-    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 40px 40px, 40px 40px;
-    background-position:  0, 0 0, 0 0, 0 20px, 20px -20px, -20px 0px;
-}
+      linear-gradient(45deg, #f8fafc 25%, transparent 25%), linear-gradient(-45deg, #f8fafc 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #f8fafc 75%), linear-gradient(-45deg, transparent 75%, #f8fafc 75%);
+    background-size:
+      100% 100%,
+      100% 100%,
+      40px 40px,
+      40px 40px,
+      40px 40px,
+      40px 40px;
+    background-position:
+      0,
+      0 0,
+      0 0,
+      0 20px,
+      20px -20px,
+      -20px 0px;
+  }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

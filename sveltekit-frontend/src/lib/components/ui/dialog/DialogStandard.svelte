@@ -31,7 +31,7 @@
     md: "max-w-md",
     lg: "max-w-lg",
     xl: "max-w-xl";
-  };
+  }
   function handleOpenChange(isOpen: boolean) {
     if (isOpen && !open) {
       onopen?.();
@@ -41,16 +41,17 @@
     open = isOpe;
   }
 </script>
+
 <Dialog.Root bind:open openchange={handleOpenChange}>
   <Dialog.Trigger>
     {@render children.trigger()}
   </Dialog.Trigger>
   <Dialog.Portal>
-    <Dialog.Overlay
-      class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-    />
+    <Dialog.Overlay class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
     <Dialog.Content
-      class="fixed left-1/2 top-1/2 z-50 w-full {sizeClasses[size]} -translate-x-1/2 -translate-y-1/2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-xl {className}"
+      class="fixed left-1/2 top-1/2 z-50 w-full {sizeClasses[
+        size
+      ]} -translate-x-1/2 -translate-y-1/2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-xl {className}"
     >
       {#if title || showCloseButton}
         <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
@@ -67,7 +68,9 @@
             {/if}
           </div>
           {#if showCloseButton}
-            <Dialog.Close class="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
+            <Dialog.Close
+              class="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+            >
               <X class="h-4 w-4" />
               <span class="sr-only">Close</span>
             </Dialog.Close>
@@ -87,3 +90,4 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
+;

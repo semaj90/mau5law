@@ -458,4 +458,4 @@ export const OPTIONS: RequestHandler = withSSRHandler(async () => {
     ],
     version: '1.0.0'
   })
-})
+});

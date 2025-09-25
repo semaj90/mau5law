@@ -23,7 +23,7 @@ export interface VectorSimilarityResponse {
     parallelWorkers: number;
     memoryUsed: number;
     timestamp: string;
-  };
+  }
 }
 export interface EmbeddingRequest {
   texts: string[];
@@ -46,7 +46,7 @@ export interface EmbeddingResponse {
     chunksProcessed: number;
     tokensProcessed: number;
     parallelWorkers: number;
-  };
+  }
 }
 export interface MatrixOperation {
   operation: 'multiply' | 'transpose' | 'inverse' | 'eigenvalues' | 'svd' | 'qr' | 'cholesky';
@@ -58,7 +58,7 @@ export interface MatrixOperation {
     precision?: 'float32' | 'float64';
     batchSize?: number;
     workers?: number;
-  };
+  }
 }
 export interface MatrixBatchOperation {
   operation: 'batch_multiply' | 'batch_similarity' | 'batch_normalize' | 'batch_transform';
@@ -69,7 +69,7 @@ export interface MatrixBatchOperation {
     parallel?: boolean;
     maxParallelWorkers?: number;
     chunkSize?: number;
-  };
+  }
 }
 export interface MatrixResponse {
   success: boolean;
@@ -83,7 +83,7 @@ export interface MatrixResponse {
     parallelWorkers: number;
     memoryUsed: number;
     flops?: number; // Floating point operations count
-  };
+  }
 }
 export interface VectorSearchRequest {
   query: string;
@@ -94,10 +94,10 @@ export interface VectorSearchRequest {
   filters?: {
     documentType?: string[];
     jurisdiction?: string[];
-    dateRange?: { start: string; end: string };
+    dateRange?: { start: string; end: string }
     practiceArea?: string[];
     riskLevel?: string[];
-  };
+  }
   searchMethod?: 'cosine' | 'euclidean' | 'dot' | 'hnsw';
   useCUDA?: boolean;
   rerank?: boolean;
@@ -118,12 +118,12 @@ export interface VectorSearchResponse {
     embeddingTime?: number;
     cudaTime?: number;
     rerankTime?: number;
-  };
+  }
   query: {
     original: string;
     embedding?: number[];
     filters: any;
-  };
+  }
 }
 export interface ChunkingRequest {
   text: string;
@@ -142,7 +142,7 @@ export interface ChunkingResponse {
     chunkingMethod: string;
     chunkSize: number;
     chunkOverlap: number;
-  };
+  }
 }
 export interface RAGChunkingOptions {
   chunkSize: number;
@@ -164,19 +164,19 @@ export interface LegalDocumentMetadata {
     }>;
     datesFiled: string[];
     courtLevel: 'district' | 'appellate' | 'supreme';
-  };
+  }
   classification: {
     documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     practiceArea: string[];
     confidenceLevel: number;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  };
+  }
   processing: {
     extractedEntities: string[];
     keyTerms: string[];
     sentiment: number;
     complexity: number;
-  };
+  }
 }
 export interface CUDAConfig {
   url: string;
@@ -186,14 +186,14 @@ export interface CUDAConfig {
     submit: string;
     workers: string;
     metrics: string;
-  };
+  }
   gpu: {
     model: string;
     cudaCores: number;
     tensorCores: number;
     memoryGB: number;
     computeCapability: string;
-  };
+  }
 }
 export interface PerformanceMetrics {
   totalTime: number;

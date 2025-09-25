@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
   		device: null
   		shaders: new Map(),
   		buffers: new Map(),
-  		active: false
+  		active: false;
   		performance: {
   			computeTime: 0,
   			memoryUsage: 0,
@@ -98,8 +98,8 @@ https://svelte.dev/e/js_parse_error -->
   	});
   	const threeStore = writable({
   		scene: null
-  		renderer: null
-  		camera: null
+  		renderer: null;
+  		camera: null;
   		objects: new Map(),
   		lodManager: {
   			currentLevel: 1,
@@ -108,13 +108,13 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	});
   	const serviceWorkerStore = writable({
-  		registration: null
+  		registration: null;
   		cache: {
   			name: 'webgpu-3d-cache-v1',
   			strategy: 'cache-first',
   			resources: new Map(),
   			maxAge: 86400000, // 24 hours
-  			maxSize: 100 * 1024 * 1024 // 100MB
+  			maxSize: 100 * 1024 * 1024 // 100MB;
   		},
   		messageChannel: null
   		performance: {
@@ -169,7 +169,7 @@ https://svelte.dev/e/js_parse_error -->
   				adapter,
   				features: Array.from(device.features),
   				limits: device.limit;
-  			};
+  			}
   			console.log('✅ WebGPU initialized:', {
   				features: webgpuDevice.features,
   				maxBufferSize: webgpuDevice.limits.maxStorageBufferBindingSize,
@@ -227,8 +227,8 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	`;
   	async function createComputeShader(
-  		device: GPUDevice
-  		source: string
+  		device: GPUDevice;
+  		source: string;
   		label: string
   	): Promise<ComputeShader> {
   		const shaderModule = device.createShaderModule({
@@ -251,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
   			pipeline,
   			bindGroup: null as any, // Will be set when buffers are bound
   			workgroupSize: [16, 16, 1];
-  		};
+  		}
   	}
   	// ============================================================================
   	// THREE.JS SETUP WITH LOD
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
   		const gl = renderer.getContext();
   		gl.getExtension('EXT_color_buffer_float');
   		gl.getExtension('OES_texture_float_linear');
-  		return { scene, camera, renderer };
+  		return { scene, camera, renderer }
   	}
   	function createLODGeometry(baseGeometry: THREE.BufferGeometry): LODLevel[] {
   		const levels: LODLevel[] = [];
@@ -303,7 +303,7 @@ https://svelte.dev/e/js_parse_error -->
   		// Simplify geometry (pseudo-decimation)
   		levels.push({
   			distance: 50,
-  			geometry: mediumGeometry
+  			geometry: mediumGeometry;
   			material: new THREE.MeshStandardMaterial({ ,
   				color: 0x0088ff,
   				roughness: 0.5,
@@ -316,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
   		const lowGeometry = new THREE.BoxGeometry(1, 1, 1);
   		levels.push({
   			distance: 100,
-  			geometry: lowGeometry
+  			geometry: lowGeometry;
   			material: new THREE.MeshBasicMaterial({ color: 0xff8800 }),
   			polyCount: 12, // 6 faces * 2 triangles
   			textureSize: 128
@@ -342,7 +342,7 @@ https://svelte.dev/e/js_parse_error -->
   			messageChannel.port1.onmessage = (event) => {
   				console.log('Message from service worker:', event.data);
   				handleServiceWorkerMessage(event.data);
-  			};
+  			}
   			// Send port to service worker
   			if (registration.active) {
   				registration.active.postMessage({
@@ -427,7 +427,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   			if (webgpuDevice) {
   				webgpuStore.update(store => ({
   					...store,
-  					device: webgpuDevice
+  					device: webgpuDevice;
   					active: true;
   				}));
   				// Create compute shaders
@@ -476,7 +476,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   					currentLOD: 0,
   					cached: false
   					gpuOptimized: enableGPUComput;
-  				};
+  				}
   				threeStore.update(store => {
   					store.objects.set(renderObject.id, renderObject);
   					return stor;
@@ -565,191 +565,192 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   	}
   	let metrics = $derived($performanceMetrics)
 </script>
+
 <!-- ============================================================================ -->
 <!-- TEMPLATE -->
 <!-- ============================================================================ -->
 <div class="webgpu-processor">
-	<div class="controls">
-		<h3>🌐 WebGPU + Three.js + Service Worker System</h3>
-		<div class="status-grid">
-			<div class="status-item" class:active={$webgpuStore.active}>
-				<span class="icon">🔧</span>
-				<span>WebGPU</span>
-				<span class="value">{$webgpuStore.active ? 'Active' : 'Inactive'}</span>
-			</div>
-			<div class="status-item" class:active={$threeStore.scene !== null}>
-				<span class="icon">🎮</span>
-				<span>Three.js</span>
-				<span class="value">{$threeStore.objects.size} Objects</span>
-			</div>
-			<div class="status-item" class:active={$serviceWorkerStore.registration !== null}>
-				<span class="icon">⚡</span>
-				<span>Service Worker</span>
-				<span class="value">{$serviceWorkerStore.performance.cacheHitRate.toFixed(1)}% Hit Rate</span>
-			</div>
-		</div>
-		<div class="performance-metrics">
-			<h4>📊 Performance Metrics</h4>
-			<div class="metrics-grid">
-				<div class="metric">
-					<span>GPU Compute:</span>
-					<span>{metrics.gpu.computeTime.toFixed(2)}ms</span>
-				</div>
-				<div class="metric">
-					<span>FPS Target:</span>
-					<span>{metrics.rendering.fps}</span>
-				</div>
-				<div class="metric">
-					<span>Current LOD:</span>
-					<span>Level {metrics.rendering.currentLOD}</span>
-				</div>
-				<div class="metric">
-					<span>Memory:</span>
-					<span>{(metrics.overall.memory / 1024 / 1024).toFixed(1)}MB</span>
-				</div>
-				<div class="metric">
-					<span>Cache Hits:</span>
-					<span>{metrics.cache.cacheHitRate.toFixed(1)}%</span>
-				</div>
-				<div class="metric">
-					<span>Network:</span>
-					<span>{metrics.overall.network.toFixed(1)} Mbps</span>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="render-area">
-		<canvas
-			bind:this={canvas as any}
-			width="800"
-			height="600"
-			class="three-canvas"
-		></canvas>
-		{#if !initialized}
-			<div class="loading-overlay">
-				<div class="loading-spinner"></div>
-				<p>Initializing WebGPU + Three.js + Service Worker...</p>
-			</div>
-		{/if}
-	</div>
+  <div class="controls">
+    <h3>🌐 WebGPU + Three.js + Service Worker System</h3>
+    <div class="status-grid">
+      <div class="status-item" class:active={$webgpuStore.active}>
+        <span class="icon">🔧</span>
+        <span>WebGPU</span>
+        <span class="value">{$webgpuStore.active ? 'Active' : 'Inactive'}</span>
+      </div>
+      <div class="status-item" class:active={$threeStore.scene !== null}>
+        <span class="icon">🎮</span>
+        <span>Three.js</span>
+        <span class="value">{$threeStore.objects.size} Objects</span>
+      </div>
+      <div class="status-item" class:active={$serviceWorkerStore.registration !== null}>
+        <span class="icon">⚡</span>
+        <span>Service Worker</span>
+        <span class="value">{$serviceWorkerStore.performance.cacheHitRate.toFixed(1)}% Hit Rate</span>
+      </div>
+    </div>
+    <div class="performance-metrics">
+      <h4>📊 Performance Metrics</h4>
+      <div class="metrics-grid">
+        <div class="metric">
+          <span>GPU Compute:</span>
+          <span>{metrics.gpu.computeTime.toFixed(2)}ms</span>
+        </div>
+        <div class="metric">
+          <span>FPS Target:</span>
+          <span>{metrics.rendering.fps}</span>
+        </div>
+        <div class="metric">
+          <span>Current LOD:</span>
+          <span>Level {metrics.rendering.currentLOD}</span>
+        </div>
+        <div class="metric">
+          <span>Memory:</span>
+          <span>{(metrics.overall.memory / 1024 / 1024).toFixed(1)}MB</span>
+        </div>
+        <div class="metric">
+          <span>Cache Hits:</span>
+          <span>{metrics.cache.cacheHitRate.toFixed(1)}%</span>
+        </div>
+        <div class="metric">
+          <span>Network:</span>
+          <span>{metrics.overall.network.toFixed(1)} Mbps</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="render-area">
+    <canvas bind:this={canvas as any} width="800" height="600" class="three-canvas"></canvas>
+    {#if !initialized}
+      <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Initializing WebGPU + Three.js + Service Worker...</p>
+      </div>
+    {/if}
+  </div>
 </div>
+
 <!-- ============================================================================ -->
 <!-- STYLES -->
 <!-- ============================================================================ -->
 <style>
-	.webgpu-processor {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		padding: 1rem;
-		background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-		border-radius: 12px;
-		border: 1px solid #333;
-		color: #fff;
-	}
-	.controls {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-	.controls h3 {
-		margin: 0;
-		color: #00ff88;
-		font-family: 'Courier New', monospace;
-	}
-	.status-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-		gap: 1rem;
-	}
-	.status-item {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.75rem;
-		background: rgba(255, 255, 255, 0.05);
-		border-radius: 8px;
-		border: 1px solid #333;
-		transition: all 0.3s ease;
-	}
-	.status-.active {
-		border-color: #00ff88;
-		background: rgba(0, 255, 136, 0.1);
-	}
-	.status-item .icon {
-		font-size: 1.2rem;
-	}
-	.status-item .value {
-		margin-left: auto;
-		font-family: 'Courier New', monospace;
-		color: #00ff88;
-	}
-	.performance-metrics h4 {
-		margin: 0 0 0.5rem 0;
-		color: #0088ff;
-	}
-	.metrics-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-		gap: 0.5rem;
-	}
-	.metric {
-		display: flex;
-		justify-content: space-betwee;
-		padding: 0.5rem;
-		background: rgba(255, 255, 255, 0.03);
-		border-radius: 4px;
-		font-size: 0.9rem;
-	}
-	.metric span:last-child {
-		color: #ff8800;
-		font-family: 'Courier New', monospace;
-	}
-	.render-area {
-		position: relative;
-		background: #000;
-		border-radius: 8px;
-		overflow: hidden;
-		border: 1px solid #333;
-	}
-	.three-canv.loading-overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.8);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 1rem;
-		color: #fff;
-	}
-	.loading-spinner {
-		width: 40px;
-		height: 40px;
-		border: 3px solid #333;
-		border-top: 3px solid #00ff88;
-		border-radius: 50%;
-		animation: spin 1s linear infinite;
-	}
-	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
-	}
-	@media (max-width: 768px) {
-		.webgpu-processor {
-			padding: 0.5rem;
-		}
-		.status-grid {
-			grid-template-columns: 1fr;
-		}
-		.metrics-grid {
-			grid-template-columns: 1fr 1fr;
-		}
-		.three-canvas {
-			height: 400px;
-		}
-	}
+  .webgpu-processor {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    border-radius: 12px;
+    border: 1px solid #333;
+    color: #fff;
+  }
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .controls h3 {
+    margin: 0;
+    color: #00ff88;
+    font-family: 'Courier New', monospace;
+  }
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+  }
+  .status-.active {
+    border-color: #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+  }
+  .status-item .icon {
+    font-size: 1.2rem;
+  }
+  .status-item .value {
+    margin-left: auto;
+    font-family: 'Courier New', monospace;
+    color: #00ff88;
+  }
+  .performance-metrics h4 {
+    margin: 0 0 0.5rem 0;
+    color: #0088ff;
+  }
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.5rem;
+  }
+  .metric {
+    display: flex;
+    justify-content: space-betwee;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  .metric span:last-child {
+    color: #ff8800;
+    font-family: 'Courier New', monospace;
+  }
+  .render-area {
+    position: relative;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #333;
+  }
+  .three-canv.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: #fff;
+  }
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #333;
+    border-top: 3px solid #00ff88;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @media (max-width: 768px) {
+    .webgpu-processor {
+      padding: 0.5rem;
+    }
+    .status-grid {
+      grid-template-columns: 1fr;
+    }
+    .metrics-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .three-canvas {
+      height: 400px;
+    }
+  }
 </style>

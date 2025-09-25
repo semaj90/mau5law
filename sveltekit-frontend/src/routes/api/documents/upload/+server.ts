@@ -4,7 +4,7 @@ import { db } from '$lib/server/db'
 import { documents, document_processing } from '$lib/server/db/schema-postgres'
 import { rabbitMQService, createDocumentProcessingJob } from '$lib/services/rabbitmq-service'
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain']
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const UPLOAD_SERVICE_URL = 'http://localhost:8093'

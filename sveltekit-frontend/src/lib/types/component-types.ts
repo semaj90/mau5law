@@ -78,14 +78,14 @@ export interface ComponentProps {
   error?: string;
 }
 export interface EventHandlers {
-  onclick?: (event: MouseEvent) => void;
-  onchange?: (event: Event) => void;
-  oninput?: (event: Event) => void;
-  onsubmit?: (event: SubmitEvent) => void;
-  onkeydown?: (event: KeyboardEvent) => void;
-  onkeyup?: (event: KeyboardEvent) => void;
-  onfocus?: (event: FocusEvent) => void;
-  onblur?: (event: FocusEvent) => void;
+  onclick?: (_event: MouseEvent) => void;
+  onchange?: (_event: Event) => void;
+  oninput?: (_event: Event) => void;
+  onsubmit?: (_event: SubmitEvent) => void;
+  onkeydown?: (_event: KeyboardEvent) => void;
+  onkeyup?: (_event: KeyboardEvent) => void;
+  onfocus?: (_event: FocusEvent) => void;
+  onblur?: (_event: FocusEvent) => void;
 }
 export interface CanvasContext {
   canvas: HTMLCanvasElement;
@@ -101,6 +101,6 @@ export interface WebGPUContext {
 }
 // Utility types
 export type AsyncFunction<T = void> = () => Promise<T>;
-export type EventCallback<T = Event> = (event: T) => void;
-export type ValidationResult = { valid: boolean; errors: string[] };
+export type EventCallback<T = Event> = (_event: T) => void;
+export type ValidationResult = { valid: boolean; errors: string[] }
 export type ComponentState = 'idle' | 'loading' | 'success' | 'error';

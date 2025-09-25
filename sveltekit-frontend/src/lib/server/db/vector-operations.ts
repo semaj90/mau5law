@@ -35,7 +35,7 @@ const defaultGRPMOConfig: GRPMOConfig = {
   reinforcementLearningRate: 0.01,
   predictiveWindowMs: 30000,
   glyphCompressionRatio: 50
-};
+}
 // Enhanced interface for GRPMO vector similarity search results
 interface SimilarityResult {
   id: string;
@@ -154,7 +154,7 @@ export async function storeAiQueryWithEmbedding(
 // Cache embedding to avoid recomputing
 export async function cacheEmbedding(
   textHash: string
-  embedding: number[]
+  embedding: number[];
   model: string = 'nomic-embed-text';
 ): Promise<void> {
   try {
@@ -191,7 +191,7 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
 // Hybrid search: combine vector and text search
 export async function hybridSearch(
   queryText: string
-  queryEmbedding: number[]
+  queryEmbedding: number[];
   limit: number = 10;
 ): Promise<SimilarityResult[]> {
   try {
@@ -272,7 +272,7 @@ export async function testVectorOperations(): Promise<any> {
     pgvectorAvailable,
     similaritySearchWorking,
     embeddingCacheWorking
-  };
+  }
 }
 // GRPMO Extended Thinking Engine
 export class GRPMOOrchestrator {
@@ -292,7 +292,7 @@ export class GRPMOOrchestrator {
   ): Promise<any> {
     const startTime = Date.now();
     const stages: ExtendedThinkingStage[] = [];
-    const cachePerformance = { hot: 0, warm: 0, cold: 0 };
+    const cachePerformance = { hot: 0, warm: 0, cold: 0 }
     // Stage 1: Hot cache retrieval
     const hotCacheKey = this.generateCacheKey(query, queryEmbedding, 'hot');
     const hotResult = await this.retrieveFromCache(hotCacheKey, 'hot');
@@ -305,7 +305,7 @@ export class GRPMOOrchestrator {
         confidence: 0.95,
         glyphData: this.compressToGlyph(hotResult.data)
       });
-      return { result: hotResult.data, thinkingStages: stages, cachePerformance };
+      return { result: hotResult.data, thinkingStages: stages, cachePerformance }
     }
     // Stage 2: Warm cache with predictive analysis
     const warmCacheKey = this.generateCacheKey(query, queryEmbedding, 'warm');
@@ -322,7 +322,7 @@ export class GRPMOOrchestrator {
       // Predictive enhancement
       const enhanced = await this.enhanceWithPredictiveAnalysis(warmResult.data, queryEmbedding);
       await this.cacheResult(hotCacheKey, enhanced, 'hot');
-      return { result: enhanced, thinkingStages: stages, cachePerformance };
+      return { result: enhanced, thinkingStages: stages, cachePerformance }
     }
     // Stage 3: Cold cache with full vector search
     stages.push({
@@ -350,13 +350,13 @@ export class GRPMOOrchestrator {
     // Cache at multiple layers
     await this.cacheResult(warmCacheKey, optimizedResults, 'warm');
     await this.cacheResult(hotCacheKey, optimizedResults, 'hot');
-    return { result: optimizedResults, thinkingStages: stages, cachePerformance };
+    return { result: optimizedResults, thinkingStages: stages, cachePerformance }
   }
   private generateCacheKey(query: string, embedding: number[], layer: string): string {
     const embeddingHash = this.hashEmbedding(embedding);
     return `${layer}:${this.hashString(query)}:${embeddingHash}`;
   }
-  private async retrieveFromCache(key: string, layer: string): Promise<any> {
+  private async retrieveFromCache(_key: string, layer: string): Promise<any> {
     const cached = this.memoryCache.get(key);
     if (!cached) return null;
     const age = Date.now() - cached.timestamp;
@@ -364,7 +364,7 @@ export class GRPMOOrchestrator {
                      this.config.coldCacheThreshold;
     return age < threshold ? { data: cached.data, timestamp: cached.timestamp } : null;
   }
-  private async cacheResult(key: string, data: SimilarityResult[], layer: string): Promise<void> {
+  private async cacheResult(_key: string, data: SimilarityResult[], layer: string): Promise<void> {
     this.memoryCache.set(key, {
       data,
       timestamp: Date.now(),
@@ -457,4 +457,4 @@ export {
   type GRPMOConfig,
   type ExtendedThinkingStage,
   type PPOState
-};
+}

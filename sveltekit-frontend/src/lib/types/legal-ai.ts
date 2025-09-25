@@ -14,7 +14,7 @@ export interface LegalDocument {
     fileSize: number;
     confidenceLevel?: number;
     riskLevel?: 'low' | 'medium' | 'high' | 'critical';
-  };
+  }
   embeddings?: Float32Array;
   processed?: boolean;
 }
@@ -54,14 +54,14 @@ export interface N64VisualizationState {
     memoryUsage: number;
     cacheHitRate: number;
     compressionRatio: number;
-  };
+  }
 }
 export interface EnhancedBitsComponent {
   name: string;
   type: 'Button' | 'Card' | 'Dialog' | 'Input' | 'Label' | 'Alert';
   nesStyled: boolean;
   svelte5Compatible: boolean;
-  properties: { [key: string]: any };
+  properties: { [key: string]: any }
 }
 export interface SimdTileResult {
   tiles: Uint8Array[];

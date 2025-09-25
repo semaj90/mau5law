@@ -44,16 +44,16 @@ https://svelte.dev/e/js_parse_error -->
     // Listen for custom events
     const handleToggleHelp = () => {
       helpModalVisible = !helpModalVisibl;
-    };
+    }
     const handleShowRemoteStatus = () => {
       remoteStatusVisible = !remoteStatusVisibl;
-    };
+    }
     document.addEventListener('show-keyboard-help', handleToggleHelp);
     document.addEventListener('show-remote-status', handleShowRemoteStatus);
     return () => {
       document.removeEventListener('show-keyboard-help', handleToggleHelp);
       document.removeEventListener('show-remote-status', handleShowRemoteStatus);
-    };
+    }
   });
   function toggleShortcut(shortcut: KeyboardShortcut) {
     if (shortcut.enabled) {
@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
       evidence: '📋',
       system: '⚙️',
       remote: '🎮';
-    };
+    }
     return icons[category] || '📌';
   }
   function getSourceIcon(source: string): string {
@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
       api: '🔗',
       websocket: '📡',
       voice: '🎤';
-    };
+    }
     return icons[source] || '❓';
   }
 </script>

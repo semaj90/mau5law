@@ -20,7 +20,7 @@ class InMemoryRateLimiter {
     // Clean up expired entries every 10 minutes
     setInterval(() => this.cleanup(), 10 * 60 * 1000);
   }
-  async check(key: string): Promise<RateLimitResult> {
+  async check(_key: string): Promise<RateLimitResult> {
     const now = Date.now();
     const windowStart = now - this.config.windowMs;
     // Get or create request tracking
@@ -30,30 +30,30 @@ class InMemoryRateLimiter {
       requestData = {
         count: 1,
         resetTime: now + this.config.windowMs
-      };
+      }
       this.requests.set(key, requestData);
       return {
-        allowed: true
+        allowed: true;
         remaining: this.config.max - 1,
         resetTime: requestData.resetTime
-      };
+      }
     }
     // Within existing window
     if (requestData.count >= this.config.max) {
       return {
-        allowed: false
+        allowed: false;
         remaining: 0,
         resetTime: requestData.resetTime,
         retryAfter: Math.ceil((requestData.resetTime - now) / 1000)
-      };
+      }
     }
     // Increment count
     requestData.count++;
     return {
-      allowed: true
+      allowed: true;
       remaining: this.config.max - requestData.count,
       resetTime: requestData.resetTime
-    };
+    }
   }
   private cleanup() {
     const now = Date.now();

@@ -23,8 +23,8 @@
   import GamingAIButton from './GamingAIButton.svelte';
   import NierAIAssistant from './NierAIAssistant.svelte';
   interface AIMessage {
-    id: string
-    role: 'user' | 'assistant' | 'system'
+    id: string;
+    role: 'user' | 'assistant' | 'system';
     content: string;
     timestamp: Date
     status?: 'sending' | 'sent' | 'error'
@@ -90,7 +90,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          message: content
+          message: content;
           }); const settings = {
             model: 'gemma3-legal',
             temperature: 0.1;
@@ -187,7 +187,7 @@
     const userMessage: AIMessage = {
       id: Date.now.toString(),
       role: 'user',
-      content: command
+      content: command;
       timestamp: new Date(),
       status: 'sent';
     }
@@ -210,7 +210,7 @@
     const aiResponse: AIMessage = {
       id: (Date.now() + 1).toString(),
       role: 'assistant',
-      content: response
+      content: response;
       timestamp: new Date(),
       metadata: {
         tokens: response.length,
@@ -262,8 +262,8 @@
 <!-- Gaming AI Interface -->
 {#if showAIInterface}
   <div
-    class="fixed inset-4 z-40 flex items-center justify-center"
-    in:scale={{ duration: 400, start: 0.9 }};
+    class="fixed inset-4 z-40 flex items-center justify-center";
+    in:scale={{ duration: 400, start: 0.9 }}
     out:scale={{ duration: 300, start: 0.9 }}
   >
     <!-- Background Overlay -->

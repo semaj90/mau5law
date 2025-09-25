@@ -13,7 +13,7 @@
   // Dynamic fabric import to avoid SSR issues
   let fabricInstance: any = null;
   async function getFabric(): Promise<any> {
-    if (fabricInstance) return fabricInstanc;
+    if (fabricInstance) return fabricInstance;
     try {
       const mod: any = await import('fabric');
       fabricInstance = mod.fabric ?? mod.default ?? mod;
@@ -38,7 +38,7 @@
         Object: class MockObject {},
         Line: class MockLine {},
         Group: class MockGroup {}
-      };
+      }
     }
   }
   // Custom types for fabric objects with extended properties
@@ -111,7 +111,7 @@
     collaboration: `legal:canvas:${caseId}:collab`,
     cursors: `legal:canvas:${caseId}:cursors`,
     ai: `legal:canvas:${caseId}:ai`
-  };
+  }
   // Lifecycle
   $effect(() => {
     if (!browser) return;
@@ -174,7 +174,7 @@
       const line = new fabricInstance.Line([i * gridSize, 0, i * gridSize, canvasHeight], {
         stroke: '#333',
         strokeWidth: 1,
-        selectable: false
+        selectable: false;
         evented: false
         excludeFromExport: true;
       });
@@ -185,7 +185,7 @@
       const line = new fabricInstance.Line([0, i * gridSize, canvasWidth, i * gridSize], {
         stroke: '#333',
         strokeWidth: 1,
-        selectable: false
+        selectable: false;
         evented: false
         excludeFromExport: true;
       });
@@ -255,7 +255,7 @@
         console.log('✅ Canvas loaded from Redis cache');
       } else {
         // Fallback to API if no cache
-        const response = await fetch(`/api/v1/evidence/canvas?caseId=${caseId}`);
+        // removed unused response assignment
         if (response.ok) {
           const data = await response.json();
           if (data.canvasData) {
@@ -378,7 +378,7 @@
       selectable: !readOnly,
       hasControls: false
       hasBorders: false
-      strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined
+      strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined;
       shadow: new fabricInstance.Shadow({,
         color: 'rgba(0,0,0,0.2)',
         blur: 5;
@@ -392,7 +392,7 @@
       left: toCenter.x,
       top: toCenter.y,
       angle: Math.atan2(toCenter.y - fromCenter.y, toCenter.x - fromCenter.x) * 180 / Math.PI + 90,
-      selectable: false
+      selectable: false;
       evented: false;
     });
     const connectionGroup = new fabricInstance.Group([connection, arrowhead], {
@@ -454,7 +454,7 @@
       'witness_statement': '#F44336',
       'key_document': '#FFD700',
       'physical': '#795548'
-    };
+    }
     return colors[type as keyof typeof colors] || '#607D8B';
   }
   function getEvidenceIcon(type: string): string {
@@ -466,7 +466,7 @@
       'witness_statement': '👤',
       'key_document': '⭐',
       'physical': '📦'
-    };
+    }
     return icons[type as keyof typeof icons] || '📄';
   }
   function getConnectionColor(type: string): string {
@@ -477,7 +477,7 @@
       'contradicts': '#FF5722',
       'supports': '#8BC34A',
       'inferred': '#9E9E9E'
-    };
+    }
     return colors[type as keyof typeof colors] || '#666';
   }
   function handleNodeClick(node: any, event: any) {
@@ -488,10 +488,10 @@
     fabricCanvas.setActiveObject(node);
     propertiesPanel = {
       type: node.nodeType,
-      data: node.nodeType === 'evidence' ? node.evidenceData: node
+      data: node.nodeType === 'evidence' ? node.evidenceData: node;
       position: ;
 { x: node.left, y: node.top }
-    };
+    }
   }
   let connectionStartNode: any = null;
   async function handleConnectionStart(node: any) {
@@ -627,7 +627,7 @@
       y,
       target,
       actions: getContextActions(target);
-    };
+    }
   }
   function getContextActions(target: any) {
     const actions = [];
@@ -767,7 +767,7 @@
         fill: cursorData.color || '#FF5722',
         left: cursorData.x,
         top: cursorData.y,
-        selectable: false
+        selectable: false;
         evented: false
         excludeFromExport: true;
       });
@@ -873,7 +873,7 @@
         connections: Array.from(connections.entries()),
         annotations: Array.from(annotations.entries()),
         timestamp: new Date().toISOString();
-      };
+      }
       // Save to database via API
       const response = await fetch('/api/v1/evidence/canvas', {
         method: 'POST',
@@ -889,7 +889,7 @@
             action: 'canvas_saved',
             caseId,
             timestamp: savePayload.timestamp,
-            user: 'current_user' // Replace with actual user ID
+            user: 'current_user' // Replace with actual user ID;
           });
         }
         lastSaveTime = new Date();
@@ -906,7 +906,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           key: KEY_PATTERNS.DOCUMENT_CACHE(caseId),
-          value: canvasPayload
+          value: canvasPayload;
           ttl: CACHE_TTL.DOCUMENT_ANALYSIS;
         })
       });
@@ -919,7 +919,7 @@
   }
   async function loadFromRedisCache(): Promise<any | null> {
     try {
-      const response = await fetch(`/api/v1/redis/cache/${KEY_PATTERNS.DOCUMENT_CACHE(caseId)}`);
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         console.log('✅ Loaded canvas from Redis cache');
@@ -953,7 +953,7 @@
         action,
         caseId,
         timestamp: new Date().toISOString(),
-        user: 'current_user' // Replace with actual user ID
+        user: 'current_user' // Replace with actual user ID;
       });
     } catch (error) {
       console.error('Failed to publish canvas change:', error);
@@ -1004,7 +1004,7 @@
         stroke: '#4CAF50',
         strokeWidth: 3,
         strokeDashArray: [10, 5],
-        selectable: false
+        selectable: false;
         evented: false;
       });
       fabricCanvas.add(highlight);
@@ -1124,13 +1124,17 @@
     // TODO: Implement paste functionality
   }
 </script>
+
 <div class="canvas-workspace" class:sidebar-open={sidebarOpen}>
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="tool-group flex gap-2">
       <Button
         variant={selectedTool === 'select' ? 'default' : 'ghost'}
-        onclick={() => { selectedTool = 'select'; updateToolMode(); }}
+        onclick={() => {
+          selectedTool = 'select';
+          updateToolMode();
+        }}
         title="Select (1)"
         size="sm"
       >
@@ -1138,7 +1142,7 @@
       </Button>
       <Button
         variant={selectedTool === 'evidence' ? 'default' : 'ghost'}
-        onclick={() => selectedTool = 'evidence'}
+        onclick={() => (selectedTool = 'evidence')}
         title="Add Evidence (2)"
         size="sm"
       >
@@ -1146,7 +1150,7 @@
       </Button>
       <Button
         variant={selectedTool === 'connection' ? 'default' : 'ghost'}
-        onclick={() => selectedTool = 'connection'}
+        onclick={() => (selectedTool = 'connection')}
         title="Connect Evidence (3)"
         size="sm"
       >
@@ -1154,7 +1158,7 @@
       </Button>
       <Button
         variant={selectedTool === 'note' ? 'default' : 'ghost'}
-        onclick={() => selectedTool = 'note'}
+        onclick={() => (selectedTool = 'note')}
         title="Add Note (4)"
         size="sm"
       >
@@ -1162,7 +1166,7 @@
       </Button>
       <Button
         variant={selectedTool === 'highlight' ? 'default' : 'ghost'}
-        onclick={() => selectedTool = 'highlight'}
+        onclick={() => (selectedTool = 'highlight')}
         title="Highlight (5)"
         size="sm"
       >
@@ -1170,7 +1174,10 @@
       </Button>
       <Button
         variant={selectedTool === 'draw' ? 'default' : 'ghost'}
-        onclick={() => { selectedTool = 'draw'; updateToolMode(); }}
+        onclick={() => {
+          selectedTool = 'draw';
+          updateToolMode();
+        }}
         title="Draw (6)"
         size="sm"
       >
@@ -1178,52 +1185,17 @@
       </Button>
     </div>
     <div class="action-group flex gap-2">
-      <Button
-        variant="ghost"
-        onclick={undo}
-        disabled={undoStack.length === 0}
-        size="sm"
-      >
-        ⏪ Undo
-      </Button>
-      <Button
-        variant="ghost"
-        onclick={redo}
-        disabled={redoStack.length === 0}
-        size="sm"
-      >
-        ⏩ Redo
-      </Button>
-      <Button
-        variant="ghost"
-        onclick={zoomFit}
-        size="sm"
-      >
-        🔍 Fit
-      </Button>
-      <Button
-        variant="ghost"
-        onclick={() => exportCanvas('png')}
-        size="sm"
-      >
-        💾 Export
-      </Button>
+      <Button variant="ghost" onclick={undo} disabled={undoStack.length === 0} size="sm">⏪ Undo</Button>
+      <Button variant="ghost" onclick={redo} disabled={redoStack.length === 0} size="sm">⏩ Redo</Button>
+      <Button variant="ghost" onclick={zoomFit} size="sm">🔍 Fit</Button>
+      <Button variant="ghost" onclick={() => exportCanvas('png')} size="sm">💾 Export</Button>
     </div>
     {#if aiAssisted}
       <div class="ai-group">
-        <button
-          class="ai-btn"
-          onclick={applyAILayout}
-          disabled={isGeneratingLayout}
-        >
+        <button class="ai-btn" onclick={applyAILayout} disabled={isGeneratingLayout}>
           {isGeneratingLayout ? '⏳' : '🤖'} AI Layout
         </button>
-        <button
-          class="ai-btn"
-          onclick={() => showAISuggestions = !showAISuggestions}
-        >
-          💡 Suggestions
-        </button>
+        <button class="ai-btn" onclick={() => (showAISuggestions = !showAISuggestions)}> 💡 Suggestions </button>
       </div>
     {/if}
     {#if collaborative}
@@ -1246,14 +1218,14 @@
     <div class="sidebar">
       <div class="sidebar-header">
         <h3>Evidence Library</h3>
-        <button class="close-btn" onclick={() => sidebarOpen = false}>×</button>
+        <button class="close-btn" onclick={() => (sidebarOpen = false)}>×</button>
       </div>
       <div class="evidence-list">
         {#each evidenceData as evidence}
           <div
             class="evidence-item {evidenceNodes.has(evidence.id) ? 'on-canvas' : ''}"
             draggable="true"
-            ondragstart={(e) => e.dataTransfer?.setData('evidence', JSON.stringify(evidence))}
+            ondragstart={e => e.dataTransfer?.setData('evidence', JSON.stringify(evidence))}
           >
             <div class="evidence-icon">{getEvidenceIcon(evidence.type)}</div>
             <div class="evidence-info">
@@ -1269,21 +1241,14 @@
           {#each aiSuggestions as suggestion}
             <div class="suggestion-item">
               <div class="suggestion-text">{suggestion.text}</div>
-              <button class="apply-btn" onclick={() => suggestion.action()}>
-                Apply
-              </button>
+              <button class="apply-btn" onclick={() => suggestion.action()}> Apply </button>
             </div>
           {/each}
         </div>
       {/if}
     </div>
   {:else}
-    <Button
-      variant="ghost"
-      size="sm"
-      onclick={() => sidebarOpen = true}
-      class="fixed left-4 top-4 z-30"
-    >
+    <Button variant="ghost" size="sm" onclick={() => (sidebarOpen = true)} class="fixed left-4 top-4 z-30">
       📚 Sidebar
     </Button>
   {/if}
@@ -1298,29 +1263,19 @@
         <CardHeader>
           <div class="flex items-center justify-between">
             <CardTitle>Properties</CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              onclick={() => propertiesPanel = null}
-            >
-              ×
-            </Button>
+            <Button variant="ghost" size="sm" onclick={() => (propertiesPanel = null)}>×</Button>
           </div>
         </CardHeader>
         <CardContent class="space-y-4">
           {#if propertiesPanel.type === 'evidence'}
             <div class="space-y-2">
               <Label for="evidence-title">Title:</Label>
-              <Input
-                id="evidence-title"
-                type="text"
-                bind:value={propertiesPanel.data.title}
-              />
+              <Input id="evidence-title" type="text" bind:value={propertiesPanel.data.title} />
             </div>
             <div class="space-y-2">
               <Label for="evidence-type">Type:</Label>
               <select
-                id="evidence-type"
+                id="evidence-type";
                 bind:value={propertiesPanel.data.type}
                 class="w-full px-3 py-2 border border-input bg-background rounded-md"
               >
@@ -1334,16 +1289,8 @@
             <div class="space-y-2">
               <Label>Position:</Label>
               <div class="grid grid-cols-2 gap-2">
-                <Input
-                  type="number"
-                  bind:value={propertiesPanel.position.x}
-                  placeholder="X"
-                />
-                <Input
-                  type="number";
-                  bind:value={propertiesPanel.position.y}
-                  placeholder="Y"
-                />
+                <Input type="number" bind:value={propertiesPanel.position.x} placeholder="X" />
+                <Input type="number" ; bind:value={propertiesPanel.position.y} placeholder="Y" />
               </div>
             </div>
           {/if}
@@ -1361,7 +1308,10 @@
         <Button
           variant="ghost"
           size="sm"
-          onclick={() => { action.action(); contextMenu = null; }}
+          onclick={() => {
+            action.action();
+            contextMenu = null;
+          }}
           class="w-full justify-start"
         >
           {action.label}
@@ -1370,6 +1320,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .canvas-workspace {
     display: flex;
@@ -1395,12 +1346,17 @@
     gap: 30px;
     z-index: 100;
   }
-  .tool-group, .action-group, .ai-group, .collab-group {
+  .tool-group,
+  .action-group,
+  .ai-group,
+  .collab-group {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-  .tool-btn, .action-btn, .ai-btn {
+  .tool-btn,
+  .action-btn,
+  .ai-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
@@ -1415,7 +1371,9 @@
     align-items: center;
     justify-content: center;
   }
-  .tool-btn:hover, .action-btn:hover, .ai-btn:hover {
+  .tool-btn:hover,
+  .action-btn:hover,
+  .ai-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
   }
@@ -1547,7 +1505,8 @@
     font-size: 12px;
     color: #ccc;
   }
-  .property-group input, .property-group select {
+  .property-group input,
+  .property-group select {
     width: 100%;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);

@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
 /*
  * Simple Copilot Optimization API for Testing
  */
-import { URL } from "url"
+
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action')
   try {

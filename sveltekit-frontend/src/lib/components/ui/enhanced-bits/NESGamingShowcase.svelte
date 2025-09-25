@@ -94,6 +94,7 @@
     }
   }
 </script>
+
 <div class="nes-gaming-showcase">
   <!-- Header Section -->
   <div class="showcase-header">
@@ -102,9 +103,7 @@
       <NESButton variant="primary" onclick={() => handleGameAction('start')}>
         {isPlaying ? 'Playing...' : 'Start Demo'}
       </NESButton>
-      <NESButton variant="warning" onclick={() => handleGameAction('reset')}>
-        Reset
-      </NESButton>
+      <NESButton variant="warning" onclick={() => handleGameAction('reset')}>Reset</NESButton>
     </div>
   </div>
   <!-- Stats Bar -->
@@ -157,26 +156,15 @@
   </div>
   <!-- Action Buttons Grid -->
   <div class="actions-grid">
-    <NESButton variant="success" onclick={() => handleGameAction('powerup')}>
-      Power Up! (+100)
-    </NESButton>
+    <NESButton variant="success" onclick={() => handleGameAction('powerup')}>Power Up! (+100)</NESButton>
     <NESButton variant="warning" onclick={() => handleGameAction('pause')}>
       {isPlaying ? 'Pause' : 'Resume'}
     </NESButton>
-    <NESButton variant="danger" onclick={() => handleGameAction('damage')}>
-      Take Damage (-1 Life)
-    </NESButton>
-    <NESButton variant="primary" onclick={() => showModal = true}>
-      Show Modal
-    </NESButton>
+    <NESButton variant="danger" onclick={() => handleGameAction('damage')}>Take Damage (-1 Life)</NESButton>
+    <NESButton variant="primary" onclick={() => (showModal = true)}>Show Modal</NESButton>
   </div>
   <!-- Demo Modal -->
-  <NESModal
-    bind:open={showModal}
-    title="System Information"
-    variant="dark"
-    size="lg"
-  >
+  <NESModal bind:open={showModal} title="System Information" variant="dark" size="lg">
     <div class="modal-content">
       {#if selectedCard}
         {@const feature = gameFeatures.find(f => f.id === selectedCard)}
@@ -232,16 +220,13 @@
         </div>
       {/if}
       <div class="modal-actions">
-        <NESButton variant="success" onclick={() => showModal = false}>
-          Awesome!
-        </NESButton>
-        <NESButton variant="default" onclick={() => selectedCard = null}>
-          Clear Selection
-        </NESButton>
+        <NESButton variant="success" onclick={() => (showModal = false)}>Awesome!</NESButton>
+        <NESButton variant="default" onclick={() => (selectedCard = null)}>Clear Selection</NESButton>
       </div>
     </div>
   </NESModal>
 </div>
+
 <style>
   .nes-gaming-showcase {
     padding: 2rem;
@@ -381,21 +366,46 @@
   }
   /* Animations */
   @keyframes score-pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); color: theme('colors.nes.yellow'); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+      color: theme('colors.nes.yellow');
+    }
+    100% {
+      transform: scale(1);
+    }
   }
   @keyframes status-blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.6; }
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0.6;
+    }
   }
   @keyframes status-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.05); }
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.05);
+    }
   }
   @keyframes status-urgent {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
   }
   /* Responsive Design */
   @media (max-width: 768px) {

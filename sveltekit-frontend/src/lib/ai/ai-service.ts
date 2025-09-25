@@ -1,6 +1,6 @@
 import { aiAssistant, type AIMessage, type CaseAIContext } from '$lib/stores/ai-assistant';
 import { get } from 'svelte/store';
-}
+
 export interface SendToAIOptions {
   caseId: string;
   prompt: string;
@@ -26,12 +26,12 @@ export interface AIServiceResponse {
     model: string;
     tokensUsed: number;
     processingTime: number;
-  };
+  }
 }
 class AIService {
   private baseUrl = '/api/ai';
   private defaultModel = 'gemma3:legal-latest';
-  async sendToAI(options: SendToAIOptions): Promise<AIServiceResponse> {
+  async sendToAI(_options: SendToAIOptions): Promise<AIServiceResponse> {
     const { caseId, prompt, evidenceIds = [], context = 'general', includeHistory = true } = options;
     // Set loading state
     aiAssistant.setLoading(true);
@@ -51,7 +51,7 @@ class AIService {
       // Add user message to store immediately
       aiAssistant.addMessage(caseId, {
         role: 'user',
-        content: prompt
+        content: prompt,
         evidenceIds: evidenceIds.length > 0 ? evidenceIds : undefined
       });
       // Make API call to AI service
@@ -62,7 +62,7 @@ class AIService {
         },
         body: JSON.stringify({
           caseId,
-          prompt: enhancedPrompt
+          prompt: enhancedPrompt,
           context,
           model: this.defaultModel,
           evidenceIds,
@@ -114,7 +114,7 @@ class AIService {
       aiAssistant.setLoading(false);
     }
   }
-  private buildEnhancedPrompt(options: {
+  private buildEnhancedPrompt(_options: {
     prompt: string;
     caseContext?: CaseAIContext;
     evidenceIds: string[];
@@ -255,7 +255,7 @@ class AIService {
     });
   }
   // Streaming support for real-time responses
-  async sendToAIStream(options: SendToAIOptions): Promise<ReadableStream<string> {
+  async sendToAIStream(_options: SendToAIOptions): Promise<ReadableStream<string>> {
     // Implementation for streaming responses
     // This would connect to your streaming endpoint
     throw new Error('Streaming not yet implemented');

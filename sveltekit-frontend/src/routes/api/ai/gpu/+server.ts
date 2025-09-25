@@ -104,7 +104,7 @@ async function checkGPUHealth(): Promise<{ [key: string]: any } {
 		if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
 			const serviceHealth = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json()
 			health.wasm_llvm_service = {
-				available: true
+				available: true;
 				status: 'healthy',
 				...serviceHealth
 			}
@@ -465,4 +465,4 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 	}
 }
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

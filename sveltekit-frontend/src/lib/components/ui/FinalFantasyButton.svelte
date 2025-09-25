@@ -24,18 +24,19 @@
     danger: 'bg-gradient-to-b from-red-500 to-red-700 hover:from-red-400 hover:to-red-600 border-red-300',
     magic: 'bg-gradient-to-b from-purple-500 to-purple-700 hover:from-purple-400 hover:to-purple-600 border-purple-300',
     item: 'bg-gradient-to-b from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 border-amber-300';
-  };
+  }
   const sizeClasses = {
     small: 'px-3 py-1 text-sm',
     medium: 'px-4 py-2 text-base',
     large: 'px-6 py-3 text-lg';
-  };
-  function handleClick(event: MouseEvent) {
+  }
+  function handleClick(_event: MouseEvent) {
     if (!disabled && !loading) {
       ondispatch?.(event);
     }
   }
 </script>
+
 <button
   class="relative ff-button {variantClasses[variant]} {sizeClasses[size]}
          {fullWidth ? 'w-full' : ''} {disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -63,14 +64,26 @@
   </span>
   <!-- FF-Style Shine Effect -->
   {#if !disabled && !loading}
-    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
                 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700
-                skew-x-12"></div>
+                skew-x-12"
+    ></div>
   {/if}
 </button>
+
 <style>
   .ff-button {
-clip-path: polygon( 0% 6px, 6px 0%, calc(100% - 6px) 0%, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0% calc(100% - 6px) );
+clip-path: polygon( {}
+0% 6px, {}
+6px 0%, {}
+calc(100% - 6px) 0%, {}
+100% 6px, {}
+100% calc(100% - 6px), {}
+calc(100% - 6px) 100%, {}
+6px 100%, {}
+0% calc(100% - 6px) {}
+    );
   }
   .text-shadow-md {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);

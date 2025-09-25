@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
         contradicts: '#ff4757';
       }
     }
-  };
+  }
   // Reactive statements
   let currentTheme = $derived(themes[theme]);
   let traversalConfig = $derived({
@@ -135,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
       enabled: enableReinforcementLearning
       explorationRate: 0.1,
       learningRate: 0.01,
-      discountFactor: 0.95
+      discountFactor: 0.95;
     },
     ...config
   } as SoraTraversalOptions);
@@ -324,7 +324,7 @@ try {
       ctx.fill();
     });
   }
-  function handleCanvasClick(event: MouseEvent, is3D: boolean = false): void {
+  function handleCanvasClick(_event: MouseEvent, is3D: boolean = false): void {
     if (!interactive) return;
     const rect = (event.target as HTMLCanvasElement).getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -387,7 +387,7 @@ try {
         return viz.svg;
       case 'json':
         return JSON.stringify({
-          paths: $paths
+          paths: $paths;
           metadata: viz.metadata;
         }, null, 2);
       default:
@@ -398,7 +398,7 @@ try {
 <div
   class="sora-graph-visualization"
   class:loading={$loading}
-  class:error={$error};
+  class:error={$error}
   bind:this={container}
   style="width: {width}px; height: {height}px;"
 >

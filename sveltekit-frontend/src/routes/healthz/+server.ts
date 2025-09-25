@@ -12,11 +12,14 @@ export const GET = async () => {
   } catch (e: any) {
     redisOk = false;
   }
-  return json({
-    status: redisOk ? 'ok' : 'degraded',
-    redis: { ok: redisOk, latencyMs },
-    uptimeSeconds: Math.round(process.uptime()),
-    timestamp: new Date().toISOString(),
-    totalTimeMs: Date.now() - start
-  }, { status: redisOk ? 200 : 503 });
-};
+  return json(
+    {
+      status: redisOk ? 'ok' : 'degraded',
+      redis: { ok: redisOk, latencyMs },
+      uptimeSeconds: Math.round(process.uptime()),
+      timestamp: new Date().toISOString(),
+      totalTimeMs: Date.now() - start,
+    },
+    { status: redisOk ? 200 : 503 },
+  );
+}

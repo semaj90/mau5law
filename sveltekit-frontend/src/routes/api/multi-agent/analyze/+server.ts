@@ -5,7 +5,7 @@ import { exec } from "child_process"
 import { writeFile, readFile, mkdir } from "fs/promises"
 import { existsSync } from "fs"
 import type { RequestHandler } from "@sveltejs/kit"
-import { URL } from "url"
+
 const execAsync = promisify(exec)
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -147,7 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // If storage directory doesn't exist, return empty result (no analyses yet)
       if (!nodeFs.existsSync(baseDir)) {
         return json({
-          success: true
+          success: true;
           analyses: [],
           caseId
         })

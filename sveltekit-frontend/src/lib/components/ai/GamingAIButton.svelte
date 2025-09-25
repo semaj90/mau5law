@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Expected token >
+<!-- @migration-task Error while migrating Svelte code: Expected token >;
 https: //svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!-- @migration-task Error while migrating Svelte code: Expected token >;
@@ -51,19 +51,19 @@ https://svelte.dev/e/expected_token -->
     {
       id: 'analyze',
       label: 'Analyze Case',
-      icon: Brain
+      icon: Brain;
       color: 'hover:bg-purple-500/20' ;
     },
     {
       id: 'search',
       label: 'Search Evidence',
-      icon: MessageCircle
+      icon: MessageCircle;
       color: 'hover:bg-blue-500/20' ;
     },
     {
       id: 'assist',
       label: 'AI Assistant',
-      icon: Sparkles
+      icon: Sparkles;
       color: 'hover:bg-green-500/20' ;
     }
   ]
@@ -112,7 +112,7 @@ https://svelte.dev/e/expected_token -->
           <button
             onclick={() => handleQuickAction(action.id)}
             class="group relative flex items-center gap-3 px-4 py-3 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-2xl
-                   hover:border-gray-500/50 transition-all duration-200 {action.color}"
+                   hover:border-gray-500/50 transition-all duration-200 {action.color}";
             in:scale={{ duration: 200, delay: index * 50, start: 0.8 }}
             aria-label={action.label}
           >
@@ -146,7 +146,7 @@ https://svelte.dev/e/expected_token -->
     {#if isExpanded}
       <button
         onclick={onSettingsClick}
-        class="p-3 bg-gray-800/90 backdrop-blur-md border border-gray-600/50 rounded-xl
+        class="p-3 bg-gray-800/90 backdrop-blur-md border border-gray-600/50 rounded-xl;
                hover: bg-gray-700/90 hover:border-gray-500/50 transition-all duration-200 group";
         in:scale={{ duration: 200, delay: 300 }}
         aria-label="AI Assistant Settings"
@@ -160,7 +160,7 @@ https://svelte.dev/e/expected_token -->
       onmouseenter={() => isHovered = true}
       onmouseleave={() => isHovered = false}
       class="relative group p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900
-             border-2 border-gray-600/50 rounded-full shadow-2xl
+             border-2 border-gray-600/50 rounded-full shadow-2xl;
              hover: border-gray-400/70 hover:shadow-blue-500/20
              transition-all duration-300 transform hover:scale-105 active:scale-95";
       class:animate-pulse={aiMode === 'idle' && pulseAnimation}

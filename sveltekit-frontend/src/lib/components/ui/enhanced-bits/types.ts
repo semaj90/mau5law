@@ -59,7 +59,7 @@ export interface VectorSearchResult {
   id: string;
   score: number;
   content: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   embedding?: number[];
   highlights?: string[];
 }
@@ -67,7 +67,7 @@ export interface SemanticEntity {
   id: string;
   type: string;
   text?: string;
-  properties: { [key: string]: any };
+  properties: { [key: string]: any }
   relationships?: Array<any>;
 }
 export interface SelectOption {
@@ -93,7 +93,7 @@ export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
   timestamp?: Date;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface Recommendation {
   id: string;
@@ -102,5 +102,5 @@ export interface Recommendation {
   priority?: 'high' | 'medium' | 'low';
   category?: string;
   actionUrl?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }

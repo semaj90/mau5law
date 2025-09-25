@@ -1,7 +1,21 @@
 /**
  * AI Assistant Types - Complete type definitions for multi-backend AI system
  */
-export type Backend = 'tensorRT-llm' | 'ollama' | 'webasm' | 'go-micro' | 'gemma' | 'openai' | 'azure' | 'anthropic' | 'local-llm' | 'custom-api' | 'google-palm' | 'cohere' | 'ai21' | 'llama2-server';
+export type Backend =
+  | 'tensorRT-llm'
+  | 'ollama'
+  | 'webasm'
+  | 'go-micro'
+  | 'gemma'
+  | 'openai'
+  | 'azure'
+  | 'anthropic'
+  | 'local-llm'
+  | 'custom-api'
+  | 'google-palm'
+  | 'cohere'
+  | 'ai21'
+  | 'llama2-server';
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
@@ -18,7 +32,7 @@ export interface ChatMessage {
     processingPath?: string;
     processingNodes?: string[];
     cacheHit?: boolean;
-  };
+  }
 }
 export interface AssistantConfig {
   temperature: number;
@@ -39,7 +53,7 @@ export interface ChatSession {
     primaryBackend: Backend;
     legalDomain?: string;
     averageResponseTime: number;
-  };
+  }
 }
 export interface BackendResponse {
   text: string;
@@ -76,7 +90,7 @@ export interface ContextualEmbedding {
     legalDomain?: string;
     documentType?: string;
     importance?: number;
-  };
+  }
 }
 export interface SemanticSearchResult {
   id: string;
@@ -95,7 +109,7 @@ export interface VectorSearchQuery {
     sessionId?: string;
     legalDomain?: string;
     dateRange?: [number, number];
-  };
+  }
 }
 export interface VectorSearchResult {
   id: string;
@@ -111,7 +125,7 @@ export interface LokiMessage extends ChatMessage {
     created: number;
     revision: number;
     version: number;
-  };
+  }
 }
 // Fuse.js configuration
 export interface FuseSearchOptions {
@@ -140,12 +154,12 @@ export interface BackendCapabilities {
     multimodal?: boolean;
     codeGeneration?: boolean;
     legalAnalysis?: boolean;
-  };
+  }
   pricing?: {
     inputTokens: number;
     outputTokens: number;
     currency: string;
-  };
+  }
 }
 // Legal context specific types
 export interface LegalContext {
@@ -181,7 +195,7 @@ export interface GPUAcceleration {
     tokensPerSecond: number;
     latencyMs: number;
     throughput: number;
-  };
+  }
 }
 export interface WebGPUConfig {
   maxBufferSize: number;
@@ -199,7 +213,7 @@ export interface GoMicroRequest {
   retryPolicy?: {
     maxRetries: number;
     backoffMs: number;
-  };
+  }
 }
 export interface GoMicroResponse {
   success: boolean;
@@ -210,7 +224,7 @@ export interface GoMicroResponse {
     totalProcessingTime: number;
     queueTime: number;
     retryCount?: number;
-  };
+  }
 }
 // WebAssembly specific types
 export interface WebASMConfig {
@@ -240,7 +254,7 @@ export interface ExportOptions {
     backend?: Backend;
     role?: 'user' | 'assistant';
     hasLegalContext?: boolean;
-  };
+  }
 }
 // Real-time features
 export interface RealtimeConfig {
@@ -253,7 +267,7 @@ export interface RealtimeConfig {
     voice: string;
     rate: number;
     pitch: number;
-  };
+  }
 }
 export interface VoiceInputResult {
   text: string;
@@ -272,7 +286,7 @@ export interface LegalPlatformIntegration {
     read: boolean;
     write: boolean;
     share: boolean;
-  };
+  }
 }
 // Cache optimization types
 export interface CacheStrategy {
@@ -326,18 +340,15 @@ export interface AIAssistantProps {
 /**
  * Type guards for runtime validation
  */
-export const isChatMessage = (value: unknown): value is ChatMessage => {
-  return typeof value === 'object' && value !== null &&
-    'id' in value && 'role' in value && 'content' in value;
-};
-export const isBackendResponse = (value: unknown): value is BackendResponse => {
-  return typeof value === 'object' && value !== null &&
-    'text' in value && 'backend' in value && 'model' in value;
-};
-export const isLegalContext = (value: unknown): value is LegalContext => {
-  return typeof value === 'object' && value !== null &&
-    'domain' in value && 'confidentiality' in value;
-};
+export const isChatMessage = (_value: unknown): value is ChatMessage => {
+  return typeof value === 'object' && value !== null && 'id' in value && 'role' in value && 'content' in value;
+}
+export const isBackendResponse = (_value: unknown): value is BackendResponse => {
+  return typeof value === 'object' && value !== null && 'text' in value && 'backend' in value && 'model' in value;
+}
+export const isLegalContext = (_value: unknown): value is LegalContext => {
+  return typeof value === 'object' && value !== null && 'domain' in value && 'confidentiality' in value;
+}
 /**
  * Enhanced streaming response interface
  */
@@ -359,7 +370,7 @@ export interface WebGPUAIConfig extends WebGPUConfig {
   precision: 'fp16' | 'fp32' | 'int8';
 }
 // === Re-exports for compatibility ===
-export type { ChatMessage as AIMessage };
-export type { ChatSession as AISession };
-export type { BackendResponse as AIResponse };
-export type { LegalContext as AILegalContext };
+export type { ChatMessage as AIMessage }
+export type { ChatSession as AISession }
+export type { BackendResponse as AIResponse }
+export type { LegalContext as AILegalContext }

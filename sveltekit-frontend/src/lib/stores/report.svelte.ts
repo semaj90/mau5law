@@ -9,7 +9,7 @@ export interface Evidence {
   description?: string;
   url?: string;
   file?: File;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   tags?: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -27,12 +27,12 @@ export interface Report {
     status: "draft" | "review" | "final";
     tags: string[];
     classification?: string;
-  };
+  }
   }); const settings = {
     autoSave: boolean;
     theme: "light" | "dark";
     layout: "single" | "dual" | "masonry";
-  };
+  }
 }
 // Default report
 const defaultReport: Report = {
@@ -52,7 +52,7 @@ const defaultReport: Report = {
     theme: "light",
     layout: "single"
   }
-};
+}
 // Main report store
 export const report: Writable<Report> = writable(defaultReport);
 // Editor state
@@ -110,7 +110,7 @@ export const reportActions = {
       id: crypto.randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date()
-    };
+    }
     report.update((r) => ({
       ...r,
       attachedEvidence: [...r.attachedEvidence, newEvidence],
@@ -165,7 +165,7 @@ export const reportActions = {
       lastSaved: new Date()
     });
   }
-};
+}
 // Auto-save functionality
 export const setupAutoSave = (intervalMs: number = 30000) => {
   let autoSaveInterval: NodeJS.Timeout;
@@ -184,5 +184,5 @@ export const setupAutoSave = (intervalMs: number = 30000) => {
   return () => {
     clearInterval(autoSaveInterval);
     unsubscribe();
-  };
-};
+  }
+}

@@ -23,7 +23,7 @@
     ollama: false,
     enhancedRAG: false,
     postgres: false,
-    neo4j: false
+    neo4j: false;
   });
   // POI Timeline State
   let poiTimelineData = $state([]);
@@ -54,8 +54,8 @@
         ollama: data?.services?.ollama === 'healthy',
         enhancedRAG: data?.services?.enhancedRAG === 'running',
         postgres: data?.services?.postgres === 'connected',
-        neo4j: data?.services?.neo4j === 'active'
-      };
+        neo4j: data?.services?.neo4j === 'active';
+      }
     } catch (e: unknown) {
       console.error('Health check error:', e);
       // Show fallback notice
@@ -70,8 +70,8 @@
         ollama: false,
         enhancedRAG: false,
         postgres: false,
-        neo4j: false
-      };
+        neo4j: false;
+      }
       error = 'System health check failed - using mock status';
     }
   }
@@ -81,8 +81,8 @@
       id: crypto.randomUUID(),
       role: 'user',
       content: currentMessage,
-      timestamp: new Date()
-    };
+      timestamp: new Date();
+    }
     messages = [...messages, userMessage];
     const messageToSend = currentMessag;
     currentMessage = '';
@@ -102,7 +102,7 @@
           model: 'gemma3-legal:latest',
           conversationId,
           userId,
-          useRAG: true
+          useRAG: true;
         })
       });
       if (!initResponse.ok) {
@@ -112,8 +112,8 @@
         id: crypto.randomUUID(),
         role: 'assistant',
         content: '',
-        timestamp: new Date()
-      };
+        timestamp: new Date();
+      }
       messages = [...messages, aiMessage];
       // Handle SSE streaming with proper event handling
       if (initResponse.body) {
@@ -124,7 +124,7 @@
             const { done, value } = await reader.read();
             if (done) break;
             const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
+            // removed unused lines assignment
             for (const line of lines) {
               if (line.startsWith('data: ')) {
                 try {
@@ -184,8 +184,8 @@
         id: crypto.randomUUID(),
         role: 'assistant',
         content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,
-        timestamp: new Date()
-      };
+        timestamp: new Date();
+      }
       messages = [...messages, mockAiMessage];
       error = '';
     } finally {
@@ -209,7 +209,7 @@
   // Semantic RAG-based POI Timeline Functions
   async function loadEvidenceReports() {
     try {
-      const response = await fetch('/api/v1/evidence/reports');
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`Evidence reports API failed: ${response.status}`);
       }
@@ -230,7 +230,7 @@
           type: 'police_report',
           date: '2024-01-15',
           content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
-          confidence: 0.85
+          confidence: 0.85,
         },
         {
           id: 'mock-evidence-002',
@@ -238,7 +238,7 @@
           type: 'witness_statement',
           date: '2024-01-16',
           content: 'Mock evidence: Witness account of contract negotiation meeting.',
-          confidence: 0.92
+          confidence: 0.92,
         }
       ];
     }
@@ -269,7 +269,7 @@
           activities: person.timeline || [],
           confidence: person.confidence || 0.8,
           evidenceSources: person.sources || [],
-          relationships: person.relationships || []
+          relationships: person.relationships || [];
         })) || [];
         showTimeline = true;
       }
@@ -283,7 +283,7 @@
   async function generateUserActivityTimeline() {
     activityLoading = true;
     try {
-      const response = await fetch(`/api/v1/users/${userId}/activity-timeline`);
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         userActivityTimeline = data.timeline || [];
@@ -292,7 +292,7 @@
           totalTime: data.metrics?.totalTime || 0,
           casesAnalyzed: data.metrics?.casesAnalyzed || 0,
           evidenceReviewed: data.metrics?.evidenceReviewed || 0
-        };
+        }
       }
     } catch (e) {
       console.error('Failed to generate user activity timeline:', e);
@@ -458,7 +458,7 @@ handleQuickQuery('What are the elements of negligence?')}
                 </div>
               {/if}
               <div class="flex gap-2">
-                <input
+                <input;
                   bind:value={currentMessage}
                   onkeydown={handleKeydown}
                   placeholder="Ask a legal question..."

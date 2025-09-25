@@ -34,7 +34,7 @@ export const fieldMap = {
     updatedAt: 'updated_at',
     closedAt: 'closed_at'
   },
-  // Evidence fields
+  // Evidence fields;
   evidence: {
     caseId: 'case_id',
     criminalId: 'criminal_id',
@@ -81,7 +81,7 @@ export function buildSearchFilters(
   return or(...searchFilters);
 }
 export function applySorting(
-  column: PgColumn
+  column: PgColumn;
   order: 'asc' | 'desc' = 'desc';
 ): SQL {
   return order === 'asc' ? asc(column) : desc(column);
@@ -98,29 +98,29 @@ export const filterBuilders = {
       like(column, `%${start.toISOString().split('T')[0]}%`),
       like(column, `%${end.toISOString().split('T')[0]}%`)
     )
-};
+}
 // Pagination helpers
 export interface PaginationParams {
   page: number;
   limit: number;
 }
 export function getPaginationParams(
-  page: string | null
+  page: string | null;
   limit: string | null;
 ): PaginationParams {
   const pageNum = Math.max(1, parseInt(page || '1');
   const limitNum = Math.min(100, Math.max(1, parseInt(limit || '20'));
   return {
-    page: pageNum
+    page: pageNum;
     limit: limitNum
-  };
+  }
 }
 export function applyPagination(params: PaginationParams) {
   const offset = (params.page - 1) * params.limit;
   return {
     limit: params.limit,
     offset
-  };
+  }
 }
 // Common query patterns
 export const queryPatterns = {
@@ -160,7 +160,7 @@ export const queryPatterns = {
     }
     return buildFilters(conditions);
   }
-};
+}
 export default {
   fieldMap,
   buildFilters,
@@ -170,4 +170,4 @@ export default {
   getPaginationParams,
   applyPagination,
   queryPatterns
-};
+}

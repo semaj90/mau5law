@@ -13,7 +13,7 @@ export interface ProductionConfig {
     requestTimeout: number; // milliseconds
     retryAttempts: number;
     retryDelay: number; // milliseconds
-  };
+  }
   // Database Settings
   database: {
     connectionPoolSize: number;
@@ -21,7 +21,7 @@ export interface ProductionConfig {
     enableQueryLogging: boolean;
     enableSlowQueryLogging: boolean;
     slowQueryThreshold: number; // milliseconds
-  };
+  }
   // Cache Settings
   cache: {
     redis: {
@@ -29,25 +29,25 @@ export interface ProductionConfig {
       ttl: number; // seconds
       keyPrefix: string;
       enableCompression: boolean;
-    };
+    }
     gpu: {
       bufferSize: number; // bytes
       maxBuffers: number;
       enablePrefetch: boolean;
-    };
-  };
+    }
+  }
   // Security Settings
   security: {
     enableRateLimit: boolean;
     rateLimit: {
       windowMs: number;
       maxRequests: number;
-    };
+    }
     enableCors: boolean;
     corsOrigins: string[];
     enableCsrfProtection: boolean;
     maxRequestSize: number; // bytes
-  };
+  }
   // Monitoring Settings
   monitoring: {
     enableMetrics: boolean;
@@ -56,7 +56,7 @@ export interface ProductionConfig {
     healthCheckInterval: number; // milliseconds,
     enableErrorTracking: boolean;
     logLevel: 'error' | 'warn' | 'info' | 'debug';
-  };
+  }
   // AI Settings
   ai: {
     defaultModel: string;
@@ -66,7 +66,7 @@ export interface ProductionConfig {
     enableCaching: boolean;
     batchProcessing: boolean;
     maxBatchSize: number;
-  };
+  }
   // MinIO Settings
   minio: {
     maxFileSize: number;
@@ -75,7 +75,7 @@ export interface ProductionConfig {
     enableEncryption: boolean;
     enableVersioning: boolean;
     enableNotifications: boolean;
-  };
+  }
 }
 // Production Configuration
 export const PRODUCTION_CONFIG: ProductionConfig = {
@@ -156,7 +156,7 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
     enableVersioning: true
     enableNotifications: true
   }
-};
+}
 // Development Configuration (less restrictive)
 export const DEVELOPMENT_CONFIG: ProductionConfig = {
   ...PRODUCTION_CONFIG,
@@ -183,7 +183,7 @@ export const DEVELOPMENT_CONFIG: ProductionConfig = {
     logLevel: 'debug', // Full logging in development
     metricsInterval: 30000, // 30 seconds
   }
-};
+}
 // Environment-based configuration
 export function getConfig(): ProductionConfig {
   const isDevelopment =

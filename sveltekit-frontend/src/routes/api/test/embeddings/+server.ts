@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types.js'
 // Nomic Embedding Service Test API
 // Tests the 768-dimensional embedding service with database integration
 import { json } from '@sveltejs/kit'
-import { URL } from "url"
+
 }
 export interface TestResult {
   test: string

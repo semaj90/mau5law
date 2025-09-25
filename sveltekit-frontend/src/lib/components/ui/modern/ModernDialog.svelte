@@ -46,10 +46,11 @@
       lg: 'max-w-2xl',
       xl: 'max-w-4xl',
       full: 'max-w-7xl w-full h-full max-h-screen';
-    };
+    }
     return `dialog-content ${sizes[size]}`;
   });
 </script>
+
 <DialogPrimitive.Root bind:open>
   {#if trigger}
     <DialogPrimitive.Trigger>
@@ -58,47 +59,26 @@
   {/if}
   <DialogPrimitive.Portal>
     <!-- Backdrop overlay -->
-    <DialogPrimitive.Overlay
-      class="dialog-overlay"
-    />
+    <DialogPrimitive.Overlay class="dialog-overlay" />
     <!-- Dialog content -->
-    <DialogPrimitive.Content
-      class={dialogClasses}
-    >
+    <DialogPrimitive.Content class={dialogClasses}>
       <!-- Header -->
       <header class="dialog-header">
         <div class="golden-flex-between">
           <div class="space-y-golden">
-            <DialogPrimitive.Title
-                class="dialog-title"
-              >
-                {title}
-              </DialogPrimitive.Title>
+            <DialogPrimitive.Title class="dialog-title">
+              {title}
+            </DialogPrimitive.Title>
             {#if description}
-              <DialogPrimitive.Description
-                class="dialog-description"
-              >
+              <DialogPrimitive.Description class="dialog-description">
                 {description}
               </DialogPrimitive.Description>
             {/if}
           </div>
           {#if showClose}
-            <DialogPrimitive.Close
-              class="dialog-close"
-              onclick={handleClose}
-            >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
+            <DialogPrimitive.Close class="dialog-close" onclick={handleClose}>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span class="sr-only">Close dialog</span>
             </DialogPrimitive.Close>
@@ -118,6 +98,7 @@
     </DialogPrimitive.Content>
   </DialogPrimitive.Portal>
 </DialogPrimitive.Root>
+
 <style>
   .dialog-overlay {
     position: fixed;

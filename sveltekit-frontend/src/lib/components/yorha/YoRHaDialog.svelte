@@ -71,13 +71,13 @@ https://svelte.dev/e/attribute_duplicate -->
       color: "var(--yorha-secondary, #ffd700)",
       border: "var(--yorha-secondary, #ffd700)",
     },
-  };
+  }
   const positionClasses = {
     center: "dialog-center",
     top: "dialog-top",
     bottom: "dialog-bottom",
-  };
-  function handleKeydown(event: KeyboardEvent) {
+  }
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === "Escape" && closable && !persistent) {
       event.preventDefault();
       handleClose();
@@ -92,7 +92,7 @@ https://svelte.dev/e/attribute_duplicate -->
       }
     }
   }
-  function handleBackdropClick(event: MouseEvent) {
+  function handleBackdropClick(_event: MouseEvent) {
     if (event.target === event.currentTarget && closable && !persistent) {
       handleClose();
     }
@@ -137,7 +137,7 @@ https://svelte.dev/e/attribute_duplicate -->
       transitionfly={{
         y: position === "top" ? -50 : position === "bottom" ? 50 : 0,
         duration: 250,
-        easing: quintOut
+        easing: quintOut;
       }}
       tabindex="-1"
     >
@@ -146,7 +146,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <div class="header-left">
           <div
             class="dialog-icon"
-            style="color: {config.color}; border-color: {config.color}"
+            style="color: {config.color} border-color: {config.color}"
           >
             {config.icon}
           </div>
@@ -198,7 +198,7 @@ https://svelte.dev/e/attribute_duplicate -->
           </button>
           <button
             class="dialog-button confirm"
-            style="border-color: {config.color}; color: {config.color}"
+            style="border-color: {config.color} color: {config.color}"
             onclick={handleConfirm}
           >
             <span class="button-icon">✓</span>
@@ -207,7 +207,7 @@ https://svelte.dev/e/attribute_duplicate -->
         {:else}
           <button
             class="dialog-button acknowledge"
-            style="border-color: {config.color}; color: {config.color}"
+            style="border-color: {config.color} color: {config.color}"
             onclick={handleClose}
           >
             <span class="button-icon">■</span>

@@ -15,7 +15,7 @@
       type: 'case' | 'evidence' | 'statute' | 'brief';
       progress: number;
       complexity: number;
-    };
+    }
     connections?: Array;
     lodLevel?: 'low' | 'medium' | 'high' | 'ultra';
     style?: 'nes' | 'snes' | 'n64' | 'ps1' | 'yorha';
@@ -129,7 +129,7 @@
       filter: 'contrast(1.1) saturate(0.9)',
       borderRadius: '0px';
     }
-  };
+  }
   let currentStyle = $derived(styleConfigs[style]);
   // LOD configurations
   const lodConfigs = {
@@ -137,7 +137,7 @@
     medium: { particleCount: 50, updateRate: 4, effectIntensity: 0.7 },
     high: { particleCount: 100, updateRate: 2, effectIntensity: 0.9 },
     ultra: { particleCount: 200, updateRate: 1, effectIntensity: 1.0 }
-  };
+  }
   let currentLOD = $derived(lodConfigs[lodLevel]);
   // Quality Tier Configurations for Adaptive Rendering
   const qualityTiers = {
@@ -206,7 +206,7 @@
       maxParticles: 200,
       updateRate: 1;
     }
-  };
+  }
   $effect(() => {
     (async () => {
 // Initialize GPU cache for adaptive rendering
@@ -261,7 +261,7 @@
       connection: currentStyle.colors.secondary,
       analysis: currentStyle.colors.accent,
       result: '#00FF00';
-    };
+    }
     return {
       id: `particle_${Date.now()}_${Math.random()}`,
       x: (Math.random() - 0.5) * 400,
@@ -273,11 +273,11 @@
         z: (Math.random() - 0.5) * 1;
       },
       type,
-      color: colors[type]
+      color: colors[type];
       size: Math.random() * 6 + 2,
       life: 1.0,
       maxLife: Math.random() * 3000 + 2000;
-    };
+    }
   }
   function animate() {
     const frameStartTime = performance.now();
@@ -361,7 +361,7 @@
       connecting: 0.8,
       synthesizing: 1.0,
       complete: 0.2;
-    };
+    }
     const targetIntensity = stageIntensities[processingStage];
     pulseIntensity += (targetIntensity - pulseIntensity) * 0.05;
   }
@@ -395,15 +395,15 @@
         translateY(${particle.y}px)
         translateZ(${translateZ}px)
         scale(${scale});
-      opacity: ${opacity};
-      background: ${particle.color};
+      opacity: ${opacity}
+      background: ${particle.color}
       width: ${particle.size}px;
       height: ${particle.size}px;
-      border-radius: ${currentStyle.borderRadius};
-      box-shadow: ${currentStyle.shadows};
-      filter: ${currentStyle.filter};
+      border-radius: ${currentStyle.borderRadius}
+      box-shadow: ${currentStyle.shadows}
+      filter: ${currentStyle.filter}
       pointer-events: none;
-      z-index: ${Math.round(100 + translateZ)};
+      z-index: ${Math.round(100 + translateZ)}
     `;
   }
   function getContainerStyle() {
@@ -421,8 +421,8 @@
         rotateY(${rotationY * 0.1}deg)
         rotateZ(${rotationZ * 0.05}deg)
         scale(${zoom});
-      filter: ${adaptiveFilter};
-      image-rendering: ${imageRendering};
+      filter: ${adaptiveFilter}
+      image-rendering: ${imageRendering}
       will-change: transform, filter;
     `;
   }
@@ -433,7 +433,7 @@
       connecting: currentStyle.colors.accent,
       synthesizing: '#00FF00',
       complete: '#FFFFFF';
-    };
+    }
     return colors[processingStage];
   }
   function getStageDescription() {
@@ -443,7 +443,7 @@
       connecting: 'Finding connections...',
       synthesizing: 'Synthesizing results...',
       complete: 'Processing complete';
-    };
+    }
     return descriptions[processingStage];
   }
   // ===============================
@@ -464,7 +464,7 @@
     adaptiveQuality = getInitialQualityTier(performanceTarget);
     qualityTier = qualityTiers[adaptiveQuality];
     console.log('🚀 Adaptive Rendering Engine initialized:', {
-      quality: adaptiveQuality
+      quality: adaptiveQuality;
       target: performanceTarget
       userId;
     });
@@ -535,7 +535,7 @@
       'smooth': 60,
       'balanced': 55,
       'quality': 45
-    };
+    }
     const targetFPS = fpsTargets[performanceTarget] || 55;
     const fpsScore = Math.min(avgFPS / targetFPS, 1.2); // Allow slight overclock
     score += fpsScore * 0.6;
@@ -618,7 +618,7 @@
     await adjustParticleCount(targetParticleCount);
     // Update cache with quality preference
     await gpuCache.storeResult(`user_quality_preference_${userId}`, {
-      quality: newQuality
+      quality: newQuality;
       timestamp: Date.now(),
       performance_context: {
         fps: performanceMetrics.fps,
@@ -672,31 +672,29 @@
       particles: particles.length,
       cacheHit: Math.round(performanceMetrics.cacheHitRate * 100),
       performanceScore: Math.round(calculatePerformanceScore(avgFPS) * 100);
-    };
+    }
   }
 </script>
+
 <div
   bind:this={container}
   class="nes-lod-processor"
-  style="
-    background: {currentStyle.colors.background};
-    image-rendering: {currentStyle.pixelSize > 2 ? 'pixelated' : 'auto'};
+  style=";
+    background: {currentStyle.colors.background}
+    image-rendering: {currentStyle.pixelSize > 2 ? 'pixelated' : 'auto'}
   "
 >
   <!-- 3D Scene Container -->
-  <div
-    class="scene-container"
-    style={getContainerStyle()}
-  >
+  <div class="scene-container" style={getContainerStyle()}>
     <!-- Document Representation -->
     {#if document}
       <div
         class="document-core"
         style="
-          color: {getStageColor()};
-          text-shadow: 0 0 20px {getStageColor()};
-          border: 2px solid {getStageColor()};
-          border-radius: {currentStyle.borderRadius};
+          color: {getStageColor()}
+          text-shadow: 0 0 20px {getStageColor()}
+          border: 2px solid {getStageColor()}
+          border-radius: {currentStyle.borderRadius}
           box-shadow: {currentStyle.shadows}, inset 0 0 20px {getStageColor()}33;
         "
         transitionscale={{ duration: 500, easing: elasticOut }}
@@ -707,14 +705,7 @@
         <!-- Progress Ring -->
         <div class="progress-ring">
           <svg width="60" height="60" viewBox="0 0 60 60">
-            <circle
-              cx="30"
-              cy="30"
-              r="25"
-              fill="none"
-              stroke="rgba(255,255,255,0.2)"
-              stroke-width="2"
-            />
+            <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
             <circle
               cx="30"
               cy="30"
@@ -744,10 +735,10 @@
     {#each connections as connection (connection.id)}
       <div
         class="connection-line"
-        style="
-          background: {currentStyle.colors.secondary};
-          opacity: {connection.strength};
-          box-shadow: 0 0 10px {currentStyle.colors.secondary};
+        style=";
+          background: {currentStyle.colors.secondary}
+          opacity: {connection.strength}
+          box-shadow: 0 0 10px {currentStyle.colors.secondary}
         "
         transitionfly={{ duration: 500, easing: quintOut }}
       ></div>
@@ -758,12 +749,12 @@
     <!-- Processing Stage Indicator -->
     <div
       class="stage-indicator"
-      style="
+      style=";
         background: {getStageColor()}22;
-        border: 1px solid {getStageColor()};
-        color: {getStageColor()};
-        border-radius: {currentStyle.borderRadius};
-        box-shadow: {currentStyle.shadows};
+        border: 1px solid {getStageColor()}
+        color: {getStageColor()}
+        border-radius: {currentStyle.borderRadius}
+        box-shadow: {currentStyle.shadows}
       "
       transitionfade={{ duration: 300 }}
     >
@@ -780,11 +771,11 @@
     <!-- LOD Level Indicator -->
     <div
       class="lod-indicator"
-      style="
+      style=";
         background: {currentStyle.colors.accent}22;
-        border: 1px solid {currentStyle.colors.accent};
-        color: {currentStyle.colors.accent};
-        border-radius: {currentStyle.borderRadius};
+        border: 1px solid {currentStyle.colors.accent}
+        color: {currentStyle.colors.accent}
+        border-radius: {currentStyle.borderRadius}
       "
     >
       <div class="lod-text">LOD: {lodLevel.toUpperCase()}</div>
@@ -795,9 +786,9 @@
       class="style-indicator"
       style="
         background: {currentStyle.colors.primary}22;
-        border: 1px solid {currentStyle.colors.primary};
-        color: {currentStyle.colors.primary};
-        border-radius: {currentStyle.borderRadius};
+        border: 1px solid {currentStyle.colors.primary}
+        color: {currentStyle.colors.primary}
+        border-radius: {currentStyle.borderRadius}
       "
     >
       {style.toUpperCase()} Mode
@@ -811,7 +802,7 @@
           background: rgba(212, 175, 55, 0.1);
           border: 1px solid #D4AF37;
           color: #D4AF37;
-          border-radius: {currentStyle.borderRadius};
+          border-radius: {currentStyle.borderRadius}
         "
       >
         <div class="quality-tier">🎮 {qualityInfo.tier}</div>
@@ -841,6 +832,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .nes-lod-processor {
     position: relative;
@@ -991,21 +983,44 @@
   }
   /* Animations */
   @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(180deg); }
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(180deg);
+    }
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
   }
   @keyframes flow {
-    0% { opacity: 0.3; transform: scaleX(0); }
-    50% { opacity: 1; transform: scaleX(1); }
-    100% { opacity: 0.3; transform: scaleX(0); }
+    0% {
+      opacity: 0.3;
+      transform: scaleX(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    100% {
+      opacity: 0.3;
+      transform: scaleX(0);
+    }
   }
   /* Responsive design */
   @media (max-width: 768px) {

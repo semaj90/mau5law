@@ -36,7 +36,7 @@
     return () => {
       subscription.unsubscribe();
       actor.stop();
-    };
+    }
   });
   // Reactive getters for easier template access
   let context = $derived(machineState.context as EnhancedCaseManagementContext);
@@ -70,7 +70,7 @@
       description: '',
       priority: 'medium',
       status: 'open';
-    };
+    }
   }
   function searchCases() {
     if (searchQuery.trim()) {
@@ -225,7 +225,7 @@ Refresh
             />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1" for="description">Description</label><textarea id="description"
+            <label class="block text-sm font-medium mb-1" for="description">Description</label><textarea id="description";
               bind:value={newCaseData.description}
               placeholder="Enter case description..."
               rows="3"

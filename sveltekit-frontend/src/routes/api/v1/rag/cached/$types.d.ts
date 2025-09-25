@@ -1,2 +1,2 @@
-import type { RequestHandler as GenericRequestHandler } from '@sveltejs/kit'
-export type RequestHandler = GenericRequestHandler
+import type { RequestHandler as GenericRequestHandler } from '@sveltejs/kit';
+export type RequestHandler = GenericRequestHandler;

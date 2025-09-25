@@ -1,4 +1,3 @@
-
 /**
  * Authentication Types
  * Standardized types for user sessions and authentication
@@ -20,11 +19,13 @@ export interface SessionValidationResult {
 }
 // Type guards for safe type checking
 export function isSessionUser(user: any): user is SessionUser {
-  return user &&
+  return (
+    user &&
     typeof user.id === 'string' &&
     typeof user.email === 'string' &&
     typeof user.role === 'string' &&
-    typeof user.isActive === 'boolean';
+    typeof user.isActive === 'boolean'
+  );
 }
 export function hasValidSession(locals: { user?: unknown } & { [key: string]: any }): locals is { user: SessionUser } {
   return !!locals.user && isSessionUser(locals.user as any);

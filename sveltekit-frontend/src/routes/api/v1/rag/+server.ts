@@ -16,7 +16,7 @@ import type {
 } from '$lib/types/api.js'
 import { embeddingService } from '$lib/server/embedding-service.js'
 import crypto from 'crypto'
-import { URL } from 'url'
+
 // Enhanced RAG Service Configuration
 const ENHANCED_RAG_CONFIG = {
   http: 'http://localhost:8094',

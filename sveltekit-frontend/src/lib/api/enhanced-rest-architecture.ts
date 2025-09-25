@@ -10,7 +10,7 @@ export interface APIResponse<T = any> {
     timestamp: string;
     version: string;
     processing_time: number;
-  };
+  }
 }
 export interface ClusteringConfig {
   k: number;
@@ -43,7 +43,7 @@ export interface DocumentCluster {
   label?: string;
   // Additional properties for search results
   similarity?: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   // Additional properties for various search contexts
   documentId?: string;
   embedding?: number[];
@@ -74,7 +74,7 @@ export interface ClusterResultDetails {
     silhouetteScore: number;
     inertia: number;
     converged: boolean;
-  };
+  }
 }
 export class EnhancedRESTClient {
   constructor(private baseURL: string = '/api') {}
@@ -87,7 +87,7 @@ export class EnhancedRESTClient {
     return response.json();
   }
   async get<T>(endpoint: string): Promise<APIResponse<T> {
-    const response = await fetch(`${this.baseURL}${endpoint}`);
+    // removed unused response assignment
     return response.json();
   }
   async cluster(data: number[][], config: ClusteringConfig): Promise<APIResponse<ClusterResult> {

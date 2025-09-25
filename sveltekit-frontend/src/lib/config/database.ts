@@ -33,7 +33,7 @@ export function getDatabaseConfig(): DatabaseConfig {
     maxConnections: parseInt(process.env.DB_MAX_CONNECTIONS || '20'),
     idleTimeoutMs: parseInt(process.env.DB_IDLE_TIMEOUT || '30000'),
     connectionTimeoutMs: parseInt(process.env.DB_CONNECTION_TIMEOUT || '10000')
-  };
+  }
 }
 /**
  * Generate standardized database URLs
@@ -45,7 +45,7 @@ export function getDatabaseUrls(): DatabaseUrls {
     connectionString: process.env.DATABASE_URL || baseUrl,
     appUrl: process.env.DATABASE_URL || baseUrl,
     adminUrl: process.env.ADMIN_DATABASE_URL || baseUrl
-  };
+  }
 }
 /**
  * Get connection string for specific service types
@@ -75,7 +75,7 @@ export function validateDatabaseConfig(): { valid: boolean; errors: string[] } {
   return {
     valid: errors.length === 0,
     errors
-  };
+  }
 }
 /**
  * Get pool configuration for different environments
@@ -98,11 +98,11 @@ export function getPoolConfig(environment: 'development' | 'production' | 'test'
       idleTimeoutMillis: 10000,
       connectionTimeoutMillis: 5000
     }
-  };
+  }
   return {
     connectionString: getConnectionString(),
     ...poolConfigs[environment]
-  };
+  }
 }
 /**
  * Export commonly used constants
@@ -131,5 +131,5 @@ export function getBrowserSafeDatabaseInfo() {
     // Never expose password in browser
     ssl: config.ssl,
     connected: true // This would be updated by a connection test
-  };
+  }
 }

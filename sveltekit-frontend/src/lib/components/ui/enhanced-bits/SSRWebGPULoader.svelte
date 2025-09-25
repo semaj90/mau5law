@@ -25,7 +25,7 @@
       overlay?: Snippet<[number, boolean, string]>;
       fallback?: Snippet<[string]>;
       debug?: Snippet<[any, number, boolean]>;
-    };
+    }
   }
   let {
     assetId,
@@ -86,7 +86,7 @@
         viewportDistance,
         documentComplexity: 0.5, // Medium complexity default
         memoryPressure: 0.3       // Assume good memory conditions
-      };
+      }
       currentLOD = lodManager.calculateLOD(lodContext);
       // Stream texture at calculated LOD
       const textureChunk = await lodManager.streamTexture(assetId, currentLOD);
@@ -202,6 +202,7 @@
     return lodManager.getMemoryStats();
   }
 </script>
+
 <!-- SSR-safe rendering with progressive enhancement -->
 <div
   bind:this={containerElement}
@@ -256,8 +257,8 @@
     {@render children.debug(getMemoryStats(), currentLOD, webgpuSupported)}
   {/if}
 </div>
-<style>
-  /* NES-inspired container styling */
+
+<style>/* NES-inspired container styling */ {}
   .nes-container {
     position: relative;
     border: 2px solid #000;
@@ -341,11 +342,21 @@
     text-shadow: 1px 1px 0 #fff;
   }
   @keyframes nes-blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.6; }
+0%, {}
+    50% {
+      opacity: 1;
+    }
+51%, {}
+    100% {
+      opacity: 0.6;
+    }
   }
   @keyframes nes-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https: //svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
       fileSize?: number;
       pageNumber?: number;
       section?: string;
-    };
+    }
     highlights: string[];
     aiSummary?: string;
     entities?: Array;
@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
     dateRange: {
       from?: Date;
       to?: Date;
-    };
+    }
     similarityThreshold: number;
     maxResults: number;
     tags: string[];
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
       vectorSearchTime: number;
       rankingTime: number;
       totalTime: number;
-    };
+    }
   }
   // State management
   const searchQuery = writable("");
@@ -127,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
     jurisdictions: [],
     dateRange: ,
     similarityThreshold: 0.7,
-    maxResults: maxResults
+    maxResults: maxResults;
     tags: [],
     sortBy: "relevance",
     sortOrder: "desc",
@@ -206,7 +206,7 @@ https://svelte.dev/e/js_parse_error -->
       // Build search request
       const searchRequest = {
         query: searchTerm
-        caseId: caseId || undefined
+        caseId: caseId || undefined;
         filters: {
           documentTypes: filters.documentTypes,
           jurisdictions: filters.jurisdictions,
@@ -220,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
         includeAnalytics: enableAnalytics
         generateSnippets: true
         highlightTerms: true
-      };
+      }
       // Make API call
       const response = await fetch("/api/search/vector", {
         method: "POST",
@@ -337,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
       jurisdictions: [],
       dateRange: ,
       similarityThreshold: 0.7,
-      maxResults: maxResults
+      maxResults: maxResults;
       tags: [],
       sortBy: "relevance",
       sortOrder: "desc",
@@ -371,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
       regulation: "pink",
       case_law: "gray",
       other: "slate",
-    };
+    }
     return colors[type as keyof typeof colors] || "gray";
   }
   function highlightText(text: string, highlights: string[]): string {
@@ -409,7 +409,7 @@ https://svelte.dev/e/js_parse_error -->
   });
   async function loadAnalytics() {
     try {
-      const response = await fetch("/api/search/analytics");
+      // removed unused response assignment
       if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
         searchAnalytics.set(data);

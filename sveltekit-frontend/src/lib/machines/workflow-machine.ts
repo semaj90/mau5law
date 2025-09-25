@@ -17,7 +17,7 @@ export interface DocumentContext {
   embeddings?: number[];
   ocrConfidence?: number;
   processingErrors?: string[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   retryCount: number;
 }
 export type DocumentEvent =
@@ -31,7 +31,7 @@ export type DocumentEvent =
   | { type: 'INDEXING_COMPLETED' }
   | { type: 'INDEXING_FAILED'; error: string }
   | { type: 'RETRY' }
-  | { type: 'ABORT' };
+  | { type: 'ABORT' }
 export const documentWorkflowMachine = setup({
   types: {
     context: { [key: string]: any } as DocumentContext,
@@ -211,7 +211,7 @@ export type CaseEvent =
   | { type: 'REQUEST_CHANGES'; reviewerId: number; changes: string }
   | { type: 'CLOSE_CASE'; reason?: string }
   | { type: 'ARCHIVE_CASE' }
-  | { type: 'REOPEN_CASE'; reason: string };
+  | { type: 'REOPEN_CASE'; reason: string }
 export const caseWorkflowMachine = setup({
   types: {
     context: { [key: string]: any } as CaseContext,
@@ -380,7 +380,7 @@ export interface RAGContext {
   tokens: {
     input: number;
     output: number;
-  };
+  }
 }
 export type RAGEvent =
   | { type: 'START_QUERY'; query: string; userId: number; caseId?: string }
@@ -390,7 +390,7 @@ export type RAGEvent =
   | { type: 'GENERATION_COMPLETED'; response: string; confidence: number; tokens: any }
   | { type: 'GENERATION_FAILED'; error: string }
   | { type: 'CACHE_STORED' }
-  | { type: 'RETRY' };
+  | { type: 'RETRY' }
 export const ragWorkflowMachine = setup({
   types: {
     context: { [key: string]: any } as RAGContext,

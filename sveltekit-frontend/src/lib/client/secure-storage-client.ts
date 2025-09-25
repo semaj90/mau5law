@@ -48,7 +48,7 @@ export class SecureStorageClient {
    * Get authentication headers
    */;
   private getAuthHeaders(): Record<string, string> {
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = {}
     if (this.authToken) {
       headers['Authorization'] = `Bearer ${this.authToken}`;
     }
@@ -58,7 +58,7 @@ export class SecureStorageClient {
    * Upload file with proper error handling and security
    */
   async uploadFile(
-    file: File
+    file: File;
     bucket: string = 'legal-documents',
     customKey?: string;
   ): Promise<UploadResponse> {
@@ -77,12 +77,12 @@ export class SecureStorageClient {
       const result = await (response as { json?: any; ok?: any }).json();
       if (!(response as { json?: any; ok?: any }).ok) {
         console.error('Upload failed:', (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error);
-        return { ok: false, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Upload failed' };
+        return { ok: false, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Upload failed' }
       }
       return result;
     } catch (error) {
       console.error('Upload error:', error);
-      return { ok: false, error: 'Network error during upload' };
+      return { ok: false, error: 'Network error during upload' }
     }
   }
   /**
@@ -101,12 +101,12 @@ export class SecureStorageClient {
       const result = await (response as { json?: any; ok?: any }).json();
       if (!(response as { json?: any; ok?: any }).ok) {
         console.error('Delete failed:', (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error);
-        return { ok: false, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Delete failed' };
+        return { ok: false, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Delete failed' }
       }
       return result;
     } catch (error) {
       console.error('Delete error:', error);
-      return { ok: false, error: 'Network error during delete' };
+      return { ok: false, error: 'Network error during delete' }
     }
   }
   /**
@@ -123,19 +123,19 @@ export class SecureStorageClient {
       });
       const result = await (response as { json?: any; ok?: any }).json();
       if (!(response as { json?: any; ok?: any }).ok) {
-        return { ok: false, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Status check failed' };
+        return { ok: false, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Status check failed' }
       }
       return result;
     } catch (error) {
       console.error('Status check error:', error);
-      return { ok: false, error: 'Network error during status check' };
+      return { ok: false, error: 'Network error during status check' }
     }
   }
   /**
    * Batch upload multiple files
    */
   async uploadFiles(
-    files: File[]
+    files: File[];
     bucket: string = 'legal-documents',
     onProgress?: (completed: number, total: number) => void;
   ): Promise<any> {
@@ -153,7 +153,7 @@ export class SecureStorageClient {
         onProgress(i + 1, files.length);
       }
     }
-    return { successful, failed };
+    return { successful, failed }
   }
 }
 /**
@@ -175,7 +175,7 @@ export class ReactiveStorageManager {
       files: this.files,
       loading: this.loading,
       error: this.error
-    };
+    }
   }
   /**
    * Set authentication token

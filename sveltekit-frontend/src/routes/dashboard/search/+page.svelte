@@ -41,7 +41,7 @@
       upload_date?: string;
       tags?: string[];
       confidence?: number;
-    };
+    }
     highlights?: string[];
   }
   interface SearchResponse {
@@ -53,7 +53,7 @@
       embedding_model: string;
       search_time_ms: number;
       total_results: number;
-    };
+    }
     suggestions?: string[];
   }
   // Svelte 5 runes for reactive state
@@ -95,10 +95,10 @@
     try {
       const requestBody = {
         query: query.trim(),
-        mode: searchMode
+        mode: searchMode;
         filters: {
           document_types: Array.from(selectedTypes),
-          similarity_threshold: similarityThreshold
+          similarity_threshold: similarityThreshold;
           limit: 20;
         },
         options: {
@@ -106,7 +106,7 @@
           include_metadata: true
           boost_recent: true
         }
-      };
+      }
       console.log('Vector search request:', requestBody);
       const response = await fetch('/api/unified/search', {
         method: 'POST',
@@ -131,7 +131,7 @@
       loading = false;
     }
   }
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter') {
       performSearch();
     }
@@ -445,4 +445,4 @@ Retry Search
       </div.Content>
     </div.Root>
   {/if}
-</div>
+</div>;

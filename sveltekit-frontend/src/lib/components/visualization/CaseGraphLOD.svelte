@@ -30,10 +30,10 @@
     importance: number; // 0-1, affects LOD visibility
     connections: string[];
     position: ;
-{ x: number; y: number; z?: number };
+{ x: number; y: number; z?: number }
     size: number;
     color: string;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   }
   interface GraphEdge {
     id: string;
@@ -43,19 +43,19 @@
     strength: number; // 0-1, affects LOD visibility
     label?: string;
     color: string;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   }
   interface GraphCluster {
     id: string;
     nodes: string[];
-    center: { x: number; y: number };
+    center: { x: number; y: number }
     radius: number;
     importance: number;
     label: string;
   }
   interface CaseGraphLODProps {
     caseId: string;
-    graphData?: { nodes: GraphNode[]; edges: GraphEdge[] };
+    graphData?: { nodes: GraphNode[]; edges: GraphEdge[] }
     enableWebGPU?: boolean;
     maxNodes?: number;
     cameraDistance?: number;
@@ -97,8 +97,8 @@
   let nodeTypeFilters = $state({
     person: true
     entity: true
-    document: true
-    event: true
+    document: true;
+    event: true;
     location: true;
   });
   let importanceThreshold = $state(0.1);
@@ -136,7 +136,7 @@
       description: 'Low Detail (N64 Style)',
       renderComplexity: 0.2;
     }
-  };
+  }
   // Derived values for automatic LOD calculation
   let recommendedLOD = $derived(() => {
     // N64-style LOD based on camera distance and node count
@@ -157,7 +157,7 @@
       renderComplexity: config?.renderComplexity || 0.2,
       memoryUsage: calculateMemoryUsage(),
       frameTime: estimateFrameTime();
-    };
+    }
   });
   // Initialize WebGPU and load graph data
   $effect(() => {
@@ -196,7 +196,7 @@ if (!browser) return;
     const context = canvasElement.getContext('webgpu');
     if (!context) throw new Error('WebGPU context creation failed');
     context.configure({
-      device: gpuDevice
+      device: gpuDevice;
       format: 'bgra8unorm',
       alphaMode: 'premultiplied',
       usage: GPUTextureUsage.RENDER_ATTACHMENT;
@@ -214,7 +214,7 @@ if (!browser) return;
     isLoading = true;
     try {
       // Load graph data from API
-      const response = await fetch(`/api/v1/cases/${caseId}/graph?maxNodes=${maxNodes}`);
+      // removed unused response assignment
       const data = await response.json();
       allNodes = data.nodes || [];
       allEdges = data.edges || [];
@@ -241,7 +241,7 @@ if (!browser) return;
       const typeWeight = getNodeTypeImportance(node.type);
       const metadataWeight = node.metadata.priority || 0.5;
       const importance = Math.min(1.0, (connectionWeight * 0.4) + (typeWeight * 0.3) + (metadataWeight * 0.3));
-      return { ...node, importance };
+      return { ...node, importance }
     });
   }
   function getNodeTypeImportance(type: string): number {
@@ -249,9 +249,9 @@ if (!browser) return;
       person: 0.9,     // People are usually most important
       entity: 0.8,     // Organizations, companies
       document: 0.6,   // Evidence, contract
-      event: 0.7,      // Timeline event
-      location: 0.5    // Places, addresse
-    };
+      event: 0.7,      // Timeline event;
+      location: 0.5    // Places, addresse;
+    }
     return typeWeights[type as keyof typeof typeWeights] || 0.5;
   }
   function generateGraphClusters(): void {
@@ -275,7 +275,7 @@ if (!browser) return;
         radius,
         importance,
         label: `${type.charAt.toUpperCase() + type.slice(1)}s (${nodes.length})`
-      };
+      }
     });
   }
   function calculateClusterCenter(nodes: GraphNode[]): { x: number; y: number } {
@@ -283,7 +283,7 @@ if (!browser) return;
       (acc, node) => ({ x: acc.x + node.position.x, y: acc.y + node.position.y }),
       { x: 0, y: 0 }
     );
-    return { x: sum.x / nodes.length, y: sum.y / nodes.length };
+    return { x: sum.x / nodes.length, y: sum.y / nodes.length }
   }
   function calculateClusterRadius(nodes: GraphNode[], center: { x: number; y: number }): number {
     return Math.max(
@@ -326,7 +326,7 @@ if (!browser) return;
           x: Math.cos(angle) * radius,
           y: Math.sin(angle) * radius,
           z: node.position.z || 0;
-        };
+        }
       }
     });
   }
@@ -343,7 +343,7 @@ if (!browser) return;
       if (simulationStep < 1000) { // Limit simulation steps
         requestAnimationFrame(simulate);
       }
-    };
+    }
     simulate();
   }
   function applyForces(): void {
@@ -367,7 +367,7 @@ if (!browser) return;
       // Apply attraction forces from edges
       visibleEdges.forEach(edge => {
         if (edge.source === nodeA.id) {
-          const target = visibleNodes.find(n => n.id === edge.target);
+          // removed unused target assignment
           if (target) {
             const dx = target.position.x - nodeA.position.x;
             const dy = target.position.y - nodeA.position.y;
@@ -396,7 +396,7 @@ if (!browser) return;
     // - Instanced rendering for nodes (using GPU buffers)
     // - Line rendering for edges with bundling
     // - LOD-based shader switching
-    // - N64-style effects for distant node
+    // - N64-style effects for distant node;
   }
   async function renderCanvas2D(): Promise<void> {
     const ctx = canvasElement?.getContext('2d');
@@ -417,7 +417,7 @@ if (!browser) return;
     ctx.lineWidth = 1;
     visibleEdges.forEach(edge => {
       const source = visibleNodes.find(n => n.id === edge.source);
-      const target = visibleNodes.find(n => n.id === edge.target);
+      // removed unused target assignment
       if (source && target) {
         // Apply LOD-based edge styling
         const alpha = Math.max(0.1, lodConfig[currentLOD as keyof typeof lodConfig].renderComplexity);
@@ -481,7 +481,7 @@ if (!browser) return;
     ctx.restore();
   }
   // User interaction handlers
-  function handleCanvasClick(event: MouseEvent): void {
+  function handleCanvasClick(_event: MouseEvent): void {
     const rect = canvasElement?.getBoundingClientRect();
     if (!rect) return;
     const x = (event.clientX - rect.left - rect.width / 2) / zoomLevel + cameraPosition.x;
@@ -499,7 +499,7 @@ if (!browser) return;
     }
     renderGraph();
   }
-  function handleCanvasHover(event: MouseEvent): void {
+  function handleCanvasHover(_event: MouseEvent): void {
     const rect = canvasElement?.getBoundingClientRect();
     if (!rect) return;
     const x = (event.clientX - rect.left - rect.width / 2) / zoomLevel + cameraPosition.x;
@@ -523,7 +523,7 @@ if (!browser) return;
     renderGraph();
   }
   function handleResetView(): void {
-    cameraPosition = { x: 0, y: 0, z: cameraDistance };
+    cameraPosition = { x: 0, y: 0, z: cameraDistance }
     zoomLevel = 1.0;
     rotation = 0;
     renderGraph();
@@ -596,6 +596,7 @@ if (!browser) return;
     initializePhysicsPositions();
   }
 </script>
+
 <div class="case-graph-lod nes-container with-title">
   <p class="title">🕸️ Case Relationship Graph</p>
   <!-- Graph Controls -->
@@ -615,11 +616,7 @@ if (!browser) return;
       </LoadingButton>
     </div>
     <div class="lod-controls">
-      <select
-        class="nes-select"
-        bind:value={currentLOD}
-        onchange={handleLODChange}
-      >
+      <select class="nes-select" bind:value={currentLOD} onchange={handleLODChange}>
         {#each Object.entries(lodConfig) as [level, config]}
           <option value={parseInt(level)}>
             LOD {level}: {config.description}
@@ -654,7 +651,8 @@ if (!browser) return;
           <div class="importance-filter">
             <label class="nes-label" for="-min-importance-impo">
               Min Importance: {importanceThreshold.toFixed(2)}
-            </label><input id="-min-importance-impo"
+            </label><input
+              id="-min-importance-impo"
               type="range"
               class="nes-range"
               min="0"
@@ -735,6 +733,7 @@ if (!browser) return;
     </div>
   </div>
 </div>
+
 <style>
   .case-graph-lod {
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);

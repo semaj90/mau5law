@@ -19,7 +19,7 @@ export interface SessionData {
   ipAddress?: string;
   userAgent?: string;
   deviceFingerprint?: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface SessionConfig {
   maxAge: number; // Session duration in milliseconds,
@@ -34,7 +34,7 @@ const DEFAULT_CONFIG: SessionConfig = {
   renewalThreshold: 2 * 60 * 60 * 1000, // 2 hours
   maxSessionsPerUser: 5,
   cleanupInterval: 60 * 60 * 1000, // 1 hour
-};
+}
 export class SessionManager {
   private static instance: SessionManager | null = null;
   private redisClient: any = null;
@@ -42,7 +42,7 @@ export class SessionManager {
   private cleanupTimer: NodeJS.Timeout | null = null;
   private isInitialized = false;
   private constructor(config: Partial<SessionConfig> = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.config = { ...DEFAULT_CONFIG, ...config }
   }
   static getInstance(config?: Partial<SessionConfig>): SessionManager {
     if (!SessionManager.instance) {
@@ -81,12 +81,12 @@ export class SessionManager {
    * Create a new session
    */
   async createSession(
-    user: AuthUser
+    user: AuthUser;
     request: {
       ipAddress?: string;
       userAgent?: string;
       deviceFingerprint?: string;
-      metadata?: { [key: string]: any };
+      metadata?: { [key: string]: any }
     } = {}
   ): Promise<SessionData> {
     if (!this.redisClient) {
@@ -110,7 +110,7 @@ export class SessionManager {
       userAgent: request.userAgent,
       deviceFingerprint: request.deviceFingerprint,
       metadata: request.metadata || {}
-    };
+    }
     // Enforce max sessions per user
     await this.enforceSessionLimits(user.id);
     // Store session in Redis
@@ -166,7 +166,7 @@ export class SessionManager {
    */
   async updateSessionActivity(
     sessionId: string
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   ): Promise<boolean> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -180,7 +180,7 @@ export class SessionManager {
       const now = new Date();
       sessionData.lastActivity = now;
       if (metadata) {
-        sessionData.metadata = { ...sessionData.metadata, ...metadata };
+        sessionData.metadata = { ...sessionData.metadata, ...metadata }
       }
       // Check if session should be renewed
       const timeUntilExpiry = sessionData.expiresAt.getTime() - now.getTime();
@@ -304,7 +304,7 @@ export class SessionManager {
       const totalSessions = sessionKeys.length;
       let activeSessions = 0;
       let expiredSessions = 0;
-      const userSessionCounts: Record<string, number> = {};
+      const userSessionCounts: Record<string, number> = {}
       for (const key of sessionKeys) {
         const sessionId = key.replace(this.getSessionKey(''), '');
         const session = await this.getSession(sessionId);
@@ -320,7 +320,7 @@ export class SessionManager {
         activeSessions,
         expiredSessions,
         userSessionCounts
-      };
+      }
     } catch (error: any) {
       console.error('Error getting session stats:', error);
       return {
@@ -328,7 +328,7 @@ export class SessionManager {
         activeSessions: 0,
         expiredSessions: 0,
         userSessionCounts: { [key: string]: any }
-      };
+      }
     }
   }
   /**

@@ -9,24 +9,22 @@
  */
 // Type definitions
 export interface JSONOptions {
-  replacer?: (key: string, value: any) => any;
+  replacer?: (_key: string, value: any) => any;
   space?: string | number;
 }
 export interface ParseOptions {
-  reviver?: (key: string, value: any) => any;
+  reviver?: (_key: string, value: any) => any;
 }
 /**
  * Fast JSON stringifier - optimized for legal document data
  * Uses native JSON.stringify with performance optimizations
- */;
-export class FastJSON {
+ */ export class FastJSON {
   private static cache = new Map<string, string>();
   private static maxCacheSize = 1000;
   /**
    * High-performance JSON stringify with caching
    * Perfect for repetitive legal document structures
-   */;
-  static stringify(obj: any, options?: JSONOptions): string {
+   */ static stringify(obj: any, options?: JSONOptions): string {
     try {
       // For simple objects, use caching
       if (typeof obj === 'object' && obj !== null && !Array.isArray(obj)) {
@@ -50,8 +48,7 @@ export class FastJSON {
   /**
    * High-performance JSON parse with error recovery
    * Handles malformed legal document JSON gracefully
-   */;
-  static parse<T = any>(text: string, options?: ParseOptions): T {
+   */ static parse<T = any>(text: string, options?: ParseOptions): T {
     try {
       if (!text || text.trim() === '' || text === null || text === undefined) {
         throw new Error('Empty or null JSON string');
@@ -69,8 +66,7 @@ export class FastJSON {
   }
   /**
    * Validate JSON without parsing - ultra-fast validation
-   */;
-  static isValid(text: string): boolean {
+   */ static isValid(text: string): boolean {
     if (!text || text.trim() === '') return false;
     try {
       JSON.parse(text);
@@ -93,14 +89,12 @@ export class FastJSON {
   /**
    * Compress JSON by removing unnecessary whitespace
    * Perfect for legal document storage optimization
-   */;
-  static compress(obj: any): string {
+   */ static compress(obj: any): string {
     return FastJSON.stringify(obj); // No spacing = compressed
   }
   /**
    * Pretty-print JSON for legal document readability
-   */;
-  static prettify(obj: any, indent: number = 2): string {
+   */ static prettify(obj: any, indent: number = 2): string {
     return FastJSON.stringify(obj, { space: indent });
   }
   // Private helper methods
@@ -115,11 +109,11 @@ export class FastJSON {
   private static tryRecoverJSON(text: string): string | null {
     try {
       // Common legal document JSON issues
-      let recovered = text
+      const recovered = text
         .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
-        .replace(/\n|\r/g, ' ')       // Replace newlines
-        .replace(/\t/g, ' ')          // Replace tabs
-        .replace(/\\/g, '\\\\')       // Escape backslashes
+        .replace(/\n|\r/g, ' ') // Replace newlines
+        .replace(/\t/g, ' ') // Replace tabs
+        .replace(/\\/g, '\\\\') // Escape backslashes
         .trim();
       // Validate the recovery attempt
       JSON.parse(recovered);
@@ -130,18 +124,16 @@ export class FastJSON {
   }
   /**
    * Clear the internal cache
-   */;
-  static clearCache(): void {
+   */ static clearCache(): void {
     FastJSON.cache.clear();
   }
   /**
    * Get cache statistics
-   */;
-  static getCacheStats() {
+   */ static getCacheStats() {
     return {
       size: FastJSON.cache.size,
-      maxSize: FastJSON.maxCacheSize
-    };
+      maxSize: FastJSON.maxCacheSize,
+    }
   }
 }
 // Convenience functions for common legal AI use cases

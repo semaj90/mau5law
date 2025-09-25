@@ -131,7 +131,7 @@
         high: 0.9,
         medium: 0.7,
         low: 0.0;
-      };
+      }
       const minScore = thresholds[selectedConfidence as keyof typeof thresholds];
       const maxScore = selectedConfidence === 'low' ? 0.7 : 1.0;
       return searchResults.filter(item => item.score) >= minScore && (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score < maxScore
@@ -141,12 +141,12 @@
   // Entity type icons mapping
   const entityIcons = {
     person: Users
-    organization: Scale
-    location: MapPin
+    organization: Scale;
+    location: MapPin;
     date: Calendar
     legal_term: FileText
     case_citation: Scal;
-  };
+  }
   // Entity type colors
   const entityColors = {
     person: 'semantic-entity-person',
@@ -155,7 +155,7 @@
     date: 'semantic-entity-date',
     legal_term: 'semantic-entity-legal',
     case_citation: 'semantic-entity-legal';
-  };
+  }
   // Search functionality
   async function performVectorSearch() {
     if (!searchQuery.trim()) return;
@@ -166,7 +166,7 @@
       // Mock results based on search type
       searchResults = mockSearchResults.map(result => ({
         ...result,
-        score: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0
+        score: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0;
         highlights: (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlights.filter(() => Math.random() > 0.3) // Random highlights
       }));
       // Mock entity extraction
@@ -228,7 +228,7 @@
         legal
         label="Confidence Filter"
       />
-      <Select
+      <Select;
         bind:value={analysisDepth}
         options={analysisOptions}
         placeholder="Analysis depth..."

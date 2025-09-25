@@ -4,11 +4,11 @@
  * Optimized for legal document semantic analysis and reinforcement learning
  */
 // Production-compatible simplified imports
-type NESGPUIntegration = { computeBatchSimilarities?: (data: any) => Promise<number[]> };
-type NESMemoryArchitecture = { allocateCHR_ROM?: (size: number) => any; writeCHR_ROM?: (region: any, data: any) => void };
-type SemanticAnalysisPipeline = { processDocument: (content: string) => Promise<any>; extractEntities: (content: string) => Promise<string[]>; generateEmbedding?: (text: string) => Promise<Float32Array> };
-type DimensionalTensorStore = { storeTensorSlice?: (slice: any) => Promise<void>; getStats?: () => any };
-type LegalAIReranker = { rerank: (results: any[], context: any) => Promise<any[]> };
+type NESGPUIntegration = { computeBatchSimilarities?: (data: any) => Promise<number[]> }
+type NESMemoryArchitecture = { allocateCHR_ROM?: (size: number) => any; writeCHR_ROM?: (region: any, data: any) => void }
+type SemanticAnalysisPipeline = { processDocument: (content: string) => Promise<any>; extractEntities: (content: string) => Promise<string[]>; generateEmbedding?: (text: string) => Promise<Float32Array> }
+type DimensionalTensorStore = { storeTensorSlice?: (slice: any) => Promise<void>; getStats?: () => any }
+type LegalAIReranker = { rerank: (results: any[], context: any) => Promise<any[]> }
 type TensorSlice = {
   data: Float32Array;
   dimensions: number[];
@@ -22,8 +22,8 @@ type TensorSlice = {
     compressed: boolean;
     accessCount: number;
     lastAccessed: number;
-  };
-};
+  }
+}
 type UserContext = {
   userId?: string;
   preferences?: any;
@@ -33,17 +33,17 @@ type UserContext = {
   workflowState?: string;
   recentActions?: any[];
   currentCase?: any;
-};
-type RerankResult = { id: string; score: number; metadata: any };
-type GraphNode = { id: string; properties: any };
-type GraphEdge = { id: string; source: string; target: string; weight: number };
+}
+type RerankResult = { id: string; score: number; metadata: any }
+type GraphNode = { id: string; properties: any }
+type GraphEdge = { id: string; source: string; target: string; weight: number }
 }
 export interface SoraGraphNode {
   id: string;
   type: 'document' | 'entity' | 'concept' | 'relationship' | 'case' | 'evidence';
-  properties: { [key: string]: any };
+  properties: { [key: string]: any }
   embedding?: Float32Array;
-  coordinates?: { x: number; y: number; z: number };
+  coordinates?: { x: number; y: number; z: number }
   score?: number;
   depth?: number;
 }
@@ -53,7 +53,7 @@ export interface SoraGraphEdge {
   target: string;
   type: 'cites' | 'contains' | 'related' | 'similar' | 'references' | 'contradicts';
   weight: number;
-  properties: { [key: string]: any };
+  properties: { [key: string]: any }
 }
 export interface SoraTraversalPath {
   nodes: SoraGraphNode[];
@@ -74,7 +74,7 @@ export interface SoraTraversalOptions {
     explorationRate: number;
     learningRate: number;
     discountFactor: number;
-  };
+  }
 }
 export interface SoraReinforcementState {
   currentNode: string;
@@ -129,7 +129,7 @@ export class SoraGraphTraversal {
         discountFactor: 0.95
       },
       ...options
-    };
+    }
     // Check cache first
     const cacheKey = `${startNodeId}_${query}_${JSON.stringify(config)}`;
     if (this.traversalCache.has(cacheKey)) {
@@ -145,7 +145,7 @@ export class SoraGraphTraversal {
       pathHistory: [startNodeId],
       cumulativeReward: 0,
       actionValues: new Map()
-    };
+    }
     let paths: SoraTraversalPath[] = [];
     switch (config.traversalStrategy) {
       case 'reinforcement':
@@ -182,7 +182,7 @@ export class SoraGraphTraversal {
   private async reinforcementTraversal(
     startNodeId: string
     queryEmbedding: Float32Array
-    config: SoraTraversalOptions
+    config: SoraTraversalOptions;
     state: SoraReinforcementState;
   ): Promise<SoraTraversalPath[]> {
     const paths: SoraTraversalPath[] = [];
@@ -222,7 +222,7 @@ export class SoraGraphTraversal {
       totalScore: 0,
       pathLength: 0,
       semanticCoherence: 0
-    };
+    }
     let currentNode = startNode;
     const visitedNodes = new Set([startNode.id]);
     for (let depth = 0; depth < config.maxDepth; depth++) {
@@ -264,7 +264,7 @@ export class SoraGraphTraversal {
   private updateQTable(
     stateId: string
     actionId: string
-    reward: number
+    reward: number;
     config: SoraTraversalOptions
     qTable: Map<string, Map<string, number>;
   ): void {
@@ -309,7 +309,7 @@ export class SoraGraphTraversal {
       'entity': 1,
       'concept': 1,
       'relationship': 0.5
-    };
+    }
     reward += typeBonus[toNode.type] || 0;
     // Novelty bonus (encourage exploration of less visited nodes)
     const visitCount = this.reinforcementModel.get(toNode.id) || 0;
@@ -368,7 +368,7 @@ export class SoraGraphTraversal {
         'entity': 0.4,
         'concept': 0.3,
         'relationship': 0.2
-      };
+      }
       score += (typeScore[action.target.type] || 0) * 0.2;
       if (score > bestScore) {
         bestScore = score;
@@ -512,7 +512,7 @@ export class SoraGraphTraversal {
             y: node.properties.coordinates.y,
             z: node.properties.coordinates.z || 0
           } : undefined
-        };
+        }
       } finally {
         await session.close();
       }
@@ -547,7 +547,7 @@ export class SoraGraphTraversal {
             properties: targetNode.properties,
             embedding: targetNode.properties.embedding ?
               new Float32Array(targetNode.properties.embedding) : undefined
-          };
+          }
           const edge: SoraGraphEdge = {
             id: relationship.identity.toString(),
             source: nodeId
@@ -555,7 +555,7 @@ export class SoraGraphTraversal {
             type: this.mapRelationshipType(relType),
             weight: relationship.properties.weight || 1,
             properties: relationship.properties
-          };
+          }
           neighbors.push({ target, edge });
         }
         return neighbors;
@@ -584,7 +584,7 @@ export class SoraGraphTraversal {
       'entity': 0.6,
       'concept': 0.5,
       'relationship': 0.3
-    };
+    }
     score += (typeWeights[node.type] || 0.1) * 0.3;
     return Math.max(0, Math.min(1, score);
   }
@@ -681,7 +681,7 @@ export class SoraGraphTraversal {
       'SIMILAR_TO': 'similar',
       'REFERENCES': 'references',
       'CONTRADICTS': 'contradicts'
-    };
+    }
     return mapping[relType] || 'related';
   }
   /**
@@ -733,7 +733,7 @@ export class SoraGraphTraversal {
    */
   private async applyLegalReranking(
     paths: SoraTraversalPath[]
-    query: string
+    query: string;
     config: SoraTraversalOptions;
   ): Promise<SoraTraversalPath[]> {
     try {
@@ -760,7 +760,7 @@ export class SoraGraphTraversal {
         workflowState: 'draft',
         recentActions: [],
         currentCase: undefined
-      };
+      }
       // Apply reranking
       const rerankedResults = await this.reranker?.rerank(rerankInputs, userContext) || [];
       // Reorder paths based on reranking scores
@@ -785,7 +785,7 @@ export class SoraGraphTraversal {
    */
   private async storeTensorData(
     paths: SoraTraversalPath[]
-    queryEmbedding: Float32Array
+    queryEmbedding: Float32Array;
     config: SoraTraversalOptions;
   ): Promise<void> {
     try {
@@ -823,7 +823,7 @@ export class SoraGraphTraversal {
               accessCount: 1,
               lastAccessed: Date.now()
             }
-          };
+          }
           if (this.tensorStore?.storeTensorSlice) {
             await this.tensorStore.storeTensorSlice(tensorSlice);
           }
@@ -845,7 +845,7 @@ export class SoraGraphTraversal {
             accessCount: 1,
             lastAccessed: Date.now()
           }
-        };
+        }
         if (this.tensorStore?.storeTensorSlice) {
           await this.tensorStore.storeTensorSlice(querySlice);
         }
@@ -957,7 +957,7 @@ export class SoraGraphTraversal {
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .map(([id, visits]) => ({ id, visits })
-    };
+    }
   }
   /**
    * Get tensor store statistics
@@ -965,20 +965,20 @@ export class SoraGraphTraversal {
   public async getTensorStats(): Promise<any> {
     try {
       // Get basic stats from tensor store
-      const stats = this.tensorStore?.getStats ? await this.tensorStore.getStats() : { [key: string]: any };
+      const stats = this.tensorStore?.getStats ? await this.tensorStore.getStats() : { [key: string]: any }
       return {
         totalSlices: stats.totalTensorSlices || 0,
         totalSize: stats.totalMemoryUsage || 0,
         cacheHitRate: stats.cacheHitRate || 0,
         dimensions: stats.dimensions || { documents: 0, chunks: 0, representations: 0 }
-      };
+      }
     } catch (error) {
       return {
         totalSlices: 0,
         totalSize: 0,
         cacheHitRate: 0,
         dimensions: { documents: 0, chunks: 0, representations: 0 }
-      };
+      }
     }
   }
 }

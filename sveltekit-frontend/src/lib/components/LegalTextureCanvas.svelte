@@ -233,7 +233,7 @@
 	/**
 	 * Handle mouse events
 	 */
-	function handleMouseDown(event: MouseEvent) {
+	function handleMouseDown(_event: MouseEvent) {
 		const rect = canvasElement.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
@@ -244,7 +244,7 @@
 		const clickedItem = findItemAtPosition(transformedX, transformedY);
 		evidenceCanvas.handlePointerDown(x, y, clickedItem?.id);
 	}
-	function handleMouseMove(event: MouseEvent) {
+	function handleMouseMove(_event: MouseEvent) {
 		const rect = canvasElement.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
@@ -259,7 +259,7 @@
 	function handleMouseUp() {
 		evidenceCanvas.handlePointerUp();
 	}
-	function handleWheel(event: WheelEvent) {
+	function handleWheel(_event: WheelEvent) {
 		event.preventDefault();
 		const rect = canvasElement.getBoundingClientRect();
 		const x = event.clientX - rect.left;
@@ -389,8 +389,8 @@
 		onmousemove={handleMouseMove}
 		onmouseup={handleMouseUp}
 		onwheel={handleWheel}
-		class="texture-canvas"
-		class:gpu-enabled={textureStreaming.stats().hasWebGL};
+		class="texture-canvas";
+		class:gpu-enabled={textureStreaming.stats().hasWebGL}
 		class:error={!!error}
 	/>
 	{#if error}

@@ -211,7 +211,7 @@ export class YoRHaUIExample {
     formLayout.addChild(emailInput, { alignSelf: 'stretch' });
     formLayout.addChild(messageInput, { alignSelf: 'stretch' });
     // Add event listeners
-    nameInput.addEventListener('input', (event: any) => {
+    nameInput.addEventListener('input', (_event: any) => {
       console.log('Name input:', event.data?.value);
     });
     this.mainLayout.addChild(contentPanel, { flex: 1, alignSelf: 'stretch' });
@@ -396,7 +396,7 @@ export class YoRHaUIExample {
       }
     });
   }
-  private onMouseMove(event: MouseEvent): void {
+  private onMouseMove(_event: MouseEvent): void {
     const rect = this.renderer.domElement.getBoundingClientRect();
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -425,7 +425,7 @@ export class YoRHaUIExample {
       this.renderer.domElement.style.cursor = 'default';
     }
   }
-  private onClick(event: MouseEvent): void {
+  private onClick(_event: MouseEvent): void {
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects = this.raycaster.intersectObjects(this.scene.children, true);
     if (intersects.length > 0) {
@@ -435,7 +435,7 @@ export class YoRHaUIExample {
       }
     }
   }
-  private onKeyDown(event: KeyboardEvent): void {
+  private onKeyDown(_event: KeyboardEvent): void {
     // Handle keyboard input for focused components
     // This would be expanded to work with actual focused input components
     console.log('Key pressed:', event.key);

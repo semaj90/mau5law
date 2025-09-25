@@ -112,7 +112,7 @@ https://svelte.dev/e/expected_token -->
     animate();
     return () =&gt; {
       if (animationFrame) cancelAnimationFrame(animationFrame);
-    };
+    }
   }
   function resetToComfortable() {
     stereoSeparation = 0.04;

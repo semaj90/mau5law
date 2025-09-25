@@ -34,14 +34,14 @@
       formData[field.name] = field.defaultValu;
     }
   });
-  async function handleSubmit(event: Event) {
+  async function handleSubmit(_event: Event) {
     event.preventDefault();
     if (isSubmitting) return;
     try {
       isSubmitting = true;
       await onSubmit(formData);
       // Reset form
-      formData = {};
+      formData = {}
       fields.forEach(field => {
         if (field.defaultValue !== undefined) {
           formData[field.name] = field.defaultValu;
@@ -57,6 +57,7 @@
     formData[fieldName] = valu;
   }
 </script>
+
 <form class="yorha-form" onsubmit={handleSubmit}>
   <div class="form-fields">
     {#each fields as field}
@@ -124,11 +125,7 @@
     {/each}
   </div>
   <div class="form-actions">
-    <button
-      type="submit"
-      class="submit-btn {submitClass}"
-      disabled={isSubmitting}
-    >
+    <button type="submit" class="submit-btn {submitClass}" disabled={isSubmitting}>
       {#if isSubmitting}
         SUBMITTING...
       {:else}
@@ -137,6 +134,7 @@
     </button>
   </div>
 </form>
+
 <style>
   .yorha-form {
     font-family: 'Roboto Mono', monospace;
@@ -155,7 +153,7 @@
     font-size: 0.875rem;
     font-weight: bold;
     text-transform: uppercase;
-    color: #3D3D3D;
+    color: #3d3d3d;
     letter-spacing: 0.025em;
   }
   .required {
@@ -163,12 +161,12 @@
     margin-left: 0.25rem;
   }
   .form-input {
-    background-color: #FFFFFF;
-    border: 1px solid #D1CFC7;
+    background-color: #ffffff;
+    border: 1px solid #d1cfc7;
     padding: 0.75rem 1rem;
     font-family: 'Roboto Mono', monospace;
     font-size: 0.875rem;
-    color: #3D3D3D;
+    color: #3d3d3d;
     transition: all 0.2s ease;
     border-radius: 0;
     width: 100%;
@@ -176,7 +174,7 @@
   }
   .form-input:focus {
     outline: none;
-    border-color: #3D3D3D;
+    border-color: #3d3d3d;
     box-shadow: 0 0 0 3px rgba(61, 61, 61, 0.2);
   }
   .form-input::placeholder {
@@ -199,20 +197,20 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border: 1px solid #D1CFC7;
-    background-color: #F7F6F2;
+    border: 1px solid #d1cfc7;
+    background-color: #f7f6f2;
     padding: 0.75rem 1.5rem;
     font-family: 'Roboto Mono', monospace;
     font-size: 0.875rem;
     font-weight: bold;
-    color: #3D3D3D;
+    color: #3d3d3d;
     cursor: pointer;
     transition: all 0.2s ease;
     border-radius: 0;
     text-transform: uppercase;
   }
   .submit-btn: hover:not(:disabled) {
-    background-color: #EAE8E1;
+    background-color: #eae8e1;
     transform: translateY(-1px);
   }
   .submit-btn:disabled {

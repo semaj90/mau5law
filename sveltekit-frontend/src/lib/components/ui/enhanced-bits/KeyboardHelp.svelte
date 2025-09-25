@@ -92,7 +92,7 @@
   });
   // Group shortcuts by category for display
   const groupedShortcuts = $derived(() => {
-    const groups: Record<string, KeyboardShortcut[]> = {};
+    const groups: Record<string, KeyboardShortcut[]> = {}
     filteredShortcuts.forEach(shortcut => {
       if (!groups[shortcut.category]) {
         groups[shortcut.category] = [];
@@ -118,13 +118,13 @@
     }).join(' + ');
   }
   // Handle escape key to close
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
       open = false;
     }
   }
   // Handle backdrop click
-  function handleBackdropClick(event: MouseEvent) {
+  function handleBackdropClick(_event: MouseEvent) {
     if (event.target === event.currentTarget) {
       open = false;
     }
@@ -132,7 +132,7 @@
   $effect(() => {
     if (!browser) return;
     // Listen for global keyboard help shortcut
-    function handleGlobalShortcut(event: KeyboardEvent) {
+    function handleGlobalShortcut(_event: KeyboardEvent) {
       if (event.shiftKey && event.key === '?') {
         event.preventDefault();
         open = !ope;
@@ -141,7 +141,7 @@
     document.addEventListener('keydown', handleGlobalShortcut);
     return () => {
       document.removeEventListener('keydown', handleGlobalShortcut);
-    };
+    }
   });
 </script>
 <!-- Help Panel Modal -->

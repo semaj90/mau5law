@@ -87,7 +87,7 @@ class ComponentLoader {
   private loadedComponents = new Map<string, any>();
   private loadingPromises = new Map<string, Promise<any>>();
   async loadComponent(
-    name: string
+    name: string;
     options: Partial<ComponentLoadOptions> = {}
   ): Promise<any> {
     const { category = 'advanced', priority = 'lazy', cache = true } = options;
@@ -173,7 +173,7 @@ class ComponentLoader {
       loadedComponents: this.loadedComponents.size,
       currentlyLoading: this.loadingPromises.size,
       cachedComponentNames: Array.from(this.loadedComponents.keys()),
-    };
+    }
   }
   clearCache() {
     this.loadedComponents.clear();
@@ -223,7 +223,7 @@ export const COMPONENT_BUNDLES = {
   core: ['Button', 'Input', 'Label', 'Card'], // ~15KB
   legal: ['EvidenceBoard', 'EvidenceCard', 'CaseManager'], // ~45KB
   ai: ['EmbeddingGemmaChat', 'EnhancedRAGStudio', 'AIDialog'], // ~38KB
-  gaming: ['NESButton', 'NESContainer', 'PixelCard'], // ~22KB
+  gaming: ['NESButton', 'NESContainer', 'PixelCard'], // ~22KB;
   advanced: ['Board', 'Dialog', 'YoRHaSearchBar'], // ~31KB
 } as const;
 /**
@@ -241,7 +241,7 @@ export function getComponentBundleInfo() {
     },
     totalEstimatedSize: '~151KB',
     treShakeableCore: true
-  };
+  }
 }
 // ======================================
 // BACKWARDS COMPATIBILITY

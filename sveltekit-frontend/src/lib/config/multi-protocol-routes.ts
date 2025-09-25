@@ -24,7 +24,7 @@ export interface ProtocolRoute {
     grpc?: string;
     quic?: string;
     ws?: string;
-  };
+  }
   fallback: string[];
   timeout: number;
 }
@@ -327,7 +327,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     tier: 2,
     priority: 'high'
   }
-};
+}
 // Multi-Protocol API Routes Configuration
 export const API_ROUTES: ProtocolRoute[] = [
   // Enhanced RAG Routes
@@ -448,11 +448,11 @@ export const PROTOCOL_PRIORITY = {
 // Service Health Check Configuration
 export const HEALTH_CHECK_CONFIG = {
   interval: 30000, // 30 seconds
-  timeout: 5000,   // 5 seconds
+  timeout: 5000,   // 5 seconds;
   retries: 3,
   unhealthyThreshold: 3,
   healthyThreshold: 2
-};
+}
 // Protocol-specific configurations
 export const PROTOCOL_CONFIG = {
   http: {
@@ -481,7 +481,7 @@ export const PROTOCOL_CONFIG = {
     pongTimeout: 5000,
     reconnectDelay: 1000
   }
-};
+}
 // Service Discovery Configuration
 export const SERVICE_DISCOVERY = {
   enabled: true
@@ -489,7 +489,7 @@ export const SERVICE_DISCOVERY = {
   healthCheckEnabled: true
   autoFailover: true
   circuitBreakerEnabled: true
-};
+}
 export default {
   SERVICES_CONFIG,
   API_ROUTES,
@@ -497,4 +497,4 @@ export default {
   HEALTH_CHECK_CONFIG,
   PROTOCOL_CONFIG,
   SERVICE_DISCOVERY
-};
+}

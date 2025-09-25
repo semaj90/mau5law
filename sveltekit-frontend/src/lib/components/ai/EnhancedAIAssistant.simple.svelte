@@ -34,7 +34,7 @@ https://svelte.dev/e/props_duplicate -->
   async function handleSubmit() {
     if (!query.trim() || isLoading) return;
     isLoading = true;
-    const userMessage = { role: "user", content: query };
+    const userMessage = { role: "user", content: query }
     messages = [...messages, userMessage];
     // Clear input
     query = "";
@@ -62,7 +62,7 @@ https://svelte.dev/e/props_duplicate -->
             relevance: 0.8,
           },
         ],
-      };
+      }
       messages = [...messages, aiResponse];
       isLoading = false;
     }, 1500);
@@ -79,6 +79,7 @@ https://svelte.dev/e/props_duplicate -->
     messages = [];
   }
 </script>
+
 <div class="container mx-auto px-4">
   <!-- Main Chat Interface -->
   <div class="container mx-auto px-4" style="max-height: {maxHeight}">
@@ -88,24 +89,14 @@ https://svelte.dev/e/props_duplicate -->
         <Brain class="container mx-auto px-4" />
         <h3 class="container mx-auto px-4">Legal AI Assistant</h3>
         {#if caseId}
-          <span class="container mx-auto px-4"
-            >Case: {caseId}</span
-          >
+          <span class="container mx-auto px-4">Case: {caseId}</span>
         {/if}
       </div>
       <div class="container mx-auto px-4">
-        <button
-          class="container mx-auto px-4"
-          onclick={() => (showSettings = !showSettings)}
-          title="Settings"
-        >
+        <button class="container mx-auto px-4" onclick={() => (showSettings = !showSettings)} title="Settings">
           <Settings class="container mx-auto px-4" />
         </button>
-        <button
-          class="container mx-auto px-4"
-          onclick={() => clearMessages()}
-          title="Clear conversation"
-        >
+        <button class="container mx-auto px-4" onclick={() => clearMessages()} title="Clear conversation">
           <Trash2 class="container mx-auto px-4" />
         </button>
       </div>
@@ -121,10 +112,7 @@ https://svelte.dev/e/props_duplicate -->
             <div class="container mx-auto px-4">
               <h4 class="container mx-auto px-4">References:</h4>
               {#each message.references as reference}
-                <button
-                  class="container mx-auto px-4"
-                  onclick={() => handleReferenceClick(reference)}
-                >
+                <button class="container mx-auto px-4" onclick={() => handleReferenceClick(reference)}>
                   <Quote class="container mx-auto px-4" />
                   <span class="container mx-auto px-4">{reference.title}</span>
                   <span class="container mx-auto px-4">{reference.citation}</span>
@@ -146,18 +134,8 @@ https://svelte.dev/e/props_duplicate -->
     <!-- Input -->
     <form class="container mx-auto px-4" onsubmit|preventDefault={handleSubmit}>
       <div class="container mx-auto px-4">
-        <input
-          type="text"
-          bind:value={query}
-          {placeholder}
-          disabled={isLoading}
-          class="container mx-auto px-4"
-        />
-        <button
-          type="submit"
-          disabled={!query.trim() || isLoading}
-          class="container mx-auto px-4"
-        >
+        <input type="text" bind:value={query} {placeholder} disabled={isLoading} class="container mx-auto px-4" />
+        <button type="submit" disabled={!query.trim() || isLoading} class="container mx-auto px-4">
           <Search class="container mx-auto px-4" />
         </button>
       </div>
@@ -168,9 +146,7 @@ https://svelte.dev/e/props_duplicate -->
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <h4 class="container mx-auto px-4">AI Assistant Settings</h4>
-        <button class="container mx-auto px-4" onclick={() => (showSettings = false)}
-          >×</button
-        >
+        <button class="container mx-auto px-4" onclick={() => (showSettings = false)}>×</button>
       </div>
       <div class="container mx-auto px-4">
         <div class="container mx-auto px-4">
@@ -183,37 +159,15 @@ https://svelte.dev/e/props_duplicate -->
         </div>
         <div class="container mx-auto px-4">
           <label for="temperature-range">Temperature: {temperature}</label>
-          <input
-            id="temperature-range"
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            bind:value={temperature}
-          />
+          <input id="temperature-range" type="range" min="0" max="1" step="0.1" bind:value={temperature} />
         </div>
         <div class="container mx-auto px-4">
-          <label for="threshold-range"
-            >Search Threshold: {searchThreshold}</label
-          >
-          <input
-            id="threshold-range"
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            bind:value={searchThreshold}
-          />
+          <label for="threshold-range">Search Threshold: {searchThreshold}</label>
+          <input id="threshold-range" type="range" min="0" max="1" step="0.1" bind:value={searchThreshold} />
         </div>
         <div class="container mx-auto px-4">
           <label for="max-results">Max Results:</label>
-          <input
-            id="max-results"
-            type="number"
-            min="1"
-            max="20";
-            bind:value={maxResults}
-          />
+          <input id="max-results" type="number" min="1" max="20" ; bind:value={maxResults} />
         </div>
       </div>
     </div>
@@ -223,8 +177,8 @@ https://svelte.dev/e/props_duplicate -->
     <div
       class="container mx-auto px-4"
       onclick={() => (showCitationDialog = false)}
-      keydown={(e) => {
-        if (e.key === "Escape") {
+      keydown={e => {
+        if (e.key === 'Escape') {
           showCitationDialog = false;
         }
       }}
@@ -245,29 +199,21 @@ https://svelte.dev/e/props_duplicate -->
             <p>{selectedCitation}</p>
           </div>
           <div class="container mx-auto px-4">
-            <button class="container mx-auto px-4" onclick={() => insertCitation()}>
-              Insert Citation
-            </button>
-            <button
-              class="container mx-auto px-4"
-              onclick={() => navigator.clipboard.writeText(selectedCitation)}
-            >
+            <button class="container mx-auto px-4" onclick={() => insertCitation()}> Insert Citation </button>
+            <button class="container mx-auto px-4" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
               Copy to Clipboard
             </button>
           </div>
         </div>
         <div class="container mx-auto px-4">
-          <button
-            class="container mx-auto px-4"
-            onclick={() => (showCitationDialog = false)}
-          >
-            Close
-          </button>
+          <button class="container mx-auto px-4" onclick={() => (showCitationDialog = false)}> Close </button>
         </div>
       </div>
     </div>
   {/if}
 </div>
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   /* @unocss-include */
   .ai-assistant-container {
@@ -528,4 +474,3 @@ d;
     background: #e5e7eb;
 }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

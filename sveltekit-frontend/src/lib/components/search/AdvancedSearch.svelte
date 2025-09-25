@@ -89,14 +89,14 @@ https://svelte.dev/e/js_parse_error -->
   const handleSelect = (item: Evidence) => {
     onSelect(item);
     inputValue.set('');
-  };
+  }
   // Clear search
   const clearSearch = () => {
     inputValue.set('');
     selectedTags = [];
     selectedTypes = [];
-    dateRange = {};
-  };
+    dateRange = {}
+  }
   // Toggle tag filter
   const toggleTag = (tag: string) => {
     if (selectedTags.includes(tag)) {
@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
     } else {
       selectedTags = [...selectedTags, tag];
     }
-  };
+  }
   // Toggle type filter
   const toggleType = (type: string) => {
     if (selectedTypes.includes(type)) {
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
     } else {
       selectedTypes = [...selectedTypes, type];
     }
-  };
+  }
   // Evidence types
   const evidenceTypes = ['document', 'image', 'video', 'audio', 'link'];
   // Highlight search matches
@@ -120,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!searchTerm) return text;
     const regex = new RegExp(`(${searchTerm})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
-  };
+  }
 </script>
 <div class="advanced-search">
   <!-- Search Input -->

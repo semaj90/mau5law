@@ -1,17 +1,16 @@
 <!-- AI Chat Message: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
   interface Props {
-    message: { role: string; content: string; timestamp?: string; references?: unknown[] };
+    message: { role: string; content: string; timestamp?: string; references?: unknown[] }
     showReferences?: boolean;
   }
-  let {
-    message,
-    showReferences = false
-  }: Props = $props();
+  let { message, showReferences = false }: Props = $props();
   let isUser = message.role === 'user';
 </script>
+
 <div class="flex gap-2 items-start mb-2" class:justify-end={isUser}>
-  <div class="rounded-lg px-4 py-2 max-w-xl shadow text-sm"
+  <div
+    class="rounded-lg px-4 py-2 max-w-xl shadow text-sm"
     class:bg-blue-100={isUser}
     class:bg-gray-100={!isUser}
     class:text-right={isUser}
@@ -33,3 +32,4 @@
     {/if}
   </div>
 </div>
+;

@@ -27,8 +27,8 @@
     evidence: false
     reports: false
     criminals: false
-    activities: false
-    users: false
+    activities: false;
+    users: false;
   });
   // Statistics
   let stats = $state({
@@ -162,7 +162,7 @@
   async function fetchUsers() {
     loading.users = true;
     try {
-      const response = await fetch("/api/users?limit=10");
+      // removed unused response assignment
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         users_list = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).users || data;

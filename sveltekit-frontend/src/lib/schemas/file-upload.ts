@@ -110,7 +110,7 @@ export const fileUploadSchema = z.object({
   enableOcr: z.boolean().default(true),
   enableEmbeddings: z.boolean().default(true),
   enableSummarization: z.boolean().default(true),
-  // Additional metadata
+  // Additional metadata;
   metadata: z.record(z.any()).default({})
 });
 // Multiple file upload schema
@@ -153,7 +153,7 @@ export const caseWithFilesSchema = z.object({
     .optional(),
   assignedTeam: z.array(z.string()).default([]),
   tags: z.array(z.string()).max(20, 'Cannot have more than 20 tags').default([]),
-  // Files to upload with the case (file-like objects)
+  // Files to upload with the case (file-like objects);
   files: z.array(z.any()
     .min(0)
     .max(20, 'Cannot upload more than 20 files when creating a case')
@@ -220,24 +220,24 @@ export type CasePriority = z.infer<typeof casePriorityEnum>;
 export const validateFileSize = (file: any, maxSizeMB: number = 100): boolean => {
   if (!file || typeof file.size !== 'number') return false;
   return file.size <= maxSizeMB * 1024 * 1024;
-};
+}
 export const validateFileType = (file: any, allowedTypes: string[] = allowedMimeTypes): boolean => {
   if (!file || typeof file.type !== 'string') return false;
   return allowedTypes.includes(file.type);
-};
+}
 export const getFileCategory = (mimeType: string): FileType => {
   if (mimeType.startsWith('image/')) return 'image';
   if (mimeType.startsWith('video/')) return 'video';
   if (mimeType.startsWith('audio/')) return 'audio';
   if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('text')) return 'document';
   return 'digital';
-};
+}
 export const formatFileSize = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB'];
   if (bytes === 0) return '0 B';
   const i = Math.floor(Math.log(bytes) / Math.log(1024);
   return `${Math.round(bytes / Math.pow(1024, i) * 100) / 100} ${sizes[i]}`;
-};
+}
 // Default form values
 export const defaultFileUploadValues: Partial<FileUpload> = {
   title: '',
@@ -253,7 +253,7 @@ export const defaultFileUploadValues: Partial<FileUpload> = {
   enableSummarization: true
   chainOfCustody: [],
   metadata: { [key: string]: any }
-};
+}
 export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = {
   title: '',
   caseNumber: '',
@@ -267,4 +267,4 @@ export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = {
   fileTitles: [],
   fileTypes: [],
   fileEvidenceTypes: []
-};
+}

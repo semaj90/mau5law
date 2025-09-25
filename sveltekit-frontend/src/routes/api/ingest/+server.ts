@@ -103,13 +103,13 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Ingestion error:', err)
     return json()
       {
-        success: false
+        success: false;
         error: err instanceof Error ? err.message: String(err)
       },
       { status: 500 }
     )
   }
-}; // GET endpoint for job status and recent ingestions
+} // GET endpoint for job status and recent ingestions
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const userId = url.searchParams.get('userId') || 'anonymous'

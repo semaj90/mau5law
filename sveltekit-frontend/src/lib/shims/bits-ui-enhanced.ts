@@ -45,7 +45,7 @@ export function createEnhancedComponent(config: BitsUIEnhancedConfig) {
     theme: config.theme,
     variant: config.variant || 'nes',
     enhanced: true
-  };
+  }
 }
 // Compound component helpers for shadcn-style usage
 export function createCompoundComponent<T>(
@@ -68,7 +68,7 @@ export function withEnhancedStyling(
     theme,
     variant,
     apply: (element: HTMLElement) => applyCustomDesign(element, theme)
-  };
+  }
 }
 // Legacy melt-ui migration helpers (for smooth transition)
 export const legacyMeltSupport = {
@@ -82,10 +82,10 @@ export const legacyMeltSupport = {
   createCombobox: () => ({ Combobox }),
   createToolbar: () => ({ Toolbar }),
   createResizable: () => ({ Resizable }),
-};
+}
 export default {
   ...legacyMeltSupport,
   createEnhancedComponent,
   createCompoundComponent,
   withEnhancedStyling
-};
+}

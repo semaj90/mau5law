@@ -22,7 +22,7 @@ const getUUID = (): string => {
   } catch (error) {}
   // Fallback
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-};
+}
 class AIServiceWorker {
   private providers: Map<string, AIProviderConfig> = new Map();
   private activeRequests: Map<string, AbortController> = new Map();
@@ -65,7 +65,7 @@ class AIServiceWorker {
     });
   }
   private setupMessageHandlers() {
-    self.addEventListener('message', async (event: MessageEvent<WorkerMessage>) => {
+    self.addEventListener('message', async (_event: MessageEvent<WorkerMessage>) => {
       const { type, payload, taskId } = event.data;
       try {
         switch (type) {
@@ -89,7 +89,7 @@ class AIServiceWorker {
       }
     });
   }
-  private async processAITask(task: AITask, taskId: string) {
+  private async processAITask(_task: AITask, taskId: string) {
     // Add to queue if at max capacity
     if (this.activeRequestCount >= this.maxConcurrentRequests) {
       this.requestQueue.push({ ...task, taskId });
@@ -131,7 +131,7 @@ class AIServiceWorker {
       this.processQueue();
     }
   }
-  private async executeAITask(task: AITask, signal: AbortSignal): Promise<AIResponse> {
+  private async executeAITask(_task: AITask, signal: AbortSignal): Promise<AIResponse> {
     const provider = this.providers.get(task.providerId);
     if (!provider) {
       throw new Error(`Provider ${task.providerId} not found`);
@@ -140,7 +140,7 @@ class AIServiceWorker {
     // Retry logic
     for (let attempt = 0; attempt <= provider.retries; attempt++) {
       try {
-        const response = await this.callProvider(provider, task, signal);
+        // removed unused response assignment
         return response;
       } catch (error: any) {
         lastError = error as Error;
@@ -155,7 +155,7 @@ class AIServiceWorker {
   }
   private async callProvider(
     provider: AIProviderConfig
-    task: AITask
+    task: AITask;
     signal: AbortSignal;
   ): Promise<AIResponse> {
     const timeoutId = setTimeout(() => {
@@ -180,7 +180,7 @@ class AIServiceWorker {
   }
   private async callOllama(
     provider: AIProviderConfig
-    task: AITask
+    task: AITask;
     signal: AbortSignal;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/generate`, {
@@ -216,11 +216,11 @@ class AIServiceWorker {
         evalDuration: data.eval_duration,
         loadDuration: data.load_duration
       }
-    };
+    }
   }
   private async callAutoGen(
     provider: AIProviderConfig
-    task: AITask
+    task: AITask;
     signal: AbortSignal;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/chat`, {
@@ -250,11 +250,11 @@ class AIServiceWorker {
         agents: data.agent_responses,
         conversationId: data.conversation_id
       }
-    };
+    }
   }
   private async callCrewAI(
     provider: AIProviderConfig
-    task: AITask
+    task: AITask;
     signal: AbortSignal;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/crew/execute`, {
@@ -284,7 +284,7 @@ class AIServiceWorker {
         agents: data.agent_outputs,
         executionTime: data.execution_time
       }
-    };
+    }
   }
   private processQueue() {
     if (this.requestQueue.length > 0 && this.activeRequestCount < this.maxConcurrentRequests) {
@@ -341,4 +341,4 @@ class AIServiceWorker {
 }
 // Initialize the worker
 new AIServiceWorker();
-export {};
+export {}

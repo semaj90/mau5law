@@ -53,11 +53,11 @@ https://svelte.dev/e/js_parse_error -->
   bind:this={containerElement}
   class="space-y-4"
   class:expanded={isExpanded}
-  style="
-    --columns: {currentColumns};
-    --gap: {gap};
-    --expand-duration: {expandDuration};
-    --easing: {easing};
+  style=";
+    --columns: {currentColumns}
+    --gap: {gap}
+    --expand-duration: {expandDuration}
+    --easing: {easing}
   "
   onmouseenter={handleMouseEnter}
   onmouseleave={focusin}

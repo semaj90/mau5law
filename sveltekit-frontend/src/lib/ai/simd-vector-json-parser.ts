@@ -53,7 +53,7 @@ export class SIMDVectorJsonParser {
       memoryAlignment: 32, // 256-bit alignment for AVX
       parallelParsers: Math.min(4, Math.ceil(require('os').cpus().length / 2)),
       ...config
-    };
+    }
     this.initializeMemoryPool();
     this.initializeParseWorkers();
     console.log(`🚀 SIMD Vector Parser initialized:`);
@@ -90,7 +90,7 @@ export class SIMDVectorJsonParser {
         memoryUsed: process.memoryUsage().heapUsed / 1024 / 1024,
         simdUtilization: this.calculateSIMDUtilization(chunkResults),
         cacheHitRate: this.calculateCacheHitRate(totalVectors)
-      };
+      }
       console.log(`⚡ SIMD JSON Parse: ${totalVectors} vectors in ${parseTime.toFixed(2)}ms`);
       console.log(`📊 Throughput: ${vectorsPerSecond.toFixed(0)} vectors/second`);
       console.log(`🧠 SIMD Utilization: ${(mergedResult.parseStatistics.simdUtilization * 100).toFixed(1)}%`);
@@ -223,14 +223,14 @@ export class SIMDVectorJsonParser {
       parseTime,
       simdOperations,
       chunkIndex
-    };
+    }
   }
   /**
    * Extract vector using SIMD operations
    */
   private extractVectorSIMD(
     parsed: any
-    alignedMemory: ArrayBuffer
+    alignedMemory: ArrayBuffer;
     offset: number;
   ): Float32Array {
     // Create aligned view into memory
@@ -307,7 +307,7 @@ export class SIMDVectorJsonParser {
       norm: this.calculateNorm(vector),
       timestamp: Date.now(),
       parseTime: 0 // Would be measured per vector in production
-    };
+    }
   }
   /**
    * Fast string hashing
@@ -372,7 +372,7 @@ export class SIMDVectorJsonParser {
       allMetadata.push(...result.metadata);
     }
     return {
-      vectors: allVectors
+      vectors: allVectors;
       metadata: allMetadata
       parseStatistics: {
         totalVectors: allVectors.length,
@@ -382,7 +382,7 @@ export class SIMDVectorJsonParser {
         simdUtilization: 0, // Will be filled by caller
         cacheHitRate: 0 // Will be filled by caller
       }
-    };
+    }
   }
   /**
    * Calculate SIMD utilization across chunks
@@ -424,7 +424,7 @@ export class SIMDVectorJsonParser {
       vectorDimensions: this.config.vectorDimensions,
       batchSize: this.config.batchSize,
       parallelParsers: this.config.parallelParsers
-    };
+    }
   }
   /**
    * Clear cache and reset
@@ -470,4 +470,4 @@ export {
   ParseStatistics,
   SIMDInstructionSet,
   SIMDParserConfig
-};
+}

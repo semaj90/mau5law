@@ -69,7 +69,7 @@
       // Create automation configuration
       const automationConfig = {
         id: `automation_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
-        type: selectedAutomationType
+        type: selectedAutomationType;
         source: selectedSource
         autoProcessing: enableAutoProcessing
         gpuAcceleration: enableGPUAcceleration
@@ -77,7 +77,7 @@
         confidenceThreshold: confidenceThreshold
         processingOptions: Array.from(selectedProcessingOptions),
         createdAt: new Date().toISOString();
-      };
+      }
       // Initialize tensor service if GPU acceleration is enabled
       if (enableGPUAcceleration) {
         try {
@@ -104,8 +104,8 @@
       }
       processingStats.processingTime = Date.now() - startTime;
       ondispatch?.({
-        type: selectedAutomationType
-        source: selectedSource
+        type: selectedAutomationType;
+        source: selectedSource;
         config: automationConfig;
       });
       // Reset form
@@ -118,7 +118,7 @@
     } finally {
       processing = false;
     }
-  };
+  }
   // Simulate batch document processing with GPU acceleration
   async function simulateBatchProcessing(config: unknown) {
     const mockDocuments = generateMockLegalDocuments(config.batchSize);
@@ -157,6 +157,7 @@
     fetchAutomationTypes();
   });
 </script>
+
 <div class="rounded-xl bg-white shadow-lg border border-gray-200 p-8 max-w-4xl mx-auto">
   <div class="border-b border-gray-200 pb-4 mb-6">
     <h3 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -168,14 +169,12 @@
     <!-- Configuration Panel -->
     <div class="space-y-6">
       <div>
-        <label for="automationTypeSelect" class="block font-semibold mb-2 text-gray-700">
-          Automation Type
-        </label>
+        <label for="automationTypeSelect" class="block font-semibold mb-2 text-gray-700"> Automation Type </label>
         {#if loadingAutomationTypes}
           <div class="w-full h-10 bg-gray-100 animate-pulse rounded-md"></div>
         {:else}
           <Dropdown
-            id="automationTypeSelect"
+            id="automationTypeSelect";
             bind:selected={selectedAutomationType}
             options={automationTypeOptions}
             placeholder="Select automation type..."
@@ -183,11 +182,10 @@
         {/if}
       </div>
       <div>
-        <label for="sourceSelect" class="block font-semibold mb-2 text-gray-700">
-          Document Source
-        </label>
+        <label for="sourceSelect" class="block font-semibold mb-2 text-gray-700"> Document Source </label>
         <Dropdown
-          id="sourceSelect" ;
+          id="sourceSelect"
+          ;
           bind:selected={selectedSource}
           options={sourceOptions}
           placeholder="Select document source..."
@@ -202,7 +200,7 @@
               id="processing_{option.value}"
               label={option.label}
               checked={selectedProcessingOptions.has(option.value)}
-              onchange={(e) => {
+              onchange={e => {
                 if (e.detail) {
                   selectedProcessingOptions.add(option.value);
                 } else {
@@ -217,11 +215,7 @@
       <!-- Advanced Settings -->
       <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
         <h4 class="font-medium text-gray-800">Advanced Configuration</h4>
-        <Checkbox
-          id="autoProcessCheckbox"
-          bind:checked={enableAutoProcessing}
-          label="Enable Automatic Processing"
-        />
+        <Checkbox id="autoProcessCheckbox" bind:checked={enableAutoProcessing} label="Enable Automatic Processing" />
         <Checkbox
           id="gpuAccelCheckbox"
           bind:checked={enableGPUAcceleration}
@@ -229,12 +223,10 @@
         />
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="batchSize" class="block text-sm font-medium text-gray-700">
-              Batch Size
-            </label>
+            <label for="batchSize" class="block text-sm font-medium text-gray-700"> Batch Size </label>
             <input
               id="batchSize"
-              type="number"
+              type="number";
               bind:value={batchSize}
               min="1"
               max="100"
@@ -242,12 +234,11 @@
             />
           </div>
           <div>
-            <label for="confidence" class="block text-sm font-medium text-gray-700">
-              Confidence Threshold
-            </label>
+            <label for="confidence" class="block text-sm font-medium text-gray-700"> Confidence Threshold </label>
             <input
               id="confidence"
-              type="number" ;
+              type="number"
+              ;
               bind:value={confidenceThreshold}
               min="0.1"
               max="1"
@@ -275,7 +266,9 @@
             <div class="w-full bg-gray-200 rounded-full h-2">
               <div
                 class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style="width: {processingStats.totalDocuments > 0 ? (processingStats.documentsProcessed / processingStats.totalDocuments) * 100 : 0}%"
+                style="width: {processingStats.totalDocuments > 0
+                  ? (processingStats.documentsProcessed / processingStats.totalDocuments) * 100
+                  : 0}%"
               ></div>
             </div>
           </div>
@@ -336,6 +329,7 @@
     </button>
   </div>
 </div>
+
 <style>
   /* Custom scrollbar for processing options */
   .overflow-y-auto::-webkit-scrollbar {

@@ -46,7 +46,7 @@ let zoomLevel = $state(1);
     urlExpiry?: number; // timestamp when presigned URL expires
     x: number;
     y: number;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   }
 let evidenceItems = $state<EvidenceItem[] >([]);
 let minioStatus = $state<'checking' | 'connected' | 'disconnected'>('checking');
@@ -79,7 +79,7 @@ let uploadProgress = $state(new Map<string, number>());
       width,
       height,
       backgroundColor: '#f8fafc',
-      selection: !readOnly
+      selection: !readOnly;
     });
     if (gridEnabled) {
       drawGrid(fabric);
@@ -145,7 +145,7 @@ let uploadProgress = $state(new Map<string, number>());
   }
   async function checkMinIOStatus() {
     try {
-      const response = await fetch('/api/v1/minio/upload', { method: 'HEAD' });
+      // removed unused response assignment
       minioStatus = (response as { ok?: any; json?: any }).ok ? 'connected' : 'disconnected';
     } catch {
       minioStatus = 'disconnected';
@@ -156,7 +156,7 @@ let uploadProgress = $state(new Map<string, number>());
     try {
       isLoading = true;
       // Load evidence items for this case
-      const response = await fetch(`/api/cases/${caseId}/evidence`);
+      // removed unused response assignment
       const evidence = await (response as { ok?: any; json?: any }).json();
       evidenceItems = evidenc;
       // Add evidence to canvas
@@ -257,7 +257,7 @@ let uploadProgress = $state(new Map<string, number>());
       console.error('Failed to add evidence to canvas:', error);
     }
   }
-  async function handleFileUpload(event: Event) {
+  async function handleFileUpload(_event: Event) {
     const input = event.target as HTMLInputElement;
     const files = input.file;
     if (!files || files.length === 0) return;
@@ -308,7 +308,7 @@ let uploadProgress = $state(new Map<string, number>());
           bucket: uploadResult.bucket || 'demo',
           fileName: uploadResult.fileName || uploadResult.filenam;
         }
-      };
+      }
       evidenceItems = [...evidenceItems, evidence];
       await addEvidenceToCanvas(evidence);
       uploadProgress.set(fileId, 100);
@@ -408,6 +408,7 @@ let uploadProgress = $state(new Map<string, number>());
     link.click();
   }
 </script>
+
 <div class="fabric-canvas-container">
   <!-- Toolbar -->
   <div class="mb-4 nes-container">
@@ -489,10 +490,7 @@ let uploadProgress = $state(new Map<string, number>());
   </div>
   <!-- Canvas -->
   <div class="canvas-wrapper relative border border-gray-200 rounded-lg overflow-hidden">
-    <canvas
-      bind:this={canvasElement}
-      class="block"
-></canvas>
+    <canvas bind:this={canvasElement} class="block"></canvas>
     {#if isLoading}
       <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
         <div class="text-center">
@@ -511,8 +509,7 @@ let uploadProgress = $state(new Map<string, number>());
               <span class="text-blue-600">{progress}%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                   style="width: {progress}%"></div>
+              <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {progress}%"></div>
             </div>
           </div>
         {/each}
@@ -557,6 +554,7 @@ let uploadProgress = $state(new Map<string, number>());
     </div>
   {/if}
 </div>
+
 <style>
   .fabric-canvas-container {
     width: 100%;

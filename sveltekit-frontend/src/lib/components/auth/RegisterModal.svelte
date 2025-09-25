@@ -11,32 +11,33 @@ https://svelte.dev/e/attribute_invalid_name -->
   // Bits UI dialog primitives
   import * as Dialog from 'bits-ui';
   // State (Svelte 5 runes)
-  let email = $state("");
-  let password = $state("");
-  let confirmPassword = $state("");
+  let email = $state('');
+  let password = $state('');
+  let confirmPassword = $state('');
   let loading = $state(false);
-  let error = $state("");
+  let error = $state('');
   async function handleRegister() {
     loading = true;
-    error = "";
+    error = '';
     try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, confirmPassword })
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, confirmPassword }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Registration failed");
+      if (!res.ok) throw new Error(data.error || 'Registration failed');
       onsuccess?.();
       open = false;
     } catch (e) {
-      error = e instanceof Error ? e.message: "Registration failed";
+      error = e instanceof Error ? e.message : 'Registration failed';
     } finally {
       loading = false;
     }
   }
 </script>
-<Dialog.Root bind:open={open}>
+
+<Dialog.Root bind:open>
   <!-- Optional external trigger could go here -->
   <Dialog.Portal>
     <Dialog.Overlay class="overlay" />
@@ -46,34 +47,19 @@ https://svelte.dev/e/attribute_invalid_name -->
       <form onsubmit|preventDefault={handleRegister} class="form">
         <label>
           <span>Email</span>
-          <input
-            type="email"
-            bind:value={email}
-            required
-            autocomplete="email"
-          />
+          <input type="email" bind:value={email} required autocomplete="email" />
         </label>
         <label>
           <span>Password</span>
-            <input
-              type="password"
-              bind:value={password}
-              required
-              autocomplete="new-password"
-            />
+          <input type="password" bind:value={password} required autocomplete="new-password" />
         </label>
         <label>
           <span>Confirm Password</span>
-          <input
-            type="password"
-            bind:value={confirmPassword}
-            required
-            autocomplete="new-password"
-          />
+          <input type="password" bind:value={confirmPassword} required autocomplete="new-password" />
         </label>
         <div class="actions">
           <button type="submit" disabled={loading}>
-            {loading ? "Registering..." : "Register"}
+            {loading ? 'Registering...' : 'Register'}
           </button>
           <Dialog.Close class="close-btn" type="button">Cancel</Dialog.Close>
         </div>
@@ -81,6 +67,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
+
 <style>
   .overlay {
     position: fixed;

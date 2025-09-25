@@ -19,7 +19,7 @@ export interface PrefetchContext {
     misses: number;
     avgPredictionTime: number;
     lastPredictionAccuracy: number;
-  };
+  }
   // Current session data
   docId: string | null;
   currentRoute: string;
@@ -27,7 +27,7 @@ export interface PrefetchContext {
     width: number;
     height: number;
     scrollY: number;
-  };
+  }
 }
 type PrefetchEvent =
   | { type: 'USER_ACTION'; action: string; context: any }
@@ -39,7 +39,7 @@ type PrefetchEvent =
   | { type: 'RESET_METRICS' }
   | { type: 'TRAIN_MODEL' }
   | { type: 'CACHE_HIT'; resource: string }
-  | { type: 'CACHE_MISS'; resource: string };
+  | { type: 'CACHE_MISS'; resource: string }
 export const prefetchMachine = createMachine({
   types: { [key: string]: any } as {
     context: PrefetchContext;
@@ -209,7 +209,7 @@ export const prefetchMachine = createMachine({
         return {
           ...context.metrics,
           avgPredictionTime: (context.metrics.avgPredictionTime + predictionTime) / 2
-        };
+        }
       }
     }),
     logPredictionError: (_, event) => {
@@ -235,7 +235,7 @@ export const prefetchMachine = createMachine({
       for (let i = 0; i < weights.length; i++) {
         weights[i] = (Math.random() - 0.5) * 0.1;
       }
-      return { weights };
+      return { weights }
     }),
     predictUserIntent: fromPromise(async ({ input }: { input: any }) => {
       const context = input;
@@ -268,7 +268,7 @@ export const prefetchMachine = createMachine({
           confidence,
           prefetchQueue,
           processingTime
-        };
+        }
       } catch (error: any) {
         throw new Error(`Prediction failed: ${error}`);
       }
@@ -290,7 +290,7 @@ export const prefetchMachine = createMachine({
         }
       });
       await Promise.allSettled(promises);
-      return { success: true };
+      return { success: true }
     }),
     trainPredictionModel: fromPromise(async ({ input }: { input: any }) => {
       const context = input;
@@ -304,7 +304,7 @@ export const prefetchMachine = createMachine({
       for (let i = 0; i < newWeights.length; i++) {
         newWeights[i] += (Math.random() - 0.5) * 0.01;
       }
-      return { weights: newWeights, accuracy };
+      return { weights: newWeights, accuracy }
     })
   }
 });

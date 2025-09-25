@@ -33,7 +33,7 @@ export interface WebGPUTensorOperation {
   operation: 'add' | 'multiply' | 'matmul' | 'transpose' | 'normalize';
   inputTensors: WebGPUTensor[];
   outputTensor: WebGPUTensor;
-  parameters?: { [key: string]: any };
+  parameters?: { [key: string]: any }
 }
 export interface WebGPUTensor {
   data: Float32Array | Uint32Array | Int32Array;
@@ -67,7 +67,7 @@ export interface WebGPUPerformanceMetrics {
   efficiency: number;
 }
 export interface WebGPULegalProcessor {
-  processDocument(document: string): Promise<WebGPUProcessingResult>;
+  processDocument(_document: string): Promise<WebGPUProcessingResult>;
   extractEntities(text: string): Promise<WebGPUEntityResult[]>;
   calculateSimilarity(text1: string, text2: string): Promise<number>;
   generateEmbeddings(text: string): Promise<Float32Array>;
@@ -75,7 +75,7 @@ export interface WebGPULegalProcessor {
 export interface WebGPUProcessingResult {
   success: boolean;
   processedText: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   performanceMetrics: WebGPUPerformanceMetrics;
 }
 export interface WebGPUEntityResult {
@@ -108,8 +108,8 @@ export interface WebGPUCapabilities {
 // Legal AI specific interfaces
 export interface LegalDocumentProcessor {
   processContract(contract: string): Promise<ContractAnalysis>;
-  extractClauses(document: string): Promise<ClauseExtraction[]>;
-  assessRisk(document: string): Promise<RiskAssessment>;
+  extractClauses(_document: string): Promise<ClauseExtraction[]>;
+  assessRisk(_document: string): Promise<RiskAssessment>;
   compareDocuments(doc1: string, doc2: string): Promise<DocumentComparison>;
 }
 export interface ContractAnalysis {
@@ -172,7 +172,7 @@ export interface WebGPUError extends Error {
   code: string;
   details: string;
   recoverable: boolean;
-  context: { [key: string]: any };
+  context: { [key: string]: any }
 }
 export interface WebGPUValidationError extends WebGPUError {
   shaderSource?: string;
@@ -186,8 +186,8 @@ export interface WebGPUOutOfMemoryError extends WebGPUError {
 }
 // Event interfaces
 export interface WebGPUEventHandler {
-  onDeviceLost(callback: (event: GPUDeviceLostInfo) => void): void;
-  onUncapturedError(callback: (event: GPUUncapturedErrorEvent) => void): void;
+  onDeviceLost(callback: (_event: GPUDeviceLostInfo) => void): void;
+  onUncapturedError(callback: (_event: GPUUncapturedErrorEvent) => void): void;
   onPerformanceWarning(callback: (warning: string) => void): void;
 }
 // Utility types
@@ -214,5 +214,5 @@ export type {
   GPUUncapturedErrorEvent,
   GPUBufferUsage,
   GPUTextureUsage,
-  GPUShaderStage as NativeGPUShaderStage
+  GPUShaderStage as NativeGPUShaderStage,
 } from '@webgpu/types';

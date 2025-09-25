@@ -40,7 +40,7 @@
           legal: 'bg-blue-600 text-white border-2 border-blue-500 hover:bg-blue-700 hover:border-blue-400 shadow-md',
           evidence: 'bg-orange-600 text-white border-2 border-orange-500 hover:bg-orange-700 hover:border-orange-400 shadow-md',
           caseItem: 'bg-green-600 text-white border-2 border-green-500 hover:bg-green-700 hover:border-green-400 shadow-md',
-          nes: 'nes-btn is-primary' // 🎮 optional NES.css integratio
+          nes: 'nes-btn is-primary' // 🎮 optional NES.css integratio;
         },
         size: {
           default: 'h-10 px-4 py-2 text-sm rounded-md',

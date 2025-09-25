@@ -32,7 +32,7 @@ export const enhancedEvidence = pgTable("enhanced_evidence", {
   tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
   riskScore: integer("risk_score").default(0), // 0-100
   confidenceScore: decimal("confidence_score", { precision: 3, scale: 2 }).default("0.75"),
-  // Hybrid Vector Storage
+  // Hybrid Vector Storage;
   embedding: vector("embedding", { dimensions: 384 }), // PGVector storage (nomic-embed-text)
   qdrantId: varchar("qdrant_id", { length: 100 }), // Reference to Qdrant collection
   qdrantCollection: varchar("qdrant_collection", { length: 100 }).default("legal_documents"),
@@ -57,7 +57,7 @@ export const legalRAGSessions = pgTable("legal_rag_sessions", {
   caseId: uuid("case_id"),
   // Search Parameters
   query: text("query").notNull(),
-  searchType: varchar("search_type", { length: 50 }).default("semantic"), // semantic, hybrid, legal_precedent
+  searchType: varchar("search_type", { length: 50 }).default("semantic"), // semantic, hybrid, legal_precedent;
   jurisdiction: varchar("jurisdiction", { length: 50 }),
   caseType: varchar("case_type", { length: 50 }),
   // Results and Scoring
@@ -121,7 +121,7 @@ export const legalProcessingQueue = pgTable("legal_processing_queue", {
   priority: varchar("priority", { length: 20 }).default("medium"), // low, medium, high, urgent
   // Processing Options
   processingOptions: jsonb("processing_options").$type().default(sql`'{"extractEntities":true,"generateSummary":true,"assessRisk":true,"generateEmbedding":true,"storeInQdrant":true,"useContext7":false}'::jsonb`),
-  // Progress Tracking
+  // Progress Tracking;
   progress: integer("progress").default(0), // 0-100
   currentTask: varchar("current_task", { length: 100 }),
   // Error Handling
@@ -164,7 +164,7 @@ export const context7MCPLogs = pgTable("context7_mcp_logs", {
   request: jsonb("request").notNull(),
   response: jsonb("response"),
   // Performance
-  duration: integer("duration"), // milliseconds
+  duration: integer("duration"), // milliseconds;
   success: boolean("success").default(true),
   errorMessage: text("error_message"),
   // Legal Context
@@ -183,7 +183,7 @@ export const legalSystemMetrics = pgTable("legal_system_metrics", {
   tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
   // Aggregation Support
   timeWindow: varchar("time_window", { length: 20 }).default("1min"), // 1min, 5min, 1hour, 1day
-  aggregationType: varchar("aggregation_type", { length: 20 }).default("avg"), // avg, sum, count, max, min
+  aggregationType: varchar("aggregation_type", { length: 20 }).default("avg"), // avg, sum, count, max, min;
   timestamp: timestamp("timestamp", { mode: "date" }).defaultNow().notNull()
 });
 // === TYPE EXPORTS ===

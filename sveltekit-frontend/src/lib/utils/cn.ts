@@ -1,10 +1,10 @@
-import { clsx, type ClassValue } from "clsx";
+import { clsx, type ClassValue } from 'clsx';
 /**
  * Utility function to merge CSS classes
  * Using UnoCSS instead of Tailwind, so no merge deduplication needed
  */
 export function cn(...inputs: ClassValue[]) {
-	return clsx(inputs);
+  return clsx(inputs);
 }
 /**
  * Legal-specific class name utility with YoRHa theme integration

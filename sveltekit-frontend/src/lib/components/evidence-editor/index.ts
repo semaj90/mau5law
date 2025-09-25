@@ -9,7 +9,7 @@ export type AnnotationType = 'highlight' | 'redaction' | 'comment' | 'timestamp'
 export interface EvidenceAnnotation {
   id: string;
   type: AnnotationType;
-  position: { x: number; y: number; width?: number; height?: number };
+  position: { x: number; y: number; width?: number; height?: number }
   content: string;
   timestamp: Date;
   author?: string;

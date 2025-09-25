@@ -28,7 +28,7 @@ export interface RouteMetrics {
     fid?: number;
     cls?: number;
     fcp?: number;
-  };
+  }
   timestamp: number;
   requestId?: string;
 }
@@ -41,7 +41,7 @@ class ObservabilityClient {
     batchSize: 10,
     flushInterval: 30000, // 30 seconds
     debugMode: false
-  };
+  }
   private metricsBuffer: RouteMetrics[] = [];
   private flushTimer?: number;
   private initialized = false;
@@ -51,7 +51,7 @@ class ObservabilityClient {
    */;
   initialize(config?: Partial<ObservabilityConfig>): void {
     if (!browser || this.initialized) return;
-    this.config = { ...this.config, ...config };
+    this.config = { ...this.config, ...config }
     if (this.config.debugMode) {
       console.log('🔍 Observability client initializing with config:', this.config);
     }
@@ -95,7 +95,7 @@ class ObservabilityClient {
    * Track component mount performance
    */;
   trackComponentMount(componentName: string): () => void {
-    if (!browser || !this.config.enablePerformanceTracking) return () => {};
+    if (!browser || !this.config.enablePerformanceTracking) return () => {}
     const startTime = performance.now();
     timingMetrics.mark(`component-mount-start-${componentName}`);
     return () => {
@@ -110,7 +110,7 @@ class ObservabilityClient {
       if (this.config.debugMode) {
         console.log(`⚡ Component mount: ${componentName} = ${Math.round(duration * 100) / 100}ms`);
       }
-    };
+    }
   }
   /**
    * Track API call performance
@@ -134,7 +134,7 @@ class ObservabilityClient {
         const endTime = performance.now();
         const duration = endTime - startTime;
         timingMetrics.mark(`api-call-end-${endpoint}`);
-        const serverTiming = response ? timingMetrics.extractServerTiming(response) : { [key: string]: any };
+        const serverTiming = response ? timingMetrics.extractServerTiming(response) : { [key: string]: any }
         const serverRequestId = response ? timingMetrics.extractRequestId(response) : undefined;
         if (this.config.debugMode) {
           console.log(`✅ API call completed: ${method} ${endpoint}`, {
@@ -145,7 +145,7 @@ class ObservabilityClient {
           });
         }
       }
-    };
+    }
   }
   /**
    * Create enhanced fetch with observability
@@ -176,7 +176,7 @@ class ObservabilityClient {
         downlink: (navigator as any).connection.downlink,
         rtt: (navigator as any).connection.rtt
       } : undefined
-    };
+    }
     return snapshot;
   }
   /**
@@ -237,7 +237,7 @@ class ObservabilityClient {
       serverTiming: { [key: string]: any }, // Will be populated by Server-Timing headers during SSR
       webVitals,
       timestamp: Date.now()
-    };
+    }
     // Add to buffer
     this.metricsBuffer.push(routeMetrics);
     // Auto-flush if buffer is full
@@ -289,7 +289,7 @@ export function trackComponent(componentName: string) {
   if (browser) {
     return observabilityClient.trackComponentMount(componentName);
   }
-  return () => {};
+  return () => {}
 }
 export function trackAPI(endpoint: string, method?: string) {
   if (browser) {
@@ -298,7 +298,7 @@ export function trackAPI(endpoint: string, method?: string) {
   return {
     start: () => {},
     end: () => {}
-  };
+  }
 }
 // Export for advanced usage
-export { observabilityClient };
+export { observabilityClient }

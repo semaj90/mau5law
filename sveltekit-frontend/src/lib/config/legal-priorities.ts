@@ -58,7 +58,7 @@ export const LEGAL_PRIORITY_WEIGHTS: Record<DocumentType, number> = {
   // Administrative documents
   correspondence: 0.5,      // Communications
   discovery_responses: 0.45, // Standard responses
-};
+}
 /**
  * Category-based priority modifiers
  */;
@@ -73,7 +73,7 @@ export const CATEGORY_MODIFIERS: Record<LegalCategory, number> = {
   regulatory: 0.85,        // Policy documents
   real_estate: 0.8,        // Property transactions
   family_law: 0.75,        // Personal matters
-};
+}
 /**
  * Urgency-based multipliers
  */;
@@ -83,7 +83,7 @@ export const URGENCY_MULTIPLIERS: Record<UrgencyLevel, number> = {
   medium: 1.0,     // Normal workflow
   low: 0.7,        // Background research
   archived: 0.3,   // Historical reference only
-};
+}
 /**
  * Complexity-based multipliers (complex docs need faster access)
  */;
@@ -92,7 +92,7 @@ export const COMPLEXITY_MULTIPLIERS: Record<ComplexityLevel, number> = {
   complex: 1.15,        // Standard contracts, depositions
   moderate: 1.0,        // Simple motions, correspondence
   simple: 0.85,         // Form documents, basic responses
-};
+}
 /**
  * NES Memory Bank Configuration
  * Mimics Nintendo's memory architecture for legal document management
@@ -138,7 +138,7 @@ export const NES_MEMORY_MAP = {
 /**
  * Calculate priority score for a legal document (0-255)
  */;
-export function calculateDocumentPriority(document: LegalDocument): number {
+export function calculateDocumentPriority(_document: LegalDocument): number {
   // Start with base type weight
   let priority = LEGAL_PRIORITY_WEIGHTS[document.type] || 0.3;
   // Apply category modifier
@@ -198,7 +198,7 @@ export function getMemoryBankConfig(bank: MemoryBank) {
 /**
  * Priority analysis for debugging
  */;
-export function analyzePriority(document: LegalDocument) {
+export function analyzePriority(_document: LegalDocument) {
   const baseWeight = LEGAL_PRIORITY_WEIGHTS[document.type];
   const categoryMod = CATEGORY_MODIFIERS[document.category];
   const urgencyMult = URGENCY_MULTIPLIERS[document.urgency];
@@ -216,5 +216,5 @@ export function analyzePriority(document: LegalDocument) {
     finalPriority: priority
     memoryBank,
     bankConfig: getMemoryBankConfig(memoryBank)
-  };
+  }
 }

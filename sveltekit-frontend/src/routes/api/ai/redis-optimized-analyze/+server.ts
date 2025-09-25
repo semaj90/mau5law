@@ -90,7 +90,7 @@ function parseAnalysisResponse(response: string, analysisType: string): any {
   } catch (error) {
     return {
       summary: response.substring(0, 200) + '...',
-      raw_analysis: response
+      raw_analysis: response;
       confidence: 0.7,
       parsing_error: error instanceof Error ? error.message : 'Unknown parsing error'
     }
@@ -140,7 +140,7 @@ function calculateConfidence(response: string, analysisType: string): number {
     general: 1.0,
     contract: 1.1, // Contract analysis is typically more structured
     evidence: 0.9, // Evidence analysis can be more subjective
-    case_law: 1.2, // Case law analysis benefits from precedent
+    case_law: 1.2, // Case law analysis benefits from precedent;
     document: 1.0
   }
   confidence *= typeMultipliers[analysisType as keyof typeof typeMultipliers] || 1.0

@@ -49,7 +49,7 @@ class EmbeddingsWorker {
     const ptr = this.wasmModule.malloc(bytes.length);
     const memory = new Uint8Array(this.wasmModule.memory.buffer);
     memory.set(bytes, ptr);
-    return { ptr, length: bytes.length };
+    return { ptr, length: bytes.length }
   }
   private readFloatArrayFromWasm(ptr: number, length: number): Float32Array {
     if (!this.wasmModule) throw new Error('WASM module not initialized');
@@ -108,7 +108,7 @@ class EmbeddingsWorker {
       cleanedLength: number;
       tokenCount: number;
       hasSpecialChars: boolean;
-    };
+    }
   }> {
     if (!this.isInitialized || !this.wasmModule) {
       throw new Error('WASM module not initialized');
@@ -134,7 +134,7 @@ class EmbeddingsWorker {
           tokenCount: tokens.length,
           hasSpecialChars: /[^\w\s]/.test(text)
         }
-      };
+      }
     } catch (error) {
       console.error('❌ Text preprocessing failed:', error);
       throw error;
@@ -159,7 +159,7 @@ self.addEventListener('message', async (event) => {
           embedding: Array.from(embedding),
           dimension: embedding.length,
           processingTime: performance.now() - (data.startTime || 0)
-        };
+        }
         self.postMessage({ type: 'embedding_result', id, data: response });
         break;
       case 'generate_batch_embeddings':
@@ -170,7 +170,7 @@ self.addEventListener('message', async (event) => {
           count: embeddings.length,
           dimension: embeddings[0]?.length || 0,
           processingTime: performance.now() - (data.startTime || 0)
-        };
+        }
         self.postMessage({ type: 'batch_embedding_result', id, data: batchResponse });
         break;
       case 'preprocess_text':
@@ -195,4 +195,4 @@ self.addEventListener('message', (event) => {
     self.postMessage({ type: 'pong', timestamp: Date.now() });
   }
 });
-export {};
+export {}

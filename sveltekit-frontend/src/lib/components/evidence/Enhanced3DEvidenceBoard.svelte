@@ -12,7 +12,7 @@
     type: 'document' | 'witness' | 'physical' | 'digital' | 'timeline';
     title: string;
     position: ;
-{ x: number; y: number; z: number };
+{ x: number; y: number; z: number }
     connections: string[];
     confidence: number;
     priority: number;
@@ -42,9 +42,9 @@
   const LOD_DISTANCES = [100, 300, 600, 1000];
   const TEXTURE_CACHE_SIZE = 1024; // 1KB per node texture
   let animationFrame: number;
-  let mousePos = { x: 0, y: 0 };
+  let mousePos = { x: 0, y: 0 }
   let isDragging = false;
-  let lastMousePos = { x: 0, y: 0 };
+  let lastMousePos = { x: 0, y: 0 }
   onMount(async () => {
     await initializeBoard();
     await loadSampleData();
@@ -90,11 +90,11 @@
       }
       // Check for node hover
       checkNodeHover();
-      lastMousePos = { ...mousePos };
+      lastMousePos = { ...mousePos }
     });
     canvas.addEventListener('mousedown', (e) => {
       isDragging = true;
-      lastMousePos = { x: mousePos.x, y: mousePos.y };
+      lastMousePos = { x: mousePos.x, y: mousePos.y }
     });
     canvas.addEventListener('mouseup', () => {
       isDragging = false;
@@ -152,7 +152,7 @@
       x: canvas.width / 2 + x1 * perspective,
       y: canvas.height / 2 - y1 * perspective,
       scale: perspectiv;
-    };
+    }
   }
   function getVisibleNodes(): EvidenceNode[] {
     // N64-style culling: Only render nodes within view frustum and distance
@@ -445,10 +445,10 @@
     ctx.shadowBlur = 0;
   }
   function drawDetailedNode(
-    ctx: CanvasRenderingContext2D
+    ctx: CanvasRenderingContext2D;
     pos: { x: number; y: number; scale: number },
-    size: number
-    node: EvidenceNode
+    size: number;
+    node: EvidenceNode;
     color: string
   ) {
     ctx.fillStyle = color;
@@ -548,10 +548,10 @@
     const exportData = {
       nodes,
       connections,
-      camera: $camera
-      rotation: $rotation
+      camera: $camera;
+      rotation: $rotation;
       timestamp: new Date().toISOString();
-    };
+    }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -561,14 +561,10 @@
     URL.revokeObjectURL(url);
   }
 </script>
+
 <div class="evidence-board-container">
   <!-- 3D Canvas -->
-  <canvas
-    bind:this={canvas}
-    width={1200}
-    height={800}
-    class="evidence-canvas"
-  ></canvas>
+  <canvas bind:this={canvas} width={1200} height={800} class="evidence-canvas"></canvas>
   <!-- Control Panel -->
   <div class="control-panel">
     <div class="panel-section">
@@ -604,10 +600,7 @@
         <div class="stat-item">
           <span>Confidence:</span>
           <div class="confidence-bar">
-            <div
-              class="confidence-fill"
-              style="width: {selectedNode.confidence * 100}%"
-            ></div>
+            <div class="confidence-fill" style="width: {selectedNode.confidence * 100}%"></div>
           </div>
           <span>{Math.round(selectedNode.confidence * 100)}%</span>
         </div>
@@ -636,6 +629,7 @@
     </div>
   {/if}
 </DiamondModal>
+
 <style>
   .evidence-board-container {
     position: relative;

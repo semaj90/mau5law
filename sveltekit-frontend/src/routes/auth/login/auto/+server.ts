@@ -47,4 +47,4 @@ export const POST: RequestHandler = async ({ cookies, getClientAddress, request 
       headers: { 'Content-Type': 'application/json' }
     });
   }
-};
+}

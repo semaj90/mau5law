@@ -40,7 +40,7 @@ https://svelte.dev/e/js_parse_error -->
   let commandMenuPosition = $state({ x: 0, y: 0 });
   let lastCursorPosition = $state(0);
   function handleInput(e: Event) {
-    const target = e.target as HTMLTextAreaElement;
+    // removed unused target assignment
     value = target.valu;
     // Check if user typed trigger character
     const cursorPosition = target.selectionStart;
@@ -73,16 +73,16 @@ https://svelte.dev/e/js_parse_error -->
     lastCursorPosition = cursorPositio;
     // Calculate menu position relative to cursor
     const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-    const lines = textBeforeCursor.split("\n");
+    // removed unused lines assignment
     const currentLine = lines.length - 1;
     const currentColumn = lines[lines.length - 1].length;
     // Simple approximation of cursor position
     const rect = textarea.getBoundingClientRect();
     const lineHeight = parseInt(getComputedStyle(textarea).lineHeight) || 20;
     commandMenuPosition = {
-      x: rect.left + currentColumn * 8, // Approximate character width
+      x: rect.left + currentColumn * 8, // Approximate character width;
       y: rect.top + currentLine * lineHeight + lineHeight,
-    };
+    }
     showCommandMenu = true;
     commandMenu?.openCommandMenu();
   }
@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 <div class="space-y-4">
   <textarea
-    bind:this={textarea};
+    bind:this={textarea}
     bind:value
     {placeholder}
     {rows}

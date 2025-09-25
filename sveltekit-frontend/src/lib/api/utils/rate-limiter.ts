@@ -39,10 +39,10 @@ export interface RateLimitOptions<Args extends unknown[] = unknown[]> {
 
 type Pending<Args extends unknown[], T> = {
   args: Args;
-  resolve: (value: T | PromiseLike<T>) => void;
+  resolve: (_value: T | PromiseLike<T>) => void;
   reject: (err: unknown) => void;
   enqueueAt: number;
-};
+}
 
 class Bucket<Args extends unknown[], T> {
   tokens: number;
@@ -91,7 +91,7 @@ class Bucket<Args extends unknown[], T> {
  */
 export function rateLimit<T, Args extends unknown[] = unknown[]>(
   fn: (...args: Args) => Promise<T>,
-  options?: RateLimitOptions<Args>
+  options?: RateLimitOptions<Args>,
 ): (...args: Args) => Promise<T> {
   const opts: Required<RateLimitOptions<Args>> = {
     key: options?.key ?? (() => '::global::'),
@@ -100,11 +100,11 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
     maxConcurrent: options?.maxConcurrent ?? 5,
     maxQueue: options?.maxQueue ?? 200,
     onDropped: options?.onDropped ?? (() => {}),
-  };
+  }
 
   const buckets = new Map<string, Bucket<Args, T>>();
 
-  function getBucket(key: string) {
+  function getBucket(_key: string) {
     let b = buckets.get(key);
     if (!b) {
       b = new Bucket<Args, T>(opts);
@@ -203,14 +203,14 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
         resolve,
         reject,
         enqueueAt: Date.now(),
-      };
+      }
       bucket.queue.push(pending);
       // Try to trigger processing (in case tokens become available soon)
       // schedule a wake-up roughly when a token could be available
       const wakeMs = Math.max(1, Math.floor(bucket.opts.windowMs / Math.max(1, bucket.opts.maxRequests)));
       setTimeout(() => processQueue(bucket), wakeMs);
     });
-  };
+  }
 }
 
 export default rateLimit;

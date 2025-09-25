@@ -14,8 +14,8 @@ const RAW_ENV = {
   VITE_PERFORMANCE_PROFILE: import.meta.env.VITE_PERFORMANCE_PROFILE,
   VITE_GPU_DEBUG: import.meta.env.VITE_GPU_DEBUG,
   VITE_SHADER_DEBUG: import.meta.env.VITE_SHADER_DEBUG,
-  VITE_REDUCTION_MODE: import.meta.env.VITE_REDUCTION_MODE
-};
+  VITE_REDUCTION_MODE: import.meta.env.VITE_REDUCTION_MODE,
+}
 export interface EnvConfig {
   OLLAMA_URL: string;
   OLLAMA_MODEL: string;
@@ -31,9 +31,9 @@ export interface EnvConfig {
   SHADER_DEBUG: boolean;
   REDUCTION_MODE: 'auto' | 'gpu' | 'cpu';
 }
-function coerceBoolean(value: string | undefined, defaultValue: boolean): boolean {
-  if (value === undefined) return defaultValue;
-  return !(value.toLowerCase() === 'false' || value === '0' || value.toLowerCase() === 'off');
+function coerceBoolean(_value: string | undefined, defaultValue: boolean): boolean {
+  if (_value === undefined) return defaultValue;
+  return !(_value.toLowerCase() === 'false' || _value === '0' || _value.toLowerCase() === 'off');
 }
 function validateAndBuildEnv(): EnvConfig {
   const memoryMB = clampMemoryMB(parseInt(RAW_ENV.VITE_GPU_MEMORY_LIMIT || '512', 10));
@@ -53,8 +53,9 @@ function validateAndBuildEnv(): EnvConfig {
     SHADER_DEBUG: RAW_ENV.VITE_SHADER_DEBUG === 'true',
     REDUCTION_MODE:
       RAW_ENV.VITE_REDUCTION_MODE === 'gpu' || RAW_ENV.VITE_REDUCTION_MODE === 'cpu'
-        ? RAW_ENV.VITE_REDUCTION_MODE : 'auto'
-  };
+        ? RAW_ENV.VITE_REDUCTION_MODE
+        : 'auto',
+  }
   if (cfg.GPU_DEBUG) {
     console.log('[ENV] Loaded configuration', cfg);
   }
@@ -72,7 +73,7 @@ export const CLIENT_ENV = Object.freeze({
   PERFORMANCE_PROFILE: ENV_CONFIG.PERFORMANCE_PROFILE,
   GPU_DEBUG: ENV_CONFIG.GPU_DEBUG,
   SHADER_DEBUG: ENV_CONFIG.SHADER_DEBUG,
-  REDUCTION_MODE: ENV_CONFIG.REDUCTION_MODE
+  REDUCTION_MODE: ENV_CONFIG.REDUCTION_MODE,
 });
 // GPU Context Configuration based on environment
 export const GPU_CONFIG = Object.freeze({
@@ -97,6 +98,6 @@ export const GPU_CONFIG = Object.freeze({
   nesColorPaletteSize: 52,
   nesDithering: true,
   nesPixelPerfect: true,
-  reductionMode: CLIENT_ENV.REDUCTION_MODE
+  reductionMode: CLIENT_ENV.REDUCTION_MODE,
 });
 export default ENV_CONFIG;

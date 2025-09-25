@@ -13,7 +13,7 @@ export interface AuthState {
     sessionTimeoutMinutes: number;
     requireReauth: boolean;
     enable2FA: boolean;
-  };
+  }
 }
 export interface LoginCredentials {
   email: string;
@@ -43,7 +43,7 @@ class EnhancedAuthStore {
   }) : {
     user: null
     isAuthenticated: false
-    isLoading: false
+    isLoading: false;
     session: null
     lastActivity: null
     securitySettings: {
@@ -51,7 +51,7 @@ class EnhancedAuthStore {
       requireReauth: false
       enable2FA: false
     }
-  };
+  }
   private _error = browser ? $state<string | null>(null) : null;
   private _sessionCheckInterval: NodeJS.Timeout | null = null;
   private _activityTimeout: NodeJS.Timeout | null = null;
@@ -132,15 +132,15 @@ class EnhancedAuthStore {
           localStorage.setItem('auth:rememberMe', 'true');
         }
         this.trackActivity();
-        return { success: true };
+        return { success: true }
       } else {
         this._error = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).error || 'Login failed';
-        return { success: false, error: this._error };
+        return { success: false, error: this._error }
       }
     } catch (error: any) {
       this._error = 'Network error. Please try again.';
       console.error('Login error:', error);
-      return { success: false, error: this._error };
+      return { success: false, error: this._error }
     } finally {
       this._state.isLoading = false;
     }
@@ -163,7 +163,7 @@ class EnhancedAuthStore {
       const result = await (response as { json?: any; ok?: any }).json();
       if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
         if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).requiresVerification) {
-          return { success: true, requiresVerification: true };
+          return { success: true, requiresVerification: true }
         }
         // Auto-login after registration
         this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
@@ -171,15 +171,15 @@ class EnhancedAuthStore {
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
         this.trackActivity();
-        return { success: true };
+        return { success: true }
       } else {
         this._error = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).error || 'Registration failed';
-        return { success: false, error: this._error };
+        return { success: false, error: this._error }
       }
     } catch (error: any) {
       this._error = 'Network error. Please try again.';
       console.error('Registration error:', error);
-      return { success: false, error: this._error };
+      return { success: false, error: this._error }
     } finally {
       this._state.isLoading = false;
     }
@@ -223,7 +223,7 @@ class EnhancedAuthStore {
       return result;
     } catch (error: any) {
       console.error('Email verification error:', error);
-      return { success: false, error: 'Verification failed' };
+      return { success: false, error: 'Verification failed' }
     }
   }
   async requestPasswordReset(email: string): Promise<any> {
@@ -238,7 +238,7 @@ class EnhancedAuthStore {
       return await (response as { json?: any; ok?: any }).json();
     } catch (error: any) {
       console.error('Password reset request error:', error);
-      return { success: false, error: 'Request failed' };
+      return { success: false, error: 'Request failed' }
     }
   }
   async resetPassword(token: string, newPassword: string): Promise<any> {
@@ -258,12 +258,12 @@ class EnhancedAuthStore {
       return result;
     } catch (error: any) {
       console.error('Password reset error:', error);
-      return { success: false, error: 'Reset failed' };
+      return { success: false, error: 'Reset failed' }
     }
   }
   async updateProfile(updates: Partial<User>): Promise<any> {
     if (!this._state.isAuthenticated) {
-      return { success: false, error: 'Not authenticated' };
+      return { success: false, error: 'Not authenticated' }
     }
     try {
       const response = await fetch('/api/auth/update-profile', {
@@ -275,17 +275,17 @@ class EnhancedAuthStore {
       });
       const result = await (response as { json?: any; ok?: any }).json();
       if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
-        this._state.user = { ...this._state.user!, ...result.user };
+        this._state.user = { ...this._state.user!, ...result.user }
       }
       return result;
     } catch (error: any) {
       console.error('Profile update error:', error);
-      return { success: false, error: 'Update failed' };
+      return { success: false, error: 'Update failed' }
     }
   }
   async changePassword(currentPassword: string, newPassword: string): Promise<any> {
     if (!this._state.isAuthenticated) {
-      return { success: false, error: 'Not authenticated' };
+      return { success: false, error: 'Not authenticated' }
     }
     try {
       const response = await fetch('/api/auth/change-password', {
@@ -298,7 +298,7 @@ class EnhancedAuthStore {
       return await (response as { json?: any; ok?: any }).json();
     } catch (error: any) {
       console.error('Password change error:', error);
-      return { success: false, error: 'Password change failed' };
+      return { success: false, error: 'Password change failed' }
     }
   }
   // Security and session management
@@ -340,7 +340,7 @@ class EnhancedAuthStore {
   async getSecuritySummary(): Promise<any> {
     if (!this._state.isAuthenticated) return null;
     try {
-      const response = await fetch('/api/auth/security-summary');
+      // removed unused response assignment
       if ((response as { json?: any; ok?: any }).ok) {
         return await (response as { json?: any; ok?: any }).json();
       }
@@ -360,7 +360,7 @@ class EnhancedAuthStore {
       prosecutor: ['case:read', 'case:write', 'evidence:read', 'evidence:write', 'document:read', 'document:write'],
       detective: ['case:read', 'evidence:read', 'evidence:write', 'document:read'],
       user: ['case:read', 'document:read']
-    };
+    }
     const userPermissions = rolePermissions[this._state.user.role as keyof typeof rolePermissions] || [];
     return userPermissions.includes('*') || userPermissions.includes(permission);
   }
@@ -390,7 +390,7 @@ class EnhancedAuthStore {
       if (this._state.isAuthenticated) {
         this.trackActivity();
       }
-    };
+    }
     events.forEach(event => {
       document.addEventListener(event, activityHandler, { passive: true });
     });
@@ -429,7 +429,7 @@ class EnhancedAuthStore {
   }
   private async getClientIP(): Promise<string> {
     try {
-      const response = await fetch('/api/client-ip');
+      // removed unused response assignment
       const data = await (response as { json?: any; ok?: any }).json();
       return (data as { ip?: any }).ip || 'unknown';
     } catch {

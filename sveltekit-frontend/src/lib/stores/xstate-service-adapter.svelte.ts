@@ -9,13 +9,13 @@ import { createActor, type Actor, type AnyStateMachine, type AnyEventObject } fr
 export interface MachineState<TContext = any> {
   value: string;
   context: TContext;
-  matches: (value: string) => boolean;
-  can: (event: string) => boolean;
+  matches: (_value: string) => boolean;
+  can: (_event: string) => boolean;
   hasTag: (tag: string) => boolean;
 }
 export interface MachineService<TContext = any> {
   state: Readable<MachineState<TContext>;
-  send: (event: AnyEventObject | string) => void;
+  send: (_event: AnyEventObject | string) => void;
   start: () => void;
   stop: () => void;
   isRunning: Readable<boolean>;
@@ -33,7 +33,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
     const { subscribe } = this.stateStore;
     return {
       state: { subscribe },
-      send: (event: AnyEventObject | string) => {
+      send: (_event: AnyEventObject | string) => {
         if (this.actor) {
           // Handle string events by converting to event object
           const eventObj = typeof event === 'string' ? { type: event } : event;
@@ -43,7 +43,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
       start: () => this.start(),
       stop: () => this.stop(),
       isRunning: { subscribe: this.runningStore.subscribe }
-    };
+    }
   }
   private start(): void {
     if (this.actor) return;
@@ -53,10 +53,10 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
       const simpleState: MachineState = {
         value: typeof snapshot.value === 'string' ? snapshot.value: JSON.stringify(snapshot.value),
         context: snapshot.context,
-        matches: (value: string) => snapshot.matches(value),
-        can: (event: string) => snapshot.can({ type: event }),
+        matches: (_value: string) => snapshot.matches(value),
+        can: (_event: string) => snapshot.can({ type: event }),
         hasTag: (tag: string) => snapshot.hasTag(tag)
-      };
+      }
       this.stateStore.set(simpleState);
     });
     this.actor.start();
@@ -102,7 +102,7 @@ export interface UploadMachineContext {
     redis: boolean;
     rabbitmq: boolean;
     ollama: boolean;
-  };
+  }
 }
 /**
  * Factory functions for creating typed service adapters
@@ -146,7 +146,7 @@ export const xstateUtils = {
       return defaultValue;
     }
   }
-};
+}
 /**
  * Migration helpers for existing XState v4 code
  */;
@@ -168,6 +168,6 @@ export const migrationHelpers = {
         matches: $state.matches,
         can: $state.can
       })
-    };
+    }
   }
-};
+}

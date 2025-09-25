@@ -12,15 +12,15 @@ export interface GraphNode {
   id: string;
   type: 'case' | 'precedent' | 'statute' | 'person' | 'organization' | 'concept';
   label: string;
-  properties: { [key: string]: any };
-  position: { x: number; y: number; z: number };
+  properties: { [key: string]: any }
+  position: { x: number; y: number; z: number }
   metadata: {
     importance: number;
     confidence: number;
     lastAccessed: number;
     memoryBank?: string;
     vectorEmbedding?: Float32Array;
-  };
+  }
 }
 export interface GraphEdge {
   id: string;
@@ -28,12 +28,12 @@ export interface GraphEdge {
   target: string;
   type: 'CITES' | 'RELATED_TO' | 'CONFLICTS_WITH' | 'SUPPORTS' | 'MENTIONS' | 'PART_OF';
   weight: number;
-  properties: { [key: string]: any };
+  properties: { [key: string]: any }
   metadata: {
     confidence: number;
     strength: number;
     bidirectional: boolean;
-  };
+  }
 }
 export interface GraphTraversalQuery {
   startNodes: string[];
@@ -42,9 +42,9 @@ export interface GraphTraversalQuery {
   filters?: {
     nodeTypes?: string[];
     minImportance?: number;
-    dateRange?: { start: Date; end: Date };
+    dateRange?: { start: Date; end: Date }
     jurisdiction?: string[];
-  };
+  }
   traversalStrategy: 'breadth_first' | 'depth_first' | 'weighted' | 'semantic_similarity';
   returnLimit?: number;
   useWasmAcceleration?: boolean;
@@ -60,13 +60,13 @@ export interface GraphTraversalResult {
     edgesTraversed: number;
     cacheHits: number;
     wasmAccelerated: boolean;
-  };
+  }
   visualizationData: {
     positions: Float32Array;
     colors: Float32Array;
     connections: Uint32Array;
     metadata: any;
-  };
+  }
 }
 export interface Neo4jConnection {
   uri: string;
@@ -88,7 +88,7 @@ export class SoraGraphTraversal {
     averageTraversalTime: 0,
     wasmAccelerationUsed: 0,
     memoryBankAccess: 0
-  };
+  }
   constructor(private config: {
     neo4j?: Neo4jConnection;
     enableWasm?: boolean;
@@ -100,7 +100,7 @@ export class SoraGraphTraversal {
       cacheSize: 10000,
       memoryIntegration: true
       ...config
-    };
+    }
   }
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -233,7 +233,7 @@ export class SoraGraphTraversal {
           connections: new Uint32Array(0),
           metadata: { [key: string]: any }
         }
-      };
+      }
     } catch (error: any) {
       console.error('❌ Semantic similarity traversal failed:', error);
       throw error;
@@ -290,7 +290,7 @@ export class SoraGraphTraversal {
         });
       }
     }
-    return { nodes, edges, paths, nodesVisited, edgesTraversed };
+    return { nodes, edges, paths, nodesVisited, edgesTraversed }
   }
   /**
    * Breadth-first traversal implementation
@@ -360,7 +360,7 @@ export class SoraGraphTraversal {
         connections: new Uint32Array(0),
         metadata: { [key: string]: any }
       }
-    };
+    }
   }
   /**
    * Depth-first traversal implementation
@@ -431,7 +431,7 @@ export class SoraGraphTraversal {
         connections: new Uint32Array(0),
         metadata: { [key: string]: any }
       }
-    };
+    }
   }
   /**
    * Weighted traversal using edge weights and node importance
@@ -475,7 +475,7 @@ export class SoraGraphTraversal {
         if (path.length > 1) {
           paths.push({
             nodes: path
-            totalWeight: minDistance
+            totalWeight: minDistance;
             confidence: node.metadata.confidence
           });
         }
@@ -513,7 +513,7 @@ export class SoraGraphTraversal {
         connections: new Uint32Array(0),
         metadata: { [key: string]: any }
       }
-    };
+    }
   }
   /**
    * Generate visualization data for Moogle
@@ -566,7 +566,7 @@ export class SoraGraphTraversal {
         nodeTypes: this.getNodeTypeDistribution((result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes),
         edgeTypes: this.getEdgeTypeDistribution((result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).edges)
       }
-    };
+    }
   }
   // Helper methods (mock implementations for now)
   private async initializeNeo4j(): Promise<void> {
@@ -584,7 +584,7 @@ export class SoraGraphTraversal {
           nodesVisited: 0,
           edgesTraversed: 0
         })
-      };
+      }
       console.log('🚀 WASM module initialized (mock)');
     } catch (error: any) {
       console.warn('WASM initialization failed:', error);
@@ -666,7 +666,7 @@ export class SoraGraphTraversal {
         confidence: Math.random() * 0.3 + 0.7,
         lastAccessed: Date.now()
       }
-    };
+    }
     this.nodeCache.set(nodeId, node);
     return node;
   }
@@ -689,7 +689,7 @@ export class SoraGraphTraversal {
             strength: Math.random(),
             bidirectional: true
           }
-        };
+        }
         neighbors.push({ node: neighbor, edge });
       }
     }
@@ -722,7 +722,7 @@ export class SoraGraphTraversal {
       person: { r: 1.0, g: 0.6, b: 0.2, a: 1.0 },
       organization: { r: 0.6, g: 0.2, b: 0.8, a: 1.0 },
       concept: { r: 0.5, g: 0.5, b: 0.5, a: 1.0 }
-    };
+    }
     return colors[node.type] || colors.concept;
   }
   private calculateBoundingBox(positions: Float32Array): { min: [number, number, number]; max: [number, number, number] } {
@@ -736,17 +736,17 @@ export class SoraGraphTraversal {
       maxY = Math.max(maxY, positions[i + 1]);
       maxZ = Math.max(maxZ, positions[i + 2]);
     }
-    return { min: [minX, minY, minZ], max: [maxX, maxY, maxZ] };
+    return { min: [minX, minY, minZ], max: [maxX, maxY, maxZ] }
   }
   private getNodeTypeDistribution(nodes: Map<string, GraphNode>): Record<string, number> {
-    const distribution: Record<string, number> = {};
+    const distribution: Record<string, number> = {}
     for (const node of nodes.values()) {
       distribution[node.type] = (distribution[node.type] || 0) + 1;
     }
     return distribution;
   }
   private getEdgeTypeDistribution(edges: Map<string, GraphEdge>): Record<string, number> {
-    const distribution: Record<string, number> = {};
+    const distribution: Record<string, number> = {}
     for (const edge of edges.values()) {
       distribution[edge.type] = (distribution[edge.type] || 0) + 1;
     }
@@ -770,7 +770,7 @@ export class SoraGraphTraversal {
       2: 'PRG_ROM',
       3: 'SAVE_RAM',
       4: 'EXPANSION_ROM'
-    };
+    }
     return bankNames[bankId as keyof typeof bankNames] || 'UNKNOWN';
   }
   private prepareWasmInput(query: GraphTraversalQuery, embeddings: Map<string, Float32Array>): any {
@@ -780,7 +780,7 @@ export class SoraGraphTraversal {
         id,
         embedding: Array.from(emb)
       })
-    };
+    }
   }
   private convertWasmNode(wasmNode: any): GraphNode {
     return wasmNode as GraphNode;
@@ -795,7 +795,7 @@ export class SoraGraphTraversal {
    * Get performance metrics
    */;
   getMetrics() {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   /**
    * Clear caches

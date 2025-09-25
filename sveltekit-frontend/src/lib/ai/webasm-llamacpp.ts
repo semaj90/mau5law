@@ -6,7 +6,7 @@ import type { WebASMRankingCache } from '../webgpu/webasm-ranking-cache.js';
 type RankingCacheMetrics = import('../webgpu/webasm-ranking-cache').CacheMetrics;
 // Define missing types locally
 type RankingAlgorithm = 'cosine' | 'euclidean' | 'dot_product' | 'manhattan';
-type LlamaGenerationParams = { maxTokens?: number; temperature?: number };
+type LlamaGenerationParams = { maxTokens?: number; temperature?: number }
 }
 export interface WebLlamaConfig {
   modelUrl: string;
@@ -49,7 +49,7 @@ export interface WebLlamaResponse {
     inferenceTime: number;
     cacheTime: number;
     totalTime: number;
-  };
+  }
 }
 class WebAssemblyLlamaService {
   private module: any = null;
@@ -81,7 +81,7 @@ class WebAssemblyLlamaService {
     evictions: 0,
     memoryUsage: 0,
     lastUpdated: Date.now()
-  };
+  }
   constructor(config: Partial<WebLlamaConfig> = {}) {
     this.config = {
       modelUrl: '/models/gemma3:270m',
@@ -99,7 +99,7 @@ class WebAssemblyLlamaService {
       enableServiceWorker: true
       quicEndpoint: '/api/cache/ranking',
       ...config
-    };
+    }
     this.initializeWebGPU();
     this.initializeWorker();
     this.initializeRankingCache();
@@ -129,9 +129,9 @@ class WebAssemblyLlamaService {
       });
       console.log('[WebLlama] WebGPU initialized successfully');
       // Set up error handling
-      (this.webgpuDevice as any).onuncapturederror = (event: any) => {
+      (this.webgpuDevice as any).onuncapturederror = (_event: any) => {
         console.error('[WebLlama] WebGPU error:', event.error);
-      };
+      }
     } catch (error: any) {
       console.error('[WebLlama] WebGPU initialization failed:', error);
     }
@@ -195,7 +195,7 @@ class WebAssemblyLlamaService {
       if (this.worker) {
         this.worker.onerror = (error) => {
           console.error('[WebLlama Worker] Error:', error);
-        };
+        }
         // Optionally send init messages
         this.worker.postMessage({ type: 'init', data: { wasmUrl: this.config.wasmUrl } });
         this.worker.postMessage({ type: 'load_model', data: { modelUrl: this.config.modelUrl } });
@@ -248,7 +248,7 @@ class WebAssemblyLlamaService {
       inferenceTime: 0,
       cacheTime: 0,
       totalTime: 0
-    };
+    }
     // Enhanced cache lookup with ranking (disabled in this build; using legacy cache below)
     // Fallback to legacy cache
     if (options.useCache !== false) {
@@ -260,7 +260,7 @@ class WebAssemblyLlamaService {
           fromCache: true
           cacheHit: true
           processingPath: 'cache'
-        };
+        }
       }
     }
     if (!this.modelLoaded || !this.module) {
@@ -331,7 +331,7 @@ class WebAssemblyLlamaService {
       confidence: analysis?.confidence || 0,
       processingTime: (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingTime,
       method: 'WebAssembly llama.cpp + Gemma 3 Legal'
-    };
+    }
   }
   /**
    * Generate embedding for semantic similarity
@@ -438,12 +438,12 @@ class WebAssemblyLlamaService {
       evictions: number;
       memoryUsage: number;
       lastUpdated: number;
-    };
+    }
     performance: {
       avgLatency: number;
       hitRatio: number;
       throughput: number;
-    };
+    }
   } {
     return {
       modelLoaded: this.modelLoaded,
@@ -462,15 +462,15 @@ class WebAssemblyLlamaService {
         hitRatio: this.cacheMetrics.hitRatio,
         throughput: this.cacheMetrics.totalRequests
       }
-    };
+    }
   }
   /**
    * Get detailed cache analytics
    */;
   getCacheAnalytics(): {
-    legacy: { size: number; maxSize: number };
+    legacy: { size: number; maxSize: number }
     ranking: RankingCacheMetrics | null;
-    serviceWorker: { registered: boolean; active: boolean };
+    serviceWorker: { registered: boolean; active: boolean }
   } {
     return {
       legacy: {
@@ -482,7 +482,7 @@ class WebAssemblyLlamaService {
         registered: !!this.serviceWorkerRegistration,
         active: !!this.serviceWorkerRegistration?.active
       }
-    };
+    }
   }
   /**
    * Clear all caches
@@ -502,7 +502,7 @@ class WebAssemblyLlamaService {
       evictions: 0,
       memoryUsage: 0,
       lastUpdated: Date.now()
-    };
+    }
     console.log('[WebLlama] All caches cleared');
   }
   // Private helper methods
@@ -557,7 +557,7 @@ class WebAssemblyLlamaService {
           return 0;
         }
       }
-    };
+    }
   }
   private async generateWithWorker(prompt: string, options: any): Promise<WebLlamaResponse> {
     return new Promise((resolve, reject) => {
@@ -583,7 +583,7 @@ class WebAssemblyLlamaService {
           this.worker!.removeEventListener('message', messageHandler);
           reject(new Error(error);
         }
-      };
+      }
       this.worker.addEventListener('message', messageHandler);
       this.worker.postMessage({
         type: 'generate',
@@ -625,7 +625,7 @@ class WebAssemblyLlamaService {
         fromCache: false
         cacheHit: false
         processingPath: 'ollama'
-      };
+      }
     } catch (error: any) {
       console.error('[WebLlama] Ollama API call failed:', error);
       throw error;
@@ -636,7 +636,7 @@ class WebAssemblyLlamaService {
       comprehensive: 'Provide detailed analysis of all legal aspects',
       quick: 'Provide concise summary of key legal points',
       'risk-focused': 'Focus on identifying legal risks and compliance issues'
-    };
+    }
     return `<|system|>You are a specialized legal AI assistant. Analyze the following legal document.
 Instructions: ${instructions[analysisType as keyof typeof instructions]}
 Document Title: ${title}
@@ -662,7 +662,7 @@ Provide analysis in structured format:
       risks: [] as Array<any>,
       recommendations: [] as string[],
       confidence: 0.8
-    };
+    }
     try {
       // Extract sections using regex
       const summaryMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<summary>(.*?)<\/summary>/s);
@@ -685,7 +685,7 @@ Provide analysis in structured format:
               type: type?.trim() || 'unknown',
               value: value?.trim() || '',
               confidence: parseFloat(confidenceStr?.trim() || '0.8')
-            };
+            }
           })
           .filter((e) => e.value);
       }
@@ -700,7 +700,7 @@ Provide analysis in structured format:
               type: type?.trim() || 'general',
               severity: severity?.trim() || 'medium',
               description: description?.trim() || ''
-            };
+            }
           })
           .filter((r) => r.description);
       }
@@ -774,4 +774,4 @@ Provide analysis in structured format:
 // Export singleton for global use
 export const webLlamaService = new WebAssemblyLlamaService();
 // Export class for custom instances
-export { WebAssemblyLlamaService };
+export { WebAssemblyLlamaService }

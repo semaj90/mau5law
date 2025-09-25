@@ -8,7 +8,7 @@ export interface MCPToolResponse<T = any> {
     timestamp: string;
     tool: string;
     duration?: number;
-  };
+  }
 }
 export interface MCPTools {
   // Nested structure expected by agentShellMachine
@@ -19,7 +19,7 @@ export interface MCPTools {
     deleteCase: (caseId: string) => Promise<MCPToolResponse>;
     findSimilarCases: (embedding: number[], limit: number) => Promise<MCPToolResponse>;
     getCaseAnalytics: (userId: string) => Promise<MCPToolResponse>;
-  };
+  }
   evidence: {
     loadEvidence: (params: { caseId?: string; limit?: number; query?: string }) => Promise<MCPToolResponse>;
     createEvidence: (evidenceData: any) => Promise<MCPToolResponse>;
@@ -27,15 +27,15 @@ export interface MCPTools {
     deleteEvidence: (evidenceId: string) => Promise<MCPToolResponse>;
     findSimilarEvidence: (params: { embedding: number[]; caseId: string; limit: number; threshold?: number }) => Promise<MCPToolResponse>;
     getEvidenceAnalytics: (caseId: string) => Promise<MCPToolResponse>;
-  };
+  }
   users: {
     getUserById: (userId: string) => Promise<MCPToolResponse>;
     updateUser: (userId: string, updates: any) => Promise<MCPToolResponse>;
     getUserAnalytics: () => Promise<MCPToolResponse>;
-  };
+  }
   // Direct methods for other functionality
   getAnalytics: (params: any) => Promise<MCPToolResponse>;
-  analyzeLegalDocument: (document: any) => Promise<MCPToolResponse>;
+  analyzeLegalDocument: (_document: any) => Promise<MCPToolResponse>;
   extractClauses: (documentId: string) => Promise<MCPToolResponse>;
   queryRAG: (query: string, context?: any) => Promise<MCPToolResponse>;
   generateEmbedding: (text: string) => Promise<MCPToolResponse>;
@@ -56,7 +56,7 @@ export const mcpTools: MCPTools = {
   },
   evidence: {
     loadEvidence: async (params: { caseId?: string; limit?: number; query?: string }) => ({
-      success: true
+      success: true;
       data: []
     }),
     createEvidence: async (evidenceData: any) => ({ success: true, data: { id: 'new-evidence-123', ...evidenceData } }),
@@ -70,16 +70,16 @@ export const mcpTools: MCPTools = {
   },
   users: {
     getUserById: async (userId: string) => ({ ,
-      success: true
+      success: true;
       data: { id: userId, name: 'Demo User', role: 'attorney' }
     }),
     updateUser: async (userId: string, updates: any) => ({ success: true, data: { id: userId, ...updates } }),
     getUserAnalytics: async () => ({ success: true, data: { totalUsers: 1, activeUsers: 1 } })
   },
   getAnalytics: async (params: any) => ({ success: true, data: null }),
-  analyzeLegalDocument: async (document: any) => ({ success: true, data: null }),
+  analyzeLegalDocument: async (_document: any) => ({ success: true, data: null }),
   extractClauses: async (documentId: string) => ({ success: true, data: null }),
   queryRAG: async (query: string, context?: any) => ({ success: true, data: null }),
   generateEmbedding: async (text: string) => ({ success: true, data: [] }),
   semanticSearch: async (query: string, filters?: any) => ({ success: true, data: [] })
-};
+}

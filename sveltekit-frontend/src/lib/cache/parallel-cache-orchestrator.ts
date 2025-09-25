@@ -18,12 +18,12 @@ export interface CacheResourceAllocation {
     l2Redis: number;
     l3Storage: number;
     gpuTexture: number;
-  };
+  }
   circuitBreakers: {
     enabled: boolean;
     failureThreshold: number;
     recoveryTime: number;
-  };
+  }
 }
 export interface ParallelCacheRequest {
   id: string;
@@ -42,14 +42,14 @@ export interface CacheExecutionMetrics {
     cpuThreads: number;
     memoryUsedMB: number;
     gpuUtilizationPercent: number;
-  };
+  }
   layerPerformance: {
     l1MemoryHits: number;
     l2RedisHits: number;
     l3StorageHits: number;
     gpuTextureHits: number;
     misses: number;
-  };
+  }
   circuitBreakerStatus: Record<string, boolean>;
 }
 class ParallelCacheOrchestrator {
@@ -71,7 +71,7 @@ class ParallelCacheOrchestrator {
       failureThreshold: 5,
       recoveryTime: 30000
     }
-  };
+  }
   private circuitBreakerState = new Map<string, { failures: number; lastFailure: number; isOpen: boolean }>();
   private activeRequests = new Map<string, Promise<any>();
   private executionMetrics: CacheExecutionMetrics = this.initializeMetrics();
@@ -104,7 +104,7 @@ class ParallelCacheOrchestrator {
         data: allResults.map(r => r.data).filter(Boolean),
         metrics: { ...this.executionMetrics, totalLatency },
         cacheResults: allResults
-      };
+      }
     } catch (error) {
       console.error('Parallel cache execution failed:', error);
       this.recordCircuitBreakerFailure(request.type);
@@ -112,7 +112,7 @@ class ParallelCacheOrchestrator {
         success: false
         metrics: { ...this.executionMetrics, totalLatency: performance.now() - startTime },
         cacheResults: []
-      };
+      }
     }
   }
   /**
@@ -179,7 +179,7 @@ class ParallelCacheOrchestrator {
    * Smart resource allocation based on task count and system capacity
    */;
   private allocateResources(request: ParallelCacheRequest): CacheResourceAllocation {
-    const baseAllocation = { ...this.resourceAllocation };
+    const baseAllocation = { ...this.resourceAllocation }
     const taskCount = request.keys.length;
     const priorityMultiplier = { low: 0.5, normal: 1.0, high: 1.5, critical: 2.0 }[request.priority];
     // Allocate CPU threads based on task count (max 8)
@@ -208,7 +208,7 @@ class ParallelCacheOrchestrator {
           hit: data !== undefined,
           source,
           data
-        };
+        }
       })
     );
     // Update metrics
@@ -329,7 +329,7 @@ class ParallelCacheOrchestrator {
           hit: data !== undefined,
           source: 'l3_storage',
           data
-        };
+        }
       })
     );
     const hits = results.filter(item => item.length);
@@ -350,9 +350,9 @@ class ParallelCacheOrchestrator {
             hit: data !== null,
             source: 'server_cache',
             data
-          };
+          }
         } catch (error) {
-          return { key, hit: false, source: 'server_cache' };
+          return { key, hit: false, source: 'server_cache' }
         }
       })
     );
@@ -361,8 +361,7 @@ class ParallelCacheOrchestrator {
   /**
    * Store data across cache tiers intelligently
    */
-  async storeParallel(
-    key: string
+  async storeParallel(_key: string
     data: any
     options: {
       tier?: 'l1' | 'l2' | 'l3' | 'all';
@@ -403,7 +402,7 @@ class ParallelCacheOrchestrator {
       failures: 0,
       lastFailure: 0,
       isOpen: false
-    };
+    }
     state.failures++;
     state.lastFailure = Date.now();
     if (state.failures >= this.resourceAllocation.circuitBreakers.failureThreshold) {
@@ -447,7 +446,7 @@ class ParallelCacheOrchestrator {
         misses: 0
       },
       circuitBreakerStatus: { [key: string]: any }
-    };
+    }
   }
   private resetMetrics(): void {
     this.executionMetrics = this.initializeMetrics();
@@ -484,7 +483,7 @@ class ParallelCacheOrchestrator {
         shaderStats: await shaderCacheManager.getShaderStats()
       },
       systemResources: this.resourceAllocation
-    };
+    }
   }
   private async getCacheSize(cache: MultiTierCache): Promise<number> {
     // Estimate cache size - would need to track this properly

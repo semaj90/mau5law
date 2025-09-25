@@ -78,7 +78,7 @@ https://svelte.dev/e/js_parse_error -->
     activeTab = 'input';
   }
   // Handle file upload
-  function handleFileUpload(event: Event) {
+  function handleFileUpload(_event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) { // 10MB limit
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
     reader.onload = (e) => {
       reportText = e.target?.result as string;
       activeTab = 'input';
-    };
+    }
     reader.readAsText(file);
   }
   // Main summarization function
@@ -120,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          text: reportText
+          text: reportText;
           options: {
             summaryLength,
             includeKeyTerms,
@@ -172,6 +172,7 @@ https://svelte.dev/e/js_parse_error -->
     document.getElementById('document-input')?.focus();
   });
 </script>
+
 <svelte:head>
   <title>Legal Document Summarization - Legal AI Platform</title>
   <meta name="description" content="AI-powered legal document summarization using advanced language models" />
@@ -187,25 +188,18 @@ https://svelte.dev/e/js_parse_error -->
         <span>⏱️ Est. time: {estimatedProcessingTime}s</span>
       </div>
       <div class="actions">
-        <button class="btn nes-btn" onclick={loadSampleDocument}>
-          Load Sample
-        </button>
-        <button class="btn nes-btn" onclick={clearAll}>
-          Clear All
-        </button>
+        <button class="btn nes-btn" onclick={loadSampleDocument}> Load Sample </button>
+        <button class="btn nes-btn" onclick={clearAll}> Clear All </button>
       </div>
     </div>
   </header>
   <div class="tab-navigation">
-    <button
-      class="tab {activeTab === 'input' ? 'active' : ''}"
-      onclick={() => activeTab = 'input'}
-    >
+    <button class="tab {activeTab === 'input' ? 'active' : ''}" onclick={() => (activeTab = 'input')}>
       📝 Document Input
     </button>
     <button
       class="tab {activeTab === 'summary' ? 'active' : ''}"
-      onclick={() => activeTab = 'summary'}
+      onclick={() => (activeTab = 'summary')}
       disabled={!summary && !isLoading}
     >
       📋 Summary
@@ -215,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
     </button>
     <button
       class="tab {activeTab === 'analysis' ? 'active' : ''}"
-      onclick={() => activeTab = 'analysis'}
+      onclick={() => (activeTab = 'analysis')}
       disabled={!metadata?.legalRiskAnalysis}
     >
       ⚖️ Legal Analysis
@@ -226,15 +220,8 @@ https://svelte.dev/e/js_parse_error -->
       <div class="input-panel">
         <div class="input-controls">
           <div class="file-upload">
-            <label for="file-input" class="btn nes-btn">
-              📁 Upload Document
-            </label>
-            <input
-              id="file-input"
-              type="file"
-              accept=".txt,.md,.pdf,.docx" onchange={handleFileUpload}
-              hidden
-            />
+            <label for="file-input" class="btn nes-btn"> 📁 Upload Document </label>
+            <input id="file-input" type="file" accept=".txt,.md,.pdf,.docx" onchange={handleFileUpload} hidden />
           </div>
           <div class="options-grid">
             <div class="option-group">
@@ -247,14 +234,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
             <div class="option-group">
               <label for="temperature">Analysis Creativity:</label>
-              <input
-                id="temperature"
-                type="range"
-                min="0"
-                max="1"
-                step="0.1"
-                bind:value={temperature}
-              />
+              <input id="temperature" type="range" min="0" max="1" step="0.1" bind:value={temperature} />
               <span class="range-value">{temperature}</span>
             </div>
             <div class="option-group checkbox-group">
@@ -313,9 +293,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="result-header">
               <h3>📋 Document Summary</h3>
               <div class="result-actions">
-                <button id="copy-btn" class="btn nes-btn" onclick={copySummary}>
-                  📋 Copy Summary
-                </button>
+                <button id="copy-btn" class="btn nes-btn" onclick={copySummary}> 📋 Copy Summary </button>
               </div>
             </div>
             <div class="summary-content">
@@ -327,16 +305,20 @@ https://svelte.dev/e/js_parse_error -->
                   <h4>📊 Processing Metadata</h4>
                   <div class="metadata-grid">
                     <div class="metadata-item">
-                      <strong>Compression:</strong> {metadata.compressionRatio}:1 ratio
+                      <strong>Compression:</strong>
+                      {metadata.compressionRatio}:1 ratio
                     </div>
                     <div class="metadata-item">
-                      <strong>Processing Time:</strong> {metadata.processingTime}ms
+                      <strong>Processing Time:</strong>
+                      {metadata.processingTime}ms
                     </div>
                     <div class="metadata-item">
-                      <strong>Chunks Processed:</strong> {metadata.chunksProcessed}
+                      <strong>Chunks Processed:</strong>
+                      {metadata.chunksProcessed}
                     </div>
                     <div class="metadata-item">
-                      <strong>Model:</strong> {metadata.model}
+                      <strong>Model:</strong>
+                      {metadata.model}
                     </div>
                   </div>
                   {#if metadata.keyLegalTerms?.length}
@@ -357,9 +339,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="error-panel">
             <h3>❌ Processing Error</h3>
             <p>{errorMessage}</p>
-            <button class="btn nes-btn is-primary" onclick={() => activeTab = 'input'}>
-              ← Back to Input
-            </button>
+            <button class="btn nes-btn is-primary" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
           </div>
         {:else}
           <div class="empty-state">
@@ -388,6 +368,7 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </main>
 </div>
+
 <style>
   .summarization-container {
     max-width: 1200px;

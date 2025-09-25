@@ -11,7 +11,7 @@ export interface AIMessage {
     source?: string;
     reasoning?: string;
     suggestions?: string[];
-  };
+  }
 }
 export interface AIResponse {
   text: string;
@@ -39,7 +39,7 @@ export interface CaseAIContext {
     isActive: boolean;
     lastActivity: number;
     activeEvidenceId?: string;
-  };
+  }
   insights: Array<{,
     id: string;
     type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
@@ -66,7 +66,7 @@ const initialState: AIAssistantState = {
   cases: {},
   isLoading: false
   globalInsights: []
-};
+}
 function createAIAssistantStore() {
   const { subscribe, set, update } = writable<AIAssistantState>(initialState);
   return {
@@ -87,7 +87,7 @@ function createAIAssistantStore() {
               lastActivity: Date.now()
             },
             insights: []
-          };
+          }
         }
         return state;
       });
@@ -117,13 +117,13 @@ function createAIAssistantStore() {
               lastActivity: Date.now()
             },
             insights: []
-          };
+          }
         }
         const newMessage: AIMessage = {
           ...message,
           id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           timestamp: Date.now()
-        };
+        }
         state.cases[caseId].messages.push(newMessage);
         state.cases[caseId].currentSession.lastActivity = Date.now();
         return state;
@@ -143,7 +143,7 @@ function createAIAssistantStore() {
           ...evidence,
           annotations: evidence.annotations || [],
           connections: evidence.connections || []
-        };
+        }
         return state;
       });
     },
@@ -155,7 +155,7 @@ function createAIAssistantStore() {
           ...insight,
           id: `insight-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           timestamp: Date.now()
-        };
+        }
         state.cases[caseId].insights.push(newInsight);
         return state;
       });
@@ -188,7 +188,7 @@ function createAIAssistantStore() {
     getCaseContext: (caseId: string, state: AIAssistantState): CaseAIContext | undefined => {
       return state.cases[caseId];
     }
-  };
+  }
 }
 export const aiAssistant = createAIAssistantStore();
 // Derived stores for easier access

@@ -2,13 +2,13 @@
 declare global {
   // Service Worker Global Scope
   interface ServiceWorkerGlobalScope extends WorkerGlobalScope {
-    addEventListener(type: 'install', listener: (event: ExtendableEvent) => void): void;
-    addEventListener(type: 'activate', listener: (event: ExtendableEvent) => void): void;
-    addEventListener(type: 'fetch', listener: (event: FetchEvent) => void): void;
-    addEventListener(type: 'message', listener: (event: ExtendableMessageEvent) => void): void;
-    addEventListener(type: 'sync', listener: (event: SyncEvent) => void): void;
-    addEventListener(type: 'push', listener: (event: PushEvent) => void): void;
-    addEventListener(type: 'notificationclick', listener: (event: NotificationEvent) => void): void;
+    addEventListener(type: 'install', listener: (_event: ExtendableEvent) => void): void;
+    addEventListener(type: 'activate', listener: (_event: ExtendableEvent) => void): void;
+    addEventListener(type: 'fetch', listener: (_event: FetchEvent) => void): void;
+    addEventListener(type: 'message', listener: (_event: ExtendableMessageEvent) => void): void;
+    addEventListener(type: 'sync', listener: (_event: SyncEvent) => void): void;
+    addEventListener(type: 'push', listener: (_event: PushEvent) => void): void;
+    addEventListener(type: 'notificationclick', listener: (_event: NotificationEvent) => void): void;
   }
   // Service Worker Events
   interface ExtendableEvent extends Event {

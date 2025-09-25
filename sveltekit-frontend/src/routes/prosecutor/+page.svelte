@@ -7,33 +7,15 @@ Features: Case management, evidence upload, AI chat, vector search
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { SearchResults } from "$lib/types/global";
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import type { SearchResults } from '$lib/types/global';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
+  import { Input } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import EvidenceUploadComponent from '$lib/components/prosecutor/EvidenceUploadComponent.svelte';
   import EnhancedAIChatAssistant from '$lib/components/prosecutor/EnhancedAIChatAssistant.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
-  import {
-    Scale,
-    Users,
-    FileText,
-    Upload,
-    Search,
-    Brain,
-    Zap,
-    Eye,
-    Plus,
-    Filter
-  } from 'lucide-svelte';
+  import { Scale, Users, FileText, Upload, Search, Brain, Zap, Eye, Plus, Filter } from 'lucide-svelte';
   import { onMount } from 'svelte';
   // State management
   let selectedCaseId = $state('');
@@ -48,54 +30,61 @@ Features: Case management, evidence upload, AI chat, vector search
   let ragSystemStatus = $state('initializing');
   $effect(() => {
     (async () => {
-// Check WebGPU availability
-    webGPUEnabled = await webGPUProcessor.initialize();
-    // Load prosecutor data
-    await loadCases();
-    await loadPersonsOfInterest();
-    await loadRecentEvidence();
-    ragSystemStatus = 'ready';
+      // Check WebGPU availability
+      webGPUEnabled = await webGPUProcessor.initialize();
+      // Load prosecutor data
+      await loadCases();
+      await loadPersonsOfInterest();
+      await loadRecentEvidence();
+      ragSystemStatus = 'ready';
     })();
   });
   const loadCases = async () => {
     try {
-      const response = await fetch('/api/cases?role=prosecutor');
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const result = await response.json();
-      cases = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
+      cases =
+        (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
       if (cases.length > 0 && !selectedCaseId) {
         selectedCaseId = cases[0].id;
       }
     } catch (error) {
       console.error('Failed to load cases:', error);
     }
-  };
+  }
   const loadPersonsOfInterest = async () => {
     try {
-      const response = await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const result = await response.json();
-      personsOfInterest = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
+      personsOfInterest =
+        (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
     } catch (error) {
       console.error('Failed to load POIs:', error);
     }
-  };
+  }
   const loadRecentEvidence = async () => {
     try {
-      const response = await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
+      // removed unused response assignment
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+        throw new Error(
+          `HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`,
+        );
       }
-      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-      recentEvidence = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
+      const result = await (
+        response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }
+      ).json();
+      recentEvidence =
+        (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
     } catch (error) {
       console.error('Failed to load evidence:', error);
     }
-  };
+  }
   // Enhanced vector search with WebGPU
   const performVectorSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -106,7 +95,7 @@ Features: Case management, evidence upload, AI chat, vector search
           selectedCaseId,
           undefined, // any evidence type
           undefined, // any tags
-          20
+          20,
         );
       } else {
         // Fallback to API search
@@ -116,28 +105,33 @@ Features: Case management, evidence upload, AI chat, vector search
           body: JSON.stringify({
             query: searchQuery,
             caseId: selectedCaseId,
-            type: 'evidence'
-          })
+            type: 'evidence',
+          }),
         });
-        const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-        searchResults = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).results || [];
+        const result = await (
+          response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }
+        ).json();
+        searchResults =
+          (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).results ||
+          [];
       }
     } catch (error) {
       console.error('Vector search failed:', error);
     }
-  };
+  }
   // Handle evidence upload completion
   const handleEvidenceUploaded = (results: unknown[]) => {
     console.log('Evidence uploaded:', results);
     loadRecentEvidence(); // Refresh evidence list
-  };
+  }
   // Case selection handler
   const selectCase = (caseId: string) => {
     selectedCaseId = caseId;
     loadPersonsOfInterest();
     loadRecentEvidence();
-  };
+  }
 </script>
+
 <svelte:head>
   <title>Prosecutor Dashboard - Legal AI Platform</title>
 </svelte:head>
@@ -177,11 +171,11 @@ Features: Case management, evidence upload, AI chat, vector search
       <div class="yorha-panel-content">
         <div class="flex flex-wrap gap-2">
           {#each cases as caseItem}
-            <Button class="bits-btn"
+            <Button
+              class="bits-btn"
               variant={selectedCaseId === caseItem.id ? 'default' : 'outline'}
               size="sm"
-              onclick={() =>
-selectCase(caseItem.id)}
+              onclick={() => selectCase(caseItem.id)}
             >
               {caseItem.caseNumber} - {caseItem.title}
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{caseItem.status}</span>
@@ -211,11 +205,7 @@ selectCase(caseItem.id)}
           </div>
           <div class="yorha-panel-content space-y-4">
             <div class="flex gap-2">
-              <Input
-                bind:value={searchQuery}
-                placeholder="Search evidence, cases, precedents..."
-                class="flex-1"
-              />
+              <Input bind:value={searchQuery} placeholder="Search evidence, cases, precedents..." class="flex-1" />
               <Button class="bits-btn" onclick={performVectorSearch} disabled={!searchQuery.trim()}>
                 <Search class="w-4 h-4" />
               </Button>
@@ -227,19 +217,60 @@ selectCase(caseItem.id)}
                   <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                     <div class="flex justify-between items-start">
                       <div>
-                        <p class="font-medium text-sm">{(result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).payload?.fileName || (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).id}</p>
+                        <p class="font-medium text-sm">
+                          {(
+                            result as {
+                              data?: unknown;
+                              results?: unknown;
+                              payload?: unknown;
+                              id?: unknown;
+                              score?: unknown;
+                            }
+                          ).payload?.fileName ||
+                            (
+                              result as {
+                                data?: unknown;
+                                results?: unknown;
+                                payload?: unknown;
+                                id?: unknown;
+                                score?: unknown;
+                              }
+                            ).id}
+                        </p>
                         <p class="text-xs text-gray-600 mt-1">
-                          {(result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).payload?.title || 'No title'}
+                          {(
+                            result as {
+                              data?: unknown;
+                              results?: unknown;
+                              payload?: unknown;
+                              id?: unknown;
+                              score?: unknown;
+                            }
+                          ).payload?.title || 'No title'}
                         </p>
                         {#if (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).payload?.tags}
                           <div class="flex gap-1 mt-2">
                             {#each (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).payload.tags as tag}
-                              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
+                              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                                >{tag}</span
+                              >
                             {/each}
                           </div>
                         {/if}
                       </div>
-                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(((result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).score || 0) * 100)}% match</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                        >{Math.round(
+                          ((
+                            result as {
+                              data?: unknown;
+                              results?: unknown;
+                              payload?: unknown;
+                              id?: unknown;
+                              score?: unknown;
+                            }
+                          ).score || 0) * 100,
+                        )}% match</span
+                      >
                     </div>
                   </div>
                 {/each}
@@ -326,15 +357,14 @@ selectCase(caseItem.id)}
                         {#if poi.tags}
                           <div class="flex gap-1 mt-1">
                             {#each poi.tags as tag}
-                              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
+                              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                                >{tag}</span
+                              >
                             {/each}
                           </div>
                         {/if}
                       </div>
-                      <Badge
-                        variant={poi.priority === 'high' ? 'destructive' : 'secondary'}
-                        class="text-xs"
-                      >
+                      <Badge variant={poi.priority === 'high' ? 'destructive' : 'secondary'} class="text-xs">
                         {poi.priority || 'normal'}
                       </Badge>
                     </div>
@@ -390,6 +420,7 @@ selectCase(caseItem.id)}
     </div>
   </div>
 </div>
+
 <style>
   /* Prosecutor dashboard styling */
   :global(.prosecutor-dashboard) {

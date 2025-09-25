@@ -258,14 +258,14 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       success: steps.every(step => step.success),
       steps,
       timestamp: new Date().toISOString()
-    };
+    }
   } catch (error: any) {
     console.error('❌ Database setup failed:', error);
     return {
       success: false
       steps: [...steps, { step: 'Overall setup', success: false, error: error.message }],
       timestamp: new Date().toISOString()
-    };
+    }
   }
 }
 export async function checkDatabaseHealth(): Promise<any> {
@@ -301,7 +301,7 @@ export async function checkDatabaseHealth(): Promise<any> {
       extensionsEnabled,
       indexesReady,
       sampleDataPresent
-    };
+    }
   } catch (error) {
     return {
       connected: false
@@ -309,7 +309,7 @@ export async function checkDatabaseHealth(): Promise<any> {
       extensionsEnabled: false
       indexesReady: false
       sampleDataPresent: false
-    };
+    }
   }
 }
 export async function getDatabaseStats(): Promise<any> {
@@ -327,7 +327,7 @@ export async function getDatabaseStats(): Promise<any> {
       glyphCount: Number(results[2].rows[0].count),
       sessionCount: Number(results[3].rows[0].count),
       performanceRecords: Number(results[4].rows[0].count)
-    };
+    }
   } catch (error) {
     return {
       documentCount: 0,
@@ -335,6 +335,6 @@ export async function getDatabaseStats(): Promise<any> {
       glyphCount: 0,
       sessionCount: 0,
       performanceRecords: 0
-    };
+    }
   }
 }

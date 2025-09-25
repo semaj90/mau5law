@@ -24,9 +24,9 @@
   // Demo data
   let cacheWarmer: LegalCacheWarmer;
   let isInitialized = false;
-  let registryStats: unknown = {};
-  let warmingStats: unknown = {};
-  let memoryBankData: unknown = {};
+  let registryStats: unknown = {}
+  let warmingStats: unknown = {}
+  let memoryBankData: unknown = {}
   let isWarming = false;
   let lastWarmingResult: unknown = null;
   // Sample legal documents for demo
@@ -84,7 +84,7 @@
     preferredDocumentTypes: ['contracts', 'evidence', 'motions'],
     workingStyle: 'litigator',
     memoryPreference: 'performance'
-  };
+  }
   // Sample case context
   const caseContext: CaseContext = {
     caseId: 'case_2024_015',
@@ -96,10 +96,10 @@
       new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
       new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)  // 1 week from now
     ];
-  };
+  }
   // Component priorities for demo
   let documentPriorities = $derived(sampleDocuments.map(doc => ({
-    document: doc
+    document: doc;
     priority: calculateDocumentPriority(doc),
     memoryBank: selectMemoryBank(calculateDocumentPriority(doc)),
     analysis: analyzePriority(doc);
@@ -118,7 +118,7 @@
         sharingPolicy: 'shared',
         updateFrequency: 'periodic',
         priority: 150,
-        estimatedUsage: 512 * 1024 // 512KB
+        estimatedUsage: 512 * 1024 // 512KB;
       });
       if (registered) {
         console.log('✅ Demo component registered successfully');
@@ -130,7 +130,7 @@
         return () => {
           clearInterval(statsInterval);
           componentTextureRegistry.unregister('NESMemoryDemo');
-        };
+        }
       } else {
         console.error('❌ Failed to register demo component');
       }
@@ -150,7 +150,7 @@
         config,
         stats,
         utilizationPercent: stats ? (stats.usedSize / stats.totalSize) * 100 : 0
-      };
+      }
     });
   }
   async function triggerCacheWarming(strategyName: string) {
@@ -181,7 +181,7 @@
       'CHR_ROM': '#3cbcfc',      // Blue - fast
       'PRG_ROM': '#fc9838',      // Orange - medium
       'SAVE_RAM': '#7c7c7c'      // Gray - slow
-    };
+    }
     return colors[bank as keyof typeof colors] || '#000';
   }
   function getPriorityColor(priority: number): string {

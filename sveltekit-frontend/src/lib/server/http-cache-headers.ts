@@ -62,7 +62,7 @@ export const CACHE_STRATEGIES = {
   },
   // Immutable content (with versioned URLs)
   IMMUTABLE: {
-    maxAge: 31536000, // 1 year
+    maxAge: 31536000, // 1 year;
     private: false
   }
 } as const;
@@ -110,7 +110,7 @@ function generateETag(content: any): string {
  */
 export function applyCacheHeaders(
   response: Response
-  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig
+  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
   options: {
     content?: any;
     generateETag?: boolean;
@@ -145,7 +145,7 @@ export function applyCacheHeaders(
  */
 export function cachedJson(
   data: any
-  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig
+  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
   options: {
     status?: number;
     generateETag?: boolean;
@@ -192,7 +192,7 @@ export function checkConditionalHeaders(
   return {
     isNotModified,
     shouldSend304: isNotModified
-  };
+  }
 }
 /**
  * Create 304 Not Modified response
@@ -215,7 +215,7 @@ export function notModifiedResponse(etag?: string, lastModified?: Date): Respons
  */
 export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>(,
   handler: T
-  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig
+  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig;
   options: {
     generateETag?: boolean;
     getLastModified?: (...args: any[]) => Date | undefined;
@@ -231,7 +231,7 @@ export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>
       if (options.generateETag || lastModified) {
         // For conditional checks, we need to run the handler to get content
         // This is a simplified approach - in production, you'd want more sophisticated caching
-        const response = await handler(...args);
+        // removed unused response assignment
         const data = await response.json();
         const etag = options.generateETag ? generateETag(data) : undefined;
         const { shouldSend304 } = checkConditionalHeaders(request, etag, lastModified);
@@ -247,7 +247,7 @@ export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>
       }
     }
     // Normal response with cache headers
-    const response = await handler(...args);
+    // removed unused response assignment
     const data = await response.json();
     return cachedJson(data, strategy, {
       status: response.status,

@@ -17,14 +17,35 @@ export type {
   FormProps,
   ProgressProps,
   BadgeProps,
-  FileUploadProps
+  FileUploadProps,
 } from './types.js';
 // Component variants and types for external use
-export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'yorha' | 'legal' | 'evidence' | 'case';
+export type ButtonVariant =
+  | 'default'
+  | 'destructive'
+  | 'outline'
+  | 'secondary'
+  | 'ghost'
+  | 'link'
+  | 'yorha'
+  | 'legal'
+  | 'evidence'
+  | 'case';
 export type CardVariant = 'default' | 'elevated' | 'outlined' | 'filled' | 'yorha' | 'glass';
 export type DialogVariant = 'default' | 'yorha' | 'legal' | 'fullscreen' | 'drawer';
 export type InputVariant = 'default' | 'outlined' | 'filled' | 'ghost' | 'yorha' | 'legal';
-export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info' | 'outline' | 'yorha' | 'legal' | 'evidence' | 'case';
+export type BadgeVariant =
+  | 'default'
+  | 'secondary'
+  | 'destructive'
+  | 'success'
+  | 'warning'
+  | 'info'
+  | 'outline'
+  | 'yorha'
+  | 'legal'
+  | 'evidence'
+  | 'case';
 export type ProgressVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'yorha' | 'legal';
 export type FileUploadVariant = 'default' | 'compact' | 'card' | 'yorha' | 'legal' | 'evidence';
 export type ComponentSize = 'sm' | 'default' | 'lg';

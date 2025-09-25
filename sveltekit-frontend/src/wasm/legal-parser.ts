@@ -323,7 +323,7 @@ export function getProcessingTime(): f32 {
 /**
  * Get a parsed document by index (returns JSON string pointer)
  */;
-export function getDocument(index: i32, outputPtr: usize, maxLength: i32): i32 {
+export function getDocument(_index: i32, outputPtr: usize, maxLength: i32): i32 {
   if (index < 0 || index >= globalResult.documents.length) {
     return 0;
   }

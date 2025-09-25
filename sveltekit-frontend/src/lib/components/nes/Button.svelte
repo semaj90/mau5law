@@ -16,12 +16,13 @@
     disabled = false,
     onclick = () => {},
     onClick = () => {},
-    children
+    children,
   }: Props = $props();
   // Support both variant and type for backward compatibility
   const buttonType = variant || typ;
   const handleClick = onclick || onClick;
 </script>
+
 <button class={`nes-btn is-${buttonType}`} onclick={handleClick} {disabled}>
   {#if children}
     {@render children()}

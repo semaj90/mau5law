@@ -1,30 +1,22 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent,
-    CardDescription
-  } from '$lib/components/ui/enhanced-bits';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '$lib/components/ui/enhanced-bits';
+  import { Input } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Search, BookOpen, ExternalLink, Bot, MessageSquare } from 'lucide-svelte';
   import { onMount } from 'svelte';
   // In Svelte 5 (runes mode) don't use `export let` for page props — use $props()
-  const { data } = $props() as { data: unknown };
-let EnhancedFuseSearch = $state<any >(null);
+  const { data } = $props() as { data: unknown }
+  let EnhancedFuseSearch = $state<any>(null);
   $effect(() => {
     (async () => {
-EnhancedFuseSearch = (await import('$lib/components/search/EnhancedFuseSearch.svelte')).default;
+      EnhancedFuseSearch = (await import('$lib/components/search/EnhancedFuseSearch.svelte')).default;
     })();
   });
   // Simple search state
-let searchQuery = $state<string >('');
-let searchResults = $state<any[] >([]);
-let isSearching = $state<boolean >(false);
+  let searchQuery = $state<string>('');
+  let searchResults = $state<any[]>([]);
+  let isSearching = $state<boolean>(false);
   async function performSearch() {
     if (!searchQuery.trim()) return;
     isSearching = true;
@@ -34,7 +26,7 @@ let isSearching = $state<boolean >(false);
         jurisdiction: 'all',
         category: 'all',
       });
-      const response = await fetch(`/api/laws/search?${params}`);
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; laws?: unknown; error?: unknown }).success) {
         searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws || [];
@@ -49,7 +41,7 @@ let isSearching = $state<boolean >(false);
       isSearching = false;
     }
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter') {
       performSearch();
     }
@@ -68,11 +60,10 @@ let isSearching = $state<boolean >(false);
     console.log('AI Summarization Result:', result);
   }
 </script>
+
 <svelte:head>
   <title>Legal Resources - Laws & Regulations | YoRHa Legal AI</title>
-  <meta
-    name="description"
-    content="Browse California and state laws with AI-powered search and summaries" />
+  <meta name="description" content="Browse California and state laws with AI-powered search and summaries" />
   <!-- NES.css (optional) -->
   <link rel="stylesheet" href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" />
 </svelte:head>
@@ -108,12 +99,17 @@ let isSearching = $state<boolean >(false);
     </div>
     <div class="yorha-panel-content space-y-4">
       <div class="flex gap-2">
-          <Input
+        <Input
           placeholder="Search laws, codes, regulations..."
           bind:value={searchQuery}
           onkeydown={handleKeydown}
-          class="flex-1" />
-        <button onclick={performSearch} disabled={isSearching || !searchQuery.trim()} class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition disabled:opacity-50">
+          class="flex-1"
+        />
+        <button
+          onclick={performSearch}
+          disabled={isSearching || !searchQuery.trim()}
+          class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition disabled:opacity-50"
+        >
           {#if isSearching}
             Loading...
           {:else}
@@ -138,7 +134,9 @@ let isSearching = $state<boolean >(false);
             <p class="nes-text">{link.description}</p>
             <div class="flex gap-2">
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{link.jurisdiction}</span>
-              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{link.category}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                >{link.category}</span
+              >
             </div>
           </div>
           <div class="yorha-panel-content">
@@ -146,7 +144,8 @@ let isSearching = $state<boolean >(false);
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition">
+              class="w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition"
+            >
               <ExternalLink class="h-4 w-4" />
               Browse {link.title}
             </a>
@@ -173,16 +172,27 @@ let isSearching = $state<boolean >(false);
             <div class="yorha-panel-content">
               <p class="mb-4 text-sm">{law.description}</p>
               <div class="flex gap-2">
-                <button onclick={() => handleAISummarizeResult(law)} class="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm">
+                <button
+                  onclick={() => handleAISummarizeResult(law)}
+                  class="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm"
+                >
                   <Bot class="h-4 w-4 mr-2" />
                   <span>AI Summary</span>
                 </button>
-                <button onclick={() => handleAIChatResult(law)} class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm">
+                <button
+                  onclick={() => handleAIChatResult(law)}
+                  class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm"
+                >
                   <MessageSquare class="h-4 w-4 mr-2" />
                   <span>AI Chat</span>
                 </button>
                 {#if law.fullTextUrl}
-                  <a href={law.fullTextUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm">
+                  <a
+                    href={law.fullTextUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm"
+                  >
                     Full Text
                   </a>
                 {/if}
@@ -200,3 +210,4 @@ let isSearching = $state<boolean >(false);
     </div>
   {/if}
 </div>
+;

@@ -56,7 +56,7 @@
     return () => {
       if (progressInterval) clearInterval(progressInterval);
       if (autoCloseTimeout) clearTimeout(autoCloseTimeout);
-    };
+    }
   });
   function closeNotification() {
     visible = false;
@@ -89,27 +89,24 @@
     warning: '⚠',
     error: '✕',
     system: '◆';
-  };
+  }
   const notificationIcon = $derived(icon || iconMap[type])
 </script>
+
 {#if visible}
   <div
     bind:this={notificationElement}
-  class="yorha-notification {type}"
-  transitionfly="{{ x: position.includes('right') ? 150 : -150, duration: 250 }}"
-  onmouseenter={pauseAutoClose}
-  onmouseleave={resumeAutoClose}
+    class="yorha-notification {type}"
+    transitionfly={{ x: position.includes('right') ? 150 : -150, duration: 250 }}
+    onmouseenter={pauseAutoClose}
+    onmouseleave={resumeAutoClose}
     role="alert"
     aria-live="polite"
   >
     <!-- Progress Bar -->
     {#if showProgress && !persistent}
       <div class="notification-progress">
-        <div
-          class="progress-fill"
-          style="width: {progress}%"
-          transitionfade="{{ duration: 200 }}"
-        ></div>
+        <div class="progress-fill" style="width: {progress}%" transitionfade={{ duration: 200 }}></div>
       </div>
     {/if}
     <!-- Content -->
@@ -127,13 +124,7 @@
       </div>
       <!-- Close Button -->
       {#if closable}
-        <button
-          class="notification-close"
-          onclick={closeNotification}
-          aria-label="Close notification"
-        >
-          ✕
-        </button>
+        <button class="notification-close" onclick={closeNotification} aria-label="Close notification"> ✕ </button>
       {/if}
     </div>
     <!-- System Status Indicator -->
@@ -144,6 +135,7 @@
     {/if}
   </div>
 {/if}
+
 <style>
   .yorha-notification {
     min-width: 300px;
@@ -181,7 +173,7 @@
     flex-shrink: 0;
     width: 20px;
     height: 20px;
-    display: flex
+    display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;

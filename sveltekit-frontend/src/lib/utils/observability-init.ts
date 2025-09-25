@@ -82,7 +82,7 @@ function setupNavigationTracking() {
       currentRouteId = routeId;
       trackPageLoad(routeId);
     }
-  };
+  }
   window.addEventListener('popstate', trackNavigation);
   // Override pushState and replaceState to track programmatic navigation
   const originalPushState = history.pushState;
@@ -90,11 +90,11 @@ function setupNavigationTracking() {
   history.pushState = function(...args) {
     originalPushState.apply(history, args);
     setTimeout(trackNavigation, 0);
-  };
+  }
   history.replaceState = function(...args) {
     originalReplaceState.apply(history, args);
     setTimeout(trackNavigation, 0);
-  };
+  }
 }
 function setupPerformanceMonitoring() {
   // Monitor long tasks
@@ -183,15 +183,15 @@ export function trackCustomEvent(name: string, data?: any) {
  */;
 export function getObservabilityStatus() {
   if (!browser) {
-    return { initialized: false, browser: false };
+    return { initialized: false, browser: false }
   }
   return {
     initialized: isInitialized
     browser: true
-    currentRoute: currentRouteId
+    currentRoute: currentRouteId;
     capabilities: observabilityClient.getCapabilities(),
     performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null
-  };
+  }
 }
 // Auto-initialize if in browser
 if (browser) {

@@ -6,6 +6,7 @@
   // Example of custom media query
   const isWideScreen = useMediaQuery('(min-width: 1400px)');
 </script>
+
 <svelte:head>
   <title>Svelte 5 Examples - Children & Media Queries</title>
 </svelte:head>
@@ -44,20 +45,24 @@
       <section id="children">
         <h2>🧩 Children Pattern</h2>
         <p>Svelte 5 replaces <code>&lt;slot&gt;</code> with <code>{`{#snippet}`}</code>:</p>
-        <pre><code>{`<!-- ❌ Svelte 4 -->
+        <pre><code
+            >{`<!-- ❌ Svelte 4 -->
 {@render children}
 <!-- ✅ Svelte 5 -->
 {#if children}
   {@render children()}
-{/if}`}</code></pre>
+{/if}`}</code
+          ></pre>
       </section>
       <section id="media">
         <h2>📱 Media Query Reactivity</h2>
         <p>Reactive media queries using Svelte 5 runes:</p>
-        <pre><code>{`const mobile = useIsMobile();
+        <pre><code
+            >{`const mobile = useIsMobile();
 const desktop = useIsDesktop();
 // Reactive derived values
-let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code></pre>
+let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code
+          ></pre>
         <div class="live-example">
           <h4>Live Example:</h4>
           <p>Current screen: <strong>{isWideScreen.matches ? 'Ultra-wide' : 'Standard'}</strong></p>
@@ -80,6 +85,7 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code></pre>
     <p>Built with Svelte 5 • Reactive Media Queries • Modern Patterns</p>
   {/snippet}
 </Svelte5Examples>
+
 <style>
   .custom-header {
     display: flex;

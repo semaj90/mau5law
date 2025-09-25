@@ -21,7 +21,7 @@ async function cacheEmbedding(text: string, model: string, embedding: number[]):
   // Placeholder cache implementation
 }
 export async function generateEmbedding(
-  text: string
+  text: string;
   options: EmbeddingOptions = {},
 ): Promise<number[] | null> {
   const { model = "embeddinggemma", cache = true, maxTokens = 8000 } = options;
@@ -62,7 +62,7 @@ async function generateLocalEmbedding(text: string, model: string = "embeddingge
         "Content-Type": "application/json"
       },
       body: JSON.stringify({,
-        model: model
+        model: model;
         prompt: text
       })
     });
@@ -111,7 +111,7 @@ function generateMockEmbedding(dimensions: number = 384): number[] {
 }
 // Batch embedding generation for efficiency
 export async function generateBatchEmbeddings(
-  texts: string[]
+  texts: string[];
   options: EmbeddingOptions = {},
 ): Promise<number[][]> {
   const { model = "embeddinggemma" } = options;

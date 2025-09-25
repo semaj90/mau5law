@@ -4,25 +4,24 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { aiHistory } from "$lib/stores/aiHistoryStore";
-  import Fuse from "fuse.js";
-  let recommendations = $state<any[] >([]);
+  import { aiHistory } from '$lib/stores/aiHistoryStore';
+  import Fuse from 'fuse.js';
+  let recommendations = $state<any[]>([]);
   let fuse: Fuse<any>;
   let history = $derived($aiHistory);
   $effect(() => {
     fuse = new Fuse(history, {
-      keys: ["prompt", "response"],
+      keys: ['prompt', 'response'],
       threshold: 0.2,
     });
     // Example: recommend based on last prompt
     if (history.length > 0) {
       const lastPrompt = history[history.length - 1].prompt;
-      recommendations = fuse
-        .search.map((r) => r.item)
-        .slice(0, 3);
+      recommendations = fuse.search.map(r => r.item).slice(0, 3);
     }
   });
 </script>
+
 <div class="mx-auto px-4 max-w-7xl">
   <h3 class="mx-auto px-4 max-w-7xl">Recommended Next Actions</h3>
   <ul class="mx-auto px-4 max-w-7xl">

@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
  * Integrates with t5-transformer Go service on port 8122
  */
 import { productionServiceClient } from '$lib/services/productionServiceClient'
-import { URL } from 'url'
+
 interface T5TransformRequest {
   input: string
   task: 'summarize' | 'translate' | 'paraphrase' | 'generate' | 'analyze' | 'extract'
@@ -435,7 +435,7 @@ function assessRelevance(input: string, output: string): number {
   const commonWords = [...inputWords].filter((w) => outputWords.has(w)
   return Math.min(0.95, commonWords.length / Math.max(inputWords.size, 10) + 0.3)
 }
-function getTaskInformation(task: string): any {
+function getTaskInformation(_task: string): any {
   const taskMap: { [key: string]: any } = {
     summarize: {
       name: 'Document Summarization',

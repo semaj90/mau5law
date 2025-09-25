@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { speak } from "./speak";
+  import { speak } from './speak';
   let isSupported = $state(false);
   let isListening = $state(false);
   let finalTranscript = $state('');
@@ -21,10 +21,10 @@
       recognition.onstart = () => {
         isListening = true;
         speak("I'm listening. You can ask me legal questions or give voice commands.");
-      };
-      recognition.onresult = (event: unknown) => {
-  let interim = $state('');
-  let final = $state('');
+      }
+      recognition.onresult = (_event: unknown) => {
+        let interim = $state('');
+        let final = $state('');
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
@@ -36,14 +36,14 @@
         finalTranscript = final;
         interimTranscript = interim;
         currentTranscript = final + interim;
-      };
+      }
       recognition.onend = () => {
         isListening = false;
         if (finalTranscript === '') {
           speak('No speech detected. Please try again.');
         }
-      };
-      recognition.onerror = (event: unknown) => {
+      }
+      recognition.onerror = (_event: unknown) => {
         isListening = false;
         if (event.error === 'no-speech') {
           speak('No speech detected. Please try again.');
@@ -54,12 +54,13 @@
         } else {
           speak('Error occurred in recognition: ' + event.error);
         }
-      };
+      }
     } else {
       isSupported = false;
     }
   });
 </script>
+
 {#if isSupported}
   <div>
     {#if isListening}
@@ -67,14 +68,16 @@
     {:else}
       <p>Click the button and start speaking.</p>
     {/if}
-    <button onclick={() => {
-      if (isListening) {
-        recognition.stop();
-        isListening = false;
-      } else {
-        recognition.start();
-      }
-    }}>
+    <button
+      onclick={() => {
+        if (isListening) {
+          recognition.stop();
+          isListening = false;
+        } else {
+          recognition.start();
+        }
+      }}
+    >
       {#if isListening}
         Stop Listening
       {:else}
@@ -87,6 +90,7 @@
 {:else}
   <p>Speech recognition is not supported in this browser.</p>
 {/if}
+
 <style>
   /* @unocss-include */
   /* Add your styles here */

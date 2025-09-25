@@ -14,7 +14,7 @@ export interface FetchWithTimeoutOptions extends Omit<RequestInit, 'signal'> {
     attempts: number;
     delay: number;
     backoff?: 'linear' | 'exponential';
-  };
+  }
 }
 export interface FetchTimeoutError extends Error {
   name: 'TimeoutError';
@@ -102,7 +102,7 @@ export async function fetchWithTimeout(
       }
       throw error;
     }
-  };
+  }
   try {
     return await attemptFetch(0);
   } finally {
@@ -237,5 +237,5 @@ export function createTimeoutController(timeout: number): {
     controller,
     timeoutId,
     clear: () => clearTimeout(timeoutId)
-  };
+  }
 }

@@ -175,7 +175,7 @@ export const POST: RequestHandler = async ({ request }) => {
           'wasm_similarity_compute',
           {
             query: queryVector
-            vectors: candidateVectors
+            vectors: candidateVectors;
             operation: 'similarity',
             algorithm
           },

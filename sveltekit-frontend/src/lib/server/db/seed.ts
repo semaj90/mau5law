@@ -16,7 +16,7 @@ const sampleEmbeddings = {
   financial: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.1),
   legal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.2),
   criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3)
-};
+}
 async function seed() {
   console.log('🌱 Starting database seed...');
   try {
@@ -193,4 +193,4 @@ async function seed() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   seed();
 }
-export { seed };
+export { seed }

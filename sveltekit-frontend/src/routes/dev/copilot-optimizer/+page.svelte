@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated templat;
@@ -47,7 +47,7 @@ await loadCopilotContent();
     const metricsInterval = setInterval(loadMetrics, 5000);
     return () => {
       clearInterval(metricsInterval);
-    };
+    }
     })();
   });
   /**
@@ -56,7 +56,7 @@ await loadCopilotContent();
   async function loadCopilotContent() {
     try {
       isLoading = true;
-      const response = await fetch('/api/copilot/optimize?action=load_copilot');
+      // removed unused response assignment
       if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
         throw new Error(`Failed to load: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`);
       }
@@ -81,8 +81,8 @@ await loadCopilotContent();
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           action: 'optimize_index',
-          content: copilotContent
-          options: optimizationConfig
+          content: copilotContent;
+          options: optimizationConfig;
         }),
       });
       if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
@@ -112,11 +112,11 @@ await loadCopilotContent();
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           action: 'semantic_search',
-          content: searchQuery
+          content: searchQuery;
           options: {
             limit: 10,
             includePatterns: true
-            boostContext7: true
+            boostContext7: true;
           },
         }),
       });
@@ -136,7 +136,7 @@ await loadCopilotContent();
    */
   async function loadSystemStatus() {
     try {
-      const response = await fetch('/api/copilot/optimize?action=status');
+      // removed unused response assignment
       const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
       realTimeMetrics.lastUpdated = new Date().toLocaleTimeString();
     } catch (error) {
@@ -148,7 +148,7 @@ await loadCopilotContent();
    */
   async function loadMetrics() {
     try {
-      const response = await fetch('/api/copilot/optimize?action=metrics');
+      // removed unused response assignment
       const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
       performanceMetrics = data;
       realTimeMetrics = {
@@ -156,7 +156,7 @@ await loadCopilotContent();
         avgOptimizationTime: (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).optimizer.avgOptimizationTime || 0,
         cacheHitRate: (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).cache.hitRate || 0,
         lastUpdated: new Date().toLocaleTimeString(),
-      };
+      }
     } catch (error) {
       console.error('Failed to load metrics:', error);
     }
@@ -345,7 +345,7 @@ await loadCopilotContent();
             <button
               onclick={optimizeIndex}
               disabled={!copilotContent || isLoading}
-              class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600
+              class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600;
                      hover:from-purple-700 hover:to-blue-700 disabled:opacity-50
                      text-white rounded-lg transition-all font-medium"
             >
@@ -722,7 +722,7 @@ await loadCopilotContent();
                 type="range"
                 min="0.1"
                 max="1.0"
-                step="0.1"
+                step="0.1";
                 bind:value={optimizationConfig.minRelevanceThreshold}
                 class="w-full h-2 bg-black/30 rounded-lg appearance-none cursor-pointer slider"
               />
@@ -782,7 +782,7 @@ await loadCopilotContent();
                 enablePerformanceOptimization: true
                 minRelevanceThreshold: 0.7,
                 compressionRatio: 0.8,
-              };
+              }
             }}
             class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
           >

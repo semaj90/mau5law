@@ -1,7 +1,7 @@
-import { db } from "$lib/server/db/client";
-import { chatSessions, chatMessages } from "$lib/server/db/schema-unified";
-import { desc, eq, sql } from "drizzle-orm";
-import { randomUUID } from "crypto";
+import { db } from '$lib/server/db/client';
+import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
+import { desc, eq, sql } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 // Use InferModel or define types directly for better compatibility
 type NewChatSession = typeof chatSessions.$inferInsert;
 type NewChatMessage = typeof chatMessages.$inferInsert;
@@ -16,12 +16,13 @@ export class ChatHistoryService {
       .limit(limit);
   }
   static async getMessages(sessionId: string) {
-    return db.select()
+    return db
+      .select()
       .from(chatMessages)
       .where(eq(chatMessages.sessionId, sessionId))
       .orderBy(desc(chatMessages.createdAt));
   }
-  static async createSession(userId: string, model = "gemma3-legal") {
+  static async createSession(userId: string, model = 'gemma3-legal') {
     const id = randomUUID();
     const session: NewChatSession = {
       id,
@@ -30,13 +31,19 @@ export class ChatHistoryService {
       context: {} as { [key: string]: any },
       metadata: {
         model,
-        messageCount: 0
-      }
-    };
+        messageCount: 0,
+      },
+    }
     await db.insert(chatSessions).values(session);
     return id;
   }
-  static async addMessage(params: { sessionId: string; role: 'user' | 'assistant' | 'system'; content: string; model?: string; metadata?: any; }) {
+  static async addMessage(params: {
+    sessionId: string;
+    role: 'user' | 'assistant' | 'system';
+    content: string;
+    model?: string;
+    metadata?: any;
+  }) {
     const id = randomUUID();
     const msg: NewChatMessage = {
       id,
@@ -46,16 +53,12 @@ export class ChatHistoryService {
       embedding: null,
       metadata: {
         model: params?.model || 'unknown',
-        ...(params.metadata || {})
-      }
-    };
+        ...(params.metadata || {}),
+      },
+    }
     await db.insert(chatMessages).values(msg);
     // Update session metadata with incremented message count
-    const currentSession = await db
-      .select()
-      .from(chatSessions)
-      .where(eq(chatSessions.id, params.sessionId))
-      .limit(1);
+    const currentSession = await db.select().from(chatSessions).where(eq(chatSessions.id, params.sessionId)).limit(1);
     if (currentSession.length > 0) {
       const currentCount = (currentSession[0].metadata as any)?.messageCount || 0;
       await db
@@ -63,9 +66,9 @@ export class ChatHistoryService {
         .set({
           metadata: {
             ...(currentSession[0].metadata as object),
-            messageCount: currentCount + 1
+            messageCount: currentCount + 1,
           },
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
         .where(eq(chatSessions.id, params.sessionId));
     }

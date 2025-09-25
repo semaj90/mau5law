@@ -46,7 +46,7 @@ const authState = writable<AuthState>({
   user: null
   session: null
   isAuthenticated: false
-  isLoading: false
+  isLoading: false;
   error: null
   twoFactorRequired: false
   machineState: 'idle',
@@ -129,7 +129,7 @@ async function getDeviceFingerprint(): Promise<string> {
     hardwareConcurrency: navigator.hardwareConcurrency,
     deviceMemory: (navigator as any).deviceMemory || 0,
     connection: (navigator as any).connection?.effectiveType || 'unknown'
-  };
+  }
   return btoa(JSON.stringify(fingerprint);
 }
 export const authStore = {
@@ -177,7 +177,7 @@ export const authStore = {
       language: navigator.language,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       fingerprint: await getDeviceFingerprint()
-    };
+    }
     // GPU-enhanced authentication if enabled
     if (options.enableGPUAuth && browser) {
       try {
@@ -240,7 +240,7 @@ export const authStore = {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       fingerprint: await getDeviceFingerprint(),
       securityScore: 100 // Default high score for new registrations
-    };
+    }
     // GPU-enhanced validation for legal professionals
     if (browser) {
       try {
@@ -298,7 +298,7 @@ export const authStore = {
         ...state,
         user: null
         session: null
-        isAuthenticated: false
+        isAuthenticated: false;
         error: null
         twoFactorRequired: false
       });
@@ -376,7 +376,7 @@ export const authStore = {
     if (hours > 0) return `${hours}h ${minutes}m`;
     return `${minutes}m`;
   }
-};
+}
 // Auto-refresh session every 15 minutes
 if (browser) {
   setInterval(() => {

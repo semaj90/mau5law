@@ -67,7 +67,7 @@ https://svelte.dev/e/script_duplicate -->
       averageRelevance: number;
       threshold: number;
       caseId: string | null;
-    };
+    }
     model: string;
     timestamp: string;
   }
@@ -82,14 +82,14 @@ https://svelte.dev/e/script_duplicate -->
   let serviceHealth = $state<any>(null);
   async function checkServiceHealth() {
     try {
-      const response = await fetch('/api/ai/vector-search');
+      // removed unused response assignment
       if (response.ok) {
         serviceHealth = await response.json();
       } else {
-        serviceHealth = { error: 'Service unavailable' };
+        serviceHealth = { error: 'Service unavailable' }
       }
     } catch (err) {
-      serviceHealth = { error: 'Connection failed' };
+      serviceHealth = { error: 'Connection failed' }
     }
   }
   async function performSearch() {
@@ -133,7 +133,7 @@ https://svelte.dev/e/script_duplicate -->
         documentType: 'contract',
         generateSummary: true
         extractKeywords: true;
-      };
+      }
       const response = await fetch('/api/ai/vector-search/index', {
         method: 'POST',
         headers: {

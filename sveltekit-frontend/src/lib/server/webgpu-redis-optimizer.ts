@@ -181,7 +181,7 @@ export class WebGPURedisOptimizer {
           thermalStatus: Math.random() > 0.8 ? 'hot' : Math.random() > 0.5 ? 'warm' : 'cool',
           availableComputeUnits: this.MAX_TENSOR_CORES - Math.floor(Math.random() * 20),
           queueDepth: this.loadBalancerQueue.size,
-        };
+        }
         this.metricsHistory.push(metrics);
         if (this.metricsHistory.length > 100) {
           this.metricsHistory.shift();
@@ -199,7 +199,7 @@ export class WebGPURedisOptimizer {
       thermalStatus: 'cool',
       availableComputeUnits: 0,
       queueDepth: this.loadBalancerQueue.size,
-    };
+    }
   }
   /**
    * Intelligent load balancing based on GPU metrics and workload analysis
@@ -239,18 +239,18 @@ export class WebGPURedisOptimizer {
       const byteSize = data.byteLength;
       // Create GPU buffers
       const inputBuffer = this.gpuDevice.createBuffer({
-        size: byteSize
+        size: byteSize;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
         mappedAtCreation: true
       });
       new Float32Array(inputBuffer.getMappedRange()).set(data);
       inputBuffer.unmap();
       const outputBuffer = this.gpuDevice.createBuffer({
-        size: byteSize
+        size: byteSize;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       });
       const uniformBuffer = this.gpuDevice.createBuffer({
-        size: 16, // vec4<u32>
+        size: 16, // vec4<u32>;
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
       // Set compression parameters
@@ -273,7 +273,7 @@ export class WebGPURedisOptimizer {
       computePass.end();
       // Read result
       const stagingBuffer = this.gpuDevice.createBuffer({
-        size: byteSize
+        size: byteSize;
         usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
       });
       commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, byteSize);
@@ -318,9 +318,8 @@ export class WebGPURedisOptimizer {
   /**
    * Enhanced cache set operation with GPU optimization
    */
-  async setOptimized(
-    key: string
-    value: any
+  async setOptimized(_key: string
+    value: any;
     options: {
       ttl?: number;
       compress?: boolean;
@@ -340,7 +339,7 @@ export class WebGPURedisOptimizer {
       data: value
       key,
       ttl: options.ttl,
-    };
+    }
     const strategy = await this.optimizeWorkloadDistribution(job);
     if (strategy === 'gpu' && value instanceof Float32Array) {
       // GPU-accelerated tensor compression
@@ -350,7 +349,7 @@ export class WebGPURedisOptimizer {
         originalLength: value.length,
         compressionRatio: 4,
         timestamp: Date.now(),
-      };
+      }
       await cache.set(`${key}:data`, compressed, options.ttl);
       await cache.set(`${key}:meta`, metadata, options.ttl);
     } else if (options.parallel && this.serviceWorker) {
@@ -369,8 +368,7 @@ export class WebGPURedisOptimizer {
   /**
    * Enhanced cache get operation with GPU decompression
    */
-  async getOptimized(
-    key: string
+  async getOptimized(_key: string
     options: {
       decompress?: boolean;
       parallel?: boolean;
@@ -404,7 +402,7 @@ export class WebGPURedisOptimizer {
       const batchPromises = batch.map(async op => {
         if (op.type === 'set') {
           await this.setOptimized(op.key, op.value, op.options);
-          return { success: true };
+          return { success: true }
         } else {
           return await this.getOptimized(op.key, op.options);
         }
@@ -429,7 +427,7 @@ export class WebGPURedisOptimizer {
       cacheHitRatio: 0.85, // Would calculate from actual cache stats
       averageResponseTime: 12.5, // ms
       compressionRatio: 4.2, // Average compression achieved
-    };
+    }
   }
   /**
    * Cleanup resources
@@ -450,17 +448,17 @@ export class WebGPURedisOptimizer {
 export const webgpuRedisOptimizer = new WebGPURedisOptimizer();
 // Enhanced cache interface with GPU optimizations
 export const optimizedCache = {
-  async set(key: string, value: any, ttl?: number): Promise<void> {
+  async set(_key: string, value: any, ttl?: number): Promise<void> {
     return webgpuRedisOptimizer.setOptimized(key, value, {
       ttl,
       compress: value instanceof Float32Array
-      parallel: true
+      parallel: true;
       priority: 'medium',
     });
   },
-  async get(key: string): Promise<any> {
+  async get(_key: string): Promise<any> {
     return webgpuRedisOptimizer.getOptimized(key, {
-      decompress: true
+      decompress: true;
       parallel: true
     });
   },
@@ -470,6 +468,6 @@ export const optimizedCache = {
   async stats() {
     return webgpuRedisOptimizer.getOptimizationStats();
   }
-};
+}
 // Export types for external use
-export type { GPUMetrics, CacheWorkload, ParallelCacheJob };
+export type { GPUMetrics, CacheWorkload, ParallelCacheJob }

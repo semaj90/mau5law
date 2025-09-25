@@ -9,7 +9,7 @@ export type JobRecord = {
   lastError?: string | null;
   updatedAt: string;
   createdAt: string;
-};
+}
 class JobStore extends EventEmitter {
   private items = new Map<string, JobRecord>();
   private nowIso() {
@@ -25,7 +25,7 @@ class JobStore extends EventEmitter {
       lastError: job.lastError ?? existing?.lastError ?? null,
       createdAt: existing?.createdAt ?? this.nowIso(),
       updatedAt: this.nowIso()
-    };
+    }
     this.items.set(job.id, record);
     try {
       await redis.set(`jobs:state:${job.id}`, JSON.stringify(record);

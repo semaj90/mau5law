@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js'
 import { db } from '$lib/server/database'
 import { evidence, cases, users } from '$lib/server/db/schema'
 import { eq, desc, asc, and, or, like, ilike, gte, lte, inArray, sql } from 'drizzle-orm'
-import { URL } from "url"
+
 interface SearchFilters {
   query?: string
   types?: string[]

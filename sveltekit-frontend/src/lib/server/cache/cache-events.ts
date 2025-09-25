@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 // Minimal cache event bus for server-side publishers
 // Usage: import { emitCacheEvent } and call with { type, ...payload }
-export type CacheEvent = { type: string; [key: string]: any };
+export type CacheEvent = { type: string; [key: string]: any }
 class CacheEventBus extends EventEmitter {
   emitEvent(evt: CacheEvent) {
     this.emit('cache-event', evt);

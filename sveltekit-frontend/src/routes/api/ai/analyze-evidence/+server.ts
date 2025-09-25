@@ -121,4 +121,4 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

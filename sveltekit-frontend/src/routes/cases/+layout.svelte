@@ -1,6 +1,6 @@
 <script lang="ts">
   import EnhancedLayout from '$lib/components/layout/EnhancedLayout.svelte';
-  import type { LayoutData } from "./$types";
+  import type { LayoutData } from './$types';
   import type { Snippet } from 'svelte';
   interface Props {
     data?: LayoutData;
@@ -8,6 +8,7 @@
   }
   let { data, children }: Props = $props();
 </script>
+
 <EnhancedLayout
   title="Legal Cases Management"
   variant="legal"

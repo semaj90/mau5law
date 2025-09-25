@@ -54,11 +54,11 @@
       uploadDate?: string;
       entities?: string[];
       filePath?: string;
-    };
+    }
     highlight?: {
       title?: string;
       content?: string;
-    };
+    }
   }
   // Initialize search services
   $effect(() => {
@@ -85,7 +85,7 @@ await initializeSearchServices();
         minMatchCharLength: 2,
         useExtendedSearch: true
         ignoreLocation: true;
-      };
+      }
       fuseIndex = new Fuse(evidenceData, fuseOptions);
       console.log('✅ Fuse.js initialized with', evidenceData.length, 'evidence items');
     } catch (error) {
@@ -211,7 +211,7 @@ await initializeSearchServices();
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
-          filters: selectedFilters
+          filters: selectedFilters;
           limit: 5 ;
         })
       });
@@ -236,7 +236,7 @@ await initializeSearchServices();
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
-          filters: selectedFilters
+          filters: selectedFilters;
           limit: 5;
         })
       });
@@ -304,7 +304,7 @@ await initializeSearchServices();
     showDropdown = false;
     goto(`/evidence/${(result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).id}`);
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (!showDropdown || searchResults.length === 0) return;
     switch (event.key) {
       case 'ArrowDown':
@@ -371,8 +371,8 @@ await initializeSearchServices();
         </svg>
       {/if}
     </div>
-    <input
-      bind:this={searchInput};
+    <input;
+      bind:this={searchInput}
       bind:value={searchQuery}
       type="search"
       autocomplete="off"
@@ -425,7 +425,7 @@ await initializeSearchServices();
           type="range"
           min="0"
           max="1"
-          step="0.1"
+          step="0.1";
           bind:value={selectedFilters.confidenceMin}
           class="w-16 h-1"
         />

@@ -22,7 +22,7 @@ export interface Recommendation {
     reasoning: string;
     estimatedImpact: 'low' | 'medium' | 'high';
     timeToComplete?: string;
-  };
+  }
   createdAt: number;
   expiresAt?: number;
   dismissed?: boolean;
@@ -39,15 +39,15 @@ export interface UserAnalytics {
       averageSessionLength: number;
       documentsPerWeek: number;
       casesHandled: number;
-    };
-  };
+    }
+  }
   behavior: {
     searchPatterns: string[];
     documentTypes: string[];
     commonQueries: string[];
     toolUsage: Record<string, number>;
     navigationPaths: string[];
-  };
+  }
   performance: {
     averageTaskTime: Record<string, number>;
     accuracyScores: Record<string, number>;
@@ -56,7 +56,7 @@ export interface UserAnalytics {
     aiAssistanceLevel: 'minimal' | 'moderate' | 'extensive';
     notificationFrequency: 'real-time' | 'hourly' | 'daily';
     recommendationTypes: string[];
-  };
+  }
 }
 export interface RecommendationState {
   // Recommendations
@@ -76,7 +76,7 @@ export interface RecommendationState {
     nvidia_llama: boolean;
     gemma3_legal: boolean;
     recommendation_engine: boolean;
-  };
+  }
   // Performance
   analyticsLatency: number;
   recommendationAccuracy: number; // User feedback based
@@ -107,7 +107,7 @@ const initialState: RecommendationState = {
   enableRealTimeAnalysis: true
   privacyLevel: 'standard',
   error: null
-};
+}
 // Core store
 export const recommendationStore = writable<RecommendationState>(initialState);
 // Derived stores (repaired syntax)
@@ -117,7 +117,7 @@ export const highPriorityRecommendations = derived(recommendationStore, ($store)
     .sort((a, b) => b.confidence - a.confidence)
 );
 export const recommendationsByType = derived(recommendationStore, ($store) => {
-  const grouped: Record<string, Recommendation[]> = {};
+  const grouped: Record<string, Recommendation[]> = {}
   $store.activeRecommendations.forEach(rec => {
     if (!grouped[rec.type]) grouped[rec.type] = [];
     grouped[rec.type].push(rec);
@@ -189,7 +189,7 @@ export const recommendationActions = {
     try {
       const response = await productionServiceClient.execute('analytics.behavior', {
         userId,
-        activity: activityData
+        activity: activityData;
         options: {
           updateProfile: true
           generateInsights: true
@@ -248,7 +248,7 @@ export const recommendationActions = {
           ),
           activeRecommendations: state.activeRecommendations.filter(r => r.id !== recommendationId),
           dismissedRecommendations: dismissedRec ? [...state.dismissedRecommendations, dismissedRec] : state.dismissedRecommendations
-        };
+        }
       });
     } catch (error: any) {
       console.error('Failed to dismiss recommendation:', error);
@@ -305,7 +305,7 @@ export const recommendationActions = {
    */;
   async checkModelsStatus(): Promise<void> {
     try {
-      const response = await productionServiceClient.execute('ai.models.status', {});
+      // removed unused response assignment
       recommendationStore.update(state => ({
         ...state,
         aiModelsStatus: {
@@ -329,7 +329,7 @@ export const recommendationActions = {
       error: null
     });
   }
-};
+}
 // Auto-initialize
 if (typeof window !== 'undefined') {
   recommendationActions.checkModelsStatus();

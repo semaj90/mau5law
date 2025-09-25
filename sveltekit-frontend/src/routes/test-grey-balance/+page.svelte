@@ -11,12 +11,8 @@
   <div class="max-w-6xl mx-auto space-y-8">
     <!-- Page Header -->
     <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold text-enhanced-text-primary mb-4 yorha-harvard-title">
-        Grey Balance Test
-      </h1>
-      <p class="text-enhanced-text-secondary text-lg">
-        Testing NES-style grey balance with Harvard crimson components
-      </p>
+      <h1 class="text-4xl font-bold text-enhanced-text-primary mb-4 yorha-harvard-title">Grey Balance Test</h1>
+      <p class="text-enhanced-text-secondary text-lg">Testing NES-style grey balance with Harvard crimson components</p>
     </div>
 
     <!-- Button Variants Section -->
@@ -56,69 +52,29 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Original Cards -->
-        <YoRHaHarvardCard
-          variant="default"
-          title="Default Harvard"
-          subtitle="Classic crimson styling"
-        >
-          <p class="text-enhanced-text-secondary">
-            Traditional Harvard crimson card with academic styling.
-          </p>
+        <YoRHaHarvardCard variant="default" title="Default Harvard" subtitle="Classic crimson styling">
+          <p class="text-enhanced-text-secondary">Traditional Harvard crimson card with academic styling.</p>
         </YoRHaHarvardCard>
 
-        <YoRHaHarvardCard
-          variant="gaming"
-          title="Gaming Card"
-          subtitle="YoRHa gaming theme"
-          glowing
-        >
-          <p class="text-enhanced-text-secondary">
-            Gaming-themed card with scan lines and effects.
-          </p>
+        <YoRHaHarvardCard variant="gaming" title="Gaming Card" subtitle="YoRHa gaming theme" glowing>
+          <p class="text-enhanced-text-secondary">Gaming-themed card with scan lines and effects.</p>
         </YoRHaHarvardCard>
 
-        <YoRHaHarvardCard
-          variant="legal"
-          title="Legal Card"
-          subtitle="Professional styling"
-          bordered
-        >
-          <p class="text-enhanced-text-secondary">
-            Professional legal document styling with borders.
-          </p>
+        <YoRHaHarvardCard variant="legal" title="Legal Card" subtitle="Professional styling" bordered>
+          <p class="text-enhanced-text-secondary">Professional legal document styling with borders.</p>
         </YoRHaHarvardCard>
 
         <!-- Grey Balance Cards -->
-        <YoRHaHarvardCard
-          variant="grey"
-          title="Pure Grey"
-          subtitle="NES-style neutral"
-        >
-          <p class="text-enhanced-text-secondary">
-            Pure grey card following NES color patterns.
-          </p>
+        <YoRHaHarvardCard variant="grey" title="Pure Grey" subtitle="NES-style neutral">
+          <p class="text-enhanced-text-secondary">Pure grey card following NES color patterns.</p>
         </YoRHaHarvardCard>
 
-        <YoRHaHarvardCard
-          variant="crimson-grey"
-          title="Crimson Grey Balance"
-          subtitle="Balanced approach"
-          glowing
-        >
-          <p class="text-enhanced-text-secondary">
-            Balanced card combining Harvard crimson with grey tones.
-          </p>
+        <YoRHaHarvardCard variant="crimson-grey" title="Crimson Grey Balance" subtitle="Balanced approach" glowing>
+          <p class="text-enhanced-text-secondary">Balanced card combining Harvard crimson with grey tones.</p>
         </YoRHaHarvardCard>
 
-        <YoRHaHarvardCard
-          variant="terminal"
-          title="Terminal Grey"
-          subtitle="Monospace styling"
-          scanLines
-        >
-          <p class="text-enhanced-text-secondary font-mono">
-            Terminal-style card with monospace text and scan lines.
-          </p>
+        <YoRHaHarvardCard variant="terminal" title="Terminal Grey" subtitle="Monospace styling" scanLines>
+          <p class="text-enhanced-text-secondary font-mono">Terminal-style card with monospace text and scan lines.</p>
         </YoRHaHarvardCard>
       </div>
     </section>
@@ -143,7 +99,9 @@
           <div class="text-sm opacity-90">#6a6a6a</div>
         </div>
 
-        <div class="bg-enhanced-bg-secondary p-4 rounded text-enhanced-text-primary text-center border border-enhanced-border">
+        <div
+          class="bg-enhanced-bg-secondary p-4 rounded text-enhanced-text-primary text-center border border-enhanced-border"
+        >
           <div class="font-bold">Enhanced Secondary</div>
           <div class="text-sm opacity-70">#1a1a1a</div>
         </div>
@@ -160,7 +118,9 @@
           <div class="p-6 bg-gradient-to-br from-red-900/20 to-red-800/10 rounded-lg border border-red-700/30">
             <YoRHaHarvardButton variant="primary" class="mb-4">Primary Action</YoRHaHarvardButton>
             <YoRHaHarvardCard variant="default" title="Heavy Crimson" subtitle="Overwhelming red tones">
-              <p class="text-enhanced-text-secondary">Too much crimson can be overwhelming and doesn't match NES aesthetics.</p>
+              <p class="text-enhanced-text-secondary">
+                Too much crimson can be overwhelming and doesn't match NES aesthetics.
+              </p>
             </YoRHaHarvardCard>
           </div>
         </div>
@@ -170,7 +130,9 @@
           <div class="p-6 bg-gradient-to-br from-gray-800/20 to-red-900/5 rounded-lg border border-gray-600/30">
             <YoRHaHarvardButton variant="crimson-grey" class="mb-4">Balanced Action</YoRHaHarvardButton>
             <YoRHaHarvardCard variant="crimson-grey" title="Balanced Design" subtitle="Grey with crimson accents">
-              <p class="text-enhanced-text-secondary">Perfect balance of grey neutrals with Harvard crimson highlights.</p>
+              <p class="text-enhanced-text-secondary">
+                Perfect balance of grey neutrals with Harvard crimson highlights.
+              </p>
             </YoRHaHarvardCard>
           </div>
         </div>
@@ -224,10 +186,12 @@
 <style>
   .yorha-harvard-title {
     text-shadow: 0 0 10px rgba(196, 30, 58, 0.3);
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       var(--enhanced-text-primary) 0%,
       var(--enhanced-accent) 50%,
-      var(--enhanced-accent-grey) 100%);
+      var(--enhanced-accent-grey) 100%
+    );
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

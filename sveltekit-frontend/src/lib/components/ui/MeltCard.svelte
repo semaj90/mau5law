@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
   		role?: string;
   		'data-testid'?: string;
   		// Event handlers
-  		onclick?: (event: MouseEvent) => void;
+  		onclick?: (_event: MouseEvent) => void;
   	}
   	let {
   		variant = 'default',
@@ -67,41 +67,50 @@ https://svelte.dev/e/js_parse_error -->
   	let cardClass = $derived(cn(cardVariants({ variant, size }), class));
   	type $$Props = Prop;
 </script>
+
 <div
-	class={cardClass}
-	{role}
-	data-testid={testId || "melt-card"}
-	{onclick}
-	tabindex={onclick ? 0 : undefined}
-	keydown={onclick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onclick?.(e as any); } } : undefined}
+  class={cardClass}
+  {role}
+  data-testid={testId || 'melt-card'}
+  {onclick}
+  tabindex={onclick ? 0 : undefined}
+  keydown={onclick
+    ? e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onclick?.(e as any);
+        }
+      }
+    : undefined}
 >
-	<!-- Header -->
-	{#if header}
-		<div class="flex flex-col space-y-1.5 pb-4">
-			{@render header()}
-		</div>
-	{:else if title || description}
-		<div class="flex flex-col space-y-1.5 pb-4">
-			{#if title}
-				<h3 class="text-lg font-semibold leading-none tracking-tight">{title}</h3>
-			{/if}
-			{#if description}
-				<p class="text-sm text-gray-500 dark:text-gray-400">{description}</p>
-			{/if}
-		</div>
-	{/if}
-	<!-- Content -->
-	{#if content}
-		<div class="pt-0">
-			{@render content()}
-		</div>
-	{:else if children}
-		{@render children()}
-	{/if}
-	<!-- Footer -->
-	{#if footer}
-		<div class="flex items-center pt-4">
-			{@render footer()}
-		</div>
-	{/if}
+  <!-- Header -->
+  {#if header}
+    <div class="flex flex-col space-y-1.5 pb-4">
+      {@render header()}
+    </div>
+  {:else if title || description}
+    <div class="flex flex-col space-y-1.5 pb-4">
+      {#if title}
+        <h3 class="text-lg font-semibold leading-none tracking-tight">{title}</h3>
+      {/if}
+      {#if description}
+        <p class="text-sm text-gray-500 dark:text-gray-400">{description}</p>
+      {/if}
+    </div>
+  {/if}
+  <!-- Content -->
+  {#if content}
+    <div class="pt-0">
+      {@render content()}
+    </div>
+  {:else if children}
+    {@render children()}
+  {/if}
+  <!-- Footer -->
+  {#if footer}
+    <div class="flex items-center pt-4">
+      {@render footer()}
+    </div>
+  {/if}
 </div>
+;

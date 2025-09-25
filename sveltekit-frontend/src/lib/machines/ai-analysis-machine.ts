@@ -8,13 +8,13 @@ export interface AIAnalysisContext {
     caseId?: string;
     documentIds: string[];
     analysisType: 'summary' | 'recommendation' | 'risk-assessment' | 'precedent-analysis';
-  };
+  }
   options: {
     includeReferences: boolean;
     maxTokens: number;
     temperature: number;
     model?: string;
-  };
+  }
   analysisResults: {
     summary?: string;
     recommendations?: string[];
@@ -22,7 +22,7 @@ export interface AIAnalysisContext {
     precedents?: any[];
     references?: any[];
     confidence?: number;
-  };
+  }
   processingTime: number;
   tokensUsed: number;
   confidence: number;
@@ -87,7 +87,7 @@ export const aiAnalysisMachine = createMachine({
         id: 'validateAnalysisRequest',
         input: ({ context }) => context,
         src: fromPromise(async ({ input }) => {
-          const errors: Record<string, string[]> = {};
+          const errors: Record<string, string[]> = {}
           const context = input as AIAnalysisContext;
           if (!context.prompt?.trim()) {
             errors.prompt = ['Analysis prompt is required'];
@@ -105,7 +105,7 @@ export const aiAnalysisMachine = createMachine({
             errors.temperature = ['Temperature must be between 0 and 1'];
           }
           if (Object.keys(errors).length > 0) {
-            throw { validationErrors: errors };
+            throw { validationErrors: errors }
           }
           return context;
         }),
@@ -121,7 +121,7 @@ export const aiAnalysisMachine = createMachine({
           actions: assign({,
             validationErrors: ({ event }) => {
               const error = event.error as any;
-              return error?.validationErrors || {};
+              return error?.validationErrors || {}
             },
             error: 'Validation failed'
           })
@@ -146,7 +146,7 @@ export const aiAnalysisMachine = createMachine({
             context: context.context,
             options: context.options,
             streaming: true
-          };
+          }
           // Call AI analysis API
           const response = await fetch('/api/ai/analyze', {
             method: 'POST',
@@ -162,14 +162,14 @@ export const aiAnalysisMachine = createMachine({
           // Handle streaming response
           const reader = response.body?.getReader();
           const decoder = new TextDecoder();
-          let analysisResults = {};
+          let analysisResults = {}
           let tokensUsed = 0;
           if (reader) {
             while (true) {
               const { done, value } = await reader.read();
               if (done) break;
               const chunk = decoder.decode(value);
-              const lines = chunk.split('\n');
+              // removed unused lines assignment
               for (const line of lines) {
                 if (line.startsWith('data: ')) {
                   try {
@@ -194,7 +194,7 @@ export const aiAnalysisMachine = createMachine({
             processingTime,
             tokensUsed,
             confidence: (analysisResults as any)?.confidence || 0.8
-          };
+          }
         }),
         onDone: {
           target: 'completed',

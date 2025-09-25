@@ -43,7 +43,7 @@ async function forwardToRAGBackend(
         input: { endpoint, options: { ...options, signal: undefined } },
         output: { error: errorText, status: (response as { ok?: any; text?: any; status?: any; json?: any }).status },
         duration,
-        success: false
+        success: false;
         error: `HTTP ${(response as { ok?: any; text?: any; status?: any; json?: any }).status}: ${errorText}`
       })
       throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`)
@@ -106,7 +106,7 @@ export async function handleUpload(request: Request): Promise<any> {
       body: ragFormData
     })
     return json({
-      success: true
+      success: true;
       document: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).document,
       processing: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).processing,
       metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata
@@ -140,7 +140,7 @@ export async function handleCrawl(request: Request): Promise<any> {
       })
     })
     return json({
-      success: true
+      success: true;
       document: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).document,
       crawlStats: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).crawlStats,
       processingTime: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).processingTime
@@ -166,7 +166,7 @@ export async function handleWorkflow(request: Request): Promise<any> {
       })
     })
     return json({
-      success: true
+      success: true;
       workflow: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).result,
       metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata
     })
@@ -190,7 +190,7 @@ export async function handleChat(request: Request): Promise<any> {
       })
     })
     return json({
-      success: true
+      success: true;
       response: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
       metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata
     })
@@ -281,7 +281,7 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<any> {
     })
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
     return json({
-      success: true
+      success: true;
       data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response
     })
   } catch (err: any) {
@@ -321,7 +321,7 @@ Provide analysis covering:
     })
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
     return json({
-      success: true
+      success: true;
       data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response
     })
   } catch (err: any) {
@@ -355,7 +355,7 @@ Document content: ${content.substring(0, 4000)}`,
     })
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
     return json({
-      success: true
+      success: true;
       data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response
     })
   } catch (err: any) {

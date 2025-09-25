@@ -5,7 +5,7 @@ interface RequestEvent {
   cookies: {
     set(name: string, value: string, options?: any): void;
     delete(name: string, options?: any): void;
-  };
+  }
 }
 import { signJWT, verifyJWT, type JWTPayload } from './authUtils.js';
 // In-memory session store (for development)
@@ -35,42 +35,41 @@ export async function validateSessionToken(
           id: token
           userId: user.id,
           expiresAt: new Date(payload.exp * 1000)
-        };
+        }
         return {
           session,
           user: {
             ...user,
             name: user.name || user.firstName || user.email || 'Unknown User'
           } as User
-        };
+        }
       }
     }
-    return { session: null, user: null };
+    return { session: null, user: null }
   } catch (error: any) {
     console.error("Session validation error:", error);
-    return { session: null, user: null };
+    return { session: null, user: null }
   }
 }
 export function invalidateSession(sessionId: string): void {
   sessions.delete(sessionId);
 }
-export function setSessionTokenCookie(
-  event: RequestEvent
+export function setSessionTokenCookie(_event: RequestEvent
   token: string
   expiresAt: Date
 ): void {
   event.cookies.set("session", token, {
     path: "/",
     expires: expiresAt
-    httpOnly: true
+    httpOnly: true;
     secure: import.meta.env.NODE_ENV === "production",
     sameSite: "lax"
   });
 }
-export function deleteSessionTokenCookie(event: RequestEvent): void {
+export function deleteSessionTokenCookie(_event: RequestEvent): void {
   event.cookies.delete("session", {
     path: "/",
-    httpOnly: true
+    httpOnly: true;
     secure: import.meta.env.NODE_ENV === "production",
     sameSite: "lax"
   });

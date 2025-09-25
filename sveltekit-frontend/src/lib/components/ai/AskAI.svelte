@@ -51,7 +51,7 @@
     timestamp: number;
     references?: AIResponse["references"];
     confidence?: number;
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   }
   // Component state
   let query = $state("");
@@ -81,7 +81,7 @@
   let audioContext = $state<AudioContext | null >(null);
   // Simple localStorage wrapper for conversation storage
   const getLocalStorageService = () => ({
-    async getSetting(key: string): Promise<any> {
+    async getSetting(_key: string): Promise<any> {
       if (!browser) return null;
       try {
         const stored = localStorage.getItem(key);
@@ -90,7 +90,7 @@
         return null;
   }
     },
-    async setSetting(key: string, value: any): Promise<void> {
+    async setSetting(_key: string, value: any): Promise<void> {
       if (!browser) return;
       try {
         localStorage.setItem(key, JSON.stringify(value));
@@ -115,17 +115,17 @@
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = "en-US";
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (_event: any) => {
         const transcript = event.results[0][0].transcript;
         query = transcript;
         textareaRef?.focus();
-      };
+      }
       recognition.onerror = () => {
         isListening = false;
-      };
+      }
       recognition.onend = () => {
         isListening = false;
-      };
+      }
   }
     // Load conversation history from IndexedDB
     loadConversationHistory();
@@ -161,7 +161,7 @@
       type: "user",
       content: query.trim(),
       timestamp: Date.now(),
-    };
+    }
     conversation = [...conversation, userMessage];
     const currentQuery = query;
     query = "";
@@ -174,7 +174,7 @@
       content: "",
       timestamp: Date.now(),
       references: [],
-      confidence: undefined
+      confidence: undefined;
       metadata: ,
     });
     conversation = [...conversation, aiMessage];
@@ -188,7 +188,7 @@
       });
       // Prepare request
       const requestBody = {
-        question: currentQuery
+        question: currentQuery;
         context: {
           caseId,
           evidenceIds,
@@ -199,9 +199,9 @@
           model: selectedModel
           temperature,
           maxTokens: 1000,
-          includeReferences: showReferences
+          includeReferences: showReferences;
         },
-      };
+      }
       // Use streaming endpoint for Ollama/Gemma3
       const endpoint = selectedModel === "ollama" ? "/api/ai/chat" : "/api/ai/ask";
       const controller = new AbortController();
@@ -295,7 +295,7 @@
             processingTime: aiResponse.processingTime,
             searchResults: aiResponse.searchResults,
           },
-        };
+        }
         conversation = conversation.map((m) => m.id === aiMessageId ? aiMessage : m);
         setTimeout(() => scrollToBottom(), 100);
         await saveConversationHistory();
@@ -308,7 +308,7 @@
     } finally {
       isLoading = false;
   }}
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       askAI();
@@ -325,18 +325,18 @@
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = "en-US";
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (_event: any) => {
         const transcript = event.results[0][0].transcript;
         query = transcript;
         textareaRef?.focus();
         isListening = false;
-      };
+      }
       recognition.onerror = () => {
         isListening = false;
-      };
+      }
       recognition.onend = () => {
         isListening = false;
-      };
+      }
     }
     if (!isListening) {
       isListening = true;
@@ -430,8 +430,8 @@
     return AlertCircl;
   }
   // Auto-resize textarea
-  function autoResize(event: Event) {
-    const target = event.target as HTMLTextAreaElement;
+  function autoResize(_event: Event) {
+    // removed unused target assignment
     target.style.height = "auto";
     target.style.height = target.scrollHeight + "px";
   }
@@ -450,14 +450,14 @@
       <div>
         <button aria-label="Action button"
           type="button"
-          onclick={(event: MouseEvent) => ) => (showAdvancedOptions = !showAdvancedOptions}
+          onclick={(_event: MouseEvent) => ) => (showAdvancedOptions = !showAdvancedOptions}
         >
           Advanced
         </button>
         {#if conversation.length > 0}
           <button aria-label="Action button"
             type="button"
-            onclick={(event: MouseEvent) => ) => clearConversation(}
+            onclick={(_event: MouseEvent) => ) => clearConversation(}
           >
             Clear
           </button>
@@ -516,7 +516,7 @@
               type="range"
               min="0.1"
               max="1.0"
-              step="0.1"
+              step="0.1";
               bind:value={temperature}
               id="field-4"
             />
@@ -529,7 +529,7 @@
   <!-- Conversation -->
   <div;
     bind:this={messagesContainer}
-    style="max-height: {maxHeight};"
+    style="max-height: {maxHeight}"
     aria-live="polite"
   >
     {#if conversation.length === 0}
@@ -576,7 +576,7 @@
               <button
                 type="button"
                 aria-label="Listen to AI response"
-                onclick={(event: MouseEvent) => ) => speak(message.content}
+                onclick={(_event: MouseEvent) => ) => speak(message.content}
                 disabled={ttsLoading}
               >
                 {#if ttsLoading}
@@ -596,7 +596,7 @@
                 {#each message.references as reference}
                   <button aria-label="Action button"
                     type="button"
-                    onclick={(event: MouseEvent) => ) => handleReferenceClick(reference}
+                    onclick={(_event: MouseEvent) => ) => handleReferenceClick(reference}
                   >
                     <span>{reference.type.toUpperCase()}:</span>
                     {reference.title}
@@ -639,7 +639,7 @@
         <textarea
           bind:this={textareaRef}
           bind:value={query}
-          onkeypress={handleKeyPress} oninput={(event: Event) => debounce(autoResize, 300}
+          onkeypress={handleKeyPress} oninput={(_event: Event) => debounce(autoResize, 300}
           {placeholder}
           disabled={isLoading}
           rows={1}
@@ -650,7 +650,7 @@
             type="button"
             class:text-red-500={isListening}
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            onclick={(event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
+            onclick={(_event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
             disabled={isLoading}
           >
             🎤
@@ -659,7 +659,7 @@
       </div>
       <button aria-label="Action button"
         type="button"
-        onclick={(event: MouseEvent) => ) => askAI(}
+        onclick={(_event: MouseEvent) => ) => askAI(}
         disabled={!query.trim() || isLoading}
         aria-label="Send question to AI"
       >
@@ -677,7 +677,7 @@
             type="button"
             class="container mx-auto px-4 {isListening ? 'text-red-500' : ''}"
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            onclick={(event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
+            onclick={(_event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
             disabled={isLoading}
           >
             🎤

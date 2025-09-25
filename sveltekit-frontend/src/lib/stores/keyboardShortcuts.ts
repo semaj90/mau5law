@@ -2,12 +2,12 @@ import { writable } from "svelte/store";
 // Mock imports to avoid resolution issues
 const aiRecommendationEngine = {
   generateRecommendations: async (context: any) => []
-};
+}
 const advancedCache = {
-  get: async <T>(key: string): Promise<T | null> => null,
-  set: async (key: string, value: any, options?: unknown) => {},
+  get: async <T>(_key: string): Promise<T | null> => null,
+  set: async (_key: string, value: any, options?: unknown) => {},
   invalidateByTags: async (tags: string[]) => {}
-};
+}
 }
 export interface Shortcut {
   key: string;
@@ -24,7 +24,7 @@ const staticShortcuts: Shortcut[] = [;
     key: "Ctrl+I",
     description: "Open context menu",
     action: () => {}, // To be set by consumer (e.g., contextMenuActions.open)
-    global: true
+    global: true;
     category: "UI"
   },
   // ...add more static shortcuts as needed
@@ -35,7 +35,7 @@ export function registerShortcut(shortcut: Shortcut) {
   keyboardShortcuts.update((shortcuts) => [...shortcuts, shortcut]);
 }
 // Utility to remove a shortcut by key
-export function unregisterShortcut(key: string) {
+export function unregisterShortcut(_key: string) {
   keyboardShortcuts.update((shortcuts) =>
     shortcuts.filter((s) => s.key !== key)
   );
@@ -68,7 +68,7 @@ export async function loadShortcutsFromAI(
           key: rec.id, // Should be unique per shortcut/action
           description: rec.content,
           action: () => {}, // To be set by consumer
-          global: true
+          global: true;
           category: rec.type,
           aiScore: rec.confidence,
           aiSummary: rec.reasoning || null

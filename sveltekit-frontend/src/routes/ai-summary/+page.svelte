@@ -19,14 +19,18 @@
           caseId: 'demo-case',
           summaryType,
           includeEvidence: true,
-          prompt: `Generate ${summaryType} summary with legal analysis`
-        })
+          prompt: `Generate ${summaryType} summary with legal analysis`,
+        }),
       });
       const result = await res.json();
       if ((result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).success) {
         summary = (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).summary;
-        confidence = (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).metadata?.confidence || 0.85;
-        ragScore = (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).metadata?.ragScore || 0.82;
+        confidence =
+          (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).metadata
+            ?.confidence || 0.85;
+        ragScore =
+          (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).metadata
+            ?.ragScore || 0.82;
       } else {
         summary = `API Error: ${(result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).error}`;
       }
@@ -34,7 +38,7 @@
       summary = `Connection Error: ${error.message}`;
     }
     isGenerating = false;
-  };
+  }
   const loadCaseDemo = async () => {
     caseData = {
       id: 'demo-case',
@@ -42,15 +46,16 @@
       evidence: [
         { id: '1', type: 'digital', title: 'Email Communications' },
         { id: '2', type: 'document', title: 'Financial Records' },
-        { id: '3', type: 'photo', title: 'Crime Scene Photos' }
+        { id: '3', type: 'photo', title: 'Crime Scene Photos' },
       ],
-      status: 'active'
-    };
-  };
+      status: 'active',
+    }
+  }
   $effect(() => {
     loadCaseDemo();
   });
 </script>
+
 <div class="max-w-4xl mx-auto p-6">
   <h1 class="text-3xl font-bold mb-6">AI Summary Generator</h1>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -128,3 +133,4 @@
     </div>
   </div>
 </div>
+;

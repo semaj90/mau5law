@@ -15,9 +15,9 @@ export function withRedisOrchestrator(
     cacheStrategy: CacheStrategy;
     memoryBank: MemoryBank;
     requiresFresh?: boolean;
-  }
+  },
 ): RequestHandler {
-  return async (event) => {
+  return async event => {
     // Skip caching for fresh-required operations
     if (config.requiresFresh) {
       return await originalHandler(event);
@@ -25,40 +25,45 @@ export function withRedisOrchestrator(
 
     // Execute original handler (Redis integration disabled for now)
     return await originalHandler(event);
-  };
+  }
 }
 
 export const redisMiddleware = {
-  aiChat: (handler: RequestHandler) => withRedisOrchestrator(handler, {
-    endpointName: 'ai-chat',
-    cacheStrategy: 'aggressive',
-    memoryBank: 'CHR_ROM'
-  }),
+  aiChat: (handler: RequestHandler) =>
+    withRedisOrchestrator(handler, {
+      endpointName: 'ai-chat',
+      cacheStrategy: 'aggressive',
+      memoryBank: 'CHR_ROM',
+    }),
 
-  aiAnalysis: (handler: RequestHandler) => withRedisOrchestrator(handler, {
-    endpointName: 'ai-analysis',
-    cacheStrategy: 'conservative',
-    memoryBank: 'PRG_ROM'
-  }),
+  aiAnalysis: (handler: RequestHandler) =>
+    withRedisOrchestrator(handler, {
+      endpointName: 'ai-analysis',
+      cacheStrategy: 'conservative',
+      memoryBank: 'PRG_ROM',
+    }),
 
-  evidence: (handler: RequestHandler) => withRedisOrchestrator(handler, {
-    endpointName: 'evidence',
-    cacheStrategy: 'minimal',
-    memoryBank: 'SAVE_RAM'
-  }),
+  evidence: (handler: RequestHandler) =>
+    withRedisOrchestrator(handler, {
+      endpointName: 'evidence',
+      cacheStrategy: 'minimal',
+      memoryBank: 'SAVE_RAM',
+    }),
 
-  caseScoring: (handler: RequestHandler) => withRedisOrchestrator(handler, {
-    endpointName: 'case-scoring',
-    cacheStrategy: 'bypass',
-    memoryBank: 'INTERNAL_RAM',
-    requiresFresh: true
-  }),
-
-  search: (handler: RequestHandler) => withRedisOrchestrator(handler, {
-    endpointName: 'search',
-    cacheStrategy: 'aggressive',
-    memoryBank: 'CHR_ROM'
-  })
-};
+  caseScoring: (handler: RequestHandler) =>
+    withRedisOrchestrator(handler, {
+      endpointName: 'case-scoring',
+      cacheStrategy: 'bypass',
+      memoryBank: 'INTERNAL_RAM',
+      requiresFresh: true,
+    }),
+;
+  search: (handler: RequestHandler) =>
+    withRedisOrchestrator(handler, {
+      endpointName: 'search',
+      cacheStrategy: 'aggressive',
+      memoryBank: 'CHR_ROM',
+    }),
+}
 
 export default redisMiddleware;

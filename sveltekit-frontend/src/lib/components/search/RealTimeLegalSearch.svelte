@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }, 300);
   // Handle input changes
-  function handleInputChange(value: string) {
+  function handleInputChange(_value: string) {
     inputValue = valu;
     if (autoSearch && value.trim.length >= 2) {
       debouncedSearch(value);
@@ -141,15 +141,14 @@ https://svelte.dev/e/js_parse_error -->
     console.log('🔌 Real-Time Legal Search Component destroyed');
   });
 </script>
+
 <!-- Enhanced Real-Time Search Interface -->
 <div class="real-time-search-container {className}">
   <!-- Search Header with Status -->
   <div class="flex items-center gap-2 mb-4">
     <div class="flex-1">
       <h3 class="text-lg font-semibold text-gray-900">Legal AI Search</h3>
-      <p class="text-sm text-gray-600">
-        Real-time search with vector similarity and AI enhancement
-      </p>
+      <p class="text-sm text-gray-600">Real-time search with vector similarity and AI enhancement</p>
     </div>
     <!-- Connection Status -->
     <div class="flex items-center gap-2">
@@ -184,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="relative">
       <!-- Search Input with Enhanced Styling -->
       <Combobox.Input
-        class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm
+        class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm;
                placeholder: text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 ;
                focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50
                {isStreaming ? 'pr-12' : 'pr-10'}"
@@ -231,42 +230,153 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Streaming Results -->
         {#each filteredResults as result, index ((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id)}
           <Combobox.Item
-            value={(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id}
+            value={(
+              result as {
+                title?: unknown;
+                id?: unknown;
+                realTime?: unknown;
+                type?: unknown;
+                score?: unknown;
+                content?: unknown;
+                metadata?: unknown;
+                highlights?: unknown;
+              }
+            ).id}
             class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
                    text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50
-                   {(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).realTime ? 'animate-pulse border-l-2 border-blue-400' : ''}"
+                   {(
+              result as {
+                title?: unknown;
+                id?: unknown;
+                realTime?: unknown;
+                type?: unknown;
+                score?: unknown;
+                content?: unknown;
+                metadata?: unknown;
+                highlights?: unknown;
+              }
+            ).realTime
+              ? 'animate-pulse border-l-2 border-blue-400'
+              : ''}"
             onSelect={() => handleSelect(result)}
           >
             <!-- Result Type Icon -->
             <div class="mt-1 text-lg">
-              {getResultTypeIcon((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).type)}
+              {getResultTypeIcon(
+                (
+                  result as {
+                    title?: unknown;
+                    id?: unknown;
+                    realTime?: unknown;
+                    type?: unknown;
+                    score?: unknown;
+                    content?: unknown;
+                    metadata?: unknown;
+                    highlights?: unknown;
+                  }
+                ).type,
+              )}
             </div>
             <!-- Result Content -->
             <div class="flex-1 min-w-0">
               <div class="flex items-start justify-between gap-2">
                 <div class="font-medium text-gray-900 truncate">
-                  {(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).title}
+                  {(
+                    result as {
+                      title?: unknown;
+                      id?: unknown;
+                      realTime?: unknown;
+                      type?: unknown;
+                      score?: unknown;
+                      content?: unknown;
+                      metadata?: unknown;
+                      highlights?: unknown;
+                    }
+                  ).title}
                 </div>
                 <div class="flex items-center gap-1 text-xs text-gray-500 shrink-0">
                   {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).realTime}
                     <TrendingUp class="w-3 h-3 text-blue-500" />
                   {/if}
-                  <span>{((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).score * 100).toFixed(0)}%</span>
+                  <span
+                    >{(
+                      (
+                        result as {
+                          title?: unknown;
+                          id?: unknown;
+                          realTime?: unknown;
+                          type?: unknown;
+                          score?: unknown;
+                          content?: unknown;
+                          metadata?: unknown;
+                          highlights?: unknown;
+                        }
+                      ).score * 100
+                    ).toFixed(0)}%</span
+                  >
                 </div>
               </div>
               <div class="text-xs text-gray-600 mt-1 line-clamp-2">
-                {(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).content.substring(0, 120)}...
+                {(
+                  result as {
+                    title?: unknown;
+                    id?: unknown;
+                    realTime?: unknown;
+                    type?: unknown;
+                    score?: unknown;
+                    content?: unknown;
+                    metadata?: unknown;
+                    highlights?: unknown;
+                  }
+                ).content.substring(0, 120)}...
               </div>
               <!-- Enhanced Metadata -->
               <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
                 <span class="capitalize bg-gray-100 px-2 py-1 rounded">
-                  {(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).type}
+                  {(
+                    result as {
+                      title?: unknown;
+                      id?: unknown;
+                      realTime?: unknown;
+                      type?: unknown;
+                      score?: unknown;
+                      content?: unknown;
+                      metadata?: unknown;
+                      highlights?: unknown;
+                    }
+                  ).type}
                 </span>
                 {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.jurisdiction}
-                  <span>{(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.jurisdiction}</span>
+                  <span
+                    >{(
+                      result as {
+                        title?: unknown;
+                        id?: unknown;
+                        realTime?: unknown;
+                        type?: unknown;
+                        score?: unknown;
+                        content?: unknown;
+                        metadata?: unknown;
+                        highlights?: unknown;
+                      }
+                    ).metadata.jurisdiction}</span
+                  >
                 {/if}
                 {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.status}
-                  <span class="capitalize">{(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.status}</span>
+                  <span class="capitalize"
+                    >{(
+                      result as {
+                        title?: unknown;
+                        id?: unknown;
+                        realTime?: unknown;
+                        type?: unknown;
+                        score?: unknown;
+                        content?: unknown;
+                        metadata?: unknown;
+                        highlights?: unknown;
+                      }
+                    ).metadata.status}</span
+                  >
                 {/if}
                 {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).realTime}
                   <span class="text-blue-500 font-medium">Live</span>
@@ -279,45 +389,154 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Standard Results -->
         {#each filteredResults as result ((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id)}
           <Combobox.Item
-            value={(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id}
+            value={(
+              result as {
+                title?: unknown;
+                id?: unknown;
+                realTime?: unknown;
+                type?: unknown;
+                score?: unknown;
+                content?: unknown;
+                metadata?: unknown;
+                highlights?: unknown;
+              }
+            ).id}
             class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2
                    text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50"
             onSelect={() => handleSelect(result)}
           >
             <!-- Result Type Icon -->
             <div class="mt-1 text-lg">
-              {getResultTypeIcon((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).type)}
+              {getResultTypeIcon(
+                (
+                  result as {
+                    title?: unknown;
+                    id?: unknown;
+                    realTime?: unknown;
+                    type?: unknown;
+                    score?: unknown;
+                    content?: unknown;
+                    metadata?: unknown;
+                    highlights?: unknown;
+                  }
+                ).type,
+              )}
             </div>
             <!-- Result Content -->
             <div class="flex-1 min-w-0">
               <div class="flex items-start justify-between gap-2">
                 <div class="font-medium text-gray-900 truncate">
-                  {(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).title}
+                  {(
+                    result as {
+                      title?: unknown;
+                      id?: unknown;
+                      realTime?: unknown;
+                      type?: unknown;
+                      score?: unknown;
+                      content?: unknown;
+                      metadata?: unknown;
+                      highlights?: unknown;
+                    }
+                  ).title}
                 </div>
                 <div class="text-xs text-gray-500 shrink-0">
-                  {((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).score * 100).toFixed(0)}%
+                  {(
+                    (
+                      result as {
+                        title?: unknown;
+                        id?: unknown;
+                        realTime?: unknown;
+                        type?: unknown;
+                        score?: unknown;
+                        content?: unknown;
+                        metadata?: unknown;
+                        highlights?: unknown;
+                      }
+                    ).score * 100
+                  ).toFixed(0)}%
                 </div>
               </div>
               <div class="text-xs text-gray-600 mt-1 line-clamp-2">
-                {(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).content.substring(0, 120)}...
+                {(
+                  result as {
+                    title?: unknown;
+                    id?: unknown;
+                    realTime?: unknown;
+                    type?: unknown;
+                    score?: unknown;
+                    content?: unknown;
+                    metadata?: unknown;
+                    highlights?: unknown;
+                  }
+                ).content.substring(0, 120)}...
               </div>
               <!-- Metadata Tags -->
               <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
                 <span class="capitalize bg-gray-100 px-2 py-1 rounded">
-                  {(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).type}
+                  {(
+                    result as {
+                      title?: unknown;
+                      id?: unknown;
+                      realTime?: unknown;
+                      type?: unknown;
+                      score?: unknown;
+                      content?: unknown;
+                      metadata?: unknown;
+                      highlights?: unknown;
+                    }
+                  ).type}
                 </span>
                 {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.jurisdiction}
-                  <span>{(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.jurisdiction}</span>
+                  <span
+                    >{(
+                      result as {
+                        title?: unknown;
+                        id?: unknown;
+                        realTime?: unknown;
+                        type?: unknown;
+                        score?: unknown;
+                        content?: unknown;
+                        metadata?: unknown;
+                        highlights?: unknown;
+                      }
+                    ).metadata.jurisdiction}</span
+                  >
                 {/if}
                 {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.date}
-                  <span>{new Date((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.date).toLocaleDateString()}</span>
+                  <span
+                    >{new Date(
+                      (
+                        result as {
+                          title?: unknown;
+                          id?: unknown;
+                          realTime?: unknown;
+                          type?: unknown;
+                          score?: unknown;
+                          content?: unknown;
+                          metadata?: unknown;
+                          highlights?: unknown;
+                        }
+                      ).metadata.date,
+                    ).toLocaleDateString()}</span
+                  >
                 {/if}
               </div>
               <!-- Highlights -->
               {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).highlights && (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).highlights.length > 0}
                 <div class="mt-2 text-xs text-blue-600">
                   <span class="font-medium">Highlights:</span>
-                  {(result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).highlights[0].substring(0, 80)}...
+                  {(
+                    result as {
+                      title?: unknown;
+                      id?: unknown;
+                      realTime?: unknown;
+                      type?: unknown;
+                      score?: unknown;
+                      content?: unknown;
+                      metadata?: unknown;
+                      highlights?: unknown;
+                    }
+                  ).highlights[0].substring(0, 80)}...
                 </div>
               {/if}
             </div>
@@ -368,9 +587,7 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         {/if}
         {#if enableAI}
-          <span class="flex items-center gap-1">
-            ✨ AI enhanced
-          </span>
+          <span class="flex items-center gap-1"> ✨ AI enhanced </span>
         {/if}
       </div>
       {#if searchMetrics.totalQueries > 0}
@@ -381,6 +598,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+
 <style>
   .real-time-search-container {
     @apply relative w-full max-w-2xl mx-auto;

@@ -109,7 +109,7 @@ export class POI {
       createdBy: this.createdBy,
       createdAt: this.createdAt,
       updatedAt: new Date()
-    };
+    }
   }
   // Helper to get current value from writable store
   private getValueFromStore<T>(store: Writable<T>): T {

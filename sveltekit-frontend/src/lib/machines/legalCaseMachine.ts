@@ -30,7 +30,7 @@ export type LegalCaseEvent =
   | { type: 'ARCHIVE_CASE'; reason?: string }
   | { type: 'RESTORE_CASE' }
   | { type: 'RETRY' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 // Legal Case Context - Production Ready
 export interface LegalCaseContext {
   // Core case data
@@ -240,7 +240,7 @@ export interface CaseFilters {
   priority?: CaseForm['priority'][];
   caseType?: CaseForm['caseType'][];
   assignedTo?: string[];
-  dateRange?: { start: Date; end: Date };
+  dateRange?: { start: Date; end: Date }
   tags?: string[];
 }
 export interface SortOptions {
@@ -399,7 +399,7 @@ export const legalCaseMachine = createMachine({
       invoke: {
         id: 'loadCase',
         src: fromPromise(async ({ input }: { input: { caseId: string } }) => {
-          const response = await fetch(`/api/v1/cases/${input.caseId}`);
+          // removed unused response assignment
           if (!response.ok) {
             throw new Error(`Failed to load case: ${response.statusText}`);
           }
@@ -697,7 +697,7 @@ export const legalCaseMachine = createMachine({
           target: 'idle',
           actions: assign({,
             currentCase: null
-            caseId: null
+            caseId: null;
             error: null
             retryCount: 0,
             isLoading: false

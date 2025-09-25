@@ -8,8 +8,8 @@
     isProcessing?: boolean;
     systemStatus?: 'operational' | 'offline' | 'unknown';
     responseTime?: number;
-    onresponse?: (event: CustomEvent) => void;
-    onerror?: (event: CustomEvent) => void;
+    onresponse?: (_event: CustomEvent) => void;
+    onerror?: (_event: CustomEvent) => void;
   }
   let {
     query = '',
@@ -29,7 +29,7 @@
       error,
       timestamp: Date.now();
     }, ...apiLogs.slice(0, 9)];
-  };
+  }
   const testGemma3 = async () => {
     if (isProcessing) return;
     isProcessing = true;
@@ -42,11 +42,11 @@
         body: JSON.stringify({,
           model: 'gemma3-legal',
           prompt: query || 'Legal AI status check',
-          stream: false
+          stream: false;
           options: {
             temperature: 0.1,
             num_ctx: 4096,
-            num_gpu: 1 // Force GPU
+            num_gpu: 1 // Force GPU;
           }
         })
       });
@@ -75,7 +75,7 @@
     }
     isProcessing = false;
     currentTest = null;
-  };
+  }
   const testSynthesis = async () => {
     if (isProcessing) return;
     isProcessing = true;
@@ -118,7 +118,7 @@
     }
     isProcessing = false;
     currentTest = null;
-  };
+  }
   const testRAG = async () => {
     if (isProcessing) return;
     isProcessing = true;
@@ -157,15 +157,16 @@
     }
     isProcessing = false;
     currentTest = null;
-  };
+  }
   const getStatusColor = (status) => {
     switch (status) {
       case 'operational': return 'bg-green-500';
       case 'offline': return 'bg-red-500';
       default: return 'bg-yellow-500';
     }
-  };
+  }
 </script>
+
 <div class="space-y-4">
   <!-- Action Buttons -->
   <div class="grid grid-cols-3 gap-3">
@@ -235,3 +236,4 @@
     </div>
   {/if}
 </div>
+;

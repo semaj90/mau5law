@@ -17,7 +17,7 @@ export const aiStore = writable<AIState>({
   current: "",
   history: [],
   isProcessing: false
-  lastResult: null
+  lastResult: null;
   error: null
 });
 // Command result store for Phase 2 compatibility
@@ -45,7 +45,7 @@ export async function parseAICommand(command: string): Promise<any> {
       type,
       timestamp: new Date().toISOString(),
       processed: true
-    };
+    }
     // Update stores
     aiCommandResult.set(result);
     addCommand(command, result);
@@ -61,7 +61,7 @@ export async function parseAICommand(command: string): Promise<any> {
  * Apply AI-controlled classes to elements
  */
 export function applyAIClasses(
-  element: HTMLElement
+  element: HTMLElement;
   config: {
     add?: string[];
     remove?: string[];
@@ -87,30 +87,30 @@ export const addCommand = (command: string, result: any = null) => {
     ],
     lastResult: result
   });
-};
+}
 export const setCurrentCommand = (command: string) => {
   aiStore.update((store) => ({ ...store, current: command });
-};
+}
 export const setProcessing = (isProcessing: boolean) => {
   aiStore.update((store) => ({ ...store, isProcessing });
-};
+}
 export const setError = (error: string | null) => {
   aiStore.update((store) => ({ ...store, error });
-};
+}
 export const clearHistory = () => {
   aiStore.update((store) => ({
     ...store,
     history: [],
     current: "",
-    lastResult: null
+    lastResult: null;
     error: null
   });
-};
+}
 // Simple command service for Phase 2 compatibility
 export const aiCommandService = {
   state: writable("idle"),
   context: writable({}),
-  send: function (event: any) {
+  send: function (_event: any) {
     console.log("Processing event:", event);
     this.state.set("processing");
     setTimeout(() => {
@@ -118,13 +118,13 @@ export const aiCommandService = {
       this.context.update((ctx) => ({ ...ctx, lastCommand: event });
     }, 1000);
   },
-  subscribe: function (callback: (value: any) => void) {
+  subscribe: function (callback: (_value: any) => void) {
     return this.state.subscribe(callback);
   }
-};
+}
 // Derived stores (repaired syntax)
 export const recentCommands = derived(aiStore, ($store) => $store.history.slice(-10);
 export const isAIActive = derived(aiStore, ($store) => $store.isProcessing || $store.current.length > 0);
 // Legacy exports for backward compatibility
-export { aiStore as aiCommands };
+export { aiStore as aiCommands }
 export default aiStore;

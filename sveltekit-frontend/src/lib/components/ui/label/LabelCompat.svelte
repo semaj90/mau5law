@@ -6,8 +6,9 @@
     for?: string;
     class?: string;
   }
-  let { 'for': forProp = '', class: classProp = '', children, ...rest }: Props & { children?: unknown } = $props();
+  let { for: forProp = '', class: classProp = '', children, ...rest }: Props & { children?: unknown } = $props();
 </script>
+
 <Label for_={forProp} class_={classProp} {...rest}>
   {#if children}
     {@render children()}

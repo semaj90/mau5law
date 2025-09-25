@@ -52,6 +52,7 @@
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   }
 </script>
+
 <div class="memory-monitor bg-white border rounded-lg p-4 shadow-sm">
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-semibold">Memory Monitor</h3>
@@ -93,10 +94,7 @@
             <span class="font-medium">{pool.id}</span>
             <div class="flex items-center gap-2">
               <div class="usage-bar w-20 h-2 bg-gray-200 rounded">
-                <div
-                  class="usage-fill h-full bg-blue-600 rounded"
-                  style="width: {pool.percentage}%"
-                ></div>
+                <div class="usage-fill h-full bg-blue-600 rounded" style="width: {pool.percentage}%"></div>
               </div>
               <span class="text-xs text-gray-500">{pool.percentage.toFixed(1)}%</span>
             </div>
@@ -120,6 +118,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .usage-fill {
     transition: width 0.3s ease;

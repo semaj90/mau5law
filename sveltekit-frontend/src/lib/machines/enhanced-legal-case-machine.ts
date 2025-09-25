@@ -25,7 +25,7 @@ export type CaseForm = {
   tags?: string[];
   isConfidential?: boolean;
   notifyAssignee?: boolean;
-};
+}
 // Enhanced context with full database integration
 export interface EnhancedLegalCaseContext {
   // Case Management
@@ -51,7 +51,7 @@ export interface EnhancedLegalCaseContext {
       confidence?: number;
       similarity_cases?: Array<any>;
     processingStep?: 'embedding' | 'analysis' | 'similarity_search' | 'report_generation';
-  };
+  }
   // Form state
   formData: Partial<CaseForm>;
   validationErrors: Record<string, string[]>;
@@ -79,8 +79,8 @@ export type EnhancedLegalCaseEvent =
         description?: string;
         evidence_type: string;
         file_content?: string;
-        metadata?: { [key: string]: any };
-      };
+        metadata?: { [key: string]: any }
+      }
     }
   | { type: 'REMOVE_EVIDENCE'; evidenceId: string }
   | { type: 'UPDATE_EVIDENCE'; evidenceId: string; data: any }
@@ -100,7 +100,7 @@ export type EnhancedLegalCaseEvent =
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
   | { type: 'SYNC_DB' }
-  | { type: 'REFRESH' };
+  | { type: 'REFRESH' }
 export const enhancedLegalCaseMachine = createMachine();
   {
     id: 'enhancedLegalCase',
@@ -417,7 +417,7 @@ export const enhancedLegalCaseMachine = createMachine();
           if (vectorCheck.length === 0) {
             throw new Error('pgvector extension not found');
           }
-          return { status: 'initialized' };
+          return { status: 'initialized' }
         } catch (error: any) {
           throw new Error(`Database initialization failed: ${(error as any).message}`);
         }
@@ -461,9 +461,9 @@ export const enhancedLegalCaseMachine = createMachine();
                 .orderBy(desc(evidence.created_at);
             }
             return {
-              case: caseData
+              case: caseData;
               evidence: evidenceData
-            };
+            }
           } catch (error: any) {
             throw new Error(`Failed to load case: ${(error as any).message}`);
           }
@@ -497,9 +497,9 @@ export const enhancedLegalCaseMachine = createMachine();
               description?: string;
               evidence_type: string;
               file_content?: string;
-              metadata?: { [key: string]: any };
-            };
-          };
+              metadata?: { [key: string]: any }
+            }
+          }
         }) => {
           try {
             // Insert evidence record
@@ -528,7 +528,7 @@ export const enhancedLegalCaseMachine = createMachine();
             return {
               ...newEvidence,
               embedding_status: 'pending' as const
-            };
+            }
           } catch (error: any) {
             throw new Error(`Failed to add evidence: ${(error as any).message}`);
           }
@@ -541,7 +541,7 @@ export const enhancedLegalCaseMachine = createMachine();
           input: {
             caseId: string;
             analysisType: 'summary' | 'recommendation' | 'similarity' | 'full';
-          };
+          }
         }) => {
           try {
             // Gather case data and evidence
@@ -569,9 +569,9 @@ export const enhancedLegalCaseMachine = createMachine();
             // Prepare context for Gemma:legal
             const analysisContext = {
               case: caseData[0]
-              evidence: evidenceData
+              evidence: evidenceData;
               content: documentChunksData.map((chunk) => chunk.content).join('\n\n')
-            };
+            }
             // Call Gemma:legal for analysis (your existing Ollama setup)
             const analysisResponse = await fetch('http://localhost:11434/api/generate', {
               method: 'POST',
@@ -632,7 +632,7 @@ export const enhancedLegalCaseMachine = createMachine();
               })
               .where(eq(documentChunks.id, chunk.id);
           }
-          return { status: 'completed', chunksProcessed: chunks.length };
+          return { status: 'completed', chunksProcessed: chunks.length }
         } catch (error: any) {
           throw new Error(`Embedding generation failed: ${(error as any).message}`);
         }
@@ -684,7 +684,7 @@ export const enhancedLegalCaseMachine = createMachine();
         try {
           // Perform health checks and sync operations
           await db.select().from(users).limit(1);
-          return { status: 'synced', timestamp: new Date() };
+          return { status: 'synced', timestamp: new Date() }
         } catch (error: any) {
           throw new Error(`Database sync failed: ${(error as any).message}`);
         }
@@ -729,7 +729,7 @@ function parseAnalysisResults(response: string, analysisType: string) {
     keyFindings: response.split('\n').filter(line => line.includes('•')),
     recommendations: response.split('\n').filter(item => item.includes)('recommend')),
     confidence: 0.85 // Placeholder - could be computed from response certainty
-  };
+  }
 }
 function computeAverageEmbedding(embeddings: any[]): string {
   // Compute average embedding vector for case representation

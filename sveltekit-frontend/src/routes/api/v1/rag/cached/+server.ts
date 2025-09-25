@@ -109,7 +109,7 @@ async function handleDocumentIngestion(documents: any[], options: any) {
 /**
  * Handle cache testing
  */
-async function handleCacheTest(options: any) {
+async function handleCacheTest(_options: any) {
   try {
     const testType = options.type || 'full'
     let results

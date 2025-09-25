@@ -26,7 +26,7 @@ https://svelte.dev/e/js_parse_error -->
             email: string;
             phone: string;
             address: string;
-        };
+        }
         documents?: unknown[];
         aiAnalysis?: unknown;
         [key: string]: unknown; // Allow additional properties
@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
             id: 'case-info',
             title: 'Case Information',
             description: 'Basic case details and client information',
-            component: CaseInfoForm
+            component: CaseInfoForm;
             required: true
             estimatedTime: 5;
         },
@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
             id: 'document-upload',
             title: 'Document Upload',
             description: 'Upload and process case documents',
-            component: DocumentUploadForm
+            component: DocumentUploadForm;
             required: true
             estimatedTime: 10;
         },
@@ -99,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
             id: 'evidence-analysis',
             title: 'Evidence Analysis',
             description: 'Analyze and categorize evidence',
-            component: EvidenceAnalysisForm
+            component: EvidenceAnalysisForm;
             required: false
             estimatedTime: 15;
         },
@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
             id: 'ai-analysis',
             title: 'AI Analysis',
             description: 'AI-powered case analysis and recommendations',
-            component: AIAnalysisForm
+            component: AIAnalysisForm;
             required: false
             estimatedTime: 8;
         },
@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
             id: 'review-submit',
             title: 'Review & Submit',
             description: 'Final review and case submission',
-            component: ReviewSubmitForm
+            component: ReviewSubmitForm;
             required: true
             estimatedTime: 5;
         }
@@ -162,10 +162,10 @@ https://svelte.dev/e/js_parse_error -->
     async function validateCurrentStep(): Promise<ValidationResult> {
         const stepConfig = currentStepConfig;
         const result: ValidationResult = {
-            isValid: true
+            isValid: true;
             errors: [],
             warnings: [];
-        };
+        }
         switch (stepConfig.id) {
             case 'case-info':
                 if (!caseData.title.trim()) {
@@ -301,7 +301,7 @@ https://svelte.dev/e/js_parse_error -->
             caseData.metadata = {
                 ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata: ),
                 submittedAt: new Date()
-            };
+            }
             // Submit to backend
             const response = await fetch('/api/cases/submit', {
                 method: 'POST',
@@ -351,7 +351,7 @@ https://svelte.dev/e/js_parse_error -->
                 email: '',
                 phone: '',
                 address: '';
-            };
+            }
             caseData.documents = [];
             caseData.evidence = [];
             caseData.aiAnalysis = null;
@@ -363,9 +363,9 @@ https://svelte.dev/e/js_parse_error -->
                 updatedAt: new Date(),
                 version: 1,
                 workflow: 'standard';
-            };
+            }
             currentStep = 0;
-            validationResults = {};
+            validationResults = {}
             notifications.add({
                 type: 'info',
                 title: 'Reset',
@@ -383,16 +383,16 @@ https://svelte.dev/e/js_parse_error -->
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.lang = 'en-US';
-            recognition.onresult = (event: unknown) => {
+            recognition.onresult = (_event: unknown) => {
                 const command = event.results[0][0].transcript.toLowerCase();
                 handleVoiceCommand(command);
-            };
+            }
             recognition.onerror = () => {
                 isListening = false;
-            };
+            }
             recognition.onend = () => {
                 isListening = false;
-            };
+            }
         }
     }
     function handleVoiceCommand(command: string): void {
@@ -417,7 +417,7 @@ https://svelte.dev/e/js_parse_error -->
         }
     }
     // Keyboard shortcuts
-    function handleKeydown(event: KeyboardEvent): void {
+    function handleKeydown(_event: KeyboardEvent): void {
         if (event.ctrlKey || event.metaKey) {
             switch (event.key) {
                 case 'ArrowRight':
@@ -518,7 +518,7 @@ https://svelte.dev/e/js_parse_error -->
                     <!-- Auto-save toggle -->
                     <label class="flex items-center space-x-2 text-sm">
                         <input
-                            type="checkbox"
+                            type="checkbox";
                             bind:checked={autoSaveEnabled}
                             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
@@ -579,7 +579,7 @@ https://svelte.dev/e/js_parse_error -->
                         bind:caseData={caseData}
                         validationresult={validationResults[currentStep]}
                         data-changed={() => {
-                            caseData.metadata = { ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata: ), updatedAt: new Date() };
+                            caseData.metadata = { ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata: ), updatedAt: new Date() }
                         }}
                         request-validation={validateCurrentStep}
                     />
@@ -636,7 +636,7 @@ https://svelte.dev/e/js_parse_error -->
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
-                                       text-white bg-blue-600
+                                       text-white bg-blue-600;
                                        hover: bg-blue-700;
                                        disabled:opacity-50 disabled:cursor-not-allowed
                                        transition-colors"
@@ -649,7 +649,7 @@ https://svelte.dev/e/js_parse_error -->
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
-                                       text-white bg-blue-600
+                                       text-white bg-blue-600;
                                        hover: bg-blue-700;
                                        disabled:opacity-50 disabled:cursor-not-allowed
                                        transition-colors"

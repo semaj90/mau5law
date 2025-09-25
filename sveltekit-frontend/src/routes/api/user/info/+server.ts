@@ -3,7 +3,7 @@ import { db } from '$lib/server/db'
 import { users, userProfiles } from '$lib/server/db/schema-postgres'
 import { eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const email = url.searchParams.get('email')

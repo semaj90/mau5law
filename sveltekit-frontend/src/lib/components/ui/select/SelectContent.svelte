@@ -19,6 +19,7 @@
       onToggle: () => } satisfies SelectContext);
   const { open } = context;
 </script>
+
 {#if $open}
   <div class="space-y-4" role="listbox">
     {#if children}
@@ -26,7 +27,9 @@
     {/if}
   </div>
 {/if}
-<style>/* @unocss-include */ .select-content {
+
+<style>/* @unocss-include */ {}
+  .select-content {
     position: absolute;
     top: 100%;
     left: 0;
@@ -38,5 +41,5 @@
     z-index: 50;
     max-height: 200px;
     overflow-y: auto;
-}
+  }
 </style>

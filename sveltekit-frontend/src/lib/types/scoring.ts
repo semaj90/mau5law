@@ -9,7 +9,7 @@ export interface CaseScoringRequest {
   jurisdiction?: string;
   caseType?: string;
   priority?: 'low' | 'medium' | 'high' | 'critical';
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   // Additional properties used in the service
   scoring_criteria?: ScoringCriteria;
   criteria?: ScoringCriteria;
@@ -44,7 +44,7 @@ export interface CaseScoringResult {
     protocol?: string;
     responseTime?: number;
     accuracy?: number;
-  };
+  }
 }
 export interface ScoringAnalysis {
   overallScore: number;
@@ -53,7 +53,7 @@ export interface ScoringAnalysis {
     strengths: string[];
     weaknesses: string[];
     riskFactors: string[];
-  };
+  }
   recommendations: string[];
   confidence: number;
 }

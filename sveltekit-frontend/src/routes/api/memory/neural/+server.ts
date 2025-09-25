@@ -2,7 +2,7 @@ import { NeuralMemoryManager } from '$lib/optimization/neural-memory-manager'
 import { redisRateLimit } from '$lib/server/redisRateLimit'
 import { dev } from '$app/environment'
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 // Global manager singleton with Windows optimization
 let neuralManager: NeuralMemoryManager | null = null
 let initializationPromise: Promise<NeuralMemoryManager> | null = null
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   })
   if (!rateLimitResult.allowed) {
     return json({
-        success: false
+        success: false;
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter
       },)

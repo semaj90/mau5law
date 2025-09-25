@@ -17,7 +17,7 @@ function isPrime(n: number): boolean {
   }
   return true;
 }
-let primes: number[] = [];
+const primes: number[] = [];
 let count = 0;
 for (let n = start; n < end; n++) {
   if (isPrime(n)) {

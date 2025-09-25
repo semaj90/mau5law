@@ -31,7 +31,7 @@ export interface Migration {
   down?: string;
   checkDependencies?: () => Promise<boolean>;
   postMigration?: () => Promise<void>;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface MigrationResult {
   success: boolean;
@@ -121,7 +121,7 @@ export class DatabaseMigrator {
    * DROP TABLE users;
    */;
   private parseSQLMigration(filename: string, content: string): Migration {
-    const lines = content.split('\n');
+    // removed unused lines assignment
     let name = filename.replace(/\.(sql|ts|js)$/, '');
     let version = '';
     let upSQL = '';
@@ -154,7 +154,7 @@ export class DatabaseMigrator {
       name,
       up: upSQL.trim(),
       down: downSQL.trim() || undefined
-    };
+    }
   }
   /**
    * Check which migrations have been applied
@@ -202,7 +202,7 @@ export class DatabaseMigrator {
           version: migration.version,
           executionTime: 0,
           applied: false
-        };
+        }
       }
       // Check dependencies if defined
       if (migration.checkDependencies) {
@@ -243,7 +243,7 @@ export class DatabaseMigrator {
         version: migration.version,
         executionTime,
         applied: true
-      };
+      }
     } catch (error) {
       const executionTime = Date.now() - startTime;
       const errorMessage = error instanceof Error ? error.message: String(error);
@@ -269,7 +269,7 @@ export class DatabaseMigrator {
         executionTime,
         error: errorMessage
         applied: false
-      };
+      }
     }
   }
   /**
@@ -328,7 +328,7 @@ export class DatabaseMigrator {
           version: '',
           executionTime: 0,
           applied: false
-        };
+        }
       }
       const migration = lastMigration[0];
       if (!migration.rollback_sql) {
@@ -353,7 +353,7 @@ export class DatabaseMigrator {
         version: migration.version,
         executionTime,
         applied: true
-      };
+      }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message: String(error);
       console.error('❌ Rollback failed:', errorMessage);
@@ -363,7 +363,7 @@ export class DatabaseMigrator {
         executionTime: 0,
         error: errorMessage
         applied: false
-      };
+      }
     }
   }
   /**
@@ -396,7 +396,7 @@ export class DatabaseMigrator {
         pendingMigrations: pendingCount
         lastMigration,
         systemHealthy: failedMigrations.length === 0
-      };
+      }
     } catch (error) {
       console.error('❌ Failed to get migration status:', error);
       return {
@@ -404,7 +404,7 @@ export class DatabaseMigrator {
         pendingMigrations: 0,
         lastMigration: null
         systemHealthy: false
-      };
+      }
     }
   }
   /**
@@ -470,13 +470,13 @@ export class DatabaseMigrator {
       return {
         valid: issues.length === 0,
         issues
-      };
+      }
     } catch (error) {
       issues.push(`Validation error: ${error instanceof Error ? error.message: String(error)}`);
       return {
         valid: false
         issues
-      };
+      }
     }
   }
   /**
@@ -643,7 +643,7 @@ DROP FUNCTION IF EXISTS search_similar_evidence;`
   for (const migration of migrations) {
     await migrator.createMigration(migration.name, migration.sql);
   }
-};
+}
 // CLI interface for migrations
 export const runMigrationCLI = async (command: string, args: string[] = []) => {
   const connectionString = process.env.DATABASE_URL || 'postgresql://localhost:5432/legal_ai'
@@ -692,7 +692,7 @@ export const runMigrationCLI = async (command: string, args: string[] = []) => {
   } finally {
     await migrator.close();
   }
-};
+}
 // If run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const command = process.argv[2];

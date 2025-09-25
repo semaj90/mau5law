@@ -47,7 +47,7 @@ export interface ServiceHealth {
   last_check: string;
   response_time: number;
   error_count: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 // =====================================================
 // SEARCH & RETRIEVAL
@@ -58,7 +58,7 @@ export interface SearchResults {
   total: number;
   processingTime: number;
   query: string;
-  facets?: { [key: string]: any };
+  facets?: { [key: string]: any }
   suggestions?: string[];
   // Extended properties for legal AI demo
   executionTime?: number;
@@ -69,7 +69,7 @@ export interface SearchResults {
     index: string;
     algorithm: string;
     filters: any[];
-  };
+  }
 }
 export interface TestResults {
   // Core fields (optional to allow progressive assignment)
@@ -80,7 +80,7 @@ export interface TestResults {
     embedding_time?: number;
     search_time?: number;
     total_time?: number;
-  };
+  }
   accuracy?: number;
   // Error can be simple string or structured
   error?:
@@ -89,7 +89,7 @@ export interface TestResults {
         message: string;
         code: string;
         stack?: string;
-      };
+      }
   executionTime?: number;
   source?: string;
   testType?: string;
@@ -98,7 +98,7 @@ export interface TestResults {
     model?: string;
     version?: string;
     environment?: string;
-  };
+  }
 }
 export interface AnalysisResults {
   content?: string;
@@ -108,7 +108,7 @@ export interface AnalysisResults {
     entities?: Entity[];
     sentiment?: number;
     confidence?: number;
-  };
+  }
   processing_time?: number;
   model_used?: string;
   // Extended / flexible entities list
@@ -119,14 +119,14 @@ export interface AnalysisResults {
     category?: string; // singular form used in some pages
     categories?: string[];
     confidence?: number;
-  };
+  }
   error?:
     | string;
     | {
         message: string;
         code: string;
     details?: unknown;
-      };
+      }
   summary?:;
     | {
         text: string;
@@ -140,7 +140,7 @@ export interface AnalysisResults {
         level: 'low' | 'medium' | 'high' | 'critical';
         factors: string[];
         score: number;
-      };
+      }
   similarity?: number;
 }
 // =====================================================
@@ -166,7 +166,7 @@ export interface LegalDocument {
     case_number?: string;
     attorney?: string;
     priority?: string;
-  };
+  }
   embedding?: number[];
   vector_id?: string;
 }
@@ -191,7 +191,7 @@ export interface Evidence {
   file_path?: string;
   hash?: string;
   chain_of_custody: CustodyEntry[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   created_at: string;
 }
 export interface PersonOfInterest {
@@ -202,7 +202,7 @@ export interface PersonOfInterest {
     email?: string;
     phone?: string;
     address?: string;
-  };
+  }
   notes: string;
   cases: string[];
 }
@@ -235,7 +235,7 @@ export interface Document {
   documentType?: string; // e.g., 'deed', 'contract', 'report'
   caseId?: string;
   fileUrl?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   createdAt?: string;
   updatedAt?: string;
 }
@@ -293,7 +293,7 @@ export interface VectorSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   highlights?: string[];
 }
 export interface Entity {
@@ -328,9 +328,9 @@ export interface UploadedFile {
   metadata: {
     pages?: number;
     duration?: number;
-    dimensions?: { width: number; height: number };
+    dimensions?: { width: number; height: number }
     extracted_text?: string;
-  };
+  }
   created_at: string;
   // Extended properties for legal AI demo
   url?: string;
@@ -360,7 +360,7 @@ export interface ChatMessage {
     tokens?: number;
     processing_time?: number;
     citations?: Citation[];
-  };
+  }
 }
 export interface ChatSession {
   id: string;
@@ -369,7 +369,7 @@ export interface ChatSession {
   title?: string;
   created_at: string;
   updated_at: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 // =====================================================
 // ERROR HANDLING & VALIDATION
@@ -393,7 +393,7 @@ export interface ValidationFormState {
   isSubmitting: boolean;
   errors: ValidationError[];
   touched: Record<string, boolean>;
-  values: { [key: string]: any };
+  values: { [key: string]: any }
 }
 // =====================================================
 // PERFORMANCE & MONITORING
@@ -424,7 +424,7 @@ export interface GPUMetrics {
 export interface WorkflowState {
   current_step: string;
   completed_steps: string[];
-  data: { [key: string]: any };
+  data: { [key: string]: any }
   errors: string[];
   started_at: string;
   updated_at: string;
@@ -455,7 +455,7 @@ export interface ModelAvailability {
     loaded: boolean;
     size?: string;
     capabilities?: string[];
-  };
+  }
 }
 export interface Toast {
   id: string;
@@ -475,7 +475,7 @@ export interface AIModel {
   contextWindow?: number;
 }
 export interface SearchFilters {
-  dateRange?: { start: Date; end: Date };
+  dateRange?: { start: Date; end: Date }
   documentType?: string[];
   jurisdiction?: string[];
   tags?: string[];
@@ -485,5 +485,5 @@ export interface SearchFilters {
 export interface SearchFacets {
   [category: string]: {
     [value: string]: number;
-  };
+  }
 }

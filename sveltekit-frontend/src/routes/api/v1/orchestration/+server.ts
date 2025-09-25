@@ -152,4 +152,4 @@ function generateOrchestrationId(): string {
 }
 // Extend the GET handler to include health endpoint
 export const GET_orchestration_health = GET_HEALTH
-export const POST_orchestration_emergency = POST_EMERGENCY
+export const POST_orchestration_emergency = POST_EMERGENCY;

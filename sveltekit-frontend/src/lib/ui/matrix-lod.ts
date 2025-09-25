@@ -1,4 +1,3 @@
-
 // Real-Time Matrix LOD System with AI-Aware Rendering
 // GPU-accelerated Level of Detail with cubic filter blending
 export interface LODCache {
@@ -7,18 +6,18 @@ export interface LODCache {
       vertices: Float32Array;
       cssClasses: string[];
       priority: number;
-    };
+    }
     mid: {
       vertices: Float32Array;
       cssClasses: string[];
       priority: number;
-    };
+    }
     high: {
       vertices: Float32Array;
       cssClasses: string[];
       priority: number;
-    };
-  };
+    }
+  }
 }
 export interface ViewportFocus {
   centerX: number;
@@ -36,7 +35,7 @@ export interface GPULoadMetrics {
 }
 export class MatrixLODSystem {
   private gl: WebGL2RenderingContext;
-  private lodCache: LODCache = {};
+  private lodCache: LODCache = {}
   private shaderProgram: WebGLProgram | null = null;
   private viewportFocus: ViewportFocus | null = null;
   private gpuMetrics: GPULoadMetrics;
@@ -145,7 +144,7 @@ export class MatrixLODSystem {
         allowWebGL1: true,
         requireCompute: false,
         lodSystemIntegration: true,
-        nesMemoryOptimization: true
+        nesMemoryOptimization: true,
       });
       console.log(`🚀 Matrix LOD System using ${this.hybridGPU.getActiveContextType()} acceleration`);
     } catch (error) {
@@ -211,9 +210,9 @@ export class MatrixLODSystem {
       high: {
         vertices: highVertices,
         cssClasses: this.generateHighLODClasses(metadata),
-        priority: priority
+        priority: priority,
       },
-    };
+    }
   }
   /**
    * Calculate AI-based priority for components
@@ -376,7 +375,7 @@ export class MatrixLODSystem {
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       const distance = Math.sqrt(
-        Math.pow(centerX - this.viewportFocus!.centerX, 2) + Math.pow(centerY - this.viewportFocus!.centerY, 2)
+        Math.pow(centerX - this.viewportFocus!.centerX, 2) + Math.pow(centerY - this.viewportFocus!.centerY, 2),
       );
       const normalizedDistance = distance / this.viewportFocus!.radius;
       // Determine LOD level based on distance and AI factors
@@ -428,7 +427,7 @@ export class MatrixLODSystem {
       memoryUsage: 0,
       renderTime: 0,
       activeBuffers: 0,
-    };
+    }
   }
   /**
    * Start performance monitoring loop
@@ -447,7 +446,7 @@ export class MatrixLODSystem {
         this.adaptiveQualityControl();
       }
       requestAnimationFrame(monitor);
-    };
+    }
     requestAnimationFrame(monitor);
   }
   /**
@@ -488,7 +487,7 @@ export class MatrixLODSystem {
   /**
    * Get current performance metrics
    */ getPerformanceMetrics(): GPULoadMetrics {
-    return { ...this.gpuMetrics };
+    return { ...this.gpuMetrics }
   }
   /**
    * Toggle AI awareness features
@@ -506,7 +505,7 @@ export class MatrixLODSystem {
       this.gl.deleteProgram(this.shaderProgram);
     }
     // Clear cache
-    this.lodCache = {};
+    this.lodCache = {}
   }
 }
 // Integration with existing matrix compiler

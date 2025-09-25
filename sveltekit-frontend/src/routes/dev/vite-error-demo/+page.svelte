@@ -49,7 +49,7 @@
       errors: errorLog.filter(item => item.length),
       warnings: errorLog.filter(item => item.length),
       info: errorLog.filter(item => item.length);
-    };
+    }
   }
   function generateDemoError() {
     const randomError = demoErrors[Math.floor(Math.random() * demoErrors.length)];
@@ -59,7 +59,7 @@
       timestamp: new Date().toISOString(),
       buildPhase: 'demo',
       id: Math.random.toString-substr(2, 9);
-    };
+    }
     errorLog = [errorEntry, ...errorLog];
     updateStats();
     console.log(`🔧 Demo Error Generated: ${randomError.message}`);
@@ -110,17 +110,19 @@
     loadErrorLog();
   });
 </script>
+
 <svelte:head>
   <title>Vite Error Logger Demo</title>
-  <meta name="description" content="Interactive demonstration of the Vite error logging system with VS Code integration" />
+  <meta
+    name="description"
+    content="Interactive demonstration of the Vite error logging system with VS Code integration"
+  />
 </svelte:head>
 <main class="min-h-screen bg-gray-50 py-8">
   <div class="container mx-auto px-4 max-w-6xl">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-4">
-        🔧 Vite Error Logger Demo
-      </h1>
+      <h1 class="text-3xl font-bold text-gray-900 mb-4">🔧 Vite Error Logger Demo</h1>
       <p class="text-gray-600 text-lg">
         Interactive demonstration of the Vite error logging system with real-time VS Code integration
       </p>
@@ -148,7 +150,9 @@
           🧹 Clear Errors
         </button>
         <button
-          class="px-4 py-2 {isWatching ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-purple-600 hover:bg-purple-700'} text-white rounded-md transition-colors"
+          class="px-4 py-2 {isWatching
+            ? 'bg-yellow-600 hover:bg-yellow-700'
+            : 'bg-purple-600 hover:bg-purple-700'} text-white rounded-md transition-colors"
           onclick={isWatching ? stopWatching : startWatching}
         >
           {isWatching ? '⏹️ Stop Watching' : '👀 Start Watching'}
@@ -198,9 +202,7 @@
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
       <div class="px-6 py-4 border-b border-gray-200">
         <h2 class="text-xl font-semibold text-gray-900">Error Log</h2>
-        <p class="text-sm text-gray-600 mt-1">
-          Real-time error tracking with VS Code integration
-        </p>
+        <p class="text-sm text-gray-600 mt-1">Real-time error tracking with VS Code integration</p>
       </div>
       <div class="max-h-96 overflow-y-auto">
         {#if errorLog.length === 0}
@@ -221,7 +223,11 @@
                         {error.message}
                       </p>
                       <div class="flex items-center space-x-2">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getErrorColor(error.level)} border">
+                        <span
+                          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getErrorColor(
+                            error.level,
+                          )} border"
+                        >
                           {error.level.toUpperCase()}
                         </span>
                         <span class="text-xs text-gray-500">
@@ -237,7 +243,8 @@
                     {#if error.suggestion}
                       <div class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
                         <p class="text-sm text-blue-700">
-                          💡 <strong>Suggestion:</strong> {error.suggestion}
+                          💡 <strong>Suggestion:</strong>
+                          {error.suggestion}
                         </p>
                       </div>
                     {/if}
@@ -279,8 +286,9 @@
       </div>
       <div class="mt-4 p-4 bg-indigo-100 rounded">
         <p class="text-sm text-indigo-800">
-          <strong>💡 Tip:</strong> Use <code>Ctrl+Shift+P</code> and search for "Tasks: Run Task" to access Vite error logger commands.
-          The error logger automatically integrates with VS Code's Problems panel and provides intelligent error suggestions.
+          <strong>💡 Tip:</strong> Use <code>Ctrl+Shift+P</code> and search for "Tasks: Run Task" to access Vite error logger
+          commands. The error logger automatically integrates with VS Code's Problems panel and provides intelligent error
+          suggestions.
         </p>
       </div>
     </div>
@@ -314,9 +322,15 @@
     </div>
   </div>
 </main>
+
 <style>
   :global(body) {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family:
+      'Inter',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      sans-serif;
   }
   code {
     background-color: rgba(0, 0, 0, 0.1);

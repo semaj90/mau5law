@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit'
 import { cacheManager } from '$lib/services/cache-layer-manager'
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 // Simple console logger fallback
 const logger = {
   info: (message: string, data?: any) => console.log(`[INFO] ${message}`, data || ''),
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         const startTime = Date.now()
         // Data loader function for cache warming
-        const dataLoader = async (key: string): Promise<any> => {
+        const dataLoader = async (_key: string): Promise<any> => {
           try {
             const response = await fetch(`${dataUrl}?key=${encodeURIComponent(key)}`)
             if (!response.ok) return null

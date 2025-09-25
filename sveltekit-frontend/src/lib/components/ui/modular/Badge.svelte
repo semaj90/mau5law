@@ -58,11 +58,12 @@
   // Computed class names
   let badgeClass = $derived(cn(badgeVariants({ variant, size }), className));
   // Handle remove click
-  function handleRemove(event: MouseEvent) {
+  function handleRemove(_event: MouseEvent) {
     event.stopPropagation();
     onremove?.();
   }
 </script>
+
 <span class={badgeClass} {...restProps}>
   <!-- Icon -->
   {#if icon}
@@ -84,7 +85,9 @@
     </button>
   {/if}
 </span>
-<style>/* YoRHa-specific animations */ .yorha-badge {
+
+<style>/* YoRHa-specific animations */ {}
+  .yorha-badge {
     position: relative;
     overflow: hidden;
   }
@@ -95,24 +98,27 @@
     left: -100%;
     width: 100%;
     height: 100%;
-background: linear-gradient( 90deg, transparent, rgba(212, 175, 55, 0.2), transparent );
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
     transition: left 0.5;
   }
   .yorha-badge:hover::before {
     left: 100%;
   }
-/* Pulse animation for critical badges */ .badge-critical {
+/* Pulse animation for critical badges */ {}
+  .badge-critical {
     animation: badge-pulse 2s infinite;
   }
   @keyframes badge-pulse {
-    0%, 100% {
+0%, {}
+    100% {
       opacity: 1;
     }
     50% {
       opacity: 0.7;
     }
   }
-/* Priority indicators */ .badge-high-priority {
+/* Priority indicators */ {}
+  .badge-high-priority {
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
   }
   .badge-medium-priority {

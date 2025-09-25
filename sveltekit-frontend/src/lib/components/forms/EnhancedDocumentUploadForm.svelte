@@ -96,8 +96,8 @@
   // ============================================================================
   // FILE HANDLING
   // ============================================================================
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     const file = target.files?.[0];
     if (file) {
       selectedFile = fil;
@@ -108,7 +108,7 @@
       }
     }
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dragActive = false;
     const file = event.dataTransfer?.files[0];
@@ -120,7 +120,7 @@
       }
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dragActive = true;
   }
@@ -147,7 +147,7 @@
       title: "",
       description: "",
       documentType: "other",
-      jurisdiction: undefined
+      jurisdiction: undefined;
       tags: [],
       file: null
       aiProcessing: {
@@ -156,7 +156,7 @@
         riskAssessment: true
         generateRecommendations: false
       },
-    };
+    }
     persistence.clear();
   }
   function handleSaveDraft() {
@@ -189,7 +189,7 @@
         extractEntities: true
         riskAssessment: true
         generateRecommendations: false
-      };
+      }
     }
     if (!$formData.tags) {
       $formData.tags = [];
@@ -325,7 +325,7 @@
           </div>
         {/if}
       </div>
-      <input
+      <input;
         bind:this={fileInput}
         type="file"
         accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp" onchange={handleFileSelect}
@@ -375,7 +375,7 @@
               <label for="documentType" class="block text-sm font-medium mb-2">
                 Document Type *
               </label>
-              <Select
+              <Select;
                 bind:value={$formData.documentType}
                 disabled={$isSubmitting}
               >
@@ -456,7 +456,7 @@
                 Identify names, dates, amounts, and legal entities
               </span>
             </Checkbox>
-            <Checkbox
+            <Checkbox;
               bind:checked={$formData.aiProcessing.riskAssessment}
               disabled={$isSubmitting}
             >

@@ -3047,7 +3047,7 @@ export const routeCategories = {
     description: 'System administration and configuration',
     color: '#fb7185'
   }
-};
+}
 // Statistics for dashboard
 export const routeStats = {
   total: allRoutes.length,
@@ -3059,12 +3059,12 @@ export const routeStats = {
     acc[category] = getRoutesByCategory(category as RouteDefinition['category']).length;
     return acc;
   }, {} as Record<string, number>)
-};
+}
 // Additional interfaces and types for compatibility
 export interface DynamicRouteConfig {
   path: string;
   component?: any;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface GeneratedRoute {
   path: string;
@@ -3093,5 +3093,5 @@ export function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute
     path: config.path,
     handler: config.component,
     config
-  };
+  }
 }

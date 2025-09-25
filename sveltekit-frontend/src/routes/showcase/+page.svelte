@@ -93,23 +93,19 @@
     }
   }
 </script>
+
 <div class="p-8 font-sans bg-nier-surface text-nier-white min-h-screen">
-  <h1 class="text-3xl font-bold mb-4 border-b-2 border-crimson nier-text-glow">
-    Enhanced Legal AI Showcase
-  </h1>
+  <h1 class="text-3xl font-bold mb-4 border-b-2 border-crimson nier-text-glow">Enhanced Legal AI Showcase</h1>
   <!-- Vector Search Demo -->
   <section class="mb-12">
     <h2 class="text-2xl font-semibold mb-4 text-gold">Vector Search Integration</h2>
     <div class="nier-nier-bits-card nier-nier-bits-card-interactive p-6">
       <div class="flex gap-4 mb-4">
-        <Input
-          bind:value={searchQuery}
-          placeholder="Search cases, evidence, legal documents..."
-          class="flex-1" />
-  <Button class="bits-btn" onclick={performVectorSearch} loading={isSearching} disabled={!searchQuery.trim()}>
-<Search class="w-5 h-5 mr-2" />
+        <Input bind:value={searchQuery} placeholder="Search cases, evidence, legal documents..." class="flex-1" />
+        <Button class="bits-btn" onclick={performVectorSearch} loading={isSearching} disabled={!searchQuery.trim()}>
+          <Search class="w-5 h-5 mr-2" />
           Search
-</Button>
+        </Button>
       </div>
       {#if vectorResults.length > 0}
         <div class="mt-4">
@@ -120,14 +116,24 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <h5 class="font-semibold text-nier-white">
-                      {(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.title || 'Untitled'}
+                      {(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.title ||
+                        'Untitled'}
                     </h5>
-                    <p class="text-sm text-nier-text-muted">{(result as { metadata?: unknown; content?: unknown; score?: unknown }).content?.slice(0, 100)}...</p>
+                    <p class="text-sm text-nier-text-muted">
+                      {(result as { metadata?: unknown; content?: unknown; score?: unknown }).content?.slice(0, 100)}...
+                    </p>
                     <span class="text-xs text-nier-accent"
-                      >Score: {((result as { metadata?: unknown; content?: unknown; score?: unknown }).score * 100).toFixed(1)}%</span>
+                      >Score: {(
+                        (result as { metadata?: unknown; content?: unknown; score?: unknown }).score * 100
+                      ).toFixed(1)}%</span
+                    >
                   </div>
-                  <span class="badge status-{(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.type || 'default'}"
-                    >{(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.type || 'document'}</span>
+                  <span
+                    class="badge status-{(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata
+                      ?.type || 'default'}"
+                    >{(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.type ||
+                      'document'}</span
+                  >
                 </div>
               </div>
             {/each}
@@ -145,18 +151,10 @@
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Button Variants</h3>
           <div class="space-y-3">
-            <Button class="bits-btn" variant="default">
-Primary Action
-</Button>
-            <Button class="bits-btn" variant="secondary">
-Secondary Action
-</Button>
-            <Button class="bits-btn" variant="ghost">
-Ghost Button
-</Button>
-            <Button class="bits-btn" variant="error">
-Delete Action
-</Button>
+            <Button class="bits-btn" variant="default">Primary Action</Button>
+            <Button class="bits-btn" variant="secondary">Secondary Action</Button>
+            <Button class="bits-btn" variant="ghost">Ghost Button</Button>
+            <Button class="bits-btn" variant="error">Delete Action</Button>
           </div>
         </div>
       </div>
@@ -164,22 +162,16 @@ Delete Action
       <div class="nes-container">
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Modal Component</h3>
-          <Button class="bits-btn" onclick={() =>
-(modalOpen = true)}>Open Modal
-</Button>
+          <Button class="bits-btn" onclick={() => (modalOpen = true)}>Open Modal</Button>
           <Modal bind:open={modalOpen} title="System Alert">
             <div class="mt-4">
               <p class="text-nier-light-gray mb-4">
-                This modal uses the enhanced Modal component with Svelte 5 runes. The modal
-                integrates with bits-ui and follows Svelte 5 best practices.
+                This modal uses the enhanced Modal component with Svelte 5 runes. The modal integrates with bits-ui and
+                follows Svelte 5 best practices.
               </p>
               <div class="flex gap-2 justify-end">
-                <Button class="bits-btn" variant="ghost" onclick={() =>
-(modalOpen = false)}>Cancel
-</Button>
-                <Button class="bits-btn" onclick={() =>
-(modalOpen = false)}>Acknowledge
-</Button>
+                <Button class="bits-btn" variant="ghost" onclick={() => (modalOpen = false)}>Cancel</Button>
+                <Button class="bits-btn" onclick={() => (modalOpen = false)}>Acknowledge</Button>
               </div>
             </div>
           </Modal>
@@ -192,10 +184,7 @@ Delete Action
           <div class="space-y-3">
             <Input label="Case Title" placeholder="Enter case title..." />
             <Input label="Evidence ID" type="search" placeholder="Search evidence..." />
-            <Input
-              label="Error Example"
-              error="This field is required"
-              placeholder="Input with error..." />
+            <Input label="Error Example" error="This field is required" placeholder="Input with error..." />
           </div>
         </div>
       </div>
@@ -239,10 +228,10 @@ Delete Action
   <div variant="interactive" class="nes-container">
     <div class="p-4 text-center">
       <div
-        class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center {status ===
-        'active'
+        class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center {status === 'active'
           ? 'bg-green-500/20'
-          : 'bg-red-500/20'}">
+          : 'bg-red-500/20'}"
+      >
         {#if status === 'active'}
           <ShieldCheck class="w-6 h-6 text-green-400" />
         {:else}
@@ -254,7 +243,8 @@ Delete Action
       <span
         class="inline-block mt-2 px-2 py-1 text-xs rounded {status === 'active'
           ? 'bg-green-500/20 text-green-400'
-          : 'bg-red-500/20 text-red-400'}">
+          : 'bg-red-500/20 text-red-400'}"
+      >
         {status.toUpperCase()}
       </span>
     </div>
@@ -270,9 +260,7 @@ Delete Action
       <nav class="space-y-2">
         {#each [{ icon: LayoutDashboard, label: 'Dashboard' }, { icon: FileText, label: 'Cases' }, { icon: Scale, label: 'Evidence' }, { icon: Users, label: 'Users' }] as item}
           {@const IconComponent = (item as { icon?: unknown; label?: unknown }).icon}
-          <a
-            href="/showcase"
-            class="flex items-center gap-3 p-2 rounded hover:bg-nier-surface-light text-nier-text">
+          <a href="/showcase" class="flex items-center gap-3 p-2 rounded hover:bg-nier-surface-light text-nier-text">
             <IconComponent class="w-5 h-5" />
             {(item as { icon?: unknown; label?: unknown }).label}
           </a>
@@ -318,7 +306,9 @@ Delete Action
     </main>
   </div>
 {/snippet}
-<style>/* Enhanced Nier theme styles */ :global(:root) {
+
+<style>/* Enhanced Nier theme styles */ {}
+  :global(:root) {
     --nier-bg: #0a0a0a;
     --nier-surface: #1a1a1a;
     --nier-surface-light: #2a2a2a;

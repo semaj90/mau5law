@@ -11,7 +11,7 @@ export interface RagContext {
 type RagEvent =
   | { type: 'EXECUTE'; query: string }
   | { type: 'RESET' }
-  | { type: 'RETRY' };
+  | { type: 'RETRY' }
 export const enhancedRagMachine = createMachine({
   id: 'enhancedRag',
   types: { [key: string]: any } as {
@@ -59,7 +59,7 @@ export const enhancedRagMachine = createMachine({
           actions: assign(({ event }) => {
             const err = (event as any)?.error;
             const msg = err?.message || err?.data?.message || 'RAG failed';
-            return { error: msg, loading: false };
+            return { error: msg, loading: false }
           })
         }
       }
@@ -81,6 +81,6 @@ export const enhancedRagMachine = createMachine({
 export const enhancedRagStore = writable({
   state: 'idle',
   results: [],
-  loading: false
+  loading: false;
   error: null
 });

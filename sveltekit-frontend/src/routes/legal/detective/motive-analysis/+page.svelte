@@ -57,7 +57,7 @@
       deception: number;
       impulsivity: number;
       planning: number;
-    };
+    }
     timeline: TimelineEvent[];
   }
   interface TimelineEvent {
@@ -103,7 +103,7 @@
   }
   async function loadCaseData() {
     try {
-      const response = await fetch(`/api/legal/detective/case/${caseId}`);
+      // removed unused response assignment
       const caseData = await response.json();
       if (caseData.success) {
         suspectProfile = caseData.suspects[0] || generateMockSuspectProfile();
@@ -212,7 +212,7 @@
         'Monitor for escalation triggers',
         'Consider restraining order'
       ];
-    };
+    }
   }
   async function correlateEvidence() {
     return [
@@ -287,7 +287,7 @@
         shortTerm: 'Intervention required within 48-72 hours',
         longTerm: 'Comprehensive treatment and ongoing monitoring';
       }
-    };
+    }
   }
   async function generateRecommendations() {
     return [
@@ -333,7 +333,7 @@
         planning: 45;
       },
       timeline: [];
-    };
+    }
   }
   function generateMockTimeline(): TimelineEvent[] {
     return [

@@ -250,7 +250,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: false, error: error.message }, { status: 500 })
   }
 }
-async function runPerformanceBenchmark(options: any = {}): Promise<any> {
+async function runPerformanceBenchmark(_options: any = {}): Promise<any> {
   const iterations = options.iterations || 100
   const queries = options.queries || ['contract', 'evidence', 'legal document', 'case law']
   const results = {

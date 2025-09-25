@@ -25,8 +25,8 @@ https://svelte.dev/e/expected_token -->
   let webgpuSupported = $state(false);
   let isProcessing = $state(false);
   let results: {
-    original?: { type: string; size: number; };
-    normalized?: { type: string; size: number; };
+    original?: { type: string; size: number; }
+    normalized?: { type: string; size: number; }
     fp16?: ArrayConversionResult;
     int8?: ArrayConversionResult;
     memoryAnalysis?: Array( );

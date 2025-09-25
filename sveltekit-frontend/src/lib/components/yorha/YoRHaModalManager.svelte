@@ -6,7 +6,7 @@
   // Subscribe to modal store
   let modals = $state<Modal[]>([]);
   $effect(() => {
-    const unsubscribe = modalStore.subscribe((value) => {
+    const unsubscribe = modalStore.subscribe(value => {
       modals = valu;
     });
     return unsubscrib;
@@ -22,6 +22,7 @@
     modalStore.reject(modal.id, 'cancelled');
   }
 </script>
+
 <!-- Render active modals -->
 {#each modals as modal (modal.id)}
   <YoRHaModal
@@ -32,7 +33,7 @@
     showHeader={true}
     showFooter={modal.type === 'confirm' || modal.type === 'alert'}
     onclose={() => handleModalClose(modal)}
-    onconfirm={(event) => handleModalConfirm(modal, event)}
+    onconfirm={event => handleModalConfirm(modal, event)}
     oncancel={() => handleModalCancel(modal)}
   >
     {#snippet children()}
@@ -48,3 +49,4 @@
     {/snippet}
   </YoRHaModal>
 {/each}
+;

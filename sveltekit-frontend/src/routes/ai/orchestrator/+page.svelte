@@ -71,8 +71,8 @@ Showcases the service worker-based AI orchestration system
   ];
   $effect(() => {
         capabilities: ['legal-analysis', 'case-research', 'document-review'],
-        endpoint: 'http://localhost:11434'
-      };
+        endpoint: 'http://localhost:11434';
+      }
     }
   });
   async function runDemoScenario(scenario: unknown) {
@@ -103,14 +103,14 @@ Showcases the service worker-based AI orchestration system
           // Update result
           const index = demoResults.findIndex(r => r.task.taskId === task.taskId);
           if (index >= 0) {
-            demoResults[index] = { task, response: result };
+            demoResults[index] = { task, response: result }
           }
           return result;
         } catch (error) {
           console.error('Task failed:', error);
           const index = demoResults.findIndex(r => r.task.taskId === task.taskId);
           if (index >= 0) {
-            demoResults[index] = { task, error: (error as Error).message };
+            demoResults[index] = { task, error: (error as Error).message }
           }
         }
       });
@@ -452,4 +452,4 @@ Clear
 </div>
 <style>
   /* @unocss-include */
-</style>
+</style>;

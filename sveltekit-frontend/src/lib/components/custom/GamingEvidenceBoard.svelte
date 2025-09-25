@@ -121,7 +121,7 @@
       connections: [],
       description: 'Newly added evidence item',
       icon: '📋';
-    };
+    }
     evidenceItems.push(newEvidence);
     drawConnections();
   }
@@ -129,6 +129,7 @@
     drawConnections();
   });
 </script>
+
 <div class="gaming-evidence-board">
   <!-- Gaming-style header -->
   <div class="board-header">
@@ -142,11 +143,7 @@
         <span class="case-name">CORPORATE ESPIONAGE INV</span>
         <div class="case-items">
           {#each caseInfo.items as item, index}
-            <div
-              class="case-item"
-              class:active={index === 0}
-              transition:fade={{ delay: index * 100 }}
-            >
+            <div class="case-item" class:active={index === 0} transition:fade={{ delay: index * 100 }}>
               {item}
               <span class="status-indicator {index < 2 ? 'active' : 'pending'}">
                 {index < 2 ? 'active' : 'pending'}
@@ -164,16 +161,11 @@
   <!-- Gaming-style toolbar -->
   <div class="toolbar">
     <div class="zoom-controls">
-      <Button
-        class="zoom-btn"
-        onclick={() => zoom = Math.max(50, zoom - 10)}
-      >
+      <Button class="zoom-btn" onclick={() => (zoom = Math.max(50, zoom - 10))}>
         🔍 {zoom}%
       </Button>
       <Button class="action-btn">🔗 CONNECT</Button>
-      <Button class="action-btn" onclick={addEvidence}>
-        ➕ ADD EVIDENCE
-      </Button>
+      <Button class="action-btn" onclick={addEvidence}>➕ ADD EVIDENCE</Button>
       <Button class="action-btn">📚 LIBRARY (0)</Button>
     </div>
     <div class="connection-status">
@@ -187,22 +179,17 @@
     <!-- Background grid -->
     <div class="grid-background"></div>
     <!-- Connection canvas -->
-    <canvas
-      bind:this={canvas}
-      width="1200"
-      height="600"
-      class="connection-canvas"
-    ></canvas>
+    <canvas bind:this={canvas} width="1200" height="600" class="connection-canvas"></canvas>
     <!-- Evidence items -->
     {#each evidenceItems as item (item.id)}
       {@const builder = evidenceBuilders[item.id]}
       <div
         class="evidence-item {item.type}"
         class:selected={selectedEvidence === item.id}
-        style="
+        style=";
           left: {item.x}px;
           top: {item.y}px;
-          border-color: {builder.styling.colors.primary};
+          border-color: {builder.styling.colors.primary}
         "
         onclick={() => selectEvidence(item.id)}
         transition:scale={builder.animations.enter}
@@ -236,6 +223,7 @@
     {/each}
   </div>
 </div>
+
 <style>
   .gaming-evidence-board {
     width: 100%;
@@ -361,7 +349,8 @@
     display: flex;
     gap: 0.5rem;
   }
-  .zoom-btn, .action-btn {
+  .zoom-btn,
+  .action-btn {
     background: #333333;
     border: 2px solid #555555;
     color: #ffffff;

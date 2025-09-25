@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
       confidence?: number;
       type?: string;
       streaming?: boolean;
-    };
+    }
   }
   // State
   let messages = writable<ChatMessage[]>([]);
@@ -68,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
         content: buildSystemPrompt(),
         timestamp: new Date(),
         metadata: { type: 'system' }
-      };
+      }
       messages.update(msgs => [systemMessage, ...msgs]);
       // Add welcome message
       const welcomeMessage: ChatMessage = {
@@ -77,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
         content: buildWelcomeMessage(),
         timestamp: new Date(),
         metadata: { type: 'welcome' }
-      };
+      }
       messages.update(msgs => [...msgs, welcomeMessage]);
       scrollToBottom();
     })();
@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   // Check Ollama connection
   async function checkOllamaConnection(): Promise<boolean> {
     try {
-      const response = await fetch('/api/ollama/health');
+      // removed unused response assignment
       ollamaConnected = response.ok;
       if (!ollamaConnected) {
         console.warn('Ollama not connected, will use WebAssembly fallback');
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
       role: 'user',
       content: currentMessage.trim(),
       timestamp: new Date();
-    };
+    }
     messages.update(msgs => [...msgs, userMessage]);
     const messageText = currentMessage.trim();
     currentMessage = '';
@@ -206,7 +206,7 @@ https://svelte.dev/e/js_parse_error -->
       content: '',
       timestamp: new Date(),
       metadata: { streaming: true, type: 'response' }
-    };
+    }
     messages.update(msgs => [...msgs, assistantMessage]);
     try {
       const endpoint = ollamaConnected ? '/api/ollama/chat' : '/api/wasm/chat';
@@ -237,7 +237,7 @@ https://svelte.dev/e/js_parse_error -->
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n');
+          // removed unused lines assignment
           for (const line of lines) {
             if (line.startsWith('data: ')) {
               const data = line.slice(6);
@@ -257,7 +257,7 @@ https://svelte.dev/e/js_parse_error -->
                         ...lastMsg.metadata,
                         sources,
                         confidence: parsed.metadata?.confidenc;
-                      };
+                      }
                     }
                     return updated;
                   });
@@ -279,7 +279,7 @@ https://svelte.dev/e/js_parse_error -->
               ...lastMsg.metadata,
               streaming: false
               source;
-            };
+            }
           }
           return updated;
         });
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
         content: `I apologize, but I encountered an error processing your request: ${error.message || 'Unknown error'}`,
         timestamp: new Date(),
         metadata: { type: 'error' }
-      };
+      }
       messages.update(msgs => {
         // Replace the streaming message with error
         const updated = [...msgs];
@@ -336,14 +336,14 @@ https://svelte.dev/e/js_parse_error -->
     return context;
   }
   // Handle key press in input
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
   // Auto-resize textarea
-  function autoResize(event: Event) {
+  function autoResize(_event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
     textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
@@ -436,7 +436,7 @@ https://svelte.dev/e/js_parse_error -->
   <div ;
     bind:this={chatContainer}
     class="flex-1 overflow-y-auto p-4 space-y-4"
-    style="height: {height};"
+    style="height: {height}"
   >
     {#each $messages as message (message.id)}
       {#if message.role !== 'system'}
@@ -503,8 +503,8 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex-shrink-0 border-t border-gray-200 p-4">
       <div class="flex space-x-3">
         <div class="flex-1">
-          <textarea
-            bind:this={messageInput};
+          <textarea;
+            bind:this={messageInput}
             bind:value={currentMessage}
             placeholder="Ask a legal question, request case analysis, or seek investigative insights..."
             disabled={isLoading}

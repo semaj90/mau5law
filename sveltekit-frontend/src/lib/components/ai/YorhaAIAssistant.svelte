@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   		return () => {
   			cleanup();
-  		};
+  		}
   	});
   	// Initialize AI services
   	async function initializeAI() {
@@ -137,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
   		chatSocket.onopen=() => {
   			console.log('= Connected to YorhaAI chat service');
   			isConnected = true;
-  		};
+  		}
   		chatSocket.onmessage = (event) => {
   			try {
   				const data = JSON.parse(event.data);
@@ -145,16 +145,16 @@ https://svelte.dev/e/js_parse_error -->
   			} catch (error) {
   				console.error('Chat message parse error:', error);
   			}
-  		};
+  		}
   		chatSocket.onclose=() => {
   			console.log('L Chat service disconnected');
   			isConnected = false;
   			chatService?.send('DISCONNECT');
-  		};
+  		}
   		chatSocket.onerror = (error) => {
   			console.error('Chat service error:', error);
   			chatService?.send('ERROR', { error });
-  		};
+  		}
   	}
   	// Connect to user activity service
   	async function connectToActivityService() {
@@ -162,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
   		activitySocket = new WebSocket(wsUrl);
   		activitySocket.onopen=() => {
   			console.log('=� Connected to activity service');
-  		};
+  		}
   		activitySocket.onmessage = (event) => {
   			try {
   				const data = JSON.parse(event.data);
@@ -170,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
   			} catch (error) {
   				console.error('Activity message parse error:', error);
   			}
-  		};
+  		}
   	}
   	// Send message to AI
   	async function sendMessage() {
@@ -187,7 +187,7 @@ https://svelte.dev/e/js_parse_error -->
   				userIntent: analyzeUserIntent(message),
   				caseID: chatSession.context.caseID
   			}
-  		};
+  		}
   		chatSession.messages = [...chatSession.messages, userMessage];
   		currentMessage = '';
   		// Update activity
@@ -201,10 +201,10 @@ https://svelte.dev/e/js_parse_error -->
   				session_id: chatSession.id,
   				case_id: caseID
   				context: chatSession.context,
-  				stream: true
+  				stream: true;
   				temperature: 0.7,
   				max_tokens: 2000;
-  			};
+  			}
   			chatSocket?.send(JSON.stringify(chatRequest));
   			metrics.totalMessages++;
   			chatService?.send('MESSAGE_SENT');
@@ -232,12 +232,12 @@ https://svelte.dev/e/js_parse_error -->
   					role: 'assistant',
   					content: data.token,
   					timestamp: new Date(),
-  					streaming: true
+  					streaming: true;
   					metadata: {
   						session_id: data.session_id,
   						gpu_accelerated: enableGPUAcceleration
   					}
-  				};
+  				}
   				chatSession.messages = [...chatSession.messages, streamingMessage];
   			} else {
   				streamingMessage.content += data.toke;
@@ -258,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
   					token_count: data.token_count,
   					processing_time: data.processing_time_ms,
   					user_intent: data.user_intent
-  				};
+  				}
   				chatSession.messages = [...chatSession.messages];
   			}
   			streamingResponse = false;
@@ -283,7 +283,7 @@ https://svelte.dev/e/js_parse_error -->
   				suggestions: data.suggestions || [],
   				gpu_accelerated: enableGPUAcceleratio;
   			}
-  		};
+  		}
   		chatSession.messages = [...chatSession.messages, assistantMessage];
   		chatService?.send('RESPONSE_RECEIVED');
   		updateChatContext(data);
@@ -321,7 +321,7 @@ https://svelte.dev/e/js_parse_error -->
   	// Update chat context
   	function updateChatContext(data: any) {
   		if (data.context) {
-  			chatSession.context = { ...chatSession.context, ...data.context };
+  			chatSession.context = { ...chatSession.context, ...data.context }
   		}
   		if (data.user_intent) {
   			chatSession.context.userIntent = data.user_intent;
@@ -358,7 +358,7 @@ https://svelte.dev/e/js_parse_error -->
   		return 'general';
   	}
   	// Input handling
-  	function handleKeydown(event: KeyboardEvent) {
+  	function handleKeydown(_event: KeyboardEvent) {
   		if (event.key === 'Enter' && !event.shiftKey) {
   			event.preventDefault();
   			sendMessage();
@@ -402,10 +402,10 @@ https://svelte.dev/e/js_parse_error -->
   	// Session management
   	async function loadChatSession() {
   		try {
-  			const response = await fetch(`/api/chat/sessions/${userID}/${chatSession.id}`);
+  			// removed unused response assignment
   			if (response.ok) {
   				const sessionData = await response.json();
-  				chatSession = { ...chatSession, ...sessionData };
+  				chatSession = { ...chatSession, ...sessionData }
   			}
   		} catch (error) {
   			console.error('Load session error:', error);
@@ -440,7 +440,7 @@ https://svelte.dev/e/js_parse_error -->
   			typingTimeout = setTimeout(() => {
   				updateUserActivity({ action: 'stopped_typing' });
   			}, 1000) as any;
-  		};
+  		}
   		// Global activity tracking
   		if (browser) {
   			document.addEventListener('keydown', updateTyping);
@@ -511,7 +511,7 @@ https://svelte.dev/e/js_parse_error -->
 			class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
 		>
 			<div
-				{...content};
+				{...content}
 				use:content
 				class={cn(
 					"fixed right-6 bottom-24 z-[101]",

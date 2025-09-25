@@ -92,8 +92,10 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <div
-  class="bg-white rounded-lg shadow-sm border p-4 transition-all hover: shadow-md";
+  class="bg-white rounded-lg shadow-sm border p-4 transition-all hover: shadow-md"
+  ;
   class:opacity-60={disabled}
   class:pointer-events-none={disabled}
 >
@@ -107,7 +109,9 @@ https://svelte.dev/e/js_parse_error -->
       </h4>
       <div class="mt-1">
         <span
-          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getTypeColor(evidence.evidenceType || evidence.type)}"
+          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getTypeColor(
+            evidence.evidenceType || evidence.type,
+          )}"
         >
           {evidence.evidenceType || evidence.type}
         </span>
@@ -159,13 +163,14 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    -webkit-box-orient: vertical
+    -webkit-box-orient: vertical;
     overflow: hidden;
   }
 </style>

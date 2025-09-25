@@ -250,7 +250,7 @@ export const POST: RequestHandler = async ({ request }) => {
 // DELETE endpoint - Clean up shader caches
 export const DELETE: RequestHandler = async ({ url }) => {
   // Helper to safely delete a key regardless of underlying cache implementation
-  const safeDelete = async (key: string) => {
+  const safeDelete = async (_key: string) => {
     const c: any = cache as any
     if (c && typeof c.delete === 'function') return c.delete(key)
     if (c && typeof c.del === 'function') return c.del(key)

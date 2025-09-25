@@ -35,9 +35,9 @@ declare global {
     env: ProcessEnv;
     browser?: boolean;
     version?: string;
-    versions?: { node: string; [key: string]: string };
+    versions?: { node: string; [key: string]: string }
     cwd(): string;
   }
   declare const process: Process;
 }
-export {};
+export {}

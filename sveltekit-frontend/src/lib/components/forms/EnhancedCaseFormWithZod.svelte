@@ -40,10 +40,10 @@ https://svelte.dev/e/js_parse_error -->
     editMode?: boolean;
     enableAutoSave?: boolean;
     enableRealTimeValidation?: boolean;
-    onsubmit?: (event: { data: CaseForm }) => void;
-    onsuccess?: (event: { caseItem: unknown }) => void;
-    onerror?: (event: { message: string }) => void;
-    ondraft?: (event: { data: CaseForm }) => void;
+    onsubmit?: (_event: { data: CaseForm }) => void;
+    onsuccess?: (_event: { caseItem: unknown }) => void;
+    onerror?: (_event: { message: string }) => void;
+    ondraft?: (_event: { data: CaseForm }) => void;
   }
   // Svelte 5 props with defaults
   let {
@@ -107,14 +107,14 @@ https://svelte.dev/e/js_parse_error -->
   let lastSaved = $state<Date | null>(null);
   let isAutoSaving = $state(false);
   // Enhanced file upload handler
-  function handleFileUpload(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileUpload(_event: Event) {
+    // removed unused target assignment
     if (target.files) {
       uploadedFiles = [...uploadedFiles, ...Array.from(target.files)];)
     }
   }
   // Remove uploaded file
-  function removeFile(index: number) {
+  function removeFile(_index: number) {
     uploadedFiles = uploadedFiles.filter((_, i) => i !== index);
   }
   // Format file size
@@ -155,334 +155,302 @@ https://svelte.dev/e/js_parse_error -->
         }
         // Update the form
         await update();
-      };
+      }
     });
   }
 </script>
+
 {#if !componentError}
-<Card class="w-full max-w-4xl mx-auto">
-  <CardHeader>
-    <div class="flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <Scale class="h-6 w-6 text-primary" />
-        <div>
-          <CardTitle class="text-xl">
-            {editMode ? 'Edit Case' : 'Create New Case'}
-          </CardTitle>
-          <CardDescription>
-            {editMode ? 'Update case information and evidence' : 'Enter case details and upload evidence'}
-          </CardDescription>
-        </div>
-      </div>
-      <!-- Progress indicator -->
-      {#if $progress > 0}
-        <div class="flex items-center space-x-2">
-          <div class="w-20 bg-gray-200 rounded-full h-2">
-            <div
-              class="bg-primary h-2 rounded-full transition-all duration-300"
-              style="width: {$progress}%"
-            ></div>
+  <Card class="w-full max-w-4xl mx-auto">
+    <CardHeader>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <Scale class="h-6 w-6 text-primary" />
+          <div>
+            <CardTitle class="text-xl">
+              {editMode ? 'Edit Case' : 'Create New Case'}
+            </CardTitle>
+            <CardDescription>
+              {editMode ? 'Update case information and evidence' : 'Enter case details and upload evidence'}
+            </CardDescription>
           </div>
-          <span class="text-sm nes-text is-disabled">{Math.round($progress)}%</span>
+        </div>
+        <!-- Progress indicator -->
+        {#if $progress > 0}
+          <div class="flex items-center space-x-2">
+            <div class="w-20 bg-gray-200 rounded-full h-2">
+              <div class="bg-primary h-2 rounded-full transition-all duration-300" style="width: {$progress}%"></div>
+            </div>
+            <span class="text-sm nes-text is-disabled">{Math.round($progress)}%</span>
+          </div>
+        {/if}
+      </div>
+    </CardHeader>
+    <CardContent>
+      <!-- Auto-save status -->
+      {#if enableAutoSave && (lastSaved || isAutoSaving)}
+        <div class="mb-4 p-3 bg-muted rounded-md flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            {#if isAutoSaving}
+              <Loader2 class="h-4 w-4 animate-spin" />
+              <span class="text-sm">Auto-saving...</span>
+            {:else if lastSaved}
+              <Save class="h-4 w-4 text-green-600" />
+              <span class="text-sm">Last saved: {lastSaved.toLocaleTimeString()}</span>
+            {/if}
+          </div>
+          <!-- Real-time validation status -->
+          {#if enableRealTimeValidation}
+            <div class="flex items-center space-x-2">
+              {#if validationStatus === 'validating'}
+                <Loader2 class="h-4 w-4 animate-spin text-yellow-600" />
+                <span class="text-sm text-yellow-600">Validating...</span>
+              {:else if validationStatus === 'valid'}
+                <CheckCircle class="h-4 w-4 text-green-600" />
+                <span class="text-sm text-green-600">Valid</span>
+              {:else if validationStatus === 'invalid'}
+                <AlertCircle class="h-4 w-4 text-red-600" />
+                <span class="text-sm text-red-600">Issues found</span>
+              {/if}
+            </div>
+          {/if}
         </div>
       {/if}
-    </div>
-  </CardHeader>
-  <CardContent>
-    <!-- Auto-save status -->
-    {#if enableAutoSave && (lastSaved || isAutoSaving)}
-      <div class="mb-4 p-3 bg-muted rounded-md flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          {#if isAutoSaving}
-            <Loader2 class="h-4 w-4 animate-spin" />
-            <span class="text-sm">Auto-saving...</span>
-          {:else if lastSaved}
-            <Save class="h-4 w-4 text-green-600" />
-            <span class="text-sm">Last saved: {lastSaved.toLocaleTimeString()}</span>
-          {/if}
-        </div>
-        <!-- Real-time validation status -->
-        {#if enableRealTimeValidation}
-          <div class="flex items-center space-x-2">
-            {#if validationStatus === 'validating'}
-              <Loader2 class="h-4 w-4 animate-spin text-yellow-600" />
-              <span class="text-sm text-yellow-600">Validating...</span>
-            {:else if validationStatus === 'valid'}
-              <CheckCircle class="h-4 w-4 text-green-600" />
-              <span class="text-sm text-green-600">Valid</span>
-            {:else if validationStatus === 'invalid'}
-              <AlertCircle class="h-4 w-4 text-red-600" />
-              <span class="text-sm text-red-600">Issues found</span>
+      <form
+        method="POST"
+        action={submitAction}
+        use:createEnhancedSubmit
+        enctype="multipart/form-data"
+        class="space-y-6"
+      >
+        <!-- Basic Information -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Case Number -->
+          <div class="space-y-2">
+            <Label for="caseNumber" class="flex items-center space-x-2">
+              <FileText class="h-4 w-4" />
+              <span>Case Number *</span>
+            </Label>
+            <Input
+              id="caseNumber"
+              name="caseNumber"
+              placeholder="ABC-2024-123456"
+              ;
+              bind:value={$form.caseNumber}
+              aria-invalid={$errors.caseNumber ? 'true' : undefined}
+              class={$errors.caseNumber ? 'border-destructive' : ''}
+            />
+            {#if $errors.caseNumber}
+              <p class="text-sm text-destructive flex items-center space-x-1">
+                <AlertCircle class="h-3 w-3" />
+                <span>{$errors.caseNumber[0]}</span>
+              </p>
             {/if}
           </div>
-        {/if}
-      </div>
-    {/if}
-    <form
-      method="POST"
-      action={submitAction}
-      use:createEnhancedSubmit
-      enctype="multipart/form-data"
-      class="space-y-6"
-    >
-      <!-- Basic Information -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Case Number -->
-        <div class="space-y-2">
-          <Label for="caseNumber" class="flex items-center space-x-2">
-            <FileText class="h-4 w-4" />
-            <span>Case Number *</span>
-          </Label>
-          <Input
-            id="caseNumber"
-            name="caseNumber"
-            placeholder="ABC-2024-123456";
-            bind:value={$form.caseNumber}
-            aria-invalid={$errors.caseNumber ? 'true' : undefined}
-            class={$errors.caseNumber ? 'border-destructive' : ''}
-          />
-          {#if $errors.caseNumber}
-            <p class="text-sm text-destructive flex items-center space-x-1">
-              <AlertCircle class="h-3 w-3" />
-              <span>{$errors.caseNumber[0]}</span>
-            </p>
-          {/if}
-        </div>
-        <!-- Priority -->
-        <div class="space-y-2">
-          <Label for="priority" class="flex items-center space-x-2">
-            <AlertCircle class="h-4 w-4" />
-            <span>Priority Level *</span>
-          </Label>
-          <Select.Root bind:selected={$form.priority} name="priority">
-            <Select.Trigger class={$errors.priority ? 'border-destructive' : ''}>
-              <Select.Value placeholder="Select priority" />
-            </Select.Trigger>
-            <Select.Content>
-              {#each priorityLevels as priority}
-                <Select.Item value={priority.value} class={priority.color}>
-                  {priority.label}
-                </Select.Item>
-              {/each}
-            </Select.Content>
-          </Select.Root>
-          {#if $errors.priority}
-            <p class="text-sm text-destructive">{$errors.priority[0]}</p>
-          {/if}
-        </div>
-      </div>
-      <!-- Title -->
-      <div class="space-y-2">
-        <Label for="title">Case Title *</Label>
-        <Input
-          id="title"
-          name="title"
-          placeholder="Enter a descriptive case title"
-          bind:value={$form.title}
-          aria-invalid={$errors.title ? 'true' : undefined}
-          class={$errors.title ? 'border-destructive' : ''}
-        />
-        {#if $errors.title}
-          <p class="text-sm text-destructive">{$errors.title[0]}</p>
-        {/if}
-      </div>
-      <!-- Description -->
-      <div class="space-y-2">
-        <Label for="description">Description</Label>
-        <Textarea
-          id="description"
-          name="description"
-          placeholder="Provide detailed case description (optional)"
-          bind:value={$form.description}
-          rows="4"
-          aria-invalid={$errors.description ? 'true' : undefined}
-          class={$errors.description ? 'border-destructive' : ''}
-        />
-        {#if $errors.description}
-          <p class="text-sm text-destructive">{$errors.description[0]}</p>
-        {/if}
-        <p class="text-sm nes-text is-disabled">
-          {$form.description?.length || 0}/1000 characters
-        </p>
-      </div>
-      <!-- Advanced Options -->
-      <div class="border-t pt-6">
-        <Button
-          type="button"
-          variant="ghost"
-          onclick={() => showAdvanced = !showAdvanced}
-          class="mb-4"
-        >
-          {showAdvanced ? 'Hide' : 'Show'} Advanced Options
-        </Button>
-        {#if showAdvanced}
-          <div class="space-y-6 border-l-2 border-muted pl-6">
-            <!-- Status and Assignment -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Status -->
-              <div class="space-y-2">
-                <Label for="status">Case Status</Label>
-                <Select.Root bind:selected={$form.status} name="status">
-                  <Select.Trigger>
-                    <Select.Value placeholder="Select status" />
-                  </Select.Trigger>
-                  <Select.Content>
-                    {#each statusOptions as status}
-                      <Select.Item value={status.value}>
-                        <div>
-                          <div class="font-medium">{status.label}</div>
-                          <div class="text-sm nes-text is-disabled">{status.description}</div>
-                        </div>
-                      </Select.Item>
-                    {/each}
-                  </Select.Content>
-                </Select.Root>
-              </div>
-              <!-- Due Date -->
-              <div class="space-y-2">
-                <Label for="dueDate" class="flex items-center space-x-2">
-                  <Calendar class="h-4 w-4" />
-                  <span>Due Date</span>
-                </Label>
-                <Input
-                  id="dueDate"
-                  name="dueDate"
-                  type="datetime-local"
-                  bind:value={$form.dueDate}
-                  aria-invalid={$errors.dueDate ? 'true' : undefined}
-                  class={$errors.dueDate ? 'border-destructive' : ''}
-                />
-                {#if $errors.dueDate}
-                  <p class="text-sm text-destructive">{$errors.dueDate[0]}</p>
-                {/if}
-              </div>
-            </div>
-            <!-- Tags -->
-            <div class="space-y-2">
-              <Label for="tags">Tags (max 10)</Label>
-              <Input
-                id="tags"
-                name="tags"
-                placeholder="Enter tags separated by commas"
-                bind:value={$form.tags}
-              />
-              <p class="text-sm nes-text is-disabled">
-                Use tags to categorize and organize cases
-              </p>
-            </div>
-            <!-- Options -->
-            <div class="flex flex-col space-y-3">
-              <div class="flex items-center space-x-2">
-                <Checkbox
-                  id="isConfidential"
-                  name="isConfidential"
-                  bind:checked={$form.isConfidential}
-                />
-                <Label for="isConfidential">Mark as confidential</Label>
-              </div>
-              <div class="flex items-center space-x-2">
-                <Checkbox
-                  id="notifyAssignee"
-                  name="notifyAssignee";
-                  bind:checked={$form.notifyAssignee}
-                />
-                <Label for="notifyAssignee">Notify assignee when case is updated</Label>
-              </div>
-            </div>
-          </div>
-        {/if}
-      </div>
-      <!-- File Upload Section -->
-      <div class="border-t pt-6">
-        <div class="space-y-4">
-          <div class="flex items-center space-x-2">
-            <Upload class="h-5 w-5" />
-            <Label class="text-base font-medium">Case Documents</Label>
-          </div>
-          <!-- File Upload Input -->
-          <div class="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
-            <div class="text-center">
-              <Upload class="mx-auto h-12 w-12 nes-text is-disabled/50" />
-              <div class="mt-4">
-                <Label for="file-upload" class="cursor-pointer">
-                  <span class="text-sm font-medium text-primary">Upload files</span>
-                  <input
-                    id="file-upload"
-                    type="file"
-                    multiple
-                    accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-                    onchange={handleFileUpload}
-                    class="sr-only"
-                  />
-                </Label>
-                <p class="text-sm nes-text is-disabled">or drag and drop</p>
-              </div>
-              <p class="text-xs nes-text is-disabled mt-2">
-                PDF, DOC, DOCX, TXT, JPG, PNG up to 10MB each
-              </p>
-            </div>
-          </div>
-          <!-- Uploaded Files List -->
-          {#if uploadedFiles.length > 0}
-            <div class="space-y-2">
-              <h4 class="text-sm font-medium">Uploaded Files ({uploadedFiles.length})</h4>
-              <div class="space-y-2">
-                {#each uploadedFiles as file, index}
-                  <div class="flex items-center justify-between p-3 bg-muted rounded-md">
-                    <div class="flex items-center space-x-3">
-                      <FileText class="h-4 w-4 nes-text is-disabled" />
-                      <div>
-                        <p class="text-sm font-medium">{file.name}</p>
-                        <p class="text-xs nes-text is-disabled">{formatFileSize(file.size)}</p>
-                      </div>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onclick={() => removeFile(index)}
-                    >
-                      Remove
-                    </Button>
-                  </div>
+          <!-- Priority -->
+          <div class="space-y-2">
+            <Label for="priority" class="flex items-center space-x-2">
+              <AlertCircle class="h-4 w-4" />
+              <span>Priority Level *</span>
+            </Label>
+            <Select.Root bind:selected={$form.priority} name="priority">
+              <Select.Trigger class={$errors.priority ? 'border-destructive' : ''}>
+                <Select.Value placeholder="Select priority" />
+              </Select.Trigger>
+              <Select.Content>
+                {#each priorityLevels as priority}
+                  <Select.Item value={priority.value} class={priority.color}>
+                    {priority.label}
+                  </Select.Item>
                 {/each}
+              </Select.Content>
+            </Select.Root>
+            {#if $errors.priority}
+              <p class="text-sm text-destructive">{$errors.priority[0]}</p>
+            {/if}
+          </div>
+        </div>
+        <!-- Title -->
+        <div class="space-y-2">
+          <Label for="title">Case Title *</Label>
+          <Input
+            id="title"
+            name="title"
+            placeholder="Enter a descriptive case title"
+            bind:value={$form.title}
+            aria-invalid={$errors.title ? 'true' : undefined}
+            class={$errors.title ? 'border-destructive' : ''}
+          />
+          {#if $errors.title}
+            <p class="text-sm text-destructive">{$errors.title[0]}</p>
+          {/if}
+        </div>
+        <!-- Description -->
+        <div class="space-y-2">
+          <Label for="description">Description</Label>
+          <Textarea
+            id="description"
+            name="description"
+            placeholder="Provide detailed case description (optional)"
+            bind:value={$form.description}
+            rows="4"
+            aria-invalid={$errors.description ? 'true' : undefined}
+            class={$errors.description ? 'border-destructive' : ''}
+          />
+          {#if $errors.description}
+            <p class="text-sm text-destructive">{$errors.description[0]}</p>
+          {/if}
+          <p class="text-sm nes-text is-disabled">
+            {$form.description?.length || 0}/1000 characters
+          </p>
+        </div>
+        <!-- Advanced Options -->
+        <div class="border-t pt-6">
+          <Button type="button" variant="ghost" onclick={() => (showAdvanced = !showAdvanced)} class="mb-4">
+            {showAdvanced ? 'Hide' : 'Show'} Advanced Options
+          </Button>
+          {#if showAdvanced}
+            <div class="space-y-6 border-l-2 border-muted pl-6">
+              <!-- Status and Assignment -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Status -->
+                <div class="space-y-2">
+                  <Label for="status">Case Status</Label>
+                  <Select.Root bind:selected={$form.status} name="status">
+                    <Select.Trigger>
+                      <Select.Value placeholder="Select status" />
+                    </Select.Trigger>
+                    <Select.Content>
+                      {#each statusOptions as status}
+                        <Select.Item value={status.value}>
+                          <div>
+                            <div class="font-medium">{status.label}</div>
+                            <div class="text-sm nes-text is-disabled">{status.description}</div>
+                          </div>
+                        </Select.Item>
+                      {/each}
+                    </Select.Content>
+                  </Select.Root>
+                </div>
+                <!-- Due Date -->
+                <div class="space-y-2">
+                  <Label for="dueDate" class="flex items-center space-x-2">
+                    <Calendar class="h-4 w-4" />
+                    <span>Due Date</span>
+                  </Label>
+                  <Input
+                    id="dueDate"
+                    name="dueDate"
+                    type="datetime-local";
+                    bind:value={$form.dueDate}
+                    aria-invalid={$errors.dueDate ? 'true' : undefined}
+                    class={$errors.dueDate ? 'border-destructive' : ''}
+                  />
+                  {#if $errors.dueDate}
+                    <p class="text-sm text-destructive">{$errors.dueDate[0]}</p>
+                  {/if}
+                </div>
+              </div>
+              <!-- Tags -->
+              <div class="space-y-2">
+                <Label for="tags">Tags (max 10)</Label>
+                <Input id="tags" name="tags" placeholder="Enter tags separated by commas" bind:value={$form.tags} />
+                <p class="text-sm nes-text is-disabled">Use tags to categorize and organize cases</p>
+              </div>
+              <!-- Options -->
+              <div class="flex flex-col space-y-3">
+                <div class="flex items-center space-x-2">
+                  <Checkbox id="isConfidential" name="isConfidential" bind:checked={$form.isConfidential} />
+                  <Label for="isConfidential">Mark as confidential</Label>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <Checkbox id="notifyAssignee" name="notifyAssignee" ; bind:checked={$form.notifyAssignee} />
+                  <Label for="notifyAssignee">Notify assignee when case is updated</Label>
+                </div>
               </div>
             </div>
           {/if}
         </div>
-      </div>
-      <!-- Form Actions -->
-      <div class="flex items-center justify-between pt-6 border-t">
-        <div class="flex items-center space-x-4">
-          {#if enableAutoSave && !editMode}
-            <Button type="button" variant="ghost" onclick={() => {
-              if (ondraft) ondraft({ data: $form });
-            }}>
-              Save as Draft
-            </Button>
-          {/if}
-        </div>
-        <div class="flex items-center space-x-3">
-          <Button type="button" variant="ghost">
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            disabled={$submitting || !$isValid}
-            class="min-w-[120px]"
-          >
-            {#if $submitting}
-              <Loader2 class="mr-2 h-4 w-4 animate-spin" />
-              {editMode ? 'Updating...' : 'Creating...'}
-            {:else}
-              {editMode ? 'Update Case' : 'Create Case'}
+        <!-- File Upload Section -->
+        <div class="border-t pt-6">
+          <div class="space-y-4">
+            <div class="flex items-center space-x-2">
+              <Upload class="h-5 w-5" />
+              <Label class="text-base font-medium">Case Documents</Label>
+            </div>
+            <!-- File Upload Input -->
+            <div class="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
+              <div class="text-center">
+                <Upload class="mx-auto h-12 w-12 nes-text is-disabled/50" />
+                <div class="mt-4">
+                  <Label for="file-upload" class="cursor-pointer">
+                    <span class="text-sm font-medium text-primary">Upload files</span>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      multiple
+                      accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                      onchange={handleFileUpload}
+                      class="sr-only"
+                    />
+                  </Label>
+                  <p class="text-sm nes-text is-disabled">or drag and drop</p>
+                </div>
+                <p class="text-xs nes-text is-disabled mt-2">PDF, DOC, DOCX, TXT, JPG, PNG up to 10MB each</p>
+              </div>
+            </div>
+            <!-- Uploaded Files List -->
+            {#if uploadedFiles.length > 0}
+              <div class="space-y-2">
+                <h4 class="text-sm font-medium">Uploaded Files ({uploadedFiles.length})</h4>
+                <div class="space-y-2">
+                  {#each uploadedFiles as file, index}
+                    <div class="flex items-center justify-between p-3 bg-muted rounded-md">
+                      <div class="flex items-center space-x-3">
+                        <FileText class="h-4 w-4 nes-text is-disabled" />
+                        <div>
+                          <p class="text-sm font-medium">{file.name}</p>
+                          <p class="text-xs nes-text is-disabled">{formatFileSize(file.size)}</p>
+                        </div>
+                      </div>
+                      <Button type="button" variant="ghost" size="sm" onclick={() => removeFile(index)}>Remove</Button>
+                    </div>
+                  {/each}
+                </div>
+              </div>
             {/if}
-          </Button>
+          </div>
         </div>
-      </div>
-    </form>
-  </CardContent>
-</Card>
+        <!-- Form Actions -->
+        <div class="flex items-center justify-between pt-6 border-t">
+          <div class="flex items-center space-x-4">
+            {#if enableAutoSave && !editMode}
+              <Button
+                type="button"
+                variant="ghost"
+                onclick={() => {
+                  if (ondraft) ondraft({ data: $form });
+                }}
+              >
+                Save as Draft
+              </Button>
+            {/if}
+          </div>
+          <div class="flex items-center space-x-3">
+            <Button type="button" variant="ghost">Cancel</Button>
+            <Button type="submit" disabled={$submitting || !$isValid} class="min-w-[120px]">
+              {#if $submitting}
+                <Loader2 class="mr-2 h-4 w-4 animate-spin" />
+                {editMode ? 'Updating...' : 'Creating...'}
+              {:else}
+                {editMode ? 'Update Case' : 'Create Case'}
+              {/if}
+            </Button>
+          </div>
+        </div>
+      </form>
+    </CardContent>
+  </Card>
 {/if}
 {#if componentError}
   <div class="error-boundary bg-red-50 border border-red-200 rounded-lg p-6 m-4">
@@ -490,7 +458,9 @@ https://svelte.dev/e/js_parse_error -->
     <p class="text-red-700 mb-4">The case form encountered an error:</p>
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
     <Button
-      onclick={() => { componentError = null; }}
+      onclick={() => {
+        componentError = null;
+      }}
       variant="ghost"
       class="border-red-300 text-red-700 hover:bg-red-50"
     >
@@ -498,4 +468,8 @@ https://svelte.dev/e/js_parse_error -->
     </Button>
   </div>
 {/if}
-<style lang="postcss">/*$$__STYLE_CONTENT__$$*/</style>
+
+<style lang="postcss">
+  /*$$__STYLE_CONTENT__$$*/
+</style>
+;

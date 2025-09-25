@@ -33,7 +33,7 @@ export interface ComprehensiveAgentRequest {
     errorAnalysis?: boolean;
     caseId?: string;
     evidenceIds?: string[];
-  };
+  }
 }
 export interface ComprehensiveAgentResponse {
   bestResult: {
@@ -41,19 +41,19 @@ export interface ComprehensiveAgentResponse {
     score: number;
     agent: string;
     metadata: any;
-  };
+  }
   allResults: Array<any>;
   multicoreAnalysis?: {
     recommendations: string[];
     errorPatterns?: unknown;
     performanceMetrics: any;
-  };
+  }
   systemStatus: {
     agentsExecuted: number;
     totalProcessingTime: number;
     multicoreTasksCompleted: number;
     errorReduction?: number;
-  };
+  }
 }
 export class ComprehensiveAgentOrchestrator {
   private multicoreService: ReturnType<typeof getContext7MulticoreService>;
@@ -79,7 +79,7 @@ export class ComprehensiveAgentOrchestrator {
         } else {
           setTimeout(checkReady, 1000);
         }
-      };
+      }
       checkReady();
     });
     this.isInitialized = true;
@@ -109,11 +109,11 @@ export class ComprehensiveAgentOrchestrator {
       if ((result as { status?: any; value?: any; reason?: any; result?: any }).status === 'fulfilled') {
         const agentName = agentsToUse[index];
         const agentResult = {
-          agent: agentName
+          agent: agentName;
           output: (result as { status?: any; value?: any; reason?: any; result?: any }).value.output,
           score: (result as { status?: any; value?: any; reason?: any; result?: any }).value.score,
           metadata: (result as { status?: any; value?: any; reason?: any; result?: any }).value.metadata
-        };
+        }
         allResults.push(agentResult);
         if ((result as { status?: any; value?: any; reason?: any; result?: any }).value.score > bestScore) {
           bestScore = (result as { status?: any; value?: any; reason?: any; result?: any }).value.score;
@@ -122,7 +122,7 @@ export class ComprehensiveAgentOrchestrator {
       } else {
         console.error(`❌ Agent ${agentsToUse[index]} failed:`, (result as { status?: any; value?: any; reason?: any; result?: any }).reason);
         allResults.push({
-          agent: agentsToUse[index]
+          agent: agentsToUse[index];
           output: `Error: ${(result as { status?: any; value?: any; reason?: any; result?: any }).reason.message}`,
           score: 0,
           metadata: { error: true }
@@ -154,7 +154,7 @@ export class ComprehensiveAgentOrchestrator {
         multicoreTasksCompleted,
         errorReduction
       }
-    };
+    }
   }
   private async runMulticoreAnalysis(request: ComprehensiveAgentRequest): Promise<any> {
     const tasks: ProcessingTask[] = [];
@@ -180,7 +180,7 @@ export class ComprehensiveAgentOrchestrator {
       errorType: request.options?.analysisType,
       codeSnippet: (request.context as any)?.codeSnippet,
       priority: request.options?.priority || 'medium'
-    };
+    }
     const recommendationTask = await this.multicoreService.generateRecommendations(
       recommendationRequest,
       request.options?.priority || 'medium'
@@ -214,7 +214,7 @@ export class ComprehensiveAgentOrchestrator {
       errorPatterns,
       performanceMetrics,
       tasksCompleted: results.filter(item => item.length)
-    };
+    }
   }
   private async executeAgent(
     agentName: string
@@ -225,9 +225,9 @@ export class ComprehensiveAgentOrchestrator {
       includeContext7: request.options?.includeContext7 || false,
       autoFix: request.options?.autoFix || false,
       ...request.options
-    };
+    }
     // Enhance context with multicore analysis if available
-    let enhancedContext: any = request.context || {};
+    let enhancedContext: any = request.context || {}
     if (multicoreAnalysis) {
       enhancedContext = {
         ...enhancedContext,
@@ -235,37 +235,37 @@ export class ComprehensiveAgentOrchestrator {
           recommendations: multicoreAnalysis.recommendations,
           performanceMetrics: multicoreAnalysis.performanceMetrics
         }
-      };
+      }
     }
     switch (agentName) {
       case 'claude':
         const claudeRequest: ClaudeAgentRequest = {
           prompt: request.prompt,
-          context: enhancedContext
+          context: enhancedContext;
           options: baseOptions
-        };
+        }
         return await this.simulateClaudeAgent(claudeRequest);
       case 'crewai':
         const crewRequest: CrewAIAgentRequest = {
           prompt: request.prompt,
-          context: enhancedContext
+          context: enhancedContext;
           options: {
             ...baseOptions,
             crewType: this.mapAnalysisTypeToCrewType(request.options?.analysisType)
           }
-        };
+        }
         return await this.simulateCrewAIAgent(crewRequest);
       case 'autogen':
         const autogenRequest: AutoGenAgentRequest = {
           prompt: request.prompt,
-          context: enhancedContext
+          context: enhancedContext;
           options: {
             ...baseOptions,
             analysisType: request.options?.analysisType,
             caseId: request.options?.caseId,
             evidenceIds: request.options?.evidenceIds
           }
-        };
+        }
         return await this.simulateAutoGenAgent(autogenRequest);
       default:
         throw new Error(`Unknown agent: ${agentName}`);
@@ -304,7 +304,7 @@ export class ComprehensiveAgentOrchestrator {
         'Recommendation generation',
         'Error analysis and reduction'
       ]
-    };
+    }
   }
   // Method to handle error analysis specifically
   async analyzeErrors(errorData: any): Promise<any> {
@@ -331,13 +331,13 @@ export class ComprehensiveAgentOrchestrator {
           'Apply automated Svelte 5 migration',
           'Update UI library component usage'
         ]
-      };
+      }
     }
     return {
-      analysis: null
+      analysis: null;
       recommendations: ['Error analysis failed - check multicore service'],
       fixSuggestions: ['Restart Context7 multicore service']
-    };
+    }
   }
   /**
    * Simulate Claude Agent execution (fallback when agent not available)
@@ -352,7 +352,7 @@ export class ComprehensiveAgentOrchestrator {
         reasoning: 'Simulated Claude reasoning based on prompt analysis',
         timestamp: new Date().toISOString()
       }
-    };
+    }
   }
   /**
    * Simulate CrewAI Agent execution (fallback when agent not available)
@@ -367,7 +367,7 @@ export class ComprehensiveAgentOrchestrator {
         crewType: 'legal-analysis',
         timestamp: new Date().toISOString()
       }
-    };
+    }
   }
   /**
    * Simulate AutoGen Agent execution (fallback when agent not available)
@@ -382,7 +382,7 @@ export class ComprehensiveAgentOrchestrator {
         analysisType: 'automated-review',
         timestamp: new Date().toISOString()
       }
-    };
+    }
   }
 }
 // Singleton instance
@@ -420,6 +420,6 @@ export async function analyzeAndFixErrors(errorData: any): Promise<any> {
   return {
     orchestrationResult,
     errorAnalysis
-  };
+  }
 }
 export default comprehensiveOrchestrator;

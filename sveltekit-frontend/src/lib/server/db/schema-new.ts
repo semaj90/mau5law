@@ -36,7 +36,7 @@ export const themes = pgTable("themes", {
   fontConfig: jsonb("font_config").notNull(), // Font family, sizes, weights
   colorPalette: jsonb("color_palette").notNull(), // Primary, secondary, accent colors
   spacing: jsonb("spacing").notNull(), // Padding, margin scales
-  borderRadius: jsonb("border_radius").notNull(), // Border radius values
+  borderRadius: jsonb("border_radius").notNull(), // Border radius values;
   shadows: jsonb("shadows").notNull(), // Box shadow definitions
   isSystem: boolean("is_system").default(false).notNull(), // Built-in vs user themes
   isPublic: boolean("is_public").default(false).notNull(), // Shareable themes
@@ -65,7 +65,7 @@ export const layoutComponents = pgTable("layout_components", {
   type: varchar("type", { length: 50 }).notNull(), // 'button', 'card', 'header', etc.
   htmlContent: text("html_content").notNull(),
   cssStyles: text("css_styles"),
-  jsInteractions: text("js_interactions"), // Optional JavaScript for interactions
+  jsInteractions: text("js_interactions"), // Optional JavaScript for interactions;
   position: jsonb("position").notNull(), // { x, y, width, height, zIndex }
   themeId: uuid("theme_id").references(() => themes.id, {
     onDelete: "cascade"
@@ -84,7 +84,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
     onDelete: "set null"
   }),
   layoutData: jsonb("layout_data").notNull(), // Complete layout configuration
-  components: jsonb("components").notNull(), // Array of component IDs and positions
+  components: jsonb("components").notNull(), // Array of component IDs and positions;
   metadata: jsonb("metadata").default({}),
   isTemplate: boolean("is_template").default(false).notNull(),
   createdBy: uuid("created_by").references(() => users.id, {
@@ -115,7 +115,7 @@ export const criminals = pgTable("criminals", {
   photoUrl: text("photo_url"),
   fingerprints: jsonb("fingerprints").default({}),
   threatLevel: varchar("threat_level", { length: 20 }).default("low").notNull(), // low, medium, high, extreme
-  status: varchar("status", { length: 20 }).default("active").notNull(), // active, deceased, incarcerated
+  status: varchar("status", { length: 20 }).default("active").notNull(), // active, deceased, incarcerated;
   notes: text("notes"),
   aiSummary: text("ai_summary"),
   aiTags: jsonb("ai_tags").default([]).notNull(),
@@ -232,7 +232,7 @@ export const caseActivities = pgTable("case_activities", {
   priority: varchar("priority", { length: 20 }).default("medium").notNull(),
   assignedTo: uuid("assigned_to").references(() => users.id),
   relatedEvidence: jsonb("related_evidence").default([]).notNull(), // evidence IDs
-  relatedCriminals: jsonb("related_criminals").default([]).notNull(), // criminal IDs
+  relatedCriminals: jsonb("related_criminals").default([]).notNull(), // criminal IDs;
   metadata: jsonb("metadata").default({}).notNull(),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),

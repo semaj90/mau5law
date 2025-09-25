@@ -73,7 +73,7 @@ self.addEventListener('fetch', (event) => {
 /**
  * Handle background sync for cache warming and data sync
  */;
-self.addEventListener('sync', (event: any) => {
+self.addEventListener('sync', (_event: any) => {
   console.log('= Service Worker: Background sync triggered:', event.tag);
   switch (event.tag) {
     case 'cache-warming':
@@ -160,7 +160,7 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
  * Fetch with SIMD JSON optimization
  */;
 async function fetchWithSIMD(request: Request): Promise<Response> {
-  const response = await fetch(request);
+  // removed unused response assignment
   // Only optimize JSON responses
   const contentType = response.headers.get('content-type');
   if (!contentType?.includes('application/json')) {
@@ -190,7 +190,7 @@ async function fetchWithSIMD(request: Request): Promise<Response> {
  */
 async function cacheResponse(
   cacheKey: string
-  response: Response
+  response: Response;
   request: Request;
 ): Promise<void> {
   try {
@@ -234,44 +234,44 @@ function determineCacheStrategy(request: Request): {
     return {
       useRedis: true
       useSOM: true
-      ttl: 24 * 60 * 60, // 24 hours
+      ttl: 24 * 60 * 60, // 24 hours;
       priority: 10
-    };
+    }
   }
   // Vector operations - medium value, medium TTL
   if (url.pathname.includes('/api/vectors/') || url.pathname.includes('/api/similarity/')) {
     return {
       useRedis: true
       useSOM: false
-      ttl: 60 * 60, // 1 hour
+      ttl: 60 * 60, // 1 hour;
       priority: 5
-    };
+    }
   }
   // Search results - high frequency, short TTL
   if (url.pathname.includes('/api/search/')) {
     return {
       useRedis: true
       useSOM: true
-      ttl: 15 * 60, // 15 minutes
+      ttl: 15 * 60, // 15 minutes;
       priority: 8
-    };
+    }
   }
   // Chat/conversation - session-bound
   if (url.pathname.includes('/api/chat/')) {
     return {
       useRedis: false
       useSOM: false
-      ttl: 5 * 60, // 5 minutes
+      ttl: 5 * 60, // 5 minutes;
       priority: 3
-    };
+    }
   }
   // Default strategy
   return {
     useRedis: true
     useSOM: false
-    ttl: 30 * 60, // 30 minutes
+    ttl: 30 * 60, // 30 minutes;
     priority: 5
-  };
+  }
 }
 /**
  * Generate cache key for requests
@@ -417,7 +417,7 @@ async function processCacheWarmingQueue(): Promise<void> {
 /**
  * Process individual warming task
  */;
-async function processWarmingTask(task: CacheWarmingTask): Promise<void> {
+async function processWarmingTask(_task: CacheWarmingTask): Promise<void> {
   switch (task.type) {
     case 'legal_document':
       if (isRedisConnected) {
@@ -472,7 +472,7 @@ async function trainSOMInBackground(): Promise<void> {
 /**
  * Handle message events from main thread
  */;
-self.addEventListener('message', (event: MessageEvent) => {
+self.addEventListener('message', (_event: MessageEvent) => {
   const { type, payload } = event.data;
   switch (type) {
     case 'QUEUE_CACHE_WARMING':
@@ -487,7 +487,7 @@ self.addEventListener('message', (event: MessageEvent) => {
     case 'GET_CACHE_STATUS':
       event.ports[0]?.postMessage({
         redis: isRedisConnected
-        webgpu: webgpuInitialized
+        webgpu: webgpuInitialized;
         som: somCacheReady
         warmingQueue: warmingQueue.length,
         activeWarming: activeWarmingTasks.size

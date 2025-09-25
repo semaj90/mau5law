@@ -7,10 +7,7 @@
     children?: import('svelte').Snippet;
     autoInitialize?: boolean;
   }
-  let {
-    children,
-    autoInitialize = true
-  }: Props = $props();
+  let { children, autoInitialize = true }: Props = $props();
   // Initialize auth store on component mount
   $effect(() => {
     if (browser && autoInitialize) {
@@ -18,6 +15,7 @@
     }
   });
 </script>
+
 <!-- Provide the authentication context to child components -->
 {#if children}
   {@render children()}

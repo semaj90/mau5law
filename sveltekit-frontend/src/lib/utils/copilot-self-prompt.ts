@@ -17,11 +17,11 @@ export interface AITask {
 // Mock embeddings service
 const OpenAIEmbeddings = class {
   embedQuery = async (query: string) => new Array(384).fill(0).map(() => Math.random();
-};
+}
 // Mock database pool
 const pool = {
   query: async (query: string, params?: any[]) => ({ rows: [] })
-};
+}
 // Import Redis client
 import { createClient } from 'redis';
 // Singleton Redis client for connection reuse
@@ -58,7 +58,7 @@ export async function getEnhancedContext(query: string): Promise<any> {
     // Simplified vector search using mock pool
     const vectorStore = {
       similaritySearch: async (_query: string, _k: number) => [] as any[]
-    };
+    }
     // Generate embedding and search for top results
     const results = await vectorStore.similaritySearch(query, 8);
     // 3. Store the result in Redis with an expiration (e.g., 1 hour)
@@ -87,7 +87,7 @@ export interface CopilotSelfPromptOptions {
     urgency?: 'low' | 'medium' | 'high' | 'critical';
     includeTests?: boolean;
     targetExtensions?: string[]; // For Cline, Roo, VSCode extensions
-  };
+  }
   outputFormat?: 'json' | 'markdown' | 'structured';
 }
 export interface CopilotSelfPromptResult {
@@ -105,7 +105,7 @@ export interface CopilotSelfPromptResult {
     confidence: number;
     sources: string[];
     tokensUsed: number;
-  };
+  }
 }
 export interface NextAction {
   id: string;
@@ -142,7 +142,7 @@ export interface ExecutionPhase {
  * Main Copilot self-prompting function with comprehensive AI orchestration
  */
 export async function copilotSelfPrompt(
-  prompt: string
+  prompt: string;
   options: CopilotSelfPromptOptions = {}
 ): Promise<CopilotSelfPromptResult> {
   const startTime = Date.now();
@@ -227,7 +227,7 @@ export async function copilotSelfPrompt(
         sources: extractSources(contextResults, memoryResults, agentResults),
         tokensUsed
       }
-    };
+    }
   } catch (error: any) {
     // Log error to MCP_TODO_LOG.md for productionization
     try {
@@ -295,7 +295,7 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({,
-          query: prompt
+          query: prompt;
           context: context
           includeGraph: true
           includeHistory: true
@@ -397,7 +397,7 @@ Format your response as a structured analysis with clear sections and actionable
       priority: 'high',
       temperature: 0.2,
       maxTokens: 3072
-    };
+    }
     const taskId = await aiWorkerManager.submitTask(synthesisTask);
     const result = await aiWorkerManager.waitForTask(taskId);
     return (
@@ -442,7 +442,7 @@ ${prompt}
  * Generate actionable next steps
  */
 async function generateNextActions(
-  prompt: string
+  prompt: string;
   synthesis: string
   engineeringAnalysis: any;
 ): Promise<NextAction[]> {
@@ -514,7 +514,7 @@ async function generateRecommendations(
  * Create execution plan from actions and recommendations
  */
 async function createExecutionPlan(
-  actions: NextAction[]
+  actions: NextAction[];
   recommendations: Recommendation[];
 ): Promise<ExecutionPlan> {
   const phases: ExecutionPhase[] = [];
@@ -571,7 +571,7 @@ async function createExecutionPlan(
     totalEstimatedTime: parallelTime
     parallelizable: parallelTime < totalTime
     criticalPath: phases.filter((p) => !p.canRunInParallel).map((p) => p.id)
-  };
+  }
 }
 /**
  * Generate self-prompt for Copilot
@@ -579,7 +579,7 @@ async function createExecutionPlan(
 function generateCopilotSelfPrompt(
   originalPrompt: string
   synthesis: string
-  nextActions: NextAction[]
+  nextActions: NextAction[];
   recommendations: Recommendation[]
   outputFormat: string;
 ): string {
@@ -738,7 +738,7 @@ export class RLRankingDatastore {
       effectiveness: this.calculateEffectiveness(result),
       nextActions: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).nextActions,
       recommendations: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).recommendations
-    };
+    }
     try {
       // Store summary with score-based ranking
       await this.redisClient.zadd(
@@ -815,7 +815,7 @@ export class RLRankingDatastore {
 export const rlRankingDatastore = new RLRankingDatastore();
 // Update copilotSelfPrompt to use RL ranking
 export async function enhancedCopilotSelfPromptWithRL(
-  prompt: string
+  prompt: string;
   options: CopilotSelfPromptOptions = {}
 ): Promise<CopilotSelfPromptResult> {
   const result = await copilotSelfPrompt(prompt, options);

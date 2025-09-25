@@ -57,14 +57,14 @@ class GPUMetricsStore {
   // Performance status derived from FPS
   performanceStatus = $derived(() => {
     const avgFps = this.state.averageFPS;
-    if (avgFps >= 55) return { level: 'excellent', color: 'green' };
-    if (avgFps >= 30) return { level: 'good', color: 'yellow' };
-    if (avgFps >= 15) return { level: 'poor', color: 'orange' };
-    return { level: 'critical', color: 'red' };
+    if (avgFps >= 55) return { level: 'excellent', color: 'green' }
+    if (avgFps >= 30) return { level: 'good', color: 'yellow' }
+    if (avgFps >= 15) return { level: 'poor', color: 'orange' }
+    return { level: 'critical', color: 'red' }
   });
   // Effect summary
   effectsSummary = $derived(() => {
-    const summary: Record<string, number> = {};
+    const summary: Record<string, number> = {}
     const recentMetrics = this.state.metrics.slice(-50); // Last 50 samples
     recentMetrics.forEach(metric => {
       metric.effectsActive?.forEach(effect => {
@@ -166,7 +166,7 @@ class GPUMetricsStore {
     const now = Date.now();
     const startTime = this.state.metrics.length > 0 ? this.state.metrics[0].timestamp: now;
     const fpsSamples = this.state.metrics.filter(item => item.map)(m => m.fps!);
-    const effectsSummary: Record<string, number> = {};
+    const effectsSummary: Record<string, number> = {}
     this.state.metrics.forEach(metric => {
       metric.effectsActive?.forEach(effect => {
         effectsSummary[effect] = (effectsSummary[effect] || 0) + 1;
@@ -182,7 +182,7 @@ class GPUMetricsStore {
       maxFps: fpsSamples.length > 0 ? Math.max(...fpsSamples) : 0,
       effectsSummary,
       totalSamples: this.state.metrics.length
-    };
+    }
   }
 }
 // Create and export the store instance
@@ -202,5 +202,5 @@ export function useGPUMetrics() {
     effectsSummary: gpuMetricsStore.effectsSummary,
     renderingMode: () => gpuMetricsStore.renderingMode,
     totalSamplesSent: () => gpuMetricsStore.totalSamplesSent
-  };
+  }
 }

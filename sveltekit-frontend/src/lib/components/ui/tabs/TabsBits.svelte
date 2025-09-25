@@ -1,12 +1,8 @@
 <script lang="ts" module>
   // Re-export bits-ui components for compound component usage
-  export {
-    Root,
-    List,
-    Trigger,
-    Content
-  } from "bits-ui/tabs";
+  export { Root, List, Trigger, Content } from 'bits-ui/tabs';
 </script>
+
 <script lang="ts">
   import {
     Root as TabsRoot,
@@ -28,7 +24,7 @@
   interface Props {
     tabs?: TabItem[];
     value?: string;
-    onValueChange?: (value: string) => void;
+    onValueChange?: (_value: string) => void;
     variant?: 'default' | 'pills' | 'underline';
     size?: 'sm' | 'md' | 'lg';
     class?: string;
@@ -52,7 +48,7 @@
     sm: "text-sm px-3 py-2",
     md: "text-base px-4 py-3",
     lg: "text-lg px-6 py-4";
-  };
+  }
   const variantClasses = {
     default: {
       list: "bg-slate-800/40 rounded-xl p-1",
@@ -72,38 +68,29 @@
       triggerActive: "border-amber-500 text-amber-400",
       triggerInactive: "text-slate-400 hover:text-amber-400 hover:border-slate-500";
     }
-  };
+  }
   function handleValueChange(newValue: string) {
     value = newValu;
     onValueChange?.(newValue);
   }
 </script>
-<TabsRoot
-  bind:value
-  onValueChange={handleValueChange}
-  class={cn("legal-ai-tabs w-full", className)}
->
+
+<TabsRoot bind:value onValueChange={handleValueChange} class={cn('legal-ai-tabs w-full', className)}>
   {#if children}
     <!-- Compound component mode -->
     {@render children()}
   {:else}
     <!-- Array-based mode -->
-    <TabsList
-      class={cn(
-        "legal-ai-tabs-list flex",
-        variantClasses[variant].list
-      )}
-    >
+    <TabsList class={cn('legal-ai-tabs-list flex', variantClasses[variant].list)}>
       {#each tabs as tab}
         <TabsTrigger
           value={tab.value}
           disabled={tab.disabled}
           class={cn(
-            "legal-ai-tabs-trigger font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed",
+            'legal-ai-tabs-trigger font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed',
             sizeClasses[size],
             variantClasses[variant].trigger,
-            value === tab.value
-              ? variantClasses[variant].triggerActive : variantClasses[variant].triggerInactive
+            value === tab.value ? variantClasses[variant].triggerActive : variantClasses[variant].triggerInactive,
           )}
         >
           {tab.label}
@@ -111,10 +98,7 @@
       {/each}
     </TabsList>
     {#each tabs as tab}
-      <TabsContent
-        value={tab.value}
-        class="legal-ai-tabs-content mt-6 focus:outline-none"
-      >
+      <TabsContent value={tab.value} class="legal-ai-tabs-content mt-6 focus:outline-none">
         {#if tab.content}
           {@render tab.content()}
         {:else}
@@ -126,6 +110,7 @@
     {/each}
   {/if}
 </TabsRoot>
+
 <style>
   :global(.legal-ai-tabs) {
     font-family: var(--legal-ai-font-family-sans);

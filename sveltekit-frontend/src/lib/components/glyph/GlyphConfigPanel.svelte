@@ -69,7 +69,7 @@ https://svelte.dev/e/expected_token -->
       seed: seed || undefined
       simd_config: simdConfig
       neural_sprite_config: neuralSpriteConfig;
-    };
+    }
   }
   function handleGenerate() {
     if (!validateForm()) return;
@@ -82,7 +82,7 @@ https://svelte.dev/e/expected_token -->
   function loadPreset(preset: keyof typeof GLYPH_PRESETS) {
     selectedPreset = preset;
     const presetConfig = GLYPH_PRESETS[preset];
-    simdConfig = { ...simdConfig, ...presetConfig.simd_config };
+    simdConfig = { ...simdConfig, ...presetConfig.simd_config }
     useCustomStyle = false;
   }
   function resetToDefaults() {
@@ -99,12 +99,12 @@ https://svelte.dev/e/expected_token -->
       shader_format: 'webgpu',
       adaptive_quality: true
       performance_tier: 'n64'
-    };
+    }
     neuralSpriteConfig = {
       enable_compression: true
       target_ratio: 2.0,
       predictive_frames: 4
-    };
+    }
   }
   function exportConfig() {
     const config = buildRequest();
@@ -119,8 +119,8 @@ https://svelte.dev/e/expected_token -->
       prompt = config.prompt || prompt;
       dimensions = config.dimensions || dimension;
       seed = config.seed;
-      if (config.simd_config) simdConfig = { ...simdConfig, ...config.simd_config };
-      if (config.neural_sprite_config) neuralSpriteConfig = { ...neuralSpriteConfig, ...config.neural_sprite_config };
+      if (config.simd_config) simdConfig = { ...simdConfig, ...config.simd_config }
+      if (config.neural_sprite_config) neuralSpriteConfig = { ...neuralSpriteConfig, ...config.neural_sprite_config }
     } catch (error) {
       alert('Invalid JSON configuration');
     }
@@ -232,7 +232,7 @@ https://svelte.dev/e/expected_token -->
       </label>
       <label class="flex items-center">
         <input
-          type="radio"
+          type="radio";
           bind:group={useCustomStyle}
           value={true}
           class="mr-2"
@@ -283,7 +283,7 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div>
           <label class="block text-sm text-gray-300 mb-1" for="compression-simdconf">Compression: {simdConfig.compression_target}:1</label><input id="compression-simdconf"
-            type="range"
+            type="range";
             bind:value={simdConfig.compression_target}
             min="10"
             max="100"
@@ -330,7 +330,7 @@ https://svelte.dev/e/expected_token -->
     {#if showAdvanced}
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2" for="seed-optional">Seed (Optional)</label><input id="seed-optional"
+          <label class="block text-sm font-medium text-gray-300 mb-2" for="seed-optional">Seed (Optional)</label><input id="seed-optional";
             bind:value={seed}
             type="number"
             class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -350,7 +350,7 @@ https://svelte.dev/e/expected_token -->
           </div>
           <div>
             <label class="block text-sm text-gray-300 mb-1" for="target-ratio-neurals">Target Ratio: {neuralSpriteConfig.target_ratio.toFixed(1)}:1</label><input id="target-ratio-neurals"
-              type="range"
+              type="range";
               bind:value={neuralSpriteConfig.target_ratio}
               min="1.5"
               max="5.0"

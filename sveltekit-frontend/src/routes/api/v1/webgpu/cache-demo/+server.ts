@@ -218,7 +218,7 @@ async function benchmarkTensorCompression(testTensors: Float32Array[]): Promise<
       after: endMemory
       peak: peakMemory
     },
-    compressionRatio: 4.2, // Estimated compression ratio
+    compressionRatio: 4.2, // Estimated compression ratio;
     throughput: {
       opsPerSecond: testTensors.length / (webgpuTime / 1000),
       mbPerSecond:

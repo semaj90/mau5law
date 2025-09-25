@@ -4,9 +4,9 @@ import { writable } from 'svelte/store';
 const initialState: ChatState = {
   messages: [],
   currentSession: null
-  isLoading: false
+  isLoading: false;
   error: null
-};
+}
 function createChatStore() {
   const { subscribe, set, update } = writable<ChatState>(initialState);
   return {
@@ -38,6 +38,6 @@ function createChatStore() {
     reset: () => {
       set(initialState);
     }
-  };
+  }
 }
 export const chatStore = createChatStore();

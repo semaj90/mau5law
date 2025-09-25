@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
  * Supports A/B testing and user preference adaptation
  */
 import { productionServiceClient } from '$lib/services/productionServiceClient'
-import { URL } from "url"
+
 interface AIModule {
   id: string
   name: string
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const targetModule = moduleRegistry.get(toModule)
         if (!targetModule) {
           return json({
-            success: false
+            success: false;
             error: `Target module not found: ${toModule}`
           }, { status: 404 })
         }

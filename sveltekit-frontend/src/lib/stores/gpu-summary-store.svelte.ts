@@ -265,7 +265,7 @@ function createGPUSummaryStore() {
       bottlenecks,
       recommendations,
       lastUpdated: now
-    };
+    }
   }
   // Calculate system health score and identify issues
   function calculateHealthMetrics(
@@ -327,7 +327,7 @@ function createGPUSummaryStore() {
       healthScore: Math.max(0, Math.round(healthScore)),
       bottlenecks,
       recommendations
-    };
+    }
   }
   // Determine material complexity based on active effects and performance
   function determineMaterialComplexity(effects: string[], fps: number): 'low' | 'medium' | 'high' | 'ultra' {
@@ -388,7 +388,7 @@ function createGPUSummaryStore() {
   function getPerformanceInsights(): {
     fpsStability: number;
     memoryTrend: 'increasing' | 'stable' | 'decreasing';
-    recommendedSettings: { [key: string]: any };
+    recommendedSettings: { [key: string]: any }
   } {
     const recentMetrics = state.historicalMetrics.slice(-100);
     if (recentMetrics.length < 10) {
@@ -396,7 +396,7 @@ function createGPUSummaryStore() {
         fpsStability: 0,
         memoryTrend: 'stable',
         recommendedSettings: { [key: string]: any }
-      };
+      }
     }
     // Calculate FPS stability (coefficient of variation)
     const fpsValues = recentMetrics.filter(item => item.map)(m => m.fps!);
@@ -420,12 +420,12 @@ function createGPUSummaryStore() {
       fogEffect: avgFps >= 45,
       shadowCasting: avgFps >= 50,
       depthOfField: avgFps >= 55
-    };
+    }
     return {
       fpsStability: Math.round(fpsStability),
       memoryTrend,
       recommendedSettings
-    };
+    }
   }
   // Stop collection and cleanup
   function stop() {
@@ -453,7 +453,7 @@ function createGPUSummaryStore() {
       totalSearches: state.vectorSearchMetrics.length,
       totalMinIOOps: state.minioMetrics.length,
       exportTime: Date.now()
-    };
+    }
   }
   return {
     // State (read-only)
@@ -490,7 +490,7 @@ function createGPUSummaryStore() {
     getPerformanceInsights,
     updateSummary,
     exportData
-  };
+  }
 }
 // Create and export the global store instance
 export const gpuSummaryStore = createGPUSummaryStore();
@@ -556,7 +556,7 @@ export function trackVectorSearch(
 export function trackMinIOOperation(
   operation: 'get' | 'put' | 'delete' | 'list',
   bucketName: string
-  transferSize: number
+  transferSize: number;
   duration: number
   cacheHit: boolean
   objectKey?: string

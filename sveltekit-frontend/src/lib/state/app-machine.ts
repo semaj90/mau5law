@@ -51,7 +51,7 @@ export interface AppContext {
     apiResponseTimes: Record<string, number>;
     memoryUsage: number;
     cacheHitRate: number;
-  };
+  }
   // Feature flags
   features: Record<string, boolean>;
   // Application settings
@@ -63,7 +63,7 @@ export interface AppContext {
     enableOfflineMode: boolean;
     maxFileUploadSize: number;
     defaultPageSize: number;
-  };
+  }
   // Offline state
   isOnline: boolean;
   offlineQueue: Array<any>;
@@ -72,7 +72,7 @@ export interface AppContext {
     connected: boolean;
     connectionId: string | null;
     lastActivity: Date | null;
-  };
+  }
 }
 // Application events
 export type AppEvents =
@@ -112,7 +112,7 @@ export type AppEvents =
   | { type: 'GLOBAL_LOADING'; message?: string }
   | { type: 'GLOBAL_LOADING_COMPLETE' }
   | { type: 'INITIALIZE_APP' }
-  | { type: 'SHUTDOWN_APP' };
+  | { type: 'SHUTDOWN_APP' }
 // Services
 const loginService = fromPromise(async ({ input }: { input: { credentials: any } }) => {
   const response = await fetch('/api/auth/login', {
@@ -151,18 +151,18 @@ const initializeAppService = fromPromise(async () => {
     fetch('/api/user/preferences').then((r: any) => r.ok ? r.json() : { [key: string]: any }),
     fetch('/api/features').then((r: any) => r.ok ? r.json() : { [key: string]: any })
   ]);
-  return { userPrefs, features };
+  return { userPrefs, features }
 });
 // Guards
 const isAuthenticated = ({ context }: { context: AppContext }) => {
   return !!context.user && !!context.session?.isActive;
-};
+}
 const hasValidSession = ({ context }: { context: AppContext }) => {
   return !!context.session && new Date() < context.session.expiresAt;
-};
+}
 const isOnline = ({ context }: { context: AppContext }) => {
   return context.isOnline;
-};
+}
 // Actions
 const setUser = assign({
   user: ({ event }: { event: any }) => event.output?.user,
@@ -173,7 +173,7 @@ const setUser = assign({
   })
 });
 const clearUser = assign({
-  user: null
+  user: null;
   session: null
 });
 const setTheme = assign({
@@ -561,4 +561,4 @@ export const appSelectors = {
   isFeatureEnabled: (featureName: string) => (state: any) =>
     state.context.features[featureName] ?? false,
   isInState: (stateName: string) => (state: any) => state.matches(stateName)
-};
+}

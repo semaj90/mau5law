@@ -12,7 +12,7 @@ import { goBinaryService } from '../../../lib/services/go-binary-integration.js'
 import { context7FlashAttentionIntegration } from '../../../lib/services/context7-flashattention-integration.js'
 // import { analyzeCurrentErrors } from '../../../context7-multicore-error-analysis.js'
 import crypto from "crypto"
-import { URL } from "url"
+
 // Configuration for the enhanced autosolve system
 const ENHANCED_AUTOSOLVE_CONFIG = {
   orchestration: {
@@ -316,7 +316,7 @@ async function handleGetRecommendations(userId: string): Promise<Response> {
   })
 }
 // Store chat message handler
-async function handleStoreChatMessage(options: any, userId: string): Promise<Response> {
+async function handleStoreChatMessage(_options: any, userId: string): Promise<Response> {
   const { sessionId, message, role = 'user', metadata = {} } = options
   if (!userId || !sessionId || !message) {
     return json({ error: 'Missing required parameters' }, { status: 400 })
@@ -344,7 +344,7 @@ async function handleStoreChatMessage(options: any, userId: string): Promise<Res
   })
 }
 // Process feedback handler for reinforcement learning
-async function handleProcessFeedback(options: any, userId: string): Promise<Response> {
+async function handleProcessFeedback(_options: any, userId: string): Promise<Response> {
   const { actionId, feedback, engagement = 0.5, context = {} } = options
   const feedbackData = {
     actionId,
@@ -364,7 +364,7 @@ async function handleProcessFeedback(options: any, userId: string): Promise<Resp
   })
 }
 // Enhanced force cycle with all integrations
-async function handleEnhancedForceCycle(options: any): Promise<Response> {
+async function handleEnhancedForceCycle(_options: any): Promise<Response> {
   console.log('🚀 Enhanced autosolve cycle with full integration...')
   const cycleId = `enhanced-autosolve-${Date.now()}`
   // Run comprehensive analysis using all systems
@@ -426,7 +426,7 @@ async function handleEnhancedForceCycle(options: any): Promise<Response> {
   return json(response)
 }
 // Enhanced error analysis with ML and GPU acceleration
-async function handleEnhancedAnalyzeErrors(options: any): Promise<Response> {
+async function handleEnhancedAnalyzeErrors(_options: any): Promise<Response> {
   const { useGPU = true, useML = true, categories = [] } = options || {}
   const analysis = await analyzeCurrentErrors()
   // If GPU enabled, run flash attention analysis
@@ -503,7 +503,7 @@ async function handleWebAssemblyStatus(): Promise<Response> {
   })
 }
 // Test WebAssembly acceleration
-async function handleTestWebAssemblyAcceleration(options: any): Promise<Response> {
+async function handleTestWebAssemblyAcceleration(_options: any): Promise<Response> {
   const { testData = { large: 'test data string'.repeat(1000) } } = options
   const results = {
     native_js_parsing: await benchmarkNativeJSONParse(testData),
@@ -663,7 +663,7 @@ async function handleEnhancedMetrics(): Promise<Response> {
     }
   })
 }
-async function handleOptimizeCache(options: any): Promise<Response> {
+async function handleOptimizeCache(_options: any): Promise<Response> {
   // Simulate cache optimization
   await multiLayerCache.clear({ type: 'query' })
   return json({
@@ -674,7 +674,7 @@ async function handleOptimizeCache(options: any): Promise<Response> {
     timestamp: new Date().toISOString()
   })
 }
-async function handleSyncNeo4j(options: any): Promise<Response> {
+async function handleSyncNeo4j(_options: any): Promise<Response> {
   // Simulate Neo4j sync
   return json({
     neo4j_sync_completed: true
@@ -685,7 +685,7 @@ async function handleSyncNeo4j(options: any): Promise<Response> {
     timestamp: new Date().toISOString()
   })
 }
-async function handleRunGPUAnalysis(options: any): Promise<Response> {
+async function handleRunGPUAnalysis(_options: any): Promise<Response> {
   const analysis = await context7FlashAttentionIntegration.integration
     .runEnhancedErrorAnalysis().catch(() => null)
   return json({
@@ -698,7 +698,7 @@ async function handleRunGPUAnalysis(options: any): Promise<Response> {
   })
 }
 // Additional handlers for remaining functions
-async function handleExecuteRemediation(options: any): Promise<Response> {
+async function handleExecuteRemediation(_options: any): Promise<Response> {
   const { category, serviceName, useGPU = true } = options || {}
   let results: any = {}
   if (category && ENHANCED_AUTOSOLVE_CONFIG.errorCategories[category]) {
@@ -728,7 +728,7 @@ async function handleExecuteRemediation(options: any): Promise<Response> {
     timestamp: new Date().toISOString()
   })
 }
-async function handleUpdateThreshold(options: any): Promise<Response> {
+async function handleUpdateThreshold(_options: any): Promise<Response> {
   const { threshold } = options || {}
   return json({
     action: 'update_threshold',

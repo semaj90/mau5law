@@ -44,7 +44,7 @@ export class PaletteAnimationController {
         { type: 'chromatic-aberration', intensity: 0.2, duration: 800 }
       ],
       ...options
-    };
+    }
     this.isAnimating = true;
     this.setupTransitions(fromPalette, toPalette);
     // Apply pre-transition effects
@@ -68,7 +68,7 @@ export class PaletteAnimationController {
           this.completeAnimation(toPalette);
           resolve();
         }
-      };
+      }
       this.animationFrame = requestAnimationFrame(animate);
     });
   }
@@ -87,7 +87,7 @@ export class PaletteAnimationController {
           this.transitions.set(`${key}[${index}]`, {
             from,
             to,
-            current: from
+            current: from;
             progress: 0
           });
         });
@@ -95,7 +95,7 @@ export class PaletteAnimationController {
         this.transitions.set(key, {
           from: fromColor
           to: toColor
-          current: fromColor
+          current: fromColor;
           progress: 0
         });
       }

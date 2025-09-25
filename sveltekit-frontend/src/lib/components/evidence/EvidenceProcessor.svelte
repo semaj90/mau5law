@@ -1,7 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-// Enhanced Evidence Processing Component
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
@@ -149,6 +145,12 @@ https://svelte.dev/e/js_parse_error -->
     return JSON.stringify(fragment, null, 2);
   }
 </script>
+
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+// Enhanced Evidence Processing Component
+
 <div class="evidence-processor border rounded-lg p-6 bg-white shadow-sm">
   <!-- Header -->
   <div class="flex items-center justify-between mb-4">
@@ -195,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       {/if}
       <button
-        onclick={() => showDetails = !showDetails}
+        onclick={() => (showDetails = !showDetails)}
         class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
       >
         {showDetails ? 'Hide' : 'Show'} Details
@@ -287,10 +289,22 @@ https://svelte.dev/e/js_parse_error -->
             {#each steps as step, index}
               {@const isCurrentStep = fileProgress.step === step}
               {@const isCompleted = steps.indexOf(fileProgress.step || '') > index}
-              <div class="flex items-center space-x-3 p-3 rounded-lg {isCurrentStep ? 'bg-blue-50 border border-blue-200' : isCompleted ? 'bg-green-50 border border-green-200' : 'bg-gray-50'}">
+              <div
+                class="flex items-center space-x-3 p-3 rounded-lg {isCurrentStep
+                  ? 'bg-blue-50 border border-blue-200'
+                  : isCompleted
+                    ? 'bg-green-50 border border-green-200'
+                    : 'bg-gray-50'}"
+              >
                 <span class="text-xl">{getStepIcon(step)}</span>
                 <div class="flex-1">
-                  <div class="font-medium capitalize {isCurrentStep ? 'text-blue-900' : isCompleted ? 'text-green-900' : 'text-gray-700'}">
+                  <div
+                    class="font-medium capitalize {isCurrentStep
+                      ? 'text-blue-900'
+                      : isCompleted
+                        ? 'text-green-900'
+                        : 'text-gray-700'}"
+                  >
                     {step}
                   </div>
                   {#if isCurrentStep && fileProgress.stepProgress}
@@ -337,10 +351,7 @@ https://svelte.dev/e/js_parse_error -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <h4 class="font-medium text-gray-900">Processing Logs</h4>
-            <button
-              onclick={() => showLogs = !showLogs}
-              class="text-sm text-blue-600 hover:text-blue-800"
-            >
+            <button onclick={() => (showLogs = !showLogs)} class="text-sm text-blue-600 hover:text-blue-800">
               {showLogs ? 'Hide' : 'Show'} Logs
             </button>
           </div>
@@ -349,7 +360,13 @@ https://svelte.dev/e/js_parse_error -->
               {#each processingLogs as log}
                 <div class="flex items-start space-x-2 mb-1">
                   <span class="text-gray-500">[{log.timestamp}]</span>
-                  <span class="flex-1 {log.type === 'error' ? 'text-red-400' : log.type === 'success' ? 'text-green-400' : 'text-gray-300'}">
+                  <span
+                    class="flex-1 {log.type === 'error'
+                      ? 'text-red-400'
+                      : log.type === 'success'
+                        ? 'text-green-400'
+                        : 'text-gray-300'}"
+                  >
                     {log.message}
                   </span>
                 </div>
@@ -373,9 +390,10 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   .evidence-processor {
     /* Custom styles if needed */
   }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

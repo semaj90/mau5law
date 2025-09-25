@@ -9,27 +9,31 @@ https://svelte.dev/e/js_parse_error -->
   let searchQuery = $state('');
   $effect(() => {
     (async () => {
-try {
-      const response = await fetch('/api/statutes');
-      if (response.ok) {
-        laws = await response.json();
-      } else {
-        error = 'Failed to load laws';
-  }
-    } catch (err) {
-      error = 'Error loading laws';
-      console.error('Error:', err);
-    } finally {
-      loading = false;
-  }
+      try {
+        // removed unused response assignment
+        if (response.ok) {
+          laws = await response.json();
+        } else {
+          error = 'Failed to load laws';
+        }
+      } catch (err) {
+        error = 'Error loading laws';
+        console.error('Error:', err);
+      } finally {
+        loading = false;
+      }
     })();
   });
-  let filteredLaws = $derived(laws.filter(law =>
-    law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    law.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    law.code?.toLowerCase().includes(searchQuery.toLowerCase())
-  ));
+  let filteredLaws = $derived(
+    laws.filter(
+      law =>
+        law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        law.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        law.code?.toLowerCase().includes(searchQuery.toLowerCase()),
+    ),
+  );
 </script>
+
 <svelte:head>
   <title>Law Database - WardenNet</title>
 </svelte:head>
@@ -38,7 +42,7 @@ try {
     <h1 class="space-y-4">Law Database</h1>
     <a href="/law/add" class="space-y-4">
       <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
       </svg>
       Add Statute
     </a>
@@ -65,14 +69,24 @@ try {
   {:else if error}
     <div class="space-y-4">
       <svg xmlns="http://www.w3.org/2000/svg" class="space-y-4" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
       </svg>
       <span>{error}</span>
     </div>
   {:else if filteredLaws.length === 0}
     <div class="space-y-4">
       <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
       </svg>
       <h3 class="space-y-4">No laws found</h3>
       <p class="space-y-4">
@@ -92,11 +106,11 @@ try {
               <div class="space-y-4">{law.code || 'No Code'}</div>
             </h2>
             <p class="space-y-4">
-              {law.description ?
-                (law.description.length > 200 ?
-                  law.description.substring(0, 200) + '...' :
-                  law.description) :
-                'No description available'}
+              {law.description
+                ? law.description.length > 200
+                  ? law.description.substring(0, 200) + '...'
+                  : law.description
+                : 'No description available'}
             </p>
             {#if law.category}
               <div class="space-y-4">{law.category}</div>
@@ -113,3 +127,4 @@ try {
     </div>
   {/if}
 </div>
+;

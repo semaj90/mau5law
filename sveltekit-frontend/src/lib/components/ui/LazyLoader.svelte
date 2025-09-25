@@ -8,14 +8,14 @@
     key: string;
     fallback?: string;
     errorFallback?: string;
-    props?: { [key: string]: any };
+    props?: { [key: string]: any }
   }
   let {
     loader,
     key,
     fallback = 'Loading component...',
     errorFallback = 'Failed to load component',
-    props: componentProps = {}
+    props: componentProps = {},
   }: Props = $props();
   let Component = $state<any>(null);
   let isLoading = $state(true);
@@ -40,32 +40,23 @@
     loadComponent();
   }
 </script>
+
 {#if isLoading}
-  <AILoadingIndicator
-    isLoading={true}
-    title={fallback}
-    operation="processing"
-    size="md"
-    variant="inline"
-  />
+  <AILoadingIndicator isLoading={true} title={fallback} operation="processing" size="md" variant="inline" />
 {:else if error}
   <div class="lazy-load-error p-4 border border-red-200 dark:border-red-800 rounded-lg bg-red-50 dark:bg-red-950">
-    <h3 class="text-red-800 dark:text-red-200 font-semibold mb-2">
-      Component Error
-    </h3>
+    <h3 class="text-red-800 dark:text-red-200 font-semibold mb-2">Component Error</h3>
     <p class="text-red-600 dark:text-red-400 text-sm mb-3">
       {errorFallback}
     </p>
-    <button
-      onclick={retry}
-      class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
-    >
+    <button onclick={retry} class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors">
       Retry
     </button>
   </div>
 {:else if Component}
   <Component {...componentProps} />
 {/if}
+
 <style>
   .lazy-load-error {
     min-height: 100px;

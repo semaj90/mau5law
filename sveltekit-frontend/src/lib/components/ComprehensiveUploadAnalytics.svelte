@@ -79,7 +79,7 @@
     }
     return () => {
       uploadActor?.stop();
-    };
+    }
   });
   function initializeUploadAnalytics() {
     const userAnalytics: UserAnalytics = {
@@ -111,7 +111,7 @@
         workflowStage: 'discovery',
         expertise: expertiseLevel;
       }
-    };
+    }
     uploadActor = createUploadAnalyticsActor({
       userAnalytics
     });
@@ -136,7 +136,7 @@
         const wpm = Math.round((keyStrokes / 5) / (timeDiff / 60000));
         uploadActor?.send({
           type: 'USER_TYPING',
-          speed: wpm
+          speed: wpm;
           content: e.key;
         });
       }
@@ -159,21 +159,21 @@
         const scrollSpeed = Math.abs(window.scrollY) / (currentTime - lastScrollTime);
         uploadActor?.send({
           type: 'USER_SCROLL',
-          depth: scrollDepth
+          depth: scrollDepth;
           speed: scrollSpeed;
         });
       }
       lastScrollTime = currentTim;
     });
   }
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     if (target.files) {
       const files = Array.from(target.files);
       selectFiles(files);
     }
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     if (event.dataTransfer?.files) {
@@ -181,7 +181,7 @@
       selectFiles(files);
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }

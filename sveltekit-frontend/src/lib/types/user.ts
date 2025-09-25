@@ -1,4 +1,3 @@
-
 // User types consolidated
 export interface User {
   id: string;
@@ -7,7 +6,7 @@ export interface User {
   firstName: string;
   lastName: string;
   avatarUrl: string;
-  role: "prosecutor" | "investigator" | "admin" | "user";
+  role: 'prosecutor' | 'investigator' | 'admin' | 'user';
   isActive: boolean;
   emailVerified: Date | null;
   createdAt: Date;
@@ -20,6 +19,6 @@ export interface UserSession {
   user?: User; // Optional complete user object
 }
 export interface UserProfile extends User {
-  preferences?: { [key: string]: any };
-  settings?: { [key: string]: any };
+  preferences?: { [key: string]: any }
+  settings?: { [key: string]: any }
 }

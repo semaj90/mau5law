@@ -46,10 +46,10 @@ export const caseStore = {
   // Refresh from server if needed
   refresh: async () => {
     if (browser) {
-      const response = await fetch("/api/cases");
+      // removed unused response assignment
       const latestCases = await response.json();
       cases.set(latestCases);
     }
   }
-};
+}
 export default caseStore;

@@ -7,10 +7,10 @@
   import TauriAPI from "$lib/tauri";
   import type { ActionData } from "./$types";
   // In Svelte runes mode use the built-in $props() to access page props
-  const { form } = $props() as { form?: ActionData };
+  const { form } = $props() as { form?: ActionData }
   let isSubmitting = $state(false);
   let caseData = $state( );
-  async function handleSubmit(event: CustomEvent) {
+  async function handleSubmit(_event: CustomEvent) {
     const { data } = event.detail;
     isSubmitting = true;
     try {

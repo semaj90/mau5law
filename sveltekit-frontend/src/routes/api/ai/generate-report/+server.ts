@@ -260,4 +260,4 @@ function generateSectionContent(
   `
   )
 }
-export const POST = redisOptimized.documentProcessing(originalPOSTHandler)
+export const POST = redisOptimized.documentProcessing(originalPOSTHandler);

@@ -14,7 +14,13 @@ export async function ensureContext7Ready(opts?: unknown) {
     return null;
   }
 }
-export async function performContext7Search(options: { query: string; maxResults?: number; confidenceThreshold?: number; includeCode?: boolean; includeDocs?: boolean; } ) {
+export async function performContext7Search(_options: {
+  query: string;
+  maxResults?: number;
+  confidenceThreshold?: number;
+  includeCode?: boolean;
+  includeDocs?: boolean;
+}) {
   const impl = await ensureContext7Ready();
   if (!impl || typeof (impl as { performSearch?: (...args: unknown[]) => unknown }).performSearch !== 'function') {
     // mock fallback: do a trivial in-memory search stub
@@ -24,7 +30,7 @@ export async function performContext7Search(options: { query: string; maxResults
     }
     return results;
   }
-  return (impl as { performSearch: (options: unknown) => unknown }).performSearch(options);
+  return (impl as { performSearch: (_options: unknown) => unknown }).performSearch(options);
 }
 // Minimal agent orchestrator wrapper. The real implementation exposes methods like
 // triggerAgent, logAuditEntry, getAuditLog. The mock will be a small in-memory shim.
@@ -33,7 +39,7 @@ export const context7AgentOrchestrator = {
     const impl = await ensureContext7Ready();
     if (!impl || typeof (impl as any).triggerAgent !== 'function') {
       // mock behavior: echo back a completed trigger
-      return { ...trigger, result: `Mocked trigger for ${trigger.todoId || 'unknown'}`, status: 'completed' };
+      return { ...trigger, result: `Mocked trigger for ${trigger.todoId || 'unknown'}`, status: 'completed' }
     }
     return (impl as any).triggerAgent(trigger);
   },
@@ -42,31 +48,33 @@ export const context7AgentOrchestrator = {
     (async () => {
       const impl = await ensureContext7Ready();
       if (impl && typeof (impl as { logAuditEntry?: (...args: unknown[]) => unknown }).logAuditEntry === 'function') {
-        try { (impl as unknown).logAuditEntry?.(entry); } catch { /* Intentionally ignore audit errors */ }
+        try {
+          (impl as unknown).logAuditEntry?.(entry);
+        } catch {
+          /* Intentionally ignore audit errors */
+        }
       }
     })();
   },
   getAuditLog() {
     // real impl or empty
     return [] as any[];
-  }
-};
+  },
+}
 // Semantic auditor wrapper
 export const context7SemanticAuditor = {
   async performSemanticAudit(component: string) {
     const impl = await ensureContext7Ready();
     if (!impl || typeof (impl as any).performSemanticAudit !== 'function') {
       // return a small mocked audit result set
-      return [
-        { id: 'mock-1', step: 'init-scan', status: 'ok', message: 'Mocked audit step', suggestedFix: null }
-      ];
+      return [{ id: 'mock-1', step: 'init-scan', status: 'ok', message: 'Mocked audit step', suggestedFix: null }];
     }
     return (impl as any).performSemanticAudit(component);
-  }
-};
+  },
+}
 export default {
   ensureContext7Ready,
   performContext7Search,
   context7AgentOrchestrator,
-  context7SemanticAuditor
-};
+  context7SemanticAuditor,
+}

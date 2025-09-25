@@ -13,7 +13,7 @@ async function testSearchAPI() {
   // Test 1: Health check
   console.log('1. Testing search health check...');
   try {
-    const response = await fetch(`${BASE_URL}/api/rag/search?action=health`);
+    // removed unused response assignment
     const result = await response.json();
     console.log('✅ Health check:', result.success ? 'PASSED' : 'FAILED');
     console.log('   Database connected:', result.database?.connected);
@@ -28,7 +28,7 @@ async function testSearchAPI() {
   // Test 2: Stats check
   console.log('2. Testing search statistics...');
   try {
-    const response = await fetch(`${BASE_URL}/api/rag/search?action=stats`);
+    // removed unused response assignment
     const result = await response.json();
     console.log('✅ Stats check:', result.success ? 'PASSED' : 'FAILED');
     console.log('   Documents:', result.stats?.documents);

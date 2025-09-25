@@ -40,14 +40,14 @@ export interface QLoRAProtobufTopologyResponse {
       nodes: number;
       edges: number;
       connectivity: number;
-    };
-  };
+    }
+  }
   accuracy: number;
   topology: {
     structure: string;
     complexity: number;
     patternMatch: number;
-  };
+  }
   cacheHit: boolean;
   processingTime: number;
   metrics: QLoRAProtobufMetrics;
@@ -57,7 +57,7 @@ export interface QLoRAProtobufTopologyResponse {
     originalSize: number;
     compressedSize: number;
     encoding: 'gzip' | 'brotli' | 'lz4';
-  };
+  }
 }
 /**
  * Binary serialization utilities for protobuf-like encoding
@@ -74,7 +74,7 @@ export class QLoRABinaryCodec {
         return {
           __type: 'Float32Array',
           data: Array.from(value)
-        };
+        }
       }
       return value;
     });
@@ -110,7 +110,7 @@ export class QLoRABinaryCodec {
       originalSize,
       compressedSize,
       compressionRatio: Math.round((originalSize / compressedSize) * 100) / 100
-    };
+    }
   }
 }
 /**
@@ -129,7 +129,7 @@ export class QLoRANetworkCacheKey {
       topologyType: request.topologyType,
       accuracyTarget: request.accuracyTarget,
       trainingMode: request.trainingMode
-    };
+    }
     const hash = crypto.createHash('sha256');
     hash.update(JSON.stringify(cacheableParams);
     return `qlora:neural:${hash.digest('hex').substring(0, 16)}`;
@@ -171,7 +171,7 @@ export class QLoRAPerformanceMonitor {
     }
   }
   static getAverageMetrics(): Partial<QLoRABinaryPerformanceMetrics> {
-    if (this.metrics.length === 0) return {};
+    if (this.metrics.length === 0) return {}
     const totals = this.metrics.reduce((acc, m) => ({
       requestSize: acc.requestSize + m.requestSize,
       responseSize: acc.responseSize + m.responseSize,
@@ -192,6 +192,6 @@ export class QLoRAPerformanceMonitor {
       compressionRatio: Math.round((totals.compressionRatio / count) * 100) / 100,
       processingTime: Math.round(totals.processingTime / count),
       cacheHit: totals.cacheHitRate / count > 0.5
-    };
+    }
   }
 }

@@ -33,7 +33,7 @@ export class FocusManager {
           firstElement?.focus();
         }
       }
-    };
+    }
     container.addEventListener("keydown", handleTabKey);
     // Return cleanup function
     return () => {
@@ -49,7 +49,7 @@ export class FocusManager {
         this.originalActiveElement.focus();
         this.originalActiveElement = null;
       }
-    };
+    }
   }
   static getFocusableElements(container: HTMLElement): HTMLElement[] {
     const focusableSelectors = [
@@ -83,7 +83,7 @@ export class FocusManager {
     }
   }
   static announceToScreenReader(
-    message: string
+    message: string;
     priority: "polite" | "assertive" = "polite";
   ) {
     const announcement = document.createElement("div");
@@ -119,7 +119,7 @@ export class FocusManager {
       progress: `File upload in progress${context ? ` for ${context}` : ''}`,
       complete: `File upload completed successfully${context ? ` for ${context}` : ''}`,
       error: `File upload failed${context ? ` for ${context}` : ''}`
-    };
+    }
     const priority = stage === 'error' ? 'assertive' : 'polite';
     this.announceToScreenReader(messages[stage], priority);
   }
@@ -133,7 +133,7 @@ export class FocusManager {
       generating: `Generating${context ? ` ${context}` : ''}, please wait...`,
       complete: `Processing completed${context ? ` for ${context}` : ''}`,
       error: `Processing failed${context ? ` for ${context}` : ''}`
-    };
+    }
     const priority = stage === 'error' ? 'assertive' : 'polite';
     this.announceToScreenReader(messages[stage], priority);
   }
@@ -143,7 +143,7 @@ export class KeyboardNavigation {
   static handleArrowKeys(
     elements: HTMLElement[]
     currentIndex: number
-    key: string
+    key: string;
     orientation: "horizontal" | "vertical" = "horizontal";
   ): number {
     let newIndex = currentIndex;
@@ -192,7 +192,7 @@ export class KeyboardNavigation {
       el.setAttribute("tabindex", index === 0 ? "0" : "-1");
     });
   const handleKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement;
+      // removed unused target assignment
       const index = elements.indexOf(target);
       if (index === -1) return;
       let handled = false;
@@ -207,11 +207,11 @@ export class KeyboardNavigation {
       if (handled) {
         e.preventDefault();
       }
-    };
+    }
     container.addEventListener("keydown", handleKeyDown);
     return () => {
       container.removeEventListener("keydown", handleKeyDown);
-    };
+    }
   }
 }
 // Color contrast utilities
@@ -295,7 +295,7 @@ export class AriaUtils {
   }
   static linkElements(
     trigger: HTMLElement
-    target: HTMLElement
+    target: HTMLElement;
     relationship: string;
   ) {
     const id = target.id || this.generateId();
@@ -344,7 +344,7 @@ export class MotionUtils {
   }
   static createResponsiveAnimation(
     element: HTMLElement
-    animation: Keyframe[] | PropertyIndexedKeyframes
+    animation: Keyframe[] | PropertyIndexedKeyframes;
     options: KeyframeAnimationOptions;
   ): Animation | null {
     if (this.prefersReducedMotion()) {

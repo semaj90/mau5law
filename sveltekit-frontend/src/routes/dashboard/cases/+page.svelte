@@ -29,6 +29,7 @@
   ]);
   let searchQuery = $state('');
 </script>
+
 <svelte:head>
   <title>Cases Dashboard - YoRHa Legal AI</title>
 </svelte:head>
@@ -67,15 +68,14 @@
           </div>
         </div>
         <div class="case-actions">
-          <ButtonBits to="/evidenceboard?case={case_.id}" variant="primary" size="sm">
-            🔍 Evidence Board
-          </ButtonBits>
+          <ButtonBits to="/evidenceboard?case={case_.id}" variant="primary" size="sm">🔍 Evidence Board</ButtonBits>
           <ButtonBits variant="ghost" size="sm">📝 Details</ButtonBits>
         </div>
       </CardBits>
     {/each}
   </div>
 </div>
+
 <style>
   .cases-dashboard {
     max-width: 1200px;

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on component;
@@ -23,7 +23,7 @@ https://svelte.dev/e/component_invalid_directive -->
   let editor = $state<Editor | null >(null);
   let editorElement = $state({}) {
     editor = new Editor({
-      element: editorElement
+      element: editorElement;
       extensions: [StarterKit],
       content,
       editorProps: {

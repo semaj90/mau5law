@@ -185,7 +185,7 @@ async function performVectorSearch(params: {
   embedding: number[]
   limit: number
   threshold: number
-  includeMetadata: boolean
+  includeMetadata: boolean;
   filters: any
   searchMethod: string
   useCUDA: boolean

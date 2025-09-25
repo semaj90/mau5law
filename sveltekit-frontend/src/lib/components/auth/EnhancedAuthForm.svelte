@@ -36,7 +36,7 @@
     rememberMe: false;
   });
   let formState = $state({
-    loading: false
+    loading: false;
     error: '',
     success: '',
     passwordStrength: 0,
@@ -66,7 +66,7 @@
         passwordsMatch,
         hasName,
         termsAccepted
-      };
+      }
     }
     return {
       isValid: hasValidEmail && formData.password.length >= 6,
@@ -75,7 +75,7 @@
       passwordsMatch: true
       hasName: true
       termsAccepted: true
-    };
+    }
   });
   // Password strength calculation
   let passwordStrength = $derived(() => {
@@ -105,7 +105,7 @@
     }
   }
   // Enhanced form submission with comprehensive security
-  async function handleSubmit(event: Event) {
+  async function handleSubmit(_event: Event) {
     const form = event.target as HTMLFormElement;
     formState.loading = true;
     formState.error = '';
@@ -119,7 +119,7 @@
         userAgent: navigator.userAgent,
         ipAddress: await getClientIP(),
         passwordStrength: passwordStrength;
-      };
+      }
       // AI-powered security analysis
       const securityAnalysis = await mcpGPUOrchestrator.routeAPIRequest(
         '/api/security/analyze-login-attempt',
@@ -171,7 +171,7 @@
   // Helper functions
   async function getClientIP(): Promise<string> {
     try {
-      const response = await fetch('/api/client-ip');
+      // removed unused response assignment
       const data = await (response as { json?: any; ok?: any }).json();
       return (data as { ip?: any }).ip || 'unknown';
     } catch {
@@ -185,7 +185,7 @@
         {
           includeRAG: false
           includeGraph: true
-          generateSummary: false
+          generateSummary: false;
           metadata: { context, result }
         }
       );
@@ -202,9 +202,9 @@
       lastName: '',
       acceptTerms: false
       rememberMe: false;
-    };
+    }
     formState = {
-      loading: false
+      loading: false;
       error: '',
       success: '',
       passwordStrength: 0,
@@ -212,7 +212,7 @@
       showConfirmPassword: false
       emailExists: false
       verificationSent: false;
-    };
+    }
   }
   function toggleMode() {
     mode = mode === 'login' ? 'register' : 'login';

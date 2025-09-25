@@ -86,16 +86,16 @@ await initializeMCPConnection();
   			wsConnection = new WebSocket('ws://localhost:40000')
   			wsConnection.onopen = () => {
   				console.log('📡 WebSocket connected for real-time updates');
-  			};
+  			}
   			wsConnection.onmessage = (event) => {
   				const data = JSON.parse(event.data);
   				handleRealtimeUpdate(data);
-  			};
+  			}
   			wsConnection.onclose = () => {
   				console.log('📡 WebSocket disconnected');
   				// Attempt reconnection after 5 seconds
   				setTimeout(setupWebSocketConnection, 5000);
-  			};
+  			}
   		} catch (error) {
   			console.error('WebSocket connection failed:', error);
   		}
@@ -148,7 +148,7 @@ await initializeMCPConnection();
   						entities: [
   							{
   								type: 'case',
-  								id: caseId
+  								id: caseId;
   								properties: {
   									analyzed_at: new Date().toISOString(),
   									source: 'enhanced_mcp_integration';
@@ -309,133 +309,197 @@ await initializeMCPConnection();
   			? { query: queryInput }
   			: selectedTool.includes('context7')
   			? { libraryName: queryInput }
-  			: { prompt: queryInput, context: 'sveltekit_frontend' };
+  			: { prompt: queryInput, context: 'sveltekit_frontend' }
   		await executeMCPTool(selectedTool, args);
   		queryInput = '';
   	}
 </script>
+
 <div class="enhanced-mcp-integration">
-	<div class="mcp-header">
-		<h2 class="mcp-title">
-			🤖 Enhanced MCP Integration
-			<span class="status-indicator status-{$mcpStatus}"></span>
-		</h2>
-		<div class="connection-status">
-			Status: <span class="status-text">{$mcpStatus}</span>
-		</div>
-	</div>
-	{#if showMetrics && $mcpStatus === 'connected'}
-		<div class="cluster-metrics">
-			<h3>📊 Cluster Performance Metrics</h3>
-			<div class="metrics-grid">
-				<div class="metric">
-					<span class="metric-label">Active Workers</span>
-					<span class="metric-value">{$clusterMetrics.activeWorkers}</span>
-				</div>
-				<div class="metric">
-					<span class="metric-label">Total Requests</span>
-					<span class="metric-value">{$clusterMetrics.totalRequests.toLocaleString()}</span>
-				</div>
-				<div class="metric">
-					<span class="metric-label">Success Rate</span>
-					<span class="metric-value">{($clusterMetrics.successRate * 100).toFixed(1)}%</span>
-				</div>
-				<div class="metric">
-					<span class="metric-label">Avg Response</span>
-					<span class="metric-value">{$clusterMetrics.averageResponseTime.toFixed(0)}ms</span>
-				</div>
-				<div class="metric">
-					<span class="metric-label">Cache Hit Rate</span>
-					<span class="metric-value">{($clusterMetrics.cacheHitRate * 100).toFixed(1)}%</span>
-				</div>
-			</div>
-		</div>
-	{/if}
-	<div class="mcp-interface">
-		<div class="query-section">
-			<h3>🔍 MCP Query Interface</h3>
-			<div class="query-form">
-				<select bind:value={selectedTool} class="tool-selector">
-					<option value="">Select MCP Tool</option>
-					{#each availableMCPTools as tool}
-						<option value={tool.id}>{tool.name} - {tool.description}</option>
-					{/each}
-				</select>
-				<input ;
-					bind:value={queryInput}
-					placeholder="Enter your query..."
-					class="query-input"
-					onkeydown={(e) => e.key === 'Enter' && executeQuery()}
-				/>
-				<button
-					onclick={executeQuery}
-					disabled={!queryInput.trim() || !selectedTool || isProcessing}
-					class="execute-button"
-				>
-					{isProcessing ? '⏳ Processing...' : '🚀 Execute'}
-				</button>
-			</div>
-		</div>
-		<div class="suggestions-section">
-			<h3>💡 Contextual Suggestions</h3>
-			<div class="suggestions-list">
-				{#each $contextualSuggestions as suggestion}
-					<button
-						class="suggestion-item suggestion-{suggestion.priority}"
-						onclick={suggestion.action}
-						disabled={isProcessing}
-					>
-						<div class="suggestion-title">{suggestion.title}</div>
-						<div class="suggestion-description">{suggestion.description}</div>
-						<div class="suggestion-type">{suggestion.type}</div>
-					</button>
-				{/each}
-			</div>
-		</div>
-		<div class="tools-status">
-			<h3>🛠️ MCP Tools Status</h3>
-			<div class="tools-grid">
-				{#each $mcpTools as tool}
-					<div class="tool-card tool-{tool.status}">
-						<div class="tool-name">{tool.name}</div>
-						<div class="tool-stats">
-							<span class="success-count">✅ {tool.successCount}</span>
-							<span class="error-count">❌ {tool.errorCount}</span>
-						</div>
-						<div class="tool-status">Status: {tool.status}</div>
-						{#if tool.lastUsed}
-							<div class="last-used">
-								Last used: {tool.lastUsed.toLocaleTimeString()}
-							</div>
-						{/if}
-					</div>
-				{/each}
-			</div>
-		</div>
-		<div class="results-section">
-			<h3>📋 Recent Query Results</h3>
-			<div class="results-list">
-				{#each $queryResults as result}
-					<div class="result-item result-{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).success ? 'success' : 'error'}">
-						<div class="result-header">
-							<span class="result-source">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).source}</span>
-							<span class="result-time">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).responseTime}ms</span>
-							<span class="result-timestamp">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).timestamp.toLocaleTimeString()}</span>
-						</div>
-						<div class="result-query">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).query}</div>
-						<div class="result-content">
-							{#if (result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).success}
-								<pre>{JSON.stringify((result as any).result, null, 2)}</pre>
-							{:else}
-								<div class="error-message">Error: {(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).result.error}</div>
-							{/if}
-						</div>
-					</div>
-				{/each}
-			</div>
-		</div>
-	</div>
+  <div class="mcp-header">
+    <h2 class="mcp-title">
+      🤖 Enhanced MCP Integration
+      <span class="status-indicator status-{$mcpStatus}"></span>
+    </h2>
+    <div class="connection-status">
+      Status: <span class="status-text">{$mcpStatus}</span>
+    </div>
+  </div>
+  {#if showMetrics && $mcpStatus === 'connected'}
+    <div class="cluster-metrics">
+      <h3>📊 Cluster Performance Metrics</h3>
+      <div class="metrics-grid">
+        <div class="metric">
+          <span class="metric-label">Active Workers</span>
+          <span class="metric-value">{$clusterMetrics.activeWorkers}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Total Requests</span>
+          <span class="metric-value">{$clusterMetrics.totalRequests.toLocaleString()}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Success Rate</span>
+          <span class="metric-value">{($clusterMetrics.successRate * 100).toFixed(1)}%</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Avg Response</span>
+          <span class="metric-value">{$clusterMetrics.averageResponseTime.toFixed(0)}ms</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Cache Hit Rate</span>
+          <span class="metric-value">{($clusterMetrics.cacheHitRate * 100).toFixed(1)}%</span>
+        </div>
+      </div>
+    </div>
+  {/if}
+  <div class="mcp-interface">
+    <div class="query-section">
+      <h3>🔍 MCP Query Interface</h3>
+      <div class="query-form">
+        <select bind:value={selectedTool} class="tool-selector">
+          <option value="">Select MCP Tool</option>
+          {#each availableMCPTools as tool}
+            <option value={tool.id}>{tool.name} - {tool.description}</option>
+          {/each}
+        </select>
+        <input
+          ;
+          bind:value={queryInput}
+          placeholder="Enter your query..."
+          class="query-input"
+          onkeydown={e => e.key === 'Enter' && executeQuery()}
+        />
+        <button
+          onclick={executeQuery}
+          disabled={!queryInput.trim() || !selectedTool || isProcessing}
+          class="execute-button"
+        >
+          {isProcessing ? '⏳ Processing...' : '🚀 Execute'}
+        </button>
+      </div>
+    </div>
+    <div class="suggestions-section">
+      <h3>💡 Contextual Suggestions</h3>
+      <div class="suggestions-list">
+        {#each $contextualSuggestions as suggestion}
+          <button
+            class="suggestion-item suggestion-{suggestion.priority}"
+            onclick={suggestion.action}
+            disabled={isProcessing}
+          >
+            <div class="suggestion-title">{suggestion.title}</div>
+            <div class="suggestion-description">{suggestion.description}</div>
+            <div class="suggestion-type">{suggestion.type}</div>
+          </button>
+        {/each}
+      </div>
+    </div>
+    <div class="tools-status">
+      <h3>🛠️ MCP Tools Status</h3>
+      <div class="tools-grid">
+        {#each $mcpTools as tool}
+          <div class="tool-card tool-{tool.status}">
+            <div class="tool-name">{tool.name}</div>
+            <div class="tool-stats">
+              <span class="success-count">✅ {tool.successCount}</span>
+              <span class="error-count">❌ {tool.errorCount}</span>
+            </div>
+            <div class="tool-status">Status: {tool.status}</div>
+            {#if tool.lastUsed}
+              <div class="last-used">
+                Last used: {tool.lastUsed.toLocaleTimeString()}
+              </div>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    </div>
+    <div class="results-section">
+      <h3>📋 Recent Query Results</h3>
+      <div class="results-list">
+        {#each $queryResults as result}
+          <div
+            class="result-item result-{(
+              result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }
+            ).success
+              ? 'success'
+              : 'error'}"
+          >
+            <div class="result-header">
+              <span class="result-source"
+                >{(
+                  result as {
+                    success?: any;
+                    source?: any;
+                    responseTime?: any;
+                    timestamp?: any;
+                    query?: any;
+                    result?: any;
+                  }
+                ).source}</span
+              >
+              <span class="result-time"
+                >{(
+                  result as {
+                    success?: any;
+                    source?: any;
+                    responseTime?: any;
+                    timestamp?: any;
+                    query?: any;
+                    result?: any;
+                  }
+                ).responseTime}ms</span
+              >
+              <span class="result-timestamp"
+                >{(
+                  result as {
+                    success?: any;
+                    source?: any;
+                    responseTime?: any;
+                    timestamp?: any;
+                    query?: any;
+                    result?: any;
+                  }
+                ).timestamp.toLocaleTimeString()}</span
+              >
+            </div>
+            <div class="result-query">
+              {(
+                result as {
+                  success?: any;
+                  source?: any;
+                  responseTime?: any;
+                  timestamp?: any;
+                  query?: any;
+                  result?: any;
+                }
+              ).query}
+            </div>
+            <div class="result-content">
+              {#if (result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).success}
+                <pre>{JSON.stringify((result as any).result, null, 2)}</pre>
+              {:else}
+                <div class="error-message">
+                  Error: {(
+                    result as {
+                      success?: any;
+                      source?: any;
+                      responseTime?: any;
+                      timestamp?: any;
+                      query?: any;
+                      result?: any;
+                    }
+                  ).result.error}
+                </div>
+              {/if}
+            </div>
+          </div>
+        {/each}
+      </div>
+    </div>
+  </div>
 </div>
+
 <style>
 	.enhanced-mcp-integration {
 		background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);

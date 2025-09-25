@@ -93,7 +93,7 @@ export interface EvidenceFilter {
   type?: string[];
   confidentiality_level?: string[];
   priority?: string[];
-  date_range?: { start: string; end: string };
+  date_range?: { start: string; end: string }
   collected_by?: string[];
   tags?: string[];
   search_text?: string;
@@ -178,7 +178,7 @@ const createEvidenceStore = () => {
       const evidenceData = (await response.json().catch(() => ({}))) as {
         evidence?: Evidence[];
         stats?: EvidenceStats | null;
-      };
+      }
       const evidenceList: Evidence[] = evidenceData.evidence || [];
       const stats: EvidenceStats = evidenceData.stats || null;
       // Validate evidence integrity
@@ -188,7 +188,7 @@ const createEvidenceStore = () => {
         evidence: evidenceList
         filtered_evidence: evidenceList
         stats,
-        isLoading: false
+        isLoading: false;
         error: null
       }));
       // Log access for audit trail
@@ -200,11 +200,11 @@ const createEvidenceStore = () => {
         ...state,
         evidence: [],
         filtered_evidence: [],
-        isLoading: false
+        isLoading: false;
         error: message
       }));
     }
-  };
+  }
   // QUIC tensor streaming for evidence embeddings (browser-only, no-SSR)
   type TensorEnvelope = {
     kind: 'embedding';
@@ -215,7 +215,7 @@ const createEvidenceStore = () => {
     vector: number[];
     // Optional metadata
     createdAt: string;
-  };
+  }
   class QUICTensorStream {
     private writer: WritableStreamDefaultWriter<Uint8Array> | null = null;
     private connected = false;
@@ -289,7 +289,7 @@ const createEvidenceStore = () => {
         dim: ev.embedding.length,
         vector: ev.embedding,
         createdAt: new Date().toISOString(),
-      };
+      }
       streamedEmbeddingIds.add(ev.id);
       quicStream.sendEnvelope(envelope).catch(() => {
         // If send fails, allow retry later
@@ -334,17 +334,17 @@ const createEvidenceStore = () => {
           location: newEvidenceData.location_collected,
           purpose: 'Evidence collection for case investigation',
           notes: `Evidence "${newEvidenceData.title}" added to case system`,
-        };
+        }
         const evidencePayload = {
           ...newEvidenceData,
           caseId: currentCaseId
           chain_of_custody: [initialChainEntry],
           access_log: [],
-          x: Math.random() * 500, // Default canvas position
+          x: Math.random() * 500, // Default canvas position;
           y: Math.random() * 500,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        };
+        }
         const response = await fetch('/api/evidence', {
           method: 'POST',
           headers: {
@@ -399,14 +399,14 @@ const createEvidenceStore = () => {
               ...item,
               ...updates,
               updated_at: new Date().toISOString(),
-            };
+            }
             // Add chain of custody entry if provided
             if (chainOfCustodyAction) {
               const chainEntry: ChainOfCustodyEntry = {
                 id: `chain_${Date.now()}`,
                 timestamp: new Date().toISOString(),
                 ...chainOfCustodyAction,
-              };
+              }
               updated.chain_of_custody = [...updated.chain_of_custody, chainEntry];
             }
             return updated;
@@ -417,10 +417,10 @@ const createEvidenceStore = () => {
           ...state,
           evidence: updatedEvidence
           filtered_evidence: applyFilter(updatedEvidence, state.current_filter),
-        };
+        }
       });
       try {
-        const payload: Record<string, unknown> = { ...updates };
+        const payload: Record<string, unknown> = { ...updates }
         if (chainOfCustodyAction) {
           payload.chain_of_custody_action = chainOfCustodyAction;
         }
@@ -467,7 +467,7 @@ const createEvidenceStore = () => {
           ...state,
           evidence: newList
           filtered_evidence: applyFilter(newList, state.current_filter),
-        };
+        }
       });
       try {
         const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -545,7 +545,7 @@ const createEvidenceStore = () => {
           ...state,
           current_filter: filter
           filtered_evidence: filtered
-        };
+        }
       });
     },
     // Search evidence
@@ -557,7 +557,7 @@ const createEvidenceStore = () => {
         case_sensitive?: boolean;
       }
     ) => {
-      const { include_content = true, include_notes = true, case_sensitive = false } = options || {};
+      const { include_content = true, include_notes = true, case_sensitive = false } = options || {}
       update(state => {
         const searchTerm = case_sensitive ? query : query.toLowerCase();
         const filtered = state.evidence.filter(evidence => {
@@ -582,7 +582,7 @@ const createEvidenceStore = () => {
           ...state,
           filtered_evidence: filtered
           current_filter: { search_text: query },
-        };
+        }
       });
     },
     // Select evidence for detailed view
@@ -596,7 +596,7 @@ const createEvidenceStore = () => {
         return {
           ...state,
           selected_evidence: selected
-        };
+        }
       });
     },
     // Chain of custody operations
@@ -736,8 +736,8 @@ const createEvidenceStore = () => {
         throw err;
       }
     },
-  };
-};
+  }
+}
 // Helper functions
 function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evidence[] {
   if (!filter) return evidence;
@@ -858,7 +858,7 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
     encrypted_count: 0,
     total_file_size: 0,
     average_relevance_score: 0,
-  };
+  }
   let totalRelevanceScore = 0;
   let relevanceScoreCount = 0;
   for (const item of evidence) {
@@ -883,7 +883,7 @@ export function validateChainOfCustody(evidence: Evidence): { valid: boolean; is
   const chain = evidence.chain_of_custody;
   if (chain.length === 0) {
     issues.push('No chain of custody entries found');
-    return { valid: false, issues };
+    return { valid: false, issues }
   }
   for (let i = 1; i < chain.length; i++) {
     const prev = new Date(chain[i - 1].timestamp);
@@ -895,7 +895,7 @@ export function validateChainOfCustody(evidence: Evidence): { valid: boolean; is
     if (!entry.person) issues.push(`Missing person information at entry ${i + 1}`);
     if (!entry.action) issues.push(`Missing action information at entry ${i + 1}`);
   }
-  return { valid: issues.length === 0, issues };
+  return { valid: issues.length === 0, issues }
 }
 // Default export retained for compatibility
 export default evidenceStore;

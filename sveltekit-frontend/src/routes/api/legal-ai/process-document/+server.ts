@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { URL } from "url"
+
 import { queueDocumentProcessing, getJobStatus, getQueueStats, type DocumentProcessingJobData } from "$lib/services/queue-service"
 import type { RequestHandler } from './$types.js'
 // Types for Go server integration (kept for compatibility)
@@ -40,7 +40,7 @@ export interface RiskAssessment {
 	overall_risk: string
 	risk_score: number
 	risk_factors: string[]
-	recommendations: string[]
+	recommendations: string[];
 	confidence: number
 }
 // Configuration

@@ -37,29 +37,16 @@
     }
   }
 </script>
+
 {#if href}
   <DropdownMenu.Item asChild>
-    <a
-      {href}
-      class={itemClasses}
-      data-disabled={disabled ? '' : undefined}
-      onclick={handleClick}
-    >
+    <a {href} class={itemClasses} data-disabled={disabled ? '' : undefined} onclick={handleClick}>
       {@render children?.()}
     </a>
   </DropdownMenu.Item>
 {:else}
-  <DropdownMenu.Item
-    class={itemClasses}
-    {disabled}
-    onSelect={onselect}
-  >
-    <button
-      type="button"
-      class="flex w-full items-center gap-2 text-left"
-      onclick={handleClick}
-      {disabled}
-    >
+  <DropdownMenu.Item class={itemClasses} {disabled} onSelect={onselect}>
+    <button type="button" class="flex w-full items-center gap-2 text-left" onclick={handleClick} {disabled}>
       {@render children?.()}
     </button>
   </DropdownMenu.Item>

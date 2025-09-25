@@ -47,7 +47,7 @@ export async function integrateLegalChatWithWebGPU() {
           webgpuBuffer: (result as { buffer?: any; compressionStats?: any; processingTime?: any }).buffer,
           compressionStats: (result as { buffer?: any; compressionStats?: any; processingTime?: any }).compressionStats,
           processingTime: (result as { buffer?: any; compressionStats?: any; processingTime?: any }).processingTime
-        };
+        }
       })
     );
     console.log('✅ Legal chat WebGPU integration complete:', {
@@ -207,7 +207,7 @@ export async function enableRealTimeLegalAnalysis() {
       originalTexts: legalTextSamples
       processedEmbeddings,
       isWebGPUAccelerated: processedEmbeddings.some(e => !(e instanceof Float32Array)
-    };
+    }
   } catch (error) {
     console.error('❌ Real-time legal analysis setup failed:', error);
     return null;
@@ -235,9 +235,9 @@ export async function setupLegalAIPerformanceMonitoring() {
     // Set up periodic monitoring (in a real app, you'd use setInterval)
     const monitoringData = {
       timestamp: new Date().toISOString(),
-      stats: performanceStats
+      stats: performanceStats;
       recommendations: generatePerformanceRecommendations(performanceStats)
-    };
+    }
     return monitoringData;
   } catch (error) {
     console.error('❌ Performance monitoring setup failed:', error);
@@ -287,7 +287,7 @@ export class ProgressiveLegalAIEnhancement {
       webgpuAvailable: this.webgpuAvailable,
       fallbackMode: this.fallbackMode,
       enhancementActive: this.webgpuAvailable && !this.fallbackMode
-    };
+    }
   }
 }
 // Helper functions
@@ -325,5 +325,5 @@ export const clientIntegrationExamples = {
   enableRealTimeLegalAnalysis,
   setupLegalAIPerformanceMonitoring,
   ProgressiveLegalAIEnhancement
-};
+}
 export default clientIntegrationExamples;

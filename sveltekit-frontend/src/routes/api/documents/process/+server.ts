@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types.js'
  * Endpoint for complete document processing pipeline
  */
 import { unifiedDocumentProcessor, type DocumentProcessingConfig } from "$lib/services/unified-document-processor.js"
-import { URL } from "url"
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
     console.log('📄 Starting unified document processing request...')

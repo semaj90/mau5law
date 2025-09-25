@@ -1,41 +1,43 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import TauriAPI from "$lib/tauri";
-  import type { Report } from "$lib/types/index";
-  import { onMount } from "svelte";
+  import TauriAPI from '$lib/tauri';
+  import type { Report } from '$lib/types/index';
+  import { onMount } from 'svelte';
   let reports: Report[] = $state([]);
   let loading = $state(true);
   let error: string | null = $state(null);
   $effect(() => {
     (async () => {
-try {
-      reports = await TauriAPI.getReports();
-    } catch (err) {
-      error = "Error loading reports";
-      console.error("Error:", err);
-    } finally {
-      loading = false;
-  }
+      try {
+        reports = await TauriAPI.getReports();
+      } catch (err) {
+        error = 'Error loading reports';
+        console.error('Error:', err);
+      } finally {
+        loading = false;
+      }
     })();
   });
   function formatDate(date: Date | string) {
     if (typeof date === 'string') {
       return new Date(date).toLocaleDateString();
-  }
+    }
     return date.toLocaleDateString();
   }
   function getStatusBadgeClass(status: string) {
     switch (status) {
-      case "published":
-        return "badge-success";
-      case "draft":
-        return "badge-warning";
-      case "archived":
-        return "badge-neutral";
+      case 'published':
+        return 'badge-success';
+      case 'draft':
+        return 'badge-warning';
+      case 'archived':
+        return 'badge-neutral';
       default:
-        return "badge-info";
-  }}
+        return 'badge-info';
+    }
+  }
 </script>
+
 <svelte:head>
   <title>Reports - Legal Case Management</title>
 </svelte:head>
@@ -43,18 +45,8 @@ try {
   <div class="space-y-4">
     <h1 class="space-y-4">Reports</h1>
     <a href="/report-builder" class="space-y-4">
-      <svg
-        class="space-y-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-        />
+      <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
       </svg>
       New Report
     </a>
@@ -66,12 +58,7 @@ try {
     </div>
   {:else if error}
     <div class="space-y-4">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="space-y-4"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg" class="space-y-4" fill="none" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -83,12 +70,7 @@ try {
     </div>
   {:else if reports.length === 0}
     <div class="space-y-4">
-      <svg
-        class="space-y-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
+      <svg class="space-y-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -97,23 +79,11 @@ try {
         />
       </svg>
       <h3 class="space-y-4">No reports</h3>
-      <p class="space-y-4">
-        Get started by creating a new report.
-      </p>
+      <p class="space-y-4">Get started by creating a new report.</p>
       <div class="space-y-4">
         <a href="/report-builder" class="space-y-4">
-          <svg
-            class="space-y-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
           New Report
         </a>
@@ -127,9 +97,7 @@ try {
             <div class="space-y-4">
               <div class="space-y-4">
                 <h2 class="space-y-4">
-                  <a href="/reports/{report.id}" class="space-y-4"
-                    >{report.title}</a
-                  >
+                  <a href="/reports/{report.id}" class="space-y-4">{report.title}</a>
                 </h2>
                 <p class="space-y-4">{report.summary}</p>
                 <div class="space-y-4">
@@ -149,35 +117,20 @@ try {
                 {/if}
               </div>
               <div class="space-y-4">
-                <span class="space-y-4"
-                  >{report.status}</span
-                >
+                <span class="space-y-4">{report.status}</span>
                 <div class="space-y-4">
-                  <button
-                    tabindex={0}
-                    class="space-y-4"
-                    aria-label="Actions menu"
-                  >
-                    <svg
-                      class="space-y-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
+                  <button tabindex={0} class="space-y-4" aria-label="Actions menu">
+                    <svg class="space-y-4" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
                       />
                     </svg>
                   </button>
-                  <ul
-                    class="space-y-4"
-                  >
+                  <ul class="space-y-4">
                     <li><a href="/reports/{report.id}">View</a></li>
                     <li><a href="/reports/{report.id}/edit">Edit</a></li>
                     <li>
-                      <a
-                        href="/api/reports/{report.id}/export/pdf"
-                        target="_blank">Export PDF</a
-                      >
+                      <a href="/api/reports/{report.id}/export/pdf" target="_blank">Export PDF</a>
                     </li>
                     <li><button class="space-y-4">Delete</button></li>
                   </ul>
@@ -190,3 +143,4 @@ try {
     </div>
   {/if}
 </div>
+;

@@ -26,7 +26,7 @@ export interface AuthContext {
     language?: string;
     timezone?: string;
     securityScore?: number;
-  };
+  }
   loginAttempts: number;
   maxLoginAttempts: number;
   lastLoginAttempt?: Date;
@@ -55,7 +55,7 @@ export type AuthEvent =
   | { type: 'UNLOCK_ACCOUNT' }
   | { type: 'UPDATE_PROFILE'; data: any }
   | { type: 'PROFILE_UPDATED' }
-  | { type: 'RETRY' };
+  | { type: 'RETRY' }
 }
 export interface LoginData {
   email: string;
@@ -78,7 +78,7 @@ export interface RegistrationData {
 }
 const initialContext: AuthContext = {
   user: null
-  session: null
+  session: null;
   error: undefined
   isLoading: false
   deviceInfo: undefined
@@ -88,14 +88,14 @@ const initialContext: AuthContext = {
   lockoutUntil: undefined
   twoFactorRequired: false
   registrationData: undefined
-};
+}
 // Helper functions for inline guards
 const isMaxAttemptsReached = ({ context }: { context: AuthContext }) => {
   return context.loginAttempts >= context.maxLoginAttempts;
-};
+}
 const isAccountLocked = ({ context }: { context: AuthContext }) => {
   return context.lockoutUntil ? new Date() < context.lockoutUntil: false;
-};
+}
 export const authMachine = setup({
   types: { [key: string]: any } as {
     context: AuthContext;
@@ -180,10 +180,10 @@ export const authMachine = setup({
         },
         session: {
           id: 'session_123',
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours;
           fresh: true
         }
-      };
+      }
     }),
     register: fromPromise(async ({ input }: { input: RegistrationData }) => {
       // Mock registration
@@ -198,17 +198,17 @@ export const authMachine = setup({
           department: input.department,
           permissions: []
         }
-      };
+      }
     }),
     logout: fromPromise(async () => {
       // Mock logout
       await new Promise(resolve => setTimeout(resolve, 500);
-      return { success: true };
+      return { success: true }
     }),
     resetPassword: fromPromise(async ({ input }: { input: { email: string } }) => {
       // Mock password reset
       await new Promise(resolve => setTimeout(resolve, 1000);
-      return { success: true };
+      return { success: true }
     })
   }
 }).createMachine({

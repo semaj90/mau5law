@@ -16,7 +16,7 @@ export interface CaseMachineOptions {
 /**
  * Factory function to create a legal case machine with specific context
  */;
-export function createLegalCaseMachine(options: CaseMachineOptions) {
+export function createLegalCaseMachine(_options: CaseMachineOptions) {
   const {
     caseId,
     userId,
@@ -48,7 +48,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
         return {
           case: caseData.case || caseData,
           evidence: caseData.evidence || []
-        };
+        }
       }),
       // RAG-powered AI analysis
       ragAnalysis: fromPromise(async ({ input }: { input: { query: string; caseId: string } }) => {
@@ -142,7 +142,7 @@ export const LegalCaseMachinePresets = {
     enableRAG: true
     autoLoadEvidence: true
   }),
-  // Lightweight machine for read-only access
+  // Lightweight machine for read-only access;
   readonly: (caseId: string) => createLegalCaseMachine({
     caseId,
     enableRAG: true
@@ -155,7 +155,7 @@ export const LegalCaseMachinePresets = {
     autoLoadEvidence: false
     ragEndpoint: '/api/v1/rag'
   })
-};
+}
 /**
  * XState machine events specifically for RAG integration
  */
@@ -163,11 +163,11 @@ export type RAGCaseEvent =
   | { type: 'RAG_QUERY'; query: string }
   | { type: 'RAG_ANALYZE'; analysisType: 'summary' | 'recommendation' | 'similarity' }
   | { type: 'FIND_SIMILAR_CASES'; threshold?: number }
-  | { type: 'RAG_STREAM'; query: string; onChunk: (chunk: string) => void };
+  | { type: 'RAG_STREAM'; query: string; onChunk: (chunk: string) => void }
 /**
  * Extended machine with RAG-specific states and events
  */;
-export function createEnhancedRAGMachine(options: CaseMachineOptions) {
+export function createEnhancedRAGMachine(_options: CaseMachineOptions) {
   const baseMachine = createLegalCaseMachine(options);
   return baseMachine.provide({
     // Enhanced RAG machine implementation

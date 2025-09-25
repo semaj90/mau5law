@@ -5,7 +5,7 @@
 // Mock db for TypeScript compatibility
 const db = {
   execute: async (query: any) => [] as any[]
-};
+}
 import { sql } from "drizzle-orm";
 import type { Redis } from 'ioredis';
 import { getRedisConfig } from '$lib/config/redis-config';
@@ -31,7 +31,7 @@ export class OptimizedQueries {
       cases: result
       totalCount: result[0]?.total_count || 0,
       hasMore: Number(result[0]?.total_count || 0) > offset + limit
-    };
+    }
   }
   // Efficient evidence search with vector similarity
   static async searchEvidenceOptimized(query: string, caseId?: string, limit = 10) {
@@ -78,8 +78,8 @@ export function createDebouncedSearch(delay = 300) {
     return (...args: T) => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => fn(...args), delay);
-    };
-  };
+    }
+  }
 }
 export class VirtualScrollManager {
   private itemHeight: number;
@@ -95,7 +95,7 @@ export class VirtualScrollManager {
       startIndex + Math.ceil(this.containerHeight / this.itemHeight) + 1,
       totalItems,
     );
-    return { startIndex, endIndex };
+    return { startIndex, endIndex }
   }
   updateScrollTop(newScrollTop: number) {
     this.scrollTop = newScrollTop;
@@ -116,7 +116,7 @@ export const performanceConfig = {
   rateLimitWindow: 15 * 60 * 1000, // 15 minutes
   rateLimitMax: 1000,
   requestTimeout: 30000
-};
+}
 function generateEmbedding(query: string): Promise<number[]> {
   // Placeholder - implement with your embedding service
   return Promise.resolve([]);

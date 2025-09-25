@@ -1,7 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-import type { Case } from '$lib/types';
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
@@ -23,9 +19,9 @@ import type { Case } from '$lib/types';
     if (!disabled) {
       onclick?.();
   }}
-  function handleStatusChange(event: Event) {
+  function handleStatusChange(_event: Event) {
     event.stopPropagation();
-    const target = event.target as HTMLSelectElement;
+    // removed unused target assignment
     onstatusChange?.();
   }
   function getStatusColor(status: string) {
@@ -72,12 +68,18 @@ import type { Case } from '$lib/types';
     addSuffix: true
   });
 </script>
+
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+import type {Case} from '$lib/types';
+
 <div
   class="space-y-4"
   class:active={isActive}
   class:disabled
   onclick={handleClick}
-  onkeydown={(e) => e.key === "Enter" && handleClick()}
+  onkeydown={e => e.key === 'Enter' && handleClick()}
   role="button"
   tabindex={0}
 >
@@ -85,10 +87,7 @@ import type { Case } from '$lib/types';
     <div class="space-y-4">
       <!-- Case Title and Number -->
       <div class="space-y-4">
-        <svelte:component
-          this={statusIcon}
-          class="space-y-4"
-        />
+        <svelte:component this={statusIcon} class="space-y-4" />
         <h3 class="space-y-4">
           {caseData.title}
         </h3>
@@ -100,7 +99,7 @@ import type { Case } from '$lib/types';
       <!-- Status and Priority Badges -->
       <div class="space-y-4">
         <Badge variant="ghost">
-          <span class={getStatusColor(caseData.status)}>{caseData.status.replace("_", " ")}</span>
+          <span class={getStatusColor(caseData.status)}>{caseData.status.replace('_', ' ')}</span>
         </Badge>
         <Badge variant="ghost">
           <span class={getPriorityColor(caseData.priority)}>{caseData.priority}</span>
@@ -139,7 +138,7 @@ import type { Case } from '$lib/types';
         class="space-y-4"
         value={caseData.status}
         onchange={handleStatusChange}
-        onclick={(e) => e.stopPropagation()}
+        onclick={e => e.stopPropagation()}
       >
         <option value="open">Open</option>
         <option value="in_progress">In Progress</option>
@@ -149,3 +148,4 @@ import type { Case } from '$lib/types';
     </div>
   </div>
 </div>
+;

@@ -65,7 +65,7 @@
           total_time: data.result.total_time,
           similar_documents_found: data.result.similar_documents_found,
           timestamp: new Date();
-        };
+        }
         queries = [newQuery, ...queries];
         currentResponse = newQuery;
         // Clear form
@@ -90,7 +90,7 @@
   }
   async function loadRecentQueries() {
     try {
-      const response = await fetch('/api/legal-ai?limit=10');
+      // removed unused response assignment
       const data = await response.json();
       if (data.success) {
         queries = data.queries.map((q: any) => ({
@@ -106,11 +106,14 @@
     loadRecentQueries();
   });
 </script>
+
 <div class="legal-ai-chat max-w-4xl mx-auto p-6">
   <div class="header mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">Legal AI Assistant</h1>
     <p class="text-gray-600">
-      Powered by Gemma3 with TensorRT optimization • {useVectorSearch ? 'Vector search enabled' : 'Vector search disabled'}
+      Powered by Gemma3 with TensorRT optimization • {useVectorSearch
+        ? 'Vector search enabled'
+        : 'Vector search disabled'}
     </p>
   </div>
   <!-- Query Form -->
@@ -121,9 +124,7 @@
     <CardContent class="space-y-4">
       <!-- Prompt Input -->
       <div>
-        <label for="prompt" class="block text-sm font-medium text-gray-700 mb-2">
-          Legal Query
-        </label>
+        <label for="prompt" class="block text-sm font-medium text-gray-700 mb-2"> Legal Query </label>
         <textarea
           id="prompt"
           bind:value={prompt}
@@ -156,20 +157,23 @@
             disabled={isLoading}
             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
-          <span class="ml-2 text-sm text-gray-700">
-            Search similar documents
-          </span>
+          <span class="ml-2 text-sm text-gray-700"> Search similar documents </span>
         </label>
-        <Button
-          onclick={submitQuery}
-          disabled={!canSubmit}
-          class="px-6 py-2"
-        >
+        <Button onclick={submitQuery} disabled={!canSubmit} class="px-6 py-2">
           {#if isLoading}
             <span class="flex items-center">
-              <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg
+                class="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Processing...
             </span>
@@ -204,7 +208,11 @@
     <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
       <div class="flex">
         <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+            clip-rule="evenodd"
+          />
         </svg>
         <div class="ml-3">
           <h3 class="text-sm font-medium text-red-800">Error</h3>
@@ -278,6 +286,7 @@
     </Card>
   {/if}
 </div>
+
 <style>
   .line-clamp-3 {
     display: -webkit-box;

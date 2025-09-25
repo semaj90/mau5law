@@ -30,7 +30,7 @@ export interface EvidenceProcessingContext {
   userId: string;
   filename: string;
   content: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   // Processing results
   extractedText?: string;
   chunks?: Array<any>;
@@ -42,7 +42,7 @@ export interface EvidenceProcessingContext {
     classification: string;
     riskAssessment?: string;
     recommendations?: string[];
-  };
+  }
   // Job tracking
   documentProcessingJobId?: string;
   embeddingJobId?: string;
@@ -67,7 +67,7 @@ export type EvidenceProcessingEvent =;
       userId: string;
       filename: string;
       content: string;
-      metadata?: { [key: string]: any };
+      metadata?: { [key: string]: any }
     }
   | { type: "RETRY" }
   | { type: "CANCEL" }
@@ -78,7 +78,7 @@ export type EvidenceProcessingEvent =;
   | { type: "EMBEDDING_COMPLETE" }
   | { type: "EMBEDDING_FAILED"; error: string }
   | { type: "ANALYSIS_COMPLETE" }
-  | { type: "ANALYSIS_FAILED"; error: string };
+  | { type: "ANALYSIS_FAILED"; error: string }
 // Service implementations
 const documentProcessingService = fromPromise(async ({ input }: { input: EvidenceProcessingContext }) => {
     console.log(
@@ -119,7 +119,7 @@ const documentProcessingService = fromPromise(async ({ input }: { input: Evidenc
           jobId: job.id,
           result: jobStatus.returnvalue,
           processingTime: jobStatus.finishedOn - jobStatus.processedOn!
-        };
+        }
       }
       // Update progress if available
       if (jobStatus?.progress) {
@@ -144,7 +144,7 @@ const embeddingGenerationService = fromPromise(async ({ input }: { input: Eviden
     await multiLayerCache.set(`embeddings:${input.evidenceId}`, result, {
       type: "embedding",
       userId: input.userId,
-      persistent: true
+      persistent: true;
       ttl: 86400, // 24 hours
     });
     return result;
@@ -186,12 +186,12 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcess
       classification,
       riskAssessment,
       recommendations
-    };
+    }
     // Cache the analysis
     await multiLayerCache.set(`analysis:${input.evidenceId}`, analysis, {
       type: "document",
       userId: input.userId,
-      persistent: true
+      persistent: true;
       ttl: 43200, // 12 hours
     });
     return analysis;
@@ -209,7 +209,7 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
       analysis: input.analysis,
       processingTimes: input.processingTimes,
       completedAt: new Date().toISOString()
-    };
+    }
     // Store in multiple cache layers
     await Promise.all([
       multiLayerCache.set(
@@ -218,7 +218,7 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
         {
           type: "document",
           userId: input.userId,
-          persistent: true
+          persistent: true;
           ttl: 604800, // 7 days
         }
       ),
@@ -228,7 +228,7 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
         {
           type: "document",
           userId: input.userId,
-          persistent: true
+          persistent: true;
           ttl: 604800
         }
       )
@@ -499,7 +499,7 @@ export const createEvidenceProcessingActor = (
       // Custom guards can be injected here
     }
   });
-};
+}
 // Export state machine types
 export type EvidenceProcessingMachine = typeof evidenceProcessingMachine;
 export type EvidenceProcessingState = Parameters<
@@ -513,34 +513,34 @@ export const isProcessing = (state: EvidenceProcessingState): boolean => {
     "aiAnalysis",
     "cachingResults"
   ].includes(state.value as string);
-};
+}
 export const isCompleted = (state: EvidenceProcessingState): boolean => {
   return state.value === "completed";
-};
+}
 export const isFailed = (state: EvidenceProcessingState): boolean => {
   return ["error", "failed"].includes(state.value as string);
-};
+}
 export const canRetry = (state: EvidenceProcessingState): boolean => {
   return (
     state.value === "error" &&
     state.context.retryCount < state.context.maxRetries
   );
-};
+}
 export const getProgressPercentage = (
   state: EvidenceProcessingState;
 ): number => {
   return state.context.progress;
-};
+}
 export const getCurrentStage = (state: EvidenceProcessingState): string => {
   return state.context.stage;
-};
+}
 export const getProcessingTimes = (
   state: EvidenceProcessingState;
 ): Record<string, number> => {
   return state.context.processingTimes;
-};
+}
 export const getError = (
   state: EvidenceProcessingState;
 ): string | undefined => {
   return state.context.error;
-};
+}

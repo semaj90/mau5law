@@ -100,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => {
     return () => {
       if (autoSaveTimer) clearTimeout(autoSaveTimer);
-    };
+    }
   });
   async function autoPopulateForm(node: unknown) {
     if (!node) return;
@@ -136,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
         },
         redFlags: [],
         recommendations: [];
-      };
+      }
       // If AI tags exist, populate from them
       if (node.aiTags) {
         Object.assign(newFormData, {
@@ -188,7 +188,7 @@ https://svelte.dev/e/js_parse_error -->
           content: node.content,
           fileName: node.name,
           fileType: node.type,
-          enhanced: true // Request enhanced analysi
+          enhanced: true // Request enhanced analysi;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -329,7 +329,7 @@ https://svelte.dev/e/js_parse_error -->
           ...selectedNode.metadata,
           lastModified: new Date().toISOString()
   }
-      };
+      }
       const response = await fetch('/api/evidence/save-node', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -368,7 +368,7 @@ https://svelte.dev/e/js_parse_error -->
           ...selectedNode.metadata,
           lastModified: new Date().toISOString()
   }
-      };
+      }
       const response = await fetch('/api/evidence/save-node', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

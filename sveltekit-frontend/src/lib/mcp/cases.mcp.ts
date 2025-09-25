@@ -12,7 +12,7 @@ import { minioService } from '../server/storage/minio-service.js';
 const pool = new Pool({
   connectionString: import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
 });
-const db = drizzle(pool, { schema });
+// removed unused db assignment
 }
 export interface CaseData {
   id?: string;
@@ -102,10 +102,10 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
       timestamp: Date.now()
     });
     console.log(`✅ Case created: ${newCase.id}`);
-    return { success: true, caseId: newCase.id };
+    return { success: true, caseId: newCase.id }
   } catch (error: any) {
     console.error('❌ MCP Tool createCase error:', error);
-    return { success: false, error: error instanceof Error ? error.message: 'Unknown error' };
+    return { success: false, error: error instanceof Error ? error.message: 'Unknown error' }
   }
 }
 /**
@@ -124,7 +124,7 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
       .where(eq(schema.cases.id, caseId)
       .returning();
     if (!updated) {
-      return { success: false, error: 'Case not found' };
+      return { success: false, error: 'Case not found' }
     }
     // Invalidate caches
     await cache.del(`case:${caseId}`);
@@ -132,14 +132,14 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
     // Publish update event
     await cache.publish('case:updated', {
       caseId,
-      changes: updates
+      changes: updates;
       timestamp: Date.now()
     });
     console.log(`✅ Case ${caseId} updated`);
-    return { success: true };
+    return { success: true }
   } catch (error: any) {
     console.error('❌ MCP Tool updateCase error:', error);
-    return { success: false, error: error instanceof Error ? error.message: 'Unknown error' };
+    return { success: false, error: error instanceof Error ? error.message: 'Unknown error' }
   }
 }
 /**
@@ -154,7 +154,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       where: eq(schema.cases.id, caseId)
     });
     if (!caseExists) {
-      return { success: false, error: 'Case not found' };
+      return { success: false, error: 'Case not found' }
     }
     // Insert evidence
     const [newEvidence] = await db.insert(schema.evidence).values({
@@ -164,7 +164,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       type: evidence.evidenceType,
       evidenceType: evidence.evidenceType,
       createdBy: 'system', // TODO: get from context
-      tags: evidence.tags ? JSON.stringify(evidence.tags) : null
+      tags: evidence.tags ? JSON.stringify(evidence.tags) : null;
       metadata: evidence
       createdAt: new Date()
     }).returning();
@@ -178,10 +178,10 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       timestamp: Date.now()
     });
     console.log(`✅ Evidence added: ${newEvidence.id}`);
-    return { success: true, evidenceId: newEvidence.id };
+    return { success: true, evidenceId: newEvidence.id }
   } catch (error: any) {
     console.error('❌ MCP Tool addEvidence error:', error);
-    return { success: false, error: error instanceof Error ? error.message: 'Unknown error' };
+    return { success: false, error: error instanceof Error ? error.message: 'Unknown error' }
   }
 }
 /**
@@ -191,7 +191,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
 export async function searchCases(query: string, userId: string, filters?: {
   status?: string;
   priority?: string;
-  dateRange?: { from: Date; to: Date };
+  dateRange?: { from: Date; to: Date }
 }): Promise<any> {
   try {
     console.log(`🔍 MCP Tool: searchCases("${query}")`);
@@ -199,7 +199,7 @@ export async function searchCases(query: string, userId: string, filters?: {
     const cached = await cache.getSearchResults?.(query, 'cases', filters);
     if (cached && typeof cached === 'object' && 'cases' in cached && 'totalCount' in cached) {
       console.log(`📦 Cache hit for search: ${query}`);
-      return cached as { cases: CaseData[]; totalCount: number };
+      return cached as { cases: CaseData[]; totalCount: number }
     }
     // Build query conditions
     let conditions = [eq(schema.cases.userId, userId)];
@@ -229,14 +229,14 @@ export async function searchCases(query: string, userId: string, filters?: {
     const searchResult = {
       cases: results as CaseData[]
       totalCount: results.length
-    };
+    }
     // Cache results using specialized search cache
     await cache.setSearchResults(query, 'cases', searchResult.cases, filters);
     console.log(`✅ Found ${results.length} cases`);
     return searchResult;
   } catch (error: any) {
     console.error('❌ MCP Tool searchCases error:', error);
-    return { cases: [], totalCount: 0 };
+    return { cases: [], totalCount: 0 }
   }
 }
 /**
@@ -255,7 +255,7 @@ export async function getUserCases(userId: string, options: {
     const cacheKey = `user:${userId}:cases:${JSON.stringify(options)}`;
     const cached = await cache.get(cacheKey);
     if (cached && typeof cached === 'object' && 'cases' in cached && 'totalCount' in cached) {
-      return cached as { cases: CaseData[]; totalCount: number };
+      return cached as { cases: CaseData[]; totalCount: number }
     }
     let conditions = [eq(schema.cases.userId, userId)];
     if (status) {
@@ -272,13 +272,13 @@ export async function getUserCases(userId: string, options: {
       .select({ count: sql`count(*)`.mapWith(Number) })
       .from(schema.cases)
       .where(and(...conditions);
-    const result = { cases: cases as CaseData[], totalCount: count };
+    const result = { cases: cases as CaseData[], totalCount: count }
     // Cache for 2 minutes (TTL will be converted from seconds to ms)
     await cache.set(cacheKey, result, 120);
     return result;
   } catch (error: any) {
     console.error('❌ MCP Tool getUserCases error:', error);
-    return { cases: [], totalCount: 0 };
+    return { cases: [], totalCount: 0 }
   }
 }
 /**
@@ -324,13 +324,13 @@ export async function healthCheck(): Promise<any> {
         poolIdleCount: pool.idleCount,
         poolWaitingCount: pool.waitingCount
       }
-    };
+    }
   } catch (error: any) {
     return {
       status: 'unhealthy',
       details: {
         error: error instanceof Error ? error.message: 'Unknown error'
       }
-    };
+    }
   }
 }

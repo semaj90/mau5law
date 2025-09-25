@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { texts, model = 'nomic-embed-text', meta = {}, priority = 1 } = jobData
         if (!Array.isArray(texts) || texts.length === 0) {
           return json({
-            success: false
+            success: false;
             error: 'texts array is required for batch embedding jobs'
           }, { status: 400 })
         }

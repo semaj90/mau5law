@@ -8,7 +8,7 @@ export interface ComponentMetadata {
   category: 'core' | 'legal' | 'ai' | 'gaming' | 'advanced';
   size: number; // Bundle size in bytes,
   dependencies: string[];
-  props: { [key: string]: any };
+  props: { [key: string]: any }
   lastModified: number;
   loadTime?: number;
   renderTime?: number;
@@ -119,7 +119,7 @@ class ComponentMetadataCache {
       priority: 'high',
       cacheable: true
     },
-  };
+  }
   async initialize() {
     // Load cached metadata from Redis
     await this.loadCachedMetadata();
@@ -169,12 +169,12 @@ class ComponentMetadataCache {
       errorCount: 0,
       successCount: 0,
       lastAccess: Date.now(),
-    };
+    }
     const updated = {
       ...existing,
       ...metrics,
       lastAccess: Date.now(),
-    };
+    }
     this.performanceMetrics.set(componentName, updated);
     // Cache performance metrics
     this.cachePerformanceMetrics(componentName, updated);
@@ -240,9 +240,9 @@ class ComponentMetadataCache {
         visit(dep);
       }
       ordered.push(name);
-    };
+    }
     // Sort by priority first
-    const priorityOrder = { critical: 0, high: 1, normal: 2, low: 3 };
+    const priorityOrder = { critical: 0, high: 1, normal: 2, low: 3 }
     const sortedComponents = componentNames.sort((a, b) => {
       const metaA = this.metadata.get(a);
       const metaB = this.metadata.get(b);
@@ -266,7 +266,7 @@ class ComponentMetadataCache {
       averageRenderTime: 0,
       totalMemoryUsage: 0,
       errorRate: 0,
-    };
+    }
     // Calculate category counts
     for (const metadata of this.metadata.values()) {
       analytics.categoryCounts[metadata.category] =
@@ -296,7 +296,7 @@ class ComponentMetadataCache {
       lastModified: Date.now(),
       cacheable: definition.cacheable !== false,
       priority: definition.priority || 'normal',
-    };
+    }
   }
   private async loadCachedMetadata() {
     for (const componentName of Object.keys(this.COMPONENT_DEFINITIONS)) {

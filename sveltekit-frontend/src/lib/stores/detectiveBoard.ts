@@ -31,7 +31,7 @@ export interface AIContext {
     title: string;
     description?: string;
     status?: string;
-  };
+  }
   connections: Array<{,
     fromId: string;
     toId: string;
@@ -92,7 +92,7 @@ export function initializeCaseAI(caseId: string, caseInfo: AIContext['caseInfo']
     },
     insights: [],
     isProcessing: false
-  };
+  }
   aiAssistantContexts.update(contexts => ({
     ...contexts,
     [caseId]: context
@@ -120,7 +120,7 @@ export function updateAIContext(caseId: string, contextUpdates: Partial<AIContex
         ...context.context,
         ...contextUpdates
       }
-    };
+    }
     // Update current context if it's active
     currentAIContext.update(current =>
       current?.caseId === caseId ? updatedContext : current
@@ -128,7 +128,7 @@ export function updateAIContext(caseId: string, contextUpdates: Partial<AIContex
     return {
       ...contexts,
       [caseId]: updatedContext
-    };
+    }
   });
 }
 export async function sendToAI(
@@ -144,7 +144,7 @@ export async function sendToAI(
     type: 'user',
     timestamp: Date.now(),
     evidenceIds
-  };
+  }
   addMessage(caseId, userMessage);
   try {
     // Get current context
@@ -163,7 +163,7 @@ export async function sendToAI(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         caseId,
-        message: prompt
+        message: prompt;
         context: context
         evidenceIds
       })
@@ -181,7 +181,7 @@ export async function sendToAI(
       evidenceIds: aiResponse.referencedEvidence || [],
       suggestions: aiResponse.suggestions || [],
       confidence: aiResponse.confidence || 0.8
-    };
+    }
     addMessage(caseId, assistantMessage);
     // Add any insights discovered
     if (aiResponse.insights) {
@@ -198,7 +198,7 @@ export async function sendToAI(
       type: 'assistant',
       timestamp: Date.now(),
       confidence: 0
-    };
+    }
     addMessage(caseId, errorMessage);
     return errorMessage;
   } finally {
@@ -212,7 +212,7 @@ export function addMessage(caseId: string, message: AIMessage) {
     const updatedContext = {
       ...context,
       messages: [...context.messages, message]
-    };
+    }
     // Update current context if active
     currentAIContext.update(current =>
       current?.caseId === caseId ? updatedContext : current
@@ -220,7 +220,7 @@ export function addMessage(caseId: string, message: AIMessage) {
     return {
       ...contexts,
       [caseId]: updatedContext
-    };
+    }
   });
 }
 export function addInsight(caseId: string, insight: Omit<AIInsight, 'id' | 'timestamp' | 'acknowledged'>) {
@@ -229,14 +229,14 @@ export function addInsight(caseId: string, insight: Omit<AIInsight, 'id' | 'time
     id: crypto.randomUUID(),
     timestamp: Date.now(),
     acknowledged: false
-  };
+  }
   aiAssistantContexts.update(contexts => {
     const context = contexts[caseId];
     if (!context) return contexts;
     const updatedContext = {
       ...context,
       insights: [...context.insights, newInsight]
-    };
+    }
     // Update current context if active
     currentAIContext.update(current =>
       current?.caseId === caseId ? updatedContext : current
@@ -244,7 +244,7 @@ export function addInsight(caseId: string, insight: Omit<AIInsight, 'id' | 'time
     return {
       ...contexts,
       [caseId]: updatedContext
-    };
+    }
   });
   return newInsight;
 }
@@ -257,7 +257,7 @@ export function acknowledgeInsight(caseId: string, insightId: string) {
       insights: context.insights.map(insight =>
         insight.id === insightId ? { ...insight, acknowledged: true } : insight
       )
-    };
+    }
     // Update current context if active
     currentAIContext.update(current =>
       current?.caseId === caseId ? updatedContext : current
@@ -265,7 +265,7 @@ export function acknowledgeInsight(caseId: string, insightId: string) {
     return {
       ...contexts,
       [caseId]: updatedContext
-    };
+    }
   });
 }
 export function clearMessages(caseId: string) {
@@ -275,7 +275,7 @@ export function clearMessages(caseId: string) {
     const updatedContext = {
       ...context,
       messages: []
-    };
+    }
     // Update current context if active
     currentAIContext.update(current =>
       current?.caseId === caseId ? updatedContext : current
@@ -283,7 +283,7 @@ export function clearMessages(caseId: string) {
     return {
       ...contexts,
       [caseId]: updatedContext
-    };
+    }
   });
 }
 // Helper functions

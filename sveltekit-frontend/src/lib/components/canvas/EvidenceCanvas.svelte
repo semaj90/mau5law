@@ -48,7 +48,7 @@
       success: '#2ed573',
       warning: '#ffa502',
       danger: '#ff4757',
-      border: '#57606f'
+      border: '#57606f',
     },
     light: {
       background: '#f1f2f6',
@@ -57,7 +57,7 @@
       success: '#2ed573',
       warning: '#ffa502',
       danger: '#ff4757',
-      border: '#ced6e0'
+      border: '#ced6e0',
     },
     yorha: {
       background: '#0a0a0a',
@@ -66,7 +66,7 @@
       success: '#00ff41',
       warning: '#ff6b35',
       danger: '#ff0041',
-      border: '#b0b0b0'
+      border: '#b0b0b0',
     }
   }
   const currentTheme = $derived(themes[theme]);
@@ -80,7 +80,7 @@
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
-    };
+    }
   });
   function setupCanvas() {
     if (!canvas || !ctx) return;
@@ -290,8 +290,8 @@
       pending: caseFiles.filter(f => f.status === 'pending').length,
       disputed: caseFiles.filter(f => f.status === 'disputed').length,
       highRisk: caseFiles.filter(f => (f.riskScore || calculateRiskScore(f)) > 75).length,
-      chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length
-    };
+      chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length;
+    }
     // Stats background
     ctx.fillStyle = currentTheme.background + 'E0';
     ctx.fillRect(width - 200, 10, 190, 130);
@@ -329,12 +329,12 @@
     const fileIndex = Math.floor((y - startY) / itemHeight);
     return caseFiles[fileIndex] || null;
   }
-  function handleMouseMove(event: MouseEvent) {
+  function handleMouseMove(_event: MouseEvent) {
     if (!canvas || !interactive) return;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    mousePos = { x, y };
+    mousePos = { x, y }
     const file = getFileAtPosition(x, y);
     if (file !== hoveredFile) {
       hoveredFile = fil;
@@ -342,7 +342,7 @@
       canvas.style.cursor = file ? 'pointer' : 'default';
     }
   }
-  function handleMouseClick(event: MouseEvent) {
+  function handleMouseClick(_event: MouseEvent) {
     if (!canvas || !interactive) return;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -375,7 +375,7 @@
           chainOfCustody: true,
           confidentialityLevel: 'restricted',
           fileSize: 15728640,
-          createdAt: new Date('2024-01-15')
+          createdAt: new Date('2024-01-15');
         },
         {
           id: 'EV002',
@@ -421,7 +421,12 @@
     }
   });
 </script>
-<div class="evidence-canvas-container nes-container with-title" role="region" aria-label="Enhanced evidence visualization system">
+
+<div
+  class="evidence-canvas-container nes-container with-title"
+  role="region"
+  aria-label="Enhanced evidence visualization system"
+>
   <p class="title">Evidence Management Canvas</p>
   <div class="canvas-wrapper">
     <canvas
@@ -446,11 +451,11 @@
       </div>
     </div>
     <label class="nes-field">
-      <input type="checkbox" class="nes-checkbox" bind:checked={interactive}>
+      <input type="checkbox" class="nes-checkbox" bind:checked={interactive} />
       <span>Interactive Mode</span>
     </label>
     <label class="nes-field">
-      <input type="checkbox" class="nes-checkbox" bind:checked={showDetails}>
+      <input type="checkbox" class="nes-checkbox" bind:checked={showDetails} />
       <span>Show Statistics</span>
     </label>
   </div>
@@ -461,7 +466,10 @@
         <div><strong>ID:</strong> {selectedFile.id}</div>
         <div><strong>Type:</strong> {selectedFile.evidenceType || 'Unknown'}</div>
         <div><strong>Status:</strong> {selectedFile.status || 'Pending'}</div>
-        <div><strong>Risk Score:</strong> {Math.round(selectedFile.riskScore || calculateRiskScore(selectedFile))}%</div>
+        <div>
+          <strong>Risk Score:</strong>
+          {Math.round(selectedFile.riskScore || calculateRiskScore(selectedFile))}%
+        </div>
         <div><strong>Chain of Custody:</strong> {selectedFile.chainOfCustody ? '✓ Valid' : '✗ Broken'}</div>
         <div><strong>Confidentiality:</strong> {selectedFile.confidentialityLevel || 'Public'}</div>
         {#if selectedFile.fileSize}
@@ -479,6 +487,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .evidence-canvas-container {
     margin: 1rem;
@@ -547,7 +556,7 @@
     background: var(--yorha-bg-tertiary);
     border: 1px solid var(--yorha-text-muted);
   }
-  /* Animation for canvas */
+/* Animation for canvas */ {}
   .canvas-wrapper {
     animation: borderGlow 4s ease-in-out infinite alternate;
   }
@@ -559,7 +568,7 @@
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
     }
   }
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 768px) {
     .controls-panel {
       flex-direction: column;

@@ -33,7 +33,7 @@ export default ;
       response: '',
       conversationHistory: [],
       sessionId: `simd-session-${Date.now()}`,
-      isProcessing: false
+      isProcessing: false;
       model: 'gemma3-legal:latest',
       temperature: 0.7,
       maxTokens: 2048,

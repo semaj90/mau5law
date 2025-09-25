@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'yorha-api',
         description: 'Get real-time system health and metrics',
         headers: {} as Record<string, unknown>,
-        body: null
+        body: null,
       },
       {
         id: 'graph-data',
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'yorha-api',
         description: 'Retrieve system architecture graph data',
         headers: {} as Record<string, unknown>,
-        body: null
+        body: null,
       },
       {
         id: 'enhanced-rag',
@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'context7',
         description: 'Get Context7 multicore service health',
         headers: {} as Record<string, unknown>,
-        body: null
+        body: null,
       },
       {
         id: 'process-text',
@@ -71,7 +71,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'yorha-api',
         description: 'Get 3D component performance metrics',
         headers: {} as Record<string, unknown>,
-        body: null
+        body: null,
       },
       {
         id: 'database-health',
@@ -81,7 +81,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         type: 'standard',
         description: 'Test database connectivity and performance',
         headers: {} as Record<string, unknown>,
-        body: null
+        body: null,
       },
       {
         id: 'vector-search',
@@ -141,6 +141,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
     const testDocumentation = {
       overview: 'YoRHa API Testing Suite provides comprehensive testing for all system APIs',
       features: [
+        ,
         'Real-time API testing with live metrics',
         'Context7 multicore service integration',
         'YoRHa 3D interface API validation',
@@ -149,34 +150,36 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         'Historical test result tracking',
       ],
       protocols: [
+        ,
         { name: 'YoRHa API', description: 'Custom APIs for YoRHa 3D interface components' },
         { name: 'Context7', description: 'Multicore processing and AI analysis services' },
         { name: 'Standard REST', description: 'Traditional HTTP REST API endpoints' },
       ],
       metrics: [
+        ,
         'Total test executions',
         'Pass/fail rates',
         'Average response latency',
         'Success rate percentage',
         'Error categorization',
       ],
-    };
+    }
     return {
-      endpoints: apiEndpoints
+      endpoints: apiEndpoints,
       testSuites,
-      documentation: testDocumentation
-      initialLoad: true
+      documentation: testDocumentation,
+      initialLoad: true,
       timestamp: new Date().toISOString(),
-    };
+    }
   } catch (error: unknown) {
     console.error('Error loading API test data:', error);
     return {
       endpoints: [],
       testSuites: [],
       documentation: { overview: '', features: [], protocols: [], metrics: [] },
-      initialLoad: false
+      initialLoad: false,
       timestamp: new Date().toISOString(),
       error: 'Failed to load API test configuration',
-    };
+    }
   }
-};
+}

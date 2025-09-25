@@ -135,4 +135,4 @@ const originalGETHandler: RequestHandler = async () => {
   }
 }
 export const POST = redisOptimized.aiChat(originalPOSTHandler)
-export const GET = redisOptimized.aiChat(originalGETHandler)
+export const GET = redisOptimized.aiChat(originalGETHandler);

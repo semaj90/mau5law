@@ -42,7 +42,7 @@ export const cases = sqliteTable("cases", {
   assignedTeam: text("assigned_team").default("[]").notNull(), // JSON string
   tags: text("tags").default("[]").notNull(), // JSON string
   aiSummary: text("ai_summary"),
-  aiTags: text("ai_tags").default("[]").notNull(), // JSON string
+  aiTags: text("ai_tags").default("[]").notNull(), // JSON string;
   metadata: text("metadata").default("{}").notNull(), // JSON string
   createdBy: text("created_by"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
@@ -128,7 +128,7 @@ export const caseActivities = sqliteTable("case_activities", {
   priority: text("priority").default("medium").notNull(),
   assignedTo: text("assigned_to"),
   relatedEvidence: text("related_evidence").default("[]").notNull(), // JSON string
-  relatedCriminals: text("related_criminals").default("[]").notNull(), // JSON string
+  relatedCriminals: text("related_criminals").default("[]").notNull(), // JSON string;
   metadata: text("metadata").default("{}").notNull(), // JSON string
   createdBy: text("created_by"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),

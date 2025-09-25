@@ -44,7 +44,7 @@ await loadEngineData();
         query: queryInput,
         result,
         timestamp: new Date(),
-        executionTime
+        executionTime;
       });
       // Keep only last 5 queries in history
       if (queryHistory.length > 5) {
@@ -57,9 +57,9 @@ await loadEngineData();
         metadata: {
           source: 'error',
           queryTime: Date.now() - startTime,
-          resultCount: 0
+          resultCount: 0;
         }
-      };
+      }
     } finally {
       isExecuting = false;
     }
@@ -75,7 +75,7 @@ await loadEngineData();
       queryResult = {
         ...queryResult,
         recommendations
-      };
+      }
     }
   }
   async function hydrateCache() {

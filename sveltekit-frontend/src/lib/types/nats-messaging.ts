@@ -186,19 +186,19 @@ export interface PerformanceMetrics {
 		bytes_per_second: number;
 		peak_messages_per_second: number;
 		peak_bytes_per_second: number;
-	};
+	}
 	latency: {
 		avg_publish_latency_ms: number;
 		avg_delivery_latency_ms: number;
 		p95_publish_latency_ms: number;
 		p95_delivery_latency_ms: number;
-	};
+	}
 	reliability: {
 		success_rate: number;
 		retry_rate: number;
 		duplicate_rate: number;
 		loss_rate: number;
-	};
+	}
 }
 export interface SystemHealth {
 	overall_status: 'healthy' | 'degraded' | 'critical';
@@ -311,7 +311,7 @@ export interface CaseEventData {
 	priority: 'low' | 'normal' | 'high' | 'urgent';
 	created_by: string;
 	updated_by?: string;
-	metadata?: { [key: string]: any };
+	metadata?: { [key: string]: any }
 }
 export interface DocumentEventData {
 	document_id: string;
@@ -323,7 +323,7 @@ export interface DocumentEventData {
 	storage_path: string;
 	processing_status: 'uploaded' | 'processing' | 'processed' | 'indexed' | 'failed';
 	extracted_text?: string;
-	metadata?: { [key: string]: any };
+	metadata?: { [key: string]: any }
 }
 export interface AIAnalysisEventData {
 	analysis_id: string;
@@ -364,7 +364,7 @@ export interface SearchFilters {
 	date_range?: {
 		from: string;
 		to: string;
-	};
+	}
 	priority?: string[];
 	status?: string[];
 	assigned_to?: string[];
@@ -375,7 +375,7 @@ export interface SearchResult {
 	title: string;
 	relevance_score: number;
 	snippet?: string;
-	metadata?: { [key: string]: any };
+	metadata?: { [key: string]: any }
 }
 export interface SystemHealthEventData {
 	component: string;

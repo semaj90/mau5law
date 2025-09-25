@@ -54,7 +54,7 @@ export const Default: Story = {
     ],
     enableAIProcessing: true
   }
-};
+}
 // Large file support
 export const LargeFileSupport: Story = {
   args: {
@@ -77,7 +77,7 @@ export const LargeFileSupport: Story = {
       }
     }
   }
-};
+}
 // AI processing disabled
 export const SimpleUpload: Story = {
   args: {
@@ -92,7 +92,7 @@ export const SimpleUpload: Story = {
       }
     }
   }
-};
+}
 // Legal document specific
 export const LegalDocuments: Story = {
   args: {
@@ -113,7 +113,7 @@ export const LegalDocuments: Story = {
       }
     }
   }
-};
+}
 // Image and media upload
 export const MediaUpload: Story = {
   args: {
@@ -137,7 +137,7 @@ export const MediaUpload: Story = {
       }
     }
   }
-};
+}
 // Minimal configuration
 export const Minimal: Story = {
   args: {
@@ -152,4 +152,4 @@ export const Minimal: Story = {
       }
     }
   }
-};
+}

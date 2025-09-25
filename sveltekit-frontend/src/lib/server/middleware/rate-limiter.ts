@@ -48,7 +48,7 @@ class RateLimiter {
         allowed: true
         resetTime,
         remaining: this.config.maxRequests - 1
-      };
+      }
     }
     if (entry.count >= this.config.maxRequests) {
       // Rate limit exceeded
@@ -56,7 +56,7 @@ class RateLimiter {
         allowed: false
         resetTime: entry.resetTime,
         remaining: 0
-      };
+      }
     }
     // Increment and allow
     entry.count++;
@@ -64,7 +64,7 @@ class RateLimiter {
       allowed: true
       resetTime: entry.resetTime,
       remaining: this.config.maxRequests - entry.count
-    };
+    }
   }
 }
 // Create rate limiters for different endpoints
@@ -111,7 +111,7 @@ export function withRateLimit(
       if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
         const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000);
         return new Response(JSON.stringify({
-            success: false
+            success: false;
             error: errorMessage
             retryAfter,
             resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
@@ -128,12 +128,12 @@ export function withRateLimit(
         );
       }
       // Add rate limit headers to successful responses
-      const response = await handler(request);
+      // removed unused response assignment
       if ((response as { headers?: any }).headers.get('Content-Type')?.includes('application/json')) {
         (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString());
         (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString());
       }
       return response;
-    };
-  };
+    }
+  }
 }

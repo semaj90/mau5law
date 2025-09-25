@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
         context: 'legal_analysis',
         options: {
           maxResults: 5,
-          includeMetadata: true
+          includeMetadata: true;
           model: 'gemma3-legal';
         }
       },
@@ -331,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: BarChart3
       endpoints: ['system-status', 'enhanced-rag', 'legal-data-search'],
       timeout: 180000,
-      parallel: true
+      parallel: true;
       iterations: 10;
     }
   ];
@@ -355,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
       ...suite,
       status: 'pending',
       results: [],
-      lastRun: null
+      lastRun: null;
       duration: 0;
     });
     // Subscribe to real-time API events
@@ -383,7 +383,7 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
   function updateRealTimeStats() {
-    realTimeStats = { ...realTimeStats };
+    realTimeStats = { ...realTimeStats }
   }
   function startPerformanceMonitoring() {
     monitoringInterval = setInterval(() => {
@@ -421,7 +421,7 @@ https://svelte.dev/e/js_parse_error -->
       performanceMetrics.throughput = Math.round(recentResults.length / 5); // Requests per second over 5 minutes
       performanceMetrics.errorRate = Math.round((performanceMetrics.failedTests / performanceMetrics.totalTests) * 100);
     }
-    performanceMetrics = { ...performanceMetrics };
+    performanceMetrics = { ...performanceMetrics }
   }
   async function runApiTest(endpoint) {
     const testId = `test-${endpoint.id}-${Date.now()}`;
@@ -444,10 +444,10 @@ https://svelte.dev/e/js_parse_error -->
       responseSize: 0,
       headers: ,
       validation: {
-        passed: false
+        passed: false;
         errors: [];
       }
-    };
+    }
     testResults = [testResult, ...testResults.slice(0, 199)]; // Keep last 200 results
     currentTest = testId;
     try {
@@ -461,9 +461,9 @@ https://svelte.dev/e/js_parse_error -->
       // Prepare request options
       const requestOptions = {
         method: endpoint.method,
-        headers: endpoint.headers ||
+        headers: endpoint.headers ||;
         signal: AbortSignal.timeout(endpoint.timeout || 30000);
-      };
+      }
       // Add body for POST requests
       if (endpoint.method === 'POST' && endpoint.payload) {
         requestOptions.body = JSON.stringify(endpoint.payload);
@@ -526,7 +526,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   function validateResponse(responseData, validation, statusCode) {
-    const result = { passed: true, errors: [] };
+    const result = { passed: true, errors: [] }
     // Check status codes
     if (validation.statusCodes && !validation.statusCodes.includes(statusCode)) {
       (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).passed = false;
@@ -630,7 +630,7 @@ https://svelte.dev/e/js_parse_error -->
       errorRate: 0,
       uptime: 100,
       lastReset: new Date();
-    };
+    }
   }
   function exportResults() {
     const exportData = {
@@ -640,9 +640,9 @@ https://svelte.dev/e/js_parse_error -->
       testResults: testResults.slice(0, 50), // Last 50 results
       testSuites: testSuites.map(suite => ({
         ...suite,
-        results: suite.results?.slice(0, 10) // Last 10 results per suit
+        results: suite.results?.slice(0, 10) // Last 10 results per suit;
       }))
-    };
+    }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: 'application/json';
     });
@@ -986,7 +986,7 @@ https://svelte.dev/e/js_parse_error -->
               <Search class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search results..."
+                placeholder="Search results...";
                 bind:value={searchTerm}
                 class="pl-10 pr-4 py-2 bg-black/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:border-amber-400 focus:outline-none"
               />

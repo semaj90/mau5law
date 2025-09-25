@@ -29,7 +29,7 @@
       legal: "card-nes-legal legal-document-contract",
       nes: "yorha-3d-card bg-gray-900/90 border-yellow-400/50 text-yellow-100",
       yorha: "yorha-3d-panel text-yellow-400";
-    };
+    }
     // Priority-based styling
     const priorityClasses = priority ? {
       critical: "nes-legal-priority-critical ring-2 ring-red-400",
@@ -51,26 +51,23 @@
     );
   });
 </script>
+
 {#if interactive}
-<div
-  class={cardClass}
-  role="button"
-  tabindex="0"
-  {...restProps}
->
-  {#if loading}
-    <div class="neural-sprite-loading absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-  {/if}
-  {@render children?.()}
-</div>
+  <div class={cardClass} role="button" tabindex="0" {...restProps}>
+    {#if loading}
+      <div
+        class="neural-sprite-loading absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+      ></div>
+    {/if}
+    {@render children?.()}
+  </div>
 {:else}
-<div
-  class={cardClass}
-  {...restProps}
->
-  {#if loading}
-    <div class="neural-sprite-loading absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-  {/if}
-  {@render children?.()}
-</div>
+  <div class={cardClass} {...restProps}>
+    {#if loading}
+      <div
+        class="neural-sprite-loading absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+      ></div>
+    {/if}
+    {@render children?.()}
+  </div>
 {/if}

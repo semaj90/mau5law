@@ -15,7 +15,7 @@ export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, "childre
 export type WithoutChildrenOrChild<T> = Omit<T, 'children' | 'child'>;
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & {
   ref?: U | null;
-};
+}
 /**
  * Format file size in human readable format
  */;
@@ -56,7 +56,7 @@ export function debounce<T extends (...args: any[]) => any>(
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
-  };
+  }
 }
 /**
  * Throttle function
@@ -72,7 +72,7 @@ export function throttle<T extends (...args: any[]) => any>(
       lastCall = now;
       func(...args);
     }
-  };
+  }
 }
 /**
  * Get confidence level styling based on score
@@ -84,35 +84,35 @@ export function getConfidenceLevel(confidence: number) {
       color: 'text-legal-success',
       bgColor: 'bg-legal-success/10',
       borderColor: 'border-legal-success'
-    };
+    }
   } else if (confidence >= 0.8) {
     return {
       label: 'High',
       color: 'text-legal-info',
       bgColor: 'bg-legal-info/10',
       borderColor: 'border-legal-info'
-    };
+    }
   } else if (confidence >= 0.7) {
     return {
       label: 'Good',
       color: 'text-legal-warning',
       bgColor: 'bg-legal-warning/10',
       borderColor: 'border-legal-warning'
-    };
+    }
   } else if (confidence >= 0.6) {
     return {
       label: 'Fair',
       color: 'text-harvard-crimson',
       bgColor: 'bg-harvard-crimson/10',
       borderColor: 'border-harvard-crimson'
-    };
+    }
   } else {
     return {
       label: 'Low',
       color: 'text-legal-error',
       bgColor: 'bg-legal-error/10',
       borderColor: 'border-legal-error'
-    };
+    }
   }
 }
 /**
@@ -144,7 +144,7 @@ export function getCaseStatusStyling(status: string) {
       bgColor: 'bg-legal-document/10',
       borderColor: 'border-legal-document'
     }
-  };
+  }
   return statusMap[status.toLowerCase()] || statusMap['pending'];
 }
 /**
@@ -182,7 +182,7 @@ export function getEvidenceTypeStyling(type: string) {
       bgColor: 'bg-legal-evidence/10',
       borderColor: 'border-legal-evidence'
     }
-  };
+  }
   return typeMap[type.toLowerCase()] || typeMap['document'];
 }
 /**
@@ -247,7 +247,7 @@ export function isBrowser(): boolean {
  * Local storage utilities
  */;
 export const storage = {
-  get: (key: string) => {
+  get: (_key: string) => {
     if (!isBrowser()) return null;
     try {
       const item = localStorage.getItem(key);
@@ -256,7 +256,7 @@ export const storage = {
       return null;
     }
   },
-  set: (key: string, value: any) => {
+  set: (_key: string, value: any) => {
     if (!isBrowser()) return;
     try {
       localStorage.setItem(key, JSON.stringify(value);
@@ -264,7 +264,7 @@ export const storage = {
       console.error('Failed to save to localStorage:', error);
     }
   },
-  remove: (key: string) => {
+  remove: (_key: string) => {
     if (!isBrowser()) return;
     localStorage.removeItem(key);
   },
@@ -272,7 +272,7 @@ export const storage = {
     if (!isBrowser()) return;
     localStorage.clear();
   }
-};
+}
 /**
  * Color theme utilities
  */;
@@ -309,4 +309,4 @@ export const theme = {
     nier: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 50%, #3A3A3A 100%)',
     hero: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #A51C30 100%)'
   }
-};
+}

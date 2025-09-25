@@ -62,13 +62,13 @@ https://svelte.dev/e/effect_invalid_placement -->
         const transcript = event.results[0][0].transcript;
         messageInput = transcript;
         isListening = false;
-      };
+      }
       recognition.onerror = () => {
         isListening = false;
-      };
+      }
       recognition.onend = () => {
         isListening = false;
-      };
+      }
     }
   });
   // Auto-scroll to bottom when new messages arrive
@@ -110,7 +110,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     }
   }
   // Handle Enter key
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -269,7 +269,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       <div class="setting-group">
         <label>
           <input
-            type="checkbox"
+            type="checkbox";
             bind:checked={config.autoSwitchBackend}
           />
           Auto-switch backend based on query complexity

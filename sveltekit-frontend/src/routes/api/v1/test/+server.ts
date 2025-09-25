@@ -10,7 +10,7 @@ import { apiOrchestrator } from '$lib/services/api-orchestrator.js'
 import { embeddingService } from '$lib/server/embedding-service.js'
 import type { APIResponse, APIRequestContext } from '$lib/types/api.js'
 import crypto from "crypto"
-import { URL } from "url"
+
 }
 export interface IntegrationTestResult {
   testName: string
@@ -361,7 +361,7 @@ async function testRAGAPI(): Promise<any> {
     }
   } catch (error: any) {
     return {
-      success: false
+      success: false;
       error: String(error)
     }
   }

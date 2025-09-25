@@ -5,9 +5,9 @@ export interface CacheConfiguration {
   persistence: boolean;
 }
 export interface CacheLayerInterface {
-  get(key: string): Promise<any>;
-  set(key: string, value: any, ttl?: number): Promise<void>;
-  delete(key: string): Promise<void>;
+  get(_key: string): Promise<any>;
+  set(_key: string, value: any, ttl?: number): Promise<void>;
+  delete(_key: string): Promise<void>;
   clear(): Promise<void>;
   size(): number;
 }
@@ -22,15 +22,15 @@ export class AdvancedCacheManager implements CacheLayerInterface {
     console.log('🚀 Advanced cache manager initialize called');
     return true;
   }
-  async get(key: string): Promise<any> {
+  async get(_key: string): Promise<any> {
     console.log('🔍 Cache get:', key);
     return this.cache.get(key);
   }
-  async set(key: string, value: any, ttl?: number): Promise<void> {
+  async set(_key: string, value: any, ttl?: number): Promise<void> {
     console.log('💾 Cache set:', key);
     this.cache.set(key, value);
   }
-  async delete(key: string): Promise<void> {
+  async delete(_key: string): Promise<void> {
     console.log('🗑️ Cache delete:', key);
     this.cache.delete(key);
   }
@@ -47,7 +47,7 @@ export class AdvancedCacheManager implements CacheLayerInterface {
       maxSize: this.config.maxSize,
       ttl: this.config.ttl,
       hitRate: 0.85,
-      missRate: 0.15
-    };
+      missRate: 0.15,
+    }
   }
 }

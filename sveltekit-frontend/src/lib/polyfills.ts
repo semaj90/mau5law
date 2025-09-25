@@ -1,5 +1,4 @@
 /// <reference types="vite/client" />
-import path from "path";
 import crypto from "crypto";
 import { URL } from "url";
 // Browser polyfills for Node.js modules and enhanced compatibility
@@ -11,7 +10,7 @@ declare global {
     process: {
       env: Record<string, string | undefined>;
       browser: boolean;
-    };
+    }
     Buffer: any;
   }
 }
@@ -82,7 +81,7 @@ export const pathUtils = {
     }
     return base;
   }
-};
+}
 // URL utilities for better compatibility
 export const urlUtils = {
   isAbsolute: (url: string) => {
@@ -100,10 +99,10 @@ export const urlUtils = {
       return new URL(url, window?.location?.href || 'http://localhost/')
     }
   }
-};
+}
 // Enhanced fetch with timeout and better error handling
 export const enhancedFetch = async (
-  url: string
+  url: string;
   options: RequestInit & { timeout?: number } = {}
 ): Promise<Response> => {
   const { timeout = 30000, ...fetchOptions } = options;
@@ -126,21 +125,21 @@ export const enhancedFetch = async (
     }
     throw error;
   }
-};
+}
 // Debounce utility for search and other operations
 export const debounce = <T extends (...args: any[]) => any>(,
-  func: T
+  func: T;
   wait: number;
 ): ((...args: Parameters<T>) => void) => {
   let timeout: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
-  };
-};
+  }
+}
 // Throttle utility for performance-sensitive operations
 export const throttle = <T extends (...args: any[]) => any>(,
-  func: T
+  func: T;
   limit: number;
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
@@ -150,11 +149,11 @@ export const throttle = <T extends (...args: any[]) => any>(,
       inThrottle = true;
       setTimeout(() => (inThrottle = false), limit);
     }
-  };
-};
+  }
+}
 // Local storage utilities with error handling
 export const storage = {
-  get: <T = any>(key: string, defaultValue?: T): T | null => {
+  get: <T = any>(_key: string, defaultValue?: T): T | null => {
     try {
       if (typeof window === 'undefined') return defaultValue || null;
       const item = localStorage.getItem(key);
@@ -164,7 +163,7 @@ export const storage = {
       return defaultValue || null;
     }
   },
-  set: (key: string, value: any): boolean => {
+  set: (_key: string, value: any): boolean => {
     try {
       if (typeof window === 'undefined') return false;
       localStorage.setItem(key, JSON.stringify(value);
@@ -174,7 +173,7 @@ export const storage = {
       return false;
     }
   },
-  remove: (key: string): boolean => {
+  remove: (_key: string): boolean => {
     try {
       if (typeof window === 'undefined') return false;
       localStorage.removeItem(key);
@@ -194,7 +193,7 @@ export const storage = {
       return false;
     }
   }
-};
+}
 // Initialize polyfills
 if (typeof window !== 'undefined') {
   // Ensure all polyfills are applied
@@ -229,7 +228,7 @@ const webGPU = {
     if (!device) throw new Error('WebGPU not supported or device unavailable');
     return device;
   }
-};
+}
 if (typeof window !== 'undefined') {
   (window as any).__WEBGPU_SUPPORTED__ = webGPU.isSupported();
 }
@@ -241,4 +240,4 @@ export default {
   throttle,
   storage,
   webGPU
-};
+}

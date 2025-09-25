@@ -272,7 +272,7 @@ async function hybridSearch(
   query: string
   embedding: number[] | null
   limit: number
-  threshold: number
+  threshold: number;
   filters: any
 ): Promise<any[]> {
   console.log('[Search] Performing hybrid search')
@@ -321,7 +321,7 @@ async function semanticSearch(
   query: string
   embedding: number[]
   limit: number
-  threshold: number
+  threshold: number;
   filters: any
 ): Promise<any[]> {
   console.log('[Search] Performing semantic search with context')

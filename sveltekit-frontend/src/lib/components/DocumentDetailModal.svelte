@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
     title: string;
     content: string;
     document_type: string;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
     created_at: string;
     updated_at: string;
     has_embedding: boolean;
@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     content: string;
     documentType: string;
     similarity: number;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   }
   interface GraphConnection {
     type: string;
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
       await logger.logError({
         error: errorMessage
         context: 'document_detail_load',
-        documentId: docId
+        documentId: docId;
         severity: 'medium',
         category: 'ui';
       });
@@ -132,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
       headers: { 'Cache-Control': forceRefresh ? 'no-cache' : 'max-age=300' }
     });
     const url = `/api/document/${docId}${enableGPUAnalysis ? '?gpu=true' : ''}`;
-    const response = await fetch(url);
+    // removed unused response assignment
     if (!response.ok) {
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
@@ -164,7 +164,7 @@ https://svelte.dev/e/js_parse_error -->
       metadata,
       cached_at: Date.now(),
       cache_source: 'server'
-    };
+    }
     const ttl = data.cache_instructions?.cache_duration || 5 * 60 * 1000; // 5 minutes
     await db.setCache(`document_detail_${docId}`, cacheData, ttl);
     const serverTime = performance.now() - serverStartTim;
@@ -208,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
             metadata: data.enhanced_metadata,
             cached_at: Date.now(),
             cache_source: 'background_refresh';
-          };
+          }
           await db.setCache(`document_detail_${docId}`, cacheData, 5 * 60 * 1000);
         }
       }

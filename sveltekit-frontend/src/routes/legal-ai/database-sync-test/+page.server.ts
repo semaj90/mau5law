@@ -15,7 +15,7 @@ export interface DatabaseSyncTestData {
       isAvailable: boolean;
       models: string[];
       error: string | null;
-    };
+    }
     recentSessions: Array<any>;
     recentDocuments: Array<any>;
     serviceStatus: {
@@ -23,21 +23,21 @@ export interface DatabaseSyncTestData {
       ollama: boolean;
       redis: boolean;
       lastChecked: string;
-    };
+    }
     testingMetrics: {
       totalDocuments: number;
       totalSessions: number;
       documentsToday: number;
       averageProcessingTime: number;
       cacheHitRate: number;
-    };
-  };
+    }
+  }
   meta: {
     totalDocuments: number;
     totalSessions: number;
     serverRenderTime: number;
     testingEnvironment: boolean;
-  };
+  }
 }
 export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSyncTestData> => {
   const startTime = Date.now();
@@ -45,18 +45,12 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
     // Test service availability with detailed error handling
     const [ollamaAvailable, ollamaModels] = await Promise.allSettled([
       langExtractService.isOllamaAvailable(),
-      langExtractService.listAvailableModels().catch(() => [])
+      langExtractService.listAvailableModels().catch(() => []),
     ]);
     const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value : false;
     const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value : [];
     // Enhanced database queries for testing
-    const [
-      recentSessions,
-      recentDocuments,
-      totalCounts,
-      todayDocuments,
-      processingMetrics
-    ] = await Promise.allSettled([
+    const [recentSessions, recentDocuments, totalCounts, todayDocuments, processingMetrics] = await Promise.allSettled([
       // Recent sessions with enhanced data
       db
         .select({
@@ -64,7 +58,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           sessionName: ragSessions.sessionName,
           messageCount: ragSessions.messageCount,
           lastActivity: ragSessions.updatedAt,
-          createdAt: ragSessions.createdAt
+          createdAt: ragSessions.createdAt,
         })
         .from(ragSessions)
         .where(eq(ragSessions.isActive, true))
@@ -79,7 +73,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           documentType: legalDocuments.documentType,
           createdAt: legalDocuments.createdAt,
           keyTerms: legalDocuments.keyTerms,
-          processingMetadata: legalDocuments.processingMetadata
+          processingMetadata: legalDocuments.processingMetadata,
         })
         .from(legalDocuments)
         .orderBy(desc(legalDocuments.createdAt))
@@ -87,7 +81,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
       // Total counts
       Promise.all([
         db.select({ count: count() }).from(legalDocuments),
-        db.select({ count: count() }).from(ragSessions)
+        db.select({ count: count() }).from(ragSessions),
       ]),
       // Documents processed today
       db
@@ -99,23 +93,29 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         .select({
           avgProcessingTime: sql<number>`AVG(CAST(processing_metadata->>'processingTime' AS INTEGER))`,
           cacheHits: sql<number>`COUNT(*) FILTER (WHERE processing_metadata->>'cacheHit' = 'true')`,
-          totalProcessed: count()
+          totalProcessed: count(),
         })
         .from(legalDocuments)
-        .where(sql`processing_metadata IS NOT NULL`)
+        .where(sql`processing_metadata IS NOT NULL`),
     ]);
     // Process results with error handling
     const sessions = recentSessions.status === 'fulfilled' ? recentSessions.value : [];
     const documents = recentDocuments.status === 'fulfilled' ? recentDocuments.value : [];
     const counts = totalCounts.status === 'fulfilled' ? totalCounts.value : [{ count: 0 }, { count: 0 }];
     const todayDocs = todayDocuments.status === 'fulfilled' ? todayDocuments.value : [{ count: 0 }];
-    const metrics = processingMetrics.status === 'fulfilled' ? processingMetrics.value : [{
-      avgProcessingTime: 0,
-      cacheHits: 0,
-      totalProcessed: 0
-    }];
+    const metrics =
+      processingMetrics.status === 'fulfilled'
+        ? processingMetrics.value
+        : [
+            {
+              avgProcessingTime: 0,
+              cacheHits: 0,
+              totalProcessed: 0,
+            },
+          ];
     // Calculate document counts per session
-    const sessionsWithCounts = await Promise.all(sessions.map(async (session) => {
+    const sessionsWithCounts = await Promise.all(
+      sessions.map(async session => {
         try {
           const [{ count: docCount }] = await db
             .select({ count: count() })
@@ -125,9 +125,10 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
             id: session.id,
             sessionName: session.sessionName || `Test Session ${session.id.slice(0, 8)}`,
             messageCount: session.messageCount || 0,
-            lastActivity: session.lastActivity?.toISOString() || session.createdAt?.toISOString() || new Date().toISOString(),
-            documentsProcessed: Number(docCount) || 0
-          };
+            lastActivity:
+              session.lastActivity?.toISOString() || session.createdAt?.toISOString() || new Date().toISOString(),
+            documentsProcessed: Number(docCount) || 0,
+          }
         } catch (error) {
           console.warn(`Failed to count documents for session ${session.id}:`, error);
           return {
@@ -135,16 +136,15 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
             sessionName: session.sessionName || `Test Session ${session.id.slice(0, 8)}`,
             messageCount: session.messageCount || 0,
             lastActivity: session.lastActivity?.toISOString() || new Date().toISOString(),
-            documentsProcessed: 0
-          };
+            documentsProcessed: 0,
+          }
         }
-      })
+      }),
     );
     // Calculate metrics
     const metricsData = metrics[0];
-    const cacheHitRate = metricsData.totalProcessed > 0
-      ? (metricsData.cacheHits / metricsData.totalProcessed) * 100
-      : 0;
+    const cacheHitRate =
+      metricsData.totalProcessed > 0 ? (metricsData.cacheHits / metricsData.totalProcessed) * 100 : 0;
     // Test database connectivity
     let postgresqlAvailable = true;
     try {
@@ -167,40 +167,40 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
     const pageData: DatabaseSyncTestData = {
       initialState: {
         langchainService: {
-          isAvailable: isOllamaAvailable
-          models: availableModels
-          error: isOllamaAvailable ? null : 'Ollama service not available'
+          isAvailable: isOllamaAvailable,
+          models: availableModels,
+          error: isOllamaAvailable ? null : 'Ollama service not available',
         },
-        recentSessions: sessionsWithCounts
-        recentDocuments: documents.map(doc => ({,
+        recentSessions: sessionsWithCounts,
+        recentDocuments: documents.map(doc => ({
           id: doc.id,
           title: doc.title || 'Untitled Test Document',
           summary: doc.summary || 'No summary available',
           documentType: doc.documentType || 'unknown',
           createdAt: doc.createdAt?.toISOString() || new Date().toISOString(),
-          keyTerms: doc.keyTerms || []
+          keyTerms: doc.keyTerms || [],
         })),
         serviceStatus: {
-          postgresql: postgresqlAvailable
-          ollama: isOllamaAvailable
-          redis: redisAvailable
-          lastChecked: new Date().toISOString()
+          postgresql: postgresqlAvailable,
+          ollama: isOllamaAvailable,
+          redis: redisAvailable,
+          lastChecked: new Date().toISOString(),
         },
         testingMetrics: {
           totalDocuments: Number((counts[0] as any)?.count) || 0,
           totalSessions: Number((counts[1] as any)?.count) || 0,
           documentsToday: Number((todayDocs[0] as any)?.count) || 0,
           averageProcessingTime: Math.round(metricsData.avgProcessingTime || 0),
-          cacheHitRate: Math.round(cacheHitRate * 100) / 100
-        }
+          cacheHitRate: Math.round(cacheHitRate * 100) / 100,
+        },
       },
       meta: {
         totalDocuments: Number((counts[0] as any)?.count) || 0,
         totalSessions: Number((counts[1] as any)?.count) || 0,
         serverRenderTime,
-        testingEnvironment: true
-      }
-    };
+        testingEnvironment: true,
+      },
+    }
     return pageData;
   } catch (error) {
     console.error('Failed to load database sync test data:', error);
@@ -208,32 +208,32 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
     return {
       initialState: {
         langchainService: {
-          isAvailable: false
+          isAvailable: false,
           models: [],
-          error: `Failed to load service data: ${error instanceof Error ? error.message: 'Unknown error'}`
+          error: `Failed to load service data: ${error instanceof Error ? error.message : 'Unknown error'}`,
         },
         recentSessions: [],
         recentDocuments: [],
         serviceStatus: {
-          postgresql: false
-          ollama: false
-          redis: false
-          lastChecked: new Date().toISOString()
+          postgresql: false,
+          ollama: false,
+          redis: false,
+          lastChecked: new Date().toISOString(),
         },
         testingMetrics: {
           totalDocuments: 0,
           totalSessions: 0,
           documentsToday: 0,
           averageProcessingTime: 0,
-          cacheHitRate: 0
-        }
+          cacheHitRate: 0,
+        },
       },
       meta: {
         totalDocuments: 0,
         totalSessions: 0,
         serverRenderTime: Date.now() - startTime,
-        testingEnvironment: true
-      }
-    };
+        testingEnvironment: true,
+      },
+    }
   }
-};
+}

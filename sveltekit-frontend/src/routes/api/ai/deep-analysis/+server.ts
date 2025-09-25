@@ -119,7 +119,7 @@ function generateRoleSpecificRecommendations(
         recommendations.push('Consider scheduling additional time for oral arguments')
       }
       recommendations.push('Review jurisdictional precedents')
-      break
+      break;
     default:
       recommendations.push('Consult with qualified legal counsel')
       recommendations.push('Gather all relevant documentation')
@@ -221,4 +221,4 @@ function generateNextSteps(analysis: any, userRole?: string, caseId?: string): s
   steps.push('Schedule follow-up review of legal developments')
   return steps
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

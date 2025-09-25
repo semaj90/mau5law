@@ -13,7 +13,7 @@ export interface NotificationState {
 }
 const initialState: NotificationState = {
   notifications: []
-};
+}
 function createNotificationStore() {
   const { subscribe, set, update } = writable<NotificationState>(initialState);
   const store = {
@@ -25,7 +25,7 @@ function createNotificationStore() {
         ...notification,
         id,
         duration: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).duration ?? 5000
-      };
+      }
       update((state) => ({
         notifications: [...state.notifications, newNotification]
       });
@@ -98,7 +98,7 @@ function createNotificationStore() {
         duration: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).timeout || (notification as { duration?: any; type?: any; message?: any; timeout?: any }).duration
       });
     }
-  };
+  }
   return store;
 }
 export const notifications = createNotificationStore();

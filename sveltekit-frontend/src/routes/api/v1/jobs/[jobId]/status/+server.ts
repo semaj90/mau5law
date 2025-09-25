@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     const existingData = await redis.get(jobKey)
     if (!existingData) {
       return json({
-          success: false
+          success: false;
           error: 'Job not found'
         },)
         { status: 404 }
@@ -278,7 +278,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     // Can only cancel queued or processing jobs
     if (!['queued', 'processing'].includes(job.status)) {
       return json({
-          success: false
+          success: false;
           error: `Cannot cancel job with status: ${job.status}`
         },)
         { status: 400 }

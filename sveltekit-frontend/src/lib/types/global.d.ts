@@ -1,6 +1,5 @@
-
 // Global type definitions for TypeScript error resolution
-export {};
+export {}
 declare global {
   interface Window {
     fs?: unknown;
@@ -23,7 +22,7 @@ declare module '@qdrant/js-client-rest' {
   export interface PointStruct {
     id: string;
     vector: number[];
-    payload?: { [key: string]: any };
+    payload?: { [key: string]: any }
   }
   export interface Filter {
     must?: Array<{ [key: string]: any }>;

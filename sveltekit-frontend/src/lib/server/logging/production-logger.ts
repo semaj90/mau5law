@@ -20,7 +20,7 @@ export interface LogEntry {
     duration: number;
     memoryUsage: number;
     cpuUsage?: number;
-  };
+  }
 }
 export class ProductionLogger {
   private logDir: string;
@@ -51,15 +51,15 @@ export class ProductionLogger {
       caseId: entry.caseId,
       documentId: entry.documentId,
       performanceMetrics: entry.performanceMetrics
-    };
+    }
     // Console output with colors
     const timestamp = logEntry.timestamp.toISOString();
     const levelColors = {
       info: '\x1b[36m', // Cyan
       warn: '\x1b[33m', // Yellow
-      error: '\x1b[31m', // Red
+      error: '\x1b[31m', // Red;
       debug: '\x1b[90m'  // Gray
-    };
+    }
     const color = levelColors[logEntry.level];
     const reset = '\x1b[0m';
     console.log(`${color}[${logEntry.level.toUpperCase()}]${reset} ${timestamp} [${logEntry.service}] ${logEntry.message}`);
@@ -106,18 +106,18 @@ export class ProductionLogger {
           message: entry.error.message,
           stack: entry.error.stack,
           name: entry.error.name
-        } : null
+        } : null;
         data: entry.data ? JSON.stringify(entry.data) : null
         userId: entry.userId,
         caseId: entry.caseId,
         documentId: entry.documentId
-      };
+      }
       // Since we may not have an errors table, we'll store in a JSON log for now
       const errorLogPath = path.join(this.logDir, 'errors.json');
       const errorLog = {
         timestamp: new Date().toISOString(),
         ...errorData
-      };
+      }
       await appendFile(errorLogPath, JSON.stringify(errorLog) + '\n');
     } catch (error: any) {
       console.error('[LOGGER] Failed to store error in database:', error);
@@ -205,7 +205,7 @@ export class ProductionLogger {
       const today = new Date().toISOString().split('T')[0];
       const logFile = path.join(this.logDir, `${today}.log`);
       const logContent = await readFile(logFile, 'utf-8').catch(() => '');
-      const lines = logContent.split('\n').filter(line => line.trim();
+      // removed unused lines assignment
       let logs = lines.map(line => {
         try {
           return JSON.parse(line) as LogEntry;
@@ -243,10 +243,10 @@ export class ProductionLogger {
         errorsByService,
         recentErrors: recentErrors.slice(-10), // Last 10 errors
         timeRange: `${hours} hours`
-      };
+      }
     } catch (error: any) {
       console.error('[LOGGER] Failed to generate error summary:', error);
-      return { totalErrors: 0, errorsByService: { [key: string]: any }, recentErrors: [] };
+      return { totalErrors: 0, errorsByService: { [key: string]: any }, recentErrors: [] }
     }
   }
 }
@@ -256,24 +256,24 @@ export const logger = new ProductionLogger();
 export const dbLogger = {
   info: (operation: string, data?: unknown, metrics?: unknown) => logger.logDatabaseOperation(operation, data, undefined, metrics),
   error: (operation: string, error: Error, data?: unknown) => logger.logDatabaseOperation(operation, data, error)
-};
+}
 export const ocrLogger = {
   info: (fileName: string, result?: unknown, metrics?: unknown) => logger.logOCROperation(fileName, result, undefined, metrics),
   error: (fileName: string, error: Error) => logger.logOCROperation(fileName, undefined, error)
-};
+}
 export const vectorLogger = {
   info: (operation: string, query?: string, results?: unknown) => logger.logVectorOperation(operation, query, results),
   error: (operation: string, error: Error, query?: string) => logger.logVectorOperation(operation, query, undefined, error)
-};
+}
 export const aiLogger = {
   info: (model: string, prompt?: string, response?: unknown, metrics?: unknown) => logger.logAIOperation(model, prompt, response, undefined, metrics),
   error: (model: string, error: Error, prompt?: string) => logger.logAIOperation(model, prompt, undefined, error)
-};
+}
 export const uploadLogger = {
   info: (fileName: string, fileSize: number, caseId?: string, result?: unknown) => logger.logUploadOperation(fileName, fileSize, caseId, result),
   error: (fileName: string, fileSize: number, error: Error, caseId?: string) => logger.logUploadOperation(fileName, fileSize, caseId, undefined, error)
-};
+}
 export const xstateLogger = {
   info: (machine: string, state: string, event: string, context?: unknown) => logger.logXStateTransition(machine, state, event, context),
   error: (machine: string, state: string, event: string, error: Error, context?: unknown) => logger.logXStateTransition(machine, state, event, context, error)
-};
+}

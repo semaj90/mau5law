@@ -11,7 +11,7 @@ import { redis } from '$lib/server/redis';
 import { closeRabbitMQ } from '$lib/server/rabbitmq';
 import { emitCacheEvent } from '$lib/server/cache/cache-events';
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const db = drizzle(pool);
+// removed unused db assignment
 let shuttingDown = false;
 // Wire globalLoki to Redis client if available
 (async () => {
@@ -169,7 +169,7 @@ async function runRedisLoop() {
       const popped = await cache.blpop('embedding:jobs', 0);
       if (!popped) continue;
       const [, raw] = popped;
-      const job = JSON.parse(raw) as { id: string; text: string; model?: string };
+      const job = JSON.parse(raw) as { id: string; text: string; model?: string }
       try {
         await processJob(job);
       } catch (err: any) {

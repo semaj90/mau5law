@@ -59,4 +59,4 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     headers
   })
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

@@ -35,8 +35,8 @@ export interface JobDefinition {
   id: string;
   type: JobType;
   priority: number;
-  payload: { [key: string]: any };
-  metadata?: { [key: string]: any };
+  payload: { [key: string]: any }
+  metadata?: { [key: string]: any }
   dependencies?: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -59,14 +59,14 @@ export interface QueueConfig {
   durable: boolean;
   autoDelete: boolean;
   exclusive: boolean;
-  arguments?: { [key: string]: any };
+  arguments?: { [key: string]: any }
 }
 export interface ExchangeConfig {
   name: string;
   type: 'direct' | 'topic' | 'fanout' | 'headers';
   durable: boolean;
   autoDelete: boolean;
-  arguments?: { [key: string]: any };
+  arguments?: { [key: string]: any }
 }
 export interface RabbitMQConnection {
   host: string;

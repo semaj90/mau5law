@@ -18,7 +18,7 @@ export interface FlashAttentionMulticoreRequest {
     errorData?: unknown;
     maxSequenceLength?: number;
     memoryOptimization?: 'speed' | 'memory' | 'balanced';
-  };
+  }
 }
 export interface FlashAttentionMulticoreResponse {
   attentionResult: AttentionResult;
@@ -34,8 +34,8 @@ export interface FlashAttentionMulticoreResponse {
       attention: number;
       multicore: number;
       overall: number;
-    };
-  };
+    }
+  }
   performanceOptimizations: string[];
 }
 export interface ErrorAnalysisWithAttention {
@@ -74,7 +74,7 @@ export class FlashAttentionMulticoreBridge {
           } else {
             setTimeout(checkMulticore, 500);
           }
-        };
+        }
         checkMulticore();
       })
     ]);
@@ -127,7 +127,7 @@ export class FlashAttentionMulticoreBridge {
         agentOrchestrationResult,
         systemMetrics,
         performanceOptimizations
-      };
+      }
     } catch (error: any) {
       console.error('❌ Enhanced analysis failed:', error);
       throw new Error(`FlashAttention2 + Multicore analysis failed: ${error.message}`);
@@ -174,7 +174,7 @@ export class FlashAttentionMulticoreBridge {
       relevantCodeSections,
       fixProbability: attentionResult.confidence * 0.9,
       prioritizedErrors
-    };
+    }
   }
   private async processWithFlashAttention(
     request: FlashAttentionMulticoreRequest;
@@ -197,7 +197,7 @@ export class FlashAttentionMulticoreBridge {
         sequenceLength: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).sequenceLength || 0
       },
       legalAnalysis: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).legalAnalysis
-    };
+    }
   }
   private async runMulticoreAnalysis(request: FlashAttentionMulticoreRequest): Promise<ProcessingTask[]> {
     const tasks: ProcessingTask[] = [];
@@ -248,7 +248,7 @@ export class FlashAttentionMulticoreBridge {
         useMulticoreAnalysis: true
         includeContext7: true
       }
-    };
+    }
     return await comprehensiveOrchestrator.executeComprehensiveAnalysis(orchestrationRequest);
   }
   private async generateCombinedRecommendations(
@@ -303,7 +303,7 @@ export class FlashAttentionMulticoreBridge {
         multicore: completedTasks / Math.max(1, totalTasks),
         overall: (attentionResult.result.confidence + (completedTasks / Math.max(1, totalTasks))) / 2
       }
-    };
+    }
   }
   private generatePerformanceOptimizations(
     metrics: FlashAttentionMulticoreResponse['systemMetrics'],
@@ -388,7 +388,7 @@ export class FlashAttentionMulticoreBridge {
         'Performance optimization',
         'Attention-based code analysis'
       ]
-    };
+    }
   }
 }
 // Global bridge instance

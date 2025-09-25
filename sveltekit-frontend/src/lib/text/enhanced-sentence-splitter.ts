@@ -94,7 +94,7 @@ export function splitSentencesEnhanced(text: string, options: SplitterOptions = 
 export class EnhancedSentenceSplitter {
   private options: SplitterOptions;
   private customAbbrevs: Set<string>;
-  constructor(options: SplitterOptions = {}) {
+  constructor(_options: SplitterOptions = {}) {
     this.options = options;
     this.customAbbrevs = new Set(options.customAbbreviations || []);
   }
@@ -113,7 +113,7 @@ export class EnhancedSentenceSplitter {
     return [] as string[];
   }
 }
-export function createStreamingSplitter(options: SplitterOptions = {}) {
-  return { splitter: new EnhancedSentenceSplitter(options), context: { [key: string]: any } };
+export function createStreamingSplitter(_options: SplitterOptions = {}) {
+  return { splitter: new EnhancedSentenceSplitter(options), context: { [key: string]: any } }
 }
-export default { splitSentencesEnhanced, EnhancedSentenceSplitter, createStreamingSplitter };
+export default { splitSentencesEnhanced, EnhancedSentenceSplitter, createStreamingSplitter }

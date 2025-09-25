@@ -5,8 +5,8 @@ declare interface RedisLegacy {
   connect?: () => Promise<void>;
   ping?: () => Promise<string>;
   quit?: () => Promise<void>;
-  get?: (key: string) => Promise<string | null>;
-  set?: (key: string, value: string, mode?: string, duration?: number) => Promise<unknown>;
+  get?: (_key: string) => Promise<string | null>;
+  set?: (_key: string, value: string, mode?: string, duration?: number) => Promise<unknown>;
   keys?: (pattern: string) => Promise<string[]>;
   xAdd?: (...args: unknown[]) => Promise<unknown>;
 }

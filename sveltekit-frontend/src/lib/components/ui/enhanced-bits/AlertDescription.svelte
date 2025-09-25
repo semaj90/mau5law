@@ -24,21 +24,25 @@ Description content for alerts with NES styling
     )
   );
 </script>
+
 <div class={descriptionClasses}>
   {#if children}
     {@render children()}
   {/if}
 </div>
+
 <style>
   .bits-alert-description {
     font-family: 'Courier New', monospace;
     line-height: 1.6;
   }
-/* Legal AI specific styling */ .bits-alert-description {
+/* Legal AI specific styling */ {}
+  .bits-alert-description {
     word-spacing: 0.1em;
     letter-spacing: 0.025em;
   }
-/* Enhanced readability */ .bits-alert-description ul {
+/* Enhanced readability */ {}
+  .bits-alert-description ul {
     margin: 0.5rem 0;
     padding-left: 1.5rem;
   }

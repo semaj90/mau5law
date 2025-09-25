@@ -22,14 +22,14 @@ export interface LegalCaseContext {
     risks: string[];
     recommendations: string[];
     confidenceLevel: number;
-  };
+  }
   documents: string[];
   deadlines: Array<any>;
   budget: {
     allocated: number;
     spent: number;
     remaining: number;
-  };
+  }
   progress: number;
   errors: string[];
   lastModified: number;
@@ -85,7 +85,7 @@ export type LegalCaseEvent =;
   | { type: 'CALCULATE_RISKS' }
   | { type: 'PROGRESS_UPDATE'; progress: number }
   | { type: 'VALIDATION_COMPLETE' }
-  | { type: 'VALIDATION_FAILED'; errors: string[] };
+  | { type: 'VALIDATION_FAILED'; errors: string[] }
 // Case management actors
 const caseValidationActor = fromPromise(async ({
     input
@@ -95,7 +95,7 @@ const caseValidationActor = fromPromise(async ({
       description: string;
       caseType: string;
       jurisdiction: string;
-    };
+    }
   }) => {
     const { title, description, caseType, jurisdiction } = input;
     console.log(`🔍 Validating case: ${title}`);
@@ -122,7 +122,7 @@ const caseValidationActor = fromPromise(async ({
       throw new Error(errors.join('; ');
     }
     console.log(`✅ Case validation complete: ${title}`);
-    return { valid: true };
+    return { valid: true }
   }
 );
 const caseCreationActor = fromPromise(async ({
@@ -134,7 +134,7 @@ const caseCreationActor = fromPromise(async ({
       caseType: string;
       jurisdiction: string;
       createdBy: string;
-    };
+    }
   }) => {
     const { title, description, caseType, jurisdiction, createdBy } = input;
     console.log(`📝 Creating case in database: ${title}`);
@@ -160,12 +160,12 @@ const caseCreationActor = fromPromise(async ({
           confidenceLevel: 0
         }
       }
-    };
+    }
     const [newCase] = await db.insert(cases).values(caseData).returning();
     console.log(`✅ Case created with ID: ${newCase.id}`);
     // Cache the case for quick access
     await cache.set(`case:${newCase.id}`, newCase, 3600); // 1 hour TTL
-    return { caseId: newCase.id, case: newCase };
+    return { caseId: newCase.id, case: newCase }
   }
 );
 const riskAnalysisActor = fromPromise(async ({ input }: { input: { caseId: string; context: any } }) => {
@@ -218,9 +218,9 @@ const riskAnalysisActor = fromPromise(async ({ input }: { input: { caseId: strin
       confidenceLevel,
       analysisDate: new Date().toISOString(),
       lastUpdated: Date.now()
-    };
+    }
     console.log(`✅ Risk analysis complete with ${confidenceLevel}% confidence`);
-    return { analysis };
+    return { analysis }
   }
 );
 const stakeholderNotificationActor = fromPromise(async ({
@@ -231,7 +231,7 @@ const stakeholderNotificationActor = fromPromise(async ({
       message: string;
       recipients: string[];
       notificationType: string;
-    };
+    }
   }) => {
     const { caseId, message, recipients, notificationType } = input;
     console.log(`📢 Sending notifications for case: ${caseId} to ${recipients.length} recipients`);
@@ -247,7 +247,7 @@ const stakeholderNotificationActor = fromPromise(async ({
     // Store notifications
     await cache.set(`notifications:case:${caseId}`, notifications, 86400); // 24h TTL
     console.log(`✅ Notifications sent successfully`);
-    return { notifications };
+    return { notifications }
   }
 );
 // Progress tracking for legal cases

@@ -11,13 +11,13 @@ export interface ONNXApiOptions {
 export class ONNXApiClient {
   private baseUrl: string;
   private defaultOptions: ONNXApiOptions;
-  constructor(options: ONNXApiOptions = {}) {
+  constructor(_options: ONNXApiOptions = {}) {
     this.baseUrl = options.baseUrl || '';
     this.defaultOptions = {
       timeout: 30000,
       retries: 2,
       ...options
-    };
+    }
   }
   /**
    * Extract legal entities from text
@@ -79,12 +79,12 @@ export class ONNXApiClient {
       results: results.map((r, i) => ({
         requestId: requests[i].id,
         success: r.status === 'fulfilled',
-        result: r.status === 'fulfilled' ? r.value: null
+        result: r.status === 'fulfilled' ? r.value: null;
         error: r.status === 'rejected' ? r.reason?.message : null
       })),
       totalTime,
       parallelExecution: true
-    };
+    }
   }
   /**
    * Test all ONNX endpoints with sample data
@@ -94,7 +94,7 @@ export class ONNXApiClient {
       contractText: "This is a legal contract between ABC Corporation and John Doe, executed on January 15, 2024, in the Superior Court of California.",
       courtDecision: "The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.",
       legalBrief: "Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes..."
-    };
+    }
     const tests = [;
       {
         name: 'Entity Extraction - Contract',
@@ -156,18 +156,18 @@ export class ONNXApiClient {
     const totalTime = Date.now() - startTime;
     const summary = {
       totalTests: tests.length,
-      successful: successCount
+      successful: successCount;
       failed: tests.length - successCount,
       successRate: (successCount / tests.length) * 100,
       totalTime,
       averageTime: totalTime / tests.length
-    };
+    }
     console.log(`📊 Test Summary: ${successCount}/${tests.length} passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`);
     return {
       success: successCount === tests.length,
       results,
       summary
-    };
+    }
   }
   /**
    * Performance benchmark
@@ -178,7 +178,7 @@ export class ONNXApiClient {
       entityExtraction: [],
       classification: [],
       embeddings: []
-    };
+    }
     // Entity extraction benchmark
     for (let i = 0; i < iterations; i++) {
       const start = Date.now();
@@ -209,7 +209,7 @@ export class ONNXApiClient {
       entityExtraction: calculateStats(benchmarks.entityExtraction),
       classification: calculateStats(benchmarks.classification),
       embeddings: calculateStats(benchmarks.embeddings)
-    };
+    }
   }
   /**
    * Make HTTP request with retry logic

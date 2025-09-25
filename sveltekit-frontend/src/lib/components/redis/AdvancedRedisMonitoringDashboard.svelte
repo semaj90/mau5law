@@ -31,7 +31,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     error: '#fc5454',
     background: '#0f0f23',
     surface: '#1e1e3f';
-  };
+  }
   $effect(() => {
     (async () => {
 // Initialize SIMD parser first
@@ -47,7 +47,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
           backends_available: []
         }),
         clearAllCaches: () => Promise.resolve()
-      };
+      }
     }
     await initializeRealTimeMonitoring();
     startPerformancePolling();
@@ -64,15 +64,15 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       wsConnection.onopen = () => {
         isConnected = true;
         console.log('🎮 Redis monitoring WebSocket connected');
-      };
+      }
       wsConnection.onmessage = (event) => {
         const data = JSON.parse(event.data);
         updateLiveMetrics(data);
-      };
+      }
       wsConnection.onerror = () => {
         isConnected = false;
         console.warn('⚠️ WebSocket connection failed, falling back to polling');
-      };
+      }
     } catch (error) {
       console.warn('WebSocket not available, using polling mode');
       isConnected = false;
@@ -121,7 +121,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
           total: 90,
           performance_gain: calculatePerformanceGain(redisData.cache_hit_rate);
         }
-      };
+      }
       liveMetrics.set(newMetrics);
       // Update performance history
       performanceHistory.update(history => {
@@ -139,11 +139,11 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       // Simulate GPU metrics - replace with actual NVIDIA-ML or GPU monitoring
       return {
         utilization: Math.random() * 30 + 20, // 20-50% utilization
-        memory_used_mb: Math.random() * 2000 + 1500, // 1.5-3.5GB
-        temperature: Math.random() * 10 + 45 // 45-55°C
-      };
+        memory_used_mb: Math.random() * 2000 + 1500, // 1.5-3.5GB;
+        temperature: Math.random() * 10 + 45 // 45-55°C;
+      }
     } catch {
-      return { utilization: 0, memory_used_mb: 0, temperature: 0 };
+      return { utilization: 0, memory_used_mb: 0, temperature: 0 }
     }
   }
   async function getMCPStats() {
@@ -152,9 +152,9 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         return await (response as { ok?: unknown; json?: unknown }).json();
       }
-      return { active_workers: 16, rps: 0, avg_response_ms: 0 };
+      return { active_workers: 16, rps: 0, avg_response_ms: 0 }
     } catch {
-      return { active_workers: 16, rps: 0, avg_response_ms: 0 };
+      return { active_workers: 16, rps: 0, avg_response_ms: 0 }
     }
   }
   function calculatePerformanceGain(hitRate: number): number {
@@ -189,6 +189,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   const formatNumber = (num: number, decimals = 1) =>
     num?.toFixed(decimals) || '0.0';
 </script>
+
 <div class="nintendo-dashboard">
   <div class="dashboard-header">
     <h1>🎮 Redis Orchestrator Command Center</h1>
@@ -272,8 +273,10 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       ></div>
     </div>
     <div class="status-text">
-      {$liveMetrics.endpoints.optimized} / {$liveMetrics.endpoints.total} endpoints optimized
-      ({formatNumber(($liveMetrics.endpoints.optimized / $liveMetrics.endpoints.total) * 100, 0)}%)
+      {$liveMetrics.endpoints.optimized} / {$liveMetrics.endpoints.total} endpoints optimized ({formatNumber(
+        ($liveMetrics.endpoints.optimized / $liveMetrics.endpoints.total) * 100,
+        0,
+      )}%)
     </div>
     <div class="performance-gain">
       🚀 Performance Gain: {$liveMetrics.endpoints.performance_gain}x faster
@@ -281,73 +284,66 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   </div>
   <!-- Performance Chart -->
   {#if $performanceHistory.length > 10}
-  <div class="performance-chart">
-    <h3>📈 Real-Time Performance History</h3>
-    <div class="chart-container">
-      <svg viewBox="0 0 400 100" class="performance-svg">
-        <!-- Grid lines -->
-        {#each Array(10) as _, i}
-          <line x1="0" y1="{i * 10}" x2="400" y2="{i * 10}" class="grid-line" />
-        {/each}
-        <!-- Cache hit rate line -->
-        <polyline
-          points={$performanceHistory
-            .map((point, i) => `${(i / $performanceHistory.length) * 400},${100 - point.redis.hit_rate}`)
-            .join(' ')
-          }
-          class="performance-line redis-line"
-          fill="none"
-        />
-        <!-- GPU utilization line -->
-        <polyline
-          points={$performanceHistory
-            .map((point, i) => `${(i / $performanceHistory.length) * 400},${100 - point.gpu.utilization}`)
-            .join(' ')
-          }
-          class="performance-line gpu-line"
-          fill="none"
-        />
-      </svg>
-      <div class="chart-legend">
-        <span class="legend-item"><span class="redis-color"></span> Redis Hit Rate</span>
-        <span class="legend-item"><span class="gpu-color"></span> GPU Utilization</span>
+    <div class="performance-chart">
+      <h3>📈 Real-Time Performance History</h3>
+      <div class="chart-container">
+        <svg viewBox="0 0 400 100" class="performance-svg">
+          <!-- Grid lines -->
+          {#each Array(10) as _, i}
+            <line x1="0" y1={i * 10} x2="400" y2={i * 10} class="grid-line" />
+          {/each}
+          <!-- Cache hit rate line -->
+          <polyline
+            points={$performanceHistory
+              .map((point, i) => `${(i / $performanceHistory.length) * 400},${100 - point.redis.hit_rate}`)
+              .join(' ')}
+            class="performance-line redis-line"
+            fill="none"
+          />
+          <!-- GPU utilization line -->
+          <polyline
+            points={$performanceHistory
+              .map((point, i) => `${(i / $performanceHistory.length) * 400},${100 - point.gpu.utilization}`)
+              .join(' ')}
+            class="performance-line gpu-line"
+            fill="none"
+          />
+        </svg>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="redis-color"></span> Redis Hit Rate</span>
+          <span class="legend-item"><span class="gpu-color"></span> GPU Utilization</span>
+        </div>
       </div>
     </div>
-  </div>
   {/if}
   <!-- Alerts Panel -->
   {#if $alertsLog.length > 0}
-  <div class="alerts-panel">
-    <h3>⚠️ System Alerts</h3>
-    <div class="alerts-list">
-      {#each $alertsLog as alert}
-        <div class="alert-item {alert.type}">
-          <span class="alert-time">{new Date(alert.timestamp).toLocaleTimeString()}</span>
-          <span class="alert-message">{alert.message}</span>
-        </div>
-      {/each}
+    <div class="alerts-panel">
+      <h3>⚠️ System Alerts</h3>
+      <div class="alerts-list">
+        {#each $alertsLog as alert}
+          <div class="alert-item {alert.type}">
+            <span class="alert-time">{new Date(alert.timestamp).toLocaleTimeString()}</span>
+            <span class="alert-message">{alert.message}</span>
+          </div>
+        {/each}
+      </div>
     </div>
-  </div>
   {/if}
   <!-- Control Panel -->
   <div class="control-panel">
     <h3>🎮 System Controls</h3>
     <div class="controls-grid">
-      <button class="control-btn" onclick={() => unifiedSIMDParser.clearAllCaches()}>
-        🧹 Clear All Caches
-      </button>
-      <button class="control-btn" onclick={() => window.open('/admin/redis', '_blank')}>
-        📊 Detailed Analytics
-      </button>
+      <button class="control-btn" onclick={() => unifiedSIMDParser.clearAllCaches()}> 🧹 Clear All Caches </button>
+      <button class="control-btn" onclick={() => window.open('/admin/redis', '_blank')}> 📊 Detailed Analytics </button>
       <button class="control-btn" onclick={() => window.open('http://localhost:3002/mcp/workers', '_blank')}>
         👥 MCP Workers
       </button>
-      <button class="control-btn" onclick={() => location.reload()}>
-        🔄 Refresh Dashboard
-      </button>
+      <button class="control-btn" onclick={() => location.reload()}> 🔄 Refresh Dashboard </button>
     </div>
   </div>
 </div>
+
 <style>
   .nintendo-dashboard {
     background: #0f0f23;
@@ -395,10 +391,18 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   .metric-card:hover {
     transform: translateY(-5px);
   }
-  .redis-card { border-color: #fc5454; }
-  .gpu-card { border-color: #3cbcfc; }
-  .simd-card { border-color: #fcfc54; }
-  .mcp-card { border-color: #00d800; }
+  .redis-card {
+    border-color: #fc5454;
+  }
+  .gpu-card {
+    border-color: #3cbcfc;
+  }
+  .simd-card {
+    border-color: #fcfc54;
+  }
+  .mcp-card {
+    border-color: #00d800;
+  }
   .card-header {
     display: flex;
     align-items: center;

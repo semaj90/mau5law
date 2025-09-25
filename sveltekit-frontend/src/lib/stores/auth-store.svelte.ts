@@ -24,7 +24,7 @@ type AuthEvents =
   | { type: 'CLEAR_ERROR' }
   | { type: 'SET_REDIRECT'; path: string }
   | { type: 'AUTHENTICATED'; user: SessionUser }
-  | { type: 'UNAUTHENTICATED' };
+  | { type: 'UNAUTHENTICATED' }
 }
 export interface RegisterData {
   email: string;
@@ -69,7 +69,7 @@ const logoutService = fromPromise(async () => {
   return true;
 });
 const checkAuthService = fromPromise(async () => {
-  const response = await fetch('/api/auth/me');
+  // removed unused response assignment
   if (!response.ok) {
     throw new Error('Not authenticated');
   }
@@ -150,7 +150,7 @@ const authMachine = createMachine({
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true
-              isLoading: false
+              isLoading: false;
               error: null
             }),
             // Handle redirect after successful login
@@ -186,7 +186,7 @@ const authMachine = createMachine({
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true
-              isLoading: false
+              isLoading: false;
               error: null
             }),
             // Redirect to dashboard after registration
@@ -235,7 +235,7 @@ const authMachine = createMachine({
             assign({
               user: null
               isAuthenticated: false
-              isLoading: false
+              isLoading: false;
               error: null
             }),
             // Redirect to home after logout
@@ -290,7 +290,7 @@ class AuthStore {
           this.#machineState = {
             context: state.context,
             value: state.value
-          };
+          }
         });
         // Check initial auth state
         this.#actor.send({ type: 'CHECK_AUTH' });
@@ -326,22 +326,22 @@ class AuthStore {
   // Actions
   login = (email: string, password: string) => {
     this.#actor?.send({ type: 'LOGIN', email, password });
-  };
+  }
   register = (userData: RegisterData) => {
     this.#actor?.send({ type: 'REGISTER', userData });
-  };
+  }
   logout = () => {
     this.#actor?.send({ type: 'LOGOUT' });
-  };
+  }
   clearError = () => {
     this.#actor?.send({ type: 'CLEAR_ERROR' });
-  };
+  }
   setRedirect = (path: string) => {
     this.#actor?.send({ type: 'SET_REDIRECT', path });
-  };
+  }
   checkAuth = () => {
     this.#actor?.send({ type: 'CHECK_AUTH' });
-  };
+  }
   // Permission helpers
   hasPermission = (permission: string): boolean => {
     if (!this.user) return false;
@@ -350,21 +350,21 @@ class AuthStore {
       prosecutor: ['read', 'write', 'manage_cases', 'manage_evidence'],
       detective: ['read', 'write', 'manage_evidence'],
       user: ['read']
-    };
+    }
     return (
       rolePermissions[this.user.role as keyof typeof rolePermissions]?.includes(permission) ?? false
     );
-  };
+  }
   canAccessCase = (caseId: string): boolean => {
     // Implement case-specific access control
     return this.hasPermission('read');
-  };
+  }
   canEditCase = (caseId: string): boolean => {
     return this.hasPermission('write');
-  };
+  }
   canDeleteCase = (caseId: string): boolean => {
     return this.hasPermission('delete');
-  };
+  }
 }
 // Export singleton instance
 export const authStore = new AuthStore();
@@ -379,7 +379,7 @@ export function requireAuth() {
       }
       return true;
     }
-  };
+  }
 }
 export function requireRole(role: string) {
   return {
@@ -395,7 +395,7 @@ export function requireRole(role: string) {
       }
       return true;
     }
-  };
+  }
 }
 export function requirePermission(permission: string) {
   return {
@@ -411,7 +411,7 @@ export function requirePermission(permission: string) {
       }
       return true;
     }
-  };
+  }
 }
 // Utility for components - Use the authStore directly
 // In Svelte 5, components should access authStore properties directly

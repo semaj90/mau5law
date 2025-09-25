@@ -17,7 +17,7 @@ Tests the demo RAG functionality with a working interface
     'What evidence do we have about financial transactions?',
     'Show me a timeline of events',
     'Analyze patterns in the evidence',
-    'Who are the persons of interest?'
+    'Who are the persons of interest?',
   ];
   async function sendQuery() {
     if (!query.trim() || isLoading) return;
@@ -26,31 +26,31 @@ Tests the demo RAG functionality with a working interface
     // Add user message
     chatHistory.push({
       type: 'user',
-      content: userQuery
-      timestamp: new Date();
+      content: userQuery,
+      timestamp: new Date(),
     });
     isLoading = true;
     try {
-      let response: RAGDemoRespon;
+      let response: RAGDemoResponse;
       // Handle special case for summary
       if (userQuery.toLowerCase().includes('summary')) {
         const summaryText = await demoGenerateCaseSummary(currentCase?.id || '1');
         response = {
-          response: summaryText
+          response: summaryText,
           sources: [],
           confidence: 0.9,
           tokensUsed: 250,
-          reasoning: ['Generated comprehensive case summary from available evidence'];
-        };
+          reasoning: ['Generated comprehensive case summary from available evidence'],
+        }
       } else {
         // Use RAG query for other questions
         const ragQuery: RAGDemoQuery = {
-          query: userQuery
+          query: userQuery,
           caseId: currentCase?.id || '1',
-          evidence: currentEvidence
+          evidence: currentEvidence,
           maxTokens: 500,
-          temperature: 0.7;
-        };
+          temperature: 0.7,
+        }
         response = await demoQueryLLM(ragQuery);
       }
       // Add AI response
@@ -59,20 +59,20 @@ Tests the demo RAG functionality with a working interface
         content: response.response,
         timestamp: new Date(),
         sources: response.sources,
-        reasoning: response.reasoning;
+        reasoning: response.reasoning,
       });
     } catch (error) {
       console.error('Chat error:', error);
       chatHistory.push({
         type: 'ai',
         content: 'Sorry, I encountered an error processing your request. Please try again.',
-        timestamp: new Date();
+        timestamp: new Date(),
       });
     } finally {
       isLoading = false;
     }
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendQuery();
@@ -85,13 +85,12 @@ Tests the demo RAG functionality with a working interface
     chatHistory = [];
   }
 </script>
+
 <div class="demo-chat nes-container is-dark">
   <div class="chat-header">
     <h3 class="nes-text is-primary">🤖 Demo AI Chat</h3>
     <div class="chat-controls">
-      <button class="nes-btn is-warning" onclick={clearChat}>
-        Clear Chat
-      </button>
+      <button class="nes-btn is-warning" onclick={clearChat}> Clear Chat </button>
     </div>
   </div>
   <!-- Sample Queries -->
@@ -99,10 +98,7 @@ Tests the demo RAG functionality with a working interface
     <p class="nes-text is-disabled">Try these sample queries:</p>
     <div class="query-buttons">
       {#each sampleQueries as sampleQuery}
-        <button
-          class="nes-btn is-normal"
-          onclick={() => useSampleQuery(sampleQuery)}
-        >
+        <button class="nes-btn is-normal" onclick={() => useSampleQuery(sampleQuery)}>
           {sampleQuery}
         </button>
       {/each}
@@ -123,9 +119,9 @@ Tests the demo RAG functionality with a working interface
         <div class="message-content nes-container">
           {#if message.type === 'ai' && message.content.includes('# Case Summary')}
             <!-- Render markdown-like content for summaries -->
-{message.content}
+            {message.content}
           {:else}
-{message.content}
+            {message.content}
           {/if}
           {#if message.sources && message.sources.length > 0}
             <div class="message-sources">
@@ -179,7 +175,9 @@ Tests the demo RAG functionality with a working interface
     {#if chatHistory.length === 0}
       <div class="empty-chat">
         <p class="nes-text">Welcome to the Demo AI Chat!</p>
-        <p class="nes-text is-disabled">Ask questions about the case and I'll analyze the evidence to provide insights.</p>
+        <p class="nes-text is-disabled">
+          Ask questions about the case and I'll analyze the evidence to provide insights.
+        </p>
       </div>
     {/if}
   </div>
@@ -195,15 +193,12 @@ Tests the demo RAG functionality with a working interface
         rows="3"
       ></textarea>
     </div>
-    <button
-      class="nes-btn is-primary"
-      onclick={sendQuery}
-      disabled={!query.trim() || isLoading}
-    >
+    <button class="nes-btn is-primary" onclick={sendQuery} disabled={!query.trim() || isLoading}>
       {isLoading ? 'Thinking...' : 'Send'}
     </button>
   </div>
 </div>
+
 <style>
   .demo-chat {
     display: flex;
@@ -214,7 +209,7 @@ Tests the demo RAG functionality with a working interface
   }
   .chat-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
@@ -259,7 +254,7 @@ Tests the demo RAG functionality with a working interface
   }
   .message-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.9em;
@@ -350,12 +345,23 @@ Tests the demo RAG functionality with a working interface
     font-size: 1.2em;
     color: #00ff00;
   }
-  .loading-animation span:nth-child(1) { animation-delay: 0s; }
-  .loading-animation span:nth-child(2) { animation-delay: 0.3s; }
-  .loading-animation span:nth-child(3) { animation-delay: 0.6s; }
+  .loading-animation span:nth-child(1) {
+    animation-delay: 0s;
+  }
+  .loading-animation span:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+  .loading-animation span:nth-child(3) {
+    animation-delay: 0.6s;
+  }
   @keyframes pulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
   }
   .empty-chat {
     text-align: center;

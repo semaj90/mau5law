@@ -28,10 +28,10 @@ https://svelte.dev/e/js_parse_error -->
     headerIds: false
     mangle: false
     sanitize: !unsafe,
-    smartLists: true
+    smartLists: true;
     smartypants: true
     baseUrl,
-  };
+  }
   $effect(() => {
     isClient = true;
     renderMarkdown();
@@ -60,15 +60,15 @@ https://svelte.dev/e/js_parse_error -->
               .join("")
           : href;
         return `<a href="${href}"${titleAttr}${target}>${linkText}</a>`;
-      };
+      }
       // Customize image rendering
       renderer.image = ({ href, title, text }) => {
         const titleAttr = title ? ` title="${title}"` : "";
         const altAttr = text ? ` alt="${text}"` : "";
         return `<img src="${href}"${titleAttr}${altAttr} class="space-y-4" loading="lazy" />`;
-      };
+      }
       // Customize code block rendering
-      renderer.code = ({ text, lang }) => {/* JSX syntax converted to Svelte */};
+      renderer.code = ({ text, lang }) => {/* JSX syntax converted to Svelte */}
       marked.use({ renderer });
       renderedHtml = await marked.parse(markdown);
     } catch (error) {/* JSX syntax converted to Svelte */}}

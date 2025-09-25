@@ -6,7 +6,7 @@
     open?: boolean;
     title?: string;
     description?: string;
-    analyticsLog?: (event: unknown) => void;
+    analyticsLog?: (_event: unknown) => void;
     onClose?: () => void;
     children?: Snippet;
   }
@@ -16,7 +16,7 @@
     title = '',
     description = '',
     analyticsLog = () => {},
-    onClose = () => {}
+    onClose = () => {},
   }: Props = $props();
   $effect(() => {
     if (open) {
@@ -30,6 +30,7 @@
     onClose();
   }
 </script>
+
 <Dialog.Root bind:open>
   <Dialog.Portal>
     <Dialog.Overlay class="modal-overlay" />
@@ -49,6 +50,7 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
+
 <style>
   :global(.modal-overlay) {
     @apply fixed inset-0 bg-black/60 z-40;

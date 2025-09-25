@@ -33,7 +33,7 @@ export interface ModernButtonProps {
   tooltip?: string;
   icon?: import('svelte').Snippet;
   children?: import('svelte').Snippet;
-  onclick?: (event: MouseEvent) => void;
+  onclick?: (_event: MouseEvent) => void;
 }
 export interface ModernDialogProps {
   open?: boolean;
@@ -48,27 +48,9 @@ export interface ModernDialogProps {
   onClose?: () => void;
 }
 // Component variants for easier usage
-export const cardVariants = [
-  'default',
-  'elevated',
-  'outline',
-  'ghost'
-] as const;
-export const buttonVariants = [
-  'primary',
-  'secondary',
-  'ghost',
-  'outline',
-  'danger',
-  'success'
-] as const;
-export const sizes = [
-  'xs',
-  'sm',
-  'md',
-  'lg',
-  'xl'
-] as const;
+export const cardVariants = ['default', 'elevated', 'outline', 'ghost'] as const;
+export const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'danger', 'success'] as const;
+export const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
 // Utility functions for golden ratio calculations
 export const goldenRatio = 1.618;
 export function goldenSpacing(multiplier: number = 1): string {
@@ -111,5 +93,5 @@ export const cssVars = {
   accentGreen: 'var(--yorha-accent-green)',
   borderPrimary: 'var(--yorha-border-primary)',
   borderSecondary: 'var(--yorha-border-secondary)',
-  borderAccent: 'var(--yorha-border-accent)'
+  borderAccent: 'var(--yorha-border-accent)',
 } as const;

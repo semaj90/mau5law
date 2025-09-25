@@ -20,7 +20,7 @@ export interface EmbeddingResult {
     textLength: number;
     generatedAt: string;
     extracted?: unknown;
-  };
+  }
 }
 /**
  * Generate embeddings using Ollama Gemma embeddings model (primary) with nomic-embed-text fallback
@@ -35,7 +35,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          model: model
+          model: model;
           prompt: text
         })
       });
@@ -67,7 +67,7 @@ async function extractDocumentStructure(text: string): Promise<any> {
     amounts: /\$[\d]+(?:\.\d{2})?/g,
     caseNumbers: /(?:case|docket)\s*(?:no\.?|#)?\s*([a-z0-9\-]+)/gi,
     sections: /(?:section|§)\s*(\d+(?:\.\d+)*)/gi
-  };
+  }
   const extracted = {
     parties: [],
     dates: [],
@@ -76,7 +76,7 @@ async function extractDocumentStructure(text: string): Promise<any> {
     sections: [],
     documentType: detectDocumentType(text),
     keyPhrases: extractKeyPhrases(text)
-  };
+  }
   for (const [key, pattern] of Object.entries(patterns)) {
     const matches = Array.from(text.matchAll(pattern as RegExp);
     (extracted as any)[key] = matches.map(match => match[1] || match[0]).slice(0, 10);
@@ -117,7 +117,7 @@ function extractKeyPhrases(text: string): string[] {
  * Main embedding generation function with langchain-style processing
  */
 export async function generateEnhancedEmbedding(
-  text: string | string[]
+  text: string | string[];
   options: EnhancedEmbeddingOptions = {},
 ): Promise<number[] | number[][]> {
   const {
@@ -176,7 +176,7 @@ export async function generateEnhancedEmbedding(
  * Batch embedding generation with progress tracking
  */
 export async function generateBatchEmbeddingsEnhanced(
-  texts: string[]
+  texts: string[];
   options: EnhancedEmbeddingOptions = {},
   onProgress?: (completed: number, total: number) => void,
 ): Promise<number[][]> {
@@ -239,7 +239,7 @@ export async function generateLegalEmbedding(
     },
     confidence: 0.85, // Default confidence for nomic-embed
     extracted
-  };
+  }
 }
 /**
  * Similarity calculation between legal documents
@@ -301,8 +301,7 @@ export async function generateBatchEmbeddings(
 /**
  * Langchain-style document processing with chunking
  */
-export async function processDocumentWithChunking(
-  document: string
+export async function processDocumentWithChunking(_document: string
   chunkSize: number = 1000,
   chunkOverlap: number = 200,
 ): Promise<any> {
@@ -332,5 +331,5 @@ export async function processDocumentWithChunking(
       extracted,
       processedAt: new Date().toISOString()
     }
-  };
+  }
 }

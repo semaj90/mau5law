@@ -8,7 +8,7 @@ import { enhanced_db } from '$lib/server/db/drizzle'
 import { legal_documents, evidence, cases } from '$lib/server/db/unified-schema'
 import { eq, sql, desc } from 'drizzle-orm'
 import type { VectorSearchResult } from '$lib/server/db/enhanced-vector-operations'
-import { URL } from "url"
+
 export const GET: RequestHandler = async ({ params, url }) => {
   const docId = params.id
   if (!docId) {
@@ -211,4 +211,4 @@ export const POST: RequestHandler = async ({ params, request }) => {
       throw error(400, `Unknown action: ${action}`)
   }
 }
-export const prerender = false
+export const prerender = false;

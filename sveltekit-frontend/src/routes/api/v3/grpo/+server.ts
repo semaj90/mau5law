@@ -49,7 +49,7 @@ async function withGrpoRateLimit(request: Request, handler: () => Promise<Respon
   if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
     const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000)
     return json({
-      success: false
+      success: false;
       error: 'GRPO rate limit exceeded. Please wait before making more requests.',
       retryAfter,
       resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
@@ -388,7 +388,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           }
           if (body.responses.length > 50) {
             return json({
-              success: false
+              success: false;
               error: 'batch size too large (max 50 responses)',
               requestId
             }, { status: 400 })

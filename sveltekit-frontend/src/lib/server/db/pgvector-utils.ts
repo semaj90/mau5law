@@ -360,7 +360,7 @@ export async function pgvectorHealthCheck(): Promise<any> {
         available: false
         functions: [],
         error: 'pgvector extension not installed'
-      };
+      }
     }
     // Check if our custom functions exist
     const functionsCheck = await db.execute(sql`
@@ -378,13 +378,13 @@ export async function pgvectorHealthCheck(): Promise<any> {
       available: true
       version: (extensionCheck[0]?.version as string) || 'unknown',
       functions: availableFunctions
-    };
+    }
   } catch (error: any) {
     return {
       available: false
       functions: [],
       error: error instanceof Error ? error.message: 'Unknown error'
-    };
+    }
   }
 }
 // Initialize on import (only in non-production)

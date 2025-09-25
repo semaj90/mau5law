@@ -27,10 +27,10 @@ export interface LegalCaseContext {
   lastEmbedding: number[] | null;
   filters: {
     evidenceType?: string;
-    dateRange?: { start: Date; end: Date };
+    dateRange?: { start: Date; end: Date }
     tags?: string[];
     isAdmissible?: boolean;
-  };
+  }
   // UI state
   activeTab: 'overview' | 'evidence' | 'analysis' | 'search';
   isLoading: boolean;
@@ -39,7 +39,7 @@ export interface LegalCaseContext {
   formData: {
     caseForm: Partial<NewCase>;
     evidenceForm: Partial<NewEvidence>;
-  };
+  }
   // Workflow state
   workflowStage: 'investigation' | 'analysis' | 'preparation' | 'review' | 'closed';
   nextActions: string[];
@@ -52,7 +52,7 @@ export interface LegalCaseContext {
     processedEvidence: number;
     averageConfidence: number;
     processingTime: number;
-  };
+  }
 }
 // Event types
 export type LegalCaseEvents =
@@ -91,17 +91,17 @@ export type LegalCaseEvents =
   | { type: 'DISMISS_ERROR' }
   // Generic events
   | { type: 'REFRESH' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 // === Services (async operations) ===
 // XState expects functions of the form (context, event) => Promise<any>
 // below we expose functions that return promises; when invoked by the machine we pass them directly
 const loadCaseService = async (_context: LegalCaseContext, event: any): Promise<any> => {
   const caseId = event?.caseId;
   if (!caseId) throw new Error('Missing caseId');
-  const response = await fetch(`/api/cases/${caseId}`);
+  // removed unused response assignment
   if (!response.ok) throw new Error('Failed to load case');
   return await response.json();
-};
+}
 const createCaseService = async (context: LegalCaseContext): Promise<any> => {
   const response = await fetch('/api/cases', {
     method: 'POST',
@@ -110,20 +110,20 @@ const createCaseService = async (context: LegalCaseContext): Promise<any> => {
   });
   if (!response.ok) throw new Error('Failed to create case');
   return await response.json();
-};
+}
 const loadEvidenceService = async (_context: LegalCaseContext, event: any): Promise<any> => {
   const caseId = event?.caseId ?? _context.caseId;
   if (!caseId) throw new Error('Missing caseId for evidence load');
-  const response = await fetch(`/api/cases/${caseId}/evidence`);
+  // removed unused response assignment
   if (!response.ok) throw new Error('Failed to load evidence');
   return await response.json();
-};
+}
 const processEvidenceService = async (_context: LegalCaseContext, event: any): Promise<any> => {
   const evidenceId = event?.evidenceId ?? _context?.selectedEvidence?.id;
   if (!evidenceId) throw new Error('Missing evidenceId for processing');
   const result = await aiSummarizationService.summarizeEvidence(evidenceId);
   return result;
-};
+}
 const findSimilarCasesService = async (_context: LegalCaseContext, event: any): Promise<any> => {
   const caseId = event?.caseId ?? _context.caseId;
   if (!caseId) throw new Error('Missing caseId for similarity search');
@@ -132,7 +132,7 @@ const findSimilarCasesService = async (_context: LegalCaseContext, event: any): 
     threshold: 0.7
   });
   return similarDocs;
-};
+}
 const searchService = async (_context: LegalCaseContext, event: any): Promise<any> => {
   const query = event?.query ?? '';
   const results = await vectorSearchService.search({
@@ -141,7 +141,7 @@ const searchService = async (_context: LegalCaseContext, event: any): Promise<an
     options: { limit: 20 }
   });
   return results;
-};
+}
 const generateEmbeddingService = async (_context: LegalCaseContext, event: any): Promise<any> => {
   const text = event?.text;
   if (!text) throw new Error('Missing text for embedding generation');
@@ -152,8 +152,8 @@ const generateEmbeddingService = async (_context: LegalCaseContext, event: any):
     text,
     model: process.env.EMBEDDING_MODEL || 'nomic-embed-text-v1.5',
     dimensions: embedding.length
-  };
-};
+  }
+}
 const searchRelatedEvidenceService = async (context: LegalCaseContext, event: any): Promise<any> => {
   const text = event?.text || context.case?.description || 'Related evidence search';
   const response = await fetch('/api/unified/search', {
@@ -174,18 +174,18 @@ const searchRelatedEvidenceService = async (context: LegalCaseContext, event: an
   }
   const data = await response.json();
   return data.results || [];
-};
+}
 // === Guards ===
 const isValidCaseData = ({ context }: { context: LegalCaseContext }) => {
   const { caseForm } = context.formData;
   return !!(caseForm && (caseForm as any).title && (caseForm as any).description && (caseForm as any).caseNumber);
-};
+}
 const hasEvidence = ({ context }: { context: LegalCaseContext }) => {
   return Array.isArray(context.evidence) && context.evidence.length > 0;
-};
+}
 const hasAIAnalysis = ({ context }: { context: LegalCaseContext }) => {
   return !!context.aiSummary;
-};
+}
 // === Actions (assign helpers) ===
 // note: event.data is used in onDone handlers
 const assignCaseData = assign({
@@ -237,7 +237,7 @@ const updateWorkflowStage = assign({
       preparation: ['Prepare legal briefs', 'Organize evidence', 'Plan strategy'],
       review: ['Final review', 'Quality check', 'Prepare for court'],
       closed: ['Archive case', 'Generate reports', 'Post-case analysis']
-    };
+    }
     return (nextActionsMap as any)[event.stage] || [];
   }
 });
@@ -774,4 +774,4 @@ export const legalCaseSelectors = {
   isInState: (stateName: string) => (state: any) => state.matches(stateName),
   isGeneratingEmbedding: (state: any) => state.matches('caseLoaded.generatingEmbedding'),
   isSearchingRelatedEvidence: (state: any) => state.matches('caseLoaded.searchingRelatedEvidence')
-};
+}

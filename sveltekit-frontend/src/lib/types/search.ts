@@ -11,7 +11,7 @@ export interface SearchResult {
   score: number;
   rank?: number;
   document?: unknown; // Backward compatibility
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   type?: string;
 }
 export interface SummaryResult {
@@ -22,7 +22,7 @@ export interface SummaryResult {
     processingTime: number;
     lambda: number;
     sentenceCount?: number; // Added for MMR compatibility
-  };
+  }
   sources?: string[]; // Added for enhanced functionality
 }
 export interface SummaryRequest {
@@ -36,7 +36,7 @@ export interface LegalDocument {
   title: string;
   content: string;
   type?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface SystemStatus {
   database: boolean;
@@ -60,7 +60,7 @@ export interface TestResults {
   performance: {
     duration: number;
     documentsSearched: number;
-  };
+  }
   error?: unknown;
 }
 export interface TensorOperation {
@@ -86,7 +86,7 @@ export interface GPUChatMessage {
     processingTime?: number;
     gpuUsed?: boolean;
     tokenCount?: number;
-  };
+  }
 }
 export interface GPUProcessingStatus {
   gpuAvailable: boolean;
@@ -95,7 +95,7 @@ export interface GPUProcessingStatus {
     total: number;
     used: number;
     free: number;
-  };
+  }
   activeJobs: number;
   queueLength: number;
 }
@@ -106,5 +106,5 @@ export interface StreamingResponse {
   metadata?: {
     tokensGenerated?: number;
     processingTimeMs?: number;
-  };
+  }
 }

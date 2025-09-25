@@ -19,11 +19,11 @@ class RedisService {
   }
   private async initializeClients() {
     const config: RedisConfig = {
-      // Standardize on port 4005 across the platform
+      // Standardize on port 4005 across the platform;
       url: import.meta.env.REDIS_URL || 'redis://127.0.0.1:4005',
       // retryDelayOnFailover: 100, // removed - deprecated
       maxRetriesPerRequest: 3
-    };
+    }
     try {
       // Main client for operations
       this.client = createClient(config);
@@ -180,7 +180,7 @@ class RedisService {
     }
   }
   // Cache operations
-  public async setCache(key: string, value: any, ttlSeconds: number = 300) {
+  public async setCache(_key: string, value: any, ttlSeconds: number = 300) {
     if (!this.isConnected) return;
     try {
       const serialized = JSON.stringify(value);
@@ -189,7 +189,7 @@ class RedisService {
       console.error('Cache set error:', error);
     }
   }
-  public async getCache(key: string) {
+  public async getCache(_key: string) {
     if (!this.isConnected) return null;
     try {
       const cached = await this.client.get(key);
@@ -199,7 +199,7 @@ class RedisService {
       return null;
     }
   }
-  public async deleteCache(key: string) {
+  public async deleteCache(_key: string) {
     if (!this.isConnected) return;
     try {
       await this.client.del(key);
@@ -218,7 +218,7 @@ class RedisService {
     });
   }
   // Analytics and metrics
-  public async trackEvent(event: string, data: any, userId?: string) {
+  public async trackEvent(_event: string, data: any, userId?: string) {
     await this.publish('analytics', {
       event,
       data,
@@ -238,7 +238,7 @@ class RedisService {
     return {
       connected: this.isConnected,
       status: this.isConnected ? 'connected' : 'disconnected'
-    };
+    }
   }
   public async disconnect() {
     if (this.client) await this.client.disconnect();

@@ -113,7 +113,7 @@ class SIMDMetrics {
     avgSIMDTime: 0,
     avgFallbackTime: 0,
     speedupRatio: 1
-  };
+  }
   recordSIMDParse(timeMs: number) {
     this.stats.simdParses++;
     this.stats.totalSIMDTime += timeMs;
@@ -132,7 +132,7 @@ class SIMDMetrics {
     }
   }
   getStats() {
-    return { ...this.stats };
+    return { ...this.stats }
   }
   reset() {
     this.stats = {
@@ -143,7 +143,7 @@ class SIMDMetrics {
       avgSIMDTime: 0,
       avgFallbackTime: 0,
       speedupRatio: 1
-    };
+    }
   }
 }
 export const simdMetrics = new SIMDMetrics();
@@ -192,7 +192,7 @@ export async function stringifyFast(obj: any): Promise<string> {
  */;
 export async function enhanceRabbitMQMessage(message: any): Promise<any> {
   // If message contains JSON strings, parse them with SIMD
-  const enhanced = { ...message };
+  const enhanced = { ...message }
   // Common JSON fields in RabbitMQ messages
   const jsonFields = ['payload', 'metadata', 'analysis', 'results'];
   for (const field of jsonFields) {
@@ -262,11 +262,11 @@ export function getSIMDStatus() {
   return {
     enabled: USE_SIMDJSON && parseJSONSIMD !== null,
     available: parseJSONSIMD !== null,
-    environmentFlag: USE_SIMDJSON
+    environmentFlag: USE_SIMDJSON;
     metrics: simdMetrics.getStats(),
     integrationPoints: Object.keys(SIMD_INTEGRATION_POINTS).length,
     optimizedPayloads: Object.keys(SIMD_OPTIMIZED_PAYLOADS).length
-  };
+  }
 }
 /**
  * Benchmark SIMD vs standard JSON parsing
@@ -293,7 +293,7 @@ export async function benchmarkJSONParsing(iterations: number = 1000): Promise<a
       complexity: 0.62,
       riskFactors: ['missing_clause', 'unusual_terms']
     }
-  };
+  }
   const testData = JSON.stringify(testObj);
   // Benchmark standard JSON.parse
   const standardStart = performance.now();
@@ -321,5 +321,5 @@ export async function benchmarkJSONParsing(iterations: number = 1000): Promise<a
     },
     speedup: simdTime > 0 ? standardTime / simdTime : 0,
     testData: `${Math.round(testData.length / 1024)}KB test payload`
-  };
+  }
 }

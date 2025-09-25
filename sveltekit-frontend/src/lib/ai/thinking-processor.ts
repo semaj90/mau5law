@@ -8,7 +8,7 @@ export interface ThinkingAnalysis {
     model_used: string;
     processing_time: number;
     thinking_enabled: boolean;
-  };
+  }
 }
 // Enhanced analysis with GRPO integration flag
 export interface EnhancedThinkingOptions extends AnalysisOptions {
@@ -72,7 +72,7 @@ export class ThinkingProcessor {
           temporal_score: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.temporal_score,
           structured_reasoning: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning
         }
-      };
+      }
     }
     // Standard analysis response
     return {
@@ -81,7 +81,7 @@ export class ThinkingProcessor {
       confidence: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata.confidence,
       reasoning_steps: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.reasoning_steps || [],
       metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata
-    };
+    }
   }
   /**
    * Analyzes evidence by ID
@@ -116,7 +116,7 @@ export class ThinkingProcessor {
           processing_time: 0,
           thinking_enabled: false
         }
-      };
+      }
     }
     const thinkingMatch = content.match(/<\|thinking\|>([\s\S]*?)<\/\|thinking\|>/);
     const thinking = thinkingMatch ? thinkingMatch[1].trim() : '';
@@ -131,7 +131,7 @@ export class ThinkingProcessor {
         processing_time: 0,
         thinking_enabled: true
       }
-    };
+    }
   }
   /**
    * Extracts JSON from text content
@@ -204,7 +204,7 @@ export class ThinkingProcessor {
   /**
    * Gets analysis history for a document
    */;
-  static async getAnalysisHistory(options: {
+  static async getAnalysisHistory(_options: {
     evidenceId?: string;
     caseId?: string;
     limit?: number;
@@ -213,7 +213,7 @@ export class ThinkingProcessor {
     if (options.evidenceId) params.append('evidenceId', options.evidenceId);
     if (options.caseId) params.append('caseId', options.caseId);
     if (options.limit) params.append('limit', options.limit.toString();
-    const response = await fetch(`/api/analyze?${params}`);
+    // removed unused response assignment
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Failed to get analysis history: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
@@ -239,11 +239,11 @@ export const LegalAnalysisUtils = {
    * Gets the confidence level description
    */;
   getConfidenceLabel(confidence: number): { label: string; color: string } {
-    if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' };
-    if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' };
-    if (confidence >= 0.7) return { label: 'Good', color: '#f59e0b' };
-    if (confidence >= 0.6) return { label: 'Fair', color: '#ef4444' };
-    return { label: 'Low', color: '#6b7280' };
+    if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' }
+    if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' }
+    if (confidence >= 0.7) return { label: 'Good', color: '#f59e0b' }
+    if (confidence >= 0.6) return { label: 'Fair', color: '#ef4444' }
+    return { label: 'Low', color: '#6b7280' }
   },
   /**
    * Formats processing time for display
@@ -278,7 +278,7 @@ export const LegalAnalysisUtils = {
     ];
     return legalTerms.filter((term) => text.includes(term);
   }
-};
+}
 /**
  * Document analysis result from thinking processor
  */;
@@ -293,17 +293,17 @@ export interface DocumentAnalysisResult {
   risk_assessment?: {
     level: 'low' | 'medium' | 'high';
     factors: string[];
-  };
+  }
   compliance_status?: {
     compliant: boolean;
     violations: string[];
     recommendations: string[];
-  };
+  }
   chain_of_custody?: {
     complete: boolean;
     gaps: string[];
     verification_status: string;
-  };
+  }
 }
 /**
  * Quick analysis shortcuts for common operations
@@ -346,4 +346,4 @@ export const QuickAnalysis = {
       useThinkingStyle: useThinking
     });
   }
-};
+}

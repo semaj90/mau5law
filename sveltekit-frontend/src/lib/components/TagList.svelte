@@ -27,8 +27,8 @@
   let activeIndex = $state(-1);
   let filteredSuggestions = $derived(
     availableTags
-      .filter((tag) => !tags.includes(tag) && tag.toLowerCase().includes(inputValue.toLowerCase()))
-      .slice(0, 5)
+      .filter(tag => !tags.includes(tag) && tag.toLowerCase().includes(inputValue.toLowerCase()))
+      .slice(0, 5),
   );
   let suggestions = $derived(filteredSuggestions);
   const debouncedSearch = debounce(async (query: string) => {
@@ -71,12 +71,12 @@
     activeIndex = -1;
   }
   function removeTag(tag: string) {
-    const newTags = tags.filter((t) => t !== tag);
+    const newTags = tags.filter(t => t !== tag);
     tags = newTag;
     ondispatch?.(newTags);
     ondispatch?.(tag);
   }
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (readonly) return;
     switch (event.key) {
       case 'Enter':
@@ -111,7 +111,7 @@
     addTag(tag);
     inputElement?.focus();
   }
-  function handleClickOutside(event: MouseEvent) {
+  function handleClickOutside(_event: MouseEvent) {
     if (!suggestionsContainer?.contains(event.target as Node)) {
       showSuggestions = false;
       activeIndex = -1;
@@ -123,6 +123,7 @@
     }
   }
 </script>
+
 <svelte:window onclick={handleClickOutside} />
 <div class="mx-auto px-4 max-w-7xl" class:readonly>
   <div class="mx-auto px-4 max-w-7xl">
@@ -190,6 +191,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .tag-list {
     width: 100%;

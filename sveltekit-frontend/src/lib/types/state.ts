@@ -85,7 +85,7 @@ export interface ComponentState {
   data: any;
 }
 export interface FormState {
-  values: { [key: string]: any };
+  values: { [key: string]: any }
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   isValid: boolean;
@@ -112,8 +112,8 @@ export interface StoreOptions<T> {
   initial: T;
   persist?: boolean;
   key?: string;
-  serialize?: (value: T) => string;
-  deserialize?: (value: string) => T;
+  serialize?: (_value: T) => string;
+  deserialize?: (_value: string) => T;
 }
 export interface AsyncStoreOptions<T> extends StoreOptions<T> {
   fetcher: () => Promise<T>;
@@ -127,16 +127,16 @@ export interface AsyncStoreOptions<T> extends StoreOptions<T> {
 export interface MachineState {
   value: string;
   context: any;
-  matches: (value: string) => boolean;
-  can: (event: string) => boolean;
-  send: (event: any) => void;
+  matches: (_value: string) => boolean;
+  can: (_event: string) => boolean;
+  send: (_event: any) => void;
 }
 export interface MachineConfig {
   id: string;
   initial: string;
-  states: { [key: string]: any };
+  states: { [key: string]: any }
   context?: unknown;
-  on?: { [key: string]: any };
+  on?: { [key: string]: any }
 }
 // =====================================================
 // FORM INTEGRATION TYPES
@@ -145,7 +145,7 @@ export interface MachineConfig {
 export interface SuperFormsState<T = { [key: string]: any } {
   form: Writable<T>;
   errors: Readable<Record<string, string[]>;
-  constraints: Readable<{ [key: string]: any };
+  constraints: Readable<{ [key: string]: any }
   message: Writable<any>;
   submitting: Readable<boolean>;
   delayed: Readable<boolean>;
@@ -157,7 +157,7 @@ export interface ValidationConfig {
   min?: number;
   max?: number;
   pattern?: RegExp;
-  custom?: (value: any) => string | null;
+  custom?: (_value: any) => string | null;
 }
 // =====================================================
 // PERFORMANCE MONITORING TYPES
@@ -235,18 +235,18 @@ export type Action<T = HTMLElement, P = any> = (
 ) => {
   update?: (parameters: P) => void;
   destroy?: () => void;
-};
+}
 // =====================================================
 // HELPER TYPES
 // =====================================================
 export type Prettify<T> = {
   [K in keyof T]: T[K];
-} & {};
+} & {}
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
+}
 // Renamed to avoid clashing with built-in TypeScript NonNullable
 export type NonNullish<T> = T extends null | undefined ? never : T;
 export type NonNullable<T> = T extends null | undefined ? never : T;
-export type EventHandler<T = Event> = (event: T) => void;
+export type EventHandler<T = Event> = (_event: T) => void;
 export type AsyncFunction<T = any> = (...args: any[]) => Promise<T>;

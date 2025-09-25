@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
     initWebGL();
     return () => {
       if (animationId) cancelAnimationFrame(animationId);
-    };
+    }
   });
   function initializeHolographics() {
     const initialData: HolographicData[] = [
@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
       // Render holographic elements
       renderHolographics(timestamp);
       animationId = requestAnimationFrame(render);
-    };
+    }
     render(0);
   }
   function renderHolographics(timestamp: number) {
@@ -243,11 +243,11 @@ https://svelte.dev/e/js_parse_error -->
       status: 'PROCESSING',
       output: 'Executing command...',
       module: 'YORHA-CORE';
-    };
+    }
     commandHistory.update(history => [result, ...history.slice(0, 9)]);
     try {
       // Route command to appropriate system
-      const response = await routeCommand(command);
+      // removed unused response assignment
       (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status = 'SUCCESS';
       (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).output = (response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).output;
       (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).data = (response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).data;
@@ -288,7 +288,7 @@ https://svelte.dev/e/js_parse_error -->
       return {
         output: `Legal analysis complete. ${(data as { map?: unknown; summary?: unknown }).summary || 'Analysis processed.'}`,
         data: data;
-      };
+      }
     } else {
       throw new Error('Legal AI system unavailable');
     }
@@ -297,44 +297,44 @@ https://svelte.dev/e/js_parse_error -->
     return {
       output: `Analysis initiated: ${cmd.replace('analyze ', '')}`,
       data: { analysis_id: 'ANL-' + Date.now(), status: 'queued' }
-    };
+    }
   }
   async function executeSearchCommand(cmd: string): Promise<any> {
     const query = cmd.replace('search ', '');
     return {
       output: `Searching database for: "${query}"`,
       data: { query, results_count: Math.floor(Math.random() * 50) + 1 }
-    };
+    }
   }
   function executeSystemCommand(cmd: string) {
     if (cmd.includes('status')) {
       return {
         output: 'All systems operational. YoRHa interface running at optimal parameters.',
         data: $metric;
-      };
+      }
     } else if (cmd.includes('modules')) {
       return {
         output: `${$activeModules.length} modules active`,
         data: $activeModule;
-      };
+      }
     } else {
       return {
         output: 'System command processed',
         data: { status: 'ok' }
-      };
+      }
     }
   }
   async function executeNeuralCommand(cmd: string): Promise<any> {
     return {
       output: 'Neural network processing initiated',
       data: { neural_activity: $metrics.neural_activity }
-    };
+    }
   }
   function executeHelpCommand(cmd: string) {
     return {
       output: `Available commands: LEGAL <query>, ANALYZE <target>, SEARCH <terms>, SYSTEM STATUS, NEURAL SCAN`,
       data: { commands: ['legal', 'analyze', 'search', 'system', 'neural'] }
-    };
+    }
   }
   function triggerGlitch() {
     glitchActive = true;
@@ -344,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
       hologramFlicker = false;
     }, 200);
   }
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter' && commandInput.trim()) {
       executeCommand(commandInput.trim());
     }

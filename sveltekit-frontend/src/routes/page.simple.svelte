@@ -10,6 +10,7 @@
     console.log('YoRHa Legal AI Platform loaded');
   });
 </script>
+
 <svelte:head>
   <title>YoRHa Legal AI Platform</title>
 </svelte:head>
@@ -51,6 +52,7 @@
     </a>
   </div>
 </div>
+
 <style>
   .home-page {
     max-width: 1200px;

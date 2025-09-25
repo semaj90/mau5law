@@ -62,7 +62,7 @@ class RealTimeServer {
       const client: ClientConnection = {
         ws,
         subscriptions: new Set()
-      };
+      }
       this.clients.set(clientId, client);
       console.log(`📡 Client connected: ${clientId}`);
       // Handle client messages
@@ -118,12 +118,12 @@ class RealTimeServer {
     try {
       parsedMessage = JSON.parse(message);
     } catch {
-      parsedMessage = { data: message };
+      parsedMessage = { data: message }
     }
     const payload = JSON.stringify({
       type: 'update',
       channel,
-      data: parsedMessage
+      data: parsedMessage;
       timestamp: new Date().toISOString()
     });
     this.clients.forEach((client, clientId) => {
@@ -153,7 +153,7 @@ class RealTimeServer {
   // Utility methods for specific updates
   public async publishEvidenceUpdate(
     evidenceId: string
-    action: string
+    action: string;
     data: any
     userId?: string;
   ) {
@@ -197,7 +197,7 @@ class RealTimeServer {
       connectedClients: this.clients.size,
       redisConnected: this.isInitialized,
       uptime: process.uptime()
-    };
+    }
   }
   // Additional methods for proper lifecycle management
   public async initialize(): Promise<void> {

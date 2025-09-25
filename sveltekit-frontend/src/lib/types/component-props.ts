@@ -97,15 +97,15 @@ export interface InputProps extends BaseComponentProps {
   required?: boolean;
   name?: string;
   autocomplete?: string;
-  oninput?: (event: Event) => void;
-  onchange?: (event: Event) => void;
-  onfocus?: (event: FocusEvent) => void;
-  onblur?: (event: FocusEvent) => void;
+  oninput?: (_event: Event) => void;
+  onchange?: (_event: Event) => void;
+  onfocus?: (_event: FocusEvent) => void;
+  onblur?: (_event: FocusEvent) => void;
 }
 // Select Component Props
 export interface SelectProps extends BaseComponentProps {
   value?: string;
-  onValueChange?: (value: string) => void;
+  onValueChange?: (_value: string) => void;
   options?: SelectOption[];
   placeholder?: string;
   disabled?: boolean;
@@ -122,8 +122,8 @@ export interface TextareaProps extends BaseComponentProps {
   name?: string;
   rows?: number;
   cols?: number;
-  oninput?: (event: Event) => void;
-  onchange?: (event: Event) => void;
+  oninput?: (_event: Event) => void;
+  onchange?: (_event: Event) => void;
 }
 // Card Component Props
 export interface CardProps extends BaseComponentProps {
@@ -186,7 +186,7 @@ export interface SearchFilters {
   dateRange?: {
     start: Date;
     end: Date;
-  };
+  }
   jurisdiction?: string;
   documentType?: string[];
   relevanceThreshold?: number;

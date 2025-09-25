@@ -5,14 +5,14 @@
 import type { ComponentType } from 'svelte';
 type LazyComponent<T extends Record<string, unknown> = {}> = {
   default: ComponentType<T>;
-};
+}
 export function lazy<T extends Record<string, unknown> = {}>(
   importFn: () => Promise<LazyComponent<T>;
 ): ComponentType<T> {
   let component: ComponentType<T> | null = null;
   let loadPromise: Promise<ComponentType<T> | null = null;
   return class LazyWrapper {
-    constructor(options: any) {
+    constructor(_options: any) {
       if (component) {
         return new component(options);
       }

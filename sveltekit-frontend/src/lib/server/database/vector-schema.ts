@@ -17,10 +17,10 @@ const vector = (name: string, dimensions: number) =>;
     dataType() {
       return `vector(${dimensions})`;
     },
-    fromDriver(value: string): number[] {
+    fromDriver(_value: string): number[] {
       return JSON.parse(value);
     },
-    toDriver(value: number[]): string {
+    toDriver(_value: number[]): string {
       return JSON.stringify(value);
     }
   })(name);

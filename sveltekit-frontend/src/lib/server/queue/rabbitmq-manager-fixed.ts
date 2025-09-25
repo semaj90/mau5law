@@ -32,7 +32,7 @@ export class RabbitMQManager extends EventEmitter {
     document_processing: 'document.processing',
     vector_updates: 'vector.updates',
     analytics: 'analytics.events'
-  };
+  }
   private readonly queues = {
     cache_invalidate: 'cache.invalidate',
     document_embed: 'document.embed',
@@ -40,7 +40,7 @@ export class RabbitMQManager extends EventEmitter {
     vector_index: 'vector.index',
     chat_context: 'chat.context',
     analytics_track: 'analytics.track'
-  };
+  }
   constructor(private url = 'amqp://localhost:5672') {
     super();
     // Initialize Gemma embeddings with centralized config
@@ -122,7 +122,7 @@ export class RabbitMQManager extends EventEmitter {
     // Declare queues
     for (const [name, queue] of Object.entries(this.queues)) {
       await this.channel.assertQueue(queue, {
-        durable: true
+        durable: true;
         arguments: {
           'x-message-ttl': 300000, // 5 minutes TTL
           'x-max-retries': 3
@@ -280,7 +280,7 @@ export class RabbitMQManager extends EventEmitter {
     try {
       const message = Buffer.from(JSON.stringify(data);
       const success = this.channel.publish(exchange, routingKey, message, {
-        persistent: true
+        persistent: true;
         timestamp: Date.now()
       });
       if (!success) {
@@ -323,7 +323,7 @@ export class RabbitMQManager extends EventEmitter {
       console.log(`📄 Processing document embedding: ${document_id}`);
       // Generate document data
       const docData = {
-        id: document_id
+        id: document_id;
         title: title || `Document ${document_id}`,
         documentType: document_type
         content,
@@ -331,7 +331,7 @@ export class RabbitMQManager extends EventEmitter {
         caseId: case_id
         isActive: true
         createdAt: new Date().toISOString()
-      };
+      }
       // Index with RAG pipeline if available
       if (this.enhancedRAGPipeline?.indexDocument) {
         const indexResult = await this.enhancedRAGPipeline.indexDocument(docData);
@@ -369,7 +369,7 @@ export class RabbitMQManager extends EventEmitter {
           id: document_id
           title: docData.title,
           content,
-          type: document_type
+          type: document_type;
           metadata: {
             case_id,
             document_type,
@@ -380,7 +380,7 @@ export class RabbitMQManager extends EventEmitter {
       // Invalidate related caches
       await this.publishCacheInvalidation({
         type: 'document',
-        id: document_id
+        id: document_id;
         keys: [`document:${document_id}`, `case:${case_id}:documents`, `search:*`]
       });
       this.channel.ack(msg);
@@ -600,7 +600,7 @@ export class RabbitMQManager extends EventEmitter {
           totalResponseTime: 0,
           cacheHits: 0,
           errors: 0
-        };
+        }
         currentStats.count += 1;
         currentStats.totalResponseTime += response_time_ms || 0;
         if (cache_hit) currentStats.cacheHits += 1;
@@ -709,7 +709,7 @@ export class RabbitMQManager extends EventEmitter {
   async healthCheck(): Promise<any> {
     try {
       if (!this.connection || !this.channel) {
-        return { status: 'disconnected' };
+        return { status: 'disconnected' }
       }
       await this.channel.checkQueue(this.queues.cache_invalidate);
       return {
@@ -727,13 +727,13 @@ export class RabbitMQManager extends EventEmitter {
           database: !!this.db,
           schema: !!this.schema
         }
-      };
+      }
     } catch (error: any) {
       return {
         status: 'unhealthy',
         error: error.message,
         reconnectAttempts: this.reconnectAttempts
-      };
+      }
     }
   }
   // Graceful shutdown

@@ -211,7 +211,7 @@ class VectorPipelineService {
         body: JSON.stringify({
           texts,
           model,
-          normalize: true
+          normalize: true;
           device: this.cudaEnabled ? 'cuda' : 'cpu'
         })
       })

@@ -47,7 +47,7 @@ self.onmessage = async (ev: MessageEvent) => {
         break;
       }
       case 'pack': {
-        const { payload } = msg as { payload: RankingSet };
+        const { payload } = msg as { payload: RankingSet }
         // If future WASM export present use it, else JS fallback
         let packed: Uint8Array;
         if (wasmReady && typeof wasm.pack_rankings === 'function') {
@@ -64,7 +64,7 @@ self.onmessage = async (ev: MessageEvent) => {
         break;
       }
       case 'unpack': {
-        const { blob } = msg as { blob: ArrayBuffer };
+        const { blob } = msg as { blob: ArrayBuffer }
         let rs: RankingSet;
         if (wasmReady && typeof wasm.unpack_rankings === 'function') {
           try {
@@ -79,7 +79,7 @@ self.onmessage = async (ev: MessageEvent) => {
         break;
       }
       case 'fetch': {
-        const { key, endpoint, format } = msg as { key: string; endpoint?: string; format?: string };
+        const { key, endpoint, format } = msg as { key: string; endpoint?: string; format?: string }
         const url = `${endpoint || defaultEndpoint}/${encodeURIComponent(key)}${format==='json'? '?format=json':''}`;
         const res = await fetch(url);
         if (!res.ok) { (self as any).postMessage({ type:'fetch:error', error: res.status }); break; }
@@ -96,7 +96,7 @@ self.onmessage = async (ev: MessageEvent) => {
   } catch (err:any) {
     (self as any).postMessage({ type:'error', error: err?.message || String(err) });
   }
-};
+}
 // --- Minimal JS pack/unpack (mirrors canonical-result-cache.ts logic) ---
 function packRankingSetJS(rankingSet: RankingSet): Uint8Array {
   const MAX_RESULTS = 1024;
@@ -150,16 +150,16 @@ function unpackRankingSetJS(packed: Uint8Array): RankingSet {
     if (hasUrl) { const urlRes = readString(view, offset); targetUrlId = urlRes.value; offset = urlRes.newOffset; }
     results.push({ docId, score: scoreQ/1023, flags: fl, summaryHash: sh, targetUrlId });
   }
-  return { results, query:'', totalResults: results.length, timestamp: Date.now(), version };
+  return { results, query:'', totalResults: results.length, timestamp: Date.now(), version }
 }
 function computeDocDelta(cur:string, prev:string){ if(!prev) return parseInt(cur)||0; return (parseInt(cur)||0)-(parseInt(prev)||0); }
 function applyDocDelta(prev:string, delta:number){ if(!prev) return delta.toString(); return ((parseInt(prev)||0)+delta).toString(); }
 function computeSummaryHash(s:string){ let h=0; for(let i=0;i<s.length;i++){ h=((h<<5)-h+s.charCodeAt(i)) & 0x3FFFFF;} return h; }
 function writeVarint(view:DataView, offset:number, value:number){ while(value>=0x80){ view.setUint8(offset++, (value & 0xFF)|0x80); value>=7;} view.setUint8(offset++, value & 0xFF); return offset; }
-function readVarint(view:DataView, offset:number){ let v=0, shift=0; while(true){ const b=view.getUint8(offset++); v|=(b&0x7F)<<shift; if((b&0x80)===0) break; shift+=7;} return { value:v, newOffset: offset}; }
+function readVarint(view:DataView, offset:number){ let v=0, shift=0; while(true){ const b=view.getUint8(offset++); v|=(b&0x7F)<<shift; if((b&0x80)===0) break; shift+=7;} return { value:v, newOffset: offset} }
 function write22Bits(view:DataView, offset:number, value:number){ value &=0x3FFFFF; view.setUint8(offset++, (value>>16)&0xFF); view.setUint8(offset++, (value>>8)&0xFF); view.setUint8(offset++, value & 0xFF); return offset; }
-function read22Bits(view:DataView, offset:number){ const b0=view.getUint8(offset++), b1=view.getUint8(offset++), b2=view.getUint8(offset++); return { value: (b0<<16)|(b1<<8)|b2, newOffset: offset}; }
+function read22Bits(view:DataView, offset:number){ const b0=view.getUint8(offset++), b1=view.getUint8(offset++), b2=view.getUint8(offset++); return { value: (b0<<16)|(b1<<8)|b2, newOffset: offset} }
 function writeString(view:DataView, offset:number, str:string){ const bytes=new TextEncoder().encode(str); offset=writeVarint(view, offset, bytes.length); for(let i=0;i<bytes.length;i++){ view.setUint8(offset++, bytes[i]); } return offset; }
-function readString(view:DataView, offset:number){ const lenRes=readVarint(view, offset); const len=lenRes.value; offset = lenRes.newOffset; const bytes=new Uint8Array(len); for(let i=0;i<len;i++){ bytes[i]=view.getUint8(offset++);} return { value: new TextDecoder().decode(bytes), newOffset: offset}; }
+function readString(view:DataView, offset:number){ const lenRes=readVarint(view, offset); const len=lenRes.value; offset = lenRes.newOffset; const bytes=new Uint8Array(len); for(let i=0;i<len;i++){ bytes[i]=view.getUint8(offset++);} return { value: new TextDecoder().decode(bytes), newOffset: offset} }
 function computeCRC32(data:Uint8Array){ let crc=0xFFFFFFFF; for(let i=0;i<data.length;i++){ crc^=data[i]; for(let j=0;j<8;j++){ crc = (crc>1) ^ (crc & 1 ? 0xEDB88320:0); } } return (~crc)>0; }
-export {};
+export {}

@@ -37,7 +37,7 @@ class GPUWorker {
             }
         }
         // Load WebAssembly module
-        const response = await fetch('/wasm/gpu-compute.wasm');
+        // removed unused response assignment
         const wasmBuffer = await (response as { arrayBuffer?: any }).arrayBuffer();
         const wasmModule = await WebAssembly.instantiate(wasmBuffer, {
             env: {
@@ -57,7 +57,7 @@ class GPUWorker {
             code: `;
                 struct Matrix {
                     data: array<f32>
-                    rows: u32
+                    rows: u32;
                     cols: u32
                 }
                 @group(0) @binding(0) var<storage, read> a: Matrix;
@@ -181,7 +181,7 @@ class GPUWorker {
         });
         const resultSize = params.m * params.n * 4;
         const resultBuffer = this.gpuDevice.createBuffer({
-            size: resultSize
+            size: resultSize;
             usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
         });
         // Write data to buffers
@@ -208,7 +208,7 @@ class GPUWorker {
         passEncoder.end();
         // Read back result
         const readBuffer = this.gpuDevice.createBuffer({
-            size: resultSize
+            size: resultSize;
             usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
         });
         commandEncoder.copyBufferToBuffer(resultBuffer, 0, readBuffer, 0, resultSize);
@@ -280,7 +280,7 @@ class GPUWorker {
     getCacheKey(op: TensorOp): string {
         return `${op.type}-${op.inputA.length}-${op.inputB?.length || 0}`;
     }
-    cacheResult(key: string, buffer: Float32Array) {
+    cacheResult(_key: string, buffer: Float32Array) {
         this.vertexCache.set(key, {
             url: key
             buffer: buffer
@@ -312,7 +312,7 @@ class GPUWorker {
 }
 // Worker message handler
 let gpuWorker: GPUWorker | null = null;
-self.addEventListener('message', async (event: any) => {
+self.addEventListener('message', async (_event: any) => {
     const { type, data } = event.data;
     switch (type) {
         case 'init':
@@ -335,4 +335,4 @@ self.addEventListener('message', async (event: any) => {
     }
 });
 // Export for module usage
-export { GPUWorker };
+export { GPUWorker }

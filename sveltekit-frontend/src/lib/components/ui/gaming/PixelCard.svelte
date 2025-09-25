@@ -34,12 +34,12 @@
       secondary?: string;
       accent?: string;
       text?: string;
-    };
+    }
     class?: string;
     style?: string;
     // Events
-    onclick?: (event: MouseEvent) => void;
-    onhover?: (event: MouseEvent) => void;
+    onclick?: (_event: MouseEvent) => void;
+    onhover?: (_event: MouseEvent) => void;
     children?: any;
   }
   let {
@@ -69,7 +69,7 @@
     onclick,
     onhover,
     children,
-    ...restProps
+    ...restProps;
   }: Props = $props();
   let card: HTMLElement;
   let isHovered = $state(false);
@@ -80,68 +80,68 @@
       primary: '#2C2C54',    // Deep purple
       secondary: '#40407A',  // Medium purple
       accent: '#706FD3',     // Light purple
-      text: '#F1F2F6',       // Off white
-      highlight: '#FF5252'   // Red accent
+      text: '#F1F2F6',       // Off white;
+      highlight: '#FF5252'   // Red accent;
     },
     arcade: {
       primary: '#0F0F23',    // Dark blue
       secondary: '#1A1A2E',  // Navy
       accent: '#16213E',     // Blue gray
-      text: '#E43F5A',       // Pink
-      highlight: '#E99A00'   // Orange
+      text: '#E43F5A',       // Pink;
+      highlight: '#E99A00'   // Orange;
     },
     gameboy: {
       primary: '#0F380F',    // Dark green
       secondary: '#306230',  // Medium green
       accent: '#8BAC0F',     // Light green
-      text: '#9BBB0F',       // Bright green
-      highlight: '#8BAC0F'   // Green accent
+      text: '#9BBB0F',       // Bright green;
+      highlight: '#8BAC0F'   // Green accent;
     },
     atari: {
       primary: '#8B4513',    // Brown
       secondary: '#A0522D',  // Sandy brown
       accent: '#CD853F',     // Peru
-      text: '#F5DEB3',       // Wheat
-      highlight: '#FF6347'   // Tomato
+      text: '#F5DEB3',       // Wheat;
+      highlight: '#FF6347'   // Tomato;
     },
     commodore: {
       primary: '#40318D',    // Commodore blue
       secondary: '#5D4FB3',  // Light blue
       accent: '#7B68EE',     // Medium slate blue
-      text: '#FFFFFF',       // White
-      highlight: '#00FFFF'   // Cyan
+      text: '#FFFFFF',       // White;
+      highlight: '#00FFFF'   // Cyan;
     },
     legal: {
       primary: '#1E293B',    // Legal dark
       secondary: '#334155',  // Slate
       accent: '#00FF88',     // Legal green
-      text: '#F8FAFC',       // Light
-      highlight: '#06B6D4'   // Cyan
+      text: '#F8FAFC',       // Light;
+      highlight: '#06B6D4'   // Cyan;
     }
-  };
+  }
   // Status colors for analysis
   const statusColors = {
     pending: '#FFA500',    // Orange
     analyzing: '#00BFFF',  // Deep sky blue
     complete: '#32CD32',   // Lime green
-    error: '#FF4500',      // Red orange
-    flagged: '#DC143C'     // Crimson
-  };
+    error: '#FF4500',      // Red orange;
+    flagged: '#DC143C'     // Crimson;
+  }
   // Priority indicators
   const priorityEmojis = {
     low: '🟢',
     medium: '🟡',
     high: '🟠',
     critical: '🔴',
-    urgent: '🚨'
-  };
+    urgent: '🚨';
+  }
   // Classification badges
   const classificationBadges = {
     public: '🌐',
     confidential: '🔒',
     classified: '🛡️',
-    'top-secret': '🚫'
-  };
+    'top-secret': '🚫';
+  }
   // Get active color palette
   let activeColors = $derived(() => {
     const palette = pixelPalettes[variant];
@@ -183,13 +183,13 @@
   let cardStyle = $derived(() => {
     const colors = activeColor;
     const baseStyle = `
-      --pixel-primary: ${colors.primary};
-      --pixel-secondary: ${colors.secondary};
-      --pixel-accent: ${colors.accent};
-      --pixel-text: ${colors.text};
-      --pixel-highlight: ${colors.highlight};
+      --pixel-primary: ${colors.primary}
+      --pixel-secondary: ${colors.secondary}
+      --pixel-accent: ${colors.accent}
+      --pixel-text: ${colors.text}
+      --pixel-highlight: ${colors.highlight}
       --pixel-size: ${pixelSize}px;
-      --pixel-status-color: ${statusColors[analysisStatus] || colors.accent};
+      --pixel-status-color: ${statusColors[analysisStatus] || colors.accent}
       --scanline-position: ;
 ${scanlinePosition}%;
     `;
@@ -205,10 +205,10 @@ ${scanlinePosition}%;
     }
     return () => {
       clearInterval(scanlineInterval);
-    };
+    }
   });
   // Event handlers
-  function handleClick(event: MouseEvent) {
+  function handleClick(_event: MouseEvent) {
     if (onclick && interactive) {
       // Pixel click sound effect
       try {
@@ -221,7 +221,7 @@ ${scanlinePosition}%;
       onclick(event);
     }
   }
-  function handleMouseEnter(event: MouseEvent) {
+  function handleMouseEnter(_event: MouseEvent) {
     if (interactive) {
       isHovered = true;
       onhover?.(event);
@@ -358,7 +358,7 @@ ${scanlinePosition}%;
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
   }
-  /* Size variants */
+/* Size variants */ {}
   .pixel-card--xs {
     min-width: 120px;
     min-height: 80px;
@@ -384,7 +384,7 @@ ${scanlinePosition}%;
     min-height: 300px;
     font-size: 1.1rem;
   }
-  /* Orientation variants */
+/* Orientation variants */ {}
   .pixel-card--portrait {
     aspect-ratio: 3/4;
   }
@@ -394,7 +394,7 @@ ${scanlinePosition}%;
   .pixel-card--square {
     aspect-ratio: 1/1;
   }
-  /* Pixel size variants */
+/* Pixel size variants */ {}
   .pixel-card--pixel-2 {
     --pixel-size: 2px;
   }
@@ -407,20 +407,20 @@ ${scanlinePosition}%;
   .pixel-card--pixel-8 {
     --pixel-size: 8px;
   }
-  /* Border styling */
+/* Border styling */ {}
   .pixel-card--bordered {
     border: var(--pixel-size) solid var(--pixel-secondary);
-    box-shadow:
-      inset var(--pixel-size) var(--pixel-size) 0 var(--pixel-accent),
+box-shadow: {}
+inset var(--pixel-size) var(--pixel-size) 0 var(--pixel-accent), {}
       inset calc(-1 * var(--pixel-size)) calc(-1 * var(--pixel-size)) 0 var(--pixel-highlight);
   }
-  /* Shadow effect */
+/* Shadow effect */ {}
   .pixel-card--shadowed {
-    box-shadow:
-      calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3),
+box-shadow: {}
+calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
       calc(var(--pixel-size) * 4) calc(var(--pixel-size) * 4) 0 rgba(0, 0, 0, 0.2);
   }
-  /* Interactive states */
+/* Interactive states */ {}
   .pixel-card--interactive {
     cursor: pointer;
   }
@@ -435,7 +435,7 @@ ${scanlinePosition}%;
     border-color: var(--pixel-accent);
     box-shadow: 0 0 calc(var(--pixel-size) * 4) var(--pixel-accent);
   }
-  /* Animation effects */
+/* Animation effects */ {}
   .pixel-card--animated {
     animation: pixel-card-idle 3s ease-in-out infinite alternate;
   }
@@ -447,7 +447,7 @@ ${scanlinePosition}%;
       filter: brightness(1.05);
     }
   }
-  /* Glowing effect */
+/* Glowing effect */ {}
   .pixel-card--glowing {
     animation: pixel-card-glow 2s ease-in-out infinite alternate;
   }
@@ -459,7 +459,7 @@ ${scanlinePosition}%;
       box-shadow: 0 0 calc(var(--pixel-size) * 6) var(--pixel-accent);
     }
   }
-  /* Status styling */
+/* Status styling */ {}
   .pixel-card--status-analyzing {
     border-color: #00BFFF;
     animation: pixel-card-analyzing 1s linear infinite;
@@ -489,7 +489,7 @@ ${scanlinePosition}%;
     0%, 100% { box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.4); }
     50% { box-shadow: 0 0 0 calc(var(--pixel-size) * 3) rgba(220, 20, 60, 0); }
   }
-  /* Priority styling */
+/* Priority styling */ {}
   .pixel-card--priority-urgent {
     animation: pixel-card-urgent 0.8s ease-in-out infinite;
   }
@@ -500,7 +500,7 @@ ${scanlinePosition}%;
   .pixel-card--priority-critical {
     border-color: #FF0000;
   }
-  /* Layout sections */
+/* Layout sections */ {}
   .pixel-card__status-bar {
     position: absolute;
     top: 0;
@@ -530,7 +530,7 @@ ${scanlinePosition}%;
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0.5; }
   }
-  .pixel-card__priority,
+.pixel-card__priority, {}
   .pixel-card__classification {
     display: flex;
     align-items: center;
@@ -578,12 +578,12 @@ ${scanlinePosition}%;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      45deg,
-      transparent 48%,
-      rgba(255, 255, 255, 0.1) 49%,
-      rgba(255, 255, 255, 0.1) 51%,
-      transparent 52%
+background: linear-gradient( {}
+45deg, {}
+transparent 48%, {}
+rgba(255, 255, 255, 0.1) 49%, {}
+rgba(255, 255, 255, 0.1) 51%, {}
+transparent 52% {}
     );
     background-size: calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2);
     pointer-events: none;
@@ -633,18 +633,18 @@ ${scanlinePosition}%;
     background: linear-gradient(90deg, #FF0000, #FFFF00, #00FF00);
     transition: width 0.3s ease;
   }
-  /* Pixel effects */
+/* Pixel effects */ {}
   .pixel-card__scanlines {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      0deg,
-      transparent calc(var(--scanline-position) * 1%),
-      rgba(0, 255, 0, 0.1) calc(var(--scanline-position) * 1% + 2px),
-      transparent calc(var(--scanline-position) * 1% + 4px)
+background: linear-gradient( {}
+0deg, {}
+transparent calc(var(--scanline-position) * 1%), {}
+rgba(0, 255, 0, 0.1) calc(var(--scanline-position) * 1% + 2px), {}
+transparent calc(var(--scanline-position) * 1% + 4px) {}
     );
     pointer-events: none;
     z-index: 5;
@@ -655,14 +655,14 @@ ${scanlinePosition}%;
     left: 0;
     right: 0;
     bottom: 0;
-    background:
-      radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%),
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent calc(var(--pixel-size) * 2),
-        rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 2),
-        rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 4)
+background: {}
+radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%), {}
+repeating-linear-gradient( {}
+0deg, {}
+transparent, {}
+transparent calc(var(--pixel-size) * 2), {}
+rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 2), {}
+rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 4) {}
       );
     pointer-events: none;
     z-index: 5;
@@ -673,20 +673,20 @@ ${scanlinePosition}%;
     left: 0;
     right: 0;
     bottom: 0;
-    background:
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent var(--pixel-size),
-        rgba(255, 255, 255, 0.03) var(--pixel-size),
-        rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2)
-      ),
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent var(--pixel-size),
-        rgba(255, 255, 255, 0.03) var(--pixel-size),
-        rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2)
+background: {}
+repeating-linear-gradient( {}
+90deg, {}
+transparent, {}
+transparent var(--pixel-size), {}
+rgba(255, 255, 255, 0.03) var(--pixel-size), {}
+rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2) {}
+), {}
+repeating-linear-gradient( {}
+0deg, {}
+transparent, {}
+transparent var(--pixel-size), {}
+rgba(255, 255, 255, 0.03) var(--pixel-size), {}
+rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2) {}
       );
     pointer-events: none;
     z-index: 1;
@@ -702,30 +702,30 @@ ${scanlinePosition}%;
     opacity: 0.3;
     z-index: -1;
   }
-  /* Accessibility */
+/* Accessibility */ {}
   @media (prefers-reduced-motion: reduce) {
-    .pixel-card,
-    .status-dot,
+.pixel-card, {}
+.status-dot, {}
     .pixel-card__scanlines {
       animation: none;
     }
   }
-  /* High contrast mode */
+/* High contrast mode */ {}
   @media (prefers-contrast: high) {
     .pixel-card {
       border-width: calc(var(--pixel-size) * 1.5);
       filter: contrast(1.5);
     }
   }
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 640px) {
-    .pixel-card--xs,
+.pixel-card--xs, {}
     .pixel-card--sm {
       min-width: 100px;
       min-height: 80px;
     }
-    .pixel-card__header,
-    .pixel-card__content,
+.pixel-card__header, {}
+.pixel-card__content, {}
     .pixel-card__footer {
       padding: calc(var(--pixel-size) * 1.5);
     }

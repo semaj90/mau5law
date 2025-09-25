@@ -102,7 +102,7 @@ class ComponentTextureRegistry {
       isActive: true
       registrationTime: Date.now(),
       lastActivity: Date.now()
-    };
+    }
     // Reserve texture slots
     manifest.textureSlots.forEach(slotId => {
       const textureSlot: TextureSlot = {
@@ -112,7 +112,7 @@ class ComponentTextureRegistry {
         size: 0,
         lastAccessed: Date.now(),
         lockCount: 0
-      };
+      }
       registration.textureSlots.set(slotId, textureSlot);
       this.textureSlots.set(textureSlot.textureId, textureSlot);
     });
@@ -199,7 +199,7 @@ class ComponentTextureRegistry {
       CHR_ROM: { size: 2 * 1024 * 1024 },     // 2MB
       PRG_ROM: { size: 4 * 1024 * 1024 },     // 4MB
       SAVE_RAM: { size: Infinity }             // Unlimited
-    };
+    }
     const maxSize = bankConfig[bank].size;
     const currentUsage = this.memoryBankUsage.get(bank) || 0;
     return (currentUsage + size) <= maxSize;
@@ -292,7 +292,7 @@ class ComponentTextureRegistry {
           .filter(item => item.length),
         fragmentationRatio: 0, // Would calculate actual fragmentation
         hitRate: 0.9 // Placeholder for hit rate calculation
-      };
+      }
     });
     return {
       totalComponents: this.components.size,
@@ -303,7 +303,7 @@ class ComponentTextureRegistry {
       conflicts: this.conflictLog.length,
       evictions: this.evictionCount,
       lastDefrag: this.lastDefragTime
-    };
+    }
   }
   /**
    * Debug information for development

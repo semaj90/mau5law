@@ -9,7 +9,7 @@ import { createClient } from 'redis'
 import { nanoid } from 'nanoid'
 import { vectorOutbox, vectorJobs, vectors } from '$lib/server/db/schema-postgres.js'
 import { eq } from 'drizzle-orm'
-import { URL } from "url"
+
 // Initialize connections
 const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db')
 const db = drizzle(sql)
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Job status error:', error)
     return json({
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }

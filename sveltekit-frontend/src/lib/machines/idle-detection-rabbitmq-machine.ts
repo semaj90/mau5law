@@ -23,7 +23,7 @@ export interface IdleDetectionContext {
     averageProcessingTime: number;
     successRate: number;
     lastJobTimestamp: number;
-  };
+  }
 }
 export interface BackgroundJob {
   id: string;
@@ -65,14 +65,14 @@ export type IdleDetectionEvent =
   | { type: 'MINIO_CONNECTED'; connected: boolean }
   | { type: 'RABBITMQ_CONNECTED'; connected: boolean }
   | { type: 'GENERATE_SELF_PROMPT'; context: any }
-  | { type: 'SELF_PROMPT_COMPLETED'; promptId: string; response: string; artifacts: string[] };
+  | { type: 'SELF_PROMPT_COMPLETED'; promptId: string; response: string; artifacts: string[] }
 // Services for background operations
 const idleDetectionServices = {
   // Monitor user activity patterns
   monitorActivity: () => (callback: any) => {
-    const handleActivity = (event: Event) => {
+    const handleActivity = (_event: Event) => {
       callback({ type: 'USER_ACTIVITY', timestamp: Date.now() });
-    };
+    }
     // Monitor various user activity types
     const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'focus', 'blur'];
     events.forEach(eventType => {
@@ -82,7 +82,7 @@ const idleDetectionServices = {
       events.forEach(eventType => {
         window.removeEventListener(eventType, handleActivity);
       });
-    };
+    }
   },
   // Idle timeout checker
   idleTimer: (context: IdleDetectionContext) => (callback: any) => {
@@ -123,7 +123,7 @@ const idleDetectionServices = {
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
         console.log('✅ Background job queued:', result);
-        return { jobId: job.id, status: 'queued', messageId: (result as { messageId?: any }).messageId };
+        return { jobId: job.id, status: 'queued', messageId: (result as { messageId?: any }).messageId }
       } else {
         throw new Error(`Failed to queue job: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
@@ -147,7 +147,7 @@ const idleDetectionServices = {
           minio: context.minioConnected,
           rabbitmq: context.rabbitmqConnected
         }
-      };
+      }
       // Generate contextual prompts based on system state
       const prompts = await generateContextualPrompts(systemContext);
       const selectedPrompt = selectBestPrompt(prompts, context.selfPromptingHistory);
@@ -190,9 +190,9 @@ const idleDetectionServices = {
       neo4j: serviceChecks[0].status === 'fulfilled' && serviceChecks[0].value,
       minio: serviceChecks[1].status === 'fulfilled' && serviceChecks[1].value,
       rabbitmq: serviceChecks[2].status === 'fulfilled' && serviceChecks[2].value
-    };
+    }
   }
-};
+}
 // Actions for state transitions
 const idleDetectionActions = {
   // Update last activity timestamp
@@ -210,10 +210,10 @@ const idleDetectionActions = {
         createdAt: Date.now(),
         status: 'pending',
         retryCount: 0
-      };
+      }
       return [...context.jobQueue, newJob].sort((a, b) => {
         // Sort by priority: critical > high > medium > low
-        const priorities = { critical: 4, high: 3, medium: 2, low: 1 };
+        const priorities = { critical: 4, high: 3, medium: 2, low: 1 }
         return priorities[b.priority] - priorities[a.priority];
       });
     }
@@ -236,7 +236,7 @@ const idleDetectionActions = {
         averageProcessingTime: avgTime
         successRate: totalJobs > 0 ? (totalJobs / (totalJobs + 1)) * 100 : 100, // Simplified success rate
         lastJobTimestamp: Date.now()
-      };
+      }
     }
   }),
   // Store self-prompt in history
@@ -248,12 +248,12 @@ const idleDetectionActions = {
         prompt: '', // Would be populated from the original prompt
         context: { [key: string]: any },
         response: event.response,
-        confidence: 0.8, // Would be calculated based on response quality
+        confidence: 0.8, // Would be calculated based on response quality;
         timestamp: Date.now(),
         triggerReason: 'idle_detected',
         processedByNeo4j: true
         minioArtifacts: event.artifacts
-      };
+      }
       return [prompt, ...context.selfPromptingHistory].slice(0, 100); // Keep last 100 prompts
     }
   }),
@@ -272,7 +272,7 @@ const idleDetectionActions = {
       return context.rabbitmqConnected;
     }
   })
-};
+}
 // Guards for conditional logic
 const idleDetectionGuards = {
   isIdle: (context: IdleDetectionContext) => {
@@ -287,7 +287,7 @@ const idleDetectionGuards = {
   allServicesConnected: (context: IdleDetectionContext) => {
     return context.neo4jConnected && context.minioConnected && context.rabbitmqConnected;
   }
-};
+}
 // Main XState machine
 export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDetectionEvent>({
   id: 'idleDetection',
@@ -404,7 +404,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                           retryCount: 0,
                           maxRetries: 3,
                           estimatedDuration: 30000 // 30 seconds
-                        };
+                        }
                         return [selfPromptJob, ...context.jobQueue];
                       }
                     })
@@ -489,7 +489,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
   }
 }, {
   services: idleDetectionServices
-  actions: idleDetectionActions
+  actions: idleDetectionActions;
   guards: idleDetectionGuards
 });
 // Helper functions for self-prompting
@@ -543,7 +543,7 @@ async function storePromptInNeo4j(prompt: SelfPrompt, sessionId: string): Promis
 async function checkNeo4jConnection(): Promise<boolean> {
   try {
     // Check Neo4j connection
-    const response = await fetch('/api/health/neo4j');
+    // removed unused response assignment
     return (response as { ok?: any; json?: any; statusText?: any }).ok;
   } catch {
     return false;
@@ -552,7 +552,7 @@ async function checkNeo4jConnection(): Promise<boolean> {
 async function checkMinioConnection(): Promise<boolean> {
   try {
     // Check MinIO connection
-    const response = await fetch('/api/v1/minio/health');
+    // removed unused response assignment
     return (response as { ok?: any; json?: any; statusText?: any }).ok;
   } catch {
     return false;
@@ -561,7 +561,7 @@ async function checkMinioConnection(): Promise<boolean> {
 async function checkRabbitMQConnection(): Promise<boolean> {
   try {
     // Check RabbitMQ connection
-    const response = await fetch('/api/rabbitmq/health');
+    // removed unused response assignment
     return (response as { ok?: any; json?: any; statusText?: any }).ok;
   } catch {
     return false;

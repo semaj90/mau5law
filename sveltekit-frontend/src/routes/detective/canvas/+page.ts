@@ -4,7 +4,7 @@ export const load: PageLoad = async ({ params, url, fetch }) => {
   return {
     meta: {
       title: 'Detective Canvas - Evidence Visualization',
-      description: 'Interactive canvas for visualizing and organizing evidence relationships'
-    }
-  };
-};
+      description: 'Interactive canvas for visualizing and organizing evidence relationships',
+    },
+  }
+}

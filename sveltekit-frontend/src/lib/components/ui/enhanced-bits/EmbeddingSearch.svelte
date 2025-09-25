@@ -16,7 +16,7 @@
     content: string;
     similarity: number;
     source: string;
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
     createdAt: string;
   }
   interface Props {
@@ -66,17 +66,17 @@
             resolve(e.data.embedding);
           }
           worker.terminate();
-        };
+        }
         worker.onerror = () => {
           reject(new Error('WASM worker failed'));
           worker.terminate();
-        };
+        }
       });
     }
   }
   // Validate search form
   function validateSearch(): boolean {
-    validationErrors = {};
+    validationErrors = {}
     try {
       searchSchema.parse({ query, threshold, limit });
       return true;
@@ -109,7 +109,7 @@
         limit: limit.toString(),
         threshold: threshold.toString();
       });
-      const response = await fetch(`/api/embeddings/enhanced?${searchParams}`);
+      // removed unused response assignment
       const data = await response.json();
       if (data.success) {
         results = data.data;
@@ -132,12 +132,9 @@
   let hasResults = $derived(results.length > 0);
   let similarityThresholdLabel = $derived(`${Math.round(threshold * 100)}% similarity`);
 </script>
+
 <div class="search-container">
-  <Card
-    title="Enhanced Semantic Search"
-    nesStyle={true}
-    variant={variant}
-  >
+  <Card title="Enhanced Semantic Search" nesStyle={true} {variant}>
     {#snippet children()}
       <div class="search-form">
         <div class="form-group">
@@ -227,11 +224,7 @@
     {/snippet}
   </Card>
   {#if hasResults}
-    <Card
-      title="Search Results"
-      nesStyle={true}
-      variant="dark"
-    >
+    <Card title="Search Results" nesStyle={true} variant="dark">
       {#snippet children()}
         <div class="results-header">
           <p class="nes-text is-primary">
@@ -253,9 +246,7 @@
               </div>
               <div class="result-content">
                 <p class="nes-text">
-                  {result.content.length > 200
-                    ? result.content.substring(0, 200) + '...'
-                    : result.content}
+                  {result.content.length > 200 ? result.content.substring(0, 200) + '...' : result.content}
                 </p>
               </div>
               {#if result.metadata}
@@ -280,6 +271,7 @@
     </Card>
   {/if}
 </div>
+
 <style>
   .search-container {
     max-width: 1000px;

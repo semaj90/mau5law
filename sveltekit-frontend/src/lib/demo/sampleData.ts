@@ -40,7 +40,7 @@ export interface DemoPerson {
     phone?: string;
     email?: string;
     address?: string;
-  };
+  }
   notes: string;
 }
 class DemoDataGenerator {
@@ -106,7 +106,7 @@ class DemoDataGenerator {
         assignedTo: ["Detective Smith", "Prosecutor Jones", "Officer Brown"][
           Math.floor(Math.random() * 3)
         ]
-      };
+      }
     });
   }
   /**
@@ -320,9 +320,9 @@ Legal Review: Prosecutor Williams`,
           Math.floor(Math.random() * 3)
         ] as any,
         uploadedAt,
-        fileSize: Math.floor(Math.random() * 5000000) + 10000, // 10KB to 5MB
+        fileSize: Math.floor(Math.random() * 5000000) + 10000, // 10KB to 5MB;
         tags: [...template.tags, "demo-data"]
-      };
+      }
     });
   }
   /**
@@ -395,7 +395,7 @@ Legal Review: Prosecutor Williams`,
       return {
         id: `PER-${caseId}-${(this.personCounter++).toString().padStart(3, "0")}`,
         ...template
-      };
+      }
     });
   }
   /**
@@ -412,7 +412,7 @@ Legal Review: Prosecutor Williams`,
       case: caseData
       evidence: this.generateEvidence(caseData.id, 4),
       persons: this.generatePersons(caseData.id, 4)
-    };
+    }
   }
   /**
    * Generate sample analysis results for testing
@@ -586,7 +586,7 @@ Legal Review: Prosecutor Williams`,
           confidence: 0.87
         }
       }
-    };
+    }
   }
 }
 // Export singleton instance

@@ -219,7 +219,7 @@ export const conversations = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").notNull(),
     title: text("title").notNull(),
-    type: text("type").notNull().default("general"), // case_analysis, evidence_review, legal_research, general
+    type: text("type").notNull().default("general"), // case_analysis, evidence_review, legal_research, general;
     metadata: jsonb("metadata").default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()

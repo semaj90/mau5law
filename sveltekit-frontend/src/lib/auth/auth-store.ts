@@ -35,10 +35,10 @@ const initialState: AuthState = {
   user: null
   session: null
   isLoading: true
-  isAuthenticated: false
+  isAuthenticated: false;
   permissions: [],
   lastActivity: null
-};
+}
 // Create writable store for auth state
 export const authState = writable<AuthState>(initialState);
 // Create derived stores for common auth checks
@@ -94,17 +94,17 @@ export class AuthStore {
         await this.updateAuthState((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user, (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session);
         // Track login activity
         this.trackActivity('login');
-        return { success: true };
+        return { success: true }
       } else {
         return {
-          success: false
+          success: false;
           error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Login failed',
           requiresMFA: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).requiresMFA
-        };
+        }
       }
     } catch (error: any) {
       console.error('Login error:', error);
-      return { success: false, error: 'Network error during login' };
+      return { success: false, error: 'Network error during login' }
     } finally {
       authState.update(state => ({ ...state, isLoading: false });
     }
@@ -138,16 +138,16 @@ export class AuthStore {
         return {
           success: true
           requiresVerification: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).requiresVerification
-        };
+        }
       } else {
         return {
-          success: false
+          success: false;
           error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Registration failed'
-        };
+        }
       }
     } catch (error: any) {
       console.error('Registration error:', error);
-      return { success: false, error: 'Network error during registration' };
+      return { success: false, error: 'Network error during registration' }
     } finally {
       authState.update(state => ({ ...state, isLoading: false });
     }
@@ -202,7 +202,7 @@ export class AuthStore {
   static async updateProfile(updates: Partial<AuthUser>): Promise<any> {
     const currentState = get(authState);
     if (!currentState.isAuthenticated || !currentState.user) {
-      return { success: false, error: 'Not authenticated' };
+      return { success: false, error: 'Not authenticated' }
     }
     try {
       const response = await fetch('/api/user/profile', {
@@ -220,13 +220,13 @@ export class AuthStore {
           ...state,
           user: state.user ? { ...state.user, ...result.user } : null
         });
-        return { success: true };
+        return { success: true }
       } else {
-        return { success: false, error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Profile update failed' };
+        return { success: false, error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Profile update failed' }
       }
     } catch (error: any) {
       console.error('Profile update error:', error);
-      return { success: false, error: 'Network error during profile update' };
+      return { success: false, error: 'Network error during profile update' }
     }
   }
   /**
@@ -246,10 +246,10 @@ export class AuthStore {
       return {
         success: (response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success,
         error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error
-      };
+      }
     } catch (error: any) {
       console.error('Password change error:', error);
-      return { success: false, error: 'Network error during password change' };
+      return { success: false, error: 'Network error during password change' }
     }
   }
   /**
@@ -371,7 +371,7 @@ export class AuthStore {
     const trackActivity = () => {
       this.trackActivity('interaction');
       this.resetActivityTimeout();
-    };
+    }
     // Add event listeners for user activity
     ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
       document.addEventListener(event, trackActivity, { passive: true });
@@ -424,4 +424,4 @@ export class AuthStore {
   }
 }
 // Export store instances and utilities
-export { authState as default };
+export { authState as default }

@@ -37,7 +37,7 @@ export type DocumentEvent =
   | { type: 'ERROR'; error: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 export const documentMachine = createMachine({
   id: 'documentProcessor',
   types: {

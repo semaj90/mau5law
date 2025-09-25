@@ -18,22 +18,22 @@ export interface EvidenceProcessingContext {
     entities: Array<any>;
     risk_assessment: 'low' | 'medium' | 'high' | 'critical';
     summary: string;
-  };
+  }
   glyphGeneration?: {
     request: GlyphRequest;
     result?: GlyphResponse;
     neuralSpriteEnabled: boolean;
-  };
+  }
   portableArtifact?: {
     enhancedPngUrl: string;
     metadata: LegalAIMetadata;
     compressionRatio?: number;
-  };
+  }
   minioStorage?: {
     artifactId: string;
     storageUrl: string;
     indexed: boolean;
-  };
+  }
   errors: string[];
   processingTimeMs: number;
   streamingUpdates: Array<any>
@@ -57,14 +57,14 @@ export type EvidenceProcessingEvent =
   | { type: 'STORAGE_ERROR'; error: string }
   | { type: 'RETRY_CURRENT_STEP' }
   | { type: 'CANCEL_PROCESSING' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 // Services for async operations
 const uploadFileService = fromPromise(async ({ input }: { input: { file: File } }) => {
   // Simulate file upload with progress
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
-        success: true
+        success: true;
         message: `File "${input.file.name}" uploaded successfully`
       });
     }, 1000);
@@ -125,7 +125,7 @@ const embedPNGService = fromPromise(async ({ input }: {
       analysis_results: input.analysisResults,
       neural_sprite_data: input.glyphResult.neural_sprite_results
     } as LegalAIMetadata
-  };
+  }
 });
 const storeInMinIOService = fromPromise(async ({ input }: {
   input: { enhancedPngUrl: string; metadata: LegalAIMetadata; evidenceId: string }

@@ -24,14 +24,15 @@
     className
   ].filter(Boolean).join(' '));
 </script>
+
 <div class={containerClass} {...restProps}>
   {#if title}
     <p class="title">{title}</p>
   {/if}
   {@render children?.()}
 </div>
-<style>
-  /* Additional card styling if needed */
+
+<style>/* Additional card styling if needed */ {}
   .nes-container {
     margin-bottom: 1rem;
   }

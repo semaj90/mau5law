@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount,   } from "svelte";
+  import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { Save, Maximize, Minimize, Eye, EyeOff, FileText, Keyboard } from 'lucide-svelte';
   // Props
@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
     content = $bindable(''),
     title = $bindable('Untitled Document'),
     autoSave = $bindable(true),
-    autoSaveInterval = $bindable(5000)
+    autoSaveInterval = $bindable(5000),
   }: Props = $props();
   // State management
   let editorElement: HTMLDivElement;
@@ -43,22 +43,22 @@ https://svelte.dev/e/js_parse_error -->
     if (autoSaveTimer) clearInterval(autoSaveTimer);
   }
   function saveDocument() {
-  // dispatch save event hook if provided
-  // ondispatch variable was invalid; keep local save only for now
+    // dispatch save event hook if provided
+    // ondispatch variable was invalid; keep local save only for now
     hasUnsavedChanges = false;
-  lastSaved = new Date();
+    lastSaved = new Date();
   }
   // Document statistics
   function updateStatistics() {
-  const text = editorElement?.textContent || '';
-  const words = text.trim().split(/\s+/).filter(Boolean);
-  wordCount = words.length;
+    const text = editorElement?.textContent || '';
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    wordCount = words.length;
     charCount = text.length;
     readingTime = Math.ceil(wordCount / 200); // Assuming 200 WPM reading speed
     hasUnsavedChanges = true;
   }
   // Keyboard shortcuts
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     const isCtrl = event.ctrlKey || event.metaKey;
     // Save (Ctrl+S)
     if (isCtrl && event.key === 's') {
@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
     });
     return () => {
       stopAutoSave();
-    };
+    }
   });
   // Shortcuts data
   const shortcuts = [
@@ -138,6 +138,7 @@ https://svelte.dev/e/js_parse_error -->
     { key: 'Ctrl + Y', action: 'Redo' },
   ];
 </script>
+
 <svelte:window onkeydown={handleKeydown} />
 <div
   class="professional-editor {isFullscreen ? 'fullscreen' : ''} {isFocusMode ? 'focus-mode' : ''}"
@@ -147,11 +148,7 @@ https://svelte.dev/e/js_parse_error -->
   <header class="editor-header" class:dimmed={isFocusMode}>
     <div class="title-section">
       <FileText class="h-5 w-5 text-yorha-primary" />
-      <input
-        bind:value={title}
-        class="title-input yorha-input"
-        placeholder="Document title..."
-      />
+      <input bind:value={title} class="title-input yorha-input" placeholder="Document title..." />
       {#if hasUnsavedChanges}
         <span class="unsaved-indicator">•</span>
       {/if}
@@ -159,27 +156,19 @@ https://svelte.dev/e/js_parse_error -->
     <div class="header-actions">
       <button
         class="action-btn yorha-btn yorha-nes-btn"
-        onclick={() => showShortcuts = !showShortcuts}
+        onclick={() => (showShortcuts = !showShortcuts)}
         title="Keyboard shortcuts (Ctrl+/)"
       >
         <Keyboard class="h-4 w-4" />
       </button>
-      <button
-        class="action-btn yorha-btn yorha-nes-btn"
-        onclick={toggleFocusMode}
-        title="Focus mode (F10)"
-      >
+      <button class="action-btn yorha-btn yorha-nes-btn" onclick={toggleFocusMode} title="Focus mode (F10)">
         {#if isFocusMode}
           <EyeOff class="h-4 w-4" />
         {:else}
           <Eye class="h-4 w-4" />
         {/if}
       </button>
-      <button
-        class="action-btn yorha-btn yorha-nes-btn"
-        onclick={toggleFullscreen}
-        title="Fullscreen (F11)"
-      >
+      <button class="action-btn yorha-btn yorha-nes-btn" onclick={toggleFullscreen} title="Fullscreen (F11)">
         {#if isFullscreen}
           <Minimize class="h-4 w-4" />
         {:else}
@@ -199,48 +188,24 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Toolbar -->
   <div class="editor-toolbar" class:dimmed={isFocusMode}>
     <div class="format-group">
-      <button
-        class="format-btn yorha-btn yorha-nes-btn"
-        onclick={() => formatText('bold')}
-        title="Bold (Ctrl+B)"
-      >
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('bold')} title="Bold (Ctrl+B)">
         <strong>B</strong>
       </button>
-      <button
-        class="format-btn yorha-btn yorha-nes-btn"
-        onclick={() => formatText('italic')}
-        title="Italic (Ctrl+I)"
-      >
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('italic')} title="Italic (Ctrl+I)">
         <em>I</em>
       </button>
-      <button
-        class="format-btn yorha-btn yorha-nes-btn"
-        onclick={() => formatText('underline')}
-        title="Underline"
-      >
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('underline')} title="Underline">
         <u>U</u>
       </button>
     </div>
     <div class="format-group">
-      <button
-        class="format-btn yorha-btn yorha-nes-btn"
-        onclick={() => formatText('justifyLeft')}
-        title="Align left"
-      >
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('justifyLeft')} title="Align left">
         ⟸
       </button>
-      <button
-        class="format-btn yorha-btn yorha-nes-btn"
-        onclick={() => formatText('justifyCenter')}
-        title="Center"
-      >
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('justifyCenter')} title="Center">
         ▤
       </button>
-      <button
-        class="format-btn yorha-btn yorha-nes-btn"
-        onclick={() => formatText('justifyRight')}
-        title="Align right"
-      >
+      <button class="format-btn yorha-btn yorha-nes-btn" onclick={() => formatText('justifyRight')} title="Align right">
         ⟹
       </button>
     </div>
@@ -266,7 +231,8 @@ https://svelte.dev/e/js_parse_error -->
     <div
       bind:this={editorElement}
       class="editor-content"
-      contenteditable="true" oninput={updateStatistics}
+      contenteditable="true"
+      oninput={updateStatistics}
       bind:innerHTML={content}
       placeholder="Start writing your document..."
     ></div>
@@ -295,11 +261,9 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 <!-- Keyboard Shortcuts Modal -->
 {#if showShortcuts}
-  <div class="shortcuts-overlay" onclick={() => showShortcuts = false}>
-    <div class="shortcuts-modal yorha-nier-bits-card" onclick={(e) => e.stopPropagation()}>
-      <h3 class="shortcuts-title gradient-text-primary">
-        Keyboard Shortcuts
-      </h3>
+  <div class="shortcuts-overlay" onclick={() => (showShortcuts = false)}>
+    <div class="shortcuts-modal yorha-nier-bits-card" onclick={e => e.stopPropagation()}>
+      <h3 class="shortcuts-title gradient-text-primary">Keyboard Shortcuts</h3>
       <div class="shortcuts-grid">
         {#each shortcuts as shortcut}
           <div class="shortcut-item">
@@ -308,15 +272,14 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-      <button
-        class="close-shortcuts yorha-btn yorha-nes-btn is-primary"
-        onclick={() => showShortcuts = false}
-      >
+      <button class="close-shortcuts yorha-btn yorha-nes-btn is-primary" onclick={() => (showShortcuts = false)}>
         Close
       </button>
     </div>
   </div>
 {/if}
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   .professional-editor {
   .professional-editor {
@@ -585,4 +548,3 @@ d;
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

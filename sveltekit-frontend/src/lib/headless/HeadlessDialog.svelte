@@ -12,7 +12,10 @@
     onOpen?: () => void;
     onClose?: () => void;
   }
-  let { title, children, footer,
+  let {
+    title,
+    children,
+    footer,
     open = $bindable(),
     initialFocus = null,
     restoreFocus = true,
@@ -21,8 +24,8 @@
     ariaLabelledby,
     ariaDescribedby,
     onOpen,
-    onClose
-   }: HeadlessDialogProps = $props();
+    onClose,
+  }: HeadlessDialogProps = $props();
   let container = $state<HTMLElement | null>(null);
   let previousActive = $state<HTMLElement | null>(null);
   let mounted = $state(false);
@@ -43,7 +46,7 @@
     if (!open || !container) return;
     if (e.key !== 'Tab') return;
     const focusableElements = container.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
@@ -63,9 +66,10 @@
   async function trapFocus() {
     if (!open || !container || !mounted) return;
     await tick();
-    const target = initialFocus?.()
-      || container.querySelector<HTMLElement>('[data-autofocus]')
-      || container.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const target =
+      initialFocus?.() ||
+      container.querySelector<HTMLElement>('[data-autofocus]') ||
+      container.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
     target?.focus();
   }
   // Handle dialog open/close effects
@@ -97,14 +101,14 @@
       document.removeEventListener('keydown', handleKey, true);
       document.removeEventListener('keydown', handleTabKey, true);
       document.body.style.overflow = '';
-    };
+    }
   });
   // Mount effect
   $effect(() => {
     mounted = true;
     return () => {
       mounted = false;
-    };
+    }
   });
   function backdropClick(e: MouseEvent) {
     if (!closeOnBackdrop) return;
@@ -117,6 +121,7 @@
     e.stopPropagation();
   }
 </script>
+
 {#if open && mounted}
   <!-- Portal to body for proper z-index stacking -->
   <div
@@ -128,7 +133,7 @@
     aria-describedby={ariaDescribedby}
     tabindex="0"
     onclick={backdropClick}
-    onkeydown={(e) => e.key === 'Escape' ? backdropClick(e) : null}
+    onkeydown={e => (e.key === 'Escape' ? backdropClick(e) : null)}
     style="animation: fadeIn 0.2s ease-out;"
   >
     <div class="flex min-h-full items-center justify-center p-4">
@@ -136,7 +141,7 @@
         class="relative w-full max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl transition-all"
         role="document"
         onclick={handleContentClick}
-        onkeydown={(e) => e.key === 'Escape' ? backdropClick(e) : null}
+        onkeydown={e => (e.key === 'Escape' ? backdropClick(e) : null)}
         style="animation: slideIn 0.2s ease-out;"
       >
         <!-- Dialog header -->
@@ -159,17 +164,26 @@
           onclick={() => setOpen(false)}
         >
           <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
           </svg>
         </button>
       </div>
     </div>
   </div>
 {/if}
+
 <style>
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
   @keyframes slideIn {
     from {

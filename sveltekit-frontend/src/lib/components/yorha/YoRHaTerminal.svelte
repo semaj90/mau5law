@@ -12,24 +12,24 @@
     maxLines?: number;
   }
   let {
-    title = "YORHA LEGAL TERMINAL v4.0.0",
-    prompt = "YoRHa:legal>",
+    title = 'YORHA LEGAL TERMINAL v4.0.0',
+    prompt = 'YoRHa:legal>',
     history = [],
-    currentInput = "",
+    currentInput = '',
     isActive = true,
     onCommand,
-    maxLines = 100
+    maxLines = 100,
   } = $props<Partial<TerminalProps>>();
-  let terminalRef: HTMLDivElement
-  let inputRef: HTMLInputElement
+  let terminalRef: HTMLDivElement;
+  let inputRef: HTMLInputElement;
   let terminalHistory = $state([
-    "YoRHa Legal AI System v4.0.0",
-    "Copyright (c) 2024 YoRHa Command Division",
-    "Legal Analysis Module Loaded",
+    'YoRHa Legal AI System v4.0.0',
+    'Copyright (c) 2024 YoRHa Command Division',
+    'Legal Analysis Module Loaded',
     "Type 'help' for available commands",
-    ""
+    '',
   ]);
-  let currentCommand = $state("");
+  let currentCommand = $state('');
   let commandHistory: string[] = $state([]);
   let historyIndex = $state(-1);
   let isProcessing = $state(false);
@@ -49,7 +49,7 @@
     }
     return () => clearInterval(interval);
   });
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (event.key === 'Enter') {
       executeCommand();
     } else if (event.key === 'ArrowUp') {
@@ -73,24 +73,33 @@
     if (historyIndex >= 0) {
       currentCommand = commandHistory[commandHistory.length - 1 - historyIndex];
     } else {
-      currentCommand = "";
+      currentCommand = '';
     }
   }
   function autoComplete() {
     const availableCommands = [
-      'help', 'clear', 'status', 'cases', 'evidence', 'analyze',
-      'search', 'report', 'audit', 'backup', 'config', 'exit'
+      'help',
+      'clear',
+      'status',
+      'cases',
+      'evidence',
+      'analyze',
+      'search',
+      'report',
+      'audit',
+      'backup',
+      'config',
+      'exit',
     ];
-    const matches = availableCommands.filter(cmd =>
-      cmd.startsWith(currentCommand.toLowerCase())
-    );
+    const matches = availableCommands.filter(cmd => cmd.startsWith(currentCommand.toLowerCase()));
     if (matches.length === 1) {
       currentCommand = matches[0];
     } else if (matches.length > 1) {
-      terminalHistory = [...terminalHistory,
+      terminalHistory = [
+        ...terminalHistory,
         `${prompt} ${currentCommand}`,
         `Available commands: ${matches.join(', ')}`,
-        ""
+        '',
       ];
       scrollToBottom();
     }
@@ -107,7 +116,7 @@
     setTimeout(() => {
       processCommand(cmd);
       isProcessing = false;
-      currentCommand = "";
+      currentCommand = '';
       scrollToBottom();
     }, 100);
   }
@@ -115,114 +124,117 @@
     const [command, ...args] = cmd.toLowerCase().split(' ');
     switch (command) {
       case 'help':
-        terminalHistory = [...terminalHistory,
-          "YoRHa Legal AI Commands:",
-          "  help           - Show this help message",
-          "  clear          - Clear terminal screen",
-          "  status         - Show system status",
-          "  cases          - List active legal cases",
-          "  evidence       - Evidence management commands",
-          "  analyze <file> - Analyze legal document",
-          "  search <term>  - Search legal database",
-          "  report         - Generate analysis report",
-          "  audit          - Run system audit",
-          "  backup         - Backup case data",
-          "  config         - System configuration",
-          "  exit           - Close terminal",
-          ""
+        terminalHistory = [
+          ...terminalHistory,
+          'YoRHa Legal AI Commands:',
+          '  help           - Show this help message',
+          '  clear          - Clear terminal screen',
+          '  status         - Show system status',
+          '  cases          - List active legal cases',
+          '  evidence       - Evidence management commands',
+          '  analyze <file> - Analyze legal document',
+          '  search <term>  - Search legal database',
+          '  report         - Generate analysis report',
+          '  audit          - Run system audit',
+          '  backup         - Backup case data',
+          '  config         - System configuration',
+          '  exit           - Close terminal',
+          '',
         ];
         break;
       case 'clear':
         terminalHistory = [];
         break;
       case 'status':
-        terminalHistory = [...terminalHistory,
-          "YoRHa Legal AI System Status:",
-          "  CPU Usage:     23%",
-          "  Memory:        4.2GB / 16GB",
-          "  Active Cases:  15",
-          "  AI Models:     ONLINE",
-          "  Database:      CONNECTED",
-          "  Last Backup:   2 hours ago",
-          ""
+        terminalHistory = [
+          ...terminalHistory,
+          'YoRHa Legal AI System Status:',
+          '  CPU Usage:     23%',
+          '  Memory:        4.2GB / 16GB',
+          '  Active Cases:  15',
+          '  AI Models:     ONLINE',
+          '  Database:      CONNECTED',
+          '  Last Backup:   2 hours ago',
+          '',
         ];
         break;
       case 'cases':
-        terminalHistory = [...terminalHistory,
-          "Active Legal Cases:",
-          "  CASE-2024-001  [HIGH]    Corporate Litigation",
-          "  CASE-2024-002  [MEDIUM]  Contract Dispute",
-          "  CASE-2024-003  [LOW]     Employment Issue",
-          "  CASE-2024-004  [HIGH]    IP Infringement",
-          ""
+        terminalHistory = [
+          ...terminalHistory,
+          'Active Legal Cases:',
+          '  CASE-2024-001  [HIGH]    Corporate Litigation',
+          '  CASE-2024-002  [MEDIUM]  Contract Dispute',
+          '  CASE-2024-003  [LOW]     Employment Issue',
+          '  CASE-2024-004  [HIGH]    IP Infringement',
+          '',
         ];
         break;
       case 'evidence':
         if (args[0] === 'list') {
-          terminalHistory = [...terminalHistory,
-            "Evidence Repository:",
-            "  DOC-001.pdf    [ANALYZED]    Contract Agreement",
-            "  IMG-002.jpg    [PENDING]     Photo Evidence",
-            "  AUD-003.wav    [PROCESSED]   Meeting Recording",
-            ""
+          terminalHistory = [
+            ...terminalHistory,
+            'Evidence Repository:',
+            '  DOC-001.pdf    [ANALYZED]    Contract Agreement',
+            '  IMG-002.jpg    [PENDING]     Photo Evidence',
+            '  AUD-003.wav    [PROCESSED]   Meeting Recording',
+            '',
           ];
         } else {
-          terminalHistory = [...terminalHistory,
-            "Evidence commands:",
-            "  evidence list  - List all evidence",
-            "  evidence scan  - Scan for new evidence",
-            ""
+          terminalHistory = [
+            ...terminalHistory,
+            'Evidence commands:',
+            '  evidence list  - List all evidence',
+            '  evidence scan  - Scan for new evidence',
+            '',
           ];
         }
         break;
       case 'analyze':
         if (args[0]) {
-          terminalHistory = [...terminalHistory,
+          terminalHistory = [
+            ...terminalHistory,
             `Analyzing document: ${args[0]}...`,
-            "Document type: Contract Agreement",
-            "Confidence: 94.2%",
-            "Key entities: 12 found",
-            "Risk level: MEDIUM",
-            "Analysis complete.",
-            ""
+            'Document type: Contract Agreement',
+            'Confidence: 94.2%',
+            'Key entities: 12 found',
+            'Risk level: MEDIUM',
+            'Analysis complete.',
+            '',
           ];
         } else {
-          terminalHistory = [...terminalHistory,
-            "Usage: analyze <filename>",
-            ""
-          ];
+          terminalHistory = [...terminalHistory, 'Usage: analyze <filename>', ''];
         }
         break;
       case 'search':
         if (args[0]) {
-          terminalHistory = [...terminalHistory,
+          terminalHistory = [
+            ...terminalHistory,
             `Searching legal database for: "${args.join(' ')}"`,
-            "Found 7 relevant documents:",
-            "  Contract_2023_Amendment.pdf",
-            "  Legal_Precedent_Smith_v_Jones.pdf",
-            "  Policy_Document_v2.docx",
-            ""
+            'Found 7 relevant documents:',
+            '  Contract_2023_Amendment.pdf',
+            '  Legal_Precedent_Smith_v_Jones.pdf',
+            '  Policy_Document_v2.docx',
+            '',
           ];
         } else {
-          terminalHistory = [...terminalHistory,
-            "Usage: search <search term>",
-            ""
-          ];
+          terminalHistory = [...terminalHistory, 'Usage: search <search term>', ''];
         }
         break;
       case 'exit':
-        terminalHistory = [...terminalHistory,
-          "Terminal session ending...",
-          "Session saved to audit log.",
-          "Goodbye.",
-          ""
+        terminalHistory = [
+          ...terminalHistory,
+          'Terminal session ending...',
+          'Session saved to audit log.',
+          'Goodbye.',
+          '',
         ];
         break;
       default:
-        terminalHistory = [...terminalHistory,
+        terminalHistory = [
+          ...terminalHistory,
           `Unknown command: ${command}`,
           "Type 'help' for available commands.",
-          ""
+          '',
         ];
     }
     // Call external command handler if provided
@@ -236,11 +248,12 @@
     setTimeout(() => {
       terminalRef?.scrollTo({
         top: terminalRef.scrollHeight,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }, 10);
   }
 </script>
+
 <div class="yorha-terminal" bind:this={terminalRef}>
   <!-- Terminal Header -->
   <div class="terminal-header">
@@ -287,6 +300,7 @@
     </div>
   </div>
 </div>
+
 <style>
   .yorha-terminal {
     background: var(--yorha-bg-primary, #0a0a0a);
@@ -429,12 +443,23 @@
     color: var(--yorha-warning, #ffaa00);
   }
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
   /* Responsive Design */
   @media (max-width: 768px) {

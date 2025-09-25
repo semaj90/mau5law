@@ -15,9 +15,9 @@
     showSuggestions = true,
     maxResults = 20,
     theme = 'light' as 'light' | 'dark' | 'yorha',
-    onsearch = undefined as ((event: CustomEvent) => void) | undefined,
-    onselect = undefined as ((event: CustomEvent) => void) | undefined,
-    onclear = undefined as ((event: CustomEvent<void>) => void) | undefined
+    onsearch = undefined as ((_event: CustomEvent) => void) | undefined,
+    onselect = undefined as ((_event: CustomEvent) => void) | undefined,
+    onclear = undefined as ((_event: CustomEvent<void>) => void) | undefined
   } = $props();
   // Component state
   let searchInput = $state('');
@@ -97,7 +97,7 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({,
-          query: searchInput
+          query: searchInput;
           categories: selectedCategories
           enableVectorSearch: searchOptions.enableVectorSearch,
           aiSuggestions: searchOptions.aiSuggestions,
@@ -216,7 +216,7 @@
       'api': 'document',
       'demo': 'document',
       'documentation': 'document'
-    };
+    }
     return mapping[category] || 'document';
   }
   async function generateSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
@@ -348,7 +348,7 @@
               class:text-black={selectedCategories.includes(category.id) && theme === 'yorha'}
               class:bg-gray-100={!selectedCategories.includes(category.id) && theme === 'light'}
               class:bg-gray-700={!selectedCategories.includes(category.id) && theme === 'dark'}
-              class:bg-black={!selectedCategories.includes(category.id) && theme === 'yorha'};
+              class:bg-black={!selectedCategories.includes(category.id) && theme === 'yorha'}
               class:bg-opacity-50={!selectedCategories.includes(category.id) && theme === 'yorha'}
               onclick={() => toggleCategory(category.id)}
             >

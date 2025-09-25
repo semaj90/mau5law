@@ -10,7 +10,7 @@ export const legalCaseStore = $state({
     cases: [],
     selectedCase: null
     currentUser: null
-    loading: false
+    loading: false;
     error: null
     generatingEmbedding: false
     searchingRelatedEvidence: false
@@ -55,7 +55,7 @@ export const legalCaseActions = {
     legalCaseActor?.send({ type: 'SET_USER', user }),
   resetError: () =>
     legalCaseActor?.send({ type: 'RESET_ERROR' })
-};
+}
 // Getter functions for derived state
 export const legalCaseGetters = {
   isLoading: () => legalCaseStore.context.loading ||
@@ -69,4 +69,4 @@ export const legalCaseGetters = {
     searching: legalCaseStore.context.searchingRelatedEvidence,
     hasResults: legalCaseStore.context.relatedEvidence?.length > 0
   })
-};
+}

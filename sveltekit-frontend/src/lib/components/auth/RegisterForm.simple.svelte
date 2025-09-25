@@ -80,7 +80,7 @@
   // Password strength checker
   let passwordStrength = $derived(calculatePasswordStrength(formData.password));
   function calculatePasswordStrength(password: string): { score: number; feedback: string; color: string } {
-    if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' };
+    if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' }
   let score = $state(0);
     if (password.length >= 8) score += 2;
     if (password.length >= 12) score += 1;
@@ -88,12 +88,13 @@
     if (/[A-Z]/.test(password)) score += 1;
     if (/\d/.test(password)) score += 1;
     if (/[@$!%*?&]/.test(password)) score += 1;
-    if (score < 3) return { score, feedback: 'Weak', color: 'text-red-500' };
-    if (score < 5) return { score, feedback: 'Fair', color: 'text-yellow-500' };
-    if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' };
-    return { score, feedback: 'Excellent', color: 'text-green-500' };
+    if (score < 3) return { score, feedback: 'Weak', color: 'text-red-500' }
+    if (score < 5) return { score, feedback: 'Fair', color: 'text-yellow-500' }
+    if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' }
+    return { score, feedback: 'Excellent', color: 'text-green-500' }
   }
 </script>
+
 <div class="w-full max-w-2xl mx-auto">
   <div class="bg-nier-bits-card p-8 rounded-lg border border-border">
     <div class="text-center mb-6">
@@ -105,20 +106,22 @@
         <UserPlus class="h-5 w-5" />
         Create Account
       </h2>
-      <p class="nes-text is-disabled mt-2">
-        Register as a legal professional to access the AI-powered legal system
-      </p>
+      <p class="nes-text is-disabled mt-2">Register as a legal professional to access the AI-powered legal system</p>
     </div>
     <!-- Error Message -->
     {#if errorMessage}
-      <div class="bg-destructive/15 border border-destructive text-destructive-foreground px-4 py-3 rounded mb-4 flex items-center gap-2">
+      <div
+        class="bg-destructive/15 border border-destructive text-destructive-foreground px-4 py-3 rounded mb-4 flex items-center gap-2"
+      >
         <AlertCircle class="h-4 w-4" />
         <span>{errorMessage}</span>
       </div>
     {/if}
     <!-- Success Message -->
     {#if successMessage}
-      <div class="bg-green-500/15 border border-green-500 text-green-700 px-4 py-3 rounded mb-4 flex items-center gap-2">
+      <div
+        class="bg-green-500/15 border border-green-500 text-green-700 px-4 py-3 rounded mb-4 flex items-center gap-2"
+      >
         <Shield class="h-4 w-4" />
         <span>{successMessage}</span>
       </div>
@@ -142,11 +145,13 @@
               goto('/dashboard');
             }, 2000);
           } else if ((result as { type?: any; data?: any }).type === 'failure') {
-            errorMessage = (result as { type?: any; data?: any }).data?.form?.errors?.email?.[0] || 'Registration failed. Please try again.';
+            errorMessage =
+              (result as { type?: any; data?: any }).data?.form?.errors?.email?.[0] ||
+              'Registration failed. Please try again.';
           } else if ((result as { type?: any; data?: any }).type === 'error') {
             errorMessage = 'An error occurred during registration. Please try again.';
           }
-        };
+        }
       }}
       class="space-y-4"
     >
@@ -160,7 +165,8 @@
             id="firstName"
             name="firstName"
             type="text"
-            placeholder="John";
+            placeholder="John"
+            ;
             bind:value={formData.firstName}
             disabled={isLoading}
             required
@@ -189,7 +195,7 @@
           id="email"
           name="email"
           type="email"
-          placeholder="john.smith@prosecutor.gov"
+          placeholder="john.smith@prosecutor.gov";
           bind:value={formData.email}
           disabled={isLoading}
           required
@@ -203,7 +209,8 @@
           <Label for="role">Professional Role</Label>
           <select
             id="role"
-            name="role";
+            name="role"
+            ;
             bind:value={formData.role}
             disabled={isLoading}
             required
@@ -221,7 +228,7 @@
             id="badgeNumber"
             name="badgeNumber"
             type="text"
-            placeholder="12345"
+            placeholder="12345";
             bind:value={formData.badgeNumber}
             disabled={isLoading}
             class="mt-1"
@@ -236,7 +243,8 @@
             id="department"
             name="department"
             type="text"
-            placeholder="District Attorney's Office";
+            placeholder="District Attorney's Office"
+            ;
             bind:value={formData.department}
             disabled={isLoading}
             required
@@ -337,7 +345,7 @@
           <input
             type="checkbox"
             id="enableTwoFactor"
-            name="enableTwoFactor"
+            name="enableTwoFactor";
             bind:checked={formData.enableTwoFactor}
             disabled={isLoading}
             class="rounded border-border text-primary focus:ring-primary"
@@ -353,7 +361,8 @@
           <input
             type="checkbox"
             id="agreeToTerms"
-            name="agreeToTerms";
+            name="agreeToTerms"
+            ;
             bind:checked={formData.agreeToTerms}
             disabled={isLoading}
             required
@@ -367,7 +376,8 @@
           <input
             type="checkbox"
             id="agreeToPrivacy"
-            name="agreeToPrivacy";
+            name="agreeToPrivacy"
+            ;
             bind:checked={formData.agreeToPrivacy}
             disabled={isLoading}
             required
@@ -379,30 +389,22 @@
         </div>
       </div>
       <!-- Submit Button -->
-      <Button
-        type="submit"
-        class="w-full bits-btn bits-btn"
-        disabled={isLoading}
-      >
-{#if isLoading}
+      <Button type="submit" class="w-full bits-btn bits-btn" disabled={isLoading}>
+        {#if isLoading}
           <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           Creating Account...
         {:else}
           <UserPlus class="mr-2 h-4 w-4" />
           Create Legal Professional Account
         {/if}
-</Button>
+      </Button>
     </form>
     <!-- Login Link -->
     {#if showLogin}
       <div class="mt-6 text-center">
         <p class="text-sm nes-text is-disabled">
           Already have an account?
-          <a
-            href="/auth/login"
-            class="text-primary hover:underline font-medium"
-            tabindex={isLoading ? -1 : 0}
-          >
+          <a href="/auth/login" class="text-primary hover:underline font-medium" tabindex={isLoading ? -1 : 0}>
             Sign in here
           </a>
         </p>
@@ -410,3 +412,4 @@
     {/if}
   </div>
 </div>
+;

@@ -7,7 +7,7 @@ import { writable } from "svelte/store";
 export const selectedCase = writable<string | null>(null);
 export const casesStore = writable({
   cases: [],
-  isLoading: false
+  isLoading: false;
   error: null
 });
 export default casesStore;

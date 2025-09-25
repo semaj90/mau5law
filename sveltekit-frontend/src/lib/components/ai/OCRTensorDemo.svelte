@@ -42,8 +42,8 @@ try {
   /**
    * Handle file selection
    */
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     const file = target.files?.[0];
     if (file) {
       if (!file.type.startsWith('image/')) {
@@ -75,7 +75,7 @@ try {
         embeddingTime: (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime * 0.3, // Estimated embedding portion
         tensorTime: (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime * 0.2, // Estimated tensor portion
         storageTime: (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime * 0.1 // Estimated storage portion
-      };
+      }
       // Update cache stats
       if ((result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).cacheHit) {
         cacheStats.hits++;
@@ -168,8 +168,8 @@ try {
   function clearResults() {
     results = [];
     logs = [];
-    cacheStats = { hits: 0, misses: 0, totalProcessingTime: 0 };
-    performanceMetrics = { ocrTime: 0, embeddingTime: 0, tensorTime: 0, storageTime: 0 };
+    cacheStats = { hits: 0, misses: 0, totalProcessingTime: 0 }
+    performanceMetrics = { ocrTime: 0, embeddingTime: 0, tensorTime: 0, storageTime: 0 }
     addLog('🗑️ Cleared all results');
   }
   /**

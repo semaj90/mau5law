@@ -25,20 +25,20 @@ export interface ClientLLMRequest {
     legalDomain?: string;
     documentType?: string;
     previousContext?: string[];
-  };
+  }
   modelPreferences: {
   preferredModel?: 'gemma270m' | 'gemma-legal' | 'legal-bert' | 'auto';
     maxLatency?: number;
     qualityThreshold?: number;
     enableRLTraining?: boolean;
     enableContextSwitching?: boolean;
-  };
+  }
   resourceLimits: {
     maxGPUMemoryMB?: number;
     maxDDRRAMCacheMB?: number;
     allowModelSwitching?: boolean;
     enableParallelInference?: boolean;
-  };
+  }
 }
 export interface ModelInstance {
   id: string;
@@ -50,13 +50,13 @@ export interface ModelInstance {
     gpuMemoryMB: number;
     ddrRAMCacheMB: number;
     wasmHeapMB: number;
-  };
+  }
   performanceMetrics: {
     averageLatency: number;
     throughput: number;
     qualityScore: number;
     lastUsed: number;
-  };
+  }
   worker?: Worker;
   wasmModule?: WebAssembly.Instance;
   onnxSession?: any;
@@ -72,18 +72,18 @@ export interface InferenceResult {
     cacheHitRate: number;
     memoryUsed: number;
     qualityScore: number;
-  };
+  }
   rlMetrics?: {
     reward: number;
     action: any;
     stateEmbedding: number[];
-  };
+  }
   contextSwitching?: {
     switchOccurred: boolean;
     fromModel: string;
     toModel: string;
     switchReason: string;
-  };
+  }
 }
 class UnifiedClientLLMOrchestrator {
   private models = new Map<string, ModelInstance>();
@@ -123,7 +123,7 @@ class UnifiedClientLLMOrchestrator {
             memoryUsed: 0,
             qualityScore: cacheResult.data.qualityScore
           }
-        };
+        }
       }
       // Step 2: Select optimal model for the task
       const selectedModel = await this.selectOptimalModel(request);
@@ -159,7 +159,7 @@ class UnifiedClientLLMOrchestrator {
           toModel: contextSwitch.toModel,
           switchReason: contextSwitch.reason
         } : undefined
-      };
+      }
     } catch (error) {
       console.error('Client LLM orchestrator error:', error);
       // Fallback to simplest model
@@ -177,7 +177,7 @@ class UnifiedClientLLMOrchestrator {
             memoryUsed: 0,
             qualityScore: 0
           }
-        };
+        }
       }
     }
   }
@@ -246,7 +246,7 @@ class UnifiedClientLLMOrchestrator {
         },
         worker,
         modelVariant: 'gemma-270m'
-      };
+      }
       this.models.set('gemma270m', model);
       this.activeWorkers.set('gemma270m', worker);
       this.totalGPUMemoryMB += model.memoryFootprint.gpuMemoryMB;
@@ -280,7 +280,7 @@ class UnifiedClientLLMOrchestrator {
         },
         worker,
         modelVariant: 'gemma:legal'
-      };
+      }
       this.models.set('gemma-legal', model);
       this.activeWorkers.set('gemma-legal', worker);
       this.totalGPUMemoryMB += model.memoryFootprint.gpuMemoryMB;
@@ -315,7 +315,7 @@ class UnifiedClientLLMOrchestrator {
           lastUsed: 0
         },
         onnxSession: session
-      };
+      }
       this.models.set('legal-bert', model);
       this.totalGPUMemoryMB += model.memoryFootprint.gpuMemoryMB;
       this.totalDDRRAMCacheMB += model.memoryFootprint.ddrRAMCacheMB;
@@ -349,7 +349,7 @@ class UnifiedClientLLMOrchestrator {
           lastUsed: 0
         },
         onnxSession: embeddingSession
-      };
+      }
       this.models.set('onnx-embeddings', model);
       this.totalGPUMemoryMB += model.memoryFootprint.gpuMemoryMB;
       console.log('✅ ONNX models initialized');
@@ -408,12 +408,12 @@ class UnifiedClientLLMOrchestrator {
       });
       if (cacheResult.success && cacheResult.cacheResults.length > 0) {
         const cachedResult = cacheResult.cacheResults[0];
-        return { hit: cachedResult.hit, data: cachedResult.data };
+        return { hit: cachedResult.hit, data: cachedResult.data }
       }
-      return { hit: false };
+      return { hit: false }
     } catch (error) {
       console.warn('Cache check failed:', error);
-      return { hit: false };
+      return { hit: false }
     }
   }
   /**
@@ -458,7 +458,7 @@ class UnifiedClientLLMOrchestrator {
     return {
       response: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).text || 'No response generated',
       qualityScore: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).confidence || 0.8
-    };
+    }
   }
   /**
    * Execute Legal-BERT inference (context switching)
@@ -476,7 +476,7 @@ class UnifiedClientLLMOrchestrator {
     return {
       response: `Legal context analysis: ${contextAnalysis.contextType} (confidence: ${contextAnalysis.confidence})`,
       qualityScore: contextAnalysis.confidence || 0.92
-    };
+    }
   }
   /**
    * Execute Gemma Legal inference (specialized reasoning)
@@ -501,7 +501,7 @@ class UnifiedClientLLMOrchestrator {
       response: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).text || 'No legal response generated',
       qualityScore: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).qualityScore || (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).confidence || 0.9,
       rlMetrics: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).rlMetrics
-    };
+    }
   }
   private async executeLLaMAInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.worker) {
@@ -518,7 +518,7 @@ class UnifiedClientLLMOrchestrator {
       response: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).text || 'No response generated',
       qualityScore: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).rlMetrics?.reward || 0.85,
       rlMetrics: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).rlMetrics
-    };
+    }
   }
   /**
    * Execute ONNX model inference
@@ -535,7 +535,7 @@ class UnifiedClientLLMOrchestrator {
     return {
       response: JSON.stringify(result),
       qualityScore: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).confidence || 0.88
-    };
+    }
   }
   /**
    * Cache inference result
@@ -581,7 +581,7 @@ class UnifiedClientLLMOrchestrator {
   private async sendWorkerMessage(worker: Worker, message: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const messageId = Math.random().toString(36);
-      const handleMessage = (event: MessageEvent) => {
+      const handleMessage = (_event: MessageEvent) => {
         if (event.data.id === messageId) {
           worker.removeEventListener('message', handleMessage);
           if (event.data.type === 'ERROR') {
@@ -590,7 +590,7 @@ class UnifiedClientLLMOrchestrator {
             resolve(event.data.data || event.data);
           }
         }
-      };
+      }
       worker.addEventListener('message', handleMessage);
       worker.postMessage({ ...message, id: messageId });
       // Timeout after 30 seconds
@@ -602,7 +602,7 @@ class UnifiedClientLLMOrchestrator {
   }
   // Placeholder methods for components not yet implemented
   private async evaluateContextSwitch(request: ClientLLMRequest, model: ModelInstance): Promise<any> {
-    return { required: false };
+    return { required: false }
   }
   private async performContextSwitch(fromModel: string, toModel: string, request: ClientLLMRequest): Promise<void> {
     // Context switching implementation
@@ -625,7 +625,7 @@ class UnifiedClientLLMOrchestrator {
           memoryUsed: gemmaModel.memoryFootprint.gpuMemoryMB,
           qualityScore: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).qualityScore
         }
-      };
+      }
     }
     throw new Error('No fallback model available');
   }
@@ -644,7 +644,7 @@ class UnifiedClientLLMOrchestrator {
       activeModels,
       memoryUtilization: this.totalGPUMemoryMB / this.maxGPUMemoryMB,
       cacheStats: cacheStats.currentMetrics
-    };
+    }
   }
 }
 // Placeholder classes for components not yet fully implemented
@@ -663,7 +663,7 @@ class ONNXInferenceEngine {
   async loadModel(modelPath: string): Promise<any> {
     console.log(`📥 Loading ONNX model: ${modelPath}`);
     // Would use onnxruntime-web here
-    return { modelPath };
+    return { modelPath }
   }
   async runInference(session: any, input: string, options: any): Promise<any> {
     // ONNX inference implementation
@@ -671,7 +671,7 @@ class ONNXInferenceEngine {
       output: `ONNX inference result for: ${input}`,
       confidence: 0.88,
       contextType: options.task
-    };
+    }
   }
 }
 // Export singleton instance

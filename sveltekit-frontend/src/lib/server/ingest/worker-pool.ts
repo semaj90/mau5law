@@ -21,8 +21,8 @@ export type Job = {
   filename?: string;
   userId: string;
   contentType?: string;
-  metadata?: { [key: string]: any };
-};
+  metadata?: { [key: string]: any }
+}
 }
 export interface WorkerJobData {
   id: string;
@@ -35,13 +35,13 @@ export interface WorkerJobResult {
   data?: any;
   error?: string;
   processingTime: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface JobOptions {
   priority?: number;
   timeout?: number;
   retryAttempts?: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface WorkerPoolOptions {
   maxWorkers?: number;
@@ -111,7 +111,7 @@ export class SimpleWorkerPool {
       freeWorkers: this.free.filter(item => item.length),
       queuedJobs: this.queue.length,
       pendingCallbacks: this.jobCallbacks.size
-    };
+    }
   }
   async shutdown(): Promise<void> {
     // Terminate all workers
@@ -154,15 +154,15 @@ class WorkerInstance {
       const onMessage = (result: WorkerJobResult) => {
         this.cleanup();
         resolve(result);
-      };
+      }
       const onError = (error: Error) => {
         this.cleanup();
         reject(error);
-      };
+      }
       const onExit = (code: number) => {
         this.cleanup();
         reject(new Error(`Worker exited with code ${code}`);
-      };
+      }
       this.worker.once('message', onMessage);
       this.worker.once('error', onError);
       this.worker.once('exit', onExit);
@@ -208,7 +208,7 @@ export class AdvancedWorkerPool extends EventEmitter {
   private totalProcessed = 0;
   private cleanupInterval?: NodeJS.Timeout;
   private isShuttingDown = false;
-  constructor(options: WorkerPoolOptions = {}) {
+  constructor(_options: WorkerPoolOptions = {}) {
     super();
     const cpuCount = cpus().length;
     this.options = {
@@ -217,7 +217,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       idleTimeout: options.idleTimeout || 30000, // 30 seconds
       jobTimeout: options.jobTimeout || 300000, // 5 minutes
       retryAttempts: options.retryAttempts || 2
-    };
+    }
     // Worker script path
     this.workerScript = new URL('./worker.js', import.meta.url).pathname;
     // Start with minimum workers
@@ -233,7 +233,7 @@ export class AdvancedWorkerPool extends EventEmitter {
   }
   async processJob(
     type: WorkerJobData['type'],
-    payload: any
+    payload: any;
     options: JobOptions = {}
   ): Promise<WorkerJobResult> {
     if (this.isShuttingDown) {
@@ -245,7 +245,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       type,
       payload,
       options
-    };
+    }
     return new Promise((resolve, reject) => {
       this.jobQueue.enqueue()
         { jobData, resolve, reject, options },
@@ -308,7 +308,7 @@ export class AdvancedWorkerPool extends EventEmitter {
           jobData.options = {
             ...jobData.options,
             metadata: { ...jobData.options?.metadata, attempt: currentAttempt }
-          };
+          }
           this.jobQueue.enqueue({ jobData, resolve, reject, options }, options.priority || 0);
           this.processNextJob();
         }, retryDelay);
@@ -391,7 +391,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       totalProcessed: this.totalProcessed,
       busyWorkers: Array.from(this.workers.values()).filter(item => item.length),
       idleWorkers: Array.from(this.workers.values()).filter(item => item.length)
-    };
+    }
   }
   async shutdown(graceful = true, timeout = 30000): Promise<void> {
     this.isShuttingDown = true;
@@ -424,7 +424,7 @@ export function getWorkerPool(options?: WorkerPoolOptions): AdvancedWorkerPool {
   return workerPool;
 }
 // Export the primary WorkerPool as the AdvancedWorkerPool
-export { AdvancedWorkerPool as WorkerPool };
+export { AdvancedWorkerPool as WorkerPool }
 export async function shutdownWorkerPool(graceful = true, timeout = 30000): Promise<void> {
   if (workerPool) {
     await workerPool.shutdown(graceful, timeout);

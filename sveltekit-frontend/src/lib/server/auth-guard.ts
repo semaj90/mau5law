@@ -13,7 +13,7 @@ export interface AuthenticatedUser {
  * Enhanced authentication guard for storage operations
  * Supports both session-based and JWT authentication
  */;
-export async function requireAuthentication(event: RequestEvent): Promise<AuthenticatedUser | null> {
+export async function requireAuthentication(_event: RequestEvent): Promise<AuthenticatedUser | null> {
   try {
     // Development mode: Always authenticate with a default dev user
     const isDevelopment = dev || process.env.DEV_MODE === 'true';
@@ -28,7 +28,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
           firstName: 'Dev',
           lastName: 'User',
           role: 'admin'
-        };
+        }
       }
       // Default dev user for all requests in development
       console.log('🔧 Development mode: Using default authenticated user');
@@ -38,7 +38,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         firstName: 'Development',
         lastName: 'User',
         role: 'admin'
-      };
+      }
     }
     // Production mode: Strict authentication required
     console.log('🔒 Production mode: Requiring real authentication');
@@ -51,7 +51,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         firstName: session.user.firstName,
         lastName: session.user.lastName,
         role: session.user.role
-      };
+      }
     }
     // Check for JWT Bearer token
     const authHeader = event.request.headers.get('authorization');
@@ -67,7 +67,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
             firstName: decoded.firstName,
             lastName: decoded.lastName,
             role: decoded.role
-          };
+          }
         } catch (jwtError) {
           console.warn('JWT verification failed:', jwtError);
         }
@@ -82,7 +82,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
           id: 'system',
           email: 'system@legal-ai.local',
           role: 'system'
-        };
+        }
       }
     }
     return null;

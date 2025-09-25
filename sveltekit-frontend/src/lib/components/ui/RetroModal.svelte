@@ -6,7 +6,7 @@ https://svelte.dev/e/slot_snippet_conflict -->
   Demonstrates the perfect marriage of headless functionality with retro styling
 -->
 <script lang="ts">
-  import { Dialog } from "bits-ui";
+  import { Dialog } from 'bits-ui';
   import type { Snippet } from 'svelte';
   interface Props {
     open?: boolean;
@@ -16,20 +16,14 @@ https://svelte.dev/e/slot_snippet_conflict -->
     children?: Snippet;
     footer?: Snippet;
   }
-  let {
-    open = false,
-    title = "Dialog",
-    onClose,
-    trigger,
-    children,
-    footer
-  }: Props = $props();
+  let { open = false, title = 'Dialog', onClose, trigger, children, footer }: Props = $props();
   function handleOpenChange(isOpen: boolean) {
     if (!isOpen && onClose) {
       onClose();
     }
   }
 </script>
+
 <!-- bits-ui provides the functionality, nes.css provides the styling -->
 <Dialog.Root {open} onOpenChange={handleOpenChange}>
   <!-- Trigger button with retro styling -->
@@ -48,9 +42,7 @@ https://svelte.dev/e/slot_snippet_conflict -->
           <Dialog.Title class="nes-text is-primary font-bold text-lg">
             {title}
           </Dialog.Title>
-          <Dialog.Close class="nes-btn is-error" style="padding: 4px 8px;">
-            ×
-          </Dialog.Close>
+          <Dialog.Close class="nes-btn is-error" style="padding: 4px 8px;">×</Dialog.Close>
         </div>
         <!-- Modal body content -->
         <div class="modal-content">
@@ -66,7 +58,9 @@ https://svelte.dev/e/slot_snippet_conflict -->
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-<style>/* Additional custom styling to enhance nes.css */ :global(.nes-dialog) {
+
+<style>/* Additional custom styling to enhance nes.css */ {}
+  :global(.nes-dialog) {
     animation: modalSlideIn 0.3s ease-out;
   }
   @keyframes modalSlideIn {
@@ -79,7 +73,8 @@ https://svelte.dev/e/slot_snippet_conflict -->
       transform: translateY(0);
     }
   }
-/* Custom modal content styling */ .modal-content {
+/* Custom modal content styling */ {}
+  .modal-content {
     max-height: 400px;
     overflow-y: auto;
   }

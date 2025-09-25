@@ -58,18 +58,18 @@ export interface UserPreferences {
     maxTokens: number;
     enableStreaming: boolean;
     autoComplete: boolean;
-  };
+  }
   notifications: {
     email: boolean;
     push: boolean;
     desktop: boolean;
     legal: boolean;
-  };
+  }
   privacy: {
     shareAnalytics: boolean;
     storeSearchHistory: boolean;
     enableRecommendations: boolean;
-  };
+  }
 }
 export interface AIMessage {
   id: string;
@@ -77,7 +77,7 @@ export interface AIMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   embedding?: number[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   timestamp: Date;
   isSuccessful: boolean;
   processingTime?: number;
@@ -126,7 +126,7 @@ const defaultPreferences: UserPreferences = {
     storeSearchHistory: true
     enableRecommendations: true
   }
-};
+}
 const defaultState: GlobalUserState = {
   user: null
   session: null
@@ -151,7 +151,7 @@ const defaultState: GlobalUserState = {
   syncStatus: 'idle',
   lastSync: null
   pendingChanges: 0
-};
+}
 // ===== SVELTE 5 RUNES STORE =====
 let globalUserState = $state<GlobalUserState>(defaultState);
 // Reactive computations using Svelte 5 $derived
@@ -194,7 +194,7 @@ export const globalUserStore = {
   },
   async loadUserProfile(userId: string) {
     try {
-      const response = await fetch(`/api/v1/users/${userId}/profile`);
+      // removed unused response assignment
       if (response.ok) {
         const profile = await response.json();
         globalUserState.profile = profile;
@@ -205,17 +205,17 @@ export const globalUserStore = {
   },
   async loadUserPreferences(userId: string) {
     try {
-      const response = await fetch(`/api/v1/users/${userId}/preferences`);
+      // removed unused response assignment
       if (response.ok) {
         const preferences = await response.json();
-        globalUserState.preferences = { ...defaultPreferences, ...preferences };
+        globalUserState.preferences = { ...defaultPreferences, ...preferences }
       }
     } catch (error: any) {
       console.error('Failed to load user preferences:', error);
     }
   },
   async updatePreferences(updates: Partial<UserPreferences>) {
-    globalUserState.preferences = { ...globalUserState.preferences, ...updates };
+    globalUserState.preferences = { ...globalUserState.preferences, ...updates }
     this.markForSync();
     if (globalUserState.user?.id) {
       try {
@@ -236,7 +236,7 @@ export const globalUserStore = {
       ...message,
       id: crypto.randomUUID(),
       timestamp: new Date()
-    };
+    }
     globalUserState.chatHistory.push(aiMessage);
     globalUserState.sessionMetrics.queriesCount++;
     globalUserState.lastActivity = new Date();
@@ -307,7 +307,7 @@ export const globalUserStore = {
   async loadRecommendations() {
     if (!globalUserState.user?.id) return;
     try {
-      const response = await fetch(`/api/v1/recommendations?userId=${globalUserState.user.id}`);
+      // removed unused response assignment
       if (response.ok) {
         const recommendations = await response.json();
         globalUserState.recommendations = recommendations;
@@ -324,7 +324,7 @@ export const globalUserStore = {
         params.set('from', timeRange.from.toISOString();
         params.set('to', timeRange.to.toISOString();
       }
-      const response = await fetch(`/api/v1/analytics?${params}`);
+      // removed unused response assignment
       if (response.ok) {
         const analytics = await response.json();
         globalUserState.analytics = analytics;
@@ -336,7 +336,7 @@ export const globalUserStore = {
   async loadUserPatterns() {
     if (!globalUserState.user?.id) return;
     try {
-      const response = await fetch(`/api/v1/patterns?userId=${globalUserState.user.id}`);
+      // removed unused response assignment
       if (response.ok) {
         const patterns = await response.json();
         globalUserState.patterns = patterns;
@@ -352,7 +352,7 @@ export const globalUserStore = {
       embedding,
       model,
       createdAt: new Date()
-    };
+    }
     globalUserState.recentEmbeddings.unshift(cache);
     // Keep only recent 100 embeddings
     if (globalUserState.recentEmbeddings.length > 100) {
@@ -362,10 +362,10 @@ export const globalUserStore = {
   addSearchQuery(query: string, resultsCount: number, context?: string) {
     const search: SearchQuery = {
       query,
-      results: resultsCount
+      results: resultsCount;
       timestamp: new Date(),
       context
-    };
+    }
     globalUserState.searchHistory.unshift(search);
     // Keep only recent 50 searches
     if (globalUserState.searchHistory.length > 50) {
@@ -389,7 +389,7 @@ export const globalUserStore = {
         sessionMetrics: globalUserState.sessionMetrics,
         searchHistory: globalUserState.searchHistory.slice(0, 10), // Recent searches
         lastActivity: globalUserState.lastActivity
-      };
+      }
       const response = await fetch('/api/v1/sync/user-state', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -419,7 +419,7 @@ export const globalUserStore = {
       successRate: 0,
       averageResponseTime: 0,
       topTopics: []
-    };
+    }
     // Load user data
     if (globalUserState.user?.id) {
       await Promise.all([
@@ -455,7 +455,7 @@ export const globalUserStore = {
   getRecommendationsByType(type: 'query' | 'case' | 'document' | 'legal_precedent'): RecommendationResult[] {
     return globalUserState.recommendations.filter(rec => rec.type === type);
   }
-};
+}
 // Auto-sync every 30 seconds if there are pending changes
 if (browser) {
   setInterval(() => {

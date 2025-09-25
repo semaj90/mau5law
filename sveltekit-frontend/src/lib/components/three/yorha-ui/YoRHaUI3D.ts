@@ -31,7 +31,7 @@ export const YORHA_COLORS = {
   interaction: {
     hover: 0xe8dcc0,           // Warm hover
     active: 0xffd700,          // Gold active
-    disabled: 0x4a4a4a,        // Disabled grey
+    disabled: 0x4a4a4a,        // Disabled grey;
     focus: 0xf0e68c,           // Khaki focus
   }
 } as const;
@@ -169,7 +169,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
         offsetY: -0.1
       },
       ...style
-    };
+    }
   }
   protected abstract createGeometry(): void;
   protected createMaterial(): void {
@@ -179,7 +179,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       transparent: (this.style.opacity || 1) < 1,
       metalness: this.style.metalness,
       roughness: this.style.roughness
-    };
+    }
     // Apply gradient if specified
     if (this.style.gradient) {
       this.material = this.createGradientMaterial(materialProps);
@@ -296,7 +296,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       const glowMaterial = new THREE.MeshStandardMaterial({
         color: this.style.glow.color || YORHA_COLORS.accent.gold,
         opacity: layerIntensity
-        transparent: true
+        transparent: true;
         side: THREE.BackSide
       });
       const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
@@ -312,7 +312,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const glowMaterial = new THREE.MeshStandardMaterial({
       color: this.style.borderColor,
       opacity: 0.3,
-      transparent: true
+      transparent: true;
       side: THREE.BackSide
     });
     const glowMesh = new THREE.Mesh(borderMesh.geometry, glowMaterial);
@@ -383,7 +383,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       right: padding.right ?? padding.all ?? 0,
       bottom: padding.bottom ?? padding.all ?? 0,
       left: padding.left ?? padding.all ?? 0
-    };
+    }
     // Store padding for child components to use
     this.userData.padding = paddingValues;
   }
@@ -395,7 +395,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       right: margin.right ?? margin.all ?? 0,
       bottom: margin.bottom ?? margin.all ?? 0,
       left: margin.left ?? margin.all ?? 0
-    };
+    }
     // Apply margin to position
     this.position.x += marginValues.left - marginValues.right;
     this.position.y += marginValues.top - marginValues.bottom;
@@ -437,14 +437,14 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       const time = Date.now() * 0.001 + delay;
       const pulse = Math.sin(time * 2) * 0.1 + 1;
       target.scale.setScalar(pulse);
-    };
+    }
     this.addCustomAnimation('pulse', pulseAnimation);
   }
   protected createRotateAnimation(animation: YoRHaAnimation): void {
     const rotateAnimation = (deltaTime: number) => {
       const speed = (2 * Math.PI) / (animation.duration || 2000);
       this.mesh.rotation.y += speed * deltaTime * 1000;
-    };
+    }
     this.addCustomAnimation('rotate', rotateAnimation);
   }
   protected createScaleAnimation(animation: YoRHaAnimation): void {
@@ -452,7 +452,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       const time = Date.now() * 0.001;
       const scale = Math.sin(time * (2 * Math.PI) / (animation.duration || 1000)) * 0.2 + 1;
       this.mesh.scale.setScalar(scale);
-    };
+    }
     this.addCustomAnimation('scale', scaleAnimation);
   }
   protected createScanAnimation(animation: YoRHaAnimation): void {
@@ -505,7 +505,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
           this.mesh.scale.setScalar(1);
         }, 50);
       }
-    };
+    }
     this.addCustomAnimation('glitch', glitchAnimation);
   }
   public update(deltaTime: number): void {
@@ -572,7 +572,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   // Utility methods
   public setStyle(newStyle: Partial<YoRHaStyle>): void {
-    this.style = { ...this.style, ...newStyle };
+    this.style = { ...this.style, ...newStyle }
     this.applyStyle();
   }
   public setDisabled(disabled: boolean): void {

@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       },
       status: 'completed',
       categories: Object.entries(categorizedErrors).map(([category, errors]) => ({
-        name: category
+        name: category;
         count: errors.length,
         avgConfidence:
           errors.reduce((acc, err) => acc + (Math.random() * 0.25 + 0.7), 0) / errors.length

@@ -241,4 +241,4 @@ Respectfully submitted,
     )
   }
 }
-export const GET = redisOptimized.documentProcessing(originalGETHandler)
+export const GET = redisOptimized.documentProcessing(originalGETHandler);

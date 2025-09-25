@@ -48,7 +48,7 @@ Analysis:`,);
         classificationTime: 100, // placeholder
         totalProcessingTime: Date.now() - performance.now()
       }
-    };
+    }
   } catch (error) {
     console.error('❌ Error processing document with ONNX:', error);
     throw error;
@@ -114,12 +114,12 @@ export async function batchProcessLegalDocuments(documents: Array<) {
     results,
     summary: {
       totalDocuments: documents.length,
-      successful: successCount
+      successful: successCount;
       failed: documents.length - successCount,
       totalTime,
       averageTimePerDocument: Math.round(totalTime / documents.length)
     }
-  };
+  }
 }
 /**
  * Example: Performance comparison between ONNX and Ollama
@@ -134,10 +134,10 @@ export async function performanceComparison(testText: string) {
     },
     ollama: {
       entityExtraction: null
-      classification: null
+      classification: null;
       embeddings: null
     }
-  };
+  }
   try {
     // Test ONNX Legal-BERT
     console.log('🔬 Testing ONNX Legal-BERT...');
@@ -171,7 +171,7 @@ export async function performanceComparison(testText: string) {
         entityExtraction: ollamaTotal / (tests.onnx.entityExtraction || 1),
         overall: ollamaTotal / onnxTotal
       }
-    };
+    }
     console.log('📊 Performance Comparison Results:');
     console.log('ONNX Total Time:', onnxTotal, 'ms');
     console.log('Ollama Total Time:', ollamaTotal, 'ms');

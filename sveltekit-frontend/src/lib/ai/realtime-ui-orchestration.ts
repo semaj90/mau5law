@@ -30,7 +30,7 @@ export class LegalCanvasManager {
     fps: 0,
     lastFrameTime: 0,
     droppedFrames: 0
-  };
+  }
   constructor(canvasElement: HTMLCanvasElement, config: CanvasConfig) {
     this.initializeFabricCanvas(canvasElement, config);
     this.startRenderLoop();
@@ -82,7 +82,7 @@ export class LegalCanvasManager {
    * Create real-time progress indicator
    */
   createProgressIndicator(
-    id: string
+    id: string;
     config: ProgressConfig;
   ): ProgressIndicator {
     if (!this.canvas) throw new Error('Canvas not initialized');
@@ -95,7 +95,7 @@ export class LegalCanvasManager {
    * Update progress with smooth animation
    */
   updateProgress(
-    id: string
+    id: string;
     progress: number
     details?: ProgressDetails;
   ): void {
@@ -126,7 +126,7 @@ export class LegalCanvasManager {
         this.renderMetrics.lastFrameTime = timestamp;
       }
       this.animationFrameId = requestAnimationFrame(renderFrame);
-    };
+    }
     this.isRendering = true;
     this.animationFrameId = requestAnimationFrame(renderFrame);
     console.log('🎬 Started 60fps render loop');
@@ -209,7 +209,7 @@ export class LegalCanvasManager {
       activeIndicators: this.progressIndicators.size,
       canvasObjects: this.canvas?.getObjects().length || 0,
       memoryUsage: this.getCanvasMemoryUsage()
-    };
+    }
   }
   /**
    * Estimate canvas memory usage
@@ -296,7 +296,7 @@ class ProgressIndicator {
     });
     // Group elements
     this.progressGroup = new fabric.Group([background, this.progressBar, this.progressText], {
-      selectable: false
+      selectable: false;
       evented: false
     });
     this.canvas.add(this.progressGroup);
@@ -393,7 +393,7 @@ class VectorVisualization {
       stroke: '#444444',
       strokeWidth: 1,
       opacity: 0.3,
-      selectable: false
+      selectable: false;
       evented: false
     });
     this.canvas.add(line);
@@ -497,7 +497,7 @@ export class LokiCacheManager {
         })),
         timestamp: Date.now(),
         ttl: Date.now() + 3600000 // 1 hour TTL
-      };
+      }
       // Upsert cache entry
       const existing = collection.findOne({ query_id: queryId });
       if (existing) {
@@ -551,7 +551,7 @@ export class LokiCacheManager {
         canvas_data: canvasData
         timestamp: Date.now(),
         version: Date.now() // Simple versioning
-      };
+      }
       collection.insert(stateEntry);
       // Keep only last 10 versions per canvas
       const allStates = collection.find({ canvas_id: canvasId });
@@ -628,20 +628,20 @@ export class LokiCacheManager {
    */;
   getCacheStats(): CacheStats {
     if (!this.isInitialized || !this.db) {
-      return { totalEntries: 0, collectionStats: {}, isInitialized: false };
+      return { totalEntries: 0, collectionStats: {}, isInitialized: false }
     }
     const stats: CacheStats = {
       totalEntries: 0,
       collectionStats: {},
       isInitialized: true
-    };
+    }
     this.collections.forEach((collection, name) => {
       const count = collection.count();
       stats.totalEntries += count;
       stats.collectionStats[name] = {
         count,
         size: this.estimateCollectionSize(collection)
-      };
+      }
     });
     return stats;
   }
@@ -756,7 +756,7 @@ export class RabbitMQRealtimeMessenger {
       ...progressData,
       timestamp: Date.now(),
       id: progressId
-    };
+    }
     await this.channel.publish(
       'legal-ai-realtime',
       routingKey,
@@ -810,7 +810,7 @@ export class RabbitMQRealtimeMessenger {
       ...updateData,
       canvasId,
       timestamp: Date.now()
-    };
+    }
     await this.channel.publish(
       'canvas-collaboration',
       '',
@@ -872,7 +872,7 @@ export class RabbitMQRealtimeMessenger {
       isConnected: this.isConnected,
       activeSubscriptions: this.subscriptions.size,
       messageHandlers: this.messageHandlers.size
-    };
+    }
   }
   /**
    * Cleanup RabbitMQ resources
@@ -1020,7 +1020,7 @@ export const realTimeUIMachine = createMachine({
     }),
     enableCollaborativeMode: assign((context, event) => {
       console.log('👥 Enabling collaborative mode');
-      return { ...context, collaborativeMode: true };
+      return { ...context, collaborativeMode: true }
     }),
     broadcastCanvasUpdate: (context, event: any) => {
       const { canvasId, updateData } = event;
@@ -1038,7 +1038,7 @@ export const realTimeUIMachine = createMachine({
         activeProgress: new Map(),
         vectorVisualization: null
         collaborativeMode: false
-      };
+      }
     })
   }
 });
@@ -1127,4 +1127,4 @@ export {
   RenderMetrics,
   CacheStats,
   MessengerStatus
-};
+}

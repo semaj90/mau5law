@@ -11,7 +11,7 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';
   type SearchResult = {
-    id: string
+    id: string;
     title: string;
     content: string;
     similarity: number
@@ -20,14 +20,14 @@
       caseId?: string;
       uploadDate?: string;
       tags?: string[];
-    };
-  };
+    }
+  }
   type SearchMetrics = {
     totalDocuments: number
     searchTime: number
     vectorDimensions: number
     similarityThreshold: number
-  };
+  }
   // Modern Svelte 5 runes
   let query = $state("");
   let isSearching = $state(false);
@@ -67,14 +67,14 @@
         title: `Document ${r.id}`, // API doesn't provide title, create one
         content: r.content,
         similarity: r.similarity,
-        documentType: 'deed' // Mock typ
+        documentType: 'deed' // Mock typ;
       }));
       metrics = {
         totalDocuments: (data as { results?: any }).results.length,
         searchTime: Math.round(searchTime),
         vectorDimensions: 384, // Assuming this value, as API doesn't provide it
         similarityThreshold: 0.0 // API doesn't use a threshold input
-      };
+      }
     } catch (err) {
       error = err instanceof Error ? err.message: 'Search failed';
       results = [];
@@ -84,12 +84,12 @@
     }
   }
   // Handle form submission
-  function handleSubmit(event: SubmitEvent) {
+  function handleSubmit(_event: SubmitEvent) {
     event.preventDefault();
     performSemanticSearch();
   }
   // Handle Enter key in search input
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !searchButtonDisabled) {
       performSemanticSearch();
     }
@@ -102,15 +102,15 @@
   function getDocumentTypeStyle(type: SearchResult['documentType']) {
     switch (type) {
       case 'deed':
-        return { icon: FileText, color: 'bg-blue-100 text-blue-800' };
+        return { icon: FileText, color: 'bg-blue-100 text-blue-800' }
       case 'contract':
-        return { icon: FileText, color: 'bg-green-100 text-green-800' };
+        return { icon: FileText, color: 'bg-green-100 text-green-800' }
       case 'evidence':
-        return { icon: Database, color: 'bg-orange-100 text-orange-800' };
+        return { icon: Database, color: 'bg-orange-100 text-orange-800' }
       case 'case_law':
-        return { icon: Brain, color: 'bg-purple-100 text-purple-800' };
+        return { icon: Brain, color: 'bg-purple-100 text-purple-800' }
       default:
-        return { icon: FileText, color: 'bg-gray-100 text-gray-800' };
+        return { icon: FileText, color: 'bg-gray-100 text-gray-800' }
     }
   }
   // Demo placeholder results for development
@@ -324,7 +324,7 @@
           <Button class="bits-btn"
             variant="ghost"
             onclick={() =>
-{ results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 }; }}
+{ results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 } }}
           >
             Load Demo Results
 </Button>

@@ -45,7 +45,7 @@ class HTTPClient implements ProtocolClient {
       protocol: 'http',
       service: new URL(url).host,
       latency
-    };
+    }
   }
 }
 class WebSocketClient implements ProtocolClient {
@@ -62,8 +62,8 @@ class WebSocketClient implements ProtocolClient {
           body: options.body,
           headers: options.headers
         });
-      };
-      ws.onmessage = (event: any) => {
+      }
+      ws.onmessage = (_event: any) => {
         const data = JSON.parse(event.data);
         const latency = Date.now() - startTime;
         resolve({
@@ -75,13 +75,13 @@ class WebSocketClient implements ProtocolClient {
           latency
         });
         ws.close();
-      };
+      }
       ws.onerror = () => reject(new Error('WebSocket connection failed');
-      ws.onclose = (event: any) => {
+      ws.onclose = (_event: any) => {
         if (event.code !== 1000) {
           reject(new Error(`WebSocket closed with code: ${event.code}`);
         }
-      };
+      }
       setTimeout(() => reject(new Error('WebSocket timeout')), options.timeout || 30000);
     });
   }
@@ -92,8 +92,8 @@ class QUICClient implements ProtocolClient {
     // In browser environment, fallback to HTTP
     // In Node.js, this would use a proper QUIC client
     const httpClient = new HTTPClient();
-    const response = await httpClient.request<T>(url, options);
-    return { ...response, protocol: 'quic' };
+    // removed unused response assignment
+    return { ...response, protocol: 'quic' }
   }
 }
 // gRPC Client (uses gRPC-Web for browser compatibility)
@@ -102,8 +102,8 @@ class GRPCClient implements ProtocolClient {
     // For browser environment, would use grpc-web
     // For Node.js, would use @grpc/grpc-js
     const httpClient = new HTTPClient();
-    const response = await httpClient.request<T>(url, options);
-    return { ...response, protocol: 'grpc' };
+    // removed unused response assignment
+    return { ...response, protocol: 'grpc' }
   }
 }
 export class ProductionAPIClient {
@@ -112,7 +112,7 @@ export class ProductionAPIClient {
   private quicClient = new QUICClient();
   private grpcClient = new GRPCClient();
   private requestMetrics: Map<string, number[]> = new Map();
-  async request<T = any>(options: ServiceRequest): Promise<ServiceResponse<T> {
+  async request<T = any>(_options: ServiceRequest): Promise<ServiceResponse<T> {
     const routeMapping = productionServiceRegistry.getServiceForRoute(options.route);
     if (!routeMapping) {
       throw new Error(`No service mapping found for route: ${options.route}`);
@@ -120,7 +120,7 @@ export class ProductionAPIClient {
     const { primary, fallbacks, protocol } = routeMapping;
     // Try primary service first
     try {
-      const response = await this.executeRequest<T>(primary, protocol.protocol as any, options);
+      // removed unused response assignment
       this.recordMetrics(options.route, response.latency);
       return response;
     } catch (primaryError) {
@@ -128,7 +128,7 @@ export class ProductionAPIClient {
       // Try fallback services
       for (const fallbackService of fallbacks) {
         try {
-          const response = await this.executeRequest<T>(fallbackService, 'http', options);
+          // removed unused response assignment
           this.recordMetrics(options.route, response.latency);
           return response;
         } catch (fallbackError) {
@@ -178,7 +178,7 @@ export class ProductionAPIClient {
   } {
     const metrics = this.requestMetrics.get(route) || [];
     if (metrics.length === 0) {
-      return { count: 0, avgLatency: 0, p95Latency: 0, minLatency: 0, maxLatency: 0 };
+      return { count: 0, avgLatency: 0, p95Latency: 0, minLatency: 0, maxLatency: 0 }
     }
     const sorted = [...metrics].sort((a, b) => a - b);
     const p95Index = Math.floor(sorted.length * 0.95);
@@ -188,11 +188,11 @@ export class ProductionAPIClient {
       p95Latency: sorted[p95Index] || 0
       minLatency: sorted[0] || 0
       maxLatency: sorted[sorted.length - 1] || 0
-    };
+    }
   }
   async getClusterStatus(this: ProductionAPIClient): Promise<{,
     health: any;
-    metrics: { [key: string]: any };
+    metrics: { [key: string]: any }
     activeRoutes: string[];
   }> {
     const health = await productionServiceRegistry.getClusterHealth();
@@ -200,7 +200,7 @@ export class ProductionAPIClient {
     const metrics = Object.fromEntries(
       activeRoutes.map(route => [route, this.getRouteMetrics(route)])
     );
-    return { health, metrics, activeRoutes };
+    return { health, metrics, activeRoutes }
   }
 }
 // Convenience methods for specific service categories
@@ -273,7 +273,7 @@ export class ClusterAPIClient {
 }
 export class XStateAPIClient {
   constructor(private client: ProductionAPIClient) {}
-  async sendEvent(event: any): Promise<ServiceResponse> {
+  async sendEvent(_event: any): Promise<ServiceResponse> {
     return this.client.request({
       route: '/api/v1/xstate/events',
       method: 'POST',

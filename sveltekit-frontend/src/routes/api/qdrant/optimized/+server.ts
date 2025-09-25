@@ -4,7 +4,7 @@ import { redisRateLimit, createRateLimitConfig } from "$lib/server/redisRateLimi
 import logger from '$lib/server/production-logger'
 import { dev } from '$app/environment'
 import type { RequestHandler } from './$types.js'
-import { URL } from 'url'
+
 /*
  * Optimized Qdrant API Endpoints
  * Memory-efficient vector operations with cache-like logging system

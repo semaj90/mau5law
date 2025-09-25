@@ -1,7 +1,7 @@
-import { db } from '$lib/server/db'
-import { evidence } from '$lib/server/db/schema-postgres-enhanced'
-import { desc } from 'drizzle-orm'
-import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/db';
+import { evidence } from '$lib/server/db/schema-postgres-enhanced';
+import { desc } from 'drizzle-orm';
+import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     const rows = await db.select().from(evidence).orderBy(desc(evidence.createdAt)).limit(500);

@@ -81,7 +81,7 @@ export class MCPGraphReader {
         weight: 8,
         metadata: { relationship: "case_owner" }
       });
-    return { nodes, relations };
+    return { nodes, relations }
   }
   /**
    * Read evidence nodes with proper query patterns
@@ -161,7 +161,7 @@ export class MCPGraphReader {
           metadata: { relationship: "evidence_owner" }
         }))
     ];
-    return { nodes, relations };
+    return { nodes, relations }
   }
   /**
    * Read report nodes with proper query patterns
@@ -239,7 +239,7 @@ export class MCPGraphReader {
           metadata: { relationship: "report_generator" }
         }))
     ];
-    return { nodes, relations };
+    return { nodes, relations }
   }
   /**
    * Main read graph method
@@ -272,7 +272,7 @@ export class MCPGraphReader {
           queryTime: Date.now() - startTime,
           mcpSource: "drizzle-postgres-graph-reader"
         }
-      };
+      }
     } catch (error: any) {
       console.error("Graph reading error:", error);
       throw new Error(

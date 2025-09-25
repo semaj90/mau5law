@@ -106,8 +106,8 @@ export class LegalPerformanceMonitor {
   private metrics: PerformanceSnapshot[] = [];
   private startTime: number = Date.now();
   private queryCount: number = 0;
-  private cacheHits: Record<string, number> = {};
-  private cacheMisses: Record<string, number> = {};
+  private cacheHits: Record<string, number> = {}
+  private cacheMisses: Record<string, number> = {}
   constructor() {
     this.initializeMonitoring();
   }
@@ -141,7 +141,7 @@ export class LegalPerformanceMonitor {
       const misses = this.cacheMisses[layer] || 0;
       const total = hits + misses;
       return total > 0 ? hits / total : 0;
-    };
+    }
     const l1 = calculateRate('L1_GPU');
     const l2 = calculateRate('L2_Memory');
     const l3 = calculateRate('L3_Redis');
@@ -153,7 +153,7 @@ export class LegalPerformanceMonitor {
       L3_Redis: l3
       L4_Database: 1 - l4, // Convert miss rate to hit rate
       overall
-    };
+    }
   }
   // Get system resource usage
   private async getResourceMetrics(): Promise<ResourceMetrics> {
@@ -166,7 +166,7 @@ export class LegalPerformanceMonitor {
       postgres_cache_size: await this.getPostgresCacheSize(),
       cpu_usage: await this.getCPUUsage(),
       gpu_utilization: await this.getGPUUtilization()
-    };
+    }
   }
   // Simulate GPU memory usage (RTX 3060 Ti has 8GB VRAM)
   private async getGPUMemoryUsage(): Promise<number> {
@@ -229,7 +229,7 @@ export class LegalPerformanceMonitor {
         average_batch_size: 4 + Math.random() * 4
       },
       system_health: this.determineSystemHealth()
-    };
+    }
     this.metrics.push(snapshot);
     // Update stores
     performanceMetrics.update(metrics => {
@@ -311,14 +311,14 @@ export class LegalPerformanceMonitor {
     const total = totalHits + totalMisses;
     return {
       hits: totalHits
-      misses: totalMisses
+      misses: totalMisses;
       efficiency: total > 0 ? totalHits / total : 0
-    };
+    }
   }
   reset() {
     this.queryCount = 0;
-    this.cacheHits = {};
-    this.cacheMisses = {};
+    this.cacheHits = {}
+    this.cacheMisses = {}
     this.metrics = [];
     this.startTime = Date.now();
     performanceMetrics.set([]);
@@ -349,7 +349,7 @@ export const legalConfidence = derived(
   $metrics => $metrics?.legal_processing.legal_confidence_score || 0
 );
 // Helper function to format metrics for display
-export function formatMetric(value: number, type: 'percentage' | 'milliseconds' | 'megabytes' | 'count'): string {
+export function formatMetric(_value: number, type: 'percentage' | 'milliseconds' | 'megabytes' | 'count'): string {
   switch (type) {
     case 'percentage':
       return `${(value * 100).toFixed(1)}%`;

@@ -73,8 +73,8 @@
       header: 'bg-green-400/5 border-b-2 border-green-400/30',
       button: 'hover:bg-green-400/15 text-green-400 border border-green-400/30';
     }
-  };
-  function startDrag(event: MouseEvent) {
+  }
+  function startDrag(_event: MouseEvent) {
     if (isMinimized) return;
     isDragging = true;
     dragStart = {
@@ -82,26 +82,26 @@
       y: event.clientY,
       modalX: position.x,
       modalY: position.y;
-    };
+    }
     document.addEventListener('mousemove', handleDrag);
     document.addEventListener('mouseup', stopDrag);
     event.preventDefault();
   }
-  function handleDrag(event: MouseEvent) {
+  function handleDrag(_event: MouseEvent) {
     if (!isDragging) return;
     const deltaX = event.clientX - dragStart.x;
     const deltaY = event.clientY - dragStart.y;
     position = {
       x: Math.max(0, Math.min(window.innerWidth - dimensions.width, dragStart.modalX + deltaX)),
       y: Math.max(0, Math.min(window.innerHeight - 60, dragStart.modalY + deltaY));
-    };
+    }
   }
   function stopDrag() {
     isDragging = false;
     document.removeEventListener('mousemove', handleDrag);
     document.removeEventListener('mouseup', stopDrag);
   }
-  function startResize(event: MouseEvent, direction: string) {
+  function startResize(_event: MouseEvent, direction: string) {
     if (isMinimized) return;
     isResizing = true;
     resizeDirection = directio;
@@ -110,13 +110,13 @@
       y: event.clientY,
       width: dimensions.width,
       height: dimensions.height;
-    };
+    }
     document.addEventListener('mousemove', handleResize);
     document.addEventListener('mouseup', stopResize);
     event.preventDefault();
     event.stopPropagation();
   }
-  function handleResize(event: MouseEvent) {
+  function handleResize(_event: MouseEvent) {
     if (!isResizing) return;
     const deltaX = event.clientX - resizeStart.x;
     const deltaY = event.clientY - resizeStart.y;
@@ -138,8 +138,8 @@
       newHeight = Math.max(minHeight, Math.min(maxHeight, resizeStart.height - deltaY));
       newY = position.y + (dimensions.height - newHeight);
     }
-    dimensions = { width: newWidth, height: newHeight };
-    position = { x: newX, y: newY };
+    dimensions = { width: newWidth, height: newHeight }
+    position = { x: newX, y: newY }
   }
   function stopResize() {
     isResizing = false;
@@ -162,8 +162,8 @@
         position = {
           x: Math.max(0, Math.min(window.innerWidth - dimensions.width, position.x)),
           y: Math.max(0, Math.min(window.innerHeight - 60, position.y));
-        };
-      };
+        }
+      }
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }
@@ -186,17 +186,17 @@
       ${isMinimized ? 'h-12' : ''}
       ${theme === 'yorha' ? 'font-mono' : ''}
     `}
-    style="
+    style=";
       left: {position.x}px;
       top: {position.y}px;
       width: {dimensions.width}px;
-      height: {isMinimized ? '48px' : dimensions.height + 'px'};
-      z-index: {zIndex};
+      height: {isMinimized ? '48px' : dimensions.height + 'px'}
+      z-index: {zIndex}
     "
     transition:scale={{ duration: 200, easing: quintOut }}
   >
     <!-- Header -->
-    <div
+    <div;
       bind:this={headerElement}
       class={`
         h-12 flex items-center justify-between px-4 border-b cursor-grab select-none
@@ -312,16 +312,15 @@
     {/if}
   </div>
 {/if}
-<style>
-  /* Prevent text selection during drag */
-  .cursor-grabbing,
+<style>/* Prevent text selection during drag */ {}
+.cursor-grabbing, {}
   .cursor-grabbing * {
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
   }
-  /* YoRHa theme enhancements */
+/* YoRHa theme enhancements */ {}
   :global(.yorha-modal) {
     animation: yorha-pulse 3s ease-in-out infinite alternate;
   }

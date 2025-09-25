@@ -39,7 +39,7 @@ export function parseMinioUrl(minioUrl: string): { bucket: string; key: string }
     throw new Error(`Invalid MinIO URL format: ${minioUrl}. Expected: minio://bucket/key`)
   }
   const [, bucket, key] = match;
-  return { bucket, key };
+  return { bucket, key }
 }
 /**
  * Fetch object from MinIO using minio:// URL
@@ -60,7 +60,7 @@ export async function fetchMinioObject(minioUrl: string) {
       size: (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).ContentLength,
       lastModified: (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).LastModified,
       etag: (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).ETag
-    };
+    }
   } catch (error) {
     throw new Error(`Failed to fetch ${minioUrl}: ${error}`);
   }
@@ -101,11 +101,11 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
     const batchPromises = batch.map(async (url) => {
       try {
         const data = await fetchMinioObject(url);
-        return { url, success: true, data };
+        return { url, success: true, data }
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message: String(error);
         if (failFast) throw error;
-        return { url, success: false, error: errorMsg };
+        return { url, success: false, error: errorMsg }
       }
     });
     const batchResults = await Promise.allSettled(batchPromises);
@@ -115,7 +115,7 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
       } else {
         results.push({
           url: 'unknown',
-          success: false
+          success: false;
           error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error'
         });
       }
@@ -169,7 +169,7 @@ export function detectContentType(buffer: Buffer, filename?: string): string {
       'mp3': 'audio/mpeg', 'wav': 'audio/wav', 'flac': 'audio/flac', 'm4a': 'audio/mp4',
       'mp4': 'video/mp4', 'avi': 'video/avi', 'webm': 'video/webm', 'mov': 'video/quicktime',
       'json': 'application/json', 'txt': 'text/plain', 'md': 'text/markdown'
-    };
+    }
     if (ext && extensionMap[ext]) {
       return extensionMap[ext];
     }
@@ -192,33 +192,33 @@ export function validateContentForIngestion(contentType: string, size: number): 
   if (contentType.startsWith('text/') || contentType === 'application/json') {
     const type = contentType === 'application/json' ? 'json' : 'text';
     if (size > MAX_TEXT_SIZE) {
-      return { valid: false, reason: `Text/JSON file too large: ${size} bytes`, type };
+      return { valid: false, reason: `Text/JSON file too large: ${size} bytes`, type }
     }
-    return { valid: true, type };
+    return { valid: true, type }
   }
   if (contentType.startsWith('image/')) {
     if (size > MAX_IMAGE_SIZE) {
-      return { valid: false, reason: `Image file too large: ${size} bytes`, type: 'image' };
+      return { valid: false, reason: `Image file too large: ${size} bytes`, type: 'image' }
     }
-    return { valid: true, type: 'image' };
+    return { valid: true, type: 'image' }
   }
   if (contentType.startsWith('audio/')) {
     if (size > MAX_AUDIO_SIZE) {
-      return { valid: false, reason: `Audio file too large: ${size} bytes`, type: 'audio' };
+      return { valid: false, reason: `Audio file too large: ${size} bytes`, type: 'audio' }
     }
-    return { valid: true, type: 'audio' };
+    return { valid: true, type: 'audio' }
   }
   if (contentType.startsWith('video/')) {
     if (size > MAX_VIDEO_SIZE) {
-      return { valid: false, reason: `Video file too large: ${size} bytes`, type: 'video' };
+      return { valid: false, reason: `Video file too large: ${size} bytes`, type: 'video' }
     }
-    return { valid: true, type: 'video' };
+    return { valid: true, type: 'video' }
   }
   if (contentType === 'application/pdf') {
     if (size > MAX_IMAGE_SIZE) { // Treat PDFs like images for OCR
-      return { valid: false, reason: `PDF file too large: ${size} bytes`, type: 'image' };
+      return { valid: false, reason: `PDF file too large: ${size} bytes`, type: 'image' }
     }
-    return { valid: true, type: 'image' };
+    return { valid: true, type: 'image' }
   }
-  return { valid: false, reason: `Unsupported content type: ${contentType}`, type: 'other' };
+  return { valid: false, reason: `Unsupported content type: ${contentType}`, type: 'other' }
 }

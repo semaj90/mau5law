@@ -6,34 +6,48 @@
   import Navigation from '$lib/components/Navigation.svelte';
   const { children } = $props();
   // Simplified state management for compatibility
-  let theme = $state<'dark' | 'light' >('dark');
+  let theme = $state<'dark' | 'light'>('dark');
   let sidebarOpen = $state(false);
   // App context for global state
   setContext('app', {
-  get theme() { return theme; },
-  set theme(value) { theme = value; },
-  get sidebarOpen() { return sidebarOpen; },
-  set sidebarOpen(value) { sidebarOpen = value; },
-  toggleSidebar: () => { sidebarOpen = !sidebarOpen; },
-  toggleTheme: () => { theme = theme === 'dark' ? 'light' : 'dark'; }
+    get theme() {
+      return theme;
+    },
+    set theme(value) {
+      theme = value;
+    },
+    get sidebarOpen() {
+      return sidebarOpen;
+    },
+    set sidebarOpen(value) {
+      sidebarOpen = value;
+    },
+    toggleSidebar: () => {
+      sidebarOpen = !sidebarOpen;
+    },
+    toggleTheme: () => {
+      theme = theme === 'dark' ? 'light' : 'dark';
+    },
   });
   $effect(() => {
-  // Modern YoRHa UI initialization
-  console.log('Modern Dark YoRHa Legal AI Interface initialized');
-  // Set theme on document
-  document.documentElement.setAttribute('data-theme', theme);
+    // Modern YoRHa UI initialization
+    console.log('Modern Dark YoRHa Legal AI Interface initialized');
+    // Set theme on document
+    document.documentElement.setAttribute('data-theme', theme);
   });
   // Reactive theme updates - temporarily simplified
   // $effect(() => {
   //   document.documentElement.setAttribute('data-theme', theme)
   // })
 </script>
+
 <div class="app-layout golden-grid-holy-grail yorha-bg-primary">
   <header class="app-header" style="grid-area: header;">
-    <Navigation bind:sidebarOpen={sidebarOpen} />
+    <Navigation bind:sidebarOpen />
   </header>
   <aside
-    class="app-sidebar transition-transform duration-300";
+    class="app-sidebar transition-transform duration-300"
+    ;
     class:sidebar-hidden={!sidebarOpen}
     style="grid-area: sidebar;"
   >
@@ -49,7 +63,7 @@
   </aside>
   <main class="app-main" style="grid-area: main;">
     <div class="container p-golden-xl">
-  {@render children?.()}
+      {@render children?.()}
     </div>
   </main>
   <footer class="app-footer" style="grid-area: footer;">
@@ -62,6 +76,7 @@
     </div>
   </footer>
 </div>
+
 <style>
   .app-layout {
     min-height: 100vh;
@@ -91,9 +106,9 @@
   }
   @media (max-width: 768px) {
     .app-layout {
-grid-template-areas:
-"header"
-"main"
+grid-template-areas: {}
+"header" {}
+"main" {}
         "footer";
       grid-template-columns: 1fr;
     }

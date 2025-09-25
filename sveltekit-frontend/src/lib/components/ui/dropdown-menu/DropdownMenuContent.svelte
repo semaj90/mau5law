@@ -38,6 +38,7 @@
     className
   ));
 </script>
+
 <DropdownMenu.Content
   class={contentClasses}
   {side}
@@ -53,3 +54,4 @@
 >
   {@render children?.()}
 </DropdownMenu.Content>
+;

@@ -11,6 +11,6 @@ export type AIComponentProps = {
   provider?: 'ollama' | 'openai' | 'anthropic';
   temperature?: number;
   maxTokens?: number;
-};
+}
 export const AI_PROVIDERS = ['ollama', 'openai', 'anthropic'] as const;
-export type AIProvider = typeof AI_PROVIDERS[number];
+export type AIProvider = (typeof AI_PROVIDERS)[number];

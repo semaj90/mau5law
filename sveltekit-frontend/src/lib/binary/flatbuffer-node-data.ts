@@ -49,7 +49,7 @@ export interface FlatBufferNode {
   readonly flags: number;
   readonly confidence: number;
   readonly riskCode: number;
-  readonly position: { x: number; y: number; z: number };
+  readonly position: { x: number; y: number; z: number }
   readonly embedding: Float32Array | null;
   readonly metadata: ArrayBuffer | null;
 }
@@ -71,7 +71,7 @@ export class FlatBufferNodeSerializer {
     totalNodes: 0,
     cacheHits: 0,
     cacheMisses: 0
-  };
+  }
   // Binary data cache with LRU eviction
   private static binaryCache = new Map<string, ArrayBuffer>();
   private static cacheAccessTime = new Map<string, number>();
@@ -217,7 +217,7 @@ export class FlatBufferNodeSerializer {
           x: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_X, true),
           y: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Y, true),
           z: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Z, true)
-        };
+        }
         offset += FLATBUFFER_SCHEMA.NODE.TOTAL_SIZE;
         // Read embedding (zero-copy when possible)
         let embedding: Float32Array | null = null;
@@ -260,7 +260,7 @@ export class FlatBufferNodeSerializer {
         checksum,
         nodes,
         totalSize: buffer.byteLength
-      };
+      }
     } catch (error: any) {
       console.error('❌ FlatBuffer deserialization failed:', error);
       throw error;
@@ -308,14 +308,14 @@ export class FlatBufferNodeSerializer {
       metadata,
       priority: priorities
       bankId: bankIds
-    };
+    }
   }
   // Cache management
   private static generateCacheKey(nodes: any[]): string {
     const ids = nodes.map(n => n.id).sort();
     return `nodes_${ids.length}_${ids[0] || 0}_${ids[ids.length - 1] || 0}`;
   }
-  private static addToCache(key: string, buffer: ArrayBuffer): void {
+  private static addToCache(_key: string, buffer: ArrayBuffer): void {
     // LRU eviction
     if (this.binaryCache.size >= this.MAX_CACHE_SIZE) {
       const oldestKey = Array.from(this.cacheAccessTime.entries()
@@ -326,7 +326,7 @@ export class FlatBufferNodeSerializer {
     this.binaryCache.set(key, buffer);
     this.cacheAccessTime.set(key, Date.now();
   }
-  static getFromCache(key: string): ArrayBuffer | null {
+  static getFromCache(_key: string): ArrayBuffer | null {
     const buffer = this.binaryCache.get(key);
     if (buffer) {
       this.cacheAccessTime.set(key, Date.now();
@@ -338,11 +338,11 @@ export class FlatBufferNodeSerializer {
   }
   // Utility methods
   private static encodeDocumentType(type: string): number {
-    const types = { contract: 1, evidence: 2, brief: 3, citation: 4, precedent: 5 };
+    const types = { contract: 1, evidence: 2, brief: 3, citation: 4, precedent: 5 }
     return (types as any)[type] || 0;
   }
   private static encodeRiskLevel(level: string): number {
-    const levels = { low: 1, medium: 2, high: 3, critical: 4 };
+    const levels = { low: 1, medium: 2, high: 3, critical: 4 }
     return (levels as any)[level] || 1;
   }
   private static calculateChecksum(data: Uint8Array): number {
@@ -363,7 +363,7 @@ export class FlatBufferNodeSerializer {
       cacheHitRate: isNaN(cacheHitRate) ? 0 : cacheHitRate
       avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes: 0,
       avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0
-    };
+    }
   }
   /**
    * Clear cache and reset metrics
@@ -378,7 +378,7 @@ export class FlatBufferNodeSerializer {
       totalNodes: 0,
       cacheHits: 0,
       cacheMisses: 0
-    };
+    }
   }
 }
-export { FLATBUFFER_SCHEMA };
+export { FLATBUFFER_SCHEMA }

@@ -30,14 +30,14 @@ export class WASMLLMService {
 		totalProcessingTime: 0,
 		averageTokensPerSecond: 0,
 		modelLoadTime: 0
-	};
+	}
 	// Legal-specific tokenizer patterns
 	private legalTokenPatterns = {
 		citations: /\b\d+\s+[A-Z][a-zA-Z\s]+\d+\b/g,
 		statutes: /\b\d+\s+U\.S\.C\.\s+§\s*\d+/g,
 		cases: /\b[A-Z][a-zA-Z\s]+v\.\s+[A-Z][a-zA-Z\s]+/g,
 		jurisdictions: /\b(federal|state|appellate|supreme|district)\s+court\b/gi
-	};
+	}
 	async initialize(): Promise<boolean> {
 		if (this.isInitialized) return true;
 		try {
@@ -73,7 +73,7 @@ export class WASMLLMService {
 			// Instantiate the WASM module with memory and table
 			const wasmModule = await WebAssembly.instantiate(wasmBinary, {
 				env: {
-					memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }), // 16MB - 32MB
+					memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }), // 16MB - 32MB;
 					abort: (msg: number, file: number, line: number, column: number) => {
 						console.error('WASM abort:', msg, file, line, column);
 					},
@@ -138,7 +138,7 @@ export class WASMLLMService {
 			stringToUTF8: (str: string, ptr: number, maxBytes: number) => {
 				this.writeStringToMemory(memory, str, ptr);
 			}
-		};
+		}
 	}
 	async loadModel(config: WASMLLMConfig): Promise<boolean> {
 		if (!this.isInitialized || !this.wasmModule) {
@@ -177,7 +177,7 @@ export class WASMLLMService {
 			throw new Error('Model not loaded');
 		}
 		const startTime = performance.now();
-		const config = { ...this.currentConfig, ...options };
+		const config = { ...this.currentConfig, ...options }
 		try {
 			// Preprocess legal prompt
 			const processedPrompt = this.preprocessLegalPrompt(prompt);
@@ -222,7 +222,7 @@ export class WASMLLMService {
 					totalTokens,
 					...legalMetadata
 				}
-			};
+			}
 			console.log(`✅ Generated ${totalTokens} tokens in ${processingTime.toFixed(2)}ms`);
 			return response;
 		} catch (error: any) {
@@ -260,7 +260,7 @@ export class WASMLLMService {
 			statuteReferences: (text.match(this.legalTokenPatterns.statutes) || []).length,
 			caseReferences: (text.match(this.legalTokenPatterns.cases) || []).length,
 			jurisdictionMentions: (text.match(this.legalTokenPatterns.jurisdictions) || []).length
-		};
+		}
 	}
 	private calculateConfidence(text: string, metadata: any): number {
 		// Simple confidence calculation based on legal content density
@@ -333,7 +333,7 @@ export class WASMLLMService {
 			modelsLoaded: this.modelCache.size,
 			modelLoaded: this.modelLoaded,
 			isInitialized: this.isInitialized
-		};
+		}
 	}
 	dispose(): void {
 		if (this.wasmModule) {

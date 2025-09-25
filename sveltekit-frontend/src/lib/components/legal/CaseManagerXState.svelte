@@ -55,16 +55,16 @@ https://svelte.dev/e/js_parse_error -->
     send({
       type: 'UPDATE_CASE_FORM',
       data: {
-        title: newCaseTitle
+        title: newCaseTitle;
         description: newCaseDescription
-        caseNumber: newCaseNumber
+        caseNumber: newCaseNumber;
         status: 'active';
       }
     });
     send({ type: 'CREATE_CASE', caseData: {
-      title: newCaseTitle
+      title: newCaseTitle;
       description: newCaseDescription
-      caseNumber: newCaseNumber
+      caseNumber: newCaseNumber;
       status: 'active';
     }});
     // Clear form
@@ -100,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
   let fileInput = $state<HTMLInputElement;
   function triggerFileUpload() {
     fileInput?.click()}
-  function onFileChange(event: Event) {
+  function onFileChange(_event: Event) {
     const target  | null>(null); const data = event.target as HTMLInputElement);
     if (target.files) {
       handleAddEvidence(target.files);
@@ -185,7 +185,7 @@ Create Case
               <p class="text-sm text-gray-500">Case #{currentCase.caseNumber}</p>
             </div>
             <div class="flex items-center gap-2">
-              <select
+              <select;
                 bind:value={workflowStage} onchange={(e) => handleWorkflowStageChange(e.target.value)}
                 class="px-3 py-1 border border-gray-300 rounded-md text-sm"
               >

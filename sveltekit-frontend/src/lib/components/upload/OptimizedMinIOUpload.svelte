@@ -99,7 +99,7 @@
       type: f.file.type,
       status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,
       attempts: f.attempts || 0,
-      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null
+      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null;
     }));
     if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) { /* ignore */ } return; }
     try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })); } catch(e) { /* ignore */ }
@@ -108,7 +108,7 @@
     if (!enablePersistence) return;
     try { const raw = sessionStorage.getItem(STORAGE_KEY); if (!raw) return; const data = JSON.parse(raw); if (!data?.files) return; const restored: FileState[] = []; for (const m of data.files) { const ph = new File([], m.name, { type: m.type || 'application/octet-stream' }); restored.push({ file: ph, placeholder: true, originalSize: m.size, status: 'pending', progress: 0, attempts: m.attempts || 0, nextRetryAt: m.nextRetryAt || null }); } if (restored.length) { fileStates = [...fileStates, ...restored]; files = [...files, ...restored.map(r=>r.file)]; liveMessage = `Restored ${restored.length} pending file(s)`; if (enableToastNotifications) toastService.info('Session Restored', `Recovered ${restored.length} pending file(s). Re-select originals to resume.`, { duration: 6000 }); ensureRetryTicker(); } } catch(e) { /* ignore */ }
   }
-  function matchPlaceholders(incoming: File[]) { for (const f of incoming) { const idx = fileStates.findIndex(ps => ps.placeholder && ps.file.name === f.name && ps.originalSize === f.size); if (idx !== -1) { const prev = fileStates[idx]; fileStates[idx] = { ...prev, file: f, placeholder: false }; } } }
+  function matchPlaceholders(incoming: File[]) { for (const f of incoming) { const idx = fileStates.findIndex(ps => ps.placeholder && ps.file.name === f.name && ps.originalSize === f.size); if (idx !== -1) { const prev = fileStates[idx]; fileStates[idx] = { ...prev, file: f, placeholder: false } } } }
   function isRetryable(message: string, statusCode?: number): boolean {
     const transientPatterns = [/network/i, /timeout/i, /temporar/i, /rate limit/i, /ECONNRESET/i];
     if (statusCode && (statusCode >= 500 || statusCode === 429)) return true;
@@ -167,7 +167,7 @@
       }
       if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch(e) { /* ignore */ } fs.retryTimeoutId = null; }
       if (['uploading','pending','processing'].includes(fs.status)) {
-        return { ...fs, status: 'canceled', progress: fs.status === 'uploading' ? fs.progress: 0, controller: null };
+        return { ...fs, status: 'canceled', progress: fs.status === 'uploading' ? fs.progress: 0, controller: null }
       }
       return f;
     });
@@ -181,25 +181,25 @@
   telemetry.emit('upload_batch_canceled_all', { remaining: fileStates.length });
   }
   // Drag and drop handlers
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     if (disabled || uploading) return;
   dragOver = true;
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     if (disabled || uploading) return;
     dragOver = false;
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     if (disabled || uploading) return;
     dragOver = false;
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     processFiles(droppedFiles);
   }
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     const selectedFiles = Array.from(target.files || []);
     processFiles(selectedFiles);
   }
@@ -231,16 +231,16 @@
   fileStates = fileStates.filter(fs => files.includes(fs.file));
   serializeSession();
   }
-  function removeFile(index: number) {
+  function removeFile(_index: number) {
     if (uploading) return; // prevent removal mid-batch
-    const target = fileStates[index];
+    // removed unused target assignment
     if (target && target.status === 'uploading') return; // active upload
   if (target?.retryTimeoutId) { try { clearTimeout(target.retryTimeoutId); } catch(e) { /* ignore */ } }
     files = files.filter((_, i) => i !== index);
     fileStates = fileStates.filter((_, i) => i !== index);
   serializeSession();
   }
-  function cancelUpload(index: number) {
+  function cancelUpload(_index: number) {
     const fs = fileStates[index];
     if (!fs || fs.status !== 'uploading') return;
     try { fs.controller?.abort(); } catch(e) { /* ignore */ } if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch(e) { /* ignore */ } fs.retryTimeoutId = null; }
@@ -252,7 +252,7 @@
   serializeSession();
   telemetry.emit('upload_canceled', { file: fs.file.name });
   }
-  function retryFile(index: number) {
+  function retryFile(_index: number) {
     const fs = fileStates[index];
     if (!fs || (fs.status !== 'error' && fs.status !== 'canceled')) return;
     fs.status = 'pending';
@@ -317,7 +317,7 @@
           averageUploadTime: 0,
           totalUploadTime: 0,
           gpuTasksSubmitted: 0
-        };
+        }
       }, 2500);
     }
   }
@@ -382,7 +382,7 @@
     telemetry.emit('upload_batch_complete', {
       completed: fileStates.filter(fs => fs.status === 'completed').length,
       failed: fileStates.filter(fs => fs.status === 'error').length,
-      canceled: fileStates.filter(fs => fs.status === 'canceled').length
+      canceled: fileStates.filter(fs => fs.status === 'canceled').length;
     });
   }
   /**
@@ -457,7 +457,7 @@
         if (e.lengthComputable) {
           fs.progress = Math.min(90, Math.round((e.loaded / e.total) * 90));
         }
-      };
+      }
       const abortHandler = () => xhr.abort();
       controller.signal.addEventListener('abort', abortHandler);
       const resultPromise = new Promise<UploadResult[]>((resolve, reject) => {
@@ -474,7 +474,7 @@
               reject(Object.assign(new Error(xhr.responseText || 'Upload failed'), { statusCode: xhr.status }));
             }
           }
-        };
+        }
         xhr.onerror = () => reject(new Error('Network error'));
         xhr.onabort = () => reject(new Error('Upload aborted'));
       });
@@ -668,16 +668,25 @@ restoreSession();
     queueMicrotask(serializeSession);
   });
 </script>
+
 <!-- MinIO Upload Zone -->
 <div class="upload-container">
   <!-- Hidden file input -->
-  <input bind:this={fileInput} type="file" {accept} {multiple} disabled={disabled || uploading} onchange={handleFileSelect} style="display:none" />
+  <input
+    bind:this={fileInput}
+    type="file"
+    {accept}
+    {multiple}
+    disabled={disabled || uploading}
+    onchange={handleFileSelect}
+    style="display:none"
+  />
   <!-- Drag and Drop Zone -->
   <div
     class="drop-zone"
     class:drag-over={dragOver}
     class:has-files={files.length > 0}
-    class:uploading={uploading}
+    class:uploading
     role="button"
     aria-disabled={disabled || uploading}
     tabindex="0"
@@ -685,9 +694,9 @@ restoreSession();
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     onclick={openFileDialog}
-    onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
+    onkeydown={e => e.key === 'Enter' && openFileDialog()}
   >
-  {#if fileStates.length === 0}
+    {#if fileStates.length === 0}
       <div class="upload-prompt">
         <div class="upload-icon">
           {#if dragOver}
@@ -719,28 +728,72 @@ restoreSession();
               <div class="file-name">{fs.file.name}</div>
               <div class="file-size">{formatFileSize(fs.file.size)}</div>
               <div class="file-status text-xs">
-                {#if fs.status === 'pending'}Pending{#if fs.attempts && fs.attempts>1} • retry {fs.attempts - 1}{/if}{/if}
+                {#if fs.status === 'pending'}Pending{#if fs.attempts && fs.attempts > 1}
+                    • retry {fs.attempts - 1}{/if}{/if}
                 {#if fs.status === 'uploading'}Uploading {fs.progress}% (attempt {fs.attempts}){/if}
                 {#if fs.status === 'processing'}Processing...{/if}
                 {#if fs.status === 'completed'}✅ Completed (attempts {fs.attempts}){/if}
                 {#if fs.status === 'error'}❌ Failed (attempts {fs.attempts}) • {fs.error}{/if}
                 {#if fs.status === 'canceled'}⚠️ Canceled{/if}
                 {#if fs.status === 'pending' && fs.nextRetryAt}
-                  <span class="retry-countdown">Retrying in {Math.max(0, Math.round((fs.nextRetryAt - Date.now())/1000))}s</span>
+                  <span class="retry-countdown"
+                    >Retrying in {Math.max(0, Math.round((fs.nextRetryAt - Date.now()) / 1000))}s</span
+                  >
                 {/if}
               </div>
               {#if fs.status !== 'pending' && fs.status !== 'completed' && fs.status !== 'error' && fs.status !== 'canceled'}
-                <Progress value={fs.progress} max={100} class="mini-progress-bar w-full h-2 bg-gray-200 rounded-full overflow-hidden" />
+                <Progress
+                  value={fs.progress}
+                  max={100}
+                  class="mini-progress-bar w-full h-2 bg-gray-200 rounded-full overflow-hidden"
+                />
               {/if}
             </div>
             <div class="file-actions">
               {#if fs.status === 'pending' && !uploading}
-                <button type="button" class="action-btn" title="Remove" onclick={(e) => { e.stopPropagation(); removeFile(index); }} aria-label="Remove file">✕</button>
+                <button
+                  type="button"
+                  class="action-btn"
+                  title="Remove"
+                  onclick={e => {
+                    e.stopPropagation();
+                    removeFile(index);
+                  }}
+                  aria-label="Remove file">✕</button
+                >
               {:else if fs.status === 'uploading'}
-                <button type="button" class="action-btn" title="Cancel" onclick={(e) => { e.stopPropagation(); cancelUpload(index); }} aria-label="Cancel upload">⏹</button>
+                <button
+                  type="button"
+                  class="action-btn"
+                  title="Cancel"
+                  onclick={e => {
+                    e.stopPropagation();
+                    cancelUpload(index);
+                  }}
+                  aria-label="Cancel upload">⏹</button
+                >
               {:else if fs.status === 'error' || fs.status === 'canceled'}
-                <button type="button" class="action-btn" title="Retry" onclick={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(); }} aria-label="Retry upload">⟳</button>
-                <button type="button" class="action-btn" title="Remove" onclick={(e) => { e.stopPropagation(); removeFile(index); }} aria-label="Remove file">✕</button>
+                <button
+                  type="button"
+                  class="action-btn"
+                  title="Retry"
+                  onclick={e => {
+                    e.stopPropagation();
+                    retryFile(index);
+                    uploadFiles();
+                  }}
+                  aria-label="Retry upload">⟳</button
+                >
+                <button
+                  type="button"
+                  class="action-btn"
+                  title="Remove"
+                  onclick={e => {
+                    e.stopPropagation();
+                    removeFile(index);
+                  }}
+                  aria-label="Remove file">✕</button
+                >
               {/if}
             </div>
           </div>
@@ -751,7 +804,11 @@ restoreSession();
   <!-- Upload Progress -->
   {#if uploadStatus !== 'idle'}
     <div class="upload-progress">
-      <Progress value={uploadProgress} max={100} class="progress-bar w-full h-4 bg-gray-200 rounded-full overflow-hidden" />
+      <Progress
+        value={uploadProgress}
+        max={100}
+        class="progress-bar w-full h-4 bg-gray-200 rounded-full overflow-hidden"
+      />
       <div class="progress-text">
         {#if uploadStatus === 'uploading'}
           <Loader2 class="w-4 h-4 animate-spin" />
@@ -810,7 +867,10 @@ restoreSession();
     <button
       type="button"
       class="upload-button"
-      disabled={fileStates.length === 0 || uploading || disabled || fileStates.every(f=>['completed','canceled'].includes(f.status))}
+      disabled={fileStates.length === 0 ||
+        uploading ||
+        disabled ||
+        fileStates.every(f => ['completed', 'canceled'].includes(f.status))}
       onclick={uploadFiles}
       aria-label="Start upload"
     >
@@ -823,20 +883,22 @@ restoreSession();
       {/if}
     </button>
     {#if uploading}
-      <button
-        type="button"
-        class="clear-button"
-        onclick={cancelAllUploads}
-        aria-label="Cancel all uploads"
-      >Cancel All</button>
+      <button type="button" class="clear-button" onclick={cancelAllUploads} aria-label="Cancel all uploads"
+        >Cancel All</button
+      >
     {/if}
     {#if fileStates.length > 0 && !uploading}
       <button
         type="button"
         class="clear-button"
-        onclick={() => { files = []; fileStates = []; if (fileInput) fileInput.value = ''; liveMessage = 'Cleared selected files'; }}
-        aria-label="Clear selected files"
-      >Clear Files</button>
+        onclick={() => {
+          files = [];
+          fileStates = [];
+          if (fileInput) fileInput.value = '';
+          liveMessage = 'Cleared selected files';
+        }}
+        aria-label="Clear selected files">Clear Files</button
+      >
     {/if}
   </div>
   {#if minioHealthy === false}
@@ -848,9 +910,12 @@ restoreSession();
   <!-- Hidden style usage helper to ensure Svelte marks selectors as used (addresses spurious unused selector warnings) -->
   <div style="display:none" aria-hidden="true" class="mini-progress-bar progress-bar"></div>
   <div style="display:none" aria-hidden="true" class="nes-theme">
-    <span class="progress-track progress-fill mini-progress-fill upload-button clear-button action-btn performance-metrics file-item metric-item"></span>
+    <span
+      class="progress-track progress-fill mini-progress-fill upload-button clear-button action-btn performance-metrics file-item metric-item"
+    ></span>
   </div>
 </div>
+
 <style>
   .upload-container {
     width: 100%;
@@ -935,7 +1000,9 @@ restoreSession();
     font-size: 0.75rem;
     line-height: 1;
   }
-  .action-btn:hover { background: #e5e7eb; }
+  .action-btn:hover {
+    background: #e5e7eb;
+  }
   .mini-progress-bar {
     width: 100%;
     height: 4px;
@@ -1020,9 +1087,14 @@ restoreSession();
     border-radius: 0;
     padding: 0.75rem 0.85rem 0.9rem;
     border: 4px solid #212529;
-    box-shadow: 0 0 0 4px #fff, 0 0 0 8px #212529;
+    box-shadow:
+      0 0 0 4px #fff,
+      0 0 0 8px #212529;
   }
-  :global(.nes-theme) .progress-bar { height: 12px; margin-bottom: 0.75rem; }
+  :global(.nes-theme) .progress-bar {
+    height: 12px;
+    margin-bottom: 0.75rem;
+  }
   :global(.nes-theme) .progress-track {
     background: #d7d7d7;
     border: 2px solid #212529;
@@ -1043,22 +1115,30 @@ restoreSession();
   :global(.nes-theme) .file-item {
     border-radius: 0;
     border: 4px solid #212529;
-    box-shadow: 0 0 0 4px #fff, 0 0 0 8px #212529;
+    box-shadow:
+      0 0 0 4px #fff,
+      0 0 0 8px #212529;
     background: #fff;
   }
   :global(.nes-theme) .upload-button {
     border-radius: 0;
     font-family: 'Press Start 2P', monospace;
     background: #209ce2;
-    box-shadow: 0 0 0 4px #fff, 0 0 0 8px #212529;
+    box-shadow:
+      0 0 0 4px #fff,
+      0 0 0 8px #212529;
     border: 4px solid #212529;
   }
-  :global(.nes-theme) .upload-button:hover:not(:disabled) { background: #1081c4; }
+  :global(.nes-theme) .upload-button:hover:not(:disabled) {
+    background: #1081c4;
+  }
   :global(.nes-theme) .clear-button {
     border-radius: 0;
     font-family: 'Press Start 2P', monospace;
     border: 4px solid #212529;
-    box-shadow: 0 0 0 4px #fff, 0 0 0 8px #212529;
+    box-shadow:
+      0 0 0 4px #fff,
+      0 0 0 8px #212529;
   }
   :global(.nes-theme) .action-btn {
     border-radius: 0;
@@ -1066,17 +1146,31 @@ restoreSession();
     border: 2px solid #212529;
     background: #f5f5f5;
   }
-  :global(.nes-theme) .action-btn:hover { background: #e0e0e0; }
+  :global(.nes-theme) .action-btn:hover {
+    background: #e0e0e0;
+  }
   :global(.nes-theme) .performance-metrics {
     border-radius: 0;
     border: 4px solid #212529;
-    box-shadow: 0 0 0 4px #fff, 0 0 0 8px #212529;
+    box-shadow:
+      0 0 0 4px #fff,
+      0 0 0 8px #212529;
     background: #fff;
   }
-  :global(.nes-theme) .metrics-header { color: #212529; }
-  :global(.nes-theme) .metric-item { border-radius: 0; border: 2px solid #212529; background: #f8f8f8; }
-  :global(.nes-theme) .metric-label { color: #444; }
-  :global(.nes-theme) .metric-value { color: #111; }
+  :global(.nes-theme) .metrics-header {
+    color: #212529;
+  }
+  :global(.nes-theme) .metric-item {
+    border-radius: 0;
+    border: 2px solid #212529;
+    background: #f8f8f8;
+  }
+  :global(.nes-theme) .metric-label {
+    color: #444;
+  }
+  :global(.nes-theme) .metric-value {
+    color: #111;
+  }
   .upload-actions {
     margin-top: 1rem;
     display: flex;

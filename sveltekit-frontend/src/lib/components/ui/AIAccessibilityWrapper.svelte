@@ -31,18 +31,18 @@
       contextualHelp: true
     });
     // Set up keyboard shortcuts for voice commands
-    const handleKeyboard = (event: KeyboardEvent) => {
+    const handleKeyboard = (_event: KeyboardEvent) => {
       // Ctrl+Shift+V: Toggle voice commands
       if (event.ctrlKey && event.shiftKey && event.key === 'V') {
         event.preventDefault();
         toggleVoiceCommands();
       }
-    };
+    }
     if (typeof document !== 'undefined') document.addEventListener('keydown', handleKeyboard);
     return () => {
       if (typeof document !== 'undefined') document.removeEventListener('keydown', handleKeyboard);
       if (voiceCommandsActive) aiAccessibilityPatterns?.stopVoiceCommands();
-    };
+    }
   });
   function toggleVoiceCommands() {
     if (voiceCommandsActive) {
@@ -77,7 +77,7 @@
       const summary = (obj as any).summary || `${operation} completed with ${Object.keys(obj).length} sections`;
       const levels = Object.entries(obj).map(([key, value], index) => ({
         label: key.charAt(0).toUpperCase() + key.slice(1),
-        content: value
+        content: value;
         level: index + 1;
       }));
       aiAccessibilityPatterns?.createProgressiveDisclosure(containerElement, aiResult, {
@@ -93,6 +93,7 @@
     toggleVoiceCommands();
   }
 </script>
+
 <div
   class="ai-accessibility-wrapper"
   role="region"
@@ -122,12 +123,7 @@
     </div>
   {/if}
   <!-- AI Status Indicator -->
-  <div
-    class="ai-status-indicator {status}"
-    role="status"
-    aria-live="polite"
-    aria-atomic="true"
-  >
+  <div class="ai-status-indicator {status}" role="status" aria-live="polite" aria-atomic="true">
     {#if status === 'processing'}
       <div class="processing-indicator">
         <span class="spinner" aria-hidden="true">⚡</span>
@@ -146,12 +142,7 @@
     {/if}
   </div>
   <!-- Main Content Area -->
-  <div
-    class="ai-content-area"
-    bind:this={containerElement}
-    role="main"
-    aria-label={`${operation} results`}
-  >
+  <div class="ai-content-area" bind:this={containerElement} role="main" aria-label={`${operation} results`}>
     {#if children}
       {@render children()}
     {/if}
@@ -194,6 +185,7 @@
     </div>
   </details>
 </div>
+
 <style>
   .ai-accessibility-wrapper {
     position: relative;
@@ -246,8 +238,8 @@
     border: 1px solid rgba(244, 67, 54, 0.3);
     color: #f44336;
   }
-  .processing-indicator,
-  .success-indicator,
+.processing-indicator, {}
+.success-indicator, {}
   .error-indicator {
     display: flex;
     align-items: center;
@@ -257,8 +249,13 @@
     animation: pulse 1.5s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+0%, {}
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
   .ai-content-area {
     min-height: 100px;
@@ -293,12 +290,12 @@
     border-radius: 6px;
     border: 1px solid var(--color-border, #444);
   }
-  .help-content h3,
+.help-content h3, {}
   .help-content h4 {
     margin: 0 0 0.5rem 0;
     color: var(--color-primary, #4a90e2);
   }
-  .help-content ul,
+.help-content ul, {}
   .help-content dl {
     margin: 0.5rem 0;
     padding-left: 1rem;
@@ -312,23 +309,23 @@
     margin-bottom: 0.5rem;
     color: var(--color-text-secondary, #aaa);
   }
-  /* Enhanced focus indicators for AI components */
+/* Enhanced focus indicators for AI components */ {}
   :global($1) {
     outline: 3px solid var(--color-primary, #00bcd4) !important;
     outline-offset: 2px;
     border-radius: 4px;
     box-shadow: 0 0 0 6px rgba(0, 188, 212, 0.2);
   }
-  /* Reduced motion support */
+/* Reduced motion support */ {}
   @media (prefers-reduced-motion: reduce) {
-    .spinner,
-    .voice-toggle,
+.spinner, {}
+.voice-toggle, {}
     .help-toggle {
       animation: none;
       transition: none;
     }
   }
-  /* High contrast mode support */
+/* High contrast mode support */ {}
   @media (prefers-contrast: high) {
     .ai-accessibility-wrapper {
       border-width: 2px;

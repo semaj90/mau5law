@@ -114,11 +114,14 @@
     }
   });
 </script>
+
 {#if isLoading || status !== 'loading'}
   <div class="ai-loading-component {variant} {sizeClasses[size]}">
     {#if variant === 'overlay'}
       <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full mx-4">
+        <div
+          class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full mx-4"
+        >
           <div class="p-6">
             <!-- Main Content -->
             <div class="flex items-start gap-3">
@@ -127,18 +130,16 @@
                 {#if status === 'loading'}
                   <div class="relative">
                     {@const OperationIcon = getOperationIcon(operation)}
-                    <OperationIcon
-                      class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
-                    />
+                    <OperationIcon class="{iconSize[size]} {getStatusColor(status)} animate-pulse" />
                     {#if operation === 'ai' || operation === 'gpu'}
-                      <div class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"></div>
+                      <div
+                        class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"
+                      ></div>
                     {/if}
                   </div>
                 {:else}
                   {@const StatusIcon = getStatusIcon(status)}
-                  <StatusIcon
-                    class="{iconSize[size]} {getStatusColor(status)}"
-                  />
+                  <StatusIcon class="{iconSize[size]} {getStatusColor(status)}" />
                 {/if}
               </div>
               <!-- Content -->
@@ -162,7 +163,13 @@
                     </div>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                       <div
-                        class="h-2 rounded-full transition-all duration-300 {operation === 'ai' ? 'bg-blue-500' : operation === 'gpu' ? 'bg-purple-500' : operation === 'cpu' ? 'bg-orange-500' : 'bg-green-500'}"
+                        class="h-2 rounded-full transition-all duration-300 {operation === 'ai'
+                          ? 'bg-blue-500'
+                          : operation === 'gpu'
+                            ? 'bg-purple-500'
+                            : operation === 'cpu'
+                              ? 'bg-orange-500'
+                              : 'bg-green-500'}"
                         style="width: {$progressTween}%"
                       ></div>
                     </div>
@@ -187,11 +194,16 @@
                 <!-- Operation Details -->
                 {#if operation && status === 'loading'}
                   <div class="mt-2">
-                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
-                      {operation === 'ai' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                       operation === 'gpu' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
-                       operation === 'cpu' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
-                       'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}">
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                      {operation === 'ai'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                        : operation === 'gpu'
+                          ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                          : operation === 'cpu'
+                            ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+                            : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}"
+                    >
                       {operation.toUpperCase()} Processing
                     </span>
                   </div>
@@ -202,7 +214,9 @@
         </div>
       </div>
     {:else if variant === 'modal'}
-      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full">
+      <div
+        class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full"
+      >
         <div class="p-6">
           <!-- Main Content -->
           <div class="flex items-start gap-3">
@@ -211,18 +225,16 @@
               {#if status === 'loading'}
                 <div class="relative">
                   {@const OperationIcon = getOperationIcon(operation)}
-                  <OperationIcon
-                    class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
-                  />
+                  <OperationIcon class="{iconSize[size]} {getStatusColor(status)} animate-pulse" />
                   {#if operation === 'ai' || operation === 'gpu'}
-                    <div class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"></div>
+                    <div
+                      class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"
+                    ></div>
                   {/if}
                 </div>
               {:else}
                 {@const StatusIcon = getStatusIcon(status)}
-                <StatusIcon
-                  class="{iconSize[size]} {getStatusColor(status)}"
-                />
+                <StatusIcon class="{iconSize[size]} {getStatusColor(status)}" />
               {/if}
             </div>
             <!-- Content -->
@@ -246,7 +258,13 @@
                   </div>
                   <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div
-                      class="h-2 rounded-full transition-all duration-300 {operation === 'ai' ? 'bg-blue-500' : operation === 'gpu' ? 'bg-purple-500' : operation === 'cpu' ? 'bg-orange-500' : 'bg-green-500'}"
+                      class="h-2 rounded-full transition-all duration-300 {operation === 'ai'
+                        ? 'bg-blue-500'
+                        : operation === 'gpu'
+                          ? 'bg-purple-500'
+                          : operation === 'cpu'
+                            ? 'bg-orange-500'
+                            : 'bg-green-500'}"
                       style="width: {$progressTween}%"
                     ></div>
                   </div>
@@ -271,11 +289,16 @@
               <!-- Operation Details -->
               {#if operation && status === 'loading'}
                 <div class="mt-2">
-                  <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
-                    {operation === 'ai' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                     operation === 'gpu' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
-                     operation === 'cpu' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
-                     'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}">
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                    {operation === 'ai'
+                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                      : operation === 'gpu'
+                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                        : operation === 'cpu'
+                          ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+                          : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}"
+                  >
                     {operation.toUpperCase()} Processing
                   </span>
                 </div>
@@ -293,18 +316,16 @@
             {#if status === 'loading'}
               <div class="relative">
                 {@const OperationIcon = getOperationIcon(operation)}
-                <OperationIcon
-                  class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
-                />
+                <OperationIcon class="{iconSize[size]} {getStatusColor(status)} animate-pulse" />
                 {#if operation === 'ai' || operation === 'gpu'}
-                  <div class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"></div>
+                  <div
+                    class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"
+                  ></div>
                 {/if}
               </div>
             {:else}
               {@const StatusIcon = getStatusIcon(status)}
-              <StatusIcon
-                class="{iconSize[size]} {getStatusColor(status)}"
-              />
+              <StatusIcon class="{iconSize[size]} {getStatusColor(status)}" />
             {/if}
           </div>
           <!-- Content -->
@@ -328,7 +349,13 @@
                 </div>
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div
-                    class="h-2 rounded-full transition-all duration-300 {operation === 'ai' ? 'bg-blue-500' : operation === 'gpu' ? 'bg-purple-500' : operation === 'cpu' ? 'bg-orange-500' : 'bg-green-500'}"
+                    class="h-2 rounded-full transition-all duration-300 {operation === 'ai'
+                      ? 'bg-blue-500'
+                      : operation === 'gpu'
+                        ? 'bg-purple-500'
+                        : operation === 'cpu'
+                          ? 'bg-orange-500'
+                          : 'bg-green-500'}"
                     style="width: {$progressTween}%"
                   ></div>
                 </div>
@@ -353,11 +380,16 @@
             <!-- Operation Details -->
             {#if operation && status === 'loading'}
               <div class="mt-2">
-                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
-                  {operation === 'ai' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                   operation === 'gpu' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
-                   operation === 'cpu' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
-                   'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}">
+                <span
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                  {operation === 'ai'
+                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                    : operation === 'gpu'
+                      ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                      : operation === 'cpu'
+                        ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+                        : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}"
+                >
                   {operation.toUpperCase()} Processing
                 </span>
               </div>
@@ -368,6 +400,7 @@
     {/if}
   </div>
 {/if}
+
 <style>
   .ai-loading-component.inline {
     @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm;
@@ -379,8 +412,12 @@
     @apply bg-transparent;
   }
   @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
   .loading-shimmer {
     position: relative;

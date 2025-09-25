@@ -29,7 +29,7 @@ Compact searchable component for embedding in other interfaces
     contextFilter?: {
       caseId?: string;
       evidenceType?: string;
-    };
+    }
     onResultSelect?: (result: VectorSearchResult) => void;
     compact?: boolean;
   }
@@ -107,8 +107,8 @@ Compact searchable component for embedding in other interfaces
   }
   $effect(() => {
     // Close dropdown when clicking outside
-    function handleClickOutside(event: MouseEvent) {
-      const target = event.target as Element;
+    function handleClickOutside(_event: MouseEvent) {
+      // removed unused target assignment
       if (!target.closest('.vector-search-widget')) {
         isOpen = false;
       }
@@ -128,7 +128,7 @@ Compact searchable component for embedding in other interfaces
       {/if}
     </div>
     <input
-      bind:this={inputElement};
+      bind:this={inputElement}
       bind:value={searchQuery}
       type="text"
       {placeholder}

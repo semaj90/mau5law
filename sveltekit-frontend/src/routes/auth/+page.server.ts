@@ -5,35 +5,39 @@ import bcrypt from 'bcryptjs';
 // Simple validation schemas
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required')
+  password: z.string().min(1, 'Password is required'),
 });
-const registerSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  firstName: z.string().min(2, 'First name must be at least 2 characters'),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-  role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
-  department: z.string().min(2, 'Department is required'),
-  jurisdiction: z.string().min(2, 'Jurisdiction is required'),
-  badgeNumber: z.string().optional(),
-  agreeToTerms: z.string().transform(val => val === 'true'),
-  agreeToPrivacy: z.string().transform(val => val === 'true')
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"]
-}).refine((data) => data.agreeToTerms === true, {
-  message: "You must agree to the terms",
-  path: ["agreeToTerms"]
-}).refine((data) => data.agreeToPrivacy === true, {
-  message: "You must agree to privacy policy",
-  path: ["agreeToPrivacy"]
-});
+const registerSchema = z
+  .object({
+    email: z.string().email('Please enter a valid email address'),
+    firstName: z.string().min(2, 'First name must be at least 2 characters'),
+    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string(),
+    role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
+    department: z.string().min(2, 'Department is required'),
+    jurisdiction: z.string().min(2, 'Jurisdiction is required'),
+    badgeNumber: z.string().optional(),
+    agreeToTerms: z.string().transform(val => val === 'true'),
+    agreeToPrivacy: z.string().transform(val => val === 'true'),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  })
+  .refine(data => data.agreeToTerms === true, {
+    message: 'You must agree to the terms',
+    path: ['agreeToTerms'],
+  })
+  .refine(data => data.agreeToPrivacy === true, {
+    message: 'You must agree to privacy policy',
+    path: ['agreeToPrivacy'],
+  });
 export const load: PageServerLoad = async () => {
-  return {};
-};
+  return {}
+}
 export const actions: Actions = {
-  // Handle both login and register in unified flow
+  // Handle both login and register in unified flow;
   default: async ({ request, cookies }) => {
     const formData = await request.formData();
     const email = formData.get('email') as string;
@@ -53,16 +57,16 @@ export const actions: Actions = {
           role: formData.get('role') as string,
           department: formData.get('department') as string,
           jurisdiction: formData.get('jurisdiction') as string,
-          badgeNumber: formData.get('badgeNumber') as string || '',
+          badgeNumber: (formData.get('badgeNumber') as string) || '',
           agreeToTerms: formData.get('agreeToTerms') as string,
-          agreeToPrivacy: formData.get('agreeToPrivacy') as string
-        };
+          agreeToPrivacy: formData.get('agreeToPrivacy') as string,
+        }
         // Validate registration data
         const validation = registerSchema.safeParse(registerData);
         if (!validation.success) {
           const errors = validation.error.errors;
           return fail(400, {
-            error: errors[0]?.message || 'Registration validation failed'
+            error: errors[0]?.message || 'Registration validation failed',
           });
         }
         // For demo purposes - just set session and redirect
@@ -71,21 +75,21 @@ export const actions: Actions = {
         // Set demo session
         cookies.set('session', `demo-register-${Date.now()}`, {
           path: '/',
-          maxAge: 60 * 60 * 24 * 7, // 1 week
+          maxAge: 60 * 60 * 24 * 7, // 1 week,
           httpOnly: true,
           secure: false,
-          sameSite: 'lax'
+          sameSite: 'lax',
         });
         throw redirect(302, '/dashboard');
       } else {
         // Login flow
-        const loginData = { email, password };
+        const loginData = { email, password }
         // Validate login data
         const validation = loginSchema.safeParse(loginData);
         if (!validation.success) {
           const errors = validation.error.errors;
           return fail(400, {
-            error: errors[0]?.message || 'Login validation failed'
+            error: errors[0]?.message || 'Login validation failed',
           });
         }
         // For demo purposes - accept any valid email/password
@@ -93,10 +97,10 @@ export const actions: Actions = {
         // Set demo session
         cookies.set('session', `demo-login-${Date.now()}`, {
           path: '/',
-          maxAge: 60 * 60 * 24 * 7, // 1 week
+          maxAge: 60 * 60 * 24 * 7, // 1 week,
           httpOnly: true,
           secure: false,
-          sameSite: 'lax'
+          sameSite: 'lax',
         });
         throw redirect(302, '/dashboard');
       }
@@ -107,8 +111,8 @@ export const actions: Actions = {
       }
       console.error('Auth error:', error);
       return fail(500, {
-        error: 'An error occurred during authentication. Please try again.'
+        error: 'An error occurred during authentication. Please try again.',
       });
     }
-  }
-};
+  },
+}

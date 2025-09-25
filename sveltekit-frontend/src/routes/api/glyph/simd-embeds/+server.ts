@@ -288,7 +288,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               step: 'neural_sprite_compression',
               duration_ms: Math.floor(glyphResult.generation_time_ms * 0.2),
-              success: true
+              success: true;
               metadata: {
                 compression_ratio: glyphResult.neural_sprite_results.compression_ratio,
                 predictive_frames_generated: glyphResult.neural_sprite_results.predictive_frames?.length || 0

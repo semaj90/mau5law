@@ -5,9 +5,9 @@
     {
       id: '001',
       role: 'assistant',
-      content: 'Hello! I\'m your Legal AI Assistant. How can I help you today?',
-      timestamp: new Date()
-    }
+      content: "Hello! I'm your Legal AI Assistant. How can I help you today?",
+      timestamp: new Date(),
+    },
   ]);
   let currentMessage = $state('');
   let isTyping = $state(false);
@@ -17,8 +17,8 @@
       id: Date.now().toString(),
       role: 'user',
       content: currentMessage.trim(),
-      timestamp: new Date()
-    };
+      timestamp: new Date(),
+    }
     messages = [...messages, userMessage];
     const messageToSend = currentMessag;
     currentMessage = '';
@@ -28,12 +28,12 @@
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           messages: messages,
-          stream: false
-        })
+          stream: false,
+        }),
       });
       const result = await response.json();
       let aiContent = '';
@@ -47,23 +47,24 @@
         role: 'assistant',
         content: aiContent,
         timestamp: new Date(),
-        metadata: result.metadata || { source: 'triton-fallback' }
-      };
+        metadata: result.metadata || { source: 'triton-fallback' },
+      }
       messages = [...messages, aiResponse];
     } catch (error) {
       console.error('Chat API error:', error);
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText =
+        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Generate mock legal response
       const mockLegalResponses = [
         "Based on your legal question, I would recommend reviewing the relevant case law in your jurisdiction. Here's a mock analysis of potential approaches.",
-        "This appears to be a contract law matter. In similar cases, courts have typically focused on intent and consideration. Mock legal advice: consult local precedents.",
-        "For employment law issues like this, documentation is crucial. Mock recommendation: gather timeline evidence and review company policies.",
-        "In intellectual property matters, prior art searches are essential. Mock suggestion: conduct comprehensive patent database review."
+        'This appears to be a contract law matter. In similar cases, courts have typically focused on intent and consideration. Mock legal advice: consult local precedents.',
+        'For employment law issues like this, documentation is crucial. Mock recommendation: gather timeline evidence and review company policies.',
+        'In intellectual property matters, prior art searches are essential. Mock suggestion: conduct comprehensive patent database review.',
       ];
       const randomMockResponse = mockLegalResponses[Math.floor(Math.random() * mockLegalResponses.length)];
       const errorResponse = {
@@ -71,8 +72,8 @@
         role: 'assistant',
         content: `🤖 ${randomMockResponse} [Mock Legal AI - Real service unavailable]`,
         timestamp: new Date(),
-        metadata: { error: true, source: 'mock-legal-ai' }
-      };
+        metadata: { error: true, source: 'mock-legal-ai' },
+      }
       messages = [...messages, errorResponse];
     } finally {
       isTyping = false;
@@ -82,6 +83,7 @@
     return timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 </script>
+
 <svelte:head>
   <title>AI Chat - YoRHa Legal AI</title>
 </svelte:head>
@@ -132,7 +134,7 @@
             bind:value={currentMessage}
             placeholder="Ask your legal question..."
             class="message-input"
-            onkeydown={(e) => e.key === 'Enter' && sendMessage()}
+            onkeydown={e => e.key === 'Enter' && sendMessage()}
           />
           <ButtonBits
             variant="primary"
@@ -140,7 +142,7 @@
             disabled={!currentMessage.trim() || isTyping}
             class="send-button"
           >
-➤ Send
+            ➤ Send
           </ButtonBits>
         </div>
       </div>
@@ -170,22 +172,13 @@
       <div class="info-section">
         <h4>💡 Quick Questions</h4>
         <div class="quick-questions">
-          <button
-            class="quick-question"
-            onclick={() => currentMessage = 'What are Miranda rights?'}
-          >
+          <button class="quick-question" onclick={() => (currentMessage = 'What are Miranda rights?')}>
             Miranda Rights
           </button>
-          <button
-            class="quick-question"
-            onclick={() => currentMessage = 'How to file a motion?'}
-          >
+          <button class="quick-question" onclick={() => (currentMessage = 'How to file a motion?')}>
             Filing Motions
           </button>
-          <button
-            class="quick-question"
-            onclick={() => currentMessage = 'Evidence admissibility rules'}
-          >
+          <button class="quick-question" onclick={() => (currentMessage = 'Evidence admissibility rules')}>
             Evidence Rules
           </button>
         </div>
@@ -193,6 +186,7 @@
     </CardBits>
   </div>
 </div>
+
 <style>
   .chat-dashboard {
     max-width: 1400px;
@@ -306,7 +300,9 @@
     animation-delay: 0.6;
   }
   @keyframes typing {
-    0%, 60%, 100% {
+    0%,
+    60%,
+    100% {
       opacity: 0.3;
     }
     30% {

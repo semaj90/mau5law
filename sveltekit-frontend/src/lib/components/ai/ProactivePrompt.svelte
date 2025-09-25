@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Export prop callbacks for Svelte consumers
-  let { onaccept } = $props(): (event?: unknown) => void = () => {};
-  let { ondismiss } = $props(): (event?: unknown) => void = () => {};
-  let { onquickResponse } = $props(): (event?: unknown) => void = () => {};
+  let { onaccept } = $props(): (event?: unknown) => void = () => {}
+  let { ondismiss } = $props(): (event?: unknown) => void = () => {}
+  let { onquickResponse } = $props(): (event?: unknown) => void = () => {}
   // Use native buttons here to avoid strict typed component event typings
   import aiPersonality from "$lib/stores/chatStore";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
@@ -34,6 +34,7 @@
     onquickResponse?.();
   }
 </script>
+
 <div class="space-y-4">
   <!-- Header -->
   <div class="space-y-4">
@@ -58,20 +59,12 @@
         <!-- Actions -->
         <div class="space-y-4">
           <!-- Accept Button (native to avoid typed component event issues) -->
-          <button
-            type="button"
-            class="space-y-4 bits-btn bits-btn"
-            onclick={handleAccept}
-          >
+          <button type="button" class="space-y-4 bits-btn bits-btn" onclick={handleAccept}>
             <MessageCircle class="space-y-4" />
             Yes, help me
           </button>
           <!-- Quick responses -->
-          <button
-            type="button"
-            class="space-y-4 bits-btn bits-btn"
-            onclick={handleQuickResponse}
-          >
+          <button type="button" class="space-y-4 bits-btn bits-btn" onclick={handleQuickResponse}>
             <Lightbulb class="space-y-4" />
             Summarize
           </button>
@@ -94,6 +87,7 @@
     <div class="space-y-4"></div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   @keyframes slide-in-from-bottom {

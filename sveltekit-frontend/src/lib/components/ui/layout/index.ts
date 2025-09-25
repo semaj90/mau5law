@@ -26,13 +26,13 @@ export const goldenRatioUtils = {
    * @param value - Base value to apply golden ratio to
    * @returns Value multiplied by φ
    */
-  phi: (value: number): number => value * GOLDEN_RATIO,
+  phi: (_value: number): number => value * GOLDEN_RATIO,
   /**
    * Calculate inverse golden ratio proportion of a value
    * @param value - Base value to apply inverse golden ratio to
    * @returns Value multiplied by 1/φ
    */
-  phiInverse: (value: number): number => value * INVERSE_GOLDEN_RATIO,
+  phiInverse: (_value: number): number => value * INVERSE_GOLDEN_RATIO,
   /**
    * Split a value into golden ratio proportions
    * @param total - Total value to split
@@ -60,7 +60,7 @@ export const goldenRatioUtils = {
   spacing: (baseSpacing: number = 1, scale: number = 0): number => {
     return baseSpacing * Math.pow(GOLDEN_RATIO, scale);
   }
-};
+}
 /**
  * Predefined golden ratio breakpoints for responsive design
  */;
@@ -69,7 +69,7 @@ export const goldenBreakpoints = {
   tablet: Math.round(768 * GOLDEN_RATIO), // ~1242px
   desktop: Math.round(1024 * GOLDEN_RATIO), // ~1657px
   wide: Math.round(1440 * GOLDEN_RATIO), // ~2330px
-};
+}
 /**
  * CSS custom property names for golden ratio values
  */;

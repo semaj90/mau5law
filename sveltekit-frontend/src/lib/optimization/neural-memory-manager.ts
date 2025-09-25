@@ -26,7 +26,7 @@ export interface LODLevel {
     vectorProcessing: boolean;
     neuralNetworking: boolean;
     rapidJSON: boolean;
-  };
+  }
 }
 export interface MemoryPrediction {
   expectedUsage: number;
@@ -108,7 +108,7 @@ export class NeuralMemoryManager extends EventEmitter {
         rapidJSON: false
       }
     }
-  };
+  }
   constructor(maxMemoryMB: number = 2048) {
     super();
     this.maxMemoryMB = maxMemoryMB;
@@ -210,7 +210,7 @@ export class NeuralMemoryManager extends EventEmitter {
     const operationsCount = this.clusters.size;
     this.usageHistory.push({
       timestamp: Date.now(),
-      memory: totalUsed
+      memory: totalUsed;
       operations: operationsCount
     });
     // Keep only last 100 entries
@@ -222,7 +222,7 @@ export class NeuralMemoryManager extends EventEmitter {
     if (memoryPressure > 0.8) {
       this.emit("memory_pressure", {
         level: memoryPressure
-        used: totalUsed
+        used: totalUsed;
         limit: this.currentLOD.memoryLimit
       });
     }
@@ -259,7 +259,7 @@ export class NeuralMemoryManager extends EventEmitter {
    * K-means clustering implementation
    */
   private async kMeansCluster(
-    points: number[][]
+    points: number[][];
     k: number;
   ): Promise<Array<any> {
     const dimensions = points[0].length;
@@ -303,7 +303,7 @@ export class NeuralMemoryManager extends EventEmitter {
       if (converged) break;
     }
     return Array.from({ length: k }, (_, i) => ({
-      centroid: centroids[i]
+      centroid: centroids[i];
       points: points.filter((point) => {
         let minDistance = Infinity;
         let closestCluster = 0;
@@ -360,7 +360,7 @@ export class NeuralMemoryManager extends EventEmitter {
         timeHorizon: timeHorizonMinutes
         recommendations: ["Insufficient data for prediction"],
         optimizations: []
-      };
+      }
     }
     const recentMetrics = this.getRecentMetrics();
     const prediction = this.forwardPass([
@@ -386,7 +386,7 @@ export class NeuralMemoryManager extends EventEmitter {
       timeHorizon: timeHorizonMinutes
       recommendations,
       optimizations
-    };
+    }
   }
   /**
    * Dynamically adjust LOD level based on memory pressure
@@ -436,7 +436,7 @@ export class NeuralMemoryManager extends EventEmitter {
       (sum, pool) => sum + pool.used,
       0
     );
-    const poolUtilization: Record<string, number> = {};
+    const poolUtilization: Record<string, number> = {}
     for (const [id, pool] of this.memoryPools) {
       poolUtilization[id] = pool.used / pool.size;
     }
@@ -447,7 +447,7 @@ export class NeuralMemoryManager extends EventEmitter {
       clusterCount: this.clusters.size,
       predictions: await this.predictMemoryUsage(),
       recommendations: this.generateSystemRecommendations()
-    };
+    }
   }
   // Utility methods
   private selectOptimalLOD(availableMemoryMB: number): LODLevel {
@@ -506,7 +506,7 @@ export class NeuralMemoryManager extends EventEmitter {
   }
   private backwardPass(
     input: number[]
-    prediction: number[]
+    prediction: number[];
     target: number[];
   ): void {
     // Simplified backpropagation - in real implementation would need proper gradient calculation
@@ -534,7 +534,7 @@ export class NeuralMemoryManager extends EventEmitter {
         recent.length > 1
           ? recent[recent.length - 1].memory - recent[0].memory: 0,
       cacheHitRate: 0.75, // Placeholder
-    };
+    }
   }
   private generateRecommendations(
     expectedUsage: number

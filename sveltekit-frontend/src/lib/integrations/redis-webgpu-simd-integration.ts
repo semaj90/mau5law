@@ -14,7 +14,7 @@ const REDIS_CONFIG = {
   db: 0,
   keyPrefix: 'legal_ai:',
   defaultTTL: 3600 // 1 hour
-};
+}
 // Cache key patterns for different data types
 const CACHE_PATTERNS = {
   WEBGPU_COMPUTATION: 'webgpu:compute:{operation}:{hash}',
@@ -53,14 +53,14 @@ export class RedisWebGPUSIMDIntegration {
       maxCacheSize: 1000, // 1GB
       defaultTTL: 3600, // 1 hour
       ...config
-    };
+    }
     this.metrics = {
       redisHits: 0,
       webgpuComputations: 0,
       simdParsing: 0,
       totalProcessingTime: 0,
       cacheEfficiency: 0
-    };
+    }
     this.webgpuCache = new WebGPUSOMCache();
   }
   /**
@@ -138,7 +138,7 @@ export class RedisWebGPUSIMDIntegration {
               cacheHit: true
               source: 'redis'
             }
-          };
+          }
         }
       }
       // Step 3: Process with WebGPU if available
@@ -175,7 +175,7 @@ export class RedisWebGPUSIMDIntegration {
           cacheHit: false
           source: processingPath.includes('WEBGPU_COMPUTE') ? 'webgpu' : 'cpu'
         }
-      };
+      }
     } catch (error) {
       console.error('❌ Legal document processing failed:', error);
       throw error;
@@ -217,7 +217,7 @@ export class RedisWebGPUSIMDIntegration {
               cacheHit: true
               source: 'redis'
             }
-          };
+          }
         }
       }
       // Process with WebGPU similarity shader
@@ -252,7 +252,7 @@ export class RedisWebGPUSIMDIntegration {
           cacheHit: false
           source: processingPath.includes('WEBGPU_SIMILARITY') ? 'webgpu' : 'cpu'
         }
-      };
+      }
     } catch (error) {
       console.error('❌ Vector similarity processing failed:', error);
       throw error;
@@ -291,7 +291,7 @@ export class RedisWebGPUSIMDIntegration {
               cacheHit: true
               source: 'redis'
             }
-          };
+          }
         }
       }
       // Process with WebGPU SOM cache
@@ -311,7 +311,7 @@ export class RedisWebGPUSIMDIntegration {
           cacheHit: false
           source: 'webgpu_som'
         }
-      };
+      }
     } catch (error) {
       console.error('❌ Intelligent todos processing failed:', error);
       throw error;
@@ -324,7 +324,7 @@ export class RedisWebGPUSIMDIntegration {
     operations: Array<;
   ): Promise<any> {
     const startTime = performance.now();
-    const initialMetrics = { ...this.metrics };
+    const initialMetrics = { ...this.metrics }
     // Group operations by type for optimization
     const groupedOps = operations.reduce((groups, op, index) => {
       if (!groups[op.type]) groups[op.type] = [];
@@ -361,12 +361,12 @@ export class RedisWebGPUSIMDIntegration {
         }
       })
     );
-    const finalMetrics = { ...this.metrics };
+    const finalMetrics = { ...this.metrics }
     const deltaMetrics = {
       redisHits: finalMetrics.redisHits - initialMetrics.redisHits,
       webgpuComputations: finalMetrics.webgpuComputations - initialMetrics.webgpuComputations,
       simdParsing: finalMetrics.simdParsing - initialMetrics.simdParsing
-    };
+    }
     return {
       results,
       performance: {
@@ -375,7 +375,7 @@ export class RedisWebGPUSIMDIntegration {
         averageTimePerOp: (performance.now() - startTime) / operations.length
       },
       cacheStats: deltaMetrics
-    };
+    }
   }
   /**
    * WebGPU processing for legal documents
@@ -390,7 +390,7 @@ export class RedisWebGPUSIMDIntegration {
       risk_assessment: await this.assessRiskWebGPU(documentData),
       webgpu_accelerated: true
       processing_time: performance.now()
-    };
+    }
     return analysis;
   }
   /**
@@ -406,7 +406,7 @@ export class RedisWebGPUSIMDIntegration {
       risk_assessment: this.assessRiskCPU(documentData),
       cpu_processed: true
       processing_time: performance.now()
-    };
+    }
   }
   /**
    * WebGPU similarity computation using existing shader
@@ -462,7 +462,7 @@ export class RedisWebGPUSIMDIntegration {
   }
   private async assessRiskWebGPU(documentData: any): Promise<any> {
     // WebGPU risk assessment
-    return { risk_score: Math.random(), factors: ['example_factor'] };
+    return { risk_score: Math.random(), factors: ['example_factor'] }
   }
   /**
    * CPU fallback implementations
@@ -480,7 +480,7 @@ export class RedisWebGPUSIMDIntegration {
     return [{ id: 'cpu_similar_doc_1', similarity: 0.8 }];
   }
   private assessRiskCPU(documentData: any): any {
-    return { risk_score: Math.random(), factors: ['cpu_factor'] };
+    return { risk_score: Math.random(), factors: ['cpu_factor'] }
   }
   /**
    * Utility functions
@@ -523,25 +523,24 @@ export class RedisWebGPUSIMDIntegration {
   /**
    * Redis operations (mocked for now)
    */;
-  private async getFromRedis(key: string): Promise<any> {
+  private async getFromRedis(_key: string): Promise<any> {
     // Mock Redis get - would use actual Redis client
     return null; // Simulate cache miss for demo
   }
-  private async setInRedis(key: string, value: any, ttl: number): Promise<void> {
+  private async setInRedis(_key: string, value: any, ttl: number): Promise<void> {
     // Mock Redis set - would use actual Redis client
     console.log(`📦 Redis SET: ${key} (TTL: ${ttl}s)`);
   }
   /**
    * Public method for CHR-ROM cache integration
    */;
-  async getCachedResult(key: string): Promise<any> {
+  async getCachedResult(_key: string): Promise<any> {
     return await this.getFromRedis(key);
   }
   /**
    * Public method for CHR-ROM cache integration
    */
-  async cacheResult(
-    key: string
+  async cacheResult(_key: string
     value: any
     options: { ttl?: number; priority?: number } = {}
   ): Promise<void> {
@@ -557,7 +556,7 @@ export class RedisWebGPUSIMDIntegration {
     return {
       ...this.metrics,
       efficiency: totalOps > 0 ? this.metrics.redisHits / totalOps : 0
-    };
+    }
   }
   /**
    * Get system status
@@ -573,7 +572,7 @@ export class RedisWebGPUSIMDIntegration {
       webgpu: this.config.enableWebGPU,
       simd: this.config.enableSIMD,
       som: true, // WebGPU SOM cache is initialized
-    };
+    }
   }
   /**
    * Get all cache keys from Redis
@@ -649,7 +648,7 @@ export class RedisWebGPUSIMDIntegration {
       console.log('🔄 Syncing with distributed cache...');
       // In real implementation, this would sync local cache with distributed Redis
       // For now, just log the operation
-      const stats = { cacheHits: 0, cacheMisses: 0, syncTime: Date.now() };
+      const stats = { cacheHits: 0, cacheMisses: 0, syncTime: Date.now() }
       console.log('📊 Cache sync stats:', stats);
     } catch (error) {
       console.error('❌ Failed to sync with distributed cache:', error);

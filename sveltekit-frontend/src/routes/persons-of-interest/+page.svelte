@@ -33,7 +33,7 @@
         intelligence: 80,
         strength: 70,
         speed: 85,
-        dangerousness: 90
+        dangerousness: 90;
       }
     },
     {
@@ -64,7 +64,7 @@
         intelligence: 95,
         strength: 45,
         speed: 60,
-        dangerousness: 65
+        dangerousness: 65;
       }
     },
     {
@@ -95,7 +95,7 @@
         intelligence: 85,
         strength: 55,
         speed: 70,
-        dangerousness: 30
+        dangerousness: 30;
       }
     }
   ]);
@@ -105,7 +105,7 @@
   // Function to load POIs from API
   async function loadPersonsFromAPI() {
     try {
-      const response = await fetch('/api/persons-of-interest');
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown }).json();
         const apiPersons = (result as { success?: unknown; data?: unknown }).success ? (result as { success?: unknown; data?: unknown }).data: [];
@@ -154,6 +154,7 @@
     loadPersonsFromAPI();
   }
 </script>
+
 <svelte:head>
   <title>YoRHa Pod Network - Person of Interest Database</title>
 </svelte:head>
@@ -188,7 +189,7 @@
         {#each persons as person (person.id)}
           <button
             class="person-entry {selectedPerson.id === person.id ? 'selected' : ''}"
-            onclick={() => selectedPerson = person}
+            onclick={() => (selectedPerson = person)}
           >
             <span class="person-number">#{person.id}</span>
             <span class="person-name">{person.alias}</span>
@@ -324,19 +325,14 @@
         </div>
       </div>
       <div class="actions-section">
-        <ButtonBits variant="primary" class="action-btn">
-          🎯 Track Location
-        </ButtonBits>
-        <ButtonBits variant="secondary" class="action-btn">
-          📞 Contact Team
-        </ButtonBits>
-        <ButtonBits variant="ghost" class="action-btn">
-          📋 Generate Report
-        </ButtonBits>
+        <ButtonBits variant="primary" class="action-btn">🎯 Track Location</ButtonBits>
+        <ButtonBits variant="secondary" class="action-btn">📞 Contact Team</ButtonBits>
+        <ButtonBits variant="ghost" class="action-btn">📋 Generate Report</ButtonBits>
       </div>
     </div>
   </div>
 </div>
+
 <style>
   .fugitive-dex {
     background: linear-gradient(135deg, #0d1117, #161b22);
@@ -677,7 +673,7 @@
   }
   .associates-list li: before
   .habits-list li:before {
-    content: "• ";
+    content: '• ';
     color: #10b981;
     font-weight: bold;
     margin-right: 0.5rem;

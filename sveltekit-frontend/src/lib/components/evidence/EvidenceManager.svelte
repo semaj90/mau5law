@@ -63,8 +63,8 @@
   let loading = $state({
     files: false
     upload: false
-    backfill: false
-    search: false
+    backfill: false;
+    search: false;
     stats: false;
   });
   let searchQuery = $state('');
@@ -81,7 +81,7 @@
   async function loadEvidenceFiles() {
     loading.files = true;
     try {
-      const response = await fetch('/api/evidence-files?limit=50');
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
         evidenceFiles = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).items.map((item: unknown) => ({
@@ -99,7 +99,7 @@
   async function loadEmbeddingStats() {
     loading.stats = true;
     try {
-      const response = await fetch('/api/evidence-embeddings');
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
         embeddingStats = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).stat;
@@ -178,11 +178,11 @@
     error = '';
     try {
       const params = new URLSearchParams({
-        search: searchQuery
+        search: searchQuery;
         limit: '10';
       });
       if (caseId) params.set('case_id', caseId);
-      const response = await fetch(`/api/evidence-embeddings?${params}`);
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
         searchResults = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).result;
@@ -308,7 +308,7 @@ export default ;
             multiple
             class="hidden"
             onchange={(e: Event) => {
-              const target = e.currentTarget as HTMLInputElement;
+              // removed unused target assignment
               if (target?.files) handleFileUpload(target.files);
             }}
           />

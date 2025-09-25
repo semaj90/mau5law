@@ -24,7 +24,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          query: testQuery
+          query: testQuery;
           component: selectedComponent;
         })
       });
@@ -38,7 +38,7 @@
           test: 'Semantic Audit API',
           status: 'success',
           timestamp: new Date().toISOString(),
-          data: data
+          data: data;
           summary: `Analyzed ${selectedComponent} with ${(data as { results?: any; triggeredAgents?: any }).results?.length || 0} results, ${(data as { results?: any; triggeredAgents?: any }).triggeredAgents?.length || 0} agent triggers`
         }
       ];
@@ -80,7 +80,7 @@
           test: 'Direct Semantic Search',
           status: 'success',
           timestamp: new Date().toISOString(),
-          data: searchResults
+          data: searchResults;
           summary: `Found ${searchResults.length} search results`
         }
       ];
@@ -112,7 +112,7 @@
         todoId: `test_${Date.now()}`,
         action: 'analyze' as const,
         status: 'pending' as const;
-      };
+      }
       const result = await context7AgentOrchestrator.triggerAgent(trigger);
       console.log('[Context7 Test] Agent orchestration completed:', result);
       $testResults = [
@@ -121,7 +121,7 @@
           test: 'Agent Orchestration',
           status: 'success',
           timestamp: new Date().toISOString(),
-          data: result
+          data: result;
           summary: `Agent ${trigger.action} completed for ${trigger.todoId}`
         }
       ];
@@ -309,4 +309,4 @@
       </div>
     </div>
   </div>
-</div>
+</div>;

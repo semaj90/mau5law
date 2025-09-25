@@ -100,30 +100,30 @@
       if (recordingStream) {
         recordingStream.getTracks.forEach((track) => track.stop());
   }
-    };
+    }
   });
   function generateId(): string {
     return Math.random.toString-substr(2, 9);
   }
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     if (target.files) {
       addFiles(Array.from(target.files));
   }}
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     addFiles(droppedFiles);
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     isDragOver = true;
   }
   function handleDragLeave() {
     isDragOver = false;
   }
-  function handlePaste(event: ClipboardEvent) {
+  function handlePaste(_event: ClipboardEvent) {
     if (!enablePasteUpload || disabled) return;
     const items = Array.from(event.clipboardData?.items || []);
     const files = items
@@ -182,7 +182,7 @@
         type: file.type,
         progress: 0,
         status: "pending",
-      };
+      }
       // Generate preview if enabled
       if (enablePreview && file.type.startsWith("image/")) {
         fileItem.preview = await generatePreview(file);
@@ -248,7 +248,7 @@
           file.type,
           compressionQuality
         );
-      };
+      }
       img.onerror = () => resolve(file);
       img.src = URL.createObjectURL(file);
     });
@@ -307,7 +307,7 @@
     formData.append("filename", fileItem.name);
     const response = await fetch(uploadUrl, {
       method: "POST",
-      body: formData
+      body: formData;
     });
     if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
       throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
@@ -332,7 +332,7 @@
       formData.append("fileId", fileItem.id);
       const response = await fetch(`${uploadUrl}/chunk`, {
         method: "POST",
-        body: formData
+        body: formData;
       });
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
@@ -383,11 +383,11 @@
       uploadFiles([fileId]);
   }}
   // Wrapper functions to handle event propagation
-  function handleCameraCaptureClick(event: CustomEvent | Event) {
+  function handleCameraCaptureClick(_event: CustomEvent | Event) {
     event.stopPropagation();
     startCameraCapture();
   }
-  function handleAudioRecordingClick(event: CustomEvent | Event) {
+  function handleAudioRecordingClick(_event: CustomEvent | Event) {
     event.stopPropagation();
     if (isRecording) {
       stopAudioRecording();
@@ -397,8 +397,8 @@
   async function startCameraCapture() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true
-        audio: false
+        video: true;
+        audio: false;
       });
       // Create video element for camera feed
       const video = document.createElement("video");
@@ -426,20 +426,20 @@
   }
     try {
       recordingStream = await navigator.mediaDevices.getUserMedia({
-        audio: true
+        audio: true;
       });
       mediaRecorder = new MediaRecorder(recordingStream);
       const chunks: Blob[] = [];
       mediaRecorder.ondataavailable = (event) => {
         chunks.push(event.data);
-      };
+      }
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(chunks, { type: "audio/wav" });
         const audioFile = new File([audioBlob], `recording-${Date.now()}.wav`, {
           type: "audio/wav",
         });
         addFiles([audioFile]);
-      };
+      }
       mediaRecorder.start();
       isRecording = true;
       notifications.add({
@@ -500,8 +500,8 @@
   <!-- Drop zone -->
   <div;
     bind:this={dropZone}
-    class="drop-zone-area"
-    class:drag-over={isDragOver};
+    class="drop-zone-area";
+    class:drag-over={isDragOver}
     class:disabled
     ondrop={handleDrop}
     role="button"

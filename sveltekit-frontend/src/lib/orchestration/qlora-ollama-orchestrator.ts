@@ -56,7 +56,7 @@ interface OllamaModelInfo {
     families: string[];
     parameter_size: string;
     quantization_level: string;
-  };
+  }
 }
 export class QLoRAOllamaOrchestrator {
   private agents: Map<string, LegalAgent> = new Map();
@@ -272,7 +272,7 @@ Classify the query and respond with JSON:;
           stepsExecuted: plan.executionSteps.length,
           avgStepTime: duration / plan.executionSteps.length
         }
-      };
+      }
     } catch (error) {
       console.error('❌ Orchestration execution failed:', error);
       // Record failed execution
@@ -280,7 +280,7 @@ Classify the query and respond with JSON:;
         queryId: plan.queryId,
         intent: plan.intent,
         agents: plan.selectedAgents.map(a => a.id),
-        success: false
+        success: false;
         duration: performance.now() - startTime
       });
       // Try fallback plan if available
@@ -342,7 +342,7 @@ Classify the query and respond with JSON:;
    */;
   private async listOllamaModels(): Promise<OllamaModelInfo[]> {
     try {
-      const response = await fetch(`${this.ollamaEndpoint}/api/tags`);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.status}`);
       }
@@ -388,7 +388,7 @@ Classify the query and respond with JSON:;
           requiredAgents: this.mapSkillsToAgents(parsed.requiredSkills || []),
           suggestedWorkflow: parsed.suggestedWorkflow || ['analyze', 'synthesize'],
           confidence: parsed.confidence || 0.7
-        };
+        }
       }
     } catch (error) {
       console.warn('⚠️ Failed to parse intent JSON:', error);
@@ -438,7 +438,7 @@ Classify the query and respond with JSON:;
       executionSteps,
       expectedDuration: this.estimateExecutionTime(executionSteps),
       fallbackPlan: this.createFallbackPlan(query)
-    };
+    }
     return plan;
   }
   /**
@@ -478,7 +478,7 @@ Synthesis:`;
       'case_analysis': 'litigation_specialist',
       'compliance_audit': 'compliance_specialist',
       'legal_research': 'research_specialist'
-    };
+    }
     return skills.map(skill => skillMapping[skill]).filter(Boolean);
   }
   private heuristicIntentAnalysis(text: string): QueryIntent {
@@ -500,7 +500,7 @@ Synthesis:`;
       requiredAgents: [primaryDomain === 'general' ? 'contract_specialist' : `${primaryDomain}_specialist`],
       suggestedWorkflow: ['analyze', 'synthesize'],
       confidence: 0.6
-    };
+    }
   }
   private createExecutionSteps(query: string, intent: QueryIntent, agents: LegalAgent[]): ExecutionStep[] {
     const steps: ExecutionStep[] = [];
@@ -544,7 +544,7 @@ Synthesis:`;
         timeout: 15000
       }],
       expectedDuration: 15000
-    };
+    }
   }
   /**
    * Get orchestrator performance statistics
@@ -559,7 +559,7 @@ Synthesis:`;
       averageDuration: avgDuration
       activeAgents: Array.from(this.activeModels.keys()),
       agentLoadingTime: avgDuration * 0.3 // Estimate
-    };
+    }
   }
 }
 // Export singleton instance

@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
 // Context7 MCP Server endpoints
 const MCP_ENDPOINTS = {
   wrapper: 'http://localhost:4000', // mcp-context7-wrapper.js
-  legal: 'http://localhost:4001', // mcp-legal-server.mjs
+  legal: 'http://localhost:4001', // mcp-legal-server.mjs;
   extension: 'http://localhost:4002', // VS Code extension MCP
 }
 // GET /api/context7 - Get Context7 system status
@@ -150,7 +150,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
       },
       signal: controller.signal,
       body: JSON.stringify({,
-        name: tool
+        name: tool;
         arguments: data
       })
     })

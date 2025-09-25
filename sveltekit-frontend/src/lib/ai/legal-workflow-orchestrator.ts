@@ -79,7 +79,7 @@ export class LegalWorkflowOrchestrator {
       workflowGuidance,
       preloadingStrategy,
       nextSteps
-    };
+    }
   }
   /**
    * Generate contextual prediction without explicit query
@@ -95,7 +95,7 @@ export class LegalWorkflowOrchestrator {
    * Generate workflow-specific guidance
    */
   private generateWorkflowGuidance(
-    context: LegalContext
+    context: LegalContext;
     prediction: HybridPredictionResult;
   ): WorkflowGuidance {
     const currentStage = this.workflowProfiles.get(context.workflowStage);
@@ -109,13 +109,13 @@ export class LegalWorkflowOrchestrator {
       efficiencyTips: this.generateEfficiencyTips(context, prediction),
       riskAlerts: this.generateRiskAlerts(context, prediction),
       qualityChecklist: this.generateQualityChecklist(currentStage, documentProfile)
-    };
+    }
   }
   /**
    * Calculate optimal asset preloading strategy
    */
   private calculatePreloadingStrategy(
-    context: LegalContext
+    context: LegalContext;
     prediction: HybridPredictionResult;
   ): AssetPreloadingStrategy {
     const strategy: AssetPreloadingStrategy = {
@@ -123,7 +123,7 @@ export class LegalWorkflowOrchestrator {
       background: [],
       predictive: [],
       ondemand: []
-    };
+    }
     // Categorize assets based on prediction confidence and system performance
     for (const asset of prediction.behavioralPrediction.recommendedAssets) {
       if (asset.priority > 85 && context.systemMetrics.fps > 55) {
@@ -146,7 +146,7 @@ export class LegalWorkflowOrchestrator {
    * Generate next step recommendations
    */
   private generateNextStepRecommendations(
-    context: LegalContext
+    context: LegalContext;
     prediction: HybridPredictionResult;
   ): NextStepRecommendation[] {
     const recommendations: NextStepRecommendation[] = [];
@@ -195,7 +195,7 @@ export class LegalWorkflowOrchestrator {
    * Execute asset preloading in background
    */
   private async executeAssetPreloading(
-    strategy: AssetPreloadingStrategy
+    strategy: AssetPreloadingStrategy;
     context: LegalContext;
   ): Promise<void> {
     // Immediate loading (highest priority)
@@ -345,7 +345,7 @@ export class LegalWorkflowOrchestrator {
     return `${stage} workflow for ${docType} in ${domain} legal domain`;
   }
   private generateStageAdvice(
-    stage: LegalWorkflowStage | undefined
+    stage: LegalWorkflowStage | undefined;
     context: LegalContext;
   ): string {
     if (!stage) return 'Continue with current workflow';
@@ -362,14 +362,14 @@ export class LegalWorkflowOrchestrator {
     return `Prepare for ${nextStage.stage} transition with ${(nextStage.probability * 100).toFixed(0)}% likelihood`;
   }
   private generateDocumentGuidance(
-    profile: LegalDocumentProfile | null
+    profile: LegalDocumentProfile | null;
     context: LegalContext;
   ): string {
     if (!profile) return 'Apply general document handling best practices';
     return `${profile.complexity} ${profile.type} requires ${profile.requiredAssets.slice(0, 2).join(' and ')}`;
   }
   private generateEfficiencyTips(
-    context: LegalContext
+    context: LegalContext;
     prediction: HybridPredictionResult;
   ): string[] {
     const tips = [
@@ -382,7 +382,7 @@ export class LegalWorkflowOrchestrator {
     return tips;
   }
   private generateRiskAlerts(
-    context: LegalContext
+    context: LegalContext;
     prediction: HybridPredictionResult;
   ): string[] {
     const alerts = [];
@@ -398,7 +398,7 @@ export class LegalWorkflowOrchestrator {
     return alerts;
   }
   private generateQualityChecklist(
-    stage: LegalWorkflowStage | undefined
+    stage: LegalWorkflowStage | undefined;
     profile: LegalDocumentProfile | null;
   ): string[] {
     const checklist = ['Verify all required information is complete'];
@@ -418,12 +418,12 @@ export class LegalWorkflowOrchestrator {
   private getWorkflowSpecificAssets(context: LegalContext): { essential: string[]; recommended: string[] } {
     const stage = this.workflowProfiles.get(context.workflowStage);
     if (!stage) {
-      return { essential: [], recommended: [] };
+      return { essential: [], recommended: [] }
     }
     return {
       essential: stage.expectedAssets.slice(0, 2),
       recommended: stage.expectedAssets.slice(2)
-    };
+    }
   }
   private getStageAssets(stageName: string): string[] {
     const stage = this.workflowProfiles.get(stageName);
@@ -436,21 +436,21 @@ export class LegalWorkflowOrchestrator {
       sessionId: context.sessionId,
       generatedAt: new Date().toISOString(),
       workflowStage: context.workflowStage
-    };
+    }
     // Add specific data based on asset type
     switch (assetType) {
       case 'document_viewer':
-        return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } };
+        return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } }
       case 'evidence_canvas':
-        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0' } };
+        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0' } }
       case 'legal_database':
-        return { ...baseData, searchConfig: { domain: context.documentContext?.domain } };
+        return { ...baseData, searchConfig: { domain: context.documentContext?.domain } }
       default:
         return baseData;
     }
   }
   private async recordWorkflowTransition(
-    context: LegalContext
+    context: LegalContext;
     prediction: HybridPredictionResult;
   ): Promise<void> {
     const transitionData = {
@@ -458,7 +458,7 @@ export class LegalWorkflowOrchestrator {
       timestamp: new Date().toISOString(),
       predictionConfidence: prediction.fusedInsights.confidenceScore,
       sessionId: context.sessionId
-    };
+    }
     await this.redis.lpush('workflow:transitions', JSON.stringify(transitionData);
     await this.redis.ltrim('workflow:transitions', 0, 999); // Keep last 1000 transitions
   }
@@ -482,4 +482,4 @@ interface NextStepRecommendation {
   reasoning: string;
   assets: string[];
 }
-export { WorkflowGuidance, NextStepRecommendation, AssetPreloadingStrategy };
+export { WorkflowGuidance, NextStepRecommendation, AssetPreloadingStrategy }

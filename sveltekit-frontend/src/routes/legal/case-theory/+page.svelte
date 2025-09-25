@@ -63,7 +63,7 @@
   });
   async function loadCaseData() {
     try {
-      const response = await fetch(`/api/v1/cases/${caseId}`);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const caseData = await (response as { ok?: unknown; json?: unknown }).json();
         caseTitle = caseData.title || caseData.name || 'Untitled Case';
@@ -80,7 +80,7 @@
   }
   async function loadCaseEvidence() {
     try {
-      const response = await fetch(`/api/v1/evidence/case/${caseId}`);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         evidenceItems = (data as { evidence?: unknown; results?: unknown; theories?: unknown }).evidence || [];
@@ -115,7 +115,7 @@
   }
   async function loadExistingTheories() {
     try {
-      const response = await fetch(`/api/legal/case-theory/${caseId}`);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         theories = (data as { evidence?: unknown; results?: unknown; theories?: unknown }).theories || [];
@@ -149,8 +149,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
-          theory: theoryData
-          evidence: evidenceItems
+          theory: theoryData;
+          evidence: evidenceItems;
           precedents: precedents.slice(0, 5);
         })
       });
@@ -168,7 +168,7 @@
           aiSuggestions: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).suggestions || [],
           createdAt: new Date(),
           updatedAt: new Date()
-        };
+        }
         theories = [builtTheory, ...theories];
         currentTheory = builtTheory;
         // Load detailed analysis
@@ -230,7 +230,7 @@
       ],
       createdAt: new Date(),
       updatedAt: new Date()
-    };
+    }
   }
   async function loadTheoryAnalysis(theory) {
     legalArguments = theory.legalArguments || [];
@@ -247,15 +247,15 @@
         logic: 0.9,
         presentation: 0.6;
       }
-    };
+    }
   }
   async function submitTheory(event) {
     event.preventDefault();
     if (!newTheoryForm.name.trim()) {
-      newTheoryForm.errors = { name: ['Theory name is required'] };
+      newTheoryForm.errors = { name: ['Theory name is required'] }
       return;
     }
-    newTheoryForm.errors = {};
+    newTheoryForm.errors = {}
     await buildTheoryWithAI(newTheoryForm);
     // Reset form
     newTheoryForm = {
@@ -263,7 +263,7 @@
       type: 'prosecution',
       strategy: 'evidence-based',
       description: '',
-      errors: };
+      errors: }
   }
   function selectTheory(theory) {
     currentTheory = theory;
@@ -327,6 +327,7 @@
     ];
   }
 </script>
+
 <svelte:head>
   <title>Case Theory Builder - AI Legal Reasoning</title>
   <meta name="description" content="AI-powered case theory building with logical reasoning and precedent analysis" />
@@ -346,7 +347,7 @@
           {/if}
         </div>
         <button
-          onclick={() => showTheoryDialog = true}
+          onclick={() => (showTheoryDialog = true)}
           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
         >
           <Plus class="h-4 w-4 mr-2" />
@@ -365,20 +366,23 @@
             <p class="text-sm text-gray-500">AI-powered legal reasoning</p>
           </div>
           <div class="p-6">
-            <OptimisticList
-              items={theories}
-            >
+            <OptimisticList items={theories}>
               {#snippet children({ item: theory, optimistic })}
-                            <div
+                <div
                   class="p-4 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md mb-3
                          {currentTheory?.id === theory.id ? 'border-purple-500 bg-purple-50' : 'hover:border-gray-300'}
                          {optimistic ? 'opacity-50' : ''}"
-                  role="button" tabindex="0"
+                  role="button"
+                  tabindex="0"
                   onclick={() => selectTheory(theory)}
                 >
                   <div class="flex items-start justify-between mb-2">
                     <h4 class="font-medium text-gray-900">{theory.name}</h4>
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getTheoryTypeColor(theory.type)}">
+                    <span
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getTheoryTypeColor(
+                        theory.type,
+                      )}"
+                    >
                       {theory.type}
                     </span>
                   </div>
@@ -395,8 +399,8 @@
                     </div>
                   </div>
                 </div>
-                                        {/snippet}
-                        </OptimisticList>
+              {/snippet}
+            </OptimisticList>
             {#if theories.length === 0}
               <div class="text-center py-8 text-gray-500">
                 <Brain class="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -416,7 +420,11 @@
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center space-x-3">
                   <h2 class="text-xl font-semibold text-gray-900">{currentTheory.name}</h2>
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {getTheoryTypeColor(currentTheory.type)}">
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {getTheoryTypeColor(
+                      currentTheory.type,
+                    )}"
+                  >
                     {currentTheory.type} Theory
                   </span>
                 </div>
@@ -445,7 +453,11 @@
                       <div class="text-sm text-gray-500 capitalize">{component}</div>
                       <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
                         <div
-                          class="h-2 rounded-full {score >= 0.8 ? 'bg-green-500' : score >= 0.6 ? 'bg-yellow-500' : 'bg-red-500'}"
+                          class="h-2 rounded-full {score >= 0.8
+                            ? 'bg-green-500'
+                            : score >= 0.6
+                              ? 'bg-yellow-500'
+                              : 'bg-red-500'}"
                           style="width: {score * 100}%"
                         ></div>
                       </div>
@@ -465,7 +477,9 @@
                 <div class="space-y-3">
                   {#each legalArguments as argument, index}
                     <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
-                      <div class="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-medium">
+                      <div
+                        class="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-medium"
+                      >
                         {index + 1}
                       </div>
                       <div class="text-sm text-gray-700">{argument}</div>
@@ -482,7 +496,9 @@
                 <div class="space-y-3">
                   {#each counterarguments as counterarg, index}
                     <div class="flex items-start space-x-3 p-3 bg-red-50 rounded-lg">
-                      <div class="flex-shrink-0 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-medium">
+                      <div
+                        class="flex-shrink-0 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-medium"
+                      >
                         {index + 1}
                       </div>
                       <div class="text-sm text-gray-700">{counterarg}</div>
@@ -502,7 +518,9 @@
                   {#each logicalChain as step, index}
                     <div class="flex items-start space-x-4">
                       <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                        <div
+                          class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-medium"
+                        >
                           {step.step}
                         </div>
                       </div>
@@ -601,7 +619,7 @@
             <h3 class="text-lg font-medium text-gray-900 mb-2">Select a Theory</h3>
             <p class="text-gray-600 mb-6">Choose a case theory from the list to view detailed AI analysis</p>
             <button
-              onclick={() => showTheoryDialog = true}
+              onclick={() => (showTheoryDialog = true)}
               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
             >
               <Plus class="h-4 w-4 mr-2" />
@@ -623,14 +641,13 @@
       </div>
       <form onsubmit={submitTheory} class="p-6 space-y-4">
         <div>
-          <label for="theoryName" class="block text-sm font-medium text-gray-700 mb-1">
-            Theory Name
-          </label>
+          <label for="theoryName" class="block text-sm font-medium text-gray-700 mb-1"> Theory Name </label>
           <input
             id="theoryName"
             type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-            placeholder="e.g., Self-Defense Theory";
+            placeholder="e.g., Self-Defense Theory"
+            ;
             bind:value={newTheoryForm.name}
             required
           />
@@ -639,12 +656,11 @@
           {/if}
         </div>
         <div>
-          <label for="theoryType" class="block text-sm font-medium text-gray-700 mb-1">
-            Theory Type
-          </label>
+          <label for="theoryType" class="block text-sm font-medium text-gray-700 mb-1"> Theory Type </label>
           <select
             id="theoryType"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-purple-500 focus:border-purple-500";
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-purple-500 focus:border-purple-500"
+            ;
             bind:value={newTheoryForm.type}
           >
             {#each theoryTypes as type}
@@ -653,12 +669,11 @@
           </select>
         </div>
         <div>
-          <label for="strategy" class="block text-sm font-medium text-gray-700 mb-1">
-            Strategy Approach
-          </label>
+          <label for="strategy" class="block text-sm font-medium text-gray-700 mb-1"> Strategy Approach </label>
           <select
             id="strategy"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-purple-500 focus:border-purple-500";
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-purple-500 focus:border-purple-500"
+            ;
             bind:value={newTheoryForm.strategy}
           >
             {#each strategyTypes as strategy}
@@ -667,21 +682,20 @@
           </select>
         </div>
         <div>
-          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
-            Description
-          </label>
+          <label for="description" class="block text-sm font-medium text-gray-700 mb-1"> Description </label>
           <textarea
             id="description"
             rows="3"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-            placeholder="Describe the core elements of this theory...";
+            placeholder="Describe the core elements of this theory..."
+            ;
             bind:value={newTheoryForm.description}
           ></textarea>
         </div>
         <div class="flex justify-end space-x-3 pt-4">
           <button
             type="button"
-            onclick={() => showTheoryDialog = false}
+            onclick={() => (showTheoryDialog = false)}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
             disabled={isBuilding}
           >

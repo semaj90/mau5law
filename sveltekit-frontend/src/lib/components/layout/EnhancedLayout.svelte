@@ -22,7 +22,7 @@
     variant = 'legal',
     user = null,
     hideHeader = false,
-    fullWidth = false
+    fullWidth = false,
   }: Props = $props();
   let sidebarOpen = $state(false);
   let mounted = $state(false);
@@ -40,23 +40,27 @@
     const baseItems = [
       { href: '/', label: 'Home', icon: '🏠' },
       { href: '/cases', label: 'Cases', icon: '📋' },
-      { href: '/evidence', label: 'Evidence', icon: '🔍' }
+      { href: '/evidence', label: 'Evidence', icon: '🔍' },
     ];
     const yorhaItems = [
       { href: '/yorha', label: 'YoRHa Terminal', icon: '⚡' },
       { href: '/yorha/dashboard', label: 'Command Center', icon: '🎮' },
-      { href: '/demo', label: 'Demos', icon: '🚀' }
+      { href: '/demo', label: 'Demos', icon: '🚀' },
     ];
     const adminItems = [
       { href: '/admin', label: 'Admin', icon: '⚙️' },
       { href: '/admin/users', label: 'Users', icon: '👥' },
-      { href: '/admin/performance', label: 'Performance', icon: '📊' }
+      { href: '/admin/performance', label: 'Performance', icon: '📊' },
     ];
     switch (layoutVariant) {
-      case 'yorha': return [...baseItems, ...yorhaItems];
-      case 'admin': return [...baseItems, ...adminItems];
-      case 'minimal': return [];
-      default: return baseItem;
+      case 'yorha':
+        return [...baseItems, ...yorhaItems];
+      case 'admin':
+        return [...baseItems, ...adminItems];
+      case 'minimal':
+        return [];
+      default:
+        return baseItem;
     }
   });
   function toggleSidebar() {
@@ -66,6 +70,7 @@
     mounted = true;
   });
 </script>
+
 <div class="enhanced-layout" data-variant={layoutVariant} class:full-width={fullWidth}>
   {#if !hideHeader && showNavigation}
     <header class="layout-header">
@@ -81,22 +86,21 @@
             <a
               href={(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).href}
               class="nav-item"
-              class:active={currentPath === (item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).href}
+              class:active={currentPath ===
+                (item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).href}
               aria-label={(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).label}
             >
-              <span class="nav-icon">{(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).icon}</span>
-              <span class="nav-label">{(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).label}</span>
+              <span class="nav-icon"
+                >{(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).icon}</span
+              >
+              <span class="nav-label"
+                >{(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).label}</span
+              >
             </a>
           {/each}
         </nav>
         {#if showSidebar}
-          <button
-            class="sidebar-toggle nes-btn"
-            onclick={toggleSidebar}
-            aria-label="Toggle sidebar"
-          >
-            ☰
-          </button>
+          <button class="sidebar-toggle nes-btn" onclick={toggleSidebar} aria-label="Toggle sidebar"> ☰ </button>
         {/if}
       </div>
     </header>
@@ -134,6 +138,7 @@
     <div class="yorha-scan-lines"></div>
   {/if}
 </div>
+
 <style>
   .enhanced-layout {
     min-height: 100vh;
@@ -274,7 +279,7 @@ d;
     align-items: center;
     min-height: 200px;
   }
-  /* YoRHa scan lines effect */
+/* YoRHa scan lines effect */ {}
   .yorha-scan-lines {
     position: fixed;
 d;
@@ -282,17 +287,17 @@ d;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      transparent 50%,
-      rgba(255, 215, 0, 0.03) 51%,
-      rgba(255, 215, 0, 0.03) 52%,
-      transparent 53%
+background: linear-gradient( {}
+transparent 50%, {}
+rgba(255, 215, 0, 0.03) 51%, {}
+rgba(255, 215, 0, 0.03) 52%, {}
+transparent 53% {}
     );
     background-size: 100% 4px;
     pointer-events: none;
     z-index: 1;
   }
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 768px) {
     .header-nav {
       display: none;

@@ -6,7 +6,7 @@
   // Subscribe to dialog store
   let dialogs = $state<Dialog.Root[]>([]);
   $effect(() => {
-    const unsubscribe = dialogStore.subscribe((value) => {
+    const unsubscribe = dialogStore.subscribe(value => {
       dialogs = valu;
     });
     return unsubscrib;
@@ -22,6 +22,7 @@
     dialogStore.reject(dialog.id, 'cancelled');
   }
 </script>
+
 <!-- Render active dialogs -->
 {#each dialogs as dialog (dialog.id)}
   <YoRHaDialog
@@ -33,7 +34,7 @@
     persistent={dialog.persistent}
     value={dialog.value}
     onclose={() => handleDialogClose(dialog)}
-    onconfirm={(event) => handleDialogConfirm(dialog, event)}
+    onconfirm={event => handleDialogConfirm(dialog, event)}
     oncancel={() => handleDialogCancel(dialog)}
   />
 {/each}

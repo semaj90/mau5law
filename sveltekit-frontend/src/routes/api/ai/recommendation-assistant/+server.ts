@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break
       default:
         return json({,
-          success: false
+          success: false;
           error: 'Invalid recommendation type'
         }, { status: 400 })
     }

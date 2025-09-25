@@ -94,6 +94,7 @@ https://svelte.dev/e/js_parse_error -->
     return "0%";
   }
 </script>
+
 <!-- Notification Container -->
 <div
   class="document-notifications fixed {position === 'top-right'
@@ -101,19 +102,13 @@ https://svelte.dev/e/js_parse_error -->
     : 'bottom-4 right-4'} z-50 w-96 max-w-sm"
 >
   <!-- Connection Status & Toggle -->
-  <div
-    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 mb-2 p-3"
-  >
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 mb-2 p-3">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-2">
         <span class="text-lg">{connectionStatusIcon}</span>
-        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Document Updates
-        </span>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300"> Document Updates </span>
         {#if activeUpdatesList.length > 0}
-          <span
-            class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
-          >
+          <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
             {activeUpdatesList.length} active
           </span>
         {/if}
@@ -131,11 +126,9 @@ https://svelte.dev/e/js_parse_error -->
         <button
           onclick={toggleNotifications}
           class="text-gray-500 hover:text-gray-700 p-1 rounded"
-          title={showNotifications
-            ? "Hide notifications"
-            : "Show notifications"}
+          title={showNotifications ? 'Hide notifications' : 'Show notifications'}
         >
-          {showNotifications ? "🔽" : "🔼"}
+          {showNotifications ? '🔽' : '🔼'}
         </button>
       </div>
     </div>
@@ -149,28 +142,20 @@ https://svelte.dev/e/js_parse_error -->
   </div>
   <!-- Active Updates (Always Visible) -->
   {#if activeUpdatesList.length > 0}
-    <div
-      class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 mb-2"
-    >
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 mb-2">
       <div class="p-3 border-b border-gray-200 dark:border-gray-700">
-        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">
-          🔄 Processing Updates
-        </h4>
+        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">🔄 Processing Updates</h4>
       </div>
       {#each activeUpdatesList as update (update.id)}
-        <div
-          class="p-3 border-b border-gray-100 dark:border-gray-600 last:border-b-0"
-        >
+        <div class="p-3 border-b border-gray-100 dark:border-gray-600 last:border-b-0">
           <div class="flex items-start justify-between">
             <div class="flex-1">
               <div class="text-sm text-gray-700 dark:text-gray-300 mb-1">
-                {update.data.title ||
-                  `Document ${update.documentId.substring(0, 8)}...`}
+                {update.data.title || `Document ${update.documentId.substring(0, 8)}...`}
               </div>
               {#if update.data.chunksProcessed != null && update.data.totalChunks != null}
                 <div class="text-xs text-gray-500 mb-2">
-                  Processing chunk {update.data.chunksProcessed} of {update.data
-                    .totalChunks}
+                  Processing chunk {update.data.chunksProcessed} of {update.data.totalChunks}
                 </div>
                 <!-- Progress Bar -->
                 <div class="w-full bg-gray-200 rounded-full h-2 mb-1">
@@ -181,9 +166,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {:else}
                 <div class="flex items-center space-x-2 text-xs text-gray-500">
-                  <div
-                    class="animate-spin w-3 h-3 border border-blue-600 border-t-transparent rounded-full"
-                  ></div>
+                  <div class="animate-spin w-3 h-3 border border-blue-600 border-t-transparent rounded-full"></div>
                   <span>Processing...</span>
                 </div>
               {/if}
@@ -203,9 +186,7 @@ https://svelte.dev/e/js_parse_error -->
       transitislide={{ duration: 200 }}
     >
       <div class="p-3 border-b border-gray-200 dark:border-gray-700">
-        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">
-          📋 Recent Updates
-        </h4>
+        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">📋 Recent Updates</h4>
       </div>
       {#each visibleNotifications as notification ((notification as { data?: unknown; id?: unknown }).id)}
         {@const typedNotification = notification as UpdateNotification}
@@ -220,25 +201,20 @@ https://svelte.dev/e/js_parse_error -->
               </span>
               <div class="flex-1 min-w-0">
                 <div class="text-sm text-gray-700 dark:text-gray-300 mb-1">
-                  {#if typedNotification.type === "document_changed"}
-                    Document "{typedNotification.data.title || "Untitled"}" was
-                    modified
-                  {:else if typedNotification.type === "reembedding_started"}
-                    Re-embedding "{typedNotification.data.title || "document"}"
-                  {:else if typedNotification.type === "reembedding_complete"}
-                    Completed re-embedding with {typedNotification.data
-                      .chunksProcessed || 0} chunks
-                  {:else if typedNotification.type === "reranking_complete"}
-                    Updated {typedNotification.data.queriesReranked || 0} search
-                    queries
+                  {#if typedNotification.type === 'document_changed'}
+                    Document "{typedNotification.data.title || 'Untitled'}" was modified
+                  {:else if typedNotification.type === 'reembedding_started'}
+                    Re-embedding "{typedNotification.data.title || 'document'}"
+                  {:else if typedNotification.type === 'reembedding_complete'}
+                    Completed re-embedding with {typedNotification.data.chunksProcessed || 0} chunks
+                  {:else if typedNotification.type === 'reranking_complete'}
+                    Updated {typedNotification.data.queriesReranked || 0} search queries
                     {#if typedNotification.data.similarityImprovement}
                       <span class="text-green-600">
-                        (+{(
-                          typedNotification.data.similarityImprovement * 100
-                        ).toFixed(1)}% accuracy)
+                        (+{(typedNotification.data.similarityImprovement * 100).toFixed(1)}% accuracy)
                       </span>
                     {/if}
-                  {:else if typedNotification.type === "error"}
+                  {:else if typedNotification.type === 'error'}
                     <span class="text-red-600">
                       Error: {typedNotification.data.error}
                     </span>
@@ -247,7 +223,7 @@ https://svelte.dev/e/js_parse_error -->
                 {#if typedNotification.data.priority}
                   <span
                     class="inline-block px-2 py-1 text-xs rounded-full {getPriorityColor(
-                      typedNotification.data.priority
+                      typedNotification.data.priority,
                     )}"
                   >
                     {typedNotification.data.priority} priority
@@ -263,10 +239,7 @@ https://svelte.dev/e/js_parse_error -->
       {/each}
       {#if !showAll && notifications.length > maxVisible}
         <div class="p-3 text-center">
-          <button
-            onclick={() => (showAll = true)}
-            class="text-xs text-blue-600 hover:text-blue-800"
-          >
+          <button onclick={() => (showAll = true)} class="text-xs text-blue-600 hover:text-blue-800">
             Show all {notifications.length} notifications
           </button>
         </div>
@@ -284,6 +257,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+
 <style>
   .document-notifications {
     /* Ensure notifications appear above other elements */;

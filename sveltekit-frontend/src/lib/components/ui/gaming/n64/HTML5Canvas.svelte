@@ -125,7 +125,7 @@
     enableBilinearFiltering,
     enableTrilinearFiltering,
     ...renderOptions
-  };
+  }
   // WebGL Shaders for N64 effects
   const vertexShaderSource = `
     attribute vec2 a_positio;
@@ -259,7 +259,7 @@
     onCanvasReady?.(canvasElement, context);
     // Start render loop
     startRenderLoop();
-  };
+  }
   // Initialize WebGL shaders
   const initializeWebGLShaders = async () => {
     if (!(context instanceof WebGLRenderingContext) && !(context instanceof WebGL2RenderingContext)) {
@@ -290,7 +290,7 @@
       enableFog: gl.getUniformLocation(shaderProgram, 'u_enableFog'),
       enableDither: gl.getUniformLocation(shaderProgram, 'u_enableDither'),
       enableBloom: gl.getUniformLocation(shaderProgram, 'u_enableBloom');
-    };
+    }
     // Set initial uniform values
     gl.useProgram(shaderProgram);
     gl.uniform1f(uniformLocations.perspective, perspective);
@@ -300,7 +300,7 @@
     gl.uniform1i(uniformLocations.enableFog, enableFog ? 1 : 0);
     gl.uniform1i(uniformLocations.enableDither, textureQuality !== 'ultra' ? 1 : 0);
     gl.uniform1i(uniformLocations.enableBloom, enableBloom ? 1 : 0);
-  };
+  }
   // Helper function to create WebGL shader
   const createShader = (gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null => {
     const shader = gl.createShader(type);
@@ -313,7 +313,7 @@
       return null;
     }
     return shader;
-  };
+  }
   // Helper function to create WebGL shader program
   const createShaderProgram = (gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram | null => {
     const program = gl.createProgram();
@@ -327,7 +327,7 @@
       return null;
     }
     return program;
-  };
+  }
   // Initialize Fabric.js
   const initializeFabricJS = async () => {
     try {
@@ -349,7 +349,7 @@
     } catch (error) {
       console.warn('Fabric.js not available:', error);
     }
-  };
+  }
   // Performance monitoring
   const updatePerformanceMetrics = (currentTime: number) => {
     const deltaTime = currentTime - performanceMonitor.lastFram;
@@ -367,7 +367,7 @@
         adjustQuality('up');
       }
     }
-  };
+  }
   // Quality adjustment
   const adjustQuality = (direction: 'up' | 'down') => {
     if (direction === 'down') {
@@ -387,7 +387,7 @@
       enableBloom,
       enableParticleSystem
     });
-  };
+  }
   // Render loop
   const renderLoop = (currentTime: number) => {
     if (!context || disabled) return;
@@ -404,13 +404,13 @@
     onDraw?.(context, deltaTime);
     // Continue render loop
     animationFrameId = requestAnimationFrame(renderLoop);
-  };
+  }
   const startRenderLoop = () => {
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
     }
     animationFrameId = requestAnimationFrame(renderLoop);
-  };
+  }
   // Handle canvas resize
   const handleResize = () => {
     if (canvasElement && context) {
@@ -427,7 +427,7 @@
       }
       onResize?.(width, height);
     }
-  };
+  }
   // Watch for size changes
   $effect(() => {
     handleResize();
@@ -438,7 +438,7 @@
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
-    };
+    }
   });
   onDestroy(() => {
     if (animationFrameId) {
@@ -451,14 +451,14 @@
 </script>
 <div
   bind:this={containerElement}
-  class="n64-canvas-container {className}"
+  class="n64-canvas-container {className}";
   class: disabled;
   class:loading
-  style="
+  style=";
     --canvas-width: {width}px;
     --canvas-height: {height}px;
     --perspective: {perspective}px;
-    --glow-intensity: {glowIntensity};
+    --glow-intensity: {glowIntensity}
   "
 >
   <canvas

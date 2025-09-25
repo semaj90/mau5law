@@ -22,8 +22,8 @@ export interface ChatMessage {
       documentType?: string;
       jurisdiction?: string;
       practiceArea?: string;
-    };
-  };
+    }
+  }
 }
 export interface LegalDocument {
   id?: number;
@@ -42,7 +42,7 @@ export interface GraphNode {
   id?: number;
   nodeId: string; // Neo4j node ID,
   label: string;
-  position: { x: number; y: number; z?: number }; // Layout coordinates
+  position: { x: number; y: number; z?: number } // Layout coordinates
   embedding: number[]; // 384d vector from nomic-embed,
   rankingMatrix: number[]; // 4x4 matrix flattened to 16 elements
   varianceMatrix: number[]; // 4x4 variance matrix,
@@ -52,7 +52,7 @@ export interface GraphNode {
     practiceArea?: string;
     confidence: number;
     lastUpdated: Date;
-  };
+  }
   connections: string[]; // Connected node IDs
 }
 export interface GraphEdge {
@@ -61,7 +61,7 @@ export interface GraphEdge {
   toNodeId: string;
   weight: number;
   edgeType: 'citation' | 'reference' | 'similarity' | 'precedent';
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface UserSession {
   id?: number;
@@ -117,7 +117,7 @@ export class LegalAIDatabase extends Dexie {
       (obj as any).createdAt = new Date();
     });
     this.graphNodes.hook('updating', (modifications, primKey, obj, trans) => {
-      (modifications as any).metadata = { ...(obj as any).metadata, lastUpdated: new Date() };
+      (modifications as any).metadata = { ...(obj as any).metadata, lastUpdated: new Date() }
     });
   }
   // ========================================================================
@@ -160,7 +160,7 @@ export class LegalAIDatabase extends Dexie {
   // ========================================================================
   // LEGAL DOCUMENT METHODS
   // ========================================================================
-  async addLegalDocument(document: Omit<LegalDocument, 'id' | 'created' | 'modified'>): Promise<number> {
+  async addLegalDocument(_document: Omit<LegalDocument, 'id' | 'created' | 'modified'>): Promise<number> {
     return await this.legalDocuments.add({
       ...document,
       created: new Date(),
@@ -247,7 +247,7 @@ export class LegalAIDatabase extends Dexie {
   // ========================================================================
   // CACHE METHODS
   // ========================================================================
-  async setCache(key: string, data: any, ttlMs = 300000): Promise<number> {
+  async setCache(_key: string, data: any, ttlMs = 300000): Promise<number> {
     const expiresAt = new Date(Date.now() + ttlMs);
     const size = JSON.stringify(data).length;
     // Remove existing entry
@@ -261,7 +261,7 @@ export class LegalAIDatabase extends Dexie {
       hitCount: 0
     });
   }
-  async getCache(key: string): Promise<any | null> {
+  async getCache(_key: string): Promise<any | null> {
     const entry = await this.cache.where('key').equals(key).first();
     if (!entry) return null;
     // Check expiration
@@ -296,7 +296,7 @@ export class LegalAIDatabase extends Dexie {
       const newActivity = {
         ...activity,
         timestamp: new Date()
-      };
+      }
       session.activities.push(newActivity);
       await this.userSessions.where('sessionId').equals(sessionId).modify({
         activities: session.activities
@@ -346,7 +346,7 @@ export class LegalAIDatabase extends Dexie {
         totalSize: cacheSize
       },
       estimatedSize: cacheSize + (chatCount * 1000) + (documentsCount * 5000) // Rough estimate
-    };
+    }
   }
   async cleanupDatabase(): Promise<void> {
     // Clear expired cache
@@ -373,7 +373,7 @@ export class LegalAIDatabase extends Dexie {
       graphEdges: await this.graphEdges.toArray(),
       userSessions: await this.userSessions.toArray(),
       exportedAt: new Date().toISOString()
-    };
+    }
     return data;
   }
   async importData(data: any): Promise<void> {
@@ -390,7 +390,7 @@ export class LegalAIDatabase extends Dexie {
 // ============================================================================
 // SINGLETON INSTANCE
 // ============================================================================
-export const db = new LegalAIDatabase();
+export // removed unused db assignment
 // ============================================================================
 // REACTIVE STORES FOR SVELTE COMPONENTS
 // ============================================================================

@@ -17,5 +17,5 @@ export interface LegalDocument {
   content: string;
   stage: WorkflowStage;
   verification?: VerificationStatus;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }

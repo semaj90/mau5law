@@ -86,8 +86,8 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       parse_time_ms: parseTime
       stringify_time_ms: 0,
       wasm_acceleration
-    };
-    return { data: result, stats };
+    }
+    return { data: result, stats }
   }
   async stringifyJSON(data: any): Promise<any> {
     const startTime = performance.now();
@@ -115,8 +115,8 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       parse_time_ms: 0,
       stringify_time_ms: stringifyTime
       wasm_acceleration
-    };
-    return { json: result, stats };
+    }
+    return { json: result, stats }
   }
   // === Compression with LZ4 ===
   async compressJSON(data: any): Promise<any> {
@@ -138,7 +138,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
         compression_ratio,
         stringify_time_ms: stats.stringify_time_ms + compressionTime
       }
-    };
+    }
   }
   async decompressJSON<T = any>(compressed: Uint8Array): Promise<any> {
     const startTime = performance.now();
@@ -158,7 +158,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
         compression_ratio: decompressed.length / compressed.length,
         parse_time_ms: stats.parse_time_ms + decompressionTime
       }
-    };
+    }
   }
   // === WebAssembly Implementation ===
   private async parseJSONWithWASM<T>(jsonString: string): Promise<T> {
@@ -271,9 +271,9 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     }
     return result;
   }
-  private getReplacer(): ((key: string, value: any) => any) | undefined {
+  private getReplacer(): ((_key: string, value: any) => any) | undefined {
     if (this.optimization_level === 'high') {
-      return (key: string, value: any) => {
+      return (_key: string, value: any) => {
         // Remove null values and empty objects/arrays
         if (value === null) return undefined;
         if (Array.isArray(value) && value.length === 0) return undefined;
@@ -284,7 +284,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
           return Math.round(value * 1000) / 1000; // Round to 3 decimal places
         }
         return value;
-      };
+      }
     }
     return undefined;
   }
@@ -373,13 +373,13 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   }
   // === Public API ===
   getPerformanceStats(): Record<string, { avg: number; min: number; max: number; count: number }> {
-    const result: Record<string, { avg: number; min: number; max: number; count: number }> = {};
+    const result: Record<string, { avg: number; min: number; max: number; count: number }> = {}
     for (const [operation, times] of this.performance_stats) {
       if (times.length === 0) continue;
       const avg = times.reduce((sum, time) => sum + time, 0) / times.length;
       const min = Math.min(...times);
       const max = Math.max(...times);
-      result[operation] = { avg, min, max, count: times.length };
+      result[operation] = { avg, min, max, count: times.length }
     }
     return result;
   }
@@ -416,7 +416,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     return optimized;
   }
   private removeUnusedImports(code: string): string {
-    const lines = code.split('\n');
+    // removed unused lines assignment
     const imports = new Set<string>();
     const usages = new Set<string>();
     // Extract imports
@@ -458,7 +458,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
         const match = line.match(/export\s+(?:const|let|var|function|class)\s+(\w+)/);
         return match ? match[1] : null;
       }).filter(Boolean);
-      return otherLines.join('\n') + '\n\n' + `export { ${exports.join(', ')} };`;
+      return otherLines.join('\n') + '\n\n' + `export { ${exports.join(', ')} }`;
     }
     return code;
   }
@@ -494,17 +494,17 @@ export async function optimizeJSONForTransport(data: any): Promise<any> {
     const { compressed, stats: compressStats } = await jsonWasmOptimizer.compressJSON(data);
     if (compressStats.compression_ratio > 1.5) {
       return {
-        optimized: compressed
+        optimized: compressed;
         stats: compressStats
         useCompression: true
-      };
+      }
     }
   }
   return {
-    optimized: json
+    optimized: json;
     stats: stringifyStats
     useCompression: false
-  };
+  }
 }
 export async function parseOptimizedTransport<T = any>(
   data: string | Uint8Array

@@ -95,7 +95,7 @@ https://svelte.dev/e/attribute_duplicate -->
     const categories = ['main', 'demo', 'ai', 'legal', 'dev', 'admin'];
     const stats: unknown = {
       total: allRoutes.length,
-      categories: };
+      categories: }
     categories.forEach.length;
     });
     // Count by status

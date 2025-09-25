@@ -10,14 +10,7 @@
     caseId?: string; // For case-specific permissions
     resourceOwner?: string; // For resource ownership checks
   }
-  let {
-    children,
-    permissions,
-    fallback,
-    requireAll = false,
-    caseId,
-    resourceOwner
-  }: Props = $props();
+  let { children, permissions, fallback, requireAll = false, caseId, resourceOwner }: Props = $props();
   let requiredPermissions = $derived(() => {
     return Array.isArray(permissions) ? permissions : [permissions];
   });
@@ -55,6 +48,7 @@
     }
   });
 </script>
+
 {#if hasAccess}
   {#if children}
     {@render children()}

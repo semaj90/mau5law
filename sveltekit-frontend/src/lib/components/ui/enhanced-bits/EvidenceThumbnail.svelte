@@ -79,6 +79,7 @@
     }
   });
 </script>
+
 <div class={containerClasses} onclick={handleThumbnailClick} {...restProps}>
   {#if evidence.thumbnailUrl}
     <!-- Image/Video Thumbnail -->
@@ -86,7 +87,7 @@
       src={evidence.thumbnailUrl}
       alt={evidence.title}
       class="w-full h-full object-cover"
-      onload={() => isLoaded = true}
+      onload={() => (isLoaded = true)}
     />
     <!-- AI Highlights Overlay -->
     {#if showAIOverlay && isLoaded && aiHighlights.length > 0}
@@ -121,10 +122,7 @@
   {:else}
     <!-- Fallback Icon Display -->
     <div class="w-full h-full flex items-center justify-center bg-gray-200">
-      <svelte:component
-        this={getEvidenceIcon(evidence.type)}
-        class="w-8 h-8 {getTypeColor(evidence.type)}"
-      />
+      <svelte:component this={getEvidenceIcon(evidence.type)} class="w-8 h-8 {getTypeColor(evidence.type)}" />
     </div>
   {/if}
   <!-- Type Badge -->
@@ -142,16 +140,10 @@
   <!-- Controls Overlay -->
   {#if showControls && size !== 'sm'}
     <div class="absolute bottom-1 left-1 flex gap-1 opacity-0 hover:opacity-100 transition-opacity">
-      <button
-        class="p-1 bg-black/70 text-white rounded hover:bg-black/90"
-        title="View Full"
-      >
+      <button class="p-1 bg-black/70 text-white rounded hover:bg-black/90" title="View Full">
         <Eye class="w-3 h-3" />
       </button>
-      <button
-        class="p-1 bg-black/70 text-white rounded hover:bg-black/90"
-        title="Download"
-      >
+      <button class="p-1 bg-black/70 text-white rounded hover:bg-black/90" title="Download">
         <Download class="w-3 h-3" />
       </button>
     </div>
@@ -169,6 +161,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   /* Additional hover effects for legal evidence */
   .nes-container: hover {
@@ -176,7 +169,7 @@
     transform: scale(1.02);
   }
   /* Special styling for critical evidence */
-  .nes-container[data-priority="critical"] {
+  .nes-container[data-priority='critical'] {
     border-color: #dc3545;
     box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
   }

@@ -59,7 +59,7 @@ class CacheService {
       this.useRedis = false;
     }
   }
-  async get<T>(key: string): Promise<T | null> {
+  async get<T>(_key: string): Promise<T | null> {
     try {
       if (this.useRedis && this.redisClient) {
         const result = await this.redisClient.get(key);
@@ -84,7 +84,7 @@ class CacheService {
       return null;
     }
   }
-  async set<T>(key: string, value: T, ttlMs: number = CACHE_TTL): Promise<void> {
+  async set<T>(_key: string, value: T, ttlMs: number = CACHE_TTL): Promise<void> {
     try {
       // Accept small second TTLs for back-compat
       if (typeof ttlMs === 'number' && Number.isInteger(ttlMs) && ttlMs > 0 && ttlMs <= 86400) {
@@ -119,11 +119,11 @@ class CacheService {
     }
   }
   // Convenience: accept seconds TTL and rely on internal gzip/base64 storage
-  async setCompressed<T>(key: string, value: T, ttlSeconds: number): Promise<void> {
+  async setCompressed<T>(_key: string, value: T, ttlSeconds: number): Promise<void> {
     const ttl = Number.isFinite(ttlSeconds) ? Math.max(1, Math.floor(ttlSeconds)) : 3600;
     return this.set(key, value, ttl);
   }
-  async del(key: string): Promise<void> {
+  async del(_key: string): Promise<void> {
     try {
       if (this.useRedis && this.redisClient) {
         await this.redisClient.del(key);
@@ -134,7 +134,7 @@ class CacheService {
       console.warn('Cache delete error:', (e as Error).message || e);
     }
   }
-  async incr(key: string): Promise<number> {
+  async incr(_key: string): Promise<number> {
     try {
       if (this.useRedis && this.redisClient) {
         return await this.redisClient.incr(key);
@@ -150,7 +150,7 @@ class CacheService {
       return 1; // Default fallback
     }
   }
-  async expire(key: string, seconds: number): Promise<void> {
+  async expire(_key: string, seconds: number): Promise<void> {
     try {
       if (this.useRedis && this.redisClient) {
         await this.redisClient.expire(key, seconds);
@@ -194,7 +194,7 @@ class CacheService {
     return null;
   }
   // Hash operations for complex caching
-  async hget(key: string, field: string): Promise<string | null> {
+  async hget(_key: string, field: string): Promise<string | null> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.hget === 'function') {
         return await this.redisClient.hget(key, field);
@@ -208,7 +208,7 @@ class CacheService {
       return null;
     }
   }
-  async hset(key: string, field: string, value: any): Promise<void> {
+  async hset(_key: string, field: string, value: any): Promise<void> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.hset === 'function') {
         const payload = typeof value === 'string' ? value : JSON.stringify(value);
@@ -271,16 +271,16 @@ class CacheService {
     await this.set(key, results, 5 * 60 * 1000);
   }
   // Compute shader/modules
-  async getShader(key: string): Promise<string | null> {
+  async getShader(_key: string): Promise<string | null> {
     const cacheKey = `shader:${this.hashString(key)}`;
     return this.get<string>(cacheKey);
   }
-  async setShader(key: string, compiledWGSL: string, ttlMs: number = 6 * 60 * 60 * 1000): Promise<void> {
+  async setShader(_key: string, compiledWGSL: string, ttlMs: number = 6 * 60 * 60 * 1000): Promise<void> {
     const cacheKey = `shader:${this.hashString(key)}`;
     await this.set(cacheKey, compiledWGSL, ttlMs);
   }
   // Internals
-  private getFromMemory<T>(key: string): T | null {
+  private getFromMemory<T>(_key: string): T | null {
     const item = memoryCache.get(key) as CacheItem<T> | undefined;
     if (!item) return null;
     const now = Date.now();
@@ -294,7 +294,7 @@ class CacheService {
     }
     return (item as { timestamp?: any; ttl?: any; data?: any }).data;
   }
-  private setInMemory<T>(key: string, value: T, ttlMs: number): void {
+  private setInMemory<T>(_key: string, value: T, ttlMs: number): void {
     if (memoryCache.size >= MEMORY_CACHE_MAX_SIZE) {
       const firstKey = memoryCache.keys().next().value;
       if (firstKey) memoryCache.delete(firstKey);
@@ -325,12 +325,12 @@ export const cacheEmbedding = (text: string, embedding: number[], model?: string
 export const getCachedEmbedding = (text: string, model?: string) => cache.getEmbedding(text, model);
 export const cacheSearchResults = (
   query: string
-  searchType: string
+  searchType: string;
   results: any[]
   filters?: unknown
 ) => cache.setSearchResults(query, searchType, results, filters as any);
 export const getCachedSearchResults = (query: string, searchType: string, filters?: unknown) =>
   cache.getSearchResults(query, searchType, filters as any);
-export const cacheShader = (key: string, compiledWGSL: string, ttlMs?: number) =>
+export const cacheShader = (_key: string, compiledWGSL: string, ttlMs?: number) =>
   cache.setShader(key, compiledWGSL, ttlMs);
-export const getCachedShader = (key: string) => cache.getShader(key);
+export const getCachedShader = (_key: string) => cache.getShader(key);

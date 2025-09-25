@@ -32,7 +32,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
   private textTexture?: THREE.CanvasTexture;
   private lodLevel: number = 1;
   private distanceToCamera: number = 0;
-  constructor(options: YoRHaButtonAA3DOptions = {}) {
+  constructor(_options: YoRHaButtonAA3DOptions = {}) {
     const style = YoRHaButtonAA3D.getVariantStyle(options.variant || 'primary', options.size || 'medium');
     super({
       ...style,
@@ -343,7 +343,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
       bevelSize: radius * 0.1,
       bevelThickness: depth * 0.1,
       curveSegments: curveResolution
-    };
+    }
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
   }
   private createEnhancedText(): void {
@@ -549,7 +549,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
       medium: 0.6,
       large: 0.8,
       xl: 1.0
-    };
+    }
     return heights[size as keyof typeof heights] || 0.6;
   }
   private static getVariantStyle(variant: string, size: string): Partial<YoRHaAAStyle> {
@@ -558,7 +558,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
       medium: { width: 2, fontSize: 0.16 },
       large: { width: 3, fontSize: 0.2 },
       xl: { width: 4, fontSize: 0.24 }
-    };
+    }
     const variantStyles = {
       primary: {
         backgroundColor: YORHA_COLORS.primary.beige,
@@ -617,11 +617,11 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
           animation: 'scan' as const
         }
       }
-    };
+    }
     return {
       ...sizeStyles[size as keyof typeof sizeStyles],
       ...variantStyles[variant as keyof typeof variantStyles]
-    };
+    }
   }
   // Enhanced public methods
   public setText(text: string): void {
@@ -709,7 +709,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         rippleMaterial.dispose();
         this.removeCustomAnimation('ripple');
       }
-    };
+    }
     this.addCustomAnimation('ripple', rippleAnimation);
   }
   public override dispose(): void {

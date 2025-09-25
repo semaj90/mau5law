@@ -1,44 +1,44 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 // Clean, self-contained analysis endpoint that avoids referencing missing DB schema symbols.
 // - Validates input
 // - Calls local Ollama at http://localhost:11434/api/generate (if available)
 // - Returns structured JSON analysis
 // Note: Re-enable DB interactions once your drizzle schema and table symbols are available.
-import { json } from '@sveltejs/kit'
-import { createHash } from 'node:crypto'
+import { json } from '@sveltejs/kit';
+import { createHash } from 'node:crypto';
 type AnalysisRequest = {
-  text?: string
-  documentId?: string
-  evidenceId?: string
-  caseId?: string
-  documentType?: 'evidence' | 'case_file' | 'legal_document' | 'ocr_scan'
-  analysisType?: 'classification' | 'extraction' | 'reasoning' | 'compliance' | 'chain_of_custody'
-  useThinkingStyle?: boolean
-  contextDocuments?: string[]
-  userId?: string
+  text?: string;
+  documentId?: string;
+  evidenceId?: string;
+  caseId?: string;
+  documentType?: 'evidence' | 'case_file' | 'legal_document' | 'ocr_scan';
+  analysisType?: 'classification' | 'extraction' | 'reasoning' | 'compliance' | 'chain_of_custody';
+  useThinkingStyle?: boolean;
+  contextDocuments?: string[];
+  userId?: string;
 }
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = (await request.json()) as AnalysisRequest
-    const startTime = Date.now()
+    const body = (await request.json()) as AnalysisRequest;
+    const startTime = Date.now();
     // Basic validation
     if (!body.text && !body.evidenceId && !body.caseId) {
-      return json({ error: 'Missing required field: text, evidenceId, or caseId' }, { status: 400 })
+      return json({ error: 'Missing required field: text, evidenceId, or caseId' }, { status: 400 });
     }
     // For safety this implementation does not depend on DB lookups; prefer provided text
-    const documentText = body.text ?? ''
-    const documentMetadata: any = {}; // placeholder for callers that provide metadata
+    const documentText = body.text ?? '';
+    const documentMetadata: any = {} // placeholder for callers that provide metadata
     const contextualInfo = ''; // no case context resolved in this simplified handler
-    const modelName = body.useThinkingStyle ? 'gemma3-legal:latest' : 'gemma3-legal:latest'
+    const modelName = body.useThinkingStyle ? 'gemma3-legal:latest' : 'gemma3-legal:latest';
     const prompt = buildEnhancedAnalysisPrompt(
       documentText,
       body.analysisType ?? 'classification',
       body.documentType ?? 'legal_document',
       !!body.useThinkingStyle,
       contextualInfo,
-      documentMetadata
-    )
-    let aiContent = ''
+      documentMetadata,
+    );
+    let aiContent = '';
     try {
       const resp = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
@@ -50,23 +50,26 @@ export const POST: RequestHandler = async ({ request }) => {
           options: {
             temperature: 0.2,
             top_p: 0.9,
-            num_ctx: 4096
-          }
-        })
-      })
+            num_ctx: 4096,
+          },
+        }),
+      });
       if (!resp.ok) {
-        console.warn(`Ollama API returned ${resp.status}: ${resp.statusText}`)
-        aiContent = 'AI analysis unavailable (service error)'
+        console.warn(`Ollama API returned ${resp.status}: ${resp.statusText}`);
+        aiContent = 'AI analysis unavailable (service error)';
       } else {
-        const data = await resp.json()
-        aiContent = data.response || 'No analysis returned'
+        const data = await resp.json();
+        aiContent = data.response || 'No analysis returned';
       }
     } catch (fetchError) {
-      console.warn('Could not connect to Ollama:', fetchError)
-      aiContent = 'AI analysis unavailable (connection error)'
+      console.warn('Could not connect to Ollama:', fetchError);
+      aiContent = 'AI analysis unavailable (connection error)';
     }
     // Generate a request ID for logging
-    const requestId = createHash('sha256').update(`${Date.now()}-${JSON.stringify(body)}`).digest('hex').slice(0, 8)
+    const requestId = createHash('sha256')
+      .update(`${Date.now()}-${JSON.stringify(body)}`)
+      .digest('hex')
+      .slice(0, 8);
     const result = {
       requestId,
       analysis: aiContent,
@@ -77,16 +80,16 @@ export const POST: RequestHandler = async ({ request }) => {
         textLength: documentText.length,
         processingTimeMs: Date.now() - startTime,
         timestamp: new Date().toISOString(),
-        model: modelName
-      }
+        model: modelName,
+      },
     }
-    return json(result)
+    return json(result);
   } catch (error: any) {
-    console.error('Analysis endpoint error:', error)
+    console.error('Analysis endpoint error:', error);
     return json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message: 'Unknown error' },
-      { status: 500 }
-    )
+      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 },
+    );
   }
 }
 function buildEnhancedAnalysisPrompt(
@@ -95,7 +98,7 @@ function buildEnhancedAnalysisPrompt(
   documentType: string,
   useThinkingStyle: boolean,
   contextualInfo: string,
-  documentMetadata: any
+  documentMetadata: any,
 ): string {
   const basePrompt = `Analyze this ${documentType} document for ${analysisType}.
 Document Text:
@@ -106,7 +109,7 @@ Provide a structured analysis focusing on:
 2. Legal relevance
 3. Compliance issues (if any)
 4. Recommendations
-Format: JSON with clear sections for each point.`
+Format: JSON with clear sections for each point.`;
   if (useThinkingStyle) {
     return `<thinking>
 Let me analyze this ${documentType} for ${analysisType} purposes.
@@ -114,7 +117,7 @@ First, I'll examine the content structure and identify key elements...
 Then I'll assess legal implications and compliance requirements...
 Finally, I'll provide actionable recommendations...
 </thinking>
-${basePrompt}`
+${basePrompt}`;
   }
-  return basePrompt
+  return basePrompt;
 }

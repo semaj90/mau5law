@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types.js'
 // Handles document changes with automatic re-embedding and re-ranking
 import { documentUpdateLoop } from "$lib/services/documentUpdateLoop"
 import { documents } from "$lib/db/schema"
-import { URL } from "url"
+
 // ============================================================================
 // UPDATE DOCUMENT WITH AUTO RE-EMBEDDING
 // ============================================================================
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json({
       success: true
-      data: result
+      data: result;
       timestamp: new Date().toISOString()
     })
   } catch (err: any) {

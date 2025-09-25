@@ -38,7 +38,7 @@ export interface ChatContext {
     enabled: boolean;
     documents: string[];
     vectorResults: any[];
-  };
+  }
 }
 export type ChatEvent =
   | { type: "SEND_MESSAGE"; message: string }
@@ -57,12 +57,12 @@ export type ChatEvent =
   | { type: "MODEL_READY" }
   | { type: "MODEL_ERROR"; error: Error }
   | { type: "CLEAR_ERROR" }
-  | { type: "RESET_CHAT" };
+  | { type: "RESET_CHAT" }
 const initialContext: ChatContext = {
   messages: [],
   conversations: [],
   currentConversation: null
-  error: null
+  error: null;
   stream: null
   modelStatus: "unknown"
   }); const settings = {
@@ -75,11 +75,11 @@ const initialContext: ChatContext = {
     emotionalMode: false
   },
   contextInjection: {
-    enabled: false
+    enabled: false;
     documents: [],
     vectorResults: []
   }
-};
+}
 // Services
 const sendMessageService = fromPromise(async ({ input }: { input: { context: ChatContext } }) => {
   const { context } = input;
@@ -104,7 +104,7 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
   return data;
 });
 const checkModelService = fromPromise(async () => {
-  const response = await fetch("/api/ai/model-status");
+  // removed unused response assignment
   if (!response.ok) {
     throw new Error("Model not ready");
   }
@@ -140,7 +140,7 @@ export const chatMachine = setup({
                   messages: [],
                   created: new Date(),
                   updated: new Date()
-                };
+                }
               },
               messages: () => []
             })
@@ -186,7 +186,7 @@ export const chatMachine = setup({
             actions: assign({
               settings: ({ context, event }) => {
                 if (event.type !== "UPDATE_SETTINGS") return context.settings;
-                return { ...context.settings, ...event.settings };
+                return { ...context.settings, ...event.settings }
               }
             })
           },
@@ -196,9 +196,9 @@ export const chatMachine = setup({
                 if (event.type !== "INJECT_CONTEXT") return context.contextInjection;
                 return {
                   ...context.contextInjection,
-                  enabled: true
+                  enabled: true;
                   documents: event.documents
-                };
+                }
               }
             })
           },
@@ -233,7 +233,7 @@ export const chatMachine = setup({
               role: "user",
               timestamp: new Date(),
               conversationId: context.currentConversation?.id
-            };
+            }
             return [...context.messages, message];
           },
           currentConversation: ({ context, event }) => {
@@ -247,13 +247,13 @@ export const chatMachine = setup({
                 messages: [],
                 created: new Date(),
                 updated: new Date()
-              };
+              }
               return conversation;
             }
             return {
               ...context.currentConversation,
               updated: new Date()
-            };
+            }
           }
         }),
         invoke: {
@@ -270,7 +270,7 @@ export const chatMachine = setup({
                   timestamp: new Date(),
                   conversationId: context.currentConversation?.id,
                   metadata: event.output.metadata
-                };
+                }
                 return [...context.messages, response];
               }
             })
@@ -310,7 +310,7 @@ export const chatMachine = setup({
                   role: "assistant",
                   timestamp: new Date(),
                   conversationId: context.currentConversation?.id
-                };
+                }
                 return [...context.messages, newMessage];
               }
             })

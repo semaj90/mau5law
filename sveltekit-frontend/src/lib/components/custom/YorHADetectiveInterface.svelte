@@ -70,7 +70,7 @@
     const updateTime = () => {
       const now = new Date();
       currentTime = now.toTimeString().slice(0, 5);
-    };
+    }
     updateTime();
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
@@ -88,9 +88,9 @@
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       sender: 'detective',
-      content: currentInput
+      content: currentInput;
       timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0');
-    };
+    }
     messages.push(userMessage);
     const input = currentInput;
     currentInput = '';
@@ -102,7 +102,7 @@
       content: '9S is ANALYZING...',
       timestamp: currentTime + ':' + (new Date().getSeconds() + 1).toString().padStart(2, '0'),
       isTyping: true;
-    };
+    }
     messages.push(typingMessage);
     // Simulate AI response
     setTimeout(() => {
@@ -115,7 +115,7 @@
         sender: 'assistant',
         content: generateDetectiveResponse(input),
         timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0');
-      };
+      }
       messages.push(aiResponse);
     }, 2000);
   }
@@ -129,18 +129,19 @@
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
-  function selectSidebarItem(index: number) {
+  function selectSidebarItem(_index: number) {
     sidebarItems = sidebarItems.map((item, i) => ({
       ...item,
       active: i === index;
     }));
   }
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter') {
       sendMessage();
     }
   }
 </script>
+
 <div class="yorha-detective-interface">
   <!-- Sidebar Navigation -->
   <div class="sidebar">
@@ -194,10 +195,7 @@
       </div>
       <div class="header-right">
         <div class="search-section">
-          <Input
-            placeholder="Search cases, evidence, persons..."
-            class="search-input"
-          />
+          <Input placeholder="Search cases, evidence, persons..." class="search-input" />
           <select class="filter-select">
             <option>All</option>
             <option>Active Cases</option>
@@ -231,9 +229,7 @@
             <span class="status-dot active"></span>
             <span class="status-text">9S AI ASSISTANT</span>
           </div>
-          <div class="system-description">
-            YoRHa AI Assistant Online - Detective Support System Active
-          </div>
+          <div class="system-description">YoRHa AI Assistant Online - Detective Support System Active</div>
         </div>
         <div class="messages-container" bind:this={messagesContainer}>
           {#each messages as message (message.id)}
@@ -277,19 +273,14 @@
               onkeypress={handleKeyPress}
               disabled={isTyping}
             />
-            <Button
-              class="send-btn"
-              onclick={sendMessage}
-              disabled={!currentInput.trim() || isTyping}
-            >
-              ⚡SEND
-            </Button>
+            <Button class="send-btn" onclick={sendMessage} disabled={!currentInput.trim() || isTyping}>⚡SEND</Button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <style>
   .yorha-detective-interface {
     display: flex;

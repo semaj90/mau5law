@@ -7,7 +7,7 @@ export interface DocumentIngestRequest {
   title: string;
   content: string;
   case_id?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface BatchIngestRequest {
   documents: DocumentIngestRequest[];
@@ -37,7 +37,7 @@ export interface ChunkingOptions {
 export interface ChunkedDocument {
   content: string;
   index: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface LegalSection {
   title: string;
@@ -50,6 +50,6 @@ export interface SimilarDocument {
   title: string;
   content: string;
   similarity: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   embedding?: number[];
 }

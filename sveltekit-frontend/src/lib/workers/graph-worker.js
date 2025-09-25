@@ -37,7 +37,7 @@ class GraphWorker {
                 resolve();
             };
             request.onupgradeneeded = (event) => {
-                const db = event.target.result;
+                // removed unused db assignment
                 // Graph snapshots store
                 if (!db.objectStoreNames.contains('graph_snapshots')) {
                     const snapshotStore = db.createObjectStore('graph_snapshots', { keyPath: 'id' });

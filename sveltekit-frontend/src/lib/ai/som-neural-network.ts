@@ -8,7 +8,7 @@ import '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
 }
 export interface SOMConfig {
-  gridSize: { width: number; height: number };
+  gridSize: { width: number; height: number }
   learningRate: number;
   neighborhoodRadius: number;
   epochs: number;
@@ -17,7 +17,7 @@ export interface SOMConfig {
   inputDimension: number;
 }
 export interface SOMNode {
-  position: { x: number; y: number };
+  position: { x: number; y: number }
   weights: Float32Array;
   activationLevel: number;
   legalContext: {
@@ -25,7 +25,7 @@ export interface SOMNode {
     importance: number;
     jurisdiction: string;
     practiceArea: string[];
-  };
+  }
 }
 export interface SOMDecomposition {
   clusters: SOMCluster[];
@@ -41,11 +41,11 @@ export interface SOMCluster {
   nodes: string[];
   legalSignificance: number;
   conceptSimilarity: number;
-  boundingBox: { x: number; y: number; width: number; height: number };
+  boundingBox: { x: number; y: number; width: number; height: number }
 }
 export interface LegalConceptMapping {
   conceptId: string;
-  somPosition: { x: number; y: number };
+  somPosition: { x: number; y: number }
   legalTerms: string[];
   citationNetwork: string[];
   importance: number;
@@ -76,7 +76,7 @@ export class SOMNeuralNetwork {
       enableGPU: config.enableGPU !== undefined ? config.enableGPU: true
       decayRate: config.decayRate || 0.99,
       inputDimension: config.inputDimension || 384
-    };
+    }
     this.somGrid = [];
     this.initializeCache();
   }
@@ -141,7 +141,7 @@ export class SOMNeuralNetwork {
             jurisdiction: 'unknown',
             practiceArea: []
           }
-        };
+        }
       }
     }
     // Create weight tensor for GPU computation
@@ -224,7 +224,7 @@ export class SOMNeuralNetwork {
       ...decomposition,
       processingTime,
       convergenceHistory: this.trainingHistory.map(h => h.quantizationError)
-    };
+    }
     // Cache the result
     if (this.cache) {
       await this.cache.set(cacheKey, result, { type: "document", ttl: 3600 });
@@ -259,7 +259,7 @@ export class SOMNeuralNetwork {
     const y = flatIndex % width;
     inputTensor.dispose();
     distances.dispose();
-    return { x, y };
+    return { x, y }
   }
   private findBMUCPU(inputSample: number[]): { x: number; y: number } {
     let minDistance = Infinity;
@@ -274,7 +274,7 @@ export class SOMNeuralNetwork {
         }
       }
     }
-    return { x: bmuX, y: bmuY };
+    return { x: bmuX, y: bmuY }
   }
   private calculateDistance(a: number[] | Float32Array, b: number[] | Float32Array): number {
     let sum = 0;
@@ -384,7 +384,7 @@ export class SOMNeuralNetwork {
       topologyMap,
       legalConcepts,
       decompositionQuality
-    };
+    }
   }
   private async identifyClusters(): Promise<SOMCluster[]> {
     const clusters: SOMCluster[] = [];
@@ -459,7 +459,7 @@ export class SOMNeuralNetwork {
         width: maxX - minX + 1,
         height: maxY - minY + 1
       }
-    };
+    }
   }
   private calculateClusterSimilarity(nodes: string[]): number {
     if (nodes.length < 2) return 1.0;
@@ -559,7 +559,7 @@ export class SOMNeuralNetwork {
       ...decomposition,
       processingTime: 0, // Already computed
       convergenceHistory: this.trainingHistory.map(h => h.quantizationError)
-    };
+    }
   }
   private shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];

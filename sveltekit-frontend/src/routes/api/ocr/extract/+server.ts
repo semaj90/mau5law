@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { data } = await worker.recognize(canvas)
         await worker.terminate()
         ocrResults.push({
-          page: pageNum
+          page: pageNum;
           text: (data as { text?: any; confidence?: any }).text,
           confidence: (data as { text?: any; confidence?: any }).confidence,
           method: 'ocr'

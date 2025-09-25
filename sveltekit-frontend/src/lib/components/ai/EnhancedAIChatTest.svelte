@@ -76,7 +76,7 @@ if (browser) {
   async function checkSystemHealth() {
     try {
       connectionStatus = 'checking';
-      const response = await fetch('/api/system/check');
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         isConnected = data.services?.ollama?.status === 'connected';
@@ -117,14 +117,14 @@ if (browser) {
       role: 'user' as const,
       content: currentMessage.trim(),
       timestamp: new Date(),
-    };
+    }
     const loadingMessage = {
       id: 'loading',
       role: 'assistant' as const,
       content: 'Thinking...',
       timestamp: new Date(),
-      loading: true
-    };
+      loading: true;
+    }
     // Add messages and clear input
     messages = [...messages, userMessage, loadingMessage];
     const messageContent = currentMessag;
@@ -153,7 +153,7 @@ if (browser) {
               })),
             {
               role: 'user',
-              content: messageContent
+              content: messageContent;
             },
           ],
         }),
@@ -177,7 +177,7 @@ if (browser) {
           model: 'gemma3-legal-enhanced',
           gpu: 'RTX 3060 Ti',
         },
-      };
+      }
       messages = [...messages, assistantMessage];
       if (reader) {
   let fullContent = $state('');
@@ -185,7 +185,7 @@ if (browser) {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n');
+          // removed unused lines assignment
           for (const line of lines) {
             if (line.trim() && line.startsWith('data: ')) {
               try {
@@ -217,7 +217,7 @@ if (browser) {
           role: 'assistant',
           content: `I apologize, but I encountered an error: ${error.message}. Please check that the Ollama service is running and try again.`,
           timestamp: new Date(),
-          error: true
+          error: true;
         },
       ];
     } finally {
@@ -225,7 +225,7 @@ if (browser) {
     }
   }
   // Handle Enter key
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -258,7 +258,7 @@ if (browser) {
       timestamp: new Date().toISOString(),
       caseId,
       messages: messages.filter((m) => !m.loading),
-    };
+    }
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: 'application/json',
     });
@@ -295,20 +295,21 @@ if (browser) {
     }
   }
 </script>
+
 <Dialog.Root bind:open>
   <Dialog.Trigger>
     <Button variant="ghost" class="gap-2 bits-btn bits-btn">
-<MessageCircle class="h-4 w-4" />
+      <MessageCircle class="h-4 w-4" />
       {title}
-</Button>
+    </Button>
   </Dialog.Trigger>
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 bg-black/50 z-50" />
     <Dialog.Content
-      class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl max-h-[80vh] bg-white rounded-lg shadow-lg z-50 flex flex-col">
+      class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl max-h-[80vh] bg-white rounded-lg shadow-lg z-50 flex flex-col"
+    >
       <!-- Header -->
-      <div
-        class="flex items-center justify-between p-4 border-b bg-gradient-to-r from-blue-50 to-purple-50">
+      <div class="flex items-center justify-between p-4 border-b bg-gradient-to-r from-blue-50 to-purple-50">
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-2">
             <Bot class="h-5 w-5 text-blue-600" />
@@ -325,10 +326,7 @@ if (browser) {
           <div class="flex items-center gap-2 px-2 py-1 rounded-md bg-white/50">
             {#snippet statusIndicator()}
               {@const StatusIcon = getStatusIcon()}
-              <StatusIcon
-                class="h-4 w-4 {getStatusColor()} {connectionStatus === 'checking'
-                  ? 'animate-spin'
-                  : ''}" />
+              <StatusIcon class="h-4 w-4 {getStatusColor()} {connectionStatus === 'checking' ? 'animate-spin' : ''}" />
               <span class="text-xs {getStatusColor()}">
                 {connectionStatus === 'checking'
                   ? 'Checking...'
@@ -340,20 +338,20 @@ if (browser) {
             {@render statusIndicator()}
           </div>
           <!-- Action Buttons -->
-          <Button class="bits-btn"
+          <Button
+            class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={downloadConversation}
-            disabled={messages.length <= 1}>
-<Download class="h-4 w-4" />
-</Button>
+            disabled={messages.length <= 1}
+          >
+            <Download class="h-4 w-4" />
+          </Button>
           <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages} disabled={messages.length <= 1}>
-<Trash2 class="h-4 w-4" />
-</Button>
+            <Trash2 class="h-4 w-4" />
+          </Button>
           <Dialog.Close>
-            <Button class="bits-btn" variant="ghost" size="sm">
-✕
-</Button>
+            <Button class="bits-btn" variant="ghost" size="sm">✕</Button>
           </Dialog.Close>
         </div>
       </div>
@@ -363,8 +361,7 @@ if (browser) {
           {#each messages as message (message.id)}
             <div class="flex gap-3 {message.role === 'user' ? 'justify-end' : 'justify-start'}">
               {#if message.role === 'assistant'}
-                <div
-                  class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                   <Bot class="h-4 w-4 text-blue-600" />
                 </div>
               {/if}
@@ -373,18 +370,25 @@ if (browser) {
                   ? 'bg-blue-600 text-white'
                   : message.error
                     ? 'bg-red-50 border-red-200'
-                    : 'bg-gray-50'} nes-container">
+                    : 'bg-gray-50'} nes-container"
+              >
                 <div class="text-sm whitespace-pre-wrap">
                   {message.content}
                 </div>
                 {#if message.metadata}
                   <div class="flex items-center gap-2 mt-2 pt-2 border-t border-current/20">
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.metadata.model || 'AI'}</span>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                      >{message.metadata.model || 'AI'}</span
+                    >
                     {#if message.metadata.provider}
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.metadata.provider}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        >{message.metadata.provider}</span
+                      >
                     {/if}
                     {#if message.metadata.gpu}
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.metadata.gpu}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        >{message.metadata.gpu}</span
+                      >
                     {/if}
                   </div>
                 {/if}
@@ -393,8 +397,7 @@ if (browser) {
                 </div>
               </div>
               {#if message.role === 'user'}
-                <div
-                  class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
                   <User class="h-4 w-4 text-white" />
                 </div>
               {/if}
@@ -411,17 +414,19 @@ if (browser) {
             placeholder={isConnected ? 'Ask your legal question...' : 'Connecting to AI service...'}
             disabled={!isConnected || isLoading}
             class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            keydown={handleKeydown} />
+            keydown={handleKeydown}
+          />
           <Button
             onclick={sendMessage}
             disabled={!currentMessage.trim() || !isConnected || isLoading}
-            class="px-4 bits-btn bits-btn">
-{#if isLoading}
+            class="px-4 bits-btn bits-btn"
+          >
+            {#if isLoading}
               <Loader2 class="h-4 w-4 animate-spin" />
             {:else}
               <Send class="h-4 w-4" />
             {/if}
-</Button>
+          </Button>
         </div>
         <div class="flex items-center justify-between mt-2">
           <div class="text-xs text-gray-500">
@@ -437,7 +442,9 @@ if (browser) {
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-<style>/* Custom styles for enhanced appearance */ :global(.chat-message-content) {
+
+<style>/* Custom styles for enhanced appearance */ {}
+  :global(.chat-message-content) {
     line-height: 1.6;
   }
   :global(.chat-message-content p) {

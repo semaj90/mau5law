@@ -7,9 +7,23 @@
   import { Badge } from '$lib/components/ui/badge';
   // Icons
   import {
-    Settings, Users, Activity, Database, Cpu, HardDrive,
-    Shield, BarChart3, Clock, CheckCircle, AlertTriangle,
-    RefreshCw, Eye, Zap, Server, Network, Monitor
+    Settings,
+    Users,
+    Activity,
+    Database,
+    Cpu,
+    HardDrive,
+    Shield,
+    BarChart3,
+    Clock,
+    CheckCircle,
+    AlertTriangle,
+    RefreshCw,
+    Eye,
+    Zap,
+    Server,
+    Network,
+    Monitor,
   } from 'lucide-svelte';
   // Svelte 5 runes
   let systemStats = $state({
@@ -20,7 +34,7 @@
     totalDocuments: 0,
     processedDocuments: 0,
     aiAnalyses: 0,
-    uptime: '0d 0h 0m'
+    uptime: '0d 0h 0m',
   });
   let systemHealth = $state({
     database: true,
@@ -28,7 +42,7 @@
     aiService: true,
     fileSystem: true,
     gpu: false,
-    vectorSearch: true
+    vectorSearch: true,
   });
   let recentActivity = $state([]);
   let isLoading = $state(true);
@@ -45,7 +59,7 @@
   });
   async function loadSystemStats() {
     try {
-      const response = await fetch('/api/admin/stats');
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         systemStats = data;
@@ -59,8 +73,8 @@
           totalDocuments: 1847,
           processedDocuments: 1523,
           aiAnalyses: 3421,
-          uptime: '2d 14h 32m'
-        };
+          uptime: '2d 14h 32m',
+        }
       }
     } catch (error) {
       console.error('Failed to load system stats:', error);
@@ -68,7 +82,7 @@
   }
   async function loadSystemHealth() {
     try {
-      const response = await fetch('/api/admin/health');
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         systemHealth = data.services || systemHealth;
@@ -81,7 +95,7 @@
   }
   async function loadRecentActivity() {
     try {
-      const response = await fetch('/api/admin/activity');
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         recentActivity = data.activities || [];
@@ -94,7 +108,7 @@
             user: 'john.doe@law.com',
             description: 'Created new case: Smith v. Johnson',
             timestamp: new Date(Date.now() - 300000).toISOString(),
-            status: 'success'
+            status: 'success',
           },
           {
             id: 2,
@@ -102,7 +116,7 @@
             user: 'jane.smith@law.com',
             description: 'Completed AI analysis on contract dispute',
             timestamp: new Date(Date.now() - 900000).toISOString(),
-            status: 'success'
+            status: 'success',
           },
           {
             id: 3,
@@ -110,8 +124,8 @@
             user: 'admin@legal-ai.com',
             description: 'Administrator login from 192.168.1.100',
             timestamp: new Date(Date.now() - 1800000).toISOString(),
-            status: 'info'
-          }
+            status: 'info',
+          },
         ];
       }
     } catch (error) {
@@ -119,11 +133,7 @@
     }
   }
   async function refreshData() {
-    await Promise.all([
-      loadSystemStats(),
-      loadSystemHealth(),
-      loadRecentActivity()
-    ]);
+    await Promise.all([loadSystemStats(), loadSystemHealth(), loadRecentActivity()]);
     lastUpdated = new Date();
   }
   function getHealthIcon(isHealthy: boolean) {
@@ -134,10 +144,14 @@
   }
   function getActivityIcon(type: string) {
     switch (type) {
-      case 'case_created': return User;
-      case 'ai_analysis': return Cpu;
-      case 'user_login': return Shield;
-      default: return Activity;
+      case 'case_created':
+        return User;
+      case 'ai_analysis':
+        return Cpu;
+      case 'user_login':
+        return Shield;
+      default:
+        return Activity;
     }
   }
   function formatTimeAgo(timestamp: string) {
@@ -150,6 +164,7 @@
     return `${Math.floor(diffMins / 1440)}d ago`;
   }
 </script>
+
 <svelte:head>
   <title>Admin Dashboard - Legal AI Platform</title>
   <meta name="description" content="Administrative dashboard for the Legal AI Platform" />
@@ -162,53 +177,34 @@
         <Shield class="w-8 h-8 text-primary" />
         Admin Dashboard
       </h1>
-      <p class="nes-text is-disabled mt-2">
-        Legal AI Platform system administration and monitoring
-      </p>
+      <p class="nes-text is-disabled mt-2">Legal AI Platform system administration and monitoring</p>
     </div>
     <div class="flex items-center gap-3">
       <Badge variant="secondary" class="gap-1">
         <Clock class="w-3 h-3" />
         Updated {formatTimeAgo(lastUpdated.toISOString())}
       </Badge>
-      <Button
-        variant="ghost"
-        onclick={refreshData}
-        disabled={isLoading}
-        class="gap-2"
-      >
-<RefreshCw class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" />
+      <Button variant="ghost" onclick={refreshData} disabled={isLoading} class="gap-2">
+        <RefreshCw class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" />
         Refresh
       </Button>
     </div>
   </div>
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <button class="nes-btn h-20 flex-col gap-2"
-      onclick={() => goto('/admin/users')}
-      variant="ghost"
-    >
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/users')} variant="ghost">
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
     </button>
-    <button class="nes-btn h-20 flex-col gap-2"
-      onclick={() => goto('/admin/cluster')}
-      variant="ghost"
-    >
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/cluster')} variant="ghost">
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
     </button>
-    <button class="nes-btn h-20 flex-col gap-2"
-      onclick={() => goto('/admin/gpu-demo')}
-      variant="ghost"
-    >
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/gpu-demo')} variant="ghost">
       <Cpu class="w-6 h-6" />
       <span>GPU Monitor</span>
     </button>
-    <button class="nes-btn h-20 flex-col gap-2"
-      onclick={() => goto('/system-status')}
-      variant="ghost"
-    >
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/system-status')} variant="ghost">
       <Monitor class="w-6 h-6" />
       <span>System Status</span>
     </button>
@@ -284,19 +280,10 @@
           <Activity class="w-5 h-5" />
           System Health
         </div>
-        <div>
-          Real-time status of core system components
-        </div>
+        <div>Real-time status of core system components</div>
       </div>
       <div class="space-y-4">
-        {#each [
-          { key: 'database', label: 'PostgreSQL Database', icon: Database },
-          { key: 'redis', label: 'Redis Cache', icon: HardDrive },
-          { key: 'aiService', label: 'AI Service', icon: Cpu },
-          { key: 'vectorSearch', label: 'Vector Search', icon: Network },
-          { key: 'fileSystem', label: 'File System', icon: HardDrive },
-          { key: 'gpu', label: 'GPU Acceleration', icon: Zap }
-        ] as service}
+        {#each [{ key: 'database', label: 'PostgreSQL Database', icon: Database }, { key: 'redis', label: 'Redis Cache', icon: HardDrive }, { key: 'aiService', label: 'AI Service', icon: Cpu }, { key: 'vectorSearch', label: 'Vector Search', icon: Network }, { key: 'fileSystem', label: 'File System', icon: HardDrive }, { key: 'gpu', label: 'GPU Acceleration', icon: Zap }] as service}
           <div class="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
             <div class="flex items-center gap-3">
               <service.icon class="w-4 h-4 nes-text is-disabled" />
@@ -322,15 +309,19 @@
           <Clock class="w-5 h-5" />
           Recent Activity
         </div>
-        <div>
-          Latest system events and user actions
-        </div>
+        <div>Latest system events and user actions</div>
       </div>
       <div class="space-y-4">
         {#if recentActivity.length > 0}
           {#each recentActivity as activity}
             {@const ActivityIcon = getActivityIcon(activity.type)}
-            <div class="flex items-start gap-3 p-3 border-l-4 {activity.status === 'success' ? 'border-green-500 bg-green-50' : activity.status === 'error' ? 'border-red-500 bg-red-50' : 'border-blue-500 bg-blue-50'} rounded-r-lg">
+            <div
+              class="flex items-start gap-3 p-3 border-l-4 {activity.status === 'success'
+                ? 'border-green-500 bg-green-50'
+                : activity.status === 'error'
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-blue-500 bg-blue-50'} rounded-r-lg"
+            >
               <ActivityIcon class="w-4 h-4 mt-1 nes-text is-disabled" />
               <div class="flex-1">
                 <p class="text-sm font-medium">{activity.description}</p>
@@ -350,4 +341,5 @@
       </div>
     </div>
   </div>
-</div>;
+</div>
+;

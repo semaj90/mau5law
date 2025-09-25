@@ -23,8 +23,8 @@ const client = postgres(DATABASE_URL, {
     vector: {
       to: 1184,
       from: [1184],
-      serialize: (value: number[]) => `[${value.join(',')}]`,
-      parse: (value: string) => {
+      serialize: (_value: number[]) => `[${value.join(',')}]`,
+      parse: (_value: string) => {
         const matches = value.match(/^\[(.*)\]$/);
         if (!matches) return [];
         return matches[1] ? matches[1].split(',').map(Number) : [];
@@ -95,7 +95,7 @@ export async function getDatabaseHealth(): Promise<any> {
       tablesCount,
       version,
       uptime: uptime?.toString()
-    };
+    }
   } catch (error) {
     console.error('Database health check failed:', error);
     return {
@@ -103,7 +103,7 @@ export async function getDatabaseHealth(): Promise<any> {
       pgvectorEnabled: false
       tablesCount: 0,
       version: 'Unknown'
-    };
+    }
   }
 }
 // Vector operations helper functions

@@ -19,15 +19,15 @@
         description: 'Recurring pattern in email communications indicates systematic behavior',
         confidence: 0.85,
         relevance: 0.9,
-        supportingData: []
+        supportingData: [],
       },
       {
         type: 'anomaly' as const,
         description: 'Unusual time gaps in document timestamps suggest tampering',
         confidence: 0.73,
         relevance: 0.8,
-        supportingData: []
-      }
+        supportingData: [],
+      },
     ],
     correlations: [
       {
@@ -35,15 +35,15 @@
         correlationType: 'temporal' as const,
         strength: 0.78,
         description: 'Similar timeframe and participants in both evidence items',
-        sharedEntities: ['John Doe', 'Contract ABC']
+        sharedEntities: ['John Doe', 'Contract ABC'],
       },
       {
         relatedEvidenceId: 'evidence-003',
         correlationType: 'semantic' as const,
         strength: 0.65,
         description: 'Common terminology and legal concepts',
-        sharedEntities: ['Amendment', 'Termination']
-      }
+        sharedEntities: ['Amendment', 'Termination'],
+      },
     ],
     riskScore: 0.72,
     confidence: 0.81,
@@ -51,7 +51,7 @@
     recommendations: [
       'Conduct forensic analysis of original documents',
       'Interview parties mentioned in correlations',
-      'Review timestamp metadata for all related files'
+      'Review timestamp metadata for all related files',
     ],
     keyEntities: [
       {
@@ -59,22 +59,22 @@
         value: 'John Doe',
         confidence: 0.95,
         mentions: 12,
-        context: ['Contract signatory', 'Email participant']
+        context: ['Contract signatory', 'Email participant'],
       },
       {
         type: 'organization' as const,
         value: 'ABC Corporation',
         confidence: 0.88,
         mentions: 8,
-        context: ['Contracting party', 'Email domain']
+        context: ['Contracting party', 'Email domain'],
       },
       {
         type: 'date' as const,
         value: '2024-01-15',
         confidence: 0.92,
         mentions: 5,
-        context: ['Contract date', 'Email timestamp']
-      }
+        context: ['Contract date', 'Email timestamp'],
+      },
     ],
     sentiment: {
       overall: -0.2,
@@ -84,10 +84,10 @@
         joy: 0.05,
         sadness: 0.1,
         surprise: 0.2,
-        trust: 0.4
+        trust: 0.4,
       },
       subjectivity: 0.6,
-      formality: 0.8
+      formality: 0.8,
     },
     timeline: [
       {
@@ -95,17 +95,17 @@
         description: 'Initial contract draft created',
         type: 'action' as const,
         actors: ['Legal Team'],
-        confidence: 0.9
+        confidence: 0.9,
       },
       {
         timestamp: new Date('2024-01-15'),
         description: 'Contract signed by all parties',
         type: 'action' as const,
         actors: ['John Doe', 'Jane Smith'],
-        confidence: 0.95
-      }
-    ]
-  };
+        confidence: 0.95,
+      },
+    ],
+  }
   $effect(() => {
     // Check WebGPU support
     webGPUSupported = !!navigator.gpu;
@@ -114,6 +114,7 @@
     showWebGPUDemo = !showWebGPUDemo;
   }
 </script>
+
 <svelte:head>
   <title>Evidence Analysis - Legal AI Platform</title>
   <meta name="description" content="AI-powered evidence analysis with advanced visualizations" />
@@ -121,9 +122,7 @@
 <div class="evidence-analysis-page">
   <div class="page-header">
     <h1 class="page-title">AI-Powered Evidence Analysis</h1>
-    <p class="page-description">
-      Analyze legal evidence using advanced AI models with interactive visualizations
-    </p>
+    <p class="page-description">Analyze legal evidence using advanced AI models with interactive visualizations</p>
   </div>
   <div class="feature-cards">
     <Card>
@@ -184,9 +183,7 @@
       {#if !webGPUSupported}
         <div class="webgpu-warning">
           <h3>WebGPU Not Supported</h3>
-          <p>
-            Your browser doesn't support WebGPU. To experience the 3D evidence graph:
-          </p>
+          <p>Your browser doesn't support WebGPU. To experience the 3D evidence graph:</p>
           <ul>
             <li>Use Chrome Canary or Edge Dev</li>
             <li>Enable the <code>--enable-unsafe-webgpu</code> flag</li>
@@ -195,22 +192,18 @@
         </div>
       {:else if showWebGPUDemo}
         <div class="webgpu-demo">
-          <WebGPUEvidenceGraphVisualization
-            analysis={sampleAnalysis}
-            relatedAnalyses={[]}
-          />
+          <WebGPUEvidenceGraphVisualization analysis={sampleAnalysis} relatedAnalyses={[]} />
         </div>
       {:else}
         <div class="demo-placeholder">
           <div class="placeholder-content">
             <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
             <h3>WebGPU-Accelerated Evidence Graph</h3>
             <p>
-              Experience real-time 3D visualization of evidence relationships
-              with GPU acceleration for smooth interaction with complex data.
+              Experience real-time 3D visualization of evidence relationships with GPU acceleration for smooth
+              interaction with complex data.
             </p>
             <ul class="demo-features">
               <li>Real-time force-directed layout</li>
@@ -266,6 +259,7 @@
     </CardContent>
   </Card>
 </div>
+
 <style>
   .evidence-analysis-page {
     @apply min-h-screen bg-gray-50 dark:bg-gray-900 p-6 space-y-8;
@@ -289,7 +283,7 @@
     @apply flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400;
   }
   .feature-list li:before {
-    content: "✓";
+    content: '✓';
     @apply text-green-500 font-bold;
   }
   .dashboard-section {
@@ -338,7 +332,7 @@
     @apply space-y-1 text-sm text-gray-500 dark:text-gray-500;
   }
   .demo-features li:before {
-    content: "⚡";
+    content: '⚡';
     @apply mr-2;
   }
   .tech-specs {
@@ -357,7 +351,7 @@
     @apply flex items-start gap-2;
   }
   .spec-item li:before {
-    content: "•";
+    content: '•';
     @apply text-indigo-500;
   }
 </style>

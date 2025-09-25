@@ -7,7 +7,7 @@ export interface AnalyticsEvent {
   id: string;
   type: 'page_view' | 'user_action' | 'ai_interaction' | 'document_upload' | 'search' | 'error' | 'performance';
   action: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   timestamp: Date;
   userId?: string;
   sessionId?: string;
@@ -35,7 +35,7 @@ const initialState: AnalyticsState = {
   autoFlush: true
   flushInterval: 30000, // 30 seconds
   lastFlushAt: 0
-};
+}
 // Create reactive analytics store using Svelte 5 runes
 const createAnalyticsStore = () => {
   // Initialize with initial state using $state
@@ -48,14 +48,14 @@ const createAnalyticsStore = () => {
     // Initialize analytics
     init: (config?: Partial<AnalyticsState>) => {
       if (config) {
-        analyticsState = { ...analyticsState, ...config };
+        analyticsState = { ...analyticsState, ...config }
       }
       if (browser && analyticsState.autoFlush) {
         startAutoFlush();
       }
     },
     // Log analytics event
-    logEvent: (event: Omit<AnalyticsEvent, 'id' | 'timestamp'>): AnalyticsEvent => {
+    logEvent: (_event: Omit<AnalyticsEvent, 'id' | 'timestamp'>): AnalyticsEvent => {
       if (!analyticsState.isEnabled) {
         return null as any;
       }
@@ -65,7 +65,7 @@ const createAnalyticsStore = () => {
         timestamp: new Date(),
         url: browser ? window.location.href : undefined
         userAgent: browser ? navigator.userAgent : undefined
-      };
+      }
       analyticsState.events.push(fullEvent);
       // Limit events to prevent memory issues
       if (analyticsState.events.length > analyticsState.maxEvents) {
@@ -92,7 +92,7 @@ const createAnalyticsStore = () => {
             'X-Analytics-Batch': 'true'
           },
           body: JSON.stringify({,
-            events: eventsToFlush
+            events: eventsToFlush;
             timestamp: new Date().toISOString(),
             batchSize: eventsToFlush.length
           })
@@ -233,7 +233,7 @@ const createAnalyticsStore = () => {
     clear: () => {
       analyticsState.events = [];
     }
-  };
+  }
   // Helper functions
   function flushEvents(): Promise<boolean> {
     return analyticsStore.flushEvents();
@@ -246,7 +246,7 @@ const createAnalyticsStore = () => {
       }
     }, analyticsState.flushInterval);
   }
-};
+}
 // Export singleton instance
 export const analyticsStore = createAnalyticsStore();
 // Helper functions for accessing reactive state
@@ -276,4 +276,4 @@ export const analyticsActions = {
   getEventsSince: analyticsStore.getEventsSince,
   getStats: analyticsStore.getStats,
   clear: analyticsStore.clear
-};
+}

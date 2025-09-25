@@ -46,37 +46,37 @@ export class EnhancedEmbeddingWorker {
   private concurrencyLimit = 5;
   private initialized = false;
   // --- Redis compatibility helpers (ioredis v4/v5) ---
-  private async redisBlpop(key: string, timeout: number): Promise<[string, string] | null> {
+  private async redisBlpop(_key: string, timeout: number): Promise<[string, string] | null> {
     const r = this.redis as unknown as {
       blpop?: (k: string, t: number) => Promise<[string, string] | null>;
       blPop?: (k: string, t: number) => Promise<[string, string] | null>;
-    };
+    }
     if (r?.blpop) return r.blpop(key, timeout);
     if (r?.blPop) return r.blPop(key, timeout);
     throw new Error('Redis client missing blpop/blPop');
   }
-  private async redisRpush(key: string, value: string): Promise<number> {
+  private async redisRpush(_key: string, value: string): Promise<number> {
     const r = this.redis as unknown as {
       rpush?: (k: string, v: string) => Promise<number>;
       rPush?: (k: string, v: string) => Promise<number>;
-    };
+    }
     if (r?.rpush) return r.rpush(key, value);
     if (r?.rPush) return r.rPush(key, value);
     throw new Error('Redis client missing rpush/rPush');
   }
-  private async redisLlen(key: string): Promise<number> {
+  private async redisLlen(_key: string): Promise<number> {
     const r = this.redis as unknown as {
       llen?: (k: string) => Promise<number>;
       lLen?: (k: string) => Promise<number>;
-    };
+    }
     if (r?.llen) return r.llen(key);
     if (r?.lLen) return r.lLen(key);
     throw new Error('Redis client missing llen/lLen');
   }
-  private async redisSetNXEX(key: string, value: string, exSeconds: number): Promise<string | null> {
+  private async redisSetNXEX(_key: string, value: string, exSeconds: number): Promise<string | null> {
     const r = this.redis as unknown as {
       set: (...args: unknown[]) => Promise<string | null>;
-    };
+    }
     // Try modern options form first
     try {
       return await r.set(key, value, { NX: true, EX: exSeconds } as unknown as undefined);
@@ -90,8 +90,8 @@ export class EnhancedEmbeddingWorker {
       }
     }
   }
-  private async redisDel(key: string): Promise<number> {
-    const r = this.redis as unknown as { del: (k: string) => Promise<number> };
+  private async redisDel(_key: string): Promise<number> {
+    const r = this.redis as unknown as { del: (k: string) => Promise<number> }
     return r.del(key);
   }
   constructor() {
@@ -177,7 +177,7 @@ export class EnhancedEmbeddingWorker {
         const result = (await this.redisBlpop(this.queueName, 30)) as unknown as
           | null
           | [string, string]
-          | { element?: string };
+          | { element?: string }
         if (!result) continue; // Timeout, check if still running
         const jobData = (result && !Array.isArray(result)
           ? (result as { element?: string }).element
@@ -236,7 +236,7 @@ export class EnhancedEmbeddingWorker {
    * Process jobs for a specific model
    */
   private async processModelBatch(
-    jobs: EmbeddingJob[]
+    jobs: EmbeddingJob[];
     model: string
     batchId: string
   ): Promise<void> {
@@ -375,7 +375,7 @@ export class EnhancedEmbeddingWorker {
    * Set cached embedding with compression
    */
   private async setCachedEmbedding(
-    text: string
+    text: string;
     embedding: number[]
     model?: string
   ): Promise<void> {
@@ -410,7 +410,7 @@ export class EnhancedEmbeddingWorker {
   private async upsertEmbeddingToDB(
     id: string
     model: string
-    embedding: number[]
+    embedding: number[];
     meta: Record<string, unknown>
   ): Promise<void> {
     try {
@@ -463,7 +463,7 @@ export class EnhancedEmbeddingWorker {
           retryAttempt: retryCount
           lastFailureTime: Date.now()
         }
-      };
+      }
       // Re-queue with exponential backoff: 2s, 4s, 8s
       const delay = Math.pow(2, retryCount) * 1000;
       console.log(`⏰ Scheduling retry in ${delay}ms`);
@@ -492,7 +492,7 @@ export class EnhancedEmbeddingWorker {
    * Group jobs by model for batch optimization
    */
   private groupJobsByModel(jobs: EmbeddingJob[]): Record<string, EmbeddingJob[]> {
-    const grouped: Record<string, EmbeddingJob[]> = {};
+    const grouped: Record<string, EmbeddingJob[]> = {}
     for (const job of jobs) {
       const model = job.model || 'nomic-embed-text';
       if (!grouped[model]) {
@@ -533,7 +533,7 @@ export class EnhancedEmbeddingWorker {
       avgBatchProcessingTime: number;
       cacheHitRate: number;
       throughput: number;
-    };
+    }
   } {
     return {
       running: this.running,
@@ -548,10 +548,10 @@ export class EnhancedEmbeddingWorker {
       lokiStats: globalLoki.getStats(),
       performance: {
         avgBatchProcessingTime: 0, // TODO: Track this
-        cacheHitRate: 0, // TODO: Track this
+        cacheHitRate: 0, // TODO: Track this;
         throughput: 0, // TODO: Track jobs/second
       }
-    };
+    }
   }
   /**
    * Enqueue a job for processing
@@ -565,7 +565,7 @@ export class EnhancedEmbeddingWorker {
       ...job,
       id: jobId
       createdAt: Date.now()
-    };
+    }
   await this.redisRpush(this.queueName, JSON.stringify(fullJob));
     console.log(`📥 Enqueued job ${jobId} for processing`);
     return jobId;
@@ -579,14 +579,14 @@ export class EnhancedEmbeddingWorker {
     dlqLength: number;
   }> {
     if (!this.redis) {
-      return { queueLength: 0, processingQueueLength: 0, dlqLength: 0 };
+      return { queueLength: 0, processingQueueLength: 0, dlqLength: 0 }
     }
     const [queueLength, processingQueueLength, dlqLength] = await Promise.all([
       this.redisLlen(this.queueName),
       this.redisLlen(this.processingQueue),
       this.redisLlen('embedding:dlq')
     ]);
-    return { queueLength, processingQueueLength, dlqLength };
+    return { queueLength, processingQueueLength, dlqLength }
   }
 }
 // Export singleton worker instance

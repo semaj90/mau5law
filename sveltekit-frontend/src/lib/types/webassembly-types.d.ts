@@ -35,12 +35,7 @@ export interface LegalWASMModule {
   // Vector operations
   normalize_embeddings: (vectorPtr: number, dimension: number) => void;
   cosine_similarity: (vec1Ptr: number, vec2Ptr: number, dimension: number) => number;
-  batch_similarity: (
-    vectorsPtr: number,
-    queryPtr: number,
-    count: number,
-    dimension: number
-  ) => number;
+  batch_similarity: (vectorsPtr: number, queryPtr: number, count: number, dimension: number) => number;
   // Legal-specific operations
   classify_document: (contentPtr: number, contentLen: number) => number;
   extract_legal_entities: (textPtr: number, textLen: number, resultPtr: number) => number;
@@ -72,13 +67,13 @@ export interface WASMRabbitMQMessage {
     embeddings?: Float32Array;
     query?: string;
     documentId?: string;
-  };
+  }
   wasmProcessed?: boolean;
   processingResult?: {
     success: boolean;
     data: unknown;
     processingTime: number;
-  };
+  }
 }
 // Memory allocation utilities
 export interface WASMAllocator {
@@ -92,11 +87,11 @@ export interface WASMInstantiationOptions {
     initial: number;
     maximum?: number;
     shared?: boolean;
-  };
+  }
   imports?: {
     env?: Record<string, WebAssembly.ImportValue>;
     js?: Record<string, WebAssembly.ImportValue>;
-  };
+  }
 }
 // Performance monitoring for WASM operations
 export interface WASMPerformanceMetrics {
@@ -106,29 +101,26 @@ export interface WASMPerformanceMetrics {
     textProcessing: number;
     vectorOperations: number;
     memoryAllocations: number;
-  };
+  }
   averageOperationTime: {
     documentProcessing: number;
     embeddingNormalization: number;
     similarityCalculation: number;
-  };
+  }
 }
 // Error types for WASM operations (declaration only)
 export declare class WASMError extends Error {
   constructor(
     message: string,
     code: 'INSTANTIATION_FAILED' | 'MEMORY_ERROR' | 'PROCESSING_ERROR' | 'INVALID_INPUT',
-    details?: unknown
+    details?: unknown,
   );
 }
 // WASM module loader utility type
 export interface WASMLoader {
   loadModule(url: string, options?: WASMInstantiationOptions): Promise<LegalWASMBridge>;
   precompileModule(bytes: ArrayBuffer): Promise<WebAssembly.Module>;
-  instantiateModule(
-    module: WebAssembly.Module,
-    imports?: WebAssembly.Imports
-  ): Promise<WebAssembly.Instance>;
+  instantiateModule(module: WebAssembly.Module, imports?: WebAssembly.Imports): Promise<WebAssembly.Instance>;
 }
 // Vector operations result types
 export interface VectorOperationResult {
@@ -154,9 +146,5 @@ declare global {
   }
 }
 // Re-export commonly used types
-export type {
-  WASMMemoryManager,
-  LegalWASMModule,
-  LegalWASMBridge
-};
-export default {};
+export type { WASMMemoryManager, LegalWASMModule, LegalWASMBridge }
+export default {}

@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
       type: file.type,
       status: 'pending',
       preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined;
-    };
+    }
   }
   function validateFile(file: File): string | null {
     if (file.size > maxSize) {
@@ -158,23 +158,23 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
   // Event handlers
-  function handleInputChange(event: Event) {
+  function handleInputChange(_event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) {
       handleFiles(input.files);
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     if (!disabled) {
       isDragOver = true;
     }
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
     if (disabled || !event.dataTransfer?.files) return;
@@ -199,6 +199,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
+
 <div class="file-upload-container space-y-4">
   <!-- Upload Drop Zone -->
   <div
@@ -218,7 +219,8 @@ https://svelte.dev/e/js_parse_error -->
       {accept}
       {multiple}
       {disabled}
-      class="sr-only" onchange={handleInputChange}
+      class="sr-only"
+      onchange={handleInputChange}
     />
     <div class="flex flex-col items-center justify-center text-center">
       <!-- Upload Icon -->
@@ -301,6 +303,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+
 <style>
   /* YoRHa-specific styling */
   :global(.yorha-upload) {

@@ -3,7 +3,7 @@ import Fuse from 'fuse.js';
 export interface LocalDoc {
   id: string;
   text: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface LocalSearchResult extends LocalDoc {
   score: number; // 0..1 (higher is better)
@@ -34,11 +34,11 @@ export class LocalSearchPipeline {
   private redis:
     | undefined;
     | {
-        get: (key: string) => MaybePromise<string | null>;
-        setex?: (key: string, seconds: number, value: string) => MaybePromise<any>;
-        set?: (key: string, value: string) => MaybePromise<any>;
-        expire?: (key: string, seconds: number) => MaybePromise<any>;
-      };
+        get: (_key: string) => MaybePromise<string | null>;
+        setex?: (_key: string, seconds: number, value: string) => MaybePromise<any>;
+        set?: (_key: string, value: string) => MaybePromise<any>;
+        expire?: (_key: string, seconds: number) => MaybePromise<any>;
+      }
   constructor() {
     this.fuse = new Fuse([], {
       includeScore: true
@@ -142,7 +142,7 @@ export class LocalSearchPipeline {
       docs: this.docs.size,
       hasRedis: Boolean(this.redis),
       fuseSize: (this as any).fuse?._docs?.length ?? undefined
-    };
+    }
   }
 }
 export const localSearchPipeline = new LocalSearchPipeline();

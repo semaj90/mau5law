@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
 // Legal Documents API - SvelteKit Server Endpoint
 import { db } from "$lib/server/db/index"
 import { json } from "@sveltejs/kit"
-import { URL } from "url"
+
 import { eq, desc, like, or } from "drizzle-orm"
 // Import with fallback for different schema files
 let schema: any = {}

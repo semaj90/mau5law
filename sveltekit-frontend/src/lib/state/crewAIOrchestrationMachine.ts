@@ -52,7 +52,7 @@ export type CrewAIEvents =
   | { type: 'AUTO_SAVE_TRIGGERED' }
   | { type: 'RETRY_FAILED_AGENTS' }
   | { type: 'CANCEL_REVIEW' }
-  | { type: 'QUEUE_NEXT_TASK' };
+  | { type: 'QUEUE_NEXT_TASK' }
 // ============================================================================
 // XSTATE MACHINE DEFINITION
 // ============================================================================
@@ -65,23 +65,23 @@ export const crewAIOrchestrationMachine = setup({
     // Start multi-agent review
     startAgentReview: fromPromise(async ({ input }: { input: { task: DocumentReviewTask } }) => {
       const taskId = await crewAIOrchestrator.startDocumentReview(input.task);
-      return { taskId, task: input.task };
+      return { taskId, task: input.task }
     }),
     // Auto-save document changes
     autoSaveDocument: fromPromise(async ({ input }: { input: { documentId: string; content: string } }) => {
       await documentUpdateLoop.queueDocumentUpdate(input.documentId, input.content);
-      return { saved: true, timestamp: new Date().toISOString() };
+      return { saved: true, timestamp: new Date().toISOString() }
     }),
     // Generate self-prompting recommendations
     generateSelfPrompt: fromPromise(async ({ input }: { input: { context: CrewAIContext } }) => {
       // This would integrate with your self-prompting system
       const recommendations = await generateContextualRecommendations(input.context);
-      return { recommendations };
+      return { recommendations }
     }),
     // Apply schema focus change
     applySchemaFocus: fromPromise(async ({ input }: { input: { schema: string; context: CrewAIContext } }) => {
       const focusConfig = await generateSchemaFocusConfig(input.schema, input.context);
-      return { focusConfig };
+      return { focusConfig }
     })
   },
   guards: {
@@ -348,7 +348,7 @@ export const crewAIOrchestrationMachine = setup({
               target: 'checking_completion'
             }
           },
-          // Periodic user activity check
+          // Periodic user activity check;
           after: {
             60000: [;
               {
@@ -512,6 +512,6 @@ async function generateSchemaFocusConfig(schema: string, context: CrewAIContext)
       autoSavePrompt: true
       minimizeUI: true
     }
-  };
+  }
   return configs[schema as keyof typeof configs] || configs.document_edit;
 }

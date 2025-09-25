@@ -13,7 +13,7 @@
     open: (x: number, y: number) => void;
     close: () => void;
   }>('context-menu');
-  function handleContextMenu(event: MouseEvent) {
+  function handleContextMenu(_event: MouseEvent) {
     event.preventDefault();
     open(event.clientX, event.clientY);
   }
@@ -23,9 +23,10 @@
       destroy() {
         node.removeEventListener('contextmenu', handleContextMenu);
       }
-    };
+    }
   }
 </script>
+
 {#if asChild}
   {@render children?.({ action: builderAction })}
 {:else}
@@ -33,3 +34,4 @@
     {@render children?.()}
   </div>
 {/if}
+;

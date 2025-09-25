@@ -117,8 +117,8 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
     if (predicted3D) {
       predictions = [...predictions, {
         step: step + 1,
-        action: userAction
-        prediction: predicted3D
+        action: userAction;
+        prediction: predicted3D;
         confidence: predicted3D.predictedUsag;
       }];
       asset3DMetrics.predictedComponents++;
@@ -148,8 +148,8 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
     });
     searchResults = [...searchResults, {
       step: step + 1,
-      query: searchQuery
-      results: assetSearchResults
+      query: searchQuery;
+      results: assetSearchResults;
       count: assetSearchResults.length;
     }];
     // STEP 4: CNN Topology - Visual pattern recognition and WebGPU processing
@@ -174,7 +174,7 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
         searchResults: assetSearchResults.length,
         chrRomHit: !!chrRomPatter;
       }
-    };
+    }
     console.log(`⚡ Step ${step + 1} completed in ${processingTime.toFixed(2)}ms`);
   }
   async function searchPredictive3DAssets(query: string, context: any) {
@@ -210,7 +210,7 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
       textural: userAction.includes('hover') ? 0.8 : 0.5,
       motion: userAction.includes('drag') ? 0.9 : 0.3,
       lighting: predicted3D?.animationType === 'particle' ? 0.7 : 0.4;
-    };
+    }
     console.log('👁️ Visual patterns processed:', patterns);
     return pattern;
   }
@@ -223,8 +223,8 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
       neuralTopologiesActive: Object.values.filter-length,
       avgProcessingTime: Object.values.map((m: any) => m.processingTime)
         .reduce((sum: number, time: number) => sum + time, 0) / Object.keys(errors).length;
-    };
-    performanceMetrics = { ...performanceMetrics, summary };
+    }
+    performanceMetrics = { ...performanceMetrics, summary }
     console.log('📊 Final Performance Summary:', summary);
   }
   async function checkWebGPUSupport(): Promise<boolean> {

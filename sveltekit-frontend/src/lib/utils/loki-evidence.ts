@@ -123,7 +123,7 @@ export class LokiEvidenceService {
           createdAt: existing.timeline.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString()
         }
-      };
+      }
       this.evidenceCollection.update(updated);
       // Add to sync queue
       await this.addToSyncQueue({
@@ -221,11 +221,11 @@ export class LokiEvidenceService {
   // Advanced analytics queries
   public getEvidenceStats() {
     if (!this.evidenceCollection) {
-      return { total: 0, byType: { [key: string]: any }, byCase: { [key: string]: any }, recentCount: 0 };
+      return { total: 0, byType: { [key: string]: any }, byCase: { [key: string]: any }, recentCount: 0 }
     }
     const all = this.evidenceCollection.find({});
-    const byType: Record<string, number> = {};
-    const byCase: Record<string, number> = {};
+    const byType: Record<string, number> = {}
+    const byCase: Record<string, number> = {}
     let recentCount = 0;
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -247,7 +247,7 @@ export class LokiEvidenceService {
       byType,
       byCase,
       recentCount
-    };
+    }
   }
   // Sync queue management
   private async addToSyncQueue(operation: SyncOperation): Promise<void> {
@@ -311,7 +311,7 @@ export class LokiEvidenceService {
   // Sync status and conflict resolution
   public getSyncStatus() {
     if (!this.syncQueue) {
-      return { pending: 0, failed: 0, total: 0, inProgress: false };
+      return { pending: 0, failed: 0, total: 0, inProgress: false }
     }
     const all = this.syncQueue.find({});
     const pending = all.filter((op) => !op.synced && op.retryCount < 5).length;
@@ -321,7 +321,7 @@ export class LokiEvidenceService {
       failed,
       total: all.length,
       inProgress: this.syncInProgress
-    };
+    }
   }
   public async syncWithServer(serverEvidence: Evidence[]): Promise<void> {
     if (!this.evidenceCollection) return;
@@ -380,34 +380,34 @@ class LokiIndexedAdapter {
     // Load from IndexedDB
     const request = indexedDB.open(this.dbname, 1);
     request.onerror = () => callback(null);
-    request.onsuccess = (event: any) => {
-      const db = (event.target as IDBOpenDBRequest).result;
+    request.onsuccess = (_event: any) => {
+      // removed unused db assignment
       const transaction = db.transaction(["data"], "readonly");
       const store = transaction.objectStore("data");
       const getRequest = store.get(dbname);
       getRequest.onsuccess = () => {
         callback(getRequest.result ? getRequest.result.data: null);
-      };
+      }
       getRequest.onerror = () => callback(null);
-    };
-    request.onupgradeneeded = (event: any) => {
-      const db = (event.target as IDBOpenDBRequest).result;
+    }
+    request.onupgradeneeded = (_event: any) => {
+      // removed unused db assignment
       if (!db.objectStoreNames.contains("data")) {
         db.createObjectStore("data", { keyPath: "id" });
       }
-    };
+    }
   }
   saveDatabase(dbname: string, dbstring: string, callback: () => void): void {
     // Save to IndexedDB
     const request = indexedDB.open(this.dbname, 1);
-    request.onsuccess = (event: any) => {
-      const db = (event.target as IDBOpenDBRequest).result;
+    request.onsuccess = (_event: any) => {
+      // removed unused db assignment
       const transaction = db.transaction(["data"], "readwrite");
       const store = transaction.objectStore("data");
       store.put({ id: dbname, data: dbstring });
       transaction.oncomplete = () => callback();
       transaction.onerror = () => callback();
-    };
+    }
     request.onerror = () => callback();
   }
   deleteDatabase(dbname: string, callback: () => void): void {

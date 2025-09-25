@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]): string {
 }
 // ===== NETWORK UTILITIES =====
 export async function fetchWithTimeout(
-  resource: RequestInfo | URL
+  resource: RequestInfo | URL;
   options: RequestInit & { timeout?: number } = {}
 ): Promise<Response> {
   const { timeout = 8000, ...fetchOptions } = options;
@@ -58,17 +58,17 @@ export function generateId(): string {
 }
 // ===== PERFORMANCE UTILITIES =====
 export function debounce<T extends (...args: any[]) => any>(,
-  func: T
+  func: T;
   wait: number;
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
-  };
+  }
 }
 export function throttle<T extends (...args: any[]) => any>(,
-  func: T
+  func: T;
   limit: number;
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
@@ -78,7 +78,7 @@ export function throttle<T extends (...args: any[]) => any>(,
       inThrottle = true;
       setTimeout(() => inThrottle = false, limit);
     }
-  };
+  }
 }
 // ===== LEGAL AI SPECIFIC UTILITIES =====
 export function getConfidenceLevel(score: number): string {
@@ -95,7 +95,7 @@ export function getCaseStatusStyling(status: string): string {
     'closed': 'bg-green-100 text-green-800 border-green-200',
     'suspended': 'bg-gray-100 text-gray-800 border-gray-200',
     'archived': 'bg-purple-100 text-purple-800 border-purple-200'
-  };
+  }
   return styles[status as keyof typeof styles] || styles['open'];
 }
 export function getEvidenceTypeStyling(type: string): string {
@@ -106,7 +106,7 @@ export function getEvidenceTypeStyling(type: string): string {
     'image': 'bg-orange-50 border-orange-200 text-orange-700',
     'physical': 'bg-gray-50 border-gray-200 text-gray-700',
     'digital': 'bg-cyan-50 border-cyan-200 text-cyan-700'
-  };
+  }
   return styles[type as keyof typeof styles] || styles['document'];
 }
 // ===== USER UTILITIES =====
@@ -159,7 +159,7 @@ export function downloadFile(data: Blob | string, filename: string, type: string
 export const isBrowser = typeof window !== 'undefined';
 // ===== STORAGE UTILITIES =====
 export const storage = {
-  get: <T>(key: string, fallback?: T): T | undefined => {
+  get: <T>(_key: string, fallback?: T): T | undefined => {
     if (!isBrowser) return fallback;
     try {
       const item = localStorage.getItem(key);
@@ -168,7 +168,7 @@ export const storage = {
       return fallback;
     }
   },
-  set: <T>(key: string, value: T): void => {
+  set: <T>(_key: string, value: T): void => {
     if (!isBrowser) return;
     try {
       localStorage.setItem(key, JSON.stringify(value);
@@ -176,7 +176,7 @@ export const storage = {
       console.error('Failed to save to localStorage:', error);
     }
   },
-  remove: (key: string): void => {
+  remove: (_key: string): void => {
     if (!isBrowser) return;
     localStorage.removeItem(key);
   },
@@ -184,7 +184,7 @@ export const storage = {
     if (!isBrowser) return;
     localStorage.clear();
   }
-};
+}
 // ===== THEME UTILITIES =====
 export const theme = {
   get: (): 'light' | 'dark' => {
@@ -202,11 +202,11 @@ export const theme = {
     theme.set(newTheme);
     return newTheme;
   }
-};
+}
 // ===== SVELTE 5 TYPE HELPERS =====
 export type WithoutChild<T> = Omit<T, 'child'>;
 export type WithoutChildren<T> = Omit<T, 'children'>;
 export type WithoutChildrenOrChild<T> = Omit<T, 'children' | 'child'>;
 export type WithElementRef<T, E extends Element = HTMLElement> = T & {
   el?: E;
-};
+}

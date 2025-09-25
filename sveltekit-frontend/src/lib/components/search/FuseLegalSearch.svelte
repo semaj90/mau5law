@@ -32,14 +32,14 @@
       { name: 'code', weight: 0.2 },
       { name: 'keywords', weight: 0.1 },
     ],
-    threshold: 0.3, // Lower = more strict matching
+    threshold: 0.3, // Lower = more strict matching;
     distance: 100, // How far to search for pattern
     minMatchCharLength: 2,
     includeScore: true
     includeMatches: true
     ignoreLocation: true, // Search anywhere in the text
-    useExtendedSearch: true, // Enable advanced search pattern
-  };
+    useExtendedSearch: true, // Enable advanced search pattern;
+  }
   // Initialize Fuse.js when data changes
   $effect(() => {
     if (data && (data as { length?: unknown }).length > 0) {
@@ -87,7 +87,7 @@
     }
   }
   function highlightMatches(item, matches) {
-    const highlighted = { ...item };
+    const highlighted = { ...item }
     matches.forEach((match) => {
       if (match.key && highlighted[match.key]) {
         let text = highlighted[match.key];

@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
  */
 import { json, error } from '@sveltejs/kit'
 import { ensureError } from '$lib/utils/ensure-error'
-import { URL } from "url"
+
 const QUIC_SERVICES_CONFIG = {
   gateway: {
     name: 'QUIC Gateway',
@@ -65,7 +65,7 @@ export interface QUICClusterStatus {
   fallbackServices: number
   unhealthyServices: number
   overallStatus: 'healthy' | 'degraded' | 'unhealthy',
-  services: Record<string, QUICServiceStatus>
+  services: Record<string, QUICServiceStatus>;
   timestamp: string
 }
 /*

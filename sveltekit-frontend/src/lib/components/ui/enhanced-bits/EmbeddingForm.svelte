@@ -31,7 +31,7 @@
   // Load recent embeddings on mount
   async function loadRecentEmbeddings() {
     try {
-      const response = await fetch('/api/embeddings/enhanced?action=recent&limit=5');
+      // removed unused response assignment
       const data = await response.json();
       if (data.success) {
         recentEmbeddings = data.data;
@@ -68,17 +68,17 @@
             resolve(e.data.embedding);
           }
           worker.terminate();
-        };
+        }
         worker.onerror = () => {
           reject(new Error('WASM worker failed'));
           worker.terminate();
-        };
+        }
       });
     }
   }
   // Validate form data
   function validateForm(): boolean {
-    validationErrors = {};
+    validationErrors = {}
     try {
       embeddingFormSchema.parse({ content });
       return true;
@@ -144,12 +144,9 @@
   let isValid = $derived(content.length > 0 && content.length <= 10000);
   let hasValidationErrors = $derived(Object.keys(validationErrors).length > 0);
 </script>
+
 <div class="embedding-form-container">
-  <Card
-    title="Enhanced-Bits Embedding Generator"
-    nesStyle={true}
-    variant={variant}
-  >
+  <Card title="Enhanced-Bits Embedding Generator" nesStyle={true} {variant}>
     {#snippet children()}
       <form onsubmit={handleSubmit} class="embedding-form">
         <div class="form-group">
@@ -225,20 +222,14 @@
     {/snippet}
   </Card>
   {#if showRecentEmbeddings && recentEmbeddings.length > 0}
-    <Card
-      title="Recent Embeddings"
-      nesStyle={true}
-      variant="dark"
-    >
+    <Card title="Recent Embeddings" nesStyle={true} variant="dark">
       {#snippet children()}
         <div class="recent-embeddings">
           {#each recentEmbeddings.slice(0, 3) as embedding}
             <div class="embedding-item">
               <div class="embedding-content">
                 <p class="nes-text">
-                  {embedding.content.length > 100
-                    ? embedding.content.substring(0, 100) + '...'
-                    : embedding.content}
+                  {embedding.content.length > 100 ? embedding.content.substring(0, 100) + '...' : embedding.content}
                 </p>
               </div>
               <div class="embedding-meta">
@@ -254,6 +245,7 @@
     </Card>
   {/if}
 </div>
+
 <style>
   .embedding-form-container {
     max-width: 800px;

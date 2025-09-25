@@ -90,7 +90,7 @@ export class QueryBuilder {
   }
   static applySorting(
     table: any
-    sortBy: string
+    sortBy: string;
     order: "asc" | "desc" = "desc";
   ): SQL {
     const column = table[sortBy];
@@ -108,11 +108,11 @@ export class QueryBuilder {
     const pageNum = Math.max(1, parseInt(page || "1");
     const limitNum = Math.min(100, Math.max(1, parseInt(limit || "20"));
     const offset = (pageNum - 1) * limitNum;
-    return { page: pageNum, limit: limitNum, offset };
+    return { page: pageNum, limit: limitNum, offset }
   }
   static async executeQuery<T>(
     baseQuery: any
-    filters: QueryFilters
+    filters: QueryFilters;
     table: any;
   ): Promise<any> {
     // Build filter conditions
@@ -144,7 +144,7 @@ export class QueryBuilder {
       countQuery = countQuery.where(whereClause);
     }
     const [{ count: total }] = await countQuery.execute();
-    return { data, total, pagination };
+    return { data, total, pagination }
   }
 }
 // Export helper functions

@@ -273,7 +273,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   if (!rateLimitResult.allowed) {
     return json(
       {
-        success: false
+        success: false;
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter,
       },
@@ -441,7 +441,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       {
         success: false
         error: 'Internal server error',
-        details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined
+        details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined;
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
@@ -477,7 +477,7 @@ async function runDiskIOBenchmark(): Promise<{ score: number; details: { duratio
   return {
     score,
     details: {
-      durationMs: duration
+      durationMs: duration;
       rating: duration < 20 ? 'excellent' : duration < 60 ? 'good' : 'fair',
     },
   }

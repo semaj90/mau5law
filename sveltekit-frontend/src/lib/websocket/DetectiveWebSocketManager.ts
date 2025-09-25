@@ -80,7 +80,7 @@ export class DetectiveWebSocketManager {
         timestamp: new Date().toISOString(),
         data: { action: 'join', userInfo: { id: this.userId, name: 'Detective User' } }
       });
-    };
+    }
     this.ws.onmessage = (event) => {
       try {
         const message: DetectiveWebSocketMessage = JSON.parse(event.data);
@@ -88,7 +88,7 @@ export class DetectiveWebSocketManager {
       } catch (error) {
         console.error('[DetectiveWS] Failed to parse message:', error);
       }
-    };
+    }
     this.ws.onclose = (event) => {
       console.log('[DetectiveWS] Connection closed:', event.code, event.reason);
       this.isConnected = false;
@@ -97,10 +97,10 @@ export class DetectiveWebSocketManager {
       if (event.code !== 1000) { // Not a normal closure
         this.scheduleReconnect();
       }
-    };
+    }
     this.ws.onerror = (error) => {
       console.error('[DetectiveWS] WebSocket error:', error);
-    };
+    }
   }
   /**
    * Handle incoming WebSocket messages
@@ -143,7 +143,7 @@ export class DetectiveWebSocketManager {
             typing: false
             lastActivity: message.timestamp,
             currentFocus: undefined
-          };
+          }
           this.collaborativeUsers.set(message.userId, user);
           this.onUserJoinedHandlers.forEach(handler => handler(user);
         }
@@ -368,7 +368,7 @@ export class DetectiveWebSocketManager {
         connections: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
         analysis: Array.from(this.collaborativeUsers.values()).filter(item => item.length)
       }
-    };
+    }
   }
 }
 export default DetectiveWebSocketManager;

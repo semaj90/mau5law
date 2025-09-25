@@ -48,7 +48,7 @@
       description: 'Create New Case',
       category: 'Case Management',
       action: () => goto('/cases/new'),
-      global: true
+      global: true;
       priority: 100;
     },
     {
@@ -57,7 +57,7 @@
       description: 'Search Cases',
       category: 'Case Management',
       action: () => goto('/cases/search'),
-      global: true
+      global: true;
       priority: 90;
     },
     // Evidence Management
@@ -67,7 +67,7 @@
       description: 'Upload Evidence',
       category: 'Evidence',
       action: () => goto('/evidence/upload'),
-      global: true
+      global: true;
       priority: 85;
     },
     {
@@ -76,7 +76,7 @@
       description: 'AI Evidence Analysis',
       category: 'Evidence',
       action: () => goto('/evidence/analysis'),
-      global: true
+      global: true;
       priority: 80;
     },
     // AI Assistant
@@ -86,7 +86,7 @@
       description: 'Open AI Assistant',
       category: 'AI Tools',
       action: () => goto('/ai-assistant'),
-      global: true
+      global: true;
       priority: 95;
     },
     {
@@ -95,7 +95,7 @@
       description: 'Legal Research',
       category: 'AI Tools',
       action: () => goto('/research'),
-      global: true
+      global: true;
       priority: 85;
     },
     // Document Management
@@ -105,7 +105,7 @@
       description: 'New Document',
       category: 'Documents',
       action: () => goto('/documents/new'),
-      global: true
+      global: true;
       priority: 75;
     },
     {
@@ -114,7 +114,7 @@
       description: 'Document Review',
       category: 'Documents',
       action: () => goto('/documents/review'),
-      global: true
+      global: true;
       priority: 70;
     },
     // Navigation
@@ -124,7 +124,7 @@
       description: 'Go to Dashboard',
       category: 'Navigation',
       action: () => goto('/dashboard'),
-      global: true
+      global: true;
       priority: 60;
     },
     {
@@ -133,7 +133,7 @@
       description: 'Open Settings',
       category: 'Navigation',
       action: () => goto('/settings'),
-      global: true
+      global: true;
       priority: 50;
     },
     // Accessibility
@@ -143,7 +143,7 @@
       description: 'Accessibility Panel',
       category: 'Accessibility',
       action: () => document.dispatchEvent(new CustomEvent('toggle-accessibility')),
-      global: true
+      global: true;
       priority: 40;
     },
     {
@@ -152,7 +152,7 @@
       description: 'Keyboard Shortcuts Help',
       category: 'Help',
       action: () => document.dispatchEvent(new CustomEvent('show-keyboard-help')),
-      global: true
+      global: true;
       priority: 30;
     }
   ];
@@ -163,7 +163,7 @@
       .filter(item => item.sort)((a, b) => (b.priority || 0) - (a.priority || 0));
   });
   // Key mapping utilities
-  function normalizeKey(key: string): string {
+  function normalizeKey(_key: string): string {
     const keyMap: Record<string, string> = {
       'Control': 'ctrl',
       'Meta': 'cmd',
@@ -179,7 +179,7 @@
       'Backspace': 'backspace',
       'Delete': 'delete',
       'Tab': 'tab'
-    };
+    }
     return keyMap[key] || key.toLowerCase();
   }
   function formatShortcut(keys: string[]): string {
@@ -213,7 +213,7 @@
     }];
   }
   // Event handlers
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (!enableGlobalShortcuts && !event.target?.closest?.('[data-keyboard-scope]')) {
       return;
     }
@@ -245,13 +245,13 @@
       } catch (error) {
         addDebugLog(`Error executing shortcut: ${error}`, 'error');
         onshortcutblocked?.({
-          shortcut: matchingShortcut
+          shortcut: matchingShortcut;
           reason: error instanceof Error ? error.message: 'Unknown error';
         });
       }
     }
   }
-  function handleKeyUp(event: KeyboardEvent) {
+  function handleKeyUp(_event: KeyboardEvent) {
     const key = normalizeKey(event.key);
     // Remove modifier keys
     if (!event.ctrlKey && !event.metaKey) pressedKeys.delete('ctrl');
@@ -276,7 +276,7 @@
       document.removeEventListener('keyup', handleKeyUp, { capture: true });
       window.removeEventListener('blur', clearPressedKeys);
       window.removeEventListener('focus', clearPressedKeys);
-    };
+    }
   });
   onDestroy(() => {
     if (browser) {
@@ -309,9 +309,10 @@
     return Array.from.sort();
   });
 </script>
+
 <!-- Keyboard Mapping Display (Optional) -->
 {#if enableDebugMode}
-  <div class={cn("fixed bottom-4 right-4 z-50 max-w-sm", className)}>
+  <div class={cn('fixed bottom-4 right-4 z-50 max-w-sm', className)}>
     <div class="bg-black/90 text-white p-4 rounded-lg shadow-xl">
       <h3 class="text-sm font-bold mb-2">Keyboard Debug</h3>
       <!-- Currently Pressed Keys -->
@@ -326,7 +327,9 @@
       <!-- Debug Log -->
       <div class="text-xs space-y-1 max-h-32 overflow-y-auto">
         {#each debugLog.slice(-5) as log}
-          <div class="text-gray-300 {log.type === 'error' ? 'text-red-400' : log.type === 'warn' ? 'text-yellow-400' : ''}">
+          <div
+            class="text-gray-300 {log.type === 'error' ? 'text-red-400' : log.type === 'warn' ? 'text-yellow-400' : ''}"
+          >
             {new Date(log.timestamp).toLocaleTimeString()}: {log.message}
           </div>
         {/each}
@@ -336,6 +339,7 @@
 {/if}
 <!-- Screen Reader Announcements -->
 <div class="sr-only" aria-live="polite" id="keyboard-announcements"></div>
+
 <style>
   .sr-only {
     position: absolute;

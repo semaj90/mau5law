@@ -72,18 +72,18 @@ const agentRegistry: Record<
             prompt,
             context || {}
           )
-        };
+        }
       } else {
         return {
           agent: "autogen",
           result: `AutoGen agent (mock): Analyzed "${prompt}" - would provide legal research workflow results`
-        };
+        }
       }
     } catch (error: any) {
       return {
         agent: "autogen",
         result: `AutoGen agent error: ${error}`
-      };
+      }
     }
   },
   crewai: async (prompt) => {
@@ -96,7 +96,7 @@ const agentRegistry: Record<
             analysisType: "legal_research",
             priority: "medium"
           })
-        };
+        }
       } else {
         throw new Error(`CrewAI legal team not available for prompt: ${prompt}`);
       }
@@ -104,7 +104,7 @@ const agentRegistry: Record<
       return {
         agent: "crewai",
         result: `CrewAI agent error: ${error}`
-      };
+      }
     }
   },
   // Add Copilot and Claude agent implementations
@@ -129,7 +129,7 @@ const agentRegistry: Record<
         return {
           agent: "copilot",
           result: (data as { response?: any; result?: any; results?: any }).response || `Copilot analysis for: ${prompt}`
-        };
+        }
       } else {
         throw new Error("Ollama request failed");
       }
@@ -137,7 +137,7 @@ const agentRegistry: Record<
       return {
         agent: "copilot",
         result: `Copilot agent (mock): Code analysis for "${prompt}" - would provide coding suggestions and optimizations`
-      };
+      }
     }
   },
   claude: async (prompt, context) => {
@@ -161,7 +161,7 @@ const agentRegistry: Record<
         return {
           agent: "claude",
           result: (data as { response?: any; result?: any; results?: any }).response || `Claude legal analysis for: ${prompt}`
-        };
+        }
       } else {
         throw new Error("Legal model request failed");
       }
@@ -169,7 +169,7 @@ const agentRegistry: Record<
       return {
         agent: "claude",
         result: `Claude agent (mock): Legal analysis for "${prompt}" - would provide detailed legal insights and case analysis`
-      };
+      }
     }
   },
   // RAG agent for enhanced retrieval
@@ -184,7 +184,7 @@ const agentRegistry: Record<
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({,
           action: "query",
-          query: prompt
+          query: prompt;
           context: context
         })
       });
@@ -193,7 +193,7 @@ const agentRegistry: Record<
         return {
           agent: "rag",
           result: (data as { response?: any; result?: any; results?: any }).result || `RAG analysis for: ${prompt}`
-        };
+        }
       } else {
         throw new Error("RAG request failed");
       }
@@ -201,19 +201,19 @@ const agentRegistry: Record<
       return {
         agent: "rag",
         result: `RAG agent (mock): Enhanced retrieval for "${prompt}" - would provide context-aware document analysis`
-      };
+      }
     }
   }
-};
+}
 /**
  * Main Orchestration Wrapper
  * Now supports dynamic agent selection (autogen, crewai, copilot, claude, etc)
  */
 export async function copilotOrchestrator(
-  prompt: string
+  prompt: string;
   options: OrchestrationOptions = {}
 ): Promise<any> {
-  let results: any = {};
+  let results: any = {}
   // Step 1: Semantic Search
   if (options.useSemanticSearch) {
     results.semantic = await semanticSearch(prompt);
@@ -480,7 +480,7 @@ export function validateMCPRequest(request: MCPToolRequest): {
   return {
     valid: errors.length === 0,
     errors
-  };
+  }
 }
 /**
  * Common MCP queries for the legal AI stack
@@ -600,7 +600,7 @@ export const commonMCPQueries = {
     tool: "rag-integration-guide",
     integrationType: "document-upload"
   })
-};
+}
 /**
  * Format MCP response for display
  */;
@@ -721,16 +721,16 @@ export async function mcpReadDirectory(path: string): Promise<any> {
 const autogenServiceFallback = {
   async runAgents(prompt: string, context?: unknown) {
     // TODO: Replace with real Autogen API call
-    return { agent: "autogen", result: `AutoGen agent result for: ${prompt}` };
+    return { agent: "autogen", result: `AutoGen agent result for: ${prompt}` }
   }
-};
+}
 // Production: CrewAI agent orchestration (stub, replace with real API integration if available)
 const crewAIService = {
   async analyzeLegalCaseWithCrew(prompt: string) {
     // TODO: Replace with real CrewAI API call
-    return { agent: "crewai", result: `CrewAI agent result for: ${prompt}` };
+    return { agent: "crewai", result: `CrewAI agent result for: ${prompt}` }
   }
-};
+}
 // Production: Read error log from MCP and append to MCP_TODO_LOG.md
 const MCP_TODO_LOG_PATH = "../../../../MCP_TODO_LOG.md";
 export async function mcpReadErrorLog(): Promise<any> {

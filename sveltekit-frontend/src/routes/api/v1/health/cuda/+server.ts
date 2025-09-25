@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
 					if (response.ok) {
 						details = await response.json()
 					}
-					break
+					break;
 				default:
 					// For redis and postgres, we'll assume they're checked by other services
 					serviceStatus = 'online'; // Optimistic

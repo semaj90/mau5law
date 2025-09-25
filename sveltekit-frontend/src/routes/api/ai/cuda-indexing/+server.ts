@@ -96,7 +96,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		const isHealthy = await checkCudaIndexingHealth()
 		if (!isHealthy) {
 			return json({
-				success: false
+				success: false;
 				error: 'CUDA indexing service is not available',
 				fallback_available: false
 				processing_time_ms: Date.now() - startTime
@@ -482,4 +482,4 @@ export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler)
 export const PUT = redisOptimized.aiAnalysis(originalPUTHandler)
-export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler)
+export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

@@ -26,7 +26,7 @@ export const StorageRateLimit = {
     recent.push(now);
     rateMap.set(userId, recent);
     return true;
-  }
+  },
 };
 /**
  * Require an authenticated session via `event.locals.auth.validate()` (Lucia pattern)
@@ -40,11 +40,11 @@ export async function requireAuthentication(event) {
     if (!auth || typeof auth.validate !== 'function') return null;
     const session = await auth.validate();
     if (!session || !session.user) return null;
-    const user = /** @type {AuthenticatedUser} */ ({
+    const user = /** @type {AuthenticatedUser} */ {
       id: session.user.id,
       email: session.user.email || session.user.username || 'unknown',
       isAdmin: !!session.user.isAdmin,
-    });
+    };
     return user;
   } catch (e) {
     return null;
@@ -64,5 +64,5 @@ export function checkOwnership(user, key) {
 export default {
   requireAuthentication,
   StorageRateLimit,
-  checkOwnership
+  checkOwnership,
 };

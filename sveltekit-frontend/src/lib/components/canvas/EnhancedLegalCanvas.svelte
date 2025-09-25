@@ -9,7 +9,7 @@
     label: string;
     type: 'evidence' | 'case' | 'document' | 'citation' | 'connection';
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   }
   interface Props {
     width?: number;
@@ -55,7 +55,8 @@
       riskLow: '#28a745',
       riskMedium: '#ffc107',
       riskHigh: '#fd7e14',
-      riskCritical: '#dc3545';
+      riskCritical: '#dc3545'
+;
     },
     nes: {
       background: '#212529',
@@ -70,7 +71,8 @@
       riskLow: '#28a745',
       riskMedium: '#ffc107',
       riskHigh: '#fd7e14',
-      riskCritical: '#dc3545';
+      riskCritical: '#dc3545'
+;
     },
     legal: {
       background: '#1a1a2e',
@@ -85,9 +87,10 @@
       riskLow: '#00b894',
       riskMedium: '#fdcb6e',
       riskHigh: '#e17055',
-      riskCritical: '#d63031';
+      riskCritical: '#d63031'
+;
     }
-  };
+  }
   const currentTheme = $derived(themes[theme]);
   // Canvas initialization and WebGPU detection
   onMount(async () => {
@@ -109,7 +112,7 @@
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
-    };
+    }
   });
   function setupCanvas() {
     if (!canvas || !ctx) return;
@@ -258,8 +261,9 @@
       evidence: data.filter(n => n.type === 'evidence').length,
       cases: data.filter(n => n.type === 'case').length,
       documents: data.filter(n => n.type === 'document').length,
-      highRisk: data.filter(n => n.riskLevel === 'high' || n.riskLevel === 'critical').length;
-    };
+      highRisk: data.filter(n => n.riskLevel === 'high' || n.riskLevel === 'critical').length
+;
+    }
     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     ctx.fillRect(10, 10, 200, 100);
     ctx.strokeStyle = currentTheme.accent;
@@ -287,12 +291,12 @@
       return distance <= 12;
     }) || null;
   }
-  function handleMouseMove(event: MouseEvent) {
+  function handleMouseMove(_event: MouseEvent) {
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    mousePos = { x, y };
+    mousePos = { x, y }
     if (interactive) {
       const node = getNodeAtPosition(x, y);
       if (node !== hoveredNode) {
@@ -302,7 +306,7 @@
       }
     }
   }
-  function handleMouseClick(event: MouseEvent) {
+  function handleMouseClick(_event: MouseEvent) {
     if (!canvas || !interactive) return;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -368,6 +372,7 @@
     }
   });
 </script>
+
 <div class="canvas-container nes-container with-title">
   <p class="title">Legal Evidence Canvas</p>
   <div class="canvas-wrapper">
@@ -393,11 +398,11 @@
       </div>
     </div>
     <label class="nes-field">
-      <input type="checkbox" class="nes-checkbox" bind:checked={showGrid}>
+      <input type="checkbox" class="nes-checkbox" bind:checked={showGrid} />
       <span>Show Grid</span>
     </label>
     <label class="nes-field">
-      <input type="checkbox" class="nes-checkbox" bind:checked={interactive}>
+      <input type="checkbox" class="nes-checkbox" bind:checked={interactive} />
       <span>Interactive Mode</span>
     </label>
   </div>
@@ -419,8 +424,9 @@
     {@render children()}
   {/if}
 </div>
+
 <style>
-  .canvas-container {;
+  .canvas-container {
     margin: 1rem;
     padding: 1rem;
     background: var(--yorha-bg-secondary);
@@ -494,11 +500,11 @@
     border: 1px solid var(--yorha-text-muted);
     background: var(--yorha-bg-secondary);
   }
-  summary: hover {;
+  summary: hover {
     background: var(--yorha-bg-tertiary);
     border-color: var(--yorha-secondary);
   }
-  /* Animation for canvas updates */
+/* Animation for canvas updates */ {}
   .canvas-wrapper {
     animation: subtleGlow 3s ease-in-out infinite alternate;
   }
@@ -510,7 +516,7 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
     }
   }
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 768px) {
     .canvas-controls {
       flex-direction: column;

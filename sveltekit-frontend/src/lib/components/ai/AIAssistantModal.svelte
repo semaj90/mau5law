@@ -46,10 +46,7 @@
     caseId?: string;
   }
 
-  let {
-    contextItems = [],
-    caseId = ''
-  }: Props = $props();
+  let { contextItems = [], caseId = '' }: Props = $props();
 
   // Get user from context (SSR-safe)
   const getUser = getContext<unknown>('user');
@@ -84,8 +81,8 @@
           includeRAG: true,
           includeUserActivity: false,
           enableStreaming: false,
-          userId: user.id
-        })
+          userId: user.id,
+        }),
       });
 
       if (!response.ok) {

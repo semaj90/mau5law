@@ -11,7 +11,7 @@ export interface VectorJobContext {
 	priority: 'high' | 'medium' | 'low';
 	// Job data
 	inputData?: any;
-	payload?: { [key: string]: any };
+	payload?: { [key: string]: any }
 	vector?: number[];
 	// Results
 	result?: VectorJobResult;
@@ -38,7 +38,7 @@ export type VectorJobEvent =
 	| { type: 'PROCESSING_FAILED'; error: string }
 	| { type: 'RETRY' }
 	| { type: 'CANCEL' }
-	| { type: 'RESET' };
+	| { type: 'RESET' }
 // Services for external API calls
 const vectorJobServices = {
 	submitToAPI: fromPromise(async ({ input }: { input: { context: VectorJobContext; event: any } }) => {
@@ -55,7 +55,7 @@ const vectorJobServices = {
 			},
 			priority: context.priority,
 			use_webgpu_fallback: context.useWebGPU
-		};
+		}
 		const response = await fetch('/api/v1/vector/jobs', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -67,7 +67,7 @@ const vectorJobServices = {
 		return await response.json();
 	}),
 	checkJobStatus: fromPromise(async ({ input }: { input: { jobId: string } }) => {
-		const response = await fetch(`/api/v1/vector/jobs/${input.jobId}/status`);
+		// removed unused response assignment
 		if (!response.ok) {
 			throw new Error(`Failed to check job status: ${response.statusText}`);
 		}
@@ -102,7 +102,7 @@ const vectorJobServices = {
 			if (input.signal.aborted) {
 				throw new Error('Polling cancelled');
 			}
-			const response = await fetch(`/api/v1/vector/jobs/${input.jobId}/status`);
+			// removed unused response assignment
 			const status = await response.json();
 			if (status.status === 'completed') {
 				return status;
@@ -115,7 +115,7 @@ const vectorJobServices = {
 		}
 		throw new Error('Job processing timeout');
 	})
-};
+}
 export const vectorJobMachine = createMachine({
 	types: {
 		context: { [key: string]: any } as VectorJobContext,
@@ -358,7 +358,7 @@ export async function createVectorJob(
 	ownerType: string
 	ownerId: string
 	operation: string
-	data?: any
+	data?: any;
 	priority: string = 'medium';
 ): Promise<any> {
 	const { createActor } = await import('xstate');

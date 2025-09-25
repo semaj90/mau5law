@@ -21,7 +21,7 @@ https://svelte.dev/e/expected_token -->
     showTime?: boolean;
     format?: string;
     class?: string;
-    onValueChange?: (value: Date | undefined) => void;
+    onValueChange?: (_value: Date | undefined) => void;
   }
   let {
     value = $bindable(undefined),
@@ -43,7 +43,7 @@ https://svelte.dev/e/expected_token -->
     default: 'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
     legal: 'border-yorha-primary/30 bg-yorha-bg-secondary text-yorha-text-primary ring-yorha-primary',
     deadline: 'border-red-500/30 bg-red-500/5 text-yorha-text-primary ring-red-500/20';
-  };
+  }
   // Format date for display
   let formattedDate = $derived(() => {
     if (!value) return placeholder;
@@ -51,7 +51,7 @@ https://svelte.dev/e/expected_token -->
       year: 'numeric',
       month: 'short',
       day: 'numeric';
-    };
+    }
     if (showTime) {
       options.hour = '2-digit';
       options.minute = '2-digit';

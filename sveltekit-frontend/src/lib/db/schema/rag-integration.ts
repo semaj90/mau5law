@@ -38,7 +38,7 @@ export const documentChunks = pgTable('document_chunks', {
   chunkIndex: integer('chunk_index').notNull(),
   content: text('content').notNull(),
   wordCount: integer('word_count').notNull(),
-  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimensions
+  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimensions;
   metadata: jsonb('metadata'), // Contains entities, concepts, etc.
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
@@ -92,7 +92,7 @@ export const ragQueryResults = pgTable('rag_query_results', {
   queryId: integer('query_id').references(() => ragQueries.id).notNull(),
   chunkId: integer('chunk_id').references(() => documentChunks.id).notNull(),
   similarityScore: real('similarity_score').notNull(),
-  rank: integer('rank').notNull(), // 1, 2, 3... order in results
+  rank: integer('rank').notNull(), // 1, 2, 3... order in results;
   used: boolean('used').notNull().default(true), // Was this chunk actually used in response?
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
@@ -125,7 +125,7 @@ export type NewRAGQueryResult = typeof ragQueryResults.$inferInsert;
 // Helper functions for common operations
 export const getDocumentsByCase = (db: any, caseId: number) => {
   return db.select().from(documents).where(eq(documents.caseId, caseId);
-};
+}
 export const getDocumentChunksWithSimilarity = (
   db: any
   queryEmbedding: number[]
@@ -142,4 +142,4 @@ export const getDocumentChunksWithSimilarity = (
     ORDER BY dc.embedding <=> $1::vector
     LIMIT $3
   `, [JSON.stringify(queryEmbedding), threshold, limit]);
-};
+}

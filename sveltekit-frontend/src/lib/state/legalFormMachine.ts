@@ -36,7 +36,7 @@ export type LegalFormEvent =
   | { type: "VALIDATE_STEP" }
   | { type: "RESET_FORM" }
   | { type: "REQUEST_AI_HELP" }
-  | { type: "APPLY_AI_RECOMMENDATION"; recommendation: string };
+  | { type: "APPLY_AI_RECOMMENDATION"; recommendation: string }
 export const legalFormMachine = setup({
   types: {
     context: { [key: string]: any } as LegalFormContext,
@@ -54,9 +54,9 @@ export const legalFormMachine = setup({
             typeof crypto !== "undefined" && crypto.randomUUID
               ? crypto.randomUUID()
               : Math.random().toString(36).slice(2),
-          success: true
+          success: true;
           message: "Case submitted successfully"
-        };
+        }
       }
     )
   }
@@ -126,7 +126,7 @@ export const legalFormMachine = setup({
                   "Expert testimony needed",
                   "Technical validation"
                 ]
-              };
+              }
               return suggestions[event.evidenceType] || [];
             }
           })
@@ -231,7 +231,7 @@ export const legalFormMachine = setup({
         VALIDATE_STEP: {
           actions: assign({
             validationErrors: ({ context }) => {
-              const errors: Record<string, string> = {};
+              const errors: Record<string, string> = {}
               if (!context.caseTitle.trim()) {
                 errors.caseTitle = "Case title is required";
               }
@@ -426,11 +426,11 @@ export function getStateDescription(state: StateValue): string {
     submitting: "Submitting case to system",
     success: "Case submitted successfully",
     error: "Error occurred during submission"
-  };
+  }
   return descriptions[state as keyof typeof descriptions] || "Unknown state";
 }
 export function getAISuggestions(
-  context: LegalFormContext
+  context: LegalFormContext;
   state: StateValue;
 ): string[] {
   const baseSuggestions = context.aiSuggestions;
@@ -446,7 +446,7 @@ export function getAISuggestions(
     ],
     review: ["Double-check evidence classification", "Verify priority level"],
     submitting: ["Do not close this window", "Submission in progress..."]
-  };
+  }
   const stateSpecific =
     stateSuggestions[state as keyof typeof stateSuggestions] || [];
   return [...baseSuggestions, ...stateSpecific];
@@ -473,7 +473,7 @@ export function getNextPossibleActions(state: StateValue): string[] {
     submitting: [],
     success: ["RESET_FORM"],
     error: ["BACK", "REQUEST_AI_HELP"]
-  };
+  }
   return actions[state as keyof typeof actions] || [];
 }
 /**
@@ -485,7 +485,7 @@ export function getNextPossibleActions(state: StateValue): string[] {
  * @returns string[] Array of best practice recommendations
  */
 export async function generateBestPractices(
-  context: LegalFormContext
+  context: LegalFormContext;
   state: StateValue;
 ): Promise<string[]> {
   // #context7: Use semantic search, memory, and agent orchestration for best practices

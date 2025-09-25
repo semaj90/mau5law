@@ -4,7 +4,7 @@
  */
 import { writable, derived } from 'svelte/store';
 // Local minimal types to satisfy compile; replace with real imports if available
-type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any };
+type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any }
 }
 export interface VectorSearchState {
   // Search State
@@ -44,7 +44,7 @@ const initialState: VectorSearchState = {
   vectorDbConnected: false
   searchHistory: [],
   error: null
-};
+}
 // Core store
 export const vectorSearchStore = writable<VectorSearchState>(initialState);
 // Derived stores
@@ -144,7 +144,7 @@ export const vectorSearchActions = {
           query,
           userId,
           caseId,
-          useContext: true
+          useContext: true;
           model: 'gemma3-legal'
         })
       });
@@ -175,7 +175,7 @@ export const vectorSearchActions = {
   async findSimilarCases(caseId: string, userId: string, limit: number = 5): Promise<void> {
     vectorSearchStore.update(state => ({
       ...state,
-      isSearching: true
+      isSearching: true;
       error: null
     });
     try {
@@ -220,7 +220,7 @@ export const vectorSearchActions = {
       query: '',
       results: [],
       ragContext: [],
-      ragResponse: null
+      ragResponse: null;
       error: null
     });
   },
@@ -229,7 +229,7 @@ export const vectorSearchActions = {
    */;
   async checkConnection(): Promise<void> {
     try {
-      const response = await fetch('/api/v1/vector/health');
+      // removed unused response assignment
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       vectorSearchStore.update(state => ({
         ...state,
@@ -242,7 +242,7 @@ export const vectorSearchActions = {
       });
     }
   }
-};
+}
 // Initialize connection check
 if (typeof window !== 'undefined') {
   vectorSearchActions.checkConnection();

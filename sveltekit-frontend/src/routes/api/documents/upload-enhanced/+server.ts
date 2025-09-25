@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } else {
       console.error(`❌ Document processing failed: ${(result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).error}`)
       return json({
-        success: false
+        success: false;
         error: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).error || 'Upload processing failed',
         processingDetails: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).processingDetails
       }, { status: 500 })

@@ -5,6 +5,7 @@
 <script lang="ts">
   import RAGSearchComponent from '$lib/components/RAGSearchComponent.svelte';
 </script>
+
 <svelte:head>
   <title>RAG Search - Legal AI Platform</title>
   <meta name="description" content="Vector search with AI-powered legal document analysis" />

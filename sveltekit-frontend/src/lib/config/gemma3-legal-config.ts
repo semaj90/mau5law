@@ -11,7 +11,7 @@ export interface Gemma3LegalConfig {
     context_length: number;
     gpu_layers: number;
     memory_requirement: string;
-  };
+  }
   generation: {
     temperature: number;
     top_p: number;
@@ -19,7 +19,7 @@ export interface Gemma3LegalConfig {
     repeat_penalty: number;
     max_tokens: number;
     stop_sequences: string[];
-  };
+  }
   legal_prompts: {
     contract_analysis: string;
     case_summary: string;
@@ -27,7 +27,7 @@ export interface Gemma3LegalConfig {
     precedent_search: string;
     compliance_check: string;
     risk_assessment: string;
-  };
+  }
   gpu_optimization: {
     enable_gpu: boolean;
     gpu_memory_fraction: number;
@@ -35,7 +35,7 @@ export interface Gemma3LegalConfig {
     parallel_requests: number;
     quantization: 'int8' | 'int4' | 'fp16' | 'fp32';
     tensor_parallel: boolean;
-  };
+  }
   rag_integration: {
     enable_rag: boolean;
     vector_db: 'postgresql' | 'qdrant';
@@ -43,7 +43,7 @@ export interface Gemma3LegalConfig {
     similarity_threshold: number;
     max_context_chunks: number;
     rerank_results: boolean;
-  };
+  }
   legal_domains: {
     contract_law: boolean;
     criminal_law: boolean;
@@ -53,7 +53,7 @@ export interface Gemma3LegalConfig {
     real_estate: boolean;
     family_law: boolean;
     tax_law: boolean;
-  };
+  }
 }
 export const GEMMA3_LEGAL_CONFIG: Gemma3LegalConfig = {
   model: {
@@ -166,7 +166,7 @@ Provide detailed risk matrix with severity and likelihood ratings.`
     family_law: false, // Specialized domain
     tax_law: false     // Specialized domain
   }
-};
+}
 // Legal entity extraction patterns
 export const LEGAL_ENTITY_PATTERNS = {
   parties: [
@@ -192,7 +192,7 @@ export const LEGAL_ENTITY_PATTERNS = {
     /\b(indemnification|limitation of liability|force majeure|termination|confidentiality|non-disclosure)\b/gi,
     /\b(warranty|representation|covenant|agreement|obligation)\b/gi
   ]
-};
+}
 // Performance optimization settings
 export const PERFORMANCE_CONFIG = {
   // Model loading optimization
@@ -217,14 +217,14 @@ export const PERFORMANCE_CONFIG = {
     beam_search: false, // Use sampling for legal creativity
     early_stopping: true
   },
-  // Multi-threading
+  // Multi-threading;
   threading: {
     num_threads: 8, // Match CPU cores
     num_gpu_layers: 35,
     num_batch: 512,
     num_predict: 2048
   }
-};
+}
 // API integration endpoints
 export const API_ENDPOINTS = {
   ollama: {
@@ -247,7 +247,7 @@ export const API_ENDPOINTS = {
     review: '/legal.v1.LegalService/Review',
     search: '/legal.v1.LegalService/Search'
   }
-};
+}
 // Prompt templates for specific legal tasks
 export const PROMPT_TEMPLATES = {
   contract_clause_extraction: `Extract all clauses from this contract and categorize them:
@@ -265,5 +265,5 @@ Include: key dates, deadlines, milestones, dependencies.`,
   contract_risk_scoring: `Score contract risks on a scale of 1-10:
 {document}
 Evaluate: financial risk, legal risk, operational risk, reputational risk.`
-};
+}
 export default GEMMA3_LEGAL_CONFIG;

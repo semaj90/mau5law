@@ -26,7 +26,7 @@ export function quantizeInt8Symmetric(vec: Float32Array): { data: Int8Array; sca
   const scale = maxAbs / 127 || 1;
   const out = new Int8Array(vec.length);
   for (let i=0;i<vec.length;i++) out[i] = Math.max(-128, Math.min(127, Math.round(vec[i]/scale));
-  return { data: out, scale };
+  return { data: out, scale }
 }
 export function dequantizeInt8Symmetric(data: Int8Array, scale: number): Float32Array {
   const out = new Float32Array(data.length);
@@ -53,14 +53,14 @@ export function packEmbedding(vec: number[] | Float32Array, method: 'uint8-linea
     const header = new Float32Array([min,max]);
     const bytes = new Uint8Array(header.buffer.byteLength + packed.byteLength);
     bytes.set(new Uint8Array(header.buffer),0); bytes.set(packed, header.buffer.byteLength);
-    return { b64: encodeBase64(bytes), scale: undefined, method:'uint8-linear' as const };
+    return { b64: encodeBase64(bytes), scale: undefined, method:'uint8-linear' as const }
   } else {
     const { data, scale } = quantizeInt8Symmetric(arr);
     // store scale as float32 header
     const header = new Float32Array([scale]);
     const bytes = new Uint8Array(header.buffer.byteLength + data.byteLength);
     bytes.set(new Uint8Array(header.buffer),0); bytes.set(new Uint8Array(data.buffer), header.buffer.byteLength);
-    return { b64: encodeBase64(bytes), scale, method:'int8-symmetric' as const };
+    return { b64: encodeBase64(bytes), scale, method:'int8-symmetric' as const }
   }
 }
 export function unpackEmbedding(b64: string, method: 'uint8-linear' | 'int8-symmetric', dims: number): Float32Array {

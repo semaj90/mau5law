@@ -180,7 +180,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       meta: z.record(z.any()).optional()
     }).passthrough()
     const payload = {
-      success: true
+      success: true;
       data: (result as { data?: any; pagination?: any }).data,
       pagination: (result as { data?: any; pagination?: any }).pagination,
       meta: {

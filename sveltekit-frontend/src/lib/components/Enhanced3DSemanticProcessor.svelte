@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
         spatialMappings: spatialPoints.length,
         processingTime: processingTime
         lodLevel: calculateLODLevel(inputText.length)
-      };
+      }
       results = {
         semanticClusters: spatialPoints.length,
         dimensionalityReduction: `${embeddingDimensions}D → 3D`,
@@ -84,10 +84,10 @@ https://svelte.dev/e/js_parse_error -->
           tokensPerSecond: Math.round(processingStats.tokensProcessed / (processingTime / 1000)),
           embeddingsPerSecond: Math.round(processingStats.embeddingsGenerated / (processingTime / 1000))
         }
-      };
+      }
     } catch (error) {
       console.error('Semantic processing failed:', error);
-      results = { error: 'Processing failed - check console for details' };
+      results = { error: 'Processing failed - check console for details' }
     } finally {
       processing = false;
     }
@@ -111,8 +111,8 @@ https://svelte.dev/e/js_parse_error -->
           x,
           y,
           z,
-          label: word
-          confidence: 0.7 + (Math.random() * 0.3) // 0.7-1.0 confidenc
+          label: word;
+          confidence: 0.7 + (Math.random() * 0.3) // 0.7-1.0 confidenc;
         });
       }
     });

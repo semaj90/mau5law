@@ -1,11 +1,11 @@
 /// <reference types="vite/client" />
 import type { PageServerLoad } from './$types.js';
-import { fail } from "@sveltejs/kit";
+import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from "sveltekit-superforms/adapters";
+import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions } from './$types.js';
-const UPLOAD_SERVICE_URL = import.meta.env.UPLOAD_SERVICE_URL || 'http://localhost:8093'
+const UPLOAD_SERVICE_URL = import.meta.env.UPLOAD_SERVICE_URL || 'http://localhost:8093';
 // Fallback minimal schema used only to keep typechecking stable during incremental edits.
 // Replace with the project's canonical `fileUploadSchema` when available.
 const fallbackFileUploadSchema = z.object({
@@ -15,7 +15,7 @@ const fallbackFileUploadSchema = z.object({
   description: z.string().optional(),
   tags: z.array(z.string()).optional(),
   isPrivate: z.boolean().optional(),
-  aiAnalysis: z.boolean().optional()
+  aiAnalysis: z.boolean().optional(),
 });
 const getSchema = () => {
   // Try to reference the real `fileUploadSchema` if it exists in the current module scope.
@@ -23,15 +23,15 @@ const getSchema = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   return typeof fileUploadSchema !== 'undefined' ? fileUploadSchema : fallbackFileUploadSchema;
-};
+}
 export const load: PageServerLoad = async () => {
   // Initialize the form
   const schema = getSchema();
   const form = await superValidate(zod(schema));
   return {
-    form
-  };
-};
+    form,
+  }
+}
 export const actions: Actions = {
   upload: async ({ request, fetch }) => {
     const formData = await request.formData();
@@ -48,13 +48,13 @@ export const actions: Actions = {
       if (!(file instanceof File)) {
         return fail(400, {
           form,
-          message: 'Invalid file provided'
+          message: 'Invalid file provided',
         });
       }
       if (!file || file.size === 0) {
         return fail(400, {
           form,
-          message: 'No file provided'
+          message: 'No file provided',
         });
       }
       uploadFormData.append('file', file);
@@ -65,53 +65,60 @@ export const actions: Actions = {
       }
       // Add tags if provided
       if (form.data.tags && Array.isArray(form.data.tags) && form.data.tags.length > 0) {
-        uploadFormData.append('tags', JSON.stringify((form.data.tags as string[]).reduce((acc, tag) => {
-            acc[tag] = 'true';
-            return acc;
-          }, {} as Record<string, string>)
-        ));
+        uploadFormData.append(
+          'tags',
+          JSON.stringify(
+            (form.data.tags as string[]).reduce(
+              (acc, tag) => {
+                acc[tag] = 'true';
+                return acc;
+              },
+              {} as Record<string, string>,
+            ),
+          ),
+        );
       }
       // Add metadata
       const metadata = {
         title: form.data.title,
         isPrivate: form.data.isPrivate.toString(),
         aiAnalysis: form.data.aiAnalysis.toString(),
-        uploadedBy: 'user', // TODO: Get from session
-        uploadedAt: new Date().toISOString()
-      };
+        uploadedBy: 'user', // TODO: Get from session,
+        uploadedAt: new Date().toISOString(),
+      }
       uploadFormData.append('metadata', JSON.stringify(metadata));
       // Upload to MinIO service
       const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
         method: 'POST',
-        body: uploadFormData
+        body: uploadFormData,
       });
       if (!uploadResponse.ok) {
         const errorText = await uploadResponse.text();
         console.error('Upload service error:', errorText);
         return fail(uploadResponse.status, {
           form,
-          message: `Upload failed: ${errorText}`
+          message: `Upload failed: ${errorText}`,
         });
       }
       const uploadResult = await uploadResponse.json();
       if (!uploadResult.success) {
         return fail(500, {
           form,
-          message: uploadResult.message || 'Upload failed'
+          message: uploadResult.message || 'Upload failed',
         });
       }
       // Return success with upload result
       return {
         form,
         uploadResult,
-        message: 'Document uploaded successfully!'
-      };
+        message: 'Document uploaded successfully!',
+      }
     } catch (error: any) {
       console.error('Upload error:', error);
       return fail(500, {
         form,
-        message: 'Internal server error during upload'
+        message: 'Internal server error during upload',
       });
     }
-  }
-};
+  },
+}

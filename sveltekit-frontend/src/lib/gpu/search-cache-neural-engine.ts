@@ -49,7 +49,7 @@ class MockMinioClient {
     // Provide some deterministic pseudo-data for personalization synthesis
     const data = new Float32Array(16);
     for (let i = 0; i < data.length; i++) data[i] = ((i + glyphId.length) % 7) / 7;
-    return { id: glyphId, embeddedVertexData: data };
+    return { id: glyphId, embeddedVertexData: data }
   }
 }
 /**
@@ -67,8 +67,7 @@ class UserAnalyticsEngine {
     );
     await sleep(5);
   }
-  async generateRecommendations(
-    document: LegalDocument
+  async generateRecommendations(_document: LegalDocument
     context: RenderContext
   ): Promise<{ personalizationVector: Float32Array; recommendedDocIds: string[] }> {
     console.log(`[Analytics] Generating recommendations for user & document ${document.id}`);
@@ -91,8 +90,8 @@ class UserAnalyticsEngine {
     }
     // 5. Synthesize personalization vector (16 dims expected by engine)
     const pv = new Float32Array(16);
-    const riskMap: Record<string, number> = { low: 0.25, medium: 0.5, high: 0.75, critical: 1 };
-    const interactionMap: Record<string, number> = { idle: 0.25, hover: 0.5, focus: 0.75, interaction: 1 };
+    const riskMap: Record<string, number> = { low: 0.25, medium: 0.5, high: 0.75, critical: 1 }
+    const interactionMap: Record<string, number> = { idle: 0.25, hover: 0.5, focus: 0.75, interaction: 1 }
     pv[0] = Math.min(1, history.length / 20);
     pv[1] = similarGlyphs.length ? similarGlyphs[0].score : 0;
     pv[2] = Math.min(1, graphRecs.length / 10);
@@ -117,12 +116,12 @@ class UserAnalyticsEngine {
     return {
       personalizationVector: pv
       recommendedDocIds: graphRecs.map((r) => r.recommendedDocId).filter(Boolean)
-    };
+    }
   }
 }
-type SOMSimilarity = { similarity: number };
+type SOMSimilarity = { similarity: number }
 class WebGPUSOMCache {
-  constructor(options: { maxNodes: number; dimensions: number }) {
+  constructor(_options: { maxNodes: number; dimensions: number }) {
     console.log('Mock WebGPUSOMCache initialized with options:', options);
   }
   async findSimilar(_features: number[], _threshold: number): Promise<SOMSimilarity[]> {
@@ -136,15 +135,15 @@ class WebGPUSOMCache {
     await sleep(5);
   }
   getStats() {
-    return { nodes: 1000, dimensions: 256, utilization: Math.random() };
+    return { nodes: 1000, dimensions: 256, utilization: Math.random() }
   }
 }
 const lokiRedisCache = {
-  async set(key: string, value: string, ttl: number): Promise<void> {
+  async set(_key: string, value: string, ttl: number): Promise<void> {
     console.log(`Loki/Redis Cache: SET key=${key} ttl=${ttl}s`);
     await sleep(5);
   }
-};
+}
 // --- Core Types ---
 export interface ShaderVariant {
   id: string;
@@ -167,7 +166,7 @@ export interface LODLevel {
 }
 export interface RenderContext {
   documentId: string;
-  viewportSize: { width: number; height: number };
+  viewportSize: { width: number; height: number }
   cameraDistance: number;
   userInteractionType: 'idle' | 'hover' | 'focus' | 'interaction';
   deviceCapabilities: {
@@ -175,18 +174,18 @@ export interface RenderContext {
     memoryAvailable: number;
     computeUnits: number;
     bandwidth: number;
-  };
+  }
   performanceMetrics: {
     currentFPS: number;
     frameTime: number;
     gpuUtilization: number;
     memoryPressure: number;
-  };
+  }
   cacheStatus: {
     chrRomHitRate: number;
     texturesCached: number;
     shadersCompiled: number;
-  };
+  }
 }
 export interface NeuralOptimizationResult {
   recommendedShaderVariant: ShaderVariant;
@@ -198,18 +197,18 @@ export interface NeuralOptimizationResult {
   visualContext?: {
     optimizationPlanSVG: string;
     semanticHeatmapSVG: string;
-  };
+  }
 }
 // --- Neural Optimizer (simple MLP) ---
 class NeuralOptimizer {
-  private weights: { input: Float32Array; hidden: Float32Array; output: Float32Array };
-  private biases: { hidden: Float32Array; output: Float32Array };
+  private weights: { input: Float32Array; hidden: Float32Array; output: Float32Array }
+  private biases: { hidden: Float32Array; output: Float32Array }
   private config: {
     inputSize: number;
     hiddenSize: number;
     outputSize: number;
     learningRate: number;
-  };
+  }
   private accuracy = 0;
   constructor(config: {
     inputSize: number;
@@ -222,11 +221,11 @@ class NeuralOptimizer {
       input: new Float32Array(config.inputSize * config.hiddenSize),
       hidden: new Float32Array(config.hiddenSize * config.hiddenSize),
       output: new Float32Array(config.hiddenSize * config.outputSize)
-    };
+    }
     this.biases = {
       hidden: new Float32Array(config.hiddenSize),
       output: new Float32Array(config.outputSize)
-    };
+    }
     this.init();
   }
   private init() {
@@ -342,8 +341,7 @@ export class SearchCacheNeuralEngine {
     this.initLODLevels();
     console.log('🧠 SearchCacheNeuralEngine ready with User Analytics');
   }
-  async optimizeRenderingForDocument(
-    document: LegalDocument
+  async optimizeRenderingForDocument(_document: LegalDocument
     context: RenderContext
   ): Promise<NeuralOptimizationResult> {
     // Phase 1: User Analytics & Recommendation
@@ -370,7 +368,7 @@ export class SearchCacheNeuralEngine {
         optimizationPlanSVG: this.makePlanSVG(shader, lod, cacheStrategy),
         semanticHeatmapSVG: this.makeHeatmap(features)
       }
-    };
+    }
     await this.persist(document.id, result);
     console.log(
       `✅ NEURAL OPT ${document.id}: ${shader.quality} | LOD ${lod.level} | +${perfGain.toFixed(1)}%`
@@ -540,7 +538,7 @@ export class SearchCacheNeuralEngine {
   }
   private estimateGain(shader: ShaderVariant, lod: LODLevel, ctx: RenderContext): number {
     const base = ctx.performanceMetrics.currentFPS;
-    const target = shader.expectedPerformance;
+    // removed unused target assignment
     const lodBonus = ((8 - lod.level) / 8) * 10;
     const gain = Math.max(0, ((target + lodBonus) / Math.max(1, base) - 1) * 100);
     return Math.min(200, gain);

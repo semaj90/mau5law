@@ -49,4 +49,4 @@ export interface ValidationProgressMessage {
  * 7. { type: 'complete', message: 'Validation complete', percentage: 100 }
  */
 // Note: Actual WebSocket implementation would be handled by the SvelteKit adapter
-// This endpoint serves as documentation and fallback for non-WebSocket requests
+// This endpoint serves as documentation and fallback for non-WebSocket requests;

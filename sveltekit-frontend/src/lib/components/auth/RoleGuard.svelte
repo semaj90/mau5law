@@ -8,12 +8,7 @@
     fallback?: import('svelte').Snippet;
     requireAll?: boolean; // For multiple roles, require all or just one
   }
-  let {
-    children,
-    roles,
-    fallback,
-    requireAll = false
-  }: Props = $props();
+  let { children, roles, fallback, requireAll = false }: Props = $props();
   let allowedRoles = $derived(() => {
     return Array.isArray(roles) ? roles : [roles];
   });
@@ -35,6 +30,7 @@
     }
   });
 </script>
+
 {#if hasAccess}
   {#if children}
     {@render children()}

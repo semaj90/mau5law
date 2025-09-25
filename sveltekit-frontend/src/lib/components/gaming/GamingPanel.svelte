@@ -41,7 +41,7 @@
 <div
 	class="gaming-panel {variant}"
 	class:glow={borderGlow}
-	class:scan={scanEffect};
+	class:scan={scanEffect}
 	class:minimized={isMinimized}
 >
 	<!-- Panel Header -->

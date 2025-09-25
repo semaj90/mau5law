@@ -24,7 +24,7 @@
     sm: 'p-3',
     md: 'p-4',
     lg: 'p-6';
-  };
+  }
   const variantClasses = {
     default: 'nes-card',
     dark: 'nes-card-dark',
@@ -32,8 +32,9 @@
     success: 'nes-card-success',
     warning: 'nes-card-warning',
     danger: 'nes-card-danger';
-  };
+  }
 </script>
+
 <div
   class="nes-card-container {variantClasses[variant]} {sizeClasses[size]}"
   class:is-elevated={elevated}
@@ -55,6 +56,7 @@
     {@render children?.()}
   </div>
 </div>
+
 <style>
   .nes-card-container {
     position: relative;
@@ -63,7 +65,7 @@
     font-family: 'Press Start 2P', cursiv;
     transition: all 0.2s ease;
   }
-  /* Base NES Card Styling */
+/* Base NES Card Styling */ {}
   .nes-card {
     background: theme('colors.nes.white');
     color: theme('colors.nes.black');
@@ -82,7 +84,7 @@
   .is-rounded {
     border-radius: 8px;
   }
-  /* Variant Styles */
+/* Variant Styles */ {}
   .nes-card-dark {
     background: theme('colors.nes.black');
     color: theme('colors.nes.white');
@@ -129,7 +131,7 @@
     border-color: theme('colors.nes.red');
     box-shadow: 8px 8px 0px 0px theme('colors.nes.red');
   }
-  /* Header Styles */
+/* Header Styles */ {}
   .nes-card-header {
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
@@ -149,13 +151,13 @@
     opacity: 0.8;
     line-height: 1.4;
   }
-  /* Content Styles */
+/* Content Styles */ {}
   .nes-card-content {
     flex: 1;
     font-size: 0.75rem;
     line-height: 1.5;
   }
-  /* Size Adjustments */
+/* Size Adjustments */ {}
   .p-3 .nes-card-title {
     font-size: 0.75rem;
   }
@@ -174,16 +176,16 @@
   .p-6 .nes-card-content {
     font-size: 0.875rem;
   }
-  /* Interactive Effects */
+/* Interactive Effects */ {}
   .nes-card-container:hover.is-elevated {
     cursor: pointer;
   }
-  /* Focus styles for accessibility */
+/* Focus styles for accessibility */ {}
   .nes-card-container:focus-visible {
     outline: 2px solid theme('colors.nes.yellow');
     outline-offset: 2px;
   }
-  /* Responsive Design */
+/* Responsive Design */ {}
   @media (max-width: 768px) {
     .nes-card-container {
       box-shadow: 4px 4px 0px 0px theme('colors.nes.black');

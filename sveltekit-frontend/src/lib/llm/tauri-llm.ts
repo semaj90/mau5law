@@ -20,7 +20,7 @@ export async function getAvailableModels(): Promise<string[]> {
   return await invoke("list_llm_models") as Promise<string[]>;
 }
 export async function runInference(
-  model: string
+  model: string;
   prompt: string
 ): Promise<string> {
   if (!tauriInitialized) {

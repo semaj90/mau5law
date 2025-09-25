@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		if (!body.strategy || !['speed', 'quality', 'comparison'].includes(body.strategy)) {
 			return json({
-				success: false
+				success: false;
 				error: 'Invalid strategy: must be "speed", "quality", or "comparison"'
 			}, { status: 400 })
 		}

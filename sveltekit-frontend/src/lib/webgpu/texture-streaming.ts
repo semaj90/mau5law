@@ -38,7 +38,7 @@ export interface NESTexture {
     documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     confidenceLevel: number;
     riskIndicator: boolean;
-  };
+  }
 }
 export interface MemoryRegion {
   name: 'RAM' | 'CHR_ROM' | 'PRG_ROM';
@@ -138,7 +138,7 @@ export class WebGPUTextureStreamer {
     try {
       this.gl = canvas.getContext('webgl2', {
         alpha: true
-        antialias: false, // Disable for pixel-perfect NES style
+        antialias: false, // Disable for pixel-perfect NES style;
         depth: true
         premultipliedAlpha: true
       });
@@ -172,7 +172,7 @@ export class WebGPUTextureStreamer {
         } catch (error: any) {
           self.postMessage({ success: false, error: error.message });
         }
-      };
+      }
       function compressTexture(data, legalContext) {
         const input = new Uint8Array(data);
         const output = [];
@@ -201,7 +201,7 @@ export class WebGPUTextureStreamer {
         return {
           data: compressed.buffer,
           ratio: input.length / compressed.length
-        };
+        }
       }
     `;
     const blob = new Blob([workerCode], { type: 'application/javascript' });
@@ -225,7 +225,7 @@ export class WebGPUTextureStreamer {
     id: string
     data: BufferLike
     width: number
-    height: number
+    height: number;
     options: {
       priority?: number;
       legalContext?: NESTexture['legalContext'];
@@ -276,7 +276,7 @@ export class WebGPUTextureStreamer {
         priority,
         compressed,
         legalContext
-      };
+      }
       // Store in appropriate memory region
       memoryRegion.textures.set(id, nesTexture);
       memoryRegion.used += nesTexture.size;
@@ -295,7 +295,7 @@ export class WebGPUTextureStreamer {
   }
   private async compressTexture(
     data: ArrayBuffer
-    width: number
+    width: number;
     height: number
     legalContext?: NESTexture['legalContext']
   ): Promise<ArrayBuffer> {
@@ -313,7 +313,7 @@ export class WebGPUTextureStreamer {
         } else {
           reject(new Error(e.data.error));
         }
-      };
+      }
       this.compressionWorker!.addEventListener('message', handleMessage);
       this.compressionWorker!.postMessage({
         textureData: data
@@ -435,7 +435,7 @@ export class WebGPUTextureStreamer {
       textures: 0,
       isWebGPU: !!this.device,
       isWebGL2: !!this.gl
-    };
+    }
     let totalUsed = 0;
     let totalTextures = 0;
     for (const [name, region] of this.memoryRegions) {
@@ -444,7 +444,7 @@ export class WebGPUTextureStreamer {
         size: region.size,
         utilization: region.used / region.size,
         textureCount: region.textures.size
-      };
+      }
       totalUsed += region.used;
       totalTextures += region.textures.size;
     }

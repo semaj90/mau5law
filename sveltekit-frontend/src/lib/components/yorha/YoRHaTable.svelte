@@ -123,7 +123,7 @@
       selectedRows = new Set(paginatedData.map(row => row.id));
     }
   }
-  function formatCellValue(value: unknown, column: TableColumn) {
+  function formatCellValue(_value: unknown, column: TableColumn) {
     switch (column.type) {
       case 'date':
         return new Date(value).toLocaleDateString();
@@ -140,7 +140,7 @@
     const alignClass = column.align ? `text-${column.align}` : '';
     return `${baseClass} ${alignClass}`.trim();
   }
-  function getStatusClass(value: string) {
+  function getStatusClass(_value: string) {
     const statusClasses = {
       'active': 'yorha-status-active',
       'inactive': 'yorha-status-inactive',
@@ -153,7 +153,7 @@
       'failed': 'yorha-status-failed',
       'online': 'yorha-status-online',
       'offline': 'yorha-status-offline'
-    };
+    }
     return statusClasses[value?.toLowerCase()] || 'yorha-status-default';
   }
 </script>
@@ -245,7 +245,7 @@
             <tr
               class="yorha-table-row"
               class:yorha-row-selected={selectedRows.has(row.id)}
-              class:yorha-row-even={index % 2 === 0};
+              class:yorha-row-even={index % 2 === 0}
               class:yorha-row-odd={index % 2 === 1}
             >
               {#if selectable}

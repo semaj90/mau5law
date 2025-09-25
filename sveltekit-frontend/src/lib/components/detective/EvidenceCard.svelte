@@ -16,10 +16,10 @@
     aiSummary?: string;
     analysis?: {
       aiSummary?: string;
-    };
+    }
     timeline?: {
       createdAt?: string | Date;
-    };
+    }
     hash?: string;
   }
   // --- SVELTE 5 PROPS ---
@@ -33,52 +33,53 @@
   // --- Helper Functions ---
   function getEvidenceIcon(type: string) {
     switch (type) {
-      case "document":
-        return "i-lucide-file-text";
-      case "image":
-        return "i-lucide-image";
-      case "video":
-        return "i-lucide-video";
-      case "audio":
-        return "i-lucide-mic";
-      case "digital":
-        return "i-lucide-hard-drive";
+      case 'document':
+        return 'i-lucide-file-text';
+      case 'image':
+        return 'i-lucide-image';
+      case 'video':
+        return 'i-lucide-video';
+      case 'audio':
+        return 'i-lucide-mic';
+      case 'digital':
+        return 'i-lucide-hard-drive';
       default:
-        return "i-lucide-file";
+        return 'i-lucide-file';
     }
   }
   function getTypeColor(type: string) {
     switch (type) {
-      case "document":
-        return "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300";
-      case "image":
-        return "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300";
-      case "video":
-        return "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300";
-      case "audio":
-        return "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300";
-      case "digital":
-        return "bg-orange-50 text-orange-700 dark: bg-orange-950 dark:text-orange-300";
+      case 'document':
+        return 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300';
+      case 'image':
+        return 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300';
+      case 'video':
+        return 'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300';
+      case 'audio':
+        return 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300';
+      case 'digital':
+        return 'bg-orange-50 text-orange-700 dark: bg-orange-950 dark:text-orange-300';
       default:
-        return "bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+        return 'bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-300';
     }
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return "0 Bytes";
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   function formatDate(date: string | Date): string {
-    return new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   }
 </script>
+
 <Card
   class="nes-container is-rounded group hover:shadow-md transition-shadow duration-200 cursor-pointer"
   role="article"
@@ -89,27 +90,22 @@
       <div class="flex items-center gap-3">
         <div
           class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center {getTypeColor(
-            item.evidenceType || item.type || 'document'
+            item.evidenceType || item.type || 'document',
           )}"
         >
-          <i
-            class="{getEvidenceIcon(item.evidenceType || item.type || 'document')} w-5 h-5"
-            aria-hidden="true"
-          ></i>
+          <i class="{getEvidenceIcon(item.evidenceType || item.type || 'document')} w-5 h-5" aria-hidden="true"></i>
         </div>
         <div class="min-w-0 flex-1">
           <h3 class="font-semibold text-sm text-foreground truncate">
             {item.title}
           </h3>
           <p class="text-xs nes-text is-disabled truncate">
-            {item.fileName || "No filename"}
+            {item.fileName || 'No filename'}
           </p>
         </div>
       </div>
       <!-- Quick Actions -->
-      <div
-        class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-      >
+      <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <Button
           variant="ghost"
           size="sm"
@@ -135,12 +131,7 @@
     <!-- Preview/Thumbnail -->
     {#if item.thumbnailUrl}
       <div class="aspect-video bg-muted rounded-md overflow-hidden">
-        <img
-          src={item.thumbnailUrl}
-          alt="Evidence preview"
-          class="w-full h-full object-cover"
-          loading="lazy"
-        />
+        <img src={item.thumbnailUrl} alt="Evidence preview" class="w-full h-full object-cover" loading="lazy" />
       </div>
     {:else}
       <div
@@ -149,7 +140,7 @@
         <div class="text-center">
           <i
             class="{getEvidenceIcon(
-              item.evidenceType || item.type || 'document'
+              item.evidenceType || item.type || 'document',
             )} w-8 h-8 mx-auto mb-2 text-muted-foreground"
             aria-hidden="true"
           ></i>
@@ -180,30 +171,28 @@
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
           {/each}
           {#if item.tags.length > 3}
-            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{item.tags.length - 3}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+              >+{item.tags.length - 3}</span
+            >
           {/if}
         </div>
       {/if}
       <!-- File Info -->
-      <div
-        class="flex items-center justify-between text-xs nes-text is-disabled"
-      >
+      <div class="flex items-center justify-between text-xs nes-text is-disabled">
         <span>{formatFileSize(item.fileSize || 0)}</span>
         <span>{formatDate(item.createdAt || item.timeline?.createdAt || new Date())}</span>
       </div>
       <!-- Hash Verification -->
       {#if item.hash}
         <div class="flex items-center gap-2">
-          <i
-            class="i-lucide-shield-check w-4 h-4 text-green-600"
-            aria-hidden="true"
-          ></i>
+          <i class="i-lucide-shield-check w-4 h-4 text-green-600" aria-hidden="true"></i>
           <span class="text-xs text-green-600 font-medium">Verified</span>
         </div>
       {/if}
     </div>
   </div>
 </Card>
+
 <style>
   /* Modern CSS line clamping with fallback */
   .line-clamp-2 {

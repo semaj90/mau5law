@@ -12,11 +12,11 @@
   let performanceStats = $state<any>(null);
   $effect(() => {
     (async () => {
-if (!browser) return;
-    // Check browser compatibility
-    browserCheck = checkBrowserCompatibility();
-    // Run full diagnostics
-    await runDiagnostics();
+      if (!browser) return;
+      // Check browser compatibility
+      browserCheck = checkBrowserCompatibility();
+      // Run full diagnostics
+      await runDiagnostics();
     })();
   });
   async function runDiagnostics() {
@@ -45,7 +45,7 @@ if (!browser) return;
       const startCPU = performance.now();
       const cpuResult = webgpuPolyfill['computeSimilarityCPU'](vector1, vector2);
       const cpuTime = performance.now() - startCPU;
-      testResults = { cpu: cpuResult };
+      testResults = { cpu: cpuResult }
       // Test WebGPU if available
       try {
         const startGPU = performance.now();
@@ -57,7 +57,7 @@ if (!browser) return;
         console.log(`Difference: ${Math.abs(cpuResult - webgpuResult)}`);
       } catch (error) {
         console.warn('WebGPU test failed:', error);
-        testResults.error = error instanceof Error ? error.message: 'Unknown WebGPU error';
+        testResults.error = error instanceof Error ? error.message : 'Unknown WebGPU error';
       }
       // Get performance stats
       performanceStats = webgpuPolyfill.getPerformanceStats();
@@ -65,13 +65,14 @@ if (!browser) return;
       console.error('Vector similarity test failed:', error);
       testResults = {
         cpu: 0,
-        error: error instanceof Error ? error.message: 'Test failed'
-      };
+        error: error instanceof Error ? error.message : 'Test failed',
+      }
     } finally {
       isRunning = false;
     }
   }
 </script>
+
 <svelte:head>
   <title>WebGPU Vector Similarity Test</title>
   <meta name="description" content="Test and diagnose WebGPU vector similarity computation for legal AI platform" />
@@ -100,7 +101,11 @@ if (!browser) return;
     </button>
     {#if diagnosticsResults}
       <div class="diagnostics-results">
-        <div class="status-nier-bits-card" class:success={diagnosticsResults.isSupported} class:error={!diagnosticsResults.isSupported}>
+        <div
+          class="status-nier-bits-card"
+          class:success={diagnosticsResults.isSupported}
+          class:error={!diagnosticsResults.isSupported}
+        >
           <div class="status-icon">
             {diagnosticsResults.isSupported ? '🚀' : '⚠️'}
           </div>
@@ -111,7 +116,10 @@ if (!browser) return;
         <div class="details">
           <h3>Browser Information</h3>
           <ul>
-            <li>Browser: {diagnosticsResults.browserSupport.browserName} {diagnosticsResults.browserSupport.browserVersion}</li>
+            <li>
+              Browser: {diagnosticsResults.browserSupport.browserName}
+              {diagnosticsResults.browserSupport.browserVersion}
+            </li>
             <li>Navigator GPU: {diagnosticsResults.browserSupport.hasNavigatorGPU ? 'Available' : 'Not Available'}</li>
           </ul>
           {#if diagnosticsResults.adapterInfo}
@@ -207,6 +215,7 @@ if (!browser) return;
     {/if}
   </section>
 </div>
+
 <style>
   .container {
     max-width: 1200px;

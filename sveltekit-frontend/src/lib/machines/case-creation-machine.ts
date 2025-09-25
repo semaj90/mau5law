@@ -10,7 +10,7 @@ export interface CaseCreationContext {
     status: 'open' | 'investigating' | 'pending' | 'closed' | 'archived';
     location?: string;
     jurisdiction?: string;
-  };
+  }
   validationErrors: Record<string, string[]>;
   createdCase: any;
   error: string | null;
@@ -200,7 +200,7 @@ export const caseCreationMachine = createMachine({
 }, {
   actors: {
     validateCaseData: fromPromise(async ({ input }: { input: CaseCreationContext }) => {
-      const errors: Record<string, string[]> = {};
+      const errors: Record<string, string[]> = {}
       if (!input.formData.title?.trim()) {
         errors.title = ['Title is required'];
       }
@@ -208,9 +208,9 @@ export const caseCreationMachine = createMachine({
         errors.description = ['Description is required'];
       }
       if (Object.keys(errors).length > 0) {
-        throw { validationErrors: errors };
+        throw { validationErrors: errors }
       }
-      return { valid: true };
+      return { valid: true }
     })
   }
 });

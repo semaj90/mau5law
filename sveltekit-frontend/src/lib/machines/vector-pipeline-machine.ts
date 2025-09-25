@@ -6,15 +6,15 @@ import { writable } from 'svelte/store';
 // Mock implementations for undefined variables
 const webgpuWASM = {
   getStatus: () => ({ capabilities: { webgpuSupported: true } })
-};
+}
 const vectorPipeline = {
   submitJob: async (job: any) => ({ jobId: `job_${Date.now()}`, status: 'enqueued' })
-};
+}
 // Add loadModel method to webgpuWASM
 const webgpuWASMExtended = {
   ...webgpuWASM,
   loadModel: async () => ({ modelLoaded: true, status: 'ready' })
-};
+}
 export interface VectorPipelineJob {
   jobId: string;
   ownerType: 'evidence' | 'report' | 'case' | 'document';
@@ -37,7 +37,7 @@ export interface VectorPipelineContext {
     completedJobs: number;
     failedJobs: number;
     progress: number;
-  };
+  }
   // Pipeline status
   pipeline: {
     postgresql: boolean;
@@ -46,7 +46,7 @@ export interface VectorPipelineContext {
     cudaWorker: boolean;
     qdrant: boolean;
     webgpu: boolean;
-  };
+  }
   // Error tracking
   errors: string[];
   retryAttempts: number;
@@ -57,7 +57,7 @@ export interface VectorPipelineContext {
     totalJobsProcessed: number;
     throughputPerMinute: number;
     lastProcessedAt: Date | null;
-  };
+  }
 }
 export type VectorPipelineEvent =
   | { type: 'SUBMIT_JOB'; job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> }
@@ -69,7 +69,7 @@ export type VectorPipelineEvent =
   | { type: 'HEALTH_CHECK' }
   | { type: 'RESET_PIPELINE' }
   | { type: 'ENABLE_WEBGPU' }
-  | { type: 'DISABLE_WEBGPU' };
+  | { type: 'DISABLE_WEBGPU' }
 const initialContext: VectorPipelineContext = {
   currentJob: null
   batch: {
@@ -96,7 +96,7 @@ const initialContext: VectorPipelineContext = {
     throughputPerMinute: 0,
     lastProcessedAt: null
   }
-};
+}
 export const vectorPipelineMachine = setup({
   types: { [key: string]: any } as {
     context: VectorPipelineContext;
@@ -114,7 +114,7 @@ export const vectorPipelineMachine = setup({
           ...context.batch,
           jobs: [...context.batch.jobs, ...jobs],
           totalJobs: context.batch.totalJobs + jobs.length
-        };
+        }
       }
     }),
     updateJobProgress: assign({,
@@ -134,7 +134,7 @@ export const vectorPipelineMachine = setup({
           completedJobs,
           failedJobs,
           progress: overallProgress
-        };
+        }
       }
     }),
     completeJob: assign({,
@@ -147,7 +147,7 @@ export const vectorPipelineMachine = setup({
           ...context.batch,
           jobs,
           completedJobs: context.batch.completedJobs + 1
-        };
+        }
       },
       metrics: ({ context }) => ({
         ...context.metrics,
@@ -165,7 +165,7 @@ export const vectorPipelineMachine = setup({
           ...context.batch,
           jobs,
           failedJobs: context.batch.failedJobs + 1
-        };
+        }
       },
       errors: ({ context, event }) => [...context.errors, (event as any).error]
     }),
@@ -221,7 +221,7 @@ export const vectorPipelineMachine = setup({
           ...context.metrics,
           averageProcessingTime: averageTime
           throughputPerMinute: recentJobs.length
-        };
+        }
       }
     })
   },
@@ -245,7 +245,7 @@ export const vectorPipelineMachine = setup({
         jobId: `job_${Date.now()}`,
         status: 'enqueued',
         progress: 0
-      };
+      }
     }),
     submitBatch: fromPromise(async ({ input }: { input: any }) => {
       const { jobs } = input;
@@ -263,9 +263,9 @@ export const vectorPipelineMachine = setup({
         redis: true
         goMicroservice: true
         cudaWorker: true
-        qdrant: true
+        qdrant: true;
         webgpu: false
-      };
+      }
     }),
     retryFailedJobs: fromPromise(async ({ input }: { input: any }) => {
       const { failedJobs } = input;
@@ -279,7 +279,7 @@ export const vectorPipelineMachine = setup({
         })
       );
       return retryResults.map((result, index) => ({
-        job: failedJobs[index]
+        job: failedJobs[index];
         success: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled',
         result: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason
       });
@@ -496,5 +496,5 @@ export const vectorPipelineActions = {
   reset: () => {
     vectorPipelineActor.send({ type: 'RESET_PIPELINE' });
   }
-};
+}
 export default vectorPipelineActor;

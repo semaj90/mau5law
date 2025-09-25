@@ -31,7 +31,7 @@ export class LegalAIReranker {
     workflow: 1.2,
     recency: 0.8,
     confidence: 1.5
-  };
+  }
   /**
    * Advanced reranking with legal context awareness
    */
@@ -66,7 +66,7 @@ export class LegalAIReranker {
         return {
           ...result,
           rerankScore: score
-        };
+        }
       })
       .sort((a, b) => b.rerankScore - a.rerankScore);
   }
@@ -90,7 +90,7 @@ export class LegalAIReranker {
         "user-activity": 1.5,
         "system-reports": 1.3
       }
-    };
+    }
     const boosts = roleBoosts[role as keyof typeof roleBoosts];
     const contentType = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.type as string;
     return boosts?.[contentType as keyof typeof boosts] || 0;
@@ -106,7 +106,7 @@ export class LegalAIReranker {
       draft: { templates: 1.5, examples: 1.3 },
       review: { checklist: 1.8, validation: 1.5 },
       approved: { archive: 1.2, export: 1.5 }
-    };
+    }
     const boosts = workflowBoosts[workflowState as keyof typeof workflowBoosts];
     const actionType = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.actionType as string;
     return boosts?.[actionType as keyof typeof boosts] || 0;
@@ -171,7 +171,7 @@ export interface Neo4jPathContext {
 export async function enhancedSearchWithNeo4j(
   query: string
   userContext: UserContext
-  neo4jContext?: Neo4jPathContext
+  neo4jContext?: Neo4jPathContext;
   limit: number = 10,
 ): Promise<RerankResult[]> {
   // Use existing qdrant service for initial ANN search
@@ -245,13 +245,13 @@ function calculateFrequencyScore(
 // Legacy function for backward compatibility
 export async function enhancedSearch(
   query: string
-  userContext: UserContext
+  userContext: UserContext;
   limit: number = 10,
 ): Promise<RerankResult[]> {
   return enhancedSearchWithNeo4j(query, userContext, undefined, limit);
 }
 // Export for use in components
-export { LegalAIReranker as default };
+export { LegalAIReranker as default }
 /**
  * Multi-LLM synthesis function for advanced legal AI workflows
  * Accepts multiple LLM outputs, user history, uploaded files, MCP server data, and synthesizes a rich output.
@@ -317,5 +317,5 @@ export async function synthesizeMultiLLMOutput({
     nextSteps,
     generativeAutocomplete,
     selfPrompt
-  };
+  }
 }

@@ -175,7 +175,7 @@ async function getCachedSuggestions(query: string): Promise<any> {
 }
 async function getDatabaseSuggestions(
   query: string
-  context: string
+  context: string;
   jurisdiction: string | undefined
   maxResults: number
 ): Promise<any> {

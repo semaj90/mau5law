@@ -66,21 +66,21 @@ if (!browser) return;
   /**
    * Handle file drop for evidence analysis
    */
-  function handleFileDrop(event: DragEvent) {
+  function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
     const files = event.dataTransfer?.file;
     if (files && files.length > 0) {
       analyzeEvidence(files[0]);
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
   }
   /**
    * Handle file input change
    */
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     const file = target.files?.[0];
     if (file) {
       analyzeEvidence(file);
@@ -125,7 +125,7 @@ if (!browser) return;
             reasoning: 'Cross-reference with existing evidence shows discrepancies',
             recommendations: ['Verify with additional sources', 'Interview witnesses'];
           }
-        };
+        }
         conflicts = [newConflict, ...conflicts];
       }
       // Update performance metrics
@@ -140,7 +140,7 @@ if (!browser) return;
         cacheSize: performanceMetrics.cacheSize + evidence.metadata.memoryFootprint,
         textureMemory: performanceMetrics.textureMemory + 1024 * 1024, // 1MB
         vertexBufferMemory: performanceMetrics.vertexBufferMemory + 512 * 1024 // 512KB
-      };
+      }
       console.log(`✅ Analysis complete: ${totalTime.toFixed(2)}ms`);
     } catch (error: unknown) {
       console.error('Evidence analysis failed:', error);
@@ -200,7 +200,7 @@ if (!browser) return;
       );
       memoryBankStatus[bank].used = Math.max(0, usage);
     });
-    memoryBankStatus = { ...memoryBankStatus }; // Trigger reactivity
+    memoryBankStatus = { ...memoryBankStatus } // Trigger reactivity
   }
   /**
    * Screenshot current evidence for enhancement

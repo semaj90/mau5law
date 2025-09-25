@@ -13,12 +13,12 @@ export interface LegalDocumentUnified {
   jurisdiction?: string;
   court?: string;
   citation?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   createdAt?: Date;
   updatedAt?: Date;
 }
 export type LegalDocument = LegalDocumentUnified;
-export function isLegalDocument(value: any): value is LegalDocumentUnified {
+export function isLegalDocument(_value: any): value is LegalDocumentUnified {
   return (
     value &&
     typeof value === 'object' &&
@@ -27,8 +27,8 @@ export function isLegalDocument(value: any): value is LegalDocumentUnified {
   );
 }
 export function mergeLegalDocuments<T extends Partial<LegalDocumentUnified>(
-  base: LegalDocumentUnified
+  base: LegalDocumentUnified;
   patch: T;
 ): LegalDocumentUnified {
-  return { ...base, ...patch };
+  return { ...base, ...patch }
 }

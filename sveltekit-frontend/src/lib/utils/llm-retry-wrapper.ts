@@ -27,7 +27,7 @@ const todoAutogen = {
   logLLMMisfire: async (details: any) => {
     console.warn('LLM misfire:', details);
   }
-};
+}
 const retryLLMCall = async (fn: () => Promise<any>, model: string, prompt: string, retries: number) => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -37,7 +37,7 @@ const retryLLMCall = async (fn: () => Promise<any>, model: string, prompt: strin
       await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1));
     }
   }
-};
+}
 /**
  * Enhanced LLM wrapper with retry logic and TODO generation
  */;
@@ -52,7 +52,7 @@ export class OllamaRetryWrapper {
    * Make LLM call with automatic retry and error logging
    */
   async callLLM(
-    prompt: string
+    prompt: string;
     options: LLMCallOptions = {}
   ): Promise<LLMResponse> {
     const {
@@ -79,7 +79,7 @@ export class OllamaRetryWrapper {
             body: JSON.stringify({
               model,
               prompt,
-              stream: false
+              stream: false;
               options: {
                 temperature,
                 num_predict: maxTokens
@@ -114,7 +114,7 @@ export class OllamaRetryWrapper {
             model,
             duration,
             success: true
-          };
+          }
         } catch (error: any) {
           clearTimeout(timeoutId);
           // Track failures
@@ -171,14 +171,14 @@ export class OllamaRetryWrapper {
         lastSuccessTime: this.lastSuccessTime,
         failureCount: this.failureCount,
         url: this.baseUrl
-      };
+      }
       if (status === 'degraded') {
         await todoAutogen.logPerformanceIssue('gpu', {
           issue: 'Missing required models',
           details
         });
       }
-      return { status, details };
+      return { status, details }
     } catch (error: any) {
       await todoAutogen.logLLMMisfire({
         model: 'health-check',
@@ -193,7 +193,7 @@ export class OllamaRetryWrapper {
           url: this.baseUrl,
           timestamp: new Date().toISOString()
         }
-      };
+      }
     }
   }
   /**
@@ -209,7 +209,7 @@ export class OllamaRetryWrapper {
         maxOldSpaceSize: (import.meta as any).env?.NODE_OPTIONS?.includes('max-old-space-size'),
         gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION
       }
-    };
+    }
   }
 }
 // Singleton instance for reuse
@@ -232,7 +232,7 @@ export async function promptLLM(
  * Streaming LLM call with retry logic
  */
 export async function* streamLLM(
-  prompt: string
+  prompt: string;
   options: LLMCallOptions = {}
 ): AsyncGenerator<string, void, unknown> {
   const {
@@ -250,7 +250,7 @@ export async function* streamLLM(
       body: JSON.stringify({
         model,
         prompt,
-        stream: true
+        stream: true;
         options: { temperature }
       })
     });
@@ -264,7 +264,7 @@ export async function* streamLLM(
       const { done, value } = await reader.read();
       if (done) break;
       const chunk = decoder.decode(value);
-      const lines = chunk.split('\n').filter((line: string) => line.trim();
+      // removed unused lines assignment
       for (const line of lines) {
         try {
           const data = JSON.parse(line);

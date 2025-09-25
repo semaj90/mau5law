@@ -23,7 +23,7 @@ export interface GlyphEmbedRequest {
     enable_compression: boolean;
     target_ratio: number;
     predictive_frames: number;
-  };
+  }
   simd_config?: Partial<SIMDGlyphConfig>;
   // RAG enhancement fields
   rag_config?: {
@@ -32,7 +32,7 @@ export interface GlyphEmbedRequest {
     overlap_size: number;
     enable_summarization: boolean;
     enable_vector_store: boolean;
-  };
+  }
   article_urls?: string[];
   content_sources?: Array<any>;
 }
@@ -46,7 +46,7 @@ export interface SIMDShaderData {
     compression_time_ms: number;
     shader_generation_time_ms: number;
     total_optimization_time_ms: number;
-  };
+  }
 }
 export interface GlyphEmbedResult {
   glyph_url: string;
@@ -78,7 +78,7 @@ export interface GlyphEmbedResponse {
     shader_format?: string;
     performance_tier?: string;
     generated_at: string;
-  };
+  }
 }
 export interface GlyphHealthStatus {
   service: string;
@@ -93,7 +93,7 @@ export interface GlyphHealthStatus {
     png_embedding: boolean;
     neural_sprite_integration: boolean;
     portable_artifacts: boolean;
-  };
+  }
   supported_formats: string[];
   performance_tiers: string[];
   compression_targets: number[];
@@ -101,7 +101,7 @@ export interface GlyphHealthStatus {
     glyph_diffusion_service: string;
     simd_gpu_tiling_engine: string;
     png_embed_extractor: string;
-  };
+  }
 }
 /**
  * Enhanced SIMD Glyph Embeds API Client with RAG Integration
@@ -160,7 +160,7 @@ export class EnhancedGlyphEmbedsClient {
       return {
         success: false
         error: error instanceof Error ? error.message: 'Unknown error occurred'
-      };
+      }
     }
   }
   /**
@@ -180,7 +180,7 @@ export class EnhancedGlyphEmbedsClient {
       return {
         success: false
         error: error instanceof Error ? error.message: 'Health check failed'
-      };
+      }
     }
   }
   /**
@@ -230,7 +230,7 @@ export class EnhancedGlyphEmbedsClient {
         // Fetch article if URL provided
         if (article.url && !content) {
           try {
-            const response = await fetch(article.url);
+            // removed unused response assignment
             content = await (response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).text();
           } catch (error) {
             console.warn(`Failed to fetch article: ${article.url}`, error);
@@ -322,13 +322,13 @@ export class EnhancedGlyphEmbedsClient {
       return {
         success: true
         chunks: processedChunks
-      };
+      }
     } catch (error) {
       console.error('RAG processing failed:', error);
       return {
         success: false
         error: error instanceof Error ? error.message: 'RAG processing failed'
-      };
+      }
     }
   }
   /**
@@ -414,13 +414,13 @@ export class EnhancedGlyphEmbedsClient {
         success: true
         synthesized_glyph: synthesisResult.synthesized_glyph,
         did_you_mean_suggestions: didYouMeanSuggestions
-      };
+      }
     } catch (error) {
       console.error('Glyph synthesis failed:', error);
       return {
         success: false
         error: error instanceof Error ? error.message: 'Synthesis failed'
-      };
+      }
     }
   }
   /**
@@ -473,13 +473,13 @@ export class EnhancedGlyphEmbedsClient {
       return {
         success: true
         matches: searchResults.matches || []
-      };
+      }
     } catch (error) {
       console.error('Semantic glyph search failed:', error);
       return {
         success: false
         error: error instanceof Error ? error.message: 'Search failed'
-      };
+      }
     }
   }
   /**
@@ -499,25 +499,25 @@ export class EnhancedGlyphEmbedsClient {
         return {
           success: true
           shaderCode: shaderData.shader_code
-        };
+        }
       }
       if (shaderData.shader_code.includes('precision mediump') && targetFormat === 'webgl') {
         return {
           success: true
           shaderCode: shaderData.shader_code
-        };
+        }
       }
       // Need to regenerate shader for different format
       console.warn(`Shader format mismatch. Generated for different target. Using as-is.`);
       return {
         success: true
         shaderCode: shaderData.shader_code
-      };
+      }
     } catch (error) {
       return {
         success: false
         error: error instanceof Error ? error.message: 'Shader creation failed'
-      };
+      }
     }
   }
   /**
@@ -537,12 +537,12 @@ export class EnhancedGlyphEmbedsClient {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      return { success: true };
+      return { success: true }
     } catch (error) {
       return {
         success: false
         error: error instanceof Error ? error.message: 'Download failed'
-      };
+      }
     }
   }
   /**
@@ -638,5 +638,5 @@ export function createEnhancedGlyphRequest(
     prompt,
     ...GLYPH_PRESETS[preset],
     ...RAG_PRESETS[ragPreset]
-  };
+  }
 }

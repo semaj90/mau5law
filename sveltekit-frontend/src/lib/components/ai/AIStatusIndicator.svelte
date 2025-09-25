@@ -4,50 +4,45 @@
   interface Props {
     isReady?: boolean;
     isLoading?: boolean;
-    provider?: "local" | "cloud" | "hybrid" | null;
+    provider?: 'local' | 'cloud' | 'hybrid' | null;
     model?: string | null;
     error?: string | null;
   }
-  let {
-    isReady = false,
-    isLoading = false,
-    provider = null,
-    model = null,
-    error = null
-  }: Props = $props();
+  let { isReady = false, isLoading = false, provider = null, model = null, error = null }: Props = $props();
   // Status computation
-  let currentStatus = $derived(error
-    ? "error"
-    : isLoading
-      ? "loading"
-      : isReady
-        ? "ready"
-        : "unavailable");
-  let statusText = $derived({
-    ready: "AI Ready",
-    loading: "Loading...",
-    error: "AI Error",
-    unavailable: "AI Unavailable",
-  }[currentStatus]);
-  let statusColor = $derived({
-    ready: "var(--status-success, #10b981)",
-    loading: "var(--status-warning, #f59e0b)",
-    error: "var(--status-error, #ef4444)",
-    unavailable: "var(--status-muted, #94a3b8)",
-  }[currentStatus]);
+  let currentStatus = $derived(error ? 'error' : isLoading ? 'loading' : isReady ? 'ready' : 'unavailable');
+  let statusText = $derived(
+    {
+      ready: 'AI Ready',
+      loading: 'Loading...',
+      error: 'AI Error',
+      unavailable: 'AI Unavailable',
+    }[currentStatus],
+  );
+  let statusColor = $derived(
+    {
+      ready: 'var(--status-success, #10b981)',
+      loading: 'var(--status-warning, #f59e0b)',
+      error: 'var(--status-error, #ef4444)',
+      unavailable: 'var(--status-muted, #94a3b8)',
+    }[currentStatus],
+  );
   // Provider details
-  let providerText = $derived(provider === "local"
-      ? "Local AI"
-      : provider === "cloud"
-        ? "Cloud AI"
-        : provider === "hybrid"
-          ? "Hybrid AI"
-          : "No Provider");
-  let isErrorState = $derived(currentStatus === "error");
-  let isLoadingState = $derived(currentStatus === "loading");
-  let isReadyState = $derived(currentStatus === "ready");
-  let modelText = $derived(model || "No Model");
+  let providerText = $derived(
+    provider === 'local'
+      ? 'Local AI'
+      : provider === 'cloud'
+        ? 'Cloud AI'
+        : provider === 'hybrid'
+          ? 'Hybrid AI'
+          : 'No Provider',
+  );
+  let isErrorState = $derived(currentStatus === 'error');
+  let isLoadingState = $derived(currentStatus === 'loading');
+  let isReadyState = $derived(currentStatus === 'ready');
+  let modelText = $derived(model || 'No Model');
 </script>
+
 <div
   class="mx-auto px-4 max-w-7xl"
   class:error={isErrorState}
@@ -56,42 +51,21 @@
 >
   <!-- Status Icon -->
   <div class="mx-auto px-4 max-w-7xl" style="color: {statusColor}">
-    {#if currentStatus === "loading"}
+    {#if currentStatus === 'loading'}
       <div class="mx-auto px-4 max-w-7xl"></div>
-    {:else if currentStatus === "ready"}
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
+    {:else if currentStatus === 'ready'}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 12l2 2 4-4" />
         <circle cx="12" cy="12" r="9" />
       </svg>
-    {:else if currentStatus === "error"}
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
+    {:else if currentStatus === 'error'}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="9" />
         <line x1="15" y1="9" x2="9" y2="15" />
         <line x1="9" y1="9" x2="15" y2="15" />
       </svg>
     {:else}
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="9" />
         <line x1="9" y1="9" x2="15" y2="15" />
         <line x1="15" y1="9" x2="9" y2="15" />
@@ -105,7 +79,7 @@
     </div>
     {#if isReady && provider && model}
       <div class="mx-auto px-4 max-w-7xl">
-        <span class="mx-auto px-4 max-w-7xl" class:local={provider === "local"}>
+        <span class="mx-auto px-4 max-w-7xl" class:local={provider === 'local'}>
           {providerText}
         </span>
         <span class="mx-auto px-4 max-w-7xl">•</span>
@@ -115,7 +89,7 @@
       </div>
     {:else if error}
       <div class="mx-auto px-4 max-w-7xl" title={error}>
-        {error.length > 50 ? error.substring(0, 50) + "..." : error}
+        {error.length > 50 ? error.substring(0, 50) + '...' : error}
       </div>
     {/if}
   </div>
@@ -144,11 +118,11 @@
       {/if}
       <div class="mx-auto px-4 max-w-7xl">
         <small>
-          {#if currentStatus === "ready"}
+          {#if currentStatus === 'ready'}
             AI system is ready to process requests
-          {:else if currentStatus === "loading"}
+          {:else if currentStatus === 'loading'}
             Initializing AI system...
-          {:else if currentStatus === "error"}
+          {:else if currentStatus === 'error'}
             AI system encountered an error
           {:else}
             AI system is not available
@@ -158,6 +132,7 @@
     </div>
   </div>
 </div>
+
 <style>
   .ai-status-indicator {
     position: relative;
@@ -184,7 +159,7 @@
     justify-content: center;
     flex-shrink: 0;
   }
-@keyframes spin {
+  @keyframes spin {
     0% {
       transform: rotate(0deg);
     }
@@ -254,7 +229,7 @@
     min-width: 200px;
   }
   .status-tooltip::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 100%;
     left: 50%;
@@ -313,7 +288,7 @@
       height: 14px;
     }
     .status-icon svg,
-.provider-info {
+    .provider-info {
       font-size: 0.6875rem;
     }
     .status-tooltip {

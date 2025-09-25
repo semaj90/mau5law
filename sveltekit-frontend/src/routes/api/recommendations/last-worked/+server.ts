@@ -8,7 +8,7 @@ import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
 import { calculateDocumentPriority } from '$lib/config/legal-priorities'
 interface WorkItem {
   id: string
-  type: 'case' | 'document' | 'evidence' | 'contract' | 'research'
+  type: 'case' | 'document' | 'evidence' | 'contract' | 'research';
   title: string
   lastWorked: string
   timeSpent: number; // minutes,
@@ -26,7 +26,7 @@ interface WorkItem {
 }
 interface WorkActivity {
   timestamp: string
-  action: 'opened' | 'edited' | 'reviewed' | 'commented' | 'shared' | 'approved'
+  action: 'opened' | 'edited' | 'reviewed' | 'commented' | 'shared' | 'approved';
   duration: number; // minutes
   description?: string
 }

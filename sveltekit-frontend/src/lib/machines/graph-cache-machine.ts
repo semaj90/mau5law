@@ -6,7 +6,7 @@ import type { ActorRefFrom } from 'xstate';
 // Types for the graph cache system
 export interface GraphCacheContext {
   query: string | null;
-  params: { [key: string]: any };
+  params: { [key: string]: any }
   result: any;
   source: 'indexeddb_cache' | 'wasm' | 'neo4j' | 'graph_service' | 'snapshot_fallback';
   isStale: boolean;
@@ -22,7 +22,7 @@ export interface GraphCacheContext {
     avgLatencyMs: number;
     p95LatencyMs: number;
     p99LatencyMs: number;
-  };
+  }
   worker: any;
   refreshJob: string | null;
   lastRefresh: number;
@@ -47,7 +47,7 @@ export type GraphCacheEvent =
   | { type: 'WORKER_ERROR'; error: string }
   | { type: 'INVALIDATE_CACHE'; key?: string }
   | { type: 'IDLE_CALLBACK' }
-  | { type: 'RETRY' };
+  | { type: 'RETRY' }
 // XState machine for graph cache orchestration
 export const graphCacheMachine = createMachine({
   id: 'graphCache',
@@ -257,14 +257,14 @@ export const graphCacheMachine = createMachine({
               default:
                 console.log('Worker message:', type, data);
             }
-          };
+          }
           return worker;
         }
         return null;
       }
     }),
     setQuery: assign({,
-      query: ({ event }) => event.type === 'QUERY' ? event.query: null
+      query: ({ event }) => event.type === 'QUERY' ? event.query: null;
       params: ({ event }) => event.type === 'QUERY' ? (event.params || {}) : { [key: string]: any },
       queryHash: ({ event }) => {
         if (event.type === 'QUERY') {
@@ -338,7 +338,7 @@ export const graphCacheMachine = createMachine({
           ...context.telemetry,
           hitRate: total > 0 ? (context.telemetry.cacheHits / total * 100) : 0,
           // Update other metrics as needed
-        };
+        }
       }
     }),
     resetTelemetry: assign({,

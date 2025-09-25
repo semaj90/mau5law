@@ -20,7 +20,7 @@ import {
 // ============================================================================
 // FORM STATE INTEGRATION TYPES
 // ============================================================================
-export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any; context: any };
+export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any; context: any }
 }
 export interface FormMachineIntegration<M extends { getSnapshot: () => any }> {
   form: ReturnType<typeof superForm>;
@@ -97,7 +97,7 @@ export function createDocumentUploadForm(
   );
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     // Flatten the complex superforms error structure to match interface
-    const flattened: Record<string, string[]> = {};
+    const flattened: Record<string, string[]> = {}
     // Handle superforms errors (which can be nested objects)
     const flattenErrors = (obj: any, prefix = ''): void => {
       for (const [key, value] of Object.entries(obj || {})) {
@@ -108,7 +108,7 @@ export function createDocumentUploadForm(
           flattenErrors(value, fullKey);
         }
       }
-    };
+    }
     flattenErrors($errors);
     // Add context validation errors
     if ($context?.validationErrors) {
@@ -122,7 +122,7 @@ export function createDocumentUploadForm(
   // Subscribe to actor changes (XState v5 compatibility)
   actor.subscribe((snapshot) => {
     const stateValue = (snapshot as any).status || (snapshot as any).value || 'idle';
-    const contextValue = (snapshot as any).context || {};
+    const contextValue = (snapshot as any).context || {}
     state.set(stateValue);
     context.set(contextValue);
     // Handle state-specific actions
@@ -158,7 +158,7 @@ export function createDocumentUploadForm(
     isSubmitting,
     errors,
     progress
-  };
+  }
 }
 // ============================================================================
 // CASE CREATION FORM INTEGRATION
@@ -202,7 +202,7 @@ export function createCaseCreationForm(
   );
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     // Flatten the complex superforms error structure to match interface
-    const flattened: Record<string, string[]> = {};
+    const flattened: Record<string, string[]> = {}
     // Handle superforms errors (which can be nested objects)
     const flattenErrors = (obj: any, prefix = ''): void => {
       for (const [key, value] of Object.entries(obj || {})) {
@@ -213,7 +213,7 @@ export function createCaseCreationForm(
           flattenErrors(value, fullKey);
         }
       }
-    };
+    }
     flattenErrors($errors);
     // Add context validation errors
     if ($context?.validationErrors) {
@@ -230,7 +230,7 @@ export function createCaseCreationForm(
   });
   actor.subscribe((snapshot) => {
     const stateValue = (snapshot as any).status || (snapshot as any).value || 'idle';
-    const contextValue = (snapshot as any).context || {};
+    const contextValue = (snapshot as any).context || {}
     state.set(stateValue);
     context.set(contextValue);
     if (stateValue === 'completed' && options.onSuccess) {
@@ -250,7 +250,7 @@ export function createCaseCreationForm(
     isSubmitting,
     errors,
     progress
-  };
+  }
 }
 // ============================================================================
 // SEARCH FORM INTEGRATION
@@ -294,7 +294,7 @@ export function createSearchForm(
   );
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     // Flatten the complex superforms error structure to match interface
-    const flattened: Record<string, string[]> = {};
+    const flattened: Record<string, string[]> = {}
     // Handle superforms errors (which can be nested objects)
     const flattenErrors = (obj: any, prefix = ''): void => {
       for (const [key, value] of Object.entries(obj || {})) {
@@ -305,7 +305,7 @@ export function createSearchForm(
           flattenErrors(value, fullKey);
         }
       }
-    };
+    }
     flattenErrors($errors);
     // Add context validation errors
     if ($context?.validationErrors) {
@@ -321,7 +321,7 @@ export function createSearchForm(
   });
   actor.subscribe((snapshot) => {
     const stateValue = (snapshot as any).status || (snapshot as any).value || 'idle';
-    const contextValue = (snapshot as any).context || {};
+    const contextValue = (snapshot as any).context || {}
     state.set(stateValue);
     context.set(contextValue);
     if (stateValue === 'results' && options.onSuccess) {
@@ -344,7 +344,7 @@ export function createSearchForm(
     isSubmitting,
     errors,
     progress
-  };
+  }
 }
 // ============================================================================
 // AI ANALYSIS FORM INTEGRATION
@@ -382,7 +382,7 @@ export function createAIAnalysisForm(
   );
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     // Flatten the complex superforms error structure to match interface
-    const flattened: Record<string, string[]> = {};
+    const flattened: Record<string, string[]> = {}
     // Handle superforms errors (which can be nested objects)
     const flattenErrors = (obj: any, prefix = ''): void => {
       for (const [key, value] of Object.entries(obj || {})) {
@@ -393,7 +393,7 @@ export function createAIAnalysisForm(
           flattenErrors(value, fullKey);
         }
       }
-    };
+    }
     flattenErrors($errors);
     // Add context validation errors
     if ($context?.validationErrors) {
@@ -409,7 +409,7 @@ export function createAIAnalysisForm(
   });
   actor.subscribe((snapshot) => {
     const stateValue = (snapshot as any).status || (snapshot as any).value || 'idle';
-    const contextValue = (snapshot as any).context || {};
+    const contextValue = (snapshot as any).context || {}
     state.set(stateValue);
     context.set(contextValue);
     if (stateValue === 'completed' && options.onSuccess) {
@@ -432,7 +432,7 @@ export function createAIAnalysisForm(
     isSubmitting,
     errors,
     progress
-  };
+  }
 }
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -444,13 +444,13 @@ export function createFormValidator<T extends z.ZodType>(schema: T) {
     },
     getErrors: (data: any): Record<string, string[]> => {
       const result = schema.safeParse(data);
-      if ((result as { success?: any; error?: any }).success) return {};
+      if ((result as { success?: any; error?: any }).success) return {}
       return (result as { success?: any; error?: any }).error.flatten().fieldErrors;
     },
     validateAsync: async (data: any): Promise<z.infer<T> => {
       return schema.parseAsync(data);
     }
-  };
+  }
 }
 export function createMultiStepForm<T extends z.ZodType[]>(...schemas: T) {
   const currentStep = writable(0);
@@ -480,9 +480,9 @@ export function createMultiStepForm<T extends z.ZodType[]>(...schemas: T) {
       if (step >= 0 && step < schemas.length) {
         return createFormValidator(schemas[step]).getErrors(data);
       }
-      return {};
+      return {}
     }
-  };
+  }
 }
 // ============================================================================
 // FORM STATE PERSISTENCE
@@ -542,7 +542,7 @@ export const formValidators = {
   caseCreation: createFormValidator(CaseCreationSchema),
   searchQuery: createFormValidator(SearchQuerySchema),
   aiAnalysis: createFormValidator(AIAnalysisSchema)
-};
+}
 export const FORM_STORAGE_KEYS = {
   DOCUMENT_UPLOAD: 'legal-ai:document-upload',
   CASE_CREATION: 'legal-ai:case-creation',

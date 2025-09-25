@@ -1,4 +1,3 @@
-
 // Legal AI System Type Definitions - Extended for Evidence and Case Management
 export * from './legal';
 // Additional Evidence Types
@@ -10,15 +9,7 @@ export interface Evidence {
   filePath?: string;
   fileSize?: number;
   mimeType?: string;
-  evidenceType:
-    | "document"
-    | "image"
-    | "video"
-    | "audio"
-    | "digital"
-    | "physical"
-    | "testimony"
-    | "other";
+  evidenceType: 'document' | 'image' | 'video' | 'audio' | 'digital' | 'physical' | 'testimony' | 'other';
   caseId: string;
   uploadedAt: Date;
   uploadedBy: string;
@@ -26,16 +17,16 @@ export interface Evidence {
   aiTags?: string[];
   aiSummary?: string;
   aiAnalysis?: AIAnalysis;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   confidentialityLevel: number;
   chainOfCustody?: ChainOfCustodyEntry[];
   isProcessed: boolean;
-  processingStatus?: "pending" | "processing" | "completed" | "failed";
+  processingStatus?: 'pending' | 'processing' | 'completed' | 'failed';
 }
 export interface ChainOfCustodyEntry {
   id: string;
   evidenceId: string;
-  action: "collected" | "transferred" | "analyzed" | "stored" | "accessed";
+  action: 'collected' | 'transferred' | 'analyzed' | 'stored' | 'accessed';
   performedBy: string;
   timestamp: Date;
   location?: string;
@@ -45,8 +36,8 @@ export interface ChainOfCustodyEntry {
 export interface AIAnalysis {
   id: string;
   evidenceId: string;
-  analysisType: "content_extraction" | "sentiment_analysis" | "entity_recognition" | "classification" | "similarity";
-  results: { [key: string]: any };
+  analysisType: 'content_extraction' | 'sentiment_analysis' | 'entity_recognition' | 'classification' | 'similarity';
+  results: { [key: string]: any }
   confidence: number;
   processingTime: number;
   model: string;
@@ -57,22 +48,22 @@ export interface AIAnalysis {
 export interface LegalDocument {
   id: string;
   title: string;
-  fullText?: string;  // Complete document content
-  content: string;    // Processed/summarized content
+  fullText?: string; // Complete document content
+  content: string; // Processed/summarized content
   summary?: string;
   headnotes?: string;
   documentType:
-    | "motion"
-    | "brief"
-    | "contract"
-    | "evidence"
-    | "correspondence"
-    | "pleading"
-    | "statute"
-    | "regulation"
-    | "case_law"
-    | "memo"
-    | "other";
+    | 'motion'
+    | 'brief'
+    | 'contract'
+    | 'evidence'
+    | 'correspondence'
+    | 'pleading'
+    | 'statute'
+    | 'regulation'
+    | 'case_law'
+    | 'memo'
+    | 'other';
   caseId?: string;
   fileName?: string;
   fileSize?: number;
@@ -86,7 +77,7 @@ export interface LegalDocument {
   jurisdiction?: string;
   court?: string;
   parties?: Record<string, string>; // e.g., { plaintiff: "John Doe", defendant: "Jane Smith" }
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   embeddings?: number[]; // Vector embeddings for search
 }
 // Enhanced Case Interface
@@ -95,8 +86,8 @@ export interface Case {
   caseNumber: string;
   title: string;
   description?: string;
-  status: "active" | "pending" | "closed" | "archived";
-  priority: "low" | "medium" | "high" | "critical";
+  status: 'active' | 'pending' | 'closed' | 'archived';
+  priority: 'low' | 'medium' | 'high' | 'critical';
   confidentialityLevel: number;
   createdAt: Date;
   updatedAt: Date;
@@ -145,8 +136,8 @@ export interface VectorSearchResult {
   id: string;
   score: number;
   content: string;
-  metadata: { [key: string]: any };
-  type: "document" | "evidence" | "case";
+  metadata: { [key: string]: any }
+  type: 'document' | 'evidence' | 'case';
 }
 // Export commonly used types from legal.ts
 export type {
@@ -161,5 +152,5 @@ export type {
   User,
   SearchQuery,
   SearchResult,
-  ApiResponse
+  ApiResponse,
 } from './legal';

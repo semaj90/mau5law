@@ -31,10 +31,10 @@ const authState = browser ? $state<AuthState>({
   isAuthenticated: false
 }) : {
   user: null
-  loading: false
+  loading: false;
   error: null
   isAuthenticated: false
-};
+}
 // Derived state functions for common auth checks
 export function isAdmin(): boolean {
   return authState.user?.role === 'admin' || authState.user?.role === 'lead_prosecutor' || false;
@@ -98,7 +98,7 @@ export class AuthService {
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
         ipInfo: await this.getClientInfo()
-      };
+      }
       await mcpGPUOrchestrator.routeAPIRequest(
         '/api/security/pre-login-analysis',
         securityContext,)
@@ -130,7 +130,7 @@ export class AuthService {
             generateSummary: false
           }
         );
-        return { success: true };
+        return { success: true }
       } else {
         authState.error = (result as { user?: any; error?: any }).error;
         // Log failed login attempt for security monitoring
@@ -139,13 +139,13 @@ export class AuthService {
           { ...securityContext, error: (result as { user?: any; error?: any }).error },
           { securityLevel: 'high' }
         );
-        return { success: false, error: (result as { user?: any; error?: any }).error };
+        return { success: false, error: (result as { user?: any; error?: any }).error }
       }
     } catch (error: any) {
       const errorMessage = 'Network error during login';
       authState.error = errorMessage;
       console.error('Login error:', error);
-      return { success: false, error: errorMessage };
+      return { success: false, error: errorMessage }
     } finally {
       authState.loading = false;
     }
@@ -166,7 +166,7 @@ export class AuthService {
         firstName: userData.firstName,
         lastName: userData.lastName,
         timestamp: new Date().toISOString()
-      };
+      }
       await mcpGPUOrchestrator.routeAPIRequest(
         '/api/analytics/registration-attempt',
         registrationContext,)
@@ -195,16 +195,16 @@ export class AuthService {
             generateSummary: true
           }
         );
-        return { success: true };
+        return { success: true }
       } else {
         authState.error = (result as { user?: any; error?: any }).error;
-        return { success: false, error: (result as { user?: any; error?: any }).error };
+        return { success: false, error: (result as { user?: any; error?: any }).error }
       }
     } catch (error: any) {
       const errorMessage = 'Network error during registration';
       authState.error = errorMessage;
       console.error('Registration error:', error);
-      return { success: false, error: errorMessage };
+      return { success: false, error: errorMessage }
     } finally {
       authState.loading = false;
     }
@@ -250,7 +250,7 @@ export class AuthService {
   }
   // Update user profile
   async updateProfile(updates: Partial<User>): Promise<any> {
-    if (!authState.user) return { success: false, error: 'Not authenticated' };
+    if (!authState.user) return { success: false, error: 'Not authenticated' }
     authState.loading = true;
     try {
       const response = await fetch('/api/auth/profile', {
@@ -263,7 +263,7 @@ export class AuthService {
       });
       const result = await (response as { ok?: any; json?: any }).json();
       if ((response as { ok?: any; json?: any }).ok) {
-        authState.user = { ...authState.user, ...result.user };
+        authState.user = { ...authState.user, ...result.user }
         // Log profile update for audit trail
         await mcpGPUOrchestrator.routeAPIRequest(
           '/api/analytics/profile-update',);
@@ -274,16 +274,16 @@ export class AuthService {
           },
           { userId: authState.user.id, analyticsLevel: 'profile' }
         );
-        return { success: true };
+        return { success: true }
       } else {
         authState.error = (result as { user?: any; error?: any }).error;
-        return { success: false, error: (result as { user?: any; error?: any }).error };
+        return { success: false, error: (result as { user?: any; error?: any }).error }
       }
     } catch (error: any) {
       const errorMessage = 'Failed to update profile';
       authState.error = errorMessage;
       console.error('Profile update error:', error);
-      return { success: false, error: errorMessage };
+      return { success: false, error: errorMessage }
     } finally {
       authState.loading = false;
     }
@@ -298,7 +298,7 @@ export class AuthService {
       investigator: ['view_cases', 'add_evidence', 'view_evidence'],
       analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],
       viewer: ['view_cases', 'view_evidence']
-    };
+    }
     const userPermissions = rolePermissions[authState.user.role as keyof typeof rolePermissions] || [];
     return userPermissions.includes('all') || userPermissions.includes(permission);
   }
@@ -319,9 +319,9 @@ export class AuthService {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         language: navigator.language,
         platform: navigator.platform
-      };
+      }
     } catch {
-      return {};
+      return {}
     }
   }
   private calculateSessionDuration(): number {

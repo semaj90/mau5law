@@ -38,7 +38,7 @@ export function useModal(initialOpen = false) {
     confirm,
     cancel,
     setCallbacks
-  };
+  }
 }
 // Toast/Notification state management
 interface Toast {
@@ -65,7 +65,7 @@ export function useToast() {
       message,
       duration: duration || 5000
       createdAt: Date.now()
-    };
+    }
     toasts = [...toasts, toast];
     // Auto-remove toast after duration
     setTimeout(() => {
@@ -98,7 +98,7 @@ export function useToast() {
     error,
     warning,
     info
-  };
+  }
 }
 // Form state management
 export function useForm<T extends { [key: string]: any }(initialValues: T) {
@@ -115,33 +115,33 @@ export function useForm<T extends { [key: string]: any }(initialValues: T) {
     touched[field] = true;
     // Clear error when user starts typing
     if (errors[field]) {
-      const newErrors = { ...errors };
+      const newErrors = { ...errors }
       delete newErrors[field];
       errors = newErrors;
     }
   }
   function setError(field: keyof T, message: string): void {
-    errors = { ...errors, [field]: message };
+    errors = { ...errors, [field]: message }
   }
   function clearError(field: keyof T): void {
-    const newErrors = { ...errors };
+    const newErrors = { ...errors }
     delete newErrors[field];
     errors = newErrors;
   }
   function clearAllErrors(): void {
-    errors = {};
+    errors = {}
   }
   function setTouched(field: keyof T, isTouched = true): void {
-    touched = { ...touched, [field]: isTouched };
+    touched = { ...touched, [field]: isTouched }
   }
   function reset(newValues?: Partial<T>): void {
-    values = { ...initialValues, ...newValues };
-    errors = {};
-    touched = {};
+    values = { ...initialValues, ...newValues }
+    errors = {}
+    touched = {}
     isSubmitting = false;
   }
-  function validate(validators: Partial<Record<keyof T, (value: any) => string | null>>): boolean {
-    const newErrors: Partial<Record<keyof T, string> = {};
+  function validate(validators: Partial<Record<keyof T, (_value: any) => string | null>>): boolean {
+    const newErrors: Partial<Record<keyof T, string> = {}
     let hasErrors = false;
     Object.keys(validators).forEach(field => {
       const validator = validators[field as keyof T];
@@ -164,7 +164,7 @@ export function useForm<T extends { [key: string]: any }(initialValues: T) {
     } catch (error: any) {
       // Handle submission errors
       if (error.fieldErrors) {
-        errors = { ...errors, ...error.fieldErrors };
+        errors = { ...errors, ...error.fieldErrors }
       }
       throw error;
     } finally {
@@ -186,7 +186,7 @@ export function useForm<T extends { [key: string]: any }(initialValues: T) {
     reset,
     validate,
     submit
-  };
+  }
 }
 // Loading state management
 export function useAsync<T>(asyncFn: () => Promise<T>) {
@@ -232,7 +232,7 @@ export function useAsync<T>(asyncFn: () => Promise<T>) {
     isStale,
     execute,
     reset
-  };
+  }
 }
 // Sidebar/Navigation state management
 export function useSidebar(initialOpen = true) {
@@ -271,7 +271,7 @@ export function useSidebar(initialOpen = true) {
     close,
     setActiveSection,
     togglePin
-  };
+  }
 }
 // Search state management
 export function useSearch<T>(
@@ -328,7 +328,7 @@ export function useSearch<T>(
     setQuery,
     clearQuery,
     performAsyncSearch
-  };
+  }
 }
 // Theme/Appearance state management
 export function useTheme() {
@@ -345,7 +345,7 @@ export function useTheme() {
       systemTheme = mediaQuery.matches ? 'dark' : 'light';
       const handleChange = (e: MediaQueryListEvent) => {
         systemTheme = e.matches ? 'dark' : 'light';
-      };
+      }
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
@@ -371,5 +371,5 @@ export function useTheme() {
     systemTheme: () => systemTheme,
     effectiveTheme,
     setTheme
-  };
+  }
 }

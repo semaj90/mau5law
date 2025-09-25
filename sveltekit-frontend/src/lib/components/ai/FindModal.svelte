@@ -59,7 +59,7 @@ const saved = localStorage.getItem('ai-search-history');
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          query: searchQuery
+          query: searchQuery;
           type: selectedType
           useAI: true
           mcpAnalysis: useMCPAnalysis
@@ -75,7 +75,7 @@ const saved = localStorage.getItem('ai-search-history');
         // Update memory graph with search interaction
         await updateMemoryWithAIContext({
           userId: 'current-user',
-          query: searchQuery
+          query: searchQuery;
           results: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).results.length,
           aiModel: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.model,
           confidence: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.confidence,
@@ -99,7 +99,7 @@ const saved = localStorage.getItem('ai-search-history');
       return;
     }
     try {
-      const response = await fetch(`/api/ai/find?q=${encodeURIComponent(searchQuery)}`);
+      // removed unused response assignment
       const data = await (response as { json?: any; ok?: any }).json();
       if ((data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).success) {
         suggestions = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).suggestion;
@@ -165,7 +165,7 @@ const saved = localStorage.getItem('ai-search-history');
     }
   }
   // Keyboard shortcuts and event handlers
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     switch (event.key) {
       case 'Enter':
         if (!isSearching) {
@@ -222,7 +222,7 @@ const saved = localStorage.getItem('ai-search-history');
   // Update Phase 13 integration status
   async function updatePhase13Status() {
     try {
-      const response = await fetch('/api/phase13/integration?action=health');
+      // removed unused response assignment
       if ((response as { json?: any; ok?: any }).ok) {
         const data = await (response as { json?: any; ok?: any }).json();
         systemHealth = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).data;
@@ -372,7 +372,7 @@ const saved = localStorage.getItem('ai-search-history');
           <!-- Advanced Options Panel -->
           {#if showAdvanced}
             <div
-              class="nier-advanced-panel bg-gray-800/50 border border-gray-600 p-4 space-y-3"
+              class="nier-advanced-panel bg-gray-800/50 border border-gray-600 p-4 space-y-3";
               in:fly={{ y: -20, duration: 300, easing: elasticOut }}
             >
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -442,7 +442,7 @@ const saved = localStorage.getItem('ai-search-history');
             {#each searchResults as result, index ((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).id)}
               <div
                 class="nier-result-item border-b border-gray-700/50 p-4 hover:bg-gray-800/50 cursor-pointer transition-all duration-200 group"
-                onclick={() => selectResult(result)};
+                onclick={() => selectResult(result)}
                 in:fly={{ x: -20, duration: 300, delay: index * 50 }}
                 data-testid="result-item"
               >

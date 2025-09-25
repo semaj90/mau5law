@@ -27,7 +27,7 @@ export function setupWebSocketServer(server: any) {
       id: `user-${Math.random().toString(36).substr(2, 9)}`,
       name: `Prosecutor ${Math.floor(Math.random() * 100)}`,
       email: `user${Math.floor(Math.random() * 100)}@prosecutor.office`
-    };
+    }
     // Add user to active users
     if (!activeUsers.has(caseId)) {
       activeUsers.set(caseId, new Set();
@@ -84,7 +84,7 @@ export function setupWebSocketServer(server: any) {
 function handleWebSocketMessage(
   caseId: string
   message: any
-  sender: any
+  sender: any;
   user: any
 ) {
   switch (message.type) {
@@ -177,7 +177,7 @@ function broadcastToCase(
 // Export for manual broadcasting from API endpoints
 export function broadcastEvidenceUpdate(
   caseId: string
-  type: string
+  type: string;
   payload: any
 ) {
   broadcastToCase(caseId, {

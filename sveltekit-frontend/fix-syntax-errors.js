@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import fs from 'fs';
-import path from 'path';
 import { glob } from 'glob';
 
 function fixSyntaxErrors(filePath) {
@@ -87,7 +86,7 @@ function fixSyntaxErrors(filePath) {
 }
 
 // Find all .svelte and .ts files
-const srcDir = 'src';
+// removed unused srcDir assignment
 const patterns = [
   'src/**/*.svelte',
   'src/**/*.ts'

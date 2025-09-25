@@ -57,7 +57,7 @@
       currentContext = state.context;
       // Dispatch state change event
       ondispatch?.({
-        state: currentState
+        state: currentState;
         context: currentContext;
       });
       // Dispatch specific events based on state
@@ -84,7 +84,7 @@
    */
   function setupEventListeners() {
     // Listen to the bound element or document
-    const target = element || document;
+    // removed unused target assignment
     // Input/change events
     target.addEventListener('input', handleInput);
     target.addEventListener('keydown', handleKeyDown);
@@ -110,15 +110,15 @@
   /**
    * Handle input events
    */
-  function handleInput(event: Event) {
-    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+  function handleInput(_event: Event) {
+    // removed unused target assignment
     const newText = target.value || text;
     // Update bound text
     text = newText;
     // Send typing event to machine
     typingActor.send({
       type: 'USER_STARTED_TYPING',
-      text: newText
+      text: newText;
       timestamp: Date.now();
     });
     isTyping = true;
@@ -135,13 +135,13 @@
   /**
    * Handle key down events
    */
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     // Track special keys
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       // Ctrl+Enter or Cmd+Enter - submission
       typingActor.send({
         type: 'USER_SUBMITTED',
-        text: text
+        text: text;
         timestamp: Date.now();
       });
     } else if (event.key === 'Escape') {
@@ -155,21 +155,21 @@
   /**
    * Handle key up events
    */
-  function handleKeyUp(event: KeyboardEvent) {
+  function handleKeyUp(_event: KeyboardEvent) {
     // Update last activity time
     lastTypingTime = Date.now();
   }
   /**
    * Handle paste events
    */
-  function handlePaste(event: ClipboardEvent) {
+  function handlePaste(_event: ClipboardEvent) {
     // Track paste as a special typing event
     setTimeout(() => {
-      const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+      // removed unused target assignment
       const newText = target.value || text;
       typingActor.send({
         type: 'USER_STARTED_TYPING',
-        text: newText
+        text: newText;
         timestamp: Date.now();
       });
     }, 0);
@@ -199,7 +199,7 @@
     typingTimeout = null;
     typingActor.send({
       type: 'USER_STOPPED_TYPING',
-      text: currentText
+      text: currentText;
       timestamp: Date.now();
     });
     // Check if we should trigger contextual processing
@@ -277,7 +277,7 @@
       clearTimeout(typingTimeout);
     }
     // Remove event listeners
-    const target = element || document;
+    // removed unused target assignment
     target.removeEventListener('input', handleInput);
     target.removeEventListener('keydown', handleKeyDown);
     target.removeEventListener('keyup', handleKeyUp);
@@ -294,7 +294,7 @@
   /**
    * Public API - Send custom events to the machine
    */
-  export function sendEvent(event: unknown) {
+  export function sendEvent(_event: unknown) {
     typingActor.send(event);
   }
   /**
@@ -319,14 +319,18 @@
     });
   }
 </script>
+
 <!--
   This component is headless - it renders nothing but provides all the typing behavior tracking
   Use the exported functions and event handlers to integrate with your UI
 -->
 {#if import.meta.env.DEV}
   <!-- Debug info only in development -->
-  <div class="debug-panel" style="position: fixed;
-d; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;">
+  <div
+    class="debug-panel"
+    style="position: fixed;
+d; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;"
+  >
     <div><strong>Typing State:</strong> {currentState}</div>
     <div><strong>User Engagement:</strong> {userEngagement}</div>
     <div><strong>Typing Speed:</strong> {Math.round(typingSpeed)} CPM</div>

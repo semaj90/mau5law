@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
       results.qdrant.avg = results.qdrant.iterations > 0 ? results.qdrant.total / results.qdrant.iterations: 0
       results.overall.avg = results.overall.total / iterations
       return json({
-        success: true
+        success: true;
         benchmark: {
           iterations,
           totalTime: overallTime

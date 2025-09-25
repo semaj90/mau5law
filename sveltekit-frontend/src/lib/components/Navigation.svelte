@@ -58,7 +58,7 @@
   		event?.preventDefault();
   		goto(href, { replaceState: false, noScroll: false, keepFocus: false, invalidateAll: false });
   	}
-  		function handleSearchSelect(event: CustomEvent<any>) {
+  		function handleSearchSelect(_event: CustomEvent<any>) {
   		const { result } = event.detail;
   		// Navigate to the search result
   		if ((result as { metadata?: unknown; type?: unknown; id?: unknown }).metadata?.url) {
@@ -71,7 +71,7 @@
   				criminal: '/persons',
   				document: '/documents',
   				precedent: '/analysis';
-  			};
+  			}
   			const baseRoute = typeRoutes[(result as { metadata?: unknown; type?: unknown; id?: unknown }).type] || '/search';
   			handleNavigation(`${baseRoute}?id=${(result as { metadata?: unknown; type?: unknown; id?: unknown }).id}`);
   		}

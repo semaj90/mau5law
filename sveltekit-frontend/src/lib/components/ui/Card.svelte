@@ -20,18 +20,19 @@
   		default: '',
   		interactive: 'hover:shadow-md hover:-translate-y-0.5 cursor-pointer',
   		outline: 'border-2 bg-transparent';
-  	};
+  	}
   	const paddingClasses = {
   		none: '',
   		sm: 'p-3',
   		md: 'p-4',
   		lg: 'p-6';
-  	};
+  	}
   	let cardClass = $derived(cn(
   		baseClasses,
   		variantClasses[variant],
   		paddingClasses[padding], className));
 </script>
+
 <div class={cardClass} {...restProps}>
-	{@render children?.()}
+  {@render children?.()}
 </div>

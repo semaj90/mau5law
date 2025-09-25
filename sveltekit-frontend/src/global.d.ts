@@ -15,7 +15,7 @@ declare global {
     __TELEMETRY__?: any;
     __GPU_MANAGER__?: {
       getAcceleration(): any;
-    };
+    }
   }
 }
 // Stub out problematic drizzle-orm gel module types
@@ -39,4 +39,4 @@ declare module 'gel' {
     [key: string]: any;
   }
 }
-export {};
+export {}

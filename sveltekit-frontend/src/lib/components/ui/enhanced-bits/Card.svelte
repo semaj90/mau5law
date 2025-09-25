@@ -20,7 +20,7 @@
     children,
     header,
     footer,
-    ...restProps
+    ...restProps;
   }: CardProps = $props();
   let cardClasses = $derived.by(() => {
     const classes = [];
@@ -31,8 +31,8 @@
         legal: 'nes-container with-title is-rounded',
         evidence: 'nes-container with-title is-dark',
         case: 'nes-container with-title',
-        dark: 'nes-container with-title is-dark'
-      };
+        dark: 'nes-container with-title is-dark',
+      }
       classes.push(nesVariants[variant] || nesVariants.default);
     } else {
       // Modern styled card
@@ -45,6 +45,7 @@
     return classes.join(' ');
   });
 </script>
+
 <div class={cardClasses}>
   {#if header}
     {@render header()}
@@ -64,6 +65,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .enhanced-card {
     border: 2px solid #333;
@@ -98,7 +100,7 @@
     padding-top: 1rem;
     margin-top: 1rem;
   }
-  /* NES.css override for better spacing */
+/* NES.css override for better spacing */ {}
   :global(.nes-container.with-title) {
     margin: 1rem 0;
   }

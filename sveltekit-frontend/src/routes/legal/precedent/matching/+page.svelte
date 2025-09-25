@@ -73,7 +73,7 @@
       legalPrinciples: number;
       jurisdictionalRelevance: number;
       temporalRelevance: number;
-    };
+    }
   }
   interface CitationNetwork {
     caseId: string;
@@ -368,7 +368,7 @@
         'Emphasize factual similarities in briefing',
         'Consider alternative legal theories'
       ];
-    };
+    }
   }
   async function assessStrength() {
     return {
@@ -393,7 +393,7 @@
         'Emphasize policy considerations',
         'Prepare distinguishing arguments for adverse cases'
       ];
-    };
+    }
   }
   function generateMockCitingCases(count: number): string[] {
     const cases = [];
@@ -414,7 +414,7 @@
     const avgScore = precedentMatches.reduce((sum, match) => sum + match.similarityScore, 0) / precedentMatches.length;
     return Math.round(avgScore * 100);
   }
-  function getPrecedentColor(value: string) {
+  function getPrecedentColor(_value: string) {
     switch (value) {
       case 'BINDING': return 'bg-green-600';
       case 'PERSUASIVE': return 'bg-blue-600';
@@ -569,7 +569,7 @@
       </div>
       <div class="space-y-2">
         <label class="text-sm font-medium">Case Fact Pattern (Optional)</label>
-        <Textarea
+        <Textarea;
           bind:value={caseFactPattern}
           placeholder="Describe the key facts of your case for more precise matching..."
           rows={4}

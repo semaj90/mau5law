@@ -23,13 +23,13 @@ export interface UserIntent {
     mouseActivity: MouseEvent[];
     keyboardActivity: KeyboardEvent[];
     eyeTracking?: { x: number; y: number; timestamp: number }[];
-  };
+  }
   userProfile: {
     role: "prosecutor" | "detective" | "admin" | "user";
     recentActions: string[];
-    preferences: { [key: string]: any };
+    preferences: { [key: string]: any }
     workflowPatterns: string[];
-  };
+  }
 }
 export interface PrefetchItem {
   type: "route" | "api" | "asset" | "ui-buffer" | "css";
@@ -43,7 +43,7 @@ export interface PrefetchItem {
 export interface LegalWorkflowPattern {
   name: string;
   sequence: string[];
-  triggerConditions: { [key: string]: any };
+  triggerConditions: { [key: string]: any }
   successProbability: number;
   typicalAssets: string[];
   preloadTiming: "immediate" | "on-hover" | "predictive";
@@ -59,12 +59,12 @@ export interface PrefetchStrategy {
     battery?: "high" | "low";
     userRole?: string[];
     timeOfDay?: string[];
-  };
+  }
   llmIntegration?: {
     modelEndpoint?: string;
     useLocalLLM?: boolean;
     intentThreshold?: number;
-  };
+  }
 }
 export class PredictivePrefetcher {
   private cache: Cache | null = null;
@@ -114,7 +114,7 @@ export class PredictivePrefetcher {
           initialized: true
           endpoint: "http://localhost:11434/api/generate",
           model: "gemma3-legal:latest"
-        };
+        }
         console.log("🧠 Local LLM initialized for intent prediction");
       } else {
         throw new Error("Local LLM not available, using heuristic fallback");
@@ -124,7 +124,7 @@ export class PredictivePrefetcher {
         "⚠️ LLM initialization failed, using pattern matching:",
         error,
       );
-      this.intentModel = { initialized: false, fallback: true };
+      this.intentModel = { initialized: false, fallback: true }
     }
   }
   /**
@@ -407,7 +407,7 @@ export class PredictivePrefetcher {
           preferences: { [key: string]: any },
           workflowPatterns: []
         }
-      };
+      }
     }
     return null;
   }
@@ -422,7 +422,7 @@ export class PredictivePrefetcher {
       scrollPosition: window.scrollY || 0,
       mouseActivity: context.mouseEvents,
       keyboardActivity: context.keyboardEvents
-    };
+    }
     return await this.predictIntent(currentContext);
   }
   /**
@@ -534,7 +534,7 @@ export class PredictivePrefetcher {
   private async prefetchAsset(asset: string): Promise<void> {
     if (!this.cache) return;
     try {
-      const response = await fetch(asset);
+      // removed unused response assignment
       if (response.ok) {
         await this.cache.put(asset, response.clone();
       }
@@ -547,7 +547,7 @@ export class PredictivePrefetcher {
    */;
   private setupEventListeners(): void {
     // Listen for user interactions
-    self.addEventListener("message", async (event: any) => {
+    self.addEventListener("message", async (_event: any) => {
       if (event.data.type === "USER_INTERACTION") {
         const intent = await this.predictIntent(event.data.context);
         if (intent) {
@@ -575,7 +575,7 @@ export class PredictivePrefetcher {
       const now = Date.now();
       const maxAge = 24 * 60 * 60 * 1000; // 24 hours
       for (const request of keys) {
-        const response = await this.cache.match(request);
+        // removed unused response assignment
         if (response) {
           const cachedTime = response.headers.get("sw-cached-time");
           if (cachedTime && now - parseInt(cachedTime) > maxAge) {
@@ -609,7 +609,7 @@ self.addEventListener("install", () => {
 self.addEventListener("activate", () => {
   prefetcher.initialize();
 });
-self.addEventListener("fetch", async (event: any) => {
+self.addEventListener("fetch", async (_event: any) => {
   // Check cache first for prefetched resources
   const cachedResponse = await prefetcher.getCachedResponse(event.request);
   if (cachedResponse) {

@@ -43,7 +43,7 @@ export const evidenceVectors = pgTable("evidence_vectors", {
   chunkIndex: integer("chunk_index").notNull(),
   content: text("content").notNull(),
   embedding: vector("embedding", { dimensions: 384 }).notNull(),
-  analysisType: text("analysis_type"), // summary, entities, sentiment, classification
+  analysisType: text("analysis_type"), // summary, entities, sentiment, classification;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow().notNull()
 }, (table: any) => ({,
@@ -96,7 +96,7 @@ export const recommendationCache = pgTable("recommendation_cache", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => users.id).notNull(),
   recommendationType: text("recommendation_type").notNull(), // case, evidence, document
-  recommendations: jsonb("recommendations").notNull(), // Array of recommended items
+  recommendations: jsonb("recommendations").notNull(), // Array of recommended items;
   score: real("score").default(0),
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()
@@ -116,7 +116,7 @@ export const vectorOperations = {
   // Hybrid search combining vector and keyword search
   hybridSearch: (vectorScore: any, textScore: any, vectorWeight: number = 0.7) =>
     sql`(${vectorScore} * ${vectorWeight} + ${textScore} * ${1 - vectorWeight})`
-};
+}
 // Export types
 export type DocumentVector = typeof documentVectors.$inferSelect;
 export type NewDocumentVector = typeof documentVectors.$inferInsert;

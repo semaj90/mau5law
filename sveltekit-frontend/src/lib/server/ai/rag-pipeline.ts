@@ -10,7 +10,7 @@ try {
     documentVectors: { [key: string]: any },
     evidence: { [key: string]: any },
     cases: { [key: string]: any }
-  };
+  }
 }
 import Redis from "ioredis";
 import { createHash } from "crypto";
@@ -40,10 +40,10 @@ const sql = postgres({
   password: process.env.DATABASE_PASSWORD || '123456',
   max: 20,
   idle_timeout: 20,
-  prepare: true
+  prepare: true;
   ssl: process.env.NODE_ENV === 'production' ? 'require' : false
 });
-const db = drizzle(sql, { schema });
+// removed unused db assignment
 // Initialize Redis for caching
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
@@ -128,7 +128,7 @@ export class LegalRAGPipeline {
     title: string;
     content: string;
     documentType: string;
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
     caseId?: string;
     userId: string;
   }) {
@@ -179,7 +179,7 @@ export class LegalRAGPipeline {
                 totalChunks: chunks.length,
                 ...metadata
               }
-            };
+            }
           })
         );
         await db.insert(schema.documentChunks).values(chunkRecords);
@@ -206,7 +206,7 @@ export class LegalRAGPipeline {
         chunksCreated: chunks.length,
         tags: tags.map((t) => t.tag),
         processingTime
-      };
+      }
     } catch (error: any) {
       console.error('[RAG] Ingestion error:', error);
       throw error;
@@ -320,7 +320,7 @@ export class LegalRAGPipeline {
             "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",
           sources: [],
           confidence: 0
-        };
+        }
       }
       // 2. Build context from retrieved documents
       const context = relevantDocs
@@ -383,7 +383,7 @@ Answer:
         confidence: analysis.confidence,
         keyPoints: analysis.keyPoints,
         processingTime: Date.now() - startTime
-      };
+      }
     } catch (error: any) {
       console.error('[RAG] QA error:', error);
       // Log failed query
@@ -554,7 +554,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
         documentType,
         content: content.substring(0, 3000), // Use first 3000 chars for tagging
       });
-      const response = typeof chainResult === 'string' ? chainResult : chainResult.parse || '';
+      // removed unused response assignment
       // Extract JSON from response
       const jsonMatch = response.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
@@ -579,7 +579,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
     return {
       confidence,
       keyPoints
-    };
+    }
   }
   private parseContractAnalysis(analysis: string) {
     const sections = {
@@ -589,9 +589,9 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       risks: [],
       legalIssues: [],
       recommendations: []
-    };
+    }
     // Parse the structured response
-    const lines = analysis.split('\n');
+    // removed unused lines assignment
     let currentSection = '';
     for (const line of lines) {
       if (line.includes('CONTRACT TYPE')) currentSection = 'type';

@@ -77,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
   		} finally {
   			isProcessing = false;
   		}
-  	};
+  	}
   	// Generate smart suggestions for incomplete fields
   	const generateSmartSuggestions = async (documentText: string) => {
   		for (const field of populatedFields) {
@@ -93,8 +93,8 @@ https://svelte.dev/e/js_parse_error -->
   				}
   			}
   		}
-  		activeSuggestions = { ...activeSuggestions }; // Trigger reactivity
-  	};
+  		activeSuggestions = { ...activeSuggestions } // Trigger reactivity
+  	}
   	// Handle field value changes
   	const handleFieldChange = (fieldName: string, value: string, confidence?: number) => {
   		const fieldIndex = populatedFields.findIndex(f => f.name === fieldName);
@@ -103,21 +103,21 @@ https://svelte.dev/e/js_parse_error -->
   			populatedFields[fieldIndex].confidence = confidenc;
   			// Clear suggestions once user makes a selection
   			delete activeSuggestions[fieldName];
-  			activeSuggestions = { ...activeSuggestions };
+  			activeSuggestions = { ...activeSuggestions }
   		}
   		// Validate field
   		validateField(fieldName, value);
   		ondispatch?.({ fieldName, value, confidence });
-  	};
+  	}
   	// Apply suggestion to field
   	const applySuggestion = (fieldName: string, suggestion: string) => {
   		handleFieldChange(fieldName, suggestion, 0.8);
-  	};
+  	}
   	// Field validation
   	const validateField = (fieldName: string, value: string) => {
   		const field = populatedFields.find(f => f.name === fieldName);
   		if (!field) return;
-  		const errors = { ...$formErrors };
+  		const errors = { ...$formErrors }
   		// Required field validation
   		if (field.required && !value.trim()) {
   			errors[fieldName] = 'This field is required';
@@ -134,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
   		formErrors.set(errors);
   		isFormValid = Object.keys(errors).length === 0 &&
   			populatedFields.filter(item => item.every)(f => f.value?.trim());
-  	};
+  	}
   	// Form submission
   	const handleSubmit = () => {
   		// Final validation
@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
   			}, as { [key: string]: any });
   			ondispatch?.({ formData, extractedFields: $extractedFields });
   		}
-  	};
+  	}
   	// Get field type icon
   	const getFieldTypeIcon = (type: FieldType) => {
   		switch (type) {
@@ -161,26 +161,26 @@ https://svelte.dev/e/js_parse_error -->
   			case 'monetary_amount': return '💰';
   			default: return '📝';
   		}
-  	};
+  	}
   	// Get confidence color
   	const getConfidenceColor = (confidence?: number) => {
   		if (!confidence) return 'bg-gray-500';
   		if (confidence >= 0.9) return 'bg-green-500';
   		if (confidence >= 0.7) return 'bg-yellow-500';
   		return 'bg-red-500';
-  	};
+  	}
   	// File drop handling
-  	const handleDrop = (event: DragEvent) => {
+  	const handleDrop = (_event: DragEvent) => {
   		event.preventDefault();
   		const files = event.dataTransfer?.file;
   		if (files && files.length > 0) {
   			uploadedFile = files[0];
   			handleFileUpload();
   		}
-  	};
-  	const handleDragOver = (event: DragEvent) => {
+  	}
+  	const handleDragOver = (_event: DragEvent) => {
   		event.preventDefault();
-  	};
+  	}
 </script>
 <div class="smart-document-form max-w-4xl mx-auto p-6 space-y-6">
 	<!-- Header -->
@@ -339,8 +339,8 @@ fileInput.click()}
 									type={field.type === 'email' ? 'email' : field.type === 'phone' ? 'tel' : 'text'}
 									bind:value={field.value}
 									placeholder={`Enter ${field.label.toLowerCase()}...`}
-									class="bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary"
-																class:border-yorha-danger={$formErrors[field.name]};
+									class="bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary";
+																class:border-yorha-danger={$formErrors[field.name]}
 								class:border-yorha-success={field.confidence && field.confidence > 0.8} oninput={(e) => handleFieldChange(field.name, e.target.value)}
 								/>
 							{/if}

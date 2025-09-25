@@ -10,7 +10,7 @@ import type { Redis } from 'ioredis'
 import { createRedisInstance } from '$lib/server/redis'
 import { db } from "$lib/server/db"
 import { inArray } from "drizzle-orm"
-import { URL } from "url"
+
 // Optional amqp for message queue integration
 // Initialize connections
 let redis: ReturnType<typeof createRedisInstance> | null = null

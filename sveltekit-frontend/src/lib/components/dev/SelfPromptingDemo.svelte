@@ -127,7 +127,7 @@
           searchResults,
           memoryResult;
         }
-      };
+      }
       const results = await copilotOrchestrator(currentPrompt, orchestrationOptions);
       // Update agent results store
       if (results.agentResults) {
@@ -169,7 +169,7 @@
     // Simulate Context7 semantic search
     await new Promise(resolve => setTimeout(resolve, 800));
     const searchResults = {
-      query: prompt
+      query: prompt;
       results: [
         {
           document: 'Legal Precedent DB',
@@ -184,7 +184,7 @@
           caseId: 'GUIDELINE-PROC-001';
         }
       ]
-    };
+    }
     updateAgentStatus('context7', 'completed', 'Semantic search completed');
     addLogEntry('semantic-search', 'context7', 'Semantic search completed', searchResults);
     return searchResult;
@@ -216,7 +216,7 @@
         'Multiple precedent cases support prosecution strategy',
         'Key witness testimony patterns identified'
       ];
-    };
+    }
     updateAgentStatus('memory-server', 'completed', 'Memory analysis completed');
     addLogEntry('memory-analysis', 'memory-server', 'Memory graph analysis completed', memoryResults);
     return memoryResult;
@@ -240,7 +240,7 @@
         'Insufficient defendant background research'
       ],
       nextFocus: 'Investigate temporal relationships between evidence items and witness statements';
-    };
+    }
     const nextPrompt = `Based on previous analysis, focus on: ${analysis.nextFocus}.
     Specifically examine witness testimony timing relative to evidence collection,
     and identify any inconsistencies or corroborating patterns that strengthen the case.`;
@@ -248,8 +248,8 @@
       analysis,
       nextPrompt,
       reasoning: 'Previous iteration showed strong evidence foundation but lacked temporal analysis. Next iteration should focus on timeline correlation to strengthen legal argument.',
-      confidence: 0.87;
-    };
+      confidence: 0.87,
+    }
     addLogEntry('self-prompting', 'meta-agent', 'Self-prompt generated', selfPromptResult);
     return selfPromptResult;
   }
@@ -267,11 +267,11 @@
       ],
       agentPerformance: workflow.agents.map(agent => ({
         agent,
-        performance: Math.random() * 0.3 + 0.7, // Simulate performance metric
+        performance: Math.random() * 0.3 + 0.7, // Simulate performance metric;
         contribution: `Agent ${agent} contributed specialized analysis`
       })),
       nextSteps: iteration < maxIterations ? ['Continue with refined focus', 'Apply self-prompting insights'] : ['Prepare final report']
-    };
+    }
     addLogEntry('synthesis', 'synthesizer', 'Iteration synthesis completed', synthesis);
     return synthesi;
   }
@@ -308,7 +308,7 @@
       ],
       confidenceScore: 0.91,
       generatedAt: new Date().toISOString();
-    };
+    }
     addLogEntry('final-report', 'orchestrator', 'Final report generated', finalReport);
   }
   /**
@@ -334,7 +334,7 @@
           'Implement proper security measures for sensitive data',
           'Optimize performance for large document processing'
         ];
-      };
+      }
       addLogEntry('context7-demo', 'context7', `Result: ${formatMCPResponse(mockResult)}`, mockResult);
     }
   }
@@ -381,13 +381,14 @@
     updateAgentStatus('context7', 'idle', 'MCP tools available');
   });
 </script>
+
 <div class="space-y-6 p-6 max-w-7xl mx-auto">
   <!-- Header -->
   <div class="border-b border-gray-200 pb-4">
     <h2 class="text-3xl font-bold text-gray-900">Self-Prompting Agent Orchestration Demo</h2>
     <p class="text-gray-600 mt-2">
-      Comprehensive demonstration of multi-agent coordination with self-prompting loops,
-      Context7 MCP integration, and legal AI workflow automation.
+      Comprehensive demonstration of multi-agent coordination with self-prompting loops, Context7 MCP integration, and
+      legal AI workflow automation.
     </p>
   </div>
   <!-- Progress Indicator -->
@@ -398,10 +399,7 @@
         <span class="text-sm text-blue-700">Iteration {currentIteration}/{maxIterations}</span>
       </div>
       <div class="w-full bg-blue-200 rounded-full h-2">
-        <div
-          class="bg-blue-600 h-2 rounded-full transition-all duration-500"
-          style="width: {$progress}%"
-        ></div>
+        <div class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: {$progress}%"></div>
       </div>
     </div>
   {/if}
@@ -413,7 +411,8 @@
         <div>
           <label for="workflow" class="block text-sm font-medium mb-2">Select Workflow</label>
           <select
-            id="workflow";
+            id="workflow"
+            ;
             bind:value={selectedWorkflow}
             disabled={$isRunning}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
@@ -429,7 +428,7 @@
         <div>
           <label for="prompt" class="block text-sm font-medium mb-2">Initial Prompt</label>
           <textarea
-            id="prompt"
+            id="prompt";
             bind:value={initialPrompt}
             disabled={$isRunning}
             rows="3"
@@ -440,23 +439,13 @@
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="flex items-center">
-              <input
-                type="checkbox";
-                bind:checked={enableSelfPrompting}
-                disabled={$isRunning}
-                class="mr-2"
-              />
+              <input type="checkbox" ; bind:checked={enableSelfPrompting} disabled={$isRunning} class="mr-2" />
               <span class="text-sm">Enable Self-Prompting</span>
             </label>
           </div>
           <div>
             <label class="flex items-center">
-              <input
-                type="checkbox"
-                bind:checked={enableMultiAgent}
-                disabled={$isRunning}
-                class="mr-2"
-              />
+              <input type="checkbox" bind:checked={enableMultiAgent} disabled={$isRunning} class="mr-2" />
               <span class="text-sm">Multi-Agent Coordination</span>
             </label>
           </div>
@@ -465,7 +454,8 @@
           <label for="iterations" class="block text-sm font-medium mb-2">Max Iterations</label>
           <input
             id="iterations"
-            type="number";
+            type="number"
+            ;
             bind:value={maxIterations}
             disabled={$isRunning}
             min="1"
@@ -490,10 +480,7 @@
           {/if}
         </button>
         {#if $isRunning}
-          <button
-            onclick={stopWorkflow}
-            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-          >
+          <button onclick={stopWorkflow} class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
             Stop
           </button>
         {/if}
@@ -513,12 +500,15 @@
         {#each Object.entries($agentStatus) as [agent, status]}
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <div class="flex items-center gap-3">
-              <div class="w-3 h-3 rounded-full {
-                status.status === 'processing' ? 'bg-blue-500 animate-pulse' :
-                status.status === 'completed' ? 'bg-green-500' :
-                status.status === 'error' ? 'bg-red-500' :
-                'bg-gray-400'
-              }"></div>
+              <div
+                class="w-3 h-3 rounded-full {status.status === 'processing'
+                  ? 'bg-blue-500 animate-pulse'
+                  : status.status === 'completed'
+                    ? 'bg-green-500'
+                    : status.status === 'error'
+                      ? 'bg-red-500'
+                      : 'bg-gray-400'}"
+              ></div>
               <div>
                 <div class="font-medium">{agent}</div>
                 <div class="text-sm text-gray-600">{status.currentTask}</div>
@@ -547,15 +537,19 @@
     <h3 class="text-lg font-semibold mb-4">Real-time Orchestration Log</h3>
     <div class="max-h-96 overflow-y-auto space-y-3">
       {#each $orchestrationLog as entry}
-        <div class="border-l-4 pl-4 py-2 {
-          entry.phase === 'error' ? 'border-red-500 bg-red-50' :
-          entry.phase === 'final-report' ? 'border-green-500 bg-green-50' :
-          entry.phase === 'self-prompting' ? 'border-purple-500 bg-purple-50' :
-          'border-blue-500 bg-blue-50'
-        }">
+        <div
+          class="border-l-4 pl-4 py-2 {entry.phase === 'error'
+            ? 'border-red-500 bg-red-50'
+            : entry.phase === 'final-report'
+              ? 'border-green-500 bg-green-50'
+              : entry.phase === 'self-prompting'
+                ? 'border-purple-500 bg-purple-50'
+                : 'border-blue-500 bg-blue-50'}"
+        >
           <div class="flex items-center justify-between mb-1">
             <span class="text-sm font-medium">
-              {entry.phase} {entry.agent ? `(${entry.agent})` : ''}
+              {entry.phase}
+              {entry.agent ? `(${entry.agent})` : ''}
             </span>
             <span class="text-xs text-gray-500">
               {new Date(entry.timestamp).toLocaleTimeString()}
@@ -565,7 +559,11 @@
           {#if entry.result && Object.keys(errors).length > 0}
             <details class="text-xs">
               <summary class="cursor-pointer text-blue-600 hover:text-blue-800">View Details</summary>
-              <pre class="mt-2 p-2 bg-white rounded text-gray-600 overflow-x-auto">{JSON.stringify(entry.result, null, 2)}</pre>
+              <pre class="mt-2 p-2 bg-white rounded text-gray-600 overflow-x-auto">{JSON.stringify(
+                  entry.result,
+                  null,
+                  2,
+                )}</pre>
             </details>
           {/if}
         </div>
@@ -592,11 +590,13 @@
               <span class="font-medium text-green-600">{comm.to}</span>
             </div>
             <div class="flex-1">
-              <span class="text-sm px-2 py-1 rounded text-white {
-                comm.type === 'prompt' ? 'bg-blue-500' :
-                comm.type === 'result' ? 'bg-green-500' :
-                'bg-purple-500'
-              }">{comm.type}</span>
+              <span
+                class="text-sm px-2 py-1 rounded text-white {comm.type === 'prompt'
+                  ? 'bg-blue-500'
+                  : comm.type === 'result'
+                    ? 'bg-green-500'
+                    : 'bg-purple-500'}">{comm.type}</span
+              >
               <span class="ml-2 text-sm text-gray-600">{comm.message}</span>
             </div>
             <span class="text-xs text-gray-500">
@@ -614,9 +614,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each $agentResults as result}
           <div class="border border-gray-200 rounded-lg p-4">
-            <h4 class="font-medium text-gray-900 mb-2">{(result as { selfPrompt?: any; agent?: any; result?: any }).agent}</h4>
+            <h4 class="font-medium text-gray-900 mb-2">
+              {(result as { selfPrompt?: any; agent?: any; result?: any }).agent}
+            </h4>
             <div class="text-sm text-gray-600 mb-2">
-              {typeof (result as { selfPrompt?: any; agent?: any; result?: any }).result === 'string' ? (result as { selfPrompt?: any; agent?: any; result?: any }).result: JSON.stringify(result).substring(0, 100) + '...'}
+              {typeof (result as { selfPrompt?: any; agent?: any; result?: any }).result === 'string'
+                ? (result as { selfPrompt?: any; agent?: any; result?: any }).result
+                : JSON.stringify(result).substring(0, 100) + '...'}
             </div>
             <div class="flex items-center justify-between text-xs">
               <span class="text-green-600">Completed</span>
@@ -685,6 +689,7 @@
     </div>
   </div>
 </div>
+
 <style>
   /* Custom scrollbar for log panels */
   .max-h-96::-webkit-scrollbar {

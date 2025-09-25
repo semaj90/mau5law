@@ -13,7 +13,7 @@ const metrics = {
   informationCompleteness: 0.8,
   responseReadiness: 0.8,
   getAllMetrics: () => ({})
-};
+}
 // Simple stubs for missing dependencies
 const legalBERT = {
   analyze: (text: string) => Promise.resolve({ confidence: 0.8, categories: [], summary: '' }),
@@ -37,10 +37,10 @@ const legalBERT = {
     similarity: 0.8,
     confidence: 0.8
   })
-};
+}
 const enhancedLegalSearch = {
   search: (query: string, options: any) => Promise.resolve([])
-};
+}
 // Utility function for timeout handling
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
   const timeout = new Promise<never>((_, reject) => {
@@ -55,12 +55,12 @@ export interface SynthesizerAnalysisResult {
     abstractive: string;
     extractive: string;
     keyPoints: string[];
-  };
+  }
   entities?: Array<unknown>;
   concepts?: Array<unknown>;
   complexity?: {
     legalComplexity: number;
-  };
+  }
 }
 export interface RetrievalOptions {
   enableRAG?: boolean;
@@ -75,7 +75,7 @@ export interface RetrievalOptions {
  */;
 interface RetrievalResult {
   sources: Array<any>;
-  summary: { abstractive: string; extractive: string[]; keyPoints: string[] };
+  summary: { abstractive: string; extractive: string[]; keyPoints: string[] }
   totalSources: number;
   searchStrategies: string[];
 }
@@ -94,8 +94,8 @@ export interface SynthesizerInput {
       maxLength: number;
       includeCitations: boolean;
       focusAreas: string[];
-    };
-  };
+    }
+  }
   options?: {
     enableMMR: boolean;
     enableCrossEncoder: boolean;
@@ -104,7 +104,7 @@ export interface SynthesizerInput {
     maxSources: number;
     similarityThreshold: number;
     diversityLambda: number;
-  };
+  }
 }
 // Synthesized output structure
 export interface SynthesizedOutput {
@@ -115,31 +115,31 @@ export interface SynthesizedOutput {
     entities: Array<any>;
     legalConcepts: string[];
     complexity: number;
-  };
+  }
   retrievedContext: {
     sources: Array<any>;
     summary: {
       abstractive: string;
       extractive: string[];
       keyPoints: string[];
-    };
+    }
     totalSources: number;
     searchStrategies: string[];
-  };
+  }
   enhancedPrompt: {
     systemPrompt: string;
     contextPrompt: string;
     queryPrompt: string;
     instructions: string[];
     constraints: string[];
-  };
+  }
   metadata: {
     processingTime: number;
     confidence: number;
     strategies: string[];
     qualityScore: number;
     recommendations: string[];
-  };
+  }
 }
 // Quality assessment metrics
 export interface QualityMetrics {
@@ -188,7 +188,7 @@ export class AIAssistantInputSynthesizer {
         similarityThreshold: 0.7,
         diversityLambda: 0.5,
         ...input.options
-      };
+      }
       // Step 1: Query Analysis and Enhancement
       const processedQuery = await this.analyzeAndEnhanceQuery(input.query, input.context);
       // Step 2: Multi-Strategy Retrieval
@@ -227,7 +227,7 @@ export class AIAssistantInputSynthesizer {
           qualityScore: this.calculateOverallQuality(qualityMetrics),
           recommendations: this.generateRecommendations(qualityMetrics)
         }
-      };
+      }
       // Log metrics
       metrics.incrementCounter('synthesizer_requests');
       metrics.recordTiming('synthesizer_processing_time', processingTime);
@@ -266,7 +266,7 @@ export class AIAssistantInputSynthesizer {
         })),
         legalConcepts: (legalAnalysis.legalConcepts ?? []).map((c: any) => c.concept || c),
         complexity: legalAnalysis.complexity?.legalComplexity ?? 0.5
-      };
+      }
     } catch (error: any) {
       logger.warn('[Synthesizer] Query analysis failed, returning basic structure', error);
       return {
@@ -276,7 +276,7 @@ export class AIAssistantInputSynthesizer {
         entities: [],
         legalConcepts: [],
         complexity: 0.5
-      };
+      }
     }
   }
   /**
@@ -296,14 +296,14 @@ export class AIAssistantInputSynthesizer {
       similarityThreshold: 0.7,
       enableMMR: true
       enableCrossEncoder: true
-    };
-    const effectiveOptions = { ...defaults, ...options };
+    }
+    const effectiveOptions = { ...defaults, ...options }
     const retrievalResults: RetrievalResult = {
       sources: [],
       summary: { abstractive: '', extractive: [], keyPoints: [] },
       totalSources: 0,
       searchStrategies: []
-    };
+    }
     try {
       // Strategy 1: RAG Pipeline Search
       if (effectiveOptions.enableRAG) {
@@ -348,7 +348,7 @@ export class AIAssistantInputSynthesizer {
             jurisdiction?: string;
             searchType?: string;
             confidence?: number;
-          };
+          }
           if (!retrievalResults.sources.find((s) => s.id === searchResult.id)) {
             retrievalResults.sources.push({
               id: searchResult.id,
@@ -445,7 +445,7 @@ export class AIAssistantInputSynthesizer {
         summary,
         totalSources: sources.length,
         searchStrategies: retrievedContext.searchStrategies
-      };
+      }
     } catch (error: any) {
       logger.error('[Synthesizer] Content processing failed:', error);
       return retrievedContext;
@@ -476,7 +476,7 @@ export class AIAssistantInputSynthesizer {
         queryPrompt,
         instructions,
         constraints
-      };
+      }
     } catch (error: any) {
       logger.error('[Synthesizer] Prompt construction failed:', error);
       return {
@@ -485,7 +485,7 @@ export class AIAssistantInputSynthesizer {
         queryPrompt: processedQuery.original,
         instructions: ['Provide a helpful response.'],
         constraints: ['Be accurate and professional.']
-      };
+      }
     }
   }
   /**
@@ -520,7 +520,7 @@ export class AIAssistantInputSynthesizer {
         conceptCoverage,
         informationCompleteness,
         responseReadiness
-      };
+      }
     } catch (error: any) {
       logger.error('[Synthesizer] Quality assessment failed:', error);
       return {
@@ -529,7 +529,7 @@ export class AIAssistantInputSynthesizer {
         conceptCoverage: 0.5,
         informationCompleteness: 0.5,
         responseReadiness: 0.5
-      };
+      }
     }
   }
   // === HELPER METHODS ===
@@ -613,7 +613,7 @@ export class AIAssistantInputSynthesizer {
   }
   private async applyMMRDiversification(
     sources: any[]
-    query: string
+    query: string;
     lambda: number = 0.5;
   ): Promise<any[]> {
     // Implement MMR algorithm for diversity
@@ -693,14 +693,14 @@ export class AIAssistantInputSynthesizer {
         keyPoints: Array.isArray(summary.summary.keyPoints)
           ? summary.summary.keyPoints
           : [summary.summary.keyPoints || '']
-      };
+      }
     } catch (error: any) {
       logger.warn('[Synthesizer] Summary generation failed:', error);
       return {
         abstractive: 'Summary generation failed',
         extractive: sources.slice(0, 3).map((s) => s.content.substring(0, 200) + '...'),
         keyPoints: sources.slice(0, 5).map((s) => s.title)
-      };
+      }
     }
   }
   private buildSystemPrompt(
@@ -826,7 +826,7 @@ export class AIAssistantInputSynthesizer {
       statute: 0.95,
       precedent: 0.85,
       document: 0.7
-    };
+    }
     if (retrievedContext.sources.length === 0) return 0;
     const avgAuthority =
       retrievedContext.sources.reduce(
@@ -910,7 +910,7 @@ export class AIAssistantInputSynthesizer {
     const categoryDiversity = categories.size / Math.min(sources.length, 5);
     return (typeDiversity + categoryDiversity) / 2;
   }
-  private getUsedStrategies(options: any): string[] {
+  private getUsedStrategies(_options: any): string[] {
     const strategies = [];
     if (options.enableRAG) strategies.push('rag_pipeline');
     if (options.enableLegalBERT) strategies.push('legalbert_analysis');
@@ -925,7 +925,7 @@ export class AIAssistantInputSynthesizer {
       conceptCoverage: 0.2,
       informationCompleteness: 0.15,
       responseReadiness: 0.15
-    };
+    }
     return Object.entries(metrics).reduce(
       (sum, [key, value]) => sum + (weights[key as keyof QualityMetrics] || 0) * value,
       0
@@ -959,22 +959,22 @@ export class AIAssistantInputSynthesizer {
       requestCount: this.requestCount,
       processingStats: Object.fromEntries(this.processingStats),
       ...metrics.getAllMetrics()
-    };
+    }
   }
   /**
    * Health check
    */;
   async healthCheck(): Promise<any> {
-    const components: { [key: string]: any } = {};
+    const components: { [key: string]: any } = {}
     try {
       components.legalbert = await legalBERT.healthCheck();
     } catch (error: any) {
-      components.legalbert = { status: 'unhealthy', error: error.message };
+      components.legalbert = { status: 'unhealthy', error: error.message }
     }
     try {
       components.rag = await enhancedRAGPipeline.getHealthStatus();
     } catch (error: any) {
-      components.rag = { status: 'unhealthy', error: error.message };
+      components.rag = { status: 'unhealthy', error: error.message }
     }
     const healthyComponents = Object.values(components).filter(
       (c: any) =>
@@ -984,7 +984,7 @@ export class AIAssistantInputSynthesizer {
     return {
       status: healthyComponents >= 1 ? 'healthy' : 'degraded',
       components
-    };
+    }
   }
 }
 // Export singleton instance

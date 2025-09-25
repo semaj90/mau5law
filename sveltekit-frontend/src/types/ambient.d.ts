@@ -16,22 +16,22 @@ declare interface SimpleRedis {
   get: (...args: unknown[]) => Promise<unknown>;
   set: (...args: unknown[]) => Promise<unknown>;
   /** Set key with expiry (seconds) */
-  setex: (key: string, seconds: number, value: string) => Promise<unknown>;
+  setex: (_key: string, seconds: number, value: string) => Promise<unknown>;
   /** Push value(s) to list (left) */
-  lpush: (key: string, ...values: unknown[]) => Promise<number | unknown>;
+  lpush: (_key: string, ...values: unknown[]) => Promise<number | unknown>;
   /** Range query for list */
-  lrange: (key: string, start: number, stop: number) => Promise<unknown[]>;
+  lrange: (_key: string, start: number, stop: number) => Promise<unknown[]>;
   del: (...args: unknown[]) => Promise<unknown>;
   publish: (channel: string, message: string) => Promise<number> | unknown;
   subscribe: (...args: unknown[]) => Promise<unknown>;
   psubscribe: (...args: unknown[]) => Promise<unknown>;
-  on: (event: string, cb: (...args: unknown[]) => void) => void;
+  on: (_event: string, cb: (...args: unknown[]) => void) => void;
   pipeline: (...args: unknown[]) => {
     lpush?: (...a: unknown[]) => unknown;
     ltrim?: (...a: unknown[]) => unknown;
     expire?: (...a: unknown[]) => unknown;
     exec?: (...a: unknown[]) => unknown;
-  };
+  }
   /** Redis Streams helpers used by some workers */
   xInfoStream: (stream: string) => Promise<unknown>;
   xRevRange: (stream: string, start: string, end: string, opts?: unknown) => Promise<unknown>;
@@ -54,19 +54,19 @@ declare module '$lib/server/db/client.js' {
 }
 declare module '$lib/server/db/drizzle' {
   const enhanced_db: unknown;
-  export { enhanced_db };
+  export { enhanced_db }
   export default enhanced_db;
 }
 declare module '$lib/server/db/index' {
   export const isPostgreSQL: unknown;
   export const users: unknown;
-  export default {};
+  export default {}
 }
 declare module '$lib/server/database' {
   export const documents: unknown;
   export const embeddings: unknown;
   export const searchSessions: unknown;
-  export default {};
+  export default {}
 }
 declare module '$lib/server/redis-service' {
   export const redisService: SimpleRedis;
@@ -74,7 +74,7 @@ declare module '$lib/server/redis-service' {
 }
 declare module '$lib/services/nomic-embedding-service' {
   const nomicEmbeddings: unknown;
-  export { nomicEmbeddings };
+  export { nomicEmbeddings }
   export default nomicEmbeddings;
 }
 // Generic catch-all for other internal modules that are still in flux
@@ -109,7 +109,7 @@ declare interface DBClient {
   [k: string]: unknown;
 }
 /** Utility type used by some generic helpers that expect a `context` property */
-declare type WithContext<T = unknown> = T & { context?: unknown; value?: unknown };
+declare type WithContext<T = unknown> = T & { context?: unknown; value?: unknown }
 declare interface VectorSearchResult {
   id?: string;
   excerpt?: string;

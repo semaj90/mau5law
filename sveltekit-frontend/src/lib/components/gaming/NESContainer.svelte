@@ -31,7 +31,7 @@
     header,
     footer,
     class: className = '',
-    style = ''
+    style = '',
   }: Props = $props();
   let isMinimized = $state(false);
   let isDragging = $state(false);
@@ -42,16 +42,16 @@
   function toggleMinimize() {
     isMinimized = !isMinimized;
   }
-  function handleDragStart(event: MouseEvent) {
+  function handleDragStart(_event: MouseEvent) {
     if (variant !== 'dialog') return;
     isDragging = true;
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     dragOffset = {
       x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    };
+      y: event.clientY - rect.top,
+    }
   }
-  function handleDrag(event: MouseEvent) {
+  function handleDrag(_event: MouseEvent) {
     if (!isDragging) return;
     const container = event.currentTarget as HTMLElement;
     container.style.left = `${event.clientX - dragOffset.x}px`;
@@ -70,11 +70,14 @@
       elevated && 'nes-container--elevated',
       scrollable && 'nes-container--scrollable',
       isMinimized && 'nes-container--minimized',
-      isDragging && 'nes-container--dragging'
-    ].filter(Boolean).join(' ');
+      isDragging && 'nes-container--dragging',
+    ]
+      .filter(Boolean)
+      .join(' ');
     return `${base} ${variantClass} ${sizeClass} ${stateClasses} ${className}`.trim();
   });
 </script>
+
 <div
   class={containerClasses}
   {style}
@@ -153,38 +156,39 @@
     <div class="nes-container__corner nes-container__corner--br"></div>
   </div>
 </div>
+
 <style>
   .nes-container {
     position: relative;
     font-family: 'Courier New', monospace;
-    color: var(--console-foreground, #FCFCFC);
+    color: var(--console-foreground, #fcfcfc);
     line-height: 1.4;
-    /* NES-style pixelated rendering */
+/* NES-style pixelated rendering */ {}
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
   }
-  /* Base Styling */
+/* Base Styling */ {}
   .nes-container--bordered {
-    border: 3px solid var(--console-primary, #E52521);
-    border-image:
-      repeating-linear-gradient(
-        90deg,
-        var(--console-primary, #E52521) 0px,
-        var(--console-primary, #E52521) 3px,
-        transparent 3px,
-        transparent 6px
-      ) 3;
+    border: 3px solid var(--console-primary, #e52521);
+border-image: repeating-linear-gradient( {}
+90deg, {}
+var(--console-primary, #e52521) 0px, {}
+var(--console-primary, #e52521) 3px, {}
+transparent 3px, {}
+transparent 6px {}
+) {}
+      3;
   }
   .nes-container--elevated {
-    /* NES-style 3D effect */
-    box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, 0.3),
-      inset 0 0 0 2px var(--console-secondary, #0084FF),
-      4px 4px 0 rgba(0, 0, 0, 0.8),
+/* NES-style 3D effect */ {}
+box-shadow: {}
+inset 0 0 0 1px rgba(255, 255, 255, 0.3), {}
+inset 0 0 0 2px var(--console-secondary, #0084ff), {}
+4px 4px 0 rgba(0, 0, 0, 0.8), {}
       8px 8px 0 rgba(0, 0, 0, 0.4);
   }
-  /* Size Variants */
+/* Size Variants */ {}
   .nes-container--small {
     min-width: 200px;
     min-height: 120px;
@@ -208,9 +212,9 @@
     font-size: 16px;
     z-index: 1000;
   }
-  /* Variant Styling */
+/* Variant Styling */ {}
   .nes-container--window {
-    background: linear-gradient(180deg, #1C1C1C, #0A0A0A);
+    background: linear-gradient(180deg, #1c1c1c, #0a0a0a);
     border-radius: 0; /* No rounded corners for authentic NES look */
   }
   .nes-container--panel {
@@ -218,7 +222,7 @@
     padding: 12px;
   }
   .nes-container--dialog {
-    background: linear-gradient(145deg, #2C2C2C, #1A1A1A);
+    background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
     position: fixed;
     top: 50%;
     left: 50%;
@@ -226,24 +230,27 @@
     z-index: 1000;
   }
   .nes-container--card {
-    background: #1A1A1A;
+    background: #1a1a1a;
     padding: 16px;
   }
   .nes-container--screen {
-    background:
-      radial-gradient(circle at 50% 50%, #0F0F23, #000000),
-      linear-gradient(90deg, transparent 50%, rgba(0, 255, 0, 0.03) 50%),
+background: {}
+radial-gradient(circle at 50% 50%, #0f0f23, #000000), {}
+linear-gradient(90deg, transparent 50%, rgba(0, 255, 0, 0.03) 50%), {}
       linear-gradient(0deg, transparent 50%, rgba(0, 255, 0, 0.03) 50%);
-    background-size: 100% 100%, 4px 4px, 4px 4px;
+background-size: {}
+100% 100%, {}
+4px 4px, {}
+      4px 4px;
   }
-  /* Header Styling */
+/* Header Styling */ {}
   .nes-container__header {
     display: flex;
     align-items: center;
     justify-content: space-betwee;
     padding: 8px 12px;
-    background: linear-gradient(90deg, var(--console-secondary, #0084FF), var(--console-primary, #E52521));
-    border-bottom: 2px solid var(--console-primary, #E52521);
+    background: linear-gradient(90deg, var(--console-secondary, #0084ff), var(--console-primary, #e52521));
+    border-bottom: 2px solid var(--console-primary, #e52521);
     font-weight: bold;
     color: white;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
@@ -267,8 +274,8 @@
   .nes-container__control {
     width: 24px;
     height: 24px;
-    border: 2px solid #FCFCFC;
-    background: var(--console-secondary, #0084FF);
+    border: 2px solid #fcfcfc;
+    background: var(--console-secondary, #0084ff);
     color: white;
     font-size: 14px;
     font-weight: bold;
@@ -279,13 +286,13 @@
     transition: all 0.1s ease;
   }
   .nes-container__control:hover {
-    background: var(--console-primary, #E52521);
+    background: var(--console-primary, #e52521);
     transform: scale(1.1);
   }
   .nes-container__control:active {
     transform: scale(0.95);
   }
-  /* Content Area */
+/* Content Area */ {}
   .nes-container__content {
     padding: 16px;
     flex: 1;
@@ -295,46 +302,40 @@
     overflow-y: auto;
     max-height: 60vh;
   }
-  /* Custom Scrollbar */
+/* Custom Scrollbar */ {}
   .nes-container--scrollable .nes-container__content::-webkit-scrollbar {
     width: 16px;
     background: #000000;
   }
   .nes-container--scrollable .nes-container__content::-webkit-scrollbar-track {
-    background: repeating-linear-gradient(
-      90deg,
-      #1A1A1A 0px,
-      #1A1A1A 2px,
-      #0A0A0A 2px,
-      #0A0A0A 4px
-    );
+    background: repeating-linear-gradient(90deg, #1a1a1a 0px, #1a1a1a 2px, #0a0a0a 2px, #0a0a0a 4px);
   }
   .nes-container--scrollable .nes-container__content::-webkit-scrollbar-thumb {
-    background: var(--console-primary, #E52521);
-    border: 2px solid #FCFCFC;
+    background: var(--console-primary, #e52521);
+    border: 2px solid #fcfcfc;
   }
-  /* Footer */
+/* Footer */ {}
   .nes-container__footer {
     padding: 8px 16px;
-    border-top: 2px solid var(--console-secondary, #0084FF);
+    border-top: 2px solid var(--console-secondary, #0084ff);
     background: rgba(0, 0, 0, 0.3);
     font-size: 0.9em;
   }
-  /* Scanlines Effect */
+/* Scanlines Effect */ {}
   .nes-container__scanlines {
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 2px,
-      rgba(0, 255, 0, 0.02) 2px,
-      rgba(0, 255, 0, 0.02) 4px
+background: repeating-linear-gradient( {}
+0deg, {}
+transparent 0px, {}
+transparent 2px, {}
+rgba(0, 255, 0, 0.02) 2px, {}
+rgba(0, 255, 0, 0.02) 4px {}
     );
     pointer-events: none;
     mix-blend-mode: overlay;
   }
-  /* Corner Decorations */
+/* Corner Decorations */ {}
   .nes-container__corners {
     position: absolute;
     inset: 0;
@@ -344,7 +345,7 @@
     position: absolute;
     width: 12px;
     height: 12px;
-    border: 3px solid var(--console-tertiary, #4CAF50);
+    border: 3px solid var(--console-tertiary, #4caf50);
   }
   .nes-container__corner--tl {
     top: -3px;
@@ -370,11 +371,11 @@
     border-top: none;
     border-left: none;
   }
-  /* States */
+/* States */ {}
   .nes-container--minimized {
     height: auto !important;
   }
-  .nes-container--minimized .nes-container__content,
+.nes-container--minimized .nes-container__content, {}
   .nes-container--minimized .nes-container__footer {
     display: none;
   }
@@ -383,47 +384,47 @@
     user-select: none;
     z-index: 1001;
   }
-  /* Console Theme Adaptations */
+/* Console Theme Adaptations */ {}
   .theme-nes .nes-container {
-    --container-primary: #E52521;
-    --container-secondary: #0084FF;
-    --container-tertiary: #4CAF50;
+    --container-primary: #e52521;
+    --container-secondary: #0084ff;
+    --container-tertiary: #4caf50;
   }
   .theme-snes .nes-container {
-    --container-primary: #B266FF;
-    --container-secondary: #00C8FF;
-    --container-tertiary: #FFD700;
+    --container-primary: #b266ff;
+    --container-secondary: #00c8ff;
+    --container-tertiary: #ffd700;
   }
   .theme-n64 .nes-container {
-    --container-primary: #00AA00;
-    --container-secondary: #0055FF;
-    --container-tertiary: #FF5555;
+    --container-primary: #00aa00;
+    --container-secondary: #0055ff;
+    --container-tertiary: #ff5555;
   }
   .theme-ps1 .nes-container {
     --container-primary: #003791;
-    --container-secondary: #FF3131;
-    --container-tertiary: #00BF63;
+    --container-secondary: #ff3131;
+    --container-tertiary: #00bf63;
   }
   .theme-ps2 .nes-container {
-    --container-primary: #1B3A6B;
-    --container-secondary: #3A7BC8;
-    --container-tertiary: #67B3CC;
+    --container-primary: #1b3a6b;
+    --container-secondary: #3a7bc8;
+    --container-tertiary: #67b3cc;
   }
   .theme-legal .nes-container {
-    --container-primary: #1E293B;
+    --container-primary: #1e293b;
     --container-secondary: #334155;
-    --container-tertiary: #00FF88;
+    --container-tertiary: #00ff88;
   }
-  /* Accessibility */
+/* Accessibility */ {}
   .nes-container:focus-within {
-    outline: 2px solid var(--console-primary, #E52521);
+    outline: 2px solid var(--console-primary, #e52521);
     outline-offset: 2px;
   }
-  /* Animation for minimize/maximize */
+/* Animation for minimize/maximize */ {}
   .nes-container {
     transition: height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  /* Responsive Design */
+/* Responsive Design */ {}
   @media (max-width: 768px) {
     .nes-container--dialog {
       position: fixed;
@@ -434,7 +435,7 @@
       width: calc(100% - 40px);
       height: calc(100% - 40px);
     }
-    .nes-container--large,
+.nes-container--large, {}
     .nes-container--medium {
       min-width: unset;
       width: 100%;
@@ -443,7 +444,7 @@
       font-size: 1em;
     }
   }
-  /* High Contrast Mode */
+/* High Contrast Mode */ {}
   @media (prefers-contrast: high) {
     .nes-container {
       border-width: 4px;
@@ -452,9 +453,9 @@
       display: none;
     }
   }
-  /* Reduced Motion */
+/* Reduced Motion */ {}
   @media (prefers-reduced-motion: reduce) {
-    .nes-container,
+.nes-container, {}
     .nes-container__control {
       transition: none;
     }

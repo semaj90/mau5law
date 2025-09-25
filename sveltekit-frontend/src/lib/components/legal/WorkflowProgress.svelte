@@ -5,16 +5,10 @@ Visual progress indicator for the Evidence Chain of Custody workflow
 <script lang="ts">
   interface Props {
     progress: number;
-    stage: string
+    stage: string;
     stageName: string;
   }
-  let { progress,
-    stage,
-    stageName
-   }: { progress,
-    stage,
-    stageName
-  : unknown } = $props();
+  let { progress, stage, stageName }: { progress; stage; stageName: unknown } = $props();
   import { Progress } from '$lib/components/ui/progress';
   import { CheckCircle, Clock, AlertCircle } from 'lucide-svelte';
   // Define workflow stages
@@ -27,12 +21,16 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     { id: 'custody-transfer', name: 'Custody Transfer', description: 'Transferring custody' },
     { id: 'awaiting-approval', name: 'Awaiting Approval', description: 'Waiting for supervisor approval' },
     { id: 'finalization', name: 'Finalization', description: 'Finalizing custody workflow' },
-    { id: 'completed', name: 'Completed', description: 'Workflow completed successfully' }
+    { id: 'completed', name: 'Completed', description: 'Workflow completed successfully' },
   ];
   function getStageIndex(stageId: string): number {
     return workflowStages.findIndex(s => s.id === stageId);
   }
-  function getStageStatus(stageId: string, currentStage: string, currentProgress: number): 'completed' | 'current' | 'pending' {
+  function getStageStatus(
+    stageId: string,
+    currentStage: string,
+    currentProgress: number,
+  ): 'completed' | 'current' | 'pending' {
     const currentIndex = getStageIndex(currentStage);
     const stageIndex = getStageIndex(stageId);
     if (stageIndex < currentIndex) return 'completed';
@@ -86,6 +84,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     }
   }
 </script>
+
 <div class="workflow-progress bg-white border border-gray-200 rounded-lg p-6">
   <!-- Overall Progress -->
   <div class="mb-8">
@@ -136,21 +135,23 @@ Visual progress indicator for the Evidence Chain of Custody workflow
             {@const SvelteComponent = getStageIcon(status)}
             <div class="flex flex-col items-center">
               <!-- Stage Circle -->
-              <div class={`
+              <div
+                class={`
                 w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300
                 ${getStageColor(status)}
                 ${status === 'current' ? 'animate-pulse' : ''}
-              `}>
-                <SvelteComponent
-                  class="w-5 h-5"
-                />
+              `}
+              >
+                <SvelteComponent class="w-5 h-5" />
               </div>
               <!-- Stage Info -->
               <div class="mt-3 text-center max-w-20">
-                <div class={`
+                <div
+                  class={`
                   text-xs font-medium mb-1
                   ${status === 'current' ? 'text-blue-600' : status === 'completed' ? 'text-green-600' : 'text-gray-500'}
-                `}>
+                `}
+                >
                   {stageItem.name}
                 </div>
                 <!-- Mini Progress Bar for Current Stage -->
@@ -185,21 +186,23 @@ Visual progress indicator for the Evidence Chain of Custody workflow
             ></div>
           {/if}
           <!-- Stage Circle -->
-          <div class={`
+          <div
+            class={`
             relative z-10 w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300
             ${getStageColor(status)}
             ${status === 'current' ? 'animate-pulse' : ''}
-          `}>
-            <SvelteComponent_1
-              class="w-5 h-5"
-            />
+          `}
+          >
+            <SvelteComponent_1 class="w-5 h-5" />
           </div>
           <!-- Stage Content -->
           <div class="flex-1 pb-4">
-            <div class={`
+            <div
+              class={`
               font-medium mb-1
               ${status === 'current' ? 'text-blue-600' : status === 'completed' ? 'text-green-600' : 'text-gray-500'}
-            `}>
+            `}
+            >
               {stageItem.name}
             </div>
             <p class="text-sm text-gray-600 mb-2">{stageItem.description}</p>
@@ -220,6 +223,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     </div>
   </div>
 </div>
+
 <style>
   .workflow-progress {
     animation: fadeInUp 0.5s ease-out;

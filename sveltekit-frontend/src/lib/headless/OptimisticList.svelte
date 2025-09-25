@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
   export interface Item<T = any> {
     id: string;
     __optimistic?: boolean;
@@ -24,22 +24,20 @@
     error = null,
     empty,
     item,
-    loadingItem
+    loadingItem,
   }: OptimisticListProps = $props();
   // Merge items with optimistic updates, avoiding duplicates
-  let merged = $derived([
-    ...items,
-    ...optimistic.filter(o => !items.some(i => i[keyField] === o[keyField]))
-  ]);
+  let merged = $derived([...items, ...optimistic.filter(o => !items.some(i => i[keyField] === o[keyField]))]);
   // Track which items are optimistic
   let itemsWithMetadata = $derived(
     merged.map((item, index) => ({
       item,
       index,
-      isOptimistic: !!(item as { __optimistic?: unknownn }).__optimistic || optimistic.includes(item)
-    }))
+      isOptimistic: !!(item as { __optimistic?: unknownn }).__optimistic || optimistic.includes(item),
+    })),
   );
 </script>
+
 <div class="optimistic-list">
   {#if error}
     <div class="optimistic-list__error" role="alert">
@@ -99,6 +97,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .optimistic-list {
     display: flex;
@@ -121,12 +120,12 @@
   .error-message {
     font-weight: 500;
   }
-  .optimistic-list__loading,
+.optimistic-list__loading, {}
   .optimistic-list__empty {
     padding: 2rem;
     text-align: center;
   }
-  .loading-placeholder,
+.loading-placeholder, {}
   .empty-placeholder {
     display: flex;
     flex-direction: column;
@@ -191,7 +190,8 @@
     }
   }
   @keyframes optimisticPulse {
-    0%, 100% {
+0%, {}
+    100% {
       background-color: rgba(59, 130, 246, 0.05);
     }
     50% {

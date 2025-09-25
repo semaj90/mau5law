@@ -23,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
   let showSuccess = $state(false);
   let errorMessage = $state('');
   // Handle form submission success
-  function handleFormSuccess(event: CustomEvent) {
+  function handleFormSuccess(_event: CustomEvent) {
     const { caseItem: newCase } = event.detail;
     showSuccess = true;
     toast.success(`Case ${newCase.caseNumber} created successfully!`);
@@ -33,16 +33,16 @@ https://svelte.dev/e/js_parse_error -->
     }, 2000);
   }
   // Handle form submission error
-  function handleFormError(event: CustomEvent) {
+  function handleFormError(_event: CustomEvent) {
     errorMessage = event.detail.messag;
     toast.error(event.detail.message);
   }
   // Handle draft save
-  function handleDraftSave(event: CustomEvent) {
+  function handleDraftSave(_event: CustomEvent) {
     toast.info('Draft saved successfully');
   }
   // Handle form submission
-  function handleFormSubmit(event: CustomEvent) {
+  function handleFormSubmit(_event: CustomEvent) {
     isSubmitting = true;
     errorMessage = '';
   }

@@ -1,7 +1,7 @@
 export type CacheEntry<T> = {
   value: T;
   expiresAt?: number; // epoch ms
-};
+}
 export default class MultiTierCache<T = unknown> {
   private memory = new Map<string, CacheEntry<T>();
   private memoryLimit: number;
@@ -25,10 +25,10 @@ export default class MultiTierCache<T = unknown> {
 	  this.memory.delete(firstKey);
 	}
   }
-  private storageKey(key: string) {
+  private storageKey(_key: string) {
 	return `${this.storagePrefix}${key}`;
   }
-  private saveToStorage(key: string, entry: CacheEntry<T> | undefined) {
+  private saveToStorage(_key: string, entry: CacheEntry<T> | undefined) {
 	if (typeof window === 'undefined' || !window.localStorage) return;
 	try {
 	  const sKey = this.storageKey(key);
@@ -41,7 +41,7 @@ export default class MultiTierCache<T = unknown> {
 	  // ignore storage errors (quota, private mode, etc.)
 	}
   }
-  private loadFromStorage(key: string): CacheEntry<T> | undefined {
+  private loadFromStorage(_key: string): CacheEntry<T> | undefined {
 	if (typeof window === 'undefined' || !window.localStorage) return undefined;
 	try {
 	  const s = window.localStorage.getItem(this.storageKey(key);
@@ -52,7 +52,7 @@ export default class MultiTierCache<T = unknown> {
 	  return undefined;
 	}
   }
-  async get(key: string): Promise<T | undefined> {
+  async get(_key: string): Promise<T | undefined> {
 	// Try memory
 	const mem = this.memory.get(key);
 	if (mem) {
@@ -78,11 +78,11 @@ export default class MultiTierCache<T = unknown> {
 	this.trimMemory();
 	return stored.value;
   }
-  async set(key: string, value: T, ttlMs?: number): Promise<void> {
+  async set(_key: string, value: T, ttlMs?: number): Promise<void> {
 	const entry: CacheEntry<T> = {
 	  value,
 	  expiresAt: typeof ttlMs === 'number' ? this.now() + ttlMs : undefined
-	};
+	}
 	// set in memory (LRU)
 	if (this.memory.has(key)) this.memory.delete(key);
 	this.memory.set(key, entry);
@@ -90,11 +90,11 @@ export default class MultiTierCache<T = unknown> {
 	// persist
 	this.saveToStorage(key, entry);
   }
-  async del(key: string): Promise<void> {
+  async del(_key: string): Promise<void> {
 	this.memory.delete(key);
 	this.saveToStorage(key, undefined);
   }
-  async has(key: string): Promise<boolean> {
+  async has(_key: string): Promise<boolean> {
 	const mem = this.memory.get(key);
 	if (mem) {
 	  if (this.isExpired(mem)) {

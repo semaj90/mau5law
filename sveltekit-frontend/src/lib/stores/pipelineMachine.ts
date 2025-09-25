@@ -12,7 +12,7 @@ interface Ctx {
 type Ev =
   | { type: 'START'; req: PipelineRequest }
   | { type: 'CHUNK_EMBED_DONE'; result: EmbedResult }
-  | { type: 'FAIL'; error: string };
+  | { type: 'FAIL'; error: string }
 export const pipelineMachine = createMachine<Ctx, Ev>({
   id: 'pipeline',
   initial: 'idle',

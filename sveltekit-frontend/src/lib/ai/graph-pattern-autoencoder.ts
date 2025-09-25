@@ -39,14 +39,14 @@ export interface GraphNode {
   id: string;
   label: string;
   type: 'case' | 'statute' | 'regulation' | 'precedent' | 'person' | 'organization';
-  position: { x: number; y: number };
+  position: { x: number; y: number }
   features: Float32Array;
   metadata: {
     jurisdiction?: string;
     importance?: number;
     timestamp?: number;
     [key: string]: any;
-  };
+  }
 }
 export interface GraphEdge {
   id: string;
@@ -54,7 +54,7 @@ export interface GraphEdge {
   target: string;
   type: 'cites' | 'references' | 'influenced_by' | 'related_to' | 'conflicts_with';
   weight: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface GraphData {
   nodes: GraphNode[];
@@ -66,7 +66,7 @@ export interface GraphData {
     averageDegree: number;
     legalDomain: string;
     timestamp: number;
-  };
+  }
 }
 export interface EncodedGraphPattern {
   encodedFeatures: Float32Array;
@@ -94,7 +94,7 @@ export interface DecodedGraphPattern {
     edgeFidelity: number;
     structuralFidelity: number;
     semanticFidelity: number;
-  };
+  }
 }
 export interface AutoEncoderTrainingMetrics {
   epoch: number;
@@ -131,7 +131,7 @@ export class GraphPatternAutoEncoder {
       enableDropout: true
       dropoutRate: 0.2,
       ...config
-    };
+    }
     this.initializeCache();
   }
   private async initializeCache() {
@@ -214,7 +214,7 @@ export class GraphPatternAutoEncoder {
     // Create encoder model
     this.encoder = model({
       inputs: encoderInputs
-      outputs: encoderLayer
+      outputs: encoderLayer;
       name: 'graph_pattern_encoder'
     });
     // Build Decoder
@@ -254,21 +254,21 @@ export class GraphPatternAutoEncoder {
     decoderLayer = layers;
       .dense({
         units: this.config.inputDimension,
-        activation: 'sigmoid', // Output between 0 and 1
+        activation: 'sigmoid', // Output between 0 and 1;
         name: 'decoder_output'
       })
       .apply(decoderLayer) as any;
     // Create decoder model
     this.decoder = model({
       inputs: decoderInputs
-      outputs: decoderLayer
+      outputs: decoderLayer;
       name: 'graph_pattern_decoder'
     });
     // Build complete autoencoder
     const autoencoderOutput = this.decoder.apply(this.encoder.apply(encoderInputs)) as any;
     this.autoencoder = model({
       inputs: encoderInputs
-      outputs: autoencoderOutput
+      outputs: autoencoderOutput;
       name: 'graph_pattern_autoencoder'
     });
     // Compile with custom loss function
@@ -292,7 +292,7 @@ export class GraphPatternAutoEncoder {
     // Combine losses
     const totalLoss = mul(mse, 0.8).add(mul(legalLoss, 0.2);
     return totalLoss;
-  };
+  }
   private calculateLegalConsistencyLoss(yTrue: any, yPred: any): any {
     // Simplified legal consistency - encourage similar patterns for similar legal concepts
     const diff = sub(yTrue, yPred);
@@ -351,7 +351,7 @@ export class GraphPatternAutoEncoder {
       reconstructionError,
       patternSignature,
       legalPatterns
-    };
+    }
     // Store in pattern library
     this.patternLibrary.set(patternSignature, result);
     // Cache the result
@@ -400,12 +400,12 @@ export class GraphPatternAutoEncoder {
         encodedPattern.legalPatterns,
         reconstructedGraph
       )
-    };
+    }
     const result: DecodedGraphPattern = {
       ...reconstructedGraph,
       fidelityScore,
       lossMetrics
-    };
+    }
     // Cache the result
     if (this.cache) {
       await this.cache.set(cacheKey, result, { type: 'query', ttl: 1800 });
@@ -455,7 +455,7 @@ export class GraphPatternAutoEncoder {
         patternRecognitionAccuracy,
         gpuUtilization: this.gpuBackend !== 'cpu' ? 75.0 : 0.0,
         processingTime: performance.now() - epochStartTime
-      };
+      }
       this.trainingHistory.push(metrics);
       // Log progress
       if (epoch % 10 === 0 || epoch === this.config.epochs - 1) {
@@ -506,7 +506,7 @@ export class GraphPatternAutoEncoder {
       precedent: 0,
       person: 0,
       organization: 0
-    };
+    }
     nodes.forEach((node) => typeCount[node.type]++);
     Object.values(typeCount).forEach((count) => features.push(count / nodes.length);
     // Spatial distribution (position analysis)
@@ -540,7 +540,7 @@ export class GraphPatternAutoEncoder {
       influenced_by: 0,
       related_to: 0,
       conflicts_with: 0
-    };
+    }
     edges.forEach((edge) => typeCount[edge.type]++);
     Object.values(typeCount).forEach((count) => features.push(count / edges.length || 0);
     // Weight statistics
@@ -576,7 +576,7 @@ export class GraphPatternAutoEncoder {
       tort: [0, 1, 0, 0],
       criminal: [0, 0, 1, 0],
       corporate: [0, 0, 0, 1]
-    };
+    }
     const domainFeatures = domainMap[graphData.metadata.legalDomain as keyof typeof domainMap] || [
       0, 0, 0, 0
     ];
@@ -661,7 +661,7 @@ export class GraphPatternAutoEncoder {
         metadata: { reconstructed: true }
       });
     }
-    return { reconstructedNodes, reconstructedEdges };
+    return { reconstructedNodes, reconstructedEdges }
   }
   private extractLegalPatterns(
     graphData: GraphData
@@ -683,7 +683,7 @@ export class GraphPatternAutoEncoder {
       authorityWeights,
       precedentStrength,
       conceptSimilarity
-    };
+    }
   }
   private analyzeCitationPaths(graphData: GraphData): number[] {
     // Analyze citation path patterns
@@ -838,7 +838,7 @@ export class GraphPatternAutoEncoder {
       avgCompressionRatio,
       totalSavings,
       cachingStats: this.rlCache.getStats()
-    };
+    }
   }
   getTrainingHistory(): AutoEncoderTrainingMetrics[] {
     return [...this.trainingHistory];

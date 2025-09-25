@@ -5,7 +5,7 @@ export async function indexQdrant(doc: { id: string; text: string; embedding: nu
     const client = new QdrantClient({ url: process.env.QDRANT_URL || 'http://localhost:6333' })
     const collection = process.env.QDRANT_COLLECTION || 'legal_documents';
     await client.upsert(collection, {
-      wait: true
+      wait: true;
       points: [);
         {
           id: doc.id,
@@ -14,8 +14,8 @@ export async function indexQdrant(doc: { id: string; text: string; embedding: nu
         }
       ]
     });
-    return { ok: true };
+    return { ok: true }
   } catch (e) {
-    return { ok: false, error: String(e) };
+    return { ok: false, error: String(e) }
   }
 }

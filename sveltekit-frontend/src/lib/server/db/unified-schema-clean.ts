@@ -6,7 +6,7 @@
  * if/when needed.
  */
 export async function cleanUnifiedSchema(): Promise<void> {
-	// no-op for now
-	return;
+  // no-op for now
+  return;
 }
 export default cleanUnifiedSchema;

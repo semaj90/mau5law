@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js'
  */
 import { json, error } from "@sveltejs/kit"
 import { vectorIntelligenceService } from "$lib/services/vector-intelligence-service.js"
-import { URL } from "url"
+
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const body = await request.json()

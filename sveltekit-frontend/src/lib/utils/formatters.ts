@@ -8,7 +8,7 @@ export function formatTimestamp(date: Date | string, options?: {
   style?: 'relative' | 'absolute' | 'smart';
   includeTime?: boolean;
 }): string {
-  const { style = 'smart', includeTime = false } = options || {};
+  const { style = 'smart', includeTime = false } = options || {}
   const targetDate = typeof date === 'string' ? new Date(date) : date;
   const now = new Date();
   const diff = now.getTime() - targetDate.getTime();
@@ -62,7 +62,7 @@ export function truncateText(text: string, options?: {
     wordBoundary = true,
     suffix = '...',
     preserveWords = true
-  } = options || {};
+  } = options || {}
   if (text.length <= maxLength) return text;
   let truncated = text.slice(0, maxLength - suffix.length);
   if (wordBoundary && preserveWords) {
@@ -78,7 +78,7 @@ export function truncateText(text: string, options?: {
 export function extractTitle(content: string, fallback: string = 'Untitled'): string {
   if (!content) return fallback;
   // Try to extract first meaningful line
-  const lines = content.split('\n').map(line => line.trim()).filter(Boolean);
+  // removed unused lines assignment
   if (lines.length === 0) return fallback;
   const firstLine = lines[0];
   // If first line looks like a title (short, no periods except end)
@@ -129,7 +129,7 @@ export function formatPriority(priority: string): {
       bgColor: 'bg-red-100',
       icon: '●'
     }
-  };
+  }
   return priorityMap[priority as keyof typeof priorityMap] || priorityMap.low;
 }
 // Status formatting
@@ -163,14 +163,14 @@ export function formatStatus(status: string, type: 'case' | 'evidence' | 'report
       referenced: { label: 'Referenced', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '🔗' },
       archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '📚' }
     }
-  };
+  }
   const map = statusMaps[type];
   return map[status as keyof typeof map] || {
     label: status.replace('_', ' '),
     color: 'text-gray-500',
     bgColor: 'bg-gray-100',
     icon: '○'
-  };
+  }
 }
 // Entity type formatting
 export function formatEntityType(type: string): {
@@ -189,12 +189,12 @@ export function formatEntityType(type: string): {
     audio: { label: 'Audio', icon: '🎵', color: 'text-indigo-600' },
     physical: { label: 'Physical', icon: '📦', color: 'text-orange-600' },
     digital: { label: 'Digital', icon: '💾', color: 'text-cyan-600' }
-  };
+  }
   return typeMap[type as keyof typeof typeMap] || {
     label: type.charAt(0).toUpperCase() + type.slice(1),
     icon: '📄',
     color: 'text-gray-600'
-  };
+  }
 }
 // Search highlighting
 export function highlightSearchTerm(text: string, searchTerm: string): string {
@@ -208,7 +208,7 @@ export function calculateProgress(completed: number, total: number): {
   label: string;
   color: string;
 } {
-  if (total === 0) return { percentage: 0, label: '0%', color: 'bg-gray-200' };
+  if (total === 0) return { percentage: 0, label: '0%', color: 'bg-gray-200' }
   const percentage = Math.round((completed / total) * 100);
   let color = 'bg-gray-200';
   if (percentage >= 100) color = 'bg-green-500';
@@ -220,7 +220,7 @@ export function calculateProgress(completed: number, total: number): {
     percentage,
     label: `${percentage}%`,
     color
-  };
+  }
 }
 // User role formatting
 export function formatUserRole(role: string): {
@@ -260,13 +260,13 @@ export function formatUserRole(role: string): {
       bgColor: 'bg-gray-100',
       icon: '👁️'
     }
-  };
+  }
   return roleMap[role as keyof typeof roleMap] || {
     label: role.charAt(0).toUpperCase() + role.slice(1),
     color: 'text-gray-600',
     bgColor: 'bg-gray-100',
     icon: '👤'
-  };
+  }
 }
 // Activity type formatting
 export function formatActivityType(type: string): {
@@ -283,12 +283,12 @@ export function formatActivityType(type: string): {
     citation_added: { label: 'Citation Added', icon: '⚖️', color: 'text-amber-600' },
     ai_analysis: { label: 'AI Analysis', icon: '🤖', color: 'text-indigo-600' },
     system_update: { label: 'System Update', icon: '⚙️', color: 'text-gray-600' }
-  };
+  }
   return activityMap[type as keyof typeof activityMap] || {
     label: type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
     icon: '📝',
     color: 'text-gray-600'
-  };
+  }
 }
 // Content preview extraction
 export function extractPreview(content: string, maxLength: number = 100): string {
@@ -322,7 +322,7 @@ export function formatJurisdiction(jurisdiction: string): string {
     'ga': 'Georgia',
     'nc': 'North Carolina',
     'mi': 'Michigan'
-  };
+  }
   return jurisdictionMap[jurisdiction.toLowerCase()] ||
          jurisdiction.charAt(0).toUpperCase() + jurisdiction.slice(1);
 }
@@ -336,14 +336,14 @@ export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
 }
 // Debounce function for search
 export function debounce<T extends (...args: any[]) => any>(,
-  func: T
+  func: T;
   wait: number
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
-  };
+  }
 }
 // Generate initials from name
 export function getInitials(name: string): string {

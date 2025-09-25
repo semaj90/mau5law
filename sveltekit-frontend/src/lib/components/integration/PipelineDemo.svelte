@@ -123,7 +123,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       averageTime: results.length > 0 ? totalTime / results.length: 0,
       successRate: results.length > 0 ? (successful / results.length) * 100 : 0,
       lastUpdate: new Date()
-    };
+    }
   }
   // Cleanup resources
   async function cleanup() {
@@ -187,7 +187,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
         <div>
           <label class="block text-sm font-medium mb-2" for="cache-key">Cache Key</label><input id="cache-key"
-            type="text"
+            type="text";
             bind:value={cacheKey}
             class="w-full p-2 border rounded-md"
             placeholder="Enter cache key..."

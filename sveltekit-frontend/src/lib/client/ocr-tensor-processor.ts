@@ -25,7 +25,7 @@ export interface TensorData {
     processed_at: number;
     tensor_id: string;
     confidence: number;
-  };
+  }
 }
 export interface ProcessingResult {
   ocr: OCRResult;
@@ -149,7 +149,7 @@ export class OCRTensorProcessor {
         searchIndex,
         processingTime: totalTime
         cacheHit: embeddingResult.fromCache
-      };
+      }
     } catch (error) {
       console.error('OCR Tensor processing failed:', error);
       throw error;
@@ -180,7 +180,7 @@ export class OCRTensorProcessor {
           bbox: word.bbox,
           confidence: word.confidence
         })
-      };
+      }
       console.log('📝 OCR completed:', {
         textLength: ocrResult.text.length,
         confidence: ocrResult.confidence,
@@ -203,7 +203,7 @@ export class OCRTensorProcessor {
           tessjs_create_pdf: false
           tessjs_create_hocr: false
           tessjs_create_tsv: false
-        };
+        }
       case 'medium':
         // 16-bit SNES level optimization
         return {
@@ -212,7 +212,7 @@ export class OCRTensorProcessor {
           tessjs_create_pdf: false
           tessjs_create_hocr: true
           tessjs_create_tsv: false
-        };
+        }
       case 'high':
         // N64 level optimization with DNN LOD system
         return {
@@ -221,9 +221,9 @@ export class OCRTensorProcessor {
           tessjs_create_pdf: true
           tessjs_create_hocr: true
           tessjs_create_tsv: true
-        };
+        }
       default:
-        return {};
+        return {}
     }
   }
   private async selectOptimalModel(): Promise<any> {
@@ -246,7 +246,7 @@ export class OCRTensorProcessor {
           useCrewAI: false
           parallelism: 4,                     // 4 parallel requests to prevent OOM
           cacheSize: 128                      // 128MB cache for fast responses
-        };
+        }
       }
       // Determine model based on available GPU memory
       if (availableMemory > 2048) { // 2GB+ GPU memory
@@ -256,7 +256,7 @@ export class OCRTensorProcessor {
           useCrewAI: false
           parallelism: 8,                     // High parallelism for powerful GPU
           cacheSize: 512                      // Large cache for complex models
-        };
+        }
       } else if (availableMemory > 1024) { // 1GB+ GPU memory
         return {
           model: 'gemma:270m',                // Gemma 270MB optimal for this range
@@ -264,7 +264,7 @@ export class OCRTensorProcessor {
           useCrewAI: false
           parallelism: 6,                     // Balanced parallelism
           cacheSize: 256                      // Medium cache size
-        };
+        }
       } else if (availableMemory > 512) { // 512MB+ GPU memory
         return {
           model: 'gemma:270m',                // Still use 270MB - it fits with cache
@@ -272,7 +272,7 @@ export class OCRTensorProcessor {
           useCrewAI: false
           parallelism: 3,                     // Conservative parallelism
           cacheSize: 128                      // Smaller cache to prevent OOM
-        };
+        }
       } else {
         // Very low GPU memory - use lightweight model with CrewAI fallback
         return {
@@ -281,7 +281,7 @@ export class OCRTensorProcessor {
           useCrewAI: true
           parallelism: 2,                     // Minimal parallelism
           cacheSize: 64                       // Small cache
-        };
+        }
       }
     } catch (error) {
       console.warn('Failed to check Ollama status, using Gemma 270MB fallback:', error);
@@ -292,7 +292,7 @@ export class OCRTensorProcessor {
         useCrewAI: true
         parallelism: 4,                       // Safe parallelism level
         cacheSize: 128                        // Safe cache size for 270MB model
-      };
+      }
     }
   }
   private async generateEmbeddings(text: string): Promise<any> {
@@ -324,7 +324,7 @@ export class OCRTensorProcessor {
         embeddings: new Float32Array((data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).embedding),
         fromCache: (data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).fromCache || false,
         model: data?.model || "unknown" // @ts-ignore - Model property access
-      };
+      }
     } catch (error) {
       console.error('Embedding generation failed:', error);
       throw error;
@@ -342,7 +342,7 @@ export class OCRTensorProcessor {
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           confidence: 0.8
         }
-      };
+      }
     }
     try {
       // Get SIMD parsing shader
@@ -379,7 +379,7 @@ export class OCRTensorProcessor {
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           confidence: 0.9
         }
-      };
+      }
     } catch (error) {
       console.warn('WebGPU tensor processing failed, using CPU fallback:', error);
       return {
@@ -391,7 +391,7 @@ export class OCRTensorProcessor {
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           confidence: 0.8
         }
-      };
+      }
     }
   }
   private async createSearchIndex(tensorData: TensorData): Promise<Float32Array> {
@@ -484,7 +484,7 @@ export class OCRTensorProcessor {
         reject(new Error('Web Worker not available');
         return;
       }
-      const messageHandler = (event: MessageEvent) => {
+      const messageHandler = (_event: MessageEvent) => {
         if (event.data.type === 'ocr-result') {
           this.worker!.removeEventListener('message', messageHandler);
           resolve(event.data.result);
@@ -492,7 +492,7 @@ export class OCRTensorProcessor {
           this.worker!.removeEventListener('message', messageHandler);
           reject(new Error(event.data.error);
         }
-      };
+      }
       this.worker.addEventListener('message', messageHandler);
       // Send processing task to worker
       this.worker.postMessage({

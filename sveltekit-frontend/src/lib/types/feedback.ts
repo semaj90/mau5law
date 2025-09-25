@@ -24,7 +24,7 @@ export interface SessionContext {
   viewport: {
     width: number;
     height: number;
-  };
+  }
   [key: string]: any;
 }
 export interface FeedbackTrigger {
@@ -43,7 +43,7 @@ export interface FeedbackAnalytics {
   trends?: {
     daily: { date: string; rating: number; count: number }[];
     weekly: { week: string; rating: number; count: number }[];
-  };
+  }
 }
 export interface UserFeedbackContext {
   userId: string;
@@ -69,7 +69,7 @@ export interface FeedbackRecommendation {
   action?: {
     type: 'navigate' | 'highlight' | 'modal';
     target: string;
-  };
+  }
 }
 // Database schema types
 export interface UserRating {
@@ -82,8 +82,8 @@ export interface UserRating {
   feedback?: string;
   queryEmbedding?: number[];
   responseEmbedding?: number[];
-  context: { [key: string]: any };
-  metadata: { [key: string]: any };
+  context: { [key: string]: any }
+  metadata: { [key: string]: any }
   timestamp: Date;
 }
 export interface UserInteractionPattern {
@@ -94,7 +94,7 @@ export interface UserInteractionPattern {
   avgRating: number;
   contextHash: string;
   embedding?: number[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   firstSeen: Date;
   lastSeen: Date;
 }
@@ -106,7 +106,7 @@ export interface FeedbackInsight {
   confidence: number;
   userSegment: string;
   embedding?: number[];
-  metrics: { [key: string]: any };
+  metrics: { [key: string]: any }
   recommendations: string[];
   createdAt: Date;
 }
@@ -115,7 +115,7 @@ export interface FeedbackWidgetProps {
   interactionId: string;
   sessionId: string;
   userId: string;
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
   show: boolean;
   ratingType?: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance';
   onSubmitted?: (data: { rating: number; feedback?: string; interactionId: string }) => void;
@@ -133,14 +133,14 @@ export interface FeedbackBatchResponse extends FeedbackAPIResponse {
     processed: number;
     failed: number;
     insights: FeedbackInsight[];
-  };
+  }
 }
 export interface RecommendationsResponse extends FeedbackAPIResponse {
   data: {
     recommendations: FeedbackRecommendation[];
     metrics: FeedbackMetrics;
     insights: string[];
-  };
+  }
 }
 export interface AnalyticsResponse extends FeedbackAPIResponse {
   data: {
@@ -149,7 +149,7 @@ export interface AnalyticsResponse extends FeedbackAPIResponse {
       averageRating: number;
       completionRate: number;
       trendDirection: 'up' | 'down' | 'stable';
-    };
+    }
     breakdown: {
       ratingType: string;
       count: number;
@@ -158,7 +158,7 @@ export interface AnalyticsResponse extends FeedbackAPIResponse {
     }[];
     insights: FeedbackInsight[];
     recommendations: FeedbackRecommendation[];
-  };
+  }
 }
 // Events
 export interface FeedbackSubmittedEvent {

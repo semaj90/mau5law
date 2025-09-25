@@ -3,7 +3,7 @@ export type QuantizationLevel = 'float32' | 'int8' | 'int4' | 'binary';
 export interface VectorProcessingConfig {
   dimensions: number;
   batchSize: number;
-  memoryBudget: { total: number };
+  memoryBudget: { total: number }
   quantization: QuantizationLevel;
   fallbackToWebGL?: boolean;
 }
@@ -70,8 +70,8 @@ export class GpuVectorProcessor {
     if (this.webglProgCache.has(dim)) return this.webglProgCache.get(dim)!;
     const gl = this.gl;
     const vec4Count = Math.ceil(dim / 4);
-    const attribDecl = Array.from({ length: vec4Count }, (_, i) => `in vec4 a_in${i};`).join('\n');
-    const varyingDecl = Array.from({ length: vec4Count }, (_, i) => `out vec4 v_out${i};`).join(
+    const attribDecl = Array.from({ length: vec4Count }, (_, i) => `in vec4 a_in${i}`).join('\n');
+    const varyingDecl = Array.from({ length: vec4Count }, (_, i) => `out vec4 v_out${i}`).join(
       '\n'
     );
     const assigns = Array.from()
@@ -107,7 +107,7 @@ export class GpuVectorProcessor {
       type: 'gpu.vector.process.start',
       meta: { operation: 'compile_program', duration: took, dimension: dim, vec4Count }
     });
-    const rec = { program: prog, vao, attribCount: vec4Count };
+    const rec = { program: prog, vao, attribCount: vec4Count }
     this.webglProgCache.set(dim, rec);
     return rec;
   }
@@ -151,10 +151,10 @@ export class GpuVectorProcessor {
         packed[i * vec4Count * 4 + j] = src[j] ?? 0;
       }
     }
-    return { packed, vec4Count };
+    return { packed, vec4Count }
   }
   private async executeWebGL2TransformFeedback(
-    vectors: Float32Array[]
+    vectors: Float32Array[];
     dim: number;
   ): Promise<Float32Array[]> {
     if (!this.gl) throw new Error('webgl2-not-init');
@@ -229,7 +229,7 @@ export class GpuVectorProcessor {
           setupMs: tSetup
           execMs: tExec
           readMs: tRead
-          dimension: dim
+          dimension: dim;
           count: vectors.length,
           vec4Count,
           buffersReused: true
@@ -244,7 +244,7 @@ export class GpuVectorProcessor {
           operation: 'transform_feedback',
           duration: totalTime
           error: (error as Error).message,
-          dimension: dim
+          dimension: dim;
           count: vectors.length
         }
       });
@@ -280,7 +280,7 @@ export class GpuVectorProcessor {
       quantizationApplied: this.config.quantization,
       gpuUtilization: Math.min(100, (memoryUsed / this.config.memoryBudget.total) * 100),
       cacheHitRate: 0.95, // placeholder
-    };
+    }
   }
   cleanup() {
     if (this.gl) {

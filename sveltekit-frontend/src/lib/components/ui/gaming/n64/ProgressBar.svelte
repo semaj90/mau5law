@@ -96,7 +96,7 @@
     enableMipMapping,
     enableFog,
     ...renderOptions
-  };
+  }
   // Derived values
   let normalizedValue = $derived(Math.min(Math.max(value, 0), max));
   let progressPercentage = $derived((normalizedValue / max) * 100);
@@ -139,7 +139,7 @@
     } catch (error) {
       console.warn('Could not play progress sound:', error);
     }
-  };
+  }
   const playCompletionSound = async () => {
     if (!enableSpatialAudio) return;
     try {
@@ -177,7 +177,7 @@
     } catch (error) {
       console.warn('Could not play completion sound:', error);
     }
-  };
+  }
   // Smooth animation of progress value
   const animateProgress = () => {
     if (animatedValue === progressPercentage) {
@@ -195,7 +195,7 @@
     } else {
       animationFrameId = requestAnimationFrame(animateProgress);
     }
-  };
+  }
   // Watch for value changes and animate
   $effect(() => {
     if (previousValue !== normalizedValue) {
@@ -215,7 +215,7 @@
       warning: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00', track: '#744210' },
       error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333', track: '#742a2a' },
       info: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496', track: '#2a4365' }
-    };
+    }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     // Dynamic color intensity based on progress
     const intensity = 0.3 + (progress / 100) * 0.7;
@@ -259,18 +259,18 @@
           0 0 0 1px rgba(255,255,255,${0.1 * intensity})
         `
       }
-    };
+    }
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
-  };
+  }
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { height: '16px', fontSize: '12px', borderRadius: '8px' },
       medium: { height: '24px', fontSize: '14px', borderRadius: '12px' },
       large: { height: '32px', fontSize: '16px', borderRadius: '16px' },
       xl: { height: '40px', fontSize: '18px', borderRadius: '20px' }
-    };
+    }
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
-  };
+  }
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
@@ -292,7 +292,7 @@
       classes.push('anisotropic-4x');
     }
     return classes.join(' ');
-  };
+  }
   let sizeStyles = $derived(getSizeStyles(size));
   let materialStyles = $derived(getMaterialStyles(variant, materialType, animatedValue));
   $effect(() => {
@@ -301,7 +301,7 @@
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
-    };
+    }
   });
 </script>
 <div class="n64-progress-container {className}">
@@ -318,22 +318,22 @@
   {/if}
   <div
     bind:this={progressElement}
-    class="n64-progress {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
+    class="n64-progress {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}";
     class: indeterminat;
     class:complete={isComplete}
     class:animating={isAnimating}
     class:disabled
-    style="
-      --track-bg: {materialStyles.trackBackground};
-      --bar-bg: {materialStyles.barBackground};
-      --bar-shadow: {materialStyles.barShadow};
-      --progress-height: {sizeStyles.height};
-      --progress-border-radius: {sizeStyles.borderRadius};
-      --progress-font-size: {sizeStyles.fontSize};
+    style=";
+      --track-bg: {materialStyles.trackBackground}
+      --bar-bg: {materialStyles.barBackground}
+      --bar-shadow: {materialStyles.barShadow}
+      --progress-height: {sizeStyles.height}
+      --progress-border-radius: {sizeStyles.borderRadius}
+      --progress-font-size: {sizeStyles.fontSize}
       --progress-depth: {depth}px;
       --perspective: {perspective}px;
-      --glow-intensity: {glowIntensity};
-      --fog-color: {effectiveRenderOptions.fogColor};
+      --glow-intensity: {glowIntensity}
+      --fog-color: {effectiveRenderOptions.fogColor}
       --animated-value: {animatedValue}%;
     "
     role="progressbar"

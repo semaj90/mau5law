@@ -14,12 +14,12 @@ export interface EvidenceAnalysisCache {
   userId?: string;
   caseId?: string;
   modelVersion: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface CacheKey {
   evidenceId: string;
   analysisType: string;
-  parameters?: { [key: string]: any };
+  parameters?: { [key: string]: any }
   modelVersion?: string;
 }
 class EvidenceAnalysisCacheService {
@@ -31,15 +31,14 @@ class EvidenceAnalysisCacheService {
   /**
    * Cache evidence analysis result
    */
-  async cacheAnalysisResult(
-    key: CacheKey
+  async cacheAnalysisResult(_key: CacheKey
     result: AnalysisResult
     options: {
       confidence: number;
       processingTime: number;
       userId?: string;
       caseId?: string;
-      metadata?: { [key: string]: any };
+      metadata?: { [key: string]: any }
     }
   ): Promise<void> {
     const cacheEntry: EvidenceAnalysisCache = {
@@ -53,7 +52,7 @@ class EvidenceAnalysisCacheService {
       caseId: options.caseId,
       modelVersion: key.modelVersion || 'gemma3:legal-latest',
       metadata: options.metadata || {},
-    };
+    }
     const cacheKey = this.generateCacheKey(key);
     const ttl = this.getTTLForAnalysisType(key.analysisType);
     await redisComponentStore.cacheEvidenceAnalysis(cacheKey, cacheEntry, ttl);
@@ -66,7 +65,7 @@ class EvidenceAnalysisCacheService {
   /**
    * Get cached analysis result
    */
-  async getCachedAnalysisResult(key: CacheKey): Promise<EvidenceAnalysisCache | null> {
+  async getCachedAnalysisResult(_key: CacheKey): Promise<EvidenceAnalysisCache | null> {
     const cacheKey = this.generateCacheKey(key);
     try {
       const cached = await redisComponentStore.getEvidenceAnalysis(cacheKey);
@@ -103,7 +102,7 @@ class EvidenceAnalysisCacheService {
       if (result) {
         results.set(cacheKey, result);
       }
-      return { key: cacheKey, result };
+      return { key: cacheKey, result }
     });
     await Promise.allSettled(promises);
     return results;
@@ -113,7 +112,7 @@ class EvidenceAnalysisCacheService {
    */
   async cacheSimilarityMatrix(
     evidenceIds: string[]
-    matrix: number[][]
+    matrix: number[][];
     metadata: { [key: string]: any } = {}
   ): Promise<void> {
     const key = `similarity:matrix:${evidenceIds.sort().join(':')}`;
@@ -122,7 +121,7 @@ class EvidenceAnalysisCacheService {
       matrix,
       timestamp: Date.now(),
       metadata,
-    };
+    }
     await redisComponentStore.cacheEvidenceAnalysis(key, cacheEntry, this.SIMILARITY_TTL);
   }
   /**
@@ -132,7 +131,7 @@ class EvidenceAnalysisCacheService {
     evidenceIds: string[];
     matrix: number[][];
     timestamp: number;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
   } | null> {
     const key = `similarity:matrix:${evidenceIds.sort().join(':')}`;
     return await redisComponentStore.getEvidenceAnalysis(key);
@@ -156,7 +155,7 @@ class EvidenceAnalysisCacheService {
       caseId,
       ...summary,
       timestamp: Date.now(),
-    };
+    }
     await redisComponentStore.cacheEvidenceAnalysis(key, cacheEntry, this.SUMMARY_TTL);
   }
   /**
@@ -169,7 +168,7 @@ class EvidenceAnalysisCacheService {
   /**
    * Invalidate analysis result
    */
-  async invalidateAnalysisResult(key: CacheKey): Promise<void> {
+  async invalidateAnalysisResult(_key: CacheKey): Promise<void> {
     const cacheKey = this.generateCacheKey(key);
     await redisComponentStore.clearCache(cacheKey);
     console.log(`🗑️ Invalidated cache: ${cacheKey}`);
@@ -211,7 +210,7 @@ class EvidenceAnalysisCacheService {
       missCount: this.missCount,
       hitRate: Math.round(hitRate * 100) / 100,
       ...redisComponentStore.getCacheStats(),
-    };
+    }
   }
   /**
    * Warm up cache with frequently accessed evidence
@@ -220,7 +219,7 @@ class EvidenceAnalysisCacheService {
     console.log(`🔥 Warming up cache for ${evidenceIds.length} evidence items...`);
     const warmupPromises = evidenceIds.flatMap(evidenceId =>
       analysisTypes.map(analysisType => {
-        const key: CacheKey = { evidenceId, analysisType };
+        const key: CacheKey = { evidenceId, analysisType }
         return this.getCachedAnalysisResult(key);
       })
     );
@@ -236,7 +235,7 @@ class EvidenceAnalysisCacheService {
     // Implementation would depend on specific cleanup requirements
     // For now, rely on Redis TTL mechanism
   }
-  private generateCacheKey(key: CacheKey): string {
+  private generateCacheKey(_key: CacheKey): string {
     const parts = [
       'evidence',
       'analysis',
@@ -267,7 +266,7 @@ class EvidenceAnalysisCacheService {
   }
   private async addToCaseAnalysisIndex(caseId: string, analysisKey: string): Promise<void> {
     const indexKey = `case:index:${caseId}`;
-    const existing = await redisComponentStore.getEvidenceAnalysis(indexKey) || { analysisKeys: [] };
+    const existing = await redisComponentStore.getEvidenceAnalysis(indexKey) || { analysisKeys: [] }
     if (!existing.analysisKeys.includes(analysisKey)) {
       existing.analysisKeys.push(analysisKey);
       await redisComponentStore.cacheEvidenceAnalysis(indexKey, existing, 86400); // 24 hour TTL
@@ -302,14 +301,14 @@ export async function cacheAnalysis(
     processingTime: number;
     userId?: string;
     caseId?: string;
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   }
 ) {
-  const key: CacheKey = { evidenceId, analysisType };
+  const key: CacheKey = { evidenceId, analysisType }
   return evidenceAnalysisCacheService.cacheAnalysisResult(key, result, options);
 }
 export async function getCachedAnalysis(evidenceId: string, analysisType: string) {
-  const key: CacheKey = { evidenceId, analysisType };
+  const key: CacheKey = { evidenceId, analysisType }
   return evidenceAnalysisCacheService.getCachedAnalysisResult(key);
 }
 export async function invalidateEvidenceCache(evidenceId: string) {

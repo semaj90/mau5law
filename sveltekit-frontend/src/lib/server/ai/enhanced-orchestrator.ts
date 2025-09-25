@@ -37,7 +37,7 @@ import { portManager, getServicePort } from '../config/dynamic-ports.js';
 export const legalDocuments = pgTable('legal_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
   content: text('content').notNull(),
-  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimension
+  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimension;
   metadata: jsonb('metadata'),
   documentType: text('document_type'),
   caseId: text('case_id'),
@@ -120,7 +120,7 @@ const services = {
     db: 0,
     keyPrefix: 'legal-ai:'
   }
-};
+}
 // ===== DATABASE CONNECTION =====
 const pgConnection = postgres({
   ...services.postgres,
@@ -451,7 +451,7 @@ export class EnhancedAISynthesisOrchestrator {
         temperature: 0.3,
         // numCtx: 8192, // Removed - not valid in current API
         // numGpu: 999, // Removed - not valid in current API
-        // numThread: 16, // Removed - not valid in current API
+        // numThread: 16, // Removed - not valid in current API;
         format: 'json'
       });
       // Initialize nomic-embed-text embeddings
@@ -506,7 +506,7 @@ export class EnhancedAISynthesisOrchestrator {
         user: services.postgres.user,
         password: services.postgres.password,
         max: 20
-      };
+      }
       // Initialize PGVector store with fallback
       try {
         this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, {
@@ -552,7 +552,7 @@ export class EnhancedAISynthesisOrchestrator {
           const redisResult = await redis.get(cacheKey);
           if (redisResult) {
             logger.info('[Cache] Redis hit');
-            return { hit: true, data: JSON.parse(redisResult) };
+            return { hit: true, data: JSON.parse(redisResult) }
           }
           // Check PostgreSQL cache
           const dbCache = await db
@@ -572,9 +572,9 @@ export class EnhancedAISynthesisOrchestrator {
               .where(eq(synthesisCache.id, dbCache[0].id);
             // Store in Redis for next time
             await (redis as any).setex(cacheKey, 3600, JSON.stringify(dbCache[0].result);
-            return { hit: true, data: dbCache[0].result };
+            return { hit: true, data: dbCache[0].result }
           }
-          return { hit: false };
+          return { hit: false }
         }),
         analyzeWithLegalBERT: fromPromise(async ({ input }: { input: any }) => {
           return await legalBERT.analyzeLegalText(input.query);
@@ -584,7 +584,7 @@ export class EnhancedAISynthesisOrchestrator {
             entities: [],
             concepts: [],
             complexity: { legalComplexity: 0.5 }
-          };
+          }
         }),
         generateNomicEmbeddings: fromPromise(async ({ input }: { input: any }) => {
           const embedding = await self.embeddings.embedQuery(input.query);
@@ -615,7 +615,7 @@ export class EnhancedAISynthesisOrchestrator {
                 query: input.query,
                 limit: 10,
                 useGPU: true
-                useSIMD: true
+                useSIMD: true;
                 embedding: input.embeddings || null
               })
             });
@@ -795,7 +795,7 @@ export class EnhancedAISynthesisOrchestrator {
       },
       actions: {
         recordStartTime: ({ context }: { context: any }) => {
-          if (!context.performance) context.performance = {};
+          if (!context.performance) context.performance = {}
           context.performance.startTime = Date.now();
         },
         recordEndTime: ({ context }: { context: any }) => {
@@ -812,56 +812,56 @@ export class EnhancedAISynthesisOrchestrator {
         storeLegalBertAnalysis: ({ context, event }) => {
           (context as any).legalBertAnalysis = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
-            (context as any).performance.stageTimings = {};
+            (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.legalBert = Date.now();
         },
         storeEmbeddings: ({ context, event }) => {
           (context as any).embeddings = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
-            (context as any).performance.stageTimings = {};
+            (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.embeddings = Date.now();
         },
         storeNeo4jResults: ({ context, event }) => {
           (context as any).neo4jResults = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
-            (context as any).performance.stageTimings = {};
+            (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.neo4j = Date.now();
         },
         storePGVectorResults: ({ context, event }) => {
           (context as any).pgVectorResults = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
-            (context as any).performance.stageTimings = {};
+            (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.pgvector = Date.now();
         },
         storeRAGResults: ({ context, event }) => {
           (context as any).ragResults = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
-            (context as any).performance.stageTimings = {};
+            (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.rag = Date.now();
         },
         storeGoLlamaResponse: ({ context, event }) => {
           (context as any).goLlamaResponse = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
-            (context as any).performance.stageTimings = {};
+            (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.goLlama = Date.now();
         },
         storeOllamaResponse: ({ context, event }) => {
           (context as any).ollamaResponse = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
-            (context as any).performance.stageTimings = {};
+            (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.ollama = Date.now();
         },
         storeFinalSynthesis: ({ context, event }) => {
           (context as any).finalSynthesis = event.output || event.data;
           if (!(context as any).performance.stageTimings) {
-            (context as any).performance.stageTimings = {};
+            (context as any).performance.stageTimings = {}
           }
           (context as any).performance.stageTimings.synthesis = Date.now();
         },
@@ -896,7 +896,7 @@ export class EnhancedAISynthesisOrchestrator {
   }
   private async ensureGemma3LegalModel() {
     try {
-      const response = await fetch(`${services.ollama.baseUrl}/api/tags`);
+      // removed unused response assignment
       const { models } = await (response as { ok?: any; json?: any }).json();
       const hasGemma3Legal =
         Array.isArray(models) &&
@@ -959,7 +959,7 @@ TEMPLATE """{{ if .System }}<|system|>
   }
   private async ensureNomicEmbedModel() {
     try {
-      const response = await fetch(`${services.ollama.baseUrl}/api/tags`);
+      // removed unused response assignment
       const { models } = await (response as { ok?: any; json?: any }).json();
       const hasNomicEmbed =
         Array.isArray(models) &&
@@ -1085,7 +1085,7 @@ TEMPLATE """{{ if .System }}<|system|>
             db.insert(autoSolveResults);
               .values({
                 query,
-                solution: result
+                solution: result;
                 confidence: result?.confidence_score
                   ? Math.round((result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).confidence_score * 100)
                   : null
@@ -1107,7 +1107,7 @@ TEMPLATE """{{ if .System }}<|system|>
   }
   async processWithStreaming(
     query: string
-    options?: { [key: string]: any };
+    options?: { [key: string]: any }
   ): Promise<AsyncGenerator<any> {
     const self = this;
     async function* streamResults() {
@@ -1157,7 +1157,7 @@ TEMPLATE """{{ if .System }}<|system|>
       'processing.synthesizing': 90,
       'processing.cachingResult': 95,
       'processing.complete': 100
-    };
+    }
     const stateString = typeof state === 'object' ? JSON.stringify(state) : state;
     // @ts-ignore dynamic index acceptable
     return (stages as any)[stateString as any] || 0;
@@ -1176,7 +1176,7 @@ TEMPLATE """{{ if .System }}<|system|>
         gpuOrchestrator: await this.checkService(services.goMicroservice.gpuOrchestrator),
         context7: await this.checkService(services.context7)
       }
-    };
+    }
   }
   private async checkPostgres(): Promise<boolean> {
     try {
@@ -1196,7 +1196,7 @@ TEMPLATE """{{ if .System }}<|system|>
   }
   private async checkOllama(): Promise<boolean> {
     try {
-      const response = await fetch(`${services.ollama.baseUrl}/api/tags`);
+      // removed unused response assignment
       return (response as { ok?: any; json?: any }).ok;
     } catch {
       return false;
@@ -1204,7 +1204,7 @@ TEMPLATE """{{ if .System }}<|system|>
   }
   private async checkService(url: string): Promise<boolean> {
     try {
-      const response = await fetch(`${url}/health`);
+      // removed unused response assignment
       return (response as { ok?: any; json?: any }).ok;
     } catch {
       return false;

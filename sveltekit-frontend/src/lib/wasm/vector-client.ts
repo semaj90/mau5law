@@ -71,14 +71,14 @@ class VectorWasmClient {
       usedServer = false;
     }
     const processingTime = performance.now() - startTime;
-    return { result, usedServer, processingTime };
+    return { result, usedServer, processingTime }
   }
   /**
    * Batch similarity computation with intelligent chunking
    */
   async computeBatchSimilarity(
     queryVector: Float32Array
-    vectors: Float32Array[]
+    vectors: Float32Array[];
     algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine',
     chunkSize = 50;
   ): Promise<{
@@ -103,9 +103,9 @@ class VectorWasmClient {
         vectorA: Array.from(queryVector),
         vectors: vectors.map(v => Array.from(v)),
         algorithm: this.algorithmToNumber(algorithm),
-        useCUDA: true
+        useCUDA: true;
         parallel: true
-      };
+      }
       const response = await fetch('/api/v1/vector/similarity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -135,13 +135,13 @@ class VectorWasmClient {
       usedServer: shouldUseServer
       processingTime,
       chunksProcessed
-    };
+    }
   }
   /**
    * Generate embeddings with server-side Gemma model
    */
   async generateEmbeddings(
-    texts: string[]
+    texts: string[];
     options: {
       model?: string;
       chunkSize?: number;
@@ -173,7 +173,7 @@ class VectorWasmClient {
       embeddings: data.embeddings,
       processingTime,
       tokensProcessed: data.performance?.tokensProcessed || 0
-    };
+    }
   }
   /**
    * Matrix operations with CUDA acceleration
@@ -181,7 +181,7 @@ class VectorWasmClient {
   async computeMatrix(
     operation: 'multiply' | 'transpose' | 'inverse',
     matrixA: number[][]
-    matrixB?: number[][]
+    matrixB?: number[][];
     options: { useCUDA?: boolean; parallel?: boolean } = {}
   ): Promise<{
     result: number[][];
@@ -209,13 +209,13 @@ class VectorWasmClient {
       result: data.result,
       processingTime: data.metadata.processingTime,
       flops: data.metadata.flops || 0
-    };
+    }
   }
   /**
    * Semantic search with pgvector and CUDA acceleration
    */
   async semanticSearch(
-    query: string
+    query: string;
     options: {
       limit?: number;
       threshold?: number;
@@ -253,7 +253,7 @@ class VectorWasmClient {
       results: data.results,
       totalCount: data.totalCount,
       processingTime: data.performance.searchTime
-    };
+    }
   }
   private computeLocalSimilarity(
     vectorA: Float32Array
@@ -298,9 +298,9 @@ class VectorWasmClient {
       operation: algorithm as any
       vectorA: Array.from(vectorA),
       vectorB: Array.from(vectorB),
-      useCUDA: true
+      useCUDA: true;
       parallel: true
-    };
+    }
     const response = await fetch('/api/v1/vector/similarity', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -355,7 +355,7 @@ class VectorWasmClient {
       localPerformance: benchmarkTime
       memoryUsage,
       recommendations
-    };
+    }
   }
 }
 // Global instance

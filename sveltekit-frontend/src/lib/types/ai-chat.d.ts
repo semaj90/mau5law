@@ -1,11 +1,11 @@
-import stream from "stream";
+import stream from 'stream';
 // AI Chat Type Definitions
 export interface AIMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp?: Date;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface AIChat {
   id: string;

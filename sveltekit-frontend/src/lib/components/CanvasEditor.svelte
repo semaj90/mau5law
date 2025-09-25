@@ -98,7 +98,7 @@ if (browser) {
   			script.onload = () => {
   				fabric = (window as any).fabric;
   				resolve();
-  			};
+  			}
   			script.onerror = reject;
   			document.head.appendChild(script);
   		});
@@ -157,7 +157,7 @@ if (browser) {
   						panY = canvasData.viewport.panY;
   						fabricCanvas.setZoom(zoomLevel);
   						// Use Point class compatible with version
-  						const PointClass = fabric.Point || fabric.FabricPoint || { x: panX, y: panY };
+  						const PointClass = fabric.Point || fabric.FabricPoint || { x: panX, y: panY }
   						if (typeof PointClass === 'function') {
   							fabricCanvas.relativePan(new PointClass(panX, panY));
   						} else {
@@ -174,25 +174,25 @@ if (browser) {
   			console.error('Failed to load canvas state:', error);
   		}
   	}
-  	function handleObjectAdded(event: any) {
+  	function handleObjectAdded(_event: any) {
   		if (readOnly) return;
   		markDirty();
   	}
-  	function handleObjectModified(event: any) {
+  	function handleObjectModified(_event: any) {
   		if (readOnly) return;
   		markDirty();
   	}
-  	function handleObjectRemoved(event: any) {
+  	function handleObjectRemoved(_event: any) {
   		if (readOnly) return;
   		markDirty();
   	}
-  	function handleSelectionCreated(event: any) {
+  	function handleSelectionCreated(_event: any) {
   		selectedObject = event.selected[0];
   	}
-  	function handleSelectionCleared(event: any) {
+  	function handleSelectionCleared(_event: any) {
   		selectedObject = null;
   	}
-  	function handleMouseDown(event: any) {
+  	function handleMouseDown(_event: any) {
   		if (readOnly) return;
   		const pointer = fabricCanvas.getPointer(event.e);
   		switch (selectedTool) {
@@ -216,29 +216,29 @@ if (browser) {
   				break;
   		}
   	}
-  	function handleMouseMove(event: any) {
+  	function handleMouseMove(_event: any) {
   		if (!isDrawing || readOnly) return;
   		const pointer = fabricCanvas.getPointer(event.e);
   		// Update drawing object based on current tool
   		// Implementation depends on the specific drawing logic
   	}
-  	function handleMouseUp(event: any) {
+  	function handleMouseUp(_event: any) {
   		if (readOnly) return;
   		isDrawing = false;
   		drawingPath = null;
   		markDirty();
   	}
-  	function handlePathCreated(event: any) {
+  	function handlePathCreated(_event: any) {
   		if (readOnly) return;
   		const path = event.path;
   		path.set({
   			stroke: currentColor
-  			strokeWidth: currentStrokeWidth
+  			strokeWidth: currentStrokeWidth;
   			fill: selectedTool === 'highlight' ? currentColor + '40' : 'transparent';
   		});
   		markDirty();
   	}
-  	function handleKeyDown(event: KeyboardEvent) {
+  	function handleKeyDown(_event: KeyboardEvent) {
   		if (readOnly) return;
   		if (event.ctrlKey || event.metaKey) {
   			switch (event.key) {
@@ -276,7 +276,7 @@ if (browser) {
   			}
   		}
   	}
-  	function handleKeyUp(event: KeyboardEvent) {
+  	function handleKeyUp(_event: KeyboardEvent) {
   		// Handle key up events if needed
   	}
   	function selectTool(toolId: string) {
@@ -309,7 +309,7 @@ if (browser) {
   		const text = new TextClass('Click to edit', {
   			left: pointer.x,
   			top: pointer.y,
-  			fontSize: currentFontSize
+  			fontSize: currentFontSize;
   			fill: currentColor
   			fontFamily: 'Arial';
   		});
@@ -462,7 +462,7 @@ if (browser) {
   				clonedObj.set({
   					left: clonedObj.left + 10,
   					top: clonedObj.top + 10,
-  					evented: true
+  					evented: true;
   				});
   				if (clonedObj.type === 'activeSelection') {
   					clonedObj.canvas = fabricCanva;
@@ -536,7 +536,7 @@ if (browser) {
   					evidenceIds: getEvidenceIds(),
   					citationIds: getCitationIds();
   				}
-  			};
+  			}
   			// Generate thumbnail
   			const thumbnailUrl = generateThumbnail();
   			const canvasStateData: Partial<CanvasState> = {
@@ -545,7 +545,7 @@ if (browser) {
   				canvasData: JSON.stringify(canvasData), // Ensure it's stored as string
   				thumbnailUrl,
   				updatedAt: new Date() // Store as Date object
-  			};
+  			}
   			const response = await fetch('/api/canvas-states', {
   				method: canvasState ? 'PUT' : 'POST',
   				headers: {
@@ -624,7 +624,7 @@ if (browser) {
   		}
   	}
   	// Add drop event handler for evidence
-  	function handleDrop(event: DragEvent) {
+  	function handleDrop(_event: DragEvent) {
   		event.preventDefault();
   		if (!fabricCanvas) return;
   		const data = event.dataTransfer?.getData('application/json');
@@ -651,7 +651,7 @@ if (browser) {
   							const img = new ImageClass(imgElement);
   							img.set({ left, top, scaleX: 0.3, scaleY: 0.3, selectable: true });
   							fabricCanvas.add(img);
-  						};
+  						}
   						imgElement.src = evd.fileUrl;
   					}
   				} else {
@@ -687,95 +687,98 @@ if (browser) {
   	}
   	// Attach drop event to canvas element
   	// TODO: Convert to $derived: if (canvasElement) {
-  		canvasElement.ondragover = (e) => { e.preventDefault() };
+  		canvasElement.ondragover = (e) => { e.preventDefault() }
   		canvasElement.ondrop = handleDrop;
   	}
 </script>
+
 <div class="mx-auto px-4 max-w-7xl">
-	<!-- Toolbar -->
-	<div class="mx-auto px-4 max-w-7xl">
-		<Toolbar.Root class="mx-auto px-4 max-w-7xl">
-			<Toolbar.Group bind:value={$text} type="multiple" class="mx-auto px-4 max-w-7xl">
-				<Toolbar.GroupItem aria-label="toggle bold" value="bold" class="mx-auto px-4 max-w-7xl">
-					<Bold class="mx-auto px-4 max-w-7xl" />
-				</Toolbar.GroupItem>
-				<Toolbar.GroupItem aria-label="toggle italic" value="italic" class="mx-auto px-4 max-w-7xl">
-					<Italic class="mx-auto px-4 max-w-7xl" />
-				</Toolbar.GroupItem>
-				<Toolbar.GroupItem aria-label="toggle strikethrough" value="strikethrough" class="mx-auto px-4 max-w-7xl">
-					<Strikethrough class="mx-auto px-4 max-w-7xl" />
-				</Toolbar.GroupItem>
-			</Toolbar.Group>
-			<Separator.Root class="mx-auto px-4 max-w-7xl" />
-			<Toolbar.Group bind:value={$align} type="single" class="mx-auto px-4 max-w-7xl">
-				<Toolbar.GroupItem aria-label="align left" value="left" class="mx-auto px-4 max-w-7xl">
-					<AlignLeft class="mx-auto px-4 max-w-7xl" />
-				</Toolbar.GroupItem>
-				<Toolbar.GroupItem aria-label="align center" value="center" class="mx-auto px-4 max-w-7xl">
-					<AlignCenter class="mx-auto px-4 max-w-7xl" />
-				</Toolbar.GroupItem>
-				<Toolbar.GroupItem aria-label="align right" value="right" class="mx-auto px-4 max-w-7xl">
-					<AlignRight class="mx-auto px-4 max-w-7xl" />
-				</Toolbar.GroupItem>
-			</Toolbar.Group>
-			<Separator.Root class="mx-auto px-4 max-w-7xl" />
-			<div class="mx-auto px-4 max-w-7xl">
-				<Toolbar.Button class="mx-auto px-4 max-w-7xl">
-					<Sparkles class="mx-auto px-4 max-w-7xl" />
-					<span>Ask AI</span>
-				</Toolbar.Button>
-			</div>
-		</Toolbar.Root>
-	</div>
-	<!-- Canvas container -->
-	<div class="mx-auto px-4 max-w-7xl">
-		<canvas bind:this={canvasElement} class="mx-auto px-4 max-w-7xl"></canvas>
-	</div>
-	<!-- Evidence panel -->
-	<div class="mx-auto px-4 max-w-7xl">
-		<h3>Evidence</h3>
-		<div class="mx-auto px-4 max-w-7xl">
-			{#each evidence as item}
-				<div class="mx-auto px-4 max-w-7xl">
-					<div class="mx-auto px-4 max-w-7xl">
-						<div class="mx-auto px-4 max-w-7xl">{(item as { title?: any; fileType?: any }).title}</div>
-						<div class="mx-auto px-4 max-w-7xl">{(item as { title?: any; fileType?: any }).fileType}</div>
-					</div>
-					<button
-						class="mx-auto px-4 max-w-7xl"
-						onclick={() => addEvidenceMarker(item)}
-						disabled={readOnly}
-						title="Add evidence marker to canvas"
-					>
-						+
-					</button>
-				</div>
-			{/each}
-		</div>
-	</div>
-	<!-- Citation panel -->
-	<div class="mx-auto px-4 max-w-7xl">
-		<h3>Citations</h3>
-		<div class="mx-auto px-4 max-w-7xl">
-			{#each citationPoints as citation}
-				<div class="mx-auto px-4 max-w-7xl">
-					<div class="mx-auto px-4 max-w-7xl">
-						<div class="mx-auto px-4 max-w-7xl">{citation.source}</div>
-						<div class="mx-auto px-4 max-w-7xl">{citation.text.substring(0, 50)}...</div>
-					</div>
-					<button
-						class="mx-auto px-4 max-w-7xl"
-						onclick={() => addCitationMarker(citation)}
-						disabled={readOnly}
-						title="Add citation marker to canvas"
-					>
-						+
-					</button>
-				</div>
-			{/each}
-		</div>
-	</div>
+  <!-- Toolbar -->
+  <div class="mx-auto px-4 max-w-7xl">
+    <Toolbar.Root class="mx-auto px-4 max-w-7xl">
+      <Toolbar.Group bind:value={$text} type="multiple" class="mx-auto px-4 max-w-7xl">
+        <Toolbar.GroupItem aria-label="toggle bold" value="bold" class="mx-auto px-4 max-w-7xl">
+          <Bold class="mx-auto px-4 max-w-7xl" />
+        </Toolbar.GroupItem>
+        <Toolbar.GroupItem aria-label="toggle italic" value="italic" class="mx-auto px-4 max-w-7xl">
+          <Italic class="mx-auto px-4 max-w-7xl" />
+        </Toolbar.GroupItem>
+        <Toolbar.GroupItem aria-label="toggle strikethrough" value="strikethrough" class="mx-auto px-4 max-w-7xl">
+          <Strikethrough class="mx-auto px-4 max-w-7xl" />
+        </Toolbar.GroupItem>
+      </Toolbar.Group>
+      <Separator.Root class="mx-auto px-4 max-w-7xl" />
+      <Toolbar.Group bind:value={$align} type="single" class="mx-auto px-4 max-w-7xl">
+        <Toolbar.GroupItem aria-label="align left" value="left" class="mx-auto px-4 max-w-7xl">
+          <AlignLeft class="mx-auto px-4 max-w-7xl" />
+        </Toolbar.GroupItem>
+        <Toolbar.GroupItem aria-label="align center" value="center" class="mx-auto px-4 max-w-7xl">
+          <AlignCenter class="mx-auto px-4 max-w-7xl" />
+        </Toolbar.GroupItem>
+        <Toolbar.GroupItem aria-label="align right" value="right" class="mx-auto px-4 max-w-7xl">
+          <AlignRight class="mx-auto px-4 max-w-7xl" />
+        </Toolbar.GroupItem>
+      </Toolbar.Group>
+      <Separator.Root class="mx-auto px-4 max-w-7xl" />
+      <div class="mx-auto px-4 max-w-7xl">
+        <Toolbar.Button class="mx-auto px-4 max-w-7xl">
+          <Sparkles class="mx-auto px-4 max-w-7xl" />
+          <span>Ask AI</span>
+        </Toolbar.Button>
+      </div>
+    </Toolbar.Root>
+  </div>
+  <!-- Canvas container -->
+  <div class="mx-auto px-4 max-w-7xl">
+    <canvas bind:this={canvasElement} class="mx-auto px-4 max-w-7xl"></canvas>
+  </div>
+  <!-- Evidence panel -->
+  <div class="mx-auto px-4 max-w-7xl">
+    <h3>Evidence</h3>
+    <div class="mx-auto px-4 max-w-7xl">
+      {#each evidence as item}
+        <div class="mx-auto px-4 max-w-7xl">
+          <div class="mx-auto px-4 max-w-7xl">
+            <div class="mx-auto px-4 max-w-7xl">{(item as { title?: any; fileType?: any }).title}</div>
+            <div class="mx-auto px-4 max-w-7xl">{(item as { title?: any; fileType?: any }).fileType}</div>
+          </div>
+          <button
+            class="mx-auto px-4 max-w-7xl"
+            onclick={() => addEvidenceMarker(item)}
+            disabled={readOnly}
+            title="Add evidence marker to canvas"
+          >
+            +
+          </button>
+        </div>
+      {/each}
+    </div>
+  </div>
+  <!-- Citation panel -->
+  <div class="mx-auto px-4 max-w-7xl">
+    <h3>Citations</h3>
+    <div class="mx-auto px-4 max-w-7xl">
+      {#each citationPoints as citation}
+        <div class="mx-auto px-4 max-w-7xl">
+          <div class="mx-auto px-4 max-w-7xl">
+            <div class="mx-auto px-4 max-w-7xl">{citation.source}</div>
+            <div class="mx-auto px-4 max-w-7xl">{citation.text.substring(0, 50)}...</div>
+          </div>
+          <button
+            class="mx-auto px-4 max-w-7xl"
+            onclick={() => addCitationMarker(citation)}
+            disabled={readOnly}
+            title="Add citation marker to canvas"
+          >
+            +
+          </button>
+        </div>
+      {/each}
+    </div>
+  </div>
 </div>
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
 	.canvas-editor-container {
 		display: flex;
@@ -899,4 +902,3 @@ if (browser) {
 		}
 	}
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

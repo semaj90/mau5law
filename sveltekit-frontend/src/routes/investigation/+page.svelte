@@ -94,8 +94,8 @@
       priority: 'medium',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      assignedTo: 'current-user'
-    };
+      assignedTo: 'current-user';
+    }
     cases = [newCase, ...cases];
     currentCase = newCa;
     // Add system message
@@ -103,7 +103,7 @@
     return newCa;
   }
   // Evidence handling
-  function handleEvidenceUploaded(event: CustomEvent) {
+  function handleEvidenceUploaded(_event: CustomEvent) {
     const { file, position } = event.detail;
     console.log('🔍 Evidence uploaded:', file.name, 'at position:', position);
     const newEvidence: EvidenceItem = {
@@ -114,12 +114,12 @@
       status: 'analyzing',
       tags: [],
       uploadedAt: new Date().toISOString(),
-      size: file.size
-    };
+      size: file.size;
+    }
     evidence = [newEvidence, ...evidence];
     addChatMessage('system', `Evidence uploaded: ${file.name}. Starting AI analysis...`, 'evidence', newEvidence.id);
   }
-  function handleAnalysisComplete(event: CustomEvent) {
+  function handleAnalysisComplete(_event: CustomEvent) {
     const { fileId, analysis, confidence } = event.detail;
     console.log('🧠 Analysis complete:', analysis);
     // Update evidence with analysis
@@ -130,14 +130,14 @@
           status: 'analyzed',
           aiAnalysis: analysis.summary || 'Analysis completed',
           confidence: confidence || 0.85,
-          tags: analysis.tags || ['analyzed']
-        };
+          tags: analysis.tags || ['analyzed'];
+        }
       }
       return item;
     });
     addChatMessage('assistant', `Analysis completed for ${fileId}: ${analysis.summary || 'Evidence processed successfully'}`, 'evidence', fileId);
   }
-  function handleDetectiveInsights(event: CustomEvent) {
+  function handleDetectiveInsights(_event: CustomEvent) {
     const { patterns, conflicts, relevance } = event.detail;
     console.log('🕵️ Detective insights:', patterns);
     if (conflicts && conflicts.length > 0) {
@@ -155,8 +155,8 @@
       content,
       timestamp: new Date().toISOString(),
       context,
-      relatedId
-    };
+      relatedId;
+    }
     chatMessages = [...chatMessages, message];
   }
   async function sendChatMessage() {
@@ -172,14 +172,14 @@
         evidence,
         investigationNotes,
         citations
-      };
+      }
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
           context,
-          conversationHistory: chatMessages.slice(-10) // Last 10 messages for context
+          conversationHistory: chatMessages.slice(-10) // Last 10 messages for context;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -240,7 +240,7 @@
         priority: 'high',
         createdAt: '2024-01-15T10:00:00Z',
         updatedAt: '2024-01-20T14:30:00Z',
-        description: 'Investigation into alleged financial irregularities'
+        description: 'Investigation into alleged financial irregularities';
       },
       {
         id: 'case-002',
@@ -249,7 +249,7 @@
         priority: 'medium',
         createdAt: '2024-01-18T09:00:00Z',
         updatedAt: '2024-01-18T09:00:00Z',
-        description: 'Breach of contract claim requiring evidence analysis'
+        description: 'Breach of contract claim requiring evidence analysis';
       }
     ];
     if (!currentCase && cases.length > 0) {
@@ -258,10 +258,10 @@
   }
   async function loadSystemStatus() {
     try {
-      const response = await fetch('/api/system/status');
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const status = await (response as { ok?: unknown; json?: unknown }).json();
-        systemStatus = { ...systemStatus, ...status };
+        systemStatus = { ...systemStatus, ...status }
       }
     } catch (error) {
       console.log('Could not load system status:', error);
@@ -277,13 +277,13 @@
         evidence: evidence.filter(e => e.caseId === currentCase.id),
         citations,
         chatHistory: chatMessages,
-        updatedAt: new Date().toISOString()
-      };
+        updatedAt: new Date().toISOString();
+      }
       // Save to backend
       const response = await fetch(`/api/cases/${currentCase.id}/investigation`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(investigationData)
+        body: JSON.stringify(investigationData);
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         addChatMessage('system', 'Investigation progress saved successfully.');

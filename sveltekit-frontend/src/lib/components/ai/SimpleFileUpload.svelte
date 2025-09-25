@@ -61,14 +61,14 @@
       files: [],
       currentFile: null
       progress: 0,
-      error: null
+      error: null;
       results: [],
       services: {
         postgresql: false
         minio: false
         qdrant: false
-        redis: false
-        rabbitmq: false
+        redis: false;
+        rabbitmq: false;
         ollama: false;
       }
     },
@@ -180,9 +180,9 @@
           ollama: ragStatus.ollama || false,
           webgpu: enableWebGPU && (await checkWebGPUSupport());
         },
-        performance: systemHealth.performance ||
-        queues: ragStatus.queues ||
-        storage: ragStatus.storage || };
+        performance: systemHealth.performance ||;
+        queues: ragStatus.queues ||;
+        storage: ragStatus.storage || }
     } catch (error) {
       console.error('Failed to fetch system status:', error);
       notificationStore.error('Failed to connect to backend services');
@@ -200,20 +200,20 @@
       return false;
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     isDragOver = true;
   }
   function handleDragLeave() {
     isDragOver = false;
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     handleFiles(droppedFiles);
   }
-  function handleFileInput(event: Event) {
+  function handleFileInput(_event: Event) {
     const input = event.target as HTMLInputElement;
     const selectedFiles = Array.from(input.files || []);
     handleFiles(selectedFiles);
@@ -248,7 +248,7 @@
         documentId: null
         minioPath: null
         embeddingId: null
-        vectorId: null
+        vectorId: null;
         tags: [],
         metadata: },
       performance: {
@@ -256,7 +256,7 @@
         endTime: null
         totalTime: null
         stageTimings: }
-    };
+    }
     uploadStates.set(fileId, initialState);
     uploadStates = new Map(uploadStates);
     try {
@@ -379,7 +379,7 @@
         const endpoint = `/api/v1/storage/${protocol}/upload`;
         const response = await fetch(endpoint, {
           method: 'POST',
-          body: formData
+          body: formData;
           headers: {
             'X-Upload-Protocol': protocol.toUpperCase()
           }
@@ -401,20 +401,20 @@
       fileType: file.type,
       minioPath: storageResult.path,
       uploadId: fileId
-      caseId: caseId
+      caseId: caseId;
       metadata: {
         originalName: file.name,
         uploadTime: new Date().toISOString(),
         userAgent: navigator.userAgent,
         enabledFeatures: {
           ocr: enableOCR
-          embedding: enableEmbedding
+          embedding: enableEmbedding;
           rag: enableRAG
-          autoTags: enableAutoTags
+          autoTags: enableAutoTags;
           webgpu: enableWebGPU;
         }
       }
-    };
+    }
     const response = await fetch('/api/v1/documents', {
       method: 'POST',
       headers: {
@@ -473,7 +473,7 @@
       },
       body: JSON.stringify({,
         content: content
-        fileId: fileId
+        fileId: fileId;
         model: 'webgpu-transformer';
       })
     });
@@ -490,10 +490,10 @@
         fileName: documentRecord.fileName,
         fileType: documentRecord.fileType,
         caseId: documentRecord.caseId,
-        uploadId: fileId
+        uploadId: fileId;
         timestamp: new Date().toISOString();
       }
-    };
+    }
     const response = await fetch('/api/v1/qdrant/points/upsert', {
       method: 'POST',
       headers: {
@@ -535,7 +535,7 @@
       ...documentRecord,
       processedAt: new Date().toISOString(),
       fileId: fileId
-    };
+    }
     await comprehensiveCachingService.set(cacheKey, cacheData, 3600); // Cache for 1 hour
   }
   async function publishUploadEvent(documentRecord: any, fileId: string): Promise<void> {
@@ -544,9 +544,9 @@
       documentId: documentRecord.id,
       fileName: documentRecord.fileName,
       caseId: documentRecord.caseId,
-      uploadId: fileId
+      uploadId: fileId;
       timestamp: new Date().toISOString();
-    };
+    }
     await fetch('/api/v1/rabbitmq/publish', {
       method: 'POST',
       headers: {
@@ -559,7 +559,7 @@
       })
     });
   }
-  function removeFile(index: number) {
+  function removeFile(_index: number) {
     files = files.filter((_, i) => i !== index);
   }
   function formatFileSize(bytes: number): string {

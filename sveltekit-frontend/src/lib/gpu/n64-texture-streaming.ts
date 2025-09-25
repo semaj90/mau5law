@@ -24,14 +24,14 @@ export interface LegalDocumentTexture {
   documentId: string;
   pageNumber: number;
   textureType: 'evidence' | 'document' | 'visualization' | 'courtroom';
-  resolution: { width: number; height: number };
+  resolution: { width: number; height: number }
   chunks: TextureChunk[];
   metadata: {
     caseId?: string;
     evidenceType?: string;
     classification?: string;
     timestamp: Date;
-  };
+  }
 }
 /**
  * N64 Texture Streaming Engine with WebGL/WebGL2/CPU fallback
@@ -50,7 +50,7 @@ export class N64TextureStreamingEngine {
     gpuMemoryUsed: 0,
     renderTime: 0,
     adaptiveQualityLevel: 1.0
-  };
+  }
   constructor(canvas: HTMLCanvasElement, options: Partial<StreamingOptions> = {}) {
     this.options = {
       maxChunkSize: 4096, // N64-style 4KB chunks
@@ -59,7 +59,7 @@ export class N64TextureStreamingEngine {
       cacheSize: 256, // 256MB cache
       wasmAcceleration: true
       ...options
-    };
+    }
     this.initializeContext(canvas);
     this.initializeWASM();
     this.setupCompressionWorker();
@@ -144,10 +144,10 @@ export class N64TextureStreamingEngine {
         const compressed = chunks.map(chunk => {
           // Simple RLE compression for demonstration
           const compressed = compressChunk(chunk.data);
-          return { ...chunk, data: compressed, isCompressed: true };
+          return { ...chunk, data: compressed, isCompressed: true }
         });
         self.postMessage({ compressed });
-      };
+      }
       function compressChunk(data) {
         // Simple run-length encoding
         const result = [];
@@ -172,7 +172,7 @@ export class N64TextureStreamingEngine {
   /**
    * Load legal document texture with 4KB chunked streaming
    */;
-  async loadLegalDocumentTexture(document: LegalDocumentTexture): Promise<WebGLTexture | ImageData> {
+  async loadLegalDocumentTexture(_document: LegalDocumentTexture): Promise<WebGLTexture | ImageData> {
     const startTime = performance.now();
     if (!this.gl) {
       return this.loadTextureCPU(document);
@@ -258,7 +258,7 @@ export class N64TextureStreamingEngine {
   /**
    * CPU fallback for texture loading
    */;
-  private async loadTextureCPU(document: LegalDocumentTexture): Promise<ImageData> {
+  private async loadTextureCPU(_document: LegalDocumentTexture): Promise<ImageData> {
     const { width, height } = document.resolution;
     const canvas = new OffscreenCanvas(width, height);
     const ctx = canvas.getContext('2d');
@@ -346,19 +346,19 @@ export class N64TextureStreamingEngine {
           internalFormat: this.gl.RGBA,
           format: this.gl.RGBA,
           type: this.gl.UNSIGNED_BYTE
-        };
+        }
       case 'rgb':
         return {
           internalFormat: this.gl.RGB,
           format: this.gl.RGB,
           type: this.gl.UNSIGNED_BYTE
-        };
+        }
       case 'luminance':
         return {
           internalFormat: this.gl.LUMINANCE,
           format: this.gl.LUMINANCE,
           type: this.gl.UNSIGNED_BYTE
-        };
+        }
       default:
         throw new Error(`Unsupported format: ${format}`);
     }
@@ -394,7 +394,7 @@ export class N64TextureStreamingEngine {
         evidenceType: 'photo',
         timestamp: new Date()
       }
-    };
+    }
   }
   async loadDocumentScan(pdfPage: ImageData, pageNumber: number, caseId: string): Promise<LegalDocumentTexture> {
     const chunks = await this.createTextureChunksFromImageData(pdfPage, 'document');
@@ -409,7 +409,7 @@ export class N64TextureStreamingEngine {
         classification: 'legal_document',
         timestamp: new Date()
       }
-    };
+    }
   }
   /**
    * Create 4KB texture chunks from image
@@ -450,7 +450,7 @@ export class N64TextureStreamingEngine {
         this.compressionWorker!.postMessage({ chunks, compression: 'rle' });
         this.compressionWorker!.onmessage = (e) => {
           resolve(e.data.compressed);
-        };
+        }
       });
     }
     return chunks;
@@ -496,7 +496,7 @@ export class N64TextureStreamingEngine {
       gpuMemoryUsed: this.textureCache.size * 64, // Estimated KB per texture
       hasWebGL: !!this.gl,
       hasWASM: !!this.wasmModule
-    };
+    }
   }
   /**
    * Clear caches and cleanup
@@ -563,7 +563,7 @@ export const LegalTextureUtils = {
         evidenceType: 'relationship_map',
         timestamp: new Date()
       }
-    };
+    }
   },
   /**
    * Create courtroom display texture optimized for low bandwidth
@@ -583,7 +583,7 @@ export const LegalTextureUtils = {
         ...documentTexture.metadata,
         classification: 'courtroom_display'
       }
-    };
+    }
   },
   /**
    * Enhance texture data for courtroom visibility
@@ -605,4 +605,4 @@ export const LegalTextureUtils = {
     }
     return enhanced;
   }
-};
+}

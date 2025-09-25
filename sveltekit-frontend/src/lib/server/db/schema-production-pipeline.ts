@@ -35,7 +35,7 @@ export const crawlJobs = pgTable('crawl_jobs', {
   maxDepth: integer('max_depth').default(1),
   allowedDomains: jsonb('allowed_domains'), // Array of domains to crawl
   blockedPaths: jsonb('blocked_paths'), // Array of path patterns to skip
-  headers: jsonb('headers'), // Custom headers for crawling
+  headers: jsonb('headers'), // Custom headers for crawling;
   metadata: jsonb('metadata'), // Additional crawl configuration
   retryCount: integer('retry_count').default(0),
   maxRetries: integer('max_retries').default(3),
@@ -67,7 +67,7 @@ export const crawledPages = pgTable('crawled_pages', {
   blobPath: text('blob_path'), // MinIO path for large files
   headers: jsonb('headers'),
   links: jsonb('links'), // Extracted links
-  images: jsonb('images'), // Extracted images
+  images: jsonb('images'), // Extracted images;
   metadata: jsonb('metadata'),
   processingStatus: varchar('processing_status', { length: 50 }).default('pending'), // pending, processing, completed, failed
   ocrRequired: boolean('ocr_required').default(false),
@@ -98,7 +98,7 @@ export const documents = pgTable('documents', {
   confidentialityLevel: varchar('confidentiality_level', { length: 50 }).default('public'), // public, internal, confidential, restricted
   classification: jsonb('classification'), // AI-generated document classification
   entities: jsonb('entities'), // Extracted legal entities (parties, courts, etc.)
-  topics: jsonb('topics'), // Topic modeling results
+  topics: jsonb('topics'), // Topic modeling results;
   summary: text('summary'), // AI-generated summary
   keyPhrases: jsonb('key_phrases'), // Extracted key legal phrases
   citedCases: jsonb('cited_cases'), // Referenced case law
@@ -149,7 +149,7 @@ export const documentChunks = pgTable('document_chunks', {
   embeddingVersion: varchar('embedding_version', { length: 50 }).default('1.0'),
   embeddingMetadata: jsonb('embedding_metadata'),
   searchKeywords: jsonb('search_keywords'), // Extracted keywords for hybrid search
-  legalConcepts: jsonb('legal_concepts'), // Identified legal concepts
+  legalConcepts: jsonb('legal_concepts'), // Identified legal concepts;
   entities: jsonb('entities'), // Entities mentioned in this chunk
   qualityScore: real('quality_score'), // Chunk-specific quality score
   createdAt: timestamp('created_at').defaultNow(),
@@ -181,7 +181,7 @@ export const searchIndex = pgTable('search_index', {
   entities: jsonb('entities'),
   boost: real('boost').default(1.0), // Search ranking boost
   freshness: real('freshness').default(1.0), // Time-based relevance decay
-  authority: real('authority').default(0.5), // Domain/source authority score
+  authority: real('authority').default(0.5), // Domain/source authority score;
   popularity: real('popularity').default(0.0), // Click-through rate based score
   legalWeight: real('legal_weight').default(0.5), // Legal document importance
   lastAccessed: timestamp('last_accessed'),
@@ -211,7 +211,7 @@ export const cacheKeys = pgTable('cache_keys', {
   ttl: integer('ttl').default(3600), // TTL in seconds
   hitCount: integer('hit_count').default(0),
   lastHit: timestamp('last_hit'),
-  dataSize: integer('data_size'), // Cached data size in bytes
+  dataSize: integer('data_size'), // Cached data size in bytes;
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),

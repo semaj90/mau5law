@@ -5,7 +5,7 @@ import {
   saveObservabilityState
 } from '$lib/services/observability-persistence'
 import { json } from '@sveltejs/kit'
-import { URL } from "url"
+
 }
 export interface BaselineDiff {
   metric: string

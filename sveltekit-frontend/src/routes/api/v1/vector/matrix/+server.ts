@@ -224,7 +224,7 @@ async function processCUDAMatrixOperation(params: {
   matrixB?: number[][]
   precision: string
   workers: number
-  requestId: string
+  requestId: string;
   complexity: number
 }): Promise<{ result: number[][] | number[]; flops: number; memoryUsed: number; parallelWorkers: number }> {
   const { operation, matrixA, matrixB, precision, workers, requestId, complexity } = params
@@ -291,7 +291,7 @@ async function processCUDAMatrixOperation(params: {
   }
 }
 async function processCUDABatchOperation(params: {
-  operation: string
+  operation: string;
   matrices: number[][][]
   transformMatrix?: number[][]
   maxParallelWorkers: number
@@ -354,7 +354,7 @@ async function processCPUMatrixOperation(params: {
   }
 }
 async function processCPUBatchOperation(params: {
-  operation: string
+  operation: string;
   matrices: number[][][]
   transformMatrix?: number[][]
   chunkSize: number

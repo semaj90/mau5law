@@ -57,8 +57,8 @@
     pending: 'var(--yorha-warning, #ffaa00)',
     completed: 'var(--yorha-secondary, #ffd700)',
     failed: 'var(--yorha-danger, #ff0041)';
-  };
-  function getBarHeight(value: number): number {
+  }
+  function getBarHeight(_value: number): number {
     if (maxValue === 0) return 0;
     return (value / maxValue) * 100;
   }
@@ -103,9 +103,9 @@
               <div
                 class="bar"
                 class:animated={animated && isVisible}
-                style="
+                style=";
                   height: {getBarHeight((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value)}%;
-                  background: {getStatusColor(item)};
+                  background: {getStatusColor(item)}
                   animation-delay: {index * 100}m;
                 "
               >
@@ -129,9 +129,9 @@
                 <div
                   class="progress-fill"
                   class:animated={animated && isVisible}
-                  style="
+                  style=";
                     width: {(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}%;
-                    background: {getStatusColor(item)};
+                    background: {getStatusColor(item)}
                     animation-delay: {index * 200}m;
                   "
                 >
@@ -169,7 +169,7 @@
             <div
               class="timeline-item"
               class:animated={animated && isVisible}
-              style="
+              style=";
                 left: {((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value / maxValue) * 100}%;
                 animation-delay: {index * 100}m;
               "
@@ -292,7 +292,7 @@
   }
   .bar-container {
     flex: 1;
-    display: flex
+    display: flex;
     flex-direction: column;
     align-items: center;
     height: 100%;
@@ -504,7 +504,7 @@ s
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    text-align: center
+    text-align: center;
     white-space: nowrap;
   }
   /* Chart Footer */

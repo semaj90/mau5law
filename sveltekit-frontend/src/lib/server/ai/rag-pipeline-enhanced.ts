@@ -107,17 +107,17 @@ export interface SecuritySettings {
   rateLimit: {
     perMinute: number;
     windowMs: number;
-  };
+  }
   validation: {
     maxInputLength: number;
     maxDocumentSize: number;
     allowedDocumentTypes: string[];
-  };
+  }
   sanitization: {
     removeHtmlTags: boolean;
     removeSqlChars: boolean;
     maxLineLength: number;
-  };
+  }
 }
 /**
  * Default configuration with environment variable overrides
@@ -191,7 +191,7 @@ export interface DocumentIngestionParams {
   title: string;
   content: string;
   documentType: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   caseId?: string;
   userId: string;
   confidentialityLevel?: 'public' | 'confidential' | 'privileged' | 'attorney_client';
@@ -234,7 +234,7 @@ export interface SearchResult {
   score: number;
   similarity: number;
   textRank: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   confidentialityLevel?: string;
   highlights?: string[];
 }
@@ -252,7 +252,7 @@ export interface AnswerResult {
   riskAssessment?: {
     level: 'low' | 'medium' | 'high';
     factors: string[];
-  };
+  }
 }
 /**
  * Contract Analysis Result
@@ -279,7 +279,7 @@ export interface IngestionResult {
   processingTime: number;
   success: boolean;
   errors?: string[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   confidentialityLevel?: string;
 }
 // ===== UTILITY CLASSES =====
@@ -405,7 +405,7 @@ class MetricsCollector {
     }
   }
   getMetrics(): { [key: string]: any } {
-    const result: { [key: string]: any } = {};
+    const result: { [key: string]: any } = {}
     // Add timing metrics with percentiles
     for (const [operation, timings] of this.metrics.entries()) {
       if (timings.length > 0) {
@@ -485,7 +485,7 @@ class LegalChunker {
         /(?:^|\n)(?:BACKGROUND|ANALYSIS|RECOMMENDATION|CONCLUSION)\s*[^\n]*/gi,
         /(?:^|\n)\d+\.\s+[A-Z][^\n]+/g
       ]
-    };
+    }
     // Try legal structure-based chunking first
     const docPatterns = patterns[documentType as keyof typeof patterns] || patterns.contract;
     let structuredChunks: string[] = [];
@@ -522,7 +522,7 @@ class LegalChunker {
   }
   // Enhanced chunking for specific legal document sections
   extractLegalSections(content: string, documentType: string): Record<string, string> {
-    const sections: Record<string, string> = {};
+    const sections: Record<string, string> = {}
     const sectionPatterns = {
       contract: {
         parties: /(?:PARTIES|Party|Parties to this Agreement)[^\n]*\n([\s\S]*?)(?=\n(?:RECITALS|WHEREAS|BACKGROUND|TERMS|$))/i,
@@ -543,7 +543,7 @@ class LegalChunker {
         provisions: /(?:PROVISIONS|REQUIREMENTS)[^\n]*\n([\s\S]*?)(?=\n(?:PENALTIES|ENFORCEMENT|$))/i,
         enforcement: /(?:ENFORCEMENT|PENALTIES|SANCTIONS)[^\n]*\n([\s\S]*?)$/i
       }
-    };
+    }
     const patterns = sectionPatterns[documentType as keyof typeof sectionPatterns];
     if (patterns) {
       for (const [sectionName, pattern] of Object.entries(patterns)) {
@@ -576,7 +576,7 @@ export class EnhancedLegalRAGPipeline {
   private metrics: MetricsCollector;
   private chunker: LegalChunker;
   constructor(config?: Partial<RAGConfig>) {
-    this.config = { ...createDefaultConfig(), ...config };
+    this.config = { ...createDefaultConfig(), ...config }
     this.validator = new InputValidator(this.config.security);
     this.rateLimiter = new RateLimiter(this.config.security.rateLimit);
     this.metrics = new MetricsCollector();
@@ -625,7 +625,7 @@ export class EnhancedLegalRAGPipeline {
         prepare: true
         connect_timeout: this.config.database.connect_timeout,
         onnotice: (notice: any) => console.debug('[DB] Notice:', notice),
-        onparameter: (key: string, value: any) => console.debug(`[DB] Parameter ${key}:`, value)
+        onparameter: (_key: string, value: any) => console.debug(`[DB] Parameter ${key}:`, value)
       });
       this.db = drizzle(this.sql, { schema });
       // Test connection
@@ -821,7 +821,7 @@ export class EnhancedLegalRAGPipeline {
                     legalSections: Object.keys(legalSections),
                     ...metadata
                   }
-                };
+                }
               } catch (error: any) {
                 const errorMsg = `Failed to process chunk ${i + idx}: ${error}`;
                 errors.push(errorMsg);
@@ -877,7 +877,7 @@ export class EnhancedLegalRAGPipeline {
         tags: tags.map(t => t.tag),
         processingTime,
         success,
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined;
         metadata: {
           documentType,
           confidentialityLevel,
@@ -885,7 +885,7 @@ export class EnhancedLegalRAGPipeline {
           totalChunks: chunks.length
         },
         confidentialityLevel
-      };
+      }
     } catch (error: any) {
       const processingTime = Date.now() - startTime;
       console.error('[RAG] Ingestion error:', error);
@@ -1054,7 +1054,7 @@ export class EnhancedLegalRAGPipeline {
       const relevantDocs = await this.hybridSearch({
         query: question
         caseId,
-        limit: maxSources
+        limit: maxSources;
         threshold: 0.6,
         userId,
         sortBy: 'relevance'
@@ -1066,7 +1066,7 @@ export class EnhancedLegalRAGPipeline {
           confidence: 0,
           keyPoints: [],
           processingTime: Date.now() - startTime
-        };
+        }
       }
       // Build context from retrieved documents
       const context = relevantDocs
@@ -1160,7 +1160,7 @@ Answer:
         citations,
         legalPrecedents,
         riskAssessment
-      };
+      }
       this.metrics.incrementCounter('questions_answered');
       this.metrics.recordTiming('qa_time', (result as { processingTime?: any; status?: any; reason?: any }).processingTime, {
         confidentiality_level: confidentialityLevel || 'general',
@@ -1267,7 +1267,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
         processingTime,
         complianceFlags,
         jurisdiction
-      };
+      }
     } catch (error: any) {
       console.error('[RAG] Contract analysis error:', error);
       this.metrics.incrementCounter('contract_analysis_errors');
@@ -1370,7 +1370,7 @@ Limit to 10 most relevant tags.
     return {
       confidence: Math.max(0.1, baseConfidence),
       keyPoints
-    };
+    }
   }
   /**
    * Extract highlights from content based on query
@@ -1459,7 +1459,7 @@ Limit to 10 most relevant tags.
     return {
       level,
       factors: factors.slice(0, 5) // Limit factors
-    };
+    }
   }
   /**
    * Parse contract analysis results
@@ -1472,8 +1472,8 @@ Limit to 10 most relevant tags.
       risks: [] as Array<any>,
       legalIssues: [] as string[],
       recommendations: [] as string[]
-    };
-    const lines = analysis.split('\n');
+    }
+    // removed unused lines assignment
     let currentSection = '';
     for (const line of lines) {
       const trimmed = line.trim();
@@ -1532,7 +1532,7 @@ Limit to 10 most relevant tags.
       'intellectual_property': ['ip', 'patent', 'trademark', 'copyright'],
       'anti_trust': ['antitrust', 'monopoly', 'competition', 'market'],
       'international': ['export', 'import', 'sanctions', 'foreign']
-    };
+    }
     for (const [flag, terms] of Object.entries(flagPatterns)) {
       if (terms.some(term => lowerAnalysis.includes(term))) {
         flags.push(flag);
@@ -1558,7 +1558,7 @@ Limit to 10 most relevant tags.
     ]);
     const services = ['Database', 'Redis', 'Ollama'];
     return checks.map((result, index) => ({
-      service: services[index]
+      service: services[index];
       status: (result as { processingTime?: any; status?: any; reason?: any }).status === 'fulfilled' ? 'healthy' : 'unhealthy',
       error: (result as { processingTime?: any; status?: any; reason?: any }).status === 'rejected' ? (result as { processingTime?: any; status?: any; reason?: any }).reason?.message: undefined
       timestamp: new Date().toISOString()
@@ -1596,7 +1596,7 @@ Limit to 10 most relevant tags.
         perMinute: this.config.security.rateLimit.perMinute,
         windowMs: this.config.security.rateLimit.windowMs
       }
-    };
+    }
   }
   /**
    * Get rate limiting status for user
@@ -1606,7 +1606,7 @@ Limit to 10 most relevant tags.
       remaining: this.rateLimiter.getRemainingRequests(userId),
       resetTime: this.rateLimiter.getTimeUntilReset(userId),
       limit: this.config.security.rateLimit.perMinute
-    };
+    }
   }
   // ===== CLEANUP =====
   /**
@@ -1637,7 +1637,7 @@ export const ragPipeline = enhancedRAGPipeline;
 /**
  * Export configuration creator for custom instances
  */
-export { createDefaultConfig };
+export { createDefaultConfig }
 /**
  * Export all interfaces for external use
  */

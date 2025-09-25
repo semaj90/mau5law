@@ -46,7 +46,7 @@ export class MemoryPalaceEngine {
   private renderLoop?: number;
   private settings: PalaceSettings;
   // N64-style constraints
-  private readonly MAX_POLYGONS = 160000;  // N64 limit
+  private readonly MAX_POLYGONS = 160000; // N64 limit
   private readonly TEXTURE_CACHE_SIZE = 4 * 1024 * 1024; // 4MB like N64
   private textureCache = new Map<string, WebGLTexture>();
   private currentMemoryUsage = 0;
@@ -54,9 +54,9 @@ export class MemoryPalaceEngine {
     this.canvas = canvas;
     const gl = canvas.getContext('webgl2', {
       antialias: false, // N64-style pixelated look
-      alpha: false
-      depth: true
-      preserveDrawingBuffer: false
+      alpha: false,
+      depth: true,
+      preserveDrawingBuffer: false,
     });
     if (!gl) {
       throw new Error('WebGL2 not supported');
@@ -66,17 +66,17 @@ export class MemoryPalaceEngine {
       renderDistance: 100,
       lodLevels: 4,
       textureResolution: 64, // N64-style low-res textures
-      memoryBudgetMB: 4,     // N64 memory constraint
+      memoryBudgetMB: 4, // N64 memory constraint
       consolePalette: 'n64',
-      ...settings
-    };
+      ...settings,
+    }
     this.camera = {
       position: [0, 5, 10],
       target: [0, 0, 0],
       fov: 60,
       near: 0.1,
-      far: this.settings.renderDistance
-    };
+      far: this.settings.renderDistance,
+    }
     this.initializeWebGL();
   }
   private async initializeWebGL(): Promise<void> {
@@ -188,7 +188,7 @@ export class MemoryPalaceEngine {
     for (const room of rooms) {
       this.rooms.set(room.id, {
         ...room,
-        documents: await this.processDocuments(room.documents)
+        documents: await this.processDocuments(room.documents),
       });
     }
   }
@@ -196,14 +196,20 @@ export class MemoryPalaceEngine {
     return documents.map(doc => ({
       ...doc,
       // Generate embeddings if not provided (mock for now)
-      embedding: doc.embedding || new Float32Array(Array(384).fill(0).map(() => Math.random()))
+      embedding:
+        doc.embedding ||
+        new Float32Array(
+          Array(384)
+            .fill(0)
+            .map(() => Math.random()),
+        ),
     }));
   }
   startRenderLoop(): void {
     const render = () => {
       this.render();
       this.renderLoop = requestAnimationFrame(render);
-    };
+    }
     render();
   }
   stopRenderLoop(): void {
@@ -234,33 +240,40 @@ export class MemoryPalaceEngine {
   }
   private calculateViewMatrix(): Float32Array {
     // Simple look-at matrix calculation
-    const eye = this.camera.position;
-    const target = this.camera.target;
-    const up = [0, 1, 0];
+    // removed unused eye assignment
+    // removed unused target assignment
+    // removed unused up assignment
     // This would typically use a proper matrix library
     // For now, return identity matrix
-    return new Float32Array([
-      1, 0, 0, 0,
-      0, 1, 0, 0,
-      0, 0, 1, 0,
-      0, 0, 0, 1
-    ]);
+    return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
   }
   private calculateProjectionMatrix(): Float32Array {
     // Perspective projection matrix
     const aspect = this.canvas.width / this.canvas.height;
-    const fov = this.camera.fov * Math.PI / 180;
+    const fov = (this.camera.fov * Math.PI) / 180;
     const near = this.camera.near;
     const far = this.camera.far;
     const f = 1.0 / Math.tan(fov / 2);
     return new Float32Array([
-      f / aspect, 0, 0, 0,
-      0, f, 0, 0,
-      0, 0, (far + near) / (near - far), 2 * far * near / (near - far),
-      0, 0, -1, 0
+      f / aspect,
+      0,
+      0,
+      0,
+      0,
+      f,
+      0,
+      0,
+      0,
+      0,
+      (far + near) / (near - far),
+      (2 * far * near) / (near - far),
+      0,
+      0,
+      -1,
+      0,
     ]);
   }
-  private renderRoom(room: MemoryRoom): void {
+  private renderRoom(_room: MemoryRoom): void {
     // Calculate distance from camera for LOD
     const distance = this.calculateDistance(this.camera.position, room.position);
     const lodLevel = this.calculateLOD(distance);
@@ -283,21 +296,21 @@ export class MemoryPalaceEngine {
   }
   private calculateLOD(distance: number): number {
     // N64-style LOD: closer = higher detail
-    if (distance < 10) return 0;      // High detail
-    if (distance < 25) return 1;      // Medium detail
-    if (distance < 50) return 2;      // Low detail
-    return 3;                         // Minimal detail
+    if (distance < 10) return 0; // High detail
+    if (distance < 25) return 1; // Medium detail
+    if (distance < 50) return 2; // Low detail
+    return 3; // Minimal detail
   }
-  private renderRoomGeometry(room: MemoryRoom, lodLevel: number): void {
+  private renderRoomGeometry(_room: MemoryRoom, lodLevel: number): void {
     // Render simplified geometry based on LOD
     // This would create the actual WebGL buffers and draw calls
   }
-  private shouldRenderDocument(document: LegalDocument, roomDistance: number): boolean {
+  private shouldRenderDocument(_document: LegalDocument, roomDistance: number): boolean {
     // Cull documents based on priority and distance
     const priorityThreshold = Math.max(0.1, 1.0 - roomDistance / 50.0);
     return document.priority >= priorityThreshold;
   }
-  private renderDocument(document: LegalDocument, lodLevel: number): void {
+  private renderDocument(_document: LegalDocument, lodLevel: number): void {
     // Render document as a floating card or hologram
     // Style based on document type and confidence
   }
@@ -321,14 +334,14 @@ export class MemoryPalaceEngine {
         this.camera.position = [
           startPosition[0] + (targetPosition[0] - startPosition[0]) * eased,
           startPosition[1] + (targetPosition[1] - startPosition[1]) * eased,
-          startPosition[2] + (targetPosition[2] - startPosition[2]) * eased
+          startPosition[2] + (targetPosition[2] - startPosition[2]) * eased,
         ];
         if (progress < 1) {
           requestAnimationFrame(animate);
         } else {
           resolve();
         }
-      };
+      }
       requestAnimationFrame(animate);
     });
   }
@@ -356,8 +369,8 @@ export class MemoryPalaceEngine {
     return {
       used: this.currentMemoryUsage,
       total: this.TEXTURE_CACHE_SIZE,
-      utilization: (this.currentMemoryUsage / this.TEXTURE_CACHE_SIZE) * 100
-    };
+      utilization: (this.currentMemoryUsage / this.TEXTURE_CACHE_SIZE) * 100,
+    }
   }
   destroy(): void {
     this.stopRenderLoop();
@@ -375,8 +388,8 @@ export class MemoryPalaceEngine {
 }
 // Factory function for easier instantiation
 export async function createMemoryPalaceEngine(
-  canvas: HTMLCanvasElement
-  settings?: Partial<PalaceSettings>
+  canvas: HTMLCanvasElement,
+  settings?: Partial<PalaceSettings>,
 ): Promise<MemoryPalaceEngine> {
   const engine = new MemoryPalaceEngine(canvas, settings);
   return engine;

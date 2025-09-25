@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
  */
 import { ensureError } from '$lib/utils/ensure-error'
 import { productionServiceClient } from "$lib/services/productionServiceClient"
-import { URL } from "url"
+
 }
 export interface AIRequest {
   type: 'summary' | 'legal' | 'live' | 'analysis'

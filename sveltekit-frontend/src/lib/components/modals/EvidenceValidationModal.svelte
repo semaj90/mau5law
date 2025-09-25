@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https: //svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'aiEvent' has already been declared;
@@ -46,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
         tags: evidence.aiTags || [],
         evidenceType: evidence.evidenceType || "",
         analysis: evidence.aiAnalysis?.analysis || "",
-      };
+      }
     }
   });
   function handleValidationChoice(choice: "approve" | "reject") {
@@ -73,8 +73,8 @@ https://svelte.dev/e/js_parse_error -->
         eventId: aiEvent?.id || null,
         valid: validationChoice === "approve",
         feedback: feedback.trim() || null,
-        corrections: validationChoice === "reject" ? corrections : null
-      };
+        corrections: validationChoice === "reject" ? corrections : null;
+      }
       const response = await fetch("/api/evidence/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -353,4 +353,4 @@ submitValidation()}
       {/if}
     </div>
   </DialogPrimitive.Content>
-</DialogPrimitive.Root>
+</DialogPrimitive.Root>;

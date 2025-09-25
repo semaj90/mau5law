@@ -5,6 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   let { options: { value, selected = '', placeholder = 'Select an option', label = '', id = ''  }: { options: { value, selected = '', placeholder = 'Select an option', label = '', id = '' : unknown } = $props();
    label: string }[] = [];
 </script>
+
 <div class="dropdown-container">
   {#if label}
     <label for="dropdown-{label.replace(/\s+/g, '-')}" class="dropdown-label">{label}</label>
@@ -18,6 +19,7 @@ https://svelte.dev/e/js_parse_error -->
     {/each}
   </select>
 </div>
+
 <style>
   .dropdown-container {
     margin-bottom: 1rem;

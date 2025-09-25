@@ -26,7 +26,7 @@
   							const { done, value } = await reader.read();
   							if (done) break;
   							const chunk = decoder.decode(value, { stream: true });
-  							const lines = chunk.split.filter(line => line.trim() !== '');
+  							// removed unused lines assignment
   							for (const line of lines) {
   								try {
   									const jsonResponse = JSON.parse(line);
@@ -49,11 +49,11 @@
   				stream();
   				return () => {
   					controller.abort();
-  				};
+  				}
   			}
   		}
   	});
-  	function handleSubmit(event: SubmitEvent) {
+  	function handleSubmit(_event: SubmitEvent) {
   		event.preventDefault();
   		if (!userInput.trim()) return;
   		send({ type: 'SUBMIT', message: userInput });
@@ -71,46 +71,49 @@
   		}
   	});
 </script>
+
 <div class="flex flex-col h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900">
-	<div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">
-		{#each snapshot.context.messages as message, i (i)}
-			<div class="chat-message {message.role === 'user' ? 'user' : 'assistant'}">
-				<div class="message-bubble">
-					{@html message.content.replace(/\n/g, '<br>')}
-					{#if snapshot.matches('loading') && i === snapshot.context.messages.length - 1}
-						<span class="typing-indicator"></span>
-					{/if}
-				</div>
-			</div>
-		{/each}
-		{#if snapshot.matches('error')}
-			<div class="chat-message assistant">
-				<div class="message-bubble error-bubble">
-					<p>Sorry, an error occurred: {snapshot.context.error?.message || 'Unknown error'}</p>
-					<p>Please try again.</p>
-				</div>
-			</div>
-		{/if}
-	</div>
-	<div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-		<form onsubmit={handleSubmit} class="flex items-center space-x-2">
-			<input
-				type="text";
-				bind:value={userInput}
-				placeholder="Ask about your case..."
-				class="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-				disabled={snapshot.matches('loading')}
-			/>
-			<button
-				type="submit"
-				class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed"
-				disabled={snapshot.matches('loading') || !userInput.trim()}
-			>
-				Send
-			</button>
-		</form>
-	</div>
+  <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">
+    {#each snapshot.context.messages as message, i (i)}
+      <div class="chat-message {message.role === 'user' ? 'user' : 'assistant'}">
+        <div class="message-bubble">
+          {@html message.content.replace(/\n/g, '<br>')}
+          {#if snapshot.matches('loading') && i === snapshot.context.messages.length - 1}
+            <span class="typing-indicator"></span>
+          {/if}
+        </div>
+      </div>
+    {/each}
+    {#if snapshot.matches('error')}
+      <div class="chat-message assistant">
+        <div class="message-bubble error-bubble">
+          <p>Sorry, an error occurred: {snapshot.context.error?.message || 'Unknown error'}</p>
+          <p>Please try again.</p>
+        </div>
+      </div>
+    {/if}
+  </div>
+  <div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+    <form onsubmit={handleSubmit} class="flex items-center space-x-2">
+      <input
+        type="text"
+        ;
+        bind:value={userInput}
+        placeholder="Ask about your case..."
+        class="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        disabled={snapshot.matches('loading')}
+      />
+      <button
+        type="submit"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed"
+        disabled={snapshot.matches('loading') || !userInput.trim()}
+      >
+        Send
+      </button>
+    </form>
+  </div>
 </div>
+
 <style>
 	/* Styles from previous Chat.svelte component can be reused here */
 	.chat-message { display: flex; max-width: 80%; }

@@ -34,7 +34,7 @@ export interface BatchEmbeddingRequest {
   options?: {
     batchSize?: number;
     maxConcurrent?: number;
-  };
+  }
 }
 export interface TextPreprocessingResult {
   cleanText: string;
@@ -44,7 +44,7 @@ export interface TextPreprocessingResult {
     cleanedLength: number;
     tokenCount: number;
     hasSpecialChars: boolean;
-  };
+  }
 }
 export interface WASMEmbeddingConfig {
   wasmPath: string;
@@ -61,7 +61,7 @@ export interface BatchEmbeddingResponse {
     successful: number;
     failed: number;
     processingTime: string;
-  };
+  }
 }
 export interface VectorDocument {
   id: string;
@@ -73,7 +73,7 @@ export interface VectorDocument {
     source?: string;
     createdAt?: string;
     [key: string]: any;
-  };
+  }
 }
 export interface SimilaritySearchOptions {
   limit?: number;

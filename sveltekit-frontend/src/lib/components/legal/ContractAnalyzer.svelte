@@ -72,7 +72,7 @@
         type: 'confidentiality',
         content: 'All confidential information shall be protected for a period of 5 years...',
         riskLevel: 'low',
-        confidence: 0.95;
+        confidence: 0.95,
       }
     ]
   });
@@ -123,19 +123,20 @@
       confidentiality: '🔒',
       liability: '⚠️',
       governing_law: '⚖️';
-    };
+    }
     return icons[type] || '📄';
   }
   function getRiskBadgeStyle(risk: string) {
     return riskStyles()[risk as keyof typeof riskStyles] || riskStyles().medium;
   }
 </script>
+
 <div class="contract-analyzer">
   <!-- Contract Header -->
   <Card
     style="
-      border-color: {contractBuilder.styling.colors.primary};
-      border-width: {contractBuilder.styling.nes.borderWidth};
+      border-color: {contractBuilder.styling.colors.primary}
+      border-width: {contractBuilder.styling.nes.borderWidth}
     "
   >
     <CardHeader>
@@ -147,7 +148,10 @@
             <div class="contract-meta">
               <span class="contract-type">{contractData.type.toUpperCase()}</span>
               <span class="contract-status status-{contractData.status}">{contractData.status}</span>
-              <span class="risk-score" style="color: {getRiskBadgeStyle(contractData.riskScore > 7 ? 'high' : 'medium').color};">
+              <span
+                class="risk-score"
+                style="color: {getRiskBadgeStyle(contractData.riskScore > 7 ? 'high' : 'medium').color}"
+              >
                 Risk: {contractData.riskScore.toFixed(1)}/10
               </span>
             </div>
@@ -157,7 +161,7 @@
           <Button
             onclick={analyzeContract}
             disabled={isAnalyzing}
-            style="background: {contractBuilder.styling.colors.ai};"
+            style="background: {contractBuilder.styling.colors.ai}"
           >
             {isAnalyzing ? '🔄 Analyzing...' : '🤖 AI Analyze'}
           </Button>
@@ -175,11 +179,7 @@
     <CardContent>
       <!-- Search and Filters -->
       <div class="search-section">
-        <Input
-          bind:value={searchTerm}
-          placeholder="Search clauses, terms, or clause types..."
-          class="clause-search"
-        />
+        <Input bind:value={searchTerm} placeholder="Search clauses, terms, or clause types..." class="clause-search" />
         <div class="clause-stats">
           <span class="stat-item">
             📄 {filteredClauses.length} clauses
@@ -200,9 +200,9 @@
               <div class="risk-track">
                 <div
                   class="risk-fill"
-                  style="
+                  style=";
                     width: {(count / contractData.clauses.length) * 100}%;
-                    background: {getRiskBadgeStyle(riskLevel).color};
+                    background: {getRiskBadgeStyle(riskLevel).color}
                   "
                 ></div>
               </div>
@@ -219,9 +219,9 @@
             <div
               class="clause-card"
               class:selected={selectedClause === clause.id}
-              onclick={() => selectClause(clause.id)};
+              onclick="{() => selectClause(clause.id)}"
               transition:scale={contractBuilder.animations.enter}
-              style="border-color: {getRiskBadgeStyle(clause.riskLevel).color};"
+              style="border-color: {getRiskBadgeStyle(clause.riskLevel).color}"
             >
               <div class="clause-header">
                 <div class="clause-type">
@@ -242,7 +242,7 @@
                         class="confidence-fill"
                         style="
                           width: {clause.confidence * 100}%;
-                          background: {contractBuilder.styling.colors.evidence};
+                          background: {contractBuilder.styling.colors.evidence}
                         "
                       ></div>
                     </div>
@@ -274,6 +274,7 @@
     </CardContent>
   </Card>
 </div>
+
 <style>
   .contract-analyzer {
     max-width: 1200px;
@@ -318,10 +319,22 @@
     border-radius: 4px;
     font-weight: bold;
   }
-  .status-draft { background: rgba(156, 163, 175, 0.2); color: #9ca3af; }
-  .status-review { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-  .status-approved { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-  .status-executed { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+  .status-draft {
+    background: rgba(156, 163, 175, 0.2);
+    color: #9ca3af;
+  }
+  .status-review {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+  }
+  .status-approved {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+  }
+  .status-executed {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+  }
   .risk-score {
     font-weight: bold;
   }

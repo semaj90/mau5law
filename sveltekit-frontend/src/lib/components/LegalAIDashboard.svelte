@@ -109,7 +109,7 @@ try {
       } catch (err) {
         error = err instanceof Error ? err.message: 'Failed to upload evidence';
       }
-    };
+    }
     input.click();
   }
   function selectCase(case_: any): void {
@@ -279,7 +279,7 @@ try {
                   <div
                     class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
                     onclick={() => selectCase(case_)}
-                    class:ring-2={selectedCase?.id === case_.id};
+                    class:ring-2={selectedCase?.id === case_.id}
                     class:ring-blue-500={selectedCase?.id === case_.id}
                   >
                     <div class="flex justify-between items-start">

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Missing catch or finally clause
+<!-- @migration-task Error while migrating Svelte code: Missing catch or finally clause;
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Missing catch or finally clause -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
     (async () => {
 // Load available cases
     try {
-      const response = await fetch("/api/cases");
+      // removed unused response assignment
       if ((response as { ok?: any; json?: any }).ok) {
         cases = await (response as { ok?: any; json?: any }).json();
   }

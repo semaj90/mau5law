@@ -16,7 +16,7 @@ export interface VectorCacheEntry {
     model: string;
     distanceMetric: 'cosine' | 'euclidean' | 'inner_product';
     threshold?: number;
-  };
+  }
   ts: number;
   lastAccess: number;
   ttlMs: number;
@@ -54,14 +54,14 @@ function generateVectorKey(query: string, options: any = {}): string {
     threshold: options.threshold || 1,
     documentType: options.documentType,
     includeContent: options.includeContent
-  };
+  }
   return crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex').substring(0, 16);
 }
 /**
  * Generate cache key for embeddings
  */;
 function generateEmbeddingKey(text: string, model: string = 'default'): string {
-  const keyData = { text: text.trim(), model };
+  const keyData = { text: text.trim(), model }
   return crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex').substring(0, 16);
 }
 /**
@@ -111,7 +111,7 @@ export async function getVectorCache(query: string, options: any = {}): Promise<
     memEntry.lastAccess = now;
     vectorCache.delete(key);
     vectorCache.set(key, memEntry);
-    return { entry: memEntry, source: 'memory' };
+    return { entry: memEntry, source: 'memory' }
   }
   // Check Redis cache
   const redis = getRedisClient();
@@ -125,13 +125,13 @@ export async function getVectorCache(query: string, options: any = {}): Promise<
         // Store in memory cache for faster future access
         vectorCache.set(key, entry);
         evictVectorCache();
-        return { entry, source: 'redis' };
+        return { entry, source: 'redis' }
       }
     } catch (error) {
       console.warn('[VectorCache] Redis get failed:', error);
     }
   }
-  return { entry: null, source: null };
+  return { entry: null, source: null }
 }
 /**
  * Cache vector search results
@@ -151,7 +151,7 @@ export async function setVectorCache(
     ts: now
     lastAccess: now
     ttlMs: VECTOR_TTL_MS
-  };
+  }
   // Store in memory
   vectorCache.set(key, entry);
   evictVectorCache();
@@ -179,7 +179,7 @@ export async function getEmbeddingCache(text: string, model: string = 'default')
     memEntry.lastAccess = now;
     embeddingCache.delete(key);
     embeddingCache.set(key, memEntry);
-    return { entry: memEntry, source: 'memory' };
+    return { entry: memEntry, source: 'memory' }
   }
   // Check Redis cache
   const redis = getRedisClient();
@@ -193,20 +193,20 @@ export async function getEmbeddingCache(text: string, model: string = 'default')
         // Store in memory cache
         embeddingCache.set(key, entry);
         evictEmbeddingCache();
-        return { entry, source: 'redis' };
+        return { entry, source: 'redis' }
       }
     } catch (error) {
       console.warn('[EmbeddingCache] Redis get failed:', error);
     }
   }
-  return { entry: null, source: null };
+  return { entry: null, source: null }
 }
 /**
  * Cache embedding result
  */
 export async function setEmbeddingCache(
   text: string
-  embedding: number[]
+  embedding: number[];
   model: string = 'default';
 ): Promise<void> {
   const key = generateEmbeddingKey(text, model);
@@ -219,7 +219,7 @@ export async function setEmbeddingCache(
     ts: now
     lastAccess: now
     ttlMs: EMBEDDING_TTL_MS
-  };
+  }
   // Store in memory
   embeddingCache.set(key, entry);
   evictEmbeddingCache();
@@ -270,7 +270,7 @@ export function getVectorCacheStats() {
       embeddingTtlMs: EMBEDDING_TTL_MS
       redisEnabled: !!getRedisClient()
     }
-  };
+  }
 }
 /**
  * Middleware helper for caching vector API responses
@@ -303,5 +303,5 @@ export function withVectorCache<T>(
       }
     }
     return result;
-  };
+  }
 }

@@ -167,7 +167,7 @@ export class AccessibilityValidator {
       errors: number;
       warnings: number;
       info: number;
-    };
+    }
     issues: AccessibilityReport[];
   } {
     const issues = this.validatePage();
@@ -179,7 +179,7 @@ export class AccessibilityValidator {
         info: issues.filter(i => i.rule.severity === 'info').length
       },
       issues
-    };
+    }
   }
   /**
    * Live accessibility monitoring
@@ -247,13 +247,13 @@ export class KeyboardNavigationHelper {
           firstElement.focus();
         }
       }
-    };
+    }
     container.addEventListener('keydown', handleKeyDown);
     firstElement?.focus();
     // Return cleanup function
     return () => {
       container.removeEventListener('keydown', handleKeyDown);
-    };
+    }
   }
   /**
    * Handle escape key for closing modals
@@ -263,11 +263,11 @@ export class KeyboardNavigationHelper {
       if (e.key === 'Escape') {
         callback();
       }
-    };
+    }
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-    };
+    }
   }
 }
 // Export singleton instances

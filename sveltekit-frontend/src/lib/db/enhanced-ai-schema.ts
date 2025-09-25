@@ -43,14 +43,18 @@ export const aiResponses = pgTable('ai_responses', {
   tags: jsonb('tags').default(sql`'[]'::jsonb`), // Searchable tags array
   // Quality indicators
   isValidated: boolean('is_validated').default(false), // Human verified
-  flaggedForReview: boolean('flagged_for_review').default(false)
+  flaggedForReview: boolean('flagged_for_review').default(false),
 });
 // Recommendation scores and rankings
 export const recommendationScores = pgTable('recommendation_scores', {
   id: uuid('id').defaultRandom().primaryKey(),
   // Target and recommended items
-  queryId: uuid('query_id').references(() => aiResponses.id).notNull(),
-  recommendedId: uuid('recommended_id').references(() => aiResponses.id).notNull(),
+  queryId: uuid('query_id')
+    .references(() => aiResponses.id)
+    .notNull(),
+  recommendedId: uuid('recommended_id')
+    .references(() => aiResponses.id)
+    .notNull(),
   // Scoring components
   semanticSimilarity: decimal('semantic_similarity', { precision: 8, scale: 6 }), // Cosine similarity
   temporalScore: decimal('temporal_score', { precision: 5, scale: 4 }), // Recency factor
@@ -62,13 +66,15 @@ export const recommendationScores = pgTable('recommendation_scores', {
   algorithm: text('algorithm').notNull(), // 'semantic', 'collaborative', 'hybrid'
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull()
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 // Feedback loop for GRPO (Generalized Reinforcement from Preference Optimization)
 export const grpoFeedback = pgTable('grpo_feedback', {
   id: uuid('id').defaultRandom().primaryKey(),
   // Response being evaluated
-  responseId: uuid('response_id').references(() => aiResponses.id).notNull(),
+  responseId: uuid('response_id')
+    .references(() => aiResponses.id)
+    .notNull(),
   // Human preference data
   userRating: integer('user_rating').notNull(), // 1-5 scale
   preferredAlternative: uuid('preferred_alternative'), // Other response if comparison
@@ -84,14 +90,18 @@ export const grpoFeedback = pgTable('grpo_feedback', {
   // User providing feedback
   userId: uuid('user_id'),
   userRole: text('user_role'), // lawyer, paralegal, judge, etc.
-  createdAt: timestamp('created_at').defaultNow().notNull()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 // Vector similarity cache for performance
 export const similarityCache = pgTable('similarity_cache', {
   id: uuid('id').defaultRandom().primaryKey(),
   // Cached similarity pair
-  embedding1Id: uuid('embedding1_id').references(() => aiResponses.id).notNull(),
-  embedding2Id: uuid('embedding2_id').references(() => aiResponses.id).notNull(),
+  embedding1Id: uuid('embedding1_id')
+    .references(() => aiResponses.id)
+    .notNull(),
+  embedding2Id: uuid('embedding2_id')
+    .references(() => aiResponses.id)
+    .notNull(),
   // Cached similarity score
   similarity: decimal('similarity', { precision: 8, scale: 6 }).notNull(),
   algorithm: text('algorithm').notNull(), // 'cosine', 'euclidean', 'dot'
@@ -103,8 +113,12 @@ export const similarityCache = pgTable('similarity_cache', {
 export const legalEntityRelations = pgTable('legal_entity_relations', {
   id: uuid('id').defaultRandom().primaryKey(),
   // Source and target entities
-  sourceResponseId: uuid('source_response_id').references(() => aiResponses.id).notNull(),
-  targetResponseId: uuid('target_response_id').references(() => aiResponses.id).notNull(),
+  sourceResponseId: uuid('source_response_id')
+    .references(() => aiResponses.id)
+    .notNull(),
+  targetResponseId: uuid('target_response_id')
+    .references(() => aiResponses.id)
+    .notNull(),
   // Relationship type and strength
   relationType: text('relation_type').notNull(), // 'cites', 'contradicts', 'supports', 'extends'
   relationStrength: decimal('relation_strength', { precision: 5, scale: 4 }),
@@ -114,7 +128,7 @@ export const legalEntityRelations = pgTable('legal_entity_relations', {
   // Discovery metadata
   discoveredBy: text('discovered_by'), // 'nlp', 'manual', 'graph_algorithm'
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
-  createdAt: timestamp('created_at').defaultNow().notNull()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 // Performance analytics for recommendation tuning
 export const recommendationAnalytics = pgTable('recommendation_analytics', {
@@ -130,7 +144,7 @@ export const recommendationAnalytics = pgTable('recommendation_analytics', {
   periodStart: timestamp('period_start').notNull(),
   periodEnd: timestamp('period_end').notNull(),
   totalRecommendations: integer('total_recommendations'),
-  createdAt: timestamp('created_at').defaultNow().notNull()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 // Type exports for use in API and components
 export type AIResponse = typeof aiResponses.$inferSelect;
@@ -147,12 +161,12 @@ export const RECOMMENDATION_WEIGHTS = {
   SEMANTIC_SIMILARITY: 0.35,
   TEMPORAL_SCORE: 0.15,
   CONTEXT_RELEVANCE: 0.25,
-  USER_PREFERENCE: 0.20,
-  USAGE_COUNT: 0.05
+  USER_PREFERENCE: 0.2,
+  USAGE_COUNT: 0.05,
 } as const;
 // Temporal decay function parameters
 export const TEMPORAL_DECAY = {
   HALF_LIFE_DAYS: 30, // Score halves every 30 days
   MIN_SCORE: 0.1, // Minimum temporal score
-  MAX_SCORE: 1.0 // Maximum temporal score
+  MAX_SCORE: 1.0, // Maximum temporal score
 } as const;

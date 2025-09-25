@@ -1,4 +1,4 @@
-import { URL } from "url"
+
 import type { RequestHandler } from './$types.js'
 // Mock legal database - in production this would connect to a real legal database
 const mockLegalDatabase = [

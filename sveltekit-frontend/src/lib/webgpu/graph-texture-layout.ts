@@ -34,7 +34,7 @@ export interface GPUTextureData {
 }
 export interface LODLevel {
   level: number;
-  bounds: { x: number; y: number; width: number; height: number };
+  bounds: { x: number; y: number; width: number; height: number }
   nodeCount: number;
   loaded: boolean;
   gpuData?: GPUTextureData;
@@ -50,7 +50,7 @@ class GraphSpatialLayout {
    * Connected nodes will be adjacent in memory
    */
   async computeBFSLayout(
-    nodes: GraphNode[]
+    nodes: GraphNode[];
     edges: GraphEdge[];
   ): Promise<Map<string, number> {
     // Build adjacency map
@@ -80,7 +80,7 @@ class GraphSpatialLayout {
       const unvisitedNeighbors = neighbors
         .filter(neighbor => !visited.has(neighbor);
         .map(neighbor => ({
-          id: neighbor
+          id: neighbor;
           confidence: nodes.find(n => n.nodeId === neighbor)?.metadata.confidence || 0
         })
         .sort((a, b) => b.confidence - a.confidence) // High confidence first
@@ -111,7 +111,7 @@ class GraphSpatialLayout {
    * Uses Fruchterman-Reingold algorithm
    */
   async computeForceDirectedLayout(
-    nodes: GraphNode[]
+    nodes: GraphNode[];
     edges: GraphEdge[]
     iterations = 500;
   ): Promise<void> {
@@ -197,7 +197,7 @@ export class GraphTextureManager {
   private device: GPUDevice | null = null;
   private spatialLayout = new GraphSpatialLayout();
   private lodLevels: LODLevel[] = [];
-  private currentViewport = { x: 0, y: 0, width: 1000, height: 1000 };
+  private currentViewport = { x: 0, y: 0, width: 1000, height: 1000 }
   async initialize(): Promise<void> {
     if (!navigator.gpu) {
       throw new Error('WebGPU not available');
@@ -243,7 +243,7 @@ export class GraphTextureManager {
       nodeCount: nodes.length,
       loaded: true
       gpuData
-    };
+    }
     this.lodLevels.push(lodLevel);
     console.log(`✅ Loaded ${nodes.length} nodes with optimal GPU layout`);
   }
@@ -251,7 +251,7 @@ export class GraphTextureManager {
    * Create GPU data structures with spatial locality
    */
   private async createGPUDataStructures(
-    nodes: GraphNode[]
+    nodes: GraphNode[];
     edges: GraphEdge[]
     memoryLayout: Map<string, number>;
   ): Promise<GPUTextureData> {
@@ -268,7 +268,7 @@ export class GraphTextureManager {
     const nodeDataArray = new Float32Array(orderedNodes.length * 8); // 8 floats per node
     let nodeIndex = 0;
     for (const node of orderedNodes) {
-      const position = this.spatialLayout.getNodePosition(node.nodeId) || { x: 0, y: 0, z: 0 };
+      const position = this.spatialLayout.getNodePosition(node.nodeId) || { x: 0, y: 0, z: 0 }
       const baseIdx = nodeIndex * 8;
       // Position (vec3<f32>)
       nodeDataArray[baseIdx + 0] = position.x;
@@ -389,7 +389,7 @@ export class GraphTextureManager {
       varianceTexture,
       nodeDataBuffer,
       adjacencyBuffer
-    };
+    }
   }
   /**
    * Stream new data based on viewport changes (LOD system)
@@ -418,7 +418,7 @@ export class GraphTextureManager {
         metadata: vec4<f32>
         matrix_index: f32
         neighbor_offset: f32
-        neighbor_count: f32
+        neighbor_count: f32;
         padding: f32
       }
       @group(0) @binding(0) var<storage, read> node_data: array<NodeData>;
@@ -461,7 +461,7 @@ export class GraphTextureManager {
       'pleading': 4.0,
       'evidence': 5.0,
       'citation': 6.0
-    };
+    }
     return typeMap[documentType] || 0.0;
   }
   /**
@@ -477,7 +477,7 @@ export class GraphTextureManager {
         return sum + (level.nodeCount * 32) + (1024 * 1024 * 2); // Node data + textures
       }, 0),
       currentViewport: this.currentViewport
-    };
+    }
   }
   /**
    * Cleanup GPU resources

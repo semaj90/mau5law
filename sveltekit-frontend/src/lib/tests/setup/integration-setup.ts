@@ -47,13 +47,13 @@ const mockStorage = {
   clear: vi.fn(),
   length: 0,
   key: vi.fn()
-};
+}
 Object.defineProperty(window, 'localStorage', {
-  value: mockStorage
+  value: mockStorage;
   writable: true
 });
 Object.defineProperty(window, 'sessionStorage', {
-  value: mockStorage
+  value: mockStorage;
   writable: true
 });
 // Mock crypto for session token generation
@@ -318,7 +318,7 @@ global.FileReader = class MockFileReader extends EventTarget {
   }
   readAsDataURL(file: File) {
     setTimeout(() => {
-      this.result = `data:${file.type};base64,mockedcontent`;
+      this.result = `data:${file.type}base64,mockedcontent`;
       this.readyState = 2;
       this.dispatchEvent(new Event('loadend');
     }, 0);
@@ -357,7 +357,7 @@ global.FormData = class MockFormData {
   set(name: string, value: string | File | Blob, filename?: string) {
     this._data.set(name, [value]);
   }
-  forEach(callback: (value: FormDataEntryValue, name: string, formData: FormData) => void) {
+  forEach(callback: (_value: FormDataEntryValue, name: string, formData: FormData) => void) {
     for (const [name, values] of this._data) {
       for (const value of values) {
         callback(value, name, this as any);

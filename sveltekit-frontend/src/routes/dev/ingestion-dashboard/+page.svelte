@@ -23,11 +23,11 @@ https://svelte.dev/e/js_parse_error -->
     text: '',
     chunks: 1,
     priority: 'normal';
-  };
+  }
   let submissionStatus = '';
   async function fetchDashboardData() {
     try {
-      const response = await fetch('/api/ingestion/comprehensive?action=get_dashboard');
+      // removed unused response assignment
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; dashboard?: unknown; error?: unknown; jobId?: unknown; message?: unknown }).success) {
         dashboardData.set(dashboard));
@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
       if ((result as { success?: unknown; dashboard?: unknown; error?: unknown; jobId?: unknown; message?: unknown }).success) {
         submissionStatus = `✅ Job submitted: ${(result as { success?: unknown; dashboard?: unknown; error?: unknown; jobId?: unknown; message?: unknown }).jobId}`;
         // Reset form
-        newJob = { documentId: '', text: '', chunks: 1, priority: 'normal' };
+        newJob = { documentId: '', text: '', chunks: 1, priority: 'normal' }
         // Refresh dashboard
         await fetchDashboardData();
       } else {
@@ -123,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
       'idle': 'text-gray-600',
       'error': 'text-red-600',
       'offline': 'text-gray-400'
-    };
+    }
     return colors[status] || 'text-gray-600';
   }
   $effect(() => {

@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
       "#92400e",
       "#166534",
     ],
-  };
+  }
   // Font options
   const fontFamilies = [
     "Inter",
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
   });
   function initializeEditor( {
     editor = new Editor({
-      element: editorElement
+      element: editorElement;
       extensions: [
         StarterKit.configure({
           history: {
@@ -169,20 +169,20 @@ https://svelte.dev/e/js_parse_error -->
         }),
         Image.configure({
           inline: true
-          allowBase64: true
+          allowBase64: true;
         }),
         TextAlign.configure({
           types: ["heading", "paragraph"],
         }),
         Highlight.configure({
-          multicolor: true
+          multicolor: true;
         }),
         Typography,
         Placeholder.configure({
-          placeholder: placeholder
+          placeholder: placeholder;
         }),
         Table.configure({
-          resizable: true
+          resizable: true;
         }),
         TableRow,
         TableHeader,
@@ -303,7 +303,7 @@ https://svelte.dev/e/js_parse_error -->
           document.addEventListener("keydown", (e)
           return () => {
             document.removeEventListener('keydown', (e);
-          };
+          }
     } catch (error) {
       console.error('Effect error:', error);
       // Handle error gracefully
@@ -371,10 +371,10 @@ https://svelte.dev/e/js_parse_error -->
         reader.onload = (e) => {
           const src = e.target?.result as string;
           editor?.chain.focus().setImage.run();
-        };
+        }
         reader.readAsDataURL(file);
       }
-    };
+    }
     input.click();
   }
   function toggleFullscreen() {
@@ -420,10 +420,10 @@ https://svelte.dev/e/js_parse_error -->
             // If not JSON, treat as HTML
             editor?.commands.setContent(e.target?.result as string);
           }
-        };
+        }
         reader.readAsText(file);
       }
-    };
+    }
     input.click();
   }
   // Reactive statements
@@ -450,14 +450,14 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(event: MouseEvent) => ) => saveContent(}
+        onclick={(_event: MouseEvent) => ) => saveContent(}
         title="Save (Ctrl+S)"
       >
         <Save size="18" />
       </button>
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(event: MouseEvent) => ) => importDocument(}
+        onclick={(_event: MouseEvent) => ) => importDocument(}
         title="Import Document"
       >
         <Upload size="18" />
@@ -468,11 +468,11 @@ https://svelte.dev/e/js_parse_error -->
           <ChevronDown size="14" />
         </button>
         <div class="mx-auto px-4 max-w-7xl">
-          <button aria-label="Action button" onclick={(event: MouseEvent) => ) => exportDocument("html"}>Export as HTML</button
+          <button aria-label="Action button" onclick={(_event: MouseEvent) => ) => exportDocument("html"}>Export as HTML</button
           >
-          <button aria-label="Action button" onclick={(event: MouseEvent) => ) => exportDocument("json"}>Export as JSON</button
+          <button aria-label="Action button" onclick={(_event: MouseEvent) => ) => exportDocument("json"}>Export as JSON</button
           >
-          <button aria-label="Action button" onclick={(event: MouseEvent) => ) => exportDocument("pdf"}>Export as PDF</button>
+          <button aria-label="Action button" onclick={(_event: MouseEvent) => ) => exportDocument("pdf"}>Export as PDF</button>
         </div>
       </div>
     </div>
@@ -482,7 +482,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:disabled={!state.canUndo}
-        onclick={(event: MouseEvent) => ) => editor?.commands.undo(}
+        onclick={(_event: MouseEvent) => ) => editor?.commands.undo(}
         title="Undo (Ctrl+Z)"
       >
         <Undo size="18" />
@@ -490,7 +490,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:disabled={!state.canRedo}
-        onclick={(event: MouseEvent) => ) => editor?.commands.redo(}
+        onclick={(_event: MouseEvent) => ) => editor?.commands.redo(}
         title="Redo (Ctrl+Shift+Z)"
       >
         <Redo size="18" />
@@ -501,7 +501,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <div class="mx-auto px-4 max-w-7xl">
         <select
-          bind:value={state.currentFontFamily} onchange={(event: Event) => e) =>
+          bind:value={state.currentFontFamily} onchange={(_event: Event) => e) =>
             setFontFamily((e.target as HTMLSelectElement).value}
         >
           {#each fontFamilies as font}
@@ -512,7 +512,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isBold}
-        onclick={(event: MouseEvent) => ) => toggleBold(}
+        onclick={(_event: MouseEvent) => ) => toggleBold(}
         title="Bold (Ctrl+B)"
       >
         <Bold size="18" />
@@ -520,7 +520,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isItalic}
-        onclick={(event: MouseEvent) => ) => toggleItalic(}
+        onclick={(_event: MouseEvent) => ) => toggleItalic(}
         title="Italic (Ctrl+I)"
       >
         <Italic size="18" />
@@ -528,7 +528,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isUnderline}
-        onclick={(event: MouseEvent) => ) => toggleUnderline()
+        onclick={(_event: MouseEvent) => ) => toggleUnderline()
         title="Underline (Ctrl+U)"
       >
         <Underline size="18" />
@@ -536,7 +536,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isStrike}
-        onclick={(event: MouseEvent) => ) => toggleStrike(}
+        onclick={(_event: MouseEvent) => ) => toggleStrike(}
         title="Strikethrough"
       >
         <Strikethrough size="18" />
@@ -548,7 +548,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl">
         <input
           type="color"
-          bind:value={state.currentColor} onchange={(event: Event) => e) => setTextColor((e.target as HTMLInputElement).value}
+          bind:value={state.currentColor} onchange={(_event: Event) => e) => setTextColor((e.target as HTMLInputElement).value}
           title="Text Color"
         />
         <Type size="18" />
@@ -563,7 +563,7 @@ https://svelte.dev/e/js_parse_error -->
             <button aria-label="Action button"
               class="mx-auto px-4 max-w-7xl"
               style="background-color: {color}"
-              onclick={(event: MouseEvent) => ) => setHighlight(color}
+              onclick={(_event: MouseEvent) => ) => setHighlight(color}
               title={color === "transparent"
                 ? "Remove highlight"
                 : `Highlight with ${color}`}
@@ -581,7 +581,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "left"}
-        onclick={(event: MouseEvent) => ) => setAlignment("left"}
+        onclick={(_event: MouseEvent) => ) => setAlignment("left"}
         title="Align Left"
       >
         <AlignLeft size="18" />
@@ -589,7 +589,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "center"}
-        onclick={(event: MouseEvent) => ) => setAlignment("center"}
+        onclick={(_event: MouseEvent) => ) => setAlignment("center"}
         title="Align Center"
       >
         <AlignCenter size="18" />
@@ -597,7 +597,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "right"}
-        onclick={(event: MouseEvent) => ) => setAlignment("right"))
+        onclick={(_event: MouseEvent) => ) => setAlignment("right"))
         title="Align Right"
       >
         <AlignRight size="18" />
@@ -605,8 +605,8 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "justify"}
-        onclick={(event: MouseEvent) => /* JSX syntax converted to Svelte */}
-        onclick={(event: MouseEvent) => ) => editor?.chain.focus().toggleBulletList.run(}
+        onclick={(_event: MouseEvent) => /* JSX syntax converted to Svelte */}
+        onclick={(_event: MouseEvent) => ) => editor?.chain.focus().toggleBulletList.run(}
         title="Bullet List"
       >
         <List size="18" />
@@ -614,7 +614,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isOrderedList}
-        onclick={(event: MouseEvent) => ) => editor?.chain.focus().toggleOrderedList.run(}
+        onclick={(_event: MouseEvent) => ) => editor?.chain.focus().toggleOrderedList.run(}
         title="Numbered List"
       >
         <ListOrdered size="18" />
@@ -622,7 +622,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isQuote}
-        onclick={(event: MouseEvent) => ) => editor?.chain.focus().toggleBlockquote.run(}
+        onclick={(_event: MouseEvent) => ) => editor?.chain.focus().toggleBlockquote.run(}
         title="Quote"
       >
         <Quote size="18" />
@@ -630,14 +630,14 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isCode}
-        onclick={(event: MouseEvent) => /* JSX syntax converted to Svelte */}
+        onclick={(_event: MouseEvent) => /* JSX syntax converted to Svelte */}
         title="Insert Image"
       >
         <ImageIcon size="18" />
       </button>
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(event: MouseEvent) => ) => insertTable(}
+        onclick={(_event: MouseEvent) => ) => insertTable(}
         title="Insert Table"
       >
         <TableIcon size="18" />
@@ -648,7 +648,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(event: MouseEvent) => ) => adjustZoom(-10}
+        onclick={(_event: MouseEvent) => ) => adjustZoom(-10}
         title="Zoom Out"
       >
         <ZoomOut size="18" />
@@ -656,7 +656,7 @@ https://svelte.dev/e/js_parse_error -->
       <span class="mx-auto px-4 max-w-7xl">{currentZoom}%</span>
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(event: MouseEvent) => ) => adjustZoom(10}
+        onclick={(_event: MouseEvent) => ) => adjustZoom(10}
         title="Zoom In"
       >
         <ZoomIn size="18" />
@@ -664,14 +664,14 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={showGrid}
-        onclick={(event: MouseEvent) => ) => (showGrid = !showGrid}
+        onclick={(_event: MouseEvent) => ) => (showGrid = !showGrid}
         title="Toggle Grid"
       >
         <Grid size="18" />
       </button>
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(event: MouseEvent) => ) => toggleFullscreen())
+        onclick={(_event: MouseEvent) => ) => toggleFullscreen())
         title="Toggle Fullscreen"
       >
         {#if isFullscreen}

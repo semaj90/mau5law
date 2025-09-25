@@ -80,7 +80,7 @@ export function validateFileUpload(file: File) {
   return {
     valid: errors.length === 0,
     errors
-  };
+  }
 }
 // Export types
 export type FileUploadInput = z.input<typeof fileUploadSchema>;

@@ -20,7 +20,7 @@ interface OCRHealthResponse {
   timestamp: string
   ocr: OCRHealthDetails
   metadata: {
-    checkDuration: number
+    checkDuration: number;
     environment: string
   }
 }

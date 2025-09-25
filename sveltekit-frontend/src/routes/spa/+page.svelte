@@ -12,8 +12,8 @@
     documents: [] as LegalDocument[],
     evidence: [] as EvidenceItem[],
     cases: [],
-    chatMessages: []
-  };
+    chatMessages: [];
+  }
   let currentView: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
   let isLoading = true;
   $effect(() => {
@@ -29,7 +29,7 @@
       id: `doc-${i}`,
       title: `Legal Document ${i + 1}: ${getRandomDocumentType()}`,
       content: generateSampleLegalContent(),
-      confidence: Math.floor(Math.random() * 40) + 60, // 60-100%
+      confidence: Math.floor(Math.random() * 40) + 60, // 60-100%;
       priority: getRandomPriority(),
       metadata: {
         gemmaModel: 'gemma3:legal-latest',
@@ -43,7 +43,7 @@
       title: `Evidence Item ${i + 1}: ${getRandomEvidenceType()}`,
       type: getRandomEvidenceTypeEnum(),
       priority: getRandomPriority(),
-      confidence: Math.floor(Math.random() * 30) + 70, // 70-100%
+      confidence: Math.floor(Math.random() * 30) + 70, // 70-100%;
       metadata: {
         collectedBy: 'Legal AI Assistant',
         verifiedBy: 'gemma3:legal-latest',
@@ -59,7 +59,7 @@
       aiAnalysis: {
         model: 'gemma3:legal-latest',
         confidence: Math.floor(Math.random() * 20) + 80,
-        riskAssessment: getRandomRisk()
+        riskAssessment: getRandomRisk();
       }
     }));
     console.log('📊 Sample legal data loaded for SPA Canvas', {
@@ -151,7 +151,7 @@
     ];
     return samples[Math.floor(Math.random() * samples.length)];
   }
-  function handleNavigation(event: CustomEvent) {
+  function handleNavigation(_event: CustomEvent) {
     currentView = event.detail.view;
     console.log('🧭 Navigation:', event.detail);
     // Simulate AI processing with gemma3:legal-latest
@@ -159,7 +159,7 @@
       simulateAIResponse();
     }
   }
-  function handleInteraction(event: CustomEvent) {
+  function handleInteraction(_event: CustomEvent) {
     console.log('🖱️ Canvas interaction:', event.detail);
     // Handle canvas clicks and interactions
     const { type, position, view, data } = event.detail;
@@ -178,10 +178,11 @@
       'Risk assessment indicates moderate exposure. I recommend reviewing sections 4.2 and 7.1 of the agreement...',
       'Legal entity extraction successful. Found 12 parties, 8 jurisdictions, and 15 key dates for timeline analysis...'
     ];
-    const response = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+    // removed unused response assignment
     console.log('🤖 AI Response (gemma3:legal-latest):', response);
   }
 </script>
+
 <!-- Page metadata -->
 <svelte:head>
   <title>Legal AI SPA - Single Page Canvas Application</title>
@@ -221,6 +222,7 @@
     <p>📊 Data: {legalData.documents.length} docs, {legalData.evidence.length} evidence</p>
   </div>
 {/if}
+
 <style>
   /* Import hybrid theme */
   @import '$lib/styles/hybrid-theme.css';
@@ -260,8 +262,14 @@
     animation-delay: 0.6;
   }
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.3; }
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0.3;
+    }
   }
   .loading-stats {
     margin-top: 2rem;

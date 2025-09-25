@@ -45,7 +45,7 @@ export const MODELS: Record<string, ModelConfig> = {
     systemPrompt:
       'Generate high-quality semantic embeddings for legal document analysis and retrieval.'
   }
-};
+}
 // Fallback chain configuration - llama3.2 removed
 export const FALLBACK_CHAIN = {
   'legal-analysis': [
@@ -58,7 +58,7 @@ export const FALLBACK_CHAIN = {
     'embeddinggemma', // Primary: Google's EmbeddingGemma
     'nomic-embed-text', // Fallback: Nomic embedding model
   ]
-};
+}
 export const OLLAMA_CONFIG: OllamaConfig = {
   baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',
   defaultModel: 'gemma3-legal:latest',
@@ -94,7 +94,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
     webGpuAcceleration: true
     intelligentFallback: true, // Enable smart model selection
   }
-};
+}
 /**
  * Get model configuration with fallback support
  */;
@@ -111,12 +111,12 @@ export function modelSupportsCapability(modelName: string, capability: string): 
 /**
  * Get optimal model for a specific task with fallback chain
  */;
-export function getOptimalModel(task: 'embedding' | 'generation' | 'legal-analysis'): string[] {
+export function getOptimalModel(_task: 'embedding' | 'generation' | 'legal-analysis'): string[] {
   const taskMap = {
     'embedding': FALLBACK_CHAIN['embeddings'],
     'generation': FALLBACK_CHAIN['text-generation'],
     'legal-analysis': FALLBACK_CHAIN['legal-analysis']
-  };
+  }
   return taskMap[task] || [OLLAMA_CONFIG.defaultModel];
 }
 /**

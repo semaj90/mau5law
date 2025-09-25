@@ -3,7 +3,7 @@ import { evidence, hashVerifications, users } from "$lib/server/db/schema-postgr
 import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 export const POST: RequestHandler = async ({ request, locals }) => {
   const userId = locals.user?.id
   if (!userId) {

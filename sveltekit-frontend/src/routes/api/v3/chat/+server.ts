@@ -45,7 +45,7 @@ async function withRateLimit(request: Request, handler: () => Promise<Response>)
   if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
     const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000)
     return json({
-      success: false
+      success: false;
       error: 'Too many requests. Please wait before sending another message.',
       retryAfter,
       resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()

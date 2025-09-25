@@ -17,7 +17,7 @@
     theme?: ConsolePaletteName;
   }
   let { open = $bindable(false), user, theme = 'legal' }: Props = $props();
-  import { cn } from "$lib/utils";
+  import { cn } from '$lib/utils';
   import {
     BarChart3,
     Bot,
@@ -31,8 +31,8 @@
     Scale,
     Search,
     Settings,
-  } from "lucide-svelte";
-  import { onMount } from "svelte";
+  } from 'lucide-svelte';
+  import { onMount } from 'svelte';
   let mounted = $state(false);
   $effect(() => {
     mounted = true;
@@ -45,91 +45,92 @@
     icon: any;
     current: boolean;
     badge?: string;
-  };
+  }
   let navigation = $derived([
     {
-      name: "🎮 Command Center",
-      href: "/dashboard",
+      name: '🎮 Command Center',
+      href: '/dashboard',
       icon: Home,
-      current: currentPath === "/" || currentPath === "/dashboard",
-      badge: "HQ",
+      current: currentPath === '/' || currentPath === '/dashboard',
+      badge: 'HQ',
     },
     {
-      name: "⚖️ Case Management",
-      href: "/cases",
+      name: '⚖️ Case Management',
+      href: '/cases',
       icon: Briefcase,
-      current: currentPath.startsWith("/cases"),
-      badge: "ACTIVE",
+      current: currentPath.startsWith('/cases'),
+      badge: 'ACTIVE',
     },
     {
-      name: "🗃️ Evidence Vault",
-      href: "/evidence",
+      name: '🗃️ Evidence Vault',
+      href: '/evidence',
       icon: FileText,
-      current: currentPath.startsWith("/evidence"),
-      badge: "12 New",
+      current: currentPath.startsWith('/evidence'),
+      badge: '12 New',
     },
     {
-      name: "🤖 AI Counsel",
-      href: "/ai",
+      name: '🤖 AI Counsel',
+      href: '/ai',
       icon: Bot,
-      current: currentPath.startsWith("/ai"),
-      badge: "AI",
+      current: currentPath.startsWith('/ai'),
+      badge: 'AI',
     },
     {
-      name: "📋 Document Analysis",
-      href: "/documents",
+      name: '📋 Document Analysis',
+      href: '/documents',
       icon: FileBarChart,
-      current: currentPath.startsWith("/documents"),
+      current: currentPath.startsWith('/documents'),
     },
     {
-      name: "🔍 Legal Research",
-      href: "/research",
+      name: '🔍 Legal Research',
+      href: '/research',
       icon: Search,
-      current: currentPath.startsWith("/research"),
+      current: currentPath.startsWith('/research'),
     },
     {
-      name: "⏱️ Case Timeline",
-      href: "/timeline",
+      name: '⏱️ Case Timeline',
+      href: '/timeline',
       icon: Layers,
-      current: currentPath.startsWith("/timeline"),
+      current: currentPath.startsWith('/timeline'),
     },
   ]);
   let analytics = $derived([
     {
-      name: "📊 Analytics Hub",
-      href: "/analytics",
+      name: '📊 Analytics Hub',
+      href: '/analytics',
       icon: BarChart3,
-      current: currentPath.startsWith("/analytics"),
+      current: currentPath.startsWith('/analytics'),
     },
     {
-      name: "📋 Reports",
-      href: "/reports",
+      name: '📋 Reports',
+      href: '/reports',
       icon: FileBarChart,
-      current: currentPath.startsWith("/reports"),
+      current: currentPath.startsWith('/reports'),
     },
   ]);
   let adminFeatures = $derived([
     {
-      name: "🔧 Admin Console",
-      href: "/admin",
+      name: '🔧 Admin Console',
+      href: '/admin',
       icon: Settings,
-      current: currentPath.startsWith("/admin"),
-      badge: "ADMIN",
+      current: currentPath.startsWith('/admin'),
+      badge: 'ADMIN',
     },
   ]);
 
   let settings = $derived([
     {
-      name: "⚙️ Settings",
-      href: "/settings",
+      name: '⚙️ Settings',
+      href: '/settings',
       icon: Settings,
-      current: currentPath.startsWith("/settings"),
+      current: currentPath.startsWith('/settings'),
     },
   ]);
   function closeSidebar() {
     open = false;
   }
 </script>
+
 <!-- Mobile backdrop -->
 {#if open}
   <div
@@ -137,29 +138,25 @@
     onclick={closeSidebar}
     role="button"
     tabindex="0"
-    keydown={(e) => e.key === "Enter" && closeSidebar()}
+    keydown={e => e.key === 'Enter' && closeSidebar()}
   ></div>
 {/if}
 <!-- Sidebar -->
 <aside
   class={cn(
-    "fixed top-0 left-0 z-50 h-full w-64 transform bg-nier-surface border-r border-nier-gray transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0",
-    open ? "translate-x-0" : "-translate-x-full"
+    'fixed top-0 left-0 z-50 h-full w-64 transform bg-nier-surface border-r border-nier-gray transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0',
+    open ? 'translate-x-0' : '-translate-x-full',
   )}
 >
   <div class="flex h-full flex-col">
     <!-- Logo section -->
     <div class="flex h-16 items-center border-b border-nier-gray px-6">
       <div class="flex items-center gap-3">
-        <div
-          class="w-8 h-8 bg-crimson-gradient rounded-md flex items-center justify-center nier-glow"
-        >
+        <div class="w-8 h-8 bg-crimson-gradient rounded-md flex items-center justify-center nier-glow">
           <Scale class="h-5 w-5 text-white" />
         </div>
         <div class="flex-1">
-          <h1 class="text-sm font-semibold text-foreground">
-            Legal AI Platform
-          </h1>
+          <h1 class="text-sm font-semibold text-foreground">Legal AI Platform</h1>
           <p class="text-xs nes-text is-disabled">
             {theme?.toUpperCase()} Console Mode
           </p>
@@ -185,9 +182,7 @@
           </p>
         </div>
         {#if isAdmin}
-          <div class="text-xs bg-console-error text-white px-2 py-1 rounded">
-            ADMIN
-          </div>
+          <div class="text-xs bg-console-error text-white px-2 py-1 rounded">ADMIN</div>
         {/if}
       </div>
     {/if}
@@ -213,10 +208,10 @@
             <a
               href={item.href}
               class={cn(
-                "group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
+                'group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                 item.current
-                  ? "bg-harvard-crimson text-white shadow-nier-glow"
-                  : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
+                  ? 'bg-harvard-crimson text-white shadow-nier-glow'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light',
               )}
               onclick={closeSidebar}
             >
@@ -224,10 +219,8 @@
                 <svelte:component
                   this={item.icon}
                   class={cn(
-                    "mr-3 h-5 w-5 flex-shrink-0",
-                    item.current
-                      ? "text-white"
-                      : "text-muted-foreground group-hover:text-foreground"
+                    'mr-3 h-5 w-5 flex-shrink-0',
+                    item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground',
                   )}
                 />
                 {item.name}
@@ -235,10 +228,8 @@
               {#if item.badge}
                 <span
                   class={cn(
-                    "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
-                    item.current
-                      ? "bg-white/20 text-white"
-                      : "bg-harvard-crimson text-white"
+                    'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                    item.current ? 'bg-white/20 text-white' : 'bg-harvard-crimson text-white',
                   )}
                 >
                   {item.badge}
@@ -252,30 +243,24 @@
         </div>
         <!-- Analytics section -->
         <div class="pt-4">
-          <h3
-            class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider"
-          >
-            Analytics
-          </h3>
+          <h3 class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">Analytics</h3>
           <div class="mt-2 space-y-1">
             {#each analytics as item}
               <a
                 href={item.href}
                 class={cn(
-                  "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
+                  'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                   item.current
-                    ? "bg-harvard-crimson text-white shadow-nier-glow"
-                    : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
+                    ? 'bg-harvard-crimson text-white shadow-nier-glow'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light',
                 )}
                 onclick={closeSidebar}
               >
                 <svelte:component
                   this={item.icon}
                   class={cn(
-                    "mr-3 h-5 w-5 flex-shrink-0",
-                    item.current
-                      ? "text-white"
-                      : "text-muted-foreground group-hover:text-foreground"
+                    'mr-3 h-5 w-5 flex-shrink-0',
+                    item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground',
                   )}
                 />
                 {item.name}
@@ -286,20 +271,16 @@
         <!-- Admin section -->
         {#if isAdmin}
           <div class="pt-4">
-            <h3
-              class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider"
-            >
-              🛡️ Administration
-            </h3>
+            <h3 class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">🛡️ Administration</h3>
             <div class="mt-2 space-y-1">
               {#each adminFeatures as item}
                 <a
                   href={item.href}
                   class={cn(
-                    "group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
+                    'group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                     item.current
-                      ? "bg-console-error text-white shadow-nier-glow"
-                      : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light border border-console-error/20"
+                      ? 'bg-console-error text-white shadow-nier-glow'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light border border-console-error/20',
                   )}
                   onclick={closeSidebar}
                 >
@@ -307,10 +288,8 @@
                     <svelte:component
                       this={item.icon}
                       class={cn(
-                        "mr-3 h-5 w-5 flex-shrink-0",
-                        item.current
-                          ? "text-white"
-                          : "text-console-error group-hover:text-foreground"
+                        'mr-3 h-5 w-5 flex-shrink-0',
+                        item.current ? 'text-white' : 'text-console-error group-hover:text-foreground',
                       )}
                     />
                     {item.name}
@@ -318,10 +297,8 @@
                   {#if item.badge}
                     <span
                       class={cn(
-                        "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
-                        item.current
-                          ? "bg-white/20 text-white"
-                          : "bg-console-error text-white"
+                        'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                        item.current ? 'bg-white/20 text-white' : 'bg-console-error text-white',
                       )}
                     >
                       {item.badge}
@@ -335,30 +312,24 @@
 
         <!-- Settings section -->
         <div class="pt-4">
-          <h3
-            class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider"
-          >
-            ⚙️ System
-          </h3>
+          <h3 class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">⚙️ System</h3>
           <div class="mt-2 space-y-1">
             {#each settings as item}
               <a
                 href={item.href}
                 class={cn(
-                  "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
+                  'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                   item.current
-                    ? "bg-console-primary text-console-bg shadow-nier-glow"
-                    : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
+                    ? 'bg-console-primary text-console-bg shadow-nier-glow'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light',
                 )}
                 onclick={closeSidebar}
               >
                 <svelte:component
                   this={item.icon}
                   class={cn(
-                    "mr-3 h-5 w-5 flex-shrink-0",
-                    item.current
-                      ? "text-console-bg"
-                      : "text-muted-foreground group-hover:text-foreground"
+                    'mr-3 h-5 w-5 flex-shrink-0',
+                    item.current ? 'text-console-bg' : 'text-muted-foreground group-hover:text-foreground',
                   )}
                 />
                 {item.name}
@@ -371,22 +342,19 @@
     <!-- Status indicator -->
     <div class="p-4 border-t border-nier-gray">
       <div class="flex items-center gap-3 p-3 bg-nier-surface-light rounded-md">
-        <div
-          class="w-3 h-3 bg-console-primary rounded-full animate-nier-pulse"
-        ></div>
+        <div class="w-3 h-3 bg-console-primary rounded-full animate-nier-pulse"></div>
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-foreground">🎮 Console Status</p>
           <p class="text-xs nes-text is-disabled truncate">
             {theme?.toUpperCase()} mode - All systems online
           </p>
         </div>
-        <div class="text-xs bg-console-primary text-console-bg px-2 py-1 rounded font-mono">
-          PWR
-        </div>
+        <div class="text-xs bg-console-primary text-console-bg px-2 py-1 rounded font-mono">PWR</div>
       </div>
     </div>
   </div>
 </aside>
+
 <style>
   /* @unocss-include */
   /* Gaming console aesthetic with console variable support */
@@ -421,7 +389,8 @@
 
   /* Gaming-themed animations */
   @keyframes nier-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
       box-shadow: 0 0 5px var(--console-primary, #00aa00);
     }

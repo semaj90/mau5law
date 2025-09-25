@@ -237,7 +237,7 @@ https://svelte.dev/e/js_parse_error -->
       rag_result: 'bg-yellow-100 text-yellow-800',
       gpu_compute: 'bg-red-100 text-red-800',
       semantic_update: 'bg-indigo-100 text-indigo-800',
-    };
+    }
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
   $effect(() => {

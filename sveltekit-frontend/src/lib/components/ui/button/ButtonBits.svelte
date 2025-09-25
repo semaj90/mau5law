@@ -36,14 +36,14 @@
     success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
     warning: "bg-yellow-600 text-black hover:bg-yellow-700 focus:ring-yellow-500",
     info: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500";
-  };
+  }
   const sizeClasses = {
     xs: "text-xs px-2 py-1 rounded-md",
     sm: "text-sm px-3 py-1.5 rounded-md",
     md: "text-base px-4 py-2 rounded-lg",
     lg: "text-lg px-6 py-3 rounded-lg",
     xl: "text-xl px-8 py-4 rounded-xl";
-  };
+  }
   let computedClasses = $derived(cn(
     baseClasses,
     variantClasses[variant],
@@ -53,14 +53,10 @@
   ));
   let isDisabled = $derived(disabled || loading);
 </script>
+
 {#if to}
   <!-- Navigation Link Button -->
-  <a
-    href={to}
-    class={computedClasses}
-    aria-disabled={isDisabled}
-    {...restProps}
-  >
+  <a href={to} class={computedClasses} aria-disabled={isDisabled} {...restProps}>
     {#if loading}
       <div class="legal-ai-spinner w-4 h-4"></div>
     {/if}
@@ -70,11 +66,7 @@
   </a>
 {:else}
   <!-- Interactive Button using bits-ui -->
-  <ButtonPrimitive.Root
-    class={computedClasses}
-    disabled={isDisabled}
-    {...restProps}
-  >
+  <ButtonPrimitive.Root class={computedClasses} disabled={isDisabled} {...restProps}>
     {#if loading}
       <div class="legal-ai-spinner w-4 h-4"></div>
     {/if}
@@ -83,8 +75,8 @@
     {/if}
   </ButtonPrimitive.Root>
 {/if}
-<style>
-  /* Professional Legal AI Button Styles using CSS Variables */
+
+<style>/* Professional Legal AI Button Styles using CSS Variables */ {}
   :global(.legal-ai-btn) {
     font-family: var(--legal-ai-font-family-sans);
     border: 1px solid transparent;
@@ -118,7 +110,7 @@
     background: rgba(245, 158, 11, 0.1);
     color: var(--legal-ai-primary);
   }
-  /* Professional Spinner */
+/* Professional Spinner */ {}
   :global(.legal-ai-spinner) {
     border: 2px solid currentColor;
     border-right-color: transparent;
@@ -131,14 +123,14 @@
       transform: rotate(360deg);
     }
   }
-  /* Focus states for accessibility */
+/* Focus states for accessibility */ {}
   :global($1) {
     outline: 2px solid var(--legal-ai-primary);
     outline-offset: 2px;
   }
-  /* Disabled state */
-  :global(.legal-ai-btn:disabled),
-  :global(.legal-ai-btn[aria-disabled="true"]) {
+/* Disabled state */ {}
+:global(.legal-ai-btn:disabled), {}
+  :global(.legal-ai-btn[aria-disabled='true']) {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;

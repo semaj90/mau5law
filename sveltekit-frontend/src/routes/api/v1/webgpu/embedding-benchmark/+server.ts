@@ -187,7 +187,7 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
     webgpuUtilization: config.useWebGPU ? 0.75 : 0, // Simulated
     compressionRatio: 4.2,
     memoryUsage: {
-      peak: memoryPeak
+      peak: memoryPeak;
       average: (memoryStart + memoryPeak) / 2
     },
     qualityMetrics: {
@@ -231,7 +231,7 @@ async function runBatchProcessingBenchmark(config: any): Promise<BenchmarkResult
     webgpuUtilization: config.useWebGPU ? 0.85 : 0,
     compressionRatio: 4.5,
     memoryUsage: {
-      peak: memoryPeak
+      peak: memoryPeak;
       average: (memoryStart + memoryPeak) / 2
     }
   }

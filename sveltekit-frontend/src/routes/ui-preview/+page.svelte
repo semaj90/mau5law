@@ -23,7 +23,7 @@
     truncateText,
     getFileIcon,
     getPriorityColor,
-    getStatusColor
+    getStatusColor,
   } from '$lib/utils/formatting';
   // Component state
   let showDialog = $state(false);
@@ -39,9 +39,12 @@
   let mockUser = $state({
     id: 'demo-user-123',
     email: 'demo@legalai.com',
-    role: 'prosecutor' as const
+    role: 'prosecutor' as const,
   });
-  interface TabItem { id: string; label: string }
+  interface TabItem {
+    id: string;
+    label: string;
+  }
   const tabs: TabItem[] = [
     { id: 'buttons', label: 'Buttons' },
     { id: 'avatars', label: 'Avatars' },
@@ -50,10 +53,14 @@
     { id: 'cards', label: 'Cards' },
     { id: 'session', label: 'Session Demo' },
     { id: 'formatting', label: 'Formatting' },
-    { id: 'sidebar', label: 'Global Sidebar' }
+    { id: 'sidebar', label: 'Global Sidebar' },
   ];
-  function openDialog() { showDialog = true }
-  function closeDialog() { showDialog = false }
+  function openDialog() {
+    showDialog = true;
+  }
+  function closeDialog() {
+    showDialog = false;
+  }
 
   // Modal functions
   function openModal(variant: string = 'gradient', size: string = 'md') {
@@ -61,24 +68,26 @@
     modalSize = size;
     showModal = true;
   }
-  function closeModal() { showModal = false }
-  const buttonVariants = ['primary','success','warning','error','info','disabled'] as const
-  type ButtonVariant = typeof buttonVariants[number]
-  const avatarSizes = ['small','medium','large'] as const
-  type AvatarSize = typeof avatarSizes[number]
+  function closeModal() {
+    showModal = false;
+  }
+  const buttonVariants = ['primary', 'success', 'warning', 'error', 'info', 'disabled'] as const;
+  type ButtonVariant = (typeof buttonVariants)[number];
+  const avatarSizes = ['small', 'medium', 'large'] as const;
+  type AvatarSize = (typeof avatarSizes)[number];
   // Mock session actions for demo
   const mockSessionActions = {
     setSession: (user: any, session: any) => console.log('Mock setSession:', user, session),
     clearSession: () => console.log('Mock clearSession'),
-    init: (data: any) => console.log('Mock init:', data)
-  };
+    init: (data: any) => console.log('Mock init:', data),
+  }
   // Session demo functions
   function simulateLogin() {
     mockSessionActive = true;
     mockSessionActions.setSession(mockUser, {
       id: 'demo-session-123',
       user: mockUser,
-      fresh: true
+      fresh: true,
     });
   }
   function simulateLogout() {
@@ -95,23 +104,27 @@
   // Mock reactive data with conditionals
   let currentUser = $derived(mockSessionActive ? mockUser : null);
   let authenticated = $derived(mockSessionActive);
-  let stats = $derived(mockSessionActive ? {
-    casesWorked: 23,
-    documentsReviewed: 157,
-    hoursLogged: 89.5,
-    accuracy: 94.2,
-    totalCases: 47,
-    totalEvidence: 1284,
-    totalDocuments: 567,
-    totalCitations: 89,
-    totalReports: 34
-  } : {
-    totalCases: 0,
-    totalEvidence: 0,
-    totalDocuments: 0,
-    totalCitations: 0,
-    totalReports: 0
-  });
+  let stats = $derived(
+    mockSessionActive
+      ? {
+          casesWorked: 23,
+          documentsReviewed: 157,
+          hoursLogged: 89.5,
+          accuracy: 94.2,
+          totalCases: 47,
+          totalEvidence: 1284,
+          totalDocuments: 567,
+          totalCitations: 89,
+          totalReports: 34,
+        }
+      : {
+          totalCases: 0,
+          totalEvidence: 0,
+          totalDocuments: 0,
+          totalCitations: 0,
+          totalReports: 0,
+        },
+  );
   // Mock data for formatting demos
   const mockTimestamps = [
     new Date(),
@@ -127,67 +140,20 @@
     'witness_statement_john_doe_transcript.docx',
     'financial_records_audit_summary.xlsx',
     'legal_precedent_research_notes.txt',
-    'deposition_video_plaintiff_testimony.mp4'
+    'deposition_video_plaintiff_testimony.mp4',
   ];
   const mockCases = [
     { title: 'Corporate Fraud Investigation - Multinational Tech Company', status: 'open', priority: 'high' },
     { title: 'Contract Dispute Resolution', status: 'pending', priority: 'medium' },
     { title: 'Criminal Defense - Armed Robbery Case', status: 'closed', priority: 'critical' },
-    { title: 'Family Law Custody Battle', status: 'open', priority: 'low' }
+    { title: 'Family Law Custody Battle', status: 'open', priority: 'low' },
   ];
   let focusReady = false;
-  $effect(() => { focusReady = true });
+  $effect(() => {
+    focusReady = true;
+  });
 </script>
-<style>
-  .layout { display: grid; gap: 1.25rem; padding: 1.5rem; }
-  .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .tab-btn { cursor: pointer; }
-  .tab-btn.active { outline: 3px solid var(--nes-primary, #212529); }
-  .grid { display: grid; gap: 1rem; }
-  .grid.buttons { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-  .grid.avatars { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-  .cards-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-  .dialog-actions { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1.25rem; }
-  h1 { font-family: 'Press Start 2P', monospace; font-size: 1.1rem; }
-  h2.section { margin: 0 0 .75rem; font-size: .9rem; letter-spacing: .5px; }
-  .section-wrap { padding: 1rem; border: 2px dashed #ccc; border-radius: 8px; background: #fff; }
-  .meta { font-size: .65rem; opacity: .7; margin-top: .4rem; }
-  /* Session Demo Styles */
-  .session-controls { display: flex; flex-direction: column; gap: 1rem; }
-  .status-display { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-  .user-details { display: flex; align-items: center; gap: 0.5rem; }
-  .session-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .user-stats h4 { margin: 0.5rem 0; }
-  .stats-grid-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; }
-  .stat-card { text-align: center; padding: 0.5rem; }
-  .stat-number { display: block; font-weight: bold; font-size: 1.2rem; color: #007bff; }
-  .stat-label { display: block; font-size: 0.8rem; opacity: 0.8; }
-  /* Formatting Demo Styles */
-  .formatting-demos { display: flex; flex-direction: column; gap: 1.5rem; }
-  .demo-group h3 { margin: 0 0 0.75rem; font-size: 0.9rem; }
-  .timestamp-examples, .filename-examples, .case-examples { display: flex; flex-direction: column; gap: 0.5rem; }
-  .timestamp-row { display: grid; grid-template-columns: 1fr 100px 1fr; gap: 0.5rem; padding: 0.5rem; background: #f8f9fa; border-radius: 4px; }
-  .timestamp-row span { font-size: 0.8rem; }
-  .relative { font-weight: bold; color: #007bff; }
-  .detailed { color: #666; cursor: help; }
-  .filename-row { display: grid; grid-template-columns: 30px 1fr 1fr; gap: 0.5rem; padding: 0.5rem; background: #f8f9fa; border-radius: 4px; align-items: center; }
-  .file-icon { font-size: 1.2rem; text-align: center; }
-  .filename-row .original { font-family: monospace; font-size: 0.8rem; }
-  .filename-row .truncated { font-family: monospace; font-size: 0.8rem; font-weight: bold; color: #007bff; }
-  .case-row { margin-bottom: 0.5rem; }
-  .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem; }
-  .case-title { font-weight: bold; }
-  .case-meta { display: flex; gap: 0.5rem; }
-  /* Sidebar Demo Styles */
-  .sidebar-controls { display: flex; flex-direction: column; gap: 1rem; }
-  .control-group { display: flex; gap: 1rem; align-items: center; }
-  .sidebar-info { color: inherit; }
-  .feature-list { list-style: none; padding: 0; margin: 0.5rem 0; }
-  .feature-list li { margin: 0.25rem 0; padding: 0.25rem 0; }
-  .integration-notes { margin-top: 1rem; }
-  .integration-notes ol { margin: 0.5rem 0; padding-left: 1.5rem; }
-  .integration-notes li { margin: 0.25rem 0; }
-</style>
+
 <div class="layout">
   <h1>NES UI Preview</h1>
   <nav class="tabs" aria-label="Preview Tabs">
@@ -195,8 +161,8 @@
       <button
         class="nes-btn tab-btn {selectedTab === t.id ? 'is-primary active' : ''}"
         aria-pressed={selectedTab === t.id}
-        onclick={() => selectedTab = t.id}
-      >{t.label}</button>
+        onclick={() => (selectedTab = t.id)}>{t.label}</button
+      >
     {/each}
   </nav>
   {#if selectedTab === 'buttons'}
@@ -218,7 +184,16 @@
       <div class="grid avatars">
         {#each avatarSizes as size}
           <div>
-            <div class="avatar-placeholder" style="width: {size === 'small' ? '24px' : size === 'medium' ? '32px' : '48px'}; height: {size === 'small' ? '24px' : size === 'medium' ? '32px' : '48px'}; border-radius: 50%; background: #ccc; display: flex; align-items: center; justify-content: center;">👤</div>
+            <div
+              class="avatar-placeholder"
+              style="width: {size === 'small' ? '24px' : size === 'medium' ? '32px' : '48px'} height: {size === 'small'
+                ? '24px'
+                : size === 'medium'
+                  ? '32px'
+                  : '48px'} border-radius: 50%; background: #ccc; display: flex; align-items: center; justify-content: center;"
+            >
+              👤
+            </div>
             <div class="meta">size: {size}</div>
           </div>
         {/each}
@@ -248,32 +223,17 @@
 
       <!-- Modal Trigger Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        <QuickActionButton onclick={() => openModal('gradient', 'md')}>
-          Gradient Modal
-        </QuickActionButton>
+        <QuickActionButton onclick={() => openModal('gradient', 'md')}>Gradient Modal</QuickActionButton>
 
-        <QuickActionButton onclick={() => openModal('diamond', 'lg')}>
-          Diamond Pattern
-        </QuickActionButton>
+        <QuickActionButton onclick={() => openModal('diamond', 'lg')}>Diamond Pattern</QuickActionButton>
 
-        <QuickActionButton onclick={() => openModal('gaming', 'md')}>
-          Gaming Modal
-        </QuickActionButton>
+        <QuickActionButton onclick={() => openModal('gaming', 'md')}>Gaming Modal</QuickActionButton>
 
-        <QuickActionButton onclick={() => openModal('legal', 'xl')}>
-          Legal Modal XL
-        </QuickActionButton>
+        <QuickActionButton onclick={() => openModal('legal', 'xl')}>Legal Modal XL</QuickActionButton>
 
-        <QuickActionButton onclick={() => openModal('default', 'sm')}>
-          Default Small
-        </QuickActionButton>
+        <QuickActionButton onclick={() => openModal('default', 'sm')}>Default Small</QuickActionButton>
 
-        <button
-          class="nes-btn is-primary"
-          onclick={() => openModal('diamond', 'md')}
-        >
-          NES Diamond
-        </button>
+        <button class="nes-btn is-primary" onclick={() => openModal('diamond', 'md')}> NES Diamond </button>
       </div>
 
       <!-- Demo Cards with Diamond Backgrounds -->
@@ -283,8 +243,8 @@
       </div>
 
       <div class="meta">
-        Enhanced modals with gradient colors, diamond patterns, and NES.css integration.
-        Supports multiple sizes (sm, md, lg, xl) and themes (gradient, diamond, gaming, legal).
+        Enhanced modals with gradient colors, diamond patterns, and NES.css integration. Supports multiple sizes (sm,
+        md, lg, xl) and themes (gradient, diamond, gaming, legal).
       </div>
     </section>
   {/if}
@@ -405,11 +365,7 @@
         <h3>Sidebar Configuration:</h3>
         <div class="control-group">
           <label class="nes-text">
-            <input
-              type="checkbox"
-              class="nes-checkbox"
-              bind:checked={showSidebar}
-            />
+            <input type="checkbox" class="nes-checkbox" bind:checked={showSidebar} />
             <span>Show Sidebar</span>
           </label>
         </div>
@@ -447,109 +403,323 @@
 
 <!-- Enhanced Modal -->
 {#if showModal}
-<dialog class="nes-dialog is-dark" open>
-  <form method="dialog">
-    <p class="title">Enhanced Modal - {modalVariant.charAt(0).toUpperCase() + modalVariant.slice(1)} Style</p>
-  {#snippet children()}
-    <div class="space-y-6">
-      <!-- Modal Content based on variant -->
-      {#if modalVariant === 'gradient'}
-        <div class="space-y-4">
-          <h3 class="text-xl font-bold text-enhanced-text-primary">Gradient Modal Content</h3>
-          <p class="text-enhanced-text-secondary">
-            This modal features beautiful gradient backgrounds combining Harvard crimson, gold, and grey tones.
-            The gradients create visual depth while maintaining readability.
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="p-4 rounded-lg bg-gradient-to-r from-harvard-crimson/20 to-harvard-gold/20">
-              <h4 class="font-semibold text-enhanced-text-primary">Crimson to Gold</h4>
-              <p class="text-sm text-enhanced-text-secondary">Harvard signature colors</p>
-            </div>
-            <div class="p-4 rounded-lg bg-gradient-to-r from-enhanced-accent-grey/20 to-harvard-crimson/20">
-              <h4 class="font-semibold text-enhanced-text-primary">Grey to Crimson</h4>
-              <p class="text-sm text-enhanced-text-secondary">NES-style balance</p>
-            </div>
-          </div>
-        </div>
-      {:else if modalVariant === 'diamond'}
-        <div class="space-y-4">
-          <h3 class="text-xl font-bold text-enhanced-text-primary nes-diamond-text">Diamond Pattern Modal</h3>
-          <p class="text-enhanced-text-secondary">
-            This modal showcases NES-style diamond patterns with repeating gradients.
-            The patterns are created using CSS background images.
-          </p>
-          <div class="grid grid-cols-1 gap-4">
-            <div class="p-4 rounded-lg nes-diamond-small">
-              <h4 class="font-semibold text-enhanced-text-primary">Small Diamond Pattern</h4>
-              <p class="text-sm text-enhanced-text-secondary">Fine detail background</p>
-            </div>
-            <div class="p-4 rounded-lg nes-diamond-large">
-              <h4 class="font-semibold text-enhanced-text-primary">Large Diamond Pattern</h4>
-              <p class="text-sm text-enhanced-text-secondary">Bold pattern background</p>
-            </div>
-            <div class="p-4 rounded-lg nes-diamond-crimson">
-              <h4 class="font-semibold text-enhanced-text-primary">Crimson Diamonds</h4>
-              <p class="text-sm text-enhanced-text-secondary">Harvard-themed pattern</p>
-            </div>
-          </div>
-        </div>
-      {:else if modalVariant === 'gaming'}
-        <div class="space-y-4">
-          <h3 class="text-xl font-bold text-enhanced-text-primary" style="font-family: 'Press Start 2P', monospace;">Gaming Modal</h3>
-          <p class="text-enhanced-text-secondary">
-            A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style elements.
-          </p>
-          <div class="space-y-4">
-            <div class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent gaming-scan-lines">
-              <h4 class="font-semibold text-enhanced-text-primary mb-2">Terminal Interface</h4>
-              <div class="font-mono text-green-400 text-sm">
-                <div>> System Status: ONLINE</div>
-                <div>> AI Models: LOADED</div>
-                <div>> GPU Acceleration: ENABLED</div>
-                <div>> Legal Database: CONNECTED</div>
+  <dialog class="nes-dialog is-dark" open>
+    <form method="dialog">
+      <p class="title">Enhanced Modal - {modalVariant.charAt(0).toUpperCase() + modalVariant.slice(1)} Style</p>
+      {#snippet children()}
+        <div class="space-y-6">
+          <!-- Modal Content based on variant -->
+          {#if modalVariant === 'gradient'}
+            <div class="space-y-4">
+              <h3 class="text-xl font-bold text-enhanced-text-primary">Gradient Modal Content</h3>
+              <p class="text-enhanced-text-secondary">
+                This modal features beautiful gradient backgrounds combining Harvard crimson, gold, and grey tones. The
+                gradients create visual depth while maintaining readability.
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-gradient-to-r from-harvard-crimson/20 to-harvard-gold/20">
+                  <h4 class="font-semibold text-enhanced-text-primary">Crimson to Gold</h4>
+                  <p class="text-sm text-enhanced-text-secondary">Harvard signature colors</p>
+                </div>
+                <div class="p-4 rounded-lg bg-gradient-to-r from-enhanced-accent-grey/20 to-harvard-crimson/20">
+                  <h4 class="font-semibold text-enhanced-text-primary">Grey to Crimson</h4>
+                  <p class="text-sm text-enhanced-text-secondary">NES-style balance</p>
+                </div>
               </div>
             </div>
-            <div class="flex space-x-2">
-              <QuickActionButton>Execute</QuickActionButton>
-              <QuickActionButton>Terminal</QuickActionButton>
-              <button class="nes-btn is-success">Success</button>
+          {:else if modalVariant === 'diamond'}
+            <div class="space-y-4">
+              <h3 class="text-xl font-bold text-enhanced-text-primary nes-diamond-text">Diamond Pattern Modal</h3>
+              <p class="text-enhanced-text-secondary">
+                This modal showcases NES-style diamond patterns with repeating gradients. The patterns are created using
+                CSS background images.
+              </p>
+              <div class="grid grid-cols-1 gap-4">
+                <div class="p-4 rounded-lg nes-diamond-small">
+                  <h4 class="font-semibold text-enhanced-text-primary">Small Diamond Pattern</h4>
+                  <p class="text-sm text-enhanced-text-secondary">Fine detail background</p>
+                </div>
+                <div class="p-4 rounded-lg nes-diamond-large">
+                  <h4 class="font-semibold text-enhanced-text-primary">Large Diamond Pattern</h4>
+                  <p class="text-sm text-enhanced-text-secondary">Bold pattern background</p>
+                </div>
+                <div class="p-4 rounded-lg nes-diamond-crimson">
+                  <h4 class="font-semibold text-enhanced-text-primary">Crimson Diamonds</h4>
+                  <p class="text-sm text-enhanced-text-secondary">Harvard-themed pattern</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      {:else if modalVariant === 'legal'}
-        <div class="space-y-4">
-          <h3 class="text-xl font-bold text-enhanced-text-primary">Legal Document Modal</h3>
-          <p class="text-enhanced-text-secondary">
-            Professional modal styling for legal documents, case management, and court filings.
-          </p>
-          <div class="space-y-4">
-            <StatsCard title="Case File #2024-001" value="Harvard Law" />
-          </div>
-        </div>
-      {:else}
-        <div class="space-y-4">
-          <h3 class="text-xl font-bold text-enhanced-text-primary">Default Modal Content</h3>
-          <p class="text-enhanced-text-secondary">
-            This is the default modal styling with clean, professional appearance.
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <StatsCard title="Feature Card" value="Standard" />
-            <StatsCard title="Grey Card" value="NES-style" />
-          </div>
-        </div>
-      {/if}
+          {:else if modalVariant === 'gaming'}
+            <div class="space-y-4">
+              <h3
+                class="text-xl font-bold text-enhanced-text-primary"
+                style="font-family: 'Press Start 2P', monospace;"
+              >
+                Gaming Modal
+              </h3>
+              <p class="text-enhanced-text-secondary">
+                A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style elements.
+              </p>
+              <div class="space-y-4">
+                <div class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent gaming-scan-lines">
+                  <h4 class="font-semibold text-enhanced-text-primary mb-2">Terminal Interface</h4>
+                  <div class="font-mono text-green-400 text-sm">
+                    <div>> System Status: ONLINE</div>
+                    <div>> AI Models: LOADED</div>
+                    <div>> GPU Acceleration: ENABLED</div>
+                    <div>> Legal Database: CONNECTED</div>
+                  </div>
+                </div>
+                <div class="flex space-x-2">
+                  <QuickActionButton>Execute</QuickActionButton>
+                  <QuickActionButton>Terminal</QuickActionButton>
+                  <button class="nes-btn is-success">Success</button>
+                </div>
+              </div>
+            </div>
+          {:else if modalVariant === 'legal'}
+            <div class="space-y-4">
+              <h3 class="text-xl font-bold text-enhanced-text-primary">Legal Document Modal</h3>
+              <p class="text-enhanced-text-secondary">
+                Professional modal styling for legal documents, case management, and court filings.
+              </p>
+              <div class="space-y-4">
+                <StatsCard title="Case File #2024-001" value="Harvard Law" />
+              </div>
+            </div>
+          {:else}
+            <div class="space-y-4">
+              <h3 class="text-xl font-bold text-enhanced-text-primary">Default Modal Content</h3>
+              <p class="text-enhanced-text-secondary">
+                This is the default modal styling with clean, professional appearance.
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <StatsCard title="Feature Card" value="Standard" />
+                <StatsCard title="Grey Card" value="NES-style" />
+              </div>
+            </div>
+          {/if}
 
-      <!-- Common Modal Footer -->
-      <div class="flex justify-end space-x-2 pt-4 border-t border-enhanced-border">
-        <QuickActionButton onclick={closeModal}>
-          Cancel
-        </QuickActionButton>
-        <QuickActionButton onclick={closeModal}>
-          Confirm
-        </QuickActionButton>
-      </div>
-    </div>
-  {/snippet}
-  </form>
-</dialog>
+          <!-- Common Modal Footer -->
+          <div class="flex justify-end space-x-2 pt-4 border-t border-enhanced-border">
+            <QuickActionButton onclick={closeModal}>Cancel</QuickActionButton>
+            <QuickActionButton onclick={closeModal}>Confirm</QuickActionButton>
+          </div>
+        </div>
+      {/snippet}
+    </form>
+  </dialog>
 {/if}
+
+<style>
+  .layout {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.5rem;
+  }
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    outline: 3px solid var(--nes-primary, #212529);
+  }
+  .grid {
+    display: grid;
+    gap: 1rem;
+  }
+  .grid.buttons {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  .grid.avatars {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  .cards-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .dialog-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+  }
+  h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.1rem;
+  }
+  h2.section {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+  .section-wrap {
+    padding: 1rem;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background: #fff;
+  }
+  .meta {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-top: 0.4rem;
+  }
+  /* Session Demo Styles */
+  .session-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .status-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .user-details {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .session-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .user-stats h4 {
+    margin: 0.5rem 0;
+  }
+  .stats-grid-demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+  .stat-card {
+    text-align: center;
+    padding: 0.5rem;
+  }
+  .stat-number {
+    display: block;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #007bff;
+  }
+  .stat-label {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
+  /* Formatting Demo Styles */
+  .formatting-demos {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .demo-group h3 {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+  }
+  .timestamp-examples,
+  .filename-examples,
+  .case-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .timestamp-row {
+    display: grid;
+    grid-template-columns: 1fr 100px 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+  .timestamp-row span {
+    font-size: 0.8rem;
+  }
+  .relative {
+    font-weight: bold;
+    color: #007bff;
+  }
+  .detailed {
+    color: #666;
+    cursor: help;
+  }
+  .filename-row {
+    display: grid;
+    grid-template-columns: 30px 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+    align-items: center;
+  }
+  .file-icon {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  .filename-row .original {
+    font-family: monospace;
+    font-size: 0.8rem;
+  }
+  .filename-row .truncated {
+    font-family: monospace;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #007bff;
+  }
+  .case-row {
+    margin-bottom: 0.5rem;
+  }
+  .case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+  }
+  .case-title {
+    font-weight: bold;
+  }
+  .case-meta {
+    display: flex;
+    gap: 0.5rem;
+  }
+  /* Sidebar Demo Styles */
+  .sidebar-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .control-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .sidebar-info {
+    color: inherit;
+  }
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+  }
+  .feature-list li {
+    margin: 0.25rem 0;
+    padding: 0.25rem 0;
+  }
+  .integration-notes {
+    margin-top: 1rem;
+  }
+  .integration-notes ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+  .integration-notes li {
+    margin: 0.25rem 0;
+  }
+</style>

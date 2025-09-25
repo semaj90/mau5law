@@ -71,14 +71,14 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
       priority: 3;
     }
-  };
+  }
   // Jurisdiction configurations
   const jurisdictionConfig = {
     federal: { label: 'Federal', icon: Scale, color: 'text-blue-400' },
     state: { label: 'State', icon: MapPin, color: 'text-green-400' },
     local: { label: 'Local', icon: MapPin, color: 'text-yellow-400' },
     international: { label: 'International', icon: Scale, color: 'text-purple-400' }
-  };
+  }
   // Calculate relevance level
   let relevanceLevel = $derived(() => {
     if (precedent.relevanceScore >= 90) return 'high';
@@ -108,12 +108,15 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     return text.substring.trim() + '...';
   }
 </script>
-<div className={cn(
-  'legal-precedent-card bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
-  interactive && 'hover:border-yorha-primary/30 transition-colors',
-  precedent.overruled && 'opacity-75',
-  className
-)}>
+
+<div
+  className={cn(
+    'legal-precedent-card bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
+    interactive && 'hover:border-yorha-primary/30 transition-colors',
+    precedent.overruled && 'opacity-75',
+    className,
+  )}
+>
   <!-- Card Header -->
   <div class="p-4 border-b border-yorha-border">
     <div class="flex items-start justify-between mb-3">
@@ -128,10 +131,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
       </div>
       <!-- Precedent Type Badge -->
-      <span className={cn(
-        'px-2 py-1 text-xs font-mono rounded border shrink-0',
-        precedentTypeConfig[precedent.precedentType].className
-      )}>
+      <span
+        className={cn(
+          'px-2 py-1 text-xs font-mono rounded border shrink-0',
+          precedentTypeConfig[precedent.precedentType].className,
+        )}
+      >
         {precedentTypeConfig[precedent.precedentType].label}
       </span>
     </div>
@@ -159,11 +164,16 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {#if showSimilarityScore && precedent.similarityScore !== undefined}
           <div class="flex items-center gap-1">
             <span class="text-yorha-text-secondary">Similarity:</span>
-            <span class={cn(
-              'font-medium',
-              similarityLevel === 'high' ? 'text-green-400' :
-              similarityLevel === 'medium' ? 'text-yellow-400' : 'text-red-400'
-            )}>
+            <span
+              class={cn(
+                'font-medium',
+                similarityLevel === 'high'
+                  ? 'text-green-400'
+                  : similarityLevel === 'medium'
+                    ? 'text-yellow-400'
+                    : 'text-red-400',
+              )}
+            >
               {precedent.similarityScore}%
             </span>
           </div>
@@ -171,11 +181,16 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {#if showRelevanceScore}
           <div class="flex items-center gap-1">
             <Star class="w-3 h-3 text-yorha-text-secondary" />
-            <span class={cn(
-              'font-medium',
-              relevanceLevel === 'high' ? 'text-green-400' :
-              relevanceLevel === 'medium' ? 'text-yellow-400' : 'text-red-400'
-            )}>
+            <span
+              class={cn(
+                'font-medium',
+                relevanceLevel === 'high'
+                  ? 'text-green-400'
+                  : relevanceLevel === 'medium'
+                    ? 'text-yellow-400'
+                    : 'text-red-400',
+              )}
+            >
               {precedent.relevanceScore}%
             </span>
           </div>
@@ -188,22 +203,24 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     <!-- Summary -->
     <div class="mb-4">
       <p class="text-sm text-yorha-text-primary font-mono leading-relaxed">
-        {expanded ? precedent.summary: truncateText(precedent.summary, 200)}
+        {expanded ? precedent.summary : truncateText(precedent.summary, 200)}
       </p>
     </div>
     <!-- Key Issues -->
     <div class="mb-4">
-      <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
-        Key Issues
-      </h4>
+      <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Key Issues</h4>
       <div class="flex flex-wrap gap-2">
         {#each precedent.keyIssues.slice(0, expanded ? undefined : 3) as issue}
-          <span class="px-2 py-1 text-xs font-mono bg-yorha-primary/10 text-yorha-primary rounded border border-yorha-primary/20">
+          <span
+            class="px-2 py-1 text-xs font-mono bg-yorha-primary/10 text-yorha-primary rounded border border-yorha-primary/20"
+          >
             {issue}
           </span>
         {/each}
         {#if !expanded && precedent.keyIssues.length > 3}
-          <span class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-secondary rounded border border-yorha-border">
+          <span
+            class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-secondary rounded border border-yorha-border"
+          >
             +{precedent.keyIssues.length - 3} more
           </span>
         {/if}
@@ -211,17 +228,19 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     </div>
     <!-- Legal Areas -->
     <div class="mb-4">
-      <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
-        Legal Areas
-      </h4>
+      <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Legal Areas</h4>
       <div class="flex flex-wrap gap-2">
         {#each precedent.legalAreas.slice(0, expanded ? undefined : 4) as area}
-          <span class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-primary rounded border border-yorha-border">
+          <span
+            class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-primary rounded border border-yorha-border"
+          >
             {area}
           </span>
         {/each}
         {#if !expanded && precedent.legalAreas.length > 4}
-          <span class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-secondary rounded border border-yorha-border">
+          <span
+            class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-secondary rounded border border-yorha-border"
+          >
             +{precedent.legalAreas.length - 4} more
           </span>
         {/if}
@@ -231,18 +250,16 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     {#if expanded}
       <!-- Holding -->
       <div class="mb-4">
-        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
-          Holding
-        </h4>
-        <p class="text-sm text-yorha-text-primary font-mono leading-relaxed bg-yorha-bg-tertiary p-3 rounded border border-yorha-border">
+        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Holding</h4>
+        <p
+          class="text-sm text-yorha-text-primary font-mono leading-relaxed bg-yorha-bg-tertiary p-3 rounded border border-yorha-border"
+        >
           {precedent.holding}
         </p>
       </div>
       <!-- Reasoning -->
       <div class="mb-4">
-        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
-          Reasoning
-        </h4>
+        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Reasoning</h4>
         <ul class="space-y-2">
           {#each precedent.reasoning as reason}
             <li class="text-sm text-yorha-text-primary font-mono flex items-start gap-2">
@@ -254,9 +271,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
       <!-- Judge Information -->
       <div class="mb-4">
-        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
-          Judge
-        </h4>
+        <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Judge</h4>
         <div class="flex items-center gap-2 text-sm font-mono">
           <Users class="w-4 h-4 text-yorha-text-secondary" />
           <span class="text-yorha-text-primary">{precedent.judge}</span>
@@ -282,7 +297,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       <!-- Expand/Collapse -->
       {#if expandable}
         <button
-          onclick={() => expanded = !expanded}
+          onclick={() => (expanded = !expanded)}
           class="text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
         >
           {expanded ? 'Show Less' : 'Show More'}
@@ -335,9 +350,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     <!-- Related Cases -->
     {#if precedent.relatedCases && precedent.relatedCases.length > 0 && expanded}
       <div class="mt-3 pt-3 border-t border-yorha-border">
-        <h5 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
-          Related Cases
-        </h5>
+        <h5 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">Related Cases</h5>
         <div class="flex flex-wrap gap-2">
           {#each precedent.relatedCases.slice(0, 3) as relatedCase}
             <button
@@ -357,6 +370,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     {/if}
   </div>
 </div>
+
 <style>
   .legal-precedent-card {
     transition: all 0.2s ease;

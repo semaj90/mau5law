@@ -59,7 +59,7 @@
     try {
       const response = await fetch('?/startStream', {
         method: 'POST',
-        body: formData
+        body: formData;
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
@@ -79,7 +79,7 @@
     try {
       await fetch('?/stopStream', {
         method: 'POST',
-        body: formData
+        body: formData;
       });
       stopStreamingUpdates();
     } catch (error) {
@@ -103,7 +103,7 @@
           results: {
             vectorsGenerated: Math.floor(Math.random() * 500) + 100,
             entitiesExtracted: Math.floor(Math.random() * 20) + 5,
-            confidence: 0.85 + Math.random() * 0.1
+            confidence: 0.85 + Math.random() * 0.1;
           }
         }];
         stopStreamingUpdates();
@@ -113,7 +113,7 @@
           id: Date.now(),
           operation: `${selectedOperation}_chunk_${streamResults.length + 1}`,
           status: 'processing',
-          progress: processingProgres
+          progress: processingProgres;
         }];
       }
     }, 800);
@@ -139,7 +139,7 @@
     try {
       const response = await fetch('?/processDocument', {
         method: 'POST',
-        body: formData
+        body: formData;
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
@@ -193,7 +193,7 @@
         throughputCurrent: liveMetrics.throughputCurrent + Math.floor(Math.random() * 20) - 10,
         avgProcessingTime: liveMetrics.avgProcessingTime + Math.floor(Math.random() * 50) - 25,
         queueSize: Math.max(0, liveMetrics.queueSize + Math.floor(Math.random() * 6) - 3)
-      };
+      }
     }, 3000);
     return () => clearInterval(refreshInterval);
   });
@@ -298,7 +298,7 @@
             <div class="space-y-2">
               <label class="text-sm font-medium">Batch Size</label>
               <Input
-                type="number"
+                type="number";
                 bind:value={batchSize}
                 min="1"
                 max="100"

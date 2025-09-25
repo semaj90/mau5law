@@ -39,7 +39,7 @@ export interface DocumentProcessingResult {
     language?: string;
     document_type?: string;
     confidence?: number;
-  };
+  }
 }
 export interface BenchmarkResult {
   textProcessing: number;
@@ -50,7 +50,7 @@ export interface BenchmarkResult {
     platform: string;
     wasmSupport: boolean;
     memoryLimit?: number;
-  };
+  }
 }
 export interface RustBridgeStatus {
   initialized: boolean;
@@ -61,7 +61,7 @@ export interface RustBridgeStatus {
     target: string;
     optimized: boolean;
     features: string[];
-  };
+  }
 }
 // Legal document processing specific types
 export interface LegalDocumentMetadata {
@@ -116,25 +116,25 @@ export interface SystemResourceUsage {
     usage: number; // percentage
     cores: number;
     frequency?: number; // MHz
-  };
+  }
   memory: {
     total: number; // bytes
     used: number;
     available: number;
     percentage: number;
-  };
+  }
   disk: {
     reads: number;
     writes: number;
     totalSpace?: number;
     freeSpace?: number;
-  };
+  }
   network?: {
     bytesReceived: number;
     bytesSent: number;
     packetsReceived: number;
     packetsSent: number;
-  };
+  }
 }
 export interface GpuInfo {
   name: string;
@@ -181,28 +181,28 @@ export interface LegalAISystemStatus {
     postgres: boolean;
     connectionPool: number;
     activeQueries: number;
-  };
+  }
   ai: {
     ollama: boolean;
     modelLoaded: string;
     availableModels: string[];
     queueLength: number;
-  };
+  }
   cache: {
     redis: boolean;
     memoryUsage: number;
     hitRate: number;
-  };
+  }
   search: {
     qdrant: boolean;
     indexedDocuments: number;
     searchPerformance: number; // ms average
-  };
+  }
   services: {
     go: boolean;
     python: boolean;
     node: boolean;
-  };
+  }
 }
 export interface LegalCaseContext {
   caseId: string;

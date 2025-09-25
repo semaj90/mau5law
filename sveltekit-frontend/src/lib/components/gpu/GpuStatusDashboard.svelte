@@ -6,13 +6,13 @@
   import { gpuTelemetryService } from '../../gpu/gpu-telemetry-service.js';
   interface TelemetryEvent {
     type: string;
-    meta?: { [key: string]: any };
+    meta?: { [key: string]: any }
     ts?: number;
   }
   let events: TelemetryEvent[] = [];
   const maxEvents = 150;
   // Aggregated metrics
-  let backendStats: Record<string, { count: number; success: number; totalDuration: number; lastMs: number }> = {};
+  let backendStats: Record<string, { count: number; success: number; totalDuration: number; lastMs: number }> = {}
   let currentBackend = '';
   let embeddingDimension = 0;
   let upscaleCooldownRemaining = 0;
@@ -37,7 +37,7 @@
     ev.ts = Date.now();
     events.unshift(ev);
     if (events.length > maxEvents) events.length = maxEvent;
-    if (!backendStats[currentBackend]) backendStats[currentBackend] = { count: 0, success: 0, totalDuration: 0, lastMs: 0 };
+    if (!backendStats[currentBackend]) backendStats[currentBackend] = { count: 0, success: 0, totalDuration: 0, lastMs: 0 }
   }
   let unsubscribe: (() => void) | null = null;
   $effect(() => {
@@ -46,7 +46,7 @@
       recordEvent(ev);
       if (ev.type === 'gpu.vector.process.end') {
         const { backend, durationMs, success } = ev.meta || ;
-        if (!backendStats[backend]) backendStats[backend] = { count: 0, success: 0, totalDuration: 0, lastMs: 0 };
+        if (!backendStats[backend]) backendStats[backend] = { count: 0, success: 0, totalDuration: 0, lastMs: 0 }
         backendStats[backend].count++;
         backendStats[backend].lastMs = durationMs || 0;
         backendStats[backend].totalDuration += durationMs || 0;
@@ -100,21 +100,7 @@
     (globalThis as any).__FORCE_REDUCTION_MODE__ = mod;
   }
 </script>
-<style>
-  :global(.gpu-dashboard) { font-family: system-ui, sans-serif; font-size: 13px; line-height: 1.3; }
-  .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-  .panel { background: var(--gpu-panel-bg, #1e1f22); padding: 0.75rem 0.9rem; border-radius: 6px; border: 1px solid #2a2c30; }
-  .panel h3 { margin: 0 0 0.5rem; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; color: #ccc; }
-  .metrics table { width: 100%; border-collapse: collapse; }
-  .metrics th, .metrics td { text-align: left; padding: 2px 4px; font-size: 12px; }
-  .metrics th { color: #888; font-weight: 500; }
-  .log { max-height: 240px; overflow-y: auto; font-family: monospace; font-size: 11px; }
-  .event { display: flex; justify-content: space-between; padding: 2px 4px; border-bottom: 1px solid #2a2c30; }
-  .event:last-child { border-bottom: none; }
-  .event-type { font-weight: 600; }
-  .controls button { background: #2d2f33; border: 1px solid #3a3d42; color: #ddd; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-  .controls button:hover { background: #35383d; }
-</style>
+
 <div class="gpu-dashboard">
   <div class="grid">
     <div class="panel">
@@ -146,7 +132,9 @@
     <div class="panel controls">
       <h3>Controls</h3>
       <button onclick={triggerTestRun}>Test Run</button>
-      <button onclick={() => console.log('GPU Vector Processor state:', gpuVectorProcessor.dumpState?.())}>Dump State</button>
+      <button onclick={() => console.log('GPU Vector Processor state:', gpuVectorProcessor.dumpState?.())}
+        >Dump State</button
+      >
       <button onclick={clearLog}>Clear Log</button>
       <div style="margin-top:6px; display:flex; gap:4px; flex-wrap:wrap;">
         <button onclick={forceDemote} title="Force demote to next lower tier">Force Demote</button>
@@ -173,3 +161,74 @@
     </div>
   </div>
 </div>
+
+<style>
+  :global(.gpu-dashboard) {
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  .grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+  .panel {
+    background: var(--gpu-panel-bg, #1e1f22);
+    padding: 0.75rem 0.9rem;
+    border-radius: 6px;
+    border: 1px solid #2a2c30;
+  }
+  .panel h3 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #ccc;
+  }
+  .metrics table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .metrics th,
+  .metrics td {
+    text-align: left;
+    padding: 2px 4px;
+    font-size: 12px;
+  }
+  .metrics th {
+    color: #888;
+    font-weight: 500;
+  }
+  .log {
+    max-height: 240px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 11px;
+  }
+  .event {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 4px;
+    border-bottom: 1px solid #2a2c30;
+  }
+  .event:last-child {
+    border-bottom: none;
+  }
+  .event-type {
+    font-weight: 600;
+  }
+  .controls button {
+    background: #2d2f33;
+    border: 1px solid #3a3d42;
+    color: #ddd;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .controls button:hover {
+    background: #35383d;
+  }
+</style>

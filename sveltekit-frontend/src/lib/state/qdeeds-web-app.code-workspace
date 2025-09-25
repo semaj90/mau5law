@@ -13,5 +13,10 @@
     },
     "git.ignoreLimitWarning": true,
     "powershell.cwd": "deeds-web-app",
+    "terminal.integrated.copyOnSelection": false,
+    "terminal.integrated.gpuAcceleration": "on",
+    "editor.experimentalGpuAcceleration": "on",
+    "files.autoSave": "onFocusChange",
+    "eslint.run": "onSave",
   },
 }

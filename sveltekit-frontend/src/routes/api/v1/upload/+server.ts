@@ -13,7 +13,7 @@ import type {
 } from '$lib/types/api.js'
 import { embeddingService } from '$lib/server/embedding-service.js'
 import crypto from "crypto"
-import { URL } from "url"
+
 // Upload Service Configuration
 const UPLOAD_SERVICE_CONFIG = {
   http: 'http://localhost:8093',

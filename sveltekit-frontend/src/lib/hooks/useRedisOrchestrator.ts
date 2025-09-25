@@ -40,7 +40,7 @@ export function useRedisAI() {
     } finally {
       isProcessing = false;
     }
-  };
+  }
   const queueTask = async (
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
     query: string
@@ -58,10 +58,10 @@ export function useRedisAI() {
     } finally {
       isProcessing = false;
     }
-  };
+  }
   const getTaskResult = async (taskId: string) => {
     return await redisOrchestratorClient.getTaskResult(taskId);
-  };
+  }
   return {
     get isProcessing() { return isProcessing; },
     get lastResult() { return lastResult; },
@@ -70,7 +70,7 @@ export function useRedisAI() {
     queueTask,
     getTaskResult,
     clearError: () => { error = null; }
-  };
+  }
 }
 /**
  * Hook for Redis system monitoring
@@ -87,13 +87,13 @@ export function useRedisMonitoring() {
     } finally {
       isLoading = false;
     }
-  };
+  }
   const clearCache = async (confirm = false) => {
     if (!confirm) {
       throw new Error('Cache clear requires confirmation');
     }
     return await redisOrchestratorClient.clearCache(true);
-  };
+  }
   onMount(() => {
     refresh();
   });
@@ -104,7 +104,7 @@ export function useRedisMonitoring() {
     get isHealthy() { return get(isRedisHealthy); },
     refresh,
     clearCache
-  };
+  }
 }
 /**
  * Hook for managing queued tasks
@@ -118,21 +118,21 @@ export function useRedisTaskQueue() {
   });
   const getTask = (taskId: string): QueuedTask | undefined => {
     return tasks.get(taskId);
-  };
+  }
   const getAllTasks = (): QueuedTask[] => {
     return Array.from(tasks.values()).sort((a, b) =>
       new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
     );
-  };
+  }
   const getTasksByStatus = (status: QueuedTask['status']): QueuedTask[] => {
     return getAllTasks().filter(task => task.status === status);
-  };
+  }
   const removeTask = (taskId: string) => {
     queuedTasks.update(tasks => {
       tasks.delete(taskId);
       return tasks;
     });
-  };
+  }
   const clearCompletedTasks = () => {
     queuedTasks.update(tasks => {
       for (const [taskId, task] of tasks.entries()) {
@@ -142,7 +142,7 @@ export function useRedisTaskQueue() {
       }
       return tasks;
     });
-  };
+  }
   onDestroy(() => {
     unsubscribe();
   });
@@ -154,12 +154,12 @@ export function useRedisTaskQueue() {
     getTasksByStatus,
     removeTask,
     clearCompletedTasks
-  };
+  }
 }
 /**
  * Hook for auto-initializing Redis orchestrator
  */;
-export function useRedisInit(options: { pollInterval?: number; autoStart?: boolean } = {}) {
+export function useRedisInit(_options: { pollInterval?: number; autoStart?: boolean } = {}) {
   let isInitialized = $state(false);
   let initError: string | null = $state(null);
   const initialize = async () => {
@@ -171,7 +171,7 @@ export function useRedisInit(options: { pollInterval?: number; autoStart?: boole
       initError = error instanceof Error ? error.message: 'Initialization failed';
       console.error('Redis orchestrator initialization failed:', error);
     }
-  };
+  }
   onMount(async () => {
     if (options.autoStart !== false) {
       await initialize();
@@ -184,7 +184,7 @@ export function useRedisInit(options: { pollInterval?: number; autoStart?: boole
     get isInitialized() { return isInitialized; },
     get initError() { return initError; },
     initialize
-  };
+  }
 }
 /**
  * Hook for Redis-aware component state
@@ -229,12 +229,12 @@ export function useRedisComponent(
     }
     lastQuery = query;
     return result;
-  };
+  }
   const clearComponentCache = () => {
     componentCache.clear();
     cacheHits = 0;
     cacheMisses = 0;
-  };
+  }
   const getCacheStats = () => ({
     size: componentCache.size,
     hits: cacheHits
@@ -246,7 +246,7 @@ export function useRedisComponent(
     get cacheStats() { return getCacheStats(); },
     queryWithCache,
     clearComponentCache
-  };
+  }
 }
 /**
  * Hook for Redis-optimized form submissions
@@ -281,7 +281,7 @@ export function useRedisForm() {
           type: 'queued',
           taskId,
           estimatedTime: '30-45 seconds'
-        };
+        }
       } else {
         // Process immediately with Redis optimization
         const result = await redisOrchestratorClient.processQuery(query, {
@@ -291,7 +291,7 @@ export function useRedisForm() {
         lastSubmission = {
           type: 'immediate',
           result
-        };
+        }
       }
       return lastSubmission;
     } catch (error) {
@@ -300,14 +300,14 @@ export function useRedisForm() {
     } finally {
       isSubmitting = false;
     }
-  };
+  }
   return {
     get isSubmitting() { return isSubmitting; },
     get submitError() { return submitError; },
     get lastSubmission() { return lastSubmission; },
     submitForm,
     clearError: () => { submitError = null; }
-  };
+  }
 }
 // Helper functions
 function extractQueryFromForm(formData: any): string {

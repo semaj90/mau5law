@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
         const percentComplete = (event.loaded / event.total) * 100;
         uploadProgress = percentComplet;
       }
-    };
+    }
     xhr.onload = () => {
       isUploading = false;
       const processingTime = Date.now() - uploadStartTim;
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
           });
         }
       }
-    };
+    }
     xhr.onerror = () => {
       isUploading = false;
       const errorMsg = "Upload failed. Please check your network connection.";
@@ -84,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
           networkError: true
         });
       }
-    };
+    }
     xhr.send(formData);
   }
 </script>
@@ -147,4 +147,4 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
-</FeedbackIntegration>
+</FeedbackIntegration>;

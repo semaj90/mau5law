@@ -119,7 +119,7 @@ export interface WebGPUShaderData {
   computeShader: string;
   vertexShader?: string;
   fragmentShader?: string;
-  uniforms?: { [key: string]: any };
+  uniforms?: { [key: string]: any }
   bindGroupLayout?: GPUBindGroupLayoutDescriptor;
   workgroupSize?: [number, number, number];
 }
@@ -151,7 +151,7 @@ export interface ShaderMetadata {
   visualizationType?: string;
   complexity: number;
   embedding?: Float32Array;
-  parameters?: { [key: string]: any };
+  parameters?: { [key: string]: any }
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -189,7 +189,7 @@ export interface LegalWorkflowContext {
   urgency: UrgencyLevel;
   clientId?: string;
   caseId?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export type ComplexityLevel = 'low' | 'medium' | 'high' | 'critical';
 export type UrgencyLevel = 'low' | 'medium' | 'high' | 'emergency';
@@ -299,27 +299,27 @@ export interface EnhancedGPUCacheConfig {
     preferredAdapter?: string;
     memoryLimit?: number;
     features?: string[];
-  };
+  }
   // Shader cache configuration
   shaderCache: {
     enabled: boolean;
     maxEntries: number;
     compressionEnabled: boolean;
     predictiveLoading: boolean;
-  };
+  }
   // Legal workflow configuration
   legalWorkflows: {
     enabled: boolean;
     defaultComplexity: ComplexityLevel;
     securityLevel: SecurityLevel;
     retentionPeriod: number;
-  };
+  }
   // Performance configuration
   performance: {
     enableAnalytics: boolean;
     metricsInterval: number;
     optimizationThreshold: number;
-  };
+  }
 }
 // === Utility Types ===
 }
@@ -332,7 +332,7 @@ export interface CacheOperationOptions {
   enableWebGPU?: boolean;
   securityLevel?: SecurityLevel;
   tags?: string[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface RetrievalOptions {
   includeMetadata?: boolean;
@@ -361,7 +361,7 @@ export interface CacheEvent {
   timestamp: number;
   workflowType?: LegalWorkflowType;
   performance?: Partial<PerformanceMetrics>;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface IntegrationEvent {
   type: 'binary_encode' | 'nes_cache' | 'webgpu_process' | 'shader_compile' | 'som_cluster';
@@ -370,7 +370,7 @@ export interface IntegrationEvent {
   success: boolean;
   performance: number;
   timestamp: number;
-  details?: { [key: string]: any };
+  details?: { [key: string]: any }
 }
 // === Error Types ===
 export class EnhancedGPUCacheError extends Error {
@@ -393,29 +393,29 @@ export interface ErrorContext {
   requestId?: string;
 }
 // === Type Guards ===
-export function isBinaryEncodingFormat(value: string): value is EncodingFormat {
+export function isBinaryEncodingFormat(_value: string): value is EncodingFormat {
   return ['cbor', 'msgpack', 'json'].includes(value);
 }
-export function isLegalWorkflowType(value: string): value is LegalWorkflowType {
+export function isLegalWorkflowType(_value: string): value is LegalWorkflowType {
   return [
     'document_upload', 'evidence_review', 'case_analysis',
     'contract_review', 'litigation_prep', 'deposition_analysis',
     'discovery_management', 'legal_research', 'compliance_audit'
   ].includes(value);
 }
-export function isNESMemoryRegion(value: string): value is NESMemoryRegion {
+export function isNESMemoryRegion(_value: string): value is NESMemoryRegion {
   return [
     'PRG_ROM', 'CHR_ROM', 'RAM',
     'PPU_MEMORY', 'SPRITE_MEMORY', 'PALETTE_MEMORY'
   ].includes(value);
 }
-export function isComplexityLevel(value: string): value is ComplexityLevel {
+export function isComplexityLevel(_value: string): value is ComplexityLevel {
   return ['low', 'medium', 'high', 'critical'].includes(value);
 }
-export function isUrgencyLevel(value: string): value is UrgencyLevel {
+export function isUrgencyLevel(_value: string): value is UrgencyLevel {
   return ['low', 'medium', 'high', 'emergency'].includes(value);
 }
-export function isSecurityLevel(value: string): value is SecurityLevel {
+export function isSecurityLevel(_value: string): value is SecurityLevel {
   return ['standard', 'enhanced', 'maximum'].includes(value);
 }
 // === Utility Functions ===
@@ -459,7 +459,7 @@ export function createDefaultEnhancedGPUCacheConfig(): EnhancedGPUCacheConfig {
       metricsInterval: 60000, // 1 minute
       optimizationThreshold: 0.7
     }
-  };
+  }
 }
 export function calculateOverallPerformanceScore(metrics: PerformanceMetrics): number {
   const weights = {
@@ -469,7 +469,7 @@ export function calculateOverallPerformanceScore(metrics: PerformanceMetrics): n
     compressionEfficiency: 0.15,
     gpuAccelerationGain: 0.1,
     nesOptimizationGain: 0.05
-  };
+  }
   // Normalize metrics to 0-1 range
   const normalized = {
     cacheHitRatio: metrics.cacheHitRatio,
@@ -478,7 +478,7 @@ export function calculateOverallPerformanceScore(metrics: PerformanceMetrics): n
     compressionEfficiency: metrics.compressionEfficiency,
     gpuAccelerationGain: metrics.gpuAccelerationGain || 0,
     nesOptimizationGain: metrics.nesOptimizationGain || 0
-  };
+  }
   const score = Object.entries(weights).reduce((total, [key, weight]) => {
     return total + (normalized[key as keyof typeof normalized] * weight);
   }, 0);
@@ -495,7 +495,7 @@ export function createCacheKey(
   return parts.join(':');
 }
 export function estimateMemoryFootprint(
-  data: any
+  data: any;
   format: EncodingFormat = 'json';
 ): number {
   const jsonSize = JSON.stringify(data).length * 2; // UTF-16
@@ -524,4 +524,4 @@ export default {
   estimateMemoryFootprint,
   // Error class
   EnhancedGPUCacheError
-};
+}

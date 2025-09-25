@@ -9,7 +9,7 @@ export interface SIMDVectorProcessor {
     normalizedVectors: Float32Array;
     magnitudes: Float32Array;
     metadata: VectorMetadata;
-  };
+  }
 }
 export interface VectorMetadata {
   vectorCount: number;
@@ -52,7 +52,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     }
   }
   private normalizeVectorsSIMD(
-    vectors: Float32Array
+    vectors: Float32Array;
     dimensions: number
     vectorCount: number;
   ): Float32Array {
@@ -80,7 +80,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     return normalizedVectors;
   }
   private normalizeVectorsScalar(
-    vectors: Float32Array
+    vectors: Float32Array;
     dimensions: number
     vectorCount: number;
   ): Float32Array {
@@ -194,12 +194,12 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
       isNormalized: true
       processingTime,
       simdSupported: this.simdSupported
-    };
+    }
     return {
       normalizedVectors,
       magnitudes,
       metadata
-    };
+    }
   }
 }
 // Legal AI specific vector operations
@@ -284,7 +284,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
       dimensions: number;
       totalVectors: number;
       processingTime: number;
-    };
+    }
   } {
     const startTime = performance.now();
     // Process case embeddings
@@ -302,7 +302,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
         totalVectors: caseEmbeddings.length + evidenceEmbeddings.length,
         processingTime
       }
-    };
+    }
   }
 }
 // Singleton instance for the application

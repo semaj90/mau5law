@@ -15,11 +15,11 @@ export interface APIResponse<T> {
     error?: {
         code: string;
         message: string;
-    };
+    }
     metadata?: {
         timestamp: string;
         processingTimeMs: number;
-    };
+    }
 }
 // --- AI & Worker Manager Types (Fixes ~50+ errors) ---
 export type AITaskType = "generate" | "analyze" | "embed" | "search" | "embedding" | "analysis" | "classification" | "summarization";
@@ -48,7 +48,7 @@ export interface WorkerStatus {
   performance: {
     avgTaskTime: number;
     tasksPerMinute: number;
-  };
+  }
   lastActivity: Date;
 }
 export interface WorkerMessage {
@@ -92,7 +92,7 @@ export interface LegalDocument {
     content: string;
     createdAt: string;
     updatedAt: string;
-    metadata: { [key: string]: any };
+    metadata: { [key: string]: any }
     embedding?: number[];
 }
 // --- NES-Style Canvas Engine & AI Prediction Types ---
@@ -107,7 +107,7 @@ export interface CanvasState {
     transitions?: string[];
     userContext?: string[];
     confidence?: number;
-  };
+  }
 }
 export interface CanvasAnimation {
     name: string;
@@ -117,7 +117,7 @@ export interface CanvasAnimation {
 export interface UserActivityLog {
     timestamp: number;
     action: string; // e.g., 'canvas_click', 'animation_changed'
-    context: { [key: string]: any };
+    context: { [key: string]: any }
     sessionId: string;
 }
 // --- XState & Machine Types ---
@@ -130,7 +130,7 @@ export type GlobalAppEvent =
   | { type: 'LOGIN'; user: { id: string; email: string } }
   | { type: 'LOGOUT' }
   | { type: 'SET_CASE'; caseId: string }
-  | { type: 'SET_THEME'; theme: 'light' | 'dark' };
+  | { type: 'SET_THEME'; theme: 'light' | 'dark' }
 // --- Legal Case & Evidence Types ---
 }
 export interface LegalCase {
@@ -142,7 +142,7 @@ export interface LegalCase {
   createdAt: string;
   updatedAt: string;
   userId: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface Evidence {
   id: string;
@@ -154,14 +154,14 @@ export interface Evidence {
   fileSize?: number;
   mimeType?: string;
   uploadedAt: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   embedding?: number[];
 }
 // --- Vector & Search Types ---
 }
 export interface VectorSearchRequest {
   query: string;
-  filters?: { [key: string]: any };
+  filters?: { [key: string]: any }
   limit?: number;
   threshold?: number;
 }
@@ -169,7 +169,7 @@ export interface VectorSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 // --- Form & Validation Types ---
 }
@@ -205,7 +205,7 @@ export interface ButtonProps {
   loading?: boolean;
   href?: string;
   type?: 'button' | 'submit' | 'reset';
-  onclick?: (event: MouseEvent) => void;
+  onclick?: (_event: MouseEvent) => void;
   class?: string;
 }
 export interface ModalProps {
@@ -240,7 +240,7 @@ export interface FileUploadRequest {
   file: File;
   caseId?: string;
   description?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface FileUploadResponse {
   id: string;

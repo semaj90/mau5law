@@ -78,6 +78,7 @@ https://svelte.dev/e/js_parse_error -->
     )
   );
 </script>
+
 <div class={cardClass} {...restProps}>
   <!-- Card Header -->
   {#if header}
@@ -98,7 +99,9 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-<style>/* YoRHa-specific animations */ .yorha-glow {
+
+<style>/* YoRHa-specific animations */ {}
+  .yorha-glow {
     animation: yorha-pulse 2s ease-in-out infinite alternate;
   }
   @keyframes yorha-pulse {
@@ -106,7 +109,9 @@ https://svelte.dev/e/js_parse_error -->
       box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
     }
     to {
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 0 30px rgba(212, 175, 55, 0.3);
+box-shadow: {}
+0 0 20px rgba(212, 175, 55, 0.6), {}
+        0 0 30px rgba(212, 175, 55, 0.3);
     }
   }
 </style>

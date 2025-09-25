@@ -28,7 +28,7 @@ export interface Snippet<Parameters extends readonly any[] = []> {
     render(): string;
     setup?(): void;
     teardown?(): void;
-  };
+  }
 }
 // Component types
 export interface Component<Props extends { [key: string]: any } = {}> {
@@ -36,7 +36,7 @@ export interface Component<Props extends { [key: string]: any } = {}> {
     render(): string;
     setup?(): void;
     teardown?(): void;
-  };
+  }
 }
 export type ComponentProps<T> = T extends Component<infer P> ? P : never;
 // Action types
@@ -69,17 +69,17 @@ export interface LoadEvent {
   cookies: {
     get(name: string): string | undefined;
     set(name: string, value: string, options?: any): void;
-  };
-  locals: { [key: string]: any };
-  parent(): Promise<{ [key: string]: any };
+  }
+  locals: { [key: string]: any }
+  parent(): Promise<{ [key: string]: any }
   depends(...deps: string[]): void;
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 }
 export interface PageLoad<Data = any> {
-  (event: LoadEvent): Promise<Data> | Data;
+  (_event: LoadEvent): Promise<Data> | Data;
 }
 export interface LayoutLoad<Data = any> {
-  (event: LoadEvent): Promise<Data> | Data;
+  (_event: LoadEvent): Promise<Data> | Data;
 }
 // Server-side request handlers
 export interface RequestEvent {
@@ -90,13 +90,13 @@ export interface RequestEvent {
     get(name: string): string | undefined;
     set(name: string, value: string, options?: any): void;
     delete(name: string, options?: any): void;
-  };
-  locals: { [key: string]: any };
+  }
+  locals: { [key: string]: any }
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
   platform?: any;
 }
 export interface RequestHandler<Data = any> {
-  (event: RequestEvent): Promise<Response> | Response;
+  (_event: RequestEvent): Promise<Response> | Response;
 }
 // SvelteKit hooks
 export interface Handle {
@@ -112,15 +112,15 @@ export interface HandleFetch {
 export interface PageStore {
   url: URL;
   params: Record<string, string>;
-  route: { id: string | null };
-  data: { [key: string]: any };
+  route: { id: string | null }
+  data: { [key: string]: any }
   error: any;
-  state: { [key: string]: any };
+  state: { [key: string]: any }
   form: any;
 }
 export type NavigatingStore = {
-  from?: { params: Record<string, string>; url: URL };
-  to?: { params: Record<string, string>; url: URL };
+  from?: { params: Record<string, string>; url: URL }
+  to?: { params: Record<string, string>; url: URL }
   type?: 'link' | 'popstate' | 'goto';
 } | null;
 }
@@ -133,7 +133,7 @@ export interface UpdatedStore {
 export interface SQL<T = unknown> {
   queryChunks: readonly string[];
   params: readonly unknown[];
-  typings?: { [key: string]: string };
+  typings?: { [key: string]: string }
   shouldInlineParams?: boolean;
   sql: string;
 }
@@ -165,13 +165,13 @@ export interface PostgresOptions {
   prepare?: boolean;
   connect_timeout?: number;
   onnotice?: (notice: any) => void;
-  onparameter?: (key: string, value: any) => void;
+  onparameter?: (_key: string, value: any) => void;
   onconnect?: () => Promise<void>;
   [key: string]: any;
 }
 // Drizzle ORM specific types
 export interface DrizzleConfig {
-  schema?: { [key: string]: any };
+  schema?: { [key: string]: any }
   logger?: boolean | any;
   mode?: 'default' | 'planetscale';
 }
@@ -222,7 +222,7 @@ export interface DrizzleTable<T extends { [key: string]: any } = { [key: string]
     columns: T;
     schema?: string;
     baseName: string;
-  };
+  }
 }
 export interface DrizzleColumn<T = any> {
   name: string;
@@ -237,13 +237,13 @@ export interface DrizzleColumn<T = any> {
 export interface EmbeddingVector {
   id: string;
   values: number[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface VectorSearchResult {
   id: string;
   score: number;
   values?: number[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   document?: any;
 }
 export interface VectorSearchOptions {
@@ -251,7 +251,7 @@ export interface VectorSearchOptions {
   threshold?: number;
   includeValues?: boolean;
   includeMetadata?: boolean;
-  filter?: { [key: string]: any };
+  filter?: { [key: string]: any }
 }
 // ===== AI/ML TYPES =====
 // Ollama types
@@ -268,7 +268,7 @@ export interface OllamaGenerateRequest {
     seed?: number;
     num_predict?: number;
     stop?: string[];
-  };
+  }
   system?: string;
   template?: string;
   context?: number[];
@@ -307,13 +307,13 @@ export interface OllamaModel {
     family: string;
     parameter_size: string;
     quantization_level?: string;
-  };
+  }
 }
 // RAG types
 export interface RAGDocument {
   id: string;
   content: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   embedding?: number[];
 }
 export interface RAGQuery {
@@ -325,7 +325,7 @@ export interface RAGQuery {
     contextLimit?: number;
     temperature?: number;
     maxTokens?: number;
-  };
+  }
 }
 export interface RAGResponse {
   response: string;
@@ -334,7 +334,7 @@ export interface RAGResponse {
   confidence: number;
   processingTime: number;
   model?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 // ===== CACHE TYPES =====
 // Enhanced cache configuration (fixing our previous errors)
@@ -358,11 +358,11 @@ export interface CacheLayerConfig {
   capacity: number;
   ttl: number;
   enabled?: boolean;
-  options?: { [key: string]: any };
+  options?: { [key: string]: any }
 }
 export interface CacheEntry {
   value: any;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   ttl: number;
   createdAt: number;
   lastAccessed?: number;
@@ -388,8 +388,8 @@ export interface CacheAnalytics {
   accessPatterns?: Map<string, any>;
   hotKeys?: Set<string>;
   coldKeys?: Set<string>;
-  performanceMetrics?: { [key: string]: any };
-  usageStats?: { [key: string]: any };
+  performanceMetrics?: { [key: string]: any }
+  usageStats?: { [key: string]: any }
 }
 export interface CacheStats {
   totalEntries: number;
@@ -469,8 +469,8 @@ export interface ExpectationResult {
 export interface MockFunction<T extends (...args: any[]) => any = (...args: any[]) => any> {
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation(fn: T): this;
-  mockReturnValue(value: ReturnType<T>): this;
-  mockResolvedValue(value: Awaited<ReturnType<T>): this;
+  mockReturnValue(_value: ReturnType<T>): this;
+  mockResolvedValue(_value: Awaited<ReturnType<T>): this;
   mockRejectedValue(error: any): this;
   mockClear(): this;
   mockReset(): this;
@@ -513,14 +513,14 @@ export type DeepPartial<T> = {
     : T[P] extends { [key: string]: any }
       ? DeepPartial<T[P]>
       : T[P];
-};
+}
 export type RequiredBy<T, K extends keyof T> = T & Required<Pick<T, K>;
 export type OptionalBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>;
 export type Nullable<T> = T | null | undefined;
 export type NonNullable<T> = T extends null | undefined ? never : T;
 // Function utility types
 export type AsyncFunction<T = any> = (...args: any[]) => Promise<T>;
-export type EventHandler<T = Event> = (event: T) => void | Promise<void>;
+export type EventHandler<T = Event> = (_event: T) => void | Promise<void>;
 // Class utility types
 export type ClassValue =
   | string

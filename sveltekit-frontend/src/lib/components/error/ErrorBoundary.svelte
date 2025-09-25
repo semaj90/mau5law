@@ -31,16 +31,16 @@
       return () => {
         window.removeEventListener('error', handleError);
         window.removeEventListener('unhandledrejection', handleRejection);
-      };
+      }
     }
   });
-  function handleError(event: ErrorEvent) {
+  function handleError(_event: ErrorEvent) {
     console.error('Error caught by ErrorBoundary:', event.error);
     hasError = true;
     errorDetails = event.error?.message || 'Unknown error occurred';
     errorStack = event.error?.stack || '';
   }
-  function handleRejection(event: PromiseRejectionEvent) {
+  function handleRejection(_event: PromiseRejectionEvent) {
     console.error('Promise rejection caught by ErrorBoundary:', event.reason);
     hasError = true;
     errorDetails = event.reason?.message || 'Promise rejection occurred';
@@ -60,11 +60,11 @@
     if (browser) {
       const errorReport = {
         path: currentPath
-        error: errorDetails
+        error: errorDetails;
         stack: errorStack
         userAgent: navigator.userAgent,
         timestamp: new Date().toISOString();
-      };
+      }
       console.log('Error Report:', errorReport);
       // In a real application, you would send this to your error reporting service
       alert('Error reported to development team. Thank you for helping us improve!');
@@ -76,20 +76,19 @@
     errorStack = null;
   }
 </script>
+
 {#if hasError && !fallback}
   <div class="error-boundary-container">
     <div class="error-boundary-content">
       <div class="error-icon">
         <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
       </div>
       <h2 class="error-title">{title}</h2>
-      <p class="error-message">
-        We encountered an unexpected error while loading this page. This might be temporary.
-      </p>
+      <p class="error-message">We encountered an unexpected error while loading this page. This might be temporary.</p>
       {#if errorDetails}
         <details class="error-details">
           <summary>Technical Details</summary>
@@ -104,21 +103,13 @@
       {/if}
       <div class="error-actions">
         {#if showRefreshButton}
-          <button class="nes-btn is-primary" onclick={refreshPage}>
-            Try Again
-          </button>
+          <button class="nes-btn is-primary" onclick={refreshPage}> Try Again </button>
         {/if}
-        <button class="nes-btn" variant="ghost" onclick={goHome}>
-          Go Home
-        </button>
+        <button class="nes-btn" variant="ghost" onclick={goHome}> Go Home </button>
         {#if showReportButton}
-          <button class="nes-btn" variant="ghost" onclick={reportError}>
-            Report Issue
-          </button>
+          <button class="nes-btn" variant="ghost" onclick={reportError}> Report Issue </button>
         {/if}
-        <button class="nes-btn" variant="ghost" size="sm" onclick={reset}>
-          Reset
-        </button>
+        <button class="nes-btn" variant="ghost" size="sm" onclick={reset}> Reset </button>
       </div>
     </div>
   </div>
@@ -127,6 +118,7 @@
 {:else}
   {@render children?.()}
 {/if}
+
 <style>
   .error-boundary-container {
     min-height: 60vh;

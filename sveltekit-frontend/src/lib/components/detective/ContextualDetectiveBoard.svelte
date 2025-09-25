@@ -78,7 +78,7 @@
    */
   async function loadCaseEvidence() {
     try {
-      const response = await fetch(`/api/v1/evidence/by-case/${caseId}`);
+      // removed unused response assignment
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         evidenceList = (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).evidence || [];
@@ -145,7 +145,7 @@
   /**
    * Handle typing state changes from the headless listener
    */
-  function handleTypingStateChange(event: CustomEvent) {
+  function handleTypingStateChange(_event: CustomEvent) {
     currentTypingState = event.detail.stat;
     typingContext = event.detail.context;
     // Send typing updates to collaborators
@@ -160,7 +160,7 @@
   /**
    * Handle contextual prompts from typing behavior
    */
-  function handleContextualPrompt(event: CustomEvent) {
+  function handleContextualPrompt(_event: CustomEvent) {
     contextualPrompts = [...event.detail.prompts];
     // Add detective-specific contextual prompts
     if (userInput.toLowerCase().includes('evidence')) {
@@ -173,14 +173,14 @@
       contextualPrompts.push('Generate location timeline?');
     }
     ondispatch?.({
-      prompts: contextualPrompts
+      prompts: contextualPrompts;
       context: event.detail.context;
     });
   }
   /**
    * Handle analytics updates from typing behavior
    */
-  function handleAnalyticsUpdate(event: CustomEvent) {
+  function handleAnalyticsUpdate(_event: CustomEvent) {
     if (enableAnalytics) {
       console.log('[ContextualDetectiveBoard] Analytics update:', event.detail.analytics);
     }
@@ -231,7 +231,7 @@
           options: {
             includeWeakConnections: true
             includePredictedConnections: true
-            clusterSimilar: true
+            clusterSimilar: true;
             layout: 'force';
           }
         })
@@ -244,7 +244,7 @@
           wsManager.sendConnectionMapUpdate.data.metadata);
         }
         ondispatch?.({
-          map: connectionMap
+          map: connectionMap;
           metadata: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).data.metadata
         });
       }

@@ -18,7 +18,7 @@
     variant = 'icon',
     showLabel = false,
     storageKey = 'enhanced-bits-theme',
-    defaultMode = 'system'
+    defaultMode = 'system',
   }: ThemeToggleProps = $props();
   const dispatch = createEventDispatcher();
   // Theme state management
@@ -29,14 +29,19 @@
       setLight: () => set('light'),
       setDark: () => set('dark'),
       setSystem: () => set('system'),
-      toggle: () => update(current => {
-        switch (current) {
-          case 'light': return 'dark';
-          case 'dark': return 'system';
-          case 'system': return 'light';
-          default: return 'light';
-        }
-      }),
+      toggle: () =>
+        update(current => {
+          switch (current) {
+            case 'light':
+              return 'dark';
+            case 'dark':
+              return 'system';
+            case 'system':
+              return 'light';
+            default:
+              return 'light';
+          }
+        }),
       init: () => {
         if (browser) {
           const stored = localStorage.getItem(storageKey);
@@ -44,9 +49,9 @@
             set(stored as 'light' | 'dark' | 'system');
           }
         }
-      }
-    };
-  };
+      },
+    }
+  }
   const themeStore = createThemeStore();
   let currentTheme = $state<'light' | 'dark' | 'system'>(defaultMode);
   let resolvedTheme = $state<'light' | 'dark'>('light');
@@ -105,7 +110,7 @@
       const handleChange = () => {
         updateResolvedTheme();
         applyTheme();
-      };
+      }
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
@@ -113,25 +118,28 @@
   const themeIcons = {
     light: '☀️',
     dark: '🌙',
-    system: '💻'
-  };
+    system: '💻',
+  }
   const themeLabels = {
     light: 'Light',
     dark: 'Dark',
-    system: 'System'
-  };
+    system: 'System',
+  }
   const sizeClasses = {
     sm: 'h-6 w-6 text-xs',
     md: 'h-8 w-8 text-sm',
-    lg: 'h-10 w-10 text-base'
-  };
-  const gamingThemeClasses = resolvedTheme === 'dark'
-    ? 'border-green-400 text-green-400 hover:bg-green-400/10 shadow-[0_0_10px_rgba(34,197,94,0.3)]'
-    : 'border-green-600 text-green-600 hover:bg-green-600/10';
-  const legalThemeClasses = resolvedTheme === 'dark'
-    ? 'border-slate-700 text-slate-300 hover:bg-slate-800'
-    : 'border-slate-300 text-slate-700 hover:bg-slate-100';
+    lg: 'h-10 w-10 text-base',
+  }
+  const gamingThemeClasses =
+    resolvedTheme === 'dark'
+      ? 'border-green-400 text-green-400 hover:bg-green-400/10 shadow-[0_0_10px_rgba(34,197,94,0.3)]'
+      : 'border-green-600 text-green-600 hover:bg-green-600/10';
+  const legalThemeClasses =
+    resolvedTheme === 'dark'
+      ? 'border-slate-700 text-slate-300 hover:bg-slate-800'
+      : 'border-slate-300 text-slate-700 hover:bg-slate-100';
 </script>
+
 {#if variant === 'switch'}
   <div class="flex items-center space-x-3">
     {#if showLabel}
@@ -184,7 +192,7 @@
   <button
     onclick={toggleTheme}
     class={`
-      inline-flex items-center justify-center rounded-md border transition-colors
+      inline-flex items-center justify-center rounded-md border transition-colors;
       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary,
       disabled:pointer-events-none disabled:opacity-50
       ${sizeClasses[size]}
@@ -204,9 +212,10 @@
     </span>
   </button>
 {/if}
+
 <style>
   /* Gaming theme animations */
-  button[data-theme="gaming"] {
+  button[data-theme='gaming'] {
     animation: gaming-glow 3s ease-in-out infinite alternate;
   }
   @keyframes gaming-glow {
@@ -214,16 +223,20 @@
       box-shadow: 0 0 5px rgba(34, 197, 94, 0.3);
     }
     to {
-      box-shadow: 0 0 15px rgba(34, 197, 94, 0.5), 0 0 25px rgba(34, 197, 94, 0.2);
+      box-shadow:
+        0 0 15px rgba(34, 197, 94, 0.5),
+        0 0 25px rgba(34, 197, 94, 0.2);
     }
   }
   /* Legal theme professional styling */
-  button[data-theme="legal"] {
+  button[data-theme='legal'] {
     backdrop-filter: blur(4px);
   }
   /* Smooth theme transitions */
   :global(html) {
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
   }
   :global(html.dark) {
     color-scheme: dark;

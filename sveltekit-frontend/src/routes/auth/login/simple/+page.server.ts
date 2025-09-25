@@ -32,4 +32,4 @@ import { db, users, helpers } from '$lib/server/db';
     // Redirect to dashboard or intended page
     throw redirect(302, '/dashboard');
   }
-};
+}

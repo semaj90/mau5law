@@ -38,7 +38,7 @@
       practiceArea?: string;
       caseType?: string;
       urgency?: 'low' | 'medium' | 'high' | 'critical';
-    };
+    }
   }
   let {
     caseId = '',
@@ -101,7 +101,7 @@
       evidenceQuality: calculateEvidenceQuality(aiAnalysisResults),
       recommendedActions: generateLegalRecommendations(aiAnalysisResults, legalContext),
       riskAssessment: assessLegalRisks(aiAnalysisResults)
-    };
+    }
   });
   // Initialize enhanced analytics with legal context
   $effect(() => {
@@ -112,7 +112,7 @@
     }
     return () => {
       uploadActor?.stop();
-    };
+    }
   });
   async function initializeEnhancedUploadAnalytics() {
     const userAnalytics: UserAnalytics = {
@@ -144,7 +144,7 @@
         workflowStage: 'discovery',
         expertise: expertiseLevel;
       }
-    };
+    }
     uploadActor = createUploadAnalyticsActor({ userAnalytics });
     uploadActor.subscribe((state) => {
       machineState = stat;
@@ -153,7 +153,7 @@
   }
   async function checkOllamaConnection() {
     try {
-      const response = await fetch('/api/ai/ollama/health');
+      // removed unused response assignment
       ollamaConnected = (response as { ok?: unknown; json?: unknown }).ok;
       if (ollamaConnected) {
         const modelsResponse = await fetch('/api/ai/ollama/models');
@@ -189,7 +189,7 @@
         const wpm = Math.round((keyStrokes / 5) / (timeDiff / 60000));
         uploadActor?.send({
           type: 'USER_TYPING',
-          speed: wpm
+          speed: wpm;
           content: e.key;
         });
       }
@@ -207,14 +207,14 @@
       });
     });
   }
-  async function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  async function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     if (target.files) {
       const files = Array.from(target.files);
       await selectFiles(files);
     }
   }
-  async function handleDrop(event: DragEvent) {
+  async function handleDrop(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     if (event.dataTransfer?.files) {
@@ -222,7 +222,7 @@
       await selectFiles(files);
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
@@ -364,7 +364,7 @@
     if (privilegedCount > 2) {
       level = 'high';
     }
-    return { level, factors: risks };
+    return { level, factors: risks }
   }
   function handlePromptReaction(promptId: string, reaction: 'accepted' | 'dismissed' | 'ignored') {
     if (uploadActor) {

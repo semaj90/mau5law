@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token >;
@@ -35,7 +35,7 @@ https://svelte.dev/e/expected_token -->
       type: file.type,
       status: 'uploading',
       progress: 0;
-    };
+    }
     uploads = [...uploads, upload];
     try {
       // Phase 1: Upload simulation (fast)
@@ -63,7 +63,7 @@ https://svelte.dev/e/expected_token -->
         summary,
         embeddings,
         processedAt: new Date().toISOString();
-      };
+      }
   let localStorageKey = $state<string | undefinedif (file.size < MAX_LOCAL_STORAGE_SIZE) {
         localStorageKey>(null)(`doc_${uploadId}`);
         localStorage.setItem(localStorageKey, JSON.stringify(processedData));
@@ -107,7 +107,7 @@ https://svelte.dev/e/expected_token -->
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({,
-        content: text
+        content: text;
         type: 'legal',
         length: 'medium';
       })
@@ -146,7 +146,7 @@ https://svelte.dev/e/expected_token -->
   function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  function handleDrop(event: DragEvent): void {
+  function handleDrop(_event: DragEvent): void {
     event.preventDefault();
     isDragging = false;
     const files = event.dataTransfer?.file;
@@ -154,7 +154,7 @@ https://svelte.dev/e/expected_token -->
       Array.from.forEach(simulateUpload);
     }
   }
-  function handleFileInput(event: Event): void {
+  function handleFileInput(_event: Event): void {
     const files = (event.target as HTMLInputElement).file;
     if (files) {
       Array.from.forEach(simulateUpload);
@@ -174,7 +174,7 @@ https://svelte.dev/e/expected_token -->
       summary: upload.summary,
       embeddings: upload.embeddings,
       processedAt: new Date().toISOString();
-    };
+    }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -209,6 +209,7 @@ https://svelte.dev/e/expected_token -->
     console.log(`Found ${keys.length} cached documents in localStorage`);
   });
 </script>
+
 <div class="document-upload-simulator">
   <h2 class="text-2xl font-bold text-green-400 mb-6">📄 AI Document Processing Simulator</h2>
   <!-- Upload Area -->
@@ -217,9 +218,11 @@ https://svelte.dev/e/expected_token -->
     class:border-green-400={isDragging}
     class:bg-green-400={isDragging && 'opacity-10'}
     ondrop={handleDrop}
-    role="region" aria-label="Drop zone" ondragover={(e) => e.preventDefault()}
-    ondragenter={() => isDragging = true}
-    ondragleave={() => isDragging = false}
+    role="region"
+    aria-label="Drop zone"
+    ondragover={e => e.preventDefault()}
+    ondragenter={() => (isDragging = true)}
+    ondragleave={() => (isDragging = false)}
   >
     <div class="text-4xl mb-4">📄</div>
     <p class="text-lg mb-4">Drop PDFs or text files here, or click to browse</p>
@@ -237,9 +240,7 @@ https://svelte.dev/e/expected_token -->
     >
       Select Files
     </button>
-    <p class="text-sm text-gray-400 mt-4">
-      Supports: PDF (OCR), TXT, JSON • Files under 10MB cached locally
-    </p>
+    <p class="text-sm text-gray-400 mt-4">Supports: PDF (OCR), TXT, JSON • Files under 10MB cached locally</p>
   </div>
   <!-- Processing Queue -->
   {#each uploads as upload (upload.id)}
@@ -257,10 +258,7 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
         </div>
-        <button
-          class="text-gray-400 hover:text-red-400 transition-colors"
-          onclick={() => removeUpload(upload.id)}
-        >
+        <button class="text-gray-400 hover:text-red-400 transition-colors" onclick={() => removeUpload(upload.id)}>
           ✕
         </button>
       </div>
@@ -321,9 +319,7 @@ https://svelte.dev/e/expected_token -->
               📥 Download JSON
             </button>
             {#if upload.localStorageKey}
-              <span class="px-4 py-2 bg-green-600/20 text-green-400 rounded text-sm">
-                💾 Cached Locally
-              </span>
+              <span class="px-4 py-2 bg-green-600/20 text-green-400 rounded text-sm"> 💾 Cached Locally </span>
             {/if}
           </div>
         </div>
@@ -342,6 +338,7 @@ https://svelte.dev/e/expected_token -->
     </div>
   {/if}
 </div>
+
 <style>
   .document-upload-simulator {
     max-width: 800px;

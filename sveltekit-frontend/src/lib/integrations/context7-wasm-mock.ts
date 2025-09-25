@@ -5,18 +5,18 @@
 export type Context7InitOptions = {
   workers?: number;
   mockLatencyMs?: number;
-};
+}
 export type Pattern = {
   id: string;
   name: string;
   description?: string;
   template?: string;
-};
+}
 let isInitialized = false;
 let readyPromise: Promise<void> | null = null;
 let patterns: Pattern[] = [];
 let mockLatency = 50;
-export async function initialize(options: Context7InitOptions = {}) {
+export async function initialize(_options: Context7InitOptions = {}) {
   if (isInitialized) return;
   mockLatency = options.mockLatencyMs ?? mockLatency;
   readyPromise = new Promise((resolve) => {
@@ -50,7 +50,7 @@ export async function runPattern(id: string, input: any = {}) {
   await ensureReady();
   const p = patterns.find((x) => x.id === id);
   await sleep(mockLatency + 10);
-  if (!p) return { success: false, error: 'pattern not found', id };
+  if (!p) return { success: false, error: 'pattern not found', id }
   // Very small deterministic mock response
   const output = {
     patternId: p.id,
@@ -58,8 +58,8 @@ export async function runPattern(id: string, input: any = {}) {
     inputSummary: summarizeInput(input),
     result: `Mock result for pattern ${p.name}`,
     timestamp: new Date().toISOString()
-  };
-  return { success: true, output };
+  }
+  return { success: true, output }
 }
 export async function processFile(fileName: string, bytes: Uint8Array) {
   await ensureReady();
@@ -69,7 +69,7 @@ export async function processFile(fileName: string, bytes: Uint8Array) {
     text: `Mock extracted text from ${fileName} (${bytes.length} bytes)`,
     mime: inferMime(fileName),
     size: bytes.length
-  };
+  }
 }
 export async function fetchAndProcessUrl(url: string) {
   await ensureReady();
@@ -79,7 +79,7 @@ export async function fetchAndProcessUrl(url: string) {
     title: `Mock title for ${url}`,
     text: `Mocked scraped text for ${url}`,
     fetchedAt: new Date().toISOString()
-  };
+  }
 }
 function summarizeInput(input: any) {
   try {
@@ -112,4 +112,4 @@ export default {
   runPattern,
   processFile,
   fetchAndProcessUrl
-};
+}

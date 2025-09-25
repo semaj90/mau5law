@@ -4,7 +4,7 @@ import type { z } from 'zod';
 import type { Case, Evidence, User, LegalDocument } from '../server/db/schema-postgres.js';
 import type { StandardApiResponse } from '../server/api/response.js';
 // Re-export StandardApiResponse for external use
-export type { StandardApiResponse };
+export type { StandardApiResponse }
 // ==================== API CONTRACT TYPES ====================
 // Base API response wrapper
 export interface ApiContract<TRequest = any, TResponse = any> {
@@ -33,7 +33,7 @@ export namespace CaseAPI {
       total: number;
       hasNext: boolean;
       hasPrev: boolean;
-    };
+    }
     search?: {
       term: string;
       resultsCount: number;
@@ -78,7 +78,7 @@ export namespace CaseAPI {
       evidence: Evidence[];
       createdByUser?: User;
       leadProsecutorUser?: User;
-    };
+    }
   }
   export type Get = ApiContract<GetRequest, GetResponse>;
 }
@@ -104,7 +104,7 @@ export namespace EvidenceAPI {
       total: number;
       hasNext: boolean;
       hasPrev: boolean;
-    };
+    }
     search?: {
       term: string;
       resultsCount: number;
@@ -172,14 +172,14 @@ export namespace ChatAPI {
       confidence?: number;
       processingTime?: number;
       sources?: VectorSearchResult[];
-    };
+    }
   }
   export interface VectorSearchResult {
     id: string;
     content: string;
     score: number;
     type: 'case' | 'evidence' | 'statute' | 'document';
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   }
   // POST /api/ai/enhanced-chat - AI Chat
   export interface ChatRequest {
@@ -192,7 +192,7 @@ export namespace ChatAPI {
       enableLegalBERT?: boolean;
       enableRAG?: boolean;
       maxDocuments?: number;
-    };
+    }
     settings?: {
       enhancementLevel?: 'basic' | 'standard' | 'advanced' | 'comprehensive';
       includeConfidenceScores?: boolean;
@@ -200,7 +200,7 @@ export namespace ChatAPI {
       model?: string;
       temperature?: number;
       maxTokens?: number;
-    };
+    }
   }
   export interface ChatResponse {
     response: string;
@@ -215,7 +215,7 @@ export namespace ChatAPI {
       enabledFeatures: string[];
       fallbacksUsed?: string[];
       cacheHits?: string[];
-    };
+    }
     recommendations?: string[];
     contextualPrompts?: unknown[];
   }
@@ -228,7 +228,7 @@ export namespace VectorSearchAPI {
     type?: 'semantic' | 'similarity' | 'hybrid';
     limit?: number;
     threshold?: number;
-    filters?: { [key: string]: any };
+    filters?: { [key: string]: any }
   }
   export interface SearchResponse {
     results: VectorSearchResult[];
@@ -239,14 +239,14 @@ export namespace VectorSearchAPI {
       model?: string;
       threshold?: number;
       vectorSearchUsed?: boolean;
-    };
+    }
   }
   export interface VectorSearchResult {
     id: string;
     content: string;
     score: number;
     type: 'case' | 'evidence' | 'statute' | 'document';
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   }
   export type Search = ApiContract<SearchRequest, SearchResponse>;
 }
@@ -272,11 +272,11 @@ export namespace HealthAPI {
       uploadService: ServiceStatus;
       memory: ServiceStatus;
       cache: ServiceStatus;
-    };
+    }
     performance: {
       responseTime: number;
       status: 'healthy' | 'degraded';
-    };
+    }
     errors?: string[];
     system?: {
       nodeVersion: string;
@@ -284,7 +284,7 @@ export namespace HealthAPI {
       arch: string;
       cpuUsage: NodeJS.CpuUsage;
       env: Record<string, string>;
-    };
+    }
   }
   export type Health = ApiContract<HealthRequest, HealthResponse>;
   // POST /api/health - System maintenance

@@ -1,4 +1,3 @@
-
 // Card Compound Component Exports - SSR-Safe
 // shadcn-style compatibility layer for enhanced-bits
 // Re-export enhanced-bits Card components for compound usage
@@ -9,6 +8,13 @@ export { CardDescription as Description } from '$lib/components/ui/enhanced-bits
 export { CardContent as Content } from '$lib/components/ui/enhanced-bits';
 export { CardFooter as Footer } from '$lib/components/ui/enhanced-bits';
 // Also export with standard names for flexibility
-export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/enhanced-bits';
+export {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '$lib/components/ui/enhanced-bits';
 // For convenience, also export the compound object
 export { CardCompound } from '$lib/components/ui/enhanced-bits';

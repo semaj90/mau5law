@@ -67,7 +67,7 @@ Real-time collaboration interface for multiple investigators working on evidence
       wsConnection.onmessage = (event) => {
         originalOnMessage?.(event);
         handleWebSocketMessage(JSON.parse(event.data));
-      };
+      }
     }
   });
   function handleWebSocketMessage(data: unknown) {
@@ -102,9 +102,9 @@ Real-time collaboration interface for multiple investigators working on evidence
     if (!newMessage.trim() || !wsConnection || !collaborationSession) return;
     const message = {
       userId,
-      message: newMessage
+      message: newMessage;
       timestamp: new Date().toISOString();
-    };
+    }
     // Send via WebSocket
     wsConnection.send(JSON.stringify({
       type: 'chat-message',
@@ -134,11 +134,11 @@ Real-time collaboration interface for multiple investigators working on evidence
     if (!newAnnotation.trim()) return;
     const annotation = {
       userId,
-      content: newAnnotation
+      content: newAnnotation;
       position: annotatio;
 Position,
       timestamp: new Date().toISOString();
-    };
+    }
     // Send via WebSocket
     if (wsConnection && collaborationSession) {
       wsConnection.send(JSON.stringify({

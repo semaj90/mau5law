@@ -50,7 +50,7 @@ export class BrowserCacheManager {
       console.warn("Failed to register sprite cache service worker:", error);
     }
   }
-  private handleServiceWorkerMessage(event: MessageEvent): void {
+  private handleServiceWorkerMessage(_event: MessageEvent): void {
     const { type, data } = event.data;
     switch (type) {
       case "SPRITE_CACHED":
@@ -110,7 +110,7 @@ export class BrowserCacheManager {
         timestamp: Date.now(),
         accessCount: 1,
         size: JSON.stringify(idbCached).length
-      };
+      }
       this.memoryCache.set(cacheKey, cached);
       return this.decompressData(idbCached, true);
     }
@@ -118,7 +118,7 @@ export class BrowserCacheManager {
   }
   public async cacheSprite(sprite: any): Promise<void> {
     const cacheKey = this.getCacheKey(sprite.id);
-    const spriteData = { ...sprite };
+    const spriteData = { ...sprite }
     // Compress JSON data if enabled
     const compressed = this.config.enableCompression
       ? await this.compressData(spriteData)
@@ -135,7 +135,7 @@ export class BrowserCacheManager {
       timestamp: Date.now(),
       accessCount: 1,
       size
-    };
+    }
     // Store in memory cache
     this.memoryCache.set(cacheKey, cached);
     this.currentCacheSize += size;
@@ -154,10 +154,10 @@ export class BrowserCacheManager {
     }
     return new Promise((resolve) => {
       const messageChannel = new MessageChannel();
-      messageChannel.port1.onmessage = (event: any) => {
+      messageChannel.port1.onmessage = (_event: any) => {
         const { data } = event.data;
         resolve(data || null);
-      };
+      }
       this.serviceWorkerRegistration!.active!.postMessage();
         {
           type: "GET_SPRITE",
@@ -178,44 +178,44 @@ export class BrowserCacheManager {
       sprite
     });
   }
-  private async getFromIndexedDB(key: string): Promise<any | null> {
+  private async getFromIndexedDB(_key: string): Promise<any | null> {
     return new Promise((resolve) => {
       const request = indexedDB.open(`${this.config.cachePrefix}db`, 1);
       request.onerror = () => resolve(null);
-      request.onsuccess = (event: any) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+      request.onsuccess = (_event: any) => {
+        // removed unused db assignment
         const transaction = db.transaction(["sprites"], "readonly");
         const store = transaction.objectStore("sprites");
         const getRequest = store.get(key);
         getRequest.onsuccess = () => resolve(getRequest.result?.data || null);
         getRequest.onerror = () => resolve(null);
-      };
-      request.onupgradeneeded = (event: any) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+      }
+      request.onupgradeneeded = (_event: any) => {
+        // removed unused db assignment
         if (!db.objectStoreNames.contains("sprites")) {
           db.createObjectStore("sprites", { keyPath: "key" });
         }
-      };
+      }
     });
   }
-  private async storeInIndexedDB(key: string, data: any): Promise<void> {
+  private async storeInIndexedDB(_key: string, data: any): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(`${this.config.cachePrefix}db`, 1);
       request.onerror = () => reject(request.error);
-      request.onsuccess = (event: any) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+      request.onsuccess = (_event: any) => {
+        // removed unused db assignment
         const transaction = db.transaction(["sprites"], "readwrite");
         const store = transaction.objectStore("sprites");
         store.put({ key, data, timestamp: Date.now() });
         transaction.oncomplete = () => resolve();
         transaction.onerror = () => reject(transaction.error);
-      };
-      request.onupgradeneeded = (event: any) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+      }
+      request.onupgradeneeded = (_event: any) => {
+        // removed unused db assignment
         if (!db.objectStoreNames.contains("sprites")) {
           db.createObjectStore("sprites", { keyPath: "key" });
         }
-      };
+      }
     });
   }
   private async compressData(data: any): Promise<string> {
@@ -271,7 +271,7 @@ export class BrowserCacheManager {
         triggers: "t",
         usageCount: "u",
         createdAt: "ca"
-      };
+      }
       return shortcuts[key] ? `"${shortcuts[key]}"` : match;
     });
   }
@@ -297,7 +297,7 @@ export class BrowserCacheManager {
           '"t"': '"triggers"',
           '"u"': '"usageCount"',
           '"ca"': '"createdAt"'
-        };
+        }
         for (const [short, long] of Object.entries(shortcuts)) {
           jsonString = jsonString.replace(new RegExp(short, "g"), long);
         }
@@ -342,7 +342,7 @@ export class BrowserCacheManager {
   }
   private updateCacheIndex(): void {
     try {
-      const index: Record<string, Omit<CachedSprite, "data"> = {};
+      const index: Record<string, Omit<CachedSprite, "data"> = {}
       const cacheEntries = Array.from(this.memoryCache.entries();
       for (let i = 0; i < cacheEntries.length; i++) {
         const [key, sprite] = cacheEntries[i];
@@ -352,7 +352,7 @@ export class BrowserCacheManager {
           timestamp: sprite.timestamp,
           accessCount: sprite.accessCount,
           size: sprite.size
-        };
+        }
       }
       localStorage.setItem(
         `${this.config.cachePrefix}index`,
@@ -382,7 +382,7 @@ export class BrowserCacheManager {
         totalAccess > 0
           ? (totalAccess - this.memoryCache.size) / totalAccess
           : 0
-    };
+    }
   }
   public async clearCache(): Promise<void> {
     this.memoryCache.clear();

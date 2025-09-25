@@ -14,7 +14,7 @@ export class MCPApiClient {
   // Health check endpoint
   async getHealth(): Promise<MCPHealthStatus> {
     try {
-      const response = await fetch(`${this.baseUrl}/health`);
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (error) {
@@ -25,13 +25,13 @@ export class MCPApiClient {
         workers: 0,
         version: 'unknown',
         timestamp: new Date().toISOString()
-      };
+      }
     }
   }
   // Get server metrics
   async getMetrics(): Promise<MCPMetrics> {
     try {
-      const response = await fetch(`${this.baseUrl}/metrics`);
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (error) {
@@ -45,13 +45,13 @@ export class MCPApiClient {
         avgProcessingTime: 0,
         throughput: 0,
         timestamp: new Date().toISOString()
-      };
+      }
     }
   }
   // Get worker status
   async getWorkers(): Promise<MCPWorker[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/workers`);
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       return data.workers || [];
@@ -82,7 +82,7 @@ export class MCPApiClient {
   // Get job status
   async getJobStatus(jobId: string): Promise<MCPJob> {
     try {
-      const response = await fetch(`${this.baseUrl}/jobs/${jobId}`);
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (error) {
@@ -93,7 +93,7 @@ export class MCPApiClient {
   // Get job results
   async getJobResults(jobId: string): Promise<MCPJobResult> {
     try {
-      const response = await fetch(`${this.baseUrl}/jobs/${jobId}/results`);
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (error) {
@@ -121,7 +121,7 @@ export class MCPApiClient {
       this.wsConnection.onopen = () => {
         console.log('WebSocket connected to MCP server');
         this.reconnectAttempts = 0;
-      };
+      }
       this.wsConnection.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -129,14 +129,14 @@ export class MCPApiClient {
         } catch (error) {
           console.error('WebSocket message parse error:', error);
         }
-      };
+      }
       this.wsConnection.onclose = () => {
         console.log('WebSocket disconnected');
         this.attemptReconnect(onMessage);
-      };
+      }
       this.wsConnection.onerror = (error) => {
         console.error('WebSocket error:', error);
-      };
+      }
     } catch (error) {
       console.error('WebSocket connection failed:', error);
     }
@@ -175,7 +175,7 @@ export class MCPApiClient {
   // Get system logs
   async getLogs(limit = 100): Promise<MCPLogEntry[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/logs?limit=${limit}`);
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       return data.logs || [];
@@ -187,7 +187,7 @@ export class MCPApiClient {
   // GPU status and metrics
   async getGPUStatus(): Promise<MCPGPUStatus> {
     try {
-      const response = await fetch(`${this.baseUrl}/gpu/status`);
+      // removed unused response assignment
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (error) {
@@ -200,7 +200,7 @@ export class MCPApiClient {
         powerUsage: 0,
         utilization: 0,
         name: 'Unknown'
-      };
+      }
     }
   }
 }
@@ -268,13 +268,13 @@ export interface MCPJobResult {
     precedents: LegalPrecedent[];
     recommendations: string[];
     confidence: number;
-  };
+  }
   metadata: {
     processingTime: number;
     workerId: number;
     modelVersion: string;
     documentType: string;
-  };
+  }
 }
 export interface LegalEntity {
   name: string;
@@ -289,7 +289,7 @@ export interface RiskAssessment {
     legal: number;
     operational: number;
     regulatory: number;
-  };
+  }
   factors: string[];
 }
 export interface ComplianceCheck {

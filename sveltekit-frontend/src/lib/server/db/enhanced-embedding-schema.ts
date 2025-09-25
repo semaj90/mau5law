@@ -59,7 +59,7 @@ export const documentChunks = pgTable(
     // pgvector embeddings - supports different model dimensions
     embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text default
     embeddingModel: varchar('embedding_model', { length: 100 }).default('nomic-embed-text'),
-    confidence: real('confidence'), // Extraction/chunking confidence
+    confidence: real('confidence'), // Extraction/chunking confidence;
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull()
@@ -253,4 +253,4 @@ export const vectorOperations = {
     const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0);
     return magnitude > 0 ? vec.map((val) => val / magnitude) : vec;
   }
-};
+}

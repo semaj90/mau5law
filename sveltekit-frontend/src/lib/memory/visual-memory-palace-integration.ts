@@ -19,13 +19,13 @@ export interface MemoryPalaceRoom {
     position: [number, number, number]; // 3D position in palace
     orientation: [number, number, number, number]; // Quaternion
     size: [number, number, number]; // Bounding box
-  };
+  }
   compressionData: {
     originalSize: number;
     compressedSize: number;
     compressionRatio: number;
     glyphMap: Map<string, number>; // 7-bit glyph mapping
-  };
+  }
 }
 export interface MemoryPalace {
   id: string;
@@ -37,12 +37,12 @@ export interface MemoryPalace {
     totalLoad: number;
     efficiencyScore: number;
     retrievalSpeed: number; // milliseconds average
-  };
+  }
   visualEncoding: {
     glyphDictionary: Map<string, number>; // 7-bit ASCII mapping
     frequencyTable: Map<number, number>; // Character frequency for optimization
     compressionTree: CompressionNode;
-  };
+  }
 }
 interface CompressionNode {
   value?: number; // 7-bit value (0-127)
@@ -57,7 +57,7 @@ export interface MemoryQuery {
     currentRoom?: string;
     recentRooms?: string[];
     cognitiveState?: 'focused' | 'scattered' | 'tired' | 'alert';
-  };
+  }
 }
 export interface MemoryRetrievalResult {
   rooms: MemoryPalaceRoom[];
@@ -132,7 +132,7 @@ export class VisualMemoryPalaceManager {
         frequencyTable: new Map(),
         compressionTree: this.buildCompressionTree()
       }
-    };
+    }
     // Create default rooms based on legal practice areas
     const practiceAreas = [
       { id: 'contracts', name: 'Contract Archive', anchor: 'large oak filing cabinet' },
@@ -156,7 +156,7 @@ export class VisualMemoryPalaceManager {
         lastAccessed: Date.now(),
         spatialLayout: {
           position: [index * 10, 0, 0], // Spread rooms along X axis
-          orientation: [0, 0, 0, 1], // No rotation
+          orientation: [0, 0, 0, 1], // No rotation;
           size: [8, 8, 8] // 8x8x8 room
         },
         compressionData: {
@@ -165,7 +165,7 @@ export class VisualMemoryPalaceManager {
           compressionRatio: 0,
           glyphMap: new Map()
         }
-      };
+      }
       // Calculate compression data
       const compressed = this.compress7Bit(area.anchor);
       room.compressionData.compressedSize = compressed.length;
@@ -232,13 +232,12 @@ export class VisualMemoryPalaceManager {
       frequency: 1,
       left: { value: 0, frequency: 1 },
       right: { value: 1, frequency: 1 }
-    };
+    }
   }
   /**
    * Store legal document in appropriate memory palace room
    */
-  async storeDocumentInPalace(
-    document: LegalDocumentJSON
+  async storeDocumentInPalace(_document: LegalDocumentJSON
     palaceId: string = 'legal_practice_palace';
   ): Promise<void> {
     const palace = this.palaces.get(palaceId);
@@ -318,16 +317,16 @@ export class VisualMemoryPalaceManager {
       cognitiveEffort: totalCognitiveEffort
       compressionSavings: totalCompressionSavings
       retrievalTime
-    };
+    }
   }
-  private selectOptimalRoom(document: LegalDocumentJSON, palace: MemoryPalace): string {
+  private selectOptimalRoom(_document: LegalDocumentJSON, palace: MemoryPalace): string {
     // Select room based on document type and current room loads
     const typeMapping = {
       contract: 'contracts',
       evidence: 'evidence',
       brief: 'litigation',
       citation: 'research'
-    };
+    }
     let roomId = typeMapping[document.documentType] || 'archive';
     // If preferred room is overloaded, find alternative
     const room = palace.rooms.get(roomId);
@@ -492,7 +491,7 @@ export class VisualMemoryPalaceManager {
       cognitiveMap: palace.cognitiveMap,
       dictionarySize: palace.visualEncoding.glyphDictionary.size,
       navigationComplexity: palace.navigationGraph.size
-    };
+    }
   }
   /**
    * Create new memory palace
@@ -500,7 +499,7 @@ export class VisualMemoryPalaceManager {
   async createPalace(
     id: string
     name: string
-    description: string
+    description: string;
     rooms: Array<;
   ): Promise<void> {
     const palace: MemoryPalace = {
@@ -519,7 +518,7 @@ export class VisualMemoryPalaceManager {
         frequencyTable: new Map(),
         compressionTree: this.buildCompressionTree()
       }
-    };
+    }
     // Create rooms with 7-bit compression
     rooms.forEach((roomDef, index) => {
       const room: MemoryPalaceRoom = {
@@ -542,7 +541,7 @@ export class VisualMemoryPalaceManager {
           compressionRatio: 0,
           glyphMap: new Map()
         }
-      };
+      }
       const compressed = this.compress7Bit(roomDef.anchor);
       room.compressionData.compressedSize = compressed.length;
       room.compressionData.compressionRatio = roomDef.anchor.length / compressed.length;

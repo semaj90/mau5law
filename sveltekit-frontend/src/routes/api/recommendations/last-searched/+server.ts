@@ -196,7 +196,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     const searchIndex = mockSearchHistory.findIndex(s => s.id === searchId)
     if (searchIndex === -1) {
       return json({
-        success: false
+        success: false;
         error: 'Search not found'
       }, { status: 404 })
     }

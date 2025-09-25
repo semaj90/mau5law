@@ -11,7 +11,7 @@
     gpuUtilization,
     legalConfidence,
     formatMetric,
-    type PerformanceSnapshot
+    type PerformanceSnapshot,
   } from '$lib/monitoring/legal-performance-metrics.js';
   let metricsHistory: PerformanceSnapshot[] = $state([]);
   let refreshInterval: number;
@@ -24,14 +24,18 @@
     metricsHistory = legalPerformanceMonitor.getHistoricalMetrics(10);
     return () => {
       if (refreshInterval) clearInterval(refreshInterval);
-    };
+    }
   });
   function getHealthColor(health: string): string {
     switch (health) {
-      case 'optimal': return 'text-green-500';
-      case 'degraded': return 'text-yellow-500';
-      case 'critical': return 'text-red-500';
-      default: return 'text-gray-500';
+      case 'optimal':
+        return 'text-green-500';
+      case 'degraded':
+        return 'text-yellow-500';
+      case 'critical':
+        return 'text-red-500';
+      default:
+        return 'text-gray-500';
     }
   }
   function getCacheColor(efficiency: number): string {
@@ -50,6 +54,7 @@
     return 'text-red-500';
   }
 </script>
+
 <svelte:head>
   <title>Legal AI Performance Dashboard</title>
 </svelte:head>
@@ -67,9 +72,7 @@
       <div class="text-xl font-bold {getHealthColor($systemHealth)}">
         {$systemHealth.toUpperCase()}
       </div>
-      <div class="text-xs text-green-600 mt-1">
-        Overall system status
-      </div>
+      <div class="text-xs text-green-600 mt-1">Overall system status</div>
     </div>
     <!-- Cache Efficiency -->
     <div class="border border-green-500 rounded p-4">
@@ -77,9 +80,7 @@
       <div class="text-xl font-bold {getCacheColor($cacheEfficiency)}">
         {formatMetric($cacheEfficiency, 'percentage')}
       </div>
-      <div class="text-xs text-green-600 mt-1">
-        Multi-tier hit rate
-      </div>
+      <div class="text-xs text-green-600 mt-1">Multi-tier hit rate</div>
     </div>
     <!-- Average Latency -->
     <div class="border border-green-500 rounded p-4">
@@ -87,9 +88,7 @@
       <div class="text-xl font-bold {getLatencyColor($averageLatency)}">
         {formatMetric($averageLatency, 'milliseconds')}
       </div>
-      <div class="text-xs text-green-600 mt-1">
-        Average response time
-      </div>
+      <div class="text-xs text-green-600 mt-1">Average response time</div>
     </div>
     <!-- GPU Utilization -->
     <div class="border border-green-500 rounded p-4">
@@ -97,9 +96,7 @@
       <div class="text-xl font-bold {getGPUColor($gpuUtilization)}">
         {formatMetric($gpuUtilization / 100, 'percentage')}
       </div>
-      <div class="text-xs text-green-600 mt-1">
-        RTX 3060 Ti usage
-      </div>
+      <div class="text-xs text-green-600 mt-1">RTX 3060 Ti usage</div>
     </div>
   </div>
   {#if $currentMetrics}
@@ -133,11 +130,14 @@
         <div class="space-y-3">
           <div class="flex justify-between">
             <span class="text-green-400">Embedding Generation:</span>
-            <span class="text-green-200">{formatMetric($currentMetrics.latency.embedding_generation, 'milliseconds')}</span>
+            <span class="text-green-200"
+              >{formatMetric($currentMetrics.latency.embedding_generation, 'milliseconds')}</span
+            >
           </div>
           <div class="flex justify-between">
             <span class="text-green-400">Similarity Search:</span>
-            <span class="text-green-200">{formatMetric($currentMetrics.latency.similarity_search, 'milliseconds')}</span>
+            <span class="text-green-200">{formatMetric($currentMetrics.latency.similarity_search, 'milliseconds')}</span
+            >
           </div>
           <div class="flex justify-between">
             <span class="text-green-400">Result Retrieval:</span>
@@ -145,7 +145,8 @@
           </div>
           <div class="flex justify-between">
             <span class="text-green-400">Cache Lookup:</span>
-            <span class="text-green-200">{formatMetric($currentMetrics.latency.cache_lookup_time, 'milliseconds')}</span>
+            <span class="text-green-200">{formatMetric($currentMetrics.latency.cache_lookup_time, 'milliseconds')}</span
+            >
           </div>
         </div>
       </div>
@@ -155,7 +156,9 @@
         <div class="space-y-3">
           <div class="flex justify-between">
             <span class="text-green-400">GPU VRAM:</span>
-            <span class="text-green-200">{formatMetric($currentMetrics.resources.gpu_vram_usage, 'megabytes')} / 8GB</span>
+            <span class="text-green-200"
+              >{formatMetric($currentMetrics.resources.gpu_vram_usage, 'megabytes')} / 8GB</span
+            >
           </div>
           <div class="flex justify-between">
             <span class="text-green-400">System RAM:</span>
@@ -163,7 +166,8 @@
           </div>
           <div class="flex justify-between">
             <span class="text-green-400">Redis Memory:</span>
-            <span class="text-green-200">{formatMetric($currentMetrics.resources.redis_memory_usage, 'megabytes')}</span>
+            <span class="text-green-200">{formatMetric($currentMetrics.resources.redis_memory_usage, 'megabytes')}</span
+            >
           </div>
           <div class="flex justify-between">
             <span class="text-green-400">CPU Usage:</span>
@@ -177,11 +181,15 @@
         <div class="space-y-3">
           <div class="flex justify-between">
             <span class="text-green-400">Documents Processed:</span>
-            <span class="text-green-200">{formatMetric($currentMetrics.legal_processing.documents_processed, 'count')}</span>
+            <span class="text-green-200"
+              >{formatMetric($currentMetrics.legal_processing.documents_processed, 'count')}</span
+            >
           </div>
           <div class="flex justify-between">
             <span class="text-green-400">Entities Extracted:</span>
-            <span class="text-green-200">{formatMetric($currentMetrics.legal_processing.entities_extracted, 'count')}</span>
+            <span class="text-green-200"
+              >{formatMetric($currentMetrics.legal_processing.entities_extracted, 'count')}</span
+            >
           </div>
           <div class="flex justify-between">
             <span class="text-green-400">Cases Analyzed:</span>
@@ -189,7 +197,9 @@
           </div>
           <div class="flex justify-between">
             <span class="text-green-400">Legal Confidence:</span>
-            <span class="text-green-200">{formatMetric($currentMetrics.legal_processing.legal_confidence_score, 'percentage')}</span>
+            <span class="text-green-200"
+              >{formatMetric($currentMetrics.legal_processing.legal_confidence_score, 'percentage')}</span
+            >
           </div>
         </div>
       </div>
@@ -246,7 +256,7 @@
           <div class="text-sm">
             <span class="text-green-600">{metric.timestamp.toLocaleTimeString()}</span>
             - <span class="text-green-400">Health:</span>
-            <span class="{getHealthColor(metric.system_health)}">{metric.system_health}</span>
+            <span class={getHealthColor(metric.system_health)}>{metric.system_health}</span>
             - <span class="text-green-400">Cache:</span>
             <span class="text-green-200">{formatMetric(metric.cache_hits.overall, 'percentage')}</span>
             - <span class="text-green-400">Latency:</span>
@@ -265,6 +275,7 @@
     Legal AI Performance Dashboard | Gemma3:legal-latest | RTX 3060 Ti | Real-time Monitoring
   </div>
 </div>
+
 <style>
   /* Additional terminal-style animations */
   .text-green-400 {
@@ -278,7 +289,12 @@
     animation: pulse 2s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
 </style>

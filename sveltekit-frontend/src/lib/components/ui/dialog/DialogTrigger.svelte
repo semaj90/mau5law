@@ -4,10 +4,9 @@
   interface Props {
     trigger: unknown;
   }
-  let { children,
-    trigger
-  }: Props = $props();
+  let { children, trigger }: Props = $props();
 </script>
+
 <button>
   {@render children?.()}
 </button>

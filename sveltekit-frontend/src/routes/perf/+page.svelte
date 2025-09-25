@@ -146,7 +146,7 @@
             return;
           }
         } catch (error) {
-          console.error('Cache metrics error:', error)
+          console.error('Cache metrics error:', error);
         }
       // Simulate realistic cache metrics based on performance optimization principles
       const mockData = {
@@ -155,7 +155,7 @@
         hitRate: 0.85 + Math.random() * 0.14, // 85-99% hit rate
         evictions: Math.floor(Math.random() * 200),
         size: Math.floor(Math.random() * 1024 * 1024 * 100), // Up to 100MB
-        maxSize: 1024 * 1024 * 256, // 256MB max
+        maxSize: 1024 * 1024 * 256, // 256MB max;
         entries: Math.floor(Math.random() * 10000) + 1000,
         types: {
           'function-results': Math.floor(Math.random() * 3000),
@@ -163,7 +163,7 @@
           'database-queries': Math.floor(Math.random() * 2000),
           'api-responses': Math.floor(Math.random() * 1500)
         }
-      };
+      }
       cacheMetrics.set(mockData);
       cacheHitSeries.push(mockData.hitRate * 100);
       cacheEvictionSeries.push(mockData.evictions);
@@ -222,7 +222,7 @@
         inlineFunctions: Math.floor(Math.random() * 200) + 100,
         memoryReuse: (0.7 + Math.random() * 0.25) * 100 // 70-95%
       }
-    };
+    }
     wasmMetrics.set(mockWasm);
     wasmExecutionSeries.push(mockWasm.executionTime.avg);
     if (wasmExecutionSeries.length > 300) wasmExecutionSeries.shift();
@@ -248,8 +248,8 @@
     const mockNode = {
       eventLoop: {
         lag: Math.random() * 25 + 2, // 2-27ms lag
-        utilization: Math.random() * 0.8 + 0.1, // 10-90% utilization
-        idle: Math.random() * 0.5 + 0.3 // 30-80% idl
+        utilization: Math.random() * 0.8 + 0.1, // 10-90% utilization;
+        idle: Math.random() * 0.5 + 0.3 // 30-80% idl;
       },
       memory: {
         rss: (150 + Math.random() * 100) * 1024 * 1024,
@@ -266,7 +266,7 @@
         httpRequests: Math.floor(Math.random() * 1000) + 200,
         fileOperations: Math.floor(Math.random() * 500) + 100
       }
-    };
+    }
     nodeMetrics.set(mockNode);
     eventLoopLagSeries.push(mockNode.eventLoop.lag);
     memoryUsageSeries.push(mockNode.memory.heapUsed / (1024 * 1024));
@@ -395,7 +395,7 @@
         if (rtRes.ok) {
           const rtData = await rtRes.json();
           gpuRuntime.set(rtData.runtime);
-          gpuInfo = { initialized: !!rtData.runtime?.gpu, device_count: rtData.runtime?.gpu ? 1 : 0 };
+          gpuInfo = { initialized: !!rtData.runtime?.gpu, device_count: rtData.runtime?.gpu ? 1 : 0 }
         }
         if (seriesRes.ok) {
           const series = await seriesRes.json();

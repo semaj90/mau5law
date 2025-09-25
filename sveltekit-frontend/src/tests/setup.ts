@@ -16,7 +16,7 @@ global.TEST_CONFIG = {
   databaseUrl: process.env.TEST_DATABASE_URL || 'postgresql://localhost:5432/legal_ai_test',
   timeout: 30000,
   retryAttempts: 3
-};
+}
 // Global setup - runs once before all tests
 beforeAll(async () => {
   console.log('🧪 Setting up test environment...');
@@ -59,4 +59,4 @@ export const withRetry = async <T>(
     }
   }
   throw lastError!;
-};
+}

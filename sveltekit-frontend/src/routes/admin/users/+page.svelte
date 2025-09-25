@@ -16,7 +16,7 @@
     createdAt: string | Date;
     updatedAt?: string | Date | null;
     profile?: Record<string, unknown> | null;
-  };
+  }
   // User management state (use $state so updates trigger reactivity)
   let users = $state([] as (AdminUser & { profile?: unknown })[]);
   let filteredUsers = $state([] as (AdminUser & { profile?: unknown })[]);
@@ -56,7 +56,7 @@
     tableCell: 'px-3 py-2 text-sm',
     modal: 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50',
     modalContent: 'bg-[#0b0b0b] border border-[#333333] p-6 w-full max-w-2xl rounded';
-  };
+  }
   // Paginated users container
   let paginatedUsers = $state([] as (AdminUser & { profile?: unknown })[]);
   // Use runes-friendly effect to recompute filteredUsers when dependencies change
@@ -112,7 +112,7 @@
       isLoading = false;
     }
   }
-  async function createUser(event: Event) {
+  async function createUser(_event: Event) {
     event.preventDefault();
     if (newUser.password !== newUser.confirmPassword) {
       alert('Passwords do not match');
@@ -193,7 +193,7 @@
     isActive: z.boolean.optional();
   });
   // Safe submit handler for the edit form to ensure currentEditUser is not null
-  function handleUpdate(event: Event) {
+  function handleUpdate(_event: Event) {
     event.preventDefault();
     if (!currentEditUser) return;
     const parsed = editUserSchema.safeParse(currentEditUser);
@@ -270,10 +270,10 @@
       role: 'viewer',
       password: '',
       confirmPassword: '';
-    };
+    }
   }
   function openEditModal(user: AdminUser) {
-    currentEditUser = { ...user };
+    currentEditUser = { ...user }
     showEditModal = true;
   }
   function canManageUser(targetUser: AdminUser): boolean {
@@ -299,21 +299,16 @@
     if (roleLevel >= 40) return 'border-yellow-500 text-yellow-400';
     return 'border-gray-500 text-gray-400';
   }
-    </script>
-  {#if showCreateModal}
-    <div class={yorhaClasses.modal}>
-      <div class={yorhaClasses.modalContent}>
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-bold text-[#00ff88]">CREATE USER</h2>
-          <button
-            type="button"
-            onclick={() => showCreateModal = false}
-            class="text-2xl hover:text-red-500"
-          >
-            ✕
-          </button>
-        </div>
-  <!--
+</script>
+
+{#if showCreateModal}
+  <div class={yorhaClasses.modal}>
+    <div class={yorhaClasses.modalContent}>
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-[#00ff88]">CREATE USER</h2>
+        <button type="button" onclick={() => (showCreateModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
+      </div>
+      <!--
   Superforms integration notes (no runtime change yet):
   You asked about using superforms + zod + progressive enhancement (:enhance).
   Because superforms needs server load/actions (+page.server.ts) and a `form` object
@@ -337,8 +332,8 @@
     });
     export const load = async () => {
       const form = await superValidate(createUserSchema);
-      return { form };
-    };
+      return { form }
+    }
     export const actions = {
       create: async ({ request }) => {
        const form = await superValidate(request, createUserSchema);
@@ -347,7 +342,7 @@
        // await db.insertUser(...)
        return message(form, 'User created');
       }
-    };
+    }
   3. In this +page.svelte script:
     - import { enhance } from 'sveltekit-superforms/client';
     - get `` then `const form = data.form;`
@@ -370,42 +365,33 @@
   5. Remove newUser state if no longer needed; superforms keeps form state.
   This placeholder only documents the migration; current code continues to work.
   -->
-        <form onsubmit={createUser} class="space-y-4">
+      <form onsubmit={createUser} class="space-y-4">
         <!-- Email -->
         <div>
-          <label class="block text-sm font-bold mb-2">EMAIL ADDRESS
-            <input
-              type="email"
-              bind:value={newUser.email}
-              required
-              class={yorhaClasses.input}
-            >
+          <label class="block text-sm font-bold mb-2"
+            >EMAIL ADDRESS
+            <input type="email" bind:value={newUser.email} required class={yorhaClasses.input} />
           </label>
         </div>
         <!-- Names -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-bold mb-2">FIRST NAME
-              <input
-                type="text"
-                bind:value={newUser.firstName}
-                class={yorhaClasses.input}
-              >
+            <label class="block text-sm font-bold mb-2"
+              >FIRST NAME
+              <input type="text" bind:value={newUser.firstName} class={yorhaClasses.input} />
             </label>
           </div>
           <div>
-            <label class="block text-sm font-bold mb-2">LAST NAME
-              <input
-                type="text"
-                bind:value={newUser.lastName}
-                class={yorhaClasses.input}
-              >
+            <label class="block text-sm font-bold mb-2"
+              >LAST NAME
+              <input type="text" bind:value={newUser.lastName} class={yorhaClasses.input} />
             </label>
           </div>
         </div>
         <!-- Role -->
         <div>
-          <label class="block text-sm font-bold mb-2">USER ROLE
+          <label class="block text-sm font-bold mb-2"
+            >USER ROLE
             <select bind:value={newUser.role} class={yorhaClasses.select}>
               {#each ROLE_HIERARCHY as role}
                 {#if canAssignRole(role)}
@@ -421,42 +407,22 @@
         <!-- Password -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-bold mb-2">PASSWORD
-              <input
-                type="password"
-                bind:value={newUser.password}
-                required
-                minlength="8"
-                class={yorhaClasses.input}
-              >
+            <label class="block text-sm font-bold mb-2"
+              >PASSWORD
+              <input type="password" bind:value={newUser.password} required minlength="8" class={yorhaClasses.input} />
             </label>
           </div>
           <div>
-            <label class="block text-sm font-bold mb-2">CONFIRM PASSWORD
-              <input
-                type="password"
-                bind:value={newUser.confirmPassword}
-                required
-                class={yorhaClasses.input}
-              >
+            <label class="block text-sm font-bold mb-2"
+              >CONFIRM PASSWORD
+              <input type="password" bind:value={newUser.confirmPassword} required class={yorhaClasses.input} />
             </label>
           </div>
         </div>
         <!-- Actions -->
         <div class="flex justify-end space-x-4 pt-4">
-          <button
-            type="button"
-            onclick={() => showCreateModal = false}
-            class={yorhaClasses.button}
-          >
-            CANCEL
-          </button>
-          <button
-            type="submit"
-            class={yorhaClasses.buttonPrimary}
-          >
-            ◈ CREATE USER
-          </button>
+          <button type="button" onclick={() => (showCreateModal = false)} class={yorhaClasses.button}> CANCEL </button>
+          <button type="submit" class={yorhaClasses.buttonPrimary}> ◈ CREATE USER </button>
         </div>
       </form>
     </div>
@@ -468,51 +434,36 @@
     <div class={yorhaClasses.modalContent}>
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold text-[#00ff88]">EDIT USER</h2>
-        <button
-          type="button"
-          onclick={() => showEditModal = false}
-          class="text-2xl hover:text-red-500"
-        >
-          ✕
-        </button>
+        <button type="button" onclick={() => (showEditModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
       </div>
       <!-- Single form using handleUpdate which omits the id and sends partial updates -->
       <form onsubmit={handleUpdate} class="space-y-4">
         <!-- Email -->
         <div>
-          <label class="block text-sm font-bold mb-2">EMAIL ADDRESS
-            <input
-              type="email"
-              bind:value={currentEditUser.email}
-              required
-              class={yorhaClasses.input}
-            >
+          <label class="block text-sm font-bold mb-2"
+            >EMAIL ADDRESS
+            <input type="email" bind:value={currentEditUser.email} required class={yorhaClasses.input} />
           </label>
         </div>
         <!-- Names -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-bold mb-2">FIRST NAME
-              <input
-                type="text"
-                bind:value={currentEditUser.firstName}
-                class={yorhaClasses.input}
-              >
+            <label class="block text-sm font-bold mb-2"
+              >FIRST NAME
+              <input type="text" bind:value={currentEditUser.firstName} class={yorhaClasses.input} />
             </label>
           </div>
           <div>
-            <label class="block text-sm font-bold mb-2">LAST NAME
-              <input
-                type="text"
-                bind:value={currentEditUser.lastName}
-                class={yorhaClasses.input}
-              >
+            <label class="block text-sm font-bold mb-2"
+              >LAST NAME
+              <input type="text" bind:value={currentEditUser.lastName} class={yorhaClasses.input} />
             </label>
           </div>
         </div>
         <!-- Role -->
         <div>
-          <label class="block text-sm font-bold mb-2">USER ROLE
+          <label class="block text-sm font-bold mb-2"
+            >USER ROLE
             <select bind:value={currentEditUser.role} class={yorhaClasses.select}>
               {#each ROLE_HIERARCHY as role}
                 {#if canAssignRole(role)}
@@ -525,30 +476,17 @@
         <!-- Status -->
         <div>
           <label class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              bind:checked={currentEditUser.isActive}
-            >
+            <input type="checkbox" bind:checked={currentEditUser.isActive} />
             <span class="text-sm font-bold">ACTIVE USER</span>
           </label>
         </div>
         <!-- Actions -->
         <div class="flex justify-end space-x-4 pt-4">
-          <button
-            type="button"
-            onclick={() => showEditModal = false}
-            class={yorhaClasses.button}
-          >
-            CANCEL
-          </button>
-          <button
-            type="submit"
-            class={yorhaClasses.buttonPrimary}
-          >
-            ◈ UPDATE USER
-          </button>
+          <button type="button" onclick={() => (showEditModal = false)} class={yorhaClasses.button}> CANCEL </button>
+          <button type="submit" class={yorhaClasses.buttonPrimary}> ◈ UPDATE USER </button>
         </div>
       </form>
     </div>
   </div>
 {/if}
+;

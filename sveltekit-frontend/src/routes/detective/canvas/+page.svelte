@@ -80,7 +80,7 @@
       width: 180,
       height: 120,
       color: '#8b5cf6';
-    };
+    }
     evidenceData = [...evidenceData, newItem];
     renderEvidence();
   }
@@ -97,6 +97,7 @@
     }
   });
 </script>
+
 <svelte:head>
   <title>Detective Canvas - Evidence Visualization</title>
   <meta name="description" content="Interactive canvas for visualizing and organizing evidence relationships" />
@@ -114,10 +115,7 @@
       >
         Add Evidence
       </button>
-      <button
-        onclick={clearCanvas}
-        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
-      >
+      <button onclick={clearCanvas} class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors">
         Clear Canvas
       </button>
       <a
@@ -129,7 +127,8 @@
     </div>
   </div>
   <div class="bg-slate-900 border border-slate-700 rounded-lg p-4">
-    <canvas ;
+    <canvas
+      ;
       bind:this={canvasElement}
       class="border border-slate-600 rounded cursor-crosshair"
       width="1200"
@@ -160,11 +159,45 @@
           <div class="flex items-center gap-3 p-2 bg-slate-700 rounded">
             <div
               class="w-4 h-4 rounded"
-              style="background-color: {(item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).color}"
+              style="background-color: {(
+                item as {
+                  color?: unknown;
+                  x?: unknown;
+                  y?: unknown;
+                  width?: unknown;
+                  height?: unknown;
+                  title?: unknown;
+                  type?: unknown;
+                }
+              ).color}"
             ></div>
             <div>
-              <div class="font-medium">{(item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).title}</div>
-              <div class="text-gray-400 capitalize">{(item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).type}</div>
+              <div class="font-medium">
+                {(
+                  item as {
+                    color?: unknown;
+                    x?: unknown;
+                    y?: unknown;
+                    width?: unknown;
+                    height?: unknown;
+                    title?: unknown;
+                    type?: unknown;
+                  }
+                ).title}
+              </div>
+              <div class="text-gray-400 capitalize">
+                {(
+                  item as {
+                    color?: unknown;
+                    x?: unknown;
+                    y?: unknown;
+                    width?: unknown;
+                    height?: unknown;
+                    title?: unknown;
+                    type?: unknown;
+                  }
+                ).type}
+              </div>
             </div>
           </div>
         {/each}
@@ -182,3 +215,4 @@
     </div>
   {/if}
 </div>
+;

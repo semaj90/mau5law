@@ -31,8 +31,9 @@
     notesContent = '';
     selectedCaseForNotes = '';
     selectedPoiForNotes = '';
-  };
+  }
 </script>
+
 <div class="nier-bits-card">
   <div class="nier-bits-yorha-panel-header">
     <h3>Add Notes</h3>
@@ -60,9 +61,12 @@
         {/each}
       </select>
     </div>
-    <button aria-label="Action button" class="btn nes-btn is-primary" onclick={(event: MouseEvent) => handleSubmit}>Save Notes</button>
+    <button aria-label="Action button" class="btn nes-btn is-primary" onclick={(_event: MouseEvent) => handleSubmit}
+      >Save Notes</button
+    >
   </div>
 </div>
+
 <style>
   .card {
     background-color: #fff;

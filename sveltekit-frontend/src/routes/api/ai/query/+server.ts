@@ -16,7 +16,7 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 import { aiService } from "$lib/server/services/ai-service.js"
-import { URL } from "url"
+
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
 const querySchema = z.object({
@@ -106,4 +106,4 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   }
 }
 export const POST = redisOptimized.aiSearch(originalPOSTHandler)
-export const GET = redisOptimized.aiSearch(originalGETHandler)
+export const GET = redisOptimized.aiSearch(originalGETHandler);

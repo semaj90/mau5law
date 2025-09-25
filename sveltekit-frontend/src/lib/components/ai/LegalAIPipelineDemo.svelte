@@ -22,7 +22,7 @@ https://svelte.dev/e/expected_token -->
     riskLevel: 'medium',
     lastAccessed: Date.now(),
     bankId: 1,
-    compressed: false
+    compressed: false;
     content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',
     metadata: {
       document_type: 'contract',

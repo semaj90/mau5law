@@ -40,7 +40,7 @@ function createNotificationStore() {
       icon: options.icon,
       position: options.position || 'top-right',
       showProgress: options.showProgress ?? true
-    };
+    }
     update(notifications => [...notifications, notification]);
     return id;
   }
@@ -104,7 +104,7 @@ function createNotificationStore() {
       type: 'error',
       title: 'Security Alert',
       icon: '🚨',
-      persistent: true
+      persistent: true;
       position: 'center'
     });
   }
@@ -133,7 +133,7 @@ function createNotificationStore() {
     aiAnalysisComplete,
     securityAlert,
     systemStatus
-  };
+  }
 }
 export const notificationStore = createNotificationStore();
 // Export convenience functions for use throughout the app

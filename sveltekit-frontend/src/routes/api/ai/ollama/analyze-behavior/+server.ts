@@ -120,4 +120,4 @@ Provide analysis in JSON format:
     return json({ error: 'Analysis failed' }, { status: 500 })
   }
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

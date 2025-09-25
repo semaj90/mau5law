@@ -9,9 +9,11 @@
     childre;
   }: CardDescriptionProps = $props();
 </script>
+
 <p class={cn('shadcn-card-description', className)}>
   {@render children?.()}
 </p>
+
 <style>
   :global(.shadcn-card-description) {
     font-size: 0.875rem;

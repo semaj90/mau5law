@@ -7,14 +7,14 @@
   let file: File | null = null;
   let summarize: boolean = $state(false);
   let tag: boolean = $state(false);
-  const handleFileChange = (event: Event) => {
+  const handleFileChange = (_event: Event) => {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       file = input.files[0];
     } else {
       file = null;
     }
-  };
+  }
   const handleSubmit = async () => {
     if (!file) {
       alert('Please select a file to upload.');
@@ -29,7 +29,7 @@
     try {
       const response = await fetch('/api/evidence/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
       if (response.ok) {
         alert('File uploaded successfully!');
@@ -48,7 +48,7 @@
       console.error('Error uploading file:', error);
       alert('An error occurred during file upload.');
     }
-  };
+  }
   // Dummy data for dropdowns - replace with actual data fetched from API
   const caseOptions = [
     { value: 'case1', label: 'Case 2023-001' },
@@ -61,6 +61,7 @@
     { value: 'poi3', label: 'Criminal X' },
   ];
 </script>
+
 <div class="nier-bits-card">
   <div class="nier-bits-yorha-panel-header">
     <h3>Automatic File Upload</h3>
@@ -87,6 +88,7 @@
     <button class="btn nes-btn is-primary" onclick={handleSubmit}>Upload</button>
   </div>
 </div>
+
 <style>
   .card {
     background-color: #fff;

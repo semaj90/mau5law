@@ -140,7 +140,7 @@ export interface AutomatedResolutionResult {
     analysisTime: number;
     generationTime: number;
     totalTime: number;
-  };
+  }
 }
 export interface BarrelStoreFile {
   fileName: string;
@@ -181,7 +181,7 @@ export interface Context7McpResponse {
     version?: string;
     topics: string[];
     confidence: number;
-  };
+  }
   snippets?: CodeSnippet[];
 }
 export interface CodeSnippet {
@@ -221,4 +221,4 @@ export {
   ErrorResolutionStrategy,
   AutomatedResolutionResult,
   EnhancedErrorAnalysis
-};
+}

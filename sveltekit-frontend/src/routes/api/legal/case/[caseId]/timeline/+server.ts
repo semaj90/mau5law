@@ -7,7 +7,7 @@ interface TimelineEvent {
   description: string
   eventType: 'INCIDENT' | 'EVIDENCE_COLLECTION' | 'LEGAL_FILING' | 'COURT_HEARING' | 'INVESTIGATION' | 'COMMUNICATION' | 'DECISION',
   category: string
-  subcategory?: string
+  subcategory?: string;
   timestamp: string
   endTimestamp?: string; // For events with duration
   location?: string

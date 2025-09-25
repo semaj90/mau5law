@@ -96,7 +96,7 @@
 			"Based on our analysis, I'll now create a comprehensive case file with AI recommendations.",
 			"Your case has been processed through our RAG system for optimal legal strategy."
 		];
-	};
+	}
 	// Utility: push message and keep reactivity
 	function pushMessage(msg: any) {
 		messages = [...messages, msg];
@@ -130,7 +130,7 @@
 			const idx = messages.findIndex((m) => m.id === messageId);
 			if (idx !== -1) {
 				const copy = [...messages];
-				copy[idx] = { ...copy[idx], content: content.slice(0, i) };
+				copy[idx] = { ...copy[idx], content: content.slice(0, i) }
 				messages = copy;
 			}
 			// small randomized delay to simulate typing
@@ -220,7 +220,7 @@
 					rag_context: ragContext
 					ai_processed: true
 				}
-			};
+			}
 			const response = await fetch('/api/v1/cases', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -409,7 +409,7 @@
 		<div class="chat-input-container">
 			<div class="input-wrapper">
 				<textarea
-					bind:this={messageInput};
+					bind:this={messageInput}
 					bind:value={currentMessage}
 					placeholder="Ask me anything about legal cases, or say 'help' to start a new case..."
 					rows="2"

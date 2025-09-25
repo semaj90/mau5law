@@ -200,7 +200,7 @@ async function handleChunking(request: Request, requestId: string, apiStartTime:
 }
 async function processCUDAEmbeddings(params: {
   texts: string[]
-  model: string
+  model: string;
   normalize: boolean
   batchSize: number
   requestId: string
@@ -258,7 +258,7 @@ async function processCUDAEmbeddings(params: {
 }
 async function processOllamaEmbeddings(params: {
   texts: string[]
-  model: string
+  model: string;
   normalize: boolean
   batchSize: number
 }): Promise<number[][]> {

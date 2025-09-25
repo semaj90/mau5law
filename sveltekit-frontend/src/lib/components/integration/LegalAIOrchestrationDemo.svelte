@@ -65,7 +65,7 @@
       description: 'Commercial contract dispute involving breach of delivery terms and damages claim. Client seeks recovery of $75,000 in damages plus attorney fees.',
       caseType: 'civil';
     }
-  };
+  }
   // Load demo data for current workflow
   function loadDemoData() {
     switch (selectedWorkflow) {
@@ -101,7 +101,7 @@
             userRole: legalResearchForm.userRole,
             maxResults: legalResearchForm.maxResults,
             includeAI: true;
-          };
+          }
           result = await workflowOrchestrator.performLegalResearch(researchRequest);
           break;
         case 'document-processing':
@@ -109,7 +109,7 @@
             documentId: documentProcessingForm.documentId || `doc_${Date.now()}`,
             content: documentProcessingForm.content,
             documentType: documentProcessingForm.documentTyp;
-          };
+          }
           result = await workflowOrchestrator.processDocument(docRequest);
           break;
         case 'case-creation':
@@ -119,7 +119,7 @@
             caseType: caseCreationForm.caseType,
             jurisdiction: caseCreationForm.jurisdiction,
             clientId: caseCreationForm.clientId || 'demo_client';
-          };
+          }
           result = await workflowOrchestrator.createCase(caseRequest);
           break;
       }
@@ -300,7 +300,7 @@ Load Demo Data
             <div class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1" for="case-title">Case Title</label><input id="case-title"
-                  type="text"
+                  type="text";
                   bind:value={caseCreationForm.title}
                   placeholder="Enter case title..."
                   class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"

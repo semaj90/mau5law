@@ -75,7 +75,7 @@
       icon: FileText
       shortcut: "Ctrl+Shift+S",
       description: "Generate AI summary of current content",
-      requiresContent: true
+      requiresContent: true;
     },
     {
       id: "analyze",
@@ -83,11 +83,11 @@
       icon: Brain
       shortcut: "Ctrl+Shift+A",
       description: "Comprehensive AI analysis with insights",
-      requiresContent: true
+      requiresContent: true;
     },
   ];
   // Keyboard shortcut handling
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (!event.ctrlKey || !event.shiftKey) return;
     const key = event.key.toLowerCase();
     // Report generation shortcuts
@@ -139,6 +139,7 @@
     return () => document.removeEventListener("keydown", handleKeydown);
   });
 </script>
+
 <!-- Trigger Button -->
 <button
   class="ai-trigger {$open ? 'ai-trigger--active' : ''} {disabled || isGenerating ? 'ai-trigger--disabled' : ''}"
@@ -147,20 +148,14 @@
   title="AI Tools (Press ? for shortcuts)"
 >
   <Sparkles size={16} class="ai-trigger__icon" />
-  <ChevronDown
-    size={12}
-    class="ai-trigger__chevron {$open ? 'ai-trigger__chevron--rotated' : ''}"
-  />
+  <ChevronDown size={12} class="ai-trigger__chevron {$open ? 'ai-trigger__chevron--rotated' : ''}" />
   {#if isGenerating}
     <div class="ai-trigger__spinner" aria-hidden="true"></div>
   {/if}
 </button>
 <!-- Dropdown Menu -->
 {#if $open}
-  <div
-    class="ai-menu"
-    transitionfly={{ duration: 150, y: -8 }}
-  >
+  <div class="ai-menu" transitionfly={{ duration: 150, y: -8 }}>
     <!-- Report Generation Section -->
     <div class="ai-menu__section">
       <div class="ai-menu__header">
@@ -176,15 +171,10 @@
           data-value={reportType.id}
         >
           <div class="ai-menu__item-content">
-            <reportType.icon
-              size={14}
-              class="ai-menu__item-icon"
-            />
+            <reportType.icon size={14} class="ai-menu__item-icon" />
             <div class="ai-menu__item-text">
               <span class="ai-menu__item-name">{reportType.name}</span>
-              <span class="ai-menu__item-description"
-                >{reportType.description}</span
-              >
+              <span class="ai-menu__item-description">{reportType.description}</span>
             </div>
           </div>
           <kbd class="ai-menu__shortcut">{reportType.shortcut}</kbd>
@@ -205,19 +195,12 @@
           class:ai-menu__item--selected={selectedItem === tool.id}
           class:ai-menu__item--disabled={tool.requiresContent && !hasContent}
           onclick={() => handleItemSelect(tool.id, tool.requiresContent)}
-          disabled={disabled ||
-            isGenerating ||
-            (tool.requiresContent && !hasContent)}
+          disabled={disabled || isGenerating || (tool.requiresContent && !hasContent)}
           data-value={tool.id}
-          title={tool.requiresContent && !hasContent
-            ? "Add content to enable this feature"
-            : ""}
+          title={tool.requiresContent && !hasContent ? 'Add content to enable this feature' : ''}
         >
           <div class="ai-menu__item-content">
-            <tool.icon
-              size={14}
-              class="ai-menu__item-icon"
-            />
+            <tool.icon size={14} class="ai-menu__item-icon" />
             <div class="ai-menu__item-text">
               <span class="ai-menu__item-name">{tool.name}</span>
               <span class="ai-menu__item-description">{tool.description}</span>
@@ -231,12 +214,11 @@
     <div class="ai-menu__separator"></div>
     <div class="ai-menu__footer">
       <Keyboard size={12} />
-      <span class="ai-menu__footer-text"
-        >Use keyboard shortcuts or click items</span
-      >
+      <span class="ai-menu__footer-text">Use keyboard shortcuts or click items</span>
     </div>
   </div>
 {/if}
+
 <style>
   /* @unocss-include */
   /* Trigger Button */
@@ -295,11 +277,7 @@
     position: absolute;
     inset: 0;
     border-radius: 0.375rem;
-    background: linear-gradient(
-      to right,
-      rgba(233, 213, 255, 0.8),
-      rgba(224, 231, 255, 0.8)
-    );
+    background: linear-gradient(to right, rgba(233, 213, 255, 0.8), rgba(224, 231, 255, 0.8));
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   /* Dropdown Menu */
@@ -447,11 +425,7 @@
   }
   /* Yorha Theme Integration */
   :global(.yorha-theme) .ai-trigger {
-    background: linear-gradient(
-      to right,
-      var(--yorha-bg-secondary),
-      var(--yorha-bg-tertiary)
-    );
+    background: linear-gradient(to right, var(--yorha-bg-secondary), var(--yorha-bg-tertiary));
     color: var(--yorha-text-primary);
     border-color: var(--yorha-border);
   }

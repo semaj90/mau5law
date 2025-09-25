@@ -66,12 +66,12 @@ https://svelte.dev/e/js_parse_error -->
 >
   {#if sidebarPosition === "left"}
     <aside
-      class="container mx-auto px-4"
+      class="container mx-auto px-4";
       class:collapsed
-      style="
+      style=";
         flex: {collapsed ? '0' : calculatedSidebarFlex}
         min-width: {collapsed ? '0' : minSidebarWidth}
-        max-width: {collapsed ? '0' : maxSidebarWidth};
+        max-width: {collapsed ? '0' : maxSidebarWidth}
         margin-right: {collapsed ? '0' : gap}
       "
     >
@@ -91,14 +91,14 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </aside>
   {/if}
-  <main class="container mx-auto px-4" style="flex: {calculatedMainFlex};">
+  <main class="container mx-auto px-4" style="flex: {calculatedMainFlex}">
     {@render children}
   </main>
   {#if sidebarPosition === "right"}
     <aside
       class="container mx-auto px-4"
       class:collapsed
-      style="
+      style=";
         flex: {collapsed ? '0' : calculatedSidebarFlex}
         min-width: {collapsed ? '0' : minSidebarWidth}
         max-width: {collapsed ? '0' : maxSidebarWidth}

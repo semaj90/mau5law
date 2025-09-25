@@ -35,7 +35,7 @@
     try {
       const res = await fetch("/api/evidence/upload", {
         method: "POST",
-        body: formData
+        body: formData;
       });
       if (res.ok) {
         console.log("Evidence uploaded!");
@@ -56,16 +56,12 @@
   }
   $effect(fetchEvidence);
 </script>
+
 <section class="evidence-panel">
   <h2 class="evidence-title">Evidence</h2>
   <div class="evidence-upload">
     <label class="evidence-upload-btn">
-      <input
-        type="file"
-        accept="*/*"
-        onchange={handleUpload}
-        style="display:none"
-      />
+      <input type="file" accept="*/*" onchange={handleUpload} style="display:none" />
       📁 Upload Evidence
     </label>
     {#if isUploading}
@@ -77,7 +73,7 @@
       <div
         class="evidence-nier-bits-card"
         draggable={true}
-        ondragstart={(e) => handleDragStart(e, evd)}
+        ondragstart={e => handleDragStart(e, evd)}
         role="button"
         tabindex={0}
         aria-label="Drag evidence item: {evd.title}"
@@ -85,7 +81,7 @@
         <div class="evidence-meta">
           <span class="file-type">{evd.fileType}</span>
           {#if Array.isArray(evd.tags) && evd.tags.length > 0}
-            <span class="evidence-tags">{evd.tags.join(", ")}</span>
+            <span class="evidence-tags">{evd.tags.join(', ')}</span>
           {/if}
         </div>
         <div class="evidence-item-title">{evd.title}</div>
@@ -102,6 +98,7 @@
     {/if}
   </div>
 </section>
+
 <style>
   /* @unocss-include */
   .evidence-panel {

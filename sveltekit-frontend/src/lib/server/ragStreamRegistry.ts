@@ -40,7 +40,7 @@ export function createStream(): ActiveStream {
   const controller = new AbortController();
   const id = randomUUID();
   const now = Date.now();
-  const stream: ActiveStream = { id, createdAt: now, controller, tokens: [], lastActivity: now };
+  const stream: ActiveStream = { id, createdAt: now, controller, tokens: [], lastActivity: now }
   streams.set(id, stream);
   sweepIfNeeded();
   return stream;
@@ -114,7 +114,7 @@ function summarizeText(text: string, maxSentences: number): string | undefined {
     .filter(Boolean);
   if (!sentences.length) return text.slice(0, 300);
   // Build TF counts
-  const termFreq: Record<string, number> = {};
+  const termFreq: Record<string, number> = {}
   const sentenceTerms: string[][] = [];
   for (const s of sentences) {
     const terms = s
@@ -130,7 +130,7 @@ function summarizeText(text: string, maxSentences: number): string | undefined {
   }
   // IDF approximation
   const totalSent = sentences.length;
-  const idf: Record<string, number> = {};
+  const idf: Record<string, number> = {}
   for (const [term, tf] of Object.entries(termFreq)) {
     idf[term] = Math.log(1 + totalSent / (1 + tf);
   }
@@ -141,7 +141,7 @@ function summarizeText(text: string, maxSentences: number): string | undefined {
     for (const t of terms) score += idf[t] || 0;
     // Position boost: first + last
     if (i === 0 || i === totalSent - 1) score *= 1.15;
-    return { s, score, i };
+    return { s, score, i }
   });
   scored.sort((a, b) => b.score - a.score || a.i - b.i);
   return scored

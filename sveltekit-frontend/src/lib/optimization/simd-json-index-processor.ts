@@ -26,7 +26,7 @@ export interface CopilotIndexEntry {
     timestamp: number;
     fileSize: number;
     tokens: number;
-  };
+  }
   semanticChunks: Array<any>;
 }
 export interface CopilotIndex {
@@ -39,7 +39,7 @@ export interface CopilotIndex {
     avgEmbeddingTime: number;
     indexSizeMB: number;
     lastUpdated: number;
-  };
+  }
   clusters: Array<any>
 // Vector embedding integration with pgvector/Qdrant
 export interface VectorEmbeddingConfig {
@@ -59,7 +59,7 @@ export class SIMDJSONIndexProcessor {
     indexTime: 0,
     totalProcessed: 0,
     cacheHits: 0
-  };
+  }
   constructor(config: Partial<VectorEmbeddingConfig> = {}) {
     this.vectorConfig = {
       model: 'nomic-embed-text',
@@ -68,7 +68,7 @@ export class SIMDJSONIndexProcessor {
       chunkSize: 512,
       overlap: 50,
       ...config
-    };
+    }
     // Initialize SIMD JSON parser with worker thread support
     this.parser = this.createSIMDParser();
   }
@@ -92,7 +92,7 @@ export class SIMDJSONIndexProcessor {
         entries: optimizedEntries
         statistics,
         clusters
-      };
+      }
       this.performanceMetrics.indexTime = performance.now() - startTime;
       this.performanceMetrics.totalProcessed++;
       // Integrate with Enhanced RAG store
@@ -144,7 +144,7 @@ export class SIMDJSONIndexProcessor {
    */
   async semanticSearch(
     query: string
-    index: CopilotIndex
+    index: CopilotIndex;
     options: {
       limit?: number;
       threshold?: number;
@@ -275,7 +275,7 @@ export class SIMDJSONIndexProcessor {
           offset += chunkSize;
         }
       }
-    };
+    }
   }
   /**
    * Parse data with SIMD optimization
@@ -401,12 +401,12 @@ export class SIMDJSONIndexProcessor {
       avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(entries.length, 1),
       indexSizeMB: totalSize / (1024 * 1024),
       lastUpdated: Date.now()
-    };
+    }
   }
   /**
    * Integrate with Enhanced RAG store
    */;
-  private async integrateWithRAGStore(index: CopilotIndex) {
+  private async integrateWithRAGStore(_index: CopilotIndex) {
     const addDocument = enhancedRAGStore.addDocument;
     // Add entries as RAG documents
     for (const entry of index.entries) {
@@ -547,7 +547,7 @@ export class SIMDJSONIndexProcessor {
       svelte: 'memo',
       markdown: 'memo',
       json: 'evidence'
-    };
+    }
     return typeMap[language] || 'memo';
   }
   private extractHighlights(content: string, query: string): string[] {
@@ -572,7 +572,7 @@ export class SIMDJSONIndexProcessor {
       avgParseTime: this.performanceMetrics.parseTime / Math.max(this.performanceMetrics.totalProcessed, 1),
       avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(this.performanceMetrics.totalProcessed, 1),
       avgIndexTime: this.performanceMetrics.indexTime / Math.max(this.performanceMetrics.totalProcessed, 1)
-    };
+    }
   }
   /**
    * Reset performance metrics
@@ -584,7 +584,7 @@ export class SIMDJSONIndexProcessor {
       indexTime: 0,
       totalProcessed: 0,
       cacheHits: 0
-    };
+    }
   }
   /**
    * Clear embedding cache

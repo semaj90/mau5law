@@ -17,8 +17,8 @@ export const GET: RequestHandler = async ({ request }) => {
         headers: {
           'Upgrade': 'WebSocket',
           'Connection': 'Upgrade',
-          'Sec-WebSocket-Accept': ''
-        }
+          'Sec-WebSocket-Accept': '',
+        },
       });
     } else {
       console.error('❌ [WebSocket Route] WebSocket server not available');
@@ -26,24 +26,27 @@ export const GET: RequestHandler = async ({ request }) => {
     }
   }
   // Return information about the WebSocket endpoint for non-upgrade requests
-  return new Response(JSON.stringify({
-    endpoint: '/websocket',
-    protocol: 'Binary QLoRA WebSocket',
-    status: 'Ready',
-    description: 'Real-time binary compressed QLoRA topology predictions',
-    upgrade: 'Use WebSocket upgrade headers to connect',
-    example: {
-      request: {
-        query: 'analyze legal contract',
-        topologyType: 'legal',
-        accuracyTarget: 90,
-        streamBinary: true
-      }
-    }
-  }), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-};
+  return new Response(
+    JSON.stringify({
+      endpoint: '/websocket',
+      protocol: 'Binary QLoRA WebSocket',
+      status: 'Ready',
+      description: 'Real-time binary compressed QLoRA topology predictions',
+      upgrade: 'Use WebSocket upgrade headers to connect',
+      example: {
+        request: {
+          query: 'analyze legal contract',
+          topologyType: 'legal',
+          accuracyTarget: 90,
+          streamBinary: true,
+        },
+      },
+    }),
+    {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+}

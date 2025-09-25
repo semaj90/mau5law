@@ -50,7 +50,7 @@ const { fabric } = await import("fabric");
     fabricCanvas = new fabric.Canvas(canvasEl, {
       backgroundColor: '#ffffff',
       selection: true
-      preserveObjectStacking: true
+      preserveObjectStacking: true;
     })();
   });
     // Register canvas with concurrency orchestrator
@@ -65,7 +65,7 @@ const { fabric } = await import("fabric");
   });
   async function loadCaseEvidence() {
     try {
-      const response = await fetch(`/api/cases/${caseId}/evidence`);
+      // removed unused response assignment
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
         evidenceList = ((data as { evidence?: any }).evidence || []).map((item: any) => ({,
@@ -98,7 +98,7 @@ const { fabric } = await import("fabric");
         type: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).type,
         uploadedAt: new Date().toISOString(),
         status: 'uploaded' as const;
-      };
+      }
       evidenceList.push(evidenceItem);
       addEvidenceToCanvas(evidenceItem, index, (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).color);
     });
@@ -128,7 +128,7 @@ const { fabric } = await import("fabric");
       fontSize: 14,
       fill: '#ffffff',
       fontWeight: 'bold',
-      selectable: false
+      selectable: false;
       evented: false;
     });
     // Add type label
@@ -138,7 +138,7 @@ const { fabric } = await import("fabric");
       fontFamily: 'Arial',
       fontSize: 12,
       fill: '#ffffff',
-      selectable: false
+      selectable: false;
       evented: false;
     });
     // Add status indicator
@@ -148,7 +148,7 @@ const { fabric } = await import("fabric");
       fontFamily: 'Arial',
       fontSize: 10,
       fill: '#ffffff',
-      selectable: false
+      selectable: false;
       evented: false;
     });
     fabricCanvas.add(rect);
@@ -165,7 +165,7 @@ const { fabric } = await import("fabric");
       physical: '#ef4444',
       digital: '#06b6d4',
       default: '#6b7280';
-    };
+    }
     return colors[type] || colors.default;
   }
   function collectObjects() {
@@ -181,7 +181,7 @@ const { fabric } = await import("fabric");
 { x: left, y: top },
         ...(text ? { text } : ),
         ...(evidenceId ? { evidenceId } : )
-      };
+      }
     });
     return obj;
   }
@@ -226,7 +226,7 @@ const { fabric } = await import("fabric");
           complianceStatus: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis.complianceStatus,
           timeline: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).analysis.timeline,
           processingTime: (result as { success?: any; analysis?: any; metadata?: any; error?: any }).metadata?.processingTimeMs
-        };
+        }
         analysisProgress = 100;
         analysisStatus = 'complete';
         // Auto-close after showing success
@@ -244,8 +244,8 @@ const { fabric } = await import("fabric");
     }
   }
   // File upload function
-  async function handleFileUpload(event: Event) {
-    const target = event.target as HTMLInputElement;
+  async function handleFileUpload(_event: Event) {
+    // removed unused target assignment
     const files = target.file;
     if (!files || files.length === 0) return;
     for (const file of Array.from(files)) {
@@ -255,7 +255,7 @@ const { fabric } = await import("fabric");
         type: getFileType(file.type),
         uploadedAt: new Date().toISOString(),
         status: 'uploading' as const;
-      };
+      }
       evidenceList.push(evidenceItem);
       try {
         // Upload to MinIO or fallback endpoint
@@ -293,16 +293,17 @@ const { fabric } = await import("fabric");
     const canvasData = {
       version: fabricCanvas.version,
       objects: fabricCanvas.toJSON(),
-      evidence: evidenceList
+      evidence: evidenceList;
       timestamp: new Date().toISOString(),
       caseId;
-    };
+    }
     // Save to localStorage as backup
     localStorage.setItem(`evidence-canvas-${caseId}`, JSON.stringify(canvasData));
     // TODO: Save to backend
     console.log('Canvas saved:', canvasData);
   }
 </script>
+
 <!-- NES-styled toolbar with controls and status -->
 <div class="nes-container with-title is-centered evidence-toolbar">
   <p class="title">Evidence Analysis Toolkit</p>
@@ -321,7 +322,11 @@ const { fabric } = await import("fabric");
       />
     </label>
     <button
-      class="nes-btn {analysisStatus === 'idle' ? 'is-primary' : analysisStatus === 'complete' ? 'is-success' : 'is-warning'}"
+      class="nes-btn {analysisStatus === 'idle'
+        ? 'is-primary'
+        : analysisStatus === 'complete'
+          ? 'is-success'
+          : 'is-warning'}"
       onclick={handleAnalysis}
       disabled={analysisStatus === 'analyzing' || analysisStatus === 'pending'}
     >
@@ -379,7 +384,8 @@ const { fabric } = await import("fabric");
         Context Window:
         <input
           type="number"
-          class="nes-input";
+          class="nes-input"
+          ;
           bind:value={options.context_window}
           min={512}
           max={16384}
@@ -417,9 +423,49 @@ const { fabric } = await import("fabric");
     <p class="title">Evidence Items ({evidenceList.length})</p>
     <div class="evidence-grid">
       {#each evidenceList as item}
-        <div class="nes-container is-rounded evidence-item {(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).status}">
+        <div
+          class="nes-container is-rounded evidence-item {(
+            item as {
+              id?: any;
+              title?: any;
+              name?: any;
+              type?: any;
+              evidenceType?: any;
+              createdAt?: any;
+              color?: any;
+              status?: any;
+              uploadedAt?: any;
+              uploading?: any;
+              uploaded?: any;
+              failed?: any;
+              high?: any;
+              medium?: any;
+              low?: any;
+            }
+          ).status}"
+        >
           <div class="evidence-header">
-            <span class="evidence-name">{(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).name}</span>
+            <span class="evidence-name"
+              >{(
+                item as {
+                  id?: any;
+                  title?: any;
+                  name?: any;
+                  type?: any;
+                  evidenceType?: any;
+                  createdAt?: any;
+                  color?: any;
+                  status?: any;
+                  uploadedAt?: any;
+                  uploading?: any;
+                  uploaded?: any;
+                  failed?: any;
+                  high?: any;
+                  medium?: any;
+                  low?: any;
+                }
+              ).name}</span
+            >
             <span class="evidence-status nes-badge">
               {#if (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).status === 'uploaded'}
                 <CheckCircle size={14} />
@@ -428,12 +474,72 @@ const { fabric } = await import("fabric");
               {:else}
                 <AlertCircle size={14} />
               {/if}
-              {(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).status}
+              {(
+                item as {
+                  id?: any;
+                  title?: any;
+                  name?: any;
+                  type?: any;
+                  evidenceType?: any;
+                  createdAt?: any;
+                  color?: any;
+                  status?: any;
+                  uploadedAt?: any;
+                  uploading?: any;
+                  uploaded?: any;
+                  failed?: any;
+                  high?: any;
+                  medium?: any;
+                  low?: any;
+                }
+              ).status}
             </span>
           </div>
           <div class="evidence-details">
-            <small>Type: {(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).type}</small>
-            <small>Added: {new Date((item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).uploadedAt).toLocaleDateString()}</small>
+            <small
+              >Type: {(
+                item as {
+                  id?: any;
+                  title?: any;
+                  name?: any;
+                  type?: any;
+                  evidenceType?: any;
+                  createdAt?: any;
+                  color?: any;
+                  status?: any;
+                  uploadedAt?: any;
+                  uploading?: any;
+                  uploaded?: any;
+                  failed?: any;
+                  high?: any;
+                  medium?: any;
+                  low?: any;
+                }
+              ).type}</small
+            >
+            <small
+              >Added: {new Date(
+                (
+                  item as {
+                    id?: any;
+                    title?: any;
+                    name?: any;
+                    type?: any;
+                    evidenceType?: any;
+                    createdAt?: any;
+                    color?: any;
+                    status?: any;
+                    uploadedAt?: any;
+                    uploading?: any;
+                    uploaded?: any;
+                    failed?: any;
+                    high?: any;
+                    medium?: any;
+                    low?: any;
+                  }
+                ).uploadedAt,
+              ).toLocaleDateString()}</small
+            >
           </div>
         </div>
       {/each}
@@ -450,7 +556,13 @@ const { fabric } = await import("fabric");
       <p class="analysis-text">{analysisResult.summary}</p>
       {#if analysisResult.riskLevel}
         <div class="risk-indicator">
-          <span class="nes-badge {analysisResult.riskLevel === 'high' || analysisResult.riskLevel === 'critical' ? 'is-error' : analysisResult.riskLevel === 'medium' ? 'is-warning' : 'is-success'}">
+          <span
+            class="nes-badge {analysisResult.riskLevel === 'high' || analysisResult.riskLevel === 'critical'
+              ? 'is-error'
+              : analysisResult.riskLevel === 'medium'
+                ? 'is-warning'
+                : 'is-success'}"
+          >
             Risk Level: {analysisResult.riskLevel.toUpperCase()}
           </span>
         </div>
@@ -508,7 +620,13 @@ const { fabric } = await import("fabric");
             <div class="nes-container is-rounded timeline-item {event.importance}">
               <div class="timeline-header">
                 <span class="timeline-date">{new Date(event.date).toLocaleDateString()}</span>
-                <span class="nes-badge {event.importance === 'high' ? 'is-error' : event.importance === 'medium' ? 'is-warning' : 'is-success'}">
+                <span
+                  class="nes-badge {event.importance === 'high'
+                    ? 'is-error'
+                    : event.importance === 'medium'
+                      ? 'is-warning'
+                      : 'is-success'}"
+                >
                   {event.importance}
                 </span>
               </div>
@@ -523,7 +641,13 @@ const { fabric } = await import("fabric");
       <div class="nes-container is-rounded compliance-card">
         <h4 class="nes-text">Compliance Status</h4>
         <div class="compliance-status">
-          <span class="nes-badge {analysisResult.complianceStatus.toLowerCase().includes('compliant') ? 'is-success' : analysisResult.complianceStatus.toLowerCase().includes('violation') ? 'is-error' : 'is-warning'}">
+          <span
+            class="nes-badge {analysisResult.complianceStatus.toLowerCase().includes('compliant')
+              ? 'is-success'
+              : analysisResult.complianceStatus.toLowerCase().includes('violation')
+                ? 'is-error'
+                : 'is-warning'}"
+          >
             {analysisResult.complianceStatus}
           </span>
         </div>
@@ -551,6 +675,7 @@ const { fabric } = await import("fabric");
     </div>
   </div>
 {/if}
+
 <style>
   /* Main toolbar styling */
   .evidence-toolbar {
@@ -702,19 +827,28 @@ const { fabric } = await import("fabric");
     margin-top: 1rem;
   }
   /* Findings */
-  .findings-card, .recommendations-card, .similar-cases-card,
-  .timeline-card, .compliance-card, .metadata-card {
+  .findings-card,
+  .recommendations-card,
+  .similar-cases-card,
+  .timeline-card,
+  .compliance-card,
+  .metadata-card {
     margin-bottom: 2rem;
     padding: 1.5rem;
   }
-  .findings-list, .recommendations-list, .similar-cases-list,
+  .findings-list,
+  .recommendations-list,
+  .similar-cases-list,
   .timeline-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     margin-top: 1rem;
   }
-  .finding-item, .recommendation-item, .case-item, .timeline-item {
+  .finding-item,
+  .recommendation-item,
+  .case-item,
+  .timeline-item {
     padding: 0.75rem;
     font-size: 13px;
     line-height: 1.4;
@@ -798,7 +932,8 @@ const { fabric } = await import("fabric");
     .evidence-grid {
       grid-template-columns: 1fr;
     }
-    .case-header, .timeline-header {
+    .case-header,
+    .timeline-header {
       flex-direction: column;
       gap: 0.5rem;
       align-items: flex-start;

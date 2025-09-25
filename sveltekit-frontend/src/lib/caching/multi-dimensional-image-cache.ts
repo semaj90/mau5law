@@ -13,13 +13,13 @@ export interface ImageCacheEntry {
   id: string;
   algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';
   imageData: string; // Base64 encoded,
-  dimensions: { width: number; height: number };
+  dimensions: { width: number; height: number }
   metadata: ImageMetadata;
   compressionData?: {
     original: EncodedGraphPattern;
     som: SOMDecomposition;
     compressed: ArrayBuffer;
-  };
+  }
   gpuTexture?: GPUTextureMatrix;
   cacheStats: CacheStats;
   timestamp: number;
@@ -37,7 +37,7 @@ export interface ImageMetadata {
     jurisdictionalSpread: number;
     temporalRange: number;
     complexityIndex: number;
-  };
+  }
 }
 export interface CacheStats {
   hitCount: number;
@@ -132,7 +132,7 @@ export class MultiDimensionalImageCache {
     gpu_operations: 0,
     som_operations: 0,
     autoencoder_operations: 0
-  };
+  }
   constructor() {
     this.initializeServices();
   }
@@ -216,7 +216,7 @@ export class MultiDimensionalImageCache {
           temporalRange: this.calculateTemporalRange(graphData),
           complexityIndex: this.calculateComplexityIndex(graphData)
         }
-      };
+      }
       // Compress image data using auto-encoder and SOM
       const compressionData = await this.compressImageData(imageData, graphData);
       metadata.compressionRatio = compressionData.compressionRatio;
@@ -249,7 +249,7 @@ export class MultiDimensionalImageCache {
           compressionEfficiency: compressionData.compressionRatio
         },
         timestamp: Date.now()
-      };
+      }
       // Store in appropriate cache layers
       await this.storeInLayers(entry, dimensions);
       // Update dimensional indices
@@ -334,7 +334,7 @@ export class MultiDimensionalImageCache {
           legalDomain: graphData.metadata?.legalDomain || 'general',
           timestamp: Date.now()
         }
-      };
+      }
       // Encode with auto-encoder
       const original = await this.autoencoder.encodeGraphPattern(graphForProcessing);
       // Analyze with SOM
@@ -349,13 +349,13 @@ export class MultiDimensionalImageCache {
         confidenceLevel: 0.8,
         riskLevel: 'medium' as const,
         lastAccessed: Date.now(),
-        compressed: true
+        compressed: true;
         metadata: {
           imageData,
           originalSize: imageData.length,
           vectorEmbedding: original.encodedFeatures
         }
-      };
+      }
       const compressed = await nesGPUBridge.createFlatBufferFromDocument(mockDocument);
       const compressionRatio = compressed.byteLength / imageData.length;
       return {
@@ -363,7 +363,7 @@ export class MultiDimensionalImageCache {
         som,
         compressed,
         compressionRatio
-      };
+      }
     } catch (error) {
       console.error('Failed to compress image data:', error);
       // Return fallback compression
@@ -372,7 +372,7 @@ export class MultiDimensionalImageCache {
         som: { [key: string]: any } as SOMDecomposition,
         compressed: new ArrayBuffer(imageData.length),
         compressionRatio: 1.0
-      };
+      }
     }
   }
   private async createGPUTexture(
@@ -589,7 +589,7 @@ export class MultiDimensionalImageCache {
           compressionEfficiency: data.byteLength / metadata.imageData.length
         },
         timestamp: document?.lastAccessed || Date.now()
-      };
+      }
       return entry;
     } catch (error) {
       console.error('Failed to reconstruct from compressed data:', error);
@@ -684,7 +684,7 @@ export class MultiDimensionalImageCache {
         priority: layer.priority,
         ttl: layer.ttl
       }))
-    };
+    }
   }
   async evictExpired(): Promise<number> {
     let evicted = 0;

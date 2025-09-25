@@ -22,31 +22,31 @@ export interface ServiceConfig {
     uri: string;
     user: string;
     password: string;
-  };
+  }
   postgres: {
     host: string;
     port: number;
     database: string;
     user: string;
     password: string;
-  };
+  }
   redis: {
     host: string;
     port: number;
-  };
+  }
   goMicroservices: {
     rag: string;
     gpu: string;
     llama: string;
-  };
+  }
   ollama: {
     baseUrl: string;
     model: string;
-  };
+  }
   mcp: {
     context7: string;
     synthesis: string;
-  };
+  }
 }
 export interface AutoSolveQuery {
   query: string;
@@ -58,7 +58,7 @@ export interface AutoSolveQuery {
     maxSources?: number;
     useGPU?: boolean;
     stream?: boolean;
-  };
+  }
 }
 export interface AutoSolveResult {
   synthesis: string;
@@ -69,7 +69,7 @@ export interface AutoSolveResult {
     model: string;
     tokensUsed: number;
     cacheHit: boolean;
-  };
+  }
 }
 // Service configuration from environment
 const serviceConfig: ServiceConfig = {
@@ -102,7 +102,7 @@ const serviceConfig: ServiceConfig = {
     context7: import.meta.env.CONTEXT7_URL || 'http://localhost:4000',
     synthesis: import.meta.env.AI_SYNTHESIS_URL || 'http://localhost:8200'
   }
-};
+}
 // Database connection with Drizzle ORM (TypeScript-safe)
 const pgConnection = postgres({
   host: serviceConfig.postgres.host,
@@ -114,7 +114,7 @@ const pgConnection = postgres({
   idle_timeout: 20,
   connect_timeout: 60
 });
-export const db = drizzle(pgConnection);
+export // removed unused db assignment
 // Redis connection for caching and Go service communication
 const redis = new Redis({
   host: serviceConfig.redis.host,
@@ -339,10 +339,10 @@ export class EnhancedAISynthesisOrchestrator {
     // Initialize cache service (simple in-memory for now)
     this.cacheService = {
       cache: new Map(),
-      get: async (key: string) => this.cacheService.cache.get(key),
-      set: async (key: string, value: any) => this.cacheService.cache.set(key, value),
-      delete: async (key: string) => this.cacheService.cache.delete(key)
-    };
+      get: async (_key: string) => this.cacheService.cache.get(key),
+      set: async (_key: string, value: any) => this.cacheService.cache.set(key, value),
+      delete: async (_key: string) => this.cacheService.cache.delete(key)
+    }
   }
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -375,7 +375,7 @@ export class EnhancedAISynthesisOrchestrator {
         user: serviceConfig.postgres.user,
         password: serviceConfig.postgres.password,
         max: 20
-      };
+      }
       // Initialize PGVector store with fallback
       try {
         this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, {
@@ -416,11 +416,11 @@ export class EnhancedAISynthesisOrchestrator {
         checkCache: fromPromise(async ({ input }) => {
           const cacheKey = `synthesis:${Buffer.from(input.query || '').toString('base64')}`;
           const cached = await this.cacheService.get(cacheKey);
-          return { cached: !!cached, data: cached };
+          return { cached: !!cached, data: cached }
         }),
         generateEmbeddings: fromPromise(async ({ input }) => {
           const embeddings = await this.ollamaEmbeddings.embedQuery(input.query || '');
-          return { embeddings };
+          return { embeddings }
         }),
         analyzeWithLegalBERT: fromPromise(async ({ input }) => {
           if (!input.query) throw new Error('No query provided');
@@ -459,7 +459,7 @@ export class EnhancedAISynthesisOrchestrator {
               body: JSON.stringify({,
                 query: context.query,
                 limit: 10,
-                useGPU: true
+                useGPU: true;
                 model: 'gemma3-legal:latest'
               })
             });
@@ -473,7 +473,7 @@ export class EnhancedAISynthesisOrchestrator {
         generateWithGemma3Legal: (async ({ context }) => {
           const prompt = this.buildEnhancedPrompt(context);
           try {
-            const response = await this.ollama.invoke(prompt);
+            // removed unused response assignment
             return (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).content;
           } catch (error: any) {
             logger.error('[Orchestrator] Generation failed:', error);
@@ -506,7 +506,7 @@ export class EnhancedAISynthesisOrchestrator {
             strategies: ['legal-bert', 'rag', 'cross-encoder'],
             qualityScore: 0.85,
             recommendations: ['Review sources', 'Verify legal citations']
-          };
+          }
           return result;
         }) as any, // Temporary cast to fix UnknownActorLogic
         cacheResult: (async ({ context }) => {
@@ -563,7 +563,7 @@ export class EnhancedAISynthesisOrchestrator {
   private async ensureGemma3LegalModel(): Promise<void> {
     try {
       // Check if model exists
-      const response = await fetch(`${serviceConfig.ollama.baseUrl}/api/tags`);
+      // removed unused response assignment
       const { models } = await (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).json();
       const hasGemma3Legal = models?.some((m: any) => m.name === 'gemma3-legal:latest');
       if (!hasGemma3Legal) {
@@ -637,7 +637,7 @@ TEMPLATE """{{ if .System }}<|system|>
         if (service.test) {
           await service.test();
         } else if (service.url) {
-          const response = await fetch(service.url);
+          // removed unused response assignment
           if (!(response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok) throw new Error(`HTTP ${(response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).status}`);
         }
         logger.info(`[Orchestrator] ✅ ${service.name} connected`);
@@ -811,12 +811,12 @@ RESPONSE:`;
       yield {
         type: 'complete',
         result: finalSnapshot.context.finalSynthesis
-      };
+      }
     }
   }
   // Health check
   async health(): Promise<any> {
-    const services: any = {};
+    const services: any = {}
     // Check each service
     try {
       await (redis as any).setex('health-check', 1, 'ok');
@@ -831,19 +831,19 @@ RESPONSE:`;
       services.postgres = 'unhealthy';
     }
     try {
-      const response = await fetch(`${serviceConfig.ollama.baseUrl}/api/tags`);
+      // removed unused response assignment
       services.ollama = (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok ? 'healthy' : 'unhealthy';
     } catch {
       services.ollama = 'offline';
     }
     try {
-      const response = await fetch(`${serviceConfig.goMicroservices.rag}/health`);
+      // removed unused response assignment
       services.enhancedRAG = (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok ? 'healthy' : 'unhealthy';
     } catch {
       services.enhancedRAG = 'offline';
     }
     try {
-      const response = await fetch(`${serviceConfig.goMicroservices.gpu}/health`);
+      // removed unused response assignment
       services.gpuOrchestrator = (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok ? 'healthy' : 'unhealthy';
     } catch {
       services.gpuOrchestrator = 'offline';
@@ -853,7 +853,7 @@ RESPONSE:`;
       initialized: this.initialized,
       services,
       timestamp: new Date().toISOString()
-    };
+    }
   }
 }
 // Export singleton instance

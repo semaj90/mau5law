@@ -27,7 +27,7 @@ const authMachine = createMachine({
           const startTime = performance.now();
           const result = await mockServices.validateCredentials(input.credentials);
           const duration = performance.now() - startTime;
-          return { ...result, performanceMetrics: { responseTime: duration, protocol: 'HTTP' } };
+          return { ...result, performanceMetrics: { responseTime: duration, protocol: 'HTTP' } }
         }),
         input: ({ event }) => ({ credentials: event.credentials }),
         onDone: {
@@ -69,7 +69,7 @@ const authMachine = createMachine({
           const startTime = performance.now();
           const result = await mockServices.refreshAuthToken();
           const duration = performance.now() - startTime;
-          return { ...result, performanceMetrics: { responseTime: duration, protocol: 'HTTP' } };
+          return { ...result, performanceMetrics: { responseTime: duration, protocol: 'HTTP' } }
         }),
         onDone: {
           target: 'authenticated',
@@ -174,7 +174,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         if (attemptCount <= 2) {
           throw new Error('Invalid credentials');
         }
-        return { valid: true, userId: 'test-123', token: 'success-token', role: 'attorney' };
+        return { valid: true, userId: 'test-123', token: 'success-token', role: 'attorney' }
       });
       const authActor = createActor(authMachine);
       authActor.start();

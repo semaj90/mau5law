@@ -24,8 +24,8 @@ export const websocketStore = {
       totalCases: 0,
       totalEvidence: 0,
       pendingAnalysis: 0,
-      activeCases: 0
-    }
+      activeCases: 0,
+    },
   }),
 
   // Real-time updates
@@ -35,7 +35,7 @@ export const websocketStore = {
     api: 'unknown',
     database: 'unknown',
     aiServices: 'unknown',
-    jobQueue: 'unknown'
+    jobQueue: 'unknown',
   }),
 
   // Collaborative editing state
@@ -49,8 +49,8 @@ export const websocketStore = {
   subscribeToEvidence,
   subscribeToDashboard,
   broadcastEvidenceEdit,
-  broadcastCursorPosition
-};
+  broadcastCursorPosition,
+}
 
 /**
  * Initialize WebSocket connection
@@ -152,7 +152,7 @@ function broadcastEvidenceEdit(evidenceId: number, operation: string, data: any)
     wsClient.send({
       type: 'evidence_edit',
       payload: { evidenceId, operation, data },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 }
@@ -165,7 +165,7 @@ function broadcastCursorPosition(evidenceId: number, position: any, selection?: 
     wsClient.send({
       type: 'cursor_position',
       payload: { evidenceId, position, selection },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 }
@@ -175,15 +175,13 @@ function handleCaseUpdate(data: any): void {
   const { caseId, data: updateData } = data;
 
   // Update case in dashboard data
-  const caseIndex = websocketStore.dashboardData.cases.findIndex(
-    (c: any) => c.id === caseId
-  );
+  const caseIndex = websocketStore.dashboardData.cases.findIndex((c: any) => c.id === caseId);
 
   if (caseIndex !== -1) {
     websocketStore.dashboardData.cases[caseIndex] = {
       ...websocketStore.dashboardData.cases[caseIndex],
-      ...updateData
-    };
+      ...updateData,
+    }
   }
 
   // Add to recent activity
@@ -191,7 +189,7 @@ function handleCaseUpdate(data: any): void {
     type: 'case_updated',
     title: `Case "${updateData.title || caseId}" was updated`,
     timestamp: new Date().toISOString(),
-    entityId: caseId
+    entityId: caseId,
   });
 
   // Keep only last 20 activities
@@ -217,7 +215,7 @@ function handleEvidenceAdded(data: any): void {
     type: 'evidence_added',
     title: `Evidence "${evidence.title}" was added to case ${caseId}`,
     timestamp: new Date().toISOString(),
-    entityId: evidence.id
+    entityId: evidence.id,
   });
 
   // Keep only last 20 activities
@@ -231,33 +229,32 @@ function handleProcessingStatus(data: any): void {
 
   // Update processing jobs list
   const jobIndex = websocketStore.processingJobs.findIndex(
-    job => job.entityType === entityType && job.entityId === entityId
+    job => job.entityType === entityType && job.entityId === entityId,
   );
 
   if (jobIndex !== -1) {
     websocketStore.processingJobs[jobIndex] = {
       ...websocketStore.processingJobs[jobIndex],
-      status
-    };
+      status,
+    }
   } else {
     websocketStore.processingJobs.push({
       entityType,
       entityId,
       status,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 
   // Update pending analysis count if completed
   if (entityType === 'evidence' && status.status === 'completed') {
-    websocketStore.dashboardData.stats.pendingAnalysis = Math.max(0,
-      websocketStore.dashboardData.stats.pendingAnalysis - 1
+    websocketStore.dashboardData.stats.pendingAnalysis = Math.max(
+      0,
+      websocketStore.dashboardData.stats.pendingAnalysis - 1,
     );
 
     // Update evidence with AI summary
-    const evidenceIndex = websocketStore.dashboardData.evidence.findIndex(
-      (e: any) => e.id === entityId
-    );
+    const evidenceIndex = websocketStore.dashboardData.evidence.findIndex((e: any) => e.id === entityId);
 
     if (evidenceIndex !== -1) {
       websocketStore.dashboardData.evidence[evidenceIndex].aiSummary = status.result?.summary;
@@ -268,7 +265,7 @@ function handleProcessingStatus(data: any): void {
 function handleDashboardUpdate(data: any): void {
   // Merge dashboard update data
   if (data.stats) {
-    websocketStore.dashboardData.stats = { ...websocketStore.dashboardData.stats, ...data.stats };
+    websocketStore.dashboardData.stats = { ...websocketStore.dashboardData.stats, ...data.stats }
   }
   if (data.recentCases) {
     websocketStore.dashboardData.cases = data.recentCases;
@@ -286,7 +283,7 @@ function handleCollaborativeEdit(data: any): void {
     userId,
     evidenceId,
     operation,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   // Mark evidence as being edited
@@ -297,8 +294,9 @@ function handleCollaborativeEdit(data: any): void {
     websocketStore.activeEditors.delete(sessionId);
 
     // Check if anyone else is editing this evidence
-    const stillEditing = Array.from(websocketStore.activeEditors.values())
-      .some(editor => editor.evidenceId === evidenceId);
+    const stillEditing = Array.from(websocketStore.activeEditors.values()).some(
+      editor => editor.evidenceId === evidenceId,
+    );
 
     if (!stillEditing) {
       websocketStore.evidenceBeingEdited.delete(evidenceId);
@@ -316,13 +314,13 @@ function handleCursorUpdate(data: any): void {
       ...editor,
       cursorPosition: position,
       selection,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 }
 
 function handleSystemHealth(data: any): void {
-  websocketStore.systemHealth = { ...websocketStore.systemHealth, ...data };
+  websocketStore.systemHealth = { ...websocketStore.systemHealth, ...data }
 }
 
 // Utility functions for components
@@ -331,8 +329,7 @@ export function isEvidenceBeingEdited(evidenceId: number): boolean {
 }
 
 export function getActiveEditorsForEvidence(evidenceId: number): any[] {
-  return Array.from(websocketStore.activeEditors.values())
-    .filter(editor => editor.evidenceId === evidenceId);
+  return Array.from(websocketStore.activeEditors.values()).filter(editor => editor.evidenceId === evidenceId);
 }
 
 export function formatRecentActivity(activity: any): string {

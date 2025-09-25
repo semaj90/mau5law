@@ -40,12 +40,12 @@ export type {
   SNESColorPalette,
   N64RenderingOptions,
   ProgressiveGamingConfig,
-  GamingComponentProps
+  GamingComponentProps,
 } from './types/gaming-types.js';
 // Color Palettes and Constants
 export {
   NES_COLOR_PALETTE,
   SNES_COLOR_PALETTE,
   N64_TEXTURE_PRESETS,
-  GAMING_BREAKPOINTS
+  GAMING_BREAKPOINTS,
 } from './constants/gaming-constants.js';

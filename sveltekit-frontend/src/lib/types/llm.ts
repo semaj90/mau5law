@@ -35,7 +35,7 @@ export interface LLMProviderConfig {
 	rateLimit?: {
 		requestsPerMinute: number;
 		tokensPerMinute: number;
-	};
+	}
 }
 export interface PerformanceMetrics {
 	avgResponseTime: number; // milliseconds,
@@ -47,7 +47,7 @@ export interface PerformanceMetrics {
 		p50: number;
 		p95: number;
 		p99: number;
-	};
+	}
 	errorRate?: number;
 }
 // Status and Capability Types
@@ -223,7 +223,7 @@ export interface TaskMetadata {
 	timestamp: number;
 	estimatedDuration?: number;
 	tags?: string[];
-	context?: { [key: string]: any };
+	context?: { [key: string]: any }
 }
 export interface TaskRequirements {
 	maxExecutionTime?: number;

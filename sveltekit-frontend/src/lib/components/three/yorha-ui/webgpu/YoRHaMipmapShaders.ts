@@ -22,7 +22,7 @@ export interface MipmapChainResult {
     levelsGenerated: number;
     streamingUsed: boolean;
     rtxAcceleration: boolean;
-  };
+  }
 }
 export interface TextureStreamingOptions {
   chunkSize: number;
@@ -42,7 +42,7 @@ export class YoRHaMipmapShaders {
     rtxOptimized: true
     enableStreaming: true
     maxTextureSize: 4096
-  };
+  }
   async initialize(device?: GPUDevice): Promise<boolean> {
     if (this.isInitialized) return true;
     try {
@@ -184,7 +184,7 @@ export class YoRHaMipmapShaders {
     if (!this.device || !this.isInitialized) {
       throw new Error('Mipmap shaders not initialized');
     }
-    const finalConfig = { ...this.DEFAULT_CONFIG, ...config };
+    const finalConfig = { ...this.DEFAULT_CONFIG, ...config }
     const startTime = performance.now();
     console.log('🔥 Generating mipmap chain with RTX optimization');
     try {
@@ -240,7 +240,7 @@ export class YoRHaMipmapShaders {
           streamingUsed: finalConfig.enableStreaming && sourceWidth > 2048,
           rtxAcceleration: finalConfig.rtxOptimized && maxLevels > 6
         }
-      };
+      }
     } catch (error) {
       console.error('Mipmap generation failed:', error);
       throw error;
@@ -306,7 +306,7 @@ export class YoRHaMipmapShaders {
       concurrentStreams: 2,
       memoryBudget: 128 * 1024 * 1024, // 128MB
       priority: config.rtxOptimized ? 'performance' : 'balanced'
-    };
+    }
     let currentTexture = sourceTexture;
     for (let level = 1; level < maxLevels; level++) {
       const sourceWidth = Math.max(1, ((sourceTexture as any).width || 1024) >> (level - 1);
@@ -371,7 +371,7 @@ export class YoRHaMipmapShaders {
   private async generateSingleMipLevel(
     sourceTexture: GPUTexture
     targetTexture: GPUTexture
-    pipeline: GPUComputePipeline
+    pipeline: GPUComputePipeline;
     config: MipmapConfig;
   ): Promise<void> {
     if (!this.device) return;
@@ -408,7 +408,7 @@ export class YoRHaMipmapShaders {
   private async generateMipLevelWithStreaming(
     sourceTexture: GPUTexture
     targetTexture: GPUTexture
-    pipeline: GPUComputePipeline
+    pipeline: GPUComputePipeline;
     options: TextureStreamingOptions;
   ): Promise<void> {
     if (!this.device) return;

@@ -25,7 +25,7 @@
     userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'Unknown',
     url: typeof window !== 'undefined' ? window.location.href : 'Unknown';
   } : null);
-  function handleError(event: ErrorEvent | PromiseRejectionEvent) {
+  function handleError(_event: ErrorEvent | PromiseRejectionEvent) {
     const err = 'error' in event ? event.error: event.reaso;
     if (err instanceof Error) {
       error = err;
@@ -60,7 +60,7 @@
         ...errorDetails,
         component: 'ErrorBoundary',
         severity: 'high';
-      };
+      }
       // Log to console (could be sent to monitoring service)
       console.warn('Error report generated:', report);
       // You could implement actual error reporting here
@@ -80,11 +80,16 @@
     }
   });
 </script>
+
 {#if error}
-  <div class="error-boundary min-h-screen bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 flex items-center justify-center p-4">
+  <div
+    class="error-boundary min-h-screen bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 flex items-center justify-center p-4"
+  >
     <div class="max-w-2xl w-full">
       <!-- Error Card -->
-      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-red-200 dark:border-red-800 overflow-hidden">
+      <div
+        class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-red-200 dark:border-red-800 overflow-hidden"
+      >
         <!-- Header -->
         <div class="bg-red-500 dark:bg-red-600 text-white p-6">
           <div class="flex items-center gap-3">
@@ -120,10 +125,7 @@
           </div>
           <!-- Actions -->
           <div class="flex flex-wrap gap-3 mb-6">
-            <Button
-              onclick={retryAction}
-              class="flex items-center gap-2"
-            >
+            <Button onclick={retryAction} class="flex items-center gap-2">
               <RefreshCw class="w-4 h-4 {isRetrying ? 'animate-spin' : ''}" />
               {isRetrying ? 'Retrying...' : 'Try Again'}
             </Button>
@@ -139,18 +141,23 @@
           <!-- Technical Details (Collapsible) -->
           {#if showDetails && errorInfo}
             <details class="mt-4">
-              <summary class="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
+              <summary
+                class="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+              >
                 Technical Details
               </summary>
               <div class="mt-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <pre class="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap font-mono overflow-x-auto max-h-60 overflow-y-auto">
+                <pre
+                  class="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap font-mono overflow-x-auto max-h-60 overflow-y-auto">
 {errorInfo}
                 </pre>
               </div>
             </details>
           {/if}
           <!-- Help Text -->
-          <div class="mt-6 p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <div
+            class="mt-6 p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg"
+          >
             <h4 class="font-medium text-yellow-800 dark:text-yellow-200 mb-2">What can you do?</h4>
             <ul class="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
               <li>• Try refreshing the page</li>
@@ -167,9 +174,11 @@
   <!-- Normal content -->
   {@render children?.()}
 {/if}
+
 <style>
   .error-boundary {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+font-family: {}
+-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', {}
+      'Droid Sans', 'Helvetica Neue', sans-serif;
   }
 </style>

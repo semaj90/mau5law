@@ -29,7 +29,7 @@ export interface TypeScriptFixResult {
 	fixed_code: string;
 	explanation: string;
 	confidence: number;
-	metadata?: { [key: string]: any };
+	metadata?: { [key: string]: any }
 }
 // Request Types
 }
@@ -58,7 +58,7 @@ export interface BenchmarkRequest {
 	strategy: 'speed' | 'quality' | 'comparison';
 	iterations?: number;
 	endpoints?: string[];
-	parameters?: { [key: string]: any };
+	parameters?: { [key: string]: any }
 }
 // Response Types
 }
@@ -69,7 +69,7 @@ export interface AutoSolveResponse {
 	fixes: TypeScriptFix[];
 	processing_time: number;
 	strategy: string;
-	metadata: { [key: string]: any };
+	metadata: { [key: string]: any }
 }
 export interface OptimizedFixResponse {
 	success: boolean;
@@ -77,7 +77,7 @@ export interface OptimizedFixResponse {
 	successful_count: number;
 	results: TypeScriptFixResult[];
 	processing_stats: ProcessingStats;
-	optimization_meta: { [key: string]: any };
+	optimization_meta: { [key: string]: any }
 }
 export interface ProcessingStats {
 	total_time: number; // milliseconds,
@@ -137,7 +137,7 @@ export interface PerformanceComparison {
 	fastest_endpoint: string;
 	most_accurate: string;
 	best_overall: string;
-	performance_summary: { [key: string]: any };
+	performance_summary: { [key: string]: any }
 	resource_efficiency: Record<string, number>;
 	scaling_analysis?: ScalingAnalysis;
 }
@@ -157,7 +157,7 @@ export interface OptimizerStatus {
 		available: boolean;
 		health: any;
 		url: string;
-	};
+	}
 	performance: any;
 	capabilities: OptimizerCapabilities;
 	endpoints: Record<string, string>;
@@ -198,12 +198,12 @@ export interface OptimizerConfig {
 		min: number;
 		max: number;
 		optimal: number;
-	};
+	}
 	performance_targets: {
 		latency_ms: number;
 		throughput_eps: number;
 		success_rate: number;
-	};
+	}
 }
 export interface ProcessingPriority {
 	level: 'low' | 'normal' | 'high' | 'urgent';
@@ -229,7 +229,7 @@ export interface ProcessingInsights {
 		avg_processing_time: number;
 		success_rate: number;
 		confidence_distribution: number[];
-	};
+	}
 	optimization_opportunities: string[];
 	recommendations: string[];
 }
@@ -279,7 +279,7 @@ export interface ProgressEvent extends WebSocketEvent {
 		current_file: string;
 		fixes_applied: number;
 		estimated_remaining_ms: number;
-	};
+	}
 }
 export interface CompletedEvent extends WebSocketEvent {
 	type: 'completed';
@@ -288,7 +288,7 @@ export interface CompletedEvent extends WebSocketEvent {
 		processing_time: number;
 		success_rate: number;
 		download_url?: string;
-	};
+	}
 }
 export interface ErrorEvent extends WebSocketEvent {
 	type: 'error';
@@ -297,7 +297,7 @@ export interface ErrorEvent extends WebSocketEvent {
 		error_code: string;
 		recoverable: boolean;
 		retry_available: boolean;
-	};
+	}
 }
 // Export utility types
 export type ProcessingStrategy =
@@ -331,5 +331,5 @@ export interface APIResponse<T = any> {
 	error?: string;
 	details?: string;
 	timestamp: string;
-	metadata?: { [key: string]: any };
+	metadata?: { [key: string]: any }
 }

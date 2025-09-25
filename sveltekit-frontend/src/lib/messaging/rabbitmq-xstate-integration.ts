@@ -56,7 +56,7 @@ export interface SelfPromptingContext {
     successRate: number;
     cacheHitRate: number;
     gpuUtilization: number;
-  };
+  }
   rabbitMQConnection: any;
   isConnected: boolean;
   reconnectAttempts: number;
@@ -268,7 +268,7 @@ export const selfPromptingMachine = createMachine({
           successRate: total > 0 ? completed.length / total : 1.0,
           averageResponseTime: completed.length > 0
             ? completed.reduce((sum, task) => sum + ((task as any).completedAt - task.timestamp), 0) / completed.length: context.performanceMetrics.averageResponseTime
-        };
+        }
       }
     }),
     publishSelfPromptResults: ({ context, event }) => {
@@ -305,7 +305,7 @@ export class RabbitMQXStateIntegration {
     password: import.meta.env.RABBITMQ_PASSWORD || 'guest',
     ssl: import.meta.env.RABBITMQ_SSL === 'true',
     heartbeat: 60
-  };
+  }
   // Legal AI queues (enhanced for WebAssembly inference)
   private static queues = {
     HIGH_PRIORITY: 'legal_ai_high_priority',
@@ -319,7 +319,7 @@ export class RabbitMQXStateIntegration {
     WASM_BATCH: 'legal_ai_wasm_batch',                   // NEW: WebAssembly batch processing
     WASM_STREAMING: 'legal_ai_wasm_streaming',           // NEW: WebAssembly streaming queue
     WASM_MODEL_MANAGEMENT: 'legal_ai_wasm_models'        // NEW: WebAssembly model operations
-  };
+  }
   /**
    * Initialize RabbitMQ connection (free tier compatible)
    */;
@@ -351,7 +351,7 @@ export class RabbitMQXStateIntegration {
             onStompError: (frame: any) => {
               console.error('❌ RabbitMQ STOMP error:', frame);
             },
-            onWebSocketClose: (event: any) => {
+            onWebSocketClose: (_event: any) => {
               console.log('🔌 RabbitMQ WebSocket closed:', event);
             }
           });
@@ -371,7 +371,7 @@ export class RabbitMQXStateIntegration {
         console.log('✅ Connected to RabbitMQ via AMQP');
       }
       this.isInitialized = true;
-      return { connection: this.connection, isConnected: true };
+      return { connection: this.connection, isConnected: true }
     } catch (error: any) {
       console.error('❌ Failed to initialize RabbitMQ:', error);
       throw error;
@@ -401,7 +401,7 @@ export class RabbitMQXStateIntegration {
       // Server AMQP setup
       for (const queueName of Object.values(this.queues)) {
         await this.channel.assertQueue(queueName, {
-          durable: true
+          durable: true;
           arguments: {
             'x-max-priority': 10, // Priority queue support
             'x-message-ttl': 600000, // 10 minutes TTL
@@ -436,7 +436,7 @@ export class RabbitMQXStateIntegration {
       id: this.generateId(),
       timestamp: Date.now(),
       ...message
-    };
+    }
     const queueName = this.selectQueue(message.priority || 5, message.type);
     if (browser && this.connection) {
       // Browser STOMP publish
@@ -603,7 +603,7 @@ export class RabbitMQXStateIntegration {
         timestamp: Date.now()
       })),
       analysis: patterns
-    };
+    }
   }
   /**
    * Analyze user behavior patterns for self-prompting (enhanced for WebAssembly)
@@ -624,40 +624,40 @@ export class RabbitMQXStateIntegration {
       wasmErrors: recentHistory.filter(item => item.length),
       wasmModelUsage: this.analyzeWasmModelUsage(recentHistory),
       wasmBatchOpportunities: this.identifyWasmBatchOpportunities(recentHistory)
-    };
+    }
   }
   // Message processing methods
   private static async processDocumentIngestion(payload: any): Promise<any> {
     // Implementation would handle document ingestion with NES memory + GPU
-    return { status: 'ingested', documents: payload.documents?.length || 0 };
+    return { status: 'ingested', documents: payload.documents?.length || 0 }
   }
   private static async processVectorSearch(payload: any): Promise<any> {
     // Implementation would use GPU-accelerated vector search
-    return { results: [], processingTime: Date.now() };
+    return { results: [], processingTime: Date.now() }
   }
   private static async processAIAnalysis(payload: any): Promise<any> {
     // Implementation would perform AI analysis with WASM acceleration
-    return { analysis: 'completed', confidence: 0.95 };
+    return { analysis: 'completed', confidence: 0.95 }
   }
   private static async processSelfPrompt(payload: any): Promise<any> {
     // Implementation would handle self-prompting logic
-    return { prompt: 'generated', actions: [] };
+    return { prompt: 'generated', actions: [] }
   }
   private static async processUserHistoryUpdate(payload: any): Promise<any> {
     // Implementation would update user history in NES memory
-    return { updated: true, historySize: payload.actions?.length || 0 };
+    return { updated: true, historySize: payload.actions?.length || 0 }
   }
   private static async processGPUTask(payload: any): Promise<any> {
     // Implementation would queue GPU tasks
-    return { queued: true, estimatedTime: '2ms' };
+    return { queued: true, estimatedTime: '2ms' }
   }
   private static async processWASMCompilation(payload: any): Promise<any> {
     // Implementation would handle WASM compilation
-    return { compiled: true, moduleSize: payload.sourceSize };
+    return { compiled: true, moduleSize: payload.sourceSize }
   }
   private static async processCacheInvalidation(payload: any): Promise<any> {
     // Implementation would handle cache operations
-    return { invalidated: true, cacheKeys: payload.keys?.length || 0 };
+    return { invalidated: true, cacheKeys: payload.keys?.length || 0 }
   }
   /**
    * Process WebAssembly inference request
@@ -682,7 +682,7 @@ export class RabbitMQXStateIntegration {
         systemMessage: payload.systemMessage,
         contextDocuments: payload.contextDocuments,
         stopSequences: payload.stopSequences
-      };
+      }
       // Process inference with RAG context
       const result = await WASMInferenceRAGService.processInferenceWithRAG(request, {
         wasmModule: null
@@ -726,7 +726,7 @@ export class RabbitMQXStateIntegration {
         tokens: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).tokens,
         processingTime: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).processingTime,
         ragContext: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).ragContext
-      };
+      }
     } catch (error: any) {
       console.error('❌ WASM inference processing failed:', error);
       // Publish error result
@@ -755,10 +755,10 @@ export class RabbitMQXStateIntegration {
       console.error(`❌ WASM inference failed: ${payload.error}`);
     }
     return {
-      processed: true
+      processed: true;
       success: payload.success,
       originalRequestId: payload.originalRequestId
-    };
+    }
   }
   /**
    * Process WebAssembly model loading
@@ -774,7 +774,7 @@ export class RabbitMQXStateIntegration {
         enableGPU: payload.enableGPU !== false,
         batchSize: payload.batchSize || 4,
         quantization: payload.quantization || 'q4_0'
-      };
+      }
       const result = await WASMInferenceRAGService.initialize(config);
       return {
         status: 'loaded',
@@ -782,7 +782,7 @@ export class RabbitMQXStateIntegration {
         moduleSize: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).module ? 'loaded' : 'mock',
         instanceCreated: !!(result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).instance,
         config
-      };
+      }
     } catch (error: any) {
       console.error('❌ WASM model loading failed:', error);
       throw error;
@@ -800,7 +800,7 @@ export class RabbitMQXStateIntegration {
         status: 'unloaded',
         modelPath: payload.modelPath,
         cleanupCompleted: true
-      };
+      }
     } catch (error: any) {
       console.error('❌ WASM model unloading failed:', error);
       throw error;
@@ -838,7 +838,7 @@ export class RabbitMQXStateIntegration {
         successfulResults: results.filter(item => item.length),
         failedResults: results.filter(item => item.length),
         results
-      };
+      }
     } catch (error: any) {
       console.error('❌ WASM batch inference failed:', error);
       throw error;
@@ -856,7 +856,7 @@ export class RabbitMQXStateIntegration {
       const request = {
         ...payload.request,
         maxTokens: Math.min(payload.request.maxTokens || 2048, 512), // Smaller chunks for streaming
-      };
+      }
       const result = await WASMInferenceRAGService.processInferenceWithRAG(request, payload.context);
       // In a real streaming implementation, we would send multiple messages
       // with partial results. For now, we simulate streaming behavior.
@@ -882,7 +882,7 @@ export class RabbitMQXStateIntegration {
         status: 'streaming_completed',
         streamId: payload.id,
         totalChunks: chunks.length
-      };
+      }
     } catch (error: any) {
       console.error('❌ WASM streaming inference failed:', error);
       throw error;
@@ -902,7 +902,7 @@ export class RabbitMQXStateIntegration {
         health: healthStatus
         uptime: Date.now() - (payload.startTime || Date.now()),
         version: '1.0.0'
-      };
+      }
     } catch (error: any) {
       console.error('❌ WASM health check failed:', error);
       return {
@@ -912,10 +912,10 @@ export class RabbitMQXStateIntegration {
         health: {
           status: 'unhealthy',
           wasm: false
-          rag: false
+          rag: false;
           messaging: false
         }
-      };
+      }
     }
   }
   /**
@@ -980,7 +980,7 @@ export class RabbitMQXStateIntegration {
     return history[history.length - 1].timestamp - history[0].timestamp;
   }
   private static extractMostUsedFeatures(history: any[]): Record<string, number> {
-    const features: Record<string, number> = {};
+    const features: Record<string, number> = {}
     history.forEach(h => {
       features[h.action] = (features[h.action] || 0) + 1;
     });
@@ -988,14 +988,14 @@ export class RabbitMQXStateIntegration {
   }
   private static analyzeTimePatterns(history: any[]): any {
     const hours = history.map(h => new Date(h.timestamp).getHours();
-    const hourCounts: Record<number, number> = {};
+    const hourCounts: Record<number, number> = {}
     hours.forEach(h => hourCounts[h] = (hourCounts[h] || 0) + 1);
     return {
       mostActiveHour: Object.keys(hourCounts).reduce((a, b) =>
         hourCounts[a] > hourCounts[b] ? a : b
       ),
       activityDistribution: hourCounts
-    };
+    }
   }
   /**
    * Calculate average WebAssembly inference latency
@@ -1028,7 +1028,7 @@ export class RabbitMQXStateIntegration {
    */;
   private static analyzeWasmModelUsage(history: any[]): any {
     const modelActions = history.filter(h => h.action?.includes('wasm_model') || h.action === 'wasm_inference');
-    const modelUsage: Record<string, number> = {};
+    const modelUsage: Record<string, number> = {}
     modelActions.forEach(h => {
       const modelPath = h.data?.modelPath || h.data?.config?.modelPath || 'unknown';
       modelUsage[modelPath] = (modelUsage[modelPath] || 0) + 1;
@@ -1039,7 +1039,7 @@ export class RabbitMQXStateIntegration {
       mostUsedModel: Object.keys(modelUsage).reduce((a, b) =>
         modelUsage[a] > modelUsage[b] ? a : b, 'none'
       )
-    };
+    }
   }
   /**
    * Identify WebAssembly batch processing opportunities
@@ -1075,7 +1075,7 @@ export class RabbitMQXStateIntegration {
       potentialLatencySavings: batches.length > 0
         ? batches.reduce((sum, batch) => sum + (batch.length - 1) * 200, 0) // Est. 200ms saved per batched request
         : 0
-    };
+    }
   }
   /**
    * Cleanup and close connections

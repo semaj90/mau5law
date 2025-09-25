@@ -53,12 +53,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     if (disabled) return;
     onClick?.();
     // ondispatch removed;
-  };
+  }
   const handleHover = () => {
     if (disabled) return;
     onHover?.();
     // ondispatch removed;
-  };
+  }
   // Get container color based on variant
   const getVariantStyles = (variant: string) => {
     const styleMap = {
@@ -92,18 +92,18 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         borderColor: NES_COLOR_PALETTE.blue,
         textColor: NES_COLOR_PALETTE.blue
       }
-    };
+    }
     return styleMap[variant as keyof typeof styleMap] || styleMap.primary;
-  };
+  }
   const getPaddingValue = (padding: string) => {
     const paddingMap = {
       'none': '0',
       'small': '8px',
       'medium': '16px',
       'large': '24px'
-    };
+    }
     return paddingMap[padding as keyof typeof paddingMap] || paddingMap.medium;
-  };
+  }
   let variantStyles = $derived(getVariantStyles(variant));
   let paddingValue = $derived(getPaddingValue(padding));
   let containerClasses = $derived([
@@ -119,15 +119,16 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     className
   ].filter(Boolean).join(' '));
 </script>
+
 <div
   class={containerClasses}
   style="
-    --container-bg: {variantStyles.backgroundColor};
-    --container-border: {variantStyles.borderColor};
-    --container-text: {variantStyles.textColor};
-    --container-padding: {paddingValue};
-    {maxWidth ? `--container-max-width: ${maxWidth};` : ''}
-    {minHeight ? `--container-min-height: ${minHeight};` : ''}
+    --container-bg: {variantStyles.backgroundColor}
+    --container-border: {variantStyles.borderColor}
+    --container-text: {variantStyles.textColor}
+    --container-padding: {paddingValue}
+    {maxWidth ? `--container-max-width: ${maxWidth}` : ''}
+    {minHeight ? `--container-min-height: ${minHeight}` : ''}
     {style}
   "
   onclick={handleClick}
@@ -141,29 +142,37 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     {@render children?.()}
   </div>
 </div>
+
 <style>
   :global(.nes-8bit-container) {
-/* Base container styling */ background-color: var(--container-bg);
+/* Base container styling */ {}
+    background-color: var(--container-bg);
     border: 2px solid var(--container-border);
     border-radius: 0;
     padding: var(--container-padding);
     color: var(--container-text);
-/* Typography */ font-family: 'Press Start 2P', 'Courier New', monospace;
+/* Typography */ {}
+    font-family: 'Press Start 2P', 'Courier New', monospace;
     font-size: 12px;
     line-height: 1.5;
-/* Pixel perfect rendering */ image-rendering: pixelated;
+/* Pixel perfect rendering */ {}
+    image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
-/* Layout */ position: relative;
+/* Layout */ {}
+    position: relative;
     display: block;
     box-sizing: border-box;
-/* Optional constraints */ max-width: var(--container-max-width, none);
+/* Optional constraints */ {}
+    max-width: var(--container-max-width, none);
     min-height: var(--container-min-height, auto);
-/* Disable text selection for interactive containers */ -webkit-user-select: text;
+/* Disable text selection for interactive containers */ {}
+    -webkit-user-select: text;
     -moz-user-select: text;
     user-select: text;
   }
-/* Container variants */ :global(.nes-8bit-container.with-title) {
+/* Container variants */ {}
+  :global(.nes-8bit-container.with-title) {
     margin-top: 1rem;
   }
   :global(.nes-8bit-container.with-title .title) {
@@ -178,7 +187,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     letter-spacing: 1px;
     margin: 0;
     z-index: 1;
-/* Ensure title has proper background */ border: 1px solid var(--container-border);
+/* Ensure title has proper background */ {}
+    border: 1px solid var(--container-border);
     border-radius: 0;
   }
   :global(.nes-8bit-container.is-rounded) {
@@ -201,43 +211,48 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     align-items: center;
     justify-content: center;
   }
-/* Success variant */ :global(.nes-8bit-container.is-success) {
+/* Success variant */ {}
+  :global(.nes-8bit-container.is-success) {
     border-color: #92cc41;
     background-color: rgba(146, 204, 65, 0.1);
     color: #92cc41;
     --container-border: #92cc41;
     --container-text: #92cc41;
   }
-/* Warning variant */ :global(.nes-8bit-container.is-warning) {
+/* Warning variant */ {}
+  :global(.nes-8bit-container.is-warning) {
     border-color: #f7d51d;
     background-color: rgba(247, 213, 29, 0.1);
     color: #f7d51d;
     --container-border: #f7d51d;
     --container-text: #f7d51d;
   }
-/* Error variant */ :global(.nes-8bit-container.is-error) {
+/* Error variant */ {}
+  :global(.nes-8bit-container.is-error) {
     border-color: #f83800;
     background-color: rgba(248, 56, 0, 0.1);
     color: #f83800;
     --container-border: #f83800;
     --container-text: #f83800;
   }
-/* Container content wrapper */ .container-content {
+/* Container content wrapper */ {}
+  .container-content {
     position: relative;
     z-index: 0;
   }
-/* Interactive container styles */ :global(.nes-8bit-container[role="button"]) {
+/* Interactive container styles */ {}
+  :global(.nes-8bit-container[role='button']) {
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
     transition: transform 50ms ease-out;
   }
-  :global(.nes-8bit-container[role="button"]:hover) {
+  :global(.nes-8bit-container[role='button']:hover) {
     transform: scale(1.01);
     filter: brightness(1.05);
   }
-  :global(.nes-8bit-container[role="button"]:active) {
+  :global(.nes-8bit-container[role='button']:active) {
     transform: scale(0.99);
   }
   :global(.nes-8bit-container.disabled) {
@@ -245,37 +260,56 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     cursor: not-allowed;
     pointer-events: none;
   }
-/* Focus styles for accessibility */ :global(.nes-8bit-container[tabindex]:focus-visible) {
+/* Focus styles for accessibility */ {}
+  :global(.nes-8bit-container[tabindex]:focus-visible) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
-/* Scanlines effect */ :global($1) {
+/* Scanlines effect */ {}
+  :global($1) {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: repeating-linear-gradient( 0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.1) 2px, rgba(0, 0, 0, 0.1) 4px );
+background: repeating-linear-gradient( {}
+0deg, {}
+transparent, {}
+transparent 2px, {}
+rgba(0, 0, 0, 0.1) 2px, {}
+rgba(0, 0, 0, 0.1) 4px {}
+    );
     pointer-events: none;
     z-index: 1;
   }
-/* CRT effect */ :global(.nes-8bit-container.enable-crt) {
+/* CRT effect */ {}
+  :global(.nes-8bit-container.enable-crt) {
     filter: contrast(1.2) brightness(1.1);
-box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3);
+box-shadow: {}
+inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
+      0 0 8px rgba(0, 0, 0, 0.3);
     border-radius: 2px;
   }
-/* Nested containers */ :global(.nes-8bit-container .nes-8bit-container) {
+/* Nested containers */ {}
+  :global(.nes-8bit-container .nes-8bit-container) {
     margin: 8px 0;
     font-size: 10px;
   }
-/* Content spacing */ .container-content > :global(*:first-child) {
+/* Content spacing */ {}
+  .container-content > :global(*:first-child) {
     margin-top: 0;
   }
   .container-content > :global(*:last-child) {
     margin-bottom: 0;
   }
-/* Typography within containers */ :global(.nes-8bit-container h1), :global(.nes-8bit-container h2), :global(.nes-8bit-container h3), :global(.nes-8bit-container h4), :global(.nes-8bit-container h5), :global(.nes-8bit-container h6) {
+/* Typography within containers */ {}
+:global(.nes-8bit-container h1), {}
+:global(.nes-8bit-container h2), {}
+:global(.nes-8bit-container h3), {}
+:global(.nes-8bit-container h4), {}
+:global(.nes-8bit-container h5), {}
+  :global(.nes-8bit-container h6) {
     color: var(--container-text);
     font-family: 'Press Start 2P', 'Courier New', monospace;
     font-weight: normal;
@@ -283,15 +317,27 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
     letter-spacing: 1px;
     margin: 1rem 0 0.5rem 0;
   }
-  :global(.nes-8bit-container h1) { font-size: 14px; }
-  :global(.nes-8bit-container h2) { font-size: 12px; }
-  :global(.nes-8bit-container h3) { font-size: 11px; }
-:global(.nes-8bit-container h4), :global(.nes-8bit-container h5), :global(.nes-8bit-container h6) { font-size: 10px; }
+  :global(.nes-8bit-container h1) {
+    font-size: 14px;
+  }
+  :global(.nes-8bit-container h2) {
+    font-size: 12px;
+  }
+  :global(.nes-8bit-container h3) {
+    font-size: 11px;
+  }
+:global(.nes-8bit-container h4), {}
+:global(.nes-8bit-container h5), {}
+  :global(.nes-8bit-container h6) {
+    font-size: 10px;
+  }
   :global(.nes-8bit-container p) {
     margin: 0.5rem 0;
     line-height: 1.6;
   }
-/* List styling */ :global(.nes-8bit-container ul), :global(.nes-8bit-container ol) {
+/* List styling */ {}
+:global(.nes-8bit-container ul), {}
+  :global(.nes-8bit-container ol) {
     margin: 0.5rem 0;
     padding-left: 2rem;
   }
@@ -299,7 +345,8 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
     margin: 0.25rem 0;
     line-height: 1.4;
   }
-/* Code blocks */ :global(.nes-8bit-container code) {
+/* Code blocks */ {}
+  :global(.nes-8bit-container code) {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--container-border);
     padding: 2px 4px;
@@ -318,7 +365,8 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
     border: none;
     padding: 0;
   }
-/* Mobile optimizations */ @media (max-width: 480px) {
+/* Mobile optimizations */ {}
+  @media (max-width: 480px) {
     :global(.nes-8bit-container) {
       font-size: 10px;
       padding: 12px;
@@ -327,11 +375,18 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
       font-size: 9px;
       left: 0.5rem;
     }
-    :global(.nes-8bit-container h1) { font-size: 12px; }
-    :global(.nes-8bit-container h2) { font-size: 11px; }
-    :global(.nes-8bit-container h3) { font-size: 10px; }
+    :global(.nes-8bit-container h1) {
+      font-size: 12px;
+    }
+    :global(.nes-8bit-container h2) {
+      font-size: 11px;
+    }
+    :global(.nes-8bit-container h3) {
+      font-size: 10px;
+    }
   }
-/* High DPI displays */ @media (-webkit-min-device-pixel-ratio: 2) {
+/* High DPI displays */ {}
+  @media (-webkit-min-device-pixel-ratio: 2) {
     :global(.nes-8bit-container) {
       border-width: 1px;
     }

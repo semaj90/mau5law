@@ -10,13 +10,13 @@ export interface SystemHealthData {
     total_services: number;
     uptime_hours: number;
     last_updated: string;
-  };
+  }
   services: Array<any>;
   performance: {
     cpu_usage: number;
     memory_usage: number;
     disk_usage: number;
-  };
+  }
 }
 export interface UserSession {
   user: {
@@ -29,7 +29,7 @@ export interface UserSession {
       theme: string;
       language: string;
       notifications: Record<string, boolean>;
-    };
+    }
   } | null;
   isAuthenticated: boolean;
 }
@@ -47,7 +47,7 @@ export interface RoutePageData {
       configMissingFiles: number;
       filesMissingConfig: number;
       consolidatable: number;
-    };
+    }
     configMissingFiles: string[];
     filesMissingConfig: string[];
     fileRoutesSample: { route: string; title?: string | null }[];
@@ -72,7 +72,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
       fetchFn(url, opts),
       new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs))
     ]);
-  };
+  }
   const serviceResults = await Promise.allSettled(services.map(async (service) => {
       try {
         const startTime = Date.now();
@@ -82,7 +82,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
             response = await fetchWithFallback(
               `http://localhost:${service.port}/health`,
               {
-                method: 'GET'
+                method: 'GET',
               },
               2000
             );
@@ -93,21 +93,21 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
           return {
             ...service,
             status: response && (response as { ok?: any }).ok ? ('healthy' as const) : ('degraded' as const),
-            response_time: responseTime
-          };
+            response_time: responseTime,
+          }
         }
         const responseTime = Date.now() - startTime;
         return {
           ...service,
           status: 'healthy' as const,
-          response_time: responseTime || 50
-        };
+          response_time: responseTime || 50,
+        }
       } catch (err) {
         return {
           ...service,
           status: 'down' as const,
-          response_time: undefined
-        };
+          response_time: undefined,
+        }
       }
     })
   );
@@ -119,29 +119,29 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
       healthy_services: healthyServices,
       total_services: services.length,
       uptime_hours: Math.floor(process.uptime() / 3600),
-      last_updated: new Date().toISOString()
+      last_updated: new Date().toISOString(),
     },
-    services: serviceResults.map((result) =>
+    services: serviceResults.map((result) =>,
       (result as { status?: any; value?: any }).status === 'fulfilled'
         ? (result as { status?: any; value?: any }).value : {
             name: 'Unknown Service',
-            status: 'down' as const
+            status: 'down' as const,
           }
     ),
     performance: {
       cpu_usage: Math.random() * 80 + 10,
       memory_usage: Math.random() * 70 + 20,
-      disk_usage: Math.random() * 60 + 15
+      disk_usage: Math.random() * 60 + 15,
     }
-  };
+  }
 }
 async function getUserSession(cookies: any): Promise<UserSession> {
   const sessionToken = cookies.get('session_token') || cookies.get('auth_token');
   if (!sessionToken) {
     return {
       user: null,
-      isAuthenticated: false
-    };
+      isAuthenticated: false,
+    }
   }
   try {
     const mockUser = {
@@ -156,20 +156,20 @@ async function getUserSession(cookies: any): Promise<UserSession> {
         notifications: {
           email: true,
           push: true,
-          sms: false
+          sms: false,
         }
       }
-    };
+    }
     return {
       user: mockUser,
-      isAuthenticated: true
-    };
+      isAuthenticated: true,
+    }
   } catch (error) {
     console.error('Session validation error:', error);
     return {
       user: null,
-      isAuthenticated: false
-    };
+      isAuthenticated: false,
+    }
   }
 }
 export const load: PageServerLoad = async ({ url, cookies, depends }) => {
@@ -188,25 +188,25 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
         operation: 'System Health Check',
         timestamp: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
         status: 'success' as const,
-        protocol: 'http'
+        protocol: 'http',
       },
       {
         operation: 'Route Discovery Scan',
         timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
         status: 'success' as const,
-        protocol: 'internal'
+        protocol: 'internal',
       },
       {
         operation: 'Consolidatable Routes Integration',
         timestamp: new Date(Date.now() - 1000 * 60 * 8).toISOString(),
         status: 'success' as const,
-        protocol: 'internal'
+        protocol: 'internal',
       },
       {
         operation: 'API Endpoint Validation',
         timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
         status: 'success' as const,
-        protocol: 'http'
+        protocol: 'http',
       }
     ];
     // Enhanced route loading with discovery system integration
@@ -246,13 +246,13 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
           generated: parsed.generated,
           counts: {
             ...parsed.counts,
-            consolidatable: consolidatableRoutes.length
+            consolidatable: consolidatableRoutes.length,
           },
           configMissingFiles: parsed.configMissingFiles || [],
           filesMissingConfig: parsed.filesMissingConfig || [],
           fileRoutesSample: (parsed.fileRoutes || []).slice(0, 50),
-          consolidatableRoutes: consolidatableRoutes.slice(0, 20) // Sample of consolidatable routes
-        };
+          consolidatableRoutes: consolidatableRoutes.slice(0, 20) // Sample of consolidatable routes,
+        }
       }
     } catch (e) {
       console.error('Failed to load ROUTE_MAP_EXPORT.json', e);
@@ -268,4 +268,4 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
     console.error('Page load error:', err);
     throw error(500, 'Failed to load route data');
   }
-};
+}

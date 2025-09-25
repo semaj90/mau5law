@@ -45,7 +45,7 @@ async function checkDockerContainer(containerName: string): Promise<any> {
     }
   } catch (error: any) {
     return {
-      running: false
+      running: false;
       error: error.message || 'Container check failed'
     }
   }

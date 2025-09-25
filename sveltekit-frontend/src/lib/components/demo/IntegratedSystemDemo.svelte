@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
     return () => {
       clearInterval(healthCheckInterval);
       clearInterval(metricsInterval);
-    };
+    }
     })();
   });
   // Comprehensive system health check
@@ -495,4 +495,4 @@ Refresh System Health
 />
 <style>
   /* Additional component styles if needed */
-</style>
+</style>;

@@ -22,7 +22,7 @@ interface ContextVector {
     urgency: number;
     memoryPressure: number;
     gpuUtilization: number;
-  };
+  }
 }
 // Model switching decision
 interface SwitchingDecision {
@@ -125,14 +125,14 @@ export class AutoencoderContextSwitcher {
       switchingLatency: this.switchingLatency,
       compressionRatio: switchingDecision.contextCompressionRatio,
       memoryState: await this.gpuMemoryManager.getMemoryState()
-    };
+    }
   }
   /**
    * Generate compressed context embedding using autoencoder
    */
   private async generateContextVector(
     userId: string
-    query: string
+    query: string;
     context: any;
   ): Promise<ContextVector> {
     // Extract features for autoencoder input
@@ -153,7 +153,7 @@ export class AutoencoderContextSwitcher {
         memoryPressure: 1.0 - (memoryState.freeVRAM / memoryState.totalVRAM),
         gpuUtilization: context.gpuUtilization || 0.5
       }
-    };
+    }
     // Add to context history for pattern learning
     this.contextHistory.push(contextVector);
     if (this.contextHistory.length > 1000) {
@@ -195,7 +195,7 @@ export class AutoencoderContextSwitcher {
       shouldSwitch,
       gcRequired,
       contextCompressionRatio: this.contextAutoencoder.getLastCompressionRatio()
-    };
+    }
   }
   /**
    * Intelligent garbage collection based on usage patterns
@@ -239,7 +239,7 @@ export class AutoencoderContextSwitcher {
       priority: 'high',
       compressionEnabled: true
       streamingEnabled: true
-    };
+    }
     const loadResponse = await this.quicServer.sendLoadCommand(loadCommand);
     if (loadResponse.success) {
       // Load model through WebAssembly loader
@@ -268,7 +268,7 @@ export class AutoencoderContextSwitcher {
       userPreference: 0.5,
       contextSimilarity: new Array(this.contextDimensions).fill(0),
       lastAccessed: 0
-    };
+    }
     // Update usage statistics
     pattern.totalUsage += 1;
     pattern.recentUsage += 1;
@@ -329,7 +329,7 @@ export class AutoencoderContextSwitcher {
       alpha: this.calculateOptimalAlpha(trainingData.patterns),
       targetModules: this.selectTargetModules(trainingData.domain),
       trainingData: trainingData.examples
-    };
+    }
     // Simulate QLoRA training (in production, would use actual training)
     console.log(`🔄 Training QLoRA adapter with ${trainingData.examples.length} examples...`);
     await new Promise(resolve => setTimeout(resolve, 3000); // Simulate training time
@@ -350,12 +350,12 @@ export class AutoencoderContextSwitcher {
       domain: domain
       created: Date.now(),
       version: '1.0',
-      compression: 'lz4', // Fast compression for quick loading
+      compression: 'lz4', // Fast compression for quick loading;
       metadata: {
         usagePattern: this.modelUsagePatterns.get(modelName),
         contextEmbedding: this.calculateDomainEmbedding(domain)
       }
-    };
+    }
     await this.writeToFile(diskPath, modelData);
     console.log(`💾 Model stored to disk: ${diskPath}`);
   }
@@ -490,14 +490,14 @@ export class AutoencoderContextSwitcher {
       coherence: 0.85,
       uniqueness: 0.72,
       domain: 'specialized_contract_analysis'
-    };
+    }
   }
   private extractTrainingData(modelId: string, clusters: any) {
     return {
       domain: clusters.domain,
-      examples: [], // Would extract from usage history
+      examples: [], // Would extract from usage history;
       patterns: new Float32Array(256)
-    };
+    }
   }
   private calculateOptimalRank(exampleCount: number): number {
     return Math.min(Math.max(8, Math.floor(exampleCount / 10)), 64);
@@ -537,7 +537,7 @@ export class AutoencoderContextSwitcher {
       activeModels: this.activeModels.size,
       totalSwitches: this.switchingHistory.length,
       averageSwitchingCost: this.switchingHistory.reduce((sum, s) => sum + s.switchingCost, 0) / Math.max(this.switchingHistory.length, 1)
-    };
+    }
   }
 }
 // Supporting classes (simplified implementations)
@@ -575,7 +575,7 @@ class GPUMemoryManager {
       fragmentationLevel: 0.15,
       gcThreshold: this.gcThresholdMB,
       lastGCTime: Date.now() - 300000
-    };
+    }
   }
   async forceGarbageCollection(): Promise<void> {
     console.log('🗑️ Force GPU garbage collection');
@@ -589,7 +589,7 @@ class QUICProtocolServer {
   async sendLoadCommand(command: any): Promise<any> {
     // Simulate ultra-low latency QUIC communication
     await new Promise(resolve => setTimeout(resolve, 5); // 5ms latency
-    return { success: true, latency: 5 };
+    return { success: true, latency: 5 }
   }
   async sendUnloadCommand(modelId: string, wasmKey: string): Promise<void> {
     console.log(`⚡ QUIC unload command: ${modelId}`);

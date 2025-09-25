@@ -4,7 +4,7 @@ import { redisRateLimit, createRateLimitConfig } from "$lib/server/redisRateLimi
 import { productionLogger as logger } from '$lib/server/production-logger'
 import { dev } from '$app/environment'
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 // Enhanced interfaces for better type safety and optimization
 export interface QdrantSyncRequest {
   collection?: string
@@ -36,7 +36,7 @@ export interface CollectionRequest {
   }
 }
 export interface SearchRequest {
-  collection: string
+  collection: string;
   query: number[] | string
   limit?: number
   offset?: number
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     // Check admin permissions for sync operations
     if (!locals.user || locals.user.role !== "admin") {
       return json({
-          success: false
+          success: false;
           error: "Admin privileges required for sync operations"
         },)
         { status: 403 }

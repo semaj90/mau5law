@@ -1,4 +1,3 @@
-
 // Slider Component Barrel Export
 // Note: Slider may not be available in bits-ui v2, using fallback approach
 // import { Slider } from "bits-ui"
@@ -21,6 +20,6 @@ export interface SliderProps extends SliderCommonProps {
   max?: number;
   step?: number;
   disabled?: boolean;
-  onValueChange?: (value: number[]) => void;
-  orientation?: "horizontal" | "vertical";
+  onValueChange?: (_value: number[]) => void;
+  orientation?: 'horizontal' | 'vertical';
 }

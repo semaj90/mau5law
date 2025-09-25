@@ -9,11 +9,11 @@
     content?: string;
     thumbnail?: string;
     position: ;
-{ x: number; y: number };
-    size: { width: number; height: number };
+{ x: number; y: number }
+    size: { width: number; height: number }
     color?: string;
     connections?: string[];
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   }
   interface EvidenceBoardProps {
     theme?: 'default' | 'legal' | 'gaming' | 'yorha';
@@ -120,7 +120,7 @@
       item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.4)] font-mono',
       connection: 'stroke-green-400 stroke-2';
     }
-  };
+  }
   function getItemIcon(type: EvidenceItem['type']): string {
     const icons = {
       document: '📄',
@@ -129,22 +129,22 @@
       audio: '🎵',
       note: '📝',
       link: '🔗';
-    };
+    }
     return icons[type];
   }
-  function startDrag(event: MouseEvent, item: EvidenceItem) {
+  function startDrag(_event: MouseEvent, item: EvidenceItem) {
     if (readonly) return;
     const rect = boardElement.getBoundingClientRect();
     draggedItem = item;
     dragOffset = {
       x: event.clientX - rect.left - item.position.x,
       y: event.clientY - rect.top - item.position.y;
-    };
+    }
     document.addEventListener('mousemove', handleDrag);
     document.addEventListener('mouseup', stopDrag);
     event.preventDefault();
   }
-  function handleDrag(event: MouseEvent) {
+  function handleDrag(_event: MouseEvent) {
     if (!draggedItem || !boardElement) return;
     const rect = boardElement.getBoundingClientRect();
     let newX = event.clientX - rect.left - dragOffset.x;
@@ -157,7 +157,7 @@
     // Keep within bounds
     newX = Math.max(0, Math.min(width - draggedItem.size.width, newX));
     newY = Math.max(0, Math.min(height - draggedItem.size.height, newY));
-    draggedItem.position = { x: newX, y: newY };
+    draggedItem.position = { x: newX, y: newY }
     items = [...items]; // Trigger reactivity
   }
   function stopDrag() {
@@ -216,7 +216,7 @@
 { x: 50, y: 50 },
       size: { width: 200, height: 150 },
       color: '#6b7280';
-    };
+    }
     items = [...items, newItem];
     dispatch('itemAdded', { item: newItem });
   }
@@ -228,15 +228,15 @@
     const fromCenter = {
       x: fromItem.position.x + fromItem.size.width / 2,
       y: fromItem.position.y + fromItem.size.height / 2;
-    };
+    }
     const toCenter = {
       x: toItem.position.x + toItem.size.width / 2,
       y: toItem.position.y + toItem.size.height / 2;
-    };
+    }
     return `M ${fromCenter.x} ${fromCenter.y} L ${toCenter.x} ${toCenter.y}`;
   }
   // Handle keyboard shortcuts
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (event.key === 'Delete' || event.key === 'Backspace') {
       deleteSelected();
     }
@@ -327,7 +327,7 @@
         top: {item.position.y}px;
         width: {item.size.width}px;
         height: {item.size.height}px;
-        border-color: {item.color || ''};
+        border-color: {item.color || ''}
       "
       onmousedown={(e) => startDrag(e, item)}
       onclick={(e) => {

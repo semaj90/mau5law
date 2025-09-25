@@ -43,7 +43,7 @@ const meta: any = {
       }
     }
   } as any
-};
+}
 export default meta as Meta;
 type Story = StoryObj<any>;
 // Default idle state - ready for interaction
@@ -104,14 +104,14 @@ export const Default: Story = {
     enableStreamingMode: false
     preferredProtocol: 'http'
   }
-};
+}
 // Processing state with AI interaction
 export const Processing: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze the contractual obligations in this employment agreement',
-      isProcessing: true
+      isProcessing: true;
       response: 'Analyzing legal document... Please wait.',
       conversationHistory: [;
         {
@@ -142,14 +142,14 @@ export const Processing: Story = {
       }
     }
   }
-};
+}
 // Streaming mode with real-time responses
 export const StreamingMode: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'What are the key provisions in this merger agreement?',
-      isProcessing: true
+      isProcessing: true;
       response: 'Based on my analysis of the merger agreement, I can identify several key provisions:\n\n1. **Purchase Price and Payment Terms**: The agreement specifies...',
       conversationHistory: [;
         {
@@ -182,14 +182,14 @@ export const StreamingMode: Story = {
       }
     }
   }
-};
+}
 // Multi-document analysis scenario
 export const MultiDocumentAnalysis: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Compare these three contracts for common risk factors',
-      isProcessing: true
+      isProcessing: true;
       response: 'Comparing 3 contracts for risk analysis...',
       conversationHistory: [;
         {
@@ -254,7 +254,7 @@ export const MultiDocumentAnalysis: Story = {
       }
     }
   }
-};
+}
 // High-performance QUIC protocol scenario
 export const HighPerformanceMode: Story = {
   args: {
@@ -309,14 +309,14 @@ export const HighPerformanceMode: Story = {
       }
     }
   }
-};
+}
 // Error state with circuit breaker activation
 export const ErrorRecovery: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze this corrupted document',
-      isProcessing: false
+      isProcessing: false;
       response: '',
       conversationHistory: [;
         {
@@ -370,14 +370,14 @@ export const ErrorRecovery: Story = {
       }
     }
   }
-};
+}
 // Collaborative session with multiple users
 export const CollaborativeMode: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Draft a motion for summary judgment based on these case files',
-      isProcessing: true
+      isProcessing: true;
       response: 'Analyzing case precedents and drafting motion...',
       conversationHistory: [;
         {
@@ -437,14 +437,14 @@ export const CollaborativeMode: Story = {
       }
     }
   }
-};
+}
 // Context7 integration showcase
 export const Context7Integration: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Help me implement a new Svelte 5 component for case management',
-      isProcessing: true
+      isProcessing: true;
       response: 'Analyzing your SvelteKit architecture and generating Context7-compliant component...',
       conversationHistory: [;
         {
@@ -490,4 +490,4 @@ export const Context7Integration: Story = {
       }
     }
   }
-};
+}

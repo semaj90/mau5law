@@ -54,6 +54,7 @@
     }).length,
   });
 </script>
+
 <div class="case-stats container mx-auto px-4">
   <div class="stat-nier-bits-card">
     <div class="stat-value">{stats.total}</div>
@@ -76,13 +77,14 @@
     <div class="stat-label">Recently Updated</div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .case-stats {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
-}
+  }
   .stat-card {
     flex: 1;
     background: #f8f9fa;
@@ -90,15 +92,15 @@
     border-radius: 8px;
     text-align: center;
     border: 1px solid #e9ecef;
-}
+  }
   .stat-value {
     font-size: 2rem;
     font-weight: bold;
     color: #495057;
-}
+  }
   .stat-label {
     font-size: 0.875rem;
     color: #6c757d;
     margin-top: 0.25rem;
-}
+  }
 </style>

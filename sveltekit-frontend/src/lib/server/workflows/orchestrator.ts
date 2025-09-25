@@ -18,7 +18,7 @@ export interface WorkflowInstance {
   childWorkflows: string[];
   dependencies: string[];
   tags: string[];
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface OrchestrationEvent {
   type: string;
@@ -31,14 +31,14 @@ class WorkflowOrchestrator {
   private workflows: Map<string, WorkflowInstance> = new Map();
   private eventQueue: OrchestrationEvent[] = [];
   private running = false;
-  private subscribers: Map<string, ((event: OrchestrationEvent) => void)[]> = new Map();
+  private subscribers: Map<string, ((_event: OrchestrationEvent) => void)[]> = new Map();
   constructor() {
     console.log('🎭 Workflow Orchestrator initialized');
   }
   // Start a new document processing workflow
   async startDocumentProcessing(
     documentId: string
-    content: string
+    content: string;
     metadata: { [key: string]: any } = {},
     parentWorkflow?: string;
   ): Promise<string> {
@@ -68,7 +68,7 @@ class WorkflowOrchestrator {
         documentId,
         ...metadata
       }
-    };
+    }
     this.workflows.set(workflowId, workflow);
     // Set up event listeners
     actor.subscribe((snapshot) => {
@@ -98,7 +98,7 @@ class WorkflowOrchestrator {
   async startLegalCaseManagement(
     title: string
     description: string
-    caseType: string
+    caseType: string;
     jurisdiction: string
     createdBy: string
     parentWorkflow?: string;
@@ -125,7 +125,7 @@ class WorkflowOrchestrator {
         jurisdiction,
         createdBy
       }
-    };
+    }
     this.workflows.set(workflowId, workflow);
     // Set up event listeners
     actor.subscribe((snapshot) => {
@@ -168,7 +168,7 @@ class WorkflowOrchestrator {
       this.emitEvent({
         type: 'EVENT_SENT',
         workflowId,
-        payload: event
+        payload: event;
         timestamp: Date.now()
       });
       return true;
@@ -284,7 +284,7 @@ class WorkflowOrchestrator {
     return true;
   }
   // Subscribe to workflow events
-  subscribe(eventType: string, callback: (event: OrchestrationEvent) => void): () => void {
+  subscribe(eventType: string, callback: (_event: OrchestrationEvent) => void): () => void {
     if (!this.subscribers.has(eventType)) {
       this.subscribers.set(eventType, []);
     }
@@ -298,7 +298,7 @@ class WorkflowOrchestrator {
           subscribers.splice(index, 1);
         }
       }
-    };
+    }
   }
   // Event handling
   private onWorkflowStateChange(workflowId: string, snapshot: any): void {
@@ -343,7 +343,7 @@ class WorkflowOrchestrator {
     // Auto-persist on significant changes
     this.persistWorkflow(workflowId);
   }
-  private emitEvent(event: OrchestrationEvent): void {
+  private emitEvent(_event: OrchestrationEvent): void {
     console.log(`📡 Orchestrator event: ${event.type} (${event.workflowId})`);
     // Add to event queue
     this.eventQueue.push(event);
@@ -371,7 +371,7 @@ class WorkflowOrchestrator {
       const serializable = {
         ...workflow,
         actor: null, // Don't serialize the actor
-      };
+      }
       await cache.set(`workflow:${workflowId}`, serializable, 86400); // 24h TTL
     } catch (error) {
       console.error(`❌ Failed to persist workflow ${workflowId}:`, error);
@@ -399,7 +399,7 @@ class WorkflowOrchestrator {
       const workflow: WorkflowInstance = {
         ...cached,
         actor
-      };
+      }
       this.workflows.set(workflowId, workflow);
       // Set up event listeners
       actor.subscribe((snapshot) => {
@@ -420,8 +420,8 @@ class WorkflowOrchestrator {
     totalEvents: number;
   } {
     const workflows = this.getAllWorkflows();
-    const byType: Record<string, number> = {};
-    const byStatus: Record<string, number> = {};
+    const byType: Record<string, number> = {}
+    const byStatus: Record<string, number> = {}
     let totalProgress = 0;
     workflows.forEach(workflow => {
       byType[workflow.type] = (byType[workflow.type] || 0) + 1;
@@ -434,7 +434,7 @@ class WorkflowOrchestrator {
       byStatus,
       averageProgress: workflows.length > 0 ? totalProgress / workflows.length: 0,
       totalEvents: this.eventQueue.length
-    };
+    }
   }
   // Cleanup completed workflows
   async cleanup(olderThanMs: number = 24 * 60 * 60 * 1000): Promise<number> {

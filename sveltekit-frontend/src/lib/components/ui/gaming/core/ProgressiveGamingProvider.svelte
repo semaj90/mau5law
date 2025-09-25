@@ -91,23 +91,23 @@ https://svelte.dev/e/js_parse_error -->
     if (evolutionManager) {
       await evolutionManager.setEra(era);
     }
-  };
+  }
   const upgradeEra = async () => {
     if (evolutionManager) {
       await evolutionManager.upgradeEra();
     }
-  };
+  }
   const downgradeEra = async () => {
     if (evolutionManager) {
       await evolutionManager.downgradeEra();
     }
-  };
+  }
   const updateConfig = (updates: Partial<ProgressiveGamingConfig>) => {
     gamingConfig.update(current => ({ ...current, ...updates }));
     if (evolutionManager) {
       evolutionManager.updateConfig(updates);
     }
-  };
+  }
   // Apply CSS custom properties based on current era
   const applyCSSVariables = (era: GamingEra) => {
     if (!enableGlobalCSS || typeof document === 'undefined') return;
@@ -145,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
       root.style.setProperty('--yorha-gaming-era', era);
       root.style.setProperty('--yorha-gaming-active', 'true');
     }
-  };
+  }
   // Update debug information
   const updateDebugInfo = () => {
     if (!showDebugInfo || !evolutionManager) return;
@@ -154,8 +154,8 @@ https://svelte.dev/e/js_parse_error -->
       capabilities: evolutionManager.getCapabilities(),
       config: evolutionManager.getConfig(),
       timestamp: new Date().toISOString();
-    };
-  };
+    }
+  }
   $effect(() => {
     // Initialize gaming evolution manager
     evolutionManager = GamingEvolutionManager.getInstance($gamingConfig);
@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
   class:era-8bit={$gamingState.currentEra === '8bit'}
   class:era-16bit={$gamingState.currentEra === '16bit'}
   class:era-n64={$gamingState.currentEra === 'n64'}
-  class:transitioning={$gamingState.isTransitioning};
+  class:transitioning={$gamingState.isTransitioning}
   class:yorha-integration={integrateWithYorha}
   data-gaming-era={$gamingState.currentEra}
   data-performance-level={$gamingState.performanceLevel}

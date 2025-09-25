@@ -23,12 +23,12 @@ interface SearchResult {
     jurisdiction: string;
     date: string;
     legal_domain: string;
-  };
+  }
   performance: {
     gpu_accelerated: boolean;
     search_time_ms: number;
     gpu_utilization: number;
-  };
+  }
 }
 interface CudaCapabilities {
   gpu_model: string;
@@ -82,7 +82,7 @@ let performanceHistory = $state<Array<{
 $effect(() => {
     (async () => {
 try {
-    const response = await fetch('/api/ai/cuda-indexing?operation=capabilities');
+    // removed unused response assignment
     if (response.ok) {
       const data = await response.json();
       cudaCapabilities = {
@@ -91,7 +91,7 @@ try {
         cuda_cores: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.cuda_cores || 4864,
         simd_enabled: data.simd_capabilities?.avx2_enabled || false,
         instruction_set: data.simd_capabilities?.instruction_set || 'AVX2'
-      };
+      }
     }
   } catch (error) {
     console.error('Failed to load CUDA capabilities:', error);
@@ -110,7 +110,7 @@ async function performSearch() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({,
-        text: query
+        text: query;
         model: 'embeddinggemma:latest';
       })
     });
@@ -127,7 +127,7 @@ async function performSearch() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          query_vector: queryVector
+          query_vector: queryVector;
           k: maxResults
           index_type: 'hnsw',
           config: {
@@ -163,7 +163,7 @@ async function performSearch() {
             memory_usage: cudaResults.stats.memory_usage_mb || 0,
             temperature: 65, // Simulated
             active_streams: 1;
-          };
+          }
         }
       }
     }
@@ -173,7 +173,7 @@ async function performSearch() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          query: query
+          query: query;
           limit: maxResults
           legal_domain: legalDomain
           search_type: searchType
@@ -235,7 +235,7 @@ async function performSearch() {
   }
 }
 // Handle form submission
-function handleSubmit(event: Event) {
+function handleSubmit(_event: Event) {
   event.preventDefault();
   performSearch();
 }
@@ -254,7 +254,7 @@ $effect(() => {
   }
 });
 // Format performance metrics
-function formatMetric(value: number, unit: string): string {
+function formatMetric(_value: number, unit: string): string {
   return `${value.toFixed(1)}${unit}`;
 }
 function getSearchTypeColor(type: string): string {
@@ -275,13 +275,19 @@ function getDocumentTypeColor(type: string): string {
   }
 }
 </script>
+
 <div class="cuda-search-container">
   <!-- Search Header -->
   <Card class="mb-4">
     <CardHeader>
       <CardTitle class="flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          ></path>
         </svg>
         CUDA-Accelerated Legal Search
         {#if cudaCapabilities}
@@ -307,7 +313,12 @@ function getDocumentTypeColor(type: string): string {
               <div class="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
             {:else}
               <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
               </svg>
             {/if}
           </div>
@@ -318,9 +329,7 @@ function getDocumentTypeColor(type: string): string {
             {searchType.charAt.toUpperCase() + searchType.slice(1)} Search
           </span>
           {#if enableGpuAcceleration}
-            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">
-              🚀 GPU Accelerated
-            </span>
+            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium"> 🚀 GPU Accelerated </span>
           {/if}
           {#if enableSIMD && cudaCapabilities?.simd_enabled}
             <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium">
@@ -405,7 +414,11 @@ function getDocumentTypeColor(type: string): string {
                     {result.title}
                   </h3>
                   <div class="flex flex-wrap gap-2 mb-2">
-                    <span class="{getDocumentTypeColor(result.metadata.document_type)} px-2 py-1 rounded text-sm font-medium">
+                    <span
+                      class="{getDocumentTypeColor(
+                        result.metadata.document_type,
+                      )} px-2 py-1 rounded text-sm font-medium"
+                    >
                       {result.metadata.document_type}
                     </span>
                     <span class="bg-secondary text-secondary-foreground px-2 py-1 rounded text-sm font-medium">
@@ -421,13 +434,9 @@ function getDocumentTypeColor(type: string): string {
                     Score: {(result.score * 100).toFixed(1)}%
                   </div>
                   {#if result.performance.gpu_accelerated}
-                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">
-                      🚀 GPU
-                    </span>
+                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium"> 🚀 GPU </span>
                   {:else}
-                    <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-medium">
-                      💻 CPU
-                    </span>
+                    <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-medium"> 💻 CPU </span>
                   {/if}
                 </div>
               </div>
@@ -457,6 +466,7 @@ function getDocumentTypeColor(type: string): string {
     </Card>
   {/if}
 </div>
+
 <style>
   .cuda-search-container {
     @apply max-w-4xl mx-auto;

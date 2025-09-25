@@ -125,7 +125,7 @@
     expanded: false
     disabled: $documentProcessing.isProcessing,
     label: $documentProcessing.isProcessing ? 'Processing...' : 'Test database sync',
-    live: $documentProcessing.isProcessing ? 'polite' : 'off'
+    live: $documentProcessing.isProcessing ? 'polite' : 'off';
   });
   $effect(() => {
     addToLog('🚀 Database sync test component mounted');
@@ -235,7 +235,7 @@
         use:accessibleClick={{,
           handler: testServiceAvailability
           label: 'Test service availability',
-          disabled: ariaProps.disabled
+          disabled: ariaProps.disabled;
         }}
         disabled={$documentProcessing.isProcessing}
         class="test-btn"
@@ -246,7 +246,7 @@
         use:accessibleClick={{,
           handler: testDocumentProcessing
           label: 'Test document processing and database sync',
-          disabled: ariaProps.disabled
+          disabled: ariaProps.disabled;
         }}
         disabled={$documentProcessing.isProcessing || !langchainState.isAvailable}
         class="test-btn primary"
@@ -257,7 +257,7 @@
         use:accessibleClick={{,
           handler: testSessionLoading
           label: 'Test session loading from database',
-          disabled: ariaProps.disabled || !selectedSession
+          disabled: ariaProps.disabled || !selectedSession;
         }}
         disabled={$documentProcessing.isProcessing || !selectedSession}
         class="test-btn"
@@ -268,7 +268,7 @@
         use:accessibleClick={{,
           handler: testDocumentDeletion
           label: 'Test document deletion from database',
-          disabled: ariaProps.disabled || !testResults
+          disabled: ariaProps.disabled || !testResults;
         }}
         disabled={$documentProcessing.isProcessing || !testResults}
         class="test-btn danger"
@@ -277,8 +277,8 @@
       </button>
       <button
         use:accessibleClick={{,
-          handler: clearLog
-          label: 'Clear test log'
+          handler: clearLog;
+          label: 'Clear test log';
         }}
         class="test-btn secondary"
       >

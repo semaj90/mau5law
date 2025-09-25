@@ -57,9 +57,9 @@
       type: 'evidence',
       label: 'Primary Evidence',
       weight: 1.0,
-      color: [0.2, 0.6, 1.0, 1.0], // Blu
+      color: [0.2, 0.6, 1.0, 1.0], // Blu;
       connections: [];
-    };
+    }
     nodes.push(mainNode);
     // Add entity nodes
     analysis.keyEntities.forEach((entity, i) => {
@@ -75,7 +75,7 @@
         weight: entity.confidence,
         color: getEntityColor(entity.type),
         connections: [];
-      };
+      }
       nodes.push(entityNode);
       mainNode.connections.push(entityNode.id);
       // Create edge from main to entity
@@ -101,7 +101,7 @@
         weight: correlation.strength,
         color: getCorrelationColor(correlation.correlationType),
         connections: [];
-      };
+      }
       nodes.push(correlationNode);
       // Create edge for correlation
       edges.push({
@@ -137,9 +137,9 @@
         type: 'event',
         label: event.description,
         weight: event.confidence,
-        color: [0.8, 0.5, 0.2, 1.0], // Orang
+        color: [0.8, 0.5, 0.2, 1.0], // Orang;
         connections: [];
-      };
+      }
       nodes.push(eventNode);
       // Connect events chronologically
       if (i > 0) {
@@ -206,7 +206,7 @@
       // Apply attractive forces along edges
       edges.forEach(edge => {
         const source = nodes.find(n => n.id === edge.source);
-        const target = nodes.find(n => n.id === edge.target);
+        // removed unused target assignment
         if (source && target) {
           const dx = target.x - source.x;
           const dy = target.y - source.y;
@@ -242,7 +242,7 @@
       entity: nodes.filter(n => n.type === 'entity'),
       event: nodes.filter(n => n.type === 'event'),
       correlation: nodes.filter(n => n.type === 'correlation');
-    };
+    }
     // Position groups in layers
     groups.evidence.forEach((node, i) => {
       node.x = (i - groups.evidence.length / 2) * 2;

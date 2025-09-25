@@ -20,14 +20,14 @@
     onclick,
     children,
     class: className = '',
-    style = ''
+    style = '',
   }: Props = $props();
   const dispatch = createEventDispatcher();
   let isPressed = $state(false);
   let rippleX = $state(0);
   let rippleY = $state(0);
   let showRipple = $state(false);
-  function handleClick(event: MouseEvent) {
+  function handleClick(_event: MouseEvent) {
     if (disabled || loading) return;
     // Create ripple effect
     const rect = (event.currentTarget as HTMLButtonElement).getBoundingClientRect();
@@ -61,25 +61,37 @@
     const stateClasses = [
       disabled && 'n64-button--disabled',
       loading && 'n64-button--loading',
-      isPressed && 'n64-button--pressed'
-    ].filter(Boolean).join(' ');
+      isPressed && 'n64-button--pressed',
+    ]
+      .filter(Boolean)
+      .join(' ');
     return `${base} ${variantClass} ${sizeClass} ${stateClasses} ${className}`.trim();
   });
   // Button icon/content based on variant
   let buttonContent = $derived(() => {
     switch (variant) {
-      case 'c-up': return '↑';
-      case 'c-down': return '↓';
-      case 'c-left': return '←';
-      case 'c-right': return '→';
-      case 'start': return 'START';
-      case 'z': return 'Z';
-      case 'a': return 'A';
-      case 'b': return 'B';
-      default: return null;
+      case 'c-up':
+        return '↑';
+      case 'c-down':
+        return '↓';
+      case 'c-left':
+        return '←';
+      case 'c-right':
+        return '→';
+      case 'start':
+        return 'START';
+      case 'z':
+        return 'Z';
+      case 'a':
+        return 'A';
+      case 'b':
+        return 'B';
+      default:
+        return null;
     }
   });
 </script>
+
 <button
   class={buttonStyles}
   {style}
@@ -110,16 +122,14 @@
   {/if}
   <!-- Ripple Effect -->
   {#if showRipple}
-    <div
-      class="n64-button__ripple"
-      style="left: {rippleX}px; top: {rippleY}px;"
-    ></div>
+    <div class="n64-button__ripple" style="left: {rippleX}px; top: {rippleY}px;"></div>
   {/if}
   <!-- Pressed Effect Overlay -->
   {#if isPressed}
     <div class="n64-button__pressed-overlay"></div>
   {/if}
 </button>
+
 <style>
   .n64-button {
     position: relative;
@@ -135,13 +145,13 @@
     overflow: hidden;
     user-select: none;
     touch-action: manipulatio;
-    /* N64-style 3D effect */
-    box-shadow:
-      inset 0 2px 0 rgba(255, 255, 255, 0.3),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.3),
+/* N64-style 3D effect */ {}
+box-shadow: {}
+inset 0 2px 0 rgba(255, 255, 255, 0.3), {}
+inset 0 -2px 0 rgba(0, 0, 0, 0.3), {}
       0 4px 8px rgba(0, 0, 0, 0.2);
   }
-  /* Size Variants */
+/* Size Variants */ {}
   .n64-button--small {
     padding: 6px 12px;
     font-size: 12px;
@@ -157,7 +167,7 @@
     font-size: 16px;
     min-height: 48px;
   }
-  /* Color Variants */
+/* Color Variants */ {}
   .n64-button--primary {
     background: linear-gradient(145deg, #00AA00, #008800);
     color: white;
@@ -168,10 +178,10 @@
     color: white;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   }
-  /* C Button Variants */
-  .n64-button--c-up,
-  .n64-button--c-down,
-  .n64-button--c-left,
+/* C Button Variants */ {}
+.n64-button--c-up, {}
+.n64-button--c-down, {}
+.n64-button--c-left, {}
   .n64-button--c-right {
     background: linear-gradient(145deg, #FFD700, #FFA500);
     color: #000;
@@ -179,7 +189,7 @@
     min-width: 40px;
     padding: 8px;
   }
-  /* Action Button Variants */
+/* Action Button Variants */ {}
   .n64-button--a {
     background: linear-gradient(145deg, #4169E1, #1E90FF);
     color: white;
@@ -209,19 +219,19 @@
     font-size: 10px;
     letter-spacing: 0.5px;
   }
-  /* States */
+/* States */ {}
   .n64-button:hover:not(.n64-button--disabled) {,
     transform: translateY(-1px);
-    box-shadow:
-      inset 0 2px 0 rgba(255, 255, 255, 0.4),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.4),
+box-shadow: {}
+inset 0 2px 0 rgba(255, 255, 255, 0.4), {}
+inset 0 -2px 0 rgba(0, 0, 0, 0.4), {}
       0 6px 12px rgba(0, 0, 0, 0.3);
   }
   .n64-button--pressed {
     transform: translateY(1px) scale(0.98);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.2),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+box-shadow: {}
+inset 0 1px 0 rgba(255, 255, 255, 0.2), {}
+inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
       0 2px 4px rgba(0, 0, 0, 0.3);
   }
   .n64-button--disabled {
@@ -234,7 +244,7 @@
     pointer-events: none;
     opacity: 0.8;
   }
-  /* Content */
+/* Content */ {}
   .n64-button__content {
     display: flex;
     align-items: center;
@@ -249,7 +259,7 @@
   .n64-button__text {
     white-space: nowrap;
   }
-  /* Loading Spinner */
+/* Loading Spinner */ {}
   .n64-button__loading {
     display: flex;
     align-items: center;
@@ -266,7 +276,7 @@
   @keyframes n64-spin {
     to { transform: rotate(360deg); }
   }
-  /* Ripple Effect */
+/* Ripple Effect */ {}
   .n64-button__ripple {
     position: absolute;
     width: 20px;
@@ -283,27 +293,27 @@
       opacity: 0;
     }
   }
-  /* Pressed Overlay */
+/* Pressed Overlay */ {}
   .n64-button__pressed-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.1);
     pointer-events: none;
   }
-  /* Accessibility */
+/* Accessibility */ {}
   .n64-button:focus-visible {
     outline: 2px solid var(--console-primary, #00AA00);
     outline-offset: 2px;
   }
-  /* Animation for variant changes */
+/* Animation for variant changes */ {}
   .n64-button {
-    transition:
-      background 0.3s ease,
-      color 0.3s ease,
-      transform 0.15s ease,
+transition: {}
+background 0.3s ease, {}
+color 0.3s ease, {}
+transform 0.15s ease, {}
       box-shadow 0.15s ease;
   }
-  /* N64-specific enhancements */
+/* N64-specific enhancements */ {}
   .n64-button::before {
     content: '';
     position: absolute;
@@ -317,7 +327,7 @@
     opacity: 0.1;
     background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent);
   }
-  /* Console theme integration */
+/* Console theme integration */ {}
   .theme-nes .n64-button--primary {
     background: linear-gradient(145deg, #E52521, #BC0000);
   }
@@ -333,16 +343,16 @@
   .theme-legal .n64-button--primary {
     background: linear-gradient(145deg, #1E293B, #0F172A);
   }
-  /* High contrast mode support */
+/* High contrast mode support */ {}
   @media (prefers-contrast: high) {
     .n64-button {
       border: 2px solid currentColor;
     }
   }
-  /* Reduced motion support */
+/* Reduced motion support */ {}
   @media (prefers-reduced-motion: reduce) {
-    .n64-button,
-    .n64-button__spinner,
+.n64-button, {}
+.n64-button__spinner, {}
     .n64-button__ripple {
       animation: none;
       transition: none;

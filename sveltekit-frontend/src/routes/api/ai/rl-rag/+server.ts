@@ -44,7 +44,7 @@ interface RAGResponse {
 			processing_time_ms: number
 			gpu_accelerated: boolean
 		}
-	}>
+	}>;
 	performance: {
 		total_time_ms: number
 		vector_search_ms: number
@@ -149,7 +149,7 @@ async function preprocessQuerySIMD(query: string): Promise<string> {
 }
 // GPU-accelerated vector similarity search with Gemma embeddings
 async function performCudaVectorSearch(params: {
-	query: string
+	query: string;
 	context: string[]
 	max_results: number
 	use_gpu: boolean
@@ -223,7 +223,7 @@ async function performCudaVectorSearch(params: {
 }
 // Knowledge Graph Service fallback (8099)
 async function fallbackKnowledgeGraphSearch(params: {
-	query: string
+	query: string;
 	context: string[]
 	max_results: number
 	legal_filter: any
@@ -266,7 +266,7 @@ async function fallbackKnowledgeGraphSearch(params: {
 }
 // PostgreSQL + pgvector fallback
 async function fallbackPostgreSQLSearch(params: {
-	query: string
+	query: string;
 	context: string[]
 	max_results: number
 	legal_filter: any
@@ -289,7 +289,7 @@ async function fallbackPostgreSQLSearch(params: {
 	]
 }
 // Reinforcement Learning-based legal document ranking
-async function reinforcementLearningRanking(
+async function reinforcementLearningRanking(;
 	results: Array<{ content: string; score: number; metadata: any }>,
 	query: string
 	legal_filter: any

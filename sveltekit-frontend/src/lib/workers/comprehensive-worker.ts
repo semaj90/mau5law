@@ -7,7 +7,7 @@ import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
 import { consumeFromQueue } from '$lib/server/rabbitmq';
 import { ingestionService } from '$lib/server/workflows/ingestion-service';
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const db = drizzle(pool);
+// removed unused db assignment
 let shuttingDown = false;
 let workerId = `worker_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 interface ChunkJob {
@@ -21,7 +21,7 @@ interface ChunkJob {
     priority: string;
     userId?: string;
     timestamp: string;
-  };
+  }
 }
 async function processChunkJob(job: ChunkJob) {
   console.log(`📥 Processing chunk job: ${job.jobId}:${job.chunkIndex}`);
@@ -59,7 +59,7 @@ async function processChunkJob(job: ChunkJob) {
       success: true
       processingTime: Date.now() - startTime,
       chunkIndex: job.chunkIndex
-    };
+    }
   } catch (error) {
     console.error(`❌ Error processing chunk ${job.jobId}:${job.chunkIndex}:`, error);
     // Report error to ingestion service

@@ -7,47 +7,47 @@
     gpuInfo: '',
     memoryUsage: '',
     services: [],
-    port: 5173
+    port: 5173,
   });
   let performanceMetrics = $state({
     fps: 0,
     latency: 0,
     throughput: 0,
-    gpuUtilization: 0
+    gpuUtilization: 0,
   });
   $effect(() => {
     (async () => {
-// Get system information with port detection
-    let port = 5173;
-    try {
-      // Try primary port first
-      let response = await fetch(`http://localhost:${port}/api/system-info`)
-      // If primary fails, try fallbacks
-      if (!response.ok) {
-        const fallbackPorts = [5174, 5175, 8080, 8081];
-        for (const fallbackPort of fallbackPorts) {
-          try {
-            response = await fetch(`http://localhost:${fallbackPort}/api/system-info`)
-            if (response.ok) {
-              port = fallbackPort;
-              break;
+      // Get system information with port detection
+      let port = 5173;
+      try {
+        // Try primary port first
+        let response = await fetch(`http://localhost:${port}/api/system-info`);
+        // If primary fails, try fallbacks
+        if (!response.ok) {
+          const fallbackPorts = [5174, 5175, 8080, 8081];
+          for (const fallbackPort of fallbackPorts) {
+            try {
+              response = await fetch(`http://localhost:${fallbackPort}/api/system-info`);
+              if (response.ok) {
+                port = fallbackPort;
+                break;
+              }
+            } catch (error) {
+              console.warn(`Failed to connect to port ${fallbackPort}:`, error);
             }
-          } catch (error) {
-            console.warn(`Failed to connect to port ${fallbackPort}:`, error);
           }
         }
+        if (response.ok) {
+          systemInfo = {
+            ...(await response.json()),
+            port,
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch system info:', error);
       }
-      if (response.ok) {
-        systemInfo = {
-          ...await response.json(),
-          port
-        };
-      }
-    } catch (error) {
-      console.error('Failed to fetch system info:', error);
-    }
-    // Monitor performance metrics
-    setInterval(updatePerformanceMetrics, 1000);
+      // Monitor performance metrics
+      setInterval(updatePerformanceMetrics, 1000);
     })();
   });
   async function updatePerformanceMetrics() {
@@ -56,7 +56,7 @@
     // Measure latency
     const start = performance.now();
     try {
-      await fetch(`http://localhost:${systemInfo.port}/api/health`)
+      await fetch(`http://localhost:${systemInfo.port}/api/health`);
       performanceMetrics.latency = Math.round(performance.now() - start);
     } catch (error) {
       // Handle error silently and estimate throughput and GPU utilization
@@ -65,9 +65,13 @@
     }
   }
 </script>
+
 <svelte:head>
   <title>GPU-Accelerated Legal AI Chat | Production-Ready System</title>
-  <meta name="description" content="Enterprise-grade legal AI with CUDA acceleration, TensorRT optimization, and multi-user support." />
+  <meta
+    name="description"
+    content="Enterprise-grade legal AI with CUDA acceleration, TensorRT optimization, and multi-user support."
+  />
 </svelte:head>
 <div class="gpu-chat-page">
   <GPUAcceleratedChat />
@@ -153,6 +157,7 @@
     </div>
   </div>
 </div>
+
 <style>
   .gpu-chat-page {
     position: relative;
@@ -297,7 +302,8 @@
   }
   /* Animations */
   @keyframes glow {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
     }
     50% {

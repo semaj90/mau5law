@@ -15,12 +15,12 @@ export interface GlyphRenderingRequest {
     compressionMethod: 'chr-rom' | 'simd' | 'texture';
     targetResolution: [number, number];
     colorSpace: 'sRGB' | 'P3' | 'Rec2020';
-  };
+  }
   legalContext?: {
     documentType: 'contract' | 'brief' | 'statute' | 'case';
     confidentialityLevel: 'public' | 'confidential' | 'privileged';
     renderingPriority: 'standard' | 'high' | 'realtime';
-  };
+  }
 }
 export interface CachedGlyphShader {
   shaderId: string;
@@ -31,13 +31,13 @@ export interface CachedGlyphShader {
     averageRenderTime: number;
     cacheHitRate: number;
     memoryFootprint: number;
-  };
+  }
   quantizationData: {
     originalSize: number;
     compressedSize: number;
     compressionRatio: number;
     qualityScore: number;
-  };
+  }
 }
 class GlyphShaderCacheBridge {
   private glyphShaderCache = new Map<string, CachedGlyphShader>();
@@ -121,7 +121,7 @@ class GlyphShaderCacheBridge {
           memoryFootprint: this.calculateMemoryFootprint(glyphTextures)
         },
         quantizationData
-      };
+      }
       // Step 7: Store in memory cache
       this.glyphShaderCache.set(cacheKey, cachedShader);
       // Step 8: Store in parallel cache orchestrator
@@ -316,7 +316,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
       compressedSize,
       compressionRatio: originalSize / compressedSize,
       qualityScore
-    };
+    }
   }
   /**
    * Execute glyph rendering with cached shader
@@ -363,7 +363,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
         success: true
         renderTime,
         memoryUsed: cachedShader.renderingMetrics.memoryFootprint
-      };
+      }
     } catch (error) {
       console.error('Glyph rendering failed:', error);
       this.updateMetrics(cachedShader, 'render_error');
@@ -371,7 +371,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
         success: false
         renderTime: performance.now() - startTime,
         memoryUsed: 0
-      };
+      }
     }
   }
   /**
@@ -448,7 +448,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
       averageRenderTime: shaders.reduce((sum, s) => sum + s.renderingMetrics.averageRenderTime, 0) / shaders.length,
       cacheHitRate: shaders.reduce((sum, s) => sum + s.renderingMetrics.cacheHitRate, 0) / shaders.length,
       quantizationEfficiency: shaders.reduce((sum, s) => sum + s.quantizationData.compressionRatio, 0) / shaders.length
-    };
+    }
   }
   /**
    * Clear all cached shaders

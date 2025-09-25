@@ -47,9 +47,9 @@ export const adminDb: NodePgDatabase<typeof schema> = drizzle(adminPool, { schem
 // Connection info for logging
 export const connectionInfo = {
   app: appConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password
-  admin: adminConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password
+  admin: adminConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password;
   environment: isDevelopment ? 'development' : 'production'
-};
+}
 // Utility functions
 export async function testAppConnection(): Promise<boolean> {
   try {

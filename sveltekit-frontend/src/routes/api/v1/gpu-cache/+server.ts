@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Cache as YoRHa component if applicable
         if (options.isYoRHaComponent) {
           await nesCacheOrchestrator.cacheYoRHaComponent({
-            name: key
+            name: key;
             props: (data as { props?: any; styles?: any; animations?: any; embedding?: any }).props || {},
             styles: (data as { props?: any; styles?: any; animations?: any; embedding?: any }).styles || {},
             animations: (data as { props?: any; styles?: any; animations?: any; embedding?: any }).animations || [],
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
     // Convert Float32Arrays back to regular arrays for JSON response
     const response = {
-      success: true
+      success: true;
       entry: {
         ...result,
         vertexBuffers: (result as { vertexBuffers?: any; embedding?: any }).vertexBuffers?.map((vb) => Array.from(vb)),
@@ -559,7 +559,7 @@ async function simulateIndexedDBSync(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, 200)
 }
 async function simulateGetUserHistory(
-  userId: string
+  userId: string;
   limit: number
   includeAnalytics: boolean
 ): Promise<any> {
@@ -611,7 +611,7 @@ async function handleBulkStore(entries: any[]): Promise<BulkStoreResult> {
   return results
 }
 type BulkRetrieveResult = {
-  retrieved: { key: string; entry: any }[]
+  retrieved: { key: string; entry: any }[];
   failed: { key: string; error: string }[]
 }
 async function handleBulkRetrieve(keys: string[]): Promise<BulkRetrieveResult> {

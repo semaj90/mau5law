@@ -10,18 +10,13 @@
     icon?: any;
     children?: any;
   }
-  let {
-    variant = 'info',
-    title,
-    dismissible = false,
-    icon,
-    children
-  }: Props = $props();
+  let { variant = 'info', title, dismissible = false, icon, children }: Props = $props();
   let visible = $state(true);
   function dismiss() {
     visible = false;
   }
 </script>
+
 {#if visible}
   <div class="alert alert-{variant}" role="alert">
     <div class="alert-content">
@@ -39,13 +34,12 @@
         </div>
       </div>
       {#if dismissible}
-        <button class="alert-dismiss" onclick={dismiss} aria-label="Dismiss">
-          ×
-        </button>
+        <button class="alert-dismiss" onclick={dismiss} aria-label="Dismiss"> × </button>
       {/if}
     </div>
   </div>
 {/if}
+
 <style>
   .alert {
     border-radius: var(--radius-md, 8px);
@@ -91,7 +85,7 @@
   .alert-dismiss:hover {
     opacity: 1;
   }
-  /* Variants */
+/* Variants */ {}
   .alert-info {
     background: #eff6ff;
     border-color: #3b82f6;

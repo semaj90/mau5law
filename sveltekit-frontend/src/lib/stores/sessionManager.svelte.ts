@@ -18,12 +18,12 @@ export interface SessionState {
     isValid: boolean;
     warningCount: number;
     lastCheck: Date | null;
-  };
+  }
   analytics: {
     loginTime: Date | null;
     activityCount: number;
     featuresUsed: string[];
-  };
+  }
 }
 // Create reactive session state using $state rune
 const sessionState = $state<SessionState>({
@@ -192,7 +192,7 @@ export class SessionManager {
         Date.now() - sessionState.analytics.loginTime.getTime() : 0,
       isHealthy: sessionState.health.isValid,
       warningCount: sessionState.health.warningCount
-    };
+    }
   }
   // Check for existing session on initialization
   private async checkExistingSession() {
@@ -212,13 +212,13 @@ export class SessionManager {
     // Track page navigation
     const trackNavigation = () => {
       this.recordActivity(window.location.pathname, 'navigation');
-    };
+    }
     // Track user interactions
-    const trackInteraction = (event: Event) => {
-      const target = event.target as HTMLElement;
+    const trackInteraction = (_event: Event) => {
+      // removed unused target assignment
       const action = `${event.type}:${target.tagName.toLowerCase()}`;
       this.recordActivity(window.location.pathname, action);
-    };
+    }
     // Set up event listeners
     window.addEventListener('popstate', trackNavigation);
     document.addEventListener('click', trackInteraction);
@@ -281,7 +281,7 @@ export const hasPermission = (permission: string) => sessionManager.hasPermissio
 export const requirePermission = (permission: string) => sessionManager.requirePermission(permission);
 export const recordActivity = (route: string, action: string, feature?: string) => {
   sessionManager.recordActivity(route, action, feature);
-};
+}
 // Initialize session manager when module loads
 if (browser) {
   // Auto-cleanup on page unload

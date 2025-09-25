@@ -15,7 +15,7 @@
     NESGamingShowcase,
     DraggableModal,
     EvidenceBoard,
-    Toolbar
+    Toolbar,
   } from '$lib/components/ui/enhanced-bits';
   let activeDemo = $state('overview');
   let searchQuery = $state('');
@@ -30,28 +30,25 @@
     { id: 'nes-gaming', title: 'NES Gaming', icon: '🎮' },
     { id: 'yorha', title: 'YoRHa Theme', icon: '🤖' },
     { id: 'evidence', title: 'Evidence Board', icon: '📋' },
-    { id: 'integration', title: 'Integration', icon: '🔧' }
+    { id: 'integration', title: 'Integration', icon: '🔧' },
   ];
-  function handleSearchDemo(event: CustomEvent) {
+  function handleSearchDemo(_event: CustomEvent) {
     const { query } = event.detail;
     console.log('Search demo:', query);
   }
 </script>
+
 <div class="demo-showcase">
   <!-- Header -->
   <div class="demo-header">
     <div class="header-content">
       <div class="title-section">
         <h1 class="demo-title">Enhanced-Bits Showcase</h1>
-        <p class="demo-subtitle">
-          Complete UI component library for YoRHa Legal AI Platform
-        </p>
+        <p class="demo-subtitle">Complete UI component library for YoRHa Legal AI Platform</p>
       </div>
       <div class="header-controls">
         <ThemeToggle />
-        <Button variant="primary" onclick={() => window.open('/all-routes', '_blank')}>
-          View All Routes
-        </Button>
+        <Button variant="primary" onclick={() => window.open('/all-routes', '_blank')}>View All Routes</Button>
       </div>
     </div>
   </div>
@@ -62,7 +59,7 @@
         {#each demoSections as section}
           <button
             class="tab-trigger {activeDemo === section.id ? 'active' : ''}"
-            onclick={() => activeDemo = section.id}
+            onclick={() => (activeDemo = section.id)}
           >
             <span class="tab-icon">{section.icon}</span>
             <span class="tab-label">{section.title}</span>
@@ -185,11 +182,7 @@
         </Card>
         <Card title="Legal Theme Search" class="demo-card">
           <div class="search-container">
-            <YoRHaSearchBar
-              theme="legal"
-              placeholder="Professional legal search..."
-              onsearch={handleSearchDemo}
-            />
+            <YoRHaSearchBar theme="legal" placeholder="Professional legal search..." onsearch={handleSearchDemo} />
           </div>
         </Card>
       </div>
@@ -220,9 +213,7 @@
               </div>
             </NESCard>
           </div>
-          <NESButton onclick={() => showNESModal = true}>
-            Open NES Modal
-          </NESButton>
+          <NESButton onclick={() => (showNESModal = true)}>Open NES Modal</NESButton>
         </Card>
         <!-- Full NES Gaming Showcase -->
         <Card title="Complete NES Gaming Interface" class="demo-card">
@@ -253,9 +244,7 @@
                 </div>
               </div>
             </div>
-            <Button onclick={() => showYoRHaModal = true}>
-              Open YoRHa Modal
-            </Button>
+            <Button onclick={() => (showYoRHaModal = true)}>Open YoRHa Modal</Button>
           </div>
         </Card>
       </div>
@@ -264,9 +253,7 @@
       <div class="evidence-demo">
         <Card title="Interactive Evidence Board" class="demo-card">
           <p>Drag-and-drop evidence management system with YoRHa styling</p>
-          <Button onclick={() => showEvidenceBoard = true}>
-            Open Evidence Board
-          </Button>
+          <Button onclick={() => (showEvidenceBoard = true)}>Open Evidence Board</Button>
         </Card>
       </div>
     {:else if activeDemo === 'integration'}
@@ -280,7 +267,7 @@
                 tools={[
                   { id: 'search', icon: '🔍', label: 'Search' },
                   { id: 'filter', icon: '🔽', label: 'Filter' },
-                  { id: 'export', icon: '📤', label: 'Export' }
+                  { id: 'export', icon: '📤', label: 'Export' },
                 ]}
               />
             </div>
@@ -292,10 +279,7 @@
                     <CardTitle>Legal Document Analysis</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <YoRHaSearchBar
-                      placeholder="Search documents..."
-                      theme="legal"
-                    />
+                    <YoRHaSearchBar placeholder="Search documents..." theme="legal" />
                     <div class="action-buttons">
                       <Button variant="primary">Analyze</Button>
                       <NESButton variant="success">Process</NESButton>
@@ -310,11 +294,7 @@
     {/if}
   </div>
   <!-- Modals -->
-  <NESModal
-    bind:open={showNESModal}
-    title="NES System Information"
-    variant="dark"
-  >
+  <NESModal bind:open={showNESModal} title="NES System Information" variant="dark">
     <div class="modal-demo-content">
       <p>This is a demonstration of the NES-styled modal component.</p>
       <div class="modal-stats">
@@ -322,16 +302,10 @@
         <div>Theme: NES Gaming</div>
         <div>Framework: Svelte 5</div>
       </div>
-      <NESButton onclick={() => showNESModal = false}>
-        Close Modal
-      </NESButton>
+      <NESButton onclick={() => (showNESModal = false)}>Close Modal</NESButton>
     </div>
   </NESModal>
-  <DraggableModal
-    bind:open={showYoRHaModal}
-    title="YoRHa System Interface"
-    theme="yorha"
-  >
+  <DraggableModal bind:open={showYoRHaModal} title="YoRHa System Interface" theme="yorha">
     <div class="yorha-modal-content">
       <p>Neural network interface established. All systems nominal.</p>
       <div class="system-readout">
@@ -352,6 +326,7 @@
     <EvidenceBoard />
   </DraggableModal>
 </div>
+
 <style>
   .demo-showcase {
     min-height: 100vh;
@@ -374,7 +349,7 @@
     font-size: 2.5rem;
     font-weight: 800;
     margin: 0 0 0.5rem 0;
-    background: linear-gradient(45deg, #4A90E2, #8E44AD);
+    background: linear-gradient(45deg, #4a90e2, #8e44ad);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -420,7 +395,7 @@
     color: var(--color-text-primary, #1f2937);
   }
   .tab-trigger.active {
-    background: var(--color-primary, #4A90E2);
+    background: var(--color-primary, #4a90e2);
     color: white;
     box-shadow: 0 2px 4px rgba(74, 144, 226, 0.4);
   }
@@ -451,7 +426,7 @@
     transition: all 0.2s ease;
   }
   .feature-item:hover {
-    border-color: var(--color-primary, #4A90E2);
+    border-color: var(--color-primary, #4a90e2);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
   }

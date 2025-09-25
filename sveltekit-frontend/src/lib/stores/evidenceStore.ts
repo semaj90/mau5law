@@ -9,23 +9,23 @@ export interface Evidence {
   type: string;
   caseId: string;
   fileUrl?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   tags?: string[];
   location?: {
     latitude: number;
     longitude: number;
     address?: string;
-  };
+  }
   classification?: {
     category: string;
     relevance: number;
     confidence: number;
-  };
+  }
   timeline?: {
     createdAt: string;
     updatedAt: string;
     collectedAt?: string;
-  };
+  }
   analysis?: {
     summary: string;
     keyPoints: string[];
@@ -37,7 +37,7 @@ export interface Evidence {
     aiSummary?: string;
     vectorSimilarity?: number;
     relatedEvidence?: string[];
-  };
+  }
 }
 export interface EvidenceOperation {
   id: string;
@@ -100,15 +100,15 @@ class RealTimeEvidenceStore {
             }),
           );
           resolve();
-        };
-        this.websocket.onmessage = (event: any) => {
+        }
+        this.websocket.onmessage = (_event: any) => {
           try {
             const message = JSON.parse(event.data);
             this.handleRealtimeUpdate(message);
           } catch (error: any) {
             console.error("WebSocket message parse error:", error);
           }
-        };
+        }
         this.websocket.onclose = () => {
           console.log("WebSocket disconnected");
           this.isConnected.set(false);
@@ -124,11 +124,11 @@ class RealTimeEvidenceStore {
             );
             this.connectSSE();
           }
-        };
+        }
         this.websocket.onerror = (error) => {
           console.error("WebSocket error:", error);
           reject(error);
-        };
+        }
       } catch (error: any) {
         reject(error);
       }
@@ -143,15 +143,15 @@ class RealTimeEvidenceStore {
         console.log("✅ SSE connected");
         this.isConnected.set(true);
         this.reconnectAttempts = 0;
-      };
-      this.eventSource.onmessage = (event: any) => {
+      }
+      this.eventSource.onmessage = (_event: any) => {
         try {
           const message = JSON.parse(event.data);
           this.handleRealtimeUpdate(message);
         } catch (error: any) {
           console.error("SSE message parse error:", error);
         }
-      };
+      }
       this.eventSource.onerror = () => {
         console.log("SSE disconnected");
         this.isConnected.set(false);
@@ -161,7 +161,7 @@ class RealTimeEvidenceStore {
             this.connectSSE();
           }, this.reconnectDelay * this.reconnectAttempts);
         }
-      };
+      }
     } catch (error: any) {
       console.error("SSE connection failed:", error);
     }
@@ -213,8 +213,8 @@ class RealTimeEvidenceStore {
     this.evidence.update((items) => {
       const index = items.findIndex((item) => (item as { id?: any; caseId?: any }).id === evidenceId);
       if (index === -1) return items;
-      const previousState = { ...items[index] };
-      const newState = { ...items[index], ...changes };
+      const previousState = { ...items[index] }
+      const newState = { ...items[index], ...changes }
       // Update local cache
       this.localCache.set(evidenceId, newState);
       // Add operation to history
@@ -261,13 +261,13 @@ class RealTimeEvidenceStore {
     const evidenceId = crypto.randomUUID();
     const newEvidence: Evidence = {
       ...evidenceData,
-      id: evidenceId
+      id: evidenceId;
       timeline: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         ...evidenceData.timeline
       }
-    };
+    }
     // Optimistic update
     this.handleEvidenceCreated(newEvidence, this.getCurrentUserId();
     try {
@@ -451,7 +451,7 @@ class RealTimeEvidenceStore {
         operationHistory: get(this.operationHistory),
         currentHistoryIndex: get(this.currentHistoryIndex),
         lastUpdated: new Date().toISOString()
-      };
+      }
       localStorage.setItem("evidenceStore", JSON.stringify(data);
     } catch (error: any) {
       console.error("Failed to save to localStorage:", error);

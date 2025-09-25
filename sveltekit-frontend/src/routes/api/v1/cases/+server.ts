@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       })
       .passthrough()
     const payload = {
-      success: true
+      success: true;
       data: (result as { items?: any; pagination?: any }).items,
       pagination: {
         page: (result as { items?: any; pagination?: any }).pagination.page,

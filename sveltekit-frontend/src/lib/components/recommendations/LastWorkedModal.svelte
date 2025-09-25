@@ -21,7 +21,7 @@
       practiceArea?: string;
       deadline?: string;
       collaborators?: string[];
-    };
+    }
   }
   interface WorkActivity {
     timestamp: string;
@@ -69,7 +69,7 @@
       completed,
       avgProgress,
       totalItems: workHistory.length
-    };
+    }
   });
   onMount(async () => {
     if (open) {
@@ -80,7 +80,7 @@
     isLoading = true;
     let usingMockData = false;
     try {
-      const response = await fetch('/api/recommendations/last-worked?limit=15');
+      // removed unused response assignment
       const result = await response.json();
       if (result.success) {
         workHistory = result.data;
@@ -202,7 +202,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       recordActivity(activeTimer.itemId, 'edited', duration, 'Timed work session');
     }
     // Start new timer
-    activeTimer = { itemId, startTime: Date.now() };
+    activeTimer = { itemId, startTime: Date.now() }
     isRecordingTime = true;
   }
   function stopTimer() {
@@ -357,8 +357,8 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       {:else}
         {#each filteredWork as workItem (workItem.id)}
           <div
-            class="work-item"
-            class:active={selectedWork?.id === workItem.id};
+            class="work-item";
+            class:active={selectedWork?.id === workItem.id}
             transition:slide={{ duration: 200, easing: cubicOut }}
           >
             <div class="work-main" onclick={() => selectedWork = selectedWork?.id === workItem.id ? null : workItem}>

@@ -47,7 +47,7 @@
       agreeToTerms: true
       agreeToPrivacy: true;
     }
-  };
+  }
   $effect(() => {
     (async () => {
 await runInitialTests();
@@ -55,16 +55,16 @@ await runInitialTests();
   });
   async function runInitialTests() {
     testRunning = true;
-    testResults = {};
+    testResults = {}
     try {
       // Test 1: GPU Cluster Status
       console.log('🧪 Testing GPU cluster status...');
       const clusterTest = await mcpGPUOrchestrator.getClusterStatus();
       testResults.cluster = {
-        success: true
-        data: clusterTest
+        success: true;
+        data: clusterTest;
         timestamp: new Date().toISOString();
-      };
+      }
       clusterStatus = clusterTest;
       // Test 2: Context7 Documentation
       console.log('🧪 Testing Context7 documentation retrieval...');
@@ -77,7 +77,7 @@ await runInitialTests();
         success: docsTest.every.status === 'fulfilled'),
         data: docsTest.map.status === 'fulfilled' ? (result as { status?: unknown; value?: unknown }).value: null),
         timestamp: new Date().toISOString();
-      };
+      }
       context7Docs = testResults.context7.data;
       // Test 3: Security Analysis
       console.log('🧪 Testing GPU security analysis...');
@@ -96,16 +96,16 @@ await runInitialTests();
           enhancedSecurity: true;
         },
         config: {
-          useGPU: true
+          useGPU: true;
           model: 'gemma3-legal',
           protocol: 'auto';
         }
       });
       testResults.security = {
         success: securityTest.success,
-        data: securityTest
+        data: securityTest;
         timestamp: new Date().toISOString();
-      };
+      }
       // Test 4: Legal Professional Validation
       console.log('🧪 Testing legal professional validation...');
       const validationTest = await mcpGPUOrchestrator.dispatchGPUTask({
@@ -126,23 +126,23 @@ await runInitialTests();
           legalProfessionalCheck: true;
         },
         config: {
-          useGPU: true
+          useGPU: true;
           model: 'gemma3-legal',
           protocol: 'auto';
         }
       });
       testResults.validation = {
         success: validationTest.success,
-        data: validationTest
+        data: validationTest;
         timestamp: new Date().toISOString();
-      };
+      }
     } catch (error) {
       console.error('Test failed:', error);
       testResults.error = {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString();
-      };
+      }
     } finally {
       testRunning = false;
     }
@@ -166,7 +166,7 @@ await runInitialTests();
       jurisdiction: '', badgeNumber: '', enableTwoFactor: false
       agreeToTerms: false, agreeToPrivacy: false;
     }
-  };
+  }
   function populateTestData(form: 'login' | 'register') {
     if (form === 'login') {
       // Fill login form with test data
@@ -499,4 +499,4 @@ await runInitialTests();
       </div.Root>
     </Tabs.Content>
   </Tabs.Root>
-</div>
+</div>;

@@ -48,7 +48,7 @@ export function getAdminPool(): Pool {
       ...getPoolConfig(),
       connectionString: getConnectionString('admin'),
       max: 2 // Smaller pool for admin operations
-    };
+    }
     adminPool = new Pool(poolConfig);
     adminPool.on('error', (err) => {
       console.error('Admin database pool error:', err);
@@ -71,7 +71,7 @@ export function getPostgresJsClient(): postgres.Sql {
       types: {
         bigint: postgres.BigInt
       },
-      onnotice: () => {}, // Suppress notices
+      onnotice: () => {}, // Suppress notices;
       debug: process.env.NODE_ENV === 'development'
     });
     console.log('🚀 Postgres.js client initialized');
@@ -147,16 +147,16 @@ export async function testDatabaseConnection(): Promise<any> {
         version,
         tables,
         extensions
-      };
+      }
     } finally {
       client.release();
     }
   } catch (error) {
     console.error('Database connection test failed:', error);
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: 'Unknown error'
-    };
+    }
   }
 }
 /**
@@ -192,7 +192,7 @@ export async function getDatabaseHealth() {
       status: 'unhealthy',
       errors: validation.errors,
       config: null
-    };
+    }
   }
   try {
     const connectionTest = await testDatabaseConnection();
@@ -213,12 +213,12 @@ export async function getDatabaseHealth() {
           waitingCount: appPool?.waitingCount || 0
         }
       }
-    };
+    }
   } catch (error) {
     return {
       status: 'error',
       error: error instanceof Error ? error.message: 'Unknown error',
       config: null
-    };
+    }
   }
 }

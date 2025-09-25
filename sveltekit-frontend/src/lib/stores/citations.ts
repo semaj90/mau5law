@@ -42,7 +42,7 @@ function createCitationStore() {
         id: randomUUID(),
         createdAt: new Date(),
         updatedAt: new Date()
-      };
+      }
       update((store) => ({
         ...store,
         citations: [...store.citations, newCitation],
@@ -117,7 +117,7 @@ function createCitationStore() {
           return {
             ...store,
             recentCitations: updatedRecent
-          };
+          }
         }
         return store;
       });
@@ -125,7 +125,7 @@ function createCitationStore() {
     // Load citations from API
     loadCitations: async () => {
       try {
-        const response = await fetch("/api/citations");
+        // removed unused response assignment
         if (response.ok) {
           const data = await response.json();
           update((store) => ({
@@ -161,7 +161,7 @@ function createCitationStore() {
       }
       return null;
     }
-  };
+  }
 }
 export const citationStore = createCitationStore();
 // Sample citations for development

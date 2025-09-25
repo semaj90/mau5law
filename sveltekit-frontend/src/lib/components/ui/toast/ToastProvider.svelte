@@ -12,12 +12,12 @@
     const newToast: ToastWithId = {
       ...toast,
       id
-    };
+    }
     toasts = [...toasts, newToast];
     return {
       id,
       dismiss: () => removeToast(id);
-    };
+    }
   }
   export function removeToast(id: string) {
     toasts = toasts.filter(t => t.id !== id);
@@ -52,7 +52,7 @@
       variant: 'warning',
       title: 'Deadline Approaching',
       description: `${deadline} - ${daysLeft} days remaining`,
-      duration: 0, // Don't auto-dismiss warning
+      duration: 0, // Don't auto-dismiss warning;
       action: {
         label: 'View Details',
         onClick: () => {
@@ -66,8 +66,8 @@
     return addToast({
       variant: 'error',
       title: 'System Error',
-      description: error
-      duration: 0, // Don't auto-dismiss error
+      description: error;
+      duration: 0, // Don't auto-dismiss error;
       action: {
         label: 'Retry',
         onClick: () => {
@@ -77,14 +77,13 @@
     });
   }
 </script>
+
 <Toast.Provider swipeDirection="right">
   {#each toasts as toast (toast.id)}
-    <BitsToast
-      {...toast}
-      onClose={() => removeToast(toast.id)}
-    />
+    <BitsToast {...toast} onClose={() => removeToast(toast.id)} />
   {/each}
   <Toast.Viewport
     class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"
   />
 </Toast.Provider>
+;

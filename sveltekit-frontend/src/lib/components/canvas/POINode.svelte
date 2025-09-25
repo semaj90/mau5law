@@ -20,7 +20,7 @@
       what: string;
       why: string;
       how: string;
-    };
+    }
     threatLevel?: string;
     status?: string;
     tags?: string[];
@@ -47,12 +47,12 @@
   type FormShape = {
     name: string;
     aliases: string;
-    profileData: { who: string; what: string; why: string; how: string };
+    profileData: { who: string; what: string; why: string; how: string }
     relationship: string;
     threatLevel: string;
     status: string;
     tags: string;
-  };
+  }
   let formData: FormShape = {
     name: "",
     aliases: "",
@@ -61,7 +61,7 @@
     threatLevel: "low",
     status: "active",
     tags: "",
-  };
+  }
   // Initialize form when component mounts or poi changes
   $effect(() => {
     if (!isEditing) {
@@ -73,7 +73,7 @@
       threatLevel,
       status,
       tags: tags.join(", "),
-    };
+    }
     }
   });
   function startEditing() {
@@ -86,7 +86,7 @@
       threatLevel,
       status,
       tags: tags.join(", "),
-    };
+    }
   }
   function saveChanges() {
     const updatedPoi: POIData = {
@@ -104,7 +104,7 @@
         .map((t: string) => t.trim())
         .filter((t: string) => t.length > 0),
       profileData: formData.profileData,
-    };
+    }
     // Update local poi reference and emit an update event
     poi = updatedPoi;
     dispatch('update', updatedPoi);
@@ -121,9 +121,9 @@
       threatLevel,
       status,
       tags: tags.join(", "),
-    };
+    }
   }
-  function handleContextMenu(event: MouseEvent) {
+  function handleContextMenu(_event: MouseEvent) {
     event.preventDefault();
     contextX = event.clientX;
     contextY = event.clientY;
@@ -222,7 +222,7 @@
                 <label for="aliases" class="nier-label">Aliases</label>
                 <input
                   id="aliases"
-                  class="nier-input w-full"
+                  class="nier-input w-full";
                   bind:value={formData.aliases}
                   placeholder="Comma-separated aliases"
                 />
@@ -327,7 +327,7 @@
     <ContextMenu.Separator />
     <ContextMenu.Item;
       on:select={() => {
-        poi = { ...poi, threatLevel: "low" };
+        poi = { ...poi, threatLevel: "low" }
         dispatch('update', poi);
       }}
     >
@@ -336,7 +336,7 @@
     </ContextMenu.Item>
     <ContextMenu.Item
       on:select={() => {
-        poi = { ...poi, threatLevel: "medium" };
+        poi = { ...poi, threatLevel: "medium" }
         dispatch('update', poi);
       }}
     >
@@ -345,7 +345,7 @@
     </ContextMenu.Item>
     <ContextMenu.Item
       on:select={() => {
-        poi = { ...poi, threatLevel: "high" };
+        poi = { ...poi, threatLevel: "high" }
         dispatch('update', poi);
       }}
     >

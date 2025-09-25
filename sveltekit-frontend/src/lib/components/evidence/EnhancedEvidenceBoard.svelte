@@ -30,11 +30,11 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         bucket?: string;
         key?: string;
         url?: string;
-      };
+      }
       unifiedInsights?: unknown;
-    };
+    }
     position: ;
-{ x: number; y: number };
+{ x: number; y: number }
   previewUrl?: string;
   }
   interface SearchSuggestion {
@@ -162,7 +162,7 @@ await loadExistingEvidence();
   // Load existing evidence
   async function loadExistingEvidence() {
     try {
-      const response = await fetch('/api/v1/evidence');
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         evidenceItems = (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).data || [];
@@ -261,7 +261,7 @@ await loadExistingEvidence();
     const position = {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top;
-    };
+    }
     await uploadFiles(files, position);
   }
   // File upload with AI processing
@@ -286,7 +286,7 @@ await loadExistingEvidence();
             x: position.x + (evidenceItems.length * 20),
             y: position.y + (evidenceItems.length * 20);
           }
-        };
+        }
         // Add preview URL for images
         if (file.type.startsWith('image/')) {
           (newEvidence as any).previewUrl = URL.createObjectURL(file);
@@ -391,7 +391,7 @@ await loadExistingEvidence();
         body: JSON.stringify({
           evidenceId,
           filename: file.name,
-          content: content.substring(0, 2000), // Limit content length
+          content: content.substring(0, 2000), // Limit content length;
           type: detectFileType(file.type);
         })
       });
@@ -431,7 +431,7 @@ await loadExistingEvidence();
       video: '🎥',
       audio: '🎵',
       other: '📎';
-    };
+    }
     return icons[type];
   }
   // Revoke a preview URL if present
@@ -504,7 +504,7 @@ await loadExistingEvidence();
       processing: '🔄',
       ready: '✅',
       error: '❌';
-    };
+    }
     return icons[status];
   }
   function getScoreColor(score: number): string {
@@ -530,7 +530,7 @@ await loadExistingEvidence();
               keyFindings: ['Key finding 1', 'Key finding 2'],
               recommendations: ['Recommendation 1', 'Recommendation 2'];
             }
-          };
+          }
         }
         return item;
       });
@@ -879,8 +879,8 @@ await loadExistingEvidence();
       <div
         bind:this={dropZone}
         role="list"
-        class="evidence-drop-zone min-h-96 p-6 transition-all duration-300"
-        class:n64-depth={gamingMode};
+        class="evidence-drop-zone min-h-96 p-6 transition-all duration-300";
+        class:n64-depth={gamingMode}
         class:yorha-glow={dragActive}
         ondragenter={handleDragEnter}
         ondragleave={handleDragLeave}
@@ -964,7 +964,7 @@ await loadExistingEvidence();
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4" style="display: none;">
           {#each filteredEvidence as evidence (evidence.id)}
             <div class="evidence-nier-bits-card nes-container {selectedEvidence.includes(evidence.id) ? 'is-success' : 'with-title'} relative"
-                 class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)};
+                 class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)}
                  class:yorha-selected={selectedEvidence.includes(evidence.id)}>
               {#if !selectedEvidence.includes(evidence.id)}
                 <p class="title">{getFileIcon(evidence.type)} Evidence File</p>
@@ -979,7 +979,7 @@ await loadExistingEvidence();
                       class="nes-checkbox"
                       checked={selectedEvidence.includes(evidence.id)}
                       onchange={(e: Event) => {
-                        const target = e.target as HTMLInputElement | null;
+                        // removed unused target assignment
                         if (target && target.checked) {
                           selectedEvidence = [...selectedEvidence, evidence.id];
                         } else {

@@ -43,7 +43,7 @@
   interface ScoringRequest {
     caseId: string;
     evidence?: string[];
-    context?: { [key: string]: any };
+    context?: { [key: string]: any }
     scoringModel?: 'comprehensive' | 'priority' | 'risk';
   }
   // Mock data generator for demonstration
@@ -227,21 +227,21 @@
           const newScore = Math.min(100, Math.max(0, oldCase.score + scoreChange));
           cases[caseIndex] = {
             ...oldCase,
-            score: newScore
+            score: newScore;
             confidence: Math.min(100, oldCase.confidence + Math.floor(Math.random() * 5)),
             lastUpdated: new Date().toISOString(),
             riskLevel: newScore >= 70 ? 'high' : newScore >= 40 ? 'medium' : 'low',
             priority: newScore >= 70 ? 'critical' : newScore >= 50 ? 'high' : newScore >= 30 ? 'medium' : 'low';
-          };
+          }
         }
-        return { success: true, caseScore: cases[caseIndex] };
+        return { success: true, caseScore: cases[caseIndex] }
       } else {
         // Real API call
         const request: ScoringRequest = {
           caseId,
           scoringModel: 'comprehensive',
           ...options
-        };
+        }
         const response = await fetch('/api/ai/case-scoring', {
           method: 'POST',
           headers: {
@@ -253,7 +253,7 @@
           const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
           const caseIndex = cases.findIndex(c => c.id === caseId);
           if (caseIndex !== -1) {
-            cases[caseIndex] = { ...cases[caseIndex], ...result.caseScore };
+            cases[caseIndex] = { ...cases[caseIndex], ...result.caseScore }
           } else {
             cases = [...cases, (result as { caseScore?: any }).caseScore];
           }
@@ -310,7 +310,7 @@
       switch (sortBy) {
         case 'score': return b.score - a.scor;
         case 'priority': {
-          const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+          const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 }
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         }
         case 'date': return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
@@ -335,10 +335,10 @@
     </div>
     <div class="header-actions">
       <label class="demo-toggle">
-        <input type="checkbox" bind:checked={useMockData} onchange={(event: Event) => loadCaseScores} />
+        <input type="checkbox" bind:checked={useMockData} onchange={(_event: Event) => loadCaseScores} />
         <span>Demo Mode</span>
       </label>
-      <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => loadCaseScores} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
+      <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => loadCaseScores} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
         {isLoading ? 'Loading...' : 'Refresh'}
       </button>
     </div>
@@ -436,12 +436,12 @@
           </div>
             <div class="nier-bits-yorha-panel-content">
               <div class="nier-bits-card-actions">
-                <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => ) => openScoreDetails(caseItem} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
+                <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => ) => openScoreDetails(caseItem} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
                   View Details
                 </button>
                 <button aria-label="Action button"
                   type="button"
-                  onclick={(event: MouseEvent) => ) => scoreCase(caseItem.id}
+                  onclick={(_event: MouseEvent) => ) => scoreCase(caseItem.id}
                   disabled={scoringInProgress}
                   class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
                 >
@@ -456,12 +456,12 @@
 </div>
 <!-- Score Details Modal -->
 {#if showScoreDetails && selectedCase}
-  <div class="modal-overlay" role="dialog" aria-modal="true" onclick={(event: MouseEvent) => ) => showScoreDetails = false} onkeydown={(e) => e.key === 'Escape' && (showScoreDetails = false)}>
-    <div class="modal-content score-details-dialog" role="document" onclick={(event: MouseEvent) => e) => e.stopPropagation(}>
+  <div class="modal-overlay" role="dialog" aria-modal="true" onclick={(_event: MouseEvent) => ) => showScoreDetails = false} onkeydown={(e) => e.key === 'Escape' && (showScoreDetails = false)}>
+    <div class="modal-content score-details-dialog" role="document" onclick={(_event: MouseEvent) => e) => e.stopPropagation(}>
       <div class="modal-header">
         <h2 class="modal-title">Case Score Analysis: {selectedCase.title}</h2>
         <p class="modal-description">Detailed scoring breakdown and recommendations</p>
-        <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => ) => showScoreDetails = false} class="modal-close" aria-label="Close">
+        <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => ) => showScoreDetails = false} class="modal-close" aria-label="Close">
           ×
         </button>
       </div>
@@ -508,10 +508,10 @@
         </section>
       </div>
       <div class="dialog-actions">
-        <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => ) => showScoreDetails = false} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
+        <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => ) => showScoreDetails = false} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
           Close
         </button>
-        <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => ) => selectedCase && scoreCase(selectedCase.id} class="px-3 py-2 rounded bg-blue-600 text-white">
+        <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => ) => selectedCase && scoreCase(selectedCase.id} class="px-3 py-2 rounded bg-blue-600 text-white">
           Rescore Case
         </button>
       </div>

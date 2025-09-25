@@ -28,7 +28,7 @@ export interface MatrixUINode {
     active?: string;
     disabled?: string;
     [key: string]: unknown;
-  };
+  }
   events?: string[];
   children?: MatrixUINode[];
   metadata?: {
@@ -38,14 +38,14 @@ export interface MatrixUINode {
     aiGenerated?: boolean;
     lodLevel?: "low" | "mid" | "high";
     component?: string;
-  };
+  }
   content?: string;
   bounds?: {
     x: number;
     y: number;
     width: number;
     height: number;
-  };
+  }
 }
 export interface EnhancedWebGLBuffer {
   vertices: Float32Array;
@@ -59,7 +59,7 @@ export interface EnhancedWebGLBuffer {
     nodeCount: number;
     lodLevel: "low" | "mid" | "high";
     shaderComplexity: "basic" | "standard" | "advanced";
-  };
+  }
 }
 export interface CSSOutput {
   classes: string[];
@@ -73,7 +73,7 @@ export interface EventMapping {
     type: string;
     handler: string;
     matrix: number[];
-    bounds: { x: number; y: number; width: number; height: number };
+    bounds: { x: number; y: number; width: number; height: number }
   }[];
 }
 export interface CompiledNode {
@@ -93,7 +93,7 @@ export class MatrixUICompiler {
     low: { maxVertices: 1000, maxNodes: 50 },
     mid: { maxVertices: 5000, maxNodes: 200 },
     high: { maxVertices: 20000, maxNodes: 1000 }
-  };
+  }
   constructor(canvas?: HTMLCanvasElement) {
     if (canvas) {
       this.gl = canvas.getContext("webgl2");
@@ -102,7 +102,7 @@ export class MatrixUICompiler {
   /**
    * Enhanced compilation with full Phase 8 features: JSON → WebGL + CSS + Events
    */
-  async compileEnhanced(
+  async compileEnhanced(;
     nodes: MatrixUINode[]
     xstateContext?: unknown
   ): Promise<any> {
@@ -133,10 +133,10 @@ export class MatrixUICompiler {
     return {
       compiled: compiledNodes
       webgl: webglBuffer
-      css: cssOutput
+      css: cssOutput;
       events: eventMappings
       optimizations
-    };
+    }
   }
   /**
    * Legacy compile method for backward compatibility
@@ -167,7 +167,7 @@ export class MatrixUICompiler {
     const matrices = new Float32Array(nodes.length * 16); // 4x4 matrix per node
     // Fill buffers with node data
     nodes.forEach((node, i) => {
-      const bounds = node.bounds || { x: 0, y: 0, width: 100, height: 100 };
+      const bounds = node.bounds || { x: 0, y: 0, width: 100, height: 100 }
       const baseVertex = i * 4;
       const baseIndex = i * 6;
       // Vertices (quad)
@@ -198,7 +198,7 @@ export class MatrixUICompiler {
         lodLevel,
         shaderComplexity: lodLevel === "high" ? "advanced" : "standard"
       }
-    };
+    }
   }
   /**
    * Generate UnoCSS classes for a node
@@ -225,7 +225,7 @@ export class MatrixUICompiler {
   }
   private async generateEnhancedCSS(nodes: MatrixUINode[], xstateContext?: unknown): Promise<CSSOutput> {
     const classes: string[] = [];
-    const variables: Record<string, string> = {};
+    const variables: Record<string, string> = {}
     const animations: string[] = [];
     nodes.forEach((node: any) => {
       // Generate UnoCSS classes based on node type and metadata
@@ -249,7 +249,7 @@ export class MatrixUICompiler {
       variables,
       animations,
       unoCSS
-    };
+    }
   }
   private generateEventMappings(nodes: MatrixUINode[]): EventMapping[] {
     return nodes.map((node: any) => ({,
@@ -287,7 +287,7 @@ export class MatrixUICompiler {
       cssClasses,
       webglBuffer,
       lodLevel
-    };
+    }
   }
   /**
    * Create DOM element based on node type
@@ -417,7 +417,7 @@ export class MatrixUICompiler {
     if (!document.querySelector(`style[data-matrix="${className}"]`)) {
       const style = document.createElement("style");
       style.setAttribute("data-matrix", className);
-      style.textContent = `.${className} { transform: ${transformValue}; }`;
+      style.textContent = `.${className} { transform: ${transformValue} }`;
       document.head.appendChild(style);
     }
     return className;
@@ -426,7 +426,7 @@ export class MatrixUICompiler {
    * Create WebGL buffer for GPU acceleration
    */
   private createWebGLBuffer(
-    node: MatrixUINode
+    node: MatrixUINode;
     matrix: Float32Array
   ): WebGLBuffer | undefined {
     if (!this.gl) return undefined;
@@ -501,7 +501,7 @@ export class MatrixUICompiler {
   /**
    * Handle UI events with matrix context
    */;
-  private handleEvent(event: Event, node: MatrixUINode): void {
+  private handleEvent(_event: Event, node: MatrixUINode): void {
     // Emit custom event with matrix context
     const matrixEvent = new CustomEvent("matrix-ui-event", {
       detail: {
@@ -551,6 +551,6 @@ export function createMatrixComponent(node: MatrixUINode) {
     destroy() {
       // Cleanup when component unmounts
     }
-  };
+  }
 }
 export default MatrixUICompiler;

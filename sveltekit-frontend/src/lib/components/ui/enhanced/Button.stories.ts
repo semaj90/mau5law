@@ -41,7 +41,7 @@ export const Default: Story = {
     children: 'Button',
     variant: 'default'
   }
-};
+}
 export const Legal: Story = {
   args: {
     children: 'Legal Action',
@@ -54,7 +54,7 @@ export const Legal: Story = {
       }
     }
   }
-};
+}
 export const Evidence: Story = {
   args: {
     children: 'Add Evidence',
@@ -67,7 +67,7 @@ export const Evidence: Story = {
       }
     }
   }
-};
+}
 export const Case: Story = {
   args: {
     children: 'Create Case',
@@ -80,7 +80,7 @@ export const Case: Story = {
       }
     }
   }
-};
+}
 export const Loading: Story = {
   args: {
     children: 'Processing...',
@@ -93,43 +93,43 @@ export const Loading: Story = {
       }
     }
   }
-};
+}
 export const Disabled: Story = {
   args: {
     children: 'Disabled',
     disabled: true
   }
-};
+}
 export const Large: Story = {
   args: {
     children: 'Large Button',
     size: 'lg'
   }
-};
+}
 export const ExtraLarge: Story = {
   args: {
     children: 'Extra Large',
     size: 'xl'
   }
-};
+}
 export const Small: Story = {
   args: {
     children: 'Small',
     size: 'sm'
   }
-};
+}
 export const Outline: Story = {
   args: {
     children: 'Outline',
     variant: 'outline'
   }
-};
+}
 export const Ghost: Story = {
   args: {
     children: 'Ghost',
     variant: 'ghost'
   }
-};
+}
 export const Destructive: Story = {
   args: {
     children: 'Delete',
@@ -142,7 +142,7 @@ export const Destructive: Story = {
       }
     }
   }
-};
+}
 export const FullWidth: Story = {
   args: {
     children: 'Full Width Button',
@@ -155,4 +155,4 @@ export const FullWidth: Story = {
       }
     }
   }
-};
+}

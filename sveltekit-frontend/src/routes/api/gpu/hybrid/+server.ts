@@ -86,7 +86,7 @@ async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>
 /*
  * Intelligently route request to optimal GPU service
  */
-function selectOptimalService(
+function selectOptimalService(;
   request: GPURequest
   healthStatus: Record<string, ServiceHealthStatus>
 ): string {

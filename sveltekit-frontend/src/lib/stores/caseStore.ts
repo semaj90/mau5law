@@ -22,12 +22,12 @@ export interface CaseState {
     caseType?: string;
     priority?: string;
     search?: string;
-  };
+  }
   pagination: {
     page: number;
     limit: number;
     total: number;
-  };
+  }
 }
 const createCaseStore = () => {
   const { subscribe, set, update } = writable<CaseState>({
@@ -103,7 +103,7 @@ const createCaseStore = () => {
             activeCaseId: caseId
             isLoading: false
           });
-          return { success: true, case: caseData };
+          return { success: true, case: caseData }
         } else {
           const error = await response.json();
           update((state) => ({
@@ -111,7 +111,7 @@ const createCaseStore = () => {
             error: error.message || "Failed to load case",
             isLoading: false
           });
-          return { success: false, error: error.message };
+          return { success: false, error: error.message }
         }
       } catch (error: any) {
         update((state) => ({
@@ -119,7 +119,7 @@ const createCaseStore = () => {
           error: "Network error while loading case",
           isLoading: false
         });
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     // Create new case
@@ -150,7 +150,7 @@ const createCaseStore = () => {
             },
             isLoading: false
           });
-          return { success: true, case: newCase };
+          return { success: true, case: newCase }
         } else {
           const error = await response.json();
           update((state) => ({
@@ -158,7 +158,7 @@ const createCaseStore = () => {
             error: error.message || "Failed to create case",
             isLoading: false
           });
-          return { success: false, error: error.message };
+          return { success: false, error: error.message }
         }
       } catch (error: any) {
         update((state) => ({
@@ -166,7 +166,7 @@ const createCaseStore = () => {
           error: "Network error while creating case",
           isLoading: false
         });
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     // Update case
@@ -194,7 +194,7 @@ const createCaseStore = () => {
                 : state.activeCase,
             isLoading: false
           });
-          return { success: true, case: updatedCase };
+          return { success: true, case: updatedCase }
         } else {
           const error = await response.json();
           update((state) => ({
@@ -202,7 +202,7 @@ const createCaseStore = () => {
             error: error.message || "Failed to update case",
             isLoading: false
           });
-          return { success: false, error: error.message };
+          return { success: false, error: error.message }
         }
       } catch (error: any) {
         update((state) => ({
@@ -210,7 +210,7 @@ const createCaseStore = () => {
           error: "Network error while updating case",
           isLoading: false
         });
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     // Delete case
@@ -235,7 +235,7 @@ const createCaseStore = () => {
             },
             isLoading: false
           });
-          return { success: true };
+          return { success: true }
         } else {
           const error = await response.json();
           update((state) => ({
@@ -243,7 +243,7 @@ const createCaseStore = () => {
             error: error.message || "Failed to delete case",
             isLoading: false
           });
-          return { success: false, error: error.message };
+          return { success: false, error: error.message }
         }
       } catch (error: any) {
         update((state) => ({
@@ -251,7 +251,7 @@ const createCaseStore = () => {
           error: "Network error while deleting case",
           isLoading: false
         });
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     // Generate AI-powered report for case
@@ -287,7 +287,7 @@ const createCaseStore = () => {
               : state.activeCase,
             isLoading: false
           });
-          return { success: true, report };
+          return { success: true, report }
         } else {
           const error = await response.json();
           update((state) => ({
@@ -295,7 +295,7 @@ const createCaseStore = () => {
             error: error.message || "Failed to generate report",
             isLoading: false
           });
-          return { success: false, error: error.message };
+          return { success: false, error: error.message }
         }
       } catch (error: any) {
         update((state) => ({
@@ -303,7 +303,7 @@ const createCaseStore = () => {
           error: "Network error while generating report",
           isLoading: false
         });
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     // Set active case
@@ -316,7 +316,7 @@ const createCaseStore = () => {
           ...state,
           activeCaseId: caseId
           activeCase
-        };
+        }
       });
     },
     // Update filters
@@ -370,17 +370,17 @@ const createCaseStore = () => {
         });
         if (response.ok) {
           const analysis = await response.json();
-          return { success: true, analysis };
+          return { success: true, analysis }
         } else {
           const error = await response.json();
-          return { success: false, error: error.message };
+          return { success: false, error: error.message }
         }
       } catch (error: any) {
-        return { success: false, error: "Network error during analysis" };
+        return { success: false, error: "Network error during analysis" }
       }
     }
-  };
-};
+  }
+}
 export const caseStore = createCaseStore();
 // Derived stores
 export const activeCaseId = derived(caseStore, ($cases) => $cases.activeCaseId);

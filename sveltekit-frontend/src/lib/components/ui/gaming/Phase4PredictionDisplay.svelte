@@ -36,7 +36,7 @@
       borderColor: '#E4E4FF',
       fontFamily: '"Press Start 2P", monospace'
     }
-  };
+  }
   let currentTheme = $derived(themeConfig[consoleTheme as keyof typeof themeConfig] || themeConfig.n64);
   async function loadPrediction() {
     if (!caseId) return;
@@ -69,7 +69,7 @@
     return '#6B7280'; // Gray
   }
   function getConfidenceBarWidth(level: string): number {
-    const levels = { LOW: 25, MEDIUM: 50, HIGH: 75, CRITICAL: 100 };
+    const levels = { LOW: 25, MEDIUM: 50, HIGH: 75, CRITICAL: 100 }
     return levels[level as keyof typeof levels] || 0;
   }
   function getRiskIndicatorIcon(risk: string): string {
@@ -78,7 +78,7 @@
       MEDIUM: '🟡',
       HIGH: '🟠',
       CRITICAL: '🔴'
-    };
+    }
     return icons[risk as keyof typeof icons] || '⚪';
   }
   $effect(() => {
@@ -87,6 +87,7 @@
     }
   });
 </script>
+
 <div
   class="prediction-display {consoleTheme}"
   style:background={currentTheme.bgColor}
@@ -99,12 +100,7 @@
       <span class="icon">🔮</span>
       Case Outcome Prediction
     </h2>
-    <button
-      class="refresh-btn"
-      style:color={currentTheme.accentColor}
-      onclick={loadPrediction}
-      disabled={loading}
-    >
+    <button class="refresh-btn" style:color={currentTheme.accentColor} onclick={loadPrediction} disabled={loading}>
       {loading ? '⏳' : '🔄'}
     </button>
   </div>
@@ -120,9 +116,7 @@
     <div class="error-container" transition:fade>
       <div class="error-icon">❌</div>
       <p class="error-message">{error}</p>
-      <button class="retry-btn nes-btn is-error" onclick={loadPrediction}>
-        Retry Analysis
-      </button>
+      <button class="retry-btn nes-btn is-error" onclick={loadPrediction}> Retry Analysis </button>
     </div>
   {:else if prediction}
     <div class="prediction-content" transitionfly={{ y: 20, duration: 400 }}>
@@ -163,10 +157,7 @@
           </h3>
           <div class="factors-grid">
             {#each prediction.keyFactors as factor, index}
-              <div
-                class="factor-card {consoleTheme}"
-                transitionfly={{ x: -20, delay: index * 100 }}
-              >
+              <div class="factor-card {consoleTheme}" transitionfly={{ x: -20, delay: index * 100 }}>
                 <div class="factor-header">
                   <span class="factor-type">{factor.factorType.replace.toUpperCase()}</span>
                   <div
@@ -195,10 +186,7 @@
           </h3>
           <div class="cases-list">
             {#each prediction.similarCases as similarCase, index}
-              <div
-                class="case-card {consoleTheme}"
-                transitionfly={{ y: 10, delay: index * 50 }}
-              >
+              <div class="case-card {consoleTheme}" transitionfly={{ y: 10, delay: index * 50 }}>
                 <div class="case-header">
                   <h4 class="case-title">{similarCase.title}</h4>
                   <div class="case-outcome {similarCase.outcome}">
@@ -228,8 +216,11 @@
       <div class="gaming-elements" transitionfade={{ delay: 600 }}>
         <div class="achievement-display">
           <span class="achievement-icon">
-            {prediction.gameTheme.displayAs === 'boss_battle_odds' ? '⚔️' :
-             prediction.gameTheme.displayAs === 'quest_completion' ? '🎯' : '🎲'}
+            {prediction.gameTheme.displayAs === 'boss_battle_odds'
+              ? '⚔️'
+              : prediction.gameTheme.displayAs === 'quest_completion'
+                ? '🎯'
+                : '🎲'}
           </span>
           <span class="achievement-text">
             {prediction.gameTheme.displayAs.replace.toUpperCase()} Analysis Complete
@@ -241,12 +232,11 @@
     <div class="empty-state" transition:fade>
       <div class="empty-icon">🔮</div>
       <p>Click "Analyze Case" to generate outcome prediction</p>
-      <button class="analyze-btn nes-btn is-primary" onclick={loadPrediction}>
-        Analyze Case
-      </button>
+      <button class="analyze-btn nes-btn is-primary" onclick={loadPrediction}> Analyze Case </button>
     </div>
   {/if}
 </div>
+
 <style>
   .prediction-display {
     border: 3px solid;

@@ -32,7 +32,7 @@ export class EnhancedVectorOperations {
     return [];
   }
   async enhancedRAGQuery(_query: string, _context: VectorSearchResult[], _userId: string) {
-    return { response: 'stub', sources: [], model: 'stub', processingTime: 0 };
+    return { response: 'stub', sources: [], model: 'stub', processingTime: 0 }
   }
 }
 export const vectorOps = new EnhancedVectorOperations();

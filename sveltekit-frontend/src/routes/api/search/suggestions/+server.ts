@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 // Enhanced RAG Service Configuration
 const ENHANCED_RAG_URL = 'http://localhost:8094'
 // Enhanced service client for AI-powered suggestions

@@ -1,4 +1,3 @@
-
 // Rate limiting utility stub
 export interface RateLimitOptions {
   maxRequests: number;
@@ -8,7 +7,7 @@ export interface RateLimitOptions {
 export class RateLimiter {
   private requests = new Map<string, number[]>();
   constructor(private options: RateLimitOptions) {}
-  isAllowed(key: string): boolean {
+  isAllowed(_key: string): boolean {
     const now = Date.now();
     const windowStart = now - this.options.windowMs;
     // Get existing requests for this key
@@ -24,7 +23,7 @@ export class RateLimiter {
     this.requests.set(key, recentRequests);
     return true;
   }
-  getRemainingAttempts(key: string): number {
+  getRemainingAttempts(_key: string): number {
     const now = Date.now();
     const windowStart = now - this.options.windowMs;
     const keyRequests = this.requests.get(key) || [];
@@ -32,6 +31,6 @@ export class RateLimiter {
     return Math.max(0, this.options.maxRequests - recentRequests.length);
   }
 }
-export function createRateLimiter(options: RateLimitOptions) {
+export function createRateLimiter(_options: RateLimitOptions) {
   return new RateLimiter(options);
 }

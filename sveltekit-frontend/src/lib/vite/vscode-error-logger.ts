@@ -7,7 +7,7 @@ import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
  * - Listens for devServer ws 'vite:error' and 'vite:warning'
  * - Records buildStart/buildEnd events
  */;
-export function vscodeErrorLogger(options: any = {}) {
+export function vscodeErrorLogger(_options: any = {}) {
   const config = {
     enabled: true
     logFile: resolve(process.cwd(), '.vscode/vite-errors.json'),
@@ -15,9 +15,9 @@ export function vscodeErrorLogger(options: any = {}) {
     includeWarnings: true
     includeSourceMaps: true
     ...options
-  };
+  }
   let server: any = undefined;
-  let errorLog: any = { metadata: { lastUpdated: new Date().toISOString(), version: 1 }, errors: [] };
+  let errorLog: any = { metadata: { lastUpdated: new Date().toISOString(), version: 1 }, errors: [] }
   function loadLog() {
     try {
       if (existsSync(config.logFile)) {
@@ -30,7 +30,7 @@ export function vscodeErrorLogger(options: any = {}) {
             version: parsed?.metadata?.version || 1
           },
           errors: Array.isArray(parsed?.errors) ? parsed.errors: []
-        };
+        }
       }
     } catch (e: any) {
     // ignore
@@ -41,7 +41,7 @@ export function vscodeErrorLogger(options: any = {}) {
       const dir = dirname(config.logFile);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       // Ensure metadata and errors exist before mutating
-      errorLog.metadata = errorLog.metadata || { version: 1 };
+      errorLog.metadata = errorLog.metadata || { version: 1 }
       errorLog.metadata.lastUpdated = new Date().toISOString();
       errorLog.errors = Array.isArray(errorLog.errors) ? errorLog.errors: [];
       writeFileSync(config.logFile, JSON.stringify(errorLog, null, 2);
@@ -68,7 +68,7 @@ export function vscodeErrorLogger(options: any = {}) {
       frame: err?.frame || undefined,
       plugin: err?.plugin || undefined,
       buildPhase: 'vite'
-    };
+    }
     return entry;
   }
   return {
@@ -102,7 +102,7 @@ export function vscodeErrorLogger(options: any = {}) {
         pushEntry({ timestamp: new Date().toISOString(), level: 'info', message: 'Build completed', buildPhase: 'build' });
       }
     }
-  };
+  }
 }
 export const defaultVSCodeErrorConfig = {
   enabled: true
@@ -114,4 +114,4 @@ export const defaultVSCodeErrorConfig = {
   notificationLevel: 'errors-only',
   integrateTasks: true
   generateDiagnostics: true
-};
+}

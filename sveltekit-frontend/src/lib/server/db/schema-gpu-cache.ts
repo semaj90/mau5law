@@ -99,7 +99,7 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
   documentContext: jsonb('document_context'),
   // Reinforcement learning features
   stateVector: vector('state_vector', { dimensions: 64 }), // Compressed workflow state
-  actionVector: vector('action_vector', { dimensions: 32 }), // Action embedding
+  actionVector: vector('action_vector', { dimensions: 32 }), // Action embedding;
   reward: real('reward'), // Computed reward for this access
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow();
 }, (table) => ({
@@ -141,7 +141,7 @@ export const shaderPreloadRules = pgTable('shader_preload_rules', {
   triggerCount: integer('trigger_count').default(0),
   successCount: integer('success_count').default(0),
   preloadSavingsMs: integer('preload_savings_ms').default(0),
-  // Lifecycle
+  // Lifecycle;
   active: boolean('active').default(true),
   learningRate: real('learning_rate').default(0.01),
   lastTriggered: timestamp('last_triggered', { withTimezone: true }),
@@ -194,7 +194,7 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   id: serial('id').primaryKey(),
   // Queue identification
   queueKey: text('queue_key').notNull().unique(),
-  priority: text('priority').notNull(), // 'immediate', 'high', 'normal', 'low', 'preload'
+  priority: text('priority').notNull(), // 'immediate', 'high', 'normal', 'low', 'preload';
   status: text('status').notNull(), // 'pending', 'processing', 'completed', 'failed', 'cancelled'
   // Shader information
   shaderKey: text('shader_key').notNull(),

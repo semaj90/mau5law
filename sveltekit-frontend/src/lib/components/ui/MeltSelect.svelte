@@ -21,7 +21,7 @@
   		contentClass?: string;
   		itemClass?: string;
   		// Event handlers
-  		onValueChange?: (value: string | undefined) => void;
+  		onValueChange?: (_value: string | undefined) => void;
   		onOpenChange?: (open: boolean) => void;
   		// Snippets
   		trigger?: Snippet<[{ selected: unknown; open: boolean }]>;
@@ -79,59 +79,59 @@
   	});
   	type $$Props = Prop;
 </script>
+
 <!-- Hidden input for form submission -->
 {#if name}
-	<input type="hidden" {name} value={value || ''} />
+  <input type="hidden" {name} value={value || ''} />
 {/if}
 <BitsSelect.Root {value} {open} {disabled} onValueChange={handleValueChange} onOpenChange={handleOpenChange}>
-	<!-- Trigger -->
-	<BitsSelect.Trigger
-		class={cn(defaultTriggerClass, triggerClass, className)}
-		aria-label={ariaLabel}
-		aria-labelledby={ariaLabelledBy}
-		data-testid={testId || "bits-select-trigger"}
-	>
-		{#if trigger}
-			{@render trigger({ selected: value, open: open })}
-		{:else}
-			<BitsSelect.Value placeholder={placeholder}>
-				{displayText}
-			</BitsSelect.Value>
-			<!-- Arrow -->
-			<BitsSelect.Icon class="ml-2 h-4 w-4 opacity-50">
-				<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="h-4 w-4">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-				</svg>
-			</BitsSelect.Icon>
-		{/if}
-	</BitsSelect.Trigger>
-	<!-- Content -->
-	<BitsSelect.Portal>
-		<BitsSelect.Content
-			class={cn(defaultContentClass, contentClass)}
-		>
-			{#each options as optionItem (optionItem.value)}
-				{@const isSelected = value === optionItem.value}
-				<BitsSelect.Item
-					value={optionItem.value}
-					disabled={optionItem.disabled}
-					class={cn(defaultItemClass, itemClass)}
-				>
-					{#if option}
-						{@render option({ option: optionItem, isSelected })}
-					{:else}
-						<!-- Selected indicator -->
-						<BitsSelect.ItemIndicator class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-							</svg>
-						</BitsSelect.ItemIndicator>
-						<BitsSelect.ItemText class="truncate">
-							{optionItem.label}
-						</BitsSelect.ItemText>
-					{/if}
-				</BitsSelect.Item>
-			{/each}
-		</BitsSelect.Content>
-	</BitsSelect.Portal>
+  <!-- Trigger -->
+  <BitsSelect.Trigger
+    class={cn(defaultTriggerClass, triggerClass, className)}
+    aria-label={ariaLabel}
+    aria-labelledby={ariaLabelledBy}
+    data-testid={testId || 'bits-select-trigger'}
+  >
+    {#if trigger}
+      {@render trigger({ selected: value, open: open })}
+    {:else}
+      <BitsSelect.Value {placeholder}>
+        {displayText}
+      </BitsSelect.Value>
+      <!-- Arrow -->
+      <BitsSelect.Icon class="ml-2 h-4 w-4 opacity-50">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="h-4 w-4">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </BitsSelect.Icon>
+    {/if}
+  </BitsSelect.Trigger>
+  <!-- Content -->
+  <BitsSelect.Portal>
+    <BitsSelect.Content class={cn(defaultContentClass, contentClass)}>
+      {#each options as optionItem (optionItem.value)}
+        {@const isSelected = value === optionItem.value}
+        <BitsSelect.Item
+          value={optionItem.value}
+          disabled={optionItem.disabled}
+          class={cn(defaultItemClass, itemClass)}
+        >
+          {#if option}
+            {@render option({ option: optionItem, isSelected })}
+          {:else}
+            <!-- Selected indicator -->
+            <BitsSelect.ItemIndicator class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </BitsSelect.ItemIndicator>
+            <BitsSelect.ItemText class="truncate">
+              {optionItem.label}
+            </BitsSelect.ItemText>
+          {/if}
+        </BitsSelect.Item>
+      {/each}
+    </BitsSelect.Content>
+  </BitsSelect.Portal>
 </BitsSelect.Root>
+;

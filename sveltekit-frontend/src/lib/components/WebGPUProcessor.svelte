@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level;
@@ -44,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
   			documentId?: string;
   			chunkIndex?: number;
   			timestamp: number;
-  		};
+  		}
   		status: 'pending' | 'processing' | 'completed' | 'error';
   		duration?: number;
   	}
@@ -57,8 +57,8 @@ https://svelte.dev/e/js_parse_error -->
   	// Stores
   	const webgpuContext = writable<WebGPUContext>({
   		device: null
-  		adapter: null
-  		canvas: null
+  		adapter: null;
+  		canvas: null;
   		context: null
   		isSupported: false
   		isInitialized: false;
@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
   			// Click tracking for attention heatmap
   			this.container.addEventListener('click', this.handleClick.bind(this));
   		}
-  		private handleMouseMove(event: MouseEvent) {
+  		private handleMouseMove(_event: MouseEvent) {
   			this.mousePositions.push({
   				x: event.clientX,
   				y: event.clientY,
@@ -215,8 +215,8 @@ https://svelte.dev/e/js_parse_error -->
   			}
   			this.updateAttentionHeatmap();
   		}
-  		private handleScroll(event: Event) {
-  			const target = event.target as HTMLElement;
+  		private handleScroll(_event: Event) {
+  			// removed unused target assignment
   			this.scrollPositions.push({
   				y: target.scrollTop,
   				timestamp: performance.now();
@@ -225,15 +225,15 @@ https://svelte.dev/e/js_parse_error -->
   				this.scrollPositions = this.scrollPositions.slice(-50);
   			}
   		}
-  		private handleFocusIn(event: FocusEvent) {
-  			const target = event.target as HTMLElement;
+  		private handleFocusIn(_event: FocusEvent) {
+  			// removed unused target assignment
   			this.focusRegions.push({ element: target, weight: 1.0 });
   		}
-  		private handleFocusOut(event: FocusEvent) {
-  			const target = event.target as HTMLElement;
+  		private handleFocusOut(_event: FocusEvent) {
+  			// removed unused target assignment
   			this.focusRegions = this.focusRegions.filter(region => region.element !== target);
   		}
-  		private handleClick(event: MouseEvent) {
+  		private handleClick(_event: MouseEvent) {
   			// Add high-weight attention point for clicks
   			this.mousePositions.push({
   				x: event.clientX,
@@ -268,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
   			const activeRegions = this.identifyActiveRegions(recentPositions, scores);
   			attentionData.set({
   				scores,
-  				positions: recentPositions
+  				positions: recentPositions;
   				timestamp: now
   				activeRegion;
   			});
@@ -487,7 +487,7 @@ https://svelte.dev/e/js_parse_error -->
   				timestamp: performance.now();
   			},
   			status: 'pending';
-  		};
+  		}
   		tensorOperations.update(ops => [...ops, operation]);
   		processingQueue.update(queue => [...queue, operation]);
   		// Process immediately if WebGPU is ready
@@ -648,235 +648,235 @@ if (enableWebGPU) {
   		return $tensorOperations.find(op => op.id === operationId);
   	}
 </script>
+
 <!-- Component template -->
 <div className={`webgpu-processor ${className}`}>
-	<!-- WebGPU Canvas -->
-	<canvas
-		bind:this={canvas as any}
-		class="webgpu-canvas"
-		width="800"
-		height="600"
-		style="display: none;"
-	></canvas>
-	<!-- Status Display -->
-	<div class="status-panel">
-		<div class="status-item">
-			<span class="label">WebGPU:</span>
-			<span class="value" class:enabled={$isWebGPUReady} class:disabled={!$isWebGPUReady}>
-				{$isWebGPUReady ? 'Ready' : 'Not Available'}
-			</span>
-		</div>
-		<div class="status-item">
-			<span class="label">Queue:</span>
-			<span class="value">{$queueLength} operations</span>
-		</div>
-		<div class="status-item">
-			<span class="label">Completed:</span>
-			<span class="value">{$completedOperations.length} operations</span>
-		</div>
-		<div class="status-item">
-			<span class="label">Performance:</span>
-			<span class="value">{$gpuMetrics.operationsPerSecond} ops/sec</span>
-		</div>
-	</div>
-	<!-- Performance Metrics -->
-	{#if enableWebGPU && $isWebGPUReady}
-		<div class="metrics-panel">
-			<h3>GPU Metrics</h3>
-			<div class="metric">
-				<label>Operations/sec:</label>
-				<div class="progress-bar">
-					<div class="progress" style="width: {Math.min(100, $gpuMetrics.operationsPerSecond * 2)}%"></div>
-				</div>
-				<span>{$gpuMetrics.operationsPerSecond.toFixed(1)}</span>
-			</div>
-			<div class="metric">
-				<label>Memory Usage:</label>
-				<div class="progress-bar">
-					<div class="progress memory" style="width: {$gpuMetrics.memoryUsage}%"></div>
-				</div>
-				<span>{$gpuMetrics.memoryUsage.toFixed(1)}%</span>
-			</div>
-			<div class="metric">
-				<label>Power Efficiency:</label>
-				<div class="progress-bar">
-					<div class="progress efficiency" style="width: {$gpuMetrics.powerEfficiency}%"></div>
-				</div>
-				<span>{$gpuMetrics.powerEfficiency.toFixed(1)}%</span>
-			</div>
-		</div>
-	{/if}
-	<!-- Attention Heatmap Visualization -->
-	{#if enableAttentionTracking && $attentionData}
-		<div class="attention-heatmap">
-			<h3>Attention Tracking</h3>
-			<div class="heatmap-container">
-				{#each $attentionData.activeRegions as region, i}
-					<div
-						class="attention-region"
-						style="
+  <!-- WebGPU Canvas -->
+  <canvas bind:this={canvas as any} class="webgpu-canvas" width="800" height="600" style="display: none;"></canvas>
+  <!-- Status Display -->
+  <div class="status-panel">
+    <div class="status-item">
+      <span class="label">WebGPU:</span>
+      <span class="value" class:enabled={$isWebGPUReady} class:disabled={!$isWebGPUReady}>
+        {$isWebGPUReady ? 'Ready' : 'Not Available'}
+      </span>
+    </div>
+    <div class="status-item">
+      <span class="label">Queue:</span>
+      <span class="value">{$queueLength} operations</span>
+    </div>
+    <div class="status-item">
+      <span class="label">Completed:</span>
+      <span class="value">{$completedOperations.length} operations</span>
+    </div>
+    <div class="status-item">
+      <span class="label">Performance:</span>
+      <span class="value">{$gpuMetrics.operationsPerSecond} ops/sec</span>
+    </div>
+  </div>
+  <!-- Performance Metrics -->
+  {#if enableWebGPU && $isWebGPUReady}
+    <div class="metrics-panel">
+      <h3>GPU Metrics</h3>
+      <div class="metric">
+        <label>Operations/sec:</label>
+        <div class="progress-bar">
+          <div class="progress" style="width: {Math.min(100, $gpuMetrics.operationsPerSecond * 2)}%"></div>
+        </div>
+        <span>{$gpuMetrics.operationsPerSecond.toFixed(1)}</span>
+      </div>
+      <div class="metric">
+        <label>Memory Usage:</label>
+        <div class="progress-bar">
+          <div class="progress memory" style="width: {$gpuMetrics.memoryUsage}%"></div>
+        </div>
+        <span>{$gpuMetrics.memoryUsage.toFixed(1)}%</span>
+      </div>
+      <div class="metric">
+        <label>Power Efficiency:</label>
+        <div class="progress-bar">
+          <div class="progress efficiency" style="width: {$gpuMetrics.powerEfficiency}%"></div>
+        </div>
+        <span>{$gpuMetrics.powerEfficiency.toFixed(1)}%</span>
+      </div>
+    </div>
+  {/if}
+  <!-- Attention Heatmap Visualization -->
+  {#if enableAttentionTracking && $attentionData}
+    <div class="attention-heatmap">
+      <h3>Attention Tracking</h3>
+      <div class="heatmap-container">
+        {#each $attentionData.activeRegions as region, i}
+          <div
+            class="attention-region"
+            style=";
 							top: {region.start}px;
 							height: {region.end - region.start}px;
-							opacity: {Math.min(1, region.weight)};
+							opacity: {Math.min(1, region.weight)}
 							background: hsl({240 - region.weight * 60}, 70%, 50%);
 						"
-					>
-						<span class="region-weight">{region.weight.toFixed(2)}</span>
-					</div>
-				{/each}
-			</div>
-		</div>
-	{/if}
-	<!-- Operation Log (for debugging) -->
-	{#if $tensorOperations.length > 0}
-		<details class="operation-log">
-			<summary>Operation Log ({$tensorOperations.length})</summary>
-			<div class="log-content">
-				{#each $tensorOperations.slice(-10) as operation}
-					<div class="operation-entry" class:completed={operation.status === 'completed'} class:error={operation.status === 'error'}>
-						<span class="op-id">{operation.id}</span>
-						<span class="op-type">{operation.type}</span>
-						<span class="op-status">{operation.status}</span>
-						{#if operation.duration}
-							<span class="op-duration">{operation.duration.toFixed(2)}ms</span>
-						{/if}
-					</div>
-				{/each}
-			</div>
-		</details>
-	{/if}
+          >
+            <span class="region-weight">{region.weight.toFixed(2)}</span>
+          </div>
+        {/each}
+      </div>
+    </div>
+  {/if}
+  <!-- Operation Log (for debugging) -->
+  {#if $tensorOperations.length > 0}
+    <details class="operation-log">
+      <summary>Operation Log ({$tensorOperations.length})</summary>
+      <div class="log-content">
+        {#each $tensorOperations.slice(-10) as operation}
+          <div
+            class="operation-entry"
+            class:completed={operation.status === 'completed'}
+            class:error={operation.status === 'error'}
+          >
+            <span class="op-id">{operation.id}</span>
+            <span class="op-type">{operation.type}</span>
+            <span class="op-status">{operation.status}</span>
+            {#if operation.duration}
+              <span class="op-duration">{operation.duration.toFixed(2)}ms</span>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    </details>
+  {/if}
 </div>
+
 <style>
-	.webgpu-processor {
-		@apply bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border;
-		font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-	}
-	.webgpu-canv.status-panel {
-		@apply grid grid-cols-2 md:grid-cols-4 gap-4 mb-4;
-	}
-	.status-item {
-		@apply bg-white dark:bg-gray-800 p-3 rounded border;
-	}
-	.label {
-		@apply text-sm font-medium text-gray-600 dark:text-gray-400;
-	}
-	.value {
-		@apply block text-lg font-bold text-gray-900 dark:text-white;
-	}
-	.value.enabled {
-		@apply text-green-600 dark:text-green-400;
-	}
-	.value.disabled {
-		@apply text-red-600 dark:text-red-400;
-	}
-	.metrics-panel {
-		@apply bg-white dark:bg-gray-800 p-4 rounded border mb-4;
-	}
-	.metrics-panel h3 {
-		@apply text-lg font-bold mb-3 text-gray-900 dark:text-white;
-	}
-	.metric {
-		@apply flex items-center gap-3 mb-2;
-	}
-	.metric label {
-		@apply text-sm font-medium text-gray-600 dark:text-gray-400 w-32;
-	}
-	.progress-bar {
-		@apply flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden;
-	}
-	.progress {
-		@apply h-full bg-blue-500 transition-all duration-300;
-	}
-	.progress.memory {
-		@apply bg-yellow-500;
-	}
-	.progress.efficiency {
-		@apply bg-green-500;
-	}
-	.attention-heatmap {
-		@apply bg-white dark: bg-gray-800 p-4 rounded border mb-4;
-		position: relative;
-	}
-	.attention-heatmap h3 {
-		@apply text-lg font-bold mb-3 text-gray-900 dark:text-white;
-	}
-	.heatmap-container {
-		@apply relative h-64 border rounded;
-		background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1));
-	}
-	.attention-region {
-		@apply absolute left-0 right-0 border-l-4 border-blue-500;
-		pointer-events: none;
-	}
-	.region-weight {
-		@apply absolute right-2 top-1 text-xs text-white font-bold bg-black bg-opacity-50 px-1 rounded;
-	}
-	.operation-log {
-		@apply bg-white dark:bg-gray-800 rounded border;
-	}
-	.operation-log summary {
-		@apply p-3 cursor-pointer font-medium text-gray-900 dark:text-white;
-	}
-	.log-content {
-		@apply border-t p-3 max-h-48 overflow-y-auto;
-	}
-	.operation-entry {
-		@apply flex gap-3 py-1 text-sm border-b border-gray-100 dark:border-gray-700 last:border-b-0;
-	}
-	.operation-entry.completed {
-		@apply text-green-600 dark:text-green-400;
-	}
-	.operation-entry.error {
-		@apply text-red-600 dark:text-red-400;
-	}
-	.op-id {
-		@apply font-mono text-xs w-16 truncat;
-	}
-	.op-type {
-		@apply flex-1 font-medium;
-	}
-	.op-status {
-		@apply w-20 text-center;
-	}
-	.op-duration {
-		@apply w-16 text-right text-gray-500;
-	}
-	/* Responsive design */
-	@media (max-width: 768px) {
-		.status-panel {
-			@apply grid-cols-1;
-		}
-		.metric {
-			@apply flex-col items-start gap-1;
-		}
-		.metric label {
-			@apply w-full;
-		}
-	}
-	/* Dark mode enhancements */
-	@media (prefers-color-scheme: dark) {
-		.webgpu-canvas {
-			border-color: #374151;
-		}
-	}
-	/* Animation for smooth updates */
-	.progress {
-		transition: width 0.3s ease-out;
-	}
-	.attention-region {
-		transition: all 0.2s ease-out;
-	}
-	/* Focus and accessibility */
-	.operation-log summary:focus {
-		@apply outline-none ring-2 ring-blue-500 ring-offset-2;
-	}
-	/* Performance indicator colors */
-	.value.enabled::before {
-		content: '●';
-		@apply text-green-400 mr-1;
-	}
-	.value.disabled::before {
-		content: '●';
-		@apply text-red-400 mr-1;
-	}
+  .webgpu-processor {
+    @apply bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  }
+  .webgpu-canv.status-panel {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-4 mb-4;
+  }
+  .status-item {
+    @apply bg-white dark:bg-gray-800 p-3 rounded border;
+  }
+  .label {
+    @apply text-sm font-medium text-gray-600 dark:text-gray-400;
+  }
+  .value {
+    @apply block text-lg font-bold text-gray-900 dark:text-white;
+  }
+  .value.enabled {
+    @apply text-green-600 dark:text-green-400;
+  }
+  .value.disabled {
+    @apply text-red-600 dark:text-red-400;
+  }
+  .metrics-panel {
+    @apply bg-white dark:bg-gray-800 p-4 rounded border mb-4;
+  }
+  .metrics-panel h3 {
+    @apply text-lg font-bold mb-3 text-gray-900 dark:text-white;
+  }
+  .metric {
+    @apply flex items-center gap-3 mb-2;
+  }
+  .metric label {
+    @apply text-sm font-medium text-gray-600 dark:text-gray-400 w-32;
+  }
+  .progress-bar {
+    @apply flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden;
+  }
+  .progress {
+    @apply h-full bg-blue-500 transition-all duration-300;
+  }
+  .progress.memory {
+    @apply bg-yellow-500;
+  }
+  .progress.efficiency {
+    @apply bg-green-500;
+  }
+  .attention-heatmap {
+    @apply bg-white dark: bg-gray-800 p-4 rounded border mb-4;
+    position: relative;
+  }
+  .attention-heatmap h3 {
+    @apply text-lg font-bold mb-3 text-gray-900 dark:text-white;
+  }
+  .heatmap-container {
+    @apply relative h-64 border rounded;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1));
+  }
+  .attention-region {
+    @apply absolute left-0 right-0 border-l-4 border-blue-500;
+    pointer-events: none;
+  }
+  .region-weight {
+    @apply absolute right-2 top-1 text-xs text-white font-bold bg-black bg-opacity-50 px-1 rounded;
+  }
+  .operation-log {
+    @apply bg-white dark:bg-gray-800 rounded border;
+  }
+  .operation-log summary {
+    @apply p-3 cursor-pointer font-medium text-gray-900 dark:text-white;
+  }
+  .log-content {
+    @apply border-t p-3 max-h-48 overflow-y-auto;
+  }
+  .operation-entry {
+    @apply flex gap-3 py-1 text-sm border-b border-gray-100 dark:border-gray-700 last:border-b-0;
+  }
+  .operation-entry.completed {
+    @apply text-green-600 dark:text-green-400;
+  }
+  .operation-entry.error {
+    @apply text-red-600 dark:text-red-400;
+  }
+  .op-id {
+    @apply font-mono text-xs w-16 truncat;
+  }
+  .op-type {
+    @apply flex-1 font-medium;
+  }
+  .op-status {
+    @apply w-20 text-center;
+  }
+  .op-duration {
+    @apply w-16 text-right text-gray-500;
+  }
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .status-panel {
+      @apply grid-cols-1;
+    }
+    .metric {
+      @apply flex-col items-start gap-1;
+    }
+    .metric label {
+      @apply w-full;
+    }
+  }
+  /* Dark mode enhancements */
+  @media (prefers-color-scheme: dark) {
+    .webgpu-canvas {
+      border-color: #374151;
+    }
+  }
+  /* Animation for smooth updates */
+  .progress {
+    transition: width 0.3s ease-out;
+  }
+  .attention-region {
+    transition: all 0.2s ease-out;
+  }
+  /* Focus and accessibility */
+  .operation-log summary:focus {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+  }
+  /* Performance indicator colors */
+  .value.enabled::before {
+    content: '●';
+    @apply text-green-400 mr-1;
+  }
+  .value.disabled::before {
+    content: '●';
+    @apply text-red-400 mr-1;
+  }
 </style>

@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
   		aiStore.update(state => ({ ...state, dialogOpen: false }));
   		// ondispatch removed;
   	}
-  	function handleKeydown(event: KeyboardEvent) {
+  	function handleKeydown(_event: KeyboardEvent) {
   		if (event.key === 'Escape') {
   			handleClose();
   		} else if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -62,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
   			role: 'user',
   			content: currentPrompt.trim(),
   			timestamp: new Date().toISOString();
-  		};
+  		}
   		// Add user message to history
   		aiStore.update(state => ({
   			...state,
@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
   				},
   				body: JSON.stringify({,
   					prompt: userMessage.content,
-  					vibe: selectedVibe
+  					vibe: selectedVibe;
   					context: 'canvas';
   				})
   			});
@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
   				role: 'assistant',
   				content: data.response || 'Sorry, I could not generate a response.',
   				timestamp: new Date().toISOString();
-  			};
+  			}
   			// Add AI response to history
   			aiStore.update(state => ({
   				...state,
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   				content: 'Sorry, I encountered an error. Please try again.',
   				timestamp: new Date().toISOString(),
   				isError: true;
-  			};
+  			}
   			aiStore.update(state => ({
   				...state,
   				isGenerating: false
@@ -145,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
   		});
   	}
   	// Close on outside click
-  	function handleBackdropClick(event: MouseEvent) {
+  	function handleBackdropClick(_event: MouseEvent) {
   		if (event.target === event.currentTarget) {
   			handleClose();
   		}
@@ -250,8 +250,8 @@ https://svelte.dev/e/js_parse_error -->
 			<!-- Input -->
 			<div class="mx-auto px-4 max-w-7xl">
 				<div class="mx-auto px-4 max-w-7xl">
-					<textarea
-						bind:this={promptInput};
+					<textarea;
+						bind:this={promptInput}
 						bind:value={currentPrompt}
 						placeholder="Ask the AI assistant anything about your case..."
 						rows="4"

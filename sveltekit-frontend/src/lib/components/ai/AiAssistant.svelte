@@ -1,4 +1,3 @@
-
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
@@ -87,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({,
             type: 'case',
-            targetId: caseId
+            targetId: caseId;
             depth: 'comprehensive',
             includeRAG: true
             includeUserActivity: false
@@ -110,10 +109,11 @@ https://svelte.dev/e/js_parse_error -->
         errorMessage = error instanceof Error ? error.message: 'An error occurred';
       }
     }
-  </script>
-  <div class="nier-nier-bits-card p-6 nes-container">
-    <div class="nier-header mb-4">
-      <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
+</script>
+
+<div class="nier-nier-bits-card p-6 nes-container">
+  <div class="nier-header mb-4">
+    <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
     <div class="flex gap-2 flex-wrap">
       <Button
         onclick={handleSummarize}
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
       >
-        {!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
+        {!user ? 'Sign in to Summarize' : $aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence'}
       </Button>
       <Button
         onclick={saveSummary}
@@ -175,7 +175,9 @@ https://svelte.dev/e/js_parse_error -->
               {#each $aiGlobalStore.context.sources.slice(0, 3) as item, i}
                 <li class="nier-list-item">
                   <span class="nier-badge">{i + 1}</span>
-                  {(item as { title?: any; id?: any }).title || (item as { title?: any; id?: any }).id || `Evidence #${i+1}`}
+                  {(item as { title?: any; id?: any }).title ||
+                    (item as { title?: any; id?: any }).id ||
+                    `Evidence #${i + 1}`}
                 </li>
               {/each}
             </ol>
@@ -248,6 +250,7 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </main>
 </div>
+
 <style>
   /* Nier.css inspired styles */
   :global(.nier-card) {

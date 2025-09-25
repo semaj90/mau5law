@@ -26,7 +26,7 @@ export interface ChatCompletionResponse {
     prompt_tokens: number;
     completion_tokens: number;
     total_tokens: number;
-  };
+  }
 }
 export interface CompletionRequest {
   model?: string;
@@ -46,7 +46,7 @@ export interface CompletionResponse {
     prompt_tokens: number;
     completion_tokens: number;
     total_tokens: number;
-  };
+  }
 }
 export class Gemma3Client {
   private baseUrl: string;
@@ -115,7 +115,7 @@ export class Gemma3Client {
       top_p: request.top_p ?? 0.9,
       max_tokens: request.max_tokens ?? 1024,
       stream: request.stream ?? false
-    };
+    }
     const response = await fetch(`${this.baseUrl}/v1/chat/completions`, {
       method: "POST",
       headers: {
@@ -145,7 +145,7 @@ export class Gemma3Client {
       top_p: request.top_p ?? 0.9,
       max_tokens: request.max_tokens ?? 1024,
       stream: request.stream ?? false
-    };
+    }
     const response = await fetch(`${this.baseUrl}/v1/completions`, {
       method: "POST",
       headers: {
@@ -259,7 +259,7 @@ export class Gemma3Client {
    * Helper: Summarize content
    */
   async summarizeContent(
-    content: string
+    content: string;
     type: string = "general",
   ): Promise<string> {
     const messages: ChatMessage[] = [;
@@ -297,7 +297,7 @@ export async function detectAvailableServer(): Promise<any> {
         return {
           url: server.url,
           backend: info.backend || server.name
-        };
+        }
       }
     } catch (error: any) {
       console.debug(`Server ${server.url} not available:`, error);
@@ -316,14 +316,14 @@ export function createGemma3Store() {
       analyzeDocument: async () => "",
       reviewContract: async () => "",
       generateTemplate: async () => ""
-    };
+    }
   }
   let client = new Gemma3Client();
   let serverInfo: any = null;
   return {
     subscribe: (callback: (info: any) => void) => {
       callback(serverInfo);
-      return () => {};
+      return () => {}
     },
     async checkHealth() {
       try {
@@ -353,5 +353,5 @@ export function createGemma3Store() {
     async generateTemplate(type: string, requirements: string) {
       return client.generateDocumentTemplate(type, requirements);
     }
-  };
+  }
 }

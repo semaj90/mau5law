@@ -1,18 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
   interface Props {
     content?: string;
-    placement?: "top" | "bottom" | "left" | "right";
+    placement?: 'top' | 'bottom' | 'left' | 'right';
     disabled?: boolean;
     children?: import('svelte').Snippet;
   }
-  let {
-    content = "",
-    placement = "top",
-    disabled = false,
-    children
-  }: Props = $props();
+  let { content = '', placement = 'top', disabled = false, children }: Props = $props();
   let showTooltip = $state(false);
   let timeoutId = $state<ReturnType<typeof setTimeout> | null>(null);
   function handleMouseEnter() {
@@ -26,12 +21,8 @@
     showTooltip = false;
   }
 </script>
-<div
-  class="space-y-4"
-  role="tooltip"
-  onmouseenter={handleMouseEnter}
-  onmouseleave={handleMouseLeave}
->
+
+<div class="space-y-4" role="tooltip" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
   {@render children?.()}
   {#if showTooltip && content}
     <div class="space-y-4" role="tooltip">
@@ -39,10 +30,12 @@
     </div>
   {/if}
 </div>
-<style>/* @unocss-include */ .tooltip-wrapper {
+
+<style>/* @unocss-include */ {}
+  .tooltip-wrapper {
     position: relative;
     display: inline-block;
-}
+  }
   .tooltip {
     position: absolute;
     z-index: 9999;
@@ -57,29 +50,29 @@
     word-wrap: break-word;
     white-space: normal;
     pointer-events: none;
-}
+  }
   .tooltip-top {
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
     margin-bottom: 0.5rem;
-}
+  }
   .tooltip-bottom {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
     margin-top: 0.5rem;
-}
+  }
   .tooltip-left {
     right: 100%;
     top: 50%;
     transform: translateY(-50%);
     margin-right: 0.5rem;
-}
+  }
   .tooltip-right {
     left: 100%;
     top: 50%;
     transform: translateY(-50%);
     margin-left: 0.5rem;
-}
+  }
 </style>

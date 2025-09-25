@@ -28,7 +28,7 @@ export interface AIAgentState {
     isIndexed: boolean;
     documentCount: number;
     lastIndexUpdate: Date | null;
-  };
+  }
   similarDocuments: SimilarDocument[];
   citationSources: CitationSource[];
   // Real-time Features
@@ -60,7 +60,7 @@ export interface SimilarDocument {
   title: string;
   content: string;
   similarity: number;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 export interface CitationSource {
   id: string;
@@ -166,7 +166,7 @@ const createAIAgentStore = () => {
         content: message
         role: "user",
         timestamp: new Date()
-      };
+      }
       update((state) => ({
         ...state,
         currentConversation: [...state.currentConversation, userMessage],
@@ -182,7 +182,7 @@ const createAIAgentStore = () => {
         input: { message, context, sessionId },
         startTime: new Date(),
         retryCount: 0
-      };
+      }
       update((state) => ({
         ...state,
         processingQueue: [...state.processingQueue, job]
@@ -250,7 +250,7 @@ const createAIAgentStore = () => {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split("\n");
+          // removed unused lines assignment
           for (const line of lines) {
             if (line.startsWith("data: ")) {
               try {
@@ -294,7 +294,7 @@ const createAIAgentStore = () => {
           executionTime: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).executionTime,
           fromCache: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).fromCache || false
         }
-      };
+      }
       update((state) => ({
         ...state,
         currentConversation: [...state.currentConversation, assistantMessage],
@@ -325,7 +325,7 @@ const createAIAgentStore = () => {
         return [];
       }
     },
-    async indexDocument(document: {
+    async indexDocument(_document: {
       title: string;
       content: string;
       metadata?: unknown;
@@ -349,7 +349,7 @@ const createAIAgentStore = () => {
             isIndexed: true
           }
         });
-        return { success: true };
+        return { success: true }
       } catch (error: any) {
         this.addError({
           type: "processing",
@@ -405,14 +405,14 @@ const createAIAgentStore = () => {
         activeSessionId: null
       });
     },
-    loadConversation(index: number) {
+    loadConversation(_index: number) {
       update((state) => {
         if (index >= 0 && index < state.conversationHistory.length) {
           return {
             ...state,
             currentConversation: [...state.conversationHistory[index]],
             activeSessionId: crypto.randomUUID()
-          };
+          }
         }
         return state;
       });
@@ -424,7 +424,7 @@ const createAIAgentStore = () => {
         timestamp: new Date(),
         resolved: false
         ...error
-      };
+      }
       update((state) => ({
         ...state,
         errors: [...state.errors, newError],
@@ -457,12 +457,12 @@ const createAIAgentStore = () => {
           status: "completed",
           output: result
           endTime: new Date()
-        };
+        }
         return {
           ...state,
           processingQueue: state.processingQueue.filter((j) => j.id !== jobId),
           completedJobs: [...state.completedJobs, completedJob]
-        };
+        }
       });
     },
     failJob(jobId: string, error: string) {
@@ -474,12 +474,12 @@ const createAIAgentStore = () => {
           status: "failed",
           error,
           endTime: new Date()
-        };
+        }
         return {
           ...state,
           processingQueue: state.processingQueue.filter((j) => j.id !== jobId),
           completedJobs: [...state.completedJobs, failedJob]
-        };
+        }
       });
     },
     // Health Monitoring
@@ -506,8 +506,8 @@ const createAIAgentStore = () => {
       // Store interval ID for cleanup
       return interval;
     }
-  };
-};
+  }
+}
 // Export the store
 export const aiAgentStore = createAIAgentStore();
 // Derived stores for easy component access (fixed corruption)

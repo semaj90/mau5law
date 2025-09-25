@@ -6,7 +6,7 @@
 export function safeWriteBuffer(
   queue: GPUQueue
   buffer: GPUBuffer
-  offset: number
+  offset: number;
   data: ArrayBufferView | ArrayBuffer;
 ): void {
   if (data instanceof ArrayBuffer) {
@@ -25,12 +25,12 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
     return {
       name: info.device || info.description || 'Unknown GPU',
       vendor: info.vendor
-    };
+    }
   }
   return {
     name: 'Unknown GPU Device',
     vendor: 'Unknown'
-  };
+  }
 }
 // Helper to create Float32Array from ArrayBufferLike safely
 export function createFloat32Array(
@@ -74,12 +74,12 @@ export function createFloat32Array(
 // WebGPU feature detection
 export async function checkWebGPUSupport(): Promise<any> {
   if (!navigator.gpu) {
-    return { supported: false, features: [] };
+    return { supported: false, features: [] }
   }
   try {
     const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) {
-      return { supported: false, features: [] };
+      return { supported: false, features: [] }
     }
     const device = await adapter.requestDevice();
     const features = Array.from(adapter.features);
@@ -88,10 +88,10 @@ export async function checkWebGPUSupport(): Promise<any> {
       adapter,
       device,
       features
-    };
+    }
   } catch (error) {
     console.warn('WebGPU not supported:', error);
-    return { supported: false, features: [] };
+    return { supported: false, features: [] }
   }
 }
 export default {
@@ -99,4 +99,4 @@ export default {
   getAdapterInfo,
   createFloat32Array,
   checkWebGPUSupport
-};
+}

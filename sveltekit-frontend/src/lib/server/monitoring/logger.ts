@@ -10,7 +10,7 @@ export interface LogEntry {
   message: string;
   userId?: string;
   action?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   duration?: number;
   endpoint?: string;
   userAgent?: string;
@@ -40,7 +40,7 @@ class AppLogger {
       level,
       message,
       ...metadata
-    };
+    }
     this.logs.push(entry);
     // Keep logs within limit
     if (this.logs.length > this.maxLogs) {
@@ -90,7 +90,7 @@ class AppLogger {
       slowestEndpoints: this.getSlowEndpoints(recent),
       errorRate: recent.filter((m) => m.status >= 400).length / recent.length,
       peakHours: this.getPeakHours(recent)
-    };
+    }
   }
   private getSlowEndpoints(metrics: PerformanceMetrics[]) {
     const endpointTimes = metrics.reduce((acc, m) => {
@@ -142,7 +142,7 @@ class AppLogger {
       const endpoint = new URL(request.url).pathname;
       const method = request.method;
       try {
-        const response = await next();
+        // removed unused response assignment
         const duration = Date.now() - start;
         this.logPerformance({
           endpoint,
@@ -163,7 +163,7 @@ class AppLogger {
         });
         throw error;
       }
-    };
+    }
   }
 }
 // Export singleton instance
@@ -188,4 +188,4 @@ export const logUserAction = (
     userId,
     metadata
   });
-};
+}

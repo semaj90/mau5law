@@ -17,17 +17,17 @@ interface ONNXModelConfig {
     enableCpuMemArena: boolean;
     executionMode: 'sequential' | 'parallel';
     logSeverityLevel: number;
-  };
+  }
   inputSpec: {
-    inputIds: { name: string; type: string; shape: number[] };
-    attentionMask: { name: string; type: string; shape: number[] };
-    tokenTypeIds?: { name: string; type: string; shape: number[] };
-  };
+    inputIds: { name: string; type: string; shape: number[] }
+    attentionMask: { name: string; type: string; shape: number[] }
+    tokenTypeIds?: { name: string; type: string; shape: number[] }
+  }
   outputSpec: {
-    lastHiddenState: { name: string; type: string; shape: number[] };
-    poolerOutput?: { name: string; type: string; shape: number[] };
-    logits?: { name: string; type: string; shape: number[] };
-  };
+    lastHiddenState: { name: string; type: string; shape: number[] }
+    poolerOutput?: { name: string; type: string; shape: number[] }
+    logits?: { name: string; type: string; shape: number[] }
+  }
 }
 interface LegalEntityExtractionResult {
   entities: Array<any>;
@@ -39,7 +39,7 @@ interface LegalClassificationResult {
   topPrediction: {
     label: string;
     confidence: number;
-  };
+  }
   processingTime: number;
   modelUsed: string;
 }
@@ -59,7 +59,7 @@ export class LegalBertONNXService extends EventEmitter {
     averageLatency: 0,
     successRate: 1.0,
     lastUsed: new Date()
-  };
+  }
   constructor() {
     super();
     this.modelConfig = this.getDefaultConfig();
@@ -118,7 +118,7 @@ export class LegalBertONNXService extends EventEmitter {
           shape: [-1, 768], // [batch, hidden_size]
         }
       }
-    };
+    }
   }
   /**
    * Initialize ONNX session and tokenizer
@@ -176,7 +176,7 @@ export class LegalBertONNXService extends EventEmitter {
       decode: (tokens: number[]) => this.mockDetokenize(tokens),
       vocab_size: 30522, // Standard BERT vocab size
       max_length: 512
-    };
+    }
   }
   /**
    * Mock tokenization (replace with actual BERT tokenizer)
@@ -187,7 +187,7 @@ export class LegalBertONNXService extends EventEmitter {
     const input_ids = [101, ...words.map(() => Math.floor(Math.random() * 30522)), 102]; // [CLS] + tokens + [SEP]
     const attention_mask = Array(input_ids.length).fill(1);
     const token_type_ids = Array(input_ids.length).fill(0);
-    return { input_ids, attention_mask, token_type_ids };
+    return { input_ids, attention_mask, token_type_ids }
   }
   /**
    * Mock detokenization
@@ -218,7 +218,7 @@ export class LegalBertONNXService extends EventEmitter {
         entities,
         processingTime,
         modelUsed: 'legal-bert-onnx'
-      };
+      }
       this.emit('entity-extraction-complete', result);
       return result;
     } catch (error) {
@@ -253,7 +253,7 @@ export class LegalBertONNXService extends EventEmitter {
         topPrediction: predictions[0]
         processingTime,
         modelUsed: 'legal-bert-onnx'
-      };
+      }
       this.emit('classification-complete', result);
       return result;
     } catch (error) {
@@ -288,7 +288,7 @@ export class LegalBertONNXService extends EventEmitter {
         dimensions: embeddings.length,
         processingTime,
         modelUsed: 'legal-bert-onnx'
-      };
+      }
       this.emit('embedding-complete', result);
       return result;
     } catch (error) {
@@ -322,7 +322,7 @@ export class LegalBertONNXService extends EventEmitter {
       input_ids: new ort.Tensor('int64', new BigInt64Array(paddedInputIds.map(id => BigInt(id))), [batchSize, paddedLength]),
       attention_mask: new ort.Tensor('int64', new BigInt64Array(paddedAttentionMask.map(mask => BigInt(mask))), [batchSize, paddedLength]),
       token_type_ids: new ort.Tensor('int64', new BigInt64Array(paddedTokenTypeIds.map(type => BigInt(type))), [batchSize, paddedLength])
-    };
+    }
   }
   /**
    * Process NER outputs to extract entities
@@ -384,7 +384,7 @@ export class LegalBertONNXService extends EventEmitter {
    * Get performance metrics
    */;
   getPerformanceMetrics() {
-    return { ...this.performanceMetrics };
+    return { ...this.performanceMetrics }
   }
   /**
    * Check if service is ready
@@ -416,6 +416,6 @@ export type {
   LegalClassificationResult,
   LegalEmbeddingResult,
   ONNXModelConfig
-};
+}
 // Export class for testing and extension
 export default LegalBertONNXService;

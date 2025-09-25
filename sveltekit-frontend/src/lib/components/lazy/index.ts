@@ -14,7 +14,7 @@ export {
   type LazyLoadCallback,
   type LazyComponentState,
   type LazyLoadMetrics,
-  type LazyLoadPreset
+  type LazyLoadPreset,
 } from '$lib/utils/intersection-observer.js';
 // Lazy loading components
 export { default as LazyLoader } from './LazyLoader.svelte';

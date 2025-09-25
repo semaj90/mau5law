@@ -20,7 +20,7 @@
   					action: onConfirm;
   }
   			]
-  		};
+  		}
   }
   	function AlertModal({ props, onClose }: unknown) {
   		return {
@@ -33,7 +33,7 @@
   					action: onClo;
   }
   			]
-  		};
+  		}
   }
   	function PromptModal({ props, onConfirm, onClose }: unknown) {/* JSX syntax converted to Svelte */}"
   						value="${inputValue}"
@@ -53,13 +53,13 @@
   					action: () => onConfirm?.(inputValue);
   }
   			]
-  		};
+  		}
   }
   	const builtInComponents = {
   		ConfirmModal,
   		AlertModal,
   		PromptModal
-  	};
+  	}
   	function getSizeClasses(size: string) {
   		const sizeMap = {
   			sm: 'max-w-md',
@@ -67,14 +67,14 @@
   			lg: 'max-w-2xl',
   			xl: 'max-w-4xl',
   			full: 'max-w-[95vw] max-h-[95vh]';
-  		};
+  		}
   		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
   }
-  	function handleBackdropClick(event: MouseEvent, modal: unknown) {
+  	function handleBackdropClick(_event: MouseEvent, modal: unknown) {
   		if (event.target === event.currentTarget && !modal.persistent) {
   			modals.close(modal.id);
   }}
-  	function handleKeydown(event: KeyboardEvent, modal: unknown) {
+  	function handleKeydown(_event: KeyboardEvent, modal: unknown) {
   		if (event.key === 'Escape' && modal.closable) {
   			modals.close(modal.id);
   }}

@@ -72,7 +72,7 @@
     memoryUsage: 0,
   });
   // Cached compiled shader programs
-  const shaderPrograms: { [key: string]: any } = {};
+  const shaderPrograms: { [key: string]: any } = {}
   // Subscriptions (track to unsubscribe on destroy)
   let gpuMetricsSub = $state(null);
   let shaderMetricsSub = $state(null);
@@ -143,7 +143,7 @@
             compilationTime: metrics.compilationTime,
             frameRate: metrics.performance.frameRate,
             contextSwitches: metrics.performance.contextSwitches,
-          };
+          }
         });
       }
       if (shaderCache) {
@@ -154,7 +154,7 @@
             cacheMisses: metrics.cacheMisses,
             averageCompilationTime: metrics.averageCompilationTime,
             memoryUsage: metrics.memoryUsage,
-          };
+          }
         });
       }
       isInitialized = true;
@@ -272,12 +272,12 @@
         u_lowColor: [0.1, 0.1, 0.8],
         u_highColor: [0.8, 0.2, 0.2],
         u_intensity: 1.0,
-      };
+      }
       shaderCache.setUniforms(program, uniforms);
       const attributes = {
         a_position: { buffer: positionBuffer, size: 2, stride: 3 * 4 },
         a_attention: { buffer: positionBuffer, size: 1, offset: 2 * 4, stride: 3 * 4 },
-      };
+      }
       shaderCache.setupVertexAttributes(program, attributes);
       gl.drawArrays(gl.POINTS, 0, attentionData.length / 3);
     } catch (error) {
@@ -296,13 +296,13 @@
         u_time: time
         u_nodeSize: 10.0,
         u_alpha: 0.8,
-      };
+      }
       shaderCache.setUniforms(program, uniforms);
       const attributes = {
         a_position: { buffer: positionBuffer, size: 3, stride: 7 * 4 },
         a_color: { buffer: positionBuffer, size: 3, offset: 3 * 4, stride: 7 * 4 },
         a_pageRank: { buffer: positionBuffer, size: 1, offset: 6 * 4, stride: 7 * 4 },
-      };
+      }
       shaderCache.setupVertexAttributes(program, attributes);
       gl.drawArrays(gl.POINTS, 0, documentData.length / 7);
     } catch (error) {
@@ -321,14 +321,14 @@
         u_currentTime: (time * 0.1) % 1.0,
         u_timeRange: 1.0,
         u_alpha: 0.8,
-      };
+      }
       shaderCache.setUniforms(program, uniforms);
       const attributes = {
         a_position: { buffer: positionBuffer, size: 2, stride: 7 * 4 },
         a_timestamp: { buffer: positionBuffer, size: 1, offset: 2 * 4, stride: 7 * 4 },
         a_importance: { buffer: positionBuffer, size: 1, offset: 3 * 4, stride: 7 * 4 },
         a_evidenceColor: { buffer: positionBuffer, size: 3, offset: 4 * 4, stride: 7 * 4 },
-      };
+      }
       shaderCache.setupVertexAttributes(program, attributes);
       gl.drawArrays(gl.POINTS, 0, timelineData.length / 7);
     } catch (error) {
@@ -365,7 +365,7 @@
         callback: (result: unknown) => {
           console.log('GPU workload result:', result);
         },
-      };
+      }
       const result = await gpuManager.executeWorkload(workload);
       console.log('🔥 GPU workload completed:', result);
     } catch (error) {
@@ -375,7 +375,7 @@
   function formatBytes(bytes: number): string {
     return `${(bytes / 1024).toFixed(1)} KB`;
   }
-  function formatPercentage(value: number): string {
+  function formatPercentage(_value: number): string {
     return `${value.toFixed(1)}%`;
   }
 </script>

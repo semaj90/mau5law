@@ -32,7 +32,7 @@
     person = {
       name: 'Unknown',
       role: 'unknown',
-      confidence: 0;
+      confidence: 0,
     },
     relationships = []
   }: Props = $props();

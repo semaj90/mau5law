@@ -5,7 +5,7 @@ import { z } from 'zod';
 import type { ApiResponse, ApiError } from '../../types/api.js';
 import type { APIResponse as UnifiedAPIResponse } from '$lib/types';
 import path from 'path';
-import { URL } from 'url';
+;
 // Standard response interface
 export interface StandardApiResponse<T = any> {
   success: boolean;
@@ -22,20 +22,20 @@ export interface StandardApiResponse<T = any> {
       total: number;
       hasNext: boolean;
       hasPrev: boolean;
-    };
-  };
+    }
+  }
 }
 // Enhanced error class for API errors
 export class ApiErrorClass extends Error {
   public readonly code: string;
   public readonly statusCode: number;
-  public readonly details?: { [key: string]: any };
+  public readonly details?: { [key: string]: any }
   public readonly timestamp: Date;
   constructor(
-    message: string
+    message: string;
     code: string = 'UNKNOWN_ERROR',
     statusCode: number = 500,
-    details?: { [key: string]: any };
+    details?: { [key: string]: any }
   ) {
     super(message);
     this.name = 'ApiError';
@@ -62,7 +62,7 @@ export function apiSuccess<T>(
       version: '2.0',
       ...(pagination && { pagination })
     }
-  };
+  }
   return json(response);
 }
 // Error response builder
@@ -79,20 +79,20 @@ export function apiError(
       message: error.message,
       details: error.details,
       timestamp: error.timestamp
-    };
+    }
     statusCode = error.statusCode;
   } else if (error instanceof Error) {
     apiErrorData = {
       code: 'INTERNAL_ERROR',
       message: error.message,
       timestamp: new Date()
-    };
+    }
   } else {
     apiErrorData = {
       code: 'UNKNOWN_ERROR',
       message: typeof error === 'string' ? error : 'Unknown error occurred',
       timestamp: new Date()
-    };
+    }
   }
   // Add fallback data for legal API endpoints
   const response: StandardApiResponse<any> = {
@@ -109,7 +109,7 @@ export function apiError(
       version: '2.0',
       mockData: true
     }
-  };
+  }
   return json(response, { status: statusCode });
 }
 // Validation error response
@@ -132,18 +132,18 @@ export function validationError(
 }
 // --- Unified Builders (Lightweight wrappers aligned with new shared types) ---
 export function buildSuccessResponse<T>(
-  data: T
+  data: T;
   metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
     success: true
     data,
     metadata: { ...metadata, timestamp: new Date().toISOString() }
-  };
+  }
 }
 export function buildErrorResponse(
   code: string
-  message: string
+  message: string;
   metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
@@ -153,13 +153,13 @@ export function buildErrorResponse(
   } as UnifiedAPIResponse;
 }
 export function buildFormSubmissionResult<T>(
-  result: any
+  result: any;
   metadata: { processingTimeMs: number; requestId: string }
 ): any {
   return {
     ...result,
     metadata: { ...metadata, timestamp: new Date().toISOString() }
-  };
+  }
 }
 // Request ID generator
 function generateRequestId(): string {
@@ -171,7 +171,7 @@ function generateMockFallbackData(errorCode: string): any {
     mockData: true
     fallbackReason: 'Service temporarily unavailable',
     timestamp: new Date().toISOString()
-  };
+  }
   // Context-aware mock data generation
   switch (errorCode) {
     case 'DATABASE_ERROR':
@@ -208,7 +208,7 @@ function generateMockFallbackData(errorCode: string): any {
           hasNext: false
           hasPrev: false
         }
-      };
+      }
     case 'NOT_FOUND':
       return {
         ...baseData,
@@ -220,7 +220,7 @@ function generateMockFallbackData(errorCode: string): any {
             relevance: 0.75
           }
         ]
-      };
+      }
     case 'UNAUTHORIZED':
     case 'FORBIDDEN':
       return {
@@ -228,14 +228,14 @@ function generateMockFallbackData(errorCode: string): any {
         demoMode: true
         availableFeatures: ['case-viewing', 'evidence-browsing'],
         restrictedFeatures: ['case-creation', 'evidence-upload', 'ai-analysis']
-      };
+      }
     default:
       return baseData;
   }
 }
 // API wrapper function for consistent error handling
 export async function withApiHandler<T>(
-  handler: (event: RequestEvent) => Promise<T>,
+  handler: (_event: RequestEvent) => Promise<T>,
   event: RequestEvent;
 ): Promise<Response> {
   const startTime = Date.now();
@@ -297,7 +297,7 @@ export const CommonErrors = {
 } as const;
 // Type-safe request body parser with validation
 export async function parseRequestBody<T>(
-  request: Request
+  request: Request;
   schema: z.ZodSchema<T>;
 ): Promise<T> {
   try {
@@ -322,5 +322,5 @@ export function createPagination(page: number, limit: number, total: number) {
     hasNext,
     hasPrev,
     offset
-  };
+  }
 }

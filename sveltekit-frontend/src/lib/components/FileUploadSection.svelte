@@ -115,22 +115,22 @@ if (browser) {
       // Check file size
       if (file.size > maxFileSize) {
         return {
-          valid: false
+          valid: false;
           error: `File size exceeds ${formatFileSize(maxFileSize)} limit`
-        };
+        }
       }
       // Check file type
       const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
       if (!acceptedTypes.some(type => type.toLowerCase() === fileExtension)) {
         return {
-          valid: false
+          valid: false;
           error: `File type not supported. Accepted types: ${acceptedTypes.join(', ')}`
-        };
+        }
       }
-      return { valid: true };
+      return { valid: true }
     }
   		}
-  		return { valid: true };
+  		return { valid: true }
   	}
   	async function createFilePreview(file: globalThis.File): Promise<string | undefined> {
   		if (!file.type.startsWith('image/')) return undefined;
@@ -154,7 +154,7 @@ if (browser) {
         file.status === 'completed' ? 'success' :
         'error',
       error: file.error,
-      hash: undefined
+      hash: undefined;
     }));
     onfilesChanged?.(legacyUploads as any);
   }
@@ -178,7 +178,7 @@ if (browser) {
           uploadDate: new Date(),
           caseId: reportId
           userId: 'current-user',
-          tags: [], // Will be updated later
+          tags: [], // Will be updated later;
           classification: 'evidence',
           confidentialityLevel: 'internal',
           retentionPolicy: 'standard',
@@ -187,8 +187,8 @@ if (browser) {
         stages: [],
         currentStage: 0,
         startTime: new Date(),
-        status: 'pending'
-      };
+        status: 'pending';
+      }
       // Simulate upload progress
       const progressInterval = setInterval(() => {
         if ((file.progress ?? 0) < 90) {
@@ -295,4 +295,4 @@ if (browser) {
     </div>
   {/if}
 </div>
-<!-- Styles are now handled by modular components and UnoCSS -->
+<!-- Styles are now handled by modular components and UnoCSS -->;

@@ -16,7 +16,7 @@ export interface DrizzleCompatibilityLayer {
     similarity: (vector1: number[], vector2: number[]) => number;
     distance: (vector1: number[], vector2: number[]) => number;
     normalize: (vector: number[]) => number[];
-  };
+  }
 }
 // ===== ENHANCED QUERY RESULT HANDLER =====
 export const handleQueryResult = <T>(result: any): T[] => {
@@ -60,7 +60,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
   // Fallback for unexpected formats
   console.warn('Unexpected query result format:', typeof result, result);
   return [];
-};
+}
 // ===== SAFE PROPERTY ACCESS =====
 export const safePropertyAccess = <T>(obj: any, property: string, defaultValue: T): T => {
   if (!obj || typeof obj !== 'object') {
@@ -77,7 +77,7 @@ export const safePropertyAccess = <T>(obj: any, property: string, defaultValue: 
     }
   }
   return current !== null && current !== undefined ? current : defaultValue;
-};
+}
 // ===== VECTOR OPERATIONS COMPATIBILITY =====
 export const vectorOperations = {
   similarity: (vector1: number[], vector2: number[]): number => {
@@ -120,7 +120,7 @@ export const vectorOperations = {
     }
     return vector.map(component => component / magnitude);
   }
-};
+}
 // ===== CONNECTION MANAGEMENT =====
 export const ensureConnection = async (client: any): Promise<any> => {
   if (!client) {
@@ -134,8 +134,8 @@ export const ensureConnection = async (client: any): Promise<any> => {
       // Add missing method as no-op
       client[method] = async (...args: any[]) => {
         console.warn(`Called missing method ${method} with args:`, args);
-        return { rows: [], rowCount: 0 };
-      };
+        return { rows: [], rowCount: 0 }
+      }
     }
   }
   // Test connection if possible
@@ -147,14 +147,14 @@ export const ensureConnection = async (client: any): Promise<any> => {
     console.warn('Database connection test failed:', error);
   }
   return client;
-};
+}
 // ===== ENHANCED DRIZZLE COMPATIBILITY LAYER =====
 export const drizzleCompatibilityLayer: DrizzleCompatibilityLayer = {
   handleQueryResult,
   ensureConnection,
   safePropertyAccess,
   vectorOperations
-};
+}
 // ===== TYPE-SAFE RESULT ENHANCER =====
 export const enhanceResultWithTypes = <T extends { [key: string]: any }(
   result: any
@@ -176,7 +176,7 @@ export const enhanceResultWithTypes = <T extends { [key: string]: any }(
     }
   }
   return enhancedResult;
-};
+}
 // ===== COMMON DATABASE ENTITY ENHANCERS =====
 export const entityEnhancers = {
   // Legal document entity enhancer
@@ -227,10 +227,10 @@ export const entityEnhancers = {
     status: 'pending',
     started_at: null
     completed_at: null
-    error_message: null
+    error_message: null;
     metadata: { [key: string]: any }
   })
-};
+}
 // ===== QUERY INTERCEPTOR FOR TYPE SAFETY =====
 export const createTypeSafeQuery = (baseQuery: any) => {
   return {
@@ -266,8 +266,8 @@ export const createTypeSafeQuery = (baseQuery: any) => {
         return null;
       }
     }
-  };
-};
+  }
+}
 // ===== EXPORT MAIN COMPATIBILITY LAYER =====
 export default {
   drizzleCompatibilityLayer,
@@ -278,4 +278,4 @@ export default {
   enhanceResultWithTypes,
   entityEnhancers,
   createTypeSafeQuery
-};
+}

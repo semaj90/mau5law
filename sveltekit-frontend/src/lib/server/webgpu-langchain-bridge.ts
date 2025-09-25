@@ -23,27 +23,27 @@ export interface ProcessingResult {
     caseCitations?: any[];
     legalDates?: any[];
     risks?: string[];
-  };
+  }
   embeddings: {
     documentEmbedding: Float32Array;
     sectionEmbeddings?: Float32Array[];
     compressionRatio: number;
     processingTime: number;
     cacheHit: boolean;
-  };
+  }
   performance: {
     totalTime: number;
     extractionTime: number;
     embeddingTime: number;
     webgpuUtilized: boolean;
     throughput: number;
-  };
+  }
   metadata: {
     documentLength: number;
     embeddingDimensions: number;
     sectionsProcessed: number;
     cacheStrategy: string;
-  };
+  }
 }
 export class WebGPULangChainBridge {
   private config: LangChainWebGPUConfig;
@@ -55,7 +55,7 @@ export class WebGPULangChainBridge {
       compressVectors: config.compressVectors ?? true,
       practiceArea: config.practiceArea || 'general',
       documentType: config.documentType || 'general',
-    };
+    }
   }
   /**
    * Process legal document with integrated LangChain extraction + WebGPU caching
@@ -65,7 +65,7 @@ export class WebGPULangChainBridge {
     options: Partial<LangChainWebGPUConfig> = {}
   ): Promise<ProcessingResult> {
     const startTime = Date.now();
-    const mergedConfig = { ...this.config, ...options };
+    const mergedConfig = { ...this.config, ...options }
     console.log(`🔗 WebGPU-LangChain Bridge: Processing ${documentText.length} chars`);
     // Phase 1: Parallel LangChain extraction and embedding generation
     const [extractionResult, embeddingResult] = await Promise.all([
@@ -89,7 +89,7 @@ export class WebGPULangChainBridge {
         sectionsProcessed: embeddingResult.sectionEmbeddings?.length || 1,
         cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard',
       },
-    };
+    }
   }
   /**
    * Batch process multiple documents with WebGPU optimization
@@ -98,7 +98,7 @@ export class WebGPULangChainBridge {
     documents: Array<{ id: string; content: string; metadata?: any }>,
     options: Partial<LangChainWebGPUConfig> = {}
   ): Promise<ProcessingResult[]> {
-    const mergedConfig = { ...this.config, ...options };
+    const mergedConfig = { ...this.config, ...options }
     const batchSize = mergedConfig.batchSize;
     console.log(`📦 Batch processing ${documents.length} documents (batch size: ${batchSize})`);
     const results: ProcessingResult[] = [];
@@ -128,7 +128,7 @@ export class WebGPULangChainBridge {
       caseCitations: unknown[];
       legalDates: unknown[];
       risks: unknown[];
-    };
+    }
     processingTime: number;
   }> {
     const startTime = Date.now();
@@ -176,11 +176,11 @@ export class WebGPULangChainBridge {
           entities: entities || []
           contractTerms: contractTerms?.terms || [],
           caseCitations: [], // Would extract if document type is case
-          legalDates: [], // Would extract legal dates
+          legalDates: [], // Would extract legal dates;
           risks: risks || []
         },
         processingTime,
-      };
+      }
     } catch (error) {
       console.error('LangChain extraction failed:', error);
       return {
@@ -194,14 +194,14 @@ export class WebGPULangChainBridge {
           risks: [],
         },
         processingTime: Date.now() - startTime,
-      };
+      }
     }
   }
   /**
    * Generate embeddings with WebGPU optimization
    */
   private async generateEmbeddingsWithWebGPU(
-    text: string
+    text: string;
     config: LangChainWebGPUConfig
   ): Promise<{
     documentEmbedding: Float32Array;
@@ -235,14 +235,14 @@ export class WebGPULangChainBridge {
           processingTime: Date.now() - startTime,
           cacheHit,
           webgpuUtilized: true
-        };
+        }
       } else {
         // Standard embedding generation
         const legalQuery = {
           text,
           documentType: config.documentType === 'general' ? 'case' : config.documentType,
           practiceArea: config.practiceArea,
-        };
+        }
         const result = await getLegalEmbedding(legalQuery);
         cacheHit = (result as { metadata?: any; embedding?: any }).metadata.cacheHit;
         return {
@@ -251,7 +251,7 @@ export class WebGPULangChainBridge {
           processingTime: Date.now() - startTime,
           cacheHit,
           webgpuUtilized: false
-        };
+        }
       }
     } catch (error) {
       console.error('WebGPU embedding generation failed:', error);
@@ -262,7 +262,7 @@ export class WebGPULangChainBridge {
         processingTime: Date.now() - startTime,
         cacheHit: false
         webgpuUtilized: false
-      };
+      }
     }
   }
   /**
@@ -338,7 +338,7 @@ export class WebGPULangChainBridge {
     langchainService: {
       available: boolean;
       models: string[];
-    };
+    }
   }> {
     const [webgpuStats, cacheStats, ollamaAvailable] = await Promise.all([
       webgpuRedisOptimizer.getOptimizationStats(),
@@ -355,16 +355,16 @@ export class WebGPULangChainBridge {
       webgpuOptimizer: webgpuStats
       embeddingCache: cacheStats
       langchainService: {
-        available: ollamaAvailable
+        available: ollamaAvailable;
         models: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
       },
-    };
+    }
   }
   /**
    * Update configuration
    */
   updateConfig(newConfig: Partial<LangChainWebGPUConfig>): void {
-    this.config = { ...this.config, ...newConfig };
+    this.config = { ...this.config, ...newConfig }
     console.log('🔧 WebGPU-LangChain Bridge config updated:', this.config);
   }
 }

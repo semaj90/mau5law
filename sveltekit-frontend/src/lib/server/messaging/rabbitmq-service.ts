@@ -10,7 +10,7 @@ export interface LegalDocumentMessage {
   caseId: string;
   documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'discovery';
   content: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   priority: 'low' | 'normal' | 'high' | 'urgent';
   retryCount: number;
   timestamp: number;
@@ -43,12 +43,12 @@ class RabbitMQService extends EventEmitter {
     dlxDocumentAnalysis: 'legal.dlx.document.analysis',
     processingResults: 'legal.processing.results',
     notifications: 'legal.notifications'
-  };
+  }
   private exchanges = {
     legal: 'legal.direct',
     legalTopic: 'legal.topic',
     dlx: 'legal.dlx'
-  };
+  }
   constructor(url = 'amqp://localhost:5672') {
     super();
     this.url = url;
@@ -80,12 +80,12 @@ class RabbitMQService extends EventEmitter {
   private async setupQueues(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available');
     const queueConfig = {
-      durable: true
+      durable: true;
       arguments: {
         'x-dead-letter-exchange': this.exchanges.dlx,
         'x-message-ttl': 24 * 60 * 60 * 1000, // 24 hours
       }
-    };
+    }
     for (const [key, queueName] of Object.entries(this.queues)) {
       await this.channel.assertQueue(queueName, queueConfig);
     }
@@ -107,7 +107,7 @@ class RabbitMQService extends EventEmitter {
     }
     logger.info('[RabbitMQ] Queue bindings configured successfully');
   }
-  async publishDocumentForAnalysis(document: LegalDocumentMessage): Promise<boolean> {
+  async publishDocumentForAnalysis(_document: LegalDocumentMessage): Promise<boolean> {
     if (!this.isConnected || !this.channel) return false;
     try {
       const routingKey = this.getRoutingKey(document);
@@ -128,7 +128,7 @@ class RabbitMQService extends EventEmitter {
       return false;
     }
   }
-  private getRoutingKey(document: LegalDocumentMessage): string {
+  private getRoutingKey(_document: LegalDocumentMessage): string {
     if (document.priority === 'urgent') return 'urgent.processing';
     switch (document.documentType) {
       case 'contract':
@@ -145,7 +145,7 @@ class RabbitMQService extends EventEmitter {
     if (!this.isConnected || !this.channel) {
       throw new Error('RabbitMQ not connected');
     }
-    const stats: { [key: string]: any } = {};
+    const stats: { [key: string]: any } = {}
     for (const [key, queueName] of Object.entries(this.queues)) {
       try {
         const queueInfo = await this.channel.checkQueue(queueName);
@@ -153,9 +153,9 @@ class RabbitMQService extends EventEmitter {
           queue: queueName
           messageCount: queueInfo.messageCount,
           consumerCount: queueInfo.consumerCount
-        };
+        }
       } catch (error) {
-        stats[key] = { error: 'Queue not found' };
+        stats[key] = { error: 'Queue not found' }
       }
     }
     return stats;
@@ -175,9 +175,9 @@ class RabbitMQService extends EventEmitter {
         await this.initialize();
       }
       const queueStats = await this.getQueueStats();
-      return { healthy: this.isConnected, queues: queueStats };
+      return { healthy: this.isConnected, queues: queueStats }
     } catch (error) {
-      return { healthy: false, error: (error as any).message };
+      return { healthy: false, error: (error as any).message }
     }
   }
   /**
@@ -186,7 +186,7 @@ class RabbitMQService extends EventEmitter {
   async publish(
     exchange: string
     routingKey: string
-    message: any
+    message: any;
     options: any = {}
   ): Promise<boolean> {
     if (!this.isConnected || !this.channel) {

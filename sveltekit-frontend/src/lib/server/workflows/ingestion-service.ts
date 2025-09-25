@@ -26,7 +26,7 @@ export class IngestionService {
       retryAttempts: 3,
       jobTimeout: 300000, // 5 minutes
       ...config
-    };
+    }
   }
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -56,7 +56,7 @@ export class IngestionService {
   async submitDocument(
     documentId: string
     chunks: string[]
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   ): Promise<any> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -91,13 +91,13 @@ export class IngestionService {
         jobId: job.id,
         queuePosition: (workflowState.context as any).jobQueue.length,
         estimatedTime: chunks.length * 2, // Rough estimate: 2 seconds per chunk
-      };
+      }
     } catch (error) {
       console.error('❌ Failed to submit document:', error);
       return {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: String(error)
-      };
+      }
     }
   }
   private async publishJobToQueue(job: IngestionJob): Promise<void> {
@@ -115,7 +115,7 @@ export class IngestionService {
             priority: job.metadata.priority,
             timestamp: new Date().toISOString()
           }
-        };
+        }
         // Route to appropriate queue based on job type
         const queueName = this.getQueueNameForJob(job);
         await publishToQueue(queueName, chunkJob);
@@ -145,7 +145,7 @@ export class IngestionService {
             priority: job.metadata.priority,
             timestamp: new Date().toISOString()
           }
-        };
+        }
         await cache.rpush('embedding:jobs', JSON.stringify(chunkJob);
       }
       console.log(`📤 Published job ${job.id} (${job.chunks.length} chunks) to Redis`);
@@ -191,11 +191,11 @@ export class IngestionService {
       'completed': 'completed',
       'failed': 'failed',
       'paused': 'queued'
-    };
+    }
     return stateMap[workflowState] || 'queued';
   }
   private calculateJobProgress(job: IngestionJob, context: any): number {
-    const stats = context.stats || {};
+    const stats = context.stats || {}
     const processed = stats.processedJobs || 0;
     const total = context.jobQueue.length + processed;
     if (total === 0) return 100;
@@ -221,7 +221,7 @@ export class IngestionService {
         job = jobTracker.getJob(jobId);
       }
       if (!job) {
-        return { success: false, error: 'Job not found' };
+        return { success: false, error: 'Job not found' }
       }
       // Get current workflow state
       const workflowState = this.workflowActor.getSnapshot();
@@ -235,12 +235,12 @@ export class IngestionService {
           queuePosition:
             (workflowState.context as any).jobQueue.findIndex((j: any) => j.id === jobId) + 1
         }
-      };
+      }
     } catch (error) {
       return {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: String(error)
-      };
+      }
     }
   }
   async retryJob(jobId: string): Promise<any> {
@@ -267,14 +267,14 @@ export class IngestionService {
         }
       }
       return {
-        success: true
+        success: true;
         message: `Job ${jobId} queued for retry`
-      };
+      }
     } catch (error) {
       return {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: String(error)
-      };
+      }
     }
   }
   async cancelJob(jobId: string): Promise<any> {
@@ -288,37 +288,37 @@ export class IngestionService {
         completedAt: new Date().toISOString()
       });
       return {
-        success: true
+        success: true;
         message: `Job ${jobId} cancelled`
-      };
+      }
     } catch (error) {
       return {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: String(error)
-      };
+      }
     }
   }
   // Workflow Control API
   async pauseProcessing(): Promise<any> {
     this.workflowActor.send({ type: 'PAUSE_PROCESSING' });
-    return { success: true, message: 'Processing paused' };
+    return { success: true, message: 'Processing paused' }
   }
   async resumeProcessing(): Promise<any> {
     this.workflowActor.send({ type: 'RESUME_PROCESSING' });
-    return { success: true, message: 'Processing resumed' };
+    return { success: true, message: 'Processing resumed' }
   }
   async setConcurrency(concurrency: number): Promise<any> {
     if (concurrency < 1 || concurrency > 10) {
       return {
-        success: false
+        success: false;
         error: 'Concurrency must be between 1 and 10'
-      };
+      }
     }
     this.workflowActor.send({ type: 'SET_CONCURRENCY', concurrency });
     return {
-      success: true
+      success: true;
       message: `Concurrency set to ${concurrency}`
-    };
+    }
   }
   // Monitoring API
   getDashboardData() {
@@ -345,24 +345,24 @@ export class IngestionService {
           maxConcurrency: this.config.maxConcurrency
         }
       }
-    };
+    }
   }
   // Cleanup and maintenance
   async clearCompletedJobs(): Promise<any> {
     this.workflowActor.send({ type: 'CLEAR_COMPLETED' });
     const cleared = jobTracker.clearCompletedJobs();
     return {
-      success: true
+      success: true;
       message: `Cleared ${cleared} completed jobs`
-    };
+    }
   }
   async resetStats(): Promise<any> {
     this.workflowActor.send({ type: 'RESET_STATS' });
     jobTracker.reset();
     return {
-      success: true
+      success: true;
       message: 'Statistics reset'
-    };
+    }
   }
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down Ingestion Service...');

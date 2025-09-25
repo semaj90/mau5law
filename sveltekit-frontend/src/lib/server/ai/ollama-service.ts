@@ -44,14 +44,13 @@ class EnhancedOllamaService extends EventEmitter {
   }
   async listModels(): Promise<{ models: Array<{ name: string }> }> {
     await this.ensureModels();
-    return { models: this.availableModels.map(name => ({ name })) };
+    return { models: this.availableModels.map(name => ({ name })) }
   }
   async updateAvailableModels(): Promise<void> {
     // Placeholder: refresh list from configuration/service in real implementation
     await this.ensureModels();
   }
-  private async selectModelForTask(
-    task: 'generation' | 'legal-analysis' | 'embedding',
+  private async selectModelForTask(_task: 'generation' | 'legal-analysis' | 'embedding',
     prompt?: string
   ): Promise<string> {
     await this.ensureModels();
@@ -87,7 +86,7 @@ class EnhancedOllamaService extends EventEmitter {
     });
     return out;
   }
-  async analyzeLegalDocument(document: LegalDocument): Promise<AnalysisResult> {
+  async analyzeLegalDocument(_document: LegalDocument): Promise<AnalysisResult> {
     const model = await this.selectModelForTask('legal-analysis', document.content);
     return this.formatAnalysisResult(
       document.id,
@@ -148,7 +147,7 @@ class EnhancedOllamaService extends EventEmitter {
         general: this.availableModels,
         embedding: ['nomic-embed-text'],
       },
-    };
+    }
   }
   async healthCheck() {
     try {
@@ -158,14 +157,14 @@ class EnhancedOllamaService extends EventEmitter {
         service: 'ollama',
         timestamp: new Date().toISOString(),
         details: { models: this.availableModels.length, cache: this.cache.size },
-      };
+      }
     } catch (err: any) {
       return {
         status: 'error',
         service: 'ollama',
         timestamp: new Date().toISOString(),
         error: err?.message ?? 'unknown',
-      };
+      }
     }
   }
   clearCache() {
@@ -173,16 +172,16 @@ class EnhancedOllamaService extends EventEmitter {
     this.emit('cache-cleared');
   }
   getCacheStats() {
-    return { size: this.cache.size, entries: Array.from(this.cache.keys()) };
+    return { size: this.cache.size, entries: Array.from(this.cache.keys()) }
   }
   destroy() {
     // no-op for stub implementation
     this.requestQueue = [];
   }
-  async embedDocument(document: LegalDocument): Promise<number[]> {
+  async embedDocument(_document: LegalDocument): Promise<number[]> {
     return this.generateEmbeddings(document.content);
   }
-  async analyzeDocument(document: LegalDocument): Promise<AnalysisResult> {
+  async analyzeDocument(_document: LegalDocument): Promise<AnalysisResult> {
     return this.analyzeLegalDocument(document);
   }
   // Lightweight request queueing for parallelism limit
@@ -220,7 +219,7 @@ class EnhancedOllamaService extends EventEmitter {
     query: string
   ): Promise<{ selectedModel: string; confidence: number; reasoning: string[] }> {
     const model = await this.selectModelForTask('generation', query);
-    return { selectedModel: model, confidence: 0.5, reasoning: ['stub-selection'] };
+    return { selectedModel: model, confidence: 0.5, reasoning: ['stub-selection'] }
   }
   async generateSelfPromptingSuggestions(): Promise<SelfPromptingSuggestion[]> {
     return [];
@@ -230,7 +229,7 @@ class EnhancedOllamaService extends EventEmitter {
   }
   async getEnhancedSystemStatus() {
     const base = await this.getSystemStatus();
-    return { ...base, intelligentFeatures: 'stub' };
+    return { ...base, intelligentFeatures: 'stub' }
   }
 }
 // Export singleton and default class

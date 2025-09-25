@@ -23,10 +23,10 @@ const vector = customType({
   dataType() {
     return 'vector(1536)';
   },
-  toDriver(value: number[]): string {
+  toDriver(_value: number[]): string {
     return JSON.stringify(value);
   },
-  fromDriver(value: string): number[] {
+  fromDriver(_value: string): number[] {
     return JSON.parse(value);
   }
 });
@@ -123,11 +123,11 @@ export interface UserPreferences {
     email: boolean;
     push: boolean;
     webhook_url?: string;
-  };
+  }
   api_limits: {
     daily_quota: number;
     rate_limit_per_minute: number;
-  };
+  }
 }
 // Main documents table
 export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
@@ -270,7 +270,7 @@ export const schema = {
   documentEmbeddings,
   summarizationJobs,
   userPreferences
-};
+}
 // Type exports for use in application
 export type AISummarizedDocument = typeof aiSummarizedDocuments.$inferSelect;
 export type NewAISummarizedDocument = typeof aiSummarizedDocuments.$inferInsert;

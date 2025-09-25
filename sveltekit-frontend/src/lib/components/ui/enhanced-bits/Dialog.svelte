@@ -90,14 +90,16 @@
     handleOpenChange(false);
   }
 </script>
+
 <!-- SSR-safe Dialog rendering with proper hydration -->
 {#if open}
   <div class="dialog-overlay" onclick={handleClose} role="presentation">
-    <div class="dialog-content" onclick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+    <div class="dialog-content" onclick={e => e.stopPropagation()} role="dialog" aria-modal="true">
       {@render children?.()}
     </div>
   </div>
 {/if}
+
 <!-- Portal rendering for dialog content with SSR compatibility -->
 <!-- <BitsDialog.Portal>
     <BitsDialog.Overlay
@@ -117,7 +119,7 @@
 </BitsDialog.Root> -->
 <!-- Export sub-components for easy use -->
 <!-- <script lang="ts" module>
-  export { BitsDialog as Dialog };
+  export { BitsDialog as Dialog }
   // Re-export commonly used sub-components
   export const DialogTrigger = BitsDialog.Trigger;
   export const DialogPortal = BitsDialog.Portal;
@@ -130,7 +132,8 @@
   export const DialogHeader = 'div';
   export const DialogFooter = 'div';
 </script> -->
-<style>/* @unocss-include */ /* Enhanced dialog animations for legal AI context */ :global(.bits-dialog-overlay) {
+<style>
+/* @unocss-include */ /* Enhanced dialog animations for legal AI context */ :global(.bits-dialog-overlay) {
     animation: overlay-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   :global(.bits-dialog-content) {
@@ -175,43 +178,43 @@ background-image: linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%),
 /* Case management specific styling */ :global([data-case-management] .bits-dialog-content) {
 box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-/* SSR-specific optimizations for dialog rendering */
+/* SSR-specific optimizations for dialog rendering */ {}
   :global([data-ssr-dialog-overlay]) {
-    /* Ensure overlay renders properly during SSR */
+/* Ensure overlay renders properly during SSR */ {}
     position: fixed;
 d;
     inset: 0;
     z-index: 50;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
-    /* Prevent layout shift during hydration */
+/* Prevent layout shift during hydration */ {}
     contain: layout styl;
     will-change: opacity;
   }
   :global([data-ssr-dialog-content]) {
-    /* Optimize dialog content for SSR */
+/* Optimize dialog content for SSR */ {}
     position: fixed;
 d;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 51;
-    /* Ensure consistent sizing across different screen sizes */
+/* Ensure consistent sizing across different screen sizes */ {}
     width: 90vw;
     max-width: 512px;
     max-height: 85vh;
-    /* Background and styling */
+/* Background and styling */ {}
     background: white;
     border-radius: 0.5rem;
     border: 1px solid #e5e7eb;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    /* Prevent content overflow */
+/* Prevent content overflow */ {}
     overflow-y: auto;
     padding: 1.5rem;
-    /* Focus management */
+/* Focus management */ {}
     outline: none;
   }
-  /* Responsive adjustments for dialog content */
+/* Responsive adjustments for dialog content */ {}
   @media (max-width: 640px) {
     :global([data-ssr-dialog-content]) {
       width: 95vw;

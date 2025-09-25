@@ -22,13 +22,13 @@ export interface WebElement {
     elementType: 'text' | 'image' | 'input' | 'button' | 'link' | 'container';
     interactionCount: number;
     lastInteraction?: number;
-  };
+  }
 }
 export interface PageChunk {
   id: string;
   content: string;
   elements: WebElement[];
-  position: { start: number; end: number };
+  position: { start: number; end: number }
   embeddings?: Float32Array;
   semantic_meaning?: string;
   confidence: number;
@@ -40,17 +40,17 @@ export interface UserAnalytics {
     avgSpeed: number; // WPM
     commonWords: string[];
     specialization: string[]; // legal, technical, etc.
-  };
+  }
   interactionPatterns: {
     clickHeatmap: Array<any>;
-    scrollBehavior: { depth: number; speed: number };
+    scrollBehavior: { depth: number; speed: number }
     focusAreas: string[]; // element selectors
-  };
+  }
   caseContext: {
     activeCases: string[];
     currentTask: string;
     relevantDocuments: string[];
-  };
+  }
 }
 export interface QLoRATrainingData {
   user_id: string;
@@ -60,7 +60,7 @@ export interface QLoRATrainingData {
     session_data: UserAnalytics;
     distilled_size: number;
     training_ready: boolean;
-  };
+  }
 }
 export class IntelligentWebAnalyzer {
   private worker?: Worker;
@@ -91,7 +91,7 @@ export class IntelligentWebAnalyzer {
         relevantDocuments: [],
         ...initialAnalytics.caseContext
       }
-    };
+    }
   }
   /**
    * Initialize the intelligent web analyzer
@@ -149,7 +149,7 @@ export class IntelligentWebAnalyzer {
     this.mutationObserver.observe(document.body, {
       childList: true
       subtree: true
-      characterData: true
+      characterData: true;
       attributes: false // Skip attribute changes for performance
     });
   }
@@ -210,7 +210,7 @@ export class IntelligentWebAnalyzer {
         this.userAnalytics.interactionPatterns.scrollBehavior = {
           depth: Math.max(this.userAnalytics.interactionPatterns.scrollBehavior.depth, scrollDepth),
           speed: scrollSpeed
-        };
+        }
       }
       lastScrollTime = currentTime;
     });
@@ -266,7 +266,7 @@ export class IntelligentWebAnalyzer {
           elementType: this.getElementType(el),
           interactionCount: 0
         }
-      };
+      }
       elements.push(webElement);
       this.pageElements.set(elementId, webElement);
     });
@@ -405,14 +405,14 @@ export class IntelligentWebAnalyzer {
     });
     return {
       user_id: this.userAnalytics.userId,
-      chunks: trainingChunks
+      chunks: trainingChunks;
       metadata: {
         page_url: window.location.href,
         session_data: this.userAnalytics,
         distilled_size: trainingChunks.length,
         training_ready: true
       }
-    };
+    }
   }
   /**
    * Cache analysis results for future use
@@ -476,7 +476,7 @@ export class IntelligentWebAnalyzer {
     return path.join(' > ');
   }
   private getElementAttributes(element: Element): Record<string, string> {
-    const attrs: Record<string, string> = {};
+    const attrs: Record<string, string> = {}
     Array.from(element.attributes).forEach(attr => {
       attrs[attr.name] = attr.value;
     });
@@ -543,7 +543,7 @@ export class IntelligentWebAnalyzer {
     this.userAnalytics = {
       ...this.userAnalytics,
       ...context
-    };
+    }
   }
   /**
    * Get current analysis state for debugging
@@ -559,7 +559,7 @@ export class IntelligentWebAnalyzer {
       chunksInQueue: this.processingQueue.length,
       userAnalytics: this.userAnalytics,
       isProcessing: this.isProcessing
-    };
+    }
   }
   /**
    * Clean up resources

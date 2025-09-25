@@ -85,7 +85,7 @@
           similarEvidence: analysis.similarEvidence || [],
           timeline: analysis.timeline || [],
           suggestedActions: analysis.suggestedActions || [];
-        };
+        }
         ondispatch?.(analysis);
         processingStatus = 'Analysis complete!';
       } else {

@@ -9,7 +9,7 @@ import { db } from '$lib/server/db/unified-client'
 import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres'
 import { eq, or, desc, ilike, and } from 'drizzle-orm'
 import { createId } from '@paralleldrive/cuid2'
-import { URL } from 'url'
+
 // Go Microservice Configuration
 const GO_SERVICES = {
   enhanced_rag: {

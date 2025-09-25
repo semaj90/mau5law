@@ -83,16 +83,16 @@
       if (embeddingWorker) {
         embeddingWorker.terminate();
       }
-    };
+    }
   });
-  function handleWorkerMessage(event: MessageEvent) {
+  function handleWorkerMessage(_event: MessageEvent) {
     const { type, data, error: workerError } = event.data;
     if (type === 'embedding_result') {
       if (workerError) {
         error = workerError;
       } else {
         result = {
-          success: true
+          success: true;
           embedding: Array.from(data.embedding),
           metadata: {
             dimensions: data.embedding.length,
@@ -101,18 +101,18 @@
           },
           responseTime: `${data.processingTime}ms`,
           timestamp: new Date().toISOString();
-        };
+        }
       }
       isGenerating = false;
     }
   }
-  function handleWorkerError(event: ErrorEvent) {
+  function handleWorkerError(_event: ErrorEvent) {
     error = `Worker error: ${event.message}`;
     isGenerating = false;
   }
   // Validate form data
   function validateForm(): boolean {
-    validationErrors = {};
+    validationErrors = {}
     try {
       embeddingFormSchema.parse({ content });
       return true;
@@ -139,7 +139,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          text: content
+          text: content;
           metadata: {
             timestamp: new Date().toISOString(),
             length: content.length,
@@ -160,7 +160,7 @@
             source: 'gemma_api',
             dimensions: data.embedding.length;
           }
-        };
+        }
         // Store in enhanced database
         try {
           await fetch('/api/embeddings/enhanced', {
@@ -188,7 +188,7 @@
         error = 'Server unavailable, using client-side processing...';
         embeddingWorker.postMessage({
           type: 'generate_embedding',
-          text: content
+          text: content;
           options: { variant }
         });
         return; // Worker will handle completion
@@ -215,7 +215,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          text: searchQuery
+          text: searchQuery;
           metadata: { source: 'search_query' }
         }),
       });
@@ -243,14 +243,14 @@
   // Load system stats
   async function loadStats() {
     try {
-      const response = await fetch('/api/embeddings/enhanced?action=health');
+      // removed unused response assignment
       const data = await response.json();
       if (data.success) {
         stats = {
           totalEmbeddings: data.count || 0,
           avgResponseTime: '45ms', // Mock data
           lastUpdate: data.timestamp
-        };
+        }
       }
     } catch (err) {
       console.warn('Failed to load stats:', err);
@@ -265,13 +265,10 @@
   let hasValidationErrors = $derived(Object.keys(validationErrors).length > 0);
   let canSearch = $derived(searchQuery.trim().length > 0);
 </script>
+
 <div class="gemma-demo-container">
   <!-- Header -->
-  <Card
-    title="🧠 Gemma Embeddings + Enhanced-Bits Demo"
-    nesStyle={true}
-    variant="legal"
-  >
+  <Card title="🧠 Gemma Embeddings + Enhanced-Bits Demo" nesStyle={true} variant="legal">
     {#snippet children()}
       <div class="demo-header">
         <p class="nes-text">
@@ -298,11 +295,7 @@
     {/snippet}
   </Card>
   <!-- Generation Form -->
-  <Card
-    title="Generate Embedding"
-    nesStyle={true}
-    variant="evidence"
-  >
+  <Card title="Generate Embedding" nesStyle={true} variant="evidence">
     {#snippet children()}
       <form onsubmit={generateEmbedding} class="generation-form">
         <div class="form-group">
@@ -348,12 +341,7 @@
             {/if}
           </Button>
           <label class="nes-text worker-toggle">
-            <input
-              type="checkbox"
-              class="nes-checkbox"
-              bind:checked={useWorker}
-              disabled={isGenerating}
-            />
+            <input type="checkbox" class="nes-checkbox" bind:checked={useWorker} disabled={isGenerating} />
             <span>Use WASM Worker</span>
           </label>
         </div>
@@ -369,7 +357,14 @@
               <p class="nes-text">Dimensions: <code>512</code></p>
               <p class="nes-text">Response Time: <code>{result.responseTime}</code></p>
               <p class="nes-text">Source: <code>{result.metadata?.source || 'gemma'}</code></p>
-              <p class="nes-text">Vector Preview: <code>[{result.embedding?.slice(0, 3).map(n => n.toFixed(4)).join(', ')}...]</code></p>
+              <p class="nes-text">
+                Vector Preview: <code
+                  >[{result.embedding
+                    ?.slice(0, 3)
+                    .map(n => n.toFixed(4))
+                    .join(', ')}...]</code
+                >
+              </p>
             </div>
           </div>
         </div>
@@ -388,11 +383,7 @@
   </Card>
   <!-- Search Section -->
   {#if showSearch}
-    <Card
-      title="Semantic Search"
-      nesStyle={true}
-      variant="dark"
-    >
+    <Card title="Semantic Search" nesStyle={true} variant="dark">
       {#snippet children()}
         <div class="search-section">
           <div class="search-form">
@@ -427,9 +418,7 @@
                 <div class="search-result-item">
                   <div class="result-content">
                     <p class="nes-text">
-                      {result.content.length > 150
-                        ? result.content.substring(0, 150) + '...'
-                        : result.content}
+                      {result.content.length > 150 ? result.content.substring(0, 150) + '...' : result.content}
                     </p>
                   </div>
                   <div class="result-meta">
@@ -451,6 +440,7 @@
     </Card>
   {/if}
 </div>
+
 <style>
   .gemma-demo-container {
     max-width: 1000px;

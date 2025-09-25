@@ -65,7 +65,7 @@
     lg: 'max-w-lg',
     xl: 'max-w-xl',
     full: 'max-w-[95vw] max-h-[95vh]';
-  };
+  }
   // Load data when dialog opens or component mounts
   async function loadData(force = false) {
     if (!entityType || !entityId) return;
@@ -130,7 +130,7 @@
         clearInterval(refreshTimer);
         refreshTimer = null;
       }
-    };
+    }
   });
   // Initial load
   $effect(() => {
@@ -153,7 +153,7 @@
     }
     return () => {
       unsubscribe?.();
-    };
+    }
   });
 </script>
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>

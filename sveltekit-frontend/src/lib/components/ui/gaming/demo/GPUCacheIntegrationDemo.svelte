@@ -92,6 +92,7 @@
     currentEra = eras[(currentIndex + 1) % eras.length];
   }
 </script>
+
 <!-- GPU Cache Integration Demo Container -->
 <div class="gpu-cache-demo p-6 bg-gradient-to-br from-gray-900 to-black rounded-lg">
   <!-- Header with Cache Status -->
@@ -105,28 +106,16 @@
   {#if showProgressionDemo}
     <div class="gaming-progression-container mb-8">
       <div class="era-selector mb-4">
-        <button
-          class="era-button era-8bit {currentEra === '8bit' ? 'active' : ''}"
-          onclick={progressEra}
-        >
+        <button class="era-button era-8bit {currentEra === '8bit' ? 'active' : ''}" onclick={progressEra}>
           8-Bit Era
         </button>
-        <button
-          class="era-button era-16bit {currentEra === '16bit' ? 'active' : ''}"
-          onclick={progressEra}
-        >
+        <button class="era-button era-16bit {currentEra === '16bit' ? 'active' : ''}" onclick={progressEra}>
           16-Bit Era
         </button>
-        <button
-          class="era-button era-n64 {currentEra === 'n64' ? 'active' : ''}"
-          onclick={progressEra}
-        >
+        <button class="era-button era-n64 {currentEra === 'n64' ? 'active' : ''}" onclick={progressEra}>
           N64 3D Era
         </button>
-        <button
-          class="era-button era-yorha {currentEra === 'yorha' ? 'active' : ''}"
-          onclick={progressEra}
-        >
+        <button class="era-button era-yorha {currentEra === 'yorha' ? 'active' : ''}" onclick={progressEra}>
           YoRHa Era
         </button>
       </div>
@@ -141,10 +130,7 @@
                   <div class="nes-memory-bank nes-{bank.region.toLowerCase()} nes-status-{bank.status}">
                     <div class="memory-bank-label">{bank.region}</div>
                     <div class="memory-bank-bar">
-                      <div
-                        class="memory-bank-fill"
-                        style="width: {bank.utilization}%"
-                      ></div>
+                      <div class="memory-bank-fill" style="width: {bank.utilization}%"></div>
                     </div>
                     <div class="memory-bank-percentage">{bank.utilization}%</div>
                   </div>
@@ -178,9 +164,7 @@
               <div class="quantum-effect-container">
                 <div class="quantum-particles"></div>
                 <div class="holographic-grid"></div>
-                <button class="yorha-quantum-button">
-                  YoRHa Quantum Interface
-                </button>
+                <button class="yorha-quantum-button"> YoRHa Quantum Interface </button>
               </div>
             </div>
           </div>
@@ -201,10 +185,7 @@
           <div class="metric-label">Cache Hit Rate</div>
           <div class="metric-value">{(cacheMetrics.hitRate * 100).toFixed(1)}%</div>
           <div class="metric-bar">
-            <div
-              class="metric-bar-fill"
-              style="width: {cacheMetrics.hitRate * 100}%"
-            ></div>
+            <div class="metric-bar-fill" style="width: {cacheMetrics.hitRate * 100}%"></div>
           </div>
         </div>
         <div class="metric-nier-bits-card">
@@ -224,12 +205,15 @@
     <div class="state-machine-diagram">
       <div class="state-node state-idle {machineState === 'idle' ? 'active' : ''}">Idle</div>
       <div class="state-node state-querying {machineState === 'querying' ? 'active' : ''}">Querying</div>
-      <div class="state-node state-backgroundRefreshing {machineState === 'backgroundRefreshing' ? 'active' : ''}">Background Refresh</div>
+      <div class="state-node state-backgroundRefreshing {machineState === 'backgroundRefreshing' ? 'active' : ''}">
+        Background Refresh
+      </div>
       <div class="state-node state-rehydrated {machineState === 'rehydrated' ? 'active' : ''}">Rehydrated</div>
       <div class="state-node state-error {machineState === 'error' ? 'active' : ''}">Error</div>
     </div>
   </div>
 </div>
+
 <style>
   /* Component-specific styles that use the global GPU cache CSS */
   .gpu-cache-demo {
@@ -269,12 +253,24 @@
     font-family: monospace;
   }
   /* Use NES memory region colors from GPU cache CSS */
-  .nes-memory-bank.nes-prg_rom { border-color: var(--nes-prg-rom-color); }
-  .nes-memory-bank.nes-chr_rom { border-color: var(--nes-chr-rom-color); }
-  .nes-memory-bank.nes-ram { border-color: var(--nes-ram-color); }
-  .nes-memory-bank.nes-ppu_memory { border-color: var(--nes-ppu-memory-color); }
-  .nes-memory-bank.nes-sprite_memory { border-color: var(--nes-sprite-memory-color); }
-  .nes-memory-bank.nes-palette_memory { border-color: var(--nes-palette-memory-color); }
+  .nes-memory-bank.nes-prg_rom {
+    border-color: var(--nes-prg-rom-color);
+  }
+  .nes-memory-bank.nes-chr_rom {
+    border-color: var(--nes-chr-rom-color);
+  }
+  .nes-memory-bank.nes-ram {
+    border-color: var(--nes-ram-color);
+  }
+  .nes-memory-bank.nes-ppu_memory {
+    border-color: var(--nes-ppu-memory-color);
+  }
+  .nes-memory-bank.nes-sprite_memory {
+    border-color: var(--nes-sprite-memory-color);
+  }
+  .nes-memory-bank.nes-palette_memory {
+    border-color: var(--nes-palette-memory-color);
+  }
   .memory-bank-bar {
     height: 4px;
     background: var(--gpu-cache-bg-tertiary);
@@ -342,8 +338,12 @@
     animation: pulse 1s ease-in-out infinite alternate;
   }
   @keyframes pulse {
-    from { opacity: 0.8; }
-    to { opacity: 1; }
+    from {
+      opacity: 0.8;
+    }
+    to {
+      opacity: 1;
+    }
   }
   /* Cache status indicator using global classes */
   .cache-status-indicator {
@@ -400,12 +400,17 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
+    background:
+      radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
     animation: float 4s ease-in-out infinite alternate;
   }
   @keyframes float {
-    from { transform: translateY(-5px) rotate(0deg); }
-    to { transform: translateY(5px) rotate(360deg); }
+    from {
+      transform: translateY(-5px) rotate(0deg);
+    }
+    to {
+      transform: translateY(5px) rotate(360deg);
+    }
   }
 </style>

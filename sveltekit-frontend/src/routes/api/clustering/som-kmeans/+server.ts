@@ -83,7 +83,7 @@ function extractFeaturesForClustering(ragData: any): unknown {
     }
   }
 }
-function extractTextFeatures(document: any): number[] {
+function extractTextFeatures(_document: any): number[] {
   const features = []
   // Document length features
   const fullText = document.embeddings?.embeddings?.[0]?.text || ''
@@ -101,7 +101,7 @@ function extractTextFeatures(document: any): number[] {
                 document.legalContext?.complexity_level === 'medium' ? 0.5 : 0)
   return features
 }
-function extractSemanticFeatures(document: any): number[] {
+function extractSemanticFeatures(_document: any): number[] {
   const features = []
   // Semantic analysis features
   const semanticAnalysis = document.semanticAnalysis || {}
@@ -118,7 +118,7 @@ function extractSemanticFeatures(document: any): number[] {
   features.push(topics.length / 10); // Normalized topic count
   return features
 }
-function extractStructuralFeatures(document: any): number[] {
+function extractStructuralFeatures(_document: any): number[] {
   const features = []
   // Document structure features
   const structure = document.vectorData || {}
@@ -147,7 +147,7 @@ function combineFeatureVectors(featureArrays: number[][]): number[][] {
   }
   return vectors
 }
-function generateFeatureLabels(document: any): string[] {
+function generateFeatureLabels(_document: any): string[] {
   const labels = []
   const docType = document.legalContext?.document_type || 'unknown'
   const practiceArea = document.legalContext?.practice_area || 'general'
@@ -336,7 +336,7 @@ function updateSOMWeights(
   bmu: { x: number, y: number },
   learningRate: number
   neighborhoodRadius: number
-  width: number
+  width: number;
   height: number
 ): void {
   for (let x = 0; x < width; x++) {

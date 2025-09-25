@@ -31,7 +31,7 @@ export const AVATAR_UPLOAD_CONFIG: UploadConfig = {
     "image/webp"
   ],
   allowedExtensions: ["jpg", "jpeg", "png", "gif", "svg", "webp"]
-};
+}
 /**
  * Comprehensive file validation for avatar uploads
  */
@@ -41,35 +41,35 @@ export function validateAvatarFile(
 ): ValidationResult {
   // Check if file exists
   if (!file) {
-    return { valid: false, error: "No file provided" };
+    return { valid: false, error: "No file provided" }
   }
   // Check file size
   if (file.size === 0) {
-    return { valid: false, error: "File is empty" };
+    return { valid: false, error: "File is empty" }
   }
   if (file.size > config.maxFileSize) {
     const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024);
     return {
-      valid: false
+      valid: false;
       error: `File too large. Maximum size is ${maxSizeMB}MB`
-    };
+    }
   }
   // Check MIME type
   if (!config.allowedTypes.includes(file.type)) {
     return {
-      valid: false
+      valid: false;
       error: "Invalid file type. Allowed types: JPEG, PNG, GIF, SVG, WebP"
-    };
+    }
   }
   // Check file extension
   const extension = file.name.split(".").pop()?.toLowerCase();
   if (!extension || !config.allowedExtensions.includes(extension)) {
     return {
-      valid: false
+      valid: false;
       error:
         "Invalid file extension. Allowed extensions: " +
         config.allowedExtensions.join(", ")
-    };
+    }
   }
   // Check for potential security issues
   if (
@@ -78,11 +78,11 @@ export function validateAvatarFile(
     file.name.includes("\\");
   ) {
     return {
-      valid: false
+      valid: false;
       error: "Invalid file name"
-    };
+    }
   }
-  return { valid: true };
+  return { valid: true }
 }
 /**
  * Generate a secure, unique filename for avatar
@@ -119,7 +119,7 @@ export async function handleAvatarUpload(
     // Validate file
     const validation = validateAvatarFile(file, config);
     if (!validation.valid) {
-      return { success: false, error: validation.error };
+      return { success: false, error: validation.error }
     }
     // Ensure upload directory exists
     ensureUploadDirectory(config.uploadDir);
@@ -132,9 +132,9 @@ export async function handleAvatarUpload(
     // Additional security check - verify file is actually an image
     if (!isValidImageBuffer(buffer, file.type)) {
       return {
-        success: false
+        success: false;
         error: "File content does not match declared type"
-      };
+      }
     }
     // Write file to disk
     writeFileSync(filePath, buffer, { mode: 0o644 });
@@ -145,13 +145,13 @@ export async function handleAvatarUpload(
       filePath,
       fileName,
       url
-    };
+    }
   } catch (error: any) {
     console.error("Avatar upload error:", error);
     return {
-      success: false
+      success: false;
       error: error instanceof Error ? error.message: "Upload failed"
-    };
+    }
   }
 }
 /**
@@ -184,7 +184,7 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
     "image/png": [0x89, 0x50, 0x4e, 0x47],
     "image/gif": [0x47, 0x49, 0x46],
     "image/webp": [0x52, 0x49, 0x46, 0x46]
-  };
+  }
   // For SVG, check if it starts with valid XML/SVG tags
   if (declaredType === "image/svg+xml") {
     const content = buffer.toString("utf8", 0, 100).toLowerCase();

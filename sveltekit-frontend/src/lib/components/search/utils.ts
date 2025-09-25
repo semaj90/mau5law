@@ -47,7 +47,7 @@ export function calculateRelevanceScore(query: string, text: string, options?: {
     exactMatchBonus = 0.3,
     wordMatchWeight = 0.8,
     positionWeight = true
-  } = options || {};
+  } = options || {}
   const queryLower = query.toLowerCase().trim();
   const textLower = text.toLowerCase();
   // Exact match gets highest score
@@ -127,7 +127,7 @@ export function highlightSearchTerms(text: string, query: string, options?: {
     maxLength = 200,
     contextBefore = 30,
     contextAfter = 30
-  } = options || {};
+  } = options || {}
   if (!query || !text) return text;
   const queryWords = query.toLowerCase().split(/\s+/).filter(word => word.length > 2);
   if (queryWords.length === 0) return text;
@@ -158,14 +158,14 @@ export function highlightSearchTerms(text: string, query: string, options?: {
  * Debounce function for search input
  */
 export function debounce<T extends (...args: any[]) => any>(,
-  func: T
+  func: T;
   delay: number;
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
-  };
+  }
 }
 /**
  * Get search category display name
@@ -178,7 +178,7 @@ export function getCategoryDisplayName(category: string): string {
     statutes: 'Statutes',
     criminals: 'Persons',
     documents: 'Documents'
-  };
+  }
   return displayNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
 }
 /**
@@ -193,7 +193,7 @@ export function validateSearchQuery(query: string): {
   const suggestions: string[] = [];
   if (!query || query.trim().length === 0) {
     errors.push('Search query is required');
-    return { isValid: false, errors, suggestions };
+    return { isValid: false, errors, suggestions }
   }
   if (query.trim().length < 2) {
     errors.push('Search query must be at least 2 characters');
@@ -212,5 +212,5 @@ export function validateSearchQuery(query: string): {
     isValid: errors.length === 0,
     errors,
     suggestions
-  };
+  }
 }

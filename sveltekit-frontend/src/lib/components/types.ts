@@ -1,4 +1,3 @@
-
 export interface EditableNode {
   id: string;
   x: number;
@@ -6,15 +5,15 @@ export interface EditableNode {
   width: number;
   height: number;
   content: string;
-  type: "text" | "evidence" | "link";
-  metadata?: { [key: string]: any };
+  type: 'text' | 'evidence' | 'link';
+  metadata?: { [key: string]: any }
 }
 // Renamed to avoid conflict with Evidence from data/types.ts
 export interface ComponentEvidence {
   id: string;
   filename: string;
   content: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   uploadedAt: string;
   userId: string;
 }
@@ -22,7 +21,7 @@ export interface CanvasState {
   id: string;
   nodes: EditableNode[];
   connections: Array<any>;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface SearchResult {
   id: string;

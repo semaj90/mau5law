@@ -312,7 +312,7 @@ await loadShortcutsFromAI();
   });
   $effect(() => {
     if (!browser) return;
-    const handleKeydown = (event: KeyboardEvent) => {
+    const handleKeydown = (_event: KeyboardEvent) => {
       // Command palette toggle
       if ((event.ctrlKey || event.metaKey) && event.key === "/") {
         event.preventDefault();
@@ -350,19 +350,19 @@ await loadShortcutsFromAI();
         event.preventDefault();
         shortcut.action();
   }
-    };
+    }
     document.addEventListener("keydown", handleKeydown);
     return () => {
       document.removeEventListener("keydown", handleKeydown);
-    };
+    }
   });
-  function findShortcut(event: KeyboardEvent) {
+  function findShortcut(_event: KeyboardEvent) {
     const key = formatKeyCombo(event);
     return shortcuts
       .flatMap((category) => category.items)
       .find((shortcut) => shortcut.key === key);
   }
-  function formatKeyCombo(event: KeyboardEvent): string {
+  function formatKeyCombo(_event: KeyboardEvent): string {
     const parts: string[] = [];
     if (event.ctrlKey || event.metaKey) parts.push("Ctrl");
     if (event.altKey) parts.push("Alt");
@@ -376,7 +376,7 @@ await loadShortcutsFromAI();
       "/": "/",
       ",": ",",
       Enter: "Enter",
-    };
+    }
     const key = specialKeys[event.key] || event.key.toUpperCase();
     parts.push(key);
     return parts.join("+");

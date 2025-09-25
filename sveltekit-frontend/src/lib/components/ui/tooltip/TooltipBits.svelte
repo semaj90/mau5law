@@ -64,6 +64,7 @@
     showDocumentation && documentationContent ? documentationContent : content
   );
 </script>
+
 <TooltipPrimitive.Root {delayDuration}>
   <TooltipPrimitive.Trigger class="legal-ai-tooltip-trigger">
     {#if children}
@@ -100,6 +101,6 @@
     {:else}
       {displayContent}
     {/if}
-    <TooltipPrimitive.Arrow class={showDocumentation ? "fill-slate-800" : "fill-amber-400"} />
+    <TooltipPrimitive.Arrow class={showDocumentation ? 'fill-slate-800' : 'fill-amber-400'} />
   </TooltipPrimitive.Content>
 </TooltipPrimitive.Root>;

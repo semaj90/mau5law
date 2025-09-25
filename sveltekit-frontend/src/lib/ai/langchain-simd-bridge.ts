@@ -29,7 +29,7 @@ export interface SIMDProcessingResult extends ProcessingResult {
     totalCompressionRatio: number;
     gpuProcessingTime: number;
     instantUIComponents: InstantUIComponent[];
-  };
+  }
   // Performance metrics
   pipelineStats: {
     langchainTime: number;
@@ -37,7 +37,7 @@ export interface SIMDProcessingResult extends ProcessingResult {
     uiGenerationTime: number;
     totalPipelineTime: number;
     memoryEfficiency: number;
-  };
+  }
 }
 export interface SIMDQueryResult extends QueryResult {
   // Enhanced with instant UI components
@@ -46,7 +46,7 @@ export interface SIMDQueryResult extends QueryResult {
     sourceCompression: number;
     averageCompressionRatio: number;
     semanticPreservation: number;
-  };
+  }
 }
 export class LangChainSIMDBridge {
   private config: SIMDLangChainConfig;
@@ -57,7 +57,7 @@ export class LangChainSIMDBridge {
     averageProcessingTime: 0,
     cacheHitRatio: 0,
     gpuUtilizationAverage: 0
-  };
+  }
   constructor(config: Partial<SIMDLangChainConfig> = {}) {
     this.config = {
       // LangChain defaults
@@ -89,7 +89,7 @@ export class LangChainSIMDBridge {
       memoryPoolSize: 256,
       gpuAccelerationLevel: 0.85,
       ...config
-    };
+    }
     console.log('🌉 LangChain-SIMD Bridge initialized:', {
       compressionTarget: this.config.compressionTarget,
       qualityTier: this.config.qualityTier,
@@ -126,7 +126,7 @@ export class LangChainSIMDBridge {
         embeddings: [new Array(this.config.vectorDimensions!).fill(0.1)],
         processingTime: 0,
         metadata: { totalTokens: content.length / 4, avgChunkSize: content.length, model: 'direct' }
-      };
+      }
     }
     // Phase 2: SIMD compression with enhanced configuration
     const simdStart = Date.now();
@@ -196,7 +196,7 @@ export class LangChainSIMDBridge {
         totalPipelineTime,
         memoryEfficiency: this.calculateMemoryEfficiency(content.length, simdResult)
       }
-    };
+    }
     // Update performance metrics
     this.updatePerformanceMetrics(enhancedResult);
     console.log(`✅ SIMD Pipeline complete: ${totalPipelineTime}ms total (LC:${langchainTime}ms, SIMD:${simdCompressionTime}ms, UI:${uiGenerationTime}ms)`);
@@ -224,7 +224,7 @@ export class LangChainSIMDBridge {
       sourceCompression: 0,
       averageCompressionRatio: 1,
       semanticPreservation: 1
-    };
+    }
     if (options.generateInstantComponents !== false) {
       try {
         // Combine answer and source content for SIMD processing
@@ -253,7 +253,7 @@ export class LangChainSIMDBridge {
           sourceCompression: combinedContent.length / simdResult.compressedTiles.reduce((sum, t) => sum + t.compressedData.length, 0),
           averageCompressionRatio: simdResult.processingStats.totalCompressionRatio,
           semanticPreservation: simdResult.processingStats.semanticPreservationScore
-        };
+        }
       } catch (error) {
         console.warn('SIMD query processing failed:', error);
       }
@@ -268,7 +268,7 @@ export class LangChainSIMDBridge {
       // SIMD enhancements
       instantComponents,
       compressionStats
-    };
+    }
     console.log(`✅ SIMD Query complete: ${processingTime}ms, ${instantComponents.length} instant components`);
     return enhancedResult;
   }
@@ -276,7 +276,7 @@ export class LangChainSIMDBridge {
    * Batch process multiple documents with optimal SIMD pipeline
    */
   async processBatchDocuments(
-    documents: Array<any>
+    documents: Array<any>;
     options: {
       concurrencyLimit?: number;
       enableUIGeneration?: boolean;
@@ -382,13 +382,13 @@ export class LangChainSIMDBridge {
         batchOptimization: this.config.batchOptimization,
         supportedQualityTiers: ['nes', 'snes', 'n64']
       }
-    };
+    }
   }
   /**
    * Update bridge configuration
    */;
   updateConfig(newConfig: Partial<SIMDLangChainConfig>): void {
-    this.config = { ...this.config, ...newConfig };
+    this.config = { ...this.config, ...newConfig }
     console.log('🔧 LangChain-SIMD Bridge config updated:', newConfig);
   }
   /**
@@ -427,17 +427,17 @@ export class LangChainSIMDBridge {
           memoryEfficiency: processResult.pipelineStats.memoryEfficiency
         },
         results: {
-          processing: processResult
+          processing: processResult;
           query: queryResult
         }
-      };
+      }
     } catch (error) {
       console.error('Pipeline test failed:', error);
       return {
         success: false
         performance: { [key: string]: any },
         results: { error: error instanceof Error ? error.message: 'Unknown error' }
-      };
+      }
     }
   }
 }

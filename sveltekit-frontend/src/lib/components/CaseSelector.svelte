@@ -28,4 +28,4 @@ selectCase(caseItem.id)} variant="secondary">
         {caseItem.name}
     {/each}
   </div>
-</Modal>
+</Modal>;

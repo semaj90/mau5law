@@ -37,7 +37,7 @@ export interface QualitySettings {
     excellent: number;
     good: number;
     poor: number;
-  };
+  }
 }
 /**
  * Performance Monitor and Adaptive Quality Controller
@@ -71,7 +71,7 @@ export class PerformanceMonitor {
       chunksPerSecond: 0,
       qualityLevel: 1.0,
       adaptiveEnabled: true
-    };
+    }
     // Detect client capabilities
     this.capabilities = this.detectClientCapabilities();
     // Initialize quality settings based on capabilities
@@ -139,7 +139,7 @@ export class PerformanceMonitor {
       memoryLimit,
       connectionSpeed,
       deviceType
-    };
+    }
   }
   /**
    * Get optimal quality settings based on capabilities
@@ -154,10 +154,10 @@ export class PerformanceMonitor {
       gpuAcceleration: this.capabilities.hasWebGL,
       adaptiveThresholds: {
         excellent: 16.67, // 60fps
-        good: 33.33, // 30fps
+        good: 33.33, // 30fps;
         poor: 66.67 // 15fps
       }
-    };
+    }
     // Adjust based on device type
     switch (this.capabilities.deviceType) {
       case 'mobile':
@@ -355,19 +355,19 @@ export class PerformanceMonitor {
    * Get current metrics
    */;
   getMetrics(): PerformanceMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   /**
    * Get client capabilities
    */;
   getCapabilities(): ClientCapabilities {
-    return { ...this.capabilities };
+    return { ...this.capabilities }
   }
   /**
    * Get current quality settings
    */;
   getQualitySettings(): QualitySettings {
-    return { ...this.qualitySettings };
+    return { ...this.qualitySettings }
   }
   /**
    * Benchmark system performance
@@ -388,7 +388,7 @@ export class PerformanceMonitor {
       networkScore: 0,
       overallScore: 0,
       recommendedQuality: 0.8
-    };
+    }
     // CPU benchmark - JavaScript computation speed
     const cpuStart = performance.now();
     let sum = 0;
@@ -470,7 +470,7 @@ export class PerformanceMonitor {
       metrics: this.metrics,
       qualitySettings: this.qualitySettings,
       recommendations: this.generateRecommendations()
-    };
+    }
     return JSON.stringify(report, null, 2);
   }
   /**

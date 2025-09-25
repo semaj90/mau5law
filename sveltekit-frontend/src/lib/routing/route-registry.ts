@@ -8,7 +8,7 @@ import type { RouteDefinition } from '$lib/data/routes-config';
 import { allRoutes, getRoutesByCategory } from '$lib/data/routes-config';
 import type { GeneratedRoute, DynamicRouteConfig } from './dynamic-route-generator.js';
 import { dynamicRouteGenerator } from './dynamic-route-generator.js';
-import { URL } from "url";
+;
 }
 export interface RouteRegistryState {
   routes: Map<string, RouteDefinition>;
@@ -34,14 +34,14 @@ export class RouteRegistry {
     recentRoutes: []
   });
   private options: RouteRegistryOptions;
-  constructor(options: Partial<RouteRegistryOptions> = {}) {
+  constructor(_options: Partial<RouteRegistryOptions> = {}) {
     this.options = {
       maxHistorySize: 50,
       maxRecentSize: 10,
       persistState: true
       storageKey: 'yorha-route-registry',
       ...options
-    };
+    }
     this.initialize();
   }
   /**
@@ -66,7 +66,7 @@ export class RouteRegistry {
         ...state,
         routes: routesMap
         dynamicRoutes: dynamicRoutesMap
-      };
+      }
     });
     // Subscribe to page changes for current route tracking
     if (typeof window !== 'undefined') {
@@ -97,7 +97,7 @@ export class RouteRegistry {
       return {
         ...state,
         routes: newRoutes
-      };
+      }
     });
   }
   /**
@@ -105,7 +105,7 @@ export class RouteRegistry {
    */
   public registerDynamicRoute(
     id: string
-    path: string
+    path: string;
     config: Partial<DynamicRouteConfig> = {}
   ): GeneratedRoute {
     const generatedRoute = dynamicRouteGenerator.generateRoute(id, path, config);
@@ -115,7 +115,7 @@ export class RouteRegistry {
       return {
         ...state,
         dynamicRoutes: newDynamicRoutes
-      };
+      }
     });
     return generatedRoute;
   }
@@ -140,7 +140,7 @@ export class RouteRegistry {
         ...state,
         routes: newRoutes
         dynamicRoutes: newDynamicRoutes
-      };
+      }
     });
     return removed;
   }
@@ -214,7 +214,7 @@ export class RouteRegistry {
         currentRoute: route
         routeHistory: newHistory
         recentRoutes: newRecent
-      };
+      }
     });
   }
   /**
@@ -236,7 +236,7 @@ export class RouteRegistry {
       return {
         ...state,
         favorites: newFavorites
-      };
+      }
     });
   }
   /**
@@ -276,7 +276,7 @@ export class RouteRegistry {
     categories: Record<string, number>;
   } {
     const state = this.getCurrentState();
-    const categories: Record<string, number> = {};
+    const categories: Record<string, number> = {}
     for (const route of this.getAllRoutes()) {
       const category = 'category' in route ? route.category: route.metadata?.category || 'unknown';
       categories[category] = (categories[category] || 0) + 1;
@@ -288,7 +288,7 @@ export class RouteRegistry {
       favorites: state.favorites.size,
       recent: state.recentRoutes.length,
       categories
-    };
+    }
   }
   /**
    * Clear route history
@@ -330,7 +330,7 @@ export class RouteRegistry {
         favorites: Array.from(state.favorites),
         recentRoutes: state.recentRoutes,
         routeHistory: state.routeHistory
-      };
+      }
       localStorage.setItem(this.options.storageKey, JSON.stringify(persistedData);
     } catch (error: any) {
       console.warn('Failed to save route registry state:', error);
@@ -361,20 +361,20 @@ export class RouteRegistry {
    */;
   public exportRouteManifest(): { [key: string]: any } {
     const state = this.getCurrentState();
-    const manifest: { [key: string]: any } = {};
+    const manifest: { [key: string]: any } = {}
     // Add static routes
     for (const [id, route] of state.routes) {
       manifest[id] = {
         type: 'static',
         ...route
-      };
+      }
     }
     // Add dynamic routes
     for (const [id, route] of state.dynamicRoutes) {
       manifest[id] = {
         type: 'dynamic',
         ...route
-      };
+      }
     }
     return manifest;
   }
@@ -406,7 +406,7 @@ export const recentRoutes = derived(routeRegistry.getState(), state =>
     .filter(Boolean)
 );
 export const routeStatistics = derived(routeRegistry.getState(), state => {
-  const categories: Record<string, number> = {};
+  const categories: Record<string, number> = {}
   const allRoutes = [
     ...Array.from(state.routes.values()),
     ...Array.from(state.dynamicRoutes.values()
@@ -422,14 +422,14 @@ export const routeStatistics = derived(routeRegistry.getState(), state => {
     favorites: state.favorites.size,
     recent: state.recentRoutes.length,
     categories
-  };
+  }
 });
 // Export convenience functions
 export function registerRoute(route: RouteDefinition): void {
   return routeRegistry.registerRoute(route);
 }
 export function registerDynamicRoute(
-  id: string
+  id: string;
   path: string
   config?: Partial<DynamicRouteConfig>;
 ): GeneratedRoute {

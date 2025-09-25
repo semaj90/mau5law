@@ -64,7 +64,7 @@ https://svelte.dev/e/props_duplicate -->
     // Initialize word count
     updateWordCount();
   }
-  function handleContentChange(event: Event) {
+  function handleContentChange(_event: Event) {
     if (readOnly) return;
     content = editorElement.innerHTML;
     isDirty = true;
@@ -75,7 +75,7 @@ https://svelte.dev/e/props_duplicate -->
     if (content.length > 100) {
       debounceAiSuggestions();
   }}
-  function handlePaste(event: ClipboardEvent) {
+  function handlePaste(_event: ClipboardEvent) {
     if (readOnly) return;
     event.preventDefault();
     const text = event.clipboardData?.getData("text/plain") || "";
@@ -83,7 +83,7 @@ https://svelte.dev/e/props_duplicate -->
     document.execCommand("insertText", false, text);
     handleContentChange(event);
   }
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (readOnly) return;
     // Handle keyboard shortcuts
     if (event.ctrlKey || event.metaKey) {
@@ -160,7 +160,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   async function loadAvailableCitations() {
     try {
-      const response = await fetch(`/api/citations?caseId=${caseId}`);
+      // removed unused response assignment
       if (response.ok) {
         availableCitations = await response.json();
   }
@@ -226,7 +226,7 @@ https://svelte.dev/e/props_duplicate -->
           estimatedReadTime,
         },
         updatedAt: new Date(),
-      };
+      }
       const response = await fetch("/api/reports", {
         method: report ? "PUT" : "POST",
         headers: {
@@ -383,7 +383,7 @@ https://svelte.dev/e/props_duplicate -->
     <!-- Content editor -->
     <div
       bind:this={editorElement}
-      class="container mx-auto px-4"
+      class="container mx-auto px-4";
       class:read-ly={readOnly}
       role="textbox"
       aria-multiline="true"

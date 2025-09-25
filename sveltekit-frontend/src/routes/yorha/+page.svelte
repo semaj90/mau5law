@@ -26,18 +26,25 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     Zap,
     Network,
     Shield,
-    Brain
+    Brain,
   } from 'lucide-svelte';
   import { debounce, withAbort } from '$lib/yorha/constants';
   import YoRHaNavCard from '$lib/components/yorha/YoRHaNavCard.svelte';
-  import { ensureLocalIndex, localSearch, isLocalIndexReady, getLocalDocumentCount, wasLoadedFromCache, mergeResults } from '$lib/yorha/localSearch';
+  import {
+    ensureLocalIndex,
+    localSearch,
+    isLocalIndexReady,
+    getLocalDocumentCount,
+    wasLoadedFromCache,
+    mergeResults,
+  } from '$lib/yorha/localSearch';
   import { initHybridLayer, reRankWithPgVector } from '$lib/yorha/hybridSearchManager';
   import type {
     SystemMetrics,
     YoRHaModule,
     HolographicScene,
     CommandResult,
-    LegalAISession
+    LegalAISession,
   } from '$lib/types/yorha-interface';
   // Enhanced YoRHa system data with full metrics
   let systemData = $state<SystemMetrics>({
@@ -48,7 +55,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     active_processes: 12,
     security_level: 'HIGH',
     quantum_state: 'COHERENT',
-    neural_activity: 87
+    neural_activity: 87,
   });
   // Enhanced YoRHa state management
   let ragResult = $state<any>(null);
@@ -86,8 +93,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         memory_usage: Math.max(40, Math.min(85, systemData.memory_usage + (Math.random() - 0.5) * 6)),
         network_latency: Math.max(10, Math.min(100, systemData.network_latency + (Math.random() - 0.5) * 5)),
         neural_activity: Math.max(60, Math.min(100, systemData.neural_activity + (Math.random() - 0.5) * 4)),
-        active_processes: Math.max(8, Math.min(20, systemData.active_processes + Math.round((Math.random() - 0.5) * 2)))
-      };
+        active_processes: Math.max(
+          8,
+          Math.min(20, systemData.active_processes + Math.round((Math.random() - 0.5) * 2)),
+        ),
+      }
     }, 3000);
     // Initialize legal AI session
     initializeLegalSession();
@@ -110,9 +120,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
             practice_area: ['AI Law', 'Tech Ethics', 'Data Privacy'],
             case_type: 'Investigation',
             priority_level: 8,
-            security_classification: 'HIGH'
-          }
-        })
+            security_classification: 'HIGH',
+          },
+        }),
       });
       if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
         legalSession = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
@@ -137,14 +147,15 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   async function performRAGQuery(query: string = 'Legal case precedent analysis') {
     isLoading = true;
     ragResult = null;
-    const { promise, abort } = withAbort(async (signal) => {
+    const { promise, abort } = withAbort(async signal => {
       const response = await fetch('/api/yorha/enhanced-rag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, context: 'legal_analysis' }),
-        signal
+        signal,
       });
-      if (!(response as { ok?: unknown; json?: unknown; status?: unknown }).ok) throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
+      if (!(response as { ok?: unknown; json?: unknown; status?: unknown }).ok)
+        throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
       return (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
     });
     try {
@@ -162,7 +173,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   async function performSemanticSearch(searchTerm: string = 'contract liability') {
     isLoading = true;
     searchResults = [];
-  let localResults: unknown[] = [];
+    let localResults: unknown[] = [];
     if (isLocalIndexReady() && (searchMode === 'local' || searchMode === 'hybrid')) {
       localResults = localSearch(searchTerm, 50);
       if (searchMode === 'local') {
@@ -172,21 +183,86 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         return;
       }
     }
-    const { promise, abort } = withAbort(async (signal) => {
-      if (searchMode === 'local') return { results: [] }; // guard
-      const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=25`, { signal });
-      if (!(response as { ok?: unknown; json?: unknown; status?: unknown }).ok) throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
+    const { promise, abort } = withAbort(async signal => {
+      if (searchMode === 'local') return { results: [] } // guard
+      const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=25`, {
+        signal,
+      });
+      if (!(response as { ok?: unknown; json?: unknown; status?: unknown }).ok)
+        throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
       return (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
     });
     try {
       const data = await promi;
       const remote = ((data as { results?: unknown }).results || []).map((item: unknown, index: number) => ({
-        id: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).id || index + 1,
-        title: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).title || (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).name || `Document ${index + 1}`,
-        type: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).type || 'Legal Document',
-        relevance: Math.round(((item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).relevance || Math.random()) * 100),
-        status: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).status || 'active',
-        metadata: item
+        id:
+          (
+            item as {
+              id?: unknown;
+              title?: unknown;
+              name?: unknown;
+              type?: unknown;
+              relevance?: unknown;
+              status?: unknown;
+            }
+          ).id || index + 1,
+        title:
+          (
+            item as {
+              id?: unknown;
+              title?: unknown;
+              name?: unknown;
+              type?: unknown;
+              relevance?: unknown;
+              status?: unknown;
+            }
+          ).title ||
+          (
+            item as {
+              id?: unknown;
+              title?: unknown;
+              name?: unknown;
+              type?: unknown;
+              relevance?: unknown;
+              status?: unknown;
+            }
+          ).name ||
+          `Document ${index + 1}`,
+        type:
+          (
+            item as {
+              id?: unknown;
+              title?: unknown;
+              name?: unknown;
+              type?: unknown;
+              relevance?: unknown;
+              status?: unknown;
+            }
+          ).type || 'Legal Document',
+        relevance: Math.round(
+          ((
+            item as {
+              id?: unknown;
+              title?: unknown;
+              name?: unknown;
+              type?: unknown;
+              relevance?: unknown;
+              status?: unknown;
+            }
+          ).relevance || Math.random()) * 100,
+        ),
+        status:
+          (
+            item as {
+              id?: unknown;
+              title?: unknown;
+              name?: unknown;
+              type?: unknown;
+              relevance?: unknown;
+              status?: unknown;
+            }
+          ).status || 'active',
+        metadata: item,
       }));
       searchResults = searchMode === 'hybrid' ? mergeResults(localResults, remote) : remote;
       activeSection = 'search-results';
@@ -199,9 +275,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   async function checkClusterHealth() {
     isLoading = true;
-    const { promise, abort } = withAbort(async (signal) => {
-      const response = await fetch('/api/v1/cluster/health', { signal });
-      if (!(response as { ok?: unknown; json?: unknown; status?: unknown }).ok) throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
+    const { promise, abort } = withAbort(async signal => {
+      // removed unused response assignment
+      if (!(response as { ok?: unknown; json?: unknown; status?: unknown }).ok)
+        throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
       return (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
     });
     try {
@@ -242,6 +319,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     }
   });
 </script>
+
 <svelte:head>
   <title>YoRHa Interface - Command Center</title>
 </svelte:head>
@@ -354,7 +432,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         {systemData}
         {legalSession}
         {holographicMode}
-        onCommand={(result) => {
+        onCommand={result => {
           commandHistory = [result, ...commandHistory.slice(0, 49)]; // Keep last 50
         }}
       />
@@ -367,22 +445,58 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       INTERFACE MODULES
     </h2>
     <div class="yorha-nav-grid" role="grid" aria-label="YoRHa interface modules">
-      <YoRHaNavCard title="SYSTEM DASHBOARD" description="Real-time monitoring and analytics" path="/yorha/dashboard" icon={Monitor} ariaLabel="Open System Dashboard">
+      <YoRHaNavCard
+        title="SYSTEM DASHBOARD"
+        description="Real-time monitoring and analytics"
+        path="/yorha/dashboard"
+        icon={Monitor}
+        ariaLabel="Open System Dashboard"
+      >
         <ChevronRight size={16} slot="trailing" />
       </YoRHaNavCard>
-      <YoRHaNavCard title="3D COMPONENTS" description="Interactive UI component gallery" path="/yorha/components" icon={Gamepad2} ariaLabel="Open 3D Components">
+      <YoRHaNavCard
+        title="3D COMPONENTS"
+        description="Interactive UI component gallery"
+        path="/yorha/components"
+        icon={Gamepad2}
+        ariaLabel="Open 3D Components"
+      >
         <ChevronRight size={16} slot="trailing" />
       </YoRHaNavCard>
-      <YoRHaNavCard title="API TESTING" description="Live API integration suite" path="/yorha/api-test" icon={Zap} ariaLabel="Open API Testing">
+      <YoRHaNavCard
+        title="API TESTING"
+        description="Live API integration suite"
+        path="/yorha/api-test"
+        icon={Zap}
+        ariaLabel="Open API Testing"
+      >
         <ChevronRight size={16} slot="trailing" />
       </YoRHaNavCard>
-      <YoRHaNavCard title="TERMINAL" description="Command-line interface" path="/yorha/terminal" icon={Terminal} ariaLabel="Open Terminal">
+      <YoRHaNavCard
+        title="TERMINAL"
+        description="Command-line interface"
+        path="/yorha/terminal"
+        icon={Terminal}
+        ariaLabel="Open Terminal"
+      >
         <ChevronRight size={16} slot="trailing" />
       </YoRHaNavCard>
-      <YoRHaNavCard title="DATA GRID" description="Advanced data visualization" path="/yorha/data-grid" icon={Database} ariaLabel="Open Data Grid">
+      <YoRHaNavCard
+        title="DATA GRID"
+        description="Advanced data visualization"
+        path="/yorha/data-grid"
+        icon={Database}
+        ariaLabel="Open Data Grid"
+      >
         <ChevronRight size={16} slot="trailing" />
       </YoRHaNavCard>
-      <YoRHaNavCard title="AI CHAT" description="Enhanced conversation interface" path="/yorha/chat" icon={Bot} ariaLabel="Open AI Chat">
+      <YoRHaNavCard
+        title="AI CHAT"
+        description="Enhanced conversation interface"
+        path="/yorha/chat"
+        icon={Bot}
+        ariaLabel="Open AI Chat"
+      >
         <ChevronRight size={16} slot="trailing" />
       </YoRHaNavCard>
     </div>
@@ -391,7 +505,13 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   <section class="yorha-search-box" aria-label="Semantic Search">
     <div class="yorha-search-inner max-w-6xl mx-auto">
       <label for="yorha-search" class="sr-only">Search legal documents</label>
-      <input id="yorha-search" type="search" placeholder="Search legal documents..." class="yorha-search-input" oninput={(e) => debouncedSearch((e.target as HTMLInputElement).value)} />
+      <input
+        id="yorha-search"
+        type="search"
+        placeholder="Search legal documents..."
+        class="yorha-search-input"
+        oninput={e => debouncedSearch((e.target as HTMLInputElement).value)}
+      />
       <div class="yorha-search-meta">
         <fieldset class="yorha-search-modes" aria-label="Search Mode">
           <legend class="sr-only">Search Mode</legend>
@@ -403,7 +523,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           {#if !localIndexReady}
             <span class="yorha-index-loading">Building local index…</span>
           {:else}
-            <span class="yorha-index-ready">Local index: {localIndexCount} docs ({localLoadedFromCache ? 'cached' : 'fresh'})</span>
+            <span class="yorha-index-ready"
+              >Local index: {localIndexCount} docs ({localLoadedFromCache ? 'cached' : 'fresh'})</span
+            >
           {/if}
         </div>
       </div>
@@ -425,11 +547,21 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           <div class="yorha-result-item">
             <div class="yorha-result-header">
               <h4>{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).title}</h4>
-              <span class="yorha-result-relevance">{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).relevance}%</span>
+              <span class="yorha-result-relevance"
+                >{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown })
+                  .relevance}%</span
+              >
             </div>
             <div class="yorha-result-meta">
-              <span class="yorha-result-type">{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).type}</span>
-              <span class="yorha-result-status yorha-status-{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).status}">{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).status}</span>
+              <span class="yorha-result-type"
+                >{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).type}</span
+              >
+              <span
+                class="yorha-result-status yorha-status-{(
+                  result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }
+                ).status}"
+                >{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).status}</span
+              >
             </div>
           </div>
         {/each}
@@ -437,4 +569,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     </section>
   {/if}
 </div>
-<style lang="postcss">/*$$__STYLE_CONTENT__$$*/</style>
+
+<style lang="postcss">
+  /*$$__STYLE_CONTENT__$$*/
+</style>

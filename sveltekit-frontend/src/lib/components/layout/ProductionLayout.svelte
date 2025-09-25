@@ -33,42 +33,42 @@
       id: 'dashboard',
       href: '/',
       label: 'Dashboard',
-      icon: Home
+      icon: Home;
       description: 'Executive overview and key metrics';
     },
     {
       id: 'cases',
       href: '/cases',
       label: 'Case Management',
-      icon: Folder
+      icon: Folder;
       description: 'Legal case tracking and documentation';
     },
     {
       id: 'evidence',
       href: '/evidenceboard',
       label: 'Evidence Analysis',
-      icon: Eye
+      icon: Eye;
       description: 'Digital evidence collection and forensics';
     },
     {
       id: 'research',
       href: '/demo/enhanced-rag-semantic',
       label: 'Legal Research',
-      icon: Search
+      icon: Search;
       description: 'AI-powered legal research and precedents';
     },
     {
       id: 'chat',
       href: '/chat',
       label: 'AI Assistant',
-      icon: MessageSquare
+      icon: MessageSquare;
       description: 'Intelligent legal consultation';
     },
     {
       id: 'analysis',
       href: '/analysis',
       label: 'Analytics',
-      icon: BarChart3
+      icon: BarChart3;
       description: 'Data insights and trend analysis';
     }
   ];
@@ -77,28 +77,28 @@
       id: 'yorha-command',
       href: '/yorha-command-center',
       label: 'Command Center',
-      icon: Terminal
+      icon: Terminal;
       description: 'Advanced system controls';
     },
     {
       id: 'gpu-inference',
       href: '/demo/gpu-inference',
       label: 'GPU Processing',
-      icon: Zap
+      icon: Zap;
       description: 'High-performance AI inference';
     },
     {
       id: 'settings',
       href: '/settings',
       label: 'Settings',
-      icon: Settings
+      icon: Settings;
       description: 'Platform configuration';
     },
     {
       id: 'admin',
       href: '/admin',
       label: 'Administration',
-      icon: Database
+      icon: Database;
       description: 'System administration';
     }
   ];
@@ -110,8 +110,8 @@
   let currentTime = $state(new Date());
   let systemStatus = $state({
     ai: true
-    database: true
-    search: true
+    database: true;
+    search: true;
     gpu: false;
   });
   // Derived state
@@ -132,12 +132,12 @@
         database: Math.random() > 0.05,
         search: Math.random() > 0.1,
         gpu: Math.random() > 0.3;
-      };
+      }
     }, 10000);
     return () => {
       clearInterval(timer);
       clearInterval(statusTimer);
-    };
+    }
   });
   // Functions
   function handleNavigation(href: string, event?: MouseEvent) {
@@ -517,7 +517,7 @@
     @apply min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white;
     font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
   }
-/* Professional enhanced scrollbars */
+/* Professional enhanced scrollbars */ {}
   :global(.yorha-production-layout *::-webkit-scrollbar) {
     width: 12px;
     height: 12px;
@@ -534,7 +534,7 @@
   :global($1) {
     background: linear-gradient(180deg, rgba(245, 158, 11, 0.8), rgba(217, 119, 6, 0.8));
   }
-/* Professional animation effects */
+/* Professional animation effects */ {}
   :global(.professional-glow) {
     animation: professional-glow 3s ease-in-out infinite;
   }
@@ -542,11 +542,11 @@
     0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.1); }
     50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); }
   }
-  /* Enhanced backdrop blur effects */
+/* Enhanced backdrop blur effects */ {}
   .backdrop-blur-md {
     backdrop-filter: blur(12px) saturate(180%);
   }
-  /* Professional responsive typography */
+/* Professional responsive typography */ {}
   @media (max-width: 768px) {
     .yorha-production-layout {
       font-size: 15px;
@@ -557,7 +557,7 @@
       font-size: 14px;
     }
   }
-  /* Professional smooth transitions */
+/* Professional smooth transitions */ {}
   :global(*) {
     transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }

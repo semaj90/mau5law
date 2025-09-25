@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
           title: '',
           description: '',
           priority: 'medium';
-        };
+        }
         // Show success notification
         addNotification('success', `Case "${(result as { title?: unknown }).title}" created successfully`, 5000);
         // Refresh the page data
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
       title: '',
       description: '',
       priority: 'medium';
-    };
+    }
   }
   // Helper function to add notifications
   function addNotification(type: string, message: string, duration: number = 5000) {
@@ -110,13 +110,16 @@ https://svelte.dev/e/js_parse_error -->
     }, duration);
   }
 </script>
+
 <!-- Main Detective Interface -->
 <div class="yorha-detective min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-amber-300">
   <!-- Header Bar -->
   <div class="header-bar bg-black bg-opacity-70 border-b border-amber-400 border-opacity-30 p-4">
     <div class="flex justify-between items-center">
       <div class="flex items-center space-x-4">
-        <div class="w-8 h-8 bg-amber-400 bg-opacity-20 border border-amber-400 border-opacity-50 flex items-center justify-center">
+        <div
+          class="w-8 h-8 bg-amber-400 bg-opacity-20 border border-amber-400 border-opacity-50 flex items-center justify-center"
+        >
           <span class="text-amber-400 font-bold text-sm">YD</span>
         </div>
         <h1 class="text-xl font-bold text-amber-300">YoRHa Detective Command Center</h1>
@@ -124,15 +127,23 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex items-center space-x-4">
         <button
           class="px-4 py-2 bg-amber-600 bg-opacity-20 border border-amber-400 border-opacity-50 text-amber-300 hover:bg-opacity-30 transition-all duration-300"
-          onclick={() => showNewCaseModal = true}
+          onclick={() => (showNewCaseModal = true)}
         >
           + New Case
         </button>
         <div class="flex items-center space-x-2 text-sm">
           <span>User:</span>
-          <span class="text-amber-400">{(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user.firstName} {(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user.lastName}</span>
-          <span class="px-2 py-1 bg-amber-600 bg-opacity-20 border border-amber-400 border-opacity-30 text-xs uppercase">
-            {(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user.role}
+          <span class="text-amber-400"
+            >{(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user
+              .firstName}
+            {(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user
+              .lastName}</span
+          >
+          <span
+            class="px-2 py-1 bg-amber-600 bg-opacity-20 border border-amber-400 border-opacity-30 text-xs uppercase"
+          >
+            {(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user
+              .role}
           </span>
         </div>
       </div>
@@ -145,7 +156,10 @@ https://svelte.dev/e/js_parse_error -->
       <nav class="space-y-2">
         {#each navigationSections as section}
           <button
-            class="nav-item w-full flex items-center space-x-3 p-3 text-left border border-transparent hover:border-amber-400 hover:border-opacity-30 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300 {selectedSection === section.id ? 'border-amber-400 border-opacity-50 bg-amber-600 bg-opacity-20 text-amber-400' : 'text-amber-300'}"
+            class="nav-item w-full flex items-center space-x-3 p-3 text-left border border-transparent hover:border-amber-400 hover:border-opacity-30 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300 {selectedSection ===
+            section.id
+              ? 'border-amber-400 border-opacity-50 bg-amber-600 bg-opacity-20 text-amber-400'
+              : 'text-amber-300'}"
             onclick={() => navigateToSection(section.id)}
           >
             <span class="text-lg">{section.icon}</span>
@@ -178,7 +192,11 @@ https://svelte.dev/e/js_parse_error -->
     <div class="content flex-1 p-6">
       {#if selectedSection === 'command-center'}
         <!-- Command Center Dashboard -->
-        <YoRHaCommandCenter systemData={(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).systemData} />
+        <YoRHaCommandCenter
+          systemData={(
+            data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }
+          ).systemData}
+        />
       {:else if selectedSection === 'evidence'}
         <!-- Evidence Section -->
         <div class="evidence-section">
@@ -189,7 +207,9 @@ https://svelte.dev/e/js_parse_error -->
               <h3 class="text-lg font-bold text-amber-400 mb-4">Recent Evidence</h3>
               <div class="space-y-3">
                 {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence.slice(0, 5) as evidence}
-                  <div class="evidence-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300">
+                  <div
+                    class="evidence-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300"
+                  >
                     <div class="flex justify-between items-start">
                       <div>
                         <div class="font-medium text-amber-300">{evidence.title}</div>
@@ -239,7 +259,9 @@ https://svelte.dev/e/js_parse_error -->
           <div class="coming-soon bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-12 text-center">
             <div class="text-6xl mb-4">👤</div>
             <h3 class="text-xl font-bold text-amber-400 mb-2">Coming Soon</h3>
-            <p class="text-amber-300 opacity-70">Person tracking and relationship mapping will be available in the next update.</p>
+            <p class="text-amber-300 opacity-70">
+              Person tracking and relationship mapping will be available in the next update.
+            </p>
           </div>
         </div>
       {:else if selectedSection === 'analysis'}
@@ -252,21 +274,32 @@ https://svelte.dev/e/js_parse_error -->
               <h3 class="text-lg font-bold text-amber-400 mb-4">Recent Cases</h3>
               <div class="space-y-3">
                 {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentCases.slice(0, 5) as case_}
-                  <div class="case-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300 cursor-pointer"
-                       role="button" tabindex="0"
-                onclick={() => goto(`/cases/${case_.id}`)}>
+                  <div
+                    class="case-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300 cursor-pointer"
+                    role="button"
+                    tabindex="0"
+                    onclick={() => goto(`/cases/${case_.id}`)}
+                  >
                     <div class="flex justify-between items-start">
                       <div>
                         <div class="font-medium text-amber-300">{case_.title}</div>
                         <div class="text-xs text-amber-400 opacity-70">#{case_.caseNumber}</div>
                         {#if case_.createdBy}
                           <div class="text-xs text-amber-400 opacity-60">
-                            By: {case_.createdBy} {case_.createdByLastName}
+                            By: {case_.createdBy}
+                            {case_.createdByLastName}
                           </div>
                         {/if}
                       </div>
                       <div class="flex flex-col items-end">
-                        <span class="text-xs px-2 py-1 border border-amber-400 border-opacity-30 {case_.priority === 'critical' ? 'text-red-400' : case_.priority === 'high' ? 'text-orange-400' : 'text-amber-400'}">
+                        <span
+                          class="text-xs px-2 py-1 border border-amber-400 border-opacity-30 {case_.priority ===
+                          'critical'
+                            ? 'text-red-400'
+                            : case_.priority === 'high'
+                              ? 'text-orange-400'
+                              : 'text-amber-400'}"
+                        >
                           {case_.priority}
                         </span>
                         <div class="text-xs text-amber-400 opacity-60 mt-1">
@@ -309,18 +342,14 @@ https://svelte.dev/e/js_parse_error -->
   </div>
   <!-- New Case Modal -->
   {#if showNewCaseModal}
-    <YoRHaModal
-      title="Create New Case"
-      open={showNewCaseModal}
-      close={cancelNewCase}
-    >
+    <YoRHaModal title="Create New Case" open={showNewCaseModal} close={cancelNewCase}>
       <form class="space-y-4" onsubmit={handleCreateCase}>
         <!-- Case Title -->
         <div>
           <label for="case-title" class="block text-sm font-medium text-amber-400 mb-2">Case Title</label>
           <input
             id="case-title"
-            type="text"
+            type="text";
             bind:value={newCaseData.title}
             class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 placeholder-amber-400 placeholder-opacity-50 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
             placeholder="Enter case title..."
@@ -331,7 +360,8 @@ https://svelte.dev/e/js_parse_error -->
         <div>
           <label for="case-description" class="block text-sm font-medium text-amber-400 mb-2">Description</label>
           <textarea
-            id="case-description";
+            id="case-description"
+            ;
             bind:value={newCaseData.description}
             rows="4"
             class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 placeholder-amber-400 placeholder-opacity-50 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
@@ -342,7 +372,8 @@ https://svelte.dev/e/js_parse_error -->
         <div>
           <label for="case-priority" class="block text-sm font-medium text-amber-400 mb-2">Priority</label>
           <select
-            id="case-priority";
+            id="case-priority"
+            ;
             bind:value={newCaseData.priority}
             class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
           >
@@ -376,7 +407,9 @@ https://svelte.dev/e/js_parse_error -->
   {#if notifications.length > 0}
     <div class="notifications fixed top-4 right-4 space-y-2 z-50">
       {#each notifications as notification ((notification as { id?: unknown; type?: unknown; message?: unknown }).id)}
-        <div class="notification bg-black bg-opacity-90 border border-amber-400 border-opacity-50 text-amber-300 p-3 rounded backdrop-blur-sm">
+        <div
+          class="notification bg-black bg-opacity-90 border border-amber-400 border-opacity-50 text-amber-300 p-3 rounded backdrop-blur-sm"
+        >
           <div class="flex items-center space-x-2">
             <span class="text-lg">
               {#if (notification as { id?: unknown; type?: unknown; message?: unknown }).type === 'success'}✅
@@ -391,6 +424,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+
 <style>
   .yorha-detective {
     font-family: 'JetBrains Mono', 'Courier New', monospace;
@@ -453,7 +487,8 @@ https://svelte.dev/e/js_parse_error -->
     animation: pulse 2s infinite;
   }
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {

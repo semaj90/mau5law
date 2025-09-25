@@ -16,7 +16,7 @@ export interface Evidence {
   type: string;
   description?: string;
   fileUrl?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   [key: string]: unknown;
 }
 export interface LegalAIContext {
@@ -26,7 +26,7 @@ export interface LegalAIContext {
     role: string | null;
     permissions: string[];
     isAuthenticated: boolean;
-  };
+  }
   cases: {
     items: Case[];
     currentCase: Case | null;
@@ -35,15 +35,15 @@ export interface LegalAIContext {
       status: string;
       priority: string;
       category: string;
-    };
+    }
     pagination: {
       page: number;
       limit: number;
       total: number;
-    };
+    }
     loading: boolean;
     error: string | null;
-  };
+  }
   ai: {
     isProcessing: boolean;
     currentQuery: string;
@@ -53,8 +53,8 @@ export interface LegalAIContext {
       primary: string;
       embedding: string;
       available: string[];
-    };
-  };
+    }
+  }
   system: {
     connected: boolean;
     services: {
@@ -62,13 +62,13 @@ export interface LegalAIContext {
       redis: boolean;
       ollama: boolean;
       gpu: boolean;
-    };
+    }
     metrics: {
       errorCount: number;
       performanceScore: number;
       uptime: number;
-    };
-  };
+    }
+  }
 }
 export type LegalAIEvent =
   | { type: 'AUTH.LOGIN'; credentials: { email: string; password: string } }
@@ -79,7 +79,7 @@ export type LegalAIEvent =
   | { type: 'CASES.CREATE'; caseData: any }
   | { type: 'CASES.SEARCH'; query: string }
   | { type: 'AI.QUERY'; prompt: string; context?: any }
-  | { type: 'SYSTEM.CHECK_STATUS' };
+  | { type: 'SYSTEM.CHECK_STATUS' }
 const initialContext: LegalAIContext = {
   user: {
     id: null
@@ -130,7 +130,7 @@ const initialContext: LegalAIContext = {
       uptime: 0
     }
   }
-};
+}
 export const legalAIMachine = setup({
   types: { [key: string]: any } as {
     context: LegalAIContext;
@@ -224,14 +224,14 @@ export const legalAIMachine = setup({
             performanceScore,
             uptime: Date.now()
           }
-        };
+        }
       } catch (error: any) {
         console.error('System status check failed:', error);
         return {
           connected: false
           services: { database: false, redis: false, ollama: false, gpu: false, pgvector: false, qdrant: false, neo4j: false },
           metrics: { errorCount: 1, performanceScore: 0, uptime: 0 }
-        };
+        }
       }
     }),
     authenticateUser: fromPromise(async ({ input }: { input: any }) => {
@@ -246,7 +246,7 @@ export const legalAIMachine = setup({
             email: response.data.email || input.credentials?.email,
             role: response.data.role || 'legal_professional',
             permissions: response.data.permissions || ['read:cases', 'write:cases', 'ai:query']
-          };
+          }
         } else {
           throw new Error(response.error || 'Authentication failed');
         }
@@ -286,7 +286,7 @@ export const legalAIMachine = setup({
     }),
     processAIQuery: fromPromise(async ({ input }: { input: any }) => {
       try {
-        const response = await productionServiceClient.queryRAG(input.prompt, input.context);
+        // removed unused response assignment
         if (response.success && response.data) {
           return {
             response: response.data.response || response.data.answer,
@@ -297,7 +297,7 @@ export const legalAIMachine = setup({
             protocol: response.protocol,
             latency: response.latency,
             metadata: response.data.metadata || {}
-          };
+          }
         } else {
           throw new Error(response.error || 'AI query failed');
         }

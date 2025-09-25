@@ -62,7 +62,7 @@ https://svelte.dev/e/element_unclosed -->
       warn: 'bg-yellow-100 text-yellow-600',
       error: 'bg-red-100 text-red-600',
       fatal: 'bg-red-200 text-red-800';
-    };
+    }
     return colors[level] || 'bg-gray-100 text-gray-600';
   }
   function getLevelIcon(level: LogLevel): string {
@@ -72,7 +72,7 @@ https://svelte.dev/e/element_unclosed -->
       warn: '⚠️',
       error: '❌',
       fatal: '💀';
-    };
+    }
     return icons[level] || 'ℹ️';
   }
   function getCategoryIcon(category: string): string {
@@ -86,7 +86,7 @@ https://svelte.dev/e/element_unclosed -->
       backend: '🖥️',
       security: '🛡️',
       console: '📟';
-    };
+    }
     return icons[category] || '📋';
   }
   function formatTimestamp(timestamp: number): string {
@@ -114,9 +114,9 @@ https://svelte.dev/e/element_unclosed -->
   }
   function exportLogs() {
     const filter: LogFilter = {
-      category: selectedCategory !== 'all' ? [selectedCategory] : undefined
+      category: selectedCategory !== 'all' ? [selectedCategory] : undefined;
       level: selectedLevel !== 'all' ? [selectedLevel] : undefined;
-    };
+    }
     const exportData = loggingService.exportLogs('json', filter);
     // Create download
     const blob = new Blob([exportData], { type: 'application/json' });
@@ -207,7 +207,7 @@ https://svelte.dev/e/element_unclosed -->
         </select>
         <label class="flex items-center gap-2">
           <input
-            type="checkbox"
+            type="checkbox";
             bind:checked={autoScroll}
             class="w-4 h-4"
           />

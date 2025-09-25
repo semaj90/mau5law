@@ -8,13 +8,13 @@ import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // Database connection
 const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:legal_pass_2025@localhost:5432/legal_ai'
 const client = postgres(connectionString);
-export const db = drizzle(client);
+export // removed unused db assignment
 export class LegalVectorService {
   constructor(private database: PostgresJsDatabase = db) {}
   /**
    * Store document with embedding from gemma3-legal:latest
    */;
-  async storeDocumentWithEmbedding(document: {
+  async storeDocumentWithEmbedding(_document: {
     title: string;
     content: string;
     documentType: string;

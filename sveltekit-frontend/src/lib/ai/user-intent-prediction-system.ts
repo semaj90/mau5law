@@ -20,7 +20,7 @@ export interface UserIntentPrediction {
     domainSpecialization: string[];
     sessionPattern: 'exploration' | 'focused_work' | 'research' | 'problem_solving';
     lastUpdated?: number;
-  };
+  }
 }
 export interface DidYouMeanSuggestion {
   originalQuery: string;
@@ -32,7 +32,7 @@ export interface DidYouMeanSuggestion {
     clarityGain: number; // 0-1,
     specificityGain: number; // 0-1
     completenessGain: number; // 0-1
-  };
+  }
 }
 export interface TaskCompletionPrediction {
   taskType: string;
@@ -73,7 +73,7 @@ class UserIntentPredictionSystem {
   /**
    * Main prediction method: Analyze user query and predict intentions
    */
-  async predictUserIntent(
+  async predictUserIntent(;
     query: string
     userContext: {
       userId: string;
@@ -116,7 +116,7 @@ class UserIntentPredictionSystem {
         taskCompletion,
         userInsights,
         processingTime
-      };
+      }
     } catch (error) {
       console.error('❌ Intent prediction failed:', error);
       return {
@@ -125,7 +125,7 @@ class UserIntentPredictionSystem {
         taskCompletion: this.createFallbackTaskPrediction(),
         userInsights: this.createFallbackUserInsights(),
         processingTime: performance.now() - startTime
-      };
+      }
     }
   }
   /**
@@ -153,7 +153,7 @@ class UserIntentPredictionSystem {
         contextualHelp,
         personalizedSuggestions,
         nextStepPrediction
-      };
+      }
     } catch (error) {
       console.error('❌ Fast task assistance failed:', error);
       return {
@@ -161,7 +161,7 @@ class UserIntentPredictionSystem {
         contextualHelp: [],
         personalizedSuggestions: [],
         nextStepPrediction: 'Continue with your query for more assistance'
-      };
+      }
     }
   }
   /**
@@ -186,7 +186,7 @@ class UserIntentPredictionSystem {
       alternativeIntents,
       suggestedActions,
       contextualInsights
-    };
+    }
   }
   /**
    * Generate "Did you mean" suggestions using multiple techniques
@@ -333,7 +333,7 @@ class UserIntentPredictionSystem {
       creation: ['create', 'write', 'draft', 'generate'],
       explanation: ['explain', 'what is', 'how does', 'why'],
       comparison: ['compare', 'versus', 'difference', 'better']
-    };
+    }
     let featureIndex = 5;
     Object.entries(intentKeywords).forEach(([intent, keywords]) => {
       features[featureIndex++] = keywords.filter(keyword => query.toLowerCase().includes(keyword)).length / keywords.length;
@@ -439,7 +439,7 @@ class UserIntentPredictionSystem {
         sessionPattern: 'exploration',
         lastUpdated: Date.now()
       }
-    };
+    }
   }
   private createFallbackTaskPrediction(): TaskCompletionPrediction {
     return {
@@ -449,7 +449,7 @@ class UserIntentPredictionSystem {
       successProbability: 0.7,
       potentialChallenges: ['unclear_requirements'],
       recommendedApproach: 'step_by_step_clarification'
-    };
+    }
   }
   private createFallbackUserInsights(): UserLearningInsights {
     return {
@@ -459,7 +459,7 @@ class UserIntentPredictionSystem {
       commonMistakePatterns: [],
       personalizedShortcuts: new Map(),
       adaptationRecommendations: ['provide_more_context']
-    };
+    }
   }
   private async buildFastCachedResponse(cached: any, query: string, userContext: any, startTime: number): Promise<any> {
     return {
@@ -468,7 +468,7 @@ class UserIntentPredictionSystem {
       taskCompletion: this.createFallbackTaskPrediction(),
       userInsights: this.userInsightCache.get(userContext.userId) || this.createFallbackUserInsights(),
       processingTime: performance.now() - startTime
-    };
+    }
   }
   // Placeholder method implementations (would be fully implemented in production)
   private refineIntentWithContext(result: any, context: any): any { return result; }
@@ -482,7 +482,7 @@ class UserIntentPredictionSystem {
       domainSpecialization: [],
       sessionPattern: 'exploration',
       lastUpdated: Date.now()
-    };
+    }
   }
   private async predictTaskCompletion(query: string, intent: any, context: any): Promise<any> { return this.createFallbackTaskPrediction(); }
   private async analyzeUserLearning(userId: string, query: string, intent: any): Promise<any> { return this.createFallbackUserInsights(); }
@@ -514,17 +514,17 @@ class UserIntentPredictionSystem {
       avgProcessingTime: totalProcessingTime / Math.max(totalPredictions, 1),
       intentAccuracy: totalPredictions > 0 ? correctPredictions / totalPredictions : 0,
       suggestionAcceptanceRate: 0.65 // Estimated based on user interaction
-    };
+    }
   }
 }
 // Placeholder classes for ML components
 class IntentClassifierModel {
   async classify(features: Float32Array): Promise<any> {
     // Simplified classification based on features
-    if (features[4] > 0.3) return { intent: 'legal_analysis', confidence: 0.8 };
-    if (features[5] > 0.5) return { intent: 'search', confidence: 0.7 };
-    if (features[6] > 0.5) return { intent: 'document_analysis', confidence: 0.75 };
-    return { intent: 'general_chat', confidence: 0.6 };
+    if (features[4] > 0.3) return { intent: 'legal_analysis', confidence: 0.8 }
+    if (features[5] > 0.5) return { intent: 'search', confidence: 0.7 }
+    if (features[6] > 0.5) return { intent: 'document_analysis', confidence: 0.75 }
+    return { intent: 'general_chat', confidence: 0.6 }
   }
 }
 class SpellingCorrectionEngine {
@@ -538,7 +538,7 @@ class SpellingCorrectionEngine {
       'seperate': 'separate',
       'definately': 'definitely',
       'occurence': 'occurrence'
-    };
+    }
     words.forEach(word => {
       const cleanWord = word.toLowerCase().replace(/[.,!?]/g, '');
       const replacement = commonMisspellings[cleanWord];
@@ -563,7 +563,7 @@ class SynonymExpansionEngine {
       'law': 'statute',
       'case': 'legal precedent',
       'company': 'corporation'
-    };
+    }
     Object.entries(legalSynonyms).forEach(([original, legal]) => {
       if (query.toLowerCase().includes(original)) {
         expansions.push({

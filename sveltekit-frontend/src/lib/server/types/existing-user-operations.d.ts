@@ -26,7 +26,9 @@ declare module '$lib/server/db/existing-user-operations' {
     isActive?: boolean;
     [key: string]: any;
   }
-  export interface ExistingUserProfile { [key: string]: any }
+  export interface ExistingUserProfile {
+    [key: string]: any;
+  }
   export interface ServiceResult<T = any> {
     success: boolean;
     data?: T;
@@ -41,7 +43,7 @@ declare module '$lib/server/db/existing-user-operations' {
     static validateSession(sessionId: string): Promise<ServiceResult>;
     static logoutUser(sessionId: string, ipAddress?: string): Promise<ServiceResult>;
   }
-  export { ExistingUserAuthService as ExistingUserAuthService };
+  export { ExistingUserAuthService as ExistingUserAuthService }
 }
 // also declare the .js import path used by routes
 declare module '$lib/server/db/existing-user-operations.js' {

@@ -10,7 +10,7 @@ import { generateEmbedding } from '$lib/server/embedding-service'
 import { validateSession } from '$lib/server/lucia'
 import type { RequestHandler } from './$types.js'
 import crypto from 'crypto'
-import { URL } from 'url'
+
 // Local any-typed alias to reduce noisy overload errors in this route.
 // Use sparingly; replace with proper types when refactoring DB layer.
 const dbAny = db as unknown as any
@@ -300,7 +300,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             model_name: 'nomic-embed-text',
             metadata: {
               entityType: 'case',
-              entityId: caseId
+              entityId: caseId;
               content: caseContent.substring(0, 500), // Store first 500 chars for reference
             },
             created_at: now

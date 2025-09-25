@@ -6,11 +6,11 @@ export interface FormField {
   error?: string | null;
   touched: boolean;
   required?: boolean;
-  validator?: (value: any) => string | null;
+  validator?: (_value: any) => string | null;
 }
 export interface FormState {
   fields: Record<string, FormField>;
-  values: { [key: string]: any };
+  values: { [key: string]: any }
   errors: Record<string, string>;
   isSubmitting: boolean;
   isValid: boolean;
@@ -18,12 +18,12 @@ export interface FormState {
   submitCount: number;
 }
 export interface FormOptions {
-  initialValues?: { [key: string]: any };
-  validators?: Record<string, (value: any) => string | null>;
+  initialValues?: { [key: string]: any }
+  validators?: Record<string, (_value: any) => string | null>;
   requiredFields?: string[];
   onSubmit?: (values: { [key: string]: any }) => Promise<void> | void;
 }
-function createFormStore(options: FormOptions = {}) {
+function createFormStore(_options: FormOptions = {}) {
   const {
     initialValues = {},
     validators = {},
@@ -31,7 +31,7 @@ function createFormStore(options: FormOptions = {}) {
     onSubmit
   } = options;
   // Initialize fields
-  const initialFields: Record<string, FormField> = {};
+  const initialFields: Record<string, FormField> = {}
   Object.keys(initialValues).forEach((name) => {
     initialFields[name] = {
       name,
@@ -39,21 +39,21 @@ function createFormStore(options: FormOptions = {}) {
       touched: false
       required: requiredFields.includes(name),
       validator: validators[name]
-    };
+    }
   });
   const initialState: FormState = {
     fields: initialFields
-    values: initialValues
+    values: initialValues;
     errors: { [key: string]: any },
     isSubmitting: false
     isValid: true
     isDirty: false
     submitCount: 0
-  };
+  }
   const { subscribe, set, update } = writable<FormState>(initialState);
   // Derived store for form values
   const values = derived({ subscribe }, ($state) => {
-    const vals: { [key: string]: any } = {};
+    const vals: { [key: string]: any } = {}
     Object.values($state.fields).forEach((field) => {
       vals[field.name] = field.value;
     });
@@ -61,7 +61,7 @@ function createFormStore(options: FormOptions = {}) {
   });
   // Derived store for form errors
   const errors = derived({ subscribe }, ($state) => {
-    const errs: Record<string, string> = {};
+    const errs: Record<string, string> = {}
     Object.values($state.fields).forEach((field) => {
       if (field.error) {
         errs[field.name] = field.error;
@@ -79,18 +79,18 @@ function createFormStore(options: FormOptions = {}) {
       return field.validator(field.value);
     }
     return null;
-  };
+  }
   const validateForm = (state: FormState): boolean => {
     let isValid = true;
-    const updatedFields = { ...state.fields };
+    const updatedFields = { ...state.fields }
     Object.keys(updatedFields).forEach((name) => {
       const field = updatedFields[name];
       const error = validateField(field);
-      updatedFields[name] = { ...field, error: error || undefined };
+      updatedFields[name] = { ...field, error: error || undefined }
       if (error) isValid = false;
     });
     return isValid;
-  };
+  }
   return {
     subscribe,
     values,
@@ -104,12 +104,12 @@ function createFormStore(options: FormOptions = {}) {
           touched: false
           required: requiredFields.includes(name),
           validator: validators[name]
-        };
+        }
         const updatedField = {
           ...field,
           value,
           touched: true
-        };
+        }
         // Validate field
         const error = validateField(updatedField);
         updatedField.error = error;
@@ -120,12 +120,12 @@ function createFormStore(options: FormOptions = {}) {
             [name]: updatedField
           },
           isDirty: true
-        };
+        }
         // Recalculate form validity
         newState.isValid = validateForm(newState);
         // Update values and errors
-        newState.values = {};
-        newState.errors = {};
+        newState.values = {}
+        newState.errors = {}
         Object.values(newState.fields).forEach((field) => {
           newState.values[field.name] = field.value;
           if (field.error) {
@@ -152,7 +152,7 @@ function createFormStore(options: FormOptions = {}) {
     validate: () => {
       let isValid = true;
       update((state) => {
-        const newState = { ...state };
+        const newState = { ...state }
         newState.isValid = validateForm(newState);
         return newState;
       });
@@ -166,7 +166,7 @@ function createFormStore(options: FormOptions = {}) {
           ...state,
           isSubmitting: true
           submitCount: state.submitCount + 1
-        };
+        }
         // Touch all fields and validate
         Object.keys(newState.fields).forEach((name) => {
           newState.fields[name].touched = true;
@@ -209,7 +209,7 @@ function createFormStore(options: FormOptions = {}) {
             name,
             value: initialValue
             touched: false
-            required: isRequired
+            required: isRequired;
             validator: validators[name]
           }
         }
@@ -222,9 +222,9 @@ function createFormStore(options: FormOptions = {}) {
         return {
           ...state,
           fields: remainingFields
-        };
+        }
       });
     }
-  };
+  }
 }
-export { createFormStore };
+export { createFormStore }

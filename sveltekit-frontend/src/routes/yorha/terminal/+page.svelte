@@ -19,7 +19,7 @@
     timestamp: string;
     text: string;
     type: 'system' | 'user' | 'success' | 'error' | 'info';
-  };
+  }
   let terminalHistory = $state<TerminalEntry[]>([]);
   let currentInput = $state('');
   let isExecuting = $state(false);
@@ -70,7 +70,7 @@
       usage: 'version',
       execute: () => showVersion();
     }
-  };
+  }
   $effect(() => {
     // Initialize terminal with welcome message
     addOutput('YORHA TERMINAL v1.0.0 - Legal AI System Interface', 'system');
@@ -173,7 +173,7 @@
     }
     try {
       addOutput(`Searching database for: "${term}"`, 'info');
-      const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(term)}&limit=5`);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         addOutput('=== SEARCH RESULTS ===', 'success');
@@ -201,7 +201,7 @@
       case 'health':
         try {
           addOutput('Checking cluster health...', 'info');
-          const response = await fetch('/api/v1/cluster/health');
+          // removed unused response assignment
           if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
             const health = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
             addOutput('=== CLUSTER HEALTH ===', 'success');
@@ -243,12 +243,13 @@
     addOutput('SvelteKit: 2.x', 'info');
     addOutput('Node.js: ' + (typeof process !== 'undefined' ? process.version : 'Browser'), 'info');
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !isExecuting) {
       executeCommand(currentInput);
     }
   }
 </script>
+
 <svelte:head>
   <title>YoRHa Terminal - Command Interface</title>
 </svelte:head>
@@ -343,6 +344,7 @@
     </div>
   </section>
 </div>
+
 <style>
   .yorha-terminal-page {
     @apply min-h-scree;
@@ -445,15 +447,33 @@
     @apply text-amber-400;
   }
   @keyframes spin {
-    0% { content: '⠋'; }
-    12.5% { content: '⠙'; }
-    25% { content: '⠹'; }
-    37.5% { content: '⠸'; }
-    50% { content: '⠼'; }
-    62.5% { content: '⠴'; }
-    75% { content: '⠦'; }
-    87.5% { content: '⠧'; }
-    100% { content: '⠇'; }
+    0% {
+      content: '⠋';
+    }
+    12.5% {
+      content: '⠙';
+    }
+    25% {
+      content: '⠹';
+    }
+    37.5% {
+      content: '⠸';
+    }
+    50% {
+      content: '⠼';
+    }
+    62.5% {
+      content: '⠴';
+    }
+    75% {
+      content: '⠦';
+    }
+    87.5% {
+      content: '⠧';
+    }
+    100% {
+      content: '⠇';
+    }
   }
   /* Responsive */
   @media (max-width: 768px) {

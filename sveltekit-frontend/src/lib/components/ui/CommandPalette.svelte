@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Search,
       category: 'Navigation',
       href: '/',
-      shortcut: ['⌘', 'H']
+      shortcut: ['⌘', 'H'];
     },
     {
       id: 'nav-evidence',
@@ -51,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: File,
       category: 'Navigation',
       href: '/evidence',
-      shortcut: ['⌘', 'E']
+      shortcut: ['⌘', 'E'];
     },
     {
       id: 'nav-cases',
@@ -60,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Briefcase,
       category: 'Navigation',
       href: '/cases',
-      shortcut: ['⌘', 'C']
+      shortcut: ['⌘', 'C'];
     },
     // Actions
     {
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Briefcase,
       category: 'Actions',
       action: () => console.log('Create new case'),
-      shortcut: ['⌘', 'N']
+      shortcut: ['⌘', 'N'];
     },
     {
       id: 'action-upload-evidence',
@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: File,
       category: 'Actions',
       action: () => console.log('Upload evidence'),
-      shortcut: ['⌘', 'U']
+      shortcut: ['⌘', 'U'];
     },
     // Settings
     {
@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
       description: 'Manage your user profile',
       icon: UserIcon,
       category: 'Settings',
-      href: '/profile'
+      href: '/profile';
     },
     {
       id: 'settings-system',
@@ -96,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
       description: 'Configure system preferences',
       icon: Settings,
       category: 'Settings',
-      href: '/settings'
+      href: '/settings';
   }
   ];
   $effect(() => {
@@ -143,6 +143,7 @@ https://svelte.dev/e/js_parse_error -->
     selectedIndex = 0
   }
 </script>
+
 <svelte:window keydown={handleKeydown} />
 {#if open}
   <!-- Backdrop -->
@@ -151,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
     onclick={close}
     role="button"
     tabindex="0"
-    keydown={(e) => e.key === 'Enter' && close()}
+    keydown={e => e.key === 'Enter' && close()}
   >
     <!-- Command palette -->
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
@@ -170,7 +171,7 @@ https://svelte.dev/e/js_parse_error -->
             type="text"
             placeholder="Search commands, cases, evidence..."
             class="flex-1 bg-transparent border-none outline-none py-4 text-foreground placeholder:nes-text is-disabled"
-            oninput={() => selectedIndex = 0}
+            oninput={() => (selectedIndex = 0)}
           />
           <div class="flex items-center gap-1 text-xs nes-text is-disabled">
             <kbd class="px-1.5 py-0.5 bg-nier-surface-light rounded border border-nier-gray">
@@ -182,13 +183,11 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Results -->
         <div class="max-h-96 overflow-y-auto">
           {#if filteredItems.length > 0}
-            {#each Object.entries(
-              filteredItems.reduce((acc: Record<string, CommandItem[]>, item) => {
+            {#each Object.entries(filteredItems.reduce((acc: Record<string, CommandItem[]>, item) => {
                 if (!acc[item.category]) acc[item.category] = [];
                 acc[item.category].push(item);
                 return acc;
-              }, {})
-            ) as entry, categoryIndex}
+              }, {})) as entry, categoryIndex}
               {@const [category, items] = entry as [string, CommandItem[]]}
               <div class="px-2 py-2">
                 <h3 class="px-2 text-xs font-semibold nes-text is-disabled uppercase tracking-wider mb-1">
@@ -198,33 +197,37 @@ https://svelte.dev/e/js_parse_error -->
                   {@const globalIndex = filteredItems.indexOf(item)}
                   <button
                     class={cn(
-                      "w-full flex items-center justify-between px-3 py-2 text-left rounded-md transition-all duration-150",
+                      'w-full flex items-center justify-between px-3 py-2 text-left rounded-md transition-all duration-150',
                       globalIndex === selectedIndex
-                        ? "bg-harvard-crimson text-white shadow-nier-glow"
-                        : "hover:bg-nier-surface-light text-foreground"
+                        ? 'bg-harvard-crimson text-white shadow-nier-glow'
+                        : 'hover:bg-nier-surface-light text-foreground',
                     )}
                     onclick={() => selectItem(item)}
-                    onmouseenter={() => selectedIndex = globalIndex}
+                    onmouseenter={() => (selectedIndex = globalIndex)}
                   >
                     <div class="flex items-center">
                       <svelte:component
                         this={item.icon}
                         class={cn(
-                          "h-4 w-4 mr-3",
-                          globalIndex === selectedIndex ? "text-white" : "text-muted-foreground"
+                          'h-4 w-4 mr-3',
+                          globalIndex === selectedIndex ? 'text-white' : 'text-muted-foreground',
                         )}
                       />
                       <div>
-                        <div class={cn(
-                          "text-sm font-medium",
-                          globalIndex === selectedIndex ? "text-white" : "text-foreground"
-                        )}>
+                        <div
+                          class={cn(
+                            'text-sm font-medium',
+                            globalIndex === selectedIndex ? 'text-white' : 'text-foreground',
+                          )}
+                        >
                           {item.title}
                         </div>
-                        <div class={cn(
-                          "text-xs",
-                          globalIndex === selectedIndex ? "text-white/70" : "text-muted-foreground"
-                        )}>
+                        <div
+                          class={cn(
+                            'text-xs',
+                            globalIndex === selectedIndex ? 'text-white/70' : 'text-muted-foreground',
+                          )}
+                        >
                           {item.description}
                         </div>
                       </div>
@@ -232,12 +235,14 @@ https://svelte.dev/e/js_parse_error -->
                     {#if item.shortcut}
                       <div class="flex items-center gap-1">
                         {#each item.shortcut as key}
-                          <kbd class={cn(
-                            "px-1.5 py-0.5 text-xs rounded border",
-                            globalIndex === selectedIndex
-                              ? "bg-white/20 text-white border-white/30"
-                              : "bg-nier-surface-light text-muted-foreground border-nier-gray"
-                          )}>
+                          <kbd
+                            class={cn(
+                              'px-1.5 py-0.5 text-xs rounded border',
+                              globalIndex === selectedIndex
+                                ? 'bg-white/20 text-white border-white/30'
+                                : 'bg-nier-surface-light text-muted-foreground border-nier-gray',
+                            )}
+                          >
                             {key}
                           </kbd>
                         {/each}
@@ -279,12 +284,14 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   /* @unocss-include */
   .nier-border-glow {
     position: relative;
     box-shadow: 0 0 30px rgba(165, 28, 48, 0.3);
-}
+  }
   .nier-border-glow::before {
     content: '';
     position: absolute;
@@ -292,9 +299,10 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1px;
     background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold));
     border-radius: inherit;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     mask-composite: exclude;
     opacity: 0.4;
-}
+  }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

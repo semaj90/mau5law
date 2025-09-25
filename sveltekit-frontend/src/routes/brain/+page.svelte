@@ -8,13 +8,20 @@ https://svelte.dev/e/js_parse_error -->
   import * as THREE from 'three';
   let layout = $state<any>(null);
   let graphData = $state<any>({ nodes: [], links: [] });
-  const client = new YoRHaAPIClient({ onData: (id, data) => { if (id === 'brainGraph') { graphData = data; updateScene(); } }});
+  const client = new YoRHaAPIClient({
+    onData: (id, data) => {
+      if (id === 'brainGraph') {
+        graphData = data;
+        updateScene();
+      }
+    },
+  });
   let canvasContainer = $state<HTMLDivElement | null>(null);
   let renderer = $state<THREE.WebGLRenderer | null>(null);
   let scene: THREE.Sce;
   let camera: THREE.PerspectiveCamera;
   let animationId: number;
-  let nodeMeshes = $state<Record<string, THREE.Mesh>({});
+  let nodeMeshes = $state < Record<string, THREE.Mesh>({});
   let linkLines = $state<THREE.Line[]>([]);
   const nodeGeometry = new THREE.SphereGeometry(0.25, 24, 24);
   const typeColor: Record<string, number> = {
@@ -28,8 +35,8 @@ https://svelte.dev/e/js_parse_error -->
     routing: 0x22c55e,
     automation: 0x14b8a6,
     table: 0x8b5cf6,
-    default: 0xffffff
-  };
+    default: 0xffffff,
+  }
   function initThree() {
     if (!canvasContainer) return;
     scene = new THREE.Scene();
@@ -42,13 +49,13 @@ https://svelte.dev/e/js_parse_error -->
     const light = new THREE.DirectionalLight(0xffffff, 0.8);
     light.position.set(4, 6, 5);
     scene.add(light);
-  scene.add(new THREE.AmbientLight(0x404040));
+    scene.add(new THREE.AmbientLight(0x404040));
   }
   function buildGraph() {
     // Clear existing
-  Object.values(nodeMeshes).forEach(m => scene.remove(m));
-  linkLines.forEach(l => scene.remove(l));
-    nodeMeshes = {};
+    Object.values(nodeMeshes).forEach(m => scene.remove(m));
+    linkLines.forEach(l => scene.remove(l));
+    nodeMeshes = {}
     linkLines = [];
     const radius = 4;
     graphData.nodes.forEach((n: unknown, idx: number) => {
@@ -59,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
       mesh.position.set(
         Math.cos(a) * radius,
         Math.sin(a * 2) * 0.5,
-        Math.sin(a) * radius * 0.5 + (Math.random() - 0.5)
+        Math.sin(a) * radius * 0.5 + (Math.random() - 0.5),
       );
       scene.add(mesh);
       nodeMeshes[n.id] = mesh;
@@ -92,24 +99,27 @@ https://svelte.dev/e/js_parse_error -->
   }
   $effect(() => {
     (async () => {
-initThree();
-    try {
-      await client.loadLayout('/api/yorha/layout');
-      layout = client.getLayout();
-      client.startDataStreams();
-      const res = await fetch('/api/brain/graph');
-      if (res.ok) {
-        graphData = await res.json();
-        updateScene();
+      initThree();
+      try {
+        await client.loadLayout('/api/yorha/layout');
+        layout = client.getLayout();
+        client.startDataStreams();
+        const res = await fetch('/api/brain/graph');
+        if (res.ok) {
+          graphData = await res.json();
+          updateScene();
+        }
+        animate();
+      } catch (e) {
+        console.error('Brain page init failed', e);
       }
-      animate();
-    } catch (e) {
-      console.error('Brain page init failed', e);
-    }
-    return () => { cancelAnimationFrame(animationId); };
+      return () => {
+        cancelAnimationFrame(animationId);
+      }
     })();
   });
 </script>
+
 <h1 class="text-2xl font-bold mb-4 font-mono">🧠 System Brain Graph</h1>
 <p class="mb-4 opacity-80">Live topology of backend services, database entities and frontend modules.</p>
 <div class="grid gap-4 md:grid-cols-3">
@@ -137,6 +147,9 @@ initThree();
     </ul>
   </div>
 </div>
+
 <style>
-  :global(body) { font-family: system-ui, sans-serif; }
+  :global(body) {
+    font-family: system-ui, sans-serif;
+  }
 </style>

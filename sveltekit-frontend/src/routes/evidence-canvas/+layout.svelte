@@ -8,12 +8,16 @@
   if (browser) {
     mounted = true;
   }
-  interface Props { children: Snippet }
+  interface Props {
+    children: Snippet;
+  }
   let { children }: Props = $props();
 </script>
+
 <div class="evidence-canvas-layout" class:mounted>
   {@render children?.()}
-  </div>
+</div>
+
 <style>
   .evidence-canvas-layout {
     min-height: 100vh;
@@ -27,7 +31,9 @@
   :global(body) {
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+font-family: {}
+-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', {}
+      'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

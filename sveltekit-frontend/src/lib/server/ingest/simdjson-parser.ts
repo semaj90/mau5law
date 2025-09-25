@@ -58,7 +58,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
         textFields: textFields.length,
         processingTime: Date.now() - startTime
       }
-    };
+    }
   } catch (error) {
     return {
       success: false
@@ -69,7 +69,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
         textFields: 0,
         processingTime: Date.now() - startTime
       }
-    };
+    }
   }
 }
 /**
@@ -91,7 +91,7 @@ export async function parseJsonStream(
     for (const chunk of chunks) {
       try {
         // Try to find complete JSON objects in chunk
-        const lines = chunk.split('\n');
+        // removed unused lines assignment
         for (const line of lines) {
           const trimmed = line.trim();
           if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
@@ -113,14 +113,14 @@ export async function parseJsonStream(
       success: true
       extractedTexts: extractedTexts.slice(0, 1000), // Limit results
       totalChunks: chunks.length
-    };
+    }
   } catch (error) {
     return {
       success: false
       extractedTexts: [],
       totalChunks: 0,
       error: error instanceof Error ? error.message: String(error)
-    };
+    }
   }
 }
 /**
@@ -128,7 +128,7 @@ export async function parseJsonStream(
  */;
 function extractTextFromObject(obj: any): string[] {
   const texts: string[] = [];
-  function walk(value: any, depth = 0): void {
+  function walk(_value: any, depth = 0): void {
     if (depth > 5) return; // Prevent deep recursion
     if (typeof value === 'string' && value.length > 10) {
       texts.push(value);

@@ -105,7 +105,7 @@ export function createAlignedBuffer(sizeInBytes: number): ArrayBuffer {
  * Copy data between buffers with proper alignment
  */
 export function copyBufferAligned(
-  source: BufferLike
+  source: BufferLike;
   target: ArrayBuffer
   targetOffset = 0
 ): void {
@@ -141,7 +141,7 @@ export class WebGPUBufferUtils {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
     const elementCount = data instanceof Float32Array ? data.length : byteLength / 4;
-    return { buffer, byteLength, elementCount };
+    return { buffer, byteLength, elementCount }
   }
   /**
    * Calculate proper buffer size with padding for WebGPU
@@ -167,7 +167,7 @@ export const BufferTypeGuards = {
   isBufferLike: (data: any): data is BufferLike => {
     return data instanceof ArrayBuffer || BufferTypeGuards.isTypedArray(data);
   }
-};
+}
 /**
  * Debug utilities for buffer inspection
  */
@@ -203,7 +203,7 @@ export const BufferDebugUtils = {
       elementCount,
       alignment,
       isAligned: alignment === 0
-    };
+    }
   },
   /**
    * Log buffer info for debugging
@@ -217,7 +217,7 @@ export const BufferDebugUtils = {
         : `${info.byteLength} bytes`
     });
   }
-};
+}
 /**
  * Extended WebGPU Buffer Utilities with Quantization Support
  */
@@ -238,7 +238,7 @@ export class WebGPUBufferUtils_Advanced {
    * Enhanced buffer preparation that considers quantization needs
    */
   static prepareForUploadAdvanced(
-    data: BufferLike
+    data: BufferLike;
     options: {
       alignment?: number;
       quantizationHint?: 'precision' | 'performance' | 'storage';
@@ -259,7 +259,7 @@ export class WebGPUBufferUtils_Advanced {
     } else if (options.quantizationHint === 'performance' || byteLength > 1024 * 1024) {
       recommendedQuantization = 'fp16';
     }
-    return { buffer, byteLength, elementCount, recommendedQuantization };
+    return { buffer, byteLength, elementCount, recommendedQuantization }
   }
 }
 export default {
@@ -273,4 +273,4 @@ export default {
   WebGPUBufferUtils_Advanced,
   BufferTypeGuards,
   BufferDebugUtils
-};
+}

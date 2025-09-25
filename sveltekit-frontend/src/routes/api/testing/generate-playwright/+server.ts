@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
         estimatedRunTime: calculateEstimatedRunTime(testResults),
         coverage: assessTestCoverage(testResults)
       },
-      // Generated content preview
+      // Generated content preview;
       preview: {
         todoLines: todoContent.split('\n').length,
         testLines: playwrightTestContent.split('\n').length,

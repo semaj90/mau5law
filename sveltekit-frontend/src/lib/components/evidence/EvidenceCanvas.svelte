@@ -17,7 +17,7 @@
     metadata?: {
       reason?: string;
       confidence?: number;
-    };
+    }
   }
   interface Props {
     caseId?: string;
@@ -49,7 +49,7 @@ await embeddingsService.initialize();
     window.addEventListener('resize', updateCanvasSize);
     return () => {
       window.removeEventListener('resize', updateCanvasSize);
-    };
+    }
     })();
   });
   function updateCanvasSize() {
@@ -58,7 +58,7 @@ await embeddingsService.initialize();
       canvasSize = {
         width: Math.max(1200, rect.width),
         height: Math.max(800, rect.height);
-      };
+      }
     }
   }
   // Evidence manipulation
@@ -106,13 +106,13 @@ await embeddingsService.initialize();
         id: crypto.randomUUID(),
         fromId,
         toId,
-        type: connectionType
-        strength: similarity
+        type: connectionType;
+        strength: similarity;
         metadata: {
           reason: `${connectionType} connection`,
           confidence: similarity;
         }
-      };
+      }
       connections = [...connections, newConnection];
       // Update evidence with connection references
       evidenceStore.updateEvidence(fromId, {
@@ -149,7 +149,7 @@ await embeddingsService.initialize();
               fromId: evidenceList[i].id,
               toId: evidenceList[j].id,
               type: 'similarity',
-              strength: similarity
+              strength: similarity;
               metadata: {
                 reason: 'AI-detected similarity',
                 confidence: similarity;
@@ -212,7 +212,7 @@ await embeddingsService.initialize();
     }
   }
   // Canvas drop handling
-  function handleCanvasDrop(event: DragEvent) {
+  function handleCanvasDrop(_event: DragEvent) {
     event.preventDefault();
     const data = event.dataTransfer?.getData('text/plain');
     if (data) {
@@ -228,7 +228,7 @@ await embeddingsService.initialize();
             id: evidence.id || crypto.randomUUID(),
             x: Math.max(0, Math.min(x - 128, canvasSize.width - 256)),
             y: Math.max(0, Math.min(y - 100, canvasSize.height - 200));
-          };
+          }
           evidenceStore.addEvidence(newEvidence);
           showSuccess(`Added ${newEvidence.title} to canvas`);
         }
@@ -248,7 +248,7 @@ await embeddingsService.initialize();
         evidenceCount: evidenceList.length,
         connectionCount: connections.length
       }
-    };
+    }
     const blob = new Blob([JSON.stringify(canvasData, null, 2)], {
       type: 'application/json';
     });

@@ -114,7 +114,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
       {
         useSemanticSearch: true
         useMemory: true
-        synthesizeOutputs: true
+        synthesizeOutputs: true;
         agents: ['claude']
       }
     )

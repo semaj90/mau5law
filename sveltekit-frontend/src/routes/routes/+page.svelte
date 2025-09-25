@@ -7,6 +7,7 @@
     goto('/all-routes');
   });
 </script>
+
 <svelte:head>
   <title>Redirecting...</title>
 </svelte:head>

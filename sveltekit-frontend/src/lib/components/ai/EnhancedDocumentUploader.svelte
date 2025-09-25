@@ -75,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
       tags?: string[];
       autoSummarize?: boolean;
       extractEntities?: boolean;
-    };
+    }
   }
   interface ProcessedFile {
     id: string;
@@ -132,11 +132,11 @@ https://svelte.dev/e/js_parse_error -->
   // ============================================================================
   // DRAG & DROP HANDLERS
   // ============================================================================
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     isDragging.set(true);
   }
-  function handleDragLeave(event: DragEvent) {
+  function handleDragLeave(_event: DragEvent) {
     if (
       !event.relatedTarget ||
       !dropZone?.contains(event.relatedTarget as Node)
@@ -144,14 +144,14 @@ https://svelte.dev/e/js_parse_error -->
       isDragging.set(false);
     }
   }
-  function handleDrop(event: DragEvent) {
+  function handleDrop(_event: DragEvent) {
     event.preventDefault();
     isDragging.set(false);
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     processSelectedFiles(droppedFiles);
   }
-  function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileSelect(_event: Event) {
+    // removed unused target assignment
     const selectedFiles = Array.from(target.files || []);
     processSelectedFiles(selectedFiles);
     target.value = ""; // Reset input
@@ -189,7 +189,7 @@ https://svelte.dev/e/js_parse_error -->
           title: file.name.replace(/\.[^/.]+$/, ""),
           documentType: "other",
           autoSummarize: true
-          extractEntities: true
+          extractEntities: true;
           tags: [],
         },
       }));
@@ -200,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
           reader.onload = (e) => {
             uploadFile.preview = e.target?.result as string;
             files.update((f) => [...f]); // Trigger reactivity
-          };
+          }
           reader.readAsDataURL(uploadFile.file);
         }
       });
@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
       // Upload file
       const uploadResponse = await fetch("/api/documents/upload", {
         method: "POST",
-        body: formData
+        body: formData;
       });
       if (!uploadResponse.ok) {
         throw new Error(`Upload failed: ${uploadResponse.statusText}`);
@@ -271,7 +271,7 @@ https://svelte.dev/e/js_parse_error -->
         // Emit events
         ondispatch?.({
           fileId: uploadFile.id,
-          result: processingResult
+          result: processingResult;
         });
         ondispatch?.({
           files: [
@@ -372,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
     const preventDefaults = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
-    };
+    }
     ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
       document.addEventListener(eventName, preventDefaults, false);
     });
@@ -380,7 +380,7 @@ https://svelte.dev/e/js_parse_error -->
       ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
         document.removeEventListener(eventName, preventDefaults, false);
       });
-    };
+    }
   });
 </script>
 <!-- Main Upload Interface -->
@@ -565,7 +565,7 @@ files.set([])}
           <div>
             <Label for="title">Title</Label>
             <Input
-              id="title"
+              id="title";
               bind:value={$selectedFile.metadata.title}
               placeholder="Document title"
             />

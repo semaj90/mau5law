@@ -27,7 +27,7 @@
     webgpu: false,
     webasm: false,
     model: false,
-    adapter: false
+    adapter: false;
   });
   // Quick prompts
   let quickPrompts = [
@@ -46,8 +46,8 @@
           webgpu: health.webgpuEnabled || false,
           webasm: health.wasmSupported || false,
           model: health.modelLoaded || false,
-          adapter: health.initialized || false
-        };
+          adapter: health.initialized || false;
+        }
         isInitialized = true;
         console.log('✅ Client-side AI ready:', health);
         // Add welcome message
@@ -55,7 +55,7 @@
           id: 'welcome',
           role: 'assistant',
           content: 'Hello! I\'m running locally in your browser using WebAssembly and the Gemma 270MB model. Ask me anything about legal AI, compliance, or contract analysis.',
-          timestamp: Date.now()
+          timestamp: Date.now();
         });
       } else {
         throw new Error('Failed to initialize AI adapter');
@@ -72,8 +72,8 @@
       id: `user_${Date.now()}`,
       role: 'user' as const,
       content: message,
-      timestamp: Date.now()
-    };
+      timestamp: Date.now();
+    }
     messages.push(userMessage);
     messages = [...messages]; // Trigger reactivity
     isProcessing = true;
@@ -86,20 +86,20 @@
         conversationHistory: messages.map(msg => ({
           type: msg.role,
           content: msg.content,
-          timestamp: msg.timestamp
+          timestamp: msg.timestamp;
         }))
       });
       const assistantMessage = {
         id: `assistant_${Date.now()}`,
         role: 'assistant' as const,
         content: response.content,
-        timestamp: Date.now()
-      };
+        timestamp: Date.now();
+      }
       messages.push(assistantMessage);
       messages = [...messages]; // Trigger reactivity
       console.log('✅ Response generated:', {
         method: response.metadata?.method,
-        processingTime: response.metadata?.processingTime
+        processingTime: response.metadata?.processingTime;
       });
     } catch (err) {
       error = err instanceof Error ? err.message: 'Failed to process message';
@@ -113,11 +113,11 @@
       id: 'welcome',
       role: 'assistant',
       content: 'Chat cleared. How can I help you with legal AI questions?',
-      timestamp: Date.now()
+      timestamp: Date.now();
     }];
     error = null;
   }
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();

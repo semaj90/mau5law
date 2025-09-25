@@ -36,7 +36,7 @@ export class TensorAccelerator {
       workgroupSize: [16, 16, 1],
       precision: 'fp16',
       memoryOptimized: true
-    };
+    }
   }
   /**
    * Lazy initialization of WebGPU device
@@ -221,11 +221,11 @@ export class TensorAccelerator {
       new Float32Array(bufferB.getMappedRange()).set(vectorB);
       bufferB.unmap();
       const resultBuffer = this.device.createBuffer({
-        size: numTiles * 4, // f32 per tile
+        size: numTiles * 4, // f32 per tile;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
       const uniformBuffer = this.device.createBuffer({
-        size: 16, // vec4<u32>
+        size: 16, // vec4<u32>;
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
       // Set uniforms
@@ -284,7 +284,7 @@ export class TensorAccelerator {
           kernelType: 'tiled-similarity',
           precision: options.precision || 'fp32'
         }
-      };
+      }
     } catch (error) {
       console.error('GPU similarity computation failed:', error);
       throw error;
@@ -368,7 +368,7 @@ export class TensorAccelerator {
           kernelType: `transform-${operation}`,
           precision: options.precision || 'fp32'
         }
-      };
+      }
     } catch (error) {
       console.error('GPU embedding transformation failed:', error);
       throw error;
@@ -380,7 +380,7 @@ export class TensorAccelerator {
   async analyzeImage(
     imageData: Uint32Array
     width: number
-    height: number
+    height: number;
     options: TensorAccelerationOptions = {}
   ): Promise<any> {
     const startTime = performance.now();
@@ -404,7 +404,7 @@ export class TensorAccelerator {
       new Uint32Array(imageBuffer.getMappedRange()).set(imageData);
       imageBuffer.unmap();
       const featureBuffer = this.device.createBuffer({
-        size: numFeatures * 4, // f32 per feature
+        size: numFeatures * 4, // f32 per feature;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
       const uniformBuffer = this.device.createBuffer({
@@ -459,7 +459,7 @@ export class TensorAccelerator {
           kernelType: 'tiled-image-analysis',
           precision: options.precision || 'fp32'
         }
-      };
+      }
     } catch (error) {
       console.error('GPU image analysis failed:', error);
       throw error;
@@ -530,7 +530,7 @@ export async function acceleratedSimilarity(
       kernelType: 'cpu-similarity',
       precision: 'fp64'
     }
-  };
+  }
 }
 export async function acceleratedTransform(
   embedding: Float32Array
@@ -567,5 +567,5 @@ export async function acceleratedTransform(
       kernelType: `cpu-${operation}`,
       precision: 'fp64'
     }
-  };
+  }
 }

@@ -22,7 +22,7 @@ export interface RouteMetrics {
     fid?: number;
     cls?: number;
     fcp?: number;
-  };
+  }
   timestamp: number;
   requestId?: string;
 }
@@ -51,7 +51,7 @@ export interface PerformanceMetrics {
     status: 'excellent' | 'good' | 'fair' | 'poor';
     score: number;
     timestamp: string;
-  };
+  }
   frontend: {
     averageLoadTime: number;
     averageRenderTime: number;
@@ -61,14 +61,14 @@ export interface PerformanceMetrics {
       fid: number;
       cls: number;
       fcp: number;
-    };
-  };
+    }
+  }
   backend: {
     averageResponseTime: number;
     requestsPerSecond: number;
     errorRate: number;
     uptime: number;
-  };
+  }
   cognitive: CognitiveMetrics;
 }
 export interface SystemMetrics {
@@ -79,25 +79,25 @@ export interface SystemMetrics {
       heapTotal: number;
       external: number;
       rss: number;
-    };
+    }
     cpu: {
       usage: number;
       loadAverage: number[];
-    };
+    }
     gpu?: {
       utilization: number;
       memory: {
         used: number;
         total: number;
-      };
+      }
       temperature: number;
-    };
-  };
+    }
+  }
   services: {
     databases: Record<string, { status: string; responseTime?: number }>;
     aiServices: Record<string, { status: string; responseTime?: number }>;
     microservices: Record<string, { status: string; responseTime?: number }>;
-  };
+  }
 }
 export interface MetricsAggregation {
   timeWindow: string;
@@ -110,7 +110,7 @@ export interface MetricsAggregation {
     fid: number;
     cls: number;
     fcp: number;
-  };
+  }
   topRoutes: Array<any>;
   cognitiveMetrics: CognitiveMetrics;
 }
@@ -127,7 +127,7 @@ export interface PartialCognitiveMetrics {
 /**
  * Normalize a raw metric (0-100 nominal) into bounded range with optional clamping.
  */;
-export function clampMetric(value: number | undefined, min = 0, max = 100): number {
+export function clampMetric(_value: number | undefined, min = 0, max = 100): number {
   if (value == null || Number.isNaN(value)) return 0;
   return Math.min(max, Math.max(min, value);
 }
@@ -142,7 +142,7 @@ export function buildCognitiveMetrics(partial: PartialCognitiveMetrics): Cogniti
     consciousnessLevel: clampMetric(partial.consciousnessLevel),
     quantumCoherence: clampMetric(partial.quantumCoherence),
     timestamp: partial.timestamp || new Date().toISOString()
-  };
+  }
 }
 /**
  * Derive synthetic emergent cognitive fields if not supplied by server subsystems.
@@ -154,5 +154,5 @@ export function deriveEmergentCognitiveSignals(base: CognitiveMetrics): Cognitiv
   const timeFactor = Date.now() / 12000; // slow oscillation
   const wave = (Math.sin(timeFactor) + 1) / 2; // 0..1
   const derivedQuantum = base.quantumCoherence || clampMetric(base.gpuUtilization * 0.4 + wave * 60);
-  return { ...base, consciousnessLevel: derivedConsciousness, quantumCoherence: derivedQuantum };
+  return { ...base, consciousnessLevel: derivedConsciousness, quantumCoherence: derivedQuantum }
 }

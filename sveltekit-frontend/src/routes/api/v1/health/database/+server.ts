@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js'
 import { json, error } from '@sveltejs/kit'
 import { ensureError } from '$lib/utils/ensure-error'
 import { checkDatabaseHealth, dbHealthChecker } from '$lib/server/db/health-check'
-import { URL } from "url"
+
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now()
   try {

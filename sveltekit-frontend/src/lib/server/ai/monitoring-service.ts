@@ -40,14 +40,14 @@ class MonitoringService extends EventEmitter {
     cacheMisses: 0,
     streamRequests: 0,
     feedbackReceived: 0
-  };
+  }
   private timings = {
     queryAnalysis: [],
     retrieval: [],
     ranking: [],
     promptConstruction: [],
     totalProcessing: []
-  };
+  }
   constructor() {
     super();
     this.initialize();
@@ -211,7 +211,7 @@ class MonitoringService extends EventEmitter {
       retrieval: this.calculatePerformanceMetrics(this.timings.retrieval),
       ranking: this.calculatePerformanceMetrics(this.timings.ranking),
       promptConstruction: this.calculatePerformanceMetrics(this.timings.promptConstruction)
-    };
+    }
     return {
       counters: this.counters,
       rates: {
@@ -227,13 +227,13 @@ class MonitoringService extends EventEmitter {
       activeRequests: this.requestTracking.size,
       uptime: process.uptime(),
       memoryUsage: process.memoryUsage()
-    };
+    }
   }
   /**
    * Get detailed metrics for analysis
    */;
   getDetailedMetrics(timeRange?: { start: Date; end: Date }): unknown {
-    const metrics = {};
+    const metrics = {}
     for (const [name, values] of this.metrics) {
       if (values.length > 0) {
         const numericValues = values.filter((v): v is number => typeof v === 'number');
@@ -244,7 +244,7 @@ class MonitoringService extends EventEmitter {
           mean: numericValues.length > 0 ? numericValues.reduce((a, b) => a + b, 0) / numericValues.length: 0,
           latest: numericValues[numericValues.length - 1] || 0,
           trend: this.calculateTrend(numericValues)
-        };
+        }
       }
     }
     return metrics;
@@ -253,7 +253,7 @@ class MonitoringService extends EventEmitter {
    * Export metrics for external monitoring systems
    */;
   exportPrometheusMetrics(): string {
-    const lines = [];
+    // removed unused lines assignment
     // Counter metrics
     lines.push(`# HELP ai_synthesis_requests_total Total number of synthesis requests`);
     lines.push(`# TYPE ai_synthesis_requests_total counter`);
@@ -311,7 +311,7 @@ class MonitoringService extends EventEmitter {
           name: alert.name,
           severity: alert.severity,
           message: alert.message,
-          context: metrics
+          context: metrics;
           timestamp: new Date()
         });
         logger.warn(`[Monitoring] Alert triggered: ${alert.name} - ${alert.message}`);
@@ -326,7 +326,7 @@ class MonitoringService extends EventEmitter {
         results.set(name, healthy);
         if (!healthy) {
           this.emit('health:unhealthy', {
-            component: name
+            component: name;
             timestamp: new Date()
           });
         }
@@ -359,7 +359,7 @@ class MonitoringService extends EventEmitter {
   }
   private calculatePerformanceMetrics(values: number[]): PerformanceMetrics {
     if (!values || values.length === 0) {
-      return { p50: 0, p95: 0, p99: 0, mean: 0, stdDev: 0 };
+      return { p50: 0, p95: 0, p99: 0, mean: 0, stdDev: 0 }
     }
     const sorted = [...values].sort((a, b) => a - b);
     const len = sorted.length;
@@ -370,7 +370,7 @@ class MonitoringService extends EventEmitter {
     const squaredDiffs = values.map((v) => Math.pow(v - mean, 2);
     const variance = squaredDiffs.reduce((a, b) => a + b, 0) / len;
     const stdDev = Math.sqrt(variance);
-    return { p50, p95, p99, mean, stdDev };
+    return { p50, p95, p99, mean, stdDev }
   }
   private calculateTrend(values: number[]): 'increasing' | 'decreasing' | 'stable' {
     if (values.length < 10) return 'stable';
@@ -423,7 +423,7 @@ class MonitoringService extends EventEmitter {
    * Record a metric value
    */
   async recordMetric(
-    metric: string
+    metric: string;
     value: number
     labels?: Record<string, string>;
   ): Promise<void> {
@@ -439,7 +439,7 @@ class MonitoringService extends EventEmitter {
         value,
         labels
       }
-    };
+    }
     // Ensure metrics is typed as array, not Map
     if (Array.isArray(this.metrics)) {
       this.metrics.push(data);
@@ -484,14 +484,14 @@ class MonitoringService extends EventEmitter {
       .filter((m: any) => m.data?.metric === metricName)
       .map((m: any) => m.data?.value || 0);
     if (metricData.length === 0) {
-      return { count: 0, sum: 0, avg: 0, min: 0, max: 0, latest: 0 };
+      return { count: 0, sum: 0, avg: 0, min: 0, max: 0, latest: 0 }
     }
     const sum = metricData.reduce((a, b) => a + b, 0);
     const avg = sum / metricData.length;
     const min = Math.min(...metricData);
     const max = Math.max(...metricData);
     const latest = metricData[metricData.length - 1];
-    return { count: metricData.length, sum, avg, min, max, latest };
+    return { count: metricData.length, sum, avg, min, max, latest }
   }
   /**
    * Shutdown monitoring service

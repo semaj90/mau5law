@@ -1,11 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   interface Props {
     progress?: number;
     fileName?: string;
@@ -20,35 +15,48 @@
     label = 'Uploading file',
     variant = 'default',
     status = 'uploading',
-    showPercentage = true
+    showPercentage = true,
   }: Props = $props();
   // Computed values
   let progressVariant = $derived(() => {
     switch (status) {
-      case 'completed': return 'success';
-      case 'error': return 'error';
-      case 'paused': return 'warning';
-      default: return variant === 'yorha' ? 'yorha' : variant === 'legal' ? 'legal' : 'info';
+      case 'completed':
+        return 'success';
+      case 'error':
+        return 'error';
+      case 'paused':
+        return 'warning';
+      default:
+        return variant === 'yorha' ? 'yorha' : variant === 'legal' ? 'legal' : 'info';
     }
   });
   let badgeVariant = $derived(() => {
     switch (status) {
-      case 'completed': return 'success';
-      case 'error': return 'destructive';
-      case 'paused': return 'warning';
-      default: return 'info';
+      case 'completed':
+        return 'success';
+      case 'error':
+        return 'destructive';
+      case 'paused':
+        return 'warning';
+      default:
+        return 'info';
     }
   });
   let statusText = $derived(() => {
     switch (status) {
-      case 'completed': return 'Completed';
-      case 'error': return 'Failed';
-      case 'paused': return 'Paused';
-      default: return 'Uploading';
+      case 'completed':
+        return 'Completed';
+      case 'error':
+        return 'Failed';
+      case 'paused':
+        return 'Paused';
+      default:
+        return 'Uploading';
     }
   });
 </script>
-<div variant={variant} class="w-full nes-container">
+
+<div {variant} class="w-full nes-container">
   <!-- File info header -->
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center gap-3">
@@ -64,25 +72,13 @@
     </Badge>
   </div>
   <!-- Progress Bar -->
-  <Progress
-    value={progress}
-    variant={progressVariant()}
-    showPercentage={showPercentage}
-    size="default"
-    class="mb-2"
-  />
+  <Progress value={progress} variant={progressVariant()} {showPercentage} size="default" class="mb-2" />
   <!-- Additional Info -->
   {#if status === 'error'}
-    <p class="text-xs text-red-600 mt-2">
-      Upload failed. Please try again.
-    </p>
+    <p class="text-xs text-red-600 mt-2">Upload failed. Please try again.</p>
   {:else if status === 'completed'}
-    <p class="text-xs text-green-600 mt-2">
-      Upload completed successfully!
-    </p>
+    <p class="text-xs text-green-600 mt-2">Upload completed successfully!</p>
   {:else if status === 'paused'}
-    <p class="text-xs text-yellow-600 mt-2">
-      Upload paused. Click to resume.
-    </p>
+    <p class="text-xs text-yellow-600 mt-2">Upload paused. Click to resume.</p>
   {/if}
 </div>

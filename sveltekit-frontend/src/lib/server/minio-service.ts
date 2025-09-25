@@ -46,7 +46,7 @@ interface TextExtractionResult {
     extractedSize: number;
     contentType: string;
     processingTime: number;
-  };
+  }
 }
 // MinIO client configuration
 const createMinIOClient = (): InstanceType<typeof S3Client> => {
@@ -56,7 +56,7 @@ const createMinIOClient = (): InstanceType<typeof S3Client> => {
     accessKeyId: process.env.MINIO_ACCESS_KEY || 'minioadmin',
     secretAccessKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
     forcePathStyle: true, // Required for MinIO
-  };
+  }
   return new S3Client({
     endpoint: config.endpoint,
     region: config.region,
@@ -66,7 +66,7 @@ const createMinIOClient = (): InstanceType<typeof S3Client> => {
     },
     forcePathStyle: config.forcePathStyle
   });
-};
+}
 // Global MinIO client instance
 const minioClient = createMinIOClient();
 // Helper function to stream S3 object to string
@@ -86,7 +86,7 @@ async function streamToString(stream: Readable): Promise<string> {
   });
 }
 // Helper function to detect file type from key/content
-function detectFileType(key: string, contentType?: string): string {
+function detectFileType(_key: string, contentType?: string): string {
   const extension = key.split('.').pop()?.toLowerCase() || '';
   if (contentType) {
     if (contentType.includes('json')) return 'json';
@@ -119,7 +119,7 @@ export class MinIOService {
       throw new Error(`Invalid MinIO URL format: ${minioUrl}. Expected: minio://bucket/key`)
     }
     const [, bucket, key] = match;
-    return { bucket, key };
+    return { bucket, key }
   }
   /**
    * Load and extract text content from MinIO object
@@ -137,7 +137,7 @@ export class MinIOService {
     try {
       const { bucket, key } = this.parseMinIOUrl(minioUrl);
       const command = new GetObjectCommand({ Bucket: bucket, Key: key });
-      const response = await this.client.send(command);
+      // removed unused response assignment
       if (!response.Body) {
         throw new Error('Empty response body from MinIO');
       }
@@ -156,14 +156,14 @@ export class MinIOService {
       }
       const processingTime = Date.now() - startTime;
       return {
-        content: extractedContent
+        content: extractedContent;
         metadata: {
           originalSize: rawContent.length,
           extractedSize: extractedContent.length,
           contentType: response.ContentType || 'application/octet-stream',
           processingTime
         }
-      };
+      }
     } catch (error) {
       const processingTime = Date.now() - startTime;
       console.error(`MinIO text extraction failed for ${minioUrl}:`, error);
@@ -195,7 +195,7 @@ export class MinIOService {
           .trim();
       case 'csv':
         // Convert CSV to readable format
-        const lines = content.split('\n');
+        // removed unused lines assignment
         return lines.map(line => line.split(',').join(' | ')).join('\n');
       case 'log':
         // Extract log entries, remove timestamps if needed
@@ -214,7 +214,7 @@ export class MinIOService {
    */
   static async storeTextContent(
     bucket: string
-    key: string
+    key: string;
     content: string
     metadata?: Record<string, string>;
   ): Promise<string> {
@@ -238,7 +238,7 @@ export class MinIOService {
    */
   static async uploadLargeFile(
     bucket: string
-    key: string
+    key: string;
     content: Buffer | Uint8Array | string
     contentType?: string;
   ): Promise<string> {
@@ -273,7 +273,7 @@ export class MinIOService {
         Prefix: prefix
         MaxKeys: maxKeys
       });
-      const response = await this.client.send(command);
+      // removed unused response assignment
       return (response.Contents || []).map(obj => ({
         key: obj.Key!,
         size: obj.Size || 0,
@@ -303,14 +303,14 @@ export class MinIOService {
   static async getObjectMetadata(bucket: string, key: string): Promise<FileMetadata | null> {
     try {
       const command = new GetObjectCommand({ Bucket: bucket, Key: key });
-      const response = await this.client.send(command);
+      // removed unused response assignment
       return {
         key,
         size: response.ContentLength || 0,
         lastModified: response.LastModified || new Date(),
         contentType: response.ContentType,
         bucket
-      };
+      }
     } catch {
       return null;
     }
@@ -330,12 +330,12 @@ export class MinIOService {
       const batchPromises = batch.map(async (url) => {
         try {
           const result = await this.getTextContent(url, { maxSize });
-          return { url, result };
+          return { url, result }
         } catch (error) {
           return {
             url,
             error: error instanceof Error ? error.message: 'Unknown error'
-          };
+          }
         }
       });
       const batchResults = await Promise.all(batchPromises);

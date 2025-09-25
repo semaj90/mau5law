@@ -29,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     title?: string;
     onsuggestionsreceived?: (suggestions: string[]) => void;
     onactionsreceived?: (actions: any[]) => void;
-    onmessage?: (event: any) => void;
+    onmessage?: (_event: any) => void;
     onclose?: () => void;
     onaction?: (action: any) => void;
   }
@@ -65,25 +65,25 @@ https://svelte.dev/e/js_parse_error -->
     {
       id: "professional",
       label: "Professional",
-      icon: Scale
+      icon: Scale;
       description: "Formal legal analysis",
     },
     {
       id: "investigative",
       label: "Investigative",
-      icon: Brain
+      icon: Brain;
       description: "Deep case analysis",
     },
     {
       id: "evidence",
       label: "Evidence Focus",
-      icon: FileText
+      icon: FileText;
       description: "Evidence-centered responses",
     },
     {
       id: "strategic",
       label: "Strategic",
-      icon: Zap
+      icon: Zap;
       description: "Case strategy planning",
     },
   ]);
@@ -132,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === "Enter") {
       if (event.shiftKey) {
         // Allow new line with Shift+Enter
@@ -156,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
       role: "user" as const,
       content: currentMessage.trim(),
       timestamp: new Date(),
-    };
+    }
     // Add user message immediately
     messages.update((msgs) => [...msgs, userMessage]);
     const messageContent = currentMessage.trim();
@@ -168,8 +168,8 @@ https://svelte.dev/e/js_parse_error -->
       role: "assistant" as const,
       content: "",
       timestamp: new Date(),
-      isTyping: true
-    };
+      isTyping: true;
+    }
     messages.update((msgs) => [...msgs, typingMessage]);
     try {
       // Send to enhanced chat API with vector context
@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
           contextUsed: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).contextUsed,
           suggestions: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).suggestions,
           actions: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).actions,
-        };
+        }
         messages.update((msgs) => [...msgs, aiMessage]);
         // Dispatch events for suggestions and actions
         if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).suggestions?.length > 0 && onsuggestionsreceived) {
@@ -223,8 +223,8 @@ https://svelte.dev/e/js_parse_error -->
         content:
           "Sorry, I encountered an error while processing your request. Please try again.",
         timestamp: new Date(),
-        isError: true
-      };
+        isError: true;
+      }
       messages.update((msgs) => [...msgs, errorMessage]);
     } finally {
       isGenerating = false;
@@ -233,7 +233,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   async function storeMessageEmbedding(
-    content: string
+    content: string;
     role: "user" | "assistant"
   ) {
     try {
@@ -241,14 +241,14 @@ https://svelte.dev/e/js_parse_error -->
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({,
-          text: content
+          text: content;
           type: "chat_message",
           metadata: {
             userId,
             caseId,
             conversationId,
             role,
-            mode: selectedMode
+            mode: selectedMode;
           },
         }),
       });

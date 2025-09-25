@@ -11,22 +11,21 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
   try {
     // Get Redis information and statistics
-    const [redisInfo, keyStats, recentKeys, connectionStatus, performanceMetrics] =
-      await Promise.all([
-        getRedisInfo(),
-        getKeyStatistics(),
-        getRecentKeys(),
-        checkRedisConnection(),
-        getPerformanceMetrics()
-      ]);
+    const [redisInfo, keyStats, recentKeys, connectionStatus, performanceMetrics] = await Promise.all([
+      getRedisInfo(),
+      getKeyStatistics(),
+      getRecentKeys(),
+      checkRedisConnection(),
+      getPerformanceMetrics(),
+    ]);
     return {
       redisInfo,
       keyStats,
       recentKeys,
       connectionStatus,
       performanceMetrics,
-      timestamp: new Date().toISOString()
-    };
+      timestamp: new Date().toISOString(),
+    }
   } catch (err) {
     console.error('Error loading Redis admin data:', err);
     // Return mock data for development/demo
@@ -43,21 +42,22 @@ export const load: PageServerLoad = async ({ locals }) => {
         keyspace_hits: 98743,
         keyspace_misses: 12456,
         expired_keys: 2341,
-        uptime_in_seconds: 2847293
+        uptime_in_seconds: 2847293,
       },
       keyStats: {
         total_keys: 15679,
         expired_count: 2341,
         avg_ttl: 3600,
         memory_usage: '32.1MB',
-        fragmentation_ratio: 1.23
+        fragmentation_ratio: 1.23,
       },
       recentKeys: [
+        ,
         { key: 'search:semantic:user123', type: 'hash', ttl: 3456, size: '2.3KB' },
         { key: 'cases:active:list', type: 'list', ttl: 1800, size: '15.7KB' },
         { key: 'rag:embeddings:doc456', type: 'string', ttl: 7200, size: '45.2KB' },
         { key: 'session:legal_user_789', type: 'hash', ttl: 1440, size: '1.2KB' },
-        { key: 'vector:similarity:cache', type: 'zset', ttl: 900, size: '8.9KB' }
+        { key: 'vector:similarity:cache', type: 'zset', ttl: 900, size: '8.9KB' },
       ],
       connectionStatus: 'connected',
       performanceMetrics: {
@@ -65,12 +65,12 @@ export const load: PageServerLoad = async ({ locals }) => {
         miss_rate: 11.2,
         ops_per_sec: 142,
         latency_avg: 0.85,
-        memory_efficiency: 76.3
+        memory_efficiency: 76.3,
       },
-      timestamp: new Date().toISOString()
-    };
+      timestamp: new Date().toISOString(),
+    }
   }
-};
+}
 export const actions: Actions = {
   flushCache: async ({ locals }) => {
     if (!locals.user || !isAdminUser(locals.user)) {
@@ -79,7 +79,7 @@ export const actions: Actions = {
     try {
       // await redisService.flushall(); // Method not available in current redis service
       console.log('Redis cache flushed by admin:', locals.user.email);
-      return { success: true, message: 'Cache cleared successfully' };
+      return { success: true, message: 'Cache cleared successfully' }
     } catch (err) {
       console.error('Failed to flush Redis cache:', err);
       return fail(500, { error: 'Failed to clear cache' });
@@ -97,7 +97,7 @@ export const actions: Actions = {
     try {
       await redisService.del(key);
       console.log(`Redis key deleted by admin: ${key}`);
-      return { success: true, message: `Key "${key}" deleted successfully` };
+      return { success: true, message: `Key "${key}" deleted successfully` }
     } catch (err) {
       console.error('Failed to delete Redis key:', err);
       return fail(500, { error: 'Failed to delete key' });
@@ -121,13 +121,13 @@ export const actions: Actions = {
         await redisService.set(key, value);
       }
       console.log(`Redis key set by admin: ${key}`);
-      return { success: true, message: `Key "${key}" set successfully` };
+      return { success: true, message: `Key "${key}" set successfully` }
     } catch (err) {
       console.error('Failed to set Redis key:', err);
       return fail(500, { error: 'Failed to set key' });
     }
-  }
-};
+  },
+}
 async function getRedisInfo() {
   try {
     // Get Redis server info - replace with actual Redis client calls
@@ -140,12 +140,12 @@ async function getKeyStatistics() {
   try {
     // Get key statistics - replace with actual implementation
     return {
-      total_keys: await redisService.dbsize() || 0,
+      total_keys: (await redisService.dbsize()) || 0,
       expired_count: 0,
       avg_ttl: 3600,
       memory_usage: '0MB',
-      fragmentation_ratio: 1.0
-    };
+      fragmentation_ratio: 1.0,
+    }
   } catch (error) {
     throw new Error('Failed to get key statistics');
   }
@@ -154,12 +154,14 @@ async function getRecentKeys() {
   try {
     // Get recent keys - replace with actual implementation
     const keys = await redisService.keys('*');
-    return keys?.slice(0, 10).map(key => ({
-      key,
-      type: 'string',
-      ttl: -1,
-      size: '1KB'
-    })) || [];
+    return (
+      keys?.slice(0, 10).map(key => ({
+        key,
+        type: 'string',
+        ttl: -1,
+        size: '1KB',
+      })) || []
+    );
   } catch (error) {
     return [];
   }
@@ -180,8 +182,8 @@ async function getPerformanceMetrics() {
       miss_rate: 15.0,
       ops_per_sec: 100,
       latency_avg: 1.0,
-      memory_efficiency: 80.0
-    };
+      memory_efficiency: 80.0,
+    }
   } catch (error) {
     throw new Error('Failed to get performance metrics');
   }

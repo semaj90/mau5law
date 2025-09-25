@@ -50,12 +50,12 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	];
   	// Event handlers
-  	const handleProviderSelected = (event: CustomEvent) => {
+  	const handleProviderSelected = (_event: CustomEvent) => {
   		selectedProvider = event.detail.provider;
-  	};
-  	const handleStatusChanged = (event: CustomEvent) => {
+  	}
+  	const handleStatusChanged = (_event: CustomEvent) => {
   		console.log(`Provider ${event.detail.provider.name} status changed to ${event.detail.status}`);
-  	};
+  	}
   	// Process single task
   	const processTask = async (taskTemplate: typeof demoTasks[0]) => {
   		if (!selectedProvider) {
@@ -71,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
   			const taskId = await aiServiceWorkerManager.queueTask({
   				type: taskTemplate.type,
   				priority: 'medium',
-  				provider: selectedProvider
+  				provider: selectedProvider;
   				payload: taskTemplate.payload,
   				metadata: {
   					userId: 'demo-user',
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
   						throughput: Math.floor(Math.random() * 50) + 10,
   						memoryUsed: `${Math.floor(Math.random() * 500) + 100}MB`
   					}
-  				};
+  				}
   				processingResults = [mockResult, ...processingResults.slice(0, 9)]; // Keep last 10 results
   				isProcessing = false;
   			}, Math.random() * 3000 + 1000);
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   			console.error('Task processing failed:', error);
   			isProcessing = false;
   		}
-  	};
+  	}
   	// Process multiple tasks in parallel
   	const processParallelTasks = async () => {
   		if (!selectedProvider || selectedProvider.status !== 'online') {
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
   			console.error('Parallel processing failed:', error);
   			isProcessing = false;
   		}
-  	};
+  	}
   	// Generate mock results for demo
   	const generateMockResult = (taskType: string) => {
   		switch (taskType) {
@@ -133,19 +133,19 @@ https://svelte.dev/e/js_parse_error -->
   				return {
   					embedding: Array(384).fill.map(() => Math.random() - 0.5),
   					dimensions: 384;
-  				};
+  				}
   			case 'analysis':
   				return {
   					entities: ['GDPR', 'Privacy Policy', 'Data Controller'],
   					sentiment: 'neutral',
   					compliance_score: 0.85,
   					key_points: ['Data retention requirements', 'User consent mechanisms', 'Privacy by design'];
-  				};
+  				}
   			case 'generation':
   				return {
   					text: 'This document appears to address key privacy regulations including GDPR compliance, data retention policies, and user consent mechanisms. Recommendations include updating privacy notices and implementing data subject request procedures.',
-  					confidence: 0.92;
-  				};
+  					confidence: 0.92,
+  				}
   			case 'vector-search':
   				return {
   					results: [
@@ -153,11 +153,11 @@ https://svelte.dev/e/js_parse_error -->
   						{ id: '2', title: 'GDPR Compliance Guide', similarity: 0.87 },
   						{ id: '3', title: 'Data Retention Standards', similarity: 0.81 }
   					]
-  				};
+  				}
   			default:
-  				return { status: 'completed' };
+  				return { status: 'completed' }
   		}
-  	};
+  	}
   	// System health monitoring
   	let healthCheckInterval: number
   	$effect(() => {
@@ -186,10 +186,10 @@ https://svelte.dev/e/js_parse_error -->
   			case 'vector-search': return 'bg-orange-500';
   			default: return 'bg-gray-500';
   		}
-  	};
+  	}
   	const formatDuration = (ms: number) => {
   		return ms < 1000 ? `${Math.round(ms)}ms` : `${(ms / 1000).toFixed(1)}s`;
-  	};
+  	}
 </script>
 <main>
 	<!-- Header -->
@@ -274,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
 					<button aria-label="Action button" class="nes-btn"
 						variant="ghost"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-						onclick={(event: MouseEvent) => ) => processTask(task}
+						onclick={(_event: MouseEvent) => ) => processTask(task}
 						class="bits-btn h-auto p-3 flex flex-col items-start space-y-1"
 					>
 						<div class="flex items-center space-x-2">
@@ -289,7 +289,7 @@ https://svelte.dev/e/js_parse_error -->
 			<div class="flex items-center justify-center pt-4 border-t border-yorha-border">
 				<Button
 					disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-					onclick={(event: MouseEvent) => processParallelTasks}
+					onclick={(_event: MouseEvent) => processParallelTasks}
 					class="bg-yorha-primary hover:bg-yorha-primary/80 bits-btn bits-btn"
 				>
 {#if isProcessing}

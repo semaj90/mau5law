@@ -11,7 +11,7 @@ import { db } from '$lib/server/database'
 import { evidence, cases } from '$lib/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { randomUUID } from 'node:crypto'
-import { URL } from "url"
+
 const UPLOAD_DIR = 'uploads'
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ALLOWED_TYPES = [
@@ -38,7 +38,7 @@ export interface UploadResponse {
     filename: string
     originalName: string
     size: number
-    type: string
+    type: string;
     url: string
     uploadPath: string
     thumbnailUrl?: string

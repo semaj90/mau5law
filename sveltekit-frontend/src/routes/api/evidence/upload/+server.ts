@@ -24,7 +24,7 @@ import Busboy from 'busboy'
 import { Client as MinioClient } from 'minio'
 import { createClient } from 'redis'
 import sharp from 'sharp'; // optional image processing - install as needed
-import { URL } from "url"
+
 // Simple rate limiting and auth stubs for production compatibility
 const redisRateLimit = async (opts: any): Promise<any> => ({ allowed: true, count: 0, retryAfter: 0 })
 const checkRateLimit = (opts: any) => ({ allowed: true, retryAfter: 0 })
@@ -230,7 +230,7 @@ class QdrantService {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          vector: queryVector
+          vector: queryVector;
           filter: filters
           limit,
           with_payload: true
@@ -252,7 +252,7 @@ export interface UploadResult {
   originalName: string
   fileSize: number
   mimeType: string
-  url: string
+  url: string;
   hash: string
   aiAnalysis?: AiAnalysisResult
   embedding?: number[]
@@ -452,7 +452,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 }
 export interface StreamedFileMeta { filename:string; mimeType:string; size:number; tempPath:string; hash: ReturnType<typeof createHash> }
 // Enhanced to accept correlation + user for structured logging and to cleanup tmp file
-async function processFileStreamed(
+async function processFileStreamed(;
   meta: StreamedFileMeta
   uploadData: Partial<FileUpload>
   correlationId?: string
@@ -660,7 +660,7 @@ Provide structured JSON analysis:
   }
 }
 async function performAIAnalysis(
-  file: File
+  file: File;
   buffer: Buffer
   uploadData: Partial<FileUpload>
   ocrText?: string

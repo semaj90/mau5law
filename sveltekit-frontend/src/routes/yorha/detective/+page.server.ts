@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async () => {
   try {
-    const user = { id: 'mock-user-id', firstName: 'Detective', lastName: 'Smith', role: 'detective' };
+    const user = { id: 'mock-user-id', firstName: 'Detective', lastName: 'Smith', role: 'detective' }
     const recentCases = [
       {
         id: 'case-1',
@@ -44,10 +44,10 @@ export const load: PageServerLoad = async () => {
       gpuUtilization: 67,
       memoryUsage: 42,
       networkLatency: 23,
-    };
-    return { user, recentCases, recentEvidence, systemData };
+    }
+    return { user, recentCases, recentEvidence, systemData }
   } catch (err: unknown) {
     console.error('Error loading detective dashboard:', err);
     throw error(500, 'Failed to load dashboard data');
   }
-};
+}

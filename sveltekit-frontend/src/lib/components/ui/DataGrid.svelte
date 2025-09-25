@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, ChevronUp, MoreHorizontal, Search, Filter } from 'lucide-svelte';
   interface DataGridProps extends Props {
-    onSelectionChange?: (event: { selectedRows: Array<string | number> }) => void;
+    onSelectionChange?: (_event: { selectedRows: Array<string | number> }) => void;
   }
   let {
     columns,
@@ -60,9 +60,9 @@ https://svelte.dev/e/js_parse_error -->
       sortConfig = {
         column,
         direction: sortConfig.direction === 'asc' ? 'desc' : 'asc';
-      };
+      }
     } else {
-      sortConfig = { column, direction: 'asc' };
+      sortConfig = { column, direction: 'asc' }
     }
   }
   function handleRowSelect(rowId: string | number) {

@@ -11,7 +11,7 @@
     processLegalTextFast,
     isRustBridgeAvailable,
     getBridgeStatus,
-    benchmarkRustBridge
+    benchmarkRustBridge,
   } from '$lib/wasm/rust-bridge';
   import type { SystemInfo, PerformanceMetrics } from '$lib/types/rust-bridge';
   // Reactive state
@@ -29,25 +29,25 @@
   let errorMessage = $state<string | null>(null);
   $effect(() => {
     (async () => {
-try {
-      isLoading = true;
-      errorMessage = null;
-      // Initialize the Rust WASM bridge
-      const success = await initRustBridge();
-      bridgeInitialized = succes;
-      if (success) {
-        // Load initial data
-        await loadSystemData();
-        bridgeStatus = getBridgeStatus();
-      } else {
-        errorMessage = 'Failed to initialize Rust WASM bridge. Make sure to build the WASM package first.';
+      try {
+        isLoading = true;
+        errorMessage = null;
+        // Initialize the Rust WASM bridge
+        const success = await initRustBridge();
+        bridgeInitialized = succes;
+        if (success) {
+          // Load initial data
+          await loadSystemData();
+          bridgeStatus = getBridgeStatus();
+        } else {
+          errorMessage = 'Failed to initialize Rust WASM bridge. Make sure to build the WASM package first.';
+        }
+      } catch (error) {
+        console.error('Error initializing Rust bridge:', error);
+        errorMessage = `Initialization error: ${error}`;
+      } finally {
+        isLoading = false;
       }
-    } catch (error) {
-      console.error('Error initializing Rust bridge:', error);
-      errorMessage = `Initialization error: ${error}`;
-    } finally {
-      isLoading = false;
-    }
     })();
   });
   async function loadSystemData() {
@@ -91,6 +91,7 @@ try {
     return `${gb.toFixed(2)} GB`;
   }
 </script>
+
 <div class="rust-bridge-demo">
   <div class="demo-header">
     <h2>🦀 Rust WASM Bridge Demo</h2>
@@ -187,15 +188,9 @@ try {
       <!-- Text Processing Demo -->
       <div class="demo-section">
         <h3>📄 Legal Text Processing</h3>
-        <textarea
-          bind:value={sampleText}
-          placeholder="Enter legal text to process..."
-          rows="4"
-          class="text-input"
+        <textarea bind:value={sampleText} placeholder="Enter legal text to process..." rows="4" class="text-input"
         ></textarea>
-        <button onclick={processText} disabled={!bridgeInitialized || isLoading}>
-          🔄 Process Text
-        </button>
+        <button onclick={processText} disabled={!bridgeInitialized || isLoading}> 🔄 Process Text </button>
         {#if textProcessingResult}
           <div class="processing-result">
             <h4>Processing Results:</h4>
@@ -206,9 +201,7 @@ try {
       <!-- Performance Benchmark -->
       <div class="demo-section">
         <h3>⚡ Performance Benchmark</h3>
-        <button onclick={runBenchmark} disabled={!bridgeInitialized || isLoading}>
-          🏃‍♂️ Run Benchmark
-        </button>
+        <button onclick={runBenchmark} disabled={!bridgeInitialized || isLoading}> 🏃‍♂️ Run Benchmark </button>
         {#if benchmarkResults}
           <div class="benchmark-results">
             <h4>Benchmark Results:</h4>
@@ -263,13 +256,12 @@ try {
       {/if}
       <!-- Refresh Button -->
       <div class="demo-actions">
-        <button onclick={loadSystemData} disabled={!bridgeInitialized || isLoading}>
-          🔄 Refresh Data
-        </button>
+        <button onclick={loadSystemData} disabled={!bridgeInitialized || isLoading}> 🔄 Refresh Data </button>
       </div>
     </div>
   {/if}
 </div>
+
 <style>
   .rust-bridge-demo {
     padding: 2rem;

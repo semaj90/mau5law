@@ -16,7 +16,7 @@ interface EvidenceChainNode {
     processingTime: number;
     recursionPath: string[];
     analysisTimestamp: string;
-  };
+  }
 }
 interface ChainEntry {
   officer_id: string;
@@ -76,7 +76,7 @@ class RecursiveEvidenceChainProcessor {
           recursionPath: [...recursionPath, rootEvidenceId],
           analysisTimestamp: new Date().toISOString()
         }
-      };
+      }
     }
     this.visitedEvidence.add(rootEvidenceId);
     try {
@@ -120,7 +120,7 @@ class RecursiveEvidenceChainProcessor {
           recursionPath: [...recursionPath, rootEvidenceId],
           analysisTimestamp: new Date().toISOString()
         }
-      };
+      }
     } catch (error) {
       console.error(`Error processing evidence ${rootEvidenceId}:`, error);
       return {
@@ -136,24 +136,24 @@ class RecursiveEvidenceChainProcessor {
           recursionPath: [...recursionPath, rootEvidenceId],
           analysisTimestamp: new Date().toISOString()
         }
-      };
+      }
     }
   }
   private async fetchEvidenceData(evidenceId: string): Promise<any> {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/evidence/${evidenceId}`);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`Failed to fetch evidence data: ${response.statusText}`);
       }
       return await response.json();
     } catch (error) {
       console.warn(`Could not fetch evidence data for ${evidenceId}:`, error);
-      return { id: evidenceId, error: error.message };
+      return { id: evidenceId, error: error.message }
     }
   }
   private async getChainOfCustody(evidenceId: string): Promise<ChainEntry[]> {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/evidence/${evidenceId}/chain`);
+      // removed unused response assignment
       if (!response.ok) {
         return [];
       }
@@ -236,7 +236,7 @@ class RecursiveEvidenceChainProcessor {
       legalSignificance: significance
       supportingEvidence: [evidenceId, related.evidenceId],
       confidence: this.calculateRelationshipConfidence(strength, relationshipType)
-    };
+    }
   }
   private async isChainLinked(evidenceId1: string, evidenceId2: string): Promise<boolean> {
     // Check if evidence items share chain of custody officers or timestamps
@@ -416,13 +416,13 @@ self.addEventListener('message', async (event) => {
       processor.reset();
       self.postMessage({
         messageId,
-        success: true
+        success: true;
         message: 'Processor reset successfully'
       });
     } catch (error) {
       self.postMessage({
         messageId,
-        success: false
+        success: false;
         error: error.message
       });
     }

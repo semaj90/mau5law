@@ -68,10 +68,10 @@ Production-ready with native Windows support
         height,
         steps,
         cfgScale,
-        seed: seed === -1 ? undefined : seed
-        style: selectedStyle
+        seed: seed === -1 ? undefined : seed;
+        style: selectedStyle;
         provider: selectedProvider;
-      };
+      }
       const result = await imageGenerationService.generateImage(request);
       // Update history
       generationHistory = [result, ...generationHistory];
@@ -93,13 +93,13 @@ Production-ready with native Windows support
         evidenceType: 'image',
         fileUrl: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).imageUrl,
         metadata: {
-          aiGenerated: true
+          aiGenerated: true;
           provider: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider,
           parameters: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).parameters,
           generatedAt: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).timestamp
         },
         tags: ['ai-generated', (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider, selectedStyle]
-      };
+      }
       onImageGenerated(result);
     }
   }
@@ -128,6 +128,7 @@ Production-ready with native Windows support
     { name: 'Legal Diagram', prompt: 'legal process diagram, flowchart style, professional presentation, clear annotations' }
   ];
 </script>
+
 <div class="image-generator nes-container is-rounded {compact ? 'compact' : 'full'}">
   <div class="generator-header">
     <h3>🎨 AI Image Generation</h3>
@@ -142,7 +143,8 @@ Production-ready with native Windows support
   <div class="generation-controls">
     <!-- Prompt Input -->
     <div class="input-group">
-      <label class="nes-text" for="prompt">Prompt:</label><textarea id="prompt"
+      <label class="nes-text" for="prompt">Prompt:</label><textarea
+        id="prompt"
         class="nes-textarea"
         bind:value={prompt}
         placeholder="Describe the image you want to generate..."
@@ -154,10 +156,7 @@ Production-ready with native Windows support
       <label class="nes-text">Legal Templates:</label>
       <div class="template-buttons">
         {#each legalPromptTemplates as template}
-          <button
-            class="template-btn nes-btn is-primary"
-            onclick={() => prompt = template.prompt}
-          >
+          <button class="template-btn nes-btn is-primary" onclick={() => (prompt = template.prompt)}>
             {template.name}
           </button>
         {/each}
@@ -184,7 +183,8 @@ Production-ready with native Windows support
           <select bind:value={selectedProvider}>
             {#each Array.from(providerStatus.keys()) as provider}
               <option value={provider}>
-                {provider} {providerStatus.get(provider) !== 'internal' ? '(Available)' : '(Fallback)'}
+                {provider}
+                {providerStatus.get(provider) !== 'internal' ? '(Available)' : '(Fallback)'}
               </option>
             {/each}
           </select>
@@ -194,15 +194,17 @@ Production-ready with native Windows support
     <!-- Advanced Controls -->
     <div class="advanced-toggle">
       <label class="nes-checkbox">
-        <input type="checkbox" bind:checked={advancedMode}>
+        <input type="checkbox" bind:checked={advancedMode} />
         <span>Advanced Settings</span>
       </label>
     </div>
     {#if advancedMode}
       <div class="advanced-controls nes-container is-dark">
         <div class="input-group">
-          <label class="nes-text" for="negative-prompt">Negative Prompt:</label><textarea id="negative-prompt"
-            class="nes-textarea" ;
+          <label class="nes-text" for="negative-prompt">Negative Prompt:</label><textarea
+            id="negative-prompt"
+            class="nes-textarea"
+            ;
             bind:value={negativePrompt}
             placeholder="What to avoid in the image..."
             rows="2"
@@ -211,23 +213,23 @@ Production-ready with native Windows support
         <div class="parameter-row">
           <div class="param-group">
             <label class="nes-text" for="width">Width:</label>
-            <input id="width" class="nes-input" type="number" bind:value={width} min="256" max="1024" step="64">
+            <input id="width" class="nes-input" type="number" bind:value={width} min="256" max="1024" step="64" />
           </div>
           <div class="param-group">
             <label class="nes-text" for="height">Height:</label>
-            <input id="height" class="nes-input" type="number" bind:value={height} min="256" max="1024" step="64">
+            <input id="height" class="nes-input" type="number" bind:value={height} min="256" max="1024" step="64" />
           </div>
           <div class="param-group">
             <label class="nes-text" for="steps">Steps:</label>
-            <input id="steps" class="nes-input" type="number" bind:value={steps} min="1" max="100">
+            <input id="steps" class="nes-input" type="number" bind:value={steps} min="1" max="100" />
           </div>
           <div class="param-group">
             <label class="nes-text" for="cfg-scale">CFG Scale:</label>
-            <input id="cfg-scale" class="nes-input" type="number" bind:value={cfgScale} min="1" max="30" step="0.5">
+            <input id="cfg-scale" class="nes-input" type="number" bind:value={cfgScale} min="1" max="30" step="0.5" />
           </div>
           <div class="param-group">
             <label class="nes-text" for="seed-1-for-random">Seed (-1 for random):</label>
-            <input id="seed-1-for-random" class="nes-input" type="number" bind:value={seed} min="-1" max="999999999">
+            <input id="seed-1-for-random" class="nes-input" type="number" bind:value={seed} min="-1" max="999999999" />
           </div>
         </div>
       </div>
@@ -272,7 +274,7 @@ Production-ready with native Windows support
           src={$imageGenerationStore.currentGeneration.imageUrl}
           alt={$imageGenerationStore.currentGeneration.prompt}
           class="generated-image"
-        >
+        />
         <div class="image-actions">
           <button
             class="nes-btn is-primary"
@@ -297,7 +299,11 @@ Production-ready with native Windows support
         </div>
         <div class="image-metadata nes-container is-dark">
           <p><strong>Provider:</strong> {$imageGenerationStore.currentGeneration.provider}</p>
-          <p><strong>Size:</strong> {$imageGenerationStore.currentGeneration.metadata.size.width}×{$imageGenerationStore.currentGeneration.metadata.size.height}</p>
+          <p>
+            <strong>Size:</strong>
+            {$imageGenerationStore.currentGeneration.metadata.size.width}×{$imageGenerationStore.currentGeneration
+              .metadata.size.height}
+          </p>
           <p><strong>Processing Time:</strong> {$imageGenerationStore.currentGeneration.processingTime}ms</p>
           {#if $imageGenerationStore.currentGeneration.metadata.seed !== -1}
             <p><strong>Seed:</strong> {$imageGenerationStore.currentGeneration.metadata.seed}</p>
@@ -309,10 +315,7 @@ Production-ready with native Windows support
   <!-- History Section -->
   <div class="history-section">
     <div class="history-header">
-      <button
-        class="nes-btn is-normal"
-        onclick={() => showHistory = !showHistory}
-      >
+      <button class="nes-btn is-normal" onclick={() => (showHistory = !showHistory)}>
         📚 History ({generationHistory.length})
       </button>
       {#if generationHistory.length > 0}
@@ -332,14 +335,70 @@ Production-ready with native Windows support
         {#each generationHistory as result}
           <div class="history-item nes-container is-rounded">
             <img
-              src={(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).imageUrl}
-              alt={(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt}
+              src={(
+                result as {
+                  id?: any;
+                  prompt?: any;
+                  imageUrl?: any;
+                  provider?: any;
+                  parameters?: any;
+                  timestamp?: any;
+                  metadata?: any;
+                }
+              ).imageUrl}
+              alt={(
+                result as {
+                  id?: any;
+                  prompt?: any;
+                  imageUrl?: any;
+                  provider?: any;
+                  parameters?: any;
+                  timestamp?: any;
+                  metadata?: any;
+                }
+              ).prompt}
               class="history-thumbnail"
-              onclick={() => selectedImage = result}
-            >
+              onclick={() => (selectedImage = result)}
+            />
             <div class="history-info">
-              <p class="history-prompt">{(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt.substring(0, 50)}...</p>
-              <p class="history-meta">{(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider} • {new Date((result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).timestamp).toLocaleTimeString()}</p>
+              <p class="history-prompt">
+                {(
+                  result as {
+                    id?: any;
+                    prompt?: any;
+                    imageUrl?: any;
+                    provider?: any;
+                    parameters?: any;
+                    timestamp?: any;
+                    metadata?: any;
+                  }
+                ).prompt.substring(0, 50)}...
+              </p>
+              <p class="history-meta">
+                {(
+                  result as {
+                    id?: any;
+                    prompt?: any;
+                    imageUrl?: any;
+                    provider?: any;
+                    parameters?: any;
+                    timestamp?: any;
+                    metadata?: any;
+                  }
+                ).provider} • {new Date(
+                  (
+                    result as {
+                      id?: any;
+                      prompt?: any;
+                      imageUrl?: any;
+                      provider?: any;
+                      parameters?: any;
+                      timestamp?: any;
+                      metadata?: any;
+                    }
+                  ).timestamp,
+                ).toLocaleTimeString()}
+              </p>
             </div>
           </div>
         {/each}
@@ -348,14 +407,14 @@ Production-ready with native Windows support
   </div>
   <!-- Selected Image Modal -->
   {#if selectedImage}
-    <div class="modal-overlay" onclick={() => selectedImage = null}>
-      <div class="modal-content nes-container is-rounded" onclick={(e) => e.stopPropagation()}>
+    <div class="modal-overlay" onclick={() => (selectedImage = null)}>
+      <div class="modal-content nes-container is-rounded" onclick={e => e.stopPropagation()}>
         <div class="modal-header">
           <h4>Generated Image Details</h4>
-          <button class="nes-btn is-error" onclick={() => selectedImage = null}>×</button>
+          <button class="nes-btn is-error" onclick={() => (selectedImage = null)}>×</button>
         </div>
         <div class="modal-body">
-          <img src={selectedImage.imageUrl} alt={selectedImage.prompt} class="modal-image">
+          <img src={selectedImage.imageUrl} alt={selectedImage.prompt} class="modal-image" />
           <div class="modal-info">
             <p><strong>Prompt:</strong> {selectedImage.prompt}</p>
             <p><strong>Style:</strong> {selectedImage.parameters.style || 'realistic'}</p>
@@ -372,12 +431,7 @@ Production-ready with native Windows support
             >
               Use Prompt
             </button>
-            <button
-              class="nes-btn is-warning"
-              onclick={() => regenerateWithSeed(selectedImage!)}
-            >
-              Regenerate
-            </button>
+            <button class="nes-btn is-warning" onclick={() => regenerateWithSeed(selectedImage!)}> Regenerate </button>
             {#if caseId}
               <button
                 class="nes-btn is-success"
@@ -395,6 +449,7 @@ Production-ready with native Windows support
     </div>
   {/if}
 </div>
+
 <style>
   .image-generator {
     max-width: 100%;

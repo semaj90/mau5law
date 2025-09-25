@@ -60,10 +60,10 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 512,
     latency: 50,
     accuracy: 0.90,
-    specialized: true
+    specialized: true;
     capabilities: ['legal-text', 'case-law', 'legal-entity-extraction']
   }
-};
+}
 export const EMBEDDING_FALLBACK_CHAINS = {
   'legal-general': [
     'embeddinggemma:latest',
@@ -81,7 +81,7 @@ export const EMBEDDING_FALLBACK_CHAINS = {
     'embeddinggemma',
     'nomic-embed-text'
   ]
-};
+}
 export function getOptimalEmbeddingModel(
   taskType: 'legal-general' | 'legal-fast' | 'general' = 'legal-general',
   availableModels: string[] = [];

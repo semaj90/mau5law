@@ -23,7 +23,7 @@ interface CachedEmbedding {
     timestamp: number;
     gpuProcessed: boolean;
     threadId: string;
-  };
+  }
 }
 export class EmbeddingCacheMiddleware {
   private config: Required<EmbeddingCacheConfig>;
@@ -35,7 +35,7 @@ export class EmbeddingCacheMiddleware {
       cacheTTL: config.cacheTTL || 86400, // 24 hours
       batchSize: config.batchSize || 128, // RTX 3060 Ti optimized
       useGPUAcceleration: config.useGPUAcceleration ?? true,
-    };
+    }
   }
   // Initialize centralized cache (no-op, already initialized)
   async initializeRedisCache(): Promise<void> {
@@ -73,7 +73,7 @@ export class EmbeddingCacheMiddleware {
             (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).vector
           ),
           metadata: (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).metadata,
-        };
+        }
       }
     } catch (error) {
       console.error('Postgres embedding cache query failed:', error);
@@ -100,7 +100,7 @@ export class EmbeddingCacheMiddleware {
       if (!response.ok) {
         throw new Error(`Python worker error: ${response.status} ${response.statusText}`);
       }
-      const { vectors, metadata } = (await response.json()) as { vectors: number[][]; metadata: any };
+      const { vectors, metadata } = (await response.json()) as { vectors: number[][]; metadata: any }
       console.log(`🚀 GPU embedding batch completed: ${texts.length} texts, ${metadata.gpu_time_ms}ms`);
       return vectors.map((v: number[]) => new Float32Array(v));
     } catch (error) {
@@ -120,7 +120,7 @@ export class EmbeddingCacheMiddleware {
         gpuProcessed: true
         threadId: 'middleware_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
       },
-    };
+    }
     try {
       await optimizedCache.set('embed:' + cacheKey, vector, 3600);
       console.log('Embedding stored with WebGPU optimization');
@@ -296,7 +296,7 @@ export class EmbeddingCacheMiddleware {
         options: {
           ttl: 3600,
           compress: true
-          parallel: true
+          parallel: true;
           priority: 'high' as const,
         },
       }));
@@ -348,7 +348,7 @@ export class EmbeddingCacheMiddleware {
       postgresConnected: !!postgresHealth,
       totalEmbeddings,
       gpuAcceleration: this.config.useGPUAcceleration,
-    };
+    }
   }
   // Clear embeddings cache
   async clearCache(): Promise<void> {
@@ -400,7 +400,7 @@ export async function getLegalEmbedding(query: LegalEmbeddingQuery): Promise<any
         practiceArea: query.practiceArea,
       },
     },
-  };
+  }
 }
 // Batch legal document embeddings
 export async function getBatchLegalEmbeddings(queries: LegalEmbeddingQuery[]): Promise<Float32Array[]> {

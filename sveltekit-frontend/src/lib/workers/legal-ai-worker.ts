@@ -22,7 +22,7 @@ export interface LegalAIJobData {
     generateEmbedding?: boolean;
     storeInDatabase?: boolean;
     useGemma3Legal?: boolean;
-  };
+  }
 }
 export interface GoServerResponse {
   success: boolean;
@@ -66,7 +66,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
       store_in_database: jobData.options?.storeInDatabase ?? true,
       use_gemma3_legal: jobData.options?.useGemma3Legal ?? true
     }
-  };
+  }
   console.log(`🔄 Sending document ${jobData.documentId} to Go server for processing...`);
   const response = await fetch(`${GO_SERVER_URL}/process-document`, {
     method: 'POST',
@@ -74,7 +74,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(requestPayload),
-    // 5 minute timeout for complex processing
+    // 5 minute timeout for complex processing;
     signal: AbortSignal.timeout(300000)
   });
   if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
@@ -93,7 +93,7 @@ async function updateEvidenceWithResults(
   try {
     const updateData: Partial<typeof evidence.$inferInsert> = {
       updatedAt: new Date()
-    };
+    }
     // Add AI-generated summary
     if (results.summary) {
       updateData.aiSummary = results.summary;
@@ -150,7 +150,7 @@ export function createLegalAIWorker(): Worker {
           success: true
           documentId: (data as { documentId?: any }).documentId,
           processingTime: `${processingTime}ms`,
-          goServerResults: results
+          goServerResults: results;
           summary: {
             entitiesExtracted: results.entities?.length || 0,
             summaryGenerated: !!results.summary,
@@ -159,7 +159,7 @@ export function createLegalAIWorker(): Worker {
             overallRisk: results.risk_assessment?.overall_risk,
             riskScore: results.risk_assessment?.risk_score
           }
-        };
+        }
         await job.updateProgress(100);
         return jobResult;
       } catch (error: any) {
@@ -272,7 +272,7 @@ export async function getLegalAIJobStatus(jobId: string): Promise<any> {
   });
   const job = await queue.getJob(jobId);
   if (!job) {
-    return { status: 'not_found', progress: 0 };
+    return { status: 'not_found', progress: 0 }
   }
   const state = await job.getState();
   const progress = job.progress || 0;
@@ -281,7 +281,7 @@ export async function getLegalAIJobStatus(jobId: string): Promise<any> {
     progress: typeof progress === 'number' ? progress : 0,
     result: job.returnvalue,
     error: job.failedReason
-  };
+  }
 }
 // Export for use in startup scripts
-export { GO_SERVER_URL, REDIS_URL };
+export { GO_SERVER_URL, REDIS_URL }

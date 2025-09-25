@@ -31,7 +31,7 @@ type AutoTagResult = {
 const memoryStore = new Map<string, {
   id: string
   tags: string[]
-  summary: string
+  summary: string;
   embedding: number[] | null
   updatedAt: string
 }>()

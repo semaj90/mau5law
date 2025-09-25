@@ -29,7 +29,7 @@ export interface ErrorDetails {
   message: string;
   details?: string;
   timestamp: Date;
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
   stack?: string;
   retry?: () => Promise<void>;
   severity: ErrorSeverity;
@@ -120,7 +120,7 @@ export interface ErrorStats {
     increasing: ErrorCategory[];
     decreasing: ErrorCategory[];
     stable: ErrorCategory[];
-  };
+  }
 }
 export interface ErrorFilter {
   severity?: ErrorSeverity[];
@@ -128,12 +128,12 @@ export interface ErrorFilter {
   timeRange?: {
     start: Date;
     end: Date;
-  };
+  }
   legalContext?: {
     case_type?: string[];
     confidentiality_level?: string[];
     jurisdiction?: string[];
-  };
+  }
   complianceOnly?: boolean;
   chainOfCustodyOnly?: boolean;
   privilegeViolationsOnly?: boolean;
@@ -216,13 +216,13 @@ class EnhancedErrorHandler {
       compliance_requirements: ['FRCP 26', 'Local Court Rules'],
       reporting_required: confidentialityLevel === 'privileged' || confidentialityLevel === 'attorney_client',
       retention_period: 2555 // 7 years
-    };
+    }
     const enhancedContext = {
       ...context,
       document_id: documentId
       document_type: documentType
       category: 'legal_document' as ErrorCategory
-    };
+    }
     return this.handle(error, enhancedContext, retryFn, legalContext);
   }
   handleChainOfCustodyError(
@@ -230,7 +230,7 @@ class EnhancedErrorHandler {
     evidenceId: string
     caseId: string
     custodyAction: string
-    context?: { [key: string]: any };
+    context?: { [key: string]: any }
   ): UserFriendlyError {
     const compliance: ComplianceViolation = {
       regulation: 'Chain of Custody Protocol',
@@ -245,13 +245,13 @@ class EnhancedErrorHandler {
       notification_required: true
       notification_timeline: '24 hours',
       potential_penalties: ['Evidence exclusion', 'Sanctions', 'Malpractice claim']
-    };
+    }
     const legalContext: LegalErrorContext = {
       confidentiality_level: 'privileged',
       compliance_requirements: ['FRE 901', 'Local Evidence Rules'],
       reporting_required: true
       retention_period: 2555
-    };
+    }
     const enhancedContext = {
       ...context,
       evidence_id: evidenceId
@@ -259,7 +259,7 @@ class EnhancedErrorHandler {
       custody_action: custodyAction
       category: 'chain_of_custody' as ErrorCategory,
       chain_of_custody_error: true
-    };
+    }
     const errorDetails = this.parseError(error, enhancedContext, legalContext);
     errorDetails.compliance = compliance;
     this.addToHistory(errorDetails);
@@ -274,7 +274,7 @@ class EnhancedErrorHandler {
     documentId: string
     caseId: string
     exposedContent: string
-    context?: { [key: string]: any };
+    context?: { [key: string]: any }
   ): UserFriendlyError {
     const compliance: ComplianceViolation = {
       regulation: 'Attorney-Client Privilege Protection',
@@ -290,14 +290,14 @@ class EnhancedErrorHandler {
       notification_required: true
       notification_timeline: 'Immediate',
       potential_penalties: ['Privilege waiver', 'Sanctions', 'Malpractice claim', 'Disciplinary action']
-    };
+    }
     const legalContext: LegalErrorContext = {
       confidentiality_level: 'attorney_client',
       compliance_requirements: ['MRPC 1.6', 'FRCP 26(b)(3)', 'Local Privilege Rules'],
       reporting_required: true
       potential_sanctions: ['Privilege waiver', 'Case dismissal'],
       retention_period: 2555
-    };
+    }
     const enhancedContext = {
       ...context,
       document_id: documentId
@@ -305,7 +305,7 @@ class EnhancedErrorHandler {
       exposed_content: exposedContent
       category: 'privilege_protection' as ErrorCategory,
       privileged_content_exposed: true
-    };
+    }
     const errorDetails = this.parseError(error, enhancedContext, legalContext);
     errorDetails.compliance = compliance;
     errorDetails.severity = 'critical';
@@ -319,7 +319,7 @@ class EnhancedErrorHandler {
   handleCourtFilingError(
     error: any
     filingType: string
-    docketNumber: string
+    docketNumber: string;
     deadline: Date
     context?: { [key: string]: any },
     retryFn?: () => Promise<void>;
@@ -330,15 +330,15 @@ class EnhancedErrorHandler {
       reporting_required: isUrgent
       potential_sanctions: isUrgent ? ['Default judgment', 'Sanctions', 'Dismissal'] : ['Late filing fees'],
       retention_period: 2555
-    };
+    }
     const enhancedContext = {
       ...context,
       filing_type: filingType
       docket_number: docketNumber
       deadline: deadline
-      is_urgent: isUrgent
+      is_urgent: isUrgent;
       category: 'court_filing' as ErrorCategory
-    };
+    }
     return this.handle(error, enhancedContext, retryFn, legalContext);
   }
   // ===== STANDARD ERROR HANDLERS =====
@@ -360,7 +360,7 @@ class EnhancedErrorHandler {
         status: response.status,
         ...context
       }
-    };
+    }
     const userError = this.createUserFriendlyError(errorDetails, retryFn);
     this.errorStore.set(userError);
     this.addToHistory(errorDetails);
@@ -384,7 +384,7 @@ class EnhancedErrorHandler {
         type: "network",
         ...context
       }
-    };
+    }
     const userError: UserFriendlyError = {
       id: errorDetails.id,
       title: "Connection Problem",
@@ -394,7 +394,7 @@ class EnhancedErrorHandler {
       severity: 'error',
       category: 'network',
       timestamp: new Date()
-    };
+    }
     this.errorStore.set(userError);
     this.addToHistory(errorDetails);
     this.updateStats();
@@ -402,7 +402,7 @@ class EnhancedErrorHandler {
   }
   handleValidationError(
     errors: Record<string, string[]> | string[],
-    context?: { [key: string]: any };
+    context?: { [key: string]: any }
   ): UserFriendlyError {
     const errorDetails: ErrorDetails = {
       id: this.generateErrorId(),
@@ -421,7 +421,7 @@ class EnhancedErrorHandler {
         errors,
         ...context
       }
-    };
+    }
     const userError: UserFriendlyError = {
       id: errorDetails.id,
       title: "Validation Error",
@@ -431,7 +431,7 @@ class EnhancedErrorHandler {
       severity: 'warning',
       category: 'validation',
       timestamp: new Date()
-    };
+    }
     this.errorStore.set(userError);
     this.addToHistory(errorDetails);
     this.updateStats();
@@ -450,7 +450,7 @@ class EnhancedErrorHandler {
         type: "authentication",
         ...context
       }
-    };
+    }
     const userError: UserFriendlyError = {
       id: errorDetails.id,
       title: "Authentication Required",
@@ -460,7 +460,7 @@ class EnhancedErrorHandler {
       severity: 'warning',
       category: 'authentication',
       timestamp: new Date()
-    };
+    }
     this.errorStore.set(userError);
     this.addToHistory(errorDetails);
     this.updateStats();
@@ -501,7 +501,7 @@ class EnhancedErrorHandler {
         chain_of_custody_errors: stats.chainOfCustodyErrors,
         privilege_violations: stats.privilegeViolations
       }
-    };
+    }
     return JSON.stringify(report, null, 2);
   }
   // ===== PRIVATE METHODS =====
@@ -551,7 +551,7 @@ class EnhancedErrorHandler {
       document_id: context?.document_id,
       evidence_id: context?.evidence_id,
       user_id: context?.user_id
-    };
+    }
   }
   private createUserFriendlyError(
     errorDetails: ErrorDetails
@@ -585,7 +585,7 @@ class EnhancedErrorHandler {
             type: 'primary'
           }
         ]
-      };
+      }
     }
     if (category === 'privilege_protection') {
       return {
@@ -608,7 +608,7 @@ class EnhancedErrorHandler {
             requiresConfirmation: true
           }
         ]
-      };
+      }
     }
     // Standard error patterns with legal enhancements
     if (message.includes("fetch") || message.includes("network") || message.includes("connection")) {
@@ -621,7 +621,7 @@ class EnhancedErrorHandler {
         severity: 'error',
         category: 'network',
         timestamp: errorDetails.timestamp
-      };
+      }
     }
     // Default user-friendly error
     return {
@@ -637,7 +637,7 @@ class EnhancedErrorHandler {
       legalGuidance: legalContext ? this.generateLegalGuidance(legalContext, compliance) : undefined
       complianceAlert: !!compliance,
       requiresLegalReview: errorDetails.severity === 'critical' || !!compliance
-    };
+    }
   }
   private addToHistory(errorDetails: ErrorDetails): void {
     this.errorHistory.update(history => [
@@ -673,7 +673,7 @@ class EnhancedErrorHandler {
         decreasing: [],
         stable: []
       }
-    };
+    }
     history.forEach(error => {
       // Count by code
       if (error.code) {
@@ -718,7 +718,7 @@ class EnhancedErrorHandler {
         decreasing: [],
         stable: []
       }
-    };
+    }
   }
   private determineSeverity(
     message: string
@@ -766,7 +766,7 @@ class EnhancedErrorHandler {
       database: 'Database Error',
       ai_processing: 'AI Processing Error',
       system: 'System Error'
-    };
+    }
     return titles[category] || 'Error';
   }
   private generateLegalGuidance(legalContext: LegalErrorContext, compliance?: ComplianceViolation): string {
@@ -892,7 +892,7 @@ class EnhancedErrorHandler {
       critical: '/icons/critical.png',
       security: '/icons/security.png',
       compliance: '/icons/compliance.png'
-    };
+    }
     return icons[severity] || '/icons/error.png';
   }
   private applyFilter(errors: ErrorDetails[], filter: ErrorFilter): ErrorDetails[] {
@@ -1031,7 +1031,7 @@ export function handleNetworkError(
 }
 export function handleValidationError(
   errors: Record<string, string[]> | string[],
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
 ): UserFriendlyError {
   return enhancedErrorHandler.handleValidationError(errors, context);
 }
@@ -1055,7 +1055,7 @@ export function handleChainOfCustodyError(
   evidenceId: string
   caseId: string
   custodyAction: string
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
 ): UserFriendlyError {
   return enhancedErrorHandler.handleChainOfCustodyError(error, evidenceId, caseId, custodyAction, context);
 }
@@ -1064,14 +1064,14 @@ export function handlePrivilegeViolation(
   documentId: string
   caseId: string
   exposedContent: string
-  context?: { [key: string]: any };
+  context?: { [key: string]: any }
 ): UserFriendlyError {
   return enhancedErrorHandler.handlePrivilegeViolation(error, documentId, caseId, exposedContent, context);
 }
 export function handleCourtFilingError(
   error: any
   filingType: string
-  docketNumber: string
+  docketNumber: string;
   deadline: Date
   context?: { [key: string]: any },
   retryFn?: () => Promise<void>;

@@ -53,6 +53,7 @@
     return status ? '✅' : '❌';
   }
 </script>
+
 <div class="w-full max-w-6xl mx-auto p-4 space-y-6">
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -72,33 +73,30 @@
         </div>
         {#if errors.length > 0}
           <div class="text-red-600 text-sm">
-            <strong>Errors:</strong> {errors.join(', ')}
+            <strong>Errors:</strong>
+            {errors.join(', ')}
           </div>
         {/if}
       </div>
       <!-- Control Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <Button class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
-Submit Single Job
-</Button>
+          Submit Single Job
+        </Button>
         <Button class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
-Submit Batch
-</Button>
-        <Button class="bits-btn" onclick={runHealthCheck} variant="ghost">
-Health Check
-</Button>
-        <Button class="bits-btn" onclick={resetPipeline} variant="error">
-Reset Pipeline
-</Button>
-        <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>
-Enable WebGPU
-</Button>
-        <Button class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>
-Disable WebGPU
-</Button>
-        <Button class="bits-btn" onclick={retryFailedJobs} disabled={!batchInfo?.failedJobs || batchInfo.failedJobs === 0}>
-Retry Failed
-</Button>
+          Submit Batch
+        </Button>
+        <Button class="bits-btn" onclick={runHealthCheck} variant="ghost">Health Check</Button>
+        <Button class="bits-btn" onclick={resetPipeline} variant="error">Reset Pipeline</Button>
+        <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>Enable WebGPU</Button>
+        <Button class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>Disable WebGPU</Button>
+        <Button
+          class="bits-btn"
+          onclick={retryFailedJobs}
+          disabled={!batchInfo?.failedJobs || batchInfo.failedJobs === 0}
+        >
+          Retry Failed
+        </Button>
       </div>
       <!-- Pipeline Status Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -204,10 +202,7 @@ Retry Failed
               <div class="flex justify-between">
                 <span>Last Run:</span>
                 <span class="text-sm">
-                  {metrics?.lastProcessedAt ?
-                    new Date(metrics.lastProcessedAt).toLocaleTimeString() :
-                    'Never'
-                  }
+                  {metrics?.lastProcessedAt ? new Date(metrics.lastProcessedAt).toLocaleTimeString() : 'Never'}
                 </span>
               </div>
             </div>
@@ -241,11 +236,16 @@ Retry Failed
                       <td class="p-2 font-mono text-xs">{job.ownerId}</td>
                       <td class="p-2">{job.event}</td>
                       <td class="p-2">
-                        <span class="px-2 py-1 rounded text-xs font-medium
-                          {job.status === 'succeeded' ? 'bg-green-100 text-green-800' :
-                           job.status === 'failed' ? 'bg-red-100 text-red-800' :
-                           job.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                           'bg-gray-100 text-gray-800'}">
+                        <span
+                          class="px-2 py-1 rounded text-xs font-medium
+                          {job.status === 'succeeded'
+                            ? 'bg-green-100 text-green-800'
+                            : job.status === 'failed'
+                              ? 'bg-red-100 text-red-800'
+                              : job.status === 'processing'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-gray-100 text-gray-800'}"
+                        >
                           {job.status}
                         </span>
                       </td>
@@ -267,11 +267,11 @@ Retry Failed
           <p class="text-sm text-gray-600 mb-4">
             Test connectivity to backend services that the vector pipeline depends on:
           </p>
-          <Button class="bits-btn mr-2"
-            onclick={async () =>
-{
+          <Button
+            class="bits-btn mr-2"
+            onclick={async () => {
               try {
-                const response = await fetch('http://localhost:8094/api/health')
+                // removed unused response assignment
                 const data = await response.json();
                 alert(`Enhanced RAG Service: ${data.status} (${data.service})`);
               } catch (error) {
@@ -281,12 +281,12 @@ Retry Failed
             variant="ghost"
           >
             Test Enhanced RAG (8094)
-</Button>
-          <Button class="bits-btn"
-            onclick={async () =>
-{
+          </Button>
+          <Button
+            class="bits-btn"
+            onclick={async () => {
               try {
-                const response = await fetch('http://localhost:6333/health')
+                // removed unused response assignment
                 if (response.ok) {
                   alert('Qdrant Service: Healthy');
                 } else {
@@ -299,7 +299,7 @@ Retry Failed
             variant="ghost"
           >
             Test Qdrant (6333)
-</Button>
+          </Button>
         </div>
       </div>
     </div>

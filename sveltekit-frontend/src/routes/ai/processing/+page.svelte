@@ -37,7 +37,7 @@
     documentId: '',
     analysisType: 'semantic',
     priority: 'normal',
-    useGPU: true
+    useGPU: true;
     errors: [];
   });
   let selectedBankView = $state('RAM');
@@ -89,13 +89,13 @@
         glyphCacheHitRate: glyphStats.cacheHitRate * 100,
         bankSwitchingFreq: nesGPUMetrics.activeBankMappings ? Object.keys(errors).length: 0,
         chrRomPatterns: nesGPUMetrics.textureCacheSize
-      };
+      }
       performanceStats = {
         totalDocumentsProcessed: performanceStats.totalDocumentsProcessed + Math.floor(Math.random() * 3),
         averageProcessingTime: glyphStats.averageRenderTime,
         successRate: Math.max(85, Math.min(100, performanceStats.successRate + (Math.random() - 0.5) * 2)),
         memoryEfficiency: nesGPUMetrics.memoryEfficiencyRatio
-      };
+      }
     } catch (error) {
       console.error('Failed to update metrics:', error);
     }
@@ -165,11 +165,11 @@
   async function submitProcessingJob(event) {
     event.preventDefault();
     if (!newJobForm.documentId.trim()) {
-      newJobForm.errors = { documentId: ['Document ID is required'] };
+      newJobForm.errors = { documentId: ['Document ID is required'] }
       return;
     }
     isProcessing = true;
-    newJobForm.errors = {};
+    newJobForm.errors = {}
     try {
       // Create processing job with NES-GPU optimization
       const job = {
@@ -182,7 +182,7 @@
         createdAt: new Date().toISOString(),
         useGPU: newJobForm.useGPU,
         bankId: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null;
-      };
+      }
       // Store in CHR-ROM pattern cache if high priority
       if (newJobForm.priority === 'high' && newJobForm.useGPU) {
         await nesGPUBridge.storeCHRROMPattern(`job_${job.id}`, {/* JSX syntax converted to Svelte */});
@@ -194,11 +194,11 @@
         documentId: '',
         analysisType: 'semantic',
         priority: 'normal',
-        useGPU: true
-        errors: []
+        useGPU: true;
+        errors: [];
     } catch (error) {
       console.error('Failed to submit job:', error);
-      newJobForm.errors = { general: ['Failed to submit processing job'] };
+      newJobForm.errors = { general: ['Failed to submit processing job'] }
     } finally {
       isProcessing = false;
     }
@@ -244,6 +244,7 @@
     }
   }
 </script>
+
 <svelte:head>
   <title>AI Processing Dashboard - NES-GPU Optimized</title>
   <meta name="description" content="Real-time AI document processing with NES-GPU memory bridge optimization" />
@@ -257,20 +258,18 @@
           <Brain class="w-8 h-8 text-blue-600" />
           AI Processing Dashboard
         </h1>
-        <p class="text-gray-600 mt-2">
-          Real-time legal document processing with NES-GPU memory bridge optimization
-        </p>
+        <p class="text-gray-600 mt-2">Real-time legal document processing with NES-GPU memory bridge optimization</p>
       </div>
       <div class="flex items-center gap-3">
         <button
-          onclick={() => realTimeStats = !realTimeStats}
+          onclick={() => (realTimeStats = !realTimeStats)}
           class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           <Monitor class="w-4 h-4" />
           Real-time: {realTimeStats ? 'ON' : 'OFF'}
         </button>
         <button
-          onclick={() => showJobDialog = true}
+          onclick={() => (showJobDialog = true)}
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-blue-700"
         >
           <Play class="w-4 h-4" />
@@ -368,11 +367,9 @@
         </h3>
       </div>
       <div class="p-6">
-        <OptimisticList
-          items={processingQueue}
-        >
+        <OptimisticList items={processingQueue}>
           {#snippet children({ item: job, optimistic })}
-                    <div class="p-3 border border-gray-200 rounded-lg mb-3 {optimistic ? 'opacity-50' : ''}">
+            <div class="p-3 border border-gray-200 rounded-lg mb-3 {optimistic ? 'opacity-50' : ''}">
               <div class="flex items-center justify-between mb-2">
                 <span class="font-medium text-sm">{job.documentId}</span>
                 <span class="px-2 py-1 rounded-full text-xs font-medium {getPriorityColor(job.priority)}">
@@ -383,16 +380,13 @@
                 {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
               </div>
               <div class="flex justify-end mt-2">
-                <button
-                  onclick={() => cancelJob(job.id)}
-                  class="text-xs text-red-600 hover:text-red-800"
-                >
+                <button onclick={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800">
                   Cancel
                 </button>
               </div>
             </div>
-                            {/snippet}
-                </OptimisticList>
+          {/snippet}
+        </OptimisticList>
         {#if processingQueue.length === 0}
           <div class="text-center py-8 text-gray-500">
             <Clock class="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -426,7 +420,9 @@
             </div>
             <div class="text-xs text-gray-500 space-y-1">
               <div>{job.analysisType} · {Math.round(job.progress)}% complete</div>
-              <div>{job.bankId ? `Bank ${getBankName(job.bankId)} · GPU Layers: ${job.gpuLayers || 0}` : 'CPU Processing'}</div>
+              <div>
+                {job.bankId ? `Bank ${getBankName(job.bankId)} · GPU Layers: ${job.gpuLayers || 0}` : 'CPU Processing'}
+              </div>
               <div>Started {formatTimeAgo(job.startedAt)}</div>
             </div>
           </div>
@@ -452,9 +448,7 @@
           <div class="p-3 border border-green-200 bg-green-50 rounded-lg mb-3">
             <div class="flex items-center justify-between mb-2">
               <span class="font-medium text-sm">{job.documentId}</span>
-              <span class="px-2 py-1 rounded-full text-xs font-medium {getStatusColor(job.status)}">
-                ✓ Done
-              </span>
+              <span class="px-2 py-1 rounded-full text-xs font-medium {getStatusColor(job.status)}"> ✓ Done </span>
             </div>
             <div class="text-xs text-gray-600 space-y-1">
               <div>{job.analysisType}</div>
@@ -509,26 +503,24 @@
       </div>
       <form onsubmit={submitProcessingJob} class="p-6 space-y-4">
         <FormField name="documentId" errors={newJobForm.errors.documentId}>
-          <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1">
-            Document ID
-          </label>
+          <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1"> Document ID </label>
           <input
             id="documentId"
             name="documentId"
             type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="contract_2024_001";
+            placeholder="contract_2024_001"
+            ;
             bind:value={newJobForm.documentId}
             required
           />
         </FormField>
         <div>
-          <label for="analysisType" class="block text-sm font-medium text-gray-700 mb-1">
-            Analysis Type
-          </label>
+          <label for="analysisType" class="block text-sm font-medium text-gray-700 mb-1"> Analysis Type </label>
           <select
             id="analysisType"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-blue-500 focus:border-blue-500";
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-blue-500 focus:border-blue-500"
+            ;
             bind:value={newJobForm.analysisType}
           >
             <option value="semantic">Semantic Analysis</option>
@@ -539,12 +531,11 @@
           </select>
         </div>
         <div>
-          <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">
-            Priority
-          </label>
+          <label for="priority" class="block text-sm font-medium text-gray-700 mb-1"> Priority </label>
           <select
             id="priority"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-blue-500 focus:border-blue-500";
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-blue-500 focus:border-blue-500"
+            ;
             bind:value={newJobForm.priority}
           >
             <option value="low">Low Priority</option>
@@ -556,12 +547,11 @@
           <input
             id="useGPU"
             type="checkbox"
-            class="h-4 w-4 text-blue-600 focus: ring-blue-500 border-gray-300 rounded";
+            class="h-4 w-4 text-blue-600 focus: ring-blue-500 border-gray-300 rounded"
+            ;
             bind:checked={newJobForm.useGPU}
           />
-          <label for="useGPU" class="ml-2 block text-sm text-gray-900">
-            Use GPU Acceleration (NES-GPU Bridge)
-          </label>
+          <label for="useGPU" class="ml-2 block text-sm text-gray-900"> Use GPU Acceleration (NES-GPU Bridge) </label>
         </div>
         {#if newJobForm.errors.general}
           <div class="text-red-600 text-sm">{newJobForm.errors.general[0]}</div>
@@ -569,7 +559,7 @@
         <div class="flex justify-end gap-3 pt-4">
           <button
             type="button"
-            onclick={() => showJobDialog = false}
+            onclick={() => (showJobDialog = false)}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancel

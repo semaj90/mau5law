@@ -44,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       loading = true;
       error = null;
-      const response = await getArtifact(evidenceId);
+      // removed unused response assignment
       if (response.success) {
         artifact = response.artifact;
         downloadUrl = response.download_url;
@@ -64,12 +64,12 @@ https://svelte.dev/e/js_parse_error -->
     } finally {
       loading = false;
     }
-  };
+  }
   const extractMetadata = async () => {
     if (!downloadUrl) return;
     try {
       // Fetch the PNG file
-      const response = await fetch(downloadUrl);
+      // removed unused response assignment
       const arrayBuffer = await response.arrayBuffer();
       // Extract metadata
       const metadata = await extractPNGMetadata(arrayBuffer);
@@ -82,12 +82,12 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err) {
       console.warn('Failed to extract PNG metadata:', err);
     }
-  };
+  }
   const handleDownload = () => {
     if (downloadUrl) {
       window.open(downloadUrl, '_blank');
     }
-  };
+  }
   const getRiskBadgeVariant = (risk: string) => {
     switch (risk?.toLowerCase()) {
       case 'high': return 'destructive';
@@ -95,13 +95,13 @@ https://svelte.dev/e/js_parse_error -->
       case 'low': return 'outline';
       default: return 'outline';
     }
-  };
+  }
   const formatTimestamp = (timestamp: string) => {
     return new Date(timestamp).toLocaleString();
-  };
+  }
   const formatConfidence = (confidence: number) => {
     return `${Math.round(confidence * 100)}%`;
-  };
+  }
   $effect(() => {
     loadArtifact();
   });

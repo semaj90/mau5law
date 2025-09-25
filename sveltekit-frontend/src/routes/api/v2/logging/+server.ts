@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
  */
 import { json, error } from '@sveltejs/kit'
 import crypto from "crypto"
-import { URL } from "url"
+
 // Log levels
 type LogLevel = 'error' | 'warn' | 'info' | 'debug'
 }
@@ -26,7 +26,7 @@ export interface LogBatch {
   logs: LogEntry[]
   clientInfo: {
     userAgent: string
-    url: string
+    url: string;
     timestamp: string
   }
 }

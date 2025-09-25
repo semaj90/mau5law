@@ -18,20 +18,12 @@ export interface SSRResponse<T = any> {
     timestamp: string;
     cached: boolean;
     source: 'ssr' | 'api';
-  };
+  }
   error?: string;
 }
 export interface BitsUICompatibleData {
   // Ensure all data is JSON serializable for SSR
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | null
-    | undefined
-    | Date
-    | BitsUICompatibleData
-    | BitsUICompatibleData[];
+  [key: string]: string | number | boolean | null | undefined | Date | BitsUICompatibleData | BitsUICompatibleData[];
 }
 /**
  * Creates an SSR-optimized JSON response for Bits UI components
@@ -46,7 +38,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     gpuAccelerated?: boolean;
     threadSafe?: boolean;
     cacheKey?: string;
-  }
+  },
 ): Promise<Response> {
   let sanitizedData: T;
   let serializedResponse: string;
@@ -80,7 +72,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
       cached: options?.cached ?? false,
       source: 'ssr',
     },
-  };
+  }
   // Use concurrent serializer for better performance
   try {
     serializedResponse = await serializeForAPI(response, {
@@ -112,8 +104,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
 }
 /**
  * Creates an error response optimized for SSR
- */;
-export function createSSRErrorResponse(error: string, status: number = 500, data?: any): Response {
+ */ export function createSSRErrorResponse(error: string, status: number = 500, data?: any): Response {
   const response: SSRResponse = {
     success: false,
     data: data ?? null,
@@ -123,14 +114,13 @@ export function createSSRErrorResponse(error: string, status: number = 500, data
       source: 'ssr',
     },
     error,
-  };
+  }
   return json(response, { status });
 }
 /**
  * Sanitizes data to ensure it's serializable for SSR
  * Handles Date objects, functions, undefined values, etc.
- */;
-export function sanitizeForSSR<T>(data: T): T {
+ */ export function sanitizeForSSR<T>(data: T): T {
   if (data === null || data === undefined) {
     return data;
   }
@@ -144,7 +134,7 @@ export function sanitizeForSSR<T>(data: T): T {
     return (data as { toISOString?: any; map?: any }).map(sanitizeForSSR) as unknown as T;
   }
   if (typeof data === 'object') {
-    const sanitized: any = {};
+    const sanitized: any = {}
     for (const [key, value] of Object.entries(data)) {
       sanitized[key] = sanitizeForSSR(value);
     }
@@ -158,10 +148,7 @@ export function sanitizeForSSR<T>(data: T): T {
 /**
  * Page data loader helper for Bits UI SSR
  */
-export async function loadWithSSR<T extends BitsUICompatibleData>(
-  loader: () => Promise<T>,
-  fallback: T
-): Promise<T> {
+export async function loadWithSSR<T extends BitsUICompatibleData>(loader: () => Promise<T>, fallback: T): Promise<T> {
   try {
     const data = await loader();
     return sanitizeForSSR(data);
@@ -175,14 +162,15 @@ export async function loadWithSSR<T extends BitsUICompatibleData>(
  */
 export async function batchSSRRequests<T extends { [key: string]: any }>(
   requests: { [K in keyof T]: () => Promise<T[K]> },
-  timeout = 5000
+  timeout = 5000,
 ): Promise<T> {
   const results = {} as T;
   const requestEntries = Object.entries(requests) as Array<[keyof T, () => Promise<any>]>;
-  await Promise.allSettled(requestEntries.map(async ([key, requestFn]) => {
+  await Promise.allSettled(
+    requestEntries.map(async ([key, requestFn]) => {
       try {
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Request timeout')), timeout)
+          setTimeout(() => reject(new Error('Request timeout')), timeout),
         );
         const result = await Promise.race([requestFn(), timeoutPromise]);
         results[key] = sanitizeForSSR(result);
@@ -190,15 +178,14 @@ export async function batchSSRRequests<T extends { [key: string]: any }>(
         console.error(`SSR batch request failed for ${String(key)}:`, error);
         results[key] = null;
       }
-    })
+    }),
   );
   return results;
 }
 /**
  * Enhanced error boundary for SSR API routes
- */;
-export function ssrErrorBoundary<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
-  return fn().catch((error) => {
+ */ export function ssrErrorBoundary<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  return fn().catch(error => {
     console.error('SSR Error Boundary:', error);
     return fallback;
   });
@@ -219,8 +206,7 @@ export function validateSSRResponse<T>(response: any, validator: (data: any) => 
 }
 /**
  * Estimate data size for optimization decisions
- */;
-function estimateDataSize(data: any): number {
+ */ function estimateDataSize(data: any): number {
   try {
     return JSON.stringify(data).length * 2; // UTF-16 estimation
   } catch {
@@ -231,14 +217,14 @@ function estimateDataSize(data: any): number {
  * Enhanced wrapper for API route handlers with GPU and thread-safe support
  */
 export function withSSRHandler<T extends BitsUICompatibleData>(
-  handler: (event: Parameters<RequestHandler>[0]) => Promise<T | Response>,
+  handler: (_event: Parameters<RequestHandler>[0]) => Promise<T | Response>,
   options?: {
     gpuAccelerated?: boolean;
-    cacheKey?: (event: Parameters<RequestHandler>[0]) => string;
+    cacheKey?: (_event: Parameters<RequestHandler>[0]) => string;
     threadSafe?: boolean;
-  }
+  },
 ): RequestHandler {
-  return async (event) => {
+  return async event => {
     const threadId = `handler_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     try {
       const result = await handler(event);
@@ -252,29 +238,29 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
       return await createSSRResponse(result, {
         gpuAccelerated: options?.gpuAccelerated,
         threadSafe: options?.threadSafe ?? true,
-        cacheKey
+        cacheKey,
       });
     } catch (error: any) {
       console.error('SSR API Handler Error:', error);
       return createSSRErrorResponse(error.message || 'Internal server error', error.status || 500);
     }
-  };
+  }
 }
 /**
  * Thread-safe JSONB query wrapper for legal documents
- */;
-export async function queryLegalDocumentsSSR(query: {
+ */ export async function queryLegalDocumentsSSR(
+  query: {
     path?: string;
     operator?: '@>' | '@?' | '@@' | '->' | '->>';
     value?: any;
-    conditions?: { [key: string]: any };
+    conditions?: { [key: string]: any }
   },
   options?: {
     limit?: number;
     offset?: number;
     useGPU?: boolean;
     cacheResults?: boolean;
-  }
+  },
 ): Promise<any[]> {
   try {
     const cacheKey = options?.cacheResults
@@ -289,16 +275,14 @@ export async function queryLegalDocumentsSSR(query: {
     }
     // Use thread-safe postgres for the query
     const queryFn: any =
-      (threadSafePostgres as any).queryJsonbDocuments ||
-      (threadSafePostgres as any).queryDocuments ||
-      null;
+      (threadSafePostgres as any).queryJsonbDocuments || (threadSafePostgres as any).queryDocuments || null;
     const results = queryFn
       ? await queryFn('legal_documents', query, {
           limit: options?.limit,
           offset: options?.offset,
           orderBy: 'relevance',
           useGPU: options?.useGPU,
-          cacheResults: options?.cacheResults
+          cacheResults: options?.cacheResults,
         })
       : [];
     // Cache results if requested
@@ -306,7 +290,7 @@ export async function queryLegalDocumentsSSR(query: {
       await cognitiveCache.storeJsonbDocument(cacheKey, results, {
         queryType: 'legal_search',
         resultCount: results.length,
-        gpuProcessed: options?.useGPU || false
+        gpuProcessed: options?.useGPU || false,
       });
     }
     return results;
@@ -325,14 +309,9 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
     gpuAccelerated?: boolean;
     cacheResults?: boolean;
     threadSafe?: boolean;
-  } = {}
+  } = {},
 ): Promise<T> {
-  const {
-    timeout = 5000,
-    gpuAccelerated = false,
-    cacheResults = false,
-    threadSafe = true
-  } = options;
+  const { timeout = 5000, gpuAccelerated = false, cacheResults = false, threadSafe = true } = options;
   const results = {} as T;
   const requestEntries = Object.entries(requests) as Array<[keyof T, () => Promise<any>]>;
   // Use GPU coordinator for large batch operations
@@ -351,7 +330,7 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
             atomic: false,
             gpuSerialize: true,
             threadSafe,
-          }
+          },
         );
         if (batchResult.result?.success) {
           console.log(`🚀 GPU batch processing completed for ${requestEntries.length} requests`);
@@ -361,10 +340,11 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
       console.warn('GPU batch processing failed, using standard processing:', error);
     }
   }
-  await Promise.allSettled(requestEntries.map(async ([key, requestFn]) => {
+  await Promise.allSettled(
+    requestEntries.map(async ([key, requestFn]) => {
       try {
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Request timeout')), timeout)
+          setTimeout(() => reject(new Error('Request timeout')), timeout),
         );
         const result = await Promise.race([requestFn(), timeoutPromise]);
         // Use concurrent serializer if GPU acceleration is enabled
@@ -391,14 +371,13 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
         console.error(`SSR batch request failed for ${String(key)}:`, error);
         results[key] = null;
       }
-    })
+    }),
   );
   return results;
 }
 /**
  * System health check for thread synchronization components
- */;
-export async function getThreadSyncHealth(): Promise<any> {
+ */ export async function getThreadSyncHealth(): Promise<any> {
   try {
     const [postgresHealth, cacheStats, serializerStats, gpuHealth] = await Promise.all([
       (threadSafePostgres as any).healthCheck
@@ -408,13 +387,10 @@ export async function getThreadSyncHealth(): Promise<any> {
       concurrentSerializer.getStats(),
       (gpuCoordinator as any).getSystemHealth
         ? (gpuCoordinator as any).getSystemHealth()
-        : Promise.resolve({ gpuAvailable: false })
+        : Promise.resolve({ gpuAvailable: false }),
     ]);
     const overallStatus =
-      postgresHealth.connected &&
-      cacheStats.threadSafe &&
-      serializerStats.activeWorkers > 0 &&
-      gpuHealth.gpuAvailable
+      postgresHealth.connected && cacheStats.threadSafe && serializerStats.activeWorkers > 0 && gpuHealth.gpuAvailable
         ? 'healthy'
         : postgresHealth.connected && cacheStats.threadSafe
           ? 'degraded'
@@ -425,7 +401,7 @@ export async function getThreadSyncHealth(): Promise<any> {
       serializer: serializerStats,
       gpu_coordinator: gpuHealth,
       overall_status: overallStatus,
-    };
+    }
   } catch (error) {
     console.error('Health check failed:', error);
     return {
@@ -433,7 +409,7 @@ export async function getThreadSyncHealth(): Promise<any> {
       cognitive_cache: { threadSafe: false },
       serializer: { activeWorkers: 0 },
       gpu_coordinator: { gpuAvailable: false },
-      overall_status: 'unhealthy'
-    };
+      overall_status: 'unhealthy',
+    }
   }
 }

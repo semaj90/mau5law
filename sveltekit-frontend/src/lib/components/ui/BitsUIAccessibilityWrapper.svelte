@@ -33,7 +33,7 @@
     enhanceForRoute = true,
     customAriaLabel,
     contextualHelp,
-    keyboardShortcut
+    keyboardShortcut,
   }: Props = $props();
   let containerElement: HTMLElement;
   let currentRouteConfig = $state(null);
@@ -47,7 +47,8 @@
       liveRegion.setAttribute('aria-live', 'polite');
       liveRegion.setAttribute('aria-atomic', 'true');
       liveRegion.className = 'sr-only';
-      liveRegion.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
+      liveRegion.style.cssText =
+        'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
       document.body.appendChild(liveRegion);
       liveRegion.textContent = messag;
       // Clean up after announcement
@@ -72,11 +73,13 @@
     }
     return () => {
       clearInterval(interval);
-    };
+    }
   });
   function enhanceComponentAccessibility() {
     if (!containerElement || !currentRouteConfig) return;
-    const bitsUIElement = containerElement.querySelector('[data-bits-ui], .legal-ai-btn, .legal-ai-input, .legal-ai-card');
+    const bitsUIElement = containerElement.querySelector(
+      '[data-bits-ui], .legal-ai-btn, .legal-ai-input, .legal-ai-card',
+    );
     if (!bitsUIElement) return;
     // Add route-specific enhancements
     const routeContext = currentRouteConfig.category;
@@ -98,7 +101,10 @@
     if (keyboardShortcut) {
       const currentLabel = bitsUIElement.getAttribute('aria-label') || '';
       bitsUIElement.setAttribute('aria-label', `${currentLabel} (${keyboardShortcut})`);
-      bitsUIElement.setAttribute('title', `${bitsUIElement.getAttribute('title') || ''} Keyboard: ${keyboardShortcut}`.trim());
+      bitsUIElement.setAttribute(
+        'title',
+        `${bitsUIElement.getAttribute('title') || ''} Keyboard: ${keyboardShortcut}`.trim(),
+      );
     }
     // Add component-specific enhancements
     enhanceByComponentType(bitsUIElement as HTMLElement);
@@ -132,8 +138,8 @@
       element.setAttribute('role', 'button');
     }
     // Add loading state support
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'disabled') {
           const isDisabled = element.hasAttribute('disabled');
           element.setAttribute('aria-disabled', isDisabled.toString());
@@ -170,7 +176,7 @@
     }
     // Focus management
     const focusableElements = element.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     if (focusableElements.length > 0) {
       (focusableElements[0] as HTMLElement).focus();
@@ -186,9 +192,7 @@
     if (button) {
       button.addEventListener('click', () => {
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        announceToScreenReader(
-          isExpanded ? 'Options collapsed' : 'Options expanded'
-        );
+        announceToScreenReader(isExpanded ? 'Options collapsed' : 'Options expanded');
       });
     }
   }
@@ -199,7 +203,7 @@
     const panels = element.querySelectorAll('[role="tabpanel"]');
     if (tabList && tabs.length > 0) {
       // Add arrow key navigation
-      tabList.addEventListener('keydown', (event) => {
+      tabList.addEventListener('keydown', event => {
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
           event.preventDefault();
           const currentTab = document.activeElement as HTMLElement;
@@ -235,6 +239,7 @@
     }
   });
 </script>
+
 <div
   bind:this={containerElement}
   class="bits-ui-accessibility-wrapper"
@@ -250,6 +255,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .bits-ui-accessibility-wrapper {
     position: relative;
@@ -265,12 +271,12 @@
     white-space: nowrap;
     border: 0;
   }
-  /* Route-specific accessibility enhancements */
-  :global(.accessibility-enhanced-essential),
-  :global(.accessibility-enhanced-demo),
-  :global(.accessibility-enhanced-test),
+/* Route-specific accessibility enhancements */ {}
+:global(.accessibility-enhanced-essential), {}
+:global(.accessibility-enhanced-demo), {}
+:global(.accessibility-enhanced-test), {}
   :global(.accessibility-enhanced-legal) {
-    /* Enhanced focus and accessibility improvements for all route types */
+/* Enhanced focus and accessibility improvements for all route types */ {}
     position: relative;
   }
   :global(.accessibility-focused) {
@@ -278,7 +284,7 @@
     outline-offset: 2px;
     border-radius: 4px;
   }
-  /* High contrast mode enhancements */
+/* High contrast mode enhancements */ {}
   :global(.high-contrast .accessibility-enhanced-essential) {
     border: 2px solid currentColor;
   }
@@ -286,7 +292,7 @@
     background: var(--color-bg-contrast, #000);
     color: var(--color-text-contrast, #fff);
   }
-  /* Reduced motion support */
+/* Reduced motion support */ {}
   @media (prefers-reduced-motion: reduce) {
     :global(.bits-ui-accessibility-wrapper *) {
       transition: none !important;

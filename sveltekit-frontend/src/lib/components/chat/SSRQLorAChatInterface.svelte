@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   });
   async function loadSSRContext() {
     try {
-      const response = await fetch(`/api/chat/ssr-qlora?userId=${userId}&sessionId=${sessionId}`);
+      // removed unused response assignment
       const data = await response.json();
       if (data.success) {
         ssrContext = data.ssrContext;
@@ -105,10 +105,10 @@ https://svelte.dev/e/js_parse_error -->
     const userMessage = {
       id: `msg_${Date.now()}`,
       role: 'user',
-      content: message
+      content: message;
       timestamp: new Date(),
       processed: false;
-    };
+    }
     messages.update(msgs => [...msgs, userMessage]);
     currentMessage.set('');
     isStreaming.set(true);
@@ -123,11 +123,11 @@ https://svelte.dev/e/js_parse_error -->
         role: 'assistant',
         content: '',
         timestamp: new Date(),
-        streaming: true
+        streaming: true;
         chunks: [],
-        neuralSprite: null
+        neuralSprite: null;
         source: 'qlora';
-      };
+      }
       messages.update(msgs => [...msgs, aiMessage]);
       // Start streaming response
       await startStreaming(message, aiMessage);
@@ -173,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
+        // removed unused lines assignment
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const data = JSON.parse(line.slice(6));
@@ -226,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   }
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();

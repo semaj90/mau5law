@@ -1,4 +1,4 @@
-import { cases, helpers } from "$lib/server/db";
+import { cases, helpers } from '$lib/server/db';
 import type { LayoutServerLoad } from './$types.js';
 // This runs for /cases and all its sub-pages
 // Perfect for loading persistent 3-column layout data
@@ -7,18 +7,18 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
   const user = locals.user || {
     id: 'test-user-id',
     role: 'user' as const,
-    email: 'test@example.com'
-  };
+    email: 'test@example.com',
+  }
   // REMOVED: Authentication redirect for testing
   // if (!user?.id) {
   //   throw redirect(303, "/login")
   // }
   // Get search/filter parameters
-  const searchQuery = url.searchParams.get("search") || "";
-  const statusFilter = url.searchParams.get("status") || "all";
-  const priorityFilter = url.searchParams.get("priority") || "all";
-  const sortBy = url.searchParams.get("sort") || "createdAt";
-  const sortOrder = url.searchParams.get("order") || "desc";
+  const searchQuery = url.searchParams.get('search') || '';
+  const statusFilter = url.searchParams.get('status') || 'all';
+  const priorityFilter = url.searchParams.get('priority') || 'all';
+  const sortBy = url.searchParams.get('sort') || 'createdAt';
+  const sortOrder = url.searchParams.get('order') || 'desc';
   // Build where conditions - now we know user.id is valid
   const whereConditions: unknown[] = [];
   if (searchQuery) {
@@ -26,15 +26,15 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
       whereConditions.push(
         helpers.or(
           helpers.like((cases as any).title, `%${searchQuery}%`),
-          helpers.like((cases as any).description, `%${searchQuery}%`)
-        )
+          helpers.like((cases as any).description, `%${searchQuery}%`),
+        ),
       );
     }
   }
-  if (statusFilter !== "all") {
+  if (statusFilter !== 'all') {
     if (helpers.eq) whereConditions.push(helpers.eq((cases as any).status, statusFilter));
   }
-  if (priorityFilter !== "all") {
+  if (priorityFilter !== 'all') {
     if (helpers.eq) whereConditions.push(helpers.eq((cases as any).priority, priorityFilter));
   }
   // Safely determine sort column
@@ -51,12 +51,12 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
       priority: 'high',
       createdAt: new Date(),
       description: 'Test case for SuperForms',
-      metadata: {} as { [key: string]: any }
-    }
+      metadata: {} as { [key: string]: any },
+    },
   ];
   caseStats = [
     { status: 'open', count: 1 },
-    { status: 'closed', count: 0 }
+    { status: 'closed', count: 0 },
   ];
   // DISABLED: Database queries for testing
   // try {
@@ -75,6 +75,6 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
     priorityFilter,
     sortBy,
     sortOrder,
-    user
-  };
-};
+    user,
+  }
+}

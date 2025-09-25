@@ -158,7 +158,7 @@ await initializeWebGPU();
       compressionRatio: uploadResult.uploadStats.compressionRatio,
       memoryUsage: uploadResult.uploadStats.uploadedSize,
       cacheHitRate: 0 // Will be updated with cache demos
-    };
+    }
     // Cleanup
     uploadResult.buffer.destroy();
   }
@@ -336,7 +336,7 @@ await initializeWebGPU();
       compressionRatio: 0,
       memoryUsage: 0,
       cacheHitRate: 0
-    };
+    }
   }
   function clearCache() {
     if (uploader) {

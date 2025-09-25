@@ -13,7 +13,7 @@ export async function hashPassword(password: string): Promise<string> {
  * Verify a password against its hash
  */
 export async function verifyPassword(
-  password: string
+  password: string;
   hash: string
 ): Promise<boolean> {
   return await bcrypt.compare(password, hash);
@@ -45,7 +45,7 @@ export function verifyToken(
     return {
       userId: decoded.userId,
       email: decoded.email
-    };
+    }
   } catch (error: any) {
     return null;
   }
@@ -59,5 +59,5 @@ export function createSessionData(userId: string, email: string, name: string) {
     email,
     name,
     loginTime: Date.now()
-  };
+  }
 }

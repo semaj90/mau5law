@@ -72,13 +72,13 @@ https://svelte.dev/e/js_parse_error -->
   let validationModal = $state({
     open: false,
     evidence: null as Evidence | null,
-    aiEvent: null as any
+    aiEvent: null as any;
   });
   let analysisModal = $state({
     open: false,
     evidence: null as Evidence | null,
     result: null as any,
-    loading: false
+    loading: false;
   });
   let searchQuery = $state("");
   let showFilters = $state(false);
@@ -208,8 +208,8 @@ https://svelte.dev/e/js_parse_error -->
         open: true,
         evidence,
         result: analysis,
-        loading: false
-      };
+        loading: false;
+      }
       notifications.add({
         type: "success",
         title: `Evidence Analysis Complete`,
@@ -269,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
       showBulkActions = false;
     }
   }
-  function handleThinkingToggle(event: CustomEvent) {
+  function handleThinkingToggle(_event: CustomEvent) {
     thinkingStyleEnabled = event.detail.enabled;
     notifications.add({
       type: "info",
@@ -284,8 +284,8 @@ https://svelte.dev/e/js_parse_error -->
       open: false,
       evidence: null,
       result: null,
-      loading: false
-    };
+      loading: false;
+    }
   }
   function formatAnalysisForDisplay(analysis: unknown): string {
     if (!analysis) return "No analysis available";
@@ -435,15 +435,15 @@ https://svelte.dev/e/js_parse_error -->
   function openUploadModal() {
     uploadActions.openModal(caseId);
   }
-  function handleEvidenceValidation(event: CustomEvent) {
+  function handleEvidenceValidation(_event: CustomEvent) {
     const { evidence, aiEvent } = event.detail;
     validationModal = {
       open: true,
       evidence,
-      aiEvent: aiEvent || null
-    };
+      aiEvent: aiEvent || null;
+    }
   }
-  function handleValidationComplete(event: CustomEvent) {
+  function handleValidationComplete(_event: CustomEvent) {
     validationModal.open = false;
     // Refresh evidence grid to show updated analysis
     refreshEvidence();
@@ -451,7 +451,7 @@ https://svelte.dev/e/js_parse_error -->
   function handleAdvancedUpload() {
     showAdvancedUpload = true;
   }
-  function handleFileUpload(event: CustomEvent) {
+  function handleFileUpload(_event: CustomEvent) {
     const { files } = event.detail;
     // Process uploaded files
     console.log("Files uploaded:", files);
@@ -488,14 +488,14 @@ https://svelte.dev/e/js_parse_error -->
         type: "success",
         title: "Multi-Source Search Complete",
         message: `Found ${searchResults.length} results across PostgreSQL, Qdrant, MinIO, and Loki`,
-        duration: 3000
+        duration: 3000;
       });
     } else {
       notifications.add({
         type: "info",
         title: "No Results Found",
         message: "Try adjusting your search terms or filters",
-        duration: 3000
+        duration: 3000;
       });
     }
   }
@@ -587,7 +587,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex flex-wrap gap-2 items-center">
         <!-- AI Analysis Toggle -->
         <div class="neural-sprite-active">
-          <ThinkingStyleToggle
+          <ThinkingStyleToggle;
             bind:enabled={thinkingStyleEnabled}
             premium={true}
             size="sm"
@@ -1307,12 +1307,12 @@ Close
     page: 'evidence',
     viewMode,
     evidenceCount: $evidenceGrid.length,
-    hasFilters: searchQuery.trim() || selectedType || selectedStatus
+    hasFilters: searchQuery.trim() || selectedType || selectedStatus;
   }}
   trackOnMount={true}
   let:feedback
 />
-<FeedbackIntegration
+<FeedbackIntegration;
   bind:this={evidenceSearchFeedback}
   interactionType="evidence_search"
   ratingType="search_relevance"
@@ -1320,11 +1320,11 @@ Close
   context={{ component: 'EvidenceSearch', legalDomain: 'evidence_management' }}
   let:feedback
 />
-<FeedbackIntegration
+<FeedbackIntegration;
   bind:this={evidenceUploadFeedback}
   interactionType="evidence_upload"
   ratingType="ui_experience"
   priority="high"
   context={{ component: 'EvidenceUpload' }}
   let:feedback
-/>
+/>;

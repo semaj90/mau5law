@@ -15,7 +15,7 @@
       practiceArea?: string;
       dateRange?: string;
       status?: string;
-    };
+    }
     confidence: number;
     clickedResults: string[];
     timeSpent: number;
@@ -54,7 +54,7 @@
     isLoading = true;
     let usingMockData = false;
     try {
-      const response = await fetch('/api/recommendations/last-searched?limit=20');
+      // removed unused response assignment
       const result = await response.json();
       if (result.success) {
         searchHistory = result.data;
@@ -188,17 +188,13 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     return `${minutes}m`;
   }
 </script>
+
 <DiamondModal bind:open title="🔍 Search History & AI Suggestions" size="large">
   <div class="search-history-modal">
     <!-- Header Controls -->
     <div class="modal-header">
       <div class="search-controls">
-        <input
-          type="text"
-          placeholder="Filter searches...";
-          bind:value={searchFilter}
-          class="search-input"
-        />
+        <input type="text" placeholder="Filter searches..." ; bind:value={searchFilter} class="search-input" />
         <select bind:value={typeFilter} class="type-filter">
           <option value="all">All Types</option>
           <option value="cases">Cases</option>
@@ -242,11 +238,11 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         </div>
       {:else}
         {#each filteredSearches as searchItem (searchItem.id)}
-          <div
-            class="search-item"
-            transition:slide={{ duration: 200, easing: cubicOut }}
-          >
-            <div class="search-main" onclick={() => selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem}>
+          <div class="search-item" transition:slide={{ duration: 200, easing: cubicOut }}>
+            <div
+              class="search-main"
+              onclick={() => (selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem)}
+            >
               <div class="search-header">
                 <span class="search-type-icon">{getSearchIcon(searchItem.searchType)}</span>
                 <div class="search-info">
@@ -260,7 +256,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                 <div class="search-stats">
                   <div
                     class="confidence-badge"
-                    style="background-color: {getConfidenceColor(searchItem.confidence)}20; border-color: {getConfidenceColor(searchItem.confidence)}"
+                    style="background-color: {getConfidenceColor(
+                      searchItem.confidence,
+                    )}20; border-color: {getConfidenceColor(searchItem.confidence)}"
                   >
                     {Math.round(searchItem.confidence * 100)}%
                   </div>
@@ -294,10 +292,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                   {/if}
                   <!-- Action Buttons -->
                   <div class="search-actions">
-                    <button
-                      class="action-btn primary"
-                      onclick={() => repeatSearch(searchItem)}
-                    >
+                    <button class="action-btn primary" onclick={() => repeatSearch(searchItem)}>
                       🔄 Repeat Search
                     </button>
                     <button
@@ -306,12 +301,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                     >
                       📋 Copy Query
                     </button>
-                    <button
-                      class="action-btn danger"
-                      onclick={() => deleteSearch(searchItem.id)}
-                    >
-                      🗑️ Delete
-                    </button>
+                    <button class="action-btn danger" onclick={() => deleteSearch(searchItem.id)}> 🗑️ Delete </button>
                   </div>
                 </div>
               {/if}
@@ -322,6 +312,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     </div>
   </div>
 </DiamondModal>
+
 <style>
   .search-history-modal {
     max-height: 80vh;
@@ -550,8 +541,12 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     opacity: 0.5;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   /* Scrollbar styling */
   .search-list::-webkit-scrollbar {

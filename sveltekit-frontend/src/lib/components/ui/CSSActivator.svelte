@@ -3,8 +3,12 @@
   // This component is invisible but contains all HTML elements that NES.css styles
   import NESElementsShowcase from './NESElementsShowcase.svelte';
 </script>
+
 <!-- Hidden showcase that activates all CSS selectors -->
-<div style="position: absolute; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;" aria-hidden="true">
+<div
+  style="position: absolute; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none;"
+  aria-hidden="true"
+>
   <NESElementsShowcase visible={true} />
   <!-- Additional elements to ensure all selectors are covered -->
   <div class="nes-container">
@@ -120,30 +124,36 @@
   <a style="opacity: 0;">Link without href</a>
   <!-- Content elements that might be styled globally -->
   <article style="opacity: 0;"><h1>H1</h1></article>
-      <aside><h2>H2</h2></aside>
-      <figure><figcaption>Caption</figcaption></figure>
-      <footer><h3>H3</h3></footer>
-      <header><h4>H4</h4></header>
-      <main><h5>H5</h5></main>
-      <nav><h6>H6</h6></nav>
-      <section>
-        <p>Paragraph with <strong>strong</strong>, <b>bold</b>, <small>small</small>, <sub>sub</sub>, <sup>sup</sup> text.</p>
-        <blockquote>Quote</blockquote>
-        <address>Address</address>
-        <hr>
-        <dl><dt>Term</dt><dd>Definition</dd></dl>
-        <ol><li>Ordered</li></ol>
-        <ul><li>Unordered</li></ul>
-        <code>Code</code>
-        <kbd>Keyboard</kbd>
-        <pre>Preformatted</pre>
-        <samp>Sample</samp>
-        <img src="" alt="Image" style="opacity: 0;">
-        <svg><rect /></svg>
-        <abbr title="Abbreviation">Abbr</abbr>
-        <abbr data-original-title="Abbreviation">Abbr</abbr>
-      </section>
+  <aside><h2>H2</h2></aside>
+  <figure><figcaption>Caption</figcaption></figure>
+  <footer><h3>H3</h3></footer>
+  <header><h4>H4</h4></header>
+  <main><h5>H5</h5></main>
+  <nav><h6>H6</h6></nav>
+  <section>
+    <p>
+      Paragraph with <strong>strong</strong>, <b>bold</b>, <small>small</small>, <sub>sub</sub>, <sup>sup</sup> text.
+    </p>
+    <blockquote>Quote</blockquote>
+    <address>Address</address>
+    <hr />
+    <dl>
+      <dt>Term</dt>
+      <dd>Definition</dd>
+    </dl>
+    <ol><li>Ordered</li></ol>
+    <ul><li>Unordered</li></ul>
+    <code>Code</code>
+    <kbd>Keyboard</kbd>
+    <pre>Preformatted</pre>
+    <samp>Sample</samp>
+    <img src="" alt="Image" style="opacity: 0;" />
+    <svg><rect /></svg>
+    <abbr title="Abbreviation">Abbr</abbr>
+    <abbr data-original-title="Abbreviation">Abbr</abbr>
+  </section>
 </div>
+
 <style>
   /* Ensure this component doesn't affect layout */
   :global(.css-activator-hidden) {

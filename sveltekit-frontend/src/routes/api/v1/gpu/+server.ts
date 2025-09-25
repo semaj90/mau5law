@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			body: JSON.stringify({
 				...body,
 				gpu_acceleration: true
-				frontend_request: true
+				frontend_request: true;
 				timestamp: Date.now()
 			})
 		})

@@ -91,7 +91,7 @@ export const conversationSummary = derived(chatMessages, ($messages) => {
     aiMessages,
     totalTokens,
     avgTokensPerMessage: $messages.length > 0 ? Math.round(totalTokens / $messages.length) : 0
-  };
+  }
 });
 export const isSessionActive = derived(currentSession, ($session) =>
   $session?.is_active || false
@@ -104,7 +104,7 @@ export const sessionMetrics = derived([currentSession, chatMessages], ([$session
     tokensUsed: sessionMessages.reduce((sum, m) => sum + (m.token_count || 0), 0),
     duration: Date.now() - new Date($session.start_time).getTime(),
     lastActivity: $session.last_activity
-  };
+  }
 });
 export const hasRecommendations = derived(recommendations, ($recs) => $recs.length > 0);
 export const hasAnalysis = derived(currentAnalysis, ($analysis) => $analysis !== null);
@@ -143,7 +143,7 @@ export const chatActions = {
   },
   loadSession: async (sessionId: string): Promise<void> => {
     try {
-      const response = await fetch(`/api/chat/session/${sessionId}`);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error('Session not found');
       }
@@ -178,7 +178,7 @@ export const chatActions = {
   },
   loadHistory: async (sessionId: string): Promise<void> => {
     try {
-      const response = await fetch(`/api/chat/history/${sessionId}`);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error('Failed to load history');
       }
@@ -205,7 +205,7 @@ export const chatActions = {
     streamingResponse.update(current => current + token);
   },
   completeStreaming: (): void => {
-    const response = get(streamingResponse);
+    // removed unused response assignment
     const messageId = get(streamingMessageId);
     if (messageId && response) {
       // Create final AI message
@@ -215,10 +215,10 @@ export const chatActions = {
         session_id: session?.id || '',
         sessionId: session?.id || '',
         role: 'assistant',
-        content: response
+        content: response;
         timestamp: Date.now(),
         token_count: Math.ceil(response.length / 4) // Rough estimate
-      };
+      }
       chatActions.addMessage(aiMessage);
     }
     streamingResponse.set('');
@@ -249,7 +249,7 @@ export const chatActions = {
       isTyping,
       lastSeen: Date.now(),
       status: 'online'
-    };
+    }
     userActivities.update(activities => {
       const updated = [...activities, activity];
       // Keep only last 100 activities
@@ -275,7 +275,7 @@ export const chatActions = {
       timestamp: new Date(),
       error: message
       context
-    };
+    }
     lastError.set(message);
     errorHistory.update(history => [...history, error].slice(-50); // Keep last 50 errors
   },
@@ -341,7 +341,7 @@ export const chatActions = {
     userActivities.set([]);
     typingUsers.set(new Set();
   }
-};
+}
 // Initialize from localStorage if available
 if (browser) {
   const savedConfig = localStorage.getItem('chat-config');
@@ -376,7 +376,7 @@ export const chatStores = {
   activities: userActivities
   // Configuration
   config: chatConfig
-  // Derived
+  // Derived;
   derived: {
     messageCount,
     lastUserMessage,
@@ -388,5 +388,5 @@ export const chatStores = {
     hasAnalysis,
     isSessionActive
   }
-};
+}
 export default chatStores;

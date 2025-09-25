@@ -42,7 +42,7 @@
   });
   async function loadDocuments() {
     try {
-      const response = await fetch('/api/documents');
+      // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
         console.log(`📚 Loaded ${data.documents?.length || 0} documents`);
@@ -64,8 +64,8 @@
       }
     });
   }
-  function handleFileUpload(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleFileUpload(_event: Event) {
+    // removed unused target assignment
     const files = Array.from(target.files || []);
     files.forEach(async (file) => {
       try {
@@ -84,6 +84,7 @@
     return `${Math.round(score * 100)}%`;
   }
 </script>
+
 <div class="realtime-rag-interface">
   <!-- Header with connection status -->
   <div class="rag-header">
@@ -93,8 +94,11 @@
         <div class="flex items-center space-x-2">
           <div class="connection-indicator {stats.connectionStatus}"></div>
           <span class="text-sm text-gray-600">
-            {stats.connectionStatus === 'connected' ? 'Connected' :
-             stats.connectionStatus === 'connecting' ? 'Connecting...' : 'Disconnected'}
+            {stats.connectionStatus === 'connected'
+              ? 'Connected'
+              : stats.connectionStatus === 'connecting'
+                ? 'Connecting...'
+                : 'Disconnected'}
           </span>
         </div>
         <div class="text-sm text-gray-500">
@@ -112,7 +116,7 @@
         class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         rows="3"
         disabled={machineState.matches('querying')}
-        onkeydown={(e) => {
+        onkeydown={e => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleQuerySubmit();
@@ -128,7 +132,11 @@
         {#if machineState.matches('querying')}
           <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
           </svg>
           <span>Analyzing...</span>
         {:else}
@@ -140,7 +148,7 @@
     <div class="flex items-center justify-between mt-3">
       <button
         type="button"
-        onclick={() => showAdvancedOptions = !showAdvancedOptions}
+        onclick={() => (showAdvancedOptions = !showAdvancedOptions)}
         class="text-sm text-blue-600 hover:text-blue-800"
       >
         {showAdvancedOptions ? 'Hide' : 'Show'} Advanced Options
@@ -163,19 +171,14 @@
             <label class="block text-sm font-medium text-gray-700 mb-1" for="max-results">
               Max Results: {maxResults}
             </label>
-            <input id="max-results"
-              type="range"
-              bind:value={maxResults}
-              min="1"
-              max="20"
-              class="w-full"
-            />
+            <input id="max-results" type="range" bind:value={maxResults} min="1" max="20" class="w-full" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1" for="confidence">
               Confidence: {formatConfidence(confidenceThreshold)}
             </label>
-            <input id="confidence"
+            <input
+              id="confidence"
               type="range"
               bind:value={confidenceThreshold}
               min="0.1"
@@ -185,10 +188,9 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1" for="document-types">
-              Document Types
-            </label>
-            <select id="document-types"
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="document-types"> Document Types </label>
+            <select
+              id="document-types";
               bind:value={selectedDocumentTypes}
               multiple
               class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
@@ -247,9 +249,7 @@
                     <div class="text-sm font-medium text-blue-600">
                       {formatConfidence(source.similarity_score)}
                     </div>
-                    <div class="text-xs text-gray-500">
-                      similarity
-                    </div>
+                    <div class="text-xs text-gray-500">similarity</div>
                   </div>
                 </div>
               </div>
@@ -265,7 +265,11 @@
       <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
         <div class="flex items-center space-x-2">
           <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+              clip-rule="evenodd"
+            ></path>
           </svg>
           <span class="text-sm font-medium text-red-800">Query Failed</span>
         </div>
@@ -287,23 +291,18 @@
     <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
       <div class="text-center">
         <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-          <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path
+            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
         <div class="mt-4">
           <label class="cursor-pointer">
-            <span class="mt-2 block text-sm font-medium text-gray-900">
-              Upload legal documents
-            </span>
-            <span class="mt-1 block text-xs text-gray-500">
-              PDF, DOCX, TXT up to 50MB
-            </span>
-            <input
-              type="file"
-              multiple
-              accept=".pdf,.docx,.txt,.doc"
-              onchange={handleFileUpload}
-              class="sr-only"
-            />
+            <span class="mt-2 block text-sm font-medium text-gray-900"> Upload legal documents </span>
+            <span class="mt-1 block text-xs text-gray-500"> PDF, DOCX, TXT up to 50MB </span>
+            <input type="file" multiple accept=".pdf,.docx,.txt,.doc" onchange={handleFileUpload} class="sr-only" />
           </label>
         </div>
       </div>
@@ -323,15 +322,27 @@
                 {#if job.status === 'processing'}
                   <svg class="animate-spin h-4 w-4 text-yellow-600" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                 {:else if job.status === 'completed'}
                   <svg class="h-4 w-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    ></path>
                   </svg>
                 {:else}
                   <svg class="h-4 w-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    ></path>
                   </svg>
                 {/if}
               </div>
@@ -353,6 +364,8 @@
     </div>
   {/if}
 </div>
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   .realtime-rag-interface {
     max-width: 1200px;
@@ -384,8 +397,13 @@
     overflow: hidden;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
   .processing-spinner {
     display: flex;
@@ -408,4 +426,3 @@
     }
   }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

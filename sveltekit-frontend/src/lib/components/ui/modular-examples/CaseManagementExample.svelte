@@ -41,7 +41,7 @@ https://svelte.dev/e/illegal_element_attribute -->
     }
   }
   // Keyboard shortcuts
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.metaKey || event.ctrlKey) {
       if (event.key === 'k') {
         event.preventDefault();
@@ -253,4 +253,4 @@ https://svelte.dev/e/illegal_element_attribute -->
       </button>
     </div>
   {/snippet}
-</ModularDialog>
+</ModularDialog>;

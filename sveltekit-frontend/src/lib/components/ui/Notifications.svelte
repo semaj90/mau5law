@@ -9,7 +9,7 @@
     error: "ph:x-circle",
     warning: "ph:warning-circle",
     info: "ph:info",
-  };
+  }
   const colorClasses = {
     success:
       "bg-green-50 border-green-200 text-green-800 dark:bg-green-900/10 dark:border-green-800 dark:text-green-200",
@@ -18,13 +18,13 @@
     warning:
       "bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-900/10 dark:border-yellow-800 dark:text-yellow-200",
     info: "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/10 dark:border-blue-800 dark:text-blue-200",
-  };
+  }
   const iconColorClasses = {
     success: "text-green-400",
     error: "text-red-400",
     warning: "text-yellow-400",
     info: "text-blue-400",
-  };
+  }
   function handleClose(notification: Notification) {
     notifications.remove.id);
   }
@@ -34,7 +34,7 @@
     notifications.clear && notifications.clear();
   });
   function handleAction(
-    notification: Notification
+    notification: Notification;
     action: NonNullable<Notification["actions"]>[0]
   ) {
     action.action();
@@ -49,7 +49,7 @@
         relative p-4 rounded-lg border shadow-lg backdrop-blur-sm
         ${colorClasses[(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).type]}
       `}
-      in:fly={{ x: 300, duration: 300, easing: quintOut }};
+      in:fly={{ x: 300, duration: 300, easing: quintOut }}
       out:fly={{ x: 300, duration: 200, easing: quintOut  }}
     >
       <div class="space-y-4">

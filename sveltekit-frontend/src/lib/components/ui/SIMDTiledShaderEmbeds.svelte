@@ -25,7 +25,7 @@ export interface Props {
   // UI Component data
   componentType: 'widget' | 'chart' | 'form' | 'visualization' | 'glyph';
   sourceData: string | Float32Array | HTMLCanvasElement;
-  dimensions: { width: number; height: number };
+  dimensions: { width: number; height: number }
   // Tiling configuration
   tileSize?: number;
   compressionRatio?: number;
@@ -226,7 +226,7 @@ async function textToFloat32Array(text: string): Promise<Float32Array> {
   ctx.font = `${Math.min(24, dimensions.height / 10)}px Arial`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const lines = text.split('\n');
+  // removed unused lines assignment
   const lineHeight = dimensions.height / (lines.length + 1);
   lines.forEach((line, index) => {
     ctx.fillText(
@@ -310,8 +310,8 @@ function generateShaderCode(config: {
         tileSize: u32
         confidence: f32
         avgValue: f32
-        variance: f32
-        time: f32
+        variance: f32;
+        time: f32;
       }
       @compute @workgroup_size(8, 8)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
@@ -348,7 +348,7 @@ function generateShaderCode(config: {
         // Sample neighboring pixels
         return vec4<f32>(1.0); // Simplified
       }
-      fn applyAdvancedFilter(value: f32, neighbors: vec4<f32>) -> f32 {
+      fn applyAdvancedFilter(_value: f32, neighbors: vec4<f32>) -> f32 {
         return value * 0.6 + dot(neighbors, vec4<f32>(0.1)) * 0.4;
       }
     `;
@@ -419,7 +419,7 @@ async function applyCHRROMCompression(tiles: unknown[]): Promise {
     compressionRatio,
     chrPatterns,
     compressionTime
-  };
+  }
 }
 /**
  * Generate CHR-ROM pattern from tile data
@@ -516,7 +516,7 @@ async function predictiveAssetCaching(): Promise<void> {
       enablePredictions: true
       storeInCache: cacheResults
       realtimeUpdates: false
-    };
+    }
     const result = await ultimateNeuralTopologyOrchestrator.processWithUnifiedIntelligence(request);
     console.log.predictions.recommendedAssets.length, 'assets predicted');
   } catch (error) {
@@ -532,9 +532,9 @@ function updateMemoryUsage(): void {
   const cacheMemory = compressionResults ? compressionResults.compressedSize: 0;
   memoryUsage = {
     gpu: Math.round(gpuMemory / 1024 / 1024 * 100) / 100, // MB
-    system: Math.round(systemMemory / 1024 * 100) / 100, // KB
-    cache: Math.round(cacheMemory / 1024 * 100) / 100 // KB
-  };
+    system: Math.round(systemMemory / 1024 * 100) / 100, // KB;
+    cache: Math.round(cacheMemory / 1024 * 100) / 100 // KB;
+  }
 }
 /**
  * Cleanup resources
@@ -609,7 +609,7 @@ export function getCHRPatterns(): string[] {
           {#each tiledData.slice(0, 6) as tile, index}
             <div
               class="tile-info"
-              style="
+              style=";
                 left: {(tile.tileX * tile.width / dimensions.width * 100)}%;
                 top: {(tile.tileY * tile.height / dimensions.height * 100)}%;
               "

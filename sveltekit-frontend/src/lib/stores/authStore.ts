@@ -86,7 +86,7 @@ const createAuthStore = () => {
           });
           // Initialize AI assistant for user
           aiAssistantStore.initializeForUser(userData.user);
-          return { success: true };
+          return { success: true }
         } else {
           const error = await (response as { ok?: any; json?: any }).json();
           set({
@@ -94,7 +94,7 @@ const createAuthStore = () => {
             isAuthenticated: false
             isLoading: false
           });
-          return { success: false, error: error.message };
+          return { success: false, error: error.message }
         }
       } catch (error: any) {
         set({
@@ -102,7 +102,7 @@ const createAuthStore = () => {
           isAuthenticated: false
           isLoading: false
         });
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     // Register new user
@@ -134,7 +134,7 @@ const createAuthStore = () => {
           });
           // Initialize AI assistant for new user
           aiAssistantStore.initializeForUser((result as { user?: any; sessionId?: any }).user);
-          return { success: true };
+          return { success: true }
         } else {
           const error = await (response as { ok?: any; json?: any }).json();
           set({
@@ -142,7 +142,7 @@ const createAuthStore = () => {
             isAuthenticated: false
             isLoading: false
           });
-          return { success: false, error: error.message };
+          return { success: false, error: error.message }
         }
       } catch (error: any) {
         set({
@@ -150,7 +150,7 @@ const createAuthStore = () => {
           isAuthenticated: false
           isLoading: false
         });
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     // Logout user
@@ -177,7 +177,7 @@ const createAuthStore = () => {
     async updateProfile(updates: Partial<AuthUser>) {
       const currentState = get({ subscribe });
       if (!currentState.user)
-        return { success: false, error: "Not authenticated" };
+        return { success: false, error: "Not authenticated" }
       try {
         const response = await fetch("/api/auth/profile", {
           method: "PATCH",
@@ -194,13 +194,13 @@ const createAuthStore = () => {
             user: { ...state.user!, ...updatedUser },
             lastActivity: new Date()
           });
-          return { success: true };
+          return { success: true }
         } else {
           const error = await (response as { ok?: any; json?: any }).json();
-          return { success: false, error: error.message };
+          return { success: false, error: error.message }
         }
       } catch (error: any) {
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     // Update last activity
@@ -210,8 +210,8 @@ const createAuthStore = () => {
         lastActivity: new Date()
       });
     }
-  };
-};
+  }
+}
 export const authStore = createAuthStore();
 // Derived stores for common checks (repaired syntax)
 export const isAuthenticated = derived(authStore, ($auth: any) => $auth.isAuthenticated);
@@ -229,12 +229,12 @@ export interface AIAssistantState {
     contextAwareness: boolean;
     legalSpecialization: boolean;
     confidenceThreshold: number;
-  };
+  }
   currentContext?: {
     caseId?: string;
     evidenceId?: string;
     reportId?: string;
-  };
+  }
   conversationHistory: Array<any>
 const createAIAssistantStore = () => {
   const { subscribe, set, update } = writable<AIAssistantState>({
@@ -297,12 +297,12 @@ const createAIAssistantStore = () => {
             ...state,
             preferences: { ...state.preferences, ...updates }
           });
-          return { success: true };
+          return { success: true }
         } else {
-          return { success: false, error: "Failed to update preferences" };
+          return { success: false, error: "Failed to update preferences" }
         }
       } catch (error: any) {
-        return { success: false, error: "Network error" };
+        return { success: false, error: "Network error" }
       }
     },
     // Set current context for AI assistance
@@ -323,7 +323,7 @@ const createAIAssistantStore = () => {
         ...conversation,
         id: crypto.randomUUID(),
         timestamp: new Date()
-      };
+      }
       update((state: any) => ({
         ...state,
         conversationHistory: [
@@ -345,8 +345,8 @@ const createAIAssistantStore = () => {
         conversationHistory: []
       });
     }
-  };
-};
+  }
+}
 export const aiAssistantStore = createAIAssistantStore();
 // Derived stores for AI assistant (repaired syntax)
 export const aiEnabled = derived(aiAssistantStore, ($ai: any) => $ai.isEnabled);

@@ -12,19 +12,19 @@ export interface WebGPUDiagnostics {
     isFirefox: boolean;
     isEdge: boolean;
     isSafari: boolean;
-  };
+  }
   adapterInfo?: {
     vendor: string;
     architecture: string;
     device: string;
     description: string;
-  };
+  }
   deviceInfo?: {
     features: string[];
     limits: Record<string, number>;
     maxBufferSize: number;
     maxComputeWorkgroupSize: number;
-  };
+  }
   errors: string[];
   recommendations: string[];
 }
@@ -37,7 +37,7 @@ export class WebGPUDiagnosticsService {
       browserSupport: this.getBrowserSupport(),
       errors: [],
       recommendations: []
-    };
+    }
     try {
       // Step 1: Check navigator.gpu availability
       if (!diagnostics.browserSupport.hasNavigatorGPU) {
@@ -95,7 +95,7 @@ export class WebGPUDiagnosticsService {
       isFirefox,
       isEdge,
       isSafari
-    };
+    }
   }
   private async testAdapterRequest(diagnostics: WebGPUDiagnostics): Promise<void> {
     try {
@@ -116,7 +116,7 @@ export class WebGPUDiagnosticsService {
           architecture: info.architecture || 'Unknown',
           device: info.device || 'Unknown',
           description: info.description || 'Unknown'
-        };
+        }
         console.log('✅ WebGPU adapter info:', diagnostics.adapterInfo);
       } catch (error: any) {
         console.warn('Could not get adapter info:', error.message);
@@ -125,7 +125,7 @@ export class WebGPUDiagnosticsService {
           architecture: 'Unknown',
           device: 'Unknown',
           description: 'Unknown'
-        };
+        }
       }
     } catch (error: any) {
       diagnostics.errors.push(`Adapter request failed: ${error.message}`);
@@ -156,7 +156,7 @@ export class WebGPUDiagnosticsService {
         ),
         maxBufferSize: Number(this.device.limits.maxBufferSize),
         maxComputeWorkgroupSize: Number(this.device.limits.maxComputeWorkgroupSize)
-      };
+      }
       console.log('✅ WebGPU device created successfully');
       console.log('📊 Device features:', diagnostics.deviceInfo.features);
       console.log('📊 Device limits:', diagnostics.deviceInfo.limits);
@@ -232,27 +232,27 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagnostics> {
 // Browser compatibility check
 export function checkBrowserCompatibility(): { compatible: boolean; message: string } {
   if (typeof navigator === 'undefined') {
-    return { compatible: false, message: 'Running in server-side environment' };
+    return { compatible: false, message: 'Running in server-side environment' }
   }
   if (!('gpu' in navigator)) {
-    return { compatible: false, message: 'WebGPU not supported in this browser' };
+    return { compatible: false, message: 'WebGPU not supported in this browser' }
   }
   const userAgent = navigator.userAgent;
   const isSecureContext = typeof window !== 'undefined' ? window.isSecureContext: false;
   if (!isSecureContext) {
-    return { compatible: false, message: 'WebGPU requires HTTPS or localhost (secure context)' };
+    return { compatible: false, message: 'WebGPU requires HTTPS or localhost (secure context)' }
   }
   if (/Chrome/.test(userAgent) && !/Edg/.test(userAgent)) {
     const match = userAgent.match(/Chrome\/(\d+)/);
     const version = match ? parseInt(match[1]) : 0;
     if (version >= 113) {
-      return { compatible: true, message: `Chrome ${version} supports WebGPU` };
+      return { compatible: true, message: `Chrome ${version} supports WebGPU` }
     } else {
-      return { compatible: false, message: `Chrome ${version} detected. WebGPU requires Chrome 113+` };
+      return { compatible: false, message: `Chrome ${version} detected. WebGPU requires Chrome 113+` }
     }
   }
   if (/Firefox/.test(userAgent)) {
-    return { compatible: true, message: 'Firefox with experimental WebGPU support detected' };
+    return { compatible: true, message: 'Firefox with experimental WebGPU support detected' }
   }
-  return { compatible: false, message: 'Browser may have limited WebGPU support' };
+  return { compatible: false, message: 'Browser may have limited WebGPU support' }
 }

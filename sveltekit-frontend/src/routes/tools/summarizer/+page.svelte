@@ -6,6 +6,7 @@
     // Additional handling if needed
   }
 </script>
+
 <svelte:head>
   <title>Legal Document Summarizer - AI-Powered Analysis</title>
   <meta name="description" content="Convert lengthy legal documents into concise summaries using Gemma3 AI" />
@@ -17,8 +18,8 @@
       <CardHeader>
         <CardTitle class="text-2xl">🤖 Legal Document Summarizer</CardTitle>
         <p class="text-muted-foreground">
-          Transform lengthy legal documents into concise, actionable summaries using advanced Gemma3 AI.
-          Perfect for contracts, judgments, briefs, and legal statutes.
+          Transform lengthy legal documents into concise, actionable summaries using advanced Gemma3 AI. Perfect for
+          contracts, judgments, briefs, and legal statutes.
         </p>
       </CardHeader>
       <CardContent>
@@ -95,4 +96,5 @@
       </CardContent>
     </Card>
   </div>
-</div>;
+</div>
+;

@@ -86,12 +86,11 @@
     return `${(ms / 60000).toFixed(1)}m`;
   }
 </script>
+
 <div class="legal-document-processor p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-      Legal Document Processor
-    </h2>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Legal Document Processor</h2>
     <div class="flex items-center space-x-2">
       {#if $context.processingDuration}
         <span class="text-sm text-gray-500">
@@ -99,7 +98,15 @@
         </span>
       {/if}
       <div class="flex items-center space-x-1">
-        <div class="w-3 h-3 rounded-full {isProcessing ? 'bg-blue-500 animate-pulse' : isCompleted ? 'bg-green-500' : isFailed ? 'bg-red-500' : 'bg-gray-300'}"></div>
+        <div
+          class="w-3 h-3 rounded-full {isProcessing
+            ? 'bg-blue-500 animate-pulse'
+            : isCompleted
+              ? 'bg-green-500'
+              : isFailed
+                ? 'bg-red-500'
+                : 'bg-gray-300'}"
+        ></div>
         <span class="text-sm font-medium">{processingStage}</span>
       </div>
     </div>
@@ -110,16 +117,20 @@
       <h3 class="font-semibold mb-2">Document Information</h3>
       <div class="grid grid-cols-2 gap-4 text-sm">
         <div>
-          <span class="font-medium">Title:</span> {document.title || 'Untitled'}
+          <span class="font-medium">Title:</span>
+          {document.title || 'Untitled'}
         </div>
         <div>
-          <span class="font-medium">Case Type:</span> {document.caseType || 'Unknown'}
+          <span class="font-medium">Case Type:</span>
+          {document.caseType || 'Unknown'}
         </div>
         <div>
-          <span class="font-medium">Jurisdiction:</span> {document.jurisdiction || 'Unknown'}
+          <span class="font-medium">Jurisdiction:</span>
+          {document.jurisdiction || 'Unknown'}
         </div>
         <div>
-          <span class="font-medium">Content Length:</span> {document.content?.length || 0} characters
+          <span class="font-medium">Content Length:</span>
+          {document.content?.length || 0} characters
         </div>
       </div>
     </div>
@@ -147,11 +158,17 @@
             {#if status === 'completed'}
               <div class="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
                 <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
                 </svg>
               </div>
             {:else}
-              <div class="w-4 h-4 rounded-full bg-blue-500 animate-spin border-2 border-blue-500 border-t-transparent"></div>
+              <div
+                class="w-4 h-4 rounded-full bg-blue-500 animate-spin border-2 border-blue-500 border-t-transparent"
+              ></div>
             {/if}
             <span class="capitalize">{task.replace(/([A-Z])/g, ' $1').trim()}</span>
           </div>
@@ -182,7 +199,11 @@
               <div class="flex items-center space-x-1">
                 <div class="w-16 bg-gray-200 rounded-full h-2">
                   <div
-                    class="h-2 rounded-full {$context.riskScore > 70 ? 'bg-red-500' : $context.riskScore > 40 ? 'bg-yellow-500' : 'bg-green-500'}"
+                    class="h-2 rounded-full {$context.riskScore > 70
+                      ? 'bg-red-500'
+                      : $context.riskScore > 40
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'}"
                     style="width: {$context.riskScore}%"
                   ></div>
                 </div>
@@ -307,9 +328,7 @@
   <!-- Debug Info (development only) -->
   {#if import.meta.env.DEV}
     <details class="mt-6">
-      <summary class="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
-        Debug Information
-      </summary>
+      <summary class="cursor-pointer text-sm text-gray-500 hover:text-gray-700"> Debug Information </summary>
       <pre class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">,
 State: {JSON.stringify($state.value, null, 2)}
 Context: {JSON.stringify($context, null, 2)}
@@ -317,6 +336,7 @@ Context: {JSON.stringify($context, null, 2)}
     </details>
   {/if}
 </div>
+
 <style>
   .legal-document-processor {
     /* Component-specific styles if needed */;

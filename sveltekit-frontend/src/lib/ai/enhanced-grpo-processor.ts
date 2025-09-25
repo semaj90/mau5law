@@ -14,14 +14,14 @@ export interface GRPOAnalysis extends ThinkingAnalysis {
     legalPrinciples: string[];
     counterArguments: string[];
     confidenceFactors: string[];
-  };
+  }
   temporalScore: number;
   recommendationContext: RecommendationContext[];
   feedbackLoop: {
     previousRatings: number[];
     userPreferences: string[];
     improvementSuggestions: string[];
-  };
+  }
 }
 export interface RecommendationContext {
   responseId: string;
@@ -48,7 +48,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
     maxRecommendations: 5,
     temporalDecayDays: 30,
     semanticSimilarityThreshold: 0.7
-  };
+  }
   /**
    * Enhanced document analysis with GRPO-thinking and recommendations
    */
@@ -56,7 +56,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
     text: string
     options: AnalysisOptions & { config?: Partial<GRPOConfig> } = {}
   ): Promise<GRPOAnalysis> {
-    const config = { ...this.DEFAULT_CONFIG, ...options.config };
+    const config = { ...this.DEFAULT_CONFIG, ...options.config }
     // Get base thinking analysis
     const baseAnalysis = await super.analyzeDocument(text, {
       ...options,
@@ -81,7 +81,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
     // Get feedback loop data if available
     const feedbackLoop = config.enableFeedbackLoop
       ? await this.getFeedbackLoopData(text)
-      : { previousRatings: [], userPreferences: [], improvementSuggestions: [] };
+      : { previousRatings: [], userPreferences: [], improvementSuggestions: [] }
     // Save enhanced analysis to database
     const grpoId = await this.saveGRPOAnalysis({
       query: text
@@ -103,7 +103,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       temporalScore,
       recommendationContext,
       feedbackLoop
-    };
+    }
   }
   /**
    * Extract structured reasoning components from thinking content
@@ -269,14 +269,14 @@ Extract and format as JSON:;
         previousRatings,
         userPreferences,
         improvementSuggestions
-      };
+      }
     } catch (error) {
       console.warn('Failed to get feedback loop data:', error);
       return {
         previousRatings: [],
         userPreferences: [],
         improvementSuggestions: []
-      };
+      }
     }
   }
   /**
@@ -373,12 +373,12 @@ Extract and format as JSON:;
       legalPrinciples: [],
       counterArguments: [],
       confidenceFactors: []
-    };
+    }
   }
   private static fallbackStructureExtraction(
     thinkingContent: string;
   ): GRPOAnalysis['structuredReasoning'] {
-    const lines = thinkingContent.split('\n').filter((line) => line.trim();
+    // removed unused lines assignment
     return {
       premises: lines.filter(
         (line) => line.toLowerCase().includes('premise') || line.toLowerCase().includes('given')
@@ -399,7 +399,7 @@ Extract and format as JSON:;
       confidenceFactors: lines.filter(
         (line) => line.toLowerCase().includes('confident') || line.toLowerCase().includes('certain')
       )
-    };
+    }
   }
   private static generateImprovementSuggestions(feedbackRows: any[]): string[] {
     const suggestions: string[] = [];
@@ -493,4 +493,4 @@ export const GRPOUtils = {
       avgRating: parseFloat(row.avg_rating as string)
     });
   }
-};
+}

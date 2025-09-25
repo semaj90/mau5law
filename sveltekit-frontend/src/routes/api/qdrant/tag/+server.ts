@@ -1,6 +1,6 @@
 
 import { json } from "@sveltejs/kit"
-import { URL } from "url"
+
 import type { RequestHandler } from './$types.js'
 // Mock Qdrant client for development
 class MockQdrantClient {
@@ -661,7 +661,7 @@ async function getDocument(documentId: string, userId: string): Promise<any> {
   })
 }
 async function listDocuments(
-  userId: string
+  userId: string;
   options: { caseId?: string; limit: number }
 ): Promise<any> {
   const filter = {

@@ -86,7 +86,7 @@ export const OrchestrationContext = {
   webgpuService: null as any
   // Vector search integration
   vectorService: null as any
-};
+}
 // Legal AI utility functions
 export function getConfidenceClass(confidence: number): string {
   if (confidence >= 0.9) return 'confidence-very-high';

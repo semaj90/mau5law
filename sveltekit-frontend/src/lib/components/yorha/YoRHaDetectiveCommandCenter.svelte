@@ -20,7 +20,7 @@
       gpuUtilization: number;
       memoryUsage: number;
       networkLatency: number;
-    };
+    }
   }
   let {
     currentUser = undefined,
@@ -62,14 +62,14 @@
       name: 'title',
       label: 'CASE TITLE',
       type: 'text',
-      required: true
+      required: true;
       placeholder: 'e.g., The Missing Android' ;
     },
     {
       name: 'description',
       label: 'CASE DESCRIPTION / SYNOPSIS',
       type: 'textarea',
-      required: true
+      required: true;
       placeholder: 'Initial details of the investigation...',
       rows: 4;
     },
@@ -77,7 +77,7 @@
       name: 'priority',
       label: 'PRIORITY LEVEL',
       type: 'select',
-      required: true
+      required: true;
       options: [
         { value: 'low', label: 'Low' },
         { value: 'medium', label: 'Medium' },
@@ -112,9 +112,9 @@
     }
   }
   function showNotification(message: string, type: 'success' | 'error' | 'info' = 'info') {
-    notification = { show: true, message, type };
+    notification = { show: true, message, type }
     setTimeout(() => {
-      notification = { show: false, message: '', type: 'info' };
+      notification = { show: false, message: '', type: 'info' }
     }, 3000);
   }
   function openNewCaseModal() {
@@ -138,7 +138,7 @@
         // Add to active cases
         activeCases = [newCase, ...activeCases];
         // Update system data
-        systemData = { ...systemData, activeCases: systemData.activeCases + 1 };
+        systemData = { ...systemData, activeCases: systemData.activeCases + 1 }
         showNotification('Case successfully saved!', 'success');
         closeNewCaseModal();
       } else {
@@ -169,6 +169,7 @@
     }
   }
 </script>
+
 <!-- YoRHa Detective Command Center -->
 <div class="yorha-detective-command-center min-h-screen bg-yorha-sand text-yorha-dark font-mono">
   <!-- Header -->
@@ -187,13 +188,23 @@
         </button>
         <button class="header-btn" onclick={handleGlobalSearch}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
           </svg>
           GLOBAL SEARCH
         </button>
-        <button class="header-btn ai-assistant" onclick={() => showAIAssistant = true}>
+        <button class="header-btn ai-assistant" onclick={() => (showAIAssistant = true)}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
           </svg>
           AI ASSISTANT
         </button>
@@ -208,10 +219,15 @@
       <nav class="sidebar-nav">
         {#each navigationItems as item}
           <button
-            class="sidebar-link {activeTab === (item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).id ? 'active' : ''}"
+            class="sidebar-link {activeTab ===
+            (item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).id
+              ? 'active'
+              : ''}"
             onclick={() => handleNavigation(item)}
           >
-            <span class="nav-icon">{(item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).icon}</span>
+            <span class="nav-icon"
+              >{(item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).icon}</span
+            >
             {(item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).label}
           </button>
         {/each}
@@ -284,7 +300,11 @@
             </div>
             <div class="health-bar">
               <div
-                class="health-fill {systemData.systemLoad > 80 ? 'critical' : systemData.systemLoad > 60 ? 'warning' : 'normal'}"
+                class="health-fill {systemData.systemLoad > 80
+                  ? 'critical'
+                  : systemData.systemLoad > 60
+                    ? 'warning'
+                    : 'normal'}"
                 style="width: {systemData.systemLoad}%"
               ></div>
             </div>
@@ -296,7 +316,11 @@
             </div>
             <div class="health-bar">
               <div
-                class="health-fill {systemData.gpuUtilization > 80 ? 'critical' : systemData.gpuUtilization > 60 ? 'warning' : 'normal'}"
+                class="health-fill {systemData.gpuUtilization > 80
+                  ? 'critical'
+                  : systemData.gpuUtilization > 60
+                    ? 'warning'
+                    : 'normal'}"
                 style="width: {systemData.gpuUtilization}%"
               ></div>
             </div>
@@ -308,7 +332,11 @@
             </div>
             <div class="health-bar">
               <div
-                class="health-fill {systemData.memoryUsage > 80 ? 'critical' : systemData.memoryUsage > 60 ? 'warning' : 'normal'}"
+                class="health-fill {systemData.memoryUsage > 80
+                  ? 'critical'
+                  : systemData.memoryUsage > 60
+                    ? 'warning'
+                    : 'normal'}"
                 style="width: {systemData.memoryUsage}%"
               ></div>
             </div>
@@ -319,7 +347,13 @@
               <span class="health-value">{systemData.networkLatency}ms</span>
             </div>
             <div class="network-status">
-              <div class="network-indicator {systemData.networkLatency < 50 ? 'excellent' : systemData.networkLatency < 100 ? 'good' : 'poor'}"></div>
+              <div
+                class="network-indicator {systemData.networkLatency < 50
+                  ? 'excellent'
+                  : systemData.networkLatency < 100
+                    ? 'good'
+                    : 'poor'}"
+              ></div>
               <span class="network-label">
                 {systemData.networkLatency < 50 ? 'EXCELLENT' : systemData.networkLatency < 100 ? 'GOOD' : 'POOR'}
               </span>
@@ -332,65 +366,68 @@
 </div>
 <!-- New Case Modal -->
 {#if showNewCaseModal}
-<YoRHaDetectiveModal
-  showModal={showNewCaseModal}
-  title="CREATE NEW CASE FILE"
-  onClose={closeNewCaseModal}
->
-  <YoRHaDetectiveForm
-    fields={newCaseFormFields}
-    onsubmit={handleNewCaseSubmit}
-    submitText="SAVE TO DATABASE"
-    submitClass="yorha-btn-success"
-  />
-</YoRHaDetectiveModal>
+  <YoRHaDetectiveModal showModal={showNewCaseModal} title="CREATE NEW CASE FILE" onClose={closeNewCaseModal}>
+    <YoRHaDetectiveForm
+      fields={newCaseFormFields}
+      onsubmit={handleNewCaseSubmit}
+      submitText="SAVE TO DATABASE"
+      submitClass="yorha-btn-success"
+    />
+  </YoRHaDetectiveModal>
 {/if}
 <!-- AI Assistant Modal -->
 {#if showAIAssistant}
-<YoRHaDetectiveModal
-  showModal={showAIAssistant}
-  title="AI ASSISTANT"
-  onClose={() => showAIAssistant = false}
->
-  <div class="ai-assistant-content">
-    <div class="ai-status-section">
-      <div class="ai-status-indicator active"></div>
-      <span class="ai-status-text">Neural Network Status: ACTIVE</span>
-    </div>
-    <div class="ai-capabilities">
-      <div class="ai-capability">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <span>Evidence Pattern Analysis</span>
+  <YoRHaDetectiveModal showModal={showAIAssistant} title="AI ASSISTANT" onClose={() => (showAIAssistant = false)}>
+    <div class="ai-assistant-content">
+      <div class="ai-status-section">
+        <div class="ai-status-indicator active"></div>
+        <span class="ai-status-text">Neural Network Status: ACTIVE</span>
       </div>
-      <div class="ai-capability">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-        </svg>
-        <span>Case Correlation Engine</span>
+      <div class="ai-capabilities">
+        <div class="ai-capability">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <span>Evidence Pattern Analysis</span>
+        </div>
+        <div class="ai-capability">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+          <span>Case Correlation Engine</span>
+        </div>
+        <div class="ai-capability">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            ></path>
+          </svg>
+          <span>Legal Precedent Search</span>
+        </div>
       </div>
-      <div class="ai-capability">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-        </svg>
-        <span>Legal Precedent Search</span>
+      <div class="ai-query-section">
+        <label class="ai-query-label" for="query-input">QUERY INPUT</label><textarea
+          id="query-input"
+          class="ai-query-input"
+          placeholder="Enter legal query or case analysis request..."
+          rows="4"
+        ></textarea>
+      </div>
+      <div class="ai-actions">
+        <button class="yorha-btn">Analyze Current Case</button>
+        <button class="yorha-btn">Evidence Summary</button>
+        <button class="yorha-btn yorha-nes-btn is-primary">EXECUTE QUERY</button>
       </div>
     </div>
-    <div class="ai-query-section">
-      <label class="ai-query-label" for="query-input">QUERY INPUT</label><textarea id="query-input"
-        class="ai-query-input"
-        placeholder="Enter legal query or case analysis request..."
-        rows="4"
-      ></textarea>
-    </div>
-    <div class="ai-actions">
-      <button class="yorha-btn">Analyze Current Case</button>
-      <button class="yorha-btn">Evidence Summary</button>
-      <button class="yorha-btn yorha-nes-btn is-primary">EXECUTE QUERY</button>
-    </div>
-  </div>
-</YoRHaDetectiveModal>
+  </YoRHaDetectiveModal>
 {/if}
 <!-- Notification -->
 <YoRHaDetectiveNotification
@@ -398,6 +435,7 @@
   type={(notification as { message?: unknown; type?: unknown; show?: unknown }).type}
   show={(notification as { message?: unknown; type?: unknown; show?: unknown }).show}
 />
+
 <style>
   .yorha-detective-command-center {
     --yorha-sand: #EAE8E1;

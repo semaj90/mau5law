@@ -47,7 +47,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
       clientName: '',
       tags: [],
       notes: '';
-    };
+    }
     // Create form integration with enhanced options
     formIntegration = createCaseCreationForm(initialData, {
       autoSave: true

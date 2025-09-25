@@ -68,7 +68,7 @@ export async function createUser(userData: {
   }
 }
 export async function updateUser(
-  id: string
+  id: string;
   updates: Partial<User>
 ): Promise<User | null> {
   try {

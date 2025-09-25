@@ -3,7 +3,7 @@
   interface GridColumn {
     key: string;
     title: string;
-    formatter?: (value: unknown, row: unknown) => string;
+    formatter?: (_value: unknown, row: unknown) => string;
   }
   interface DataGridProps {
     columns?: GridColumn[];
@@ -12,17 +12,12 @@
     className?: string;
     actionsSnippet?: Snippet<[any, number]>;
   }
-  let {
-    columns = [],
-    data = [],
-    loading = false,
-    className = '',
-    actionsSnippet
-  }: DataGridProps = $props();
-  function format(value: unknown, col: GridColumn, row: unknown) {
+  let { columns = [], data = [], loading = false, className = '', actionsSnippet }: DataGridProps = $props();
+  function format(_value: unknown, col: GridColumn, row: unknown) {
     return col.formatter ? col.formatter(value, row) : valu;
   }
 </script>
+
 <div class="yorha-data-grid {className}">
   {#if loading}
     <div class="grid-loading">Loading...</div>
@@ -58,6 +53,7 @@
     <div class="grid-empty">No data</div>
   {/if}
 </div>
+
 <style>
   .yorha-data-grid {
     border: 2px solid #ffbf00;

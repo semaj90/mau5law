@@ -204,7 +204,7 @@ try {
   function formatScore(score: number) {
     return (score * 100).toFixed(1) + '%';
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && searchResults.length > 0) {
       handleResultClick(searchResults[0]);
     } else if (event.key === 'Escape') {
@@ -305,7 +305,7 @@ try {
             <div class="space-y-3">
               <div>
                 <label class="text-xs nes-text is-disabled" for="confidence-selectedf">Confidence: {selectedFilters.confidenceMin}</label><input id="confidence-selectedf"
-                  type="range"
+                  type="range";
                   bind:value={selectedFilters.confidenceMin}
                   min="0"
                   max="1"

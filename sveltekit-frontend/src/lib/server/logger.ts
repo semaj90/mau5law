@@ -1,10 +1,10 @@
 // Simple in-memory metric counters (can be replaced by Prometheus client later)
-const counters: Record<string, number> = {};
+const counters: Record<string, number> = {}
 export function incrementMetric(name: string, value = 1) {
   counters[name] = (counters[name] || 0) + value;
 }
 export function getMetricsSnapshot() {
-  return { ...counters };
+  return { ...counters }
 }
 /**
  * Server-side logger utility
@@ -19,23 +19,17 @@ export class Logger {
     return Logger.instance;
   }
   info(message: string, meta?: unknown) {
-    console.log(`[INFO] ${new Date().toISOString()} - ${message}`, meta || "");
+    console.log(`[INFO] ${new Date().toISOString()} - ${message}`, meta || '');
   }
   error(message: string, error?: unknown) {
-    console.error(
-      `[ERROR] ${new Date().toISOString()} - ${message}`,
-      error || ""
-    );
+    console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error || '');
   }
   warn(message: string, meta?: unknown) {
-    console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, meta || "");
+    console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, meta || '');
   }
   debug(message: string, meta?: unknown) {
-    if (import.meta.env.NODE_ENV === "development") {
-      console.debug(
-        `[DEBUG] ${new Date().toISOString()} - ${message}`,
-        meta || ""
-      );
+    if (import.meta.env.NODE_ENV === 'development') {
+      console.debug(`[DEBUG] ${new Date().toISOString()} - ${message}`, meta || '');
     }
   }
 }

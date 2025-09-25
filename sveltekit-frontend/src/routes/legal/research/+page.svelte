@@ -62,7 +62,7 @@ await initializeResearchSession();
     if (!searchQuery.trim()) return;
     isSearching = true;
     researchSession.queries.push({
-      query: searchQuery
+      query: searchQuery;
       filters: { ...selectedFilters },
       timestamp: new Date(),
       mode: searchMod;
@@ -72,10 +72,10 @@ await initializeResearchSession();
         query: searchQuery
         mode: searchMode
         filters: selectedFilters
-        sort: sortBy
-        page: currentPage
+        sort: sortBy;
+        page: currentPage;
         limit: 20;
-      };
+      }
       // Store search pattern in CHR-ROM for fast retrieval
       await nesGPUBridge.storeCHRROMPattern(`search_${Date.now()}`, {/* JSX syntax converted to Svelte */});
       const response = await fetch('/api/legal/research/search', {
@@ -119,7 +119,7 @@ await initializeResearchSession();
         keyTopics: ['Contract Law', 'Commercial Disputes', 'Interpretation'],
         relevanceScore: 0.94,
         citedBy: 47,
-        isBookmarked: false
+        isBookmarked: false;
         url: '/legal/documents/smith-v-johnson-2019';
       },
       {
@@ -136,7 +136,7 @@ await initializeResearchSession();
         keyTopics: ['Discovery', 'Civil Procedure', 'Proportionality'],
         relevanceScore: 0.89,
         citedBy: 234,
-        isBookmarked: true
+        isBookmarked: true;
         url: '/legal/documents/frcp-26-b-1';
       },
       {
@@ -153,7 +153,7 @@ await initializeResearchSession();
         keyTopics: ['Summary Judgment', 'Motion Practice', 'Legal Writing'],
         relevanceScore: 0.82,
         citedBy: 12,
-        isBookmarked: false
+        isBookmarked: false;
         url: '/legal/documents/summary-judgment-template';
       }
     ];
@@ -171,7 +171,7 @@ await initializeResearchSession();
   }
   async function loadSavedCitations() {
     try {
-      const response = await fetch('/api/legal/research/citations/saved');
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         savedCitations = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).citations || [];
@@ -234,7 +234,7 @@ await initializeResearchSession();
       documentType: '',
       dateRange: '',
       precedentialValue: '';
-    };
+    }
   }
   function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('en-US', {

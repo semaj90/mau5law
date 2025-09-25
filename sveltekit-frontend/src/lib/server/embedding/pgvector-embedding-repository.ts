@@ -90,6 +90,6 @@ export const pgvectorEmbeddingRepository: EmbeddingRepository = {
   processNextJob,
   getJobStatus: async (jobId: string) => getJobStatus(jobId) || null,
   querySimilar
-};
+}
 // Named exports (optional direct usage)
-export { enqueueIngestion, processNextJob, getJobStatus, querySimilar };
+export { enqueueIngestion, processNextJob, getJobStatus, querySimilar }

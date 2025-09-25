@@ -93,7 +93,7 @@ export const canvasConnections = pgTable("canvas_connections", {
     .default("related")
     .notNull(),
   description: text("description"),
-  strength: varchar("strength", { length: 20 }).default("medium").notNull(), // 'weak', 'medium', 'strong'
+  strength: varchar("strength", { length: 20 }).default("medium").notNull(), // 'weak', 'medium', 'strong';
   confidence: varchar("confidence", { length: 20 })
     .default("inferred")
     .notNull(), // 'confirmed', 'likely', 'inferred'
@@ -121,7 +121,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   isDefault: boolean("is_default").default(false).notNull(),
-  // Canvas view state
+  // Canvas view state;
   viewport: jsonb("viewport");
     .default({
       x: 0,

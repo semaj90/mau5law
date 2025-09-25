@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
 import { json } from "@sveltejs/kit"
 import { and, desc, ilike, or, sql } from "drizzle-orm"
 import { db, isPostgreSQL } from "$lib/server/db/index"
-import { URL } from "url"
+
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get("q")

@@ -96,7 +96,7 @@ export class UserAuthService {
         .where(eq(users.email, validatedUser.email)
         .limit(1);
       if (existingUser.length > 0) {
-        return { user: existingUser[0], success: false, error: 'User already exists' };
+        return { user: existingUser[0], success: false, error: 'User already exists' }
       }
       // Create user with transaction
       const result = await userDb.transaction(async (tx) => {
@@ -124,16 +124,16 @@ export class UserAuthService {
           },
           success: true
         });
-        return { user: newUser, profile };
+        return { user: newUser, profile }
       });
-      return { ...result, success: true };
+      return { ...result, success: true }
     } catch (error: any) {
       console.error('User registration error:', error);
       return {
         user: { [key: string]: any } as User,
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: 'Registration failed'
-      };
+      }
     }
   }
   /**
@@ -153,7 +153,7 @@ export class UserAuthService {
         )
         .limit(1);
       if (userWithProfile.length === 0) {
-        return { success: false, error: 'Invalid credentials' };
+        return { success: false, error: 'Invalid credentials' }
       }
       const userData = userWithProfile[0];
       const user = userData.users;
@@ -171,7 +171,7 @@ export class UserAuthService {
           ipAddress,
           userAgent
         });
-        return { success: false, error: 'Invalid credentials' };
+        return { success: false, error: 'Invalid credentials' }
       }
       // Create session
       const sessionId = nanoid(32);
@@ -204,13 +204,13 @@ export class UserAuthService {
         profile: profile || undefined
         session,
         success: true
-      };
+      }
     } catch (error: any) {
       console.error('Authentication error:', error);
       return {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: 'Authentication failed'
-      };
+      }
     }
   }
   /**
@@ -230,7 +230,7 @@ export class UserAuthService {
         )
         .limit(1);
       if (sessionData.length === 0) {
-        return { valid: false };
+        return { valid: false }
       }
       const data = sessionData[0];
       return {
@@ -238,10 +238,10 @@ export class UserAuthService {
         profile: data.user_profiles || undefined,
         session: data.user_sessions,
         valid: true
-      };
+      }
     } catch (error: any) {
       console.error('Session validation error:', error);
-      return { valid: false };
+      return { valid: false }
     }
   }
   /**
@@ -253,10 +253,10 @@ export class UserAuthService {
         .update(userSessions)
         .set({ isActive: false, updatedAt: new Date() })
         .where(eq(userSessions.sessionId, sessionId);
-      return { success: true };
+      return { success: true }
     } catch (error: any) {
       console.error('Logout error:', error);
-      return { success: false };
+      return { success: false }
     }
   }
 }
@@ -305,7 +305,7 @@ export class UserProfileService {
         profile: profile || undefined
         sessions,
         recentActivity
-      };
+      }
     } catch (error: any) {
       console.error('Get full profile error:', error);
       return null;
@@ -331,7 +331,7 @@ export class UserProfileService {
           barNumber: updates.barNumber,
           firmName: updates.firmName,
           updatedAt: new Date()
-        };
+        }
         // Filter out undefined values
         const userUpdates = Object.fromEntries(
           Object.entries(userFields).filter(([_, value]) => value !== undefined)
@@ -356,7 +356,7 @@ export class UserProfileService {
           avatarUrl: updates.avatarUrl,
           bio: updates.bio,
           updatedAt: new Date()
-        };
+        }
         const profileUpdates = Object.fromEntries(
           Object.entries(profileFields).filter(([_, value]) => value !== undefined)
         );
@@ -394,15 +394,15 @@ export class UserProfileService {
           },
           success: true
         });
-        return { user: updatedUser, profile: updatedProfile };
+        return { user: updatedUser, profile: updatedProfile }
       });
-      return { ...result, success: true };
+      return { ...result, success: true }
     } catch (error: any) {
       console.error('Update profile error:', error);
       return {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: 'Profile update failed'
-      };
+      }
     }
   }
   /**
@@ -435,13 +435,13 @@ export class UserProfileService {
           success: true
         });
       });
-      return { success: true };
+      return { success: true }
     } catch (error: any) {
       console.error('Delete user error:', error);
       return {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: 'User deletion failed'
-      };
+      }
     }
   }
   /**
@@ -459,7 +459,7 @@ export class UserProfileService {
       }
       const similarUsers = await db;
         .select({
-          user: users
+          user: users;
           similarity: sql<number>`1 - (${cosineDistance(users.profileEmbedding, currentUser[0].embedding)})`
         })
         .from(users)
@@ -559,7 +559,7 @@ export class UserActivityService {
         uniqueActions: uniqueActionsResult[0]?.uniqueActions || 0,
         successRate: stats[0]?.successRate || 0,
         topActions
-      };
+      }
     } catch (error: any) {
       console.error('Get activity stats error:', error);
       return {
@@ -567,16 +567,16 @@ export class UserActivityService {
         uniqueActions: 0,
         successRate: 0,
         topActions: []
-      };
+      }
     }
   }
 }
 // ============================================================================
 // EXPORTS
 // ============================================================================
-export { userDb as db };
+export { userDb as db }
 export default {
   UserAuthService,
   UserProfileService,
   UserActivityService
-};
+}

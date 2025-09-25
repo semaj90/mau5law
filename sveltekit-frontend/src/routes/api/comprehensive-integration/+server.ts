@@ -26,7 +26,7 @@ interface APIOperationRequest {
 interface APIOperationResponse {
   success: boolean
   operation: string
-  result?: any
+  result?: any;
   timestamp: string
   processing_time?: number
 }

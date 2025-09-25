@@ -133,9 +133,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       --rotation-x: ${rotationX}deg;
       --rotation-y: ${rotationY}deg;
       --translate-z: ${translateZ}px;
-      --mouse-x: ${mouseX};
-      --mouse-y: ${mouseY};
-      --frame-time: ${frameCount * 0.016};
+      --mouse-x: ${mouseX}
+      --mouse-y: ${mouseY}
+      --frame-time: ${frameCount * 0.016}
     `;
   });
   function getDepthValue(depth: string): number {
@@ -144,7 +144,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       'medium': 15,
       'deep': 30,
       'extreme': 50
-    };
+    }
     return depthMap[depth] || 15;
   }
   // Initialize audio and GPU contexts
@@ -174,7 +174,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       if (audioContext) {
         audioContext.close();
       }
-    };
+    }
     })();
   });
   async function initializeGPUContext() {
@@ -212,7 +212,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       requestAnimationFrame(animationLoop);
     }
   }
-  function handleMouseMove(event: MouseEvent) {
+  function handleMouseMove(_event: MouseEvent) {
     if (!hoverable || reducedMotion) return;
     const rect = cardElement.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -259,12 +259,12 @@ if (spatialAudio && typeof window !== 'undefined') {
     isPressed = false;
     playSpatialSound('release', 440, 0.05);
   }
-  function handleClick(event: MouseEvent) {
+  function handleClick(_event: MouseEvent) {
     if (!clickable) return;
     playSpatialSound('click', 660, 0.08);
     onClick?.(event);
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       if (clickable) {
@@ -356,7 +356,7 @@ if (spatialAudio && typeof window !== 'undefined') {
         {#each Array(Math.min(parallaxDepth, 5)) as _, i}
           <div
             class="parallax-layer"
-            style="transform: translateZ({-i * 3}px); opacity: {1 - (i * 0.15)};"
+            style="transform: translateZ({-i * 3}px); opacity: {1 - (i * 0.15)}"
           ></div>
         {/each}
       </div>

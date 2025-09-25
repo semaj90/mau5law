@@ -54,7 +54,7 @@ export interface WASMModule {
   instance: WebAssembly.Instance;
   module: WebAssembly.Module;
   memory: WebAssembly.Memory;
-  exports: { [key: string]: any };
+  exports: { [key: string]: any }
 }
 // Legal-specific WASM configurations
 export interface WASMLLMConfig {
@@ -83,7 +83,7 @@ export interface WASMLLMResponse {
     statuteReferences?: number;
     caseReferences?: number;
     jurisdictionMentions?: number;
-  };
+  }
 }
 // WebGPU Device Information
 export interface WebGPUDevice {
@@ -110,7 +110,7 @@ export interface WebGPUVectorOperation {
     threshold?: number;
     algorithm?: string;
     batchSize?: number;
-  };
+  }
 }
 // Performance Metrics
 export interface WASMPerformanceMetrics {
@@ -134,7 +134,7 @@ export interface LegalDocumentProcessor {
     entityRecognition: boolean;
     riskAssessment: boolean;
     complianceCheck: boolean;
-  };
+  }
 }
 // WASM Memory Management
 export interface WASMMemoryLayout {
@@ -212,13 +212,13 @@ export interface LegalWASMConfig {
     memoryPoolSizeMB: number;
     maxConcurrentOperations: number;
     cacheEnabled: boolean;
-  };
+  }
   security: {
     sandboxEnabled: boolean;
     allowFileAccess: boolean;
     allowNetworkAccess: boolean;
     maxExecutionTime: number;
-  };
+  }
 }
 // WASM Service Interface
 export interface WASMService {

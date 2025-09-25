@@ -25,7 +25,7 @@ export interface GraphReadResponse {
     duplicateVariables: number;
     componentCount: number;
     lastUpdated: string;
-  };
+  }
 }
 export async function mcpMemory2ReadGraph(
   filter?: string
@@ -72,7 +72,7 @@ export async function analyzeComponentStructure(componentName: string): Promise<
     variables: relatedNodes.filter(n => n.type === 'variable'),
     props: relatedNodes.filter(n => n.type === 'prop'),
     duplicates: relatedNodes.filter(n => (n.duplicateCount || 0) > 1)
-  };
+  }
 }
 // Helper for prop destructuring consolidation analysis
 export async function analyzePropDestructuring(filePath: string): Promise<any> {
@@ -93,9 +93,9 @@ export async function analyzePropDestructuring(filePath: string): Promise<any> {
       duplicateVariables: [propName],
       suggestedInterface: `interface Props {\n  ${propName}?: unknown;\n}`,
       suggestedDestructuring: `let { ${propName} } = $props();`
-    };
+    }
   });
-  return { duplicateProps, consolidationSuggestions };
+  return { duplicateProps, consolidationSuggestions }
 }
 // Tag: #mcp_memory2_read_graph
 // Keywords: #memory #read_graph #duplicates #props #consolidation

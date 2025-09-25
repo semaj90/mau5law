@@ -157,7 +157,7 @@ function getRoutingReason(orchestratorUsed: string, taskType: string, requestedO
     case 'mcp':
       return `MCP multi-core chosen for ${taskType} - optimal for parallel processing`
     case 'hybrid':
-      return `Hybrid approach used for ${taskType} - combining multiple orchestrators`
+      return `Hybrid approach used for ${taskType} - combining multiple orchestrators`;
     default:
       return `Routed to ${orchestratorUsed} orchestrator`
   }

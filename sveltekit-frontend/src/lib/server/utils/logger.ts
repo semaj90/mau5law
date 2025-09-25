@@ -15,16 +15,16 @@ interface LogEntry {
   userId?: string;
   conversationId?: string;
   requestId?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   error?: {
     name: string;
     message: string;
     stack?: string;
-  };
+  }
   performance?: {
     duration: number;
     memoryUsage: number;
-  };
+  }
 }
 interface LoggerConfig {
   level: LogLevel;
@@ -45,7 +45,7 @@ class Logger {
       enableDatabase: true
       maxRetries: 3,
       ...config
-    };
+    }
     // Process logs periodically
     setInterval(() => {
       this.processLogQueue();
@@ -81,7 +81,7 @@ class Logger {
         (log.metadata?.retryCount || 0) < this.config.maxRetries
       );
       retriableLogs.forEach(log => {
-        log.metadata = log.metadata || {};
+        log.metadata = log.metadata || {}
         log.metadata.retryCount = (log.metadata.retryCount || 0) + 1;
       });
       this.logQueue.unshift(...retriableLogs);
@@ -178,14 +178,14 @@ class Logger {
       message,
       component,
       metadata: { ...metadata }
-    };
+    }
     // Add performance data if available
     if (typeof process !== 'undefined' && process.memoryUsage) {
       const usage = process.memoryUsage();
       entry.performance = {
         duration: metadata?.duration || 0,
         memoryUsage: usage.heapUsed
-      };
+      }
     }
     // Console logging (immediate)
     if (this.config.enableConsole) {
@@ -229,7 +229,7 @@ class Logger {
         message: error.message,
         stack: error.stack
       } : undefined
-    };
+    }
     if (this.config.enableConsole) {
       console.error(this.formatForConsole(entry);
       if (error) {
@@ -250,7 +250,7 @@ class Logger {
         message: error.message,
         stack: error.stack
       } : undefined
-    };
+    }
     if (this.config.enableConsole) {
       console.error(this.formatForConsole(entry);
       if (error) {
@@ -274,7 +274,7 @@ class Logger {
         this.error(message, component, error, { ...metadata, requestId }),
       fatal: (message: string, component: string, error?: Error, metadata?: { [key: string]: any }) =>
         this.fatal(message, component, error, { ...metadata, requestId })
-    };
+    }
   }
   withConversation(conversationId: string) {
     return {
@@ -288,7 +288,7 @@ class Logger {
         this.error(message, component, error, { ...metadata, conversationId }),
       fatal: (message: string, component: string, error?: Error, metadata?: { [key: string]: any }) =>
         this.fatal(message, component, error, { ...metadata, conversationId })
-    };
+    }
   }
   // Create system logs table if it doesn't exist
   async initializeLogTable(): Promise<void> {

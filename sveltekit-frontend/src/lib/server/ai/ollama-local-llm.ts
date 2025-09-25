@@ -28,7 +28,7 @@ export interface OllamaGenerateOptions {
     stop?: string[];
     seed?: number;
     repeat_penalty?: number;
-  };
+  }
 }
 export interface OllamaResponse {
   model: string;
@@ -75,7 +75,7 @@ class OllamaLocalLLM {
    */;
   async checkAvailability(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/tags`);
+      // removed unused response assignment
       return (response as { ok?: any; json?: any; statusText?: any; body?: any }).ok;
     } catch (error: any) {
       return false;
@@ -86,7 +86,7 @@ class OllamaLocalLLM {
    */;
   async loadAvailableModels(): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/tags`);
+      // removed unused response assignment
       if (!(response as { ok?: any; json?: any; statusText?: any; body?: any }).ok) {
         throw new Error('Failed to fetch models');
       }
@@ -150,7 +150,7 @@ TEMPLATE """{{ if .System }}<|system|>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          name: targetName
+          name: targetName;
           modelfile: modelfile
         })
       });
@@ -165,7 +165,7 @@ TEMPLATE """{{ if .System }}<|system|>
   /**
    * Generate completion using local LLM
    */;
-  async generate(options: OllamaGenerateOptions): Promise<OllamaResponse | null> {
+  async generate(_options: OllamaGenerateOptions): Promise<OllamaResponse | null> {
     try {
       // Use legal model if available
       const model = this.selectBestModel(options?.model || "unknown" // @ts-ignore - Model property access)
@@ -197,8 +197,7 @@ TEMPLATE """{{ if .System }}<|system|>
   /**
    * Stream generation with progressive updates
    */
-  async generateStream(
-    options: OllamaGenerateOptions
+  async generateStream(_options: OllamaGenerateOptions
     onToken: (token: string) => void,
     onComplete: (response: string) => void;
   ): Promise<void> {
@@ -224,7 +223,7 @@ TEMPLATE """{{ if .System }}<|system|>
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim();
+        // removed unused lines assignment
         for (const line of lines) {
           try {
             const data = JSON.parse(line);
@@ -255,7 +254,7 @@ TEMPLATE """{{ if .System }}<|system|>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          model: embeddingModel
+          model: embeddingModel;
           prompt: text
         })
       });
@@ -297,8 +296,7 @@ TEMPLATE """{{ if .System }}<|system|>
   /**
    * Process legal document with specialized prompting
    */
-  async processLegalDocument(
-    document: string
+  async processLegalDocument(_document: string
     task: 'summarize' | 'extract' | 'analyze' | 'classify',
     options?: unknown;
   ): Promise<any> {
@@ -354,7 +352,7 @@ Document:\n${document}`;
           try {
             return JSON.parse((result as { embedding?: any; message?: any; response?: any }).response);
           } catch {
-            return { text: (result as { embedding?: any; message?: any; response?: any }).response };
+            return { text: (result as { embedding?: any; message?: any; response?: any }).response }
           }
         }
         return (result as { embedding?: any; message?: any; response?: any }).response;
@@ -463,7 +461,7 @@ Document:\n${document}`;
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim();
+        // removed unused lines assignment
         for (const line of lines) {
           try {
             const data = JSON.parse(line);
@@ -494,7 +492,7 @@ Document:\n${document}`;
       loaded: Array.from(this.modelCache.keys()).filter(
         model => this.modelCache.get(model)?.loaded
       )
-    };
+    }
   }
 }
 // Export singleton instance

@@ -40,7 +40,7 @@ class TableManager {
       columnWidths: new Map(),
       expandedRows: new Set(),
       ...initialState
-    };
+    }
     const store = writable(defaultState);
     this.tables.set(id, store);
     return store;
@@ -62,7 +62,7 @@ class TableManager {
         sortColumn: column
         sortDirection: newDirection
         currentPage: 1 // Reset to first page when sorting
-      };
+      }
     });
   }
   updateSelection(tableId: string, rowIds: (string | number)[] | 'all' | 'none') {
@@ -81,7 +81,7 @@ class TableManager {
       return {
         ...state,
         selectedRows: newSelection
-      };
+      }
     });
   }
   toggleRowSelection(tableId: string, rowId: string | number) {
@@ -97,7 +97,7 @@ class TableManager {
       return {
         ...state,
         selectedRows: newSelection
-      };
+      }
     });
   }
   updateSearch(tableId: string, query: string) {
@@ -123,7 +123,7 @@ class TableManager {
         ...state,
         columnFilters: newFilters
         currentPage: 1 // Reset to first page when filtering
-      };
+      }
     });
   }
   updatePagination(tableId: string, page: number, pageSize?: number) {
@@ -144,7 +144,7 @@ class TableManager {
       return {
         ...state,
         columnWidths: newWidths
-      };
+      }
     });
   }
   toggleRowExpansion(tableId: string, rowId: string | number) {
@@ -160,7 +160,7 @@ class TableManager {
       return {
         ...state,
         expandedRows: newExpanded
-      };
+      }
     });
   }
   // Notifications for table operations
@@ -170,7 +170,7 @@ class TableManager {
       ...notification,
       id,
       timestamp: new Date()
-    };
+    }
     this.notifications.update(notifications => [...notifications, fullNotification]);
     // Auto-remove non-persistent notifications
     if (!(notification as { persistent?: any; duration?: any }).persistent) {
@@ -280,11 +280,11 @@ export const legalAITableConfigs = {
     sortColumn: 'timestamp',
     sortDirection: 'desc' as const
   }
-};
+}
 // Utility functions
 export function formatTableData(data: any[], columns: string[]): unknown[] {
   return (data as { map?: any; length?: any }).map(row => {
-    const formatted: any = { id: row.id };
+    const formatted: any = { id: row.id }
     columns.forEach(col => {
       formatted[col] = row[col] ?? '';
     });

@@ -21,32 +21,32 @@ export interface EvidenceItem {
     sharpened?: Blob;
     textExtracted?: string;
     confidence: number;
-  };
+  }
   ocrResults: {
     text: string;
     confidence: number;
     boundingBoxes: Array<any>;
     handwritingDetected: boolean;
-  };
+  }
   embeddings: {
     textEmbedding?: Float32Array;
     visualEmbedding?: Float32Array;
     semanticEmbedding?: Float32Array;
-  };
+  }
   analysis: {
     detectedPatterns: string[];
     legalRelevance: 'high' | 'medium' | 'low';
     conflictIndicators: string[];
     contextualClues: string[];
     suggestedActions: string[];
-  };
+  }
   metadata: {
     timestamp: number;
     caseId?: string;
     userId: string;
     processingTime: number;
     memoryFootprint: number;
-  };
+  }
 }
 export interface ConflictAnalysis {
   conflictId: string;
@@ -60,7 +60,7 @@ export interface ConflictAnalysis {
     summary: string;
     reasoning: string;
     recommendations: string[];
-  };
+  }
 }
 export interface SearchSuggestion {
   query: string;
@@ -155,7 +155,7 @@ export class DetectiveAnalysisEngine {
           processingTime,
           memoryFootprint: this.estimateMemoryFootprint(evidenceData, embeddings)
         }
-      };
+      }
       console.log(`✅ Evidence analysis complete: ${processingTime.toFixed(2)}ms`);
       return evidence;
     } catch (error: any) {
@@ -167,7 +167,7 @@ export class DetectiveAnalysisEngine {
    * Enhance evidence using WebAssembly ImageMagick-style processing
    */
   private async enhanceEvidence(
-    data: Blob | File | string
+    data: Blob | File | string;
     type: EvidenceItem['type'];
   ): Promise<Blob | null> {
     if (type !== 'screenshot' && type !== 'image') {
@@ -424,14 +424,14 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           confidence: enhancedText.confidence || ocrResult.confidence || 0,
           boundingBoxes: enhancedText.boundingBoxes || [],
           handwritingDetected: true
-        };
+        }
       }
       return {
         text: ocrResult.text,
         confidence: ocrResult.confidence || 0,
         boundingBoxes: [], // Would be populated by actual OCR engine
         handwritingDetected: false
-      };
+      }
     } catch (error) {
       console.error('Advanced OCR failed:', error);
       return {
@@ -439,7 +439,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         confidence: 0,
         boundingBoxes: [],
         handwritingDetected: false
-      };
+      }
     }
   }
   /**
@@ -452,7 +452,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       const cacheKey = `handwriting_${await this.generateDataHash(data)}`;
       const cached = await cache.get(cacheKey);
       if (cached && (cached as any).detected !== undefined) {
-        return cached as { detected: boolean; confidence: number; regions: { x: number; y: number; width: number; height: number; }[]; };
+        return cached as { detected: boolean; confidence: number; regions: { x: number; y: number; width: number; height: number; }[]; }
       }
       // Perform analysis (mock implementation)
       const result = {
@@ -462,13 +462,13 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           { x: 10, y: 20, width: 200, height: 50 },
           { x: 50, y: 100, width: 150, height: 40 }
         ]
-      };
+      }
       // Cache result
       await cache.set(cacheKey, result, 60 * 60 * 1000); // 1 hour
       return result;
     } catch (error) {
       console.warn('Handwriting detection failed:', error);
-      return { detected: false, confidence: 0, regions: [] };
+      return { detected: false, confidence: 0, regions: [] }
     }
   }
   /**
@@ -486,7 +486,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           confidence: 0.75
         }
       ]
-    };
+    }
   }
   /**
    * Generate multi-dimensional embeddings
@@ -498,7 +498,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   ): Promise<EvidenceItem['embeddings']> {
     try {
       console.log('🧮 Generating multi-dimensional embeddings...');
-      const embeddings: EvidenceItem['embeddings'] = {};
+      const embeddings: EvidenceItem['embeddings'] = {}
       // Text embedding using cached service
       if (text && text.length > 0) {
         const textEmbedding = await getCachedEmbedding(text, 'nomic-text');
@@ -545,7 +545,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       return embeddings;
     } catch (error) {
       console.error('Embedding generation failed:', error);
-      return {};
+      return {}
     }
   }
   /**
@@ -572,7 +572,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         addresses: /\b\d+\s+[A-Za-z0-9\s]+(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|way|court|ct)\b/gi,
         amounts: /\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b/g,
         legal_terms: /\b(?:contract|agreement|plaintiff|defendant|witness|testimony|evidence|exhibit|court|judge|jury|verdict|settlement)\b/gi
-      };
+      }
       for (const [patternName, regex] of Object.entries(patterns)) {
         const matches = text.match(regex);
         if (matches && matches.length > 0) {
@@ -639,7 +639,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         conflictIndicators,
         contextualClues,
         suggestedActions
-      };
+      }
     } catch (error) {
       console.error('Detective analysis failed:', error);
       return {
@@ -648,14 +648,14 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         conflictIndicators: [],
         contextualClues: [],
         suggestedActions: []
-      };
+      }
     }
   }
   /**
    * Detect conflicts using reinforcement learning cache
    */
   private async detectConflicts(
-    text: string
+    text: string;
     embeddings: EvidenceItem['embeddings'],
     caseId?: string;
   ): Promise<ConflictAnalysis[]> {
@@ -784,7 +784,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
   }
   private estimateMemoryFootprint(
-    data: Blob | File | string
+    data: Blob | File | string;
     embeddings: EvidenceItem['embeddings'];
   ): number {
     let size = 0;
@@ -845,10 +845,10 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         'Interview relevant witnesses',
         'Review supporting documentation'
       ]
-    };
+    }
   }
   private generateSuggestedActions(
-    patterns: string[]
+    patterns: string[];
     relevance: string
     hasHandwriting: boolean;
   ): string[] {

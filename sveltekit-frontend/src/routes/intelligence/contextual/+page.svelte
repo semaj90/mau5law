@@ -55,7 +55,7 @@
     status: 'pending' | 'processing' | 'completed' | 'failed';
     progress: number;
     estimatedTime?: number;
-    context: { [key: string]: any };
+    context: { [key: string]: any }
   }
   // Svelte 5 runes state management
   let intelligenceMetrics = $state<IntelligenceMetric[]>([
@@ -222,7 +222,7 @@
         timestamp: new Date(),
         sources: ['contextual-ai', 'user-query'];
       }
-    };
+    }
     optimisticInsights = [optimisticInsight, ...optimisticInsights];
     try {
       // Simulate API call to contextual intelligence service
@@ -237,7 +237,7 @@
         relevance: 0.88,
         timestamp: new Date(),
         sources: ['contextual-ai', 'gemma-embeddings', 'legal-reasoning'];
-      };
+      }
       contextualInsights = [realInsight, ...contextualInsights];
       optimisticInsights = optimisticInsights.filter(item => item.id) !== optimisticInsight.id);
       analysisQuery = '';
@@ -518,7 +518,7 @@
                 timestamp: new Date(),
                 sources: ['document-upload', 'text-extraction', 'gemma-embeddings'];
               }
-            };
+            }
             optimisticInsights = [documentInsight, ...optimisticInsights];
           }}
         >

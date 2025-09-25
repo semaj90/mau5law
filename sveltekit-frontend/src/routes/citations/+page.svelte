@@ -14,7 +14,7 @@
       category: 'Criminal Procedure',
       relevance: 'high',
       keyPoints: ['Right to remain silent', 'Right to counsel', 'Police warnings'],
-      cited: 47
+      cited: 47,
     },
     {
       id: '002',
@@ -25,7 +25,7 @@
       category: 'Civil Rights',
       relevance: 'medium',
       keyPoints: ['Separate but equal', 'Educational discrimination', '14th Amendment'],
-      cited: 23
+      cited: 23,
     },
     {
       id: '003',
@@ -36,7 +36,7 @@
       category: 'Constitutional Law',
       relevance: 'low',
       keyPoints: ['Privacy rights', 'Due process', 'State regulation'],
-      cited: 12
+      cited: 12,
     },
     {
       id: '004',
@@ -47,8 +47,8 @@
       category: 'Criminal Defense',
       relevance: 'high',
       keyPoints: ['Right to counsel', '6th Amendment', 'Public defender'],
-      cited: 34
-    }
+      cited: 34,
+    },
   ]);
   let searchQuery = $state('');
   let selectedCategory = $state('all');
@@ -56,7 +56,7 @@
   let currentUser = $state(authDemo.getCurrentUser());
   let showAuthDemo = $state(false);
   // Listen for auth changes
-  citationsManager.onAuthChange((user) => {
+  citationsManager.onAuthChange(user => {
     currentUser = user;
   });
   // Demo authentication for testing
@@ -70,6 +70,7 @@
     currentUser = null;
   }
 </script>
+
 <svelte:head>
   <title>Citations Database - YoRHa Legal AI</title>
 </svelte:head>
@@ -98,12 +99,9 @@
     <div class="auth-controls">
       {#if currentUser}
         <span class="user-info">👤 {currentUser.name}</span>
-        <ButtonBits variant="ghost" size="sm" onclick={handleSignOut}>
-Sign Out</ButtonBits>
+        <ButtonBits variant="ghost" size="sm" onclick={handleSignOut}>Sign Out</ButtonBits>
       {:else}
-        <ButtonBits variant="secondary" size="sm" onclick={() => showAuthDemo = true}>
-          🔐 Demo Sign In
-        </ButtonBits>
+        <ButtonBits variant="secondary" size="sm" onclick={() => (showAuthDemo = true)}>🔐 Demo Sign In</ButtonBits>
       {/if}
       <ButtonBits variant="primary">➕ ADD CITATION</ButtonBits>
     </div>
@@ -117,7 +115,13 @@ Sign Out</ButtonBits>
             <span class="citation-number">{citation.citation}</span>
           </div>
           <span class="relevance-badge nes-badge">
-            <span class={citation.relevance === 'high' ? 'is-error' : citation.relevance === 'medium' ? 'is-warning' : 'is-success'}>
+            <span
+              class={citation.relevance === 'high'
+                ? 'is-error'
+                : citation.relevance === 'medium'
+                  ? 'is-warning'
+                  : 'is-success'}
+            >
               {citation.relevance.toUpperCase()}
             </span>
           </span>
@@ -152,12 +156,10 @@ Sign Out</ButtonBits>
           <CitationsSaveButton
             {citation}
             size="sm"
-            onsaved={(e) => console.log('Citation saved:', e.detail)}
-            onerror={(e) => console.error('Save error:', e.detail)}
+            onsaved={e => console.log('Citation saved:', e.detail)}
+            onerror={e => console.error('Save error:', e.detail)}
           />
-          <ButtonBits variant="primary" size="sm">
-            📖 Full Text
-          </ButtonBits>
+          <ButtonBits variant="primary" size="sm">📖 Full Text</ButtonBits>
           <ButtonBits variant="ghost" size="sm">📋 Copy Citation</ButtonBits>
           <ButtonBits variant="ghost" size="sm">🔗 Related Cases</ButtonBits>
         </div>
@@ -167,20 +169,17 @@ Sign Out</ButtonBits>
 </div>
 <!-- Demo Authentication Modal -->
 {#if showAuthDemo}
-  <div class="auth-modal-overlay" onclick={() => showAuthDemo = false}>
-    <div class="auth-modal" onclick={(e) => e.stopPropagation()}>
+  <div class="auth-modal-overlay" onclick={() => (showAuthDemo = false)}>
+    <div class="auth-modal" onclick={e => e.stopPropagation()}>
       <div class="auth-header">
         <h3>🔐 Demo Authentication</h3>
-        <button class="close-btn" onclick={() => showAuthDemo = false}>✕
+        <button class="close-btn" onclick={() => (showAuthDemo = false)}>✕ </button>
       </div>
       <div class="auth-content">
         <p>Choose a demo user to test citation saving:</p>
         <div class="demo-users">
           {#each authDemo.getDemoUsers() as user}
-            <button
-              class="demo-user-btn"
-              onclick={() => handleDemoSignIn(user.email)}
-            >
+            <button class="demo-user-btn" onclick={() => handleDemoSignIn(user.email)}>
               <div class="user-details">
                 <strong>{user.name}</strong>
                 <span class="user-role">{user.role}</span>
@@ -196,6 +195,7 @@ Sign Out</ButtonBits>
     </div>
   </div>
 {/if}
+
 <style>
   .citations-dashboard {
     max-width: 1200px;

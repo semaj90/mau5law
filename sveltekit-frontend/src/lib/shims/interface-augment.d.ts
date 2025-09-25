@@ -16,10 +16,10 @@ declare global {
 declare module 'ioredis' {
   interface Redis {
     ping?(): Promise<string>;
-    setex?(key: string, seconds: number, value: any): Promise<any>;
+    setex?(_key: string, seconds: number, value: any): Promise<any>;
     psubscribe?(pattern: string, listener?: (...args: any[]) => void): Promise<any>;
     disconnect?(): void;
-    on?(event: string, cb: (...args: any[]) => void): void;
+    on?(_event: string, cb: (...args: any[]) => void): void;
   }
 }
 // XState type augmentations
@@ -55,7 +55,16 @@ declare global {
   // Worker message types
   interface WorkerMessage {
     taskId?: string;
-    type: "error" | "status" | "result" | "task" | "TASK_STARTED" | "TASK_COMPLETED" | "TASK_ERROR" | "TASK_CANCELLED" | "STATUS_UPDATE";
+    type:
+      | 'error'
+      | 'status'
+      | 'result'
+      | 'task'
+      | 'TASK_STARTED'
+      | 'TASK_COMPLETED'
+      | 'TASK_ERROR'
+      | 'TASK_CANCELLED'
+      | 'STATUS_UPDATE';
     data?: unknown;
   }
   // Enrichment job interface
@@ -94,7 +103,7 @@ declare global {
 declare global {
   namespace loki {
     interface LokiMemoryAdapter {
-      new(): any;
+      new (): any;
     }
   }
 }

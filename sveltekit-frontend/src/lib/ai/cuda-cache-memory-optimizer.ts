@@ -63,8 +63,8 @@ class CUDACacheMemoryOptimizer {
   private neighborhoodRadius = 3.0;
   // Auto-encoder for feature compression and pattern recognition
   private autoEncoderWeights: {
-    encoder: { w1: Float32Array; b1: Float32Array; w2: Float32Array; b2: Float32Array };
-    decoder: { w3: Float32Array; b3: Float32Array; w4: Float32Array; b4: Float32Array };
+    encoder: { w1: Float32Array; b1: Float32Array; w2: Float32Array; b2: Float32Array }
+    decoder: { w3: Float32Array; b3: Float32Array; w4: Float32Array; b4: Float32Array }
   } | null = null;
   private inputFeatureSize = 256; // User query + context features
   private latentSize = 64; // Compressed representation
@@ -112,7 +112,7 @@ class CUDACacheMemoryOptimizer {
         memoryOptimizations,
         userIntentPrediction: userIntent
         didYouMeanSuggestions
-      };
+      }
     } catch (error) {
       console.error('❌ CUDA cache optimizer failed:', error);
       // Fallback to simple heuristics
@@ -132,7 +132,7 @@ class CUDACacheMemoryOptimizer {
           userBehaviorPattern: 'explorer'
         },
         didYouMeanSuggestions: []
-      };
+      }
     }
   }
   /**
@@ -165,7 +165,7 @@ class CUDACacheMemoryOptimizer {
       domainSpecificity,
       contextualSimilarity,
       userBehaviorPattern
-    };
+    }
     // Store for future learning
     this.userIntentHistory.push(userIntent);
     if (this.userIntentHistory.length > 1000) {
@@ -255,10 +255,10 @@ class CUDACacheMemoryOptimizer {
           confidence = Math.min(0.95, score);
         }
       }
-      return { modelId: bestModel, confidence };
+      return { modelId: bestModel, confidence }
     } catch (error) {
       console.error('Model optimization failed:', error);
-      return { modelId: bestModel, confidence: 0.5 };
+      return { modelId: bestModel, confidence: 0.5 }
     }
   }
   /**
@@ -331,7 +331,7 @@ class CUDACacheMemoryOptimizer {
         w4: initWeight(this.hiddenSize * this.inputFeatureSize),
         b4: new Float32Array(this.inputFeatureSize).fill(0.01)
       }
-    };
+    }
     console.log('✅ Auto-Encoder initialized');
   }
   /**
@@ -604,7 +604,7 @@ class CUDACacheMemoryOptimizer {
       userIntentHistory: this.userIntentHistory.length,
       somNeuronActivations: totalActivations
       cacheHitRate: 0.85 // Would calculate actual hit rate
-    };
+    }
   }
 }
 // Export singleton instance

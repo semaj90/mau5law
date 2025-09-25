@@ -42,6 +42,7 @@
     }
   }
 </script>
+
 {#if show}
   <div class="notification-container {getTypeStyles(type)}">
     <div class="notification-content">
@@ -50,6 +51,7 @@
     </div>
   </div>
 {/if}
+
 <style>
   .notification-container {
     position: fixed;

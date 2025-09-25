@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
   		// Content
   		text?: string;
   		// Event handlers
-  		onclick?: (event: MouseEvent) => void;
+  		onclick?: (_event: MouseEvent) => void;
   		// Accessibility
   		role?: string;
   		'aria-label'?: string;
@@ -59,34 +59,35 @@ https://svelte.dev/e/js_parse_error -->
   	let isClickable = $derived(!!onclick);
   	type $$Props = Prop;
 </script>
+
 {#if isClickable}
-	<button
-		class={badgeClass}
-		{onclick}
-		{role}
-		aria-label={ariaLabel}
-		data-testid={testId || "melt-badge"}
-		type="button"
-		tabindex={0}
-		keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onclick?.(e as any); } }}
-	>
-		{#if children}
-			{@render children()}
-		{:else if text}
-			{text}
-		{/if}
-	</button>
+  <button
+    class={badgeClass}
+    {onclick}
+    {role}
+    aria-label={ariaLabel}
+    data-testid={testId || 'melt-badge'}
+    type="button"
+    tabindex={0}
+    keydown={e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onclick?.(e as any);
+      }
+    }}
+  >
+    {#if children}
+      {@render children()}
+    {:else if text}
+      {text}
+    {/if}
+  </button>
 {:else}
-	<span
-		class={badgeClass}
-		{role}
-		aria-label={ariaLabel}
-		data-testid={testId || "melt-badge"}
-	>
-		{#if children}
-			{@render children()}
-		{:else if text}
-			{text}
-		{/if}
-	</span>
+  <span class={badgeClass} {role} aria-label={ariaLabel} data-testid={testId || 'melt-badge'}>
+    {#if children}
+      {@render children()}
+    {:else if text}
+      {text}
+    {/if}
+  </span>
 {/if}

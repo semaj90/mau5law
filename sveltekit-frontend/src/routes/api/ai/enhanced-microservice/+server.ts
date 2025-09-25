@@ -21,7 +21,7 @@ import type { RequestHandler } from './$types.js'
 // Connects SvelteKit frontend with enhanced legal AI processing
 // Supports local Gemma3-legal GGUF model with CUDA acceleration
 import { json } from "@sveltejs/kit"
-import { URL } from "url"
+
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 }
 export interface GoMicroserviceConfig {
@@ -60,7 +60,7 @@ class GoMicroserviceClient {
     this.retries = config.retries
   }
   private async makeRequest(
-    endpoint: string
+    endpoint: string;
     method: string = "GET",
     body?: unknown
   ): Promise<any> {
@@ -75,7 +75,7 @@ class GoMicroserviceClient {
             "Content-Type": "application/json",
             Accept: "application/json"
           },
-          body: body ? JSON.stringify(body) : undefined
+          body: body ? JSON.stringify(body) : undefined;
           signal: controller.signal
         })
         clearTimeout(timeoutId)
@@ -179,7 +179,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         return json({
           status: "success",
           timestamp: new Date().toISOString(),
-          result: result
+          result: result;
           metadata: {
             processingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
             chunksCreated: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).chunks?.length || 0,
@@ -208,7 +208,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         return json({
           status: "success",
           timestamp: new Date().toISOString(),
-          result: result
+          result: result;
           metadata: {
             queryProcessingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
             resultsFound: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).total_found,
@@ -437,4 +437,4 @@ function generateRecommendations(
   return recommendations
 }
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

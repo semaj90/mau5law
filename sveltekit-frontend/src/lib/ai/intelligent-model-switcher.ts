@@ -18,12 +18,12 @@ export interface ModelSwitchDecision {
     speedGain: number; // percentage,
     qualityGain: number; // percentage
     userSatisfactionGain: number; // percentage
-  };
+  }
   switchCost: {
     timeMs: number;
     memoryMB: number;
     cpuUsage: number;
-  };
+  }
 }
 export interface UserLearningProfile {
   userId: string;
@@ -37,7 +37,7 @@ export interface UserLearningProfile {
     commonIntents: string[];
     peakUsageHours: number[];
     taskComplexityPreference: number; // 0-1
-  };
+  }
   satisfactionHistory: Array<any>;
   adaptationRate: number; // How quickly to adapt to new patterns
 }
@@ -62,14 +62,14 @@ class IntelligentModelSwitcher {
     successfulSwitches: 0,
     avgSwitchTime: 0,
     userSatisfactionImprovement: 0
-  };
+  }
   constructor() {
     this.initializeIntelligentSwitcher();
   }
   /**
    * Main entry point: Determine if model should switch and execute if needed
    */
-  async executeIntelligentSwitch(
+  async executeIntelligentSwitch(;
     query: string
     currentModel: string
     userContext: {
@@ -132,7 +132,7 @@ class IntelligentModelSwitcher {
         userLearningUpdates: learningUpdates
         didYouMeanSuggestions: optimizationResult.didYouMeanSuggestions,
         processingTime
-      };
+      }
     } catch (error) {
       console.error('❌ Intelligent model switcher failed:', error);
       return {
@@ -151,7 +151,7 @@ class IntelligentModelSwitcher {
         userLearningUpdates: [],
         didYouMeanSuggestions: [],
         processingTime: performance.now() - startTime
-      };
+      }
     }
   }
   /**
@@ -174,7 +174,7 @@ class IntelligentModelSwitcher {
         reason: 'already_optimal',
         estimatedImprovement: { speedGain: 0, qualityGain: 0, userSatisfactionGain: 0 },
         switchCost: { timeMs: 0, memoryMB: 0, cpuUsage: 0 }
-      };
+      }
     }
     // Calculate expected improvements
     const improvements = this.calculateExpectedImprovements(
@@ -208,7 +208,7 @@ class IntelligentModelSwitcher {
       reason,
       estimatedImprovement: improvements
       switchCost
-    };
+    }
   }
   /**
    * Execute model switch with monitoring and fallback
@@ -238,14 +238,14 @@ class IntelligentModelSwitcher {
       this.performanceMonitor.avgSwitchTime =
         (this.performanceMonitor.avgSwitchTime + switchTime) / 2;
       console.log(`✅ Model switch completed in ${switchTime.toFixed(2)}ms`);
-      return { success: true, switchTime };
+      return { success: true, switchTime }
     } catch (error: any) {
       console.error(`❌ Model switch failed: ${fromModel} -> ${toModel}`, error);
       return {
         success: false
         switchTime: performance.now() - startTime,
         error: error?.message || 'Unknown error'
-      };
+      }
     }
   }
   /**
@@ -279,7 +279,7 @@ class IntelligentModelSwitcher {
       },
       satisfactionHistory: [],
       adaptationRate: 0.1 // Moderate adaptation rate
-    };
+    }
     this.userProfiles.set(profileKey, profile);
     // Try to load existing profile from cache
     try {
@@ -303,7 +303,7 @@ class IntelligentModelSwitcher {
    * Update user learning based on interactions and feedback
    */
   private async updateUserLearning(
-    profile: UserLearningProfile
+    profile: UserLearningProfile;
     query: string
     modelUsed: string
     userIntent: any
@@ -414,7 +414,7 @@ class IntelligentModelSwitcher {
           contextualPredictions: [],
           didYouMeanCache: new Map(),
           userIntentShortcuts: new Map()
-        };
+        }
         this.fastUXOptimizations.set(profileKey, fastUX);
       }
       // Prefetch likely next models based on user patterns
@@ -444,7 +444,7 @@ class IntelligentModelSwitcher {
     const speedGain = currentModel === 'llama-rl' && recommendedModel === 'gemma270m' ? 25 : 10;
     const qualityGain = currentModel === 'gemma270m' && recommendedModel === 'llama-rl' ? 20 : 5;
     const userSatisfactionGain = optimizationResult.confidence * 15;
-    return { speedGain, qualityGain, userSatisfactionGain };
+    return { speedGain, qualityGain, userSatisfactionGain }
   }
   private async calculateSwitchCost(fromModel: string, toModel: string): Promise<any> {
     // Estimated switch costs - would measure actual performance
@@ -453,9 +453,9 @@ class IntelligentModelSwitcher {
       'llama-rl->gemma270m': { timeMs: 100, memoryMB: -1024, cpuUsage: 40 },
       'gemma270m->legal-bert': { timeMs: 50, memoryMB: -512, cpuUsage: 20 },
       'legal-bert->gemma270m': { timeMs: 80, memoryMB: 512, cpuUsage: 30 }
-    };
+    }
     const key = `${fromModel}->${toModel}`;
-    return switchCosts[key] || { timeMs: 150, memoryMB: 0, cpuUsage: 50 };
+    return switchCosts[key] || { timeMs: 150, memoryMB: 0, cpuUsage: 50 }
   }
   private calculateNetBenefit(
     improvements: { speedGain: number; qualityGain: number; userSatisfactionGain: number },
@@ -518,7 +518,7 @@ class IntelligentModelSwitcher {
     userId: string
     fromModel: string
     toModel: string
-    reason: string
+    reason: string;
     performance: number;
   ): void {
     this.switchHistory.push({
@@ -559,7 +559,7 @@ class IntelligentModelSwitcher {
       userSatisfactionImprovement: this.performanceMonitor.userSatisfactionImprovement,
       activeUserProfiles: this.userProfiles.size,
       learningPhaseDistribution: phaseDistribution
-    };
+    }
   }
 }
 // Export singleton instance

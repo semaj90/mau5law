@@ -1,5 +1,5 @@
 // Type Assertion Utilities for Complex Services
-export function assertAny<T>(value: unknown): T {
+export function assertAny<T>(_value: unknown): T {
   return value as T;
 }
 export function safeAccess<T>(obj: any, path: string, defaultValue?: T): T {

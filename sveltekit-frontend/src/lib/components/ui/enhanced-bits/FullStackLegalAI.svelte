@@ -36,7 +36,7 @@ interface RAGResult {
 		confidence: number;
 		processing_time_ms: number;
 		gpu_accelerated: boolean;
-	};
+	}
 }
 interface PerformanceMetrics {
 	total_time_ms: number;
@@ -102,7 +102,7 @@ async function checkServiceHealth() {
 				knowledge_graph_8099: health.services?.knowledge_graph_8099 || false,
 				gpu_memory_manager_8107: health.services?.gpu_memory_manager_8107 || false,
 				overall_health: health.status === 'ready'
-			};
+			}
 			// Update GPU metrics if available
 			if (health.gpu_status) {
 				gpuMetrics = {
@@ -111,7 +111,7 @@ async function checkServiceHealth() {
 					loaded_engines: health.gpu_status.loaded_engines || 0,
 					active_streams: 0,
 					mps_enabled: health.gpu_status.mps_enabled || false
-				};
+				}
 			}
 		} else {
 			throw new Error(`Health check failed: ${response.status}`);
@@ -124,7 +124,7 @@ async function checkServiceHealth() {
 			knowledge_graph_8099: false
 			gpu_memory_manager_8107: false
 			overall_health: false
-		};
+		}
 	}
 }
 // Setup WebSocket for real-time GPU monitoring
@@ -152,12 +152,12 @@ async function performFullStackSearch() {
 				use_gpu: true
 				performance_monitoring: showPerformanceMetrics
 				legal_filter: {
-					category: legalDomain
+					category: legalDomain;
 					jurisdiction: 'federal',
 					confidence_threshold: 0.7;
 				}
 			}),
-			signal: AbortSignal.timeout(30000) // 30s timeout for complex operation
+			signal: AbortSignal.timeout(30000) // 30s timeout for complex operation;
 		});
 		if (!response.ok) {
 			throw new Error(`Search failed: ${response.status} ${response.statusText}`);
@@ -206,12 +206,12 @@ async function tryClientSideFallback() {
 	}
 }
 // Handle form submission
-function handleSubmit(event: Event) {
+function handleSubmit(_event: Event) {
 	event.preventDefault();
 	performFullStackSearch();
 }
 // Format performance metrics
-function formatMetric(value: number, unit: string): string {
+function formatMetric(_value: number, unit: string): string {
 	return `${value.toFixed(1)}${unit}`;
 }
 function formatTime(ms: number): string {
@@ -245,247 +245,265 @@ $effect(() => {
 	}
 });
 </script>
+
 <div class="full-stack-legal-ai max-w-6xl mx-auto p-6 space-y-6">
-	<!-- Header with Service Status -->
-	<Card class="yorha-card">
-		<CardHeader>
-			<CardTitle class="flex items-center justify-between text-yorha-text-primary">
-				<div class="flex items-center gap-3">
-					<div class="w-3 h-3 rounded-full bg-gradient-to-r from-yorha-primary to-yorha-secondary animate-pulse"></div>
-					<span class="font-mono text-xl">Full-Stack Legal AI</span>
-					<div class="text-sm font-normal opacity-70">RTX 3060 Ti + Gemma3 + Tensor Cores</div>
-				</div>
-				{#if serviceStatus}
-					<div class="flex items-center gap-2 text-sm">
-						<span class="text-yorha-text-muted">Services:</span>
-						<span class={getServiceStatusColor(serviceStatus.cuda_service_8097)}>
-							{getServiceStatusIcon(serviceStatus.cuda_service_8097)} CUDA
-						</span>
-						<span class={getServiceStatusColor(serviceStatus.legal_extraction_8098)}>
-							{getServiceStatusIcon(serviceStatus.legal_extraction_8098)} Extract
-						</span>
-						<span class={getServiceStatusColor(serviceStatus.knowledge_graph_8099)}>
-							{getServiceStatusIcon(serviceStatus.knowledge_graph_8099)} KG
-						</span>
-						<span class={getServiceStatusColor(serviceStatus.gpu_memory_manager_8107)}>
-							{getServiceStatusIcon(serviceStatus.gpu_memory_manager_8107)} GPU-Mgr
-						</span>
-					</div>
-				{/if}
-			</CardTitle>
-		</CardHeader>
-	</Card>
-	<!-- Search Interface -->
-	<Card class="yorha-card">
-		<CardContent class="p-6">
-			<form onsubmit={handleSubmit} class="space-y-4">
-				<div class="relative">
-					<Input
-						type="text"
-						bind:value={query}
-						{placeholder}
-						disabled={isSearching}
-						class="yorha-input w-full px-4 py-3 text-lg pr-12"
-					/>
-					<div class="absolute right-3 top-1/2 transform -translate-y-1/2">
-						{#if isSearching}
-							<div class="w-5 h-5 border-2 border-yorha-primary border-t-transparent rounded-full animate-spin"></div>
-						{:else}
-							<svg class="w-5 h-5 text-yorha-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-							</svg>
-						{/if}
-					</div>
-				</div>
-				<div class="flex flex-wrap gap-3 items-center justify-between">
-					<div class="flex gap-2">
-						<div class="px-3 py-1 bg-yorha-bg-tertiary border border-yorha-border rounded text-sm text-yorha-text-muted">
-							Domain: {legalDomain}
-						</div>
-						<div class="px-3 py-1 bg-yorha-bg-tertiary border border-yorha-border rounded text-sm text-yorha-text-muted">
-							Max: {maxResults} results
-						</div>
-						{#if serviceStatus?.overall_health}
-							<div class="px-3 py-1 bg-green-900 border border-green-600 rounded text-sm text-green-200">
-								🚀 GPU Accelerated
-							</div>
-						{:else}
-							<div class="px-3 py-1 bg-orange-900 border border-orange-600 rounded text-sm text-orange-200">
-								⚡ Client Fallback
-							</div>
-						{/if}
-					</div>
-					<Button
-						type="submit"
-						disabled={isSearching || !query.trim()}
-						class="yorha-btn yorha-btn-primary px-6"
-					>
-						{#if isSearching}
-							Processing...
-						{:else}
-							Search Legal AI
-						{/if}
-					</Button>
-				</div>
-			</form>
-			{#if errorMessage}
-				<Alert class="mt-4 bg-red-900 border-red-600">
-					<AlertDescription class="text-red-200">
-						{errorMessage}
-					</AlertDescription>
-				</Alert>
-			{/if}
-		</CardContent>
-	</Card>
-	<!-- Performance Metrics -->
-	{#if showPerformanceMetrics && (performance || gpuMetrics.vram_usage > 0)}
-		<Card class="yorha-card">
-			<CardHeader>
-				<CardTitle class="text-yorha-text-primary">Performance Metrics</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-					{#if performance}
-						<div class="text-center">
-							<div class="text-2xl font-bold text-yorha-primary font-mono">
-								{formatTime(performance.total_time_ms)}
-							</div>
-							<div class="text-sm text-yorha-text-muted">Total Time</div>
-						</div>
-						<div class="text-center">
-							<div class="text-2xl font-bold text-green-400 font-mono">
-								{performance.service_count}/4
-							</div>
-							<div class="text-sm text-yorha-text-muted">Services</div>
-						</div>
-						<div class="text-center">
-							<div class="text-2xl font-bold text-blue-400 font-mono">
-								{formatTime(performance.vector_search_ms)}
-							</div>
-							<div class="text-sm text-yorha-text-muted">Search</div>
-						</div>
-						<div class="text-center">
-							<div class="text-2xl font-bold text-purple-400 font-mono">
-								{formatTime(performance.rl_ranking_ms)}
-							</div>
-							<div class="text-sm text-yorha-text-muted">RL Ranking</div>
-						</div>
-					{/if}
-					{#if gpuMetrics.vram_usage > 0}
-						<div class="text-center">
-							<div class="text-2xl font-bold text-orange-400 font-mono">
-								{gpuMetrics.vram_usage}MB
-							</div>
-							<div class="text-sm text-yorha-text-muted">VRAM</div>
-						</div>
-						<div class="text-center">
-							<div class="text-2xl font-bold text-red-400 font-mono">
-								{gpuMetrics.gpu_utilization}%
-							</div>
-							<div class="text-sm text-yorha-text-muted">GPU Load</div>
-						</div>
-					{/if}
-				</div>
-			</CardContent>
-		</Card>
-	{/if}
-	<!-- Search Results -->
-	{#if results.length > 0}
-		<Card class="yorha-card">
-			<CardHeader>
-				<CardTitle class="flex items-center justify-between text-yorha-text-primary">
-					<span>Legal AI Results ({results.length})</span>
-					{#if performance}
-						<div class="text-sm font-normal opacity-70">
-							{formatTime(performance.total_time_ms)} • {performance.gpu_acceleration_used ? 'GPU' : 'CPU'}
-						</div>
-					{/if}
-				</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="space-y-6">
-					{#each results as result, index (result.metadata.document_id)}
-						<div class="border border-yorha-border rounded-lg p-5 hover:border-yorha-primary transition-all duration-300 hover:shadow-lg hover:shadow-yorha-primary/10">
-							<!-- Result Header -->
-							<div class="flex items-start justify-between mb-3">
-								<div class="flex-1">
-									<div class="flex items-center gap-3 mb-2">
-										<div class="text-lg font-semibold text-yorha-text-primary">
-											Result {index + 1}
-										</div>
-										<div class={`px-2 py-1 rounded border text-xs font-mono ${getCategoryColor(result.metadata.legal_category)}`}>
-											{result.metadata.legal_category}
-										</div>
-										<div class="text-sm text-yorha-text-muted">
-											ID: {result.metadata.document_id}
-										</div>
-									</div>
-								</div>
-								<div class="text-right space-y-1">
-									<div class="text-lg font-bold text-yorha-primary font-mono">
-										{(result.score * 100).toFixed(1)}%
-									</div>
-									<div class="text-xs text-yorha-text-muted">
-										{result.metadata.gpu_accelerated ? '🚀 GPU' : '💻 CPU'} • {result.metadata.processing_time_ms}ms
-									</div>
-								</div>
-							</div>
-							<!-- Result Content -->
-							<div class="text-yorha-text-primary leading-relaxed mb-3 p-4 bg-yorha-bg-tertiary rounded border border-yorha-border">
-								{result.content}
-							</div>
-							<!-- Confidence and Performance -->
-							<div class="flex justify-between items-center text-sm text-yorha-text-muted">
-								<div>
-									Confidence: {(result.metadata.confidence * 100).toFixed(1)}%
-								</div>
-								<div>
-									Processed: {formatTime(result.metadata.processing_time_ms)}
-								</div>
-							</div>
-						</div>
-					{/each}
-				</div>
-			</CardContent>
-		</Card>
-	{:else if query && !isSearching}
-		<Card class="yorha-card">
-			<CardContent class="text-center py-12">
-				<div class="text-yorha-text-muted text-lg mb-2">
-					No results found for "{query}"
-				</div>
-				<div class="text-sm text-yorha-text-muted opacity-70">
-					Try adjusting your search terms or check service status above
-				</div>
-			</CardContent>
-		</Card>
-	{/if}
+  <!-- Header with Service Status -->
+  <Card class="yorha-card">
+    <CardHeader>
+      <CardTitle class="flex items-center justify-between text-yorha-text-primary">
+        <div class="flex items-center gap-3">
+          <div class="w-3 h-3 rounded-full bg-gradient-to-r from-yorha-primary to-yorha-secondary animate-pulse"></div>
+          <span class="font-mono text-xl">Full-Stack Legal AI</span>
+          <div class="text-sm font-normal opacity-70">RTX 3060 Ti + Gemma3 + Tensor Cores</div>
+        </div>
+        {#if serviceStatus}
+          <div class="flex items-center gap-2 text-sm">
+            <span class="text-yorha-text-muted">Services:</span>
+            <span class={getServiceStatusColor(serviceStatus.cuda_service_8097)}>
+              {getServiceStatusIcon(serviceStatus.cuda_service_8097)} CUDA
+            </span>
+            <span class={getServiceStatusColor(serviceStatus.legal_extraction_8098)}>
+              {getServiceStatusIcon(serviceStatus.legal_extraction_8098)} Extract
+            </span>
+            <span class={getServiceStatusColor(serviceStatus.knowledge_graph_8099)}>
+              {getServiceStatusIcon(serviceStatus.knowledge_graph_8099)} KG
+            </span>
+            <span class={getServiceStatusColor(serviceStatus.gpu_memory_manager_8107)}>
+              {getServiceStatusIcon(serviceStatus.gpu_memory_manager_8107)} GPU-Mgr
+            </span>
+          </div>
+        {/if}
+      </CardTitle>
+    </CardHeader>
+  </Card>
+  <!-- Search Interface -->
+  <Card class="yorha-card">
+    <CardContent class="p-6">
+      <form onsubmit={handleSubmit} class="space-y-4">
+        <div class="relative">
+          <Input
+            type="text"
+            bind:value={query}
+            {placeholder}
+            disabled={isSearching}
+            class="yorha-input w-full px-4 py-3 text-lg pr-12"
+          />
+          <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+            {#if isSearching}
+              <div class="w-5 h-5 border-2 border-yorha-primary border-t-transparent rounded-full animate-spin"></div>
+            {:else}
+              <svg class="w-5 h-5 text-yorha-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            {/if}
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-3 items-center justify-between">
+          <div class="flex gap-2">
+            <div
+              class="px-3 py-1 bg-yorha-bg-tertiary border border-yorha-border rounded text-sm text-yorha-text-muted"
+            >
+              Domain: {legalDomain}
+            </div>
+            <div
+              class="px-3 py-1 bg-yorha-bg-tertiary border border-yorha-border rounded text-sm text-yorha-text-muted"
+            >
+              Max: {maxResults} results
+            </div>
+            {#if serviceStatus?.overall_health}
+              <div class="px-3 py-1 bg-green-900 border border-green-600 rounded text-sm text-green-200">
+                🚀 GPU Accelerated
+              </div>
+            {:else}
+              <div class="px-3 py-1 bg-orange-900 border border-orange-600 rounded text-sm text-orange-200">
+                ⚡ Client Fallback
+              </div>
+            {/if}
+          </div>
+          <Button type="submit" disabled={isSearching || !query.trim()} class="yorha-btn yorha-btn-primary px-6">
+            {#if isSearching}
+              Processing...
+            {:else}
+              Search Legal AI
+            {/if}
+          </Button>
+        </div>
+      </form>
+      {#if errorMessage}
+        <Alert class="mt-4 bg-red-900 border-red-600">
+          <AlertDescription class="text-red-200">
+            {errorMessage}
+          </AlertDescription>
+        </Alert>
+      {/if}
+    </CardContent>
+  </Card>
+  <!-- Performance Metrics -->
+  {#if showPerformanceMetrics && (performance || gpuMetrics.vram_usage > 0)}
+    <Card class="yorha-card">
+      <CardHeader>
+        <CardTitle class="text-yorha-text-primary">Performance Metrics</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {#if performance}
+            <div class="text-center">
+              <div class="text-2xl font-bold text-yorha-primary font-mono">
+                {formatTime(performance.total_time_ms)}
+              </div>
+              <div class="text-sm text-yorha-text-muted">Total Time</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-green-400 font-mono">
+                {performance.service_count}/4
+              </div>
+              <div class="text-sm text-yorha-text-muted">Services</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-blue-400 font-mono">
+                {formatTime(performance.vector_search_ms)}
+              </div>
+              <div class="text-sm text-yorha-text-muted">Search</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-purple-400 font-mono">
+                {formatTime(performance.rl_ranking_ms)}
+              </div>
+              <div class="text-sm text-yorha-text-muted">RL Ranking</div>
+            </div>
+          {/if}
+          {#if gpuMetrics.vram_usage > 0}
+            <div class="text-center">
+              <div class="text-2xl font-bold text-orange-400 font-mono">
+                {gpuMetrics.vram_usage}MB
+              </div>
+              <div class="text-sm text-yorha-text-muted">VRAM</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-red-400 font-mono">
+                {gpuMetrics.gpu_utilization}%
+              </div>
+              <div class="text-sm text-yorha-text-muted">GPU Load</div>
+            </div>
+          {/if}
+        </div>
+      </CardContent>
+    </Card>
+  {/if}
+  <!-- Search Results -->
+  {#if results.length > 0}
+    <Card class="yorha-card">
+      <CardHeader>
+        <CardTitle class="flex items-center justify-between text-yorha-text-primary">
+          <span>Legal AI Results ({results.length})</span>
+          {#if performance}
+            <div class="text-sm font-normal opacity-70">
+              {formatTime(performance.total_time_ms)} • {performance.gpu_acceleration_used ? 'GPU' : 'CPU'}
+            </div>
+          {/if}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="space-y-6">
+          {#each results as result, index (result.metadata.document_id)}
+            <div
+              class="border border-yorha-border rounded-lg p-5 hover:border-yorha-primary transition-all duration-300 hover:shadow-lg hover:shadow-yorha-primary/10"
+            >
+              <!-- Result Header -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex-1">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="text-lg font-semibold text-yorha-text-primary">
+                      Result {index + 1}
+                    </div>
+                    <div
+                      class={`px-2 py-1 rounded border text-xs font-mono ${getCategoryColor(result.metadata.legal_category)}`}
+                    >
+                      {result.metadata.legal_category}
+                    </div>
+                    <div class="text-sm text-yorha-text-muted">
+                      ID: {result.metadata.document_id}
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right space-y-1">
+                  <div class="text-lg font-bold text-yorha-primary font-mono">
+                    {(result.score * 100).toFixed(1)}%
+                  </div>
+                  <div class="text-xs text-yorha-text-muted">
+                    {result.metadata.gpu_accelerated ? '🚀 GPU' : '💻 CPU'} • {result.metadata.processing_time_ms}ms
+                  </div>
+                </div>
+              </div>
+              <!-- Result Content -->
+              <div
+                class="text-yorha-text-primary leading-relaxed mb-3 p-4 bg-yorha-bg-tertiary rounded border border-yorha-border"
+              >
+                {result.content}
+              </div>
+              <!-- Confidence and Performance -->
+              <div class="flex justify-between items-center text-sm text-yorha-text-muted">
+                <div>
+                  Confidence: {(result.metadata.confidence * 100).toFixed(1)}%
+                </div>
+                <div>
+                  Processed: {formatTime(result.metadata.processing_time_ms)}
+                </div>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </CardContent>
+    </Card>
+  {:else if query && !isSearching}
+    <Card class="yorha-card">
+      <CardContent class="text-center py-12">
+        <div class="text-yorha-text-muted text-lg mb-2">
+          No results found for "{query}"
+        </div>
+        <div class="text-sm text-yorha-text-muted opacity-70">
+          Try adjusting your search terms or check service status above
+        </div>
+      </CardContent>
+    </Card>
+  {/if}
 </div>
+
 <style>
-	.full-stack-legal-ai {
-		/* Additional component-specific styles */;
-		font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
-	}
-	/* Custom scrollbar for result content */
-	.full-stack-legal-ai :global($1) {
-		width: 6px;
-	}
-	.full-stack-legal-ai :global($1) {
-		background: rgb(var(--muted));
-	}
-	.full-stack-legal-ai :global($1) {
-		background: rgb(var(--border));
-		border-radius: 3px;
-	}
-	.full-stack-legal-ai :global($1) {
-		background: rgb(var(--primary));
-	}
-	/* Animation for search indicator */
-	@keyframes pulse-glow {
-		0%, 100% { box-shadow: 0 0 5px rgb(var(--primary) / 0.3); }
-		50% { box-shadow: 0 0 20px rgb(var(--primary) / 0.6); }
-	}
-	.full-stack-legal-ai :global(.animate-pulse-glow) {
-		animation: pulse-glow 2s ease-in-out infinite;
-	}
+  .full-stack-legal-ai {
+    /* Additional component-specific styles */;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  }
+  /* Custom scrollbar for result content */
+  .full-stack-legal-ai :global($1) {
+    width: 6px;
+  }
+  .full-stack-legal-ai :global($1) {
+    background: rgb(var(--muted));
+  }
+  .full-stack-legal-ai :global($1) {
+    background: rgb(var(--border));
+    border-radius: 3px;
+  }
+  .full-stack-legal-ai :global($1) {
+    background: rgb(var(--primary));
+  }
+  /* Animation for search indicator */
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 5px rgb(var(--primary) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px rgb(var(--primary) / 0.6);
+    }
+  }
+  .full-stack-legal-ai :global(.animate-pulse-glow) {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
 </style>

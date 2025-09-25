@@ -4,17 +4,17 @@ import * as crypto from "crypto";
 const LRUCache = LRU;
 // Define Redis interface since we don't have the actual Redis client
 export interface RedisPipeline {
-  set(key: string, value: string): RedisPipeline;
-  expire(key: string, seconds: number): RedisPipeline;
-  sadd(key: string, ...members: string[]): RedisPipeline;
+  set(_key: string, value: string): RedisPipeline;
+  expire(_key: string, seconds: number): RedisPipeline;
+  sadd(_key: string, ...members: string[]): RedisPipeline;
   exec(): Promise<any[]>;
 }
 export interface Redis {
-  get(key: string): Promise<string | null>;
-  set(key: string, value: string, options?: any): Promise<string>;
-  del(key: string): Promise<number>;
-  exists(key: string): Promise<number>;
-  expire(key: string, seconds: number): Promise<number>;
+  get(_key: string): Promise<string | null>;
+  set(_key: string, value: string, options?: any): Promise<string>;
+  del(_key: string): Promise<number>;
+  exists(_key: string): Promise<number>;
+  expire(_key: string, seconds: number): Promise<number>;
   flushall(): Promise<string>;
   pipeline(): RedisPipeline;
 }
@@ -43,7 +43,7 @@ class CachingLayer {
     maxItems: 10000,
     hotCacheThreshold: 5, // Hits needed to promote to hot cache
     compressionThreshold: 1024, // Compress items larger than 1KB
-  };
+  }
   constructor() {
     this.initializeCache();
     this.stats = {
@@ -52,7 +52,7 @@ class CachingLayer {
       evictions: 0,
       size: 0,
       memoryUsage: 0
-    };
+    }
     this.hotCache = new Map();
   }
   private initializeCache(): void {
@@ -96,7 +96,7 @@ class CachingLayer {
   /**
    * Get item from cache with multi-tier strategy
    */;
-  async get(key: string): Promise<any | null> {
+  async get(_key: string): Promise<any | null> {
     try {
       // Check hot cache first (ultra-fast)
       const hotItem = this.hotCache.get(key);
@@ -143,7 +143,7 @@ class CachingLayer {
   /**
    * Set item in cache with multi-tier strategy
    */;
-  async set(key: string, value: any, options: CacheOptions = {}): Promise<void> {
+  async set(_key: string, value: any, options: CacheOptions = {}): Promise<void> {
     try {
       const ttl = options.ttl || 3600; // Default 1 hour
       // Compress large values
@@ -265,10 +265,10 @@ class CachingLayer {
       lruCacheSize: this.lruCache.size,
       redisConnected: !!this.redis,
       redisStats: redisInfo
-    };
+    }
   }
   // === PRIVATE HELPER METHODS ===
-  private promoteToHotCache(key: string, data: any): void {
+  private promoteToHotCache(_key: string, data: any): void {
     // Track access count
     const accessCount = (this.lruCache as any).get(key + ':count') || 0;
     (this.lruCache as any).set(key + ':count', accessCount + 1);
@@ -300,11 +300,11 @@ class CachingLayer {
       logger.debug(`[CachingLayer] Evicted ${oldestKey} from hot cache`);
     }
   }
-  private shouldCompress(value: any): boolean {
+  private shouldCompress(_value: any): boolean {
     const size = JSON.stringify(value).length;
     return size > this.cacheConfig.compressionThreshold;
   }
-  private async compress(value: any): Promise<any> {
+  private async compress(_value: any): Promise<any> {
     // For now, just return the value
     // In production, use zlib or similar for compression
     return value;
@@ -332,7 +332,7 @@ class CachingLayer {
       return {
         dbSize,
         memory: info
-      };
+      }
     } catch (error: any) {
       return null;
     }

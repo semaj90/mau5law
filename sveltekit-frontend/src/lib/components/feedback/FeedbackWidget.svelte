@@ -7,7 +7,7 @@
     interactionId: string;
     sessionId: string;
     userId: string;
-    context?: { [key: string]: any };
+    context?: { [key: string]: any }
     show?: boolean;
     ratingType?: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance';
   }
@@ -50,7 +50,7 @@
           sessionId,
           interactionId,
           ratingType,
-          score: rating
+          score: rating;
           feedback: feedback.trim() || undefined,
           context: {
             ...context,
@@ -100,14 +100,26 @@
     ui_experience: 'User Experience',
     ai_accuracy: 'AI Accuracy',
     performance: 'Performance';
-  };
+  }
 </script>
+
 {#if show}
   <!-- Updated to Svelte 5 event syntax: use onclick/onkeydown instead of onclick etc. -->
-  <div class="feedback-overlay" role="button" tabindex="0"
-                onclick={close} onkeydown={(e) => e.key === 'Enter' && close()}>
-    <div class="feedback-widget" role="dialog" tabindex="0" aria-labelledby="feedback-title"
-                onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()}>
+  <div
+    class="feedback-overlay"
+    role="button"
+    tabindex="0"
+    onclick={close}
+    onkeydown={e => e.key === 'Enter' && close()}
+  >
+    <div
+      class="feedback-widget"
+      role="dialog"
+      tabindex="0"
+      aria-labelledby="feedback-title"
+      onclick={e => e.stopPropagation()}
+      onkeydown={e => e.key === 'Enter' && e.stopPropagation()}
+    >
       {#if !isSubmitted}
         <div class="feedback-header">
           <h3 id="feedback-title" class="feedback-title">
@@ -133,9 +145,7 @@
           </div>
           {#if rating > 0}
             <div class="feedback-section">
-              <label for="feedback-text" class="feedback-textarea-label">
-                Additional feedback (optional):
-              </label>
+              <label for="feedback-text" class="feedback-textarea-label"> Additional feedback (optional): </label>
               <textarea
                 id="feedback-text"
                 bind:value={feedback}
@@ -145,12 +155,7 @@
               ></textarea>
             </div>
             <div class="feedback-actions">
-              <button
-                class="submit-button"
-                onclick={submitFeedback}
-                disabled={isSubmitting}
-                type="button"
-              >
+              <button class="submit-button" onclick={submitFeedback} disabled={isSubmitting} type="button">
                 {#if isSubmitting}
                   Submitting...
                 {:else}
@@ -170,6 +175,7 @@
     </div>
   </div>
 {/if}
+
 <style>
   .feedback-overlay {
     position: fixed;

@@ -38,7 +38,7 @@ export const DEFAULT_SECURITY_CONFIG: SecurityConfig = {
   maxLoginAttempts: 5,
   passwordMinLength: 8,
   requireMFA: false
-};
+}
 // Authentication and session management
 export interface UserSession {
   userId: string;
@@ -65,7 +65,7 @@ export interface SecurityEvent {
     | "evidence_access";
   userId?: string;
   timestamp: number;
-  details: { [key: string]: any };
+  details: { [key: string]: any }
   severity: "low" | "medium" | "high" | "critical";
   ipAddress?: string;
   userAgent?: string;
@@ -73,7 +73,7 @@ export interface SecurityEvent {
     caseId?: string;
     clientId?: string;
     isPrivileged?: boolean;
-  };
+  }
 }
 // Session management
 class SessionManager {
@@ -92,7 +92,7 @@ class SessionManager {
       loginTime: now
       lastActivity: now
       sessionId: this.generateSessionId()
-    };
+    }
     this.startSessionMonitoring();
     this.logSecurityEvent({
       type: "login",
@@ -154,7 +154,7 @@ class SessionManager {
       }
     }, 60000); // Check every minute
   }
-  private logSecurityEvent(event: SecurityEvent): void {
+  private logSecurityEvent(_event: SecurityEvent): void {
     console.log("Security Event:", event);
     // In a real app, this would send to a security monitoring service
   }
@@ -238,13 +238,13 @@ export function sanitizeForJavaScript(input: string): string {
       '"': "&quot;",
       "'": "&#x27;",
       "&": "&amp;"
-    };
+    }
     return entityMap[match];
   });
 }
 // Generic input sanitization function
 export function sanitizeInput(
-  input: string
+  input: string;
   type: "html" | "sql" | "js" = "html";
 ): string {
   switch (type) {
@@ -338,7 +338,7 @@ export function checkFileSecurityAI(file: File): FileSecurityResult {
     risk,
     isLegalDocument,
     requiresPrivilegedAccess
-  };
+  }
 }
 // Rate limiting for security
 class RateLimiter {
@@ -382,13 +382,12 @@ class RateLimiter {
 }
 export const rateLimiter = new RateLimiter();
 // Security monitoring with legal context
-export function logSecurityEvent(
-  event: Omit<SecurityEvent, "timestamp">;
+export function logSecurityEvent(_event: Omit<SecurityEvent, "timestamp">;
 ): void {
   const fullEvent: SecurityEvent = {
     ...event,
     timestamp: Date.now()
-  };
+  }
   if (browser) {
     fullEvent.ipAddress = "client-side"; // Would get real IP server-side
     fullEvent.userAgent = navigator.userAgent;
@@ -440,7 +439,7 @@ export function checkPasswordStrength(password: string): {
   else feedback.push("Include special characters");
   if (password.length >= 12) score += 1;
   const isStrong = score >= 4;
-  return { score, feedback, isStrong };
+  return { score, feedback, isStrong }
 }
 // Secure random string generation
 export function generateSecureToken(length: number = 32): string {
@@ -471,7 +470,7 @@ export interface ChainOfCustodyEvent {
     caseId?: string;
     isPrivileged?: boolean;
     witnessPresent?: boolean;
-  };
+  }
 }
 export function addChainOfCustodyEvent(
   evidenceId: string
@@ -480,7 +479,7 @@ export function addChainOfCustodyEvent(
   const fullEvent: ChainOfCustodyEvent = {
     ...event,
     timestamp: Date.now()
-  };
+  }
   // In a real app, this would be cryptographically signed and stored immutably
   logSecurityEvent({
     type: "evidence_access",

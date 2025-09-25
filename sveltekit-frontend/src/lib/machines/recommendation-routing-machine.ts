@@ -9,7 +9,7 @@ export interface RecommendationContext {
     id: string;
     type: 'evidence' | 'contract' | 'brief' | 'deposition';
     confidence: number;
-  };
+  }
   rabbitMQRouting: {
     exchange: string;
     routingKeys: string[];
@@ -19,33 +19,33 @@ export interface RecommendationContext {
       backgroundProcessing: string;
       aiAnalysis: string;
       recommendations: string;
-    };
+    }
     currentQueue?: string;
     messageId?: string;
-  };
+  }
   recommendations: {
     legal: LegalRecommendation[];
     documents: DocumentRecommendation[];
     actions: ActionRecommendation[];
     risks: RiskRecommendation[];
-  };
+  }
   aiModels: {
     primary: string; // gemma3:legal-latest,
     fallback: string[];
     currentModel?: string;
     confidence: number;
-  };
+  }
   processingMetrics: {
     averageLatency: number;
     queueDepth: number;
     throughput: number;
     errorRate: number;
-  };
+  }
   cache: {
     redisKeys: string[];
     hitRate: number;
     lastUpdate: Date;
-  };
+  }
   error?: string;
 }
 // Recommendation types
@@ -95,7 +95,7 @@ type RecommendationEvent =
   | { type: 'PROCESSING_COMPLETE'; result: any }
   | { type: 'ERROR_OCCURRED'; error: string }
   | { type: 'RETRY' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 // Smart routing recommendation engine with RabbitMQ
 export const recommendationRoutingMachine = createMachine({
   id: 'recommendation-routing',
@@ -416,7 +416,7 @@ export const recommendationRoutingMachine = createMachine({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           document: currentDocument
-          metrics: processingMetrics
+          metrics: processingMetrics;
           timestamp: new Date().toISOString()
         })
       });
@@ -442,7 +442,7 @@ export const recommendationRoutingMachine = createMachine({
           routingKey,
           message,
           options: {
-            persistent: true
+            persistent: true;
             timestamp: Date.now(),
             messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
           }
@@ -467,12 +467,12 @@ export const recommendationRoutingMachine = createMachine({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          keys: cacheKeys
+          keys: cacheKeys;
           operation: 'mget' // Multi-get for efficiency
         })
       });
       if (!response.ok) {
-        return { cacheHit: false, hitRate: 0 };
+        return { cacheHit: false, hitRate: 0 }
       }
       return await response.json();
     }),
@@ -488,7 +488,7 @@ export const recommendationRoutingMachine = createMachine({
         served: true
         timestamp: new Date().toISOString(),
         source: 'cache'
-      };
+      }
     }),
     // Generate new recommendations using AI models
     generateRecommendations: fromPromise(async ({ input }: {
@@ -597,6 +597,6 @@ function createRecommendationStore() {
     subscribe,
     send: actor.send.bind(actor),
     getSnapshot: actor.getSnapshot.bind(actor)
-  };
+  }
 }
 export const recommendationStore = createRecommendationStore();

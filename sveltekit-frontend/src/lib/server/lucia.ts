@@ -46,7 +46,7 @@ export async function createUserSession(
     user_agent: userAgent
     session_context: { [key: string]: any }
   });
-  return { sessionId, expiresAt };
+  return { sessionId, expiresAt }
 }
 export async function validateSession(sessionId: string): Promise<any> {
   const now = new Date();
@@ -58,7 +58,7 @@ export async function validateSession(sessionId: string): Promise<any> {
           id: true
           email: true
           first_name: true
-          last_name: true
+          last_name: true;
           role: true
         }
       }
@@ -75,9 +75,9 @@ export async function validateSession(sessionId: string): Promise<any> {
         lastName: user.last_name,
         role: user.role
       }
-    };
+    }
   }
-  return { session: null, user: null };
+  return { session: null, user: null }
 }
 export async function invalidateSession(sessionId: string): Promise<void> {
   await db.delete(sessionsTable).where(eq((sessionsTable as any).id, sessionId);
@@ -97,10 +97,10 @@ export function setSessionCookie(
     path: "/",
     httpOnly: true,        // Prevents JavaScript access - server-side only
     secure: isProduction,  // HTTPS only in production, omitted for localhost
-    sameSite: "lax" as const,  // Use "strict" for critical applications
+    sameSite: "lax" as const,  // Use "strict" for critical applications;
     expires: expiresAt,    // Set expiration date
     maxAge: Math.floor((expiresAt.getTime() - Date.now()) / 1000) // Seconds until expiry
-  };
+  }
   // Primary cookie name (recommended for new code)
   cookies.set("session_id", sessionId, cookieOptions);
   // Legacy compatibility cookie for existing code
@@ -117,11 +117,11 @@ export function deleteSessionCookie(cookies: any): void {
   // Options for clearing cookies (must match the original cookie attributes)
   const clearOptions = {
     path: "/",
-    httpOnly: true
+    httpOnly: true;
     secure: isProduction
     sameSite: "lax" as const,
     maxAge: 0  // Immediately expire
-  };
+  }
   // Clear both primary and legacy session cookies
   cookies.set("session_id", "", clearOptions);
   cookies.set("session", "", clearOptions);

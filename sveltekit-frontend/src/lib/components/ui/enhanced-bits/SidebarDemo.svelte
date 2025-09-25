@@ -100,7 +100,7 @@
       confidentialityLevel: 'internal' as const;
     }
   ];
-  function handleSidebarItemClick(event: CustomEvent) {
+  function handleSidebarItemClick(_event: CustomEvent) {
     currentPage = event.detail.item.id;
     console.log('Navigation to:', event.detail.item.label);
   }
@@ -114,76 +114,79 @@
         return {
           title: '🏠 Home Dashboard',
           description: 'Welcome to your legal workspace';
-        };
+        }
       case 'dashboard':
         return {
           title: '📊 Analytics Dashboard',
           description: 'Overview of your legal practice metrics';
-        };
+        }
       case 'documents':
         return {
           title: '📄 Document Library',
           description: 'Manage all your legal documents';
-        };
+        }
       case 'contracts':
         return {
           title: '📋 Contracts',
           description: 'Contract management and analysis';
-        };
+        }
       case 'evidence':
         return {
           title: '🔍 Evidence Management',
           description: 'Digital evidence and discovery tools';
-        };
+        }
       case 'briefs':
         return {
           title: '⚖️ Legal Briefs',
           description: 'Brief writing and case preparation';
-        };
+        }
       case 'cases':
         return {
           title: '📚 Case Management',
           description: 'Track and manage your legal cases';
-        };
+        }
       case 'clients':
         return {
           title: '👥 Client Portal',
           description: 'Client information and communication';
-        };
+        }
       case 'calendar':
         return {
           title: '📅 Legal Calendar',
           description: 'Court dates, deadlines, and appointments';
-        };
+        }
       case 'reports':
         return {
           title: '📈 Reports & Analytics',
           description: 'Generate insights from your legal data';
-        };
+        }
       case 'ai-assistant':
         return {
           title: '🤖 AI Legal Assistant',
           description: 'AI-powered legal research and analysis';
-        };
+        }
       case 'settings':
         return {
           title: '⚙️ System Settings',
           description: 'Configure your legal workspace';
-        };
+        }
       default:
         return {
           title: '📄 Page Not Found',
           description: 'The requested page could not be found';
-        };
+        }
     }
   }
   const pageContent = $derived(getPageContent(currentPage));
 </script>
+
 <ThemeProvider defaultTheme="light" enableSystem={true}>
-  <div class={`
+  <div
+    class={`
     min-h-screen transition-colors
     bg-[var(--enhanced-bits-bg)] text-[var(--enhanced-bits-text)]
-  `}>
+  `}
+  >
     <!-- Sidebar -->
     <Sidebar
       {theme}
@@ -200,31 +203,35 @@
     <!-- Main Content Area -->
     <div class="ml-16 transition-all duration-300 ease-out">
       <!-- Top Header -->
-      <header class={`
+      <header
+        class={`
         sticky top-0 z-30 border-b p-4
         bg-[var(--enhanced-bits-surface)] border-[var(--enhanced-bits-border)]
         backdrop-blur-sm bg-opacity-95
-      `}>
+      `}
+      >
         <div class="flex items-center justify-between">
           <div>
-            <h1 class={`
+            <h1
+              class={`
               text-2xl font-bold
               ${theme === 'gaming' ? 'text-green-400 font-mono' : ''}
-            `}>
+            `}
+            >
               {pageContent.title}
             </h1>
-            <p class={`
+            <p
+              class={`
               text-sm mt-1
               ${theme === 'gaming' ? 'text-green-400/70 font-mono' : 'text-[var(--enhanced-bits-text-muted)]'}
-            `}>
+            `}
+            >
               {pageContent.description}
             </p>
           </div>
           <div class="flex items-center space-x-4">
             <ThemeToggle {theme} variant="button" showLabel={false} />
-            <Button {theme} variant="primary" size="sm">
-              New Document
-            </Button>
+            <Button {theme} variant="primary" size="sm">New Document</Button>
           </div>
         </div>
       </header>
@@ -234,92 +241,119 @@
           <!-- Dashboard Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <!-- Stats Cards -->
-            <div class={`
+            <div
+              class={`
               p-6 rounded-lg border
-              ${theme === 'gaming'
-                ? 'border-green-400/30 bg-green-400/5'
-                : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
+              ${
+                theme === 'gaming'
+                  ? 'border-green-400/30 bg-green-400/5'
+                  : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
               }
-            `}>
+            `}
+            >
               <div class="flex items-center justify-between">
                 <div>
-                  <p class={`
+                  <p
+                    class={`
                     text-sm font-medium
                     ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text-muted)]'}
-                  `}>
+                  `}
+                  >
                     Active Cases
                   </p>
-                  <p class={`
+                  <p
+                    class={`
                     text-3xl font-bold
                     ${theme === 'gaming' ? 'text-green-400' : ''}
-                  `}>
+                  `}
+                  >
                     24
                   </p>
                 </div>
-                <div class={`
+                <div
+                  class={`
                   text-3xl
                   ${theme === 'gaming' ? 'filter drop-shadow-[0_0_8px_currentColor]' : ''}
-                `}>
+                `}
+                >
                   📚
                 </div>
               </div>
             </div>
-            <div class={`
+            <div
+              class={`
               p-6 rounded-lg border
-              ${theme === 'gaming'
-                ? 'border-green-400/30 bg-green-400/5'
-                : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
+              ${
+                theme === 'gaming'
+                  ? 'border-green-400/30 bg-green-400/5'
+                  : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
               }
-            `}>
+            `}
+            >
               <div class="flex items-center justify-between">
                 <div>
-                  <p class={`
+                  <p
+                    class={`
                     text-sm font-medium
                     ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text-muted)]'}
-                  `}>
+                  `}
+                  >
                     Documents
                   </p>
-                  <p class={`
+                  <p
+                    class={`
                     text-3xl font-bold
                     ${theme === 'gaming' ? 'text-green-400' : ''}
-                  `}>
+                  `}
+                  >
                     156
                   </p>
                 </div>
-                <div class={`
+                <div
+                  class={`
                   text-3xl
                   ${theme === 'gaming' ? 'filter drop-shadow-[0_0_8px_currentColor]' : ''}
-                `}>
+                `}
+                >
                   📄
                 </div>
               </div>
             </div>
-            <div class={`
+            <div
+              class={`
               p-6 rounded-lg border
-              ${theme === 'gaming'
-                ? 'border-green-400/30 bg-green-400/5'
-                : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
+              ${
+                theme === 'gaming'
+                  ? 'border-green-400/30 bg-green-400/5'
+                  : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
               }
-            `}>
+            `}
+            >
               <div class="flex items-center justify-between">
                 <div>
-                  <p class={`
+                  <p
+                    class={`
                     text-sm font-medium
                     ${theme === 'gaming' ? 'text-green-400' : 'text-[var(--enhanced-bits-text-muted)]'}
-                  `}>
+                  `}
+                  >
                     Deadlines
                   </p>
-                  <p class={`
+                  <p
+                    class={`
                     text-3xl font-bold
                     ${theme === 'gaming' ? 'text-green-400' : ''}
-                  `}>
+                  `}
+                  >
                     3
                   </p>
                 </div>
-                <div class={`
+                <div
+                  class={`
                   text-3xl
                   ${theme === 'gaming' ? 'filter drop-shadow-[0_0_8px_currentColor]' : ''}
-                `}>
+                `}
+                >
                   ⏰
                 </div>
               </div>
@@ -329,10 +363,12 @@
         {#if currentPage === 'documents' || currentPage === 'contracts' || currentPage === 'evidence' || currentPage === 'briefs'}
           <!-- Documents Grid -->
           <div class="mb-6">
-            <h2 class={`
+            <h2
+              class={`
               text-xl font-semibold mb-4
               ${theme === 'gaming' ? 'text-green-400' : ''}
-            `}>
+            `}
+            >
               Recent Documents
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -355,79 +391,83 @@
           </div>
         {:else}
           <!-- Generic page content -->
-          <div class={`
+          <div
+            class={`
             p-12 text-center rounded-lg border-2 border-dashed
-            ${theme === 'gaming'
-              ? 'border-green-400/30 bg-green-400/5'
-              : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
+            ${
+              theme === 'gaming'
+                ? 'border-green-400/30 bg-green-400/5'
+                : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
             }
-          `}>
-            <div class={`
+          `}
+          >
+            <div
+              class={`
               text-6xl mb-4
               ${theme === 'gaming' ? 'filter drop-shadow-[0_0_15px_currentColor]' : ''}
-            `}>
+            `}
+            >
               {pageContent.title.split(' ')[0]}
             </div>
-            <h2 class={`
+            <h2
+              class={`
               text-2xl font-bold mb-2
               ${theme === 'gaming' ? 'text-green-400' : ''}
-            `}>
+            `}
+            >
               {pageContent.title.substring(2)}
             </h2>
-            <p class={`
+            <p
+              class={`
               text-lg mb-6
               ${theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}
-            `}>
+            `}
+            >
               {pageContent.description}
             </p>
-            <Button {theme} variant="primary">
-              Get Started
-            </Button>
+            <Button {theme} variant="primary">Get Started</Button>
           </div>
         {/if}
         <!-- Sidebar Demo Instructions -->
-        <div class={`
+        <div
+          class={`
           mt-12 p-6 rounded-lg border
-          ${theme === 'gaming'
-            ? 'border-green-400/30 bg-green-400/5'
-            : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
+          ${
+            theme === 'gaming'
+              ? 'border-green-400/30 bg-green-400/5'
+              : 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
           }
-        `}>
-          <h3 class={`
+        `}
+        >
+          <h3
+            class={`
             text-lg font-semibold mb-3
             ${theme === 'gaming' ? 'text-green-400' : ''}
-          `}>
+          `}
+          >
             🏠 Sidebar Demo Features
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
-              <strong class={theme === 'gaming' ? 'text-green-400' : ''}>
-                Hover Home Icon:
-              </strong>
+              <strong class={theme === 'gaming' ? 'text-green-400' : ''}> Hover Home Icon: </strong>
               <span class={theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}>
                 Sidebar snaps open with smooth animation
               </span>
             </div>
             <div>
-              <strong class={theme === 'gaming' ? 'text-green-400' : ''}>
-                Auto-collapse:
-              </strong>
+              <strong class={theme === 'gaming' ? 'text-green-400' : ''}> Auto-collapse: </strong>
               <span class={theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}>
                 Sidebar collapses when mouse leaves
               </span>
             </div>
             <div>
-              <strong class={theme === 'gaming' ? 'text-green-400' : ''}>
-                Badge Indicators:
-              </strong>
+              <strong class={theme === 'gaming' ? 'text-green-400' : ''}> Badge Indicators: </strong>
               <span class={theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}>
                 Show notification counts and status
               </span>
             </div>
             <div>
-              <strong class={theme === 'gaming' ? 'text-green-400' : ''}>
-                Nested Navigation:
-              </strong>
+              <strong class={theme === 'gaming' ? 'text-green-400' : ''}> Nested Navigation: </strong>
               <span class={theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}>
                 Sub-menus with hierarchical structure
               </span>
@@ -438,6 +478,7 @@
     </div>
   </div>
 </ThemeProvider>
+
 <style>
   /* Ensure content shifts smoothly when sidebar expands */
   main {
@@ -445,6 +486,9 @@
   }
   /* Smooth theme transitions */
   * {
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
 </style>

@@ -24,29 +24,29 @@ export interface Evidence {
   x: number;
   y: number;
   fileUrl?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   tags?: string[];
   embedding?: number[];
   location?: {
     latitude: number;
     longitude: number;
     address?: string;
-  };
+  }
   classification?: {
     category: string;
     relevance: number;
     confidence: number;
-  };
+  }
   timeline?: {
     createdAt: string;
     updatedAt: string;
     collectedAt?: string;
-  };
+  }
   analysis?: {
     aiSummary?: string;
     vectorSimilarity?: number;
     relatedEvidence?: string[];
-  };
+  }
 }
 export interface EvidenceStoreState {
   evidence: Evidence[];
@@ -57,7 +57,7 @@ export interface EvidenceStoreState {
 class UnifiedEvidenceStore {
   public store = writable<EvidenceStoreState>({
     evidence: [],
-    isLoading: false
+    isLoading: false;
     error: null
     isConnected: false
   });
@@ -101,15 +101,15 @@ class UnifiedEvidenceStore {
             channels: ["evidence_update"]
           }),
         );
-      };
-      this.websocket.onmessage = (event: any) => {
+      }
+      this.websocket.onmessage = (_event: any) => {
         try {
           const message = JSON.parse(event.data);
           this.handleRealtimeUpdate(message);
         } catch (error: any) {
           console.error("WebSocket message error:", error);
         }
-      };
+      }
       this.websocket.onclose = () => {
         this.store.update((s) => ({ ...s, isConnected: false });
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
@@ -120,10 +120,10 @@ class UnifiedEvidenceStore {
             Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000),
           );
         }
-      };
+      }
       this.websocket.onerror = (error) => {
         console.error("WebSocket connection error:", error);
-      };
+      }
     } catch (error: any) {
       console.error("Failed to create WebSocket:", error);
       throw error;
@@ -164,7 +164,7 @@ class UnifiedEvidenceStore {
     }
     this.store.update((s) => ({ ...s, isLoading: true, error: null });
     try {
-      const response = await fetch(`/api/evidence/${caseId}`);
+      // removed unused response assignment
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to fetch evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
@@ -226,7 +226,7 @@ class UnifiedEvidenceStore {
         evidence: s.evidence.map((e: any) =>
           e.id === evidenceId ? { ...e, ...updates } : e
         )
-      };
+      }
     });
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -258,7 +258,7 @@ class UnifiedEvidenceStore {
       return {
         ...s,
         evidence: s.evidence.filter((e: any) => e.id !== evidenceId)
-      };
+      }
     });
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {

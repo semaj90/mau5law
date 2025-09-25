@@ -27,7 +27,7 @@ export interface YoRHaComponentData {
     value?: string;
     error?: boolean;
     [key: string]: any;
-  };
+  }
   metrics?: YoRHaMetrics;
   events?: YoRHaEvent[];
 }
@@ -59,20 +59,20 @@ export interface YoRHaSystemStatus {
     latency: number;
     activeConnections: number;
     queryCount: number;
-  };
+  }
   backend: {
     healthy: boolean;
     uptime: number;
     activeServices: number;
     cpuUsage: number;
     memoryUsage: number;
-  };
+  }
   frontend: {
     renderFPS: number;
     componentCount: number;
     activeComponents: number;
     webGPUEnabled: boolean;
-  };
+  }
 }
 export interface YoRHaGraphData {
   nodes: Array<any>;
@@ -95,7 +95,7 @@ export class YoRHaAPIClient {
       enableWebSocket: config.enableWebSocket ?? true,
       enableSSE: config.enableSSE ?? true,
       ...config
-    };
+    }
     if (this.config.enableWebSocket) {
       this.initWebSocket();
     }
@@ -147,7 +147,7 @@ export class YoRHaAPIClient {
               value: Math.random(),
               updatedAt: new Date().toISOString(),
               name: ds.name
-            };
+            }
             this.pushData(ds.name, data);
           }, ds.intervalMs ?? 2000);
           this.dataSourceIntervals.set(ds.name, interval);
@@ -179,7 +179,7 @@ export class YoRHaAPIClient {
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey);
     }
-    const response = await this.apiCall(`/components/${type}/${componentId}`);
+    // removed unused response assignment
     this.cache.set(cacheKey, response);
     return response;
   }
@@ -222,7 +222,7 @@ export class YoRHaAPIClient {
       icon: data.config.icon,
       loading: data.data?.loading || false,
       ...data.config
-    };
+    }
   }
   async createPanelFromAPI(componentId: string): Promise<YoRHaPanel3DOptions> {
     const data = await this.getComponentConfig(componentId, 'panel');
@@ -233,7 +233,7 @@ export class YoRHaAPIClient {
       height: data.config.height,
       scrollable: data.config.scrollable,
       ...data.config
-    };
+    }
   }
   async createInputFromAPI(componentId: string): Promise<YoRHaInput3DOptions> {
     const data = await this.getComponentConfig(componentId, 'input');
@@ -244,7 +244,7 @@ export class YoRHaAPIClient {
       value: data.data?.value || '',
       error: data.data?.error || false,
       ...data.config
-    };
+    }
   }
   async createModalFromAPI(componentId: string): Promise<YoRHaModal3DOptions> {
     const data = await this.getComponentConfig(componentId, 'modal');
@@ -254,14 +254,14 @@ export class YoRHaAPIClient {
       size: data.config.size,
       closable: data.config.closable,
       ...data.config
-    };
+    }
   }
   // Event Logging
-  async logEvent(event: Omit<YoRHaEvent, 'timestamp'>): Promise<void> {
+  async logEvent(_event: Omit<YoRHaEvent, 'timestamp'>): Promise<void> {
     const fullEvent = {
       ...event,
       timestamp: new Date().toISOString()
-    };
+    }
     await this.apiCall('/events', {
       method: 'POST',
       body: JSON.stringify(fullEvent)
@@ -274,16 +274,16 @@ export class YoRHaAPIClient {
     return await this.apiCall(`/events?${params.toString()}`);
   }
   // Subscription System
-  subscribe<T = any>(event: string, callback: (data: T) => void): () => void {
+  subscribe<T = any>(_event: string, callback: (data: T) => void): () => void {
     if (!this.subscribers.has(event)) {
       this.subscribers.set(event, new Set();
     }
     this.subscribers.get(event)!.add(callback);
     return () => {
       this.subscribers.get(event)?.delete(callback);
-    };
+    }
   }
-  private notifySubscribers(event: string, data: any): void {
+  private notifySubscribers(_event: string, data: any): void {
     const callbacks = this.subscribers.get(event);
     if (callbacks) {
       callbacks.forEach(callback => callback(data);
@@ -306,21 +306,21 @@ export class YoRHaAPIClient {
     this.websocket.onopen = () => {
       this.wsAttempts = 0;
       console.log('YoRHa WebSocket connected');
-    };
-    this.websocket.onmessage = (event: any) => {
+    }
+    this.websocket.onmessage = (_event: any) => {
       try {
         const message = JSON.parse(event.data);
         this.handleWebSocketMessage(message);
       } catch (error: any) {
         console.error('Failed to parse WebSocket message:', error);
       }
-    };
+    }
     this.websocket.onclose = () => {
       const delay = Math.min(30000, Math.pow(2, this.wsAttempts) * 1000 + Math.random() * 500);
       this.wsAttempts++;
       console.log(`YoRHa WebSocket disconnected, reconnecting in ${(delay / 1000).toFixed(1)}s (attempt ${this.wsAttempts})`);
       setTimeout(() => this.initWebSocket(), delay);
-    };
+    }
   }
   private handleWebSocketMessage(message: any): void {
     switch (message.type) {
@@ -351,7 +351,7 @@ export class YoRHaAPIClient {
       console.warn('SSE init failed', e);
       return;
     }
-    this.eventSource.onmessage = (event: any) => {
+    this.eventSource.onmessage = (_event: any) => {
       try {
         const data = JSON.parse(event.data);
         this.notifySubscribers('sse:message', data);
@@ -363,14 +363,14 @@ export class YoRHaAPIClient {
       } catch (error: any) {
         console.error('Failed to parse SSE message:', error);
       }
-    };
+    }
     this.eventSource.onerror = () => {
       this.eventSource?.close();
       const delay = Math.min(30000, Math.pow(2, this.sseAttempts) * 1000 + Math.random() * 500);
       this.sseAttempts++;
       console.error(`SSE connection error, retrying in ${(delay / 1000).toFixed(1)}s (attempt ${this.sseAttempts})`);
       setTimeout(() => this.initServerSentEvents(), delay);
-    };
+    }
   }
   // HTTP API Helper
   private async apiCall(endpoint: string, options: RequestInit = {}): Promise<any> {
@@ -381,7 +381,7 @@ export class YoRHaAPIClient {
         ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` })
       },
       ...options
-    };
+    }
     let lastError: Error | null = null;
     for (let attempt = 0; attempt < this.config.retryAttempts; attempt++) {
       try {
@@ -438,5 +438,5 @@ export const YoRHaValidators = {
     return typeof config === 'object' &&
            (typeof config.title === 'string' || config.title === undefined);
   }
-};
+}
 // YoRHaAPIClient is already exported above as a class

@@ -35,7 +35,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   private isFocused = false;
   private isPasswordVisible = false;
   private cursorBlinkTimer = 0;
-  constructor(options: YoRHaInput3DOptions = {}) {
+  constructor(_options: YoRHaInput3DOptions = {}) {
     const style = YoRHaInput3D.getVariantStyle(
       options.variant || 'default',
       options.size || 'medium',
@@ -113,7 +113,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       bevelSegments: 2,
       bevelSize: radius * 0.05,
       bevelThickness: depth * 0.1
-    };
+    }
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
   }
   private createInputElements(): void {
@@ -237,7 +237,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
           this.clearButtonMesh.material.opacity = 0.7;
         }
       }
-    };
+    }
     this.add(this.clearButtonMesh);
   }
   private createBorderHighlight(): void {
@@ -276,7 +276,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     // Override click handler for focus
     this.userData.onClick = () => this.focus();
     // Add keyboard event simulation (in real implementation, use actual keyboard events)
-    this.userData.onKeyDown = (key: string) => this.handleKeyInput(key);
+    this.userData.onKeyDown = (_key: string) => this.handleKeyInput(key);
   }
   private startCursorBlink(): void {
     this.addCustomAnimation('cursorBlink', (deltaTime) => {
@@ -300,7 +300,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       small: { fontSize: 0.12 },
       medium: { fontSize: 0.16 },
       large: { fontSize: 0.2 }
-    };
+    }
     // Variant-based styles
     const variantStyles = {
       default: {
@@ -337,7 +337,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
           intensity: 0.2
         }
       }
-    };
+    }
     let variantStyle = variantStyles[variant as keyof typeof variantStyles] || variantStyles.default;
     // Apply error/success states (use any to bypass complex union types)
     if (error) {
@@ -354,7 +354,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     return {
       ...sizeStyles[size as keyof typeof sizeStyles],
       ...variantStyle
-    };
+    }
   }
   // Helper methods
   private getDisplayValue(): string {
@@ -419,7 +419,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     }
     this.emitEvent('blur', { value: this.currentValue });
   }
-  public setValue(value: string): void {
+  public setValue(_value: string): void {
     if (this.options.readonly) return;
     const oldValue = this.currentValue;
     this.currentValue = value.substring(0, this.options.maxLength || 255);
@@ -464,7 +464,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     this.isPasswordVisible = !this.isPasswordVisible;
     this.updateTextMesh();
   }
-  private handleKeyInput(key: string): void {
+  private handleKeyInput(_key: string): void {
     if (this.options.readonly || !this.isFocused) return;
     switch (key) {
       case 'Backspace':

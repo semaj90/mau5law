@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
   		});
   		return () => {
   			unsubscribeSidebar();
-  		};
+  		}
   	});
   	onDestroy(() => {
   		window.removeEventListener('resize', updateCanvasDimensions);
@@ -68,13 +68,13 @@ https://svelte.dev/e/js_parse_error -->
   let uploadingFiles = $state( );
   let completedUploads = $state( );
   	// Handle file drops with hash calculation
-  	async function handleFileDrop(event: DragEvent) {
+  	async function handleFileDrop(_event: DragEvent) {
   		event.preventDefault();
   		const files = event.dataTransfer?.file;
   		if (files && files.length > 0) {
   			await processFileUploads(Array.from(files));
   }}
-  	function handleDragOver(event: DragEvent) {
+  	function handleDragOver(_event: DragEvent) {
   		event.preventDefault();
   }
   	// Process multiple file uploads with hash calculation
@@ -83,8 +83,8 @@ https://svelte.dev/e/js_parse_error -->
   			const fileId = crypto.randomUUID();
   			uploadingFiles[fileId] = {
   				name: file.name,
-  				size: file.size
-  			};
+  				size: file.size;
+  			}
   			uploadProgress[fileId] = 0;
   			try {
   				// Calculate hash while uploading
@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
   					name: file.name,
   					hash: hash,
   					id: (result as { id?: unknown; uploaded?: unknown }).id
-  				};
+  				}
   				uploadProgress[fileId] = 100;
   				// Remove from uploading after delay
   				setTimeout(() => {
@@ -144,13 +144,13 @@ https://svelte.dev/e/js_parse_error -->
   }}
   		const response = await fetch('/api/evidence/upload', {
   			method: 'POST',
-  			body: formData
+  			body: formData;
   		});
   		if (!(response as { ok?: unknown; json?: unknown }).ok) {
   			throw new Error('Upload failed');
   }
   		const result = await (response as { ok?: unknown; json?: unknown }).json();
-  		return { id: (result as { id?: unknown; uploaded?: unknown }).uploaded?.[0]?.id || crypto.randomUUID() };
+  		return { id: (result as { id?: unknown; uploaded?: unknown }).uploaded?.[0]?.id || crypto.randomUUID() }
   }
 </script>
 <svelte:head>

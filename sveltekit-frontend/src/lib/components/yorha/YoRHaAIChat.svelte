@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
       content: messageInput.trim(),
       timestamp: new Date(),
       type: 'user';
-    };
+    }
     $messages = [...$messages, userMessage];
     const query = messageInput.trim();
     messageInput = '';
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({,
-          message: query
+          message: query;
           context: 'legal-ai',
           user_id: 'yorha-user',
           session_id: 'yorha-session',
@@ -129,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
         content: formatRAGResponse(result),
         timestamp: new Date(),
         type: 'assistant',
-        metadata: (result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).metadata || };
+        metadata: (result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).metadata || }
       $messages = [...$messages, assistantMessage];
       aiChatStore.addMessage(assistantMessage);
     } catch (error) {
@@ -145,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
   - Use offline mode commands`,
         timestamp: new Date(),
         type: 'error';
-      };
+      }
       $messages = [...$messages, errorMessage];
     } finally {
       $isLoading = false;
@@ -224,10 +224,10 @@ https://svelte.dev/e/js_parse_error -->
     const commandResponse = {
       id: Date.now.toString(),
       role: 'assistant',
-      content: response
+      content: response;
       timestamp: new Date(),
       type: 'command';
-    };
+    }
     $messages = [...$messages, commandResponse];
     aiChatStore.addMessage(commandResponse);
     $isLoading = false;
@@ -262,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     }, 100);
   }
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();

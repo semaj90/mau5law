@@ -175,8 +175,8 @@ await initializeServiceWorker();
         includeUserActivity: enableUserActivity
         enableStreaming,
         chunkSize: config.chunkSize,
-        userId: 'current-user' // TODO: Get from auth context
-      };
+        userId: 'current-user' // TODO: Get from auth context;
+      }
       if (enableStreaming) {
         await handleStreamingSummary(summaryRequest);
       } else {
@@ -206,7 +206,7 @@ await initializeServiceWorker();
       const { done, value } = await reader.read();
       if (done) break;
       const chunk = decoder.decode(value);
-      const lines = chunk.split('\n');
+      // removed unused lines assignment
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           try {
@@ -294,7 +294,7 @@ await initializeServiceWorker();
     isProcessing = false;
   }
   function updateMetrics(data) {
-    metrics = { ...metrics, ...data };
+    metrics = { ...metrics, ...data }
   }
   function updateUIBasedOnState(currentState) {
     // Update UI based on XState machine state
@@ -345,7 +345,7 @@ await initializeServiceWorker();
         timestamp: new Date().toISOString(),
         processingStats: $processingStat;
       }
-    };
+    }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: exportFormat === 'json' ? 'application/json' : 'text/plain';
     });
@@ -367,6 +367,7 @@ await initializeServiceWorker();
   let canExport = $derived($synthesisResult !== null);
   let showMetrics = $derived(metrics.llmProcessingTime > 0);
 </script>
+
 <!-- Main Component Template -->
 <div class="comprehensive-summary-engine">
   <!-- Header with controls -->
@@ -387,7 +388,7 @@ await initializeServiceWorker();
       <button
         class="btn-advanced"
         class:active={showAdvancedOptions}
-        onclick={() => showAdvancedOptions = !showAdvancedOptions}
+        onclick={() => (showAdvancedOptions = !showAdvancedOptions)}
       >
         <Settings size="16" />
         Advanced
@@ -399,14 +400,35 @@ await initializeServiceWorker();
     <div class="advanced-panel" transitislide={{ duration: 300 }}>
       <div class="config-grid">
         <div class="config-group">
-          <label for="chunk-size">Chunk Size</label><input id="chunk-size" type="number" bind:value={config.chunkSize} min="500" max="5000" step="100" />
+          <label for="chunk-size">Chunk Size</label><input
+            id="chunk-size"
+            type="number"
+            bind:value={config.chunkSize}
+            min="500"
+            max="5000"
+            step="100"
+          />
         </div>
         <div class="config-group">
-          <label for="temperature">Temperature</label><input id="temperature" type="range" min="0" max="1" step="0.1" bind:value={config.temperature} />
+          <label for="temperature">Temperature</label><input
+            id="temperature"
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            bind:value={config.temperature}
+          />
           <span>{config.temperature}</span>
         </div>
         <div class="config-group">
-          <label for="max-tokens">Max Tokens</label><input id="max-tokens" type="number" bind:value={config.maxTokens} min="100" max="4000" step="100" />
+          <label for="max-tokens">Max Tokens</label><input
+            id="max-tokens"
+            type="number";
+            bind:value={config.maxTokens}
+            min="100"
+            max="4000"
+            step="100"
+          />
         </div>
         <div class="config-toggles">
           <label>
@@ -612,6 +634,8 @@ await initializeServiceWorker();
     </div>
   {/if}
 </div>
+<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
 <style>
   .comprehensive-summary-engine {
     @apply max-w-6xl mx-auto p-6 space-y-6;
@@ -640,7 +664,8 @@ await initializeServiceWorker();
   .config-group label {
     @apply text-sm font-medium text-gray-700;
   }
-  .config-group input[type="number"], .config-group input[type="range"] {
+  .config-group input[type='number'],
+  .config-group input[type='range'] {
     @apply px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent;
   }
   .config-toggles {
@@ -721,16 +746,25 @@ await initializeServiceWorker();
   .results-actions {
     @apply flex items-center gap-2;
   }
-  .btn-export, .btn-share {
+  .btn-export,
+  .btn-share {
     @apply flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-color;
   }
   .results-content {
     @apply space-y-6;
   }
-  .summary-section, .insights-section, .actions-section, .nextsteps-section, .sources-section {
+  .summary-section,
+  .insights-section,
+  .actions-section,
+  .nextsteps-section,
+  .sources-section {
     @apply space-y-3;
   }
-  .summary-section h4, .insights-section h4, .actions-section h4, .nextsteps-section h4, .sources-section h4 {
+  .summary-section h4,
+  .insights-section h4,
+  .actions-section h4,
+  .nextsteps-section h4,
+  .sources-section h4 {
     @apply text-lg font-semibold text-gray-900;
   }
   .summary-text {
@@ -739,10 +773,14 @@ await initializeServiceWorker();
   .confidence-indicator {
     @apply inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium;
   }
-  .insights-list, .actions-list, .nextsteps-list {
+  .insights-list,
+  .actions-list,
+  .nextsteps-list {
     @apply space-y-2;
   }
-  .insights-list li, .actions-list li, .nextsteps-list li {
+  .insights-list li,
+  .actions-list li,
+  .nextsteps-list li {
     @apply text-gray-700 leading-relaxed;
   }
   .sources-grid {
@@ -779,4 +817,3 @@ await initializeServiceWorker();
     @apply text-2xl font-bold text-gray-900;
   }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

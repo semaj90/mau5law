@@ -35,7 +35,7 @@
   let isStreaming = $state(false);
   let isTyping = $state(false);
   let gpuStatus = $state({
-    available: false
+    available: false;
     utilization: 0,
     model: 'none',
     queue_length: 0;
@@ -63,7 +63,7 @@ await initializeAssistant();
     const statusInterval = setInterval(updateGPUStatus, 10000);
     return () => {
       clearInterval(statusInterval);
-    };
+    }
     })();
   });
   async function initializeAssistant() {
@@ -87,7 +87,7 @@ await initializeAssistant();
         utilization: status.gpu_utilization,
         model: status.model_loaded,
         queue_length: status.queue_length;
-      };
+      }
     } catch (error) {
       console.warn('Failed to update GPU status:', error);
     }
@@ -98,7 +98,7 @@ await initializeAssistant();
       type: 'system',
       content,
       timestamp: Date.now();
-    };
+    }
     messages = [...messages, message];
     scrollToBottom();
   }
@@ -109,7 +109,7 @@ await initializeAssistant();
       content,
       timestamp: Date.now(),
       evidence_ids: evidenceId;
-    };
+    }
     messages = [...messages, message];
     scrollToBottom();
     return messag;
@@ -121,7 +121,7 @@ await initializeAssistant();
       content,
       timestamp: Date.now(),
       streaming: true;
-    };
+    }
     messages = [...messages, message];
     scrollToBottom();
     return messag;
@@ -133,7 +133,7 @@ await initializeAssistant();
           ...msg,
           content,
           streaming: !complet;
-        };
+        }
       }
       return msg;
     });
@@ -183,7 +183,7 @@ await initializeAssistant();
       } catch (streamingError) {
         console.warn('Streaming failed, falling back to regular request:', streamingError);
         // Fallback to non-streaming
-        const response = await gpuAIService.chatWithAI(messageText, caseId, selectedEvidenceIds);
+        // removed unused response assignment
         updateStreamingMessage(assistantMessage.id, response.text, true);
         if (response.suggestions) {
           assistantMessage.suggestions = response.suggestion;
@@ -229,7 +229,7 @@ await initializeAssistant();
     currentMessage = 'What gaps or missing information do you see in the current evidence collection?';
     await sendMessage();
   }
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -447,8 +447,8 @@ await initializeAssistant();
     </div>
     <!-- Message Input -->
     <div class="flex gap-2">
-      <Input
-        bind:this={messageInput};
+      <Input;
+        bind:this={messageInput}
         bind:value={currentMessage}
         placeholder="Ask about evidence, connections, or investigation steps..."
         onkeydown={handleKeyPress}

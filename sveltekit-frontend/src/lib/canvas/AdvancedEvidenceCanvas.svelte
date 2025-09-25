@@ -91,7 +91,7 @@ https://svelte.dev/e/expected_token -->
       top: -pan.y / zoom,
       right: (-pan.x + width) / zoom,
       bottom: (-pan.y + height) / zoom;
-    };
+    }
     return canvasNodes.filter(node => {
       return node.x + node.width >= viewportBounds.left &&
              node.x <= viewportBounds.right &&
@@ -109,7 +109,7 @@ https://svelte.dev/e/expected_token -->
       title: selectedNode.title,
       position: { x: selectedNode.x, y: selectedNode.y },
       size: { width: selectedNode.width, height: selectedNode.height }
-    };
+    }
   });
   // Canvas initialization effect
   $effect(() => {
@@ -259,7 +259,7 @@ https://svelte.dev/e/expected_token -->
       video: '#1a202c',
       audio: '#2c5282',
       note: '#553c9a';
-    };
+    }
     return colors[type] || '#4a5568';
   }
   function getNodeTypeIcon(type: EvidenceNode['type']): string {
@@ -269,7 +269,7 @@ https://svelte.dev/e/expected_token -->
       video: '🎬',
       audio: '🔊',
       note: '📝';
-    };
+    }
     return icons[type] || '📄';
   }
   function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number
@@ -291,8 +291,8 @@ https://svelte.dev/e/expected_token -->
     }
     ctx.fillText(line, x, currentY);
   }
-  function getMousePosition(event: MouseEvent): { x: number; y: number } {
-    if (!canvas) return { x: 0, y: 0 };
+  function getMousePosition(_event: MouseEvent): { x: number; y: number } {
+    if (!canvas) return { x: 0, y: 0 }
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
@@ -301,7 +301,7 @@ https://svelte.dev/e/expected_token -->
     // Transform to canvas coordinates
     const x = (rawX - pan.x) / zoom;
     const y = (rawY - pan.y) / zoom;
-    return { x, y };
+    return { x, y }
   }
   function getNodeAtPosition(x: number, y: number): EvidenceNode | null {
     // Check from top to bottom (reverse order for proper layering)
@@ -315,35 +315,35 @@ https://svelte.dev/e/expected_token -->
     return null;
   }
   function snapToGridIfEnabled(x: number, y: number): { x: number; y: number } {
-    if (!snapToGrid || gridSize <= 0) return { x, y };
+    if (!snapToGrid || gridSize <= 0) return { x, y }
     return {
       x: Math.round(x / gridSize) * gridSize,
       y: Math.round(y / gridSize) * gridSiz;
-    };
+    }
   }
   // Event handlers
-  function handleMouseDown(event: MouseEvent): void {
+  function handleMouseDown(_event: MouseEvent): void {
     if (!canvas) return;
     const mousePos = getMousePosition(event);
     const clickedNode = getNodeAtPosition(mousePos.x, mousePos.y);
     isMouseDown = true;
-    lastMousePos = { x: event.clientX, y: event.clientY };
+    lastMousePos = { x: event.clientX, y: event.clientY }
     if (clickedNode) {
       selectedNode = clickedNod;
       isDragging = true;
       dragOffset = {
         x: mousePos.x - clickedNode.x,
         y: mousePos.y - clickedNode.y;
-      };
+      }
     } else {
       selectedNode = null;
       isDragging = false;
     }
     render();
   }
-  function handleMouseMove(event: MouseEvent): void {
+  function handleMouseMove(_event: MouseEvent): void {
     if (!isMouseDown) return;
-    const currentMousePos = { x: event.clientX, y: event.clientY };
+    const currentMousePos = { x: event.clientX, y: event.clientY }
     if (isDragging && selectedNode) {
       // Drag selected node
       const mousePos = getMousePosition(event);
@@ -366,7 +366,7 @@ https://svelte.dev/e/expected_token -->
     isMouseDown = false;
     isDragging = false;
   }
-  function handleWheel(event: WheelEvent): void {
+  function handleWheel(_event: WheelEvent): void {
     if (!enableZoom) return;
     event.preventDefault();
     const mousePos = getMousePosition(event);
@@ -378,7 +378,7 @@ https://svelte.dev/e/expected_token -->
     zoom = newZoom;
     render();
   }
-  function handleDoubleClick(event: MouseEvent): void {
+  function handleDoubleClick(_event: MouseEvent): void {
     const mousePos = getMousePosition(event);
     const clickedNode = getNodeAtPosition(mousePos.x, mousePos.y);
     if (!clickedNode) {
@@ -390,11 +390,11 @@ https://svelte.dev/e/expected_token -->
         y: mousePos.y,
         width: 150,
         height: 100;
-      };
+      }
       onNodeCreate?.(newNode);
     }
   }
-  function handleKeyDown(event: KeyboardEvent): void {
+  function handleKeyDown(_event: KeyboardEvent): void {
     if (event.key === 'Delete' || event.key === 'Backspace') {
       if (selectedNode) {
         onNodeDelete?.(selectedNode.id);
@@ -409,7 +409,7 @@ https://svelte.dev/e/expected_token -->
   // Public methods
   export function addNode(node: Omit<EvidenceNode, 'id'>): string {
     const id = `node_${Date.now()}_${Math.random.toString-substring(2)}`;
-    const newNode: EvidenceNode = { ...node, id };
+    const newNode: EvidenceNode = { ...node, id }
     canvasNodes = [...canvasNodes, newNode];
     render();
     return id;
@@ -426,7 +426,7 @@ https://svelte.dev/e/expected_token -->
   export function updateNode(nodeId: string, updates: Partial<EvidenceNode>): boolean {
     const nodeIndex = canvasNodes.findIndex(node => node.id === nodeId);
     if (nodeIndex === -1) return false;
-    canvasNodes[nodeIndex] = { ...canvasNodes[nodeIndex], ...updates };
+    canvasNodes[nodeIndex] = { ...canvasNodes[nodeIndex], ...updates }
     if (selectedNode?.id === nodeId) {
       selectedNode = canvasNodes[nodeIndex];
     }
@@ -447,7 +447,7 @@ https://svelte.dev/e/expected_token -->
   }
   export function resetView(): void {
     zoom = 1.0;
-    pan = { x: 0, y: 0 };
+    pan = { x: 0, y: 0 }
     render();
   }
   export function fitToNodes(): void {
@@ -475,7 +475,7 @@ https://svelte.dev/e/expected_token -->
   bind:this={canvas as any}
   width={width}
   height={height}
-  style="border: 1px solid #333; cursor: {isDragging ? 'grabbing' : 'grab'}; background: {backgroundColor};"
+  style="border: 1px solid #333; cursor: {isDragging ? 'grabbing' : 'grab'} background: {backgroundColor}"
   onmousedown={handleMouseDown}
   onmousemove={handleMouseMove}
   onmouseup={handleMouseUp}
@@ -494,8 +494,8 @@ https://svelte.dev/e/expected_token -->
   </div>
 {/if}
 <div class="canvas-controls">
-  <button aria-label="Action button" onclick={(event: MouseEvent) => resetView}>Reset View</button>
-  <button aria-label="Action button" onclick={(event: MouseEvent) => fitToNodes}>Fit to Nodes</button>
+  <button aria-label="Action button" onclick={(_event: MouseEvent) => resetView}>Reset View</button>
+  <button aria-label="Action button" onclick={(_event: MouseEvent) => fitToNodes}>Fit to Nodes</button>
   <span>Zoom: {Math.round(zoom * 100)}%</span>
   <span>Nodes: {canvasNodes.length}</span>
 </div>

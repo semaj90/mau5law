@@ -25,22 +25,22 @@ export const load: PageServerLoad = async ({ params, locals }) => {
         description: caseData.description,
         status: caseData.status,
         createdAt: caseData.created_at,
-        updatedAt: caseData.updated_at
+        updatedAt: caseData.updated_at,
       },
-      documents: documents.map(doc => ({,
+      documents: documents.map(doc => ({
         id: doc.id,
         title: doc.title,
         type: doc.type,
         uploadedAt: doc.uploaded_at,
-        processed: doc.processed
+        processed: doc.processed,
       })),
-      ragHistory: ragHistory || []
-    };
+      ragHistory: ragHistory || [],
+    }
   } catch (err) {
     console.error('Error loading case RAG data:', err);
     throw error(500, 'Failed to load case data');
   }
-};
+}
 export const actions: Actions = {
   query: async ({ request, params, locals }) => {
     if (!locals.user) {
@@ -56,8 +56,8 @@ export const actions: Actions = {
       // Perform RAG query against case documents
       const response = await legalRAGService.queryCaseDocuments(caseId, query, {
         userId: locals.user.id,
-        includeMetadata: true
-        maxResults: 10
+        includeMetadata: true,
+        maxResults: 10,
       });
       // Save query to history
       await legalRAGService.saveRAGInteraction(caseId, {
@@ -65,20 +65,20 @@ export const actions: Actions = {
         response: response.answer,
         sources: response.sources,
         userId: locals.user.id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       return json({
-        success: true
+        success: true,
         response: {
           answer: response.answer,
           sources: response.sources,
           confidence: response.confidence,
-          processingTime: response.processingTime
-        }
+          processingTime: response.processingTime,
+        },
       });
     } catch (err) {
       console.error('RAG query error:', err);
       return json({ error: 'Failed to process query' }, { status: 500 });
     }
-  }
-};
+  },
+}

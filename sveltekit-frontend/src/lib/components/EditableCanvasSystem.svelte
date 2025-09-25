@@ -71,7 +71,7 @@ mounted = true;
             userId
           }));
         }
-      };
+      }
       ws.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data);
@@ -79,17 +79,17 @@ mounted = true;
         } catch (error) {
           console.error('WebSocket message error:', error);
         }
-      };
+      }
       ws.onclose=() => {
         console.log('WebSocket disconnected');
         isOnline.set(false);
         scheduleReconnect();
-      };
+      }
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
         isOnline.set(false);
         ondispatch?.('WebSocket connection failed');
-      };
+      }
     } catch (error) {
       console.error('Failed to initialize WebSocket:', error);
       ondispatch?.('Failed to initialize real-time connection');
@@ -159,7 +159,7 @@ mounted = true;
       height: 80,
       content: 'New Node',
       type: 'text';
-    };
+    }
     canvas.update(c => {
       if (c) {
         c.nodes.push(newNode);
@@ -177,7 +177,7 @@ mounted = true;
       }));
     }
   }
-  function handleCanvasClick(event: MouseEvent) {
+  function handleCanvasClick(_event: MouseEvent) {
     if (readonly) return;
     const rect = canvasElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -207,14 +207,14 @@ mounted = true;
       ondispatch?.(`Upload failed: ${error.message}`);
     }
   }
-  function handleFileDrop(event: DragEvent) {
+  function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
     const files = event.dataTransfer?.file;
     if (files?.length) {
       uploadEvidence(files[0]);
     }
   }
-  function handleDragOver(event: DragEvent) {
+  function handleDragOver(_event: DragEvent) {
     event.preventDefault();
     event.dataTransfer!.dropEffect = 'copy';
   }

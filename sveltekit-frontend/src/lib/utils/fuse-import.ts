@@ -1,4 +1,3 @@
-import path from "path";
 // Fuse.js import wrapper with fallback
 let Fuse: any;
 try {
@@ -27,7 +26,7 @@ try {
               break;
             }
           }
-          return { item, refIndex: index, score };
+          return { item, refIndex: index, score }
         })
         .filter((result: any) => (result as { score?: any }).score <= threshold)
         .sort((a, b) => a.score - b.score);
@@ -35,6 +34,6 @@ try {
     private getNestedValue(obj: any, path: string) {
       return path.split('.').reduce((current, key) => current?.[key], obj);
     }
-  };
+  }
 }
 export default Fuse;

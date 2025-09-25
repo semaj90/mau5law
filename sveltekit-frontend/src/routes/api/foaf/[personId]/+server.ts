@@ -5,7 +5,7 @@ import { db } from '$lib/server/db/index.js'
 import { users, cases, evidence } from '$lib/server/db/schema-unified.js'
 import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js'
 import { eq, ne, and, sql } from 'drizzle-orm'
-import { URL } from "url"
+
 }
 export interface FOAFRequest {
   personId: string
@@ -23,7 +23,7 @@ export interface Person {
   relationshipPath: string
 }
 export interface FOAFResponse {
-  people: Person[]
+  people: Person[];
   summary: string
   totalFound: number
   processingTimeMs: number
@@ -363,7 +363,7 @@ async function enhanceRecommendationsWithEmbeddings(
           if (recProfile.length >= 50) {
             const recEmbedding = await generateEnhancedEmbedding(recProfile, {
               provider: 'nomic-embed',
-              legalDomain: true
+              legalDomain: true;
               cache: true
             }) as number[]
             const similarity = cosineSimilarity(targetEmbedding, recEmbedding)

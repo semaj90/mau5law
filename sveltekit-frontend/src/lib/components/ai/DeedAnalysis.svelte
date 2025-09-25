@@ -59,11 +59,10 @@ https://svelte.dev/e/js_parse_error -->
   }
   });
 </script>
+
 <!-- Search Input -->
 <div class="mb-6">
-  <label for="search-query" class="block text-sm font-medium mb-2">
-    🔍 Semantic Search Legal Documents
-  </label>
+  <label for="search-query" class="block text-sm font-medium mb-2"> 🔍 Semantic Search Legal Documents </label>
   <div class="flex gap-2">
     <input
       id="search-query"
@@ -101,7 +100,9 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mb-4">
       <h3 class="font-bold mb-2 text-gray-700">Content Preview</h3>
       <div class="bg-gray-50 p-3 rounded border max-h-40 overflow-y-auto">
-        <p class="text-sm text-gray-700 whitespace-pre-wrap">{selectedDocument.content.slice(0, 500)}{selectedDocument.content.length > 500 ? '...' : ''}</p>
+        <p class="text-sm text-gray-700 whitespace-pre-wrap">
+          {selectedDocument.content.slice(0, 500)}{selectedDocument.content.length > 500 ? '...' : ''}
+        </p>
       </div>
     </div>
   </div>
@@ -138,10 +139,14 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex justify-between items-start mb-2">
             <h4 class="font-semibold text-gray-900">{doc.title}</h4>
             <div class="flex items-center space-x-2">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+              >
                 {doc.documentType}
               </span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+              >
                 {(doc.similarity * 100).toFixed(1)}% match
               </span>
             </div>
@@ -157,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <div class="mt-3 flex justify-end">
             <button
-              onclick={() => selectedDocument = doc}
+              onclick={() => (selectedDocument = doc)}
               class="text-blue-600 hover:text-blue-800 text-sm font-medium"
             >
               View Details →
@@ -176,7 +181,10 @@ https://svelte.dev/e/js_parse_error -->
     <div class="text-center py-8">
       <div class="text-gray-400 text-4xl mb-4">🔍</div>
       <p class="text-gray-600 mb-2">Enter a search query to find similar legal documents</p>
-      <p class="text-sm text-gray-500">Use natural language like "property deed transfer" or "contract liability clauses"</p>
+      <p class="text-sm text-gray-500">
+        Use natural language like "property deed transfer" or "contract liability clauses"
+      </p>
     </div>
   {/if}
 </div>
+;

@@ -29,7 +29,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
  * machine workflow and web worker architecture.
  */
 interface OllamaSIMDRequest {
-  // Standard Ollama parameters
+  // Standard Ollama parameters;
   prompt: string
   model?: string
   temperature?: number
@@ -412,4 +412,4 @@ const originalDELETEHandler: RequestHandler = async () => {
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const PUT = redisOptimized.aiAnalysis(originalPUTHandler)
-export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler)
+export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

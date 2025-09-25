@@ -6,7 +6,7 @@ declare module 'lokijs' {
   interface LokiOptions {
     filename?: string;
     autoload?: boolean;
-    autoloadCallback?: ((err?: Error) => void);
+    autoloadCallback?: (err?: Error) => void;
     autosave?: boolean;
     autosaveInterval?: number;
     adapter?: LokiPersistenceAdapter;
@@ -19,25 +19,25 @@ declare module 'lokijs' {
     name: string;
     data: T[];
     idIndex: number[];
-    binaryIndices: { [key: string]: any };
+    binaryIndices: { [key: string]: any }
     objType: string;
     dirty: boolean;
     cachedIndex?: number[];
-    cachedBinaryIndex?: { [key: string]: any };
+    cachedBinaryIndex?: { [key: string]: any }
     cachedData?: T[];
     adaptiveBinaryIndices: boolean;
     transactional: boolean;
     asyncListeners: boolean;
     constraints: {
-      unique: { [key: string]: any };
-    };
+      unique: { [key: string]: any }
+    }
     uniqueNames: string[];
-    transforms: { [key: string]: any };
+    transforms: { [key: string]: any }
     ttl: {
       age?: number;
       ttlInterval?: number;
       daemon?: any;
-    };
+    }
     // Enhanced methods with proper typing
     insert(doc: T): T;
     insert(docs: T[]): T[];
@@ -69,8 +69,8 @@ declare module 'lokijs' {
     setTransform(name: string, transform: any[]): void;
     removeTransform(name: string): void;
     // Events
-    on(event: 'insert' | 'update' | 'delete' | 'warning' | 'error', listener: Function): void;
-    emit(event: string, ...args: any[]): void;
+    on(_event: 'insert' | 'update' | 'delete' | 'warning' | 'error', listener: Function): void;
+    emit(_event: string, ...args: any[]): void;
     // Statistics
     count(): number;
     count(query: any): number;
@@ -108,7 +108,7 @@ declare module 'lokijs' {
     mapReduce<U, V>(mapFun: (doc: T) => U, reduceFun: (values: U[]) => V): V;
     // Terminal operations
     data(): T[];
-    data(options: { forceClones?: boolean; forceCloneMethod?: string }): T[];
+    data(_options: { forceClones?: boolean; forceCloneMethod?: string }): T[];
     // Updates
     update(updateFunction: (doc: T) => any): void;
     remove(): void;
@@ -143,8 +143,8 @@ declare module 'lokijs' {
     rebuild(): DynamicView<T>;
     branchResultset(): Resultset<T>;
     // Events
-    on(event: 'rebuild' | 'filter' | 'sort', listener: Function): void;
-    emit(event: string, ...args: any[]): void;
+    on(_event: 'rebuild' | 'filter' | 'sort', listener: Function): void;
+    emit(_event: string, ...args: any[]): void;
     // Persistence
     toJSON(): any;
     fromJSON(obj: any): void;
@@ -206,10 +206,7 @@ declare module 'lokijs' {
     close(callback?: () => void): void;
     // Serialization
     serialize(): string;
-    serialize(options: {
-      serializationMethod?: 'normal' | 'pretty' | 'destructured';
-      inflate?: boolean;
-    }): string;
+    serialize(_options: { serializationMethod?: 'normal' | 'pretty' | 'destructured'; inflate?: boolean }): string;
     deserialize(destructuredSource: any, options?: any): void;
     // Configuration
     configureOptions(options?: LokiOptions, initialConfig?: boolean): void;
@@ -218,12 +215,12 @@ declare module 'lokijs' {
     serializeChanges(collectionNamesArray?: string[]): string;
     clearChanges(): void;
     // Events
-    on(event: 'init' | 'loaded' | 'flushbuffer' | 'close' | 'changes' | 'warning', listener: Function): void;
-    emit(event: string, ...args: any[]): boolean;
+    on(_event: 'init' | 'loaded' | 'flushbuffer' | 'close' | 'changes' | 'warning', listener: Function): void;
+    emit(_event: string, ...args: any[]): boolean;
     // Utilities
     copy(): Loki;
-    addListener(event: string, listener: Function): void;
-    removeListener(event: string, listener: Function): void;
+    addListener(_event: string, listener: Function): void;
+    removeListener(_event: string, listener: Function): void;
   }
   export = Loki;
 }

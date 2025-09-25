@@ -32,7 +32,7 @@
   interface Annotation {
     id: string;
     type: 'highlight' | 'note' | 'redaction';
-    bounds: { x: number; y: number; width: number; height: number };
+    bounds: { x: number; y: number; width: number; height: number }
     content: string;
   }
   interface DocumentLODViewerProps {
@@ -43,7 +43,7 @@
     maxLODLevel?: number;
     cacheStrategy?: 'palace' | 'cartridge';
     onPageChange?: (pageNumber: number) => void;
-    onLODChange?: (lodLevel: number) => void;
+    onLODChange?: (_lodLevel: number) => void;
   }
   let {
     documentId,
@@ -75,7 +75,7 @@
     1: { textureSize: 1024, quality: 0.8, description: 'High' },
     2: { textureSize: 512, quality: 0.6, description: 'Medium' },
     3: { textureSize: 256, quality: 0.4, description: 'Low (N64 Style)' }
-  };
+  }
   // Derived values for automatic LOD switching
   let recommendedLOD = $derived(() => {
     // N64-style LOD calculation based on zoom level
@@ -129,7 +129,7 @@ if (!browser || !enableWebGPU) return;
     if (!context) throw new Error('WebGPU context creation failed');
     // Configure canvas with N64-style settings
     context.configure({
-      device: gpuDevice
+      device: gpuDevice;
       format: 'bgra8unorm',
       alphaMode: 'premultiplied',
       usage: GPUTextureUsage.RENDER_ATTACHMENT;
@@ -149,7 +149,7 @@ if (!browser || !enableWebGPU) return;
     isLoading = true;
     try {
       // Load document metadata
-      const response = await fetch(`/api/v1/documents/${documentId}/metadata`);
+      // removed unused response assignment
       const metadata = await response.json();
       totalPages = metadata.totalPage;
       // Load initial pages with appropriate LOD
@@ -193,7 +193,7 @@ if (!browser || !enableWebGPU) return;
           annotations: pageData.annotations || [],
           lodTextures: new Map(),
           currentLOD: lodLevel;
-        };
+        }
         documentPages.set(pageNumber, page);
       }
       // Create WebGPU texture for this LOD level
@@ -283,7 +283,7 @@ if (!browser || !enableWebGPU) return;
     // Implementation would include N64-style shader with:
     // - Reduced color palette
     // - Pixelation filter
-    // - Distance fog effect
+    // - Distance fog effect;
   }
   async function renderCanvas2DFallback(): Promise<void> {
     const ctx = canvasElement?.getContext('2d');
@@ -344,16 +344,16 @@ if (!browser || !enableWebGPU) return;
   }
   function estimateRenderTime(): number {
     // Estimate render time based on LOD level (N64-style performance)
-    const baseTimes = { 0: 16.7, 1: 12.5, 2: 8.3, 3: 4.2 }; // ms
+    const baseTimes = { 0: 16.7, 1: 12.5, 2: 8.3, 3: 4.2 } // ms
     return baseTimes[currentLOD as keyof typeof baseTimes] || 16.7;
   }
   // Mouse interaction handlers
-  function handleMouseDown(event: MouseEvent): void {
+  function handleMouseDown(_event: MouseEvent): void {
     dragState.isDragging = true;
     dragState.startX = event.clientX;
     dragState.startY = event.clientY;
   }
-  function handleMouseMove(event: MouseEvent): void {
+  function handleMouseMove(_event: MouseEvent): void {
     if (!dragState.isDragging) return;
     const deltaX = event.clientX - dragState.startX;
     const deltaY = event.clientY - dragState.startY;
@@ -367,13 +367,14 @@ if (!browser || !enableWebGPU) return;
     dragState.isDragging = false;
   }
   // Wheel zoom handler
-  function handleWheel(event: WheelEvent): void {
+  function handleWheel(_event: WheelEvent): void {
     event.preventDefault();
     const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
     zoomLevel = Math.max(0.1, Math.min(4.0, zoomLevel * zoomFactor));
     updateLODBasedOnZoom();
   }
 </script>
+
 <div class="document-lod-viewer nes-container with-title">
   <p class="title">📄 Document Viewer (LOD)</p>
   <!-- Document Controls -->
@@ -492,6 +493,7 @@ if (!browser || !enableWebGPU) return;
     </div>
   </div>
 </div>
+
 <style>
   .document-lod-viewer {
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);
@@ -594,8 +596,12 @@ if (!browser || !enableWebGPU) return;
   }
   /* N64-style animations */
   @keyframes indeterminate {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
   .nes-progress-bar.indeterminate {
     animation: indeterminate 1.5s linear infinite;

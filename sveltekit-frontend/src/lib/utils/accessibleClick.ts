@@ -4,7 +4,7 @@
 // If you can, prefer just using <button>. This is for unavoidable structural cases.
 }
 export interface AccessibleClickOptions {
-  onActivate: (event: KeyboardEvent | MouseEvent) => void;
+  onActivate: (_event: KeyboardEvent | MouseEvent) => void;
   preventDefault?: boolean; // default true for Space key
 }
 export function accessibleClick(node: HTMLElement, opts: AccessibleClickOptions | ((e: MouseEvent | KeyboardEvent) => void)) {
@@ -28,5 +28,5 @@ export function accessibleClick(node: HTMLElement, opts: AccessibleClickOptions 
       node.removeEventListener('keydown', handleKey);
       node.removeEventListener('click', handleClick);
     }
-  };
+  }
 }

@@ -43,7 +43,7 @@ export interface Evidence {
     admissibility: "admissible" | "questionable" | "inadmissible";
     reasoning: string;
     suggestedTags: string[];
-  };
+  }
 }
 export interface UploadFile {
   id: string;
@@ -108,7 +108,7 @@ const fuseOptions = {
   threshold: 0.3,
   includeScore: true
   includeMatches: true
-};
+}
 // Derived store for filtered evidence
 export const filteredEvidence = derived(evidenceGrid, ($evidenceGrid) => {
   const { items, searchQuery, sortBy, sortOrder } = $evidenceGrid;
@@ -171,7 +171,7 @@ export const evidenceActions = {
     });
     try {
       const url = caseId ? `/api/evidence?caseId=${caseId}` : "/api/evidence";
-      const response = await fetch(url);
+      // removed unused response assignment
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to load evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
@@ -211,7 +211,7 @@ export const evidenceActions = {
       } else {
         newSelected.add(itemId);
       }
-      return { ...state, selectedItems: newSelected };
+      return { ...state, selectedItems: newSelected }
     });
   },
   // Clear all selections
@@ -243,7 +243,7 @@ export const evidenceActions = {
       throw error;
     }
   }
-};
+}
 export const uploadActions = {
   // Open upload modal
   openModal(caseId?: string) {
@@ -253,7 +253,7 @@ export const uploadActions = {
       caseId,
       files: [],
       step: "select",
-      isProcessing: false
+      isProcessing: false;
       error: undefined
     });
   },
@@ -264,7 +264,7 @@ export const uploadActions = {
       isOpen: false
       files: [],
       step: "select",
-      isProcessing: false
+      isProcessing: false;
       error: undefined
     });
   },
@@ -295,7 +295,7 @@ export const uploadActions = {
                 : f
             )
           });
-        };
+        }
         reader.readAsDataURL(uploadFile.file);
       }
     });
@@ -379,7 +379,7 @@ export const uploadActions = {
               });
               reject(new Error(error);
             }
-          };
+          }
           xhr.onerror = () => {
             const error = "Upload failed: Network error";
             uploadModal.update((modalState) => ({
@@ -391,7 +391,7 @@ export const uploadActions = {
               )
             });
             reject(new Error(error);
-          };
+          }
           xhr.open("POST", "/api/evidence/upload");
           xhr.send(formData);
         });
@@ -410,5 +410,5 @@ export const uploadActions = {
       });
     }
   }
-};
+}
 export default evidenceActions;

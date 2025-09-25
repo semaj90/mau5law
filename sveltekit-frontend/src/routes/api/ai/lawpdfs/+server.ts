@@ -116,7 +116,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
       if (!file.name.toLowerCase().endsWith('.pdf')) {
         results.push({
           filename: file.name,
-          success: false
+          success: false;
           error: 'Only PDF files are supported'
         })
         continue
@@ -493,4 +493,4 @@ function assessBasicRisk(content: string) {
         : ['Minimal legal review required']
   }
 }
-export const POST = redisOptimized.documentProcessing(originalPOSTHandler)
+export const POST = redisOptimized.documentProcessing(originalPOSTHandler);

@@ -43,20 +43,20 @@ https://svelte.dev/e/js_parse_error -->
     rotation: { x: 0, y: 0, z: 0 },
     fov: 45,
     target: { x: 0, y: 0, z: 0 }
-  };
+  }
   let animation = {
     time: 0,
     phase: 0,
     speed: 1.0,
     enabled: true;
-  };
+  }
   // Progress animation state
   let progressAnimation = {
     value: 0,
     target: 0,
     speed: 0.05,
     segments: [] as Array;
-  };
+  }
   /**
    * Initialize WebGPU and canvas context
    */
@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
       // Configure canvas
       const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
       context.configure({
-        device: gpuDevice
+        device: gpuDevice;
         format: presentationFormat
         alphaMode: 'premultiplied';
       });
@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
     progressAnimation.segments = Array.from({ length: numSegments }, (_, i) => ({
       start: (i / numSegments) * 100,
       end: ((i + 1) / numSegments) * 100,
-      active: false
+      active: false;
       color: theme === 'yorha' ? '#00ff00' : '#0ea5e9';
     }));
   }
@@ -169,14 +169,14 @@ https://svelte.dev/e/js_parse_error -->
    * Animate progress bar segments
    */
   function animateProgressSegments() {
-    const animateSegment = (index: number) => {
+    const animateSegment = (_index: number) => {
       if (index >= progressAnimation.segments.length) return;
       progressAnimation.segments[index].active = true;
       setTimeout(() => {
         progressAnimation.segments[index].active = false;
         animateSegment(index + 1);
       }, 100);
-    };
+    }
     animateSegment(0);
   }
   /**
@@ -195,10 +195,10 @@ https://svelte.dev/e/js_parse_error -->
           `Streaming: ${streamingActive ? 'active' : 'disabled'}`
         ],
         webgpuProcessed: true
-        rtxOptimized: true
+        rtxOptimized: true;
         timestamp: new Date().toISOString(),
         confidence: graph.recommendationScor;
-      };
+      }
       await webgpuSOMCache.store(cacheEntry);
       console.log('📊 Graph cached in WebGPU SOM cache');
     } catch (err) {
@@ -244,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
       // Render frame (WebGPU rendering would go here)
       renderFrame();
       animationFrame = requestAnimationFrame(render);
-    };
+    }
     animationFrame = requestAnimationFrame(render);
   }
   /**
@@ -284,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Handle canvas click for node selection
    */
-  function handleCanvasClick(event: MouseEvent) {
+  function handleCanvasClick(_event: MouseEvent) {
     if (!currentGraph || !canvasRef) return;
     const rect = canvasRef.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -395,7 +395,7 @@ mounted = true;
         {/each}
         <!-- Main Progress Fill -->
         <div
-          class="progress-fill"
+          class="progress-fill";
           style:width="{progress}%"
         />
       </div>

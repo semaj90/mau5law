@@ -42,7 +42,7 @@ export const Default: Story = {
     maxTokens: 2000,
     streaming: true
   }
-};
+}
 export const OpenAI: Story = {
   args: {
     model: 'gpt-4',
@@ -51,7 +51,7 @@ export const OpenAI: Story = {
     maxTokens: 1500,
     streaming: true
   }
-};
+}
 export const Conservative: Story = {
   args: {
     model: 'gemma3-legal',
@@ -60,7 +60,7 @@ export const Conservative: Story = {
     maxTokens: 1000,
     streaming: false
   }
-};
+}
 export const Creative: Story = {
   args: {
     model: 'gemma3-legal',
@@ -69,4 +69,4 @@ export const Creative: Story = {
     maxTokens: 3000,
     streaming: true
   }
-};
+}

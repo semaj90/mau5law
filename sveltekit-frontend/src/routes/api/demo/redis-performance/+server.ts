@@ -12,7 +12,7 @@ interface PerformanceResult {
   operation: string
   uncachedTime: number
   cachedTime: number
-  speedupFactor: number
+  speedupFactor: number;
   result: any
 }
 // Simulate expensive operations like vector search, legal analysis, etc.
@@ -45,7 +45,7 @@ async function expensiveVectorSearch(query: string): Promise<any> {
     }
   }
 }
-async function expensiveLegalAnalysis(document: string): Promise<any> {
+async function expensiveLegalAnalysis(_document: string): Promise<any> {
   // Simulate complex legal analysis (NLP, entity extraction, risk assessment)
   await new Promise((resolve) => setTimeout(resolve, 800); // 800ms delay
   return {

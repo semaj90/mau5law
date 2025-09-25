@@ -50,7 +50,7 @@ export const mockDataGenerators = {
       confidenceLevel: number;
       riskLevel: 'low' | 'medium' | 'high';
       priority: number;
-      metadata: { [key: string]: any };
+      metadata: { [key: string]: any }
       embedding: number[];
       createdAt: Date;
       updatedAt: Date;
@@ -115,14 +115,14 @@ export const mockDataGenerators = {
         metadata: {
           complexity: Math.random(),
           wordCount: 500 + Math.floor(Math.random() * 2000),
-          legalDomain: docType
+          legalDomain: docType;
           jurisdiction: 'US',
           practiceArea: 'corporate'
         },
         embedding,
         createdAt: new Date(),
         updatedAt: new Date()
-      };
+      }
       mockDocs.push(doc);
     }
     return mockDocs;
@@ -170,7 +170,7 @@ export const mockDataGenerators = {
           quantizationBits: [4, 8][Math.floor(Math.random() * 2)] as 4 | 8
         },
         performanceHistory: []
-      };
+      }
       states.push(state);
     }
     return states;
@@ -219,7 +219,7 @@ export const mockDataGenerators = {
         totalConfidence: 0.75 + Math.random() * 0.25,
         predictionLatencyMs: 5 + Math.random() * 20,
         cacheHitRatio: 0.6 + Math.random() * 0.4
-      };
+      }
       predictions.push(prediction);
     }
     return predictions;
@@ -235,7 +235,7 @@ export const mockDataGenerators = {
         dim: 1536,
         vec: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         createdAt: new Date().toISOString()
-      };
+      }
       shards.push(shard);
     }
     return shards;
@@ -251,12 +251,12 @@ export const mockDataGenerators = {
         keys: [`chr_key_${i}_1`, `chr_key_${i}_2`, `chr_key_${i}_3`],
         ttlSec: 300 + Math.random() * 3600,
         createdAt: new Date().toISOString()
-      };
+      }
       manifests.push(manifest);
     }
     return manifests;
   }
-};
+}
 // Database sync operations
 export const databaseSync = {
   /**
@@ -300,10 +300,10 @@ export const databaseSync = {
         );
       }
       console.log(`✅ Synced ${mockDocs.length} mock legal documents with vector embeddings`);
-      return { success: true, count: mockDocs.length };
+      return { success: true, count: mockDocs.length }
     } catch (error) {
       console.error('❌ Failed to sync mock legal documents:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message }
     }
   },
   /**
@@ -335,10 +335,10 @@ export const databaseSync = {
         })
       );
       console.log(`✅ Synced ${mockStates.length} QLoRA training jobs`);
-      return { success: true, count: mockStates.length };
+      return { success: true, count: mockStates.length }
     } catch (error) {
       console.error('❌ Failed to sync QLoRA training data:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message }
     }
   },
   /**
@@ -356,7 +356,7 @@ export const databaseSync = {
           confidence: prediction.totalConfidence,
           hitCount: Math.floor(Math.random() * 50),
           lastHit: new Date(),
-          ttl: new Date(Date.now() + 3600000), // 1 hour TTL
+          ttl: new Date(Date.now() + 3600000), // 1 hour TTL;
           metadata: {
             cacheStrategy: prediction.recommendedAssets[0]?.cacheStrategy,
             chrPatternIds: prediction.chrPatternIds,
@@ -365,13 +365,13 @@ export const databaseSync = {
         })
       );
       console.log(`✅ Synced ${mockPredictions.length} predictive asset cache entries`);
-      return { success: true, count: mockPredictions.length };
+      return { success: true, count: mockPredictions.length }
     } catch (error) {
       console.error('❌ Failed to sync predictive asset cache:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message }
     }
   }
-};
+}
 // Vector search operations
 export const vectorSearch = {
   /**
@@ -431,7 +431,7 @@ export const vectorSearch = {
       throw error;
     }
   }
-};
+}
 // Comprehensive sync orchestrator
 export const syncOrchestrator = {
   /**
@@ -444,7 +444,7 @@ export const syncOrchestrator = {
       qloraTraining: await databaseSync.syncQLoRATrainingData(),
       predictiveCache: await databaseSync.syncPredictiveAssetCache(),
       timestamp: new Date().toISOString()
-    };
+    }
     const totalSynced = Object.values(results)
       .filter(
         (r): r is { success: boolean; count: number } =>
@@ -455,13 +455,13 @@ export const syncOrchestrator = {
     return {
       success: true
       totalRecords: totalSynced
-      breakdown: results
+      breakdown: results;
       performance: {
         syncDuration: '~2-5 seconds',
         cachePrewarmed: true
         vectorIndexReady: true
       }
-    };
+    }
   },
   /**
    * Health check for all integrated systems
@@ -470,10 +470,10 @@ export const syncOrchestrator = {
     const checks = {
       database: false
       pgvector: false
-      drizzle: false
+      drizzle: false;
       redis: false
       mockDataReady: false
-    };
+    }
     try {
       // Test database connection
       await db.select({ count: sql<number>`count(*)` }).from(users);
@@ -491,7 +491,7 @@ export const syncOrchestrator = {
         status: Object.values(checks).every(Boolean) ? 'healthy' : 'partial',
         checks,
         timestamp: new Date().toISOString()
-      };
+      }
     } catch (error) {
       console.error('❌ Health check failed:', error);
       return {
@@ -499,7 +499,7 @@ export const syncOrchestrator = {
         checks,
         error: error.message,
         timestamp: new Date().toISOString()
-      };
+      }
     }
   }
-};
+}

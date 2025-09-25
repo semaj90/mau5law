@@ -4,7 +4,7 @@
 const createMachine = (config: any) => ({ start: () => null, send: () => null });
 const assign = (updates: any) => updates;
 const sendTo = (actor: any, event: any) => ({ type: 'sendTo', actor, event });
-const raise = (event: any) => ({ type: 'raise', event });
+const raise = (_event: any) => ({ type: 'raise', event });
 const fromPromise = (promiseFn: any) => ({ type: 'promise', fn: promiseFn });
 const fromCallback = (callbackFn: any) => ({ type: 'callback', fn: callbackFn });
 import { cache } from '$lib/server/cache/redis';
@@ -15,7 +15,7 @@ export interface DocumentProcessingContext {
   documentId: string;
   content: string;
   filename?: string;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
   chunks: string[];
   embeddings: number[][];
   progress: number;
@@ -32,7 +32,7 @@ export type DocumentProcessingEvent =;
       type: 'START_PROCESSING';
       documentId: string;
       content: string;
-      metadata?: { [key: string]: any };
+      metadata?: { [key: string]: any }
     }
   | { type: 'CHUNKING_COMPLETE'; chunks: string[] }
   | { type: 'CHUNKING_FAILED'; error: string }
@@ -44,7 +44,7 @@ export type DocumentProcessingEvent =;
   | { type: 'INDEXING_FAILED'; error: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
 // Text chunking logic
 const chunkText = (text: string, chunkSize: number = 512): string[] => {
   const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
@@ -61,7 +61,7 @@ const chunkText = (text: string, chunkSize: number = 512): string[] => {
   }
   if (currentChunk) chunks.push(currentChunk);
   return chunks.filter((chunk) => chunk.trim().length > 0);
-};
+}
 // Document processing actors
 const chunkingActor = fromPromise(async ({ input }: { input: { content: string; chunkSize?: number } }) => {
     const { content, chunkSize = 512 } = input;
@@ -71,7 +71,7 @@ const chunkingActor = fromPromise(async ({ input }: { input: { content: string; 
     }
     const chunks = chunkText(content, chunkSize);
     console.log(`✅ Text chunking complete: ${chunks.length} chunks created`);
-    return { chunks };
+    return { chunks }
   }
 );
 const embeddingActor = fromPromise(async ({ input }: { input: { chunks: string[]; model?: string } }) => {
@@ -84,7 +84,7 @@ const embeddingActor = fromPromise(async ({ input }: { input: { chunks: string[]
     console.log(
       `✅ Embedding generation complete: ${embeddings.length} vectors (backend: ${backend})`
     );
-    return { embeddings, backend, model };
+    return { embeddings, backend, model }
   }
 );
 const storageActor = fromPromise(async ({
@@ -94,10 +94,10 @@ const storageActor = fromPromise(async ({
       documentId: string;
       chunks: string[];
       embeddings: number[][];
-      metadata: { [key: string]: any };
+      metadata: { [key: string]: any }
       model: string;
       backend: string;
-    };
+    }
   }) => {
     const { documentId, chunks, embeddings, metadata, model, backend } = input;
     console.log(`💾 Starting database storage for document: ${documentId}`);
@@ -123,7 +123,7 @@ const storageActor = fromPromise(async ({
     });
     await db.insert(documentEmbeddings).values(rows);
     console.log(`✅ Database storage complete: ${rows.length} records inserted`);
-    return { stored: rows.length };
+    return { stored: rows.length }
   }
 );
 const cachingActor = fromPromise(async ({
@@ -133,8 +133,8 @@ const cachingActor = fromPromise(async ({
       documentId: string;
       chunks: string[];
       embeddings: number[][];
-      metadata: { [key: string]: any };
-    };
+      metadata: { [key: string]: any }
+    }
   }) => {
     const { documentId, chunks, embeddings, metadata } = input;
     console.log(`🚀 Starting cache storage for document: ${documentId}`);
@@ -144,10 +144,10 @@ const cachingActor = fromPromise(async ({
       embeddings,
       metadata,
       processed_at: new Date().toISOString()
-    };
+    }
     await cache.set(cacheKey, cacheData, 86400); // 24h TTL
     console.log(`✅ Cache storage complete: ${documentId}`);
-    return { cached: true };
+    return { cached: true }
   }
 );
 // Progress tracking actor
@@ -449,7 +449,7 @@ export const documentProcessingMachine = createMachine({
         progress: 0,
         errors: [],
         startTime: 0,
-        endTime: undefined
+        endTime: undefined;
         status: 'pending',
         retryCount: 0,
         processingStage: 'chunking'

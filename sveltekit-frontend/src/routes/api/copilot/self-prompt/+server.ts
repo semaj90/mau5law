@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js'
  * Enables Copilot to leverage comprehensive AI orchestration for autonomous problem-solving
  */
 import { json, error } from "@sveltejs/kit"
-import { URL } from "url"
+
 // Placeholder for copilotSelfPrompt - will be implemented
 async function copilotSelfPrompt(prompt: string, options: CopilotSelfPromptOptions): Promise<SelfPromptResult> {
   // Mock implementation for now

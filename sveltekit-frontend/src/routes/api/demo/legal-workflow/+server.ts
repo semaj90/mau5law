@@ -74,7 +74,7 @@ async function createLegalCase(data: any) {
     success: true
     step: 1,
     action: 'case_created',
-    case: newCase
+    case: newCase;
     message: `Legal case "${data.title}" created successfully!`,
     nextStep: 'Upload evidence files using the drag-drop canvas'
   })

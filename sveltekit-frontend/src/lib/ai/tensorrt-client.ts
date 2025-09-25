@@ -34,7 +34,7 @@ export interface TensorRTHealthResponse {
     gpu_memory_allocated?: number;
     gpu_memory_reserved?: number;
     gpu_memory_free?: number;
-  };
+  }
   performance_metrics: {
     total_inferences: number;
     total_embeddings: number;
@@ -42,7 +42,7 @@ export interface TensorRTHealthResponse {
     avg_embedding_time_ms: number;
     target_latency_ms: number;
     performance_ratio: number;
-  };
+  }
 }
 export class TensorRTLegalClient {
   private baseUrl: string;
@@ -182,7 +182,7 @@ export class TensorRTLegalClient {
 3. Procedural considerations
 4. Settlement opportunities
 5. Strategic recommendations`
-    };
+    }
     const instructions = analysisTypes[analysisType || 'comprehensive'] || analysisTypes.comprehensive;
     return `<legal_analysis>
 Document/Text: ${text}
@@ -201,12 +201,12 @@ Provide a detailed, professional legal analysis:`;
         ...options.headers
       },
       signal: AbortSignal.timeout(this.timeout)
-    };
+    }
     let lastError: Error | null = null;
     for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
       try {
         console.log(`TensorRT request (attempt ${attempt}): ${options.method} ${endpoint}`);
-        const response = await fetch(url, requestOptions);
+        // removed unused response assignment
         if (response.ok || response.status < 500) {
           return response;
         }
@@ -239,21 +239,21 @@ Provide a detailed, professional legal analysis:`;
           connected: false
           latency,
           error: 'Health check failed'
-        };
+        }
       }
       return {
         connected: health.status === 'healthy',
         latency,
         modelLoaded: health.model_loaded,
         error: health.status !== 'healthy' ? `Status: ${health.status}` : undefined
-      };
+      }
     } catch (error) {
       const latency = performance.now() - startTime;
       return {
         connected: false
         latency,
         error: error instanceof Error ? error.message: 'Unknown error'
-      };
+      }
     }
   }
 }

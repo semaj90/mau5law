@@ -1,5 +1,3 @@
-// Enhanced WYSIWYG Editor with Melt UI Integration
-// Combines Hugerte with Melt UI components for legal document editing
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
@@ -68,7 +66,7 @@ await initializeEditor();
         config: {
           readonly,
           height,
-          menubar: true
+          menubar: true;
           plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'searchreplace', 'visualblocks', 'codesample', 'fullscreen',
@@ -154,9 +152,9 @@ await initializeEditor();
           word_count: true
           character_count: true
         }
-      };
+      }
       // Listen to content changes from Hugerte
-      hugerte.$on('input', (event: unknown) => {
+      hugerte.$on('input', (_event: unknown) => {
         content = event.detail.content;
         updateCounts(content);
       });
@@ -189,7 +187,7 @@ await initializeEditor();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          query: aiQuery
+          query: aiQuery;
           context: selectedText ? [{ role: 'user', content: `Selected text: ${selectedText}` }] : [],
           options: {
             maxSources: 5,
@@ -218,7 +216,7 @@ await initializeEditor();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          query: citationQuery
+          query: citationQuery;
           limit: 10;
         })
       });
@@ -258,23 +256,16 @@ await initializeEditor();
     updateCounts(newContent);
   }
 </script>
+
+// Enhanced WYSIWYG Editor with Melt UI Integration // Combines Hugerte with Melt UI components for legal document
+editing
 <!-- Main Editor Container -->
 <div class="space-y-4">
   <!-- Editor Toolbar -->
   <div class="space-y-4">
     <div class="space-y-4">
-      <button
-        class="space-y-4"
-        disabled={!enableAI}
-      >
-        🤖 AI Assistant
-      </button>
-      <button
-        class="space-y-4"
-        disabled={!enableCitation}
-      >
-        📚 Citations
-      </button>
+      <button class="space-y-4" disabled={!enableAI}> 🤖 AI Assistant </button>
+      <button class="space-y-4" disabled={!enableCitation}> 📚 Citations </button>
     </div>
     <div class="space-y-4">
       <span class="space-y-4">Words: {$wordCount}</span>
@@ -282,11 +273,7 @@ await initializeEditor();
     </div>
   </div>
   <!-- Main Editor -->
-  <div
-    bind:this={editorElement}
-    class="space-y-4"
-    style="height: {height};"
-  ></div>
+  <div bind:this={editorElement} class="space-y-4" style="height: {height}"></div>
 </div>
 <!-- AI Assistant Dialog -->
 <div>
@@ -303,17 +290,13 @@ await initializeEditor();
       <div class="space-y-4">
         <label for="ai-query">What would you like help with?</label>
         <textarea
-          id="ai-query"
+          id="ai-query";
           bind:value={aiQuery}
           placeholder="E.g., 'Analyze this clause', 'Suggest improvements', 'Find relevant precedents'..."
           rows="4"
           class="space-y-4"
         ></textarea>
-        <button
-          onclick={() => processAIRequest()}
-          disabled={isProcessingAI || !aiQuery.trim()}
-          class="space-y-4"
-        >
+        <button onclick={() => processAIRequest()} disabled={isProcessingAI || !aiQuery.trim()} class="space-y-4">
           {#if isProcessingAI}
             Processing...
           {:else}
@@ -324,9 +307,7 @@ await initializeEditor();
           <div class="space-y-4">
             <strong>AI Response:</strong>
             <div class="space-y-4">{aiResults}</div>
-            <button onclick={() => insertAIContent()} class="space-y-4">
-              Insert into Document
-            </button>
+            <button onclick={() => insertAIContent()} class="space-y-4"> Insert into Document </button>
           </div>
         {/if}
       </div>
@@ -343,18 +324,13 @@ await initializeEditor();
       <div class="space-y-4">
         <label for="cite-query">Search for citations:</label>
         <input
-          id="cite-query";
+          id="cite-query"
+          ;
           bind:value={citationQuery}
           placeholder="Enter legal concept, case name, or statute..."
           class="space-y-4"
         />
-        <button
-          onclick={() => searchCitations()}
-          disabled={!citationQuery.trim()}
-          class="space-y-4"
-        >
-          Search
-        </button>
+        <button onclick={() => searchCitations()} disabled={!citationQuery.trim()} class="space-y-4"> Search </button>
         {#if citationResults.length > 0}
           <div class="space-y-4">
             <h4>Found Citations:</h4>
@@ -365,12 +341,7 @@ await initializeEditor();
                 <div class="space-y-4">
                   Relevance: {Math.round(citation.relevance * 100)}%
                 </div>
-                <button
-                  onclick={() => insertCitation(citation)}
-                  class="space-y-4"
-                >
-                  Insert Citation
-                </button>
+                <button onclick={() => insertCitation(citation)} class="space-y-4"> Insert Citation </button>
               </div>
             {/each}
           </div>
@@ -380,6 +351,7 @@ await initializeEditor();
     </div>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
   .wysiwyg-container {

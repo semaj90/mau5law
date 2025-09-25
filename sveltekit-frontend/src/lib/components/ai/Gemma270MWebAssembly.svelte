@@ -27,7 +27,7 @@
     memoryMB: 512, // Lighter memory footprint for client-side
     enableWebGL: true
     enableSharedMemory: true;
-  };
+  }
   // Performance metrics
   let performanceMetrics = $state({
     loadTime: 0,
@@ -82,16 +82,16 @@ await initializeWebAssembly();
           // Simulated WASM module interface
           inference: simulateInference
           embedding: simulateEmbedding
-          summarize: simulateSummarization
-          extract: simulateExtraction
+          summarize: simulateSummarization;
+          extract: simulateExtraction;
           memory: {
-            allocate: simulateMemoryAllocate
-            free: simulateMemoryFree
+            allocate: simulateMemoryAllocate;
+            free: simulateMemoryFree;
             usage: simulateMemoryUsag;
           },
           gpu: {
-            initialize: simulateGPUInit
-            transfer: simulateGPUTransfer
+            initialize: simulateGPUInit;
+            transfer: simulateGPUTransfer;
             compute: simulateGPUComput;
           }
         });
@@ -188,12 +188,12 @@ await initializeWebAssembly();
       tokensGenerated: result.tokensGenerated || 42,
       model: 'gemma3-270m-wasm',
       processingLocation: 'client-side';
-    };
+    }
   }
   async function generateClientEmbedding(text) {
     const result = await wasmModule.embedding({
-      text: text
-      dimensions: 384, // Smaller dimensions for 270M model
+      text: text;
+      dimensions: 384, // Smaller dimensions for 270M model;
       normalize: true;
     });
     return {
@@ -201,7 +201,7 @@ await initializeWebAssembly();
       dimensions: 384,
       model: 'gemma3-270m-embedding-wasm',
       processingLocation: 'client-side';
-    };
+    }
   }
   async function summarizeClientSide(text) {
     const result = await wasmModule.summarize({
@@ -215,13 +215,13 @@ await initializeWebAssembly();
       keyPoints: result.keyPoints || ['Key point 1', 'Key point 2', 'Key point 3'],
       model: 'gemma3-270m-summarizer-wasm',
       processingLocation: 'client-side';
-    };
+    }
   }
   async function extractClientSide(text) {
     const result = await wasmModule.extract({
-      text: text
+      text: text;
       schema: 'legal-entities',
-      confidence: 0.7;
+      confidence: 0.7,
     });
     return {
       entities: result.entities || [
@@ -231,7 +231,7 @@ await initializeWebAssembly();
       relationships: result.relationships || [],
       model: 'gemma3-270m-extractor-wasm',
       processingLocation: 'client-side';
-    };
+    }
   }
   function calculateTokensPerSecond(text, inferenceTime) {
     const estimatedTokens = text.split.length * 1.3; // Rough token estimation
@@ -244,13 +244,13 @@ await initializeWebAssembly();
       generatedText: `AI response to: ${params.text.substring(0, 30)}...`,
       confidence: 0.87,
       tokensGenerated: 45;
-    };
+    }
   }
   async function simulateEmbedding(params) {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
       vector: new Array(params.dimensions).fill.map(() => Math.random());
-    };
+    }
   }
   async function simulateSummarization(params) {
     await new Promise(resolve => setTimeout(resolve, 150));
@@ -258,7 +258,7 @@ await initializeWebAssembly();
       summary: `Summary: ${params.text.substring(0, params.maxSummaryLength)}`,
       compressionRatio: 0.3,
       keyPoints: ['Point 1', 'Point 2']
-    };
+    }
   }
   async function simulateExtraction(params) {
     await new Promise(resolve => setTimeout(resolve, 120));
@@ -267,7 +267,7 @@ await initializeWebAssembly();
         { type: 'person', value: 'Client Entity', confidence: 0.9 }
       ],
       relationships: [];
-    };
+    }
   }
   function simulateMemoryAllocate(size) {
     return `memory_block_${Date.now()}`;
@@ -285,7 +285,7 @@ await initializeWebAssembly();
     return `gpu_buffer_${Date.now()}`;
   }
   function simulateGPUCompute(buffer) {
-    return { result: 'gpu_computation_result' };
+    return { result: 'gpu_computation_result' }
   }
   // Utility functions
   function formatFileSize(bytes) {
@@ -303,15 +303,14 @@ await initializeWebAssembly();
     }
   }
   // Export functions for external use
-  export { processText, performanceMetrics, isLoaded, wasmSupported };
+  export { processText, performanceMetrics, isLoaded, wasmSupported }
 </script>
+
 <div class="container mx-auto p-6 max-w-4xl">
   <Card>
     <CardHeader>
       <CardTitle>Gemma3 270M Client-Side WebAssembly</CardTitle>
-      <p class="text-muted-foreground">
-        Lightweight AI processing in your browser with WebAssembly acceleration
-      </p>
+      <p class="text-muted-foreground">Lightweight AI processing in your browser with WebAssembly acceleration</p>
     </CardHeader>
     <CardContent class="space-y-6">
       <!-- Browser Compatibility Status -->
@@ -349,7 +348,11 @@ await initializeWebAssembly();
           <div class="flex items-center space-x-3">
             <div class="bg-green-500 w-6 h-6 rounded-full flex items-center justify-center">
               <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                ></path>
               </svg>
             </div>
             <span>WebAssembly module loaded successfully</span>
@@ -412,7 +415,11 @@ await initializeWebAssembly();
         <Alert variant="error">
           <div class="flex items-center space-x-2">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              ></path>
             </svg>
             <span>{errorMessage}</span>
           </div>
@@ -440,13 +447,21 @@ await initializeWebAssembly();
               </Button>
               <Button
                 variant="secondary"
-                onclick={() => processText('This is a long legal document that needs to be summarized for better understanding...', 'summarize')}
+                onclick={() =>
+                  processText(
+                    'This is a long legal document that needs to be summarized for better understanding...',
+                    'summarize',
+                  )}
               >
                 📝 Summarize
               </Button>
               <Button
                 variant="secondary"
-                onclick={() => processText('Extract entities from this legal contract between John Doe and ABC Corporation...', 'extract')}
+                onclick={() =>
+                  processText(
+                    'Extract entities from this legal contract between John Doe and ABC Corporation...',
+                    'extract',
+                  )}
               >
                 🔍 Extract
               </Button>
@@ -488,6 +503,7 @@ await initializeWebAssembly();
     </CardContent>
   </Card>
 </div>
+
 <style>
   .gemma-270m-wasm {
     max-width: 800px;

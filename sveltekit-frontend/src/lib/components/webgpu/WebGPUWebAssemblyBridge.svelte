@@ -110,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
           health: webLlamaService.getHealthStatus();
         },
         adapter: {
-          initialized: true
+          initialized: true;
           health: webAssemblyAIAdapter.getHealthStatus(),
           supportedMethods: processingMode;
         },
@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
           maxConcurrent,
           memoryEstimate: performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) : 'unknown'
         }
-      };
+      }
       metrics.initTime = performance.now() - startTime;
       initialized = true;
       console.log(`🎉 WebGPU + WebAssembly integration initialized in ${metrics.initTime.toFixed(2)}ms`);

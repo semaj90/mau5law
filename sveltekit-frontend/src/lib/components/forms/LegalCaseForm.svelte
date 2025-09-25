@@ -1,13 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import {
-    ButtonBits,
-    CardBits,
-    InputBits,
-    SelectBits,
-    TabsBits,
-    TooltipBits
-  } from '$lib/components/ui/bits-ui';
+  import { ButtonBits, CardBits, InputBits, SelectBits, TabsBits, TooltipBits } from '$lib/components/ui/bits-ui';
   // Form state using Svelte 5 runes
   let formData = $state({
     caseTitle: '',
@@ -21,14 +14,14 @@
     assignedAttorney: '',
     estimatedHours: '',
     budget: '',
-    deadline: ''
+    deadline: '',
   });
   let formErrors = $state<Record<string, string>>({});
   let isSubmitting = $state(false);
   let activeTab = $state('basic');
   // Form validation
   function validateForm(): boolean {
-    const errors: Record<string, string> = {};
+    const errors: Record<string, string> = {}
     if (!formData.caseTitle.trim()) {
       errors.caseTitle = 'Case title is required';
     }
@@ -70,8 +63,8 @@
         assignedAttorney: '',
         estimatedHours: '',
         budget: '',
-        deadline: ''
-      };
+        deadline: '',
+      }
       alert('✅ Legal case created successfully!');
     } catch (error) {
       console.error('Form submission error:', error);
@@ -89,7 +82,7 @@
     { value: 'employment', label: '👥 Employment Law' },
     { value: 'criminal', label: '🚔 Criminal Law' },
     { value: 'family', label: '👨‍👩‍👧‍👦 Family Law' },
-    { value: 'tax', label: '💰 Tax Law' }
+    { value: 'tax', label: '💰 Tax Law' },
   ];
   const jurisdictions = [
     { value: 'federal', label: '🇺🇸 Federal' },
@@ -97,39 +90,41 @@
     { value: 'state-ny', label: '🗽 New York' },
     { value: 'state-tx', label: '🤠 Texas' },
     { value: 'state-fl', label: '🌴 Florida' },
-    { value: 'international', label: '🌍 International' }
+    { value: 'international', label: '🌍 International' },
   ];
   const courtLevels = [
     { value: 'district', label: '🏛️ District Court' },
     { value: 'appellate', label: '⚖️ Appellate Court' },
     { value: 'supreme', label: '🏛️ Supreme Court' },
-    { value: 'administrative', label: '📋 Administrative' }
+    { value: 'administrative', label: '📋 Administrative' },
   ];
   const priorities = [
     { value: 'low', label: '🟢 Low Priority' },
     { value: 'medium', label: '🟡 Medium Priority' },
     { value: 'high', label: '🟠 High Priority' },
-    { value: 'urgent', label: '🔴 Urgent' }
+    { value: 'urgent', label: '🔴 Urgent' },
   ];
   const attorneys = [
     { value: 'attorney-1', label: '👨‍💼 John Smith, Esq.' },
     { value: 'attorney-2', label: '👩‍💼 Sarah Johnson, Esq.' },
     { value: 'attorney-3', label: '👨‍💼 Michael Brown, Esq.' },
-    { value: 'attorney-4', label: '👩‍💼 Emily Davis, Esq.' }
+    { value: 'attorney-4', label: '👩‍💼 Emily Davis, Esq.' },
   ];
   const tabItems = [
     { value: 'basic', label: '📋 Basic Info' },
     { value: 'details', label: '📝 Case Details' },
     { value: 'assignment', label: '👥 Assignment' },
-    { value: 'review', label: '✅ Review' }
+    { value: 'review', label: '✅ Review' },
   ];
   // Computed validation status
   let isFormValid = $derived(() => {
-    return formData.caseTitle.trim() &&
-           formData.clientName.trim() &&
-           formData.practiceArea &&
-           formData.jurisdiction &&
-           formData.deadline;
+    return (
+      formData.caseTitle.trim() &&
+      formData.clientName.trim() &&
+      formData.practiceArea &&
+      formData.jurisdiction &&
+      formData.deadline
+    );
   });
   // Progress calculation
   let formProgress = $derived(() => {
@@ -138,6 +133,7 @@
     return Math.round((filledFields / totalFields) * 100);
   });
 </script>
+
 <CardBits variant="elevated" padding="lg" class="legal-case-form">
   <div class="form-header">
     <h2 class="form-title">⚖️ Create New Legal Case</h2>
@@ -148,13 +144,7 @@
       <span class="progress-text">{formProgress}% Complete</span>
     </div>
   </div>
-  <TabsBits
-    tabs={tabItems}
-    bind:value={activeTab}
-    variant="underline"
-    size="md"
-    class="form-tabs"
-  >
+  <TabsBits tabs={tabItems} bind:value={activeTab} variant="underline" size="md" class="form-tabs">
     {#if activeTab === 'basic'}
       <div class="tab-content">
         <div class="form-grid">
@@ -327,13 +317,9 @@
           {/if}
           <div class="validation-status">
             {#if isFormValid}
-              <div class="status-valid">
-                ✅ Form is complete and ready for submission
-              </div>
+              <div class="status-valid">✅ Form is complete and ready for submission</div>
             {:else}
-              <div class="status-invalid">
-                ⚠️ Please complete all required fields before submitting
-              </div>
+              <div class="status-invalid">⚠️ Please complete all required fields before submitting</div>
             {/if}
           </div>
         </div>
@@ -359,9 +345,9 @@
                 assignedAttorney: '',
                 estimatedHours: '',
                 budget: '',
-                deadline: ''
-              };
-              formErrors = {};
+                deadline: '',
+              }
+              formErrors = {}
             }
           }}
         >
@@ -381,6 +367,7 @@
     </div>
   </div>
 </CardBits>
+
 <style>
   .legal-case-form {
     max-width: 800px;
@@ -558,7 +545,7 @@
     .action-buttons {
       justify-content: stretch;
     }
-  .action-buttons :global(button) {
+    .action-buttons :global(button) {
       flex: 1;
     }
   }

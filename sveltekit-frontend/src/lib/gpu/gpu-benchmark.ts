@@ -131,7 +131,7 @@ export async function runEmbeddingBenchmark(
       segments,
       backend,
       statsUsed
-    };
+    }
     // Attach memory delta info as optional fields for telemetry consumers
     (entry as any).memoryBefore = beforeMem;
     (entry as any).memoryAfter = afterMem;
@@ -148,7 +148,7 @@ export async function runEmbeddingBenchmark(
     segments,
     entries,
     timestamp: Date.now()
-  };
+  }
   telemetryBus.publish({ type: 'gpu.benchmark.summary' as any, meta: summary as any });
   // Expose last summary for quick inspection
   (globalThis as any).__LAST_GPU_BENCHMARK__ = summary;

@@ -21,7 +21,7 @@
       message: `Document "${(result as { objectName?: unknown; documentId?: unknown; url?: unknown }).objectName}" has been uploaded and is being processed.`,
       documentId: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).documentId,
       url: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).url
-    };
+    }
     // Store notification in session storage for display
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
     // Redirect to document or case view
@@ -38,8 +38,8 @@
     const notification = {
       type: 'error',
       title: 'Upload Failed',
-      message: error
-    };
+      message: error;
+    }
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
   }
   // Recent uploads state
@@ -48,7 +48,7 @@
   // Load recent uploads
   async function loadRecentUploads() {
     try {
-      const response = await fetch('/api/documents/recent');
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         recentUploads = await (response as { ok?: unknown; json?: unknown }).json();
         showRecentUploads = true;

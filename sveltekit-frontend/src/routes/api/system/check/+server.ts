@@ -66,7 +66,7 @@ async function checkOllamaStatus(): Promise<any> {
     }
     return {
       status: 'error',
-      error: errorMessage
+      error: errorMessage;
       url: OLLAMA_URL
     }
   }
@@ -97,4 +97,4 @@ async function checkDatabaseStatus(): Promise<any> {
   }
 }
 // Also support POST for triggering system checks
-export const POST = GET
+export const POST = GET;

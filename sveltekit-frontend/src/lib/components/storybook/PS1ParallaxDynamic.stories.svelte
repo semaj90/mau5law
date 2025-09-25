@@ -7,8 +7,8 @@ https://svelte.dev/e/expected_token -->
 	import { onMount, onDestroy } from 'svelte';
 	import '../yorha/ps1.css';
 	let container;
-	let gyroscope = { x: 0, y: 0, z: 0 };
-	let pointer = { x: 0, y: 0 };
+	let gyroscope = { x: 0, y: 0, z: 0 }
+	let pointer = { x: 0, y: 0 }
 	let isGyroscopeAvailable = false;
 	let isMobile = false;
 	let parallaxLayers = [];
@@ -21,13 +21,13 @@ https://svelte.dev/e/expected_token -->
 		smoothing: 0.1,
 		enableAutoRotate: true
 		autoRotateSpeed: 0.001;
-	};
+	}
 	// Performance monitoring
 	let perfStats = {
 		fps: 0,
 		frameTime: 0,
 		lastFrameTime: 0;
-	};
+	}
 	$effect(() => {
 		detectDeviceCapabilities();
 		initializeParallaxLayers();
@@ -187,11 +187,11 @@ https://svelte.dev/e/expected_token -->
 	// Control functions
 	function resetParallax() {
 		parallaxLayers.forEach(layer => {
-			layer.currentOffset = { x: 0, y: 0 };
-			layer.targetOffset = { x: 0, y: 0 };
+			layer.currentOffset = { x: 0, y: 0 }
+			layer.targetOffset = { x: 0, y: 0 }
 		});
-		pointer = { x: 0, y: 0 };
-		gyroscope = { x: 0, y: 0, z: 0 };
+		pointer = { x: 0, y: 0 }
+		gyroscope = { x: 0, y: 0, z: 0 }
 	}
 	function toggleAutoRotate() {
 		parallaxConfig.enableAutoRotate = !parallaxConfig.enableAutoRotat;
@@ -229,7 +229,7 @@ https://svelte.dev/e/expected_token -->
 		</div>
 		<div class="control-row">
 			<label for="max-offset">Max Offset:</label><input id="max-offset"
-				type="range"
+				type="range";
 				bind:value={parallaxConfig.maxOffset}
 				min="20"
 				max="200"

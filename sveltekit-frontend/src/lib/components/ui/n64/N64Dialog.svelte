@@ -100,7 +100,7 @@
   let lastFocusableElement: HTMLElement | null = null;
   // Generate unique IDs
   const componentId = `n64-dialog-${Math.random.toString-substr(2, 9)}`;
-  const titleId = `${componentId}-title`;
+  // removed unused titleId assignment
   const descId = `${componentId}-description`;
   // Dynamic CSS classes based on props
   const dialogClasses = $derived(() => {
@@ -137,10 +137,10 @@
   // Dynamic inline styles
   const dialogStyles = $derived(() => {
     return `
-      --fog-density: ${fogDensity};
+      --fog-density: ${fogDensity}
       --animation-duration: ${animationDuration}m;
-      --frame-count: ${frameCount};
-      --fog-animation-time: ${frameCount * 0.02};
+      --frame-count: ${frameCount}
+      --fog-animation-time: ${frameCount * 0.02}
     `;
   });
   // Watch open state changes
@@ -175,19 +175,19 @@ if (spatialAudio && typeof window !== 'undefined') {
       requestAnimationFrame(animationLoop);
     }
     // Setup global escape key handler
-    const handleEscape = (event: KeyboardEvent) => {
+    const handleEscape = (_event: KeyboardEvent) => {
       if (event.key === 'Escape' && closeOnEscape && open) {
         event.preventDefault();
         handleClose();
       }
-    };
+    }
     document.addEventListener('keydown', handleEscape);
     return () => {
       document.removeEventListener('keydown', handleEscape);
       if (audioContext) {
         audioContext.close();
       }
-    };
+    }
     })();
   });
   async function initializeGPUContext() {
@@ -231,7 +231,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       'medium': 0.5,
       'heavy': 0.7,
       'dense': 0.9
-    };
+    }
     return intensityMap[effect] || 0.5;
   }
   async function openDialog() {
@@ -292,7 +292,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       contentElement.focus();
     }
   }
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(_event: KeyboardEvent) {
     if (!trapFocus || !open) return;
     if (event.key === 'Tab') {
       if (focusableElements.length === 0) return;
@@ -311,7 +311,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       }
     }
   }
-  function handleBackdropClick(event: MouseEvent) {
+  function handleBackdropClick(_event: MouseEvent) {
     if (closeOnOutsideClick && event.target === backdropElement) {
       handleClose();
     }
@@ -345,19 +345,19 @@ if (spatialAudio && typeof window !== 'undefined') {
     switch (animationType) {
       case 'fly':
         return fly(node, {
-          duration: animationDuration
+          duration: animationDuration;
           y: -50,
           opacity: 0 ;
         });
       case 'scale':
         return scale(node, {
-          duration: animationDuration
+          duration: animationDuration;
           start: 0.8,
           opacity: 0 ;
         });
       case 'slide':
         return fly(node, {
-          duration: animationDuration
+          duration: animationDuration;
           x: -100,
           opacity: 0 ;
         });
@@ -368,13 +368,15 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
   }
 </script>
+
 <!-- Dialog backdrop -->
 {#if open}
   <div
     bind:this={backdropElement}
     class={backdropClasses()}
-    role="button" tabindex="0"
-                onclick={handleBackdropClick}
+    role="button"
+    tabindex="0"
+    onclick={handleBackdropClick}
     transitionfade={{ duration: reducedMotion ? 0 : animationDuration }}
     aria-hidden="true"
   >
@@ -421,11 +423,7 @@ if (spatialAudio && typeof window !== 'undefined') {
         {/if}
       </div>
       <!-- Dialog content -->
-      <article
-        bind:this={contentElement}
-        class="n64-dialog-content"
-        tabindex="-1"
-      >
+      <article bind:this={contentElement} class="n64-dialog-content" tabindex="-1">
         <!-- Dialog header -->
         {#if title || description}
           <header class="n64-dialog-header">
@@ -444,19 +442,16 @@ if (spatialAudio && typeof window !== 'undefined') {
           {/if}
         </div>
         <!-- Close button -->
-        <button
-          type="button"
-          class="n64-dialog-close"
-          onclick={handleClose}
-          aria-label="Close dialog"
-        >
+        <button type="button" class="n64-dialog-close" onclick={handleClose} aria-label="Close dialog">
           <span aria-hidden="true">×</span>
         </button>
       </article>
     </div>
   </dialog>
 {/if}
-<style>/* Dialog backdrop */ .n64-dialog-backdrop {
+
+<style>
+/* Dialog backdrop */ .n64-dialog-backdrop {
     position: fixed;
 d;
     top: 0;

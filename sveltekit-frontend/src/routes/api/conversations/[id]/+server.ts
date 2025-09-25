@@ -84,4 +84,4 @@ export const PATCH: RequestHandler = withErrorHandling(async (event) => {
       requestId
     )
   }
-})
+});

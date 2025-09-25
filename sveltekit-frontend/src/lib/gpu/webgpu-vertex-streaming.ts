@@ -13,7 +13,7 @@ export interface VertexData {
     documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
     riskLevel?: 'low' | 'medium' | 'high' | 'critical';
     confidence?: number;
-  };
+  }
 }
 export interface LegalVisualizationVertex {
   position: Float32Array; // 3 floats (x, y, z)
@@ -50,7 +50,7 @@ export class WebGPUVertexStreamer {
       chrRomIntegration: true
       nesMemoryBanks: 8,
       ...config
-    };
+    }
     this.initializeNESMemoryBanks();
   }
   private initializeNESMemoryBanks(): void {
@@ -177,7 +177,7 @@ export class WebGPUVertexStreamer {
     });
     // Create uniform buffer
     this.uniformBuffer = this.device.createBuffer({
-      size: 80, // mat4x4 (64 bytes) + 2 floats (16 bytes for alignment)
+      size: 80, // mat4x4 (64 bytes) + 2 floats (16 bytes for alignment);
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     // Create bind group
@@ -216,7 +216,7 @@ export class WebGPUVertexStreamer {
           this.getRiskLevelIndex(doc.riskLevel),
           Math.floor(doc.confidence * 1000)
         ])
-      };
+      }
       newVertices.push(vertex);
     }
     this.vertices = newVertices;
@@ -235,7 +235,7 @@ export class WebGPUVertexStreamer {
       evidence: [0xFF, 0x81, 0x81, 0xBD, 0xBD, 0x81, 0x81, 0xFF],
       brief: [0x7E, 0x81, 0x99, 0x81, 0x81, 0x99, 0x81, 0x7E],
       citation: [0x18, 0x24, 0x42, 0x81, 0x81, 0x42, 0x24, 0x18]
-    };
+    }
     const basePattern = typePatterns[doc.documentType as keyof typeof typePatterns] || typePatterns.contract;
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
@@ -250,15 +250,15 @@ export class WebGPUVertexStreamer {
       medium: [1.0, 1.0, 0.4, 1.0],
       high: [1.0, 0.6, 0.2, 1.0],
       critical: [1.0, 0.2, 0.2, 1.0]
-    };
+    }
     return new Float32Array(colors[riskLevel as keyof typeof colors] || colors.low);
   }
   private getDocumentTypeIndex(type: string): number {
-    const indices = { contract: 0, evidence: 1, brief: 2, citation: 3 };
+    const indices = { contract: 0, evidence: 1, brief: 2, citation: 3 }
     return indices[type as keyof typeof indices] || 0;
   }
   private getRiskLevelIndex(risk: string): number {
-    const indices = { low: 0, medium: 1, high: 2, critical: 3 };
+    const indices = { low: 0, medium: 1, high: 2, critical: 3 }
     return indices[risk as keyof typeof indices] || 0;
   }
   private hashString(str: string): number {
@@ -357,7 +357,7 @@ export class WebGPUVertexStreamer {
       chrRomCacheSize: this.chrRomCache.size,
       memoryBanksUsed: this.nesMemoryBanks.length,
       bufferUtilization: (this.vertices.length * 48) / this.config.bufferSize
-    };
+    }
   }
   /**
    * Clear CHR-ROM cache to free memory
@@ -402,7 +402,7 @@ function getRiskColorArray(riskLevel: string): [number, number, number, number] 
     medium: [1.0, 1.0, 0.4, 1.0] as [number, number, number, number],
     high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],
     critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number]
-  };
+  }
   return colors[riskLevel as keyof typeof colors] || colors.low;
 }
 // Types already exported above with interface declarations

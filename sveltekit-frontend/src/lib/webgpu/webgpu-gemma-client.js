@@ -44,7 +44,7 @@ class WebGPUGemmaClient {
         throw new Error(`Insufficient memory: need ${requiredMemory/1024/1024}MB, available ${availableMemory/1024/1024}MB`);
       }
       // Load quantized model
-      const response = await fetch(this.modelUrl);
+      // removed unused response assignment
       if (!response.ok) {
         throw new Error(`Failed to fetch model: ${response.statusText}`);
       }

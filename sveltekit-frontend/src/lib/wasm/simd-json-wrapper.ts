@@ -43,23 +43,23 @@ export class SIMDJSONAccelerator {
     compressionTime: 0,
     compressionRatio: 0,
     throughput: 0
-  };
+  }
   async initialize(): Promise<void> {
     try {
       // Create memory instance (1MB initial, 16MB max)
       this.memory = new WebAssembly.Memory({
-        initial: 16, // 16 * 64KB = 1MB
+        initial: 16, // 16 * 64KB = 1MB;
         maximum: 256 // 256 * 64KB = 16MB
       });
       // Set up imports for WebAssembly module
       const imports = {
         js: {
           memory: this.memory,
-          log: (value: number) => {
+          log: (_value: number) => {
             console.log(`🔍 WASM Log: ${value}`);
           }
         }
-      };
+      }
       // Compile and instantiate WebAssembly module
       const wasmCode = await this.loadWasmCode();
       this.wasmModule = await WebAssembly.compile(wasmCode);
@@ -169,7 +169,7 @@ export class SIMDJSONAccelerator {
       return {
         compressed: new Uint8Array(embeddings),
         compressionRatio: 1.0
-      };
+      }
     }
     try {
       // Write embeddings to memory
@@ -186,13 +186,13 @@ export class SIMDJSONAccelerator {
       this.metrics.compressionTime = performance.now() - startTime;
       this.metrics.compressionRatio = compressionRatio;
       console.log(`🗜️ Compressed ${embeddings.length} embeddings with ${compressionRatio.toFixed(2)}x ratio`);
-      return { compressed, compressionRatio };
+      return { compressed, compressionRatio }
     } catch (error) {
       console.error('❌ SIMD compression failed:', error);
       return {
         compressed: new Uint8Array(embeddings),
         compressionRatio: 1.0
-      };
+      }
     }
   }
   /**
@@ -221,7 +221,7 @@ export class SIMDJSONAccelerator {
    * Get performance metrics
    */;
   getMetrics(): SIMDParsingMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   /**
    * Reset metrics
@@ -233,7 +233,7 @@ export class SIMDJSONAccelerator {
       compressionTime: 0,
       compressionRatio: 0,
       throughput: 0
-    };
+    }
   }
   // Private helper methods
   private allocateMemory(size: number): number {
@@ -259,7 +259,7 @@ export class SIMDJSONAccelerator {
         dateCreated: '2024-01-01',
         parties: []
       }
-    };
+    }
   }
   private readMetadataFromMemory(offset: number): LegalDocumentJSON['metadata'] {
     // Simplified implementation
@@ -270,7 +270,7 @@ export class SIMDJSONAccelerator {
       jurisdiction: 'federal',
       dateCreated: '2024-01-01',
       parties: []
-    };
+    }
   }
   private validateDocumentJS(jsonString: string): boolean {
     try {
@@ -283,7 +283,7 @@ export class SIMDJSONAccelerator {
   private extractMetadataJS(jsonString: string): LegalDocumentJSON['metadata'] {
     try {
       const doc = JSON.parse(jsonString);
-      return doc.metadata || {};
+      return doc.metadata || {}
     } catch {
       return {
         riskLevel: 'low',
@@ -292,7 +292,7 @@ export class SIMDJSONAccelerator {
         jurisdiction: '',
         dateCreated: '',
         parties: []
-      };
+      }
     }
   }
   /**

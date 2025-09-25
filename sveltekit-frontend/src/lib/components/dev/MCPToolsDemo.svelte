@@ -65,7 +65,7 @@
   ];
   // Build MCP request from form data
   function buildRequest(): MCPToolRequest {
-    const request: MCPToolRequest = { tool: selectedTool as any };
+    const request: MCPToolRequest = { tool: selectedTool as any }
     switch (selectedTool) {
       case 'analyze-stack':
         request.component = component;
@@ -190,7 +190,7 @@
   - Use audit logging for all legal document access
   - Secure API endpoints with proper authentication`
           }]
-        };
+        }
       case 'generate-best-practices':
         return {
           content: [{,
@@ -226,7 +226,7 @@
   - Test with actual legal professionals
   - Document all security and compliance measures`
           }]
-        };
+        }
       case 'suggest-integration':
         return {
           content: [{,
@@ -267,7 +267,7 @@
   - Audit logging for compliance requirements
   - Data encryption for sensitive information`
           }]
-        };
+        }
       case 'resolve-library-id':
         const libraryMap: Record<string, string> = {
           'sveltekit': 'sveltekit',
@@ -277,7 +277,7 @@
           'bits-ui': 'bits-ui',
           'xstate': 'xstate',
           'fabric.js': 'fabric-js'
-        };
+        }
         const resolved = libraryMap[request.library?.toLowerCase() || ''] || request.library;
         return {
           content: [{,
@@ -287,7 +287,7 @@
   Resolved ID: ${resolved}
   Available documentation: ${Object.keys.join(', ')}`
           }]
-        };
+        }
       case 'get-library-docs':
         return {
           content: [{,
@@ -307,9 +307,9 @@
   // Legal AI specific configuration
   const config = {
   security: 'high',
-  auditLogging: true
+  auditLogging: true;
   encryption: 'AES-256';
-  };
+  }
   \`\`\`
   ### Best Practices
   - Follow legal compliance requirements
@@ -317,14 +317,14 @@
   - Use TypeScript for type safety
   - Test with legal professional workflows`
           }]
-        };
+        }
       default:
         return {
           content: [{
             type: 'text',
             text: `Tool ${request.tool} not implemented in mock response.`
           }]
-        };
+        }
     }
   }
   // Clear form
@@ -351,6 +351,7 @@
     error = '';
   }
 </script>
+
 <div class="space-y-6 p-6 max-w-4xl mx-auto">
   <div class="border-b border-gray-200 pb-4">
     <h2 class="text-2xl font-bold text-gray-900">Context7 MCP Tools Demo</h2>
@@ -382,7 +383,8 @@
       <div>
         <label for="tool" class="block text-sm font-medium mb-2">Tool</label>
         <select
-          id="tool";
+          id="tool"
+          ;
           bind:value={selectedTool}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
@@ -435,7 +437,7 @@
           <label for="feature" class="block text-sm font-medium mb-2">Feature</label>
           <input
             id="feature"
-            type="text"
+            type="text";
             bind:value={feature}
             placeholder="e.g., AI chat component"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -444,7 +446,8 @@
         <div class="md:col-span-2">
           <label for="requirements" class="block text-sm font-medium mb-2">Requirements (optional)</label>
           <textarea
-            id="requirements";
+            id="requirements"
+            ;
             bind:value={requirements}
             placeholder="e.g., real-time messaging, legal compliance, audit trails"
             rows="3"
@@ -478,7 +481,7 @@
         <div class="md:col-span-2">
           <label for="ragQuery" class="block text-sm font-medium mb-2">Legal Query</label>
           <textarea
-            id="ragQuery"
+            id="ragQuery";
             bind:value={ragQuery}
             placeholder="e.g., contract liability clauses, criminal evidence standards, case precedents..."
             rows="3"
@@ -489,7 +492,8 @@
           <label for="maxResults" class="block text-sm font-medium mb-2">Max Results</label>
           <input
             id="maxResults"
-            type="number";
+            type="number"
+            ;
             bind:value={maxResults}
             min="1"
             max="50"
@@ -500,7 +504,8 @@
           <label for="confidenceThreshold" class="block text-sm font-medium mb-2">Confidence Threshold</label>
           <input
             id="confidenceThreshold"
-            type="range";
+            type="range"
+            ;
             bind:value={confidenceThreshold}
             min="0.1"
             max="1"
@@ -513,7 +518,7 @@
           <label for="ragCaseId" class="block text-sm font-medium mb-2">Case ID (optional)</label>
           <input
             id="ragCaseId"
-            type="text"
+            type="text";
             bind:value={ragCaseId}
             placeholder="e.g., CASE-2024-001"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -523,7 +528,8 @@
           <label for="documentTypes" class="block text-sm font-medium mb-2">Document Types (optional)</label>
           <input
             id="documentTypes"
-            type="text";
+            type="text"
+            ;
             bind:value={documentTypes}
             placeholder="e.g., contract, evidence, case_law"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -534,7 +540,7 @@
           <label for="filePath" class="block text-sm font-medium mb-2">File Path</label>
           <input
             id="filePath"
-            type="text"
+            type="text";
             bind:value={filePath}
             placeholder="e.g., /path/to/legal-document.pdf"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -544,7 +550,8 @@
           <label for="ragCaseId" class="block text-sm font-medium mb-2">Case ID (optional)</label>
           <input
             id="ragCaseId"
-            type="text";
+            type="text"
+            ;
             bind:value={ragCaseId}
             placeholder="e.g., CASE-2024-001"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -553,7 +560,8 @@
         <div>
           <label for="documentType" class="block text-sm font-medium mb-2">Document Type</label>
           <select
-            id="documentType";
+            id="documentType"
+            ;
             bind:value={documentType}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -569,7 +577,8 @@
           <label for="documentTitle" class="block text-sm font-medium mb-2">Title (optional)</label>
           <input
             id="documentTitle"
-            type="text";
+            type="text"
+            ;
             bind:value={documentTitle}
             placeholder="e.g., Employment Contract v2.1"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -580,7 +589,7 @@
           <label for="ragQuery" class="block text-sm font-medium mb-2">Query</label>
           <input
             id="ragQuery"
-            type="text"
+            type="text";
             bind:value={ragQuery}
             placeholder="e.g., liability clauses"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -590,7 +599,8 @@
           <label for="documentId" class="block text-sm font-medium mb-2">Document ID</label>
           <input
             id="documentId"
-            type="text";
+            type="text"
+            ;
             bind:value={documentId}
             placeholder="e.g., doc-uuid-1234"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -629,11 +639,7 @@
           Execute Tool
         {/if}
       </button>
-      <button
-        type="button"
-        onclick={clearForm}
-        class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-      >
+      <button type="button" onclick={clearForm} class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
         Clear
       </button>
     </div>
@@ -657,10 +663,18 @@
   <div class="bg-gray-50 p-6 rounded-lg">
     <h3 class="text-lg font-semibold mb-3">Usage Instructions</h3>
     <div class="space-y-2 text-sm text-gray-700">
-      <p><strong>In Claude Desktop:</strong> Use natural language prompts like "analyze sveltekit with context legal-ai" or "generate best practices for security"</p>
-      <p><strong>In VS Code:</strong> Use the MCP tools via Claude Code integration for code analysis and suggestions</p>
-      <p><strong>In SvelteKit:</strong> Import and use the MCP helper functions from <code>$lib/utils/mcp-helpers</code></p>
+      <p>
+        <strong>In Claude Desktop:</strong> Use natural language prompts like "analyze sveltekit with context legal-ai" or
+        "generate best practices for security"
+      </p>
+      <p>
+        <strong>In VS Code:</strong> Use the MCP tools via Claude Code integration for code analysis and suggestions
+      </p>
+      <p>
+        <strong>In SvelteKit:</strong> Import and use the MCP helper functions from <code>$lib/utils/mcp-helpers</code>
+      </p>
       <p><strong>Common Queries:</strong> Use the quick action buttons above for frequently needed analysis</p>
     </div>
   </div>
 </div>
+;

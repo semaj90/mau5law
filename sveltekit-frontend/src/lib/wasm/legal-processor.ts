@@ -48,7 +48,7 @@ interface SensitiveInfo {
   value: string;
   masked: string;
   confidence: number;
-  location: { start: number; end: number };
+  location: { start: number; end: number }
 }
 // WebAssembly Legal Processor Class
 export class WasmLegalProcessor {
@@ -111,7 +111,7 @@ export class WasmLegalProcessor {
         fingerprint,
         readabilityScore,
         processingTime
-      };
+      }
     } catch (error) {
       console.error('Document processing failed:', error);
       throw new Error(`WASM processing failed: ${error}`);
@@ -158,7 +158,7 @@ export class WasmLegalProcessor {
         citations: [],
         documentType: 'fragment',
         readability: 0
-      };
+      }
     }
     const entitiesJson = this.wasmModule!.detect_legal_entities(text);
     const citationsJson = this.wasmModule!.extract_legal_citations(text);
@@ -169,7 +169,7 @@ export class WasmLegalProcessor {
       citations: JSON.parse(citationsJson),
       documentType,
       readability
-    };
+    }
   }
   // Generate document comparison report
   async compareDocuments(doc1: ProcessingResult, doc2: ProcessingResult): Promise<any> {
@@ -198,7 +198,7 @@ export class WasmLegalProcessor {
       uniqueToDoc1,
       uniqueToDoc2,
       fingerprintMatch
-    };
+    }
   }
   // Privacy-safe processing (mask sensitive info)
   async processSafely(file: File): Promise<ProcessingResult> {
@@ -213,7 +213,7 @@ export class WasmLegalProcessor {
     return {
       ...result,
       text: maskedText
-    };
+    }
   }
   // Helper methods
   private bufferToHex(buffer: Uint8Array): string {
@@ -234,7 +234,7 @@ export class WasmLegalProcessor {
           legalTermDensity: this.calculateLegalTermDensity(text),
           structure: this.analyzeStructure(text),
           classification: this.classifyDocument(text)
-        };
+        }
         return JSON.stringify(analysis);
       },
       calculate_text_similarity: (text1: string, text2: string): number => {
@@ -356,7 +356,7 @@ export class WasmLegalProcessor {
         return new Uint8Array(features.buffer, 0, Math.floor(features.length * 0.7);
       },
       memory: new WebAssembly.Memory({ initial: 1 })
-    };
+    }
   }
   // Utility functions for mock implementation
   private calculateComplexity(text: string): number {
@@ -374,7 +374,7 @@ export class WasmLegalProcessor {
       paragraphs: text.split(/\n\s*\n/).length,
       sections: (text.match(/^\d+\./gm) || []).length,
       headers: (text.match(/^[A-Z\s]+$/gm) || []).length
-    };
+    }
   }
   private classifyDocument(text: string): string {
     if (text.includes('whereas')) return 'contract';
@@ -430,7 +430,7 @@ export class WasmProcessingWorker {
         } catch (error) {
           self.postMessage({ id, error: error.message });
         }
-      };
+      }
     `;
     const blob = new Blob([workerScript], { type: 'application/javascript' });
     this.worker = new Worker(URL.createObjectURL(blob);
@@ -454,7 +454,7 @@ export class WasmProcessingWorker {
             resolve(e.data.result);
           }
         }
-      };
+      }
       this.worker!.addEventListener('message', handleMessage);
       this.worker!.postMessage({ id, method, args });
     });

@@ -28,7 +28,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
   private options: YoRHaModal3DOptions;
   private isOpen = false;
   private animationProgress = 0;
-  constructor(options: YoRHaModal3DOptions = {}) {
+  constructor(_options: YoRHaModal3DOptions = {}) {
     const style = YoRHaModal3D.getVariantStyle(
       options.variant || 'default',
       options.size || 'medium'
@@ -108,7 +108,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       bevelSegments: 4,
       bevelSize: radius * 0.1,
       bevelThickness: depth * 0.1
-    };
+    }
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
   }
   private createBackdrop(): void {
@@ -152,7 +152,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       this.backdrop.userData = {
         interactive: true
         onClick: () => this.close()
-      };
+      }
     }
     this.add(this.backdrop);
   }
@@ -243,7 +243,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
           }
         });
       }
-    };
+    }
     this.closeButtonMesh = buttonGroup as any;
     this.add(buttonGroup);
   }
@@ -346,7 +346,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
           loop: true
         }
       }
-    };
+    }
     return variantStyles[variant as keyof typeof variantStyles] || variantStyles.default;
   }
   private static getSizeWidth(size: string): number {
@@ -355,7 +355,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       medium: 5,
       large: 7,
       fullscreen: 12
-    };
+    }
     return sizes[size as keyof typeof sizes] || sizes.medium;
   }
   private static getSizeHeight(size: string): number {
@@ -364,7 +364,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       medium: 3.5,
       large: 5,
       fullscreen: 8
-    };
+    }
     return sizes[size as keyof typeof sizes] || sizes.medium;
   }
   // Public methods

@@ -93,11 +93,11 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     } catch (error) {
       console.error('Self-prompt generation failed:', error);
     }
-  };
+  }
   // Elemental awareness (YOLO-style hover analysis)
-  const handleElementHover = async (event: MouseEvent) => {
+  const handleElementHover = async (_event: MouseEvent) => {
     if (!enableElementalAwareness) return;
-    const target = event.target as HTMLElement;
+    // removed unused target assignment
     const elementType = target.tagName.toLowerCase();
     const elementText = target.textContent?.substring(0, 100) || '';
     if (elementText.length < 3) return;
@@ -109,7 +109,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           elementType,
-          content: elementText
+          content: elementText;
           context: 'legal_analysis';
         })
       });
@@ -118,16 +118,16 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     } catch (error) {
       console.error('Element analysis failed:', error);
     }
-  };
+  }
   // Enhanced RAG chat with vector search
   const sendMessage = async () => {
     if (!currentMessage.trim()) return;
     const userMessage = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: currentMessage
+      content: currentMessage;
       timestamp: new Date();
-    };
+    }
     messages = [...messages, userMessage];
     const userQuery = currentMessag;
     currentMessage = '';
@@ -155,7 +155,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          messages: messages.slice(-5), // Last 5 messages for context
+          messages: messages.slice(-5), // Last 5 messages for context;
           query: userQuery
           caseId,
           ragSources,
@@ -174,14 +174,14 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         role: 'assistant',
         content: aiResult.content || aiResult.answer,
         timestamp: new Date(),
-        sources: ragSources
+        sources: ragSources;
         metadata: {
           model: 'gemma3-legal:latest',
           confidence: aiConfidence
           ragSources: ragSources.length,
           processingTime: aiResult.processingTime || 0;
         }
-      };
+      }
       messages = [...messages, assistantMessage];
       // Generate new self-prompt suggestions based on conversation
       if (enableSelfPrompting) {
@@ -195,24 +195,24 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         content: 'I apologize, but I encountered an error processing your request. Please try again.',
         timestamp: new Date(),
         error: true;
-      };
+      }
       messages = [...messages, errorMessage];
     } finally {
       isTyping = false;
     }
-  };
+  }
   // Quick action for self-prompt suggestions
   const useSelfPrompt = (suggestion: string) => {
     currentMessage = suggestio;
     sendMessage();
-  };
+  }
   // Keyboard handler
-  const handleKeyDown = (event: KeyboardEvent) => {
+  const handleKeyDown = (_event: KeyboardEvent) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
-  };
+  }
 </script>
 <svelte:window onmouseover={handleElementHover as any} />
 <div class="flex flex-col h-full max-w-4xl mx-auto">

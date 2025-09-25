@@ -4,7 +4,7 @@ import { json, type RequestEvent } from '@sveltejs/kit'
 import { aiReports, canvasStates, reports } from '$lib/server/db/schema-postgres'
 import { db } from '$lib/server/db/index'
 import { eq, and, or, like, desc, sql } from 'drizzle-orm'
-import { URL } from "url"
+
 export async function GET({ url, locals }: RequestEvent): Promise<any> {
   try {
     if (!locals.user) {

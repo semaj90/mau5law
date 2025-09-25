@@ -149,7 +149,7 @@ export class UXPatternValidator {
           'case management': ['case handling', 'case processing'],
           'legal analysis': ['legal review', 'legal examination'],
           'evidence': ['proof', 'documentation'],
-        };
+        }
         let consistencyScore = 1;
         Object.entries(terminologyMappings).forEach(([preferred, alternatives]) => {
           const preferredCount = (textContent.match(new RegExp(preferred, 'g')) || []).length;
@@ -229,7 +229,7 @@ export class UXPatternValidator {
       passedPatterns: number;
       failedPatterns: number;
       scorePercentage: number;
-    };
+    }
     byCategory: Record<string, UXValidationResult[]>;
     recommendations: string[];
   }> {
@@ -239,7 +239,7 @@ export class UXPatternValidator {
       passedPatterns: results.filter(r => r.passed).length,
       failedPatterns: results.filter(r => !r.passed).length,
       scorePercentage: Math.round((results.filter(r => r.passed).length / results.length) * 100)
-    };
+    }
     const byCategory = results.reduce((acc, result) => {
       const category = result.pattern.category;
       if (!acc[category]) acc[category] = [];
@@ -253,7 +253,7 @@ export class UXPatternValidator {
       summary,
       byCategory,
       recommendations
-    };
+    }
   }
   /**
    * Monitor UX patterns in real-time
@@ -270,14 +270,14 @@ export class UXPatternValidator {
         );
         console.groupEnd();
       }
-    };
+    }
     // Run initial check
     runMonitoring();
     // Set up periodic monitoring
     monitoringInterval = setInterval(runMonitoring, 30000); // Every 30 seconds
     return () => {
       clearInterval(monitoringInterval);
-    };
+    }
   }
 }
 /**
@@ -293,7 +293,7 @@ export class PerformanceMetrics {
     cls?: number; // Cumulative Layout Shift
   }> {
     return new Promise((resolve) => {
-      const metrics: any = {};
+      const metrics: any = {}
       // Largest Contentful Paint
       new PerformanceObserver((list) => {
         const entries = list.getEntries();
@@ -330,7 +330,7 @@ export class PerformanceMetrics {
       if (renderTime > 16) { // More than one frame at 60fps
         console.warn(`🐌 ${componentName} render is slow (${renderTime.toFixed(2)}ms)`);
       }
-    };
+    }
   }
 }
 // Export singleton instances

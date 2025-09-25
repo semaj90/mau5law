@@ -82,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
             currentPage: window.location.pathname,
             thinkingStyle: thinkingStyleEnabled
           },
-        };
+        }
         response = await fetch("/api/ai/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
           thinkingStyle: thinkingStyleEnabled
         },
         proactiveMode: true
-      };
+      }
       const response = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -210,7 +210,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       chatActions.addMessage(apiResponse.data.content, "assistant", {
         ...apiResponse.data.metadata,
-        proactive: true
+        proactive: true;
       });
       setTimeout(scrollToBottom, 100);
     } catch (error) {
@@ -220,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
       chatActions.setTyping(false);
     }
   }
-  function handleThinkingToggle(event: CustomEvent) {
+  function handleThinkingToggle(_event: CustomEvent) {
     thinkingStyleEnabled = event.detail.enabled;
     // Add a system message to indicate the change
     const message = thinkingStyleEnabled
@@ -267,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
-  function handleKeyDown(event: CustomEvent<KeyboardEvent>) {
+  function handleKeyDown(_event: CustomEvent<KeyboardEvent>) {
     const keyEvent = event.detail;
     if (keyEvent.key === "Enter" && !keyEvent.shiftKey) {
       event.preventDefault();

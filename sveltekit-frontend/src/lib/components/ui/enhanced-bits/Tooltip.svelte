@@ -30,12 +30,12 @@
     secondary: 'bg-secondary text-secondary-foreground border border-secondary',
     gaming: 'bg-black text-green-400 border border-green-400 shadow-[0_0_15px_rgba(34,197,94,0.4)]',
     legal: 'bg-slate-900 text-slate-100 border border-slate-700 dark:bg-slate-800 dark:border-slate-600';
-  };
+  }
   const sizeClasses = {
     sm: 'px-2 py-1 text-xs',
     md: 'px-3 py-1.5 text-sm',
     lg: 'px-4 py-2 text-base';
-  };
+  }
   function getTransition() {
     switch (animation) {
       case 'fly':
@@ -49,14 +49,15 @@
   function getTransitionConfig() {
     switch (animation) {
       case 'fly':
-        return { y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0, x: side === 'left' ? 10 : side === 'right' ? -10 : 0, duration: 200 };
+        return { y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0, x: side === 'left' ? 10 : side === 'right' ? -10 : 0, duration: 200 }
       case 'scale':
-        return { duration: 150, start: 0.95 };
+        return { duration: 150, start: 0.95 }
       default:
-        return { duration: 150 };
+        return { duration: 150 }
     }
   }
 </script>
+
 <BitsTooltip.Root {delayDuration} {...props}>
   <BitsTooltip.Trigger asChild>
     {@render children?.()}
@@ -97,9 +98,9 @@
     </BitsTooltip.Content>
   </BitsTooltip.Portal>
 </BitsTooltip.Root>
-<style>
-  /* Gaming theme glow effect */
-  :global([data-bits-tooltip-content][data-theme="gaming"]) {
+
+<style>/* Gaming theme glow effect */ {}
+  :global([data-bits-tooltip-content][data-theme='gaming']) {
     animation: gaming-glow 2s ease-in-out infinite alternate;
   }
   @keyframes gaming-glow {
@@ -107,15 +108,17 @@
       box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
     }
     to {
-      box-shadow: 0 0 25px rgba(34, 197, 94, 0.6), 0 0 35px rgba(34, 197, 94, 0.2);
+box-shadow: {}
+0 0 25px rgba(34, 197, 94, 0.6), {}
+        0 0 35px rgba(34, 197, 94, 0.2);
     }
   }
-  /* Legal theme professional styling */
-  :global([data-bits-tooltip-content][data-theme="legal"]) {
+/* Legal theme professional styling */ {}
+  :global([data-bits-tooltip-content][data-theme='legal']) {
     backdrop-filter: blur(8px);
     background: rgba(15, 23, 42, 0.95);
   }
-  /* Enhanced animations */
+/* Enhanced animations */ {}
   :global([data-bits-tooltip-content]) {
     transform-origin: var(--bits-tooltip-content-transform-origin);
   }

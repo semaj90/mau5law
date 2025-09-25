@@ -39,7 +39,7 @@
     firstName: progressiveForm.generateFieldId('firstName', formId),
     lastName: progressiveForm.generateFieldId('lastName', formId),
     terms: progressiveForm.generateFieldId('terms', formId);
-  };
+  }
   // Validation functions
   function validateField(fieldName: string, value: unknown): string | null {
     switch (fieldName) {
@@ -135,7 +135,7 @@
         submitMessageType = 'error';
         // Handle server validation errors
         if ((result as { type?: unknown; data?: unknown }).data?.errors) {
-          formState.errors = { ...formState.errors, ...result.data.errors };
+          formState.errors = { ...formState.errors, ...result.data.errors }
         }
         if (onerror) {
           onerror(submitMessage);
@@ -155,10 +155,10 @@
         }
       }
       await update();
-    };
-  };
+    }
+  }
   // Handle form submission without JavaScript
-  function handleNativeSubmit(event: Event) {
+  function handleNativeSubmit(_event: Event) {
     const form = event.target as HTMLFormElement;
     const formData = new FormData(form);
     // Basic client-side validation for browsers without JavaScript
@@ -185,9 +185,10 @@
       'aria-invalid': hasError(fieldName) ? 'true' : 'false',
       'aria-describedby': hasError(fieldName) ? errorId : undefined
       'aria-required': 'true';
-    };
+    }
   }
 </script>
+
 <!-- Progressive Enhancement Form -->
 <form
   id={formId}
@@ -209,12 +210,7 @@
     </div>
   {/if}
   <!-- Live region for announcements -->
-  <div
-    id="{formId}-announcements"
-    class="sr-only"
-    aria-live="polite"
-    aria-atomic="true"
-  ></div>
+  <div id="{formId}-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   <!-- Form errors summary -->
   {#if Object.keys(errors).length > 0 && progressiveForm.config.showSummaryErrors}
     <div class="error-summary" role="alert" aria-labelledby="{formId}-error-heading">
@@ -233,49 +229,37 @@
     <legend>Personal Information</legend>
     <div class="form-row">
       <div class="form-group">
-        <label for={fieldIds.firstName} class="form-label required">
-          First Name
-        </label>
+        <label for={fieldIds.firstName} class="form-label required"> First Name </label>
         <input
           {...getFieldAria('firstName')}
           type="text"
           name="firstName"
           class="form-input {hasError('firstName') ? 'error' : ''}"
           bind:value={formState.data.firstName}
-          oninput={(e) => handleFieldChange('firstName', e.target.value)}
-          onblur={() => formState.touched.firstName = true}
+          oninput={e => handleFieldChange('firstName', e.target.value)}
+          onblur={() => (formState.touched.firstName = true)}
           required
         />
         {#if hasError('firstName')}
-          <div
-            id={progressiveForm.generateErrorId(fieldIds.firstName)}
-            class="field-error"
-            role="alert"
-          >
+          <div id={progressiveForm.generateErrorId(fieldIds.firstName)} class="field-error" role="alert">
             {getError('firstName')}
           </div>
         {/if}
       </div>
       <div class="form-group">
-        <label for={fieldIds.lastName} class="form-label required">
-          Last Name
-        </label>
+        <label for={fieldIds.lastName} class="form-label required"> Last Name </label>
         <input
           {...getFieldAria('lastName')}
           type="text"
           name="lastName"
           class="form-input {hasError('lastName') ? 'error' : ''}"
           bind:value={formState.data.lastName}
-          oninput={(e) => handleFieldChange('lastName', e.target.value)}
-          onblur={() => formState.touched.lastName = true}
+          oninput={e => handleFieldChange('lastName', e.target.value)}
+          onblur={() => (formState.touched.lastName = true)}
           required
         />
         {#if hasError('lastName')}
-          <div
-            id={progressiveForm.generateErrorId(fieldIds.lastName)}
-            class="field-error"
-            role="alert"
-          >
+          <div id={progressiveForm.generateErrorId(fieldIds.lastName)} class="field-error" role="alert">
             {getError('lastName')}
           </div>
         {/if}
@@ -286,80 +270,60 @@
   <fieldset class="form-section">
     <legend>Account Information</legend>
     <div class="form-group">
-      <label for={fieldIds.email} class="form-label required">
-        Email Address
-      </label>
+      <label for={fieldIds.email} class="form-label required"> Email Address </label>
       <input
         {...getFieldAria('email')}
         type="email"
         name="email"
         class="form-input {hasError('email') ? 'error' : ''}"
         bind:value={formState.data.email}
-        oninput={(e) => handleFieldChange('email', e.target.value)}
-        onblur={() => formState.touched.email = true}
+        oninput={e => handleFieldChange('email', e.target.value)}
+        onblur={() => (formState.touched.email = true)}
         autocomplete="email"
         required
       />
       {#if hasError('email')}
-        <div
-          id={progressiveForm.generateErrorId(fieldIds.email)}
-          class="field-error"
-          role="alert"
-        >
+        <div id={progressiveForm.generateErrorId(fieldIds.email)} class="field-error" role="alert">
           {getError('email')}
         </div>
       {/if}
     </div>
     <div class="form-group">
-      <label for={fieldIds.password} class="form-label required">
-        Password
-      </label>
+      <label for={fieldIds.password} class="form-label required"> Password </label>
       <input
         {...getFieldAria('password')}
         type="password"
         name="password"
         class="form-input {hasError('password') ? 'error' : ''}"
         bind:value={formState.data.password}
-        oninput={(e) => handleFieldChange('password', e.target.value)}
-        onblur={() => formState.touched.password = true}
+        oninput={e => handleFieldChange('password', e.target.value)}
+        onblur={() => (formState.touched.password = true)}
         autocomplete="new-password"
         minlength="8"
         required
       />
-      <div class="field-hint">
-        Password must be at least 8 characters long
-      </div>
+      <div class="field-hint">Password must be at least 8 characters long</div>
       {#if hasError('password')}
-        <div
-          id={progressiveForm.generateErrorId(fieldIds.password)}
-          class="field-error"
-          role="alert"
-        >
+        <div id={progressiveForm.generateErrorId(fieldIds.password)} class="field-error" role="alert">
           {getError('password')}
         </div>
       {/if}
     </div>
     <div class="form-group">
-      <label for={fieldIds.confirmPassword} class="form-label required">
-        Confirm Password
-      </label>
+      <label for={fieldIds.confirmPassword} class="form-label required"> Confirm Password </label>
       <input
         {...getFieldAria('confirmPassword')}
         type="password"
         name="confirmPassword"
-        class="form-input {hasError('confirmPassword') ? 'error' : ''}"
+        class="form-input {hasError('confirmPassword') ? 'error' : ''}";
         bind:value={formState.data.confirmPassword}
-        oninput={(e) => handleFieldChange('confirmPassword', e.target.value)}
-        onblur={() => formState.touched.confirmPassword = true}
+        oninput={e => handleFieldChange('confirmPassword', e.target.value)}
+        onblur={() => (formState.touched.confirmPassword = true)}
         autocomplete="new-password"
         required
       />
       {#if hasError('confirmPassword')}
-        <div
-          id={progressiveForm.generateErrorId(fieldIds.confirmPassword)}
-          class="field-error"
-          role="alert"
-        >
+        <div id={progressiveForm.generateErrorId(fieldIds.confirmPassword)} class="field-error" role="alert">
           {getError('confirmPassword')}
         </div>
       {/if}
@@ -373,9 +337,10 @@
         id={fieldIds.terms}
         type="checkbox"
         name="terms"
-        class="form-checkbox";
+        class="form-checkbox"
+        ;
         bind:checked={formState.data.terms}
-        onchange={(e) => handleFieldChange('terms', e.target.checked)}
+        onchange={e => handleFieldChange('terms', e.target.checked)}
         aria-describedby={hasError('terms') ? progressiveForm.generateErrorId(fieldIds.terms) : undefined}
         required
       />
@@ -384,11 +349,7 @@
         and <a href="/privacy" target="_blank">Privacy Policy</a>
       </label>
       {#if hasError('terms')}
-        <div
-          id={progressiveForm.generateErrorId(fieldIds.terms)}
-          class="field-error"
-          role="alert"
-        >
+        <div id={progressiveForm.generateErrorId(fieldIds.terms)} class="field-error" role="alert">
           {getError('terms')}
         </div>
       {/if}
@@ -446,6 +407,7 @@
     </details>
   {/if}
 </form>
+
 <style>
   .progressive-form {
     max-width: 600px;

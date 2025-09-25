@@ -53,7 +53,7 @@
         delayed,
         message,
         enhance
-      };
+      }
     }
   });
   // Tag management
@@ -66,7 +66,7 @@
   function removeTag(tag: string) {
     $form.tags = $form.tags?.filter(t => t !== tag) || [];
   }
-  function handleTagKeydown(event: KeyboardEvent) {
+  function handleTagKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       addTag();

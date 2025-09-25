@@ -43,8 +43,8 @@ https://svelte.dev/e/attribute_invalid_name -->
   		onclose?: (() => void);
   		onminimize?: (() => void);
   		onmaximize?: (() => void);
-  		onmessage?: ((event: { message: Message }) => void);
-  		onsettingschange?: ((event: { settings: ChatSettings }) => void);
+  		onmessage?: ((_event: { message: Message }) => void);
+  		onsettingschange?: ((_event: { settings: ChatSettings }) => void);
   	}
   	let {
   		visible = false,
@@ -79,7 +79,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   let settingsOpen = $state(false);
   	// Settings
   let settings = $state<ChatSettings >({
-  		model: modelName
+  		model: modelName;
   		temperature: 0.1,
   		maxTokens: 512,
   		topP: 0.9,
@@ -103,7 +103,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   			position = {
   				x: window.innerWidth - width - 20,
   				y: window.innerHeight - height - 20;
-  			};
+  			}
   		}
   	});
   	// Auto-scroll to bottom when new messages arrive
@@ -130,7 +130,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   			content,
   			timestamp: new Date(),
   			...option;
-  		};
+  		}
   		messages = [...messages, message];
   		onmessage?.({ message });
   		return messag;
@@ -192,7 +192,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     console.error('API call failed:', error);
     throw error;
   },
-  					stream: false
+  					stream: false;
   					options: {
   						temperature: settings.temperature,
   						num_predict: settings.maxTokens,
@@ -280,7 +280,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   		return `${settings.systemPrompt}\n\n${conversation}\n<start_of_turn>user\n${message}<end_of_turn>\n<start_of_turn>model\n`;
   	}
   	// Handle input keydown
-  	function handleKeyDown(event: KeyboardEvent) {
+  	function handleKeyDown(_event: KeyboardEvent) {
   		if (event.key === 'Enter' && !event.shiftKey) {
   			event.preventDefault();
   			sendMessage();
@@ -294,7 +294,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   		}
   	}
   	// Dragging functionality
-  	function startDrag(event: MouseEvent) {
+  	function startDrag(_event: MouseEvent) {
   		if (!draggable || (event.target instanceof HTMLButtonElement)) return;
   		if (!windowElement) return;
   		isDragging = true;
@@ -302,11 +302,11 @@ https://svelte.dev/e/attribute_invalid_name -->
   		dragOffset = {
   			x: event.clientX - rect.left,
   			y: event.clientY - rect.top;
-  		};
+  		}
   		document.addEventListener('mousemove', handleDrag);
   		document.addEventListener('mouseup', stopDrag);
   	}
-  	function handleDrag(event: MouseEvent) {
+  	function handleDrag(_event: MouseEvent) {
   		if (!isDragging) return;
   		const newX = event.clientX - dragOffset.x;
   		const newY = event.clientY - dragOffset.y;
@@ -315,7 +315,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   		position = {
   			x: Math.max(0, Math.min(newX, maxX)),
   			y: Math.max(0, Math.min(newY, maxY));
-  		};
+  		}
   	}
   	function stopDrag() {
   		isDragging = false;
@@ -362,7 +362,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 		aria-describedby="chat-window-description"
 		class="fixed bg-yorha-bg-secondary border-2 border-yorha-primary shadow-2xl z-50 flex flex-col overflow-hidden font-mono focus-within: ring-2 focus-within:ring-yorha-primary/50";
 	 class:opacity-50={isDragging}
-		style="
+		style=";
 			width: {width}px;
 			height: {minimized ? 60 : height}px;
 			left: {position.x}px;
@@ -376,10 +376,10 @@ https://svelte.dev/e/attribute_invalid_name -->
 			{#each Array(5) as _, i}
 				<div
 					class="absolute w-1 h-1 bg-yorha-accent rounded-full opacity-60 animate-float"
-					style="
+					style=";
 						left: {10 + (i * 20)}%;
-						animation-delay: {i * 0.8};
-						animation-duration: {6 + (i * 2)};
+						animation-delay: {i * 0.8}
+						animation-duration: {6 + (i * 2)}
 					"
 				></div>
 			{/each}
@@ -420,7 +420,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 				<button
 					type="button"
 					class="w-8 h-8 flex items-center justify-center border border-yorha-border text-yorha-text-secondary hover:border-yorha-primary hover:text-yorha-primary focus:border-yorha-primary focus:outline-none focus:ring-2 focus:ring-yorha-primary/50 transition-colors"
-					onclick={(event: MouseEvent) => toggleSettings}
+					onclick={(_event: MouseEvent) => toggleSettings}
 					aria-label={settingsOpen ? 'Close settings' : 'Open settings'}
 					aria-expanded={settingsOpen}
 				>
@@ -432,7 +432,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 				<button
 					type="button"
 					class="w-8 h-8 flex items-center justify-center border border-yorha-border text-yorha-text-secondary hover:border-yorha-primary hover:text-yorha-primary focus:border-yorha-primary focus:outline-none focus:ring-2 focus:ring-yorha-primary/50 transition-colors"
-					onclick={(event: MouseEvent) => minimizeWindow}
+					onclick={(_event: MouseEvent) => minimizeWindow}
 					aria-label={minimized ? 'Restore window' : 'Minimize window'}
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -446,7 +446,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 				<button
 					type="button"
 					class="w-8 h-8 flex items-center justify-center border border-yorha-border text-yorha-text-secondary hover:border-red-500 hover:text-red-500 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 transition-colors"
-					onclick={(event: MouseEvent) => closeWindow}
+					onclick={(_event: MouseEvent) => closeWindow}
 					aria-label="Close chat window"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -475,10 +475,10 @@ https://svelte.dev/e/attribute_invalid_name -->
 			<input aria-label="Input field" id="max-tokens" type="number" min="100" max="2048" bind:value={settings.maxTokens} class="w-full bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-xs p-2 focus:border-yorha-primary">
 						</div>
 						<div class="flex space-x-2">
-							<button aria-label="Action button" type="button" onclick={(event: MouseEvent) => updateSettings} class="flex-1 bg-yorha-primary text-yorha-bg-primary text-xs p-2 hover:bg-yorha-secondary transition-colors">
+							<button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => updateSettings} class="flex-1 bg-yorha-primary text-yorha-bg-primary text-xs p-2 hover:bg-yorha-secondary transition-colors">
 								Apply
 							</button>
-							<button aria-label="Action button" type="button" onclick={(event: MouseEvent) => clearChat} class="flex-1 bg-yorha-error text-white text-xs p-2 hover:bg-red-600 transition-colors">
+							<button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => clearChat} class="flex-1 bg-yorha-error text-white text-xs p-2 hover:bg-red-600 transition-colors">
 								Clear
 							</button>
 						</div>
@@ -491,7 +491,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 						<div
 							class="max-w-[85%] border border-yorha-border p-3 relative shadow-sm"
 						 class:bg-yorha-bg-tertiary={message.role === 'user'}
-						 class:border-yorha-primary={message.role === 'user'};
+						 class:border-yorha-primary={message.role === 'user'}
 						 class:bg-yorha-bg-secondary={message.role !== 'user'}
 							role={message.role === 'system' ? 'status' : 'article'}
 						>
@@ -504,7 +504,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 							</div>
 							{#if message.error}
 								<div class="mt-2 text-xs text-red-400" role="alert">
-									Failed to get response. <button onclick={(event: MouseEvent) => sendMessage} class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-400/50" aria-label="Retry sending message">Retry</button>
+									Failed to get response. <button onclick={(_event: MouseEvent) => sendMessage} class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-400/50" aria-label="Retry sending message">Retry</button>
 								</div>
 							{/if}
 							<time class="mt-2 text-xs text-yorha-text-muted" datetime={message.timestamp.toISOString()}>
@@ -530,20 +530,20 @@ https://svelte.dev/e/attribute_invalid_name -->
 				{/if}
 			</main>
 			<footer class="border-t border-yorha-border bg-yorha-bg-secondary p-4">
-				<form class="flex space-x-3" onsubmit={(event: SubmitEvent) => {
+				<form class="flex space-x-3" onsubmit={(_event: SubmitEvent) => {
       event.preventDefault();
       try {
-        (event: SubmitEvent) => e) => { e.preventDefault(); sendMessage();(event);
+        (_event: SubmitEvent) => e) => { e.preventDefault(); sendMessage();(event);
       } catch (error) {
         console.error('Form submission error:', error);
         errorMessage = error instanceof Error ? error.message: 'Form submission failed';
       }
     }}} role="search" aria-label="Send message to AI">
 					<textarea
-						bind:this={inputElement};
+						bind:this={inputElement}
 						bind:value={inputValue}
 						onkeydown={handleKeyDown}
-						oninput={(event: Event) => debounce(autoResize, 300}
+						oninput={(_event: Event) => debounce(autoResize, 300}
 						placeholder="Ask me about contracts, liability, compliance, or any legal question..."
 						class="flex-1 bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary placeholder-yorha-text-muted p-3 text-sm resize-none focus:border-yorha-primary focus:outline-none focus:ring-2 focus:ring-yorha-primary/50 transition-colors"
 						rows="1"

@@ -8,11 +8,7 @@
     autoHide?: boolean;
     updateInterval?: number;
   }
-  let {
-    showOverlay = false,
-    autoHide = true,
-    updateInterval = 1000
-  }: Props = $props();
+  let { showOverlay = false, autoHide = true, updateInterval = 1000 }: Props = $props();
   interface PerformanceMetrics {
     fps: number;
     memoryUsage: number;
@@ -31,7 +27,7 @@
     webGPUActive: false,
     activeOperations: 0,
     responseTime: 0,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
   let performanceObserver: PerformanceObserver | null = null;
   let frameCount = 0;
@@ -65,7 +61,7 @@
       webGPUActive,
       activeOperations: getActiveOperationsCount(),
       responseTime,
-      timestamp: now
+      timestamp: now,
     });
   }
   function getActiveOperationsCount(): number {
@@ -80,7 +76,7 @@
   function setupPerformanceObserver() {
     if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
       try {
-        performanceObserver = new PerformanceObserver((list) => {
+        performanceObserver = new PerformanceObserver(list => {
           const entries = list.getEntries();
           for (const entry of entries) {
             if (entry.entryType === 'measure' || entry.entryType === 'navigation') {
@@ -90,7 +86,7 @@
           }
         });
         performanceObserver.observe({
-          entryTypes: ['measure', 'navigation', 'resource']
+          entryTypes: ['measure', 'navigation', 'resource'],
         });
       } catch (error) {
         console.warn('PerformanceObserver not supported:', error);
@@ -113,13 +109,13 @@
     // Start metrics collection
     intervalId = setInterval(updateMetrics, updateInterval);
     // Keyboard shortcut to toggle (Ctrl+Shift+P)
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (_event: KeyboardEvent) => {
       if (event.ctrlKey && event.shiftKey && event.key === 'P') {
         event.preventDefault();
         toggleVisibility();
         autoHideTimer();
       }
-    };
+    }
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', handleKeyDown);
     }
@@ -127,7 +123,7 @@
       if (typeof window !== 'undefined') {
         window.removeEventListener('keydown', handleKeyDown);
       }
-    };
+    }
   });
   onDestroy(() => {
     if (intervalId) {
@@ -138,7 +134,7 @@
     }
   });
   // Color coding for metrics
-  function getStatusColor(value: number, type: 'fps' | 'memory' | 'cpu' | 'gpu'): string {
+  function getStatusColor(_value: number, type: 'fps' | 'memory' | 'cpu' | 'gpu'): string {
     switch (type) {
       case 'fps':
         if (value >= 55) return 'text-green-400';
@@ -158,6 +154,7 @@
     }
   }
 </script>
+
 {#if isVisible}
   <div class="performance-monitor fixed top-4 right-4 z-[9999] font-mono text-xs">
     <div class="bg-black/80 backdrop-blur-sm text-white rounded-lg p-3 shadow-2xl border border-gray-700 min-w-[200px]">
@@ -242,12 +239,11 @@
         </div>
       {/if}
       <!-- Help Text -->
-      <div class="mt-2 pt-1 border-t border-gray-600 text-[10px] text-gray-400">
-        Press Ctrl+Shift+P to toggle
-      </div>
+      <div class="mt-2 pt-1 border-t border-gray-600 text-[10px] text-gray-400">Press Ctrl+Shift+P to toggle</div>
     </div>
   </div>
 {/if}
+
 <style>
   .performance-monitor {
     user-select: none;

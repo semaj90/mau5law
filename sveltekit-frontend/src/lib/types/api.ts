@@ -60,12 +60,12 @@ export interface SystemInfo {
 export interface AIAnalysisRequest {
   content: string;
   analysisType: string;
-  options?: { [key: string]: any };
+  options?: { [key: string]: any }
 }
 export interface AIAnalysisResponse {
   analysis: string;
   confidence: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 // AI Chat API Types
 export interface ChatMessage {
@@ -86,7 +86,7 @@ export interface ChatMessage {
     confidence?: number;
     executionTime?: number;
     fromCache?: boolean;
-  };
+  }
 }
 export interface AIResponse {
   answer: string;
@@ -96,7 +96,7 @@ export interface AIResponse {
   confidence?: number;
   executionTime?: number;
   fromCache?: boolean;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface ConversationHistory {
   id: string;
@@ -105,7 +105,7 @@ export interface ConversationHistory {
   timestamp: number;
   role?: 'user' | 'assistant' | 'system';
   content?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface ChatRequest {
   messages: ChatMessage[];
@@ -113,13 +113,13 @@ export interface ChatRequest {
     caseId?: string;
     currentPage?: string;
     userId?: string;
-  };
+  }
   proactiveMode?: boolean;
   settings?: {
     model?: string;
     temperature?: number;
     maxTokens?: number;
-  };
+  }
 }
 export interface ChatResponse {
   content: string;
@@ -132,7 +132,7 @@ export interface ChatResponse {
     emotionalTone?: string;
     proactive?: boolean;
     processingTime?: number;
-  };
+  }
 }
 // Evidence API Types
 export interface EvidenceUploadRequest {
@@ -142,7 +142,7 @@ export interface EvidenceUploadRequest {
   type: 'document' | 'image' | 'video' | 'audio' | 'other';
   url?: string;
   tags?: string[];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface EvidenceUploadResponse {
   id: string;
@@ -169,14 +169,14 @@ export interface Evidence {
   collectedAt: Date | null;
   collectedBy: string | null;
   location: string | null;
-  labAnalysis: { [key: string]: any };
+  labAnalysis: { [key: string]: any }
   aiAnalysis: EvidenceAIAnalysis;
   aiTags: string[];
   aiSummary: string | null;
   summary: string | null;
   isAdmissible: boolean;
   confidentialityLevel: string;
-  canvasPosition: { [key: string]: any };
+  canvasPosition: { [key: string]: any }
   uploadedBy: string | null;
   uploadedAt: Date;
   updatedAt: Date;
@@ -192,7 +192,7 @@ export interface EvidenceItem {
   fileType: string | null;
   aiAnalysis?: EvidenceAIAnalysis;
   summary?: string | null;
-  canvasPosition?: { [key: string]: any };
+  canvasPosition?: { [key: string]: any }
   // Additional fields for compatibility
   type?: string;
   collectedAt?: Date | null;
@@ -208,14 +208,14 @@ export interface SearchRequest {
     dateRange?: {
       start: Date;
       end: Date;
-    };
+    }
     tags?: string[];
     status?: string[];
-  };
+  }
   pagination?: {
     page: number;
     limit: number;
-  };
+  }
 }
 export interface SearchResponse<T = any> {
   results: T[];
@@ -237,7 +237,7 @@ export interface UserProfile {
     theme?: 'light' | 'dark' | 'system';
     notifications?: boolean;
     language?: string;
-  };
+  }
 }
 export interface UserUpdateRequest {
   name?: string;
@@ -250,7 +250,7 @@ export interface FileUploadRequest {
   file: File;
   caseId?: string;
   type?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface FileUploadResponse {
   id: string;
@@ -266,13 +266,13 @@ export interface VectorSearchRequest {
   type?: 'semantic' | 'similarity' | 'hybrid';
   limit?: number;
   threshold?: number;
-  filters?: { [key: string]: any };
+  filters?: { [key: string]: any }
 }
 export interface VectorSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   type: 'case' | 'evidence' | 'statute' | 'document';
 }
 export interface VectorSearchResponse {
@@ -299,7 +299,7 @@ export interface EmbeddingResponse {
   usage?: {
     promptTokens?: number;
     totalTokens?: number;
-  };
+  }
 }
 // Citation Types
 export interface Citation {
@@ -321,7 +321,7 @@ export interface Citation {
     evidenceId?: string;
     userId?: string;
     [key: string]: unknown;
-  };
+  }
   metadata?: {
     author?: string;
     year?: number;
@@ -329,7 +329,7 @@ export interface Citation {
     jurisdiction?: string;
     caseNumber?: string;
     url?: string;
-  };
+  }
   // Additional fields commonly used in components
   savedAt?: Date;
 }
@@ -337,7 +337,7 @@ export interface Citation {
 export interface ApiError {
   code: string;
   message: string;
-  details?: { [key: string]: any };
+  details?: { [key: string]: any }
   timestamp: Date;
 }
 // Generic API Handler Types
@@ -366,7 +366,7 @@ export interface Case {
   aiSummary?: string;
   aiTags?: string[];
   aiAnalysis?: CaseAIAnalysis;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   createdBy?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -441,7 +441,7 @@ export interface NamedEntity {
   confidence: number;
   startIndex?: number;
   endIndex?: number;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 export interface Topic {
   name: string;
@@ -491,7 +491,7 @@ export interface TimelineAnalysis {
   timespan: {
     start: string; // ISO date,
     end: string; // ISO date
-  };
+  }
   keyEvents: TimelineEvent[];
   gaps: TimelineGap[];
   consistency: number; // 0-100 scale
@@ -556,7 +556,7 @@ export interface Milestone {
 // ============================================================================
 // Core API Response Interface (Enhanced)
 export interface APIResponse<T = any> extends ApiResponse<T> {
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   requestId?: string;
   processingTime?: number;
   timestamp?: string;
@@ -658,7 +658,7 @@ export interface HealthCheckResult {
     connections?: number;
     memoryUsage?: string;
     cpuUsage?: string;
-  };
+  }
 }
 // Cluster Metrics from Windows Native Process Monitoring
 export interface ClusterMetrics {
@@ -669,7 +669,7 @@ export interface ClusterMetrics {
     type: string;
     port: number;
     timestamp: string;
-  };
+  }
   events: Array<any>;
   workers: Array<any>;
   deferredQueue: Array<any>;
@@ -680,18 +680,18 @@ export interface PerformanceMetrics {
     gRPC: string;
     HTTP: string;
     WebSocket: string;
-  };
+  }
   resources: {
     cpu: string;
     memory: string;
     gpu?: string;
     storage: string;
-  };
+  }
   performance: {
     averageResponseTime: string;
     uptime: string;
     throughput: string;
-  };
+  }
   timestamp: string;
 }
 // Enhanced RAG Request/Response for Production
@@ -740,21 +740,21 @@ export interface EnhancedUploadResponse extends APIResponse {
     text: string;
     confidence: number;
     language: string;
-  };
+  }
   embeddings?: {
     model: string;
     dimensions: number;
     generated: boolean;
-  };
+  }
   analysis?: EvidenceAIAnalysis;
-  metadata: { [key: string]: any };
+  metadata: { [key: string]: any }
 }
 // Dimensional Caching for Advanced Features
 export interface DimensionalCacheRequest {
   key: string;
   embeddings?: number[][];
   attention?: number[][];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   ttl?: number; // Time to live in seconds
   userId?: string;
 }
@@ -763,13 +763,13 @@ export interface DimensionalCacheResponse extends APIResponse {
   hit: boolean;
   embeddings?: number[][];
   attention?: number[][];
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   cacheStats?: {
     hitRate: number;
     size: number;
     capacity: number;
     evictions: number;
-  };
+  }
 }
 // XState Idle Detection & Queue Management
 export interface XStateRequest {
@@ -779,9 +779,9 @@ export interface XStateRequest {
     id: string;
     type: 'computation' | 'analysis' | 'processing' | 'rag' | 'upload';
     priority: 'low' | 'medium' | 'high' | 'critical';
-    payload: { [key: string]: any };
+    payload: { [key: string]: any }
     userId?: string;
-  };
+  }
   userId?: string;
 }
 export interface XStateResponse extends APIResponse {
@@ -792,20 +792,20 @@ export interface XStateResponse extends APIResponse {
     completed: number;
     failed: number;
     total: number;
-  };
+  }
   idleTime?: number;
   lastActivity?: string;
   machineConfig?: {
     states: string[];
     transitions: Record<string, string[]>;
-  };
+  }
 }
 // Modular Hot-Swappable Experience System
 export interface ModuleRequest {
   action: 'load' | 'unload' | 'switch' | 'list' | 'health';
   moduleId?: string;
   userId?: string;
-  moduleConfig?: { [key: string]: any };
+  moduleConfig?: { [key: string]: any }
   preserveSession?: boolean;
 }
 export interface ModuleResponse extends APIResponse {
@@ -834,7 +834,7 @@ export interface RecommendationResponse extends APIResponse {
     mostUsedFeatures: string[];
     preferredSearchTerms: string[];
     averageSessionTime: number;
-  };
+  }
 }
 // System Health & Comprehensive Monitoring
 export interface SystemHealthResponse extends APIResponse {
@@ -846,7 +846,7 @@ export interface SystemHealthResponse extends APIResponse {
     healthy: number;
     unhealthy: number;
     experimental: number;
-  };
+  }
   deployment: string;
   infrastructure: {
     platform: 'Windows Native';
@@ -854,7 +854,7 @@ export interface SystemHealthResponse extends APIResponse {
     gpu: string;
     memory: string;
     storage: string;
-  };
+  }
 }
 // Service Discovery with Protocol Information
 export interface ServiceDiscoveryResponse extends APIResponse {
@@ -867,12 +867,12 @@ export interface ServiceDiscoveryResponse extends APIResponse {
     gRPC: number;
     QUIC: number;
     WebSocket: number;
-  };
+  }
   deployment: {
     type: 'Windows Native';
     docker: false;
     processes: number;
-  };
+  }
 }
 // NATS Messaging Integration Types
 export interface NATSMessageRequest {
@@ -916,7 +916,7 @@ export interface APIRequestContext {
 export interface APIErrorResponse extends APIResponse {
   error: string;
   code?: string;
-  details?: { [key: string]: any };
+  details?: { [key: string]: any }
   requestId?: string;
   timestamp: string;
   retryable?: boolean;
@@ -925,7 +925,7 @@ export interface APIErrorResponse extends APIResponse {
 // Protocol Router for Multi-Protocol Service Access
 export interface ProtocolRouter {
   route<T extends keyof ServiceEndpoints>(
-    service: T
+    service: T;
     endpoint: string
     options?: RequestInit & { protocol?: 'auto' | 'http' | 'grpc' | 'quic' | 'websocket' }
   ): Promise<Response>;
@@ -935,7 +935,7 @@ export interface ProtocolRouter {
   getAllServices(): Array<any>;
 // Utility Type for API Route Handlers with Enhanced Context
 export type EnhancedAPIHandler<TRequest = any, TResponse = APIResponse> = (
-  request: TRequest
+  request: TRequest;
   context: APIRequestContext
 ) => Promise<TResponse>;
 // Multi-Protocol Request Options
@@ -965,9 +965,9 @@ export interface CommandSearchResponse {
     evidence: any[];
     documents: any[];
     people: any[];
-  };
+  }
   success?: boolean;
-  meta?: { [key: string]: any };
+  meta?: { [key: string]: any }
 }
 export interface LegalDocument {
   id: string;

@@ -93,7 +93,7 @@ if (!browser) return;
     camera.position.set(0, 10, 20);
     // Create WebGL renderer
     renderer = new THREE.WebGLRenderer({
-      antialias: true
+      antialias: true;
       alpha: true
       powerPreference: 'high-performance';
     });
@@ -144,7 +144,7 @@ if (!browser) return;
   function setupEventListeners() {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    function onMouseMove(event: MouseEvent) {
+    function onMouseMove(_event: MouseEvent) {
       const rect = containerElement.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / width) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / height) * 2 + 1;
@@ -170,7 +170,7 @@ if (!browser) return;
         websocketStore.broadcastCursorPosition(caseId, { x: mouse.x, y: mouse.y, z: 0 });
       }
     }
-    function onClick(event: MouseEvent) {
+    function onClick(_event: MouseEvent) {
       if (!interactive) return;
       const rect = containerElement.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / width) * 2 - 1;
@@ -248,7 +248,7 @@ if (!browser) return;
 THREE.Vector3): THREE.Object3D {
     const group = new THREE.Group();
     group.position.copy(position);
-    group.userData = { evidenceId: evidence.id, evidence };
+    group.userData = { evidenceId: evidence.id, evidence }
     // Create base geometry based on evidence type
     let geometry: THREE.BufferGeometry;
     let material: THREE.Material;
@@ -263,7 +263,7 @@ THREE.Vector3): THREE.Object3D {
         geometry = new THREE.PlaneGeometry(1.2, 0.8);
         material = new THREE.MeshLambertMaterial({
           color: 0x2196F3,
-          transparent: true
+          transparent: true;
           opacity: 0.8;
         });
         break;
@@ -306,13 +306,13 @@ THREE.Vector3): THREE.Object3D {
 THREE.Vector3): THREE.Object3D {
     const group = new THREE.Group();
     group.position.copy(position);
-    group.userData = { evidenceId: evidence.id, evidence };
+    group.userData = { evidenceId: evidence.id, evidence }
     // Create node as sphere with size based on importance
     const importance = evidence.aiSummary ? 1.0 : 0.7;
     const geometry = new THREE.SphereGeometry(importance * 0.5, 16, 16);
     const material = new THREE.MeshLambertMaterial({
       color: getEvidenceColor(evidence),
-      transparent: true
+      transparent: true;
       opacity: 0.8;
     });
     const mesh = new THREE.Mesh(geometry, material);
@@ -324,7 +324,7 @@ THREE.Vector3): THREE.Object3D {
 THREE.Vector3): THREE.Object3D {
     const group = new THREE.Group();
     group.position.copy(position);
-    group.userData = { evidenceId: evidence.id, evidence };
+    group.userData = { evidenceId: evidence.id, evidence }
     // Create timeline marker
     const geometry = new THREE.CylinderGeometry(0.2, 0.2, 2, 8);
     const material = new THREE.MeshLambertMaterial({
@@ -375,7 +375,7 @@ THREE.Vector3): THREE.Object3D {
     ]);
     const material = new THREE.LineBasicMaterial({
       color: 0x4CAF50,
-      transparent: true
+      transparent: true;
       opacity: 0.6;
     });
     return new THREE.Line(geometry, material);
@@ -432,7 +432,7 @@ THREE.Vector3): THREE.Object3D {
       'video': 0x9C27B0,
       'audio': 0xFF9800,
       'physical': 0xF44336
-    };
+    }
     return colors[evidence.type as keyof typeof colors] || 0x607D8B;
   }
   function areRelated(evidence1: any, evidence2: any): boolean {
@@ -538,16 +538,16 @@ THREE.Vector3): THREE.Object3D {
     });
   }
 </script>
-<div class="visualization-container" style="position: relative;
-e; width: {width}px; height: {height}px;">
+
+<div
+  class="visualization-container"
+  style="position: relative;
+e; width: {width}px; height: {height}px;"
+>
   <!-- Controls -->
   <div class="controls-panel">
     <div class="view-controls flex gap-2">
-      <Button
-        variant={viewMode === '3d' ? 'default' : 'outline'}
-        onclick={() => changeViewMode('3d')}
-        size="sm"
-      >
+      <Button variant={viewMode === '3d' ? 'default' : 'outline'} onclick={() => changeViewMode('3d')} size="sm">
         🌍 3D Map
       </Button>
       <Button
@@ -566,7 +566,7 @@ e; width: {width}px; height: {height}px;">
       </Button>
     </div>
     <div class="filter-controls">
-      <select bind:value={filterType} onchange={(e) => applyFilter((e.target as HTMLSelectElement).value)}>
+      <select bind:value={filterType} onchange={e => applyFilter((e.target as HTMLSelectElement).value)}>
         <option value="all">All Types</option>
         <option value="document">Documents</option>
         <option value="photo">Photos</option>
@@ -575,8 +575,8 @@ e; width: {width}px; height: {height}px;">
       </select>
     </div>
     <div class="action-controls">
-  <Button variant="ghost" onclick={resetView} size="sm">🔄 Reset View</Button>
-  <Button variant="ghost" onclick={exportVisualization} size="sm">📤 Export</Button>
+      <Button variant="ghost" onclick={resetView} size="sm">🔄 Reset View</Button>
+      <Button variant="ghost" onclick={exportVisualization} size="sm">📤 Export</Button>
     </div>
   </div>
   <!-- Loading indicator -->
@@ -596,13 +596,14 @@ e; width: {width}px; height: {height}px;">
         <p><strong>AI Summary:</strong> {selectedEvidence.aiSummary}</p>
       {/if}
       <div class="evidence-actions">
-        <button class="btn-primary" onclick={() => selectedEvidence = null}>Close</button>
+        <button class="btn-primary" onclick={() => (selectedEvidence = null)}>Close</button>
       </div>
     </div>
   {/if}
   <!-- 3D visualization container -->
   <div bind:this={containerElement} class="three-container"></div>
 </div>
+
 <style>
   .visualization-container {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
@@ -622,7 +623,9 @@ e; width: {width}px; height: {height}px;">
     border-radius: 6px;
     backdrop-filter: blur(10px);
   }
-  .view-controls, .filter-controls, .action-controls {
+  .view-controls,
+  .filter-controls,
+  .action-controls {
     display: flex;
     gap: 5px;
     align-items: center;
@@ -677,8 +680,12 @@ e; width: {width}px; height: {height}px;">
     margin-bottom: 15px;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   .evidence-panel {
     position: absolute;

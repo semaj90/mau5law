@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const { user } = await requireAuth({ cookies } as any)
     if (!user) {
       return json({
-        success: false
+        success: false;
         error: 'Authentication required'
       }, { status: 401 })
     }

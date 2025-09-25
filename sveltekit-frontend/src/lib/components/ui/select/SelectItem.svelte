@@ -28,19 +28,22 @@
     open.set(false);
   }
 </script>
+
 <div
   class="space-y-4 {class_}"
   role="option"
-  aria-selected={isSelected ? "true" : "false"}
+  aria-selected={isSelected ? 'true' : 'false'}
   onclick={() => handleClick()}
-  keydown={(e) => e.key === "Enter" && handleClick()}
+  keydown={e => e.key === 'Enter' && handleClick()}
   tabindex={0}
 >
   {#if children}
     {@render children()}
   {/if}
 </div>
-<style>/* @unocss-include */ .select-item {
+
+<style>/* @unocss-include */ {}
+  .select-item {
     padding: 8px 12px;
     cursor: pointer;
     font-size: 14px;

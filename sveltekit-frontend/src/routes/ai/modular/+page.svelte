@@ -35,9 +35,13 @@ https://svelte.dev/e/js_parse_error -->
     systemStatus.rabbitMqConnected = true;
   });
 </script>
+
 <svelte:head>
   <title>Modular AI Experience - Legal AI Platform</title>
-  <meta name="description" content="Cutting-edge AI with dimensional arrays, kernel attention splicing, and T5 transformers" />
+  <meta
+    name="description"
+    content="Cutting-edge AI with dimensional arrays, kernel attention splicing, and T5 transformers"
+  />
 </svelte:head>
 <div class="demo-container min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
   <!-- Header -->
@@ -52,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
         <button
-          onclick={() => showAdvancedSettings = !showAdvancedSettings}
+          onclick={() => (showAdvancedSettings = !showAdvancedSettings)}
           class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
         >
           ⚙️ {showAdvancedSettings ? 'Hide' : 'Show'} Advanced Settings
@@ -69,22 +73,30 @@ https://svelte.dev/e/js_parse_error -->
         <div class="text-xs text-gray-500">Port 8096</div>
       </div>
       <div class="status-nier-bits-card bg-white p-4 rounded-lg shadow text-center">
-        <div class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.webgpuSupported ? 'bg-green-500' : 'bg-yellow-500'}"></div>
+        <div
+          class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.webgpuSupported ? 'bg-green-500' : 'bg-yellow-500'}"
+        ></div>
         <div class="text-xs font-medium text-gray-700">WebGPU</div>
         <div class="text-xs text-gray-500">Browser Support</div>
       </div>
       <div class="status-nier-bits-card bg-white p-4 rounded-lg shadow text-center">
-        <div class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.dimensionalCache ? 'bg-green-500' : 'bg-red-500'}"></div>
+        <div
+          class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.dimensionalCache ? 'bg-green-500' : 'bg-red-500'}"
+        ></div>
         <div class="text-xs font-medium text-gray-700">Dimensional Cache</div>
         <div class="text-xs text-gray-500">Memory Engine</div>
       </div>
       <div class="status-nier-bits-card bg-white p-4 rounded-lg shadow text-center">
-        <div class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.xstateMachine ? 'bg-green-500' : 'bg-red-500'}"></div>
+        <div
+          class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.xstateMachine ? 'bg-green-500' : 'bg-red-500'}"
+        ></div>
         <div class="text-xs font-medium text-gray-700">XState Machine</div>
         <div class="text-xs text-gray-500">State Management</div>
       </div>
       <div class="status-nier-bits-card bg-white p-4 rounded-lg shadow text-center">
-        <div class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.rabbitMqConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
+        <div
+          class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.rabbitMqConnected ? 'bg-green-500' : 'bg-red-500'}"
+        ></div>
         <div class="text-xs font-medium text-gray-700">RabbitMQ</div>
         <div class="text-xs text-gray-500">Async Processing</div>
       </div>
@@ -161,19 +173,40 @@ https://svelte.dev/e/js_parse_error -->
     <div class="bg-gray-800 text-green-400 p-6 rounded-lg font-mono text-sm">
       <div class="mb-4 text-green-300">// Technical Implementation Overview</div>
       <div class="space-y-1">
-        <div><span class="text-yellow-400">dimensional-cache-engine.ts</span> → Multi-dimensional tensor caching with attention splicing</div>
-        <div><span class="text-yellow-400">ai-computation-machine.ts</span> → XState machine for idle detection & async processing</div>
-        <div><span class="text-yellow-400">webgpu-ai-engine.ts</span> → Browser GPU acceleration with custom compute shaders</div>
-        <div><span class="text-yellow-400">cuda-ai-service.go</span> → High-performance CUDA service with proto binaries</div>
-        <div><span class="text-yellow-400">ModularAIExperience.svelte</span> → Unified interface with hot-swappable components</div>
+        <div>
+          <span class="text-yellow-400">dimensional-cache-engine.ts</span> → Multi-dimensional tensor caching with attention
+          splicing
+        </div>
+        <div>
+          <span class="text-yellow-400">ai-computation-machine.ts</span> → XState machine for idle detection & async processing
+        </div>
+        <div>
+          <span class="text-yellow-400">webgpu-ai-engine.ts</span> → Browser GPU acceleration with custom compute shaders
+        </div>
+        <div>
+          <span class="text-yellow-400">cuda-ai-service.go</span> → High-performance CUDA service with proto binaries
+        </div>
+        <div>
+          <span class="text-yellow-400">ModularAIExperience.svelte</span> → Unified interface with hot-swappable components
+        </div>
       </div>
       <div class="mt-6 text-green-300">// API Endpoints Available:</div>
       <div class="space-y-1 text-xs">
-        <div><span class="text-blue-400">POST</span> http://localhost:8096/cuda/compute → Dimensional array processing</div>
-        <div><span class="text-blue-400">POST</span> http://localhost:8096/cuda/t5/process → T5 transformer inference</div>
-        <div><span class="text-blue-400">POST</span> http://localhost:8096/cuda/kernel-attention → Kernel attention splicing</div>
-        <div><span class="text-blue-400">GET</span>  http://localhost:8096/cuda/recommendations/:userId → AI recommendations</div>
-        <div><span class="text-blue-400">POST</span> http://localhost:8096/cuda/queue/process → Offline queue processing</div>
+        <div>
+          <span class="text-blue-400">POST</span> http://localhost:8096/cuda/compute → Dimensional array processing
+        </div>
+        <div>
+          <span class="text-blue-400">POST</span> http://localhost:8096/cuda/t5/process → T5 transformer inference
+        </div>
+        <div>
+          <span class="text-blue-400">POST</span> http://localhost:8096/cuda/kernel-attention → Kernel attention splicing
+        </div>
+        <div>
+          <span class="text-blue-400">GET</span> http://localhost:8096/cuda/recommendations/:userId → AI recommendations
+        </div>
+        <div>
+          <span class="text-blue-400">POST</span> http://localhost:8096/cuda/queue/process → Offline queue processing
+        </div>
       </div>
       <div class="mt-6 text-green-300">// User Requests Addressed:</div>
       <div class="space-y-1 text-xs">
@@ -195,18 +228,20 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Legal Notice -->
   <div class="legal-notice max-w-7xl mx-auto px-6 py-4 text-center">
     <p class="text-sm text-gray-500">
-      🏛️ This implementation follows ethical AI practices and legal guidelines.
-      "Phoenix Wright" reference acknowledged for legal AI context.
-      All features are defensive security oriented and compliant with AI safety standards.
+      🏛️ This implementation follows ethical AI practices and legal guidelines. "Phoenix Wright" reference acknowledged
+      for legal AI context. All features are defensive security oriented and compliant with AI safety standards.
     </p>
   </div>
 </div>
+
 <style>
   .demo-container {
     font-family: 'Inter', system-ui, sans-serif;
   }
   .status-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
   .status-card:hover {
     transform: translateY(-2px);

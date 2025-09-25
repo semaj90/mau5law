@@ -6,12 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/Button.svelte';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import {
     Dialog,
     DialogContent,
@@ -23,13 +18,7 @@ https://svelte.dev/e/js_parse_error -->
   import Input from '$lib/components/ui/Input.svelte';
   import Label from '$lib/components/ui/Label.svelte';
   import { Progress } from '$lib/components/ui/progress';
-  import {
-    SelectContent,
-    SelectItem,
-    SelectRoot,
-    SelectTrigger,
-    SelectValue,
-  } from '$lib/components/ui/select';
+  import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue } from '$lib/components/ui/select';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Reactive state with Svelte 5 syntax
   let analyzing = $state(false);
@@ -106,20 +95,18 @@ https://svelte.dev/e/js_parse_error -->
   ];
   // Current step tracking
   let currentStep = $derived(
-    steps.findIndex(
-      (s) => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25
-    )
+    steps.findIndex(s => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25),
   );
   // File upload handler
   function handleFileUpload(event) {
-    const target = event.target;
+    // removed unused target assignment
     if (target.files && target.files.length > 0) {
       evidenceFile = target.files[0];
       // Read file content
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         evidenceContent = e.target?.result as string;
-      };
+      }
       reader.readAsText(evidenceFile);
     }
   }
@@ -168,15 +155,16 @@ https://svelte.dev/e/js_parse_error -->
           keyFindings: data.data?.analysis?.keyFindings || [],
           recommendations: data.data?.analysis?.recommendations || [],
           model: data.data?.model || 'gemma3-legal',
-          processedAt: data.data?.processedAt
-        }
-      };
+          processedAt: data.data?.processedAt,
+        },
+      }
     } catch (err) {
       console.error('Evidence analysis error:', err);
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText =
+        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Generate mock analysis results
@@ -191,26 +179,23 @@ https://svelte.dev/e/js_parse_error -->
           keyFactsCount: Math.floor(Math.random() * 10) + 5,
           personsOfInterest: [
             { name: 'John Doe', role: 'witness', confidence: 0.85 },
-            { name: 'Jane Smith', role: 'defendant', confidence: 0.92 }
+            { name: 'Jane Smith', role: 'defendant', confidence: 0.92 },
           ],
           timeline: [
             { event: 'Mock incident occurred', date: '2024-01-15', importance: 'high' },
-            { event: 'Mock evidence collected', date: '2024-01-16', importance: 'medium' }
+            { event: 'Mock evidence collected', date: '2024-01-16', importance: 'medium' },
           ],
-          legalImplications: 'Mock analysis: Strong evidence pattern suggesting liability. Recommend further investigation of contract terms.',
+          legalImplications:
+            'Mock analysis: Strong evidence pattern suggesting liability. Recommend further investigation of contract terms.',
           confidenceScore: 0.78,
-          nextSteps: [
-            'Review additional witness statements',
-            'Obtain security footage',
-            'Examine financial records'
-          ]
+          nextSteps: ['Review additional witness statements', 'Obtain security footage', 'Examine financial records'],
         },
         metadata: {
           source: 'mock-evidence-analyzer',
           processingTime: '45 seconds',
-          model: 'Legal Evidence AI v2.0 (Simulated)'
-        }
-      };
+          model: 'Legal Evidence AI v2.0 (Simulated)',
+        },
+      }
       error = '';
     }
   }
@@ -228,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
     showResults = false;
     sessionId = '';
     // Reset steps
-    steps.forEach((step) => (step.status = 'pending'));
+    steps.forEach(step => (step.status = 'pending'));
   }
   // View detailed results
   function viewDetailedResults(analysisData) {
@@ -236,6 +221,7 @@ https://svelte.dev/e/js_parse_error -->
     // Could open a modal or navigate to detailed view
   }
 </script>
+
 <div class="max-w-6xl mx-auto p-6 space-y-6">
   <div class="text-center space-y-2">
     <h1 class="text-4xl font-bold tracking-tight">Evidence Analysis Pipeline</h1>
@@ -245,9 +231,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="w-full nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary flex items-center gap-2">📄 Evidence Upload & Configuration</h3>
-      <p class="nes-text">
-        Configure your evidence analysis parameters and upload documents for processing
-      </p>
+      <p class="nes-text">Configure your evidence analysis parameters and upload documents for processing</p>
     </div>
     <div class="yorha-panel-content space-y-6">
       <!-- Form Configuration -->
@@ -255,12 +239,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Case ID -->
         <div class="space-y-2">
           <Label for_="caseId">Case ID *</Label>
-          <Input
-            id="caseId";
-            bind:value={caseId}
-            placeholder="CASE-2024-001"
-            disabled={analyzing}
-            class="font-mono" />
+          <Input id="caseId" ; bind:value={caseId} placeholder="CASE-2024-001" disabled={analyzing} class="font-mono" />
         </div>
         <!-- Evidence Type -->
         <div class="space-y-2">
@@ -297,14 +276,18 @@ https://svelte.dev/e/js_parse_error -->
         <Input
           id="evidenceFile"
           type="file"
-          accept=".txt,.pdf,.doc,.docx" onchange={handleFileUpload}
+          accept=".txt,.pdf,.doc,.docx"
+          onchange={handleFileUpload}
           disabled={analyzing}
-          class="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary hover:file:bg-opacity-80" />
+          class="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary hover:file:bg-opacity-80"
+        />
         {#if evidenceFile}
           <div class="flex items-center gap-2 text-sm nes-text is-disabled">
             <span>📎</span>
             <span>{evidenceFile.name}</span>
-            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(evidenceFile.size / 1024).toFixed(1)} KB</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+              >{(evidenceFile.size / 1024).toFixed(1)} KB</span
+            >
           </div>
         {/if}
       </div>
@@ -317,7 +300,8 @@ https://svelte.dev/e/js_parse_error -->
           placeholder="Paste evidence text here or upload a file above..."
           disabled={analyzing}
           rows={12}
-          class="font-mono text-sm" />
+          class="font-mono text-sm"
+        />
         {#if evidenceContent}
           <div class="flex justify-between text-sm nes-text is-disabled">
             <span>{evidenceContent.length} characters</span>
@@ -329,21 +313,21 @@ https://svelte.dev/e/js_parse_error -->
     <CardFooter class="flex justify-between">
       <div class="flex items-center gap-2">
         {#if priority !== 'low'}
-          <Badge class={priorityOptions.find((p) => p.value === priority)?.color}>
-            {priorityOptions.find((p) => p.value === priority)?.label}
+          <Badge class={priorityOptions.find(p => p.value === priority)?.color}>
+            {priorityOptions.find(p => p.value === priority)?.label}
           </Badge>
         {/if}
         {#if evidenceType !== 'other'}
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{evidenceTypes.find((t) => t.value === evidenceType)?.label}</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+            >{evidenceTypes.find(t => t.value === evidenceType)?.label}</span
+          >
         {/if}
       </div>
-    <div class="flex gap-2">
-  <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>
-Reset
-</Button>
-  <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
-{analyzing ? 'Analyzing...' : 'Start Analysis'}
-</Button>
+      <div class="flex gap-2">
+        <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button>
+        <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+          {analyzing ? 'Analyzing...' : 'Start Analysis'}
+        </Button>
       </div>
     </CardFooter>
   </div>
@@ -381,25 +365,23 @@ Reset
             {@const isActive = currentStep === i}
             {@const isCompleted = step.status === 'completed'}
             {@const isProcessing = step.status === 'processing'}
-            <div
-              class="transition-all duration-300 {isActive ? 'ring-2 ring-primary shadow-md' : ''} nes-container">
+            <div class="transition-all duration-300 {isActive ? 'ring-2 ring-primary shadow-md' : ''} nes-container">
               <div class="yorha-panel-content p-4">
                 <div class="flex items-center gap-4">
                   <!-- Status Icon -->
                   <div class="flex-shrink-0">
                     {#if isCompleted}
-                      <div
-                        class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+                      <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
                         ✓
                       </div>
                     {:else if isProcessing}
                       <div
-                        class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center animate-pulse">
+                        class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center animate-pulse"
+                      >
                         {step.icon}
                       </div>
                     {:else}
-                      <div
-                        class="w-10 h-10 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center">
+                      <div class="w-10 h-10 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center">
                         {step.icon}
                       </div>
                     {/if}
@@ -411,7 +393,9 @@ Reset
                         {step.name}
                       </h3>
                       {#if isProcessing}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Processing</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                          >Processing</span
+                        >
                       {:else if isCompleted}
                         <Badge class="bg-green-100 text-green-800">Completed</Badge>
                       {:else}
@@ -445,17 +429,15 @@ Reset
       <DialogContent class="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Analysis Results - {caseId}</DialogTitle>
-          <DialogDescription>
-            Multi-agent pipeline analysis completed successfully
-          </DialogDescription>
+          <DialogDescription>Multi-agent pipeline analysis completed successfully</DialogDescription>
         </DialogHeader>
         <div class="space-y-4">
           {#each Object.entries(results.outputs) as [key, data]}
             <div class="nes-container">
               <div class="yorha-panel-header">
                 <h3 class="nes-text is-primary text-lg">
-                  {steps.find((s) => s.key === key)?.icon || '📄'}
-                  {key.replace.replace(/\b\w/g, (l) => l.toUpperCase())}
+                  {steps.find(s => s.key === key)?.icon || '📄'}
+                  {key.replace.replace(/\b\w/g, l => l.toUpperCase())}
                 </h3>
               </div>
               <div class="yorha-panel-content">
@@ -468,26 +450,23 @@ Reset
                   variant="ghost"
                   size="sm"
                   class="mt-2 bits-btn bits-btn"
-                  onclick={() =>
-viewDetailedResults(data)}>
+                  onclick={() => viewDetailedResults(data)}
+                >
                   View Details →
-</Button>
+                </Button>
               </div>
             </div>
           {/each}
         </div>
         <DialogFooter>
-          <Button class="bits-btn" variant="ghost" onclick={() =>
-(showResults = false)}>Close
-</Button>
-          <Button class="bits-btn" onclick={() =>
-goto(`/cases/${caseId}`)}>View Case Details
-</Button>
+          <Button class="bits-btn" variant="ghost" onclick={() => (showResults = false)}>Close</Button>
+          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   {/if}
 </div>
+
 <style>
   /* Custom animations for progress indicators */
   @keyframes pulse-glow {

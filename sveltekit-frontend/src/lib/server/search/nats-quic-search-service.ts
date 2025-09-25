@@ -37,9 +37,9 @@ export interface SearchRequest {
   filters?: {
     caseId?: string;
     documentTypes?: string[];
-    dateRange?: { start?: string; end?: string };
+    dateRange?: { start?: string; end?: string }
     confidenceMin?: number;
-  };
+  }
   options?: {
     limit?: number;
     threshold?: number;
@@ -47,7 +47,7 @@ export interface SearchRequest {
     includeMetadata?: boolean;
     includeContent?: boolean;
     priority?: 'low' | 'normal' | 'high' | 'realtime';
-  };
+  }
   userId?: string;
   sessionId?: string;
   timestamp: number;
@@ -63,7 +63,7 @@ export interface SearchResponse {
     cacheHit: boolean;
     searchType: string;
     hasEmbedding: boolean;
-  };
+  }
   suggestions?: string[];
   timestamp: number;
 }
@@ -86,7 +86,7 @@ export class NatsQuicSearchService {
     cacheHitRate: 0,
     activeConnections: 0,
     suggestionsGenerated: 0
-  };
+  }
   constructor() {
     this.initialize();
   }
@@ -96,7 +96,7 @@ export class NatsQuicSearchService {
       initialized: this.isInitialized,
       quicEnabled: QUIC_CONFIG.enableQuic,
       metrics: { ...this.metrics }
-    };
+    }
   }
   /** Public simplified search wrapper (non-stream) for integration tests */;
   async searchSimple(query: string, options: { type?: 'semantic' | 'text' | 'hybrid'; limit?: number; threshold?: number } = {}): Promise<SearchResponse> {
@@ -106,7 +106,7 @@ export class NatsQuicSearchService {
       searchType: options.type || 'hybrid',
       options: { limit: options.limit, threshold: options.threshold },
       timestamp: Date.now()
-    };
+    }
     return this.performSearch(request, Date.now();
   }
   /**
@@ -186,7 +186,7 @@ export class NatsQuicSearchService {
               searchType: cachedResponse.analytics?.searchType ?? request.searchType,
               hasEmbedding: cachedResponse.analytics?.hasEmbedding ?? false
             }
-          };
+          }
           this.updateCacheHitRate(true);
         } else {
           // Cache miss - perform actual search
@@ -217,7 +217,7 @@ export class NatsQuicSearchService {
             success: false
             error: error instanceof Error ? error.message: 'Search processing failed',
             timestamp: Date.now()
-          };
+          }
           this.nats.publish(msg.reply, this.codec.encode(errorResponse);
         }
       }
@@ -267,7 +267,7 @@ export class NatsQuicSearchService {
           hasEmbedding: !!queryEmbedding
         },
         timestamp: Date.now()
-      };
+      }
     } catch (error) {
       console.error('❌ Search execution error:', error);
       return {
@@ -275,7 +275,7 @@ export class NatsQuicSearchService {
         success: false
         error: error instanceof Error ? error.message: 'Search execution failed',
         timestamp: Date.now()
-      };
+      }
     }
   }
   /**
@@ -315,7 +315,7 @@ export class NatsQuicSearchService {
         threshold: request.options?.threshold,
         model: request.options?.model || 'unknown'
       }
-    };
+    }
     return createHash('sha256')
       .update(JSON.stringify(keyData)
       .digest('hex')
@@ -410,7 +410,7 @@ export class NatsQuicSearchService {
       ...request,
       id: createHash('md5').update(`${Date.now()}-${Math.random()}`).digest('hex'),
       timestamp: Date.now()
-    };
+    }
     // Publish search request
     this.nats.publish(SEARCH_TOPICS.SEARCH_REQUEST, this.codec.encode(searchRequest);
     return searchRequest.id;
@@ -462,7 +462,7 @@ export class NatsQuicSearchService {
       cacheSize: this.suggestionCache.size,
       activeSearches: this.searchQueue.size,
       uptime: process.uptime()
-    };
+    }
   }
   /**
    * Publish lightweight analytics event (stubbed for now so routes can type-check)

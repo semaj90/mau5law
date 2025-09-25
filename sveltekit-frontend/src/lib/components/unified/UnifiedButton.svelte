@@ -31,14 +31,14 @@ https://svelte.dev/e/js_parse_error -->
       caseType?: 'contract' | 'evidence' | 'brief' | 'citation';
       aiSuggested?: boolean;
       riskLevel?: 'low' | 'medium' | 'high';
-    };
+    }
     // GPU Animation Settings
     gpuEffects?: boolean;
     glowIntensity?: number;
     pixelated?: boolean;
     nesStyle?: boolean;
     // Event handlers
-    onclick?: (event: MouseEvent) => void;
+    onclick?: (_event: MouseEvent) => void;
     class?: string;
   }
   let {
@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
         cancelAnimationFrame(animationFrame);
       }
       cleanupWebGL();
-    };
+    }
   });
   function initWebGL() {
     if (!canvas) return;
@@ -216,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
       gl = null;
     }
   }
-  function handleClick(event: MouseEvent) {
+  function handleClick(_event: MouseEvent) {
     if (disabled || loading) return;
     isPressed = true;
     setTimeout(() => isPressed = false, 150);

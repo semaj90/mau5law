@@ -116,6 +116,7 @@ Displays detailed integrity verification results with AI analysis
     return Math.round((score / factors) * 100);
   }
 </script>
+
 <div class="integrity-verification space-y-6">
   <!-- Overall Status -->
   <div class={`rounded-lg border p-4 ${getStatusColor(integrityStatus)}`}>
@@ -167,7 +168,9 @@ Displays detailed integrity verification results with AI analysis
           class={`w-5 h-5 ${getVerificationColor(verificationResults.hashMatch)}`}
         />
         <span class={`text-sm font-medium ${getVerificationColor(verificationResults.hashMatch)}`}>
-          {verificationResults.hashMatch ? 'Hashes match - integrity verified' : 'Hash mismatch detected - integrity compromised'}
+          {verificationResults.hashMatch
+            ? 'Hashes match - integrity verified'
+            : 'Hash mismatch detected - integrity compromised'}
         </span>
       </div>
     {/if}
@@ -243,7 +246,8 @@ Displays detailed integrity verification results with AI analysis
       {#if verificationResults.riskAssessment}
         <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
           <p class="text-sm">
-            <strong>Risk Assessment:</strong> {verificationResults.riskAssessment}
+            <strong>Risk Assessment:</strong>
+            {verificationResults.riskAssessment}
           </p>
         </div>
       {/if}
@@ -284,7 +288,9 @@ Displays detailed integrity verification results with AI analysis
       <div class="mb-4">
         <div class="flex items-center justify-between">
           <span class="text-sm font-medium">Overall Risk Level</span>
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{aiAnalysis.riskLevel.toUpperCase()}</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+            >{aiAnalysis.riskLevel.toUpperCase()}</span
+          >
         </div>
       </div>
       <!-- Recommendations -->
@@ -318,6 +324,7 @@ Displays detailed integrity verification results with AI analysis
     </div>
   {/if}
 </div>
+
 <style>
   .integrity-verification {
     animation: fadeIn 0.5s ease-out;

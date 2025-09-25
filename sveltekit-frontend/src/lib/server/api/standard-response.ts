@@ -30,7 +30,7 @@ export function apiSuccess<T>(
     success: true
     data,
     timestamp: new Date().toISOString()
-  };
+  }
   if (message) response.message = message;
   if (requestId) response.requestId = requestId;
   return json(response);
@@ -39,7 +39,7 @@ export function apiSuccess<T>(
  * Create an error API response
  */
 export function apiError(
-  message: string
+  message: string;
   status: number = 400,
   code?: string
   details?: any
@@ -47,12 +47,12 @@ export function apiError(
 ) {
   const response: ApiResponse = {
     success: false
-    error: message
+    error: message;
     timestamp: new Date().toISOString()
-  };
+  }
   if (requestId) response.requestId = requestId;
   if (code || details) {
-    response.data = { code, details };
+    response.data = { code, details }
   }
   return json(response, { status });
 }
@@ -76,7 +76,7 @@ export function validateRequest(
 /**
  * Get request ID from locals (set by hooks.server.ts)
  */;
-export function getRequestId(event: RequestEvent): string {
+export function getRequestId(_event: RequestEvent): string {
   return (event.locals as any).requestId || `req_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 /**
@@ -88,19 +88,19 @@ export function getCacheHeaders(maxAge: number = 0) {
       'Cache-Control': 'no-cache, no-store, must-revalidate',
       'Pragma': 'no-cache',
       'Expires': '0'
-    };
+    }
   }
   return {
     'Cache-Control': `public, max-age=${maxAge}`
-  };
+  }
 }
 /**
  * Standardized API handler wrapper with error catching
  */
 export function withErrorHandling<T extends RequestEvent>(
-  handler: (event: T) => Promise<Response>;
+  handler: (_event: T) => Promise<Response>;
 ) {
-  return async (event: T): Promise<Response> => {
+  return async (_event: T): Promise<Response> => {
     const requestId = getRequestId(event);
     try {
       return await handler(event);
@@ -114,5 +114,5 @@ export function withErrorHandling<T extends RequestEvent>(
         requestId
       );
     }
-  };
+  }
 }

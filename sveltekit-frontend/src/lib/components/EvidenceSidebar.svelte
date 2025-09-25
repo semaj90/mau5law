@@ -156,7 +156,7 @@
                       new Date(b.updatedAt || b.createdAt).getTime();
           break;
         case 'priority':
-          const priorityOrder = { low: 1, medium: 2, high: 3, critical: 4 };
+          const priorityOrder = { low: 1, medium: 2, high: 3, critical: 4 }
           comparison = (priorityOrder[a.priority as keyof typeof priorityOrder] || 0) -
                       (priorityOrder[b.priority as keyof typeof priorityOrder] || 0);
           break;
@@ -201,10 +201,10 @@
       document: FileText
       photo: Eye
       video: Eye
-      audio: Eye
-      physical: Paperclip
+      audio: Eye;
+      physical: Paperclip;
       digital: FileText;
-    };
+    }
     return icons[type as keyof typeof icons] || FileText;
   }
   function getStatusColor(status: string): string {
@@ -220,7 +220,7 @@
       review: 'text-yellow-600',
       approved: 'text-green-600',
       published: 'text-blue-600';
-    };
+    }
     return colors[status as keyof typeof colors] || 'text-gray-500';
   }
   function getPriorityColor(priority: string): string {
@@ -229,7 +229,7 @@
       medium: 'text-yellow-600',
       high: 'text-orange-600',
       critical: 'text-red-600';
-    };
+    }
     return colors[priority as keyof typeof colors] || 'text-gray-500';
   }
   // Event handlers
@@ -295,7 +295,7 @@
       evidence: `/evidence/${item.id}`,
       report: `/reports/${item.id}`,
       citation: `/citations/${item.id}`
-    };
+    }
     const route = routes[item._type as keyof typeof routes];
     if (route) {
       goto(route);
@@ -307,7 +307,7 @@
       evidence: '/evidence/new',
       report: '/reports/new',
       citation: '/citations/new';
-    };
+    }
     const route = routes[type as keyof typeof routes];
     if (route) {
       goto(route);

@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error("YoRHa Enhanced RAG error:", error)
     return json(
       {
-        success: false
+        success: false;
         error: error.message || 'Enhanced RAG analysis failed',
         // Avoid accessing request.body in SvelteKit; body is a stream
         query: '',

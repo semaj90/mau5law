@@ -2,6 +2,7 @@
   // Convert to Svelte 5 runes pattern
   let { name = '', className = '' } = $props();
 </script>
+
 <!-- Minimal shim for lucide-svelte Icon used during Svelte 5 migration. This avoids $$props usage. -->
 <svg class={className} aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor">
   <!-- Placeholder: real icons not required for build; keeps markup valid -->

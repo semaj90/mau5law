@@ -7,7 +7,7 @@
   }: {
     cognitiveHub: any;
     achievements: string[];
-    consciousness: { level: number; experience: number; awakening: number };
+    consciousness: { level: number; experience: number; awakening: number }
   } = $props();
   let activeTab = $state('strategy');
   let searchQuery = $state('');
@@ -326,7 +326,7 @@
         }
       ]
     }
-  };
+  }
   function filterContent(query: string) {
     if (!query) {
       filteredContent = [];
@@ -367,13 +367,15 @@
     return true;
   }
 </script>
+
 <div class="bg-[#F7F6F2] border border-[#D1CFC7] p-6">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-xl font-bold">📚 COGNITIVE DOCUMENTATION HUB</h2>
     <div class="flex items-center gap-2">
       <input
         type="text"
-        bind:value={searchQuery} oninput={() => filterContent(searchQuery)}
+        bind:value={searchQuery}
+        oninput={() => filterContent(searchQuery)}
         placeholder="Search documentation..."
         class="px-3 py-1 border border-[#D1CFC7] bg-white text-sm w-64"
       />
@@ -390,13 +392,23 @@
         {#each filteredContent as result}
           <div class="bg-white p-3 border border-gray-300 rounded">
             <div class="flex justify-between items-start mb-2">
-              <h4 class="font-bold text-sm">{(result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).title || (result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).category}</h4>
+              <h4 class="font-bold text-sm">
+                {(result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any })
+                  .title ||
+                  (result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any })
+                    .category}
+              </h4>
               <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                {(result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).sectionTitle}
+                {(result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any })
+                  .sectionTitle}
               </span>
             </div>
             <p class="text-xs text-gray-600">
-              {(result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).description || (result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).practices?.[0] || 'Advanced documentation content'}
+              {(result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any })
+                .description ||
+                (result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any })
+                  .practices?.[0] ||
+                'Advanced documentation content'}
             </p>
           </div>
         {/each}
@@ -407,10 +419,13 @@
   <div class="flex flex-wrap gap-2 mb-6">
     {#each Object.entries(documentationSections) as [key, section]}
       <button
-        class="px-4 py-2 text-sm font-bold border transition-colors {activeTab === key ? 'bg-[#3D3D3D] text-[#F7F6F2] border-[#3D3D3D]' : 'bg-[#EAE8E1] border-[#D1CFC7] hover:bg-[#F7F6F2]'}"
-        onclick={() => activeTab = key}
+        class="px-4 py-2 text-sm font-bold border transition-colors {activeTab === key
+          ? 'bg-[#3D3D3D] text-[#F7F6F2] border-[#3D3D3D]'
+          : 'bg-[#EAE8E1] border-[#D1CFC7] hover:bg-[#F7F6F2]'}"
+        onclick={() => (activeTab = key)}
       >
-        {section.icon} {section.title}
+        {section.icon}
+        {section.title}
       </button>
     {/each}
   </div>
@@ -421,42 +436,252 @@
         <!-- Unlock Status -->
         {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock && !isUnlocked((item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock)}
           <div class="absolute top-2 right-2 bg-red-100 text-red-800 px-2 py-1 rounded text-xs">
-            🔒 LOCKED: {(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock}
+            🔒 LOCKED: {(
+              item as {
+                unlock?: any;
+                title?: any;
+                category?: any;
+                phase?: any;
+                description?: any;
+                timeline?: any;
+                activation?: any;
+                level?: any;
+                steps?: any;
+                tips?: any;
+                effects?: any;
+                objectives?: any;
+                practices?: any;
+                warnings?: any;
+                secretTechniques?: any;
+                advanced?: any;
+                ultimate?: any;
+              }
+            ).unlock}
           </div>
         {:else if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock}
-          <div class="absolute top-2 right-2 bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
-            ✅ UNLOCKED
-          </div>
+          <div class="absolute top-2 right-2 bg-green-100 text-green-800 px-2 py-1 rounded text-xs">✅ UNLOCKED</div>
         {/if}
         <div class="flex justify-between items-start mb-4">
           <div>
             <h3 class="text-lg font-bold mb-1">
-              {(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).title || (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).category || (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).phase}
+              {(
+                item as {
+                  unlock?: any;
+                  title?: any;
+                  category?: any;
+                  phase?: any;
+                  description?: any;
+                  timeline?: any;
+                  activation?: any;
+                  level?: any;
+                  steps?: any;
+                  tips?: any;
+                  effects?: any;
+                  objectives?: any;
+                  practices?: any;
+                  warnings?: any;
+                  secretTechniques?: any;
+                  advanced?: any;
+                  ultimate?: any;
+                }
+              ).title ||
+                (
+                  item as {
+                    unlock?: any;
+                    title?: any;
+                    category?: any;
+                    phase?: any;
+                    description?: any;
+                    timeline?: any;
+                    activation?: any;
+                    level?: any;
+                    steps?: any;
+                    tips?: any;
+                    effects?: any;
+                    objectives?: any;
+                    practices?: any;
+                    warnings?: any;
+                    secretTechniques?: any;
+                    advanced?: any;
+                    ultimate?: any;
+                  }
+                ).category ||
+                (
+                  item as {
+                    unlock?: any;
+                    title?: any;
+                    category?: any;
+                    phase?: any;
+                    description?: any;
+                    timeline?: any;
+                    activation?: any;
+                    level?: any;
+                    steps?: any;
+                    tips?: any;
+                    effects?: any;
+                    objectives?: any;
+                    practices?: any;
+                    warnings?: any;
+                    secretTechniques?: any;
+                    advanced?: any;
+                    ultimate?: any;
+                  }
+                ).phase}
             </h3>
             {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).description}
-              <p class="text-sm text-gray-600">{(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).description}</p>
+              <p class="text-sm text-gray-600">
+                {(
+                  item as {
+                    unlock?: any;
+                    title?: any;
+                    category?: any;
+                    phase?: any;
+                    description?: any;
+                    timeline?: any;
+                    activation?: any;
+                    level?: any;
+                    steps?: any;
+                    tips?: any;
+                    effects?: any;
+                    objectives?: any;
+                    practices?: any;
+                    warnings?: any;
+                    secretTechniques?: any;
+                    advanced?: any;
+                    ultimate?: any;
+                  }
+                ).description}
+              </p>
             {/if}
             {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).timeline}
-              <p class="text-sm font-bold text-blue-600">{(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).timeline}</p>
+              <p class="text-sm font-bold text-blue-600">
+                {(
+                  item as {
+                    unlock?: any;
+                    title?: any;
+                    category?: any;
+                    phase?: any;
+                    description?: any;
+                    timeline?: any;
+                    activation?: any;
+                    level?: any;
+                    steps?: any;
+                    tips?: any;
+                    effects?: any;
+                    objectives?: any;
+                    practices?: any;
+                    warnings?: any;
+                    secretTechniques?: any;
+                    advanced?: any;
+                    ultimate?: any;
+                  }
+                ).timeline}
+              </p>
             {/if}
             {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).activation}
               <p class="text-sm font-mono bg-gray-200 px-2 py-1 rounded mt-2">
-                Activation: {(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).activation}
+                Activation: {(
+                  item as {
+                    unlock?: any;
+                    title?: any;
+                    category?: any;
+                    phase?: any;
+                    description?: any;
+                    timeline?: any;
+                    activation?: any;
+                    level?: any;
+                    steps?: any;
+                    tips?: any;
+                    effects?: any;
+                    objectives?: any;
+                    practices?: any;
+                    warnings?: any;
+                    secretTechniques?: any;
+                    advanced?: any;
+                    ultimate?: any;
+                  }
+                ).activation}
               </p>
             {/if}
           </div>
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level}
             <div class="text-right">
               <div class="text-xs font-bold mb-1">
-                Level: {(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level.toUpperCase()}
+                Level: {(
+                  item as {
+                    unlock?: any;
+                    title?: any;
+                    category?: any;
+                    phase?: any;
+                    description?: any;
+                    timeline?: any;
+                    activation?: any;
+                    level?: any;
+                    steps?: any;
+                    tips?: any;
+                    effects?: any;
+                    objectives?: any;
+                    practices?: any;
+                    warnings?: any;
+                    secretTechniques?: any;
+                    advanced?: any;
+                    ultimate?: any;
+                  }
+                ).level.toUpperCase()}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2">
                 <div
                   class="bg-blue-600 h-2 rounded-full transition-all duration-1000"
-                  style="width: {getProgressPercentage((item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level)}%"
+                  style="width: {getProgressPercentage(
+                    (
+                      item as {
+                        unlock?: any;
+                        title?: any;
+                        category?: any;
+                        phase?: any;
+                        description?: any;
+                        timeline?: any;
+                        activation?: any;
+                        level?: any;
+                        steps?: any;
+                        tips?: any;
+                        effects?: any;
+                        objectives?: any;
+                        practices?: any;
+                        warnings?: any;
+                        secretTechniques?: any;
+                        advanced?: any;
+                        ultimate?: any;
+                      }
+                    ).level,
+                  )}%"
                 ></div>
               </div>
-              <div class="text-xs mt-1">{getProgressPercentage((item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level)}%</div>
+              <div class="text-xs mt-1">
+                {getProgressPercentage(
+                  (
+                    item as {
+                      unlock?: any;
+                      title?: any;
+                      category?: any;
+                      phase?: any;
+                      description?: any;
+                      timeline?: any;
+                      activation?: any;
+                      level?: any;
+                      steps?: any;
+                      tips?: any;
+                      effects?: any;
+                      objectives?: any;
+                      practices?: any;
+                      warnings?: any;
+                      secretTechniques?: any;
+                      advanced?: any;
+                      ultimate?: any;
+                    }
+                  ).level,
+                )}%
+              </div>
             </div>
           {/if}
         </div>
@@ -468,7 +693,9 @@
               <ol class="space-y-1 text-sm">
                 {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).steps as step, index}
                   <li class="flex items-start gap-2">
-                    <span class="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span
+                      class="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5"
+                    >
                       {index + 1}
                     </span>
                     {step}
@@ -600,3 +827,4 @@
     </div>
   </div>
 </div>
+;

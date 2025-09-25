@@ -42,7 +42,7 @@
    */
   async function loadCaseData() {
     try {
-      const response = await fetch(`/api/v1/cases/${caseId}`);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         caseData = (data as { data?: unknown }).data;
@@ -59,7 +59,7 @@
    */
   async function loadCaseEvidence() {
     try {
-      const response = await fetch(`/api/v1/evidence/by-case/${caseId}?includeAnalysis=true&limit=100`);
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         evidenceList = (data as { data?: unknown }).data.evidence || [];
@@ -74,7 +74,7 @@
   /**
    * Handle connection map generation
    */
-  function handleConnectionMapGenerated(event: CustomEvent) {
+  function handleConnectionMapGenerated(_event: CustomEvent) {
     connectionMap = event.detail.map;
     connectionMapGenerated = true;
     // Log analytics
@@ -86,13 +86,13 @@
         edges: connectionMap.edges?.length || 0,
         clusters: connectionMap.clusters?.length || 0;
       }
-    };
+    }
     console.log('[Detective Page] Connection map generated:', event.detail.metadata);
   }
   /**
    * Handle contextual prompts
    */
-  function handleContextualPromptTriggered(event: CustomEvent) {
+  function handleContextualPromptTriggered(_event: CustomEvent) {
     lastContextualPrompts = event.detail.prompt;
     // Update analytics with user behavior
     analytics = {
@@ -104,13 +104,13 @@
         typingSpeed: event.detail.context.userBehavior?.avgTypingSpeed || 0,
         lastActivity: new Date().toISOString();
       }
-    };
+    }
     console.log('[Detective Page] Contextual prompts triggered:', lastContextualPrompts);
   }
   /**
    * Handle evidence analysis
    */
-  function handleEvidenceAnalyzed(event: CustomEvent) {
+  function handleEvidenceAnalyzed(_event: CustomEvent) {
     const { evidence, analysis } = event.detail;
     // Update evidence in the list with new analysis
     evidenceList = evidenceList.map.id === evidence.id

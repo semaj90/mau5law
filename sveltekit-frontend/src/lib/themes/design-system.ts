@@ -13,13 +13,13 @@ export interface DesignTokens {
     xl: string;
     '2xl': string;
     '3xl': string;
-  };
+  }
   typography: {
     fontFamily: {
       mono: string;
       sans: string;
       pixel: string;
-    };
+    }
     fontSize: {
       xs: string;
       sm: string;
@@ -28,40 +28,40 @@ export interface DesignTokens {
       xl: string;
       '2xl': string;
       '3xl': string;
-    };
+    }
     lineHeight: {
       tight: string;
       normal: string;
       relaxed: string;
-    };
-  };
+    }
+  }
   borderRadius: {
     none: string;
     sm: string;
     md: string;
     lg: string;
     pixel: string;
-  };
+  }
   shadows: {
     sm: string;
     md: string;
     lg: string;
     pixel: string;
     neon: string;
-  };
+  }
   animations: {
     duration: {
       fast: string;
       normal: string;
       slow: string;
-    };
+    }
     easing: {
       linear: string;
       easeIn: string;
       easeOut: string;
       easeInOut: string;
-    };
-  };
+    }
+  }
 }
 export interface CustomTheme extends DesignTokens {
   name: string;
@@ -72,7 +72,7 @@ export interface CustomTheme extends DesignTokens {
     scanlines: boolean;
     crtEffect: boolean;
     glowEffects: boolean;
-  };
+  }
 }
 // Base design tokens (NES-inspired minimal design)
 export const BASE_DESIGN_TOKENS: DesignTokens = {
@@ -133,7 +133,7 @@ export const BASE_DESIGN_TOKENS: DesignTokens = {
       easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)'
     }
   }
-};
+}
 // Predefined theme configurations
 export const THEME_PRESETS = {
   nesClassic: {
@@ -185,7 +185,7 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.ps2,
     mode: 'dark' as const,
     effects: {
-      pixelatedBorders: false
+      pixelatedBorders: false;
       scanlines: false
       crtEffect: false
       glowEffects: true
@@ -207,7 +207,7 @@ export function createCustomTheme(
     mode: preset.mode,
     effects: preset.effects,
     ...overrides
-  };
+  }
 }
 /**
  * Apply design system theme to document root
@@ -279,39 +279,39 @@ export function getCurrentTheme(): Partial<CustomTheme> | null {
 export function generateUtilityCSS(theme: CustomTheme): string {
   const css = `
 /* Design System Utility Classes */
-.ds-font-mono { font-family: ${theme.typography.fontFamily.mono}; }
-.ds-font-sans { font-family: ${theme.typography.fontFamily.sans}; }
-.ds-font-pixel { font-family: ${theme.typography.fontFamily.pixel}; }
-.ds-text-xs { font-size: ${theme.typography.fontSize.xs}; }
-.ds-text-sm { font-size: ${theme.typography.fontSize.sm}; }
-.ds-text-base { font-size: ${theme.typography.fontSize.base}; }
-.ds-text-lg { font-size: ${theme.typography.fontSize.lg}; }
-.ds-text-xl { font-size: ${theme.typography.fontSize.xl}; }
-.ds-text-2xl { font-size: ${theme.typography.fontSize['2xl']}; }
-.ds-text-3xl { font-size: ${theme.typography.fontSize['3xl']}; }
-.ds-leading-tight { line-height: ${theme.typography.lineHeight.tight}; }
-.ds-leading-normal { line-height: ${theme.typography.lineHeight.normal}; }
-.ds-leading-relaxed { line-height: ${theme.typography.lineHeight.relaxed}; }
-.ds-p-xs { padding: ${theme.spacing.xs}; }
-.ds-p-sm { padding: ${theme.spacing.sm}; }
-.ds-p-md { padding: ${theme.spacing.md}; }
-.ds-p-lg { padding: ${theme.spacing.lg}; }
-.ds-p-xl { padding: ${theme.spacing.xl}; }
-.ds-m-xs { margin: ${theme.spacing.xs}; }
-.ds-m-sm { margin: ${theme.spacing.sm}; }
-.ds-m-md { margin: ${theme.spacing.md}; }
-.ds-m-lg { margin: ${theme.spacing.lg}; }
-.ds-m-xl { margin: ${theme.spacing.xl}; }
-.ds-rounded-none { border-radius: ${theme.borderRadius.none}; }
-.ds-rounded-sm { border-radius: ${theme.borderRadius.sm}; }
-.ds-rounded-md { border-radius: ${theme.borderRadius.md}; }
-.ds-rounded-lg { border-radius: ${theme.borderRadius.lg}; }
-.ds-rounded-pixel { border-radius: ${theme.borderRadius.pixel}; }
-.ds-shadow-sm { box-shadow: ${theme.shadows.sm}; }
-.ds-shadow-md { box-shadow: ${theme.shadows.md}; }
-.ds-shadow-lg { box-shadow: ${theme.shadows.lg}; }
-.ds-shadow-pixel { box-shadow: ${theme.shadows.pixel}; }
-.ds-shadow-neon { box-shadow: ${theme.shadows.neon}; }
+.ds-font-mono { font-family: ${theme.typography.fontFamily.mono} }
+.ds-font-sans { font-family: ${theme.typography.fontFamily.sans} }
+.ds-font-pixel { font-family: ${theme.typography.fontFamily.pixel} }
+.ds-text-xs { font-size: ${theme.typography.fontSize.xs} }
+.ds-text-sm { font-size: ${theme.typography.fontSize.sm} }
+.ds-text-base { font-size: ${theme.typography.fontSize.base} }
+.ds-text-lg { font-size: ${theme.typography.fontSize.lg} }
+.ds-text-xl { font-size: ${theme.typography.fontSize.xl} }
+.ds-text-2xl { font-size: ${theme.typography.fontSize['2xl']} }
+.ds-text-3xl { font-size: ${theme.typography.fontSize['3xl']} }
+.ds-leading-tight { line-height: ${theme.typography.lineHeight.tight} }
+.ds-leading-normal { line-height: ${theme.typography.lineHeight.normal} }
+.ds-leading-relaxed { line-height: ${theme.typography.lineHeight.relaxed} }
+.ds-p-xs { padding: ${theme.spacing.xs} }
+.ds-p-sm { padding: ${theme.spacing.sm} }
+.ds-p-md { padding: ${theme.spacing.md} }
+.ds-p-lg { padding: ${theme.spacing.lg} }
+.ds-p-xl { padding: ${theme.spacing.xl} }
+.ds-m-xs { margin: ${theme.spacing.xs} }
+.ds-m-sm { margin: ${theme.spacing.sm} }
+.ds-m-md { margin: ${theme.spacing.md} }
+.ds-m-lg { margin: ${theme.spacing.lg} }
+.ds-m-xl { margin: ${theme.spacing.xl} }
+.ds-rounded-none { border-radius: ${theme.borderRadius.none} }
+.ds-rounded-sm { border-radius: ${theme.borderRadius.sm} }
+.ds-rounded-md { border-radius: ${theme.borderRadius.md} }
+.ds-rounded-lg { border-radius: ${theme.borderRadius.lg} }
+.ds-rounded-pixel { border-radius: ${theme.borderRadius.pixel} }
+.ds-shadow-sm { box-shadow: ${theme.shadows.sm} }
+.ds-shadow-md { box-shadow: ${theme.shadows.md} }
+.ds-shadow-lg { box-shadow: ${theme.shadows.lg} }
+.ds-shadow-pixel { box-shadow: ${theme.shadows.pixel} }
+.ds-shadow-neon { box-shadow: ${theme.shadows.neon} }
 /* Theme Effect Classes */
 .pixelated-borders * {
   image-rendering: pixelated;

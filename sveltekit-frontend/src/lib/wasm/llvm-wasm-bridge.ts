@@ -33,7 +33,7 @@ export interface LLVMModule {
   name: string;
   sourceFiles: string[];
   compiledWasm: ArrayBuffer | null;
-  exports: { [key: string]: any };
+  exports: { [key: string]: any }
   memory: WebAssembly.Memory | null;
   isLoaded: boolean;
   performance: {
@@ -41,7 +41,7 @@ export interface LLVMModule {
     loadTimeMs: number;
     executionTimeMs: number;
     memoryUsage: number;
-  };
+  }
 }
 export class LLVMWASMBridge {
   private modules = new Map<string, LLVMModule>();
@@ -69,7 +69,7 @@ export class LLVMWASMBridge {
       exports: ['analyzeContract', 'assessRisk', 'identifyObligations'],
       memoryRequired: 12 * 1024 * 1024 // 12MB
     }
-  };
+  }
   async initialize(): Promise<boolean> {
     try {
       console.log('🔄 Initializing LLVM-WASM Bridge...');
@@ -103,7 +103,7 @@ export class LLVMWASMBridge {
         shared: false
       }),
       exports: new Map()
-    };
+    }
   }
   private async precompileLegalModules(): Promise<void> {
     console.log('📦 Precompiling legal processing modules...');
@@ -122,14 +122,14 @@ export class LLVMWASMBridge {
   }
   async compileLegalModule(
     moduleId: string
-    name: string
+    name: string;
     config: any;
   ): Promise<LLVMModule | null> {
     const startTime = performance.now();
     try {
       // Mock C++ source files for legal processing
       const cppSources = config.sources.map((filename: string) => ({,
-        name: filename
+        name: filename;
         content: this.generateMockCppSource(filename, name)
       });
       // Compile C++ to WASM using LLVM
@@ -150,14 +150,14 @@ export class LLVMWASMBridge {
         compiledWasm: compilationResult.wasmBinary,
         exports: { [key: string]: any },
         memory: null
-        isLoaded: false
+        isLoaded: false;
         performance: {
           compileTimeMs: performance.now() - startTime,
           loadTimeMs: 0,
           executionTimeMs: 0,
           memoryUsage: 0
         }
-      };
+      }
       // Load and instantiate the WASM module
       await this.loadModule(module);
       return module;
@@ -271,7 +271,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
 }`;
   }
   private async compileToWASM(
-    sources: Array<any>
+    sources: Array<any>;
     options: LLVMCompileOptions;
   ): Promise<CompilationResult> {
     // Mock LLVM compilation process
@@ -294,7 +294,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         optimizations: options.features || [],
         warnings: [],
         error: null
-      };
+      }
     } catch (error: any) {
       return {
         success: false
@@ -305,11 +305,11 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         optimizations: [],
         warnings: [],
         error: error instanceof Error ? error.message: 'Unknown compilation error'
-      };
+      }
     }
   }
   private generateMockWASMBinary(
-    sources: Array<any>
+    sources: Array<any>;
     options: LLVMCompileOptions;
   ): ArrayBuffer {
     // Generate a minimal WASM binary that can be instantiated
@@ -366,7 +366,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       // Create memory for the module
       const memoryPages = Math.ceil(this.legalModules[module.name.replace('legal_', '')]?.memoryRequired || (1024 * 1024) / (64 * 1024);
       module.memory = new WebAssembly.Memory({
-        initial: memoryPages
+        initial: memoryPages;
         maximum: memoryPages * 2
       });
       // Instantiate the WASM module
@@ -465,7 +465,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         processedText,
         citations,
         processingTime
-      };
+      }
     } catch (error: any) {
       console.error('❌ Legal text processing failed:', error);
       throw error;
@@ -483,7 +483,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         return {
           embedding,
           processingTime: performance.now() - startTime
-        };
+        }
       }
       // Allocate memory for vectors
       const inputPtr = (vectorModule.exports as any).allocate_memory(inputVector.length * 4);
@@ -505,7 +505,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       (vectorModule.exports as any).free_memory(outputPtr);
       const processingTime = performance.now() - startTime;
       vectorModule.performance.executionTimeMs += processingTime;
-      return { embedding, processingTime };
+      return { embedding, processingTime }
     } catch (error: any) {
       console.error('❌ WASM embedding computation failed:', error);
       // Fallback to GPU service integration
@@ -515,7 +515,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         return {
           embedding,
           processingTime: performance.now() - startTime
-        };
+        }
       } catch (fallbackError) {
         console.error('❌ GPU service fallback failed:', fallbackError);
         // Final fallback: generate random normalized embedding
@@ -524,7 +524,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         return {
           embedding: embedding.map(val => val / norm),
           processingTime: performance.now() - startTime
-        };
+        }
       }
     }
   }
@@ -550,7 +550,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
     }
   }
   getModuleStats(): { [key: string]: any } {
-    const stats: { [key: string]: any } = {};
+    const stats: { [key: string]: any } = {}
     for (const [id, module] of this.modules.entries()) {
       stats[id] = {
         name: module.name,
@@ -558,7 +558,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         sourceFiles: module.sourceFiles.length,
         exports: Object.keys(module.exports).length,
         performance: module.performance
-      };
+      }
     }
     return stats;
   }
@@ -569,7 +569,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         // Memory will be garbage collected
         module.memory = null;
       }
-      module.exports = {};
+      module.exports = {}
       module.isLoaded = false;
     }
     this.modules.clear();

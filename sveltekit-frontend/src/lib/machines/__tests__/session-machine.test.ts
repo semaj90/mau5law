@@ -34,7 +34,7 @@ const sessionMachine = createMachine({
               protocol: 'HTTP',
               operation: 'session_creation'
             }
-          };
+          }
         }),
         input: ({ event }) => ({
           userId: event.userId,
@@ -95,7 +95,7 @@ const sessionMachine = createMachine({
                 protocol: 'HTTP',
                 operation: 'add_collaborator'
               }
-            };
+            }
           } else if (input.type === 'UPDATE_CASE') {
             const result = await mockServices.updateCaseData(input.sessionId, input.caseData);
             const duration = performance.now() - startTime;
@@ -106,7 +106,7 @@ const sessionMachine = createMachine({
                 protocol: 'HTTP',
                 operation: 'update_case'
               }
-            };
+            }
           }
         }),
         input: ({ event, context }) => ({
@@ -147,7 +147,7 @@ const sessionMachine = createMachine({
               protocol: 'HTTP',
               operation: 'session_termination'
             }
-          };
+          }
         }),
         input: ({ context }) => ({ sessionId: context.sessionId }),
         onDone: 'inactive',

@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   } catch (error: any) {
     console.error("Export error:", error)
     return json({
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: "Export failed"
       },)
       { status: 500 },

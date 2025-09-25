@@ -11,7 +11,7 @@ export interface IngestionJobRequest {
   model?: string;                  // Embedding model (default: nomic-embed-text)
   chunkSize?: number;              // Override default chunk size
   chunkOverlap?: number;           // Override default overlap
-  metadata?: { [key: string]: any };  // Arbitrary metadata for downstream query filters
+  metadata?: { [key: string]: any }  // Arbitrary metadata for downstream query filters
 }
 export interface IngestionJobStatus {
   jobId: string;
@@ -27,7 +27,7 @@ export interface IngestionJobStatus {
 export interface SimilarityQueryOptions {
   limit?: number;          // Max results
   threshold?: number;      // Minimum similarity (0-1)
-  filter?: { [key: string]: any }; // Future: metadata filter
+  filter?: { [key: string]: any } // Future: metadata filter
   model?: string;          // Embedding model to use for the query
 }
 export interface SimilarityResult {
@@ -36,7 +36,7 @@ export interface SimilarityResult {
   documentId?: string;
   content: string;
   score: number;          // 0-1 similarity (higher is better)
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
   chunkIndex?: number;
 }
 export interface EmbeddingRepository {

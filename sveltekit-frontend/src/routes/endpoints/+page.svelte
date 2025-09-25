@@ -1,6 +1,7 @@
 <script lang="ts">
-  let { data }: { data: unknown } = $props(); // { endpoints: { name: string; path: string; healthy: boolean; message?: string }[] };
+  let { data }: { data: unknown } = $props(); // { endpoints: { name: string; path: string; healthy: boolean; message?: string }[] }
 </script>
+
 <div class="endpoints-page">
   <h1 class="page-title">Endpoints & Status</h1>
   <div class="endpoint-list">
@@ -9,12 +10,14 @@
         <h2>{ep.name}</h2>
         <p class="path">{ep.path}</p>
         <p class="status">
-          {ep.healthy ? '✅ Healthy' : '❌ Down'} {ep.message ? `(${ep.message})` : ''}
+          {ep.healthy ? '✅ Healthy' : '❌ Down'}
+          {ep.message ? `(${ep.message})` : ''}
         </p>
       </div>
     {/each}
   </div>
 </div>
+
 <style>
   .endpoints-page {
     padding: 2rem;
@@ -26,7 +29,7 @@
   }
   .endpoint-list {
     display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1rem;
   }
   .endpoint-card {

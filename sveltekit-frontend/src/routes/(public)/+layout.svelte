@@ -30,12 +30,10 @@
     }
   });
 </script>
+
 <div class="public-layout">
   <!-- Navigation Bar for Public Pages -->
-  <NavBar
-    {user}
-    sidebarOpen={false}
-  />
+  <NavBar {user} sidebarOpen={false} />
 
   <!-- Main Content Area -->
   <main class="public-content">
@@ -61,6 +59,7 @@
     </div>
   </footer>
 </div>
+
 <style>
   .public-layout {
     min-height: 100vh;
@@ -142,15 +141,13 @@
     margin-top: 0.25rem;
     font-style: italic;
   }
-
-  /* Gaming theme integration */
+/* Gaming theme integration */ {}
   :global(body) {
     font-family: var(--console-font, 'Inter', sans-serif);
     background: var(--console-bg, #0f0f23);
     color: var(--console-fg, white);
   }
-
-  /* Scrollbar styling */
+/* Scrollbar styling */ {}
   .public-content::-webkit-scrollbar {
     width: 8px;
   }
@@ -167,8 +164,7 @@
   .public-content::-webkit-scrollbar-thumb:hover {
     background: var(--console-primary-light, #00cc00);
   }
-
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 768px) {
     .content-container {
       padding: 1rem;

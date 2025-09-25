@@ -42,8 +42,8 @@
       // Add enhanced processing metadata to form
       if (preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)) {
         formData.set('enhancedAnalysis', JSON.stringify({
-          ocr: ocrResults
-          legal: legalAnalysis
+          ocr: ocrResults;
+          legal: legalAnalysis;
           semantic: semanticEmbeddings
           preserveFlow: true;
         }));
@@ -203,11 +203,11 @@
         documentId: uploadResult.documentId,
         caseId: $form.caseId,
         filename: selectedFile?.name,
-        preserveEnhancedFlow: preserveExistingFlow
+        preserveEnhancedFlow: preserveExistingFlow;
         analysis: {
           ocr: ocrResults
-          legal: legalAnalysis
-          semantic: semanticEmbeddings
+          legal: legalAnalysis;
+          semantic: semanticEmbeddings;
           metadata: {
             title: $form.title,
             evidenceType: $form.evidenceType,
@@ -221,7 +221,7 @@
             }
           }
         }
-      };
+      }
       // Trigger multiple processing endpoints to preserve your existing flow
       const processingPromises = [];
       // 1. Your enhanced semantic architecture Go service
@@ -272,14 +272,14 @@
     }
   }
   // File input handlers
-  function onFileChange(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function onFileChange(_event: Event) {
+    // removed unused target assignment
     const file = target.files?.[0];
     if (file) {
       handleFileSelect(file);
     }
   }
-  function onDrop(event: DragEvent) {
+  function onDrop(_event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     const file = event.dataTransfer?.files?.[0];
@@ -287,7 +287,7 @@
       handleFileSelect(file);
     }
   }
-  function onDragOver(event: DragEvent) {
+  function onDragOver(_event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
@@ -310,14 +310,13 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
+
 <!-- bits-ui Dialog provides functionality, nes.css provides retro styling -->
 <Dialog.Root bind:open={showProcessingDetails}>
   <div class="nes-container with-title enhanced-legal-upload">
     <p class="title">🏛️ LEGAL AI DOCUMENT PROCESSOR</p>
     <div class="upload-header">
-      <div class="nes-text">
-        Enhanced Legal Document Upload System
-      </div>
+      <div class="nes-text">Enhanced Legal Document Upload System</div>
       <div class="feature-indicators">
         <span class="nes-badge" class:is-success={preserveExistingFlow}>
           <span class="is-success">🧠</span> LegalBERT
@@ -329,286 +328,263 @@
           <span class="is-success">🎯</span> RAG Pipeline
         </span>
         <!-- Processing Details Modal Trigger -->
-        <Dialog.Trigger class="nes-btn is-small">
-          📊 Details
-        </Dialog.Trigger>
+        <Dialog.Trigger class="nes-btn is-small">📊 Details</Dialog.Trigger>
       </div>
     </div>
-  <form method="POST" action="?/upload" use:enhance enctype="multipart/form-data">
-    <!-- Case ID - NES.css styled -->
-    <div class="nes-field">
-      <label for="caseId" class="nes-text">Case ID *</label>
-      <input
-        id="caseId"
-        name="caseId"
-        type="text";
-        bind:value={$form.caseId}
-        placeholder="Enter case ID"
-        required
-        class="nes-input"
-        class:is-error={$errors.caseId}
-      />
-      {#if $errors.caseId}
-        <div class="nes-text is-error">{$errors.caseId}</div>
-      {/if}
-    </div>
-    <!-- Enhanced File Upload Area - NES.css styled -->
-    <div class="nes-field">
-      <label class="nes-text">📎 Document Upload *</label>
-      <div
-        class="nes-container is-rounded file-upload-area"
-        class:is-dark={dragOver}
-        class:is-success={selectedFile}
-        class:is-warning={processingStage}
-        role="button"
-        tabindex="0"
-        ondrop={onDrop}
-        ondragover={onDragOver}
-        ondragleave={onDragLeave}
-        onclick={() => document.getElementById('file-input')?.click()}
-        keydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
-      >
+    <form method="POST" action="?/upload" use:enhance enctype="multipart/form-data">
+      <!-- Case ID - NES.css styled -->
+      <div class="nes-field">
+        <label for="caseId" class="nes-text">Case ID *</label>
         <input
-          id="file-input"
-          type="file"
-          name="file"
-          accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff" onchange={onFileChange}
-          style="display: none"
+          id="caseId"
+          name="caseId"
+          type="text"
+          ;
+          bind:value={$form.caseId}
+          placeholder="Enter case ID"
+          required
+          class="nes-input"
+          class:is-error={$errors.caseId}
         />
-        {#if selectedFile}
-          <div class="file-preview">
-            <div class="file-info">
-              {#if filePreview}
-                <img src={filePreview} alt="Preview" class="image-preview" />
-              {:else}
-                <div class="file-icon">📄</div>
-              {/if}
-              <div class="file-details">
-                <div class="file-name">{selectedFile.name}</div>
-                <div class="file-size">{formatFileSize(selectedFile.size)}</div>
-                <button type="button" class="remove-file" onclick={removeFile}>
-                  ✕ Remove
-                </button>
-              </div>
-            </div>
-            <!-- Analysis Results Preview -->
-            {#if preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)}
-              <div class="analysis-preview">
-                <h4>Preliminary Analysis Results</h4>
-                {#if ocrResults}
-                  <div class="analysis-section">
-                    <strong>OCR Results:</strong>
-                    <div class="ocr-stats">
-                      {ocrResults.pages} pages • {ocrResults.averageConfidence}% confidence
-                      {#if ocrResults.legalConcepts?.length > 0}
-                        • {ocrResults.legalConcepts.length} legal concepts
-                      {/if}
-                    </div>
-                  </div>
-                {/if}
-                {#if legalAnalysis}
-                  <div class="analysis-section">
-                    <strong>LegalBERT Analysis:</strong>
-                    <div class="legal-stats">
-                      {legalAnalysis.entities?.length || 0} entities •
-                      {legalAnalysis.concepts?.length || 0} concepts •
-                      {legalAnalysis.sentiment?.classification || 'neutral'} sentiment
-                    </div>
-                    {#if legalAnalysis.concepts?.slice(0, 3)}
-                      <div class="concept-tags">
-                        {#each legalAnalysis.concepts.slice(0, 3) as concept}
-                          <span class="concept-tag">{concept.concept}</span>
-                        {/each}
-                      </div>
-                    {/if}
-                  </div>
-                {/if}
-                {#if semanticEmbeddings}
-                  <div class="analysis-section">
-                    <strong>Semantic Analysis:</strong>
-                    <div class="semantic-stats">
-                      {semanticEmbeddings.data?.som_cluster ?
-                        `Clustered to region [${semanticEmbeddings.data.som_cluster.x},${semanticEmbeddings.data.som_cluster.y}]` :
-                        'Vector embeddings generated'
-                      }
-                    </div>
-                  </div>
-                {/if}
-              </div>
-            {/if}
-          </div>
-        {:else}
-          <div class="upload-prompt">
-            <div class="upload-icon">📤</div>
-            <div class="nes-text is-primary upload-text">
-              <div>Drop your legal document here or click to browse</div>
-              <div class="nes-text is-disabled upload-hint">
-                PDF, Word, Text, or Image files up to 100MB
-                {#if preserveExistingFlow}
-                  <br><small class="nes-text is-success">⚡ Enhanced with OCR, LegalBERT, and Semantic Analysis</small>
-                {/if}
-              </div>
-            </div>
-          </div>
+        {#if $errors.caseId}
+          <div class="nes-text is-error">{$errors.caseId}</div>
         {/if}
       </div>
-      {#if $errors.file}
-        <div class="nes-text is-error">{$errors.file}</div>
+      <!-- Enhanced File Upload Area - NES.css styled -->
+      <div class="nes-field">
+        <label class="nes-text">📎 Document Upload *</label>
+        <div
+          class="nes-container is-rounded file-upload-area"
+          class:is-dark={dragOver}
+          class:is-success={selectedFile}
+          class:is-warning={processingStage}
+          role="button"
+          tabindex="0"
+          ondrop={onDrop}
+          ondragover={onDragOver}
+          ondragleave={onDragLeave}
+          onclick={() => document.getElementById('file-input')?.click()}
+          keydown={e => e.key === 'Enter' && document.getElementById('file-input')?.click()}
+        >
+          <input
+            id="file-input"
+            type="file"
+            name="file"
+            accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff"
+            onchange={onFileChange}
+            style="display: none"
+          />
+          {#if selectedFile}
+            <div class="file-preview">
+              <div class="file-info">
+                {#if filePreview}
+                  <img src={filePreview} alt="Preview" class="image-preview" />
+                {:else}
+                  <div class="file-icon">📄</div>
+                {/if}
+                <div class="file-details">
+                  <div class="file-name">{selectedFile.name}</div>
+                  <div class="file-size">{formatFileSize(selectedFile.size)}</div>
+                  <button type="button" class="remove-file" onclick={removeFile}> ✕ Remove </button>
+                </div>
+              </div>
+              <!-- Analysis Results Preview -->
+              {#if preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)}
+                <div class="analysis-preview">
+                  <h4>Preliminary Analysis Results</h4>
+                  {#if ocrResults}
+                    <div class="analysis-section">
+                      <strong>OCR Results:</strong>
+                      <div class="ocr-stats">
+                        {ocrResults.pages} pages • {ocrResults.averageConfidence}% confidence
+                        {#if ocrResults.legalConcepts?.length > 0}
+                          • {ocrResults.legalConcepts.length} legal concepts
+                        {/if}
+                      </div>
+                    </div>
+                  {/if}
+                  {#if legalAnalysis}
+                    <div class="analysis-section">
+                      <strong>LegalBERT Analysis:</strong>
+                      <div class="legal-stats">
+                        {legalAnalysis.entities?.length || 0} entities •
+                        {legalAnalysis.concepts?.length || 0} concepts •
+                        {legalAnalysis.sentiment?.classification || 'neutral'} sentiment
+                      </div>
+                      {#if legalAnalysis.concepts?.slice(0, 3)}
+                        <div class="concept-tags">
+                          {#each legalAnalysis.concepts.slice(0, 3) as concept}
+                            <span class="concept-tag">{concept.concept}</span>
+                          {/each}
+                        </div>
+                      {/if}
+                    </div>
+                  {/if}
+                  {#if semanticEmbeddings}
+                    <div class="analysis-section">
+                      <strong>Semantic Analysis:</strong>
+                      <div class="semantic-stats">
+                        {semanticEmbeddings.data?.som_cluster
+                          ? `Clustered to region [${semanticEmbeddings.data.som_cluster.x},${semanticEmbeddings.data.som_cluster.y}]`
+                          : 'Vector embeddings generated'}
+                      </div>
+                    </div>
+                  {/if}
+                </div>
+              {/if}
+            </div>
+          {:else}
+            <div class="upload-prompt">
+              <div class="upload-icon">📤</div>
+              <div class="nes-text is-primary upload-text">
+                <div>Drop your legal document here or click to browse</div>
+                <div class="nes-text is-disabled upload-hint">
+                  PDF, Word, Text, or Image files up to 100MB
+                  {#if preserveExistingFlow}
+                    <br /><small class="nes-text is-success"
+                      >⚡ Enhanced with OCR, LegalBERT, and Semantic Analysis</small
+                    >
+                  {/if}
+                </div>
+              </div>
+            </div>
+          {/if}
+        </div>
+        {#if $errors.file}
+          <div class="nes-text is-error">{$errors.file}</div>
+        {/if}
+      </div>
+      <!-- Processing Status - NES.css styled -->
+      {#if processingStage}
+        <div class="nes-container is-rounded is-dark">
+          <div class="processing-indicator">
+            <div class="spinner nes-pointer"></div>
+            <span class="nes-text is-warning">⚡ {processingStage}</span>
+          </div>
+        </div>
       {/if}
-    </div>
-    <!-- Processing Status - NES.css styled -->
-    {#if processingStage}
-      <div class="nes-container is-rounded is-dark">
-        <div class="processing-indicator">
-          <div class="spinner nes-pointer"></div>
-          <span class="nes-text is-warning">⚡ {processingStage}</span>
+      <!-- Document Metadata - NES.css styled -->
+      <div class="form-row">
+        <div class="nes-field">
+          <label for="title" class="nes-text">📝 Title</label>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            bind:value={$form.title}
+            placeholder="Document title"
+            class="nes-input"
+          />
+        </div>
+        <div class="nes-field">
+          <label for="evidenceType" class="nes-text">🏷️ Evidence Type</label>
+          <div class="nes-select">
+            <select id="evidenceType" name="evidenceType" bind:value={$form.evidenceType}>
+              <option value="documents">📄 Document</option>
+              <option value="physical_evidence">🔍 Physical Evidence</option>
+              <option value="digital_evidence">💾 Digital Evidence</option>
+              <option value="photographs">📸 Photograph</option>
+              <option value="video_recording">🎥 Video Recording</option>
+              <option value="audio_recording">🎵 Audio Recording</option>
+              <option value="witness_testimony">👥 Witness Testimony</option>
+              <option value="expert_opinion">🎓 Expert Opinion</option>
+              <option value="forensic_analysis">🔬 Forensic Analysis</option>
+            </select>
+          </div>
         </div>
       </div>
-    {/if}
-    <!-- Document Metadata - NES.css styled -->
-    <div class="form-row">
+      <!-- Description - NES.css styled -->
       <div class="nes-field">
-        <label for="title" class="nes-text">📝 Title</label>
+        <label for="description" class="nes-text">📋 Description</label>
+        <textarea
+          id="description"
+          name="description"
+          bind:value={$form.description}
+          placeholder="Optional description"
+          rows="3"
+          class="nes-textarea"
+        ></textarea>
+      </div>
+      <!-- Tags - NES.css styled -->
+      <div class="nes-field">
+        <label for="tags" class="nes-text">🏷️ Tags (comma-separated)</label>
         <input
-          id="title"
-          name="title"
+          id="tags"
+          name="tags"
           type="text"
-          bind:value={$form.title}
-          placeholder="Document title"
+          bind:value={$form.tags}
+          placeholder="e.g., contract, evidence, confidential"
           class="nes-input"
         />
       </div>
-      <div class="nes-field">
-        <label for="evidenceType" class="nes-text">🏷️ Evidence Type</label>
-        <div class="nes-select">
-          <select
-            id="evidenceType"
-            name="evidenceType"
-            bind:value={$form.evidenceType}
-          >
-            <option value="documents">📄 Document</option>
-            <option value="physical_evidence">🔍 Physical Evidence</option>
-            <option value="digital_evidence">💾 Digital Evidence</option>
-            <option value="photographs">📸 Photograph</option>
-            <option value="video_recording">🎥 Video Recording</option>
-            <option value="audio_recording">🎵 Audio Recording</option>
-            <option value="witness_testimony">👥 Witness Testimony</option>
-            <option value="expert_opinion">🎓 Expert Opinion</option>
-            <option value="forensic_analysis">🔬 Forensic Analysis</option>
-          </select>
+      <!-- AI Processing Options - NES.css styled -->
+      <div class="nes-container is-rounded">
+        <p class="nes-text">🤖 AI Processing Options</p>
+        <div class="checkbox-group">
+          <label class="nes-checkbox">
+            <input type="checkbox" name="enableAiAnalysis" bind:checked={$form.enableAiAnalysis} />
+            <span class="checkmark"></span>
+            🧠 Enable AI Analysis
+          </label>
+          <label class="nes-checkbox">
+            <input type="checkbox" name="enableOcr" bind:checked={$form.enableOcr} />
+            <span class="checkmark"></span>
+            📄 Enable OCR
+          </label>
+          <label class="nes-checkbox">
+            <input type="checkbox" name="enableEmbeddings" bind:checked={$form.enableEmbeddings} />
+            <span class="checkmark"></span>
+            🎯 Generate Embeddings
+          </label>
+          <label class="nes-checkbox">
+            <input type="checkbox" name="isAdmissible" bind:checked={$form.isAdmissible} />
+            <span class="checkmark"></span>
+            ⚖️ Mark as admissible
+          </label>
         </div>
       </div>
-    </div>
-    <!-- Description - NES.css styled -->
-    <div class="nes-field">
-      <label for="description" class="nes-text">📋 Description</label>
-      <textarea
-        id="description"
-        name="description"
-        bind:value={$form.description}
-        placeholder="Optional description"
-        rows="3"
-        class="nes-textarea"
-      ></textarea>
-    </div>
-    <!-- Tags - NES.css styled -->
-    <div class="nes-field">
-      <label for="tags" class="nes-text">🏷️ Tags (comma-separated)</label>
-      <input
-        id="tags"
-        name="tags"
-        type="text"
-        bind:value={$form.tags}
-        placeholder="e.g., contract, evidence, confidential"
-        class="nes-input"
-      />
-    </div>
-    <!-- AI Processing Options - NES.css styled -->
-    <div class="nes-container is-rounded">
-      <p class="nes-text">🤖 AI Processing Options</p>
-      <div class="checkbox-group">
-        <label class="nes-checkbox">
-          <input
-            type="checkbox"
-            name="enableAiAnalysis"
-            bind:checked={$form.enableAiAnalysis}
-          />
-          <span class="checkmark"></span>
-          🧠 Enable AI Analysis
-        </label>
-        <label class="nes-checkbox">
-          <input
-            type="checkbox"
-            name="enableOcr"
-            bind:checked={$form.enableOcr}
-          />
-          <span class="checkmark"></span>
-          📄 Enable OCR
-        </label>
-        <label class="nes-checkbox">
-          <input
-            type="checkbox"
-            name="enableEmbeddings"
-            bind:checked={$form.enableEmbeddings}
-          />
-          <span class="checkmark"></span>
-          🎯 Generate Embeddings
-        </label>
-        <label class="nes-checkbox">
-          <input
-            type="checkbox"
-            name="isAdmissible"
-            bind:checked={$form.isAdmissible}
-          />
-          <span class="checkmark"></span>
-          ⚖️ Mark as admissible
-        </label>
-      </div>
-    </div>
-    <!-- Submit Button - NES.css styled -->
-    <div class="form-actions">
-      <button
-        type="submit"
-        disabled={$submitting || $delayed || !selectedFile || !$form.caseId || !!processingStage}
-        class="nes-btn submit-button"
-        class:is-primary={!preserveExistingFlow}
-        class:is-success={preserveExistingFlow && !$submitting}
-        class:is-warning={$submitting || $delayed}
-      >
-        {#if $submitting || $delayed}
-          {$delayed ? '⏳ Processing...' : '📤 Uploading...'}
-        {:else if processingStage && preserveExistingFlow}
-          🧠 Analyzing...
-        {:else}
-          {preserveExistingFlow ? '🚀 Upload & Analyze with Enhanced RAG' : '📤 Upload Document'}
+      <!-- Submit Button - NES.css styled -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          disabled={$submitting || $delayed || !selectedFile || !$form.caseId || !!processingStage}
+          class="nes-btn submit-button"
+          class:is-primary={!preserveExistingFlow}
+          class:is-success={preserveExistingFlow && !$submitting}
+          class:is-warning={$submitting || $delayed}
+        >
+          {#if $submitting || $delayed}
+            {$delayed ? '⏳ Processing...' : '📤 Uploading...'}
+          {:else if processingStage && preserveExistingFlow}
+            🧠 Analyzing...
+          {:else}
+            {preserveExistingFlow ? '🚀 Upload & Analyze with Enhanced RAG' : '📤 Upload Document'}
+          {/if}
+        </button>
+        {#if preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)}
+          <div class="nes-container is-rounded is-success enhanced-status">
+            <span class="nes-text">✨ Enhanced analysis ready - your existing RAG flow will be preserved</span>
+          </div>
         {/if}
-      </button>
-      {#if preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)}
-        <div class="nes-container is-rounded is-success enhanced-status">
-          <span class="nes-text">✨ Enhanced analysis ready - your existing RAG flow will be preserved</span>
+      </div>
+      <!-- Messages - NES.css styled -->
+      {#if $message}
+        <div class="nes-container is-rounded is-success form-message">
+          <p class="nes-text">{$message}</p>
         </div>
       {/if}
-    </div>
-    <!-- Messages - NES.css styled -->
-    {#if $message}
-      <div class="nes-container is-rounded is-success form-message">
-        <p class="nes-text">{$message}</p>
-      </div>
-    {/if}
-  </form>
+    </form>
   </div>
   <!-- Processing Details Modal - bits-ui Dialog with nes.css styling -->
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 bg-black/50 z-50" />
-    <Dialog.Content class="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+    <Dialog.Content
+      class="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 max-w-4xl w-full max-h-[80vh] overflow-y-auto"
+    >
       <div class="nes-dialog is-rounded">
         <div class="dialog-header">
-          <Dialog.Title class="nes-text is-primary">
-            📊 Enhanced Processing Details
-          </Dialog.Title>
-          <Dialog.Close class="nes-btn is-error is-small">
-            ✕
-          </Dialog.Close>
+          <Dialog.Title class="nes-text is-primary">📊 Enhanced Processing Details</Dialog.Title>
+          <Dialog.Close class="nes-btn is-error is-small">✕</Dialog.Close>
         </div>
         <div class="dialog-content">
           {#if ocrResults}
@@ -675,7 +651,12 @@
                       </tr>
                       <tr>
                         <td>Sentiment</td>
-                        <td class="nes-text" class:is-success={legalAnalysis.sentiment?.classification === 'positive'} class:is-warning={legalAnalysis.sentiment?.classification === 'neutral'} class:is-error={legalAnalysis.sentiment?.classification === 'negative'}>
+                        <td
+                          class="nes-text"
+                          class:is-success={legalAnalysis.sentiment?.classification === 'positive'}
+                          class:is-warning={legalAnalysis.sentiment?.classification === 'neutral'}
+                          class:is-error={legalAnalysis.sentiment?.classification === 'negative'}
+                        >
                           {legalAnalysis.sentiment?.classification || 'neutral'}
                         </td>
                       </tr>
@@ -692,7 +673,8 @@
                 <div class="semantic-visualization">
                   {#if semanticEmbeddings.data?.som_cluster}
                     <p class="nes-text is-primary">
-                      🗺️ Document clustered to region: [{semanticEmbeddings.data.som_cluster.x}, {semanticEmbeddings.data.som_cluster.y}]
+                      🗺️ Document clustered to region: [{semanticEmbeddings.data.som_cluster.x}, {semanticEmbeddings
+                        .data.som_cluster.y}]
                     </p>
                   {:else}
                     <p class="nes-text is-success">✅ Vector embeddings generated successfully</p>
@@ -711,6 +693,7 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
+
 <style>
   /* bits-ui + nes.css integration styles */
   .enhanced-legal-upload {
@@ -869,8 +852,12 @@
   }
   /* Retro animations */
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   .spinner {
     width: 16px;

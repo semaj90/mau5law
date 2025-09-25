@@ -6,10 +6,7 @@
     variant?: 'full' | 'minimal' | 'demo';
     showQuickLinks?: boolean;
   }
-  let {
-    variant = 'full',
-    showQuickLinks = true
-  }: Props = $props();
+  let { variant = 'full', showQuickLinks = true }: Props = $props();
   let currentYear = new Date().getFullYear();
   let currentPath = $derived($page.url.pathname);
   let isDemoRoute = $derived(currentPath.startsWith('/demo'));
@@ -25,6 +22,7 @@
     { href: '#', label: 'Community', icon: '👥' },
   ];
 </script>
+
 <footer class="app-footer nes-container is-dark" data-variant={variant}>
   <div class="footer-content">
     {#if variant === 'full'}
@@ -33,9 +31,7 @@
         <!-- Brand Section -->
         <div class="footer-section brand-section">
           <h3 class="footer-title nes-text is-warning">YoRHa Legal AI</h3>
-          <p class="footer-description">
-            Professional Legal Intelligence Platform
-          </p>
+          <p class="footer-description">Professional Legal Intelligence Platform</p>
           <div class="gaming-badges">
             <span class="badge nes-badge">
               <span class="is-success">AI-POWERED</span>
@@ -56,10 +52,7 @@
             <h4 class="section-title nes-text is-primary">Quick Links</h4>
             <nav class="footer-nav" aria-label="Footer navigation">
               {#each quickLinks as link}
-                <a
-                  href={link.path}
-                  class="footer-link nes-btn is-dark"
-                >
+                <a href={link.path} class="footer-link nes-btn is-dark">
                   <span class="link-icon">{link.icon}</span>
                   <span class="link-label">{link.label}</span>
                 </a>
@@ -80,7 +73,8 @@
               <span class="status-label">Database</span>
             </div>
             <div class="status-item">
-              <span class="status-dot nes-container is-rounded" style="background: var(--n64-secondary, #7ed321);"></span>
+              <span class="status-dot nes-container is-rounded" style="background: var(--n64-secondary, #7ed321);"
+              ></span>
               <span class="status-label">GPU Cluster</span>
             </div>
           </div>
@@ -111,7 +105,7 @@
             © {currentYear} YoRHa Legal AI Platform. All rights reserved.
           </p>
           <p class="version-info nes-text is-disabled">
-            Version 2.0.0 | Build: {Date.now.toString-slice(-6)}
+            Version 2.0.0 | Build: {Date.now.toString - slice(-6)}
           </p>
         </div>
         <div class="tech-stack">
@@ -145,22 +139,17 @@
       <div class="demo-footer nes-container with-title is-rounded">
         <p class="title">Demo Environment</p>
         <div class="demo-info">
-          <p class="demo-text nes-text is-warning">
-            🎮 This is a demonstration of the YoRHa Legal AI Platform
-          </p>
+          <p class="demo-text nes-text is-warning">🎮 This is a demonstration of the YoRHa Legal AI Platform</p>
           <div class="demo-actions">
-            <a href="/" class="nes-btn is-primary">
-              Return to Main App
-            </a>
-            <a href="/all-routes" class="nes-btn is-dark">
-              Explore All Routes
-            </a>
+            <a href="/" class="nes-btn is-primary"> Return to Main App </a>
+            <a href="/all-routes" class="nes-btn is-dark"> Explore All Routes </a>
           </div>
         </div>
       </div>
     {/if}
   </div>
 </footer>
+
 <style>
   .app-footer {
     margin-top: auto;

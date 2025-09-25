@@ -7,7 +7,7 @@ import { json } from '@sveltejs/kit'
 import { getRedisService } from '$lib/server/redis/redis-service.js'
 import { minioService } from '$lib/server/storage/minio-service.js'
 import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js'
-import { URL } from "url"
+
 export const GET: RequestHandler = async ({ url }) => {
   const includeMetrics = url.searchParams.get('metrics') === 'true'
   try {

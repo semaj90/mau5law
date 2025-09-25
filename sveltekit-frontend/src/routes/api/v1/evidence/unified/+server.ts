@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         query: 'comprehensive evidence analysis',
         evidenceIds: analysisRequest.evidenceIds,
         algorithms: ['semantic', 'legal', 'temporal', 'contextual'],
-        clustering: true
+        clustering: true;
         threshold: analysisRequest.parameters.similarityThreshold
       })
       // Process similarity results into groups

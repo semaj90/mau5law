@@ -1,7 +1,7 @@
 // Lightweight LokiJS compatibility shim to avoid runtime issues in browsers/SSR.
 // This stub provides a minimal API surface used across the app without importing
 // the actual 'lokijs' UMD bundle (which can break under ESM/HMR).
-type Doc = { [key: string]: any } & { $loki?: number };
+type Doc = { [key: string]: any } & { $loki?: number }
 class MemoryCollection<T extends Doc = Doc> {
 	name: string;
 	private data: T[] = [];
@@ -47,7 +47,7 @@ class Loki {
 	static LokiMemoryAdapter = LokiMemoryAdapter;
 	constructor(filename: string, options?: any) {
 		this.filename = filename;
-		this.options = options || {};
+		this.options = options || {}
 		if (typeof this.options?.autoloadCallback === 'function') {
 			// Defer to simulate async load
 			setTimeout(() => this.options.autoloadCallback?.(), 0);

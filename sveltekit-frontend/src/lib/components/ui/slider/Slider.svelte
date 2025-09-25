@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Props } from "$lib/types/global";
+  import type { Props } from '$lib/types/global';
   let {
     value = $bindable([0.5]),
     min = 0,
@@ -16,15 +16,9 @@
     value = [Math.min(max, Math.max(min, v))];
   }
 </script>
-<input
-  type="range"
-  {id}
-  {min}
-  {max}
-  {step}
-  value={value?.[0] ?? 0}
-  class={klass}
-  {disabled} oninput={onInput as any} />
+
+<input type="range" {id} {min} {max} {step} value={value?.[0] ?? 0} class={klass} {disabled} oninput={onInput as any} />
+
 <style>
   input[type='range'] {
     width: 100%;

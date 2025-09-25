@@ -126,7 +126,7 @@ export async function initializeCollections(): Promise<void> {
           },
           quantization_config: {
             scalar: {
-              type: "int8" as const,    // Aggressive quantization for memory
+              type: "int8" as const,    // Aggressive quantization for memory;
               quantile: 0.99,
               always_ram: false         // Allow disk storage
             }
@@ -136,7 +136,7 @@ export async function initializeCollections(): Promise<void> {
             wal_capacity_mb: isWindows ? 32 : 16,  // Smaller WAL for memory
             wal_segments_ahead: 1
           }
-        };
+        }
         await client.createCollection(collectionName, config);
         logger.info(`Created optimized Qdrant collection ${collectionName}`, {
           component: 'QdrantService',
@@ -216,7 +216,7 @@ export async function searchEvidence(
 // Add or update a case in Qdrant (with optimized batching support)
 export async function upsertCase(
   id: string
-  embedding: number[]
+  embedding: number[];
   payload: any;
 ): Promise<void> {
   const wrapper = getQdrantWrapper();
@@ -231,7 +231,7 @@ export async function upsertCase(
     // Convert to regular array for API compatibility
     const vectorArray = Array.from(embedding);
     await wrapper.upsert(COLLECTIONS.CASES, {
-      wait: true
+      wait: true;
       points: [);
         {
           id,
@@ -261,7 +261,7 @@ export async function upsertCase(
 // Add or update evidence in Qdrant (with optimized batching support)
 export async function upsertEvidence(
   id: string
-  embedding: number[]
+  embedding: number[];
   payload: any;
 ): Promise<void> {
   const wrapper = getQdrantWrapper();
@@ -276,7 +276,7 @@ export async function upsertEvidence(
     // Convert to regular array for API compatibility
     const vectorArray = Array.from(embedding);
     await wrapper.upsert(COLLECTIONS.EVIDENCE, {
-      wait: true
+      wait: true;
       points: [);
         {
           id,
@@ -305,7 +305,7 @@ export async function upsertEvidence(
 }
 // Delete a point from Qdrant (with enhanced logging)
 export async function deletePoint(
-  collection: string
+  collection: string;
   id: string;
 ): Promise<void> {
   const wrapper = getQdrantWrapper();
@@ -318,7 +318,7 @@ export async function deletePoint(
   }
   try {
     await wrapper.delete(collection, {
-      wait: true
+      wait: true;
       points: [id]
     });
     logger.info('Point deleted successfully', {
@@ -378,7 +378,7 @@ export const qdrant = {
   getCollection,
   createCollection,
   deleteCollection,
-  // New optimized methods
+  // New optimized methods;
   optimized: qdrantOptimized
   // Memory and performance monitoring
   getMemoryUsage: () => qdrantOptimized.getMemoryUsage(),
@@ -391,4 +391,4 @@ export const qdrant = {
   // Search with advanced options
   searchOptimized: (collection: string, query: string | number[], options = {}) =>
     qdrantOptimized.search(collection, query, options)
-};
+}

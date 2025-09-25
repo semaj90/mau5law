@@ -627,4 +627,4 @@ async function generateEmbedding(parsedResult: any, content: string): Promise<an
     console.log("Embedding generation failed:", error)
   }
 }
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

@@ -19,7 +19,7 @@ interface Evidence {
   id: string;
   type: string;
   content: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: any }
 }
 interface User {
   id: string;
@@ -35,7 +35,7 @@ interface LegalCase {
 }
 type NotificationType = 'info' | 'warning' | 'error' | 'success';
 // --- Core Type Guards ---
-export function isAPIResponse<any>(value: unknown): value is APIResponse<any> {
+export function isAPIResponse<any>(_value: unknown): value is APIResponse<any> {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -43,20 +43,20 @@ export function isAPIResponse<any>(value: unknown): value is APIResponse<any> {
     typeof (value as any).success === 'boolean'
   );
 }
-export function isServiceStatus(value: unknown): value is ServiceStatus {
+export function isServiceStatus(_value: unknown): value is ServiceStatus {
   return typeof value === 'string' &&
     ['operational', 'degraded', 'offline', 'unknown'].includes(value);
 }
 // --- AI & Worker Type Guards ---
-export function isAITaskType(value: unknown): value is AITaskType {
+export function isAITaskType(_value: unknown): value is AITaskType {
   return typeof value === 'string' &&
     ['generate', 'analyze', 'embed', 'search', 'embedding', 'analysis', 'classification', 'summarization'].includes(value);
 }
-export function isWorkerMessageType(value: unknown): value is WorkerMessageType {
+export function isWorkerMessageType(_value: unknown): value is WorkerMessageType {
   return typeof value === 'string' &&
     ['error', 'status', 'result', 'task', 'TASK_STARTED', 'TASK_COMPLETED', 'TASK_ERROR', 'TASK_CANCELLED', 'STATUS_UPDATE'].includes(value);
 }
-export function isAITask(value: unknown): value is AITask {
+export function isAITask(_value: unknown): value is AITask {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -76,7 +76,7 @@ export function isAITask(value: unknown): value is AITask {
     ['low', 'medium', 'high'].includes((value as any).priority)
   );
 }
-export function isWorkerStatus(value: unknown): value is WorkerStatus {
+export function isWorkerStatus(_value: unknown): value is WorkerStatus {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -96,7 +96,7 @@ export function isWorkerStatus(value: unknown): value is WorkerStatus {
     Array.isArray((value as any).providers)
   );
 }
-export function isWorkerMessage(value: unknown): value is WorkerMessage {
+export function isWorkerMessage(_value: unknown): value is WorkerMessage {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -106,7 +106,7 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 }
 // --- Legal Domain Type Guards ---
 // TODO: Uncomment when LegalCase type is available
-// export function isLegalCase(value: unknown): value is LegalCase {
+// export function isLegalCase(_value: unknown): value is LegalCase {
 //   return (
 //     typeof value === 'object' &&
 //     value !== null &&
@@ -127,7 +127,7 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 //   )
 // }
 // TODO: Uncomment when Evidence type is available
-// export function isEvidence(value: unknown): value is Evidence {
+// export function isEvidence(_value: unknown): value is Evidence {
 //   return (
 //     typeof value === 'object' &&
 //     value !== null &&
@@ -147,7 +147,7 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 // }
 // --- Authentication Type Guards ---
 // TODO: Uncomment when User type is available
-// export function isUser(value: unknown): value is User {
+// export function isUser(_value: unknown): value is User {
 //   return (
 //     typeof value === 'object' &&
 //     value !== null &&
@@ -164,12 +164,12 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 // }
 // --- UI Type Guards ---
 // TODO: Uncomment when NotificationType is available
-// export function isNotificationType(value: unknown): value is NotificationType {
+// export function isNotificationType(_value: unknown): value is NotificationType {
 //   return typeof value === 'string' &&
 //     ['info', 'success', 'warning', 'error'].includes(value)
 // }
 // TODO: Uncomment when Notification type is available
-// export function isNotification(value: unknown): value is Notification {
+// export function isNotification(_value: unknown): value is Notification {
 //   return (
 //     typeof value === 'object' &&
 //     value !== null &&
@@ -186,22 +186,22 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 //   )
 // }
 // --- Utility Type Guards ---
-export function isString(value: unknown): value is string {
+export function isString(_value: unknown): value is string {
   return typeof value === 'string';
 }
-export function isNumber(value: unknown): value is number {
+export function isNumber(_value: unknown): value is number {
   return typeof value === 'number' && !isNaN(value);
 }
-export function isBoolean(value: unknown): value is boolean {
+export function isBoolean(_value: unknown): value is boolean {
   return typeof value === 'boolean';
 }
-export function isObject(value: unknown): value is Record<string, unknown> {
+export function isObject(_value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
-export function isArray(value: unknown): value is unknown[] {
+export function isArray(_value: unknown): value is unknown[] {
   return Array.isArray(value);
 }
-export function isRecord(value: unknown): value is { [key: string]: any } {
+export function isRecord(_value: unknown): value is { [key: string]: any } {
   return isObject(value);
 }
 // --- Enhanced Discrimination Helpers ---
@@ -249,23 +249,23 @@ export function safeGet<T>(obj: unknown, path: string, defaultValue: T): T {
   }
 }
 export function hasProperty<K extends string>(
-  obj: unknown
+  obj: unknown;
   prop: K;
 ): obj is Record<K, unknown> {
   return typeof obj === 'object' && obj !== null && prop in obj;
 }
 // --- Type Assertion Helpers ---
-export function assertIsAITask(value: unknown): asserts value is AITask {
+export function assertIsAITask(_value: unknown): asserts value is AITask {
   if (!isAITask(value)) {
     throw new Error('Value is not a valid AITask');
   }
 }
-export function assertIsWorkerStatus(value: unknown): asserts value is WorkerStatus {
+export function assertIsWorkerStatus(_value: unknown): asserts value is WorkerStatus {
   if (!isWorkerStatus(value)) {
     throw new Error('Value is not a valid WorkerStatus');
   }
 }
-export function assertIsAPIResponse(value: unknown): asserts value is APIResponse<any> {
+export function assertIsAPIResponse(_value: unknown): asserts value is APIResponse<any> {
   if (!isAPIResponse(value)) {
     throw new Error('Value is not a valid APIResponse');
   }

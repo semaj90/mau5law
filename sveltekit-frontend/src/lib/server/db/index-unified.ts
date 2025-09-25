@@ -45,14 +45,14 @@ export {
   getPoolConfig,
   DATABASE_CONSTANTS,
   getBrowserSafeDatabaseInfo
-};
+}
 // Re-export schema
 export * from './schema-postgres.js';
-export { schema };
+export { schema }
 // Export types
-export type { DatabaseConfig, DatabaseUrls };
+export type { DatabaseConfig, DatabaseUrls }
 // Default database instances (lazy initialization)
-export const db = getDrizzleDb();
+export // removed unused db assignment
 export const sql = getPostgresJsClient();
 export const pool = getAppPool();
 // Legacy compatibility
@@ -77,7 +77,7 @@ export function getTableByName(tableName: string) {
     legalDocuments,
     caseActivities,
     statutes
-  };
+  }
   return tableMap[tableName as keyof typeof tableMap];
 }
 // Enhanced health check using centralized connection manager
@@ -90,7 +90,7 @@ export async function healthCheck() {
         status: "unhealthy" as const,
         error: health.error || 'Database connection failed',
         timestamp: new Date()
-      };
+      }
     }
     // Test specific tables if connection is healthy
     if (connection.success) {
@@ -108,7 +108,7 @@ export async function healthCheck() {
             timestamp: new Date(),
             tables: connection.tables || [],
             extensions: connection.extensions || []
-          };
+          }
         }
       } catch (tableError) {
         console.warn('Table access test failed:', tableError);
@@ -122,13 +122,13 @@ export async function healthCheck() {
       tables: connection.tables?.length || 0,
       extensions: connection.extensions || [],
       poolStats: health.pools
-    };
+    }
   } catch (error: any) {
     return {
       status: "unhealthy" as const,
       error: error.message,
       timestamp: new Date()
-    };
+    }
   }
 }
 // System health with comprehensive checks
@@ -147,7 +147,7 @@ export async function getSystemHealth() {
     application: appHealth
     timestamp: new Date().toISOString(),
     version: '2.0.0-unified'
-  };
+  }
 }
 // Vector store with centralized connection (updated for embeddinggemma)
 export function getVectorStore() {
@@ -191,7 +191,7 @@ export async function runMigration(migrationName: string, migrationSql: string) 
           status = 'completed'
       `, [migrationName, Date.now() - start]);
       await client.query('COMMIT');
-      return { success: true, executionTime: Date.now() - start };
+      return { success: true, executionTime: Date.now() - start }
     } catch (error) {
       await client.query('ROLLBACK');
       // Record failed migration

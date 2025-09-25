@@ -12,9 +12,10 @@
     subtitle,
     footer,
     content = 'This is a NES.css styled card component.',
-    children
+    children,
   }: Props = $props();
 </script>
+
 <section class="nes-container with-title is-dark">
   <h3 class="title">{title}</h3>
   {#if subtitle}

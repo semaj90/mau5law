@@ -28,7 +28,7 @@ export interface PerformanceEntry {
   entryType: string;
 }
 class TimingMetricsCollector {
-  private customMarks: Record<string, number> = {};
+  private customMarks: Record<string, number> = {}
   private observers: PerformanceObserver[] = [];
   /**
    * Initialize performance monitoring with Web Vitals
@@ -44,7 +44,7 @@ class TimingMetricsCollector {
    * Extract Server-Timing headers from response
    */;
   extractServerTiming(response: Response): Record<string, number> {
-    const serverTiming: Record<string, number> = {};
+    const serverTiming: Record<string, number> = {}
     const timingHeader = response.headers.get('Server-Timing');
     if (!timingHeader) return serverTiming;
     // Parse Server-Timing header format: "name;dur=123, name2;dur=456"
@@ -100,7 +100,7 @@ class TimingMetricsCollector {
       timestamp: Date.now(),
       url: window.location.href,
       userAgent: navigator.userAgent
-    };
+    }
   }
   /**
    * Create a performance mark
@@ -298,7 +298,7 @@ class TimingMetricsCollector {
       }
     });
     this.observers = [];
-    this.customMarks = {};
+    this.customMarks = {}
   }
 }
 // Singleton instance
@@ -321,5 +321,5 @@ export const {
 export function createTimedFetch(baseFetch = fetch) {
   return (input: RequestInfo | URL, init?: RequestInit) => {
     return timingMetrics.instrumentedFetch(input, init);
-  };
+  }
 }

@@ -26,7 +26,7 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
     if (!(result as { ok?: any }).ok) overallOk = false;
     await Promise.all([primary.quit(), subscriber.quit(), publisher.quit()].map(p => p.catch(()=>{})));
   } catch (e: any) {
-    checks.pubsub = { ok: false, error: e.message };
+    checks.pubsub = { ok: false, error: e.message }
     overallOk = false;
   }
   // Aggregate
@@ -37,4 +37,4 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
     durationMs,
     timestamp: new Date().toISOString()
   }, { status: overallOk ? 200 : 503 });
-};
+}

@@ -20,7 +20,7 @@ interface QueryResponse {
   cost_saved: number
   classification?: {
     type: string
-    confidence: number
+    confidence: number;
     reasoning: string
   }
   nintendo_diagnostics?: {

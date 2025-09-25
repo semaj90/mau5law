@@ -197,4 +197,4 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
   }
   return { prompts }
 }
-export const POST = redisOptimized.documentProcessing(originalPOSTHandler)
+export const POST = redisOptimized.documentProcessing(originalPOSTHandler);

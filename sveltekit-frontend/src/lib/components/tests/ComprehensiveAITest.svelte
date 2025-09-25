@@ -15,9 +15,9 @@
   let webgpuStatus = $state<'checking' | 'available' | 'unavailable'>('checking');
   // Performance comparison
   let performanceMetrics = $state<{
-    local?: { time: number; tokens: number; device: string };
-    cuda?: { time: number; tokens: number; gpu: number };
-    unified?: { time: number; tokens: number; acceleration: string };
+    local?: { time: number; tokens: number; device: string }
+    cuda?: { time: number; tokens: number; gpu: number }
+    unified?: { time: number; tokens: number; acceleration: string }
   }>( );
   // Check system capabilities on mount
   $effect(() => {
@@ -51,7 +51,7 @@
     if (isRunning) return;
     isRunning = true;
     testResults = [];
-    performanceMetrics = {};
+    performanceMetrics = {}
     try {
       if (testType === 'all') {
         await runAllTests();
@@ -112,21 +112,21 @@
         response: result.text || result.content || '',
         duration: Math.round(duration),
         timestamp: new Date().toLocaleTimeString(),
-        success: true
-        metrics: result.metrics ||
+        success: true;
+        metrics: result.metrics ||;
         acceleration: result.acceleration || 'none';
-      };
+      }
       testResults = [testResult, ...testResults];
       // Update performance metrics
       performanceMetrics = {
         ...performanceMetrics,
         [testType]: {
-          time: duration
+          time: duration;
           tokens: result.tokens || result.tokensGenerated || 0,
           device: result.device || result.acceleration || 'unknown',
           ...(testType === 'cuda' && { gpu: result.gpuUtilization || 0 })
         }
-      };
+      }
       console.log(`✅ ${testName} completed in ${duration.toFixed(2)}ms`);
     } catch (error) {
       console.error(`❌ ${testType} test failed:`, error);
@@ -141,7 +141,7 @@
         error: error instanceof Error ? error.message: String(error),
         metrics: ,
         acceleration: 'failed';
-      };
+      }
       testResults = [testResult, ...testResults];
     }
   }
@@ -165,7 +165,7 @@
         fromCache: result.fromCache,
         capabilities: capabilitie;
       }
-    };
+    }
   }
   async function testCUDAService() {
     if (cudaServiceStatus !== 'available') {
@@ -198,7 +198,7 @@
         gpuMetrics: gpuMetric;
       },
       acceleration: 'cuda-tensorrt';
-    };
+    }
   }
   async function testUnifiedAssistant() {
     const testCaseId = `comprehensive-test-${Date.now()}`;
@@ -218,11 +218,11 @@
         confidence: result.metadata?.confidence,
         accelerationMetrics: result.metadata?.accelerationMetric;
       }
-    };
+    }
   }
   function clearResults() {
     testResults = [];
-    performanceMetrics = {};
+    performanceMetrics = {}
   }
   // Sample legal queries for testing
   const sampleQueries = [
@@ -242,12 +242,13 @@
     return items.join(' • ');
   }
 </script>
+
 <div class="comprehensive-ai-test max-w-7xl mx-auto p-6">
   <div class="mb-8">
     <h1 class="text-3xl font-bold mb-4">🧠 Comprehensive AI System Test</h1>
     <p class="text-gray-600 mb-6">
-      Test and compare browser-local AI (gemma3:270m), CUDA TensorRT service (gemma3:legal-latest),
-      and the unified AI assistant with smart routing capabilities.
+      Test and compare browser-local AI (gemma3:270m), CUDA TensorRT service (gemma3:legal-latest), and the unified AI
+      assistant with smart routing capabilities.
     </p>
     <!-- System Status -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -257,7 +258,13 @@
         </CardHeader>
         <CardContent>
           <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full {localAIStatus === 'available' ? 'bg-green-500' : localAIStatus === 'unavailable' ? 'bg-red-500' : 'bg-yellow-500'}"></span>
+            <span
+              class="w-3 h-3 rounded-full {localAIStatus === 'available'
+                ? 'bg-green-500'
+                : localAIStatus === 'unavailable'
+                  ? 'bg-red-500'
+                  : 'bg-yellow-500'}"
+            ></span>
             <span class="text-sm capitalize">{localAIStatus}</span>
           </div>
           <p class="text-xs text-gray-500 mt-1">gemma3:270m in browser</p>
@@ -269,7 +276,13 @@
         </CardHeader>
         <CardContent>
           <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full {cudaServiceStatus === 'available' ? 'bg-green-500' : cudaServiceStatus === 'unavailable' ? 'bg-red-500' : 'bg-yellow-500'}"></span>
+            <span
+              class="w-3 h-3 rounded-full {cudaServiceStatus === 'available'
+                ? 'bg-green-500'
+                : cudaServiceStatus === 'unavailable'
+                  ? 'bg-red-500'
+                  : 'bg-yellow-500'}"
+            ></span>
             <span class="text-sm capitalize">{cudaServiceStatus}</span>
           </div>
           <p class="text-xs text-gray-500 mt-1">gemma3:legal-latest GPU</p>
@@ -306,10 +319,7 @@
       >
         {isRunning ? 'Testing...' : 'Run All Tests'}
       </button>
-      <button
-        onclick={clearResults}
-        class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-      >
+      <button onclick={clearResults} class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
         Clear
       </button>
     </div>
@@ -319,7 +329,7 @@
       <div class="flex flex-wrap gap-2 mt-1">
         {#each sampleQueries as query}
           <button
-            onclick={() => testQuery = query}
+            onclick={() => (testQuery = query)}
             class="px-2 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200 text-xs"
           >
             {query.substring(0, 40)}...
@@ -436,22 +446,34 @@
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold">🧪 Test Results</h2>
       {#each testResults as result}
-        <Card class="border-l-4 {result.success ? result.type === 'local' ? 'border-l-green-500' : result.type === 'cuda' ? 'border-l-purple-500' : 'border-l-blue-500' : 'border-l-red-500'}">
+        <Card
+          class="border-l-4 {result.success
+            ? result.type === 'local'
+              ? 'border-l-green-500'
+              : result.type === 'cuda'
+                ? 'border-l-purple-500'
+                : 'border-l-blue-500'
+            : 'border-l-red-500'}"
+        >
           <CardHeader class="pb-3">
             <div class="flex justify-between items-start">
               <div>
                 <CardTitle class="text-lg {result.success ? 'text-gray-900' : 'text-red-700'}">
-                  {result.name} {result.success ? '✅' : '❌'}
+                  {result.name}
+                  {result.success ? '✅' : '❌'}
                 </CardTitle>
                 <p class="text-sm text-gray-600">{result.timestamp} • {result.duration}ms</p>
               </div>
               <div class="text-right">
-                <span class="px-2 py-1 rounded text-xs {
-                  result.acceleration === 'browser-local' ? 'bg-green-100 text-green-800' :
-                  result.acceleration === 'cuda-tensorrt' ? 'bg-purple-100 text-purple-800' :
-                  result.acceleration === 'simd-webgpu-accelerated' ? 'bg-blue-100 text-blue-800' :
-                  'bg-gray-100 text-gray-800'
-                }">
+                <span
+                  class="px-2 py-1 rounded text-xs {result.acceleration === 'browser-local'
+                    ? 'bg-green-100 text-green-800'
+                    : result.acceleration === 'cuda-tensorrt'
+                      ? 'bg-purple-100 text-purple-800'
+                      : result.acceleration === 'simd-webgpu-accelerated'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-gray-100 text-gray-800'}"
+                >
                   {result.acceleration}
                 </span>
               </div>
@@ -470,7 +492,8 @@
                 </div>
               </div>
               <div class="text-xs text-gray-500">
-                <span class="font-medium">Metrics:</span> {formatMetrics(result.metrics)}
+                <span class="font-medium">Metrics:</span>
+                {formatMetrics(result.metrics)}
               </div>
             {/if}
             {#if result.error}
@@ -489,6 +512,7 @@
     </div>
   {/if}
 </div>
+
 <style>
   .comprehensive-ai-test {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

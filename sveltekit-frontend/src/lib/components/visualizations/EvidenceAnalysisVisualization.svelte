@@ -22,7 +22,7 @@
     renderSentimentChart();
     return () => {
       charts.forEach(chart => chart.destroy());
-    };
+    }
   });
   function renderRiskChart() {
     const ctx = canvasRisk.getContext('2d');
@@ -43,7 +43,7 @@
       },
       options: {
         responsive: true
-        maintainAspectRatio: false
+        maintainAspectRatio: false;
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -76,7 +76,7 @@
       },
       options: {
         responsive: true
-        maintainAspectRatio: false
+        maintainAspectRatio: false;
         scales: {
           y: {
             beginAtZero: true
@@ -111,10 +111,10 @@
       },
       options: {
         responsive: true
-        maintainAspectRatio: false
+        maintainAspectRatio: false;
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true;
             max: 100,
             title: { display: true, text: 'Confidence %' }
           }
@@ -153,10 +153,10 @@
       },
       options: {
         responsive: true
-        maintainAspectRatio: false
+        maintainAspectRatio: false;
         scales: {
           r: {
-            beginAtZero: true
+            beginAtZero: true;
             max: 100,
             ticks: { stepSize: 20 }
           }
@@ -188,10 +188,10 @@
       },
       options: {
         responsive: true
-        maintainAspectRatio: false
+        maintainAspectRatio: false;
         scales: {
           r: {
-            beginAtZero: true
+            beginAtZero: true;
             max: 100;
           }
         },
@@ -226,11 +226,10 @@
     }
   }
 </script>
+
 <div class="evidence-analysis-visualization">
   <div class="analysis-header">
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-      Evidence Analysis Report
-    </h2>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Evidence Analysis Report</h2>
     <div class="metadata">
       <span class="badge">Model: {analysis.aiModel}</span>
       <span class="badge">Confidence: {(analysis.confidence * 100).toFixed(1)}%</span>
@@ -248,7 +247,10 @@
       <h3 class="chart-title">Risk Assessment</h3>
       <canvas bind:this={canvasRisk}></canvas>
       <div class="risk-value">
-        <span class="risk-score" style="color: {analysis.riskScore > 0.7 ? '#ef4444' : analysis.riskScore > 0.4 ? '#f59e0b' : '#22c55e'}">
+        <span
+          class="risk-score"
+          style="color: {analysis.riskScore > 0.7 ? '#ef4444' : analysis.riskScore > 0.4 ? '#f59e0b' : '#22c55e'}"
+        >
           {(analysis.riskScore * 100).toFixed(0)}%
         </span>
         <span class="risk-label">Risk Level</span>
@@ -340,6 +342,7 @@
     </div>
   </div>
 </div>
+
 <style>
   .evidence-analysis-visualization {
     @apply p-6 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg;

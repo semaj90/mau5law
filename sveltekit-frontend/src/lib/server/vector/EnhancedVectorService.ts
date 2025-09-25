@@ -73,11 +73,11 @@ export class EnhancedVectorService {
   async storeDocument(id: string, content: string, metadata: any) {
     const embedding = await this.generateEmbedding(content);
     await this.qdrant.upsert(this.collectionName, {
-      wait: true
+      wait: true;
       points: [);
         {
           id,
-          vector: embedding
+          vector: embedding;
           payload: { content, ...metadata }
         }
       ]
@@ -125,9 +125,9 @@ export class EnhancedVectorService {
     try {
       await this.qdrant.getCollections();
       await (this.redis as any).ping();
-      return { qdrant: true, redis: true };
+      return { qdrant: true, redis: true }
     } catch (error: any) {
-      return { qdrant: false, redis: false, error: error.message };
+      return { qdrant: false, redis: false, error: error.message }
     }
   }
 }

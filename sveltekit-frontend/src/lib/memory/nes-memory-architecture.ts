@@ -76,7 +76,7 @@ export interface LegalDocument {
     readonly documentClass?: string;
     readonly aiGenerated?: boolean;
     readonly vectorEmbedding?: Float32Array;
-  };
+  }
 }
 export interface MemoryBank {
   readonly id: number;
@@ -118,7 +118,7 @@ export class NESMemoryArchitecture {
     ppu2002: 0, // PPU status register
     oamaddr: 0, // OAM address register
     ppuscroll: { x: 0, y: 0 }, // PPU scroll registers
-    ppuaddr: 0, // PPU address register
+    ppuaddr: 0, // PPU address register;
     ppudata: 0, // PPU data register
   } as const;
   // Legal AI priority scoring
@@ -126,9 +126,9 @@ export class NESMemoryArchitecture {
     critical: 255, // Active court case documents
     high: 192, // Evidence and contracts under review
     medium: 128, // Research documents and precedents
-    low: 64, // Archived or reference materials
+    low: 64, // Archived or reference materials;
     background: 32, // AI-generated summaries and metadata
-  };
+  }
   constructor() {
     this.initializeMemoryBanks();
     this.setupCompressionWorker();
@@ -239,9 +239,8 @@ export class NESMemoryArchitecture {
       this.optimizeMemoryLayout();
     }
   }
-  async allocateDocument(
-    document: Omit<LegalDocument, 'lastAccessed'>,
-    data: ArrayBuffer
+  async allocateDocument(_document: Omit<LegalDocument, 'lastAccessed'>,
+    data: ArrayBuffer;
     options: {
       preferredBank?: string;
       compress?: boolean;
@@ -293,7 +292,7 @@ export class NESMemoryArchitecture {
         lastAccessed: Date.now(),
         compressed: compress
         bankId: bank.id,
-      };
+      }
       // Allocate document in bank
       bank.documents.set(document.id, legalDocument);
       bank.used += documentSize;
@@ -307,7 +306,7 @@ export class NESMemoryArchitecture {
       return false;
     }
   }
-  private selectOptimalBank(document: Omit<LegalDocument, 'lastAccessed'>, size: number): string {
+  private selectOptimalBank(_document: Omit<LegalDocument, 'lastAccessed'>, size: number): string {
     // NES-style bank selection based on document characteristics
     // Critical legal documents go to fast RAM
     if (document.riskLevel === 'critical' || document.confidenceLevel > 0.9) {
@@ -336,7 +335,7 @@ export class NESMemoryArchitecture {
     // Default to PRG-ROM (largest bank)
     return 'PRG_ROM';
   }
-  private calculateLegalPriority(document: Omit<LegalDocument, 'lastAccessed' | 'priority'>): number {
+  private calculateLegalPriority(_document: Omit<LegalDocument, 'lastAccessed' | 'priority'>): number {
     let priority = this.LEGAL_PRIORITIES.medium; // Base priority
     // Risk level adjustment
     switch (document.riskLevel) {
@@ -363,12 +362,12 @@ export class NESMemoryArchitecture {
     return Math.max(0, Math.min(255, priority));
   }
   private async compressDocument(
-    data: ArrayBuffer
+    data: ArrayBuffer;
     document: Omit<LegalDocument, 'lastAccessed'>,
     compressionLevel: number
   ): Promise<any> {
     if (!this.compressionWorker) {
-      return { data, ratio: 1.0, priority: 128 };
+      return { data, ratio: 1.0, priority: 128 }
     }
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
@@ -385,7 +384,7 @@ export class NESMemoryArchitecture {
         } else {
           reject(new Error(e.data.error));
         }
-      };
+      }
       this.compressionWorker!.postMessage({
         documentData: data
         legalContext: {
@@ -568,7 +567,7 @@ export class NESMemoryArchitecture {
       compressionSavings: this.calculateCompressionSavings(),
       documentCount,
       averageAccessTime: accessCount > 0 ? totalAccessTime / accessCount : 0,
-    };
+    }
   }
   private calculateCompressionSavings(): number {
     let totalSavings = 0;
@@ -713,7 +712,7 @@ class PlannerMemoryManager {
     if (handle === -1) {
       throw new Error('Failed to allocate handle in memory architecture');
     }
-    this.records[handle] = { handle, graphNodeId, parentHandle, depth };
+    this.records[handle] = { handle, graphNodeId, parentHandle, depth }
     this.handleByGraphId.set(graphNodeId, handle);
     this.insertionOrder.push(handle);
     this.lastAllocation = handle;
@@ -773,7 +772,7 @@ class PlannerMemoryManager {
       prior: this.prior[handle],
       depth: this.depth[handle],
       graphNodeId: this.records[handle]?.graphNodeId,
-    };
+    }
   }
   cacheTransposition(graphNodeId: string, visits: number, value: number) {
     this.transpositionCache.set(graphNodeId, { visits, value, updated: Date.now() });
@@ -787,7 +786,7 @@ class PlannerMemoryManager {
       allocated: this.records.length - this.freeList.length,
       free: this.freeList.length,
       transpositions: this.transpositionCache.size,
-    };
+    }
   }
 }
 // Singleton planner memory (exposed for planner integration)
@@ -805,4 +804,4 @@ export const nesPlannerBridge = {
   },
   stats(handle: number) { return plannerMemory.getStats(handle); },
   summary() { return plannerMemory.summarize(); }
-};
+}

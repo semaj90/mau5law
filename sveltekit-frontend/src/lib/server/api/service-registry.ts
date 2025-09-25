@@ -176,7 +176,7 @@ export class ApiServiceRegistry {
         description: 'Debug and troubleshooting',
         required: false
       }
-    };
+    }
     // Register routes
     for (const [name, config] of Object.entries(apiRoutes)) {
       this.routes.set(name, config);
@@ -329,9 +329,9 @@ export class ApiServiceRegistry {
       existing: [],
       missing: [],
       extra: []
-    };
+    }
     if (!existsSync(apiPath)) {
-      return { ...results, error: 'API directory not found' };
+      return { ...results, error: 'API directory not found' }
     }
     // Scan existing API routes
     const scanDir = (dir, prefix = '') => {
@@ -349,7 +349,7 @@ export class ApiServiceRegistry {
       } catch (error) {
         // Directory might not exist, skip
       }
-    };
+    }
     scanDir(apiPath);
     // Find missing and extra routes
     const registeredEndpoints = new Set();
@@ -377,7 +377,7 @@ export class ApiServiceRegistry {
       routes: Object.fromEntries(this.routes),
       services: Object.fromEntries(this.services),
       timestamp: new Date().toISOString()
-    };
+    }
   }
 }
 export const apiRegistry = new ApiServiceRegistry();

@@ -1,4 +1,3 @@
-/// <reference types="vite/client"></reference>
 <!-- Test page for Simple File Upload with RAG integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -8,7 +7,7 @@
   interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: unknown }
   interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: unknown }
   let uploadResults: UploadResult[] = [];
-  let systemStatus: SystemStatus = {};
+  let systemStatus: SystemStatus = {}
   function handleUploadComplete(result: UploadResult) {
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
@@ -74,6 +73,8 @@ try {
     }
   });
 </script>
+
+/// <reference types="vite/client"></reference>
 <svelte:head>
   <title>Enhanced File Upload Test - Legal AI System</title>
 </svelte:head>
@@ -107,22 +108,79 @@ try {
         {#each uploadResults as result}
           <div class="p-4 border rounded-lg bg-white shadow-sm">
             <div class="flex justify-between items-start mb-2">
-              <h3 class="font-medium">{(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).filename || 'Unknown file'}</h3>
-              <span class={`px-2 py-1 text-xs rounded ${(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).status}
+              <h3 class="font-medium">
+                {(
+                  result as {
+                    filename?: unknown;
+                    status?: unknown;
+                    documentId?: unknown;
+                    size?: unknown;
+                    embeddingGenerated?: unknown;
+                    error?: unknown;
+                  }
+                ).filename || 'Unknown file'}
+              </h3>
+              <span
+                class={`px-2 py-1 text-xs rounded ${(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+              >
+                {(
+                  result as {
+                    filename?: unknown;
+                    status?: unknown;
+                    documentId?: unknown;
+                    size?: unknown;
+                    embeddingGenerated?: unknown;
+                    error?: unknown;
+                  }
+                ).status}
               </span>
             </div>
             {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).documentId}
-              <p class="text-sm text-gray-600 mb-1">Document ID: {(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).documentId}</p>
+              <p class="text-sm text-gray-600 mb-1">
+                Document ID: {(
+                  result as {
+                    filename?: unknown;
+                    status?: unknown;
+                    documentId?: unknown;
+                    size?: unknown;
+                    embeddingGenerated?: unknown;
+                    error?: unknown;
+                  }
+                ).documentId}
+              </p>
             {/if}
             {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size}
-              <p class="text-sm text-gray-600 mb-1">Size: {((result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size / 1024).toFixed(1)} KB</p>
+              <p class="text-sm text-gray-600 mb-1">
+                Size: {(
+                  (
+                    result as {
+                      filename?: unknown;
+                      status?: unknown;
+                      documentId?: unknown;
+                      size?: unknown;
+                      embeddingGenerated?: unknown;
+                      error?: unknown;
+                    }
+                  ).size / 1024
+                ).toFixed(1)} KB
+              </p>
             {/if}
             {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).embeddingGenerated}
               <p class="text-sm text-green-600">✓ Embeddings generated</p>
             {/if}
             {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).error}
-              <p class="text-sm text-red-600">Error: {(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).error}</p>
+              <p class="text-sm text-red-600">
+                Error: {(
+                  result as {
+                    filename?: unknown;
+                    status?: unknown;
+                    documentId?: unknown;
+                    size?: unknown;
+                    embeddingGenerated?: unknown;
+                    error?: unknown;
+                  }
+                ).error}
+              </p>
             {/if}
           </div>
         {/each}
@@ -146,3 +204,4 @@ try {
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
   Add 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->
+;

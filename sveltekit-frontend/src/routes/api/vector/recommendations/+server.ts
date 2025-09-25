@@ -13,7 +13,7 @@ import { legalAIResultCache } from "$lib/services/advanced-result-cache"
 import { legalAIGPUQueue } from "$lib/services/gpu-job-queue"
 import { mcpContext72GetLibraryDocs } from "$lib/mcp-context72-get-library-docs"
 import { enhancedSearchWithNeo4j } from "$lib/ai/custom-reranker"
-import { URL } from "url"
+
 export const POST: RequestHandler = async ({ request, url }) => {
   const startTime = Date.now()
   let cacheStatus: 'hit' | 'miss' | 'generated' = 'miss'
@@ -310,7 +310,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json()
       {
         success: false
-        error: errorMessage
+        error: errorMessage;
         metadata: {
           processingTime: Date.now() - startTime,
           cacheStatus,

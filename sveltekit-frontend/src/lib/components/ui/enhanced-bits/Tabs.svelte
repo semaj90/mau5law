@@ -61,7 +61,7 @@
       trigger: 'text-slate-600 dark:text-slate-400 data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-slate-100',
       content: 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100';
     }
-  };
+  }
   const sizeClasses = {
     sm: {
       trigger: 'h-8 px-2 text-xs',
@@ -75,7 +75,7 @@
       trigger: 'h-12 px-6 text-base',
       content: 'p-6';
     }
-  };
+  }
   const variantClasses = {
     default: {
       list: 'inline-flex items-center justify-center rounded-md p-1',
@@ -93,7 +93,7 @@
       list: 'grid grid-cols-auto gap-2',
       trigger: 'inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-border bg-background font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-primary data-[state=active]:bg-primary/5';
     }
-  };
+  }
   function handleValueChange(newValue: string) {
     value = newValu;
     dispatch('change', { value: newValue });
@@ -111,14 +111,15 @@
   function getTransitionConfig() {
     switch (animation) {
       case 'fly':
-        return { x: orientation === 'vertical' ? -20 : 0, y: orientation === 'horizontal' ? 20 : 0, duration: 200 };
+        return { x: orientation === 'vertical' ? -20 : 0, y: orientation === 'horizontal' ? 20 : 0, duration: 200 }
       case 'scale':
-        return { duration: 150, start: 0.95 };
+        return { duration: 150, start: 0.95 }
       default:
-        return { duration: 200 };
+        return { duration: 200 }
     }
   }
 </script>
+
 <BitsTabs.Root
   bind:value
   onValueChange={handleValueChange}
@@ -185,16 +186,16 @@
     </BitsTabs.Content>
   {/each}
 </BitsTabs.Root>
-<style>
-  /* Gaming theme animations */
-  :global([data-bits-tabs-trigger][data-theme="gaming"]) {
+
+<style>/* Gaming theme animations */ {}
+  :global([data-bits-tabs-trigger][data-theme='gaming']) {
     transition: all 0.3s ease;
   }
-  :global([data-bits-tabs-trigger][data-theme="gaming"]:hover) {
+  :global([data-bits-tabs-trigger][data-theme='gaming']:hover) {
     text-shadow: 0 0 8px currentColor;
     transform: translateY(-1px);
   }
-  :global([data-bits-tabs-trigger][data-state="active"][data-theme="gaming"]) {
+  :global([data-bits-tabs-trigger][data-state='active'][data-theme='gaming']) {
     animation: gaming-active 2s ease-in-out infinite alternate;
   }
   @keyframes gaming-active {
@@ -202,31 +203,35 @@
       box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
     }
     to {
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), inset 0 0 10px rgba(34, 197, 94, 0.1);
+box-shadow: {}
+0 0 20px rgba(34, 197, 94, 0.5), {}
+        inset 0 0 10px rgba(34, 197, 94, 0.1);
     }
   }
-  /* Legal theme professional styling */
-  :global([data-bits-tabs-content][data-theme="legal"]) {
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+/* Legal theme professional styling */ {}
+  :global([data-bits-tabs-content][data-theme='legal']) {
+box-shadow: {}
+0 1px 3px 0 rgba(0, 0, 0, 0.1), {}
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
-  /* Vertical orientation adjustments */
-  :global([data-orientation="vertical"]) {
+/* Vertical orientation adjustments */ {}
+  :global([data-orientation='vertical']) {
     display: flex;
     gap: 1rem;
   }
-  :global([data-orientation="vertical"] [data-bits-tabs-list]) {
+  :global([data-orientation='vertical'] [data-bits-tabs-list]) {
     flex-direction: column;
     width: 200px;
     min-width: 200px;
   }
-  :global([data-orientation="vertical"] [data-bits-tabs-content]) {
+  :global([data-orientation='vertical'] [data-bits-tabs-content]) {
     flex: 1;
   }
-  /* Underline variant animation */
-  :global([data-variant="underline"] [data-bits-tabs-trigger]) {
+/* Underline variant animation */ {}
+  :global([data-variant='underline'] [data-bits-tabs-trigger]) {
     position: relative;
   }
-  :global([data-variant="underline"] [data-bits-tabs-trigger][data-state="active"]::after) {
+  :global([data-variant='underline'] [data-bits-tabs-trigger][data-state='active']::after) {
     content: '';
     position: absolute;
     bottom: -2px;

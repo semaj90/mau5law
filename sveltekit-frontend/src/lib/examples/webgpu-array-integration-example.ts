@@ -18,11 +18,11 @@ import {
  * Shows how to handle embeddings from different sources with type safety
  */
 export async function processLegalDocumentEmbeddings(
-  device: GPUDevice
+  device: GPUDevice;
   embeddings: {
     sourceType: 'openai' | 'sentence-transformers' | 'custom';
     data: ArrayBuffer | Float32Array | number[];
-    metadata: { documentId: string; chunkIndex: number; };
+    metadata: { documentId: string; chunkIndex: number; }
   }[];
 ) {
   console.log('🧠 Processing legal document embeddings with WebGPU...');
@@ -97,7 +97,7 @@ export async function optimizeModelWeights(
  * Example: Dynamic Quantization Based on GPU Memory
  */
 export async function adaptiveQuantization(
-  device: GPUDevice
+  device: GPUDevice;
   data: Float32Array
   availableMemoryMB: number;
 ) {
@@ -108,15 +108,15 @@ export async function adaptiveQuantization(
   const dataSizeMB = ((data as { documentId?: any; chunkIndex?: any; length?: any }).length * 4) / (1024 * 1024);
   if (dataSizeMB <= availableMemoryMB * 0.25) {
     // Plenty of memory - use full precision
-    chosenConfig = { precision: 'fp32' };
+    chosenConfig = { precision: 'fp32' }
     console.log('💎 Using FP32 - plenty of memory available');
   } else if (dataSizeMB <= availableMemoryMB * 0.5) {
     // Moderate memory pressure - use FP16
-    chosenConfig = { precision: 'fp16' };
+    chosenConfig = { precision: 'fp16' }
     console.log('⚖️ Using FP16 - balanced memory usage');
   } else {
     // High memory pressure - use INT8
-    chosenConfig = { precision: 'int8' };
+    chosenConfig = { precision: 'int8' }
     console.log('🗜️ Using INT8 - memory conservation mode');
   }
   const result = createWebGPUBuffer(
@@ -129,7 +129,7 @@ export async function adaptiveQuantization(
     ...result,
     recommendedConfig: chosenConfig
     memoryAnalysis
-  };
+  }
 }
 /**
  * Integration with existing WebGPU texture streaming service
@@ -180,9 +180,9 @@ export function integrateWithTextureStreaming(
         originalSize: flatEmbeddings.length * 4,
         compressedSize: flatEmbeddings.length * 4,
         compressionRatio: 1.0
-      };
+      }
       break;
   }
   console.log(`🎯 Texture data prepared: ${compressionInfo.compressionRatio}x compression for ${textureConfig.format}`);
-  return { textureData, compressionInfo };
+  return { textureData, compressionInfo }
 }

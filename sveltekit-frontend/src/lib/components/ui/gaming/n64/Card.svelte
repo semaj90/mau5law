@@ -97,7 +97,7 @@
     enableMipMapping,
     enableFog,
     ...renderOptions
-  };
+  }
   // Create spatial audio feedback
   const playCardSound = async (frequency: number, duration: number = 0.2) => {
     if (!enableSpatialAudio) return;
@@ -141,8 +141,8 @@
     } catch (error) {
       console.warn('Could not play card sound:', error);
     }
-  };
-  const handleMouseMove = (event: MouseEvent) => {
+  }
+  const handleMouseMove = (_event: MouseEvent) => {
     if (!cardElement || disabled) return;
     const rect = cardElement.getBoundingClientRect();
     mouseX = event.clientX;
@@ -150,7 +150,7 @@
     // Calculate relative position for 3D tilt
     const relativeX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     const relativeY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
-  };
+  }
   const handleClick = async () => {
     if (!clickable || disabled || loading) return;
     isPressed = true;
@@ -160,33 +160,33 @@
     }, 200);
     onClick?.();
     // ondispatch removed;
-  };
+  }
   const handleHover = () => {
     if (disabled || !hoverable) return;
     isHovered = true;
     playCardSound(550, 0.15);
     onHover?.();
     // ondispatch removed;
-  };
+  }
   const handleUnhover = () => {
     isHovered = false;
-  };
+  }
   const handleFocus = () => {
     if (disabled) return;
     isFocused = true;
     playCardSound(660, 0.2);
     onFocus?.();
     // ondispatch removed;
-  };
+  }
   const handleBlur = () => {
     isFocused = false;
-  };
-  const handleKeyDown = (event: KeyboardEvent) => {
+  }
+  const handleKeyDown = (_event: KeyboardEvent) => {
     if (clickable && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
       handleClick();
     }
-  };
+  }
   // Get material styles based on variant and material type
   const getMaterialStyles = (variant: string, material: string) => {
     const baseColors = {
@@ -196,7 +196,7 @@
       warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', accent: '#ffc107' },
       error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', accent: '#dc3545' },
       info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', accent: '#17a2b8' }
-    };
+    }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     const materialMap = {
       basic: {
@@ -231,9 +231,9 @@
           0 0 0 1px rgba(255,255,255,0.1)
         `
       }
-    };
+    }
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
-  };
+  }
   const getPaddingStyles = (padding: string) => {
     const paddingMap = {
       none: '0',
@@ -241,9 +241,9 @@
       medium: '20px',
       large: '28px',
       xl: '36px';
-    };
+    }
     return paddingMap[padding as keyof typeof paddingMap] || paddingMap.medium;
-  };
+  }
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
@@ -265,7 +265,7 @@
       classes.push('anisotropic-4x');
     }
     return classes.join(' ');
-  };
+  }
   // Dynamic 3D transformations based on interaction state
   let dynamicRotationX = $derived(rotationX + (isHovered ? mouseY * 0.05 : 0) + (isPressed ? 2 : 0));
   let dynamicRotationY = $derived(rotationY + (isHovered ? mouseX * 0.05 : 0));
@@ -303,7 +303,7 @@
     }
     return () => {
       observer.disconnect();
-    };
+    }
   });
 </script>
 <div
@@ -319,20 +319,20 @@
   onkeydown={handleKeyDown}
   class="n64-nier-bits-card {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
   class: clickable
-  class:hoverable
-  class: disabled
+  class:hoverable;
+  class: disabled;
   class:loading;
   class:hovered={isHovered}
   class:focused={isFocused}
   class:pressed={isPressed}
-  style="
-    --material-bg: {materialStyles.background};
-    --material-border: {materialStyles.borderColor};
-    --material-shadow: {materialStyles.boxShadow};
-    --card-padding: {paddingStyle};
-    --transform-3d: {transform3D};
-    --fog-color: {effectiveRenderOptions.fogColor};
-    --glow-intensity: {glowIntensity};
+  style=";
+    --material-bg: {materialStyles.background}
+    --material-border: {materialStyles.borderColor}
+    --material-shadow: {materialStyles.boxShadow}
+    --card-padding: {paddingStyle}
+    --transform-3d: {transform3D}
+    --fog-color: {effectiveRenderOptions.fogColor}
+    --glow-intensity: {glowIntensity}
     --card-elevation: {dynamicElevation}px;
     --layer-depth: {layerDepth}px;
   "

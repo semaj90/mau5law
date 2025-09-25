@@ -4,7 +4,7 @@ import { json } from "@sveltejs/kit"
 import { and, desc, eq, like, or, sql } from "drizzle-orm"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
-import { URL } from "url"
+
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user) {

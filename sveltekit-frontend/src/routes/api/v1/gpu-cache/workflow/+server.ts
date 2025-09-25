@@ -27,7 +27,7 @@ export type LegalWorkflowType =
 export interface LegalWorkflowContext {
   type: LegalWorkflowType
   jurisdiction?: string
-  practiceArea?: string
+  practiceArea?: string;
   complexity: 'low' | 'medium' | 'high' | 'critical'
   documentCount?: number
   estimatedDataSize?: number
@@ -307,7 +307,7 @@ function analyzeWorkflowRequirements(
   return base
 }
 function calculateNESMemoryAllocation(context: LegalWorkflowContext): {
-  nesRegions: string[]
+  nesRegions: string[];
   allocation: Record<string, number>
 } {
   const regions = []
@@ -384,7 +384,7 @@ function determineOptimalEncoding(
   // Default to base optimization recommendation
   return baseOptimization.recommendedEncodingFormat || 'msgpack'
 }
-function determineCacheStrategy(
+function determineCacheStrategy(;
   context: LegalWorkflowContext
 ): 'memory' | 'nes' | 'hybrid' | 'distributed' {
   if (context.collaborators && context.collaborators > 5) return 'distributed'

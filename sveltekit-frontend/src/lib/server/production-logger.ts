@@ -44,14 +44,14 @@ export interface LogEntry {
     message: string;
     stack?: string;
     code?: string | number;
-  };
-  metadata?: { [key: string]: any };
+  }
+  metadata?: { [key: string]: any }
   tags?: string[];
   performance?: {
     memoryUsage: NodeJS.MemoryUsage;
     timing: number;
     cpuUsage?: NodeJS.CpuUsage;
-  };
+  }
 }
 export interface LogMetrics {
   totalLogs: number;
@@ -62,7 +62,7 @@ export interface LogMetrics {
   windowsSpecific?: {
     gpuMemoryUsage?: number;
     diskIOMetrics?: any;
-  };
+  }
 }
 // Windows-specific performance monitoring
 class WindowsPerformanceMonitor {
@@ -77,15 +77,15 @@ class WindowsPerformanceMonitor {
       const processMetrics = await this.getProcessMetrics();
       return {
         gpu: gpuInfo
-        process: processMetrics
+        process: processMetrics;
         platform: {
           osVersion: require('os').release(),
           totalMemory: Math.round(require('os').totalmem() / 1024 / 1024),
           freeMemory: Math.round(require('os').freemem() / 1024 / 1024)
         }
-      };
+      }
     } catch (error: any) {
-      return { error: 'Failed to collect Windows metrics' };
+      return { error: 'Failed to collect Windows metrics' }
     }
   }
   private async getGPUInfo(): Promise<any> {
@@ -110,7 +110,7 @@ class WindowsPerformanceMonitor {
             resolve({
               memoryTotal: memTotal
               memoryUsed: memUsed
-              temperature: temp
+              temperature: temp;
               utilization: util
             });
           } else {
@@ -141,7 +141,7 @@ class WindowsPerformanceMonitor {
           user: cpuUsage.user,
           system: cpuUsage.system
         }
-      };
+      }
     } catch {
       return null;
     }
@@ -157,7 +157,7 @@ export class ProductionLogger {
     errorRate: 0,
     averageResponseTime: 0,
     memoryTrend: []
-  };
+  }
   private windowsMonitor: WindowsPerformanceMonitor;
   private flushInterval: NodeJS.Timeout | null = null;
   private metricsInterval: NodeJS.Timeout | null = null;
@@ -203,14 +203,14 @@ export class ProductionLogger {
     message: string
     error?: Error
     context?: LogContext
-    metadata?: { [key: string]: any };
+    metadata?: { [key: string]: any }
   ): void {
     if (this.shouldLog('error')) {
       const errorInfo = error;
         ? {
             name: error.name,
             message: error.message,
-            stack: this.config.includeStack ? error.stack: undefined
+            stack: this.config.includeStack ? error.stack: undefined;
             code: (error as any).code
           }
         : undefined;
@@ -221,7 +221,7 @@ export class ProductionLogger {
   public apiRequest(
     method: string
     endpoint: string
-    statusCode: number
+    statusCode: number;
     duration: number
     context?: Partial<LogContext>;
   ): void {
@@ -242,7 +242,7 @@ export class ProductionLogger {
       }
     );
   }
-  public security(event: string, context?: LogContext, metadata?: { [key: string]: any }): void {
+  public security(_event: string, context?: LogContext, metadata?: { [key: string]: any }): void {
     this.log(
       'warn',
       `Security Event: ${event}`,
@@ -271,7 +271,7 @@ export class ProductionLogger {
       ['performance']
     );
   }
-  public windowsSpecific(event: string, data?: any, context?: LogContext): void {
+  public windowsSpecific(_event: string, data?: any, context?: LogContext): void {
     if (typeof process !== 'undefined' && process.platform === 'win32') {
       this.log(
         'info',
@@ -303,7 +303,7 @@ export class ProductionLogger {
       context,
       error,
       metadata,
-      tags: tags.length > 0 ? tags : undefined
+      tags: tags.length > 0 ? tags : undefined;
       performance: this.includePerformanceData();
         ? {
             memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : ({} as any),
@@ -311,7 +311,7 @@ export class ProductionLogger {
             cpuUsage: typeof process !== 'undefined' ? process.cpuUsage() : undefined
           }
         : undefined
-    };
+    }
     // Update metrics
     this.updateMetrics(logEntry);
     // Output to configured destinations
@@ -476,7 +476,7 @@ export class ProductionLogger {
     }
   }
   private parseSize(sizeStr: string): number {
-    const units: Record<string, number> = { B: 1, K: 1024, M: 1024 * 1024, G: 1024 * 1024 * 1024 };
+    const units: Record<string, number> = { B: 1, K: 1024, M: 1024 * 1024, G: 1024 * 1024 * 1024 }
     const match = sizeStr.match(/^(\d+) => [BKMG]?)$/i);
     if (!match) return 10 * 1024 * 1024; // Default 10MB
     const size = parseInt(match[1]);
@@ -514,7 +514,7 @@ export class ProductionLogger {
   }
   // Public API methods
   public getMetrics(): LogMetrics {
-    return { ...this.metrics };
+    return { ...this.metrics }
   }
   public async getHealthStatus(): Promise<any> {
     const details = {
@@ -523,7 +523,7 @@ export class ProductionLogger {
       bufferSize: this.logBuffer.length,
       outputs: this.config.outputs,
       level: this.config.level
-    };
+    }
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     if (this.metrics.errorRate > 0.1) {
       // 10% error rate
@@ -537,7 +537,7 @@ export class ProductionLogger {
       // 50% error rate
       status = 'unhealthy';
     }
-    return { status, details };
+    return { status, details }
   }
   public clearLogs(): void {
     this.logBuffer = [];
@@ -547,7 +547,7 @@ export class ProductionLogger {
       errorRate: 0,
       averageResponseTime: 0,
       memoryTrend: []
-    };
+    }
   }
   public shutdown(): void {
     if (this.flushInterval) {
@@ -576,7 +576,7 @@ export const logError = (message: string, error?: Error, context?: LogContext, m
   logger.error(message, error, context, metadata);
 export const logApiRequest = (method: string, endpoint: string, statusCode: number, duration: number, context?: Partial<LogContext>) =>
   logger.apiRequest(method, endpoint, statusCode, duration, context);
-export const logSecurity = (event: string, context?: LogContext, metadata?: { [key: string]: any }) =>
+export const logSecurity = (_event: string, context?: LogContext, metadata?: { [key: string]: any }) =>
   logger.security(event, context, metadata);
 export const logPerformance = (operation: string, duration: number, context?: LogContext) =>
   logger.performance(operation, duration, context);

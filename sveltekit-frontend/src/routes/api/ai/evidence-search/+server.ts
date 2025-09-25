@@ -90,4 +90,4 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     )
   }
 }
-export const POST = redisOptimized.aiSearch(originalPOSTHandler)
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);

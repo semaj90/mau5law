@@ -226,8 +226,8 @@ export interface StateHistoryEntry {
 }
 export interface StateSubscription {
   id: string;
-  pattern: string; // job:*, queue:legal.*, global
-  callback: (event: StateEvent) => void;
+  pattern: string; // job:*, queue:legal.*, global;
+  callback: (_event: StateEvent) => void;
   filters?: StateFilter[];
   qos?: QualityOfService;
 }
@@ -304,7 +304,7 @@ export type AsyncStateEvent =
   | { type: 'RELEASE_LOCK'; lockId: string }
   | { type: 'HANDLE_SYNC_ERROR'; error: any }
   | { type: 'CONNECTION_LOST' }
-  | { type: 'CONNECTION_RESTORED' };
+  | { type: 'CONNECTION_RESTORED' }
 // XState Machine for Async State Management
 const asyncStateMachine = createMachine();
   {
@@ -490,7 +490,7 @@ const asyncStateMachine = createMachine();
                 timeline: event.state.timeline || [],
                 stateVersion: 1,
                 lastUpdated: Date.now()
-              };
+              }
           updated.set(event.jobId, newState);
           return updated;
         }
@@ -530,7 +530,7 @@ const asyncStateMachine = createMachine();
                 },
                 lastUpdated: Date.now(),
                 ...event.state
-              };
+              }
           updated.set(event.queueName, newState);
           return updated;
         }
@@ -542,7 +542,7 @@ const asyncStateMachine = createMachine();
             ...context.globalState,
             ...event.state,
             lastSyncAt: Date.now()
-          };
+          }
         }
       }),
       broadcastStateChange: (context, event) => {
@@ -555,7 +555,7 @@ const asyncStateMachine = createMachine();
             timestamp: Date.now(),
             source: 'state_manager',
             stateVersion: 1
-          };
+          }
           if (event.type === 'JOB_STATE_UPDATE' && 'jobId' in (event as any)) {
             stateEvent.jobId = (event as any).jobId;
           } else if (event.type === 'QUEUE_STATE_UPDATE' && 'queueName' in (event as any)) {
@@ -575,10 +575,10 @@ const asyncStateMachine = createMachine();
             timestamp: Date.now(),
             event: event.type,
             previousState: null, // Would store actual previous state
-            newState: event
+            newState: event;
             source: 'state_manager',
             stateVersion: 1
-          };
+          }
           if (event.type === 'JOB_STATE_UPDATE' && 'jobId' in (event as any)) {
             historyEntry.jobId = (event as any).jobId;
           } else if (event.type === 'QUEUE_STATE_UPDATE' && 'queueName' in (event as any)) {
@@ -616,10 +616,10 @@ const asyncStateMachine = createMachine();
             lockId,
             owner: 'state_manager',
             acquiredAt: Date.now(),
-            expiresAt: Date.now() + 60000, // 1 minute
+            expiresAt: Date.now() + 60000, // 1 minute;
             renewable: true
             lockType: (event as any).lockType
-          };
+          }
           const updated = new Map(context.distributedLocks);
           updated.set(lockId, lock);
           return updated;
@@ -648,7 +648,7 @@ const asyncStateMachine = createMachine();
       establishStateSyncConnection: async () => {
         // Establish connection to RabbitMQ for state synchronization
         await rabbitmqService.connect();
-        return { connected: true };
+        return { connected: true }
       },
       monitorStateSync: () => (callback: any) => {
         const interval = setInterval(() => {
@@ -728,10 +728,10 @@ export class AsyncRabbitMQStateManager {
       syncHealth: 'failed'
     });
     // Make stores readonly
-    this.jobStates = { subscribe: jobStatesStore.subscribe };
-    this.queueStates = { subscribe: queueStatesStore.subscribe };
-    this.globalState = { subscribe: globalStateStore.subscribe };
-    this.syncStatus = { subscribe: syncStatusStore.subscribe };
+    this.jobStates = { subscribe: jobStatesStore.subscribe }
+    this.queueStates = { subscribe: queueStatesStore.subscribe }
+    this.globalState = { subscribe: globalStateStore.subscribe }
+    this.syncStatus = { subscribe: syncStatusStore.subscribe }
     // Update stores when state machine changes
     this.stateService.onTransition((state: any) => {
       jobStatesStore.set(state.context.jobStates);
@@ -754,25 +754,25 @@ export class AsyncRabbitMQStateManager {
       id: 'orchestrator-integration',
       pattern: 'job:*',
       callback: (event) => this.handleOrchestratorEvent(event)
-    };
+    }
     this.subscribe(orchestratorSubscription);
     // Subscribe to auto-attach manager events
     const autoAttachSubscription: StateSubscription = {
       id: 'auto-attach-integration',
       pattern: 'queue:*',
       callback: (event) => this.handleAutoAttachEvent(event)
-    };
+    }
     this.subscribe(autoAttachSubscription);
     this.log('🔗 Integrated with orchestrator and auto-attach services', 'info');
   }
-  private handleOrchestratorEvent(event: StateEvent): void {
+  private handleOrchestratorEvent(_event: StateEvent): void {
     this.log(`📤 Handling orchestrator event: ${event.type}`, 'info');
     // Forward orchestrator events to state machine
     if (event.jobId && event.type.includes('job')) {
       this.updateJobState(event.jobId, event.data);
     }
   }
-  private handleAutoAttachEvent(event: StateEvent): void {
+  private handleAutoAttachEvent(_event: StateEvent): void {
     this.log(`🔗 Handling auto-attach event: ${event.type}`, 'info');
     // Forward auto-attach events to state machine
     if (event.queueName && event.type.includes('queue')) {
@@ -809,7 +809,7 @@ export class AsyncRabbitMQStateManager {
         type: 'UNSUBSCRIBE_FROM_STATE',
         subscriptionId: subscription.id
       });
-    };
+    }
   }
   acquireLock(resourceId: string, lockType: 'read' | 'write' | 'exclusive' = 'write'): string {
     this.stateService.send({

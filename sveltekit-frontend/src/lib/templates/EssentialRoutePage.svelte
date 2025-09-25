@@ -136,12 +136,12 @@ Use this template for all essential routes
 		max-width: 1200px;
 		margin: 0 auto;
 	}
-	/* NES.css theme integration */
+/* NES.css theme integration */ {}
 	:global(.nes-container.is-rounded) {
 		border-image-slice: 2;
 		border-image-width: 2px;
 		border-image-outset: 0;
-		border-image-source: url("data:image/svg+xml,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' fill='none' stroke='%23fff' stroke-width='2' rx='8'/></svg>")
+border-image-source: url("data:image/svg+xml,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' fill='none' stroke='%23fff' stroke-width='2' rx='8'/></svg>") {}
 	}
 	:global(.nes-btn) {
 		font-family: 'Press Start 2P', cursive !important;

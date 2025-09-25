@@ -148,16 +148,16 @@ class RabbitMQEmbeddingWorker {
         success: true
         result,
         processingTime
-      };
+      }
     } catch (error) {
       this.failedJobs++;
       const processingTime = Date.now() - startTime;
       console.error(`❌ Embedding job ${message.id} failed in ${processingTime}ms:`, error);
       return {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: String(error),
         processingTime
-      };
+      }
     }
   }
   /**
@@ -198,7 +198,7 @@ class RabbitMQEmbeddingWorker {
                 entity_id: batch[index].entity_id,
                 error:
                   (result as { status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { status?: any; value?: any; reason?: any }).reason.message: String((result as { status?: any; value?: any; reason?: any }).reason)
-              };
+              }
             }
           });
           results.push(...batchProcessed);
@@ -230,21 +230,21 @@ class RabbitMQEmbeddingWorker {
         success: successCount > 0
         result: {
           total: results.length,
-          successful: successCount
+          successful: successCount;
           failed: failCount
           results,
           averageTimePerEntity: results.length > 0 ? processingTime / results.length: 0
         },
         processingTime
-      };
+      }
     } catch (error) {
       const processingTime = Date.now() - startTime;
       console.error(`❌ Bulk embedding job ${message.id} failed in ${processingTime}ms:`, error);
       return {
-        success: false
+        success: false;
         error: error instanceof Error ? error.message: String(error),
         processingTime
-      };
+      }
     }
   }
   /**
@@ -281,12 +281,12 @@ class RabbitMQEmbeddingWorker {
     );
     const embedding = await createEmbedding(textToEmbed);
     // Update document in database with the new embedding
-    const updateData: any = {};
+    const updateData: any = {}
     const columnMap = {
       content: 'embedding',
       title: 'title_embedding',
       summary: 'summary_embedding'
-    };
+    }
     const column = columnMap[embedding_type];
     if (column) {
       updateData[column] = sql`${JSON.stringify(embedding)}::vector`;
@@ -324,7 +324,7 @@ class RabbitMQEmbeddingWorker {
       text_length: textToEmbed.length,
       updated: !!updatedDoc,
       cached: true
-    };
+    }
   }
   /**
    * Process case embedding
@@ -386,7 +386,7 @@ class RabbitMQEmbeddingWorker {
       text_length: textToEmbed.length,
       updated: !!updatedCase,
       cached: true
-    };
+    }
   }
   /**
    * Process chunk embedding
@@ -427,7 +427,7 @@ class RabbitMQEmbeddingWorker {
       dimensions: embedding.length,
       text_length: textToEmbed.length,
       updated: !!updatedChunk
-    };
+    }
   }
   /**
    * Process individual entity embedding (for bulk jobs)
@@ -444,7 +444,7 @@ class RabbitMQEmbeddingWorker {
         entity_id: entity.entity_id,
         text_content: entity.text_content,
         embedding_type: entity.embedding_type || 'content'
-      };
+      }
       let result: any;
       switch (entity.entity_type) {
         case 'document':
@@ -459,13 +459,13 @@ class RabbitMQEmbeddingWorker {
         default:
           throw new Error(`Unsupported entity type: ${entity.entity_type}`);
       }
-      return { success: true, entity_id: entity.entity_id, result };
+      return { success: true, entity_id: entity.entity_id, result }
     } catch (error) {
       return {
         success: false
         entity_id: entity.entity_id,
         error: error instanceof Error ? error.message: String(error)
-      };
+      }
     }
   }
   /**
@@ -489,7 +489,7 @@ class RabbitMQEmbeddingWorker {
       successRate,
       uptime,
       startTime: this.startTime
-    };
+    }
   }
   /**
    * Reset statistics
@@ -517,7 +517,7 @@ class RabbitMQEmbeddingWorker {
         success_rate: stats.successRate,
         uptime: stats.uptime
       }
-    };
+    }
   }
 }
 // Export singleton instance

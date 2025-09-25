@@ -20,7 +20,7 @@ export interface AIInsights {
   riskAssessment?: {
     score: number;
     level: string;
-  };
+  }
   complianceChecks?: any[];
 }
 export interface AuditLogEntry {
@@ -62,7 +62,7 @@ export function createLegalCaseStore() {
   });
   const loading = $state({
     cases: false
-    analysis: false
+    analysis: false;
     documents: false
   });
   // Derived state for filtered cases based on user clearance
@@ -86,7 +86,7 @@ export function createLegalCaseStore() {
   async function loadCases(): Promise<any> {
     loading.cases = true;
     try {
-      const response = await fetch("/api/cases");
+      // removed unused response assignment
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
         const caseData = (result as { cases?: any; success?: any; analysis?: any }).cases || result;
@@ -320,7 +320,7 @@ export function createLegalCaseStore() {
     updateCaseStatus,
     setCurrentUser,
     searchCases
-  };
+  }
 }
 // Global store instance
 export const legalCaseStore = createLegalCaseStore();

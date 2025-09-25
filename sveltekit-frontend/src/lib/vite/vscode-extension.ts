@@ -115,7 +115,7 @@ export class VSCodeIntegration {
     } catch (error: any) {
       console.warn('Failed to read current errors:', error);
     }
-    return { errors: [], diagnostics: [] };
+    return { errors: [], diagnostics: [] }
   }
   // Generate problem matcher for VS Code tasks
   static generateProblemMatcher() {
@@ -140,7 +140,7 @@ export class VSCodeIntegration {
           severity: 'warning'
         }
       ]
-    };
+    }
   }
   // Generate VS Code settings for the integration
   static generateVSCodeSettings() {
@@ -186,7 +186,7 @@ export class VSCodeIntegration {
       ],
       'problems.decorations.enabled': true
       'problems.sortOrder': 'severity'
-    };
+    }
   }
 }
 // Error navigation utilities
@@ -234,7 +234,7 @@ export class ErrorNavigator {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
         return errorTime > oneHourAgo;
       }).length
-    };
+    }
     return summary;
   }
 }

@@ -35,9 +35,9 @@
   // Enhanced embedding options - use derived for reactive updates
   let embeddingOptions = $derived({
     model: "embeddinggemma",
-    useGPU: true
+    useGPU: true;
     temperature: 0.7,
-    contextLimit: contextLimit
+    contextLimit: contextLimit;
     threshold: similarityThreshold;
   });
   // Document management state
@@ -53,7 +53,7 @@
     // Add user message
     messages = [...messages, {
       role: 'user',
-      content: userMessage
+      content: userMessage;
       timestamp: new Date().toLocaleTimeString();
     }];
     try {
@@ -111,11 +111,11 @@
           // Add assistant message with comprehensive metadata
           messages = [...messages, {
             role: 'assistant',
-            content: assistantResponse
+            content: assistantResponse;
             timestamp: new Date().toLocaleTimeString(),
             metadata: {
               ragEnabled: true
-              enhancedService: true
+              enhancedService: true;
               model: ragResult.metadata.model,
               processingTime: ragResult.processingTime,
               similarityScores: ragResult.similarDocuments.map(r => r.similarity),
@@ -138,8 +138,8 @@
           console.error('Enhanced RAG service failed, falling back to API:', ragError);
           // Fallback to original RAG API
           const ragRequest = {
-            query: userMessage
-            documents: documentsToUse
+            query: userMessage;
+            documents: documentsToUse;
             options: {
               useGPU: embeddingOptions.useGPU,
               model: 'gemma3-legal:latest',
@@ -147,7 +147,7 @@
               temperature: embeddingOptions.temperature,
               threshold: embeddingOptions.threshold;
             }
-          };
+          }
           response = await fetch("/api/v1/embeddings/rag", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -175,11 +175,11 @@
           assistantResponse += `Processed ${ragContext.similarDocs?.length || 0} documents in ${ragContext.processingTime}ms using ${ragContext.metadata?.model || 'fallback'} embeddings.`;
           messages = [...messages, {
             role: 'assistant',
-            content: assistantResponse
+            content: assistantResponse;
             timestamp: new Date().toLocaleTimeString(),
             metadata: {
               ragEnabled: true
-              fallbackMode: true
+              fallbackMode: true;
               model: ragContext.metadata?.model || 'fallback',
               processingTime: ragContext.processingTime,
               similarityScores: ragContext.similarDocs?.map((d: unknown) => d.score) || [],
@@ -238,7 +238,7 @@
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
-  function handleKeyDown(event: KeyboardEvent) {
+  function handleKeyDown(_event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -266,7 +266,7 @@
         availableDocuments,
         {
           model: embeddingOptions.model,
-          practiceArea: caseId ? 'legal' : undefined
+          practiceArea: caseId ? 'legal' : undefined;
           jurisdiction: caseId ? 'us-federal' : undefined;
         }
       );
@@ -298,7 +298,7 @@
       const statusColor = health.status === 'healthy' ? 'success' :
                          health.status === 'degraded' ? 'warning' : 'error';
       notifications.add({
-        type: statusColor
+        type: statusColor;
         title: "Service Health Check",
         message: `Status: ${health.status}. Capabilities: ${health.capabilities.join(', ')}`,
       });
@@ -359,7 +359,7 @@
       });
     }
   }
-  function toggleDocumentSelection(index: number) {
+  function toggleDocumentSelection(_index: number) {
     const doc = availableDocuments[index];
     if (selectedDocuments.includes(doc)) {
       selectedDocuments = selectedDocuments.filter(d => d !== doc);
@@ -593,4 +593,4 @@ useAdvancedRAG = !useAdvancedRAG}
       </div>
     </div>
   </div>
-</div>
+</div>;

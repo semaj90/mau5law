@@ -68,19 +68,19 @@ if (!browser) return;
           status: 'success',
           message: 'GPU cache CSS integration fully loaded',
           details: { loadedVars: loadedVars.length, totalVars: gpuVars.length }
-        };
+        }
       } else {
         integrationTests['gpu-cache'] = {
           status: 'warning',
           message: `GPU cache CSS partially loaded: ${loadedVars.length}/${gpuVars.length} variables`,
           details: { loadedVars, missingVars: gpuVars.filter(v => !loadedVars.includes(v)) }
-        };
+        }
       }
     } catch (error) {
       integrationTests['gpu-cache'] = {
         status: 'error',
         message: `GPU cache integration error: ${error}`
-      };
+      }
     }
   }
   async function testGamingComponents() {
@@ -95,23 +95,23 @@ if (!browser) return;
             nesColors: Object.keys(errors).length,
             n64Presets: Object.keys(errors).length
           }
-        };
+        }
       } else {
         integrationTests['gaming'] = {
           status: 'error',
           message: 'Gaming constants not properly loaded';
-        };
+        }
       }
     } catch (error) {
       integrationTests['gaming'] = {
         status: 'error',
         message: `Gaming components error: ${error}`
-      };
+      }
     }
   }
   async function testPostgreSQLIntegration() {
     try {
-      const response = await fetch('/api/v1/health');
+      // removed unused response assignment
       if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         const pgStatus = (data as { services?: unknown }).services?.databases?.postgres?.statu;
@@ -120,24 +120,24 @@ if (!browser) return;
             status: 'success',
             message: 'PostgreSQL + pgvector connected and healthy',
             details: { host: (data as { services?: unknown }).services.databases.postgres.host, port: (data as { services?: unknown }).services.databases.postgres.port }
-          };
+          }
         } else {
           integrationTests['postgresql'] = {
             status: 'error',
             message: 'PostgreSQL connection failed or unhealthy';
-          };
+          }
         }
       } else {
         integrationTests['postgresql'] = {
           status: 'error',
           message: 'Unable to check PostgreSQL status';
-        };
+        }
       }
     } catch (error) {
       integrationTests['postgresql'] = {
         status: 'error',
         message: `PostgreSQL test error: ${error}`
-      };
+      }
     }
   }
   async function testAPIEndpoints() {
@@ -151,7 +151,7 @@ if (!browser) return;
   let successCount = $state(0);
       for (const endpoint of endpoints) {
         try {
-          const response = await fetch(endpoint, { method: 'HEAD' });
+          // removed unused response assignment
           if ((response as { ok?: unknown; json?: unknown; status?: unknown }).status !== 404) successCount++;
         } catch (e) {
           // Endpoint might not exist yet, that's ok
@@ -161,12 +161,12 @@ if (!browser) return;
         status: successCount >= endpoints.length / 2 ? 'success' : 'warning',
         message: `API endpoints: ${successCount}/${endpoints.length} accessible`,
         details: { endpoints, successCount }
-      };
+      }
     } catch (error) {
       integrationTests['api-endpoints'] = {
         status: 'error',
         message: `API endpoints test error: ${error}`
-      };
+      }
     }
   }
   function getStatusColor(status: string) {

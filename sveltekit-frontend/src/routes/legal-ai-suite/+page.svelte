@@ -4,12 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   // Badge replaced with span - not available in enhanced-bits
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { AlertCircle, UploadCloud, Search, Brain, CheckCircle, AlertTriangle } from 'lucide-svelte';
@@ -35,24 +30,22 @@ https://svelte.dev/e/js_parse_error -->
   let totalEntities = $derived(processedDocuments.reduce((sum, doc) => sum + (doc?.entityCount || 0), 0));
   let averageProsecutionScore = $derived(
     processedDocuments.length > 0
-      ? processedDocuments.reduce((sum, doc) => sum + (doc?.prosecutionScore || 0), 0) / processedDocuments.length: 0
+      ? processedDocuments.reduce((sum, doc) => sum + (doc?.prosecutionScore || 0), 0) / processedDocuments.length
+      : 0,
   );
   let canQuery = $derived(ragQuery.trim.length > 0);
   $effect(() => {
     (async () => {
-await checkSystemStatus();
-    // Start real-time logging
-    startRealTimeLogging();
+      await checkSystemStatus();
+      // Start real-time logging
+      startRealTimeLogging();
     })();
   });
-  function handleFileSelect(event: Event) {
+  function handleFileSelect(_event: Event) {
     const input = event.target as HTMLInputElement;
     const files = input?.files ? Array.from(input.files) : [];
     selectedFiles = files.filter(
-      (file) =>
-        file &&
-        (file.type === 'application/pdf' ||
-          (file.name && file.name.toLowerCase.endsWith('.pdf')))
+      file => file && (file.type === 'application/pdf' || (file.name && file.name.toLowerCase.endsWith('.pdf'))),
     );
     addLog(`📄 Selected ${selectedFiles.length} PDF files for processing`);
   }
@@ -64,34 +57,132 @@ await checkSystemStatus();
     try {
       const formData = new FormData();
       // Add files to form data
-      selectedFiles.forEach((file) => {
+      selectedFiles.forEach(file => {
         formData.append('pdfFiles', file);
       });
       // Add processing parameters
       formData.append('jurisdiction', selectedJurisdiction);
       formData.append('enhanceRAG', 'true');
       formData.append('caseId', `case-${Date.now()}`);
-      addLog(
-        `⚖️ Processing ${selectedFiles.length} documents under ${selectedJurisdiction} jurisdiction`
-      );
+      addLog(`⚖️ Processing ${selectedFiles.length} documents under ${selectedJurisdiction} jurisdiction`);
       const response = await fetch('/api/legal/ingest', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+        throw new Error(
+          `HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`,
+        );
       }
-      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-      if ((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).success) {
-        processedDocuments = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).documents || [];
-        processingSummary = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).summary;
-        systemMetrics.caseAIScore = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).caseAISummaryScor;
-        addLog(`✅ Processing complete: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).documentsProcessed} documents`);
-        addLog(`📊 Total entities extracted: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).summary?.totalEntities || 0}`);
+      const result = await (
+        response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }
+      ).json();
+      if (
+        (
+          result as {
+            success?: unknown;
+            documents?: unknown;
+            summary?: unknown;
+            caseAISummaryScore?: unknown;
+            documentsProcessed?: unknown;
+            error?: unknown;
+            results?: unknown;
+            ragScore?: unknown;
+            aggregatedAnalysis?: unknown;
+            sourceDocument?: unknown;
+            similarity?: unknown;
+            factCheckStatus?: unknown;
+            jurisdiction?: unknown;
+            prosecutionScore?: unknown;
+          }
+        ).success
+      ) {
+        processedDocuments =
+          (
+            result as {
+              success?: unknown;
+              documents?: unknown;
+              summary?: unknown;
+              caseAISummaryScore?: unknown;
+              documentsProcessed?: unknown;
+              error?: unknown;
+              results?: unknown;
+              ragScore?: unknown;
+              aggregatedAnalysis?: unknown;
+              sourceDocument?: unknown;
+              similarity?: unknown;
+              factCheckStatus?: unknown;
+              jurisdiction?: unknown;
+              prosecutionScore?: unknown;
+            }
+          ).documents || [];
+        processingSummary = (
+          result as {
+            success?: unknown;
+            documents?: unknown;
+            summary?: unknown;
+            caseAISummaryScore?: unknown;
+            documentsProcessed?: unknown;
+            error?: unknown;
+            results?: unknown;
+            ragScore?: unknown;
+            aggregatedAnalysis?: unknown;
+            sourceDocument?: unknown;
+            similarity?: unknown;
+            factCheckStatus?: unknown;
+            jurisdiction?: unknown;
+            prosecutionScore?: unknown;
+          }
+        ).summary;
+        systemMetrics.caseAIScore = (
+          result as {
+            success?: unknown;
+            documents?: unknown;
+            summary?: unknown;
+            caseAISummaryScore?: unknown;
+            documentsProcessed?: unknown;
+            error?: unknown;
+            results?: unknown;
+            ragScore?: unknown;
+            aggregatedAnalysis?: unknown;
+            sourceDocument?: unknown;
+            similarity?: unknown;
+            factCheckStatus?: unknown;
+            jurisdiction?: unknown;
+            prosecutionScore?: unknown;
+          }
+        ).caseAISummaryScor;
+        addLog(
+          `✅ Processing complete: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).documentsProcessed} documents`,
+        );
+        addLog(
+          `📊 Total entities extracted: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).summary?.totalEntities || 0}`,
+        );
         addLog(`🎯 Average prosecution score: ${(averageProsecutionScore * 100).toFixed(1)}%`);
-        addLog(`📈 Case AI summary score: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).caseAISummaryScore}/100`);
+        addLog(
+          `📈 Case AI summary score: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).caseAISummaryScore}/100`,
+        );
       } else {
-        throw new Error((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).error || 'Processing failed');
+        throw new Error(
+          (
+            result as {
+              success?: unknown;
+              documents?: unknown;
+              summary?: unknown;
+              caseAISummaryScore?: unknown;
+              documentsProcessed?: unknown;
+              error?: unknown;
+              results?: unknown;
+              ragScore?: unknown;
+              aggregatedAnalysis?: unknown;
+              sourceDocument?: unknown;
+              similarity?: unknown;
+              factCheckStatus?: unknown;
+              jurisdiction?: unknown;
+              prosecutionScore?: unknown;
+            }
+          ).error || 'Processing failed',
+        );
       }
     } catch (err) {
       const error = err as Error;
@@ -120,19 +211,100 @@ await checkSystemStatus();
         }),
       });
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
-      }
-      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-      if ((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).success) {
-        ragResults = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).results || [];
-        addLog(
-          `✅ RAG query complete: ${ragResults.length} results, score: ${((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).ragScore * 100).toFixed(1)}%`
+        throw new Error(
+          `HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`,
         );
-        if ((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).aggregatedAnalysis?.recommendedNextQuery) {
-          addLog(`💡 Recommended follow-up: "${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).aggregatedAnalysis.recommendedNextQuery}"`);
+      }
+      const result = await (
+        response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }
+      ).json();
+      if (
+        (
+          result as {
+            success?: unknown;
+            documents?: unknown;
+            summary?: unknown;
+            caseAISummaryScore?: unknown;
+            documentsProcessed?: unknown;
+            error?: unknown;
+            results?: unknown;
+            ragScore?: unknown;
+            aggregatedAnalysis?: unknown;
+            sourceDocument?: unknown;
+            similarity?: unknown;
+            factCheckStatus?: unknown;
+            jurisdiction?: unknown;
+            prosecutionScore?: unknown;
+          }
+        ).success
+      ) {
+        ragResults =
+          (
+            result as {
+              success?: unknown;
+              documents?: unknown;
+              summary?: unknown;
+              caseAISummaryScore?: unknown;
+              documentsProcessed?: unknown;
+              error?: unknown;
+              results?: unknown;
+              ragScore?: unknown;
+              aggregatedAnalysis?: unknown;
+              sourceDocument?: unknown;
+              similarity?: unknown;
+              factCheckStatus?: unknown;
+              jurisdiction?: unknown;
+              prosecutionScore?: unknown;
+            }
+          ).results || [];
+        addLog(
+          `✅ RAG query complete: ${ragResults.length} results, score: ${((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).ragScore * 100).toFixed(1)}%`,
+        );
+        if (
+          (
+            result as {
+              success?: unknown;
+              documents?: unknown;
+              summary?: unknown;
+              caseAISummaryScore?: unknown;
+              documentsProcessed?: unknown;
+              error?: unknown;
+              results?: unknown;
+              ragScore?: unknown;
+              aggregatedAnalysis?: unknown;
+              sourceDocument?: unknown;
+              similarity?: unknown;
+              factCheckStatus?: unknown;
+              jurisdiction?: unknown;
+              prosecutionScore?: unknown;
+            }
+          ).aggregatedAnalysis?.recommendedNextQuery
+        ) {
+          addLog(
+            `💡 Recommended follow-up: "${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).aggregatedAnalysis.recommendedNextQuery}"`,
+          );
         }
       } else {
-        throw new Error((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).error || 'RAG query failed');
+        throw new Error(
+          (
+            result as {
+              success?: unknown;
+              documents?: unknown;
+              summary?: unknown;
+              caseAISummaryScore?: unknown;
+              documentsProcessed?: unknown;
+              error?: unknown;
+              results?: unknown;
+              ragScore?: unknown;
+              aggregatedAnalysis?: unknown;
+              sourceDocument?: unknown;
+              similarity?: unknown;
+              factCheckStatus?: unknown;
+              jurisdiction?: unknown;
+              prosecutionScore?: unknown;
+            }
+          ).error || 'RAG query failed',
+        );
       }
     } catch (err) {
       const error = err as Error;
@@ -143,7 +315,7 @@ await checkSystemStatus();
   async function checkSystemStatus() {
     try {
       // Check Ollama status
-      const ollamaResponse = await fetch('http://localhost:11434/api/tags')
+      const ollamaResponse = await fetch('http://localhost:11434/api/tags');
       systemMetrics.ollamaStatus = ollamaResponse.ok ? 'healthy' : 'offline';
       // Check actual GPU service status
       try {
@@ -165,7 +337,7 @@ await checkSystemStatus();
         addLog('⚠️ GPU service not responding - using CPU processing');
       }
       addLog(
-        `🖥️ System status: Ollama ${systemMetrics.ollamaStatus}, GPU: ${systemMetrics.gpuAcceleration ? 'enabled' : 'disabled'}`
+        `🖥️ System status: Ollama ${systemMetrics.ollamaStatus}, GPU: ${systemMetrics.gpuAcceleration ? 'enabled' : 'disabled'}`,
       );
     } catch (err) {
       const error = err as Error;
@@ -181,7 +353,7 @@ await checkSystemStatus();
       realTimeLogs = realTimeLogs.slice(-20);
     }
   }
-  let loggingInterval = $state<number | null >(null);
+  let loggingInterval = $state<number | null>(null);
   function startRealTimeLogging() {
     // Prevent multiple intervals
     if (loggingInterval) return;
@@ -221,11 +393,10 @@ await checkSystemStatus();
     return 'text-red-600';
   }
 </script>
+
 <svelte:head>
   <title>Legal AI Suite - Enhanced RAG & Multi-PDF Processing</title>
-  <meta
-    name="description"
-    content="GPU-accelerated legal document analysis with enhanced RAG and fact-checking" />
+  <meta name="description" content="GPU-accelerated legal document analysis with enhanced RAG and fact-checking" />
 </svelte:head>
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
   <div class="max-w-7xl mx-auto space-y-6">
@@ -297,7 +468,7 @@ await checkSystemStatus();
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Document Processing Panel -->
       <div class="nes-container">
-          <div class="yorha-panel-header">
+        <div class="yorha-panel-header">
           <h3 class="nes-text is-primary flex items-center space-x-2">
             <UploadCloud class="h-5 w-5" />
             <span>Document Processing</span>
@@ -311,7 +482,8 @@ await checkSystemStatus();
               multiple
               accept=".pdf"
               onchange={handleFileSelect}
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
             {#if hasFiles}
               <p class="text-sm text-gray-600 mt-1">
                 {selectedFiles.length} PDF file{selectedFiles.length !== 1 ? 's' : ''} selected
@@ -320,13 +492,12 @@ await checkSystemStatus();
           </div>
           <!-- Jurisdiction Selection -->
           <div>
-            <label for="jurisdiction" class="block text-sm font-medium text-gray-700 mb-2">
-              Jurisdiction
-            </label>
+            <label for="jurisdiction" class="block text-sm font-medium text-gray-700 mb-2"> Jurisdiction </label>
             <select
-              id="jurisdiction"
+              id="jurisdiction";
               bind:value={selectedJurisdiction}
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
               <option value="federal">Federal</option>
               <option value="state">State</option>
               <option value="local">Local</option>
@@ -340,7 +511,8 @@ await checkSystemStatus();
               type="button"
               onclick={processLegalDocuments}
               disabled={!canProcess}
-              class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
+              class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+            >
               {#if isProcessing}
                 <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 <span>Processing...</span>
@@ -365,13 +537,11 @@ await checkSystemStatus();
                 </div>
                 <div>
                   <span class="text-gray-600">Facts Verified:</span>
-                  <span class="font-medium ml-2 text-green-600"
-                    >{processingSummary.factCheckResults?.facts || 0}</span>
+                  <span class="font-medium ml-2 text-green-600">{processingSummary.factCheckResults?.facts || 0}</span>
                 </div>
                 <div>
                   <span class="text-gray-600">Disputed Claims:</span>
-                  <span class="font-medium ml-2 text-red-600"
-                    >{processingSummary.factCheckResults?.fiction || 0}</span>
+                  <span class="font-medium ml-2 text-red-600">{processingSummary.factCheckResults?.fiction || 0}</span>
                 </div>
               </div>
             </div>
@@ -388,20 +558,21 @@ await checkSystemStatus();
         </div>
         <div class="yorha-panel-content">
           <div>
-            <label for="rag-query" class="block text-sm font-medium text-gray-700 mb-2">
-              Legal Query
-            </label>
+            <label for="rag-query" class="block text-sm font-medium text-gray-700 mb-2"> Legal Query </label>
             <input
-              id="rag-query";
+              id="rag-query"
+              ;
               bind:value={ragQuery}
               placeholder="Enter your legal question or search query..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
             <div class="flex space-x-2 mt-3">
               <button
                 type="button"
                 onclick={executeRAGQuery}
                 disabled={!canQuery}
-                class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50">
+                class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+              >
                 <Brain class="h-4 w-4 mr-2" />
                 Query Enhanced RAG
               </button>
@@ -416,24 +587,158 @@ await checkSystemStatus();
                   <div class="p-3 bg-gray-50 rounded-md">
                     <div class="flex justify-between items-start mb-2">
                       <span class="text-sm font-medium text-gray-800">
-                        {(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).sourceDocument ?? 'Unknown Source'}
+                        {(
+                          result as {
+                            success?: unknown;
+                            documents?: unknown;
+                            summary?: unknown;
+                            caseAISummaryScore?: unknown;
+                            documentsProcessed?: unknown;
+                            error?: unknown;
+                            results?: unknown;
+                            ragScore?: unknown;
+                            aggregatedAnalysis?: unknown;
+                            sourceDocument?: unknown;
+                            similarity?: unknown;
+                            factCheckStatus?: unknown;
+                            jurisdiction?: unknown;
+                            prosecutionScore?: unknown;
+                          }
+                        ).sourceDocument ?? 'Unknown Source'}
                       </span>
                       <div class="flex space-x-1">
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Similarity: {(((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).similarity ?? 0) * 100).toFixed(0)}%</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                          >Similarity: {(
+                            ((
+                              result as {
+                                success?: unknown;
+                                documents?: unknown;
+                                summary?: unknown;
+                                caseAISummaryScore?: unknown;
+                                documentsProcessed?: unknown;
+                                error?: unknown;
+                                results?: unknown;
+                                ragScore?: unknown;
+                                aggregatedAnalysis?: unknown;
+                                sourceDocument?: unknown;
+                                similarity?: unknown;
+                                factCheckStatus?: unknown;
+                                jurisdiction?: unknown;
+                                prosecutionScore?: unknown;
+                              }
+                            ).similarity ?? 0) * 100
+                          ).toFixed(0)}%</span
+                        >
                         <Badge
-                          variant={getFactCheckBadgeVariant((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).factCheckStatus ?? 'UNVERIFIED')}
-                          class="text-xs">
-                          {(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).factCheckStatus ?? 'N/A'}
+                          variant={getFactCheckBadgeVariant(
+                            (
+                              result as {
+                                success?: unknown;
+                                documents?: unknown;
+                                summary?: unknown;
+                                caseAISummaryScore?: unknown;
+                                documentsProcessed?: unknown;
+                                error?: unknown;
+                                results?: unknown;
+                                ragScore?: unknown;
+                                aggregatedAnalysis?: unknown;
+                                sourceDocument?: unknown;
+                                similarity?: unknown;
+                                factCheckStatus?: unknown;
+                                jurisdiction?: unknown;
+                                prosecutionScore?: unknown;
+                              }
+                            ).factCheckStatus ?? 'UNVERIFIED',
+                          )}
+                          class="text-xs"
+                        >
+                          {(
+                            result as {
+                              success?: unknown;
+                              documents?: unknown;
+                              summary?: unknown;
+                              caseAISummaryScore?: unknown;
+                              documentsProcessed?: unknown;
+                              error?: unknown;
+                              results?: unknown;
+                              ragScore?: unknown;
+                              aggregatedAnalysis?: unknown;
+                              sourceDocument?: unknown;
+                              similarity?: unknown;
+                              factCheckStatus?: unknown;
+                              jurisdiction?: unknown;
+                              prosecutionScore?: unknown;
+                            }
+                          ).factCheckStatus ?? 'N/A'}
                         </Badge>
                       </div>
                     </div>
                     <p class="text-sm text-gray-700 mb-2">
-                      {((result as any)?.content ?? "").substring(0, 200)}...
+                      {((result as any)?.content ?? '').substring(0, 200)}...
                     </p>
                     <div class="flex justify-between items-center text-xs text-gray-500">
-                      <span>Jurisdiction: {(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).jurisdiction ?? 'Unknown'}</span>
-                      <span class={getProsecutionScoreColor((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).prosecutionScore ?? 0)}>
-                        Prosecution Score: {(((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).prosecutionScore ?? 0) * 100).toFixed(0)}%
+                      <span
+                        >Jurisdiction: {(
+                          result as {
+                            success?: unknown;
+                            documents?: unknown;
+                            summary?: unknown;
+                            caseAISummaryScore?: unknown;
+                            documentsProcessed?: unknown;
+                            error?: unknown;
+                            results?: unknown;
+                            ragScore?: unknown;
+                            aggregatedAnalysis?: unknown;
+                            sourceDocument?: unknown;
+                            similarity?: unknown;
+                            factCheckStatus?: unknown;
+                            jurisdiction?: unknown;
+                            prosecutionScore?: unknown;
+                          }
+                        ).jurisdiction ?? 'Unknown'}</span
+                      >
+                      <span
+                        class={getProsecutionScoreColor(
+                          (
+                            result as {
+                              success?: unknown;
+                              documents?: unknown;
+                              summary?: unknown;
+                              caseAISummaryScore?: unknown;
+                              documentsProcessed?: unknown;
+                              error?: unknown;
+                              results?: unknown;
+                              ragScore?: unknown;
+                              aggregatedAnalysis?: unknown;
+                              sourceDocument?: unknown;
+                              similarity?: unknown;
+                              factCheckStatus?: unknown;
+                              jurisdiction?: unknown;
+                              prosecutionScore?: unknown;
+                            }
+                          ).prosecutionScore ?? 0,
+                        )}
+                      >
+                        Prosecution Score: {(
+                          ((
+                            result as {
+                              success?: unknown;
+                              documents?: unknown;
+                              summary?: unknown;
+                              caseAISummaryScore?: unknown;
+                              documentsProcessed?: unknown;
+                              error?: unknown;
+                              results?: unknown;
+                              ragScore?: unknown;
+                              aggregatedAnalysis?: unknown;
+                              sourceDocument?: unknown;
+                              similarity?: unknown;
+                              factCheckStatus?: unknown;
+                              jurisdiction?: unknown;
+                              prosecutionScore?: unknown;
+                            }
+                          ).prosecutionScore ?? 0) * 100
+                        ).toFixed(0)}%
                       </span>
                     </div>
                   </div>
@@ -487,7 +792,7 @@ await checkSystemStatus();
                   </div>
                   <div class="flex justify-between">
                     <span class="text-gray-600">Prosecution Score:</span>
-                    <span class={"font-medium " + getProsecutionScoreColor(doc.prosecutionScore ?? 0)}>
+                    <span class={'font-medium ' + getProsecutionScoreColor(doc.prosecutionScore ?? 0)}>
                       {((doc.prosecutionScore ?? 0) * 100).toFixed(0)}%
                     </span>
                   </div>
@@ -521,7 +826,8 @@ await checkSystemStatus();
         <button
           type="button"
           onclick={clearLogs}
-          class="px-3 py-1 border border-gray-300 text-sm rounded-md hover:bg-gray-50">
+          class="px-3 py-1 border border-gray-300 text-sm rounded-md hover:bg-gray-50"
+        >
           Clear Logs
         </button>
       </div>
@@ -569,6 +875,7 @@ await checkSystemStatus();
     {/if}
   </div>
 </div>
+
 <style>
   /* Custom scrollbar for logs */
   :global($1) {

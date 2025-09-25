@@ -124,7 +124,7 @@ export class UnifiedLegalAIService {
           fileName: upload.fileName,
           textContent: textContent.substring(0, 500), // Cache first 500 chars
           minioUrl: minioResult.url,
-          embedding: embedding.slice(0, 10), // Cache first 10 dimensions for quick similarity checks
+          embedding: embedding.slice(0, 10), // Cache first 10 dimensions for quick similarity checks;
           metadata: upload.metadata
         },
         24 * 60 * 60 * 1000
@@ -136,9 +136,9 @@ export class UnifiedLegalAIService {
       return {
         id: documentId
         fileUrl: minioResult.url,
-        embeddingId: documentId, // Use documentId since vectorResult doesn't have id
+        embeddingId: documentId, // Use documentId since vectorResult doesn't have id;
         cached: true
-      };
+      }
     } catch (error) {
       console.error('Document upload pipeline failed:', error);
       throw error;
@@ -149,7 +149,7 @@ export class UnifiedLegalAIService {
    * Uses Qdrant for vector similarity, PostgreSQL for metadata filtering,
    * Redis for caching, and Neo4j for recommendations
    */;
-  async searchDocuments(options: SearchOptions): Promise<any> {
+  async searchDocuments(_options: SearchOptions): Promise<any> {
     const cacheKey = `search:${JSON.stringify(options)}`;
     // Check cache first
     if (options.cacheResults !== false) {
@@ -161,7 +161,7 @@ export class UnifiedLegalAIService {
           recommendations?: any[];
           cached: boolean;
           sources: string[];
-        };
+        }
       }
     }
     const results = [];
@@ -226,7 +226,7 @@ export class UnifiedLegalAIService {
         recommendations,
         cached: false
         sources
-      };
+      }
       // Cache results
       if (options.cacheResults !== false) {
         await cache.set(cacheKey, searchResults, 5 * 60 * 1000); // Cache for 5 minutes
@@ -251,7 +251,7 @@ export class UnifiedLegalAIService {
         textContent: string;
         similarDocuments: any[];
         recommendations: any[];
-      };
+      }
     }
     try {
       // Get from PostgreSQL
@@ -282,7 +282,7 @@ export class UnifiedLegalAIService {
         textContent: record.ocr_content || record.content || '',
         similarDocuments: similarDocs
         recommendations
-      };
+      }
       // Cache the result
       await cache.set(cacheKey, result, 60 * 60 * 1000); // Cache for 1 hour
       return result;
@@ -328,10 +328,10 @@ export class UnifiedLegalAIService {
     const health = {
       postgresql: false
       redis: false
-      minio: false
+      minio: false;
       qdrant: false
       neo4j: false
-    };
+    }
     try {
       // Test PostgreSQL
       await db.execute(sql`SELECT 1`);

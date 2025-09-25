@@ -51,7 +51,7 @@ export const documentUploadMachine = createMachine({
       invoke: {
         id: 'validateFiles',
         src: fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
-          const errors: Record<string, string[]> = {};
+          const errors: Record<string, string[]> = {}
           if (input.files.length === 0) {
             errors.files = ['Please select at least one file'];
           }
@@ -69,7 +69,7 @@ export const documentUploadMachine = createMachine({
             }
           }
           if (Object.keys(errors).length > 0) {
-            throw { validationErrors: errors };
+            throw { validationErrors: errors }
           }
           return input.files;
         }),
@@ -194,7 +194,7 @@ export const documentUploadMachine = createMachine({
               successfulProcessing: processingResults.length,
               extractedText: processingResults.reduce((acc, r) => acc + (r.extractedText?.length || 0), 0)
             }
-          };
+          }
         }),
         input: ({ context }) => context,
         onDone: {

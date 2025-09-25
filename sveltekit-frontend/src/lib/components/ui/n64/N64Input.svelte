@@ -132,7 +132,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       if (audioContext) {
         audioContext.close();
       }
-    };
+    }
     })();
   });
   async function initializeGPUContext() {
@@ -167,23 +167,23 @@ if (spatialAudio && typeof window !== 'undefined') {
       requestAnimationFrame(animationLoop);
     }
   }
-  function handleFocus(event: FocusEvent) {
+  function handleFocus(_event: FocusEvent) {
     isFocused = true;
     playSpatialSound('focus', 440, 0.1);
     onFocus?.(event);
   }
-  function handleBlur(event: FocusEvent) {
+  function handleBlur(_event: FocusEvent) {
     isFocused = false;
     playSpatialSound('blur', 330, 0.1);
     onBlur?.(event);
   }
-  function handleInput(event: Event) {
-    const target = event.target as HTMLInputElement;
+  function handleInput(_event: Event) {
+    // removed unused target assignment
     value = target.valu;
     playSpatialSound('input', 660, 0.05);
     onInput?.(event);
   }
-  function handleChange(event: Event) {
+  function handleChange(_event: Event) {
     onChange?.(event);
   }
   function handleMouseEnter() {
@@ -212,6 +212,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
   }
 </script>
+
 <div
   bind:this={container}
   class="n64-input-container {className}"
@@ -264,12 +265,9 @@ if (spatialAudio && typeof window !== 'undefined') {
     {/if}
   </div>
   <!-- Focus indicator with N64 styling -->
-  <div
-    class="n64-focus-indicator"
-    class:visible={isFocused}
-    aria-hidden="true"
-  ></div>
+  <div class="n64-focus-indicator" class:visible={isFocused} aria-hidden="true"></div>
 </div>
+
 <style>
   .n64-input-container {
     position: relative;

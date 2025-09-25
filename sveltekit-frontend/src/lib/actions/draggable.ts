@@ -1,10 +1,9 @@
-
 // Enhanced draggable action for detective board evidence nodes
 import { evidenceStore } from '$lib/stores/evidence';
 export interface DraggableOptions {
   id?: string; // Evidence ID for store updates
   onDrag?: (x: number, y: number) => void;
-  onDragStart?: (event: MouseEvent) => void;
+  onDragStart?: (_event: MouseEvent) => void;
   onDragEnd?: (x: number, y: number) => void;
   handle?: string; // CSS selector for drag handle
   disabled?: boolean;
@@ -14,12 +13,11 @@ export interface DraggableOptions {
     minY?: number;
     maxY?: number;
     container?: HTMLElement; // Constrain to container bounds
-  };
+  }
 }
 /**
  * Enhanced draggable action for making elements draggable on the detective board
- */;
-export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
+ */ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
   let { id, onDrag, onDragStart, onDragEnd, handle, disabled = false, constraint } = options;
   let isDragging = false;
   let startX = 0;
@@ -56,7 +54,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     }
     return [constrainedX, constrainedY];
   }
-  function handleMouseDown(event: MouseEvent) {
+  function handleMouseDown(_event: MouseEvent) {
     if (disabled || event.button !== 0) return; // Only left mouse button
     // Check if we're dragging from the handle
     if (handle) {
@@ -73,7 +71,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     // Get current position relative to parent
     const rect = node.getBoundingClientRect();
     const parent = node.offsetParent as HTMLElement;
-    const parentRect = parent?.getBoundingClientRect() || { left: 0, top: 0 };
+    const parentRect = parent?.getBoundingClientRect() || { left: 0, top: 0 }
     initialX = rect.left - parentRect.left;
     initialY = rect.top - parentRect.top;
     currentX = initialX;
@@ -88,7 +86,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     document.addEventListener('mouseup', handleMouseUp);
     onDragStart?.(event);
   }
-  function handleMouseMove(event: MouseEvent) {
+  function handleMouseMove(_event: MouseEvent) {
     if (!isDragging) return;
     event.preventDefault();
     const deltaX = event.clientX - startX;
@@ -98,7 +96,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     const [constrainedX, constrainedY] = applyConstraints(newX, newY);
     updateNodePosition(constrainedX, constrainedY);
   }
-  function handleMouseUp(event: MouseEvent) {
+  function handleMouseUp(_event: MouseEvent) {
     if (!isDragging) return;
     isDragging = false;
     // Remove visual feedback
@@ -112,31 +110,31 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     onDragEnd?.(currentX, currentY);
   }
   // Touch support
-  function handleTouchStart(event: TouchEvent) {
+  function handleTouchStart(_event: TouchEvent) {
     if (disabled || event.touches.length !== 1) return;
     const touch = event.touches[0];
     const mouseEvent = new MouseEvent('mousedown', {
       clientX: touch.clientX,
       clientY: touch.clientY,
-      button: 0
+      button: 0,
     });
     handleMouseDown(mouseEvent);
   }
-  function handleTouchMove(event: TouchEvent) {
+  function handleTouchMove(_event: TouchEvent) {
     if (!isDragging || event.touches.length !== 1) return;
     event.preventDefault();
     const touch = event.touches[0];
     const mouseEvent = new MouseEvent('mousemove', {
       clientX: touch.clientX,
-      clientY: touch.clientY
+      clientY: touch.clientY,
     });
     handleMouseMove(mouseEvent);
   }
-  function handleTouchEnd(event: TouchEvent) {
+  function handleTouchEnd(_event: TouchEvent) {
     if (!isDragging) return;
     const mouseEvent = new MouseEvent('mouseup', {
       clientX: 0,
-      clientY: 0
+      clientY: 0,
     });
     handleMouseUp(mouseEvent);
   }
@@ -173,7 +171,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
       disabled = newOptions.disabled ?? false;
       constraint = newOptions.constraint;
       // Update cursor
-      node.style.cursor = disabled ? '' : (isDragging ? 'grabbing' : 'grab');
-    }
-  };
+      node.style.cursor = disabled ? '' : isDragging ? 'grabbing' : 'grab';
+    },
+  }
 }

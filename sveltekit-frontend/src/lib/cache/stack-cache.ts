@@ -28,7 +28,7 @@ export const cacheConfig = {
     assets: { enabled: true, ttl: 86400 },
     api_responses: { enabled: true, ttl: 300 }
   }
-};
+}
 // Cache implementation
 export class StackCache {
   private redis: any = null;
@@ -37,7 +37,7 @@ export class StackCache {
     this.redis = null;
     this.memory = new Map();
   }
-  async get(key: string): Promise<any> {
+  async get(_key: string): Promise<any> {
     // Try Redis first, fallback to memory
     if (this.redis) {
       const cached = await this.redis.get(key);
@@ -45,7 +45,7 @@ export class StackCache {
     }
     return this.memory.get(key);
   }
-  async set(key: string, value: any, ttl: number): Promise<void> {
+  async set(_key: string, value: any, ttl: number): Promise<void> {
     if (this.redis) {
       await this.redis.setex(key, ttl, JSON.stringify(value);
     }

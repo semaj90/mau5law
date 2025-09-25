@@ -11,20 +11,14 @@
     size?: 'sm' | 'md' | 'lg';
     hoverable?: boolean;
   }
-  let {
-    value,
-    label,
-    icon,
-    variant = 'default',
-    size = 'md',
-    hoverable = true
-  }: Props = $props();
+  let { value, label, icon, variant = 'default', size = 'md', hoverable = true }: Props = $props();
   const sizeClasses = {
     sm: 'text-lg',
     md: 'text-2xl',
-    lg: 'text-3xl'
-  };
+    lg: 'text-3xl',
+  }
 </script>
+
 <div class="stat-card {variant}" class:hoverable>
   {#if icon}
     <div class="stat-icon">
@@ -38,6 +32,7 @@
     {label}
   </div>
 </div>
+
 <style>
   .stat-card {
     background: var(--surface, #ffffff);

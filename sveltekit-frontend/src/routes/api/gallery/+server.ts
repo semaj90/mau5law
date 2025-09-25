@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js'
 import { db } from '$lib/server/database'
 import { cases, evidence, users, legalDocuments } from '$lib/server/database'
 import { eq, desc, asc, and, or, like, isNull } from 'drizzle-orm'
-import { URL } from "url"
+
 export interface GalleryItem {
   id: string
   type: 'evidence' | 'document' | 'image' | 'ai-generated' | 'upload'

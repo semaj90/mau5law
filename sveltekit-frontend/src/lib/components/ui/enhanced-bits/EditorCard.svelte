@@ -8,12 +8,9 @@
     modified?: boolean;
     children?: any;
   }
-  let {
-    title,
-    modified = false,
-    children
-  }: Props = $props();
+  let { title, modified = false, children }: Props = $props();
 </script>
+
 <div class="editor-card">
   {#if title}
     <div class="editor-card-header">
@@ -27,6 +24,7 @@
     {@render children?.()}
   </div>
 </div>
+
 <style>
   .editor-card {
     background: var(--surface, #ffffff);

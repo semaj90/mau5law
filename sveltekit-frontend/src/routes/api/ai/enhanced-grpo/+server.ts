@@ -166,7 +166,7 @@ async function saveEnhancedResponse(data: {
   thinking: string
   structuredReasoning: any
   queryEmbedding: number[]
-  responseEmbedding: number[]
+  responseEmbedding: number[];
   confidence: number
   userId?: string
   legalDomain?: string
@@ -494,4 +494,4 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 }
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
-export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler)
+export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler);
