@@ -19,7 +19,7 @@
     children,
   }: Props = $props();
   // Support both variant and type for backward compatibility
-  const buttonType = variant || typ;
+  const buttonType = variant || type;
   const handleClick = onclick || onClick;
 </script>
 

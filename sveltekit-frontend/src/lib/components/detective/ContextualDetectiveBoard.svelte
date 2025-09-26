@@ -173,8 +173,8 @@
       contextualPrompts.push('Generate location timeline?');
     }
     ondispatch?.({
-      prompts: contextualPrompts;
-      context: event.detail.context;
+      prompts: contextualPrompts,
+      context: event.detail.context,
     });
   }
   /**
@@ -200,7 +200,7 @@
           caseId,
           evidence: evidenceList
           analysisType: 'contextual_detective',
-          useGemmaEmbeddings: true;
+          useGemmaEmbeddings: true,
         })
       });
       if ((response as { ok?: any; json?: any }).ok) {

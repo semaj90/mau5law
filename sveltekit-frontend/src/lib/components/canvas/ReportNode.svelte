@@ -10,23 +10,24 @@
   import * as ContextMenu from '$lib/components/ui/context-menu';
   // Icons
   import { Link, Sparkles } from 'lucide-svelte';
-  let nodeElement: HTMLDivElement;
+  let nodeElement: HTMLDivElement | null = null;
   let isDragging = $state(false);
   let dragStartX = $state(0);
   let dragStartY = $state(0);
   // Add local position state for drag-and-drop
   let position = $state({ x: 100, y: 100 });
-  function handleMouseDown(_event: MouseEvent) {
-    if (event.target === nodeElement || (event.target as Element)?.classList?.contains('node-header')) {
+  function handleMouseDown(e: MouseEvent) {
+    const target = e.target as Element | null;
+    if (target === nodeElement || target?.classList?.contains('node-header')) {
       isDragging = true;
-      dragStartX = event.clientX - position.x;
-      dragStartY = event.clientY - position.y;
+      dragStartX = e.clientX - position.x;
+      dragStartY = e.clientY - position.y;
     }
   }
-  function handleMouseMove(_event: MouseEvent) {
+  function handleMouseMove(e: MouseEvent) {
     if (isDragging) {
-      position.x = event.clientX - dragStartX;
-      position.y = event.clientY - dragStartY;
+      position.x = e.clientX - dragStartX;
+      position.y = e.clientY - dragStartY;
     }
   }
   function handleMouseUp() {
@@ -54,23 +55,23 @@
 
 <ContextMenu.Root>
   <ContextMenu.Trigger>
-    <div
-      bind:this={nodeElement}
-      class="space-y-4"
-      style={`left: ${position.x}px; top: ${position.y}px; z-index: 10;`}
-      onmousedown={handleMouseDown}
-      keydown={e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          isDragging = true;
-          dragStartX = 0;
-          dragStartY = 0;
-        }
-      }}
-      role="button"
-      tabindex={0}
-      aria-label="Drag report node"
-    >
+      <div
+        bind:this={nodeElement}
+        class="space-y-4"
+        style={`left: ${position.x}px; top: ${position.y}px; z-index: 10;`}
+        onmousedown={handleMouseDown}
+        onkeydown={(e: KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            isDragging = true;
+            dragStartX = 0;
+            dragStartY = 0;
+          }
+        }}
+        role="button"
+        tabindex={0}
+        aria-label="Drag report node"
+      >
       <div>
         <div>
           {report.content}
@@ -79,7 +80,7 @@
     </div>
   </ContextMenu.Trigger>
   <ContextMenu.Content menu={true}>
-    <ContextMenu.Item <ContextMenu.Item select={() => saveCitation(window.getSelection()?.toString() || '')}>
+    <ContextMenu.Item select={() => saveCitation(window.getSelection()?.toString() || '')}>
       <Link class="space-y-4" />
       Save as Citation
     </ContextMenu.Item>

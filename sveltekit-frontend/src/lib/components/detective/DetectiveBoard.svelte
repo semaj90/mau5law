@@ -72,15 +72,15 @@
   		show: false,
   		query: '',
   		results: [] as any[],
-  		loading: false;
+  		loading: false,
   		error: '',
-  		suggestions: [] as any[];
+  		suggestions: [] as any[],
   	});
   	// --- Component Logic & Functions ---
   	// Subscribe to evidence store using $effect (runs automatically)
   	$effect(() => {
   		const unsubscribeEvidence = evidenceStore.subscribe((value) => {
-  			evidenceStoreState = valu;
+  			evidenceStoreState = value;
   		});
   		return () => {
   			unsubscribeEvidence();
@@ -152,7 +152,7 @@
   		});
   	}
   	function switchViewMode(mode: 'columns' | 'canvas') {
-  		viewMode = mod;
+  		viewMode = mode;
   	}
   	function handleFileUpload(result: any, columnId: string) {
   		console.log('File uploaded to MinIO:', result, 'for column:', columnId);
@@ -282,7 +282,7 @@
   					id: evidence.id,
   					title: evidence.title || evidence.fileName || 'Unknown Evidence',
   					annotations: evidence.annotations || [],
-  					connections: evidence.connections || [];
+  					connections: evidence.connections || [],
   				});
   			});
   		}
@@ -306,7 +306,7 @@
   					userId: $page.data?.user?.id,
   					evidenceId: itemToSave.id,
   					action: 'save',
-  					target;
+  					target,
   				})
   			});
   		} catch (e) {
@@ -348,7 +348,7 @@
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({,
-  					query: findModal.query || contextMenu.item?.titl;
+  					query: findModal.query || contextMenu.item?.title || '',
   				})
   			});
   			const vectorResults = await resp.json();
@@ -528,7 +528,7 @@
 									dropTargetStyle: {
 										background: 'hsl(var(--muted))',
 										border: '2px dashed hsl(var(--primary))',
-										borderRadius: '8px';
+										borderRadius: '8px',
 									}
 								}}
 								onconsider={(e) => handleDndConsider(e, column.id)}

@@ -28,11 +28,10 @@
   let fps = $state(0);
   let frameCount = 0;
   let lastTime = 0;
-  // WebGPU shader source
+  // WebGPU shader source (WGSL)
   const vertexShaderSource = `
     struct VertexOutput {
-      @builtin(position) position: vec;
-4<f32>,
+      @builtin(position) position: vec4<f32>;
       @location(0) color: vec3<f32>;
     }
     @vertex
@@ -66,16 +65,20 @@
     }
   `;
   let renderPipeline: GPURenderPipeline | null = null;
-  onMount(async () => {
+  onMount(() => {
     if (!canvas) return;
-    if (enableWebGPU) {
-      await initializeWebGPU();
-    }
-    if (!isWebGPUInitialized && fallbackTo2D) {
-      initialize2D();
-    }
-    startRenderLoop();
+    let mounted = true;
+    (async () => {
+      if (enableWebGPU) {
+        await initializeWebGPU();
+      }
+      if (!isWebGPUInitialized && fallbackTo2D) {
+        initialize2D();
+      }
+      if (mounted) startRenderLoop();
+    })();
     return () => {
+      mounted = false;
       // Cleanup
     }
   });
@@ -95,15 +98,15 @@
         console.warn('Failed to get WebGPU device');
         return;
       }
-      webgpuContext = canvas.getContext('webgpu');
+      webgpuContext = canvas.getContext('webgpu') as unknown as GPUCanvasContext;
       if (!webgpuContext) {
         console.warn('Failed to get WebGPU context');
         return;
       }
       const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
       webgpuContext.configure({
-        device: webgpuDevice;
-        format: canvasFormat
+        device: webgpuDevice,
+        format: canvasFormat,
         alphaMode: 'premultiplied',
       });
       await createRenderPipeline(canvasFormat);
@@ -121,32 +124,33 @@
   async function createRenderPipeline(format: GPUTextureFormat): Promise<void> {
     if (!webgpuDevice) return;
     const vertexShader = webgpuDevice.createShaderModule({
-      code: vertexShaderSource;
+      code: vertexShaderSource,
     });
     const fragmentShader = webgpuDevice.createShaderModule({
-      code: fragmentShaderSource;
+      code: fragmentShaderSource,
     });
     renderPipeline = webgpuDevice.createRenderPipeline({
       layout: 'auto',
       vertex: {
-        module: vertexShader
+        module: vertexShader,
         entryPoint: 'vs_main',
       },
       fragment: {
-        module: fragmentShader
+        module: fragmentShader,
         entryPoint: 'fs_main',
-        targets: [{,
-          format: format;
-        }],
+        targets: [
+          {
+            format: format,
+          },
+        ],
       },
       primitive: {
-;
         topology: 'triangle-list',
       },
     });
   }
   function initialize2D(): void {
-    canvas2dContext = canvas.getContext('2d');
+    canvas2dContext = canvas.getContext('2d') as CanvasRenderingContext2D | null;
     if (canvas2dContext) {
       renderingMode = '2d';
       console.log('2D Canvas fallback initialized');
@@ -156,10 +160,14 @@
     function render(currentTime: number) {
       // Calculate FPS
       frameCount++;
-      if (currentTime - lastTime >= 1000) {
-        fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+      if (!lastTime) {
+        lastTime = currentTime;
+      }
+      const delta = currentTime - lastTime;
+      if (delta >= 1000) {
+        fps = Math.round((frameCount * 1000) / delta);
         frameCount = 0;
-        lastTime = currentTim;
+        lastTime = currentTime;
       }
       if (renderingMode === 'webgpu') {
         renderWebGPU();
@@ -175,13 +183,15 @@
     const commandEncoder = webgpuDevice.createCommandEncoder();
     const textureView = webgpuContext.getCurrentTexture().createView();
     const renderPassDescriptor: GPURenderPassDescriptor = {
-      colorAttachments: [{
-        view: textureView
-        clearValue: { r: 0.04, g: 0.04, b: 0.04, a: 1.0 }, // Dark background
-        loadOp: 'clear',
-        storeOp: 'store',
-      }],
-    }
+      colorAttachments: [
+        {
+          view: textureView,
+          clearValue: { r: 0.04, g: 0.04, b: 0.04, a: 1.0 }, // Dark background
+          loadOp: 'clear',
+          storeOp: 'store',
+        },
+      ],
+    };
     const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
     passEncoder.setPipeline(renderPipeline);
     passEncoder.draw(6, 1, 0, 0);
@@ -200,7 +210,7 @@
     ctx.strokeStyle = 'rgba(255, 215, 0, 0.1)';
     ctx.lineWidth = 1;
     const gridSize = 25;
-    const offset = (time * 10) % gridSiz;
+    const offset = (time * 10) % gridSize;
     for (let x = -offset; x <= width + gridSize; x += gridSize) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
@@ -223,10 +233,10 @@
       { label: 'Document C', color: '#ff6b35', angle: Math.PI },
       { label: 'Citation D', color: '#d63384', angle: 3 * Math.PI / 2 }
     ];
-    nodes.forEach((node, index) => {
+    nodes.forEach((node) => {
       const animatedAngle = node.angle + time * 0.5;
-      const x = centerX + Math.cos(animatedAngle) * radiu;
-      const y = centerY + Math.sin(animatedAngle) * radiu;
+      const x = centerX + Math.cos(animatedAngle) * radius;
+      const y = centerY + Math.sin(animatedAngle) * radius;
       // Draw connection lines
       ctx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
       ctx.lineWidth = 2;
@@ -281,7 +291,7 @@
   <div class="canvas-info">
     <div class="info-row">
       <span class="nes-text is-success">Mode:</span>
-      <span class="mode-indicator {renderingMode}">{renderingMode.toUpperCase()}</span>
+      <span class="mode-indicator mode-{renderingMode}">{renderingMode.toUpperCase()}</span>
     </div>
     <div class="info-row">
       <span class="nes-text">WebGPU:</span>
@@ -323,7 +333,6 @@
 
 <style>
   .webgpu-canvas-container {
-;
     margin: 1rem;
     padding: 1rem;
     background: var(--yorha-bg-secondary);
@@ -349,17 +358,18 @@
     border: 1px solid;
     font-weight: bold;
   }
-  .mode-indicator.webgpu {
+  .mode-indicator.mode-webgpu {
     color: var(--yorha-accent);
     border-color: var(--yorha-accent);
     background: rgba(255, 215, 0, 0.1);
+    animation: webgpuGlow 2s ease-in-out infinite alternate;
   }
-  .mode-indicator.2d {
+  .mode-indicator.mode-2d {
     color: var(--yorha-text-primary);
     border-color: var(--yorha-text-muted);
     background: rgba(224, 224, 224, 0.1);
   }
-  .mode-indicator.none {
+  .mode-indicator.mode-none {
     color: var(--yorha-danger);
     border-color: var(--yorha-danger);
     background: rgba(220, 53, 69, 0.1);
@@ -400,7 +410,6 @@
     background: var(--yorha-bg-tertiary);
     border: 1px solid var(--yorha-text-muted);
   }
-/* Responsive design */ {}
   @media (max-width: 768px) {
     .canvas-info {
       flex-direction: column;
@@ -414,10 +423,6 @@
       height: auto;
     }
   }
-/* Animation for WebGPU mode */ {}
-  .mode-indicator.webgpu {
-    animation: webgpuGlow 2s ease-in-out infinite alternate;
-  }
   @keyframes webgpuGlow {
     from {
       box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
@@ -426,7 +431,6 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
     }
   }
-/* Canvas loading states */ {}
   .canvas-wrapper::before {
     content: '';
     position: absolute;
@@ -442,11 +446,10 @@
   }
   @keyframes scanline {
     0% {
-      background-position: ;
--200% -200%;
+      background-position: -200% -200%;
     }
     100% {
-      background-position: 00% 200%;
+      background-position: 200% 200%;
     }
   }
 </style>

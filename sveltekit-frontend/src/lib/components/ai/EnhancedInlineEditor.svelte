@@ -19,7 +19,7 @@
     minCharactersForSuggestion = 10,
     suggestionDelay = 800,
     maxSuggestions = 3,
-    class: className = '';
+    class: className = '',
   }: {
     value?: string;
     placeholder?: string;
@@ -40,7 +40,7 @@
     replacement?: string;
     confidence: number;
     reasoning: string;
-    range?: { start: number; end: number }
+    range?: { start: number; end: number };
   }
   // State management using Svelte 5 runes
   let editorElement: HTMLDivElement;
@@ -109,12 +109,12 @@
         aiActor.send({ type: 'START_PROCESSING', task: completionTask });
         const result = await waitForAIResult(completionTask.id);
         if (result?.success && result.result?.completions) {
-          suggestions.push(...result.result.completions.map((completion: string, index: number) => ({,
+          suggestions.push(...result.result.completions.map((completion: string, index: number) => ({
             id: `completion_${index}`,
             type: 'completion' as const,
-            text: completion
+            text: completion,
             confidence: 0.8,
-            reasoning: 'AI-generated text completion';
+            reasoning: 'AI-generated text completion'
           })));
         }
       } catch (error) {
@@ -138,14 +138,14 @@
         aiActor.send({ type: 'START_PROCESSING', task: grammarTask });
         const result = await waitForAIResult(grammarTask.id);
         if (result?.success && result.result?.suggestions) {
-          suggestions.push(...result.result.suggestions.map((suggestion: any, index: number) => ({,
+          suggestions.push(...result.result.suggestions.map((suggestion: any, index: number) => ({
             id: `grammar_${index}`,
             type: 'grammar' as const,
             text: suggestion.text,
             replacement: suggestion.replacement,
             confidence: suggestion.confidence || 0.7,
             reasoning: suggestion.reasoning || 'Grammar/style improvement',
-            range: suggestion.range;
+            range: suggestion.range
           })));
         }
       } catch (error) {
@@ -157,7 +157,7 @@
       try {
         const semanticTask = createAITask('embed', {
           text: context.contextBefore,
-          model: 'nomic-embed-text';
+          model: 'nomic-embed-text'
         }, { priority: 'medium' });
         aiActor.send({ type: 'START_PROCESSING', task: semanticTask });
         const embeddingResult = await waitForAIResult(semanticTask.id);
@@ -167,16 +167,16 @@
             context.contextBefore,
             {
               topK: 5,
-              useEnhancedMode: true
+              useEnhancedMode: true,
               filters: { confidenceThreshold: 0.7 }
             }
           );
           if (ragResults.results?.length > 0) {
-            suggestions.push(...ragResults.results.map((result: any, index: number) => ({,
+            suggestions.push(...ragResults.results.map((result: any, index: number) => ({
               id: `semantic_${index}`,
               type: 'legal_term' as const,
-              text: result.summary || result.content.slice(0, 100),
-              confidence: result.confidence,
+              text: result.summary || (result.content ? result.content.slice(0, 100) : ''),
+              confidence: result.confidence ?? 0.75,
               reasoning: `Related legal concept: ${result.metadata?.type || 'case law'}`
             })));
           }
@@ -185,7 +185,7 @@
         console.error('Semantic suggestions error:', error);
       }
     }
-    return suggestion;
+    return suggestions;
   }
   // Wait for AI task completion
   function waitForAIResult(taskId: string): Promise<any> {
@@ -215,21 +215,21 @@
     const editorRect = editorElement.getBoundingClientRect();
     cursorPosition = {
       x: rect.left - editorRect.left,
-      y: rect.bottom - editorRect.top + 5;
-    }
+      y: rect.bottom - editorRect.top + 5
+    };
   }
   // Handle input events
-  function handleInput(_event: InputEvent) {
-    // removed unused target assignment
-    value = target.textContent || '';
+  function handleInput(event: InputEvent) {
+    // Use editor content as source of truth
+    value = editorElement?.textContent || '';
     const selection = window.getSelection();
     const cursorPos = selection ? selection.anchorOffset : 0;
     generateSuggestions(value, cursorPos);
   }
   // Handle keyboard navigation in suggestions
-  function handleKeyDown(_event: KeyboardEvent) {
+  function handleKeyDown(event: KeyboardEvent) {
     if (!isShowingSuggestions || currentSuggestions.length === 0) return;
-    switch (event.key) {
+    switch ((event as KeyboardEvent).key) {
       case 'ArrowDown':
         event.preventDefault();
         selectedSuggestionIndex = Math.min(
@@ -258,12 +258,13 @@
   function applySuggestion(suggestion: AISuggestion) {
     if (!editorElement) return;
     const selection = window.getSelection();
-    if (!selection) return;
+    if (!selection || selection.rangeCount === 0) return;
     if (suggestion.type === 'completion') {
       // Insert completion at cursor
       const range = selection.getRangeAt(0);
       const textNode = document.createTextNode(suggestion.text);
       range.insertNode(textNode);
+      // Move caret after inserted node
       range.setStartAfter(textNode);
       range.setEndAfter(textNode);
       selection.removeAllRanges();
@@ -286,7 +287,7 @@
     selectedSuggestionIndex = -1;
   }
   // Handle clicks outside to hide suggestions
-  function handleClickOutside(_event: MouseEvent) {
+  function handleClickOutside(event: MouseEvent) {
     if (suggestionPopup && !suggestionPopup.contains(event.target as Node)) {
       hideSuggestions();
     }
@@ -296,7 +297,7 @@
     document.addEventListener('click', handleClickOutside);
     return () => {
       document.removeEventListener('click', handleClickOutside);
-    }
+    };
   });
   onDestroy(() => {
     aiActor.stop();
@@ -314,7 +315,7 @@
     role="textbox"
     aria-label="AI-enhanced text editor"
     aria-multiline="true"
-    {placeholder}
+    placeholder={placeholder}
     oninput={handleInput}
     onkeydown={handleKeyDown}
   >
@@ -322,7 +323,7 @@
   </div>
   <!-- AI Suggestions Popup -->
   {#if isShowingSuggestions && currentSuggestions.length > 0}
-    <div;
+    <div
       bind:this={suggestionPopup}
       class="suggestions-popup"
       style="left: {cursorPosition.x}px; top: {cursorPosition.y}px;"
@@ -400,7 +401,7 @@
   .suggestions-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 8px 12px;
     background: var(--console-primary, #3b82f6);
     color: var(--console-bg, white);
@@ -438,8 +439,7 @@
     transition: background-color 0.15s ease;
     border-bottom: 1px solid var(--console-accent-0, #e5e7eb);
   }
-  .suggestion-item: hover
-  .suggestion-item.selected {
+  .suggestion-item:hover {
     background: var(--console-accent-0, #f3f4f6);
   }
   .suggestion-item.selected {

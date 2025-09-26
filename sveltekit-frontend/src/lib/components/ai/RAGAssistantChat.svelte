@@ -95,7 +95,7 @@
 			"Outstanding! I have all the essential information for your case.",
 			"Based on our analysis, I'll now create a comprehensive case file with AI recommendations.",
 			"Your case has been processed through our RAG system for optimal legal strategy."
-		];
+		],
 	}
 	// Utility: push message and keep reactivity
 	function pushMessage(msg: any) {
@@ -109,7 +109,7 @@
 			content,
 			type,
 			timestamp: new Date().toISOString(),
-			metadata;
+			metadata,
 		});
 	}
 	// Typewriter effect for AI messages
@@ -117,11 +117,11 @@
 		isTyping = true;
 		const messageId = crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
 		pushMessage({
-			id: messageId
+			id: messageId,
 			content: '',
 			type: 'assistant',
 			timestamp: new Date().toISOString(),
-			metadata;
+			metadata,
 		});
 		await tick();
 		scrollToBottom();
@@ -161,20 +161,20 @@
 						type: 'precedent',
 						title: 'Similar Case: State v. Johnson (2023)',
 						relevance: 0.89,
-						summary: 'Similar MO and evidence patterns';
+						summary: 'Similar MO and evidence patterns',
 					},
 					{
 						type: 'statute',
 						title: 'Federal Criminal Code § 1341',
 						relevance: 0.76,
-						summary: 'Relevant fraud statutes and penalties';
+						summary: 'Relevant fraud statutes and penalties',
 					},
 					...ragContext
-				];
-			}
+				],
+			},
 		}
-		isIngesting = false;
-		addMessage("✅ RAG analysis complete! I've found relevant legal precedents and statutes.", 'system');
+		isIngesting = false,
+		addMessage("✅ RAG analysis complete! I've found relevant legal precedents and statutes.", 'system'),
 	}
 	// Start prosecution workflow
 	async function startWorkflow() {
@@ -216,15 +216,15 @@
 				priority: workflowData.priority,
 				status: 'open',
 				metadata: {
-					workflow_data: workflowData
-					rag_context: ragContext
-					ai_processed: true
+					workflow_data: workflowData,
+					rag_context: ragContext,
+					ai_processed: true,
 				}
 			}
 			const response = await fetch('/api/v1/cases', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(caseData);
+				body: JSON.stringify(caseData),
 			});
 			if (response.ok) {
 				const result = await response.json();

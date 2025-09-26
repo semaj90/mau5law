@@ -1,24 +1,29 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { ButtonBits } from '$lib/components/ui/bits-ui';
+  // @ts-ignore - some components may not have perfect constructor typings
+  import ButtonBits from '$lib/components/ui/bits-ui.svelte';
+  // Cast the imported component to a constructor so TypeScript/Svelte recognizes it as a component constructor
+  const ButtonCtor = ButtonBits as unknown as new (...args: any[]) => import('svelte').SvelteComponent;
   import { citationsManager, type Citation, type CitationCollection } from '$lib/modules/citations-manager';
-  interface Props {
+
+  // Use Svelte 5 runes $props() instead of export let
+  type OnDispatch = (payload: { citation: Citation; success?: boolean; error?: string }) => void;
+  let { citation, size = 'sm', variant = 'ghost', showText = true, ondispatch = undefined } = $props<{
     citation: Citation;
     size?: 'sm' | 'md' | 'lg';
     variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
     showText?: boolean;
-  }
-  const {
-    citation,
-    size = 'sm',
-    variant = 'ghost',
-    showText = true
-  } = $props<Props>();
+    ondispatch?: OnDispatch;
+  }>();
+
+  // Optional callback prop for consumers; keep typed shape for consistent usage
+
   let isAuthenticated = $state(citationsManager.isAuthenticated());
   let isSaved = $state(false);
   let isSaving = $state(false);
   let collections = $state<CitationCollection[]>([]);
   let showCollectionSelector = $state(false);
+
   // Check if citation is already saved
   $effect(() => {
     if (isAuthenticated) {
@@ -27,6 +32,7 @@
       collections = citationsManager.getCollections();
     }
   });
+
   // Listen for authentication changes
   citationsManager.onAuthChange((user) => {
     isAuthenticated = user?.isAuthenticated ?? false;
@@ -39,11 +45,12 @@
       collections = [];
     }
   });
+
   async function handleSave() {
     if (!isAuthenticated) {
       ondispatch?.({
         citation,
-        error: 'Please sign in to save citations';
+        error: 'Please sign in to save citations'
       });
       return;
     }
@@ -56,18 +63,19 @@
       } else {
         ondispatch?.({
           citation,
-          error: 'Failed to save citation';
+          error: 'Failed to save citation'
         });
       }
     } catch (error) {
       ondispatch?.({
         citation,
-        error: error instanceof Error ? error.message: 'Unknown error';
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     } finally {
       isSaving = false;
     }
   }
+
   async function handleRemove() {
     if (!isAuthenticated) return;
     isSaving = true;
@@ -80,12 +88,13 @@
     } catch (error) {
       ondispatch?.({
         citation,
-        error: error instanceof Error ? error.message: 'Failed to remove citation';
+        error: error instanceof Error ? error.message : 'Failed to remove citation'
       });
     } finally {
       isSaving = false;
     }
   }
+
   async function handleSaveToCollection(collectionId: string) {
     if (!isAuthenticated) return;
     try {
@@ -102,28 +111,29 @@
     } catch (error) {
       ondispatch?.({
         citation,
-        error: error instanceof Error ? error.message: 'Failed to save to collection';
+        error: error instanceof Error ? error.message : 'Failed to save to collection'
       });
     }
   }
 </script>
+
 {#if !isAuthenticated}
-  <ButtonBits
+  <svelte:component this={ButtonCtor}
     {variant}
     {size}
     class="citation-save-btn disabled"
     disabled={true}
     title="Sign in to save citations"
   >
-🔒 {showText ? 'Sign in to Save' : ''}
-  </ButtonBits>
+    🔒 {showText ? 'Sign in to Save' : ''}
+  </svelte:component>
 {:else}
   <div class="citation-save-container">
-    <ButtonBits
+    <svelte:component this={ButtonCtor}
       {variant}
       {size}
-      class="citation-save-btn {isSaved ? 'saved' : ''}"
-      onclick={isSaved ? handleRemove : handleSave}
+      class={`citation-save-btn ${isSaved ? 'saved' : ''}`}
+      on:click={isSaved ? handleRemove : handleSave}
       disabled={isSaving}
       title={isSaved ? 'Remove from saved citations' : 'Save citation'}
     >
@@ -134,39 +144,43 @@
       {:else}
         💾 {showText ? 'Save' : ''}
       {/if}
-    </ButtonBits>
-    {#if collections.length > 0}
-      <ButtonBits
-        variant="ghost"
-        {size}
-        class="collection-selector-btn"
-        onclick={() => showCollectionSelector = !showCollectionSelector}
-        title="Save to collection"
-      >
-        📁
-      </ButtonBits>
-      {#if showCollectionSelector}
-        <div class="collection-selector">
-          <div class="collection-header">
-            <h4>Save to Collection</h4>
-            <button class="close-btn" onclick={() => showCollectionSelector = false}>✕
-          </div>
-          <div class="collection-list">
-            {#each collections as collection}
-              <button
-                class="collection-item"
-                onclick={() => handleSaveToCollection(collection.id)}
-              >
-                <span class="collection-name">{collection.name}</span>
-                <span class="collection-count">
-                  {collection.citations.length} citations
-                </span>
-            {/each}
-          </div>
+    </svelte:component>
+
+    <svelte:component
+      this={ButtonCtor}
+      variant="ghost"
+      {size}
+      class="collection-selector-btn"
+      on:click={() => showCollectionSelector = !showCollectionSelector}
+      title="Save to collection"
+    >
+      📁
+    </svelte:component>
+
+    {#if showCollectionSelector}
+      <div class="collection-selector">
+        <div class="collection-header">
+          <h4>Save to Collection</h4>
+          <button class="close-btn" on:click={() => showCollectionSelector = false}>✕</button>
         </div>
-      {/if}
+        <div class="collection-list">
+          {#each collections as collection}
+            <button
+              class="collection-item"
+              on:click={() => handleSaveToCollection(collection.id)}
+            >
+              <span class="collection-name">{collection.name}</span>
+              <span class="collection-count">
+                {collection.citations.length} citations
+              </span>
+            </button>
+          {/each}
+        </div>
+      </div>
+    {/if}
   </div>
 {/if}
+
 <style>
   .citation-save-container {
     position: relative;
@@ -198,7 +212,7 @@
   }
   .collection-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.75rem;
     padding-bottom: 0.5rem;
@@ -206,7 +220,7 @@
   }
   .collection-header h4 {
     color: var(--nier-text-primary);
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 0.625rem;
     margin: 0;
   }
@@ -231,7 +245,7 @@
   }
   .collection-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
     background: rgba(15, 15, 35, 0.5);
@@ -258,7 +272,6 @@
   @media (max-width: 768px) {
     .collection-selector {
       position: fixed;
-d;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);

@@ -24,7 +24,7 @@
   // Update scroll when messages change
   $effect(() => {
     // Accessing $stateStore will auto-subscribe
-    const msgs = $stateStore.context.message;
+    const msgs = $stateStore.context.messages;
     if (msgs && chatContainer) {
       setTimeout(() => {
         if (chatContainer) {
