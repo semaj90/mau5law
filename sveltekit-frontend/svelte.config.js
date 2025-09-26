@@ -21,6 +21,12 @@ const config = {
       __SERVER__: path.resolve(fileURLToPath(new URL('./.svelte-kit/generated/server', import.meta.url))),
       __PUBLIC__: path.resolve(fileURLToPath(new URL('./.svelte-kit/generated/client', import.meta.url))),
     },
+    serviceWorker: {
+      register: false
+    },
+    prerender: {
+      handleHttpError: 'warn'
+    }
   },
 };
 

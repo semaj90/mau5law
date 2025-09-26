@@ -42,9 +42,8 @@ export default defineConfig({
           lines: 95,
           statements: 95,
         },
-      },
+      }
     },
-    testTimeout: 10000, // Accommodate integration tests
     pool: 'threads',
     poolOptions: {
       threads: {
