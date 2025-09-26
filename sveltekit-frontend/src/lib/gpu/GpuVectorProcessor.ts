@@ -79,7 +79,7 @@ export class GpuVectorProcessor {
       (_, i) => `  v_out${i} = a_in${i} * 1.001;`
     ).join('\n'); // slight transform for realism
     const vs = `#version 300 es\nprecision highp float;\n${attribDecl}\n${varyingDecl}\nvoid main(){\n${assigns}\n gl_Position = vec4(0.0); gl_PointSize = 1.0;\n}`;
-    const fs = `#version 300 es\nprecision highp float; out vec4 fragColor; void main(){ fragColor = vec4(0.0); }`;
+    const fs = `#version 300 es\nprecision highp float; out vec4 fragColor; void main(){ fragColor = vec4(0.0), }`;
     const t0 = performance.now();
     const sv = this.compileShader(gl, gl.VERTEX_SHADER, vs);
     const sf = this.compileShader(gl, gl.FRAGMENT_SHADER, fs);

@@ -265,7 +265,7 @@ const { fabric } = await import("fabric");
         formData.append('evidenceType', evidenceItem.type);
         const response = await fetch('/api/v1/minio/upload', {
           method: 'POST',
-          body: formData;
+          body: formData
         });
         if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
           evidenceItem.status = 'uploaded';

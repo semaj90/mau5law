@@ -440,7 +440,7 @@ const fabricModule = await import("fabric");
       }));
       const response = await fetch('/api/v1/gpu/cuda/preprocess', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       if (!(response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).ok) {
         throw new Error(`CUDA preprocessing failed: ${(response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).statusText}`);
@@ -471,7 +471,7 @@ const fabricModule = await import("fabric");
     }));
     const response = await fetch('/api/evidence/upload', {
       method: 'POST',
-      body: formData;
+      body: formData
     });
     if (!(response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).ok) {
       const errorData = await (response as { ok?: unknownn; statusText?: unknownn; json?: unknownn; success?: unknownn; jobIds?: unknownn; evidenceCount?: unknownn; jobStatuses?: unknownn; error?: unknownn }).json();

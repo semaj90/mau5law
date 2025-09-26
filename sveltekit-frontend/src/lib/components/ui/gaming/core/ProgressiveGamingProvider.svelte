@@ -340,14 +340,14 @@ d;
     animation: transitionSpin 1s linear infinite;
   }
   @keyframes fadeInOut {
-    0% { opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { opacity: 0; }
+    0% { opacity: 0, }
+    20% { opacity: 1, }
+    80% { opacity: 1, }
+    100% { opacity: 0, }
   }
   @keyframes transitionSpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    100% { transform: rotate(360deg), }
   }
 /* Debug panel */ .debug-panel {
     position: fixed;

@@ -123,7 +123,7 @@ class EnhancedRAGGlyphSystem {
    * Main RAG pipeline: Query → Glyph Retrieval → Context Synthesis → Enhanced Response
    */
   async generateWithGlyphRAG(
-    query: string;
+    query: string,
     options: {
       max_glyphs?: number;
       force_lod_level?: string;
@@ -209,8 +209,8 @@ class EnhancedRAGGlyphSystem {
       const glyphRAGResponse: GlyphRAGResponse = {
         response: optimizedResponse.text,
         confidence: optimizedResponse.confidence,
-        processing_time: totalPipelineTime
-        glyph_context: relevantGlyphs
+        processing_time: totalPipelineTime,
+        glyph_context: relevantGlyphs,
         context_synthesis: {
           primary_glyphs: synthesizedContext.primary_glyphs,
           semantic_clusters: synthesizedContext.semantic_clusters,
@@ -220,7 +220,7 @@ class EnhancedRAGGlyphSystem {
         visual_context: visualContext || this.createDefaultVisualContext(relevantGlyphs),
         performance_metrics: {
           ...pipelineMetrics,
-          total_pipeline_time: totalPipelineTime
+          total_pipeline_time: totalPipelineTime,
           cache_hit_rate: pipelineMetrics.cache_hits / pipelineMetrics.glyphs_processed,
           semantic_accuracy_score: optimizedResponse.semantic_accuracy || 0.85
         }

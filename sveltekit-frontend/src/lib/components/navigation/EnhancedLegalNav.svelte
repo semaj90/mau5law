@@ -281,12 +281,12 @@ d;
     animation: shimmer 1.5s infinite;
   }
   @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% { transform: translateX(-100%), }
+    100% { transform: translateX(100%), }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.5, }
   }
   /* NES-style scrollbar */
   .cases-container::-webkit-scrollbar {

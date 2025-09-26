@@ -732,8 +732,8 @@ if (!browser) return;
     animation: scan 2s linear infinite;
   }
   @keyframes scan {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% { left: -100%, }
+    100% { left: 100%, }
   }
   .analyzing-text {
     color: #ffff00;
@@ -743,8 +743,8 @@ if (!browser) return;
     animation: pulse 1s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.7, }
   }
   .drop-content {
     display: flex;

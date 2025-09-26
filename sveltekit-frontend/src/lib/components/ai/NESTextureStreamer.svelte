@@ -397,14 +397,14 @@ lodManager = new N64LODManager();
     font-size: 0.75rem;
     font-weight: bold;
   }
-  .mode-badge.active { background: #22c55e; }
-  .mode-badge.preview { background: #3b82f6; }
-  .mode-badge.timeline { background: #f59e0b; }
-  .mode-badge.overview { background: #6b7280; }
-  .importance-badge.critical { background: #ef4444; }
-  .importance-badge.high { background: #f97316; }
-  .importance-badge.medium { background: #eab308; }
-  .importance-badge.low { background: #6b7280; }
+  .mode-badge.active { background: #22c55e, }
+  .mode-badge.preview { background: #3b82f6, }
+  .mode-badge.timeline { background: #f59e0b, }
+  .mode-badge.overview { background: #6b7280, }
+  .importance-badge.critical { background: #ef4444, }
+  .importance-badge.high { background: #f97316, }
+  .importance-badge.medium { background: #eab308, }
+  .importance-badge.low { background: #6b7280, }
   .lod-controls {
     display: flex;
     gap: 0.25rem;

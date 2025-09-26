@@ -3,17 +3,20 @@
   Primitive component that tracks user typing behavior without rendering UI.
   Integrates with XState machine and multi-core workers for real-time processing.
   Usage:
-  <HeadlessTypingListener ,
+  <HeadlessTypingListener
     bind:text={userInput}
-    oncontextualPrompt={handlePrompt}
-    onanalyticsUpdate={handleAnalytics}
+    on:contextualPrompts={handlePrompt}
+    on:analyticsUpdate={handleAnalytics}
   />
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte 5 runes are available
   import { createActor } from 'xstate';
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, createEventDispatcher } from "svelte";
   import { userTypingStateMachine, type TypingContext, type TypingState } from '$lib/machines/userTypingStateMachine.js';
+
+  const dispatch = createEventDispatcher();
+
   // Props
   interface Props {
     text?: string;
@@ -23,6 +26,7 @@
     enableContextualPrompts?: boolean;
     mcpEndpoint?: string;
   }
+
   let {
     text = $bindable(''),
     element = $bindable(),
@@ -31,292 +35,250 @@
     enableContextualPrompts = true,
     mcpEndpoint = 'http://localhost:3002'
   }: Props = $props();
-  // Event dispatcher
+
   // XState actor
   const typingActor = createActor(userTypingStateMachine);
+
   // Reactive state
   let currentState = $state<TypingState>('idle');
   let currentContext: TypingContext = $state(undefined as any);
   let isTyping = $state(false);
   let lastTypingTime = $state(0);
   let typingTimeout: number | null = $state(null);
+
   // Reactive derived values
-  const userEngagement = $derived(currentContext?.analytics.userEngagement || 'medium');
-  const typingSpeed = $derived(currentContext?.userBehavior.avgTypingSpeed || 0);
-  const contextualHints = $derived(currentContext?.userBehavior.contextualHints || []);
+  const userEngagement = $derived(currentContext?.analytics?.userEngagement || 'medium');
+  const typingSpeed = $derived(currentContext?.userBehavior?.avgTypingSpeed || 0);
+  const contextualHints = $derived(currentContext?.userBehavior?.contextualHints || []);
   const mcpWorkerStatus = $derived(currentContext?.mcpWorkerStatus || 'idle');
-  /**
-   * Initialize the typing listener
-   */
-  $effect(() => {
-    // Start the XState machine
-    typingActor.start();
-    // Subscribe to state changes
-    typingActor.subscribe((state) => {
-      currentState = state.value as TypingStat;
-      currentContext = state.context;
-      // Dispatch state change event
-      ondispatch?.({
-        state: currentState;
-        context: currentContext;
-      });
-      // Dispatch specific events based on state
-      handleStateChange(currentState, currentContext);
-    });
-    // Set up keyboard event listeners
-    setupEventListeners();
-    // Set up visibility and focus tracking
-    setupVisibilityTracking();
-    console.log('[HeadlessTypingListener] Initialized');
-  });
-  /**
-   * Cleanup on destroy
-   */
-  onDestroy(() => {
-    if (typingActor) {
-      typingActor.stop();
-    }
-    cleanup();
-    console.log('[HeadlessTypingListener] Destroyed');
-  });
-  /**
-   * Set up keyboard and input event listeners
-   */
-  function setupEventListeners() {
-    // Listen to the bound element or document
-    // removed unused target assignment
-    // Input/change events
-    target.addEventListener('input', handleInput);
-    target.addEventListener('keydown', handleKeyDown);
-    target.addEventListener('keyup', handleKeyUp);
-    target.addEventListener('paste', handlePaste);
-    // Focus events
-    if (element) {
-      element.addEventListener('focus', handleFocus);
-      element.addEventListener('blur', handleBlur);
-    }
+
+  // Keep a reference to the subscription/unsubscribe function
+  let unsubscribeFn: (() => void) | null = null;
+
+  // Helper: read text from event or bound element
+  function readTextFromEvent(event?: Event): string {
+    if (element && 'value' in element) return (element as HTMLInputElement).value || '';
+    if (event && event.target && 'value' in (event.target as any)) return ((event.target as any).value as string) || '';
+    return text || '';
   }
-  /**
-   * Set up visibility and user presence tracking
-   */
-  function setupVisibilityTracking() {
-    // Page visibility
+
+  function setupEventListeners() {
+    if (element) {
+      element.addEventListener('input', handleInput as EventListener);
+      element.addEventListener('keydown', handleKeyDown as EventListener);
+      element.addEventListener('keyup', handleKeyUp as EventListener);
+      element.addEventListener('paste', handlePaste as EventListener);
+      element.addEventListener('focus', handleFocus as EventListener);
+      element.addEventListener('blur', handleBlur as EventListener);
+    } else {
+      // global keyboard tracking if no explicit element bound
+      document.addEventListener('keydown', handleKeyDown as EventListener);
+      document.addEventListener('keyup', handleKeyUp as EventListener);
+      document.addEventListener('paste', handlePaste as EventListener);
+    }
+
+    // Presence and visibility tracking
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    // Mouse movement for user presence
     document.addEventListener('mousemove', handleUserActivity);
     document.addEventListener('click', handleUserActivity);
     document.addEventListener('scroll', handleUserActivity);
   }
-  /**
-   * Handle input events
-   */
-  function handleInput(_event: Event) {
-    // removed unused target assignment
-    const newText = target.value || text;
-    // Update bound text
-    text = newText;
-    // Send typing event to machine
-    typingActor.send({
-      type: 'USER_STARTED_TYPING',
-      text: newText;
-      timestamp: Date.now();
-    });
-    isTyping = true;
-    lastTypingTime = Date.now();
-    // Clear existing timeout
-    if (typingTimeout) {
-      clearTimeout(typingTimeout);
-    }
-    // Set timeout for stopped typing
-    typingTimeout = setTimeout(() => {
-      handleStoppedTyping(newText);
-    }, debounceMs);
-  }
-  /**
-   * Handle key down events
-   */
-  function handleKeyDown(_event: KeyboardEvent) {
-    // Track special keys
-    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
-      // Ctrl+Enter or Cmd+Enter - submission
-      typingActor.send({
-        type: 'USER_SUBMITTED',
-        text: text;
-        timestamp: Date.now();
-      });
-    } else if (event.key === 'Escape') {
-      // Escape - clear
-      typingActor.send({
-        type: 'USER_CLEARED',
-        timestamp: Date.now();
-      });
-    }
-  }
-  /**
-   * Handle key up events
-   */
-  function handleKeyUp(_event: KeyboardEvent) {
-    // Update last activity time
-    lastTypingTime = Date.now();
-  }
-  /**
-   * Handle paste events
-   */
-  function handlePaste(_event: ClipboardEvent) {
-    // Track paste as a special typing event
-    setTimeout(() => {
-      // removed unused target assignment
-      const newText = target.value || text;
-      typingActor.send({
-        type: 'USER_STARTED_TYPING',
-        text: newText;
-        timestamp: Date.now();
-      });
-    }, 0);
-  }
-  /**
-   * Handle focus events
-   */
-  function handleFocus() {
-    typingActor.send({
-      type: 'USER_RETURNED',
-      timestamp: Date.now();
-    });
-  }
-  /**
-   * Handle blur events
-   */
-  function handleBlur() {
-    if (isTyping) {
-      handleStoppedTyping(text);
-    }
-  }
-  /**
-   * Handle stopped typing
-   */
-  function handleStoppedTyping(currentText: string) {
-    isTyping = false;
-    typingTimeout = null;
-    typingActor.send({
-      type: 'USER_STOPPED_TYPING',
-      text: currentText;
-      timestamp: Date.now();
-    });
-    // Check if we should trigger contextual processing
-    if (currentText.length > 50 && enableContextualPrompts) {
-      setTimeout(() => {
-        typingActor.send({
-          type: 'PROCESS_CONTEXT',
-          text: currentText;
-        });
-      }, 1000);
-    }
-  }
-  /**
-   * Handle visibility changes
-   */
-  function handleVisibilityChange() {
-    if (document.hidden) {
-      typingActor.send({
-        type: 'USER_INACTIVE',
-        timestamp: Date.now();
-      });
-    } else {
-      typingActor.send({
-        type: 'USER_RETURNED',
-        timestamp: Date.now();
-      });
-    }
-  }
-  /**
-   * Handle user activity (mouse, clicks, scrolling)
-   */
-  function handleUserActivity() {
-    if (currentState === 'user_inactive') {
-      typingActor.send({
-        type: 'USER_RETURNED',
-        timestamp: Date.now();
-      });
-    }
-  }
-  /**
-   * Handle state changes from the XState machine
-   */
-  function handleStateChange(state: TypingState, context: TypingContext) {
-    // Dispatch contextual prompts
-    if (state === 'waiting_user' && context.contextualPrompts.length > 0 && enableContextualPrompts) {
-      ondispatch?.({
-        prompts: context.contextualPrompts,
-        context;
-      });
-    }
-    // Dispatch analytics updates
-    if (enableAnalytics && context.analytics) {
-      ondispatch?.({
-        analytics: context.analytic;
-      });
-    }
-    // Dispatch user behavior updates
-    if (context.userBehavior) {
-      ondispatch?.({
-        behavior: context.userBehavior;
-      });
-    }
-    // Dispatch MCP worker status
-    if (context.mcpWorkerStatus) {
-      ondispatch?.({
-        status: context.mcpWorkerStatu;
-      });
-    }
-  }
-  /**
-   * Cleanup function
-   */
+
   function cleanup() {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
+      typingTimeout = null;
     }
-    // Remove event listeners
-    // removed unused target assignment
-    target.removeEventListener('input', handleInput);
-    target.removeEventListener('keydown', handleKeyDown);
-    target.removeEventListener('keyup', handleKeyUp);
-    target.removeEventListener('paste', handlePaste);
+
     if (element) {
-      element.removeEventListener('focus', handleFocus);
-      element.removeEventListener('blur', handleBlur);
+      element.removeEventListener('input', handleInput as EventListener);
+      element.removeEventListener('keydown', handleKeyDown as EventListener);
+      element.removeEventListener('keyup', handleKeyUp as EventListener);
+      element.removeEventListener('paste', handlePaste as EventListener);
+      element.removeEventListener('focus', handleFocus as EventListener);
+      element.removeEventListener('blur', handleBlur as EventListener);
+    } else {
+      document.removeEventListener('keydown', handleKeyDown as EventListener);
+      document.removeEventListener('keyup', handleKeyUp as EventListener);
+      document.removeEventListener('paste', handlePaste as EventListener);
     }
+
     document.removeEventListener('visibilitychange', handleVisibilityChange);
     document.removeEventListener('mousemove', handleUserActivity);
     document.removeEventListener('click', handleUserActivity);
     document.removeEventListener('scroll', handleUserActivity);
   }
-  /**
-   * Public API - Send custom events to the machine
-   */
-  export function sendEvent(_event: unknown) {
-    typingActor.send(event);
-  }
-  /**
-   * Public API - Get current analytics
-   */
-  export function getAnalytics() {
-    return currentContext?.analytic;
-  }
-  /**
-   * Public API - Get user behavior data
-   */
-  export function getUserBehavior() {
-    return currentContext?.userBehavior;
-  }
-  /**
-   * Public API - Force contextual processing
-   */
-  export function triggerContextualProcessing() {
+
+  function handleInput(event: Event) {
+    const newText = readTextFromEvent(event) || text;
+    text = newText;
+
     typingActor.send({
-      type: 'PROCESS_CONTEXT',
-      text: text;
+      type: 'USER_STARTED_TYPING',
+      text: newText,
+      timestamp: Date.now()
+    } as any);
+
+    isTyping = true;
+    lastTypingTime = Date.now();
+
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    typingTimeout = window.setTimeout(() => {
+      handleStoppedTyping(newText);
+    }, debounceMs);
+  }
+
+  function handleKeyDown(event: KeyboardEvent) {
+    // Track special keys
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      // Ctrl+Enter or Cmd+Enter - submission
+      typingActor.send({
+        type: 'USER_SUBMITTED',
+        text,
+        timestamp: Date.now()
+      } as any);
+    } else if (event.key === 'Escape') {
+      // Escape - clear
+      typingActor.send({
+        type: 'USER_CLEARED',
+        timestamp: Date.now()
+      } as any);
+    }
+  }
+
+  function handleKeyUp(_event: KeyboardEvent) {
+    lastTypingTime = Date.now();
+  }
+
+  function handlePaste(event: ClipboardEvent) {
+    setTimeout(() => {
+      const newText = readTextFromEvent(event) || text;
+      typingActor.send({
+        type: 'USER_STARTED_TYPING',
+        text: newText,
+        timestamp: Date.now()
+      } as any);
+      text = newText;
+    }, 0);
+  }
+
+  function handleFocus() {
+    typingActor.send({
+      type: 'USER_RETURNED',
+      timestamp: Date.now()
+    } as any);
+  }
+
+  function handleBlur() {
+    if (isTyping) {
+      handleStoppedTyping(text);
+    }
+  }
+
+  function handleStoppedTyping(currentText: string) {
+    isTyping = false;
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+      typingTimeout = null;
+    }
+    typingActor.send({
+      type: 'USER_STOPPED_TYPING',
+      text: currentText,
+      timestamp: Date.now()
+    } as any);
+
+    if (currentText.length > 50 && enableContextualPrompts) {
+      window.setTimeout(() => {
+        typingActor.send({
+          type: 'PROCESS_CONTEXT',
+          text: currentText
+        } as any);
+      }, 1000);
+    }
+  }
+
+  function handleVisibilityChange() {
+    if (document.hidden) {
+      typingActor.send({ type: 'USER_INACTIVE', timestamp: Date.now() } as any);
+    } else {
+      typingActor.send({ type: 'USER_RETURNED', timestamp: Date.now() } as any);
+    }
+  }
+
+  function handleUserActivity() {
+    if (currentState === 'user_inactive') {
+      typingActor.send({ type: 'USER_RETURNED', timestamp: Date.now() } as any);
+    }
+  }
+
+  function handleStateChange(state: TypingState, context: TypingContext) {
+    // Dispatch contextual prompts
+    if (state === 'waiting_user' && context?.contextualPrompts?.length > 0 && enableContextualPrompts) {
+      dispatch('contextualPrompts', { prompts: context.contextualPrompts, context });
+    }
+    // Dispatch analytics updates
+    if (enableAnalytics && context?.analytics) {
+      dispatch('analyticsUpdate', { analytics: context.analytics });
+    }
+    // Dispatch user behavior updates
+    if (context?.userBehavior) {
+      dispatch('behaviorUpdate', { behavior: context.userBehavior });
+    }
+    // Dispatch MCP worker status
+    if (context?.mcpWorkerStatus) {
+      dispatch('mcpWorkerStatus', { status: context.mcpWorkerStatus });
+    }
+
+    // Always emit a statechange event
+    dispatch('statechange', { state, context });
+  }
+
+  // Lifecycle
+  onMount(() => {
+    // start actor and subscribe to updates
+    try {
+      typingActor.start();
+    } catch {
+      // ignore if already started or actor implementation varies
+    }
+
+    const subscription: any = typingActor.subscribe?.((s: any) => {
+      currentState = s.value as TypingState;
+      currentContext = s.context as TypingContext;
+      handleStateChange(currentState, currentContext);
     });
+
+    unsubscribeFn = (() => {
+      if (typeof subscription === 'function') return subscription;
+      if (subscription && typeof subscription.unsubscribe === 'function') return () => subscription.unsubscribe();
+      return null;
+    })();
+
+    setupEventListeners();
+    console.log('[HeadlessTypingListener] Initialized');
+  });
+
+  onDestroy(() => {
+    try {
+      typingActor.stop();
+    } catch {
+      // ignore stop errors
+    }
+    if (unsubscribeFn) unsubscribeFn();
+    cleanup();
+    console.log('[HeadlessTypingListener] Destroyed');
+  });
+
+  // Public API - Send custom events to the machine
+  export function sendEvent(event: unknown) {
+    typingActor.send(event as any);
+  }
+
+  // Public API - Get current analytics
+  export function getAnalytics() {
+    return currentContext?.analytics;
   }
 </script>
 
@@ -328,8 +290,7 @@
   <!-- Debug info only in development -->
   <div
     class="debug-panel"
-    style="position: fixed;
-d; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;"
+    style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;"
   >
     <div><strong>Typing State:</strong> {currentState}</div>
     <div><strong>User Engagement:</strong> {userEngagement}</div>

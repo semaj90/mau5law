@@ -514,8 +514,8 @@ try {
 <style>
   /* Custom animations for processing indicators */
   @keyframes pulse-processing {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.5, }
   }
   .processing-indicator {
     animation: pulse-processing 2s infinite;

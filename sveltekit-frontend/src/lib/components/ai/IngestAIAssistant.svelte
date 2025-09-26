@@ -89,7 +89,7 @@ https://svelte.dev/e/attribute_duplicate -->
         ...result,
         title: documentTitle;
         type: selectedDocumentType;
-        timestamp: new Date();
+        timestamp: new Date(),
       }]);
       // Clear form
       clearForm();
@@ -144,7 +144,7 @@ https://svelte.dev/e/attribute_duplicate -->
       ingestResults.update(results => [...results, {
         ...result,
         is_batch: true
-        timestamp: new Date();
+        timestamp: new Date(),
       }]);
       batchDocuments.set([]);
       processingStatus.set('completed');

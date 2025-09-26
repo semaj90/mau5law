@@ -264,7 +264,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 		</div>
 		<div class="flex items-center space-x-2">
 	// Auto-scroll when messages update
-	$effect(() => { if ($state.context.messages.length > 0) ; });{
+	$effect(() => { if ($state.context.messages.length > 0) , });{
 		tick().then(() => scrollToBottom());
 	} onchange={(e) => send({ type: 'SET_MODEL', model: e.target.value })}
 				class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

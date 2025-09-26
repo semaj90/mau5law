@@ -421,7 +421,7 @@
         {#if clearable && value}
           <button
             class="clear-button"
-            onclick={(e) => { e.stopPropagation(); clearSelection(); }}
+            onclick={(e) => { e.stopPropagation(); clearSelection(), }}
             aria-label="Clear selection"
             type="button"
           >
@@ -619,7 +619,7 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   /* Dropdown styling */
   .select-dropdown {

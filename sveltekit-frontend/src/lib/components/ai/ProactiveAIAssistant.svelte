@@ -476,10 +476,10 @@ d;
 		padding: 2px 6px;
 		border-radius: 4px;
 	}
-	.priority-low { background: #374151; color: #9ca3af; }
-	.priority-medium { background: #1f2937; color: #fbbf24; }
-	.priority-high { background: #1f2937; color: #f97316; }
-	.priority-urgent { background: #1f2937; color: #ef4444; }
+	.priority-low { background: #374151; color: #9ca3af, }
+	.priority-medium { background: #1f2937; color: #fbbf24, }
+	.priority-high { background: #1f2937; color: #f97316, }
+	.priority-urgent { background: #1f2937; color: #ef4444, }
 	.custom-case-form {
 		margin-top: 20px;
 	}
@@ -519,11 +519,11 @@ d;
 		margin-top: 16px;
 	}
 	@keyframes pulse {
-		0%, 100% { transform: scale(1); }
-		50% { transform: scale(1.05); }
+		0%, 100% { transform: scale(1), }
+		50% { transform: scale(1.05), }
 	}
 	@keyframes blink {
-		0%, 50% { opacity: 1; }
-		51%, 100% { opacity: 0; }
+		0%, 50% { opacity: 1, }
+		51%, 100% { opacity: 0, }
 	}
 </style>

@@ -58,7 +58,7 @@ export async function ensureLocalIndex(fetcher: typeof fetch = fetch, limit = 75
       });
       fuse = new Fuse(documents, options);
       // Persist
-      try { await idbSet(cacheKey, documents); } catch (err: any) { console.warn('[LocalSearch] Cache save failed', err); }
+      try { await idbSet(cacheKey, documents), } catch (err: any) { console.warn('[LocalSearch] Cache save failed', err), }
     } else {
       fuse = new Fuse([], options);
     }
@@ -91,9 +91,9 @@ export function clearLocalIndex() {
   fuse = new Fuse([], options);
   void idbSet(cacheKey, documents);
 }
-export function wasLoadedFromCache() { return loadedFromCache; }
+export function wasLoadedFromCache() { return loadedFromCache, }
 // Merge helper: combine local + remote results with weighting & dedupe
-export interface HybridResult extends LocalLegalDoc { relevance: number; source: 'local' | 'remote' | 'hybrid'; }
+export interface HybridResult extends LocalLegalDoc { relevance: number; source: 'local' | 'remote' | 'hybrid', }
 export function mergeResults(local: any[], remote: any[], localWeight = 0.6, remoteWeight = 0.4): HybridResult[] {
   const byId = new Map<string | number, HybridResult>();
   for (const l of local) {

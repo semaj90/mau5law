@@ -328,7 +328,7 @@ await loadExistingEvidence();
                 );
                 toastMessage = `Uploaded ${file.name} → ${signedJson.bucket}/${namespacedKey}`;
                 showToast = true;
-                setTimeout(() => { showToast = false; }, 4000);
+                setTimeout(() => { showToast = false, }, 4000);
                 // Trigger AI analysis
                 await analyzeEvidence(evidenceId, file);
               } else {
@@ -469,14 +469,14 @@ await loadExistingEvidence();
           console.warn('Remote delete failed:', txt);
           toastMessage = `Remote delete failed: ${txt}`;
           showToast = true;
-          setTimeout(() => { showToast = false; }, 4000);
+          setTimeout(() => { showToast = false, }, 4000);
         }
       } catch (err) {
         remoteOk = false;
         console.warn('Remote delete exception:', err);
         toastMessage = `Remote delete exception`;
         showToast = true;
-        setTimeout(() => { showToast = false; }, 4000);
+        setTimeout(() => { showToast = false, }, 4000);
       }
     }
     // Only remove locally if remote deletion succeeded (or there was nothing remote)
@@ -1115,8 +1115,8 @@ await loadExistingEvidence();
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg), }
+    to { transform: rotate(360deg), }
   }
   .evidence-thumb {
     width: 40px;
@@ -1246,18 +1246,18 @@ await loadExistingEvidence();
     }
   }
   @keyframes scanDrift {
-    0% { transform: translateY(0); opacity: 0.55; }
-    50% { transform: translateY(-6px); opacity: 0.42; }
-    100% { transform: translateY(0); opacity: 0.55; }
+    0% { transform: translateY(0); opacity: 0.55, }
+    50% { transform: translateY(-6px); opacity: 0.42, }
+    100% { transform: translateY(0); opacity: 0.55, }
   }
   @keyframes hueShift {
-    0% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
-    50% { filter: brightness(1.1) saturate(1.25) hue-rotate(25deg); }
-    100% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
+    0% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg), }
+    50% { filter: brightness(1.1) saturate(1.25) hue-rotate(25deg), }
+    100% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg), }
   }
   @keyframes pulseRing {
-    0% { outline-offset: 0; }
-    100% { outline-offset: 4px; }
+    0% { outline-offset: 0, }
+    100% { outline-offset: 4px, }
   }
   @keyframes canvasGlow {
     0% {

@@ -435,13 +435,13 @@ try {
               <div class="flex gap-2 flex-wrap">
                 <button class="nes-btn"
                   size="sm"
-                  onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'view'); }}
+                  onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'view'), }}
                 >
                   View Document
                 <button class="nes-btn"
                   size="sm"
                   variant="ghost"
-                  onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'analyze'); }}
+                  onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'analyze'), }}
                 >
                   AI Analysis
                 </button>
@@ -449,7 +449,7 @@ try {
                   <button class="nes-btn"
                     size="sm"
                     variant="ghost"
-                    onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'canvas'); }}
+                    onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'canvas'), }}
                   >
                     Open in Canvas
                   </button>

@@ -482,9 +482,9 @@
 		animation: pulse 1.6s infinite;
 	}
 	@keyframes pulse {
-		0% { transform: scale(1); }
-		50% { transform: scale(1.02); }
-		100% { transform: scale(1); }
+		0% { transform: scale(1), }
+		50% { transform: scale(1.02), }
+		100% { transform: scale(1), }
 	}
 	.avatar-icon {
 		font-size: 22px;
@@ -652,12 +652,12 @@
 		opacity: 0.8;
 		animation: blink 1s infinite;
 	}
-	.typing-dots span:nth-child(2) { animation-delay: 0.12s; }
-	.typing-dots span:nth-child(3) { animation-delay: 0.24s; }
+	.typing-dots span:nth-child(2) { animation-delay: 0.12s, }
+	.typing-dots span:nth-child(3) { animation-delay: 0.24s, }
 	@keyframes blink {
-		0% { transform: translateY(0); opacity: 0.35; }
-		50% { transform: translateY(-6px); opacity: 1; }
-		100% { transform: translateY(0); opacity: 0.35; }
+		0% { transform: translateY(0); opacity: 0.35, }
+		50% { transform: translateY(-6px); opacity: 1, }
+		100% { transform: translateY(0); opacity: 0.35, }
 	}
 	/* Workflow interface */
 	.workflow-interface {
@@ -772,6 +772,6 @@
 		.chat-container {
 			height: 260px;
 		}
-		.assistant-avatar { width: 48px; height: 48px; }
+		.assistant-avatar { width: 48px; height: 48px, }
 	}
 </style>

@@ -2,7 +2,7 @@
 import type { RequestHandler } from './$types.js'
 // Lazy require (keeps optional deps from breaking build)
 const nodeCrypto = () => {
-  try { return require("crypto"); } catch { return null; }
+  try { return require("crypto"), } catch { return null, }
 }
 function isNodeBuffer(x: any): x is Buffer {
   return (

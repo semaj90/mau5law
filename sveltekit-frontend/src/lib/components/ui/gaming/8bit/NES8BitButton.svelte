@@ -252,11 +252,11 @@ box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
     animation: pixelSpin 1s steps(4, end) infinite;
   }
   @keyframes pixelSpin {
-    0% { transform: rotate(0deg); }
-    25% { transform: rotate(90deg); }
-    50% { transform: rotate(180deg); }
-    75% { transform: rotate(270deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    25% { transform: rotate(90deg), }
+    50% { transform: rotate(180deg), }
+    75% { transform: rotate(270deg), }
+    100% { transform: rotate(360deg), }
   }
 /* Scanlines effect (optional) */ :global($1) {
     content: '';
@@ -277,19 +277,19 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 2px 2px 0px #000000;
     animation: retroBounce 0.3s ease-in-out;
   }
   @keyframes retroBounce {
-    0%, 100% { transform: translateY(0px) scale(1); }
-    50% { transform: translateY(-2px) scale(1.02); }
+    0%, 100% { transform: translateY(0px) scale(1), }
+    50% { transform: translateY(-2px) scale(1.02), }
   }
 /* Glitch transition effect */ :global($1) {
     animation: glitchTransition 0.2s ease-in-out;
   }
   @keyframes glitchTransition {
-    0% { transform: translateY(0px); }
-    20% { transform: translateY(-1px) translateX(1px); }
-    40% { transform: translateY(1px) translateX(-1px); }
-    60% { transform: translateY(-1px) translateX(1px); }
-    80% { transform: translateY(1px) translateX(-1px); }
-    100% { transform: translateY(0px); }
+    0% { transform: translateY(0px), }
+    20% { transform: translateY(-1px) translateX(1px), }
+    40% { transform: translateY(1px) translateX(-1px), }
+    60% { transform: translateY(-1px) translateX(1px), }
+    80% { transform: translateY(1px) translateX(-1px), }
+    100% { transform: translateY(0px), }
   }
 /* Mobile optimizations */ @media (max-width: 480px) {
     :global(.nes-8bit-button) {

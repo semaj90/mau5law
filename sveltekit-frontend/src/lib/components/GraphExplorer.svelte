@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
             practiceArea: 'corporate';
           }
         },
-        timestamp: new Date();
+        timestamp: new Date(),
       });
       // Add sample graph node
       await db.addGraphNode({
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
             practiceArea: 'general'
           }
         },
-        timestamp: new Date();
+        timestamp: new Date(),
       });
       // Perform integrated search
       const result: any = await integratedSearch.search({,
@@ -186,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
             documentType: 'search_results'
           }
         },
-        timestamp: new Date();
+        timestamp: new Date(),
       });
       console.log('Search completed:', result);
     } catch (error: unknown) {
@@ -195,7 +195,7 @@ https://svelte.dev/e/js_parse_error -->
       await db.addChatMessage({
         role: 'system',
         content: `Search failed: ${message}`,
-        timestamp: new Date();
+        timestamp: new Date(),
       });
     } finally {
       isSearching = false;

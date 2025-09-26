@@ -328,7 +328,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   }
   // Reactive updates
   $effect(() => { if (text && containerElement) {
-    startTypewriterEffect(); });
+    startTypewriterEffect(), });
   }
 </script>
 <div
@@ -400,9 +400,9 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     animation: emphasize 0.3s ease-out;
   }
   @keyframes emphasize {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% { transform: scale(1), }
+    50% { transform: scale(1.1), }
+    100% { transform: scale(1), }
   }
   .nes-typewriter-cursor {
     display: inline-block;
@@ -418,8 +418,8 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     animation: blink 1s infinite;
   }
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+    0%, 50% { opacity: 1, }
+    51%, 100% { opacity: 0, }
   }
   /* Pixel-perfect rendering for retro look */
   .nes-classic .nes-typewriter-text,
@@ -444,8 +444,8 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     animation: loading-scan 2s infinite;
   }
   @keyframes loading-scan {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% { transform: translateX(-100%), }
+    100% { transform: translateX(100%), }
   }
   /* Responsive design */
   @media (max-width: 768px) {

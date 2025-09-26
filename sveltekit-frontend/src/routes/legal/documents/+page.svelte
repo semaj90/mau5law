@@ -247,7 +247,7 @@ await loadDocuments();
       formData.append('enableAI', enableAIProcessing.toString();
       const response = await fetch('/api/documents/upload', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       if (response.ok) {
         const result = await response.json();
@@ -465,10 +465,10 @@ showUploadDialog = true}>
                 </div>
                 <div class="flex gap-1">
                   <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) =>
-{ e.stopPropagation(); editDocument(document); }}>
+{ e.stopPropagation(); editDocument(document), }}>
                     <Edit2 class="h-4 w-4" />
                   <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) =>
-{ e.stopPropagation(); deleteDocument(document); }}>
+{ e.stopPropagation(); deleteDocument(document), }}>
                     <Trash2 class="h-4 w-4" />
                 </div>
               </div>
@@ -617,7 +617,7 @@ uploadFile = null}>
     </div>
     <Dialog.Footer>
       <Button class="bits-btn" variant="ghost" onclick={() =>
-{ showUploadDialog = false; resetUploadForm(); }}>
+{ showUploadDialog = false; resetUploadForm(), }}>
         Cancel
       <Button class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
 {#if uploading}

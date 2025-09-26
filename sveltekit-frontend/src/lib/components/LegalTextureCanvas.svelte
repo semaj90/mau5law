@@ -396,7 +396,7 @@
 	{#if error}
 		<div class="error-overlay">
 			<p>Error: {error}</p>
-			<button onclick={() => { error = null; }}>Dismiss</button>
+			<button onclick={() => { error = null, }}>Dismiss</button>
 		</div>
 	{/if}
 	{#if !isReady}
@@ -476,8 +476,8 @@
 		margin-top: 10px;
 	}
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% { transform: rotate(0deg), }
+		100% { transform: rotate(360deg), }
 	}
 	.controls-overlay {
 		position: absolute;

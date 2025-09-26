@@ -353,8 +353,8 @@ https://svelte.dev/e/expected_token -->
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    100% { transform: rotate(360deg), }
   }
   .empty-state {
     text-align: center;

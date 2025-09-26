@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     }
     // Parse query parameters
     const url = new URL(request.url)
-    const queryParams = Object.fromEntries(url.searchParams.entries()
+    const queryParams = Object.fromEntries(url.searchParams.entries())
     const validatedQuery = CasesQuerySchema.parse(queryParams)
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id)
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       .object({
         success: z.literal(true),
         data: z.array(CaseItemSchema),
-        pagination: z.object({,
+        pagination: z.object({
           page: z.number(),
           limit: z.number(),
           total: z.number(),
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       })
       .passthrough()
     const payload = {
-      success: true;
+      success: true,
       data: (result as { items?: any; pagination?: any }).items,
       pagination: {
         page: (result as { items?: any; pagination?: any }).pagination.page,
@@ -156,10 +156,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       console.error('Failed to queue case synthesis:', queueError)
       // Don't fail the request, just log the error
     }
-    return json()
+    return json(
       {
-        success: true
-        data: createdCase
+        success: true,
+        data: createdCase,
         meta: {
           caseId,
           userId: locals.user.id,
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       )
     }
     if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' })
+      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' }))
     }
     return error(
       500,

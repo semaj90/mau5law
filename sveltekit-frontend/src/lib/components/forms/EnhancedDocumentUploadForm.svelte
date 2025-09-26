@@ -43,11 +43,19 @@
   import type { Infer, SuperValidated } from "sveltekit-superforms";
 </script>
   // Props
-  let { data }: { data: unknown } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>
-  let { onSuccess = $bindable()  }: { onSuccess = $bindable() : unknown } = $props(); // ((result: unknown) => void) | undefined = undefined
-  let { onError = $bindable()  }: { onError = $bindable() : unknown } = $props(); // ((error: string) => void) | undefined = undefined
-  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string | undefined = undefined
-  let { autoSave = $bindable()  }: { autoSave = $bindable() : unknown } = $props(); // true
+  let {
+    data,
+    onSuccess = undefined,
+    onError = undefined,
+    caseId = undefined,
+    autoSave = true
+  }: {
+    data: unknown, // SuperValidated<Infer<typeof DocumentUploadSchema>>
+    onSuccess?: ((result: unknown) => void) | undefined,
+    onError?: ((error: string) => void) | undefined,
+    caseId?: string | undefined,
+    autoSave?: boolean
+  } = $props();
   // Form state management
   const formIntegration = createDocumentUploadForm(data, {
     onSuccess,

@@ -86,7 +86,7 @@ export class WebGPURedisOptimizer {
             let index = global_id.x;
             let length = params.x;
             let compression_ratio = params.y;
-            if (index >= length) { return; }
+            if (index >= length) { return, }
             // FlashAttention2 style tensor quantization
             let value = input[index];
             let quantized = round(value * f32(compression_ratio)) / f32(compression_ratio);

@@ -160,9 +160,9 @@
     return `M ${fromCenter.x} ${fromCenter.y} L ${toCenter.x} ${toCenter.y}`;
   }
   // Zoom controls
-  function zoomIn() { zoomLevel = Math.min(zoomLevel * 1.2, 3); }
-  function zoomOut() { zoomLevel = Math.max(zoomLevel / 1.2, 0.3); }
-  function resetZoom() { zoomLevel = 1; }
+  function zoomIn() { zoomLevel = Math.min(zoomLevel * 1.2, 3), }
+  function zoomOut() { zoomLevel = Math.max(zoomLevel / 1.2, 0.3), }
+  function resetZoom() { zoomLevel = 1, }
   // Layout mode handlers
   function setLayoutMode(mode: typeof layoutMode) {
     layoutMode = mod;

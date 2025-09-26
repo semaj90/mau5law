@@ -15,7 +15,7 @@
     description = '',
     analyticsLog = () => ,
     onClose = () =>  }: Props = $props();
-  // Melt UI component creation removed - replace with bits-ui declarative components analyticsLog({ event: 'dialog_closed', timestamp: Date.now() }); } });
+  // Melt UI component creation removed - replace with bits-ui declarative components analyticsLog({ event: 'dialog_closed', timestamp: Date.now() }), } });
   $effect(() => {
     if (open) analyticsLog({ event: 'dialog_opened', title, timestamp: Date.now() });
   });

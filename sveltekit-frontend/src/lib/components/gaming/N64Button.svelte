@@ -274,7 +274,7 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
     animation: n64-spin 0.8s linear infinite;
   }
   @keyframes n64-spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
 /* Ripple Effect */ {}
   .n64-button__ripple {

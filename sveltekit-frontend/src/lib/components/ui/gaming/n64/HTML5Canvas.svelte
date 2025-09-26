@@ -576,7 +576,7 @@
     animation: n64CanvasSpin 1s linear infinite;
   }
   @keyframes n64CanvasSpin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   .loading-text {
     font-size: 14px;

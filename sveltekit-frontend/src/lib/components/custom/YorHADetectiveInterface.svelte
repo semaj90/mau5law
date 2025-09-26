@@ -647,8 +647,8 @@
     cursor: not-allowed;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.7, }
   }
   /* Scrollbar Styles */
   .messages-container::-webkit-scrollbar {

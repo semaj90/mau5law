@@ -457,10 +457,10 @@ function createGPUSummaryStore() {
   }
   return {
     // State (read-only)
-    get state() { return state; },
-    get isCollecting() { return state.isCollecting; },
-    get currentSummary() { return state.currentSummary; },
-    get sessionId() { return state.sessionId; },
+    get state() { return state, },
+    get isCollecting() { return state.isCollecting, },
+    get currentSummary() { return state.currentSummary, },
+    get sessionId() { return state.sessionId, },
     // Actions
     initialize,
     stop,

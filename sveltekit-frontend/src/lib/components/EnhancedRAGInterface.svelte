@@ -501,8 +501,8 @@ visualizationMode = 'clusters'}
     padding: 1rem;
   }
   @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
-    50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+    0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5), }
+    50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), }
   }
   .enhanced-rag-interface :global(.searching) {
     animation: pulse-glow 2s infinite;

@@ -13,7 +13,7 @@ export class LegalStrategyEngine {
   static async generateStrategy(args: GenerateStrategyArgs): Promise<any> {
     const { evidenceIds, strategyType, includeRiskAssessment, generateAlternatives } = args
     const seed = evidenceIds.length + strategyType.length
-    function pr(n: number) { return (Math.sin(seed + n) * 10000) % 1; }
+    function pr(n: number) { return (Math.sin(seed + n) * 10000) % 1, }
     const riskLevels = ['low','medium','high','critical']
     const primary = {
       name: strategyType

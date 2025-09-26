@@ -89,7 +89,7 @@ export class TensorAccelerator {
         let index = global_id.x;
         let length = params.x;
         let tile_size = params.y;
-        if (index >= length) { return; }
+        if (index >= length) { return, }
         // Tiled dot product computation
         var sum = 0.0;
         let tile_start = (index / tile_size) * tile_size;
@@ -111,7 +111,7 @@ export class TensorAccelerator {
         let index = global_id.x;
         let length = params.x;
         let transform_type = params.y;
-        if (index >= length) { return; }
+        if (index >= length) { return, }
         let value = input[index];
         var result_value = value;
         // L2 normalization
@@ -141,7 +141,7 @@ export class TensorAccelerator {
         let width = params.x;
         let height = params.y;
         let tile_size = params.w;
-        if (x >= width || y >= height) { return; }
+        if (x >= width || y >= height) { return, }
         // Tiled feature extraction
         let tile_x = x / tile_size;
         let tile_y = y / tile_size;

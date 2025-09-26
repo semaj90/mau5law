@@ -326,28 +326,28 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   }
   /* Animations */
   @keyframes placeholder-pulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.6; }
+    0%, 100% { opacity: 0.3, }
+    50% { opacity: 0.6, }
   }
   @keyframes dash-move {
-    0% { stroke-dashoffset: 0; }
-    100% { stroke-dashoffset: -10; }
+    0% { stroke-dashoffset: 0, }
+    100% { stroke-dashoffset: -10, }
   }
   @keyframes point-pulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 0.8; }
+    0%, 100% { opacity: 0.4, }
+    50% { opacity: 0.8, }
   }
   @keyframes bar-grow {
-    0%, 100% { transform: scaleY(0.8); }
-    50% { transform: scaleY(1); }
+    0%, 100% { transform: scaleY(0.8), }
+    50% { transform: scaleY(1), }
   }
   @keyframes bar-pulse {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 0.4; }
+    0%, 100% { opacity: 0.2, }
+    50% { opacity: 0.4, }
   }
   @keyframes pie-rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    100% { transform: rotate(360deg), }
   }
   /* Responsive design */
   @media (max-width: 768px) {

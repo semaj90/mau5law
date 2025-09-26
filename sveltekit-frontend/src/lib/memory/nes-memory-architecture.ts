@@ -802,6 +802,6 @@ export const nesPlannerBridge = {
   select(handle: number, explorationC?: number) {
     return plannerMemory.selectChildUCB(handle, explorationC);
   },
-  stats(handle: number) { return plannerMemory.getStats(handle); },
-  summary() { return plannerMemory.summarize(); }
+  stats(handle: number) { return plannerMemory.getStats(handle), },
+  summary() { return plannerMemory.summarize(), }
 }

@@ -1106,8 +1106,8 @@ if (!browser) return;
   }
   /* N64-style animations */
   @keyframes indeterminate {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% { transform: translateX(-100%), }
+    100% { transform: translateX(100%), }
   }
   .nes-progress-bar.indeterminate {
     animation: indeterminate 1.5s linear infinite;

@@ -249,7 +249,7 @@ export class HybridGPUContext {
         #version 300 es
         precision highp float;
         out vec4 outColor;
-        void main() { outColor = vec4(1.0); }
+        void main() { outColor = vec4(1.0), }
       `,
         gl.FRAGMENT_SHADER,
       );
@@ -389,7 +389,7 @@ export class HybridGPUContext {
         @compute @workgroup_size(64)
         fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           let index = global_id.x;
-          if (index >= arrayLength(&input)) { return; }
+          if (index >= arrayLength(&input)) { return, }
           // LOD calculation based on distance and importance
           let distance = input[index * 3];
           let importance = input[index * 3 + 1];

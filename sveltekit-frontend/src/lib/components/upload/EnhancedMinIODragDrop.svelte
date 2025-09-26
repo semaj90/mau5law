@@ -219,7 +219,7 @@
       }));
       const response = await fetch('/api/v1/gpu/cuda/preprocess', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
         throw new Error(`CUDA preprocessing failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
@@ -253,7 +253,7 @@
     const startTime = Date.now();
     const response = await fetch('/api/evidence/upload', {
       method: 'POST',
-      body: formData;
+      body: formData
     });
     if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
       const errorData = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();

@@ -379,7 +379,7 @@
         const endpoint = `/api/v1/storage/${protocol}/upload`;
         const response = await fetch(endpoint, {
           method: 'POST',
-          body: formData;
+          body: formData
           headers: {
             'X-Upload-Protocol': protocol.toUpperCase()
           }
@@ -433,7 +433,7 @@
     formData.append('fileId', fileId);
     const response = await fetch('/api/v1/ocr/extract', {
       method: 'POST',
-      body: formData;
+      body: formData
     });
     if (!(response as { ok?: any; json?: any }).ok) {
       throw new Error('OCR processing failed');

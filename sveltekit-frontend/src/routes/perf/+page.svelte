@@ -367,7 +367,7 @@
     } catch // anomaly stats
     try {
       const aRes = await fetch('/api/cuda/metrics/anomalies');
-      if (aRes.ok) { anomalyStats = await aRes.json(); }
+      if (aRes.ok) { anomalyStats = await aRes.json(), }
     } catch }
   async function load() {
     try {
@@ -426,7 +426,7 @@
     interval = setInterval(load, 5000);
     // Secondary interval for engines/workers/profiling (10s) when any panel toggled
     const profilerInterval = setInterval(()=> {
-      if (showGpuEngines || showWorkers || showProfiling) { refreshEnginesWorkersProfiling(); }
+      if (showGpuEngines || showWorkers || showProfiling) { refreshEnginesWorkersProfiling(), }
     }, 10000);
     return () => clearInterval(interval);
   });

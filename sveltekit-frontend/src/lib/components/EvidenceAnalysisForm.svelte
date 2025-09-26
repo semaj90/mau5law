@@ -7,13 +7,23 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
-  let { formData = $bindable()  }: { formData = $bindable() : unknown } = $props(); // {
-    extracted_entities: Array;
-    key_facts: string[];
-    legal_issues: string[];
-    precedents: Array;
-  }
-  let { ocrResults = $bindable()  }: { ocrResults = $bindable() : unknown } = $props(); // OCRResult[]
+  let {
+    formData = {
+      extracted_entities: [],
+      key_facts: [],
+      legal_issues: [],
+      precedents: []
+    },
+    ocrResults = []
+  }: {
+    formData?: {
+      extracted_entities: Array<any>,
+      key_facts: string[],
+      legal_issues: string[],
+      precedents: Array<any>
+    },
+    ocrResults?: OCRResult[]
+  } = $props();
   let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
@@ -40,13 +50,13 @@ https://svelte.dev/e/js_parse_error -->
       currentAnalysisStep.set('Extracting entities from documents...');
       await new Promise(resolve => setTimeout(resolve, 1000));
       const entities = await extractEntitiesFromText();
-      formData.extracted_entities = entitie;
+      formData.extracted_entities = entities;
       analysisProgress.set(25);
       // Step 2: Key Facts Identification
       currentAnalysisStep.set('Identifying key facts...');
       await new Promise(resolve => setTimeout(resolve, 1000));
       const keyFacts = await identifyKeyFacts();
-      formData.key_facts = keyFact;
+      formData.key_facts = keyFacts;
       analysisProgress.set(50);
       // Step 3: Legal Issues Analysis
       currentAnalysisStep.set('Analyzing legal issues...');

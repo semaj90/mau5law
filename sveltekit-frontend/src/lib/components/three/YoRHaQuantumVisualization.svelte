@@ -463,14 +463,14 @@ await initializeQuantumVisualization();
     transition: width 0.3s ease;
     border-radius: 4px;
   }
-  .metric-fill.quantum { background: linear-gradient(90deg, #00bfff, #1e90ff); }
-  .metric-fill.entanglement { background: linear-gradient(90deg, #ff1493, #ff69b4); }
-  .metric-fill.collapsed { background: linear-gradient(90deg, #ff4500, #ffa500); }
-  .metric-fill.awareness { background: linear-gradient(90deg, #9370db, #ba55d3); }
-  .metric-fill.activity { background: linear-gradient(90deg, #32cd32, #7fff00); }
-  .metric-fill.stability { background: linear-gradient(90deg, #228b22, #90ee90); }
-  .metric-fill.glitch { background: linear-gradient(90deg, #dc143c, #ff6347); }
-  .metric-fill.temporal { background: linear-gradient(90deg, #ffd700, #ffff00); }
+  .metric-fill.quantum { background: linear-gradient(90deg, #00bfff, #1e90ff), }
+  .metric-fill.entanglement { background: linear-gradient(90deg, #ff1493, #ff69b4), }
+  .metric-fill.collapsed { background: linear-gradient(90deg, #ff4500, #ffa500), }
+  .metric-fill.awareness { background: linear-gradient(90deg, #9370db, #ba55d3), }
+  .metric-fill.activity { background: linear-gradient(90deg, #32cd32, #7fff00), }
+  .metric-fill.stability { background: linear-gradient(90deg, #228b22, #90ee90), }
+  .metric-fill.glitch { background: linear-gradient(90deg, #dc143c, #ff6347), }
+  .metric-fill.temporal { background: linear-gradient(90deg, #ffd700, #ffff00), }
   .status {
     font-weight: bold;
     padding: 0.1rem 0.3rem;

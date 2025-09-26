@@ -331,7 +331,7 @@ evidenceActions.loadEvidence(caseId)}
               class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has.id) ? 'ring-2 ring-blue-500' : ''}"
               role="button" tabindex="0"
                 onclick={() => toggleSelection(item)}
-              oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
+              oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item), }}
             >
               <!-- Preview/Thumbnail -->
               <div
@@ -418,7 +418,7 @@ evidenceActions.loadEvidence(caseId)}
               class="space-y-4"
               role="button" tabindex="0"
                 onclick={() => toggleSelection(item)}
-              oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
+              oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item), }}
             >
               <!-- Selection checkbox -->
               <input

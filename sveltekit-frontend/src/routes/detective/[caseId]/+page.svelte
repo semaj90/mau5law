@@ -257,8 +257,8 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    100% { transform: rotate(360deg), }
   }
   .error-icon {
     font-size: 3rem;
@@ -320,9 +320,9 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  .status-active { background: #dcfce7; color: #166534; }
-  .status-closed { background: #fef2f2; color: #991b1b; }
-  .status-pending { background: #fef3c7; color: #92400e; }
+  .status-active { background: #dcfce7; color: #166534, }
+  .status-closed { background: #fef2f2; color: #991b1b, }
+  .status-pending { background: #fef3c7; color: #92400e, }
   .evidence-count, .connection-status {
     font-size: 0.875rem;
     color: #64748b;
@@ -417,9 +417,9 @@
     letter-spacing: 0.05em;
     margin-top: 0.25rem;
   }
-  .value.engagement-high { color: #dc2626; }
-  .value.engagement-medium { color: #d97706; }
-  .value.engagement-low { color: #64748b; }
+  .value.engagement-high { color: #dc2626, }
+  .value.engagement-medium { color: #d97706, }
+  .value.engagement-low { color: #64748b, }
   .recent-prompts ul {
     margin: 0;
     padding: 0;

@@ -218,7 +218,7 @@
             size="sm"
             variant="ghost"
             class="p-1 h-6 w-6"
-            onclick={(e) => { e.stopPropagation(); analyzeEvidence(); }}
+            onclick={(e) => { e.stopPropagation(); analyzeEvidence(), }}
             disabled={isAnalyzing}
           >
             {#if isAnalyzing}

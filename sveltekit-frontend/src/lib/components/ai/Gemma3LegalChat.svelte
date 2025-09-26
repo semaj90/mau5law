@@ -242,7 +242,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         id: crypto.randomUUID(),
         role: 'system',
         content: 'Gemma3 Legal AI Assistant initialized. GPU acceleration enabled with 35 layers loaded. How can I help you with your legal analysis today?',
-        timestamp: new Date();
+        timestamp: new Date(),
       }]);
     } catch (error) {
       console.error('Failed to initialize Gemma3:', error);
@@ -250,7 +250,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         id: crypto.randomUUID(),
         role: 'system',
         content: 'Running in CPU mode. GPU acceleration unavailable.',
-        timestamp: new Date();
+        timestamp: new Date(),
       }]);
     }
   });
@@ -274,7 +274,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       id: crypto.randomUUID(),
       role: 'user',
       content: userInput;
-      timestamp: new Date();
+      timestamp: new Date(),
     }
     messages.update(m => [...m, userMessage]);
     isProcessing.set(true);

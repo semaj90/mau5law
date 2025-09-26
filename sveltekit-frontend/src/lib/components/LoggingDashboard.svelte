@@ -269,7 +269,7 @@ https://svelte.dev/e/element_unclosed -->
                 <!-- Actions -->
                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button class="bits-btn" size="sm" variant="ghost" onclick={(e) =>
-{ e.stopPropagation(); selectEntry(entry); }}>
+{ e.stopPropagation(); selectEntry(entry), }}>
                     👁️
                 </div>
               </div>

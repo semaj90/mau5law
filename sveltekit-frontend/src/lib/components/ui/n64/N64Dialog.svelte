@@ -487,16 +487,16 @@ background: radial-gradient( ellipse at 30% 70%, rgba(var(--fog-color-rgb, 100, 
 background: radial-gradient( ellipse at 70% 30%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.25)) 0%, transparent 70% );
     animation: fog-drift-3 18s ease-in-out infinite;
   }
-/* Fog color variations */ .fog-color-blue { --fog-color-rgb: 100, 150, 255; }
-  .fog-color-purple { --fog-color-rgb: 150, 100, 255; }
-  .fog-color-green { --fog-color-rgb: 100, 255, 150; }
-  .fog-color-orange { --fog-color-rgb: 255, 150, 100; }
-  .fog-color-red { --fog-color-rgb: 255, 100, 100; }
-  .fog-color-white { --fog-color-rgb: 255, 255, 255; }
-/* Fog intensity variations */ .fog-light { --fog-density: 0.2; }
-  .fog-medium { --fog-density: 0.5; }
-  .fog-heavy { --fog-density: 0.7; }
-  .fog-dense { --fog-density: 0.9; }
+/* Fog color variations */ .fog-color-blue { --fog-color-rgb: 100, 150, 255, }
+  .fog-color-purple { --fog-color-rgb: 150, 100, 255, }
+  .fog-color-green { --fog-color-rgb: 100, 255, 150, }
+  .fog-color-orange { --fog-color-rgb: 255, 150, 100, }
+  .fog-color-red { --fog-color-rgb: 255, 100, 100, }
+  .fog-color-white { --fog-color-rgb: 255, 255, 255, }
+/* Fog intensity variations */ .fog-light { --fog-density: 0.2, }
+  .fog-medium { --fog-density: 0.5, }
+  .fog-heavy { --fog-density: 0.7, }
+  .fog-dense { --fog-density: 0.9, }
 /* Depth of field layers */ .dof-layer {
     position: absolute;
     pointer-events: none;
@@ -738,26 +738,26 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     transform: none !important;
   }
 /* Animations */ @keyframes fog-drift-1 {
-    0% { transform: translateX(-10px) translateY(0px); }
-    33% { transform: translateX(5px) translateY(-5px); }
-    66% { transform: translateX(0px) translateY(10px); }
-    100% { transform: translateX(-10px) translateY(0px); }
+    0% { transform: translateX(-10px) translateY(0px), }
+    33% { transform: translateX(5px) translateY(-5px), }
+    66% { transform: translateX(0px) translateY(10px), }
+    100% { transform: translateX(-10px) translateY(0px), }
   }
   @keyframes fog-drift-2 {
-    0% { transform: translateX(5px) translateY(5px); }
-    33% { transform: translateX(-8px) translateY(0px); }
-    66% { transform: translateX(3px) translateY(-8px); }
-    100% { transform: translateX(5px) translateY(5px); }
+    0% { transform: translateX(5px) translateY(5px), }
+    33% { transform: translateX(-8px) translateY(0px), }
+    66% { transform: translateX(3px) translateY(-8px), }
+    100% { transform: translateX(5px) translateY(5px), }
   }
   @keyframes fog-drift-3 {
-    0% { transform: translateX(0px) translateY(-3px); }
-    33% { transform: translateX(8px) translateY(5px); }
-    66% { transform: translateX(-5px) translateY(0px); }
-    100% { transform: translateX(0px) translateY(-3px); }
+    0% { transform: translateX(0px) translateY(-3px), }
+    33% { transform: translateX(8px) translateY(5px), }
+    66% { transform: translateX(-5px) translateY(0px), }
+    100% { transform: translateX(0px) translateY(-3px), }
   }
   @keyframes internal-fog-drift {
-    0% { opacity: 0.7; transform: translateY(0px); }
-    50% { opacity: 1; transform: translateY(-2px); }
-    100% { opacity: 0.7; transform: translateY(0px); }
+    0% { opacity: 0.7; transform: translateY(0px), }
+    50% { opacity: 1; transform: translateY(-2px), }
+    100% { opacity: 0.7; transform: translateY(0px), }
   }
 </style>

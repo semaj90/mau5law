@@ -39,15 +39,15 @@ export const GET: RequestHandler = async ({ url }) => {
       )
     }
     if (caseId) {
-      conditions.push(eq(documents.case_id, caseId)
+      conditions.push(eq(documents.case_id, caseId))
     }
     if (documentType) {
-      conditions.push(eq(documents.document_type, documentType)
+      conditions.push(eq(documents.document_type, documentType))
     }
     if (riskLevel) {
-      conditions.push(eq(documents.risk_level, riskLevel)
+      conditions.push(eq(documents.risk_level, riskLevel))
     }
-    conditions.push(eq(documents.is_active, true)
+    conditions.push(eq(documents.is_active, true))
     // Execute query with relations
     const query = db
       .select({

@@ -447,7 +447,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   </div>
   <!-- Citation Dialog -->
   {#if showCitationDialog}
-    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false; }}>
+    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false, }}>
       <div class="modal" role="document">
         <div class="modal-header">
           <Quote size={20} />
@@ -785,8 +785,8 @@ https://svelte.dev/e/effect_invalid_placement -->
     animation: pulse 1s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.7, }
   }
   .input-wrapper {
     display: flex;
@@ -922,10 +922,10 @@ d;
     background: #e5e7eb;
   }
   /* Color utilities */
-  .text-gray-500 { color: #6b7280; }
-  .text-green-500 { color: #10b981; }
-  .text-yellow-500 { color: #f59e0b; }
-  .text-red-500 { color: #ef4444; }
+  .text-gray-500 { color: #6b7280, }
+  .text-green-500 { color: #10b981, }
+  .text-yellow-500 { color: #f59e0b, }
+  .text-red-500 { color: #ef4444, }
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .enhanced-ai-assistant {

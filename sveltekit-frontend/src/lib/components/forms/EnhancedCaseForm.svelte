@@ -7,7 +7,13 @@ https://svelte.dev/e/props_duplicate -->
   import { notifications } from "$lib/stores/notification";
   import type { User } from "$lib/types/user";
   import type { Case } from "$lib/types/index";
-  let { case_ = $bindable(), user = $bindable() } = $props();
+  let {
+    case_ = undefined,
+    user = undefined
+  }: {
+    case_?: Case | undefined,
+    user?: User | undefined
+  } = $props();
   // Form data matching the database schema
   let formData = $state({
     title: case_?.title || "",
@@ -15,7 +21,7 @@ https://svelte.dev/e/props_duplicate -->
     caseNumber: case_?.caseNumber || "",
     name: case_?.name || "",
     incidentDate: case_?.incidentDate
-      ? new Date(case_.incidentDate).toISOString.split("T")[0]
+      ? new Date(case_.incidentDate).toISOString().split("T")[0]
       : "",
     location: case_?.location || "",
     priority: case_?.priority || "medium",
@@ -27,25 +33,25 @@ https://svelte.dev/e/props_duplicate -->
     leadProsecutor: case_?.leadProsecutor || user?.id || "",
     assignedTeam: case_?.assignedTeam || [],
     tags: case_?.tags || [],
-    metadata: case_?.metadata ||;
+    metadata: case_?.metadata || {}
   });
   let loading = $state(false);
-  let errors = $state<Record<string, string>('') >( );
+  let errors = $state<Record<string, string>>({});
   // Form validation
   function validateForm() {
-    errors = {}
+    errors = {};
     if (!formData.title.trim()) {
       errors.title = "Title is required";
-  }
+    }
     if (!formData.caseNumber.trim()) {
       errors.caseNumber = "Case number is required";
-  }
+    }
     if (formData.dangerScore < 0 || formData.dangerScore > 10) {
       errors.dangerScore = "Danger score must be between 0 and 10";
-  }
+    }
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
       errors.estimatedValue = "Estimated value must be a number";
-  }
+    }
     return Object.keys(errors).length === 0;
   }
   // Handle form submission
@@ -154,7 +160,7 @@ https://svelte.dev/e/props_duplicate -->
     formData.assignedTeam = formData.assignedTeam.filter((m) => m !== member);
   }
 </script>
-<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="container mx-auto px-4">
+<form onsubmit={(e) => { e.preventDefault(); handleSubmit(), }} class="container mx-auto px-4">
   <div class="container mx-auto px-4">
     <!-- Basic Information -->
     <section class="container mx-auto px-4">

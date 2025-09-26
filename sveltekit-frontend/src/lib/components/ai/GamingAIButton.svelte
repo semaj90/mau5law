@@ -229,8 +229,8 @@ https://svelte.dev/e/expected_token -->
   /* @unocss-include */
   /* Custom gaming-style animations */
   @keyframes scanner {
-    0%, 100% { transform: translateY(-100%); }
-    50% { transform: translateY(100%); }
+    0%, 100% { transform: translateY(-100%), }
+    50% { transform: translateY(100%), }
   }
   /* Enhanced glow effects for gaming theme */
   .glow-blue {

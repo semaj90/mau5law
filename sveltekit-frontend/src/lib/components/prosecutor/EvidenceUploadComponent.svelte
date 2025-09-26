@@ -143,7 +143,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   let response = $state<Responsetry {
           response  | null>(null); const data = await fetch('/api/evidence/upload', {
             method: 'POST',
-            body: formData;
+            body: formData
           }));
           if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
             throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);

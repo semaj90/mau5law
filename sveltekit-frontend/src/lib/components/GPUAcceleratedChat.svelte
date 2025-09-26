@@ -164,7 +164,7 @@
       id: crypto.randomUUID(),
       role: 'user',
       content: inputMessage;
-      timestamp: new Date();
+      timestamp: new Date(),
     }
     messages = [...messages, userMessage];
     const messageContent = inputMessag;
@@ -221,7 +221,7 @@
     try {
       const response = await fetch(`http://localhost:${currentPort}/api/document/upload`, {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown }).json();
@@ -230,7 +230,7 @@
           id: crypto.randomUUID(),
           role: 'system',
           content: `Document "${file.name}" uploaded and processed. ${(result as { summary?: unknown; content?: unknown; embeddings?: unknown }).summary || ''}`,
-          timestamp: new Date();
+          timestamp: new Date(),
         }];
         // Send to WebSocket for processing
         if (ws && ws.readyState === WebSocket.OPEN) {
@@ -361,7 +361,7 @@
       id: crypto.randomUUID(),
       message,
       type,
-      timestamp: new Date();
+      timestamp: new Date(),
     }
     // You could store notifications in state and display them
   }
@@ -399,7 +399,7 @@
   • Batch processing supported
   • Document upload enabled
   Type your legal question or upload a document to begin!`,
-      timestamp: new Date();
+      timestamp: new Date(),
     }];
   });
   onDestroy(() => {

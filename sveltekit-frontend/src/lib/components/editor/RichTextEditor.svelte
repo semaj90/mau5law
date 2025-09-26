@@ -58,7 +58,7 @@
         color: #374151;
         background: #ffffff;
   }
-      p { margin-bottom: 1em; }
+      p { margin-bottom: 1em, }
       h1, h2, h3, h4, h5, h6 {
         font-weight: 600;
         margin-top: 1.5em;

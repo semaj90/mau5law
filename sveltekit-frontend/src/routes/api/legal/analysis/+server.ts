@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     ] : [])
     return new Response(JSON.stringify({
       text: (result as { response?: any; text?: any }).response || (result as { response?: any; text?: any }).text || '',
-      model: result?.model || "unknown" // @ts-ignore - Model property access || 'gemma:legal',
+      model: result?.model || 'gemma:legal',
       qualityScore: 0.82,
       citations: [],
       issues,

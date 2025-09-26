@@ -623,7 +623,7 @@ TEMPLATE """{{ if .System }}<|system|>
   private async testServiceConnections(): Promise<void> {
     logger.info('[Orchestrator] Testing service connections...');
     const services = [
-      { name: 'Redis', url: null, test: async () => { await (redis as any).setex('health-check', 1, 'ok'); return 'OK'; } },
+      { name: 'Redis', url: null, test: async () => { await (redis as any).setex('health-check', 1, 'ok'); return 'OK', } },
       { name: 'PostgreSQL', url: null, test: () => pgConnection`SELECT 1` },
       { name: 'Neo4j', url: null, test: () => this.neo4jStore?.similaritySearch('test', 1) },
       { name: 'Enhanced RAG', url: `${serviceConfig.goMicroservices.rag}/health` },

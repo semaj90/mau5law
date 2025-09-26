@@ -23,7 +23,7 @@ export const testingFramework = {
     toContain: (expected: any) => value.includes?.(expected),
     toHaveLength: (expected: number) => value?.length === expected,
     toThrow: () => {
-      try { value(); return false; } catch { return true; }
+      try { value(); return false, } catch { return true, }
     }
   })),
   beforeEach: (globalThis as any).beforeEach || ((fn: () => void) => fn()),
@@ -400,5 +400,5 @@ export interface BarrelStore {
 }
 // Global augmentation for missing types
 declare global {
-  interface Window { barrelStore?: BarrelStore; }
+  interface Window { barrelStore?: BarrelStore, }
 }

@@ -181,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
       id: `user_${Date.now()}`,
       role: 'user',
       content: currentMessage.trim(),
-      timestamp: new Date();
+      timestamp: new Date(),
     }
     messages.update(msgs => [...msgs, userMessage]);
     const messageText = currentMessage.trim();

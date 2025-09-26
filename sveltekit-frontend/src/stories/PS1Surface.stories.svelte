@@ -69,18 +69,18 @@
 				const worldX = (x - gridSize / 2) * spacing;
 				const worldZ = (z - gridSize / 2) * spacing;
 				// PS1-style low precision height calculation
-				const height = Math.sin(worldX * 0.02) * Math.cos(worldZ * 0.02) * amplitud;
-				const quantizedHeight = Math.floor(height / vertexPrecision) * vertexPrecisio;
+				const height = Math.sin(worldX * 0.02) * Math.cos(worldZ * 0.02) * amplitude;
+				const quantizedHeight = Math.floor(height / vertexPrecision) * vertexPrecision;
 				vertices.push({
-					x: worldX
-					y: quantizedHeight
-					z: worldZ
-					u: x / (gridSize - 1), // UV coordinates;
+					x: worldX,
+					y: quantizedHeight,
+					z: worldZ,
+					u: x / (gridSize - 1), // UV coordinates
 					v: z / (gridSize - 1),
 					color: {
 						r: Math.floor((x / gridSize) * 255),
 						g: Math.floor((z / gridSize) * 255),
-						b: Math.floor(((x + z) / (gridSize * 2)) * 255);
+						b: Math.floor(((x + z) / (gridSize * 2)) * 255)
 					}
 				});
 			}
@@ -112,13 +112,13 @@
 		return {
 			x: ay * bz - az * by,
 			y: az * bx - ax * bz,
-			z: ax * by - ay * bx;
+			z: ax * by - ay * bx
 		}
 	}
 	function updatePerformanceMetrics() {
 		const currentTime = performance.now();
-		perfMetrics.frameTime = currentTime - perfMetrics.lastFrameTim;
-		perfMetrics.lastFrameTime = currentTim;
+		perfMetrics.frameTime = currentTime - perfMetrics.lastFrameTime;
+		perfMetrics.lastFrameTime = currentTime;
 		perfMetrics.polygonsPerFrame = faces.length;
 		perfMetrics.vertexOperations = vertices.length * 4; // Transform, project, light, clip
 		perfMetrics.fillRate = (perfMetrics.polygonsPerFrame * 60) / 1000; // K-polys/sec estimate
@@ -677,8 +677,8 @@
 		color: #ff6600;
 		font-weight: bold;
 	}
-	.hud-value.status-ok { color: #00ff88; }
-	.hud-value.status-off { color: #888; }
+	.hud-value.status-ok { color: #00ff88, }
+	.hud-value.status-off { color: #888, }
 	.info-panel {
 		background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #ff6600;

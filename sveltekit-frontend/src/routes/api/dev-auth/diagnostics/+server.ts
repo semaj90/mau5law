@@ -10,11 +10,11 @@ export const GET: RequestHandler = async () => {
       const usersResult = await db.select({ id: users.id }).from(users).limit(1)
       userCount = usersResult.length
       sample = usersResult[0] || null
-    } catch (e: any) { joinOk = false; joinError = 'users select failed: ' + e.message; }
+    } catch (e: any) { joinOk = false; joinError = 'users select failed: ' + e.message, }
     try {
       const sessionsResult = await db.select({ id: sessions.id }).from(sessions).limit(1)
       sessionCount = sessionsResult.length
-    } catch (e: any) { joinOk = false; joinError = (joinError || '') + ' | sessions select failed: ' + e.message; }
+    } catch (e: any) { joinOk = false; joinError = (joinError || '') + ' | sessions select failed: ' + e.message, }
     return json({
       ok: true
       users: { count: userCount, sample },

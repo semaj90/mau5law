@@ -44,9 +44,9 @@ const documentMetadata: any = {
 // Replace with your real implementation or import.
 const ollamaCudaService: any = {
   currentModel: 'local-ollama',
-  async generateEmbedding(_text: string): Promise<number[]> { return []; },
-  async optimizeForUseCase(_useCase: string) { return; },
-  async chatCompletion(_messages: any[], _opts?: any): Promise<string> { return JSON.stringify({ summary: '', keyPoints: [], categories: [], confidence: 0.5 }); }
+  async generateEmbedding(_text: string): Promise<number[]> { return [], },
+  async optimizeForUseCase(_useCase: string) { return, },
+  async chatCompletion(_messages: any[], _opts?: any): Promise<string> { return JSON.stringify({ summary: '', keyPoints: [], categories: [], confidence: 0.5 }), }
 }
 // Lightweight message classes used by the AI helper to keep the API shape
 class SystemMessage { constructor(public content: string) {} }
@@ -270,10 +270,10 @@ const SUMMARY_TYPES = ['key_points', 'narrative', 'prosecutorial'] as const
 type SummaryType = typeof SUMMARY_TYPES[number]
 // Augment Partial<FileUpload> cheaply (local shape extension without editing central schema)
 export interface UploadAugment { summaryType?: SummaryType; priority?: string }
-function withCorrelation(resp: Response, cid?: string) { if (cid) resp.headers.set('x-correlation-id', cid); return resp; }
-function ok<T>(data: T, meta: { [key: string]: any } = {}, cid?: string) { return withCorrelation(json({ success: true, data, meta }, { status: 200 }), cid); }
-function created<T>(data: T, meta: { [key: string]: any } = {}, cid?: string) { return withCorrelation(json({ success: true, data, meta }, { status: 201 }), cid); }
-function fail(status: number, message: string, details?: unknown, cid?: string) { return withCorrelation(json({ success: false, error: { message, details } }, { status }), cid); }
+function withCorrelation(resp: Response, cid?: string) { if (cid) resp.headers.set('x-correlation-id', cid); return resp, }
+function ok<T>(data: T, meta: { [key: string]: any } = {}, cid?: string) { return withCorrelation(json({ success: true, data, meta }, { status: 200 }), cid), }
+function created<T>(data: T, meta: { [key: string]: any } = {}, cid?: string) { return withCorrelation(json({ success: true, data, meta }, { status: 201 }), cid), }
+function fail(status: number, message: string, details?: unknown, cid?: string) { return withCorrelation(json({ success: false, error: { message, details } }, { status }), cid), }
 const ALLOWED_MIME_TYPES = [
   // Images
   'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
@@ -337,9 +337,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         stream.on('error', reject)
         writeStream.on('error', reject)
         stream.pipe(writeStream)
-  stream.on('end', () => { incomingFiles.push(rec); logger.debug('upload.file.end', { file: filename, size: rec.size, correlationId, userId }); })
+  stream.on('end', () => { incomingFiles.push(rec); logger.debug('upload.file.end', { file: filename, size: rec.size, correlationId, userId }), })
       })
-      bb.on('field', (name, val) => { fieldMap[name] = val; })
+      bb.on('field', (name, val) => { fieldMap[name] = val, })
       bb.on('error', reject)
       bb.on('finish', resolve)
     })
@@ -382,7 +382,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const uploadDataStr = fieldMap['uploadData'] || ''
     let uploadData: Partial<FileUpload & UploadAugment> = {}
     if (uploadDataStr) {
-      try { uploadData = JSON.parse(uploadDataStr); } catch (e: any) { console.warn('Failed to parse upload data', e); }
+      try { uploadData = JSON.parse(uploadDataStr), } catch (e: any) { console.warn('Failed to parse upload data', e), }
     }
     // Parse upload metadata
   const coerceBool = (v: string | null | undefined) => (v === 'true' || v === '1')

@@ -691,8 +691,8 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.6, }
   }
 /* Lighting overlay */ .lighting-overlay {
     position: absolute;

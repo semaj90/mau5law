@@ -477,7 +477,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   animation: nes-flicker-${tile.id} ${(compressed[5] / 127 * 2 + 0.5).toFixed(1)}s infinite ease-in-out;
 }
 @keyframes nes-flicker-${tile.id} {
-  0%, 100% { opacity: 1; }
+  0%, 100% { opacity: 1, }
   50% { opacity: ${(tile.tileMetadata.semanticDensity * 0.3 + 0.7).toFixed(2)} }
 }`;
   }

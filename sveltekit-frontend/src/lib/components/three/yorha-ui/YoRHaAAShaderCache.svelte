@@ -197,12 +197,12 @@ https://svelte.dev/e/js_parse_error -->
         let rmax = aabbMax - p;
         let rmin = aabbMin - p;
         var result = r;
-        if ((result as { x?: unknown; y?: unknown; z?: unknown }).x > rmax.x + 0.000001) { result *= (rmax.x / (result as { x?: unknown; y?: unknown; z?: unknown }).x); }
-        if ((result as { x?: unknown; y?: unknown; z?: unknown }).y > rmax.y + 0.000001) { result *= (rmax.y / (result as { x?: unknown; y?: unknown; z?: unknown }).y); }
-        if ((result as { x?: unknown; y?: unknown; z?: unknown }).z > rmax.z + 0.000001) { result *= (rmax.z / (result as { x?: unknown; y?: unknown; z?: unknown }).z); }
-        if ((result as { x?: unknown; y?: unknown; z?: unknown }).x < rmin.x - 0.000001) { result *= (rmin.x / (result as { x?: unknown; y?: unknown; z?: unknown }).x); }
-        if ((result as { x?: unknown; y?: unknown; z?: unknown }).y < rmin.y - 0.000001) { result *= (rmin.y / (result as { x?: unknown; y?: unknown; z?: unknown }).y); }
-        if ((result as { x?: unknown; y?: unknown; z?: unknown }).z < rmin.z - 0.000001) { result *= (rmin.z / (result as { x?: unknown; y?: unknown; z?: unknown }).z); }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).x > rmax.x + 0.000001) { result *= (rmax.x / (result as { x?: unknown; y?: unknown; z?: unknown }).x), }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).y > rmax.y + 0.000001) { result *= (rmax.y / (result as { x?: unknown; y?: unknown; z?: unknown }).y), }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).z > rmax.z + 0.000001) { result *= (rmax.z / (result as { x?: unknown; y?: unknown; z?: unknown }).z), }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).x < rmin.x - 0.000001) { result *= (rmin.x / (result as { x?: unknown; y?: unknown; z?: unknown }).x), }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).y < rmin.y - 0.000001) { result *= (rmin.y / (result as { x?: unknown; y?: unknown; z?: unknown }).y), }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).z < rmin.z - 0.000001) { result *= (rmin.z / (result as { x?: unknown; y?: unknown; z?: unknown }).z), }
         return p + result;
       }
       fn detectYoRHaGeometry(uv: vec2<f32>) -> f32 {
@@ -1077,8 +1077,8 @@ if (preloadShaders) {
   }
   /* Animations */
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    100% { transform: rotate(360deg), }
   }
   @keyframes pulse {
     0%, 100% {

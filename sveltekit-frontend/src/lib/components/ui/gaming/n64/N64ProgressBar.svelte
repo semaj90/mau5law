@@ -323,13 +323,13 @@
   /* Animations */
   @keyframes shimmer {
     0% { background-position: ;
--200% 0; }
-    100% { background-position: 00% 0; }
+-200% 0, }
+    100% { background-position: 00% 0, }
   }
   @keyframes shine {
-    0% { transform: translateX(-100%); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateX(100%); opacity: 0; }
+    0% { transform: translateX(-100%); opacity: 0, }
+    50% { opacity: 1, }
+    100% { transform: translateX(100%); opacity: 0, }
   }
   @keyframes sparkle {
     0%, 100% {

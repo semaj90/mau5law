@@ -175,7 +175,7 @@ export class LangChainSIMDBridge {
         totalTokens: langchainResult.metadata?.totalTokens || 0,
         avgChunkSize: langchainResult.metadata?.avgChunkSize || 0,
         model: langchainResult.metadata?.model || 'unknown'
-      } as { totalTokens: number; avgChunkSize: number; model: string; },
+      } as { totalTokens: number; avgChunkSize: number; model: string, },
       // SIMD enhancement data
       simdData: {
         compressedTiles: simdResult.compressedTiles.map(tile => ({

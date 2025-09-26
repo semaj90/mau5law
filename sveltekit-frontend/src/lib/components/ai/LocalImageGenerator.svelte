@@ -556,7 +556,7 @@ Production-ready with native Windows support
     margin-right: 0.5rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   .current-generation {
     margin: 1rem 0;

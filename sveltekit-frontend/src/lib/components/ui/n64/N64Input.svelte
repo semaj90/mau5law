@@ -544,14 +544,14 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Animations */
   @keyframes anisotropic-sweep {
-    0% { transform: translateX(-100%); }
-    50% { transform: translateX(0%); }
-    100% { transform: translateX(100%); }
+    0% { transform: translateX(-100%), }
+    50% { transform: translateX(0%), }
+    100% { transform: translateX(100%), }
   }
   @keyframes fog-drift {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-2px); }
-    100% { transform: translateY(0px); }
+    0% { transform: translateY(0px), }
+    50% { transform: translateY(-2px), }
+    100% { transform: translateY(0px), }
   }
   /* Placeholder styling */
   .n64-input::placeholder {

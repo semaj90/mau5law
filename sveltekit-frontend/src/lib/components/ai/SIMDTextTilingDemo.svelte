@@ -531,8 +531,8 @@ processingLogs = []} variant="ghost" size="sm">
   }
   /* Processing animation */
   @keyframes processing-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.7, }
   }
   .processing {
     animation: processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;

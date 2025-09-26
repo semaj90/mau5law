@@ -277,7 +277,7 @@ https://svelte.dev/e/js_parse_error -->
     <p>The chat component encountered an error:</p>
     <p class="error-message">{componentError.message}</p>
     <button
-      onclick={() => { componentError = null; }}
+      onclick={() => { componentError = null, }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -288,7 +288,7 @@ https://svelte.dev/e/js_parse_error -->
   <div
     class="chat-overlay"
     transitifade={{ duration: 200 }}
-    onclick={(e) => { if (e.target === e.currentTarget) closeChat(); }}
+    onclick={(e) => { if (e.target === e.currentTarget) closeChat(), }}
     onkeydown={(e) => e.key === "Escape" && closeChat()}
     role="dialog"
     aria-modal="true"

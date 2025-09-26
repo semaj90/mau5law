@@ -45,7 +45,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     })
     if (!validatedData.success) {
       return json({
-        success: false
+        success: false,
         error: 'Invalid request data',
         details: validatedData.error.flatten()
       }, { status: 400 })
@@ -75,7 +75,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message : 'Inference failed'
     }, { status: 500 })
   }
@@ -88,30 +88,30 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'health':
         const healthStatus = await tensorrtLLMService.getHealthStatus()
         return json({
-          success: true
+          success: true,
           data: healthStatus
         })
       case 'models':
         const models = await tensorrtLLMService.getAvailableModels()
         return json({
-          success: true
+          success: true,
           data: models
         })
       case 'warmup':
         await tensorrtLLMService.warmupModels()
         return json({
-          success: true
+          success: true,
           data: { message: 'Models warmed up successfully' }
         })
       default:
-        return json({,
-          success: false
+        return json({
+          success: false,
           error: 'Unknown action'
         }, { status: 400 })
     }
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message : 'Health check failed'
     }, { status: 500 })
   }

@@ -25,7 +25,7 @@ export const GET: RequestHandler = async () => {
       const abort = () => {
         clearInterval(keepalive)
         cacheEventBus.off('cache-event', onEvent)
-        try { controller.close(); } catch (error) {}
+        try { controller.close(), } catch (error) {}
       }
       // @ts-ignore - not typed on ReadableStream controller
       controller.signal?.addEventListener?.('abort', abort)

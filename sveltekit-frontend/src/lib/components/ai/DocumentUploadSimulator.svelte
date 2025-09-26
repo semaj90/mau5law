@@ -88,7 +88,7 @@ https://svelte.dev/e/expected_token -->
       formData.append('document_type', 'legal');
       const response = await fetch(`${API_BASE}/upload`, {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`OCR processing failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);

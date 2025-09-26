@@ -192,7 +192,7 @@
             variant="ghost"
             size="sm"
             onclick={() =>
-{ query = example; }}
+{ query = example, }}
             disabled={isSearching}
           >
             {example}

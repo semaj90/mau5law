@@ -539,8 +539,8 @@
     animation: professional-glow 3s ease-in-out infinite;
   }
   @keyframes professional-glow {
-    0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.1); }
-    50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); }
+    0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.1), }
+    50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.2), }
   }
 /* Enhanced backdrop blur effects */ {}
   .backdrop-blur-md {

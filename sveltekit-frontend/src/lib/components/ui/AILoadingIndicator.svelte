@@ -36,7 +36,7 @@
   let startTime = Date.now();
   let elapsedTime = $state(0);
   let intervalId: ReturnType<typeof setInterval> | null = null;
-  $effect(() => { progressTween.set(progress); });
+  $effect(() => { progressTween.set(progress), });
   let sizeClasses = $derived({
     sm: 'text-sm p-3',
     md: 'text-base p-4',

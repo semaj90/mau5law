@@ -36,11 +36,11 @@ class FeedbackStore {
     isCollecting: false
   });
   // Getters
-  get activeSession() { return this.state.activeSession; }
-  get pendingFeedback() { return this.state.pendingFeedback; }
-  get analytics() { return this.state.analytics; }
-  get userContext() { return this.state.userContext; }
-  get isCollecting() { return this.state.isCollecting; }
+  get activeSession() { return this.state.activeSession, }
+  get pendingFeedback() { return this.state.pendingFeedback, }
+  get analytics() { return this.state.analytics, }
+  get userContext() { return this.state.userContext, }
+  get isCollecting() { return this.state.isCollecting, }
   /**
    * Initialize feedback session for user
    */;

@@ -413,7 +413,7 @@ export class NESGPUIntegration {
       @compute @workgroup_size(256);
       fn unpack_binary(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
-        if (index >= ${documentCount}u) { return; }
+        if (index >= ${documentCount}u) { return, }
         // Unpack binary data into structured format
         let base_offset = index * ${Math.ceil(1600 / 4)}u; // Approx binary size per doc
         node_data[index].id = binary_data[base_offset];
@@ -686,7 +686,7 @@ export class NESGPUIntegration {
       @compute @workgroup_size(256);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
-        if (index >= arrayLength(&rankingScores)) { return; }
+        if (index >= arrayLength(&rankingScores)) { return, }
         // Calculate cosine similarity with query
         var similarity: f32 = 0.0;
         var queryMagnitude: f32 = 0.0;

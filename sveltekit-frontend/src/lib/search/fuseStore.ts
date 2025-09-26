@@ -12,7 +12,7 @@ const options = {
   includeScore: true
   minMatchCharLength: 2
 }
-items.subscribe(list => { fuse = new Fuse(list, options); });
+items.subscribe(list => { fuse = new Fuse(list, options), });
 const results: Readable<Array<any> = derived([items, query], ([$items, $query]) => {
   if (!fuse || !$query.trim()) return [];
   return fuse.search($query).slice(0, 30).map(r => ({ item: r.item, score: r.score ?? 0 });

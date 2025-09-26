@@ -55,10 +55,10 @@ https://svelte.dev/e/js_parse_error -->
   let quadVertex = vertexIndex % 6u;
   // Create a quad for each point
   var offset = vec2<f32>(0.0, 0.0);
-  if (quadVertex == 0u || quadVertex == 3u) { offset.x = -0.02; offset.y = -0.02; }
-  else if (quadVertex == 1u) { offset.x = 0.02; offset.y = -0.02; }
-  else if (quadVertex == 2u || quadVertex == 4u) { offset.x = 0.02; offset.y = 0.02; }
-  else if (quadVertex == 5u) { offset.x = -0.02; offset.y = 0.02; }
+  if (quadVertex == 0u || quadVertex == 3u) { offset.x = -0.02; offset.y = -0.02, }
+  else if (quadVertex == 1u) { offset.x = 0.02; offset.y = -0.02, }
+  else if (quadVertex == 2u || quadVertex == 4u) { offset.x = 0.02; offset.y = 0.02, }
+  else if (quadVertex == 5u) { offset.x = -0.02; offset.y = 0.02, }
   let pos = vec4<f32>(embedding.x, embedding.y, embedding.z, 1.0);
   let transformed = uniforms.matrix * po;
   output.position = transformed + vec4<f32>(offset * uniforms.zoom, 0.0, 0.0);

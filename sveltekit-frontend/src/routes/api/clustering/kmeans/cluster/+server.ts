@@ -14,7 +14,7 @@ import { inArray } from "drizzle-orm"
 // Optional amqp for message queue integration
 // Initialize connections
 let redis: ReturnType<typeof createRedisInstance> | null = null
-try { redis = createRedisInstance(); } catch {
+try { redis = createRedisInstance(), } catch {
   const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any)
   redis = new RedisCtor({
     host: import.meta.env.REDIS_HOST || 'localhost',

@@ -1,26 +1,5 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https: //svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  interface Props {
-    documentId: string | null ;
-    caseId: string | null ;
-    initialContent: string
-    documentType:  | "evidence";
-    compact: boolean;
-  }
-  let { documentId = null,
-    caseId = null,
-    initialContent = "",
-    documentType,
-    compact = false
-   }: { documentId = null,
-    caseId = null,
-    initialContent = "",
-    documentType,
-    compact = false
-  : unknown } = $props();
   import {
     aiSummaryMachine,
     type SummarySection,
@@ -39,29 +18,53 @@ https: //svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
-             | "report"
-     | "contract"
-     | "case_law"
-     | "general" = "evidence";
+
+  // Component props
+  export type DocumentType = "evidence" | "report" | "contract" | "case_law" | "general";
+
+  let {
+    documentId = null,
+    caseId = null,
+    initialContent = "",
+    documentType = "evidence" as DocumentType | null,
+    compact = false
+  }: {
+    documentId?: string | null,
+    caseId?: string | null,
+    initialContent?: string,
+    documentType?: DocumentType | null,
+    compact?: boolean
+  } = $props();
+
   const { state, send } = useMachine(aiSummaryMachine);
-  // Reactive state helpers
-  let isLoading = $derived($state.matches("loading") ||);
+
+  // Reactive state helpers using Svelte 5 $derived
+  let isLoading = $derived(
+    $state.matches("loading") ||
     $state.matches("generating") ||
     $state.matches("analyzing") ||
-    $state.matches("synthesizing");
+    $state.matches("synthesizing")
+  );
+
   let isReady = $derived($state.matches("ready"));
   let isReading = $derived($state.matches("ready.reading"));
-  let isPlaying = $derived($state.context.isPlaying)
-  let currentSection = $derived($state.context.sections[$state.context.currentSection])
-  let progress = $derived($state.context.progress)
-  let error = $derived($state.context.error)
+  let isPlaying = $derived($state.context?.isPlaying ?? false);
+  let progress = $derived($state.context?.progress ?? 0);
+  let error = $derived($state.context?.error ?? null);
+  let currentSection = $derived(
+    $state.context?.sections?.[$state.context?.currentSection ?? 0] ?? null
+  );
+
   // Voice synthesis
   let speechSynthesis: SpeechSynthesis | null = null;
   let currentUtterance: SpeechSynthesisUtterance | null = null;
-  $effect(() => {
+
+  onMount(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      speechSynthesis = window.speechSynthesi;
+      // @ts-ignore - DOM global
+      speechSynthesis = window.speechSynthesis as SpeechSynthesis;
     }
+
     // Auto-load if content provided
     if (initialContent && documentType) {
       send({ type: "GENERATE_SUMMARY", content: initialContent, documentType });
@@ -69,6 +72,7 @@ https: //svelte.dev/e/js_parse_error -->
       send({ type: "LOAD_DOCUMENT", documentId, caseId });
     }
   });
+
   function toggleReading() {
     if (isPlaying) {
       send({ type: "PAUSE_READING" });
@@ -77,71 +81,84 @@ https: //svelte.dev/e/js_parse_error -->
       }
     } else {
       send({ type: "START_READING" });
-      if ($state.context.voiceEnabled && currentSection) {
+      if ($state.context?.voiceEnabled && currentSection) {
         speakSection(currentSection);
       }
     }
   }
+
   function stopReading() {
     send({ type: "STOP_READING" });
     if (speechSynthesis) {
       speechSynthesis.cancel();
     }
   }
+
   function nextSection() {
     send({ type: "NEXT_SECTION" });
-    if ($state.context.voiceEnabled && isPlaying) {
+    if ($state.context?.voiceEnabled && isPlaying) {
       setTimeout(
         () =>
-          speakSection($state.context.sections[$state.context.currentSection]),
+          speakSection(
+            $state.context?.sections?.[$state.context?.currentSection ?? 0]
+          ),
         100
       );
     }
   }
+
   function previousSection() {
     send({ type: "PREVIOUS_SECTION" });
-    if ($state.context.voiceEnabled && isPlaying) {
+    if ($state.context?.voiceEnabled && isPlaying) {
       setTimeout(
         () =>
-          speakSection($state.context.sections[$state.context.currentSection]),
+          speakSection(
+            $state.context?.sections?.[$state.context?.currentSection ?? 0]
+          ),
         100
       );
     }
   }
-  function jumpToSection(_index: number) {
+
+  function jumpToSection(index: number) {
     send({ type: "JUMP_TO_SECTION", sectionIndex: index });
-    if ($state.context.voiceEnabled && isPlaying) {
+    if ($state.context?.voiceEnabled && isPlaying) {
       setTimeout(() => speakSection($state.context.sections[index]), 100);
     }
   }
+
   function speakSection(section: SummarySection) {
-    if (!speechSynthesis || !$state.context.voiceEnabled) return;
+    if (!speechSynthesis || !$state.context?.voiceEnabled || !section) return;
     speechSynthesis.cancel();
     currentUtterance = new SpeechSynthesisUtterance(section.content);
     currentUtterance.rate = 0.9;
     currentUtterance.pitch = 1.0;
     currentUtterance.volume = 0.8;
     currentUtterance.onend = () => {
-      if ($state.context.currentSection < $state.context.sections.length - 1) {
+      if (($state.context?.currentSection ?? 0) < ($state.context?.sections?.length ?? 0) - 1) {
         nextSection();
       } else {
         stopReading();
       }
-    }
+    };
     speechSynthesis.speak(currentUtterance);
   }
+
   function analyzeDocument() {
     send({ type: "ANALYZE_DOCUMENT" });
   }
+
   function synthesizeInsights() {
     send({ type: "SYNTHESIZE_INSIGHTS" });
   }
+
   function toggleVoice() {
     send({
       type: "UPDATE_PREFERENCES",
-      preferences: { voiceEnabled: !$state.context.voiceEnabled },
+      preferences: { voiceEnabled: !($state.context?.voiceEnabled ?? false) },
     });
   }
+
   function getImportanceColor(importance: string) {
     switch (importance) {
       case "critical":
@@ -156,13 +173,15 @@ https: //svelte.dev/e/js_parse_error -->
         return "text-gray-600 border-gray-200 bg-gray-50";
     }
   }
+
   function getAnalysisScoreColor(score: number) {
     if (score >= 0.9) return "text-green-600 bg-green-100";
     if (score >= 0.7) return "text-yellow-600 bg-yellow-100";
     return "text-red-600 bg-red-100";
   }
 </script>
-<div class="ai-summary-reader" class:compact>
+
+<div class="ai-summary-reader" class:compact={compact}>
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
     <!-- Header -->
     <div class="flex items-center justify-between p-4 border-b border-gray-200">
@@ -175,9 +194,8 @@ https: //svelte.dev/e/js_parse_error -->
           <p class="text-sm text-gray-600">
             {#if documentId}
               Document ID: {documentId}
-            {:else if $state.context.documentType}
-              {$state.context.documentType.charAt.toUpperCase() +
-                $state.context.documentType.slice(1)} Analysis
+            {:else if $state.context?.documentType}
+              {$state.context.documentType?.charAt(0).toUpperCase() + $state.context.documentType?.slice(1)} Analysis
             {/if}
           </p>
         </div>
@@ -185,24 +203,25 @@ https: //svelte.dev/e/js_parse_error -->
       <div class="flex items-center gap-2">
         <!-- Voice Toggle -->
         <button
-          onclick={toggleVoice}
-          class="p-2 rounded-md hover: bg-gray-100 transition-colors";
-          class:text-blue-600={$state.context.voiceEnabled}
-          class:text-gray-400={!$state.context.voiceEnabled}
-          title={$state.context.voiceEnabled ? "Disable voice" : "Enable voice"}
+          on:click={toggleVoice}
+          class="p-2 rounded-md hover:bg-gray-100 transition-colors"
+          class:text-blue-600={$state.context?.voiceEnabled}
+          class:text-gray-400={!$state.context?.voiceEnabled}
+          title={$state.context?.voiceEnabled ? "Disable voice" : "Enable voice"}
         >
           <Settings class="w-4 h-4" />
         </button>
         <!-- Confidence Score -->
-        {#if $state.context.confidence > 0}
+        {#if ($state.context?.confidence ?? 0) > 0}
           <div
             class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium"
           >
-            {Math.round($state.context.confidence * 100)}% confidence
+            {Math.round(($state.context?.confidence ?? 0) * 100)}% confidence
           </div>
         {/if}
       </div>
     </div>
+
     <!-- Content -->
     <div class="p-4">
       {#if isLoading}
@@ -226,7 +245,7 @@ https: //svelte.dev/e/js_parse_error -->
         </div>
       {:else if error}
         <div
-          class="bg-red-50 border border-red-200 rounded-lg p-4";
+          class="bg-red-50 border border-red-200 rounded-lg p-4"
           transition:fade
         >
           <div class="flex items-center gap-2">
@@ -237,7 +256,7 @@ https: //svelte.dev/e/js_parse_error -->
             </div>
           </div>
           <button
-            onclick={() => send({ type: "RETRY" })}
+            on:click={() => send({ type: "RETRY" })}
             class="mt-3 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
           >
             Retry
@@ -246,20 +265,21 @@ https: //svelte.dev/e/js_parse_error -->
       {:else if isReady}
         <div class="space-y-6">
           <!-- Summary Overview -->
-          {#if $state.context.summary}
+          {#if $state.context?.summary}
             <div
               class="bg-blue-50 border border-blue-200 rounded-lg p-4"
-              transitionfly={{ y: 20, duration: 300 }}
+              transition:fly={{ y: 20, duration: 300 }}
             >
               <h4 class="font-medium text-blue-900 mb-2">Executive Summary</h4>
               <p class="text-blue-800">{$state.context.summary}</p>
             </div>
           {/if}
+
           <!-- Key Insights -->
-          {#if $state.context.keyInsights.length > 0}
+          {#if ($state.context?.keyInsights ?? []).length > 0}
             <div
               class="bg-green-50 border border-green-200 rounded-lg p-4"
-              transitionfly={{ y: 20, duration: 300, delay: 100 }}
+              transition:fly={{ y: 20, duration: 300, delay: 100 }}
             >
               <h4 class="font-medium text-green-900 mb-3">Key Insights</h4>
               <ul class="space-y-2">
@@ -272,13 +292,12 @@ https: //svelte.dev/e/js_parse_error -->
               </ul>
             </div>
           {/if}
+
           <!-- Reading Controls -->
-          <div
-            class="flex items-center justify-between bg-gray-50 rounded-lg p-4"
-          >
+          <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
             <div class="flex items-center gap-3">
               <button
-                onclick={toggleReading}
+                on:click={toggleReading}
                 class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 disabled={!currentSection}
               >
@@ -291,7 +310,7 @@ https: //svelte.dev/e/js_parse_error -->
                 {/if}
               </button>
               <button
-                onclick={stopReading}
+                on:click={stopReading}
                 class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                 disabled={!isReading}
               >
@@ -299,30 +318,29 @@ https: //svelte.dev/e/js_parse_error -->
               </button>
               <div class="flex items-center gap-1">
                 <button
-                  onclick={previousSection}
+                  on:click={previousSection}
                   class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
-                  disabled={$state.context.currentSection === 0}
+                  disabled={$state.context?.currentSection === 0}
                 >
                   <SkipBack class="w-4 h-4" />
                 </button>
                 <button
-                  onclick={nextSection}
+                  on:click={nextSection}
                   class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
-                  disabled={$state.context.currentSection >=
-                    $state.context.sections.length - 1}
+                  disabled={$state.context?.currentSection >= ($state.context?.sections?.length ?? 1) - 1}
                 >
                   <SkipForward class="w-4 h-4" />
                 </button>
               </div>
             </div>
             <div class="text-sm text-gray-600">
-              Section {$state.context.currentSection + 1} of {$state.context
-                .sections.length}
-              {#if $state.context.estimatedReadTime > 0}
+              Section {($state.context?.currentSection ?? 0) + 1} of {($state.context?.sections?.length ?? 0)}
+              {#if ($state.context?.estimatedReadTime ?? 0) > 0}
                 • ~{$state.context.estimatedReadTime} min read
               {/if}
             </div>
           </div>
+
           <!-- Progress Bar -->
           {#if isReading}
             <div class="bg-gray-200 rounded-full h-2" transition:fade>
@@ -332,57 +350,48 @@ https: //svelte.dev/e/js_parse_error -->
               ></div>
             </div>
           {/if}
+
           <!-- Section Navigation -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {#each $state.context.sections as section, index}
+            {#each ($state.context?.sections ?? []) as section, index}
               <button
-                onclick={() => jumpToSection(index)}
-                class="text-left p-3 border rounded-lg transition-all hover: shadow-md";
-                class:border-blue-500={index === $state.context.currentSection}
-                class:bg-blue-50={index === $state.context.currentSection}
-                class:shadow-sm={index === $state.context.currentSection}
-                class:border-gray-200={index !== $state.context.currentSection}
+                on:click={() => jumpToSection(index)}
+                class="text-left p-3 border rounded-lg transition-all hover:shadow-md"
+                class:border-blue-500={index === ($state.context?.currentSection ?? 0)}
+                class:bg-blue-50={index === ($state.context?.currentSection ?? 0)}
+                class:shadow-sm={index === ($state.context?.currentSection ?? 0)}
+                class:border-gray-200={index !== ($state.context?.currentSection ?? 0)}
               >
                 <div class="flex items-center justify-between mb-2">
-                  <span
-                    class="text-sm font-medium {getImportanceColor(
-                      section.importance
-                    ).split(' ')[0]}">{section.title}</span
-                  >
-                  <span
-                    class="text-xs px-2 py-1 rounded-full {getImportanceColor(
-                      section.importance
-                    )}"
-                  >
+                  <span class={"text-sm font-medium " + getImportanceColor(section.importance).split(" ")[0]}>
+                    {section.title}
+                  </span>
+                  <span class={"text-xs px-2 py-1 rounded-full " + getImportanceColor(section.importance)}>
                     {section.importance}
                   </span>
                 </div>
                 <p class="text-xs text-gray-600 line-clamp-2">
-                  {section.content.substring(0, 100)}...
+                  {section.content?.substring(0, 100) ?? ""}...
                 </p>
                 <div class="text-xs text-gray-500 mt-1">
-                  {section.wordCount} words
+                  {section.wordCount ?? 0} words
                 </div>
               </button>
             {/each}
           </div>
+
           <!-- Current Section Content -->
           {#if currentSection}
             <div
               class="bg-white border border-gray-200 rounded-lg p-6"
-              transitionfly={{ y: 20, duration: 300 }}
+              transition:fly={{ y: 20, duration: 300 }}
             >
               <div class="flex items-center justify-between mb-4">
                 <h4 class="text-xl font-semibold text-gray-900">
                   {currentSection.title}
                 </h4>
-                <span
-                  class="text-sm px-3 py-1 rounded-full {getImportanceColor(
-                    currentSection.importance
-                  )}"
-                >
-                  {currentSection.importance.charAt.toUpperCase() +
-                    currentSection.importance.slice(1)} Priority
+                <span class={"text-sm px-3 py-1 rounded-full " + getImportanceColor(currentSection.importance)}>
+                  {currentSection.importance?.charAt(0).toUpperCase() + currentSection.importance?.slice(1)} Priority
                 </span>
               </div>
               <div class="prose prose-gray max-w-none">
@@ -390,8 +399,9 @@ https: //svelte.dev/e/js_parse_error -->
                   {currentSection.content}
                 </p>
               </div>
+
               <!-- Entities -->
-              {#if currentSection.entities.length > 0}
+              {#if (currentSection.entities ?? []).length > 0}
                 <div class="mt-6 pt-4 border-t border-gray-200">
                   <h5 class="text-sm font-medium text-gray-900 mb-3">
                     Key Entities
@@ -408,21 +418,9 @@ https: //svelte.dev/e/js_parse_error -->
                         class:text-purple-800={entity.type === "date"}
                         class:bg-orange-100={entity.type === "organization"}
                         class:text-orange-800={entity.type === "organization"}
-                        class:bg-gray-100={![
-                          "legal_term",
-                          "person",
-                          "date",
-                          "organization",
-                        ].includes(entity.type)}
-                        class:text-gray-800={![
-                          "legal_term",
-                          "person",
-                          "date",
-                          "organization",
-                        ].includes(entity.type)}
-                        title="Confidence: {Math.round(
-                          entity.confidence * 100
-                        )}%"
+                        class:bg-gray-100={!["legal_term", "person", "date", "organization"].includes(entity.type)}
+                        class:text-gray-800={!["legal_term", "person", "date", "organization"].includes(entity.type)}
+                        title={"Confidence: " + Math.round((entity.confidence ?? 0) * 100) + "%"}
                       >
                         {entity.text}
                       </span>
@@ -432,10 +430,11 @@ https: //svelte.dev/e/js_parse_error -->
               {/if}
             </div>
           {/if}
+
           <!-- Analysis Actions -->
           <div class="flex flex-wrap gap-3">
             <button
-              onclick={analyzeDocument}
+              on:click={analyzeDocument}
               class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               disabled={isLoading}
             >
@@ -443,7 +442,7 @@ https: //svelte.dev/e/js_parse_error -->
               Analyze Document
             </button>
             <button
-              onclick={synthesizeInsights}
+              on:click={synthesizeInsights}
               class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               disabled={isLoading}
             >
@@ -451,9 +450,10 @@ https: //svelte.dev/e/js_parse_error -->
               Synthesize Insights
             </button>
           </div>
+
           <!-- Analysis Results -->
-          {#if $state.context.analysisResults.length > 0}
-            <div class="space-y-4" transitionfly={{ y: 20, duration: 300 }}>
+          {#if ($state.context?.analysisResults ?? []).length > 0}
+            <div class="space-y-4" transition:fly={{ y: 20, duration: 300 }}>
               <h4 class="text-lg font-semibold text-gray-900">
                 Analysis Results
               </h4>
@@ -461,18 +461,16 @@ https: //svelte.dev/e/js_parse_error -->
                 <div class="border border-gray-200 rounded-lg p-4">
                   <div class="flex items-center justify-between mb-2">
                     <h5 class="font-medium text-gray-900 capitalize">
-                      {(result as { type?: unknown; score?: unknown; explanation?: unknown; recommendations?: unknown }).type.replace("_", " ")}
+                      {(result as any).type?.replace("_", " ")}
                     </h5>
                     <span
-                      class="px-2 py-1 rounded-full text-sm font-medium {getAnalysisScoreColor(
-                        (result as { type?: unknown; score?: unknown; explanation?: unknown; recommendations?: unknown }).score
-                      )}"
+                      class={"px-2 py-1 rounded-full text-sm font-medium " + getAnalysisScoreColor((result as any).score ?? 0)}
                     >
-                      {Math.round.score * 100)}%
+                      {Math.round(((result as any).score ?? 0) * 100)}%
                     </span>
                   </div>
-                  <p class="text-gray-700 mb-3">{(result as { type?: unknown; score?: unknown; explanation?: unknown; recommendations?: unknown }).explanation}</p>
-                  {#if (result as { type?: unknown; score?: unknown; explanation?: unknown; recommendations?: unknown }).recommendations.length > 0}
+                  <p class="text-gray-700 mb-3">{(result as any).explanation}</p>
+                  {#if ((result as any).recommendations ?? []).length > 0}
                     <div>
                       <h6 class="text-sm font-medium text-gray-900 mb-1">
                         Recommendations:
@@ -480,7 +478,7 @@ https: //svelte.dev/e/js_parse_error -->
                       <ul
                         class="text-sm text-gray-600 list-disc list-inside space-y-1"
                       >
-                        {#each (result as { type?: unknown; score?: unknown; explanation?: unknown; recommendations?: unknown }).recommendations as recommendation}
+                        {#each (result as any).recommendations as recommendation}
                           <li>{recommendation}</li>
                         {/each}
                       </ul>
@@ -490,9 +488,10 @@ https: //svelte.dev/e/js_parse_error -->
               {/each}
             </div>
           {/if}
+
           <!-- Synthesis Results -->
-          {#if $state.context.synthesisData}
-            <div class="space-y-6" transitionfly={{ y: 20, duration: 300 }}>
+          {#if $state.context?.synthesisData}
+            <div class="space-y-6" transition:fly={{ y: 20, duration: 300 }}>
               <h4 class="text-lg font-semibold text-gray-900">
                 Synthesis & Strategic Analysis
               </h4>
@@ -537,7 +536,7 @@ https: //svelte.dev/e/js_parse_error -->
                       Gaps & Contradictions
                     </h5>
                     <div class="space-y-3">
-                      {#if $state.context.synthesisData.gaps.length > 0}
+                      {#if ($state.context.synthesisData.gaps ?? []).length > 0}
                         <div>
                           <h6 class="text-sm font-medium text-yellow-800">
                             Information Gaps:
@@ -549,7 +548,7 @@ https: //svelte.dev/e/js_parse_error -->
                           </ul>
                         </div>
                       {/if}
-                      {#if $state.context.synthesisData.contradictions.length > 0}
+                      {#if ($state.context.synthesisData.contradictions ?? []).length > 0}
                         <div>
                           <h6 class="text-sm font-medium text-yellow-800">
                             Contradictions:
@@ -620,6 +619,7 @@ https: //svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
+
 <style>
   .ai-summary-reader {
     width: 100%;
@@ -632,6 +632,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .line-clamp-2 {
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;

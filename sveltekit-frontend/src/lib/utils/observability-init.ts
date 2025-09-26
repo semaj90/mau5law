@@ -157,7 +157,7 @@ function extractRouteId(): string {
 // Svelte store getter fallback
 function get(store: any) {
   let value: any;
-  const unsubscribe = store.subscribe((v: any) => { value = v; });
+  const unsubscribe = store.subscribe((v: any) => { value = v, });
   unsubscribe();
   return value;
 }

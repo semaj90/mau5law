@@ -486,8 +486,8 @@
     opacity: 0.6;
   }
   @keyframes textureStream {
-    0% { transform: translateX(-16px); }
-    100% { transform: translateX(0px); }
+    0% { transform: translateX(-16px), }
+    100% { transform: translateX(0px), }
   }
   /* Bar lighting overlay */
   .bar-lighting {
@@ -645,7 +645,7 @@
     animation: progressSpin 1s linear infinite;
   }
   @keyframes progressSpin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   /* Standalone value */
   .standalone-value {
@@ -661,7 +661,7 @@
     animation: completeProgress 0.6s ease-out;
   }
   @keyframes completeProgress {
-    0% { transform: scale(1); }
+    0% { transform: scale(1), }
     50% {
       transform: scale(1.02);
       filter: brightness(1.2) saturate(1.3);

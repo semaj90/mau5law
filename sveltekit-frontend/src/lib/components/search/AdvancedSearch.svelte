@@ -410,10 +410,10 @@ https://svelte.dev/e/js_parse_error -->
   color: white;
   border-radius: 0.25rem;
 }
-.result-type-badge.document { background: #3b82f6; }
-.result-type-badge.video { background: #8b5cf6; }
-.result-type-badge.audio { background: #f59e0b; }
-.result-type-badge.link { background: #06b6d4; }
+.result-type-badge.document { background: #3b82f6, }
+.result-type-badge.video { background: #8b5cf6, }
+.result-type-badge.audio { background: #f59e0b, }
+.result-type-badge.link { background: #06b6d4, }
 .result-content {
   flex: 1;
   min-width: 0;

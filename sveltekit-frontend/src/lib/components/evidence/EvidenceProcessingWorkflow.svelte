@@ -185,10 +185,10 @@
   function recomputeDerived() {
     try {
       progress = getProcessingProgress(currentState.context) || 0;
-    } catch { progress = 0; }
+    } catch { progress = 0, }
     try {
       currentStepName = getCurrentStep(currentState.context) || 'idle';
-    } catch { currentStepName = 'idle'; }
+    } catch { currentStepName = 'idle', }
     const matches = (s: string) => typeof currentState.matches === 'function' ? currentState.matches(s) : false;
     isProcessing =
       matches('uploading') ||

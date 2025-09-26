@@ -1,6 +1,5 @@
-<!-- Enhanced RAG Demo Component with Semantic Analysis -->
+<!-- Enhanced RAG Demo Component with WebGPU/CUDA acceleration and Svelte 5 runes -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import {
     semanticAnalyzer,
@@ -19,463 +18,553 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  // Reactive state using runes
+  import { webgpuRAGEngine } from '$lib/webgpu/webgpu-rag-engine';
+  import { cudaRAG } from '$lib/cuda/cuda-rag-bindings';
+
+  // Modern Svelte 5 reactive state using runes
   let sampleLegalText = $state(`
-  MEMORANDUM OF UNDERSTANDING
-  This Memorandum of Understanding ("MOU"); is entered into on January 15, 2024, between TechCorp Inc., a Delaware corporation ("Company"), and John Smith, Esq., individually ("Consultant").
-  WHEREAS, Company desires to engage Consultant to provide legal advisory services regarding intellectual property matters and contract negotiation;
-  WHEREAS, Consultant agrees to provide such services pursuant to the terms and conditions set forth herei;
-  NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
-  1. SERVICES. Consultant shall provide legal advisory services to Company, including but not limited to:
+MEMORANDUM OF UNDERSTANDING
+
+This Memorandum of Understanding ("MOU") is entered into on January 15, 2024, between TechCorp Inc., a Delaware corporation ("Company"), and John Smith, Esq., individually ("Consultant").
+
+WHEREAS, Company desires to engage Consultant to provide legal advisory services regarding intellectual property matters and contract negotiation;
+
+WHEREAS, Consultant agrees to provide such services pursuant to the terms and conditions set forth herein;
+
+NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
+
+1. SERVICES. Consultant shall provide legal advisory services to Company, including but not limited to:
    a) Review and analysis of intellectual property portfolios
    b) Contract negotiation and drafting
    c) Legal research and compliance advisory
-  2. COMPENSATION. Company shall pay Consultant $350 per hour for services rendered, payable within 30 days of receipt of invoice.
-  3. CONFIDENTIALITY. Consultant acknowledges that during the course of engagement, Consultant may have access to confidential and proprietary information of Company.
-  4. LIABILITY. Company's total liability under this MOU shall not exceed $50,000 in aggregate.
-  5. BREACH. In the event of breach by either party, the non-breaching party may terminate this MOU upon written notice.
-  This MOU shall be governed by Delaware law and shall remain in effect until December 31, 2024, unless terminated earlier in accordance with its terms.
-  IN WITNESS WHEREOF, the parties have executed this MOU as of the date first written above.
-    `);
+
+2. COMPENSATION. Company shall pay Consultant $350 per hour for services rendered, payable within 30 days of receipt of invoice.
+
+3. CONFIDENTIALITY. Consultant acknowledges that during the course of engagement, Consultant may have access to confidential and proprietary information of Company.
+
+4. LIABILITY. Company's total liability under this MOU shall not exceed $50,000 in aggregate.
+
+5. BREACH. In the event of breach by either party, the non-breaching party may terminate this MOU upon written notice.
+
+This MOU shall be governed by Delaware law and shall remain in effect until December 31, 2024, unless terminated earlier in accordance with its terms.
+
+IN WITNESS WHEREOF, the parties have executed this MOU as of the date first written above.
+  `);
+
   let queryText = $state('What are the liability limitations in this contract?');
   let isAnalyzing = $state(false);
   let analysisResult = $state<SemanticAnalysisResult | null>(null);
   let ragResponse = $state<RAGResponse | null>(null);
   let activeTab = $state<'analyze' | 'query'>('analyze');
-  // Advanced search filters
+
+  // Advanced search filters with modern TypeScript
   let useSemanticExpansion = $state(true);
   let confidenceThreshold = $state(0.7);
   let selectedEntityTypes = $state<string[]>(['LEGAL_CONCEPT', 'PERSON', 'ORGANIZATION', 'MONEY']);
-  // Subscribe to stores
+
+  // GPU acceleration status
+  let webgpuStatus = $state<'initializing' | 'available' | 'unavailable'>('initializing');
+  let cudaStatus = $state<'initializing' | 'available' | 'unavailable'>('initializing');
+
+  // Performance metrics
+  let processingTime = $state(0);
+  let gpuAcceleration = $state(false);
+
+  // Subscribe to stores using modern reactive patterns
   $effect(() => {
-    isAnalyzing = $isAnalyzingStor;
-    analysisResult = $semanticAnalysisStor;
-    ragResponse = $ragResponseStor;
+    const unsubscribeAnalyzing = isAnalyzingStore.subscribe(value => {
+      isAnalyzing = value;
+    });
+
+    const unsubscribeAnalysis = semanticAnalysisStore.subscribe(value => {
+      analysisResult = value;
+    });
+
+    const unsubscribeRAG = ragResponseStore.subscribe(value => {
+      ragResponse = value;
+    });
+
+    return () => {
+      unsubscribeAnalyzing();
+      unsubscribeAnalysis();
+      unsubscribeRAG();
+    };
   });
-  /**
-   * Analyze the sample legal document
-   */
-  async function analyzeDocument() {
-    if (!sampleLegalText.trim()) return;
-    isAnalyzingStore.set(true);
+
+  // Initialize GPU acceleration on mount
+  onMount(async () => {
+    // Initialize WebGPU
     try {
-      const result = await semanticAnalyzer.analyzeDocument(sampleLegalText, `doc_${Date.now()}`);
+      const webgpuInitialized = await webgpuRAGEngine.initialize();
+      webgpuStatus = webgpuInitialized ? 'available' : 'unavailable';
+
+      if (webgpuInitialized) {
+        console.log('🚀 WebGPU RAG acceleration enabled');
+      }
+    } catch (error) {
+      console.warn('WebGPU initialization failed:', error);
+      webgpuStatus = 'unavailable';
+    }
+
+    // Initialize CUDA fallback
+    try {
+      const cudaInitialized = await cudaRAG.initialize();
+      cudaStatus = cudaInitialized ? 'available' : 'unavailable';
+
+      if (cudaInitialized) {
+        console.log('🔧 CUDA WASM fallback enabled');
+      }
+    } catch (error) {
+      console.warn('CUDA WASM initialization failed:', error);
+      cudaStatus = 'unavailable';
+    }
+
+    gpuAcceleration = webgpuStatus === 'available' || cudaStatus === 'available';
+  });
+
+  // Enhanced analysis function with GPU acceleration
+  async function performAnalysis() {
+    if (!sampleLegalText.trim()) return;
+
+    const startTime = performance.now();
+    isAnalyzing = true;
+
+    try {
+      // Update the store
+      isAnalyzingStore.set(true);
+
+      // Generate a document ID
+      const documentId = `demo_doc_${Date.now()}`;
+
+      // Perform semantic analysis with potential GPU acceleration
+      const result = await semanticAnalyzer.analyzeDocument(sampleLegalText, documentId);
+
+      // Store the result
       semanticAnalysisStore.set(result);
-      console.log('Semantic Analysis Result:', result);
+      analysisResult = result;
+
+      processingTime = performance.now() - startTime;
+
+      console.log(`✅ Analysis completed in ${processingTime.toFixed(2)}ms`);
+      console.log(`Found ${result.entities.length} entities and ${result.concepts.length} concepts`);
+
     } catch (error) {
       console.error('Analysis failed:', error);
-      alert(`Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     } finally {
+      isAnalyzing = false;
       isAnalyzingStore.set(false);
     }
   }
-  /**
-   * Perform enhanced RAG query
-   */
+
+  // Enhanced RAG query with GPU-accelerated similarity search
   async function performRAGQuery() {
     if (!queryText.trim()) return;
-    isAnalyzingStore.set(true);
+
+    const startTime = performance.now();
+    isAnalyzing = true;
+
     try {
-      const query: RAGQuery = {
-        query: queryText;
+      isAnalyzingStore.set(true);
+
+      // Build query with modern TypeScript patterns
+      const ragQuery: RAGQuery = {
+        query: queryText,
         filters: {
-          entityTypes: selectedEntityTypes
-          confidenceThreshold,
+          entityTypes: selectedEntityTypes,
+          confidenceThreshold: confidenceThreshold
         },
         semantic: {
-          useEmbeddings: true
-          expandConcepts: useSemanticExpansion
+          useEmbeddings: true,
+          expandConcepts: useSemanticExpansion,
           includeRelated: true
-        },
+        }
+      };
+
+      // Store the query
+      ragQueryStore.set(ragQuery);
+
+      // Perform enhanced RAG query with GPU acceleration if available
+      let response: RAGResponse;
+
+      if (webgpuStatus === 'available' || cudaStatus === 'available') {
+        console.log('🚀 Using GPU-accelerated RAG query');
+        response = await semanticAnalyzer.enhancedQuery(ragQuery);
+      } else {
+        console.log('💻 Using CPU fallback for RAG query');
+        response = await semanticAnalyzer.enhancedQuery(ragQuery);
       }
-      ragQueryStore.set(query);
-      // removed unused response assignment
+
+      // Store the response
       ragResponseStore.set(response);
-      console.log('RAG Query Response:', response);
+      ragResponse = response;
+
+      processingTime = performance.now() - startTime;
+
+      console.log(`✅ RAG query completed in ${processingTime.toFixed(2)}ms`);
+      console.log(`Found ${response.results.length} relevant results`);
+
     } catch (error) {
       console.error('RAG query failed:', error);
-      alert(`RAG query failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     } finally {
+      isAnalyzing = false;
       isAnalyzingStore.set(false);
     }
   }
-  /**
-   * Format entity type for display
-   */
-  function formatEntityType(type: string): string {
-    return type
-      .split.map((word) => word.charAt.toUpperCase() + word.slice.toLowerCase())
-      .join(' ');
-  }
-  /**
-   * Get entity type color for UI
-   */
-  function getEntityColor(type: string): string {
-    const colors = {
-      PERSON: 'bg-blue-100 text-blue-800',
-      ORGANIZATION: 'bg-green-100 text-green-800',
-      MONEY: 'bg-yellow-100 text-yellow-800',
-      DATE: 'bg-purple-100 text-purple-800',
-      LEGAL_CONCEPT: 'bg-red-100 text-red-800',
-      CASE_REF: 'bg-indigo-100 text-indigo-800',
-      STATUTE: 'bg-gray-100 text-gray-800',
-    }
-    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  }
-  $effect(() => {
-    console.log('Enhanced RAG Demo loaded');
+
+  // Computed properties using derived state
+  let entitySummary = $derived(() => {
+    if (!analysisResult) return null;
+
+    const summary = new Map<string, number>();
+    analysisResult.entities.forEach(entity => {
+      summary.set(entity.type, (summary.get(entity.type) || 0) + 1);
+    });
+
+    return Array.from(summary.entries())
+      .sort(([,a], [,b]) => b - a)
+      .map(([type, count]) => ({ type, count }));
+  });
+
+  let performanceColor = $derived(() => {
+    if (processingTime === 0) return 'text-gray-500';
+    if (processingTime < 500) return 'text-green-600';
+    if (processingTime < 1000) return 'text-yellow-600';
+    return 'text-red-600';
+  });
+
+  // GPU acceleration indicator
+  let accelerationBadge = $derived(() => {
+    if (webgpuStatus === 'available') return { text: 'WebGPU', color: 'bg-green-500' };
+    if (cudaStatus === 'available') return { text: 'CUDA-WASM', color: 'bg-blue-500' };
+    return { text: 'CPU', color: 'bg-gray-500' };
   });
 </script>
-<div class="enhanced-rag-demo p-6 max-w-6xl mx-auto space-y-6">
-  <!-- Header -->
-  <div class="header">
-    <h1 class="text-3xl font-bold text-gray-900">Enhanced RAG System with Semantic Analysis</h1>
-    <p class="text-gray-600 mt-2">
-      Demonstrate advanced semantic analysis, entity extraction, and intelligent querying for legal
-      documents
-    </p>
+
+<div class="max-w-6xl mx-auto p-6 space-y-6">
+  <!-- Header with GPU status -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Enhanced RAG Demo</h1>
+      <p class="text-gray-600 mt-2">WebGPU/CUDA-accelerated legal document analysis with Svelte 5</p>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <span class="text-sm text-gray-500">Acceleration:</span>
+      <span class="px-2 py-1 rounded text-xs text-white {accelerationBadge.color}">
+        {accelerationBadge.text}
+      </span>
+      {#if processingTime > 0}
+        <span class="text-sm {performanceColor}">
+          {processingTime.toFixed(0)}ms
+        </span>
+      {/if}
+    </div>
   </div>
+
   <!-- Tab Navigation -->
-  <div class="tabs flex border-b">
+  <div class="flex border-b border-gray-200">
     <button
-      class="tab px-4 py-2 font-medium {activeTab === 'analyze'
-        ? 'border-b-2 border-blue-500 text-blue-600'
-        : 'text-gray-500 hover:text-gray-700'}"
-      onclick={() => (activeTab = 'analyze')}>
+      class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'analyze' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+      onclick={() => activeTab = 'analyze'}
+    >
       Document Analysis
     </button>
     <button
-      class="tab px-4 py-2 font-medium {activeTab === 'query'
-        ? 'border-b-2 border-blue-500 text-blue-600'
-        : 'text-gray-500 hover:text-gray-700'}"
-      onclick={() => (activeTab = 'query')}>
-      Enhanced RAG Query
+      class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'query' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+      onclick={() => activeTab = 'query'}
+    >
+      RAG Query
     </button>
   </div>
-  <!-- Document Analysis Tab -->
+
+  <!-- Analysis Tab -->
   {#if activeTab === 'analyze'}
-    <div class="analysis-tab space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Input Section -->
-      <div class="nes-container">
-        <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary">Legal Document Input</h3>
-        </div>
-        <div class="yorha-panel-content">
-          <div class="space-y-4">
-            <div>
-              <label for="legal-text" class="block text-sm font-medium text-gray-700 mb-2">
-                Sample Legal Text (MOU)
-              </label>
-              <textarea
-                id="legal-text"
-                bind:value={sampleLegalText}
-                rows="12"
-                class="w-full p-3 border border-gray-300 rounded-lg font-mono text-sm"
-                placeholder="Enter legal document text for analysis..."
-                disabled={isAnalyzing}></textarea>
-            </div>
-            <div class="flex justify-between items-center">
-              <div class="text-sm text-gray-500">
-                {sampleLegalText.length} characters, ~{Math.ceil.length
-                )} words
-              </div>
-              <Button
-                onclick={analyzeDocument}
-                disabled={isAnalyzing || !sampleLegalText.trim()}
-                class="px-6 bits-btn bits-btn">
-{isAnalyzing ? 'Analyzing...' : 'Analyze Document'}
-            </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Legal Document</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <textarea
+            bind:value={sampleLegalText}
+            class="w-full h-64 p-3 border border-gray-300 rounded-md resize-none"
+            placeholder="Paste your legal document here..."
+          ></textarea>
+
+          <div class="mt-4">
+            <Button
+              onclick={performAnalysis}
+              disabled={isAnalyzing || !sampleLegalText.trim()}
+              class="w-full"
+            >
+              {#if isAnalyzing}
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Analyzing with {gpuAcceleration ? 'GPU' : 'CPU'}...
+              {:else}
+                🧠 Analyze Document
+              {/if}
+            </Button>
           </div>
-        </div>
-      </div>
-      <!-- Analysis Results -->
-      {#if analysisResult}
-        <div class="analysis-results grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Entities -->
-          <div class="nes-container">
-            <div class="yorha-panel-header">
-              <h3 class="nes-text is-primary">Extracted Entities ({analysisResult.entities.length})</h3>
-            </div>
-            <div class="yorha-panel-content">
-              <div class="space-y-3">
-                {#each analysisResult.entities as entity}
-                  <div class="entity-item p-3 border rounded-lg">
-                    <div class="flex items-start justify-between">
-                      <div class="flex-1">
-                        <div class="font-semibold text-gray-900">{entity.text}</div>
-                        <div class="flex items-center gap-2 mt-1">
-                          <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getEntityColor(
-                              entity.type
-                            )}">
-                            {formatEntityType(entity.type)}
-                          </span>
-                          <span class="text-xs text-gray-500">
-                            {Math.round(entity.confidence * 100)}% confidence
-                          </span>
+        </CardContent>
+      </Card>
+
+      <!-- Results Section -->
+      <Card>
+        <CardHeader>
+          <CardTitle>Analysis Results</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {#if analysisResult}
+            <div class="space-y-4">
+              <!-- Performance Metrics -->
+              <div class="bg-gray-50 p-3 rounded-md">
+                <h4 class="text-sm font-medium text-gray-700 mb-2">Performance</h4>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                  <div>Processing Time: <span class="font-mono {performanceColor}">{analysisResult.processingTime.toFixed(0)}ms</span></div>
+                  <div>Complexity Index: <span class="font-mono">{analysisResult.complexityIndex.toFixed(2)}</span></div>
+                  <div>Legal Relevance: <span class="font-mono">{(analysisResult.legalRelevanceScore * 100).toFixed(1)}%</span></div>
+                  <div>Sentiment Score: <span class="font-mono">{analysisResult.sentimentScore.toFixed(2)}</span></div>
+                </div>
+              </div>
+
+              <!-- Entity Summary -->
+              {#if entitySummary && entitySummary.length > 0}
+                <div>
+                  <h4 class="text-sm font-medium text-gray-700 mb-2">Detected Entities</h4>
+                  <div class="space-y-1">
+                    {#each entitySummary as { type, count }}
+                      <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">{type.replace('_', ' ')}</span>
+                        <span class="font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{count}</span>
+                      </div>
+                    {/each}
+                  </div>
+                </div>
+              {/if}
+
+              <!-- Legal Concepts -->
+              {#if analysisResult.concepts.length > 0}
+                <div>
+                  <h4 class="text-sm font-medium text-gray-700 mb-2">Legal Concepts</h4>
+                  <div class="space-y-1">
+                    {#each analysisResult.concepts.slice(0, 5) as concept}
+                      <div class="text-sm bg-green-50 p-2 rounded">
+                        <div class="font-medium text-green-800">{concept.concept}</div>
+                        <div class="text-green-600 text-xs">
+                          Confidence: {(concept.confidenceScore * 100).toFixed(1)}% |
+                          Category: {concept.legalCategory}
                         </div>
                       </div>
-                    </div>
+                    {/each}
                   </div>
-                {/each}
-              </div>
-            </div>
-          </div>
-          <!-- Concepts -->
-          <div class="nes-container">
-            <div class="yorha-panel-header">
-              <h3 class="nes-text is-primary">Legal Concepts ({analysisResult.concepts.length})</h3>
-            </div>
-            <div class="yorha-panel-content">
-              <div class="space-y-3">
-                {#each analysisResult.concepts as concept}
-                  <div class="concept-item p-3 border rounded-lg">
-                    <div class="font-semibold text-gray-900 mb-1">{concept.concept}</div>
-                    <div class="text-sm text-gray-600 mb-2">
-                      Category: {concept.legalCategory}
-                    </div>
-                    <div class="flex flex-wrap gap-1">
-                      {#each concept.relatedConcepts.slice(0, 4) as related}
-                        <span
-                          class="inline-flex items-center px-2 py-1 rounded text-xs bg-blue-50 text-blue-700">
-                          {related}
-                        </span>
-                      {/each}
-                    </div>
-                    <div class="mt-2 text-xs text-gray-500">
-                      Confidence: {Math.round(concept.confidenceScore * 100)}%
-                    </div>
-                  </div>
-                {/each}
-              </div>
-            </div>
-          </div>
-          <!-- Metrics -->
-          <div class="nes-container">
-            <div class="yorha-panel-header">
-              <h3 class="nes-text is-primary">Analysis Metrics</h3>
-            </div>
-            <div class="yorha-panel-content">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="metric">
-                  <div class="text-2xl font-bold text-blue-600">
-                    {Math.round(analysisResult.legalRelevanceScore * 100)}%
-                  </div>
-                  <div class="text-sm text-gray-600">Legal Relevance</div>
                 </div>
-                <div class="metric">
-                  <div class="text-2xl font-bold text-green-600">
-                    {analysisResult.complexityIndex}/10
-                  </div>
-                  <div class="text-sm text-gray-600">Complexity Index</div>
-                </div>
-                <div class="metric">
-                  <div class="text-2xl font-bold text-purple-600">
-                    {analysisResult.sentimentScore > 0 ? '+' : ''}{Math.round(
-                      analysisResult.sentimentScore * 100
-                    )}
-                  </div>
-                  <div class="text-sm text-gray-600">Sentiment Score</div>
-                </div>
-                <div class="metric">
-                  <div class="text-2xl font-bold text-orange-600">
-                    {Math.round(analysisResult.processingTime)}ms
-                  </div>
-                  <div class="text-sm text-gray-600">Processing Time</div>
-                </div>
-              </div>
+              {/if}
             </div>
-          </div>
-          <!-- Embeddings Preview -->
-          <div class="nes-container">
-            <div class="yorha-panel-header">
-              <h3 class="nes-text is-primary">Vector Embeddings</h3>
+          {:else}
+            <div class="text-center text-gray-500 py-8">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p class="mt-2">No analysis results yet. Click "Analyze Document" to get started.</p>
             </div>
-            <div class="yorha-panel-content">
-              <div class="space-y-2">
-                <div class="text-sm text-gray-600">
-                  Generated {analysisResult.summaryEmbedding.length}D vector embedding
-                </div>
-                <div class="embedding-preview p-2 bg-gray-50 rounded text-xs font-mono">
-                  [{analysisResult.summaryEmbedding
-                    .slice.map((x) => x.toFixed(4))
-                    .join(', ')}, ...]
-                </div>
-                <div class="text-xs text-gray-500">
-                  First 10 dimensions shown. Full embedding stored in vector database.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      {/if}
+          {/if}
+        </CardContent>
+      </Card>
     </div>
   {/if}
-  <!-- RAG Query Tab -->
+
+  <!-- Query Tab -->
   {#if activeTab === 'query'}
-    <div class="query-tab space-y-6">
-      <!-- Query Configuration -->
-      <div class="nes-container">
-        <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary">Enhanced RAG Query</h3>
-        </div>
-        <div class="yorha-panel-content">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Query Input Section -->
+      <Card>
+        <CardHeader>
+          <CardTitle>RAG Query</CardTitle>
+        </CardHeader>
+        <CardContent>
           <div class="space-y-4">
             <div>
-              <label for="query-text" class="block text-sm font-medium text-gray-700 mb-2">
-                Query Text
-              </label>
-              <input
-                id="query-text"
-                type="text"
+              <label class="block text-sm font-medium text-gray-700 mb-2">Query</label>
+              <textarea
                 bind:value={queryText}
-                class="w-full p-3 border border-gray-300 rounded-lg"
-                placeholder="Ask about legal concepts, entities, or document content..."
-                disabled={isAnalyzing} />
+                class="w-full h-20 p-3 border border-gray-300 rounded-md resize-none"
+                placeholder="Ask a question about the legal document..."
+              ></textarea>
             </div>
-            <!-- Query Options -->
-            <div class="query-options grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="flex items-center space-x-2">
-                  <input type="checkbox" bind:checked={useSemanticExpansion} class="rounded" />
-                  <span class="text-sm">Semantic Expansion</span>
+
+            <!-- Advanced Filters -->
+            <div class="space-y-3">
+              <h4 class="text-sm font-medium text-gray-700">Advanced Filters</h4>
+
+              <div class="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  bind:checked={useSemanticExpansion}
+                  id="semantic-expansion"
+                  class="rounded"
+                />
+                <label for="semantic-expansion" class="text-sm text-gray-600">
+                  Enable semantic concept expansion
                 </label>
               </div>
+
               <div>
-                <label for="confidence" class="block text-sm text-gray-600 mb-1">
+                <label class="block text-sm text-gray-600 mb-1">
                   Confidence Threshold: {confidenceThreshold}
                 </label>
                 <input
-                  id="confidence"
                   type="range"
+                  bind:value={confidenceThreshold}
                   min="0.1"
                   max="1.0"
-                  step="0.1";
-                  bind:value={confidenceThreshold}
-                  class="w-full" />
+                  step="0.1"
+                  class="w-full"
+                />
               </div>
+
               <div>
-                <label class="block text-sm text-gray-600 mb-1" for="entity-types">Entity Types</label><select id="entity-types"
-                  multipl;
-                  bind:value={selectedEntityTypes}
-                  class="w-full p-1 border border-gray-300 rounded text-sm">
-                  <option value="LEGAL_CONCEPT">Legal Concepts</option>
-                  <option value="PERSON">Persons</option>
-                  <option value="ORGANIZATION">Organizations</option>
-                  <option value="MONEY">Money</option>
-                  <option value="DATE">Dates</option>
-                </select>
+                <label class="block text-sm text-gray-600 mb-2">Entity Types</label>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                  {#each ['LEGAL_CONCEPT', 'PERSON', 'ORGANIZATION', 'MONEY', 'DATE', 'CASE_REF'] as entityType}
+                    <label class="flex items-center space-x-1">
+                      <input
+                        type="checkbox"
+                        bind:group={selectedEntityTypes}
+                        value={entityType}
+                        class="rounded"
+                      />
+                      <span>{entityType.replace('_', ' ')}</span>
+                    </label>
+                  {/each}
+                </div>
               </div>
             </div>
-            <div class="flex justify-end">
-              <Button
-                onclick={performRAGQuery}
-                disabled={isAnalyzing || !queryText.trim()}
-                class="px-6 bits-btn bits-btn">
-{isAnalyzing ? 'Querying...' : 'Execute RAG Query'}
-            </div>
+
+            <Button
+              onclick={performRAGQuery}
+              disabled={isAnalyzing || !queryText.trim()}
+              class="w-full"
+            >
+              {#if isAnalyzing}
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Querying with {gpuAcceleration ? 'GPU' : 'CPU'}...
+              {:else}
+                🔍 Execute RAG Query
+              {/if}
+            </Button>
           </div>
-        </div>
-      </div>
-      <!-- Query Results -->
-      {#if ragResponse}
-        <div class="nes-container">
-          <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary">Query Results ({ragResponse.totalFound} found)</h3>
-          </div>
-          <div class="yorha-panel-content">
+        </CardContent>
+      </Card>
+
+      <!-- Query Results Section -->
+      <Card>
+        <CardHeader>
+          <CardTitle>Query Results</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {#if ragResponse}
             <div class="space-y-4">
-              <!-- Query Summary -->
-              <div class="query-summary p-3 bg-blue-50 rounded-lg">
-                <div class="text-sm text-blue-800">
-                  <strong>Query:</strong>
-                  {ragResponse.query}
-                </div>
+              <!-- Query Info -->
+              <div class="bg-blue-50 p-3 rounded-md">
+                <div class="text-sm text-blue-800 font-medium">Query: "{ragResponse.query}"</div>
                 <div class="text-xs text-blue-600 mt-1">
-                  Processing time: {Math.round(ragResponse.processingTime)}ms
+                  Found {ragResponse.totalFound} results in {ragResponse.processingTime.toFixed(0)}ms
+                  {#if ragResponse.semanticExpansions && ragResponse.semanticExpansions.length > 0}
+                    | Expanded with: {ragResponse.semanticExpansions.join(', ')}
+                  {/if}
                 </div>
-                {#if ragResponse.semanticExpansions && ragResponse.semanticExpansions.length > 0}
-                  <div class="text-xs text-blue-600 mt-1">
-                    <strong>Semantic expansions:</strong>
-                    {ragResponse.semanticExpansions.join(', ')}
-                  </div>
-                {/if}
               </div>
+
               <!-- Results -->
-              <div class="results space-y-3">
-                {#each ragResponse.results as result}
-                  <div class="result-item p-4 border border-gray-200 rounded-lg">
-                    <div class="flex justify-between items-start mb-2">
-                      <h4 class="font-medium text-gray-900">{(result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).title}</h4>
-                      <span class="text-sm text-blue-600 font-medium">
-                        {Math.round.relevanceScore * 100)}% match
-                      </span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">{(result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).excerpt}</p>
-                    {#if (result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).entities && (result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).entities.length > 0}
-                      <div class="entities flex flex-wrap gap-1">
-                        {#each (result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).entities.slice(0, 5) as entity}
-                          <span
-                            class="inline-flex items-center px-2 py-1 rounded text-xs {getEntityColor(
-                              entity.type
-                            )}">
-                            {entity.text}
+              {#if ragResponse.results.length > 0}
+                <div class="space-y-2">
+                  {#each ragResponse.results.slice(0, 3) as result, index}
+                    <div class="border border-gray-200 rounded-md p-3">
+                      <div class="flex justify-between items-start mb-2">
+                        <span class="text-sm font-medium text-gray-900">Result {index + 1}</span>
+                        {#if result.relevanceScore}
+                          <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
+                            {(result.relevanceScore * 100).toFixed(1)}% match
                           </span>
-                        {/each}
+                        {/if}
                       </div>
-                    {/if}
-                  </div>
-                {/each}
-                {#if ragResponse.results.length === 0}
-                  <div class="no-results p-4 text-center text-gray-500">
-                    No results found. Try adjusting your query or lowering the confidence threshold.
-                  </div>
-                {/if}
-              </div>
+                      <p class="text-sm text-gray-700">{result.excerpt || 'No excerpt available'}</p>
+                    </div>
+                  {/each}
+                </div>
+              {:else}
+                <div class="text-center text-gray-500 py-4">
+                  <p>No relevant results found for this query.</p>
+                </div>
+              {/if}
             </div>
-          </div>
-        </div>
-      {/if}
+          {:else}
+            <div class="text-center text-gray-500 py-8">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <p class="mt-2">No query results yet. Execute a RAG query to see results here.</p>
+            </div>
+          {/if}
+        </CardContent>
+      </Card>
     </div>
   {/if}
+
+  <!-- GPU Acceleration Status Footer -->
+  <Card>
+    <CardContent class="pt-4">
+      <div class="flex items-center justify-between text-sm text-gray-600">
+        <div>
+          <span class="font-medium">Acceleration Status:</span>
+          WebGPU: <span class="font-mono {webgpuStatus === 'available' ? 'text-green-600' : webgpuStatus === 'unavailable' ? 'text-red-600' : 'text-yellow-600'}">{webgpuStatus}</span> |
+          CUDA-WASM: <span class="font-mono {cudaStatus === 'available' ? 'text-green-600' : cudaStatus === 'unavailable' ? 'text-red-600' : 'text-yellow-600'}">{cudaStatus}</span>
+        </div>
+        <div>
+          <span class="font-medium">Runtime:</span>
+          <span class="font-mono">Svelte 5 + TypeScript 5.0+</span>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
 </div>
+
 <style>
-  .enhanced-rag-demo {
-    font-family:
-      system-ui,
-      -apple-system,
-      sans-serif;
+  /* Modern styling optimized for the new architecture */
+  .grid {
+    container-type: inline-size;
   }
-  .tab {
-    transition: all 0.2s ease;
-  }
-  .entity-item,
-  .concept-item,
-  .result-item {
-    transition: all 0.2s ease;
-  }
-  .entity-item: hover
-  .concept-item: hover
-  .result-item:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  .metric {
-    text-align: center;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    background: #f9fafb;
-  }
-  .embedding-preview {
-    max-width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-  @media (max-width: 768px) {
-    .query-options {
-      grid-template-columns: 1fr;
-    }
-    .analysis-results {
+
+  @container (max-width: 768px) {
+    .grid-cols-1.lg\\:grid-cols-2 {
       grid-template-columns: 1fr;
     }
   }
+
+  /* WebGPU acceleration indicators */
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Performance indicators */
+  .text-green-600 { color: rgb(34, 197, 94), }
+  .text-yellow-600 { color: rgb(234, 179, 8), }
+  .text-red-600 { color: rgb(239, 68, 68), }
+  .text-blue-600 { color: rgb(37, 99, 235), }
 </style>

@@ -145,7 +145,7 @@
         formData.append('file', file);
         const ocrResponse = await fetch('/api/ocr/extract', {
           method: 'POST',
-          body: formData;
+          body: formData
         });
         if (ocrResponse.ok) {
           ocrResults = await ocrResponse.json();

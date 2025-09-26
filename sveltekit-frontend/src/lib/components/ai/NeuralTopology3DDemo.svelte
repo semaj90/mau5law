@@ -285,7 +285,7 @@ console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
     {:else if demoStage === 'completed'}
       <div class="demo-completed">
         <h3>✅ Demo Completed!</h3>
-        <button class="demo-btn secondary" onclick={() => { demoStage = 'ready'; predictions = []; animations = []; searchResults = []; }}>
+        <button class="demo-btn secondary" onclick={() => { demoStage = 'ready'; predictions = []; animations = []; searchResults = [], }}>
           🔄 Run Again
         </button>
       </div>

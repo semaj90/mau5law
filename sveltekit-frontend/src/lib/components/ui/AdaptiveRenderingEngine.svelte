@@ -555,15 +555,15 @@ export function setQuality(tier: QualityTier) {
   animation: premium-shine 3s ease-in-out infinite;
 }
 @keyframes pixel-flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.98; }
+  0%, 100% { opacity: 1, }
+  50% { opacity: 0.98, }
 }
 @keyframes smooth-glow {
-  0% { filter: brightness(1) contrast(1.05) saturate(1.1); }
-  100% { filter: brightness(1.02) contrast(1.08) saturate(1.15); }
+  0% { filter: brightness(1) contrast(1.05) saturate(1.1), }
+  100% { filter: brightness(1.02) contrast(1.08) saturate(1.15), }
 }
 @keyframes premium-shine {
-  0%, 100% { filter: brightness(1) saturate(1); }
-  50% { filter: brightness(1.05) saturate(1.1); }
+  0%, 100% { filter: brightness(1) saturate(1), }
+  50% { filter: brightness(1.05) saturate(1.1), }
 }
 </style>

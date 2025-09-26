@@ -1,13 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Expected token }
-https://svelte.dev/e/expected_token -->
-<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
-</script>
   interface Props {
-    class_: string ;
+    class?: string;
   }
   let {
-    class_ = '',
+    class: class_ = '',
     children
   }: Props & { children?: unknown } = $props();
   </script>

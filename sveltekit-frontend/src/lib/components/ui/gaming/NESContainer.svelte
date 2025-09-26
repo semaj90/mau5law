@@ -392,9 +392,9 @@
     animation: nes-container-processing 1s linear infinite;
   }
   @keyframes nes-container-processing {
-    0% { border-color: var(--nes-secondary); }
-    50% { border-color: var(--nes-accent); }
-    100% { border-color: var(--nes-secondary); }
+    0% { border-color: var(--nes-secondary), }
+    50% { border-color: var(--nes-accent), }
+    100% { border-color: var(--nes-secondary), }
   }
   .nes-container--complete {
     border-color: var(--nes-accent);
@@ -406,9 +406,9 @@
     animation: nes-container-error 0.5s ease-in-out 3;
   }
   @keyframes nes-container-error {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+    0%, 100% { transform: translateX(0), }
+    25% { transform: translateX(-5px), }
+    75% { transform: translateX(5px), }
   }
 /* Priority indicators */ {}
   .nes-container--priority-critical {
@@ -416,8 +416,8 @@
     animation: nes-container-critical 1s ease-in-out infinite;
   }
   @keyframes nes-container-critical {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4); }
-    50% { box-shadow: 0 0 0 8px rgba(255, 0, 0, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4), }
+    50% { box-shadow: 0 0 0 8px rgba(255, 0, 0, 0), }
   }
   .nes-container--priority-high {
     border-color: #ff8800;
@@ -431,9 +431,9 @@
     animation: nes-container-digital 2s linear infinite;
   }
   @keyframes nes-container-digital {
-    0% { border-style: dashed; }
-    50% { border-style: dotted; }
-    100% { border-style: dashed; }
+    0% { border-style: dashed, }
+    50% { border-style: dotted, }
+    100% { border-style: dashed, }
   }
 /* Power LED */ {}
   .nes-container__power-led {
@@ -545,8 +545,8 @@
     animation: priority-blink 1s infinite;
   }
   @keyframes priority-blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.5; }
+    0%, 50% { opacity: 1, }
+    51%, 100% { opacity: 0.5, }
   }
   .nes-container__priority--high {
     color: #ff8800;
@@ -575,8 +575,8 @@ rgba(0, 255, 0, 0.1) 4px {}
     animation: nes-scanlines 0.1s linear infinite;
   }
   @keyframes nes-scanlines {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(4px); }
+    0% { transform: translateY(0), }
+    100% { transform: translateY(4px), }
   }
 /* Power button for console */ {}
   .nes-container__power-button {

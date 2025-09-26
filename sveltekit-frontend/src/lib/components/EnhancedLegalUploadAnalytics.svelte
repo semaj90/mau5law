@@ -275,7 +275,7 @@
         formData.append('model', currentModel);
         const response = await fetch('/api/ai/analyze-document', {
           method: 'POST',
-          body: formData;
+          body: formData
         });
         return (response as { ok?: unknown; json?: unknown }).ok ? await (response as { ok?: unknown; json?: unknown }).json() : null;
       });
@@ -306,7 +306,7 @@
         formData.append('legalContext', JSON.stringify(legalContext));
         const response = await fetch('/api/ai/legal/analyze', {
           method: 'POST',
-          body: formData;
+          body: formData
         });
         if ((response as { ok?: unknown; json?: unknown }).ok) {
           return await (response as { ok?: unknown; json?: unknown }).json();
@@ -613,7 +613,7 @@
                 </button>
                 <button class="nes-btn"
                   variant="ghost"
-                  onclick={() => { selectedFiles = []; aiAnalysisResults = []; }}
+                  onclick={() => { selectedFiles = []; aiAnalysisResults = [], }}
                 >
                   Clear Files
                 </button>

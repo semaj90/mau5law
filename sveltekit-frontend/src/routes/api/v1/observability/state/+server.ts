@@ -17,7 +17,7 @@ export const GET: RequestHandler = async () => {
     const file = path.join(runtimeDir, 'observability-state.json')
     let legacyPersisted: any = null
     if(fs.existsSync(file)){
-      try { legacyPersisted = JSON.parse(fs.readFileSync(file,'utf8'); } catch (error) {}
+      try { legacyPersisted = JSON.parse(fs.readFileSync(file,'utf8'), } catch (error) {}
     }
     return json({
       ok: true

@@ -22,10 +22,10 @@ https://svelte.dev/e/js_parse_error -->
       const quicData = await quicRes.json();
       sustained = quicData.sustainedP99;
       loading = false;
-    } catch(e:any){ error = e.message; loading=false; }
+    } catch(e:any){ error = e.message; loading=false, }
   }
-  function fmt(ts:number){ return new Date(ts).toLocaleTimeString(); }
-  $effect(()=>{ load(); interval = setInterval(()=>{ if(autoRefresh) load(); }, 5000); return ()=> clearInterval(interval); });
+  function fmt(ts:number){ return new Date(ts).toLocaleTimeString(), }
+  $effect(()=>{ load(); interval = setInterval(()=>{ if(autoRefresh) load(), }, 5000); return ()=> clearInterval(interval), });
 </script>
 
 <div class="alerts-panel p-3 border rounded bg-white dark:bg-neutral-900 text-sm space-y-3">

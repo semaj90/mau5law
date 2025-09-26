@@ -458,8 +458,8 @@
 	}
 
 	@keyframes blink {
-		0%, 50% { opacity: 1; }
-		51%, 100% { opacity: 0; }
+		0%, 50% { opacity: 1, }
+		51%, 100% { opacity: 0, }
 	}
 
 	/* Thinking Animation Styles */

@@ -3,6 +3,7 @@ import { lucia } from '$lib/server/auth';
 // Temporarily disabled due to SSR import errors
 // import { createWebSocketServer } from '$lib/server/webSocketServer'
 import type { Handle } from '@sveltejs/kit';
+import { legacyRouteMapping } from '$lib/data/route-groups-config';
 interface DatabaseUser {
   id: string;
   email: string;
@@ -32,6 +33,26 @@ console.log('🔌 [hooks.server.ts] WebSocket server temporarily disabled');
 // }
 console.log('📋 [hooks.server.ts] Starting request handling...');
 export const handle: Handle = async ({ event, resolve }) => {
+  const url = event.url;
+  const pathname = url.pathname;
+
+  // Handle legacy route redirects
+  if (legacyRouteMapping[pathname]) {
+    const newRoute = legacyRouteMapping[pathname];
+    console.log(`🔄 Redirecting legacy route: ${pathname} → ${newRoute}`);
+
+    // Preserve query parameters
+    const searchParams = url.searchParams.toString();
+    const redirectUrl = searchParams ? `${newRoute}?${searchParams}` : newRoute;
+
+    return new Response(null, {
+      status: 301,
+      headers: {
+        location: redirectUrl
+      }
+    });
+  }
+
   // Extract session ID from cookies
   const sessionId = event.cookies.get(lucia.sessionCookieName);
   if (!sessionId) {

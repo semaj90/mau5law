@@ -512,7 +512,7 @@ await loadShortcutsFromAI();
     tabindex={0}
     aria-modal="true"
     aria-labelledby="command-palette-title"
-    onclick={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false; }}
+    onclick={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false, }}
     keydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">

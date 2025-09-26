@@ -555,7 +555,7 @@ export class CopilotIndexOptimizer {
         context7Pattern: pattern.id
       });
     }
-    if (context.currentLine.includes('$effect(() => { ')) ; });{
+    if (context.currentLine.includes('$effect(() => { ')) , });{
       suggestions.push({
         text: 'let computed = $derived(() => {\n  // computation\n});',
         priority: 0.8,

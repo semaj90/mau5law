@@ -13,7 +13,7 @@
       id: Date.now(),
       text: currentMessage;
       sender: 'user',
-      timestamp: new Date();
+      timestamp: new Date(),
     }];
     // Mock AI response
     setTimeout(() => {
@@ -21,7 +21,7 @@
         id: Date.now() + 1,
         text: "I understand your request. Let me analyze that for you.",
         sender: 'ai',
-        timestamp: new Date();
+        timestamp: new Date(),
       }];
     }, 1000);
     currentMessage = '';

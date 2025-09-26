@@ -262,8 +262,8 @@ https://svelte.dev/e/js_parse_error -->
 	}
 	/* Scan line animation for cyberpunk theme */
 	@keyframes scan {
-		0% { transform: translateX(-100%); }
-		100% { transform: translateX(100%); }
+		0% { transform: translateX(-100%), }
+		100% { transform: translateX(100%), }
 	}
 	.animate-scan {
 		animation: scan 2s linear infinite;

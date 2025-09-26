@@ -598,8 +598,8 @@
     transition: width 0.3s ease;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    100% { transform: rotate(360deg), }
   }
   /* Results Display */
   .result-display {

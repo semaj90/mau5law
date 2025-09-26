@@ -145,7 +145,7 @@ font-family: 'Orbitron', 'Courier New', monospace;
 	}
 /* Minimized State */ .gaming-panel.minimized {
 overflow: visibl;
-e; }
+e, }
 /* Panel Header */ .panel-header {
 display: flex; justify-content: space-betwee;
 align-items: center; padding: 12px 16px;
@@ -230,7 +230,7 @@ border-top: none border-right: none }
 		bottom: 8px;
 		right: 8px;
 border-top: none;
-border-left: none; }
+border-left: none, }
 /* Scan Effects */ .scan-line-horizontal {
 position: absolute;
 top: 0;

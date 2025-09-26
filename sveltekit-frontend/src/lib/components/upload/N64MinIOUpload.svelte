@@ -127,7 +127,7 @@
       gamingProgress: f.gamingProgress;
     }));
     if (pending.length === 0) {
-      try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) { /* ignore */ }
+      try { sessionStorage.removeItem(STORAGE_KEY), } catch(e) { /* ignore */ }
       return;
     }
     try {
@@ -261,9 +261,9 @@
   function cancelAllUploads() {
     fileStates = fileStates.map(fs => {
       if (fs.controller) {
-        try { fs.controller.abort(); } catch }
+        try { fs.controller.abort(), } catch }
       if (fs.retryTimeoutId) {
-        try { clearTimeout(fs.retryTimeoutId); } catch ;
+        try { clearTimeout(fs.retryTimeoutId), } catch ;
         fs.retryTimeoutId = null;
       }
       if (['uploading','pending','processing'].includes(fs.status)) {
@@ -343,7 +343,7 @@
     // removed unused target assignment
     if (target && target.status === 'uploading') return;
     if (target?.retryTimeoutId) {
-      try { clearTimeout(target.retryTimeoutId); } catch ;
+      try { clearTimeout(target.retryTimeoutId), } catch ;
     }
     files = files.filter((_, i) => i !== index);
     fileStates = fileStates.filter((_, i) => i !== index);
@@ -352,8 +352,8 @@
   function cancelUpload(_index: number) {
     const fs = fileStates[index];
     if (!fs || fs.status !== 'uploading') return;
-    try { fs.controller?.abort(); } catch if (fs.retryTimeoutId) {
-      try { clearTimeout(fs.retryTimeoutId); } catch ;
+    try { fs.controller?.abort(), } catch if (fs.retryTimeoutId) {
+      try { clearTimeout(fs.retryTimeoutId), } catch ;
       fs.retryTimeoutId = null;
     }
     fs.status = 'canceled';
@@ -393,7 +393,7 @@
         if (currentIndex < stages.length - 1) {
           evolutionStage = stages[currentIndex + 1];
           showEvolutionLoader = true;
-          setTimeout(() => { showEvolutionLoader = false; }, 3000);
+          setTimeout(() => { showEvolutionLoader = false, }, 3000);
         }
       }
     }
@@ -785,7 +785,7 @@ restoreSession();
         const data = await res.json();
         minioHealthy = !!data?.ok;
       } else minioHealthy = false;
-    } catch { minioHealthy = false; }
+    } catch { minioHealthy = false, }
     })();
   });
   $effect(() => {
@@ -911,7 +911,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn remove"
                   title="Remove"
-                  onclick={(e) => { e.stopPropagation(); removeFile(index); }}
+                  onclick={(e) => { e.stopPropagation(); removeFile(index), }}
                   aria-label="Remove file"
                 >
                   ✕
@@ -921,7 +921,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn cancel"
                   title="Cancel"
-                  onclick={(e) => { e.stopPropagation(); cancelUpload(index); }}
+                  onclick={(e) => { e.stopPropagation(); cancelUpload(index), }}
                   aria-label="Cancel upload"
                 >
                   ⏹
@@ -931,7 +931,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn retry"
                   title="Retry"
-                  onclick={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(); }}
+                  onclick={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(), }}
                   aria-label="Retry upload"
                 >
                   ⟳
@@ -940,7 +940,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn remove"
                   title="Remove"
-                  onclick={(e) => { e.stopPropagation(); removeFile(index); }}
+                  onclick={(e) => { e.stopPropagation(); removeFile(index), }}
                   aria-label="Remove file"
                 >
                   ✕
@@ -1098,8 +1098,8 @@ restoreSession();
     animation: fadeIn 0.3s ease;
   }
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0, }
+    to { opacity: 1, }
   }
   .n64-drop-zone {
     border: 4px solid #FFD700;
@@ -1153,8 +1153,8 @@ restoreSession();
     animation: pulse 2s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.8, }
+    50% { opacity: 1, }
   }
   /* Theme-specific styles */
   .theme-nes {
@@ -1183,8 +1183,8 @@ restoreSession();
     animation: float 3s ease-in-out infinite;
   }
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+    0%, 100% { transform: translateY(0px), }
+    50% { transform: translateY(-10px), }
   }
   .n64-upload-text h3 {
     margin: 0;
@@ -1248,8 +1248,8 @@ restoreSession();
     background: linear-gradient(135deg, #2e1a1a 0%, #1a0a0a 100%);
   }
   @keyframes processingGlow {
-    from { box-shadow: inset 0 0 10px rgba(64, 144, 255, 0.1), 0 0 10px rgba(0, 0, 0, 0.5); }
-    to { box-shadow: inset 0 0 20px rgba(64, 144, 255, 0.3), 0 0 20px rgba(64, 144, 255, 0.3); }
+    from { box-shadow: inset 0 0 10px rgba(64, 144, 255, 0.1), 0 0 10px rgba(0, 0, 0, 0.5), }
+    to { box-shadow: inset 0 0 20px rgba(64, 144, 255, 0.3), 0 0 20px rgba(64, 144, 255, 0.3), }
   }
   .file-icon.n64-icon {
     color: #FFD700;
@@ -1278,8 +1278,8 @@ restoreSession();
     animation: blink 1s infinite;
   }
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.3; }
+    0%, 50% { opacity: 1, }
+    51%, 100% { opacity: 0.3, }
   }
   .n64-file-actions {
     display: flex;

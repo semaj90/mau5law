@@ -796,9 +796,9 @@
     height: 100%;
     transition: width 0.3;
   }
-  .stat-fill.impact { background: #10b981; }
-  .stat-fill.effort { background: #f59e0b; }
-  .stat-fill.risk { background: #ef4444; }
+  .stat-fill.impact { background: #10b981, }
+  .stat-fill.effort { background: #f59e0b, }
+  .stat-fill.risk { background: #ef4444, }
   .stat-value {
     font-size: 0.75rem;
     font-weight: 600;
@@ -913,7 +913,7 @@
     margin-top: 0.5rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   /* Dialog Styles */
   .recommendation-details-dialog {
@@ -1013,9 +1013,9 @@
     align-items: center;
     margin-top: 0.5rem;
   }
-  .availability-available { color: #10b981; }
-  .availability-limited { color: #f59e0b; }
-  .availability-unavailable { color: #ef4444; }
+  .availability-available { color: #10b981, }
+  .availability-limited { color: #f59e0b, }
+  .availability-unavailable { color: #ef4444, }
   .resource-cost {
     font-weight: 600;
     color: #374151;

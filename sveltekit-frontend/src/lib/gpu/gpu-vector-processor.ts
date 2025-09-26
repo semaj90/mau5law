@@ -253,12 +253,12 @@ export class GPUVectorProcessor {
       return true;
     }
     if (existing) {
-      try { existing.partialBuffer.destroy(); existing.statsBuffer.destroy(); existing.statsReadBuffer.destroy(); existing.cfgBuffer.destroy(); } catch (error) {}
+      try { existing.partialBuffer.destroy(); existing.statsBuffer.destroy(); existing.statsReadBuffer.destroy(); existing.cfgBuffer.destroy(), } catch (error) {}
     }
     try {
       const WG = 128;
-  const partialWGSL = `struct Cfg { dim: u32, segments: u32 } struct Partial { sum: f32, sumSq: f32, sumAbs: f32, count: u32 } @group(0) @binding(0) var<storage, read> data: array<f32>; @group(0) @binding(1) var<storage, read_write> partials: array<Partial>; @group(0) @binding(2) var<uniform> cfg: Cfg; @compute @workgroup_size(${WG}) fn main(@builtin(local_invocation_id) lid: vec3<u32>, @builtin(workgroup_id) wid: vec3<u32>) { let dim = cfg.dim; let segs = cfg.segments; let seg = wid.x; if (seg >= segs) { return; } var sum: f32 = 0.0; var sumSq: f32 = 0.0; var sumAbs: f32 = 0.0; var i: u32 = lid.x; let base = seg * dim; while (i < dim) { let v = data[base + i]; sum += v; sumSq += v * v; sumAbs += abs(v); i += ${WG}u; } var<workgroup> wSum: array<f32, ${WG}>; var<workgroup> wSumSq: array<f32, ${WG}>; var<workgroup> wSumAbs: array<f32, ${WG}>; wSum[lid.x] = sum; wSumSq[lid.x] = sumSq; wSumAbs[lid.x] = sumAbs; workgroupBarrier(); var off: u32 = ${WG/2}u; while (off > 0u) { if (lid.x < off) { wSum[lid.x] = wSum[lid.x] + wSum[lid.x + off]; wSumSq[lid.x] = wSumSq[lid.x] + wSumSq[lid.x + off]; wSumAbs[lid.x] = wSumAbs[lid.x] + wSumAbs[lid.x + off]; } workgroupBarrier(); off = off / 2u; } if (lid.x == 0u) { partials[seg].sum = wSum[0]; partials[seg].sumSq = wSumSq[0]; partials[seg].sumAbs = wSumAbs[0]; partials[seg].count = dim; } }`;
-  const finalWGSL = `struct Cfg { dim: u32, segments: u32 } struct Partial { sum: f32, sumSq: f32, sumAbs: f32, count: u32 } struct Stat { mean: f32, std: f32, energy: f32 } @group(0) @binding(0) var<storage, read> partials: array<Partial>; @group(0) @binding(1) var<storage, read_write> stats: array<Stat>; @group(0) @binding(2) var<uniform> cfg: Cfg; @compute @workgroup_size(64) fn main(@builtin(global_invocation_id) gid: vec3<u32>) { let seg = gid.x; if (seg >= cfg.segments) { return; } let p = partials[seg]; let n = f32(p.count); let mean = p.sum / n; let variance = max(0.0, p.sumSq / n - mean * mean); let energy = p.sumAbs / n; stats[seg].mean = mean; stats[seg].std = sqrt(variance + 1e-6); stats[seg].energy = energy; }`;
+  const partialWGSL = `struct Cfg { dim: u32, segments: u32 } struct Partial { sum: f32, sumSq: f32, sumAbs: f32, count: u32 } @group(0) @binding(0) var<storage, read> data: array<f32>; @group(0) @binding(1) var<storage, read_write> partials: array<Partial>; @group(0) @binding(2) var<uniform> cfg: Cfg; @compute @workgroup_size(${WG}) fn main(@builtin(local_invocation_id) lid: vec3<u32>, @builtin(workgroup_id) wid: vec3<u32>) { let dim = cfg.dim; let segs = cfg.segments; let seg = wid.x; if (seg >= segs) { return, } var sum: f32 = 0.0; var sumSq: f32 = 0.0; var sumAbs: f32 = 0.0; var i: u32 = lid.x; let base = seg * dim; while (i < dim) { let v = data[base + i]; sum += v; sumSq += v * v; sumAbs += abs(v); i += ${WG}u, } var<workgroup> wSum: array<f32, ${WG}>; var<workgroup> wSumSq: array<f32, ${WG}>; var<workgroup> wSumAbs: array<f32, ${WG}>; wSum[lid.x] = sum; wSumSq[lid.x] = sumSq; wSumAbs[lid.x] = sumAbs; workgroupBarrier(); var off: u32 = ${WG/2}u; while (off > 0u) { if (lid.x < off) { wSum[lid.x] = wSum[lid.x] + wSum[lid.x + off]; wSumSq[lid.x] = wSumSq[lid.x] + wSumSq[lid.x + off]; wSumAbs[lid.x] = wSumAbs[lid.x] + wSumAbs[lid.x + off], } workgroupBarrier(); off = off / 2u, } if (lid.x == 0u) { partials[seg].sum = wSum[0]; partials[seg].sumSq = wSumSq[0]; partials[seg].sumAbs = wSumAbs[0]; partials[seg].count = dim, } }`;
+  const finalWGSL = `struct Cfg { dim: u32, segments: u32 } struct Partial { sum: f32, sumSq: f32, sumAbs: f32, count: u32 } struct Stat { mean: f32, std: f32, energy: f32 } @group(0) @binding(0) var<storage, read> partials: array<Partial>; @group(0) @binding(1) var<storage, read_write> stats: array<Stat>; @group(0) @binding(2) var<uniform> cfg: Cfg; @compute @workgroup_size(64) fn main(@builtin(global_invocation_id) gid: vec3<u32>) { let seg = gid.x; if (seg >= cfg.segments) { return, } let p = partials[seg]; let n = f32(p.count); let mean = p.sum / n; let variance = max(0.0, p.sumSq / n - mean * mean); let energy = p.sumAbs / n; stats[seg].mean = mean; stats[seg].std = sqrt(variance + 1e-6); stats[seg].energy = energy, }`;
       const partialModule = device.createShaderModule({ code: partialWGSL });
       const finalModule = device.createShaderModule({ code: finalWGSL });
       const layoutEntries: GPUBindGroupLayoutEntry[] = [
@@ -652,7 +652,7 @@ export class GPUVectorProcessor {
       telemetryBus.publish({ type: 'lod.embed.upscale.failure' as any, meta: { type: 'backend', from, to, error: (e as Error).message } });
     }
   }
-  getCurrentEmbeddingDimension() { return this.embeddingDimension; }
+  getCurrentEmbeddingDimension() { return this.embeddingDimension, }
   // WebGL2 transform feedback implementation with simple program+buffer caching
   private webgl2Cache: {
     program: WebGLProgram;
@@ -683,13 +683,13 @@ export class GPUVectorProcessor {
     if (this.webgl2Cache && this.webgl2Cache.capacity >= neededFloats) return this.webgl2Cache;
     // (Re)create
     this.disposeWebGL2Cache();
-    const vsSrc = `#version 300 es\nin float a_value;out float v_value;uniform float uScale;uniform float uPass;void main(){float x=a_value*(1.0+0.0005*uPass)+sin(a_value*0.5+uPass)*0.0003;v_value=x*uScale;gl_Position=vec4( (float(gl_VertexID)/1000.0)*0.0, 0.0, 0.0, 1.0);}`;
-    const fsSrc = `#version 300 es\nprecision highp float;in float v_value;out vec4 fragColor;void main(){fragColor=vec4(v_value,0.0,0.0,1.0);}`; // not used (TF discards raster if we enable RASTERIZER_DISCARD)
-    const compile = (type: number, src: string) => { const sh = gl.createShader(type)!; gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { const info = gl.getShaderInfoLog(sh); gl.deleteShader(sh); throw new Error('webgl2 shader compile: '+info); } return sh; }
+    const vsSrc = `#version 300 es\nin float a_value;out float v_value;uniform float uScale;uniform float uPass;void main(){float x=a_value*(1.0+0.0005*uPass)+sin(a_value*0.5+uPass)*0.0003;v_value=x*uScale;gl_Position=vec4( (float(gl_VertexID)/1000.0)*0.0, 0.0, 0.0, 1.0),}`;
+    const fsSrc = `#version 300 es\nprecision highp float;in float v_value;out vec4 fragColor;void main(){fragColor=vec4(v_value,0.0,0.0,1.0),}`; // not used (TF discards raster if we enable RASTERIZER_DISCARD)
+    const compile = (type: number, src: string) => { const sh = gl.createShader(type)!; gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { const info = gl.getShaderInfoLog(sh); gl.deleteShader(sh); throw new Error('webgl2 shader compile: '+info), } return sh, }
     const vs = compile(gl.VERTEX_SHADER, vsSrc);
     const fs = compile(gl.FRAGMENT_SHADER, fsSrc);
     const prog = gl.createProgram()!; gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.transformFeedbackVaryings(prog, ['v_value'], gl.INTERLEAVED_ATTRIBS); gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { const info = gl.getProgramInfoLog(prog); throw new Error('webgl2 link: '+info); }
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { const info = gl.getProgramInfoLog(prog); throw new Error('webgl2 link: '+info), }
     gl.deleteShader(vs); gl.deleteShader(fs);
     const vao = gl.createVertexArray()!; gl.bindVertexArray(vao);
     const attribLoc = gl.getAttribLocation(prog, 'a_value');
@@ -826,13 +826,13 @@ export class GPUVectorProcessor {
       telemetryBus.publish({ type: 'gpu.vector.webgl1.pool' as any, meta: { action: 'borrow', key: `${texSize}-${floatMode}`, created } });
       // Retrieve or build cached program + quad
       if (!this.webgl1Cache) {
-        const vsSrc = `attribute vec2 a_pos;varying vec2 v_uv;void main(){v_uv=(a_pos+1.0)*0.5;gl_Position=vec4(a_pos,0.0,1.0);}`;
-        const fsSrc = `precision highp float;varying vec2 v_uv;uniform sampler2D u_tex;uniform float u_pass;uniform float u_total;void main(){vec4 c=texture2D(u_tex,v_uv);c = c* (1.0 + 0.002*u_pass) + 0.0005*vec4(sin(u_pass+v_uv.x),cos(u_pass+v_uv.y),sin(u_pass*0.5),1.0);gl_FragColor=c;}`;
-        const compile = (type: number, src: string) => { const sh = gl.createShader(type)!; gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { const info = gl.getShaderInfoLog(sh); gl.deleteShader(sh); throw new Error('shader-compile: '+info); } return sh; }
+        const vsSrc = `attribute vec2 a_pos;varying vec2 v_uv;void main(){v_uv=(a_pos+1.0)*0.5;gl_Position=vec4(a_pos,0.0,1.0),}`;
+        const fsSrc = `precision highp float;varying vec2 v_uv;uniform sampler2D u_tex;uniform float u_pass;uniform float u_total;void main(){vec4 c=texture2D(u_tex,v_uv);c = c* (1.0 + 0.002*u_pass) + 0.0005*vec4(sin(u_pass+v_uv.x),cos(u_pass+v_uv.y),sin(u_pass*0.5),1.0);gl_FragColor=c,}`;
+        const compile = (type: number, src: string) => { const sh = gl.createShader(type)!; gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { const info = gl.getShaderInfoLog(sh); gl.deleteShader(sh); throw new Error('shader-compile: '+info), } return sh, }
         const vs = compile(gl.VERTEX_SHADER, vsSrc);
         const fs = compile(gl.FRAGMENT_SHADER, fsSrc);
         const prog = gl.createProgram()!; gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
-        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { const info = gl.getProgramInfoLog(prog); throw new Error('program-link: '+info); }
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { const info = gl.getProgramInfoLog(prog); throw new Error('program-link: '+info), }
         const quad = new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]);
         const vbo = gl.createBuffer()!; gl.bindBuffer(gl.ARRAY_BUFFER, vbo); gl.bufferData(gl.ARRAY_BUFFER, quad, gl.STATIC_DRAW);
         const attribLocation = gl.getAttribLocation(prog, 'a_pos');
