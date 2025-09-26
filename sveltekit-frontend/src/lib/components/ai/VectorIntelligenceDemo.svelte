@@ -1,33 +1,30 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Search, Database, Brain, FileText, AlertCircle, CheckCircle2, Loader2, Star, Clock } from "lucide-svelte";
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Search, Database, Brain, FileText, AlertCircle, Loader2, Star, Clock } from "lucide-svelte";
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Badge from '$lib/components/ui/Badge.svelte';
   import Input from "$lib/components/ui/Input.svelte";
-  // Badge replaced with span - not available in enhanced-bits
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+
   type SearchResult = {
     id: string;
     title: string;
     content: string;
-    similarity: number
+    similarity: number;
     documentType: 'deed' | 'contract' | 'evidence' | 'case_law';
     metadata?: {
       caseId?: string;
       uploadDate?: string;
       tags?: string[];
-    }
-  }
+    };
+  };
+
   type SearchMetrics = {
-    totalDocuments: number
-    searchTime: number
-    vectorDimensions: number
-    similarityThreshold: number
-  }
+    totalDocuments: number;
+    searchTime: number;
+    vectorDimensions: number;
+    similarityThreshold: number;
+  };
+
   // Modern Svelte 5 runes
   let query = $state("");
   let isSearching = $state(false);
@@ -35,10 +32,12 @@
   let metrics = $state<SearchMetrics | null>(null);
   let error = $state<string | null>(null);
   let selectedResult = $state<SearchResult | null>(null);
+
   // Derived state for UI feedback
-  const hasResults = $derived(results.length > 0)
-  const showMetrics = $derived(metrics !== null)
-  const searchButtonDisabled = $derived(isSearching || query.trim.length === 0);
+  const hasResults = $derived(() => results.length > 0);
+  const showMetrics = $derived(() => metrics !== null);
+  const searchButtonDisabled = $derived(() => isSearching || query.trim().length === 0);
+
   // Vector intelligence search function
   async function performSemanticSearch() {
     if (!query.trim() || isSearching) return;
@@ -49,70 +48,83 @@
       const response = await fetch('/api/semantic-search', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({,
-          query: query.trim();
-        })
+        body: JSON.stringify({ query: query.trim() })
       });
-      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const err = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        throw new Error(err.error || `Search failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+
+      if (!response.ok) {
+        const errText = await response.text();
+        let parsed;
+        try {
+          parsed = JSON.parse(errText);
+        } catch {
+          parsed = { error: errText || response.statusText };
+        }
+        throw new Error(parsed.error || `Search failed: ${response.statusText}`);
       }
-      const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+
+      const data = await response.json();
       const searchTime = performance.now() - startTime;
-      // Align with the simpler API response
-      results = (data as { results?: any }).results.map((r: any) => ({,
+
+      results = (data.results || []).map((r: any) => ({
         id: r.id,
-        title: `Document ${r.id}`, // API doesn't provide title, create one
-        content: r.content,
-        similarity: r.similarity,
-        documentType: 'deed' // Mock typ;
+        title: r.title || `Document ${r.id}`,
+        content: r.content || r.text || "",
+        similarity: r.similarity ?? 0,
+        documentType: r.documentType ?? 'deed',
+        metadata: r.metadata
       }));
+
       metrics = {
-        totalDocuments: (data as { results?: any }).results.length,
+        totalDocuments: (data.results || []).length,
         searchTime: Math.round(searchTime),
-        vectorDimensions: 384, // Assuming this value, as API doesn't provide it
-        similarityThreshold: 0.0 // API doesn't use a threshold input
-      }
+        vectorDimensions: data.vectorDimensions ?? 384,
+        similarityThreshold: data.similarityThreshold ?? 0.0
+      };
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Search failed';
+      error = err instanceof Error ? err.message : 'Search failed';
       results = [];
       metrics = null;
     } finally {
       isSearching = false;
     }
   }
+
   // Handle form submission
-  function handleSubmit(_event: SubmitEvent) {
+  function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     performSemanticSearch();
   }
+
   // Handle Enter key in search input
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !searchButtonDisabled) {
       performSemanticSearch();
     }
   }
+
   // Format similarity score as percentage
   function formatSimilarity(score: number): string {
     return `${Math.round(score * 100)}%`;
   }
+
   // Get document type icon and color
   function getDocumentTypeStyle(type: SearchResult['documentType']) {
     switch (type) {
       case 'deed':
-        return { icon: FileText, color: 'bg-blue-100 text-blue-800' }
+        return { icon: FileText, color: 'bg-blue-100 text-blue-800' };
       case 'contract':
-        return { icon: FileText, color: 'bg-green-100 text-green-800' }
+        return { icon: FileText, color: 'bg-green-100 text-green-800' };
       case 'evidence':
-        return { icon: Database, color: 'bg-orange-100 text-orange-800' }
+        return { icon: Database, color: 'bg-orange-100 text-orange-800' };
       case 'case_law':
-        return { icon: Brain, color: 'bg-purple-100 text-purple-800' }
+        return { icon: Brain, color: 'bg-purple-100 text-purple-800' };
       default:
-        return { icon: FileText, color: 'bg-gray-100 text-gray-800' }
+        return { icon: FileText, color: 'bg-gray-100 text-gray-800' };
     }
   }
+
   // Demo placeholder results for development
   const demoResults: SearchResult[] = [
     {
@@ -124,7 +136,7 @@
       metadata: {
         caseId: "CASE-2024-001",
         uploadDate: "2024-01-15",
-        tags: ["property", "transfer", "warranty"];
+        tags: ["property", "transfer", "warranty"]
       }
     },
     {
@@ -136,7 +148,7 @@
       metadata: {
         caseId: "CASE-2024-002",
         uploadDate: "2024-01-10",
-        tags: ["employment", "technology", "intellectual property"];
+        tags: ["employment", "technology", "intellectual property"]
       }
     }
   ];
@@ -175,14 +187,14 @@
           disabled={searchButtonDisabled}
           class="min-w-[100px] bits-btn bits-btn"
         >
-{#if isSearching}
+          {#if isSearching}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />
             Searching
           {:else}
             <Search class="h-4 w-4 mr-2" />
             Search
           {/if}
-</Button>
+        </Button>
       </form>
       <!-- Example queries -->
       <div class="flex flex-wrap gap-2">
@@ -191,12 +203,11 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() =>
-{ query = example, }}
+            onclick={() => (query = example)}
             disabled={isSearching}
           >
             {example}
-</Button>
+          </Button>
         {/each}
       </div>
     </div>
@@ -241,10 +252,13 @@
         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{results.length} found</span>
       </div>
       <div class="grid gap-4">
-        {#each results as result ((result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).id)}
-          {@const typeStyle = getDocumentTypeStyle((result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).documentType)}
-          <div
-            class="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500 nes-container"> selectedResult = result}
+        {#each results as result (result.id)}
+          {@const typeStyle = getDocumentTypeStyle(result.documentType)}
+          <button
+            type="button"
+            class="w-full text-left hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500 nes-container"
+            onclick={() => (selectedResult = result)}
+            aria-label={ `Open ${result.title}` }
           >
             <div class="yorha-panel-content pt-6">
               <div class="space-y-3">
@@ -252,50 +266,59 @@
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
-                      <typeStyle.icon class="h-4 w-4" />
-                      <h4 class="font-semibold line-clamp-1">{(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).title}</h4>
+                      {#if result.documentType === 'deed' || result.documentType === 'contract'}
+                        <FileText class="h-4 w-4" />
+                      {:else if result.documentType === 'evidence'}
+                        <Database class="h-4 w-4" />
+                      {:else if result.documentType === 'case_law'}
+                        <Brain class="h-4 w-4" />
+                      {:else}
+                        <FileText class="h-4 w-4" />
+                      {/if}
+                      <h4 class="font-semibold line-clamp-1">{result.title}</h4>
                     </div>
                     <p class="text-sm nes-text is-disabled line-clamp-2">
-                      {(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).content}
+                      {result.content}
                     </p>
                   </div>
                   <div class="flex flex-col items-end gap-2">
                     <div class="flex items-center gap-1">
                       <Star class="h-3 w-3 text-yellow-500" />
-                      <span class="text-sm font-mono">{formatSimilarity((result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).similarity)}</span>
+                      <span class="text-sm font-mono">{formatSimilarity(result.similarity)}</span>
                     </div>
                     <Badge class={typeStyle.color}>
-                      {(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).documentType.replace('_', ' ')}
+                      {result.documentType.replace('_', ' ')}
                     </Badge>
                   </div>
                 </div>
                 <!-- Metadata -->
-                {#if (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata}
+                {#if result.metadata}
                   <div class="flex items-center gap-4 text-xs nes-text is-disabled">
-                    {#if (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.caseId}
-                      <span>Case: {(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.caseId}</span>
+                    {#if result.metadata.caseId}
+                      <span>Case: {result.metadata.caseId}</span>
                     {/if}
-                    {#if (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.uploadDate}
+                    {#if result.metadata.uploadDate}
                       <span class="flex items-center gap-1">
                         <Clock class="h-3 w-3" />
-                        {(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.uploadDate}
+                        {result.metadata.uploadDate}
                       </span>
                     {/if}
                   </div>
-                  {#if (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.tags}
+                  {#if result.metadata.tags}
                     <div class="flex flex-wrap gap-1">
-                      {#each (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.tags as tag}
+                      {#each result.metadata.tags as tag}
                         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                       {/each}
                     </div>
                   {/if}
+                {/if}
               </div>
             </div>
-          </div>
+          </button>
         {/each}
       </div>
     </div>
-  {:else if !isSearching && query.trim.length > 0}
+  {:else if !isSearching && query.trim().length > 0}
     <!-- No results state -->
     <div class="nes-container">
       <div class="yorha-panel-content pt-6 text-center space-y-2">
@@ -308,7 +331,7 @@
     </div>
   {/if}
   <!-- Demo Notice -->
-  {#if !hasResults && !isSearching && query.trim.length === 0}
+  {#if !hasResults && !isSearching && query.trim().length === 0}
     <div class="border-dashed nes-container">
       <div class="yorha-panel-content pt-6 text-center space-y-4">
         <div class="flex justify-center">
@@ -323,11 +346,13 @@
         <div class="flex justify-center">
           <Button class="bits-btn"
             variant="ghost"
-            onclick={() =>
-{ results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 } }}
+            onclick={() => {
+              results = demoResults;
+              metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 };
+            }}
           >
             Load Demo Results
-</Button>
+          </Button>
         </div>
       </div>
     </div>
@@ -340,10 +365,9 @@
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           {selectedResult.title}
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-selectedResult = null}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (selectedResult = null)}>
             ×
-</Button>
+          </Button>
         </h3>
       </div>
       <div class="yorha-panel-content space-y-4">

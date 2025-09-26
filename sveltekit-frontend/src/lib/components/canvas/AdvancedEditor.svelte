@@ -1,41 +1,54 @@
 <!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import Editor from '@toast-ui/editor';
+  import '@toast-ui/editor/dist/toastui-editor.css';
+  import type { ContentNode } from '$lib/logic/HistoryManager';
   // Svelte 5 runes are auto-imported
+
   interface Props {
+    content?: ContentNode[];
+    height?: string;
+    placeholder?: string;
     onchange?: (event?: unknown) => void;
   }
+
+  // destructure props (provide defaults)
   let {
     content = [],
     height = '400px',
-    placeholder = 'Start writing...'
+    placeholder = 'Start writing...',
+    onchange
   }: Props = $props();
-    import Editor from '@toast-ui/editor';
-  import '@toast-ui/editor/dist/toastui-editor.css';
-  import type { ContentNode } from '$lib/logic/HistoryManager';
+
   let editorElement: HTMLElement;
-  let editor: Editor;
-  let isInitialized = $state(false);
+  let editor: any;
+  let isInitialized = false;
+
   // Convert ContentNode array to markdown
   function contentToMarkdown(nodes: ContentNode[]): string {
     const nodeToMd = (node: ContentNode): string => {
-      if (node.text) {
+      // handle text node
+      if ((node as any).text) {
         // Apply formatting
-        let text = node.text;
-        if (node.bold) text = `**${text}**`;
-        if (node.italic) text = `*${text}*`;
-        if (node.color) text = `<span style="color: ${node.color}">${text}</span>`;
-        if (node.fontSize) text = `<span style="font-size: ${node.fontSize}">${text}</span>`;
+        let text = (node as any).text;
+        if ((node as any).bold) text = `**${text}**`;
+        if ((node as any).italic) text = `*${text}*`;
+        if ((node as any).color) text = `<span style="color: ${(node as any).color}">${text}</span>`;
+        if ((node as any).fontSize) text = `<span style="font-size: ${(node as any).fontSize}">${text}</span>`;
         return text;
-  }
-      if (node.children) {
-        const childText = node.children.map.join('');
-        switch (node.type) {
+      }
+
+      // handle children
+      if ((node as any).children && Array.isArray((node as any).children)) {
+        const childText = ((node as any).children as ContentNode[]).map((c) => nodeToMd(c)).join('');
+        switch ((node as any).type) {
           case 'paragraph':
             return childText + '\n\n';
-          case 'heading':
-            const level = node.level || 1;
+          case 'heading': {
+            const level = Number((node as any).level) || 1;
             return '#'.repeat(level) + ' ' + childText + '\n\n';
+          }
           case 'list':
             return childText;
           case 'list-item':
@@ -47,33 +60,39 @@ https://svelte.dev/e/js_parse_error -->
           case 'code-block':
             return '```\n' + childText + '\n```\n\n';
           case 'link':
-            return `[${childText}](${node.url || '#'})`;
+            return `[${childText}](${(node as any).url || '#'})`;
           case 'image':
-            return `![${node.alt || ''}](${node.url || ''})`;
+            return `![${(node as any).alt || ''}](${(node as any).url || ''})`;
           default:
             return childText;
-  }}
+        }
+      }
       return '';
-    }
-    return nodes.map.join('');
+    };
+
+    return nodes.map((n) => nodeToMd(n)).join('');
   }
+
   // Convert markdown to ContentNode array (simplified)
   function markdownToContent(markdown: string): ContentNode[] {
-    if (!markdown.trim()) {
+    if (!markdown || !markdown.trim()) {
       return [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
-  }
+    }
+
     // Basic markdown parsing - in production, use a proper parser
-    // removed unused lines assignment
     const nodes: ContentNode[] = [];
-  let currentParagraph = $state<ContentNode | null >(null);
+    let currentParagraph: ContentNode | null = null;
+    const lines = markdown.split(/\r?\n/);
+
     for (const line of lines) {
       if (line.trim() === '') {
         if (currentParagraph) {
           nodes.push(currentParagraph);
           currentParagraph = null;
-  }
-        continu;
-  }
+        }
+        continue;
+      }
+
       // Headings
       if (line.startsWith('#')) {
         const level = line.match(/^#+/)?.[0].length || 1;
@@ -82,65 +101,76 @@ https://svelte.dev/e/js_parse_error -->
           type: 'heading',
           level,
           children: [{ type: 'text', text }]
-        });
-        continu;
-  }
+        } as any);
+        continue;
+      }
+
       // Lists
       if (line.startsWith('- ') || line.startsWith('* ')) {
         const text = line.replace(/^[-*]\s*/, '');
         nodes.push({
           type: 'list-item',
           children: [{ type: 'text', text }]
-        });
-        continu;
-  }
+        } as any);
+        continue;
+      }
+
       // Blockquotes
       if (line.startsWith('> ')) {
         const text = line.replace(/^>\s*/, '');
         nodes.push({
           type: 'blockquote',
           children: [{ type: 'text', text }]
-        });
-        continu;
-  }
+        } as any);
+        continue;
+      }
+
       // Regular paragraph
       if (!currentParagraph) {
         currentParagraph = {
           type: 'paragraph',
-          children: [];
-        }
-  }
+          children: []
+        } as any;
+      }
+
       // Basic inline formatting
-      let text = li;
-      const textNode: ContentNode = { type: 'text', text }
+      let text = line;
+      const textNode: any = { type: 'text', text };
+
       // Bold
-      if (text.includes('**')) {
+      if (/\*\*(.*?)\*\*/.test(text)) {
         textNode.bold = true;
         text = text.replace(/\*\*(.*?)\*\*/g, '$1');
         textNode.text = text;
-  }
-      // Italic
-      if (text.includes('*') && !textNode.bold) {
+      }
+
+      // Italic (avoid interfering with bold which was already handled)
+      if (/\*(.*?)\*/.test(text) && !textNode.bold) {
         textNode.italic = true;
         text = text.replace(/\*(.*?)\*/g, '$1');
         textNode.text = text;
-  }
-      currentParagraph.children!.push(textNode);
-  }
+      }
+
+      (currentParagraph!.children as any[]).push(textNode);
+    }
+
     if (currentParagraph) {
       nodes.push(currentParagraph);
-  }
+    }
+
     return nodes.length > 0 ? nodes : [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
   }
+
   $effect(() => {
+    if (!editorElement) return;
     editor = new Editor({
-      el: editorElement
+      el: editorElement,
       initialValue: contentToMarkdown(content),
       previewStyle: 'vertical',
-      height: height
+      height: height,
       initialEditType: 'markdown',
-      placeholder: placeholder
-      usageStatistics: false
+      placeholder: placeholder,
+      usageStatistics: false,
       toolbarItems: [
         ['heading', 'bold', 'italic', 'strike'],
         ['hr', 'quote'],
@@ -155,23 +185,31 @@ https://svelte.dev/e/js_parse_error -->
           const reader = new FileReader();
           reader.onload = (e) => {
             callback(e.target?.result as string, 'Uploaded image');
-          }
+          };
           reader.readAsDataURL(blob);
-  }}
+        }
+      }
     });
+
     // Listen for content changes
     editor.on('change', () => {
       const markdown = editor.getMarkdown();
       const newContent = markdownToContent(markdown);
-      onchange?.();
+      onchange?.(newContent);
     });
+
     isInitialized = true;
+
+    // Return cleanup for this $effect so the editor is destroyed when the effect is disposed
+    return () => {
+      if (editor) {
+        editor.destroy();
+        editor = null;
+        isInitialized = false;
+      }
+    };
   });
-  onDestroy(() => {
-    if (editor) {
-      editor.destroy();
-  }
-  });
+
   // Reactive update when content prop changes
   $effect(() => {
     if (editor && isInitialized && content) {
@@ -182,42 +220,50 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   });
-  // Expose methods for parent component
-  function setContent(newContent: ContentNode[]) {
+
+  // Expose methods for parent component (top-level exports)
+  export function setContent(newContent: ContentNode[]) {
     if (editor) {
       editor.setMarkdown(contentToMarkdown(newContent));
     }
   }
-  function getContent(): ContentNode[] {
+
+  export function getContent(): ContentNode[] {
     if (editor) {
       return markdownToContent(editor.getMarkdown());
     }
     return content;
   }
-  function getMarkdown(): string {
+
+  export function getMarkdown(): string {
     return editor ? editor.getMarkdown() : '';
   }
-  function getHTML(): string {
+
+  export function getHTML(): string {
     return editor ? editor.getHTML() : '';
   }
-  function insertText(text: string) {
+
+  export function insertText(text: string) {
     if (editor) {
       editor.insertText(text);
     }
   }
-  function getSelectedText(): string {
+
+  export function getSelectedText(): string {
     if (editor) {
       return editor.getSelectedText() || '';
     }
     return '';
   }
-  function focus() {
+
+  export function focus() {
     if (editor) {
       editor.focus();
     }
   }
+
   // Formatting methods
-  function toggleMark(mark: string) {
+  export function toggleMark(mark: string) {
     if (!editor) return;
     const selectedText = editor.getSelectedText();
     if (!selectedText) return;
@@ -235,36 +281,58 @@ https://svelte.dev/e/js_parse_error -->
     }
     editor.replaceSelection(formattedText);
   }
-  function addMark(mark: string, value: string) {/* JSX syntax converted to Svelte */}">${selectedText}</span>`;
+
+  export function addMark(mark: string, value: string) {
+    // Add inline marks such as color or fontSize by wrapping selection in a span
+    if (!editor) return;
+    const selectedText = editor.getSelectedText() || '';
+    if (!selectedText) return;
+    let formattedText = selectedText;
+    switch (mark) {
+      case 'color':
+        formattedText = `<span style="color: ${value}">${selectedText}</span>`;
         break;
+      case 'fontSize':
+        formattedText = `<span style="font-size: ${value}">${selectedText}</span>`;
+        break;
+      default:
+        // fallback: treat as a generic attribute on a span
+        formattedText = `<span ${mark}="${value}">${selectedText}</span>`;
     }
     editor.replaceSelection(formattedText);
   }
-  function insertNode(node: unknown) {
-    if (!editor) return;
-    switch (node.type) {
+
+  export function insertNode(node: any) {
+    if (!editor || !node) return;
+    const type = node.type;
+    switch (type) {
       case 'image':
-        editor.insertText(`![${node.alt || ''}](${node.url})`);
+        editor.insertText(`![${node.alt || ''}](${node.url || ''})`);
         break;
       case 'link':
-        editor.insertText(`[${node.text || 'Link'}](${node.url})`);
+        editor.insertText(`[${node.text || 'Link'}](${node.url || ''})`);
         break;
-      case 'heading':
+      case 'heading': {
         const level = '#'.repeat(node.level || 1);
         editor.insertText(`\n${level} ${node.text || 'Heading'}\n`);
+        break;
+      }
+      default:
+        // if node is unknown, try to insert a sensible fallback
+        if (typeof node === 'string') {
+          editor.insertText(node);
+        } else if (node.text) {
+          editor.insertText(String(node.text));
+        }
         break;
     }
   }
 </script>
 
-<div bind:this={editorElement} class="space-y-4"></div>
+<!-- Editor mount point -->
+<div bind:this={editorElement} class="editor-container" style="min-height: {height};"></div>
 
 <style>
-  /* @unocss-include */
-  .advanced-editor {
-    width: 100%;
-    height: 100%;
-  }
   :global(.toastui-editor-defaultUI) {
     border: none !important;
   }

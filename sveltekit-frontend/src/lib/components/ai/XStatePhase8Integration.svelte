@@ -6,6 +6,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
+  import { get } from 'svelte/store';
   import { useMachine } from '@xstate/svelte';
   // import { Accordion } from 'bits-ui'; // Replaced melt with bits-ui components
   import {
@@ -19,48 +20,43 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   import { MatrixUICompiler, type MatrixUINode } from '$lib/ui/matrix-compiler';
   import { LegalAIReranker, enhancedSearch, type UserContext } from '$lib/ai/custom-reranker';
   import { PredictivePrefetcher } from '$lib/workers/predictive-prefetch';
-  interface Props {
-    class?: string;
-  }
-  let { class = '' }: Props = $props();
-  // XState machine integration
-  const { state, send, context } = useMachine(legalFormMachine);
+
+  // use $props() in runes mode instead of export let
+  let { className = '' } = $props() as { className?: string };
+
+  // Use the machine but cast to any to avoid strict shape assumptions in this component
+  const machine: any = useMachine(legalFormMachine) as any;
+  // rename the destructured stores to avoid colliding with the $state/$context runes
+  const { state: machineState, send, context: machineContext } = machine;
+
   // Phase 8 system components
   let matrixCompiler: MatrixUICompiler;
   let reranker: LegalAIReranker;
   let prefetcher: PredictivePrefetcher;
-  // Simple accordion state management (using bits-ui patterns)
-  let activeAccordionItem = $state('step-1');
-  // Reactive state calculations
-  let currentStateDescription = $derived(getStateDescription($state.value);
-  let aiSuggestions = $derived(getAISuggestions($context, $state.value);
-  let progressPercentage = $derived(calculateProgressPercentage($context);
-  let possibleActions = $derived(getNextPossibleActions($state.value);
-  let aiConfidence = $derived($context.confidence);
+
+  // Simplified reactive UI state (avoid complex $derived expressions that had mismatched parens)
+  // remove generic args from the rune calls and use TS assertions instead
+  let currentStateDescription = $state('') as string;
+  let aiSuggestions = $state([]) as string[];
+  let progressPercentage = $state(0) as number;
+  let possibleActions = $state([]) as string[];
+  let aiConfidence = $state(0) as number;
+
   // Form data
   let fileInput: HTMLInputElement;
-  let caseTitle = $state('');
-  let caseDescription = $state('');
-  let selectedPriority = $state<'low' | 'medium' | 'high' | 'critical'>('medium');
-  let selectedEvidenceType = $state<'digital' | 'physical' | 'testimony' | 'forensic'>('digital');
+  let caseTitle = $state('') as string;
+  let caseDescription = $state('') as string;
+  let selectedPriority = $state('medium') as 'low' | 'medium' | 'high' | 'critical';
+  let selectedEvidenceType = $state('digital') as 'digital' | 'physical' | 'testimony' | 'forensic';
+
   // AI-aware UI state
-  let aiRecommendations = $derived($context.aiRecommendations);
-  let showAIPanel = $state(false);
-  let matrixUINodes: MatrixUINode[] = $state([]);
-  function getAccordionValue(stateValue: any): string {
-    const stateMapping = {
-      evidenceUpload: 'step-1',
-      caseDetails: 'step-2',
-      review: 'step-3',
-      submitting: 'step-4',
-      success: 'step-4',
-      error: 'step-4';
-    }
-    return stateMapping[stateValue as keyof typeof stateMapping] || 'step-1';
-  }
-  $effect(() => {
-    (async () => {
-// Initialize Phase 8 components
+  let aiRecommendations = $state([]) as any[];
+  let showAIPanel = $state(false) as boolean;
+  let matrixUINodes = $state([]) as MatrixUINode[];
+
+  // initialize async resources with onMount to avoid returning a Promise from reactive effects
+  onMount(async () => {
+    // Initialize Phase 8 components
     matrixCompiler = new MatrixUICompiler();
     reranker = new LegalAIReranker();
     prefetcher = new PredictivePrefetcher();
@@ -68,11 +64,12 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     // Generate initial matrix UI nodes
     updateMatrixUINodes();
     // Set up AI-aware prefetching
-    setupPredictivePrefetching();
-    })();
+    await setupPredictivePrefetching();
   });
+
   function updateMatrixUINodes(): void {
-    const currentState = $state.value as string;
+    const currentState = (((get(machineState) as any)?.value) as string) || 'unknown';
+    const ctx = (get(machineContext) as any) || {};
     matrixUINodes = [
       {
         type: 'card',
@@ -81,15 +78,15 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
         styles: {
           base: `yorha-card p-6 ${getStateCardClass(currentState)}`,
           hover: 'transform scale-105 transition-transform',
-          active: 'ring-2 ring-yellow-400';
+          active: 'ring-2 ring-yellow-400',
         },
         events: ['click', 'mouseover'],
         metadata: {
           priority: 'high',
-          confidence: aiConfidence
-          aiGenerated: true
-          workflowState: currentStat;
-        }
+          confidence: ctx.confidence ?? aiConfidence,
+          aiGenerated: true,
+          workflowState: currentState,
+        } as any,
       },
       {
         type: 'button',
@@ -98,17 +95,18 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
         styles: {
           base: 'yorha-button px-4 py-2 bg-blue-600 text-white',
           hover: 'bg-blue-700 transform scale-105',
-          disabled: 'opacity-50 cursor-not-allowed';
+          disabled: 'opacity-50 cursor-not-allowed',
         },
         events: ['click'],
         metadata: {
           priority: 'medium',
           confidence: 90,
-          aiGenerated: false;
-        }
-      }
+          aiGenerated: false,
+        },
+      },
     ];
   }
+
   function getStateCardClass(state: string): string {
     const classes = {
       evidenceUpload: 'border-blue-400 bg-blue-900/20',
@@ -116,10 +114,11 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       review: 'border-purple-400 bg-purple-900/20',
       submitting: 'border-orange-400 bg-orange-900/20',
       success: 'border-green-400 bg-green-900/20',
-      error: 'border-red-400 bg-red-900/20';
-    }
+      error: 'border-red-400 bg-red-900/20',
+    };
     return classes[state as keyof typeof classes] || 'border-gray-400 bg-gray-900/20';
   }
+
   async function setupPredictivePrefetching(): Promise<void> {
     const userContext: UserContext = {
       intent: 'create',
@@ -127,19 +126,26 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       currentCase: 'NEW_CASE',
       recentActions: ['open_form', 'start_evidence_upload'],
       userRole: 'prosecutor',
-      workflowState: 'draft';
-    }
-    // Predict and prefetch based on current state
+      workflowState: 'draft',
+    };
+
+    // Provide required fields expected by predictIntent with sensible defaults
+    const ctx = (get(machineContext) as any) || {};
     const intentPrediction = await prefetcher.predictIntent({
       currentPage: '/cases/new',
-      focusedElement: `step-${$context.currentStep}`,
+      focusedElement: `step-${ctx?.currentStep ?? 1}`,
       recentActions: userContext.recentActions,
-      caseId: userContext.currentCase
-    });
+      caseId: userContext.currentCase,
+      timeOnPage: 0,
+      scrollPosition: 0,
+      mouseActivity: [],
+      keyboardActivity: [],
+    } as any);
     if (intentPrediction) {
       await prefetcher.executePrefetch(intentPrediction);
     }
   }
+
   function getTimeOfDay(): 'morning' | 'afternoon' | 'evening' | 'night' {
     const hour = new Date().getHours();
     if (hour < 12) return 'morning';
@@ -147,65 +153,74 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     if (hour < 21) return 'evening';
     return 'night';
   }
+
   // Event handlers with AI awareness
-  function handleFileUpload(_event: Event): void {
-    // removed unused target assignment
-    const files = Array.from(target.files || []);
+  function handleFileUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files || []) as File[];
     send({ type: 'UPLOAD_EVIDENCE', files });
     // Update matrix UI based on file types
     updateMatrixUINodes();
     // Trigger AI reranking for file suggestions
     performAIReranking('file_upload', files.map(f => f.name));
   }
+
   function handleCaseDetailsUpdate(): void {
     send({
       type: 'UPDATE_CASE_DETAILS',
-      title: caseTitle;
-      description: caseDescription ;
+      title: caseTitle,
+      description: caseDescription,
     });
     // Update matrix UI
     updateMatrixUINodes();
     // Trigger AI reranking for case suggestions
-    performAIReranking('case_details', [caseTitle, caseDescription]);
+    performAIReranking('case_update', [caseTitle, caseDescription]);
   }
-  async function performAIReranking(action: string, context: string[]): Promise<void> {
+
+  async function performAIReranking(action: string, ctx: string[]): Promise<void> {
     try {
+      const appContext = (get(machineContext) as Partial<LegalFormContext>) || {};
       const userContext: UserContext = {
         intent: 'create',
         timeOfDay: getTimeOfDay(),
-        focusedElement: `step-${$context.currentStep}`,
+        focusedElement: `step-${appContext?.currentStep ?? 1}`,
         currentCase: 'NEW_CASE',
         recentActions: ['form_interaction', action],
         userRole: 'prosecutor',
-        workflowState: 'draft'
-      }
+        workflowState: 'draft',
+      };
       // Use enhanced search with custom reranker
-      const query = context.join(' ');
-      const results = await enhancedSearch(query, userContext, 5);
-      // Update AI suggestions based on reranked results
-      const suggestions = results.slice(0, 3);
+      const query = ctx.join(' ');
+      const results: any[] = await enhancedSearch(query, userContext, 5);
+      // Normalize suggestions to strings
+      const suggestions = results.slice(0, 3).map(r => (r && ((r.title as string) || (r.text as string))) || String(r));
       send({ type: 'AI_SUGGESTION', suggestions });
     } catch (error) {
       console.warn('AI reranking failed:', error);
     }
   }
-  function handleNextStep(): void {
+
+  async function handleNextStep(): Promise<void> {
     send({ type: 'NEXT' });
     updateMatrixUINodes();
-    setupPredictivePrefetching();
+    await setupPredictivePrefetching();
   }
+
   function handleBackStep(): void {
     send({ type: 'BACK' });
     updateMatrixUINodes();
   }
+
   function handleSubmit(): void {
     send({ type: 'SUBMIT' });
     updateMatrixUINodes();
   }
+
   function requestAIHelp(): void {
     send({ type: 'REQUEST_AI_HELP' });
     showAIPanel = true;
   }
+
   function applyAIRecommendation(recommendation: string): void {
     send({ type: 'APPLY_AI_RECOMMENDATION', recommendation });
     // Apply the recommendation based on its content
@@ -215,28 +230,28 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     }
     updateMatrixUINodes();
   }
-  // Watch for state changes and update UI accordingly
+
+  // Reactive effect to sync UI with machine context/state
   $effect(() => {
     updateMatrixUINodes();
-    // Update form fields from context
-    caseTitle = $context.caseTitl;
-    caseDescription = $context.caseDescriptio;
-    selectedPriority = $context.priority;
-    selectedEvidenceType = $context.evidenceTyp;
+    // Update form fields from context (safe defaults)
+    caseTitle = $machineContext.caseTitle ?? caseTitle;
+    caseDescription = $machineContext.caseDescription ?? caseDescription;
+    selectedPriority = $machineContext.priority ?? selectedPriority;
+    selectedEvidenceType = $machineContext.evidenceType ?? selectedEvidenceType;
+
+    // Update derived UI values
+    currentStateDescription = getStateDescription($machineContext ?? {});
+    aiSuggestions = (getAISuggestions($machineContext ?? {}, $machineState.value) as any) || [];
+    progressPercentage = calculateProgressPercentage($machineContext ?? {});
+    possibleActions = getNextPossibleActions($machineState.value);
+    aiConfidence = $machineContext.confidence ?? 0;
+    aiRecommendations = $machineContext.aiRecommendations ?? aiRecommendations;
   });
 </script>
-<div class="xstate-phase8-integration {class}">
+<div class={"xstate-phase8-integration " + className}>
   <!-- Progress Header -->
   <div class="progress-header yorha-panel p-6 mb-6">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-bold text-yellow-400">Legal Case Form</h2>
-      <button
-        class="yorha-button px-3 py-1 text-sm bg-blue-600 text-white"
-        onclick={requestAIHelp}
-      >
-        AI Assistant
-      </button>
-    </div>
     <!-- Progress Bar -->
     <div class="progress-bar bg-gray-700 rounded-full h-2 mb-2">
       <div
@@ -244,39 +259,34 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
         style="width: {progressPercentage}%"
       ></div>
     </div>
-    <div class="flex justify-between text-sm">
-      <span class="text-gray-300">
-        State: {currentStateDescription}
-      </span>
-      <span class="text-gray-300">
-        AI Confidence: {aiConfidence}%
-      </span>
-      <span class="text-gray-300">
-        Step {$context.currentStep} of {$context.totalSteps}
-      </span>
+    <div class="flex justify-between text-sm mt-2">
+      <span class="text-gray-300">State: {currentStateDescription}</span>
+      <span class="text-gray-300">AI Confidence: {aiConfidence}%</span>
+      <span class="text-gray-300">Step {$machineContext.currentStep} of {$machineContext.totalSteps}</span>
     </div>
   </div>
+
   <!-- Multi-Step Form with Accordion -->
   <div class="form-content grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Form -->
     <div class="lg:col-span-2">
       <div class="accordion-root space-y-4">
         <!-- Step 1: Evidence Upload -->
-        <div data-accordion-item value="step-1" class="accordion-item">
+        <div data-accordion-item data-accordion-value="step-1" class="accordion-item">
           <h3 data-accordion-header class="accordion-header">
             <button
               data-accordion-trigger
               class="accordion-trigger yorha-button w-full text-left p-4 data-[state=open]:bg-blue-900/30"
             >
               <span class="flex items-center gap-3">
-                <span class="step-number">1</span>
-                Evidence Upload
-                {#if $context.evidenceFiles.length > 0}
-                  <span class="text-green-400 text-sm">({$context.evidenceFiles.length} files)</span>
+                {#if $machineContext?.evidenceFiles?.length > 0}
+                  <span class="text-green-400 text-sm">({$machineContext.evidenceFiles.length} files)</span>
                 {/if}
+                <span class="text-sm">Evidence Upload</span>
               </span>
             </button>
           </h3>
+
           <div data-accordion-content class="accordion-content p-4 border-l-4 border-blue-400">
             <div class="space-y-4">
               <div class="file-upload-zone border-2 border-dashed border-gray-600 rounded-lg p-8 text-center">
@@ -284,24 +294,24 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   bind:this={fileInput}
                   type="file"
                   multiple
-                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange={handleFileUpload}
+                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  onchange={handleFileUpload}
                   class="hidden"
                 />
-                <button
-                  onclick={() => fileInput?.click()}
-                  class="yorha-button px-6 py-3 bg-blue-600 text-white"
-                >
+                <button onclick={() => fileInput?.click()} class="yorha-button px-6 py-3 bg-blue-600 text-white">
                   Select Evidence Files
                 </button>
-                <p class="text-gray-400 text-sm mt-2">
-                  Supported: PDF, Images, Documents
-                </p>
+                <p class="text-gray-400 text-sm mt-2">Supported: PDF, Images, Documents</p>
               </div>
+
               <div class="evidence-type-selector">
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-evidence-type-">
                   Evidence Type
-                </label><select id="-evidence-type-"
-                  bind:value={selectedEvidenceType} onchange={() => send({ type: 'SET_EVIDENCE_TYPE', evidenceType: selectedEvidenceType })}
+                </label>
+                <select
+                  id="-evidence-type-"
+                  bind:value={selectedEvidenceType}
+                  onchange={() => send({ type: 'SET_EVIDENCE_TYPE', evidenceType: selectedEvidenceType })}
                   class="yorha-select w-full p-2 bg-gray-800 border border-gray-600 rounded"
                 >
                   <option value="digital">Digital Evidence</option>
@@ -310,69 +320,82 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   <option value="forensic">Forensic Analysis</option>
                 </select>
               </div>
-              {#if $state.matches('evidenceUpload')}
-                <button
-                  onclick={handleNextStep}
-                  disabled={$context.evidenceFiles.length === 0}
-                  class="yorha-button px-6 py-2 bg-yellow-400 text-black disabled:opacity-50"
-                >
-                  Next: Case Details
-                </button>
+
+              {#if $machineState.matches('evidenceUpload')}
+                <div class="mt-2">
+                  <button
+                    onclick={handleNextStep}
+                    disabled={!$machineContext?.evidenceFiles?.length}
+                    class="yorha-button px-6 py-2 bg-yellow-400 text-black disabled:opacity-50"
+                  >
+                    Next: Case Details
+                  </button>
+                </div>
               {/if}
             </div>
           </div>
         </div>
+
         <!-- Step 2: Case Details -->
-        <div data-accordion-item value="step-2" class="accordion-item">
+        <div data-accordion-item data-accordion-value="step-2" class="accordion-item">
           <h3 data-accordion-header class="accordion-header">
             <button
               data-accordion-trigger
               class="accordion-trigger yorha-button w-full text-left p-4 data-[state=open]:bg-yellow-900/30"
             >
               <span class="flex items-center gap-3">
-                <span class="step-number">2</span>
-                Case Details
-                {#if $context.caseTitle}
+                {#if $machineContext?.caseTitle}
                   <span class="text-green-400 text-sm">✓</span>
                 {/if}
+                <span class="text-sm">Case Details</span>
               </span>
             </button>
           </h3>
+
           <div data-accordion-content class="accordion-content p-4 border-l-4 border-yellow-400">
             <div class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-case-title-">
                   Case Title
-                </label><input id="-case-title-"
+                </label>
+                <input
+                  id="-case-title-"
                   bind:value={caseTitle}
                   onblur={handleCaseDetailsUpdate}
                   type="text"
                   placeholder="Enter case title..."
                   class="yorha-input w-full p-3 bg-gray-800 border border-gray-600 rounded"
                 />
-                {#if $context.validationErrors.caseTitle}
-                  <p class="text-red-400 text-sm mt-1">{$context.validationErrors.caseTitle}</p>
+                {#if $machineContext?.validationErrors?.caseTitle}
+                  <p class="text-red-400 text-sm mt-1">{$machineContext.validationErrors.caseTitle}</p>
                 {/if}
               </div>
+
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-case-description-">
                   Case Description
-                </label><textarea id="-case-description-";
+                </label>
+                <textarea
+                  id="-case-description-"
                   bind:value={caseDescription}
                   onblur={handleCaseDetailsUpdate}
                   rows="4"
                   placeholder="Detailed case description..."
                   class="yorha-input w-full p-3 bg-gray-800 border border-gray-600 rounded"
                 ></textarea>
-                {#if $context.validationErrors.caseDescription}
-                  <p class="text-red-400 text-sm mt-1">{$context.validationErrors.caseDescription}</p>
+                {#if $machineContext?.validationErrors?.caseDescription}
+                  <p class="text-red-400 text-sm mt-1">{$machineContext.validationErrors.caseDescription}</p>
                 {/if}
               </div>
+
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-priority-level-">
                   Priority Level
-                </label><select id="-priority-level-" ;
-                  bind:value={selectedPriority} onchange={() => send({ type: 'SET_PRIORITY', priority: selectedPriority })}
+                </label>
+                <select
+                  id="-priority-level-"
+                  bind:value={selectedPriority}
+                  onchange={() => send({ type: 'SET_PRIORITY', priority: selectedPriority })}
                   class="yorha-select w-full p-2 bg-gray-800 border border-gray-600 rounded"
                 >
                   <option value="low">Low Priority</option>
@@ -381,12 +404,10 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   <option value="critical">Critical Priority</option>
                 </select>
               </div>
-              {#if $state.matches('caseDetails')}
+
+              {#if $machineState.matches('caseDetails')}
                 <div class="flex gap-3">
-                  <button
-                    onclick={handleBackStep}
-                    class="yorha-button px-4 py-2 bg-gray-600 text-white"
-                  >
+                  <button onclick={handleBackStep} class="yorha-button px-4 py-2 bg-gray-600 text-white">
                     Back
                   </button>
                   <button
@@ -395,96 +416,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                     class="yorha-button px-6 py-2 bg-yellow-400 text-black disabled:opacity-50"
                   >
                     Next: Review
-                  </button>
-                </div>
-              {/if}
-            </div>
-          </div>
-        </div>
-        <!-- Step 3: Review -->
-        <div data-accordion-item value="step-3" class="accordion-item">
-          <h3 data-accordion-header class="accordion-header">
-            <button
-              data-accordion-trigger
-              class="accordion-trigger yorha-button w-full text-left p-4 data-[state=open]:bg-purple-900/30"
-            >
-              <span class="flex items-center gap-3">
-                <span class="step-number">3</span>
-                Review & Submit
-              </span>
-            </button>
-          </h3>
-          <div data-accordion-content class="accordion-content p-4 border-l-4 border-purple-400">
-            <div class="space-y-4">
-              <div class="review-summary yorha-panel p-4">
-                <h4 class="text-lg font-semibold text-purple-400 mb-3">Case Summary</h4>
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span class="text-gray-400">Title:</span>
-                    <span class="text-white ml-2">{$context.caseTitle}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-400">Priority:</span>
-                    <span class="text-white ml-2 capitalize">{$context.priority}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-400">Evidence Type:</span>
-                    <span class="text-white ml-2 capitalize">{$context.evidenceType}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-400">Files:</span>
-                    <span class="text-white ml-2">{$context.evidenceFiles.length} uploaded</span>
-                  </div>
-                </div>
-                <div class="mt-3">
-                  <span class="text-gray-400">Description:</span>
-                  <p class="text-white mt-1">{$context.caseDescription}</p>
-                </div>
-              </div>
-              {#if $state.matches('review')}
-                <div class="flex gap-3">
-                  <button
-                    onclick={handleBackStep}
-                    class="yorha-button px-4 py-2 bg-gray-600 text-white"
-                  >
-                    Back
-                  </button>
-                  <button
-                    onclick={handleSubmit}
-                    class="yorha-button px-6 py-2 bg-green-600 text-white"
-                  >
-                    Submit Case
-                  </button>
-                </div>
-              {/if}
-              {#if $state.matches('submitting')}
-                <div class="submitting-state text-center p-6">
-                  <div class="loading-spinner mx-auto mb-4"></div>
-                  <p class="text-yellow-400">Submitting case...</p>
-                </div>
-              {/if}
-              {#if $state.matches('success')}
-                <div class="success-state text-center p-6">
-                  <div class="text-green-400 text-4xl mb-4">✓</div>
-                  <p class="text-green-400 text-lg">Case submitted successfully!</p>
-                  <button
-                    onclick={() => send({ type: 'RESET_FORM' })}
-                    class="yorha-button px-6 py-2 bg-blue-600 text-white mt-4"
-                  >
-                    Create New Case
-                  </button>
-                </div>
-              {/if}
-              {#if $state.matches('error')}
-                <div class="error-state text-center p-6">
-                  <div class="text-red-400 text-4xl mb-4">✗</div>
-                  <p class="text-red-400 text-lg">Submission failed</p>
-                  <p class="text-gray-400 text-sm">{$context.validationErrors.submit}</p>
-                  <button
-                    onclick={handleBackStep}
-                    class="yorha-button px-6 py-2 bg-yellow-400 text-black mt-4"
-                  >
-                    Try Again
                   </button>
                 </div>
               {/if}
@@ -547,21 +478,38 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   </div>
 </div>
 <style>
-  /* @unocss-include */
+  /* Converted Tailwind @apply rules to plain CSS to avoid unknown at-rule errors */
   .xstate-phase8-integration {
-    @apply max-w-7xl mx-auto p-6;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1.5rem;
   }
   .step-number {
-    @apply w-6 h-6 bg-yellow-400 text-black rounded-full flex items-center justify-center text-sm font-bold;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: #FBBF24;
+    color: #000;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
   }
   .progress-fill {
     transition: width 0.5s ease-in-out;
   }
   .loading-spinner {
-    @apply w-8 h-8 border-2 border-yellow-400 border-t-transparent rounded-full animate-spi;
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid #FBBF24;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
-  .accordion-trigger[data-state="open"] {
-    @apply bg-opacity-30;
+  .accordion-trigger[data-accordion-trigger] {
+    background-color: rgba(255,255,255,0.03);
   }
   .accordion-content {
     animation: slideDown 0.3s ease-out;
@@ -575,6 +523,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       height: auto;
       opacity: 1;
     }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
   .suggestion-item {
     border-left: 3px solid rgb(59 130 246);
