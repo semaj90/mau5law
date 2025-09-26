@@ -59,7 +59,7 @@
     try {
       const response = await fetch('?/startStream', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
@@ -79,7 +79,7 @@
     try {
       await fetch('?/stopStream', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       stopStreamingUpdates();
     } catch (error) {
@@ -139,7 +139,7 @@
     try {
       const response = await fetch('?/processDocument', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {

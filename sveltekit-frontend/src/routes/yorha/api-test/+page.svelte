@@ -1097,7 +1097,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Glowing animation for active connections */
   @keyframes glow {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.5, }
   }
 </style>

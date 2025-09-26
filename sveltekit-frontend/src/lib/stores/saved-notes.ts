@@ -5,8 +5,8 @@ import { derived, writable } from "svelte/store";
 // Lightweight Fuse fallback if real library not present (prevents build break)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Fuse: any = (globalThis as any).Fuse || class {
-  list: any[]; keys: any[]; constructor(list: any[], options: any) { this.list = list; this.keys = options.keys?.map((k: any) => k.name) || []; }
-  search(term: string) { const lower = term.toLowerCase(); return this.list.filter(item => this.keys.some(k => String((item as any)[k] ?? '').toLowerCase().includes(lower))).map(i => ({ item: i }); }
+  list: any[]; keys: any[]; constructor(list: any[], options: any) { this.list = list; this.keys = options.keys?.map((k: any) => k.name) || [], }
+  search(term: string) { const lower = term.toLowerCase(); return this.list.filter(item => this.keys.some(k => String((item as any)[k] ?? '').toLowerCase().includes(lower))).map(i => ({ item: i }), }
 }
 // Placeholder indexedDB utilities
 const idbUtils = {

@@ -419,10 +419,10 @@ clip-path: polygon( 0% 0%, 90% 0%, 95% 3%, 100% 10%, 100% 90%, 97% 95%, 90% 100%
   .mesh-ultra .n64-card {
 clip-path: polygon( 0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 100% 80%, 98% 88%, 95% 92%, 90% 95%, 85% 98%, 80% 100%, 20% 100%, 15% 98%, 10% 95%, 5% 92%, 2% 88%, 0% 80%, 0% 20%, 2% 12%, 5% 8%, 10% 5%, 15% 2% );
   }
-/* Depth effect variations */ .depth-shallow { --depth-z: 5px; }
-  .depth-medium { --depth-z: 15px; }
-  .depth-deep { --depth-z: 30px; }
-  .depth-extreme { --depth-z: 50px; }
+/* Depth effect variations */ .depth-shallow { --depth-z: 5px, }
+  .depth-medium { --depth-z: 15px, }
+  .depth-deep { --depth-z: 30px, }
+  .depth-extreme { --depth-z: 50px, }
 /* Visual enhancement layers */ .n64-card-overlay {
     position: absolute;
     top: 0;
@@ -627,16 +627,16 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     outline-offset: 4px;
   }
 /* Animations */ @keyframes anisotropic-sweep {
-    0% { filter: hue-rotate(0deg); }
-    25% { filter: hue-rotate(90deg); }
-    50% { filter: hue-rotate(180deg); }
-    75% { filter: hue-rotate(270deg); }
-    100% { filter: hue-rotate(360deg); }
+    0% { filter: hue-rotate(0deg), }
+    25% { filter: hue-rotate(90deg), }
+    50% { filter: hue-rotate(180deg), }
+    75% { filter: hue-rotate(270deg), }
+    100% { filter: hue-rotate(360deg), }
   }
   @keyframes fog-drift {
-    0% { transform: translateY(0px) translateX(0px); }
-    33% { transform: translateY(-1px) translateX(1px); }
-    66% { transform: translateY(1px) translateX(-1px); }
-    100% { transform: translateY(0px) translateX(0px); }
+    0% { transform: translateY(0px) translateX(0px), }
+    33% { transform: translateY(-1px) translateX(1px), }
+    66% { transform: translateY(1px) translateX(-1px), }
+    100% { transform: translateY(0px) translateX(0px), }
   }
 </style>

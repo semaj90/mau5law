@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
       // Upload file
       const uploadResponse = await fetch("/api/documents/upload", {
         method: "POST",
-        body: formData;
+        body: formData
       });
       if (!uploadResponse.ok) {
         throw new Error(`Upload failed: ${uploadResponse.statusText}`);

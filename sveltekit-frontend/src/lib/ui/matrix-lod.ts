@@ -317,7 +317,7 @@ export class MatrixLODSystem {
       @compute @workgroup_size(64);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
-        if (index >= arrayLength(&positions)) { return; }
+        if (index >= arrayLength(&positions)) { return, }
         let pos = positions[index];
         let focusCenter = viewportFocus.xy;
         let focusRadius = viewportFocus.z;

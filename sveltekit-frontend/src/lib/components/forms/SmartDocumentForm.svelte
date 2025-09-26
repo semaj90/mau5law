@@ -5,28 +5,38 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount  } from "svelte";
-  	// Updated to use bits-ui components
-  	import Button from '$lib/components/ui/Button.svelte';
-  	import Card from '$lib/components/ui/MeltCard.svelte';
-  	// TODO: Replace with bits-ui equivalents when available
-  	// import { CardContent, CardHeader, CardTitle } from 'bits-ui'
-  	// import { Badge } from 'bits-ui'
-  	// import { Progress } from 'bits-ui'
-  	// import { Input } from 'bits-ui'
-  	// import { Textarea } from 'bits-ui'
-  	// import { Label } from 'bits-ui'
-  	import { ocrService, type ExtractedField, type FormField, type FieldType } from '$lib/services/ocrService';
-  	import { enhancedRAG } from '$lib/services/enhancedRAG';
-  	import { fade, fly, scale } from 'svelte/transition';
-  	import { writable } from 'svelte/store';
-  	let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // "Smart Document Form"
-  	let { description = $bindable()  }: { description = $bindable() : unknown } = $props(); // "Upload a document for automatic field extraction and population"
-  	let { formSchema = $bindable()  }: { formSchema = $bindable() : unknown } = $props(); // FormField[] = []
-  	let { enableOCR = $bindable()  }: { enableOCR = $bindable() : unknown } = $props(); // true
-  	let { enableSmartSuggestions = $bindable()  }: { enableSmartSuggestions = $bindable() : unknown } = $props(); // true
-  	let { documentTypes = $bindable()  }: { documentTypes = $bindable() : unknown } = $props(); // string[] = ['legal_document', 'contract', 'form']
+	// Updated to use bits-ui components
+	import Button from '$lib/components/ui/Button.svelte';
+	import { Card } from 'bits-ui';
+	// TODO: Replace with bits-ui equivalents when available
+	// import { CardContent, CardHeader, CardTitle } from 'bits-ui'
+	// import { Badge } from 'bits-ui'
+	// import { Progress } from 'bits-ui'
+	// import { Input } from 'bits-ui'
+	// import { Textarea } from 'bits-ui'
+	// import { Label } from 'bits-ui'
+	import { ocrService, type ExtractedField, type FormField, type FieldType } from '$lib/services/ocrService';
+	import { enhancedRAG } from '$lib/services/enhancedRAG';
+	import { fade, fly, scale } from 'svelte/transition';
+	import { writable } from 'svelte/store';
+	let {
+		title = "Smart Document Form",
+		description = "Upload a document for automatic field extraction and population",
+		formSchema = [],
+		enableOCR = true,
+		enableSmartSuggestions = true,
+		documentTypes = ['legal_document', 'contract', 'form']
+	}: {
+		title?: string,
+		description?: string,
+		formSchema?: FormField[],
+		enableOCR?: boolean,
+		enableSmartSuggestions?: boolean,
+		documentTypes?: string[]
+	} = $props();
   	// Component state
-  let fileInput = $state<HTMLInputElementlet uploadedFile: File  | null>(null); const data = null);
+  let fileInput = $state<HTMLInputElement | null>(null);
+  let uploadedFile = $state<File | null>(null);
   let populatedFields = $state<FormField[] >([...formSchema]);
   let isProcessing = $state(false);
   let showPreview = $state(false);
@@ -37,13 +47,15 @@ https://svelte.dev/e/js_parse_error -->
   	let ocrResult = $derived(ocrService.currentResult$);
   	let extractedFields = $derived(ocrService.extractedFields$);
   	// Form validation
-  	const formErrors = writable<Record<string, string>( );
+  	const formErrors = writable<Record<string, string>>({});
   let isFormValid = $state(false);
   	// Smart suggestions
-  let activeSuggestions = $state<Record<string, string[]>([]) >( );
-  let suggestionLoading = $state<Record<string, boolean>(false) >( );
+  let activeSuggestions = $state<Record<string, string[]>>({});
+  let suggestionLoading = $state<Record<string, boolean>>({});
   	// Default form schema if none provided
   	$effect(() => {
+  		if (formSchema.length === 0) {
+  			populatedFields = [
   				{ name: 'case_number', type: 'case_number', label: 'Case Number', required: false },
   				{ name: 'document_date', type: 'date', label: 'Document Date', required: true },
   				{ name: 'jurisdiction', type: 'text_block', label: 'Jurisdiction', required: false },
@@ -60,8 +72,8 @@ https://svelte.dev/e/js_parse_error -->
   		try {
   			isProcessing = true;
   			const result = await ocrService.processDocument(uploadedFile, {
-  				documentType: selectedDocumentType as any
-  				extractFields: true
+  				documentType: selectedDocumentType as any,
+  				extractFields: true,
   				qualityEnhancement: true
   			});
   			// Auto-populate form fields
@@ -85,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
   				try {
   					suggestionLoading[field.name] = true;
   					const suggestions = await ocrService.getSuggestions(field.name, field.type, documentText);
-  					activeSuggestions[field.name] = suggestion;
+  					activeSuggestions[field.name] = suggestions;
   				} catch (error) {
   					console.warn(`Failed to generate suggestions for ${field.name}:`, error);
   				} finally {
@@ -93,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
   				}
   			}
   		}
-  		activeSuggestions = { ...activeSuggestions } // Trigger reactivity
+  		activeSuggestions = { ...activeSuggestions }; // Trigger reactivity
   	}
   	// Handle field value changes
   	const handleFieldChange = (fieldName: string, value: string, confidence?: number) => {

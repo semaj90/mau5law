@@ -751,10 +751,10 @@ enable3DVisualization = !enable3DVisualization}
     margin: 0.5rem 0;
     font-size: 0.9rem;
   }
-  .risk-low { color: #00d800; }
-  .risk-medium { color: #d4af00; }
-  .risk-high { color: #fc9838; }
-  .risk-critical { color: #f83800; }
+  .risk-low { color: #00d800, }
+  .risk-medium { color: #d4af00, }
+  .risk-high { color: #fc9838, }
+  .risk-critical { color: #f83800, }
   .key-findings, .recommendations {
     margin: 1rem 0;
   }

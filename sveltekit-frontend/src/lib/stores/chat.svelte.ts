@@ -24,50 +24,50 @@ const chatStore = (() => {
   let userActivity = $state<UserActivity[]>([]);
   let recommendations = $state<Recommendation[]>([]);
   return {
-    get sessions() { return sessions; },
-    set sessions(value) { sessions = value; },
-    get sessionMessages() { return sessionMessages; },
-    set sessionMessages(value) { sessionMessages = value; },
-    get currentSessionId() { return currentSessionId; },
-    set currentSessionId(value) { currentSessionId = value; },
-    get connectionStatus() { return connectionStatus; },
-    set connectionStatus(value) { connectionStatus = value; },
-    get isTyping() { return isTyping; },
-    set isTyping(value) { isTyping = value; },
-    get userActivity() { return userActivity; },
-    set userActivity(value) { userActivity = value; },
-    get recommendations() { return recommendations; },
-    set recommendations(value) { recommendations = value; }
+    get sessions() { return sessions, },
+    set sessions(value) { sessions = value, },
+    get sessionMessages() { return sessionMessages, },
+    set sessionMessages(value) { sessionMessages = value, },
+    get currentSessionId() { return currentSessionId, },
+    set currentSessionId(value) { currentSessionId = value, },
+    get connectionStatus() { return connectionStatus, },
+    set connectionStatus(value) { connectionStatus = value, },
+    get isTyping() { return isTyping, },
+    set isTyping(value) { isTyping = value, },
+    get userActivity() { return userActivity, },
+    set userActivity(value) { userActivity = value, },
+    get recommendations() { return recommendations, },
+    set recommendations(value) { recommendations = value, }
   }
 })();
 // Export individual properties for backward compatibility
 export const sessions = {
-  get value() { return chatStore.sessions; },
-  set value(val) { chatStore.sessions = val; }
+  get value() { return chatStore.sessions, },
+  set value(val) { chatStore.sessions = val, }
 }
 export const sessionMessages = {
-  get value() { return chatStore.sessionMessages; },
-  set value(val) { chatStore.sessionMessages = val; }
+  get value() { return chatStore.sessionMessages, },
+  set value(val) { chatStore.sessionMessages = val, }
 }
 export const currentSessionId = {
-  get value() { return chatStore.currentSessionId; },
-  set value(val) { chatStore.currentSessionId = val; }
+  get value() { return chatStore.currentSessionId, },
+  set value(val) { chatStore.currentSessionId = val, }
 }
 export const connectionStatus = {
-  get value() { return chatStore.connectionStatus; },
-  set value(val) { chatStore.connectionStatus = val; }
+  get value() { return chatStore.connectionStatus, },
+  set value(val) { chatStore.connectionStatus = val, }
 }
 export const isTyping = {
-  get value() { return chatStore.isTyping; },
-  set value(val) { chatStore.isTyping = val; }
+  get value() { return chatStore.isTyping, },
+  set value(val) { chatStore.isTyping = val, }
 }
 export const userActivity = {
-  get value() { return chatStore.userActivity; },
-  set value(val) { chatStore.userActivity = val; }
+  get value() { return chatStore.userActivity, },
+  set value(val) { chatStore.userActivity = val, }
 }
 export const recommendations = {
-  get value() { return chatStore.recommendations; },
-  set value(val) { chatStore.recommendations = val; }
+  get value() { return chatStore.recommendations, },
+  set value(val) { chatStore.recommendations = val, }
 }
 // Deriveds
 export const currentSession = $derived(

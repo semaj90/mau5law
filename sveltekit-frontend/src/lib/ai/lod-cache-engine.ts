@@ -861,11 +861,11 @@ class VectorMetadataEncoder {
         let dimensions = i32(config.x);
         let maxLength = i32(config.y);
         let segmentCount = i32(config.z);
-        if (embeddingIndex >= u32(dimensions * segmentCount)) { return; }
+        if (embeddingIndex >= u32(dimensions * segmentCount)) { return, }
         let segmentId = i32(embeddingIndex) / dimensions;
         let dimIndex = i32(embeddingIndex) % dimensions;
         let segmentLength = i32(lengths[segmentId]);
-        if (segmentId >= segmentCount) { return; }
+        if (segmentId >= segmentCount) { return, }
         var value: f32 = 0.0;
         // Generate embedding using character-based features
         for (var i = 0; i < segmentLength; i++) {
@@ -950,7 +950,7 @@ class VectorMetadataEncoder {
         for (let j = sliceStart; j < sliceEnd; j++) sum += out[j];
         mean = sum * invDim;
         let varAcc = 0;
-        for (let j = sliceStart; j < sliceEnd; j++) { const d = out[j] - mean; varAcc += d * d; }
+        for (let j = sliceStart; j < sliceEnd; j++) { const d = out[j] - mean; varAcc += d * d, }
         std = Math.sqrt(varAcc * invDim) || 1e-6;
         // Approximate energy if not provided
         let absAcc = 0; for (let j = sliceStart; j < sliceEnd; j++) absAcc += Math.abs(out[j]);
@@ -1076,11 +1076,11 @@ LODCacheEngine.prototype.createWebGPUEmbeddingShader = function(): string {
         let maxLength = i32(config.y);
         let segmentCount = i32(config.z);
         let lodLevel = config.w;
-        if (embeddingIndex >= u32(dimensions * segmentCount)) { return; }
+        if (embeddingIndex >= u32(dimensions * segmentCount)) { return, }
         let segmentId = i32(embeddingIndex) / dimensions;
         let dimIndex = i32(embeddingIndex) % dimensions;
         let segmentLength = i32(lengths[segmentId]);
-        if (segmentId >= segmentCount) { return; }
+        if (segmentId >= segmentCount) { return, }
         var value: f32 = 0.0;
         // Enhanced LOD-aware embedding generation
         for (var i = 0; i < segmentLength; i++) {
@@ -1109,7 +1109,7 @@ LODCacheEngine.prototype.createWebGPUClusteringShader = function(): string {
         let dimensions = i32(config.x);
         let embeddingCount = i32(config.y);
         let clusterCount = i32(config.z);
-        if (embeddingId >= u32(embeddingCount)) { return; }
+        if (embeddingId >= u32(embeddingCount)) { return, }
         var bestCluster = 0;
         var bestDistance = 999999.0;
         // Find closest centroid using LOD-aware distance metric
@@ -1142,7 +1142,7 @@ LODCacheEngine.prototype.createWebGPUSimilarityShader = function(): string {
         let dimensions = i32(config.x);
         let documentCount = i32(config.y);
         let similarityType = i32(config.z); // 0=cosine, 1=euclidean, 2=dot product
-        if (docId >= u32(documentCount)) { return; }
+        if (docId >= u32(documentCount)) { return, }
         var similarity = 0.0;
         var queryNorm = 0.0;
         var docNorm = 0.0;

@@ -365,7 +365,7 @@
             <button class="nes-btn is-primary" onclick={startUpload}>
               Start Upload & Analysis
             </button>
-            <button class="nes-btn" onclick={() => { selectedFiles = []; }}>
+            <button class="nes-btn" onclick={() => { selectedFiles = [], }}>
               Clear Files
             </button>
           </div>

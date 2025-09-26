@@ -307,7 +307,7 @@
     formData.append("filename", fileItem.name);
     const response = await fetch(uploadUrl, {
       method: "POST",
-      body: formData;
+      body: formData
     });
     if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
       throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
@@ -332,7 +332,7 @@
       formData.append("fileId", fileItem.id);
       const response = await fetch(`${uploadUrl}/chunk`, {
         method: "POST",
-        body: formData;
+        body: formData
       });
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);

@@ -46,7 +46,7 @@
     title: z.string().min(1).max(255, 'Title too long'),
     description: z.string().optional(),
     evidenceType: z.enum(['document', 'image', 'video']).default('document'),
-    tags: z.string().optional();
+    tags: z.string().optional()
   });
   // Props from load function
   let { data }: { data: PageData } = $props();
@@ -65,7 +65,7 @@
             success: true,
             caseTitle: form.data.title,
             casePriority: form.data.priority,
-            caseStatus: form.data.status;
+            caseStatus: form.data.status
           });
         }
       }
@@ -130,7 +130,7 @@
           collectedAt: new Date().toISOString(),
           evidenceType: current.evidenceType,
           tags: current.tags,
-          __optimistic: true;
+          __optimistic: true
         }
       ];
     }
@@ -200,7 +200,7 @@
       const aVal = (a as any)[sortBy];
       const bVal = (b as any)[sortBy];
       const comparison = aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
-      return sortOrder === 'desc' ? -comparison : compariso;
+      return sortOrder === 'desc' ? -comparison : comparison;
     });
     return filtered;
   })());
@@ -209,7 +209,7 @@
     low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
     medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
     high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
-    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
   }
   // Status colors
   const statusColors = {
@@ -217,7 +217,7 @@
     investigating: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
     pending: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
     closed: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-    archived: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400';
+    archived: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400'
   }
   // Vector search function
   async function performVectorSearch() {
@@ -227,7 +227,7 @@
       query: searchQuery,
       searchType: 'vector_search',
       legalDomain: 'case_management',
-      searchStartTime: Date.now();
+      searchStartTime: Date.now()
     });
     isSearching = true;
     const searchStartTime = Date.now();
@@ -239,7 +239,7 @@
           query: searchQuery,
           useVectorSearch: true,
           limit: 10,
-          threshold: 0.7;
+          threshold: 0.7
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -252,7 +252,7 @@
             success: true,
             resultCount: vectorSearchResults.length,
             searchTime: Date.now() - searchStartTime,
-            relevanceScore: vectorSearchResults.length > 0 ? 0.8 : 0.3 // Estimated relevanc;
+            relevanceScore: vectorSearchResults.length > 0 ? 0.8 : 0.3 // Estimated relevance
           });
         }
       } else {
@@ -278,7 +278,7 @@
   }
   // Delete evidence handler
   function confirmDeleteEvidence(evidence: unknown) {
-    evidenceToDelete = evidenc;
+    evidenceToDelete = evidence;
     deleteEvidenceDialogOpen = true;
   }
   async function deleteEvidence() {
@@ -287,7 +287,7 @@
     formData.append('evidenceId', evidenceToDelete.id);
     const response = await fetch('/cases?/deleteEvidence', {
       method: 'POST',
-      body: formData;
+      body: formData
     });
     if ((response as { ok?: unknown; json?: unknown }).ok) {
       toast.success('Evidence deleted successfully');
@@ -326,7 +326,7 @@
           Manage cases with AI-powered search and PostgreSQL vector storage
         </p>
       </div>
-  <Button class="bits-btn gap-2" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; createCaseDialogOpen = true; }}>
+  <Button class="bits-btn gap-2" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; createCaseDialogOpen = true,}}>
         {#snippet children()}
           <Plus class="h-4 w-4" />
           New Case
@@ -379,7 +379,7 @@
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
         <div class="relative">
           <Search class="absolute left-2 top-2.5 h-4 w-4 nes-text is-disabled" />
-          <Input;
+          <Input
             bind:value={searchQuery}
             placeholder="Search cases with AI vector search..."
             class="pl-8 w-full md:w-[400px]"
@@ -440,7 +440,7 @@
               ← Back to Cases
             {/snippet}
           <div class="flex gap-2">
-            <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true,}}>
               {#snippet children()}
                 <Plus class="h-4 w-4 mr-2" />
                 Add Evidence
@@ -487,7 +487,7 @@
                 <div class="flex flex-col items-center justify-center py-12">
                   <FileText class="h-12 w-12 nes-text is-disabled mb-4" />
                   <p class="nes-text is-disabled mb-4">No evidence has been added to this case yet.</p>
-                  <Button class="bits-btn" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
+                  <Button class="bits-btn" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true,}}>
                     {#snippet children()}
                       <Plus class="h-4 w-4 mr-2" />
                       Add First Evidence
@@ -553,7 +553,7 @@
         <Tabs.Content value="all-cases" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {#each filteredCases as caseItem}
-              <div class="cursor-pointer transition-colors hover:bg-muted/50 p-6 nes-container"> viewCase(caseItem)}>
+              <div class="cursor-pointer transition-colors hover:bg-muted/50 p-6 nes-container" onclick={() => viewCase(caseItem)}>
                 {#snippet children()}
                   <div class="mb-4">
                     <div class="flex items-start justify-between">
@@ -612,12 +612,12 @@
           {#if vectorSearchResults.length > 0}
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {#each vectorSearchResults as result}
-                <div class="cursor-pointer transition-colors hover:bg-muted/50 p-6 nes-container"> viewCase(result)}>
+                <div class="cursor-pointer transition-colors hover:bg-muted/50 p-6 nes-container" onclick={() => viewCase(result)}>
                   {#snippet children()}
                     <div class="mb-4">
                       <div class="flex items-start justify-between">
                         <h3 class="text-lg font-semibold line-clamp-2">{(result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).title}</h3>
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round.similarity * 100)}% match</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round((result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).similarity * 100)}% match</span>
                       </div>
                     </div>
                     <p class="text-sm nes-text is-disabled line-clamp-3 mb-2">
@@ -911,12 +911,12 @@
   context={{
     page: 'cases',
     totalCases: filteredCases.length,
-    hasActiveFilters: searchQuery.trim() || statusFilter !== 'all' || priorityFilter !== 'all';
+    hasActiveFilters: searchQuery.trim() || statusFilter !== 'all' || priorityFilter !== 'all'
   }}
   trackOnMount={true}
   let:feedback
 />
-<FeedbackIntegratio;
+<FeedbackIntegration
   bind:this={searchFeedback}
   interactionType="ai_search"
   ratingType="search_relevance"
@@ -924,7 +924,7 @@
   context={{ component: 'VectorSearch', legalDomain: 'case_management' }}
   let:feedback
 />
-<FeedbackIntegratio;
+<FeedbackIntegration
   bind:this={caseCreationFeedback}
   interactionType="case_creation"
   ratingType="ui_experience"
@@ -932,4 +932,4 @@
   context={{ component: 'CreateCaseDialog' }}
   let:feedback
 />
-<!-- Tailwind CSS will handle all styling through bits-ui components -->;
+<!-- Tailwind CSS will handle all styling through bits-ui components -->

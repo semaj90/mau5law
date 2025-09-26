@@ -725,7 +725,7 @@ class WebGPUTopologyAccelerator {
       @compute @workgroup_size(64)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
-        if (index >= arrayLength(&inputData)) { return; }
+        if (index >= arrayLength(&inputData)) { return, }
         // Topology optimization algorithm
         let complexity = inputData[0];
         let userExpectation = inputData[1];

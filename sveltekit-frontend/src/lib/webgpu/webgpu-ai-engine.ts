@@ -159,7 +159,7 @@ export class WebGPUAIEngine {
       @compute @workgroup_size(64, 1, 1);
       fn kernelAttention(@builtin(global_invocation_id) globalId: vec3<u32>) {
         let index = globalId.x;
-        if (index >= params.outputSize) { return; }
+        if (index >= params.outputSize) { return, }
         var sum: f32 = 0.0;
         var weightSum: f32 = 0.0;
         // Kernel attention computation
@@ -196,9 +196,9 @@ export class WebGPUAIEngine {
       @compute @workgroup_size(32, 1, 1);
       fn t5Attention(@builtin(global_invocation_id) globalId: vec3<u32>) {
         let seqIdx = globalId.x;
-        if (seqIdx >= params.sequenceLength) { return; }
+        if (seqIdx >= params.sequenceLength) { return, }
         let hiddenIdx = globalId.y;
-        if (hiddenIdx >= params.hiddenSize) { return; }
+        if (hiddenIdx >= params.hiddenSize) { return, }
         let inputOffset = seqIdx * params.hiddenSize + hiddenIdx;
         // Simplified T5 attention computation
         var attentionSum: f32 = 0.0;

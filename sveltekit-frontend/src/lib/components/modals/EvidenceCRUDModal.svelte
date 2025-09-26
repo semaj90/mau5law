@@ -228,7 +228,7 @@
         }
         const response = await fetch('/api/evidence', {
           method: 'POST',
-          body: formData;
+          body: formData
         });
         if (!response.ok) {
           throw new Error('Failed to create evidence');
@@ -328,7 +328,7 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
     class:animate-fadeOut={isClosing}
-    onclick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
+    onclick={(e) => { if (e.target === e.currentTarget) handleClose(), }}
     onkeydown={handleKeydown}
     role="dialog"
     aria-modal="true"
@@ -473,7 +473,7 @@
                     class:border-primary={dragOver}
                     class:bg-primary/5={dragOver}
                     ondrop={handleFileDrop}
-                    ondragover={(e) => { e.preventDefault(); dragOver = true; }}
+                    ondragover={(e) => { e.preventDefault(); dragOver = true, }}
                     ondragleave={() => dragOver = false}
                     role="button"
                     tabindex="0"
@@ -621,8 +621,8 @@
 {/if}
 <style>
   @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from { opacity: 1, }
+    to { opacity: 0, }
   }
   @keyframes scaleIn {
     from {

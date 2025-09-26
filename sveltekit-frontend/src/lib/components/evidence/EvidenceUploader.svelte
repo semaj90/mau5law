@@ -114,7 +114,7 @@ export default ;
 	padding: 0.25rem 0;
 	border-bottom: 1px solid #f0f0f0;
   }
-  .file:last-child { border-bottom: none; }
+  .file:last-child { border-bottom: none, }
   button.remove {
 	background: transparent;
 	border: none;

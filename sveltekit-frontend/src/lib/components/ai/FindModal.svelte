@@ -727,15 +727,15 @@ const saved = localStorage.getItem('ai-search-history');
     }
   }
   @keyframes glowPulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.6, }
+    50% { opacity: 1, }
   }
   .nier-spinner {
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg), }
+    to { transform: rotate(360deg), }
   }
   /* Responsive Design */
   @media (max-width: 768px) {

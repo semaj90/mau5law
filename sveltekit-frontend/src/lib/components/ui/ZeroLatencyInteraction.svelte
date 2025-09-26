@@ -488,8 +488,8 @@ https://svelte.dev/e/js_parse_error -->
     color: #ff0041;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    100% { transform: rotate(360deg), }
   }
   /* Debug Panel */
   .zero-latency-debug-panel {

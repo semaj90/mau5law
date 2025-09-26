@@ -789,12 +789,12 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     opacity: 0.5;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    100% { transform: rotate(360deg), }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.7, }
   }
   /* Scrollbar styling */
   .work-list::-webkit-scrollbar {

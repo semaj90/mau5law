@@ -26,13 +26,13 @@
         jurisdiction: 'all',
         category: 'all',
       });
-      // removed unused response assignment
+      const response = await fetch(`/api/laws/search?${params}`);
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; laws?: unknown; error?: unknown }).success) {
         searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws || [];
       } else {
         searchResults = [];
-        console.error(error);
+        console.error('Search failed:', result);
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -41,7 +41,7 @@
       isSearching = false;
     }
   }
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       performSearch();
     }
@@ -50,7 +50,7 @@
   function handleAISearchResult(result: unknown) {
     console.log('AI Search Result:', result);
     if (result?.laws) {
-      searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).law;
+      searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws || [];
     }
   }
   function handleAIChatResult(result: unknown) {
@@ -84,7 +84,7 @@
       onselect={(e: CustomEvent) => {
         const selected = e.detail;
         if (selected?.title) {
-          searchQuery = selected.titl;
+          searchQuery = selected.title;
         }
       }}
     />
@@ -210,4 +210,3 @@
     </div>
   {/if}
 </div>
-;

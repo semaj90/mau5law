@@ -436,9 +436,9 @@ d;
   }
   /* YoRHa-style animations */
   @keyframes yorha-glow {
-    0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3); }
-    50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
-    100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3); }
+    0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3), }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6), }
+    100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3), }
   }
   .yorha-canvas-board:hover {
     animation: yorha-glow 2s ease-in-out infinite;

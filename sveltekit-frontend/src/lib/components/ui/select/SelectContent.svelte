@@ -15,8 +15,8 @@
     ({
       open: writable(false),
       selected: writable(null),
-      onSelect: () => ,
-      onToggle: () => } satisfies SelectContext);
+      onSelect: () => {},
+      onToggle: () => {} } satisfies SelectContext);
   const { open } = context;
 </script>
 

@@ -169,7 +169,7 @@ https://svelte.dev/e/js_parse_error -->
       fileStates = new Map(fileStates);
       const response = await fetch('/api/rag/process', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
@@ -295,8 +295,8 @@ connectStatusSocket();
     })();
   });
   const machineState = $state<any>(uploadMachineActor.getSnapshot());
-  uploadMachineActor.subscribe((sn) => { machineState.value = sn; });
-  function getEntries() { return machineState.value?.context?.files || []; }
+  uploadMachineActor.subscribe((sn) => { machineState.value = sn, });
+  function getEntries() { return machineState.value?.context?.files || [], }
 </script>
 
 <div class="enhanced-file-upload {className}">

@@ -479,7 +479,7 @@ await loadCopilotContent();
                 'Vector embeddings'
               ] as example}
                 <button
-                  onclick={() => { searchQuery = example; performSearch(); }}
+                  onclick={() => { searchQuery = example; performSearch(), }}
                   class="p-2 text-left text-sm bg-black/20 hover:bg-purple-700/20
                          text-purple-300 hover:text-purple-100 rounded border border-purple-500/20
                          transition-colors"

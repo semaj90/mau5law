@@ -202,7 +202,7 @@ export class ShaderCacheManager {
 fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let index = global_id.x;
   let total = params.x * params.y;
-  if (index >= total) { return; }
+  if (index >= total) { return, }
   let batch_idx = index / params.x;
   let dim_idx = index % params.x;
   // Embedding computation with optimized memory access
@@ -221,7 +221,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let pair_idx = global_id.x;
   let num_pairs = params.x;
   let dimensions = params.y;
-  if (pair_idx >= num_pairs) { return; }
+  if (pair_idx >= num_pairs) { return, }
   var dot_product = 0.0;
   var norm_a = 0.0;
   var norm_b = 0.0;
@@ -246,7 +246,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   let index = global_id.x;
   let total_elements = params.x;
-  if (index >= total_elements) { return; }
+  if (index >= total_elements) { return, }
   // SIMD-style parallel parsing
   let raw_val = raw_data[index];
   // Unpack 4 bytes into floats

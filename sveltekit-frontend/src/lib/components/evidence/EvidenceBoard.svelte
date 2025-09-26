@@ -364,7 +364,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   // Reactive: re-render when network view is active and canvas is ready
   $effect(() => { if (viewMode === 'network' && canvas) {
     // slight delay to ensure canvas size is bound
-    setTimeout(() => renderNetworkView(), 0); });
+    setTimeout(() => renderNetworkView(), 0), });
   }
 </script>
 
@@ -1073,8 +1073,8 @@ o;
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg), }
+    to { transform: rotate(360deg), }
   }
   /* Responsive design */
   @media (max-width: 768px) {

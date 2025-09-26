@@ -446,8 +446,8 @@ https://svelte.dev/e/js_parse_error -->
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg), }
+    to { transform: rotate(360deg), }
   }
   .content-area {
     background: white;
@@ -569,8 +569,8 @@ https://svelte.dev/e/js_parse_error -->
     border-left: 4px solid #10b981;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.8, }
   }
   .summary-result {
     height: 100%;

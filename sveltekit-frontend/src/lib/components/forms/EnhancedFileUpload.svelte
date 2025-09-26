@@ -467,5 +467,5 @@ oncancel?.()} disabled={isUploading}>Cancel
 </div>
 <style>
   /* Minimal local styles; utilities provided by UnoCSS or your CSS framework. */
-  .hidden { display: none; }
+  .hidden { display: none, }
 </style>

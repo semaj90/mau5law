@@ -8,15 +8,15 @@
     children?: unknown;
   }
   let { children, placeholder,
-    class: class_ = "";
+    class: class_ = ""
   }: Props = $props();
   const context =
     getContext<SelectContext>("select") ||
     ({
       selected: writable(null),
       open: writable(false),
-      onSelect: () => ,
-      onToggle: () => ,
+      onSelect: () => {},
+      onToggle: () => {}
     } as SelectContext);
   const { selected } = context;
 </script>

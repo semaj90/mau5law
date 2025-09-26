@@ -348,8 +348,8 @@
     color: #22c55;
   }
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+    0%, 50% { opacity: 1, }
+    51%, 100% { opacity: 0, }
   }
   .embedding-indicator {
     position: absolute;

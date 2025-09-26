@@ -72,7 +72,7 @@
         formData.append('evidenceType', getEvidenceType(file.type));
         const response = await fetch('/api/upload', {
           method: 'POST',
-          body: formData;
+          body: formData
         });
         if ((response as { ok?: unknown; json?: unknown }).ok) {
           const result = await (response as { ok?: unknown; json?: unknown }).json();
@@ -132,7 +132,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-      onclick={() => { componentError = null; }}
+      onclick={() => { componentError = null, }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -276,8 +276,8 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg), }
+    to { transform: rotate(360deg), }
   }
   .upload-message {
     font-weight: 500;

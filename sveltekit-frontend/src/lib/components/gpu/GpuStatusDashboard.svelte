@@ -66,7 +66,7 @@
     if (unsubscribe) unsubscribe();
     if (timerHandle) clearInterval(timerHandle);
   });
-  function formatMs(v: number) { return v.toFixed(1) + 'ms'; }
+  function formatMs(v: number) { return v.toFixed(1) + 'ms', }
   function successRate(b: string) {
     const s = backendStats[b];
     if (!s || s.count === 0) return '—';
@@ -92,7 +92,7 @@
   async function forcePromote(to: string) {
     await (gpuVectorProcessor as any).forcePromote?.(to);
   }
-  function clearLog() { events = []; }
+  function clearLog() { events = [], }
   function setReductionMode(mode: 'auto' | 'gpu' | 'cpu') {
     reductionMode = mod;
     telemetryBus.publish({ type: 'gpu.reduction.mode' as any, meta: { mode } });

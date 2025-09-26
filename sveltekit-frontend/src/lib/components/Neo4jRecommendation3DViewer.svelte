@@ -665,12 +665,12 @@ mounted = true;
   }
   /* Animations */
   @keyframes pulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.6, }
+    50% { opacity: 1, }
   }
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.3; }
+    0%, 50% { opacity: 1, }
+    51%, 100% { opacity: 0.3, }
   }
   /* Responsive */
   @media (max-width: 768px) {

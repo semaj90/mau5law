@@ -6,11 +6,10 @@
  */
 import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
 import { browser } from '$app/environment';
-}
 export interface GraphNode {
   id: string;
   label: string;
-  properties: { [key: string]: any }
+  properties: { [key: string]: any };
   type: 'Case' | 'Evidence' | 'Person' | 'Document' | 'Relationship';
 }
 export interface GraphEdge {
@@ -18,7 +17,7 @@ export interface GraphEdge {
   source: string;
   target: string;
   label: string;
-  properties: { [key: string]: any }
+  properties: { [key: string]: any };
   weight?: number;
 }
 export interface GraphResult {
@@ -80,10 +79,10 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         const nodeCount = Math.floor(Math.random() * 20) + 1;
         const edgeCount = Math.floor(Math.random() * 15) + 1;
         return {
-          nodes: nodeCount;
-          edges: edgeCount
+          nodes: nodeCount,
+          edges: edgeCount,
           executionTime: Math.floor(Math.random() * 10) + 1
-        }
+        };
       },
       recommend: (nodeId: string, nodeType: string) => {
         // Simulate recommendation algorithm
@@ -92,8 +91,8 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           confidence: Math.random()
         }
       },
-      memory: () => ({,
-        used: Math.floor(Math.random() * 1000000) + 500000, // bytes;
+      memory: () => ({
+        used: Math.floor(Math.random() * 1000000) + 500000, // bytes
         allocated: 2000000
       })
     }
@@ -191,9 +190,9 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
   private async executeRemoteQuery(query: string): Promise<GraphResult> {
     // This would hit a remote Neo4j or graph service
     // For now, return mock data
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50);
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50));
     return {
-      nodes: [;
+      nodes: [
         {
           id: 'remote_1',
           label: 'Remote Case',
@@ -226,7 +225,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         recommendations.push({
           id: `rec_${nodeId}_${i}`,
           label: `Recommendation ${i + 1}`,
-          type: nodeType as any
+          type: nodeType as any,
           properties: {
             confidence: wasmResult.confidence,
             source: 'wasm_recommendation',
@@ -241,7 +240,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
     }
   }
   getStats(): WasmEngineStats {
-    const memoryInfo = this.wasmModule?.memory?.() || { used: 0, allocated: 0 }
+    const memoryInfo = this.wasmModule?.memory?.() || { used: 0, allocated: 0 };
     return {
       queriesCached: this.queryCache.size,
       memoryUsage: `${Math.round(memoryInfo.used / 1024 / 1024 * 100) / 100}MB`,

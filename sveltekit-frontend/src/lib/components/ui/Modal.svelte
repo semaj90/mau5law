@@ -55,7 +55,7 @@
     bind:this={modalElement}
     class="modal-backdrop"
     onclick={handleOutsideClick}
-    keydown={(e) => { if (e.key === 'Escape') handleClose(); }}
+    keydown={(e) => { if (e.key === 'Escape') handleClose(), }}
     role="presentation"
     aria-hidden="true"
     transitifade={{ duration: 200 }}

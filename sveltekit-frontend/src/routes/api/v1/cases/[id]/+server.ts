@@ -53,8 +53,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       })
       .passthrough()
     const payload = {
-      success: true
-      data: caseData
+      success: true,
+      data: caseData,
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString()
@@ -118,7 +118,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Parse request body
     const body = await request.json()
     const validatedData = UpdateCaseSchema.parse({
-      id: caseId
+      id: caseId,
       ...body
     }) as UpdateCaseData
     // Create service instance
@@ -128,8 +128,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Get updated case details
     const updatedCase = await casesService.getById(caseId)
     return json({
-      success: true
-      data: updatedCase
+      success: true,
+      data: updatedCase,
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString()
@@ -183,10 +183,10 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete case
     await casesService.delete(caseId)
     return json({
-      success: true
+      success: true,
       message: 'Case deleted successfully',
       meta: {
-        deletedCaseId: caseId
+        deletedCaseId: caseId,
         userId: locals.user.id,
         timestamp: new Date().toISOString()
       }

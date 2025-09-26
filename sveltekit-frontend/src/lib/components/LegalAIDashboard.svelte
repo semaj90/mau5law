@@ -296,7 +296,7 @@ try {
                         </div>
                       </div>
                       <button
-                        onclick={(e) => { e.stopPropagation(); uploadEvidence(case_.id); }}
+                        onclick={(e) => { e.stopPropagation(); uploadEvidence(case_.id), }}
                         class="ml-4 text-blue-600 hover:text-blue-800 text-sm"
                       >
                         Add Evidence

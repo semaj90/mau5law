@@ -474,8 +474,8 @@
     animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.6, }
   }
 /* Lighting overlay */ .lighting-overlay {
     position: absolute;

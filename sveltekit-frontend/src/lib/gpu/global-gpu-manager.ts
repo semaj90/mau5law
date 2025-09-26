@@ -251,7 +251,7 @@ class GlobalGPUManager {
         let height = i32(config.y);
         let x = i32(global_id.x);
         let y = i32(global_id.y);
-        if (x >= width || y >= height) { return; }
+        if (x >= width || y >= height) { return, }
         let index = y * width + x;
         let inputColor = inputPixels[index];
         var color = inputColor.rgb;

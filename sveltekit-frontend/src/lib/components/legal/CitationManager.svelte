@@ -608,7 +608,7 @@
             <span class="no-citations-icon">📚</span>
             <h3>No Citations Found</h3>
             <p>No citations match your current search and filter criteria.</p>
-            <Button onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all'; }}>
+            <Button onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all', }}>
               Clear Filters
             </Button>
           </div>

@@ -579,7 +579,7 @@ e; opacity: 0; pointer-events: none;"
     animation: switchSpin 1s linear infinite;
   }
   @keyframes switchSpin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   /* Track fog effect */
   .track-fog {

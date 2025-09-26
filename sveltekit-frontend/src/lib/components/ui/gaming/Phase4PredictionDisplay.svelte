@@ -382,10 +382,10 @@
     font-weight: bold;
     text-transform: uppercase;
   }
-  .confidence-label.low { color: #EF4444; }
-  .confidence-label.medium { color: #F59E0B; }
-  .confidence-label.high { color: #10B981; }
-  .confidence-label.critical { color: #8B5CF6; }
+  .confidence-label.low { color: #EF4444, }
+  .confidence-label.medium { color: #F59E0B, }
+  .confidence-label.high { color: #10B981, }
+  .confidence-label.critical { color: #8B5CF6, }
   .risk-assessment {
     display: flex;
     align-items: center;
@@ -534,11 +534,11 @@
     margin-top: 1rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   @keyframes loading-slide {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% { transform: translateX(-100%), }
+    100% { transform: translateX(100%), }
   }
   /* Responsive design */
   @media (max-width: 768px) {

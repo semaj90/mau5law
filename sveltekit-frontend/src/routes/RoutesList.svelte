@@ -80,7 +80,7 @@
             dynamic: /:\w+/.test(pr.path),
             segments: pr.path.split.filter(Boolean),
             group: pr.path.split.filter(Boolean)[0] || 'external',
-            kind: 'page';
+            kind: 'page'
         });
       }
     }

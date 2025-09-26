@@ -365,8 +365,8 @@
     justify-content: center;
   }
   @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% { left: -100%, }
+    100% { left: 100%, }
   }
   /* Responsive Design */
   @media (max-width: 768px) {

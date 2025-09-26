@@ -126,7 +126,7 @@
         formData.append('evidence_type', getEvidenceType(file.type));
         const response = await fetch('/api/evidence-files', {
           method: 'POST',
-          body: formData;
+          body: formData
         });
         const result = await (response as { json?: unknown }).json();
         if (!(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
@@ -147,7 +147,7 @@
     // Reload files and stats
     await Promise.all([loadEvidenceFiles(), loadEmbeddingStats()]);
     // Clear progress after delay
-    setTimeout(() => { uploadProgress = ''; }, 3000);
+    setTimeout(() => { uploadProgress = '', }, 3000);
   }
   async function triggerEmbeddingBackfill() {
     loading.backfill = true;
@@ -360,7 +360,7 @@ fileInput?.click()}
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
               <button class="nes-btn"
-                onclick={() => { showSearchResults = false; searchResults = []; }}
+                onclick={() => { showSearchResults = false; searchResults = [], }}
                 variant="ghost"
                 class="bits-btn text-sm"
               >
@@ -476,7 +476,7 @@ fileInput?.click()}
           <h4 class="error-title">Error</h4>
           <p class="error-message">{error}</p>
           <button class="nes-btn"
-            onclick={() => { error = ''; }}
+            onclick={() => { error = '', }}
             variant="ghost"
             class="bits-btn mt-3 text-xs dismiss-btn"
           >
@@ -680,23 +680,23 @@ fileInput?.click()}
     animation: flicker 4.5s linear infinite;
   }
   @keyframes pulseErr {
-    0%,100% { transform: scale(1); opacity:1; }
-    50% { transform: scale(1.08); opacity:.85; }
+    0%,100% { transform: scale(1); opacity:1, }
+    50% { transform: scale(1.08); opacity:.85, }
   }
   @keyframes sweep {
-    0% { transform:translateX(-120%) skewX(-12deg); }
-    60% { transform:translateX(160%) skewX(-12deg); }
-    100% { transform:translateX(160%) skewX(-12deg); }
+    0% { transform:translateX(-120%) skewX(-12deg), }
+    60% { transform:translateX(160%) skewX(-12deg), }
+    100% { transform:translateX(160%) skewX(-12deg), }
   }
   @keyframes scanMove {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-    100% { transform: translateY(0); }
+    0% { transform: translateY(0), }
+    50% { transform: translateY(-6px), }
+    100% { transform: translateY(0), }
   }
   @keyframes flicker {
-    0%, 97%, 100% { opacity:1; }
-    98% { opacity:.55; }
-    99% { opacity:.85; }
+    0%, 97%, 100% { opacity:1, }
+    98% { opacity:.55, }
+    99% { opacity:.85, }
   }
   @media (prefers-reduced-motion: reduce) {
     .error-box:: after

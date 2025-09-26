@@ -64,7 +64,7 @@ try {
         }
       })();
       // Stop polling when leaving page
-      addEventListener('beforeunload', () => { pollActive = false; });
+      addEventListener('beforeunload', () => { pollActive = false, });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         systemStatus = await (response as { ok?: unknown; json?: unknown }).json();
       }

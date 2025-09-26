@@ -77,9 +77,9 @@ export function createSSRStore<T>(
     load();
   }
   return {
-    get data() { return data; },
-    get loading() { return loading; },
-    get error() { return error; },
+    get data() { return data, },
+    get loading() { return loading, },
+    get error() { return error, },
     load,
     refresh: load;
     destroy: () => {
@@ -182,9 +182,9 @@ export function createDebouncedSearch<T>(
     }, delay);
   }
   return {
-    get query() { return currentQuery; },
-    get results() { return results; },
-    get searching() { return searching; },
+    get query() { return currentQuery, },
+    get results() { return results, },
+    get searching() { return searching, },
     search
   }
 }
@@ -232,10 +232,10 @@ export function createOptimisticStore<T>(initialData: T) {
     }
   }
   return {
-    get data() { return data; },
-    get pending() { return pending; },
-    get error() { return error; },
+    get data() { return data, },
+    get pending() { return pending, },
+    get error() { return error, },
     update,
-    set: (newData: T) => { data = newData; }
+    set: (newData: T) => { data = newData, }
   }
 }

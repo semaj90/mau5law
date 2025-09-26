@@ -614,12 +614,12 @@ https://svelte.dev/e/rune_missing_parentheses -->
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg), }
+    to { transform: rotate(360deg), }
   }
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0, }
+    to { opacity: 1, }
   }
   /* Debug panel */
   .debug-panel {

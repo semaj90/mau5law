@@ -47,15 +47,15 @@
     if (status && (status >= 500 || status === 429)) return true;
     return /network|timeout|temporar|ECONNRESET|rate limit/i.test(message);
   }
-  function handleDragOver(e: DragEvent) { e.preventDefault(); isDragOver = true; }
-  function handleDragLeave(e: DragEvent) { e.preventDefault(); isDragOver = false; }
-  function handleDrop(e: DragEvent) { e.preventDefault(); isDragOver = false; const files = e.dataTransfer?.files; if (files?.length) handleFileUpload(files); }
-  function handleFileSelect(e: Event) { const target = e.target as HTMLInputElement; if (target.files?.length) handleFileUpload(target.files); }
-  function openFileDialog() { fileInput?.click(); }
-  function cancelUpload() { canceled = true; currentXhr?.abort(); statusMessage = 'Upload canceled'; if (enableTelemetry) telemetry.emit('upload_canceled', { component: 'UploadZone' }); }
+  function handleDragOver(e: DragEvent) { e.preventDefault(); isDragOver = true, }
+  function handleDragLeave(e: DragEvent) { e.preventDefault(); isDragOver = false, }
+  function handleDrop(e: DragEvent) { e.preventDefault(); isDragOver = false; const files = e.dataTransfer?.files; if (files?.length) handleFileUpload(files), }
+  function handleFileSelect(e: Event) { const target = e.target as HTMLInputElement; if (target.files?.length) handleFileUpload(target.files), }
+  function openFileDialog() { fileInput?.click(), }
+  function cancelUpload() { canceled = true; currentXhr?.abort(); statusMessage = 'Upload canceled'; if (enableTelemetry) telemetry.emit('upload_canceled', { component: 'UploadZone' }), }
   async function handleFileUpload(files: FileList) {
     lastError = null; canceled = false; statusMessage = '';
-    try { validateFiles(files); } catch (err: any) { lastError = err.message; statusMessage = 'Validation failed'; return; }
+    try { validateFiles(files), } catch (err: any) { lastError = err.message; statusMessage = 'Validation failed'; return, }
     isUploading = true; uploadProgress = 0;
     const summary: UploadSummary = { count: files.length, totalBytes: 0, files: [] }
     for (let i = 0; i < files.length; i++) {
@@ -70,7 +70,7 @@
       }
     }
     isUploading = false; currentXhr = null;
-    if (!lastError && !canceled) { onupload?.(summary); statusMessage = 'All files uploaded'; }
+    if (!lastError && !canceled) { onupload?.(summary); statusMessage = 'All files uploaded', }
   }
   function uploadWithRetry(file: File, index: number, total: number): Promise {
     return new Promise(async (resolve, reject) => {
@@ -96,7 +96,7 @@
                   embeddings: [embedding.vector],
                   analysisResults: { fileType: file.type, size: file.size, embeddingModel: embedding.model, embeddingDims }
                 });
-              } catch (ve) { console.warn('Vector mapping failed:', ve); }
+              } catch (ve) { console.warn('Vector mapping failed:', ve), }
               telemetry.emit('embedding_complete', { file: file.name, dims: embeddingDims, model: embedding.model, latencyMs: embedding.latencyMs });
             } catch (embErr) {
               telemetry.emit('embedding_error', { file: file.name, error: embErr instanceof Error ? embErr.message: 'unknown' });
@@ -137,7 +137,7 @@
             try {
               const json = JSON.parse(xhr.responseText);
               resolve({ url: json.url, id: json.id });
-            } catch { resolve( ); }
+            } catch { resolve( ), }
           } else {
             reject(Object.assign(new Error(`Upload failed (${xhr.status})`), { statusCode: xhr.status }));
           }

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import Button from '$lib/components/ui/Button.svelte';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card';
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
 	// Stores for reactive state
 	const selectedTask = writable(null);
@@ -428,7 +428,7 @@
 	}
 
 	@keyframes pulse {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0.8; }
+		0%, 100% { opacity: 1, }
+		50% { opacity: 0.8, }
 	}
 </style>

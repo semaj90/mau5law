@@ -349,15 +349,15 @@
     animation: glitch 0.3s infinite;
   }
   @keyframes glitch {
-    0%, 100% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
+    0%, 100% { transform: translate(0), }
+    20% { transform: translate(-2px, 2px), }
+    40% { transform: translate(-2px, -2px), }
+    60% { transform: translate(2px, 2px), }
+    80% { transform: translate(2px, -2px), }
   }
   @keyframes scanline {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% { transform: translateX(-100%), }
+    100% { transform: translateX(100%), }
   }
   .yorha-table-header {
     @apply flex items-center justify-between p-3 bg-gray-900 border-b border-amber-400;
@@ -502,10 +502,10 @@
     @apply text-amber-400 font-mono text-sm mx-3;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.5, }
   }
 </style>

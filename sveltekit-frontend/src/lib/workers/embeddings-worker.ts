@@ -25,7 +25,7 @@ class EmbeddingsWorker {
           memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }),
           __linear_memory_base: 0,
           __table_base: 0,
-          abort: () => { throw new Error('WASM abort'); },
+          abort: () => { throw new Error('WASM abort'), },
           _emscripten_memcpy_big: (dest: number, src: number, num: number) => {
             const memory = new Uint8Array(this.wasmModule!.memory.buffer);
             memory.copyWithin(dest, src, src + num);

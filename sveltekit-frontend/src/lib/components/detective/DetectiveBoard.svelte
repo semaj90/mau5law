@@ -541,7 +541,7 @@
 										class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 										oncontextmenu={(e) => handleRightClick(e, item)}
 										onclick={() => handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id)}
-										onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id); } }}
+										onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id), } }}
 										role="button"
 										tabindex="0"
 									>
@@ -581,7 +581,7 @@
 								ondragend={(e) => handleCanvasDragEnd(e, item)}
 								oncontextmenu={(e) => handleRightClick(e, item)}
 								onclick={() => handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id)}
-								onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id); } }}
+								onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id), } }}
 								role="button"
 								tabindex="0"
 							>
@@ -643,7 +643,7 @@
 				variant="secondary"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				onclick={() => { window.open(`/evidence/${contextMenu.item?.id}`, '_blank'); closeContextMenu(); }}
+				onclick={() => { window.open(`/evidence/${contextMenu.item?.id}`, '_blank'); closeContextMenu(), }}
 			>
 				View Details
 			</Button>
@@ -651,7 +651,7 @@
 				variant="secondary"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				onclick={() => { window.location.href = `/evidence/${contextMenu.item?.id}/edit`; closeContextMenu(); }}
+				onclick={() => { window.location.href = `/evidence/${contextMenu.item?.id}/edit`; closeContextMenu(), }}
 			>
 				Edit
 			</Button>
@@ -691,7 +691,7 @@
 				variant="secondary"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				onclick={() => { analyzeSelectedEvidence(); closeContextMenu(); }}
+				onclick={() => { analyzeSelectedEvidence(); closeContextMenu(), }}
 			>
 				<Bot class="w-4 h-4 mr-2" />
 				Ask AI About This
@@ -704,8 +704,8 @@
 	<div
 		class="fixed z-50 inset-0 bg-black/60 flex items-center justify-center"
 	 role="button" tabindex="0"
-                onclick={(e) => { if (e.target === e.currentTarget) closeFindModal(); }}
-                onkeydown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) { e.preventDefault(); closeFindModal(); } }}
+                onclick={(e) => { if (e.target === e.currentTarget) closeFindModal(), }}
+                onkeydown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) { e.preventDefault(); closeFindModal(), } }}
 	>
 		<div
 			class="bg-background border border-primary rounded-lg shadow-lg p-6 w-full max-w-lg"

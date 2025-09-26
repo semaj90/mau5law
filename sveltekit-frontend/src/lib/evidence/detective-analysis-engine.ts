@@ -452,7 +452,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       const cacheKey = `handwriting_${await this.generateDataHash(data)}`;
       const cached = await cache.get(cacheKey);
       if (cached && (cached as any).detected !== undefined) {
-        return cached as { detected: boolean; confidence: number; regions: { x: number; y: number; width: number; height: number; }[]; }
+        return cached as { detected: boolean; confidence: number; regions: { x: number; y: number; width: number; height: number, }[], }
       }
       // Perform analysis (mock implementation)
       const result = {

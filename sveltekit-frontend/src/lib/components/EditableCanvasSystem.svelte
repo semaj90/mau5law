@@ -194,7 +194,7 @@ mounted = true;
     try {
       const response = await fetch('/api/evidence/upload', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       if (!(response as { ok?: any; status?: any; json?: any }).ok) {
         throw new Error(`Upload failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);

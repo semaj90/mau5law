@@ -887,9 +887,9 @@ export function getCHRPatterns(): string[] {
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
-.memory-section.gpu { background: #dc2626; }
-.memory-section.system { background: #059669; }
-.memory-section.cache { background: #7c3aed; }
+.memory-section.gpu { background: #dc2626, }
+.memory-section.system { background: #059669, }
+.memory-section.cache { background: #7c3aed, }
 .shader-preview, .chr-patterns {
   background: rgba(0, 0, 0, 0.4);
   padding: 1rem;
@@ -1002,11 +1002,11 @@ export function getCHRPatterns(): string[] {
   accent-color: #3b82f6;
 }
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to { transform: rotate(360deg), }
 }
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%, 100% { opacity: 1, }
+  50% { opacity: 0.7, }
 }
 @media (max-width: 768px) {
   .visualization-container {

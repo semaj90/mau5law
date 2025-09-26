@@ -670,10 +670,10 @@
     font-weight: 600;
     font-size: 0.875rem;
   }
-  .risk-low { color: #059669; }
-  .risk-medium { color: #d97706; }
-  .risk-high { color: #dc2626; }
-  .risk-critical { color: #991b1b; }
+  .risk-low { color: #059669, }
+  .risk-medium { color: #d97706, }
+  .risk-high { color: #dc2626, }
+  .risk-critical { color: #991b1b, }
   .top-factors h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
@@ -718,7 +718,7 @@
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   /* Modal Styles */
   .modal-overlay {

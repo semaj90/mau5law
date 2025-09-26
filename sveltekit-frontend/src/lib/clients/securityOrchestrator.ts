@@ -38,7 +38,7 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
   });
   if (!res.ok) {
     let detail: any;
-    try { detail = await res.json(); } catch (error) {}
+    try { detail = await res.json(), } catch (error) {}
     throw new Error(`Security validation failed (${res.status}): ${detail?.error || res.statusText}`);
   }
   const apiResponse = await res.json();
@@ -62,7 +62,7 @@ export function connectProgress(onMessage: (msg: any) => void): WebSocket {
   const wsUrl = `${wsProtocol}//${window.location.host}/api/security/validate/progress`
   const ws = new WebSocket(wsUrl);
   ws.onmessage = (e) => {
-    try { onMessage(JSON.parse(e.data); } catch { /* ignore */ }
+    try { onMessage(JSON.parse(e.data), } catch { /* ignore */ }
   }
   return ws;
 }

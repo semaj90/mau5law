@@ -1025,9 +1025,9 @@ if (!browser) return;
     background: #d4af37;
   }
   @keyframes pulse {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
+    0% { opacity: 0.5, }
+    50% { opacity: 1, }
+    100% { opacity: 0.5, }
   }
   @media (max-width: 1200px) {
     .enhanced-3d-legal-ai-interface {

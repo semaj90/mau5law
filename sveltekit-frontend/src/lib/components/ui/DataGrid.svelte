@@ -421,7 +421,7 @@ y;
     opacity: 0.5;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
 /* Responsive design */ @media (max-width: 768px) {
     .grid-toolbar {

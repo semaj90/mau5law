@@ -74,7 +74,7 @@ class JobStateMachine {
     const retries = (job?.retries ?? 0) + (retry ? 1 : 0);
     return this.store.setJob({ id, state: retry ? 'retrying' : 'failed', lastError: String((error as any)?.message ?? error), retries });
   }
-  onUpdate(cb: (rec: JobRecord) => void) { this.store.on('update', cb); }
+  onUpdate(cb: (rec: JobRecord) => void) { this.store.on('update', cb), }
 }
 // Singleton
 const globalAny = globalThis as any;

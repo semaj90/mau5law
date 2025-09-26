@@ -163,7 +163,7 @@ class GPUTensorWorker {
         let index = global_id.x;
         let totalElements = metadata.z;
         let dimensions = metadata.x;
-        if (index >= u32(totalElements)) { return; }
+        if (index >= u32(totalElements)) { return, }
         // Multi-dimensional indexing
         var indices: array<i32, 4>;
         var remaining = i32(index);

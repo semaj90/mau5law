@@ -1,0 +1,405 @@
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+
+// Unified AI Chat Endpoint - Consolidates all chat variants
+// Supports multiple models, streaming, and backends
+
+interface ChatRequest {
+  messages: ChatMessage[];
+  model?: 'gemma:legal' | 'gemma3:latest' | 'gemma-270m-fast' | 'gemma-270m-context';
+  temperature?: number;
+  maxTokens?: number;
+  stream?: boolean;
+  systemPrompt?: string;
+  backend?: 'ollama' | 'tensorrt' | 'mock';
+}
+
+interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp?: string;
+}
+
+interface ChatResponse {
+  message: ChatMessage;
+  model: string;
+  backend: string;
+  tokens?: number;
+  processingTime: number;
+  qualityScore: number;
+  usage?: {
+    prompt: number;
+    completion: number;
+    total: number;
+  };
+}
+
+export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+  const startTime = performance.now();
+
+  try {
+    // Parse and validate request
+    let requestData: ChatRequest;
+
+    try {
+      requestData = await request.json();
+    } catch {
+      throw error(400, 'Invalid JSON in request body');
+    }
+
+    // Validate required fields
+    if (!requestData.messages || !Array.isArray(requestData.messages)) {
+      throw error(400, 'Messages array is required');
+    }
+
+    if (requestData.messages.length === 0) {
+      throw error(400, 'At least one message is required');
+    }
+
+    // Validate messages format
+    for (const msg of requestData.messages) {
+      if (!msg.role || !msg.content) {
+        throw error(400, 'Each message must have role and content');
+      }
+      if (!['user', 'assistant', 'system'].includes(msg.role)) {
+        throw error(400, 'Invalid message role');
+      }
+    }
+
+    // Set defaults
+    const {
+      messages,
+      model = 'gemma:legal',
+      temperature = 0.7,
+      maxTokens = 1000,
+      stream = false,
+      systemPrompt,
+      backend = 'ollama'
+    } = requestData;
+
+    // Validate parameters
+    if (temperature < 0 || temperature > 2) {
+      throw error(400, 'Temperature must be between 0 and 2');
+    }
+
+    if (maxTokens < 1 || maxTokens > 4000) {
+      throw error(400, 'MaxTokens must be between 1 and 4000');
+    }
+
+    // Log request for monitoring
+    const userMessage = messages[messages.length - 1];
+    console.log(`💬 Chat request from ${getClientAddress()}: ${userMessage.content.substring(0, 100)}...`);
+
+    // Handle streaming vs non-streaming
+    if (stream) {
+      return handleStreamingChat({ messages, model, temperature, maxTokens, systemPrompt, backend });
+    }
+
+    // Execute chat inference
+    const chatResult = await executeChatInference({
+      messages,
+      model,
+      temperature,
+      maxTokens,
+      systemPrompt,
+      backend
+    });
+
+    const processingTime = performance.now() - startTime;
+
+    // Build response
+    const response: ChatResponse = {
+      message: {
+        role: 'assistant',
+        content: chatResult.text,
+        timestamp: new Date().toISOString()
+      },
+      model: chatResult.model || model,
+      backend: chatResult.backend || backend,
+      tokens: chatResult.tokens,
+      processingTime: Math.round(processingTime),
+      qualityScore: calculateChatQualityScore(chatResult.text, userMessage.content),
+      usage: chatResult.usage
+    };
+
+    return json(response, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Processing-Time': `${Math.round(processingTime)}ms`,
+        'X-Model-Used': response.model,
+        'X-Backend-Used': response.backend
+      }
+    });
+
+  } catch (err: any) {
+    const processingTime = performance.now() - startTime;
+    console.error('Chat error:', err);
+
+    const errorResponse = {
+      error: err.status ? err.body?.message || 'Chat request failed' : 'Internal server error',
+      message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+      processingTime: Math.round(processingTime)
+    };
+
+    return json(errorResponse, {
+      status: err.status || 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Processing-Time': `${Math.round(processingTime)}ms`,
+        'X-Error': 'true'
+      }
+    });
+  }
+};
+
+// Streaming chat handler
+async function handleStreamingChat(params: {
+  messages: ChatMessage[];
+  model: string;
+  temperature: number;
+  maxTokens: number;
+  systemPrompt?: string;
+  backend: string;
+}): Promise<Response> {
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        // For now, simulate streaming with chunks
+        // In production, integrate with actual streaming APIs
+        const result = await executeChatInference(params);
+        const text = result.text;
+        const chunks = text.match(/.{1,20}/g) || [text]; // Split into 20-char chunks
+
+        for (let i = 0; i < chunks.length; i++) {
+          const chunk = {
+            delta: {
+              role: i === 0 ? 'assistant' : undefined,
+              content: chunks[i]
+            },
+            model: result.model,
+            backend: result.backend,
+            index: i,
+            finished: i === chunks.length - 1
+          };
+
+          const chunkData = `data: ${JSON.stringify(chunk)}\n\n`;
+          controller.enqueue(encoder.encode(chunkData));
+
+          // Simulate streaming delay
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+
+        // Send final chunk
+        const finalChunk = `data: {"finished": true, "usage": ${JSON.stringify(result.usage)}}\n\n`;
+        controller.enqueue(encoder.encode(finalChunk));
+        controller.close();
+
+      } catch (error) {
+        const errorChunk = `data: {"error": "${error.message}"}\n\n`;
+        controller.enqueue(encoder.encode(errorChunk));
+        controller.close();
+      }
+    }
+  });
+
+  return new Response(stream, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*'
+    }
+  });
+}
+
+// Chat inference execution
+async function executeChatInference(params: {
+  messages: ChatMessage[];
+  model: string;
+  temperature: number;
+  maxTokens: number;
+  systemPrompt?: string;
+  backend: string;
+}): Promise<{
+  text: string;
+  model?: string;
+  backend?: string;
+  tokens?: number;
+  usage?: { prompt: number; completion: number; total: number };
+}> {
+  const { messages, model, temperature, maxTokens, systemPrompt, backend } = params;
+
+  try {
+    // Route to appropriate backend
+    switch (backend) {
+      case 'ollama':
+        return await executeOllamaChat(messages, model, temperature, maxTokens, systemPrompt);
+      case 'tensorrt':
+        return await executeTensorRTChat(messages, model, temperature, maxTokens, systemPrompt);
+      case 'mock':
+        return await executeMockChat(messages, model, maxTokens);
+      default:
+        throw new Error(`Unknown backend: ${backend}`);
+    }
+  } catch (error) {
+    console.error(`Chat inference failed with ${backend} backend:`, error);
+    // Fallback to mock
+    console.warn('Falling back to mock chat');
+    return await executeMockChat(messages, model, maxTokens);
+  }
+}
+
+// Ollama chat implementation
+async function executeOllamaChat(
+  messages: ChatMessage[],
+  model: string,
+  temperature: number,
+  maxTokens: number,
+  systemPrompt?: string
+): Promise<any> {
+  const ollamaEndpoint = process.env.OLLAMA_URL || 'http://localhost:11434';
+
+  // Build chat context
+  let prompt = '';
+  if (systemPrompt) {
+    prompt += `System: ${systemPrompt}\n\n`;
+  }
+
+  for (const msg of messages) {
+    prompt += `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n\n`;
+  }
+  prompt += 'Assistant: ';
+
+  const ollamaRequest = {
+    model: model === 'gemma:legal' ? 'gemma3:latest' : model.replace('gemma-270m-', 'gemma:'),
+    prompt,
+    options: {
+      temperature,
+      num_predict: maxTokens
+    },
+    stream: false
+  };
+
+  const response = await fetch(`${ollamaEndpoint}/api/generate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(ollamaRequest),
+    signal: AbortSignal.timeout(60000) // 60 second timeout
+  });
+
+  if (!response.ok) {
+    throw new Error(`Ollama API error: ${response.status}`);
+  }
+
+  const result = await response.json();
+
+  return {
+    text: result.response || 'No response generated',
+    model: result.model || model,
+    backend: 'ollama',
+    tokens: result.eval_count,
+    usage: result.eval_count ? {
+      prompt: result.prompt_eval_count || 0,
+      completion: result.eval_count || 0,
+      total: (result.prompt_eval_count || 0) + (result.eval_count || 0)
+    } : undefined
+  };
+}
+
+// TensorRT chat implementation (placeholder)
+async function executeTensorRTChat(
+  messages: ChatMessage[],
+  model: string,
+  temperature: number,
+  maxTokens: number,
+  systemPrompt?: string
+): Promise<any> {
+  // TODO: Implement TensorRT-LLM integration
+  throw new Error('TensorRT backend not yet implemented');
+}
+
+// Mock chat for development/fallback
+async function executeMockChat(
+  messages: ChatMessage[],
+  model: string,
+  maxTokens: number
+): Promise<any> {
+  const userMessage = messages[messages.length - 1].content;
+
+  // Simulate processing time
+  await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+
+  // Generate contextual mock response
+  let mockResponse = '';
+
+  if (userMessage.toLowerCase().includes('legal')) {
+    mockResponse = 'I understand you\'re asking about a legal matter. Based on the information provided, I would recommend consulting with a qualified attorney who can review the specific details of your situation. Legal matters often involve complex regulations and precedents that require professional analysis.';
+  } else if (userMessage.toLowerCase().includes('contract')) {
+    mockResponse = 'Regarding the contract terms you\'ve mentioned, it\'s important to carefully review all clauses and obligations. Key areas to focus on include performance requirements, termination conditions, and dispute resolution mechanisms. Consider having a legal professional review the agreement before signing.';
+  } else if (userMessage.toLowerCase().includes('evidence')) {
+    mockResponse = 'The evidence you\'ve described could be significant to your case. Proper documentation and chain of custody are crucial for admissibility in legal proceedings. I recommend organizing all relevant materials chronologically and ensuring they\'re preserved in their original format.';
+  } else {
+    mockResponse = `Thank you for your question. Based on what you've shared, I would suggest taking a systematic approach to address your concerns. This type of situation often requires careful analysis of all relevant factors and consideration of potential implications. Would you like me to help you break down the specific aspects you mentioned?`;
+  }
+
+  // Truncate to maxTokens (approximate)
+  const maxChars = maxTokens * 4;
+  if (mockResponse.length > maxChars) {
+    mockResponse = mockResponse.substring(0, maxChars) + '...';
+  }
+
+  const tokenCount = Math.ceil(mockResponse.length / 4);
+
+  return {
+    text: mockResponse,
+    model: `${model}-mock`,
+    backend: 'mock',
+    tokens: tokenCount,
+    usage: {
+      prompt: Math.ceil(userMessage.length / 4),
+      completion: tokenCount,
+      total: Math.ceil(userMessage.length / 4) + tokenCount
+    }
+  };
+}
+
+// Chat quality score calculation
+function calculateChatQualityScore(response: string, userInput: string): number {
+  let score = 0.6; // Base score
+
+  // Response length appropriateness
+  if (response.length > 50 && response.length < 1500) {
+    score += 0.1;
+  }
+
+  // Relevance to user input
+  const userWords = userInput.toLowerCase().split(/\s+/);
+  const responseWords = response.toLowerCase().split(/\s+/);
+  const relevantWords = userWords.filter(word =>
+    word.length > 3 && responseWords.some(rw => rw.includes(word))
+  );
+  score += Math.min(0.2, relevantWords.length * 0.03);
+
+  // Professional tone indicators
+  const professionalTerms = [
+    'recommend', 'suggest', 'consider', 'analysis', 'professional',
+    'legal', 'attorney', 'review', 'documentation', 'requirements'
+  ];
+  const hasProfessionalTone = professionalTerms.some(term =>
+    response.toLowerCase().includes(term)
+  );
+  if (hasProfessionalTone) {
+    score += 0.1;
+  }
+
+  // Conversational flow
+  if (response.includes('?') || response.includes('Would you like')) {
+    score += 0.1;
+  }
+
+  return Math.min(1.0, Math.max(0.1, score));
+}

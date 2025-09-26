@@ -267,11 +267,11 @@ class TauriNotesService {
       <head>
         <title>Exported Notes</title>
         <style>
-          body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-          .note { margin-bottom: 40px; }
-          .note-metadata { background: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; }
-          .note-content { margin: 20px 0; }
-          hr { border: none; border-top: 1px solid #ddd; margin: 40px 0; }
+          body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px, }
+          .note { margin-bottom: 40px, }
+          .note-metadata { background: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0, }
+          .note-content { margin: 20px 0, }
+          hr { border: none; border-top: 1px solid #ddd; margin: 40px 0, }
         </style>
       </head>
       <body>

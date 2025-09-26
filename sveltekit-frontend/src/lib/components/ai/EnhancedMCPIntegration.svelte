@@ -530,13 +530,13 @@ await initializeMCPConnection();
 		border-radius: 50%;
 		margin-left: 8px;
 	}
-	.status-connected { background: #10b981; }
-	.status-connecting { background: #f59e0b; animation: pulse 2s infinite; }
-	.status-disconnected { background: #6b7280; }
-	.status-error { background: #ef4444; }
+	.status-connected { background: #10b981, }
+	.status-connecting { background: #f59e0b; animation: pulse 2s infinite, }
+	.status-disconnected { background: #6b7280, }
+	.status-error { background: #ef4444, }
 	@keyframes pulse {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0.5; }
+		0%, 100% { opacity: 1, }
+		50% { opacity: 0.5, }
 	}
 	.connection-status {
 		font-size: 0.875rem;
@@ -640,9 +640,9 @@ await initializeMCPConnection();
 		background: rgba(255, 255, 255, 0.1);
 		transform: translateY(-1px);
 	}
-	.suggestion-high { border-left: 4px solid #ef4444; }
-	.suggestion-medium { border-left: 4px solid #f59e0b; }
-	.suggestion-low { border-left: 4px solid #10b981; }
+	.suggestion-high { border-left: 4px solid #ef4444, }
+	.suggestion-medium { border-left: 4px solid #f59e0b, }
+	.suggestion-low { border-left: 4px solid #10b981, }
 	.tools-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -654,9 +654,9 @@ await initializeMCPConnection();
 		padding: 12px;
 		border-left: 4px solid #6b7280;
 	}
-	.tool-available { border-left-color: #10b981; }
-	.tool-busy { border-left-color: #f59e0b; }
-	.tool-error { border-left-color: #ef4444; }
+	.tool-available { border-left-color: #10b981, }
+	.tool-busy { border-left-color: #f59e0b, }
+	.tool-error { border-left-color: #ef4444, }
 	.tool-name {
 		font-weight: 500;
 		margin-bottom: 8px;
@@ -679,8 +679,8 @@ await initializeMCPConnection();
 		padding: 12px;
 		border-left: 4px solid #6b7280;
 	}
-	.result-success { border-left-color: #10b981; }
-	.result-error { border-left-color: #ef4444; }
+	.result-success { border-left-color: #10b981, }
+	.result-error { border-left-color: #ef4444, }
 	.result-header {
 		display: flex;
 		gap: 12px;

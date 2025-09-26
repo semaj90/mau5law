@@ -368,7 +368,17 @@
       "Bash(npm view:*)",
       "Bash(.launch-vscode-optimized.bat)",
       "Bash(MCP_PORT=3002 CONTEXT7_GPU_ENABLED=true CONTEXT7_MULTICORE=true node scripts/mcp-multicore-server.mjs)",
-      "Bash(set NODE_OPTIONS=--max-old-space-size=28672)"
+      "Bash(set NODE_OPTIONS=--max-old-space-size=28672)",
+      "Bash(PORT=8086 timeout 10s go run go-microservice/tensorrt-bridge-clean.go)",
+      "Bash(PORT=8086 ./go-microservice/tensorrt-bridge-clean.exe)",
+      "Bash(./enhanced-rag-service.exe:*)",
+      "Bash(REDIS_PASSWORD=redis timeout 10s ./enhanced-rag-service.exe --help)",
+      "Bash(set REDIS_PASSWORD=)",
+      "Bash(REDIS_PASSWORD=\"redis\" timeout 10s ./enhanced-rag-service.exe)",
+      "Bash(REDIS_URL=\"redis://localhost:6379\" timeout 10s ./go-microservice/bin/enhanced-rag.exe)",
+      "Bash(REDIS_URL=\"redis://localhost:6379\" ./go-microservice/bin/enhanced-rag.exe)",
+      "Bash(if not exist go.mod go mod init github.com/legal-ai/enhanced-rag)",
+      "Bash(.scriptsbuild-protobuf.bat)"
     ],
     "deny": [],
     "ask": []

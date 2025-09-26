@@ -280,7 +280,7 @@
 						<div class="auth-buttons mt-3">
 													<button
 								class="nes-legal-priority-high yorha-3d-button"
-														onclick={() => { handleAuth('login'); showSearchModal = false; }}
+														onclick={() => { handleAuth('login'); showSearchModal = false, }}
 							>
 								Login for Full Access
 							</button>

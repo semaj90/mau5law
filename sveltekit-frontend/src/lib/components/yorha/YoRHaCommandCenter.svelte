@@ -165,7 +165,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-      onclick={() => { componentError = null; }}
+      onclick={() => { componentError = null, }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -452,8 +452,8 @@
     animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0, }
+    to { opacity: 1, }
   }
   @keyframes slideIn {
     from {

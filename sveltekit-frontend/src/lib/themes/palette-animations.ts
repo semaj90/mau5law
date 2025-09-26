@@ -208,8 +208,8 @@ export class PaletteAnimationController {
         z-index: 9999;
       }
       @keyframes scanline-scroll {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(4px); }
+        0% { transform: translateY(0), }
+        100% { transform: translateY(4px), }
       }
     `;
     this.injectCSS('palette-scanlines', scanlineCSS);
@@ -242,17 +242,17 @@ export class PaletteAnimationController {
           animation: glitch-effect 0.1s ${intensity * 10} linear;
         }
         @keyframes glitch-effect {
-          0% { transform: translateX(0); }
-          10% { transform: translateX(-2px) scaleX(1.01); }
-          20% { transform: translateX(2px) scaleY(1.01); }
-          30% { transform: translateX(-1px) scaleX(0.99); }
-          40% { transform: translateX(1px) scaleY(0.99); }
-          50% { transform: translateX(-2px) scaleX(1.02); }
-          60% { transform: translateX(2px) scaleY(1.02); }
-          70% { transform: translateX(-1px) scaleX(0.98); }
-          80% { transform: translateX(1px) scaleY(0.98); }
-          90% { transform: translateX(-2px) scaleX(1.01); }
-          100% { transform: translateX(0); }
+          0% { transform: translateX(0), }
+          10% { transform: translateX(-2px) scaleX(1.01), }
+          20% { transform: translateX(2px) scaleY(1.01), }
+          30% { transform: translateX(-1px) scaleX(0.99), }
+          40% { transform: translateX(1px) scaleY(0.99), }
+          50% { transform: translateX(-2px) scaleX(1.02), }
+          60% { transform: translateX(2px) scaleY(1.02), }
+          70% { transform: translateX(-1px) scaleX(0.98), }
+          80% { transform: translateX(1px) scaleY(0.98), }
+          90% { transform: translateX(-2px) scaleX(1.01), }
+          100% { transform: translateX(0), }
         }
       `;
       this.injectCSS('palette-glitch', glitchCSS);

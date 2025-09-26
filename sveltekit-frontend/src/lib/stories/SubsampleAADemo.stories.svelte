@@ -307,8 +307,8 @@ function resetBenchmarks() {
   background: rgba(255, 204, 0, 0.8);
 }
 @keyframes pulse {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.8, }
+  50% { opacity: 1, }
 }
 .demo-controls {
   display: grid;
@@ -372,9 +372,9 @@ function resetBenchmarks() {
   background: linear-gradient(45deg, #667eea, #764ba2);
   color: #fff;
 }
-.btn-primary:hover { transform: scale(1.05); }
-.btn-secondary:hover { transform: scale(1.05); }
-.btn-tertiary:hover { transform: scale(1.05); }
+.btn-primary:hover { transform: scale(1.05), }
+.btn-secondary:hover { transform: scale(1.05), }
+.btn-tertiary:hover { transform: scale(1.05), }
 .btn-primary: disabled
 .btn-secondary:disabled {
   opacity: 0.5;
@@ -419,9 +419,9 @@ function resetBenchmarks() {
   color: #ffcc00;
   text-shadow: 0 0 5px #ffcc00;
 }
-.value.good { color: #00ff88; }
-.value.okay { color: #ffcc00; }
-.value.poor { color: #ff6b35; }
+.value.good { color: #00ff88, }
+.value.okay { color: #ffcc00, }
+.value.poor { color: #ff6b35, }
 .test-section {
   text-align: center;
   padding: 20px;

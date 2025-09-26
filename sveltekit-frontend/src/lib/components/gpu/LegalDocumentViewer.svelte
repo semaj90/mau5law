@@ -244,11 +244,11 @@ https://svelte.dev/e/expected_token -->
       }
       fn getBankOffset(bankId: f32) -> vec3f {
         switch (i32(bankId)) {
-          case 0: { return vec3f(-0.8, 0.8, 0.2); }   // INTERNAL_RAM
-          case 1: { return vec3f(0.8, 0.8, 0.1); }    // CHR_ROM
-          case 2: { return vec3f(0.0, 0.0, 0.0); }    // PRG_ROM (center)
-          case 3: { return vec3f(-0.8, -0.8, 0.15); } // SAVE_RAM
-          default: { return vec3f(0.0, 0.0, 0.0); }
+          case 0: { return vec3f(-0.8, 0.8, 0.2), }   // INTERNAL_RAM
+          case 1: { return vec3f(0.8, 0.8, 0.1), }    // CHR_ROM
+          case 2: { return vec3f(0.0, 0.0, 0.0), }    // PRG_ROM (center)
+          case 3: { return vec3f(-0.8, -0.8, 0.15), } // SAVE_RAM
+          default: { return vec3f(0.0, 0.0, 0.0), }
         }
       }
       fn transformToMemoryPalace(pos: vec3f, bankId: f32, riskLevel: f32) -> vec3f {
@@ -342,10 +342,10 @@ https://svelte.dev/e/expected_token -->
       }
       fn getQuantizationBrightness(quantLevel: f32) -> f32 {
         switch (i32(quantLevel)) {
-          case 0: { return 1.0; }   // FP32 - full brightness
-          case 1: { return 0.9; }   // FP16 - slightly dimmed
-          case 2: { return 0.8; }   // INT8 - more dimmed
-          default: { return 1.0; }
+          case 0: { return 1.0, }   // FP32 - full brightness
+          case 1: { return 0.9, }   // FP16 - slightly dimmed
+          case 2: { return 0.8, }   // INT8 - more dimmed
+          default: { return 1.0, }
         }
       }
     `;

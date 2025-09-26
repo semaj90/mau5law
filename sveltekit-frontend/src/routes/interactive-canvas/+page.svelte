@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
   			const fileId = crypto.randomUUID();
   			uploadingFiles[fileId] = {
   				name: file.name,
-  				size: file.size;
+  				size: file.size
   			}
   			uploadProgress[fileId] = 0;
   			try {
@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
   }}
   		const response = await fetch('/api/evidence/upload', {
   			method: 'POST',
-  			body: formData;
+  			body: formData
   		});
   		if (!(response as { ok?: unknown; json?: unknown }).ok) {
   			throw new Error('Upload failed');

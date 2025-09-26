@@ -376,7 +376,7 @@
             {#each recentSearches.slice(0, 5) as recent}
               <button
                 class="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex items-center gap-2"
-                onclick={() => { searchInput = recent; performSearch(); }}
+                onclick={() => { searchInput = recent; performSearch(), }}
               >
                 <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -597,10 +597,10 @@
     box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
   }
   /* Custom Legal AI Color Scheme */
-  :global(.nes-search-bar .text-blue-800) { color: #1565C0 !important; }
-  :global(.nes-search-bar .text-blue-200) { color: #BBDEFB !important; }
-  :global(.nes-search-bar .bg-blue-100) { background: linear-gradient(135deg, #E3F2FD, #BBDEFB) !important; }
-  :global(.nes-search-bar .bg-blue-900) { background: linear-gradient(135deg, #0D47A1, #1565C0) !important; }
+  :global(.nes-search-bar .text-blue-800) { color: #1565C0 !important, }
+  :global(.nes-search-bar .text-blue-200) { color: #BBDEFB !important, }
+  :global(.nes-search-bar .bg-blue-100) { background: linear-gradient(135deg, #E3F2FD, #BBDEFB) !important, }
+  :global(.nes-search-bar .bg-blue-900) { background: linear-gradient(135deg, #0D47A1, #1565C0) !important, }
   /* Enhanced Visual Feedback */
   :global(.nes-search-bar .border-current) {
     border-width: 2px;

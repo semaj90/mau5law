@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
         formData.append("id", evidence.id);
         const response = await fetch("/api/evidence/delete", {
           method: "POST",
-          body: formData;
+          body: formData
         });
         if (response.ok) {
           reportActions.removeEvidence(evidence.id);

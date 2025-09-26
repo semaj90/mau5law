@@ -442,8 +442,8 @@
     animation: inputGlow 2s ease-in-out infinite;
   }
   @keyframes inputGlow {
-    0%, 100% { opacity: var(--glow-intensity); }
-    50% { opacity: calc(var(--glow-intensity) * 1.5); }
+    0%, 100% { opacity: var(--glow-intensity), }
+    50% { opacity: calc(var(--glow-intensity) * 1.5), }
   }
   /* Material type variations */
   :global(.n64-input.pbr) {
@@ -507,7 +507,7 @@
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   /* Input message styling */
   .input-message {

@@ -486,20 +486,20 @@
     font-weight: 600;
     font-size: 0.875rem;
   }
-  .value.state-typing { color: #059669; }
-  .value.state-waiting_user { color: #d97706; }
-  .value.state-idle { color: #64748b; }
-  .value.engagement-high { color: #dc2626; }
-  .value.engagement-medium { color: #d97706; }
-  .value.engagement-low { color: #64748b; }
-  .metric.collaboration-active .value { color: #059669; }
+  .value.state-typing { color: #059669, }
+  .value.state-waiting_user { color: #d97706, }
+  .value.state-idle { color: #64748b, }
+  .value.engagement-high { color: #dc2626, }
+  .value.engagement-medium { color: #d97706, }
+  .value.engagement-low { color: #64748b, }
+  .metric.collaboration-active .value { color: #059669, }
   .metric.typing-indicator .value {
     color: #059669;
     animation: pulse 1.5s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.5, }
   }
   .analysis-area {
     flex: 1;

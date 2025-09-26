@@ -465,9 +465,9 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     animation: pixel-card-analyzing 1s linear infinite;
   }
   @keyframes pixel-card-analyzing {
-    0% { border-color: #00BFFF; }
-    50% { border-color: #0080FF; }
-    100% { border-color: #00BFFF; }
+    0% { border-color: #00BFFF, }
+    50% { border-color: #0080FF, }
+    100% { border-color: #00BFFF, }
   }
   .pixel-card--status-complete {
     border-color: #32CD32;
@@ -477,25 +477,25 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     animation: pixel-card-error 0.5s ease-in-out 3;
   }
   @keyframes pixel-card-error {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-2px); }
-    75% { transform: translateX(2px); }
+    0%, 100% { transform: translateX(0), }
+    25% { transform: translateX(-2px), }
+    75% { transform: translateX(2px), }
   }
   .pixel-card--status-flagged {
     border-color: #DC143C;
     animation: pixel-card-flagged 1s ease-in-out infinite;
   }
   @keyframes pixel-card-flagged {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.4); }
-    50% { box-shadow: 0 0 0 calc(var(--pixel-size) * 3) rgba(220, 20, 60, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.4), }
+    50% { box-shadow: 0 0 0 calc(var(--pixel-size) * 3) rgba(220, 20, 60, 0), }
   }
 /* Priority styling */ {}
   .pixel-card--priority-urgent {
     animation: pixel-card-urgent 0.8s ease-in-out infinite;
   }
   @keyframes pixel-card-urgent {
-    0%, 100% { filter: brightness(1); }
-    50% { filter: brightness(1.3) hue-rotate(180deg); }
+    0%, 100% { filter: brightness(1), }
+    50% { filter: brightness(1.3) hue-rotate(180deg), }
   }
   .pixel-card--priority-critical {
     border-color: #FF0000;
@@ -527,8 +527,8 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     animation: pixel-dot-blink 1s infinite;
   }
   @keyframes pixel-dot-blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.5; }
+    0%, 50% { opacity: 1, }
+    51%, 100% { opacity: 0.5, }
   }
 .pixel-card__priority, {}
   .pixel-card__classification {

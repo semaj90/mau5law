@@ -4,7 +4,7 @@ import { lucia } from '$lib/server/auth'
 import { db } from '$lib/server/db/drizzle'
 import { users, sessions } from '$lib/server/db/schema-postgres'
 import { sql, desc } from 'drizzle-orm'
-interface HealthWarning { code: string; message: string; }
+interface HealthWarning { code: string; message: string, }
 export const GET: RequestHandler = async () => {
   const started = Date.now()
   const warnings: HealthWarning[] = []

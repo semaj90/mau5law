@@ -153,14 +153,14 @@ class GPUMetricsStore {
     this.state.averageFPS = Math.round(newAvg * 10) / 10; // Round to 1 decimal
   }
   // Getters for external access
-  get sessionId(): string { return this.state.sessionId; }
-  get metrics(): GPUMetric[] { return this.state.metrics; }
-  get isActive(): boolean { return this.state.isActive; }
-  get currentFPS(): number { return this.state.currentFPS; }
-  get averageFPS(): number { return this.state.averageFPS; }
-  get activeEffects(): string[] { return this.state.activeEffects; }
-  get renderingMode(): 'webgl' | 'webgpu' | 'software' | null { return this.state.renderingMode; }
-  get totalSamplesSent(): number { return this.state.totalSamplesSent; }
+  get sessionId(): string { return this.state.sessionId, }
+  get metrics(): GPUMetric[] { return this.state.metrics, }
+  get isActive(): boolean { return this.state.isActive, }
+  get currentFPS(): number { return this.state.currentFPS, }
+  get averageFPS(): number { return this.state.averageFPS, }
+  get activeEffects(): string[] { return this.state.activeEffects, }
+  get renderingMode(): 'webgl' | 'webgpu' | 'software' | null { return this.state.renderingMode, }
+  get totalSamplesSent(): number { return this.state.totalSamplesSent, }
   // Create batch data for sending
   createBatch(): BatchedMetrics {
     const now = Date.now();

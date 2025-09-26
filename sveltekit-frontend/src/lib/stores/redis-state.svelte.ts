@@ -166,13 +166,13 @@ class RedisStateStore {
     this.state.cacheMisses++;
   }
   // Getters for external access
-  get isConnected(): boolean { return this.state.isConnected; }
-  get connectionAttempts(): number { return this.state.connectionAttempts; }
-  get lastError(): string | null { return this.state.lastError; }
-  get clientCount(): number { return this.state.clientCount; }
-  get activeChannels(): string[] { return Array.from(this.state.activeChannels); }
-  get messageCount(): number { return this.state.messageCount; }
-  get messages(): RedisMessage[] { return [...this.recentMessages]; }
+  get isConnected(): boolean { return this.state.isConnected, }
+  get connectionAttempts(): number { return this.state.connectionAttempts, }
+  get lastError(): string | null { return this.state.lastError, }
+  get clientCount(): number { return this.state.clientCount, }
+  get activeChannels(): string[] { return Array.from(this.state.activeChannels), }
+  get messageCount(): number { return this.state.messageCount, }
+  get messages(): RedisMessage[] { return [...this.recentMessages], }
   // Reset all statistics
   resetStats(): void {
     this.state.messageCount = 0;

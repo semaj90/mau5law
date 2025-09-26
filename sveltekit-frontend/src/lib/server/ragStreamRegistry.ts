@@ -32,7 +32,7 @@ let redis: ReturnType<typeof createRedisInstance> | null = null;
       if (envUrl) (cfg as any).url = envUrl;
       const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
       redis = new RedisCtor(cfg);
-    } catch { redis = null; }
+    } catch { redis = null, }
   }
 })();
 const SUMMARY_CACHE_PREFIX = 'rag:summary:';

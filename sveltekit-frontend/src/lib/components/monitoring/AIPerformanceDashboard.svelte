@@ -686,10 +686,10 @@
     color: #1e293b;
   }
   /* Color utilities */
-  .text-green-500 { color: #10b981; }
-  .text-yellow-500 { color: #f59e0b; }
-  .text-red-500 { color: #ef4444; }
-  .text-gray-500 { color: #6b7280; }
+  .text-green-500 { color: #10b981, }
+  .text-yellow-500 { color: #f59e0b, }
+  .text-red-500 { color: #ef4444, }
+  .text-gray-500 { color: #6b7280, }
   /* Responsive design */
   @media (max-width: 768px) {
     .performance-dashboard {

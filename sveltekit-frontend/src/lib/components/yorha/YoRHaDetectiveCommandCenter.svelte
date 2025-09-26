@@ -757,9 +757,9 @@ c;
     box-shadow: 0 0 15px rgba(46, 139, 87, 0.5) !important;
   }
   @keyframes ai-pulse {
-    0% { box-shadow: 0 0 10px rgba(46, 139, 87, 0.3); }
-    50% { box-shadow: 0 0 20px rgba(46, 139, 87, 0.6); }
-    100% { box-shadow: 0 0 10px rgba(46, 139, 87, 0.3); }
+    0% { box-shadow: 0 0 10px rgba(46, 139, 87, 0.3), }
+    50% { box-shadow: 0 0 20px rgba(46, 139, 87, 0.6), }
+    100% { box-shadow: 0 0 10px rgba(46, 139, 87, 0.3), }
   }
   .ai-assistant-content {
     padding: 1.5rem;
@@ -789,8 +789,8 @@ c;
     color: #3D3D3D;
   }
   @keyframes ai-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.3, }
   }
   .ai-capabilities {
     display: grid;

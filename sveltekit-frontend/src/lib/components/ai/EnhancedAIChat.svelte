@@ -134,7 +134,7 @@
       id: Date.now().toString(),
       role: 'user',
       content: currentMessage,
-      timestamp: new Date();
+      timestamp: new Date(),
     }
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
@@ -179,7 +179,7 @@
           id: Date.now().toString(),
           role: 'assistant',
           content: 'Sorry, I encountered an error. Please try again.',
-          timestamp: new Date();
+          timestamp: new Date(),
         }];
       } finally {
         isTyping = false;

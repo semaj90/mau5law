@@ -52,13 +52,13 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     if (includeCases) {
       const caseFilters = []
       if (caseIds?.length) {
-        caseFilters.push(inArray(cases.id, caseIds)
+        caseFilters.push(inArray(cases.id, caseIds))
       }
       if (dateRange?.from) {
-        caseFilters.push(gte(cases.createdAt, new Date(dateRange.from))
+        caseFilters.push(gte(cases.createdAt, new Date(dateRange.from)))
       }
       if (dateRange?.to) {
-        caseFilters.push(lte(cases.createdAt, new Date(dateRange.to))
+        caseFilters.push(lte(cases.createdAt, new Date(dateRange.to)))
       }
       const casesData = await db
         .select()

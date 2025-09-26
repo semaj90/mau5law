@@ -217,7 +217,7 @@
     formData.append('metadata', JSON.stringify(evidenceFile.metadata));
     const response = await fetch('/api/evidence/upload', {
       method: 'POST',
-      body: formData;
+      body: formData
     });
     if (!response.ok) {
       throw new Error(`Upload failed: ${response.statusText}`);

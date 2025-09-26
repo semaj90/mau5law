@@ -377,7 +377,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         let height = i32(config.y);
         let x = i32(global_id.x);
         let y = i32(global_id.y);
-        if (x >= width || y >= height) { return; }
+        if (x >= width || y >= height) { return, }
         let index = y * width + x;
         let pixel = inputPixels[index];
     `;
@@ -415,7 +415,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         outputPixels[index] = result;
       }`;
       default:
-        return baseShader + `outputPixels[index] = pixel; }`;
+        return baseShader + `outputPixels[index] = pixel, }`;
     }
   }
   /**
@@ -479,7 +479,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         let dithering = config.w > 0.5;
         let x = i32(global_id.x);
         let y = i32(global_id.y);
-        if (x >= width || y >= height) { return; }
+        if (x >= width || y >= height) { return, }
         let index = y * width + x;
         var pixel = inputPixels[index];
         // Apply NES quantization
@@ -510,7 +510,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         let vignette = config.w;
         let x = i32(global_id.x);
         let y = i32(global_id.y);
-        if (x >= width || y >= height) { return; }
+        if (x >= width || y >= height) { return, }
         let index = y * width + x;
         var pixel = inputPixels[index];
         // Scanline effect

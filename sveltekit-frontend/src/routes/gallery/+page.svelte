@@ -171,7 +171,7 @@ Displays all media: evidence, generated images, documents, uploads
     }
     try {
       const response = await fetch(`/api/gallery/${(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).id}`, {
-        method: 'DELETE';
+        method: 'DELETE'
       });
       if ((response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
         mediaItems = mediaItems.filter(existingItem => existingItem.id !== (item as any).id);
@@ -216,7 +216,7 @@ Displays all media: evidence, generated images, documents, uploads
     try {
       const response = await fetch('/api/gallery/upload', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error('Upload failed');
@@ -442,10 +442,10 @@ Displays all media: evidence, generated images, documents, uploads
                   {/if}
                 </div>
                 <div class="overlay-actions">
-                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); downloadItem(item); }}>
+                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); downloadItem(item), }}>
                     ⬇️
                   </button>
-                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); shareItem(item); }}>
+                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); shareItem(item), }}>
                     📤
                   </button>
                 </div>

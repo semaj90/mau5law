@@ -63,13 +63,13 @@ export function useRedisAI() {
     return await redisOrchestratorClient.getTaskResult(taskId);
   }
   return {
-    get isProcessing() { return isProcessing; },
-    get lastResult() { return lastResult; },
-    get error() { return error; },
+    get isProcessing() { return isProcessing, },
+    get lastResult() { return lastResult, },
+    get error() { return error, },
     query,
     queueTask,
     getTaskResult,
-    clearError: () => { error = null; }
+    clearError: () => { error = null, }
   }
 }
 /**
@@ -98,10 +98,10 @@ export function useRedisMonitoring() {
     refresh();
   });
   return {
-    get healthData() { return healthData; },
-    get isLoading() { return isLoading; },
-    get stats() { return get(redisStats); },
-    get isHealthy() { return get(isRedisHealthy); },
+    get healthData() { return healthData, },
+    get isLoading() { return isLoading, },
+    get stats() { return get(redisStats), },
+    get isHealthy() { return get(isRedisHealthy), },
     refresh,
     clearCache
   }
@@ -147,8 +147,8 @@ export function useRedisTaskQueue() {
     unsubscribe();
   });
   return {
-    get tasks() { return tasks; },
-    get isPolling() { return isPolling; },
+    get tasks() { return tasks, },
+    get isPolling() { return isPolling, },
     getTask,
     getAllTasks,
     getTasksByStatus,
@@ -181,8 +181,8 @@ export function useRedisInit(_options: { pollInterval?: number; autoStart?: bool
     redisOrchestratorClient.destroy();
   });
   return {
-    get isInitialized() { return isInitialized; },
-    get initError() { return initError; },
+    get isInitialized() { return isInitialized, },
+    get initError() { return initError, },
     initialize
   }
 }
@@ -242,8 +242,8 @@ export function useRedisComponent(
     hitRate: cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses)) * 100 : 0
   });
   return {
-    get lastQuery() { return lastQuery; },
-    get cacheStats() { return getCacheStats(); },
+    get lastQuery() { return lastQuery, },
+    get cacheStats() { return getCacheStats(), },
     queryWithCache,
     clearComponentCache
   }
@@ -302,11 +302,11 @@ export function useRedisForm() {
     }
   }
   return {
-    get isSubmitting() { return isSubmitting; },
-    get submitError() { return submitError; },
-    get lastSubmission() { return lastSubmission; },
+    get isSubmitting() { return isSubmitting, },
+    get submitError() { return submitError, },
+    get lastSubmission() { return lastSubmission, },
     submitForm,
-    clearError: () => { submitError = null; }
+    clearError: () => { submitError = null, }
   }
 }
 // Helper functions

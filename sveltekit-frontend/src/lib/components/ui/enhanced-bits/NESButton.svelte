@@ -176,7 +176,7 @@
     min-height: 48px;
   }
   @keyframes nes-blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+    0%, 50% { opacity: 1, }
+    51%, 100% { opacity: 0, }
   }
 </style>

@@ -539,7 +539,7 @@ https://svelte.dev/e/component_invalid_directive -->
     margin-bottom: 1rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   .dashboard-main {
     display: flex;
@@ -707,11 +707,11 @@ https://svelte.dev/e/component_invalid_directive -->
     height: 100%;
     transition: width 0.3s ease;
   }
-  .bar-fill.rating-5 { background: #10b981; }
-  .bar-fill.rating-4 { background: #84cc16; }
-  .bar-fill.rating-3 { background: #eab308; }
-  .bar-fill.rating-2 { background: #f97316; }
-  .bar-fill.rating-1 { background: #ef4444; }
+  .bar-fill.rating-5 { background: #10b981, }
+  .bar-fill.rating-4 { background: #84cc16, }
+  .bar-fill.rating-3 { background: #eab308, }
+  .bar-fill.rating-2 { background: #f97316, }
+  .bar-fill.rating-1 { background: #ef4444, }
   .rating-percentage {
     width: 2.5rem;
     text-align: right;

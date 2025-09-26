@@ -386,7 +386,7 @@ await initializeSearchServices();
     <!-- Clear button -->
     {#if searchQuery}
       <button
-        onclick={() => { searchQuery = ''; searchResults = []; showDropdown = false; }}
+        onclick={() => { searchQuery = ''; searchResults = []; showDropdown = false, }}
         class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

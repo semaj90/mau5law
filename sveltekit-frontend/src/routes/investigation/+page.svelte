@@ -94,16 +94,16 @@
       priority: 'medium',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      assignedTo: 'current-user';
+      assignedTo: 'current-user'
     }
     cases = [newCase, ...cases];
-    currentCase = newCa;
+    currentCase = newCase;
     // Add system message
     addChatMessage('system', `New case created: ${title}`, 'case', newCase.id);
-    return newCa;
+    return newCase;
   }
   // Evidence handling
-  function handleEvidenceUploaded(_event: CustomEvent) {
+  function handleEvidenceUploaded(event: CustomEvent) {
     const { file, position } = event.detail;
     console.log('🔍 Evidence uploaded:', file.name, 'at position:', position);
     const newEvidence: EvidenceItem = {

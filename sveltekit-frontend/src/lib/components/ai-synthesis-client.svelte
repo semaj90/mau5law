@@ -213,11 +213,11 @@
     conversationHistory.push({
       role: 'user',
       content: query;
-      timestamp: new Date();
+      timestamp: new Date(),
     });
     if ((response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).enhancedPrompt) {
       conversationHistory.push.enhancedPrompt.queryPrompt,
-        timestamp: new Date();
+        timestamp: new Date(),
       });
     }
   }

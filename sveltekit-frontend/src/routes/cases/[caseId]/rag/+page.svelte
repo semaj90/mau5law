@@ -214,8 +214,8 @@
   {/if}
 </div>
 <style>
-  .confidence-very-high { @apply text-green-600 font-medium; }
-  .confidence-high { @apply text-blue-600 font-medium; }
-  .confidence-medium { @apply text-yellow-600 font-medium; }
-  .confidence-low { @apply text-red-600 font-medium; }
+  .confidence-very-high { @apply text-green-600 font-medium, }
+  .confidence-high { @apply text-blue-600 font-medium, }
+  .confidence-medium { @apply text-yellow-600 font-medium, }
+  .confidence-low { @apply text-red-600 font-medium, }
 </style>

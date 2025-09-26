@@ -35,7 +35,7 @@
     try {
       const res = await fetch("/api/evidence/upload", {
         method: "POST",
-        body: formData;
+        body: formData
       });
       if (res.ok) {
         console.log("Evidence uploaded!");

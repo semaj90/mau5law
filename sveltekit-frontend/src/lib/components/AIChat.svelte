@@ -116,16 +116,16 @@
 
 <style>
 	/* Styles from previous Chat.svelte component can be reused here */
-	.chat-message { display: flex; max-width: 80%; }
-	.chat-message.user { margin-left: auto; flex-direction: row-reverse; }
-	.chat-message.assistant { margin-right: auto; }
+	.chat-message { display: flex; max-width: 80%, }
+	.chat-message.user { margin-left: auto; flex-direction: row-reverse, }
+	.chat-message.assistant { margin-right: auto, }
 	.message-bubble { padding: 0.75rem 1rem; border-radius: 1.25rem; word-wrap: break-word; position: relative;
-e; }
-	.user .message-bubble { background-color: #2563eb; color: white; border-bottom-right-radius: 0.25rem; }
-	.assistant .message-bubble { background-color: #e5e7eb; color: #111827; border-bottom-left-radius: 0.25rem; }
-	.dark .assistant .message-bubble { background-color: #374151; color: #f9fafb; }
-	.error-bubble { background-color: #fef2f2; color: #991b1b; }
-	.dark .error-bubble { background-color: #4c1d1d; color: #fca5a5; }
-	.typing-indicator { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background-color: currentColor; animation: typing 1s infinite steps(4, end); margin-left: 8px; vertical-align: bottom; }
-	@keyframes typing { to { transform: translateY(-0.25rem); } }
+e, }
+	.user .message-bubble { background-color: #2563eb; color: white; border-bottom-right-radius: 0.25rem, }
+	.assistant .message-bubble { background-color: #e5e7eb; color: #111827; border-bottom-left-radius: 0.25rem, }
+	.dark .assistant .message-bubble { background-color: #374151; color: #f9fafb, }
+	.error-bubble { background-color: #fef2f2; color: #991b1b, }
+	.dark .error-bubble { background-color: #4c1d1d; color: #fca5a5, }
+	.typing-indicator { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background-color: currentColor; animation: typing 1s infinite steps(4, end); margin-left: 8px; vertical-align: bottom, }
+	@keyframes typing { to { transform: translateY(-0.25rem), } }
 </style>

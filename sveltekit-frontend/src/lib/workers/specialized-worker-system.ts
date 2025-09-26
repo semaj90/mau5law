@@ -315,10 +315,10 @@ export abstract class SpecializedWorker extends EventEmitter {
       );
     }
   }
-  getId(): string { return this.workerId; }
-  getType(): string { return this.workerType; }
-  getCapabilities(): string[] { return [...this.capabilities]; }
-  isIdle(): boolean { return !this.isProcessing; }
+  getId(): string { return this.workerId, }
+  getType(): string { return this.workerType, }
+  getCapabilities(): string[] { return [...this.capabilities], }
+  isIdle(): boolean { return !this.isProcessing, }
   async dispose(): Promise<void> {
     if (this.channel) await this.channel.close();
     if (this.connection) await this.connection.close();

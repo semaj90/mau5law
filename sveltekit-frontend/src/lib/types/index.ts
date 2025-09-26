@@ -122,7 +122,7 @@ export interface UserActivityLog {
 }
 // --- XState & Machine Types ---
 export interface GlobalAppContext {
-    user: { id: string; email: string; } | null;
+    user: { id: string; email: string, } | null;
     activeCaseId: string | null;
     theme: 'light' | 'dark';
 }

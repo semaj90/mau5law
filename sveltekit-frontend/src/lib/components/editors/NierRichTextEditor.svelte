@@ -489,20 +489,20 @@ https://svelte.dev/e/attribute_duplicate -->
 		pointer-events: none;
 	}
 	@keyframes scanlines {
-		0% { transform: translateY(0); }
-		100% { transform: translateY(4px); }
+		0% { transform: translateY(0), }
+		100% { transform: translateY(4px), }
 	}
 	/* Glitch Effect */
 	.glitch-effect {
 		animation: glitch 0.1s ease-in-out;
 	}
 	@keyframes glitch {
-		0% { transform: translateX(0); }
-		20% { transform: translateX(-2px); }
-		40% { transform: translateX(2px); }
-		60% { transform: translateX(-1px); }
-		80% { transform: translateX(1px); }
-		100% { transform: translateX(0); }
+		0% { transform: translateX(0), }
+		20% { transform: translateX(-2px), }
+		40% { transform: translateX(2px), }
+		60% { transform: translateX(-1px), }
+		80% { transform: translateX(1px), }
+		100% { transform: translateX(0), }
 	}
 	/* Typography Enhancements */
 	.nier-editor-content h1,
@@ -560,7 +560,7 @@ d;
 		box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
 	}
 	@keyframes fadeInOut {
-		0%, 100% { opacity: 0; transform: translateY(-10px); }
-		10%, 90% { opacity: 1; transform: translateY(0); }
+		0%, 100% { opacity: 0; transform: translateY(-10px), }
+		10%, 90% { opacity: 1; transform: translateY(0), }
 	}
 </style>

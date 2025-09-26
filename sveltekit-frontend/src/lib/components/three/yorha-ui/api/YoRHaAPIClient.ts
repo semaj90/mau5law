@@ -119,7 +119,7 @@ export class YoRHaAPIClient {
     return this.layout;
   }
   /** Get the active layout object (if loaded). */
-  getLayout(): unknown { return this.layout; }
+  getLayout(): unknown { return this.layout, }
   /** Start polling / mock generation for declared dataSources in the layout. */;
   startDataStreams(): void {
     if (!this.layout?.dataSources) return;
@@ -168,11 +168,11 @@ export class YoRHaAPIClient {
     this.cache.set(`ds:${id}`, data);
     this.notifySubscribers(`data:${id}`, data);
     if (this.config.onData) {
-      try { this.config.onData(id, data); } catch (e: any) { /* swallow */ }
+      try { this.config.onData(id, data), } catch (e: any) { /* swallow */ }
     }
   }
   /** Retrieve last value for a data source */
-  getDataSourceValue(id: string): unknown { return this.cache.get(`ds:${id}`); }
+  getDataSourceValue(id: string): unknown { return this.cache.get(`ds:${id}`), }
   // Component Configuration API
   async getComponentConfig(componentId: string, type: string): Promise<YoRHaComponentData> {
     const cacheKey = `config:${componentId}`;

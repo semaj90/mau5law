@@ -421,10 +421,10 @@ https://svelte.dev/e/expected_token -->
     font-weight: 600;
     text-transform: uppercase;
   }
-  .status-ready { background: #dcfce7; color: #166534; }
-  .status-initializing { background: #fef3c7; color: #92400e; }
-  .status-processing { background: #dbeafe; color: #1d4ed8; }
-  .status-error { background: #fecaca; color: #dc2626; }
+  .status-ready { background: #dcfce7; color: #166534, }
+  .status-initializing { background: #fef3c7; color: #92400e, }
+  .status-processing { background: #dbeafe; color: #1d4ed8, }
+  .status-error { background: #fecaca; color: #dc2626, }
   .progress-bar {
     width: 200px;
     height: 8px;

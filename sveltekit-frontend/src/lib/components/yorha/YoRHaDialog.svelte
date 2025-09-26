@@ -356,7 +356,7 @@ font-family: inherit; font-size: 11px;
 text-transform: uppercase; letter-spacing: 1px;
 cursor: pointer; transition: all 0.2s ease;
     min-width: 80px;
-justify-content: center; }
+justify-content: center, }
   .dialog-button:hover {
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-1px);

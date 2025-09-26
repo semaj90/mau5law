@@ -170,14 +170,14 @@ const hasUnsynced = $derived(
 // ===== STORE ACTIONS =====
 export const globalUserStore = {
   // State getters
-  get state() { return globalUserState; },
-  get user() { return globalUserState.user; },
-  get profile() { return globalUserState.profile; },
-  get preferences() { return globalUserState.preferences; },
-  get isAuthenticated() { return globalUserState.isAuthenticated; },
-  get displayName() { return userDisplayName; },
-  get isOnline() { return isOnline; },
-  get hasUnsynced() { return hasUnsynced; },
+  get state() { return globalUserState, },
+  get user() { return globalUserState.user, },
+  get profile() { return globalUserState.profile, },
+  get preferences() { return globalUserState.preferences, },
+  get isAuthenticated() { return globalUserState.isAuthenticated, },
+  get displayName() { return userDisplayName, },
+  get isOnline() { return isOnline, },
+  get hasUnsynced() { return hasUnsynced, },
   // ===== AUTHENTICATION ACTIONS =====
   async setUser(user: User | null, session: Session | null) {
     globalUserState.user = user;

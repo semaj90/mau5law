@@ -274,7 +274,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             <option value="title">Title</option>
           </select>
           <button
-            onclick={() => { sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; handleSortChange(); }}
+            onclick={() => { sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; handleSortChange(), }}
             class="px-2 py-2 text-sm border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
             title={sortOrder === 'asc' ? 'Sort ascending' : 'Sort descending'}
           >
@@ -292,7 +292,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         Search
       </button>
       <button
-        onclick={() => { searchQuery = ''; typeFilter = 'all'; verifiedFilter = 'all'; handleFilterChange(); }}
+        onclick={() => { searchQuery = ''; typeFilter = 'all'; verifiedFilter = 'all'; handleFilterChange(), }}
         class="px-3 py-1 text-xs font-medium text-gray-600 hover:text-gray-800"
       >
         Clear Filters

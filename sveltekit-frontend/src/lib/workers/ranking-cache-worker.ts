@@ -21,7 +21,7 @@ self.onmessage = async (ev: MessageEvent) => {
   try {
     switch(msg.type) {
       case 'init': {
-        if (wasmReady) { (self as any).postMessage({ type:'init', ok:true }); return; }
+        if (wasmReady) { (self as any).postMessage({ type:'init', ok:true }); return, }
         if (!wasmReady) {
           if (msg.wasmUrl) {
             try {
@@ -38,7 +38,7 @@ self.onmessage = async (ev: MessageEvent) => {
             try {
               // @ts-ignore - optional chunk, may fail silently
               const m = await import('../wasm/ranking_wasm_stub.js');
-              if (m && m.default) { wasm = m.default; wasmReady = true; }
+              if (m && m.default) { wasm = m.default; wasmReady = true, }
             } catch (error) {}
           }
         }
@@ -56,7 +56,7 @@ self.onmessage = async (ev: MessageEvent) => {
             const json = JSON.stringify(payload);
             const res: any = wasm.pack_rankings(json);
             if (res instanceof Uint8Array) packed = res; else packed = packRankingSetJS(payload);
-          } catch { packed = packRankingSetJS(payload); }
+          } catch { packed = packRankingSetJS(payload), }
         } else {
           packed = packRankingSetJS(payload);
         }
@@ -70,8 +70,8 @@ self.onmessage = async (ev: MessageEvent) => {
           try {
             const u8 = new Uint8Array(blob);
             const res: any = wasm.unpack_rankings(u8);
-            if (res && typeof res === 'string') { rs = JSON.parse(res); } else { rs = unpackRankingSetJS(u8); }
-          } catch { rs = unpackRankingSetJS(new Uint8Array(blob); }
+            if (res && typeof res === 'string') { rs = JSON.parse(res), } else { rs = unpackRankingSetJS(u8), }
+          } catch { rs = unpackRankingSetJS(new Uint8Array(blob), }
         } else {
           rs = unpackRankingSetJS(new Uint8Array(blob);
         }
@@ -82,7 +82,7 @@ self.onmessage = async (ev: MessageEvent) => {
         const { key, endpoint, format } = msg as { key: string; endpoint?: string; format?: string }
         const url = `${endpoint || defaultEndpoint}/${encodeURIComponent(key)}${format==='json'? '?format=json':''}`;
         const res = await fetch(url);
-        if (!res.ok) { (self as any).postMessage({ type:'fetch:error', error: res.status }); break; }
+        if (!res.ok) { (self as any).postMessage({ type:'fetch:error', error: res.status }); break, }
         if (format==='json') {
           const json = await res.json();
           (self as any).postMessage({ type:'fetch:json', data: json });
@@ -121,7 +121,7 @@ function packRankingSetJS(rankingSet: RankingSet): Uint8Array {
     offset = writeVarint(view, offset, delta);
     const sh = computeSummaryHash(r.summaryHash||'');
     offset = write22Bits(view, offset, sh);
-    if (r.targetUrlId) { view.setUint8(offset++,1); offset = writeString(view, offset, r.targetUrlId); } else { view.setUint8(offset++,0); }
+    if (r.targetUrlId) { view.setUint8(offset++,1); offset = writeString(view, offset, r.targetUrlId), } else { view.setUint8(offset++,0), }
   }
   const payloadSize = offset - 8;
   const payload = new Uint8Array(buffer, 8, payloadSize);
@@ -147,13 +147,13 @@ function unpackRankingSetJS(packed: Uint8Array): RankingSet {
     const deltaRes = readVarint(view, offset); offset = deltaRes.newOffset; const docId = applyDocDelta(prev, deltaRes.value); prev = docId;
     const shRes = read22Bits(view, offset); offset = shRes.newOffset; const sh = shRes.value.toString(16);
     const hasUrl = view.getUint8(offset++); let targetUrlId: string|undefined;
-    if (hasUrl) { const urlRes = readString(view, offset); targetUrlId = urlRes.value; offset = urlRes.newOffset; }
+    if (hasUrl) { const urlRes = readString(view, offset); targetUrlId = urlRes.value; offset = urlRes.newOffset, }
     results.push({ docId, score: scoreQ/1023, flags: fl, summaryHash: sh, targetUrlId });
   }
   return { results, query:'', totalResults: results.length, timestamp: Date.now(), version }
 }
-function computeDocDelta(cur:string, prev:string){ if(!prev) return parseInt(cur)||0; return (parseInt(cur)||0)-(parseInt(prev)||0); }
-function applyDocDelta(prev:string, delta:number){ if(!prev) return delta.toString(); return ((parseInt(prev)||0)+delta).toString(); }
+function computeDocDelta(cur:string, prev:string){ if(!prev) return parseInt(cur)||0; return (parseInt(cur)||0)-(parseInt(prev)||0), }
+function applyDocDelta(prev:string, delta:number){ if(!prev) return delta.toString(); return ((parseInt(prev)||0)+delta).toString(), }
 function computeSummaryHash(s:string){
   let h=0;
   for(let i=0;i<s.length;i++){
@@ -179,9 +179,9 @@ function readVarint(view:DataView, offset:number){
   }
   return { value:v, newOffset: offset};
 }
-function write22Bits(view:DataView, offset:number, value:number){ value &=0x3FFFFF; view.setUint8(offset++, (value>>16)&0xFF); view.setUint8(offset++, (value>>8)&0xFF); view.setUint8(offset++, value & 0xFF); return offset; }
+function write22Bits(view:DataView, offset:number, value:number){ value &=0x3FFFFF; view.setUint8(offset++, (value>>16)&0xFF); view.setUint8(offset++, (value>>8)&0xFF); view.setUint8(offset++, value & 0xFF); return offset, }
 function read22Bits(view:DataView, offset:number){ const b0=view.getUint8(offset++), b1=view.getUint8(offset++), b2=view.getUint8(offset++); return { value: (b0<<16)|(b1<<8)|b2, newOffset: offset} }
-function writeString(view:DataView, offset:number, str:string){ const bytes=new TextEncoder().encode(str); offset=writeVarint(view, offset, bytes.length); for(let i=0;i<bytes.length;i++){ view.setUint8(offset++, bytes[i]); } return offset; }
+function writeString(view:DataView, offset:number, str:string){ const bytes=new TextEncoder().encode(str); offset=writeVarint(view, offset, bytes.length); for(let i=0;i<bytes.length;i++){ view.setUint8(offset++, bytes[i]), } return offset, }
 function readString(view:DataView, offset:number){
   const lenRes=readVarint(view, offset);
   const len=lenRes.value;
@@ -192,5 +192,5 @@ function readString(view:DataView, offset:number){
   }
   return { value: new TextDecoder().decode(bytes), newOffset: offset};
 }
-function computeCRC32(data:Uint8Array){ let crc=0xFFFFFFFF; for(let i=0;i<data.length;i++){ crc^=data[i]; for(let j=0;j<8;j++){ crc = (crc>1) ^ (crc & 1 ? 0xEDB88320:0); } } return (~crc)>0; }
+function computeCRC32(data:Uint8Array){ let crc=0xFFFFFFFF; for(let i=0;i<data.length;i++){ crc^=data[i]; for(let j=0;j<8;j++){ crc = (crc>1) ^ (crc & 1 ? 0xEDB88320:0), } } return (~crc)>0, }
 export {}

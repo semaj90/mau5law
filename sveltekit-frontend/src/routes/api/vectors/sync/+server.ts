@@ -15,7 +15,7 @@ const sql = postgres(
 )
 const db = drizzle(sql)
 let redis: ReturnType<typeof createRedisInstance> | null = null
-try { redis = createRedisInstance(); } catch {
+try { redis = createRedisInstance(), } catch {
   const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any)
   redis = new RedisCtor(
     import.meta.env.REDIS_URL || `redis://localhost:${(import.meta.env.REDIS_PORT as any) || 4005}`

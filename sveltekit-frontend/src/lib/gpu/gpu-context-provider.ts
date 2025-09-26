@@ -346,10 +346,10 @@ export class GPUContextProvider {
       vertexSource = vertexSourceMatch[0].replace('/*VERTEX*/', '').replace('/*FRAGMENT*/', '').trim();
     } else {
       // Fallback: treat entire code as vertex passthrough
-      vertexSource = `#version 300 es\nlayout(location=0) in float a_index; void main(){ gl_Position=vec4( (a_index/10.0)-0.5,0.0,0.0,1.0); }`;
+      vertexSource = `#version 300 es\nlayout(location=0) in float a_index; void main(){ gl_Position=vec4( (a_index/10.0)-0.5,0.0,0.0,1.0), }`;
     }
     const varyings = ['v_out0'];
-    const tfVertex = `#version 300 es\nlayout(location=0) in float a_index; out float v_out0; void main(){ v_out0 = a_index; gl_Position=vec4(0,0,0,1); }`;
+    const tfVertex = `#version 300 es\nlayout(location=0) in float a_index; out float v_out0; void main(){ v_out0 = a_index; gl_Position=vec4(0,0,0,1), }`;
     // Compile helper
     const compile = (type: number, source: string) => {
       const sh = gl.createShader(type)!;
@@ -365,7 +365,7 @@ export class GPUContextProvider {
     const vs = compile(gl.VERTEX_SHADER, tfVertex);
     const fs = compile(
       gl.FRAGMENT_SHADER,
-      `#version 300 es\nprecision mediump float; out vec4 fragColor; void main(){ fragColor=vec4(0); }`
+      `#version 300 es\nprecision mediump float; out vec4 fragColor; void main(){ fragColor=vec4(0), }`
     );
     const program = gl.createProgram()!;
     gl.attachShader(program, vs);

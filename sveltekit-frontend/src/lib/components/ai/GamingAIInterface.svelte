@@ -273,7 +273,7 @@
       tabindex="0"
       aria-label="Close AI Interface"
       onclick={() => showAIInterface = false}
-      keydown={e => { if (e.key === 'Enter' || e.key === ' ') showAIInterface = false; }}
+      keydown={e => { if (e.key === 'Enter' || e.key === ' ') showAIInterface = false, }}
     ></div>
     <!-- Main Interface Panel -->
     <div
@@ -407,7 +407,7 @@
           </div>
           <!-- Input Area -->
           <div class="p-4 border-t {theme.border}">
-            <form onsubmit={e => { e.preventDefault(); sendMessage(inputValue); }} class="flex gap-3">
+            <form onsubmit={e => { e.preventDefault(); sendMessage(inputValue), }} class="flex gap-3">
               <div class="flex-1 relative">
                 <input
                   bind:value={inputValue}
@@ -497,8 +497,8 @@
 {/if}
 <style>
   @keyframes scanner {
-    0% { top: 0%; opacity: 1; }
-    50% { opacity: 0.3; }
-    100% { top: 100%; opacity: 1; }
+    0% { top: 0%; opacity: 1, }
+    50% { opacity: 0.3, }
+    100% { top: 100%; opacity: 1, }
   }
 </style>

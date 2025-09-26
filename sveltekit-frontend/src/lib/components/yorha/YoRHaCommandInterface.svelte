@@ -383,19 +383,19 @@ https://svelte.dev/e/js_parse_error -->
     z-index: 1;
   }
   @keyframes scanline-scroll {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(2px); }
+    0% { transform: translateY(0), }
+    100% { transform: translateY(2px), }
   }
   .glitch-effect {
     animation: glitch 0.2s ease-in-out;
   }
   @keyframes glitch {
-    0% { transform: translateX(0); filter: hue-rotate(0deg); }
-    20% { transform: translateX(-2px); filter: hue-rotate(90deg); }
-    40% { transform: translateX(2px); filter: hue-rotate(180deg); }
-    60% { transform: translateX(-1px); filter: hue-rotate(270deg); }
-    80% { transform: translateX(1px); filter: hue-rotate(360deg); }
-    100% { transform: translateX(0); filter: hue-rotate(0deg); }
+    0% { transform: translateX(0); filter: hue-rotate(0deg), }
+    20% { transform: translateX(-2px); filter: hue-rotate(90deg), }
+    40% { transform: translateX(2px); filter: hue-rotate(180deg), }
+    60% { transform: translateX(-1px); filter: hue-rotate(270deg), }
+    80% { transform: translateX(1px); filter: hue-rotate(360deg), }
+    100% { transform: translateX(0); filter: hue-rotate(0deg), }
   }
   .cyber-border {
     border: 1px solid #00ff88;
@@ -409,9 +409,9 @@ https://svelte.dev/e/js_parse_error -->
     animation: hologram-flicker 2s ease-in-out infinite alternate;
   }
   @keyframes hologram-flicker {
-    0% { opacity: 0.8; }
-    50% { opacity: 1; }
-    100% { opacity: 0.9; }
+    0% { opacity: 0.8, }
+    50% { opacity: 1, }
+    100% { opacity: 0.9, }
   }
   .module-panel {
     background: rgba(0, 20, 40, 0.8);
@@ -447,9 +447,9 @@ https://svelte.dev/e/js_parse_error -->
     animation: status-pulse 2s ease-in-out infinite;
   }
   @keyframes status-pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
+    0% { opacity: 1, }
+    50% { opacity: 0.5, }
+    100% { opacity: 1, }
   }
   .holographic-canv.data-stream {
     position: absolute;
@@ -459,9 +459,9 @@ https://svelte.dev/e/js_parse_error -->
     animation: data-flow 3s linear infinite;
   }
   @keyframes data-flow {
-    0% { transform: translateY(-100%); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateY(100vh); opacity: 0; }
+    0% { transform: translateY(-100%); opacity: 0, }
+    50% { opacity: 1, }
+    100% { transform: translateY(100vh); opacity: 0, }
   }
 </style>
 <!-- YoRHa Command Interface -->

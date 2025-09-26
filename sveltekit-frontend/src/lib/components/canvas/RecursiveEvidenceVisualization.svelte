@@ -782,8 +782,8 @@
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg), }
+    100% { transform: rotate(360deg), }
   }
   .canvas-container {
     flex: 1;

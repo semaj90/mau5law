@@ -64,7 +64,7 @@
           inference_time: data.result.inference_time,
           total_time: data.result.total_time,
           similar_documents_found: data.result.similar_documents_found,
-          timestamp: new Date();
+          timestamp: new Date(),
         }
         queries = [newQuery, ...queries];
         currentResponse = newQuery;

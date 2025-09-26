@@ -18,8 +18,8 @@
     ({
       selected: writable(null),
       open: writable(false),
-      onSelect: () => ,
-      onToggle: () => ,
+      onSelect: () => {},
+      onToggle: () => {}
     } as SelectContext);
   const { selected, open, onSelect, onToggle } = context;
   let isSelected = $derived($selected === value);

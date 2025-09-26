@@ -43,10 +43,10 @@ https://svelte.dev/e/script_duplicate -->
   <p>No results yet.</p>
   {/if}
   <style>
-  .row { display: flex; gap: 8px; margin: 8px 0; }
-  input { flex: 1; padding: 6px 8px; }
-  button { padding: 6px 12px; }
-  pre { background: #111; color: #ddd; padding: 8px; border-radius: 4px; }
+  .row { display: flex; gap: 8px; margin: 8px 0, }
+  input { flex: 1; padding: 6px 8px, }
+  button { padding: 6px 12px, }
+  pre { background: #111; color: #ddd; padding: 8px; border-radius: 4px, }
   </style>
   <script lang="ts">
 </script>

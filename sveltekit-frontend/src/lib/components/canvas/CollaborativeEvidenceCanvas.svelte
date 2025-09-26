@@ -10,6 +10,7 @@
   import { createPubSubHelper } from '$lib/server/redisPubSub';
   import { getRedisConfig, KEY_PATTERNS, CACHE_TTL } from '$lib/config/redis-config';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
+  import { ocrIntegration } from '$lib/services/ocr-integration-service';
   // Dynamic fabric import to avoid SSR issues
   let fabricInstance: any = null;
   async function getFabric(): Promise<any> {
@@ -31,7 +32,7 @@
           remove() {}
           clear() {}
           renderAll() {}
-          getObjects() { return []; }
+          getObjects() { return [], }
           on() {}
           off() {}
         },

@@ -101,12 +101,12 @@
       attempts: f.attempts || 0,
       nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null;
     }));
-    if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) { /* ignore */ } return; }
-    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })); } catch(e) { /* ignore */ }
+    if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY), } catch(e) { /* ignore */ } return, }
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })), } catch(e) { /* ignore */ }
   }
   function restoreSession() {
     if (!enablePersistence) return;
-    try { const raw = sessionStorage.getItem(STORAGE_KEY); if (!raw) return; const data = JSON.parse(raw); if (!data?.files) return; const restored: FileState[] = []; for (const m of data.files) { const ph = new File([], m.name, { type: m.type || 'application/octet-stream' }); restored.push({ file: ph, placeholder: true, originalSize: m.size, status: 'pending', progress: 0, attempts: m.attempts || 0, nextRetryAt: m.nextRetryAt || null }); } if (restored.length) { fileStates = [...fileStates, ...restored]; files = [...files, ...restored.map(r=>r.file)]; liveMessage = `Restored ${restored.length} pending file(s)`; if (enableToastNotifications) toastService.info('Session Restored', `Recovered ${restored.length} pending file(s). Re-select originals to resume.`, { duration: 6000 }); ensureRetryTicker(); } } catch(e) { /* ignore */ }
+    try { const raw = sessionStorage.getItem(STORAGE_KEY); if (!raw) return; const data = JSON.parse(raw); if (!data?.files) return; const restored: FileState[] = []; for (const m of data.files) { const ph = new File([], m.name, { type: m.type || 'application/octet-stream' }); restored.push({ file: ph, placeholder: true, originalSize: m.size, status: 'pending', progress: 0, attempts: m.attempts || 0, nextRetryAt: m.nextRetryAt || null }), } if (restored.length) { fileStates = [...fileStates, ...restored]; files = [...files, ...restored.map(r=>r.file)]; liveMessage = `Restored ${restored.length} pending file(s)`; if (enableToastNotifications) toastService.info('Session Restored', `Recovered ${restored.length} pending file(s). Re-select originals to resume.`, { duration: 6000 }); ensureRetryTicker(), } } catch(e) { /* ignore */ }
   }
   function matchPlaceholders(incoming: File[]) { for (const f of incoming) { const idx = fileStates.findIndex(ps => ps.placeholder && ps.file.name === f.name && ps.originalSize === f.size); if (idx !== -1) { const prev = fileStates[idx]; fileStates[idx] = { ...prev, file: f, placeholder: false } } } }
   function isRetryable(message: string, statusCode?: number): boolean {
@@ -132,7 +132,7 @@
     const delay = Math.min(8000, 600 * Math.pow(2, (fs.attempts - 1))) + Math.floor(Math.random() * 300);
     fs.status = 'pending';
     fs.nextRetryAt = Date.now() + delay;
-    if (fs.retryTimeoutId) { clearTimeout(fs.retryTimeoutId); fs.retryTimeoutId = null; }
+    if (fs.retryTimeoutId) { clearTimeout(fs.retryTimeoutId); fs.retryTimeoutId = null, }
     if (enableToastNotifications) {
       const eta = (delay/1000).toFixed(1);
       if (fs.toastId) {
@@ -141,7 +141,7 @@
         fs.toastId = toastService.upload(`📁 ${fs.file.name}`, `Retrying in ${eta}s (attempt ${fs.attempts + 1}/${maxRetries})`, { dismissible: false });
       }
     }
-    fs.retryTimeoutId = setTimeout(() => { if (fs.status === 'pending' && uploading) { fs.retryTimeoutId = null; fs.attempts = (fs.attempts || 0) + 1; uploadQueue.push(fs); processUploadQueue(); } }, delay);
+    fs.retryTimeoutId = setTimeout(() => { if (fs.status === 'pending' && uploading) { fs.retryTimeoutId = null; fs.attempts = (fs.attempts || 0) + 1; uploadQueue.push(fs); processUploadQueue(), } }, delay);
     ensureRetryTicker();
   telemetry.emit('upload_retry_scheduled', { file: fs.file.name, attemptNext: (fs.attempts + 1), maxRetries, delayMs: delay });
   }
@@ -158,14 +158,14 @@
       retryTicker = retryTicker + 1; // trigger reactivity
     }, 1000);
   }
-  onDestroy(() => { if (retryInterval) clearInterval(retryInterval); });
+  onDestroy(() => { if (retryInterval) clearInterval(retryInterval), });
   function cancelAllUploads() {
     // Abort active controllers
     fileStates = fileStates.map(fs => {
       if (fs.controller) {
-        try { fs.controller.abort(); } catch(e) { /* ignore */ }
+        try { fs.controller.abort(), } catch(e) { /* ignore */ }
       }
-      if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch(e) { /* ignore */ } fs.retryTimeoutId = null; }
+      if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId), } catch(e) { /* ignore */ } fs.retryTimeoutId = null, }
       if (['uploading','pending','processing'].includes(fs.status)) {
         return { ...fs, status: 'canceled', progress: fs.status === 'uploading' ? fs.progress: 0, controller: null }
       }
@@ -235,7 +235,7 @@
     if (uploading) return; // prevent removal mid-batch
     // removed unused target assignment
     if (target && target.status === 'uploading') return; // active upload
-  if (target?.retryTimeoutId) { try { clearTimeout(target.retryTimeoutId); } catch(e) { /* ignore */ } }
+  if (target?.retryTimeoutId) { try { clearTimeout(target.retryTimeoutId), } catch(e) { /* ignore */ } }
     files = files.filter((_, i) => i !== index);
     fileStates = fileStates.filter((_, i) => i !== index);
   serializeSession();
@@ -243,7 +243,7 @@
   function cancelUpload(_index: number) {
     const fs = fileStates[index];
     if (!fs || fs.status !== 'uploading') return;
-    try { fs.controller?.abort(); } catch(e) { /* ignore */ } if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch(e) { /* ignore */ } fs.retryTimeoutId = null; }
+    try { fs.controller?.abort(), } catch(e) { /* ignore */ } if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId), } catch(e) { /* ignore */ } fs.retryTimeoutId = null, }
     fs.status = 'canceled';
     fs.progress = 0;
     liveMessage = `Upload canceled for ${fs.file.name}`;
@@ -565,7 +565,7 @@
               gpuTaskIds: fs.gpuTaskIds
             }
           })
-        }).catch((err) => { console.warn('Redis publish failed:', err); });
+        }).catch((err) => { console.warn('Redis publish failed:', err), });
         fs.progress = 100;
         fs.status = 'completed';
         performanceMetrics.completedFiles++;
@@ -647,7 +647,7 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  function openFileDialog() { if (!disabled && !uploading && fileInput) fileInput.click(); }
+  function openFileDialog() { if (!disabled && !uploading && fileInput) fileInput.click(), }
   // Pre-flight MinIO health (non-blocking if fails)
   $effect(() => {
     (async () => {
@@ -658,7 +658,7 @@ restoreSession();
         const data = await res.json();
         minioHealthy = !!data?.ok;
       } else minioHealthy = false;
-    } catch { minioHealthy = false; }
+    } catch { minioHealthy = false, }
     })();
   });
   // Reactive persistence effect (lightweight)

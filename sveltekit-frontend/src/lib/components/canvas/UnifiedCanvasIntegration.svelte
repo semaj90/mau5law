@@ -367,8 +367,8 @@
     background: rgba(0, 255, 136, 0.1);
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.5, }
   }
   /* Responsive design */
   @media (max-width: 768px) {

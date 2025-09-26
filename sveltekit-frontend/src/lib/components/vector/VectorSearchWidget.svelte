@@ -133,7 +133,7 @@ Compact searchable component for embedding in other interfaces
       type="text"
       {placeholder}
       class="vector-search-input pl-10 {searchQuery ? 'pr-10' : 'pr-3'} {compact ? 'h-8 text-sm' : 'h-10'}"
-      onfocus={() => { if (searchResults.length > 0) isOpen = true; }}
+      onfocus={() => { if (searchResults.length > 0) isOpen = true, }}
     />
     {#if searchQuery}
       <button

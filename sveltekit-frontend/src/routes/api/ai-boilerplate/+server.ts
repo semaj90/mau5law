@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }, { status: 500 })
     }
 }
-async function getHighPerformingPhrases(;
+async function getHighPerformingPhrases(
     type: string,
     jurisdiction?: string,
     context?: { case_type?: string; [key: string]: any }
@@ -298,7 +298,7 @@ function generateFallbackBoilerplate(type: string, sourcePhrases: any[]) {
     }
     const fallbackText = templates[type] || `The prosecution presents the following legal argument incorporating proven effective elements: ${sourcePhrases.slice(0, 5).map((p: any) => p.phrase).join(', ')}.`
     return {
-        text: fallbackText;
+        text: fallbackText,
         confidence: 0.6,
         prosecutionStrength: 75
     }
@@ -378,7 +378,7 @@ export const GET: RequestHandler = async () => {
             statistics: {
                 total_phrases: parseInt(String(stats.rows[0]?.total_phrases || '0')),
                 average_score: parseFloat(String(stats.rows[0]?.avg_score || '0')),
-                high_performing_count: parseInt(String(stats.rows[0]?.high_performing_phrases || '0')
+                high_performing_count: parseInt(String(stats.rows[0]?.high_performing_phrases || '0'))
             }
         })
     } catch (err: any) {

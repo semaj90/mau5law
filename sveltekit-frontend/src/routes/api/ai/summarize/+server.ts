@@ -113,8 +113,8 @@ function naiveFallbackSummary(text: string, bullets = 3) {
 }
 async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
   let to: any
-  const timeout = new Promise<never>((_, rej) => { to = setTimeout(() => rej(new Error(`${label} timeout after ${ms}ms`)), ms); })
-  try { return await Promise.race([p, timeout]); } finally { clearTimeout(to); }
+  const timeout = new Promise<never>((_, rej) => { to = setTimeout(() => rej(new Error(`${label} timeout after ${ms}ms`)), ms), })
+  try { return await Promise.race([p, timeout]), } finally { clearTimeout(to), }
 }
 const originalGETHandler: RequestHandler = async () => {
   try {
@@ -215,12 +215,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             if (structuredRequested) {
               const match = accumulated.match(/\{[\s\S]*\}$/); // last JSON object
               if (match) {
-                try { finalJSON = JSON.parse(match[0]); } catch {/* ignore */ }
+                try { finalJSON = JSON.parse(match[0]), } catch {/* ignore */ }
               }
             }
             controller.enqueue(value)
           },
-          cancel() { reader.cancel(); }
+          cancel() { reader.cancel(), }
         }), { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Model': model } })
       } else {
         const response = await withTimeout(fetch(`${OLLAMA_BASE_URL}/api/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }), REQUEST_TIMEOUT_MS, 'ollama-generate')
@@ -259,7 +259,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             suggestions: ['Ollama unavailable - using heuristic summary', 'Reduce input size or retry later', 'Install a small summarization model for stronger fallback']
           })
         }
-      } else { throw err; }
+      } else { throw err, }
     }
     // Streaming path ended early: if result is a Response return it directly
     if (result instanceof Response) {

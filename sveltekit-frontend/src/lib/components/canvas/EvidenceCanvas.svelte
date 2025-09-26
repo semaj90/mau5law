@@ -329,12 +329,12 @@
     const fileIndex = Math.floor((y - startY) / itemHeight);
     return caseFiles[fileIndex] || null;
   }
-  function handleMouseMove(_event: MouseEvent) {
+  function handleMouseMove(event: MouseEvent) {
     if (!canvas || !interactive) return;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    mousePos = { x, y }
+    mousePos = { x, y };
     const file = getFileAtPosition(x, y);
     if (file !== hoveredFile) {
       hoveredFile = file;
@@ -342,14 +342,14 @@
       canvas.style.cursor = file ? 'pointer' : 'default';
     }
   }
-  function handleMouseClick(_event: MouseEvent) {
+  function handleMouseClick(event: MouseEvent) {
     if (!canvas || !interactive) return;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     const file = getFileAtPosition(x, y);
     if (file) {
-      selectedFile = fil;
+      selectedFile = file;
       onFileClick?.(file);
     } else {
       selectedFile = null;
@@ -363,57 +363,57 @@
     }
   }
   // Generate sample data if none provided
-  $effect(() => {
-    if (caseFiles.length === 0) {
-      const sampleFiles: CaseFile[] = [
-        {
-          id: 'EV001',
-          title: 'Crime Scene Photos',
-          evidenceType: 'forensic',
-          status: 'verified',
-          riskScore: 25,
-          chainOfCustody: true,
-          confidentialityLevel: 'restricted',
-          fileSize: 15728640,
-          createdAt: new Date('2024-01-15'),
-        },
-        {
-          id: 'EV002',
-          title: 'Witness Statement - John Doe',
-          evidenceType: 'witness',
-          status: 'pending',
-          riskScore: 45,
-          chainOfCustody: true
-          confidentialityLevel: 'confidential',
-          fileSize: 2097152,
-          createdAt: new Date('2024-01-16'),
-        },
-        {
-          id: 'EV003',
-          title: 'Digital Communications Log',
-          evidenceType: 'digital',
-          status: 'disputed',
-          riskScore: 75,
-          chainOfCustody: false
-          confidentialityLevel: 'classified',
-          fileSize: 52428800,
-          createdAt: new Date('2024-01-17'),
-        },
-        {
-          id: 'EV004',
-          title: 'Contract Agreement Document',
-          evidenceType: 'document',
-          status: 'verified',
-          riskScore: 35,
-          chainOfCustody: true
-          confidentialityLevel: 'public',
-          fileSize: 1048576,
-          createdAt: new Date('2024-01-18'),
-        }
-      ];
-      caseFiles = sampleFile;
-    }
-  });
+    $effect(() => {
+      if (caseFiles.length === 0) {
+        const sampleFiles: CaseFile[] = [
+          {
+            id: 'EV001',
+            title: 'Crime Scene Photos',
+            evidenceType: 'forensic',
+            status: 'verified',
+            riskScore: 25,
+            chainOfCustody: true,
+            confidentialityLevel: 'restricted',
+            fileSize: 15728640,
+            createdAt: new Date('2024-01-15'),
+          },
+          {
+            id: 'EV002',
+            title: 'Witness Statement - John Doe',
+            evidenceType: 'witness',
+            status: 'pending',
+            riskScore: 45,
+            chainOfCustody: true,
+            confidentialityLevel: 'confidential',
+            fileSize: 2097152,
+            createdAt: new Date('2024-01-16'),
+          },
+          {
+            id: 'EV003',
+            title: 'Digital Communications Log',
+            evidenceType: 'digital',
+            status: 'disputed',
+            riskScore: 75,
+            chainOfCustody: false,
+            confidentialityLevel: 'classified',
+            fileSize: 52428800,
+            createdAt: new Date('2024-01-17'),
+          },
+          {
+            id: 'EV004',
+            title: 'Contract Agreement Document',
+            evidenceType: 'document',
+            status: 'verified',
+            riskScore: 35,
+            chainOfCustody: true,
+            confidentialityLevel: 'public',
+            fileSize: 1048576,
+            createdAt: new Date('2024-01-18'),
+          }
+        ];
+        caseFiles = sampleFiles;
+      }
+    });
   // Update canvas size when dimensions change
   $effect(() => {
     if (canvas) {
@@ -556,7 +556,7 @@
     background: var(--yorha-bg-tertiary);
     border: 1px solid var(--yorha-text-muted);
   }
-/* Animation for canvas */ {}
+/* Animation for canvas */
   .canvas-wrapper {
     animation: borderGlow 4s ease-in-out infinite alternate;
   }
@@ -568,7 +568,7 @@
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
     }
   }
-/* Responsive design */ {}
+/* Responsive design */
   @media (max-width: 768px) {
     .controls-panel {
       flex-direction: column;

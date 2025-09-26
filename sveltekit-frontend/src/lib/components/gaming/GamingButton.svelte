@@ -242,8 +242,8 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		z-index: 1;
 	}
 /* Animations */ @keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% { transform: rotate(0deg), }
+		100% { transform: rotate(360deg), }
 	}
 	@keyframes gaming-glow {
 		0% {

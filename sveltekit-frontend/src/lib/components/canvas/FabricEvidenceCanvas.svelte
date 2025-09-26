@@ -35,7 +35,7 @@
           remove() {}
           clear() {}
           renderAll() {}
-          getObjects() { return []; }
+          getObjects() { return [], }
           on() {}
           off() {}
         },

@@ -747,7 +747,7 @@
     margin-top: 0.5rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(360deg), }
   }
   /* Dialog Styles */
   .pattern-details-dialog {

@@ -384,8 +384,8 @@ export function useEvidenceCanvas() {
 		exportCanvas,
 		importCanvas,
 		// Setters
-		setHoveredItem: (itemId: string | null) => { hoveredItem = itemId; },
-		setCanvasSize: (size: { width: number; height: number }) => { canvasSize = size; },
-		setViewport: (size: { width: number; height: number }) => { viewport = size; }
+		setHoveredItem: (itemId: string | null) => { hoveredItem = itemId, },
+		setCanvasSize: (size: { width: number; height: number }) => { canvasSize = size, },
+		setViewport: (size: { width: number; height: number }) => { viewport = size, }
 	}
 }

@@ -13,7 +13,7 @@ function createPipelineStore(){
   let reconnectTimer: any = null;
   const WS_URL = (import.meta.env.VITE_WS_FANOUT_URL as string) || 'ws://localhost:8080'
   function connect(){
-    if (socket){ socket.close(); }
+    if (socket){ socket.close(), }
     socket = new WebSocket(WS_URL);
     socket.onopen = () => {
       // Optionally emit system event
@@ -27,11 +27,11 @@ function createPipelineStore(){
       } catch (e: any){ /* swallow */ }
     }
     socket.onclose = () => scheduleReconnect();
-    socket.onerror = () => { try { socket?.close(); } catch (error) {} }
+    socket.onerror = () => { try { socket?.close(), } catch (error) {} }
   }
   function scheduleReconnect(){
     if (reconnectTimer) return;
-    reconnectTimer = setTimeout(()=>{ reconnectTimer=null; connect(); }, 2000);
+    reconnectTimer = setTimeout(()=>{ reconnectTimer=null; connect(), }, 2000);
   }
   connect();
   const latest = derived(events, ($e) => $e[$e.length-1]);

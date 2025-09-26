@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     }
     // Parse query parameters
     const url = new URL(request.url)
-    const queryParams = Object.fromEntries(url.searchParams.entries()
+    const queryParams = Object.fromEntries(url.searchParams.entries())
     const validatedQuery = EvidenceQuerySchema.parse(queryParams)
     // Create service instance
     const evidenceService = new EvidenceCRUDService(locals.user.id)
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           limit: validatedQuery.limit
         })
     return json({
-      success: true;
+      success: true,
       data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
         page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any })
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     console.error('Error fetching evidence:', err)
     if (err instanceof z.ZodError) {
       return json(
-        { message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors },)
+        { message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors },
         { status: 400 }
       )
     }
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 })
     }
     return json(
-      { message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message },)
+      { message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message },
       { status: 500 }
     )
   }
@@ -112,10 +112,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       console.error('Failed to queue evidence analysis:', queueError)
       // Don't fail the request, just log the error
     }
-    return json()
+    return json(
       {
-        success: true
-        data: createdEvidence
+        success: true,
+        data: createdEvidence,
         meta: {
           evidenceId,
           userId: locals.user.id,
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error('Error creating evidence:', err)
     if (err instanceof z.ZodError) {
       return json(
-        { message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors },)
+        { message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors },
         { status: 400 }
       )
     }
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 })
     }
     return json(
-      { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message },)
+      { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message },
       { status: 500 }
     )
   }

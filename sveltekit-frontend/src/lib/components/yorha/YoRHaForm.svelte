@@ -592,12 +592,12 @@ https: //svelte.dev/e/js_parse_error -->
   }
   /* Animations */
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%, 100% { opacity: 1, }
+    50% { opacity: 0.6, }
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg), }
+    to { transform: rotate(360deg), }
   }
   /* Responsive Design */
   @media (max-width: 768px) {

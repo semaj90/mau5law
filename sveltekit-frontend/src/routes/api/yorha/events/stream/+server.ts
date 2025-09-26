@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
         send({ type: 'system_metrics', data: collectMetrics(), ts: new Date().toISOString() })
       }, Math.max(1000, intervalMs))
       const keepAlive = setInterval(() => controller.enqueue(encoder.encode(': ping\n\n')), 25000)
-      const abort = () => { clearInterval(interval); clearInterval(keepAlive); controller.close(); }
+      const abort = () => { clearInterval(interval); clearInterval(keepAlive); controller.close(), }
       (globalThis as any)._yoAbort = abort; // placeholder
     }
   })

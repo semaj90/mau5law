@@ -22,7 +22,7 @@ export async function processLegalDocumentEmbeddings(
   embeddings: {
     sourceType: 'openai' | 'sentence-transformers' | 'custom';
     data: ArrayBuffer | Float32Array | number[];
-    metadata: { documentId: string; chunkIndex: number; }
+    metadata: { documentId: string; chunkIndex: number, }
   }[];
 ) {
   console.log('🧠 Processing legal document embeddings with WebGPU...');

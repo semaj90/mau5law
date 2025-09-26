@@ -1,9 +1,10 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import UnoCSS from 'unocss/vite';
+import { enhancedImages } from '@sveltejs/enhanced-img';
 
 export default defineConfig({
-  plugins: [UnoCSS(), sveltekit()],
+  plugins: [UnoCSS(), enhancedImages(), sveltekit()],
   server: {
     port: process.env.PORT || 5173,
     strictPort: false, // Allow automatic port fallback
