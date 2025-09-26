@@ -14,27 +14,26 @@ type ProcessingProgress = { type: 'PROCESSING_PROGRESS'; progress: number }
 type CancelProcessing = { type: 'CANCEL_PROCESSING' }
 type RetryProcessing = { type: 'RETRY_PROCESSING' }
 type AnyEvt = StartProcessing | ProcessingProgress | CancelProcessing | RetryProcessing | { type: string; [k: string]: any }
-export const aiProcessingMachine = createMachine();
-  {
+export const aiProcessingMachine = createMachine({
     id: "aiProcessing",
-    types: { [key: string]: any } as {
+    types: {} as {
       context: AIProcessingContext;
       events: AnyEvt;
     },
     context: {
-      userId: undefined
+      userId: undefined,
       sessionId: "",
       retryCount: 0,
       timestamp: Date.now(),
       task: {
         id: "",
         type: "parse",
-        payload: { [key: string]: any },
+        payload: {},
         priority: "medium"
       },
       progress: 0,
       provider: "go-microservice",
-      result: undefined
+      result: undefined,
       error: undefined
     },
     initial: "idle",

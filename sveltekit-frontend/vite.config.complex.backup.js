@@ -132,7 +132,7 @@ export default defineConfig({
   assetsInclude: ['**/*.wasm'],
   define: {
     'process.env.NODE_ENV': '"development"',
-    'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5434/legal_ai_db"',
+    'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5432/legal_ai_db"',
     'process.env.REDIS_URL': '"redis://localhost:6379"',
     // Removed REDIS_PASSWORD since Redis server doesn't require authentication
   },

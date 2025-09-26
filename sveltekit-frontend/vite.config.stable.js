@@ -67,7 +67,7 @@ export default defineConfig({
   assetsInclude: ['**/*.wasm'],
   define: {
     'process.env.NODE_ENV': '"development"',
-    'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5433/legal_ai_db"',
+    'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5432/legal_ai_db"',
     'process.env.REDIS_URL': '"redis://localhost:6379"',
   },
   // Add better error handling and logging

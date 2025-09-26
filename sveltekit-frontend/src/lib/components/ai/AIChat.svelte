@@ -81,7 +81,7 @@
     <form
       onsubmit={e => {
         e.preventDefault();
-        handleSubmit(e);
+        handleSubmit();
       }}
       class="flex space-x-2"
     >
