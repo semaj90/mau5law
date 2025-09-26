@@ -23,7 +23,7 @@
   let searchConfig = $state({
     limit: 5,
     threshold: 0.7,
-    includeRAGResponse: true;
+    includeRAGResponse: true
   });
   $effect(() => {
     (async () => {
@@ -69,11 +69,11 @@
             const ragResponseFetch = await fetch('/api/rag/enhanced', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({,
-                query: searchQuery
-                mode: 'semantic_search', // Use our enhanced semantic search mod;
+              body: JSON.stringify({
+                query: searchQuery,
+                mode: 'semantic_search', // Use our enhanced semantic search mode
                 limit: searchConfig.limit,
-                threshold: searchConfig.threshold;
+                threshold: searchConfig.threshold
               })
             });
             if (ragResponseFetch.ok) {
@@ -87,11 +87,11 @@
         }
         // Add to search history
         searchHistory.unshift({
-          query: searchQuery
+          query: searchQuery,
           resultCount: Array.isArray(data.results) ? data.results.length : 0,
           timestamp: new Date(),
           hasRAGResponse: !!ragResponse,
-          processingTime: data.processingTime || 0;
+          processingTime: data.processingTime || 0
         });
         // Keep only last 5 searches
         if (searchHistory.length > 5) {
@@ -105,7 +105,7 @@
         throw new Error(data.error || 'Search request failed');
       }
     } catch (error) {
-      errorMessage = (error as Error).messag;
+      errorMessage = (error as Error).message;
       console.error('Search error:', error);
     } finally {
       isSearching = false;
@@ -124,14 +124,14 @@
         const response = await fetch('/api/embed/ingest', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
-            text: text
+          body: JSON.stringify({
+            text: text,
             entityType: 'document',
             entityId: crypto.randomUUID(),
             metadata: {
               filename: file.name,
               filesize: file.size,
-              uploadedAt: new Date().toISOString();
+              uploadedAt: new Date().toISOString()
             }
           })
         });
@@ -246,7 +246,7 @@
         </label>
         <label class="flex items-center gap-2">
           <span>Threshold:</span>
-          <select;
+          <select
             bind:value={searchConfig.threshold}
             class="bg-nier-bg-primary border border-nier-border-muted rounded px-2 py-1"
           >

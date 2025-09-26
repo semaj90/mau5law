@@ -69,7 +69,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'comprehensive' as const,
       platform: 'webapp' as const,
       urgency: 'high' as const,
-      description: 'Comprehensive TypeScript error analysis and resolution';
+      description: 'Comprehensive TypeScript error analysis and resolution',
     },
     {
       id: 'performance-optimization',
@@ -78,7 +78,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'autonomous' as const,
       platform: 'all' as const,
       urgency: 'critical' as const,
-      description: 'Full-stack performance analysis with autonomous engineering';
+      description: 'Full-stack performance analysis with autonomous engineering',
     },
     {
       id: 'security-audit',
@@ -87,7 +87,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'comprehensive' as const,
       platform: 'webapp' as const,
       urgency: 'high' as const,
-      description: 'Multi-agent security analysis';
+      description: 'Multi-agent security analysis',
     },
     {
       id: 'deployment-pipeline',
@@ -96,7 +96,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'autonomous' as const,
       platform: 'all' as const,
       urgency: 'medium' as const,
-      description: 'DevOps automation and pipeline optimization';
+      description: 'DevOps automation and pipeline optimization',
     },
     {
       id: 'api-integration',
@@ -105,7 +105,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'quick' as const,
       platform: 'webapp' as const,
       urgency: 'medium' as const,
-      description: 'Quick semantic search for integration patterns';
+      description: 'Quick semantic search for integration patterns',
     }
   ];
   $effect(() => {
@@ -139,16 +139,16 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       // Execute copilot self-prompt
       const result = await copilotSelfPrompt(userPrompt, {
         useSemanticSearch: true
-        useMemory: true
+        useMemory: true,
         useMultiAgent: selectedMode !== 'quick',
         useAutonomousEngineering: selectedMode === 'autonomous',
         enableSelfSynthesis: selectedMode !== 'quick',
         context: {
           projectPath: process.cwd(),
-          platform: selectedPlatform;
+          platform: selectedPlatform,
           urgency: selectedUrgency
-          includeTests: true
-          targetExtensions: ['cline', 'roo', 'copilot'];
+          includeTests: true,
+          targetExtensions: ['cline', 'roo', 'copilot'],
         },
         outputFormat
       });
@@ -168,7 +168,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   }
   async function executeExample(example: typeof demoExamples[0]) {
     userPrompt = example.prompt;
-    selectedMode = example.mod;
+    selectedMode = example.mode;
     selectedPlatform = example.platform;
     selectedUrgency = example.urgency;
     await executePrompt();
@@ -182,13 +182,13 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          prompt: userPrompt;
-          mode: selectedMode;
+          prompt: userPrompt,
+          mode: selectedMode,
           options: {
             context: {
               platform: selectedPlatform;
               urgency: selectedUrgency
-              includeTests: true;
+              includeTests: true,
             },
             outputFormat
           }
@@ -205,7 +205,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           processingTime: 0,
           confidence: 0.8,
           sources: [],
-          tokensUsed: 0;
+          tokensUsed: 0,
         }
       }
       processingStage = 'API call complete!';
@@ -219,7 +219,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   function downloadResult() {
     if (!currentResult) return;
     const blob = new Blob([JSON.stringify(currentResult, null, 2)], {
-      type: 'application/json';
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -242,8 +242,8 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   }
   function getActionIcon(type: NextAction['type']) {
     switch (type) {
-      case 'code': return Cod;
-      case 'test': return TestTub;
+      case 'code': return Code;
+      case 'test': return TestTube;
       case 'debug': return Bug;
       case 'deploy': return Rocket;
       case 'monitor': return Monitor;

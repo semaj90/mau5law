@@ -4,57 +4,68 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { websocketStore } from '$lib/stores/websocket-store';
   import { createPubSubHelper } from '$lib/server/redisPubSub';
-  import { getRedisConfig, KEY_PATTERNS, CACHE_TTL } from '$lib/config/redis-config';
+  import { KEY_PATTERNS, CACHE_TTL } from '$lib/config/redis-config';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
-  import { ocrIntegration } from '$lib/services/ocr-integration-service';
+
   // Dynamic fabric import to avoid SSR issues
-  let fabricInstance: any = null;
+  let _fabricModule: any = null;
   async function getFabric(): Promise<any> {
-    if (fabricInstance) return fabricInstance;
+    if (_fabricModule) return _fabricModule;
     try {
       const mod: any = await import('fabric');
-      fabricInstance = mod.fabric ?? mod.default ?? mod;
-      return fabricInstance;
+      _fabricModule = mod.fabric ?? mod.default ?? mod;
+      return _fabricModule;
     } catch (error) {
-      console.error('Failed to load fabric.js:', error);
-      // Return mock fabric for fallback
-      return {
-        Canvas: class MockCanvas {
-          constructor(element: any, options: any) {
-            this.elements = elements;
-            this.options = options;
-          }
-          add() {}
-          remove() {}
-          clear() {}
-          renderAll() {}
-          getObjects() { return [], }
-          on() {}
-          off() {}
-        },
-        Object: class MockObject {},
-        Line: class MockLine {},
-        Group: class MockGroup {}
-      }
+      console.error('Failed to load fabric.js, falling back to mock:', error);
+      // Minimal mock implementation for SSR/fallback
+      const MockLine = class {};
+      const MockGroup = class {
+        objects: any[] = [];
+        constructor(arr: any[] = [], opts: any = {}) {
+          this.left = opts.left || 0;
+          this.top = opts.top || 0;
+          this.selectable = opts.selectable ?? true;
+        }
+        addWithUpdate(obj: any) { this.objects.push(obj); }
+        on() {}
+        set() {}
+      };
+      const MockCanvas = class {
+        objects: any[] = [];
+        constructor(el: any, options: any = {}) {
+          this.el = el;
+          this.options = options;
+        }
+        add(obj: any) { this.objects.push(obj); }
+        remove(obj: any) { this.objects = this.objects.filter(o => o !== obj); }
+        clear() { this.objects = []; }
+        renderAll() {}
+        getObjects() { return this.objects; }
+        on() {}
+        off() {}
+        toJSON() { return { objects: this.objects }; }
+        loadFromJSON(_: any, cb?: () => void) { if (cb) cb(); }
+      };
+      _fabricModule = {
+        Canvas: MockCanvas,
+        Line: MockLine,
+        Group: MockGroup,
+        Rect: class {},
+        Text: class {},
+        Circle: class {},
+        Triangle: class {},
+        Point: class {},
+        Shadow: class {}
+      };
+      return _fabricModule;
     }
   }
-  // Custom types for fabric objects with extended properties
-  interface ExtendedFabricObject {
-    evidenceId?: string;
-    annotationType?: string;
-    fromNodeId?: string;
-    toNodeId?: string;
-    nodeType?: string;
-    evidenceType?: string;
-    evidenceData?: any;
-    connectionType?: string;
-    annotationText?: string;
-  }
-  // Props
+
+  // Types & props
   interface Props {
     caseId: string;
     evidenceData: any[];
@@ -79,7 +90,8 @@
     showRulers = false,
     autoSave = true
   }: Props = $props();
-  // Canvas and state management
+
+  // Canvas and state
   let canvasElement: HTMLCanvasElement;
   let fabricCanvas: any;
   let canvasContainer: HTMLDivElement;
@@ -88,215 +100,198 @@
   let canvasState = $state<any>(null);
   let collaborators = $state<Map<string, any>>(new Map());
   let cursors = $state<Map<string, any>>(new Map());
-  // Evidence mapping
   let evidenceNodes = $state<Map<string, any>>(new Map());
   let connections = $state<Map<string, any>>(new Map());
   let annotations = $state<Map<string, any>>(new Map());
-  // AI suggestions
   let aiSuggestions = $state<any[]>([]);
   let showAISuggestions = $state(false);
   let isGeneratingLayout = $state(false);
-  // UI state
   let sidebarOpen = $state(true);
   let propertiesPanel = $state<any>(null);
   let contextMenu = $state<any>(null);
   let undoStack = $state<any[]>([]);
   let redoStack = $state<any[]>([]);
-  // Real-time collaboration
   let lastSaveTime = $state<Date>(new Date());
-  let saveTimeout: NodeJS.Timeout;
+  let saveTimeout: ReturnType<typeof setTimeout> | null = null;
   let collaboratorCursors = new Map<string, any>();
   let pubSubController: any = null;
+
   let redisChannels = {
     canvas: `legal:canvas:${caseId}`,
     collaboration: `legal:canvas:${caseId}:collab`,
     cursors: `legal:canvas:${caseId}:cursors`,
     ai: `legal:canvas:${caseId}:ai`
-  }
-  // Lifecycle
+  };
+
+  // Initialize on client
   $effect(() => {
     if (!browser) return;
     (async () => {
       try {
         await initializeCanvas();
         await loadCanvasData();
-        if (collaborative) {
-          await setupCollaboration();
-        }
-        if (aiAssisted) {
-          setupAIIntegration();
-        }
+        if (collaborative) await setupCollaboration();
+        if (aiAssisted) setupAIIntegration();
         setupEventHandlers();
-        // Setup auto-save with Redis
-        if (autoSave) {
-          setupAutoSave();
-        }
-      } catch (error) {
-        console.error('Failed to initialize canvas:', error);
+        if (autoSave) setupAutoSave();
+      } catch (err) {
+        console.error('Initialization error:', err);
       }
     })();
   });
+
   onDestroy(async () => {
     if (saveTimeout) clearTimeout(saveTimeout);
-    if (pubSubController) {
-      await pubSubController.stop();
-    }
-    fabricCanvas?.dispose();
+    if (pubSubController && pubSubController.stop) await pubSubController.stop();
+    if (fabricCanvas && fabricCanvas.dispose) fabricCanvas.dispose();
   });
+
   async function initializeCanvas() {
-    // Get fabric instance
-    const fabricInstance = await getFabric();
-    // Initialize Fabric.js canvas
-    fabricCanvas = new fabricInstance.Canvas(canvasElement, {
-      width: canvasWidth
-      height: canvasHeight
+    const fabric = await getFabric();
+    fabricCanvas = new fabric.Canvas(canvasElement, {
+      width: canvasWidth,
+      height: canvasHeight,
       backgroundColor: '#1a1a1a',
       selection: !readOnly,
       interactive: !readOnly,
       preserveObjectStacking: true
-      enablePointerEvents: true;
     });
-    // Configure canvas settings
-    fabricCanvas.freeDrawingBrush.width = 2;
-    fabricCanvas.freeDrawingBrush.color = '#4a90e2';
-    // Add grid if enabled
-    if (showGrid) {
-      await addGridToCanvas();
+
+    // Free drawing defaults (guard for mock)
+    if (fabricCanvas.freeDrawingBrush) {
+      fabricCanvas.freeDrawingBrush.width = 2;
+      fabricCanvas.freeDrawingBrush.color = '#4a90e2';
     }
-    // Set up zoom and pan
+
+    if (showGrid) await addGridToCanvas();
     await setupZoomPan();
   }
+
   async function addGridToCanvas() {
-    const fabricInstance = await getFabric();
+    const fabric = await getFabric();
     const gridSize = 20;
-    const grid = [];
-    // Vertical lines
-    for (let i = 0; i <= canvasWidth / gridSize; i++) {
-      const line = new fabricInstance.Line([i * gridSize, 0, i * gridSize, canvasHeight], {
+    const grid: any[] = [];
+    for (let i = 0; i <= Math.ceil(canvasWidth / gridSize); i++) {
+      const line = new fabric.Line([i * gridSize, 0, i * gridSize, canvasHeight], {
         stroke: '#333',
         strokeWidth: 1,
-        selectable: false;
-        evented: false
-        excludeFromExport: true;
+        selectable: false,
+        evented: false,
+        excludeFromExport: true
       });
       grid.push(line);
     }
-    // Horizontal lines
-    for (let i = 0; i <= canvasHeight / gridSize; i++) {
-      const line = new fabricInstance.Line([0, i * gridSize, canvasWidth, i * gridSize], {
+    for (let i = 0; i <= Math.ceil(canvasHeight / gridSize); i++) {
+      const line = new fabric.Line([0, i * gridSize, canvasWidth, i * gridSize], {
         stroke: '#333',
         strokeWidth: 1,
-        selectable: false;
-        evented: false
-        excludeFromExport: true;
+        selectable: false,
+        evented: false,
+        excludeFromExport: true
       });
       grid.push(line);
     }
     grid.forEach(line => fabricCanvas.add(line));
-    grid.forEach(line => fabricCanvas.sendToBack(line));
-  }
-  async function setupZoomPan() {
-    const fabricInstance = await getFabric();
-    // Mouse wheel zoom
-    fabricCanvas.on('mouse:wheel', (opt) => {
-      const delta = opt.e.deltaY;
-      let zoom = fabricCanvas.getZoom();
-      zoom *= 0.999 ** delta;
-      if (zoom > 5) zoom = 5;
-      if (zoom < 0.1) zoom = 0.1;
-      const point = new fabricInstance.Point(opt.e.offsetX, opt.e.offsetY);
-      fabricCanvas.zoomToPoint(point, zoom);
-      opt.e.preventDefault();
-      opt.e.stopPropagation();
+    grid.forEach(line => {
+      if (fabricCanvas.sendToBack) fabricCanvas.sendToBack(line);
     });
-    // Pan with middle mouse or alt+drag
+  }
+
+  async function setupZoomPan() {
+    const fabric = await getFabric();
+    fabricCanvas.on && fabricCanvas.on('mouse:wheel', (opt: any) => {
+      try {
+        const evt = opt.e;
+        let zoom = fabricCanvas.getZoom ? fabricCanvas.getZoom() : 1;
+        zoom *= Math.pow(0.999, evt.deltaY);
+        zoom = Math.max(0.1, Math.min(5, zoom));
+        if (fabric.Point) {
+          const point = new fabric.Point(evt.offsetX, evt.offsetY);
+          fabricCanvas.zoomToPoint(point, zoom);
+        }
+        evt.preventDefault();
+        evt.stopPropagation();
+      } catch (e) {
+        // ignore
+      }
+    });
+
     let panning = false;
-    fabricCanvas.on('mouse:down', (opt) => {
-      if (opt.e.altKey || opt.e.button === 1) {
+    fabricCanvas.on && fabricCanvas.on('mouse:down', (opt: any) => {
+      const evt = opt.e;
+      if (evt && (evt.altKey || evt.button === 1)) {
         panning = true;
         fabricCanvas.selection = false;
         fabricCanvas.defaultCursor = 'grab';
       }
     });
-    fabricCanvas.on('mouse:move', (opt) => {
-      if (panning) {
-        const delta = new fabricInstance.Point(opt.e.movementX, opt.e.movementY);
-        fabricCanvas.relativePan(delta);
-        // Broadcast cursor movement in collaborative mode
-        if (collaborative) {
-          broadcastCursorPosition(opt.e.offsetX, opt.e.offsetY);
-        }
+    fabricCanvas.on && fabricCanvas.on('mouse:move', (opt: any) => {
+      if (!panning) return;
+      const evt = opt.e;
+      if (!evt) return;
+      if (fabric.Point) {
+        const delta = new fabric.Point(evt.movementX, evt.movementY);
+        fabricCanvas.relativePan && fabricCanvas.relativePan(delta);
       }
+      if (collaborative) broadcastCursorPosition(evt.offsetX, evt.offsetY);
     });
-    fabricCanvas.on('mouse:up', () => {
+    fabricCanvas.on && fabricCanvas.on('mouse:up', () => {
       panning = false;
       fabricCanvas.selection = true;
       fabricCanvas.defaultCursor = 'default';
     });
   }
+
   async function loadCanvasData() {
     try {
-      // Try Redis cache first for faster loading
-      const cachedData = await loadFromRedisCache();
-      if (cachedData) {
-        // Load from Redis cache
-        if (cachedData.canvasData) {
-          await loadCanvasFromJSON(JSON.stringify(cachedData.canvasData));
-        }
-        // Restore state from cache
-        if (cachedData.evidenceNodes) {
-          evidenceNodes = new Map(cachedData.evidenceNodes);
-        }
-        if (cachedData.connections) {
-          connections = new Map(cachedData.connections);
-        }
-        if (cachedData.annotations) {
-          annotations = new Map(cachedData.annotations);
-        }
-        console.log('✅ Canvas loaded from Redis cache');
+      const cached = await loadFromRedisCache();
+      if (cached) {
+        if (cached.canvasData) await loadCanvasFromJSON(JSON.stringify(cached.canvasData));
+        if (cached.evidenceNodes) evidenceNodes = new Map(cached.evidenceNodes);
+        if (cached.connections) connections = new Map(cached.connections);
+        if (cached.annotations) annotations = new Map(cached.annotations);
+        console.log('Loaded canvas from Redis cache');
       } else {
-        // Fallback to API if no cache
-        // removed unused response assignment
-        if (response.ok) {
-          const data = await response.json();
-          if (data.canvasData) {
-            await loadCanvasFromJSON(data.canvasData);
-          }
+        // Fallback to API fetch
+        const resp = await fetch(`/api/v1/evidence/canvas?caseId=${encodeURIComponent(caseId)}`);
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data?.canvasData) await loadCanvasFromJSON(data.canvasData);
         }
       }
-      // Add evidence nodes that aren't already on canvas
       await addEvidenceNodes();
-    } catch (error) {
-      console.error('❌ Failed to load canvas data:', error);
+    } catch (err) {
+      console.error('Failed to load canvas data:', err);
     }
   }
+
   async function addEvidenceNodes() {
-    for (let index = 0; index < evidenceData.length; index++) {
-      const evidence = evidenceData[index];
+    for (let i = 0; i < evidenceData.length; i++) {
+      const evidence = evidenceData[i];
       if (!evidenceNodes.has(evidence.id)) {
         const node = await createEvidenceNode(evidence, {
-          x: 100 + (index % 5) * 200,
-          y: 100 + Math.floor(index / 5) * 150;
+          x: 100 + (i % 5) * 200,
+          y: 100 + Math.floor(i / 5) * 150
         });
         evidenceNodes.set(evidence.id, node);
-        fabricCanvas.add(node);
+        fabricCanvas.add && fabricCanvas.add(node);
       }
     }
-    fabricCanvas.renderAll();
+    fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
-  async function createEvidenceNode(evidence: any, position: ;
-{ x: number; y: number }) {
-    const fabricInstance = await getFabric();
-    const nodeGroup = new fabricInstance.Group([], {
+
+  async function createEvidenceNode(evidence: any, position: { x: number; y: number }) {
+    const fabric = await getFabric();
+    const nodeGroup = new fabric.Group([], {
       left: position.x,
       top: position.y,
       selectable: !readOnly,
       hasControls: !readOnly,
       hasBorders: !readOnly,
-      lockScalingFlip: true;
+      lockScalingFlip: true
     });
-    // Background card
-    const background = new fabricInstance.Rect({
+
+    const background = new fabric.Rect({
       width: 180,
       height: 120,
       fill: getEvidenceColor(evidence.type),
@@ -304,15 +299,15 @@
       strokeWidth: 2,
       rx: 8,
       ry: 8,
-      shadow: new fabricInstance.Shadow({,
+      shadow: new fabric.Shadow({
         color: 'rgba(0,0,0,0.3)',
         blur: 10,
         offsetX: 2,
-        offsetY: 2;
+        offsetY: 2
       })
     });
-    // Title text
-    const title = new fabricInstance.Text(evidence.title || `Evidence ${evidence.id}`, {
+
+    const title = new fabric.Text(evidence.title || `Evidence ${evidence.id}`, {
       fontSize: 14,
       fill: '#fff',
       fontFamily: 'Arial',
@@ -321,274 +316,242 @@
       left: 90,
       originX: 'center',
       originY: 'top',
-      width: 160;
+      width: 160
     });
-    // Type indicator
-    const typeIcon = new fabricInstance.Text(getEvidenceIcon(evidence.type), {
+
+    const typeIcon = new fabric.Text(getEvidenceIcon(evidence.type), {
       fontSize: 20,
       fill: '#fff',
       fontFamily: 'FontAwesome',
       top: 40,
       left: 90,
       originX: 'center',
-      originY: 'center';
+      originY: 'center'
     });
-    // Status indicators
-    const indicators = [];
+
+    const indicators: any[] = [];
     if (evidence.aiSummary) {
-      indicators.push(new fabricInstance.Circle({
+      indicators.push(new fabric.Circle({
         radius: 6,
         fill: '#4CAF50',
         top: 100,
-        left: 20 + indicators.length * 20;
+        left: 20 + indicators.length * 20
       }));
     }
     if (evidence.analyzed) {
-      indicators.push(new fabricInstance.Circle({
+      indicators.push(new fabric.Circle({
         radius: 6,
         fill: '#2196F3',
         top: 100,
-        left: 20 + indicators.length * 20;
+        left: 20 + indicators.length * 20
       }));
     }
-    // Combine into group
+
     const objects = [background, title, typeIcon, ...indicators];
     objects.forEach(obj => nodeGroup.addWithUpdate(obj));
-    // Add custom properties
+
     nodeGroup.set({
       evidenceId: evidence.id,
       evidenceType: evidence.type,
-      evidenceData: evidence
+      evidenceData: evidence,
       nodeType: 'evidence'
     });
-    // Add event handlers
-    nodeGroup.on('mousedown', (e) => handleNodeClick(nodeGroup, e));
-    nodeGroup.on('moving', () => saveCanvasState());
+
+    nodeGroup.on && nodeGroup.on('mousedown', (e: any) => handleNodeClick(nodeGroup, e));
+    nodeGroup.on && nodeGroup.on('moving', () => saveCanvasState());
     return nodeGroup;
   }
+
   async function createConnection(fromNode: any, toNode: any, connectionType: string = 'related') {
-    const fabricInstance = await getFabric();
-    const fromCenter = fromNode.getCenterPoint();
-    const toCenter = toNode.getCenterPoint();
-    const connection = new fabricInstance.Line([
-      fromCenter.x, fromCenter.y,
-      toCenter.x, toCenter.y
-    ], {
+    const fabric = await getFabric();
+    const fromCenter = fromNode.getCenterPoint ? fromNode.getCenterPoint() : { x: fromNode.left, y: fromNode.top };
+    const toCenter = toNode.getCenterPoint ? toNode.getCenterPoint() : { x: toNode.left, y: toNode.top };
+    const line = new fabric.Line([fromCenter.x, fromCenter.y, toCenter.x, toCenter.y], {
       stroke: getConnectionColor(connectionType),
       strokeWidth: 3,
       selectable: !readOnly,
-      hasControls: false
-      hasBorders: false
-      strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined;
-      shadow: new fabricInstance.Shadow({,
-        color: 'rgba(0,0,0,0.2)',
-        blur: 5;
-      })
+      hasControls: false,
+      hasBorders: false,
+      strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined,
+      shadow: new fabric.Shadow({ color: 'rgba(0,0,0,0.2)', blur: 5 })
     });
-    // Add arrowhead
-    const arrowhead = new fabricInstance.Triangle({
+
+    const arrow = new fabric.Triangle({
       width: 10,
       height: 10,
       fill: getConnectionColor(connectionType),
       left: toCenter.x,
       top: toCenter.y,
       angle: Math.atan2(toCenter.y - fromCenter.y, toCenter.x - fromCenter.x) * 180 / Math.PI + 90,
-      selectable: false;
-      evented: false;
+      selectable: false,
+      evented: false
     });
-    const connectionGroup = new fabricInstance.Group([connection, arrowhead], {
+
+    const group = new fabric.Group([line, arrow], {
       selectable: !readOnly,
-      hasControls: false
-      hasBorders: false;
+      hasControls: false,
+      hasBorders: false
     });
-    connectionGroup.set({
+
+    group.set({
       connectionType,
       fromNodeId: fromNode.evidenceId,
       toNodeId: toNode.evidenceId,
       nodeType: 'connection'
     });
-    return connectionGroup;
+
+    return group;
   }
-  async function createAnnotation(position: ;
-{ x: number; y: number }, text: string, type: string = 'note') {
-    const fabricInstance = await getFabric();
-    const annotation = new fabricInstance.Group([], {
+
+  async function createAnnotation(position: { x: number; y: number }, text: string, type: string = 'note') {
+    const fabric = await getFabric();
+    const annotation = new fabric.Group([], {
       left: position.x,
       top: position.y,
       selectable: !readOnly,
-      hasControls: !readOnly;
+      hasControls: !readOnly
     });
-    // Background
-    const background = new fabricInstance.Rect({
+
+    const background = new fabric.Rect({
       width: 200,
       height: 60,
-      fill: 'rgba(255, 255, 255, 0.95)',
+      fill: 'rgba(255,255,255,0.95)',
       stroke: '#ddd',
       strokeWidth: 1,
       rx: 4,
-      ry: 4;
+      ry: 4
     });
-    // Text
-    const textObj = new fabricInstance.Text(text, {
+
+    const textObj = new fabric.Text(text, {
       fontSize: 12,
       fill: '#333',
       fontFamily: 'Arial',
       width: 180,
       top: 10,
-      left: 10;
+      left: 10
     });
+
     annotation.addWithUpdate(background);
     annotation.addWithUpdate(textObj);
     annotation.set({
-      annotationType: type
-      annotationText: text
+      annotationType: type,
+      annotationText: text,
       nodeType: 'annotation'
     });
-    return annotatio;
+
+    return annotation;
   }
+
   function getEvidenceColor(type: string): string {
-    const colors = {
-      'document': '#4CAF50',
-      'photo': '#2196F3',
-      'video': '#9C27B0',
-      'audio': '#FF9800',
-      'witness_statement': '#F44336',
-      'key_document': '#FFD700',
-      'physical': '#795548'
-    }
-    return colors[type as keyof typeof colors] || '#607D8B';
+    const colors: Record<string, string> = {
+      document: '#4CAF50',
+      photo: '#2196F3',
+      video: '#9C27B0',
+      audio: '#FF9800',
+      witness_statement: '#F44336',
+      key_document: '#FFD700',
+      physical: '#795548'
+    };
+    return colors[type] || '#607D8B';
   }
+
   function getEvidenceIcon(type: string): string {
-    const icons = {
-      'document': '📄',
-      'photo': '📷',
-      'video': '🎥',
-      'audio': '🎵',
-      'witness_statement': '👤',
-      'key_document': '⭐',
-      'physical': '📦'
-    }
-    return icons[type as keyof typeof icons] || '📄';
+    const icons: Record<string, string> = {
+      document: '📄',
+      photo: '📷',
+      video: '🎥',
+      audio: '🎵',
+      witness_statement: '👤',
+      key_document: '⭐',
+      physical: '📦'
+    };
+    return icons[type] || '📄';
   }
+
   function getConnectionColor(type: string): string {
-    const colors = {
-      'related': '#4CAF50',
-      'causal': '#F44336',
-      'temporal': '#2196F3',
-      'contradicts': '#FF5722',
-      'supports': '#8BC34A',
-      'inferred': '#9E9E9E'
-    }
-    return colors[type as keyof typeof colors] || '#666';
+    const colors: Record<string, string> = {
+      related: '#4CAF50',
+      causal: '#F44336',
+      temporal: '#2196F3',
+      contradicts: '#FF5722',
+      supports: '#8BC34A',
+      inferred: '#9E9E9E'
+    };
+    return colors[type] || '#666';
   }
+
   function handleNodeClick(node: any, event: any) {
     if (readOnly) return;
-    selectedTool === 'connection' ? handleConnectionStart(node) : selectNode(node);
+    if (selectedTool === 'connection') handleConnectionStart(node);
+    else selectNode(node);
   }
+
   function selectNode(node: any) {
-    fabricCanvas.setActiveObject(node);
+    fabricCanvas.setActiveObject && fabricCanvas.setActiveObject(node);
     propertiesPanel = {
       type: node.nodeType,
-      data: node.nodeType === 'evidence' ? node.evidenceData: node;
-      position: ;
-{ x: node.left, y: node.top }
-    }
+      data: node.nodeType === 'evidence' ? node.evidenceData : node,
+      position: { x: node.left ?? 0, y: node.top ?? 0 }
+    };
   }
+
   let connectionStartNode: any = null;
   async function handleConnectionStart(node: any) {
     if (node.nodeType !== 'evidence') return;
     if (!connectionStartNode) {
-      connectionStartNode = nod;
-      node.set({ stroke: '#FFD700', strokeWidth: 3 });
-      fabricCanvas.renderAll();
+      connectionStartNode = node;
+      node.set && node.set({ stroke: '#FFD700', strokeWidth: 3 });
+      fabricCanvas.renderAll && fabricCanvas.renderAll();
     } else if (connectionStartNode !== node) {
-      // Create connection
       const connection = await createConnection(connectionStartNode, node);
       connections.set(`${connectionStartNode.evidenceId}-${node.evidenceId}`, connection);
-      fabricCanvas.add(connection);
-      // Store the fromNodeId before resetting
+      fabricCanvas.add && fabricCanvas.add(connection);
       const fromNodeId = connectionStartNode.evidenceId;
-      // Reset selection
-      connectionStartNode.set({ stroke: '#fff', strokeWidth: 2 });
+      connectionStartNode.set && connectionStartNode.set({ stroke: '#fff', strokeWidth: 2 });
       connectionStartNode = null;
-      fabricCanvas.renderAll();
-      // Broadcast in collaborative mode
+      fabricCanvas.renderAll && fabricCanvas.renderAll();
       if (collaborative) {
-        broadcastCanvasChange('connection_added', {
-          fromNodeId: fromNodeId
-          toNodeId: node.evidenceId
-        });
+        broadcastCanvasChange('connection_added', { fromNodeId, toNodeId: node.evidenceId });
       }
       saveCanvasState();
     }
   }
+
   function setupEventHandlers() {
-    // Object modification events
-    fabricCanvas.on('object:modified', () => {
+    fabricCanvas.on && fabricCanvas.on('object:modified', () => {
       saveCanvasState();
-      if (collaborative) {
-        broadcastCanvasChange('object_modified', fabricCanvas.toJSON());
-      }
+      if (collaborative) broadcastCanvasChange('object_modified', fabricCanvas.toJSON());
     });
-    // Object selection events
-    fabricCanvas.on('selection:created', (e) => {
-      if (e.selected && e.selected.length === 1) {
-        selectNode(e.selected[0]);
-      }
+
+    fabricCanvas.on && fabricCanvas.on('selection:created', (e: any) => {
+      if (e.selected && e.selected.length === 1) selectNode(e.selected[0]);
     });
-    fabricCanvas.on('selection:cleared', () => {
-      propertiesPanel = null;
-    });
-    // Drawing events
-    fabricCanvas.on('path:created', () => {
+
+    fabricCanvas.on && fabricCanvas.on('selection:cleared', () => { propertiesPanel = null; });
+
+    fabricCanvas.on && fabricCanvas.on('path:created', () => {
       saveCanvasState();
-      if (collaborative) {
-        broadcastCanvasChange('drawing_added', fabricCanvas.toJSON());
-      }
+      if (collaborative) broadcastCanvasChange('drawing_added', fabricCanvas.toJSON());
     });
-    // Context menu
-    fabricCanvas.on('mouse:down', (e) => {
-      if (e.e.button === 2) { // Right click
-        showContextMenu(e.e.clientX, e.e.clientY, e.target);
-      } else {
-        contextMenu = null;
-      }
+
+    fabricCanvas.on && fabricCanvas.on('mouse:down', (e: any) => {
+      if (e.e && e.e.button === 2) showContextMenu(e.e.clientX, e.e.clientY, e.target);
+      else contextMenu = null;
     });
-    // Keyboard shortcuts
+
     document.addEventListener('keydown', handleKeyboardShortcuts);
   }
+
   function handleKeyboardShortcuts(e: KeyboardEvent) {
     if (!fabricCanvas) return;
-    // Undo/Redo
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
-        case 'z':
-          if (e.shiftKey) {
-            redo();
-          } else {
-            undo();
-          }
-          break;
-        case 's':
-          e.preventDefault();
-          saveCanvasState();
-          break;
-        case 'a':
-          e.preventDefault();
-          fabricCanvas.discardActiveObject();
-          // Note: This will need fabric instance when available
-          // fabricCanvas.setActiveObject(new fabric.ActiveSelection(fabricCanvas.getObjects(), {
-          //   canvas: fabricCanvas
-          // }))
-          fabricCanvas.renderAll();
-          break;
+        case 'z': e.shiftKey ? redo() : undo(); break;
+        case 's': e.preventDefault(); saveCanvasState(); break;
+        case 'a': e.preventDefault(); fabricCanvas.discardActiveObject && fabricCanvas.discardActiveObject(); fabricCanvas.renderAll && fabricCanvas.renderAll(); break;
       }
     }
-    // Delete
-    if (e.key === 'Delete' || e.key === 'Backspace') {
-      deleteSelectedObjects();
-    }
-    // Tool shortcuts
+    if (e.key === 'Delete' || e.key === 'Backspace') deleteSelectedObjects();
     switch (e.key) {
       case '1': selectedTool = 'select'; break;
       case '2': selectedTool = 'evidence'; break;
@@ -599,39 +562,32 @@
     }
     updateToolMode();
   }
+
   function updateToolMode() {
     fabricCanvas.isDrawingMode = selectedTool === 'draw';
     fabricCanvas.selection = selectedTool === 'select';
     fabricCanvas.defaultCursor = selectedTool === 'draw' ? 'crosshair' : 'default';
   }
+
   function deleteSelectedObjects() {
-    const activeObjects = fabricCanvas.getActiveObjects();
-    if (activeObjects.length > 0) {
-      activeObjects.forEach(obj => {
-        if (obj.nodeType === 'evidence') {
-          evidenceNodes.delete(obj.evidenceId);
-        } else if (obj.nodeType === 'connection') {
-          connections.delete(`${obj.fromNodeId}-${obj.toNodeId}`);
-        }
-        fabricCanvas.remove(obj);
-      });
-      fabricCanvas.discardActiveObject();
-      saveCanvasState();
-      if (collaborative) {
-        broadcastCanvasChange('objects_deleted', { count:activeObjects.length });
-      }
-    }
+    const activeObjects = fabricCanvas.getActiveObjects ? fabricCanvas.getActiveObjects() : [];
+    if (activeObjects.length === 0) return;
+    activeObjects.forEach((obj: any) => {
+      if (obj.nodeType === 'evidence') evidenceNodes.delete(obj.evidenceId);
+      else if (obj.nodeType === 'connection') connections.delete(`${obj.fromNodeId}-${obj.toNodeId}`);
+      fabricCanvas.remove && fabricCanvas.remove(obj);
+    });
+    fabricCanvas.discardActiveObject && fabricCanvas.discardActiveObject();
+    saveCanvasState();
+    if (collaborative) broadcastCanvasChange('objects_deleted', { count: activeObjects.length });
   }
+
   function showContextMenu(x: number, y: number, target: any) {
-    contextMenu = {
-      x,
-      y,
-      target,
-      actions: getContextActions(target);
-    }
+    contextMenu = { x, y, target, actions: getContextActions(target) };
   }
+
   function getContextActions(target: any) {
-    const actions = [];
+    const actions: any[] = [];
     if (target) {
       if (target.nodeType === 'evidence') {
         actions.push(
@@ -646,307 +602,254 @@
           { label: 'Delete Connection', action: () => deleteConnection(target) }
         );
       }
-      actions.push({ label: 'Delete', action: () => fabricCanvas.remove(target) });
+      actions.push({ label: 'Delete', action: () => fabricCanvas.remove && fabricCanvas.remove(target) });
     } else {
       actions.push(
-        { label: 'Add Note', action: () => addNoteAt(contextMenu.x, contextMenu.y) },
+        { label: 'Add Note', action: () => addNoteAt(contextMenu?.x ?? 0, contextMenu?.y ?? 0) },
         { label: 'Paste', action: () => paste() }
       );
     }
-    return action;
+    return actions;
   }
+
   async function analyzeEvidence(evidenceId: string) {
     try {
-      const response = await fetch('/api/v1/evidence/advanced-analysis', {
+      const resp = await fetch('/api/v1/evidence/advanced-analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          evidenceId,
-          analysisTypes: ['summary', 'entities', 'sentiment'],
-          caseId
-        })
+        body: JSON.stringify({ evidenceId, analysisTypes: ['summary', 'entities', 'sentiment'], caseId })
       });
-      if (response.ok) {
-        const result = await response.json();
-        // Update evidence node with analysis results
+      if (resp.ok) {
+        const result = await resp.json();
         updateEvidenceNode(evidenceId, result.results);
       }
-    } catch (error) {
-      console.error('Failed to analyze evidence:', error);
+    } catch (err) {
+      console.error('Failed to analyze evidence:', err);
     }
   }
+
   async function updateEvidenceNode(evidenceId: string, analysisResults: any) {
-    const fabricInstance = await getFabric();
+    const fabric = await getFabric();
     const node = evidenceNodes.get(evidenceId);
-    if (node) {
-      // Add analysis indicators
-      const indicator = new fabricInstance.Circle({
-        radius: 8,
-        fill: '#4CAF50',
-        top: -10,
-        left: -10,
-        stroke: '#fff',
-        strokeWidth: 2;
-      });
-      node.addWithUpdate(indicator);
-      fabricCanvas.renderAll();
-    }
+    if (!node) return;
+    const indicator = new fabric.Circle({
+      radius: 8,
+      fill: '#4CAF50',
+      top: -10,
+      left: -10,
+      stroke: '#fff',
+      strokeWidth: 2
+    });
+    node.addWithUpdate && node.addWithUpdate(indicator);
+    fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
+
   async function setupCollaboration() {
     try {
-      // Initialize Redis pub/sub for real-time collaboration
       pubSubController = createPubSubHelper({
         channels: Object.values(redisChannels),
-        onMessage: handleRedisMessage
-        autoStart: true;
+        onMessage: handleRedisMessage,
+        autoStart: true
       });
-      // WebSocket fallback for real-time collaboration
-      websocketStore.subscribeToDashboard();
-      // Listen for collaborative events
-      // Note: websocketStore doesn't have subscribe method, using direct access
-      // websocketStore.subscribe((event) => {
-      //   if (event.type === 'canvas_change' && event.caseId === caseId) {
-      //     handleCollaborativeChange(event.data)
-      //   } else if (event.type === 'cursor_move' && event.caseId === caseId) {
-      //     updateCollaboratorCursor(event.userId, event.data)
-      //   }
-      // })
-      console.log('✅ Canvas collaboration setup complete with Redis');
-    } catch (error) {
-      console.error('❌ Failed to setup Redis collaboration:', error);
-      // Fallback to WebSocket only
+      websocketStore.subscribeToDashboard && websocketStore.subscribeToDashboard();
+      console.log('Canvas collaboration setup complete with Redis');
+    } catch (err) {
+      console.error('Failed to setup Redis collaboration:', err);
     }
   }
+
   function handleRedisMessage({ channel, message }: { channel: string; message: string }) {
     try {
       const data = JSON.parse(message);
-      switch (channel) {
-        case redisChannels.canvas:
-          handleCanvasChange(data);
-          break;
-        case redisChannels.collaboration:
-          handleCollaborativeChange(data);
-          break;
-        case redisChannels.cursors:
-          updateCollaboratorCursor(data.userId, data.cursor);
-          break;
-        case redisChannels.ai:
-          handleAISuggestion(data);
-          break;
-      }
-    } catch (error) {
-      console.error('Failed to parse Redis message:', error);
+      if (channel === redisChannels.canvas) handleCanvasChange(data);
+      else if (channel === redisChannels.collaboration) handleCollaborativeChange(data);
+      else if (channel === redisChannels.cursors) updateCollaboratorCursor(data.userId, data.cursor);
+      else if (channel === redisChannels.ai) handleAISuggestion(data);
+    } catch (err) {
+      console.error('Failed to parse Redis message:', err);
     }
   }
+
   function handleCanvasChange(data: any) {
-    // Handle canvas state changes from Redis
-    if (data.action === 'full_sync') {
-      loadCanvasFromRedis(data.canvasData);
-    } else if (data.action === 'object_change') {
-      applyObjectChange(data);
-    }
+    if (data.action === 'full_sync') loadCanvasFromRedis(data.canvasData);
+    else if (data.action === 'object_change') applyObjectChange(data);
   }
+
   function handleCollaborativeChange(data: any) {
-    // Apply changes from other users
+    // lightweight handlers reserved for future merging logic
     switch (data.action) {
-      case 'object_modified':
-        // Merge changes without overwriting local state
-        break;
-      case 'connection_added':
-        // Add connection if not already present
-        break;
-      case 'objects_deleted':
-        // Remove objects that were deleted by other users
-        break;
+      case 'object_modified': /* merge logic */ break;
+      case 'connection_added': /* create connection if missing */ break;
+      case 'objects_deleted': /* remove objects */ break;
     }
   }
+
   async function updateCollaboratorCursor(userId: string, cursorData: any) {
-    const fabricInstance = await getFabric();
+    const fabric = await getFabric();
     if (!collaboratorCursors.has(userId)) {
-      const cursor = new fabricInstance.Circle({
+      const cursor = new fabric.Circle({
         radius: 8,
         fill: cursorData.color || '#FF5722',
         left: cursorData.x,
         top: cursorData.y,
-        selectable: false;
-        evented: false
-        excludeFromExport: true;
+        selectable: false,
+        evented: false,
+        excludeFromExport: true
       });
       collaboratorCursors.set(userId, cursor);
-      fabricCanvas.add(cursor);
+      fabricCanvas.add && fabricCanvas.add(cursor);
     } else {
       const cursor = collaboratorCursors.get(userId);
-      cursor.animate('left', cursorData.x, { duration: 100 });
-      cursor.animate('top', cursorData.y, { duration: 100 });
+      cursor.animate && cursor.animate('left', cursorData.x, { duration: 100 });
+      cursor.animate && cursor.animate('top', cursorData.y, { duration: 100 });
     }
-    fabricCanvas.renderAll();
+    fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
+
   function broadcastCanvasChange(action: string, data: any) {
-    if (websocketStore.connected) {
-      websocketStore.broadcastEvidenceEdit(Number(caseId), action, data);
-    }
+    if (websocketStore.connected) websocketStore.broadcastEvidenceEdit && websocketStore.broadcastEvidenceEdit(Number(caseId), action, data);
   }
+
   function broadcastCursorPosition(x: number, y: number) {
-    if (websocketStore.connected) {
-      websocketStore.broadcastCursorPosition(caseId, { x, y });
-    }
+    if (websocketStore.connected) websocketStore.broadcastCursorPosition && websocketStore.broadcastCursorPosition(caseId, { x, y });
   }
+
   function setupAIIntegration() {
-    // AI-powered layout suggestions and analysis
     generateAISuggestions();
   }
+
   async function generateAISuggestions() {
     if (!aiAssisted) return;
     try {
-      const response = await fetch('/api/v1/ai/canvas-suggestions', {
+      const resp = await fetch('/api/v1/ai/canvas-suggestions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          caseId,
-          evidenceData,
-          canvasData: fabricCanvas.toJSON()
-        })
+        body: JSON.stringify({ caseId, evidenceData, canvasData: fabricCanvas.toJSON ? fabricCanvas.toJSON() : {} })
       });
-      if (response.ok) {
-        const suggestions = await response.json();
+      if (resp.ok) {
+        const suggestions = await resp.json();
         aiSuggestions = suggestions.suggestions || [];
       }
-    } catch (error) {
-      console.error('Failed to generate AI suggestions:', error);
+    } catch (err) {
+      console.error('Failed to generate AI suggestions:', err);
     }
   }
+
   async function applyAILayout() {
     isGeneratingLayout = true;
     try {
-      const response = await fetch('/api/v1/ai/generate-layout', {
+      const resp = await fetch('/api/v1/ai/generate-layout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          caseId,
-          evidenceData,
-          layoutType: 'smart'
-        })
+        body: JSON.stringify({ caseId, evidenceData, layoutType: 'smart' })
       });
-      if (response.ok) {
-        const layout = await response.json();
-        await applyLayout(layout.positions);
+      if (resp.ok) {
+        const layout = await resp.json();
+        await applyLayout(layout.positions || {});
       }
-    } catch (error) {
-      console.error('Failed to generate AI layout:', error);
+    } catch (err) {
+      console.error('Failed to generate AI layout:', err);
     } finally {
       isGeneratingLayout = false;
     }
   }
+
   async function applyLayout(positions: any) {
     evidenceNodes.forEach((node, evidenceId) => {
-      const position = positions[evidenceId];
-      if (position) {
-        node.animate('left', position.x, { duration: 500 });
-        node.animate('top', position.y, { duration: 500 });
+      const pos = positions[evidenceId];
+      if (pos) {
+        node.animate && node.animate('left', pos.x, { duration: 500 });
+        node.animate && node.animate('top', pos.y, { duration: 500 });
       }
     });
-    fabricCanvas.renderAll();
+    fabricCanvas.renderAll && fabricCanvas.renderAll();
     saveCanvasState();
   }
+
   function saveCanvasState() {
-    if (readOnly) return;
-    // Add to undo stack
-    undoStack.push(fabricCanvas.toJSON());
-    if (undoStack.length > 50) {
-      undoStack.shift();
-    }
-    redoStack = []; // Clear redo stack
-    // Auto-save
+    if (readOnly || !fabricCanvas) return;
+    undoStack.push(fabricCanvas.toJSON ? fabricCanvas.toJSON() : {});
+    if (undoStack.length > 50) undoStack.shift();
+    redoStack = [];
     if (autoSave) {
       if (saveTimeout) clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(async () => {
-        await saveCanvas();
-      }, 2000);
+      saveTimeout = setTimeout(async () => { await saveCanvas(); }, 2000);
     }
   }
+
   async function saveCanvas() {
     try {
-      const canvasData = fabricCanvas.toJSON();
+      const canvasData = fabricCanvas.toJSON ? fabricCanvas.toJSON() : {};
       const savePayload = {
         caseId,
         canvasData,
         evidenceNodes: Array.from(evidenceNodes.entries()),
         connections: Array.from(connections.entries()),
         annotations: Array.from(annotations.entries()),
-        timestamp: new Date().toISOString();
-      }
-      // Save to database via API
-      const response = await fetch('/api/v1/evidence/canvas', {
+        timestamp: new Date().toISOString()
+      };
+      const resp = await fetch('/api/v1/evidence/canvas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(savePayload);
+        body: JSON.stringify(savePayload)
       });
-      if (response.ok) {
-        // Cache in Redis for fast retrieval
+      if (resp.ok) {
         await saveToRedisCache(savePayload);
-        // Publish canvas change to collaborators
-        if (pubSubController && collaborative) {
+        if (pubSubController && collaborative && pubSubController.publish) {
           await pubSubController.publish(redisChannels.canvas, {
             action: 'canvas_saved',
             caseId,
             timestamp: savePayload.timestamp,
-            user: 'current_user' // Replace with actual user ID;
+            user: 'current_user' // replace with actual user id retrieval
           });
         }
         lastSaveTime = new Date();
-        console.log('✅ Canvas saved to database and Redis');
+        console.log('Canvas saved to database and Redis');
       }
-    } catch (error) {
-      console.error('❌ Failed to save canvas:', error);
+    } catch (err) {
+      console.error('Failed to save canvas:', err);
     }
   }
+
   async function saveToRedisCache(canvasPayload: any) {
     try {
-      const response = await fetch('/api/v1/redis/cache', {
+      const resp = await fetch('/api/v1/redis/cache', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           key: KEY_PATTERNS.DOCUMENT_CACHE(caseId),
-          value: canvasPayload;
-          ttl: CACHE_TTL.DOCUMENT_ANALYSIS;
+          value: canvasPayload,
+          ttl: CACHE_TTL.DOCUMENT_ANALYSIS
         })
       });
-      if (!response.ok) {
-        throw new Error('Redis cache failed');
-      }
-    } catch (error) {
-      console.warn('⚠️ Redis cache save failed:', error);
+      if (!resp.ok) throw new Error('Redis cache failed');
+    } catch (err) {
+      console.warn('Redis cache save failed:', err);
     }
   }
+
   async function loadFromRedisCache(): Promise<any | null> {
     try {
-      // removed unused response assignment
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Loaded canvas from Redis cache');
+      const key = KEY_PATTERNS.DOCUMENT_CACHE(caseId);
+      const resp = await fetch(`/api/v1/redis/cache?key=${encodeURIComponent(key)}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        console.log('Loaded canvas from Redis cache');
         return data;
       }
-    } catch (error) {
-      console.warn('⚠️ Redis cache load failed:', error);
+    } catch (err) {
+      console.warn('Redis cache load failed:', err);
     }
     return null;
   }
+
   function setupAutoSave() {
-    // Listen for canvas changes and trigger auto-save
-    fabricCanvas.on('object:modified', () => {
-      saveCanvasState();
-      publishCanvasChange('object_modified');
-    });
-    fabricCanvas.on('object:added', () => {
-      saveCanvasState();
-      publishCanvasChange('object_added');
-    });
-    fabricCanvas.on('object:removed', () => {
-      saveCanvasState();
-      publishCanvasChange('object_removed');
-    });
-    console.log('✅ Auto-save with Redis enabled');
+    fabricCanvas.on && fabricCanvas.on('object:modified', () => { saveCanvasState(); publishCanvasChange('object_modified'); });
+    fabricCanvas.on && fabricCanvas.on('object:added', () => { saveCanvasState(); publishCanvasChange('object_added'); });
+    fabricCanvas.on && fabricCanvas.on('object:removed', () => { saveCanvasState(); publishCanvasChange('object_removed'); });
+    console.log('Auto-save enabled');
   }
+
   async function publishCanvasChange(action: string) {
     if (!pubSubController || !collaborative) return;
     try {
@@ -954,176 +857,156 @@
         action,
         caseId,
         timestamp: new Date().toISOString(),
-        user: 'current_user' // Replace with actual user ID;
+        user: 'current_user'
       });
-    } catch (error) {
-      console.error('Failed to publish canvas change:', error);
+    } catch (err) {
+      console.error('Failed to publish canvas change:', err);
     }
   }
+
   async function loadCanvasFromRedis(canvasData: any) {
     try {
-      await fabricCanvas.loadFromJSON(canvasData, () => {
-        fabricCanvas.renderAll();
-        console.log('✅ Canvas synced from Redis');
+      fabricCanvas.loadFromJSON && fabricCanvas.loadFromJSON(canvasData, () => {
+        fabricCanvas.renderAll && fabricCanvas.renderAll();
+        console.log('Canvas synced from Redis');
       });
-    } catch (error) {
-      console.error('❌ Failed to load canvas from Redis:', error);
+    } catch (err) {
+      console.error('Failed to load canvas from Redis:', err);
     }
   }
+
   function applyObjectChange(data: any) {
     try {
-      const obj = fabricCanvas.getObjects().find(o => o.id === data.objectId);
+      const obj = fabricCanvas.getObjects ? fabricCanvas.getObjects().find((o: any) => o.id === data.objectId) : null;
       if (obj) {
-        obj.set(data.properties);
-        fabricCanvas.renderAll();
+        obj.set && obj.set(data.properties);
+        fabricCanvas.renderAll && fabricCanvas.renderAll();
       }
-    } catch (error) {
-      console.error('❌ Failed to apply object change:', error);
+    } catch (err) {
+      console.error('Failed to apply object change:', err);
     }
   }
+
   function handleAISuggestion(data: any) {
-    // Handle AI suggestions from Redis
     if (data.type === 'layout_suggestion') {
       aiSuggestions.push(data);
       showAISuggestions = true;
     } else if (data.type === 'connection_suggestion') {
-      // Highlight suggested connections
       highlightSuggestedConnection(data.suggestion);
     }
   }
+
   async function highlightSuggestedConnection(suggestion: any) {
-    const fabricInstance = await getFabric();
-    // Visual feedback for AI suggestions
+    const fabric = await getFabric();
     const fromNode = evidenceNodes.get(suggestion.fromId);
     const toNode = evidenceNodes.get(suggestion.toId);
-    if (fromNode && toNode) {
-      // Add temporary highlight
-      const highlight = new fabricInstance.Line([
-        fromNode.left, fromNode.top,
-        toNode.left, toNode.top
-      ], {
-        stroke: '#4CAF50',
-        strokeWidth: 3,
-        strokeDashArray: [10, 5],
-        selectable: false;
-        evented: false;
-      });
-      fabricCanvas.add(highlight);
-      // Remove highlight after 5 seconds
-      setTimeout(() => {
-        fabricCanvas.remove(highlight);
-      }, 5000);
-    }
+    if (!fromNode || !toNode) return;
+    const highlight = new fabric.Line([fromNode.left, fromNode.top, toNode.left, toNode.top], {
+      stroke: '#4CAF50',
+      strokeWidth: 3,
+      strokeDashArray: [10, 5],
+      selectable: false,
+      evented: false
+    });
+    fabricCanvas.add && fabricCanvas.add(highlight);
+    setTimeout(() => { fabricCanvas.remove && fabricCanvas.remove(highlight); }, 5000);
   }
+
   async function loadCanvasFromJSON(jsonData: string) {
     try {
-      await fabricCanvas.loadFromJSON(jsonData, () => {
-        fabricCanvas.renderAll();
-        // Rebuild node maps
-        fabricCanvas.getObjects().forEach((obj: any) => {
-          if (obj.nodeType === 'evidence') {
-            evidenceNodes.set(obj.evidenceId, obj);
-          } else if (obj.nodeType === 'connection') {
-            connections.set(`${obj.fromNodeId}-${obj.toNodeId}`, obj);
-          }
+      fabricCanvas.loadFromJSON && fabricCanvas.loadFromJSON(jsonData, () => {
+        fabricCanvas.renderAll && fabricCanvas.renderAll();
+        fabricCanvas.getObjects && fabricCanvas.getObjects().forEach((obj: any) => {
+          if (obj.nodeType === 'evidence') evidenceNodes.set(obj.evidenceId, obj);
+          else if (obj.nodeType === 'connection') connections.set(`${obj.fromNodeId}-${obj.toNodeId}`, obj);
         });
       });
-    } catch (error) {
-      console.error('Failed to load canvas from JSON:', error);
+    } catch (err) {
+      console.error('Failed to load canvas from JSON:', err);
     }
   }
+
   function undo() {
-    if (undoStack.length > 0) {
-      redoStack.push(fabricCanvas.toJSON());
-      const previousState = undoStack.pop();
-      loadCanvasFromJSON(previousState);
-    }
+    if (!undoStack.length) return;
+    redoStack.push(fabricCanvas.toJSON ? fabricCanvas.toJSON() : {});
+    const prev = undoStack.pop();
+    if (prev) loadCanvasFromJSON(prev);
   }
+
   function redo() {
-    if (redoStack.length > 0) {
-      undoStack.push(fabricCanvas.toJSON());
-      const nextState = redoStack.pop();
-      loadCanvasFromJSON(nextState);
-    }
+    if (!redoStack.length) return;
+    undoStack.push(fabricCanvas.toJSON ? fabricCanvas.toJSON() : {});
+    const next = redoStack.pop();
+    if (next) loadCanvasFromJSON(next);
   }
+
   function exportCanvas(format: 'json' | 'png' | 'svg' = 'png') {
-    switch (format) {
-      case 'json':
-        const jsonData = JSON.stringify(fabricCanvas.toJSON(), null, 2);
-        downloadFile(jsonData, `canvas-${caseId}.json`, 'application/json');
-        break;
-      case 'png':
-        const dataURL = fabricCanvas.toDataURL({ format: 'png', quality: 1 });
-        downloadFile(dataURL, `canvas-${caseId}.png`, 'image/png', true);
-        break;
-      case 'svg':
-        const svgData = fabricCanvas.toSVG();
-        downloadFile(svgData, `canvas-${caseId}.svg`, 'image/svg+xml');
-        break;
+    if (!fabricCanvas) return;
+    if (format === 'json') {
+      const jsonData = JSON.stringify(fabricCanvas.toJSON(), null, 2);
+      downloadFile(jsonData, `canvas-${caseId}.json`, 'application/json');
+    } else if (format === 'png') {
+      const dataURL = fabricCanvas.toDataURL ? fabricCanvas.toDataURL({ format: 'png', quality: 1 }) : '';
+      downloadFile(dataURL, `canvas-${caseId}.png`, 'image/png', true);
+    } else if (format === 'svg') {
+      const svgData = fabricCanvas.toSVG ? fabricCanvas.toSVG() : '';
+      downloadFile(svgData, `canvas-${caseId}.svg`, 'image/svg+xml');
     }
   }
-  function downloadFile(data: string, filename: string, mimeType: string, isDataURL = false) {
-    const blob = isDataURL ?
-      fetch(data).then(res => res.blob()) :
-      new Blob([data], { type: mimeType });
-    const url = isDataURL ? data : URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filenam;
-    link.click();
-    if (!isDataURL) {
+
+  async function downloadFile(data: string, filename: string, mimeType: string, isDataURL = false) {
+    if (isDataURL) {
+      const res = await fetch(data);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      const blob = new Blob([data], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
       URL.revokeObjectURL(url);
     }
   }
+
   function clearCanvas() {
-    fabricCanvas.clear();
+    fabricCanvas.clear && fabricCanvas.clear();
     evidenceNodes.clear();
     connections.clear();
     annotations.clear();
     saveCanvasState();
   }
+
   async function zoomFit() {
-    const fabricInstance = await getFabric();
-    fabricCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-    const objects = fabricCanvas.getObjects();
-    if (objects.length > 0) {
-      const group = new fabricInstance.Group(objects);
-      const boundingRect = group.getBoundingRect();
-      const scaleX = (canvasWidth - 40) / boundingRect.width;
-      const scaleY = (canvasHeight - 40) / boundingRect.height;
-      const scale = Math.min(scaleX, scaleY, 1);
-      fabricCanvas.setZoom(scale);
-      fabricCanvas.absolutePan(new fabricInstance.Point(
-        (canvasWidth - boundingRect.width * scale) / 2 - boundingRect.left * scale,
-        (canvasHeight - boundingRect.height * scale) / 2 - boundingRect.top * scale
-      ));
-    }
+    const fabric = await getFabric();
+    fabricCanvas.setViewportTransform && fabricCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const objects = fabricCanvas.getObjects ? fabricCanvas.getObjects() : [];
+    if (!objects.length) return;
+    const group = new fabric.Group(objects);
+    const boundingRect = group.getBoundingRect ? group.getBoundingRect() : { width: canvasWidth, height: canvasHeight, left: 0, top: 0 };
+    const scaleX = (canvasWidth - 40) / boundingRect.width;
+    const scaleY = (canvasHeight - 40) / boundingRect.height;
+    const scale = Math.min(scaleX, scaleY, 1);
+    fabricCanvas.setZoom && fabricCanvas.setZoom(scale);
+    fabricCanvas.absolutePan && fabricCanvas.absolutePan(new fabric.Point(
+      (canvasWidth - boundingRect.width * scale) / 2 - boundingRect.left * scale,
+      (canvasHeight - boundingRect.height * scale) / 2 - boundingRect.top * scale
+    ));
   }
-  // Missing function implementations
-  function startConnection(target: any) {
-    console.log('Starting connection from:', target);
-    // TODO: Implement connection creation
-  }
-  function addNote(target: any) {
-    console.log('Adding note to:', target);
-    // TODO: Implement note creation
-  }
-  function editConnection(target: any) {
-    console.log('Editing connection:', target);
-    // TODO: Implement connection editing
-  }
-  function deleteConnection(target: any) {
-    console.log('Deleting connection:', target);
-    // TODO: Implement connection deletion
-  }
-  function addNoteAt(x: number, y: number) {
-    console.log('Adding note at:', x, y);
-    // TODO: Implement note creation at position
-  }
-  function paste() {
-    console.log('Pasting from clipboard');
-    // TODO: Implement paste functionality
-  }
+
+  // Lightweight stubs for missing features to keep component error-free
+  function startConnection(target: any) { console.log('startConnection', target); }
+  function addNote(target: any) { console.log('addNote', target); }
+  function editConnection(target: any) { console.log('editConnection', target); }
+  function deleteConnection(target: any) { console.log('deleteConnection', target); }
+  function addNoteAt(x: number, y: number) { console.log('addNoteAt', x, y); }
+  function paste() { console.log('paste'); }
 </script>
 
 <div class="canvas-workspace" class:sidebar-open={sidebarOpen}>

@@ -32,13 +32,14 @@ https://svelte.dev/e/js_parse_error -->
   let showNotifications = $state(true);
   let notificationPermissionGranted = $state(false);
   // Subscribe to notifications store
-  let unsubscribe = $state<(() =>(null) {
+  let unsubscribe = $state<(() =>(null) => void) | null>(null);
+  onload(async () => {[ .. ]
     // Subscribe to notification updates
     unsubscribe = documentUpdateNotifications.subscribe((state) => {
       notifications = state.notification;
       activeUpdates = state.activeUpdate;
       connectionStatus = state.connectionStatu;
-    });
+    }),
     // Check notification permission
     if (notificationManager) {
       notificationPermissionGranted =
@@ -57,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
   });
   let activeUpdatesList = $derived(() => {
     return Array.from(activeUpdates.values()) as UpdateNotification[];)
-  });
+  })
   let connectionStatusIcon = $derived(() => {
     switch (connectionStatus) {
       case "connected":

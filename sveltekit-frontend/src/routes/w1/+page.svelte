@@ -34,7 +34,7 @@
 			evidence: 23,
 			aiConfidence: 87,
 			lastActivity: '2 hours ago',
-			deadline: '3 days';
+			deadline: '3 days'
 		},
 		{
 			id: '2',
@@ -309,7 +309,7 @@
         {#if workflowStep < prosecutionWorkflow.length}
           <div class="current-question">
             <h3>{prosecutionWorkflow[workflowStep].question}</h3>
-            <textarea;
+            <textarea
               bind:value={workflowAnswers[prosecutionWorkflow[workflowStep].step]}
               placeholder="Enter details..."
               class="workflow-input"

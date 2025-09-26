@@ -1,361 +1,123 @@
-/**/**/**
-
- * CUDA Cache Memory Optimizer - Clean Working Version
-
- * Handles model switching and memory optimization for legal AI workloads * CUDA Cache Memory Optimizer - Clean Working Version * CUDA Cache Memory Optimizer - Simplified Working Version
-
+/**
+ * CUDA Cache Memory Optimizer - Simplified Working Version
+ * Handles model switching and memory optimization for legal AI workloads
  */
+import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
+import { browser } from '$app/environment';
 
-import { browser } from '$app/environment'; * Handles model switching and memory optimization for legal AI workloads * Handles model switching and memory optimization for legal AI workloads
-
-
-
-export interface UserIntent { */ */
-
+export interface UserIntent {
   queryText: string;
-
-  intentCategory: 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';import { browser } from '$app/environment';import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
-
+  intentCategory: 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';
   confidence: number;
-
-  urgency: 'low' | 'medium' | 'high' | 'critical';import { browser } from '$app/environment';
-
-  complexity: number;
-
-  domainSpecificity: number;export interface UserIntent {
-
-  contextualSimilarity: number;
-
-  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';  queryText: string;export interface UserIntent {
-
+  urgency: 'low' | 'medium' | 'high' | 'critical';
+  complexity: number; // 0-1 scale
+  domainSpecificity: number; // 0-1 scale (legal specific)
+  contextualSimilarity: number; // to previous queries
+  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';
 }
-
-  intentCategory: 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';  queryText: string;
-
 export interface ModelPerformanceProfile {
-
-  modelName: string;  confidence: number;  intentCategory: 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';
-
-  architecture: string;
-
-  avgResponseTime: number;  urgency: 'low' | 'medium' | 'high' | 'critical';  confidence: number;
-
+  modelId: string;
+  architecture: 'llama' | 'bert' | 'onnx';
+  avgResponseTime: number;
   accuracyScore: number;
-
-  userSatisfactionScore: number;  complexity: number;  urgency: 'low' | 'medium' | 'high' | 'critical';
-
+  userSatisfactionScore: number;
   memoryFootprint: number;
-
-  specialtyDomains: string[];  domainSpecificity: number;  complexity: number; // 0-1 scale
-
+  specialtyDomains: string[];
   lastUsed: number;
-
-}  contextualSimilarity: number;  domainSpecificity: number; // 0-1 scale (legal specific)
-
-
-
-export interface CacheOptimizationStrategy {  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';  contextualSimilarity: number; // to previous queries
-
-  strategy: 'aggressive' | 'balanced' | 'conservative';
-
-  maxMemoryUsage: number;}  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';
-
-  preloadModels: string[];
-
-  evictionPolicy: 'lru' | 'performance' | 'hybrid';}
-
+  usageFrequency: number;
+  switchCost: number; // Cost in ms to switch to this model
 }
-
-export interface ModelPerformanceProfile {export interface ModelPerformanceProfile {
-
-export class CudaCacheMemoryOptimizer {
-
-  private modelProfiles: Map<string, ModelPerformanceProfile> = new Map();  modelName: string;  modelId: string;
-
+export interface CUDAMemoryBlock {
+  id: string;
+  size: number;
+  type: 'model_weights' | 'activation' | 'gradient' | 'cache' | 'som_neurons';
+  lastAccessed: number;
+  accessFrequency: number;
+  priority: number; // 0-1, higher = more important
+  compressible: boolean;
+  compressed: boolean;
+  originalSize?: number;
+}
+export interface SOMNeuron {
+  id: string;
+  position: [number, number]; // 2D grid position
+  weights: Float32Array; // Feature vector weights,
+  learningRate: number;
+  lastActivation: number;
+  activationCount: number;
+  associatedModel: string;
+  userPatternSignature: string;
+}
+class CUDACacheMemoryOptimizer {
+  private device: GPUDevice | null = null;
+  private memoryBlocks = new Map<string, CUDAMemoryBlock>();
+  private modelProfiles = new Map<string, ModelPerformanceProfile>();
   private userIntentHistory: UserIntent[] = [];
-
-  private currentStrategy: CacheOptimizationStrategy = {  architecture: string;  architecture: 'llama' | 'bert' | 'onnx';
-
-    strategy: 'balanced',
-
-    maxMemoryUsage: 4096,  avgResponseTime: number;  avgResponseTime: number;
-
-    preloadModels: ['gemma3-7b'],
-
-    evictionPolicy: 'hybrid'  accuracyScore: number;  accuracyScore: number;
-
-  };
-
-  userSatisfactionScore: number;  userSatisfactionScore: number;
-
-  constructor() {
-
-    this.initializeDefaultProfiles();  memoryFootprint: number;  memoryFootprint: number;
-
-  }
-
-  specialtyDomains: string[];  specialtyDomains: string[];
-
-  private initializeDefaultProfiles(): void {
-
-    const profiles: ModelPerformanceProfile[] = [  lastUsed: number;  lastUsed: number;
-
-      {
-
-        modelName: 'gemma3-7b',}  usageFrequency: number;
-
-        architecture: 'llama',
-
-        avgResponseTime: 150,  switchCost: number; // Cost in ms to switch to this model
-
-        accuracyScore: 0.85,
-
-        userSatisfactionScore: 0.82,export interface CacheOptimizationStrategy {}
-
-        memoryFootprint: 1024,
-
-        specialtyDomains: ['chat', 'general'],  strategy: 'aggressive' | 'balanced' | 'conservative';export interface CUDAMemoryBlock {
-
-        lastUsed: Date.now()
-
-      },  maxMemoryUsage: number;  id: string;
-
-      {
-
-        modelName: 'llama3.1-8b',  preloadModels: string[];  size: number;
-
-        architecture: 'llama',
-
-        avgResponseTime: 200,  evictionPolicy: 'lru' | 'performance' | 'hybrid';  type: 'model_weights' | 'activation' | 'gradient' | 'cache' | 'som_neurons';
-
-        accuracyScore: 0.88,
-
-        userSatisfactionScore: 0.86,}  lastAccessed: number;
-
-        memoryFootprint: 1536,
-
-        specialtyDomains: ['legal_analysis', 'research'],  accessFrequency: number;
-
-        lastUsed: Date.now() - 3600000
-
-      }export class CudaCacheMemoryOptimizer {  priority: number; // 0-1, higher = more important
-
-    ];
-
-  private modelProfiles: Map<string, ModelPerformanceProfile> = new Map();  compressible: boolean;
-
-    profiles.forEach(profile => {
-
-      this.modelProfiles.set(profile.modelName, profile);  private userIntentHistory: UserIntent[] = [];  compressed: boolean;
-
-    });
-
-  }  private currentStrategy: CacheOptimizationStrategy = {  originalSize?: number;
-
-
-
-  public analyzeUserIntent(queryText: string): UserIntent {    strategy: 'balanced',}
-
-    return {
-
-      queryText,    maxMemoryUsage: 4096,export interface SOMNeuron {
-
-      intentCategory: this.categorizeIntent(queryText),
-
-      confidence: 0.8,    preloadModels: ['gemma3-7b'],  id: string;
-
-      urgency: 'medium',
-
-      complexity: 0.5,    evictionPolicy: 'hybrid'  position: [number, number]; // 2D grid position
-
-      domainSpecificity: 0.7,
-
-      contextualSimilarity: 0.3,  };  weights: Float32Array; // Feature vector weights,
-
-      userBehaviorPattern: 'learning'
-
-    };  learningRate: number;
-
-  }
-
-  constructor() {  lastActivation: number;
-
-  public recommendOptimalModel(intent: UserIntent): string {
-
-    return 'gemma3-7b';    this.initializeDefaultProfiles();  activationCount: number;
-
-  }
-
-  }  associatedModel: string;
-
-  public getCurrentStrategy(): CacheOptimizationStrategy {
-
-    return { ...this.currentStrategy };  userPatternSignature: string;
-
-  }
-
-  private initializeDefaultProfiles(): void {}
-
-  private categorizeIntent(queryText: string): UserIntent['intentCategory'] {
-
-    const query = queryText.toLowerCase();    const profiles: ModelPerformanceProfile[] = [class CUDACacheMemoryOptimizer {
-
-
-
-    if (query.includes('analyze') || query.includes('review')) {      {  private device: GPUDevice | null = null;
-
-      return 'legal_analysis';
-
-    } else if (query.includes('document') || query.includes('contract')) {        modelName: 'gemma3-7b',  private memoryBlocks = new Map<string, CUDAMemoryBlock>();
-
-      return 'document_review';
-
-    } else if (query.includes('research') || query.includes('case law')) {        architecture: 'llama',  private modelProfiles = new Map<string, ModelPerformanceProfile>();
-
-      return 'research';
-
-    } else if (query.includes('search') || query.includes('find')) {        avgResponseTime: 150,  private userIntentHistory: UserIntent[] = [];
-
-      return 'search';
-
-    } else if (query.length < 50) {        accuracyScore: 0.85,  // Self-Organizing Map for learning user patterns
-
-      return 'chat';
-
-    }        userSatisfactionScore: 0.82,  private somNeurons: SOMNeuron[][] = [];
-
-
-
-    return 'unknown';        memoryFootprint: 1024,  private somWidth = 10; // 10x10 grid
-
-  }
-
-}        specialtyDomains: ['chat', 'general'],  private somHeight = 10;
-
-
-
-// Singleton instance        lastUsed: Date.now()  private globalLearningRate = 0.1;
-
-export const cudaCacheOptimizer = browser ? new CudaCacheMemoryOptimizer() : null;
-      },  private neighborhoodRadius = 3.0;
-
-      {  // Auto-encoder for feature compression and pattern recognition
-
-        modelName: 'llama3.1-8b',  private autoEncoderWeights: {
-
-        architecture: 'llama',    encoder: { w1: Float32Array; b1: Float32Array; w2: Float32Array; b2: Float32Array }
-
-        avgResponseTime: 200,    decoder: { w3: Float32Array; b3: Float32Array; w4: Float32Array; b4: Float32Array }
-
-        accuracyScore: 0.88,  } | null = null;
-
-        userSatisfactionScore: 0.86,  private inputFeatureSize = 256; // User query + context features
-
-        memoryFootprint: 1536,  private latentSize = 64; // Compressed representation
-
-        specialtyDomains: ['legal_analysis', 'research'],  private hiddenSize = 128;
-
-        lastUsed: Date.now() - 3600000  // Memory optimization thresholds
-
-      }  private maxGPUMemoryMB = 4096; // 4GB
-
-    ];  private memoryPressureThreshold = 0.8; // 80%
-
+  // Self-Organizing Map for learning user patterns
+  private somNeurons: SOMNeuron[][] = [];
+  private somWidth = 10; // 10x10 grid
+  private somHeight = 10;
+  private globalLearningRate = 0.1;
+  private neighborhoodRadius = 3.0;
+  // Auto-encoder for feature compression and pattern recognition
+  private autoEncoderWeights: {
+    encoder: { w1: Float32Array; b1: Float32Array; w2: Float32Array; b2: Float32Array }
+    decoder: { w3: Float32Array; b3: Float32Array; w4: Float32Array; b4: Float32Array }
+  } | null = null;
+  private inputFeatureSize = 256; // User query + context features
+  private latentSize = 64; // Compressed representation
+  private hiddenSize = 128;
+  // Memory optimization thresholds
+  private maxGPUMemoryMB = 4096; // 4GB
+  private memoryPressureThreshold = 0.8; // 80%
   private compressionThreshold = 0.6; // Compress when memory > 60%
-
-    profiles.forEach(profile => {  // User learning and adaptation
-
-      this.modelProfiles.set(profile.modelName, profile);  private userLearningEnabled = true;
-
-    });  private adaptationRate = 0.05;
-
-  }  private minLearningExamples = 10;
-
+  // User learning and adaptation
+  private userLearningEnabled = true;
+  private adaptationRate = 0.05;
+  private minLearningExamples = 10;
   constructor() {
-
-  public analyzeUserIntent(queryText: string): UserIntent {    this.initializeSOM();
-
-    return {    this.initializeAutoEncoder();
-
-      queryText,    this.startMemoryMonitoring();
-
-      intentCategory: this.categorizeIntent(queryText),  }
-
-      confidence: 0.8,  /**
-
-      urgency: 'medium',   * Main entry point: Optimize model selection based on user intent
-
-      complexity: 0.5,   */;
-
-      domainSpecificity: 0.7,  async optimizeModelSelection(query: string, userContext: any = {}): Promise<any> {
-
-      contextualSimilarity: 0.3,    const startTime = performance.now();
-
-      userBehaviorPattern: 'learning'    try {
-
-    };      // Step 1: Analyze user intent using auto-encoder + SOM
-
-  }      const userIntent = await this.analyzeUserIntent(query, userContext);
-
+    this.initializeSOM();
+    this.initializeAutoEncoder();
+    this.startMemoryMonitoring();
+  }
+  /**
+   * Main entry point: Optimize model selection based on user intent
+   */;
+  async optimizeModelSelection(query: string, userContext: any = {}): Promise<any> {
+    const startTime = performance.now();
+    try {
+      // Step 1: Analyze user intent using auto-encoder + SOM
+      const userIntent = await this.analyzeUserIntent(query, userContext);
       // Step 2: Generate "did you mean" suggestions
-
-  public recommendOptimalModel(intent: UserIntent): string {      const didYouMeanSuggestions = await this.generateDidYouMeanSuggestions(query, userIntent);
-
-    return 'gemma3-7b';      // Step 3: Find optimal model using learned patterns
-
-  }      const optimalModel = await this.findOptimalModel(userIntent);
-
+      const didYouMeanSuggestions = await this.generateDidYouMeanSuggestions(query, userIntent);
+      // Step 3: Find optimal model using learned patterns
+      const optimalModel = await this.findOptimalModel(userIntent);
       // Step 4: Optimize GPU memory for model switch
-
-  public getCurrentStrategy(): CacheOptimizationStrategy {      const memoryOptimizations = await this.optimizeGPUMemory(optimalModel.modelId);
-
-    return { ...this.currentStrategy };      // Step 5: Estimate switch time and prepare cache
-
-  }      const switchTime = await this.estimateModelSwitchTime(optimalModel.modelId);
-
+      const memoryOptimizations = await this.optimizeGPUMemory(optimalModel.modelId);
+      // Step 5: Estimate switch time and prepare cache
+      const switchTime = await this.estimateModelSwitchTime(optimalModel.modelId);
       // Step 6: Update user learning model
-
-  private categorizeIntent(queryText: string): UserIntent['intentCategory'] {      if (this.userLearningEnabled) {
-
-    const query = queryText.toLowerCase();        await this.updateUserLearning(userIntent, optimalModel.modelId);
-
-          }
-
-    if (query.includes('analyze') || query.includes('review')) {      const totalOptimizationTime = performance.now() - startTime;
-
-      return 'legal_analysis';      console.log(`🧠 Model optimization completed in ${totalOptimizationTime.toFixed(2)}ms`);
-
-    } else if (query.includes('document') || query.includes('contract')) {      console.log(`📊 Recommended: ${optimalModel.modelId} (confidence: ${optimalModel.confidence.toFixed(2)})`);
-
-      return 'document_review';      return {
-
-    } else if (query.includes('research') || query.includes('case law')) {        recommendedModel: optimalModel.modelId,
-
-      return 'research';        confidence: optimalModel.confidence,
-
-    } else if (query.includes('search') || query.includes('find')) {        switchEstimatedTime: switchTime
-
-      return 'search';        memoryOptimizations,
-
-    } else if (query.length < 50) {        userIntentPrediction: userIntent
-
-      return 'chat';        didYouMeanSuggestions
-
-    }      }
-
-        } catch (error) {
-
-    return 'unknown';      console.error('❌ CUDA cache optimizer failed:', error);
-
-  }      // Fallback to simple heuristics
-
-}      return {
-
+      if (this.userLearningEnabled) {
+        await this.updateUserLearning(userIntent, optimalModel.modelId);
+      }
+      const totalOptimizationTime = performance.now() - startTime;
+      console.log(`🧠 Model optimization completed in ${totalOptimizationTime.toFixed(2)}ms`);
+      console.log(`📊 Recommended: ${optimalModel.modelId} (confidence: ${optimalModel.confidence.toFixed(2)})`);
+      return {
+        recommendedModel: optimalModel.modelId,
+        confidence: optimalModel.confidence,
+        switchEstimatedTime: switchTime
+        memoryOptimizations,
+        userIntentPrediction: userIntent
+        didYouMeanSuggestions
+      }
+    } catch (error) {
+      console.error('❌ CUDA cache optimizer failed:', error);
+      // Fallback to simple heuristics
+      return {
         recommendedModel: 'gemma270m', // Safe fallback
-
-// Singleton instance        confidence: 0.5,
-
-export const cudaCacheOptimizer = browser ? new CudaCacheMemoryOptimizer() : null;        switchEstimatedTime: 100,
+        confidence: 0.5,
+        switchEstimatedTime: 100,
         memoryOptimizations: ['fallback_mode'],
         userIntentPrediction: {
           queryText: query

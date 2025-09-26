@@ -13,7 +13,7 @@ export interface DraggableOptions {
     minY?: number;
     maxY?: number;
     container?: HTMLElement; // Constrain to container bounds
-  }
+  };
 }
 /**
  * Enhanced draggable action for making elements draggable on the detective board
@@ -30,9 +30,16 @@ export interface DraggableOptions {
     currentX = x;
     currentY = y;
     node.style.transform = `translate(${x}px, ${y}px)`;
-    // Update evidence store if ID provided
+    // Update evidence store if ID provided (use existing addEvidence API if available)
     if (id) {
-      evidenceStore.updateEvidence(id, { x, y });
+      // evidenceStore.updateEvidence does not exist; use addEvidence if present (safe optional call)
+      type EvidenceStoreWithAdd = {
+        addEvidence?: (payload: { id?: string; x: number; y: number }) => void;
+      };
+      const _evidenceStore = evidenceStore as unknown as EvidenceStoreWithAdd;
+      if (typeof _evidenceStore.addEvidence === 'function') {
+        _evidenceStore.addEvidence({ id, x, y });
+      }
     }
     onDrag?.(x, y);
   }
@@ -54,24 +61,24 @@ export interface DraggableOptions {
     }
     return [constrainedX, constrainedY];
   }
-  function handleMouseDown(_event: MouseEvent) {
-    if (disabled || event.button !== 0) return; // Only left mouse button
+  function handleMouseDown(e: MouseEvent) {
+    if (disabled || e.button !== 0) return; // Only left mouse button
     // Check if we're dragging from the handle
     if (handle) {
       const handleElement = node.querySelector(handle);
-      if (!handleElement || !handleElement.contains(event.target as Node)) {
+      if (!handleElement || !handleElement.contains(e.target as Node)) {
         return;
       }
     }
-    event.preventDefault();
-    event.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
     isDragging = true;
-    startX = event.clientX;
-    startY = event.clientY;
+    startX = e.clientX;
+    startY = e.clientY;
     // Get current position relative to parent
     const rect = node.getBoundingClientRect();
     const parent = node.offsetParent as HTMLElement;
-    const parentRect = parent?.getBoundingClientRect() || { left: 0, top: 0 }
+    const parentRect = parent?.getBoundingClientRect() || { left: 0, top: 0 };
     initialX = rect.left - parentRect.left;
     initialY = rect.top - parentRect.top;
     currentX = initialX;
@@ -84,19 +91,19 @@ export interface DraggableOptions {
     // Add global event listeners
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-    onDragStart?.(event);
+    onDragStart?.(e);
   }
-  function handleMouseMove(_event: MouseEvent) {
+  function handleMouseMove(e: MouseEvent) {
     if (!isDragging) return;
-    event.preventDefault();
-    const deltaX = event.clientX - startX;
-    const deltaY = event.clientY - startY;
+    e.preventDefault();
+    const deltaX = e.clientX - startX;
+    const deltaY = e.clientY - startY;
     const newX = initialX + deltaX;
     const newY = initialY + deltaY;
     const [constrainedX, constrainedY] = applyConstraints(newX, newY);
     updateNodePosition(constrainedX, constrainedY);
   }
-  function handleMouseUp(_event: MouseEvent) {
+  function handleMouseUp(_e: MouseEvent) {
     if (!isDragging) return;
     isDragging = false;
     // Remove visual feedback
@@ -110,9 +117,9 @@ export interface DraggableOptions {
     onDragEnd?.(currentX, currentY);
   }
   // Touch support
-  function handleTouchStart(_event: TouchEvent) {
-    if (disabled || event.touches.length !== 1) return;
-    const touch = event.touches[0];
+  function handleTouchStart(e: TouchEvent) {
+    if (disabled || e.touches.length !== 1) return;
+    const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousedown', {
       clientX: touch.clientX,
       clientY: touch.clientY,
@@ -120,17 +127,17 @@ export interface DraggableOptions {
     });
     handleMouseDown(mouseEvent);
   }
-  function handleTouchMove(_event: TouchEvent) {
-    if (!isDragging || event.touches.length !== 1) return;
-    event.preventDefault();
-    const touch = event.touches[0];
+  function handleTouchMove(e: TouchEvent) {
+    if (!isDragging || e.touches.length !== 1) return;
+    e.preventDefault();
+    const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousemove', {
       clientX: touch.clientX,
       clientY: touch.clientY,
     });
     handleMouseMove(mouseEvent);
   }
-  function handleTouchEnd(_event: TouchEvent) {
+  function handleTouchEnd(_e: TouchEvent) {
     if (!isDragging) return;
     const mouseEvent = new MouseEvent('mouseup', {
       clientX: 0,
@@ -173,5 +180,5 @@ export interface DraggableOptions {
       // Update cursor
       node.style.cursor = disabled ? '' : isDragging ? 'grabbing' : 'grab';
     },
-  }
+  };
 }

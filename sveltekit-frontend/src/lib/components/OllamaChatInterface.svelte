@@ -100,7 +100,7 @@ await checkOllamaHealth();
     chatHistory.push({
       id: messageId
       type: "user",
-      content: userMessage;
+      content: userMessage,
       timestamp: new Date(),
     });
     // Clear input and set loading
@@ -109,10 +109,10 @@ await checkOllamaHealth();
     errorMessage = "";
     try {
       const chatRequest: ChatRequest = {
-        message: userMessage
+        message: userMessage,
         model,
         temperature,
-        stream: streamMode
+        stream: streamMode,
         caseId,
         useRAG,
       }
@@ -123,7 +123,7 @@ await checkOllamaHealth();
           messages: [{ role: "user", content: userMessage }],
           model,
           stream: streamMode
-          sessionId: caseId;
+          sessionId: caseId,
         }),
       });
       if (!response.ok) {

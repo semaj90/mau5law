@@ -280,13 +280,13 @@ export class EnhancedIngestionPipeline {
    * Process image evidence: OCR, object detection, embedding, and storage
    */
   private async processImageEvidence(
-    evidence: MultimodalEvidence;
+    evidence: MultimodalEvidence,
   ): Promise<DocumentEmbedding> {
     const extractedText = evidence.extracted_content.text || "";
     const embedding = await this.generateEmbedding(extractedText);
     const docEmbedding: DocumentEmbedding = {
       id: evidence.id,
-      content: extractedText
+      content: extractedText,
       embedding,
       metadata: {
         case_id: evidence.metadata.case_id,
@@ -309,7 +309,7 @@ export class EnhancedIngestionPipeline {
     const embedding = await this.generateEmbedding(sceneSummary);
     const docEmbedding: DocumentEmbedding = {
       id: evidence.id,
-      content: sceneSummary
+      content: sceneSummary,
       embedding,
       metadata: {
         case_id: evidence.metadata.case_id,
@@ -326,13 +326,13 @@ export class EnhancedIngestionPipeline {
    * Process audio evidence: transcription, embedding, and storage
    */
   private async processAudioEvidence(
-    evidence: MultimodalEvidence;
+    evidence: MultimodalEvidence,
   ): Promise<DocumentEmbedding> {
     const transcription = evidence.extracted_content.transcription || "";
     const embedding = await this.generateEmbedding(transcription);
     const docEmbedding: DocumentEmbedding = {
       id: evidence.id,
-      content: transcription
+      content: transcription,
       embedding,
       metadata: {
         case_id: evidence.metadata.case_id,
@@ -349,13 +349,13 @@ export class EnhancedIngestionPipeline {
    * Process document evidence: text extraction, embedding, and storage
    */
   private async processDocumentEvidence(
-    evidence: MultimodalEvidence;
+    evidence: MultimodalEvidence,
   ): Promise<DocumentEmbedding> {
     const text = evidence.extracted_content.text || "";
     const embedding = await this.generateEmbedding(text);
     const docEmbedding: DocumentEmbedding = {
       id: evidence.id,
-      content: text
+      content: text,
       embedding,
       metadata: {
         case_id: evidence.metadata.case_id,
@@ -371,7 +371,7 @@ export class EnhancedIngestionPipeline {
   /**
    * Process single document through enhanced pipeline
    */
-  async processDocument(_document: IngestionDocument;
+  async processDocument(_document: IngestionDocument,
   ): Promise<ProcessingResult> {
     if (!this.isInitialized) {
       throw new Error("Pipeline not initialized. Call initialize() first.");
@@ -414,10 +414,10 @@ export class EnhancedIngestionPipeline {
       const result: ProcessingResult = {
         document_id: document.id,
         embedding,
-        cluster_id: clusterId
-        processing_time: processingTime
-        extraction_metadata: extractedData
-        vector_store_id: vectorStoreId
+        cluster_id: clusterId,
+        processing_time: processingTime,
+        extraction_metadata: extractedData,
+        vector_store_id: vectorStoreId,
       }
       console.log(
         `✅ Document processed successfully: ${document.id} (${processingTime}ms)`
@@ -441,7 +441,7 @@ export class EnhancedIngestionPipeline {
    * Process multiple documents in batch
    */
   async processBatch(
-    documents: IngestionDocument[];
+    documents: IngestionDocument[],
   ): Promise<ProcessingResult[]> {
     console.log(`📦 Processing batch of ${documents.length} documents...`);
     const results: ProcessingResult[] = [];
@@ -518,7 +518,7 @@ export class EnhancedIngestionPipeline {
       confidence_threshold?: number;
       cluster_id?: number;
     },
-    limit: number = 10;
+    limit: number = 10,
   ): Promise<any> {
     const startTime = Date.now();
     try {
@@ -683,7 +683,7 @@ export class EnhancedIngestionPipeline {
       "defendant",
       "plaintiff"
     ];
-    const foundKeywords = words.filter((word) => legalKeywords.includes(word);
+    const foundKeywords = words.filter((word) => legalKeywords.includes(word)
     const entities = foundKeywords.slice(0, 5); // Mock entities
     return {
       entities,
@@ -692,7 +692,7 @@ export class EnhancedIngestionPipeline {
       language: "en"
     }
   }
-  private async updateSOMWithDocument(_document: DocumentEmbedding;
+  private async updateSOMWithDocument(_document: DocumentEmbedding,
   ): Promise<void> {
     // For single document updates, we would typically use online learning
     // For now, we'll use batch training with the single document
@@ -707,7 +707,7 @@ export class EnhancedIngestionPipeline {
       [Math.random() > 0.5, Math.random() > 0.5]
     ];
     return {
-      cluster: clusterId
+      cluster: clusterId,
       boolean_pattern: booleanPattern
     }
   }
@@ -722,7 +722,7 @@ export class EnhancedIngestionPipeline {
             vector: document.embedding,
             payload: {
               content: document.content,
-              metadata: document.metadata
+              metadata: document.metadata,
             }
           }
         ]
@@ -751,7 +751,7 @@ export class EnhancedIngestionPipeline {
     if (success) {
       this.stats.successful++;
     } else {
-      this.stats.failed++;
+      this.stats.failed++:
     }
     // Update average processing time
     this.stats.avg_processing_time =
@@ -821,10 +821,10 @@ export class EnhancedIngestionPipeline {
         `✅ Multimodal evidence processed: ${evidence.id} (${processingTime}ms)`
       );
       return {
-        processing_result: pipelineResult
-        anchor_points: anchorPoints
-        timeline_segments: timelineSegments
-        copilot_analysis: copilotAnalysis
+        processing_result: pipelineResult,
+        anchor_points: anchorPoints,
+        timeline_segments: timelineSegments,
+        copilot_analysis: copilotAnalysis,
       }
     } catch (error: any) {
       console.error(
@@ -851,20 +851,20 @@ export class EnhancedIngestionPipeline {
       Provide legal analysis focusing on:
       1. Admissibility considerations
       2. Chain of custody requirements
-      3. Potential challenges
-      4. Relevance to case`;
+      3. Potential challenges,
+      4. Relevance to case`,
       const orchestrationResult = await copilotOrchestrator(prompt, {
-        useSemanticSearch: true
-        useMemory: true
-        useCodebase: false
-        logErrors: true
+        useSemanticSearch: true,
+        useMemory: true,
+        useCodebase: false,
+        logErrors: true,
         synthesizeOutputs: true
         context: {
           evidence_type: evidence.type,
           case_id: evidence.metadata.case_id,
           copilot_context: this.copilotContext
         }
-      });
+      }),
       return (
         orchestrationResult.selfPrompt ||
         "Analysis completed with Copilot integration"

@@ -123,7 +123,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
         texture,
         quantizedData,
         nesPattern,
-        cached: true;
+        cached: true,
       }
       alphabetCache.set(char, alphabetTexture);
       // Cache in CHR-ROM system if available
@@ -135,7 +135,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
             riskLevel: 'low',
             visualStyle: 'classic',
             colorScheme: 'default',
-            animated: false;
+            animated: false,
           }
         );
       }
@@ -145,10 +145,10 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
       // Return fallback texture
       return {
         char,
-        texture: null
+        texture: null,
         quantizedData: new Float32Array(64),
         nesPattern: new Uint8Array(64),
-        cached: false;
+        cached: false,
       }
     }
   }

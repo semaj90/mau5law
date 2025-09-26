@@ -90,7 +90,7 @@
         api: healthResponse?.status === 'healthy' ? 'healthy' : healthResponse?.status === 'error' ? 'error' : 'warning',
         database: healthResponse.services?.database || 'unknown',
         aiServices: healthResponse.services?.aiServices || 'unknown',
-        jobQueue: healthResponse.services?.jobQueue || 'unknown';
+        jobQueue: healthResponse.services?.jobQueue || 'unknown',
       }
     } catch (err: any) {
       console.error('Health check failed:', err);
@@ -125,7 +125,7 @@
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit';
+      minute: '2-digit',
     });
   }
   // Priority and status colors

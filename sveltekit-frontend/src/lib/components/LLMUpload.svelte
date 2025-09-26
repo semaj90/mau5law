@@ -57,7 +57,7 @@
     transition: background 0.2;
   }
   .upload-btn:disabled {
-    background: #b0c4d;
+    background: #ff5246;
     cursor: not-allowed;
   }
   .upload-btn:not(:disabled):hover {

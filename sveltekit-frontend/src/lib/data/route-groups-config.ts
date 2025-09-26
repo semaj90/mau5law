@@ -440,7 +440,7 @@ export const legacyRouteMapping: Record<string, string> = {
   '/admin': '/(admin)/dashboard',
   '/metrics': '/(admin)/performance',
   '/system': '/(admin)/health',
-  '/dashboard': '/(admin)/dashboard',
+  '/system-dashboard': '/(admin)/system-dashboard',
   '/dev': '/(dev)/examples',
   '/examples': '/(dev)/examples',
   '/showcase': '/(dev)/showcase',
@@ -458,7 +458,7 @@ export const legacyRouteMapping: Record<string, string> = {
   '/webasm': '/webasm-demos',
   '/nes-bits': '/demo/enhanced-bits-showcase',
   '/ai-chat': '/(ai)/assistant',
-  '/chat': '/(ai)/assistant'
+  '/chat': '/(ai)/assistant',
 };
 
 // Get route group by theme

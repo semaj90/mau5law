@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { useLegalTextureStreaming } from '$lib/components/headless/texture-streaming.svelte';
 	import { useEvidenceCanvas } from '$lib/components/headless/evidence-canvas.svelte';
 	import type { EvidencePhoto, DocumentScan, CaseVisualization, CourtroomDisplay } from '$lib/gpu/legal-texture-pipeline';
@@ -25,8 +25,8 @@
 		mode = 'evidence'
 	}: Props = $props();
 	// Canvas element reference
-	let canvasElement: HTMLCanvasElement;
-	let containerElement: HTMLDivElement;
+	let canvasElement: HTMLCanvasElement | null = null;
+	let containerElement: HTMLDivElement | null = null;
 	// Initialize texture streaming
 	const textureStreaming = useLegalTextureStreaming({
 		enableGPU,
@@ -50,16 +50,18 @@
 	$effect(() => {
 		try {
 			// Initialize texture streaming
-			textureStreaming.initialize(canvasElement);
-			// Setup 2D rendering context for overlay
-			renderContext = canvasElement.getContext('2d');
-			// Setup evidence canvas
-			evidenceCanvas.setCanvasSize({ width, height });
-			evidenceCanvas.setViewport({ width, height });
-			isReady = true;
-			startRenderLoop();
+			if (canvasElement) {
+				textureStreaming.initialize(canvasElement);
+				// Setup 2D rendering context for overlay
+				renderContext = canvasElement.getContext('2d');
+				// Setup evidence canvas
+				evidenceCanvas.setCanvasSize({ width, height });
+				evidenceCanvas.setViewport({ width, height });
+				isReady = true;
+				startRenderLoop();
+			}
 		} catch (err) {
-			error = err instanceof Error ? err.message: 'Failed to initialize canvas';
+			error = err instanceof Error ? err.message : 'Failed to initialize canvas';
 			console.error('Canvas initialization error:', err);
 		}
 	});
@@ -86,7 +88,7 @@
 	 * Stop render loop
 	 */
 	function stopRenderLoop() {
-		if (animationId) {
+		if (animationId !== null) {
 			cancelAnimationFrame(animationId);
 			animationId = null;
 		}
@@ -133,9 +135,9 @@
 	 */
 	function renderEvidenceOverlay() {
 		if (!renderContext) return;
-		const canvasState = evidenceCanvas.getCanvasState();
-		const visibleItems = evidenceCanvas.visibleItems();
-		const selectedItems = evidenceCanvas.getSelectedItems();
+		const canvasState: any = evidenceCanvas.getCanvasState();
+		const visibleItems: any[] = evidenceCanvas.visibleItems();
+		const selectedItems: Set<any> = evidenceCanvas.getSelectedItems();
 		renderContext.save();
 		renderContext.scale(canvasState.zoom, canvasState.zoom);
 		renderContext.translate(canvasState.pan.x, canvasState.pan.y);
@@ -158,8 +160,8 @@
 		renderContext.lineWidth = 2;
 		renderContext.setLineDash([5, 5]);
 		items.forEach(item => {
-			item.connections.forEach((connectionId: string) => {
-				const connectedItem = items.find(i => i.id === connectionId);
+			(item.connections || []).forEach((connectionId: string) => {
+				const connectedItem = items.find((i: any) => i.id === connectionId);
 				if (connectedItem) {
 					renderContext!.beginPath();
 					renderContext!.moveTo(item.position.x, item.position.y);
@@ -177,8 +179,8 @@
 		if (!renderContext) return;
 		renderContext.save();
 		renderContext.translate(item.position.x, item.position.y);
-		renderContext.rotate(item.rotation);
-		renderContext.scale(item.scale, item.scale);
+		renderContext.rotate(item.rotation || 0);
+		renderContext.scale(item.scale || 1, item.scale || 1);
 		// Draw item based on type
 		const color = getItemColor(item.type);
 		renderContext.fillStyle = isSelected ? '#ffff00' : color;
@@ -191,7 +193,7 @@
 		renderContext.fillStyle = '#ffffff';
 		renderContext.font = '10px monospace';
 		renderContext.textAlign = 'center';
-		renderContext.fillText(item.name.substring(0, 8), 0, 30);
+		renderContext.fillText((item.name || '').substring(0, 8), 0, 30);
 		renderContext.restore();
 	}
 	/**
@@ -199,7 +201,7 @@
 	 */
 	function renderUIOverlay() {
 		if (!renderContext || mode === 'courtroom') return;
-		const stats = textureStreaming.stats();
+		const stats: any = textureStreaming.stats();
 		// Render performance stats
 		renderContext.fillStyle = 'rgba(0, 0, 0, 0.7)';
 		renderContext.fillRect(10, 10, 200, 100);
@@ -208,8 +210,8 @@
 		renderContext.textAlign = 'left';
 		const lines = [
 			`FPS: ${frameRate.toFixed(1)}`,
-			`Render: ${stats.renderTime.toFixed(1)}ms`,
-			`Chunks: ${stats.chunksLoaded}`,
+			`Render: ${stats.renderTime?.toFixed(1) ?? '0.0'}ms`,
+			`Chunks: ${stats.chunksLoaded ?? 0}`,
 			`Cache: ${(textureStreaming.cacheHitRate() * 100).toFixed(1)}%`,
 			`WebGL: ${stats.hasWebGL ? 'Yes' : 'No'}`,
 			`WASM: ${stats.hasWASM ? 'Yes' : 'No'}`
@@ -233,24 +235,26 @@
 	/**
 	 * Handle mouse events
 	 */
-	function handleMouseDown(_event: MouseEvent) {
+	function handleMouseDown(event: MouseEvent) {
+		if (!canvasElement) return;
 		const rect = canvasElement.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
 		// Find clicked item
-		const canvasState = evidenceCanvas.getCanvasState();
+		const canvasState: any = evidenceCanvas.getCanvasState();
 		const transformedX = (x - canvasState.pan.x) / canvasState.zoom;
 		const transformedY = (y - canvasState.pan.y) / canvasState.zoom;
 		const clickedItem = findItemAtPosition(transformedX, transformedY);
 		evidenceCanvas.handlePointerDown(x, y, clickedItem?.id);
 	}
-	function handleMouseMove(_event: MouseEvent) {
+	function handleMouseMove(event: MouseEvent) {
+		if (!canvasElement) return;
 		const rect = canvasElement.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
 		evidenceCanvas.handlePointerMove(x, y);
 		// Update hovered item
-		const canvasState = evidenceCanvas.getCanvasState();
+		const canvasState: any = evidenceCanvas.getCanvasState();
 		const transformedX = (x - canvasState.pan.x) / canvasState.zoom;
 		const transformedY = (y - canvasState.pan.y) / canvasState.zoom;
 		const hoveredItem = findItemAtPosition(transformedX, transformedY);
@@ -259,23 +263,24 @@
 	function handleMouseUp() {
 		evidenceCanvas.handlePointerUp();
 	}
-	function handleWheel(_event: WheelEvent) {
+	function handleWheel(event: WheelEvent) {
 		event.preventDefault();
+		if (!canvasElement) return;
 		const rect = canvasElement.getBoundingClientRect();
-		const x = event.clientX - rect.left;
-		const y = event.clientY - rect.top;
-		evidenceCanvas.handleWheel(event.deltaY, x, y);
+		const x = (event as any).clientX - rect.left;
+		const y = (event as any).clientY - rect.top;
+		evidenceCanvas.handleWheel((event as any).deltaY, x, y);
 	}
 	/**
 	 * Find evidence item at position
 	 */
 	function findItemAtPosition(x: number, y: number) {
-		const items = evidenceCanvas.visibleItems();
+		const items: any[] = evidenceCanvas.visibleItems();
 		for (const item of items) {
 			const dx = x - item.position.x;
 			const dy = y - item.position.y;
 			const distance = Math.sqrt(dx * dx + dy * dy);
-			if (distance < 20 * item.scale) { // Item radius
+			if (distance < 20 * (item.scale || 1)) { // Item radius
 				return item;
 			}
 		}
@@ -294,70 +299,68 @@
 	export async function loadEvidencePhoto(photo: EvidencePhoto) {
 		try {
 			const texture = await textureStreaming.loadEvidencePhoto(photo);
-			currentTexture = textur;
+			currentTexture = texture;
 			// Add to evidence canvas
 			evidenceCanvas.addEvidenceItem({
 				type: 'photo',
 				name: photo.filename,
-				position: ;
-{ x: width / 2, y: height / 2 },
+				position: { x: width / 2, y: height / 2 },
 				rotation: 0,
 				scale: 1.0,
 				textureId: photo.id,
 				metadata: photo.metadata,
-				connections: [];
+				connections: []
 			});
-			return textur;
+			return texture;
 		} catch (err) {
-			error = err instanceof Error ? err.message: 'Failed to load evidence photo';
+			error = err instanceof Error ? err.message : 'Failed to load evidence photo';
 			throw err;
 		}
 	}
 	export async function loadDocumentScan(scan: DocumentScan, pageData: ImageData[]) {
 		try {
-			const textures = await textureStreaming.loadDocumentScan(scan, pageData);
+			const textures: any[] = await textureStreaming.loadDocumentScan(scan, pageData);
 			if (textures.length > 0) {
 				currentTexture = textures[0];
 			}
 			// Add to evidence canvas
-			textures.forEach((texture, index) => {
+			textures.forEach((texture: any, index: number) => {
 				evidenceCanvas.addEvidenceItem({
 					type: 'document',
 					name: `${scan.id}_page_${index + 1}`,
-					position: ;
-{ x: 200 + index * 100, y: 200 },
+					position: { x: 200 + index * 100, y: 200 },
 					rotation: 0,
 					scale: 1.0,
 					textureId: texture.documentId,
 					metadata: scan.metadata,
-					connections: [];
+					connections: []
 				});
 			});
-			return texture;
+			return textures;
 		} catch (err) {
-			error = err instanceof Error ? err.message: 'Failed to load document scan';
+			error = err instanceof Error ? err.message : 'Failed to load document scan';
 			throw err;
 		}
 	}
 	export async function loadCaseVisualization(visualization: CaseVisualization) {
 		try {
 			const texture = await textureStreaming.loadCaseVisualization(visualization);
-			currentTexture = textur;
-			return textur;
+			currentTexture = texture;
+			return texture;
 		} catch (err) {
-			error = err instanceof Error ? err.message: 'Failed to load case visualization';
+			error = err instanceof Error ? err.message : 'Failed to load case visualization';
 			throw err;
 		}
 	}
 	export async function loadCourtroomDisplay(display: CourtroomDisplay) {
 		try {
-			const textures = await textureStreaming.loadCourtroomDisplay(display);
+			const textures: any[] = await textureStreaming.loadCourtroomDisplay(display);
 			if (textures.length > 0) {
 				currentTexture = textures[0];
 			}
-			return texture;
+			return textures;
 		} catch (err) {
-			error = err instanceof Error ? err.message: 'Failed to load courtroom display';
+			error = err instanceof Error ? err.message : 'Failed to load courtroom display';
 			throw err;
 		}
 	}
@@ -381,7 +384,7 @@
 	}
 </script>
 <div bind:this={containerElement} class="legal-texture-canvas" style="width: {width}px; height: {height}px;">
-	<canvas
+	<canvas>
 		bind:this={canvasElement}
 		{width}
 		{height}
@@ -389,14 +392,14 @@
 		onmousemove={handleMouseMove}
 		onmouseup={handleMouseUp}
 		onwheel={handleWheel}
-		class="texture-canvas";
+		class="texture-canvas"
 		class:gpu-enabled={textureStreaming.stats().hasWebGL}
 		class:error={!!error}
-	/>
+	</canvas>
 	{#if error}
 		<div class="error-overlay">
 			<p>Error: {error}</p>
-			<button onclick={() => { error = null, }}>Dismiss</button>
+			<button onclick={() => { error = null; }}>Dismiss</button>
 		</div>
 	{/if}
 	{#if !isReady}
@@ -476,8 +479,8 @@
 		margin-top: 10px;
 	}
 	@keyframes spin {
-		0% { transform: rotate(0deg), }
-		100% { transform: rotate(360deg), }
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
 	}
 	.controls-overlay {
 		position: absolute;
