@@ -1,549 +1,55 @@
-<!-- N64 Gaming-Style MinIO Upload with Retro Progress Bars -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
-  import { toastService } from '$lib/services/toast-service';
-  import { gpuService } from '$lib/services/gpu-acceleration-service';
-  import { vectorService } from '$lib/services/postgresql-vector-service';
-  import { embeddingService } from '$lib/services/embedding-service';
-  import { telemetry } from '$lib/services/telemetry-service';
-  import { uploadTelemetry } from '$lib/services/upload-telemetry-service';
-  import { CONFIG } from '$lib/config/production-config.js';
-  // Import our N64 gaming components
-  import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
-  import N64LoadingRing from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
-  import N64EvolutionLoader from '$lib/components/ui/gaming/n64/N64EvolutionLoader.svelte';
-  interface Props {
-    caseId?: string;
-    onUploadComplete?: (result: UploadResult) => void;
-    onUploadError?: (error: string) => void;
-    multiple?: boolean;
-    disabled?: boolean;
-    accept?: string;
-    maxSize?: number;
-    maxConcurrency?: number;
-    enableGPUProcessing?: boolean;
-    enableToastNotifications?: boolean;
-    maxRetries?: number;
-    gamingTheme?: 'nes' | 'snes' | 'n64' | 'modern';
-    retro?: boolean;
-    animateEvolution?: boolean;
-  }
-  let {
-    caseId = '',
-    onUploadComplete,
-    onUploadError,
-    multiple = false,
-    disabled = false,
-    accept = CONFIG.minio.allowedMimeTypes.map(type => {
-      const ext = type.split('/')[1];
-      return `.${ext === 'vnd.openxmlformats-officedocument.wordprocessingml.document' ? 'docx' :
-              ext === 'msword' ? 'doc' : ext}`;
-    }).join(','),
-    maxSize = CONFIG.minio.maxFileSize,
-    maxConcurrency = CONFIG.performance.maxConcurrentUploads,
-    enableGPUProcessing = true,
-    enableToastNotifications = true,
-    maxRetries = CONFIG.performance.retryAttempts,
-    gamingTheme = 'n64',
-    retro = true,
-    animateEvolution = true
-  }: Props = $props();
-  interface UploadResult {
-    success: boolean;
-    id: string;
-    fileName: string;
-    originalName: string;
-    fileSize: number;
-    url: string;
-    hash: string;
-    message: string;
-  }
-  interface FileState {
-    file: Fil;
-    status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled';
-    progress: number;
-    controller?: AbortController | null;
-    result?: UploadResult;
-    error?: string;
-    toastId?: string;
-    gpuTaskIds?: string[];
-    startTime?: Date;
-    endTime?: Date;
-    attempts?: number;
-    nextRetryAt?: number;
-    retryTimeoutId?: number | null;
-    placeholder?: boolean;
-    originalSize?: number;
-    gamingProgress?: {
-      theme: string;
-      sparkle: boolean;
-      animated: boolean;
-    }
-  }
-  let files = $state<File[]>([]);
-  let fileStates = $state<FileState[]>([]);
-  let uploading = $state(false);
-  let dragOver = $state(false);
-  let uploadProgress = $state(0);
-  let uploadStatus = $state<'idle' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled'>('idle');
-  let errorMessage = $state<string | null>(null);
-  let minioHealthy = $state<boolean | null>(null);
+  import UploadManager from './upload-core';
+  import { onMount } from 'svelte';
+
+  export let multiple = false;
+  export let accept = '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff';
+  export let maxConcurrency = 3;
+  export let maxRetries = 3;
+
   let fileInput: HTMLInputElement | null = null;
-  let liveMessage = $state('');
-  let activeUploads = $state(0);
-  let uploadQueue = $state<FileState[]>([]);
-  let batchToastId = $state<string | null>(null);
-  let performanceMetrics = $state({
-    totalFiles: 0,
-    completedFiles: 0,
-    averageUploadTime: 0,
-    totalUploadTime: 0,
-    gpuTasksSubmitted: 0
+  const manager = new UploadManager({ maxConcurrency, maxRetries });
+
+  function handleFileSelect(e: Event) {
+    const input = e.currentTarget as HTMLInputElement | null;
+    if (!input?.files?.length) return;
+    const files = Array.from(input.files);
+    manager.addFiles(files);
+    manager.start();
+  }
+
+  // Expose cancel helper
+  function cancelAll() { manager.cancelAll(); }
+
+  onMount(() => {
+    // no-op: placeholder for future session restore
   });
-  // Gaming-specific state
-  let evolutionStage = $state<'nes' | 'snes' | 'n64' | 'modern'>(gamingTheme);
-  let showEvolutionLoader = $state(false);
-  // N64 controller color themes
-  const n64Themes = {
-    nes: { theme: 'red', sparkle: false },
-    snes: { theme: 'blue', sparkle: true },
-    n64: { theme: 'gold', sparkle: true },
-    modern: { theme: 'green', sparkle: true }
-  }
-  // Session persistence
-  const STORAGE_KEY = 'n64-minio-upload-session';
-  const enablePersistence = true;
-  function serializeSession() {
-    if (!enablePersistence) return;
-    const pending = fileStates.filter(f => !['completed','canceled'].includes(f.status)).map(f => ({
-      name: f.file.name,
-      size: f.file.size,
-      type: f.file.type,
-      status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,
-      attempts: f.attempts || 0,
-      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null,
-      gamingProgress: f.gamingProgress;
-    }));
-    if (pending.length === 0) {
-      try { sessionStorage.removeItem(STORAGE_KEY), } catch(e) { /* ignore */ }
-      return;
-    }
-    try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-        ts: Date.now(),
-        files: pending,
-        evolutionStage: evolutionStage;
-      }));
-    } catch(e) { /* ignore */ }
-  function restoreSession() {
-    if (!enablePersistence) return;
-    try {
-      const raw = sessionStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      const data = JSON.parse(raw);
-      if (!data?.files) return;
-      // Restore evolution stage
-      if ((data as { evolutionStage?: unknown; files?: unknown }).evolutionStage) {
-        evolutionStage = (data as { evolutionStage?: unknown; files?: unknown }).evolutionStag;
-      }
-      const restored: FileState[] = [];
-      for (const m of (data as { evolutionStage?: unknown; files?: unknown }).files) {
-        const ph = new File([], m.name, { type: m.type || 'application/octet-stream' });
-        restored.push({
-          file: ph,
-          placeholder: true,
-          originalSize: m.size,
-          status: 'pending',
-          progress: 0,
-          attempts: m.attempts || 0,
-          nextRetryAt: m.nextRetryAt || null,
-          gamingProgress: m.gamingProgress || n64Themes[evolutionStage];
-        });
-      }
-      if (restored.length) {
-        fileStates = [...fileStates, ...restored];
-        files = [...files, ...restored.map(r => r.file)];
-        liveMessage = `Restored ${restored.length} pending file(s)`;
-        if (enableToastNotifications) {
-          toastService.info('N64 Session Restored', `Recovered ${restored.length} pending file(s). Re-select originals to resume.`, { duration: 6000 });
-        }
-        ensureRetryTicker();
-      }
-    } catch }
-  function matchPlaceholders(incoming: File[]) {
-    for (const f of incoming) {
-      const idx = fileStates.findIndex(ps => ps.placeholder && ps.file.name === f.name && ps.originalSize === f.size);
-      if (idx !== -1) {
-        const prev = fileStates[idx];
-        fileStates[idx] = { ...prev, file: f, placeholder: false }
-      }
-    }
-  }
-  function isRetryable(message: string, statusCode?: number): boolean {
-    const transientPatterns = [/network/i, /timeout/i, /temporar/i, /rate limit/i, /ECONNRESET/i];
-    if (statusCode && (statusCode >= 500 || statusCode === 429)) return true;
-    return transientPatterns.some(r => r.test(message));
-  }
-  function scheduleRetry(fs: FileState, reason: string) {
-    fs.attempts = (fs.attempts || 1);
-    if (fs.attempts >= maxRetries) {
-      fs.status = 'error';
-      fs.error = reaso;
-      telemetry.emit('upload_retry_exhausted', { file: fs.file.name, attempts: fs.attempts, reason });
-      if (enableToastNotifications && fs.toastId) {
-        toastService.failUpload(
-          fs.toastId,
-          `${reason} (max retries reached)`,
-          () => retryFileUpload(fs)
-        );
-      }
-      return;
-    }
-    const delay = Math.min(8000, 600 * Math.pow(2, (fs.attempts - 1))) + Math.floor(Math.random() * 300);
-    fs.status = 'pending';
-    fs.nextRetryAt = Date.now() + delay;
-    if (fs.retryTimeoutId) {
-      clearTimeout(fs.retryTimeoutId);
-      fs.retryTimeoutId = null;
-    }
-    if (enableToastNotifications) {
-      const eta = (delay/1000).toFixed(1);
-      if (fs.toastId) {
-        toastService.update(fs.toastId, {
-          type: 'info',
-          message: `🎮 Retrying in ${eta}s (attempt ${fs.attempts + 1}/${maxRetries})`
-        });
-      } else {
-        fs.toastId = toastService.upload(
-          `🎮 ${fs.file.name}`,
-          `Retrying in ${eta}s (attempt ${fs.attempts + 1}/${maxRetries})`,
-          { dismissible: false }
-        );
-      }
-    }
-    fs.retryTimeoutId = setTimeout(() => {
-      if (fs.status === 'pending' && uploading) {
-        fs.retryTimeoutId = null;
-        fs.attempts = (fs.attempts || 0) + 1;
-        uploadQueue.push(fs);
-        processUploadQueue();
-      }
-    }, delay);
-    ensureRetryTicker();
-    telemetry.emit('upload_retry_scheduled', {
-      file: fs.file.name,
-      attemptNext: (fs.attempts + 1),
-      maxRetries,
-      delayMs: delay;
-    });
-  }
-  let retryTicker = $state(0);
-  let retryInterval: unknown = null;
-  function ensureRetryTicker() {
-    if (retryInterval) return;
-    retryInterval = setInterval(() => {
-      const pendingRetries = fileStates.some(f =>
-        f.status === 'pending' && f.nextRetryAt && f.nextRetryAt > Date.now()
-      );
-      if (!pendingRetries) {
-        clearInterval(retryInterval);
-        retryInterval = null;
-        return;
-      }
-      retryTicker = retryTicker + 1;
-    }, 1000);
-  }
-  onDestroy(() => {
-    if (retryInterval) clearInterval(retryInterval);
-  });
-  function cancelAllUploads() {
-    fileStates = fileStates.map(fs => {
-      if (fs.controller) {
-        try { fs.controller.abort(), } catch }
-      if (fs.retryTimeoutId) {
-        try { clearTimeout(fs.retryTimeoutId), } catch ;
-        fs.retryTimeoutId = null;
-      }
-      if (['uploading','pending','processing'].includes(fs.status)) {
-        return {
-          ...fs,
-          status: 'canceled',
-          progress: fs.status === 'uploading' ? fs.progress: 0,
-          controller: null;
-        }
-      }
-      return f;
-    });
-    uploading = false;
-    liveMessage = 'All uploads canceled';
-    if (enableToastNotifications) {
-      toastService.info('🎮 Uploads Canceled', 'All in‑flight and queued uploads have been canceled.', { duration: 4000 });
-    }
-    finalizeAggregateStatus();
-    serializeSession();
-    telemetry.emit('upload_batch_canceled_all', { remaining: fileStates.length });
-  }
-  // Drag and drop handlers
-  function handleDragOver(_event: DragEvent) {
-    event.preventDefault();
-    if (disabled || uploading) return;
-    dragOver = true;
-  }
-  function handleDragLeave(_event: DragEvent) {
-    event.preventDefault();
-    if (disabled || uploading) return;
-    dragOver = false;
-  }
-  function handleDrop(_event: DragEvent) {
-    event.preventDefault();
-    if (disabled || uploading) return;
-    dragOver = false;
-    const droppedFiles = Array.from(event.dataTransfer?.files || []);
-    processFiles(droppedFiles);
-  }
-  function handleFileSelect(_event: Event) {
-    // removed unused target assignment
-    const selectedFiles = Array.from(target.files || []);
-    processFiles(selectedFiles);
-  }
-  function processFiles(newFiles: File[]) {
-    errorMessage = null;
-    const validFiles: File[] = [];
-    for (const file of newFiles) {
-      if (file.size > maxSize) {
-        errorMessage = `File ${file.name} exceeds ${formatFileSize(maxSize)} limit`;
-        continu;
-      }
-      validFiles.push(file);
-    }
-    matchPlaceholders(validFiles);
-    if (multiple) {
-      files = [...files, ...validFiles];
-    } else {
-      files = validFiles.slice(0, 1);
-    }
-    const existingNames = new Set(fileStates.map(f => f.file));
-    for (const f of validFiles) {
-      if (![...fileStates].some(fs => fs.file === f)) {
-        fileStates = [...fileStates, {
-          file: f;
-          status: 'pending',
-          progress: 0,
-          gamingProgress: n64Themes[evolutionStage];
-        }];
-      }
-    }
-    fileStates = fileStates.filter(fs => files.includes(fs.file));
-    serializeSession();
-  }
-  function removeFile(_index: number) {
-    if (uploading) return;
-    // removed unused target assignment
-    if (target && target.status === 'uploading') return;
-    if (target?.retryTimeoutId) {
-      try { clearTimeout(target.retryTimeoutId), } catch ;
-    }
-    files = files.filter((_, i) => i !== index);
-    fileStates = fileStates.filter((_, i) => i !== index);
-    serializeSession();
-  }
-  function cancelUpload(_index: number) {
-    const fs = fileStates[index];
-    if (!fs || fs.status !== 'uploading') return;
-    try { fs.controller?.abort(), } catch if (fs.retryTimeoutId) {
-      try { clearTimeout(fs.retryTimeoutId), } catch ;
-      fs.retryTimeoutId = null;
-    }
-    fs.status = 'canceled';
-    fs.progress = 0;
-    liveMessage = `Upload canceled for ${fs.file.name}`;
-    uploading = fileStates.some(f => f.status === 'uploading');
-    if (!uploading) finalizeAggregateStatus();
-    serializeSession();
-    telemetry.emit('upload_canceled', { file: fs.file.name });
-  }
-  function retryFile(_index: number) {
-    const fs = fileStates[index];
-    if (!fs || (fs.status !== 'error' && fs.status !== 'canceled')) return;
-    fs.status = 'pending';
-    fs.progress = 0;
-    fs.error = undefined;
-    liveMessage = `Retry scheduled for ${fs.file.name}`;
-    serializeSession();
-    telemetry.emit('upload_manual_retry', { file: fs.file.name });
-  }
-  function aggregateProgress() {
-    if (fileStates.length === 0) return 0;
-    return Math.round(fileStates.reduce((sum, f) => sum + f.progress, 0) / fileStates.length);
-  }
-  async function finalizeAggregateStatus() {
-    const anyError = fileStates.some(f => f.status === 'error');
-    const allDone = fileStates.every(f => ['completed','canceled'].includes(f.status));
-    uploadProgress = aggregateProgress();
-    if (anyError) {
-      uploadStatus = 'error';
-    } else if (allDone) {
-      uploadStatus = 'completed';
-      // Evolution stage progression on completion
-      if (animateEvolution && allDone && !anyError) {
-        const stages: typeof evolutionStage[] = ['nes', 'snes', 'n64', 'modern'];
-        const currentIndex = stages.indexOf(evolutionStage);
-        if (currentIndex < stages.length - 1) {
-          evolutionStage = stages[currentIndex + 1];
-          showEvolutionLoader = true;
-          setTimeout(() => { showEvolutionLoader = false, }, 3000);
-        }
-      }
-    }
-    if (enableToastNotifications && batchToastId) {
-      const completed = fileStates.filter(item => item.length);
-      const failed = fileStates.filter(item => item.length);
-      const canceled = fileStates.filter(item => item.length);
-      if (uploadStatus === 'completed' && failed === 0) {
-        toastService.completeUpload(
-          batchToastId,
-          `🎮 All ${completed} files uploaded successfully! Average time: ${Math.round(performanceMetrics.averageUploadTime)}ms`
-        );
-      } else {
-        toastService.update(batchToastId, {
-          type: anyError ? 'warning' : 'success',
-          message: `🎮 Batch complete: ${completed} success, ${failed} failed, ${canceled} canceled`
-        });
-        setTimeout(() => toastService.dismiss(batchToastId!), 5000);
-      }
-      batchToastId = null;
-    }
-    if (enableToastNotifications && performanceMetrics.completedFiles > 0) {
-      toastService.info(
-        `🎮 N64 Upload Performance`,
-        `Completed ${performanceMetrics.completedFiles} files in ${Math.round(performanceMetrics.totalUploadTime / 1000)}s. GPU tasks: ${performanceMetrics.gpuTasksSubmitted}`,
-        { duration: 6000 }
-      );
-    }
-    if (uploadStatus === 'completed' && !anyError) {
-      liveMessage = 'All uploads completed';
-      setTimeout(() => {
-        files = [];
-        fileStates = [];
-        uploadProgress = 0;
-        uploadStatus = 'idle';
-        if (fileInput) fileInput.value = '';
-        performanceMetrics = {
-          totalFiles: 0,
-          completedFiles: 0,
-          averageUploadTime: 0,
-          totalUploadTime: 0,
-          gpuTasksSubmitted: 0
-        }
-      }, 2500);
-    }
-  }
-  function retryFileUpload(fs: FileState) {
-    fs.status = 'pending';
-    fs.progress = 0;
-    fs.error = undefined;
-    fs.toastId = undefined;
-    fs.startTime = undefined;
-    fs.endTime = undefined;
-    fs.attempts = 1;
-    if (!uploading) {
-      uploadFiles();
-    } else {
-      uploadQueue.push(fs);
-    }
-  }
-  async function uploadFiles() {
-    if (fileStates.length === 0 || uploading) return;
-    const realPending = fileStates.filter(f => f.status === 'pending' && !f.placeholder);
-    if (realPending.length === 0) {
-      if (enableToastNotifications) {
-        toastService.info('🎮 Awaiting Files', 'Select original files to replace placeholders before uploading.', { duration: 5000 });
-      }
-      return;
-    }
-    errorMessage = null;
-    uploadStatus = 'uploading';
-    liveMessage = 'Starting N64-style parallel upload batch';
-    uploading = true;
-    activeUploads = 0;
-    performanceMetrics.totalFiles = fileStates.filter(item => item.length);
-    telemetry.emit('upload_batch_start', { total: performanceMetrics.totalFiles, concurrency: maxConcurrency });
-    performanceMetrics.completedFiles = 0;
-    performanceMetrics.totalUploadTime = 0;
-    performanceMetrics.gpuTasksSubmitted = 0;
-    if (enableToastNotifications) {
-      batchToastId = toastService.upload(
-        `🎮 N64 Upload: ${performanceMetrics.totalFiles} files`,
-        `Starting parallel upload with ${maxConcurrency} concurrent connections...`,
-        { dismissible: false }
-      );
-    }
-    uploadQueue = fileStates.filter(fs => fs.status === 'pending' && !fs.placeholder);
-    const uploadPromises: Promise<void>[] = [];
-    for (let i = 0; i < Math.min(maxConcurrency, uploadQueue.length); i++) {
-      uploadPromises.push(processUploadQueue());
-    }
-    await Promise.all(uploadPromises);
-    uploading = fileStates.some(f => f.status === 'uploading');
-    if (!uploading) {
-      await finalizeAggregateStatus();
-    }
-    serializeSession();
-    telemetry.emit.length,
-      failed: fileStates.filter(item => item.length),
-      canceled: fileStates.filter(item => item.length);
-    });
-  }
-  async function processUploadQueue(): Promise<void> {
-    while (uploadQueue.length > 0 && uploading) {
-      const fs = uploadQueue.shift();
-      if (!fs) break;
-      activeUploads++;
-      await uploadSingleFile(fs);
-      activeUploads--;
-      uploadProgress = aggregateProgress();
-      if (enableToastNotifications && batchToastId) {
-        const completed = fileStates.filter(item => item.length);
-        const total = performanceMetrics.totalFile;
-        toastService.updateUploadProgress(
-          batchToastId,
-          (completed / total) * 100,
-          `🎮 ${completed}/${total} files uploaded (${activeUploads} active)`
-        );
-      }
-    }
-  }
-  async function uploadSingleFile(fs: FileState) {
-    const file = fs.fil;
-    fs.status = 'uploading';
-    fs.progress = 0;
-    fs.error = undefined;
-    fs.startTime = new Date());
-    fs.attempts = (fs.attempts || 0) + 1;
-    const controller = new AbortController();
-    fs.controller = controller;
-    liveMessage = `🎮 Uploading ${file.name}`;
-    telemetry.emit('upload_start', {
-      file: file.name,
-      size: file.size,
-      type: file.type,
-      attempt: fs.attempt;
-    });
-    // Update gaming progress theme based on file type
-    if (file.type.startsWith('image/')) {
-      fs.gamingProgress = { theme: 'blue', sparkle: true, animated: true }
-    } else if (file.type === 'application/pdf') {
-      fs.gamingProgress = { theme: 'gold', sparkle: true, animated: true }
-    } else {
-      fs.gamingProgress = { theme: 'green', sparkle: false, animated: true }
-    }
-    if (enableToastNotifications) {
-      fs.toastId = toastService.upload(
-        `🎮 ${file.name}`,
-        'Starting N64-style upload...',
-        {
+</script>
+
+<div class="n64-upload">
+  <input bind:this={fileInput} type="file" {accept} {multiple} style="display:none" on:change={handleFileSelect} />
+  <button on:click={() => fileInput?.click()} class="n64-select">Select files</button>
+  <button on:click={cancelAll} class="n64-cancel ml-2">Cancel all</button>
+
+  <div class="files mt-3">
+    {#each manager.fileStates as s}
+      <div class="file-row">
+        <div class="file-name">{s.file.name}</div>
+        <div class="file-status">{s.status}</div>
+        <div class="file-progress">{s.progress}%</div>
+      </div>
+    {/each}
+  </div>
+</div>
+
+<style>
+  .n64-upload { padding: 8px; }
+  .n64-select, .n64-cancel { padding: 6px 10px; border-radius: 6px; }
+  .files { margin-top: 12px; }
+  .file-row { display:flex; gap:12px; align-items:center; padding:6px 0; }
+  .file-name { flex:1; }
+</style>
+
           dismissible: false;
           actions: [{,
             label: 'Cancel',
@@ -797,7 +303,7 @@ restoreSession();
 <!-- N64 Gaming Style MinIO Upload Zone -->
 <div class="n64-upload-container" class:retro>
   <!-- Hidden file input -->
-  <input;
+  <input
     bind:this={fileInput}
     type="file"
     {accept}

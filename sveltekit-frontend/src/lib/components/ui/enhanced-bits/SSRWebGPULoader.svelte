@@ -52,33 +52,40 @@
   let nesClass = $derived(`nes-container ${loadingState === 'loading' ? loadingClass : ''} ${error ? errorClass : ''}`);
   $effect(() => {
     (async () => {
-    if (!browser || !enableGPU) {
-      // Fallback for SSR or disabled GPU
-      textureData = fallbackContent || generateFallbackPattern();
-      isLoading = false;
-      return;
-    }
-    try {
-      // Check WebGPU support
-      webgpuSupported = 'gpu' in navigator;
-      if (!webgpuSupported) {
-        console.log('🎮 WebGPU not supported, using CPU fallback');
-        textureData = generateFallbackPattern();
+      if (!browser || !enableGPU) {
+        // Fallback for SSR or disabled GPU
+        textureData = fallbackContent || generateFallbackPattern();
         isLoading = false;
         return;
       }
-      // Initialize NES texture streaming
-      await initializeTextureStreaming();
-    } catch (err) {
-      console.error('🎮 WebGPU initialization failed:', err);
-      error = err instanceof Error ? err.message: 'WebGPU failed';
-      textureData = generateFallbackPattern();
-      isLoading = false;
-    }
+      try {
+        // Check WebGPU support
+        webgpuSupported = 'gpu' in navigator;
+        if (!webgpuSupported) {
+          console.log('🎮 WebGPU not supported, using CPU fallback');
+          textureData = generateFallbackPattern();
+          isLoading = false;
+          return;
+        }
+        // Initialize NES texture streaming
+        await initializeTextureStreaming();
+      } catch (err) {
+        console.error('🎮 WebGPU initialization failed:', err);
+        error = err instanceof Error ? err.message: 'WebGPU failed';
+        textureData = generateFallbackPattern();
+        isLoading = false;
+      }
+    })();
   });
   /**
    * Initialize NES-inspired texture streaming with LOD management
    */
+  async function initializeTextureStreaming() {
+    // Placeholder initialization: could warm up pipelines or allocate buffers
+    // For now just proceed to streaming logic executed below
+    return Promise.resolve();
+  }
+
   (async () => {
     try {
       // Calculate optimal LOD level based on context
@@ -128,8 +135,8 @@
    * Convert GPU texture data to displayable format
    */
   async function convertTextureToDisplay(textureBuffer: ArrayBuffer, lodLevel: number): Promise<string> {
-    const lodInfo = LOD_LEVELS[lodLevel];
-    const { width: texWidth, height: texHeight } = lodInfo.resolutio;
+  const lodInfo = LOD_LEVELS[lodLevel];
+  const { width: texWidth, height: texHeight } = lodInfo.resolution;
     // Create canvas to convert texture data
     const canvas = document.createElement('canvas');
     canvas.width = texWidth;
@@ -164,7 +171,7 @@
             const enhancedChunk = await lodManager.streamTexture(assetId, higherLOD);
             if (enhancedChunk) {
               const enhancedTexture = await convertTextureToDisplay(enhancedChunk.data, higherLOD);
-              textureData = enhancedTextur;
+              textureData = enhancedTexture;
               currentLOD = higherLOD;
               console.log(`🎮 Enhanced ${assetId} to LOD${higherLOD}`);
             }
@@ -258,7 +265,8 @@
   {/if}
 </div>
 
-<style>/* NES-inspired container styling */ {}
+<style>
+  /* NES-inspired container styling */
   .nes-container {
     position: relative;
     border: 2px solid #000;
@@ -342,14 +350,9 @@
     text-shadow: 1px 1px 0 #fff;
   }
   @keyframes nes-blink {
-0%, {}
-    50% {
-      opacity: 1;
-    }
-51%, {}
-    100% {
-      opacity: 0.6;
-    }
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
   }
   @keyframes nes-spin {
     from {

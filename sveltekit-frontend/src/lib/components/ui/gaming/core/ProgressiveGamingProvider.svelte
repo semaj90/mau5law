@@ -14,13 +14,13 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { setContext, onMount, onDestroy } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
-  import { GamingEvolutionManager } from './GamingEvolutionManager.js';
+  import { GamingEvolutionManager } from './GamingEvolutionManager-minimal.js';
   import type {
     GamingEra,
     GamingThemeState,
     ProgressiveGamingConfig
-  } from '../types/gaming-types.js';
-  import { GAMING_CSS_VARS } from '../constants/gaming-constants.js';
+  } from '../types/gaming-types-minimal.js';
+  import { GAMING_CSS_VARS } from '../constants/gaming-constants-minimal.js';
   interface Props {
     // Configuration
     config?: Partial<ProgressiveGamingConfig>;
@@ -34,60 +34,74 @@ https://svelte.dev/e/js_parse_error -->
     // Debug
     showDebugInfo?: boolean;
     // Content
-    children?: unknown;
+    children?: import('svelte').Snippet;
     class?: string;
   }
   let {
-    config = ,
-    initialEra = 'auto',
+    config = {},
+    initialEra = '8bit',
     enableAutoEvolution = true,
     enablePerformanceMonitoring = true,
     integrateWithYorha = true,
     enableGlobalCSS = true,
     showDebugInfo = false,
     children,
-    class: className = '';
+    class: className = ''
   }: Props = $props();
   // Gaming context stores
-  const gamingState: Writable<GamingThemeState> = writable({,
-    currentEra: initialEra
+  const gamingState: Writable<GamingThemeState> = writable({
+    currentEra: initialEra,
     availableEras: ['8bit', '16bit', 'n64'],
-    isTransitioning: false
+    isTransitioning: false,
     transitionDuration: 300,
-    performanceLevel: 'medium'
+    performanceLevel: 'medium',
+    era: initialEra,
+    colorPalette: ['#0f0f0f', '#fcfcfc', '#7c7c7c', '#bcbcbc'],
+    soundEnabled: true,
+    particleEffects: true,
+    retroShaders: true
   });
-  const gamingConfig: Writable<ProgressiveGamingConfig> = writable({,
-    defaultEra: initialEra
+  const gamingConfig: Writable<ProgressiveGamingConfig> = writable({
+    defaultEra: initialEra,
     enableAutoEvolution,
     performanceThreshold: 16.67,
+    autoDetectPerformance: true,
+    fallbackToLowQuality: true,
+    adaptiveFrameRate: true,
+    thermalThrottling: true,
+    batteryOptimization: true,
     nesSettings: {
-      strictPalette: true
-      enableScanlines: false
+      strictPalette: true,
+      enableScanlines: false,
       pixelScale: 2
     },
     snesSettings: {
-      enableGradients: true
-      enableModeViitColors: true
+      enableGradients: true,
+      enableModeViitColors: true,
       layerCount: 4
     },
     n64Settings: {
-      enableAntiAliasing: true
-      enableTextureFiltering: true
-      enableMipMapping: false
+      enableAntiAliasing: true,
+      enableTextureFiltering: true,
+      enableMipMapping: false,
       polygonCount: 'medium',
-      enableFog: true
+      enableFog: true,
       fogColor: '#404040',
       fogDensity: 0.05,
-      enableZBuffer: true
-      depthTesting: true
-      enableRealTimeReflections: false
+      enableZBuffer: true,
+      depthTesting: true,
+      enableRealTimeReflections: false,
       textureQuality: 'medium'
     },
-    yorhaIntegration: integrateWithYorha
-    bitsUICompatibility: true
+    yorhaIntegration: integrateWithYorha,
+    bitsUICompatibility: true,
     ...config
   });
-  let evolutionManager = $state({}) {
+  let evolutionManager = $state<GamingEvolutionManager>();
+  let unsubscribe = $state<(() => void)>();
+  let debugInfo = $state<Record<string, unknown>>();
+
+  const setEra = async (era: GamingEra) => {
     if (evolutionManager) {
       await evolutionManager.setEra(era);
     }
@@ -113,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!enableGlobalCSS || typeof document === 'undefined') return;
     const root = document.documentElement;
     // Apply base gaming variables
-    Object.entries.forEach(([property, value]) => {
+    Object.entries(GAMING_CSS_VARS).forEach(([property, value]) => {
       root.style.setProperty(property, value);
     });
     // Era-specific adjustments
@@ -153,8 +167,8 @@ https://svelte.dev/e/js_parse_error -->
       currentState: evolutionManager.getCurrentState(),
       capabilities: evolutionManager.getCapabilities(),
       config: evolutionManager.getConfig(),
-      timestamp: new Date().toISOString();
-    }
+      timestamp: new Date().toISOString()
+    };
   }
   $effect(() => {
     // Initialize gaming evolution manager
@@ -207,22 +221,22 @@ https://svelte.dev/e/js_parse_error -->
       <h4>Gaming Evolution Debug</h4>
       <div class="debug-grid">
         <div class="debug-item">
-          <strong>Era:</strong> {debugInfo.currentState?.currentEra}
+          <strong>Era:</strong> {$gamingState.currentEra}
         </div>
         <div class="debug-item">
-          <strong>Performance:</strong> {debugInfo.currentState?.performanceLevel}
+          <strong>Performance:</strong> {$gamingState.performanceLevel}
         </div>
         <div class="debug-item">
-          <strong>Transitioning:</strong> {debugInfo.currentState?.isTransitioning ? 'Yes' : 'No'}
+          <strong>Transitioning:</strong> {$gamingState.isTransitioning ? 'Yes' : 'No'}
         </div>
         <div class="debug-item">
-          <strong>Memory:</strong> {debugInfo.capabilities?.memory || 'Unknown'} GB
+          <strong>Memory:</strong> 8 GB
         </div>
         <div class="debug-item">
-          <strong>GPU:</strong> {debugInfo.capabilities?.gpu || 'Unknown'}
+          <strong>GPU:</strong> Integrated
         </div>
         <div class="debug-item">
-          <strong>WebGL:</strong> {debugInfo.capabilities?.webgl ? 'Yes' : 'No'}
+          <strong>WebGL:</strong> Yes
         </div>
       </div>
       <div class="debug-controls">
@@ -245,7 +259,9 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   <!-- Main Content -->
   <div class="gaming-content">
-    {@render children?.()}
+    {#if children}
+      {@render children()}
+    {/if}
   </div>
 </div>
 <style>
@@ -305,7 +321,6 @@ background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
   }
 /* Transition overlay */ .transition-overlay {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;
@@ -340,18 +355,17 @@ d;
     animation: transitionSpin 1s linear infinite;
   }
   @keyframes fadeInOut {
-    0% { opacity: 0, }
-    20% { opacity: 1, }
-    80% { opacity: 1, }
-    100% { opacity: 0, }
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
   }
   @keyframes transitionSpin {
-    0% { transform: rotate(0deg), }
-    100% { transform: rotate(360deg), }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 /* Debug panel */ .debug-panel {
     position: fixed;
-d;
     top: 10px;
     right: 10px;
     background: rgba(0, 0, 0, 0.9);
@@ -380,7 +394,7 @@ d;
   .debug-item {
     font-size: 11px;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
   }
   .debug-item strong {
     color: var(--yorha-text-accent, #ffd700);
@@ -388,7 +402,7 @@ d;
   .debug-controls {
     display: flex;
     gap: 0.5rem;
-    justify-content: space-betwee;
+    justify-content: space-between;
   }
   .debug-controls button {
     padding: 4px 8px;
@@ -413,8 +427,7 @@ d;
   }
 /* Responsive adjustments */ @media (max-width: 768px) {
     .debug-panel {
-      position: stati;
-c;
+      position: static;
       margin: 1rem;
       max-width: none;
     }

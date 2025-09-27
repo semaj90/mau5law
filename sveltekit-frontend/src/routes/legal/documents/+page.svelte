@@ -375,7 +375,7 @@ showUploadDialog = true}>
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
         <div class="relative">
           <Search class="absolute left-2 top-2.5 h-4 w-4 nes-text is-disabled" />
-          <Input;
+          <Input
             bind:value={searchQuery}
             placeholder="Search documents by title, author, or tags..."
             class="pl-8 w-full md:w-[400px]"

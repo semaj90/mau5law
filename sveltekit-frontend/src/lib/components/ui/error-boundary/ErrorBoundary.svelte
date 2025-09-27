@@ -1,29 +1,27 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import Button from 'bits-ui';
   import { Card } from 'bits-ui';
-  import ModernButton from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   interface Props {
     fallback?: unknown;
-    children: unknown;
     onError?: (error: Error, errorInfo?: unknown) => void;
   }
-  let { fallback, children, onError }: Props = $props();
+  // Use a type assertion on the returned props object instead of a trailing annotation
+  // which can confuse source-transform-based compilers (avoid zero-length range overwrite).
+  let { fallback, onError } = $props() as Props;
   let hasError = $state(false);
   let error = $state<Error | null>(null);
   let errorId = $state<string>('');
   // Error logging
   function logError(err: Error, context?: unknown) {
     const errorData = {
-      id: errorId
+      id: errorId,
       message: err.message,
       stack: err.stack,
-      url: $page.url.pathname,
+      url: globalThis.location?.pathname,
       timestamp: new Date().toISOString(),
       userAgent: globalThis.navigator?.userAgent,
-      context;
+      context,
     }
     console.error('YoRHa Error Boundary:', errorData);
     // In production, send to error tracking service
@@ -31,24 +29,38 @@
     onError?.(err, errorData);
   }
   // Global error handler
-  function handleGlobalError(_event: ErrorEvent) {
+  function handleGlobalError(event: ErrorEvent) {
     if (!hasError) {
-      const err = new Error(event.message);
-      err.stack = `${event.filename}:${event.lineno}:${event.colno}`;
+      const msg =
+        typeof (event as any).message === 'string'
+          ? (event as any).message
+          : String((event as any).error?.message ?? event?.toString() ?? 'Unknown Error');
+      const err = new Error(msg);
+
+      // Safely read filename/line/col if available (different browsers expose different names)
+      const filename = (event as any).filename ?? (event as any).fileName ?? '';
+      const lineno = (event as any).lineno ?? (event as any).lineNumber ?? 0;
+      const colno = (event as any).colno ?? (event as any).columnNumber ?? 0;
+      if (filename || lineno || colno) {
+        err.stack = `${filename}:${lineno}:${colno}`;
+      }
+
       hasError = true;
       error = err;
-      errorId = `ERR_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
+      errorId = `ERR_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
       logError(err, { type: 'global', event });
     }
   }
   // Unhandled promise rejection handler
-  function handleUnhandledRejection(_event: PromiseRejectionEvent) {
+  function handleUnhandledRejection(event: PromiseRejectionEvent) {
     if (!hasError) {
-      const err = new Error(event.reason?.message || 'Unhandled promise rejection');
+      const reasonAny = (event as any).reason;
+      const msg = reasonAny?.message ?? String(reasonAny ?? 'Unhandled promise rejection');
+      const err = new Error(msg);
       hasError = true;
       error = err;
-      errorId = `ERR_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
-      logError(err, { type: 'unhandled_rejection', reason: event.reason });
+      errorId = `ERR_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+      logError(err, { type: 'unhandled_rejection', reason: reasonAny });
     }
   }
   // Reset error state
@@ -75,8 +87,8 @@
 {#if hasError && error}
   <!-- Error State -->
   <div class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg">
-    <div.Root class="bg-nier-bg-secondary border-red-500/30 max-w-2xl w-full nes-container">
-      <div.Header class="text-center pb-golden-lg nes-container">
+    <Card class="bg-nier-bg-secondary border-red-500/30 max-w-2xl w-full nes-container">
+      <div class="text-center pb-golden-lg nes-container">
         <div class="mb-golden-md">
           <!-- YoRHa Error Icon -->
           <div class="w-16 h-16 mx-auto bg-red-500/20 rounded-full flex items-center justify-center">
@@ -89,14 +101,14 @@
             </svg>
           </div>
         </div>
-        <div.Title class="text-2xl font-bold text-red-400 uppercase tracking-wide mb-golden-sm nes-container">
+        <h2 class="text-2xl font-bold text-red-400 uppercase tracking-wide mb-golden-sm nes-container">
           System Error Detected
-        </div.Title>
-        <div.Description class="text-nier-text-secondary nes-container">
+        </h2>
+        <p class="text-nier-text-secondary nes-container">
           The YoRHa Legal AI system encountered an unexpected error. Our androids are investigating the issue.
-        </div.Description>
-      </div.Header>
-      <div.Content class="space-y-golden-lg nes-container">
+        </p>
+      </div>
+      <div class="space-y-golden-lg nes-container">
         <!-- Error Details -->
         <div class="bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md">
           <h3 class="text-sm font-bold text-nier-accent-warm uppercase tracking-wide mb-golden-sm">Error Details</h3>
@@ -105,11 +117,11 @@
               <span class="text-nier-text-secondary">ID:</span>
               <span class="col-span-3 text-red-400">{errorId}</span>
               <span class="text-nier-text-secondary">Message:</span>
-              <span class="col-span-3 text-nier-text-primary">{error.message}</span>
+              <span class="col-span-3 text-nier-text-primary">{error?.message ?? 'Unknown error'}</span>
               <span class="text-nier-text-secondary">Location:</span>
-              <span class="col-span-3 text-nier-text-primary">{$page.url.pathname}</span>
-              <span class="text-nier-text-secondary">Time:</span>
-              <span class="col-span-3 text-nier-text-primary">{new Date().toLocaleString()}</span>
+              <span class="col-span-3 text-nier-text-primary">{$page?.url?.pathname ?? 'unknown'}</span>
+              <span class="text-nier-text-secondary">Location:</span>
+              <span class="col-span-3 text-nier-text-primary">{globalThis.location?.pathname ?? 'unknown'}</span>
             </div>
           </div>
         </div>
@@ -127,45 +139,45 @@
         {/if}
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
-          <ModernButton
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
+          <Button
             onclick={resetError}
-            variant="primary"
+            variant="yorha"
             class="bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary"
           >
             Try Again
-          </ModernButton>
-          <ModernButton
+          </Button>
+          <Button
             onclick={reloadPage}
             variant="ghost"
             class="border-nier-accent-cool text-nier-accent-cool hover:bg-nier-accent-cool hover:text-nier-bg-primary"
           >
             Reload Page
-          </ModernButton>
-          <ModernButton
+          </Button>
+          <Button
             href="/"
             variant="ghost"
             class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
           >
             Go Home
-          </ModernButton>
+          </Button>
         </div>
-        <!-- Support Information -->
-        <div class="text-center pt-golden-lg border-t border-nier-border-muted">
           <p class="text-xs text-nier-text-muted">
             If this error persists, please contact the YoRHa support team with error ID:
             <code class="text-red-400 font-mono">{errorId}</code>
           </p>
         </div>
-      </div.Content>
-    </div.Root>
+      </div>
+    </Card>
   </div>
 {:else if fallback}
-  {@render fallback()}
+  <slot name="fallback" />
 {:else}
-  {@render children()}
+  <slot />
 {/if}
 
-<style>/* Ensure error boundary styles don't interfere with global styles */ {}
+<style>/* Ensure error boundary styles don't interfere with global styles */
   details summary::-webkit-details-marker {
     display: none;
   }

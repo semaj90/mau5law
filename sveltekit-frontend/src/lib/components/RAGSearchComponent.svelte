@@ -115,9 +115,9 @@
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.txt,.pdf,.doc,.docx';
-    fileInput.onchange= async (event) => {
-      // removed unused target assignment
-      const file = target.files?.[0];
+    fileInput.onchange = async (event) => {
+      const input = event.currentTarget as HTMLInputElement | null;
+      const file = input?.files?.[0];
       if (!file) return;
       try {
         const text = await file.text();

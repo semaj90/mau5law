@@ -1,8 +1,7 @@
 /**
  * Gaming UI Component Types
  * Type definitions for N64, NES, and retro gaming components
- */;
-}
+ */
 export interface GamingComponentProps {
   variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'outline';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -10,7 +9,7 @@ export interface GamingComponentProps {
   loading?: boolean;
   class?: string;
   style?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 export interface N64RenderingOptions {
   textureQuality: 'low' | 'medium' | 'high' | 'ultra';
@@ -24,7 +23,6 @@ export interface N64RenderingOptions {
   shadowMapSize: 256 | 512 | 1024 | 2048;
 }
 export type GamingEra = 'nes' | 'snes' | 'n64' | 'ps1' | 'dreamcast' | 'modern' | '8bit' | '16bit';
-}
 export interface NESColorPalette {
   background: string[];
   sprites: string[];

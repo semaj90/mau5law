@@ -1,7 +1,17 @@
 <!-- Combobox Component for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Combobox } from 'bits-ui';
+  import Combobox from 'bits-ui';
+  // Some builds export a single Combobox object with subcomponents; destructure it for use as individual Svelte components
+  // Cast to `any` to avoid TypeScript errors when the runtime shape differs from the declared types.
+  const {
+    Root: ComboboxRoot,
+    Input: ComboboxInput,
+    Trigger: ComboboxTrigger,
+    Content: ComboboxContent,
+    Item: ComboboxItem,
+    HiddenInput: ComboboxHiddenInput
+  } = Combobox as any;
   import { Check, ChevronDown, Search, X } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface ComboboxOption {
@@ -14,7 +24,7 @@
   }
   export interface ComboboxProps {
     options: ComboboxOption[];
-    value?: string;
+    value?: string | string[];
     placeholder?: string;
     searchPlaceholder?: string;
     emptyMessage?: string;
@@ -32,7 +42,7 @@
   }
   let {
     options = [],
-    value = $bindable(multiple ? [] : undefined),
+    value = $bindable(undefined),
     placeholder = 'Select option...',
     searchPlaceholder = 'Search options...',
     emptyMessage = 'No options found',
@@ -46,17 +56,18 @@
     error,
     class: className = '',
     onValueChange,
-    onCreateOptio;
+    onCreateOption
   }: ComboboxProps = $props();
   let inputValue = $state('');
   let open = $state(false);
   // Filter options based on search input
   let filteredOptions = $derived(() => {
-    if (!inputValue) return option;
+    if (!inputValue) return options;
     const query = inputValue.toLowerCase();
-    return options.filter(item => item.includes)(query) ||
-      option.description?.toLowerCase().includes(query) ||
-      option.category?.toLowerCase().includes(query)
+    return options.filter(item =>
+      item.label.toLowerCase().includes(query) ||
+      (item.description?.toLowerCase().includes(query) ?? false) ||
+      (item.category?.toLowerCase().includes(query) ?? false)
     );
   });
   // Group options by category if categories are enabled
@@ -69,10 +80,10 @@
       }
       acc[category].push(option);
       return acc;
-    }, as Record<string, ComboboxOption[]>);
-    return Object.entries.map(([category, options]) => ({
-      category: category === 'Other' ? null : category
-      option;
+    }, {} as Record<string, ComboboxOption[]>);
+    return Object.entries(grouped).map(([category, options]) => ({
+      category: category === 'Other' ? null : category,
+      options
     }));
   });
   // Find selected option(s) for display
@@ -80,14 +91,15 @@
     if (multiple && Array.isArray(value)) {
       return options.filter(option => value.includes(option.value));
     } else if (!multiple && typeof value === 'string') {
-      return options.find(option => option.value === value);
+      const found = options.find(option => option.value === value);
+      return found ? [found] : [];
     }
-    return null;
+    return [];
   });
   // Check if option can be created
   let canCreateOption = $derived(() => {
     return creatable &&
-           inputValue.trim() &&
+           inputValue.trim().length > 0 &&
            !filteredOptions.some(opt => opt.label.toLowerCase() === inputValue.toLowerCase());
   });
   function handleValueChange(newValue: string | undefined) {
@@ -97,7 +109,7 @@
         value = [...currentValues, newValue];
       }
     } else {
-      value = newValu;
+      value = newValue;
     }
     onValueChange?.(value);
   }
@@ -119,33 +131,30 @@
     }
   }
   // Generate unique ID for accessibility
-  const inputId = `combobox-${Math.random.toString-substr(2, 9)}`;
+  const inputId = `combobox-${Math.random().toString(36).substr(2, 9)}`;
 </script>
 <div class="legal-combobox-container w-full space-y-2">
   <!-- Label -->
-  {#if label}
-    <label
-      for={inputId}
-      class="block text-sm font-medium text-yorha-text-primary font-mono"
-    >
-      {label}
-      {#if required}
-        <span class="text-yorha-accent ml-1">*</span>
-      {/if}
-    </label>
-  {/if}
-  <Combobox.Root
-    bind: inputValue ;
-    bind:open
+    {#if label}
+      <label
+        for={inputId}
+        class="block text-sm font-medium text-yorha-text-primary font-mono"
+      >
+        {label}
+      </label>
+    {/if}
+  <ComboboxRoot
+    bind:open={open}
     {disabled}
     {multiple}
-    onSelectedChange={handleValueChange}
+    on:selectedChange={handleValueChange}
   >
     <div class="relative">
-      <Combobox.Input
+      <ComboboxInput
         id={inputId}
+        bind:value={inputValue}
         placeholder={open ? searchPlaceholder : placeholder}
-        className={cn(
+        class={cn(
           'flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
           'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
           'focus:ring-yorha-primary',
@@ -154,29 +163,29 @@
         )}
         {required}
       />
-      <Combobox.Trigger
+      <ComboboxTrigger
         class="absolute inset-y-0 right-0 flex h-full w-9 items-center justify-center"
       >
         <ChevronDown class="h-4 w-4 shrink-0 opacity-50" />
-      </Combobox.Trigger>
+      </ComboboxTrigger>
     </div>
-    <Combobox.Content
+    <ComboboxContent
       class="relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md border-yorha-border bg-yorha-bg-secondary"
       sideOffset={4}
     >
       <div class="p-1">
         <!-- Create option -->
         {#if canCreateOption}
-          <Combobox.Item
+          <ComboboxItem
             value={inputValue}
-            onSelect={handleCreateOption}
+            on:select={handleCreateOption}
             class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-yorha-bg-tertiary data-[highlighted]:bg-yorha-primary data-[highlighted]:text-yorha-bg-primary font-mono"
           >
             <div class="flex items-center gap-2">
               <Search class="w-4 h-4" />
               <span>Create "{inputValue}"</span>
             </div>
-          </Combobox.Item>
+          </ComboboxItem>
           <div class="border-b border-yorha-border my-1"></div>
         {/if}
         <!-- Options -->
@@ -192,7 +201,7 @@
               </div>
             {/if}
             {#each group.options as option}
-              <Combobox.Item
+              <ComboboxItem
                 value={option.value}
                 disabled={option.disabled}
                 class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-yorha-bg-tertiary data-[highlighted]:bg-yorha-primary data-[highlighted]:text-yorha-bg-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50 font-mono"
@@ -210,15 +219,15 @@
                     <Check class="h-4 w-4" />
                   {/if}
                 </div>
-              </Combobox.Item>
+              </ComboboxItem>
             {/each}
           {/each}
         {/if}
       </div>
-    </Combobox.Content>
+    </ComboboxContent>
     <!-- Hidden input for form submission -->
-    <Combobox.HiddenInput />
-  </Combobox.Root>
+    <ComboboxHiddenInput />
+  </ComboboxRoot>
   <!-- Selected items display for multiple selection -->
   {#if multiple && Array.isArray(value) && value.length > 0}
     <div class="flex flex-wrap gap-2 mt-2">

@@ -16,5 +16,4 @@ export {
   CardContent,
   CardFooter,
 } from '$lib/components/ui/enhanced-bits';
-// For convenience, also export the compound object
-export { CardCompound } from '$lib/components/ui/enhanced-bits';
+// Note: CardCompound does not exist in enhanced-bits, so we don't re-export it here.
