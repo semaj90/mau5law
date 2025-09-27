@@ -59,7 +59,7 @@
   });
   async function loadSystemStats() {
     try {
-      // removed unused response assignment
+      const response = await fetch('/api/admin/system-stats');
       if (response.ok) {
         const data = await response.json();
         systemStats = data;
@@ -73,8 +73,8 @@
           totalDocuments: 1847,
           processedDocuments: 1523,
           aiAnalyses: 3421,
-          uptime: '2d 14h 32m',
-        }
+          uptime: '2d 14h 32m'
+        };
       }
     } catch (error) {
       console.error('Failed to load system stats:', error);
@@ -82,7 +82,7 @@
   }
   async function loadSystemHealth() {
     try {
-      // removed unused response assignment
+      const response = await fetch('/api/admin/system-health');
       if (response.ok) {
         const data = await response.json();
         systemHealth = data.services || systemHealth;
@@ -95,7 +95,7 @@
   }
   async function loadRecentActivity() {
     try {
-      // removed unused response assignment
+      const response = await fetch('/api/admin/recent-activity');
       if (response.ok) {
         const data = await response.json();
         recentActivity = data.activities || [];
@@ -108,7 +108,7 @@
             user: 'john.doe@law.com',
             description: 'Created new case: Smith v. Johnson',
             timestamp: new Date(Date.now() - 300000).toISOString(),
-            status: 'success',
+            status: 'success'
           },
           {
             id: 2,
@@ -116,7 +116,7 @@
             user: 'jane.smith@law.com',
             description: 'Completed AI analysis on contract dispute',
             timestamp: new Date(Date.now() - 900000).toISOString(),
-            status: 'success',
+            status: 'success'
           },
           {
             id: 3,
@@ -124,8 +124,8 @@
             user: 'admin@legal-ai.com',
             description: 'Administrator login from 192.168.1.100',
             timestamp: new Date(Date.now() - 1800000).toISOString(),
-            status: 'info',
-          },
+            status: 'info'
+          }
         ];
       }
     } catch (error) {
@@ -137,22 +137,18 @@
     lastUpdated = new Date();
   }
   function getHealthIcon(isHealthy: boolean) {
-    return isHealthy ? CheckCircle : AlertTriangl;
+    return isHealthy ? CheckCircle : AlertTriangle;
   }
   function getHealthColor(isHealthy: boolean) {
     return isHealthy ? 'text-green-600' : 'text-red-600';
   }
+  const activityIconMap: Record<string, any> = {
+    case_created: Users,
+    ai_analysis: Cpu,
+    user_login: Shield
+  };
   function getActivityIcon(type: string) {
-    switch (type) {
-      case 'case_created':
-        return User;
-      case 'ai_analysis':
-        return Cpu;
-      case 'user_login':
-        return Shield;
-      default:
-        return Activity;
-    }
+    return activityIconMap[type] || Activity;
   }
   function formatTimeAgo(timestamp: string) {
     const date = new Date(timestamp);
@@ -192,19 +188,19 @@
   </div>
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/users')} variant="ghost">
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/users')}>
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
     </button>
-    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/cluster')} variant="ghost">
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/cluster')}>
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
     </button>
-    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/gpu-demo')} variant="ghost">
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/gpu-demo')}>
       <Cpu class="w-6 h-6" />
       <span>GPU Monitor</span>
     </button>
-    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/system-status')} variant="ghost">
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/system-status')}>
       <Monitor class="w-6 h-6" />
       <span>System Status</span>
     </button>
@@ -314,7 +310,7 @@
       <div class="space-y-4">
         {#if recentActivity.length > 0}
           {#each recentActivity as activity}
-            {@const ActivityIcon = getActivityIcon(activity.type)}
+                {@const ActivityIconComp = getActivityIcon(activity.type)}
             <div
               class="flex items-start gap-3 p-3 border-l-4 {activity.status === 'success'
                 ? 'border-green-500 bg-green-50'
@@ -322,7 +318,7 @@
                   ? 'border-red-500 bg-red-50'
                   : 'border-blue-500 bg-blue-50'} rounded-r-lg"
             >
-              <ActivityIcon class="w-4 h-4 mt-1 nes-text is-disabled" />
+                    <ActivityIconComp class="w-4 h-4 mt-1 nes-text is-disabled" />
               <div class="flex-1">
                 <p class="text-sm font-medium">{activity.description}</p>
                 <div class="flex items-center gap-4 mt-1 text-xs nes-text is-disabled">

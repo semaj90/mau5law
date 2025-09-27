@@ -84,7 +84,7 @@
       <!-- Query Form -->
       <form method="POST" action="?/query" use:enhance={handleRAGSubmit}>
         <div class="flex gap-3">
-          <Input;
+          <Input
             bind:value={queryText}
             name="query"
             placeholder="Ask questions about case documents..."

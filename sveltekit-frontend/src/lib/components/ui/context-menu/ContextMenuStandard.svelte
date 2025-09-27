@@ -1,189 +1,131 @@
 <script lang="ts">
-  import { ContextMenu } from 'bits-ui';
   import type { Snippet } from 'svelte';
-  import type { WithoutChild } from 'bits-ui';
-  interface Props extends ContextMenu.RootProps {
+  import BitsUI from 'bits-ui';
+  // Support both shapes: BitsUI.ContextMenu.{Root, Trigger, ...} or flat BitsUI.ContextMenuRoot, ...
+  // Prefer the nested ContextMenu namespace if present, otherwise fall back to flat BitsUI exports.
+  const _ns = (BitsUI as any).ContextMenu ?? (BitsUI as any);
+
+  // Use Svelte 5 $state for values that will be assigned at runtime so updates are reactive.
+  let ContextMenuRoot = $state<any>(null);
+  let ContextMenuTrigger = $state<any>(null);
+  let ContextMenuPortal = $state<any>(null);
+  let ContextMenuContent = $state<any>(null);
+  let ContextMenuSeparator = $state<any>(null);
+  let ContextMenuCheckboxItem = $state<any>(null);
+  let ContextMenuRadioItem = $state<any>(null);
+  let ContextMenuSub = $state<any>(null);
+  let ContextMenuSubTrigger = $state<any>(null);
+  let ContextMenuSubContent = $state<any>(null);
+  let ContextMenuItem = $state<any>(null);
+
+  // Safely assign depending on the shape present (avoid destructuring into reactive $state variables).
+  if (_ns) {
+    if ('Root' in _ns) {
+      ContextMenuRoot = _ns.Root;
+      ContextMenuTrigger = _ns.Trigger;
+      ContextMenuPortal = _ns.Portal;
+      ContextMenuContent = _ns.Content;
+      ContextMenuSeparator = _ns.Separator;
+      ContextMenuCheckboxItem = _ns.CheckboxItem;
+      ContextMenuRadioItem = _ns.RadioItem;
+      ContextMenuSub = _ns.Sub;
+      ContextMenuSubTrigger = _ns.SubTrigger;
+      ContextMenuSubContent = _ns.SubContent;
+      ContextMenuItem = _ns.Item;
+    } else {
+      const nsany = _ns as any;
+      ContextMenuRoot = nsany.ContextMenuRoot;
+      ContextMenuTrigger = nsany.ContextMenuTrigger;
+      ContextMenuPortal = nsany.ContextMenuPortal;
+      ContextMenuContent = nsany.ContextMenuContent;
+      ContextMenuSeparator = nsany.ContextMenuSeparator;
+      ContextMenuCheckboxItem = nsany.ContextMenuCheckboxItem;
+      ContextMenuRadioItem = nsany.ContextMenuRadioItem;
+      ContextMenuSub = nsany.ContextMenuSub;
+      ContextMenuSubTrigger = nsany.ContextMenuSubTrigger;
+      ContextMenuSubContent = nsany.ContextMenuSubContent;
+      ContextMenuItem = nsany.ContextMenuItem;
+    }
+  }
+
+  // Strongly-typed menu item shapes to avoid 'unknown' in templates
+  type MenuSubItem = {
+    label: string;
+    value?: any;
+    disabled?: boolean;
+    onSelect?: (...args: any[]) => void;
+  };
+
+  type MenuItem =
+    | { type?: 'separator' }
+    | { type?: 'checkbox' | 'radio' | 'item' | 'sub'; label?: string; value?: any; disabled?: boolean; onSelect?: (...args: any[]) => void; items?: MenuSubItem[] };
+
+  interface Props {
+    open?: boolean;
     trigger: Snippet;
-    items: Array;
-    contentProps?: WithoutChild<ContextMenu.ContentProps>;
+    items: MenuItem[];
+    contentProps?: any;
+    children?: import('svelte').Snippet;
+    [key: string]: any;
   }
   let { open = $bindable(false), trigger, items, contentProps, children, ...restProps }: Props = $props();
 </script>
 
-<ContextMenu.Root bind:open {...restProps}>
-  <ContextMenu.Trigger>
+<ContextMenuRoot bind:open {...restProps}>
+  <ContextMenuTrigger>
     {@render trigger()}
-  </ContextMenu.Trigger>
-  <ContextMenu.Portal>
-    <ContextMenu.Content {...contentProps}>
+  </ContextMenuTrigger>
+  <ContextMenuPortal>
+    <ContextMenuContent {...contentProps}>
       {#each items as item}
-        {#if (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).type === 'separator'}
-          <ContextMenu.Separator />
-        {:else if (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).type === 'checkbox'}
-          <ContextMenu.CheckboxItem
-            value={(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).value}
-            disabled={(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).disabled}
-            select={(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).onSelect}
+        {#if item.type === 'separator'}
+          <ContextMenuSeparator />
+        {:else if item.type === 'checkbox'}
+          <ContextMenuCheckboxItem
+            value={item.value}
+            disabled={item.disabled}
+            select={item.onSelect}
           >
             {#snippet children({ checked })}
               {#if checked}✓{/if}
-              {(
-                item as {
-                  type?: unknown;
-                  value?: unknown;
-                  disabled?: unknown;
-                  onSelect?: unknown;
-                  label?: unknown;
-                  items?: unknown;
-                }
-              ).label}
+              {item.label}
             {/snippet}
-          </ContextMenu.CheckboxItem>
-        {:else if (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).type === 'radio'}
-          <ContextMenu.RadioItem
-            value={(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).value}
-            disabled={(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).disabled}
-            select={(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).onSelect}
+          </ContextMenuCheckboxItem>
+        {:else if item.type === 'radio'}
+          <ContextMenuRadioItem
+            value={item.value}
+            disabled={item.disabled}
+            select={item.onSelect}
           >
             {#snippet children({ checked })}
               {#if checked}●{/if}
-              {(
-                item as {
-                  type?: unknown;
-                  value?: unknown;
-                  disabled?: unknown;
-                  onSelect?: unknown;
-                  label?: unknown;
-                  items?: unknown;
-                }
-              ).label}
+              {item.label}
             {/snippet}
-          </ContextMenu.RadioItem>
-        {:else if (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).type === 'sub' && (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).items}
-          <ContextMenu.Sub>
-            <ContextMenu.SubTrigger
-              >{(
-                item as {
-                  type?: unknown;
-                  value?: unknown;
-                  disabled?: unknown;
-                  onSelect?: unknown;
-                  label?: unknown;
-                  items?: unknown;
-                }
-              ).label}</ContextMenu.SubTrigger
-            >
-            <ContextMenu.Portal>
-              <ContextMenu.SubContent>
-                {#each (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).items as subItem}
-                  <ContextMenu.Item textValue={subItem.label} disabled={subItem.disabled} select={subItem.onSelect}>
+          </ContextMenuRadioItem>
+        {:else if item.type === 'sub' && item.items}
+          <ContextMenuSub>
+            <ContextMenuSubTrigger>{item.label}</ContextMenuSubTrigger>
+            <ContextMenuPortal>
+              <ContextMenuSubContent>
+                {#each item.items as subItem}
+                  <ContextMenuItem textValue={subItem.label} disabled={subItem.disabled} select={subItem.onSelect}>
                     {subItem.label}
-                  </ContextMenu.Item>
+                  </ContextMenuItem>
                 {/each}
-              </ContextMenu.SubContent>
-            </ContextMenu.Portal>
-          </ContextMenu.Sub>
+              </ContextMenuSubContent>
+            </ContextMenuPortal>
+          </ContextMenuSub>
         {:else}
-          <ContextMenu.Item
-            textValue={(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).label}
-            disabled={(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).disabled}
-            select={(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).onSelect}
+          <ContextMenuItem
+            textValue={item.label}
+            disabled={item.disabled}
+            select={item.onSelect}
           >
-            {(
-              item as {
-                type?: unknown;
-                value?: unknown;
-                disabled?: unknown;
-                onSelect?: unknown;
-                label?: unknown;
-                items?: unknown;
-              }
-            ).label}
-          </ContextMenu.Item>
+            {item.label}
+          </ContextMenuItem>
         {/if}
       {/each}
       {@render children?.()}
-    </ContextMenu.Content>
-  </ContextMenu.Portal>
-</ContextMenu.Root>
+    </ContextMenuContent>
+  </ContextMenuPortal>
+</ContextMenuRoot>

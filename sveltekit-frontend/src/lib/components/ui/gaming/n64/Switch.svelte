@@ -373,28 +373,28 @@
 <div class="n64-switch-container {className}">
   <div
     bind:this={switchElement}
-    class="n64-switch {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}";
-    class: checked;
+    class="n64-switch {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
+    class:checked={checked}
     class:focused={isFocused}
     class:hovered={isHovered}
     class:pressed={isPressed}
     class:animating={isAnimating}
-    class: disabled;
-    class:readonly
-    style=";
-      --track-bg: {materialStyles.trackBackground}
-      --knob-bg: {materialStyles.knobBackground}
-      --knob-shadow: {materialStyles.knobShadow}
+    class:disabled={disabled}
+    class:readonly={readonly}
+    style="
+      --track-bg: {materialStyles.trackBackground};
+      --knob-bg: {materialStyles.knobBackground};
+      --knob-shadow: {materialStyles.knobShadow};
       --switch-width: {sizeStyles.width}px;
       --switch-height: {sizeStyles.height}px;
       --knob-size: {sizeStyles.knobSize}px;
-      --switch-font-size: {sizeStyles.fontSize}
-      --transform-3d: {transform3D}
-      --knob-transform: {knobTransform}
-      --fog-color: {effectiveRenderOptions.fogColor}
-      --glow-intensity: {glowIntensity}
-      --animation-duration: {animationDuration}m;
-      --spring-tension: {springTension}
+      --switch-font-size: {sizeStyles.fontSize};
+      --transform-3d: {transform3D};
+      --knob-transform: {knobTransform};
+      --fog-color: {effectiveRenderOptions.fogColor};
+      --glow-intensity: {glowIntensity};
+      --animation-duration: {animationDuration}ms;
+      --spring-tension: {springTension};
     "
     role="switch"
     tabindex={disabled ? -1 : 0}
@@ -442,8 +442,7 @@
       {readonly}
       {disabled}
       bind:checked
-      style="position: absolute;
-e; opacity: 0; pointer-events: none;"
+      style="position: absolute; opacity: 0; pointer-events: none;"
     />
   </div>
   {#if label || description}

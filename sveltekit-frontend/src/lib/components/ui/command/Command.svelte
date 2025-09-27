@@ -1,23 +1,21 @@
 <!-- Legal AI Command Palette - Global Search Component -->
 <script lang="ts">
-  import { Command } from 'bits-ui';
-  import { Search, FileText, Users, Calendar, Gavel } from 'lucide-svelte';
+  import BitsUI from 'bits-ui';
+  const { CommandRoot, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandGroupHeading, CommandItem } = (BitsUI as any);
+  import { Search, FileText, Users, Gavel } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  // Exported props (use Svelte-style exports instead of $props/$bindable)
-  let { open = $bindable(),
-    onOpenChange = $bindable(),
-    placeholder = $bindable(),
-    class: className = $bindable();
-    }: { open = $bindable(),
-    onOpenChange = $bindable(),
-    placeholder = $bindable(),
-    class: className = $bindable()
-  : unknown } = $props();
+  // Exported props (Svelte-style)
+  export let open: boolean = false;
+  export let onOpenChange: ((open: boolean) => void) | undefined;
+  export let placeholder: string = 'Search...';
+  export let className: string = '';
+  export let ondispatch: ((item: unknown) => void) | undefined;
+
   // Mock data for legal AI platform
   const mockCommands = [
     {
       group: 'Cases',
-      icon: Gavel;
+      icon: Gavel,
       items: [
         { id: 'case-1', title: 'State v. Johnson', description: 'Active criminal case', keywords: ['criminal', 'theft', 'johnson'] },
         { id: 'case-2', title: 'Smith v. Corporation', description: 'Civil litigation', keywords: ['civil', 'corporate', 'smith'] },
@@ -26,7 +24,7 @@
     },
     {
       group: 'Evidence',
-      icon: FileText;
+      icon: FileText,
       items: [
         { id: 'evidence-1', title: 'Security Footage 2024-01-15', description: 'Video evidence', keywords: ['video', 'security', 'footage'] },
         { id: 'evidence-2', title: 'Financial Records', description: 'Bank statements', keywords: ['financial', 'bank', 'records'] },
@@ -35,7 +33,7 @@
     },
     {
       group: 'People',
-      icon: Users;
+      icon: Users,
       items: [
         { id: 'person-1', title: 'John Smith', description: 'Defendant in case #2024-001', keywords: ['defendant', 'smith'] },
         { id: 'person-2', title: 'Detective Rodriguez', description: 'Lead investigator', keywords: ['detective', 'rodriguez', 'investigator'] },
@@ -44,7 +42,7 @@
     },
     {
       group: 'Documents',
-      icon: FileText;
+      icon: FileText,
       items: [
         { id: 'doc-1', title: 'Motion to Dismiss', description: 'Filed 2024-01-20', keywords: ['motion', 'dismiss', 'filing'] },
         { id: 'doc-2', title: 'Search Warrant', description: 'Authorized 2024-01-18', keywords: ['warrant', 'search', 'authorized'] },
@@ -52,17 +50,19 @@
       ]
     }
   ];
+
   function handleSelect(item: unknown) {
     ondispatch?.(item);
     open = false;
+    onOpenChange?.(open);
   }
   function handleOpenChange(newOpen: boolean) {
-    open = newOpe;
+    open = newOpen;
     onOpenChange?.(newOpen);
   }
 </script>
 
-<Command.Root
+<CommandRoot
   bind:open
   openChange={handleOpenChange}
   class={cn(
@@ -73,28 +73,24 @@
 >
   <div class="flex items-center border-b px-3 legal-command-header">
     <Search class="mr-2 h-4 w-4 shrink-0 opacity-50" />
-    <Command.Input
+    <CommandInput
       {placeholder}
       class="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:nes-text is-disabled disabled:cursor-not-allowed disabled:opacity-50 font-mono"
     />
   </div>
-  <Command.List class="max-h-[300px] overflow-y-auto overflow-x-hidden legal-command-list">
-    <Command.Empty class="py-6 text-center text-sm nes-text is-disabled font-mono">No results found.</Command.Empty>
+  <CommandList class="max-h-[300px] overflow-y-auto overflow-x-hidden legal-command-list">
+    <CommandEmpty class="py-6 text-center text-sm nes-text is-disabled font-mono">No results found.</CommandEmpty>
     {#each mockCommands as group}
-      <Command.Group class="legal-command-group">
-        <Command.GroupHeading
+      <CommandGroup class="legal-command-group">
+        <CommandGroupHeading
           class="px-2 py-1.5 text-xs font-medium nes-text is-disabled font-mono uppercase tracking-wider flex items-center gap-2"
         >
           <group.icon class="h-3 w-3" />
           {group.group}
-        </Command.GroupHeading>
+        </CommandGroupHeading>
         {#each group.items as item}
-          <Command.Item
-            value={(item as { title?: unknown; description?: unknown; keywords?: unknown }).title +
-              ' ' +
-              (item as { title?: unknown; description?: unknown; keywords?: unknown }).description +
-              ' ' +
-              (item as { title?: unknown; description?: unknown; keywords?: unknown }).keywords.join(' ')}
+          <CommandItem
+            value={(item as any).title + ' ' + (item as any).description + ' ' + (((item as any).keywords ?? []) as string[]).join(' ')}
             select={() => handleSelect(item)}
             class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 legal-command-item font-mono"
           >
@@ -102,40 +98,46 @@
               <group.icon class="h-4 w-4 mt-0.5 nes-text is-disabled flex-shrink-0" />
               <div class="flex flex-col gap-1 min-w-0 flex-1">
                 <div class="font-medium text-sm">
-                  {(item as { title?: unknown; description?: unknown; keywords?: unknown }).title}
+                  {(item as any).title}
                 </div>
                 <div class="text-xs nes-text is-disabled">
-                  {(item as { title?: unknown; description?: unknown; keywords?: unknown }).description}
+                  {(item as any).description}
                 </div>
               </div>
             </div>
-          </Command.Item>
+          </CommandItem>
         {/each}
-      </Command.Group>
+      </CommandGroup>
     {/each}
-  </Command.List>
-</Command.Root>
+  </CommandList>
+</CommandRoot>
 
 <style>
-  /* Legal AI Command Palette Styling */
+  /* Legal AI Command Palette Styling (no Tailwind @apply rules to avoid build errors) */
   :global(.legal-command-palette) {
-    @apply bg-yorha-bg-primary border border-yorha-border shadow-xl;
+    background: var(--yorha-bg-primary, #ffffff);
+    border: 1px solid var(--yorha-border, transparent);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
   :global(.legal-command-header) {
-    @apply border-yorha-border bg-yorha-bg-secondary;
+    border-bottom: 1px solid var(--yorha-border, transparent);
+    background: var(--yorha-bg-secondary, transparent);
   }
   :global(.legal-command-list) {
-    @apply bg-yorha-bg-primary;
+    background: var(--yorha-bg-primary, #ffffff);
   }
   :global(.legal-command-group) {
-    @apply border-yorha-border;
+    border-bottom: 1px solid var(--yorha-border, transparent);
   }
   :global(.legal-command-item) {
-    @apply hover:bg-yorha-bg-hover text-yorha-text-primary;
-    @apply transition-colors duration-150;
+    color: var(--yorha-text-primary, inherit);
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  :global(.legal-command-item:hover) {
+    background: var(--yorha-bg-hover, rgba(0,0,0,0.03));
   }
   :global(.legal-command-item[aria-selected='true']) {
-    @apply bg-yorha-accent text-yorha-text-accent;
+    background: var(--yorha-accent, #2563eb);
+    color: var(--yorha-text-accent, #ffffff);
   }
 </style>

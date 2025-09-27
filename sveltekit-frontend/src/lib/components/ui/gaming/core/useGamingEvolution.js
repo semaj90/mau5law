@@ -6,10 +6,31 @@ import { getContext } from 'svelte';
 import { derived } from 'svelte/store';
 export function useGamingEvolution() {
   // Get context from ProgressiveGamingProvider
-  const gamingState = getContext('gaming-state');
-  const gamingConfig = getContext('gaming-config');
-  const gamingFunctions = getContext('gaming-functions');
-  const getManager = getContext('gaming-manager');
+  /**
+   * @typedef {Object} GamingState
+   * @property {string} currentEra
+   * @property {boolean} isTransitioning
+   * @property {string} performanceLevel
+   * @property {Array<string>} availableEras
+   */
+
+  /**
+   * @typedef {Object} GamingConfig
+   * @property {boolean} enableAutoEvolution
+   * @property {boolean} yorhaIntegration
+   * @property {boolean} bitsUICompatibility
+   * @property {{ enableScanlines?: boolean }} nesSettings
+   * @property {{ enableGradients?: boolean }} snesSettings
+   * @property {{ enableAntiAliasing?: boolean }} n64Settings
+   */
+
+  const gamingState = /** @type {import('svelte/store').Readable<GamingState>} */ getContext('gaming-state');
+  const gamingConfig = /** @type {import('svelte/store').Readable<GamingConfig>} */ getContext('gaming-config');
+  const gamingFunctions =
+    /** @type {{setEra:Function, upgradeEra:Function, downgradeEra:Function, updateConfig:Function}} */ getContext(
+      'gaming-functions'
+    );
+  const getManager = /** @type {(()=>any)|null} */ getContext('gaming-manager');
   if (!gamingState || !gamingConfig || !gamingFunctions) {
     throw new Error('useGamingEvolution must be used within a ProgressiveGamingProvider');
   }
@@ -28,13 +49,13 @@ export function useGamingEvolution() {
   const isLowPerformance = derived(performanceLevel, $level => $level === 'low');
   // Configuration utilities
   const enabledFeatures = derived(gamingConfig, $config => ({
-    autoEvolution: $config.enableAutoEvolution,
-    yorhaIntegration: $config.yorhaIntegration,
-    bitsUICompatibility: $config.bitsUICompatibility,
-    scanlines: $config.nesSettings?.enableScanlines || false,
-    gradients: $config.snesSettings?.enableGradients || false,
-    antiAliasing: $config.n64Settings?.enableAntiAliasing || false,
-  });
+    autoEvolution: $config?.enableAutoEvolution ?? false,
+    yorhaIntegration: $config?.yorhaIntegration ?? false,
+    bitsUICompatibility: $config?.bitsUICompatibility ?? false,
+    scanlines: $config?.nesSettings?.enableScanlines ?? false,
+    gradients: $config?.snesSettings?.enableGradients ?? false,
+    antiAliasing: $config?.n64Settings?.enableAntiAliasing ?? false,
+  }));
   // Era capabilities
   const eraCapabilities = derived(currentEra, $era => {
     switch ($era) {
@@ -44,9 +65,9 @@ export function useGamingEvolution() {
           totalColors: 64,
           resolution: { width: 256, height: 240 },
           audioChannels: 4,
-          supportsGradients: false
-          supports3D: false
-          supportsAntiAliasing: false
+          supportsGradients: false,
+          supports3D: false,
+          supportsAntiAliasing: false,
         };
       case '16bit':
         return {
@@ -54,9 +75,9 @@ export function useGamingEvolution() {
           totalColors: 32768,
           resolution: { width: 512, height: 448 },
           audioChannels: 8,
-          supportsGradients: true
-          supports3D: false
-          supportsAntiAliasing: false
+          supportsGradients: true,
+          supports3D: false,
+          supportsAntiAliasing: false,
         };
       case 'n64':
         return {
@@ -64,15 +85,16 @@ export function useGamingEvolution() {
           totalColors: 16777216,
           resolution: { width: 640, height: 480 },
           audioChannels: 64,
-          supportsGradients: true
-          supports3D: true
-          supportsAntiAliasing: true
+          supportsGradients: true,
+          supports3D: true,
+          supportsAntiAliasing: true,
         };
-      default: return null;
+      default:
+        return null;
     }
   });
   // Utility functions
-  const canUseFeature = (feature) => {
+  const canUseFeature = feature => {
     const manager = getManager?.();
     if (!manager) return false;
     const capabilities = manager.getCapabilities();
@@ -90,7 +112,8 @@ export function useGamingEvolution() {
         return state.currentEra === 'n64' && state.performanceLevel !== 'low';
       case 'particles':
         return state.currentEra === 'n64' && state.performanceLevel === 'high';
-      default: return false;
+      default:
+        return false;
     }
   };
   const getOptimalSettings = () => {
@@ -122,7 +145,7 @@ export function useGamingEvolution() {
       animationStyle: settings.enableAnimations ? 'smooth' : 'instant',
       enableSound: settings.enableSounds && baseProps.enableSound !== false,
       enableParticles: settings.enableParticles && baseProps.enableParticles,
-      ...baseProps
+      ...baseProps,
     };
   };
   // Performance monitoring
@@ -142,8 +165,8 @@ export function useGamingEvolution() {
   });
   return {
     // State stores
-    state: gamingState
-    config: gamingConfig
+    state: gamingState,
+    config: gamingConfig,
     currentEra,
     isTransitioning,
     performanceLevel,
@@ -170,6 +193,6 @@ export function useGamingEvolution() {
     getOptimalSettings,
     getComponentProps,
     // Manager access
-    getManager
+    getManager,
   };
 }

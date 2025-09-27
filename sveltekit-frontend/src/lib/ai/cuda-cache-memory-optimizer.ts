@@ -1,1088 +1,466 @@
 /**
-
- * CUDA Cache Memory Optimizer - Clean Working Version * CUDA Cache Memory Optimizer - Clean Working Version
-
- * Handles model switching and memory optimization for legal AI workloads * Handles model switching and memory optimization for legal AI workloads
-
+ * CUDA Cache Memory Optimizer - Enhanced with Neural Network Intent Analysis
+ *
+ * Features Autoencoder compression and Self-Organizing Map clustering
+ * for advanced user intent recognition and model optimization.
  */
 
+import { browser } from '$app/environment';
+import { euclideanDistance, feedForward, normalize, generateRandomWeights } from './helpers/vector-math';
 
+export type IntentCategory = 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';
+export type Urgency = 'low' | 'medium' | 'high' | 'critical';
+export type UserBehaviorPattern = 'explorer' | 'focused' | 'repetitive' | 'learning';
 
-import { browser } from '$app/environment';import { browser } from '$app/environment';
-
-
-
-export interface UserIntent {export interface UserIntent {
-
-  queryText: string;  queryText: string;
-
-  intentCategory: 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';
-
-  confidence: number;  intentCategory: 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';import { browser } from '$app/environment';import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
-
-  urgency: 'low' | 'medium' | 'high' | 'critical';
-
-  complexity: number;  confidence: number;
-
+export interface UserIntent {
+  queryText: string;
+  intentCategory: IntentCategory;
+  confidence: number;
+  urgency: Urgency;
+  complexity: number;
   domainSpecificity: number;
-
-  contextType: 'case_law' | 'statute' | 'contract' | 'general_legal' | 'procedural';  urgency: 'low' | 'medium' | 'high' | 'critical';import { browser } from '$app/environment';
-
-  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';
-
-}  complexity: number;
-
-
-
-export interface ModelPerformanceProfile {  domainSpecificity: number;export interface UserIntent {
-
-  modelId: string;
-
-  avgResponseTime: number;  contextualSimilarity: number;
-
-  memoryUsage: number;
-
-  accuracyScore: number;  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';  queryText: string;export interface UserIntent {
-
-  userSatisfactionScore: number;
-
-  specialtyDomains: string[];}
-
-  optimalBatchSize: number;
-
-  thermalFootprint: number;  intentCategory: 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';  queryText: string;
-
-  cacheHitRate: number;
-
-}export interface ModelPerformanceProfile {
-
-
-
-export interface CacheOptimizationStrategy {  modelName: string;  confidence: number;  intentCategory: 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';
-
-  strategy: 'aggressive' | 'balanced' | 'conservative';
-
-  maxMemoryUsage: number;  architecture: string;
-
-  evictionPolicy: 'lru' | 'lfu' | 'ttl' | 'priority';
-
-  preloadThreshold: number;  avgResponseTime: number;  urgency: 'low' | 'medium' | 'high' | 'critical';  confidence: number;
-
-  compressionLevel: number;
-
-}  accuracyScore: number;
-
-
-
-export interface CUDAMemoryState {  userSatisfactionScore: number;  complexity: number;  urgency: 'low' | 'medium' | 'high' | 'critical';
-
-  totalMemory: number;
-
-  usedMemory: number;  memoryFootprint: number;
-
-  availableMemory: number;
-
-  temperature: number;  specialtyDomains: string[];  domainSpecificity: number;  complexity: number; // 0-1 scale
-
-  utilizationPercent: number;
-
-  activeKernels: number;  lastUsed: number;
-
+  contextualSimilarity: number;
+  userBehaviorPattern: UserBehaviorPattern;
+  timestamp?: number;
 }
 
-}  contextualSimilarity: number;  domainSpecificity: number; // 0-1 scale (legal specific)
+export interface ModelPerformanceProfile {
+  modelId: string;
+  architecture: string;
+  avgResponseTime: number; // ms
+  accuracyScore: number; // 0-1
+  userSatisfactionScore: number; // 0-1
+  memoryFootprint: number; // MB
+  specialtyDomains: string[];
+  lastUsed: number;
+  usageFrequency: number;
+  switchCost?: number; // ms
+}
+
+export interface CacheOptimizationStrategy {
+  strategy: 'aggressive' | 'balanced' | 'conservative';
+  evictionPolicy: 'lru' | 'lfu' | 'ttl' | 'hybrid';
+  maxMemoryUsageMB: number;
+  preloadThreshold: number; // 0-1
+  compressionLevel: number;
+}
+
+export interface CUDAMemoryState {
+  totalMemoryMB: number;
+  usedMemoryMB: number;
+  availableMemoryMB: number;
+  temperatureC: number;
+  utilizationPercent: number;
+  lastUpdated: number;
+}
 
 export interface SOMNeuron {
-
   id: string;
+  weights: Float32Array;
+  activationCount: number;
+  lastActivation: number;
+  associatedModel?: string;
+}
 
-  weights: number[];
+export interface CUDAMemoryBlock {
+  id: string;
+  size: number; // bytes
+  lastAccessed: number;
+  compressed?: boolean;
+}
 
-  activationCount: number;export interface CacheOptimizationStrategy {  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';  contextualSimilarity: number; // to previous queries
+export interface AutoEncoderWeights {
+  encoder: {
+    w1: Float32Array; // input -> hidden
+    b1: Float32Array; // hidden bias
+    w2: Float32Array; // hidden -> latent
+    b2: Float32Array; // latent bias
+  };
+  decoder: {
+    w3: Float32Array; // latent -> hidden
+    b3: Float32Array; // hidden bias
+    w4: Float32Array; // hidden -> output
+    b4: Float32Array; // output bias
+  };
+}
 
-  lastUpdated: number;
+export interface OptimizerStats {
+  memoryUsageRatio: number;
+  modelCount: number;
+  intentHistory: number;
+  somActivations: number;
+  avgConfidence: number;
+  mostActiveNeuron: string;
+  recentIntentCategories: IntentCategory[];
+}
 
-  associatedQueries: string[];  strategy: 'aggressive' | 'balanced' | 'conservative';
-
-  specialization: string[];
-
-}  maxMemoryUsage: number;}  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';
-
-
-
-export class CudaCacheMemoryOptimizer {  preloadModels: string[];
-
+export class CudaCacheMemoryOptimizer {
   private modelProfiles: Map<string, ModelPerformanceProfile> = new Map();
-
-  private currentStrategy: CacheOptimizationStrategy;  evictionPolicy: 'lru' | 'performance' | 'hybrid';}
-
+  private currentStrategy: CacheOptimizationStrategy;
   private memoryState: CUDAMemoryState;
-
-  private somNeurons: Map<string, SOMNeuron> = new Map();}
-
-  private queryHistory: UserIntent[] = [];
-
-export interface ModelPerformanceProfile {export interface ModelPerformanceProfile {
+  private userIntentHistory: UserIntent[] = [];
+  private somNeurons: SOMNeuron[][] = [];
+  private somWidth = 10;
+  private somHeight = 10;
+  private inputFeatureSize = 128;
+  private hiddenSize = 64;
+  private latentSize = 32;
+  private autoEncoderWeights: AutoEncoderWeights | null = null;
+  private maxGPUMemoryMB = 4096;
+  private memoryBlocks: Map<string, CUDAMemoryBlock> = new Map();
+  private memoryPressureThreshold = 0.8;
+  private compressionThreshold = 0.6;
 
   constructor() {
-
-    this.currentStrategy = {export class CudaCacheMemoryOptimizer {
-
+    this.currentStrategy = {
       strategy: 'balanced',
-
-      maxMemoryUsage: 4096,  private modelProfiles: Map<string, ModelPerformanceProfile> = new Map();  modelName: string;  modelId: string;
-
-      evictionPolicy: 'lru',
-
-      preloadThreshold: 0.7,  private userIntentHistory: UserIntent[] = [];
-
-      compressionLevel: 3
-
-    };  private currentStrategy: CacheOptimizationStrategy = {  architecture: string;  architecture: 'llama' | 'bert' | 'onnx';
-
-
-
-    this.memoryState = {    strategy: 'balanced',
-
-      totalMemory: 8192,
-
-      usedMemory: 0,    maxMemoryUsage: 4096,  avgResponseTime: number,  avgResponseTime: number,
-
-      availableMemory: 8192,
-
-      temperature: 65,    preloadModels: ['gemma3-7b'],
-
+      evictionPolicy: 'hybrid',
+      maxMemoryUsageMB: 2048,
+      preloadThreshold: 0.7,
+      compressionLevel: 2,
+    };
+    this.memoryState = {
+      totalMemoryMB: this.maxGPUMemoryMB,
+      usedMemoryMB: 0,
+      availableMemoryMB: this.maxGPUMemoryMB,
+      temperatureC: 50,
       utilizationPercent: 0,
+      lastUpdated: Date.now(),
+    };
+    this.initializeModelProfiles();
+    this.initializeAutoEncoder();
+    this.initializeSOM();
+    this.startMemoryMonitoring();
+  }
 
-      activeKernels: 0    evictionPolicy: 'hybrid',  accuracyScore: number,  accuracyScore: number,
+  // Basic heuristic intent analysis (keeps implementation simple and deterministic)
+  public async analyzeUserIntent(query: string, _userContext: Record<string, unknown> = {}): Promise<UserIntent> {
+    const q = query.trim().toLowerCase();
+    const isLegal = ['contract', 'case', 'statute', 'law', 'court', 'precedent'].some(k => q.includes(k));
+    const isUrgent = ['urgent', 'asap', 'immediate', 'critical'].some(k => q.includes(k));
+    const isQuestion =
+      q.includes('?') || ['what', 'how', 'why', 'when', 'where', 'who'].some(w => q.startsWith(w + ' '));
 
+    const intent: UserIntent = {
+      queryText: query,
+      intentCategory: isLegal ? 'legal_analysis' : isQuestion ? 'research' : 'chat',
+      confidence: isLegal ? 0.85 : isQuestion ? 0.7 : 0.6,
+      urgency: isUrgent ? 'high' : 'medium',
+      complexity: Math.min(1, query.length / 400),
+      domainSpecificity: isLegal ? 0.9 : 0.2,
+      contextualSimilarity: this.calculateContextualSimilarity(query),
+      userBehaviorPattern: this.identifyUserBehaviorPattern(),
+      timestamp: Date.now(),
     };
 
-  };
-
-    this.initializeDefaultProfiles();
-
-  }  userSatisfactionScore: number;  userSatisfactionScore: number;
-
-
-
-  private initializeDefaultProfiles(): void {  constructor() {
-
-    const defaultProfiles: ModelPerformanceProfile[] = [
-
-      {    this.initializeDefaultProfiles();  memoryFootprint: number;  memoryFootprint: number;
-
-        modelId: 'gemma3-legal',
-
-        avgResponseTime: 1.2,  }
-
-        memoryUsage: 2048,
-
-        accuracyScore: 0.89,  specialtyDomains: string[];  specialtyDomains: string[];
-
-        userSatisfactionScore: 0.85,
-
-        specialtyDomains: ['legal_analysis', 'case_law'],  private initializeDefaultProfiles(): void {
-
-        optimalBatchSize: 4,
-
-        thermalFootprint: 75,    const profiles: ModelPerformanceProfile[] = [  lastUsed: number;  lastUsed: number;
-
-        cacheHitRate: 0.72
-
-      },      {
-
-      {
-
-        modelId: 'llama3-chat',        modelName: 'gemma3-7b',}  usageFrequency: number;
-
-        avgResponseTime: 0.8,
-
-        memoryUsage: 1536,        architecture: 'llama',
-
-        accuracyScore: 0.83,
-
-        userSatisfactionScore: 0.82,        avgResponseTime: 150,  switchCost: number; // Cost in ms to switch to this model
-
-        specialtyDomains: ['chat', 'general'],
-
-        optimalBatchSize: 8,        accuracyScore: 0.85,
-
-        thermalFootprint: 65,
-
-        cacheHitRate: 0.68        userSatisfactionScore: 0.82,export interface CacheOptimizationStrategy {}
-
-      }
-
-    ];        memoryFootprint: 1024,
-
-
-
-    defaultProfiles.forEach(profile => {        specialtyDomains: ['chat', 'general'],  strategy: 'aggressive' | 'balanced' | 'conservative';export interface CUDAMemoryBlock {
-
-      this.modelProfiles.set(profile.modelId, profile);
-
-    });        lastUsed: Date.now()
-
-  }
-
-      },  maxMemoryUsage: number;  id: string;
-
-  public analyzeUserIntent(queryText: string): UserIntent {
-
-    const legalKeywords = ['contract', 'case', 'statute', 'precedent', 'liability', 'jurisdiction'];      {
-
-    const urgentKeywords = ['urgent', 'emergency', 'deadline', 'immediate'];
-
-    const complexKeywords = ['analysis', 'review', 'complex', 'detailed', 'comprehensive'];        modelName: 'llama3.1-8b',  preloadModels: string[];  size: number;
-
-
-
-    const isLegal = legalKeywords.some(keyword =>         architecture: 'llama',
-
-      queryText.toLowerCase().includes(keyword)
-
-    );        avgResponseTime: 200,  evictionPolicy: 'lru' | 'performance' | 'hybrid';  type: 'model_weights' | 'activation' | 'gradient' | 'cache' | 'som_neurons';
-
-    const isUrgent = urgentKeywords.some(keyword =>
-
-      queryText.toLowerCase().includes(keyword)        accuracyScore: 0.88,
-
-    );
-
-    const isComplex = complexKeywords.some(keyword =>         userSatisfactionScore: 0.86,}  lastAccessed: number;
-
-      queryText.toLowerCase().includes(keyword)
-
-    );        memoryFootprint: 1536,
-
-
-
-    const intent: UserIntent = {        specialtyDomains: ['legal_analysis', 'research'],  accessFrequency: number;
-
-      queryText,
-
-      intentCategory: isLegal ? 'legal_analysis' : 'chat',        lastUsed: Date.now() - 3600000
-
-      confidence: 0.8,
-
-      urgency: isUrgent ? 'high' : 'medium',      }export class CudaCacheMemoryOptimizer {  priority: number; // 0-1, higher = more important
-
-      complexity: isComplex ? 0.8 : 0.4,
-
-      domainSpecificity: isLegal ? 0.9 : 0.3,    ];
-
-      contextType: isLegal ? 'case_law' : 'general_legal',
-
-      userBehaviorPattern: 'focused'  private modelProfiles: Map<string, ModelPerformanceProfile> = new Map();  compressible: boolean;
-
-    };
-
-    profiles.forEach(profile => {
-
-    this.queryHistory.push(intent);
-
-    return intent;      this.modelProfiles.set(profile.modelName, profile);  private userIntentHistory: UserIntent[] = [];  compressed: boolean;
-
-  }
-
-    });
-
-  public selectOptimalModel(intent: UserIntent): string {
-
-    let bestModel = 'gemma3-legal';  }  private currentStrategy: CacheOptimizationStrategy = {  originalSize?: number;
-
-    let bestScore = 0;
-
-
-
-    for (const [modelId, profile] of this.modelProfiles) {
-
-      let score = 0;  public analyzeUserIntent(queryText: string): UserIntent {    strategy: 'balanced',}
-
-
-
-      // Domain specialization bonus    return {
-
-      if (profile.specialtyDomains.includes(intent.intentCategory)) {
-
-        score += 0.4;      queryText,    maxMemoryUsage: 4096,export interface SOMNeuron {
-
-      }
-
-      intentCategory: this.categorizeIntent(queryText),
-
-      // Performance metrics
-
-      score += profile.accuracyScore * 0.3;      confidence: 0.8,    preloadModels: ['gemma3-7b'],  id: string;
-
-      score += profile.userSatisfactionScore * 0.2;
-
-      score += profile.cacheHitRate * 0.1;      urgency: 'medium',
-
-
-
-      // Memory efficiency for high urgency      complexity: 0.5,    evictionPolicy: 'hybrid'  position: [number, number]; // 2D grid position
-
-      if (intent.urgency === 'high' && profile.memoryUsage < 2048) {
-
-        score += 0.1;      domainSpecificity: 0.7,
-
-      }
-
-      contextualSimilarity: 0.3,  };  weights: Float32Array; // Feature vector weights,
-
-      if (score > bestScore) {
-
-        bestScore = score;      userBehaviorPattern: 'learning'
-
-        bestModel = modelId;
-
-      }    };  learningRate: number;
-
-    }
-
-  }
-
-    return bestModel;
-
-  }  constructor() {  lastActivation: number;
-
-
-
-  public optimizeMemoryAllocation(selectedModel: string): void {  public recommendOptimalModel(intent: UserIntent): string {
-
-    const profile = this.modelProfiles.get(selectedModel);
-
-    if (!profile) return;    return 'gemma3-7b';    this.initializeDefaultProfiles();  activationCount: number;
-
-
-
-    // Adjust strategy based on memory pressure  }
-
-    const memoryPressure = this.memoryState.usedMemory / this.memoryState.totalMemory;
-
-      }  associatedModel: string;
-
-    if (memoryPressure > 0.8) {
-
-      this.currentStrategy.strategy = 'aggressive';  public getCurrentStrategy(): CacheOptimizationStrategy {
-
-      this.currentStrategy.evictionPolicy = 'lfu';
-
-    } else if (memoryPressure > 0.6) {    return { ...this.currentStrategy };  userPatternSignature: string;
-
-      this.currentStrategy.strategy = 'balanced';
-
-      this.currentStrategy.evictionPolicy = 'lru';  }
-
-    } else {
-
-      this.currentStrategy.strategy = 'conservative';  private initializeDefaultProfiles(): void {}
-
-      this.currentStrategy.evictionPolicy = 'ttl';
-
-    }  private categorizeIntent(queryText: string): UserIntent['intentCategory'] {
-
-
-
-    // Update memory state    const query = queryText.toLowerCase();    const profiles: ModelPerformanceProfile[] = [class CUDACacheMemoryOptimizer {
-
-    this.memoryState.usedMemory += profile.memoryUsage;
-
-    this.memoryState.availableMemory = this.memoryState.totalMemory - this.memoryState.usedMemory;
-
-    this.memoryState.utilizationPercent = (this.memoryState.usedMemory / this.memoryState.totalMemory) * 100;
-
-  }    if (query.includes('analyze') || query.includes('review')) {      {  private device: GPUDevice | null = null;
-
-
-
-  public updateModelPerformance(modelId: string, metrics: Partial<ModelPerformanceProfile>): void {      return 'legal_analysis';
-
-    const existingProfile = this.modelProfiles.get(modelId);
-
-    if (existingProfile) {    } else if (query.includes('document') || query.includes('contract')) {        modelName: 'gemma3-7b',  private memoryBlocks = new Map<string, CUDAMemoryBlock>();
-
-      const updatedProfile = { ...existingProfile, ...metrics };
-
-      this.modelProfiles.set(modelId, updatedProfile);      return 'document_review';
-
-    }
-
-  }    } else if (query.includes('research') || query.includes('case law')) {        architecture: 'llama',  private modelProfiles = new Map<string, ModelPerformanceProfile>();
-
-
-
-  public getMemoryState(): CUDAMemoryState {      return 'research';
-
-    return { ...this.memoryState };
-
-  }    } else if (query.includes('search') || query.includes('find')) {        avgResponseTime: 150,  private userIntentHistory: UserIntent[] = [];
-
-
-
-  public getOptimizationStrategy(): CacheOptimizationStrategy {      return 'search';
-
-    return { ...this.currentStrategy };
-
-  }    } else if (query.length < 50) {        accuracyScore: 0.85,  // Self-Organizing Map for learning user patterns
-
-
-
-  public generatePerformanceReport(): any {      return 'chat';
-
-    return {
-
-      totalQueries: this.queryHistory.length,    }        userSatisfactionScore: 0.82,  private somNeurons: SOMNeuron[][] = [];
-
-      memoryEfficiency: (this.memoryState.availableMemory / this.memoryState.totalMemory) * 100,
-
-      averageResponseTime: Array.from(this.modelProfiles.values())
-
-        .reduce((sum, profile) => sum + profile.avgResponseTime, 0) / this.modelProfiles.size,
-
-      topPerformingModel: Array.from(this.modelProfiles.entries())    return 'unknown';        memoryFootprint: 1024,  private somWidth = 10; // 10x10 grid
-
-        .sort(([,a], [,b]) => b.userSatisfactionScore - a.userSatisfactionScore)[0]?.[0],
-
-      recommendations: this.generateOptimizationRecommendations(),  }
-
-      clusterCount: this.somNeurons.size,
-
-      predictions: {}        specialtyDomains: ['chat', 'general'],  private somHeight = 10;
-
-        confidence: 0.85,
-
-        nextOptimalModel: 'gemma3-legal'
-
-      }
-
-    };// Singleton instance        lastUsed: Date.now()  private globalLearningRate = 0.1;
-
-  }
-
-export const cudaCacheOptimizer = browser ? new CudaCacheMemoryOptimizer() : null;
-
-  private generateOptimizationRecommendations(): string[] {      },  private neighborhoodRadius = 3.0;
-
-    const recommendations: string[] = [];
-
-          {  // Auto-encoder for feature compression and pattern recognition
-
-    if (this.memoryState.utilizationPercent > 80) {
-
-      recommendations.push('Consider increasing memory allocation or reducing model size');        modelName: 'llama3.1-8b',  private autoEncoderWeights: {
-
-    }
-
-            architecture: 'llama',    encoder: { w1: Float32Array; b1: Float32Array; w2: Float32Array; b2: Float32Array }
-
-    if (this.memoryState.temperature > 80) {
-
-      recommendations.push('GPU temperature high - consider reducing workload');        avgResponseTime: 200,    decoder: { w3: Float32Array; b3: Float32Array; w4: Float32Array; b4: Float32Array }
-
-    }
-
-            accuracyScore: 0.88,  } | null = null;
-
-    const avgCacheHitRate = Array.from(this.modelProfiles.values())
-
-      .reduce((sum, profile) => sum + profile.cacheHitRate, 0) / this.modelProfiles.size;        userSatisfactionScore: 0.86,  private inputFeatureSize = 256; // User query + context features
-
-
-
-    if (avgCacheHitRate < 0.6) {        memoryFootprint: 1536,  private latentSize = 64; // Compressed representation
-
-      recommendations.push('Cache hit rate low - consider adjusting cache strategy');
-
-    }        specialtyDomains: ['legal_analysis', 'research'],  private hiddenSize = 128;
-
-
-
-    return recommendations;        lastUsed: Date.now() - 3600000  // Memory optimization thresholds
-
-  }
-
-      }  private maxGPUMemoryMB = 4096; // 4GB
-
-  public trainSOMNeuron(queryVector: number[], specialization: string[]): void {
-
-    // Simplified SOM training for legal query clustering    ];  private memoryPressureThreshold = 0.8; // 80%
-
-    const neuronId = `neuron_${Date.now()}`;
-
-    const neuron: SOMNeuron = {  private compressionThreshold = 0.6; // Compress when memory > 60%
-
-      id: neuronId,
-
-      weights: queryVector,    profiles.forEach(profile => {  // User learning and adaptation
-
-      activationCount: 1,
-
-      lastUpdated: Date.now(),      this.modelProfiles.set(profile.modelName, profile);  private userLearningEnabled = true;
-
-      associatedQueries: [],
-
-      specialization    });  private adaptationRate = 0.05;
-
-    };
-
-      }  private minLearningExamples = 10;
-
-    this.somNeurons.set(neuronId, neuron);
-
-  }  constructor() {
-
-
-
-  public findBestMatchingNeuron(queryVector: number[]): SOMNeuron | null {  public analyzeUserIntent(queryText: string): UserIntent {    this.initializeSOM();
-
-    let bestMatch: SOMNeuron | null = null;
-
-    let bestDistance = Infinity;    return {    this.initializeAutoEncoder();
-
-
-
-    for (const neuron of this.somNeurons.values()) {      queryText,    this.startMemoryMonitoring();
-
-      const distance = this.calculateEuclideanDistance(queryVector, neuron.weights);
-
-      if (distance < bestDistance) {      intentCategory: this.categorizeIntent(queryText),  }
-
-        bestDistance = distance;
-
-        bestMatch = neuron;      confidence: 0.8,  /**
-
-      }
-
-    }      urgency: 'medium',   * Main entry point: Optimize model selection based on user intent
-
-
-
-    return bestMatch;      complexity: 0.5,   */;
-
-  }
-
-      domainSpecificity: 0.7,  async optimizeModelSelection(query: string, userContext: any = {}): Promise<any> {
-
-  private calculateEuclideanDistance(a: number[], b: number[]): number {
-
-    if (a.length !== b.length) return Infinity;      contextualSimilarity: 0.3,    const startTime = performance.now();
-
-
-
-    return Math.sqrt(      userBehaviorPattern: 'learning'    try {
-
-      a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0)
-
-    );    };      // Step 1: Analyze user intent using auto-encoder + SOM
-
-  }
-
-  }      const userIntent = await this.analyzeUserIntent(query, userContext);
-
-  public cleanup(): void {
-
-    this.queryHistory = [];      // Step 2: Generate "did you mean" suggestions
-
-    this.somNeurons.clear();
-
-    this.memoryState.usedMemory = 0;  public recommendOptimalModel(intent: UserIntent): string {      const didYouMeanSuggestions = await this.generateDidYouMeanSuggestions(query, userIntent);
-
-    this.memoryState.availableMemory = this.memoryState.totalMemory;
-
-    this.memoryState.utilizationPercent = 0;    return 'gemma3-7b';      // Step 3: Find optimal model using learned patterns
-
-  }
-
-}  }      const optimalModel = await this.findOptimalModel(userIntent);
-
-
-
-// Singleton instance for global use      // Step 4: Optimize GPU memory for model switch
-
-export const cudaCacheOptimizer = browser ? new CudaCacheMemoryOptimizer() : null;
-
-  public getCurrentStrategy(): CacheOptimizationStrategy {      const memoryOptimizations = await this.optimizeGPUMemory(optimalModel.modelId);
-
-export default CudaCacheMemoryOptimizer;
-    return { ...this.currentStrategy };      // Step 5: Estimate switch time and prepare cache
-
-  }      const switchTime = await this.estimateModelSwitchTime(optimalModel.modelId);
-
-      // Step 6: Update user learning model
-
-  private categorizeIntent(queryText: string): UserIntent['intentCategory'] {      if (this.userLearningEnabled) {
-
-    const query = queryText.toLowerCase();        await this.updateUserLearning(userIntent, optimalModel.modelId);
-
-          }
-
-    if (query.includes('analyze') || query.includes('review')) {      const totalOptimizationTime = performance.now() - startTime;
-
-      return 'legal_analysis';      console.log(`🧠 Model optimization completed in ${totalOptimizationTime.toFixed(2)}ms`);
-
-    } else if (query.includes('document') || query.includes('contract')) {      console.log(`📊 Recommended: ${optimalModel.modelId} (confidence: ${optimalModel.confidence.toFixed(2)})`);
-
-      return 'document_review';      return {
-
-    } else if (query.includes('research') || query.includes('case law')) {        recommendedModel: optimalModel.modelId,
-
-      return 'research';        confidence: optimalModel.confidence,
-
-    } else if (query.includes('search') || query.includes('find')) {        switchEstimatedTime: switchTime
-
-      return 'search';        memoryOptimizations,
-
-    } else if (query.length < 50) {        userIntentPrediction: userIntent
-
-      return 'chat';        didYouMeanSuggestions
-
-    }      }
-
-        } catch (error) {
-
-    return 'unknown';      console.error('❌ CUDA cache optimizer failed:', error);
-
-  }      // Fallback to simple heuristics
-
-}      return {
-
-        recommendedModel: 'gemma270m', // Safe fallback
-
-// Singleton instance        confidence: 0.5,
-
-export const cudaCacheOptimizer = browser ? new CudaCacheMemoryOptimizer() : null;        switchEstimatedTime: 100,
-        memoryOptimizations: ['fallback_mode'],
-        userIntentPrediction: {
-          queryText: query
-          intentCategory: 'unknown',
-          confidence: 0.3,
-          urgency: 'medium',
-          complexity: 0.5,
-          domainSpecificity: 0.5,
-          contextualSimilarity: 0.0,
-          userBehaviorPattern: 'explorer'
-        },
-        didYouMeanSuggestions: []
-      }
-    }
-  }
-  /**
-   * Analyze user intent using auto-encoder and SOM
-   */;
-  private async analyzeUserIntent(query: string, userContext: any): Promise<UserIntent> {
-    // Step 1: Extract features from query and context
-    const features = this.extractUserIntentFeatures(query, userContext);
-    // Step 2: Compress features using auto-encoder
-    const compressedFeatures = this.encodeFeatures(features);
-    // Step 3: Find best matching SOM neuron
-    const bestMatchingNeuron = this.findBestMatchingNeuron(compressedFeatures);
-    // Step 4: Classify intent based on neuron and historical patterns
-    const intentCategory = this.classifyIntent(query, bestMatchingNeuron);
-    const confidence = this.calculateIntentConfidence(query, features, bestMatchingNeuron);
-    // Step 5: Determine urgency and complexity
-    const urgency = this.determineUrgency(query, userContext);
-    const complexity = this.calculateComplexity(query, features);
-    const domainSpecificity = this.calculateDomainSpecificity(query);
-    // Step 6: Calculate contextual similarity to recent queries
-    const contextualSimilarity = this.calculateContextualSimilarity(query);
-    // Step 7: Identify user behavior pattern
-    const userBehaviorPattern = this.identifyUserBehaviorPattern();
-    const userIntent: UserIntent = {
-      queryText: query
-      intentCategory,
-      confidence,
-      urgency,
-      complexity,
-      domainSpecificity,
-      contextualSimilarity,
-      userBehaviorPattern
-    }
-    // Store for future learning
-    this.userIntentHistory.push(userIntent);
+    this.userIntentHistory.push(intent);
     if (this.userIntentHistory.length > 1000) {
-      this.userIntentHistory = this.userIntentHistory.slice(-500); // Keep recent 500
+      this.userIntentHistory = this.userIntentHistory.slice(-500);
     }
-    return userIntent;
+    return intent;
   }
+
   /**
-   * Generate "did you mean" suggestions using learned patterns
-   */;
-  private async generateDidYouMeanSuggestions(query: string, userIntent: UserIntent): Promise<string[]> {
-    const suggestions: string[] = [];
-    try {
-      // Find similar queries from history
-      const similarQueries = this.userIntentHistory
-        .filter(intent =>
-          intent.intentCategory === userIntent.intentCategory &&
-          this.calculateQuerySimilarity(intent.queryText, query) > 0.6
-        )
-        .sort((a, b) => this.calculateQuerySimilarity(b.queryText, query) - this.calculateQuerySimilarity(a.queryText, query)
-        .slice(0, 3)
-        .map(intent => intent.queryText);
-      // Add spelling corrections and common variations
-      const corrections = await this.generateSpellingCorrections(query);
-      const variations = this.generateQueryVariations(query, userIntent);
-      suggestions.push(...similarQueries, ...corrections, ...variations);
-      // Remove duplicates and limit to top 5
-      return [...new Set(suggestions)]
-        .filter(suggestion => suggestion !== query)
-        .slice(0, 5);
-    } catch (error) {
-      console.warn('Failed to generate suggestions:', error);
-      return [];
+   * --- NEURAL NETWORK-BASED INTENT ANALYSIS ---
+   * Analyzes user intent using an Autoencoder and SOM for advanced pattern recognition.
+   * This replaces the heuristic-based approach with machine learning.
+   */
+  public async analyzeIntentWithNN(query: string, userContext: Record<string, unknown> = {}): Promise<UserIntent> {
+    // 1. Create a feature vector from the input query
+    const featureVector = this.createTextFeatureVector(query);
+
+    // 2. Use the Autoencoder to get a compressed latent vector
+    const latentVector = this.encodeIntent(featureVector);
+
+    // 3. Find the Best Matching Unit (BMU) on the Self-Organizing Map
+    const bmu = this.findBestMatchingUnit(latentVector);
+
+    // Update the winning neuron's stats
+    bmu.neuron.activationCount++;
+    bmu.neuron.lastActivation = Date.now();
+
+    // 4. Determine intent based on the BMU's learned association
+    const intentCategory = this.getIntentCategoryForNeuron(bmu.neuron);
+
+    // Build the intent object with neural network-derived insights
+    const intent: UserIntent = {
+      queryText: query,
+      intentCategory: intentCategory,
+      confidence: Math.max(0.1, 1 - bmu.distance), // Confidence inversely related to BMU distance
+      urgency: this.getUrgencyFromContext(query, userContext),
+      complexity: Math.min(1, query.length / 400),
+      domainSpecificity: this.getDomainSpecificityForNeuron(bmu.neuron),
+      contextualSimilarity: this.calculateContextualSimilarity(query),
+      userBehaviorPattern: this.identifyUserBehaviorPattern(),
+      timestamp: Date.now(),
+    };
+
+    // Store the intent and maintain history
+    this.userIntentHistory.push(intent);
+    if (this.userIntentHistory.length > 1000) {
+      this.userIntentHistory = this.userIntentHistory.slice(-500);
     }
+
+    // Optionally trigger SOM training (adaptive learning)
+    if (bmu.distance > 0.5) {
+      this.trainSOMNeuron(bmu.neuron, latentVector);
+    }
+
+    return intent;
   }
+
   /**
-   * Find optimal model using SOM-learned patterns
-   */;
-  private async findOptimalModel(userIntent: UserIntent): Promise<any> {
-    let bestModel = 'gemma270m';
-    let bestScore = 0;
-    let confidence = 0.5;
-    try {
-      // Get current model performance profiles
-      const models = Array.from(this.modelProfiles.values();
-      for (const model of models) {
-        let score = 0;
-        // Base performance score
-        score += model.accuracyScore * 0.3;
-        score += model.userSatisfactionScore * 0.3;
-        score += (1 / (model.avgResponseTime + 1)) * 0.2; // Inverse of response time
-        // Intent-specific scoring
-        switch (userIntent.intentCategory) {
-          case 'legal_analysis':
-            if (model.specialtyDomains.includes('legal')) score += 0.4;
-            if (model.modelId.includes('legal')) score += 0.3;
-            break;
-          case 'chat':
-            if (model.avgResponseTime < 200) score += 0.3; // Prefer fast models for chat
-            if (model.modelId.includes('gemma')) score += 0.2;
-            break;
-          case 'research':
-            if (model.accuracyScore > 0.9) score += 0.4; // Prefer accurate models
-            if (model.modelId.includes('llama')) score += 0.2;
-            break;
-        }
-        // Urgency adjustments
-        if (userIntent.urgency === 'critical' && model.avgResponseTime < 100) {
-          score += 0.3;
-        }
-        // Complexity adjustments
-        if (userIntent.complexity > 0.7 && model.accuracyScore > 0.85) {
-          score += 0.2;
-        }
-        // Memory pressure penalty
-        const memoryUsage = this.calculateCurrentMemoryUsage();
-        if (memoryUsage > this.memoryPressureThreshold && model.memoryFootprint > 1000) {
-          score -= 0.2;
-        }
-        // Frequency bonus (prefer recently used models for faster switching)
-        if (model.usageFrequency > 10 && (Date.now() - model.lastUsed) < 300000) { // 5 minutes
-          score += 0.1;
-        }
-        if (score > bestScore) {
-          bestScore = score;
-          bestModel = model.modelId;
-          confidence = Math.min(0.95, score);
-        }
-      }
-      return { modelId: bestModel, confidence }
-    } catch (error) {
-      console.error('Model optimization failed:', error);
-      return { modelId: bestModel, confidence: 0.5 }
-    }
-  }
-  /**
-   * Optimize GPU memory for efficient model switching
-   */;
-  private async optimizeGPUMemory(targetModelId: string): Promise<string[]> {
-    const optimizations: string[] = [];
-    try {
-      const currentUsage = this.calculateCurrentMemoryUsage();
-      if (currentUsage > this.compressionThreshold) {
-        // Compress least recently used blocks
-        const compressedBlocks = await this.compressLRUMemoryBlocks();
-        optimizations.push(`compressed_${compressedBlocks.length}_blocks`);
-      }
-      if (currentUsage > this.memoryPressureThreshold) {
-        // Evict unused model weights
-        const evictedModels = await this.evictUnusedModels(targetModelId);
-        optimizations.push(`evicted_${evictedModels.length}_models`);
-      }
-      // Prefetch target model if not loaded
-      await this.prefetchModelWeights(targetModelId);
-      optimizations.push(`prefetched_${targetModelId}`);
-      // Optimize SOM neurons storage
-      await this.optimizeSOMStorage();
-      optimizations.push('optimized_som_storage');
-      return optimizations;
-    } catch (error) {
-      console.error('GPU memory optimization failed:', error);
-      return ['optimization_failed'];
-    }
-  }
-  /**
-   * Initialize Self-Organizing Map for user pattern learning
-   */;
-  private initializeSOM(): void {
-    console.log('🧠 Initializing Self-Organizing Map...');
-    this.somNeurons = Array(this.somHeight).fill(null).map((_, y) =>;
-      Array(this.somWidth).fill(null).map((_, x) => ({
-        id: `som_${x}_${y}`,
-        position: [x, y] as [number, number],
-        weights: new Float32Array(this.latentSize).fill(0).map(() => Math.random() * 0.1 - 0.05),
-        learningRate: this.globalLearningRate,
-        lastActivation: 0,
-        activationCount: 0,
-        associatedModel: 'gemma270m', // Default
-        userPatternSignature: ''
-      })
-    );
-    console.log(`✅ SOM initialized: ${this.somWidth}x${this.somHeight} = ${this.somWidth * this.somHeight} neurons`);
-  }
-  /**
-   * Initialize auto-encoder for feature compression
-   */;
-  private initializeAutoEncoder(): void {
-    console.log('🔧 Initializing Auto-Encoder...');
-    // Xavier/He initialization for better training
-    const initWeight = (size: number) => new Float32Array(size).fill(0).map(() =>
-      Math.random() * Math.sqrt(2 / size) - Math.sqrt(1 / size)
-    );
-    this.autoEncoderWeights = {
-      encoder: {
-        w1: initWeight(this.inputFeatureSize * this.hiddenSize),
-        b1: new Float32Array(this.hiddenSize).fill(0.01),
-        w2: initWeight(this.hiddenSize * this.latentSize),
-        b2: new Float32Array(this.latentSize).fill(0.01)
-      },
-      decoder: {
-        w3: initWeight(this.latentSize * this.hiddenSize),
-        b3: new Float32Array(this.hiddenSize).fill(0.01),
-        w4: initWeight(this.hiddenSize * this.inputFeatureSize),
-        b4: new Float32Array(this.inputFeatureSize).fill(0.01)
-      }
-    }
-    console.log('✅ Auto-Encoder initialized');
-  }
-  /**
-   * Extract features from user query and context
-   */;
-  private extractUserIntentFeatures(query: string, userContext: any): Float32Array {
-    const features = new Float32Array(this.inputFeatureSize);
-    // Basic text features
-    const words = query.toLowerCase().split(/\s+/);
-    const wordCount = Math.min(words.length, 50);
-    features[0] = wordCount / 50; // Normalized word count
-    // Legal domain keywords
-    const legalKeywords = ['contract', 'law', 'legal', 'court', 'case', 'statute', 'regulation', 'compliance'];
-    const legalScore = words.filter(word => legalKeywords.some(kw => word.includes(kw))).length / words.length;
-    features[1] = legalScore;
-    // Question patterns
-    const questionWords = ['what', 'how', 'why', 'when', 'where', 'who'];
-    const isQuestion = questionWords.some(qw => words.includes(qw)) || query.includes('?') ? 1 : 0;
-    features[2] = isQuestion;
-    // Urgency indicators
-    const urgentWords = ['urgent', 'asap', 'immediately', 'critical', 'emergency'];
-    const urgencyScore = words.filter(word => urgentWords.includes(word)).length > 0 ? 1 : 0;
-    features[3] = urgencyScore;
-    // Time of day (user behavior pattern)
-    const hour = new Date().getHours();
-    features[4] = hour / 24; // Normalized hour
-    // Recent query similarity (contextual)
-    if (this.userIntentHistory.length > 0) {
-      const recentQuery = this.userIntentHistory[this.userIntentHistory.length - 1];
-      features[5] = this.calculateQuerySimilarity(query, recentQuery.queryText);
-    }
-    // Word embeddings (simplified - would use actual embeddings in production)
-    words.slice(0, 50).forEach((word, i) => {
-      if (i < 50) {
-        features[10 + i] = this.simpleWordHash(word) / 1000000; // Normalized hash
-      }
-    });
-    // User context features
-    if (userContext.sessionId) {
-      features[60] = this.hashString(userContext.sessionId) / 1000000;
-    }
-    if (userContext.userId) {
-      features[61] = this.hashString(userContext.userId) / 1000000;
-    }
-    // Fill remaining features with query statistics
-    for (let i = 70; i < this.inputFeatureSize; i++) {
-      features[i] = (Math.sin(i * query.length) + 1) / 2; // Deterministic but distributed
-    }
-    return features;
-  }
-  /**
-   * Encode features using auto-encoder
-   */;
-  private encodeFeatures(features: Float32Array): Float32Array {
+   * Encodes a feature vector into a compressed latent representation using the autoencoder.
+   */
+  private encodeIntent(featureVector: Float32Array): Float32Array {
     if (!this.autoEncoderWeights) {
-      throw new Error('Auto-encoder not initialized');
+      throw new Error('Autoencoder not initialized.');
     }
-    const { encoder } = this.autoEncoderWeights;
-    // Layer 1: Input -> Hidden
-    const hidden = new Float32Array(this.hiddenSize);
-    for (let i = 0; i < this.hiddenSize; i++) {
-      let sum = encoder.b1[i];
-      for (let j = 0; j < this.inputFeatureSize; j++) {
-        sum += features[j] * encoder.w1[j * this.hiddenSize + i];
-      }
-      hidden[i] = Math.tanh(sum); // Tanh activation
-    }
-    // Layer 2: Hidden -> Latent
-    const latent = new Float32Array(this.latentSize);
-    for (let i = 0; i < this.latentSize; i++) {
-      let sum = encoder.b2[i];
-      for (let j = 0; j < this.hiddenSize; j++) {
-        sum += hidden[j] * encoder.w2[j * this.latentSize + i];
-      }
-      latent[i] = Math.tanh(sum);
-    }
+
+    const weights = this.autoEncoderWeights.encoder;
+
+    // Pass through first hidden layer
+    const hidden1 = feedForward(featureVector, weights.w1, weights.b1, this.inputFeatureSize, this.hiddenSize);
+
+    // Pass through second (latent) layer
+    const latent = feedForward(hidden1, weights.w2, weights.b2, this.hiddenSize, this.latentSize);
+
     return latent;
   }
+
   /**
-   * Find best matching neuron in SOM
-   */;
-  private findBestMatchingNeuron(features: Float32Array): SOMNeuron {
-    let bestNeuron = this.somNeurons[0][0];
-    let bestDistance = Infinity;
-    for (let y = 0; y < this.somHeight; y++) {
-      for (let x = 0; x < this.somWidth; x++) {
-        const neuron = this.somNeurons[y][x];
-        const distance = this.euclideanDistance(features, neuron.weights);
-        if (distance < bestDistance) {
-          bestDistance = distance;
+   * Finds the most similar neuron (BMU) on the SOM for a given vector.
+   */
+  private findBestMatchingUnit(vector: Float32Array): { neuron: SOMNeuron; distance: number } {
+    let bestNeuron: SOMNeuron = this.somNeurons[0][0];
+    let minDistance = Infinity;
+
+    for (const row of this.somNeurons) {
+      for (const neuron of row) {
+        const distance = euclideanDistance(vector, neuron.weights);
+        if (distance < minDistance) {
+          minDistance = distance;
           bestNeuron = neuron;
         }
       }
     }
-    // Update neuron activation
-    bestNeuron.lastActivation = Date.now();
-    bestNeuron.activationCount++;
-    return bestNeuron;
+    return { neuron: bestNeuron, distance: minDistance };
   }
+
   /**
-   * Helper functions for calculations
-   */;
-  private euclideanDistance(a: Float32Array, b: Float32Array): number {
-    let sum = 0;
-    for (let i = 0; i < a.length && i < b.length; i++) {
-      sum += Math.pow(a[i] - b[i], 2);
+   * Generates a numerical vector from text using bag-of-words hashing.
+   * In production, this would use a pre-trained embedding model.
+   */
+  private createTextFeatureVector(query: string): Float32Array {
+    const vector = new Float32Array(this.inputFeatureSize).fill(0);
+    const words = query.toLowerCase().split(/\s+/);
+
+    // Simple "bag of words" hashing for demonstration
+    words.forEach(word => {
+      let hash = 0;
+      for (let j = 0; j < word.length; j++) {
+        hash = (hash << 5) - hash + word.charCodeAt(j);
+        hash |= 0; // Convert to 32bit integer
+      }
+      const index = Math.abs(hash % this.inputFeatureSize);
+      vector[index] += 1;
+    });
+
+    // Normalize the vector to unit length
+    return normalize(vector);
+  }
+
+  /**
+   * Maps a neuron to an intent category based on its spatial position.
+   * This mapping would be learned during training in a real system.
+   */
+  private getIntentCategoryForNeuron(neuron: SOMNeuron): IntentCategory {
+    const [, x, y] = neuron.id.split('_').map(Number);
+
+    // Map different regions to different intent categories
+    if (x < 3 && y < 3) return 'legal_analysis';
+    if (x > 6 && y > 6) return 'chat';
+    if (x < 5 && y > 5) return 'document_review';
+    if (x > 5 && y < 5) return 'research';
+    if (x >= 3 && x <= 6 && y >= 3 && y <= 6) return 'search';
+
+    return 'unknown';
+  }
+
+  /**
+   * Determines domain specificity from a neuron's learned associations.
+   */
+  private getDomainSpecificityForNeuron(neuron: SOMNeuron): number {
+    const category = this.getIntentCategoryForNeuron(neuron);
+    const activationFrequency = neuron.activationCount / Math.max(1, this.userIntentHistory.length);
+
+    switch (category) {
+      case 'legal_analysis':
+      case 'document_review':
+        return Math.min(0.95, 0.8 + activationFrequency);
+      case 'research':
+        return Math.min(0.8, 0.6 + activationFrequency);
+      case 'search':
+        return Math.min(0.7, 0.4 + activationFrequency);
+      case 'chat':
+        return Math.min(0.4, 0.2 + activationFrequency);
+      default:
+        return 0.1;
     }
-    return Math.sqrt(sum);
   }
-  private calculateQuerySimilarity(query1: string, query2: string): number {
-    const words1 = new Set(query1.toLowerCase().split(/\s+/);
-    const words2 = new Set(query2.toLowerCase().split(/\s+/);
-    const intersection = new Set([...words1].filter(x => words2.has(x));
-    const union = new Set([...words1, ...words2]);
-    return intersection.size / union.size;
-  }
-  private simpleWordHash(word: string): number {
-    let hash = 0;
-    for (let i = 0; i < word.length; i++) {
-      hash = ((hash << 5) - hash + word.charCodeAt(i)) & 0xffffffff;
+
+  /**
+   * Determines urgency from query text and user context.
+   */
+  private getUrgencyFromContext(query: string, userContext: Record<string, unknown>): Urgency {
+    const q = query.toLowerCase();
+
+    // Check for urgent keywords
+    if (['urgent', 'asap', 'immediate', 'critical', 'emergency'].some(k => q.includes(k))) {
+      return 'critical';
     }
-    return Math.abs(hash);
-  }
-  private hashString(str: string): number {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
+
+    if (['quickly', 'soon', 'priority', 'important'].some(k => q.includes(k))) {
+      return 'high';
     }
-    return Math.abs(hash);
+
+    // Check user context for urgency indicators
+    if (userContext.deadline && typeof userContext.deadline === 'number') {
+      const hoursUntilDeadline = (userContext.deadline - Date.now()) / (1000 * 60 * 60);
+      if (hoursUntilDeadline < 2) return 'critical';
+      if (hoursUntilDeadline < 24) return 'high';
+      if (hoursUntilDeadline < 72) return 'medium';
+    }
+
+    return 'medium';
   }
-  // Placeholder implementations for complex functions
-  private classifyIntent(query: string, neuron: SOMNeuron): UserIntent['intentCategory'] {
-    const legalWords = ['law', 'legal', 'contract', 'court', 'case'];
-    const hasLegalTerms = legalWords.some(word => query.toLowerCase().includes(word);
-    if (hasLegalTerms) return 'legal_analysis';
-    if (query.includes('?')) return 'research';
-    return 'chat';
+
+  /**
+   * Trains a SOM neuron by adjusting its weights toward the input vector.
+   * This implements basic Kohonen learning.
+   */
+  private trainSOMNeuron(neuron: SOMNeuron, inputVector: Float32Array, learningRate: number = 0.1): void {
+    if (neuron.weights.length !== inputVector.length) {
+      console.warn(`Weight dimension mismatch for neuron ${neuron.id}`);
+      return;
+    }
+
+    // Update weights using Kohonen learning rule
+    for (let i = 0; i < neuron.weights.length; i++) {
+      neuron.weights[i] += learningRate * (inputVector[i] - neuron.weights[i]);
+    }
   }
-  private calculateIntentConfidence(query: string, features: Float32Array, neuron: SOMNeuron): number {
-    return Math.min(0.95, 0.6 + (neuron.activationCount / 100) * 0.3);
+
+  public recommendOptimalModel(intent: UserIntent): string {
+    let bestModel = 'gemma270m';
+    let bestScore = -Infinity;
+
+    for (const profile of this.modelProfiles.values()) {
+      let score = 0;
+      score += profile.accuracyScore * 0.4;
+      score += profile.userSatisfactionScore * 0.2;
+      score += (1 / (profile.avgResponseTime + 1)) * 0.2;
+      if (intent.intentCategory === 'legal_analysis' && profile.specialtyDomains.includes('legal')) score += 0.3;
+      if (intent.complexity > 0.6 && profile.accuracyScore > 0.9) score += 0.2;
+      // penalize large models if memory pressure
+      const memUsageRatio = this.calculateCurrentMemoryUsage();
+      if (memUsageRatio > this.memoryPressureThreshold && profile.memoryFootprint > 1500) score -= 0.3;
+      if (score > bestScore) {
+        bestScore = score;
+        bestModel = profile.modelId;
+      }
+    }
+    return bestModel;
   }
-  private determineUrgency(query: string, userContext: any): UserIntent['urgency'] {
-    const urgentWords = ['urgent', 'asap', 'immediately', 'critical'];
-    return urgentWords.some(word => query.toLowerCase().includes(word)) ? 'high' : 'medium';
+
+  public getCurrentStrategy(): CacheOptimizationStrategy {
+    return { ...this.currentStrategy };
   }
-  private calculateComplexity(query: string, features: Float32Array): number {
-    return Math.min(1.0, query.length / 500 + features[1]); // Length + legal complexity
+
+  public getMemoryState(): CUDAMemoryState {
+    return { ...this.memoryState };
   }
-  private calculateDomainSpecificity(query: string): number {
-    const legalTerms = ['statute', 'regulation', 'compliance', 'litigation', 'contract'];
-    return legalTerms.filter(term => query.toLowerCase().includes(term)).length / legalTerms.length;
-  }
+
   private calculateContextualSimilarity(query: string): number {
     if (this.userIntentHistory.length === 0) return 0;
     const recent = this.userIntentHistory.slice(-3);
-    return recent.reduce((sum, intent) => sum + this.calculateQuerySimilarity(query, intent.queryText), 0) / recent.length;
+    let sum = 0;
+    for (const h of recent) {
+      sum += this.calculateQuerySimilarity(query, h.queryText);
+    }
+    return sum / recent.length;
   }
-  private identifyUserBehaviorPattern(): UserIntent['userBehaviorPattern'] {
+
+  private identifyUserBehaviorPattern(): UserBehaviorPattern {
     if (this.userIntentHistory.length < 5) return 'explorer';
     const recent = this.userIntentHistory.slice(-10);
-    const uniqueCategories = new Set(recent.map(i => i.intentCategory)).size;
-    if (uniqueCategories === 1) return 'focused';
-    if (uniqueCategories > 3) return 'explorer';
+    const unique = new Set(recent.map(r => r.intentCategory)).size;
+    if (unique === 1) return 'focused';
+    if (unique > 3) return 'explorer';
     return 'learning';
   }
-  // More placeholder implementations
-  private async generateSpellingCorrections(query: string): Promise<string[]> {
-    // Would implement actual spell checking
-    return [];
+
+  private calculateQuerySimilarity(a: string, b: string): number {
+    const wa = new Set(a.toLowerCase().split(/\s+/));
+    const wb = new Set(b.toLowerCase().split(/\s+/));
+    const inter = [...wa].filter(x => wb.has(x)).length;
+    const uni = new Set([...wa, ...wb]).size || 1;
+    return inter / uni;
   }
-  private generateQueryVariations(query: string, userIntent: UserIntent): string[] {
-    // Would generate query variations based on intent
-    return [];
-  }
+
   private calculateCurrentMemoryUsage(): number {
-    const totalMemory = Array.from(this.memoryBlocks.values()).reduce((sum, block) => sum + block.size, 0);
-    return totalMemory / (this.maxGPUMemoryMB * 1024 * 1024);
+    const totalBytes = Array.from(this.memoryBlocks.values()).reduce((s, b) => s + b.size, 0);
+    const maxBytes = this.maxGPUMemoryMB * 1024 * 1024;
+    return maxBytes === 0 ? 0 : totalBytes / maxBytes;
   }
-  private async compressLRUMemoryBlocks(): Promise<CUDAMemoryBlock[]> {
-    // Would implement memory compression
-    return [];
+
+  private initializeSOM(): void {
+    this.somNeurons = Array.from({ length: this.somHeight }, (_, y) =>
+      Array.from({ length: this.somWidth }, (_, x) => ({
+        id: `som_${x}_${y}`,
+        weights: new Float32Array(this.latentSize).fill(0).map(() => Math.random() * 0.1),
+        activationCount: 0,
+        lastActivation: 0,
+        associatedModel: undefined,
+      }))
+    );
   }
-  private async evictUnusedModels(keepModelId: string): Promise<string[]> {
-    // Would implement model eviction
-    return [];
+
+  private initializeAutoEncoder(): void {
+    // Initialize autoencoder weights with proper random initialization
+    const scaleFactor = 0.1; // Xavier initialization scale
+
+    this.autoEncoderWeights = {
+      encoder: {
+        w1: generateRandomWeights(this.inputFeatureSize * this.hiddenSize, scaleFactor),
+        b1: new Float32Array(this.hiddenSize).fill(0),
+        w2: generateRandomWeights(this.hiddenSize * this.latentSize, scaleFactor),
+        b2: new Float32Array(this.latentSize).fill(0),
+      },
+      decoder: {
+        w3: generateRandomWeights(this.latentSize * this.hiddenSize, scaleFactor),
+        b3: new Float32Array(this.hiddenSize).fill(0),
+        w4: generateRandomWeights(this.hiddenSize * this.inputFeatureSize, scaleFactor),
+        b4: new Float32Array(this.inputFeatureSize).fill(0),
+      },
+    };
   }
-  private async prefetchModelWeights(modelId: string): Promise<void> {
-    // Would implement model prefetching
-  }
-  private async optimizeSOMStorage(): Promise<void> {
-    // Would implement SOM storage optimization
-  }
-  private async estimateModelSwitchTime(modelId: string): Promise<number> {
-    const profile = this.modelProfiles.get(modelId);
-    return profile?.switchCost || 100; // Default 100ms
-  }
-  private async updateUserLearning(userIntent: UserIntent, selectedModel: string): Promise<void> {
-    // Would implement SOM learning update
-    console.log(`📚 Learning: ${userIntent.intentCategory} -> ${selectedModel}`);
-  }
+
   private startMemoryMonitoring(): void {
-    if (browser) {
-      setInterval(() => {
-        const usage = this.calculateCurrentMemoryUsage();
-        if (usage > this.memoryPressureThreshold) {
-          console.log(`⚠️ Memory pressure: ${(usage * 100).toFixed(1)}%`);
-        }
-      }, 5000);
-    }
+    if (!browser) return;
+    setInterval(() => {
+      this.memoryState.usedMemoryMB = Math.round(this.calculateCurrentMemoryUsage() * this.maxGPUMemoryMB);
+      this.memoryState.availableMemoryMB = Math.max(0, this.memoryState.totalMemoryMB - this.memoryState.usedMemoryMB);
+      this.memoryState.utilizationPercent = (this.memoryState.usedMemoryMB / this.memoryState.totalMemoryMB) * 100;
+      this.memoryState.lastUpdated = Date.now();
+      if (this.calculateCurrentMemoryUsage() > this.memoryPressureThreshold) {
+        console.warn(`⚠️ Memory pressure ${this.memoryState.utilizationPercent.toFixed(1)}%`);
+      }
+    }, 5000);
   }
-  /**
-   * Initialize model profiles (would load from storage in production)
-   */;
-  async initializeModelProfiles(): Promise<void> {
-    const profiles: ModelPerformanceProfile[] = [;
+
+  public async initializeModelProfiles(): Promise<void> {
+    const profiles: ModelPerformanceProfile[] = [
       {
         modelId: 'gemma270m',
         architecture: 'llama',
@@ -1093,7 +471,7 @@ export const cudaCacheOptimizer = browser ? new CudaCacheMemoryOptimizer() : nul
         specialtyDomains: ['chat', 'general'],
         lastUsed: Date.now(),
         usageFrequency: 50,
-        switchCost: 80
+        switchCost: 80,
       },
       {
         modelId: 'legal-bert',
@@ -1105,7 +483,7 @@ export const cudaCacheOptimizer = browser ? new CudaCacheMemoryOptimizer() : nul
         specialtyDomains: ['legal', 'context'],
         lastUsed: Date.now() - 300000,
         usageFrequency: 25,
-        switchCost: 30
+        switchCost: 30,
       },
       {
         modelId: 'llama-rl',
@@ -1117,30 +495,64 @@ export const cudaCacheOptimizer = browser ? new CudaCacheMemoryOptimizer() : nul
         specialtyDomains: ['legal', 'research', 'analysis'],
         lastUsed: Date.now() - 600000,
         usageFrequency: 15,
-        switchCost: 200
-      }
+        switchCost: 200,
+      },
     ];
-    profiles.forEach(profile => {
-      this.modelProfiles.set(profile.modelId, profile);
-    });
-    console.log(`✅ Model profiles initialized: ${this.modelProfiles.size} models`);
-  }
-  /**
-   * Get optimizer status and statistics
-   */;
-  async getOptimizerStats(): Promise<any> {
-    const totalActivations = this.somNeurons
-      .flat()
-      .reduce((sum, neuron) => sum + neuron.activationCount, 0);
-    return {
-      memoryUsage: this.calculateCurrentMemoryUsage(),
-      modelProfiles: this.modelProfiles.size,
-      userIntentHistory: this.userIntentHistory.length,
-      somNeuronActivations: totalActivations
-      cacheHitRate: 0.85 // Would calculate actual hit rate
+
+    for (const p of profiles) {
+      this.modelProfiles.set(p.modelId, p);
     }
+    console.info(`Model profiles initialized: ${this.modelProfiles.size}`);
+  }
+
+  // Placeholder functions for advanced operations (left intentionally simple)
+  public async optimizeGPUMemory(targetModelId: string): Promise<string[]> {
+    const ops: string[] = [];
+    const usage = this.calculateCurrentMemoryUsage();
+    if (usage > this.compressionThreshold) {
+      ops.push('compressed_blocks');
+    }
+    if (usage > this.memoryPressureThreshold) {
+      ops.push('evicted_models');
+    }
+    ops.push(`prefetched_${targetModelId}`);
+    return ops;
+  }
+
+  public async generateDidYouMeanSuggestions(_query: string): Promise<string[]> {
+    // Simple fallback: return empty array
+    // In production, this would use semantic similarity with stored queries
+    return [];
+  }
+
+  // Expose comprehensive diagnostics
+  public async getOptimizerStats(): Promise<OptimizerStats> {
+    const activations = this.somNeurons.flat().reduce((s, n) => s + n.activationCount, 0);
+    const recentIntents = this.userIntentHistory.slice(-10);
+    const avgConfidence =
+      recentIntents.length > 0
+        ? recentIntents.reduce((sum, intent) => sum + intent.confidence, 0) / recentIntents.length
+        : 0;
+
+    // Find most active neuron
+    const flatNeurons = this.somNeurons.flat();
+    const mostActive = flatNeurons.reduce(
+      (max, neuron) => (neuron.activationCount > max.activationCount ? neuron : max),
+      flatNeurons[0]
+    );
+
+    return {
+      memoryUsageRatio: this.calculateCurrentMemoryUsage(),
+      modelCount: this.modelProfiles.size,
+      intentHistory: this.userIntentHistory.length,
+      somActivations: activations,
+      avgConfidence: avgConfidence,
+      mostActiveNeuron: mostActive.id,
+      recentIntentCategories: recentIntents.map(intent => intent.intentCategory),
+    };
   }
 }
-// Export singleton instance
-export const cudaCacheMemoryOptimizer = new CUDACacheMemoryOptimizer();
-export default cudaCacheMemoryOptimizer;
+
+// Export singleton instance guarded by browser
+export const cudaCacheOptimizer = browser ? new CudaCacheMemoryOptimizer() : null;
+export default cudaCacheOptimizer;

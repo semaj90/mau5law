@@ -10,7 +10,7 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount  } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
   interface Props extends GamingComponentProps {
@@ -83,7 +83,7 @@
     enableSpatialAudio = true,
     error,
     success,
-    class: className = '';
+    class: className = '',
   }: Props = $props();
   let isFocused = $state(false);
   let isHovered = $state(false);
@@ -104,52 +104,61 @@
     ...renderOptions
   }
   // Create spatial audio feedback
+  const dispatch = createEventDispatcher();
   const playInputSound = async (frequency: number, duration: number = 0.1) => {
     if (!enableSpatialAudio) return;
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
+        const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
+        audioContext = new AC();
       }
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      const pannerNode = audioContext.createPanner();
+      const ctx = audioContext as AudioContext;
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      const pannerNode = ctx.createPanner();
       // Configure spatial audio
       pannerNode.panningModel = 'HRTF';
-      pannerNode.positionX.setValueAtTime(0, audioContext.currentTime);
-      pannerNode.positionY.setValueAtTime(0, audioContext.currentTime);
-      pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);
+      // guard for older engines that may not have positionX/Y/Z as AudioParam
+      if (typeof (pannerNode as any).positionX?.setValueAtTime === 'function') {
+        (pannerNode as any).positionX.setValueAtTime(0, ctx.currentTime);
+        (pannerNode as any).positionY.setValueAtTime(0, ctx.currentTime);
+        (pannerNode as any).positionZ.setValueAtTime(-1, ctx.currentTime);
+      } else if (typeof pannerNode.setPosition === 'function') {
+        (pannerNode as any).setPosition(0, 0, -1);
+      }
       // Connect audio chain
       oscillator.connect(pannerNode);
       pannerNode.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      gainNode.connect(ctx.destination);
       // Configure sound
       oscillator.type = 'sawtooth';
-      oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+      oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+      gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
       oscillator.start();
-      oscillator.stop(audioContext.currentTime + duration);
+      oscillator.stop(ctx.currentTime + duration);
     } catch (error) {
       console.warn('Could not play input sound:', error);
     }
   }
-  const handleInput = (_event: Event) => {
-    // removed unused target assignment
-    value = target.valu;
+  const handleInput = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (!target) return;
+    value = target.value;
     hasContent = target.value.length > 0;
     // Play typing sound
     playInputSound(440 + Math.random() * 200, 0.05);
-    ondispatch?.({ value: target.value, event });
+    dispatch('input', { value: target.value, originalEvent: event });
   }
   const handleFocus = () => {
     isFocused = true;
     playInputSound(660, 0.15);
-    // ondispatch removed;
+    dispatch('focus');
   }
   const handleBlur = () => {
     isFocused = false;
     playInputSound(440, 0.1);
-    // ondispatch removed;
+    dispatch('blur');
   }
   const handleHover = () => {
     if (disabled) return;
@@ -159,17 +168,17 @@
   const handleUnhover = () => {
     isHovered = false;
   }
-  const handleKeyDown = (_event: KeyboardEvent) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     // Play different sounds for different key types
     if (event.key === 'Enter') {
       playInputSound(880, 0.2);
     } else if (event.key === 'Backspace') {
       playInputSound(330, 0.1);
     }
-    ondispatch?.({ event });
+    dispatch('keydown', { key: event.key, originalEvent: event });
   }
   // Get material styles based on state and variant
-  const getMaterialStyles = (variant: string, material: string, state: string) => {
+  const getMaterialStyles = (variant: string, material: string) => {
     const baseColors = {
       primary: { base: '#2d3748', highlight: '#4a5568', shadow: '#1a202c', border: '#4a90e2' },
       secondary: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748', border: '#6c757d' },
@@ -183,7 +192,7 @@
     if (hasError) {
       return baseColors.error;
     } else if (hasSuccess) {
-      return baseColors.succes;
+      return baseColors.success;
     }
     const materialMap = {
       basic: {
@@ -240,10 +249,10 @@
       classes.push('filtering-trilinear');
     }
     const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1;
-    if (anisotropicLevel >= 16) {
-      classes.push('anisotropic-16x');
-    } else if (anisotropicLevel >= 8) {
-      classes.push('anisotropic-8x');
+  let sizeStyles = $derived(getSizeStyles(size));
+  let materialStyles = $derived(getMaterialStyles(variant, materialType));
+  let dynamicRotationX = $derived(rotationX + (isFocused ? -2 : 0) + (isHovered ? 1 : 0));
+      classes.push('anisotropic-8x'),
     } else if (anisotropicLevel >= 4) {
       classes.push('anisotropic-4x');
     }
@@ -267,58 +276,54 @@
   <div class="n64-input-wrapper">
     <input
       bind:this={inputElement}
-      {type}
-      {name}
-      {id}
-      {required}
-      {minlength}
-      {maxlength}
-      {pattern}
-      {readonly}
-      {disabled}
-      {autocomplete}
-      bind:value
-      {placeholder}
-      oninput={handleInput}
-      onfocus={handleFocus}
-      onblur={handleBlur}
-      onmouseenter={handleHover}
-      onmouseleave={handleUnhover}
-      onkeydown={handleKeyDown}
-      class="n64-input {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-      style=";
-        --material-bg: {materialStyles.background}
-        --material-border: {materialStyles.borderColor}
-        --material-shadow: {materialStyles.boxShadow}
-        --input-padding: {sizeStyles.padding}
-        --input-font-size: {sizeStyles.fontSize}
-        --input-min-height: {sizeStyles.minHeight}
-        --transform-3d: {transform3D}
-        --fog-color: {effectiveRenderOptions.fogColor}
-        --glow-intensity: {glowIntensity}
-        --input-depth: {depth}px;
-      "
-      aria-invalid={hasError}
-      aria-describedby={error || success ? `${id || name}-message` : undefined}
+      type={type}
+      name={name}
+      id={id}
+      required={required}
+      minlength={minlength}
+      maxlength={maxlength}
+      pattern={pattern}
+      readonly={readonly}
+      disabled={disabled}
+      autocomplete={autocomplete}
+      bind:value={value}
+      placeholder={placeholder}
+      on:input={handleInput}
+      on:focus={handleFocus}
+      on:blur={handleBlur}
+      on:mouseenter={handleHover}
+      on:mouseleave={handleUnhover}
+      on:keydown={handleKeyDown}
+      class={`n64-input ${materialType} mesh-${meshComplexity} ${getTextureFilteringClasses()}`}
+      style={`
+        --material-bg: ${materialStyles.background};
+        --material-border: ${materialStyles.borderColor};
+        --material-shadow: ${materialStyles.boxShadow};
+        --input-padding: ${sizeStyles.padding};
+        --input-font-size: ${sizeStyles.fontSize};
+        --input-min-height: ${sizeStyles.minHeight};
+        --transform-3d: ${transform3D};
+        --fog-color: ${((effectiveRenderOptions as any)?.fogColor) ?? '#404040'};
+        --glow-intensity: ${typeof glowIntensity !== 'undefined' ? glowIntensity : 0};
+        --input-depth: ${typeof depth !== 'undefined' ? depth + 'px' : '8px'};
+      `}
+      aria-invalid={hasError ? 'true' : 'false'}
+      aria-describedby={error || success ? `${id ?? name ?? 'input'}-message` : undefined}
     />
-    {#if enableLighting}
-      <div class="lighting-overlay"></div>
-    {/if}
-    {#if enableReflections}
-      <div class="reflection-overlay"></div>
-    {/if}
+    <div class="lighting-overlay" aria-hidden="true" style:display={enableLighting ? 'block' : 'none'}></div>
+    <div class="reflection-overlay" aria-hidden="true" style:display={enableReflections ? 'block' : 'none'}></div>
     {#if enableInputGlow && isFocused}
-      <div class="input-glow-effect"></div>
+      <div class="input-glow-effect" aria-hidden="true"></div>
     {/if}
   </div>
   {#if loading}
-    <div class="loading-indicator">
-      <div class="n64-spinner"></div>
+    <div class="loading-indicator" aria-hidden="false">
+      <div class="n64-spinner" role="status" aria-label="loading"></div>
     </div>
   {/if}
   {#if error || success}
-    <div class="input-message {hasError ? 'error' : 'success'}" id="{id || name}-message">
-      {error || success}
+    <div class={`input-message ${hasError ? 'error' : 'success'}`} id={`${id ?? name ?? 'input'}-message`}>
+      {error ?? success}
     </div>
   {/if}
 </div>
@@ -375,17 +380,20 @@
       var(--material-bg),
       radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
   }
+
   /* Placeholder styling */
-  :global($1) {
+  :global(.n64-input::placeholder) {
     color: rgba(255, 255, 255, 0.6);
     text-shadow: none;
     font-weight: 400;
   }
+
   /* Autofill styling */
   :global(.n64-input:-webkit-autofill) {
     -webkit-box-shadow: inset 0 0 0 50px var(--material-bg) !important;
     -webkit-text-fill-color: #ffffff !important;
   }
+
   /* Lighting overlay */
   .lighting-overlay {
     position: absolute;
@@ -404,6 +412,7 @@
     z-index: 1;
     border-radius: 4px;
   }
+
   /* Reflection overlay */
   .reflection-overlay {
     position: absolute;
@@ -422,6 +431,7 @@
     z-index: 3;
     opacity: 0.6;
   }
+
   /* Input glow effect */
   .input-glow-effect {
     position: absolute;
@@ -441,14 +451,17 @@
     opacity: var(--glow-intensity);
     animation: inputGlow 2s ease-in-out infinite;
   }
+
   @keyframes inputGlow {
-    0%, 100% { opacity: var(--glow-intensity), }
-    50% { opacity: calc(var(--glow-intensity) * 1.5), }
+    0%, 100% { opacity: var(--glow-intensity); }
+    50% { opacity: calc(var(--glow-intensity) * 1.5); }
   }
+
   /* Material type variations */
   :global(.n64-input.pbr) {
     background-blend-mode: overlay, normal;
   }
+
   /* Mesh complexity variations */
   :global(.n64-input.mesh-high) {
     border-radius: 6px;
@@ -463,8 +476,10 @@
     border-radius: 2px;
     transform-style: flat;
   }
+
   /* Disabled state */
-  :global($1) {
+  :global(.n64-input:disabled),
+  :global(.n64-input[disabled]) {
     background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
     color: #a0aec0;
     cursor: not-allowed;
@@ -475,6 +490,7 @@
       inset 0 1px 0 rgba(255,255,255,0.05),
       0 2px 4px rgba(0,0,0,0.2);
   }
+
   /* Focus styles */
   :global(.n64-input:focus) {
     border-color: #4a90e2;
@@ -483,6 +499,7 @@
       0 0 0 2px rgba(74, 144, 226, 0.3),
       0 0 20px rgba(74, 144, 226, 0.2);
   }
+
   /* Error state */
   :global(.n64-input[aria-invalid="true"]) {
     border-color: #dc3545;
@@ -490,6 +507,7 @@
       var(--material-shadow),
       0 0 0 2px rgba(220, 53, 69, 0.3);
   }
+
   /* Loading indicator */
   .loading-indicator {
     position: absolute;
@@ -498,6 +516,7 @@
     transform: translateY(-50%);
     z-index: 4;
   }
+
   .n64-spinner {
     width: 16px;
     height: 16px;
@@ -506,9 +525,11 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
+
   @keyframes spin {
-    to { transform: rotate(360deg), }
+    to { transform: rotate(360deg); }
   }
+
   /* Input message styling */
   .input-message {
     font-size: 12px;
@@ -523,6 +544,7 @@
   .input-message.success {
     color: #28a745;
   }
+
   /* Enhanced texture filtering */
   :global(.n64-input.texture-ultra) {
     -webkit-font-smoothing: antialiased;
@@ -547,8 +569,9 @@
   :global(.n64-input.anisotropic-16x) {
     filter: contrast(1.08) brightness(1.02);
   }
-  /* Fog effects */
-  :global($1) {
+
+  /* Fog effects (pseudo-element on the input) */
+  :global(.n64-input::after) {
     content: '';
     position: absolute;
     top: 0;
@@ -565,11 +588,11 @@
     z-index: 0;
     border-radius: 4px;
   }
-  /* Mobile optimizations */
+
   @media (max-width: 480px) {
     :global(.n64-input) {
       min-height: 44px;
-      font-size: 16px; /* Prevent zoom on iOS */,
+      font-size: 16px; /* Prevent zoom on iOS */
       transform: scale(var(--dynamic-scale, 1));
     }
     .lighting-overlay,
@@ -578,6 +601,7 @@
       display: none;
     }
   }
+
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     :global(.n64-input) {
@@ -593,6 +617,7 @@
       border-right-color: transparent;
     }
   }
+
   /* High contrast mode */
   @media (prefers-contrast: high) {
     :global(.n64-input) {
@@ -605,6 +630,7 @@
       display: none;
     }
   }
+
   /* Performance optimization for low-end devices */
   @media (max-device-memory: 2GB) {
     :global(.n64-input) {
@@ -614,8 +640,10 @@
     .lighting-overlay,
     .reflection-overlay,
     .input-glow-effect,
-    :global($1) {
+    :global(.n64-input::after) {
       display: none;
     }
   }
+
+  /* Reduced motion / high contrast fallbacks already handled above */
 </style>

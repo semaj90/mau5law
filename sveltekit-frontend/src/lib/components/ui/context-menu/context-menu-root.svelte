@@ -1,13 +1,12 @@
 <script lang="ts">
-  interface Props {
-    onOpenChange?: (open: boolean) => void;
-    children: unknown;
-  }
-  let { onOpenChange = undefined, children }: Props = $props();
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
+
+  export let onOpenChange: ((open: boolean) => void) | undefined = undefined;
+
   const isOpen = writable(false);
   const position = writable({ x: 0, y: 0 });
+
   setContext('context-menu', {
     isOpen,
     position,
@@ -23,11 +22,11 @@
   });
 </script>
 
-<div class="space-y-4">
-  {@render children()}
+<div class="context-menu-root space-y-4">
+  <slot />
 </div>
 
-<style>/* @unocss-include */ {}
+<style>/* @unocss-include */
   .context-menu-root {
     position: relative;
   }

@@ -23,7 +23,7 @@
     stack: error.stack,
     timestamp: new Date().toISOString(),
     userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'Unknown',
-    url: typeof window !== 'undefined' ? window.location.href : 'Unknown';
+    url: typeof window !== 'undefined' ? window.location.href : 'Unknown',
   } : null);
   function handleError(_event: ErrorEvent | PromiseRejectionEvent) {
     const err = 'error' in event ? event.error: event.reaso;
@@ -59,7 +59,7 @@
       const report = {
         ...errorDetails,
         component: 'ErrorBoundary',
-        severity: 'high';
+        severity: 'high',
       }
       // Log to console (could be sent to monitoring service)
       console.warn('Error report generated:', report);
@@ -179,6 +179,6 @@
   .error-boundary {
 font-family: {}
 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', {}
-      'Droid Sans', 'Helvetica Neue', sans-serif;
+      'Droid Sans', 'Helvetica Neue', sans-serif,
   }
 </style>

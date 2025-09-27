@@ -1,16 +1,16 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  interface Props {
-    disabled?: boolean;
-    onclick?: (event?: unknown) => void;
-  }
-  let { children,
-    disabled = false,
-    onclick= () => }: Props = $props();
+
+  export let disabled: boolean = false;
+  export let onclick: (event?: unknown) => void = () => {};
+
   interface ContextMenuContext {
     close: () => void;
   }
-  const { close } = getContext<ContextMenuContext>('context-menu') || { close: () => }
+
+  const ctx = getContext<ContextMenuContext>('context-menu');
+  const close = ctx?.close ?? (() => {});
+
   function handleClick() {
     if (!disabled) {
       onclick?.();
@@ -20,17 +20,17 @@
 </script>
 
 <button
-  class="space-y-4"
-  class:disabled
+  class="context-menu-item"
+  class:disabled={disabled}
   role="menuitem"
   tabindex={disabled ? -1 : 0}
-  onclick={() => handleClick()}
+  on:click={handleClick}
   {disabled}
 >
-  {@render children?.()}
+  <slot />
 </button>
 
-<style>/* @unocss-include */ {}
+<style>/* @unocss-include */
   .context-menu-item {
     display: flex;
     align-items: center;
@@ -41,7 +41,7 @@
     border-radius: 0.25rem;
     background: transparent;
     cursor: pointer;
-    transition: background-color 0.15;
+    transition: background-color 0.15s;
     text-align: left;
   }
   .context-menu-item:hover:not(.disabled) {
@@ -51,7 +51,7 @@
     outline: 2px solid #3b82f6;
     outline-offset: -2px;
   }
-  .context-menu-.disabled {
+  .context-menu-item.disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }

@@ -1,14 +1,14 @@
 <script lang="ts">
   import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
-  import Button from '$lib/components/ui/nes-button.svelte';
-  import { CaseLogic, type CaseFile } from '$lib/core/logic/case-logic';
-  import type { Snippet } from 'svelte';
-  interface Props {
-    caseFile: CaseFil;
-  }
-  let { caseFile, children }: Props & { children?: Snippet } = $props();
+  import { CaseLogic } from '$lib/core/logic/case-logic';
+  import type { CaseFile } from '$lib/core/logic/case-logic';
+
+  // export the prop in Svelte idiomatic way and use a slot for children
+  export let caseFile: CaseFile;
+
   const displayStatus = CaseLogic.getDisplayStatus(caseFile);
   const riskScore = CaseLogic.calculateRiskScore(caseFile);
+
   function handleAnalyzeClick() {
     // placeholder for integration
     console.log(`Analyzing case ${caseFile.id} risk ${riskScore}`);
@@ -22,11 +22,9 @@
   </CardHeader>
   <CardContent class="space-y-4">
     <p>{caseFile.summary}</p>
-    {#if children}
-      {@render children()}
-    {/if}
+    <slot />
     <div class="flex justify-end">
-      <Button class="nes-btn is-primary" onclick={handleAnalyzeClick}>Analyze</Button>
+      <button class="nes-btn is-primary" on:click={handleAnalyzeClick} type="button">Analyze</button>
     </div>
   </CardContent>
 </Card>

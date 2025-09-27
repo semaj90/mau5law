@@ -1,49 +1,60 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- Context menu content component -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { getContext, onDestroy, onMount , Snippet} from 'svelte';
-  import type {     Writable     } from 'svelte/store';
-  {#snippet children(s)}
-  let { class = $bindable()  }: { class = $bindable() : unknown } = $props(); // string = ''
-  const { isOpen, position, close } = getContext;
+  import { getContext, onMount, onDestroy } from 'svelte';
+  import type { Writable } from 'svelte/store';
+
+  // Use a safe prop name instead of the reserved word `class`
+  export let className: string = '';
+
+  type Position = { x: number; y: number };
+
+  const ctx = getContext<{
+    isOpen: Writable<boolean>;
+    position: Writable<Position>;
     close: () => void;
   }>('context-menu');
-  let menuElement = $state<HTMLDivElement | null >(null);
-  function handleClickOutside(_event: MouseEvent) {
+
+  const { isOpen, position, close } = ctx;
+
+  let menuElement: HTMLDivElement | null = null;
+
+  function handleClickOutside(event: MouseEvent) {
     if (menuElement && !menuElement.contains(event.target as Node)) {
       close();
     }
   }
-  function handleEscape(_event: KeyboardEvent) {
+
+  function handleEscape(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       close();
     }
   }
-  $effect(() => {
+
+  onMount(() => {
     document.addEventListener('click', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
   });
+
   onDestroy(() => {
     document.removeEventListener('click', handleClickOutside);
     document.removeEventListener('keydown', handleEscape);
   });
 </script>
+
 {#if $isOpen}
   <div
     bind:this={menuElement}
-    class={class || 'context-menu-content'}
+    class={className || 'context-menu-content'}
     style="left: {$position.x}px; top: {$position.y}px;"
     role="menu"
     tabindex={-1}
   >
-    {@render children}
+    <slot />
   </div>
 {/if}
+
 <style>/* @unocss-include */ .context-menu-content {
     position: fixed;
-d;
     z-index: 1000;
     min-width: 12rem;
     background-color: white;

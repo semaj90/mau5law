@@ -11,8 +11,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Button as BitsButton } from 'bits-ui';
+  let BitsButtonAny: any = BitsButton;
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js';
+
   interface Props extends GamingComponentProps {
     // Button specific props
     type?: 'button' | 'submit' | 'reset';
@@ -24,6 +26,10 @@
     formtarget?: string;
     name?: string;
     value?: string;
+    // Event callbacks
+    onClick?: (() => void) | (() => Promise<void>);
+    onHover?: () => void;
+    onFocus?: () => void;
     // NES-specific styling
     nesVariant?: 'is-primary' | 'is-success' | 'is-warning' | 'is-error' | 'is-disabled';
     pressDepth?: number;
@@ -33,16 +39,12 @@
     children?: unknown;
     class?: string;
   }
+
   let {
-    era = '8bit',
     variant = 'primary',
-    size = 'medium',
+    size = 'md',
     disabled = false,
     loading = false,
-    pixelPerfect = true,
-    enableScanlines = true,
-    enableCRTEffect = false,
-    animationStyle = 'retro-bounce',
     type = 'button',
     form,
     formaction,
@@ -60,84 +62,97 @@
     class: className = '',
     onClick,
     onHover,
-    onFocu;
+    onFocus,
   }: Props = $props();
-  // Events now handled via props in Svelte 5
-  //
+
+  // Reactive state
   let isPressed = $state(false);
-  let audioContext = $state<AudioContext | null >(null);
-  let buttonElement = $state<HTMLButtonElement | null >(null);
-  // Create 8-bit button press sound
+  let audioContext = $state<AudioContext | null>(null);
+  let buttonElement = $state<HTMLButtonElement | null>(null);
+
+  // Play simple NES-like button sound
   const playButtonSound = async () => {
     if (!enableSound) return;
     try {
       if (!audioContext) {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
-      // Create classic NES button sound
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+      const ctx = audioContext!;
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
       oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      oscillator.type = 'square'; // 8-bit square wave
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
-      gainNode.gain.setValueAtTime(soundVolume, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.1);
-    } catch (error) {
-      console.warn('Could not play button sound:', error);
+      gainNode.connect(ctx.destination);
+      oscillator.type = 'square';
+      const now = ctx.currentTime;
+      oscillator.frequency.setValueAtTime(800, now);
+      oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+      gainNode.gain.setValueAtTime(soundVolume, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+      oscillator.start(now);
+      oscillator.stop(now + 0.1);
+    } catch (err) {
+      // swallow audio errors (autoplay policy / older browsers)
+      console.warn('playButtonSound error', err);
     }
-  }
+  };
+
   const handleClick = async () => {
     if (disabled || loading) return;
     isPressed = true;
     await playButtonSound();
+    // short press visual
     setTimeout(() => {
       isPressed = false;
     }, 100);
     onClick?.();
-    // ondispatch removed;
-  }
+  };
+
   const handleHover = () => {
     if (disabled) return;
     onHover?.();
-    // ondispatch removed;
-  }
+  };
+
   const handleFocus = () => {
     if (disabled) return;
     onFocus?.();
-    // ondispatch removed;
+  };
+
+  // Normalize variant (accept "is-primary" or "primary")
+  function normalizeVariant(v: string) {
+    return v?.startsWith('is-') ? v.replace(/^is-/, '') : v;
   }
-  // Get NES color based on variant
-  const getVariantColor = (variant: string, nesVariant: string) => {
+
+  const getVariantColor = (v: string, nesV?: string) => {
+    const key = normalizeVariant(v || nesV || 'primary');
     const colorMap = {
-      'primary': NES_COLOR_PALETTE.blue,
-      'secondary': NES_COLOR_PALETTE.darkGray,
-      'success': NES_COLOR_PALETTE.green,
-      'warning': NES_COLOR_PALETTE.yellow,
-      'error': NES_COLOR_PALETTE.red,
-      'info': NES_COLOR_PALETTE.blue
-    }
-    return colorMap[variant as keyof typeof colorMap] || NES_COLOR_PALETTE.blu;
-  }
-  const getSizeStyles = (size: string) => {
+      primary: NES_COLOR_PALETTE.blue,
+      secondary: (NES_COLOR_PALETTE as any).darkGray ?? NES_COLOR_PALETTE.blue,
+      success: NES_COLOR_PALETTE.green,
+      warning: NES_COLOR_PALETTE.yellow,
+      error: NES_COLOR_PALETTE.red,
+      info: NES_COLOR_PALETTE.blue
+    } as const;
+    return (colorMap as any)[key] ?? NES_COLOR_PALETTE.blue;
+  };
+
+  const getSizeStyles = (s: string) => {
+    const normalized = (s || 'md').toLowerCase();
+    const mapKey = normalized === 'sm' || normalized === 'small' ? 'small' : normalized === 'lg' || normalized === 'large' ? 'large' : 'medium';
     const sizeMap = {
       small: { padding: '8px 12px', fontSize: '10px', minHeight: '32px' },
       medium: { padding: '12px 16px', fontSize: '12px', minHeight: '40px' },
       large: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },
-      xl: { padding: '20px 24px', fontSize: '16px', minHeight: '56px' }
-    }
-    return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
-  }
-  let sizeStyles = $derived(getSizeStyles(size));
-  let variantColor = $derived(getVariantColor(variant, nesVariant));
-  let pressTransform = $derived(isPressed ? `translateY(${pressDepth}px)` : 'translateY(0px)');
-</script>
+    } as const;
+    return sizeMap[mapKey as keyof typeof sizeMap];
+  };
 
-<BitsButton.Root
-  bind:el={buttonElement}
+  // Derived reactive values (Svelte 5 runes)
+  let sizeStyles = $derived(() => getSizeStyles(size));
+  let variantColor = $derived(() => getVariantColor(variant, nesVariant));
+  let pressTransform = $derived(() => (isPressed ? `translateY(${pressDepth}px)` : 'translateY(0px)'));
+</script>
+<BitsButtonAny
+  bind:this={buttonElement}
   {type}
   {disabled}
   {form}
@@ -148,30 +163,26 @@
   {formtarget}
   {name}
   {value}
-  onclick={handleClick}
-  onmouseenter={handleHover}
-  onfocus={handleFocus}
-  class="nes-8bit-button nes-btn {nesVariant} {className}"
-  style=";
-    --button-color: {variantColor}
-    --button-padding: {sizeStyles.padding}
-    --button-font-size: {sizeStyles.fontSize}
-    --button-min-height: {sizeStyles.minHeight}
-    --press-transform: {pressTransform}
-  "
+  on:click={handleClick}
+  on:mouseenter={handleHover}
+  on:focus={handleFocus}
+  class={`nes-8bit-button nes-btn ${nesVariant} ${className}`}
+  style={`--button-color: ${variantColor}; --button-padding: ${sizeStyles.padding}; --button-font-size: ${sizeStyles.fontSize}; --button-min-height: ${sizeStyles.minHeight}; --press-transform: ${pressTransform};`}
 >
   {#if loading}
     <div class="loading-spinner" role="status" aria-label="Loading">
       <div class="pixel-spinner"></div>
     </div>
   {:else}
-    {@render children?.()}
+    {children}
   {/if}
-</BitsButton.Root>
+</BitsButtonAny>
 
 <style>
   :global(.nes-8bit-button) {
 /* Base NES button styling */ font-family: 'Press Start 2P', 'Courier New', monospace !important;
+    position: relative;
+    overflow: hidden;
     background-color: var(--button-color);
     color: white;
     border: 2px solid #000000;
@@ -227,22 +238,20 @@
     transform: none !important;
     box-shadow: 1px 1px 0px #000000;
   }
-/* Hover effects */ :global(.nes-8bit-button:not(:disabled):hover) {,
+/* Hover effects */ :global(.nes-8bit-button:not(:disabled):hover) {
     filter: brightness(1.1);
 box-shadow: 3px 3px 0px #000000, 0px 0px 0px 2px var(--button-color);
   }
 /* Active/Pressed state */ :global(.nes-8bit-button:not(:disabled):active) {
 box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
   }
-/* Focus styles for accessibility */ :global($1) {
+/* Focus styles for accessibility */ :global(.nes-8bit-button:focus) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
 /* Loading spinner */ .loading-spinner {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-  }
   .pixel-spinner {
     width: 12px;
     height: 12px;
@@ -252,44 +261,45 @@ box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
     animation: pixelSpin 1s steps(4, end) infinite;
   }
   @keyframes pixelSpin {
-    0% { transform: rotate(0deg), }
-    25% { transform: rotate(90deg), }
-    50% { transform: rotate(180deg), }
-    75% { transform: rotate(270deg), }
-    100% { transform: rotate(360deg), }
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+    100% { transform: rotate(360deg); }
   }
-/* Scanlines effect (optional) */ :global($1) {
+/* Scanlines effect (optional) */ :global(.nes-8bit-button.enable-scanlines)::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-background: repeating-linear-gradient( 0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px );
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px);
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+  }
     pointer-events: none;
   }
 /* CRT effect (optional) */ :global(.nes-8bit-button.enable-crt) {
     filter: contrast(1.2) brightness(1.1);
     border-radius: 2px;
 box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 2px 2px 0px #000000;
-  }
-/* Retro bounce animation */ :global($1) {
+/* Retro bounce animation */ :global(.nes-8bit-button.retro-bounce) {
     animation: retroBounce 0.3s ease-in-out;
   }
   @keyframes retroBounce {
-    0%, 100% { transform: translateY(0px) scale(1), }
-    50% { transform: translateY(-2px) scale(1.02), }
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-2px) scale(1.02); }
   }
-/* Glitch transition effect */ :global($1) {
+/* Glitch transition effect */ :global(.nes-8bit-button.glitch-transition) {
     animation: glitchTransition 0.2s ease-in-out;
   }
   @keyframes glitchTransition {
-    0% { transform: translateY(0px), }
-    20% { transform: translateY(-1px) translateX(1px), }
-    40% { transform: translateY(1px) translateX(-1px), }
-    60% { transform: translateY(-1px) translateX(1px), }
-    80% { transform: translateY(1px) translateX(-1px), }
-    100% { transform: translateY(0px), }
+    0% { transform: translateY(0px); }
+    20% { transform: translateY(-1px) translateX(1px); }
+    40% { transform: translateY(1px) translateX(-1px); }
+    60% { transform: translateY(-1px) translateX(1px); }
+    80% { transform: translateY(1px) translateX(-1px); }
+    100% { transform: translateY(0px); }
+  }
   }
 /* Mobile optimizations */ @media (max-width: 480px) {
     :global(.nes-8bit-button) {

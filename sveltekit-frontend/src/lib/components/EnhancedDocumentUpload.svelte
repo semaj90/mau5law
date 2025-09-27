@@ -17,17 +17,19 @@
   let documentType = $state('');
   let title = $state('');
   onMount(async () => {
-    // Load upload configuration
+    // Load upload configuration from an endpoint (placeholder)
     try {
-      // removed unused response assignment
-      uploadConfig = await response.json();
+      const cfgRes = await fetch('/api/documents/upload-config').catch(() => null);
+      if (cfgRes && cfgRes.ok) {
+        uploadConfig = await cfgRes.json();
+      }
     } catch (error) {
-      console.error('Failed to load upload config:', error);
+      console.warn('Upload config unavailable:', error);
     }
   });
-  function handleFileSelect(_event: Event) {
-    // removed unused target assignment
-    selectedFile = target.files?.[0] || null;
+  function handleFileSelect(event: Event) {
+    const input = event.currentTarget as HTMLInputElement | null;
+    selectedFile = input?.files?.[0] || null;
     errorMessage = '';
     uploadResult = null;
     if (selectedFile) {
@@ -181,7 +183,7 @@
     </div>
     <!-- Upload Button -->
     <div class="upload-actions">
-      <ModernButton onclick={uploadDocument} disabled={!selectedFile || uploading} variant="primary">
+  <ModernButton onclick={uploadDocument} disabled={!selectedFile || uploading} variant="secondary">
         {uploading ? '🔄 Processing...' : '🚀 Upload & Process'}
       </ModernButton>
     </div>

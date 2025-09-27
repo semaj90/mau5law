@@ -44,7 +44,7 @@
         legal: 'border-legal-secondary bg-legal-primary/5 text-legal-secondary focus-visible:ring-legal-accent font-mono uppercase tracking-wider',
         success: 'border-green-500 focus-visible:ring-green-500',
         warning: 'border-amber-500 focus-visible:ring-amber-500',
-        error: 'border-red-500 focus-visible:ring-red-500 bg-red-50 dark:bg-red-950';
+        error: 'border-red-500 focus-visible:ring-red-500 bg-red-50 dark:bg-red-950',
       }
       classes.push(error ? variantClasses.error: variantClasses[variant] || variantClasses.default);
     }

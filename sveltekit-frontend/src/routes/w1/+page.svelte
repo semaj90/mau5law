@@ -34,7 +34,7 @@
 			evidence: 23,
 			aiConfidence: 87,
 			lastActivity: '2 hours ago',
-			deadline: '3 days'
+      deadline: '3 days'
 		},
 		{
 			id: '2',
@@ -44,7 +44,7 @@
 			evidence: 156,
 			aiConfidence: 94,
 			lastActivity: '1 day ago',
-			deadline: '1 week';
+      deadline: '1 week'
 		},
 		{
 			id: '3',
@@ -54,7 +54,7 @@
 			evidence: 8,
 			aiConfidence: 76,
 			lastActivity: '5 mins ago',
-			deadline: 'Tomorrow';
+      deadline: 'Tomorrow'
 		}
 	]);
 	const prosecutionWorkflow = [
@@ -65,14 +65,14 @@
 		{ step: 'why', question: "Why did this happen? What's the motive?", icon: '💭' },
 		{ step: 'how', question: "How was it carried out? Method of operation.", icon: '⚙️' }
 	];
-	let workflowAnswers = $state({
-		what: '',
-		who: '',
-		when: '',
-		where: '',
-		why: '',
-		how: '';
-	});
+  let workflowAnswers = $state({
+    what: '',
+    who: '',
+    when: '',
+    where: '',
+    why: '',
+    how: ''
+  });
 	const aiPrompts = [
 		"👋 Hello Sarah! What's wrong? I'm here to help with your cases.",
 		"🔍 I noticed unusual patterns in your evidence. Want me to investigate?",
@@ -132,12 +132,12 @@
 		const now = new Date();
 		timestamp = now.toLocaleString('en-US', {
 			weekday: 'short',
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit';
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
 		});
 	}
 	// Auto-prompting cycle
@@ -157,11 +157,14 @@
 			}
 		}, 8000);
 	}
-	$effect(() => {
-		updateTimestamp();
-		setInterval(updateTimestamp, 1000);
-		startAIPrompting();
-	});
+  $effect(() => {
+    updateTimestamp();
+    const tsInterval = setInterval(updateTimestamp, 1000);
+    startAIPrompting();
+    return () => {
+      clearInterval(tsInterval);
+    };
+  });
 </script>
 
 <div class="legal-platform">
@@ -408,7 +411,7 @@
     {/if}
     {#if showQuickInput}
       <div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
-        <textarea;
+  <textarea
           bind:value={quickInput}
           placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"
           class="quick-input"
@@ -446,7 +449,7 @@
   .platform-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+  justify-content: space-between;
     padding: 1rem 2rem;
     background: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(10px);

@@ -453,11 +453,11 @@ export const legacyRouteMapping: Record<string, string> = {
   '/reports': '/reports',
   '/settings': '/settings',
   // Demo and development routes preserved
-  '/cuda-streaming': '/cuda-streaming',
+  // '/cuda-streaming': '/cuda-streaming', // Removed duplicate of earlier mapping to avoid duplicate key warning
   '/shader-cache': '/shader-cache',
   '/webasm': '/webasm-demos',
   '/nes-bits': '/demo/enhanced-bits-showcase',
-  '/ai-chat': '/(ai)/assistant',
+  // '/ai-chat': '/(ai)/assistant', // Removed duplicate of earlier mapping
   '/chat': '/(ai)/assistant',
 };
 

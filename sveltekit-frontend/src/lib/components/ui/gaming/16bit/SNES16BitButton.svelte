@@ -55,7 +55,7 @@
     class: className = '',
     onClick,
     onHover,
-    onFocus;
+    onFocus,
   }: Props = $props();
   // Events now handled via props in Svelte 5
   //
@@ -186,13 +186,12 @@
       <div class="enhanced-spinner"></div>
     </div>
   {:else}
-    {@render children?.()}
+    <slot>{children}</slot>
   {/if}
-</BitsButton.Root>
+</BitsButton>
 
 <style>
   :global(.snes-16bit-button) {
-/* Base SNES button styling */ {}
     font-family: 'Orbitron', 'Arial', sans-serif;
     background: var(--button-gradient);
     color: white;
@@ -202,38 +201,38 @@
     font-size: var(--button-font-size);
     min-height: var(--button-min-height);
     font-weight: 500;
-/* Enhanced rendering (smoother than 8-bit) */ {}
+    /* Enhanced rendering (smoother than 8-bit) */
     image-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-/* Enhanced 3D effect */ {}
-box-shadow: {}
-0 2px 0px rgba(0, 0, 0, 0.3), {}
-inset 0 1px 0px rgba(255, 255, 255, 0.4), {}
+    /* Enhanced 3D effect */
+    box-shadow:
+      0 2px 0px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0px rgba(255, 255, 255, 0.4),
       inset 0 -1px 0px rgba(0, 0, 0, 0.2);
     transform: var(--mode7-transform, none);
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
-/* Remove default button styles */ {}
+    /* Remove default button styles */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     outline: none;
-/* Prevent text selection */ {}
+    /* Prevent text selection */
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-/* Cursor */ {}
+    /* Cursor */
     cursor: pointer;
-/* Text styling */ {}
+    /* Text styling */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-/* Flexbox for content alignment */ {}
+    /* Flexbox for content alignment */
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-/* Layer effects support */ {}
+    /* Layer effects support */
     position: relative;
     overflow: hidden;
   }

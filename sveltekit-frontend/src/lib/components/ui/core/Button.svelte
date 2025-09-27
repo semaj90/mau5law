@@ -178,19 +178,19 @@
 
 {#if href}
   <a
-    {href}
-    {target}
-    class={buttonClass}
-    role="button"
-    tabindex="0"
-    aria-disabled={isDisabled}
-    aria-label={ariaLabel}
-    aria-describedby={finalAriaDescribedby()}
-    aria-expanded={ariaExpanded}
-    aria-controls={ariaControls}
-    aria-busy={loading}
-    data-testid={testId || 'button'}
-    {...restProps}
+	{href}
+	{target}
+	class={buttonClass}
+	role="button"
+	tabindex="0"
+	aria-disabled={isDisabled}
+	aria-label={ariaLabel}
+	aria-describedby={finalAriaDescribedby}
+	aria-expanded={ariaExpanded}
+	aria-controls={ariaControls}
+	aria-busy={loading}
+	data-testid={testId || 'button'}
+	{...restProps}
   >
     {#if loading}
       <svg
@@ -217,17 +217,17 @@
   </a>
 {:else}
   <button
-    {type}
-    disabled={isDisabled}
-    class={buttonClass}
-    aria-label={ariaLabel}
-    aria-describedby={finalAriaDescribedby()}
-    aria-expanded={ariaExpanded}
-    aria-controls={ariaControls}
-    aria-busy={loading}
-    data-testid={testId || 'button'}
-    onclick={handleClick}
-    {...restProps}
+	{type}
+	disabled={isDisabled}
+	class={buttonClass}
+	aria-label={ariaLabel}
+	aria-describedby={finalAriaDescribedby}
+	aria-expanded={ariaExpanded}
+	aria-controls={ariaControls}
+	aria-busy={loading}
+	data-testid={testId || 'button'}
+	onclick={handleClick}
+	{...restProps}
   >
     {#if loading}
       <svg
