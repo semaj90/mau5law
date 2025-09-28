@@ -19,7 +19,7 @@
 	let chatContainer = $state<HTMLDivElement | null>(null);
 	let messageInput = $state<HTMLTextAreaElement | null>(null);
 	// Workflow state using $state
-	let workflowActive = $state(f	.assistant-avatar { width: 48px; height: 48px; }.assistant-avatar { width: 48px; height: 48px; }lse);
+	let workflowActive = $state(false);
 	let currentStep = $state(0);
 	let workflowData = $state({
 		what: '',

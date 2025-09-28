@@ -1,6 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
+  import NesTypewriterStream from '$lib/components/chat/nes-typewriter-stream.svelte';
   // Svelte 5 runes - simplified for NES.css retro style
   let messages = $state<Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date }>>([]);
   let currentMessage = $state('');
@@ -14,7 +15,7 @@
   async function checkServiceHealth() {
     try {
       connectionStatus = 'connecting';
-      // removed unused response assignment
+      const response = await fetch('http://localhost:8086/api/health');
       if (!response.ok) {
         throw new Error(`Health check failed: ${response.status}`);
       }
@@ -119,7 +120,7 @@
     }
   }
   // Handle Enter key
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -201,7 +202,7 @@
       {:else}
         <!-- AI Message -->
         <div class="nes-balloon from-left ai-message">
-          <p>🧠 {message.content}</p>
+          <NesTypewriterStream text={message.content} />
           <small class="timestamp">{formatTime(message.timestamp)}</small>
         </div>
       {/if}
@@ -219,7 +220,7 @@
       <label for="chat_input">ENTER LEGAL QUERY:</label>
       <textarea
         id="chat_input"
-        class="nes-textarea";
+  class="nes-textarea"
         bind:value={currentMessage}
         onkeydown={handleKeydown}
         placeholder="Type your legal question here..."
@@ -421,8 +422,5 @@
     100% {
       opacity: 0;
     }
-  }
-  .nes-balloon.is-processing {
-    animation: blink 1s infinite;
   }
 </style>

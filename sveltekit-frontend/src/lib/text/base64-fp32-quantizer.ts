@@ -4,7 +4,6 @@
  * Optimized for CUDA thread processing and legal AI model outputs
  */
 import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge.js';
-}
 export interface QuantizationOptions {
   quantizationBits: 4 | 8 | 16 | 32; // Quantization precision,
   scalingMethod: 'linear' | 'logarithmic' | 'exponential' | 'sigmoid';
@@ -29,7 +28,7 @@ export interface QuantizationResult {
     maxValue: number;
     meanValue: number;
     entropy: number;
-  }
+  };
 }
 export interface GemmaOutputQuantization {
   modelResponse: string;
@@ -42,7 +41,7 @@ export interface GemmaOutputQuantization {
     documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     confidence: number;
-  }
+  };
 }
 export interface CUDAThreadContext {
   threadId: number;
@@ -74,8 +73,8 @@ export class Base64FP32Quantizer {
         gridSize: Math.ceil(maxThreads / this.CUDA_BLOCK_SIZE),
         blockSize: this.CUDA_BLOCK_SIZE,
         sharedMemory: new ArrayBuffer(48 * 1024), // 48KB shared memory per block;
-        registers: new Map()
-      }
+        registers: new Map(),
+      };
       this.cudaThreadPool.push(context);
     }
     console.log(`🔧 Initialized CUDA thread pool: ${this.cudaThreadPool.length} threads`);
@@ -87,10 +86,7 @@ export class Base64FP32Quantizer {
   /**
    * Quantize Base64 encoded Gemma3 output to FP32
    */
-  async quantizeGemmaOutput(
-    base64Output: string
-    options?: Partial<QuantizationOptions>;
-  ): Promise<QuantizationResult> {
+  async quantizeGemmaOutput(base64Output: string, options?: Partial<QuantizationOptions>): Promise<QuantizationResult> {
     const startTime = performance.now();
     const config: QuantizationOptions = {
       quantizationBits: 8,
@@ -99,8 +95,8 @@ export class Base64FP32Quantizer {
       cudaThreads: 256,
       cacheStrategy: 'aggressive',
       outputFormat: 'fp32',
-      ...options
-    }
+      ...options,
+    };
     try {
       // Step 1: Check cache first
       const cacheKey = this.generateCacheKey(base64Output, config);
@@ -109,9 +105,9 @@ export class Base64FP32Quantizer {
         console.log('🎯 Quantization cache hit for Gemma3 output');
         return {
           ...cached,
-          cacheHit: true
-          processingTime: performance.now() - startTime
-        }
+          cacheHit: true,
+          processingTime: performance.now() - startTime,
+        };
       }
       // Step 2: Decode Base64 to raw bytes
       const rawBytes = this.decodeBase64ToBytes(base64Output);
@@ -124,20 +120,24 @@ export class Base64FP32Quantizer {
       // Step 6: Calculate metadata and metrics
       const metadata = this.calculateQuantizationMetadata(rawBytes, scaledData);
       const result: QuantizationResult = {
-        quantizedData: scaledData
-        originalBase64: base64Output
+        quantizedData: scaledData,
+        originalBase64: base64Output,
         quantizationLevel: config.quantizationBits,
         scalingFactor: this.calculateScalingFactor(rawBytes.length, scaledData.length),
         compressionRatio: rawBytes.length / scaledData.byteLength,
         processingTime: performance.now() - startTime,
         cudaThreadsUsed: config.cudaThreads,
-        cacheHit: false
-        metadata
-      }
+        cacheHit: false,
+        metadata,
+      };
       // Step 7: Cache the result
       await this.cacheQuantizationResult(cacheKey, result);
-      console.log(`⚡ Quantized Gemma3 output in ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).processingTime.toFixed(2)}ms`);
-      console.log(`📊 Compression: ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).compressionRatio.toFixed(2)}x, Threads: ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).cudaThreadsUsed}`);
+      console.log(
+        `⚡ Quantized Gemma3 output in ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).processingTime.toFixed(2)}ms`
+      );
+      console.log(
+        `📊 Compression: ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).compressionRatio.toFixed(2)}x, Threads: ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).cudaThreadsUsed}`
+      );
       return result;
     } catch (error) {
       console.error('❌ Gemma3 output quantization failed:', error);
@@ -161,10 +161,7 @@ export class Base64FP32Quantizer {
       throw new Error('Invalid Base64 input');
     }
   }
-  private async parallelQuantization(
-    rawBytes: Uint8Array
-    config: QuantizationOptions;
-  ): Promise<Float32Array> {
+  private async parallelQuantization(rawBytes: Uint8Array, config: QuantizationOptions): Promise<Float32Array> {
     const threadsPerBlock = Math.min(config.cudaThreads, this.CUDA_BLOCK_SIZE);
     const numBlocks = Math.ceil(rawBytes.length / threadsPerBlock);
     console.log(`🧵 Starting parallel quantization: ${numBlocks} blocks, ${threadsPerBlock} threads/block`);
@@ -187,10 +184,10 @@ export class Base64FP32Quantizer {
     return combined;
   }
   private async quantizationKernel(
-    data: Uint8Array
-    blockId: number
-    threadsPerBlock: number;
-    config: QuantizationOptions;
+    data: Uint8Array,
+    blockId: number,
+    threadsPerBlock: number,
+    config: QuantizationOptions
   ): Promise<Float32Array> {
     // Simulate CUDA kernel execution
     const startIdx = blockId * threadsPerBlock;
@@ -208,7 +205,7 @@ export class Base64FP32Quantizer {
     }
     return quantized;
   }
-  private quantizeValue(_value: number, config: QuantizationOptions): number {
+  private quantizeValue(value: number, config: QuantizationOptions): number {
     const maxQuantLevels = Math.pow(2, config.quantizationBits) - 1;
     // Normalize input value to [0, 1]
     const normalized = value / 255.0;
@@ -228,7 +225,7 @@ export class Base64FP32Quantizer {
       default:
         // Sigmoid with legal domain bias
         const biased = normalized + this.LEGAL_TOKEN_BIAS;
-        scaled = 1 / (1 + Math.exp(-6 * (biased - 0.5));
+        scaled = 1 / (1 + Math.exp(-6 * (biased - 0.5)));
         break;
     }
     // Quantize to target bits
@@ -330,8 +327,8 @@ export class Base64FP32Quantizer {
       minValue: Math.min(...values),
       maxValue: Math.max(...values),
       meanValue: values.reduce((sum, val) => sum + val, 0) / values.length,
-      entropy
-    }
+      entropy,
+    };
   }
   private calculateScalingFactor(originalLength: number, scaledLength: number): number {
     return scaledLength / originalLength;
@@ -342,15 +339,18 @@ export class Base64FP32Quantizer {
       bits: config.quantizationBits,
       scaling: config.scalingMethod,
       length: config.targetLength,
-      format: config.outputFormat
-    }
-    return btoa(JSON.stringify(keyData)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
+      format: config.outputFormat,
+    };
+    return btoa(JSON.stringify(keyData))
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .substring(0, 32);
   }
   private simpleHash(str: string): number {
     let hash = 0;
-    for (let i = 0; i < Math.min(str.length, 100); i++) { // Hash first 100 chars for speed
+    for (let i = 0; i < Math.min(str.length, 100); i++) {
+      // Hash first 100 chars for speed
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash;
@@ -384,9 +384,9 @@ export class Base64FP32Quantizer {
     // Store in Revolutionary AI cache
     try {
       await enhancedCachingRevolutionaryBridge.processUnifiedQuery({
-        query: cacheKey
+        query: cacheKey,
         type: 'query',
-        options: { cacheStrategy: 'enhanced_first' }
+        options: { cacheStrategy: 'enhanced_first' },
       });
     } catch (error) {
       console.warn('⚠️ Cache storage failed:', error);
@@ -396,8 +396,8 @@ export class Base64FP32Quantizer {
    * Process Gemma3:legal-latest model output with full quantization pipeline
    */
   async processGemmaLegalOutput(
-    modelOutput: string
-    options?: Partial<QuantizationOptions>;
+    modelOutput: string,
+    options?: Partial<QuantizationOptions>
   ): Promise<GemmaOutputQuantization> {
     const startTime = performance.now();
     try {
@@ -413,16 +413,18 @@ export class Base64FP32Quantizer {
       const logits = this.calculateLogits(quantizationResult.quantizedData as Float32Array);
       const perplexity = this.calculatePerplexity(logits);
       const result: GemmaOutputQuantization = {
-        modelResponse: modelOutput
+        modelResponse: modelOutput,
         quantizedTokens: quantizationResult.quantizedData as Float32Array,
         attentionWeights,
         logits,
         perplexity,
         confidence: Math.max(0, 1 - perplexity / 100), // Rough confidence estimate
-        legalClassification
-      }
+        legalClassification,
+      };
       console.log(`⚖️ Processed Gemma3:legal-latest output in ${(performance.now() - startTime).toFixed(2)}ms`);
-      console.log(`📊 Legal classification: ${legalClassification.documentType} (${legalClassification.riskLevel} risk)`);
+      console.log(
+        `📊 Legal classification: ${legalClassification.documentType} (${legalClassification.riskLevel} risk)`
+      );
       return result;
     } catch (error) {
       console.error('❌ Gemma3 legal output processing failed:', error);
@@ -457,7 +459,7 @@ export class Base64FP32Quantizer {
     if (riskScore >= 3) riskLevel = 'critical';
     else if (riskScore >= 2) riskLevel = 'high';
     else if (riskScore >= 1) riskLevel = 'medium';
-    return { documentType, riskLevel, confidence }
+    return { documentType, riskLevel, confidence };
   }
   private generateAttentionWeights(tokens: Float32Array): Float32Array {
     const seqLength = tokens.length;
@@ -493,14 +495,12 @@ export class Base64FP32Quantizer {
   }
   private applySoftmax(logits: Float32Array): Float32Array {
     const maxLogit = Math.max(...logits);
-    const shifted = logits.map(x => x - maxLogit);
-    const exps = shifted.map(x => Math.exp(x);
-    const sumExps = exps.reduce((sum, x) => sum + x, 0);
-    return new Float32Array(exps.map(x => x / sumExps);
+    const shifted = Array.from(logits).map(x => x - maxLogit);
+    const exps = shifted.map(x => Math.exp(x));
+    const sumExps = exps.reduce((sum, x) => sum + x, 0) || 1;
+    return new Float32Array(exps.map(x => x / sumExps));
   }
-  /**
-   * Get quantization performance metrics
-   */;
+  /** Get quantization performance metrics */
   getMetrics() {
     return {
       cacheSize: this.quantizationCache.size,
@@ -508,12 +508,10 @@ export class Base64FP32Quantizer {
       maxCacheSize: this.MAX_CACHE_SIZE,
       blockSize: this.CUDA_BLOCK_SIZE,
       gemmaVocabSize: this.GEMMA_VOCAB_SIZE,
-      gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE
-    }
+      gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE,
+    };
   }
-  /**
-   * Clear quantization cache
-   */;
+  /** Clear quantization cache */
   clearCache(): void {
     this.quantizationCache.clear();
     console.log('🧹 Cleared quantization cache');
@@ -527,20 +525,20 @@ export const base64FP32Quantizer = new Base64FP32Quantizer();
  * Convenience functions for Gemma3 legal output processing
  */
 export async function quantizeGemmaLegalOutput(
-  base64Output: string
-  options?: Partial<QuantizationOptions>;
+  base64Output: string,
+  options?: Partial<QuantizationOptions>
 ): Promise<QuantizationResult> {
   return await base64FP32Quantizer.quantizeGemmaOutput(base64Output, options);
 }
 export async function processGemmaResponse(
-  modelResponse: string
-  cudaThreads: number = 256;
+  modelResponse: string,
+  cudaThreads: number = 256
 ): Promise<GemmaOutputQuantization> {
   return await base64FP32Quantizer.processGemmaLegalOutput(modelResponse, {
     cudaThreads,
     quantizationBits: 8,
     scalingMethod: 'sigmoid',
     targetLength: 2048,
-    cacheStrategy: 'aggressive'
+    cacheStrategy: 'aggressive',
   });
 }

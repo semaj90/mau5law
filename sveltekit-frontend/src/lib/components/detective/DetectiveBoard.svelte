@@ -5,6 +5,9 @@
 
 	// UI libraries
 	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits';
+	import * as ContextMenu from '$lib/components/ui/context-menu';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import * as ToggleGroup from '$lib/components/ui/toggle-group';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import 'nes.css/css/nes.min.css';
 
@@ -47,8 +50,6 @@
 		gpu: { available: false, utilization: 0, model: 'RTX 3060 Ti' },
 		processingStats: { totalFiles: 0, processed: 0, queued: 0 }
 	});
-	let contextMenu = $state({ show: false, x: 0, y: 0, item: null as any });
-	let miniModal = $state({ show: false, x: 0, y: 0, type: '' });
 	let findModal = $state({ show: false, query: '', results: [] as any[], loading: false, error: '', suggestions: [] as any[] });
 
 	// Subscribe evidence store
@@ -165,28 +166,7 @@
 		}
 	}
 
-	function handleRightClick(e: MouseEvent, item: any) {
-		e.preventDefault();
-		contextMenu.show = true;
-		contextMenu.x = e.clientX;
-		contextMenu.y = e.clientY;
-		contextMenu.item = item;
-	}
 
-	function closeContextMenu() {
-		contextMenu.show = false;
-	}
-
-	function showMiniModal(type: string, e: MouseEvent) {
-		miniModal.show = true;
-		miniModal.type = type;
-		miniModal.x = e.clientX + 15;
-		miniModal.y = e.clientY + 15;
-	}
-
-	function hideMiniModal() {
-		miniModal.show = false;
-	}
 
 	function broadcastPositionUpdate(id: string, x: number, y: number) {
 		console.log('Position update', id, x, y);
@@ -196,10 +176,6 @@
 		window.open(`/evidence/${item.id}`, '_blank');
 	}
 
-	function handleShowMoreOptions(item: any) {
-		contextMenu.show = true;
-		contextMenu.item = item;
-	}
 
 	function toggleAIAssistant() {
 		showAIAssistant = !showAIAssistant;
@@ -261,22 +237,19 @@
 
 	function handleGlobalKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape') {
-			closeContextMenu();
 			closeFindModal();
 		}
 	}
 
-	async function saveTo(target: string) {
-		if (!contextMenu.item) return closeContextMenu();
-		const itemToSave = contextMenu.item;
-		closeContextMenu();
+	async function saveTo(target: string, item: any) {
+		if (!item) return;
 		try {
 			await fetch('/api/user-activity', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					userId: null,
-					evidenceId: itemToSave.id,
+					evidenceId: item.id,
 					action: 'save',
 					target
 				})
@@ -286,9 +259,9 @@
 		}
 	}
 
-	function openFindModal() {
+	function openFindModal(item: any) {
 		findModal.show = true;
-		findModal.query = contextMenu.item?.title || '';
+		findModal.query = item?.title || '';
 		findModal.results = [];
 		findModal.loading = false;
 		findModal.error = '';
@@ -297,11 +270,10 @@
 
 	function closeFindModal() {
 		findModal.show = false;
-		closeContextMenu();
 	}
 
-	async function runFindSearch() {
-		if (!contextMenu.item) return closeFindModal();
+	async function runFindSearch(item: any) {
+		if (!item) return closeFindModal();
 		findModal.loading = true;
 		findModal.error = '';
 		findModal.results = [];
@@ -309,7 +281,7 @@
 		try {
 			const items = allEvidence ?? [];
 			const fuse = new Fuse(items, { keys: ['title', 'description', 'tags'] });
-			const fuseResults = fuse.search(findModal.query || contextMenu.item?.title || '');
+			const fuseResults = fuse.search(findModal.query || item?.title || '');
 			findModal.results = fuseResults.map((r) => r.item);
 		} catch (e) {
 			findModal.error = 'Local search failed';
@@ -319,7 +291,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					query: findModal.query || contextMenu.item?.title || ''
+					query: findModal.query || item?.title || ''
 				})
 			});
 			if (resp.ok) {
@@ -386,7 +358,7 @@
 	}
 </script>
 
-<svelte:window on:click={closeContextMenu} on:keydown={handleGlobalKeydown} />
+<svelte:window on:keydown={handleGlobalKeydown} />
 
 <div class="w-full h-full min-h-screen bg-background detective-board p-4">
 	<Card class="mb-6">
@@ -403,12 +375,14 @@
 				</div>
 				<div class="flex items-center gap-4">
 					<div class="flex gap-2">
-						<Button variant={viewMode === 'columns' ? 'default' : 'ghost'} on:click={() => switchViewMode('columns')} aria-pressed={viewMode === 'columns'}>
-							<span class="mr-2">📋</span> Columns
-						</Button>
-						<Button variant={viewMode === 'canvas' ? 'default' : 'ghost'} on:click={() => switchViewMode('canvas')} aria-pressed={viewMode === 'canvas'}>
-							<span class="mr-2">🎨</span> Canvas
-						</Button>
+						<ToggleGroup.Root type="single" value={viewMode} onValueChange={(value) => switchViewMode(value)}>
+							<ToggleGroup.Item value="columns">
+								<span class="mr-2">📋</span> Columns
+							</ToggleGroup.Item>
+							<ToggleGroup.Item value="canvas">
+								<span class="mr-2">🎨</span> Canvas
+							</ToggleGroup.Item>
+						</ToggleGroup.Root>
 						<Button variant={showAIAssistant ? 'default' : 'ghost'} on:click={toggleAIAssistant} aria-pressed={showAIAssistant} size="sm">
 							AI Assistant
 						</Button>
@@ -476,18 +450,54 @@
 									on:finalize={(e: CustomEvent<{ items: any[] }>) => handleDndFinalize(e, column.id)}
 								>
 									{#each column.items as item (item.id)}
-										<div
-											class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105 p-2"
-											class:highlighted={aiHighlightedEvidence.includes(item.id)}
-											class:selected={selectedEvidenceIds.includes(item.id)}
-											on:contextmenu={(e) => handleRightClick(e, item)}
-											on:click={() => handleEvidenceSelect(item.id)}
-											on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect(item.id); } }}
-											role="button"
-											tabindex="0"
-										>
-											<EvidenceCard item={item} on:view={() => handleViewEvidence(item)} on:moreOptions={() => handleShowMoreOptions(item)} />
-										</div>
+										<ContextMenu.Root>
+											<ContextMenu.Trigger>
+												<div
+													class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105 p-2"
+													class:highlighted={aiHighlightedEvidence.includes(item.id)}
+													class:selected={selectedEvidenceIds.includes(item.id)}
+													on:click={() => handleEvidenceSelect(item.id)}
+													on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect(item.id); } }}
+													role="button"
+													tabindex="0"
+												>
+													<EvidenceCard item={item} on:view={() => handleViewEvidence(item)} on:moreOptions={() => {}} />
+												</div>
+											</ContextMenu.Trigger>
+											<ContextMenu.Content>
+												<ContextMenu.Item on:click={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
+												<ContextMenu.Item on:click={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
+												<ContextMenu.Separator />
+												<ContextMenu.Sub>
+													<ContextMenu.SubTrigger>Add to...</ContextMenu.SubTrigger>
+													<ContextMenu.SubContent>
+														<Tooltip.Root>
+															<Tooltip.Trigger asChild let:trigger>
+																<ContextMenu.Item {...triggerProps} on:click={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
+															</Tooltip.Trigger>
+															<Tooltip.Content>
+																<p>Save this evidence to your personal citations list.</p>
+															</Tooltip.Content>
+														</Tooltip.Root>
+														<Tooltip.Root>
+															<Tooltip.Trigger asChild let:trigger>
+																<ContextMenu.Item {...triggerProps} on:click={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
+															</Tooltip.Trigger>
+															<Tooltip.Content>
+																<p>Add this evidence to the MCP context for the AI assistant.</p>
+															</Tooltip.Content>
+														</Tooltip.Root>
+													</ContextMenu.SubContent>
+												</ContextMenu.Sub>
+												<ContextMenu.Separator />
+												<Dialog.Trigger asChild let:trigger>
+													<ContextMenu.Item {...triggerProps} on:click={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
+												</Dialog.Trigger>
+												<ContextMenu.Item on:click={() => analyzeSelectedEvidence()}>
+													<span class="mr-2">🤖</span> Ask AI About This
+												</ContextMenu.Item>
+											</ContextMenu.Content>
+										</ContextMenu.Root>
 									{/each}
 								</div>
 							</div>
@@ -508,43 +518,81 @@
 							<div class="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
 
 							{#each canvasEvidence as item (item.id)}
-								<div
-									class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move transition-shadow nes-container is-rounded bits-draggable"
-									class:highlighted={aiHighlightedEvidence.includes(item.id)}
-									class:selected={selectedEvidenceIds.includes(item.id)}
-									style="left: {item.x || 100}px; top: {item.y || 100}px; min-width: 200px;"
-									draggable="true"
-									data-evidence-id={item.id}
-									ondragstart={(e) => handleCanvasDragStart(e, item)}
-									ondragend={(e) => handleCanvasDragEnd(e, item)}
-									oncontextmenu={(e) => handleRightClick(e, item)}
-									onclick={() => handleEvidenceSelect(item.id)}
-									onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect(item.id); } }}
-									role="button"
-									tabindex="0"
-								>
-									<EvidenceCard item={item} on:view={() => handleViewEvidence(item)} on:moreOptions={() => handleShowMoreOptions(item)}>
-										<Card class="nes-container is-rounded p-2 w-full mt-2">
-											<CardHeader class="flex items-center justify-between">
-												<div class="flex items-center gap-2">
-													<div class="w-3 h-3 bg-primary rounded-full"></div>
-													<CardTitle class="nes-text text-sm">{item.title || item.fileName || 'Evidence'}</CardTitle>
-												</div>
-												<Badge variant="secondary" class="nes-badge">{item.evidenceType || 'doc'}</Badge>
-											</CardHeader>
-											<CardContent class="p-2">
-												<div class="mt-2 flex items-center justify-between">
-													<div class="flex items-center gap-2 text-xs text-muted-foreground nes-text">
-														<span class="nes-text is-disabled">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</span>
-													</div>
-													<div class="flex gap-2">
-														<Button size="sm" variant="ghost" on:click={() => handleViewEvidence(item)}><span class="mr-1">🔍</span> View</Button>
-														<Button size="sm" variant="secondary" on:click={() => handleShowMoreOptions(item)}><span class="mr-1">⋯</span></Button>
-													</div>
-												</div>
-											</CardContent>
-										</Card>
-									</EvidenceCard>
+								<ContextMenu.Root>
+									<ContextMenu.Trigger>
+										<div
+											class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move transition-shadow nes-container is-rounded bits-draggable"
+											class:highlighted={aiHighlightedEvidence.includes(item.id)}
+											class:selected={selectedEvidenceIds.includes(item.id)}
+											style="left: {item.x || 100}px; top: {item.y || 100}px; min-width: 200px;"
+											draggable="true"
+											data-evidence-id={item.id}
+											ondragstart={(e) => handleCanvasDragStart(e, item)}
+											ondragend={(e) => handleCanvasDragEnd(e, item)}
+											onclick={() => handleEvidenceSelect(item.id)}
+											onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect(item.id); } }}
+											role="button"
+											tabindex="0"
+										>
+											<EvidenceCard item={item} on:view={() => handleViewEvidence(item)} on:moreOptions={() => {}}>
+												<Card class="nes-container is-rounded p-2 w-full mt-2">
+													<CardHeader class="flex items-center justify-between">
+														<div class="flex items-center gap-2">
+															<div class="w-3 h-3 bg-primary rounded-full"></div>
+															<CardTitle class="nes-text text-sm">{item.title || item.fileName || 'Evidence'}</CardTitle>
+														</div>
+														<Badge variant="secondary" class="nes-badge">{item.evidenceType || 'doc'}</Badge>
+													</CardHeader>
+													<CardContent class="p-2">
+														<div class="mt-2 flex items-center justify-between">
+															<div class="flex items-center gap-2 text-xs text-muted-foreground nes-text">
+																<span class="nes-text is-disabled">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</span>
+															</div>
+															<div class="flex gap-2">
+																<Button size="sm" variant="ghost" on:click={() => handleViewEvidence(item)}><span class="mr-1">🔍</span> View</Button>
+																<Button size="sm" variant="secondary" on:click={() => {}}><span class="mr-1">⋯</span></Button>
+															</div>
+														</div>
+													</CardContent>
+												</Card>
+											</EvidenceCard>
+										</div>
+									</ContextMenu.Trigger>
+									<ContextMenu.Content>
+										<ContextMenu.Item on:click={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
+										<ContextMenu.Item on:click={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
+										<ContextMenu.Separator />
+										<ContextMenu.Sub>
+											<ContextMenu.SubTrigger>Add to...</ContextMenu.SubTrigger>
+											<ContextMenu.SubContent>
+												<Tooltip.Root>
+													<Tooltip.Trigger asChild let:trigger>
+														<ContextMenu.Item {...triggerProps} on:click={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
+													</Tooltip.Trigger>
+													<Tooltip.Content>
+														<p>Save this evidence to your personal citations list.</p>
+													</Tooltip.Content>
+												</Tooltip.Root>
+												<Tooltip.Root>
+													<Tooltip.Trigger asChild let:trigger>
+														<ContextMenu.Item {...triggerProps} on:click={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
+													</Tooltip.Trigger>
+													<Tooltip.Content>
+														<p>Add this evidence to the MCP context for the AI assistant.</p>
+													</Tooltip.Content>
+												</Tooltip.Root>
+											</ContextMenu.SubContent>
+										</ContextMenu.Sub>
+										<ContextMenu.Separator />
+										<Dialog.Trigger asChild let:trigger>
+											<ContextMenu.Item {...triggerProps} on:click={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
+										</Dialog.Trigger>
+										<ContextMenu.Item on:click={() => analyzeSelectedEvidence()}>
+											<span class="mr-2">🤖</span> Ask AI About This
+										</ContextMenu.Item>
+									</ContextMenu.Content>
+								</ContextMenu.Root>
+						</div>
 								</div>
 							{/each}
 
@@ -583,49 +631,47 @@
 	</main>
 </div>
 
-{#if contextMenu.show}
-	<div class="fixed z-50" style="left: {contextMenu.x}px; top: {contextMenu.y}px;">
-		<div class="bg-background border border-border rounded-md shadow-lg py-1 min-w-[200px]">
-			<Button variant="secondary" class="w-full justify-start bits-btn" size="sm" on:click={() => { window.open(`/evidence/${contextMenu.item?.id}`, '_blank'); closeContextMenu(); }}>View Details</Button>
-			<Button variant="secondary" class="w-full justify-start bits-btn" size="sm" on:click={() => { window.location.href = `/evidence/${contextMenu.item?.id}/edit`; closeContextMenu(); }}>Edit</Button>
-			<div class="border-t border-border my-1"></div>
-			<Button variant="secondary" class="w-full justify-start bits-btn" size="sm" on:mouseenter={(e) => showMiniModal('citation', e)} on:mouseleave={hideMiniModal} on:click={() => saveTo('savedcitations')}>Add to /savedcitations</Button>
-			<Button variant="secondary" class="w-full justify-start bits-btn" size="sm" on:mouseenter={(e) => showMiniModal('mcpcontext', e)} on:mouseleave={hideMiniModal} on:click={() => saveTo('mcpcontext')}>Add to MCP Context (LLM)</Button>
-			<div class="border-t border-border my-1"></div>
-			<Button variant="secondary" class="w-full justify-start bits-btn" size="sm" on:mouseenter={(e) => showMiniModal('find', e)} on:mouseleave={hideMiniModal} on:click={openFindModal}>Find Related...</Button>
-			<Button variant="secondary" class="w-full justify-start bits-btn" size="sm" on:click={() => { analyzeSelectedEvidence(); closeContextMenu(); }}><span class="mr-2">🤖</span> Ask AI About This</Button>
-		</div>
-	</div>
-{/if}
 
-{#if findModal.show}
-	<div class="fixed z-50 inset-0 bg-black/60 flex items-center justify-center" role="button" tabindex="0" on:click={(e) => { if (e.target === e.currentTarget) closeFindModal(); }} on:keydown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) { e.preventDefault(); closeFindModal(); } }}>
-		<div class="bg-background border border-primary rounded-lg shadow-lg p-6 w-full max-w-lg" role="dialog" aria-modal="true">
-			<div class="flex flex-col gap-4">
-				<input class="w-full border rounded px-3 py-2 text-base bg-muted text-foreground focus:outline-none focus:ring focus:border-primary" type="text" bind:value={findModal.query} placeholder="Enter keywords or question..." on:keydown={(e) => { if (e.key === 'Enter') runFindSearch(); }} />
-				<div class="flex gap-2">
-					<Button on:click={runFindSearch} disabled={findModal.loading}>{#if findModal.loading}Searching...{:else}Search{/if}</Button>
-					<Button variant="secondary" on:click={closeFindModal}>Close</Button>
-				</div>
-				{#if findModal.error}
-					<div class="text-red-500">{findModal.error}</div>
-				{/if}
-				{#if findModal.results.length > 0}
-					<div class="border-t pt-4">
-						<h3 class="font-semibold mb-2">Results:</h3>
-						<ul class="space-y-2 max-h-60 overflow-y-auto">
-							{#each findModal.results as result}
-								<li class="p-2 rounded hover:bg-muted cursor-pointer border-b border-muted-foreground/10">
-									{result?.title ?? result?.text ?? JSON.stringify(result)}
-								</li>
-							{/each}
-						</ul>
-					</div>
-				{/if}
+<Dialog.Root bind:open={findModal.show}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Find Related Evidence</Dialog.Title>
+			<Dialog.Description>
+				Search for evidence related to "{findModal.query}" using local and vector search.
+			</Dialog.Description>
+		</Dialog.Header>
+		<div class="flex flex-col gap-4">
+			<Input type="text" bind:value={findModal.query} placeholder="Enter keywords or question..." on:keydown={(e) => { if (e.key === 'Enter') runFindSearch(null); }} />
+			<div class="flex gap-2">
+				<Button on:click={() => runFindSearch(null)} disabled={findModal.loading}>
+					{#if findModal.loading}
+						Searching...
+					{:else}
+						Search
+					{/if}
+				</Button>
 			</div>
+			{#if findModal.error}
+				<div class="text-red-500">{findModal.error}</div>
+			{/if}
+			{#if findModal.results.length > 0}
+				<div class="border-t pt-4">
+					<h3 class="font-semibold mb-2">Results:</h3>
+					<ul class="space-y-2 max-h-60 overflow-y-auto">
+						{#each findModal.results as result}
+							<li class="p-2 rounded hover:bg-muted cursor-pointer border-b border-muted-foreground/10">
+								{result?.title ?? result?.text ?? JSON.stringify(result)}
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
 		</div>
-	</div>
-{/if}
+		<Dialog.Footer>
+			<Button variant="secondary" on:click={closeFindModal}>Close</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>
 
 {#if miniModal.show}
 	<div class="fixed z-40" style="left: {miniModal.x}px; top: {miniModal.y}px;">

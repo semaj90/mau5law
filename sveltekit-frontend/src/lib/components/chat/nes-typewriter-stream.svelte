@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: `$effect(() => { ` is not allowed in runes mode, use `$derived` or `$effect` instead
-https://svelte.dev/e/legacy_reactive_statement_invalid -->
-<!-- @migration-task Error while migrating Svelte code: `$effect(() => { ` is not allowed in runes mode, use `$derived` or `$effect` instead -->
 <!--
   NES.css Typewriter Text Streaming Component
   Cached alphabet texture streaming for enhanced AI chat
@@ -8,8 +5,6 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
 -- // Svelte 5 runes are auto-imported -->
   <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { writable, derived } from 'svelte/store';
-  import type { Writable } from 'svelte/store';
   import { base64FP32Quantizer } from '../../text/base64-fp32-quantizer';
   import { chrRomPatternCache } from '../../cache/chr-rom-pattern-cache';
   // Props
@@ -34,15 +29,12 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     onComplete
   }: TypewriterProps = $props();
   // State management
-  const currentIndex = writable(0);
-  const isTyping = writable(false);
-  const displayText = writable('');
-  const cursor = writable(true);
-  // Derived stores
-  const visibleText = derived(
-    [displayText, currentIndex],
-    ([$displayText, $currentIndex]) => $displayText.slice(0, $currentIndex)
-  );
+  let currentIndex = $state(0);
+  let isTyping = $state(false);
+  let displayText = $state('');
+  let cursor = $state(true);
+  // Derived state
+  const visibleText = $derived(displayText.slice(0, currentIndex));
   // Texture cache for alphabet characters
   interface AlphabetTexture {
     char: string;
@@ -59,12 +51,12 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   let typingSoundBuffer: AudioBuffer | null = null;
   // Animation frame ID
   let animationFrame: number;
-  let typewriterInterval: number;
+  let typewriterInterval: any;
   // Component references
   let containerElement: HTMLDivElement;
   let textElement: HTMLSpanElement;
   let cursorElement: HTMLSpanElement;
-  $effect(() => {
+  onMount(() => {
     initializeTextureSystem();
     initializeAudioSystem();
     startTypewriterEffect();
@@ -84,7 +76,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     textureCtx.font = '8px "Courier New", monospace';
     textureCtx.textAlign = 'left';
     textureCtx.textBaseline = 'top';
-    console.log('🎮 NES texture system initialized');
+    console.log('🎮 NES texture system initialized (2D Canvas context)');
     // Pre-cache common characters
     preloadAlphabetTextures();
   }
@@ -115,7 +107,14 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
           cudaThreads: 64,
           cacheStrategy: 'aggressive'
         });
-        quantizedData = quantizationResult.quantizedData as Float32Array;
+        // Fix type assignment for quantizedData (handle ArrayBufferLike)
+        const qd = quantizationResult.quantizedData;
+        // Always convert to a plain Float32Array with ArrayBuffer backing
+        try {
+          quantizedData = new Float32Array(Array.from(qd as any));
+        } catch {
+          quantizedData = new Float32Array(64);
+        }
       }
       // Create alphabet texture entry
       const alphabetTexture: AlphabetTexture = {
@@ -249,9 +248,9 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   }
   async function startTypewriterEffect(): Promise<void> {
     if (!text) return;
-    $isTyping = true;
-    $currentIndex = 0;
-    $displayText = text;
+    isTyping = true;
+    currentIndex = 0;
+    displayText = text;
     // Cache all characters in the text
     const uniqueChars = [...new Set(text.split(''))];
     for (const char of uniqueChars) {
@@ -261,21 +260,21 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     const charactersPerFrame = Math.max(1, Math.floor(speed / 60)); // 60 FPS
     const frameDelay = 1000 / 60; // 16.67ms per frame
     typewriterInterval = setInterval(() => {
-      if ($currentIndex >= text.length) {
-        $isTyping = false;
+      if (currentIndex >= text.length) {
+        isTyping = false;
         clearInterval(typewriterInterval);
         onComplete?.();
         return;
       }
       // Type multiple characters per frame for higher speeds
-      for (let i = 0; i < charactersPerFrame && $currentIndex < text.length; i++) {
-        $currentIndex++;
+      for (let i = 0; i < charactersPerFrame && currentIndex < text.length; i++) {
+        currentIndex++;
         // Play typing sound for non-space characters
-        if (text[$currentIndex - 1] !== ' ') {
+        if (text[currentIndex - 1] !== ' ') {
           playTypingSound();
         }
         // Apply character-specific effects
-        applyCharacterEffects(text[$currentIndex - 1]);
+        applyCharacterEffects(text[currentIndex - 1]);
       }
     }, frameDelay);
     // Start cursor blinking
@@ -285,16 +284,18 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     // Get cached texture for character
     const texture = alphabetCache.get(char);
     if (texture && texture.cached) {
-      // Apply texture-based effects
-      console.log(`🎨 Applied texture effect for '${char}'`);
+      console.log(`🎨 Applied texture effect for '${char}'. Texture object:`, texture);
+      // TODO: Implement actual visual application of texture effects, potentially using WebGPU/WebGL
     }
     // Add character-specific animations
     if (char === '!' || char === '?') {
       // Exclamation/question marks get extra emphasis
       setTimeout(() => {
         if (textElement) {
+          console.log(`✨ Adding 'nes-text-emphasis' for '${char}'`);
           textElement.classList.add('nes-text-emphasis');
           setTimeout(() => {
+            console.log(`✨ Removing 'nes-text-emphasis' for '${char}'`);
             textElement.classList.remove('nes-text-emphasis');
           }, 200);
         }
@@ -303,10 +304,14 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   }
   function startCursorBlink(): void {
     let blinkInterval = setInterval(() => {
-      if (!$isTyping) {
-        $cursor = !$cursor;
+      const oldCursor = cursor;
+      if (!isTyping) {
+        cursor = !cursor;
       } else {
-        $cursor = true; // Always show cursor while typing
+        cursor = true; // Always show cursor while typing
+      }
+      if (oldCursor !== cursor) {
+        console.log(`💡 Cursor state changed to: ${cursor} (isTyping: ${isTyping})`);
       }
     }, 500);
     // Clean up on component destroy
@@ -327,9 +332,11 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     alphabetCache.clear();
   }
   // Reactive updates
-  $effect(() => { if (text && containerElement) {
-    startTypewriterEffect(), });
-  }
+  $effect(() => {
+    if (text && containerElement) {
+      startTypewriterEffect();
+    }
+  });
 </script>
 <div
   bind:this={containerElement}
@@ -342,15 +349,15 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   <span
     bind:this={textElement}
     class="nes-typewriter-text"
-    class:typing={$isTyping}
+    class:typing={isTyping}
   >
-    {$visibleText}
+    {visibleText}
   </span>
   <span
     bind:this={cursorElement}
     class="nes-typewriter-cursor"
-    class:visible={$cursor}
-    class:blinking={!$isTyping}
+    class:visible={cursor}
+    class:blinking={!isTyping}
   >
     █
   </span>
@@ -382,7 +389,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   }
   .nes-legal {
     color: #FFD700;
-    background: #1a1a2;
+    background: #1a1a2e;
     border-color: #FFD700;
     text-shadow: 0 0 1px #FFD700;
   }
@@ -400,9 +407,9 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     animation: emphasize 0.3s ease-out;
   }
   @keyframes emphasize {
-    0% { transform: scale(1), }
-    50% { transform: scale(1.1), }
-    100% { transform: scale(1), }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
   }
   .nes-typewriter-cursor {
     display: inline-block;
@@ -415,11 +422,11 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     opacity: 1;
   }
   .nes-typewriter-cursor.blinking {
-    animation: blink 1s infinite;
+  animation: blink 1s infinite;
   }
   @keyframes blink {
-    0%, 50% { opacity: 1, }
-    51%, 100% { opacity: 0, }
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
   }
   /* Pixel-perfect rendering for retro look */
   .nes-classic .nes-typewriter-text,
@@ -428,24 +435,6 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
-  }
-  /* Loading state */
-  .nes-typewriter-container.loading {
-    position: relative;
-  }
-  .nes-typewriter-container.loading::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    animation: loading-scan 2s infinite;
-  }
-  @keyframes loading-scan {
-    0% { transform: translateX(-100%), }
-    100% { transform: translateX(100%), }
   }
   /* Responsive design */
   @media (max-width: 768px) {

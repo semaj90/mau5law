@@ -20,6 +20,21 @@ export default ;
   import { useMachine } from '@xstate/svelte';
   import { crewAIOrchestrationMachine } from '$lib/state/crewAIOrchestrationMachine';
   import { slide, fade } from 'svelte/transition';
+
+  function formatTime(date: Date): string {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  if (diff < 60000) {
+    return 'just now';
+  } else if (diff < 3600000) {
+    const minutes = Math.floor(diff / 60000);
+    return `${minutes}m ago`;
+  } else {
+    const hours = Math.floor(diff / 3600000);
+    return `${hours}h ago`;
+  }
+}
+
   // Props
   let { documentId,
     initialContent = '',
@@ -92,7 +107,7 @@ await initializeEditor();
         //   provider,
         // }),
       ],
-      content: initialContent;
+      content: initialContent,
       editable: !readOnly,
       editorProps: {
         attributes: {
@@ -169,7 +184,7 @@ await initializeEditor();
     const pos = editor.view.coordsAtPos(selection.from);
     recommendationPosition = {
       x: pos.left,
-      y: pos.top;
+      y: pos.top,
     }
     // Check if selection contains recommended text
     checkForRecommendationAtSelection(selection);
@@ -203,7 +218,7 @@ await initializeEditor();
     try {
       // This would integrate with your document update system
       await saveDocument(content);
-      lastSaveTime = new Date());
+      lastSaveTime = new Date();
       // Send auto-save event to state machine
       send({ type: 'AUTO_SAVE_TRIGGERED' });
     } catch (error) {
@@ -214,7 +229,7 @@ await initializeEditor();
     if (!editor) return;
     const content = editor.getHTML();
     await saveDocument(content);
-    lastSaveTime = new Date());
+    lastSaveTime = new Date().getTime();
     // Show save confirmation
     showNotification('Document saved', 'success');
   }
@@ -230,7 +245,7 @@ await initializeEditor();
   // AI ASSISTANT & SUGGESTIONS
   // ============================================================================
   function toggleAIAssistant() {
-    aiAssistantVisible = !aiAssistantVisibl;
+    aiAssistantVisible = !aiAssistantVisible;
     if (aiAssistantVisible) {
       send({ type: 'FOCUS_CHANGED', schema: 'analysis_mode' });
     } else {
@@ -242,7 +257,7 @@ await initializeEditor();
     // This would integrate with your AI suggestion system
     try {
       const suggestions = await fetchInlineSuggestions(content);
-      currentSuggestions = suggestion;
+      currentSuggestions = suggestions;
       if (suggestions.length > 0) {
         showSuggestions = true;
       }
@@ -294,7 +309,7 @@ await initializeEditor();
     if (suggestion.position !== undefined) {
       editor.commands.setTextSelection({
         from: suggestion.position,
-        to: suggestion.position + suggestion.length;
+        to: suggestion.position + suggestion.length,
       });
       editor.commands.insertContent(suggestion.suggestedText);
     }
@@ -526,12 +541,13 @@ await initializeEditor();
     outline: none;
     min-height: 200px;
   }
-  .tiptap-editor :global($1) {
+  :global(.tiptap-editor .ProseMirror::before) {
     content: attr(data-placeholder);
-    float: left;
     color: #9ca3af;
     pointer-events: none;
+    display: block;
     height: 0;
+  }
   }
   .ai-assistant-panel {
     max-height: 500px;
@@ -551,19 +567,4 @@ await initializeEditor();
     }
   }
 </style>
-<script lang="ts">
-</script>
-  function formatTime(date: Date): string {
-    const now = new Date());
-    const diff = now.getTime() - date.getTime();
-    if (diff < 60000) {
-      return 'just now';
-    } else if (diff < 3600000) {
-      const minutes = Math.floor(diff / 60000);
-      return `${minutes}m ago`;
-    } else {
-      const hours = Math.floor(diff / 3600000);
-      return `${hours}h ago`;
-    }
-  }
-</script>
+

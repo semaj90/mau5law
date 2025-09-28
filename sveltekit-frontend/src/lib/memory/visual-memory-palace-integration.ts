@@ -5,7 +5,6 @@
  */
 import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
 import type { CHRROMPattern } from '$lib/cache/chr-rom-pattern-cache';
-}
 export interface MemoryPalaceRoom {
   id: string;
   name: string;
@@ -141,7 +140,7 @@ export class VisualMemoryPalaceManager {
       { id: 'ip', name: 'IP Vault', anchor: 'secure metal vault door' },
       { id: 'employment', name: 'HR Office', anchor: 'desk with personnel files' },
       { id: 'evidence', name: 'Evidence Locker', anchor: 'steel evidence shelving' },
-      { id: 'research', name: 'Legal Library', anchor: 'towering law book shelves' },>
+  { id: 'research', name: 'Legal Library', anchor: 'towering law book shelves' },
       { id: 'archive', name: 'Document Archive', anchor: 'endless filing corridors' }
     ];
     practiceAreas.forEach((area, index) => {

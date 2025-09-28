@@ -429,7 +429,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           <label class="block text-sm font-medium text-gray-700 mb-2">🔍 Search Routes</label>
           <input
             type="text"
-            ;
             bind:value={searchTerm}
             placeholder="Search by path, name, or description..."
             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"

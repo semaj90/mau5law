@@ -1,9 +1,113 @@
+// Lightweight shim for SIMD JSON wrapper used during development.
+// Provides the same API surface as the planned WASM module but
+// uses pure JS fallbacks (JSON.parse) so the frontend can run
+// while the real WebAssembly module is developed and built.
+
+export interface LegalDocumentJSON {
+  caseId: string;
+  documentType: 'contract' | 'evidence' | 'brief' | 'citation';
+  title: string;
+  content: string;
+  metadata: {
+    riskLevel?: 'low' | 'medium' | 'high' | 'critical';
+    confidence?: number;
+    practiceArea?: string[];
+    jurisdiction?: string;
+    dateCreated?: string;
+    parties?: any[];
+  };
+  embeddings?: number[];
+}
+
+export interface SIMDParsingMetrics {
+  parseTime: number;
+  validationTime: number;
+  compressionTime: number;
+  compressionRatio: number;
+  throughput: number;
+}
+
+class ShimSIMD {
+  private metrics: SIMDParsingMetrics = {
+    parseTime: 0,
+    validationTime: 0,
+    compressionTime: 0,
+    compressionRatio: 1,
+    throughput: 0
+  };
+
+  async initialize(): Promise<void> {
+    // No-op for shim
+    return;
+  }
+
+  async parseDocumentJSON(jsonString: string): Promise<LegalDocumentJSON> {
+    const start = Date.now();
+    const parsed = JSON.parse(jsonString) as LegalDocumentJSON;
+    this.metrics.parseTime = Date.now() - start;
+    return parsed;
+  }
+
+  async batchParseDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
+    const start = Date.now();
+    const results = jsonStrings.map((s) => JSON.parse(s) as LegalDocumentJSON);
+    const total = Date.now() - start;
+    this.metrics.throughput = results.length / Math.max(total / 1000, 0.001);
+    return results;
+  }
+
+  async validateDocument(jsonString: string): Promise<boolean> {
+    try {
+      const doc = JSON.parse(jsonString);
+      return !!(doc && (doc as any).caseId && (doc as any).documentType);
+    } catch {
+      return false;
+    }
+  }
+
+  getMetrics(): SIMDParsingMetrics {
+    return { ...this.metrics };
+  }
+
+  dispose(): void {
+    // noop
+  }
+}
+
+export const simdJSONAccelerator = new ShimSIMD();
+
+// Indicates whether a true WASM module was successfully loaded.
+export let isWASMReady = false;
+
+// Init function placeholder - when real wasm is available, this should
+// attempt to instantiate the module and wire exports to the shim.
+export async function initWASM(timeoutMs = 3000): Promise<boolean> {
+  // Keep the shim behavior for now; caller can check isWASMReady.
+  isWASMReady = false;
+  return isWASMReady;
+}
+
+export async function parseLegalDocumentWithSIMD(jsonString: string): Promise<LegalDocumentJSON> {
+  return simdJSONAccelerator.parseDocumentJSON(jsonString);
+}
+
+export async function batchParseLegalDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
+  return simdJSONAccelerator.batchParseDocuments(jsonStrings);
+}
+
+export async function validateLegalDocumentWithSIMD(jsonString: string): Promise<boolean> {
+  return simdJSONAccelerator.validateDocument(jsonString);
+}
+
+export function getSIMDMetrics(): SIMDParsingMetrics {
+  return simdJSONAccelerator.getMetrics();
+}
+
 // @ts-nocheck - Complex experimental service with external dependencies
 /**
  * TypeScript wrapper for SIMD-accelerated JSON parser
  * Integrates with legal AI platform for 3x faster document processing
- */;
-}
+ */
 export interface LegalDocumentJSON {
   caseId: string;
   documentType: 'contract' | 'evidence' | 'brief' | 'citation';
