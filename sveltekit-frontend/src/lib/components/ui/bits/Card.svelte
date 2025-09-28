@@ -1,57 +1,111 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { HTMLAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
-  import { cn } from '$lib/utils';
-  interface Props extends HTMLAttributes<HTMLDivElement> {
-    variant?: 'default' | 'elevated' | 'outlined' | 'filled';
-    padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-    hover?: boolean;
+  interface CardProps {
+    title?: string;
+    content?: string;
+    variant?: 'default' | 'legal' | 'evidence' | 'case' | 'dark';
+    nesStyle?: boolean;
     class?: string;
     children?: Snippet;
+    header?: Snippet;
+    footer?: Snippet;
   }
   let {
+    title,
+    content,
     variant = 'default',
-    padding = 'md',
-    hover = false,
+    nesStyle = false,
     class: className = '',
     children,
+    header,
+    footer,
     ...restProps
-  }: Props = $props();
-  const baseClasses = "legal-ai-card transition-all duration-300";
-  const variantClasses = {
-    default: "legal-card bg-legal-surface/60 border border-legal-primary/20",
-    elevated: "legal-card-elevated bg-legal-surface/80 border border-legal-accent/20 shadow-2xl shadow-legal-accent/10",
-    outlined: "legal-card-outlined bg-transparent border-2 border-legal-accent/30",
-    filled: "legal-card bg-legal-surface/90 border border-legal-primary/30",
-  }
-  const paddingClasses = {
-    none: "p-0",
-    sm: "p-3",
-    md: "p-6",
-    lg: "p-8",
-    xl: "p-10",
-  }
-  const hoverClasses = hover ? "hover:border-legal-accent/50 hover:shadow-lg hover:shadow-legal-accent/20 hover:-translate-y-1" : "";
-  let computedClasses = $derived(cn(
-    baseClasses,
-    variantClasses[variant],
-    paddingClasses[padding],
-    hoverClasses,
-    className
-  ));
+  }: CardProps = $props();
+  let cardClasses = $derived.by(() => {
+    const classes = [];
+    if (nesStyle) {
+      // NES.css styled card
+      const nesVariants = {
+        default: 'nes-container with-title',
+        legal: 'nes-container with-title is-rounded',
+        evidence: 'nes-container with-title is-dark',
+        case: 'nes-container with-title',
+        dark: 'nes-container with-title is-dark',
+      }
+      classes.push(nesVariants[variant] || nesVariants.default);
+    } else {
+      // Modern styled card
+      classes.push('enhanced-card');
+      classes.push(`enhanced-card--${variant}`);
+    }
+    if (className) {
+      classes.push(className);
+    }
+    return classes.join(' ');
+  });
 </script>
 
-<div class={computedClasses} {...restProps}>
-  {#if children}
-    {@render children()}
+<div class={cardClasses}>
+  {#if header}
+    {@render header()}
+  {:else if title}
+    <h3 class="title">{title}</h3>
+  {/if}
+  <div class="card-content">
+    {#if children}
+      {@render children()}
+    {:else if content}
+      <p class="nes-text">{content}</p>
+    {/if}
+  </div>
+  {#if footer}
+    <div class="card-footer">
+      {@render footer()}
+    </div>
   {/if}
 </div>
 
 <style>
-  :global(.legal-ai-card) {
-    border-radius: var(--legal-ai-radius-xl);
-    backdrop-filter: blur(12px);
-    font-family: var(--legal-ai-font-family-sans);
+  .enhanced-card {
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 1rem;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 1rem 0;
+  }
+  .enhanced-card--legal {
+    border-color: #0066cc;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e6f2ff 100%);
+  }
+  .enhanced-card--evidence {
+    border-color: #cc6600;
+    background: linear-gradient(135deg, #fff8f0 0%, #ffe6cc 100%);
+  }
+  .enhanced-card--case {
+    border-color: #006600;
+    background: linear-gradient(135deg, #f0fff0 0%, #ccffcc 100%);
+  }
+  .enhanced-card--dark {
+    border-color: #666;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    color: white;
+  }
+  .card-content {
+    margin: 1rem 0;
+  }
+  .card-footer {
+    border-top: 1px solid #ddd;
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+/* NES.css override for better spacing */ {}
+  :global(.nes-container.with-title) {
+    margin: 1rem 0;
+  }
+  :global(.nes-container .title) {
+    background: inherit;
+    padding: 0 0.5rem;
   }
 </style>

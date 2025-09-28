@@ -116,7 +116,7 @@
 
     # PostgreSQL proxy (if needed)
     handle_path /api/db/* {
-        reverse_proxy localhost:5433 {
+        reverse_proxy localhost:5432 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
@@ -174,7 +174,7 @@
             "tensorrt_optimized": "localhost:8087",
             "tensorrt_original": "localhost:8086",
             "ollama": "localhost:11434",
-            "postgresql": "localhost:5433",
+            "postgresql": "localhost:5432",
             "redis": "localhost:6379"
         },
         "load_balancer": "round_robin",

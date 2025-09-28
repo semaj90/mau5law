@@ -13,7 +13,13 @@ export * as NES from './nes';
 export { default as LegacyButton } from './Button.svelte';
 
 // Direct imports for common components
-export { Button, Card, CardContent, CardHeader, CardTitle } from './core';
+export { default as Button } from './button/Button.svelte';
+export { default as Input } from './input/Input.svelte';
+export { default as Card } from './Card.svelte';
+export { default as CardContent } from './CardContent.svelte';
+export { default as CardHeader } from './CardHeader.svelte';
+export { default as CardTitle } from './CardTitle.svelte';
+export { default as LoadingButton } from '../headless/LoadingButton.svelte';
 
 // Component usage guide:
 // import { Button, Card } from '$lib/components/ui';           // Core components

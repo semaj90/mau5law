@@ -1,66 +1,41 @@
-import { synthesizeMultiLLMOutput } from './custom-reranker.js';
+import { synthesizeMultiLLMOutput, type SynthesisResult } from './custom-reranker.js';
+import { fetchLLMOutputs, getUserHistory, getUploadedFiles, fetchMCPServerSummaries } from '$lib/api/client';
 // TODOs and stub mocks for multi-LLM synthesis pipeline integration
-import type {
-  AIModelOutput,
-  UserHistory,
-  UploadedFile,
-  MCPServerData,
-  SynthesisOptions
-} from './types.js';
-import {
-  mockAIModelOutput,
-  mockUserHistory,
-  mockUploadedFile,
-  mockMCPServerData,
-  mockSynthesisOptions
-} from './types.js';
-// Example usage with stub mocks
-export async function runSynthesisExample(): Promise<any> {
-  // TODO: Replace mocks with real data from LLMs, user history, uploads, MCP servers
-  const result = await synthesizeMultiLLMOutput({
-    llmOutputs: [mockAIModelOutput],
-    userHistory: mockUserHistory
-    uploadedFiles: [mockUploadedFile],
-    mcpServers: [mockMCPServerData],
-    options: mockSynthesisOptions
-  });
-  // Stub: Log output for dev feedback
-  console.log("Synthesis result:", result);
-  return result;
-}
-// Stub/mock pipeline functions for development
-export async function fetchLLMOutputs(): Promise<AIModelOutput[]> {
-  // TODO: Integrate with Ollama, vLLM, etc.
-  return [mockAIModelOutput];
-}
-export async function getUserHistory(): Promise<UserHistory> {
-  // TODO: Connect to frontend/store
-  return mockUserHistory;
-}
-export async function parseUploadedFiles(): Promise<UploadedFile[]> {
-  // TODO: Parse uploaded files and extract text
-  return [mockUploadedFile];
-}
-export async function fetchMCPServerSummaries(): Promise<MCPServerData[]> {
-  // TODO: Fetch summaries from MCP servers
-  return [mockMCPServerData];
-}
-export async function runFullSynthesisPipeline(): Promise<any> {
-  // Example: Full pipeline wiring with stub mocks
+import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData } from './types.js';
+
+// Example usage with real API calls
+export async function runSynthesisExample(): Promise<SynthesisResult> {
   const llmOutputs = await fetchLLMOutputs();
   const userHistory = await getUserHistory();
-  const uploadedFiles = await parseUploadedFiles();
+  const uploadedFiles = await getUploadedFiles();
   const mcpServers = await fetchMCPServerSummaries();
-  const options = mockSynthesisOptions;
+
   const result = await synthesizeMultiLLMOutput({
     llmOutputs,
     userHistory,
     uploadedFiles,
     mcpServers,
-    options
   });
   // Stub: Log output for dev feedback
-  console.log("Full synthesis pipeline result:", result);
+  console.log('Synthesis result:', result);
+  return result;
+}
+
+export async function runFullSynthesisPipeline(): Promise<SynthesisResult> {
+  // Example: Full pipeline wiring with API calls
+  const llmOutputs = await fetchLLMOutputs();
+  const userHistory = await getUserHistory();
+  const uploadedFiles = await getUploadedFiles();
+  const mcpServers = await fetchMCPServerSummaries();
+
+  const result = await synthesizeMultiLLMOutput({
+    llmOutputs,
+    userHistory,
+    uploadedFiles,
+    mcpServers,
+  });
+  // Stub: Log output for dev feedback
+  console.log('Full synthesis pipeline result:', result);
   return result;
 }
 // TODOs for full pipeline wiring:
@@ -121,14 +96,14 @@ export async function runFullSynthesisPipeline(): Promise<any> {
 // 5. Agent Orchestration: Use audit results to trigger agent actions (CrewAI, Autogen)
 //    - Feed TODOs and errors to agents for automated code review, fixes, and analysis
 // Example stub for phase 10 semantic audit integration
-export async function phase10SemanticAudit(query: string): Promise<any> {
+export async function phase10SemanticAudit(_query: string): Promise<unknown> {
   // TODO: Wire up to real semantic_search utility or API
   // const results = await semantic_search(query)
   // TODO: Log results, auto-generate TODOs, and trigger agent actions
   // console.log("Phase 10 Semantic Audit Results:", results)
   // return results
   return {
-    status: "stub",
-    message: "Phase 10 semantic audit integration pending."
-  }
+    status: 'stub',
+    message: 'Phase 10 semantic audit integration pending.',
+  };
 }

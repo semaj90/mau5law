@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Format response for YoRHa interface
     const yorhaResponse = {
-      success: true
+      success: true,
       query,
       dataType,
       analysisType,
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
             processingNode: 'YORHA-LEGAL-AI-001',
             classification: 'CONFIDENTIAL'
           }
-        : null
+        : null,
       // Service information
       service: 'yorha-enhanced-rag-api',
       version: '4.0.0'
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error("YoRHa Enhanced RAG error:", error)
     return json(
       {
-        success: false;
+        success: false,
         error: error.message || 'Enhanced RAG analysis failed',
         // Avoid accessing request.body in SvelteKit; body is a stream
         query: '',
@@ -153,10 +153,10 @@ export const POST: RequestHandler = async ({ request }) => {
 }
 // YoRHa-specific analysis function
 async function performYoRHaAnalysis(
-  query: string
-  rerankedResults: any[]
-  dbResults: any[]
-  analysisType: string
+  query: string,
+  rerankedResults: any[],
+  dbResults: any[],
+  analysisType: string,
 ): Promise<any[]> {
   // Combine all results
   const allResults = [

@@ -1159,7 +1159,7 @@
             <div class="space-y-2">
               <Label for="evidence-type">Type:</Label>
               <select
-                id="evidence-type";
+                id="evidence-type"
                 bind:value={propertiesPanel.data.type}
                 class="w-full px-3 py-2 border border-input bg-background rounded-md"
               >
@@ -1174,7 +1174,7 @@
               <Label>Position:</Label>
               <div class="grid grid-cols-2 gap-2">
                 <Input type="number" bind:value={propertiesPanel.position.x} placeholder="X" />
-                <Input type="number" ; bind:value={propertiesPanel.position.y} placeholder="Y" />
+                <Input type="number" bind:value={propertiesPanel.position.y} placeholder="Y" />
               </div>
             </div>
           {/if}

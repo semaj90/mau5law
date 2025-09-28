@@ -1,11 +1,11 @@
+import type { Driver } from 'neo4j-driver-core';
 
 // Self-Organizing Map (SOM) Enhanced RAG System
 // Implements dimensionality reduction, k-means clustering, and boolean storage for legal AI
-}
 export interface SOMNode {
   id: string;
   weights: number[];
-  position: { x: number; y: number }
+  position: { x: number; y: number };
   cluster: number;
   activation: number;
   documents: string[];
@@ -14,7 +14,7 @@ export interface SOMNode {
     caseCategory?: string;
     confidence: number;
     priority: number;
-  }
+  };
 }
 export interface SOMConfig {
   mapWidth: number;
@@ -35,7 +35,7 @@ export interface BooleanCluster {
     avg_confidence: number;
     dominant_legal_type: string;
     creation_timestamp: number;
-  }
+  };
 }
 export interface DocumentEmbedding {
   id: string;
@@ -47,21 +47,22 @@ export interface DocumentEmbedding {
     legal_category?: string;
     confidence: number;
     timestamp: number;
-  }
+  };
 }
 export class SelfOrganizingMapRAG {
   private som!: SOMNode[][];
   private config: SOMConfig;
   private clusters: Map<number, BooleanCluster> = new Map();
   private documentEmbeddings: Map<string, DocumentEmbedding> = new Map();
-  private neo4jConnection: any; // Neo4j driver instance
-  constructor(config: SOMConfig) {
+  private neo4jConnection: Driver | undefined; // Neo4j driver instance
+  constructor(config: SOMConfig, neo4jDriver?: Driver) {
     this.config = config;
+    this.neo4jConnection = neo4jDriver;
     this.initializeSOM();
   }
   /**
    * Initialize Self-Organizing Map with random weights
-   */;
+   */
   private initializeSOM(): void {
     this.som = [];
     for (let x = 0; x < this.config.mapWidth; x++) {
@@ -76,15 +77,15 @@ export class SelfOrganizingMapRAG {
           documents: [],
           legalContext: {
             confidence: 0,
-            priority: 0
-          }
-        }
+            priority: 0,
+          },
+        };
       }
     }
   }
   /**
    * Generate random weights for SOM node initialization
-   */;
+   */
   private generateRandomWeights(): number[] {
     const weights = [];
     for (let i = 0; i < this.config.dimensions; i++) {
@@ -94,61 +95,48 @@ export class SelfOrganizingMapRAG {
   }
   /**
    * Train SOM with document embeddings
-   */;
+   */
   async trainSOM(documents: DocumentEmbedding[]): Promise<void> {
     console.log(`🧠 Training SOM with ${documents.length} legal documents...`);
     // Store document embeddings
-    documents.forEach((doc) => {
+    documents.forEach(doc => {
       this.documentEmbeddings.set(doc.id, doc);
     });
     let learningRate = this.config.learningRate;
     let neighborhoodRadius = this.config.neighborhoodRadius;
     for (let epoch = 0; epoch < this.config.maxEpochs; epoch++) {
       // Decay learning rate and neighborhood radius
-      learningRate =
-        this.config.learningRate * Math.exp(-epoch / this.config.maxEpochs);
-      neighborhoodRadius =
-        this.config.neighborhoodRadius *
-        Math.exp(-epoch / this.config.maxEpochs);
+      learningRate = this.config.learningRate * Math.exp(-epoch / this.config.maxEpochs);
+      neighborhoodRadius = this.config.neighborhoodRadius * Math.exp(-epoch / this.config.maxEpochs);
       // Shuffle documents for each epoch
       const shuffledDocs = this.shuffleArray([...documents]);
       for (const doc of shuffledDocs) {
         // Find Best Matching Unit (BMU)
         const bmu = this.findBestMatchingUnit(doc.embedding);
         // Update BMU and neighbors
-        this.updateNeighborhood(
-          bmu,
-          doc.embedding,
-          learningRate,
-          neighborhoodRadius,
-        );
+        this.updateNeighborhood(bmu, doc.embedding, learningRate, neighborhoodRadius);
         // Update legal context for BMU
         this.updateLegalContext(bmu, doc);
       }
       if (epoch % 100 === 0) {
-        console.log(
-          `📊 SOM Training Progress: ${epoch}/${this.config.maxEpochs} epochs`,
-        );
+        console.log(`📊 SOM Training Progress: ${epoch}/${this.config.maxEpochs} epochs`);
       }
     }
     // Perform k-means clustering on trained SOM
     await this.performKMeansClustering();
     // Generate boolean patterns for clusters
     this.generateBooleanPatterns();
-    console.log("✅ SOM training completed");
+    console.log('✅ SOM training completed');
   }
   /**
    * Find Best Matching Unit (BMU) for input vector
-   */;
-  private findBestMatchingUnit(inputVector: number[]): SOMNode {
+   */
+  public findBestMatchingUnit(embedding: number[]): SOMNode {
     let bestNode: SOMNode = this.som[0][0];
     let minDistance = Infinity;
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
-        const distance = this.euclideanDistance(
-          inputVector,
-          this.som[x][y].weights,
-        );
+        const distance = this.euclideanDistance(embedding, this.som[x][y].weights);
         if (distance < minDistance) {
           minDistance = distance;
           bestNode = this.som[x][y];
@@ -158,13 +146,14 @@ export class SelfOrganizingMapRAG {
     bestNode.activation = 1 / (1 + minDistance); // Activation based on distance
     return bestNode;
   }
+
   /**
    * Update SOM node weights in neighborhood
    */
   private updateNeighborhood(
-    bmu: SOMNode
-    inputVector: number[]
-    learningRate: number
+    bmu: SOMNode,
+    inputVector: number[],
+    learningRate: number,
     neighborhoodRadius: number
   ): void {
     for (let x = 0; x < this.config.mapWidth; x++) {
@@ -173,15 +162,11 @@ export class SelfOrganizingMapRAG {
         const distance = this.manhattanDistance(bmu.position, node.position);
         if (distance <= neighborhoodRadius) {
           // Calculate neighborhood influence
-          const influence = Math.exp(
-            -(distance * distance) /
-              (2 * neighborhoodRadius * neighborhoodRadius),
-          );
+          const influence = Math.exp(-(distance * distance) / (2 * neighborhoodRadius * neighborhoodRadius));
           const adjustedLearningRate = learningRate * influence;
           // Update weights
           for (let i = 0; i < node.weights.length; i++) {
-            node.weights[i] +=
-              adjustedLearningRate * (inputVector[i] - node.weights[i]);
+            node.weights[i] += adjustedLearningRate * (inputVector[i] - node.weights[i]);
           }
           // Normalize weights
           node.weights = this.normalizeVector(node.weights);
@@ -191,30 +176,22 @@ export class SelfOrganizingMapRAG {
   }
   /**
    * Update legal context for SOM node
-   */;
+   */
   private updateLegalContext(node: SOMNode, document: DocumentEmbedding): void {
     node.documents.push(document.id);
     // Update confidence (weighted average)
     const docCount = node.documents.length;
     node.legalContext.confidence =
-      (node.legalContext.confidence * (docCount - 1) +
-        document.metadata.confidence) /
-      docCount;
+      (node.legalContext.confidence * (docCount - 1) + document.metadata.confidence) / docCount;
     // Update priority based on evidence type
     const priorityMap = {
       forensic: 4,
       testimony: 3,
       digital: 2,
-      physical: 1
-    }
-    const docPriority =
-      priorityMap[
-        document.metadata.evidence_type as keyof typeof priorityMap
-      ] || 1;
-    node.legalContext.priority = Math.max(
-      node.legalContext.priority,
-      docPriority,
-    );
+      physical: 1,
+    };
+    const docPriority = priorityMap[document.metadata.evidence_type as keyof typeof priorityMap] || 1;
+    node.legalContext.priority = Math.max(node.legalContext.priority, docPriority);
     // Update dominant legal context
     if (document.metadata.evidence_type) {
       node.legalContext.evidenceType = document.metadata.evidence_type;
@@ -225,9 +202,9 @@ export class SelfOrganizingMapRAG {
   }
   /**
    * Perform K-means clustering on SOM nodes
-   */;
+   */
   private async performKMeansClustering(): Promise<void> {
-    console.log("🔄 Performing K-means clustering on SOM nodes...");
+    console.log('🔄 Performing K-means clustering on SOM nodes...');
     // Flatten SOM nodes into array
     const nodes: SOMNode[] = [];
     for (let x = 0; x < this.config.mapWidth; x++) {
@@ -264,7 +241,7 @@ export class SelfOrganizingMapRAG {
       }
       // Update centroids
       for (let i = 0; i < centroids.length; i++) {
-        const clusterNodes = nodes.filter((node) => node.cluster === i);
+        const clusterNodes = nodes.filter(node => node.cluster === i);
         if (clusterNodes.length > 0) {
           const newCentroid = new Array(this.config.dimensions).fill(0);
           for (const node of clusterNodes) {
@@ -282,49 +259,46 @@ export class SelfOrganizingMapRAG {
     }
     // Create cluster objects
     for (let i = 0; i < this.config.clusterCount; i++) {
-      const clusterNodes = nodes.filter((node) => node.cluster === i);
+      const clusterNodes = nodes.filter(node => node.cluster === i);
       const clusterDocuments: string[] = [];
       let totalConfidence = 0;
       const evidenceTypes: string[] = [];
-      clusterNodes.forEach((node) => {
+      clusterNodes.forEach(node => {
         clusterDocuments.push(...node.documents);
         totalConfidence += node.legalContext.confidence;
         if (node.legalContext.evidenceType) {
           evidenceTypes.push(node.legalContext.evidenceType);
         }
       });
-      const avgConfidence =
-        clusterNodes.length > 0 ? totalConfidence / clusterNodes.length: 0;
-      const dominantType = this.getMostFrequent(evidenceTypes) || "unknown";
+      const avgConfidence = clusterNodes.length > 0 ? totalConfidence / clusterNodes.length : 0;
+      const dominantType = this.getMostFrequent(evidenceTypes) || 'unknown';
       this.clusters.set(i, {
         id: `cluster_${i}`,
-        centroid: centroids[i]
-        documents: clusterDocuments
+        centroid: centroids[i],
+        documents: clusterDocuments,
         boolean_pattern: [
           [false, false],
-          [false, false]
+          [false, false],
         ], // Will be populated later;
         metadata: {
           cluster_size: clusterNodes.length,
-          avg_confidence: avgConfidence
-          dominant_legal_type: dominantType
-          creation_timestamp: Date.now()
-        }
+          avg_confidence: avgConfidence,
+          dominant_legal_type: dominantType,
+          creation_timestamp: Date.now(),
+        },
       });
     }
-    console.log(
-      `✅ K-means clustering completed: ${this.config.clusterCount} clusters`,
-    );
+    console.log(`✅ K-means clustering completed: ${this.config.clusterCount} clusters`);
   }
   /**
    * Generate 2x2 boolean patterns for clusters using RapidJSON format
-   */;
+   */
   private generateBooleanPatterns(): void {
-    this.clusters.forEach((cluster, clusterId) => {
+    this.clusters.forEach(cluster => {
       // Generate boolean pattern based on cluster characteristics
       const pattern: boolean[][] = [
         [false, false],
-        [false, false]
+        [false, false],
       ];
       // Pattern generation logic based on legal context
       const confidence = cluster.metadata.avg_confidence;
@@ -333,12 +307,12 @@ export class SelfOrganizingMapRAG {
       // Top-left: High confidence indicator
       pattern[0][0] = confidence > 0.7;
       // Top-right: Critical evidence type indicator
-      pattern[0][1] = ["forensic", "testimony"].includes(dominantType);
+      pattern[0][1] = ['forensic', 'testimony'].includes(dominantType);
       // Bottom-left: Large cluster indicator
       pattern[1][0] = clusterSize > 10;
       // Bottom-right: Recent documents indicator
       const recentThreshold = Date.now() - 7 * 24 * 60 * 60 * 1000; // 7 days
-      pattern[1][1] = cluster.documents.some((docId) => {
+      pattern[1][1] = cluster.documents.some(docId => {
         const doc = this.documentEmbeddings.get(docId);
         return doc && doc.metadata.timestamp > recentThreshold;
       });
@@ -348,14 +322,10 @@ export class SelfOrganizingMapRAG {
   /**
    * Enhanced retrieval using SOM and boolean patterns
    */
-  async semanticSearch(
-    query: string
-    queryEmbedding: number[];
-    limit: number = 10,
-  ): Promise<DocumentEmbedding[]> {
+  async semanticSearch(query: string, queryEmbedding: number[], limit: number = 10): Promise<DocumentEmbedding[]> {
     console.log(`🔍 Performing SOM-enhanced semantic search...`);
     // Find best matching SOM nodes
-    const candidateNodes: Array<any> = [];
+    const candidateNodes: Array<{ node: SOMNode; distance: number }> = [];
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
         const node = this.som[x][y];
@@ -365,19 +335,15 @@ export class SelfOrganizingMapRAG {
     }
     // Sort by distance and take top candidates
     candidateNodes.sort((a, b) => a.distance - b.distance);
-    const topNodes = candidateNodes.slice(
-      0,
-      Math.min(20, candidateNodes.length),
-    );
+    const topNodes = candidateNodes.slice(0, Math.min(20, candidateNodes.length));
     // Collect documents from top nodes
     const candidateDocuments: Set<string> = new Set();
     topNodes.forEach(({ node }) => {
-      node.documents.forEach((docId) => candidateDocuments.add(docId);
+      node.documents.forEach(docId => candidateDocuments.add(docId));
     });
     // Score documents using boolean patterns and legal context
-    const scoredDocuments: Array<any> =
-      [];
-    candidateDocuments.forEach((docId) => {
+    const scoredDocuments: Array<{ doc: DocumentEmbedding; score: number }> = [];
+    candidateDocuments.forEach(docId => {
       const doc = this.documentEmbeddings.get(docId);
       if (!doc) return;
       let score = 0;
@@ -385,15 +351,11 @@ export class SelfOrganizingMapRAG {
       const similarity = this.cosineSimilarity(queryEmbedding, doc.embedding);
       score += similarity * 0.6;
       // Boolean pattern boost
-      const matchingNode = topNodes.find(({ node }) =>
-        node.documents.includes(docId),
-      );
+      const matchingNode = topNodes.find(({ node }) => node.documents.includes(docId));
       if (matchingNode) {
         const cluster = this.clusters.get(matchingNode.node.cluster);
         if (cluster) {
-          const booleanBoost = this.calculateBooleanBoost(
-            cluster.boolean_pattern,
-          );
+          const booleanBoost = this.calculateBooleanBoost(cluster.boolean_pattern);
           score += booleanBoost * 0.2;
         }
       }
@@ -404,21 +366,22 @@ export class SelfOrganizingMapRAG {
     });
     // Sort by score and return top results
     scoredDocuments.sort((a, b) => b.score - a.score);
-    return scoredDocuments.slice(0, limit).map((item) => (item as { doc?: any }).doc);
+    return scoredDocuments.slice(0, limit).map(item => item.doc);
   }
+
   /**
    * Store cluster data in Neo4j for graph-based retrieval
-   */;
+   */
   async storeInNeo4j(): Promise<void> {
     if (!this.neo4jConnection) {
-      console.warn("Neo4j connection not configured");
+      console.warn('Neo4j connection not configured');
       return;
     }
-    console.log("💾 Storing SOM clusters in Neo4j...");
+    console.log('💾 Storing SOM clusters in Neo4j...');
     const session = this.neo4jConnection.session();
     try {
       // Create cluster nodes
-      for (const [clusterId, cluster] of this.clusters) {
+      for (const [, cluster] of this.clusters) {
         await session.run(
           `
           MERGE (c:Cluster {id: $clusterId})
@@ -436,8 +399,8 @@ export class SelfOrganizingMapRAG {
             avgConfidence: cluster.metadata.avg_confidence,
             dominantType: cluster.metadata.dominant_legal_type,
             clusterSize: cluster.metadata.cluster_size,
-            timestamp: cluster.metadata.creation_timestamp
-          },
+            timestamp: cluster.metadata.creation_timestamp,
+          }
         );
         // Create document relationships
         for (const docId of cluster.documents) {
@@ -447,58 +410,52 @@ export class SelfOrganizingMapRAG {
             MERGE (d:Document {id: $docId})
             MERGE (d)-[:BELONGS_TO]->(c)
             `,
-            { clusterId: cluster.id, docId },
+            { clusterId: cluster.id, docId }
           );
         }
       }
-      console.log("✅ SOM data stored in Neo4j");
+      console.log('✅ SOM data stored in Neo4j');
     } finally {
       await session.close();
     }
   }
   /**
    * Helper functions
-   */;
+   */
   private euclideanDistance(a: number[], b: number[]): number {
-    return Math.sqrt(
-      a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0),
-    );
+    return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
   }
-  private manhattanDistance(
-    a: { x: number; y: number },
-    b: { x: number; y: number },
-  ): number {
+  private manhattanDistance(a: { x: number; y: number }, b: { x: number; y: number }): number {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
   }
   private cosineSimilarity(a: number[], b: number[]): number {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
-    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0);
-    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0);
+    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+    if (magnitudeA === 0 || magnitudeB === 0) {
+      return 0;
+    }
     return dotProduct / (magnitudeA * magnitudeB);
   }
   private normalizeVector(vector: number[]): number[] {
-    const magnitude = Math.sqrt(
-      vector.reduce((sum, val) => sum + val * val, 0),
-    );
-    return magnitude > 0 ? vector.map((val) => val / magnitude) : vector;
+    const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+    return magnitude > 0 ? vector.map(val => val / magnitude) : vector;
   }
   private shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1);
+      const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
   }
   private getMostFrequent(array: string[]): string | null {
     if (array.length === 0) return null;
-    const frequency: Record<string, number> = {}
-    array.forEach((item) => {
+    const frequency: Record<string, number> = {};
+    array.forEach(item => {
       frequency[item] = (frequency[item] || 0) + 1;
     });
-    return Object.keys(frequency).reduce((a, b) =>
-      frequency[a] > frequency[b] ? a : b
-    );
+    return Object.keys(frequency).reduce((a, b) => (frequency[a] > frequency[b] ? a : b));
   }
   private calculateBooleanBoost(pattern: boolean[][]): number {
     // Convert 2x2 boolean pattern to numeric boost
@@ -509,24 +466,20 @@ export class SelfOrganizingMapRAG {
     if (pattern[1][1]) boost += 0.1; // Recent documents
     return boost;
   }
-  private calculateLegalContextBoost(
-    metadata: DocumentEmbedding["metadata"],
-  ): number {
+  private calculateLegalContextBoost(metadata: DocumentEmbedding['metadata']): number {
     let boost = 0;
     // Evidence type boost
     const evidenceBoost = {
       forensic: 0.4,
       testimony: 0.3,
       digital: 0.2,
-      physical: 0.1
-    }
-    boost +=
-      evidenceBoost[metadata.evidence_type as keyof typeof evidenceBoost] || 0;
+      physical: 0.1,
+    };
+    boost += evidenceBoost[metadata.evidence_type as keyof typeof evidenceBoost] || 0;
     // Confidence boost
     boost += metadata.confidence * 0.3;
     // Recency boost (documents from last 30 days)
-    const daysSinceCreation =
-      (Date.now() - metadata.timestamp) / (24 * 60 * 60 * 1000);
+    const daysSinceCreation = (Date.now() - metadata.timestamp) / (24 * 60 * 60 * 1000);
     if (daysSinceCreation < 30) {
       boost += ((30 - daysSinceCreation) / 30) * 0.2;
     }
@@ -534,25 +487,39 @@ export class SelfOrganizingMapRAG {
   }
   /**
    * Export cluster data as RapidJSON format
-   */;
+   */
   exportRapidJSON(): string {
     const exportData = {
       som_config: this.config,
       clusters: Array.from(this.clusters.values()),
       map_dimensions: {
         width: this.config.mapWidth,
-        height: this.config.mapHeight
+        height: this.config.mapHeight,
       },
       total_documents: this.documentEmbeddings.size,
-      export_timestamp: Date.now()
-    }
+      export_timestamp: Date.now(),
+    };
     return JSON.stringify(exportData, null, 2);
   }
   /**
    * Get cluster visualization data for UI
-   */;
-  getVisualizationData(): Array<any> {
-    const vizData: Array<any> = [];
+   */
+  getVisualizationData(): Array<{
+    id: string;
+    position: { x: number; y: number };
+    cluster: number;
+    confidence: number;
+    documents: number;
+    evidenceType: string;
+  }> {
+    const vizData: Array<{
+      id: string;
+      position: { x: number; y: number };
+      cluster: number;
+      confidence: number;
+      documents: number;
+      evidenceType: string;
+    }> = [];
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
         const node = this.som[x][y];
@@ -562,7 +529,7 @@ export class SelfOrganizingMapRAG {
           cluster: node.cluster,
           confidence: node.legalContext.confidence,
           documents: node.documents.length,
-          evidenceType: node.legalContext.evidenceType || "unknown"
+          evidenceType: node.legalContext.evidenceType || 'unknown',
         });
       }
     }
@@ -570,21 +537,21 @@ export class SelfOrganizingMapRAG {
   }
   /**
    * Train SOM incrementally with new document
-   */;
-  async trainIncremental(embedding: number[], document: any): Promise<void> {
+   */
+  async trainIncremental(embedding: number[], document: DocumentEmbedding): Promise<void> {
     console.log(`🧠 Training SOM incrementally with new document...`);
     const docEmbedding: DocumentEmbedding = {
       id: document.id,
       content: document.content,
-      embedding: embedding
+      embedding: embedding,
       metadata: {
         case_id: document.metadata?.case_id,
-        evidence_type: document.metadata?.type,
-        legal_category: document.metadata?.practiceArea?.[0],
+        evidence_type: document.metadata?.evidence_type,
+        legal_category: document.metadata?.legal_category,
         confidence: 0.8,
-        timestamp: Date.now()
-      }
-    }
+        timestamp: Date.now(),
+      },
+    };
     // Store document embedding
     this.documentEmbeddings.set(document.id, docEmbedding);
     // Find Best Matching Unit (BMU)
@@ -598,7 +565,7 @@ export class SelfOrganizingMapRAG {
   }
   /**
    * Remove document from SOM system
-   */;
+   */
   async removeDocument(documentId: string): Promise<void> {
     console.log(`🗑️ Removing document ${documentId} from SOM system...`);
     // Remove from document embeddings
@@ -614,7 +581,7 @@ export class SelfOrganizingMapRAG {
       }
     }
     // Remove from clusters
-    this.clusters.forEach((cluster) => {
+    this.clusters.forEach(cluster => {
       const index = cluster.documents.indexOf(documentId);
       if (index > -1) {
         cluster.documents.splice(index, 1);
@@ -624,7 +591,7 @@ export class SelfOrganizingMapRAG {
   }
   /**
    * Optimize clusters using advanced algorithms
-   */;
+   */
   async optimizeClusters(): Promise<void> {
     console.log('🔧 Optimizing SOM clusters...');
     // Re-run k-means clustering with current data
@@ -635,11 +602,11 @@ export class SelfOrganizingMapRAG {
   }
   /**
    * Generate query suggestions based on SOM analysis
-   */;
+   */
   async generateQuerySuggestions(query: string): Promise<string[]> {
     const suggestions: string[] = [];
     // Find relevant clusters based on current documents
-    this.clusters.forEach((cluster) => {
+    this.clusters.forEach(cluster => {
       const legalType = cluster.metadata.dominant_legal_type;
       if (legalType && legalType !== 'unknown') {
         suggestions.push(`${query} ${legalType}`);
@@ -648,7 +615,7 @@ export class SelfOrganizingMapRAG {
     });
     // Add general legal suggestions
     const legalTerms = ['evidence', 'testimony', 'case law', 'precedent', 'ruling'];
-    legalTerms.forEach((term: any) => {
+    legalTerms.forEach((term: string) => {
       if (!query.toLowerCase().includes(term)) {
         suggestions.push(`${query} ${term}`);
       }
@@ -657,26 +624,24 @@ export class SelfOrganizingMapRAG {
   }
   /**
    * Get current clusters
-   */;
+   */
   getClusters(): BooleanCluster[] {
-    return Array.from(this.clusters.values();
+    return Array.from(this.clusters.values());
   }
   /**
    * Generate recommendations based on search results
-   */;
-  async generateRecommendations(query: string, results: any[]): Promise<string[]> {
+   */
+  async generateRecommendations(query: string, results: DocumentEmbedding[]): Promise<string[]> {
     const recommendations: string[] = [];
     // Analyze result patterns
     const evidenceTypes = new Set<string>();
     const caseTypes = new Set<string>();
-    results.forEach((result: any) => {
-      if ((result as { document?: any }).document?.metadata?.type) {
-        evidenceTypes.add((result as { document?: any }).document.metadata.type);
+    results.forEach((result: DocumentEmbedding) => {
+      if (result.metadata?.evidence_type) {
+        evidenceTypes.add(result.metadata.evidence_type);
       }
-      if ((result as { document?: any }).document?.metadata?.practiceArea) {
-        (result as { document?: any }).document.metadata.practiceArea.forEach((area: string) => {
-          caseTypes.add(area);
-        });
+      if (result.metadata?.legal_category) {
+        caseTypes.add(result.metadata.legal_category);
       }
     });
     // Generate recommendations based on patterns
@@ -694,9 +659,7 @@ export class SelfOrganizingMapRAG {
   }
 }
 // Export factory function for easy instantiation
-export function createSOMRAGSystem(
-  config: Partial<SOMConfig> = {}
-): SelfOrganizingMapRAG {
+export function createSOMRAGSystem(config: Partial<SOMConfig> = {}): SelfOrganizingMapRAG {
   const defaultConfig: SOMConfig = {
     mapWidth: 20,
     mapHeight: 20,
@@ -704,9 +667,9 @@ export function createSOMRAGSystem(
     learningRate: 0.1,
     neighborhoodRadius: 3,
     maxEpochs: 1000,
-    clusterCount: 8
-  }
-  const finalConfig = { ...defaultConfig, ...config }
+    clusterCount: 8,
+  };
+  const finalConfig = { ...defaultConfig, ...config };
   return new SelfOrganizingMapRAG(finalConfig);
 }
 export default SelfOrganizingMapRAG;

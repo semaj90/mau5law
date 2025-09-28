@@ -81,7 +81,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to get benchmark system status',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         break
       default:
         return json({,
-          success: false
+          success: false,
           error: 'Invalid benchmark mode',
           validModes: ['single', 'batch', 'stress', 'comparison']
         }, { status: 400 })
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   } catch (error) {
     console.error('Legal embedding benchmark error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Benchmark execution failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -159,7 +159,7 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
     const docProcessTime = Date.now() - docStartTime
     results.push({
       text: doc.text.substring(0, 100) + '...',
-      processingTime: docProcessTime
+      processingTime: docProcessTime,
       embeddingDimensions: embeddingResult.embedding.length,
       wasCached: embeddingResult.metadata.cacheHit
     })
@@ -180,14 +180,14 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
   return {
     mode: 'single',
     totalDocuments: documents.length,
-    processingTime: totalTime
+    processingTime: totalTime,
     avgTimePerDocument: totalTime / documents.length,
     throughput: (documents.length / totalTime) * 1000, // docs per second
     cacheHitRatio: cacheHits / documents.length,
     webgpuUtilization: config.useWebGPU ? 0.75 : 0, // Simulated
     compressionRatio: 4.2,
     memoryUsage: {
-      peak: memoryPeak;
+      peak: memoryPeak,
       average: (memoryStart + memoryPeak) / 2
     },
     qualityMetrics: {

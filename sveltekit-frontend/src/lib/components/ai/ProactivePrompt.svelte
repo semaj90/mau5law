@@ -1,9 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  // Export prop callbacks for Svelte consumers
-  let { onaccept } = $props(): (event?: unknown) => void = () => {}
-  let { ondismiss } = $props(): (event?: unknown) => void = () => {}
-  let { onquickResponse } = $props(): (event?: unknown) => void = () => {}
+  // Export prop callbacks for Svelte consumers (provide safe defaults)
+  let { onaccept = (_?: unknown) => {}, ondismiss = (_?: unknown) => {}, onquickResponse = (_?: unknown) => {} } = $props();
   // Use native buttons here to avoid strict typed component event typings
   import aiPersonality from "$lib/stores/chatStore";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
@@ -20,10 +18,12 @@
   ];
   // Get a random proactive prompt
   const randomPrompt =
+  // Get a random proactive prompt
+  const randomPrompt =
     proactivePrompts[Math.floor(Math.random() * proactivePrompts.length)];
   // Derive a safe display name from the store without relying on a specific ChatContext shape
   let displayName: string = 'Assistant';
-  const displayName = $derived(( ($aiPersonality as any)?.name ?? ($aiPersonality as any)?.displayName ?? 'Assistant' ));
+  $: displayName = (($aiPersonality as any)?.name ?? ($aiPersonality as any)?.displayName ?? 'Assistant');
   function handleAccept() {
     onaccept?.();
   }
@@ -34,8 +34,6 @@
     onquickResponse?.();
   }
 </script>
-
-<div class="space-y-4">
   <!-- Header -->
   <div class="space-y-4">
     <!-- AI Avatar with pulse animation -->

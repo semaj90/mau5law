@@ -17,11 +17,11 @@ chmod +x dev-start.sh dev-stop.sh
 
 ### **What This Provides**
 
-✅ **LLM Orchestrator Integration** - Your existing `npm run dev:full` with smart routing  
-✅ **Go Hot Reload** - All Go services auto-rebuild on changes (no more manual rebuilds!)  
-✅ **MCP Multi-Core** - Distributed AI processing  
-✅ **Load Testing Ready** - Ramp mode testing with your updated load-tester  
-✅ **Full Stack** - PostgreSQL, Redis, MinIO, Qdrant all connected  
+✅ **LLM Orchestrator Integration** - Your existing `npm run dev:full` with smart routing
+✅ **Go Hot Reload** - All Go services auto-rebuild on changes (no more manual rebuilds!)
+✅ **MCP Multi-Core** - Distributed AI processing
+✅ **Load Testing Ready** - Ramp mode testing with your updated load-tester
+✅ **Full Stack** - PostgreSQL, Redis, MinIO, Qdrant all connected
 
 ---
 
@@ -74,7 +74,7 @@ chmod +x dev-start.sh dev-stop.sh
 
 ### **Go Services** (Using Air)
 - **Legal Gateway**: Changes to `legal-gateway/` → Auto rebuild
-- **Enhanced RAG**: Changes to `go-enhanced-rag-service/` → Auto rebuild  
+- **Enhanced RAG**: Changes to `go-enhanced-rag-service/` → Auto rebuild
 - **GPU Orchestrator**: Changes to `go-microservice/` → Auto rebuild
 
 ### **Frontend** (SvelteKit)
@@ -190,13 +190,13 @@ POST /api/ai/chat
 {"messages": [{"role": "user", "content": "Quick question"}]}
 // → Routes to client orchestrator (~100ms)
 
-// Complex legal analysis → Server orchestrator (comprehensive)  
+// Complex legal analysis → Server orchestrator (comprehensive)
 POST /api/ai/unified-orchestrator
 {"content": "Analyze this contract...", "type": "legal_analysis"}
 // → Routes to server orchestrator with full pipeline (~1500ms)
 
 // High priority → MCP multi-core (parallel)
-POST /api/ai/unified-orchestrator  
+POST /api/ai/unified-orchestrator
 {"content": "Process document", "options": {"priority": "high"}}
 // → Routes to MCP workers for parallel processing
 ```
@@ -217,7 +217,7 @@ POST /api/ai/unified-orchestrator
 
 ### **Go Microservices** (Hot reload enabled)
 - `GET /api/go/health` - Legal Gateway health
-- `GET /api/rag/health` - Enhanced RAG health  
+- `GET /api/rag/health` - Enhanced RAG health
 - `GET /api/gpu/health` - GPU Orchestrator health
 
 ### **MCP Multi-Core**
@@ -231,7 +231,7 @@ POST /api/ai/unified-orchestrator
 ### **Environment Variables**
 ```bash
 # Automatically set by dev-start scripts
-DATABASE_URL=postgresql://legal_admin:123456@localhost:5433/legal_ai_db
+DATABASE_URL=postgresql://legal_admin:123456@localhost:5432/legal_ai_db
 REDIS_URL=redis://127.0.0.1:6379/0
 OLLAMA_URL=http://localhost:11434
 MCP_URL=http://localhost:3002
@@ -240,7 +240,7 @@ MCP_URL=http://localhost:3002
 ### **Hot Reload Configuration**
 Air configs are pre-configured:
 - `.air.toml` - Legal Gateway
-- `.air-rag.toml` - Enhanced RAG  
+- `.air-rag.toml` - Enhanced RAG
 - `.air-gpu.toml` - GPU Orchestrator
 
 ### **Load Testing Configuration**
@@ -303,15 +303,15 @@ docker system prune -f
 
 ## 🎉 **Success! You Now Have:**
 
-✅ **Zero-rebuild development** - Go services auto-rebuild on save  
-✅ **Smart LLM routing** - Automatic orchestrator selection  
-✅ **Load testing ready** - Ramp mode performance analysis  
-✅ **Full-stack integration** - All services connected and monitored  
-✅ **Production-ready** - Same architecture, different configs  
+✅ **Zero-rebuild development** - Go services auto-rebuild on save
+✅ **Smart LLM routing** - Automatic orchestrator selection
+✅ **Load testing ready** - Ramp mode performance analysis
+✅ **Full-stack integration** - All services connected and monitored
+✅ **Production-ready** - Same architecture, different configs
 
 ### **Next Steps:**
 1. **Develop**: Edit any Go or Svelte file → Auto rebuild/reload
-2. **Test**: Use the integrated orchestrator for all AI requests  
+2. **Test**: Use the integrated orchestrator for all AI requests
 3. **Scale**: Load test with ramp mode to find bottlenecks
 4. **Deploy**: Use the same Docker setup for production
 

@@ -51,68 +51,86 @@ declare module "lucia" {
 
 // User management utilities
 export class UserManager {
-	static async createUser(
-		email: string,
-		password: string,
-		name: string,
-		role: "user" | "lawyer" | "paralegal" = "user"
-	) {
-		const passwordHash = await Bun.password.hash(password);
+  static async createUser(
+    email: string,
+    password: string,
+    name: string,
+    role: "user" | "lawyer" | "paralegal" = "user"
+  ) {
+    const passwordHash = await Bun.password.hash(password);
 
-		const [user] = await db.insert(userTable).values({
-			email,
-			passwordHash,
-			name,
-			role,
-			preferences: {
-				aiModel: "gemma3",
-				maxTokens: 1024,
-				temperature: 0.7,
-				enableCache: true,
-				enableRL: true
-			}
-		}).returning();
+    const [user] = await db
+      .insert(userTable)
+      .values({
+        email,
+        passwordHash,
+        name,
+        role,
+        preferences: {
+          aiModel: "gemma3",
+          maxTokens: 1024,
+          temperature: 0.7,
+          enableCache: true,
+          enableRL: true,
+        },
+      })
+      .returning();
 
-		return user;
-	}
+    return user;
+  }
 
-	static async verifyPassword(email: string, password: string) {
-		const user = await db.query.userTable.findFirst({
-			where: (users, { eq }) => eq(users.email, email)
-		});
+  static async verifyPassword(email: string, password: string) {
+    const user = await db.query.userTable.findFirst({
+      where: (users, { eq }) => eq(users.email, email),
+    });
 
-		if (!user) return null;
+    if (!user) return null;
 
-		const validPassword = await Bun.password.verify(password, user.passwordHash);
-		return validPassword ? user : null;
-	}
+    const validPassword = await Bun.password.verify(
+      password,
+      user.passwordHash
+    );
+    return validPassword ? user : null;
+  }
 
-	static async getUserCases(userId: string) {
-		const cases = await db.query.caseTable.findMany({
-			where: (cases, { eq }) => eq(cases.userId, userId),
-			with: {
-				messages: {
-					orderBy: (messages, { asc }) => [asc(messages.createdAt)],
-					limit: 50
-				},
-				embeddings: true
-			}
-		});
+  static async getUserCases(userId: string) {
+    const cases = await db.query.caseTable.findMany({
+      where: (cases, { eq }) => eq(cases.userId, userId),
+      with: {
+        messages: {
+          orderBy: (messages, { asc }) => [asc(messages.createdAt)],
+          limit: 50,
+        },
+        embeddings: true,
+      },
+    });
 
-		return cases;
-	}
+    return cases;
+  }
 
-	static async updateUserPreferences(
-		userId: string,
-		preferences: Partial<DatabaseUserAttributes["preferences"]>
-	) {
-		await db.update(userTable)
-			.set({
-				preferences: {
-					...preferences
-				} as any,
-				updatedAt: new Date()
-			})
-			.where(eq(userTable.id, userId));
-	}
+  static async updateUserPreferences(
+    userId: string,
+    newPreferences: Partial<DatabaseUserAttributes["preferences"]>
+  ) {
+    const user = await db.query.userTable.findFirst({
+      where: (users, { eq }) => eq(users.id, userId),
+      columns: {
+        preferences: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const updatedPreferences = { ...user.preferences, ...newPreferences };
+
+    await db
+      .update(userTable)
+      .set({
+        preferences: updatedPreferences,
+        updatedAt: new Date(),
+      })
+      .where(eq(userTable.id, userId));
+  }
 }

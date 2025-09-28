@@ -1,6 +1,6 @@
 // TensorRT-LLM Client for SvelteKit 2
 // Production client for gemma3-legal:latest inference
-}
+
 export interface EmbeddingRequest {
   text: string;
   model: string;
@@ -34,7 +34,7 @@ export interface TensorRTHealthResponse {
     gpu_memory_allocated?: number;
     gpu_memory_reserved?: number;
     gpu_memory_free?: number;
-  }
+  };
   performance_metrics: {
     total_inferences: number;
     total_embeddings: number;
@@ -42,26 +42,29 @@ export interface TensorRTHealthResponse {
     avg_embedding_time_ms: number;
     target_latency_ms: number;
     performance_ratio: number;
-  }
+  };
 }
+
 export class TensorRTLegalClient {
   private baseUrl: string;
   private timeout: number;
   private retryAttempts: number;
+
   constructor(baseUrl: string = 'http://localhost:8100', options: {
     timeout?: number;
     retryAttempts?: number;
   } = {}) {
     this.baseUrl = baseUrl.replace(/\/$/, ''); // Remove trailing slash
-    this.timeout = options.timeout || 30000; // 30 second timeout
-    this.retryAttempts = options.retryAttempts || 3;
+    this.timeout = options.timeout ?? 30000; // 30 second timeout
+    this.retryAttempts = options.retryAttempts ?? 3;
   }
+
   async generateEmbedding(request: EmbeddingRequest): Promise<EmbeddingResponse> {
     const startTime = performance.now();
     try {
       const response = await this.makeRequest('/v1/embeddings', {
         method: 'POST',
-        body: JSON.stringify({,
+        body: JSON.stringify({
           text: request.text,
           model: request.model,
           dimensions: request.dimensions
@@ -79,19 +82,21 @@ export class TensorRTLegalClient {
       throw error;
     }
   }
+
   async generateLegalAnalysis(request: LegalAnalysisRequest): Promise<LegalAnalysisResponse> {
     const startTime = performance.now();
     try {
       const analysisPrompt = this.buildLegalPrompt(request.prompt, request.context, request.analysisType);
+      const payload = {
+        prompt: analysisPrompt,
+        context: request.context,
+        model: request.model,
+        max_tokens: request.max_tokens ?? 1024,
+        temperature: request.temperature ?? 0.1
+      };
       const response = await this.makeRequest('/v1/legal/analysis', {
         method: 'POST',
-        body: JSON.stringify({,
-          prompt: analysisPrompt
-          context: request.context,
-          model: request.model,
-          max_tokens: request.max_tokens || 1024,
-          temperature: request.temperature || 0.1
-        })
+        body: JSON.stringify(payload)
       });
       if (!response.ok) {
         throw new Error(`Legal analysis failed: ${response.status} ${response.statusText}`);
@@ -105,6 +110,7 @@ export class TensorRTLegalClient {
       throw error;
     }
   }
+
   async checkHealth(): Promise<TensorRTHealthResponse | null> {
     try {
       const response = await this.makeRequest('/health', {
@@ -122,11 +128,10 @@ export class TensorRTLegalClient {
       return null;
     }
   }
+
   async listModels(): Promise<any> {
     try {
-      const response = await this.makeRequest('/v1/models', {
-        method: 'GET'
-      });
+      const response = await this.makeRequest('/v1/models', { method: 'GET' });
       if (!response.ok) {
         throw new Error(`Models list failed: ${response.status} ${response.statusText}`);
       }
@@ -136,11 +141,10 @@ export class TensorRTLegalClient {
       throw error;
     }
   }
+
   async getPerformanceMetrics(): Promise<any> {
     try {
-      const response = await this.makeRequest('/v1/performance', {
-        method: 'GET'
-      });
+      const response = await this.makeRequest('/v1/performance', { method: 'GET' });
       if (!response.ok) {
         throw new Error(`Performance metrics failed: ${response.status} ${response.statusText}`);
       }
@@ -150,6 +154,7 @@ export class TensorRTLegalClient {
       throw error;
     }
   }
+
   private buildLegalPrompt(text: string, context?: string, analysisType?: string): string {
     const analysisTypes: Record<string, string> = {
       comprehensive: `Provide a comprehensive legal analysis covering:
@@ -182,7 +187,7 @@ export class TensorRTLegalClient {
 3. Procedural considerations
 4. Settlement opportunities
 5. Strategic recommendations`
-    }
+    };
     const instructions = analysisTypes[analysisType || 'comprehensive'] || analysisTypes.comprehensive;
     return `<legal_analysis>
 Document/Text: ${text}
@@ -191,39 +196,53 @@ Analysis Instructions:
 ${instructions}
 Provide a detailed, professional legal analysis:`;
   }
+
   private async makeRequest(endpoint: string, options: RequestInit): Promise<Response> {
     const url = `${this.baseUrl}${endpoint}`;
-    const requestOptions: RequestInit = {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        ...options.headers
-      },
-      signal: AbortSignal.timeout(this.timeout)
-    }
     let lastError: Error | null = null;
+
     for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+      const requestOptions: RequestInit = {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          ...(options && options.headers ? (options.headers as Record<string, string>) : {})
+        },
+        signal: controller.signal
+      };
+
       try {
-        console.log(`TensorRT request (attempt ${attempt}): ${options.method} ${endpoint}`);
-        // removed unused response assignment
-        if (response.ok || response.status < 500) {
+        console.log(`TensorRT request (attempt ${attempt}): ${options.method ?? 'GET'} ${endpoint}`);
+        const response = await fetch(url, requestOptions);
+        clearTimeout(timeoutId);
+
+        // Return for successful or client error (do not retry 4xx)
+        if (response.ok || (response.status >= 400 && response.status < 500)) {
           return response;
         }
+
+        // Retry on server errors (5xx)
         throw new Error(`Server error: ${response.status} ${response.statusText}`);
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error);
+      } catch (err) {
+        clearTimeout(timeoutId);
+        lastError = err instanceof Error ? err : new Error(String(err));
         if (attempt === this.retryAttempts) {
           console.error(`TensorRT request failed after ${attempt} attempts:`, lastError);
           break;
         }
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
         console.warn(`TensorRT request failed (attempt ${attempt}), retrying in ${delay}ms:`, lastError.message);
-        await new Promise(resolve => setTimeout(resolve, delay);
+        await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
+
     throw lastError || new Error('Request failed after all retry attempts');
   }
+
   async validateConnection(): Promise<{
     connected: boolean;
     latency?: number;
@@ -236,27 +255,29 @@ Provide a detailed, professional legal analysis:`;
       const latency = performance.now() - startTime;
       if (!health) {
         return {
-          connected: false
+          connected: false,
           latency,
           error: 'Health check failed'
-        }
+        };
       }
       return {
         connected: health.status === 'healthy',
         latency,
         modelLoaded: health.model_loaded,
         error: health.status !== 'healthy' ? `Status: ${health.status}` : undefined
-      }
+      };
     } catch (error) {
       const latency = performance.now() - startTime;
       return {
-        connected: false
+        connected: false,
         latency,
-        error: error instanceof Error ? error.message: 'Unknown error'
-      }
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
     }
   }
 }
+
 export const tensorRTClient = new TensorRTLegalClient(
-  process.env.TENSORRT_URL || 'http://localhost:8100'
+  // process.env may not exist in the browser; many build systems replace it at build time
+  (typeof process !== 'undefined' && (process.env as any)?.TENSORRT_URL) || 'http://localhost:8100'
 );

@@ -32,18 +32,18 @@ wait_for_service() {
     local attempt=0
 
     echo -e "${YELLOW}⏳ Waiting for $service_name to be ready...${NC}"
-    
+
     while [ $attempt -lt $max_attempts ]; do
         if curl -s -f "$url" >/dev/null 2>&1; then
             echo -e "${GREEN}✅ $service_name is ready!${NC}"
             return 0
         fi
-        
+
         attempt=$((attempt + 1))
         echo -e "${YELLOW}   Attempt $attempt/$max_attempts...${NC}"
         sleep 2
     done
-    
+
     echo -e "${RED}❌ $service_name failed to start within timeout${NC}"
     return 1
 }
@@ -90,7 +90,7 @@ docker-compose -f docker-compose.dev.yml down --remove-orphans 2>/dev/null || tr
 docker-compose -f docker-compose.dev.yml up -d postgres redis minio qdrant
 
 # Wait for databases to be ready
-wait_for_service "http://localhost:5433" "PostgreSQL" || {
+wait_for_service "http://localhost:5432" "PostgreSQL" || {
     echo -e "${RED}❌ PostgreSQL failed to start${NC}"
     exit 1
 }
@@ -206,7 +206,7 @@ echo -e "   🔧 Legal Gateway API: ${GREEN}http://localhost:8080${NC}"
 echo -e "   🤖 Enhanced RAG API: ${GREEN}http://localhost:8094${NC}"
 echo -e "   🖥️  GPU Orchestrator: ${GREEN}http://localhost:8095${NC}"
 echo -e "   🔄 MCP Multi-core: ${GREEN}http://localhost:3002${NC}"
-echo -e "   🗄️  PostgreSQL: ${GREEN}localhost:5433${NC}"
+echo -e "   🗄️  PostgreSQL: ${GREEN}localhost:5432${NC}"
 echo -e "   🔴 Redis: ${GREEN}localhost:6379${NC}"
 echo -e "   📦 MinIO: ${GREEN}http://localhost:9001${NC}"
 
@@ -254,20 +254,20 @@ check_process() {
 # Monitor loop
 while true; do
     sleep 30
-    
+
     # Check if any Go processes died
     if [ -f "tmp/pids.txt" ]; then
         while IFS= read -r line; do
             if [[ $line == *"PID:"* ]]; then
                 pid=$(echo "$line" | grep -o '[0-9]\+')
                 service=$(echo "$line" | cut -d' ' -f1-2)
-                
+
                 if ! check_process "$pid"; then
                     echo -e "${RED}⚠️ $service died (PID: $pid)${NC}"
                 fi
             fi
         done < "tmp/pids.txt"
     fi
-    
+
     # Optional: Add restart logic here
 done

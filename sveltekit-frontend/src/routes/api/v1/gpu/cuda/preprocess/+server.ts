@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const options = JSON.parse(formData.get('options') as string || '{}') as CudaPreprocessOptions
     if (!file) {
       return json({
-        success: false
+        success: false,
         error: 'No file provided'
       }, { status: 400 })
     }
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!workerAvailable.available) {
       console.warn('CUDA worker not available, falling back to CPU processing')
       return json({
-        success: false
+        success: false,
         error: `CUDA worker unavailable: ${workerAvailable.error}`,
         metadata: {
           originalSize: file.size,
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('CUDA preprocessing error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'CUDA processing failed',
       metadata: {
         originalSize: 0,
@@ -83,21 +83,21 @@ async function checkCudaWorkerAvailability(workerPath: string): Promise<any> {
       timeout: 5000
     })
     return {
-      available: true
+      available: true,
       version: stdout.trim() || stderr.trim()
     }
   } catch (error) {
     return {
-      available: false
+      available: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }
   }
 }
 async function processFileWithCuda(
-  file: File
-  options: CudaPreprocessOptions
-  workerPath: string
-  startTime: number
+  file: File,
+  options: CudaPreprocessOptions,
+  workerPath: string,
+  startTime: number,
 ): Promise<CudaProcessingResult> {
   const tempId = nanoid()
   const tempDir = join('..', 'temp', 'cuda-processing')
@@ -108,7 +108,7 @@ async function processFileWithCuda(
     // Ensure temp directory exists
     await execAsync(`mkdir -p "${tempDir}"`)
     // Write input file
-    const fileBuffer = Buffer.from(await file.arrayBuffer()
+    const fileBuffer = Buffer.from(await file.arrayBuffer())
     await writeFile(inputPath, fileBuffer)
     // Prepare CUDA worker command with Clang optimizations
     const cudaCommand = buildCudaCommand(workerPath, inputPath, outputPath, metadataPath, options)
@@ -136,8 +136,8 @@ async function processFileWithCuda(
     // Cleanup temp files
     await cleanupTempFiles(inputPath, outputPath, metadataPath)
     return {
-      success: true
-      processedFile: processedBuffer
+      success: true,
+      processedFile: processedBuffer,
       metadata: {
         originalSize: file.size,
         processedSize: processedBuffer.length,
@@ -154,7 +154,7 @@ async function processFileWithCuda(
     await cleanupTempFiles(inputPath, outputPath, metadataPath)
     const processingTime = Date.now() - startTime
     return {
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'CUDA processing failed',
       metadata: {
         originalSize: file.size,
@@ -168,18 +168,18 @@ async function processFileWithCuda(
   }
 }
 function buildCudaCommand(
-  workerPath: string
-  inputPath: string
-  outputPath: string
-  metadataPath: string
-  options: CudaPreprocessOptions
+  workerPath: string,
+  inputPath: string,
+  outputPath: string,
+  metadataPath: string,
+  options: CudaPreprocessOptions,
 ): string {
   const args = [
     `"${workerPath}"`,
     `--input="${inputPath}"`,
     `--output="${outputPath}"`,
     `--metadata="${metadataPath}"`,
-    `--gpu-arch="${options.targetGpuArch || 'sm_75'}"` // RTX 3060 Ti
+    `--gpu-arch="${options.targetGpuArch || 'sm_86'}"` // RTX 3060 Ti
   ]
   if (options.enableGpuOptimization) {
     args.push('--enable-gpu-optimizations')
@@ -193,7 +193,7 @@ function buildCudaCommand(
   }
   return args.join(' ')
 }
-function buildOptimizationsList(_options: CudaPreprocessOptions): string[] {
+function buildOptimizationsList(options: CudaPreprocessOptions): string[] {
   const optimizations: string[] = ['cuda-acceleration']
   if (options.useClangOptimizations) {
     optimizations.push('clang-llvm')
@@ -208,8 +208,8 @@ function buildOptimizationsList(_options: CudaPreprocessOptions): string[] {
 }
 async function cleanupTempFiles(...paths: string[]) {
   await Promise.allSettled(
-    paths.map(path => unlink(path).catch(() => {})
-  )
+    paths.map(path => unlink(path).catch(() => {}))
+  )s
 }
 // Health check endpoint
 export const GET: RequestHandler = async () => {
@@ -220,14 +220,14 @@ export const GET: RequestHandler = async () => {
       cudaWorkerAvailable: availability.available,
       cudaWorkerVersion: availability.version,
       cudaWorkerPath,
-      clangOptimizations: true
-      msvcCompatibility: true
+      clangOptimizations: true,
+      msvcCompatibility: true,
       supportedGpuArchs: ['sm_75', 'sm_86', 'sm_89'],
       error: availability.error
     })
   } catch (error) {
     return json({
-      cudaWorkerAvailable: false
+      cudaWorkerAvailable: false,
       error: error instanceof Error ? error.message: 'Health check failed'
     }, { status: 500 })
   }
