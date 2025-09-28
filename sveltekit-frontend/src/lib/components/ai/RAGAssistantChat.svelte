@@ -19,7 +19,7 @@
 	let chatContainer = $state<HTMLDivElement | null>(null);
 	let messageInput = $state<HTMLTextAreaElement | null>(null);
 	// Workflow state using $state
-	let workflowActive = $state(false);
+	let workflowActive = $state(f	.assistant-avatar { width: 48px; height: 48px; }.assistant-avatar { width: 48px; height: 48px; }lse);
 	let currentStep = $state(0);
 	let workflowData = $state({
 		what: '',
@@ -170,12 +170,13 @@
 						summary: 'Relevant fraud statutes and penalties',
 					},
 					...ragContext
-				],
-			},
+				];
+			}
 		}
-		isIngesting = false,
-		addMessage("✅ RAG analysis complete! I've found relevant legal precedents and statutes.", 'system'),
+		isIngesting = false;
+		addMessage("✅ RAG analysis complete! I've found relevant legal precedents and statutes.", 'system');
 	}
+
 	// Start prosecution workflow
 	async function startWorkflow() {
 		workflowActive = true;
@@ -482,9 +483,9 @@
 		animation: pulse 1.6s infinite;
 	}
 	@keyframes pulse {
-		0% { transform: scale(1), }
-		50% { transform: scale(1.02), }
-		100% { transform: scale(1), }
+		0% { transform: scale(1); }
+		50% { transform: scale(1.02); }
+		100% { transform: scale(1); }
 	}
 	.avatar-icon {
 		font-size: 22px;
@@ -525,7 +526,7 @@
 	}
 	.progress-header {
 		display: flex;
-		justify-content: space-betwee;
+		justify-content: space-between;
 		font-weight: 600;
 		font-size: 13px;
 		margin-bottom: 8px;
@@ -556,7 +557,7 @@
 	.context-item {
 		display: flex;
 		align-items: center;
-		justify-content: space-betwee;
+		justify-content: space-between;
 		padding: 8px;
 		border-radius: 8px;
 		background: linear-gradient(180deg, #ffffff, #fbfdff);
@@ -618,7 +619,7 @@
 	.message-system {
 		margin: 0 auto;
 		background: #fff7ed;
-		color: #92400;
+		color: #92400E;
 		border: 1px solid rgba(249,115,22,0.08);
 	}
 	.message-content {
@@ -655,9 +656,9 @@
 	.typing-dots span:nth-child(2) { animation-delay: 0.12s, }
 	.typing-dots span:nth-child(3) { animation-delay: 0.24s, }
 	@keyframes blink {
-		0% { transform: translateY(0); opacity: 0.35, }
-		50% { transform: translateY(-6px); opacity: 1, }
-		100% { transform: translateY(0); opacity: 0.35, }
+		0% { transform: translateY(0); opacity: 0.35; }
+		50% { transform: translateY(-6px); opacity: 1; }
+		100% { transform: translateY(0); opacity: 0.35; }
 	}
 	/* Workflow interface */
 	.workflow-interface {
@@ -698,7 +699,7 @@
 	.workflow-actions {
 		display: flex;
 		align-items: center;
-		justify-content: space-betwee;
+		justify-content: space-between;
 		gap: 12px;
 	}
 	.workflow-btn.primary {
@@ -772,6 +773,6 @@
 		.chat-container {
 			height: 260px;
 		}
-		.assistant-avatar { width: 48px; height: 48px, }
+		.assistant-avatar { width: 48px; height: 48px; }
 	}
 </style>

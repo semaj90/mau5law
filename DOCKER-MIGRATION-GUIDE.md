@@ -20,7 +20,7 @@ Now runs:
 
 #### **docker-compose.yml** includes:
 - **PostgreSQL 17 + pgvector**: Port 5433 (to avoid conflicts)
-- **MinIO S3**: Ports 9000 (API) + 9001 (Console) 
+- **MinIO S3**: Ports 9000 (API) + 9001 (Console)
 - **Redis**: Port 6379
 - **Qdrant** (optional): Ports 6333 + 6334
 
@@ -40,7 +40,7 @@ Now runs:
 ```
 24 tables including:
 ✓ ai_engine_status        ✓ gpu_inference_sessions
-✓ cases                   ✓ document_vectors  
+✓ cases                   ✓ document_vectors
 ✓ evidence_vectors        ✓ vector_embeddings
 ✓ rag_queries            ✓ recommendation_cache
 ✓ predictive_asset_cache ✓ qlora_training_jobs
@@ -63,7 +63,7 @@ Both scripts:
 ```bash
 # Docker Management
 npm run docker:up         # Start all Docker services
-npm run docker:down       # Stop all Docker services  
+npm run docker:down       # Stop all Docker services
 npm run docker:logs       # View container logs
 npm run docker:migrate    # Run full migration
 npm run docker:status     # Check container status
@@ -80,8 +80,8 @@ npm run docker:migrate
 
 ### Step 2: Verify Services
 After migration, services will be available at:
-- **PostgreSQL**: `localhost:5433` (legal_admin/123456)
-- **MinIO**: `http://localhost:9000` (minio/minio123) 
+- **PostgreSQL**: `localhost:5432` (legal_admin/123456)
+- **MinIO**: `http://localhost:9000` (minio/minio123)
 - **MinIO Console**: `http://localhost:9001`
 - **Redis**: `localhost:6379`
 - **Qdrant**: `http://localhost:6333`
@@ -89,7 +89,7 @@ After migration, services will be available at:
 ### Step 3: Update Application Config
 Use the provided `.env.docker` configuration:
 ```bash
-DATABASE_URL=postgresql://legal_admin:123456@localhost:5433/legal_ai_db
+DATABASE_URL=postgresql://legal_admin:123456@localhost:5432/legal_ai_db
 MINIO_ENDPOINT=localhost
 MINIO_PORT=9000
 REDIS_HOST=localhost
@@ -108,7 +108,7 @@ npm run dev:docker  # Run with Docker environment
 - Isolated services (no port conflicts)
 - Easy cleanup and reset
 
-### **Database Benefits** 
+### **Database Benefits**
 - **pgvector** extension pre-installed
 - Optimized HNSW indexes for vector operations
 - All 24 tables with full data preserved
@@ -134,7 +134,7 @@ docker-compose logs postgres
 docker-compose exec postgres psql -U legal_admin -d legal_ai_db -c "SELECT version();"
 ```
 
-### Vector Extension Issues  
+### Vector Extension Issues
 ```bash
 # Verify pgvector is installed
 docker-compose exec postgres psql -U legal_admin -d legal_ai_db -c "SELECT extname FROM pg_extension WHERE extname = 'vector';"

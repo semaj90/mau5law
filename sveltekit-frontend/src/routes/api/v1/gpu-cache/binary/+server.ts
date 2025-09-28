@@ -48,8 +48,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
     return new Response(encoded, {
       status: 200,
       headers: {
-        'content-type': contentType
-        'x-encoding-format': format
+        'content-type': contentType,
+        'x-encoding-format': format,
         'x-compression-ratio': metrics.compressionRatio.toString(),
         'x-encode-time': `${metrics.encodeTime.toFixed(2)}ms`
       }
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Store shader with binary optimization
     const entry = await binaryGPUShaderCache.storeShader({
       sourceCode,
-      compiledBinary: binaryData
+      compiledBinary: binaryData,
       metadata: metadata || {}
     })
     // Get workflow optimization recommendations
@@ -104,7 +104,8 @@ export const POST: RequestHandler = async ({ request }) => {
         await binaryGPUShaderCache.optimizeForLegalWorkflow(workflowType)
     }
     const response = {
-      success: true
+      success: true,
+      message: 'Shader stored successfully',
       cacheKey: entry.cacheKey,
       entry: {
         id: entry.id,
@@ -130,7 +131,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Binary shader cache POST error:', error)
     return json({ error: 'Failed to store shader' }, { status: 500 })
   }
-}
+
 // PUT /api/v1/gpu-cache/binary/batch
 export const PUT: RequestHandler = async ({ request }) => {
   try {
@@ -148,13 +149,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       workflowOptimization = await binaryGPUShaderCache.optimizeForLegalWorkflow(workflowType)
     }
     const response = {
-      success: true
+      success: true,
       processed: results.encodedShaders.length,
       totalCompressionRatio: results.totalCompressionRatio,
       totalEncodingTime: results.totalEncodingTime,
-      processingTime: processingTime
+      processingTime: processingTime,
       workflowOptimization,
-      shaders: results.encodedShaders.map((shader) => ({,
+      shaders: results.encodedShaders.map((shader) => ({
         cacheKey: shader.cacheKey,
         shaderType: shader.shaderType,
         encodingFormat: shader.encodingFormat,
@@ -193,9 +194,9 @@ export const PATCH: RequestHandler = async ({ url }) => {
       shaderModule: webgpuShader.shaderModule,
       binaryAssets: assets.map((buffer) => Array.from(new Uint8Array(buffer))),
       compressionSavings: webgpuShader.compressionSavings,
-      webgpuReady: true
+      webgpuReady: true,
       loadingInstructions: {
-        createShaderModule: true
+        createShaderModule: true,
         binaryData: webgpuShader.binaryAssets.length,
         estimatedLoadTime: `${(webgpuShader.compressionSavings / 1024 / 100).toFixed(1)}ms`, // rough estimate
       }
@@ -211,9 +212,9 @@ export const DELETE: RequestHandler = async () => {
     // Clear encoding performance metrics
     binaryEncoder.clearMetrics()
     return json({
-      success: true
+      success: true,
       message: 'Binary encoding metrics cleared',
-      timestamp: Date.now()
+      timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     console.error('Metrics clear error:', error)

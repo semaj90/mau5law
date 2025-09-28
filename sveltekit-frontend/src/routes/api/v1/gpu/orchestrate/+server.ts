@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 /*
  * GPU Orchestration API - Advanced Task Dispatch & Automation
  * Handles legal document analysis, autosolve, and GPU task routing
@@ -21,16 +22,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return handleClusterStatus()
       default:
         return json({ error: 'Invalid action' }, { status: 400 })
-    }
   } catch (error: any) {
     console.error('GPU orchestration error:', error)
-    return json({
+    return json(
+      {
         error: 'GPU orchestration failed',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },)
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }
+}
 }
 async function handleLegalAnalysis(data: any, config: any): Promise<any> {
   const { document, context, options } = data
@@ -38,7 +40,7 @@ async function handleLegalAnalysis(data: any, config: any): Promise<any> {
   const analysisConfig = {
     ...GEMMA3_LEGAL_CONFIG.generation,
     ...config,
-    useGPU: true
+    useGPU: true,
     useRAG: options?.includeRAG !== false,
     model: 'gemma3-legal'
   }
@@ -79,7 +81,7 @@ async function handleDocumentProcessing(data: any, config: any): Promise<any> {
         documentId: context?.documentId
       },
       config: {
-        useGPU: true
+        useGPU: true,
         useRAG: options?.enableRAG !== false,
         protocol: 'http'
       }
@@ -87,7 +89,7 @@ async function handleDocumentProcessing(data: any, config: any): Promise<any> {
     results.push(result)
   }
   return json({
-    success: true
+    success: true,
     results,
     processed: results.length,
     failed: results.filter((r) => !r.success).length,
@@ -98,7 +100,7 @@ async function handleAutosolve(data: any, config: any): Promise<any> {
   const { threshold, forceRun, includeClusterMetrics } = data
   // Trigger autosolve maintenance cycle
   const result = await mcpGPUOrchestrator.triggerAutosolve({
-    threshold: threshold || 5
+    threshold: threshold || 5,
     includeClusterMetrics: includeClusterMetrics !== false,
     forceRun: forceRun === true
   })
@@ -111,7 +113,7 @@ async function handleAutosolve(data: any, config: any): Promise<any> {
       metrics: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).metrics,
       recommendations: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).recommendations
     },
-    cluster: clusterStatus
+    cluster: clusterStatus,
     timestamp: new Date().toISOString()
   })
 }
@@ -119,12 +121,12 @@ async function handleGPUTask(data: any, config: any): Promise<any> {
   const { taskType, taskData, priority, context } = data
   const result = await mcpGPUOrchestrator.dispatchGPUTask({
     id: `gpu_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    type: taskType
+    type: taskType,
     priority: priority || 'medium',
-    data: taskData
+    data: taskData,
     context,
     config: {
-      useGPU: true
+      useGPU: true,
       ...config
     }
   })
@@ -141,12 +143,10 @@ async function handleGPUTask(data: any, config: any): Promise<any> {
 async function handleClusterStatus(): Promise<any> {
   const clusterStatus = await mcpGPUOrchestrator.getClusterStatus()
   return json({
-    cluster: clusterStatus
+    cluster: clusterStatus,
     timestamp: new Date().toISOString()
   })
-}
-// Helper functions for legal processing
-function extractLegalEntities(_document: string) {
+function extractLegalEntities(doc: string) {
   const entities = {
     parties: [],
     dates: [],
@@ -181,10 +181,12 @@ function extractLegalEntities(_document: string) {
     RegExp[]
   ][]) {
     for (const pattern of categoryPatterns) {
-      const matches = document.match(pattern) || []
+      const matches = (doc.match(pattern) || [])
       (entities[category as keyof typeof entities] as string[]).push(...matches)
     }
   }
+  return entities
+}
   return entities
 }
 async function performRiskAssessment(analysisResult: any): Promise<any> {
@@ -214,11 +216,11 @@ async function performRiskAssessment(analysisResult: any): Promise<any> {
   }
   // Calculate overall risk
   risks.overall = Math.round(
-    (risks.financial + risks.legal + risks.operational + risks.reputational) / 4
-  )
   return {
-    scores: risks
+    scores: risks,
     level: risks.overall >= 7 ? 'high' : risks.overall >= 4 ? 'medium' : 'low',
+    recommendations: generateRiskRecommendations(risks)
+  }
     recommendations: generateRiskRecommendations(risks)
   }
 }
@@ -253,17 +255,17 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       service: 'gpu-orchestrator',
-      cluster: clusterStatus
-      timestamp: new Date().toISOString()
-    })
+      cluster: clusterStatus,
   } catch (error: any) {
-    return json()
+    return json(
       {
         status: 'unhealthy',
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
     )
+  }
+}   )
   }
 }

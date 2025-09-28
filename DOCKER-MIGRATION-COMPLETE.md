@@ -8,8 +8,8 @@ Your PostgreSQL + pgvector database and all related services have been successfu
 
 ## 📊 **Services Successfully Migrated**
 
-### ✅ **PostgreSQL 17 + pgvector** 
-- **Port**: `localhost:5433`
+### ✅ **PostgreSQL 17 + pgvector**
+- **Port**: `localhost:5432`
 - **Status**: ✅ Healthy
 - **Features**: All 24 tables migrated, vector extension active
 - **Test**: `PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db`
@@ -23,9 +23,9 @@ Your PostgreSQL + pgvector database and all related services have been successfu
 - **JSON Test**: RedisJSON working perfectly ✅
 
 ### ✅ **RabbitMQ 3 + Management**
-- **AMQP Port**: `localhost:5672` 
+- **AMQP Port**: `localhost:5672`
 - **Management**: `http://localhost:15672` (legal_admin/123456)
-- **Status**: ✅ Healthy 
+- **Status**: ✅ Healthy
 - **Test**: `npm run rabbitmq:docker` → "RabbitMQ"
 
 ### ✅ **MinIO S3 Storage**
@@ -46,7 +46,7 @@ Your PostgreSQL + pgvector database and all related services have been successfu
 ### **Docker Management**
 ```bash
 npm run docker:up         # Start all services
-npm run docker:down       # Stop all services  
+npm run docker:down       # Stop all services
 npm run docker:status     # Check container status
 npm run docker:logs       # View container logs
 npm run docker:migrate    # Full migration with backup
@@ -78,7 +78,7 @@ npm run dev:docker        # Run with Docker environment
 - **Persistence**: AOF + RDB snapshots
 - **JSON Operations**: Native JSON document storage & querying
 
-### **Database Improvements**  
+### **Database Improvements**
 - **pgvector**: Latest version with optimized HNSW indexes
 - **All Vector Tables**: Preserved with optimizations
 - **Performance**: Improved query performance for 768-dim embeddings
@@ -93,10 +93,10 @@ npm run dev:docker        # Run with Docker environment
 ## 🛠 **Current Environment Status**
 
 ### **✅ WORKING SERVICES**
-- **SvelteKit Frontend**: `http://localhost:5177` 
+- **SvelteKit Frontend**: `http://localhost:5177`
 - **CUDA Service**: `http://localhost:8096/api/v1/health` (RTX 3060 Ti)
-- **PostgreSQL**: `localhost:5433` (Docker)
-- **Redis Stack**: `localhost:6379` (Docker) 
+- **PostgreSQL**: `localhost:5432` (Docker)
+- **Redis Stack**: `localhost:6379` (Docker)
 - **RabbitMQ**: `localhost:5672` (Docker)
 - **MinIO**: `localhost:9000` (Docker)
 - **Qdrant**: `localhost:6333` (Docker)
@@ -114,7 +114,7 @@ npm run dev:docker        # Run with Docker environment
 ### **1. Update Application Config**
 Use the provided `.env.docker` configuration:
 ```env
-DATABASE_URL=postgresql://legal_admin:123456@localhost:5433/legal_ai_db
+DATABASE_URL=postgresql://legal_admin:123456@localhost:5432/legal_ai_db
 REDIS_URL=redis://localhost:6379
 RABBITMQ_URL=amqp://legal_admin:123456@localhost:5672
 MINIO_ENDPOINT=localhost:9000
@@ -134,7 +134,7 @@ PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -c "SE
 
 ### **4. Management Interfaces**
 - **RabbitMQ**: http://localhost:15672 (legal_admin/123456)
-- **Redis**: http://localhost:8001 (RedisInsight)  
+- **Redis**: http://localhost:8001 (RedisInsight)
 - **MinIO**: http://localhost:9001 (minio/minio123)
 - **Qdrant**: http://localhost:6333
 
@@ -164,7 +164,7 @@ npm run docker:status  # Check all container status
 
 | Component | Before | After | Status |
 |-----------|---------|-------|---------|
-| PostgreSQL | Local 5432 | Docker 5433 | ✅ Migrated |  
+| PostgreSQL | Local 5432 | Docker 5433 | ✅ Migrated |
 | Redis | Missing | Docker 6379 (Stack) | ✅ Enhanced |
 | RabbitMQ | Windows Service | Docker 5672 | ✅ Migrated |
 | MinIO | Missing | Docker 9000 | ✅ Added |
@@ -178,7 +178,7 @@ npm run docker:status  # Check all container status
 Your Legal AI platform is now running on a modern, containerized infrastructure:
 
 - ✅ **PostgreSQL 17** with all your data preserved
-- ✅ **Redis Stack** with JSON & advanced modules  
+- ✅ **Redis Stack** with JSON & advanced modules
 - ✅ **RabbitMQ** for message queuing
 - ✅ **MinIO** for document storage
 - ✅ **Qdrant** for advanced vector operations

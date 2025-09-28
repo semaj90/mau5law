@@ -137,7 +137,7 @@ echo    🔧 Legal Gateway API: http://localhost:8080
 echo    🤖 Enhanced RAG API: http://localhost:8094
 echo    🖥️  GPU Orchestrator: http://localhost:8095
 echo    🔄 MCP Multi-core: http://localhost:3002
-echo    🗄️  PostgreSQL: localhost:5433
+echo    🗄️  PostgreSQL: localhost:5432
 echo    🔴 Redis: localhost:6379
 echo    📦 MinIO: http://localhost:9001
 echo.

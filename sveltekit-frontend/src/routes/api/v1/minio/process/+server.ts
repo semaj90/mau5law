@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.log(`📤 Uploading ${file.name} to bucket: ${bucket}`)
     const uploadResult = await minioService.uploadFile(file, file.name, {
       bucket,
-      caseId: caseId ? parseInt(caseId) : undefined
+      caseId: caseId ? parseInt(caseId) : undefined,
       uploadedBy: userId ? parseInt(userId) : undefined
     })
     if (!uploadResult.success) {
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
     const totalProcessingTime = Date.now() - startTime
     return new Response(JSON.stringify({
-      success: true
+      success: true,
       upload: {
         fileId: uploadResult.fileId,
         fileName: uploadResult.fileName,
@@ -100,10 +100,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         url: uploadResult.url,
         contentType: file.type
       },
-      ai: enableAI ? aiAnalysis : null
+      ai: enableAI ? aiAnalysis : null,
       processing: {
-        totalTime: totalProcessingTime
-        enabledAI: enableAI
+        totalTime: totalProcessingTime,
+        enabledAI: enableAI,
         textExtracted: !!textContent
       },
       timestamp: new Date().toISOString()
@@ -156,8 +156,8 @@ export const GET: RequestHandler = async ({ url }) => {
       fileId,
       bucket,
       status: fileExists ? 'completed' : 'not_found',
-      exists: fileExists
-      file: fileExists ? files[0] : null
+      exists: fileExists,
+      file: fileExists ? files[0] : null,
       timestamp: new Date().toISOString()
     }), {
       status: 200,
@@ -194,8 +194,8 @@ function extractKeyTerms(content: string): string[] {
     'contract', 'agreement', 'evidence', 'witness', 'defendant', 'plaintiff',
     'jurisdiction', 'precedent', 'statute', 'liability', 'damages', 'testimony'
   ]
-  const foundTerms = legalTerms.filter(item => item.includes(term.toLowerCase())
-  return foundTerms.slice(0, 10); // Limit to top 10 terms
+  const foundTerms = legalTerms.filter(term => content.toLowerCase().includes(term))
+  return foundTerms.slice(0, 10) // Limit to top 10 terms
 }
 function assessComplexity(content: string): 'low' | 'medium' | 'high' {
   const wordCount = content.split(/\s+/).length
@@ -205,7 +205,7 @@ function assessComplexity(content: string): 'low' | 'medium' | 'high' {
 }
 function assessRiskLevel(content: string): 'low' | 'medium' | 'high' | 'critical' {
   const riskKeywords = ['criminal', 'felony', 'urgent', 'emergency', 'critical']
-  const foundRiskTerms = riskKeywords.filter(item => item.includes(term.toLowerCase())
+  const foundRiskTerms = riskKeywords.filter(k => content.toLowerCase().includes(k))
   if (foundRiskTerms.length >= 2) return 'critical'
   if (foundRiskTerms.length >= 1) return 'high'
   if (content.split(/\s+/).length > 1000) return 'medium'
@@ -213,7 +213,8 @@ function assessRiskLevel(content: string): 'low' | 'medium' | 'high' | 'critical
 }
 function generateSummary(content: string): string {
   // Basic summary generation - first few sentences
-  const sentences = content.split(/[.!?]+/).filter(item => item.length) > 0)
+  const sentences = content.split(/[.!?]+/).map(s => s.trim()).filter(item => item.length > 0)
   const summary = sentences.slice(0, 3).join('. ')
-  return summary.substring(0, 200) + (summary.length > 200 ? '...' : '')
+  return summary.length > 200 ? summary.substring(0, 200) + '...' : summary
+}
 }

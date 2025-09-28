@@ -258,7 +258,7 @@ REDIS_URL=redis://localhost:6379
 REDIS_PASSWORD=redis
 
 # Database
-DATABASE_URL=postgresql://legal_admin:123456@localhost:5433/legal_ai_db
+DATABASE_URL=postgresql://legal_admin:123456@localhost:5432/legal_ai_db
 
 # QUIC Server
 QUIC_PORT=4433
@@ -297,7 +297,7 @@ cd webgpu-redis-starter-repo/server/fastapi && python -m uvicorn main:app --port
 
 ### Startup Sequence:
 1. Redis Server (port 6379)
-2. PostgreSQL (port 5433)
+2. PostgreSQL (port 5432)
 3. Ollama Service (port 11434)
 4. FastAPI Tensor Service (port 8000)
 5. Go GPU Inference Server (port 8097)
@@ -333,7 +333,7 @@ cd webgpu-redis-starter-repo/server/fastapi && python -m uvicorn main:app --port
 ├─────────────────────────────────────────────────────────┤
 │ SvelteKit (5173) │ QUIC Auth (4433) │ GPU Server (8097) │
 ├─────────────────────────────────────────────────────────┤
-│ FastAPI (8000)   │ Redis (6379)     │ PostgreSQL (5433) │
+│ FastAPI (8000)   │ Redis (6379)     │ PostgreSQL (5432) │
 ├─────────────────────────────────────────────────────────┤
 │ Ollama (11434)   │ MinIO (9000)     │ Monitoring        │
 └─────────────────────────────────────────────────────────┘

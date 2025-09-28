@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
     // Process vertex buffers if provided
     if (options.vertexBuffers) {
-      options.vertexBuffers = options.vertexBuffers.map((vb: number[]) => new Float32Array(vb)
+      options.vertexBuffers = options.vertexBuffers.map((vb: number[]) => new Float32Array(vb))
     }
     // Process embedding if provided
     if (options.embedding) {
@@ -68,10 +68,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           sourceCode: shaderData.sourceCode || JSON.stringify(data),
           compiledBinary: shaderData.compiledBinary || new ArrayBuffer(1024),
           metadata: {
-            cacheKey: key
+            cacheKey: key,
             workflowType,
-            originalData: typeof data === 'object' ? JSON.stringify(data).substring(0, 200) : data
-            timestamp: Date.now()
+            originalData: typeof data === 'object' ? JSON.stringify(data).substring(0, 200) : data,
+            timestamp: Date.now(),
           }
         })
         // Get workflow optimization
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Cache as YoRHa component if applicable
         if (options.isYoRHaComponent) {
           await nesCacheOrchestrator.cacheYoRHaComponent({
-            name: key;
+            name: key,
             props: (data as { props?: any; styles?: any; animations?: any; embedding?: any }).props || {},
             styles: (data as { props?: any; styles?: any; animations?: any; embedding?: any }).styles || {},
             animations: (data as { props?: any; styles?: any; animations?: any; embedding?: any }).animations || [],
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Cache as GPU animation if applicable
         else if (options.isAnimation && shaderData) {
           await nesCacheOrchestrator.cacheGPUAnimation({
-            id: key
+            id: key,
             type: options.animationType || 'legal-ui',
             shaderCode: shaderData.sourceCode,
             uniforms: shaderData.uniforms || {},
@@ -112,12 +112,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           })
         }
         nesIntegration = {
-          cached: true
+          cached: true,
           memoryStats: nesCacheOrchestrator.getMemoryStats()
         }
       } catch (error: any) {
         nesIntegration = {
-          cached: false
+          cached: false,
           error: error instanceof Error ? error.message: 'NES cache failed'
         }
       }
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // WebGPU RAG service integration
     if (enableWebGPU) {
       try {
-        const webgpuResult = await webgpuRAGService.processQuery(`cache-store:${key}`, [)
+        const webgpuResult = await webgpuRAGService.processQuery(`cache-store:${key}`, [
           { data, options, metadata: result }
         ])
         webgpuIntegration = {
@@ -135,23 +135,27 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
       } catch (error: any) {
         webgpuIntegration = {
-          processed: false
-          error: error instanceof Error ? error.message: 'WebGPU failed'
+          processed: false,
+          error: error instanceof Error ? error.message : 'WebGPU failed'
         }
       }
     }
     // Convert Float32Arrays back to regular arrays for JSON response
     const response = {
-      success: true;
+      success: true,
       entry: {
         ...result,
-        vertexBuffers: (result as { vertexBuffers?: any; embedding?: any }).vertexBuffers?.map((vb) => Array.from(vb)),
-        embedding: (result as { vertexBuffers?: any; embedding?: any }).embedding ? Array.from((result as { vertexBuffers?: any; embedding?: any }).embedding) : undefined
+        vertexBuffers: (result as { vertexBuffers?: any; embedding?: any }).vertexBuffers?.map(
+          (vb: Float32Array) => Array.from(vb)
+        ),
+        embedding: (result as { vertexBuffers?: any; embedding?: any }).embedding
+          ? Array.from((result as { vertexBuffers?: any; embedding?: any }).embedding)
+          : undefined
       },
       integrations: {
         binaryOptimization,
-        nesCache: nesIntegration
-        webgpu: webgpuIntegration
+        nesCache: nesIntegration,
+        webgpu: webgpuIntegration,
         shaderCache: shaderCacheResult
           ? {
               id: shaderCacheResult.id,
@@ -181,10 +185,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(response)
   } catch (error: any) {
     console.error('Enhanced GPU Cache store error:', error)
-    return json()
+    return json(
       {
         error: 'Failed to store in enhanced GPU cache',
-        details: dev ? (error instanceof Error ? error.message: error) : undefined
+        details: dev ? (error instanceof Error ? error.message : error) : undefined
       },
       { status: 500 }
     )
@@ -218,9 +222,9 @@ export const GET: RequestHandler = async ({ url }) => {
       embedding: (result as { vertexBuffers?: any; embedding?: any }).embedding ? Array.from((result as { vertexBuffers?: any; embedding?: any }).embedding) : undefined
     }
     return json({
-      success: true
-      entry: response
-      cacheHit: true
+      success: true,
+      entry: response,
+      cacheHit: true,
       timestamp: Date.now()
     })
   } catch (error: any) {
@@ -255,8 +259,8 @@ export const PATCH: RequestHandler = async ({ request }) => {
       embedding: (result as { vertexBuffers?: any; embedding?: any }).embedding ? Array.from((result as { vertexBuffers?: any; embedding?: any }).embedding) : undefined
     }
     return json({
-      success: true
-      analysis: response
+      success: true,
+      analysis: response,
       timestamp: Date.now()
     })
   } catch (error: any) {
@@ -318,8 +322,8 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
-      synchronization: syncResults
+      success: true,
+      synchronization: syncResults,
       timestamp: Date.now()
     })
   } catch (error: any) {
@@ -345,11 +349,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
           return json({ error: 'Shader not found' }, { status: 404 })
         }
         return json({
-          success: true
+          success: true,
           shader: {
             key: shader.key,
             sourceCode: shader.sourceCode,
-            compiledBinary: shader.compiledBinary ? Array.from(shader.compiledBinary) : undefined
+            compiledBinary: shader.compiledBinary ? Array.from(shader.compiledBinary) : undefined,
             metadata: {
               ...shader.metadata,
               embedding: Array.from(shader.metadata.embedding)
@@ -357,15 +361,15 @@ export const DELETE: RequestHandler = async ({ request }) => {
             dependencies: shader.dependencies,
             minioPath: shader.minioPath
           },
-          fromCache: true
+          fromCache: true,
           timestamp: Date.now()
         })
       }
       case 'search': {
         const results = await gpuShaderCacheOrchestrator.multiDimensionalSearch(query)
         return json({
-          success: true
-          shaders: results.map((shader: any) => ({,
+          success: true,
+          shaders: results.map((shader: any) => ({
             key: shader.key,
             sourceCode: shader.sourceCode,
             metadata: {
@@ -381,7 +385,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
         if (context) {
           await gpuShaderCacheOrchestrator.analyzeAndPreload(context)
           return json({
-            success: true
+            success: true,
             message: 'Predictive preloading triggered',
             timestamp: Date.now()
           })
@@ -391,7 +395,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       case 'clear': {
         await gpuShaderCacheOrchestrator.clearCache(shaderKey)
         return json({
-          success: true
+          success: true,
           message: shaderKey ? `Cleared shader ${shaderKey}` : 'Cleared all shaders',
           timestamp: Date.now()
         })
@@ -442,7 +446,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         gpuMemoryUsageMB: Math.round(shaderMetrics.gpuMemoryUsage / (1024 * 1024))
       },
       reinforcement: {
-        enabled: true
+        enabled: true,
         cacheAccuracy: metrics.reinforcementAccuracy
       }
     }
@@ -461,8 +465,8 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
       }
     }
     return json({
-      success: true
-      metrics: response
+      success: true,
+      metrics: response,
       timestamp: Date.now()
     })
   } catch (error: any) {
@@ -488,7 +492,7 @@ export const HEAD: RequestHandler = async ({ url }) => {
     // Simulate user history retrieval
     const history = await simulateGetUserHistory(userId, limit, includeAnalytics)
     return json({
-      success: true
+      success: true,
       userId,
       history,
       count: history.length,
@@ -526,7 +530,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         return json({ error: 'Invalid operation. Use "store" or "retrieve"' }, { status: 400 })
     }
     return json({
-      success: true
+      success: true,
       operation,
       results,
       timestamp: Date.now()
@@ -544,23 +548,23 @@ export const PUT: RequestHandler = async ({ request }) => {
 // === Helper Functions ===
 async function simulatePostgreSQLSync(): Promise<void> {
   console.log('📊 Syncing embeddings with PostgreSQL + pgvector')
-  await new Promise((resolve) => setTimeout(resolve, 500)
+  await new Promise((resolve) => setTimeout(resolve, 500))
 }
 async function simulateQdrantSync(): Promise<void> {
   console.log('🏷️ Syncing tags with Qdrant')
-  await new Promise((resolve) => setTimeout(resolve, 300)
+  await new Promise((resolve) => setTimeout(resolve, 300))
 }
 async function simulateNeo4jSync(): Promise<void> {
   console.log('🕸️ Syncing graph relationships with Neo4j')
-  await new Promise((resolve) => setTimeout(resolve, 400)
+  await new Promise((resolve) => setTimeout(resolve, 400))
 }
 async function simulateIndexedDBSync(): Promise<void> {
   console.log('💾 Syncing client cache with IndexedDB')
-  await new Promise((resolve) => setTimeout(resolve, 200)
+  await new Promise((resolve) => setTimeout(resolve, 200))
 }
 async function simulateGetUserHistory(
-  userId: string;
-  limit: number
+  userId: string,
+  limit: number,
   includeAnalytics: boolean
 ): Promise<any> {
   const history = []

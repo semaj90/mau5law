@@ -1,72 +1,32 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+  import type { Snippet } from 'svelte';
   interface Props {
-    variant?: 'primary' | 'success' | 'warning' | 'error' | 'default';
-    size?: 'small' | 'normal' | 'large';
+    label?: string;
+    variant?: 'primary' | 'success' | 'warning' | 'error' | 'info' | 'disabled';
+    type?: 'primary' | 'success' | 'warning' | 'error';
     disabled?: boolean;
-    loading?: boolean;
-    type?: 'button' | 'submit' | 'reset';
-    class?: string;
-    onclick?: (e: MouseEvent) => void;
+    onclick?: () => void;
+    onClick?: () => void;
+    children?: Snippet;
   }
   let {
-    variant = 'default',
-    size = 'normal',
+    label = 'Click Me',
+    variant = 'primary',
+    type = 'primary',
     disabled = false,
-    loading = false,
-    type = 'button',
-    class: className = '',
-    onclick,
-    ...restProp;
+    onclick = () => {},
+    onClick = () => {},
+    children,
   }: Props = $props();
-  let variantClass = $derived({
-    primary: 'is-primary',
-    success: 'is-success',
-    warning: 'is-warning',
-    error: 'is-error',
-    default: '';
-  }[variant]);
-  let sizeClass = $derived({
-    small: 'is-small',
-    normal: '',
-    large: 'is-large';
-  }[size]);
-  let finalClass = $derived([
-    'nes-btn',
-    variantClass,
-    sizeClass,
-    loading && 'is-disabled',
-    className
-  ].filter(Boolean).join(' '));
-  function handleClick(e: MouseEvent) {
-    if (disabled || loading) {
-      e.preventDefault();
-      return;
-    }
-    ondispatch?.(e);
-    onclick?.(e);
-  }
+  // Support both variant and type for backward compatibility
+  const buttonType = variant || type;
+  const handleClick = onclick || onClick;
 </script>
 
-<button {type} {disabled} class={finalClass} onclick={handleClick} {...restProps}>
-  {#if loading}
-    <span class="loading-dots">...</span>
+<button class={`nes-btn is-${buttonType}`} onclick={handleClick} {disabled}>
+  {#if children}
+    {@render children()}
   {:else}
-    {@render children?.()}
+    {label}
   {/if}
 </button>
-
-<style>
-  .loading-dots {
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse {
-0%, {}
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-  }
-</style>

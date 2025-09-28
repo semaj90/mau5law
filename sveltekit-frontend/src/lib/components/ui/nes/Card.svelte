@@ -1,39 +1,32 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+  import type { Snippet } from 'svelte';
   interface Props {
     title?: string;
-    dark?: boolean;
-    rounded?: boolean;
-    centered?: boolean;
-    class?: string;
+    subtitle?: string;
+    footer?: string;
+    content?: string;
+    children?: Snippet;
   }
   let {
-    title = '',
-    dark = false,
-    rounded = false,
-    centered = false,
-    class: className = '',
-    ...restProp;
+    title = 'Card Title',
+    subtitle,
+    footer,
+    content = 'This is a NES.css styled card component.',
+    children,
   }: Props = $props();
-  let containerClass = $derived([
-    'nes-container',
-    title && 'with-title',
-    dark && 'is-dark',
-    rounded && 'is-rounded',
-    centered && 'is-centered',
-    className
-  ].filter(Boolean).join(' '));
 </script>
 
-<div class={containerClass} {...restProps}>
-  {#if title}
-    <p class="title">{title}</p>
+<section class="nes-container with-title is-dark">
+  <h3 class="title">{title}</h3>
+  {#if subtitle}
+    <p class="subtitle">{subtitle}</p>
   {/if}
-  {@render children?.()}
-</div>
-
-<style>/* Additional card styling if needed */ {}
-  .nes-container {
-    margin-bottom: 1rem;
-  }
-</style>
+  {#if children}
+    {@render children()}
+  {:else}
+    <p>{content}</p>
+  {/if}
+  {#if footer}
+    <div class="footer">{footer}</div>
+  {/if}
+</section>

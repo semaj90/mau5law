@@ -1,8 +1,7 @@
 /**
  * Embedding Configuration for Legal AI
  * Defines embedding models with Gemma embeddings and nomic-embed-text fallback
- */;
-}
+ */
 export interface EmbeddingModelConfig {
   id: string;
   name: string;
@@ -24,9 +23,9 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     dimensions: 768,
     maxTokens: 2048,
     latency: 100,
-    accuracy: 0.90,
-    specialized: true
-    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding']
+    accuracy: 0.9,
+    specialized: true,
+    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding'],
   },
   'embeddinggemma:latest': {
     id: 'embeddinggemma:latest',
@@ -36,8 +35,8 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 2048,
     latency: 95,
     accuracy: 0.91,
-    specialized: true
-    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding']
+    specialized: true,
+    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding'],
   },
   // Fallback: nomic-embed-text (reliable backup)
   'nomic-embed-text': {
@@ -48,8 +47,8 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 2048,
     latency: 120,
     accuracy: 0.85,
-    specialized: false
-    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text']
+    specialized: false,
+    capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text'],
   },
   // Specialized legal embedding
   'legal-bert-embeddings': {
@@ -59,11 +58,11 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     dimensions: 768,
     maxTokens: 512,
     latency: 50,
-    accuracy: 0.90,
-    specialized: true;
-    capabilities: ['legal-text', 'case-law', 'legal-entity-extraction']
-  }
-}
+    accuracy: 0.9,
+    specialized: true,
+    capabilities: ['legal-text', 'case-law', 'legal-entity-extraction'],
+  },
+};
 export const EMBEDDING_FALLBACK_CHAINS = {
   'legal-general': [
     'embeddinggemma:latest',
@@ -84,17 +83,18 @@ export const EMBEDDING_FALLBACK_CHAINS = {
 }
 export function getOptimalEmbeddingModel(
   taskType: 'legal-general' | 'legal-fast' | 'general' = 'legal-general',
-  availableModels: string[] = [];
+  availableModels: string[] = []
 ): string[] {
   const chain = EMBEDDING_FALLBACK_CHAINS[taskType];
   if (availableModels.length === 0) {
     return chain;
   }
   // Filter to only available models
-  const availableChain = chain.filter(modelId => availableModels.includes(modelId);
+  const availableChain = chain.filter(modelId => availableModels.includes(modelId));
   // If no models from the chain are available, return the full chain
   return availableChain.length > 0 ? availableChain : chain;
 }
+
 export function getEmbeddingModelConfig(modelId: string): EmbeddingModelConfig | null {
   return EMBEDDING_MODELS[modelId] || null;
 }

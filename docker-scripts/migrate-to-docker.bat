@@ -83,7 +83,7 @@ if errorlevel 1 (
 
 echo.
 echo 📋 Docker migration complete! Services are now running on:
-echo   PostgreSQL: localhost:5433 (legal_admin/123456)
+echo   PostgreSQL: localhost:5432 (legal_admin/123456)
 echo   MinIO: http://localhost:9000 (minio/minio123)
 echo   MinIO Console: http://localhost:9001
 echo   Redis: localhost:6379

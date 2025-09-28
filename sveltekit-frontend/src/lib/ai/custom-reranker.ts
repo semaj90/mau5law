@@ -1,27 +1,66 @@
-
 // Custom Reranker for Legal AI - Replaces basic top-K ANN with intelligent scoring
 // Integrates with our existing Qdrant + PGVector setup
-}
 export interface RerankResult {
   id: string;
-  content: string;
-  metadata: Record<string, unknown>;
-  originalScore: number;
-  rerankScore: number;
+  content?: string;
+  payload?: ResultPayload;
+  metadata?: RerankMetadata;
+  originalScore?: number;
+  score?: number;
+  rerankScore?: number;
   intent?: string;
   timeOfDay?: string;
   position?: string;
-  confidence: number;
+  confidence?: number; // 0-100
 }
 export interface UserContext {
-  intent: "search" | "analyze" | "review" | "create" | "navigate";
-  timeOfDay: "morning" | "afternoon" | "evening" | "night";
+  intent: 'search' | 'analyze' | 'review' | 'create' | 'navigate';
+  timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night';
   focusedElement?: string;
   currentCase?: string;
   recentActions: string[];
-  userRole: "prosecutor" | "detective" | "admin" | "user";
-  workflowState: "draft" | "review" | "approved" | "archived";
+  userRole: 'prosecutor' | 'detective' | 'admin' | 'user';
+  workflowState: 'draft' | 'review' | 'approved' | 'archived';
 }
+
+// Specific types to replace broad `any` usages in reranking logic
+export interface RerankMetadata {
+  type?: string;
+  actionType?: string;
+  lastAction?: string;
+  embedding?: number[];
+  neo4jPath?: number;
+  relatedCases?: string[];
+  userFrequency?: number;
+}
+
+export interface ResultPayload {
+  text?: string;
+  tags?: string[];
+  caseId?: string;
+  nodeId?: string;
+}
+
+export type ResultLike = {
+  id: string;
+  payload?: ResultPayload;
+  score?: number;
+  content?: string;
+  metadata?: RerankMetadata;
+  confidence?: number;
+  originalScore?: number;
+};
+
+export interface SynthesisResult {
+  fixes: string[];
+  codeReview: string;
+  analysis: string;
+  summary: string;
+  nextSteps: string[];
+  generativeAutocomplete: string;
+  selfPrompt: string;
+}
+
 export class LegalAIReranker {
   private contextWeights = {
     intent: 2.0,
@@ -30,125 +69,128 @@ export class LegalAIReranker {
     role: 1.8,
     workflow: 1.2,
     recency: 0.8,
-    confidence: 1.5
-  }
+    confidence: 1.5,
+  };
   /**
    * Advanced reranking with legal context awareness
    */
   async rerank(
-    annResults: RerankResult[]
-    userContext: UserContext
+    annResults: RerankResult[],
+    userContext: UserContext,
     queryEmbedding?: number[]
   ): Promise<RerankResult[]> {
-    return annResults;
-      .map((result) => {
-        let score = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).originalScore;
+    // Score each result, possibly using semantic similarity (async)
+    const scored = await Promise.all(
+      annResults.map(async result => {
+        let base = result.originalScore ?? result.score ?? 0;
+
         // Intent matching (critical for legal workflows)
-        if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).intent === userContext.intent) {
-          score += this.contextWeights.intent;
-        }
+        if (result.intent === userContext.intent) base += this.contextWeights.intent;
+
         // Time-based relevance (court schedules, deadlines)
-        if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).timeOfDay === userContext.timeOfDay) {
-          score += this.contextWeights.timeOfDay;
-        }
+        if (result.timeOfDay === userContext.timeOfDay) base += this.contextWeights.timeOfDay;
+
         // UI position context (focused evidence, active case)
-        if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).position === userContext.focusedElement) {
-          score += this.contextWeights.position;
-        }
+        if (result.position === userContext.focusedElement) base += this.contextWeights.position;
+
         // Role-based scoring (prosecutor vs detective needs)
-        score += this.calculateRoleScore(result, userContext.userRole);
+        base += this.calculateRoleScore(result, userContext.userRole);
+
         // Workflow state relevance
-        score += this.calculateWorkflowScore(result, userContext.workflowState);
+        base += this.calculateWorkflowScore(result, userContext.workflowState);
+
         // Recency boost for legal case updates
-        score += this.calculateRecencyScore(result, userContext.recentActions);
-        // Confidence penalty for low-confidence AI results
-        score *= (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).confidence / 100;
+        base += this.calculateRecencyScore(result, userContext.recentActions);
+
+        // Semantic similarity boost
+        if (queryEmbedding) {
+          base += await this.calculateSemanticBoost(result, queryEmbedding);
+        }
+
+        // Confidence penalty (default to 100 if absent)
+        const conf = result.confidence ?? 100;
+        const finalScore = conf ? base * (conf / 100) : base;
+
         return {
           ...result,
-          rerankScore: score
-        }
+          rerankScore: finalScore,
+        } as RerankResult;
       })
-      .sort((a, b) => b.rerankScore - a.rerankScore);
+    );
+
+    return scored.sort((a, b) => (b.rerankScore ?? 0) - (a.rerankScore ?? 0));
   }
   /**
    * Role-specific scoring for legal professionals
-   */;
+   */
   private calculateRoleScore(result: RerankResult, role: string): number {
     const roleBoosts = {
       prosecutor: {
-        "evidence-analysis": 2.0,
-        "case-precedent": 1.8,
-        "witness-testimony": 1.5
+        'evidence-analysis': 2.0,
+        'case-precedent': 1.8,
+        'witness-testimony': 1.5,
       },
       detective: {
-        "forensic-data": 2.0,
-        "timeline-analysis": 1.8,
-        "suspect-profile": 1.5
+        'forensic-data': 2.0,
+        'timeline-analysis': 1.8,
+        'suspect-profile': 1.5,
       },
       admin: {
-        "case-management": 2.0,
-        "user-activity": 1.5,
-        "system-reports": 1.3
-      }
-    }
+        'case-management': 2.0,
+        'user-activity': 1.5,
+        'system-reports': 1.3,
+      },
+    };
     const boosts = roleBoosts[role as keyof typeof roleBoosts];
-    const contentType = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.type as string;
+    const contentType = result.metadata?.type;
     return boosts?.[contentType as keyof typeof boosts] || 0;
   }
   /**
    * Workflow state context scoring
    */
-  private calculateWorkflowScore(
-    result: RerankResult
-    workflowState: string
-  ): number {
+  private calculateWorkflowScore(result: RerankResult, workflowState: string): number {
     const workflowBoosts = {
       draft: { templates: 1.5, examples: 1.3 },
       review: { checklist: 1.8, validation: 1.5 },
-      approved: { archive: 1.2, export: 1.5 }
-    }
+      approved: { archive: 1.2, export: 1.5 },
+    };
     const boosts = workflowBoosts[workflowState as keyof typeof workflowBoosts];
-    const actionType = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.actionType as string;
+    const actionType = result.metadata?.actionType;
     return boosts?.[actionType as keyof typeof boosts] || 0;
   }
   /**
    * Recency scoring based on user's recent actions
    */
-  private calculateRecencyScore(
-    result: RerankResult
-    recentActions: string[]
-  ): number {
-    const resultAction = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.lastAction as string;
+  private calculateRecencyScore(result: RerankResult, recentActions: string[]): number {
+    const resultAction = result.metadata?.lastAction as string;
     const actionIndex = recentActions.indexOf(resultAction);
     if (actionIndex === -1) return 0;
     // More recent actions get higher scores
-    return (
-      this.contextWeights.recency * (1 - actionIndex / recentActions.length)
-    );
+    return this.contextWeights.recency * (1 - actionIndex / recentActions.length);
   }
   /**
    * Semantic similarity boost using embeddings
    */
-  async calculateSemanticBoost(
-    result: RerankResult
-    queryEmbedding: number[]
-  ): Promise<number> {
-    if (!(result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.embedding || !queryEmbedding) return 0;
-    const resultEmbedding = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata.embedding as number[];
+  async calculateSemanticBoost(result: RerankResult, queryEmbedding: number[]): Promise<number> {
+    if (!result.metadata?.embedding || !queryEmbedding) return 0;
+    const resultEmbedding = result.metadata.embedding as number[];
     return this.cosineSimilarity(queryEmbedding, resultEmbedding);
   }
   /**
    * Cosine similarity calculation
-   */;
+   */
   private cosineSimilarity(a: number[], b: number[]): number {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
-    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0);
-    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0);
+    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+    if (magnitudeA === 0 || magnitudeB === 0) {
+      return 0;
+    }
     return dotProduct / (magnitudeA * magnitudeB);
   }
   /**
    * Update context weights based on user feedback
-   */;
+   */
   updateWeights(feedbackData: Record<string, number>): void {
     Object.entries(feedbackData).forEach(([key, value]) => {
       if (key in this.contextWeights) {
@@ -168,63 +210,67 @@ export interface Neo4jPathContext {
 /**
  * Enhanced search with Neo4j path context
  */
+import type { Schemas } from '@qdrant/js-client-rest/dist/types';
+
 export async function enhancedSearchWithNeo4j(
-  query: string
-  userContext: UserContext
-  neo4jContext?: Neo4jPathContext;
-  limit: number = 10,
+  query: string,
+  userContext: UserContext,
+  neo4jContext?: Neo4jPathContext,
+  limit: number = 10
 ): Promise<RerankResult[]> {
   // Use existing qdrant service for initial ANN search
-  const { qdrantService } = await import("./qdrant-service");
+  const { qdrantService } = await import('$lib/server/services/qdrant-service');
   // Generate embedding for the query
-  const { nomicEmbeddings } = await import("./nomic-embeddings");
+  const { nomicEmbeddings } = await import('./nomic-embeddings');
   const embeddingResult = await nomicEmbeddings.embed(query);
-  const annResults = await qdrantService.searchSimilar(
-    embeddingResult.embedding,
-    limit * 2,
-  ); // Get more for reranking
+  const annResults = await qdrantService.searchSimilar(embeddingResult.embedding, limit * 2); // Get more for reranking
   // Convert to rerank format with Neo4j enrichment
-  const rerankInput: RerankResult[] = annResults.map((result: any) => ({,
-    id: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).id,
-    content: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.text || "",
-    metadata: {
-      ...result.payload,
-      neo4jPath: neo4jContext ? calculatePathScore(result, neo4jContext) : 0,
-      relatedCases: neo4jContext?.relatedCases || [],
-      userFrequency: neo4jContext
-        ? calculateFrequencyScore(result, neo4jContext)
-        : 0
-    },
-    originalScore: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).score || 0,
-    rerankScore: 0,
-    confidence: ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).score || 0) * 100
+  const rerankInput: RerankResult[] = annResults.map((result: Schemas.ScoredPoint): RerankResult => {
+    const payload = result.payload as ResultPayload | undefined;
+    const metadata = result.payload as RerankMetadata | undefined;
+
+    const resultLike: ResultLike = {
+      id: result.id.toString(),
+      payload: payload,
+      score: result.score,
+      content: payload?.text,
+      metadata: metadata,
+    };
+
+    return {
+      id: result.id.toString(),
+      content: payload?.text || '',
+      payload: payload,
+      metadata: {
+        ...metadata,
+        neo4jPath: neo4jContext ? calculatePathScore(resultLike, neo4jContext) : 0,
+        relatedCases: neo4jContext?.relatedCases || [],
+        userFrequency: neo4jContext ? calculateFrequencyScore(resultLike, neo4jContext) : 0,
+      },
+      originalScore: result.score || 0,
+      rerankScore: 0,
+      confidence: (result.score || 0) * 100,
+    };
   });
   // Apply custom reranking with Neo4j context
   const reranker = new LegalAIReranker();
-  const rerankedResults = await reranker.rerank(rerankInput, userContext);
+  const rerankedResults = await reranker.rerank(rerankInput, userContext, embeddingResult.embedding);
   return rerankedResults.slice(0, limit);
 }
 /**
  * Calculate path relevance score from Neo4j context
  */
-function calculatePathScore(
-  result: any
-  neo4jContext: Neo4jPathContext
-): number {
+function calculatePathScore(result: RerankResult | ResultLike, neo4jContext: Neo4jPathContext): number {
   let pathScore = 0;
   // Check if result relates to user's recent path
   neo4jContext.userPath.forEach((pathNode, index) => {
-    if (
-      (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).content?.includes(pathNode) ||
-      (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.tags?.includes(pathNode);
-    ) {
-      pathScore +=
-        (neo4jContext.userPath.length - index) / neo4jContext.userPath.length;
+    if (result.content?.includes(pathNode) || result.payload?.tags?.includes(pathNode)) {
+      pathScore += (neo4jContext.userPath.length - index) / neo4jContext.userPath.length;
     }
   });
   // Boost score for related cases
-  neo4jContext.relatedCases.forEach((caseId) => {
-    if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.caseId === caseId) {
+  neo4jContext.relatedCases.forEach(caseId => {
+    if (result.payload?.caseId === caseId) {
       pathScore += 1.5;
     }
   });
@@ -233,89 +279,95 @@ function calculatePathScore(
 /**
  * Calculate user frequency score
  */
-function calculateFrequencyScore(
-  result: any
-  neo4jContext: Neo4jPathContext
-): number {
-  const nodeId = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).id || (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.nodeId;
+function calculateFrequencyScore(result: RerankResult | ResultLike, neo4jContext: Neo4jPathContext): number {
+  const nodeId = result.id || result.payload?.nodeId;
   if (!nodeId) return 0;
   const timeSpent = neo4jContext.timeSpentByNode[nodeId] || 0;
   return Math.min(timeSpent / 1000, 2.0); // Max boost of 2.0 points
 }
 // Legacy function for backward compatibility
-export async function enhancedSearch(
-  query: string
-  userContext: UserContext;
-  limit: number = 10,
-): Promise<RerankResult[]> {
+export async function enhancedSearch(query: string, userContext: UserContext, limit: number = 10): Promise<RerankResult[]> {
   return enhancedSearchWithNeo4j(query, userContext, undefined, limit);
 }
 // Export for use in components
-export { LegalAIReranker as default }
+export { LegalAIReranker as default };
+import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData, SynthesisResult } from './types.js';
+import { dimensionalCache } from './dimensional-cache-engine';
+
 /**
  * Multi-LLM synthesis function for advanced legal AI workflows
  * Accepts multiple LLM outputs, user history, uploaded files, MCP server data, and synthesizes a rich output.
  * Caches, auto-encodes, and trains on user feedback/history. Generates fixes, code review, analysis, summaries, next steps, and self-prompting.
- */;
-import type {
-  AIModelOutput,
-  UserHistory,
-  UploadedFile,
-  MCPServerData,
-  SynthesisOptions
-} from './types.js';
+ */
 export async function synthesizeMultiLLMOutput({
   llmOutputs,
   userHistory,
   uploadedFiles,
   mcpServers,
-  options
 }: {
   llmOutputs: AIModelOutput[];
   userHistory: UserHistory;
   uploadedFiles: UploadedFile[];
   mcpServers: MCPServerData[];
-  options?: SynthesisOptions;
-}): Promise<any> {
+}): Promise<SynthesisResult> {
   // 1. Cache and auto-encode all inputs for fast retrieval and training
-  // (Use Loki.js or similar for local cache)
-  // ...existing code...
+  const cacheKey = JSON.stringify({ llmOutputs, userHistory, uploadedFiles, mcpServers });
+  const cachedResult = await dimensionalCache.get(cacheKey);
+  if (cachedResult) {
+    return cachedResult as SynthesisResult;
+  }
+
   // 2. Aggregate LLM outputs, user history, uploaded files, and MCP data
   const allInputs = [
-    ...llmOutputs.map((o) => o.content),
+    ...llmOutputs.map(o => o.content),
     ...userHistory.actions,
-    ...uploadedFiles.map((f) => f.textContent || f.name),
-    ...mcpServers.map((s) => s.dataSummary)
+    ...(userHistory.feedback || []),
+    ...uploadedFiles.map(f => f.textContent || f.name),
+    ...mcpServers.map(s => s.dataSummary),
   ];
+
   // 3. Synthesize extra "thinking" tokens from all sources
-  const thinkingTokens = allInputs.join(" ");
+  const thinkingTokens = allInputs.join(' ');
+
   // 4. Apply best practices for legal AI: fixes, code review, analysis, summaries, next steps
-  // (Stub: Replace with actual AI calls or rule-based logic)
-  const fixes = llmOutputs.flatMap((o) => o.suggestedFixes || []);
+  const fixes = llmOutputs.flatMap(o => o.suggestedFixes || []);
   const codeReview = llmOutputs
-    .map((o) => o.codeReview)
+    .map(o => o.codeReview)
     .filter(Boolean)
-    .join("\n---\n");
+    .join('\n---\n');
+
   const analysis = llmOutputs
-    .map((o) => o.analysis)
+    .map(o => o.analysis)
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
+
   const summary = llmOutputs
-    .map((o) => o.summary)
+    .map(o => o.summary)
     .filter(Boolean)
-    .join(" ");
-  const nextSteps = llmOutputs.flatMap((o) => o.nextSteps || []);
+    .join(' ');
+
+  const nextSteps = llmOutputs.flatMap(o => o.nextSteps || []);
+
+  // 5. Generative autocomplete and self-prompting
   const generativeAutocomplete = `Auto-complete: ${thinkingTokens.slice(0, 200)}...`;
-  const selfPrompt = `AI Assistant: Based on all sources, recommend actions for prosecutor.`;
-  // 5. Optionally train/update cache with user feedback
-  // ...existing code...
-  return {
+  const selfPrompt = `AI Assistant: Based on the user's recent actions and feedback, the following next steps are recommended for the prosecutor: ${nextSteps.join(', ')}.`;
+
+  const result: SynthesisResult = {
     fixes,
     codeReview,
     analysis,
     summary,
     nextSteps,
     generativeAutocomplete,
-    selfPrompt
-  }
+    selfPrompt,
+  };
+
+  // 6. Optionally train/update cache with user feedback
+  await dimensionalCache.cacheDimensionalArray(cacheKey, result, {
+    userId: 'user-123',
+    sessionId: 'session-456',
+    behaviorPattern: 'power_user',
+  });
+
+  return result;
 }
