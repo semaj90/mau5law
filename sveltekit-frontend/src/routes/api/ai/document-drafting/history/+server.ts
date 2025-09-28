@@ -172,9 +172,9 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     const stats = {
       total: filteredHistory.length,
       byStatus: {
-        draft: filteredHistory.filter(item => item.length),
-        review: filteredHistory.filter(item => item.length),
-        finalized: filteredHistory.filter(item => item.length)
+        draft: filteredHistory.filter(item => item.status === 'draft'),
+        review: filteredHistory.filter(item => item.status === 'review'),
+        finalized: filteredHistory.filter(item => item.status === 'finalized'),
       },
       byType: filteredHistory.reduce((acc, doc) => {
         acc[doc.type] = (acc[doc.type] || 0) + 1
@@ -183,9 +183,8 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       avgCompletionScore: filteredHistory.reduce((sum, d) => sum + d.metadata.completionScore, 0) / filteredHistory.length,
       totalWordCount: filteredHistory.reduce((sum, d) => sum + d.metadata.wordCount, 0)
     }
-    return json({
-      success: true
-      history: paginatedHistory
+    return json({,
+      history: paginatedHistory,
       pagination: {
         limit,
         offset,

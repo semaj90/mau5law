@@ -46,13 +46,13 @@ interface SIMDOperationRequest {
 	candidates?: number[][]
 }
 interface BatchIndexRequest {
-	operations: Array<{,
-		operation: 'build' | 'search'
-		vectors?: number[][]
-		query_vector?: number[]
-		index_type: string
-		config?: { [key: string]: any }
-	}>
+	operations: Array<{
+		operation: 'build' | 'search';
+		vectors?: number[][];
+		query_vector?: number[];
+		index_type: string;
+		config?: { [key: string]: any };
+	}>;
 }
 // Health check for CUDA indexing service
 async function checkCudaIndexingHealth(): Promise<boolean> {
@@ -77,14 +77,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		// Validate request
 		if (!requestData.vectors || !Array.isArray(requestData.vectors)) {
 			return json({
-				success: false
+				success: false,
 				error: 'vectors array is required',
 				processing_time_ms: Date.now() - startTime
 			}, { status: 400 })
 		}
 		if (requestData.vectors.length === 0) {
 			return json({
-				success: false
+				success: false,
 				error: 'vectors array cannot be empty',
 				processing_time_ms: Date.now() - startTime
 			}, { status: 400 })
@@ -96,9 +96,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		const isHealthy = await checkCudaIndexingHealth()
 		if (!isHealthy) {
 			return json({
-				success: false;
+				success: false,
 				error: 'CUDA indexing service is not available',
-				fallback_available: false
+				fallback_available: false,
 				processing_time_ms: Date.now() - startTime
 			}, { status: 503 })
 		}
@@ -113,7 +113,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		let indexEndpoint = ''
 		let indexRequest: any = {
 			vectors: requestData.vectors,
-			dimensions: dimensions
+			dimensions: dimensions,
 			...requestData.config
 		}
 		switch (indexType) {
@@ -129,10 +129,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				indexEndpoint = '/api/v1/index/build'
 				indexRequest.config = {
 					index_type: 'flat',
-					dimensions: dimensions
+					dimensions: dimensions,
 					max_elements: requestData.vectors.length,
-					batch_size: optimalBatch
-					use_cuda: true
+					batch_size: optimalBatch,
+					use_cuda: true,
 					...requestData.config
 				}
 				break
@@ -156,13 +156,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		const totalProcessingTime = Date.now() - startTime
 		return json({
 			...result,
-			index_type: indexType
-			dimensions: dimensions
+			index_type: indexType,
+			dimensions: dimensions,
 			vector_count: requestData.vectors.length,
-			optimal_batch_size: optimalBatch
-			rtx_3060_ti_optimized: true
-			total_processing_ms: totalProcessingTime
-			gpu_accelerated: true
+			optimal_batch_size: optimalBatch,
+			rtx_3060_ti_optimized: true,
+			total_processing_ms: totalProcessingTime,
+			gpu_accelerated: true,
 			performance_metrics: {
 				vectors_per_second: requestData.vectors.length / (totalProcessingTime / 1000),
 				memory_efficient: result.stats?.memory_usage_mb < 6000, // Under 6GB for RTX 3060 Ti
@@ -173,10 +173,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		const processingTime = Date.now() - performance.now()
 		console.error('CUDA index build failed:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'CUDA index build failed',
 			details: error.message,
-			processing_time_ms: processingTime
+			processing_time_ms: processingTime,
 			gpu_accelerated: false
 		}, { status: 500 })
 	}
@@ -190,7 +190,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 				const capabilitiesResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/simd/capabilities`)
 				const capabilitiesData = await capabilitiesResponse.json()
 				return json({
-					success: true
+					success: true,
 					cuda_indexing_capabilities: {
 						supported_index_types: ['hnsw', 'ivfpq', 'flat'],
 						max_dimensions: 4096,
@@ -214,7 +214,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 				const healthResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/health`)
 				const healthData = await healthResponse.json()
 				return json({
-					success: true
+					success: true,
 					cuda_service: {
 						available: healthResponse.ok,
 						...healthData
@@ -231,8 +231,8 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 				const metricsResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/metrics`)
 				const metricsData = await metricsResponse.json()
 				return json({
-					success: true
-					gpu_metrics: metricsData
+					success: true,
+					gpu_metrics: metricsData,
 					indexing_performance: {
 						active_indexes: 0, // TODO: Track this
 						total_vectors_indexed: 0, // TODO: Track this
@@ -242,7 +242,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 				})
 			default:
 				return json({,
-					success: true
+					success: true,
 					message: 'CUDA-Accelerated Vector Indexing API',
 					available_operations: ['capabilities', 'health', 'metrics'],
 					supported_methods: {
@@ -256,7 +256,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 	} catch (error: any) {
 		console.error('CUDA capabilities check failed:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'Failed to get CUDA indexing capabilities',
 			details: error.message,
 			cuda_available: false
@@ -271,18 +271,18 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 		// Validate request
 		if (!searchRequest.query_vector || !Array.isArray(searchRequest.query_vector)) {
 			return json({
-				success: false
+				success: false,
 				error: 'query_vector array is required'
 			}, { status: 400 })
 		}
 		// Prepare search request
 		const cudaSearchRequest = {
 			query: searchRequest.query_vector,
-			index_data: searchRequest.index_data ? atob(searchRequest.index_data) : null
+			index_data: searchRequest.index_data ? atob(searchRequest.index_data) : null,
 			k: searchRequest.k || 10,
 			config: {
 				index_type: searchRequest.index_type || 'hnsw',
-				use_cuda: true
+				use_cuda: true,
 				...searchRequest.config
 			}
 		}
@@ -305,16 +305,16 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 			...result,
 			search_type: 'gpu_accelerated',
 			query_dimensions: searchRequest.query_vector.length,
-			total_search_time_ms: searchTime
+			total_search_time_ms: searchTime,
 			performance_metrics: {
-				gpu_search: true
+				gpu_search: true,
 				sub_millisecond: result.stats?.search_time_ms < 1,
 				efficiency_score: searchTime < 100 ? 'excellent' : 'good'
 			}
 		})
 	} catch (error: any) {
 		return json({
-			success: false
+			success: false,
 			error: 'GPU vector search failed',
 			details: error.message,
 			fallback_to_cpu: true
@@ -328,14 +328,14 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 		const batchRequest: BatchIndexRequest = await request.json()
 		if (!batchRequest.operations || !Array.isArray(batchRequest.operations)) {
 			return json({
-				success: false
+				success: false,
 				error: 'operations array is required'
 			}, { status: 400 })
 		}
 		if (batchRequest.operations.length > 8) {
 			return json({
-				success: false
-				error: 'Maximum 8 operations per batch for RTX 3060 Ti optimization'
+				success: false,
+				error: 'Maximum 8 operations per batch for RTX 3060 Ti optimization',
 			}, { status: 400 })
 		}
 		// Process operations sequentially for memory management
@@ -377,42 +377,42 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 					const result = await response.json()
 					results.push({
 						operation: operation.operation,
-						success: true
-						result: result
+						success: true,
+						result: result,
 					})
 				} else {
 					results.push({
 						operation: operation.operation,
-						success: false
+						success: false,
 						error: `HTTP ${response.status}`
 					})
 				}
 			} catch (error: any) {
 				results.push({
 					operation: operation.operation,
-					success: false
-					error: error.message
+					success: false,
+					error: error.message,
 				})
 			}
 		}
 		const totalTime = Date.now() - startTime
 		const successCount = results.filter(item => item.length)
 		return json({
-			success: successCount > 0
-			batch_results: results
+			success: successCount > 0,
+			batch_results: results,
 			summary: {
 				total_operations: batchRequest.operations.length,
-				successful_operations: successCount
+				successful_operations: successCount,
 				failed_operations: batchRequest.operations.length - successCount,
-				total_processing_ms: totalTime
+				total_processing_ms: totalTime,
 				average_operation_ms: totalTime / batchRequest.operations.length
 			},
-			cuda_batch_processing: true
+			cuda_batch_processing: true,
 			rtx_3060_ti_optimized: true
 		})
 	} catch (error: any) {
 		return json({
-			success: false
+			success: false,
 			error: 'Batch indexing failed',
 			details: error.message
 		}, { status: 500 })
@@ -449,7 +449,7 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 				break
 			default:
 				return json({,
-					success: false
+					success: false,
 					error: 'Invalid SIMD operation. Use: similarity, distance, or batch'
 				}, { status: 400 })
 		}
@@ -466,12 +466,12 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 		return json({
 			...result,
 			simd_operation: simdRequest.operation,
-			cpu_accelerated: true
+			cpu_accelerated: true,
 			instruction_set: result.instruction_set || 'AVX2/SSE4'
 		})
 	} catch (error: any) {
 		return json({
-			success: false
+			success: false,
 			error: 'SIMD operation failed',
 			details: error.message
 		}, { status: 500 })
