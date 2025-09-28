@@ -45,11 +45,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     // Default options
     const analysisOptions = {
-      includeEntities: true
-      includeConcepts: true
-      includeSentiment: true
-      includeComplexity: true
-      includeRecommendations: true
+      includeEntities: true,
+      includeConcepts: true,
+      includeSentiment: true,
+      includeComplexity: true,
+      includeRecommendations: true,
       ...options
     }
     // Perform deep legal analysis
@@ -83,7 +83,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         error: 'Analysis failed',
         message: error.message,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime;
       },
       { status: 500 }
     )

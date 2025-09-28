@@ -30,6 +30,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   let showSSRTest = $state(false);
   let layoutMode = $state<'grid' | 'flexbox'>('grid');
   let showClustered = $state(false);
+
+  // Dialog open state (bind to Dialog). Using a single state for cluster dialogs; adjust if you need per-cluster dialog state.
+  let dialogOpen = $state(false);
   // K-means clustering logic for API endpoints
   function clusterAPIEndpoints(routes: any[]) {
     const apiRoutes = routes.filter(route => route.path.startsWith('/api/'));
@@ -627,7 +630,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                 <br />• Icon display
               </div>
             </div>
-          </CardContent>
+          {#each Object.entries(clusteredAPIs) as [serviceName, endpoints]}
         {/snippet}
       </Card>
     {/if}
@@ -654,7 +657,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                       ? '🔍'
                       : serviceName === 'file-services'
                         ? '📁'
-                        : serviceName === 'monitoring'
+          {#each Object.entries(clusteredAPIs) as [serviceName, endpoints]}
                           ? '📊'
                           : serviceName === 'testing'
                             ? '🧪'
@@ -688,22 +691,34 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                           onclick={() => visitRoute(endpoint.path)}
                           class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs"
                           title="Visit {endpoint.path}"
-                        >
+                    <Dialog bind:open={dialogOpen}>
                           →
                         </button>
                       </div>
                     {/each}
                     {#if endpoints.length > 5}
-                      <div class="text-center py-2">
-                        <span class="endpoint-count-badge">
-                          + {endpoints.length - 5} more
-                        </span>
-                      </div>
-                    {/if}
-                  </div>
-                  <!-- Service Actions with improved layout -->
-                  <div class="action-buttons">
-                    <Dialog bind:open={false}>
+                    <div class="endpoint-item">
+                      <code class="endpoint-code">{endpoint.path}</code>
+                      <button
+                        onclick={() => visitRoute(endpoint.path)}
+                        class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs"
+                        title={"Visit " + endpoint.path}
+                      >
+                        →
+                      </button>
+                    </div>
+                      {#snippet children()}
+                        <button
+                          class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
+                        >
+                          📋 View All ({endpoints.length})
+                        </button>
+                      {/snippet}
+                      {#snippet content()}
+                        <div class="p-6 max-w-4xl max-h-[80vh] overflow-y-auto">
+                          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            {serviceIcon}
+                    <Dialog open={false}>
                       {#snippet children()}
                         <button
                           class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
@@ -746,18 +761,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                         </div>
                       {/snippet}
                     </Dialog>
-                  </div>
-                </CardContent>
-              {/snippet}
-            </Card>
-          {/each}
-        </div>
-      </div>
-    {:else}
-      <!-- Regular Route Display -->
-      {#if layoutMode === 'flexbox'}
-        <!-- Enhanced SSR-optimized 3-Column Flexbox Layout -->
-        <div class="ssr-flexbox-container flex flex-wrap justify-start items-stretch gap-6 mb-8">
           {#each filteredRoutes as route, index}
             {@const categoryInfo = routeCategories[route.category]}
             {@const columnClass =

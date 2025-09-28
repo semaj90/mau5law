@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 // Placeholder for AI Dashboard page
 </script>
 
