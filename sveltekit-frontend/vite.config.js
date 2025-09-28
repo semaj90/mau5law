@@ -24,8 +24,8 @@ export default defineConfig(({ mode }) => {
       // host: false => only listen on localhost (Vite default). Use host: '0.0.0.0' if LAN/devcontainer required.
       host: false,
       hmr: {
-        // Rely on implicit host. Explicit port kept stable for tooling.
-        port: 24678,
+        // Rely on implicit host. Use HMR port from environment when available to avoid hardcoded conflicts.
+        port: Number(process.env.HMR_PORT) || 24678,
       },
       // If in the future external access is needed under Vite 6 DNS rebinding protection:
       // allowedHosts: ['your-hostname.local', 'another-host'],

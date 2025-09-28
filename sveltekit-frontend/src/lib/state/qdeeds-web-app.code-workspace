@@ -18,5 +18,9 @@
     "editor.experimentalGpuAcceleration": "on",
     "files.autoSave": "onFocusChange",
     "eslint.run": "onSave",
+    "chat.mcp.discovery.enabled": {
+      "claude-desktop": true,
+    },
+    "chat.useChatSessionsForCloudButton": false,
   },
 }

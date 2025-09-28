@@ -145,8 +145,8 @@ let uploadProgress = $state(new Map<string, number>());
   }
   async function checkMinIOStatus() {
     try {
-      // removed unused response assignment
-      minioStatus = (response as { ok?: any; json?: any }).ok ? 'connected' : 'disconnected';
+      const response = await fetch('/api/v1/minio/status');
+      minioStatus = response.ok ? 'connected' : 'disconnected';
     } catch {
       minioStatus = 'disconnected';
     }
@@ -156,8 +156,12 @@ let uploadProgress = $state(new Map<string, number>());
     try {
       isLoading = true;
       // Load evidence items for this case
-      // removed unused response assignment
-      const evidence = await (response as { ok?: any; json?: any }).json();
+      const response = await fetch(`/api/v1/evidence/${caseId}`);
+      if (!response.ok) {
+        evidenceItems = [];
+        return;
+      }
+      const evidence = await response.json();
       evidenceItems = evidence;
       // Add evidence to canvas
       for (const item of evidenceItems) {
@@ -165,10 +169,6 @@ let uploadProgress = $state(new Map<string, number>());
       }
     } catch (error) {
       console.error('Failed to load canvas data:', error);
-    } finally {
-      isLoading = false;
-    }
-  }
   async function refreshExpiredUrl(evidence: EvidenceItem): Promise<string> {
     if (!evidence.urlExpiry || Date.now() < evidence.urlExpiry) {
       return evidence.url || '';
@@ -178,16 +178,20 @@ let uploadProgress = $state(new Map<string, number>());
       const response = await fetch(`/api/v1/minio/url-refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           bucket: evidence.metadata.bucket,
-          fileName: evidence.metadata.fileNam,
+          fileName: evidence.metadata.fileName,
         })
       });
-      if ((response as { ok?: any; json?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any }).json();
+      if (response.ok) {
+        const result = await response.json();
         return (result as { url?: any }).url;
       }
     } catch (error) {
+      console.warn('Failed to refresh URL for:', evidence.id);
+    }
+    return evidence.url || '';
+  }
       console.warn('Failed to refresh URL for:', evidence.id);
     }
     return evidence.url || '';
@@ -253,15 +257,15 @@ let uploadProgress = $state(new Map<string, number>());
         fabricCanvas.add(group);
         fabricCanvas.renderAll();
       }
-    } catch (error) {
-      console.error('Failed to add evidence to canvas:', error);
-    }
-  }
-  async function handleFileUpload(_event: Event) {
+  async function handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
-    const files = input.file;
+    const files = input.files;
     if (!files || files.length === 0) return;
     // Upload files in parallel for better performance
+    const uploadPromises = Array.from(files).map(file => uploadEvidence(file as File));
+    await Promise.allSettled(uploadPromises);
+    input.value = ''; // Reset input
+  }
     const uploadPromises = Array.from(files).map(file => uploadEvidence(file));
     await Promise.allSettled(uploadPromises);
     input.value = ''; // Reset input
@@ -375,13 +379,9 @@ let uploadProgress = $state(new Map<string, number>());
   }
   function saveCanvas() {
     if (!fabricCanvas) return;
-    const objects = fabricCanvas.getObjects();
-    updateCanvasObjects();
-    onSave?.({ objects: canvasObjects });
-  }
   function updateCanvasObjects() {
     if (!fabricCanvas) return;
-    canvasObjects = fabricCanvas.getObjects().map((obj: any) => ({,
+    canvasObjects = fabricCanvas.getObjects().map((obj: any) => ({
       type: obj.type,
       left: obj.left,
       top: obj.top,
@@ -390,6 +390,10 @@ let uploadProgress = $state(new Map<string, number>());
       angle: obj.angle,
       scaleX: obj.scaleX,
       scaleY: obj.scaleY,
+      evidenceId: obj.evidenceId,
+      evidenceType: obj.evidenceType,
+    }));
+  }
       evidenceId: obj.evidenceId,
       evidenceType: obj.evidenceType,
     }));
@@ -464,12 +468,12 @@ let uploadProgress = $state(new Map<string, number>());
         <Button class="bits-btn" variant="ghost" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn" variant="ghost" onclick={resetZoom}>
-          <RotateCcw class="h-4 w-4" />
-        </Button>
-        <!-- Object Controls -->
         {#if hasSelectedObject && !readOnly}
-          <Button class="bits-btn" variant="error" onclick={deleteSelected}>
+          <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
+            <Trash2 class="h-4 w-4 mr-2" />
+            Delete
+          </Button>
+        {/if}
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>

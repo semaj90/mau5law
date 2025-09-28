@@ -3,9 +3,8 @@
  * Nintendo-inspired optimization for legal AI platform
  * Achieves 0.5-2ms response times for UI patterns
  */
-import { Redis } from 'ioredis';
+import Redis from 'ioredis';
 import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
-}
 export interface CHRROMPattern {
   id: string;
   patternType: 'ui_component' | 'document_layout' | 'visualization' | 'text_pattern';
@@ -85,10 +84,10 @@ export class CHRROMPatternCache {
     console.log('🎮 Initialized 8 CHR-ROM banks (64KB total) with default patterns');
   }
   private generateDefaultTilePattern(
-    bankView: Uint8Array
-    offset: number
-    bankId: number
-    tileIndex: number;
+    bankView: Uint8Array,
+    offset: number,
+    bankId: number,
+    tileIndex: number
   ): void {
     // Generate NES-style 8x8 tile patterns
     const patterns: { [key: number]: number[] } = {
@@ -115,8 +114,8 @@ export class CHRROMPatternCache {
    * Get pattern with CHR-ROM-style caching
    */
   async getCachedPattern(
-    patternId: string
-    options: PatternGenerationOptions;
+    patternId: string,
+    options: PatternGenerationOptions,
   ): Promise<CHRROMPattern | null> {
     const startTime = performance.now();
     this.cache.metrics.totalRequests++;
@@ -161,9 +160,9 @@ export class CHRROMPatternCache {
    * Generate and cache new pattern with NES-style optimization
    */
   async generateAndCachePattern(
-    patternId: string
-    options: PatternGenerationOptions
-    sourceDocument?: LegalDocumentJSON;
+    patternId: string,
+    options: PatternGenerationOptions,
+    sourceDocument?: LegalDocumentJSON,
   ): Promise<CHRROMPattern> {
     const startTime = performance.now();
     try {
@@ -174,7 +173,7 @@ export class CHRROMPatternCache {
       // Generate render data for WebGPU visualization
       const renderData = this.generateRenderData(tileData, options);
       const pattern: CHRROMPattern = {
-        id: patternId
+        id: patternId,
         patternType: this.determinePatternType(options, sourceDocument),
         bankId,
         tileData,
@@ -209,24 +208,24 @@ export class CHRROMPatternCache {
   /**
    * Generate legal document tile pattern (NES-style 8x8 tiles)
    */
-  private generateLegalDocumentTilePattern(_options: PatternGenerationOptions
-    sourceDocument?: LegalDocumentJSON;
+  private generateLegalDocumentTilePattern(_options: PatternGenerationOptions,
+    sourceDocument?: LegalDocumentJSON
   ): Uint8Array {
     const tileData = new Uint8Array(this.PATTERN_SIZE);
     // Base patterns for different document types
     const basePatterns = {
-      contract: this.generateContractPattern(options.riskLevel),
-      evidence: this.generateEvidencePattern(options.riskLevel),
-      brief: this.generateBriefPattern(options.riskLevel),
-      citation: this.generateCitationPattern(options.riskLevel)
+      contract: this.generateContractPattern(_options.riskLevel),
+      evidence: this.generateEvidencePattern(_options.riskLevel),
+      brief: this.generateBriefPattern(_options.riskLevel),
+      citation: this.generateCitationPattern(_options.riskLevel)
     }
-    let basePattern = basePatterns[options.documentType];
+    let basePattern = basePatterns[_options.documentType];
     // Apply risk level modifications
-    basePattern = this.applyRiskLevelModifications(basePattern, options.riskLevel);
+    basePattern = this.applyRiskLevelModifications(basePattern, _options.riskLevel);
     // Apply visual style
-    basePattern = this.applyVisualStyle(basePattern, options.visualStyle);
+    basePattern = this.applyVisualStyle(basePattern, _options.visualStyle);
     // Apply color scheme (affects pattern density)
-    basePattern = this.applyColorScheme(basePattern, options.colorScheme);
+    basePattern = this.applyColorScheme(basePattern, _options.colorScheme);
     tileData.set(basePattern);
     return tileData;
   }
@@ -369,7 +368,7 @@ export class CHRROMPatternCache {
     const bank = this.cache.banks[pattern.bankId];
     const bankView = new Uint8Array(bank);
     // Find free space in bank (simplified allocation)
-    const tileIndex = Math.floor(Math.random() * (this.BANK_SIZE / this.PATTERN_SIZE);
+  const tileIndex = Math.floor(Math.random() * (this.BANK_SIZE / this.PATTERN_SIZE));
     const offset = tileIndex * this.PATTERN_SIZE;
     // Store pattern data
     bankView.set(pattern.tileData, offset);

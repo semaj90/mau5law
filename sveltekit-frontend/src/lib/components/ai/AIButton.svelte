@@ -1,13 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
+  import { fly, fade } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
+
   interface Props {
-    position: ;
-'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' ;
-    size: 'sm' | 'md' | 'lg' ;
-    variant: 'primary' | 'secondary' | 'accent' ;
+    position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+    size?: 'sm' | 'md' | 'lg';
+    variant?: 'primary' | 'secondary' | 'accent';
     disabled?: boolean;
     loading?: boolean;
     notification?: boolean;
@@ -17,6 +16,7 @@ https://svelte.dev/e/js_parse_error -->
     onactivate?: () => void;
     ondeactivate?: () => void;
   }
+
   let {
     position = 'bottom-right',
     size = 'md',
@@ -30,72 +30,80 @@ https://svelte.dev/e/js_parse_error -->
     onactivate,
     ondeactivate
   }: Props = $props();
-  	import { onMount } from 'svelte';
-  	import { fly, fade } from 'svelte/transition';
-  	import { quintOut } from 'svelte/easing';
-  	// State management
+
+  // State management (Svelte 5 $state)
   let mounted = $state(false);
-  let buttonElement: HTMLButtonElement | null = null;
+  let buttonElement = $state<HTMLButtonElement | null>(null);
   let showTooltip = $state(false);
-  let buttonElement = $state<HTMLButtonElement// Size configurations
-  	const sizeClasses  | null>(null); const data = {
-  		sm: 'w-12 h-12 text-sm',
-  		md: 'w-16 h-16 text-base',
-  		lg: 'w-20 h-20 text-lg';
-  	});
-  	// Position configurations
-  	const positionClasses = {
-  		'bottom-right': 'bottom-6 right-6',
-  		'bottom-left': 'bottom-6 left-6',
-  		'top-right': 'top-6 right-6',
-  		'top-left': 'top-6 left-6'
-  	}
-  	// Variant configurations
-  	const variantClasses = {
-  		primary: 'bg-gradient-to-br from-yorha-primary to-yorha-secondary hover:from-yorha-secondary hover:to-yorha-primary border-yorha-primary',
-  		secondary: 'bg-gradient-to-br from-yorha-bg-secondary to-yorha-bg-tertiary hover:from-yorha-bg-tertiary hover:to-yorha-bg-secondary border-yorha-border',
-  		accent: 'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400 hover:to-yorha-accent border-yorha-accent';
-  	}
-  	// Handle button click
-  	function handleClick() {
-  		if (disabled || loading) return;
-  		onclick?.();
-  		onactivate?.();
-  		// Add haptic feedback on supported devices
-  		if ('vibrate' in navigator) {
-  			navigator.vibrate(50);
-  		}
-  	}
-  	// Handle keyboard events
-  	function handleKeydown(_event: KeyboardEvent) {
-  		if (event.key === 'Enter' || event.key === ' ') {
-  			event.preventDefault();
-  			handleClick();
-  		}
-  	}
-  	// Show/hide tooltip
-  	function showTooltipHandler() {
-  		if (tooltip && !disabled) {
-  			showTooltip = true;
-  		}
-  	}
-  	function hideTooltipHandler() {
-  		showTooltip = false;
-  	}
-  	$effect(() => {
-  		mounted = true;
-  		// Add global keyboard shortcut (Ctrl/Cmd + K)
-  		function handleGlobalKeydown(_event: KeyboardEvent) {
-  			if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-  				event.preventDefault();
-  				handleClick();
-  			}
-  		}
-  		document.addEventListener('keydown', handleGlobalKeydown);
-  		return () => {
-  			document.removeEventListener('keydown', handleGlobalKeydown);
-  		}
-  	});
+
+  // Size configurations
+  const sizeClasses = {
+    sm: 'w-12 h-12 text-sm',
+    md: 'w-16 h-16 text-base',
+    lg: 'w-20 h-20 text-lg',
+  } as const;
+
+  // Position configurations
+  const positionClasses = {
+    'bottom-right': 'bottom-6 right-6',
+    'bottom-left': 'bottom-6 left-6',
+    'top-right': 'top-6 right-6',
+    'top-left': 'top-6 left-6',
+  } as const;
+
+  // Variant configurations
+  const variantClasses = {
+    primary:
+      'bg-gradient-to-br from-yorha-primary to-yorha-secondary hover:from-yorha-secondary hover:to-yorha-primary border-yorha-primary',
+    secondary:
+      'bg-gradient-to-br from-yorha-bg-secondary to-yorha-bg-tertiary hover:from-yorha-bg-tertiary hover:to-yorha-bg-secondary border-yorha-border',
+    accent:
+      'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400 hover:to-yorha-accent border-yorha-accent',
+  } as const;
+
+  // Handle button click
+  function handleClick() {
+    if (disabled || loading) return;
+    onclick?.();
+    onactivate?.();
+    // Add haptic feedback on supported devices
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
+  }
+
+  // Handle keyboard events
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleClick();
+    }
+  }
+
+  // Show/hide tooltip
+  function showTooltipHandler() {
+    if (tooltip && !disabled) {
+      showTooltip = true;
+    }
+  }
+  function hideTooltipHandler() {
+    showTooltip = false;
+  }
+
+  $effect(() => {
+    mounted = true;
+    // Add global keyboard shortcut (Ctrl/Cmd + K)
+    function handleGlobalKeydown(event: KeyboardEvent) {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+        event.preventDefault();
+        handleClick();
+      }
+    }
+    document.addEventListener('keydown', handleGlobalKeydown);
+    return () => {
+      document.removeEventListener('keydown', handleGlobalKeydown);
+    };
+  });
 </script>
 
 {#if mounted}
@@ -133,13 +141,13 @@ https://svelte.dev/e/js_parse_error -->
 				{disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 hover:shadow-xl hover:shadow-yorha-primary/20'}
 				{loading ? 'animate-pulse' : ''}
 			"
-      {disabled}
-      onclick={(_event: MouseEvent) => handleClick}
-      keydown={handleKeydown}
-      onmouseenter={showTooltipHandler}
-      onmouseleave={hideTooltipHandler}
-      onfocus={showTooltipHandler}
-      onblur={hideTooltipHandler}
+      disabled={disabled}
+      on:click={handleClick}
+      on:keydown={handleKeydown}
+      on:mouseenter={showTooltipHandler}
+      on:mouseleave={hideTooltipHandler}
+      on:focus={showTooltipHandler}
+      on:blur={hideTooltipHandler}
       aria-label={tooltip}
       in:fly={{ y: 100, duration: 500, easing: quintOut }}
     >

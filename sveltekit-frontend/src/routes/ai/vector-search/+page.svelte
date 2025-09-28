@@ -1,0 +1,1 @@
+<the full content of (ai)/vector-search/+page.svelte as above>

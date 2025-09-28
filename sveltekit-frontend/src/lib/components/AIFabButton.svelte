@@ -1,38 +1,51 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { aiStore } from '../stores/canvas';
   import Dialog from './Dialog.svelte';
-  import { Sparkles, Bot } from 'lucide-svelte';
-  // Reactive state
-  let dialogOpen = $derived($aiStore.dialogOpen);
-  let isGenerating = $derived($aiStore.isGenerating);
+  import { Sparkles } from 'lucide-svelte';
+  import { onDestroy } from 'svelte';
+
+  let dialogOpen = false;
+  let isGenerating = false;
+
+  const unsubscribe = aiStore.subscribe((state) => {
+    dialogOpen = !!state?.dialogOpen;
+    isGenerating = !!state?.isGenerating;
+  });
+
+  onDestroy(unsubscribe);
+
   function toggleDialog() {
-    aiStore.update(state => ({
-      ...state,
-      dialogOpen: !state.dialogOpen,
-    }));
+    aiStore.update((state) => ({ ...state, dialogOpen: !state.dialogOpen }));
   }
-  function handleAIRequest(_event: CustomEvent) {
-    ondispatch?.(event.detail);
+
+  function handleAIRequest(event: CustomEvent<any>) {
+    // event.detail contains the payload from the Dialog custom event
+    const payload = event.detail;
+    // forward or handle payload via the store
+    aiStore.update((state) => ({ ...state, lastRequest: payload }));
   }
 </script>
 
 <!-- Floating Action Button -->
 <button
-  class="mx-auto px-4 max-w-7xl"
+  class="ai-fab-button"
   class:generating={isGenerating}
-  onclick={() => toggleDialog()}
+  onclick={toggleDialog}
   aria-label="Open AI Assistant"
   title="AI Assistant"
 >
-  <div class="mx-auto px-4 max-w-7xl">
+  <span class="fab-glow" aria-hidden="true"></span>
+  <span class="fab-icon" aria-hidden="true">
     {#if isGenerating}
-      <div class="mx-auto px-4 max-w-7xl"></div>
+      <!-- simple spinner that uses the existing @keyframes spin -->
+      <svg class="spinner" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+        <path d="M22 12a10 10 0 00-10-10" stroke-linecap="round"></path>
+      </svg>
     {:else}
       <Sparkles size={24} />
     {/if}
-  </div>
-  <div class="mx-auto px-4 max-w-7xl"></div>
+  </span>
 </button>
 <!-- AI Dialog -->
 {#if dialogOpen}

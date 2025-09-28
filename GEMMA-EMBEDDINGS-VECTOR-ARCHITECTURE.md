@@ -8,7 +8,7 @@ Your legal AI platform integrates **Gemma embeddings** with sophisticated **vect
 
 ## 🏗️ **5-Layer Architecture with Gemma Embeddings**
 
-### **Layer 1: SIMD Data Parallelism** 
+### **Layer 1: SIMD Data Parallelism**
 ```
 CPU SIMD: Process 4-16 embedding vectors simultaneously
 GPU SIMD: 2560 CUDA cores generate Gemma embeddings in parallel
@@ -22,7 +22,7 @@ GPU SIMD: 2560 CUDA cores generate Gemma embeddings in parallel
 ### **Layer 3: Message Queue Distribution (RabbitMQ)**
 ```
 🐰 embedding.generation.queue → Gemma3 embedding workers
-🐰 vector.similarity.queue → pgvector search workers  
+🐰 vector.similarity.queue → pgvector search workers
 🐰 ranking.optimization.queue → Result ranking workers
 ```
 
@@ -60,11 +60,11 @@ class GemmaEmbeddingProcessor {
     this.rabbitQueue = 'legal.embeddings.gemma3';
     this.primaryModel = 'embeddinggemma:latest';
   }
-  
+
   async generateBatchEmbeddings(legalDocuments) {
     // RabbitMQ distributes across 16 workers
     const batches = this.distributeAcrossWorkers(legalDocuments);
-    
+
     // Each worker generates Gemma embeddings with SIMD
     const embeddingPromises = batches.map(async (batch, workerId) => {
       return await this.workers[workerId].processWithSIMD({
@@ -74,7 +74,7 @@ class GemmaEmbeddingProcessor {
         vectorDimensions: 768 // Gemma3 embedding dimensions
       });
     });
-    
+
     // Concurrent embedding generation across all workers
     return await Promise.all(embeddingPromises);
   }
@@ -94,30 +94,30 @@ CREATE TABLE legal_documents (
     content text NOT NULL,
     case_number varchar(50),
     document_type legal_document_type,
-    
+
     -- Gemma3 embeddings (768 dimensions)
-    embedding vector(768), 
-    
+    embedding vector(768),
+
     -- Metadata for vector search optimization
     embedding_model varchar(50) DEFAULT 'embeddinggemma:latest',
     embedding_generated_at timestamp DEFAULT NOW(),
-    
+
     -- JSONB for complex legal metadata
     legal_metadata jsonb,
-    
+
     -- Vector search indexes
     CONSTRAINT valid_embedding_dimensions CHECK (vector_dims(embedding) = 768)
 );
 
 -- HNSW index for ultra-fast Gemma embedding similarity search
-CREATE INDEX idx_legal_embeddings_hnsw 
-ON legal_documents 
+CREATE INDEX idx_legal_embeddings_hnsw
+ON legal_documents
 USING hnsw (embedding vector_cosine_ops)
 WITH (m = 16, ef_construction = 64);
 
 -- GIN index for legal metadata search
-CREATE INDEX idx_legal_metadata_gin 
-ON legal_documents 
+CREATE INDEX idx_legal_metadata_gin
+ON legal_documents
 USING gin (legal_metadata jsonb_path_ops);
 ```
 
@@ -129,7 +129,7 @@ CREATE OR REPLACE FUNCTION find_similar_legal_documents(
     similarity_threshold real DEFAULT 0.7,
     max_results integer DEFAULT 10,
     legal_context varchar(50) DEFAULT NULL
-) 
+)
 RETURNS TABLE(
     document_id uuid,
     document_title text,
@@ -141,7 +141,7 @@ RETURNS TABLE(
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
         d.id,
         d.title,
         1 - (d.embedding <=> query_embedding) AS similarity_score,
@@ -149,7 +149,7 @@ BEGIN
         d.document_type,
         d.legal_metadata,
         -- Advanced ranking combining similarity + legal relevance
-        CASE 
+        CASE
             WHEN d.legal_metadata->>'document_priority' = 'high' THEN
                 (1 - (d.embedding <=> query_embedding)) * 1.3
             WHEN d.document_type = 'precedent' THEN
@@ -157,13 +157,13 @@ BEGIN
             ELSE
                 (1 - (d.embedding <=> query_embedding))
         END as ranking_score
-        
+
     FROM legal_documents d
     WHERE d.embedding IS NOT NULL
         AND 1 - (d.embedding <=> query_embedding) >= similarity_threshold
         -- Optional legal context filtering
         AND (legal_context IS NULL OR d.legal_metadata->>'context' = legal_context)
-    
+
     -- Order by advanced ranking score (not just similarity)
     ORDER BY ranking_score DESC
     LIMIT max_results;
@@ -184,7 +184,7 @@ class LegalVectorRanking {
     this.simdProcessor = new SIMDVectorProcessor();
     this.rabbitMQ = new RabbitMQService();
   }
-  
+
   async rankLegalDocuments(query: string, context?: LegalContext): Promise<RankedDocument[]> {
     // 1. Generate Gemma query embedding with SIMD acceleration
     const queryEmbedding = await this.gemmaEmbeddings.generateEmbedding({
@@ -193,7 +193,7 @@ class LegalVectorRanking {
       simdOptimized: true,
       dimensions: 768
     });
-    
+
     // 2. Distribute vector search across workers via RabbitMQ
     await this.rabbitMQ.publish('vector.search.queue', {
       queryEmbedding,
@@ -201,14 +201,14 @@ class LegalVectorRanking {
       similarityThreshold: 0.7,
       maxResults: 100 // Get more for ranking
     });
-    
+
     // 3. Parallel pgvector similarity search across workers
     const similarDocuments = await this.pgvectorDB.findSimilar(
       queryEmbedding,
       0.7, // similarity threshold
       100  // pre-ranking results
     );
-    
+
     // 4. Advanced multi-factor ranking with SIMD
     const rankedResults = await this.simdProcessor.rankDocuments(similarDocuments, {
       factors: {
@@ -219,7 +219,7 @@ class LegalVectorRanking {
       },
       simdAcceleration: true
     });
-    
+
     return rankedResults.slice(0, 10); // Return top 10 ranked results
   }
 }
@@ -235,20 +235,20 @@ class SIMDVectorProcessor {
       const rankingVector = new Float32Array([
         doc.vectorSimilarity,
         this.calculateLegalRelevance(doc),
-        this.calculateDocumentAuthority(doc), 
+        this.calculateDocumentAuthority(doc),
         this.calculateRecencyFactor(doc)
       ]);
-      
+
       const weightVector = new Float32Array([
         options.factors.vectorSimilarity,
         options.factors.legalRelevance,
         options.factors.documentAuthority,
         options.factors.recency
       ]);
-      
+
       // SIMD dot product for final ranking score
       const rankingScore = this.simdDotProduct(rankingVector, weightVector);
-      
+
       return {
         ...doc,
         rankingScore,
@@ -261,7 +261,7 @@ class SIMDVectorProcessor {
       };
     }).sort((a, b) => b.rankingScore - a.rankingScore);
   }
-  
+
   // SIMD-optimized dot product calculation
   simdDotProduct(vecA: Float32Array, vecB: Float32Array): number {
     // In actual implementation, this would use SIMD instructions
@@ -271,7 +271,7 @@ class SIMDVectorProcessor {
       // Process 4 elements simultaneously with SIMD
       const simdChunk = vecA.slice(i, i + 4);
       const weightChunk = vecB.slice(i, i + 4);
-      
+
       for (let j = 0; j < simdChunk.length; j++) {
         result += simdChunk[j] * weightChunk[j];
       }
@@ -295,7 +295,7 @@ Text Search → Filter → Rank → Return = 45 seconds
 ✅ Your Gemma + Multi-Layer Architecture:
 ┌─ Gemma3 Query Embedding Generation (SIMD): 0.8s
 ├─ RabbitMQ Worker Distribution: 0.2s
-├─ 16 Workers Parallel pgvector Search: 2.1s  
+├─ 16 Workers Parallel pgvector Search: 2.1s
 ├─ SIMD Vector Ranking (4 factors at once): 0.7s
 ├─ XState Result Orchestration: 0.2s
 └─ Total: 4.0s (91% faster!)
@@ -316,7 +316,7 @@ Text Search → Filter → Rank → Return = 45 seconds
 ✅ Your Multi-Layer Architecture:
 ┌─ RabbitMQ distributes across 16 workers: 0.5s
 ├─ Each worker processes ~62 documents
-├─ SIMD batches 4 documents per operation  
+├─ SIMD batches 4 documents per operation
 ├─ Gemma3 embedding generation per batch: 2.1s
 ├─ Total batches per worker: 16 batches
 └─ Total time: ~35 seconds (98% faster!)
@@ -329,7 +329,7 @@ Text Search → Filter → Rank → Return = 45 seconds
 ❌ Full-text search with ranking: 2.5 minutes
 ✅ Gemma + pgvector + SIMD + Workers:
    ├─ HNSW index search (16 workers): 1.2s
-   ├─ SIMD ranking (4 factors): 0.8s  
+   ├─ SIMD ranking (4 factors): 0.8s
    ├─ Result aggregation: 0.3s
    └─ Total: 2.3 seconds (98.5% faster!)
 ```
@@ -345,7 +345,7 @@ class ContractAnalyzer {
   async findSimilarClauses(clauseText: string): Promise<SimilarClause[]> {
     // Generate Gemma embedding for clause
     const clauseEmbedding = await this.gemmaEmbeddings.generate(clauseText);
-    
+
     // Multi-worker vector search with ranking
     return await this.vectorRanking.rankLegalDocuments(clauseText, {
       documentType: 'contract',
@@ -357,18 +357,18 @@ class ContractAnalyzer {
 
 // Results:
 // 1. Force Majeure Clause - Similarity: 0.94, Authority: High Court
-// 2. Termination Clause - Similarity: 0.91, Authority: Appeals Court  
+// 2. Termination Clause - Similarity: 0.91, Authority: Appeals Court
 // 3. Damages Limitation - Similarity: 0.89, Authority: District Court
 ```
 
 ### **2. Legal Precedent Discovery**
-```typescript  
+```typescript
 // Multi-layer precedent matching with Gemma embeddings
 class PrecedentMatcher {
   async findRelevantPrecedents(caseDescription: string): Promise<RankedPrecedent[]> {
     // XState orchestrates the entire precedent discovery workflow
     const precedentMachine = createActor(this.legalResearchMachine);
-    
+
     return await precedentMachine.send({
       type: 'FIND_PRECEDENTS',
       query: caseDescription,
@@ -376,7 +376,7 @@ class PrecedentMatcher {
       rankingFactors: {
         vectorSimilarity: 0.35,
         legalAuthority: 0.30,
-        jurisdictionRelevance: 0.20, 
+        jurisdictionRelevance: 0.20,
         factualSimilarity: 0.15
       }
     });
@@ -391,14 +391,14 @@ class EvidenceProcessor {
   async categorizeEvidence(evidenceItems: Evidence[]): Promise<CategorizedEvidence[]> {
     // RabbitMQ distributes evidence across specialized workers
     await this.rabbitMQ.publishBatch('evidence.categorization', evidenceItems);
-    
+
     // Each worker uses Gemma embeddings for categorization
     const categories = await Promise.all(
-      this.workers.map(worker => 
+      this.workers.map(worker =>
         worker.categorizeWithGemmaEmbeddings(evidenceItems.slice(worker.start, worker.end))
       )
     );
-    
+
     // SIMD ranking combines multiple categorization factors
     return this.simdProcessor.rankEvidenceByRelevance(categories.flat());
   }
@@ -421,21 +421,21 @@ class GemmaMetricsDashboard {
         simdUtilization: '94%',
         avgEmbeddingTime: '0.8ms'
       },
-      
-      // Worker concurrency metrics  
+
+      // Worker concurrency metrics
       workerPerformance: {
         activeWorkers: 16,
         avgDocumentsPerWorker: 23,
         workerUtilization: '89%'
       },
-      
+
       // RabbitMQ queue metrics
       queueMetrics: {
         'embedding.generation': { pending: 45, processing: 16 },
         'vector.similarity': { pending: 12, processing: 8 },
         'ranking.optimization': { pending: 3, processing: 4 }
       },
-      
+
       // Gemma model performance
       gemmaMetrics: {
         model: 'embeddinggemma:latest',
@@ -443,7 +443,7 @@ class GemmaMetricsDashboard {
         embeddingQuality: 0.94,
         modelCacheHitRate: '87%'
       },
-      
+
       // pgvector search metrics
       vectorSearchMetrics: {
         avgSearchTime: '2.1ms',
@@ -467,7 +467,7 @@ CREATE OR REPLACE FUNCTION hybrid_legal_search(
     query_text text,
     query_embedding vector(768),
     hybrid_weight real DEFAULT 0.6
-) 
+)
 RETURNS TABLE(
     document_id uuid,
     title text,
@@ -487,13 +487,13 @@ BEGIN
         FROM legal_documents
         WHERE 1 - (embedding <=> query_embedding) > 0.7
     )
-    SELECT 
+    SELECT
         COALESCE(t.id, v.id) as document_id,
         COALESCE(t.title, v.title) as title,
         COALESCE(t.text_score, 0) as text_score,
         COALESCE(v.vector_score, 0) as vector_score,
         -- Hybrid ranking score
-        (hybrid_weight * COALESCE(v.vector_score, 0) + 
+        (hybrid_weight * COALESCE(v.vector_score, 0) +
          (1 - hybrid_weight) * COALESCE(t.text_score, 0)) as hybrid_score
     FROM text_search t
     FULL OUTER JOIN vector_search v ON t.id = v.id
@@ -508,7 +508,7 @@ $$ LANGUAGE plpgsql;
 class DynamicGemmaSelector {
   selectOptimalModel(query: string, context: LegalContext): string {
     const complexity = this.analyzeQueryComplexity(query);
-    
+
     if (complexity.score > 0.8) {
       return 'embeddinggemma:latest'; // Full Gemma3 for complex queries
     } else if (complexity.score > 0.5) {

@@ -93,9 +93,9 @@ if (!browser) return;
     camera.position.set(0, 10, 20);
     // Create WebGL renderer
     renderer = new THREE.WebGLRenderer({
-      antialias: true;
-      alpha: true
-      powerPreference: 'high-performance';
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
     });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));

@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
   import Button from '$lib/components/ui/Button.svelte';
-  import Input from '$lib/components/ui/enhanced-bits';
+  import Input from '$lib/components/ui/bits/Input.svelte';
   import { serviceStatus } from '$lib/stores/chatStore';
   // Use the XState machine through the store
   const actor = useChatActor();

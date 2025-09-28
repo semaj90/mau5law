@@ -1,7 +1,7 @@
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
+  import Card from '$lib/components/ui/bits/Card.svelte';
   // Define Evidence interface locally
   interface Evidence {
     id: string;
@@ -200,12 +200,11 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    /* Fallback for older browsers */
     text-overflow: ellipsis;
     white-space: nowrap;
-    /* Additional constraints for better browser support */
-    max-height: calc(1.2em * 2); /* 2 lines at 1.2 line height */
+    max-height: calc(1.2em * 2);
     line-height: 1.2em;
+    line-clamp: 2;
   }
   /* Enhanced NES styling for better legal UI */
   .yorha-panel-header {
