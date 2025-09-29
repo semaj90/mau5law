@@ -132,7 +132,6 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   /* @unocss-include */
   .app-header {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;
@@ -304,7 +303,6 @@ d;
 }
   .menu-overlay {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;

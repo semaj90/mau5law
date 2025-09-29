@@ -25,8 +25,6 @@
     {/each}
   </ul>
 </nav>
-@@ -1,544 +1,27 @@
- <script lang="ts">
 -  // Svelte 5 runes are auto-imported
 -  	import { page } from '$app/state';
 -  	import { goto } from '$app/navigation';

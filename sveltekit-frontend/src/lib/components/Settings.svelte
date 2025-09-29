@@ -21,13 +21,13 @@ https: //svelte.dev/e/props_duplicate -->
     language: 'en',
     ttsEngine: 'default',
     voiceLanguage: 'en-US',
-    enableSuggestions: true
-    enableMasking: false
-    enableAutoSave: false
+    enableSuggestions: true,
+    enableMasking: false,
+    enableAutoSave: false,
     maxHistoryItems: 50,
-    enableNotifications: true
+    enableNotifications: true,
     fontFamily: 'Arial',
-    fontSize: '16px';
+    fontSize: '16px',
   }
   // Bindable props with defaults
   let { isOpen = $bindable(false)  }: { isOpen = $bindable(false) : unknown } = $props();

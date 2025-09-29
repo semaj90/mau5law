@@ -273,7 +273,6 @@ I can do that — quick question before I modify the file:
 - Which parts do you want replaced with those libraries? (Tabs, buttons/pin, search input, list items, entire layout)
 - Do you want the new UI to keep the same behavior (hover-to-open, pin, fuse search, infinite list) or simplify some behaviors?
 // Packages to install (frontend)
-- melt                       // `npm install melt`
 - lucide-svelte              // `npm install lucide-svelte`
 - fuse.js                    // `npm install fuse.js`
 - xstate & @xstate/svelte    // `npm install xstate @xstate/svelte`
@@ -293,5 +292,4 @@ Behavior decisions
 - Keep DB usage (postgres-js + drizzle) on backend endpoints; call them from the frontend via fetch.
 Minimal examples
 1) Simple auth machine (frontend)
-Reply with the package names and which components to swap and I'll produce the exact Svelte 5-compatible code to drop into $SELECTION_PLACEHOLDER$.
-/
+Reply with the package names and which components to swap and I'll produce the exact Svelte 5-compatible code to drop into $SELECTION_PLACEHOLDER$.*/
