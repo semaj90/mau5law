@@ -6,17 +6,16 @@ https://svelte.dev/e/js_parse_error -->
   import * as monaco from 'monaco-editor';
   import { onDestroy, onMount } from 'svelte';
   let editorContainer: HTMLDivElement = $state();
-  let editor = $state({}) {
+  let editor = $state({}) as monaco.editor.IStandaloneCodeEditor | null;
   // SSR safety: only run in browser
   if (typeof window !== 'undefined') {
     editor = monaco.editor.create(editorContainer, {
       value: '// Type your code here...\n',
       language: 'javascript',
       theme: 'vs-dark',
-      automaticLayout: true;
-    }));
+      automaticLayout: true,
+    });
   }
-  });
   onDestroy(() => {
   if (editor) {
     editor.dispose();

@@ -19,7 +19,7 @@
   let {
     currentModel = 'gemma3-legal',
     initialLimit = 8000,
-    class: className = '';
+    class: className = '',
   }: Props = $props();
   // Reactive state using Svelte 5 runes
   let tokenLimit = $state(initialLimit);
@@ -37,15 +37,13 @@
     messageCount: 0,
     averageTokensPerMessage: 0,
     peakUsage: 0,
-    efficiency: 100;
+    efficiency: 100,
   });
   // Model token limits
   const modelLimits = {
     'gemma3:2b': 2048,
     'gemma3:7b': 4096,
-    'gemma3:13b': 8192,
     'gemma3-legal': 8000,
-    'gemma3-quick': 4096
   }
   // Reactive calculations
   let tokensRemaining = $derived(tokenLimit - tokensUsed);
@@ -91,7 +89,7 @@
         id: crypto.randomUUID(),
         timestamp: new Date(),
         totalTokens,
-        ...usag;
+        ...usage,
       },
       ...usageHistory.slice(0, 99) // Keep last 100 entries
     ];
@@ -115,7 +113,7 @@
       tokensUsed,
       tokensRemaining,
       usagePercentage,
-      session: currentSessio;
+      session: currentSession,
     });
   }
   function optimizeTokenUsage() {
@@ -132,7 +130,7 @@
     }
     ondispatch?.({
       method: 'history_compression',
-      tokensSaved: Math.max(0, tokensUsed - tokenLimit * 0.8);
+      tokensSaved: Math.max(0, tokensUsed - tokenLimit * 0.8),
     });
   }
   function compressHistory(history: typeof usageHistory) {
@@ -155,7 +153,7 @@
       responseTokens: totalOlder.responseTokens,
       totalTokens: totalOlder.totalTokens,
       model: 'system',
-      processingTime: 0;
+      processingTime: 0,
     }
     return [...recent, summaryEntry];
   }
@@ -169,23 +167,23 @@
       messageCount: 0,
       averageTokensPerMessage: 0,
       peakUsage: 0,
-      efficiency: 100;
+      efficiency: 100,
     }
     // ondispatch removed;
   }
   function exportUsageData() {
     const data = {
-      session: currentSession;
-      history: usageHistory;
-      }); const settings = {
+      session: currentSession,
+      history: usageHistory,
+      settings: {
         tokenLimit,
         currentModel,
-        autoOptimize
+        autoOptimize,
       },
       timestamp: new Date(),
     }
     const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json';
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

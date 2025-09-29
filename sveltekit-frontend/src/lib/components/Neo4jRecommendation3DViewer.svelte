@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
     fps: 0,
     vertices: 0,
     relationships: 0,
-    streamingChunks: 0;
+    streamingChunks: 0,
   });
   // XState machine for idle detection and self-prompting
   const { state: idleState, send: sendIdleEvent } = useMachine(idleDetectionMachine);
@@ -48,14 +48,14 @@ https://svelte.dev/e/js_parse_error -->
     time: 0,
     phase: 0,
     speed: 1.0,
-    enabled: true;
+    enabled: true,
   }
   // Progress animation state
   let progressAnimation = {
     value: 0,
     target: 0,
     speed: 0.05,
-    segments: [] as Array;
+    segments: [] as Array<{ start: number; end: number; active: boolean; color: string }>
   }
   /**
    * Initialize WebGPU and canvas context
@@ -85,9 +85,9 @@ https://svelte.dev/e/js_parse_error -->
       // Configure canvas
       const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
       context.configure({
-        device: gpuDevice;
-        format: presentationFormat
-        alphaMode: 'premultiplied';
+        device: gpuDevice,
+        format: presentationFormat,
+        alphaMode: 'premultiplied',
       });
       // Initialize progress animation segments
       initializeProgressSegments();
@@ -107,8 +107,8 @@ https://svelte.dev/e/js_parse_error -->
     progressAnimation.segments = Array.from({ length: numSegments }, (_, i) => ({
       start: (i / numSegments) * 100,
       end: ((i + 1) / numSegments) * 100,
-      active: false;
-      color: theme === 'yorha' ? '#00ff00' : '#0ea5e9';
+      active: false,
+      color: theme === 'yorha' ? '#00ff00' : '#0ea5e9',
     }));
   }
   /**
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
         const streamId = await neo4j3DEngine.startQUICStreaming(nodeId, {
           chunkSize: 8192,
           priority: 'high',
-          compression: true;
+          compression: true,
         });
         streamingActive = true;
         ondispatch?.({ streamId });
@@ -194,10 +194,10 @@ https://svelte.dev/e/js_parse_error -->
           `Query time: ${graph.metadata.queryTime}ms`,
           `Streaming: ${streamingActive ? 'active' : 'disabled'}`
         ],
-        webgpuProcessed: true
-        rtxOptimized: true;
+        webgpuProcessed: true,
+        rtxOptimized: true,
         timestamp: new Date().toISOString(),
-        confidence: graph.recommendationScor;
+        confidence: graph.recommendationScore,
       }
       await webgpuSOMCache.store(cacheEntry);
       console.log('📊 Graph cached in WebGPU SOM cache');
@@ -216,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
     const render = (currentTime: number) => {
       if (!mounted) return;
       const deltaTime = (currentTime - lastTime) / 1000;
-      lastTime = currentTim;
+      lastTime = currentTime
       // Update animation
       if (animation.enabled) {
         animation.time += deltaTime * animation.speed;
@@ -238,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
       if (currentTime - lastFPSTime >= 1000) {
         renderStats.fps = frameCount;
         frameCount = 0;
-        lastFPSTime = currentTim;
+        lastFPSTime = currentTime;
         ondispatch?.({ stats: renderStats });
       }
       // Render frame (WebGPU rendering would go here)
@@ -252,10 +252,10 @@ https://svelte.dev/e/js_parse_error -->
    */
   function updateProgressAnimation(deltaTime: number) {
     // Smooth progress animation
-    const diff = progressAnimation.target - progressAnimation.valu;
+    const diff = progressAnimation.target - progressAnimation.value;
     progressAnimation.value += diff * progressAnimation.speed;
     // Update progress variable for UI
-    progress = progressAnimation.valu;
+    progress = progressAnimation.value;
   }
   /**
    * Render WebGPU frame
@@ -269,10 +269,10 @@ https://svelte.dev/e/js_parse_error -->
     // Create render pass
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [{,
-        view: textureView
+        view: textureView,
         clearValue: { r: 0.1, g: 0.1, b: 0.1, a: 1.0 }, // Dark background
         loadOp: 'clear',
-        storeOp: 'store'
+        storeOp: 'store',
       }]
     });
     // Render graph nodes and relationships here

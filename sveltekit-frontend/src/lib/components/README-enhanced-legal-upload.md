@@ -88,7 +88,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/legal_ai"
 # Ollama
 OLLAMA_BASE_URL="http://localhost:11434"
 OLLAMA_MODEL="gemma3"
-OLLAMA_EMBEDDING_MODEL="mxbai-embed-large"
+OLLAMA_EMBEDDING_MODEL="embeddinggemma"
 
 # Authentication (Lucia v3)
 AUTH_SECRET="your-secret-key-here"
@@ -274,7 +274,7 @@ services:
       - ollama
 
   db:
-    image: pgvector/pgvector:pg15
+    image: pgvector/pgvector:pg17
     environment:
       POSTGRES_DB: legal_ai
       POSTGRES_PASSWORD: password

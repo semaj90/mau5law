@@ -73,7 +73,6 @@
   background: var(--yorha-bg-secondary, #1a1a1a);
   border-bottom: 3px solid var(--yorha-secondary, #ffd700);
   position: sticky;
-y;
   top: 0;
   z-index: 1000;
   box-shadow:
