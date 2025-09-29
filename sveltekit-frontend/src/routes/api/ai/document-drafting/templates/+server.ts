@@ -222,13 +222,13 @@ Respectfully submitted,
       ? allTemplates.filter(template => template.documentTypeId === documentType)
       : allTemplates
     return json({
-      success: true
+      success: true,
       templates,
       meta: {
         total: templates.length,
         totalUsage: templates.reduce((sum, t) => sum + t.usage_count, 0),
         lastUpdated: templates.reduce((latest, t) =>
-          new Date(t.lastUpdated) > new Date(latest) ? t.lastUpdated: latest
+          new Date(t.lastUpdated) > new Date(latest) ? t.lastUpdated: latest,
           templates[0]?.lastUpdated || new Date().toISOString()
         )
       }

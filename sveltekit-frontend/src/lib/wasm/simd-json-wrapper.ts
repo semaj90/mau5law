@@ -1,3 +1,60 @@
+// simd-json-wrapper.ts - single, minimal development shim
+// Provides a safe JS fallback while the real WebAssembly module is built.
+
+export interface LegalDocumentJSON {
+  caseId: string;
+  documentType: 'contract' | 'evidence' | 'brief' | 'citation';
+  title: string;
+  content: string;
+  metadata?: Record<string, unknown>;
+  embeddings?: number[];
+}
+
+export interface SIMDParsingMetrics {
+  parseTime: number;
+  validationTime: number;
+  compressionTime: number;
+  compressionRatio: number;
+  throughput: number;
+}
+
+class ShimSIMD {
+  private metrics: SIMDParsingMetrics = { parseTime: 0, validationTime: 0, compressionTime: 0, compressionRatio: 1, throughput: 0 };
+
+  async initialize(): Promise<void> { /* noop */ }
+
+  async parseDocumentJSON(jsonString: string): Promise<LegalDocumentJSON> {
+    const start = Date.now();
+    const parsed = JSON.parse(jsonString) as LegalDocumentJSON;
+    this.metrics.parseTime = Date.now() - start;
+    return parsed;
+  }
+
+  async batchParseDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
+    const start = Date.now();
+    const results = jsonStrings.map((s) => JSON.parse(s) as LegalDocumentJSON);
+    const total = Date.now() - start;
+    this.metrics.throughput = results.length / Math.max(total / 1000, 0.001);
+    return results;
+  }
+
+  async validateDocument(jsonString: string): Promise<boolean> {
+    try { const doc = JSON.parse(jsonString); return !!(doc && (doc as any).caseId); } catch { return false; }
+  }
+
+  getMetrics(): SIMDParsingMetrics { return { ...this.metrics }; }
+
+  dispose(): void { /* noop */ }
+}
+
+export const simdJSONAccelerator = new ShimSIMD();
+export let isWASMReady = false;
+
+export async function initWASM(timeoutMs = 3000): Promise<boolean> { isWASMReady = false; return isWASMReady; }
+export async function parseLegalDocumentWithSIMD(jsonString: string): Promise<LegalDocumentJSON> { return simdJSONAccelerator.parseDocumentJSON(jsonString); }
+export async function batchParseLegalDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> { return simdJSONAccelerator.batchParseDocuments(jsonStrings); }
+export async function validateLegalDocumentWithSIMD(jsonString: string): Promise<boolean> { return simdJSONAccelerator.validateDocument(jsonString); }
+export function getSIMDMetrics(): SIMDParsingMetrics { return simdJSONAccelerator.getMetrics(); }
 // Lightweight shim for SIMD JSON wrapper used during development.
 // Provides the same API surface as the planned WASM module but
 // uses pure JS fallbacks (JSON.parse) so the frontend can run

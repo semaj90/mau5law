@@ -1,65 +1,78 @@
-// Lightweight Redis JSON cache helper (ioredis) with safe fallbacks.
-// Standardizes on REDIS_URL or localhost:6379.
-let client: any | null = null;
-const pending = new Map<string, Promise<any>();
-function getRedisUrl() {
-  return process.env.REDIS_URL || 'redis://localhost:6379'
-}
-async function ensureClient() {
-  if (client) return client;
-  try {
-    const mod = await import('ioredis');
-    const Redis = (mod as any).default ?? (mod as any);
-    client = new Redis(getRedisUrl();
-    // best-effort connect
-    await client.ping().catch(() => {});
-    return client;
-  } catch {
-    client = null;
+import IORedis from 'ioredis';
+import { env } from '$env/dynamic/private';
+import { EventEmitter } from 'events'; // Import EventEmitter for event handling
+import type { SimpleRedis } from '$lib/types/ambient'; // Import SimpleRedis interface
+
+export class RedisCache {
+  private client: SimpleRedis; // Use SimpleRedis interface for better type compatibility
+  private isConnected: boolean = false;
+
+  constructor() {
+    const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
+    // Cast the IORedis instance to SimpleRedis to align with the interface
+    this.client = new IORedis(redisUrl) as unknown as SimpleRedis;
+
+    // Explicitly cast the client to EventEmitter to access the 'on' method,
+    // as the inferred type might be a custom stub without it.
+    (this.client as unknown as EventEmitter).on('connect', () => {
+      this.isConnected = true;
+      console.log('✅ Redis cache connected');
+    });
+
+    (this.client as unknown as EventEmitter).on('error', (err: Error) => {
+      this.isConnected = false;
+      console.error('❌ Redis cache error:', err);
+    });
+  }
+
+  async get<T>(key: string): Promise<T | null> {
+    if (!this.isConnected) {
+      console.warn('Redis not connected, skipping GET for key:', key);
+      return null;
+    }
+    const data = await this.client.get(key);
+    // Ensure data is treated as a string before parsing, as SimpleRedis.get returns unknown
+    if (typeof data === 'string') {
+      return JSON.parse(data) as T;
+    }
     return null;
   }
-}
-export async function getJSON<T = unknown>(_key: string): Promise<T | null> {
-  const c = await ensureClient();
-  if (!c) return null;
-  try {
-    const v = await c.get(key);
-    if (!v) return null;
-    return JSON.parse(v) as T;
-  } catch {
-    return null;
+
+  async set<T>(key: string, value: T, ttlSeconds: number = 3600): Promise<void> {
+    if (!this.isConnected) {
+      console.warn('Redis not connected, skipping SET for key:', key);
+      return;
+    }
+    // setex is available on SimpleRedis, no need for IORedis cast
+    await this.client.setex(key, ttlSeconds, JSON.stringify(value));
+  }
+
+  async del(key: string): Promise<void> {
+    if (!this.isConnected) {
+      console.warn('Redis not connected, skipping DEL for key:', key);
+      return;
+    }
+    await this.client.del(key);
+  }
+
+  async healthCheck(): Promise<boolean> {
+    try {
+      // ping is available on SimpleRedis, no need for IORedis cast
+      await this.client.ping();
+      return true;
+    } catch (error) {
+      console.error('Redis ping failed:', error);
+      return false;
+    }
+  }
+
+  async disconnect(): Promise<void> {
+    if (this.isConnected) {
+      await this.client.quit();
+      this.isConnected = false;
+      console.log('🔌 Redis cache disconnected');
+    }
   }
 }
-export async function setJSON(_key: string, value: unknown, ttlSeconds = 60): Promise<void> {
-  const c = await ensureClient();
-  if (!c) return;
-  try {
-    const s = JSON.stringify(value);
-    if (ttlSeconds > 0) await c.set(key, s, 'EX', ttlSeconds);
-    else await c.set(key, s);
-  } catch {
-    // ignore
-  }
-}
-// Simple anti-stampede: coalesce concurrent misses per key in-process.
-export async function withCache<T>(_key: string, ttlSeconds: number, compute: () => Promise<T>): Promise<any> {
-  const hit = await getJSON<T>(key);
-  if (hit != null) return { value: hit, cached: true }
-  if (pending.has(key)) {
-    const v = await pending.get(key)!;
-    return { value: v as T, cached: false }
-  }
-  const p = (async () => {
-    const v = await compute();
-    // best effort set; ignore errors
-    setJSON(key, v as unknown, ttlSeconds).catch(() => {});
-    return v;
-  })();
-  pending.set(key, p);
-  try {
-    const v = await p;
-    return { value: v as T, cached: false }
-  } finally {
-    pending.delete(key);
-  }
-}
+
+export const redisCache = new RedisCache();

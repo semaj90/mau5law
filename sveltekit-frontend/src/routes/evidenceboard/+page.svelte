@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
+  import SimpleEvidenceBoard from '$lib/components/evidence/SimpleEvidenceBoard.svelte';
   import { Button, Card } from '$lib/components/ui/enhanced-bits';
   import { onMount } from 'svelte';
   let pageLoaded = $state(false);
@@ -49,7 +49,7 @@
     </div>
   {/if}
   {#if pageLoaded}
-    <EnhancedEvidenceBoard />
+    <SimpleEvidenceBoard caseId="7d897d59-9832-45c1-87e6-9c5a04745119" />
   {:else}
     <div class="loading-screen">
       <div class="loading-spinner"></div>

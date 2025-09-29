@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unterminated string constant;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import * as DropdownMenu from 'bits-ui';
   import {
@@ -25,14 +22,7 @@ https://svelte.dev/e/js_parse_error -->
     reportActions,
     reportUI,
   } from '$lib/stores/report';
-  // File menu dropdown
-  // Melt UI component creation removed - replace with bits-ui declarative components
-  // Edit menu dropdown
-  // Melt UI component creation removed - replace with bits-ui declarative components
-  // View menu dropdown
-  // Melt UI component creation removed - replace with bits-ui declarative components
-  // Toolbar
-  // Melt UI component creation removed - replace with bits-ui declarative components
+
   // Actions
   const handleSave = () => {
     reportActions.save();
@@ -58,231 +48,198 @@ https://svelte.dev/e/js_parse_error -->
     reportActions.updateSettings({ layout: nextLayout });
   }
 </script>
-<div class="container mx-auto px-4">
+
+<div class="report-toolbar container mx-auto px-4">
   <!-- Main Menu Bar -->
-  <div class="container mx-auto px-4">
+  <div class="menu-bar">
     <!-- File Menu -->
-    <div class="container mx-auto px-4">
-      <button
-        class="container mx-auto px-4"
-        class:active={$fileOpen}
-      >
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger class="menu-trigger nes-btn">
         File
-      </button>
-      {#if $fileOpen}
-        <div
-          class="container mx-auto px-4"
-          /* transition removed */}
-        >
-          <button
-            class="container mx-auto px-4"
-            onclick={() => handleSave()}
-          >
-            <Save size={16} />
-            Save Report
-            <span class="container mx-auto px-4">Ctrl+S</span>
-          </button>
-          <button  class="container mx-auto px-4">
-            <FileText size={16} />
-            New Report
-            <span class="container mx-auto px-4">Ctrl+N</span>
-          </button>
-          <div class="container mx-auto px-4"></div>
-          <button  class="container mx-auto px-4">
-            <Upload size={16} />
-            Import
-          </button>
-          <button
-            class="container mx-auto px-4"
-            onclick={() => handleExport()}
-          >
-            <Download size={16} />
-            Export
-          </button>
-          <div class="container mx-auto px-4"></div>
-          <button
-            class="container mx-auto px-4"
-            onclick={() => handlePreview()}
-          >
-            <Eye size={16} />
-            Preview
-          </button>
-        </div>
-      {/if}
-    </div>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
+        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={handleSave}>
+          <Save size={16} />
+          Save Report
+          <span class="shortcut">Ctrl+S</span>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item class="dropdown-item nes-btn">
+          <FileText size={16} />
+          New Report
+          <span class="shortcut">Ctrl+N</span>
+        </DropdownMenu.Item>
+        <DropdownMenu.Separator class="dropdown-separator" />
+        <DropdownMenu.Item class="dropdown-item nes-btn">
+          <Upload size={16} />
+          Import
+        </DropdownMenu.Item>
+        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={handleExport}>
+          <Download size={16} />
+          Export
+        </DropdownMenu.Item>
+        <DropdownMenu.Separator class="dropdown-separator" />
+        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={handlePreview}>
+          <Eye size={16} />
+          Preview
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
+
     <!-- Edit Menu -->
-    <div class="container mx-auto px-4">
-      <button
-        class="container mx-auto px-4"
-        class:active={$editOpen}
-      >
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger class="menu-trigger nes-btn">
         Edit
-      </button>
-      {#if $editOpen}
-        <div
-          class="container mx-auto px-4"
-          /* transition removed */ />
-            Undo
-            <span class="container mx-auto px-4">Ctrl+Z</span>
-          </button>
-          <button  class="container mx-auto px-4">
-            <Redo size={16} />
-            Redo
-            <span class="container mx-auto px-4">Ctrl+Y</span>
-          </button>
-          <div class="container mx-auto px-4"></div>
-          <button  class="container mx-auto px-4">
-            <Search size={16} />
-            Find
-            <span class="container mx-auto px-4">Ctrl+F</span>
-          </button>
-          <button  class="container mx-auto px-4">
-            <Replace size={16} />
-            Replace
-            <span class="container mx-auto px-4">Ctrl+H</span>
-          </button>
-        </div>
-      {/if}
-    </div>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
+        <DropdownMenu.Item class="dropdown-item nes-btn">
+          <Undo size={16} />
+          Undo
+          <span class="shortcut">Ctrl+Z</span>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item class="dropdown-item nes-btn">
+          <Redo size={16} />
+          Redo
+          <span class="shortcut">Ctrl+Y</span>
+        </DropdownMenu.Item>
+        <DropdownMenu.Separator class="dropdown-separator" />
+        <DropdownMenu.Item class="dropdown-item nes-btn">
+          <Search size={16} />
+          Find
+          <span class="shortcut">Ctrl+F</span>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item class="dropdown-item nes-btn">
+          <Replace size={16} />
+          Replace
+          <span class="shortcut">Ctrl+H</span>
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
+
     <!-- View Menu -->
-    <div class="container mx-auto px-4">
-      <button
-        class="container mx-auto px-4"
-        class:active={$viewOpen}
-      >
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger class="menu-trigger nes-btn">
         View
-      </button>
-      {#if $viewOpen}
-        <div
-          class="container mx-auto px-4"
-          /* transition removed */
-          >
-            <Sidebar size={16} />
-            Toggle Sidebar
-            <span class="container mx-auto px-4">Ctrl+B</span>
-          </button>
-          <button
-            class="container mx-auto px-4"
-            onclick={() => toggleLayout()}
-          >
-            <Layout size={16} />
-            Switch Layout ({$report.settings.layout})
-          </button>
-          <button
-            class="container mx-auto px-4"
-            onclick={() => toggleFullscreen()}
-          >
-            {#if $reportUI.fullscreen}
-              <Minimize size={16} />
-              Exit Fullscreen
-            {:else}
-              <Maximize size={16} />
-              Fullscreen
-            {/if}
-            <span class="container mx-auto px-4">F11</span>
-          </button>
-        </div>
-      {/if}
-    </div>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
+        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleSidebar}>
+          <Sidebar size={16} />
+          Toggle Sidebar
+          <span class="shortcut">Ctrl+B</span>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleLayout}>
+          <Layout size={16} />
+          Switch Layout ({$report.settings.layout})
+        </DropdownMenu.Item>
+        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleFullscreen}>
+          {#if $reportUI.fullscreen}
+            <Minimize size={16} />
+            Exit Fullscreen
+          {:else}
+            <Maximize size={16} />
+            Fullscreen
+          {/if}
+          <span class="shortcut">F11</span>
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   </div>
+
   <!-- Quick Actions -->
-  <div class="container mx-auto px-4">
+  <div class="quick-actions">
     <button
-      class="container mx-auto px-4"
+      class="action-button nes-btn"
       class:unsaved={$editorState.hasUnsavedChanges}
-      onclick={() => handleSave()}
+      on:click={handleSave}
       title="Save Report"
     >
       <Save size={16} />
     </button>
-    <div class="container mx-auto px-4"></div>
+    <div class="separator"></div>
     <button
-      class="container mx-auto px-4"
-      onclick={() => toggleSidebar()}
+      class="action-button nes-btn"
+      on:click={toggleSidebar}
       title="Toggle Sidebar"
     >
       <Sidebar size={16} />
     </button>
     <button
-      class="container mx-auto px-4"
-      onclick={() => toggleLayout()}
+      class="action-button nes-btn"
+      on:click={toggleLayout}
       title="Switch Layout"
     >
       <Layout size={16} />
     </button>
-    <div class="container mx-auto px-4"></div>
+    <div class="separator"></div>
     <button
-      class="container mx-auto px-4"
-      onclick={() => handlePreview()}
+      class="action-button nes-btn"
+      on:click={handlePreview}
       title="Preview Report"
     >
       <Eye size={16} />
     </button>
   </div>
+
   <!-- Status Info -->
-  <div class="container mx-auto px-4">
-    <span class="container mx-auto px-4">
+  <div class="status-info">
+    <span class="word-count">
       {$editorState.wordCount} words
     </span>
     {#if $editorState.hasUnsavedChanges}
-      <span class="container mx-auto px-4" transitislide={{ duration: 200 ">
+      <span class="unsaved-indicator" transition:slide={{ duration: 200 }}>
         Unsaved changes
       </span>
     {:else}
-      <span class="container mx-auto px-4" transitislide={{ duration: 200 ">
+      <span class="saved-indicator" transition:slide={{ duration: 200 }}>
         Saved {$editorState.lastSaved.toLocaleTimeString()}
       </span>
     {/if}
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   .report-toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
-    background: var(--pico-background-color, #ffffff);
-    border-bottom: 1px solid var(--pico-border-color, #e2e8f0);
+    justify-content: space-between;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
     padding: 0.5rem 1rem;
     min-height: 3rem;
     position: sticky;
     top: 0;
     z-index: 40;
-}
+  }
   .menu-bar {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-}
-  .menu-item {
-    position: relative;
-}
+  }
   .menu-trigger {
     background: none;
     border: none;
     padding: 0.5rem 0.75rem;
     border-radius: 0.375rem;
     font-size: 0.875rem;
-    color: var(--pico-color, #374151);
+    color: #374151;
     cursor: pointer;
     transition: all 0.15s ease;
-}
-  .menu-trigger: hover
-  .menu-trigger.active {
-    background: var(--pico-primary-background, #f3f4f6);
-}
+  }
+  .menu-trigger:hover {
+    background: #f3f4f6;
+  }
   .dropdown-menu {
     position: absolute;
     top: 100%;
     left: 0;
     min-width: 12rem;
-    background: var(--pico-card-background-color, #ffffff);
-    border: 1px solid var(--pico-border-color, #e2e8f0);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     padding: 0.5rem;
     z-index: 50;
-}
+  }
   .dropdown-item {
     display: flex;
     align-items: center;
@@ -294,29 +251,29 @@ https://svelte.dev/e/js_parse_error -->
     text-align: left;
     border-radius: 0.25rem;
     font-size: 0.875rem;
-    color: var(--pico-color, #374151);
+    color: #374151;
     cursor: pointer;
     transition: background-color 0.15s ease;
-}
+  }
   .dropdown-item:hover {
-    background: var(--pico-primary-background, #f3f4f6);
-}
+    background: #f3f4f6;
+  }
   .dropdown-separator {
     height: 1px;
-    background: var(--pico-border-color, #e2e8f0);
+    background: #e2e8f0;
     margin: 0.5rem 0;
-}
+  }
   .shortcut {
     margin-left: auto;
     font-size: 0.75rem;
-    color: var(--pico-muted-color, #6b7280);
+    color: #6b7280;
     opacity: 0.7;
-}
+  }
   .quick-actions {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-}
+  }
   .action-button {
     display: flex;
     align-items: center;
@@ -326,38 +283,38 @@ https://svelte.dev/e/js_parse_error -->
     border: none;
     background: none;
     border-radius: 0.25rem;
-    color: var(--pico-color, #6b7280);
+    color: #6b7280;
     cursor: pointer;
     transition: all 0.15s ease;
-}
+  }
   .action-button:hover {
-    background: var(--pico-primary-background, #f3f4f6);
-    color: var(--pico-primary, #3b82f6);
-}
+    background: #f3f4f6;
+    color: #3b82f6;
+  }
   .action-button.unsaved {
-    color: var(--pico-del-color, #ef4444);
-}
+    color: #ef4444;
+  }
   .separator {
     width: 1px;
     height: 1.5rem;
-    background: var(--pico-border-color, #e2e8f0);
+    background: #e2e8f0;
     margin: 0 0.5rem;
-}
+  }
   .status-info {
     display: flex;
     align-items: center;
     gap: 1rem;
     font-size: 0.75rem;
-    color: var(--pico-muted-color, #6b7280);
-}
+    color: #6b7280;
+  }
   .word-count {
     font-weight: 500;
-}
+  }
   .unsaved-indicator {
-    color: var(--pico-del-color, #ef4444);
+    color: #ef4444;
     font-weight: 500;
-}
+  }
   .saved-indicator {
-    color: var(--pico-ins-color, #10b981);
-}
+    color: #10b981;
+  }
 </style>

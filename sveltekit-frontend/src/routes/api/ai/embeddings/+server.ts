@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const validatedData = EmbeddingRequestSchema.safeParse(body)
         if (!validatedData.success) {
           return json({
-            success: false
+            success: false,
             error: 'Invalid request data',
             details: validatedData.error.flatten()
           }, { status: 400 })
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processing_time: result.processing_time,
             cached: result.cached,
             text_hash: result.text_hash
-          } : undefined
+          } : undefined,
           error: result.error
         })
       case 'search':
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const searchData = VectorSearchSchema.safeParse(body)
         if (!searchData.success) {
           return json({
-            success: false
+            success: false,
             error: 'Invalid search request',
             details: searchData.error.flatten()
           }, { status: 400 })
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
         if (!queryEmbedding.success || !queryEmbedding.embedding) {
           return json({
-            success: false
+            success: false,
             error: 'Failed to generate query embedding'
           }, { status: 500 })
         }
@@ -84,12 +84,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
           filters: searchData.data.filters
         })
         return json({
-          success: true
+          success: true,
           data: {
             query: searchData.data.query,
-            results: searchResults
-            query_embedding_time: queryEmbedding.processing_time,
+            results: searchResults,
             total_results: searchResults.length
+          },
+          embedding_model: queryEmbedding.model,
+          embedding_dimensions: queryEmbedding.dimensions,
+          embedding_cached: queryEmbedding.cached,
+          embedding_time: queryEmbedding.processing_time,
+            query_embedding_time: queryEmbedding.processing_time,
+            total_results: searchResults.length,
           }
         })
       case 'batch':
@@ -97,7 +103,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const batchData = BatchEmbeddingSchema.safeParse(body)
         if (!batchData.success) {
           return json({
-            success: false
+            success: false,
             error: 'Invalid batch request',
             details: batchData.error.flatten()
           }, { status: 400 })
@@ -112,9 +118,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
           }
         )
         return json({
-          success: true
+          success: true,
           data: {
-            embeddings: batchResults
+            embeddings: batchResults,
             total_processed: batchResults.length,
             successful: batchResults.filter(r => r.success).length,
             failed: batchResults.filter(r => !r.success).length
@@ -122,7 +128,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: 'Unknown action'
         }, { status: 400 })
     }
@@ -139,7 +145,7 @@ export const GET: RequestHandler = async ({ url }) => {
     switch (action) {
       case 'status':
         return json({
-          success: true
+          success: true,
           data: {
             status: 'Gemma embeddings service available',
             models: ['nomic-embed-text:latest'],
@@ -150,24 +156,24 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'stats':
         const stats = await gemmaEmbeddingsService.getIndexStats()
         return json({
-          success: true
+          success: true,
           data: stats
         })
       case 'optimize':
         await gemmaEmbeddingsService.optimizeIndexes()
         return json({
-          success: true
+          success: true,
           data: { message: 'Vector indexes optimized successfully' }
         })
       default:
-        return json({,
-          success: false
-          error: 'Unknown action'
+        return json({
+          success: false,
+          error: 'Unknown action',
         }, { status: 400 })
     }
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message : 'Request failed'
     }, { status: 500 })
   }

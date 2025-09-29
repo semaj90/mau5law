@@ -90,8 +90,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   }
 }
 function generateRoleSpecificRecommendations(
-  analysis: any
-  userRole?: string
+  analysis: any,
+  userRole?: string,
   text?: string
 ): string[] {
   const recommendations = []

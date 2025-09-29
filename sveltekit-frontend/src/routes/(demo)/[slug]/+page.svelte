@@ -15,13 +15,13 @@
   // Demo component mapping
   const demoComponents = {
     'webgpu': () => import('$lib/components/demo/WebGPUAccelerationDemo.svelte'),
-    'cuda-streaming': () => import('../../cuda-streaming/+page.svelte'),
-    'ai-assistant': () => import('../../ai-assistant/+page.svelte'),
-    'evidence-canvas': () => import('../../evidence-canvas/+page.svelte'),
-    'legal-research': () => import('../../legal/research/+page.svelte'),
+    'cuda-streaming': () => import('/cuda-streaming/+page.svelte'),
+    'ai-assistant': () => import('/ai/assistant/+page.svelte'),
+    'evidence-canvas': () => import('/evidence/canvas/+page.svelte'),
+    'legal-research': () => import('/legal/research/+page.svelte'),
     'vector-search': () => import('$lib/components/demo/VectorIntelligenceDemo.svelte'),
     'gaming-ui': () => import('$lib/components/demo/GamingCacheDemo.svelte'),
-    'performance': () => import('../../optimization-dashboard/+page.svelte')
+    'performance': () => import('/optimization-dashboard/+page.svelte')
   };
 
   // Component loading state

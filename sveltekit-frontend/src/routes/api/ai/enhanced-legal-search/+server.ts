@@ -16,15 +16,16 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 // Enhanced Legal AI Search API with LangChain.js, Nomic Embed, and Vector Search
 // Provides advanced semantic search with multiple strategies and intelligent ranking
 import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/server/ai/enhanced-legal-search.js'
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import redisOptimized from '$lib/middleware/redis-orchestrator-middleware'
 // Rate limiting configuration
 // Simple rate limiter stub that returns the expected format
 const rateLimiter = {
-  check: (ip: string) => Promise.resolve({ allowed: true, retryAfter: null }),
+  check: (_ip: string) => Promise.resolve({ allowed: true, retryAfter: null }),
   windowMs: 60 * 1000,
   max: 30,
   message: 'Too many search requests, please try again later.'
@@ -36,7 +37,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
     const rateLimitResult = await rateLimiter.check(clientAddress)
     if (!rateLimitResult.allowed) {
       return json({
-        success: false
+        success: false,
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter
       }, { status: 429 })
@@ -48,7 +49,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
     const useAI = url.searchParams.get('useAI') !== 'false'
     if (!query || query.trim().length < 2) {
       return json({
-        success: false
+        success: false,
         error: 'Query parameter "q" is required and must be at least 2 characters',
         query: query
       }, { status: 400 })
@@ -57,8 +58,8 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
     // Perform enhanced search
     const startTime = Date.now()
     const results = await enhancedLegalSearch.search(query, {
-      jurisdiction: jurisdiction !== 'all' ? jurisdiction : undefined
-      category: category !== 'all' ? category : undefined
+      jurisdiction: jurisdiction !== 'all' ? jurisdiction : undefined,
+      category: category !== 'all' ? category : undefined,
       maxResults,
       useAI
     })
@@ -66,7 +67,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
     // Calculate search analytics
     const analytics = calculateSearchAnalytics(results, query, searchTime)
     return json({
-      success: true
+      success: true,
       query,
       results,
       analytics,
@@ -80,12 +81,12 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
         useAI
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Enhanced legal search API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Search service temporarily unavailable',
-      details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined
+      details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined,
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
@@ -97,7 +98,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
     const rateLimitResult = await rateLimiter.check(clientAddress)
     if (!rateLimitResult.allowed) {
       return json({
-        success: false
+        success: false,
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter
       }, { status: 429 })
@@ -113,7 +114,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
     } = body
     if (!query || typeof query !== 'string' || query.trim().length < 2) {
       return json({
-        success: false
+        success: false,
         error: 'Query is required and must be at least 2 characters',
         received: { query, type: typeof query }
       }, { status: 400 })
@@ -122,8 +123,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
     const startTime = Date.now()
     // Perform enhanced search with advanced options
     const results = await enhancedLegalSearch.search(query, {
-      jurisdiction: jurisdiction !== 'all' ? jurisdiction : undefined
-      category: category !== 'all' ? category : undefined
+      jurisdiction: jurisdiction !== 'all' ? jurisdiction : undefined,
+      category: category !== 'all' ? category : undefined,
       maxResults: Math.min(maxResults, 50), // Cap at 50 results
       useAI,
       ...advancedOptions
@@ -134,10 +135,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
     // AI enhancement if requested
     let aiEnhancement = null
     if (useAI && results.length > 0) {
-      aiEnhancement = await generateAIEnhancement(query, results.slice(0, 5)
+      aiEnhancement = await generateAIEnhancement(query, results.slice(0, 5))
     }
     return json({
-      success: true
+      success: true,
       query,
       results,
       analytics,
@@ -153,12 +154,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       },
       advancedOptions
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Enhanced legal search POST API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Search service temporarily unavailable',
-      details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined
+      details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined,
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
@@ -169,9 +170,9 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
     return {
       avgScore: 0,
       avgConfidence: 0,
-      searchTypes: { [key: string]: any },
-      jurisdictions: { [key: string]: any },
-      categories: { [key: string]: any },
+      searchTypes: {},
+      jurisdictions: {},
+      categories: {},
       searchTime,
       resultCount: 0
     }
@@ -203,7 +204,16 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
     queryTerms: query.split(' ').length
   }
 }
-function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string, searchTime: number, requestBody: any) {
+interface AdvancedSearchRequestBody {
+  query: string;
+  jurisdiction?: string;
+  category?: string;
+  maxResults?: number;
+  useAI?: boolean;
+  advancedOptions?: Record<string, unknown>;
+}
+
+function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string, searchTime: number, requestBody: AdvancedSearchRequestBody) {
   const basicAnalytics = calculateSearchAnalytics(results, query, searchTime)
   // Add advanced metrics
   const relevanceFactors = results.reduce((acc, r) => {
@@ -233,11 +243,20 @@ function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string,
     requestSize: JSON.stringify(requestBody).length
   }
 }
-async function generateAIEnhancement(query: string, topResults: LegalSearchResult[]): Promise<any> {
+interface AIEnhancementResult {
+  summary: string;
+  topCategories: string[];
+  topJurisdictions: string[];
+  suggestions: string[];
+  confidence: number;
+  recommendedNextSearch: string | null;
+}
+
+async function generateAIEnhancement(query: string, topResults: LegalSearchResult[]): Promise<AIEnhancementResult | null> {
   try {
     const resultsSummary = topResults.map(r => `${r.title} (${r.category}, ${r.jurisdiction})`).join('; ')
     return {
-      summary: `Found ${topResults.length} highly relevant legal documents related to "${query}".`,
+      summary: `Found ${topResults.length} highly relevant legal documents related to "${query}". Top results: ${resultsSummary}`,
       topCategories: Array.from(new Set(topResults.map(r => r.category))),
       topJurisdictions: Array.from(new Set(topResults.map(r => r.jurisdiction))),
       suggestions: [
@@ -248,7 +267,7 @@ async function generateAIEnhancement(query: string, topResults: LegalSearchResul
       confidence: topResults.reduce((sum, r) => sum + r.confidence, 0) / topResults.length,
       recommendedNextSearch: topResults[0]?.category ? `${query} ${topResults[0].category}` : null
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.warn('AI enhancement generation failed:', error)
     return null
   }
@@ -271,5 +290,5 @@ export const OPTIONS: RequestHandler = async () => {
     timestamp: new Date().toISOString()
   })
 }
-export const GET = redisOptimized.aiSearch(originalGETHandler)
-export const POST = redisOptimized.aiSearch(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

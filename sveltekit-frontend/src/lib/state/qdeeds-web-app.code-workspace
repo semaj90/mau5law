@@ -22,5 +22,6 @@
       "claude-desktop": true,
     },
     "chat.useChatSessionsForCloudButton": false,
+    "github.copilot.nextEditSuggestions.enabled": true,
   },
 }
