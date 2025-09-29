@@ -4,12 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -22,7 +19,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// Unified RAG Service - Replaces 100+ microservices with one comprehensive service
+// Document represents a legal document stored in MinIO and its metadata.// Unified RAG Service - Replaces 100+ microservices with one comprehensive service
 // Features: Document storage (MinIO), Vector search (pgvector), Streaming RAG, Smart chunking
 
 const (
@@ -32,26 +29,25 @@ const (
 	OllamaBaseURL     = "http://localhost:11434"
 	EmbeddingModel    = "nomic-embed-text"
 	EmbeddingDimension = 768
-	
+
 	// MinIO Configuration
 	MinIOEndpoint   = "localhost:9000"
 	MinIOAccessKey  = "minio"
 	MinIOSecretKey  = "minio123"
 	MinIOBucketName = "legal-documents"
-	
+
 	// RAG Configuration
 	ChunkSize           = 512   // Characters per chunk
 	ChunkOverlap        = 64    // Overlap between chunks
 	MaxChunksPerDoc     = 1000  // Maximum chunks per document
 	MaxRetrievalResults = 10    // Max similar chunks to retrieve
-	
+
 	// Streaming Configuration
 	StreamBufferSize = 1024
 	StreamTimeout    = 30 * time.Second
 )
 
-// Document represents a legal document in the system
-type Document struct {
+// Document represents a legal document in the systemtype Document struct {
 	ID          string                 `json:"id"`
 	Title       string                 `json:"title"`
 	Content     string                 `json:"content"`
@@ -113,11 +109,11 @@ type UnifiedRAGService struct {
 	db          *pgxpool.Pool
 	minioClient *minio.Client
 	logger      *zap.Logger
-	
+
 	// Processing pools
 	chunkProcessor chan *chunkJob
 	embeddingQueue chan *embeddingJob
-	
+
 	// Metrics
 	documentsProcessed int64
 	chunksGenerated    int64
@@ -138,13 +134,13 @@ type embeddingJob struct {
 // NewUnifiedRAGService creates the consolidated RAG service
 func NewUnifiedRAGService() (*UnifiedRAGService, error) {
 	logger, _ := zap.NewProduction()
-	
+
 	// PostgreSQL connection
 	db, err := pgxpool.New(context.Background(), PostgreSQLURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
 	}
-	
+
 	// MinIO client
 	minioClient, err := minio.New(MinIOEndpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(MinIOAccessKey, MinIOSecretKey, ""),
@@ -153,7 +149,7 @@ func NewUnifiedRAGService() (*UnifiedRAGService, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create MinIO client: %w", err)
 	}
-	
+
 	service := &UnifiedRAGService{
 		db:             db,
 		minioClient:    minioClient,
@@ -161,44 +157,44 @@ func NewUnifiedRAGService() (*UnifiedRAGService, error) {
 		chunkProcessor: make(chan *chunkJob, 100),
 		embeddingQueue: make(chan *embeddingJob, 500),
 	}
-	
+
 	// Initialize storage
 	if err := service.initializeStorage(); err != nil {
 		return nil, fmt.Errorf("failed to initialize storage: %w", err)
 	}
-	
+
 	// Start background workers
 	service.startWorkers()
-	
+
 	logger.Info("Unified RAG Service initialized",
 		zap.String("minio_endpoint", MinIOEndpoint),
 		zap.String("bucket", MinIOBucketName))
-	
+
 	return service, nil
 }
 
 // initializeStorage sets up PostgreSQL schema and MinIO bucket
 func (s *UnifiedRAGService) initializeStorage() error {
 	ctx := context.Background()
-	
+
 	// Create MinIO bucket
 	exists, err := s.minioClient.BucketExists(ctx, MinIOBucketName)
 	if err != nil {
 		return fmt.Errorf("failed to check MinIO bucket: %w", err)
 	}
-	
+
 	if !exists {
 		if err := s.minioClient.MakeBucket(ctx, MinIOBucketName, minio.MakeBucketOptions{}); err != nil {
 			return fmt.Errorf("failed to create MinIO bucket: %w", err)
 		}
 		s.logger.Info("Created MinIO bucket", zap.String("bucket", MinIOBucketName))
 	}
-	
+
 	// Create PostgreSQL schema
 	schema := `
 		-- Ensure pgvector extension
 		CREATE EXTENSION IF NOT EXISTS vector;
-		
+
 		-- Documents table
 		CREATE TABLE IF NOT EXISTS rag_documents (
 			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -211,7 +207,7 @@ func (s *UnifiedRAGService) initializeStorage() error {
 			uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			processed_at TIMESTAMP
 		);
-		
+
 		-- Document chunks with embeddings
 		CREATE TABLE IF NOT EXISTS rag_document_chunks (
 			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -227,7 +223,7 @@ func (s *UnifiedRAGService) initializeStorage() error {
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			UNIQUE(document_id, chunk_index)
 		);
-		
+
 		-- RAG query cache
 		CREATE TABLE IF NOT EXISTS rag_query_cache (
 			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -240,7 +236,7 @@ func (s *UnifiedRAGService) initializeStorage() error {
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			expires_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP + INTERVAL '24 hours'
 		);
-		
+
 		-- Indexes for performance
 		CREATE INDEX IF NOT EXISTS idx_rag_documents_uploaded ON rag_documents(uploaded_at DESC);
 		CREATE INDEX IF NOT EXISTS idx_rag_documents_type ON rag_documents(file_type);
@@ -249,20 +245,20 @@ func (s *UnifiedRAGService) initializeStorage() error {
 		CREATE INDEX IF NOT EXISTS idx_rag_chunks_confidence ON rag_document_chunks(confidence DESC);
 		CREATE INDEX IF NOT EXISTS idx_rag_query_cache_hash ON rag_query_cache(query_hash);
 		CREATE INDEX IF NOT EXISTS idx_rag_query_cache_expires ON rag_query_cache(expires_at);
-		
+
 		-- HNSW index for vector similarity search
-		CREATE INDEX IF NOT EXISTS idx_rag_embeddings_hnsw ON rag_document_chunks 
+		CREATE INDEX IF NOT EXISTS idx_rag_embeddings_hnsw ON rag_document_chunks
 		USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64);
-		
+
 		-- Clean up expired cache entries
 		DELETE FROM rag_query_cache WHERE expires_at < CURRENT_TIMESTAMP;
 	`
-	
+
 	_, err = s.db.Exec(ctx, schema)
 	if err != nil {
 		return fmt.Errorf("failed to create schema: %w", err)
 	}
-	
+
 	s.logger.Info("Database schema initialized with pgvector support")
 	return nil
 }
@@ -273,15 +269,15 @@ func (s *UnifiedRAGService) startWorkers() {
 	for i := 0; i < 4; i++ {
 		go s.chunkWorker()
 	}
-	
+
 	// Embedding generation workers
 	for i := 0; i < 8; i++ {
 		go s.embeddingWorker()
 	}
-	
+
 	// Cache cleanup worker
 	go s.cacheCleanupWorker()
-	
+
 	s.logger.Info("Background workers started")
 }
 
@@ -290,7 +286,7 @@ func (s *UnifiedRAGService) chunkWorker() {
 	for job := range s.chunkProcessor {
 		err := s.processDocumentChunks(job.Document)
 		job.Response <- err
-		
+
 		if err == nil {
 			s.mutex.Lock()
 			s.documentsProcessed++
@@ -304,7 +300,7 @@ func (s *UnifiedRAGService) embeddingWorker() {
 	for job := range s.embeddingQueue {
 		err := s.generateChunkEmbedding(job.Chunk)
 		job.Response <- err
-		
+
 		if err == nil {
 			s.mutex.Lock()
 			s.chunksGenerated++
@@ -317,7 +313,7 @@ func (s *UnifiedRAGService) embeddingWorker() {
 func (s *UnifiedRAGService) cacheCleanupWorker() {
 	ticker := time.NewTicker(1 * time.Hour)
 	defer ticker.Stop()
-	
+
 	for range ticker.C {
 		ctx := context.Background()
 		_, err := s.db.Exec(ctx, "DELETE FROM rag_query_cache WHERE expires_at < CURRENT_TIMESTAMP")
@@ -340,15 +336,15 @@ func (s *UnifiedRAGService) uploadDocumentHandler(c *gin.Context) {
 		return
 	}
 	defer file.Close()
-	
+
 	// Generate unique path
 	timestamp := time.Now().Format("2006/01/02")
-	minioPath := fmt.Sprintf("%s/%s_%d_%s", 
-		timestamp, 
+	minioPath := fmt.Sprintf("%s/%s_%d_%s",
+		timestamp,
 		strings.ReplaceAll(header.Filename, " ", "_"),
 		time.Now().Unix(),
 		header.Filename)
-	
+
 	// Upload to MinIO
 	uploadInfo, err := s.minioClient.PutObject(
 		context.Background(),
@@ -368,7 +364,7 @@ func (s *UnifiedRAGService) uploadDocumentHandler(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	// Create document record
 	doc := &Document{
 		Title:     header.Filename,
@@ -381,7 +377,7 @@ func (s *UnifiedRAGService) uploadDocumentHandler(c *gin.Context) {
 		},
 		UploadedAt: time.Now(),
 	}
-	
+
 	// Store in database
 	docID, err := s.storeDocument(doc)
 	if err != nil {
@@ -392,12 +388,12 @@ func (s *UnifiedRAGService) uploadDocumentHandler(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	doc.ID = docID
-	
+
 	// Start async processing
 	go s.processDocumentAsync(doc)
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"success":     true,
 		"document_id": docID,
@@ -417,7 +413,7 @@ func (s *UnifiedRAGService) ragQueryHandler(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	if query.Stream {
 		s.handleStreamingRAG(c, &query)
 	} else {
@@ -431,9 +427,9 @@ func (s *UnifiedRAGService) handleStreamingRAG(c *gin.Context, query *RAGQuery) 
 	c.Header("Cache-Control", "no-cache")
 	c.Header("Connection", "keep-alive")
 	c.Header("Access-Control-Allow-Origin", "*")
-	
+
 	startTime := time.Now()
-	
+
 	// Send initial metadata
 	s.sendStreamEvent(c, &StreamingRAGResponse{
 		Type: "metadata",
@@ -443,7 +439,7 @@ func (s *UnifiedRAGService) handleStreamingRAG(c *gin.Context, query *RAGQuery) 
 			"max_results": query.MaxResults,
 		},
 	})
-	
+
 	// Retrieve similar chunks
 	chunks, err := s.retrieveSimilarChunks(context.Background(), query)
 	if err != nil {
@@ -453,7 +449,7 @@ func (s *UnifiedRAGService) handleStreamingRAG(c *gin.Context, query *RAGQuery) 
 		})
 		return
 	}
-	
+
 	// Send context information
 	s.sendStreamEvent(c, &StreamingRAGResponse{
 		Type: "metadata",
@@ -462,7 +458,7 @@ func (s *UnifiedRAGService) handleStreamingRAG(c *gin.Context, query *RAGQuery) 
 			"sources":      s.getSourceDocuments(chunks),
 		},
 	})
-	
+
 	// Generate streaming response
 	context := s.buildRAGContext(chunks)
 	prompt := fmt.Sprintf(`Based on the following legal documents, answer the question: "%s"
@@ -471,7 +467,7 @@ Context:
 %s
 
 Answer:`, query.Query, context)
-	
+
 	// Stream from Ollama
 	if err := s.streamFromOllama(c, prompt); err != nil {
 		s.sendStreamEvent(c, &StreamingRAGResponse{
@@ -480,7 +476,7 @@ Answer:`, query.Query, context)
 		})
 		return
 	}
-	
+
 	// Send completion
 	s.sendStreamEvent(c, &StreamingRAGResponse{
 		Type: "complete",
@@ -489,7 +485,7 @@ Answer:`, query.Query, context)
 			"chunks_used":        len(chunks),
 		},
 	})
-	
+
 	s.mutex.Lock()
 	s.queriesHandled++
 	s.mutex.Unlock()
@@ -510,12 +506,12 @@ func main() {
 		log.Fatalf("Failed to initialize RAG service: %v", err)
 	}
 	defer service.db.Close()
-	
+
 	// Setup router
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
-	
+
 	// CORS middleware
 	r.Use(func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
@@ -527,7 +523,7 @@ func main() {
 		}
 		c.Next()
 	})
-	
+
 	// API routes - One service handles everything!
 	api := r.Group("/api/v1")
 	{
@@ -536,19 +532,19 @@ func main() {
 		api.GET("/documents", service.listDocumentsHandler)
 		api.GET("/documents/:id", service.getDocumentHandler)
 		api.DELETE("/documents/:id", service.deleteDocumentHandler)
-		
+
 		// RAG queries
 		api.POST("/rag/query", service.ragQueryHandler)
 		api.GET("/rag/search", service.semanticSearchHandler)
-		
+
 		// Health and metrics
 		api.GET("/health", service.healthHandler)
 		api.GET("/metrics", service.metricsHandler)
 	}
-	
+
 	service.logger.Info("Starting Unified RAG Service",
 		zap.String("port", ServicePort),
 		zap.String("features", "MinIO + PostgreSQL + pgvector + Streaming RAG"))
-	
+
 	log.Fatal(http.ListenAndServe(ServicePort, r))
 }

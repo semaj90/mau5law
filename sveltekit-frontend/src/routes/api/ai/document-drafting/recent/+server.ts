@@ -166,8 +166,8 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       }
     }
     return json({
-      success: true
-      data: sortedDocuments
+      success: true,
+      data: sortedDocuments,
       stats,
       meta: {
         limit,

@@ -59,7 +59,6 @@ console.log('🎮 Initializing CHR-ROM Document List...');
             status: doc?.processing_status || 'pending';
           }
     })();
-  });
       }
       // Prefetch patterns for all visible documents
       await prefetchAllPatterns();
@@ -369,7 +368,7 @@ console.log('🎮 Initializing CHR-ROM Document List...');
     cursor: pointer;
     transition: all 0.15s ease;
   }
-  .document-card: hover {
+  .document-card:hover {
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     transform: translateY(-1px);
   }

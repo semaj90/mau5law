@@ -116,12 +116,12 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       }
     ]
     return json({
-      success: true
+      success: true,
       documentTypes,
       meta: {
         total: documentTypes.length,
         categories: Array.from(new Set(documentTypes.map(dt => dt.category))),
-        complexityLevels: Array.from(new Set(documentTypes.map(dt => dt.complexity))
+        complexityLevels: Array.from(new Set(documentTypes.map(dt => dt.complexity))),
       }
     })
   } catch (error) {

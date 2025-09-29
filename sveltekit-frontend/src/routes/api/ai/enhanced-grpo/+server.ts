@@ -28,7 +28,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'nomic-embed-text',
         prompt: text.slice(0, 2048)
       })
@@ -48,7 +48,7 @@ async function getAIResponse(query: string): Promise<any> {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: `<|thinking|>
 Let me analyze this legal query step by step:
@@ -71,7 +71,7 @@ Please provide a comprehensive legal analysis with structured reasoning.`,
       const responseText = content.replace(/<\|thinking\|>[\s\S]*?<\/\|thinking\|>/, '').trim()
       return {
         thinking,
-        response: responseText
+        response: responseText,
         confidence: 0.85
       }
     }
@@ -86,40 +86,37 @@ Please provide a comprehensive legal analysis with structured reasoning.`,
 }
 // Extract structured reasoning from thinking content
 function extractStructuredReasoning(thinking: string) {
-  const lines = thinking.split('\n').filter(line => line.trim()
+  const lines = thinking
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.length > 0);
+
+  const matchers: { [key: string]: RegExp } = {
+    premises: /premise|given|established/i,
+    inferences: /therefore|infer|follows/i,
+    conclusions: /conclude|conclusion|result/i,
+    legal_principles: /principle|rule|doctrine/i,
+    counter_arguments: /however|but|although/i,
+    confidence_factors: /confident|certain|established|confidence/i
+  };
+
+  const pick = (regex: RegExp, limit = 5) => lines.filter(line => regex.test(line)).slice(0, limit);
+
   return {
-    premises: lines.filter(item => item.includes)('premise') ||
-      line.toLowerCase().includes('given') ||
-      line.toLowerCase().includes('established')
-    ).slice(0, 5),
-    inferences: lines.filter(item => item.includes)('therefore') ||
-      line.toLowerCase().includes('infer') ||
-      line.toLowerCase().includes('follows')
-    ).slice(0, 5),
-    conclusions: lines.filter(item => item.includes)('conclude') ||
-      line.toLowerCase().includes('conclusion') ||
-      line.toLowerCase().includes('result')
-    ).slice(0, 3),
-    legal_principles: lines.filter(item => item.includes)('principle') ||
-      line.toLowerCase().includes('rule') ||
-      line.toLowerCase().includes('doctrine')
-    ).slice(0, 3),
-    counter_arguments: lines.filter(item => item.includes)('however') ||
-      line.toLowerCase().includes('but') ||
-      line.toLowerCase().includes('although')
-    ).slice(0, 3),
-    confidence_factors: lines.filter(item => item.includes)('confident') ||
-      line.toLowerCase().includes('certain') ||
-      line.toLowerCase().includes('established')
-    ).slice(0, 3)
-  }
+    premises: pick(matchers.premises, 5),
+    inferences: pick(matchers.inferences, 5),
+    conclusions: pick(matchers.conclusions, 3),
+    legal_principles: pick(matchers.legal_principles, 3),
+    counter_arguments: pick(matchers.counter_arguments, 3),
+    confidence_factors: pick(matchers.confidence_factors, 3)
+  };
 }
 // Calculate temporal score with exponential decay
 function calculateTemporalScore(createdAt: Date, halfLifeDays: number = 30): number {
-  const now = new Date()
-  const ageDays = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24)
-  const decayFactor = Math.exp(-Math.LN2 * ageDays / halfLifeDays)
-  return Math.max(0.1, Math.min(1.0, decayFactor)
+  const now = new Date();
+  const ageDays = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
+  const decayFactor = Math.exp(-Math.LN2 * ageDays / halfLifeDays);
+  return Math.max(0.1, Math.min(1.0, decayFactor));
 }
 // Get similar responses from database using vector similarity
 async function getSimilarResponses(queryEmbedding: number[], maxResults: number = 5) {
@@ -153,7 +150,7 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
         usage_count: row.usage_count as number,
         confidence: row.confidence as string
       }
-    })
+    }))
   } catch (error) {
     console.warn('Failed to get similar responses:', error)
     return []
@@ -246,7 +243,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     // Step 5: Save to database
     const grpoId = await saveEnhancedResponse({
-      query: inputText
+      query: inputText,
       response: aiResponse.response,
       thinking: aiResponse.thinking,
       structuredReasoning,
@@ -271,7 +268,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     `)
     const processingTime = Date.now() - startTime
     const response = {
-      success: true
+      success: true,
       analysis: {
         thinking: aiResponse.thinking,
         response: aiResponse.response,
@@ -280,7 +277,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           .concat(structuredReasoning.inferences)
           .concat(structuredReasoning.conclusions),
         // Enhanced GRPO features
-        structured_reasoning: structuredReasoning
+        structured_reasoning: structuredReasoning,
         temporal_score: 1.0, // New response gets max temporal score
         // Recommendations
         recommendations: recommendations.map(rec => ({,
@@ -312,15 +309,15 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         }
       },
       metadata: {
-        processing_time: processingTime
+        processing_time: processingTime,
         model_used: 'gemma3-legal:latest',
         algorithm: 'enhanced-grpo',
-        grpo_id: grpoId
-        thinking_enabled: true
-        recommendations_enabled: enableRecommendations
-        user_id: userId
-        analysis_type: analysisType
-        document_type: documentType
+        grpo_id: grpoId,
+        thinking_enabled: true,
+        recommendations_enabled: enableRecommendations,
+        user_id: userId,
+        analysis_type: analysisType,
+        document_type: documentType,
         recommendation_count: recommendations.length,
         api_version: '2.0',
         capabilities: [
@@ -335,15 +332,15 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Enhanced GRPO API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Enhanced analysis failed',
       details: error.message || 'Unknown error occurred',
       metadata: {
         processing_time: 0,
         model_used: 'gemma3-legal:latest',
         algorithm: 'enhanced-grpo',
-        thinking_enabled: false
-        error_type: error.constructor.name
+        thinking_enabled: false,
+        error_type: error.constructor.name,
       }
     }, { status: 500 })
   }
@@ -370,7 +367,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           LIMIT ${limit}
         `)
         return json({
-          success: true
+          success: true,
           trending_topics: trendingTopics.rows.map(row => ({,
             topic: row.topic as string,
             count: parseInt(row.count as string),
@@ -394,29 +391,29 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           LIMIT ${limit}
         `)
         return json({
-          success: true
-          recent_responses: recentResponses.rows.map(row => ({,
+          success: true,
+          recent_responses: recentResponses.rows.map(row => ({
             id: row.id as string,
             query: row.query as string,
             snippet: (row.response as string).slice(0, 200) + '...',
             confidence: parseFloat(row.confidence as string || '0.8'),
             legal_domain: row.legal_domain as string,
             created_at: row.created_at as string,
-            usage_count: row.usage_count as number
+            usage_count: row.usage_count as number,
           })
         })
       default:
         return json({,
-          success: true
+          success: true,
           message: 'Enhanced GRPO API is operational',
           available_operations: ['trending', 'recent'],
-          database_tables: ['ai_responses', 'grpo_feedback', 'recommendation_scores']
+          database_tables: ['ai_responses', 'grpo_feedback', 'recommendation_scores'],
         })
     }
   } catch (error: any) {
     console.error('Enhanced GRPO GET error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to retrieve data',
       details: error.message
     }, { status: 500 })
@@ -478,15 +475,15 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       WHERE id = ${responseId}
     `)
     return json({
-      success: true
+      success: true,
       message: 'Feedback recorded successfully',
       feedback_id: responseId
-      impact: 'Learning algorithms updated with your feedback'
+      impact: 'Learning algorithms updated with your feedback',
     })
   } catch (error: any) {
     console.error('Feedback recording error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to record feedback',
       details: error.message
     }, { status: 500 })

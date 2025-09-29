@@ -221,7 +221,9 @@
             <Button
               href={service.href}
               class="service-button"
+              // @ts-expect-error: Svelte 5 automatically forwards unknown attributes to the root element, but the component's Props type is too strict.
               data-umami-event="ai-service-access"
+              // @ts-expect-error: Svelte 5 automatically forwards unknown attributes to the root element, but the component's Props type is too strict.
               data-umami-event-service={service.name}
             >
               Launch Service

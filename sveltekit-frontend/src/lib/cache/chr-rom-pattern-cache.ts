@@ -429,44 +429,69 @@ export class CHRROMPatternCache {
     console.log(`   Hot Patterns: ${this.cache.hotPatterns.length}`);
     console.log(`   Bank Utilization: [${this.cache.metrics.bankUtilization.map(u => u.toFixed(1)).join(', ')}]`);
   }
-  /**
-   * Get cache metrics
-   */;
-  getMetrics() {
-    return {
-      ...this.cache.metrics,
-      totalPatterns: this.cache.patterns.size,
-      hotPatterns: [...this.cache.hotPatterns],
-      hitRate: this.cache.metrics.totalRequests > 0 ?
-        this.cache.metrics.cacheHits / this.cache.metrics.totalRequests: 0
+}
+
+/**
+ * Get all cached patterns
+ */
+getAllPatterns(): CHRROMPattern[] {
+  return Array.from(this.cache.patterns.values());
+}
+
+/**
+ * Clear all patterns from the cache
+ */
+clear(): void {
+  this.cache.patterns.clear();
+  this.cache.hotPatterns = [];
+  // Also clear Redis cache for all patterns
+  this.redis.keys(`${this.CACHE_PREFIX}pattern:*`).then(keys => {
+    if (keys.length > 0) {
+      this.redis.del(keys);
     }
-  }
-  /**
-   * Clear specific bank
-   */;
-  async clearBank(bankId: number): Promise<void> {
-    if (bankId < 0 || bankId >= this.MAX_BANKS) {
-      throw new Error(`Invalid bank ID: ${bankId}`);
-    }
-    // Clear memory bank
-    const bank = this.cache.banks[bankId];
-    const bankView = new Uint8Array(bank);
-    bankView.fill(0);
-    // Reset utilization
-    this.cache.metrics.bankUtilization[bankId] = 0;
-    console.log(`🧹 Cleared CHR-ROM bank ${bankId}`);
-  }
-  /**
-   * Dispose cache and connections
-   */;
-  async dispose(): Promise<void> {
-    await this.redis.quit();
-    this.cache.patterns.clear();
-    this.cache.hotPatterns = [];
-    console.log('🗑️ CHR-ROM Pattern Cache disposed');
+  });
+  console.log('🧹 Cleared all CHR-ROM patterns from cache and Redis');
+}
+
+/**
+ * Get cache metrics
+ */
+getMetrics() {
+  return {
+    ...this.cache.metrics,
+    totalPatterns: this.cache.patterns.size,
+    hotPatterns: [...this.cache.hotPatterns],
+    hitRate: this.cache.metrics.totalRequests > 0 ?
+      this.cache.metrics.cacheHits / this.cache.metrics.totalRequests : 0
   }
 }
+
 /**
+ * Clear specific bank
+ */
+async clearBank(bankId: number): Promise<void> {
+  if (bankId < 0 || bankId >= this.MAX_BANKS) {
+    throw new Error(`Invalid bank ID: ${bankId}`);
+  }
+  // Clear memory bank
+  const bank = this.cache.banks[bankId];
+  const bankView = new Uint8Array(bank);
+  bankView.fill(0);
+  // Reset utilization
+  this.cache.metrics.bankUtilization[bankId] = 0;
+  console.log(`🧹 Cleared CHR-ROM bank ${bankId}`);
+}
+
+/**
+ * Dispose cache and connections
+ */
+async dispose(): Promise<void> {
+  await this.redis.quit();
+  this.cache.patterns.clear();
+  this.cache.hotPatterns = [];
+  console.log('🗑️ CHR-ROM Pattern Cache disposed');
+}
+}
  * Singleton instance for global use
  */
 export const chrRomPatternCache = new CHRROMPatternCache();

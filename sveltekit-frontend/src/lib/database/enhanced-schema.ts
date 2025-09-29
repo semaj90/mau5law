@@ -320,3 +320,202 @@ export const aiProcessingJobs = pgTable('ai_processing_jobs', {
 });
 export type AIProcessingJob = typeof aiProcessingJobs.$inferSelect;
 export type NewAIProcessingJob = typeof aiProcessingJobs.$inferInsert;
+
+// Persons of Interest (POI) table
+export const personsOfInterest = pgTable('persons_of_interest', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar('name', { length: 255 }).notNull(),
+  aliases: json('aliases').default(sql`'[]'::json`),
+  dateOfBirth: timestamp('date_of_birth'),
+  address: text('address'),
+  phone: varchar('phone', { length: 50 }),
+  email: varchar('email', { length: 255 }),
+  status: varchar('status', { length: 50 }).default('person_of_interest'), // person_of_interest, witness, suspect, victim, informant
+  priority: varchar('priority', { length: 20 }).default('medium'), // low, medium, high, critical
+  threatLevel: varchar('threat_level', { length: 20 }).default('low'), // low, medium, high, extreme
+  physicalDescription: json('physical_description'), // height, weight, hair, eyes, distinguishing marks
+  profileData: json('profile_data'), // modus operandi, known habits, associates
+  lastKnownLocation: text('last_known_location'),
+  lastSeen: timestamp('last_seen'),
+  dangerLevel: real('danger_level').default(0), // 0-10 scale
+  isActive: boolean('is_active').default(true),
+  notes: text('notes'),
+  // Vector embedding for semantic search
+  embedding: vector('embedding', { dimensions: 768 }),
+  createdBy: uuid('created_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+}, (table: any) => ({
+  embeddingIdx: index('poi_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
+  statusIdx: index('poi_status_idx').on(table.status),
+  priorityIdx: index('poi_priority_idx').on(table.priority),
+  threatLevelIdx: index('poi_threat_level_idx').on(table.threatLevel)
+}));
+
+// Case-POI relationships
+export const casePoiRelations = pgTable('case_poi_relations', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  caseId: uuid('case_id').references(() => cases.id).notNull(),
+  poiId: uuid('poi_id').references(() => personsOfInterest.id).notNull(),
+  relationshipType: varchar('relationship_type', { length: 50 }).notNull(), // suspect, witness, victim, informant, other
+  role: varchar('role', { length: 100 }), // specific role in the case
+  involvementLevel: varchar('involvement_level', { length: 20 }).default('unknown'), // primary, secondary, peripheral
+  notes: text('notes'),
+  isActive: boolean('is_active').default(true),
+  createdBy: uuid('created_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+}, (table: any) => ({
+  casePoiIdx: index('case_poi_relations_case_poi_idx').on(table.caseId, table.poiId),
+  relationshipIdx: index('case_poi_relations_relationship_idx').on(table.relationshipType)
+}));
+
+// Evidence Board configurations
+export const evidenceBoards = pgTable('evidence_boards', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  caseId: uuid('case_id').references(() => cases.id).notNull(),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description'),
+  layout: json('layout'), // Canvas layout data
+  settings: json('settings'), // Board-specific settings
+  isActive: boolean('is_active').default(true),
+  isPublic: boolean('is_public').default(false),
+  createdBy: uuid('created_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+}, (table: any) => ({
+  caseIdx: index('evidence_boards_case_idx').on(table.caseId),
+  activeIdx: index('evidence_boards_active_idx').on(table.isActive)
+}));
+
+// Evidence Board items (for canvas elements)
+export const evidenceBoardItems = pgTable('evidence_board_items', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  boardId: uuid('board_id').references(() => evidenceBoards.id).notNull(),
+  evidenceId: uuid('evidence_id').references(() => evidence.id),
+  poiId: uuid('poi_id').references(() => personsOfInterest.id),
+  itemType: varchar('item_type', { length: 50 }).notNull(), // evidence, poi, note, connection, image
+  position: json('position'), // x, y coordinates
+  size: json('size'), // width, height
+  content: text('content'), // text content for notes
+  metadata: json('metadata'), // additional item-specific data
+  isVisible: boolean('is_visible').default(true),
+  zIndex: integer('z_index').default(0),
+  createdBy: uuid('created_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+}, (table: any) => ({
+  boardIdx: index('evidence_board_items_board_idx').on(table.boardId),
+  evidenceIdx: index('evidence_board_items_evidence_idx').on(table.evidenceId),
+  poiIdx: index('evidence_board_items_poi_idx').on(table.poiId),
+  typeIdx: index('evidence_board_items_type_idx').on(table.itemType)
+}));
+
+// Evidence Board connections (for linking items)
+export const evidenceBoardConnections = pgTable('evidence_board_connections', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  boardId: uuid('board_id').references(() => evidenceBoards.id).notNull(),
+  fromItemId: uuid('from_item_id').references(() => evidenceBoardItems.id).notNull(),
+  toItemId: uuid('to_item_id').references(() => evidenceBoardItems.id).notNull(),
+  connectionType: varchar('connection_type', { length: 50 }).default('related'), // related, contradicts, supports, timeline
+  label: varchar('label', { length: 255 }),
+  notes: text('notes'),
+  strength: real('strength').default(1.0), // 0-1 strength of connection
+  isVisible: boolean('is_visible').default(true),
+  createdBy: uuid('created_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+}, (table: any) => ({
+  boardIdx: index('evidence_board_connections_board_idx').on(table.boardId),
+  fromItemIdx: index('evidence_board_connections_from_item_idx').on(table.fromItemId),
+  toItemIdx: index('evidence_board_connections_to_item_idx').on(table.toItemId),
+  typeIdx: index('evidence_board_connections_type_idx').on(table.connectionType)
+}));
+
+// Define relations for new tables
+export const personsOfInterestRelations = relations(personsOfInterest, ({ one, many }) => ({
+  creator: one(users, {
+    fields: [personsOfInterest.createdBy],
+    references: [users.id]
+  }),
+  caseRelations: many(casePoiRelations),
+  evidenceBoardItems: many(evidenceBoardItems)
+}));
+
+export const casePoiRelationsRelations = relations(casePoiRelations, ({ one }) => ({
+  case: one(cases, {
+    fields: [casePoiRelations.caseId],
+    references: [cases.id]
+  }),
+  poi: one(personsOfInterest, {
+    fields: [casePoiRelations.poiId],
+    references: [personsOfInterest.id]
+  }),
+  creator: one(users, {
+    fields: [casePoiRelations.createdBy],
+    references: [users.id]
+  })
+}));
+
+export const evidenceBoardsRelations = relations(evidenceBoards, ({ one, many }) => ({
+  case: one(cases, {
+    fields: [evidenceBoards.caseId],
+    references: [cases.id]
+  }),
+  creator: one(users, {
+    fields: [evidenceBoards.createdBy],
+    references: [users.id]
+  }),
+  items: many(evidenceBoardItems),
+  connections: many(evidenceBoardConnections)
+}));
+
+export const evidenceBoardItemsRelations = relations(evidenceBoardItems, ({ one }) => ({
+  board: one(evidenceBoards, {
+    fields: [evidenceBoardItems.boardId],
+    references: [evidenceBoards.id]
+  }),
+  evidence: one(evidence, {
+    fields: [evidenceBoardItems.evidenceId],
+    references: [evidence.id]
+  }),
+  poi: one(personsOfInterest, {
+    fields: [evidenceBoardItems.poiId],
+    references: [personsOfInterest.id]
+  }),
+  creator: one(users, {
+    fields: [evidenceBoardItems.createdBy],
+    references: [users.id]
+  })
+}));
+
+export const evidenceBoardConnectionsRelations = relations(evidenceBoardConnections, ({ one }) => ({
+  board: one(evidenceBoards, {
+    fields: [evidenceBoardConnections.boardId],
+    references: [evidenceBoards.id]
+  }),
+  fromItem: one(evidenceBoardItems, {
+    fields: [evidenceBoardConnections.fromItemId],
+    references: [evidenceBoardItems.id]
+  }),
+  toItem: one(evidenceBoardItems, {
+    fields: [evidenceBoardConnections.toItemId],
+    references: [evidenceBoardItems.id]
+  }),
+  creator: one(users, {
+    fields: [evidenceBoardConnections.createdBy],
+    references: [users.id]
+  })
+}));
+
+// Type exports for new tables
+export type PersonOfInterest = typeof personsOfInterest.$inferSelect;
+export type NewPersonOfInterest = typeof personsOfInterest.$inferInsert;
+export type CasePoiRelation = typeof casePoiRelations.$inferSelect;
+export type NewCasePoiRelation = typeof casePoiRelations.$inferInsert;
+export type EvidenceBoard = typeof evidenceBoards.$inferSelect;
+export type NewEvidenceBoard = typeof evidenceBoards.$inferInsert;
+export type EvidenceBoardItem = typeof evidenceBoardItems.$inferSelect;
+export type NewEvidenceBoardItem = typeof evidenceBoardItems.$inferInsert;
+export type EvidenceBoardConnection = typeof evidenceBoardConnections.$inferSelect;
+export type NewEvidenceBoardConnection = typeof evidenceBoardConnections.$inferInsert;

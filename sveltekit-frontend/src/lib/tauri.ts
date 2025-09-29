@@ -119,8 +119,17 @@ export class TauriAPI {
     return response.ok;
   }
   static async getUserProfile() {
-    // removed unused response assignment
-    return response.json();
+    try {
+      const response = await fetch('/api/user/profile');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Failed to fetch user profile: ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error: any) {
+      console.error('Error fetching user profile:', error);
+      throw error;
+    }
   }
   // File operations
   static async uploadAvatar(file: File) {

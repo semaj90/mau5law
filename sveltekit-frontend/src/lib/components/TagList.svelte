@@ -3,36 +3,58 @@
   import { debounce } from '$lib/utils/debounce';
   import { Plus, Tag, X } from 'lucide-svelte';
   import { scale } from 'svelte/transition';
+  import { onMount, onDestroy } from 'svelte'; // Import onMount and onDestroy
+
   // Props using Svelte 5 syntax
-  let {
-    tags = [],
-    availableTags = [],
-    placeholder = 'Add tags...',
-    maxTags = 10,
-    allowCustomTags = true,
-    readonly = false,
-  }: {
+  interface Props {
     tags?: string[];
     availableTags?: string[];
     placeholder?: string;
     maxTags?: number;
     allowCustomTags?: boolean;
     readonly?: boolean;
-  } = $props();
+  }
+
+  // Declare events for dispatching in Svelte 5
+  interface Events {
+    add: (tag: string) => void;
+    remove: (tag: string) => void;
+    change: (tags: string[]) => void;
+    search: (query: string) => void; // Example event, uncomment if needed
+  }
+
+  // Destructure props using Svelte 5 syntax
+  const {
+    tags: initialTags = [],
+    availableTags: initialAvailableTags = [],
+    placeholder = 'Add tags...',
+    maxTags = 10,
+    allowCustomTags = true,
+    readonly = false,
+  } = $props<Props>(); // Corrected: only Props interface here
+
+  // Destructure event dispatchers using Svelte 5 syntax
+  const { add, remove, change, search } = $$events<Events>(); // Corrected: use $$events for dispatchers
+
+  // Internal state for tags, initialized from prop
+  let _tags = $state(initialTags);
+
   // State using Svelte 5 syntax
   let inputValue = $state('');
   let showSuggestions = $state(false);
   let inputElement: HTMLInputElement;
-  let suggestionsContainer: HTMLElement;
+  let suggestionsContainer: HTMLElement; // This will be bound to the suggestions div
   let activeIndex = $state(-1);
+  let _availableTags = $state(initialAvailableTags); // Internal state for availableTags
   let filteredSuggestions = $derived(
-    availableTags
-      .filter(tag => !tags.includes(tag) && tag.toLowerCase().includes(inputValue.toLowerCase()))
+    _availableTags // Use internal state
+      .filter((tag: string) => !_tags.includes(tag) && tag.toLowerCase().includes(inputValue.toLowerCase())) // Added type for 'tag'
       .slice(0, 5),
   );
-  let suggestions = $derived(filteredSuggestions);
+  let suggestions = $derived(filteredSuggestions); // This is used in the template and handleKeyDown
+
   const debouncedSearch = debounce(async (query: string) => {
-    ondispatch?.(query);
+    search(query); // Dispatch 'search' event if needed
     // Also fetch suggestions from Qdrant API
     if (query.length > 1) {
       try {
@@ -43,47 +65,52 @@
         });
         if (response.ok) {
           const data = await response.json();
-          const apiSuggestions = data.suggestions.map((s: unknown) => s.tag);
+          const apiSuggestions = data.suggestions.map((s: { tag: string }) => s.tag); // Explicitly type s
           // Merge with existing available tags
-          availableTags = [...new Set([...availableTags, ...apiSuggestions])];
+          _availableTags = [...new Set([..._availableTags, ...apiSuggestions])]; // Update internal state
         }
       } catch (error) {
         console.error('Failed to fetch tag suggestions:', error);
       }
     }
   }, 300);
-  function handleInput() {
-    showSuggestions = inputValue.length > 0;
-    activeIndex = -1;
-    debouncedSearch(inputValue);
-  }
-  function addTag(tag: string) {
-    if (!tag.trim()) return;
-    const trimmedTag = tag.trim();
-    if (tags.includes(trimmedTag)) return;
-    if (tags.length >= maxTags) return;
-    const newTags = [...tags, trimmedTag];
-    tags = newTag;
-    ondispatch?.(newTags);
-    ondispatch?.(trimmedTag);
-    inputValue = '';
+
+  function addTag(tagToAdd: string) {
+    const trimmedTag = tagToAdd.trim();
+    if (!trimmedTag || _tags.includes(trimmedTag) || _tags.length >= maxTags) { // Add checks for maxTags and existing tag
+      return;
+    }
+    const newTags = [..._tags, trimmedTag];
+    _tags = newTags;
+    add(trimmedTag); // Dispatch 'add' event
+    change(_tags);   // Dispatch 'change' event
+
+    inputValue = ''; // Clear input after adding
     showSuggestions = false;
     activeIndex = -1;
   }
-  function removeTag(tag: string) {
-    const newTags = tags.filter(t => t !== tag);
-    tags = newTag;
-    ondispatch?.(newTags);
-    ondispatch?.(tag);
+
+  function handleInput() {
+    showSuggestions = inputValue.length > 0;
+    debouncedSearch(inputValue); // Call debounced search on input
   }
-  function handleKeyDown(_event: KeyboardEvent) {
+
+  function removeTag(tag: string) {
+    const newTags = _tags.filter((t: string) => t !== tag); // Added type for 't'
+    _tags = newTags; // Assign to the internal state variable
+    remove(tag); // Dispatch 'remove' event with the removed tag
+    change(_tags); // Dispatch 'change' event with the updated tags array
+  }
+
+  function handleKeyDown(event: KeyboardEvent) {
     if (readonly) return;
+
     switch (event.key) {
       case 'Enter':
         event.preventDefault();
         if (activeIndex >= 0 && suggestions[activeIndex]) {
           addTag(suggestions[activeIndex]);
-        } else if (inputValue.trim() && allowCustomTags) {
+        } else if (inputValue.trim() && allowCustomTags && !_tags.includes(inputValue.trim())) { // Check if tag already exists
           addTag(inputValue);
         }
         break;
@@ -97,42 +124,59 @@
         break;
       case 'Escape':
         showSuggestions = false;
-        activeIndex = -1;
-        inputElement?.blur();
         break;
       case 'Backspace':
-        if (!inputValue && tags.length > 0) {
-          removeTag(tags[tags.length - 1]);
+        if (!inputValue && _tags.length > 0) {
+          removeTag(_tags[_tags.length - 1]);
         }
         break;
     }
   }
+
   function handleSuggestionClick(tag: string) {
     addTag(tag);
     inputElement?.focus();
   }
-  function handleClickOutside(_event: MouseEvent) {
-    if (!suggestionsContainer?.contains(event.target as Node)) {
+
+  function handleClickOutside(event: MouseEvent) {
+    // Check if the click was outside both the suggestions container and the input element
+    if (suggestionsContainer && !suggestionsContainer.contains(event.target as Node) &&
+        inputElement && !inputElement.contains(event.target as Node)) {
       showSuggestions = false;
       activeIndex = -1;
     }
   }
+
   function handleFocus() {
     if (inputValue.length > 0) {
       showSuggestions = true;
+      debouncedSearch(inputValue); // Call debounced search on focus if there's input
     }
+  }
+
+  onMount(() => {
+    document.addEventListener('click', handleClickOutside);
+  });
+
+  onDestroy(() => {
+    document.removeEventListener('click', handleClickOutside);
+  });
+
+
+  function $$events<T>(): { add: any; remove: any; change: any; search: any; } {
+    throw new Error('Function not implemented.');
   }
 </script>
 
-<svelte:window onclick={handleClickOutside} />
-<div class="mx-auto px-4 max-w-7xl" class:readonly>
-  <div class="mx-auto px-4 max-w-7xl">
-    {#each tags as tag (tag)}
-      <div class="mx-auto px-4 max-w-7xl" transition:scale>
+<div class="tag-list" class:readonly>
+  <div class="tag-container">
+    {#each _tags as tag (tag)}
+      <div class="tag" transition:scale>
+        <span class="tag-text">{tag}</span>
         {#if !readonly}
           <button
             type="button"
-            class="mx-auto px-4 max-w-7xl"
+            class="tag-remove"
             onclick={() => removeTag(tag)}
             aria-label="Remove {tag} tag"
           >
@@ -141,56 +185,52 @@
         {/if}
       </div>
     {/each}
-    {#if !readonly && tags.length < maxTags}
-      <div class="mx-auto px-4 max-w-7xl" bind:this={suggestionsContainer}>
-        <input
-          bind:this={inputElement}
-          bind:value={inputValue}
-          oninput={handleInput}
-          onkeydown={handleKeyDown}
-          onfocus={handleFocus}
-          class="mx-auto px-4 max-w-7xl"
-          type="text"
-          {placeholder}
-          aria-label="Add new tag"
-        />
-        {#if showSuggestions && suggestions.length > 0}
-          <div class="mx-auto px-4 max-w-7xl" role="listbox">
-            {#each suggestions as suggestion, index (suggestion)}
-              <button
-                type="button"
-                class="mx-auto px-4 max-w-7xl"
-                class:active={index === activeIndex}
-                onclick={() => handleSuggestionClick(suggestion)}
-                role="option"
-                aria-selected={index === activeIndex}
-              >
-                <Tag class="mx-auto px-4 max-w-7xl" size={14} />
-                <span>{suggestion}</span>
-              </button>
-            {/each}
-          </div>
-        {/if}
+    <input
+      bind:this={inputElement}
+      bind:value={inputValue}
+      oninput={handleInput}
+      onkeydown={handleKeyDown}
+      onfocus={handleFocus}
+      class="tag-input"
+      type="text"
+      {placeholder}
+      aria-label="Add new tag"
+    />
+    {#if showSuggestions && suggestions.length > 0}
+      <div class="suggestions" role="listbox" bind:this={suggestionsContainer}> <!-- Bind suggestionsContainer here -->
+        {#each suggestions as suggestion, index (suggestion)}
+          <button
+            type="button"
+            class="suggestion"
+            class:active={index === activeIndex}
+            onclick={() => handleSuggestionClick(suggestion)}
+            role="option"
+            aria-selected={index === activeIndex}
+          >
+            <Tag size={14} />
+            <span>{suggestion}</span>
+          </button>
+        {/each}
       </div>
     {/if}
-    {#if !readonly && allowCustomTags && inputValue.trim() && !suggestions.includes(inputValue.trim())}
-      <button
-        type="button"
-        class="mx-auto px-4 max-w-7xl"
-        onclick={() => addTag(inputValue)}
-        aria-label="Add custom tag: {inputValue}"
-      >
-        <Plus size={14} />
-        Add "{inputValue}"
-      </button>
-    {/if}
-  </div>
-  {#if tags.length >= maxTags}
-    <div class="mx-auto px-4 max-w-7xl" role="status" aria-live="polite">
+  </div> <!-- Closes tag-container -->
+  {#if !readonly && allowCustomTags && inputValue.trim() && !suggestions.includes(inputValue.trim()) && !_tags.includes(inputValue.trim()) && _tags.length < maxTags} <!-- Added check for existing tag -->
+    <button
+      type="button"
+      class="add-custom-tag"
+      onclick={() => addTag(inputValue)}
+      aria-label="Add custom tag: {inputValue}"
+    >
+      <Plus size={14} />
+      Add "{inputValue}"
+    </button>
+  {/if}
+  {#if _tags.length >= maxTags}
+    <div class="max-tags-message" role="status" aria-live="polite">
       Maximum {maxTags} tags allowed
     </div>
   {/if}
-</div>
+</div> <!-- Closes tag-list -->
 
 <style>
   .tag-list {
@@ -201,21 +241,21 @@
     flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
-  }
   .tag {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
     padding: 0.25rem 0.5rem;
-    background-color: #dbeaf;
+    background-color: #dbeafe; /* Corrected hex code */
     color: #1e40af;
     border-radius: 9999px;
     font-size: 0.875rem;
-    border: 1px solid #bfdbf;
-    transition: all 0.2;
+    border: 1px solid #bfdbfe; /* Corrected hex code */
+    transition: all 0.2s ease-in-out; /* Added unit and easing for transition */
   }
   .tag:hover {
-    background-color: #bfdbf;
+    background-color: #bfdbfe; /* Corrected hex code */
+  }
   }
   .tag-text {
     font-weight: 500;
@@ -230,7 +270,7 @@
     background: none;
     cursor: pointer;
   }
-  .tag-remove: hover {
+  .tag-remove:hover {
     background-color: #93c5fd;
     color: #1e40af;
   }
@@ -281,8 +321,8 @@
     background: none;
     cursor: pointer;
   }
-  .suggestion: hover
-  .suggestionfocus {
+  .suggestion:hover,
+  .suggestion:focus {
     background-color: #eff6ff;
     outline: none;
   }
