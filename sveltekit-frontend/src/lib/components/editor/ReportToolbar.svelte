@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as DropdownMenu from 'bits-ui';
+  import * as bits from 'bits-ui';
   import {
     Download,
     Eye,
@@ -53,84 +53,84 @@
   <!-- Main Menu Bar -->
   <div class="menu-bar">
     <!-- File Menu -->
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger class="menu-trigger nes-btn">
+    <bits.DropdownMenu.Root>
+      <bits.DropdownMenu.Trigger class="menu-trigger nes-btn">
         File
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
-        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={handleSave}>
+      </bits.DropdownMenu.Trigger>
+      <bits.DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={handleSave}>
           <Save size={16} />
           Save Report
           <span class="shortcut">Ctrl+S</span>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item class="dropdown-item nes-btn">
+        </bits.DropdownMenu.Item>
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
           <FileText size={16} />
           New Report
           <span class="shortcut">Ctrl+N</span>
-        </DropdownMenu.Item>
-        <DropdownMenu.Separator class="dropdown-separator" />
-        <DropdownMenu.Item class="dropdown-item nes-btn">
+        </bits.DropdownMenu.Item>
+        <bits.DropdownMenu.Separator class="dropdown-separator" />
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
           <Upload size={16} />
           Import
-        </DropdownMenu.Item>
-        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={handleExport}>
+        </bits.DropdownMenu.Item>
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={handleExport}>
           <Download size={16} />
           Export
-        </DropdownMenu.Item>
-        <DropdownMenu.Separator class="dropdown-separator" />
-        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={handlePreview}>
+        </bits.DropdownMenu.Item>
+        <bits.DropdownMenu.Separator class="dropdown-separator" />
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={handlePreview}>
           <Eye size={16} />
           Preview
-        </DropdownMenu.Item>
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
+        </bits.DropdownMenu.Item>
+      </bits.DropdownMenu.Content>
+    </bits.DropdownMenu.Root>
 
     <!-- Edit Menu -->
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger class="menu-trigger nes-btn">
+    <bits.DropdownMenu.Root>
+      <bits.DropdownMenu.Trigger class="menu-trigger nes-btn">
         Edit
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
-        <DropdownMenu.Item class="dropdown-item nes-btn">
+      </bits.DropdownMenu.Trigger>
+      <bits.DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
           <Undo size={16} />
           Undo
           <span class="shortcut">Ctrl+Z</span>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item class="dropdown-item nes-btn">
+        </bits.DropdownMenu.Item>
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
           <Redo size={16} />
           Redo
           <span class="shortcut">Ctrl+Y</span>
-        </DropdownMenu.Item>
-        <DropdownMenu.Separator class="dropdown-separator" />
-        <DropdownMenu.Item class="dropdown-item nes-btn">
+        </bits.DropdownMenu.Item>
+        <bits.DropdownMenu.Separator class="dropdown-separator" />
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
           <Search size={16} />
           Find
           <span class="shortcut">Ctrl+F</span>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item class="dropdown-item nes-btn">
+        </bits.DropdownMenu.Item>
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
           <Replace size={16} />
           Replace
           <span class="shortcut">Ctrl+H</span>
-        </DropdownMenu.Item>
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
+        </bits.DropdownMenu.Item>
+      </bits.DropdownMenu.Content>
+    </bits.DropdownMenu.Root>
 
     <!-- View Menu -->
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger class="menu-trigger nes-btn">
+    <bits.DropdownMenu.Root>
+      <bits.DropdownMenu.Trigger class="menu-trigger nes-btn">
         View
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
-        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleSidebar}>
+      </bits.DropdownMenu.Trigger>
+      <bits.DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleSidebar}>
           <Sidebar size={16} />
           Toggle Sidebar
           <span class="shortcut">Ctrl+B</span>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleLayout}>
+        </bits.DropdownMenu.Item>
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleLayout}>
           <Layout size={16} />
           Switch Layout ({$report.settings.layout})
-        </DropdownMenu.Item>
-        <DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleFullscreen}>
+        </bits.DropdownMenu.Item>
+        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleFullscreen}>
           {#if $reportUI.fullscreen}
             <Minimize size={16} />
             Exit Fullscreen
@@ -139,9 +139,9 @@
             Fullscreen
           {/if}
           <span class="shortcut">F11</span>
-        </DropdownMenu.Item>
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
+        </bits.DropdownMenu.Item>
+      </bits.DropdownMenu.Content>
+    </bits.DropdownMenu.Root>
   </div>
 
   <!-- Quick Actions -->

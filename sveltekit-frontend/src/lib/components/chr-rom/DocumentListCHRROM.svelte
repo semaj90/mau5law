@@ -7,15 +7,14 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-</script>
-  import { onMount } from 'svelte';
+  import { slide } from 'svelte/transition';
   import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader.js';
   import { drizzleCHRROMBridge } from '$lib/services/drizzle-chr-rom-bridge.js';
   import { chrROMPatternOptimizer } from '$lib/services/chr-rom-pattern-optimizer.js';
   import type { CHRROMPattern } from '$lib/services/chr-rom-precomputation.js';
   import '$lib/styles/chr-rom-rendering.css';
   interface Props {
-    documents?: Array;
+    documents?: any[];
     showPerformanceMetrics?: boolean;
   }
   let {
@@ -23,9 +22,9 @@ https://svelte.dev/e/js_parse_error -->
     showPerformanceMetrics = false
   }: Props = $props();
   // Reactive state for CHR-ROM patterns
-  let documentPatterns = new Map<string, Map<string, CHRROMPattern | null>();
-  let performanceStats: any = null;
-  let hoveredDocument: string | null = null;
+  let documentPatterns = $state(new Map<string, Map<string, CHRROMPattern | null>>());
+  let performanceStats: any = $state(null);
+  let hoveredDocument: string | null = $state(null);
   // Pattern types to load
   const patternTypes = [
     'summary_icon',
@@ -41,24 +40,24 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Initialize CHR-ROM system and load patterns
    */
-  $effect(() => {
-    (async () => {
-console.log('🎮 Initializing CHR-ROM Document List...');
+$effect(() => {
+  (async () => {
+    console.log('🎮 Initializing CHR-ROM Document List...');
     try {
       // Initialize the Drizzle bridge
       await drizzleCHRROMBridge.initialize();
       // If no documents provided, get from Drizzle
       if (documents.length === 0) {
         const docIds = drizzleCHRROMBridge.getAllDocumentIds();
-        documents = docIds.map(id => {
+        documents = docIds.map((id) => {
           const doc = drizzleCHRROMBridge.getDocument(id);
           return {
             id,
             title: doc?.title || `Document ${id}`,
             type: doc?.document_type || 'unknown',
-            status: doc?.processing_status || 'pending';
-          }
-    })();
+            status: doc?.processing_status || 'pending'
+          };
+        });
       }
       // Prefetch patterns for all visible documents
       await prefetchAllPatterns();
@@ -70,7 +69,8 @@ console.log('🎮 Initializing CHR-ROM Document List...');
     } catch (error) {
       console.error('❌ CHR-ROM initialization failed:', error);
     }
-  });
+  })();
+});
   /**
    * Prefetch all patterns for visible documents
    */
@@ -80,25 +80,22 @@ console.log('🎮 Initializing CHR-ROM Document List...');
     const startTime = performance.now();
     // Use batch pattern retrieval for optimal performance
     const requests = docIds.flatMap(docId =>
-      patternTypes.map(patternType => ({ docId, patternType }))
-    );
+      patternTypes.map(patternType => ({ docId, patternType })));
     try {
       const batchResults = await chrROMCacheReader.getBatchPatterns(requests);
-      // Store results in reactive state
       for (const result of batchResults) {
-        if (!documentPatterns.has.docId)) {
-          documentPatterns.set(docId), new Map());
+        const typedResult = result as { docId: string; patternType: string; pattern: CHRROMPattern | null; source: string; latency: number };
+        if (!documentPatterns.has(typedResult.docId)) {
+          documentPatterns.set(typedResult.docId, new Map());
         }
-        documentPatterns.get.docId)!.set.patternType, (result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).pattern);
+        documentPatterns.get(typedResult.docId)!.set(typedResult.patternType, typedResult.pattern);
         // Track performance
         totalRequests++;
-        if ((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).source === 'cache') {
+        if (typedResult.source === 'cache') {
           cacheHits++;
         }
-        averageLatency = (averageLatency + (result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).latency) / totalRequest;
+        averageLatency = (averageLatency * (totalRequests - 1) + typedResult.latency) / totalRequests;
       }
-      // Trigger reactivity
-      documentPatterns = new Map(documentPatterns);
       const totalTime = performance.now() - startTime;
       console.log(`✅ Prefetch completed in ${totalTime.toFixed(1)}ms (${batchResults.length} patterns)`);
     } catch (error) {
@@ -110,12 +107,9 @@ console.log('🎮 Initializing CHR-ROM Document List...');
    */
   function startPerformanceMonitoring(): void {
     setInterval(() => {
-      performanceStats = chrROMCacheReader.getStats();
+      performanceStats = chrROMCacheReader.getPerformanceStats();
     }, 5000);
   }
-  /**
-   * Get pattern for document and type with zero-latency lookup
-   */
   function getPattern(docId: string, patternType: string): CHRROMPattern | null {
     return documentPatterns.get(docId)?.get(patternType) || null;
   }
@@ -132,30 +126,23 @@ console.log('🎮 Initializing CHR-ROM Document List...');
   function getPatternRenderingClass(docId: string, patternType: string): string {
     const pattern = getPattern(docId, patternType);
     if (!pattern) return 'chr-rom-pattern chr-rom-auto';
-    return 'chr-rom-pattern ' + chrROMPatternOptimizer.getCSSRenderingClass(pattern);
+    return 'chr-rom-pattern ' + chrROMPatternOptimizer.getOptimizedClass(pattern);
   }
-  /**
-   * Handle mouse hover - instant pattern loading
-   */
   async function handleDocumentHover(docId: string): Promise<void> {
     hoveredDocument = docId;
     // Check if we need additional patterns for hover state
     const hoverPatterns = ['entity_heatmap', 'similarity_graph'];
     for (const patternType of hoverPatterns) {
-      if (!getPattern(docId, patternType)) {
-        // Load on-demand with zero-latency cache lookup
-        const result = await chrROMCacheReader.getPattern(docId, patternType);
+        const result = await chrROMCacheReader.get(docId, patternType);
         if (!documentPatterns.has(docId)) {
           documentPatterns.set(docId, new Map());
         }
-        documentPatterns.get(docId)!.set.pattern);
-        // Trigger reactivity
-        documentPatterns = new Map(documentPatterns);
+        const typedResult = result as { pattern: CHRROMPattern | null; latency: number };
+        documentPatterns.get(docId)!.set(patternType, typedResult.pattern);
         // Log sub-millisecond performance
-        if ((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).latency < 1) {
-          console.log.latency.toFixed(2)}ms`);
+        if (typedResult.latency < 1) {
+          // Intentionally empty for now
         }
-      }
     }
   }
   /**

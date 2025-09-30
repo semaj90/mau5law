@@ -57,7 +57,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
       court_level: 'appellate',
       jurisdiction: 'federal',
       practice_areas: ['contract', 'commercial'],
-      estimated_complexity: 'medium';
+      estimated_complexity: 'medium',
     },
     createdAt: new Date().toISOString()
   });
@@ -98,8 +98,8 @@ await refreshSystemStatus();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          document: testDocument;
-          options: processingOption;
+          document: testDocument,
+          options: processingOption,
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -108,7 +108,7 @@ await refreshSystemStatus();
           // Add to results
           processingResults.update(results => [{
             timestamp: Date.now(),
-            document: testDocument;
+            document: testDocument,
             result: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result,
             processingTime: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result.processingTime
           }, ...results.slice(0, 9)]); // Keep last 10 results

@@ -8,7 +8,7 @@
   let files = $state<File[]>([]);
   let analysis = $state('');
   let isAnalyzing = $state(false);
-  const aiService = new AIAnalysisService();
+
   async function handleFileUpload(_event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) {
@@ -21,9 +21,9 @@
     isAnalyzing = true;
     try {
       const content = await files[0].text();
-      analysis = await aiService.analyzeEvidence(content, 'current-case');
+      analysis = await AIAnalysisService.analyzeEvidence(content, 'current-case');
     } catch (error) {
-      analysis = 'Analysis failed: ' + error.messag;
+      analysis = 'Analysis failed: ' + (error as Error).message;
     } finally {
       isAnalyzing = false;
     }

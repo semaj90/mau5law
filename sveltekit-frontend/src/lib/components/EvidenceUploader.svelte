@@ -19,7 +19,7 @@
     images: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'],
     videos: ['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/wmv'],
     documents: ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
-    audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac'];
+    audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac'],
   }
   const allAllowedTypes = Object.values.flat();
   function handleDragOver(e: DragEvent) {
@@ -57,12 +57,12 @@
         // Validate file type
         if (!allAllowedTypes.includes(file.type)) {
           uploadStatus = `Unsupported file type: ${file.type}`;
-          continu;
+          continue;
         }
         // Validate file size
         if (file.size > maxFileSize) {
           uploadStatus = `File too large: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)`;
-          continu;
+          continue;
         }
         uploadStatus = `Uploading ${file.name}...`;
         const formData = new FormData();

@@ -6,60 +6,58 @@
  * Features: Auto-prompting, queue processing, WebAssembly acceleration
  */
 
-import 'zx/globals'
-import { Worker } from 'worker_threads'
-import { WebSocket } from 'ws'
-import { createHash } from 'crypto'
-import cluster from 'cluster'
-import os from 'os'
+import 'zx/globals';
+import { createHash } from 'crypto';
+import cluster from 'cluster';
+import os from 'os';
 
-$.shell = 'powershell'
-$.verbose = false  // Reduce verbosity to prevent set -euo pipefail issues
+$.shell = 'powershell';
+$.verbose = false; // Reduce verbosity to prevent set -euo pipefail issues
 
 const CONFIG = {
   processing: {
-    maxConcurrent: 50,        // Process 50 errors simultaneously
-    batchSize: 100,           // Process in batches of 100
-    timeout: 30000,           // 30s timeout per error
-    retryAttempts: 3,         // Retry failed processes
-    useGPUParsing: true,      // Enable GPU-accelerated parsing
-    useWebAssembly: true,     // Enable WASM acceleration
+    maxConcurrent: 50, // Process 50 errors simultaneously
+    batchSize: 100, // Process in batches of 100
+    timeout: 30000, // 30s timeout per error
+    retryAttempts: 3, // Retry failed processes
+    useGPUParsing: true, // Enable GPU-accelerated parsing
+    useWebAssembly: true, // Enable WASM acceleration
     // Use Node.js clustering
+  },
+  ai: {
+    ollamaHost: 'localhost:11434',
+    model: 'gemma3-legal:latest',
+    embeddingModel: 'embeddinggemma:latest',
+    contextWindow: 4096,
+    temperature: 0.1,
+  },
+  mcp: {
+    context7Port: 40000,
+    endpoints: {
+      analyzeStack: '/mcp/analyze-stack',
+      bestPractices: '/mcp/generate-best-practices',
+      libraryDocs: '/mcp/get-library-docs',
+      subAgents: '/mcp/sub-agents',
     },
-    ai: {
-      ollamaHost: 'localhost:11434',
-      model: 'gemma3-legal:latest',
-      embeddingModel: 'nomic-embed-text',
-      contextWindow: 4096,
-      temperature: 0.1
-    },
-    mcp: {
-      context7Port: 40000,
-      endpoints: {
-    analyzeStack: '/mcp/analyze-stack',
-    bestPractices: '/mcp/generate-best-practices',
-    libraryDocs: '/mcp/get-library-docs',
-    subAgents: '/mcp/sub-agents'
-      }
-    },
-    gpu: {
-      host: 'localhost',
-      port: 8083,
-      tensorEndpoint: '/simd/parse',
-      embeddingEndpoint: '/embeddings/generate',
-      batchSize: 32
-    },
-    queue: {
-      redisUrl: null, // Use in-memory if no Redis
+  },
+  gpu: {
+    host: 'localhost',
+    port: 8083,
+    tensorEndpoint: '/simd/parse',
+    embeddingEndpoint: '/embeddings/generate',
+    batchSize: 32,
+  },
+  queue: {
+    redisUrl: null, // Use in-memory if no Redis
     maxQueueSize: 10000,
-    processingRate: 100 // errors per second target
+    processingRate: 100, // errors per second target
   },
   vscode: {
     settingsPath: '.vscode/settings.json',
     extensionsPath: '.vscode/extensions.json',
-    tasksPath: '.vscode/tasks.json'
-  }
-}
+    tasksPath: '.vscode/tasks.json',
+  },
+};
 
 // Error Processing State
 let errorProcessingState = {
@@ -74,102 +72,96 @@ let errorProcessingState = {
     avgProcessingTime: 0,
     errorsPerSecond: 0,
     gpuUtilization: 0,
-    memoryUsage: 0
+    memoryUsage: 0,
   },
   clusters: {
     active: 0,
-    workers: []
-  }
-}
+    workers: [],
+  },
+};
 
 // Enhanced Error Structure
 class ProcessableError {
   constructor(error) {
-    this.id = createHash('md5').update(`${error.file}:${error.line}:${error.message}`).digest('hex')
-    this.file = error.file
-    this.line = error.line
-    this.column = error.column
-    this.message = error.message
-    this.category = error.category || 'unknown'
-    this.severity = error.severity || 'error'
-    this.context = error.context || ''
-    this.embedding = null
-    this.suggestions = []
-    this.mcpContext = null
-    this.status = 'pending'
-    this.attempts = 0
-    this.createdAt = new Date().toISOString()
-    this.updatedAt = null
+    this.id = createHash('md5').update(`${error.file}:${error.line}:${error.message}`).digest('hex');
+    this.file = error.file;
+    this.line = error.line;
+    this.column = error.column;
+    this.message = error.message;
+    this.category = error.category || 'unknown';
+    this.severity = error.severity || 'error';
+    this.context = error.context || '';
+    this.embedding = null;
+    this.suggestions = [];
+    this.mcpContext = null;
+    this.status = 'pending';
+    this.attempts = 0;
+    this.createdAt = new Date().toISOString();
+    this.updatedAt = null;
   }
 }
 
 // AI-Powered Error Suggestion Generator
 class ErrorSuggestionEngine {
   constructor() {
-    this.ollamaClient = new OllamaClient(CONFIG.ai.ollamaHost)
-    this.mcpClient = new MCPContext7Client(CONFIG.mcp)
-    this.gpuClient = new GPUParsingClient(CONFIG.gpu)
-    this.embeddingCache = new Map()
+    this.ollamaClient = new OllamaClient(CONFIG.ai.ollamaHost);
+    this.mcpClient = new MCPContext7Client(CONFIG.mcp);
+    this.gpuClient = new GPUParsingClient(CONFIG.gpu);
+    this.embeddingCache = new Map();
   }
 
   async generateSuggestions(error) {
-    const startTime = Date.now()
+    const startTime = Date.now();
 
     try {
       // 1. Generate embedding for error context
-      const embedding = await this.generateEmbedding(error)
-      error.embedding = embedding
+      const embedding = await this.generateEmbedding(error);
+      error.embedding = embedding;
 
       // 2. Get MCP Context7 analysis
-      const mcpAnalysis = await this.getMCPAnalysis(error)
-      error.mcpContext = mcpAnalysis
+      const mcpAnalysis = await this.getMCPAnalysis(error);
+      error.mcpContext = mcpAnalysis;
 
       // 3. Generate AI suggestions using Ollama
-      const aiSuggestions = await this.generateAISuggestions(error, mcpAnalysis)
+      const aiSuggestions = await this.generateAISuggestions(error, mcpAnalysis);
 
       // 4. Enhance with GPU parsing insights
-      const gpuInsights = await this.getGPUInsights(error)
+      const gpuInsights = await this.getGPUInsights(error);
 
       // 5. Combine and rank suggestions
-      const rankedSuggestions = this.rankSuggestions([
-        ...aiSuggestions,
-        ...gpuInsights.suggestions || []
-      ])
+      const rankedSuggestions = this.rankSuggestions([...aiSuggestions, ...(gpuInsights.suggestions || [])]);
 
-      error.suggestions = rankedSuggestions
-      error.status = 'processed'
-      error.updatedAt = new Date().toISOString()
+      error.suggestions = rankedSuggestions;
+      error.status = 'processed';
+      error.updatedAt = new Date().toISOString();
 
-      const duration = Date.now() - startTime
-      this.updatePerformanceMetrics(duration)
+      const duration = Date.now() - startTime;
+      this.updatePerformanceMetrics(duration);
 
       return {
         success: true,
         error,
         processingTime: duration,
-        suggestionsCount: rankedSuggestions.length
-      }
-
+        suggestionsCount: rankedSuggestions.length,
+      };
     } catch (err) {
-      console.error(`Failed to process error ${error.id}:`, err.message)
-      error.status = 'failed'
-      error.attempts++
+      console.error(`Failed to process error ${error.id}:`, err.message);
+      error.status = 'failed';
+      error.attempts++;
 
       return {
         success: false,
         error,
-        errorMessage: err.message
-      }
+        errorMessage: err.message,
+      };
     }
   }
 
   async generateEmbedding(error) {
-    const cacheKey = createHash('md5')
-      .update(`${error.message}:${error.category}:${error.file}`)
-      .digest('hex')
+    const cacheKey = createHash('md5').update(`${error.message}:${error.category}:${error.file}`).digest('hex');
 
     if (this.embeddingCache.has(cacheKey)) {
-      return this.embeddingCache.get(cacheKey)
+      return this.embeddingCache.get(cacheKey);
     }
 
     const contextText = `
@@ -178,7 +170,7 @@ File: ${error.file}
 Line: ${error.line}
 Category: ${error.category}
 Context: ${error.context}
-`.trim()
+`.trim();
 
     try {
       const response = await fetch(`http://${CONFIG.ai.ollamaHost}/api/embeddings`, {
@@ -186,67 +178,65 @@ Context: ${error.context}
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: CONFIG.ai.embeddingModel,
-          prompt: contextText
-        })
-      })
+          prompt: contextText,
+        }),
+      });
 
       if (!response.ok) {
-        throw new Error(`Ollama embeddings failed: ${response.status}`)
+        throw new Error(`Ollama embeddings failed: ${response.status}`);
       }
 
-      const data = await response.json()
-      const embedding = data.embedding
+      const data = await response.json();
+      const embedding = data.embedding;
 
-      this.embeddingCache.set(cacheKey, embedding)
-      return embedding
-
+      this.embeddingCache.set(cacheKey, embedding);
+      return embedding;
     } catch (err) {
-      console.warn(`Embedding generation failed for error ${error.id}:`, err.message)
-      return null
+      console.warn(`Embedding generation failed for error ${error.id}:`, err.message);
+      return null;
     }
   }
 
   async getMCPAnalysis(error) {
     try {
-      const mcpQueries = []
+      const mcpQueries = [];
 
       // Determine appropriate MCP queries based on error category
       if (error.category === 'typescript') {
         mcpQueries.push(
           `#context7 analyze typescript error: ${error.message}`,
           `#get-library-docs typescript topic error-handling`
-        )
+        );
       } else if (error.category === 'svelte') {
         mcpQueries.push(
           `#context7 analyze svelte with context runes-migration`,
           `#get-library-docs svelte topic ${error.message.includes('$:') ? 'reactive-statements' : 'components'}`
-        )
+        );
       } else if (error.file && error.file.includes('.svelte')) {
         mcpQueries.push(
           `#context7 suggest integration for svelte component fixes`,
           `#generate-best-practices for svelte-components`
-        )
+        );
       }
 
-      const results = []
+      const results = [];
       for (const query of mcpQueries) {
         try {
-          const result = await this.mcpClient.query(query)
-          results.push(result)
+          const result = await this.mcpClient.query(query);
+          results.push(result);
         } catch (err) {
-          console.warn(`MCP query failed: ${query}`, err.message)
+          console.warn(`MCP query failed: ${query}`, err.message);
         }
       }
 
       return {
         queries: mcpQueries,
         results,
-        timestamp: new Date().toISOString()
-      }
-
+        timestamp: new Date().toISOString(),
+      };
     } catch (err) {
-      console.warn(`MCP analysis failed for error ${error.id}:`, err.message)
-      return null
+      console.warn(`MCP analysis failed for error ${error.id}:`, err.message);
+      return null;
     }
   }
 
@@ -261,8 +251,12 @@ Message: ${error.message}
 Category: ${error.category}
 Context: ${error.context}
 
-${mcpContext ? `MCP CONTEXT7 ANALYSIS:
-${JSON.stringify(mcpContext.results, null, 2)}` : ''}
+${
+  mcpContext
+    ? `MCP CONTEXT7 ANALYSIS:
+${JSON.stringify(mcpContext.results, null, 2)}`
+    : ''
+}
 
 Provide exactly 3 suggestions in this JSON format:
 {
@@ -283,7 +277,7 @@ Focus on:
 2. Svelte 5 runes migration if applicable
 3. TypeScript best practices
 4. Performance improvements
-`
+`;
 
     try {
       const response = await fetch(`http://${CONFIG.ai.ollamaHost}/api/generate`, {
@@ -295,44 +289,45 @@ Focus on:
           stream: false,
           options: {
             temperature: CONFIG.ai.temperature,
-            num_ctx: CONFIG.ai.contextWindow
-          }
-        })
-      })
+            num_ctx: CONFIG.ai.contextWindow,
+          },
+        }),
+      });
 
       if (!response.ok) {
-        throw new Error(`Ollama generate failed: ${response.status}`)
+        throw new Error(`Ollama generate failed: ${response.status}`);
       }
 
-      const data = await response.json()
-      const content = data.response
+      const data = await response.json();
+      const content = data.response;
 
       // Extract JSON from response
-      const jsonMatch = content.match(/\{[\s\S]*\}/g)
+      const jsonMatch = content.match(/\{[\s\S]*\}/g);
       if (jsonMatch && jsonMatch.length > 0) {
-        const parsed = JSON.parse(jsonMatch[0])
-        return parsed.suggestions || []
+        const parsed = JSON.parse(jsonMatch[0]);
+        return parsed.suggestions || [];
       }
 
       // Fallback: create basic suggestion from response
-      return [{
-        title: "AI Generated Fix",
-        description: content.substring(0, 200) + "...",
-        code: null,
-        confidence: 0.7,
-        category: "general",
-        automated: false
-      }]
-
+      return [
+        {
+          title: 'AI Generated Fix',
+          description: content.substring(0, 200) + '...',
+          code: null,
+          confidence: 0.7,
+          category: 'general',
+          automated: false,
+        },
+      ];
     } catch (err) {
-      console.warn(`AI suggestion generation failed for error ${error.id}:`, err.message)
-      return []
+      console.warn(`AI suggestion generation failed for error ${error.id}:`, err.message);
+      return [];
     }
   }
 
   async getGPUInsights(error) {
     if (!CONFIG.processing.useGPUParsing) {
-      return { suggestions: [] }
+      return { suggestions: [] };
     }
 
     try {
@@ -343,20 +338,19 @@ Focus on:
           errors: [error],
           analysisType: 'error-pattern-matching',
           useGPU: true,
-          includePerformance: true
-        })
-      })
+          includePerformance: true,
+        }),
+      });
 
       if (!response.ok) {
-        throw new Error(`GPU parsing failed: ${response.status}`)
+        throw new Error(`GPU parsing failed: ${response.status}`);
       }
 
-      const data = await response.json()
-      return data.insights || { suggestions: [] }
-
+      const data = await response.json();
+      return data.insights || { suggestions: [] };
     } catch (err) {
-      console.warn(`GPU insights failed for error ${error.id}:`, err.message)
-      return { suggestions: [] }
+      console.warn(`GPU insights failed for error ${error.id}:`, err.message);
+      return { suggestions: [] };
     }
   }
 
@@ -365,66 +359,68 @@ Focus on:
       .filter(s => s && s.title && s.confidence > 0.3)
       .sort((a, b) => {
         // Prioritize automated fixes with high confidence
-        const scoreA = (a.automated ? 0.5 : 0) + a.confidence
-        const scoreB = (b.automated ? 0.5 : 0) + b.confidence
-        return scoreB - scoreA
+        const scoreA = (a.automated ? 0.5 : 0) + a.confidence;
+        const scoreB = (b.automated ? 0.5 : 0) + b.confidence;
+        return scoreB - scoreA;
       })
-      .slice(0, 5) // Top 5 suggestions per error
+      .slice(0, 5); // Top 5 suggestions per error
   }
 
   updatePerformanceMetrics(duration) {
     errorProcessingState.performance.avgProcessingTime =
-      (errorProcessingState.performance.avgProcessingTime + duration) / 2
+      (errorProcessingState.performance.avgProcessingTime + duration) / 2;
   }
 }
 
 // MCP Context7 Client
 class MCPContext7Client {
   constructor(config) {
-    this.config = config
-    this.baseUrl = `http://localhost:${config.context7Port}`
+    this.config = config;
+    this.baseUrl = `http://localhost:${config.context7Port}`;
   }
 
   async query(queryString) {
     // Mock MCP implementation - replace with actual MCP client
-    await sleep(500 + Math.random() * 1000) // Simulate processing time
+    await sleep(500 + Math.random() * 1000); // Simulate processing time
 
     return {
       query: queryString,
       result: `Mock MCP result for: ${queryString}`,
       confidence: 0.8 + Math.random() * 0.2,
-      timestamp: new Date().toISOString()
-    }
+      timestamp: new Date().toISOString(),
+    };
   }
 }
 
 // GPU Parsing Client
 class GPUParsingClient {
   constructor(config) {
-    this.config = config
-    this.baseUrl = `http://${config.host}:${config.port}`
+    this.config = config;
+    this.baseUrl = `http://${config.host}:${config.port}`;
   }
 
-  async analyze(errors) {
+  async analyze(_errors) {
     // Mock GPU implementation
-    await sleep(200 + Math.random() * 300) // Simulate GPU processing
+    await sleep(200 + Math.random() * 300); // Simulate GPU processing
 
     return {
       insights: {
-        suggestions: [{
-          title: "GPU Pattern Analysis",
-          description: "Pattern-based suggestion from GPU analysis",
-          code: null,
-          confidence: 0.85,
-          category: "pattern-matching",
-          automated: true
-        }]
+        suggestions: [
+          {
+            title: 'GPU Pattern Analysis',
+            description: 'Pattern-based suggestion from GPU analysis',
+            code: null,
+            confidence: 0.85,
+            category: 'pattern-matching',
+            automated: true,
+          },
+        ],
       },
       performance: {
         processingTime: 150,
-        gpuUtilization: 85
-      }
-    }
+        gpuUtilization: 85,
+      },
+    };
   }
 }
 

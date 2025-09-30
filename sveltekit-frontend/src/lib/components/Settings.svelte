@@ -30,8 +30,13 @@ https: //svelte.dev/e/props_duplicate -->
     fontSize: '16px',
   }
   // Bindable props with defaults
-  let { isOpen = $bindable(false)  }: { isOpen = $bindable(false) : unknown } = $props();
-  let { settings = $bindable<Settings>(defaultSettings)  }: { settings = $bindable<Settings>(defaultSettings) : unknown } = $props();
+  let {
+    isOpen = $bindable(false),
+    settings = $bindable<Settings>(defaultSettings)
+  }: {
+    isOpen?: boolean;
+    settings?: Settings;
+  } = $props();
 </script>
 
 {#if isOpen}
