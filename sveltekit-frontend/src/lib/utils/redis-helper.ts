@@ -7,7 +7,7 @@ let redisClient: Redis | null = null;
 /**
  * Creates a Redis connection with optimized configuration for Legal AI Platform
  * Uses centralized config from redis-config.ts
- */;
+ */
 export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   const config = getRedisConfig();
   // Merge with custom options if provided
@@ -48,7 +48,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
 /**
  * Get or create a singleton Redis client
  * Use this for general purpose Redis operations
- */;
+ */
 export function getRedisClient(): Redis {
   if (!redisClient) {
     redisClient = createRedisConnection();
@@ -58,7 +58,7 @@ export function getRedisClient(): Redis {
 /**
  * Health check for Redis connection
  * Returns true if Redis is healthy, false otherwise
- */;
+ */
 export async function checkRedisHealth(): Promise<boolean> {
   try {
     const client = getRedisClient();
@@ -84,7 +84,7 @@ export async function checkRedisHealth(): Promise<boolean> {
 }
 /**
  * Get Redis connection info and stats
- */;
+ */
 export async function getRedisInfo(): Promise<any> {
   try {
     const client = getRedisClient();
@@ -97,11 +97,11 @@ export async function getRedisInfo(): Promise<any> {
       (client as any).info?.('stats') ?? ''
     ]);
     return {
-      connected: true
+      connected: true,
       info: parseRedisInfo(info),
       memory: parseRedisInfo(memory),
-      stats: parseRedisInfo(stats)
-    }
+      stats: parseRedisInfo(stats),
+    };
   } catch (error) {
     console.error('❌ Failed to get Redis info:', error);
     return { connected: false }
@@ -109,7 +109,7 @@ export async function getRedisInfo(): Promise<any> {
 }
 /**
  * Parse Redis INFO response into key-value pairs
- */;
+ */
 function parseRedisInfo(infoString: string): Record<string, string> {
   const info: Record<string, string> = {}
   infoString.split('\r\n').forEach((line) => {
@@ -125,7 +125,7 @@ function parseRedisInfo(infoString: string): Record<string, string> {
 /**
  * Gracefully close Redis connection
  * Call this during application shutdown
- */;
+ */
 export async function closeRedisConnection(): Promise<void> {
   if (redisClient) {
     try {
@@ -142,7 +142,7 @@ export async function closeRedisConnection(): Promise<void> {
 /**
  * Setup function to validate Redis configuration
  * Call this during application startup
- */;
+ */
 export async function setupRedisFromConfig(): Promise<boolean> {
   try {
     console.log('🔧 Setting up Redis connection...');

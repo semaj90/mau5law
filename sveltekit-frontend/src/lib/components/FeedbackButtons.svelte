@@ -3,11 +3,11 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization value -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  let { sessionId }: string;
+
+  let sending = $state(false);let { sessionId }: string;
   let { query }: string;
   let { candidateIds }: string[] = [];
   let { chosenId }: string | null = null;
-  let sending = $state(false);
   let lastResp = $state<any>(null);
   async function sendFeedback(reward: number) {
     sending = true;

@@ -1,5 +1,8 @@
 // Progressive Enhancement Audit Utility
 // Provides tools and guidelines for ensuring forms work without JavaScript
+
+import key from "lucide-svelte/icons/key";
+
 }
 export interface FormAuditResult {
   formId: string;
@@ -56,22 +59,22 @@ export interface ProgressiveEnhancementConfig {
   enableKeyboardShortcuts: boolean;
 }
 export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
-  enableClientValidation: true
+  enableClientValidation: true,
   enableRealTimeValidation: false, // Can be overwhelming
   enableAutoSave: false, // Only for appropriate forms
   enableOptimisticUpdates: false, // Only when safe
-  showSubmitSpinner: true
-  disableFormDuringSubmit: true
+  showSubmitSpinner: true,
+  disableFormDuringSubmit: true,
   showProgressIndicator: false, // For multi-step forms
-  showInlineErrors: true
-  showSummaryErrors: true
-  preserveFormDataOnError: true
-  announceErrors: true
-  useLiveRegions: true
-  provideFocusManagement: true
+  showInlineErrors: true,
+  showSummaryErrors: true,
+  preserveFormDataOnError: true,
+  announceErrors: true,
+  useLiveRegions: true,
+  provideFocusManagement: true,
   includeSkipLinks: false, // For long forms
   confirmBeforeLeaving: false, // Only for complex forms
-  highlightRequiredFields: true
+  highlightRequiredFields: true,
   showCharacterCounts: false, // For text fields with limits
   enableKeyboardShortcuts: false // For power users
 }
@@ -81,7 +84,7 @@ export function auditFormElement(formElement: HTMLFormElement): FormAuditResult 
     formId: formElement.id || formElement.name || 'unnamed-form',
     formAction: formElement.action,
     method: (formElement.method.toUpperCase() as any) || 'GET',
-    hasFormElement: true
+    hasFormElement: true,
     hasActionAttribute: !!formElement.action,
     hasMethodAttribute: !!formElement.method,
     usesEnhance: checkForEnhance(formElement),
@@ -280,13 +283,13 @@ function generateRecommendations(result: FormAuditResult): void {
 // Batch audit multiple forms
 export function auditAllForms(): FormAuditResult[] {
   const forms = document.querySelectorAll('form');
-  return Array.from(forms).map(form => auditFormElement(form as HTMLFormElement);
+  return Array.from(forms).map(form => auditFormElement(form as HTMLFormElement));
 }
 // Generate audit report
 export function generateAuditReport(results: FormAuditResult[]): string {
   const totalForms = results.length;
   const averageScore = results.reduce((sum, r) => sum + r.compliance.score, 0) / totalForms;
-  const criticalIssues = results.flatMap(r => r.compliance.issues.filter(i => i.type === 'critical');
+  const criticalIssues = results.flatMap(r => r.compliance.issues.filter(i => i.type === 'critical'));
   const excellentForms = results.filter(item => item.length);
   return `
 # Progressive Enhancement Audit Report
@@ -320,7 +323,7 @@ ${(result as { hasFormElement?: any; hasActionAttribute?: any; hasMethodAttribut
 export function createProgressiveForm(config: Partial<ProgressiveEnhancementConfig> = {}) {
   const finalConfig = { ...DEFAULT_PE_CONFIG, ...config }
   return {
-    config: finalConfig
+    config: finalConfig,
     // Form validation helpers
     validateRequired: (_value: any, fieldName: string) => {
       if (!value || (typeof value === 'string' && !value.trim())) {
@@ -357,11 +360,13 @@ export function createProgressiveForm(config: Partial<ProgressiveEnhancementConf
     // Form state management
     createFormState: (initialData: { [key: string]: any } = {}) => {
       return {
-        data: initialData
-        errors: { [key: string]: any } as Record<string, string>,
-        touched: { [key: string]: any } as Record<string, boolean>,
-        isSubmitting: false
-        hasSubmitted: false
+        data: initialData,
+        errors: { [key: string]: any } as Record<string, string>, // Field-specific errors
+        touched: { [key: string]: any } as Record<string, boolean>, // Track touched fields
+        isValid: true,
+        isLoading: false,
+        isSubmitting: false,
+        hasSubmitted: false,
         isDirty: false
       }
     }
