@@ -94,10 +94,10 @@ await initializeEditor();
   // ============================================================================
   async function initializeEditor() {
     editor = new Editor({
-      element: editorElement;
+      element: editorElement,
       extensions: [
         StarterKit.configure({
-          history: false, // We'll handle our own history with collaboratio;
+          history: false, // We'll handle our own history with collaboration
         }),
         // Add collaboration extensions if needed
         // Collaboration.configure({
@@ -290,7 +290,7 @@ await initializeEditor();
           task: {
             taskId: (result as { success?: any; data?: any; suggestions?: any }).data.taskId,
             documentId,
-            documentContent: content
+            documentContent: content,
             reviewType: 'comprehensive',
             priority: 'medium',
             assignedAgents: (result as { success?: any; data?: any; suggestions?: any }).data.assignedAgents.map((a: any) => a.id)

@@ -153,7 +153,7 @@ https://svelte.dev/e/js_parse_error -->
       // Add search to chat history
       await db.addChatMessage({
         role: 'user',
-        content: searchQuery;
+        content: searchQuery,
         metadata: {
           legalContext: {
             documentType: 'search',

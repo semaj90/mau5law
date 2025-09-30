@@ -13,6 +13,14 @@
         "resolve-library-id",
         "get-library-docs"
       ]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/users/james/videos/deeds-web-app/sveltekit-frontend"
+      ]
     }
   }
 }
