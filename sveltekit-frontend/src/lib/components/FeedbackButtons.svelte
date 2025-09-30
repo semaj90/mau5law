@@ -55,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
   }
   .up {
-    background: #e6f6ease;
+    background: #e6f6ea;
     color: #047857;
   }
   .down {

@@ -7,7 +7,6 @@
   let inputElement = $state<HTMLInputElement | null>(null);
   let isFocused = $state(false);
   function triggerSearch() {
-    ondispatch?.({ query: value });
     onsearch?.({ query: value });
   }
   function handleInput() {
@@ -17,10 +16,10 @@
     }, debounceTime);
   }
   function handleKeydown(_event: KeyboardEvent) {
-    if (event.key === 'Enter') {
+    if (_event.key === 'Enter') {
       if (debounceTimer) clearTimeout(debounceTimer);
       triggerSearch();
-    } else if (event.key === 'Escape') {
+    } else if (_event.key === 'Escape') {
       clearValue();
       inputElement?.blur();
     }
@@ -49,7 +48,7 @@
     class="search-input"
     type="text"
     oninput={handleInput}
-    keydown={handleKeydown}
+    onkeydown={handleKeydown}
     onfocus={handleFocus}
     onblur={handleBlur}
     aria-label="Search"
@@ -99,6 +98,7 @@
   }
   .search-input::placeholder {
     color: var(--text-muted);
+    opacity: 1; /* Ensure consistent placeholder opacity across browsers */
   }
   .clear-button {
     display: flex;

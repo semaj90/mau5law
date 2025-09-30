@@ -294,7 +294,7 @@ Automatically handles server upload with localStorage fallback
   }
   .drop-zone.drag-over {
     border-color: #3b82f6;
-    background-color: #dbeaf;
+    background-color: #dbeaff;
     transform: scale(1.02);
   }
   .drop-zone.uploading {
@@ -436,7 +436,7 @@ Automatically handles server upload with localStorage fallback
   .fallback-badge {
     padding: 0.125rem 0.375rem;
     background-color: #fef3c7;
-    color: #92400;
+    color: #92f400;
     border-radius: 12px;
     font-weight: 500;
   }

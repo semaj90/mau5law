@@ -1,5 +1,4 @@
-import type { PageServerLoad } from './$types.js';
-import type { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from "@sveltejs/kit";
 import type { RAGSearchResult } from "$lib/types/rag";
 /**
  * Copilot Index Optimizer - Advanced semantic search with Context7 MCP integration
@@ -26,8 +25,27 @@ export interface OptimizationConfig {
   maxCacheSize: number;
   compressionRatio: number;
 }
+
+// Defines the structure of the code context for suggestion generation
+export interface CodeContext {
+  language: string;
+  currentLine: string;
+  previousLines: string[];
+  nextLines: string[];
+  cursorPosition: { line: number; character: number };
+  fullContext: string;
+}
+
+// Defines the structure for a Copilot suggestion
+export interface CopilotSuggestion {
+  text: string;
+  priority: number;
+  confidence: number;
+  context7Pattern: string;
+  category: Context7Pattern['category'];
+}
 // Pre-defined Context7 patterns for enhanced Copilot suggestions
-const CONTEXT7_PATTERNS: Context7Pattern[] = [;
+const CONTEXT7_PATTERNS: Context7Pattern[] = [
   {
     id: 'svelte5_runes',
     pattern: '$props()|$state()|$derived()|$effect()',
@@ -91,10 +109,10 @@ export class CopilotIndexOptimizer {
   }
   constructor(config: Partial<OptimizationConfig> = {}) {
     this.config = {
-      enableContext7Boost: true
-      enableSemanticClustering: true
-      enablePatternRecognition: true
-      enablePerformanceOptimization: true
+      enableContext7Boost: true,
+      enableSemanticClustering: true,
+      enablePatternRecognition: true,
+      enablePerformanceOptimization: true,
       minRelevanceThreshold: 0.6,
       maxCacheSize: 1000,
       compressionRatio: 0.7,
@@ -103,7 +121,7 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Optimize the copilot.md content for enhanced suggestions
-   */;
+   */
   async optimizeCopilotIndex(copilotContent: string): Promise<CopilotIndex> {
     const startTime = performance.now();
     try {
@@ -114,16 +132,16 @@ export class CopilotIndexOptimizer {
       // Step 3: Generate semantic clusters for better organization
       const semanticClusters = await this.generateSemanticClusters(enhancedEntries);
       // Step 4: Create optimized search index
-      const searchIndex = await this.createOptimizedSearchIndex(enhancedEntries);
+      // const searchIndex = await this.createOptimizedSearchIndex(enhancedEntries);
       // Step 5: Apply performance optimizations
       const optimizedEntries = await this.applyPerformanceOptimizations(enhancedEntries);
       this.optimizedIndex = {
         version: '2.1.0',
         indexType: 'enhanced_legal_ai',
-        entries: optimizedEntries
+        entries: optimizedEntries,
         statistics: {
           totalEntries: optimizedEntries.length,
-          totalTokens: optimizedEntries.reduce((sum, entry) => sum + entry.metadata.tokens, 0),
+          totalTokens: optimizedEntries.reduce((sum: number, entry: CopilotIndexEntry) => sum + entry.metadata.tokens, 0),
           avgEmbeddingTime: this.performanceMetrics.optimizationTime / optimizedEntries.length,
           indexSizeMB: this.calculateIndexSize(optimizedEntries),
           lastUpdated: Date.now()
@@ -144,7 +162,7 @@ export class CopilotIndexOptimizer {
    * Enhanced semantic search with Context7 pattern boosting
    */
   async enhancedSemanticSearch(
-    query: string;
+    query: string,
     options: {
       limit?: number;
       includePatterns?: boolean;
@@ -188,17 +206,15 @@ export class CopilotIndexOptimizer {
       return finalResults;
     } catch (error: any) {
       console.error('Enhanced semantic search failed:', error);
-      throw error;
+      throw new Error(`Search failed: ${error.message}`);
     }
   }
-  /**
-   * Generate Context7-aware suggestions for Copilot
-   */
+
   async generateCopilotSuggestions(
-    currentCode: string
+    currentCode: string,
     cursor: { line: number; character: number },
-    language: string;
-  ): Promise<Array<any> {
+    language: string,
+  ): Promise<CopilotSuggestion[]> {
     try {
       // Analyze current code context
       const codeContext = this.analyzeCodeContext(currentCode, cursor, language);
@@ -208,7 +224,7 @@ export class CopilotIndexOptimizer {
       const suggestions = await this.generatePatternBasedSuggestions(codeContext, relevantPatterns);
       // Rank suggestions by relevance and confidence
       return suggestions
-        .sort((a, b) => b.priority * b.confidence - a.priority * a.confidence)
+        .sort((a: CopilotSuggestion, b: CopilotSuggestion) => b.priority * b.confidence - a.priority * a.confidence)
         .slice(0, 10);
     } catch (error: any) {
       console.error('Suggestion generation failed:', error);
@@ -217,7 +233,7 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Parse copilot.md content into structured index
-   */;
+   */
   private async parseCopilotContent(content: string): Promise<CopilotIndex> {
     // Extract different sections from copilot.md
     const sections = this.extractContentSections(content);
@@ -257,7 +273,7 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Extract sections from copilot.md content
-   */;
+   */
   private extractContentSections(content: string) {
     const sections = [];
     // Split by headers and code blocks
@@ -279,8 +295,8 @@ export class CopilotIndexOptimizer {
       const sectionContent = content.substring(headerStart, sectionEnd);
       sections.push({
         id: `section_${sectionId++}`,
-        title: headerText
-        content: sectionContent
+        title: headerText,
+        content: sectionContent,
         priority: this.determineSectionPriority(headerText, sectionContent),
         language: 'markdown'
       });
@@ -293,7 +309,7 @@ export class CopilotIndexOptimizer {
       sections.push({
         id: `code_${sectionId++}`,
         title: `Code: ${language}`,
-        content: code;
+        content: code,
         priority: this.determineCodePriority(language, code),
         language
       });
@@ -302,7 +318,7 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Apply Context7 patterns to boost relevant entries
-   */;
+   */
   private async applyContext7Patterns(entries: CopilotIndexEntry[]): Promise<CopilotIndexEntry[]> {
     return entries.map((entry: any) => {
       const matchingPatterns = this.findMatchingPatterns(entry.content);
@@ -323,7 +339,7 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Apply Context7 boosting to search results
-   */;
+   */
   private async applyContext7Boosting(query: string, results: RAGSearchResult[]): Promise<RAGSearchResult[]> {
     const queryPatterns = this.findMatchingPatterns(query);
     return results.map((result: any) => {
@@ -349,7 +365,7 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Find matching Context7 patterns in content
-   */;
+   */
   private findMatchingPatterns(content: string): Context7Pattern[] {
     const cacheKey = this.hashContent(content);
     if (this.patternCache.has(cacheKey)) {
@@ -361,7 +377,7 @@ export class CopilotIndexOptimizer {
       const hasMatch = regex.test(content);
       // Check if any keywords are present
       const hasKeywords = pattern.keywords.some((keyword: any) =>
-        content.toLowerCase().includes(keyword.toLowerCase()
+        content.toLowerCase().includes(keyword.toLowerCase())
       );
       return hasMatch || hasKeywords;
     });
@@ -370,7 +386,7 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Generate semantic clusters for better organization
-   */;
+   */
   private async generateSemanticClusters(entries: CopilotIndexEntry[]) {
     // Use the enhanced RAG store's SOM clustering
     const { somRAG } = enhancedRAGStore;
@@ -401,11 +417,11 @@ export class CopilotIndexOptimizer {
       centroid: new Float32Array([]), // Empty for now, could be calculated from members
       memberIds: [], // Could be extracted from cluster data if available
       relevantTerms: [], // Could be derived from cluster analysis
-    });
+    }));
   }
   /**
    * Create optimized search index
-   */;
+   */
   private async createOptimizedSearchIndex(entries: CopilotIndexEntry[]) {
     // Create inverted index for fast text search
     const invertedIndex = new Map<string, string[]>();
@@ -426,7 +442,7 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Apply performance optimizations
-   */;
+   */
   private async applyPerformanceOptimizations(entries: CopilotIndexEntry[]): Promise<CopilotIndexEntry[]> {
     if (!this.config.enablePerformanceOptimization) {
       return entries;
@@ -447,7 +463,7 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Apply intelligent ranking based on multiple factors
-   */;
+   */
   private async applyIntelligentRanking(query: string, results: RAGSearchResult[]): Promise<RAGSearchResult[]> {
     const queryPatterns = this.findMatchingPatterns(query);
     const queryEmbedding = await simdIndexProcessor.generateEmbeddings(query);
@@ -461,7 +477,7 @@ export class CopilotIndexOptimizer {
       const priorityBonus = (result as { score?: any; document?: any; explanation?: any; type?: any }).document.metadata.practiceArea?.[0] === 'enhanced_local_index' ? 0.1 : 0;
       // Factor 4: Recency bonus (for newer content)
       const age = Date.now() - (result as { score?: any; document?: any; explanation?: any; type?: any }).document.metadata.lastModified.getTime();
-      const recencyBonus = Math.max(0, 0.05 - (age / (1000 * 60 * 60 * 24 * 30)); // Decay over 30 days
+      const recencyBonus = Math.max(0, 0.05 - (age / (1000 * 60 * 60 * 24 * 30))); // Decay over 30 days
       finalScore = Math.min(1.0, finalScore + patternBonus + priorityBonus + recencyBonus);
       (result as { score?: any; document?: any; explanation?: any; type?: any }).score = finalScore;
       // Ensure required properties are present
@@ -476,9 +492,9 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Analyze code context for suggestions
-   */;
-  private analyzeCodeContext(code: string, cursor: { line: number; character: number }, language: string) {
-    // removed unused lines assignment
+   */
+  private analyzeCodeContext(code: string, cursor: { line: number; character: number }, language: string): CodeContext {
+    const lines = code.split('\n');
     const currentLine = lines[cursor.line] || '';
     const previousLines = lines.slice(Math.max(0, cursor.line - 5), cursor.line);
     const nextLines = lines.slice(cursor.line + 1, cursor.line + 6);
@@ -487,65 +503,57 @@ export class CopilotIndexOptimizer {
       currentLine,
       previousLines,
       nextLines,
-      cursorPosition: cursor
+      cursorPosition: cursor,
       fullContext: code
-    }
+    };
   }
   /**
    * Find relevant patterns for current context
-   */;
-  private findRelevantPatterns(context: any): Context7Pattern[] {
-    const languagePatterns = CONTEXT7_PATTERNS.filter((pattern: any) => {
+   */
+  private findRelevantPatterns(context: CodeContext): Context7Pattern[] {
+    const languagePatterns = CONTEXT7_PATTERNS.filter((pattern) => {
       switch (context.language) {
         case 'svelte':
           return pattern.category === 'svelte5' || pattern.category === 'ui';
         case 'typescript':
           return pattern.category === 'typescript' || pattern.category === 'sveltekit';
         default:
-          return true;
+          return false;
       }
     });
-    return languagePatterns.filter((pattern: any) => {
-      const contextText = [
-        context.currentLine,
-        ...context.previousLines,
-        ...context.nextLines
-      ].join(' ');
-      return this.findMatchingPatterns(contextText).includes(pattern);
-    });
+    return languagePatterns;
   }
+
   /**
    * Generate suggestions based on patterns and context
-   */;
-  private async generatePatternBasedSuggestions(context: any, patterns: Context7Pattern[]) {
-    const suggestions = [];
+   */
+  private async generatePatternBasedSuggestions(context: CodeContext, patterns: Context7Pattern[]): Promise<CopilotSuggestion[]> {
+    const suggestions: CopilotSuggestion[] = [];
     for (const pattern of patterns) {
       // Generate suggestions based on pattern category
       switch (pattern.category) {
         case 'svelte5':
-          suggestions.push(...this.generateSvelte5Suggestions(context, pattern);
+          suggestions.push(...this.generateSvelte5Suggestions(context, pattern));
           break;
         case 'sveltekit':
-          suggestions.push(...this.generateSvelteKitSuggestions(context, pattern);
+          suggestions.push(...this.generateSvelteKitSuggestions(context, pattern));
           break;
         case 'drizzle':
-          suggestions.push(...this.generateDrizzleSuggestions(context, pattern);
+          suggestions.push(...this.generateDrizzleSuggestions(context, pattern));
           break;
         case 'ai':
-          suggestions.push(...this.generateAISuggestions(context, pattern);
+          suggestions.push(...this.generateAISuggestions(context, pattern));
           break;
         case 'ui':
-          suggestions.push(...this.generateUISuggestions(context, pattern);
+          suggestions.push(...this.generateUISuggestions(context, pattern));
           break;
       }
     }
     return suggestions;
   }
-  /**
-   * Pattern-specific suggestion generators
-   */;
-  private generateSvelte5Suggestions(context: any, pattern: Context7Pattern) {
-    const suggestions = [];
+
+  private generateSvelte5Suggestions(context: CodeContext, pattern: Context7Pattern): CopilotSuggestion[] {
+    const suggestions: CopilotSuggestion[] = [];
     if (context.currentLine.includes('let ') && !context.currentLine.includes('$props')) {
       suggestions.push({
         text: 'let { prop = "default" } = $props();',
@@ -555,80 +563,85 @@ export class CopilotIndexOptimizer {
         context7Pattern: pattern.id
       });
     }
-    if (context.currentLine.includes('$effect(() => { ')) , });{
+    if (context.currentLine.includes('$effect')) {
       suggestions.push({
-        text: 'let computed = $derived(() => {\n  // computation\n});',
+        text: '$effect(() => {\n  // side effect\n});',
         priority: 0.8,
-        category: 'svelte5',
         confidence: 0.8,
-        context7Pattern: pattern.id
+        context7Pattern: pattern.id,
+        category: 'svelte5'
       });
     }
     return suggestions;
   }
-  private generateSvelteKitSuggestions(context: any, pattern: Context7Pattern) {
-    const suggestions = [];
+
+  private generateSvelteKitSuggestions(context: CodeContext, pattern: Context7Pattern): CopilotSuggestion[] {
+    const suggestions: CopilotSuggestion[] = [];
     if (context.currentLine.includes('export') && context.language === 'typescript') {
       suggestions.push({
-        text: 'export const load: PageServerLoad = async ({ params }) => {\n  return {\n    // data\n  }\n}',
-        priority: 0.85,
-        category: 'sveltekit',
-        confidence: 0.9,
-        context7Pattern: pattern.id
+        text: 'export const load = async ({ params }) => {\n  return {\n    // data\n  }\n}',
+        priority: 0.9,
+        confidence: 0.8,
+        context7Pattern: pattern.id,
+        category: 'sveltekit'
       });
     }
     return suggestions;
   }
-  private generateDrizzleSuggestions(context: any, pattern: Context7Pattern) {
+
+  private generateDrizzleSuggestions(_context: CodeContext, _pattern: Context7Pattern): CopilotSuggestion[] {
     // Implementation for Drizzle ORM suggestions
     return [];
   }
-  private generateAISuggestions(context: any, pattern: Context7Pattern) {
+
+  private generateAISuggestions(_context: CodeContext, _pattern: Context7Pattern): CopilotSuggestion[] {
     // Implementation for AI/RAG suggestions
     return [];
   }
-  private generateUISuggestions(context: any, pattern: Context7Pattern) {
+
+  private generateUISuggestions(_context: CodeContext, _pattern: Context7Pattern): CopilotSuggestion[] {
     // Implementation for UI component suggestions
     return [];
   }
+
   /**
-   * Utility functions
-   */;
-  private async generateSemanticChunks(content: string) {
-    return simdIndexProcessor['generateSemanticChunks'](content);
-  }
+   * Determine priority of a section based on keywords
+   */
   private determineSectionPriority(title: string, content: string): 'high' | 'medium' | 'low' {
-    const highPriorityKeywords = ['svelte 5', 'sveltekit', 'best practices', 'patterns'];
+    const highPriorityKeywords = ['svelte5', 'sveltekit', 'legal', 'ai', 'rag', 'drizzle', 'xstate'];
     const mediumPriorityKeywords = ['typescript', 'drizzle', 'ui'];
     const titleLower = title.toLowerCase();
     const contentLower = content.toLowerCase();
     if (
       highPriorityKeywords.some(
-        (keyword: any) => titleLower.includes(keyword) || contentLower.includes(keyword)
-      );
+        (keyword: string) => titleLower.includes(keyword) || contentLower.includes(keyword)
+      )
     ) {
       return 'high';
     }
     if (
       mediumPriorityKeywords.some(
-        (keyword: any) => titleLower.includes(keyword) || contentLower.includes(keyword)
-      );
+        (keyword: string) => titleLower.includes(keyword) || contentLower.includes(keyword)
+      )
     ) {
       return 'medium';
     }
     return 'low';
   }
+
   private determineCodePriority(language: string, code: string): 'high' | 'medium' | 'low' {
     const highPriorityLanguages = ['svelte', 'typescript'];
     const highPriorityPatterns = ['$props', '$state', '$derived', 'PageServerLoad'];
     if (highPriorityLanguages.includes(language)) {
       return 'high';
     }
-    if (highPriorityPatterns.some((pattern: any) => code.includes(pattern))) {
+    if (highPriorityPatterns.some((pattern: string) => code.includes(pattern))) {
+    if (highPriorityPatterns.some((pattern: string) => code.includes(pattern))) {
       return 'high';
     }
     return 'medium';
-  }
+  private calculateIndexSize(entries: CopilotIndexEntry[]): number {
+    const totalBytes = entries.reduce((sum, entry) => {
   private calculateIndexSize(entries: CopilotIndexEntry[]): number {
     const totalBytes = entries.reduce((sum, entry) => {
       return sum + entry.content.length + (entry.embedding.length * 4); // 4 bytes per float
@@ -671,18 +684,18 @@ export class CopilotIndexOptimizer {
   }
   /**
    * Performance monitoring
-   */;
+   */
   getPerformanceMetrics() {
     return {
       ...this.performanceMetrics,
       cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalOptimizations, 1),
       avgOptimizationTime: this.performanceMetrics.optimizationTime / Math.max(this.performanceMetrics.totalOptimizations, 1),
       avgSearchTime: this.performanceMetrics.searchTime / Math.max(this.performanceMetrics.totalOptimizations, 1)
-    }
+    };
   }
   /**
    * Clear caches and reset
-   */;
+   */
   clearCaches() {
     this.patternCache.clear();
     this.searchCache.clear();
@@ -692,16 +705,33 @@ export class CopilotIndexOptimizer {
       cacheHits: 0,
       totalOptimizations: 0,
       patternMatches: 0
-    }
+    };
   }
 }
 // Export singleton instance
 export const copilotIndexOptimizer = new CopilotIndexOptimizer({
-  enableContext7Boost: true
-  enableSemanticClustering: true
-  enablePatternRecognition: true
-  enablePerformanceOptimization: true
+  enableContext7Boost: true,
+  enableSemanticClustering: true,
+  enablePatternRecognition: true,
+  enablePerformanceOptimization: true,
   minRelevanceThreshold: 0.7,
   maxCacheSize: 500,
   compressionRatio: 0.8
 });
+// API endpoint to trigger optimization
+export const POST: RequestHandler = async ({ request }) => {
+  try {
+    const { copilotContent } = await request.json();
+    if (!copilotContent) {
+      return new Response(JSON.stringify({ error: 'Missing copilotContent' }), { status: 400 });
+    }
+    const optimizedIndex = await copilotIndexOptimizer.optimizeCopilotIndex(copilotContent);
+    return new Response(JSON.stringify(optimizedIndex), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'An unknown error occurred';
+    return new Response(JSON.stringify({ error: 'Failed to process request', details: message }), { status: 500 });
+  }
+};

@@ -52,20 +52,21 @@
     "svelte": "^5.39.2"
   },
   "devDependencies": {
+    "@julr/unocss-preset-forms": "^2.0.0",
     "@playwright/test": "^1.55.0",
     "@sveltejs/adapter-auto": "^6.1.0",
     "@sveltejs/enhanced-img": "^0.8.2",
     "@types/bun": "^1.2.22",
     "@types/fabric": "^5.3.10",
     "@types/node": "^24.3.3",
+    "@unocss/extractor-svelte": "^66.5.2",
     "@unocss/preset-icons": "^66.5.1",
     "@unocss/preset-typography": "^66.5.1",
-    "@unocss/preset-uno": "^66.5.1",
+    "@unocss/preset-uno": "^66.5.2",
     "@webgpu/types": "^0.1.65",
     "glob": "^10.4.5",
     "typescript": "^5.9.2",
-    "unocss": "^66.5.1",
+    "unocss": "^66.5.2",
     "vite": "^7.1.5"
   }
-
 }

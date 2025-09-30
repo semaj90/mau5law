@@ -1,38 +1,49 @@
 import {
-  pgTable,
-  serial,
-  text,
-  jsonb,
-  real,
-  timestamp,
-  index,
-  unique,
-  varchar,
-  vector,
-  uuid,
-  foreignKey,
+  bigint,
+  bigserial,
   boolean,
   check,
-  numeric,
-  integer,
-  uniqueIndex,
-  inet,
-  interval,
-  bigserial,
-  bigint,
-  pgView,
+  customType,
   doublePrecision,
+  foreignKey,
+  index,
+  inet,
+  integer,
+  interval,
+  jsonb,
+  numeric,
+  pgTable,
+  pgView,
+  real,
+  serial,
+  text,
+  timestamp,
+  unique,
+  uniqueIndex,
+  uuid,
+  varchar,
+  vector,
 } from 'drizzle-orm/pg-core';
+
+const tsvector = customType<{ data: string }>({
+  dataType() {
+    return 'tsvector';
+  },
+});
 import { sql } from 'drizzle-orm';
 
-export const predictiveAssetCache = pgTable('predictive_asset_cache', {
-  id: serial().primaryKey().notNull(),
-  assetType: text('asset_type').notNull(),
-  predictions: jsonb(),
-  confidenceScore: real('confidence_score'),
-  cacheExpires: timestamp('cache_expires', { mode: 'string' }),
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow(),
-});
+export const predictiveAssetCache = pgTable(
+  'predictive_asset_cache',
+  {
+    id: serial('id').primaryKey().notNull(),
+    assetType: text('asset_type').notNull(),
+    predictions: jsonb('predictions'),
+    confidenceScore: real('confidence_score'),
+    cacheExpires: timestamp('cache_expires', { mode: 'string' }),
+    createdAt: timestamp('created_at', { mode: 'string' }).defaultNow(),
+  },
+  table => [index('idx_cache_asset_type').on(table.assetType), index('idx_cache_expires').on(table.cacheExpires)]
+);
 
 export const legalDocuments = pgTable(
   'legal_documents',
@@ -43,19 +54,17 @@ export const legalDocuments = pgTable(
     content: text(),
     documentType: varchar('document_type', { length: 100 }),
     metadata: jsonb(),
-    embedding: vector({ dimensions: 1536 }),
+    embedding: vector({ dimensions: 768, int: 'float4' }),
+    sourceType: varchar('source_type', { length: 100 }),
+    source: varchar({ length: 255 }),
+    sourceUrl: text('source_url'),
+    jurisdiction: varchar({ length: 100 }),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow(),
   },
-  (table) => [
-    index('idx_legal_documents_document_id').using(
-      'btree',
-      table.documentId.asc().nullsLast().op('text_ops')
-    ),
-    index('idx_legal_documents_type').using(
-      'btree',
-      table.documentType.asc().nullsLast().op('text_ops')
-    ),
+  table => [
+    index('idx_legal_documents_document_id').using('btree', table.documentId.asc().nullsLast().op('text_ops')),
+    index('idx_legal_documents_type').using('btree', table.documentType.asc().nullsLast().op('text_ops')),
     unique('legal_documents_document_id_key').on(table.documentId),
   ]
 );
@@ -67,7 +76,7 @@ export const users = pgTable(
     email: text(),
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
   },
-  (table) => [unique('users_email_key').on(table.email)]
+  table => [unique('users_email_key').on(table.email)]
 );
 
 export const caseTimeline = pgTable(
@@ -89,19 +98,10 @@ export const caseTimeline = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow(),
   },
-  (table) => [
-    index('idx_case_timeline_case_id').using(
-      'btree',
-      table.caseId.asc().nullsLast().op('uuid_ops')
-    ),
-    index('idx_case_timeline_event_date').using(
-      'btree',
-      table.eventDate.asc().nullsLast().op('timestamptz_ops')
-    ),
-    index('idx_case_timeline_event_type').using(
-      'btree',
-      table.eventType.asc().nullsLast().op('text_ops')
-    ),
+  table => [
+    index('idx_case_timeline_case_id').using('btree', table.caseId.asc().nullsLast().op('uuid_ops')),
+    index('idx_case_timeline_event_date').using('btree', table.eventDate.asc().nullsLast().op('timestamptz_ops')),
+    index('idx_case_timeline_event_type').using('btree', table.eventType.asc().nullsLast().op('text_ops')),
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -137,19 +137,10 @@ export const aiRecommendations = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow(),
   },
-  (table) => [
-    index('idx_ai_recommendations_case_id').using(
-      'btree',
-      table.caseId.asc().nullsLast().op('uuid_ops')
-    ),
-    index('idx_ai_recommendations_priority').using(
-      'btree',
-      table.priority.asc().nullsLast().op('text_ops')
-    ),
-    index('idx_ai_recommendations_status').using(
-      'btree',
-      table.status.asc().nullsLast().op('text_ops')
-    ),
+  table => [
+    index('idx_ai_recommendations_case_id').using('btree', table.caseId.asc().nullsLast().op('uuid_ops')),
+    index('idx_ai_recommendations_priority').using('btree', table.priority.asc().nullsLast().op('text_ops')),
+    index('idx_ai_recommendations_status').using('btree', table.status.asc().nullsLast().op('text_ops')),
     index('idx_ai_recommendations_suggested_actions').using(
       'gin',
       table.suggestedActions.asc().nullsLast().op('jsonb_ops')
@@ -159,19 +150,13 @@ export const aiRecommendations = pgTable(
       table.supportingEvidence.asc().nullsLast().op('jsonb_ops')
     ),
     index('idx_ai_recommendations_tags').using('gin', table.tags.asc().nullsLast().op('jsonb_ops')),
-    index('idx_ai_recommendations_type').using(
-      'btree',
-      table.type.asc().nullsLast().op('text_ops')
-    ),
+    index('idx_ai_recommendations_type').using('btree', table.type.asc().nullsLast().op('text_ops')),
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
       name: 'ai_recommendations_case_id_fkey',
     }).onDelete('cascade'),
-    check(
-      'ai_recommendations_confidence_check',
-      sql`(confidence >= (0)::numeric) AND (confidence <= (1)::numeric)`
-    ),
+    check('ai_recommendations_confidence_check', sql`(confidence >= (0)::numeric) AND (confidence <= (1)::numeric)`),
   ]
 );
 
@@ -186,15 +171,12 @@ export const recommendationRatings = pgTable(
     userId: uuid('user_id'),
     ratedAt: timestamp('rated_at', { withTimezone: true, mode: 'string' }).defaultNow(),
   },
-  (table) => [
+  table => [
     index('idx_recommendation_ratings_recommendation_id').using(
       'btree',
       table.recommendationId.asc().nullsLast().op('uuid_ops')
     ),
-    index('idx_recommendation_ratings_user_id').using(
-      'btree',
-      table.userId.asc().nullsLast().op('uuid_ops')
-    ),
+    index('idx_recommendation_ratings_user_id').using('btree', table.userId.asc().nullsLast().op('uuid_ops')),
     foreignKey({
       columns: [table.recommendationId],
       foreignColumns: [aiRecommendations.id],
@@ -223,27 +205,12 @@ export const detectiveAnalysis = pgTable(
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
   },
-  (table) => [
-    index('idx_detective_analysis_case_id').using(
-      'btree',
-      table.caseId.asc().nullsLast().op('uuid_ops')
-    ),
-    index('idx_detective_analysis_created_at').using(
-      'btree',
-      table.createdAt.asc().nullsLast().op('timestamptz_ops')
-    ),
-    index('idx_detective_analysis_query_data').using(
-      'gin',
-      table.queryData.asc().nullsLast().op('jsonb_ops')
-    ),
-    index('idx_detective_analysis_results').using(
-      'gin',
-      table.results.asc().nullsLast().op('jsonb_ops')
-    ),
-    index('idx_detective_analysis_type').using(
-      'btree',
-      table.analysisType.asc().nullsLast().op('text_ops')
-    ),
+  table => [
+    index('idx_detective_analysis_case_id').using('btree', table.caseId.asc().nullsLast().op('uuid_ops')),
+    index('idx_detective_analysis_created_at').using('btree', table.createdAt.asc().nullsLast().op('timestamptz_ops')),
+    index('idx_detective_analysis_query_data').using('gin', table.queryData.asc().nullsLast().op('jsonb_ops')),
+    index('idx_detective_analysis_results').using('gin', table.results.asc().nullsLast().op('jsonb_ops')),
+    index('idx_detective_analysis_type').using('btree', table.analysisType.asc().nullsLast().op('text_ops')),
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -269,7 +236,7 @@ export const attachmentVerifications = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.verifiedBy],
       foreignColumns: [users.id],
@@ -298,7 +265,7 @@ export const canvasAnnotations = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.evidenceId],
       foreignColumns: [evidence.id],
@@ -325,7 +292,7 @@ export const canvasStates = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -349,7 +316,7 @@ export const caseEmbeddings = pgTable(
     metadata: jsonb().default({}).notNull(),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -391,7 +358,7 @@ export const caseScores = pgTable(
     calculatedAt: timestamp('calculated_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -428,7 +395,7 @@ export const citations = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -512,7 +479,7 @@ export const aiReports = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -534,7 +501,7 @@ export const embeddingCache = pgTable(
     model: varchar({ length: 100 }).notNull(),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [unique('embedding_cache_text_hash_unique').on(table.textHash)]
+  table => [unique('embedding_cache_text_hash_unique').on(table.textHash)]
 );
 
 export const emailVerificationCodes = pgTable(
@@ -546,7 +513,7 @@ export const emailVerificationCodes = pgTable(
     code: varchar({ length: 8 }).notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
@@ -573,7 +540,7 @@ export const legalAnalysisSessions = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -609,7 +576,7 @@ export const legalResearch = pgTable(
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -647,7 +614,7 @@ export const passwordResetTokens = pgTable(
     userId: uuid('user_id').notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
@@ -695,9 +662,7 @@ export const evidence = pgTable('evidence', {
   aiSummary: text('ai_summary'),
   summary: text(),
   isAdmissible: boolean('is_admissible').default(true).notNull(),
-  confidentialityLevel: varchar('confidentiality_level', { length: 20 })
-    .default('standard')
-    .notNull(),
+  confidentialityLevel: varchar('confidentiality_level', { length: 20 }).default('standard').notNull(),
   canvasPosition: jsonb('canvas_position').default({}).notNull(),
   uploadedBy: uuid('uploaded_by'),
   uploadedAt: timestamp('uploaded_at', { mode: 'string' }).defaultNow().notNull(),
@@ -718,7 +683,7 @@ export const hashVerifications = pgTable(
     notes: text(),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.evidenceId],
       foreignColumns: [evidence.id],
@@ -749,7 +714,7 @@ export const personsOfInterest = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -788,7 +753,7 @@ export const savedReports = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -809,7 +774,7 @@ export const sessions = pgTable(
     userId: uuid('user_id').notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
@@ -832,7 +797,7 @@ export const themes = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.createdBy],
       foreignColumns: [users.id],
@@ -847,7 +812,7 @@ export const statutes = pgTable('statutes', {
   code: varchar({ length: 100 }).notNull(),
   description: text(),
   category: varchar({ length: 100 }),
-  jurisdiction: varchar({ length: 100 }),
+  jurisdiction: varchar({ length: 50 }),
   isActive: boolean('is_active').default(true),
   penalties: jsonb().default({}).notNull(),
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
@@ -879,29 +844,16 @@ export const cases = pgTable(
     qdrantId: uuid('qdrant_id'),
     qdrantCollection: varchar('qdrant_collection', { length: 100 }).default('cases'),
     metadata: jsonb().default({}),
-    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
-    index('cases_assigned_attorney_idx').using(
-      'btree',
-      table.assignedAttorney.asc().nullsLast().op('uuid_ops')
-    ),
+  table => [
+    index('cases_assigned_attorney_idx').using('btree', table.assignedAttorney.asc().nullsLast().op('uuid_ops')),
     index('cases_case_embedding_hnsw_idx')
       .using('hnsw', table.caseEmbedding.asc().nullsLast().op('vector_cosine_ops'))
       .with({ m: '16', ef_construction: '64' }),
-    uniqueIndex('cases_case_number_idx').using(
-      'btree',
-      table.caseNumber.asc().nullsLast().op('text_ops')
-    ),
-    index('cases_practice_area_idx').using(
-      'btree',
-      table.practiceArea.asc().nullsLast().op('text_ops')
-    ),
+    uniqueIndex('cases_case_number_idx').using('btree', table.caseNumber.asc().nullsLast().op('text_ops')),
+    index('cases_practice_area_idx').using('btree', table.practiceArea.asc().nullsLast().op('text_ops')),
     index('cases_status_idx').using('btree', table.status.asc().nullsLast().op('text_ops')),
   ]
 );
@@ -916,7 +868,7 @@ export const userEmbeddings = pgTable(
     metadata: jsonb().default({}).notNull(),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
@@ -936,7 +888,7 @@ export const vectorMetadata = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow(),
   },
-  (table) => [unique('vector_metadata_document_id_unique').on(table.documentId)]
+  table => [unique('vector_metadata_document_id_unique').on(table.documentId)]
 );
 
 export const ragSessions = pgTable(
@@ -951,7 +903,7 @@ export const ragSessions = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
@@ -977,7 +929,7 @@ export const reports = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
+  table => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -1001,35 +953,26 @@ export const documentRelationshipsJsonb = pgTable(
     sourceId: uuid('source_id').notNull(),
     targetId: uuid('target_id').notNull(),
     relationshipMetadata: jsonb('relationship_metadata').notNull(),
-    relationshipType: text('relationship_type').generatedAlwaysAs(
-      sql`(relationship_metadata ->> 'type'::text)`
-    ),
+    relationshipType: text('relationship_type').generatedAlwaysAs(sql`(relationship_metadata ->> 'type'::text)`),
     strength: real().generatedAlwaysAs(sql`((relationship_metadata ->> 'strength'::text))::real`),
-    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
   },
-  (table) => [
-    index('idx_relationships_metadata_gin').using(
-      'gin',
-      table.relationshipMetadata.asc().nullsLast().op('jsonb_ops')
-    ),
-    index('idx_relationships_source').using(
-      'btree',
-      table.sourceId.asc().nullsLast().op('uuid_ops')
-    ),
-    index('idx_relationships_strength').using(
-      'btree',
-      table.strength.desc().nullsFirst().op('float4_ops')
-    ),
-    index('idx_relationships_target').using(
-      'btree',
-      table.targetId.asc().nullsLast().op('uuid_ops')
-    ),
-    index('idx_relationships_type').using(
-      'btree',
-      table.relationshipType.asc().nullsLast().op('text_ops')
-    ),
+  table => [
+    foreignKey({
+      columns: [table.sourceId],
+      foreignColumns: [legalDocumentsJsonb.id],
+      name: 'document_relationships_jsonb_source_id_fkey',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [table.targetId],
+      foreignColumns: [legalDocumentsJsonb.id],
+      name: 'document_relationships_jsonb_target_id_fkey',
+    }).onDelete('cascade'),
+    index('idx_relationships_metadata_gin').using('gin', table.relationshipMetadata),
+    index('idx_relationships_source').using('btree', table.sourceId.asc().nullsLast().op('uuid_ops')),
+    index('idx_relationships_strength').using('btree', table.strength.desc().nullsFirst().op('float4_ops')),
+    index('idx_relationships_target').using('btree', table.targetId.asc().nullsLast().op('uuid_ops')),
+    index('idx_relationships_type').using('btree', table.relationshipType.asc().nullsLast().op('text_ops')),
     unique('document_relationships_jsonb_source_id_target_id_relationsh_key').on(
       table.sourceId,
       table.targetId,
@@ -1057,45 +1000,21 @@ export const legalDocumentsJsonb = pgTable(
       sql`(metadata ->> 'confidentialityLevel'::text)`
     ),
     urgency: text().generatedAlwaysAs(sql`(metadata ->> 'urgency'::text)`),
-    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
-      .defaultNow()
-      .notNull(),
-    // TODO: failed to parse database type 'tsvector'
-    searchVector: unknown('search_vector').generatedAlwaysAs(
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+    searchVector: tsvector('search_vector').generatedAlwaysAs(
       sql`to_tsvector('english'::regconfig, ((title || ' '::text) || content))`
     ),
   },
-  (table) => [
-    index('idx_legal_docs_confidentiality').using(
-      'btree',
-      table.confidentialityLevel.asc().nullsLast().op('text_ops')
-    ),
+  table => [
+    index('idx_legal_docs_confidentiality').using('btree', table.confidentialityLevel.asc().nullsLast().op('text_ops')),
     index('idx_legal_docs_content_embedding')
       .using('ivfflat', table.contentEmbedding.asc().nullsLast().op('vector_cosine_ops'))
       .with({ lists: '100' }),
-    index('idx_legal_docs_document_type').using(
-      'btree',
-      table.documentType.asc().nullsLast().op('text_ops')
-    ),
-    index('idx_legal_docs_jurisdiction').using(
-      'btree',
-      table.jurisdiction.asc().nullsLast().op('text_ops')
-    ),
-    index('idx_legal_docs_metadata_gin').using(
-      'gin',
-      table.metadata.asc().nullsLast().op('jsonb_ops')
-    ),
-    index('idx_legal_docs_practice_area').using(
-      'btree',
-      table.practiceArea.asc().nullsLast().op('text_ops')
-    ),
-    index('idx_legal_docs_search_vector').using(
-      'gin',
-      table.searchVector.asc().nullsLast().op('tsvector_ops')
-    ),
+    index('idx_legal_docs_document_type').using('btree', table.documentType.asc().nullsLast().op('text_ops')),
+    index('idx_legal_docs_jurisdiction').using('btree', table.jurisdiction.asc().nullsLast().op('text_ops')),
+    index('idx_legal_docs_metadata_gin').using('gin', table.metadata.asc().nullsLast().op('jsonb_ops')),
+    index('idx_legal_docs_practice_area').using('btree', table.practiceArea.asc().nullsLast().op('text_ops')),
+    index('idx_legal_docs_search_vector').using('gin', table.searchVector.asc().nullsLast().op('tsvector_ops')),
     index('idx_legal_docs_title_embedding')
       .using('ivfflat', table.titleEmbedding.asc().nullsLast().op('vector_cosine_ops'))
       .with({ lists: '100' }),

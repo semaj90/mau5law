@@ -74,7 +74,7 @@ export class DockerResourceOptimizer {
     for (const [name, config] of this.containers) {
       // Simulate resource analysis and optimization
       optimizations.push({
-        container: name
+        container: name,
         currentMemory: config.memory,
         recommendedMemory: config.memory,
         currentCpus: config.cpus,
@@ -97,9 +97,9 @@ export class DockerResourceOptimizer {
   async scaleContainers(targetReplicas) {
     console.log(`[DockerResourceOptimizer] Scaling to ${targetReplicas} replicas...`);
     return {
-      scaled: targetReplicas
+      scaled: targetReplicas,
       currentReplicas: this.containers.size,
-      success: true
+      success: true,
     };
   }
   /**
@@ -137,9 +137,9 @@ export class DockerResourceOptimizer {
       // Simulate compression by returning a simplified object
       return {
         key,
-        data: compressed
-        compressed: true
-        size: compressed.length * 0.7 // Simulate 30% compression,
+        data: compressed,
+        compressed: true,
+        size: compressed.length * 0.7, // Simulate 30% compression
       };
     } catch (error) {
       console.error(`[DockerResourceOptimizer] Cache compression failed for ${key}:`, error);

@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
       device = await adapter.requestDevice();
       gpu = navigator.gpu;
       // Create simple compute shader for background effects
-      const computeShaderCode = `
+      const computeShaderCode =
         struct Uniforms {
           time: f32
           intensity: f32;
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
           let alpha = gradient * 0.3;
           textureStore(outputTex, coord, vec4<f32>(finalColor, alpha));
         }
-      `;
+      ;
       // Create compute pipeline (memory efficient)
       const computePipeline = device.createComputePipeline({
         layout: 'auto',

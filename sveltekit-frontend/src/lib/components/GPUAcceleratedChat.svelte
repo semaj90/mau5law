@@ -78,7 +78,7 @@
     // Try primary port first
     try {
       const response = await fetch(`http://localhost:${PRIMARY_PORT}/api/health`, {
-        signal: AbortSignal.timeout(1000);
+        signal: AbortSignal.timeout(1000),
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         return PRIMARY_PORT;
@@ -90,7 +90,7 @@
     for (const port of FALLBACK_PORTS) {
       try {
         const response = await fetch(`http://localhost:${port}/api/health`, {
-          signal: AbortSignal.timeout(1000);
+          signal: AbortSignal.timeout(1000),
         });
         if ((response as { ok?: unknown; json?: unknown }).ok) {
           console.log(`Using fallback port ${port}`);
@@ -163,19 +163,19 @@
     const userMessage: GPUChatMessage = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: inputMessage;
+      content: inputMessage,
       timestamp: new Date(),
     }
     messages = [...messages, userMessage];
-    const messageContent = inputMessag;
+    const messageContent = inputMessage;
     inputMessage = '';
     isTyping = true;
     // Send via WebSocket if connected
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
         type: 'chat',
-        content: messageContent;
-        room: currentRoom;
+        content: messageContent,
+        room: currentRoom,
       }));
     } else {
       // Fallback to HTTP API
@@ -183,9 +183,9 @@
         const response = await fetch(`http://localhost:${currentPort}/api/gpu-chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
-            message: messageContent
-            sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID();
+          body: JSON.stringify({
+            message: messageContent,
+            sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID(),
           })
         });
         if (!(response as { ok?: unknown; json?: unknown }).ok) throw new Error('API request failed');
@@ -234,9 +234,10 @@
         }];
         // Send to WebSocket for processing
         if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send.content,
-              embeddings: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).embeddings
-            }
+          ws.send(JSON.stringify({
+            type: 'document_upload',
+            content: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).content,
+            embeddings: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).embeddings
           }));
         }
       }
@@ -263,7 +264,7 @@
       ws.send(JSON.stringify({
         type: 'tts_request',
         text,
-        voice: selectedVoic;
+        voice: selectedVoice,
       }));
     }
   }
@@ -279,7 +280,7 @@
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
         type: 'batch',
-        items: batchItem;
+        items: batchItems,
       }));
       showNotification(`Processing ${batchItems.length} items in batch...`, 'info');
       batchItems = [];
@@ -291,14 +292,14 @@
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
         type: 'join_room',
-        room: roomId;
+        room: roomId,
       }));
     }
   }
   function leaveRoom() {
     if (currentRoom && ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
-        type: 'leave_room';
+        type: 'leave_room',
       }));
     }
     currentRoom = null;
@@ -323,7 +324,7 @@
     messages = [...messages, {
       id: crypto.randomUUID(),
       role: 'system',
-      content: summary;
+      content: summary,
       timestamp: new Date(),
       metadata: {
         batchSize: results.length

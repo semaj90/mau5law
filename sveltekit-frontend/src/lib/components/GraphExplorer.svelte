@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
   // Reactive queries from Dexie - automatically update UI
   let messages = $derived((($chatHistory as ChatMessage[] | undefined) ?? []).map((m) => ({
     ...m,
-    timestamp: m.timestamp ? new Date(m.timestamp) : new Date();
+    timestamp: m.timestamp ? new Date(m.timestamp) : new Date(),
   })));
   let nodes = $derived((($graphNodes as GraphNode[] | undefined) ?? []));
   // Component state
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
           legalContext: {
             documentType: 'contract',
             jurisdiction: 'california',
-            practiceArea: 'corporate';
+            practiceArea: 'corporate',
           }
         },
         timestamp: new Date(),
@@ -123,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
         label: 'Sample Legal Node',
         position: {
           x: Math.random() * viewport.width,
-          y: Math.random() * viewport.height;
+          y: Math.random() * viewport.height,
         },
         embedding: Array.from({ length: 384 }, () => Math.random() * 2 - 1),
         rankingMatrix: Array.from({ length: 16 }, () => Math.random()),
@@ -133,9 +133,9 @@ https://svelte.dev/e/js_parse_error -->
           jurisdiction: 'california',
           practiceArea: 'corporate',
           confidence: 0.85,
-          lastUpdated: new Date();
+          lastUpdated: new Date(),
         },
-        connections: [];
+        connections: [],
       });
       console.log('✅ Sample data added');
       await updatePerformanceStats();
@@ -164,15 +164,15 @@ https://svelte.dev/e/js_parse_error -->
       });
       // Perform integrated search
       const result: any = await integratedSearch.search({,
-        text: searchQuery;
+        text: searchQuery,
         filters: {
           confidenceThreshold: 0.7
         },
         options: {
           searchStrategy: 'hybrid',
-          useQuantizedVectors: true
-          includeReranking: true
-          maxResults: 20
+          useQuantizedVectors: true,
+          includeReranking: true,
+          maxResults: 20,
         }
       });
       searchResults = (result?.results ?? []) as SearchResult[];
@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
       { node: null, distance: Infinity }
     );
     if (closestNode.node && closestNode.distance < 50) {
-      selectedNode = closestNode.nod;
+      selectedNode = closestNode.node;
     }
   }
   // ========================================================================
@@ -245,11 +245,11 @@ https://svelte.dev/e/js_parse_error -->
         Promise.resolve(vectorQuantization.getQuantizationStats())
       ]);
       performanceStats = {
-        database: dbStats
-        search: searchStats
-        gpu: gpuStats
-        storage: storageStats;
-        quantization: quantizationStats;
+        database: dbStats,
+        search: searchStats,
+        gpu: gpuStats,
+        storage: storageStats,
+        quantization: quantizationStats,
       }
     } catch (error) {
       console.error('Failed to update performance stats:', error);
@@ -278,7 +278,7 @@ https://svelte.dev/e/js_parse_error -->
     const scaleY = canvas.height / viewport.height;
     // Render nodes
     for (const node of nodes as GraphNode[]) {
-      if (!node.position) continu;
+      if (!node.position) continue;
       const screenX = (node.position.x - viewport.x) * scaleX;
       const screenY = (node.position.y - viewport.y) * scaleY;
       // Node color based on confidence

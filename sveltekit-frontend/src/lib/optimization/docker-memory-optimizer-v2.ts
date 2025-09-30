@@ -1,6 +1,6 @@
 
 // Minimal Windows-safe placeholder (no real Docker dependency) to satisfy imports
-}
+
 export interface DockerMemoryConfig {
     maxMemoryMB?: number;
     cacheStrategy?: string;

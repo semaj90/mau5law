@@ -13,14 +13,10 @@
     maxTags?: number;
     allowCustomTags?: boolean;
     readonly?: boolean;
-  }
-
-  // Declare events for dispatching in Svelte 5
-  interface Events {
-    add: (tag: string) => void;
-    remove: (tag: string) => void;
-    change: (tags: string[]) => void;
-    search: (query: string) => void; // Example event, uncomment if needed
+    onAdd?: (tag: string) => void;
+    onRemove?: (tag: string) => void;
+    onChange?: (tags: string[]) => void;
+    onSearch?: (query: string) => void;
   }
 
   // Destructure props using Svelte 5 syntax
@@ -31,10 +27,11 @@
     maxTags = 10,
     allowCustomTags = true,
     readonly = false,
-  } = $props<Props>(); // Corrected: only Props interface here
-
-  // Destructure event dispatchers using Svelte 5 syntax
-  const { add, remove, change, search } = $$events<Events>(); // Corrected: use $$events for dispatchers
+    onAdd = () => {},
+    onRemove = () => {},
+    onChange = () => {},
+    onSearch = () => {},
+  } = $props<Props>();
 
   // Internal state for tags, initialized from prop
   let _tags = $state(initialTags);
@@ -43,22 +40,25 @@
   let inputValue = $state('');
   let showSuggestions = $state(false);
   let inputElement: HTMLInputElement;
-  let suggestionsContainer: HTMLElement; // This will be bound to the suggestions div
+  let suggestionsContainer = $state<HTMLElement | undefined>(); // This will be bound to the suggestions div
   let activeIndex = $state(-1);
   let _availableTags = $state(initialAvailableTags); // Internal state for availableTags
-  let filteredSuggestions = $derived(
-    _availableTags // Use internal state
-      .filter((tag: string) => !_tags.includes(tag) && tag.toLowerCase().includes(inputValue.toLowerCase())) // Added type for 'tag'
+
+  let suggestions = $derived(
+    _availableTags
+      .filter(
+        (tag) =>
+          tag.toLowerCase().includes(inputValue.toLowerCase()) && !_tags.includes(tag),
+      )
       .slice(0, 5),
   );
-  let suggestions = $derived(filteredSuggestions); // This is used in the template and handleKeyDown
 
   const debouncedSearch = debounce(async (query: string) => {
-    search(query); // Dispatch 'search' event if needed
+    onSearch(query); // Dispatch 'search' event if needed
     // Also fetch suggestions from Qdrant API
     if (query.length > 1) {
       try {
-        const response = await fetch('/api/qdrant/tag', {
+        const response = await fetch('/api/tags/suggestions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query, limit: 5 }),
@@ -77,40 +77,35 @@
 
   function addTag(tagToAdd: string) {
     const trimmedTag = tagToAdd.trim();
-    if (!trimmedTag || _tags.includes(trimmedTag) || _tags.length >= maxTags) { // Add checks for maxTags and existing tag
+    if (!trimmedTag || _tags.includes(trimmedTag) || _tags.length >= maxTags) {
       return;
     }
-    const newTags = [..._tags, trimmedTag];
-    _tags = newTags;
-    add(trimmedTag); // Dispatch 'add' event
-    change(_tags);   // Dispatch 'change' event
+    _tags = [..._tags, trimmedTag];
+    onAdd(trimmedTag);
+    onChange(_tags);
 
-    inputValue = ''; // Clear input after adding
+    inputValue = '';
     showSuggestions = false;
-    activeIndex = -1;
   }
 
   function handleInput() {
     showSuggestions = inputValue.length > 0;
-    debouncedSearch(inputValue); // Call debounced search on input
+    debouncedSearch(inputValue);
   }
 
   function removeTag(tag: string) {
-    const newTags = _tags.filter((t: string) => t !== tag); // Added type for 't'
-    _tags = newTags; // Assign to the internal state variable
-    remove(tag); // Dispatch 'remove' event with the removed tag
-    change(_tags); // Dispatch 'change' event with the updated tags array
+    _tags = _tags.filter((t: string) => t !== tag);
+    onRemove(tag);
+    onChange(_tags);
   }
 
   function handleKeyDown(event: KeyboardEvent) {
-    if (readonly) return;
-
     switch (event.key) {
       case 'Enter':
         event.preventDefault();
         if (activeIndex >= 0 && suggestions[activeIndex]) {
           addTag(suggestions[activeIndex]);
-        } else if (inputValue.trim() && allowCustomTags && !_tags.includes(inputValue.trim())) { // Check if tag already exists
+        } else if (inputValue.trim() && allowCustomTags && !_tags.includes(inputValue.trim())) {
           addTag(inputValue);
         }
         break;
@@ -124,6 +119,7 @@
         break;
       case 'Escape':
         showSuggestions = false;
+        activeIndex = -1;
         break;
       case 'Backspace':
         if (!inputValue && _tags.length > 0) {
@@ -161,11 +157,6 @@
   onDestroy(() => {
     document.removeEventListener('click', handleClickOutside);
   });
-
-
-  function $$events<T>(): { add: any; remove: any; change: any; search: any; } {
-    throw new Error('Function not implemented.');
-  }
 </script>
 
 <div class="tag-list" class:readonly>

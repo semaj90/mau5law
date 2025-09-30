@@ -49,7 +49,7 @@ export const legalDocuments: LegalDocument[] = [;
   {
     id: "ca-civ-1624",
     title: "California Civil Code Section 1624 - Statute of Frauds",
-    description: "Contracts that must be in writing to be enforceable",
+    description: "Contracts that must be in writing to be enforceable";
     content: "Certain contracts must be in writing to be enforceable, including: contracts for sale of real property, contracts not to be performed within one year, contracts for sale of goods over $500, and promises to answer for the debt of another. The writing must be signed by the party to be charged.",
     jurisdiction: "california",
     category: "contract",

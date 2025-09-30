@@ -10,8 +10,8 @@
   // Stores
   const isProcessing = writable(false);
   const results = writable<UnifiedVectorResponse | null>(null);
-  const health = writable<Record<string, boolean>( );
-  const analytics = writable<{ [key: string]: any }( );
+  const health = writable<Record<string, boolean>>({});
+  const analytics = writable<{ [key: string]: any }>({});
   const logs = writable<string[]>([]);
   // Form state
   let selectedOperation: 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest' = $state('analyze');
@@ -32,39 +32,40 @@
       id: 'doc1',
       title: 'Contract Analysis',
       content: 'This employment contract contains standard clauses for non-disclosure and termination procedures.',
-      type: 'CONTRACT';
+      type: 'CONTRACT'
     },
     {
       id: 'doc2',
       title: 'Legal Precedent',
       content: 'In the case of Smith v. Johnson, the court ruled that contractual obligations must be clearly stated.',
-      type: 'CASE_LAW';
+      type: 'CASE_LAW'
     }
   ];
   function addLog(message: string) {
-    logs.update.toLocaleTimeString()}] ${message}`,
+    logs.update((currentLogs) => [
+      `[${new Date().toLocaleTimeString()}] ${message}`,
       ...currentLogs.slice(0, 99) // Keep last 100 logs
     ]);
   }
   async function checkHealth() {
     try {
-      // removed unused response assignment
-      const data = await (response as { json?: unknown }).json();
-      health.set(health) || );
-      const healthStatus = (data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).allSystemsOperational ? 'All systems operational' : 'Some systems offline';
+      const response = await fetch('/api/health/status');
+      const data = await response.json();
+      health.set(data.health || {});
+      const healthStatus = data.allSystemsOperational ? 'All systems operational' : 'Some systems offline';
       addLog(`Health check: ${healthStatus}`);
     } catch (error: unknown) {
-      addLog(`Health check failed: ${error.message}`);
+      addLog(`Health check failed: ${(error as Error).message}`);
     }
   }
   async function loadAnalytics() {
     try {
-      // removed unused response assignment
-      const data = await (response as { json?: unknown }).json();
-      analytics.set(analytics) || );
+      const response = await fetch('/api/analytics');
+      const data = await response.json();
+      analytics.set(data.analytics || {});
       addLog('Analytics updated');
     } catch (error: unknown) {
-      addLog(`Analytics failed: ${error.message}`);
+      addLog(`Analytics failed: ${(error as Error).message}`);
     }
   }
   async function processRequest() {
@@ -76,11 +77,11 @@
     addLog(`Starting ${selectedOperation} operation...`);
     try {
       const request: UnifiedVectorRequest = {
-        type: selectedOperation;
+        type: selectedOperation,
         payload: {
-          text: inputText || undefined
-          documents: selectedOperation === 'ingest' ? sampleDocuments : undefined;
-          query: selectedOperation === 'search' ? inputText : undefined
+          text: inputText || undefined,
+          documents: selectedOperation === 'ingest' ? sampleDocuments : undefined,
+          query: selectedOperation === 'search' ? inputText : undefined,
           userId,
           sessionId,
           options: {
@@ -93,28 +94,29 @@
             cacheResults
           }
         }
-      }
+      };
       const response = await fetch('/api/unified-vector', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(request);
+        body: JSON.stringify(request)
       });
-      const data: UnifiedVectorResponse = await (response as { json?: unknown }).json();
+      const data: UnifiedVectorResponse = await response.json();
       results.set(data);
-      if ((data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).success) {
-        addLog(`✅ ${selectedOperation} completed in ${(data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).results.processingTime}ms`);
-        addLog(`Components used: ${(data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).metadata.componentsUsed.join(', ')}`);
-        addLog(`Confidence: ${((data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).results.confidence * 100).toFixed(1)}%`);
+      if (data.success) {
+        addLog(`✅ ${selectedOperation} completed in ${data.results.processingTime}ms`);
+        addLog(`Components used: ${data.metadata.componentsUsed.join(', ')}`);
+        addLog(`Confidence: ${(data.results.confidence * 100).toFixed(1)}%`);
       } else {
-        addLog(`❌ ${selectedOperation} failed: ${(data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).metadata.errors?.join(', ') || 'Unknown error'}`);
+        addLog(`❌ ${selectedOperation} failed: ${data.metadata.errors?.join(', ') || 'Unknown error'}`);
       }
     } catch (error: unknown) {
-      addLog(`❌ Request failed: ${error.message}`);
+      addLog(`❌ Request failed: ${(error as Error).message}`);
       results.set(null);
     } finally {
       isProcessing.set(false);
+    }
     }
   }
   function formatBytes(bytes: number): string {
@@ -190,13 +192,12 @@
     <!-- Control Panel -->
     <div class="border border-green-400 p-4">
       <h2 class="text-lg mb-4 text-green-300">CONTROL PANEL</h2>
-      <!-- Operation Selection -->
       <div class="mb-4">
         <label class="block text-sm mb-2" for="operation">OPERATION</label><select
           id="operation"
-          ;
           bind:value={selectedOperation}
           class="w-full bg-black border border-green-400 text-green-400 p-2 text-sm"
+        >
         >
           <option value="analyze">Analyze - Complete AI analysis pipeline</option>
           <option value="search">Search - Hybrid vector + semantic search</option>
@@ -220,7 +221,7 @@
       <div class="grid grid-cols-2 gap-2 mb-4">
         <div>
           <label class="block text-xs mb-1" for="user-id">USER ID</label><input
-            id="user-id";
+            id="user-id"
             bind:value={userId}
             class="w-full bg-black border border-green-400 text-green-400 p-1 text-xs"
           />
@@ -228,7 +229,6 @@
         <div>
           <label class="block text-xs mb-1" for="session-id">SESSION ID</label><input
             id="session-id"
-            ;
             bind:value={sessionId}
             class="w-full bg-black border border-green-400 text-green-400 p-1 text-xs"
           />
@@ -318,17 +318,15 @@
             </div>
           </div>
           <!-- Performance Breakdown -->
-          {#if Object.keys(errors).length > 0}
+          {#if $results.metadata.performance && Object.keys($results.metadata.performance).length > 0}
             <div class="border border-green-600 p-3">
               <div class="text-green-200 mb-2">PERFORMANCE</div>
-              <div class="space-y-1 text-xs">
                 {#each Object.entries($results.metadata.performance) as [component, time]}
                   <div class="flex justify-between">
                     <span>{component}</span>
                     <span>{time}ms</span>
                   </div>
                 {/each}
-              </div>
             </div>
           {/if}
           <!-- Results Data -->
@@ -339,11 +337,10 @@
                 {#each $results.results.vectorResults.slice(0, 5) as result}
                   <div class="border-l-2 border-green-700 pl-2">
                     <div class="text-green-300">
-                      {(result as { metadata?: unknown; id?: unknown; score?: unknown }).metadata?.title ||
-                        (result as { metadata?: unknown; id?: unknown; score?: unknown }).id}
+                      {(result as any).metadata?.title || (result as any).id}
                     </div>
                     <div class="text-green-500">
-                      Score: {((result as { metadata?: unknown; id?: unknown; score?: unknown }).score * 100).toFixed(
+                      Score: {((result as any).score * 100).toFixed(
                         1,
                       )}%
                     </div>
