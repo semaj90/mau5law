@@ -2,10 +2,17 @@
   import UploadManager from './upload-core';
   import { onMount } from 'svelte';
 
-  export let multiple = false;
-  export let accept = '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff';
-  export let maxConcurrency = 3;
-  export let maxRetries = 3;
+  let {
+    multiple = false,
+    accept = '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff',
+    maxConcurrency = 3,
+    maxRetries = 3
+  }: {
+    multiple?: boolean;
+    accept?: string;
+    maxConcurrency?: number;
+    maxRetries?: number;
+  } = $props();
 
   let fileInput: HTMLInputElement | null = null;
   const manager = new UploadManager({ maxConcurrency, maxRetries });
@@ -27,9 +34,9 @@
 </script>
 
 <div class="n64-upload">
-  <input bind:this={fileInput} type="file" {accept} {multiple} style="display:none" on:change={handleFileSelect} />
-  <button on:click={() => fileInput?.click()} class="n64-select">Select files</button>
-  <button on:click={cancelAll} class="n64-cancel ml-2">Cancel all</button>
+  <input bind:this={fileInput} type="file" {accept} {multiple} style="display:none" onchange={handleFileSelect} />
+  <button onclick={() => fileInput?.click()} class="n64-select">Select files</button>
+  <button onclick={cancelAll} class="n64-cancel ml-2">Cancel all</button>
 
   <div class="files mt-3">
     {#each manager.fileStates as s}

@@ -55,7 +55,7 @@ export const cases = pgTable('cases', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
-// Enhanced Documents table with nomic-embed-text (768 dimensions)
+// Enhanced Documents table with embeddinggemma (384 dimensions - memory efficient)
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   caseId: uuid('case_id').references(() => cases.id),
@@ -65,8 +65,8 @@ export const documents = pgTable('documents', {
   fileSize: integer('file_size'),
   content: text('content'),
   extractedText: text('extracted_text'),
-  // Using 768 dimensions for nomic-embed-text
-  embedding: vector('embedding', { dimensions: 768 }),
+  // Using 384 dimensions for embeddinggemma (memory efficient)
+  embedding: vector('embedding', { dimensions: 384 }),
   metadata: json('metadata'),
   tags: json('tags').default(sql`'[]'::json`),
   isIndexed: boolean('is_indexed').default(false),
@@ -87,7 +87,7 @@ export const documentChunks = pgTable('document_chunks', {
   chunkIndex: integer('chunk_index').notNull(),
   content: text('content').notNull(),
   // 768-dimensional embeddings for nomic-embed-text
-  embedding: vector('embedding', { dimensions: 768 }).notNull(),
+  embedding: vector('embedding', { dimensions: 384 }).notNull(),
   startIndex: integer('start_index'),
   endIndex: integer('end_index'),
   tokenCount: integer('token_count'),
@@ -115,7 +115,7 @@ export const evidence = pgTable('evidence', {
   // Enhanced AI analysis with embedding support
   aiAnalysis: json('ai_analysis'),
   // Vector embedding for semantic search
-  embedding: vector('embedding', { dimensions: 768 }),
+  embedding: vector('embedding', { dimensions: 384 }),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -130,7 +130,7 @@ export const searchIndex = pgTable('search_index', {
   entityId: uuid('entity_id').notNull(),
   content: text('content').notNull(),
   // 768-dimensional embeddings for nomic-embed-text
-  embedding: vector('embedding', { dimensions: 768 }).notNull(),
+  embedding: vector('embedding', { dimensions: 384 }).notNull(),
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -153,7 +153,7 @@ export const aiInteractions = pgTable('ai_interactions', {
   responseTime: integer('response_time'),
   confidence: real('confidence'),
   // Context embedding for conversation understanding
-  contextEmbedding: vector('context_embedding', { dimensions: 768 }),
+  contextEmbedding: vector('context_embedding', { dimensions: 384 }),
   feedback: json('feedback'),
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow()
@@ -166,7 +166,7 @@ export const aiInteractions = pgTable('ai_interactions', {
 export const vectorSimilarityCache = pgTable('vector_similarity_cache', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   queryHash: varchar('query_hash', { length: 64 }).notNull().unique(),
-  queryEmbedding: vector('query_embedding', { dimensions: 768 }).notNull(),
+  queryEmbedding: vector('query_embedding', { dimensions: 384 }).notNull(),
   results: json('results').notNull(),
   hitCount: integer('hit_count').default(1),
   lastAccessed: timestamp('last_accessed').defaultNow(),
@@ -188,7 +188,7 @@ export const legalKnowledgeBase = pgTable('legal_knowledge_base', {
   sourceUrl: text('source_url'),
   citationFormat: text('citation_format'),
   // Semantic embedding for knowledge retrieval
-  embedding: vector('embedding', { dimensions: 768 }),
+  embedding: vector('embedding', { dimensions: 384 }),
   metadata: json('metadata'),
   isVerified: boolean('is_verified').default(false),
   verifiedBy: uuid('verified_by').references(() => users.id),
@@ -341,7 +341,7 @@ export const personsOfInterest = pgTable('persons_of_interest', {
   isActive: boolean('is_active').default(true),
   notes: text('notes'),
   // Vector embedding for semantic search
-  embedding: vector('embedding', { dimensions: 768 }),
+  embedding: vector('embedding', { dimensions: 384 }),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()

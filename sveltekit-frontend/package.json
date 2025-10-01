@@ -450,7 +450,8 @@
     "agentic:semantic:index": "node scripts/semantic-analyzer.mjs src --build-index",
     "agentic:cache:clear": "node -e 'const fs = require(\"fs\"); if (fs.existsSync(\".agentic-cache\")) { fs.rmSync(\".agentic-cache\", { recursive: true }); console.log(\"✅ Cache cleared\"); }'",
     "agentic:demo": "node scripts/agentic-demo.mjs",
-    "log:build-errors": "npm-run-all check:svelte auto:solve 2>> logs/build-errors.txt"
+    "log:build-errors": "npm-run-all check:svelte auto:solve 2>> logs/build-errors.txt",
+    "check:test": "node ./scripts/check-and-test.cjs"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.1",

@@ -1,8 +1,13 @@
 <script lang="ts">
   import { getContext } from 'svelte';
 
-  export let disabled: boolean = false;
-  export let onclick: (event?: unknown) => void = () => {};
+  let {
+    disabled = false,
+    onclick = () => {}
+  }: {
+    disabled?: boolean;
+    onclick?: (event?: unknown) => void;
+  } = $props();
 
   interface ContextMenuContext {
     close: () => void;
@@ -24,7 +29,7 @@
   class:disabled={disabled}
   role="menuitem"
   tabindex={disabled ? -1 : 0}
-  on:click={handleClick}
+  onclick={handleClick}
   {disabled}
 >
   <slot />

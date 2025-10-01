@@ -1,0 +1,39 @@
+C:\Users\james\Videos\deeds-web-app\sveltekit-frontend>npm run dev
+
+> yorha-legal-ai-frontend@1.0.0 dev
+> concurrently -n "Redis,Vite" -c "red,cyan" "node scripts/start-redis.js" "vite dev --host localhost"
+
+[Redis] ✅ Docker Redis detected (legal-ai-redis)
+[Redis] 📍 Using Docker Redis on port 6379
+[Redis] 🔗 Skipping local Redis startup
+[Redis] node scripts/start-redis.js exited with code 0
+[Vite] X [ERROR] Expected end of file in JSON but found "}"
+[Vite]
+[Vite]     ../package.json:82:2:
+[Vite]       82 │   }
+[Vite]          ╵   ^
+[Vite]
+[Vite] X [ERROR] Expected end of file in JSON but found "\"**/*.worker.ts\""
+[Vite]
+[Vite]     tsconfig.json:64:4:
+[Vite]       64 │     "**/*.worker.ts",
+[Vite]          ╵     ~~~~~~~~~~~~~~~~
+[Vite]
+[Vite] failed to load config from C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\vite.config.js
+[Vite] error when starting dev server:
+[Vite] Error: Build failed with 2 errors:
+[Vite] ../package.json:82:2: ERROR: Expected end of file in JSON but found "}"
+[Vite] tsconfig.json:64:4: ERROR: Expected end of file in JSON but found "\"**/*.worker.ts\""
+[Vite]     at failureErrorWithLog (C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\node_modules\esbuild\lib\main.js:1467:15)
+[Vite]     at C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\node_modules\esbuild\lib\main.js:926:25
+[Vite]     at runOnEndCallbacks (C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\node_modules\esbuild\lib\main.js:1307:45)
+[Vite]     at buildResponseToResult (C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\node_modules\esbuild\lib\main.js:924:7)
+[Vite]     at C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\node_modules\esbuild\lib\main.js:951:16
+[Vite]     at responseCallbacks.<computed> (C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\node_modules\esbuild\lib\main.js:603:9)
+[Vite]     at handleIncomingPacket (C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\node_modules\esbuild\lib\main.js:658:12)
+[Vite]     at Socket.readFromStdout (C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\node_modules\esbuild\lib\main.js:581:7)
+[Vite]     at Socket.emit (node:events:518:28)
+[Vite]     at addChunk (node:internal/streams/readable:561:12)
+[Vite] vite dev --host localhost exited with code 1
+
+C:\Users\james\Videos\deeds-web-app\sveltekit-frontend>

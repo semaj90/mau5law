@@ -1,16 +1,20 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
+  import { Dialog } from '$lib/components/ui/dialog';
   import {
     Button,
     Card,
     CardHeader,
     CardTitle,
-    CardContent,
-    Dialog
+    CardContent
   } from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils';
   import type { ChatMessage, SystemStatus } from '$lib/types/ai';
+
+  // Props from server load function (optional)
+  let { data }: { data?: any } = $props();
+
   // Svelte 5 runes - proper syntax
   let messages = $state<ChatMessage[]>([]);
   let currentMessage = $state('');
@@ -24,6 +28,13 @@
     enhancedRAG: false,
     postgres: false,
     neo4j: false
+  });
+
+  // Update userId if data is provided from server
+  $effect(() => {
+    if (data?.user?.id) {
+      userId = data.user.id;
+    }
   });
   // POI Timeline State
   let poiTimelineData = $state([]);
@@ -458,7 +469,7 @@ handleQuickQuery('What are the elements of negligence?')}
                 </div>
               {/if}
               <div class="flex gap-2">
-                <input;
+                <input
                   bind:value={currentMessage}
                   onkeydown={handleKeydown}
                   placeholder="Ask a legal question..."
@@ -495,11 +506,11 @@ handleQuickQuery('What are the elements of negligence?')}
                   </svg>
                   Persons of Interest Timeline
                 </h2>
-                <button class="nes-btn"
+                <Button
                   variant="ghost"
                   size="sm"
                   onclick={() => showTimeline = false}
-                  class="bits-btn"
+                  class="nes-btn bits-btn"
                 >
                   {#snippet children()}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -523,16 +534,16 @@ handleQuickQuery('What are the elements of negligence?')}
                           </span>
                         </div>
                       </div>
-                      <button class="nes-btn"
+                      <Button
                         variant="ghost"
                         size="sm"
                         onclick={() => selectPOI(poi)}
-                        class="bits-btn"
+                        class="nes-btn bits-btn"
                       >
                         {#snippet children()}
                           View Details
                         {/snippet}
-                      </button>
+                      </Button>
                     </div>
                     {#if poi.activities.length > 0}
                       <div class="mt-3">
@@ -706,7 +717,9 @@ window.open('/api/v1/cluster/health', '_blank')}
                 POI Timeline
               </h3>
               <div class="space-y-2">
-                <button class="nes-btn is-primary w-full justify-start bits-btn"
+                <Button class="nes-btn is-primary w-full justify-start bits-btn"
+                  onclick={analyzePersonsOfInterest}
+                  disabled={timelineLoading}
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -779,7 +792,7 @@ window.open('/api/v1/cluster/health', '_blank')}
 </div>
 <!-- POI Details Modal -->
 {#if selectedPOI}
-  <Dialog bind:open={showPOIDialog} legal={true} size="lg" onOpenChange={(open) => { if (!open) closePOIDetails(),}}>
+  <Dialog bind:open={showPOIDialog} legal={true} size="lg" onOpenChange={(open: boolean) => { if (!open) closePOIDetails() }}>
     {#snippet content()}
       <div class="p-6 max-h-[80vh] overflow-y-auto">
         <!-- Modal Header -->
@@ -912,14 +925,18 @@ window.open('/api/v1/cluster/health', '_blank')}
           >
 {#snippet children()}
               Close
-            {/snippet}
-</Button>
-          <button class="nes-btn is-primary"
-            onclick={() => handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`)}
-            class="bits-btn"
+          <Button
+            onclick={() => {
+              handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
+              closePOIDetails();
+            }}
+            disabled={isStreaming}
+            class="nes-btn is-primary bits-btn"
           >
             {#snippet children()}
               Ask AI About This Person
+            {/snippet}
+</Button>
             {/snippet}
 </Button>
         </div>
@@ -929,18 +946,18 @@ window.open('/api/v1/cluster/health', '_blank')}
 {/if}
 <style>
   /* Custom scrollbar for chat */
-  :global($1) {
+  :global(::-webkit-scrollbar) {
     width: 6px;
   }
-  :global($1) {
+  :global(::-webkit-scrollbar-track) {
     background: #f1f1f1;
     border-radius: 3px;
   }
-  :global($1) {
+  :global(::-webkit-scrollbar-thumb) {
     background: #c1c1c1;
     border-radius: 3px;
   }
-  :global($1) {
+  :global(::-webkit-scrollbar-thumb):hover {
     background: #a8a8a8;
   }
 </style>

@@ -4,12 +4,20 @@
   const { CommandRoot, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandGroupHeading, CommandItem } = (BitsUI as any);
   import { Search, FileText, Users, Gavel } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  // Exported props (Svelte-style)
-  export let open: boolean = false;
-  export let onOpenChange: ((open: boolean) => void) | undefined;
-  export let placeholder: string = 'Search...';
-  export let className: string = '';
-  export let ondispatch: ((item: unknown) => void) | undefined;
+  // Svelte 5 props
+  let {
+    open = $bindable(false),
+    onOpenChange,
+    placeholder = 'Search...',
+    className = '',
+    ondispatch
+  }: {
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    placeholder?: string;
+    className?: string;
+    ondispatch?: (item: unknown) => void;
+  } = $props();
 
   // Mock data for legal AI platform
   const mockCommands = [

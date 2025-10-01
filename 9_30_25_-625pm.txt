@@ -1,0 +1,20 @@
+enhanced-bits-ui:::
+
+  You've got it. The way this project is set up, you're using bits-ui as a "headless" library, which is a
+  great practice. This means bits-ui provides the core functionality for components like <Badge> and
+  <Progress>, but you have to provide the styling.
+
+  Here's the breakdown of how styling is handled here:
+
+     Your own UI library*: The <Badge> and <Progress> components you're using are located in
+  src/lib/components/ui/. These are your project's custom wrappers around the bits-ui components.
+
+     Styling with Variants*: The different visual styles (e.g., "success", "destructive") are controlled by
+  the variant prop. You can see the available variants and the CSS classes they apply in the <script> section
+  of each file.
+
+
+   * CSS and Utility Classes: The components are styled using a mix of:
+   1. Use existing variants: Change the variant prop on your <Badge> and <Progress> components to one of the
+      existing variants ('default', 'success', 'destructive', 'warning', 'info', 'outline' for the badge, and
+      'default', 'success', 'error', 'warning', 'info', 'yorha', 'legal' for the progress bar)

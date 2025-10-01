@@ -50,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
     class = ''
   }: Props = $props();
   // Real-time search hooks
-  const { state, isReady, hasResults, searchStatus, search, disconnect } = useRealTimeSearch();
+  const { state: searchState, isReady, hasResults, searchStatus, search, disconnect } = useRealTimeSearch();
   // Local state
   let inputValue = $state('');
   let open = $state(false);
@@ -58,18 +58,18 @@ https://svelte.dev/e/js_parse_error -->
   let showFilters = $state(false);
   let searchHistory: string[] = $state([]);
   // Reactive computations
-  let filteredResults = $derived($state.results.slice(0, maxResults));
-  let isStreaming = $derived($searchStatus === 'searching' && enableRealTime);
-  let connectionStatus = $derived($state.connectionStatus);
-  let searchMetrics = $derived($state.searchMetrics);
+  let filteredResults = $derived(searchState.results.slice(0, maxResults));
+  let isStreaming = $derived(searchStatus === 'searching' && enableRealTime);
+  let connectionStatus = $derived(searchState.connectionStatus);
+  let searchMetrics = $derived(searchState.searchMetrics);
   // Enhanced debounced search
   const debouncedSearch = debounce(async (query: string) => {
     if (!query.trim() || query.length < 2) return;
     try {
       await search(query, {
         categories,
-        vectorSearch: enableVectorSearch
-        streamResults: enableRealTime
+        vectorSearch: enableVectorSearch,
+        streamResults: enableRealTime,
         includeAI: enableAI
       });
       // Add to search history
@@ -215,11 +215,11 @@ https://svelte.dev/e/js_parse_error -->
              bg-white shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out
              data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     >
-      {#if $state.error}
+      {#if searchState.error}
         <!-- Error State -->
         <div class="flex items-center gap-2 p-4 text-red-600">
           <AlertCircle class="h-4 w-4" />
-          <span class="text-sm">{$state.error}</span>
+          <span class="text-sm">{searchState.error}</span>
         </div>
       {:else if isStreaming}
         <!-- Streaming State -->

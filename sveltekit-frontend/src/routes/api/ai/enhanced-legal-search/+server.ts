@@ -25,118 +25,92 @@ import redisOptimized from '$lib/middleware/redis-orchestrator-middleware'
 // Rate limiting configuration
 // Simple rate limiter stub that returns the expected format
 const rateLimiter = {
-  check: (_ip: string) => Promise.resolve({ allowed: true, retryAfter: null }),
+  check: (_ip: string | undefined) => Promise.resolve({ allowed: true, retryAfter: null }),
   windowMs: 60 * 1000,
   max: 30,
   message: 'Too many search requests, please try again later.'
 }
 const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => {
+  const clientAddress = typeof getClientAddress === 'function' ? getClientAddress() : 'unknown';
+  const rateLimitResult = await rateLimiter.check(clientAddress);
+  if (!rateLimitResult.allowed) {
+    return json({ success: false, error: 'Rate limit exceeded', retryAfter: rateLimitResult.retryAfter }, { status: 429 });
+  }
+  const query = url.searchParams.get('q') || url.searchParams.get('query') || '';
+  if (!query || query.trim().length < 2) {
+    return json({ success: false, error: 'Query parameter "q" is required and must be at least 2 characters' }, { status: 400 });
+  }
+  const parsedLimit = Number.parseInt(url.searchParams.get('limit') || '10', 10);
+  const params = {
+    query,
+    jurisdiction: url.searchParams.get('jurisdiction') || 'all',
+    category: url.searchParams.get('category') || 'all',
+    maxResults: Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : 10,
+    useAI: url.searchParams.get('useAI') !== 'false'
+  };
   try {
-    // Apply rate limiting
-    const clientAddress = getClientAddress()
-    const rateLimitResult = await rateLimiter.check(clientAddress)
-    if (!rateLimitResult.allowed) {
-      return json({
-        success: false,
-        error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter
-      }, { status: 429 })
-    }
-    const query = url.searchParams.get('q') || url.searchParams.get('query')
-    const jurisdiction = url.searchParams.get('jurisdiction') || 'all'
-    const category = url.searchParams.get('category') || 'all'
-    const maxResults = parseInt(url.searchParams.get('limit') || '10')
-    const useAI = url.searchParams.get('useAI') !== 'false'
-    if (!query || query.trim().length < 2) {
-      return json({
-        success: false,
-        error: 'Query parameter "q" is required and must be at least 2 characters',
-        query: query
-      }, { status: 400 })
-    }
-    console.log(`🔍 Enhanced legal search: "${query}" [${jurisdiction}/${category}]`)
-    // Perform enhanced search
-    const startTime = Date.now()
-    const results = await enhancedLegalSearch.search(query, {
-      jurisdiction: jurisdiction !== 'all' ? jurisdiction : undefined,
-      category: category !== 'all' ? category : undefined,
-      maxResults,
-      useAI
-    })
-    const searchTime = Date.now() - startTime
-    // Calculate search analytics
-    const analytics = calculateSearchAnalytics(results, query, searchTime)
+    const { results, analytics, aiEnhancement, searchTime, total } = await handleSearch(params);
     return json({
       success: true,
-      query,
+      query: params.query,
       results,
       analytics,
+      aiEnhancement,
       searchTime: `${searchTime}ms`,
+      total,
+      filters: params,
       timestamp: new Date().toISOString(),
-      total: results.length,
-      filters: {
-        jurisdiction,
-        category,
-        maxResults,
-        useAI
-      }
-    })
-  } catch (error: unknown) {
-    console.error('Enhanced legal search API error:', error)
-    return json({
-      success: false,
-      error: 'Search service temporarily unavailable',
-      details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    });
+  } catch (err: unknown) {
+    console.error('Enhanced legal search API error:', err);
+    return json(
+      {
+        success: false,
+        error: 'Search service temporarily unavailable',
+        details: import.meta.env.NODE_ENV === 'development' ? String(err) : undefined,
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
 }
 const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }) => {
-  try {
-    // Apply rate limiting
-    const clientAddress = getClientAddress()
-    const rateLimitResult = await rateLimiter.check(clientAddress)
-    if (!rateLimitResult.allowed) {
-      return json({
-        success: false,
-        error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter
-      }, { status: 429 })
-    }
-    const body = await request.json()
-    const {
-      query,
-      jurisdiction = 'all',
-      category = 'all',
-      maxResults = 10,
-      useAI = true,
-      advancedOptions = {}
-    } = body
-    if (!query || typeof query !== 'string' || query.trim().length < 2) {
-      return json({
+  const clientAddress = typeof getClientAddress === 'function' ? getClientAddress() : 'unknown';
+  const rateLimitResult = await rateLimiter.check(clientAddress);
+  if (!rateLimitResult.allowed) {
+    return json(
+      { success: false, error: 'Rate limit exceeded', retryAfter: rateLimitResult.retryAfter },
+      { status: 429 }
+    );
+  }
+  const body = await request.json();
+  const {
+    query,
+    jurisdiction = 'all',
+    category = 'all',
+    maxResults = 10,
+    useAI = true,
+    advancedOptions = {},
+  } = body as AdvancedSearchRequestBody;
+  if (!query || typeof query !== 'string' || query.trim().length < 2) {
+    return json(
+      {
         success: false,
         error: 'Query is required and must be at least 2 characters',
-        received: { query, type: typeof query }
-      }, { status: 400 })
-    }
-    console.log(`🔍 Enhanced legal search (POST): "${query.substring(0, 50)}..." [${jurisdiction}/${category}]`)
-    const startTime = Date.now()
-    // Perform enhanced search with advanced options
-    const results = await enhancedLegalSearch.search(query, {
-      jurisdiction: jurisdiction !== 'all' ? jurisdiction : undefined,
-      category: category !== 'all' ? category : undefined,
-      maxResults: Math.min(maxResults, 50), // Cap at 50 results
+        received: { query, type: typeof query },
+      },
+      { status: 400 }
+    );
+  }
+  try {
+    const { results, analytics, aiEnhancement, searchTime, total } = await handleSearch({
+      query,
+      jurisdiction,
+      category,
+      maxResults,
       useAI,
-      ...advancedOptions
-    })
-    const searchTime = Date.now() - startTime
-    // Enhanced analytics for POST requests
-    const analytics = calculateAdvancedAnalytics(results, query, searchTime, body)
-    // AI enhancement if requested
-    let aiEnhancement = null
-    if (useAI && results.length > 0) {
-      aiEnhancement = await generateAIEnhancement(query, results.slice(0, 5))
-    }
+      advancedOptions,
+    });
     return json({
       success: true,
       query,
@@ -144,24 +118,22 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       analytics,
       aiEnhancement,
       searchTime: `${searchTime}ms`,
+      total,
+      filters: { jurisdiction, category, maxResults, useAI },
+      advancedOptions,
       timestamp: new Date().toISOString(),
-      total: results.length,
-      filters: {
-        jurisdiction,
-        category,
-        maxResults,
-        useAI
+    });
+  } catch (err: unknown) {
+    console.error('Enhanced legal search POST API error:', err);
+    return json(
+      {
+        success: false,
+        error: 'Search service temporarily unavailable',
+        details: import.meta.env.NODE_ENV === 'development' ? String(err) : undefined,
+        timestamp: new Date().toISOString(),
       },
-      advancedOptions
-    })
-  } catch (error: unknown) {
-    console.error('Enhanced legal search POST API error:', error)
-    return json({
-      success: false,
-      error: 'Search service temporarily unavailable',
-      details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+      { status: 500 }
+    );
   }
 }
 // Analytics calculation functions
@@ -290,5 +262,33 @@ export const OPTIONS: RequestHandler = async () => {
     timestamp: new Date().toISOString()
   })
 }
+
+// NEW: common handler used by GET and POST
+async function handleSearch(options: {
+  query: string;
+  jurisdiction?: string;
+  category?: string;
+  maxResults?: number;
+  useAI?: boolean;
+  advancedOptions?: Record<string, unknown>;
+}) {
+  const { query, jurisdiction, category, maxResults = 10, useAI = true, advancedOptions = {} } = options;
+  const startTime = Date.now();
+  const results = await enhancedLegalSearch.search(query, {
+    jurisdiction: jurisdiction !== 'all' ? jurisdiction : undefined,
+    category: category !== 'all' ? category : undefined,
+    maxResults: Math.min(maxResults, 50),
+    useAI,
+    ...advancedOptions
+  });
+  const searchTime = Date.now() - startTime;
+  const analytics = Object.keys(advancedOptions).length ?
+    calculateAdvancedAnalytics(results, query, searchTime, { query, jurisdiction, category, maxResults, useAI, advancedOptions }) :
+    calculateSearchAnalytics(results, query, searchTime);
+  const aiEnhancement = (useAI && results.length > 0) ? await generateAIEnhancement(query, results.slice(0,5)) : null;
+  return { results, analytics, aiEnhancement, searchTime, total: results.length };
+}
+
+// preserve existing Redis wrapper usage
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

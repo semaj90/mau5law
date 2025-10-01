@@ -1,6 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Svelte 5 runes are built-in, no import needed
@@ -38,22 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount, tick } from 'svelte';
   import { writable } from 'svelte/store';
   import { createMachine, interpret } from 'xstate';
-  // Updated to use melt-ui components
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  // TODO: Replace with melt-ui equivalent when available
-  // import { Tabs } from 'bits-ui'
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
-  import { Textarea } from '$lib/components/ui/textarea/index.js';
+      import { Button, Card, CardHeader, CardTitle, CardContent, Input, Badge, Textarea, Dialog, DialogCompound, Tabs } from '$lib/components/ui/enhanced-bits';
   // Real-time search integration
   import RealTimeLegalSearch from '$lib/components/search/RealTimeLegalSearch.svelte';
   import { useRealTimeSearch } from '$lib/services/real-time-search.ts';
@@ -228,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
       timestamp: new Date(),
     }
     chatMessages = [...chatMessages, userMessage];
-    const messageToSend = currentMessag;
+    const messageToSend = currentMessage;
     currentMessage = '';
     isProcessing = true;
     aiService.send('START_CHAT');
@@ -373,7 +356,7 @@ https://svelte.dev/e/js_parse_error -->
     panelLayout[panelName].width = newWidth;
     // Redistribute remaining width
     const remaining = 100 - newWidth;
-    const otherPanels = Object.keys.filter((p) => p !== panelName);
+    const otherPanels = Object.keys(panelLayout).filter((p) => p !== panelName);
     otherPanels.forEach((panel) => {
       panelLayout[panel].width = remaining / otherPanels.length;
     });
@@ -393,7 +376,7 @@ https://svelte.dev/e/js_parse_error -->
     URL.revokeObjectURL(url);
   }
   function useSuggestion(suggestion: string) {
-    currentMessage = suggestio;
+    currentMessage = suggestion;
     sendMessage();
   }
 </script>
@@ -531,7 +514,7 @@ togglePanel('citations')}>
     </div>
     <!-- AI Chat Panel -->
     <div
-      class="bg-white transition-all duration-300 flex flex-col";
+      class="bg-white transition-all duration-300 flex flex-col"
       style:width={panelLayout.chat.collapsed ? '0px' : `${panelLayout.chat.width}%`}>
       {#if !panelLayout.chat.collapsed}
         <!-- Chat Header -->
@@ -565,7 +548,7 @@ togglePanel('chat')}>
                   class="text-xs px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded transition-colors"
                   onclick={() => useSuggestion(suggestion)}>
                   {suggestion}
-</Button>
+                </button>
               {/each}
             </div>
           </div>
@@ -596,11 +579,11 @@ togglePanel('chat')}>
                   {#if message.suggestions && message.suggestions.length > 0}
                     <div class="mt-2 space-y-1">
                       {#each message.suggestions as suggestion}
-                        <button
+                                                <Button
                           class="block w-full text-left text-xs p-2 bg-white/20 hover:bg-white/30 rounded transition-colors"
                           onclick={() => useSuggestion(suggestion)}>
                           {suggestion}
-                        </button>
+                        </Button>
                       {/each}
                     </div>
                   {/if}

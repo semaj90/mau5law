@@ -7,20 +7,37 @@ import {
   transformerVariantGroup,
 } from 'unocss';
 
-import { presetIcons } from 'unocss';
-
 export default defineConfig({
   presets: [
     presetUno(),
     presetAttributify(),
-    presetIcons({
-      scale: 1.2,
-      extraProperties: {
-        'display': 'inline-block',
-        'vertical-align': 'middle',
+    presetWebFonts({
+      provider: 'google',
+      fonts: {
+        sans: 'Roboto',
+        serif: 'Merriweather',
+        mono: ['JetBrains Mono', 'monospace'], // Use Google Font for mono
       },
-    })],
-  transformers: [transformerDirectives(), transformerVariantGroup()]
+    }),
+  ],
+  transformers: [transformerDirectives(), transformerVariantGroup()],
+  // Legal AI Platform theme colors
+  theme: {
+    colors: {
+      yorha: {
+        bg: {
+          primary: '#0a0a0a',
+          secondary: '#1a1a1a',
+        },
+        text: {
+          primary: '#e0e0e0',
+          secondary: '#a0a0a0',
+        },
+        accent: '#ff6b6b',
+        border: '#333333',
+      },
+    },
+  },
 });
 
 // Additional presets can be added as needed, such as presetTypography, presetWind, etc.

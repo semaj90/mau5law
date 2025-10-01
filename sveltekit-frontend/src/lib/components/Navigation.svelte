@@ -1,31 +1,39 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { getRoutes, type Route } from '$lib/utils/routes';
 
   let navItems: Route[] = [];
   let searchOpen = false;
   let searchQuery = '';
 
-  onMount(() => {
-    navItems = getRoutes();
-  });
-
   function toggleSearch() {
     searchOpen = !searchOpen;
-    if (searchOpen) {
-      searchQuery = '';
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape' && searchOpen) {
+      toggleSearch();
     }
   }
+
+  onMount(() => {
+    navItems = getRoutes();
+    window.addEventListener('keydown', handleKeydown);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener('keydown', handleKeydown);
+  });
 </script>
 
 <nav class="nes-container is-rounded bg-gray-800 p-4 shadow-md flex flex-wrap items-center justify-between relative">
-  <div class="flex flex-wrap gap-2">
+  <ul class="flex flex-wrap gap-2">
     {#each navItems as item}
       <li class="relative list-none">
         <a href={item.href} class="nes-btn is-primary">{item.name}</a>
       </li>
     {/each}
-  </div>
+  </ul>
 
   <!-- Search -->
   <div class="relative">
@@ -35,25 +43,24 @@
 
 <!-- Search Modal -->
 {#if searchOpen}
-  <div class="search-modal-overlay" on:click={toggleSearch}>
-    <div class="search-modal" on:click|stopPropagation>
+  <div
+    class="search-modal-overlay"
+    on:click={(e) => {
+      if (e.currentTarget === e.target) toggleSearch();
+    }}
+    on:keydown={(e) => {
+      if (e.currentTarget === e.target && e.key === 'Enter') toggleSearch();
+    }}
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+  >
+    <div class="search-modal">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-white text-lg font-bold">Search</h2>
-        <button class="nes-btn is-error" on:click={toggleSearch}>X</button>
+        <h2 class="text-xl font-bold">Search</h2>
+        <button class="nes-btn is-error" on:click={toggleSearch} aria-label="Close">X</button>
       </div>
-      <input
-        type="text"
-        placeholder="Type to search..."
-        bind:value={searchQuery}
-        class="nes-input w-full mb-2"
-      />
-      <ul class="max-h-64 overflow-y-auto">
-        {#each navItems.filter(i => i.name.toLowerCase().includes(searchQuery.toLowerCase())) as result}
-          <li>
-            <a href={result.href} class="text-yellow-400 hover:underline">{result.name}</a>
-          </li>
-        {/each}
-      </ul>
+      <input type="text" class="nes-input" placeholder="Search..." bind:value={searchQuery} />
     </div>
   </div>
 {/if}
@@ -69,9 +76,8 @@
     @apply bg-gray-900 w-11/12 md:w-2/3 max-h-4/5 overflow-y-auto rounded-lg p-6 shadow-lg;
   }
   @media (max-width: 768px) {
-    nav > div:first-child { @apply flex flex-col gap-2 w-full; }
+    nav > ul:first-of-type { @apply flex flex-col gap-2 w-full; }
     li { @apply w-full; }
-    .nes-container > ul > li > button,
     .nes-container > ul > li > a { @apply w-full; }
   }
 </style>

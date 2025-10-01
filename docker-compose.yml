@@ -57,20 +57,20 @@ services:
 
   # Caddy Reverse Proxy
   caddy:
-    image: caddy:2-alpine
+    image: caddy:latest
     container_name: legal-ai-caddy
     ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
+      - "443:443/tcp"    # HTTPS
+      - "443:443/udp"    # QUIC/HTTP3
+      - "80:80/tcp"      # HTTP redirect
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./Caddyfile.ws:/etc/caddy/Caddyfile.ws
       - caddy_data:/data
       - caddy_config:/config
-    depends_on:
-      - frontend
     networks:
       - legal-ai-network
+    restart: unless-stopped
 
   postgres:
     image: pgvector/pgvector:pg17

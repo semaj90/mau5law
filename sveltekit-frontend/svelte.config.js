@@ -13,20 +13,21 @@ const config = {
   kit: {
     adapter: adapter(),
     alias: {
-      $lib: 'src/lib',
-      $components: 'src/lib/components',
-      $stores: 'src/lib/stores',
-      $utils: 'src/lib/utils',
-      $types: 'src/lib/types',
-      __SERVER__: path.resolve(fileURLToPath(new URL('./.svelte-kit/generated/server', import.meta.url))),
-      __PUBLIC__: path.resolve(fileURLToPath(new URL('./.svelte-kit/generated/client', import.meta.url))),
+      '$lib': 'src/lib',
+      '$lib/*': 'src/lib/*',
+      '$components': 'src/lib/components',
+      '$components/*': 'src/lib/components/*',
+      '$utils': 'src/lib/utils',
+      '$utils/*': 'src/lib/utils/*',
+      '$stores': 'src/lib/stores',
+      '$stores/*': 'src/lib/stores/*',
     },
     serviceWorker: {
-      register: false
+      register: false,
     },
     prerender: {
-      handleHttpError: 'warn'
-    }
+      handleHttpError: 'warn',
+    },
   },
 };
 

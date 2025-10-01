@@ -15,6 +15,15 @@ $caddy = @'
     }
 }
 
+# Experimental HTTP/3 support
+{
+	servers {
+		protocol {
+			experimental_http3
+		}
+	}
+}
+
 # Main app reverse proxy (HTTP) - Fixed for local SvelteKit
 :8080 {
     # Enable CORS for API endpoints
@@ -156,6 +165,23 @@ $caddy = @'
     respond @health "{\"status\":\"healthy\",\"timestamp\":\"{time}\",\"services\":{\"sveltekit\":\"localhost:5173,5174\",\"tensorrt_optimized\":\"localhost:8087\",\"tensorrt_original\":\"localhost:8086\",\"ollama\":\"localhost:11434\"},\"load_balancer\":\"round_robin\",\"cors\":\"enabled\"}" 200
 
     respond "Caddy Health Check" 200
+}
+
+# Fallback for non-WS traffic (optional: proxy to SvelteKit dev server)
+:443 {
+	tls internal
+
+	# Import auto-generated WebSocket upstreams
+	import Caddyfile.ws
+
+	# Health check endpoint
+	handle /health {
+		respond "OK" 200
+	}
+
+	handle /* {
+		reverse_proxy localhost:5173
+	}
 }
 '@
 

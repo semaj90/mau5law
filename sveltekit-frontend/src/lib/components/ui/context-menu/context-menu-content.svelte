@@ -4,7 +4,7 @@
   import type { Writable } from 'svelte/store';
 
   // Use a safe prop name instead of the reserved word `class`
-  export let className: string = '';
+  let { className = '' }: { className?: string } = $props();
 
   type Position = { x: number; y: number };
 
