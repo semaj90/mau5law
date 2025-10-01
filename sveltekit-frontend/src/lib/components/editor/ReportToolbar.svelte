@@ -1,5 +1,13 @@
 <script lang="ts">
-  import * as bits from 'bits-ui';
+  import { get } from 'svelte/store';
+  import EnhancedBits from '$lib/components/ui/enhanced-bits';
+  const {
+    DropdownRoot,
+    DropdownTrigger,
+    DropdownContent,
+    DropdownItem,
+    DropdownSeparator
+  } = (EnhancedBits as any) || {};
   import {
     Download,
     Eye,
@@ -15,7 +23,7 @@
     Undo,
     Upload,
   } from "lucide-svelte";
-  import { fly, slide } from "svelte/transition";
+  import { slide } from "svelte/transition";
   import {
     editorState,
     report,
@@ -43,7 +51,8 @@
   }
   const toggleLayout = () => {
     const layouts = ["single", "dual", "masonry"] as const;
-    const currentIndex = layouts.indexOf($report.settings.layout);
+    const currentLayout = ((get(report) as { settings?: { layout?: typeof layouts[number] } })?.settings?.layout) ?? "single";
+    const currentIndex = layouts.indexOf(currentLayout as any);
     const nextLayout = layouts[(currentIndex + 1) % layouts.length];
     reportActions.updateSettings({ layout: nextLayout });
   }
@@ -53,95 +62,71 @@
   <!-- Main Menu Bar -->
   <div class="menu-bar">
     <!-- File Menu -->
-    <bits.DropdownMenu.Root>
-      <bits.DropdownMenu.Trigger class="menu-trigger nes-btn">
-        File
-      </bits.DropdownMenu.Trigger>
-      <bits.DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={handleSave}>
-          <Save size={16} />
-          Save Report
-          <span class="shortcut">Ctrl+S</span>
-        </bits.DropdownMenu.Item>
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
-          <FileText size={16} />
-          New Report
-          <span class="shortcut">Ctrl+N</span>
-        </bits.DropdownMenu.Item>
-        <bits.DropdownMenu.Separator class="dropdown-separator" />
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
-          <Upload size={16} />
-          Import
-        </bits.DropdownMenu.Item>
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={handleExport}>
-          <Download size={16} />
-          Export
-        </bits.DropdownMenu.Item>
-        <bits.DropdownMenu.Separator class="dropdown-separator" />
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={handlePreview}>
-          <Eye size={16} />
-          Preview
-        </bits.DropdownMenu.Item>
-      </bits.DropdownMenu.Content>
-    </bits.DropdownMenu.Root>
+    <DropdownRoot align="left">
+      <DropdownTrigger>
+        <button class="menu-trigger nes-btn">File</button>
+      </DropdownTrigger>
+      <DropdownContent class="nes-container is-dark with-title">
+        <DropdownItem on:click={() => handleSave()}>
+          <Save size={16} /> Save Report <span class="shortcut">Ctrl+S</span>
+        </DropdownItem>
+        <DropdownItem on:click={() => { /* new */ }}>
+          <FileText size={16} /> New Report <span class="shortcut">Ctrl+N</span>
+        </DropdownItem>
+        <DropdownSeparator />
+        <DropdownItem on:click={() => { /* import */ }}>
+          <Upload size={16} /> Import
+        </DropdownItem>
+        <DropdownItem on:click={() => handleExport()}>
+          <Download size={16} /> Export
+        </DropdownItem>
+        <DropdownSeparator />
+        <DropdownItem on:click={() => handlePreview()}>
+          <Eye size={16} /> Preview
+        </DropdownItem>
+      </DropdownContent>
+    </DropdownRoot>
 
     <!-- Edit Menu -->
-    <bits.DropdownMenu.Root>
-      <bits.DropdownMenu.Trigger class="menu-trigger nes-btn">
-        Edit
-      </bits.DropdownMenu.Trigger>
-      <bits.DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
-          <Undo size={16} />
-          Undo
-          <span class="shortcut">Ctrl+Z</span>
-        </bits.DropdownMenu.Item>
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
-          <Redo size={16} />
-          Redo
-          <span class="shortcut">Ctrl+Y</span>
-        </bits.DropdownMenu.Item>
-        <bits.DropdownMenu.Separator class="dropdown-separator" />
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
-          <Search size={16} />
-          Find
-          <span class="shortcut">Ctrl+F</span>
-        </bits.DropdownMenu.Item>
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn">
-          <Replace size={16} />
-          Replace
-          <span class="shortcut">Ctrl+H</span>
-        </bits.DropdownMenu.Item>
-      </bits.DropdownMenu.Content>
-    </bits.DropdownMenu.Root>
+    <DropdownRoot align="left">
+      <DropdownTrigger><button class="menu-trigger nes-btn">Edit</button></DropdownTrigger>
+      <DropdownContent class="nes-container is-dark with-title">
+        <DropdownItem on:click={() => { /* undo */ }}>
+          <Undo size={16} /> Undo <span class="shortcut">Ctrl+Z</span>
+        </DropdownItem>
+        <DropdownItem on:click={() => { /* redo */ }}>
+          <Redo size={16} /> Redo <span class="shortcut">Ctrl+Y</span>
+        </DropdownItem>
+        <DropdownSeparator />
+        <DropdownItem on:click={() => { /* find */ }}>
+          <Search size={16} /> Find <span class="shortcut">Ctrl+F</span>
+        </DropdownItem>
+        <DropdownItem on:click={() => { /* replace */ }}>
+          <Replace size={16} /> Replace <span class="shortcut">Ctrl+H</span>
+        </DropdownItem>
+      </DropdownContent>
+    </DropdownRoot>
 
     <!-- View Menu -->
-    <bits.DropdownMenu.Root>
-      <bits.DropdownMenu.Trigger class="menu-trigger nes-btn">
-        View
-      </bits.DropdownMenu.Trigger>
-      <bits.DropdownMenu.Content class="dropdown-menu nes-container is-dark with-title" transition={fly} transitionConfig={{ y: -5, duration: 150 }}>
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleSidebar}>
-          <Sidebar size={16} />
-          Toggle Sidebar
-          <span class="shortcut">Ctrl+B</span>
-        </bits.DropdownMenu.Item>
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleLayout}>
-          <Layout size={16} />
-          Switch Layout ({$report.settings.layout})
-        </bits.DropdownMenu.Item>
-        <bits.DropdownMenu.Item class="dropdown-item nes-btn" on:click={toggleFullscreen}>
+    <DropdownRoot align="left">
+      <DropdownTrigger><button class="menu-trigger nes-btn">View</button></DropdownTrigger>
+      <DropdownContent class="nes-container is-dark with-title">
+        <DropdownItem on:click={() => toggleSidebar()}>
+          <Sidebar size={16} /> Toggle Sidebar <span class="shortcut">Ctrl+B</span>
+        </DropdownItem>
+        <DropdownItem on:click={() => toggleLayout()}>
+          <Layout size={16} /> Switch Layout ({$report.settings.layout})
+        </DropdownItem>
+        <DropdownItem on:click={() => toggleFullscreen()}>
           {#if $reportUI.fullscreen}
-            <Minimize size={16} />
-            Exit Fullscreen
+            <Minimize size={16} /> Exit Fullscreen
           {:else}
-            <Maximize size={16} />
-            Fullscreen
+            <Maximize size={16} /> Fullscreen
           {/if}
           <span class="shortcut">F11</span>
-        </bits.DropdownMenu.Item>
-      </bits.DropdownMenu.Content>
-    </bits.DropdownMenu.Root>
+        </DropdownItem>
+      </DropdownContent>
+    </DropdownRoot>
   </div>
 
   <!-- Quick Actions -->
@@ -190,7 +175,7 @@
       </span>
     {:else}
       <span class="saved-indicator" transition:slide={{ duration: 200 }}>
-        Saved {$editorState.lastSaved.toLocaleTimeString()}
+        Saved { $editorState.lastSaved ? $editorState.lastSaved.toLocaleTimeString() : 'never' }
       </span>
     {/if}
   </div>

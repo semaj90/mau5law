@@ -2,61 +2,67 @@
   import { X } from "lucide-svelte";
   import { quadOut } from "svelte/easing";
   import { cn } from '$lib/utils';
-  let { open = $bindable(),
-    title = $bindable(),
-    description = $bindable(),
-    size = $bindable(),
-    showClose = $bindable(),
-    closeOnOutsideClick = $bindable(),
-    closeOnEscape = $bindable(),
+  import type { Snippet } from 'svelte';
+
+  type Size = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+
+  let {
+    open = $bindable(false),
+    title = '',
+    description = '',
+    size = 'md' as Size,
+    showClose = true,
+    closeOnOutsideClick = true,
+    closeOnEscape = true,
     children,
     footer,
     trigger
-    }: { open = $bindable(),
-    title = $bindable(),
-    description = $bindable(),
-    size = $bindable(),
-    showClose = $bindable(),
-    closeOnOutsideClick = $bindable(),
-    closeOnEscape = $bindable(),
-    children,
-    footer,
-    trigger
-  : unknown } = $props();
-  const sizeClasses = {
+  }: {
+    open?: boolean;
+    title?: string;
+    description?: string;
+    size?: Size;
+    showClose?: boolean;
+    closeOnOutsideClick?: boolean;
+    closeOnEscape?: boolean;
+    children?: Snippet;
+    footer?: Snippet<{ close: () => void }>;
+    trigger?: Snippet;
+  } = $props();
+
+  const sizeClasses: Record<Size, string> = {
     sm: "max-w-sm",
     md: "max-w-md",
     lg: "max-w-lg",
     xl: "max-w-xl",
-    full: "max-w-[95vw] max-h-[95vh]";
-  }
-  // close function exposed to footer slot via {close}
+    full: "max-w-[95vw] max-h-[95vh]"
+  };
+
   function close() {
     open = false;
-    // ondispatch removed;
   }
-  function handleKeydown(_event: KeyboardEvent) {
+
+  function handleKeydown(event: KeyboardEvent) {
     if (closeOnEscape && event.key === "Escape") {
       close();
     }
   }
-  function handleOutsideClick(_event: MouseEvent) {
+
+  function handleOutsideClick(event: MouseEvent) {
     if (closeOnOutsideClick && event.target === event.currentTarget) {
       close();
     }
   }
 </script>
 <!-- keyboard handling on window for accessibility -->
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} />
 <!-- optional trigger -->
 {@render trigger?.()}
 {#if open}
   <!-- overlay -->
   <div
     class="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
-    transitifade={{ duration: 200, easing: quadOut }}
-    onclick={handleOutsideClick}
-    onkeydown={(e) => e.key === 'Escape' ? handleOutsideClick(e) : null}
+    on:click={handleOutsideClick}
     role="presentation"
     aria-hidden="true"
   >
@@ -66,15 +72,13 @@
         "relative z-50 w-full max-h-[95vh] overflow-auto rounded-lg border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-800 dark:bg-slate-950 sm:mx-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
         sizeClasses[size]
       )}
-      /* transition removed */}
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? "dialog-title" : undefined}
       aria-describedby={description ? "dialog-description" : undefined}
       tabindex={0}
-      onclick={(e) => e.stopPropagation()}
-      onkeydown={(e) => e.key === 'Escape' ? close() : null}
-    >
+      on:click={(e) => e.stopPropagation()}
+      on:keydown={(e) => e.key === 'Escape' ? close() : null}
     >
       <!-- header -->
       <div class="flex items-start justify-between gap-4">
@@ -94,7 +98,7 @@
           <button
             type="button"
             class="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-            onclick={close}
+            on:click={close}
             aria-label="Close dialog"
           >
             <X size="20" />

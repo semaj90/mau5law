@@ -34,7 +34,7 @@ async function initializeDB() {
       console.warn('⚠️ Redis connection failed, continuing without cache:', redisError);
     }
 
-    // Ensure RAG documents table exists
+    // Ensure RAG documents table exists (384-dim for embeddinggemma)
     await pgClient.query(`
       CREATE TABLE IF NOT EXISTS rag_documents (
         id SERIAL PRIMARY KEY,
@@ -44,7 +44,7 @@ async function initializeDB() {
         file_size INTEGER,
         content TEXT,
         metadata JSONB DEFAULT '{}',
-        embedding vector(768),
+        embedding vector(384),
         processed_at TIMESTAMP DEFAULT NOW(),
         created_at TIMESTAMP DEFAULT NOW()
       );
@@ -80,10 +80,10 @@ async function generateEmbedding(text: string): Promise<number[]> {
     }
 
     const data = await response.json();
-    return data.embedding || Array(768).fill(0.01 * Math.random());
+    return data.embedding || Array(384).fill(0.01 * Math.random());
   } catch (error) {
     console.warn('⚠️ Embedding generation failed, using fallback:', error);
-    return Array(768).fill(0.01 * Math.random());
+    return Array(384).fill(0.01 * Math.random());
   }
 }
 

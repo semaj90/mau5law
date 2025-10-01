@@ -164,17 +164,52 @@ let doubled = $derived(count * 2);
 - **Build Time**: -50% improvement (fewer files to process)
 - **Developer Experience**: +200% improvement (unified patterns)
 
-## Next Steps & Recommendations
+## Next Phases (Action Plan)
 
-### Immediate Actions:
-1. ✅ **Test critical routes** - Verify functionality
-2. ✅ **Run TypeScript check** - Validate error reduction
-3. ✅ **Update documentation** - Component usage guides
+Phase 4 — Consolidate AI components (ai/, legal-ai/, etc.)
+- Goal: Centralize all AI-related modules under src/lib/ai with clear submodules:
+  - src/lib/ai/orchestrator.ts
+  - src/lib/ai/embedder.ts
+  - src/lib/ai/rag/
+  - src/lib/ai/rerankers/
+- Tasks:
+  1. Create src/lib/ai/index.ts that re-exports each submodule.
+  2. Move files into the new layout (git mv or create new files and update imports).
+  3. Add small adapter shims in old locations that re-export from new paths for a transitional period.
+- Quick validation:
+  - npx tsc --noEmit
+  - grep -R "from 'src/lib/ai" || true
 
-### Future Phases (Optional):
-1. **Phase 4**: Consolidate AI components (ai/, legal-ai/, etc.)
-2. **Phase 5**: Update import paths in routes
-3. **Phase 6**: Remove legacy compatibility exports
+Phase 5 — Update import paths in routes
+- Goal: Replace legacy imports with unified exports.
+- Tasks:
+  1. Use code-mod or simple sed to update obvious patterns:
+     - sed -E -i.bak "s#\\$lib/(ai|legal-ai)/([^'\\\"]+)#\$lib/ai/\2#g" $(git ls-files '*.ts' '*.svelte' '*.js')
+  2. Run project typecheck and fix remaining unresolved imports.
+- Quick validation:
+  - npx tsc --noEmit
+  - npm run build (or your local build command)
+
+Phase 6 — Remove legacy compatibility exports
+- Goal: Remove temporary shims implemented during Phase 4 and fully adopt new import surface.
+- Tasks:
+  1. After 1–2 CI cycles with green tests, delete shim files and update exports index.
+  2. Run full tests and lint:
+     - npx tsc --noEmit
+     - npm test
+- Rollback: All changes should be small commits; keep shims until CI is green for two runs.
+
+Tips & safety
+- Make each change in a small PR with automated typecheck.
+- Keep adapters that re-export from new paths for at least one release cycle.
+- Use `git mv` where possible to preserve history.
+- Run `npx tsc --noEmit` after each batch and fix errors incrementally.
+
+Completion checklist for Phases 4–6
+- [ ] src/lib/ai index + subfolders created
+- [ ] routes imports updated
+- [ ] shims removed after validation
+- [ ] CI passes for two consecutive runs
 
 ## Success Validation
 

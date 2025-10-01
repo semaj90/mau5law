@@ -1,6 +1,7 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
+  import Badge from '$lib/components/ui/Badge.svelte';
+  import { default as Progress } from '$lib/components/ui/Progress.svelte';
+
   interface Props {
     progress?: number;
     fileName?: string;
@@ -9,6 +10,7 @@
     status?: 'uploading' | 'completed' | 'error' | 'paused';
     showPercentage?: boolean;
   }
+
   let {
     progress = 0,
     fileName = '',
@@ -17,46 +19,33 @@
     status = 'uploading',
     showPercentage = true,
   }: Props = $props();
-  // Computed values
-  let progressVariant = $derived(() => {
-    switch (status) {
-      case 'completed':
-        return 'success';
-      case 'error':
-        return 'error';
-      case 'paused':
-        return 'warning';
-      default:
-        return variant === 'yorha' ? 'yorha' : variant === 'legal' ? 'legal' : 'info';
-    }
-  });
-  let badgeVariant = $derived(() => {
-    switch (status) {
-      case 'completed':
-        return 'success';
-      case 'error':
-        return 'destructive';
-      case 'paused':
-        return 'warning';
-      default:
-        return 'info';
-    }
-  });
-  let statusText = $derived(() => {
-    switch (status) {
-      case 'completed':
-        return 'Completed';
-      case 'error':
-        return 'Failed';
-      case 'paused':
-        return 'Paused';
-      default:
-        return 'Uploading';
-    }
-  });
+
+  // Simplified derived values - no need for $derived.by()
+  let progressVariant = $derived(
+    status === 'completed' ? 'success' :
+    status === 'error' ? 'error' :
+    status === 'paused' ? 'warning' :
+    variant === 'yorha' ? 'yorha' :
+    variant === 'legal' ? 'legal' :
+    'info'
+  );
+
+  let badgeVariant = $derived(
+    status === 'completed' ? 'success' :
+    status === 'error' ? 'destructive' :
+    status === 'paused' ? 'warning' :
+    'info'
+  );
+
+  let statusText = $derived(
+    status === 'completed' ? 'Completed' :
+    status === 'error' ? 'Failed' :
+    status === 'paused' ? 'Paused' :
+    'Uploading'
+  );
 </script>
 
-<div {variant} class="w-full nes-container">
+<div class="w-full nes-container" data-variant={variant}>
   <!-- File info header -->
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center gap-3">
@@ -66,13 +55,22 @@
         <p class="text-xs nes-text is-disabled">{label}</p>
       </div>
     </div>
+
     <!-- Status Badge -->
-    <Badge variant={badgeVariant()} size="sm">
-      {statusText()}
+    <Badge variant={badgeVariant} size="sm">
+      {statusText}
     </Badge>
   </div>
+
   <!-- Progress Bar -->
-  <Progress value={progress} variant={progressVariant()} {showPercentage} size="default" class="mb-2" />
+  <Progress
+    value={progress}
+    variant={progressVariant}
+    {showPercentage}
+    size="default"
+    class="mb-2"
+  />
+
   <!-- Additional Info -->
   {#if status === 'error'}
     <p class="text-xs text-red-600 mt-2">Upload failed. Please try again.</p>

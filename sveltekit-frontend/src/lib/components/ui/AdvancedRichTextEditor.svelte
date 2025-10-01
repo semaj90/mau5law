@@ -3,8 +3,6 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  let { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = ""  }: { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = "" : unknown } = $props();
   import { Editor } from "@tiptap/core";
   import Color from "@tiptap/extension-color";
   import FontFamily from "@tiptap/extension-font-family";
@@ -49,153 +47,111 @@ https://svelte.dev/e/js_parse_error -->
     ZoomOut,
   } from "lucide-svelte";
   import { onDestroy, onMount } from "svelte";
-  import { get, writable } from "svelte/store";
-  let editor: Editor | null = null;
-  let editorElement: HTMLElement
+  import { writable } from "svelte/store";
+
+  // Props
+  export let content: string | null = null;
+  export let placeholder: string = "Start writing your legal report...";
+  export let autosave: boolean = true;
+  export let reportId: string = "";
+  export let caseId: string = "";
+  let editor: any = null;
+  let editorElement: HTMLElement;
   let isFullscreen = false;
   let currentZoom = 100;
   let showGrid = false;
   let showRuler = true;
   let wordCount = 0;
   let characterCount = 0;
-  // Editor state stores
+  // Editor state store
   const editorState = writable({
-    canUndo: false
-    canRedo: false
-    isBold: false
-    isItalic: false
-    isUnderline: false
-    isStrike: false
+    canUndo: false,
+    canRedo: false,
+    isBold: false,
+    isItalic: false,
+    isUnderline: false,
+    isStrike: false,
     currentAlignment: "left",
     currentColor: "#000000",
     currentHighlight: "",
     currentFontFamily: "Inter",
     currentFontSize: 16,
-    isTable: false
-    isCode: false
-    isList: false
-    isOrderedList: false
+    isTable: false,
+    isCode: false,
+    isList: false,
+    isOrderedList: false,
     isQuote: false
   });
+
   // Color palettes for quick access
   const colorPalettes = {
     text: [
-      "#000000",
-      "#374151",
-      "#6b7280",
-      "#ef4444",
-      "#f97316",
-      "#eab308",
-      "#22c55e",
-      "#3b82f6",
-      "#8b5cf6",
-      "#ec4899",
+      "#000000", "#374151", "#6b7280", "#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899",
     ],
     highlight: [
-      "transparent",
-      "#fef3c7",
-      "#dcfce7",
-      "#dbeafe",
-      "#e0e7ff",
-      "#f3e8ff",
-      "#fce7f3",
-      "#fed7d7",
-      "#f0f9ff",
+      "transparent", "#fef3c7", "#dcfce7", "#dbeafe", "#e0e7ff", "#f3e8ff", "#fce7f3", "#fed7d7", "#f0f9ff",
     ],
     legal: [
-      "#1e40af",
-      "#7c2d12",
-      "#991b1b",
-      "#365314",
-      "#581c87",
-      "#831843",
-      "#92400e",
-      "#166534",
+      "#1e40af", "#7c2d12", "#991b1b", "#365314", "#581c87", "#831843", "#92400e", "#166534",
     ],
-  }
+  };
+
   // Font options
   const fontFamilies = [
-    "Inter",
-    "Times New Roman",
-    "Arial",
-    "Helvetica",
-    "Georgia",
-    "Verdana",
-    "Courier New",
-    "Roboto",
-    "Open Sans",
-    "Lato",
-    "Merriweather",
+    "Inter", "Times New Roman", "Arial", "Helvetica", "Georgia", "Verdana", "Courier New", "Roboto", "Open Sans", "Lato", "Merriweather",
   ];
+
   // Auto-save functionality
-  let autoSaveTimeout: NodeJS.Timeout;
-  $effect(() => {
+  let autoSaveTimeout: ReturnType<typeof setTimeout> | undefined;
+
+  onMount(() => {
     initializeEditor();
     setupKeyboardShortcuts();
   });
+
   onDestroy(() => {
-    if (editor) {
-      editor.destroy();
-    }
-    if (autoSaveTimeout) {
-      clearTimeout(autoSaveTimeout);
-    }
+    if (editor) editor.destroy();
+    if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
   });
+
   function initializeEditor() {
     editor = new Editor({
-      element: editorElement;
+      element: editorElement,
       extensions: [
-        StarterKit.configure({
-          history: {
-            depth: 100,
-          },
-        }),
-        Image.configure({
-          inline: true
-          allowBase64: true;
-        }),
-        TextAlign.configure({
-          types: ["heading", "paragraph"],
-        }),
-        Highlight.configure({
-          multicolor: true;
-        }),
+        StarterKit.configure({ history: { depth: 100 } }),
+        Image.configure({ inline: true, allowBase64: true }),
+        TextAlign.configure({ types: ["heading", "paragraph"] }),
+        Highlight.configure({ multicolor: true }),
         Typography,
-        Placeholder.configure({
-          placeholder: placeholder;
-        }),
-        Table.configure({
-          resizable: true;
-        }),
+        Placeholder.configure({ placeholder }),
+        Table.configure({ resizable: true }),
         TableRow,
         TableHeader,
         TableCell,
         TextStyle,
         Color,
-        FontFamily.configure({
-          types: ["textStyle"],
-        }),
+        FontFamily.configure({ types: ["textStyle"] }),
       ],
-      content: content
-      onTransaction: updateEditorState
+      content,
+      onTransaction: updateEditorState,
       onUpdate: ({ editor }) => {
         updateWordCount();
-        if (autosave) {
-          scheduleAutoSave();
-        }
+        if (autosave) scheduleAutoSave();
       },
       editorProps: {
         attributes: {
-          class:
-            "prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6",
+          class: "prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6",
         },
       },
     });
+    updateEditorState();
   }
+
   function updateEditorState() {
     if (!editor) return;
-    editorState.set(undo)(),
-      canRedo: editor.can.redo(),
+    editorState.set({
+      canUndo: editor.can().undo(),
+      canRedo: editor.can().redo(),
       isBold: editor.isActive("bold"),
       isItalic: editor.isActive("italic"),
       isUnderline: editor.isActive("underline"),
@@ -203,36 +159,36 @@ https://svelte.dev/e/js_parse_error -->
       currentAlignment: editor.isActive({ textAlign: "center" })
         ? "center"
         : editor.isActive({ textAlign: "right" })
-          ? "right"
-          : editor.isActive({ textAlign: "justify" })
-            ? "justify"
-            : "left",
-      currentColor: editor.getAttributes.color || "#000000",
-      currentHighlight: editor.getAttributes.color || "",
-      currentFontFamily:
-        editor.getAttributes.fontFamily || "Inter",
-      currentFontSize: editor.getAttributes.fontSize || 16,
+        ? "right"
+        : editor.isActive({ textAlign: "justify" })
+        ? "justify"
+        : "left",
+      currentColor: editor.getAttributes("color")?.color || "#000000",
+      currentHighlight: editor.getAttributes("highlight")?.color || "",
+      currentFontFamily: editor.getAttributes("fontFamily")?.fontFamily || "Inter",
+      currentFontSize: editor.getAttributes("fontSize")?.fontSize || 16,
       isTable: editor.isActive("table"),
-      isCode: editor.isActive("code"),
+      isCode: editor.isActive("codeBlock"),
       isList: editor.isActive("bulletList"),
       isOrderedList: editor.isActive("orderedList"),
       isQuote: editor.isActive("blockquote"),
     });
   }
+
   function updateWordCount() {
     if (!editor) return;
     const text = editor.getText();
-    wordCount = text.split.filter((word: string) => word.length > 0).length;
+    wordCount = text.split(/\s+/).filter((word: string) => word.length > 0).length;
     characterCount = text.length;
   }
+
   function scheduleAutoSave() {
-    if (autoSaveTimeout) {
-      clearTimeout(autoSaveTimeout);
-    }
+    if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
     autoSaveTimeout = setTimeout(() => {
       saveContent();
     }, 2000);
   }
+
   async function saveContent() {
     if (!editor) return;
     const content = editor.getJSON();
@@ -240,9 +196,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const response = await fetch("/api/reports/save", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           reportId,
           caseId,
@@ -252,26 +206,23 @@ https://svelte.dev/e/js_parse_error -->
           characterCount,
         }),
       });
-      if (!response.ok) {
-        throw new Error("Failed to save");
-      }
-      // Show save indicator
+      if (!response.ok) throw new Error("Failed to save");
       showSaveIndicator();
     } catch (error) {
       console.error("Auto-save failed:", error);
     }
   }
+
   function showSaveIndicator() {
-    // Implement visual save indicator
     const indicator = document.createElement("div");
     indicator.textContent = "Saved";
-    indicator.className =
-      "fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded text-sm z-50";
+    indicator.className = "fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded text-sm z-50";
     document.body.appendChild(indicator);
     setTimeout(() => {
       document.body.removeChild(indicator);
     }, 2000);
   }
+
   function setupKeyboardShortcuts() {
     document.addEventListener("keydown", (e) => {
       if (e.ctrlKey || e.metaKey) {
@@ -281,50 +232,27 @@ https://svelte.dev/e/js_parse_error -->
             saveContent();
             break;
           case "z":
-            if (e.shiftKey) {
-              editor?.commands.redo();
-            } else {
-              editor?.commands.undo();
-            }
+            if (e.shiftKey) editor?.commands.redo();
+            else editor?.commands.undo();
             break;
         }
       }
     });
   }
+
   // Toolbar actions
-  function toggleBold() {
-    editor?.chain.focus().toggleBold.run();
-  }
-  function toggleItalic() {
-    editor?.chain.focus().toggleItalic.run();
-  }
-  function toggleUnderline() {
-    editor?.chain.focus().toggleMark.run();
-  }
-  function toggleStrike() {
-    editor?.chain.focus().toggleStrike.run();
-  }
-  function setAlignment(align: string) {
-    editor?.chain.focus().setTextAlign.run();
-  }
-  function setTextColor(color: string) {
-    editor?.chain.focus().setColor.run();
-  }
+  function toggleBold() { editor?.chain().focus().toggleBold().run(); }
+  function toggleItalic() { editor?.chain().focus().toggleItalic().run(); }
+  function toggleUnderline() { editor?.chain().focus().toggleUnderline().run(); }
+  function toggleStrike() { editor?.chain().focus().toggleStrike().run(); }
+  function setAlignment(align: string) { editor?.chain().focus().setTextAlign(align).run(); }
+  function setTextColor(color: string) { editor?.chain().focus().setColor(color).run(); }
   function setHighlight(color: string) {
-    if (color === "transparent") {
-      editor?.chain.focus().unsetHighlight.run();
-    } else {
-      editor?.chain.focus().setHighlight.run();
-    }
+    if (color === "transparent") editor?.chain().focus().unsetHighlight().run();
+    else editor?.chain().focus().setHighlight({ color }).run();
   }
-  function setFontFamily(family: string) {
-    editor?.chain.focus().setFontFamily.run();
-  }
-  function insertTable() {
-    editor
-      ?.chain.focus()
-      .insertTable.run();
-  }
+  function setFontFamily(family: string) { editor?.chain().focus().setFontFamily(family).run(); }
+  function insertTable() { editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(); }
   function insertImage() {
     const input = document.createElement("input");
     input.type = "file";
@@ -335,33 +263,34 @@ https://svelte.dev/e/js_parse_error -->
         const reader = new FileReader();
         reader.onload = (e) => {
           const src = e.target?.result as string;
-          editor?.chain.focus().setImage.run();
-        }
+          editor?.chain().focus().setImage({ src }).run();
+        };
         reader.readAsDataURL(file);
       }
-    }
+    };
     input.click();
   }
   function toggleFullscreen() {
-    isFullscreen = !isFullscree;
-    if (isFullscreen) {
-      document.documentElement.requestFullscreen?.();
-    } else {
-      document.exitFullscreen?.();
-    }
+    isFullscreen = !isFullscreen;
+    if (isFullscreen) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
   }
   function adjustZoom(delta: number) {
     currentZoom = Math.max(50, Math.min(200, currentZoom + delta));
-    if (editor?.view.dom) {
-      (editor.view.dom as HTMLElement).style.zoom = `${currentZoom}%`;
-    }
+    if (editor?.view.dom) (editor.view.dom as HTMLElement).style.zoom = `${currentZoom}%`;
   }
   function exportDocument(format: "html" | "json" | "pdf") {
     if (!editor) return;
-    const content = format === "json" ? editor.getJSON() : editor.getHTML();
-    const blob = new Blob([JSON.stringify(content, null, 2)], {
-      type: format === "json" ? "application/json" : "text/html",
-    });
+    let content: string | object;
+    let type: string;
+    if (format === "json") {
+      content = editor.getJSON();
+      type = "application/json";
+    } else {
+      content = editor.getHTML();
+      type = "text/html";
+    }
+    const blob = new Blob([format === "json" ? JSON.stringify(content, null, 2) : content as string], { type });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -382,22 +311,18 @@ https://svelte.dev/e/js_parse_error -->
             const content = JSON.parse(e.target?.result as string);
             editor?.commands.setContent(content);
           } catch {
-            // If not JSON, treat as HTML
             editor?.commands.setContent(e.target?.result as string);
           }
-        }
+        };
         reader.readAsText(file);
       }
-    }
+    };
     input.click();
   }
-  // Reactive statements
-  // TODO: Convert to $derived: state = get(editorState)
+
   // Exported functions for parent component access
   export function setContent(content: string) {
-    if (editor) {
-      editor.commands.setContent(content);
-    }
+    if (editor) editor.commands.setContent(content);
   }
   export function getContent() {
     return editor ? editor.getHTML() : "";
@@ -407,35 +332,35 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<div class="mx-auto px-4 max-w-7xl" class:fullscreen={isFullscreen}>
+<div class="mx-auto px-4 max-w-7xl advanced-editor" class:fullscreen={isFullscreen}>
   <!-- Main Toolbar -->
   <div class="mx-auto px-4 max-w-7xl">
     <!-- File Operations -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => saveContent()} title="Save (Ctrl+S)">
+    <div class="toolbar-group mx-auto px-4 max-w-7xl">
+      <button class="toolbar-btn mx-auto px-4 max-w-7xl" onclick={() => saveContent()} title="Save (Ctrl+S)">
         <Save size="18" />
       </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => importDocument()} title="Import Document">
+      <button class="toolbar-btn mx-auto px-4 max-w-7xl" onclick={() => importDocument()} title="Import Document">
         <Upload size="18" />
       </button>
-      <div class="mx-auto px-4 max-w-7xl">
-        <button class="mx-auto px-4 max-w-7xl">
+      <div class="dropdown mx-auto px-4 max-w-7xl">
+        <button class="dropdown-toggle toolbar-btn mx-auto px-4 max-w-7xl">
           <Download size="18" />
           <ChevronDown size="14" />
         </button>
-        <div class="mx-auto px-4 max-w-7xl">
-          <button onclick={() => exportDocument('html')}>Export as HTML</button>
-          <button onclick={() => exportDocument('json')}>Export as JSON</button>
-          <button onclick={() => exportDocument('pdf')}>Export as PDF</button>
+        <div class="dropdown-menu mx-auto px-4 max-w-7xl">
+          <button class="toolbar-btn" onclick={() => exportDocument('html')}>Export as HTML</button>
+          <button class="toolbar-btn" onclick={() => exportDocument('json')}>Export as JSON</button>
+          <button class="toolbar-btn" onclick={() => exportDocument('pdf')}>Export as PDF</button>
         </div>
       </div>
     </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
+    <div class="toolbar-separator mx-auto px-4 max-w-7xl"></div>
     <!-- Undo/Redo -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:disabled={!state.canUndo}
+        class:disabled={!$editorState.canUndo}
         onclick={() => editor?.commands.undo()}
         title="Undo (Ctrl+Z)"
       >
@@ -443,7 +368,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:disabled={!state.canRedo}
+        class:disabled={!$editorState.canRedo}
         onclick={() => editor?.commands.redo()}
         title="Redo (Ctrl+Shift+Z)"
       >
@@ -453,9 +378,9 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl"></div>
     <!-- Text Formatting -->
     <div class="mx-auto px-4 max-w-7xl">
-      <div class="mx-auto px-4 max-w-7xl">
+      <div class="font-selector mx-auto px-4 max-w-7xl">
         <select
-          bind:value={state.currentFontFamily}
+          value={$editorState.currentFontFamily}
           onchange={e => setFontFamily((e.target as HTMLSelectElement).value)}
         >
           {#each fontFamilies as font}
@@ -465,7 +390,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.isBold}
+        class:active={$editorState.isBold}
         onclick={() => toggleBold()}
         title="Bold (Ctrl+B)"
       >
@@ -473,7 +398,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.isItalic}
+        class:active={$editorState.isItalic}
         onclick={() => toggleItalic()}
         title="Italic (Ctrl+I)"
       >
@@ -481,7 +406,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.isUnderline}
+        class:active={$editorState.isUnderline}
         onclick={() => toggleUnderline()}
         title="Underline (Ctrl+U)"
       >
@@ -489,7 +414,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.isStrike}
+        class:active={$editorState.isStrike}
         onclick={() => toggleStrike()}
         title="Strikethrough"
       >
@@ -499,24 +424,24 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl"></div>
     <!-- Color Tools -->
     <div class="mx-auto px-4 max-w-7xl">
-      <div class="mx-auto px-4 max-w-7xl">
+      <div class="color-picker mx-auto px-4 max-w-7xl">
         <input
           type="color"
-          bind:value={state.currentColor}
+          value={$editorState.currentColor}
           onchange={e => setTextColor((e.target as HTMLInputElement).value)}
           title="Text Color"
         />
         <Type size="18" />
       </div>
-      <div class="mx-auto px-4 max-w-7xl">
-        <button class="mx-auto px-4 max-w-7xl">
+      <div class="dropdown mx-auto px-4 max-w-7xl">
+        <button class="dropdown-toggle toolbar-btn mx-auto px-4 max-w-7xl">
           <Highlighter size="18" />
           <ChevronDown size="14" />
         </button>
-        <div class="mx-auto px-4 max-w-7xl">
+        <div class="dropdown-menu color-palette mx-auto px-4 max-w-7xl">
           {#each colorPalettes.highlight as color}
             <button
-              class="mx-auto px-4 max-w-7xl"
+              class="color-swatch toolbar-btn mx-auto px-4 max-w-7xl"
               style="background-color: {color}"
               onclick={() => setHighlight(color)}
               title={color === 'transparent' ? 'Remove highlight' : `Highlight with ${color}`}
@@ -531,7 +456,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.currentAlignment === 'left'}
+        class:active={$editorState.currentAlignment === 'left'}
         onclick={() => setAlignment('left')}
         title="Align Left"
       >
@@ -539,7 +464,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.currentAlignment === 'center'}
+        class:active={$editorState.currentAlignment === 'center'}
         onclick={() => setAlignment('center')}
         title="Align Center"
       >
@@ -547,7 +472,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.currentAlignment === 'right'}
+        class:active={$editorState.currentAlignment === 'right'}
         onclick={() => setAlignment('right')}
         title="Align Right"
       >
@@ -555,7 +480,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.currentAlignment === 'justify'}
+        class:active={$editorState.currentAlignment === 'justify'}
         onclick={() => setAlignment('justify')}
         title="Justify"
       >
@@ -567,32 +492,32 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.isList}
-        onclick={() => editor?.chain.focus().toggleBulletList.run()}
+        class:active={$editorState.isList}
+        onclick={() => editor?.chain().focus().toggleBulletList().run()}
         title="Bullet List"
       >
         <List size="18" />
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.isOrderedList}
-        onclick={() => editor?.chain.focus().toggleOrderedList.run()}
+        class:active={$editorState.isOrderedList}
+        onclick={() => editor?.chain().focus().toggleOrderedList().run()}
         title="Numbered List"
       >
         <ListOrdered size="18" />
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.isQuote}
-        onclick={() => editor?.chain.focus().toggleBlockquote.run()}
+        class:active={$editorState.isQuote}
+        onclick={() => editor?.chain().focus().toggleBlockquote().run()}
         title="Quote"
       >
         <Quote size="18" />
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        class:active={state.isCode}
-        onclick={() => editor?.chain.focus().toggleCodeBlock.run()}
+        class:active={$editorState.isCode}
+        onclick={() => editor?.chain().focus().toggleCodeBlock().run()}
         title="Code Block"
       >
         <Code size="18" />
@@ -611,11 +536,11 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl"></div>
     <!-- View Controls -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => adjustZoom(-10)} title="Zoom Out">
+      <button class="toolbar-btn mx-auto px-4 max-w-7xl" onclick={() => adjustZoom(-10)} title="Zoom Out">
         <ZoomOut size="18" />
       </button>
-      <span class="mx-auto px-4 max-w-7xl">{currentZoom}%</span>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => adjustZoom(10)} title="Zoom In">
+      <span class="zoom-indicator mx-auto px-4 max-w-7xl">{currentZoom}%</span>
+      <button class="toolbar-btn mx-auto px-4 max-w-7xl" onclick={() => adjustZoom(10)} title="Zoom In">
         <ZoomIn size="18" />
       </button>
       <button
@@ -648,9 +573,9 @@ https://svelte.dev/e/js_parse_error -->
   </div>
   <!-- Ruler (if enabled) -->
   {#if showRuler}
-    <div class="mx-auto px-4 max-w-7xl">
+    <div class="ruler mx-auto px-4 max-w-7xl">
       {#each Array(20) as _, i}
-        <div class="mx-auto px-4 max-w-7xl" style="left: {i * 50}px">
+        <div class="ruler-mark mx-auto px-4 max-w-7xl" style="left: {i * 50}px">
           {#if i % 2 === 0}
             <span class="mx-auto px-4 max-w-7xl">{i}</span>
           {/if}
@@ -659,8 +584,8 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
   <!-- Editor Container -->
-  <div class="mx-auto px-4 max-w-7xl" class:show-grid={showGrid}>
-    <div bind:this={editorElement} class="mx-auto px-4 max-w-7xl"></div>
+  <div class="editor-container mx-auto px-4 max-w-7xl" class:show-grid={showGrid}>
+    <div bind:this={editorElement} class="editor-content mx-auto px-4 max-w-7xl"></div>
   </div>
 </div>
 
@@ -675,13 +600,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   .advanced-editor.fullscreen {
     position: fixed;
-d;
     inset: 0;
     z-index: 50;
   }
   .toolbar {
     position: sticky;
-y;
     top: 0;
     z-index: 10;
   }
@@ -693,8 +616,8 @@ y;
   .toolbar-btn {
     padding: 0.5rem;
     border-radius: 0.375rem;
-    border: none
-    background: transparent
+    border: none;
+    background: transparent;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -706,13 +629,13 @@ y;
   .toolbar-btn:hover {
     background: #f3f4f6;
   }
-  .toolbar-btn: disabled
+  .toolbar-btn:disabled,
   .toolbar-btn.disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
   .toolbar-btn.active {
-    background: #dbeaf;
+    background: #dbeafe;
     color: #2563eb;
   }
   .toolbar-separator {
@@ -806,8 +729,7 @@ y;
   }
   .editor-container {
     flex: 1;
-    overflow: aut;
-o;
+    overflow: auto;
     min-height: 400px;
   }
   .editor-container.show-grid {
@@ -823,15 +745,16 @@ o;
   :global(.ProseMirror) {
     outline: none;
   }
-  :global($1) {
-    color: #9ca3af;
+  /* show the placeholder text when the editor is empty; the placeholder extension sets a data-placeholder attribute */
+  :global(.ProseMirror:empty)::before {
     content: attr(data-placeholder);
+    color: #9ca3af;
     float: left;
     height: 0;
     pointer-events: none;
   }
   :global(.ProseMirror table) {
-    border-collapse: collap;
+    border-collapse: collapse;
     border: 1px solid #d1d5db;
   }
   :global(.ProseMirror table td),

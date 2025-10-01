@@ -225,3 +225,27 @@ $effect(() => {
 4. **Execute Phase 2: Modernize essential 8 components**
 5. **Execute Phase 3: Update all import paths**
 6. **Test critical application flows**
+
+# Component Usage Ranking — How to generate
+
+Purpose
+- Produce a ranked list of components by usage across the codebase to prioritize consolidation or removal.
+
+Quick method (POSIX / WSL)
+1. From repo root:
+   - grep -R --include="*.svelte" --include="*.ts" --include="*.js" -h "from '[$]lib/components" | sed -E "s/.*from '[$]lib\\/components\\/?//" | sed -E "s/'.*//" | sort | uniq -c | sort -rn > component-usage.txt
+2. Review `component-usage.txt` and export top items:
+   - head -n 100 component-usage.txt
+
+TS-morph (recommended for accuracy)
+- Create a small TS-morph script to parse imports and produce a JSON ranking.
+- Example steps:
+  1. npm i -D ts-morph
+  2. Create scripts/collect-component-usage.ts (use Project, iterate SourceFiles, inspect ImportDeclarations)
+  3. Run: node -r ts-node/register scripts/collect-component-usage.ts
+
+Deliverable
+- component-usage.txt (text) and component-usage.json (if using TS-morph)
+
+Use
+- Prioritize top 50 components for consolidation in Phase 4.

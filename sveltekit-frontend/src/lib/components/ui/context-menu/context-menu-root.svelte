@@ -2,7 +2,7 @@
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
 
-  export let onOpenChange: ((open: boolean) => void) | undefined = undefined;
+  let { onOpenChange }: { onOpenChange?: (open: boolean) => void } = $props();
 
   const isOpen = writable(false);
   const position = writable({ x: 0, y: 0 });

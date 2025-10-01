@@ -1,0 +1,198 @@
+{
+  "$schema": "https://roo.dev/schema/roo-config.json",
+  "version": "1.0",
+
+  "ai": {
+    "provider": "ollama",
+    "baseUrl": "http://localhost:11434",
+    "models": {
+      "primary": "gemma3-legal:latest",
+      "fallback": "gemma3:270m",
+      "embeddings": "embeddinggemma:latest"
+    },
+    "gpu": {
+      "enabled": true,
+      "device": "CUDA0",
+      "architecture": "ampere",
+      "compute": "8.6",
+      "vram": "8GB",
+      "layers": 44,
+      "parallelRequests": 4,
+      "tensorCores": true,
+      "cudaGraphs": true,
+      "multiStream": true
+    },
+    "options": {
+      "temperature": 0.1,
+      "topP": 0.8,
+      "topK": 20,
+      "repeatPenalty": 1.05,
+      "numPredict": 4096,
+      "numCtx": 16384
+    }
+  },
+
+  "mcp": {
+    "enabled": true,
+    "servers": [
+      {
+        "name": "context7-multicore",
+        "port": 3002,
+        "capabilities": [
+          "file_operations",
+          "code_analysis",
+          "type_checking",
+          "prettier_formatting",
+          "eslint_fixing"
+        ],
+        "autoStart": true
+      },
+      {
+        "name": "legal-ai-context",
+        "port": 3003,
+        "capabilities": [
+          "legal_document_analysis",
+          "embedding_generation",
+          "vector_operations",
+          "case_similarity"
+        ],
+        "autoStart": false
+      }
+    ]
+  },
+
+  "workspace": {
+    "framework": "sveltekit",
+    "typescript": true,
+    "svelte5": true,
+    "runes": true,
+    "css": "unocss",
+    "database": "postgresql",
+    "orm": "drizzle"
+  },
+
+  "codeGeneration": {
+    "style": "typescript-strict",
+    "conventions": {
+      "imports": "esm",
+      "quotes": "single",
+      "semi": true,
+      "trailingComma": "es5",
+      "tabWidth": 2
+    },
+    "svelte5": {
+      "useRunes": true,
+      "snippetsOverSlots": true,
+      "eventHandlers": "on:",
+      "reactivity": "$state, $derived, $effect"
+    }
+  },
+
+  "context": {
+    "checkpoints": {
+      "enabled": true,
+      "ignoreNestedGit": true
+    },
+    "files": {
+      "include": [
+        "src/**/*.{ts,js,svelte}",
+        "src/lib/**/*.{ts,js,svelte}",
+        "src/routes/**/*.{ts,js,svelte}"
+      ],
+      "exclude": [
+        "node_modules/**",
+        ".svelte-kit/**",
+        "build/**",
+        "dist/**",
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "../langextract-go/**",
+        "**/.git/**"
+      ]
+    },
+    "memory": {
+      "enabled": true,
+      "maxTokens": 32000,
+      "compression": "semantic"
+    }
+  },
+
+  "features": {
+    "autoComplete": true,
+    "codeActions": true,
+    "diagnostics": true,
+    "hover": true,
+    "formatting": true,
+    "refactoring": true,
+    "chatInterface": true,
+    "inlineChat": true
+  },
+
+  "performance": {
+    "maxConcurrentRequests": 4,
+    "timeout": 30000,
+    "cache": {
+      "enabled": true,
+      "ttl": 3600,
+      "maxSize": "2GB"
+    },
+    "gpu": {
+      "offloadLayers": 44,
+      "batchSize": 512,
+      "flashAttention": true,
+      "tensorCores": true,
+      "f16": true,
+      "cudaGraphs": true,
+      "kv_cache_quantization": "q8_0",
+      "rope_scaling": {
+        "type": "linear",
+        "factor": 1.0
+      },
+      "ampere_optimizations": {
+        "async_kernels": true,
+        "persistent_kernels": true,
+        "cooperative_groups": true,
+        "memory_efficient_attention": true
+      }
+    }
+  },
+
+  "legal": {
+    "documentTypes": [
+      "contract",
+      "evidence",
+      "brief",
+      "citation",
+      "case_law"
+    ],
+    "features": {
+      "caseAnalysis": true,
+      "evidenceProcessing": true,
+      "citationExtraction": true,
+      "similaritySearch": true,
+      "vectorSearch": true
+    },
+    "postgres": {
+      "database": "legal_ai_db",
+      "user": "legal_admin",
+      "password": "123456",
+      "host": "localhost",
+      "port": 5432,
+      "extensions": ["pgvector"]
+    },
+    "redis": {
+      "host": "localhost",
+      "port": 6379,
+      "password": "redis",
+      "db": 0
+    }
+  },
+
+  "shortcuts": {
+    "chat": "ctrl+shift+r",
+    "inlineChat": "ctrl+i",
+    "explain": "ctrl+shift+e",
+    "refactor": "ctrl+shift+f",
+    "fix": "ctrl+shift+x"
+  }
+}

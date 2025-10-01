@@ -1,9 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Expected token }
-https://svelte.dev/e/expected_token -->
-<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-</script>
 /**
  * Adaptive Rendering Engine with Dynamic Upscaling
  * Implements NES → SNES → N64 quality scaling based on system performance
@@ -15,10 +10,13 @@ https://svelte.dev/e/expected_token -->
  * - CHR-ROM pattern caching with quality-based LOD
  * - Bitmap HMM-SOM prediction integration
  */
-import { onMount, onDestroy } from 'svelte';
 import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
+
+type BitmapHMMSOMPredictorType = InstanceType<typeof BitmapHMMSOMPredictor>;
+
 // Quality tier definitions
 export type QualityTier = '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
+
 export interface QualityConfig {
   tier: QualityTier;
   targetResolution: number;
@@ -30,6 +28,7 @@ export interface QualityConfig {
   particleEffects: boolean;
   advancedLighting: boolean;
 }
+
 export interface SystemMetrics {
   fps: number;
   frameTime: number;
@@ -38,6 +37,7 @@ export interface SystemMetrics {
   gpuUtilization: number;
   drawCalls: number;
 }
+
 interface Props {
   content: unknown;
   assetType?: string;
@@ -45,6 +45,7 @@ interface Props {
   predictive?: boolean;
   className?: string;
 }
+
 let {
   content,
   assetType = 'general',
@@ -52,51 +53,55 @@ let {
   predictive = false,
   className = ''
 }: Props = $props();
+
 // Reactive state using Svelte 5 runes
 let currentQuality = $state<QualityConfig>({
   tier: '8-BIT_NES',
   targetResolution: 540,
   pixelScale: 2.0,
   shaderComplexity: 1,
-  textureStreamingEnabled: false
+  textureStreamingEnabled: false,
   chrRomCacheSize: 50,
-  antiAliasing: false
-  particleEffects: false
-  advancedLighting: false;
+  antiAliasing: false,
+  particleEffects: false,
+  advancedLighting: false,
 });
+
 let systemMetrics = $state<SystemMetrics>({
   fps: 60,
   frameTime: 16.67,
   memoryUsage: 50,
   cacheHitRate: 80,
   gpuUtilization: 30,
-  drawCalls: 100;
+  drawCalls: 100,
 });
+
 let isMonitoring = $state(false);
-let canvasElement: HTMLCanvasElement = $state(undefined as any);
+let canvasElement = $state<HTMLCanvasElement | undefined>(undefined);
 let renderContext = $state<CanvasRenderingContext2D | WebGLRenderingContext | null>(null);
 let webgpuDevice = $state<GPUDevice | null>(null);
-let hmmPredictor = $state<BitmapHMMSOMPredictor | null>(null);
+let hmmPredictor = $state<BitmapHMMSOMPredictorType | null>(null);
+
 // Performance monitoring
 let frameCount = 0;
 let lastFrameTime = 0;
 let fpsHistory: number[] = [];
-let monitoringInterval: NodeJS.Timeout;
-let qualityAdjustmentTimer: NodeJS.Timeout;
+let monitoringInterval: ReturnType<typeof setInterval> | undefined;
+let qualityAdjustmentTimer: ReturnType<typeof setInterval> | undefined;
+
 $effect(() => {
-    (async () => {
-await initializeRenderingEngine();
-  startPerformanceMonitoring();
-    })();
-  });
-onDestroy(() => {
-  stopPerformanceMonitoring();
+  return () => {
+    stopPerformanceMonitoring();
+  };
 });
+
 async function initializeRenderingEngine(): Promise<void> {
   console.log('🎮 Initializing Adaptive Rendering Engine...');
+
   // Initialize HMM-SOM predictor for asset prediction
   hmmPredictor = new BitmapHMMSOMPredictor();
   await hmmPredictor.initialize();
+
   // Setup WebGPU if available
   if ('gpu' in navigator) {
     try {
@@ -109,6 +114,7 @@ async function initializeRenderingEngine(): Promise<void> {
       console.warn('WebGPU not available:', error);
     }
   }
+
   // Initialize canvas context
   if (canvasElement) {
     renderContext = canvasElement.getContext('2d');
@@ -116,15 +122,17 @@ async function initializeRenderingEngine(): Promise<void> {
       console.log('✅ Canvas 2D context initialized');
     }
   }
+
   // Set initial quality based on device capabilities
   currentQuality = calculateInitialQuality();
   console.log(`🎯 Initial quality: ${currentQuality.tier}`);
 }
+
 function calculateInitialQuality(): QualityConfig {
   // Detect device capabilities
   const isHighEnd = navigator.hardwareConcurrency > 4 &&
                     (navigator as any).deviceMemory > 4;
-  const hasWebGPU = !!webgpuDevic;
+  const hasWebGPU = !!webgpuDevice;
   if (isHighEnd && hasWebGPU) {
     return create64BitConfig();
   } else if (isHighEnd || hasWebGPU) {
@@ -139,11 +147,11 @@ function create8BitConfig(): QualityConfig {
     targetResolution: 540,
     pixelScale: 2.0,
     shaderComplexity: 1,
-    textureStreamingEnabled: false
+    textureStreamingEnabled: false,
     chrRomCacheSize: 50,
-    antiAliasing: false
-    particleEffects: false
-    advancedLighting: false;
+    antiAliasing: false,
+    particleEffects: false,
+    advancedLighting: false,
   }
 }
 function create16BitConfig(): QualityConfig {
@@ -152,11 +160,11 @@ function create16BitConfig(): QualityConfig {
     targetResolution: 720,
     pixelScale: 1.5,
     shaderComplexity: 2,
-    textureStreamingEnabled: true
+    textureStreamingEnabled: true,
     chrRomCacheSize: 100,
-    antiAliasing: true
-    particleEffects: true
-    advancedLighting: false;
+    antiAliasing: true,
+    particleEffects: true,
+    advancedLighting: false,
   }
 }
 function create64BitConfig(): QualityConfig {
@@ -165,11 +173,11 @@ function create64BitConfig(): QualityConfig {
     targetResolution: 1080,
     pixelScale: 1.0,
     shaderComplexity: 3,
-    textureStreamingEnabled: true
+    textureStreamingEnabled: true,
     chrRomCacheSize: 200,
-    antiAliasing: true
-    particleEffects: true
-    advancedLighting: true;
+    antiAliasing: true,
+    particleEffects: true,
+    advancedLighting: true,
   }
 }
 function startPerformanceMonitoring(): void {
@@ -193,8 +201,8 @@ function stopPerformanceMonitoring(): void {
 }
 function frameTimeCallback(timestamp: number): void {
   if (lastFrameTime > 0) {
-    const frameTime = timestamp - lastFrameTim;
-    const fps = 1000 / frameTim;
+    const frameTime = timestamp - lastFrameTime;
+    const fps = 1000 / frameTime;
     fpsHistory.push(fps);
     if (fpsHistory.length > 60) { // Keep last 60 frames (1 second at 60fps)
       fpsHistory.shift();
@@ -209,14 +217,14 @@ function frameTimeCallback(timestamp: number): void {
 function updateSystemMetrics(): void {
   if (fpsHistory.length === 0) return;
   const averageFps = fpsHistory.reduce((a, b) => a + b, 0) / fpsHistory.length;
-  const averageFrameTime = 1000 / averageFp;
+  const averageFrameTime = 1000 / averageFps;
   systemMetrics = {
     fps: Math.round(averageFps),
     frameTime: Number(averageFrameTime.toFixed(2)),
     memoryUsage: getMemoryUsage(),
     cacheHitRate: getCacheHitRate(),
     gpuUtilization: estimateGPUUtilization(),
-    drawCalls: estimateDrawCalls();
+    drawCalls: estimateDrawCalls(),
   }
 }
 function getMemoryUsage(): number {
@@ -270,7 +278,7 @@ function adjustQualityBasedOnPerformance(): void {
       tier: currentQuality.tier,
       fps: systemMetrics.fps,
       memoryUsage: systemMetrics.memoryUsage,
-      assetTyp;
+      assetType: assetType,
     });
   }
 }
@@ -322,7 +330,7 @@ function downgradeQuality(): void {
 function applyQualityChanges(): void {
   if (!canvasElement || !renderContext) return;
   // Update canvas resolution
-  canvasElement.width = currentQuality.targetResolutio;
+  canvasElement.width = currentQuality.targetResolution;
   canvasElement.height = Math.round(currentQuality.targetResolution * 0.75); // 4:3 aspect ratio
   // Apply pixel scaling for retro effect
   if (renderContext instanceof CanvasRenderingContext2D) {
@@ -418,28 +426,33 @@ async function streamTexture(assetKey: string): Promise<string> {
                    currentQuality.tier === '16-BIT_SNES' ? 512 : 256;
   return loadTextureChunks(assetKey, chunkSize);
 }
-async function loadFullTexture(assetKey: string): Promise<string> {/* JSX syntax converted to Svelte */}, 10);
+async function loadFullTexture(assetKey: string): Promise<string> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(`texture_full_${assetKey}`);
+    }, 10);
   });
 }
-async function loadTextureChunks(assetKey: string, chunkSize: number): Promise<string> {/* JSX syntax converted to Svelte */}, 50);
+
+async function loadTextureChunks(assetKey: string, chunkSize: number): Promise<string> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(`texture_chunk_${assetKey}_${chunkSize}`);
+    }, 50);
   });
 }
 // Reactive updates
-$effect(() => {
-  if (canvasElement) {
-    renderContent();
-  }
-});
 // Performance metrics for external monitoring
-export function getPerformanceMetrics() {
+function getPerformanceMetrics() {
   return {
     systemMetrics,
     currentQuality,
     isMonitoring
   }
 }
+
 // Quality control API
-export function setQuality(tier: QualityTier) {
+function setQuality(tier: QualityTier) {
   switch (tier) {
     case '8-BIT_NES':
       currentQuality = create8BitConfig();
@@ -453,19 +466,31 @@ export function setQuality(tier: QualityTier) {
   }
   applyQualityChanges();
 }
+
+// Expose methods via props for parent component access
+let api = $derived({
+  getPerformanceMetrics,
+  setQuality
+});
+
+// Initialize on mount
+$effect(() => {
+  (async () => {
+    await initializeRenderingEngine();
+    startPerformanceMonitoring();
+  })();
+});
 </script>
-<!-- Adaptive Rendering Canvas -->
+
 <div class="adaptive-rendering-container {className}">
   <canvas
     bind:this={canvasElement}
-    width={currentQuality.targetResolution}
-    height={Math.round(currentQuality.targetResolution * 0.75)}
-    class="rendering-canvas {currentQuality.tier.toLowerCase.replace(/_/g, '-')}"
+    class="rendering-canvas {currentQuality.tier.toLowerCase().replace(/_/g, '-')}"
   ></canvas>
   <!-- Quality Indicator -->
   {#if isMonitoring}
     <div class="quality-indicator">
-      <div class="tier-badge {currentQuality.tier.toLowerCase.replace(/_/g, '-')}">
+      <div class="tier-badge {currentQuality.tier.toLowerCase().replace(/_/g, '-')}">
         {currentQuality.tier.replace(/_/g, ' ')}
       </div>
       <div class="performance-stats">
@@ -489,16 +514,16 @@ export function setQuality(tier: QualityTier) {
   border-radius: 4px;
   overflow: hidden;
 }
-.rendering-canv.rendering-canvas.8-bit-nes {
+.rendering-canvas.\38 -bit-nes {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edge;
   image-rendering: crisp-edge;
   filter: contrast(1.1) saturate(1.2);
 }
-.rendering-canvas.16-bit-snes {
+.rendering-canvas.\31 6-bit-snes {
   filter: contrast(1.05) saturate(1.1);
 }
-.rendering-canvas.64-bit-n64 {
+.rendering-canvas.\36 4-bit-n64 {
   filter: none;
 }
 .quality-indicator {
@@ -519,13 +544,13 @@ export function setQuality(tier: QualityTier) {
   color: white;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
 }
-.tier-badge.8-bit-nes {
+.tier-badge.\38 -bit-nes {
   background: linear-gradient(45deg, #ff4444, #ff6666);
 }
-.tier-badge.16-bit-snes {
+.tier-badge.\31 6-bit-snes {
   background: linear-gradient(45deg, #4444ff, #6666ff);
 }
-.tier-badge.64-bit-n64 {
+.tier-badge.\36 4-bit-n64 {
   background: linear-gradient(45deg, #44ff44, #66ff66);
 }
 .performance-stats {
@@ -545,25 +570,25 @@ export function setQuality(tier: QualityTier) {
   pointer-events: none;
 }
 /* Quality-specific animations */
-.8-bit-nes {
+.\38 -bit-nes {
   animation: pixel-flicker 0.1s infinite;
 }
-.16-bit-snes {
+.\31 6-bit-snes {
   animation: smooth-glow 2s ease-in-out infinite alternate;
 }
-.64-bit-n64 {
+.\36 4-bit-n64 {
   animation: premium-shine 3s ease-in-out infinite;
 }
 @keyframes pixel-flicker {
-  0%, 100% { opacity: 1, }
-  50% { opacity: 0.98, }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.98; }
 }
 @keyframes smooth-glow {
-  0% { filter: brightness(1) contrast(1.05) saturate(1.1), }
-  100% { filter: brightness(1.02) contrast(1.08) saturate(1.15), }
+  0% { filter: brightness(1) contrast(1.05) saturate(1.1); }
+  100% { filter: brightness(1.02) contrast(1.08) saturate(1.15); }
 }
 @keyframes premium-shine {
-  0%, 100% { filter: brightness(1) saturate(1), }
-  50% { filter: brightness(1.05) saturate(1.1), }
+  0%, 100% { filter: brightness(1) saturate(1); }
+  50% { filter: brightness(1.05) saturate(1.1); }
 }
 </style>

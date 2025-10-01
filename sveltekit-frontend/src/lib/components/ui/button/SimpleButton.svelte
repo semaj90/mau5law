@@ -1,11 +1,16 @@
 <script lang="ts">
-  // Simple, typed button component
-  export let type: 'button' | 'submit' | 'reset' = 'button';
-  export let variant: 'primary' | 'secondary' = 'primary';
-  export let disabled: boolean = false;
-  export let ariaLabel: string | undefined;
-
-  // Optional click handler can be provided by consumers via on:click
+  // Simple, typed button component - Svelte 5
+  let {
+    type = 'button' as 'button' | 'submit' | 'reset',
+    variant = 'primary' as 'primary' | 'secondary',
+    disabled = false,
+    ariaLabel = undefined as string | undefined
+  }: {
+    type?: 'button' | 'submit' | 'reset';
+    variant?: 'primary' | 'secondary';
+    disabled?: boolean;
+    ariaLabel?: string;
+  } = $props();
 </script>
 
 <style>
@@ -39,8 +44,8 @@
 
 <button
   class="btn {variant}"
-  type={type}
-  disabled={disabled}
+  {type}
+  {disabled}
   aria-label={ariaLabel}
 >
   <slot />

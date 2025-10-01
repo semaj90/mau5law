@@ -69,7 +69,7 @@
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
       <!-- Input Demo -->
-      <BitsInput;
+      <BitsInput
         bind:value={caseName}
         placeholder="Enter case name"
         variant="legal"
@@ -150,20 +150,21 @@ showDialog = true}
           </div>
         </div>
       {/snippet}
-      {#snippet footer()}
-        <Button class="bits-btn"
-          variant="ghost"
-          onclick={() =>
-showDialog = false}
-        >
-          Cancel
-        <Button class="bits-btn"
-          variant="primary"
-          onclick={handleCreateCase}
-          disabled={!caseName || !clientName || !selectedCaseType}
-        >
-Create Case
-      {/snippet}
+{#snippet footer()}
+  <Button class="bits-btn"
+    variant="ghost"
+    onclick={() => showDialog = false}
+  >
+    Cancel
+  </Button>
+  <Button class="bits-btn"
+    variant="primary"
+    onclick={handleCreateCase}
+    disabled={!caseName || !clientName || !selectedCaseType}
+  >
+    Create Case
+  </Button>
+{/snippet}
     </BitsDialog>
   </section>
   <!-- Cases List Demo -->
@@ -182,12 +183,14 @@ Create Case
               <p class="text-sm text-yorha-text-secondary font-mono">
                 {sampleCase.type} • {sampleCase.status}
               </p>
-            </div>
-            <div class="flex gap-2">
-              <Button class="bits-btn" variant="ghost" size="sm">
-<Eye class="w-4 h-4" />
-              <Button class="bits-btn" variant="ghost" size="sm">
-<Edit class="w-4 h-4" />
+<div class="flex gap-2">
+  <Button class="bits-btn" variant="ghost" size="sm">
+    <Eye class="w-4 h-4" />
+  </Button>
+  <Button class="bits-btn" variant="ghost" size="sm">
+    <Edit class="w-4 h-4" />
+  </Button>
+</div>
             </div>
           </div>
         </div>

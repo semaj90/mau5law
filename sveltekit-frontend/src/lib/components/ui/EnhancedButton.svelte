@@ -2,262 +2,122 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  	import type { ComponentProps } from 'svelte';
-  	import { cva, type VariantProps } from 'class-variance-authority';
-  	import { cn } from '$lib/utils';
-  	// Replaced melt with bits-ui components
-  	import { Button as BitsButton } from 'bits-ui';
-  	import type { Button as BitsButtonType } from 'bits-ui';
-  	const buttonVariants = cva(
-  		'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background',
-  		{
-  			variants: {
-  				variant: {
-  					default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-  					destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-  					outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-  					secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-  					ghost: 'hover:bg-accent hover:text-accent-foreground',
-  					link: 'text-primary underline-offset-4 hover:underline',
-  					legal: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-md',
-  					evidence: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-md',
-  					caseItem: 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500 shadow-md',
-  					yorha: 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black hover:from-yellow-500 hover:to-yellow-700 font-bold uppercase tracking-wider border-2 border-yellow-700 shadow-lg';
-  				},
-  				size: {
-  					default: 'h-10 px-4 py-2',
-  					sm: 'h-9 rounded-md px-3',
-  					lg: 'h-11 rounded-md px-8',
-  					icon: 'h-10 w-10',
-  					xs: 'h-8 rounded px-2 text-xs';
-  				}
-  			},
-  			defaultVariants: {
-  				variant: 'default',
-  				size: 'default';
-  			}
-  		}
-  	);
-  	interface Props extends ComponentProps<BitsButtonType.Root> {
-  		variant?: VariantProps<typeof buttonVariants>['variant'];
-  		size?: VariantProps<typeof buttonVariants>['size'];
-  		disabled?: boolean;
-  		type?: 'button' | 'submit' | 'reset';
-  		href?: string;
-  		target?: string;
-  		loading?: boolean;
-  		loadingText?: string;
-  		class?: string;
-  		useMelt?: boolean; // Option to use bits-ui enhancements
-  		useBits?: boolean; // Option to use bits-ui
-  	}
-  	let {
-  		variant = 'default',
-  		size = 'default',
-  		disabled = false,
-  		type = 'button',
-  		href,
-  		target,
-  		loading = false,
-  		loadingText = 'Loading...',
-  		class: className = '',
-  		useMelt = true,
-  		useBits = false,
-  		...restProp;
-  	}: Props = $props();
-  	let isDisabled = $derived(disabled || loading);
-  	let buttonClass = $derived(cn(buttonVariants({ variant, size }), class));
-  	// Create bits-ui button for enhanced accessibility and interactions - conditionally
-  	const meltButtonBuilder = useMelt ? createButton({
-  		disabled: isDisabled;
-  	}) : null;
-  	const meltButton = meltButtonBuilder?.elements.root;
-  	const pressed = meltButtonBuilder?.states.pressed;
-  	// Loading spinner SVG
-  	const LoadingSpinner = () => (
-  		`<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-  			<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-  			<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-  		</svg>`
-  	);
+  import { onMount } from 'svelte';
+  import { cn } from '$lib/utils';
+  import { buttonVariants, type ButtonVariantProps } from './button-variants';
+
+  let {
+    variant = 'default' as ButtonVariantProps['variant'],
+    size = 'default' as ButtonVariantProps['size'],
+    disabled = false,
+    type = 'button' as 'button' | 'submit' | 'reset',
+    href = undefined as string | undefined,
+    target = undefined as string | undefined,
+    loading = false,
+    loadingText = 'Loading...',
+    class: className = '',
+    useBits = false,
+    ariaLabel = undefined as string | undefined,
+    onclick
+  }: {
+    variant?: ButtonVariantProps['variant'];
+    size?: ButtonVariantProps['size'];
+    disabled?: boolean;
+    type?: 'button' | 'submit' | 'reset';
+    href?: string;
+    target?: string;
+    loading?: boolean;
+    loadingText?: string;
+    class?: string;
+    useBits?: boolean;
+    ariaLabel?: string;
+    onclick?: (evt: MouseEvent) => void;
+  } = $props();
+
+  let isDisabled = $derived(disabled || loading);
+  let buttonClass = $derived(cn(buttonVariants({ variant, size }), className));
+
+  // dynamic Bits-UI loader
+  let BitsComponent = $state<any>(null);
+  onMount(async () => {
+    if (useBits) {
+      try {
+        const mod = await import('bits-ui');
+        // prefer exported Button or Root
+        BitsComponent = mod.Button?.Root ?? mod.Button ?? mod.default ?? null;
+      } catch {
+        BitsComponent = null;
+      }
+    }
+  });
+
+  function handleClick(evt: MouseEvent) {
+    if (isDisabled) {
+      evt.preventDefault();
+      evt.stopImmediatePropagation();
+      return;
+    }
+    onclick?.(evt);
+  }
 </script>
-{#if useBits && !href}
-	<!-- Use Bits-UI Button -->
-	<BitsButton.Root
-		{type}
-		disabled={isDisabled}
-		class={buttonClass}
-		data-testid="enhanced-button"
-		data-variant={variant}
-		data-pressed={useMelt ? $pressed : undefined}
-		{...restProps}
-	>
-		{#if loading}
-			<svg
-				class="mr-2 h-4 w-4 animate-spin"
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				aria-hidden="true"
-			>
-				<circle
-					class="opacity-25"
-					cx="12"
-					cy="12"
-					r="10"
-					stroke="currentColor"
-					stroke-width="4"
-				/>
-				<path
-					class="opacity-75"
-					fill="currentColor"
-					d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-				/>
-			</svg>
-			{loadingText}
-		{:else}
-			{@render children?.()}
-		{/if}
-	</BitsButton.Root>
+
+{#if useBits && BitsComponent && !href}
+  <svelte:component
+    this={BitsComponent}
+    class={buttonClass}
+    disabled={isDisabled}
+    {type}
+    aria-label={ariaLabel}
+    onclick={handleClick}
+  >
+    {#if loading}
+      <span class="loader" aria-hidden="true" /> <span>{loadingText}</span>
+    {:else}
+      <slot />
+    {/if}
+  </svelte:component>
 {:else if href}
-	<!-- Link variant -->
-	<a
-		{href}
-		{target}
-		class={buttonClass}
-		role="button"
-		tabindex="0"
-		aria-disabled={isDisabled}
-		data-testid="enhanced-button"
-		data-variant={variant}
-		{...restProps}
-	>
-		{#if loading}
-			<svg
-				class="mr-2 h-4 w-4 animate-spin"
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				aria-hidden="true"
-			>
-				<circle
-					class="opacity-25"
-					cx="12"
-					cy="12"
-					r="10"
-					stroke="currentColor"
-					stroke-width="4"
-				/>
-				<path
-					class="opacity-75"
-					fill="currentColor"
-					d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-				/>
-			</svg>
-			{loadingText}
-		{:else}
-			{@render children?.()}
-		{/if}
-	</a>
+  <a
+    {href}
+    {target}
+    class={buttonClass}
+    role="button"
+    aria-disabled={isDisabled}
+    onclick={handleClick}
+  >
+    {#if loading}
+      <span class="loader" aria-hidden="true" /> <span>{loadingText}</span>
+    {:else}
+      <slot />
+    {/if}
+  </a>
 {:else}
-	{#if useMelt}
-		<!-- Melt-ui enhanced button -->
-		<button
-			{type}
-			disabled={isDisabled}
-			class={buttonClass}
-			data-testid="enhanced-button"
-			data-variant={variant}
-			data-pressed={$pressed}
-			{...restProps}
-		>
-			{#if loading}
-				<svg
-					class="mr-2 h-4 w-4 animate-spin"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
-				>
-					<circle
-						class="opacity-25"
-						cx="12"
-						cy="12"
-						r="10"
-						stroke="currentColor"
-						stroke-width="4"
-					/>
-					<path
-						class="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-					/>
-				</svg>
-				{loadingText}
-			{:else}
-				{@render children?.()}
-			{/if}
-		</button>
-	{:else}
-		<!-- Standard button without bits-ui -->
-		<button
-			{type}
-			disabled={isDisabled}
-			class={buttonClass}
-			data-testid="enhanced-button"
-			data-variant={variant}
-			{...restProps}
-		>
-			{#if loading}
-				<svg
-					class="mr-2 h-4 w-4 animate-spin"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
-				>
-					<circle
-						class="opacity-25"
-						cx="12"
-						cy="12"
-						r="10"
-						stroke="currentColor"
-						stroke-width="4"
-					/>
-					<path
-						class="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-					/>
-				</svg>
-				{loadingText}
-			{:else}
-				{@render children?.()}
-			{/if}
-		</button>
-	{/if}
-<style>/* YoRHa terminal-style button animations */ {}
-	:global([data-variant="yorha"]) {
-		position: relative;
-		overflow: hidden;
-	}
-	:global([data-variant="yorha"]:before) {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: -100%;
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-		transition: left 0.5;
-	}
-	:global($1) {
-		left: 100%;
-	}
-/* Enhanced focus states for accessibility */ {}
-	:global([data-testid="enhanced-button"]:focus-visible) {
-		outline: 2px solid currentColor;
-		outline-offset: 2px;
-	}
+  <button
+    {type}
+    class={buttonClass}
+    disabled={isDisabled}
+    aria-label={ariaLabel}
+    onclick={handleClick}
+  >
+    {#if loading}
+      <span class="loader" aria-hidden="true" /> <span>{loadingText}</span>
+    {:else}
+      <slot />
+    {/if}
+  </button>
+{/if}
+
+<style>
+  .loader {
+    display: inline-block;
+    margin-right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  :global([data-variant="yorha"]) { position: relative; overflow: hidden; }
 </style>

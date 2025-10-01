@@ -3,11 +3,11 @@
   import { CaseLogic } from '$lib/core/logic/case-logic';
   import type { CaseFile } from '$lib/core/logic/case-logic';
 
-  // export the prop in Svelte idiomatic way and use a slot for children
-  export let caseFile: CaseFile;
+  // Svelte 5 props
+  let { caseFile }: { caseFile: CaseFile } = $props();
 
-  const displayStatus = CaseLogic.getDisplayStatus(caseFile);
-  const riskScore = CaseLogic.calculateRiskScore(caseFile);
+  let displayStatus = $derived(CaseLogic.getDisplayStatus(caseFile));
+  let riskScore = $derived(CaseLogic.calculateRiskScore(caseFile));
 
   function handleAnalyzeClick() {
     // placeholder for integration
@@ -24,7 +24,7 @@
     <p>{caseFile.summary}</p>
     <slot />
     <div class="flex justify-end">
-      <button class="nes-btn is-primary" on:click={handleAnalyzeClick} type="button">Analyze</button>
+      <button class="nes-btn is-primary" onclick={handleAnalyzeClick} type="button">Analyze</button>
     </div>
   </CardContent>
 </Card>

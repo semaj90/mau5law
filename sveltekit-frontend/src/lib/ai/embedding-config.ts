@@ -16,11 +16,12 @@ export interface EmbeddingModelConfig {
 }
 export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
   // Primary: Gemma embeddings (optimized for legal and general tasks)
+  // embeddinggemma produces 384-dim vectors (memory efficient)
   'embeddinggemma': {
     id: 'embeddinggemma',
     name: 'Gemma Embeddings',
     provider: 'ollama',
-    dimensions: 768,
+    dimensions: 384,
     maxTokens: 2048,
     latency: 100,
     accuracy: 0.9,
@@ -31,19 +32,19 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     id: 'embeddinggemma:latest',
     name: 'Gemma Embeddings Latest',
     provider: 'ollama',
-    dimensions: 768,
+    dimensions: 384,
     maxTokens: 2048,
     latency: 95,
     accuracy: 0.91,
     specialized: true,
     capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding'],
   },
-  // Fallback: nomic-embed-text (reliable backup)
+  // Fallback: nomic-embed-text (reliable backup, also 384-dim)
   'nomic-embed-text': {
     id: 'nomic-embed-text',
     name: 'Nomic Embed Text',
     provider: 'ollama',
-    dimensions: 768,
+    dimensions: 384,
     maxTokens: 2048,
     latency: 120,
     accuracy: 0.85,

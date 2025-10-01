@@ -2,55 +2,82 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  let { options: { value, selected = '', placeholder = 'Select an option', label = '', id = ''  }: { options: { value, selected = '', placeholder = 'Select an option', label = '', id = '' : unknown } = $props();
-   label: string }[] = [];
+  import { onMount, onDestroy } from 'svelte';
+  import { fly } from 'svelte/transition';
+
+  let {
+    align = $bindable('left' as 'left' | 'right'),
+    closeOnSelect = $bindable(true),
+    onopen,
+    onclose
+  }: {
+    align?: 'left' | 'right';
+    closeOnSelect?: boolean;
+    onopen?: () => void;
+    onclose?: () => void;
+  } = $props();
+
+  let open = $state(false);
+  let rootEl = $state<HTMLElement | null>(null);
+
+  function toggle() {
+    open = !open;
+    if (open) {
+      onopen?.();
+    } else {
+      onclose?.();
+    }
+  }
+
+  export function close() {
+    if (open) {
+      open = false;
+      onclose?.();
+    }
+  }
+  function onDocumentClick(e: MouseEvent) {
+    if (!rootEl) return;
+    if (!rootEl.contains(e.target as Node)) close();
+  }
+  function onKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') close();
+  }
+
+  // optional helper for menu items to close the menu after action
+  export function maybeCloseFromItem() {
+    if (closeOnSelect) close();
+  }
+
+  onMount(() => {
+    document.addEventListener('click', onDocumentClick);
+    document.addEventListener('keydown', onKeydown);
+  });
+  onDestroy(() => {
+    document.removeEventListener('click', onDocumentClick);
+    document.removeEventListener('keydown', onKeydown);
+  });
 </script>
 
-<div class="dropdown-container">
-  {#if label}
-    <label for="dropdown-{label.replace(/\s+/g, '-')}" class="dropdown-label">{label}</label>
+<div class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
+  <div class="dropdown-trigger" on:click|stopPropagation={toggle} aria-haspopup="true" aria-expanded={open}>
+    <slot name="trigger" {open}></slot>
+  </div>
+
+  {#if open}
+    <div
+      class="dropdown-menu"
+      on:click|stopPropagation
+      style="position: absolute; top: 100%; z-index: 60; {align === 'right' ? 'right:0' : 'left:0'}"
+      in:fly={{ y: -6, duration: 140 }}
+    >
+      <slot />
+    </div>
   {/if}
-  <select id={id || `dropdown-${label.replace(/\s+/g, '-')}`} bind:value={selected} class="dropdown-select">
-    {#if placeholder}
-      <option value="" disabled selected>{placeholder}</option>
-    {/if}
-    {#each options as option}
-      <option value={option.value}>{option.label}</option>
-    {/each}
-  </select>
 </div>
 
 <style>
-  .dropdown-container {
-    margin-bottom: 1rem;
-  }
-  .dropdown-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    color: #333;
-  }
-  .dropdown-select {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 0.375rem;
-    background-color: #fff;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #333;
-    appearance: none; /* Remove default browser styling */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23333%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E');
-    background-repeat: no-repeat;
-    background-position: right;
-0.75rem center;
-    background-size: 1.25rem;
-  }
-  .dropdown-select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  }
+  /* Minimal encapsulated styles; toolbar reuses classes (menu-trigger, dropdown-menu, dropdown-item) */
+  .dropdown-root { font-size: 0.95rem; }
+  .dropdown-trigger { display: inline-flex; align-items: center; }
+  .dropdown-menu { background: var(--dropdown-bg, #fff); border-radius: 0.5rem; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 0.35rem; border: 1px solid #e6edf3; min-width: 12rem; }
 </style>

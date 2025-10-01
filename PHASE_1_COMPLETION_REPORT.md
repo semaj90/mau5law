@@ -197,6 +197,32 @@ ls demo-html-exports/
 # main-demos dev-demos test-routes showcase-routes
 ```
 
+# Phase 1 — Archive & Organization — Summary
+
+Status: COMPLETED
+
+What was done
+- Archived 49 components into `_archive/` with preserved file paths and metadata.
+- Grouped archived items into:
+  - `_archive/svelte4/`
+  - `_archive/test-demo/`
+- Created `demo-html-exports/` for demo route static snapshots.
+
+Why this matters
+- Preserves rollback capability.
+- Reduces noise for modernization tasks.
+- Enables smaller, safer PRs for migration.
+
+How to audit
+- Count archived Svelte files:
+  - find _archive -name "*.svelte" | wc -l
+- Verify that no archived components were deleted (inspect git history):
+  - git log -- _archive | less
+
+Notes
+- Archive moves used `git mv` where possible to preserve history.
+- Keep this file with commit referencing the archival changes for auditability.
+
 ## Conclusion
 
 Phase 1 has successfully established the foundation for modern Svelte 5 migration:
