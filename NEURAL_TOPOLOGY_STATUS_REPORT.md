@@ -82,11 +82,11 @@ QUIC Testing:
 
 ### PostgreSQL + pgvector Integration
 ```sql
--- Vector Embeddings (1536 dimensions)
+-- Vector Embeddings (768 dimensions)
 CREATE TABLE vector_embeddings (
     id SERIAL PRIMARY KEY,
     document_id TEXT NOT NULL,
-    embedding vector(1536),
+    embedding vector(768),
     metadata JSONB,
     created_at TIMESTAMP DEFAULT NOW()
 );
@@ -137,7 +137,7 @@ CREATE TABLE predictive_asset_cache (
 ```javascript
 // vite.config.js - Updated for neural topology
 server: {
-  port: 5175,           // ✅ Neural topology port
+  port: 5173,           // ✅ Neural topology port
   strictPort: true,
   host: '0.0.0.0',      // ✅ Network accessibility
 }

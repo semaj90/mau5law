@@ -43,3 +43,4 @@ export const load: ServerLoad = async (event): Promise<LayoutData> => {
     isAuthenticated: !!localsTyped?.user,
   };
 }
+

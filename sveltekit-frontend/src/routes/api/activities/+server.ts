@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { caseActivities } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/index';
-import { eq, sql, desc, or as orExpr, like } from 'drizzle-orm';
+import db from '$lib/server/db/index';
+import { eq, sql, desc, or as orExpr } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const sortBy = url.searchParams.get('sortBy') || 'scheduledFor';
     const sortOrder = url.searchParams.get('sortOrder') || 'asc';
     // Build filters
-    const filters: any[] = [];
+    const filters: unknown[] = [];
     // Add case filter
     if (caseId) {
       filters.push(eq(caseActivities.caseId, caseId));
@@ -46,7 +46,10 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     // Add search filter
     if (search) {
       filters.push(
-        orExpr([like(caseActivities.title, `%${search}%`), like(caseActivities.description, `%${search}%`)]),
+        orExpr([
+          sql`${caseActivities.title} ILIKE ${`%${search}%`}`,
+          sql`${caseActivities.description} ILIKE ${`%${search}%`}`,
+        ])
       );
     }
     // Determine the column for sorting
@@ -91,11 +94,11 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         total: totalCount,
       },
     });
-  } catch (error: any) {
-    console.error('Error fetching activities:', error);
+  } catch (error: unknown) {
+    console.error('Error fetching activities:', error instanceof Error ? error : String(error));
     return json({ error: 'Failed to fetch activities' }, { status: 500 });
   }
-}
+};
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
@@ -124,11 +127,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       relatedCriminals: data.relatedCriminals || [],
       metadata: data.metadata || {},
       createdBy: locals.user.id,
-    }
+    };
     const [newActivity] = await db.insert(caseActivities).values(activityData).returning();
     return json(newActivity, { status: 201 });
-  } catch (error: any) {
-    console.error('Error creating activity:', error);
+  } catch (error: unknown) {
+    console.error('Error creating activity:', error instanceof Error ? error : String(error));
     return json({ error: 'Failed to create activity' }, { status: 500 });
   }
-}
+};

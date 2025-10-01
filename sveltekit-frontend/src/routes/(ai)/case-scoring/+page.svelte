@@ -5,7 +5,7 @@
 <script lang="ts">
   import CaseScoringDashboard from '$lib/components/ai/CaseScoringDashboard.svelte';
 </script>
-<svelte: head>
+<svelte:head>
   <title>Case Scoring Dashboard - Legal AI Platform</title>
   <meta name="description" content="AI-powered case analysis and priority scoring dashboard using Enhanced-Bits architecture" />
 </svelte:head>

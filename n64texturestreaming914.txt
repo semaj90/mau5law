@@ -97,7 +97,8 @@ Memory Management:
 - Progressive loading with quality adaptation
 
 Graphics Pipeline:
-- WebGL2 for modern browsers with compute shader support
+- WebGPU for future compute shader support
+ - WebGL2 for modern browsers with compute shader support
 - WebGL1 fallback for older browsers with polyfills
 - CPU canvas rendering for legacy/mobile devices
 - WASM filtering acceleration when available

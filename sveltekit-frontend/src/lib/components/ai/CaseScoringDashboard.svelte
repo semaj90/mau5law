@@ -71,8 +71,7 @@
           'Prepare comprehensive prior art documentation',
           'Consider filing for summary judgment on key claims'
         ],
-        riskLevel: 'high';
-      },
+        riskLevel: 'high' },
       {
         id: 'case-002',
         title: 'State v. Anderson - Criminal Defense',
@@ -93,7 +92,7 @@
           'Develop alternative narrative for financial transactions',
           'Negotiate plea agreement to avoid mandatory minimums'
         ],
-        riskLevel: 'high';
+        riskLevel: 'high'
       },
       {
         id: 'case-003',
@@ -115,7 +114,7 @@
           'Review and update beneficiary designations',
           'Implement regular trust review schedule'
         ],
-        riskLevel: 'medium';
+        riskLevel: 'medium'
       },
       {
         id: 'case-004',
@@ -137,7 +136,7 @@
           'Document all performance milestones',
           'Maintain open communication channels'
         ],
-        riskLevel: 'low';
+        riskLevel: 'low'
       },
       {
         id: 'case-005',
@@ -160,14 +159,14 @@
           'Explore structured settlement options',
           'Focus on procedural compliance evidence'
         ],
-        riskLevel: 'medium';
+        riskLevel: 'medium'
       }
     ];
     // Add some randomization to scores for demo effect
     return mockCases.map(c => ({
       ...c,
       score: Math.min(100, Math.max(0, c.score + Math.floor(Math.random() * 10 - 5))),
-      confidence: Math.min(100, Math.max(50, c.confidence + Math.floor(Math.random() * 10 - 5)));
+      confidence: Math.min(100, Math.max(50, c.confidence + Math.floor(Math.random() * 10 - 5)))
     }));
   }
   $effect(() => {
@@ -209,11 +208,12 @@
       console.error('Error loading case scores:', error);
       // Fall back to mock data on error
       cases = generateMockCases();
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
+      errorMessage = error instanceof Error ? error.message : 'An error occurred';
+    } finally {
       isLoading = false;
     }
   }
-  async function scoreCase(caseId: string, options: Partial<ScoringRequest> = ) {
+  async function scoreCase(caseId: string, options: Partial<ScoringRequest> = {}) {
     scoringInProgress = true;
     try {
       if (useMockData) {
@@ -227,11 +227,11 @@
           const newScore = Math.min(100, Math.max(0, oldCase.score + scoreChange));
           cases[caseIndex] = {
             ...oldCase,
-            score: newScore;
+            score: newScore,
             confidence: Math.min(100, oldCase.confidence + Math.floor(Math.random() * 5)),
             lastUpdated: new Date().toISOString(),
             riskLevel: newScore >= 70 ? 'high' : newScore >= 40 ? 'medium' : 'low',
-            priority: newScore >= 70 ? 'critical' : newScore >= 50 ? 'high' : newScore >= 30 ? 'medium' : 'low';
+            priority: newScore >= 70 ? 'critical' : newScore >= 50 ? 'high' : newScore >= 30 ? 'medium' : 'low',
           }
         }
         return { success: true, caseScore: cases[caseIndex] }
@@ -390,8 +390,8 @@
     {:else}
       {#each filteredCases as caseItem}
 <!-- TODO: Consider virtual scrolling for large lists (filteredCases) -->
-        <div class="case-score-nier-bits-card">
-          <div class="nier-bits-yorha-panel-header">
+        <div class="case-score-card">
+          <div class="card-header">
             <div class="case-header">
               <h3 class="case-title">{caseItem.title}</h3>
               <div class="case-badges">
@@ -483,7 +483,7 @@
           <h3>Scoring Factors</h3>
           <div class="factors-grid">
             {#each selectedCase.factors as factor}
-              <div class="factor-nier-bits-card">
+              <div class="factor-card">
                 <h4>{factor.category}</h4>
                 <div class="factor-metrics">
                   <div class="factor-bar">
@@ -718,12 +718,11 @@
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg), }
+    to { transform: rotate(360deg); }
   }
   /* Modal Styles */
   .modal-overlay {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;
@@ -838,7 +837,7 @@ d;
   .factor-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-    transition: width 0.3;
+    transition: width 0.3s;
   }
   .factor-percentage {
     font-size: 0.75rem;

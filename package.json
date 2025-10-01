@@ -40,7 +40,10 @@
     "ws:health": "curl https://localhost:443/health -k",
     "logs:hmr": "powershell -NoProfile -Command \"Get-Content -Path './logs/hmr-errors.log' -Wait -Tail 20\"",
     "logs:analyze": "powershell -NoProfile -File ./scripts/analyze-ws-errors.ps1",
-    "clear:logs": "powershell -NoProfile -Command \"Remove-Item ./logs/*.log -Force -ErrorAction SilentlyContinue\""
+    "clear:logs": "powershell -NoProfile -Command \"Remove-Item ./logs/*.log -Force -ErrorAction SilentlyContinue\"",
+    "find:models": "powershell -NoProfile -File ./scripts/find-unsloth-models.ps1",
+    "build:tensorrt": "python scripts/build-tensorrt-engine.py --model-path",
+    "test:tensorrt": "python scripts/test-tensorrt-inference.py ./tensorrt_engine/engine"
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.1.0",

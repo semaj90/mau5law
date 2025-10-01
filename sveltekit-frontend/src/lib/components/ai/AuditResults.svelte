@@ -23,7 +23,7 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
       const data = await res.json();
       auditResults = (data as { results?: unknown }).results || [];
     } catch (e: unknown) {
-      error = e.message || 'Unknown error';
+      error = (e instanceof Error ? e.message : String(e)) || 'Unknown error';
     } finally {
       loading = false;
     }

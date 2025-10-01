@@ -8,7 +8,10 @@
       "Read(//c/Users/james/Desktop/deeds-web/deeds-web-app/**)",
       "Bash(find:*)",
       "Bash(git lfs:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(wsl bash -c \"echo ''123456'' | sudo -S whoami && source ~/trt_env_310/bin/activate && ~/trt_env_310/bin/python3 ~/build_gemma3_int4_direct.py\")",
+      "Bash(wsl bash -c:*)",
+      "Bash(wsl:*)"
     ],
     "deny": [],
     "ask": []

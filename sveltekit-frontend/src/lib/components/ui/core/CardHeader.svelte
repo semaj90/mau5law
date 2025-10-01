@@ -1,12 +1,16 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+  import type { Snippet } from 'svelte';
+
   interface Props {
     class?: string;
+    children?: Snippet;
   }
+
   let {
     class: className = '',
-    childre;
-  }: Props & { children?: unknown } = $props();
+    children
+  }: Props = $props();
+
   let classes = $derived(className);
 </script>
 

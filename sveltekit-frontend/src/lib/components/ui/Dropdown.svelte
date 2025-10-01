@@ -1,20 +1,22 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { fly } from 'svelte/transition';
+  import type { Snippet } from 'svelte';
 
   let {
     align = $bindable('left' as 'left' | 'right'),
     closeOnSelect = $bindable(true),
     onopen,
-    onclose
+    onclose,
+    trigger,
+    children
   }: {
     align?: 'left' | 'right';
     closeOnSelect?: boolean;
     onopen?: () => void;
     onclose?: () => void;
+    trigger: Snippet<[{ open: boolean }]>;
+    children: Snippet;
   } = $props();
 
   let open = $state(false);
@@ -59,18 +61,28 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 <div class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
-  <div class="dropdown-trigger" on:click|stopPropagation={toggle} aria-haspopup="true" aria-expanded={open}>
-    <slot name="trigger" {open}></slot>
-  </div>
+  <button
+    type="button"
+    class="dropdown-trigger"
+    onclick={(e) => { e.stopPropagation(); toggle(); }}
+    onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } }}
+    aria-haspopup="true"
+    aria-expanded={open}
+  >
+    {@render trigger({ open })}
+  </button>
 
   {#if open}
     <div
+      role="menu"
+      tabindex="-1"
       class="dropdown-menu"
-      on:click|stopPropagation
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => { if (e.key === 'Escape') close(); }}
       style="position: absolute; top: 100%; z-index: 60; {align === 'right' ? 'right:0' : 'left:0'}"
-      in:fly={{ y: -6, duration: 140 }}
+      transition:fly={{ y: -6, duration: 140 }}
     >
-      <slot />
+      {@render children()}
     </div>
   {/if}
 </div>
