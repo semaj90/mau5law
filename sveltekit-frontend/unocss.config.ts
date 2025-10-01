@@ -1,24 +1,10 @@
-import {
-  defineConfig,
-  presetAttributify,
-  presetUno,
-  presetWebFonts,
-  transformerDirectives,
-  transformerVariantGroup,
-} from 'unocss';
+import { defineConfig, presetAttributify, presetUno, transformerDirectives, transformerVariantGroup } from 'unocss';
 
 export default defineConfig({
   presets: [
     presetUno(),
     presetAttributify(),
-    presetWebFonts({
-      provider: 'google',
-      fonts: {
-        sans: 'Roboto',
-        serif: 'Merriweather',
-        mono: ['JetBrains Mono', 'monospace'], // Use Google Font for mono
-      },
-    }),
+    // presetWebFonts intentionally removed to avoid remote Google font fetch during dev
   ],
   transformers: [transformerDirectives(), transformerVariantGroup()],
   // Legal AI Platform theme colors
@@ -39,5 +25,3 @@ export default defineConfig({
     },
   },
 });
-
-// Additional presets can be added as needed, such as presetTypography, presetWind, etc.

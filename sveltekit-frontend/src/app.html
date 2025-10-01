@@ -103,6 +103,39 @@
       rel="stylesheet"
     />
 
+    <!-- Preload local fonts (place .woff2 files in static/fonts/) -->
+    <link rel="preload" href="/fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Merriweather-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Register local fonts -->
+    <style>
+      @font-face {
+        font-family: 'Roboto';
+        src: url('/fonts/Roboto-Regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Merriweather';
+        src: url('/fonts/Merriweather-Regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'JetBrains Mono';
+        src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      :root { --app-sans: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; --app-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono"; }
+      html, body { font-family: var(--app-sans); margin:0; height:100%; background: #0a0a0a; color: #e0e0e0; }
+      code, pre { font-family: var(--app-mono); }
+    </style>
+
     <!-- YoRHa Interface CSS Variables & Styles -->
     <style>
       :root {

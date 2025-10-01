@@ -180,6 +180,7 @@
       loadCaseScores();
     }
   });
+
   async function loadCaseScores() {
     isLoading = true;
     try {
@@ -195,11 +196,11 @@
             'Content-Type': 'application/json'
           }
         });
-        if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-          const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        if ((response as { ok?: boolean }).ok) {
+          const data = await response.json();
           cases = (data as { cases?: any }).cases || [];
         } else {
-          console.error(statusText);
+          console.error(response.statusText);
           // Fall back to mock data on error
           cases = generateMockCases();
         }
@@ -213,6 +214,7 @@
       isLoading = false;
     }
   }
+
   async function scoreCase(caseId: string, options: Partial<ScoringRequest> = {}) {
     scoringInProgress = true;
     try {
@@ -232,43 +234,45 @@
             lastUpdated: new Date().toISOString(),
             riskLevel: newScore >= 70 ? 'high' : newScore >= 40 ? 'medium' : 'low',
             priority: newScore >= 70 ? 'critical' : newScore >= 50 ? 'high' : newScore >= 30 ? 'medium' : 'low',
-          }
+          };
         }
-        return { success: true, caseScore: cases[caseIndex] }
+        return { success: true, caseScore: cases[caseIndex] };
       } else {
         // Real API call
         const request: ScoringRequest = {
           caseId,
           scoringModel: 'comprehensive',
           ...options
-        }
+        };
         const response = await fetch('/api/ai/case-scoring', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(request);
+          body: JSON.stringify(request),
         });
-        if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-          const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        if ((response as { ok?: boolean }).ok) {
+          const result = await response.json();
           const caseIndex = cases.findIndex(c => c.id === caseId);
           if (caseIndex !== -1) {
-            cases[caseIndex] = { ...cases[caseIndex], ...result.caseScore }
+            cases[caseIndex] = { ...cases[caseIndex], ...result.caseScore };
           } else {
             cases = [...cases, (result as { caseScore?: any }).caseScore];
           }
           return result;
         } else {
-          throw new Error(`Scoring failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+          throw new Error(`Scoring failed: ${(response as Response).statusText}`);
         }
       }
     } catch (error) {
       console.error('Error scoring case:', error);
-      throw error;
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
+      errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      return { success: false, error: String(error) };
+    } finally {
       scoringInProgress = false;
     }
   }
+
   function getScoreColor(score: number): string {
     if (score >= 85) return 'text-red-600';
     if (score >= 70) return 'text-orange-600';
@@ -284,33 +288,27 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
+  // Derived filtered list (Svelte 5 $derived returns a callable)
   let filteredCases = $derived(() => {
-    let filtered = case;
-    // Apply score filter
+    let filtered = cases;
+    // Apply score filter using named ranges
     if (scoreFilter !== 'all') {
-      filtered = filtered.filter(case_ => {
-        switch (scoreFilter) {
-          case 'high': return case_.score >= 70;
-          case 'medium': return case_.score >= 40 && case_.score < 70;
-          case 'low': return case_.score < 40;
-          default: return true;
-        }
-      });
+      if (scoreFilter === 'high') filtered = filtered.filter(c => c.score >= 70);
+      else if (scoreFilter === 'medium') filtered = filtered.filter(c => c.score >= 40 && c.score < 70);
+      else if (scoreFilter === 'low') filtered = filtered.filter(c => c.score < 40);
     }
-    // Apply search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(case_ =>
-        case_.title.toLowerCase().includes(query) ||
-        case_.description.toLowerCase().includes(query)
-      );
+    // Apply text search (use description)
+    if (searchQuery && searchQuery.trim().length > 0) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(c => (c.title + ' ' + (c.description || '')).toLowerCase().includes(q));
     }
     // Apply sorting
+    filtered = [...filtered]; // copy before sort
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'score': return b.score - a.scor;
+        case 'score': return b.score - a.score;
         case 'priority': {
-          const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 }
+          const priorityOrder: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         }
         case 'date': return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
@@ -319,6 +317,7 @@
     });
     return filtered;
   });
+
   function openScoreDetails(caseItem: CaseScore) {
     selectedCase = caseItem;
     showScoreDetails = true;
@@ -335,10 +334,10 @@
     </div>
     <div class="header-actions">
       <label class="demo-toggle">
-        <input type="checkbox" bind:checked={useMockData} onchange={(_event: Event) => loadCaseScores} />
+        <input type="checkbox" bind:checked={useMockData} onchange={() => loadCaseScores()} />
         <span>Demo Mode</span>
       </label>
-      <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => loadCaseScores} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
+      <button aria-label="Action button" type="button" onclick={() => loadCaseScores()} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
         {isLoading ? 'Loading...' : 'Refresh'}
       </button>
     </div>
@@ -382,14 +381,13 @@
         <div class="loading-spinner"></div>
         <p>Loading case scores...</p>
       </div>
-    {:else if filteredCases.length === 0}
+    {:else if filteredCases().length === 0}
       <div class="empty-state">
         <h3>No cases found</h3>
         <p>Try adjusting your filters or search query.</p>
       </div>
     {:else}
-      {#each filteredCases as caseItem}
-<!-- TODO: Consider virtual scrolling for large lists (filteredCases) -->
+      {#each filteredCases() as caseItem (caseItem.id)}
         <div class="case-score-card">
           <div class="card-header">
             <div class="case-header">
@@ -434,21 +432,21 @@
               </ul>
             </div>
           </div>
-            <div class="nier-bits-yorha-panel-content">
-              <div class="nier-bits-card-actions">
-                <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => ) => openScoreDetails(caseItem} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
-                  View Details
-                </button>
-                <button aria-label="Action button"
-                  type="button"
-                  onclick={(_event: MouseEvent) => ) => scoreCase(caseItem.id}
-                  disabled={scoringInProgress}
-                  class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
-                >
-                  {scoringInProgress ? 'Rescoring...' : 'Rescore'}
-                </button>
-              </div>
-            </div>
+          <div class="nier-bits-yorha-panel-content">
+            <div class="nier-bits-card-actions">
+              <button aria-label="Action button" type="button" onclick={() => openScoreDetails(caseItem)} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
+                 View Details
+               </button>
+              <button aria-label="Action button"
+                type="button"
+                onclick={() => scoreCase(caseItem.id)}
+                 disabled={scoringInProgress}
+                 class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
+               >
+                 {scoringInProgress ? 'Rescoring...' : 'Rescore'}
+               </button>
+             </div>
+          </div>
         </div>
       {/each}
     {/if}
@@ -456,12 +454,20 @@
 </div>
 <!-- Score Details Modal -->
 {#if showScoreDetails && selectedCase}
-  <div class="modal-overlay" role="dialog" aria-modal="true" onclick={(_event: MouseEvent) => ) => showScoreDetails = false} onkeydown={(e) => e.key === 'Escape' && (showScoreDetails = false)}>
-    <div class="modal-content score-details-dialog" role="document" onclick={(_event: MouseEvent) => e) => e.stopPropagation(}>
+  <div class="modal-overlay" role="dialog" aria-modal="true" tabindex="0">
+    <!-- Visually hidden close button for keyboard users -->
+    <button
+      type="button"
+      aria-label="Close dialog"
+      class="visually-hidden"
+      onclick={() => (showScoreDetails = false)}
+      onkeydown={(e) => { if (e.key === 'Escape') showScoreDetails = false; }}
+    >Close</button>
+    <div class="modal-content score-details-dialog" role="document" onclick={(e) => e.stopPropagation()}>
       <div class="modal-header">
         <h2 class="modal-title">Case Score Analysis: {selectedCase.title}</h2>
         <p class="modal-description">Detailed scoring breakdown and recommendations</p>
-        <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => ) => showScoreDetails = false} class="modal-close" aria-label="Close">
+        <button type="button" aria-label="Close" onclick={() => (showScoreDetails = false)} class="modal-close">
           ×
         </button>
       </div>
@@ -508,10 +514,10 @@
         </section>
       </div>
       <div class="dialog-actions">
-        <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => ) => showScoreDetails = false} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
+        <button aria-label="Action button" type="button" onclick={() => (showScoreDetails = false)} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
           Close
         </button>
-        <button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => ) => selectedCase && scoreCase(selectedCase.id} class="px-3 py-2 rounded bg-blue-600 text-white">
+        <button aria-label="Action button" type="button" onclick={() => selectedCase && scoreCase(selectedCase.id)} class="px-3 py-2 rounded bg-blue-600 text-white">
           Rescore Case
         </button>
       </div>
@@ -527,7 +533,7 @@
   }
   .dashboard-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -612,14 +618,14 @@
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: box-shadow 0.2;
+    transition: box-shadow 0.2s;
   }
   .case-score-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .case-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
   }
@@ -670,10 +676,10 @@
     font-weight: 600;
     font-size: 0.875rem;
   }
-  .risk-low { color: #059669, }
-  .risk-medium { color: #d97706, }
-  .risk-high { color: #dc2626, }
-  .risk-critical { color: #991b1b, }
+  .risk-low { color: #059669; }
+  .risk-medium { color: #d97706; }
+  .risk-high { color: #dc2626; }
+  .risk-critical { color: #991b1b; }
   .top-factors h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
@@ -686,7 +692,7 @@
   }
   .factor-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 0.25rem 0;
     font-size: 0.75rem;
   }
@@ -875,6 +881,17 @@
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid #e2e8f0;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
   @media (max-width: 768px) {
     .dashboard-header {

@@ -1,170 +1,27 @@
 // simd-json-wrapper.ts - single, minimal development shim
 // Provides a safe JS fallback while the real WebAssembly module is built.
 
-export interface LegalDocumentJSON {
-  caseId: string;
-  documentType: 'contract' | 'evidence' | 'brief' | 'citation';
-  title: string;
-  content: string;
-  metadata?: Record<string, unknown>;
-  embeddings?: number[];
-}
-
-export interface SIMDParsingMetrics {
-  parseTime: number;
-  validationTime: number;
-  compressionTime: number;
-  compressionRatio: number;
-  throughput: number;
-}
-
-class ShimSIMD {
-  private metrics: SIMDParsingMetrics = { parseTime: 0, validationTime: 0, compressionTime: 0, compressionRatio: 1, throughput: 0 };
-
-  async initialize(): Promise<void> { /* noop */ }
-
-  async parseDocumentJSON(jsonString: string): Promise<LegalDocumentJSON> {
-    const start = Date.now();
-    const parsed = JSON.parse(jsonString) as LegalDocumentJSON;
-    this.metrics.parseTime = Date.now() - start;
-    return parsed;
-  }
-
-  async batchParseDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
-    const start = Date.now();
-    const results = jsonStrings.map((s) => JSON.parse(s) as LegalDocumentJSON);
-    const total = Date.now() - start;
-    this.metrics.throughput = results.length / Math.max(total / 1000, 0.001);
-    return results;
-  }
-
-  async validateDocument(jsonString: string): Promise<boolean> {
-    try { const doc = JSON.parse(jsonString); return !!(doc && (doc as any).caseId); } catch { return false; }
-  }
-
-  getMetrics(): SIMDParsingMetrics { return { ...this.metrics }; }
-
-  dispose(): void { /* noop */ }
-}
-
-export const simdJSONAccelerator = new ShimSIMD();
-export let isWASMReady = false;
-
-export async function initWASM(timeoutMs = 3000): Promise<boolean> { isWASMReady = false; return isWASMReady; }
-export async function parseLegalDocumentWithSIMD(jsonString: string): Promise<LegalDocumentJSON> { return simdJSONAccelerator.parseDocumentJSON(jsonString); }
-export async function batchParseLegalDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> { return simdJSONAccelerator.batchParseDocuments(jsonStrings); }
-export async function validateLegalDocumentWithSIMD(jsonString: string): Promise<boolean> { return simdJSONAccelerator.validateDocument(jsonString); }
-export function getSIMDMetrics(): SIMDParsingMetrics { return simdJSONAccelerator.getMetrics(); }
-// Lightweight shim for SIMD JSON wrapper used during development.
-// Provides the same API surface as the planned WASM module but
-// uses pure JS fallbacks (JSON.parse) so the frontend can run
-// while the real WebAssembly module is developed and built.
-
-export interface LegalDocumentJSON {
-  caseId: string;
-  documentType: 'contract' | 'evidence' | 'brief' | 'citation';
-  title: string;
-  content: string;
-  metadata: {
-    riskLevel?: 'low' | 'medium' | 'high' | 'critical';
-    confidence?: number;
-    practiceArea?: string[];
-    jurisdiction?: string;
-    dateCreated?: string;
-    parties?: any[];
-  };
-  embeddings?: number[];
-}
-
-export interface SIMDParsingMetrics {
-  parseTime: number;
-  validationTime: number;
-  compressionTime: number;
-  compressionRatio: number;
-  throughput: number;
-}
-
-class ShimSIMD {
-  private metrics: SIMDParsingMetrics = {
-    parseTime: 0,
-    validationTime: 0,
-    compressionTime: 0,
-    compressionRatio: 1,
-    throughput: 0
-  };
-
-  async initialize(): Promise<void> {
-    // No-op for shim
-    return;
-  }
-
-  async parseDocumentJSON(jsonString: string): Promise<LegalDocumentJSON> {
-    const start = Date.now();
-    const parsed = JSON.parse(jsonString) as LegalDocumentJSON;
-    this.metrics.parseTime = Date.now() - start;
-    return parsed;
-  }
-
-  async batchParseDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
-    const start = Date.now();
-    const results = jsonStrings.map((s) => JSON.parse(s) as LegalDocumentJSON);
-    const total = Date.now() - start;
-    this.metrics.throughput = results.length / Math.max(total / 1000, 0.001);
-    return results;
-  }
-
-  async validateDocument(jsonString: string): Promise<boolean> {
-    try {
-      const doc = JSON.parse(jsonString);
-      return !!(doc && (doc as any).caseId && (doc as any).documentType);
-    } catch {
-      return false;
-    }
-  }
-
-  getMetrics(): SIMDParsingMetrics {
-    return { ...this.metrics };
-  }
-
-  dispose(): void {
-    // noop
-  }
-}
-
-export const simdJSONAccelerator = new ShimSIMD();
-
-// Indicates whether a true WASM module was successfully loaded.
-export let isWASMReady = false;
-
-// Init function placeholder - when real wasm is available, this should
-// attempt to instantiate the module and wire exports to the shim.
-export async function initWASM(timeoutMs = 3000): Promise<boolean> {
-  // Keep the shim behavior for now; caller can check isWASMReady.
-  isWASMReady = false;
-  return isWASMReady;
-}
-
-export async function parseLegalDocumentWithSIMD(jsonString: string): Promise<LegalDocumentJSON> {
-  return simdJSONAccelerator.parseDocumentJSON(jsonString);
-}
-
-export async function batchParseLegalDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
-  return simdJSONAccelerator.batchParseDocuments(jsonStrings);
-}
-
-export async function validateLegalDocumentWithSIMD(jsonString: string): Promise<boolean> {
-  return simdJSONAccelerator.validateDocument(jsonString);
-}
-
-export function getSIMDMetrics(): SIMDParsingMetrics {
-  return simdJSONAccelerator.getMetrics();
-}
-
-// @ts-nocheck - Complex experimental service with external dependencies
 /**
  * TypeScript wrapper for SIMD-accelerated JSON parser
  * Integrates with legal AI platform for 3x faster document processing
  */
+
+export type Party = {
+  name: string;
+  role?: string;
+  contact?: string;
+  metadata?: {
+    riskLevel: 'low' | 'medium' | 'high' | 'critical';
+    confidence: number;
+    practiceArea: string[];
+    jurisdiction: string;
+    dateCreated: string;
+    parties?: Party[];
+  };
+  embeddings?: number[];
+};
+
+// Add missing LegalDocumentJSON so signatures compile
 export interface LegalDocumentJSON {
   caseId: string;
   documentType: 'contract' | 'evidence' | 'brief' | 'citation';
@@ -176,16 +33,19 @@ export interface LegalDocumentJSON {
     practiceArea: string[];
     jurisdiction: string;
     dateCreated: string;
-    parties: Array<any>;
+    parties: Party[];
+  };
   embeddings?: number[];
 }
-export interface SIMDParsingMetrics {
+
+export type SIMDParsingMetrics = {
   parseTime: number;
   validationTime: number;
   compressionTime: number;
   compressionRatio: number;
   throughput: number; // documents per second
-}
+};
+
 export class SIMDJSONAccelerator {
   private wasmModule: WebAssembly.Module | null = null;
   private wasmInstance: WebAssembly.Instance | null = null;
@@ -203,34 +63,35 @@ export class SIMDJSONAccelerator {
     validationTime: 0,
     compressionTime: 0,
     compressionRatio: 0,
-    throughput: 0
-  }
+    throughput: 0,
+  };
   async initialize(): Promise<void> {
     try {
       // Create memory instance (1MB initial, 16MB max)
       this.memory = new WebAssembly.Memory({
         initial: 16, // 16 * 64KB = 1MB;
-        maximum: 256 // 256 * 64KB = 16MB
+        maximum: 256, // 256 * 64KB = 16MB
       });
       // Set up imports for WebAssembly module
       const imports = {
         js: {
           memory: this.memory,
           log: (_value: number) => {
-            console.log(`🔍 WASM Log: ${value}`);
-          }
-        }
-      }
+            console.log(`🔍 WASM Log: ${_value}`);
+          },
+        },
+      };
       // Compile and instantiate WebAssembly module
       const wasmCode = await this.loadWasmCode();
       this.wasmModule = await WebAssembly.compile(wasmCode);
       this.wasmInstance = await WebAssembly.instantiate(this.wasmModule, imports);
-      // Get exported functions
-      const exports = this.wasmInstance.exports as any;
-      this.parseJSON = exports.parseJSON;
-      this.validateLegalDocument = exports.validateLegalDocument;
-      this.extractMetadata = exports.extractMetadata;
-      this.compressEmbeddings = exports.compressEmbeddings;
+      // Get exported functions (typed)
+      const wasmExports = this.wasmInstance.exports as unknown as WasmExports;
+      this.parseJSON = wasmExports.parseJSON ?? null;
+      this.validateLegalDocument = wasmExports.validateLegalDocument ?? null;
+      this.extractMetadata = wasmExports.extractMetadata ?? null;
+      this.compressEmbeddings = wasmExports.compressEmbeddings ?? null;
+
       // Initialize memory offset tracker
       const memoryView = new Uint32Array(this.memory.buffer);
       memoryView[0] = this.memoryOffset;
@@ -244,15 +105,20 @@ export class SIMDJSONAccelerator {
     // For now, we'll use a pre-compiled version
     // In production, this would load the compiled .wasm file
     return new Uint8Array([
-      0x00, 0x61, 0x73, 0x6d, // WASM magic number
-      0x01, 0x00, 0x00, 0x00, // Version
+      0x00,
+      0x61,
+      0x73,
+      0x6d, // WASM magic number
+      0x01,
+      0x00,
+      0x00,
+      0x00, // Version
       // Simplified WASM binary - in production, compile from .wat file
     ]);
   }
   /**
    * Parse JSON using SIMD acceleration
-   */;
-  async parseDocumentJSON(jsonString: string): Promise<LegalDocumentJSON> {
+   */ async parseDocumentJSON(jsonString: string): Promise<LegalDocumentJSON> {
     const startTime = performance.now();
     if (!this.parseJSON || !this.memory) {
       throw new Error('SIMD JSON Accelerator not initialized');
@@ -277,8 +143,7 @@ export class SIMDJSONAccelerator {
   }
   /**
    * Batch parse multiple documents with SIMD acceleration
-   */;
-  async batchParseDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
+   */ async batchParseDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
     const startTime = performance.now();
     const results: LegalDocumentJSON[] = [];
     for (const jsonString of jsonStrings) {
@@ -298,8 +163,7 @@ export class SIMDJSONAccelerator {
   }
   /**
    * Validate legal document structure using SIMD
-   */;
-  async validateDocument(jsonString: string): Promise<boolean> {
+   */ async validateDocument(jsonString: string): Promise<boolean> {
     const startTime = performance.now();
     if (!this.validateLegalDocument || !this.memory) {
       console.warn('⚠️ SIMD validation not available, falling back to JS');
@@ -322,15 +186,16 @@ export class SIMDJSONAccelerator {
   }
   /**
    * Compress embeddings using SIMD operations
-   */;
-  async compressDocumentEmbeddings(embeddings: number[]): Promise<any> {
+   */ async compressDocumentEmbeddings(
+    embeddings: number[]
+  ): Promise<{ compressed: Uint8Array; compressionRatio: number }> {
     const startTime = performance.now();
     if (!this.compressEmbeddings || !this.memory) {
       console.warn('⚠️ SIMD compression not available');
       return {
         compressed: new Uint8Array(embeddings),
-        compressionRatio: 1.0
-      }
+        compressionRatio: 1.0,
+      };
     }
     try {
       // Write embeddings to memory
@@ -343,23 +208,22 @@ export class SIMDJSONAccelerator {
       const compressedLength = embeddings.length / 4; // 4x compression
       const compressedView = new Uint8Array(this.memory.buffer, compressedOffset, compressedLength);
       const compressed = new Uint8Array(compressedView);
-      const compressionRatio = embeddings.length * 4 / compressed.length;
+      const compressionRatio = (embeddings.length * 4) / compressed.length;
       this.metrics.compressionTime = performance.now() - startTime;
       this.metrics.compressionRatio = compressionRatio;
       console.log(`🗜️ Compressed ${embeddings.length} embeddings with ${compressionRatio.toFixed(2)}x ratio`);
-      return { compressed, compressionRatio }
+      return { compressed, compressionRatio };
     } catch (error) {
       console.error('❌ SIMD compression failed:', error);
       return {
         compressed: new Uint8Array(embeddings),
-        compressionRatio: 1.0
-      }
+        compressionRatio: 1.0,
+      };
     }
   }
   /**
    * Extract metadata using SIMD pattern matching
-   */;
-  async extractDocumentMetadata(jsonString: string): Promise<LegalDocumentJSON['metadata']> {
+   */ async extractDocumentMetadata(jsonString: string): Promise<LegalDocumentJSON['metadata']> {
     if (!this.extractMetadata || !this.memory) {
       return this.extractMetadataJS(jsonString);
     }
@@ -380,21 +244,19 @@ export class SIMDJSONAccelerator {
   }
   /**
    * Get performance metrics
-   */;
-  getMetrics(): SIMDParsingMetrics {
-    return { ...this.metrics }
+   */ getMetrics(): SIMDParsingMetrics {
+    return { ...this.metrics };
   }
   /**
    * Reset metrics
-   */;
-  resetMetrics(): void {
+   */ resetMetrics(): void {
     this.metrics = {
       parseTime: 0,
       validationTime: 0,
       compressionTime: 0,
       compressionRatio: 0,
-      throughput: 0
-    }
+      throughput: 0,
+    };
   }
   // Private helper methods
   private allocateMemory(size: number): number {
@@ -404,25 +266,70 @@ export class SIMDJSONAccelerator {
     memoryView[0] = currentOffset + size;
     return currentOffset;
   }
-  private readParsedJSON(offset: number): LegalDocumentJSON {
-    // Simplified implementation - would read structured data from memory
-    // For now, return a mock structure
+  private readParsedJSON(_offset: number): LegalDocumentJSON {
+    // Robust reader for a length-prefixed JSON blob stored in WASM memory:
+    // [u32 length][bytes...]
+    try {
+      if (!this.memory || _offset == null || _offset < 0) throw new Error('No memory or invalid offset');
+      const buffer = this.memory.buffer;
+      if (_offset + 4 > buffer.byteLength) throw new Error('Offset out of bounds for length header');
+
+      const dv = new DataView(buffer, _offset, 4);
+      const jsonLength = dv.getUint32(0, true); // little-endian length prefix
+      if (jsonLength === 0) throw new Error('Zero-length JSON payload');
+
+      const jsonStart = _offset + 4;
+      if (jsonStart + jsonLength > buffer.byteLength) throw new Error('JSON data out of bounds');
+
+      const bytes = new Uint8Array(buffer, jsonStart, jsonLength);
+      const jsonString = this.textDecoder.decode(bytes);
+      const parsed = JSON.parse(jsonString) as LegalDocumentJSON;
+
+      // Basic structural validation
+      if (parsed && typeof parsed.caseId === 'string' && parsed.metadata && Array.isArray(parsed.metadata.parties)) {
+        return parsed;
+      }
+      console.warn('⚠️ readParsedJSON: parsed object missing required fields, falling back to mock');
+    } catch (err) {
+      console.warn('⚠️ readParsedJSON: failed to read structured data from WASM memory:', err);
+    }
+
+    // Fallbacks: server (SSR) and client-friendly mocks
+    const isServer = typeof window === 'undefined';
+    if (isServer) {
+      return {
+        caseId: 'ssr_mock_case_001',
+        documentType: 'evidence',
+        title: 'SSR Mock Legal Document',
+        content: '',
+        metadata: {
+          riskLevel: 'low',
+          confidence: 0,
+          practiceArea: [],
+          jurisdiction: '',
+          dateCreated: new Date().toISOString(),
+          parties: [],
+        },
+      };
+    }
+
+    // client-side mock
     return {
-      caseId: 'case_001',
+      caseId: 'client_mock_case_001',
       documentType: 'contract',
-      title: 'Sample Legal Document',
-      content: 'Document content...',
+      title: 'Client Mock Legal Document',
+      content: 'This is a client-side fallback used when the WASM parser is unavailable.',
       metadata: {
         riskLevel: 'medium',
-        confidence: 0.85,
-        practiceArea: ['corporate'],
-        jurisdiction: 'federal',
-        dateCreated: '2024-01-01',
-        parties: []
-      }
-    }
+        confidence: 0.5,
+        practiceArea: ['general'],
+        jurisdiction: 'unknown',
+        dateCreated: new Date().toISOString(),
+        parties: [],
+      },
+    };
   }
-  private readMetadataFromMemory(offset: number): LegalDocumentJSON['metadata'] {
+  private readMetadataFromMemory(_offset: number): LegalDocumentJSON['metadata'] {
     // Simplified implementation
     return {
       riskLevel: 'medium',
@@ -430,8 +337,8 @@ export class SIMDJSONAccelerator {
       practiceArea: ['corporate'],
       jurisdiction: 'federal',
       dateCreated: '2024-01-01',
-      parties: []
-    }
+      parties: [],
+    };
   }
   private validateDocumentJS(jsonString: string): boolean {
     try {
@@ -444,7 +351,7 @@ export class SIMDJSONAccelerator {
   private extractMetadataJS(jsonString: string): LegalDocumentJSON['metadata'] {
     try {
       const doc = JSON.parse(jsonString);
-      return doc.metadata || {}
+      return doc.metadata || {};
     } catch {
       return {
         riskLevel: 'low',
@@ -452,14 +359,13 @@ export class SIMDJSONAccelerator {
         practiceArea: [],
         jurisdiction: '',
         dateCreated: '',
-        parties: []
-      }
+        parties: [],
+      };
     }
   }
   /**
    * Dispose resources
-   */;
-  dispose(): void {
+   */ dispose(): void {
     this.wasmModule = null;
     this.wasmInstance = null;
     this.memory = null;
@@ -470,30 +376,101 @@ export class SIMDJSONAccelerator {
     console.log('🗑️ SIMD JSON Accelerator disposed');
   }
 }
+
+// Add a small typed interface for wasm exports and the readiness flag
+export interface WasmExports {
+  parseJSON?: (offset: number, length: number) => number;
+  validateLegalDocument?: (offset: number) => number;
+  extractMetadata?: (offset: number) => number;
+  compressEmbeddings?: (offset: number, count: number) => number;
+  // add other exports as needed
+}
+
+export let isWASMReady = false;
+
 /**
  * Singleton instance for global use
  */
 export const simdJSONAccelerator = new SIMDJSONAccelerator();
+
 /**
  * Initialize SIMD JSON accelerator on module load
- */;
-if (typeof window !== 'undefined') {
-  simdJSONAccelerator.initialize().catch(error => {
-    console.warn('⚠️ Failed to initialize SIMD JSON accelerator, falling back to JavaScript:', error);
-  });
+ */ if (typeof window !== 'undefined') {
+  simdJSONAccelerator
+    .initialize()
+    .then(() => {
+      isWASMReady = true;
+    })
+    .catch(error => {
+      console.warn('⚠️ Failed to initialize SIMD JSON accelerator, falling back to JavaScript:', error);
+      isWASMReady = false;
+    });
 }
-/**
- * Utility functions for integration
- */
-export async function parseLegalDocumentWithSIMD(jsonString: string): Promise<LegalDocumentJSON> {
-  return await simdJSONAccelerator.parseDocumentJSON(jsonString);
-}
-export async function batchParseLegalDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
-  return await simdJSONAccelerator.batchParseDocuments(jsonStrings);
-}
-export async function validateLegalDocumentWithSIMD(jsonString: string): Promise<boolean> {
-  return await simdJSONAccelerator.validateDocument(jsonString);
-}
-export async function compressEmbeddingsWithSIMD(embeddings: number[]): Promise<any> {
-  return await simdJSONAccelerator.compressDocumentEmbeddings(embeddings);
+
+ /**
+  * Init wrapper to allow manual initialization with timeout
+  */
+ export async function initWASM(timeoutMs = 3000): Promise<boolean> {
+   try {
+     const initPromise = simdJSONAccelerator.initialize();
+     const timeoutPromise = new Promise((_, reject) =>
+       setTimeout(() => reject(new Error('WASM init timeout')), timeoutMs)
+     );
+     await Promise.race([initPromise, timeoutPromise]);
+     isWASMReady = true;
+     return true;
+   } catch (err) {
+     isWASMReady = false;
+     return false;
+   }
+ }
+
+ /**
+  * Utility functions for integration
+  */
+ export async function parseLegalDocumentWithSIMD(jsonString: string): Promise<LegalDocumentJSON> {
+   if (isWASMReady) return simdJSONAccelerator.parseDocumentJSON(jsonString);
+   // fallback to JS parse if not ready
+   return JSON.parse(jsonString) as LegalDocumentJSON;
+ }
+
+ export async function batchParseLegalDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
+   if (isWASMReady) return simdJSONAccelerator.batchParseDocuments(jsonStrings);
+   return jsonStrings.map(s => JSON.parse(s) as LegalDocumentJSON);
+ }
+
+ export async function validateLegalDocumentWithSIMD(jsonString: string): Promise<boolean> {
+   if (isWASMReady) return simdJSONAccelerator.validateDocument(jsonString);
+   try {
+     const doc = JSON.parse(jsonString);
+     if (typeof doc === 'object' && doc !== null) {
+       const record = doc as Record<string, unknown>;
+       return (
+         typeof record.caseId === 'string' &&
+         (record.documentType === 'contract' ||
+           record.documentType === 'evidence' ||
+           record.documentType === 'brief' ||
+           record.documentType === 'citation') &&
+         typeof record.metadata === 'object' &&
+         record.metadata !== null
+       );
+     }
+     return false;
+   } catch {
+     return false;
+   }
+ }
+
+ export async function compressEmbeddingsWithSIMD(
+   embeddings: number[]
+ ): Promise<{ compressed: Uint8Array; compressionRatio: number }> {
+   if (isWASMReady) return simdJSONAccelerator.compressDocumentEmbeddings(embeddings);
+   // Fallback: encode embeddings as float32 bytes
+   const float32 = new Float32Array(embeddings);
+   const compressed = new Uint8Array(float32.buffer.slice(0));
+   return { compressed, compressionRatio: 1.0 };
+ }
+
+export function getSIMDMetrics(): SIMDParsingMetrics {
+  return simdJSONAccelerator.getMetrics();
 }

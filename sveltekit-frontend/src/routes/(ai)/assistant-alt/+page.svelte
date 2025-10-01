@@ -2,13 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Dialog } from '$lib/components/ui/dialog';
-  import {
-    Button,
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils';
   import type { ChatMessage, SystemStatus } from '$lib/types/ai';
 
@@ -271,17 +265,18 @@
         })
       });
       if (ragResponse.ok) {
-        ragAnalysisResults = await ragResponse.json();
-        // Extract POI timeline data from semantic analysis
-        poiTimelineData = ragAnalysisResults.persons?.map((person: unknown) => ({
+        // Cast JSON to the expected typed shape
+        ragAnalysisResults = (await ragResponse.json()) as RagAnalysisResponse;
+        // Safely extract persons array and map to the internal POI shape
+        poiTimelineData = (ragAnalysisResults?.persons ?? []).map((person: Person) => ({
           id: person.id,
           name: person.name,
-          type: person.type || 'person',
-          activities: person.timeline || [],
-          confidence: person.confidence || 0.8,
-          evidenceSources: person.sources || [],
-          relationships: person.relationships || []
-        })) || [];
+          type: person.type ?? 'person',
+          activities: person.timeline ?? [],
+          confidence: person.confidence ?? 0.8,
+          evidenceSources: person.sources ?? [],
+          relationships: person.relationships ?? []
+        }));
         showTimeline = true;
       }
     } catch (e) {
@@ -920,11 +915,12 @@ window.open('/api/v1/cluster/health', '_blank')}
         <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
           <Button
             variant="ghost"
+            size="sm"
             onclick={closePOIDetails}
             class="bits-btn"
           >
-{#snippet children()}
-              Close
+            Close
+          </Button>
           <Button
             onclick={() => {
               handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
@@ -933,12 +929,8 @@ window.open('/api/v1/cluster/health', '_blank')}
             disabled={isStreaming}
             class="nes-btn is-primary bits-btn"
           >
-            {#snippet children()}
-              Ask AI About This Person
-            {/snippet}
-</Button>
-            {/snippet}
-</Button>
+            Ask AI About This Person
+          </Button>
         </div>
       </div>
     {/snippet}

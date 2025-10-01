@@ -1,1 +1,1 @@
-<div class="dropdown-separator" role="separator" aria-hidden="true" />
+<div class="dropdown-separator" role="separator" aria-hidden="true"></div>

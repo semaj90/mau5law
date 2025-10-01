@@ -165,3 +165,101 @@ export const GET: RequestHandler = async () => {
     }, { status: 500 })
   }
 }
+
+// Consolidated Search API Server
+// src/routes/api/search/+server.ts
+import { json } from '@sveltejs/kit';
+
+type SearchResult = {
+	id: string;
+	title: string;
+	snippet: string;
+	documentType: string;
+	score?: number;
+};
+
+type AdvancedSearchRequest = {
+	query?: string;
+	filters?: Record<string, string | number | boolean>;
+	embedding?: number[]; // optional precomputed embedding
+	limit?: number;
+};
+
+/**
+ * Minimal Search service stub.
+ * TODO: replace with real pgvector / Ollama / productionServiceClient calls.
+ */
+class SearchService {
+	static async textSearch(query: string, limit = 10): Promise<SearchResult[]> {
+		// TODO: call real search backend (pgvector, elastic, ollama RAG)
+		if (!query || query.trim().length === 0) return [];
+		const q = query.trim().toLowerCase();
+		return Array.from({ length: Math.min(limit, 5) }).map((_, i) => ({
+			id: `mock-${i + 1}`,
+			title: `Mock result for "${q}" #${i + 1}`,
+			snippet: `This is a mock snippet matching "${q}".`,
+			documentType: ['contract', 'evidence', 'brief'][i % 3],
+			score: Math.round((100 - i * 5) * 100) / 100
+		}));
+	}
+
+	static async advancedSearch(payload: AdvancedSearchRequest): Promise<SearchResult[]> {
+		// If embedding provided, prefer vector search path
+		if (payload.embedding && payload.embedding.length > 0) {
+			// TODO: vector DB call
+			return [
+				{
+					id: 'vec-1',
+					title: 'Vector match (mock)',
+					snippet: 'Mock vector search result',
+					documentType: 'evidence',
+					score: 0.98
+				}
+			];
+		}
+		// Fallback to text search with filters applied (mock)
+		const q = payload.query || '';
+		const base = await this.textSearch(q, payload.limit || 10);
+		// naive filter simulation
+		if (payload.filters && Object.keys(payload.filters).length > 0) {
+			return base.filter((r, idx) => idx % 2 === 0);
+		}
+		return base;
+	}
+}
+
+// GET /api/search?q=...
+export async function GET({ url }) {
+	const q = url.searchParams.get('q') || '';
+	const limitParam = url.searchParams.get('limit');
+	const limit = limitParam ? Math.max(1, Math.min(100, parseInt(limitParam, 10) || 10)) : 10;
+
+	if (!q) {
+		return json({ results: [], count: 0 });
+	}
+
+	try {
+		const results = await SearchService.textSearch(q, limit);
+		return json({ results, count: results.length });
+	} catch (err) {
+		console.error('Search GET error:', err);
+		return json({ error: 'Search failed' }, { status: 500 });
+	}
+}
+
+// POST /api/search/advanced
+export async function POST({ request }) {
+	try {
+		const payload = (await request.json()) as AdvancedSearchRequest;
+		// basic validation
+		if (!payload || (payload.query === undefined && !payload.embedding)) {
+			return json({ error: 'Provide query or embedding' }, { status: 400 });
+		}
+		const limit = payload.limit ? Math.max(1, Math.min(200, payload.limit)) : 10;
+		const results = await SearchService.advancedSearch({ ...payload, limit });
+		return json({ results, count: results.length });
+	} catch (err) {
+		console.error('Advanced search POST error:', err);
+		return json({ error: 'Advanced search failed' }, { status: 500 });
+	}
+}

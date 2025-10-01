@@ -38,9 +38,5 @@
   class="inline-flex items-center rounded-full border font-medium transition-colors {variantClasses} {sizeClasses} {className}"
   role="status"
 >
-  {#if children}
-    {@render children()}
-  {:else}
-    <slot />
-  {/if}
+  {@render children?.()}
 </span>

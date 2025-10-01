@@ -380,7 +380,11 @@
       "Bash(if not exist go.mod go mod init github.com/legal-ai/enhanced-rag)",
       "Bash(.scriptsbuild-protobuf.bat)",
       "Bash(ollama create:*)",
-      "Bash(ollama:*)"
+      "Bash(ollama:*)",
+      "Bash(cp:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(cmd.exe:*)",
+      "Bash(powershell.exe:*)"
     ],
     "deny": [],
     "ask": []
