@@ -3,5 +3,5 @@
 </script>
 
 <div class={`dropdown-menu ${className}`} role="menu">
-  <slot />
+  {@render children()}
 </div>

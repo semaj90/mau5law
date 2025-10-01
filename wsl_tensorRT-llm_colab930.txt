@@ -1,0 +1,24 @@
+ellent! Let me create an optimized Colab notebook incorporating NetEase's approach + Flash     
+  Attention + all RTX 3060 Ti optimizations:
+
+● Write(gemma3_int4_optimized_colab.ipynb)
+  ⎿  Wrote 1 lines to gemma3_int4_optimized_colab.ipynb
+     {
+      "cells": [
+       {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+         "# Gemma3 9B INT4 TensorRT-LLM Engine Builder\n",
+         "## Optimized for RTX 3060 Ti (8GB) - NetEase + Flash Attention\n",
+         "\n",
+         "**Goal:** Convert your local Gemma3 9B to INT4 AWQ + INT8 KV cache for 6.5GB VRAM         
+     usage\n",
+
+> ptx for ampere types as this will be used with A100 ampere gpu and we'll be using inference on    
+ rtx 3060 ampere RTX gpu 
+
+● Excellent point! You want portable engines that work on both A100 (Colab build) and RTX 3060      
+  Ti (local inference). Both are Ampere but different compute capabilities. Let me add the
+  cross-compatibility flags:
+  ⎿  Interrupted · What should Claude do instead?

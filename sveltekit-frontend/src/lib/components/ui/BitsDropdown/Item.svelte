@@ -25,8 +25,8 @@
 <button
   class={`dropdown-item ${className}`}
   role="menuitem"
-  on:click={handleClick}
+  onclick={handleClick}
   disabled={disabled}
 >
-  <slot />
+  {@render children()}
 </button>

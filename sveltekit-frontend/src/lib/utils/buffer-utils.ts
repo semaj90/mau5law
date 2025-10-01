@@ -51,16 +51,16 @@ export const ensureFloat32Array = (data: BufferCompatible): Float32Array => {
 export const createWebGPUBuffer = (
   device: GPUDevice,
   data: BufferCompatible,
-  usage: GPUBufferUsageFlags = GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST;
+  usage: GPUBufferUsageFlags = GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
 ): GPUBuffer => {
   const compatibleData = ensureBufferCompatibility(data);
   const buffer = device.createBuffer({
     size: compatibleData.byteLength,
-    usage
+    usage,
   });
   device.queue.writeBuffer(buffer, 0, compatibleData);
   return buffer;
-}
+};
 /**
  * Safe WebGPU buffer write operation with null checking
  * Fixes: Object is possibly 'null' errors

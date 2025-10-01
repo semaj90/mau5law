@@ -80,8 +80,7 @@
   interface AISuggestion {
     id: string;
     type: 'content' | 'structure' | 'legal_point' | 'citation' | 'language';
-    position: numb;
-r;
+    position: number;
     suggestion: string;
     reasoning: string;
     confidence: number;
@@ -145,19 +144,19 @@ r;
     isDrafting = true;
     try {
       const request = {
-        documentType: selectedDocumentType
-        template: selectedTemplate || undefined;
-        title: documentTitle
-        caseContext: caseContext || undefined
+        documentType: selectedDocumentType,
+        template: selectedTemplate || undefined,
+        title: documentTitle,
+        caseContext: caseContext || undefined,
         draftingMode,
-        aiAssistanceLevel;
-      }
+        aiAssistanceLevel,
+      };
       const response = await fetch('/api/ai/document-drafting', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(request);
+        body: JSON.stringify(request),
       });
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
@@ -180,17 +179,17 @@ r;
         documentId: currentDocument.id,
         prompt,
         context: {
-          currentContent: documentContent
+          currentContent: documentContent,
           caseContext,
-          assistanceLevel: aiAssistanceLevel
-        }
-      }
+          assistanceLevel: aiAssistanceLevel,
+        },
+      };
       const response = await fetch('/api/ai/document-drafting/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(request);
+        body: JSON.stringify(request),
       });
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
@@ -211,15 +210,15 @@ r;
     try {
       const request = {
         documentId: currentDocument.id,
-        content: documentContent;
-        title: documentTitl;
-      }
+        content: documentContent,
+        title: documentTitle,
+      };
       const response = await fetch('/api/ai/document-drafting/save', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(request);
+        body: JSON.stringify(request),
       });
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         await loadDraftHistory();
@@ -236,7 +235,7 @@ r;
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           documentId: currentDocument.id
         })
       });

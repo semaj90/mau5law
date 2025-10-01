@@ -178,10 +178,7 @@ Save the new checkpoint in a directory structure TRT-LLM expects (with config.js
   2. Or upgrading to newer TensorRT-LLM with HuggingFace support
   3. Or finding pre-converted Gemma3 TensorRT checkpoint
 
-  Would you like me to:
-  1. Create Ollama integration for your SvelteKit legal AI app (recommended, fast, working)
-  2. Write the tensor remapping script (complex, time-consuming, error-prone)
-  3. Search for pre-converted Gemma3 TensorRT checkpoint online
+  Would you like me to: 1. Create Ollama integration for your SvelteKit legal AI app (recommended, fast, working). 2. Write the tensor remapping script (complex, time-consuming, error-prone). 3. Search for pre-converted Gemma3 TensorRT checkpoint online
 
 > TensorRT-LLM expects: transformer.layers.*
   - ❌ TensorRT-LLM 1.1.0rc5 cannot auto-convert HuggingFace checkpoints

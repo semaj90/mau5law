@@ -120,6 +120,14 @@
     gpuAcceleration: 'active',
     ragPipeline: 'healthy'
   });
+
+  // helper to provide data-* attributes while avoiding strict Props type errors
+  function umamiAttrs(serviceName: string) {
+    return {
+      'data-umami-event': 'ai-service-access',
+      'data-umami-event-service': serviceName
+    } as any;
+  }
 </script>
 
 <svelte:head>
@@ -218,13 +226,11 @@
           <CardContent>
             <p class="service-description">{service.description}</p>
             <div class="service-stats">{service.stats}</div>
+            <!-- Use spread of an any-casted object to attach data-* attributes without TS errors -->
             <Button
               href={service.href}
               class="service-button"
-              // @ts-expect-error: Svelte 5 automatically forwards unknown attributes to the root element, but the component's Props type is too strict.
-              data-umami-event="ai-service-access"
-              // @ts-expect-error: Svelte 5 automatically forwards unknown attributes to the root element, but the component's Props type is too strict.
-              data-umami-event-service={service.name}
+              {...umamiAttrs(service.name)}
             >
               Launch Service
             </Button>
