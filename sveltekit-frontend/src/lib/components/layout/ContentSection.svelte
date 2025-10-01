@@ -21,7 +21,7 @@
     columns = 1,
     class: className = '',
     children,
-    ...restProp;
+    ...restProp
   }: Props = $props();
   let sectionClass = $derived(() => {
     const baseClass = "flex flex-col";

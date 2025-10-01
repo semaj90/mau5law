@@ -113,11 +113,18 @@ export const actions: Actions = {
         uploadResult,
         message: 'Document uploaded successfully!',
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Narrow the unknown error to extract a useful message if possible
+      let errMessage = 'Internal server error during upload';
+      if (error instanceof Error && typeof error.message === 'string') {
+        errMessage = error.message;
+      } else if (typeof error === 'string') {
+        errMessage = error;
+      }
       console.error('Upload error:', error);
       return fail(500, {
         form,
-        message: 'Internal server error during upload',
+        message: errMessage,
       });
     }
   },

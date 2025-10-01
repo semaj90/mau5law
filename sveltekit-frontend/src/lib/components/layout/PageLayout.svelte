@@ -23,7 +23,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     padding = 'lg',
     gap = 'md',
     class: className = '',
-    ...restProp;
+    ...restProp
   }: Props = $props();
   let containerClass = $derived(() => {
     const baseClass = "flex flex-col min-h-screen";

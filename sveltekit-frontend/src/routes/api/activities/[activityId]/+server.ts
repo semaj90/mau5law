@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { caseActivities } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/index';
+import db from '$lib/server/db/index';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async ({ params, locals }) => {
@@ -20,11 +20,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       return json({ error: 'Activity not found' }, { status: 404 });
     }
     return json(activityResult[0]);
-  } catch (error: any) {
-    console.error('Error fetching activity:', error);
+  } catch (error: unknown) {
+    console.error('Error fetching activity:', error instanceof Error ? error : String(error));
     return json({ error: 'Failed to fetch activity' }, { status: 500 });
   }
-}
+};
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
@@ -37,42 +37,126 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (!activityId) {
       return json({ error: 'Activity ID is required' }, { status: 400 });
     }
-    const data = await request.json();
+
+    type ActivityPayload = {
+      title?: string | null;
+      description?: string | null;
+      activityType?: string | null;
+      scheduledFor?: string | null;
+      completedAt?: string | null;
+      status?: string | null;
+      priority?: number | null;
+      assignedTo?: string | null;
+      relatedEvidence?: string[] | null;
+      relatedCriminals?: string[] | null;
+      metadata?: Record<string, unknown> | null;
+    };
+
+    const rawBody: unknown = await request.json();
+
+    // Basic runtime validation / casting
+    const data = rawBody && typeof rawBody === 'object' && !Array.isArray(rawBody) ? (rawBody as ActivityPayload) : {};
+
     // Check if activity exists
     const existingActivity = await db.select().from(caseActivities).where(eq(caseActivities.id, activityId)).limit(1);
     if (!existingActivity.length) {
       return json({ error: 'Activity not found' }, { status: 404 });
     }
-    const updateData: { [key: string]: any } = {
+
+    type UpdateData = Partial<{
+      title: string | null;
+      description: string | null;
+      activityType: string | null;
+      scheduledFor: Date | null;
+      completedAt: Date | null;
+      status: string | null;
+      priority: number | null;
+      assignedTo: string | null;
+      relatedEvidence: string[] | null;
+      relatedCriminals: string[] | null;
+      metadata: Record<string, unknown> | null;
+      updatedAt: Date;
+    }>;
+
+    const updateData: UpdateData = {
       updatedAt: new Date(),
+    };
+
+    // Helpers
+    const toNullableString = (v: unknown): string | null => (typeof v === 'string' ? v : v === null ? null : String(v));
+    const toNullableNumber = (v: unknown): number | null =>
+      v === null ? null : typeof v === 'number' ? v : isNaN(Number(v)) ? null : Number(v);
+    const toNullableDate = (v: unknown): Date | null => {
+      if (v === null) return null;
+      if (typeof v === 'string' || typeof v === 'number') {
+        const d = new Date(v);
+        return isNaN(d.getTime()) ? null : d;
+      }
+      if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
+      return null;
+    };
+    const toStringArrayOrNull = (v: unknown): string[] | null => {
+      if (v === null) return null;
+      if (Array.isArray(v)) return v.map(String);
+      return null;
+    };
+
+    // Map frontend fields to schema fields - only update provided and validated fields
+    if ('title' in data) {
+      const t = data.title;
+      updateData.title = t === null ? null : typeof t === 'string' ? t.trim() : String(t).trim();
     }
-    // Map frontend fields to schema fields - only update provided fields
-    if (data.title !== undefined) updateData.title = data.title.trim();
-    if (data.description !== undefined) updateData.description = data.description?.trim() || null;
-    if (data.activityType !== undefined) updateData.activityType = data.activityType;
-    if (data.scheduledFor !== undefined) {
-      updateData.scheduledFor = data.scheduledFor ? new Date(data.scheduledFor) : null;
+    if ('description' in data) {
+      const d = data.description;
+      updateData.description = d === null ? null : typeof d === 'string' ? d.trim() : String(d);
     }
-    if (data.completedAt !== undefined) {
-      updateData.completedAt = data.completedAt ? new Date(data.completedAt) : null;
+    if ('activityType' in data) {
+      updateData.activityType = data.activityType === undefined ? undefined : toNullableString(data.activityType);
     }
-    if (data.status !== undefined) updateData.status = data.status;
-    if (data.priority !== undefined) updateData.priority = data.priority;
-    if (data.assignedTo !== undefined) updateData.assignedTo = data.assignedTo;
-    if (data.relatedEvidence !== undefined) updateData.relatedEvidence = data.relatedEvidence;
-    if (data.relatedCriminals !== undefined) updateData.relatedCriminals = data.relatedCriminals;
-    if (data.metadata !== undefined) updateData.metadata = data.metadata;
+    if ('scheduledFor' in data) {
+      updateData.scheduledFor = toNullableDate(data.scheduledFor);
+    }
+    if ('completedAt' in data) {
+      updateData.completedAt = toNullableDate(data.completedAt);
+    }
+    if ('status' in data) {
+      updateData.status = data.status === undefined ? undefined : toNullableString(data.status);
+    }
+    if ('priority' in data) {
+      updateData.priority = data.priority === undefined ? undefined : toNullableNumber(data.priority);
+    }
+    if ('assignedTo' in data) {
+      updateData.assignedTo = data.assignedTo === undefined ? undefined : toNullableString(data.assignedTo);
+    }
+    if ('relatedEvidence' in data) {
+      updateData.relatedEvidence = toStringArrayOrNull(data.relatedEvidence);
+    }
+    if ('relatedCriminals' in data) {
+      updateData.relatedCriminals = toStringArrayOrNull(data.relatedCriminals);
+    }
+    if ('metadata' in data) {
+      updateData.metadata =
+        data.metadata === undefined
+          ? undefined
+          : data.metadata === null
+            ? null
+            : typeof data.metadata === 'object'
+              ? (data.metadata as Record<string, unknown>)
+              : { value: data.metadata };
+    }
+
     const [updatedActivity] = await db
       .update(caseActivities)
       .set(updateData)
       .where(eq(caseActivities.id, activityId))
       .returning();
+
     return json(updatedActivity);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating activity:', error);
     return json({ error: 'Failed to update activity' }, { status: 500 });
   }
-}
+};
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
@@ -93,11 +177,11 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete the activity
     const [deletedActivity] = await db.delete(caseActivities).where(eq(caseActivities.id, activityId)).returning();
     return json({ success: true, deletedActivity });
-  } catch (error: any) {
-    console.error('Error deleting activity:', error);
+  } catch (error: unknown) {
+    console.error('Error deleting activity:', error instanceof Error ? error : String(error));
     return json({ error: 'Failed to delete activity' }, { status: 500 });
   }
-}
+};
 // PATCH endpoint for partial updates (like status changes)
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
@@ -117,9 +201,9 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     if (!existingActivity.length) {
       return json({ error: 'Activity not found' }, { status: 404 });
     }
-    const updateData: { [key: string]: any } = {
+    const updateData: Record<string, unknown> = {
       updatedAt: new Date(),
-    }
+    };
     // Handle specific patch operations
     if (data.operation === 'complete') {
       updateData.status = 'completed';
@@ -163,7 +247,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       .where(eq(caseActivities.id, activityId))
       .returning();
     return json(updatedActivity);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error patching activity:', error);
     return json({ error: 'Failed to update activity' }, { status: 500 });
   }

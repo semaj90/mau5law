@@ -4,12 +4,9 @@
   interface Props {
     class?: string;
     children?: Snippet;
-  }
+  } let { class: className = '', children }: Props = $props();
 
-  let { class: className = '', children }: Props = $props();
-</script>
-
-<div class="{className} space-y-4">
+  <div class="{className} space-y-4">
   {#if children}
     {@render children()}
   {/if}
@@ -17,3 +14,4 @@
     {@render children()}
   {/if}
 </div>
+</script>

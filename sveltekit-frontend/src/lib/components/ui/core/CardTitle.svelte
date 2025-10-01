@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
     level = 3,
     class: className = '',
     children,
-    ...restProp;
+    ...restProps
   }: Props & { children?: unknown } = $props();
   let classes = $derived(
     ['nier-card-title', className].filter(Boolean).join(' ')

@@ -6,16 +6,16 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
-  import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
-  import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
-  import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
-  import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
-  import Dialog from '$lib/components/ui/enhanced-bits/Dialog.svelte';
-  import DialogTrigger from '$lib/components/ui/enhanced-bits/DialogTrigger.svelte';
-  import DialogContent from '$lib/components/ui/enhanced-bits/DialogContent.svelte';
-  import DialogTitle from '$lib/components/ui/enhanced-bits/DialogTitle.svelte';
-  import DialogDescription from '$lib/components/ui/enhanced-bits/DialogDescription.svelte';
-  import DialogClose from '$lib/components/ui/enhanced-bits/DialogClose.svelte';
+  import Card from '$lib/components/ui/bits/Card.svelte';
+  import CardHeader from '$lib/components/ui/bits/CardHeader.svelte';
+  import CardContent from '$lib/components/ui/bits/CardContent.svelte';
+  import CardTitle from '$lib/components/ui/bits/CardTitle.svelte';
+  import Dialog from '$lib/components/ui/bits/Dialog.svelte';
+  import DialogTrigger from '$lib/components/ui/bits/DialogTrigger.svelte';
+  import DialogContent from '$lib/components/ui/bits/DialogContent.svelte';
+  import DialogTitle from '$lib/components/ui/bits/DialogTitle.svelte';
+  import DialogDescription from '$lib/components/ui/bits/DialogDescription.svelte';
+  import DialogClose from '$lib/components/ui/bits/DialogClose.svelte';
   interface Props {
     data: PageData;
   }
@@ -630,7 +630,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                 <br />• Icon display
               </div>
             </div>
-          {#each Object.entries(clusteredAPIs) as [serviceName, endpoints]}
+          </CardContent>
         {/snippet}
       </Card>
     {/if}
@@ -657,7 +657,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                       ? '🔍'
                       : serviceName === 'file-services'
                         ? '📁'
-          {#each Object.entries(clusteredAPIs) as [serviceName, endpoints]}
+                        : serviceName === 'monitoring'
                           ? '📊'
                           : serviceName === 'testing'
                             ? '🧪'
@@ -691,33 +691,18 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                           onclick={() => visitRoute(endpoint.path)}
                           class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs"
                           title="Visit {endpoint.path}"
-                    <Dialog bind:open={dialogOpen}>
+                        >
                           →
                         </button>
                       </div>
                     {/each}
                     {#if endpoints.length > 5}
                     <div class="endpoint-item">
-                      <code class="endpoint-code">{endpoint.path}</code>
-                      <button
-                        onclick={() => visitRoute(endpoint.path)}
-                        class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs"
-                        title={"Visit " + endpoint.path}
-                      >
-                        →
-                      </button>
+                      <code class="endpoint-code">...and {endpoints.length - 5} more</code>
                     </div>
-                      {#snippet children()}
-                        <button
-                          class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
-                        >
-                          📋 View All ({endpoints.length})
-                        </button>
-                      {/snippet}
-                      {#snippet content()}
-                        <div class="p-6 max-w-4xl max-h-[80vh] overflow-y-auto">
-                          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                            {serviceIcon}
+                    {/if}
+                  </div>
+                  <div class="action-buttons">
                     <Dialog open={false}>
                       {#snippet children()}
                         <button
@@ -761,122 +746,132 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                         </div>
                       {/snippet}
                     </Dialog>
-          {#each filteredRoutes as route, index}
-            {@const categoryInfo = routeCategories[route.category]}
-            {@const columnClass =
-              index % 3 === 0 ? 'flex-basis-31' : index % 3 === 1 ? 'flex-basis-33' : 'flex-basis-35'}
-            <Card
-              class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group cursor-pointer border-2"
-              onclick={() => openRouteModal(route)}
-            >
-              {#snippet children()}
-                <CardHeader>
-                  {#snippet children()}
-                    <CardTitle class="text-{categoryInfo.color}-700 text-lg group-hover:text-{categoryInfo.color}-900">
-                      {categoryInfo.icon}
-                      {route.path}
-                    </CardTitle>
-                  {/snippet}
-                </CardHeader>
-                <CardContent>
-                  {#snippet children()}
-                    {#if route.description}
-                      <p class="text-sm text-gray-600 mb-3">{route.description}</p>
-                    {/if}
-                    <div class="flex flex-wrap gap-2">
-                      <span
-                        class="px-2 py-1 rounded-full text-xs bg-{categoryInfo.color}-100 text-{categoryInfo.color}-800"
-                      >
-                        {categoryInfo.name}
-                      </span>
-                    </div>
-                  {/snippet}
+                  </div>
                 </CardContent>
               {/snippet}
             </Card>
           {/each}
         </div>
-      {:else}
-        <!-- Standard Grid Layout -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {#each filteredRoutes as route}
-            {@const categoryInfo = routeCategories[route.category]}
-            <Card
-              class="hover:border-{categoryInfo.color}-400 group cursor-pointer"
-              onclick={() => openRouteModal(route)}
-            >
-              {#snippet children()}
-                <CardContent class="p-4">
-                  <!-- Route Header -->
-                  <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center flex-1 min-w-0">
-                      <span class="text-2xl mr-3 flex-shrink-0">{categoryInfo.icon}</span>
-                      <div class="min-w-0 flex-1">
-                        <h3
-                          class="font-semibold text-lg truncate group-hover:text-{categoryInfo.color}-700 transition-colors"
-                        >
-                          {route.name}
-                        </h3>
-                        <p class="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                          {categoryInfo.name}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Route Path -->
-                  <div class="mb-3">
-                    <code class="text-sm bg-gray-100 px-2 py-1 rounded font-mono text-gray-700 break-all">
-                      {route.path}
-                    </code>
-                  </div>
-                  <!-- Route Description -->
+      </div>
+    {/if}
+    <!-- SSR Flexbox Layout -->
+    {#if layoutMode === 'flexbox' && !showClustered}
+      <div class="ssr-flexbox-container flex flex-wrap gap-4 {isLoaded ? '' : 'loading'}">
+        {#each filteredRoutes as route, index}
+          {@const categoryInfo = routeCategories[route.category]}
+          {@const columnClass =
+            index % 3 === 0 ? 'flex-basis-31' : index % 3 === 1 ? 'flex-basis-33' : 'flex-basis-35'}
+          <Card
+            class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group cursor-pointer border-2"
+            onclick={() => openRouteModal(route)}
+          >
+            {#snippet children()}
+              <CardHeader>
+                {#snippet children()}
+                  <CardTitle class="text-{categoryInfo.color}-700 text-lg group-hover:text-{categoryInfo.color}-900">
+                    {categoryInfo.icon}
+                    {route.path}
+                  </CardTitle>
+                {/snippet}
+              </CardHeader>
+              <CardContent>
+                {#snippet children()}
                   {#if route.description}
-                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {route.description}
-                    </p>
+                    <p class="text-sm text-gray-600 mb-3">{route.description}</p>
                   {/if}
-                  <!-- Route Tags -->
-                  <div class="flex flex-wrap gap-2 mb-3">
+                  <div class="flex flex-wrap gap-2">
                     <span
-                      class="px-2 py-1 rounded-full text-xs bg-{categoryInfo.color}-100 text-{categoryInfo.color}-800 border border-{categoryInfo.color}-200"
+                      class="px-2 py-1 rounded-full text-xs bg-{categoryInfo.color}-100 text-{categoryInfo.color}-800"
                     >
                       {categoryInfo.name}
                     </span>
-                    <span
-                      class="px-2 py-1 rounded-full text-xs {route.type === 'configured'
-                        ? 'bg-green-100 text-green-800 border border-green-200'
-                        : 'bg-purple-100 text-purple-800 border border-purple-200'}"
-                    >
-                      {route.type}
-                    </span>
                   </div>
-                  <!-- Route Actions -->
-                  <div class="flex gap-2">
-                    <button
-                      onclick={e => {
-                        e.stopPropagation();
-                        visitRoute(route.path);
-                      }}
-                      class="flex-1 px-3 py-2 bg-{categoryInfo.color}-500 text-white rounded hover:bg-{categoryInfo.color}-600 text-sm font-medium transition-colors flex items-center justify-center gap-1"
-                    >
-                      🚀 Visit
-                    </button>
-                    <button
-                      onclick={e => {
-                        e.stopPropagation();
-                        navigator.clipboard.writeText(route.path);
-                      }}
-                      class="px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm transition-colors"
-                    >
-                      📋
-                    </button>
+                {/snippet}
+              </CardContent>
+            {/snippet}
+          </Card>
+        {/each}
+      </div>
+    {:else if !showClustered}
+      <!-- Standard Grid Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        {#each filteredRoutes as route}
+          {@const categoryInfo = routeCategories[route.category]}
+          <Card
+            class="hover:border-{categoryInfo.color}-400 group cursor-pointer"
+            onclick={() => openRouteModal(route)}
+          >
+            {#snippet children()}
+              <CardContent class="p-4">
+                <!-- Route Header -->
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex items-center flex-1 min-w-0">
+                    <span class="text-2xl mr-3 flex-shrink-0">{categoryInfo.icon}</span>
+                    <div class="min-w-0 flex-1">
+                      <h3
+                        class="font-semibold text-lg truncate group-hover:text-{categoryInfo.color}-700 transition-colors"
+                      >
+                        {route.name}
+                      </h3>
+                      <p class="text-xs text-gray-500 uppercase tracking-wide font-medium">
+                        {categoryInfo.name}
+                      </p>
+                    </div>
                   </div>
-                </CardContent>
-              {/snippet}
-            </Card>
-          {/each}
-        </div>
-      {/if}
+                </div>
+                <!-- Route Path -->
+                <div class="mb-3">
+                  <code class="text-sm bg-gray-100 px-2 py-1 rounded font-mono text-gray-700 break-all">
+                    {route.path}
+                  </code>
+                </div>
+                <!-- Route Description -->
+                {#if route.description}
+                  <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {route.description}
+                  </p>
+                {/if}
+                <!-- Route Tags -->
+                <div class="flex flex-wrap gap-2 mb-3">
+                  <span
+                    class="px-2 py-1 rounded-full text-xs bg-{categoryInfo.color}-100 text-{categoryInfo.color}-800 border border-{categoryInfo.color}-200"
+                  >
+                    {categoryInfo.name}
+                  </span>
+                  <span
+                    class="px-2 py-1 rounded-full text-xs {route.type === 'configured'
+                      ? 'bg-green-100 text-green-800 border border-green-200'
+                      : 'bg-purple-100 text-purple-800 border border-purple-200'}"
+                  >
+                    {route.type}
+                  </span>
+                </div>
+                <!-- Route Actions -->
+                <div class="flex gap-2">
+                  <button
+                    onclick={e => {
+                      e.stopPropagation();
+                      visitRoute(route.path);
+                    }}
+                    class="flex-1 px-3 py-2 bg-{categoryInfo.color}-500 text-white rounded hover:bg-{categoryInfo.color}-600 text-sm font-medium transition-colors flex items-center justify-center gap-1"
+                  >
+                    🚀 Visit
+                  </button>
+                  <button
+                    onclick={e => {
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(route.path);
+                    }}
+                    class="px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm transition-colors"
+                  >
+                    📋
+                  </button>
+                </div>
+              </CardContent>
+            {/snippet}
+          </Card>
+        {/each}
+      </div>
     {/if}
     {#if filteredRoutes.length === 0}
       <div class="text-center py-12 bg-white rounded-lg border-2 border-gray-200">

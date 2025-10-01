@@ -24,14 +24,14 @@
       misses: 0,
       hitRate: 0,
       totalQueries: 0,
-      averageResponseTime: 0;
+      averageResponseTime: 0
     },
     embedding: {
       hits: 0,
       misses: 0,
       hitRate: 0,
       totalRequests: 0,
-      costSavings: 0;
+      costSavings: 0
     },
     memory: {
       l1Usage: 0,
@@ -53,7 +53,7 @@
     textureCount: 0,
     activeStreams: 0,
     evictions: 0,
-    bankSwitches: 0;
+    bankSwitches: 0
   });
   let recentQueries = $state([]);
   let systemHealth = $state('healthy');
@@ -62,12 +62,12 @@
   let refreshInterval: number;
   // Calculated metrics
   let totalHitRate = $derived(() => {
-    const totalHits = cacheMetrics.retrieval.hits + cacheMetrics.embedding.hit;
-    const totalRequests = cacheMetrics.retrieval.totalQueries + cacheMetrics.embedding.totalRequest;
+    const totalHits = cacheMetrics.retrieval.hits + cacheMetrics.embedding.hits;
+    const totalRequests = cacheMetrics.retrieval.totalQueries + cacheMetrics.embedding.totalRequests;
     return totalRequests > 0 ? (totalHits / totalRequests) * 100 : 0;
   });
   let memoryEfficiency = $derived(() => {
-    const totalUsage = cacheMetrics.memory.l1Usage + cacheMetrics.memory.l2Usage + cacheMetrics.memory.l3Usag;
+    const totalUsage = cacheMetrics.memory.l1Usage + cacheMetrics.memory.l2Usage + cacheMetrics.memory.l3Usage;
     const maxCapacity = 1024 + 2048 + 1024; // L1 + L2 + L3 budgets in KB
     return (totalUsage / maxCapacity) * 100;
   });
@@ -92,22 +92,93 @@
     }
   });
   async function refreshMetrics() {
-    performance.mark('function-start');
+    performance.mark('refresh-start');
     if (isRefreshing) return;
     isRefreshing = true;
+
     try {
-      // In a real implementation, these would be API calls
-      await Promise.all([
-        updateCacheMetrics(),
-        updateNintendoStats(),
-        updateRecentQueries(),
-        checkSystemHealth()
+      // Parallel fetch from backend API endpoints. Fall back to local simulators on failure.
+      const endpoints = {
+        cache: '/api/cache/metrics',
+        nintendo: '/api/cache/nintendo',
+        recent: '/api/cache/recent-queries',
+        health: '/api/health/system'
+      };
+
+      const [cacheResp, nintendoResp, recentResp, healthResp] = await Promise.allSettled([
+        fetch(endpoints.cache, { headers: { Accept: 'application/json' } }),
+        fetch(endpoints.nintendo, { headers: { Accept: 'application/json' } }),
+        fetch(endpoints.recent, { headers: { Accept: 'application/json' } }),
+        fetch(endpoints.health, { headers: { Accept: 'application/json' } })
       ]);
+
+      // Handle cache metrics
+      if (cacheResp.status === 'fulfilled' && cacheResp.value.ok) {
+        try {
+          const json = await cacheResp.value.json();
+          cacheMetrics = json;
+        } catch (e) {
+          console.warn('Invalid JSON from cache metrics endpoint, using simulator.', e);
+          await updateCacheMetrics();
+        }
+      } else {
+        console.warn('Cache metrics endpoint failed, using simulator.', cacheResp);
+        await updateCacheMetrics();
+      }
+
+      // Handle Nintendo stats
+      if (nintendoResp.status === 'fulfilled' && nintendoResp.value.ok) {
+        try {
+          const json = await nintendoResp.value.json();
+          nintendoStats = json;
+        } catch (e) {
+          console.warn('Invalid JSON from nintendo endpoint, using simulator.', e);
+          await updateNintendoStats();
+        }
+      } else {
+        console.warn('Nintendo endpoint failed, using simulator.', nintendoResp);
+        await updateNintendoStats();
+      }
+
+      // Handle recent queries
+      if (recentResp.status === 'fulfilled' && recentResp.value.ok) {
+        try {
+          const json = await recentResp.value.json();
+          recentQueries = Array.isArray(json) ? json : [];
+        } catch (e) {
+          console.warn('Invalid JSON from recent queries endpoint, using simulator.', e);
+          await updateRecentQueries();
+        }
+      } else {
+        console.warn('Recent queries endpoint failed, using simulator.', recentResp);
+        await updateRecentQueries();
+      }
+
+      // Handle system health
+      if (healthResp.status === 'fulfilled' && healthResp.value.ok) {
+        try {
+          const json = await healthResp.value.json();
+          // Accept either { status: 'healthy' } or plain string
+          systemHealth = typeof json === 'string' ? json : (json?.status ?? systemHealth);
+        } catch (e) {
+          console.warn('Invalid JSON from health endpoint, re-evaluating locally.', e);
+          await checkSystemHealth();
+        }
+      } else {
+        console.warn('Health endpoint failed, re-evaluating locally.', healthResp);
+        await checkSystemHealth();
+      }
     } catch (error) {
       console.error('Failed to refresh metrics:', error);
       systemHealth = 'error';
     } finally {
       isRefreshing = false;
+      performance.mark('refresh-end');
+      try {
+        performance.measure('refreshMetrics', 'refresh-start', 'refresh-end');
+      } catch (e) {
+        // performance.measure may throw in some environments; ignore
+      }
     }
   }
   async function updateCacheMetrics() {
@@ -120,14 +191,14 @@
         misses: Math.floor(Math.random() * 300) + 100,
         hitRate: 70 + Math.random() * 25,
         totalQueries: Math.floor(Math.random() * 1500) + 800,
-        averageResponseTime: 45 + Math.random() * 30;
+        averageResponseTime: 45 + Math.random() * 30
       },
       embedding: {
         hits: Math.floor(Math.random() * 2000) + 800,
         misses: Math.floor(Math.random() * 200) + 50,
         hitRate: 85 + Math.random() * 10,
         totalRequests: Math.floor(Math.random() * 2500) + 1000,
-        costSavings: (Math.random() * 50 + 25).toFixed(2);
+        costSavings: (Math.random() * 50 + 25).toFixed(2)
       },
       memory: {
         l1Usage: Math.random() * 80,
@@ -153,7 +224,7 @@
       textureCount: Math.floor(Math.random() * 50) + 10,
       activeStreams: Math.floor(Math.random() * 5),
       evictions: Math.floor(Math.random() * 10),
-      bankSwitches: Math.floor(Math.random() * 3);
+      bankSwitches: Math.floor(Math.random() * 3)
     }
   }
   async function updateRecentQueries() {
@@ -171,7 +242,7 @@
     performance.mark('function-start');
     const hitRate = totalHitRate();
     const memUsage = memoryEfficiency();
-    const errorRate = cacheMetrics.performance.errorRat;
+    const errorRate = cacheMetrics.performance.errorRate;
     if (errorRate > 5 || memUsage > 95) {
       systemHealth = 'critical';
     } else if (hitRate < 40 || memUsage > 80) {
@@ -495,7 +566,7 @@
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
@@ -558,7 +629,7 @@
     cursor: pointer;
     font-family: inherit;
     font-size: 0.875rem;
-    transition: all 0.2;
+    transition: all 0.2s;
   }
   .control-buttons button:hover {
     background: rgba(255, 255, 255, 0.15);
@@ -570,7 +641,7 @@
   }
   .auto-refresh-btn.active {
     background: rgba(34, 197, 94, 0.2);
-    border-color: #22c55;
+    border-color: #22c55e;
   }
   .clear-cache-btn {
     background: rgba(239, 68, 68, 0.2) !important;
@@ -616,7 +687,7 @@
     font-weight: bold;
     color: #ffffff;
     display: flex;
-    align-items: baseli;
+    align-items: baseline;
     gap: 0.5rem;
   }
   .grade {
@@ -643,10 +714,10 @@
   }
   .dashboard-card.nintendo {
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
-    border-color: #22c55;
+    border-color: #22c55e;
   }
   .dashboard-card.nintendo h2 {
-    color: #22c55;
+    color: #22c55e;
   }
   .cache-stats {
     display: flex;
@@ -723,7 +794,7 @@
   }
   .bank-info {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
@@ -735,7 +806,7 @@
   }
   .nintendo-events {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     font-size: 0.8rem;
     opacity: 0.7;
   }
@@ -806,11 +877,11 @@
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  .query-.cached {
+  .query-item.cached {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgba(34, 197, 94, 0.3);
   }
-  .query-.uncached {
+  .query-item.uncached {
     background: rgba(239, 68, 68, 0.1);
     border-color: rgba(239, 68, 68, 0.3);
   }
@@ -820,12 +891,12 @@
   }
   .query-meta {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     font-size: 0.8rem;
     opacity: 0.8;
   }
   .cache-status.hit {
-    color: #22c55;
+    color: #22c55e;
   }
   .cache-status.miss {
     color: #ef4444;
@@ -837,7 +908,7 @@
   }
   .perf-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
