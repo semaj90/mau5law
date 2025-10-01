@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const systemStatus = redisWebGPUIntegration.getSystemStatus()
         const metrics = redisWebGPUIntegration.getMetrics()
         return json({
-          success: true
+          success: true,
           data: {
             title: "🚀 Supercharged Legal AI System Status",
             systems: {
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Performance comparison demo
         const benchmarkResults = await runPerformanceBenchmark()
         return json({
-          success: true
+          success: true,
           data: {
             title: "⚡ Performance Benchmark Results",
             ...benchmarkResults
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'showcase':
         // Show what's possible with the integrated system
         return json({
-          success: true
+          success: true,
           data: {
             title: "🎯 What You Can Do With Redis + WebGPU + SIMD",
             use_cases: [
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default:
         // System overview
         return json({
-          success: true
+          success: true,
           data: {
             title: "🚀 Supercharged Legal AI System",
             description: "Redis + WebGPU + SIMD JSON integrated for maximum performance",
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         )
         return json({
-          success: true
+          success: true,
           operation: 'legal_document',
           result: docResult
           total_time: performance.now() - startTime
@@ -157,7 +157,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { queryVector, candidateVectors, algorithm = 'cosine' } = data
         if (!Array.isArray(queryVector) || !Array.isArray(candidateVectors)) {
           return json({
-            success: false
+            success: false,
             error: 'queryVector and candidateVectors must be arrays'
           }, { status: 400 })
         }
@@ -171,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         )
         return json({
-          success: true
+          success: true,
           operation: 'vector_similarity',
           result: simResult
           total_time: performance.now() - startTime
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { npmOutput } = data
         if (typeof npmOutput !== 'string') {
           return json({
-            success: false
+            success: false,
             error: 'npmOutput must be a string'
           }, { status: 400 })
         }
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         )
         return json({
-          success: true
+          success: true,
           operation: 'intelligent_todos',
           result: todosResult
           total_time: performance.now() - startTime
@@ -201,13 +201,13 @@ export const POST: RequestHandler = async ({ request }) => {
         const { operations } = data
         if (!Array.isArray(operations)) {
           return json({
-            success: false
+            success: false,
             error: 'operations must be an array'
           }, { status: 400 })
         }
         const batchResult = await redisWebGPUIntegration.batchProcess(operations)
         return json({
-          success: true
+          success: true,
           operation: 'batch_operations',
           result: batchResult
           total_time: performance.now() - startTime
@@ -216,14 +216,14 @@ export const POST: RequestHandler = async ({ request }) => {
         // Run a comprehensive performance test
         const perfResult = await runComprehensivePerformanceTest(data)
         return json({
-          success: true
+          success: true,
           operation: 'performance_test',
           result: perfResult
           total_time: performance.now() - startTime
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown operation: ${operation}`,
           available_operations: [
             'legal_document',
@@ -237,7 +237,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Supercharged Legal AI Error:', error)
     return json({
-      success: false
+      success: false,
       error: {
         message: error.message,
         timestamp: new Date().toISOString()

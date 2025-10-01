@@ -4,7 +4,7 @@
  */
 import { createMachine, assign, fromPromise } from 'xstate';
 import { dimensionalCache, type DimensionalArray } from '../ai/dimensional-cache-engine.js';
-}
+
 export interface AIComputationContext {
   userId: string;
   sessionId: string;
@@ -55,10 +55,10 @@ const perform3DComputation = fromPromise(async ({ input }: {
     behaviorPattern: 'active_user'
   });
   // Simulate 3D computation processing
-  await new Promise((resolve) => setTimeout(resolve, 1000);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   return {
-    result: dimensionalArray
-    processed: true;
+    result: dimensionalArray,
+    processed: true,
     timestamp: Date.now()
   }
 });

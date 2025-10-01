@@ -18,13 +18,13 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ success: true, data: { status: 'unknown' }, timestamp: new Date().toISOString() })
     case 'metrics':
       return json({
-        success: true
+        success: true,
         data: { metrics: [], count: 0, latestMetric: null },
         timestamp: new Date().toISOString(),
       })
     case 'tasks':
       return json({
-        success: true
+        success: true,
         data: { activeTasks: [], taskQueue: [], activeCount: 0, queueCount: 0 },
         timestamp: new Date().toISOString(),
       })
@@ -68,7 +68,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   const config = obj.config ?? null
   if (!config) return json({ success: false, error: 'Configuration object required' }, { status: 400 })
   return json({
-    success: true
+    success: true,
     message: 'Configuration update acknowledged',
     data: { requestedConfig: config },
     timestamp: new Date().toISOString(),

@@ -8,12 +8,11 @@
   }
   let { children, open = $bindable(false), onOpenChange }: Props = $props();
   function handleOpenChange(newOpen: boolean) {
-    open = newOpe;
-    onOpenChange?.(newOpen);
+    open = newOpen;
+    onOpenChange?.(newOpen as boolean);
   }
 </script>
 
 <DropdownMenu.Root bind:open onOpenChange={handleOpenChange}>
   {@render children?.()}
 </DropdownMenu.Root>
-;

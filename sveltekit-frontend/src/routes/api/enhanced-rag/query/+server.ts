@@ -5,7 +5,7 @@ import { enhancedRAGService } from '$lib/services/enhanced-rag-integration.js'
 import { dev } from '$app/environment'
 const QuerySchema = z.object({
   query: z.string().min(1).max(2000),
-  options: z.object({,
+  options: z.object({
     maxResults: z.number().min(1).max(50).optional().default(10),
     includeGraph: z.boolean().optional().default(true),
     streamResponse: z.boolean().optional().default(false),
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
       console.log(`📊 Sources: ${response.sources?.length || 0}`)
     }
     return json({
-      success: true
+      success: true,
       response: response.response,
       confidence: response.confidence,
       sources: response.sources,
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Enhanced RAG Query Error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message || 'Enhanced RAG processing failed',
       timestamp: new Date().toISOString()
     }, { status: 500 })

@@ -56,7 +56,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     // Check if analysis already exists and not forcing reanalysis
     if (evidenceRecord.aiSummary && !forceReanalyze) {
       return json({
-        success: true
+        success: true,
         data: {
           cached: true
           analysis: {
@@ -90,7 +90,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       })
       .where(eq(evidence.id, evidenceId)
     return json({
-      success: true
+      success: true,
       data: {
         cached: false
         analysis: {

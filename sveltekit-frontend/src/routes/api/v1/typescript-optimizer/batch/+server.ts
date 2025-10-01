@@ -15,13 +15,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Validate batch request
 		if (!body.errors || !Array.isArray(body.errors)) {
 			return json({
-				success: false
+				success: false,
 				error: 'Invalid batch request: errors array required'
 			}, { status: 400 })
 		}
 		if (body.errors.length === 0) {
 			return json({
-				success: true
+				success: true,
 				processed_count: 0,
 				successful_count: 0,
 				results: [],
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error: any) {
 		console.error('Batch Processing Error:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'Batch processing failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString(),

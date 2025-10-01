@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { onMount } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   import { buttonVariants, type ButtonVariantProps } from './button-variants';
 
@@ -18,7 +19,9 @@ https://svelte.dev/e/js_parse_error -->
     class: className = '',
     useBits = false,
     ariaLabel = undefined as string | undefined,
-    onclick
+    onclick,
+    // content slot
+    children
   }: {
     variant?: ButtonVariantProps['variant'];
     size?: ButtonVariantProps['size'];
@@ -32,6 +35,7 @@ https://svelte.dev/e/js_parse_error -->
     useBits?: boolean;
     ariaLabel?: string;
     onclick?: (evt: MouseEvent) => void;
+    children?: Snippet;
   } = $props();
 
   let isDisabled = $derived(disabled || loading);
@@ -62,20 +66,37 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 {#if useBits && BitsComponent && !href}
-  <svelte:component
-    this={BitsComponent}
-    class={buttonClass}
-    disabled={isDisabled}
-    {type}
-    aria-label={ariaLabel}
-    onclick={handleClick}
-  >
-    {#if loading}
-      <span class="loader" aria-hidden="true" /> <span>{loadingText}</span>
-    {:else}
-      <slot />
-    {/if}
-  </svelte:component>
+  {#if typeof BitsComponent === 'function' || (BitsComponent && typeof BitsComponent === 'object')}
+    {@const Bits = BitsComponent}
+    <Bits
+      class={buttonClass}
+      disabled={isDisabled}
+      {type}
+      aria-label={ariaLabel}
+      onclick={handleClick}
+    >
+      {#if loading}
+        <span class="loader" aria-hidden="true" /> <span>{loadingText}</span>
+      {:else}
+        {@render children?.()}
+      {/if}
+    </Bits>
+  {:else}
+    <!-- Fallback: render native button if BitsComponent is unusable -->
+    <button
+      {type}
+      class={buttonClass}
+      disabled={isDisabled}
+      aria-label={ariaLabel}
+      onclick={handleClick}
+    >
+      {#if loading}
+        <span class="loader" aria-hidden="true" /> <span>{loadingText}</span>
+      {:else}
+        {@render children?.()}
+      {/if}
+    </button>
+  {/if}
 {:else if href}
   <a
     {href}
@@ -88,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if loading}
       <span class="loader" aria-hidden="true" /> <span>{loadingText}</span>
     {:else}
-      <slot />
+      {@render children?.()}
     {/if}
   </a>
 {:else}
@@ -102,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if loading}
       <span class="loader" aria-hidden="true" /> <span>{loadingText}</span>
     {:else}
-      <slot />
+      {@render children?.()}
     {/if}
   </button>
 {/if}

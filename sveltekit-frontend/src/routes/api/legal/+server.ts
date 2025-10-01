@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       })
     )
     return json({
-      success: true
+      success: true,
       job_id: mcpResult.job_id,
       status: 'submitted',
       estimated_completion_ms: mcpResult.estimated_completion - Date.now(),

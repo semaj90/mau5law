@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const structure = { type: organizationMode, groups: [], metadata: { caseId } }
     const analytics = { organizationEfficiency: 0, coverage: 0, qualityScore: 0 }
     return json({
-      success: true
+      success: true,
       data: { caseId, organizationMode, structure, analytics },
       meta: { timestamp: new Date().toISOString() },
     })

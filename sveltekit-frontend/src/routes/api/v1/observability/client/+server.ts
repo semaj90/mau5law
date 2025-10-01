@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
     }
     const processingTime = performance.now() - requestStart
     return json({
-      success: true
+      success: true,
       requestId,
       processed: payload.metrics.length,
       processingTime: Math.round(processingTime * 100) / 100,
@@ -211,7 +211,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           updateAggregatedStats()
           console.log(`🧹 [${requestId.slice(0, 8)}] Cleared ${clearedCount} client metrics`)
           return json({
-            success: true
+            success: true,
             message: `Cleared ${clearedCount} metrics`,
             requestId
           })

@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'health':
         const health = await checkDatabaseHealth()
         return json({
-          success: true
+          success: true,
           health,
           metadata: {
             processingTime: Date.now() - startTime,
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'metrics':
         const metrics = await dbHealthChecker.getDatabaseMetrics()
         return json({
-          success: true
+          success: true,
           data: metrics
           metadata: {
             processingTime: Date.now() - startTime,
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'validate':
         const isValid = await dbHealthChecker.validateSchema()
         return json({
-          success: true
+          success: true,
           data: {
             schemaValid: isValid.valid,
             missingTables: isValid.missingTables
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'vector':
         const vectorTest = await dbHealthChecker.testVectorOperations()
         return json({
-          success: true
+          success: true,
           data: {
             vectorOperationsWorking: vectorTest
             pgvectorEnabled: await dbHealthChecker.isPgVectorEnabled()
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     console.error('Database health check error:', err)
     return json({
-      success: false
+      success: false,
       error: err instanceof Error ? err.message: 'Database health check failed',
       metadata: {
         processingTime: Date.now() - startTime,
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'clear_cache':
         dbHealthChecker.clearCache()
         return json({
-          success: true
+          success: true,
           message: 'Health check cache cleared',
           metadata: {
             processingTime: Date.now() - startTime
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'force_check':
         const health = await dbHealthChecker.checkHealth(false); // Force fresh check
         return json({
-          success: true
+          success: true,
           data: health
           metadata: {
             processingTime: Date.now() - startTime,
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err: any) {
     console.error('Database health check POST error:', err)
     return json({
-      success: false
+      success: false,
       error: err instanceof Error ? err.message: 'Database health check failed',
       metadata: {
         processingTime: Date.now() - startTime

@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
     }
     const end = performance.now()
     return json({
-      success: true
+      success: true,
       redis: {
         healthy: isHealthy
         connected: stats.connected,
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         stack: error.stack,
         timestamp: new Date().toISOString()

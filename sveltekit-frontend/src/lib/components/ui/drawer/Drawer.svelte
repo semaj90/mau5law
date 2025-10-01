@@ -2,20 +2,33 @@
 https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
 <script lang="ts">
-  import { X } from "lucide-svelte";
-  let { open = $bindable()   }: { open = $bindable() : unknown } = $props(); // false
-  let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // ""
-  let { description = $bindable()  }: { description = $bindable() : unknown } = $props(); // ""
-  let { side = $bindable()  }: { side = $bindable() : unknown } = $props(); // "left" | "right" | "top" | "bottom" = "right"
-  let { size = $bindable()  }: { size = $bindable() : unknown } = $props(); // "sm" | "md" | "lg" | "xl" = "md"
+  import { X } from 'lucide-svelte';
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    open?: boolean;
+    title?: string;
+    description?: string;
+    side?: 'left' | 'right' | 'top' | 'bottom';
+    size?: 'sm' | 'md' | 'lg' | 'xl';
+    children?: Snippet;
+  }
+
+  let {
+    open = $bindable(false),
+    title = '',
+    description = '',
+    side = 'right',
+    size = 'md',
+    children
+  }: Props = $props();
+
   function handleClose() {
     open = false;
-    // ondispatch removed;
   }
+
   function handleBackdropClick(e: MouseEvent) {
-    if (e.target === e.currentTarget) {
-      handleClose();
-    }
+    if (e.target === e.currentTarget) handleClose();
   }
 </script>
 {#if open}
@@ -24,9 +37,9 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     role="dialog"
     aria-modal="true"
     aria-label={title ? title : "Drawer"}
-    onclick={handleBackdropClick}
+    on:click={handleBackdropClick}
   >
-    <div class="drawer drawer-{size} drawer-{side}" click|stopPropagation>
+  <div class="drawer drawer-{size} drawer-{side}" on:click|stopPropagation>
       <div class="drawer-header">
         <div>
           {#if title}
@@ -39,20 +52,20 @@ https://svelte.dev/e/render_tag_invalid_expression -->
         <button
           class="drawer-close"
           aria-label="Close drawer"
-          onclick={handleClose}
+          on:click={handleClose}
         >
           <X size="24" />
         </button>
       </div>
       <div class="drawer-body">
-        {@render children}
+        {@render children?.()}
       </div>
     </div>
   </div>
 {/if}
 <style>/* @unocss-include */ .drawer-overlay {
     position: fixed;
-d;
+
     top: 0;
     left: 0;
     right: 0;
@@ -85,7 +98,7 @@ d;
   }
   .drawer-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 20px;
   }

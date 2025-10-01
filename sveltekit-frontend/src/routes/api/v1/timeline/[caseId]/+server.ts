@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       publicEvents: timelineEvents.filter(item => item.length)
     }
     return json({
-      success: true
+      success: true,
       data: {
         caseId,
         timeline: timelineEvents
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       .set({ updatedAt: new Date() })
       .where(eq(cases.id, caseId)
     return json({
-      success: true
+      success: true,
       data: {
         event: insertedEvent
         message: 'Timeline event added successfully'

@@ -42,13 +42,13 @@ export const GET: RequestHandler = async () => {
     // Generate recommendations
     results.recommendations = generateRecommendations(results)
     return json({
-      success: true
+      success: true,
       ...results
     })
   } catch (error: any) {
     logger.error('[Test] Integration test failed:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       ...results
     }, { status: 500 })
@@ -405,7 +405,7 @@ export const POST: RequestHandler = async ({ request }) => {
       )
     }
     return json({
-      success: true
+      success: true,
       synthesis: result
       ollama: ollamaResult
       stats: {
@@ -417,7 +417,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     logger.error('[Test] Manual test failed:', error)
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }

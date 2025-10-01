@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       executionTime: responseData.executionTime || 0
     }
     return json({
-      success: true
+      success: true,
       data: aiResponse
       protocol,
       source: 'quic-ai-stream',
@@ -247,7 +247,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
     const result = await response.json()
     return json({
-      success: true
+      success: true,
       message: `AI session '${sessionId}' terminated`,
       result,
       timestamp: new Date().toISOString()
@@ -283,7 +283,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       lastUpdated: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       message: 'AI streaming configuration updated',
       config: updatedConfig
     })

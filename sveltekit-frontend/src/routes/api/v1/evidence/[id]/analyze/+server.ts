@@ -11,14 +11,14 @@ const UUIDSchema = z.string().uuid('Invalid evidence ID format')
 // Analysis request schema
 const AnalysisRequestSchema = z.object({
   analysisType: z.enum(['content', 'metadata', 'forensic', 'legal', 'comprehensive']).default('comprehensive'),
-  options: z.object({,
+  options: z.object({
     includeOCR: z.boolean().default(true),
     includeNLP: z.boolean().default(true),
     includeLegalReview: z.boolean().default(true),
     includeForensics: z.boolean().default(false),
     confidence: z.number().min(0).max(1).default(0.7)
   }).optional(),
-  context: z.object({,
+  context: z.object({
     caseId: z.string().uuid().optional(),
     relatedEvidence: z.array(z.string().uuid()).optional(),
     legalContext: z.string().optional()
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Note: Update would need proper implementation in the evidence service
     // For now, we'll just return the analysis results
     return json({
-      success: true
+      success: true,
       data: {
         evidenceId,
         analysisType,

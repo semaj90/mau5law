@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Generate presigned URL for download (valid for 1 hour)
     const presignedUrl = await minioClient.presignedGetObject(bucketName, objectPath, 3600)
     return json({
-      success: true
+      success: true,
       download_url: presignedUrl
       bucket: bucketName
       object_path: objectPath
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('MinIO download error:', error)
     return json(
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message : 'Download failed'
       },
       { status: 500 }
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('MinIO download error:', error)
     return json(
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message : 'Download failed'
       },
       { status: 500 }

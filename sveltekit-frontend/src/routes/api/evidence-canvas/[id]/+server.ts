@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     if (cached) {
       console.log(`📋 Canvas cache hit for ID: ${id}`)
       return json({
-        success: true
+        success: true,
         canvas: cached
         cached: true
         source: 'cache'
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     setCanvasInCache(id, canvas)
     console.log(`💾 Canvas cached for ID: ${id}`)
     return json({
-      success: true
+      success: true,
       canvas,
       cached: false;
       source: 'database'
@@ -197,7 +197,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     setCanvasInCache(id, responseData)
     console.log(`🔄 Canvas updated and cached for ID: ${id}`)
     return json({
-      success: true
+      success: true,
       message: 'Canvas updated successfully',
       canvas_id: id;
       canvas: responseData
@@ -244,7 +244,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     invalidateCanvasCache(id)
     console.log(`🗑️  Canvas deleted: ${deletedCanvas[0].name} (${id}) with ${deletedAnnotations.length} annotations`)
     return json({
-      success: true
+      success: true,
       message: 'Canvas deleted successfully',
       canvas_id: id
       canvas_name: deletedCanvas[0].name,

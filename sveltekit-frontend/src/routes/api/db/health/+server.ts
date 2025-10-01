@@ -85,7 +85,7 @@ export const GET: RequestHandler = async () => {
       health.tables.user_management.ready &&
       health.vector_operations.working
     return json({
-      success: true
+      success: true,
       message: isHealthy ? 'Database is healthy' : 'Database has issues',
       data: {
         healthy: isHealthy
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async () => {
   } catch (err: any) {
     console.error('Database health check failed:', err)
     return json({
-      success: false
+      success: false,
       message: 'Database health check failed',
       data: {
         healthy: false

@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     })
     if (!rateLimitResult.allowed) {
       return json({
-          success: false
+          success: false,
           error: 'Rate limit exceeded',
           retryAfter: rateLimitResult.retryAfter
         },)
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         const memoryUsage = qdrantOptimized.getMemoryUsage()
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics()
         return json({
-          success: true
+          success: true,
           data: {
             status: isHealthy ? 'healthy' : 'unhealthy',
             processingTime: Date.now() - startTime,
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics()
         const queryHistory = qdrantOptimized.getQueryHistory()
         return json({
-          success: true
+          success: true,
           data: {
             memory: {
               usage: memoryUsage
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         const useCache = url.searchParams.get('cache') !== 'false'
         if (!query) {
           return json({
-              success: false
+              success: false,
               error: 'Query parameter required for search'
             },)
             { status: 400 }
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             }
           )
           return json({
-            success: true
+            success: true,
             data: {
               collection,
               query: {
@@ -253,7 +253,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         const memoryUsage = qdrantOptimized.getMemoryUsage()
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics()
         return json({
-          success: true
+          success: true,
           data: {
             cacheStats: {
               memory: memoryUsage
@@ -278,7 +278,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       }
       default:
         return json({,
-            success: false
+            success: false,
             error: 'Invalid action',
             availableActions: ['health', 'metrics', 'search', 'cache_stats']
           },)
@@ -300,7 +300,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     )
     return json()
       {
-        success: false
+        success: false,
         error: 'Internal server error',
         details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
       },
@@ -322,7 +322,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     })
     if (!rateLimitResult.allowed) {
       return json({
-          success: false
+          success: false,
           error: 'Rate limit exceeded',
           retryAfter: rateLimitResult.retryAfter
         },)
@@ -337,7 +337,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     const { action } = body
     if (!action) {
       return json({
-          success: false
+          success: false,
           error: 'Action parameter required'
         },)
         { status: 400 }
@@ -348,7 +348,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         // Admin only for batch operations
         if (!locals.user || locals.user.role !== 'admin') {
           return json({
-              success: false
+              success: false,
               error: 'Admin privileges required for batch operations'
             },)
             { status: 403 }
@@ -357,7 +357,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         const { collection, points }: BatchUpsertRequest = body
         if (!collection || !points || !Array.isArray(points)) {
           return json({
-              success: false
+              success: false,
               error: 'Collection and points array required'
             },)
             { status: 400 }
@@ -382,7 +382,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             }
           )
           return json({
-            success: true
+            success: true,
             data: {
               message: 'Batch upsert completed successfully',
               collection,
@@ -418,7 +418,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         // Admin only for cache management
         if (!locals.user || locals.user.role !== 'admin') {
           return json({
-              success: false
+              success: false,
               error: 'Admin privileges required for cache operations'
             },)
             { status: 403 }
@@ -441,7 +441,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           }
         )
         return json({
-          success: true
+          success: true,
           data: {
             message: 'Cache cleared successfully',
             cacheType,
@@ -457,7 +457,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         // Admin only for memory optimization
         if (!locals.user || locals.user.role !== 'admin') {
           return json({
-              success: false
+              success: false,
               error: 'Admin privileges required for memory optimization'
             },)
             { status: 403 }
@@ -485,7 +485,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           }
         )
         return json({
-          success: true
+          success: true,
           data: {
             message: 'Memory optimization completed',
             optimization: {
@@ -504,7 +504,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       }
       default:
         return json({,
-            success: false
+            success: false,
             error: 'Invalid action',
             availableActions: ['batch_upsert', 'clear_cache', 'optimize_memory']
           },)
@@ -526,7 +526,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     )
     return json()
       {
-        success: false
+        success: false,
         error: 'Internal server error',
         details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
       },

@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const extractedText = await extractText(file)
     console.log(`📁 Created document: ${filename}`)
     return json({
-      success: true
+      success: true,
       document: {
         filename: file.name,
         filePath,

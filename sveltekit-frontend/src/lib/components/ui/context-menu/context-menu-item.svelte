@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getContext } from 'svelte';
+  import type { Snippet } from 'svelte';
 
   let {
     disabled = false,
@@ -8,6 +9,9 @@
     disabled?: boolean;
     onclick?: (event?: unknown) => void;
   } = $props();
+
+  // children Snippet for Svelte 5 runes
+  let { children }: { children?: Snippet } = $props();
 
   interface ContextMenuContext {
     close: () => void;
@@ -32,7 +36,7 @@
   onclick={handleClick}
   {disabled}
 >
-  <slot />
+  {@render children?.()}
 </button>
 
 <style>/* @unocss-include */

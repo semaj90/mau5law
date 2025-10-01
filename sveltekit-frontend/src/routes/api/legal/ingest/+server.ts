@@ -211,7 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Auto-populate case AI summary score
         const caseAISummaryScore = calculateCaseAISummaryScore(processedDocuments)
         const response = {
-            success: true
+            success: true,
             caseId,
             documentsProcessed: processedDocuments.length,
             totalProcessingTime: totalTime
@@ -257,7 +257,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const processingTime = Date.now() - startTime
         console.error('❌ Legal document processing failed:', err)
         return json({
-            success: false
+            success: false,
             error: err instanceof Error ? err.message: 'Unknown processing error',
             processingTime
         }, { status: 500 })

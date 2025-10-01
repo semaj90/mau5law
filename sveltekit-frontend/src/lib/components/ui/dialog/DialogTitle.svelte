@@ -1,8 +1,9 @@
 <script lang="ts">
-  let { title, children }: { title: unknown; children?: unknown } = $props();
+  import type { Snippet } from 'svelte';
+
+  let { title = '', children }: { title?: string; children?: Snippet } = $props();
 </script>
 
-<h2 use:title class="space-y-4">
+<h2 class="space-y-4">
   {@render children?.()}
 </h2>
-;

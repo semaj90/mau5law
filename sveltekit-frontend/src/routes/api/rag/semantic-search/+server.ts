@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		const body: SemanticSearchRequest = await request.json()
 		if (!body.query) {
 			return json({
-				success: false
+				success: false,
 				error: 'Query is required'
 			}, { status: 400 })
 		}
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({,
+			body: JSON.stringify({
 				text: body.query
 			})
 		})
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       }
     })
 		const response: SemanticSearchResponse = {
-			success: true
+			success: true,
 			query: body.query,
 			results: enhancedResults
 			embedding_time: embeddingTime
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	} catch (error) {
 		console.error('Semantic search error:', error)
 		return json({
-			success: false
+			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error',
 			total_time: Date.now() - startTime
 		}, { status: 500 })

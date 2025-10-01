@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const style = url.searchParams.get('style')
     if (!query) {
       return json({
-        success: false
+        success: false,
         error: 'Query parameter "q" is required'
       }, { status: 400 })
     }
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
     if (!queryEmbedding?.embedding) {
       return json({
-        success: false
+        success: false,
         error: 'Failed to generate query embedding'
       }, { status: 500 })
     }
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
       ? results.filter(r => r.manifest?.metadata?.style === style)
       : results
     return json({
-      success: true
+      success: true,
       data: {
         query: query
         results: filteredResults.map(result => ({,
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Tensor search error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Search failed'
     }, { status: 500 })
   }
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { embedding, limit = 10, style } = body
     if (!embedding || !Array.isArray(embedding)) {
       return json({
-        success: false
+        success: false,
         error: 'embedding array is required'
       }, { status: 400 })
     }
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ? results.filter(r => r.manifest?.metadata?.style === style)
       : results
     return json({
-      success: true
+      success: true,
       data: {
         results: filteredResults.map(result => ({
           id: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).id,
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Tensor vector search error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Vector search failed'
     }, { status: 500 })
   }

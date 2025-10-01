@@ -91,7 +91,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     } = await request.json()
     if (!query || query.trim().length === 0) {
       return json({
-          success: false
+          success: false,
           error: "Query is required"
         },)
         { status: 400 }
@@ -103,7 +103,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       const cached = (await cache.get(cacheKey)) as AIResponse
       if (cached) {
         return json({
-          success: true
+          success: true,
           data: {
             ...cached,
             fromCache: true
@@ -143,7 +143,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     }
     if (searchResults.results.length === 0) {
       return json({
-        success: true
+        success: true,
         data: {
           answer: "I couldn't find any relevant information to answer your question. Please try rephrasing your query or check if the relevant documents have been uploaded.",
           sources: [],
@@ -265,13 +265,13 @@ Instructions:
       await cache.set(cacheKey, response, 10 * 60 * 1000); // 10 minutes
     }
     return json({
-      success: true
+      success: true,
       data: response
     })
   } catch (error: any) {
     console.error("AI endpoint error:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to process AI request",
         details: error instanceof Error ? error.message: "Unknown error"
       },)

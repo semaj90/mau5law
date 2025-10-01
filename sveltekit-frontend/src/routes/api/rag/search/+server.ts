@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       query,
       results: uniqueResults
       analytics: {
@@ -289,7 +289,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const dbTest = await db.select({ count: sql<number>`count(*)` }).from(documents)
         const processingTime = Date.now() - startTime
         return json({
-          success: true
+          success: true,
           healthy: true
           database: {
             connected: true

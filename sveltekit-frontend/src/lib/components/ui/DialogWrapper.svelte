@@ -1,7 +1,6 @@
 <!-- Dialog Wrapper: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import * as Dialog from 'bits-ui';
   interface Props {
     open?: boolean;
     title?: string;
@@ -31,43 +30,86 @@
   }
 </script>
 
-<Dialog.Root bind:open>
-  <Dialog.Portal>
-    <Dialog.Overlay class="modal-overlay" />
-    <Dialog.Content class="modal-content">
-      {#if title}
-        <Dialog.Title class="modal-title">{title}</Dialog.Title>
+{#if open}
+  <!-- simple accessible modal replacing bits-ui Dialog.* usage -->
+  <!-- changed: expanded self-closing div to explicit element and use onclick (Svelte 5) -->
+  <div class="modal-overlay" role="presentation" onclick={handleClose}></div>
+  <div
+    class="modal-content"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby={title ? 'dialog-title' : undefined}
+    aria-describedby={description ? 'dialog-desc' : undefined}
+  >
+    {#if title}
+      <h2 id="dialog-title" class="modal-title">{title}</h2>
+    {/if}
+    {#if description}
+      <p id="dialog-desc" class="modal-description">{description}</p>
+    {/if}
+    <div class="modal-body">
+      {#if children}
+        {@render children()}
       {/if}
-      {#if description}
-        <Dialog.Description class="modal-description">{description}</Dialog.Description>
-      {/if}
-      <div class="modal-body">
-        {#if children}
-          {@render children()}
-        {/if}
-      </div>
-      <Dialog.Close class="modal-close" onclick={handleClose}>×</Dialog.Close>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+    </div>
+    <!-- changed: use onclick instead of deprecated on:click -->
+    <button class="modal-close" type="button" onclick={handleClose} aria-label="Close dialog">×</button>
+  </div>
+{/if}
 
 <style>
   :global(.modal-overlay) {
-    @apply fixed inset-0 bg-black/60 z-40;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 40;
   }
+
   :global(.modal-content) {
-    @apply fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2;
-    @apply bg-nier-surface border border-nier-border rounded-lg p-6 shadow-2xl;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 50;
+    width: 100%;
+    max-width: 28rem; /* approx. max-w-md */
+    transform: translate(-50%, -50%);
+    background: var(--nier-surface, #0f172a);
+    border: 1px solid var(--nier-border, #334155);
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 1.5rem; /* p-6 */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* shadow-2xl-ish */
   }
+
   :global(.modal-title) {
-    @apply text-xl font-bold text-nier-accent mb-2;
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 700; /* font-bold */
+    color: var(--nier-accent, #38bdf8);
+    margin-bottom: 0.5rem; /* mb-2 */
   }
+
   :global(.modal-description) {
-    @apply text-nier-text-muted mb-4;
+    color: var(--nier-text-muted, #cbd5e1);
+    margin-bottom: 1rem; /* mb-4 */
   }
+
   :global(.modal-close) {
-    @apply absolute top-4 right-4 w-8 h-8 rounded-full bg-nier-surface-light;
-    @apply hover:bg-nier-surface-lighter transition-color;
-    @apply flex items-center justify-center text-nier-text-muted hover:text-nier-white;
+    position: absolute;
+    top: 1rem; /* top-4 */
+    right: 1rem; /* right-4 */
+    width: 2rem; /* w-8 */
+    height: 2rem; /* h-8 */
+    border-radius: 9999px; /* rounded-full */
+    background: var(--nier-surface-light, #1f2937);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nier-text-muted, #94a3b8);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease; /* transition-color */
+  }
+
+  :global(.modal-close:hover) {
+    background: var(--nier-surface-lighter, #374151);
+    color: var(--nier-white, #ffffff);
   }
 </style>

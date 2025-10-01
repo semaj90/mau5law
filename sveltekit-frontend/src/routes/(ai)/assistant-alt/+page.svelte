@@ -1,157 +1,189 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { Dialog } from '$lib/components/ui/dialog';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import { cn } from '$lib/utils';
-  import type { ChatMessage, SystemStatus } from '$lib/types/ai';
+  // removed unused onMount import
+   import { Dialog } from '$lib/components/ui/dialog';
+   // enhanced-bits exports a collection; import as a namespace and select the Button constructor
+   import * as EnhancedBits from '$lib/components/ui/enhanced-bits';
+   const Button = (EnhancedBits as any).Button ?? (EnhancedBits as any).default?.Button ?? (EnhancedBits as any).default ?? (EnhancedBits as any);
+   import { cn } from '$lib/utils';
+   import type { ChatMessage, SystemStatus } from '$lib/types/ai';
+  // Minimal local types to satisfy TS for this page
+  type Person = {
+    id: string;
+    name: string;
+    type?: string;
+    timeline?: any[];
+    confidence?: number;
+    sources?: any[];
+    relationships?: any[];
+  };
 
-  // Props from server load function (optional)
-  let { data }: { data?: any } = $props();
+  // Normalized POI shape used by the UI (after RAG mapping)
+  type POI = {
+    id: string;
+    name: string;
+    type?: string;
+    activities?: any[];
+    confidence?: number;
+    evidenceSources?: any[];
+    relationships?: any[];
+  };
+  type RagAnalysisResponse = { persons?: Person[] };
 
-  // Svelte 5 runes - proper syntax
-  let messages = $state<ChatMessage[]>([]);
-  let currentMessage = $state('');
-  let isStreaming = $state(false);
-  let error = $state('');
-  let conversationId = $state<string | null>(null);
-  let userId = $state('mock-user-id'); // TODO: Get from auth
-  let systemStatus = $state<SystemStatus>({
-    gpu: false,
-    ollama: false,
-    enhancedRAG: false,
-    postgres: false,
-    neo4j: false
-  });
+   // Props from server load function (optional)
+   let { data }: { data?: any } = $props();
 
-  // Update userId if data is provided from server
-  $effect(() => {
-    if (data?.user?.id) {
-      userId = data.user.id;
-    }
-  });
+   // Svelte 5 runes - proper syntax
+   let messages = $state<ChatMessage[]>([]);
+   let currentMessage = $state('');
+   let isStreaming = $state(false);
+   let error = $state('');
+   let conversationId = $state<string | null>(null);
+   let userId = $state('mock-user-id'); // TODO: Get from auth
+   let systemStatus = $state<SystemStatus>({
+     gpu: false,
+     ollama: false,
+     enhancedRAG: false,
+     postgres: false,
+     neo4j: false
+   });
+
+   // Update userId if data is provided from server
+   $effect(() => {
+     if (data?.user?.id) {
+       userId = data.user.id;
+     }
+   });
   // POI Timeline State
-  let poiTimelineData = $state([]);
-  let selectedPOI = $state(null);
-  let showPOIDialog = $state(false);
-  let timelineLoading = $state(false);
-  let showTimeline = $state(false);
-  let evidenceReports = $state([]);
-  let ragAnalysisResults = $state([]);
-  // User Activity Timeline State
-  let userActivityTimeline = $state([]);
-  let activityLoading = $state(false);
-  let focusMetrics = $state({
-    sessionsToday: 0,
-    totalTime: 0,
-    casesAnalyzed: 0,
-    evidenceReviewed: 0
-  });
-  async function checkSystemStatus() {
-    try {
-      const res = await fetch('/api/v1/cluster/health');
-      if (!res.ok) {
-        throw new Error(`Health check failed: ${res.status}`);
-      }
-      const data = await res.json();
-      systemStatus = {
-        gpu: data?.services?.gpu === 'accelerated',
-        ollama: data?.services?.ollama === 'healthy',
-        enhancedRAG: data?.services?.enhancedRAG === 'running',
-        postgres: data?.services?.postgres === 'connected',
-        neo4j: data?.services?.neo4j === 'active'
-      }
-    } catch (e: unknown) {
-      console.error('Health check error:', e);
-      // Show fallback notice
-      const notice = document.createElement('div');
-      notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-      document.body.appendChild(notice);
-      setTimeout(() => notice.remove(), 3000);
-      // Set mock system status
-      systemStatus = {
-        gpu: false,
-        ollama: false,
-        enhancedRAG: false,
-        postgres: false,
-        neo4j: false
-      }
-      error = 'System health check failed - using mock status';
-    }
-  }
-  async function sendMessage() {
-    if (!currentMessage.trim() || isStreaming) return;
-    const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: currentMessage,
-      timestamp: new Date()
-    }
-    messages = [...messages, userMessage];
-    const messageToSend = currentMessage;
-    currentMessage = '';
-    isStreaming = true;
-    error = '';
-    try {
-      // Use proper Server-Sent Events (SSE) endpoint
-      const eventSource = new EventSource('/api/ai/chat-sse');
-      // Send message data via POST first to initiate the stream
+  let poiTimelineData = $state<POI[]>([]);
+  // selectedPOI should be a normalized POI or null — narrow type for template usage
+  let selectedPOI = $state<POI | null>(null);
+   let showPOIDialog = $state(false);
+   let timelineLoading = $state(false);
+   let showTimeline = $state(false);
+   let evidenceReports = $state([]);
+   // hold the full response shape (or null before any analysis)
+   let ragAnalysisResults = $state<RagAnalysisResponse | null>(null);
+   // User Activity Timeline State
+   let userActivityTimeline = $state([]);
+   let activityLoading = $state(false);
+   let focusMetrics = $state({
+     sessionsToday: 0,
+     totalTime: 0,
+     casesAnalyzed: 0,
+     evidenceReviewed: 0
+   });
+   async function checkSystemStatus() {
+     try {
+       const res = await fetch('/api/v1/cluster/health');
+       if (!res.ok) {
+         throw new Error(`Health check failed: ${res.status}`);
+       }
+       const data = await res.json();
+       systemStatus = {
+         gpu: data?.services?.gpu === 'accelerated',
+         ollama: data?.services?.ollama === 'healthy',
+         enhancedRAG: data?.services?.enhancedRAG === 'running',
+         postgres: data?.services?.postgres === 'connected',
+         neo4j: data?.services?.neo4j === 'active'
+       }
+     } catch (e: unknown) {
+       console.error('Health check error:', e);
+       // Show fallback notice
+       const notice = document.createElement('div');
+       notice.innerHTML = '⚠️ failure default to mock';
+       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+       document.body.appendChild(notice);
+       setTimeout(() => notice.remove(), 3000);
+       // Set mock system status
+       systemStatus = {
+         gpu: false,
+         ollama: false,
+         enhancedRAG: false,
+         postgres: false,
+         neo4j: false
+       }
+       error = 'System health check failed - using mock status';
+     }
+   }
+   async function sendMessage() {
+     if (!currentMessage.trim() || isStreaming) return;
+     const userMessage: ChatMessage = {
+       id: crypto.randomUUID(),
+       role: 'user',
+       content: currentMessage,
+       timestamp: new Date()
+     }
+     messages = [...messages, userMessage];
+     const messageToSend = currentMessage;
+     currentMessage = '';
+     isStreaming = true;
+     error = '';
+     try {
+      // Initiate stream by POSTing, then consume response body as a stream
       const initResponse = await fetch('/api/ai/chat-sse', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: messageToSend,
-          model: 'gemma3-legal:latest',
-          conversationId,
-          userId,
-          useRAG: true
-        })
-      });
-      if (!initResponse.ok) {
-        throw new Error(`HTTP ${initResponse.status}`);
-      }
-      const aiMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: '',
-        timestamp: new Date()
-      }
-      messages = [...messages, aiMessage];
-      // Handle SSE streaming with proper event handling
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({
+           message: messageToSend,
+           model: 'gemma3-legal:latest',
+           conversationId,
+           userId,
+           useRAG: true
+         })
+       });
+       if (!initResponse.ok) {
+         throw new Error(`HTTP ${initResponse.status}`);
+       }
+       const aiMessage: ChatMessage = {
+         id: crypto.randomUUID(),
+         role: 'assistant',
+         content: '',
+         timestamp: new Date()
+       }
+       messages = [...messages, aiMessage];
+      // Consume the response body stream (SSE framed as "data: ...\n\n")
       if (initResponse.body) {
         const reader = initResponse.body.getReader();
         const decoder = new TextDecoder();
+        let buffer = '';
         try {
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-            const chunk = decoder.decode(value);
-            // removed unused lines assignment
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
+            buffer += decoder.decode(value, { stream: true });
+            // SSE events end with a blank line
+            let sepIndex;
+            while ((sepIndex = buffer.indexOf('\n\n')) !== -1) {
+              const packet = buffer.slice(0, sepIndex);
+              buffer = buffer.slice(sepIndex + 2);
+              const lines = packet.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+              for (const line of lines) {
+                if (!line.startsWith('data:')) continue;
+                const payload = line.replace(/^data:\s*/, '');
+                if (payload === '[DONE]') {
+                  isStreaming = false;
+                  break;
+                }
                 try {
-                  const eventData = JSON.parse(line.slice(6));
+                  const eventData = JSON.parse(payload);
                   switch (eventData.type) {
                     case 'connection':
-                      if (eventData.conversationId) {
-                        conversationId = eventData.conversationId;
-                      }
+                      if (eventData.conversationId) conversationId = eventData.conversationId;
                       break;
                     case 'token':
-                      aiMessage.content = eventData.fullResponse || aiMessage.content + eventData.content;
-                      // Trigger Svelte 5 reactivity
+                      // append token or replace with fullResponse if provided
+                      aiMessage.content = eventData.fullResponse ?? (aiMessage.content + (eventData.content ?? ''));
                       messages = [...messages];
                       break;
                     case 'complete':
-                      aiMessage.content = eventData.fullRespon;
+                      aiMessage.content = eventData.fullResponse ?? aiMessage.content;
                       messages = [...messages];
                       isStreaming = false;
                       break;
                     case 'error':
-                      error = eventData.error;
+                      error = eventData.error ?? 'Unknown error';
                       isStreaming = false;
                       break;
                     case 'close':
@@ -159,168 +191,174 @@
                       break;
                   }
                 } catch (parseError) {
-                  console.warn('Failed to parse SSE data:', line);
+                  console.warn('Failed to parse SSE payload:', payload);
                 }
               }
+              if (!isStreaming) break;
             }
+            if (!isStreaming) break;
           }
         } catch (streamError) {
           console.error('SSE streaming error:', streamError);
           error = 'Stream connection failed';
+        } finally {
+          try { reader.releaseLock?.(); } catch {}
         }
       }
-    } catch (e: unknown) {
-      console.error('Send message error:', e);
-      // Show fallback notice
-      const notice = document.createElement('div');
-      notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-      document.body.appendChild(notice);
-      setTimeout(() => notice.remove(), 3000);
-      // Generate mock AI assistant response
-      const mockLegalAssistantResponses = [
-        "Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.",
-        "This appears to be an employment law matter. Mock legal assistant analysis suggests: The timeline of events indicates potential wrongful termination. I recommend gathering additional documentation and reviewing company policy violations.",
-        "For intellectual property concerns like this, prior art searches are essential. Mock recommendation: Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.",
-        "In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options."
-      ];
-      const randomMockResponse = mockLegalAssistantResponses[Math.floor(Math.random() * mockLegalAssistantResponses.length)];
-      const mockAiMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,
-        timestamp: new Date()
+     } catch (e: unknown) {
+       console.error('Send message error:', e);
+       // Show fallback notice
+       const notice = document.createElement('div');
+       notice.innerHTML = '⚠️ failure default to mock';
+       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+       document.body.appendChild(notice);
+       setTimeout(() => notice.remove(), 3000);
+       // Generate mock AI assistant response
+       const mockLegalAssistantResponses = [
+         "Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.",
+         "This appears to be an employment law matter. Mock legal assistant analysis suggests: The timeline of events indicates potential wrongful termination. I recommend gathering additional documentation and reviewing company policy violations.",
+         "For intellectual property concerns like this, prior art searches are essential. Mock recommendation: Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.",
+         "In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options."
+       ];
+       const randomMockResponse = mockLegalAssistantResponses[Math.floor(Math.random() * mockLegalAssistantResponses.length)];
+       const mockAiMessage: ChatMessage = {
+         id: crypto.randomUUID(),
+         role: 'assistant',
+         content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,
+         timestamp: new Date()
+       }
+       messages = [...messages, mockAiMessage];
+       error = '';
+     } finally {
+       isStreaming = false;
+     }
+   }
+   async function handleQuickQuery(query: string) {
+     currentMessage = query;
+     await sendMessage();
+   }
+   function handleKeydown(e: KeyboardEvent) {
+     if (e.key === 'Enter' && !e.shiftKey) {
+       e.preventDefault();
+       sendMessage();
+     }
+   }
+   function clearChat() {
+     messages = [];
+     error = '';
+   }
+   // Semantic RAG-based POI Timeline Functions
+   async function loadEvidenceReports() {
+     try {
+      const resp = await fetch('/api/v1/evidence/reports');
+      if (!resp.ok) throw new Error(`Evidence reports API failed: ${resp.status}`);
+      evidenceReports = await resp.json();
+     } catch (e) {
+       console.error('Failed to load evidence reports:', e);
+       // Show fallback notice
+       const notice = document.createElement('div');
+       notice.innerHTML = '⚠️ failure default to mock';
+       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+       document.body.appendChild(notice);
+       setTimeout(() => notice.remove(), 3000);
+       // Set mock evidence reports
+       evidenceReports = [
+         {
+           id: 'mock-evidence-001',
+           title: 'Mock Police Report - Employment Dispute',
+           type: 'police_report',
+           date: '2024-01-15',
+           content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
+           confidence: 0.85,
+         },
+         {
+           id: 'mock-evidence-002',
+           title: 'Mock Witness Statement - Contract Violation',
+           type: 'witness_statement',
+           date: '2024-01-16',
+           content: 'Mock evidence: Witness account of contract negotiation meeting.',
+           confidence: 0.92,
+         }
+       ];
+     }
+   }
+   async function analyzePersonsOfInterest() {
+     if (evidenceReports.length === 0) {
+       await loadEvidenceReports();
+     }
+     timelineLoading = true;
+     try {
+       // Semantic RAG analysis to extract POI from evidence reports
+       const ragResponse = await fetch('/api/v1/rag/analyze-poi', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({
+           evidenceReports: evidenceReports,
+           analysisType: 'semantic_entity_extraction',
+           includeTimeline: true
+         })
+       });
+       if (ragResponse.ok) {
+         // Cast JSON to the expected typed shape
+         const parsed = (await ragResponse.json()) as RagAnalysisResponse;
+         // store the parsed object (typed) — not an array
+         ragAnalysisResults = parsed;
+        // Safely extract persons array and map to the normalized POI shape
+        poiTimelineData = (parsed?.persons ?? []).map((person: Person) => {
+          const poi: POI = {
+            id: person.id,
+            name: person.name,
+            type: person.type ?? 'person',
+            activities: person.timeline ?? [],
+            confidence: person.confidence ?? 0.8,
+            evidenceSources: person.sources ?? [],
+            relationships: person.relationships ?? []
+          };
+          return poi;
+        });
+         showTimeline = true;
+       }
+     } catch (e) {
+       error = 'Failed to analyze persons of interest';
+       console.error('POI analysis error:', e);
+     } finally {
+       timelineLoading = false;
+     }
+   }
+   async function generateUserActivityTimeline() {
+     activityLoading = true;
+     try {
+      const resp = await fetch(`/api/v1/user/activity?userId=${encodeURIComponent(String(userId))}`);
+      if (!resp.ok) throw new Error(`User activity API failed: ${resp.status}`);
+      const data = await resp.json();
+      userActivityTimeline = data.timeline || [];
+      focusMetrics = {
+        sessionsToday: data.metrics?.sessionsToday || 0,
+        totalTime: data.metrics?.totalTime || 0,
+        casesAnalyzed: data.metrics?.casesAnalyzed || 0,
+        evidenceReviewed: data.metrics?.evidenceReviewed || 0
       }
-      messages = [...messages, mockAiMessage];
-      error = '';
-    } finally {
-      isStreaming = false;
-    }
-  }
-  async function handleQuickQuery(query: string) {
-    currentMessage = query;
-    await sendMessage();
-  }
-  function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }
-  function clearChat() {
-    messages = [];
-    error = '';
-  }
-  // Semantic RAG-based POI Timeline Functions
-  async function loadEvidenceReports() {
-    try {
-      // removed unused response assignment
-      if (!response.ok) {
-        throw new Error(`Evidence reports API failed: ${response.status}`);
-      }
-      evidenceReports = await response.json();
-    } catch (e) {
-      console.error('Failed to load evidence reports:', e);
-      // Show fallback notice
-      const notice = document.createElement('div');
-      notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-      document.body.appendChild(notice);
-      setTimeout(() => notice.remove(), 3000);
-      // Set mock evidence reports
-      evidenceReports = [
-        {
-          id: 'mock-evidence-001',
-          title: 'Mock Police Report - Employment Dispute',
-          type: 'police_report',
-          date: '2024-01-15',
-          content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
-          confidence: 0.85,
-        },
-        {
-          id: 'mock-evidence-002',
-          title: 'Mock Witness Statement - Contract Violation',
-          type: 'witness_statement',
-          date: '2024-01-16',
-          content: 'Mock evidence: Witness account of contract negotiation meeting.',
-          confidence: 0.92,
-        }
-      ];
-    }
-  }
-  async function analyzePersonsOfInterest() {
-    if (evidenceReports.length === 0) {
-      await loadEvidenceReports();
-    }
-    timelineLoading = true;
-    try {
-      // Semantic RAG analysis to extract POI from evidence reports
-      const ragResponse = await fetch('/api/v1/rag/analyze-poi', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          evidenceReports: evidenceReports,
-          analysisType: 'semantic_entity_extraction',
-          includeTimeline: true
-        })
-      });
-      if (ragResponse.ok) {
-        // Cast JSON to the expected typed shape
-        ragAnalysisResults = (await ragResponse.json()) as RagAnalysisResponse;
-        // Safely extract persons array and map to the internal POI shape
-        poiTimelineData = (ragAnalysisResults?.persons ?? []).map((person: Person) => ({
-          id: person.id,
-          name: person.name,
-          type: person.type ?? 'person',
-          activities: person.timeline ?? [],
-          confidence: person.confidence ?? 0.8,
-          evidenceSources: person.sources ?? [],
-          relationships: person.relationships ?? []
-        }));
-        showTimeline = true;
-      }
-    } catch (e) {
-      error = 'Failed to analyze persons of interest';
-      console.error('POI analysis error:', e);
-    } finally {
-      timelineLoading = false;
-    }
-  }
-  async function generateUserActivityTimeline() {
-    activityLoading = true;
-    try {
-      // removed unused response assignment
-      if (response.ok) {
-        const data = await response.json();
-        userActivityTimeline = data.timeline || [];
-        focusMetrics = {
-          sessionsToday: data.metrics?.sessionsToday || 0,
-          totalTime: data.metrics?.totalTime || 0,
-          casesAnalyzed: data.metrics?.casesAnalyzed || 0,
-          evidenceReviewed: data.metrics?.evidenceReviewed || 0
-        }
-      }
-    } catch (e) {
-      console.error('Failed to generate user activity timeline:', e);
-    } finally {
-      activityLoading = false;
-    }
-  }
-  function selectPOI(poi: unknown) {
-    selectedPOI = poi;
-    showPOIDialog = true;
-  }
-  function closePOIDetails() {
-    selectedPOI = null;
-    showPOIDialog = false;
-  }
-  $effect(() => {
-    checkSystemStatus();
-    loadEvidenceReports();
-    // Check system status every 30 seconds
-    const interval = setInterval(checkSystemStatus, 30000);
-    return () => clearInterval(interval);
-  });
+     } catch (e) {
+       console.error('Failed to generate user activity timeline:', e);
+     } finally {
+       activityLoading = false;
+     }
+   }
+   function selectPOI(poi: Person | null) {
+     selectedPOI = poi;
+     showPOIDialog = true;
+   }
+   function closePOIDetails() {
+     selectedPOI = null;
+     showPOIDialog = false;
+   }
+   $effect(() => {
+     checkSystemStatus();
+     loadEvidenceReports();
+     // Check system status every 30 seconds
+     const interval = setInterval(checkSystemStatus, 30000);
+     return () => clearInterval(interval);
+   });
 </script>
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 p-6">
   <div class="max-w-6xl mx-auto">
@@ -367,39 +405,35 @@
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            onclick={() =>
-handleQuickQuery('Explain contract formation requirements')}
+            onclick={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
           >
-            {#snippet children()}Contract Law{/snippet}
-</Button>
+            Contract Law
+          </Button>
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            onclick={() =>
-handleQuickQuery('What is the chain of custody for evidence?')}
+            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
           >
-            {#snippet children()}Evidence Rules{/snippet}
-</Button>
+            Evidence Rules
+          </Button>
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            onclick={() =>
-handleQuickQuery('Explain liability limitations in contracts')}
+            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
           >
-            {#snippet children()}Liability{/snippet}
-</Button>
+            Liability
+          </Button>
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            onclick={() =>
-handleQuickQuery('What are the elements of negligence?')}
+            onclick={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
           >
-            {#snippet children()}Tort Law{/snippet}
-</Button>
+            Tort Law
+          </Button>
         </div>
       {/snippet}
     </div>
@@ -415,9 +449,10 @@ handleQuickQuery('What are the elements of negligence?')}
                 <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
                   {isStreaming ? 'Streaming...' : 'Ready'}
                 </span>
-                <Button variant="ghost" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
-{#snippet children()}Clear{/snippet}
-</Button>
+                <Button variant="ghost" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn"
+                  onclick={clearChat} disabled={isStreaming}>
+                  Clear
+                </Button>
               </div>
             </div>
             <!-- Messages Area -->
@@ -476,16 +511,14 @@ handleQuickQuery('What are the elements of negligence?')}
                   disabled={!currentMessage.trim() || isStreaming}
                   class="px-6 bits-btn bits-btn"
                 >
-{#snippet children()}
-                    {#if isStreaming}
-                      <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                      </svg>
-                    {:else}
-                      Send
-                    {/if}
-                  {/snippet}
-</Button>
+                  {#if isStreaming}
+                    <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                  {:else}
+                    Send
+                  {/if}
+                </Button>
               </div>
             </div>
           {/snippet}
@@ -504,7 +537,7 @@ handleQuickQuery('What are the elements of negligence?')}
                 <Button
                   variant="ghost"
                   size="sm"
-                  onclick={() => showTimeline = false}
+                  on:click={() => showTimeline = false}
                   class="nes-btn bits-btn"
                 >
                   {#snippet children()}
@@ -673,11 +706,11 @@ handleQuickQuery('What are the elements of negligence?')}
                 <Button
                   variant="ghost"
                   size="sm"
-                  onclick={checkSystemStatus}
+                  on:click={checkSystemStatus}
                   class="w-full justify-start bits-btn bits-btn"
                   fullWidth={true}
                 >
-{#snippet children()}
+                  {#snippet children()}
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
@@ -688,8 +721,7 @@ handleQuickQuery('What are the elements of negligence?')}
                   class="bits-btn w-full justify-start"
                   variant="ghost"
                   size="sm"
-                  onclick={() =>
-window.open('/api/v1/cluster/health', '_blank')}
+                  on:click={() => window.open('/api/v1/cluster/health', '_blank')}
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -713,7 +745,7 @@ window.open('/api/v1/cluster/health', '_blank')}
               </h3>
               <div class="space-y-2">
                 <Button class="nes-btn is-primary w-full justify-start bits-btn"
-                  onclick={analyzePersonsOfInterest}
+                 on:click={analyzePersonsOfInterest}
                   disabled={timelineLoading}
                   fullWidth={true}
                 >
@@ -733,12 +765,12 @@ window.open('/api/v1/cluster/health', '_blank')}
                 <Button
                   variant="ghost"
                   size="sm"
-                  onclick={generateUserActivityTimeline}
+                 on:click={generateUserActivityTimeline}
                   disabled={activityLoading}
                   class="w-full justify-start bits-btn"
                   fullWidth={true}
                 >
-{#snippet children()}
+                  {#snippet children()}
                     {#if activityLoading}
                       <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -814,7 +846,7 @@ window.open('/api/v1/cluster/health', '_blank')}
             onclick={closePOIDetails}
             class="bits-btn"
           >
-{#snippet children()}
+            {#snippet children()}
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
@@ -916,7 +948,7 @@ window.open('/api/v1/cluster/health', '_blank')}
           <Button
             variant="ghost"
             size="sm"
-            onclick={closePOIDetails}
+            on:click={closePOIDetails}
             class="bits-btn"
           >
             Close

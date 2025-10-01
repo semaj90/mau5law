@@ -283,7 +283,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     // For now, we'll use the service method
     // await redis.del(historyKey, contextKey, summaryKey)
     return json({
-      success: true
+      success: true,
       message: `Chat history cleared for session: ${sessionId}`,
       sessionId
     })

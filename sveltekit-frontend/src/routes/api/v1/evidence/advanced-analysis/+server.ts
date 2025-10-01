@@ -103,7 +103,7 @@ async function handleAnalyzeEvidence(data: any) {
       })
     }
     return json({
-      success: true
+      success: true,
       analysisId,
       results: analysisResult
       evidenceId,
@@ -192,7 +192,7 @@ async function handleBatchAnalyze(data: any) {
         evidenceId,
         analysisId,
         results: analysisResult
-        success: true
+        success: true,
       })
     } catch (error) {
       errors.push({
@@ -217,7 +217,7 @@ async function handleBatchAnalyze(data: any) {
     })
   }
   return json({
-    success: true
+    success: true,
     batchId,
     results,
     errors,
@@ -243,7 +243,7 @@ async function handleGetAnalysis(data: any) {
   }
   const results = await query.limit(10)
   return json({
-    success: true
+    success: true,
     results: results.map(result => ({,
       analysisId: result.analysisId,
       evidenceId: result.evidenceId,
@@ -314,7 +314,7 @@ async function handleSynthesis(data: any) {
       })
     }
     return json({
-      success: true
+      success: true,
       synthesisId,
       results: synthesisResult
       evidenceIds,
@@ -380,7 +380,7 @@ async function handleRealTimeAnalysis(data: any) {
     }
   })
   return json({
-    success: true
+    success: true,
     evidenceId,
     results: quickAnalysis
     realTime: true

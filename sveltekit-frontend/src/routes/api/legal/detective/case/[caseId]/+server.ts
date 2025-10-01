@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ params }) => {
       )
     }
     return json({
-      success: true
+      success: true,
       case: caseData.case,
       suspects: caseData.suspects,
       timeline: caseData.timeline,
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     // In production, this would update the database
     const updatedCase = await updateDetectiveCase(caseId, updates)
     return json({
-      success: true
+      success: true,
       case: updatedCase
       message: 'Case updated successfully'
     })

@@ -14,13 +14,21 @@ https://svelte.dev/e/js_parse_error -->
   import { dimensionalCache } from '$lib/ai/dimensional-cache-engine';
   import { webgpuAI } from '$lib/webgpu/webgpu-ai-engine';
   // Props
-  let { userId = $bindable()  }: { userId = $bindable() : any } = $props(); // string = 'user123'
-  let { initialContext = $bindable()  }: { initialContext = $bindable() : any } = $props(); // string = 'kernel attention'
-  let { enableWebGPU = $bindable()  }: { enableWebGPU = $bindable() : any } = $props(); // boolean = true
-  let { enableModularSwitching = $bindable()  }: { enableModularSwitching = $bindable() : any } = $props(); // boolean = true
+  let {
+    userId = $bindable('user123'),
+    initialContext = $bindable('kernel attention'),
+    enableWebGPU = $bindable(true),
+    enableModularSwitching = $bindable(true)
+  }: {
+    userId?: string;
+    initialContext?: string;
+    enableWebGPU?: boolean;
+    enableModularSwitching?: boolean;
+  } = $props();
   // State
-  let aiActor = $state<anylet currentComputation: any  | null>(null); const data = null);
-  let recommendations = $state<any >(null);
+  let aiActor = $state<any>(null);
+  let currentComputation = $state<any>(null);
+  let recommendations = $state<any>(null);
   let isProcessing = $state(false);
   let processingTime = $state(0);
   let webgpuSupported = $state(false);
@@ -44,13 +52,13 @@ https://svelte.dev/e/js_parse_error -->
         sessionId: `session_${Date.now()}`,
         queuedComputations: [],
         idleTime: 0,
-        isOnline: true
-        rabbitMQConnected: true
+        isOnline: true,
+        rabbitMQConnected: true,
         recommendations: {
           similar: [],
           suggestions: [],
           didYouMean: [],
-          othersSearched: [];
+          othersSearched: []
         },
         computationResults: []
       }
@@ -59,20 +67,22 @@ https://svelte.dev/e/js_parse_error -->
     // Subscribe to state changes
     aiActor.subscribe((state: any) => {
       isProcessing = state.matches('computing') || state.matches('loadingRecommendations');
-      currentComputation = state.context.currentComputatio;
-      recommendations = state.context.recommendation;
-      computationHistory = state.context.computationResult;
+      currentComputation = state.context.currentComputation;
+      recommendations = state.context.recommendations;
+      computationHistory = state.context.computationResults;
       error = state.context.errorMessage || null;
     });
     // Check WebGPU support
-    webgpuSupported = (await webgpuAI.getCapabilities()).webgpu.isSupported;
+    webgpuAI.getCapabilities().then(caps => {
+      webgpuSupported = caps.webgpu.isSupported;
+    });
     // Load initial recommendations
     loadRecommendations();
   });
   async function processComputation() {
     if (isProcessing) return;
-    const data = inputData.split.map(Number);
-    const weights = attentionWeights.split.map(Number);
+    const data = inputData.split(',').map(Number);
+    const weights = attentionWeights.split(',').map(Number);
     const startTime = performance.now();
     try {
       if (useT5) {
@@ -88,8 +98,8 @@ https://svelte.dev/e/js_parse_error -->
           results = {
             result: `Processed: ${t5Text.substring(0, 50)}... (${t5Task})`,
             processingTime: Math.random() * 100 + 50,
-            recommendations: ['Use WebGPU for faster processing', 'Try different T5 tasks'];
-          }
+            recommendations: ['Use WebGPU for faster processing', 'Try different T5 tasks']
+          };
         }
       } else {
         // Dimensional Array Processing
@@ -122,39 +132,39 @@ https://svelte.dev/e/js_parse_error -->
             result: dimensionalArray.data,
             processingTime: Math.random() * 50 + 20,
             gpuMemoryUsed: dataArray.byteLength,
-            recommendations: ['Enable WebGPU for GPU acceleration', 'Try different kernel sizes'];
-          }
+            recommendations: ['Enable WebGPU for GPU acceleration', 'Try different kernel sizes']
+          };
         }
       }
       processingTime = performance.now() - startTime;
       // Send to state machine
       aiActor.send({
         type: 'COMPUTATION_COMPLETE',
-        result: result;
+        result: results
       });
     } catch (err: any) {
-      error = err.messag;
+      error = err.message;
       aiActor.send({
         type: 'COMPUTATION_ERROR',
-        error: err.messag;
+        error: err.message
       });
     }
   }
   async function loadRecommendations() {
     aiActor.send({
       type: 'GET_RECOMMENDATIONS',
-      context: initialContext;
+      context: initialContext
     });
     // Also get modular recommendations
     const modularRecs = webgpuAI.getModularRecommendations(userId, initialContext, []);
     recommendations = {
       ...recommendations,
       ...modularRecs
-    }
+    };
   }
   function switchModule(moduleName: string) {
     if (!enableModularSwitching) return;
-    currentModule = moduleNam;
+    currentModule = moduleName;
     console.log(`🔄 Switching to ${moduleName} module`);
     // Reset relevant state
     results = null;
@@ -195,7 +205,7 @@ https://svelte.dev/e/js_parse_error -->
       const lastComputation = computationHistory[computationHistory.length - 1];
       console.log('🔄 Resuming from:', lastComputation);
       aiActor.send({
-        type: 'PICK_UP_WHERE_LEFT_OFF';
+        type: 'PICK_UP_WHERE_LEFT_OFF'
       });
     }
   }
@@ -203,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
   function formatArray(arr: any): string {
     if (!arr) return '';
     if (Array.isArray(arr)) {
-      return arr.slice.map(n => n.toFixed(3)).join(', ') + (arr.length > 8 ? '...' : '');
+      return arr.slice(0, 8).map(n => n.toFixed(3)).join(', ') + (arr.length > 8 ? '...' : '');
     }
     if (arr.constructor === Float32Array) {
       return Array.from(arr.slice(0, 8)).map(n => n.toFixed(3)).join(', ') + (arr.length > 8 ? '...' : '');
@@ -222,7 +232,7 @@ https://svelte.dev/e/js_parse_error -->
         <span class="text-sm">WebGPU {webgpuSupported ? 'Supported' : 'Not Available'}</span>
       </div>
       <div class="flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full {aiActor?.getSnapshot.context.isOnline ? 'bg-green-500' : 'bg-red-500'}"></div>
+        <div class="w-3 h-3 rounded-full {aiActor?.getSnapshot().context.isOnline ? 'bg-green-500' : 'bg-red-500'}"></div>
         <span class="text-sm">Online Status</span>
       </div>
     </div>
@@ -239,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
               : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}"
             onclick={() => switchModule(module)}
           >
-            {module.replace.replace(/\b\w/g, l => l.toUpperCase())}
+            {module.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
           </button>
         {/each}
       </div>

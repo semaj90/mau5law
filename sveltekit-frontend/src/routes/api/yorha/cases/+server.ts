@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       .limit(limit)
       .offset(offset)
     return json({
-      success: true
+      success: true,
       data: casesList
       pagination: {
         limit,
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       })
     // Return created case
     return json({
-      success: true
+      success: true,
       data: insertedCase[0]
       message: 'Case created successfully'
     }, { status: 201 })
@@ -152,7 +152,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         updatedAt: cases.updatedAt
       })
     return json({
-      success: true
+      success: true,
       data: updatedCase[0]
       message: 'Case updated successfully'
     })
@@ -192,7 +192,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       })
       .where(eq(cases.id, caseId))
     return json({
-      success: true
+      success: true,
       message: 'Case deleted successfully'
     })
   } catch (err: any) {

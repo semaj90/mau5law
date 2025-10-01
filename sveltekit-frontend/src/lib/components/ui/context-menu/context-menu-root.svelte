@@ -1,8 +1,12 @@
 <script lang="ts">
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
+  import type { Snippet } from 'svelte';
 
   let { onOpenChange }: { onOpenChange?: (open: boolean) => void } = $props();
+
+  // children Snippet for Svelte 5 runes
+  let { children }: { children?: Snippet } = $props();
 
   const isOpen = writable(false);
   const position = writable({ x: 0, y: 0 });
@@ -23,7 +27,7 @@
 </script>
 
 <div class="context-menu-root space-y-4">
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>/* @unocss-include */

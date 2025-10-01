@@ -180,7 +180,7 @@ class GPUVectorProcessor {
         const response = await fetch('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             model: 'nomic-embed-text',
             prompt: text
           })
@@ -202,7 +202,7 @@ class QdrantService {
       await fetch('http://localhost:6333/collections/legal_evidence/points', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           points: [{
             id,
             vector: embedding
@@ -229,7 +229,7 @@ class QdrantService {
       const response = await fetch('http://localhost:6333/collections/legal_evidence/points/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           vector: queryVector;
           filter: filters
           limit,
@@ -425,7 +425,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (err instanceof Response) throw err
     const correlationId = uuidv4()
     return json({
-      success: false
+      success: false,
       error: 'failure default to mock',
       data: [{,
         id: 'mock-upload-evidence',
@@ -610,7 +610,7 @@ async function performEnhancedAIAnalysis(
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: `As a legal AI assistant for prosecutors, analyze this evidence with style: ${summaryType}.
 ${styleInstruction}
@@ -840,7 +840,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     console.error('File deletion error:', err)
     return json({
-      success: false
+      success: false,
       error: 'failure default to mock',
       data: {
         id: fileId || 'mock-file-id',

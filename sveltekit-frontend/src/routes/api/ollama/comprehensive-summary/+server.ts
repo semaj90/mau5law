@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const summaryResponse = await comprehensiveOllamaSummarizer.summarize(body)
     // 4. Return the successful response (standard envelope).
     return json({
-      success: true
+      success: true,
       data: summaryResponse
       metadata: {
         timestamp: new Date().toISOString(),
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
       errorMessage = 'Failed to process request. Please check server logs.'
     }
     return json({
-      success: false
+      success: false,
       error: { code: 'INTERNAL_ERROR', message: errorMessage },
       metadata: {
         timestamp: new Date().toISOString(),

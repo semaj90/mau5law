@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     await tauriLLM.initialize()
     if (!tauriLLM.isAvailable()) {
       return json({
-        success: false
+        success: false,
         error: "Local LLM not available",
         fallback: true
         message:
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
     })
     const inferenceTime = Date.now() - startTime
     return json({
-      success: true
+      success: true,
       data: {
         response,
         metadata: {
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error("Gemma3 test failed:", error)
     return json()
       {
-        success: false
+        success: false,
         error: "Gemma3 inference failed",
         details: error instanceof Error ? error.message: "Unknown error",
         troubleshooting: [
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async () => {
       initialized: true
     }
     return json({
-      success: true
+      success: true,
       status,
       message: status.available
         ? "Gemma3 local LLM is ready"
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       status: {
         available: false
         initialized: false

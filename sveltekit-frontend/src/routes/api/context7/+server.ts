@@ -62,9 +62,9 @@ export const GET: RequestHandler = async () => {
     // Get orchestrator Context7 integration status
     const orchestratorStatus = databaseOrchestrator.getStatus()
     return json({
-      success: true
+      success: true,
       context7_status: {
-        mcp_servers: healthChecks
+        mcp_servers: healthChecks,
         healthy_count: healthChecks.filter((h) => h.status === 'healthy').length,
         total_count: healthChecks.length,
         // Provide a derived integration flag (placeholder until real integration flag added)
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'custom_tool':
         if (!server || !tool) {
           return json({
-              success: false
+              success: false,
               error: 'Server and tool parameters required for custom tool calls'
             },)
             { status: 400 }
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await syncWithOrchestrator(data)
       default:
         return json({,
-            success: false
+            success: false,
             error: `Unknown action: ${action}`
           },)
           { status: 400 }
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 }
 // Helper function to call MCP tools
-async function callMCPTool(server: string, tool: string, data: any): Promise<any> {
+async function callMCPTool(server: string, tool: string, data: any): Promise<any> {,
   try {
     const endpoint = MCP_ENDPOINTS[server as keyof typeof MCP_ENDPOINTS]
     if (!endpoint) {
@@ -149,7 +149,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
         'User-Agent': 'Context7-API/1.0'
       },
       signal: controller.signal,
-      body: JSON.stringify({,
+      body: JSON.stringify({
         name: tool;
         arguments: data
       })
@@ -165,7 +165,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
       {
         mcp_server: server
         tool_name: tool
-        input_data: data
+        input_data: data,
         result,
         timestamp: new Date(),
         status: 'completed'
@@ -173,7 +173,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
       'mcp_tool_calls'
     )
     return json({
-      success: true
+      success: true,
       server,
       tool,
       result,
@@ -185,7 +185,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
       {
         mcp_server: server
         tool_name: tool
-        input_data: data
+        input_data: data,
         error: error.message,
         timestamp: new Date(),
         status: 'failed'
@@ -196,7 +196,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
   }
 }
 // Sync Context7 results with database orchestrator
-async function syncWithOrchestrator(data: any): Promise<any> {
+async function syncWithOrchestrator(data: any): Promise<any> {,
   try {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout for sync operations
@@ -209,7 +209,7 @@ async function syncWithOrchestrator(data: any): Promise<any> {
         'User-Agent': 'Context7-API/1.0'
       },
       signal: controller.signal,
-      body: JSON.stringify({,
+      body: JSON.stringify({
         name: 'generate_recommendations',
         arguments: data
       })
@@ -226,7 +226,7 @@ async function syncWithOrchestrator(data: any): Promise<any> {
             confidence: rec.confidence,
             error_pattern: rec.error,
             source: 'context7_mcp',
-            metadata: data
+            metadata: data,
             created_at: new Date()
           },
           'recommendations'
@@ -234,14 +234,14 @@ async function syncWithOrchestrator(data: any): Promise<any> {
         // Trigger orchestrator event
         databaseOrchestrator.emit('context7:recommendation_processed', {
           recommendation: rec
-          source_data: data
+          source_data: data,
         })
       }
     }
     const processedCount = Array.isArray((recommendationResponse as any)?.result?.recommendations)
       ? (recommendationResponse as any).result.recommendations.length: 0
     return json({
-      success: true
+      success: true,
       message: 'Context7 sync completed',
       processed_recommendations: processedCount
       timestamp: new Date().toISOString()
@@ -249,7 +249,7 @@ async function syncWithOrchestrator(data: any): Promise<any> {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },

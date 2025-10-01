@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
         // Set session cookie
         setSessionCookie({ cookies } as any, authResponse.sessionId, expiresAt)
         return json({
-            success: true
+            success: true,
             user: {
                 id: userId
                 email: authResponse.profile?.email,

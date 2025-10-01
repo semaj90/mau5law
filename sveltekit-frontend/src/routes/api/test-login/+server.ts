@@ -18,7 +18,7 @@ export async function POST({ request }): Promise<any> {
     if (!existingUser.length) {
       console.log(`[TEST LOGIN] User not found: ${email}`)
       return json({
-        success: false
+        success: false,
         error: 'User not found',
         step: 'user_lookup'
       })
@@ -28,7 +28,7 @@ export async function POST({ request }): Promise<any> {
     if (!user.hashedPassword) {
       console.log(`[TEST LOGIN] User has no password hash: ${email}`)
       return json({
-        success: false
+        success: false,
         error: 'User has no password set',
         step: 'password_check'
       })
@@ -36,7 +36,7 @@ export async function POST({ request }): Promise<any> {
     if (!user.isActive) {
       console.log(`[TEST LOGIN] User is inactive: ${email}`)
       return json({
-        success: false
+        success: false,
         error: 'Account is deactivated',
         step: 'active_check'
       })
@@ -48,7 +48,7 @@ export async function POST({ request }): Promise<any> {
     console.log(`[TEST LOGIN] Password verification result: ${validPassword}`)
     if (!validPassword) {
       return json({
-        success: false
+        success: false,
         error: 'Invalid password',
         step: 'password_verification'
       })
@@ -60,7 +60,7 @@ export async function POST({ request }): Promise<any> {
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
     console.log(`[TEST LOGIN] Session created: ${sessionId}, expires: ${expiresAt}`)
     return json({
-      success: true
+      success: true,
       message: 'Login successful',
       user: {
         id: user.id,
@@ -75,7 +75,7 @@ export async function POST({ request }): Promise<any> {
   } catch (error: any) {
     console.error('[TEST LOGIN] Error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       step: 'general_error'
     }, { status: 500 })

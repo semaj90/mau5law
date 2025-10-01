@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       downloadUrl: `/api/reports/${reportId}/export/pdf/download?token=${Date.now()}`, // Placeholder URL
     }
     return json({
-      success: true
+      success: true,
       message: "PDF export initiated successfully",
       metadata: pdfMetadata
       note: "This is a mock response. In production, actual PDF generation would occur here."

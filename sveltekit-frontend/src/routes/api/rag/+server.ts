@@ -162,7 +162,7 @@ async function handleSearch(request: Request): Promise<any> {
         })
       })
       return json({
-        success: true
+        success: true,
         query,
         searchType,
         results: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results,
@@ -195,7 +195,7 @@ async function handleSearch(request: Request): Promise<any> {
       }
       const localResult = await localSearchResponse.json()
       return json({
-        success: true
+        success: true,
         query,
         searchType,
         results: localResult.results,
@@ -298,7 +298,7 @@ async function handleStatus(): Promise<any> {
     const stats = statsResult.status === "fulfilled" ? statsResult.value: null
     const isHealthy = health?.status === "healthy"
     return json({
-      success: true
+      success: true,
       backend: {
         url: RAG_BACKEND_URL
         healthy: isHealthy
@@ -313,7 +313,7 @@ async function handleStatus(): Promise<any> {
   } catch (err: any) {
     console.error("Status check error:", err)
     return json({
-      success: false
+      success: false,
       backend: {
         url: RAG_BACKEND_URL
         healthy: false
@@ -368,7 +368,7 @@ export const GET: RequestHandler = async ({ url }) => {
             })
           })
           return json({
-            success: true
+            success: true,
             query,
             results: searchResult.results,
             total: searchResult.total,
@@ -388,7 +388,7 @@ export const GET: RequestHandler = async ({ url }) => {
           }
           const localResult = await localResponse.json()
           return json({
-            success: true
+            success: true,
             query,
             results: localResult.results,
             total: localResult.results?.length || 0,

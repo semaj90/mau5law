@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'health':
         const health = await getSystemHealth()
         return json({
-          success: true
+          success: true,
           action: 'health-check',
           data: health
           metadata: {
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'status':
         const status = mockIntegration.getIntegrationStatus()
         return json({
-          success: true
+          success: true,
           action: 'integration-status',
           data: status
           metadata: {
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
         await mockIntegration.initializeFullIntegration()
         const services = mockIntegration.getIntegrationStatus()
         return json({
-          success: true
+          success: true,
           action: 'service-detection',
           data: services
           metadata: {
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`,
           availableActions: ['health', 'status', 'services']
         }, { status: 400 })
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('Phase 13 Integration API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Integration API failed',
       message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
@@ -157,7 +157,7 @@ export const POST: RequestHandler = async ({ request }) => {
         console.log('🚀 Manual Phase 13 initialization requested')
         const initResult = await mockIntegration.initializeFullIntegration()
         return json({
-          success: true
+          success: true,
           action: 'initialize',
           data: initResult
           metadata: {
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'apply-suggestion':
         if (!suggestion) {
           return json({
-            success: false
+            success: false,
             error: 'Suggestion is required for apply-suggestion action'
           }, { status: 400 })
         }
@@ -187,14 +187,14 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'configure':
         if (!config) {
           return json({
-            success: false
+            success: false,
             error: 'Configuration is required for configure action'
           }, { status: 400 })
         }
         console.log('⚙️ Configuring Phase 13 integration:', config)
         const configResult = await mockIntegration.initializeFullIntegration()
         return json({
-          success: true
+          success: true,
           action: 'configure',
           data: configResult
           metadata: {
@@ -208,7 +208,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const testResult = await mockIntegration.initializeFullIntegration()
         const detailedStatus = mockIntegration.getIntegrationStatus()
         return json({
-          success: true
+          success: true,
           action: 'test-services',
           data: {
             ...testResult,
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request }) => {
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`,
           availableActions: ['initialize', 'apply-suggestion', 'configure', 'test-services']
         }, { status: 400 })
@@ -229,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Phase 13 Integration POST error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Integration configuration failed',
       message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
@@ -251,7 +251,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.log('🔄 Updating Phase 13 integration settings')
     const updateResult = await mockIntegration.initializeFullIntegration()
     return json({
-      success: true
+      success: true,
       action: 'update-settings',
       data: updateResult
       metadata: {
@@ -263,7 +263,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Phase 13 Integration PUT error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Integration update failed',
       message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
@@ -283,7 +283,7 @@ export const DELETE: RequestHandler = async () => {
     console.log('🔄 Resetting Phase 13 integration to default state')
     const resetResult = await mockIntegration.initializeFullIntegration()
     return json({
-      success: true
+      success: true,
       action: 'reset-integration',
       data: resetResult
       metadata: {
@@ -295,7 +295,7 @@ export const DELETE: RequestHandler = async () => {
   } catch (error: any) {
     console.error('Phase 13 Integration DELETE error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Integration reset failed',
       message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {

@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const caseId = formData.get('caseId') as string || 'demo-case'
     if (!file) {
       return json({
-        success: false
+        success: false,
         error: 'No file provided'
       }, { status: 400 })
     }
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Return success response with evidence metadata
     const response = {
-      success: true
+      success: true,
       id: evidenceId
       url: `/uploads/${caseId}/${filename}`,
       filename: file.name,
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Evidence upload failed:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Upload failed',
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     ]
     return json({
-      success: true
+      success: true,
       evidence: sampleEvidence
       caseId,
       count: sampleEvidence.length
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Failed to list evidence:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Failed to list evidence'
     }, { status: 500 })
   }

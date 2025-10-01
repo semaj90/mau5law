@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
     const { jobId } = params
     if (!jobId) {
       return json({
-          success: false
+          success: false,
           error: 'jobId parameter is required'
         },)
         { status: 400 }
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
     const job = await getJobStatus(jobId)
     if (!job) {
       return json({
-          success: false
+          success: false,
           error: 'Job not found'
         },)
         { status: 404 }
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
       }
     }
     const response = {
-      success: true
+      success: true,
       data: {
         job,
         polling: {
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
   } catch (error: any) {
     console.error(`❌ GET /api/v1/jobs/${params.jobId}/status error:`, error)
     return json({
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: 'Failed to get job status'
       },)
       { status: 500 }
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     const { jobId } = params
     if (!jobId) {
       return json({
-          success: false
+          success: false,
           error: 'jobId parameter is required'
         },)
         { status: 400 }
@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
       )
     }
     const response = {
-      success: true
+      success: true,
       data: {
         jobId,
         status: job.status,
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
   } catch (error: any) {
     console.error(`❌ POST /api/v1/jobs/${params.jobId}/status error:`, error)
     return json({
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: 'Failed to update job status'
       },)>
       { status: 500 }
@@ -256,7 +256,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     const { jobId } = params
     if (!jobId) {
       return json({
-          success: false
+          success: false,
           error: 'jobId parameter is required'
         },)
         { status: 400 }
@@ -268,7 +268,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     const existingData = await redis.get(jobKey)
     if (!existingData) {
       return json({
-          success: false
+          success: false,
           error: 'Job not found'
         },)
         { status: 404 }
@@ -316,7 +316,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     })
   )
     const response = {
-      success: true
+      success: true,
       data: {
         jobId,
         status: 'cancelled',
@@ -333,7 +333,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
   } catch (error: any) {
     console.error(`❌ DELETE /api/v1/jobs/${params.jobId}/status error:`, error)
     return json({
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: 'Failed to cancel job'
       },)>
       { status: 500 }

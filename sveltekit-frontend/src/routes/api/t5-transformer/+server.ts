@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { input, task, parameters = {}, context, domain = 'legal', outputFormat = 'text' } = body
     if (!input || !task) {
       return json({
-          success: false
+          success: false,
           error: 'Input text and task type are required',
           supportedTasks: [
             'summarize',
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
       }
       const response: T5TransformResponse = {
-        success: true
+        success: true,
         task,
         input: input.substring(0, 200) + (input.length > 200 ? '...' : ''),
         output: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output,
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Fallback to mock processing for development
       const mockResult = await generateMockT5Response(input, task, domain)
       return json({
-        success: true
+        success: true,
         ...mockResult,
         metadata: {
           ...mockResult.metadata,
@@ -208,7 +208,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('T5 Transformer API error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: String(error),
         timestamp: Date.now()
       },
@@ -224,7 +224,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const taskInfo = getTaskInformation(task)
       if (!taskInfo) {
         return json({
-            success: false
+            success: false,
             error: `Unknown task: ${task}`,
             supportedTasks: [
               'summarize',
@@ -239,7 +239,7 @@ export const GET: RequestHandler = async ({ url }) => {
         )
       }
       return json({
-        success: true
+        success: true,
         task: taskInfo
         timestamp: Date.now()
       })
@@ -312,7 +312,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: String(error),
         timestamp: Date.now()
       },
@@ -494,7 +494,7 @@ async function generateMockT5Response(
       output = `Processed ${task} request for ${domain} domain. Mock response generated for development.`
   }
   return {
-    success: true
+    success: true,
     task,
     input: input.substring(0, 200) + (input.length > 200 ? '...' : ''),
     output,

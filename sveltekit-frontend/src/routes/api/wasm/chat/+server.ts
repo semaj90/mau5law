@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } = body
     if (!message) {
       return json({
-        success: false
+        success: false,
         error: 'Message is required'
       }, { status: 400 })
     }
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const wasm = await getWasmService()
     if (!wasm.isAvailable()) {
       return json({
-        success: false
+        success: false,
         error: 'WebAssembly LLM service not available'
       }, { status: 503 })
     }
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
       fullResponse += chunk
     }
     return json({
-      success: true
+      success: true,
       response: fullResponse
       metadata: {
         model: 'webassembly-llm',
@@ -188,7 +188,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('WebAssembly chat API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to process chat request in WebAssembly mode',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async () => {
   try {
     const wasm = await getWasmService()
     return json({
-      success: true
+      success: true,
       status: wasm.isAvailable() ? 'available' : 'unavailable',
       capabilities: {
         streaming: true
@@ -220,7 +220,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'WebAssembly service error',
       details: error.message
     }, { status: 500 })

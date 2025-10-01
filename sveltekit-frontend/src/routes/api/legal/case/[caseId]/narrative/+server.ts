@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         aiAssistance = await generateAIWritingAssistance(narrative)
       }
       return json({
-        success: true
+        success: true,
         narrative,
         aiAssistance
       })
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       // Get all narratives for case
       const narratives = await getAllCaseNarratives(caseId)
       return json({
-        success: true
+        success: true,
         narratives,
         totalCount: narratives.length
       })
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       aiAssistance = await generateAIWritingAssistance(narrative)
     }
     return json({
-      success: true
+      success: true,
       narrative,
       aiAssistance,
       message: 'Case narrative generated successfully'
@@ -164,7 +164,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     // Generate fresh AI assistance
     const aiAssistance = await generateAIWritingAssistance(updatedNarrative)
     return json({
-      success: true
+      success: true,
       narrative: updatedNarrative
       aiAssistance,
       message: 'Narrative updated successfully'

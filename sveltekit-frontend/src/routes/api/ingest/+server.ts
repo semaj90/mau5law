@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       sharedWorkerPool.push(job)
       return json({
-        success: true
+        success: true,
         jobId,
         queued: true
         warnings: warnings.length > 0 ? warnings : undefined
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       sharedWorkerPool.push(job)
       return json({
-        success: true
+        success: true,
         jobId,
         queued: true
         warnings: warnings.length > 0 ? warnings : undefined
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get worker pool stats
     const workerStats = sharedWorkerPool.getStats()
     return json({
-      success: true
+      success: true,
       recentDocuments,
       workerStats,
       embeddingHealth: await checkEmbeddingEndpointHealth()
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err) {
     return json()
       {
-        success: false
+        success: false,
         error: err instanceof Error ? err.message: String(err)
       },
       { status: 500 }

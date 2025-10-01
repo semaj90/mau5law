@@ -297,7 +297,7 @@ async function runVLLMAnalysis(request: MultiAgentRequest, sessionId: string): P
     const response = await fetch(`${vllmEndpoint}/legal-analysis`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         prompt: request.query,
         case_id: request.caseId,
         evidence_ids: request.evidenceIds || [],

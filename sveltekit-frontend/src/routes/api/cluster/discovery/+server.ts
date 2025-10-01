@@ -85,13 +85,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { service } = body
         if (!service || !service.name || !service.port) {
           return json({
-            success: false
+            success: false,
             error: 'Service name and port are required'
           }, { status: 400 })
         }
         const registered = await registerService(service)
         return json({
-          success: true
+          success: true,
           action: 'register',
           service: registered
           timestamp: Date.now()
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           ? await checkServiceHealth(serviceId, force)
           : await performFullHealthCheck(force)
         return json({
-          success: true
+          success: true,
           action: 'health-check',
           health,
           timestamp: Date.now()
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { config } = body
         const updated = await updateDiscoveryConfig(config)
         return json({
-          success: true
+          success: true,
           action: 'update-config',
           config: updated
           timestamp: Date.now()
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { force = false } = body
         const discovered = await discoverServices(force)
         return json({
-          success: true
+          success: true,
           action: 'discover',
           discovered: discovered.length,
           services: discovered
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`,
           availableActions: ['register', 'deregister', 'health-check', 'failover', 'update-config', 'discover']
         }, { status: 400 })
@@ -160,7 +160,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     console.error('Service Discovery error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // Get specific service instances
       const instances = serviceRegistry.get(service) || []
       return json({
-        success: true
+        success: true,
         service,
         instances,
         healthy: instances.filter(item => item.length),
@@ -185,7 +185,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get full registry
     const registry = await getServiceRegistry()
     const response: any = {
-      success: true
+      success: true,
       registry,
       capabilities: [
         'Service registration and discovery',
@@ -211,7 +211,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(response)
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
@@ -377,7 +377,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       from: service.id,
       to: target.id,
       duration: Date.now() - startTime,
-      success: true
+      success: true,
     }
     failoverHistory.push(failoverEvent)
     // Keep only last 100 events
@@ -385,7 +385,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       failoverHistory.splice(0, failoverHistory.length - 100)
     }
     return {
-      success: true
+      success: true,
       from: service.id,
       to: target.id,
       reason,
@@ -401,11 +401,11 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       from: service.id,
       to: 'none',
       duration: Date.now() - startTime,
-      success: false
+      success: false,
     }
     failoverHistory.push(failoverEvent)
     return {
-      success: false
+      success: false,
       error: error.message,
       duration: failoverEvent.duration,
       event: failoverEvent

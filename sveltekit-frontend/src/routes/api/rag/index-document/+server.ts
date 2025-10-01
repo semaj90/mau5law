@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         }
       } catch (error: any) {
         results.push({
-          success: false
+          success: false,
           documentId: docData.id || 'unknown',
           error: error.message,
           chunksCreated: 0
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   } catch (error: any) {
     console.error('Document Indexing API Error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to process document indexing request',
       processingTime: Date.now() - startTime
     }, { status: 500 })
@@ -217,7 +217,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
     throw new Error(indexResult.error || 'Failed to index document')
   }
   return {
-    success: true
+    success: true,
     documentId,
     chunksCreated: indexResult.chunksCreated
   }
@@ -243,12 +243,12 @@ export const GET: RequestHandler = async ({ url }) => {
         .limit(1)
       if (document.length === 0) {
         return json({
-          success: false
+          success: false,
           error: 'Document not found'
         }, { status: 404 })
       }
       return json({
-        success: true
+        success: true,
         document: {
           id: document[0].id,
           title: document[0].title,
@@ -267,13 +267,13 @@ export const GET: RequestHandler = async ({ url }) => {
       // Get overall indexing statistics
       const stats = await enhancedRAGPipeline.getSystemStats()
       return json({
-        success: true
+        success: true,
         systemStats: stats
       })
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }
@@ -284,14 +284,14 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
     const user = await authenticate(cookies)
     if (!user) {
       return json({
-        success: false
+        success: false,
         error: 'Authentication required'
       }, { status: 401 })
     }
     const { documentId } = await request.json()
     if (!documentId) {
       return json({
-        success: false
+        success: false,
         error: 'Document ID is required'
       }, { status: 400 })
     }
@@ -306,14 +306,14 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
       .set({ isActive: false, updatedAt: new Date().toISOString() })
       .where(sql`id = ${documentId}`)
     return json({
-      success: true
+      success: true,
       documentId,
       chunksRemoved: deletedChunks.length,
       message: 'Document removed from search index'
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }

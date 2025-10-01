@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       citation: newCitation,
-      success: true
+      success: true,
     });
 
   } catch (error) {

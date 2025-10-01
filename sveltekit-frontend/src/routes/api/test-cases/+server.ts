@@ -118,7 +118,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         .where(eq(caseTimeline.caseId, caseId)
         .orderBy(desc(caseTimeline.timestamp)
       return json({
-        success: true
+        success: true,
         data: {
           ...caseData[0],
           documents,
@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       .from(cases)
       .where(and(...whereConditions)
     return json({
-      success: true
+      success: true,
       data: result
       pagination: {
         total,
@@ -314,7 +314,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     return json()
       {
-        success: true
+        success: true,
         message: 'Case created successfully',
         data: {
           ...newCase[0],
@@ -501,7 +501,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       message: 'Case updated successfully',
       data: {
         ...updatedCase[0],
@@ -645,7 +645,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       // Non-critical, continue
     }
     return json({
-      success: true
+      success: true,
       message: `Case "${caseRecord.title}" deleted successfully`,
       data: {
         id: caseId

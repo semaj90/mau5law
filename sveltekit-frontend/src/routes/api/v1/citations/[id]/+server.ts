@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       )
     }
     return json({
-      success: true
+      success: true,
       data: {
         citation
       },
@@ -124,7 +124,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .where(eq(citations.id, citationId)
       .returning()
     return json({
-      success: true
+      success: true,
       data: {
         citation: updatedCitation
         message: 'Citation updated successfully'
@@ -188,7 +188,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     await db.delete(citations)
       .where(eq(citations.id, citationId)
     return json({
-      success: true
+      success: true,
       data: {
         message: 'Citation deleted successfully',
         deletedCitation: {

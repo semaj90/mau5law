@@ -18,7 +18,7 @@ export const GET: RequestHandler = async () => {
   try {
     const data = await fetchWithTimeout("/api/gpu-status")
     return json({
-      ok: true
+      ok: true,
       source: "go",
       data
     })
@@ -28,14 +28,14 @@ export const GET: RequestHandler = async () => {
       const health = await fetchWithTimeout("/api/health")
       const available = health?.services?.gpu === "enabled" || Boolean(health?.services?.gpu)
       return json({
-        ok: true
+        ok: true,
         source: "go-health",
         data: { available }
       })
     } catch (e2) {
       return json()
         {
-          ok: false
+          ok: false,
           source: "shim",
           data: {
             available: false

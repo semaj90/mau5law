@@ -41,7 +41,7 @@ export async function POST(): Promise<any> {
       .where(eq(users.email, 'test@legal.ai'))
       .returning({ id: users.id, email: users.email, role: users.role })
     return json({
-      success: true
+      success: true,
       message: 'Demo users updated with proper passwords',
       users: [...updatedAdmin, ...updatedTest]
     })

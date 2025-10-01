@@ -23,18 +23,18 @@ async function testOllamaConnection(): Promise<any> {
       const modelsData = await modelsResponse.json()
       const modelNames = modelsData.models?.map((m: any) => m.name) || []
       return {
-        success: true
+        success: true,
         message: `Ollama is running with ${modelNames.length} models`,
         models: modelNames
       }
     }
     return {
-      success: true
+      success: true,
       message: "Ollama is running but model list unavailable"
     }
   } catch (error: any) {
     return {
-      success: false
+      success: false,
       message: `Ollama connection failed: ${error instanceof Error ? error.message: "Unknown error"}`
     }
   }
@@ -51,13 +51,13 @@ async function testLlamaCppConnection(): Promise<any> {
       return { success: true, message: "llama.cpp server is running" }
     } else {
       return {
-        success: false
+        success: false,
         message: "llama.cpp server not responding properly"
       }
     }
   } catch (error: any) {
     return {
-      success: false
+      success: false,
       message: `llama.cpp connection failed: ${error instanceof Error ? error.message: "Unknown error"}`
     }
   }
@@ -96,7 +96,7 @@ export const GET: RequestHandler = async () => {
       ])
     const executionTime = Date.now() - startTime
     return json({
-      success: true
+      success: true,
       timestamp: new Date().toISOString(),
       executionTime,
       services: {
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     console.error("Local AI health check failed:", error)
     return json({
-        success: false
+        success: false,
         available: false
         error: error instanceof Error ? error.message: "Health check failed",
         services: {
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const response = await fetch("http://localhost:11434/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             model: "gemma3-legal",
             prompt: prompt
             stream: false
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
           const data = await (response as { ok?: any; json?: any; statusText?: any }).json()
           result = {
-            success: true
+            success: true,
             provider: "ollama",
             model: "gemma3-legal",
             response: (data as { response?: any }).response,
@@ -181,7 +181,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({,
+              body: JSON.stringify({
                 model: "gemma2:2b",
                 prompt: prompt
                 stream: false
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request }) => {
           if (fallbackResponse.ok) {
             const data = await fallbackResponse.json()
             result = {
-              success: true
+              success: true,
               provider: "ollama",
               model: "gemma2:2b",
               response: (data as { response?: any }).response,
@@ -204,7 +204,7 @@ export const POST: RequestHandler = async ({ request }) => {
             }
           } else {
             result = {
-              success: false
+              success: false,
               provider: "ollama",
               error: `Generation failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`,
               executionTime: Date.now() - startTime
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       } catch (error: any) {
         result = {
-          success: false
+          success: false,
           provider: "ollama",
           error: `Generation error: ${error instanceof Error ? error.message: "Unknown error"}`,
           executionTime: Date.now() - startTime
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     if (!(result as { success?: any }).success && service === "auto") {
       result = {
-        success: false
+        success: false,
         provider: "none",
         error: "No available local LLM services",
         executionTime: Date.now() - startTime,
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(result)
   } catch (error: any) {
     return json({
-        success: false
+        success: false,
         error:
           error instanceof Error ? error.message: "Unknown error occurred"
       },)

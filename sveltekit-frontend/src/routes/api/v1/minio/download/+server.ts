@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate presigned URL for download
     const downloadUrl = await minioService.getPresignedDownloadUrl(bucket, fileName, expirySeconds)
     return new Response(JSON.stringify({
-      success: true
+      success: true,
       downloadUrl,
       expiresIn: expirySeconds
       bucket,

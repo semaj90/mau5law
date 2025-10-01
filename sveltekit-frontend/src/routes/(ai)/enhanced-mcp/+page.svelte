@@ -2,15 +2,27 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+	// Svelte 5 runes are auto-imported
 	/**
 	 * Enhanced MCP Integration Demo Page
 	 * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit
 	 */
 	import { onMount } from 'svelte';
-	import EnhancedMCPIntegration from '$lib/components/ai/EnhancedMCPIntegration.svelte';
-	import { page } from '$app/stores';
-	import { writable } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
+
+	// Dynamically-loaded component (avoids TypeScript "no default export" error)
+	let EnhancedMCPIntegration: any = null;
+
+	// load component on client mount
+	onMount(async () => {
+		try {
+			const mod = await import('$lib/components/ai/EnhancedMCPIntegration.svelte');
+			EnhancedMCPIntegration = (mod && (mod.default ?? mod)) as any;
+		} catch (e) {
+			console.warn('Failed to dynamically load EnhancedMCPIntegration (non-fatal)', e);
+		}
+	});
+
 	// Page state
 	const integrationStatus = writable({
 		mcpServerRunning: false,
@@ -77,8 +89,8 @@ https://svelte.dev/e/js_parse_error -->
 			logMessage('info', 'VS Code extension not detected (running in browser)', 'vscode');
 		}
 		// All systems check
-		const allSystemsReady = $integrationStatus.mcpServerRunning && $integrationStatus.clusterSystemOnli;
-		if (allSystemsReady) {
+		const statusSnapshot = get(integrationStatus);
+		if (statusSnapshot.mcpServerRunning && statusSnapshot.clusterSystemOnline) {
 			integrationStatus.update(status => ({ ...status, contextualAnalysisReady: true }));
 			logMessage('success', 'Enhanced MCP Integration fully operational!', 'system');
 		}
@@ -118,26 +130,26 @@ https://svelte.dev/e/js_parse_error -->
 			{
 				name: 'Enhanced RAG Query',
 				test: async () => {
-					const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({,
-							query: 'System diagnostic test query',
-							caseId: 'diagnostic-test',
-							maxResults: 1;
-						})
-					});
+        const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              query: 'System diagnostic test query',
+              caseId: 'diagnostic-test',
+              maxResults: 1
+            })
+          });
 					return response.ok;
 				}
 			},
 			{
 				name: 'Memory Graph Operations',
 				test: async () => {
-					const response = await fetch('http://localhost:40000/mcp/memory/read-graph', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify( );
-					});
+        const response = await fetch('http://localhost:40000/mcp/memory/read-graph', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+          });
 					return response.ok;
 				}
 			},
@@ -153,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
 				}
 			}
 		];
-let passedTests = $state(0);
+let passedTests = 0;
 		for (const diagnostic of diagnostics) {
 			try {
 				const result = await diagnostic.test();
@@ -271,12 +283,16 @@ let passedTests = $state(0);
       </div>
     </div>
     <div class="action-buttons">
-      <button onclick={runSystemDiagnostics} class="diagnostic-button"> 🔬 Run System Diagnostics </button>
-      <button onclick={clearLogs} class="clear-logs-button"> 🧹 Clear Logs </button>
+      <button on:click={runSystemDiagnostics} class="diagnostic-button"> 🔬 Run System Diagnostics </button>
+      <button on:click={clearLogs} class="clear-logs-button"> 🧹 Clear Logs </button>
     </div>
   </div>
   <div class="main-integration">
-    <EnhancedMCPIntegration caseId={selectedCaseId} {enableRealtimeUpdates} {showMetrics} {enableClusterMode} />
+    {#if EnhancedMCPIntegration}
+      <svelte:component this={EnhancedMCPIntegration} caseId={selectedCaseId} {enableRealtimeUpdates} {showMetrics} {enableClusterMode} />
+    {:else}
+      <div class="loading-component">Loading integration component...</div>
+    {/if}
   </div>
   <div class="system-logs">
     <h2>📋 System Activity Logs</h2>
@@ -468,14 +484,14 @@ let passedTests = $state(0);
     color: white;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2;
+  transition: all 0.2s;
     font-size: 0.875rem;
   }
   .clear-logs-button {
     background: linear-gradient(135deg, #6b7280, #4b5563);
   }
-  .diagnostic-button: hover
-	.clear-logs-button:hover {
+  .diagnostic-button:hover,
+  .clear-logs-button:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
   }

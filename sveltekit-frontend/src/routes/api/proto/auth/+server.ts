@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const isValid = authRequest.email && authRequest.password
       if (!isValid) {
         const errorResponse = legal.api.AuthResponse.create({
-          success: false
+          success: false,
           errorMessage: 'Invalid credentials'
         })
         const encoded = legal.api.AuthResponse.encode(errorResponse).finish()
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       })
       const authResponse = legal.api.AuthResponse.create({
-        success: true
+        success: true,
         token: 'jwt_token_here',
         user: user
         expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return error(401, 'Invalid credentials')
       }
       return json({
-        success: true
+        success: true,
         token: 'jwt_token_here',
         user: {
           id: 'user_123',

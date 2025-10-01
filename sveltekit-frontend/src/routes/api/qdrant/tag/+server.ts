@@ -228,7 +228,7 @@ async function tagDocument(data: any, userId: string): Promise<any> {
       await createTagEmbeddings(payload.tags, id, userId)
     }
     return json({
-      success: true
+      success: true,
       operation_id: (response as { operation_id?: any; status?: any; ok?: any; json?: any }).operation_id,
       status: (response as { operation_id?: any; status?: any; ok?: any; json?: any }).status,
       message: "Document tagged successfully"
@@ -252,7 +252,7 @@ async function createTagEmbeddings(
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({,
+              body: JSON.stringify({
                 model: "nomic-embed-text",
                 prompt: tag
               })
@@ -348,7 +348,7 @@ async function searchDocuments(data: any, userId: string): Promise<any> {
       with_vector: false
     })
     return json({
-      success: true
+      success: true,
       results: searchResult.map((result: any) => ({,
         id: (result as { id?: any; score?: any; payload?: any }).id,
         score: (result as { id?: any; score?: any; payload?: any }).score,
@@ -410,7 +410,7 @@ async function batchTagDocuments(data: any, userId: string): Promise<any> {
       }
     }
     return json({
-      success: true
+      success: true,
       processed: results.length * batchSize,
       successful: results.length,
       failed: errors.length,
@@ -470,7 +470,7 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
       await createTagEmbeddings(tags, documentId, userId)
     }
     return json({
-      success: true
+      success: true,
       message: "Document tags updated successfully"
     })
   } catch (error: any) {
@@ -503,7 +503,7 @@ async function deleteDocument(data: any, userId: string): Promise<any> {
       }
     })
     return json({
-      success: true
+      success: true,
       message: "Document deleted successfully"
     })
   } catch (error: any) {
@@ -539,7 +539,7 @@ async function getSimilarDocuments(data: any, userId: string): Promise<any> {
       with_vector: false
     })
     return json({
-      success: true
+      success: true,
       sourceDocument: {
         id: sourceDoc[0].id,
         payload: sourceDoc[0].payload
@@ -577,7 +577,7 @@ async function getCollectionStats(userId: string): Promise<any> {
       }
     }
     return json({
-      success: true
+      success: true,
       collections: stats
       timestamp: new Date().toISOString()
     })
@@ -591,7 +591,7 @@ async function generateTextEmbedding(text: string): Promise<number[]> {
     const response = await fetch("http://localhost:11434/api/embeddings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: "nomic-embed-text",
         prompt: text
       })
@@ -653,7 +653,7 @@ async function getDocument(documentId: string, userId: string): Promise<any> {
     return json({ error: "Document not found" }, { status: 404 })
   }
   return json({
-    success: true
+    success: true,
     document: {
       id: document[0].id,
       payload: document[0].payload
@@ -677,7 +677,7 @@ async function listDocuments(
     with_vector: false
   })
   return json({
-    success: true
+    success: true,
     documents:
       documents.points?.map((doc: any) => ({,
         id: doc.id,
@@ -706,7 +706,7 @@ async function getUserTags(userId: string): Promise<any> {
     .sort((a, b) => b[1] - a[1])
     .map(([tag, count]) => ({ tag, count })
   return json({
-    success: true
+    success: true,
     tags: sortedTags
   })
 }
@@ -714,14 +714,14 @@ async function getHealthStatus(): Promise<any> {
   try {
     const health = await qdrantClient.getCollections()
     return json({
-      success: true
+      success: true,
       status: "healthy",
       collections: health.collections?.length || 0,
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       status: "unhealthy",
       error: error instanceof Error ? error.message: "Unknown error",
       timestamp: new Date().toISOString()

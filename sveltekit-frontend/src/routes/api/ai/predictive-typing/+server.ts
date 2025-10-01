@@ -222,7 +222,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const compressionRatio = calculateCompressionRatio(query, glyphContext)
     // Phase 6: Build complete response
     const response: PredictiveTypingResponse = {
-      success: true
+      success: true,
       suggestions: topSuggestions
       analytics: {
         predicted_intent: analyticsResult?.user_intent_analysis?.primary_intent || 'search',
@@ -255,7 +255,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Predictive typing API error:', error)
     const errorResponse: PredictiveTypingResponse = {
-      success: false
+      success: false,
       suggestions: [],
       analytics: {
         predicted_intent: 'unknown',
@@ -291,7 +291,7 @@ const originalGETHandler: RequestHandler = async () => {
       vectorMetadataAutoEncoder.getEncodingStats()
     ])
     return json({
-      success: true
+      success: true,
       service: 'predictive-typing-api',
       capabilities: {
         lod_caching: true
@@ -328,7 +328,7 @@ const originalGETHandler: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to get system status',
       details: error.message
     }, { status: 500 })
@@ -349,13 +349,13 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
       vectorMetadataAutoEncoder.updateConfig(config.vector_encoder)
     }
     return json({
-      success: true
+      success: true,
       message: 'Configuration updated successfully',
       timestamp: Date.now()
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to update configuration',
       details: error.message
     }, { status: 500 })
@@ -369,13 +369,13 @@ const originalDELETEHandler: RequestHandler = async () => {
     topologyPredictiveAnalyticsEngine.clearCaches()
     vectorMetadataAutoEncoder.clearCache()
     return json({
-      success: true
+      success: true,
       message: 'All caches cleared successfully',
       timestamp: Date.now()
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to clear caches',
       details: error.message
     }, { status: 500 })

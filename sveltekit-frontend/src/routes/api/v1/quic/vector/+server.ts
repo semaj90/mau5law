@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       )
       if (ragSearchResponse) {
         return json({
-          success: true
+          success: true,
           results: (ragSearchResponse as any).results || ragSearchResponse,
           protocol: 'HTTP',
           source: 'vector-search-service',
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         collection: (searchQuery as any).collection || 'legal_documents'
       })
       return json({
-        success: true
+        success: true,
         results: (direct as any).results || (direct as any),
         protocol: 'Direct Database',
         source: 'fallback',
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
     const responseData = await response.json()
     return json({
-      success: true
+      success: true,
       results: responseData.results || responseData,
       protocol,
       source: 'quic-vector-proxy',
@@ -239,7 +239,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
     const result = await response.json()
     return json({
-      success: true
+      success: true,
       message: cacheKey ? `Cache key '${cacheKey}' cleared` : 'All cache cleared',
       result,
       timestamp: new Date().toISOString()
@@ -275,7 +275,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       lastUpdated: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       message: 'Vector proxy configuration updated',
       config: updatedConfig
     })

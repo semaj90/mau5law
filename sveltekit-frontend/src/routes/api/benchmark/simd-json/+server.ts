@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Standard benchmark with default test data
         const standardBench = await benchmarkJSONParsing(iterations)
         return json({
-          success: true
+          success: true,
           scenario: 'standard',
           data: {
             ...standardBench,
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
         const legalBenchmark = await benchmarkCustomPayload(legalDoc, iterations)
         return json({
-          success: true
+          success: true,
           scenario: 'legal_document',
           data: {
             ...legalBenchmark,
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
         const vectorBenchmark = await benchmarkCustomPayload(vectorData, iterations)
         return json({
-          success: true
+          success: true,
           scenario: 'vector_operations',
           data: {
             ...vectorBenchmark,
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
         const rabbitBenchmark = await benchmarkCustomPayload(rabbitMessage, iterations)
         return json({
-          success: true
+          success: true,
           scenario: 'rabbitmq_message',
           data: {
             ...rabbitBenchmark,
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
         })
         const cacheBenchmark = await benchmarkCustomPayload({ entries: cacheEntries }, iterations)
         return json({
-          success: true
+          success: true,
           scenario: 'cache_operations',
           data: {
             ...cacheBenchmark,
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
           comparisonResults[testScenario] = (result as { data?: any; speedup?: any }).data
         }
         return json({
-          success: true
+          success: true,
           scenario: 'comparison',
           data: {
             scenarios: comparisonResults;
@@ -203,7 +203,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const simdStatus = getSIMDStatus()
         const stats = simdMetrics.getStats()
         return json({
-          success: true
+          success: true,
           scenario: 'system_info',
           data: {
             simd: simdStatus
@@ -222,7 +222,7 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown benchmark scenario: ${scenario}`,
           availableScenarios: [
             'standard', 'legal_document', 'vector_operations',
@@ -233,7 +233,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ SIMD JSON Benchmark Error:', error)
     return json({
-      success: false
+      success: false,
       error: {
         message: error.message || 'Benchmark failed',
         timestamp: new Date().toISOString()
@@ -258,7 +258,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Run sustained load test
         const loadResults = await runLoadTest(duration, concurrency, payloadSize, scenario)
         return json({
-          success: true
+          success: true,
           testType: 'load',
           data: {
             ...loadResults,
@@ -270,7 +270,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Gradually increase load until failure
         const stressResults = await runStressTest(duration, payloadSize)
         return json({
-          success: true
+          success: true,
           testType: 'stress',
           data: {
             ...stressResults,
@@ -282,7 +282,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Sudden traffic spikes
         const spikeResults = await runSpikeTest(concurrency * 5, payloadSize)
         return json({
-          success: true
+          success: true,
           testType: 'spike',
           data: {
             ...spikeResults,
@@ -292,7 +292,7 @@ export const POST: RequestHandler = async ({ request }) => {
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown test type: ${testType}`,
           availableTypes: ['load', 'stress', 'spike']
         }, { status: 400 })
@@ -300,7 +300,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ SIMD JSON Load Test Error:', error)
     return json({
-      success: false
+      success: false,
       error: {
         message: error.message || 'Load test failed',
         timestamp: new Date().toISOString()

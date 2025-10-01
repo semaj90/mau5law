@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         case 'health': {
           const cacheStats = getGrpoCacheStats()
           return json({
-            success: true
+            success: true,
             status: 'healthy',
             service: 'grpo-thinking-v3',
             requestId,
@@ -140,7 +140,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           if (!query || query.length < 3) {
             grpoApiLogger.warn('Invalid search query', requestId, { query })
             return json({
-              success: false
+              success: false,
               error: 'Query parameter "q" is required and must be at least 3 characters long',
               requestId
             }, { status: 400 })
@@ -172,7 +172,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             duration: Date.now() - startTime
           })
           return json({
-            success: true
+            success: true,
             requestId,
             query,
             results,
@@ -201,7 +201,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             duration: Date.now() - startTime
           })
           return json({
-            success: true
+            success: true,
             requestId,
             timeWindow,
             patterns,
@@ -218,7 +218,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           const limit = Math.min(parseInt(url.searchParams.get('limit') || '5'), 20)
           if (!query) {
             return json({
-              success: false
+              success: false,
               error: 'Query parameter "q" is required for recommendations',
               requestId
             }, { status: 400 })
@@ -241,7 +241,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             recommendationCount: recommendations.length
           })
           return json({
-            success: true
+            success: true,
             requestId,
             query,
             conversationId,
@@ -274,7 +274,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             // DB not available
           }
           return json({
-            success: true
+            success: true,
             requestId,
             cache: cacheStats
             database: dbStats
@@ -287,7 +287,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         default: {
           grpoApiLogger.warn('Invalid GRPO action requested', requestId, { action })
           return json({
-            success: false
+            success: false,
             error: 'Invalid action. Available actions: health, search, trends, recommendations, stats',
             requestId,
             availableActions: ['health', 'search', 'trends', 'recommendations', 'stats']
@@ -300,7 +300,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         url: url.toString()
       })
       return json({
-        success: false
+        success: false,
         error: 'Internal GRPO server error',
         requestId,
         timestamp: new Date().toISOString()
@@ -322,7 +322,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       } catch (parseError) {
         grpoApiLogger.warn('Invalid JSON in GRPO request body', requestId)
         return json({
-          success: false
+          success: false,
           error: 'Invalid JSON in request body',
           requestId
         }, { status: 400 })
@@ -333,7 +333,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           if (!validation.valid) {
             grpoApiLogger.warn('GRPO thinking response validation failed', requestId, { error: validation.error })
             return json({
-              success: false
+              success: false,
               error: validation.error,
               requestId
             }, { status: 400 })
@@ -361,7 +361,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime
           })
           return json({
-            success: true
+            success: true,
             requestId,
             messageId: thinkingResponse.messageId,
             stored: true
@@ -374,14 +374,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         case 'batch': {
           if (!Array.isArray(body.responses)) {
             return json({
-              success: false
+              success: false,
               error: 'responses array is required for batch processing',
               requestId
             }, { status: 400 })
           }
           if (body.responses.length === 0) {
             return json({
-              success: false
+              success: false,
               error: 'responses array cannot be empty',
               requestId
             }, { status: 400 })
@@ -398,7 +398,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             const validation = validateGrpoThinkingResponse(body.responses[i])
             if (!validation.valid) {
               return json({
-                success: false
+                success: false,
                 error: `Response ${i + 1}: ${validation.error}`,
                 requestId
               }, { status: 400 })
@@ -426,7 +426,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             status: batchJob.status
           })
           return json({
-            success: true
+            success: true,
             requestId,
             jobId: batchJob.jobId,
             batchSize: body.responses.length,
@@ -441,14 +441,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         case 'embed': {
           if (!body.text || typeof body.text !== 'string') {
             return json({
-              success: false
+              success: false,
               error: 'text field is required',
               requestId
             }, { status: 400 })
           }
           if (body.text.length > 10000) {
             return json({
-              success: false
+              success: false,
               error: 'text too long (max 10000 characters)',
               requestId
             }, { status: 400 })
@@ -460,7 +460,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           if (!embedding) {
             grpoApiLogger.error('Failed to generate embedding', requestId)
             return json({
-              success: false
+              success: false,
               error: 'Failed to generate embedding',
               requestId
             }, { status: 500 })
@@ -473,7 +473,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime
           })
           return json({
-            success: true
+            success: true,
             requestId,
             embedding,
             dimensions: embedding.length,
@@ -487,7 +487,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
         default: {
           return json({
-            success: false
+            success: false,
             error: 'Invalid action. Available actions: store, batch, embed',
             requestId,
             availableActions: ['store', 'batch', 'embed']
@@ -500,7 +500,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         duration: processingTime
       })
       return json({
-        success: false
+        success: false,
         error: 'Internal GRPO server error occurred while processing your request',
         requestId,
         metadata: {

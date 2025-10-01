@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         .where(eq(citations.id, citationId)
     }
     return json({
-      success: true
+      success: true,
       data: {
         verification: verificationResult
         citation: citation ? {,

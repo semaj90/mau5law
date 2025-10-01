@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
       consoleTheme
     )
     return json({
-      success: true
+      success: true,
       response: response.response,
       contextUsed: response.contextUsed,
       confidence: response.confidence,
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Load case memory without query
     const memory = await contextAwareMemory.loadCaseMemory(caseId, consoleTheme)
     return json({
-      success: true
+      success: true,
       memory: {
         caseId: memory.caseId,
         contextVersion: memory.contextVersion,

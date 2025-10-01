@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ params }) => {
       )
     }
     return json({
-      success: true
+      success: true,
       key: decodedKey
       value: entry.value,
       version: entry.version,

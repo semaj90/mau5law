@@ -127,7 +127,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/enhanced-legal-search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         query: params.query,
         jurisdiction: params.jurisdiction,
         maxResults: params.maxResults || 20,
@@ -144,7 +144,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/legal-research', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         topic: params.query,
         jurisdiction: params.jurisdiction,
         sources: ['cases', 'statutes'],
@@ -162,7 +162,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         message: `Generate a comprehensive legal research summary for: ${params.query}. Include key findings, precedents, and strategic recommendations based on the following analysis: ${precedentData.substring(0, 2000)}`,
         model: 'gemma3-legal:latest',
         temperature: 0.3
@@ -177,7 +177,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/analyze-evidence', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         content: params.content,
         documentType: params.documentType || 'legal_document',
         extractEntities: true
@@ -193,7 +193,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         text: params.content,
         analysisType: 'legal_document',
         includeMetadata: true
@@ -208,7 +208,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/summarize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         content: params.content,
         maxLength: 500,
         includeKeyPoints: true
@@ -224,7 +224,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/case-scoring', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         caseTitle: params.title,
         description: params.description,
         caseType: params.caseType,
@@ -240,7 +240,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/suggestions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         context: `New ${params.caseType} case: ${params.title}. ${params.description}`,
         suggestionType: 'research',
         maxSuggestions: 10
@@ -267,7 +267,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/storage/evidence-metadata', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         evidenceId: params.evidenceId,
         metadata: params.metadata,
         extractAdditional: true
@@ -282,7 +282,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/evidence-search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         query: params.caseContext || params.title,
         evidenceItems: [params.evidenceId],
         analysisDepth: 'comprehensive'
@@ -298,7 +298,7 @@ class LegalAIOrchestrator {
     const response = await fetch('/api/ai/generate-report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         reportType: 'evidence_analysis',
         evidenceId: params.evidenceId,
         relevanceScore: relevanceData

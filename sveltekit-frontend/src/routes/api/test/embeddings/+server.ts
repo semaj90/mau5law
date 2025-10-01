@@ -249,7 +249,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       timestamp: new Date().toISOString(),
       service: 'nomic_embedding_service',
       tests: results
@@ -282,7 +282,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -309,20 +309,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
       }
       return json({
-        success: true
+        success: true,
         action: 'process_document',
         result,
         timestamp: new Date().toISOString()
       })
     }
     return json({
-      success: false
+      success: false,
       error: 'Invalid action. Supported actions: process_document',
       timestamp: new Date().toISOString()
     }, { status: 400 })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 })

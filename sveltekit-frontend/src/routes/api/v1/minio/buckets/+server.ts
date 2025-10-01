@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const actualBuckets = buckets.map(b => b.name)
     const missingBuckets = expectedBuckets.filter(name => !actualBuckets.includes(name)
     return new Response(JSON.stringify({
-      success: true
+      success: true,
       buckets: bucketDetails
       summary: {
         total: buckets.length,
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Ensure all standard buckets exist
       const results = await minioService.ensureAllBuckets()
       return new Response(JSON.stringify({
-        success: true
+        success: true,
         action: 'ensure-all',
         results,
         timestamp: new Date().toISOString()

@@ -1,4 +1,5 @@
 # Legal AI Platform - AI Agent Instructions
+sveltekit-complete.txt
 
 ## Project Overview
 This is a sophisticated legal AI platform with microservices architecture featuring SvelteKit 5 frontend, 37+ Go microservices, XState v5 state management, and WebAssembly/GPU acceleration.
@@ -10,7 +11,7 @@ This is a sophisticated legal AI platform with microservices architecture featur
 - **Go Services**: Ports 8080-8136 (37 microservices with health checks)
 - **Context7 MCP**: Port 8777 (AI documentation server)
 - **Databases**: PostgreSQL:5432 (pgvector), Redis:6379 (cache)
-- **AI**: Ollama:11434 (local LLMs), WebAssembly inference
+- **AI**: Ollama:11434 (local LLMs), gpu cuda, rtc 3060Ti, WebAssembly inference
 
 ### Route Discovery Pattern
 ```typescript

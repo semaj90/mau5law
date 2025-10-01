@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         }, { status: 400 })
     }
     return json({
-      success: true
+      success: true,
       mode,
       result,
       metadata: {
@@ -347,13 +347,13 @@ export const DELETE: RequestHandler = async () => {
     // Clear benchmark-specific cache entries
     // Note: In production, would implement cache pattern clearing
     return json({
-      success: true
+      success: true,
       message: 'Legal embedding benchmark cache cleared',
       timestamp: Date.now()
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to clear benchmark cache',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })

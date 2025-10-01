@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const validationId = `val_${Date.now()}_${Math.random().toString(36).substring(7)}`
     // Initialize validation response
     const response: SecurityValidationResponse = {
-      success: true
+      success: true,
       validationId,
       progress: {
         stage: 'initializing',
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     console.error('Security validation error:', error)
     return json({
-      success: false
+      success: false,
       validationId: 'error',
       progress: {
         stage: 'error',

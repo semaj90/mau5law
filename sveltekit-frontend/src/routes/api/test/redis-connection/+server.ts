@@ -48,7 +48,7 @@ export const GET: RequestHandler = async () => {
       await redis.quit()
     }
     return json({
-      success: true
+      success: true,
       message: 'Redis connection successful',
       testValue,
       redisInfo: {
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async () => {
     }
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         details: {
           code: error.code,

@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         resource: '/api/search/vector',
         clientIP,
         userAgent: request.headers.get('user-agent') || 'unknown',
-        success: false
+        success: false,
         errorMessage: 'Rate limit exceeded',
         metadata: {
           remaining: securityCheck.rateLimitInfo.remaining,
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         }
       })
       return json({
-          success: false
+          success: false,
           error: 'Rate limit exceeded. Please try again later.',
           remaining: securityCheck.rateLimitInfo.remaining,
           resetTime: securityCheck.rateLimitInfo.resetTime
@@ -80,11 +80,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         resource: '/api/search/vector',
         clientIP,
         userAgent: request.headers.get('user-agent') || 'unknown',
-        success: false
+        success: false,
         errorMessage: 'Empty query provided'
       })
       return json({
-          success: false
+          success: false,
           error: 'Query is required and must not be empty'
         },)
         {
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Validate query length
     if (query.length > 500) {
       return json({
-          success: false
+          success: false,
           error: 'Query too long. Maximum 500 characters allowed.'
         },)
         {
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Validate limit bounds
     if (limit && (limit < 1 || limit > 50)) {
       return json({
-          success: false
+          success: false,
           error: 'Limit must be between 1 and 50'
         },)
         {
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Validate threshold bounds
     if (threshold && (threshold < 0.1 || threshold > 1.0)) {
       return json({
-          success: false
+          success: false,
           error: 'Threshold must be between 0.1 and 1.0'
         },)
         {
@@ -157,7 +157,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       resource: '/api/search/vector',
       clientIP,
       userAgent: request.headers.get('user-agent') || 'unknown',
-      success: true
+      success: true,
       metadata: {
         query: query.substring(0, 100), // Truncate for privacy
         resultsCount: searchResult.results.length,
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     })
     // Prepare response with comprehensive metadata
     const response = {
-      success: true
+      success: true,
       query,
       results: searchResult.results,
       metadata: {
@@ -216,7 +216,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       resource: '/api/search/vector',
       clientIP,
       userAgent: request.headers.get('user-agent') || 'unknown',
-      success: false
+      success: false,
       errorMessage: error.message,
       metadata: {
         responseTime,
@@ -227,7 +227,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     console.error('Enhanced semantic search error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'Semantic search failed. Please try again with a simpler query.',
         responseTime,
         errorId: `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -247,7 +247,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       case 'health':
         return json()
           {
-            success: true
+            success: true,
             status: 'healthy',
             service: 'semantic-vector-search',
             timestamp: new Date().toISOString(),
@@ -284,7 +284,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         }
         return json()
           {
-            success: true
+            success: true,
             cache: {
               memory: memoryCacheStats
               redis: 'Available when configured',
@@ -300,7 +300,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         const analytics = await performanceOptimizer.getPerformanceAnalytics()
         return json()
           {
-            success: true
+            success: true,
             performance: {
               ...analytics,
               database: {
@@ -323,7 +323,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       case 'analytics':
         return json()
           {
-            success: true
+            success: true,
             analytics: {
               searchCapabilities: [
                 'Semantic query understanding',
@@ -359,7 +359,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         )
       default:
         return json({,
-            success: false
+            success: false,
             error: 'Invalid action. Available: health, cache, performance, analytics'
           },)
           {
@@ -372,7 +372,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     console.error('GET /api/search/vector error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'Service temporarily unavailable',
         timestamp: new Date().toISOString()
       },>

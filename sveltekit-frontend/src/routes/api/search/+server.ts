@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             model: 'nomic-embed-text',
             prompt: body.query
           })
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const processingTime = Date.now() - startTime
     console.log(`✅ Search completed in ${processingTime}ms, found ${searchResults.length} results`)
     return json({
-      success: true
+      success: true,
       query: body.query,
       results: searchResults
       metadata: {
@@ -138,7 +138,7 @@ export const GET: RequestHandler = async () => {
     const vectorHealth = await enhancedVectorSearchService.healthCheck()
     const vectorStats = await enhancedVectorSearchService.getSearchStats()
     return json({
-      success: true
+      success: true,
       status: {
         overall: vectorHealth.status === 'healthy' && ollamaStatus === 'ready' ? 'ready' : 'degraded',
         ollama: {

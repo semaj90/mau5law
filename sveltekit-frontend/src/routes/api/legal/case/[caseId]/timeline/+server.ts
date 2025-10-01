@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       analysis = await generateTimelineAnalysis(timelineData.events)
     }
     return json({
-      success: true
+      success: true,
       caseId,
       timeline: timelineData.events,
       analysis,
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     // Generate correlations with existing events
     const updatedCorrelations = await updateEventCorrelations(newEvent)
     return json({
-      success: true
+      success: true,
       event: newEvent
       correlations: updatedCorrelations
       message: 'Timeline event created successfully'
@@ -174,7 +174,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     // Regenerate analysis
     const analysis = await generateTimelineAnalysis(updatedEvents)
     return json({
-      success: true
+      success: true,
       updatedEvents,
       analysis,
       message: 'Timeline updated successfully'

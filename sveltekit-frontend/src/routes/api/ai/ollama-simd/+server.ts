@@ -232,7 +232,7 @@ const originalGETHandler: RequestHandler = async () => {
       langchainSIMDBridge.getSystemStats()
     ])
     return json({
-      success: true
+      success: true,
       service: 'ollama-simd-bridge',
       ollama_status: {
         available: ollamaStatus.ollamaAvailable,
@@ -263,7 +263,7 @@ const originalGETHandler: RequestHandler = async () => {
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to get system status'
     }, { status: 500 })
   }
@@ -378,14 +378,14 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
     const config: Partial<SIMDLangChainConfig> = await request.json()
     langchainSIMDBridge.updateConfig(config)
     return json({
-      success: true
+      success: true,
       message: 'Ollama-SIMD configuration updated',
       config,
       timestamp: Date.now()
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to update configuration'
     }, { status: 500 })
   }
@@ -398,13 +398,13 @@ const originalDELETEHandler: RequestHandler = async () => {
     // Clear SIMD engine caches (would implement cache clearing)
     console.log('🗑️ Cleared Ollama-SIMD caches')
     return json({
-      success: true
+      success: true,
       message: 'All caches cleared',
       timestamp: Date.now()
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to clear caches'
     }, { status: 500 })
   }

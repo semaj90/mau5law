@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const processingTime = Date.now() - startTime
     const totalTokens = chunks.reduce((acc, chunk) => acc + estimateTokens(chunk.content), 0)
     const response: ChunkingResponse = {
-      success: true
+      success: true,
       chunks,
       summary: {
         totalChunks: chunks.length,

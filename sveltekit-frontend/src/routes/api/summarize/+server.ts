@@ -3,7 +3,7 @@ async function generateSummary(content: string): Promise<string> {
   const response = await fetch('http://localhost:11434/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       model: 'gemma2',
       prompt: `Summarize this legal document:\n\n${content}`,
       stream: false

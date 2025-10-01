@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const dbHealth = await getDatabaseHealth()
     if (dbHealth.overall !== 'healthy') {
       return json({
-        success: false
+        success: false,
         error: 'Database temporarily unavailable',
         healthStatus: dbHealth
       }, { status: 503 })
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const embResponse = await fetch('/api/embeddings/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             text: query
             model: 'nomic-embed-text'
           })
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Log search session (simplified - could be extended to user activity table)
     console.log(`[Search] Query: "${query || 'embedding-only'}", Type: ${searchType}, Results: ${results.length}`)
     const finalResult = {
-      success: true
+      success: true,
       results,
       count: results.length,
       searchType,
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err: any) {
     console.error('[Search] Error:', err)
     return json({
-        success: false
+        success: false,
         error: err.message || 'Search failed',
         details: err.stack
       },)

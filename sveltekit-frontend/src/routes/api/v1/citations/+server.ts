@@ -169,7 +169,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
     const CitationsListResponse = z.object({
       success: z.literal(true),
       data: z.array(CitationItem),
-      pagination: z.object({,
+      pagination: z.object({
         page: z.number(),
         limit: z.number(),
         total: z.number(),
@@ -227,7 +227,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       meta: z.record(z.any()).optional()
     }).passthrough()
     const payload = {
-      success: true
+      success: true,
       data: newCitation
       meta: {
         userId: locals.user.id,

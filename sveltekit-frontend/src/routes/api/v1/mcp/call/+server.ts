@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: 'Invalid JSON in request body',
         metadata: {
           tool: 'unknown',
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
   if (!tool || !(tool in MCP_TOOLS)) {
     return json()
       {
-        success: false
+        success: false,
         error: `Unknown MCP tool: ${tool}. Available tools: ${Object.keys(MCP_TOOLS).join(', ')}`,
         metadata: {
           requestId: metadata.requestId,
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       executionTime: `${executionTime}ms`
     })
     return json({
-      success: true
+      success: true,
       result,
       metadata: {
         requestId: requestMetadata.requestId,
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     })
     return json()
       {
-        success: false
+        success: false,
         error: errorMessage
         metadata: {
           requestId: requestMetadata.requestId,

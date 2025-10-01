@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const cached = await multiLayerCache.get<SearchItem[]>(cacheKey)
     if (cached) {
       return json({
-        success: true
+        success: true,
         data: cached
         fromCache: true
         timestamp: new Date().toISOString()
@@ -118,7 +118,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Cache the results (5-minute TTL, medium priority)
     await multiLayerCache.set(cacheKey, recentSearches, 300, 150)
     return json({
-      success: true
+      success: true,
       data: recentSearches
       fromCache: false
       timestamp: new Date().toISOString(),
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Error fetching search history:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to fetch search history',
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { query, searchType, filters, resultCount } = body
     if (!query || !searchType) {
       return json({
-        success: false
+        success: false,
         error: 'Missing required fields: query, searchType'
       }, { status: 400 })
     }
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Clear cache to force refresh
     await multiLayerCache.clear('memory')
     return json({
-      success: true
+      success: true,
       message: 'Search recorded successfully',
       data: newSearch
       timestamp: new Date().toISOString()
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Error recording search:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to record search'
     }, { status: 500 })
   }
@@ -188,7 +188,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     const { searchId, clickedResult, timeSpent } = body
     if (!searchId) {
       return json({
-        success: false
+        success: false,
         error: 'Missing required field: searchId'
       }, { status: 400 })
     }
@@ -213,7 +213,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     // Clear cache
     await multiLayerCache.clear('memory')
     return json({
-      success: true
+      success: true,
       message: 'Search updated successfully',
       data: search
       timestamp: new Date().toISOString()
@@ -221,7 +221,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Error updating search:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to update search'
     }, { status: 500 })
   }

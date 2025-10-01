@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
     // Enhanced validation
     if (action === 'send' && !message?.trim() && !messages?.length) {
       return json({
-          success: false
+          success: false,
           error: {
             code: 'EMPTY_MESSAGE',
             message: 'Message content is required'
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
     }
     if (!user_id) {
       return json({
-          success: false
+          success: false,
           error: {
             code: 'MISSING_USERID',
             message: 'user_id is required for contextual chat'
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
       })
     }
     return json({
-      success: true
+      success: true,
       data: {
         content: response.content || response.message,
         session_id,
@@ -347,7 +347,7 @@ async function handleParallelChatExecution({
         { useRAG: !!caseId, maxContextMessages: 5 }
       )
       return json({
-        success: true
+        success: true,
         data: {
           id: `chatcmpl-fallback-${crypto.randomUUID()}`,
           object: 'chat.completion',

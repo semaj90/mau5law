@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Get prediction using your new service
     const prediction = await predictiveAnalytics.predictCaseOutcome(caseId, consoleTheme)
     return json({
-      success: true
+      success: true,
       prediction,
       timestamp: new Date().toISOString(),
       processingInfo: {

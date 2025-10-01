@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   if (!rateLimitResult.allowed) {
     return json(
       {
-        success: false
+        success: false,
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter,
       },
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         const startTime = Date.now()
         const healthCheck = await safeQuickHealthCheck()
         return json({
-          success: true
+          success: true,
           data: {
             ...healthCheck,
             processingTime: Date.now() - startTime,
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         if (validationInProgress) {
           return json(
             {
-              success: false
+              success: false,
               error: 'Validation already in progress',
               data: { estimatedCompletion: 'Please check back in ~30 seconds' },
             },
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             }
           )
           return json({
-            success: true
+            success: true,
             data: report
             meta: {
               processingTime: Date.now() - startTime,
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         if (!lastValidationReport) {
           return json(
             {
-              success: false
+              success: false,
               error: 'No validation report available. Run validation first.',
               suggestion: 'Use ?action=validate to generate a report',
             },
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         const reportAge = Date.now() - new Date(lastValidationReport.overall.timestamp).getTime()
         const isStale = reportAge > 300000; // 5 minutes
         return json({
-          success: true
+          success: true,
           data: lastValidationReport
           meta: {
             reportAge: Math.floor(reportAge / 1000),
@@ -169,7 +169,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       }
       case 'status': {
         return json({
-          success: true
+          success: true,
           data: {
             validationInProgress,
             lastReportTime: lastValidationReport?.overall.timestamp || null,
@@ -222,7 +222,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             : null
         }
         return json({
-          success: true
+          success: true,
           data: metrics
           meta: {
             endpoint: 'validation_metrics',
@@ -233,7 +233,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       default:
         return json(
           {
-            success: false
+            success: false,
             error: 'Invalid action',
             availableActions: ['health', 'validate', 'report', 'status', 'metrics'],
           },
@@ -253,7 +253,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     )
     return json(
       {
-        success: false
+        success: false,
         error: 'Internal server error',
         details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined
         timestamp: new Date().toISOString(),
@@ -286,7 +286,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (!action) {
       return json(
         {
-          success: false
+          success: false,
           error: 'Missing action',
           availableActions: ['force_validate', 'clear_cache', 'benchmark'],
         },
@@ -298,7 +298,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         if (validationInProgress) {
           return json(
             {
-              success: false
+              success: false,
               error: 'Validation already in progress',
               suggestion: 'Wait for current validation to complete',
             },
@@ -361,7 +361,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             }
           )
           return json({
-            success: true
+            success: true,
             message: 'Validation completed successfully',
             data: report
             meta: {
@@ -377,7 +377,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       case 'clear_cache': {
         lastValidationReport = null
         return json({
-          success: true
+          success: true,
           message: 'Validation cache cleared',
           data: { clearedAt: new Date().toISOString() },
         })
@@ -408,7 +408,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           },
         }
         return json({
-          success: true
+          success: true,
           message: 'Benchmark completed',
           data: benchmarkResults
           meta: {
@@ -419,7 +419,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       default:
         return json(
           {
-            success: false
+            success: false,
             error: 'Invalid action',
             availableActions: ['force_validate', 'clear_cache', 'benchmark'],
           },
@@ -439,7 +439,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     )
     return json(
       {
-        success: false
+        success: false,
         error: 'Internal server error',
         details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined;
         timestamp: new Date().toISOString(),

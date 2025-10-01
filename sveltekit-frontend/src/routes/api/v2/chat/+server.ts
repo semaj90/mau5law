@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       const results = await searchSimilarChats(query, limit, 0.6)
       return json({
-        success: true
+        success: true,
         query,
         results,
         count: results.length,
@@ -95,13 +95,13 @@ export const GET: RequestHandler = async ({ url }) => {
       })
     }
     return json({
-      success: false
+      success: false,
       error: 'Invalid action. Use ?action=health or ?action=search'
     }, { status: 400 })
   } catch (error: any) {
     console.error('Enhanced chat GET error:', error)
     return json({
-      success: false
+      success: false,
       status: 'unhealthy',
       error: error.message,
       timestamp: new Date().toISOString()
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } = body
     if (!message && (!messages || messages.length === 0)) {
       return json({
-        success: false
+        success: false,
         error: 'Message or messages array is required'
       }, { status: 400 })
     }
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const userMessage = message || messages?.filter(item => item.pop()?.content || ''
     if (!userMessage) {
       return json({
-        success: false
+        success: false,
         error: 'No user message found'
       }, { status: 400 })
     }
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     const response: ChatResponse = {
-      success: true
+      success: true,
       response: fullResponse
       conversationId,
       sources: sources.length > 0 ? sources : undefined
@@ -249,7 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Enhanced chat API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to process chat request',
       details: error instanceof Error ? error.message: String(error),
       processingTimeMs: Date.now() - startTime,

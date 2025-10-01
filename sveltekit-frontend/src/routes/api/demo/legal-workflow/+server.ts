@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err) {
     console.error('Workflow demo error:', err)
     return json({
-      success: false
+      success: false,
       error: err instanceof Error ? err.message: String(err)
     }, { status: 500 })
   }
@@ -49,7 +49,7 @@ async function createLegalCase(data: any) {
     category: data.category || 'criminal',
     titleEmbedding: titleEmbedding.success ? JSON.stringify(titleEmbedding.embedding) : null
     descriptionEmbedding: descriptionEmbedding?.success ? JSON.stringify(descriptionEmbedding.embedding) : null
-    metadata: JSON.stringify({,
+    metadata: JSON.stringify({
       createdBy: data.userId,
       workflow: 'demo',
       jurisdiction: data.jurisdiction || 'Local Court'
@@ -63,7 +63,7 @@ async function createLegalCase(data: any) {
     activityType: 'case_created',
     description: `Case "${data.title}" created`,
     performedBy: data.userId,
-    metadata: JSON.stringify({,
+    metadata: JSON.stringify({
       action: 'create_case',
       caseId: newCase.id
     }),
@@ -71,7 +71,7 @@ async function createLegalCase(data: any) {
   })
   console.log('✅ Case created:', newCase.caseNumber)
   return json({
-    success: true
+    success: true,
     step: 1,
     action: 'case_created',
     case: newCase;
@@ -110,7 +110,7 @@ async function uploadEvidenceToCase(data: any) {
       activityType: 'evidence_uploaded',
       description: `Evidence "${file.name}" uploaded and queued for processing`,
       performedBy: data.userId,
-      metadata: JSON.stringify({,
+      metadata: JSON.stringify({
         action: 'upload_evidence',
         filename: file.name,
         jobId,
@@ -127,7 +127,7 @@ async function uploadEvidenceToCase(data: any) {
   }
   console.log('✅ Evidence uploaded and queued for processing')
   return json({
-    success: true
+    success: true,
     step: 2,
     action: 'evidence_uploaded',
     results,
@@ -154,7 +154,7 @@ async function updateCanvasPositions(data: any) {
         activityType: 'evidence_repositioned',
         description: `Evidence repositioned on canvas`,
         performedBy: data.userId,
-        metadata: JSON.stringify({,
+        metadata: JSON.stringify({
           action: 'update_position',
           evidenceId,
           newPosition: position
@@ -167,7 +167,7 @@ async function updateCanvasPositions(data: any) {
   }
   console.log('✅ Canvas positions updated')
   return json({
-    success: true
+    success: true,
     step: 3,
     action: 'positions_updated',
     updated: Object.keys(evidencePositions).length,
@@ -228,7 +228,7 @@ async function generateTimeline(data: any) {
   timeline.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   console.log('✅ Timeline generated with', timeline.length, 'events')
   return json({
-    success: true
+    success: true,
     step: 4,
     action: 'timeline_generated',
     timeline,
@@ -297,7 +297,7 @@ async function chatWithCase(data: any) {
     activityType: 'ai_consultation',
     description: `AI chat query: "${query.substring(0, 100)}..."`,
     performedBy: data.userId,
-    metadata: JSON.stringify({,
+    metadata: JSON.stringify({
       action: 'rag_chat',
       query,
       responseLength: aiResponse.length,
@@ -307,7 +307,7 @@ async function chatWithCase(data: any) {
   })
   console.log('✅ RAG chat completed')
   return json({
-    success: true
+    success: true,
     step: 5,
     action: 'rag_chat_completed',
     response: aiResponse

@@ -63,7 +63,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       const embeddingResponse = await fetch("/api/ai/embedding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           content: evidence.content,
           model: options.embeddingModel || "nomic-embed-text"
         })
@@ -139,7 +139,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         const searchResponse = await fetch("/api/vector/search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             vector: embeddings
             limit: options.vectorSearchLimit || 10,
             threshold: options.similarityThreshold || 0.7,
@@ -162,7 +162,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       const graphResponse = await fetch(`/api/graph/discover/${evidence.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           content: evidence.content,
           tags: taggingResult?.tags || [],
           depth: options.graphDepth || 2,
@@ -193,7 +193,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     pipeline.overallStatus = hasErrors ? "error" : "complete"
     // Return comprehensive results
     return json({
-      success: true
+      success: true,
       evidenceId: evidence.id,
       pipeline,
       results: {

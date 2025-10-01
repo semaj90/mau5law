@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
       })
       .returning()
     return json({
-      success: true
+      success: true,
       session: newSession
     })
   } catch (error: any) {

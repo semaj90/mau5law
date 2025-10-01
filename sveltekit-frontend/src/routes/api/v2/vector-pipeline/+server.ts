@@ -420,7 +420,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const result = await vectorPipelineService.processDocuments(body)
     return json({
-      success: true
+      success: true,
       result
     })
   } catch (err) {

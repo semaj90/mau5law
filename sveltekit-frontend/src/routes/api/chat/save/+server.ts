@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({,
+					body: JSON.stringify({
 						model: 'nomic-embed-text',
 						prompt: message.content
 					})
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			})
 			.where(eq(chatSessions.id, sessionId)
 		return json({
-			success: true
+			success: true,
 			savedMessages: savedMessages.length,
 			sessionId
 		})

@@ -25,22 +25,22 @@
     children,
     trigger,
     title,
-    descriptio;
+    description
    }: Props = $props();
   const sizeClasses = {
     sm: "max-w-md",
     md: "max-w-lg",
     lg: "max-w-2xl",
     xl: "max-w-4xl",
-    full: "max-w-[95vw] max-h-[95vh]";
-  }
+    full: "max-w-[95vw] max-h-[95vh]"
+  };
   let dialogClasses = $derived(cn(
     "legal-ai-dialog fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 gap-4 border border-legal-accent/20 bg-legal-background/95 backdrop-blur-md p-6 shadow-2xl shadow-legal-accent/10 rounded-2xl",
     sizeClasses[size],
     className
   ));
   function handleOpenChange(newOpen: boolean) {
-    open = newOpe;
+    open = newOpen;
     onOpenChange?.(newOpen);
   }
 </script>
@@ -48,7 +48,7 @@
 <DialogPrimitive.Root bind:open onOpenChange={handleOpenChange}>
   {#if trigger}
     <DialogPrimitive.Trigger class="legal-ai-dialog-trigger">
-      {@render trigger()}
+      {@render trigger?.()}
     </DialogPrimitive.Trigger>
   {/if}
   <DialogPrimitive.Portal>
@@ -79,9 +79,7 @@
         </div>
       {/if}
       <div class="legal-ai-dialog-content">
-        {#if children}
-          {@render children()}
-        {/if}
+        {@render children?.()}
       </div>
       <!-- Close Button -->
       <DialogPrimitive.Close

@@ -38,7 +38,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     // Enhance with AI analysis
     const aiEnhancedResults = await enhanceWithAI(query, basicResults.laws || [], fetch)
     return json({
-      success: true
+      success: true,
       laws: aiEnhancedResults.laws,
       aiSummary: aiEnhancedResults.summary,
       suggestions: aiEnhancedResults.suggestions,
@@ -51,7 +51,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   } catch (error: any) {
     console.error('AI legal search error:', error)
     return json({
-        success: false
+        success: false,
         error: 'AI search failed',
         laws: [],
         count: 0
@@ -76,7 +76,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
     const aiResponse = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         message: aiAnalysisPrompt
         temperature: 0.3, // Lower temperature for more focused analysis
         model: 'gemma3-legal:latest'

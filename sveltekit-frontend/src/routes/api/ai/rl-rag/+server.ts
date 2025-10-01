@@ -162,7 +162,7 @@ async function performCudaVectorSearch(params: {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({,
+			body: JSON.stringify({
 				query: params.query,
 				model: EMBEDDING_MODEL
 				limit: params.max_results,
@@ -191,7 +191,7 @@ async function performCudaVectorSearch(params: {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({,
+			body: JSON.stringify({
 				id: `search_${Date.now()}`,
 				title: 'Search Query',
 				content: params.query,
@@ -234,7 +234,7 @@ async function fallbackKnowledgeGraphSearch(params: {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({,
+			body: JSON.stringify({
 				id: `kg_search_${Date.now()}`,
 				title: 'Knowledge Graph Search',
 				content: params.query,

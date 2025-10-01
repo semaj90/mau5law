@@ -54,7 +54,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const { query, searchType, jurisdiction, practiceArea, dateRange, options = {} } = searchRequest
     if (!query) {
       return json({
-        success: false
+        success: false,
         error: 'Search query is required'
       }, { status: 400 })
     }
@@ -67,7 +67,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       console.log('[LegalSearchCached] Cache hit for legal search')
       return cachedJson()
         {
-          success: true
+          success: true,
           ...cachedResults,
           metadata: {
             ...cachedResults.metadata,
@@ -103,7 +103,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     })
     const totalTime = performance.now() - startTime
     const response = {
-      success: true
+      success: true,
       results: searchResults.results,
       metadata: {
         query,
@@ -127,7 +127,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     const totalTime = performance.now() - startTime
     return json({
-      success: false
+      success: false,
       error: error.message,
       responseTime: `${totalTime.toFixed(2)}ms`,
       timestamp: new Date().toISOString()
@@ -145,7 +145,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       const legalCacheKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`)
       const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX}*`)
       return cachedJson({
-        success: true
+        success: true,
         redis: redisStats
         cacheStatistics: {
           legalSearchEntries: legalCacheKeys.length,
@@ -159,7 +159,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     case 'health':
       const isRedisHealthy = redisService.isHealthy()
       return json({
-        success: true
+        success: true,
         health: {
           redis: isRedisHealthy
           caching: true
@@ -177,13 +177,13 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           await redisService.del(key)
         }
         return json({
-          success: true
+          success: true,
           message: `Cleared ${allKeys.length} legal search cache entries`,
           timestamp: new Date().toISOString()
         })
       } catch (error: any) {
         return json({
-          success: false
+          success: false,
           error: error.message
         }, { status: 500 })
       }
@@ -234,7 +234,7 @@ async function generateLegalEmbedding(
   const response = await fetch('http://localhost:11434/api/embeddings', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       model: 'nomic-embed-text',
       prompt: legalContextPrompt
     })

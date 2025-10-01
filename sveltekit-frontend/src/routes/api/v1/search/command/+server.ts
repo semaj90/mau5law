@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const user = locals.user
     if (!user) {
       return json({
-        success: false
+        success: false,
         error: 'Unauthorized'
       }, { status: 401 })
     }
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const userId = body.userId
     if (!query || query.trim().length < 2) {
       return json({
-          success: false
+          success: false,
           error: 'Query must be at least 2 characters long'
         },)>
         { status: 400 }
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       resultArray.sort((a, b) => (b.similarity || 0) - (a.similarity || 0)
     })
     const response: CommandSearchResponse = {
-      success: true
+      success: true,
       results,
       meta: {
         totalResults,
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (error: any) {
     console.error('Command search error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Internal server error',
       timestamp: new Date().toISOString()
     }, { status: 500 })

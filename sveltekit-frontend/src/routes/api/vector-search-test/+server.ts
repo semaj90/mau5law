@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
           includeExplanation: true
         })
         results.tests.vectorRanking = {
-          success: true
+          success: true,
           resultsCount: rankingResults.length,
           firstResult: rankingResults[0] || null
           processingTime: Date.now() - startTime
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } catch (error: any) {
         logger.error('Vector ranking test failed', error)
         results.tests.vectorRanking = {
-          success: false
+          success: false,
           error: error instanceof Error ? error.message: 'Unknown error'
         }
       }
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.info('Testing LegalBERT analysis')
         const analysis = await legalBERT.analyzeLegalText(query)
         results.tests.legalAnalysis = {
-          success: true
+          success: true,
           entities: analysis.entities.length,
           concepts: analysis.concepts.length,
           sentiment: analysis.sentiment.classification,
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } catch (error: any) {
         logger.error('Legal analysis test failed', error)
         results.tests.legalAnalysis = {
-          success: false
+          success: false,
           error: error instanceof Error ? error.message: 'Unknown error'
         }
       }
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
           minConfidence: 0.7
         })
         results.tests.enhancedRAG = {
-          success: true
+          success: true,
           response: (ragResult as any)?.response ? String((ragResult as any).response).substring(0,200) + '...' : '',
           sources: ragResult.sources?.length || 0,
           confidence: ragResult.confidence,
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } catch (error: any) {
         logger.error('Enhanced RAG test failed', error)
         results.tests.enhancedRAG = {
-          success: false
+          success: false,
           error: error instanceof Error ? error.message: 'Unknown error'
         }
       }
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
           useCompression: true
         })
         results.tests.langchainRAG = {
-          success: true
+          success: true,
           answer: langchainResult.answer?.substring(0, 200) + '...',
           sourceDocuments: langchainResult.sourceDocuments.length,
           confidence: langchainResult.confidence,
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } catch (error: any) {
         logger.error('LangChain RAG test failed', error)
         results.tests.langchainRAG = {
-          success: false
+          success: false,
           error: error instanceof Error ? error.message: 'Unknown error'
         }
       }
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Normalize qdrant results to expected shape
         const qdrantResults = (qdrantResultsRaw as any[] || []).map(r => ({ id: r.id, score: r.score || 0, payload: r.payload || {} })
         results.tests.qdrantSearch = {
-          success: true
+          success: true,
           resultsCount: qdrantResults.length,
           averageScore: qdrantResults.length > 0 ?
             qdrantResults.reduce((sum, r) => sum + (r.score || 0), 0) / qdrantResults.length: 0,
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } catch (error: any) {
         logger.error('Qdrant search test failed', error)
         results.tests.qdrantSearch = {
-          success: false
+          success: false,
           error: error instanceof Error ? error.message: 'Unknown error'
         }
       }
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     logger.error('Vector search test failed', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       processingTime: Date.now() - startTime
     }, { status: 500 })

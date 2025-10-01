@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
     data,
     pagination: { page, limit, total: data.length, totalPages: 1, hasNext: false, hasPrev: false },
     analytics: { totalRecommendations: data.length },
-    success: true
+    success: true,
     timestamp: new Date().toISOString()
   })
 }
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: false, error: 'recommendationId (string) and rating (number) are required' }, { status: 400 })
   }
   return json({
-    success: true
+    success: true,
     data: { id: crypto.randomUUID(), recommendationId, rating, feedback, ratedAt: new Date().toISOString() }
   }, { status: 201 })
 }

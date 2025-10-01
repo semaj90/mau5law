@@ -334,7 +334,7 @@ async function handleStoreChatMessage(_options: any, userId: string): Promise<Re
     recommendations = await chatEngine.generateRecommendations(storedMessage)
   }
   return json({
-    success: true
+    success: true,
     message_id: storedMessage.id,
     stored_at: storedMessage.timestamp,
     recommendations,
@@ -356,7 +356,7 @@ async function handleProcessFeedback(_options: any, userId: string): Promise<Res
   }
   await chatEngine.processFeedback(feedbackData)
   return json({
-    success: true
+    success: true,
     feedback_processed: true
     action_id: actionId
     learning_update: 'Model weights updated based on feedback',

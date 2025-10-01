@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     console.log('✅ Document processing completed successfully')
     return json({
-      success: true
+      success: true,
       results,
       metadata: {
         filesProcessed: files.length,
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err: any) {
     console.error('❌ Document processing failed:', err)
     return json({
-      success: false
+      success: false,
       error: err.message || 'Document processing failed',
       details: err.stack
     }, {
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
     console.log(`✅ Search completed: ${results.results.length} results found`)
     return json({
-      success: true
+      success: true,
       query,
       results: results.results,
       metadata: {
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     console.error('❌ Semantic search failed:', err)
     return json({
-      success: false
+      success: false,
       error: err.message || 'Semantic search failed',
       details: err.stack
     }, {
@@ -127,13 +127,13 @@ export const OPTIONS: RequestHandler = async () => {
   try {
     const health = await unifiedDocumentProcessor.healthCheck()
     return json({
-      success: true
+      success: true,
       health,
       timestamp: new Date().toISOString()
     })
   } catch (err: any) {
     return json({
-      success: false
+      success: false,
       error: err.message || 'Health check failed'
     }, {
       status: 500

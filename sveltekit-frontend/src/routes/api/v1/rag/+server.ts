@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
           const cacheResult = await checkDimensionalCache(body.query, body.userId)
           if (cacheResult?.hit) {
             return {
-              success: true
+              success: true,
               results: cacheResult.results || [],
               answer: cacheResult.answer,
               totalResults: cacheResult.totalResults || 0,
@@ -234,7 +234,7 @@ async function performEnhancedRAG(
   const processingTime = Date.now() - startTime
   // Process and format response
   return {
-    success: true
+    success: true,
     results: ragData.results || [],
     answer: ragData.answer || ragData.response,
     totalResults: ragData.totalResults || ragData.results?.length || 0,
@@ -266,7 +266,7 @@ async function checkDimensionalCache(query: string, userId?: string): Promise<an
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           key: cacheKey
           userId
         }),
@@ -296,7 +296,7 @@ async function storeDimensionalCache(query: string, results: any, userId?: strin
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         key: cacheKey
         embeddings: [queryEmbedding],
         metadata: {

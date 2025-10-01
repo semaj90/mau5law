@@ -205,6 +205,14 @@
       isGenerating = false;
     }
   }
+  function handlePromptKeydown(e: KeyboardEvent) {
+    // e.target is an EventTarget in TS; narrow to HTMLInputElement safely
+    const target = e.target as HTMLInputElement | null;
+    if (e.key === 'Enter' && target && target.value.trim()) {
+      generateContent(target.value);
+      target.value = '';
+    }
+  }
   async function saveDocument() {
     if (!currentDocument) return;
     try {
@@ -300,7 +308,7 @@
     return documentTypes.find(type => type.id === selectedDocumentType);
   });
   let wordCount = $derived(() => {
-    return documentContent.split.filter-length;
+    return documentContent ? documentContent.split(/\s+/).filter(Boolean).length : 0;
   });
   let pendingSuggestions = $derived(() => {
     if (!currentDocument) return [];
@@ -319,9 +327,12 @@
     <div class="header-actions">
       {#if currentDocument}
         <button class="nes-btn" onclick={saveDocument}>Save Draft</button>
-        <button class="nes-btn" variant="ghost" onclick={() => showPreview = true}>Preview</button>
+        <button class="nes-btn btn-ghost" onclick={() => showPreview = true}>Preview</button>
       {:else}
-        <button class="nes-btn" onclick={disabled}>
+        <button class="nes-btn"
+          onclick={startNewDocument}
+          disabled={!selectedDocumentType || isDrafting}
+        >
           {isDrafting ? 'Creating...' : 'Start New Document'}
         </button>
       {/if}
@@ -386,6 +397,7 @@
                   </div>
                 </div>
               {/if}
+            {/if}
           </section>
         {/if}
         <!-- Document Configuration -->
@@ -470,10 +482,10 @@
                   <p class="suggestion-text">{suggestion.suggestion}</p>
                   <p class="suggestion-reasoning">{suggestion.reasoning}</p>
                   <div class="suggestion-actions">
-                    <button class="nes-btn" size="sm" onclick={() => applySuggestion(suggestion)}>
+                    <button class="nes-btn btn-sm" onclick={() => applySuggestion(suggestion)}>
                       Apply
                     </button>
-                    <button class="nes-btn" variant="ghost" size="sm">
+                    <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* dismiss TODO */ }}>
                       Dismiss
                     </button>
                   </div>
@@ -486,32 +498,16 @@
         <section class="sidebar-section">
           <h3>Quick Actions</h3>
           <div class="quick-actions">
-            <button class="nes-btn"
-              variant="ghost"
-              size="sm"
-              onclick={disabled}
-            >
+            <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* Add Introduction TODO */ }}>
               Add Introduction
             </button>
-            <button class="nes-btn"
-              variant="ghost"
-              size="sm"
-              onclick={disabled}
-            >
+            <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* Add Conclusion TODO */ }}>
               Add Conclusion
             </button>
-            <button class="nes-btn"
-              variant="ghost"
-              size="sm"
-              onclick={disabled}
-            >
+            <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* Improve Language TODO */ }}>
               Improve Language
             </button>
-            <button class="nes-btn"
-              variant="ghost"
-              size="sm"
-              onclick={disabled}
-            >
+            <button class="nes-btn btn-ghost btn-sm" onclick={() => { /* Add Citations TODO */ }}>
               Add Citations
             </button>
           </div>
@@ -552,9 +548,9 @@
         <!-- Document Editor -->
         <div class="document-editor">
           <div class="editor-toolbar">
-            <div class="toolbar-left">
+              <div class="toolbar-left">
               <input
-                type="text";
+                type="text"
                 bind:value={documentTitle}
                 placeholder="Document Title"
                 class="title-input"
@@ -562,13 +558,13 @@
             </div>
             <div class="toolbar-right">
               <span class="word-count">{wordCount} words</span>
-              <button class="nes-btn" variant="ghost" size="sm" disabled={isGenerating}>
+              <button class="nes-btn btn-ghost btn-sm" disabled={isGenerating} onclick={() => { /* AI Assist TODO */ }}>
                 {isGenerating ? 'Generating...' : 'AI Assist'}
               </button>
             </div>
           </div>
           <div class="editor-content">
-            <textarease;
+            <textarea
               bind:value={documentContent}
               placeholder="Start typing your document or use AI suggestions..."
               class="document-textarea"
@@ -580,14 +576,9 @@
                 type="text"
                 placeholder="Ask AI to help with specific content..."
                 class="ai-prompt-input"
-                onkeydown={(e) => {
-                  if (e.key === 'Enter' && e.target.value.trim()) {
-                    generateContent(e.target.value);
-                    e.target.value = '';
-                  }
-                }}
+                onkeydown={handlePromptKeydown}
               />
-              <button class="nes-btn" size="sm" disabled={isGenerating}>
+              <button class="nes-btn btn-sm" disabled={isGenerating} onclick={() => { /* quick generate TODO */ }}>
                 Generate
               </button>
             </div>
@@ -622,8 +613,9 @@
             </div>
             <div class="card-footer">
               <div class="draft-actions">
-                <button class="nes-btn" variant="ghost" size="sm">Continue</button>
-                <button class="nes-btn" size="sm">Duplicate</button>
+                <!-- removed invalid attributes -->
+                <button class="nes-btn btn-ghost btn-sm">Continue</button>
+                <button class="nes-btn btn-sm">Duplicate</button>
               </div>
             </div>
           </div>
@@ -658,7 +650,7 @@
         </div>
       </div>
       <div class="dialog-actions">
-        <button class="nes-btn" variant="ghost" onclick={() => showPreview = false}>
+        <button class="nes-btn btn-ghost" onclick={() => showPreview = false}>
           Close Preview
         </button>
         <button class="nes-btn">
@@ -677,7 +669,7 @@
   }
   .drafting-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -732,7 +724,7 @@
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
     background: white;
-    transition: all 0.2;
+    transition: all 0.2s;
   }
   .document-type-card:hover {
     border-color: #3b82f6;
@@ -774,7 +766,7 @@
   }
   .type-metadata {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     font-size: 0.75rem;
   }
@@ -806,7 +798,7 @@
   }
   .template-stats {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     font-size: 0.625rem;
     color: #9ca3af;
   }
@@ -894,7 +886,7 @@
     font-size: 0.75rem;
     font-weight: 500;
     color: #374151;
-    text-transform: capitaliz;
+    text-transform: capitalize;
   }
   .suggestion-confidence {
     font-size: 0.625rem;
@@ -965,7 +957,7 @@
   }
   .editor-toolbar {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid #e2e8f0;
@@ -1043,7 +1035,7 @@
   }
   .draft-card {
     border: 1px solid #e2e8f0;
-    transition: box-shadow 0.2;
+    transition: box-shadow 0.2s;
   }
   .draft-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1054,7 +1046,7 @@
   }
   .draft-stats {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.75rem;
   }
@@ -1067,10 +1059,10 @@
   }
   .status-draft {
     background: #fef3c7;
-    color: #92400;
+    color: #92400c;
   }
   .status-review {
-    background: #dbeaf;
+    background: #dbeafe;
     color: #1e40af;
   }
   .status-finalized {

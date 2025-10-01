@@ -11,7 +11,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     const sessionId = cookies.get('session_id')
     if (!sessionId) {
       return json({
-        success: false
+        success: false,
         message: 'No session found',
         data: {
           authenticated: false
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         sameSite: 'strict'
       })
       return json({
-        success: false
+        success: false,
         message: 'Invalid or expired session',
         data: {
           authenticated: false
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     // Remove sensitive information from user object
     const { passwordHash, ...safeUser } = (result as { success?: any; user?: any; session?: any }).user
     return json({
-      success: true
+      success: true,
       message: 'Session valid',
       data: {
         authenticated: true
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
       sameSite: 'strict'
     })
     return json({
-      success: false
+      success: false,
       message: 'Session validation failed',
       data: {
         authenticated: false

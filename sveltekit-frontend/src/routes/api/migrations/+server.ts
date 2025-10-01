@@ -16,14 +16,14 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'status': {
         const status = await migrator.getStatus()
         return json({
-          success: true
+          success: true,
           data: status
         })
       }
       case 'validate': {
         const validation = await migrator.validateIntegrity()
         return json({
-          success: true
+          success: true,
           data: validation
         })
       }
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ url }) => {
           hasRollback: !!migration.down
         })
         return json({
-          success: true
+          success: true,
           data: {
             migrations: migrationList
             total: allMigrations.length,
@@ -48,14 +48,14 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       default:
         return json({,
-          success: false
+          success: false,
           error: 'Invalid action. Use: status, validate, or list'
         }, { status: 400 })
     }
   } catch (error) {
     console.error('Migration API error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'rollback': {
         if (!force) {
           return json({
-            success: false
+            success: false,
             error: 'Rollback requires force=true parameter for safety'
           }, { status: 400 })
         }
@@ -98,13 +98,13 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'create': {
         if (!name || typeof name !== 'string') {
           return json({
-            success: false
+            success: false,
             error: 'Migration name is required'
           }, { status: 400 })
         }
         const filename = await migrator.createMigration(name)
         return json({
-          success: true
+          success: true,
           data: {
             filename,
             message: `Migration ${filename} created successfully`
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'initialize': {
         await migrator.initialize()
         return json({
-          success: true
+          success: true,
           data: {
             message: 'Migration system initialized successfully'
           }
@@ -122,14 +122,14 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default:
         return json({,
-          success: false
+          success: false,
           error: 'Invalid action. Use: migrate, rollback, create, or initialize'
         }, { status: 400 })
     }
   } catch (error) {
     console.error('Migration API POST error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }

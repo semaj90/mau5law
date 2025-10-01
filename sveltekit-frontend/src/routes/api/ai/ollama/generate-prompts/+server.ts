@@ -64,7 +64,7 @@ Respond in JSON format:
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: model
         prompt: promptGenerationPrompt
         format: 'json',

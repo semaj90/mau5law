@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Log detective mode change for audit trail
     console.log(`Detective mode ${enabled ? 'activated' : 'deactivated'} for case ${caseId} by user ${locals.user.id}`)
     return json({
-      success: true
+      success: true,
       data: {
         case: updatedCase
         detectiveMode: {

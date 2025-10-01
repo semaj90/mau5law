@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       const analysisResponse = await fetch(`${NLP_SERVICE_URL}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           prompt: prompt
           max_tokens: 512
         })
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       if (analysisResponse.ok) {
         const analysisData = await analysisResponse.json()
         return json({
-          success: true
+          success: true,
           analysis: analysisData.response,
           source: "Local LLM",
           context: ragContext
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 				Recent Activities: ${recentActivities.map((a) => a.title).join(", ") || "None"}
 			`.trim()
       return json({
-        success: true
+        success: true,
         analysis: `Based on the case context, here's a basic analysis of your query: "${queryText}"\n\nThe case "${currentCase.title}" appears to be related to your query. Consider reviewing the case description and recent activities for more insights.`,
         source: "Fallback Analysis",
         context: basicContext

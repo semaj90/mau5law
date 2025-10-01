@@ -12,7 +12,7 @@ const LegalAnalysisSchema = z.object({
   document_id: z.string().optional(),
   case_id: z.string().optional(),
   model: z.enum(['gemma3:legal-latest', 'embeddinggemma:latest']).default('gemma3:legal-latest'),
-  options: z.object({,
+  options: z.object({
     max_tokens: z.number().default(1024),
     temperature: z.number().min(0).max(1).default(0.1),
     include_precedents: z.boolean().default(true),
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     }
     const result = await response.json()
     return json({
-      success: true
+      success: true,
       data: {
         analysis: result.analysis,
         analysis_type: result.analysis_type,
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     }
     const result = await response.json()
     return json({
-      success: true
+      success: true,
       job_id: result.job_id,
       status: result.status,
       result: result.result,

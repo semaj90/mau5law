@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Write file content
     await writeFile(file, content, 'utf-8')
     return json({
-      success: true
+      success: true,
       file,
       size: content.length,
       lines: content.split('\n').length,

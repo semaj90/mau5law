@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
         context
       )
       return json({
-        success: true
+        success: true,
         result,
         orchestrated: true
         processing_pipeline: (result as { source?: any }).source === 'cache' ? 'L1_CACHE' :
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Direct cache check only
       const cached = await RedisLLMCache.getCachedResponse(query, context)
       return json({
-        success: true
+        success: true,
         result: cached ? {,
           response: cached.response,
           source: 'cache',
@@ -121,7 +121,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       context: metadata.context || {}
     })
     return json({
-      success: true
+      success: true,
       message: 'Response cached successfully',
       cache_key: RedisLLMCache.generateCacheKey(query, metadata.context)
     })
@@ -152,7 +152,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       // Clear all LLM cache
       await RedisLLMCache.getCacheStats(); // This doesn't clear, need to implement clearCache method
       return json({
-        success: true
+        success: true,
         message: 'Cache clear initiated',
         note: 'Full cache clear method needs implementation in RedisLLMCache'
       })
@@ -217,7 +217,7 @@ export const POST_TASKS: RequestHandler = async ({ request }) => {
       priority
     )
     return json({
-      success: true
+      success: true,
       taskId,
       message: `${taskType} task queued successfully`,
       priority,

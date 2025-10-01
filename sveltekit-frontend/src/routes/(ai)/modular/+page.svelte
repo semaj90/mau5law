@@ -10,13 +10,13 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import ModularAIExperience from '$lib/components/ai/ModularAIExperience.svelte';
   import { onMount } from 'svelte';
-  let userId = $state('demo_user_' + Math.random.toString-substring(2, 11));
+  let userId = $state('demo_user_' + Math.random().toString().substring(2, 11));
   let showAdvancedSettings = $state(false);
   let systemStatus = $state({
-    cudaService: false
-    webgpuSupported: false
-    dimensionalCache: true
-    xstateMachine: true
+    cudaService: false,
+    webgpuSupported: false,
+    dimensionalCache: true,
+    xstateMachine: true,
     rabbitMqConnected: false
   });
   $effect(() => {

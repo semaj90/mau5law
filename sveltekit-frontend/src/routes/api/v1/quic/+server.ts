@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const serviceConfig = QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG]
       if (!serviceConfig) {
         results[serviceName] = {
-          success: false
+          success: false,
           error: `Service '${serviceName}' not found`
         }
         continue
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         )
       } catch (commandError) {
         results[serviceName] = {
-          success: false
+          success: false,
           error: commandError instanceof Error ? commandError.message: 'Unknown error'
         }
       }
@@ -224,7 +224,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       lastUpdated: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       service,
       message: `Configuration updated for ${serviceConfig.name}`,
       configuration: updatedConfig
@@ -358,7 +358,7 @@ async function executeServiceCommand(
     case 'restart':
       // In a real implementation, this would trigger a service restart
       return {
-        success: true
+        success: true,
         message: `Restart signal sent to ${serviceConfig.name}`,
         note: 'Restart functionality would be implemented based on deployment method'
       }

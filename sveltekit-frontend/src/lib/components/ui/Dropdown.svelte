@@ -2,7 +2,6 @@
   import { onMount, onDestroy } from 'svelte';
   import { fly } from 'svelte/transition';
   import type { Snippet } from 'svelte';
-
   let {
     align = $bindable('left' as 'left' | 'right'),
     closeOnSelect = $bindable(true),
@@ -15,8 +14,8 @@
     closeOnSelect?: boolean;
     onopen?: () => void;
     onclose?: () => void;
-    trigger: Snippet<[{ open: boolean }]>;
-    children: Snippet;
+    trigger?: Snippet<[{ open: boolean }]>
+    children?: Snippet;
   } = $props();
 
   let open = $state(false);

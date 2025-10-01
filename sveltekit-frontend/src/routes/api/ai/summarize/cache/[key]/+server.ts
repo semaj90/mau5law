@@ -36,7 +36,7 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
   const now = Date.now()
   const remainingMs = cached.entry.ttlMs - (now - cached.entry.ts)
   return json({
-    success: true
+    success: true,
     hit: true
     key,
     source: cached.source,

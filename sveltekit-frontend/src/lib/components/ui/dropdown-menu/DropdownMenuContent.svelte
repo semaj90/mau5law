@@ -15,18 +15,18 @@
     collisionPadding?: number;
     sticky?: 'partial' | 'always';
   }
-  let {
-    children,
-    class: className = '',
-    side = 'bottom',
-    align = 'start',
-    sideOffset = 4,
-    alignOffset = 0,
-    avoidCollisions = true,
-    collisionBoundary,
-    collisionPadding = 8,
-    sticky = 'partial';
-  }: Props = $props();
+    let {
+      children,
+      class: className = '',
+      side = 'bottom',
+      align = 'start',
+      sideOffset = 4,
+      alignOffset = 0,
+      avoidCollisions = true,
+      collisionBoundary,
+      collisionPadding = 8,
+      sticky = 'partial'
+    }: Props = $props();
   let contentClasses = $derived(cn(
     "legal-ai-dropdown-content z-50 min-w-48 overflow-hidden rounded-xl border bg-slate-900/95 backdrop-blur-md shadow-2xl",
     "border-amber-500/20 shadow-amber-500/10 p-1",
@@ -37,6 +37,7 @@
     "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
     className
   ));
+  // Note: content uses Snippet-based children rendering: {@render children?.()}
 </script>
 
 <DropdownMenu.Content
@@ -52,6 +53,5 @@
   transition={scale}
   transitionConfig={{ duration: 200, start: 0.95 }}
 >
-  {@render children?.()}
-</DropdownMenu.Content>
-;
+    {@render children?.()}
+  </DropdownMenu.Content>

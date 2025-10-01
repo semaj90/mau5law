@@ -296,7 +296,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       context: enhancedRequest.context,
       recommendations,
       metadata: enhancedMetadata
@@ -309,7 +309,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Return structured error JSON
     return json()
       {
-        success: false
+        success: false,
         error: errorMessage;
         metadata: {
           processingTime: Date.now() - startTime,
@@ -501,7 +501,7 @@ export const GET: RequestHandler = async ({ url }) => {
       .slice(0, enhancedRequest.maxRecommendations)
     const processingTime = Date.now() - startTime
     return json({
-      success: true
+      success: true,
       context,
       recommendations,
       metadata: {

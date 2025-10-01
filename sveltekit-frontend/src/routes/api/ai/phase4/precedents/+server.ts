@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
       consoleTheme
     )
     return json({
-      success: true
+      success: true,
       discovery: discoveryResult
       timestamp: new Date().toISOString(),
       processingInfo: {
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
       consoleTheme
     )
     return json({
-      success: true
+      success: true,
       discovery: discoveryResult
     })
   } catch (error) {

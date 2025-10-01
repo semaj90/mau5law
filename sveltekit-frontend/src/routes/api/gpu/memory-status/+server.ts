@@ -29,17 +29,17 @@ export const GET: RequestHandler = async () => {
                     ? data.memory.total - data.memory.free: null
         }
         return json({
-            success: true
-            ok: true
+            success: true,
+            ok: true,
             source: 'go',
             memory
         })
     } catch (err: any) {
         console.error('GPU memory status error:', err)
         return json({
-            success: false
+            success: false,
             error: 'failure default to mock',
-            ok: false
+            ok: false,
             source: 'mock',
             memory: {
                 free: 8192, // Mock 8GB free

@@ -384,13 +384,13 @@ export const POST: RequestHandler = async ({ request }) => {
         if (global.gc) {
           global.gc()
           return json({
-            success: true
+            success: true,
             message: 'Garbage collection triggered',
             memoryAfter: process.memoryUsage()
           })
         } else {
           return json({
-              success: false
+              success: false,
               error: 'Garbage collection not available',
               suggestion: 'Start Node.js with --expose-gc flag'
             },)
@@ -402,7 +402,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Run performance benchmarks
         const benchmarks = await runPerformanceBenchmarks()
         return json({
-          success: true
+          success: true,
           message: 'Performance benchmarks completed',
           data: benchmarks
         })
@@ -410,14 +410,14 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'clear_cache': {
         // Clear application caches
         return json({
-          success: true
+          success: true,
           message: 'Application caches cleared',
           clearedAt: new Date().toISOString()
         })
       }
       default:
         return json({,
-            success: false
+            success: false,
             error: 'Invalid action',
             availableActions: ['gc', 'benchmark', 'clear_cache']
           },)
@@ -426,7 +426,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     return json({
-        success: false
+        success: false,
         error: 'Performance action failed',
         details: error instanceof Error ? error.message: 'Unknown error'
       },)

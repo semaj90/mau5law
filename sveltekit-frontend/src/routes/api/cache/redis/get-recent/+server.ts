@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Sort by timestamp (most recent first)
     entries.sort((a, b) => b.timestamp - a.timestamp)
     return json({
-      success: true
+      success: true,
       prefix,
       since,
       count: entries.length,
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }

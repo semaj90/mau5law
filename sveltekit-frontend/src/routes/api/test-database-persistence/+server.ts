@@ -21,7 +21,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
     testResults.push(testUser)
     if (!testUser.success) {
       return json({
-        success: false
+        success: false,
         error: 'Failed to create test user',
         results: testResults
       })
@@ -32,7 +32,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
     testResults.push(testSession)
     if (!testSession.success) {
       return json({
-        success: false
+        success: false,
         error: 'Failed to create chat session',
         results: testResults
       })
@@ -46,7 +46,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
     testResults.push(testMessage)
     if (!testMessage.success) {
       return json({
-        success: false
+        success: false,
         error: 'Failed to store message',
         results: testResults
       })
@@ -82,7 +82,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Database persistence test failed',
       details: error instanceof Error ? error.message: 'Unknown error',
       results: testResults
@@ -103,7 +103,7 @@ async function testCreateUser(): Promise<any> {
     })
     return {
       test: 'Create User',
-      success: true
+      success: true,
       message: 'Test user created successfully',
       data: { userId, email: testEmail },
       responseTime: Date.now() - startTime
@@ -111,7 +111,7 @@ async function testCreateUser(): Promise<any> {
   } catch (error: any) {
     return {
       test: 'Create User',
-      success: false
+      success: false,
       message: 'Failed to create test user',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
@@ -134,7 +134,7 @@ async function testCreateChatSession(userId: string): Promise<any> {
     })
     return {
       test: 'Create Chat Session',
-      success: true
+      success: true,
       message: 'Chat session created successfully',
       data: { sessionId },
       responseTime: Date.now() - startTime
@@ -142,7 +142,7 @@ async function testCreateChatSession(userId: string): Promise<any> {
   } catch (error: any) {
     return {
       test: 'Create Chat Session',
-      success: false
+      success: false,
       message: 'Failed to create chat session',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
@@ -162,7 +162,7 @@ async function testEmbeddingGeneration(content: string): Promise<any> {
     }
     return {
       test: 'Embedding Generation',
-      success: true
+      success: true,
       message: `Generated ${embedding.length}-dimensional embedding`,
       data: {
         embedding,
@@ -174,7 +174,7 @@ async function testEmbeddingGeneration(content: string): Promise<any> {
   } catch (error: any) {
     return {
       test: 'Embedding Generation',
-      success: false
+      success: false,
       message: 'Failed to generate embedding',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
@@ -216,7 +216,7 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
     }
     return {
       test: 'Store Message',
-      success: true
+      success: true,
       message: embedding ? 'Message stored with vector embedding' : 'Message stored without embedding',
       data: {
         messageId,
@@ -228,7 +228,7 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
   } catch (error: any) {
     return {
       test: 'Store Message',
-      success: false
+      success: false,
       message: 'Failed to store message',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
@@ -275,7 +275,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
     }
     return {
       test: 'Store Recommendations',
-      success: true
+      success: true,
       message: `Stored ${recommendations.length} test recommendations`,
       data: {
         recommendationsCount: recommendations.length,
@@ -286,7 +286,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
   } catch (error: any) {
     return {
       test: 'Store Recommendations',
-      success: false
+      success: false,
       message: 'Failed to store recommendations',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
@@ -299,7 +299,7 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
     if (!embedding || embedding.length === 0) {
       return {
         test: 'Vector Similarity Search',
-        success: false
+        success: false,
         message: 'No embedding available for similarity search',
         responseTime: Date.now() - startTime
       }
@@ -311,7 +311,7 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
     })
     return {
       test: 'Vector Similarity Search',
-      success: true
+      success: true,
       message: `Found ${similarResults.length} similar messages`,
       data: {
         resultsCount: similarResults.length,
@@ -327,7 +327,7 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
   } catch (error: any) {
     return {
       test: 'Vector Similarity Search',
-      success: false
+      success: false,
       message: 'Vector similarity search failed',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
@@ -351,7 +351,7 @@ async function testRetrieveRecommendations(userId: string): Promise<any> {
       .limit(10)
     return {
       test: 'Retrieve Recommendations',
-      success: true
+      success: true,
       message: `Retrieved ${recommendations.length} recommendations`,
       data: {
         recommendationsCount: recommendations.length,
@@ -368,7 +368,7 @@ async function testRetrieveRecommendations(userId: string): Promise<any> {
   } catch (error: any) {
     return {
       test: 'Retrieve Recommendations',
-      success: false
+      success: false,
       message: 'Failed to retrieve recommendations',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
@@ -413,7 +413,7 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
   } catch (error: any) {
     return {
       test: 'Update Recommendation Feedback',
-      success: false
+      success: false,
       message: 'Failed to update recommendation feedback',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime

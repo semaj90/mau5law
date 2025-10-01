@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Calculate clustering quality metrics
     const qualityMetrics = calculateClusteringQuality(kmeansClusters, somResults)
     const result = {
-      success: true
+      success: true,
       processedAt: new Date().toISOString(),
       // K-means results
       kmeans: {

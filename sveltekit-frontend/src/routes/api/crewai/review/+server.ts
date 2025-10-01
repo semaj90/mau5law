@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Start the review process (async)
     const taskId = await crewAIOrchestrator.startDocumentReview(reviewTask)
     return json({
-      success: true
+      success: true,
       data: {
         taskId,
         documentId,
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ url }) => {
           // Get all active reviews
           const activeReviews = await crewAIOrchestrator.getActiveReviews()
           return json({
-            success: true
+            success: true,
             data: {
               activeReviews: activeReviews.length,
               reviews: activeReviews.map((review: any) => ({,
@@ -139,12 +139,12 @@ export const GET: RequestHandler = async ({ url }) => {
           const review = activeReviews.find((r: any) => r.taskId === taskId)
           if (!review) {
             return json({
-              success: false
+              success: false,
               error: 'Review not found or completed'
             }, { status: 404 })
           }
           return json({
-            success: true
+            success: true,
             data: {
               taskId: review.taskId,
               documentId: review.documentId,
@@ -160,7 +160,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Get available agents
         const agents = crewAIOrchestrator.getAvailableAgents()
         return json({
-          success: true
+          success: true,
           data: {
             agents: agents.map((agent: any) => ({,
               id: agent.id,
@@ -175,7 +175,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'presets':
         // Get common agent combinations
         return json({
-          success: true
+          success: true,
           data: {
             presets: [
               {
@@ -218,7 +218,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const activeReviews = await crewAIOrchestrator.getActiveReviews()
         const isHealthy = activeReviews.length < 10; // Arbitrary threshold
         return json({
-          success: true
+          success: true,
           healthy: isHealthy
           data: {
             status: isHealthy ? 'healthy' : 'overloaded',
@@ -240,7 +240,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     console.error('❌ CrewAI status error:', err)
     return json({
-      success: false
+      success: false,
       error: err instanceof Error ? err.message: 'Unknown error'
     }, { status: 500 })
   }
@@ -257,12 +257,12 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const cancelled = await crewAIOrchestrator.cancelReview(taskId)
     if (!cancelled) {
       return json({
-        success: false
+        success: false,
         error: 'Review not found or already completed'
       }, { status: 404 })
     }
     return json({
-      success: true
+      success: true,
       data: {
         taskId,
         status: 'cancelled'

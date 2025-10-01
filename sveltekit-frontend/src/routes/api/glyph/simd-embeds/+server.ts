@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!simdGlyphRequest.evidence_id || !simdGlyphRequest.prompt) {
       return json({
-        success: false
+        success: false,
         error: 'evidence_id and prompt are required'
       }, { status: 400 })
     }
@@ -248,19 +248,19 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               step: 'prompt_embedding',
               duration_ms: Math.floor(glyphResult.generation_time_ms * 0.1),
-              success: true
+              success: true,
               metadata: { prompt: simdGlyphRequest.prompt }
             },
             {
               step: 'style_conditioning',
               duration_ms: Math.floor(glyphResult.generation_time_ms * 0.1),
-              success: true
+              success: true,
               metadata: { style: simdGlyphRequest.style }
             },
             {
               step: 'diffusion_generation',
               duration_ms: Math.floor(glyphResult.generation_time_ms * 0.5),
-              success: true
+              success: true,
               metadata: {
                 cache_hits: glyphResult.cache_hits,
                 tensor_count: glyphResult.tensor_ids.length
@@ -269,7 +269,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               step: 'simd_gpu_tiling',
               duration_ms: simdShaderData.performance_stats.tiling_time_ms,
-              success: true
+              success: true,
               metadata: {
                 tile_size: simdGlyphRequest.simd_config!.tile_size,
                 tile_count: simdShaderData.tile_map.length,
@@ -279,7 +279,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               step: 'shader_generation',
               duration_ms: simdShaderData.performance_stats.shader_generation_time_ms,
-              success: true
+              success: true,
               metadata: {
                 format: simdGlyphRequest.simd_config!.shader_format,
                 performance_tier: simdGlyphRequest.simd_config!.performance_tier
@@ -324,7 +324,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     console.log(`✅ SIMD glyph generation complete in ${totalTime}ms`)
     return json({
-      success: true
+      success: true,
       data: result
       metadata: {
         evidence_id: simdGlyphRequest.evidence_id,
@@ -341,7 +341,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('SIMD glyph generation error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'SIMD glyph generation failed'
     }, { status: 500 })
   }
@@ -523,12 +523,12 @@ export const GET: RequestHandler = async () => {
       }
     }
     return json({
-      success: true
+      success: true,
       data: stats
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'SIMD glyph service unavailable'
     }, { status: 503 })
   }

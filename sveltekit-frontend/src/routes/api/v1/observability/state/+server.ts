@@ -20,7 +20,7 @@ export const GET: RequestHandler = async () => {
       try { legacyPersisted = JSON.parse(fs.readFileSync(file,'utf8'), } catch (error) {}
     }
     return json({
-      ok: true
+      ok: true,
       // Enhanced structured state
       state: persistedState
       // Legacy compatibility
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     await saveObservabilityState(newState)
     return json({
-      success: true
+      success: true,
       state: newState
       timestamp: new Date().toISOString()
     })

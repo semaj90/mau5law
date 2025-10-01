@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url }) => {
     switch (action) {
       case 'status':
         return json({
-          success: true
+          success: true,
           database: {
             status: dbStatus
             available: db !== null,
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'mock-data':
         const mockData = initializeMockDataWithEmbeddings()
         return json({
-          success: true
+          success: true,
           data: mockData
           metadata: {
             generated_embeddings: true
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       case 'api-examples':
         return json({
-          success: true
+          success: true,
           examples: mockApiResponses
           usage: {
             cases_list: 'GET /api/cases',
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'database-test':
         if (dbStatus !== 'connected') {
           return json({
-            success: false
+            success: false,
             error: 'Database not connected',
             status: dbStatus
             suggestion: 'Ensure PostgreSQL is running on localhost:5432 with legal_ai_db database'
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
             testResults.pgvector = 'error'
           }
           return json({
-            success: true
+            success: true,
             database_test: testResults
             recommendations: testResults.tables === 'missing'
               ? ['Run database migrations: npm run db:migrate', 'Seed test data: npm run db:seed']
@@ -143,14 +143,14 @@ export const GET: RequestHandler = async ({ url }) => {
           })
         } catch (error) {
           return json({
-            success: false
+            success: false,
             error: 'Database test failed',
             details: error instanceof Error ? error.message: 'Unknown error'
           }, { status: 500 })
         }
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`,
           available_actions: ['status', 'mock-data', 'api-examples', 'database-test']
         }, { status: 400 })
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Mock sync API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Internal server error',
       details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
@@ -175,7 +175,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'insert-mock-data':
         if (dbStatus !== 'connected') {
           return json({
-            success: false
+            success: false,
             error: 'Database not connected - cannot insert mock data',
             suggestion: 'Use GET /api/test/mock-sync?action=mock-data for in-memory testing'
           })
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // This would insert mock data into the actual database
         // For safety, we'll return a simulation instead
         return json({
-          success: true
+          success: true,
           message: 'Mock data insertion simulated',
           note: 'Actual database insertion disabled for safety. Use migration scripts instead.',
           recommended_approach: [
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'test-vector-operations':
         if (dbStatus !== 'connected') {
           return json({
-            success: false
+            success: false,
             error: 'Database not connected - cannot test vectors'
           })
         }
@@ -207,13 +207,13 @@ export const POST: RequestHandler = async ({ request }) => {
               '[1,2,3]'::vector <-> '[1,2,4]'::vector as cosine_distance)
           `)
           return json({
-            success: true
+            success: true,
             vector_test: vectorTest[0]
             message: 'pgvector is working correctly'
           })
         } catch (error) {
           return json({
-            success: false
+            success: false,
             error: 'Vector test failed',
             details: error instanceof Error ? error.message: 'Unknown error',
             suggestion: 'Ensure pgvector extension is installed: CREATE EXTENSION vector;'
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown POST action: ${action}`,
           available_actions: ['insert-mock-data', 'test-vector-operations']
         }, { status: 400 })
@@ -229,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Mock sync POST error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to process POST request',
       details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })

@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!config.id || !config.type || !config.source) {
       return json({
-        success: false
+        success: false,
         error: 'Missing required fields: id, type, source'
       }, { status: 400 })
     }
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
     ]
     if (!validTypes.includes(config.type)) {
       return json({
-        success: false
+        success: false,
         error: `Invalid automation type. Must be one of: ${validTypes.join(', ')}`
       }, { status: 400 })
     }
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     }
     return json({
-      success: true
+      success: true,
       data: {
         configId: config.id,
         jobId,
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Configuration failed'
     }, { status: 500 })
   }
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const config = automationConfigs.get(configId)
       if (!config) {
         return json({
-          success: false
+          success: false,
           error: 'Configuration not found'
         }, { status: 404 })
       }
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const relatedJobs = Array.from(processingJobs.values()
         .filter(job => job.configId === configId)
       return json({
-        success: true
+        success: true,
         data: {
           config,
           jobs: relatedJobs
@@ -131,12 +131,12 @@ export const GET: RequestHandler = async ({ url }) => {
       const job = processingJobs.get(jobId)
       if (!job) {
         return json({
-          success: false
+          success: false,
           error: 'Job not found'
         }, { status: 404 })
       }
       return json({
-        success: true
+        success: true,
         data: { job }
       })
     }
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url }) => {
       filteredJobs = jobs.filter(job => job.status === status)
     }
     return json({
-      success: true
+      success: true,
       data: {
         configurations: configs
         jobs: filteredJobs
@@ -162,7 +162,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Request failed'
     }, { status: 500 })
   }
@@ -174,14 +174,14 @@ export const PUT: RequestHandler = async ({ request }) => {
     const { id, ...configUpdates } = updates
     if (!id) {
       return json({
-        success: false
+        success: false,
         error: 'Configuration ID is required'
       }, { status: 400 })
     }
     const existingConfig = automationConfigs.get(id)
     if (!existingConfig) {
       return json({
-        success: false
+        success: false,
         error: 'Configuration not found'
       }, { status: 404 })
     }
@@ -193,7 +193,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     }
     automationConfigs.set(id, updatedConfig)
     return json({
-      success: true
+      success: true,
       data: {
         config: updatedConfig
         message: 'Configuration updated successfully'
@@ -201,7 +201,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Update failed'
     }, { status: 500 })
   }
@@ -212,14 +212,14 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const configId = url.searchParams.get('configId')
     if (!configId) {
       return json({
-        success: false
+        success: false,
         error: 'Configuration ID is required'
       }, { status: 400 })
     }
     const config = automationConfigs.get(configId)
     if (!config) {
       return json({
-        success: false
+        success: false,
         error: 'Configuration not found'
       }, { status: 404 })
     }
@@ -237,7 +237,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       processingJobs.delete(jobId)
     })
     return json({
-      success: true
+      success: true,
       data: {
         message: 'Configuration and related jobs deleted successfully',
         deletedJobs: relatedJobs.length

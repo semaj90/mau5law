@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const [totalResult] = await db.select({ count: personsOfInterest.id }).from(personsOfInterest)
     const total = parseInt(totalResult?.count?.toString() || '0')
     return json({
-      success: true
+      success: true,
       data: persons
       pagination: {
         total,
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
   } catch (error) {
     console.error('Error fetching persons of interest:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to fetch persons of interest'
     }, { status: 500 })
   }
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!body.name || !body.relationship) {
       return json({
-        success: false
+        success: false,
         error: 'Name and relationship are required'
       }, { status: 400 })
     }
@@ -85,13 +85,13 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const [newPerson] = await db.insert(personsOfInterest).values(personData).returning()
     return json({
-      success: true
+      success: true,
       data: newPerson
     }, { status: 201 })
   } catch (error) {
     console.error('Error creating person of interest:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to create person of interest'
     }, { status: 500 })
   }
@@ -101,7 +101,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const body = await request.json()
     if (!body.id) {
       return json({
-        success: false
+        success: false,
         error: 'Person ID is required for updates'
       }, { status: 400 })
     }
@@ -123,18 +123,18 @@ export const PUT: RequestHandler = async ({ request }) => {
       .returning()
     if (!updatedPerson) {
       return json({
-        success: false
+        success: false,
         error: 'Person of interest not found'
       }, { status: 404 })
     }
     return json({
-      success: true
+      success: true,
       data: updatedPerson
     })
   } catch (error) {
     console.error('Error updating person of interest:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to update person of interest'
     }, { status: 500 })
   }
@@ -144,7 +144,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     const body = await request.json()
     if (!body.id) {
       return json({
-        success: false
+        success: false,
         error: 'Person ID is required for deletion'
       }, { status: 400 })
     }
@@ -154,18 +154,18 @@ export const DELETE: RequestHandler = async ({ request }) => {
       .returning()
     if (!deletedPerson) {
       return json({
-        success: false
+        success: false,
         error: 'Person of interest not found'
       }, { status: 404 })
     }
     return json({
-      success: true
+      success: true,
       message: 'Person of interest deleted successfully'
     })
   } catch (error) {
     console.error('Error deleting person of interest:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to delete person of interest'
     }, { status: 500 })
   }

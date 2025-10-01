@@ -129,7 +129,7 @@ async function fallbackToDirectOllama(
     const ollamaResponse = await fetch(`${DEFAULT_OLLAMA_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: model === 'auto' ? 'gemma3-legal:latest' : model
         prompt,
         stream: false

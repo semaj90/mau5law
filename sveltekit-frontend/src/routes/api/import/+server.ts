@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({ error: "Invalid import type" }, { status: 400 })
     }
     return json({
-      success: true
+      success: true,
       results,
       message: `Import completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped`
     })

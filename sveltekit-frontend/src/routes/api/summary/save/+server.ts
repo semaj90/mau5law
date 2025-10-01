@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       confidence: metadata.confidence
     })
     return json({
-      success: true
+      success: true,
       analysisId: analysisRecord[0].id,
       message: 'Summary saved successfully'
     })

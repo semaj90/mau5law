@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     })
     return json({
-      success: true
+      success: true,
       jobId,
       status: 'queued',
       message: `QLoRA distillation job started for domain: ${distillationRequest.domain}`,
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('❌ QLoRA Distillation API error:', error)
     return json({
-        success: false
+        success: false,
         error: 'Failed to start distillation job',
         details: error instanceof Error ? error.message: 'Unknown error'
       },)
@@ -180,7 +180,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     activeDistillations.set(jobId, status)
     console.log(`❌ Distillation job cancelled: ${jobId}`)
     return json({
-      success: true
+      success: true,
       message: 'Distillation job cancelled',
       jobId
     })

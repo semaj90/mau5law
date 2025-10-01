@@ -33,19 +33,19 @@ function makeErrorBody(err: unknown) {
 // Unified analysis request schema
 const UnifiedAnalysisSchema = z.object({
   evidenceIds: z.array(z.string().uuid()),
-  analysisScope: z.object({,
+  analysisScope: z.object({
     vectorSimilarity: z.boolean().default(true),
     strategyRecommendations: z.boolean().default(true),
     wasmProcessing: z.boolean().default(false), // Computationally expensive
     correlationAnalysis: z.boolean().default(true)
   }),
-  parameters: z.object({,
+  parameters: z.object({
     similarityThreshold: z.number().min(0).max(1).default(0.7),
     strategyType: z.enum(['evidence-driven', 'settlement', 'aggressive', 'comprehensive']).default('comprehensive'),
     correlationConfidence: z.number().min(0).max(1).default(0.6),
     includeVisualization: z.boolean().default(true)
   }),
-  context: z.object({,
+  context: z.object({
     caseType: z.string().optional(),
     jurisdiction: z.string().optional(),
     urgency: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),

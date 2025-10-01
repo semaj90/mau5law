@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // List files in bucket
     const files = await minioService.listFiles(bucket, prefix, limit)
     return new Response(JSON.stringify({
-      success: true
+      success: true,
       bucket,
       prefix,
       files: files.map(file => ({,
@@ -83,7 +83,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       })
     }
     return new Response(JSON.stringify({
-      success: true
+      success: true,
       message: `File ${fileName} deleted from ${bucket}`,
       timestamp: new Date().toISOString()
     }), {

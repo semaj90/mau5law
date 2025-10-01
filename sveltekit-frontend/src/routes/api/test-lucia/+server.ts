@@ -23,13 +23,13 @@ export const GET: RequestHandler = async ({ request }) => {
       console.error("Adapter error cause:", error.cause?.message)
     }
     return json({
-      success: true
+      success: true,
       message: 'Lucia adapter test completed - check console logs'
     })
   } catch (error: any) {
     console.error("Lucia Adapter Test Error:", error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       stack: error.stack
     }, { status: 500 })

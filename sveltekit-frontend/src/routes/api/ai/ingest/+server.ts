@@ -49,7 +49,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       fileSize: file.size
     })
     return json({
-      success: true
+      success: true,
       documentId: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).documentId,
       embeddingId: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).embeddingId,
       analysis: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).analysis,
@@ -79,7 +79,7 @@ const originalGETHandler: RequestHandler = async () => {
     await aiPipeline.initialize()
     const stats = await aiPipeline.getEmbeddingStats()
     return json({
-      success: true
+      success: true,
       stats,
       timestamp: new Date().toISOString()
     })

@@ -19,20 +19,20 @@ export const GET: RequestHandler = async ({ request }) => {
       console.error("Minimal adapter cause:", error.cause?.message)
       // Return the exact error details
       return json({
-        success: false
+        success: false,
         error: error.message,
         query: error.query,
         cause: error.cause?.message
       }, { status: 500 })
     }
     return json({
-      success: true
+      success: true,
       message: 'Minimal schema test completed successfully'
     })
   } catch (error: any) {
     console.error("Minimal Schema Test Error:", error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       stack: error.stack
     }, { status: 500 })

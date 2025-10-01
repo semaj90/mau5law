@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
     const successful = all.filter((r) => !isErrorResult(r)).length
     const failed = all.length - successful
     return json({
-      success: true
+      success: true,
       message: 'Context7 MCP integration test completed',
       results,
       summary: {
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
     const message = error instanceof Error ? error.message: 'Context7 test failed'
     return json()
       {
-        success: false
+        success: false,
         error: message
         timestamp: new Date().toISOString()
       },

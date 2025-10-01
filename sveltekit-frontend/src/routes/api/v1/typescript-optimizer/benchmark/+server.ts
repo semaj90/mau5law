@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Validate benchmark request
 		if (!body.error_count || body.error_count < 1) {
 			return json({
-				success: false
+				success: false,
 				error: 'Invalid benchmark: error_count required (minimum 1)'
 			}, { status: 400 })
 		}
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const analysis = analyzeBenchmarkResults(results, body.strategy)
 		console.log(`✅ Benchmark: Completed ${results.length} tests in ${analysis.total_time_ms}ms`)
 		return json({
-			success: true
+			success: true,
 			benchmark_type: body.strategy,
 			parameters: {
 				error_count: errorCount
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error: any) {
 		console.error('Benchmark Error:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'Benchmark execution failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
@@ -130,7 +130,7 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
 				const response = await fetch(`${ENHANCED_API_BASE_URL}${endpoint.url}`, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({,
+					body: JSON.stringify({
 						errors: generateSampleErrors(errorCount),
 						...endpoint.config,
 						max_fixes: errorCount
@@ -179,7 +179,7 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
 				const response = await fetch(`${ENHANCED_API_BASE_URL}/api/optimized/auto-solve`, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({,
+					body: JSON.stringify({
 						errors: generateSampleErrors(errorCount),
 						...strategy.config,
 						max_fixes: errorCount

@@ -32,13 +32,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const result = await db.insert(users).values(newUser as any).returning()
     if ((result as { length?: any }).length > 0) {
       return json({
-        success: true
+        success: true,
         message: "User created successfully",
         user: result[0]
       })
     } else {
       return json({
-          success: false
+          success: false,
           message: "Failed to create user",
           error: "Database insertion failed"
         },)
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (error: any) {
     console.error("Error creating user:", error)
     return json({
-        success: false
+        success: false,
         message: "Failed to create user",
         error: error instanceof Error ? error.message: "Unknown error"
       },)

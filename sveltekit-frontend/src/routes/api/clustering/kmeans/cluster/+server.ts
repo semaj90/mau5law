@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!documentIds || !Array.isArray(documentIds)) {
       return json()
         {
-          success: false
+          success: false,
           error: "Document IDs array is required",
           metadata: {
             timestamp: new Date().toISOString(),
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (clusterCount < 2 || clusterCount > documentIds.length) {
       return json()
         {
-          success: false
+          success: false,
           error: `Invalid cluster count: ${clusterCount}. Must be between 2 and ${documentIds.length}`,
           metadata: {
             timestamp: new Date().toISOString(),
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
       console.error("Database retrieval error:", dbError)
       return json()
         {
-          success: false
+          success: false,
           error: "Failed to retrieve document embeddings",
           metadata: {
             timestamp: new Date().toISOString(),
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (embeddings.length === 0) {
       return json()
         {
-          success: false
+          success: false,
           error: "No valid embeddings found",
           metadata: {
             timestamp: new Date().toISOString(),
@@ -280,7 +280,7 @@ export const POST: RequestHandler = async ({ request }) => {
       )
       await channel.close()
       return json({
-        success: true
+        success: true,
         data: {
           jobId: clusterJobId
           clusters: results.clusters,
@@ -320,7 +320,7 @@ export const POST: RequestHandler = async ({ request }) => {
       await channel.close()
       return json()
         {
-          success: false
+          success: false,
           error:
             clusteringError instanceof Error
               ? clusteringError.message: "Clustering failed",
@@ -336,7 +336,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error("K-Means API error:", error)
     return json()
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: "Internal server error",
         metadata: {
           timestamp: new Date().toISOString(),
@@ -354,7 +354,7 @@ export const GET: RequestHandler = async ({ url }) => {
   if (!jobId || !embeddingStr) {
     return json()
       {
-        success: false
+        success: false,
         error: "Job ID and embedding are required",
         metadata: {
           timestamp: new Date().toISOString(),
@@ -372,7 +372,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!kmeans) {
       return json()
         {
-          success: false
+          success: false,
           error: "No trained K-Means model found",
           metadata: {
             timestamp: new Date().toISOString(),
@@ -385,7 +385,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Predict cluster
     const clusterId = await kmeans.predict(embedding)
     return json({
-      success: true
+      success: true,
       data: {
         clusterId,
         jobId
@@ -399,7 +399,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error("K-Means prediction error:", error)
     return json()
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: "Prediction failed",
         metadata: {
           timestamp: new Date().toISOString(),

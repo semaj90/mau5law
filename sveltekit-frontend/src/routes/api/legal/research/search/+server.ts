@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (mode === 'semantic') {
       const results = await performSemanticSearch(query, filters, sort, page, limit)
       return json({
-        success: true
+        success: true,
         results: results.documents,
         total: results.total,
         relatedTopics: results.relatedTopics,
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Boolean/phrase search
     const results = await performKeywordSearch(query, mode, filters, sort, page, limit)
     return json({
-      success: true
+      success: true,
       results: results.documents,
       total: results.total,
       relatedTopics: results.relatedTopics,
@@ -249,7 +249,7 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'nomic-embed-text',
         prompt: query
       })

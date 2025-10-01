@@ -172,9 +172,17 @@
     </Card>
   </div>
 {:else if fallback}
-  <slot name="fallback" />
+  <script lang="ts">
+    import type { Snippet } from 'svelte';
+    let { fallback }: { fallback?: Snippet } = $props();
+  </script>
+  {@render fallback?.()}
 {:else}
-  <slot />
+  <script lang="ts">
+    import type { Snippet } from 'svelte';
+    let { children }: { children?: Snippet } = $props();
+  </script>
+  {@render children?.()}
 {/if}
 
 <style>/* Ensure error boundary styles don't interfere with global styles */

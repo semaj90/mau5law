@@ -69,14 +69,14 @@ export const POST: RequestHandler = async () => {
     }
     console.log('✅ Database setup completed successfully')
     return json({
-      success: true
+      success: true,
       message: 'Database tables created and configured successfully',
       userCount: userCount
     })
   } catch (error) {
     console.error('❌ Database setup failed:', error)
     return json({
-        success: false
+        success: false,
         error: 'Database setup failed',
         details: error instanceof Error ? error.message: 'Unknown error'
       },)

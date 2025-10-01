@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
           .where(eq(cases.id, caseId)
           .returning()
         results.crud = {
-          success: true
+          success: true,
           operations: {
             create: {
               user: newUser[0] || newUser
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url }) => {
         await db.delete(users).where(eq(users.id, userId)
       } catch (error: any) {
         results.crud = {
-          success: false
+          success: false,
           error: error.message,
           stack: error.stack
         }
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Cleanup
         await db.delete(documentChunks).where(eq(documentChunks.id, newChunk[0].id)
         results.vectorOps = {
-          success: true
+          success: true,
           operations: {
             create: newChunk[0]
             search: similarChunks
@@ -187,7 +187,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       } catch (error: any) {
         results.vectorOps = {
-          success: false
+          success: false,
           error: error.message,
           stack: error.stack
         }
@@ -196,19 +196,19 @@ export const GET: RequestHandler = async ({ url }) => {
     // 6. Test MCP Tools Integration (temporarily disabled)
     if (testType === 'mcp') {
       results.mcp = {
-        success: false
+        success: false,
         error: 'MCP tools temporarily disabled due to dependency issues - use direct database operations instead'
       }
     }
     return json({
-      success: true
+      success: true,
       timestamp: new Date().toISOString(),
       testType,
       results
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       stack: error.stack,
       timestamp: new Date().toISOString()
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
           status: 'open'
         }).returning()
         return json({
-          success: true
+          success: true,
           data: {
             user: testUser[0]
             case: testCase[0]
@@ -251,7 +251,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const deletedUsers = await db.delete(users)
           .where(sql`${users.email} LIKE '%test%@legal.ai'`)
         return json({
-          success: true
+          success: true,
           cleanup: {
             evidence: deletedEvidence
             cases: deletedCases
@@ -263,7 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       stack: error.stack
     }, { status: 500 })

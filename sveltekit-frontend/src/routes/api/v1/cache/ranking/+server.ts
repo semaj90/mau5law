@@ -164,7 +164,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Return slot key and metadata
     return json()
       {
-        success: true
+        success: true,
         slotKey,
         metadata: {
           resultCount: results.length,
@@ -217,7 +217,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       await canonicalResultCache.clear()
       const latency = performance.now() - startTime
       return json({
-        success: true
+        success: true,
         message: 'Cache cleared successfully',
         latencyMs: latency
       })

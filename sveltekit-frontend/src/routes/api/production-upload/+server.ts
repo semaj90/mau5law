@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     } catch (extractionError) {
       logger.error('Text extraction failed', extractionError)
       return json({
-        success: false
+        success: false,
         error: 'Text extraction failed',
         processingTime: Date.now() - startTime
       }, { status: 500 })
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     } catch (dbError) {
       logger.error('Database insertion failed', dbError)
       return json({
-        success: false
+        success: false,
         error: 'Database insertion failed',
         processingTime: Date.now() - startTime
       }, { status: 500 })
@@ -244,7 +244,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const processingTime = Date.now() - startTime
     logger.info(`Upload processing completed in ${processingTime}ms`)
     const result: UploadResult = {
-      success: true
+      success: true,
       documentId,
       evidenceId,
       analysis: {
@@ -265,7 +265,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const processingTime = Date.now() - startTime
     logger.error('Upload failed', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       processingTime
     }, { status: 500 })

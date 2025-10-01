@@ -149,7 +149,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
     const [updatedCanvasState] = await db
       .update(canvasLayouts)
       .set(updateData)
-      .where(eq(canvasLayouts.id, data.id)
+      .where(eq(canvasLayouts.id, data.id))
       .returning()
     return json(updatedCanvasState)
   } catch (error: any) {
@@ -173,7 +173,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
     const existingCanvasState = await db
       .select()
       .from(canvasLayouts)
-      .where(eq(canvasLayouts.id, canvasId)
+      .where(eq(canvasLayouts.id, canvasId))
       .limit(1)
     if (!existingCanvasState.length) {
       return json({ error: "Canvas state not found" }, { status: 404 })
@@ -181,7 +181,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
     // Delete the canvas state
     const [deletedCanvasState] = await db
       .delete(canvasLayouts)
-      .where(eq(canvasLayouts.id, canvasId)
+      .where(eq(canvasLayouts.id, canvasId))
       .returning()
     return json({ success: true, deletedCanvasState })
   } catch (error: any) {
@@ -207,7 +207,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
     const existingCanvasState = await db
       .select()
       .from(canvasLayouts)
-      .where(eq(canvasLayouts.id, canvasId)
+      .where(eq(canvasLayouts.id, canvasId))
       .limit(1)
     if (!existingCanvasState.length) {
       return json({ error: "Canvas state not found" }, { status: 404 })
@@ -222,7 +222,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
         await db
           .update(canvasLayouts)
           .set({ isDefault: false })
-          .where(eq(canvasLayouts.caseId, existingCanvasState[0].caseId)
+          .where(eq(canvasLayouts.caseId, existingCanvasState[0].caseId))
       }
       updateData.isDefault = true
     } else if (data.operation === "updateData") {
@@ -238,7 +238,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
     const [updatedCanvasState] = await db
       .update(canvasLayouts)
       .set(updateData)
-      .where(eq(canvasLayouts.id, canvasId)
+      .where(eq(canvasLayouts.id, canvasId))
       .returning()
     return json(updatedCanvasState)
   } catch (error: any) {

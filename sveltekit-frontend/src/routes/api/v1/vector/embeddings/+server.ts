@@ -140,7 +140,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
   const clientHints = generateEmbeddingClientHints(processedTexts, textComplexity)
   const totalApiTime = performance.now() - apiStartTime
   return json({
-    success: true
+    success: true,
     embeddings,
     chunks: chunks.length > 0 ? chunks : undefined
     metadata: Object.keys(metadata).length > 0 ? metadata : undefined
@@ -194,7 +194,7 @@ async function handleChunking(request: Request, requestId: string, apiStartTime:
     extractMetadata
   })
   return json({
-    success: true
+    success: true,
     ...result
   })
 }

@@ -3,6 +3,7 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade, scale, blur } from 'svelte/transition';
   import { cubicOut, backOut } from 'svelte/easing';
+  import type { Snippet } from 'svelte';
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   import Portal from './Portal.svelte';
   interface Props {
@@ -12,6 +13,9 @@
     palette?: 'nes' | 'snes' | 'ps1' | 'n64' | 'ps2';
     glassEffect?: boolean;
     diamondPattern?: boolean;
+    // Snippet-based slots
+    children?: Snippet;
+    footer?: Snippet;
   }
   let {
     open = $bindable(false),
@@ -19,7 +23,9 @@
     size = 'medium',
     palette = 'ps1',
     glassEffect = true,
-    diamondPattern = true
+    diamondPattern = true,
+    children,
+    footer
   }: Props = $props();
   const dispatch = createEventDispatcher();
   let modalElement: HTMLDivElement;
@@ -29,8 +35,8 @@
     small: 'max-w-md',
     medium: 'max-w-2xl',
     large: 'max-w-4xl',
-    fullscreen: 'max-w-full h-full';
-  }
+    fullscreen: 'max-w-full h-full'
+  };
   onMount(() => {
     if (diamondPattern && canvasElement) {
       drawDiamondPattern();
@@ -49,7 +55,7 @@
     const width = canvasElement.width = 400;
     const height = canvasElement.height = 400;
     // Diamond pattern generation
-    const diamondSize = 40;
+  const diamondSize = 40;
     const rows = Math.ceil(height / diamondSize) + 2;
     const cols = Math.ceil(width / diamondSize) + 2;
     let offset = 0;
@@ -85,7 +91,7 @@
           }
         }
       }
-      offset = (offset + 0.5) % diamondSiz;
+      offset = (offset + 0.5) % diamondSize;
       animationFrame = requestAnimationFrame(animate);
     }
     animate();
@@ -94,7 +100,7 @@
     open = false;
     dispatch('close');
   }
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       closeModal();
     }
@@ -147,7 +153,7 @@
           {/if}
           <!-- Body -->
           <div class="modal-body">
-            {#snippet children(/)}
+            {@render children?.()}
           </div>
           <!-- Footer -->
           <div class="modal-footer">
@@ -155,14 +161,15 @@
               <span class="suit">♦</span>
               <span class="rank">A</span>
             </div>
-            {#snippet children(name="footer")}
+            {@render footer?.()}
+            {#if !footer}
               <button
                 class="close-button"
                 onclick={closeModal}
               >
                 Close
               </button>
-            {/snippet}
+            {/if}
             <div class="card-corner bottom-right">
               <span class="suit">♦</span>
               <span class="rank">A</span>
@@ -184,7 +191,6 @@
 <style>
   .modal-overlay {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;
@@ -253,7 +259,7 @@ d;
   .modal-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(90deg,
@@ -280,7 +286,7 @@ d;
   .modal-footer {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 1rem 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(90deg,

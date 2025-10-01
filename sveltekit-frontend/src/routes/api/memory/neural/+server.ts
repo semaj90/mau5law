@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   })
   if (!rateLimitResult.allowed) {
     return json({
-        success: false
+        success: false,
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter
       },)
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         const startTime = Date.now()
         const prediction = await manager.predictMemoryUsage(horizon)
         return json({
-          success: true
+          success: true,
           data: prediction
           meta: {
             processingTime: Date.now() - startTime,
@@ -137,7 +137,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         const status = await manager.generatePerformanceReport()
         const systemInfo = await getSystemInfo()
         return json({
-          success: true
+          success: true,
           data: {
             ...status,
             system: systemInfo
@@ -152,7 +152,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         const report = await manager.generatePerformanceReport()
         const detailedMetrics = await getDetailedMetrics(manager)
         return json({
-          success: true
+          success: true,
           data: {
             ...report,
             detailed: detailedMetrics
@@ -163,7 +163,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       case 'health': {
         const health = await performHealthCheck(manager)
         return json({
-          success: true
+          success: true,
           data: health
           meta: {
             checked_at: new Date().toISOString(),
@@ -181,7 +181,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   } catch (error: any) {
     console.error('Neural memory API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Internal server error',
       details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
       timestamp: new Date().toISOString()
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         await manager.adjustLODLevel(memoryPressure)
         const newLOD = (manager as any).currentLOD
         return json({
-          success: true
+          success: true,
           message: 'LOD adjusted',
           data: {
             memoryPressure,
@@ -239,7 +239,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         const afterMemory = manager.getCurrentMemoryUsage()
         const saved = beforeMemory - afterMemory
         return json({
-          success: true
+          success: true,
           message: 'Force optimization complete',
           data: {
             memoryBefore: beforeMemory
@@ -261,7 +261,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         const startTime = Date.now()
         const clearedBytes = await clearManagerCache(manager)
         return json({
-          success: true
+          success: true,
           message: 'Cache cleared',
           data: {
             bytesCleared: clearedBytes
@@ -275,7 +275,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   } catch (error: any) {
     console.error('Neural memory POST error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Internal server error',
       details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
       timestamp: new Date().toISOString()

@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           console.error('❌ Both CUDA and Triton failed:', tritonError)
           // Final fallback
           cudaResponse = {
-            success: false
+            success: false,
             response: 'I apologize, but our AI services are currently unavailable. Please try again later.',
             confidence: 0,
             tokensPerSecond: 0,
@@ -214,7 +214,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               'Content-Type': 'application/json',
               Accept: 'text/event-stream'
             },
-            body: JSON.stringify({,
+            body: JSON.stringify({
               type: 'inference',
               priority: 5,
               payload: {
@@ -359,7 +359,7 @@ async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         prompt: query
         max_tokens: 150,
         temperature: 0.3
@@ -371,7 +371,7 @@ async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
     }
     const result = await response.json()
     return {
-      success: true
+      success: true,
       response: result.text || result.response || 'Generated response from Triton',
       confidence: 0.9,
       tokensPerSecond: result.tokens_per_second || 10,
@@ -393,7 +393,7 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       type: 'inference',
       priority: 5,
       payload: {

@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalTime: acc.totalTime + (result as { success?: any; errors?: any; totalTime?: any }).totalTime
       }), { success: 0, errors: 0, totalTime: 0 })
       return json({
-        success: true
+        success: true,
         stressTest: {
           concurrency,
           totalOperations: concurrency * opsPerWorker,

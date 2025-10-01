@@ -49,7 +49,7 @@ async function runTypeScriptCheck(): Promise<ProcessResult> {
 		setTimeout(() => {
 			checkProcess.kill()
 			resolve({
-				success: false
+				success: false,
 				output,
 				errors: errors + '\nProcess timed out after 5 minutes',
 				duration: 300000,
@@ -131,7 +131,7 @@ async function handleErrorProcessing(request: Request): Promise<any> {
 			parallelWorkers: mockResults.parallelWorkers
 		}
 		return json({
-			success: true
+			success: true,
 			stats,
 			fixes: mockResults.fixes,
 			recommendations: mockResults.recommendations,
@@ -141,7 +141,7 @@ async function handleErrorProcessing(request: Request): Promise<any> {
 		console.error('Error processing failed:', error)
 		return json()
 			{
-				success: false
+				success: false,
 				error: 'Processing failed',
 				details: error instanceof Error ? error.message: String(error)
 			},
@@ -183,7 +183,7 @@ async function handleSystemTest(): Promise<any> {
 		})
 	} catch (error: any) {
 		return json({
-			success: false
+			success: false,
 			results: testResults
 			error: error instanceof Error ? error.message: String(error)
 		})

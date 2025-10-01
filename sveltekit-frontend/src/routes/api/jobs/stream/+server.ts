@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       let isAlive = true
       const subscribers = new Map<string, () => void>()
       // Send initial connection message
-      controller.enqueue(`data: ${JSON.stringify({,
+      controller.enqueue(`data: ${JSON.stringify({
         type: 'connection',
         message: 'Connected to job status stream',
         timestamp: new Date().toISOString()
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           if (includeAll) {
             // Send all jobs
             const allJobs = globalLoki.getAllJobs()
-            controller.enqueue(`data: ${JSON.stringify({,
+            controller.enqueue(`data: ${JSON.stringify({
               type: 'jobs_snapshot',
               jobs: allJobs
               timestamp: new Date().toISOString()
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           } else if (jobIds.length > 0) {
             // Send specific jobs
             const jobs = jobIds.map(id => globalLoki.getJob(id)).filter(Boolean)
-            controller.enqueue(`data: ${JSON.stringify({,
+            controller.enqueue(`data: ${JSON.stringify({
               type: 'jobs_snapshot',
               jobs,
               timestamp: new Date().toISOString()
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           }
           // Send stats
           const stats = globalLoki.getStats()
-          controller.enqueue(`data: ${JSON.stringify({,
+          controller.enqueue(`data: ${JSON.stringify({
             type: 'stats',
             stats,
             timestamp: new Date().toISOString()
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           clearInterval(heartbeatInterval)
           return
         }
-        controller.enqueue(`data: ${JSON.stringify({,
+        controller.enqueue(`data: ${JSON.stringify({
           type: 'heartbeat',
           timestamp: new Date().toISOString()
         })}\n\n`)

@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const patternType = url.searchParams.get('type')
     if (!docId || !patternType) {
       return json({
-        success: false
+        success: false,
         error: 'docId and type parameters required'
       }, { status: 400 })
     }
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const result = await chrROMCacheReader.getPattern(docId, patternType)
     const totalLatency = performance.now() - startTime
     return json({
-      success: true
+      success: true,
       docId,
       patternType,
       pattern: (result as { pattern?: any; source?: any; latency?: any }).pattern,
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       latency: performance.now() - startTime
     }, { status: 500 })
@@ -66,14 +66,14 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleGetStats(startTime)
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown operation: ${operation}`,
           available_operations: ['get_pattern', 'get_batch', 'prefetch', 'get_stats']
         }, { status: 400 })
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       latency: performance.now() - startTime
     }, { status: 500 })
@@ -86,13 +86,13 @@ async function handleSinglePattern(data: any, startTime: number) {
   const { docId, patternType, generateOnMiss = true } = data
   if (!docId || !patternType) {
     return json({
-      success: false
+      success: false,
       error: 'docId and patternType required'
     }, { status: 400 })
   }
   const result = await chrROMCacheReader.getPattern(docId, patternType, generateOnMiss)
   return json({
-    success: true
+    success: true,
     operation: 'get_pattern',
     result: {
       docId,
@@ -116,7 +116,7 @@ async function handleBatchPatterns(data: any, startTime: number) {
   const { requests, maxConcurrency = 10 } = data
   if (!Array.isArray(requests) || requests.length === 0) {
     return json({
-      success: false
+      success: false,
       error: 'requests array required'
     }, { status: 400 })
   }
@@ -126,7 +126,7 @@ async function handleBatchPatterns(data: any, startTime: number) {
   )
   if (validRequests.length === 0) {
     return json({
-      success: false
+      success: false,
       error: 'No valid requests found. Each request needs docId and patternType.'
     }, { status: 400 })
   }
@@ -136,7 +136,7 @@ async function handleBatchPatterns(data: any, startTime: number) {
   const cacheHits = batchResults.filter(item => item.length)
   const avgLatency = batchResults.reduce((sum, r) => sum + r.latency, 0) / batchResults.length
   return json({
-    success: true
+    success: true,
     operation: 'get_batch',
     result: {
       patterns: batchResults
@@ -164,14 +164,14 @@ async function handlePrefetch(data: any, startTime: number) {
   const { docIds, patternTypes = ['summary_icon', 'category_color', 'status_indicator'] } = data
   if (!Array.isArray(docIds) || docIds.length === 0) {
     return json({
-      success: false
+      success: false,
       error: 'docIds array required'
     }, { status: 400 })
   }
   // Execute prefetch (fire-and-forget style)
   chrROMCacheReader.prefetchPatterns(docIds, patternTypes)
   return json({
-    success: true
+    success: true,
     operation: 'prefetch',
     result: {
       message: 'Prefetch initiated',
@@ -198,7 +198,7 @@ async function handleGetStats(startTime: number) {
     recommendations: getPerformanceRecommendations(stats)
   }
   return json({
-    success: true
+    success: true,
     operation: 'get_stats',
     result: enhancedStats
     total_latency: performance.now() - startTime

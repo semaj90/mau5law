@@ -185,7 +185,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     await didYouMeanService.clearCache()
     const processingTime = performance.now() - startTime
     return json({
-      success: true
+      success: true,
       message: 'Suggestion cache cleared',
       processingTimeMs: processingTime
       timestamp: new Date().toISOString()

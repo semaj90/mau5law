@@ -202,14 +202,14 @@ export async function GET({ url }: RequestEvent): Promise<any> {
         documentTemplates[documentType as keyof typeof documentTemplates]
       if (!template) {
         return json({
-            success: false
+            success: false,
             error: `Template not found for document type: ${documentType}`
           },)
           { status: 404 },
         )
       }
       return json({
-        success: true
+        success: true,
         template
       })
     }
@@ -223,13 +223,13 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       }),
     )
     return json({
-      success: true
+      success: true,
       templates
     })
   } catch (error: any) {
     console.error("Error fetching templates:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to fetch templates"
       },)
       { status: 500 },
@@ -266,7 +266,7 @@ export async function POST({ url, request }: RequestEvent): Promise<any> {
       !documentTemplates[templateType as keyof typeof documentTemplates]
     ) {
       return json({
-          success: false
+          success: false,
           error: `Template not found for type: ${templateType}`
         },)
         { status: 404 },
@@ -307,13 +307,13 @@ export async function POST({ url, request }: RequestEvent): Promise<any> {
       updatedAt: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       document: newDocument
     })
   } catch (error: any) {
     console.error("Error creating document from template:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to create document from template"
       },)
       { status: 500 },

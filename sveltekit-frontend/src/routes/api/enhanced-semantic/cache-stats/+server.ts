@@ -14,7 +14,7 @@ export const GET: RequestHandler = async () => {
 		}
 		const data = await response.json()
 		return json({
-			success: true
+			success: true,
 			data: {
 				cache_size: data.data.cache_size || 0,
 				index_size: data.data.index_size || 0,
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async () => {
 			]
 		}
 		return json({
-			success: true
+			success: true,
 			data: mockStats
 			timestamp: new Date().toISOString(),
 			source: 'Fallback Cache Monitor',
@@ -118,12 +118,12 @@ export const POST: RequestHandler = async ({ request }) => {
 				break
 			default:
 				return json({,
-					success: false
+					success: false,
 					error: `Unknown cache action: ${action}`
 				}, { status: 400 })
 		}
 		return json({
-			success: true
+			success: true,
 			action,
 			result,
 			timestamp: new Date().toISOString(),

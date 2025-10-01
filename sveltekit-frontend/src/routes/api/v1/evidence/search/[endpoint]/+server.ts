@@ -44,7 +44,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: EMBEDDING_MODEL;
         prompt: text
       })
@@ -64,7 +64,7 @@ async function queryOllama(prompt: string): Promise<string> {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: LEGAL_MODEL
         prompt,
         stream: false
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       ].filter(item => item.similarity) >= threshold)
        .slice(0, limit)
       return json({
-        success: true
+        success: true,
         data: {
           query,
           results: mockSimilarEvidence
@@ -236,7 +236,7 @@ Focus on legal terminology, case citations, statutory references, and evidence c
         ]
       }
       return json({
-        success: true
+        success: true,
         data: {
           query,
           suggestions: suggestions.slice(0, limit),

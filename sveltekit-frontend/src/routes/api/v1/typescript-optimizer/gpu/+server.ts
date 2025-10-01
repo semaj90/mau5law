@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate GPU processing request
     if (!body.errors || !Array.isArray(body.errors)) {
       return json({
-          success: false
+          success: false,
           error: 'Invalid GPU request: errors array required'
         },)
         { status: 400 }
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Check minimum batch size for GPU efficiency
     if (body.errors.length < 5) {
       return json({
-          success: false
+          success: false,
           error: 'GPU processing requires minimum 5 errors for efficiency',
           recommendation: 'Use /api/v1/typescript-optimizer for smaller batches',
           provided_count: body.errors.length
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const gpuStatusResponse = await fetch(`${ENHANCED_API_BASE_URL}/api/gpu/status`)
     if (!gpuStatusResponse.ok) {
       return json({
-          success: false
+          success: false,
           error: 'GPU acceleration not available',
           details: 'NVIDIA GPU service is not responding',
           fallback: 'Use /api/v1/typescript-optimizer for CPU processing'
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const gpuStatus = await gpuStatusResponse.json()
     if (!gpuStatus.gpu_available) {
       return json({
-          success: false
+          success: false,
           error: 'GPU not available for processing',
           gpu_status: gpuStatus
           fallback: 'Use /api/v1/typescript-optimizer for CPU processing'
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('GPU Processing Error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'GPU processing failed',
         details: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),

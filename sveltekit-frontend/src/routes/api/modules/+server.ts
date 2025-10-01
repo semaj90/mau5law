@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         module.metadata.loadTime = Date.now()
         module.metadata.memoryUsage = '512MB'
         return json({
-          success: true
+          success: true,
           module,
           loadTime: '1.2s',
           timestamp: Date.now()
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         delete module.metadata.loadTime
         delete module.metadata.memoryUsage
         return json({
-          success: true
+          success: true,
           module,
           unloadTime: '0.3s',
           timestamp: Date.now()
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
         const switchTime = Math.random() * 10; // Simulate switch time
         return json({
-          success: true
+          success: true,
           status: 'switched',
           newModule: toModule
           capabilities: targetModule.capabilities,
@@ -144,13 +144,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`
         }, { status: 400 })
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
@@ -163,12 +163,12 @@ export const GET: RequestHandler = async ({ url }) => {
       const module = moduleRegistry.get(moduleId)
       if (!module) {
         return json({
-          success: false
+          success: false,
           error: `Module not found: ${moduleId}`
         }, { status: 404 })
       }
       return json({
-        success: true
+        success: true,
         module,
         timestamp: Date.now()
       })
@@ -206,7 +206,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })

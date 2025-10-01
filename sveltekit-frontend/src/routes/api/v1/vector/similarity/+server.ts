@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const clientHints = generateClientOptimizationHints(operation, dataSize)
     const totalProcessingTime = performance.now() - startTime
     return json({
-      success: true
+      success: true,
       result,
       metadata: {
         operation,

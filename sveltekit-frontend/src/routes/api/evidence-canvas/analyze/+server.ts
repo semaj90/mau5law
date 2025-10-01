@@ -37,7 +37,7 @@ ${shapeObjects > 0 ? `- Identified ${shapeObjects} visual element(s) that could 
     }`
     const confidence = Math.min(0.95, (objectCount * 0.1 + textObjects * 0.15) + 0.5)
     return json({
-      success: true
+      success: true,
       analysis,
       summary,
       confidence: Number(confidence.toFixed(3)),

@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     console.log('📝 Restart audit log:', auditLog)
     return json({
-      success: true
+      success: true,
       message: 'Rolling restart initiated',
       workersToRestart: preRestartWorkers.length,
       estimatedDuration: `${Math.ceil(preRestartWorkers.length * 3)}s`,
@@ -157,7 +157,7 @@ async function performRollingRestart(
     timestamp: new Date().toISOString(),
     duration,
     workersRestarted: workers.length,
-    success: true
+    success: true,
   }
   globalThis.lastRestartTime = Date.now()
   globalThis.restartHistory = globalThis.restartHistory || []

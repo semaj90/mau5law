@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (action === 'info') {
       const cacheInfo = await cacheService.getCacheInfo()
       return json({
-        success: true
+        success: true,
         action: 'cache_info',
         data: cacheInfo
         timestamp: new Date().toISOString()
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const retrieved = await cacheService.get(testKey)
       const testPassed = JSON.stringify(retrieved) === JSON.stringify(testData)
       return json({
-        success: true
+        success: true,
         action: 'basic_test',
         data: {
           testPassed,
@@ -50,13 +50,13 @@ export const GET: RequestHandler = async ({ url }) => {
       })
     }
     return json({
-      success: false
+      success: false,
       error: 'Unknown action. Use: info, test'
     })
   } catch (error: any) {
     console.error('Cache test error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const { text, embedding } = data
       if (!text || !embedding) {
         return json({
-          success: false
+          success: false,
           error: 'Missing text or embedding data'
         }, { status: 400 })
       }
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const cachedEmbedding = await getCachedEmbedding(text, 'test-model')
       const testPassed = JSON.stringify(cachedEmbedding) === JSON.stringify(embedding)
       return json({
-        success: true
+        success: true,
         action: 'embedding_test',
         data: {
           testPassed,
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const { query, results, filters } = data
       if (!query || !results) {
         return json({
-          success: false
+          success: false,
           error: 'Missing query or results data'
         }, { status: 400 })
       }
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const cachedResults = await getCachedSearchResults(query, 'test', filters)
       const testPassed = JSON.stringify(cachedResults) === JSON.stringify(results)
       return json({
-        success: true
+        success: true,
         action: 'search_test',
         data: {
           testPassed,
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const compressedPassed = JSON.stringify(compressed) === JSON.stringify(largeArray)
       const uncompressedPassed = JSON.stringify(uncompressed) === JSON.stringify(largeArray)
       return json({
-        success: true
+        success: true,
         action: 'large_payload_test',
         data: {
           arraySize: largeArray.length,
@@ -149,13 +149,13 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     }
     return json({
-      success: false
+      success: false,
       error: 'Unknown action. Use: embedding, search, large_payload'
     })
   } catch (error: any) {
     console.error('Cache POST test error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })

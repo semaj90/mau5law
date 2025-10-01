@@ -311,7 +311,7 @@ async function testAPIOrchestrator(): Promise<any> {
     }
   } catch (error: any) {
     return {
-      success: false
+      success: false,
       error: String(error)
     }
   }
@@ -380,7 +380,7 @@ async function testUploadAPI(): Promise<any> {
     }
   } catch (error: any) {
     return {
-      success: false
+      success: false,
       error: String(error)
     }
   }
@@ -425,7 +425,7 @@ async function testEmbeddingService(): Promise<any> {
     }
   } catch (error: any) {
     return {
-      success: false
+      success: false,
       error: String(error)
     }
   }
@@ -433,49 +433,49 @@ async function testEmbeddingService(): Promise<any> {
 // Placeholder implementations for remaining tests
 async function testMultiProtocolRouting(): Promise<any> {
   return {
-    success: true
+    success: true,
     details: { protocols: ['HTTP', 'gRPC', 'QUIC', 'WebSocket'] }
   }
 }
 async function testErrorHandling(): Promise<any> {
   return {
-    success: true
+    success: true,
     details: { errorHandling: 'Validated' }
   }
 }
 async function testPerformanceBenchmarks(): Promise<any> {
   return {
-    success: true
+    success: true,
     details: { benchmarks: 'Completed' }
   }
 }
 async function testWindowsProcesses(): Promise<any> {
   return {
-    success: true
+    success: true,
     details: { platform: 'Windows Native', processes: 'Validated' }
   }
 }
 async function testCacheFunctionality(): Promise<any> {
   return {
-    success: true
+    success: true,
     details: { caching: 'Functional' }
   }
 }
 async function testWebSocketConnections(): Promise<any> {
   return {
-    success: true
+    success: true,
     details: { websockets: 'Available' }
   }
 }
 async function testFileProcessingPipeline(): Promise<any> {
   return {
-    success: true
+    success: true,
     details: { pipeline: 'Ready' }
   }
 }
 async function testAIModelAvailability(): Promise<any> {
   return {
-    success: true
+    success: true,
     details: { models: ['gemma3-legal', 'nomic-embed-text'] }
   }
 }

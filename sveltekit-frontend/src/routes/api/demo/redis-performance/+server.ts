@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const totalTime = performance.now() - startTime
     return json({
-      success: true
+      success: true,
       demo: {
         title: 'Redis Cache Performance Demonstration',
         description: 'Real-world performance comparison showing dramatic speed improvements',
@@ -158,7 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const totalTime = performance.now() - startTime
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         redisStatus: redis.status,
         suggestions: [
@@ -188,7 +188,7 @@ export const GET: RequestHandler = async () => {
     const server = parseRedisInfo(serverInfo)
     const responseTime = performance.now() - start
     return json({
-      success: true
+      success: true,
       redis: {
         status: 'Connected',
         version: server.redis_version,
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         redis: {
           status: 'Disconnected',
           error: error.message

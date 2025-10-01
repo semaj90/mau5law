@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // In production, this would query the database
         const precedents = []; // Simulated empty result for now
         return json({
-            success: true
+            success: true,
             precedents,
             total: precedents.length,
             query
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
             }
         ]
         return json({
-            success: false
+            success: false,
             error: 'failure default to mock',
             precedents: mockPrecedents
             total: mockPrecedents.length,
@@ -75,14 +75,14 @@ export const POST: RequestHandler = async ({ request }) => {
         // In production, this would save to database
         const rec = { id: crypto.randomUUID(), ...body, created: new Date().toISOString() }
         return json({
-            success: true
+            success: true,
             precedent: rec
             message: 'Precedent created successfully'
         })
     } catch (error) {
         console.error('Create precedent API error:', error)
         return json({
-            success: false
+            success: false,
             error: 'failure default to mock - precedent created locally',
             precedent: {
                 id: 'mock-' + crypto.randomUUID(),

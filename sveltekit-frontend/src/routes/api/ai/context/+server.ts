@@ -108,7 +108,7 @@ export async function GET({ url }): Promise<any> {
       }
     }
     return json({
-      success: true
+      success: true,
       context: enhancedContext
       timestamp: new Date().toISOString(),
       version: "1.0.0"
@@ -116,7 +116,7 @@ export async function GET({ url }): Promise<any> {
   } catch (error: any) {
     console.error("Context API error:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to retrieve AI context",
         message: error instanceof Error ? error.message: "Unknown error"
       },)
@@ -137,13 +137,13 @@ export async function POST({ request }): Promise<any> {
       await ContextService.updateCaseContext(contextUpdate)
     }
     return json({
-      success: true
+      success: true,
       message: "Context updated successfully"
     })
   } catch (error: any) {
     console.error("Context update error:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to update context"
       },)
       { status: 500 },

@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!body.text && !body.requests) {
       return json({
-        success: false
+        success: false,
         error: 'Missing required field: text or requests'
       }, { status: 400 })
     }
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const isAvailable = await langExtractService.isOllamaAvailable()
     if (!isAvailable) {
       return json({
-        success: false
+        success: false,
         error: 'Ollama service not available. Please ensure Ollama is running on http://localhost:11434'
       }, { status: 503 })
     }
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'batch':
         if (!body.requests || !Array.isArray(body.requests)) {
           return json({
-            success: false
+            success: false,
             error: 'Batch processing requires requests array'
           }, { status: 400 })
         }
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break
     }
     return json({
-      success: true
+      success: true,
       data: result
       timestamp: new Date().toISOString(),
       service: 'langextract-ollama'
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('LangExtract API error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error occurred',
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async () => {
     const isAvailable = await langExtractService.isOllamaAvailable()
     const models = await langExtractService.listAvailableModels()
     return json({
-      success: true
+      success: true,
       status: {
         ollama_available: isAvailable
         available_models: models
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to get service status',
       timestamp: new Date().toISOString()
     }, { status: 500 })

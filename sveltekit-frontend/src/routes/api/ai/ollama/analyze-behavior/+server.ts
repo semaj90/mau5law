@@ -65,7 +65,7 @@ Provide analysis in JSON format:
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma2:9b',
         prompt: behaviorPrompt
         format: 'json',

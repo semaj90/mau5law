@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const strategicRecommendations = await generateStrategicRecommendations(searchResults.matches, reasoningChain)
     const processingTime = Date.now() - startTime
     return json({
-      success: true
+      success: true,
       results: {
         matches: searchResults.matches,
         total: searchResults.total,

@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'capabilities':
         const caps = getBridgeStatus()
         return json({
-          success: true
+          success: true,
           data: {
             capabilities: caps.capabilities,
             cuda_available: caps.cudaHealthy,
@@ -58,9 +58,9 @@ export const GET: RequestHandler = async ({ url }) => {
       default:
         const fullStatus = getBridgeStatus()
         return json({
-          success: true
+          success: true,
           data: {
-            status: fullStatus
+            status: fullStatus,
             endpoints: {
               status: '/api/cuda-rabbitmq-test?action=status',
               health: '/api/cuda-rabbitmq-test?action=health',
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ RabbitMQ-CUDA Test API Error:', error)
     return json({
-      success: false
+      success: false,
       error: {
         message: error.message || 'Bridge test API error',
         timestamp: new Date().toISOString()
@@ -110,13 +110,13 @@ export const POST: RequestHandler = async ({ request }) => {
         const { tensorData, priority = 5 } = payload
         if (!tensorData) {
           return json({
-            success: false
+            success: false,
             error: { message: 'tensorData is required' }
           }, { status: 400 })
         }
         const tensorJobId = await submitCudaTensorJob(tensorData, priority)
         return json({
-          success: true
+          success: true,
           message: 'CUDA tensor job submitted successfully',
           data: {
             jobId: tensorJobId
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { queryVector, candidateVectors, algorithm = 'cosine', priority: simPriority = 7 } = payload
         if (!queryVector || !candidateVectors) {
           return json({
-            success: false
+            success: false,
             error: { message: 'queryVector and candidateVectors are required' }
           }, { status: 400 })
         }
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
         )
         const willUseCuda = candidateVectors.length > 100 && getBridgeStatus().cudaHealthy
         return json({
-          success: true
+          success: true,
           message: 'Vector similarity job submitted successfully',
           data: {
             jobId: similarityJobId
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { embeddings, batchSize = 100, priority: normPriority = 6 } = payload
         if (!embeddings || !Array.isArray(embeddings)) {
           return json({
-            success: false
+            success: false,
             error: { message: 'embeddings array is required' }
           }, { status: 400 })
         }
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
           normPriority
         )
         return json({
-          success: true
+          success: true,
           message: 'Embedding normalization job submitted successfully',
           data: {
             jobId: normalizeJobId
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }, 7)
         ])
         return json({
-          success: true
+          success: true,
           message: 'Comprehensive benchmark submitted successfully',
           data: {
             jobs: benchmarkJobs.map((jobId, index) => ({
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
           )
         )
         return json({
-          success: true
+          success: true,
           message: 'Stress test initiated successfully',
           data: {
             concurrent_jobs: stressJobs.length,
@@ -245,14 +245,14 @@ export const POST: RequestHandler = async ({ request }) => {
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: { message: `Unknown action: ${action}` }
         }, { status: 400 })
     }
   } catch (error: any) {
     console.error('❌ RabbitMQ-CUDA POST Error:', error)
     return json({
-      success: false
+      success: false,
       error: {
         message: error.message || 'CUDA-RabbitMQ operation failed',
         timestamp: new Date().toISOString(),
@@ -268,7 +268,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const { config } = body
     // Update bridge configuration (future implementation)
     return json({
-      success: true
+      success: true,
       message: 'Bridge configuration received',
       data: {
         note: 'Configuration updates will be implemented in future version',
@@ -278,7 +278,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: {
         message: error.message || 'Configuration update failed',
         timestamp: new Date().toISOString()
@@ -294,7 +294,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       case 'shutdown':
         await rabbitMQCudaBridge.shutdown()
         return json({
-          success: true
+          success: true,
           message: 'Enhanced RabbitMQ-CUDA Bridge shutdown completed',
           data: {
             shutdown_at: new Date().toISOString()
@@ -303,7 +303,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       case 'reset':
         // Future implementation: Reset bridge state
         return json({
-          success: true
+          success: true,
           message: 'Bridge reset initiated (simulation)',
           data: {
             reset_at: new Date().toISOString()
@@ -311,13 +311,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: { message: 'Action required for DELETE operation' }
         }, { status: 400 })
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: {
         message: error.message || 'Delete operation failed',
         timestamp: new Date().toISOString()

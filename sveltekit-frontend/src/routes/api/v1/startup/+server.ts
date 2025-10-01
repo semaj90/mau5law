@@ -122,14 +122,14 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'start':
         await startupFlagService.startMonitoring()
         return json({
-          success: true
+          success: true,
           message: 'Startup monitoring initiated',
           timestamp: Date.now()
         })
       case 'shutdown':
         await startupFlagService.shutdown()
         return json({
-          success: true
+          success: true,
           message: 'Startup monitoring shutdown',
           timestamp: Date.now()
         })

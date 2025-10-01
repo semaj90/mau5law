@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ params, cookies }) => {
       return error(404, 'Timeline event not found')
     }
     return json({
-      success: true
+      success: true,
       data: {
         event: timelineEvent[0]
       }
@@ -101,7 +101,7 @@ export const PUT: RequestHandler = async ({ params, cookies, request }) => {
       .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
       .returning()
     return json({
-      success: true
+      success: true,
       message: 'Timeline event updated successfully',
       data: {
         event: updatedEvent[0]
@@ -147,7 +147,7 @@ export const DELETE: RequestHandler = async ({ params, cookies }) => {
       .delete(caseTimeline)
       .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
     return json({
-      success: true
+      success: true,
       message: 'Timeline event deleted successfully',
       data: {
         deletedEventId: eventId

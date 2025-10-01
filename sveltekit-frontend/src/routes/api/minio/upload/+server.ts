@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
     )
     const documentId = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const uploadResult: MinIOUploadResult = {
-      success: true
+      success: true,
       document_id: documentId
       object_path: objectPath
       size: file.size,
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('MinIO upload error:', error)
     return json(
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message : 'Upload failed'
       },
       { status: 500 }

@@ -6,7 +6,7 @@ export const GET: RequestHandler = async () => {
     const result = await completeErrorPipeline.runCompleteErrorProcessing()
     const statusReport = await completeErrorPipeline.generateStatusReport()
     return json({
-      success: true
+      success: true,
       pipeline: result
       statusReport,
       timestamp: new Date().toISOString(),
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     console.error('❌ GPU error processing failed:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       pipeline: completeErrorPipeline.getPipelineStatus(),
       timestamp: new Date().toISOString()
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }

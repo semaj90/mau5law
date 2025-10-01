@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { key, value, ttl = 3600 } = await request.json()
     if (!key) {
       return json({
-        success: false
+        success: false,
         error: 'Key is required'
       }, { status: 400 })
     }
@@ -29,14 +29,14 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       key,
       ttl,
       message: 'Value stored in Redis cache'
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }

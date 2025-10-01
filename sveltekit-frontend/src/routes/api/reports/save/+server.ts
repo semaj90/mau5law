@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const [savedReport] = await db.insert(aiReports).values(reportData).returning()
     return json({
-      success: true
+      success: true,
       report: savedReport
       message: "Report saved successfully"
     })

@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // This would require creating a separate validations table
     // For now, we store it in the aiAnalysis JSON
     const response = {
-      success: true
+      success: true,
       validation,
       updatedAnalysis: aiAnalysis
       message: valid
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (error: any) {
     console.error("Validation error:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to record validation",
         details: error instanceof Error ? error.message: "Unknown error"
       },)
@@ -138,7 +138,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
     const validations = (aiAnalysis as any).validations || []
     return json({
-      success: true
+      success: true,
       evidenceId,
       validations,
       validationScore: (aiAnalysis as any).validationScore || 0,
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   } catch (error: any) {
     console.error("Get validations error:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to retrieve validations",
         details: error instanceof Error ? error.message: "Unknown error"
       },)

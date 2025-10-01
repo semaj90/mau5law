@@ -100,7 +100,7 @@ Respond in JSON format with the following structure:
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: model
         prompt: legalAnalysisPrompt
         format: 'json',
@@ -166,7 +166,7 @@ Respond in JSON format with the following structure:
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             model: 'mxbai-embed-large', // Use a good embedding model
             prompt: textContent.slice(0, 2000) // Truncate for embedding
           })

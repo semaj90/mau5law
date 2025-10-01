@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { context, query, type } = body
     if (!context || !type) {
       return json({
-        success: false
+        success: false,
         error: 'Missing required fields: context, type'
       }, { status: 400 })
     }
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const cached = await multiLayerCache.get<AIRecommendationResponse>(cacheKey)
     if (cached) {
       return json({
-        success: true
+        success: true,
         data: cached
         fromCache: true
         timestamp: new Date().toISOString()
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Cache the AI response
     await multiLayerCache.set(cacheKey, aiResponse, 900, 180); // 15min TTL, high priority
     return json({
-      success: true
+      success: true,
       data: aiResponse
       fromCache: false
       timestamp: new Date().toISOString(),
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request }) => {
       relatedTopics: ['Employment Law', 'Contract Analysis', 'Legal Precedents']
     }
     return json({
-      success: false
+      success: false,
       error: 'failure default to mock',
       data: mockResponse
       fromCache: false

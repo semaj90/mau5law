@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ params }) => {
       .where(eq(evidenceTable.case_id, caseId)
       .orderBy(desc(evidenceTable.uploaded_at)
     return json({
-      success: true
+      success: true,
       evidence,
       count: evidence.length
     })

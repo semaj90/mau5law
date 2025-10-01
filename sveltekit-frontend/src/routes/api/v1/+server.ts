@@ -188,7 +188,7 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'production'
         }
         return json({
-          success: true
+          success: true,
           data,
           metadata: {
             timestamp: new Date().toISOString(),
@@ -201,7 +201,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const e = ensureError(err)
     console.error('API v1 Error:', e)
     return json({
-      success: false
+      success: false,
       error: {
         code: 'INTERNAL_ERROR',
         message: dev ? e.message: 'Service temporarily unavailable'
@@ -265,7 +265,7 @@ async function handleHealthCheck(): Promise<Response> {
     deployment: 'Windows Native'
   }
   return json({
-    success: true
+    success: true,
     data,
     metadata: {
       timestamp: new Date().toISOString(),
@@ -297,7 +297,7 @@ async function handleServiceDiscovery(): Promise<Response> {
     }
   }
   return json({
-    success: true
+    success: true,
     data,
     metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
   } satisfies APIResponse<typeof data>)
@@ -330,7 +330,7 @@ async function handleMetrics(): Promise<Response> {
     timestamp: new Date().toISOString()
   }
   return json({
-    success: true
+    success: true,
     data,
     metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
   } satisfies APIResponse<typeof data>)
@@ -358,7 +358,7 @@ async function handleClusterStatus(): Promise<Response> {
     timestamp: new Date().toISOString()
   }
   return json({
-    success: true
+    success: true,
     data,
     metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
   } satisfies APIResponse<typeof data>)

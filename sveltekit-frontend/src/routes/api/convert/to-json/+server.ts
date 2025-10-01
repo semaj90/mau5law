@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       convertedAt: new Date().toISOString(),
       data: structuredData
       stats: {

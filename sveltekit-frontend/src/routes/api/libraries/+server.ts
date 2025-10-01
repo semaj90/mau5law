@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error("Failed to search libraries:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to search libraries"
       },)
       { status: 500 }
@@ -44,13 +44,13 @@ export const POST: RequestHandler = async ({ request }) => {
       await librarySyncService.syncAllLibraries()
     }
     return json({
-      success: true
+      success: true,
       message: `Libraries synced successfully${source ? ` for ${source}` : ""}`
     })
   } catch (error: any) {
     console.error("Failed to sync libraries:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to sync libraries"
       },)
       { status: 500 }

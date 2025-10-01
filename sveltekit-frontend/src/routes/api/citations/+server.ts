@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
       .where(and(...whereConditions)
     const [{ count: totalCount }] = await totalQuery
     return json({
-      success: true
+      success: true,
       citations: citationResults
       pagination: {
         limit,
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('Citations fetch error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       citations: []
     }, { status: 500 })
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { caseId, title, citationType } = citationData
     if (!caseId || !title || !citationType) {
       return json({
-        success: false
+        success: false,
         error: 'caseId, title, and citationType are required'
       }, { status: 400 })
     }
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const caseDetails = await caseManagementService.getCaseById(caseId)
     if (!caseDetails) {
       return json({
-        success: false
+        success: false,
         error: 'Case not found'
       }, { status: 404 })
     }
@@ -193,13 +193,13 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     }
     return json({
-      success: true
+      success: true,
       citation: newCitation
     }, { status: 201 })
   } catch (error: any) {
     console.error('Citation creation error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }
@@ -209,7 +209,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const { id, ...updateData } = await request.json()
     if (!id) {
       return json({
-        success: false
+        success: false,
         error: 'Citation ID is required'
       }, { status: 400 })
     }
@@ -221,7 +221,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       .limit(1)
     if (!existingCitation.length) {
       return json({
-        success: false
+        success: false,
         error: 'Citation not found'
       }, { status: 404 })
     }
@@ -235,13 +235,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       .where(eq(citations.id, id)
       .returning()
     return json({
-      success: true
+      success: true,
       citation: updatedCitation
     })
   } catch (error: any) {
     console.error('Citation update error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }
@@ -251,7 +251,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     const { id } = await request.json()
     if (!id) {
       return json({
-        success: false
+        success: false,
         error: 'Citation ID is required'
       }, { status: 400 })
     }
@@ -263,20 +263,20 @@ export const DELETE: RequestHandler = async ({ request }) => {
       .limit(1)
     if (!existingCitation.length) {
       return json({
-        success: false
+        success: false,
         error: 'Citation not found'
       }, { status: 404 })
     }
     // Delete the citation
     await db.delete(citations).where(eq(citations.id, id)
     return json({
-      success: true
+      success: true,
       message: 'Citation deleted successfully'
     })
   } catch (error: any) {
     console.error('Citation deletion error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }

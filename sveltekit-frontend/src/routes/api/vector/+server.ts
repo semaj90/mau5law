@@ -24,13 +24,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const validatedData = VectorRequestSchema.safeParse(body)
     if (!validatedData.success) {
       return json({
-        success: false
+        success: false,
         error: 'Invalid request data'
       }, { status: 400 })
     }
     const { query, type, limit } = validatedData.data
     const response: VectorResponse = {
-      success: true
+      success: true,
       data: [],
       type
     }
@@ -68,14 +68,14 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(response)
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message : 'Vector processing failed'
     }, { status: 500 })
   }
 }
 export const GET: RequestHandler = async () => {
   return json({
-    success: true
+    success: true,
     data: {
       status: 'Vector service available',
       operations: ['search', 'similarity', 'cluster'],

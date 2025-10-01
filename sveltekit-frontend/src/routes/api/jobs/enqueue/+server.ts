@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { jobType, ...jobData } = body
     if (!jobType) {
       return json({
-        success: false
+        success: false,
         error: 'jobType is required'
       }, { status: 400 })
     }
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { text, model = 'nomic-embed-text', meta = {}, priority = 1 } = jobData
         if (!text) {
           return json({
-            success: false
+            success: false,
             error: 'text is required for embedding jobs'
           }, { status: 400 })
         }
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
           priority
         })
         return json({
-          success: true
+          success: true,
           jobId,
           jobType: 'embedding',
           statusEndpoint: `/api/jobs/stream?jobIds=${jobId}`,
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
           jobIds.push(jobId)
         }
         return json({
-          success: true
+          success: true,
           batchId,
           jobIds,
           jobType: 'batch-embedding',
@@ -78,14 +78,14 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default:
         return json({ ,
-          success: false
+          success: false,
           error: `Unknown job type: ${jobType}`
         }, { status: 400 })
     }
   } catch (error) {
     console.error('Job enqueueing error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }
@@ -96,7 +96,7 @@ export const GET: RequestHandler = async () => {
     const queueStatus = await enhancedEmbeddingWorker.getQueueStatus()
     const workerStats = enhancedEmbeddingWorker.getStats()
     return json({
-      success: true
+      success: true,
       queueStatus,
       workerStats,
       availableJobTypes: [
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     console.error('Queue status error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }

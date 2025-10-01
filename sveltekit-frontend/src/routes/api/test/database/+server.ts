@@ -191,7 +191,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       timestamp: new Date().toISOString(),
       tests: results
       summary: {
@@ -202,7 +202,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 })

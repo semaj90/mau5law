@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
     if (!cases) {
       console.warn("Cases table not available, returning mock response")
       return json({
-        success: true
+        success: true,
         savedAt: new Date()
       })
     }
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       savedAt: updatedCase.updatedAt
     })
   } catch (error: any) {

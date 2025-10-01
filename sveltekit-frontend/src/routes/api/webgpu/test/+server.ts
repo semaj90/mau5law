@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break
       default:
         return json({,
-            success: false
+            success: false,
             error: `Unknown operation: ${operation}`
           },)
           { status: 400 }
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const processingTime = Date.now() - startTime
     return json({
-      success: true
+      success: true,
       operation,
       result,
       processingTimeMs: processingTime
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ WebGPU test error:', error)
     return json({
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: 'Test failed',
         operation: body?.operation || 'unknown'
       },)
@@ -240,7 +240,7 @@ function estimatePerformance(deviceType: string) {
 export const GET: RequestHandler = async () => {
   try {
     return json({
-      success: true
+      success: true,
       service: 'WebGPU Test Endpoint',
       availableOperations: ['generate_text', 'generate_embedding', 'capability_test'],
       note: 'This endpoint provides server-side simulation of WebGPU operations. Actual WebGPU testing must be performed in browser context.',
@@ -248,7 +248,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Service unavailable'
     }, { status: 500 })
   }

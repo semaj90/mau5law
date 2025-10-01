@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         database: true, // Assume database is healthy if we got this far
       }
       return json({
-        success: true
+        success: true,
         data: { services },
         timestamp: new Date().toISOString(),
         message: 'Health check completed'
@@ -168,7 +168,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
         })
         .returning()
       return json({
-        success: true
+        success: true,
         data: newCase[0]
         message: 'Case created successfully'
       })
@@ -194,7 +194,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
         .where(eq(cases.id, req.id)
         .returning()
       return json({
-        success: true
+        success: true,
         data: updatedCase[0]
         message: 'Case updated successfully'
       })
@@ -202,7 +202,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
       if (!req.id) throw error(400, 'Case ID required for deletion')
       await db.delete(cases).where(eq(cases.id, req.id)
       return json({
-        success: true
+        success: true,
         message: 'Case deleted successfully'
       })
     case 'search':
@@ -245,7 +245,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
         })
         .returning()
       return json({
-        success: true
+        success: true,
         data: newEvidence[0]
         message: 'Evidence created successfully'
       })
@@ -278,7 +278,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
         data: req.data
       })
       return json({
-        success: true
+        success: true,
         data: analysisResult
         message: 'Evidence analysis completed'
       })
@@ -309,7 +309,7 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any>
         })
         .returning()
       return json({
-        success: true
+        success: true,
         data: newCriminal[0]
         message: 'Criminal record created successfully'
       })
@@ -353,7 +353,7 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<any>
         })
         .returning()
       return json({
-        success: true
+        success: true,
         data: newDocument[0]
         message: 'Document created successfully'
       })
@@ -397,7 +397,7 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<any> {
       limit
     })
     return json({
-      success: true
+      success: true,
       data: searchResults
       message: 'Search completed successfully'
     })
@@ -411,7 +411,7 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<any> {
       )
       .limit(limit)
     return json({
-      success: true
+      success: true,
       data: fallbackResults
       message: 'Search completed (database fallback)',
       fallback: true
@@ -423,7 +423,7 @@ async function handleUploadOperations(req: LegalPlatformRequest): Promise<any> {
   try {
     const uploadResult = await callGoService('upload_service', '/upload', 'POST', req.data)
     return json({
-      success: true
+      success: true,
       data: uploadResult
       message: 'Upload processed successfully'
     })
@@ -455,7 +455,7 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<any> {
         throw error(400, `Unknown AI operation: ${operation}`)
     }
     return json({
-      success: true
+      success: true,
       data: result
       message: `AI operation ${operation} completed successfully`
     })
@@ -475,7 +475,7 @@ export const OPTIONS: RequestHandler = async () => {
     database: true // Assume database is healthy if we got this far
   }
   return json({
-    success: true
+    success: true,
     services,
     timestamp: new Date().toISOString(),
     message: 'Health check completed'

@@ -139,7 +139,8 @@
       formData.clientName.trim() &&
       formData.practiceArea &&
       formData.jurisdiction &&
-<svelte:component this={CardBitsCtor} variant="elevated" padding="lg">
+{@const CardBits = CardBitsCtor}
+<CardBits variant="elevated" padding="lg">
   <div class="legal-case-form">
     <div class="form-header">
       <h2 class="form-title">⚖️ Create New Legal Case</h2>
@@ -152,13 +153,14 @@
     </div>
 
     <div class="form-tabs">
-      <svelte:component this={TabsBitsCtor} tabs={tabItems} bind:value={activeTab} variant="underline" size="md">
+  {@const TabsBits = TabsBitsCtor}
+  <TabsBits tabs={tabItems} bind:value={activeTab} variant="underline" size="md">
         {#if activeTab === 'basic'}
           <div class="tab-content">
             <div class="form-grid">
               <div class="form-field">
-                <svelte:component
-                  this={InputBitsCtor}
+                {@const InputBits = InputBitsCtor}
+                <InputBits
                   label="📋 Case Title"
                   placeholder="Enter case title..."
                   bind:value={formData.caseTitle}
@@ -169,8 +171,8 @@
                 />
               </div>
               <div class="form-field">
-                <svelte:component
-                  this={InputBitsCtor}
+                {@const InputBits = InputBitsCtor}
+                <InputBits
                   label="🔢 Case Number"
                   placeholder="CASE-2024-001"
                   bind:value={formData.caseNumber}
@@ -178,8 +180,8 @@
                 />
               </div>
               <div class="form-field">
-                <svelte:component
-                  this={InputBitsCtor}
+                {@const InputBits = InputBitsCtor}
+                <InputBits
                   label="👤 Client Name"
                   placeholder="Enter client name..."
                   bind:value={formData.clientName}
@@ -190,8 +192,8 @@
                 />
               </div>
               <div class="form-field">
-                <svelte:component
-                  this={SelectBitsCtor}
+                {@const SelectBits = SelectBitsCtor}
+                <SelectBits
                   label="⚖️ Practice Area"
                   placeholder="Select practice area..."
                   options={practiceAreas}
@@ -207,8 +209,8 @@
           <div class="tab-content">
             <div class="form-grid">
               <div class="form-field">
-                <svelte:component
-                  this={SelectBitsCtor}
+                {@const SelectBits = SelectBitsCtor}
+                <SelectBits
                   label="🏛️ Jurisdiction"
                   placeholder="Select jurisdiction..."
                   options={jurisdictions}
@@ -219,8 +221,8 @@
                 />
               </div>
               <div class="form-field">
-                <svelte:component
-                  this={SelectBitsCtor}
+                {@const SelectBits = SelectBitsCtor}
+                <SelectBits
                   label="⚖️ Court Level"
                   placeholder="Select court level..."
                   options={courtLevels}
@@ -229,8 +231,8 @@
                 />
               </div>
               <div class="form-field">
-                <svelte:component
-                  this={SelectBitsCtor}
+                {@const SelectBits = SelectBitsCtor}
+                <SelectBits
                   label="🚨 Priority Level"
                   placeholder="Select priority..."
                   options={priorities}
@@ -255,8 +257,8 @@
           <div class="tab-content">
             <div class="form-grid">
               <div class="form-field">
-                <svelte:component
-                  this={SelectBitsCtor}
+                {@const SelectBits = SelectBitsCtor}
+                <SelectBits
                   label="👨‍💼 Assigned Attorney"
                   placeholder="Select attorney..."
                   options={attorneys}
@@ -265,8 +267,8 @@
                 />
               </div>
               <div class="form-field">
-                <svelte:component
-                  this={InputBitsCtor}
+                {@const InputBits = InputBitsCtor}
+                <InputBits
                   label="⏱️ Estimated Hours"
                   placeholder="Enter estimated hours..."
                   bind:value={formData.estimatedHours}
@@ -275,8 +277,8 @@
                 />
               </div>
               <div class="form-field">
-                <svelte:component
-                  this={InputBitsCtor}
+                {@const InputBits = InputBitsCtor}
+                <InputBits
                   label="💰 Budget"
                   placeholder="Enter budget amount..."
                   bind:value={formData.budget}
@@ -285,8 +287,8 @@
                 />
               </div>
               <div class="form-field">
-                <svelte:component
-                  this={InputBitsCtor}
+                {@const InputBits = InputBitsCtor}
+                <InputBits
                   label="📅 Deadline"
                   bind:value={formData.deadline}
                   type="date"
@@ -349,9 +351,10 @@
 
     <div class="form-actions">
       <div class="action-buttons">
-        <svelte:component this={TooltipBitsCtor} content="Clear all form data">
-          <svelte:component
-            this={ButtonBitsCtor}
+        {@const TooltipBits = TooltipBitsCtor}
+        {@const ButtonBits = ButtonBitsCtor}
+        <TooltipBits content="Clear all form data">
+          <ButtonBits
             variant="ghost"
             onclick={() => {
               if (confirm('Are you sure you want to clear all form data?')) {
@@ -372,18 +375,6 @@
                 formErrors = {}
               }
             }}
-          >
-            🗑️ Clear Form
-          </svelte:component>
-        </svelte:component>
-        <svelte:component this={TooltipBitsCtor} content={isFormValid ? 'Submit the legal case' : 'Complete required fields first'}>
-          <svelte:component
-            this={ButtonBitsCtor}
-            variant="primary"
-            loading={isSubmitting}
-            disabled={!isFormValid || isSubmitting}
-            onclick={handleSubmit}
-          >
           >
             🗑️ Clear Form
           </ButtonBits>

@@ -52,7 +52,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       tags: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.analysis?.tags || []
     })
     return json({
-      success: true
+      success: true,
       data: {
         query,
         results: formattedResults
@@ -102,7 +102,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       threshold
     )
     return json({
-      success: true
+      success: true,
       data: {
         query,
         results,

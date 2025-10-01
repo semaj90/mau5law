@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Get the created report details
     const createdReport = await reportsService.getById(reportId)
     return json({
-      success: true
+      success: true,
       data: createdReport
       meta: {
         reportId,

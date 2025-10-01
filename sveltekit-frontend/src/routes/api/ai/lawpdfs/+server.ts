@@ -153,7 +153,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
         const { sessionId } = await processResponse.json()
         results.push({
           filename: file.name,
-          success: true
+          success: true,
           documentId: evidenceId
           sessionId,
           steps,
@@ -166,7 +166,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
         console.error(`[LawPDF] Failed to process file ${file.name}:`, error)
         results.push({
           filename: file.name,
-          success: false
+          success: false,
           error: error instanceof Error ? error.message: String(error)
         })
       }
@@ -184,7 +184,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
     console.error('[LawPDF] File upload handling failed:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'File upload processing failed',
         details: error instanceof Error ? error.message: String(error)
       },
@@ -205,7 +205,7 @@ async function processWithLocalModels(
     const summaryResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: summaryModel.replace(':latest', ''),
         prompt: legalPrompt
         stream: false
@@ -228,7 +228,7 @@ async function processWithLocalModels(
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           model: embeddingModel.replace(':latest', ''),
           prompt: content.substring(0, 2000), // Limit for embedding
         })

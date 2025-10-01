@@ -126,7 +126,7 @@ ws ::= ([ \t\n]*)
     promises.push(fetch(`${NLP_SERVICE_URL}/generate-with-local-llm`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           prompt:
             basePrompt +
             '\n\nReturn your analysis as a valid JSON object with "summary" and "recommendations" keys.',
@@ -145,7 +145,7 @@ ws ::= ([ \t\n]*)
             "Content-Type": "application/json",
             Authorization: `Bearer ${OPENAI_API_KEY}`
           },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: basePrompt }],
             max_tokens: 512

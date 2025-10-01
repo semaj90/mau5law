@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(result, { status: 400 })
         }
         return json({
-          success: true
+          success: true,
           jobId: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).jobId,
           queuePosition: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).queuePosition,
           estimatedTime: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).estimatedTime,
@@ -130,14 +130,14 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`
         }, { status: 400 })
     }
   } catch (error) {
     console.error('❌ Ingestion API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Internal server error',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -160,13 +160,13 @@ export const GET: RequestHandler = async ({ url }) => {
     if (action === 'get_dashboard') {
       const dashboardData = ingestionService.getDashboardData()
       return json({
-        success: true
+        success: true,
         dashboard: dashboardData
       })
     }
     // Default: return API documentation
     return json({
-      success: true
+      success: true,
       api: {
         name: 'Comprehensive Ingestion API',
         version: '1.0.0',
@@ -193,7 +193,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('❌ Ingestion API GET error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Internal server error',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -209,18 +209,18 @@ export const PATCH: RequestHandler = async ({ request }) => {
       jobTracker.registerWorker(workerId)
       jobTracker.updateWorkerHeartbeat(workerId, stats)
       return json({
-        success: true
+        success: true,
         message: 'Heartbeat recorded',
         timestamp: new Date().toISOString()
       })
     }
     return json({
-      success: false
+      success: false,
       error: 'Invalid heartbeat data'
     }, { status: 400 })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Heartbeat failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })

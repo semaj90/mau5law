@@ -43,7 +43,7 @@ const EvidenceEnhancementRequestSchema = z.object({
         charges: z.array(z.string()).optional(),
         defendant_name: z.string().optional()
     }).optional(),
-    enhancement_options: z.object({,
+    enhancement_options: z.object({
         suggest_labels: z.boolean().optional(),
         extract_entities: z.boolean().optional(),
         find_similar: z.boolean().optional(),
@@ -52,31 +52,31 @@ const EvidenceEnhancementRequestSchema = z.object({
     }).optional()
 })
 const EvidenceEnhancementResponseSchema = z.object({
-    analysis: z.object({,
+    analysis: z.object({
         evidence_type: z.string(),
         confidence_score: z.number(),
         prosecution_strength: z.number(),
         legal_relevance: z.number()
     }),
-    suggested_labels: z.array(z.object({,
+    suggested_labels: z.array(z.object({
         label: z.string(),
         confidence: z.number(),
         category: z.string(),
         justification: z.string()
     })),
-    extracted_entities: z.array(z.object({,
+    extracted_entities: z.array(z.object({
         entity: z.string(),
         type: z.string(),
         confidence: z.number(),
         context: z.string()
     })),
-    similar_evidence: z.array(z.object({,
+    similar_evidence: z.array(z.object({
         document_id: z.string(),
         similarity_score: z.number(),
         relevant_phrases: z.array(z.string()),
         prosecution_outcome: z.string()
     })),
-    prosecution_insights: z.object({,
+    prosecution_insights: z.object({
         strengths: z.array(z.string()),
         weaknesses: z.array(z.string()),
         recommendations: z.array(z.string()),
@@ -85,7 +85,7 @@ const EvidenceEnhancementResponseSchema = z.object({
     metadata: z.object({,
         processing_time_ms: z.number(),
         enhancement_version: z.string(),
-        data_sources: z.array(z.string()
+        data_sources: z.array(z.string(),
     })
 })
 // Initialize connections
@@ -174,10 +174,10 @@ export const POST: RequestHandler = async ({ request }) => {
               recommendations: [],
               precedent_support: 0
             },
-      metadata: {
+      metadata: {,
         processing_time_ms: Date.now() - startTime,
         enhancement_version: '2.0.0',
-        data_sources: ['legal_documents_processed', 'semantic_phrases_ranking']
+        data_sources: ['legal_documents_processed', 'semantic_phrases_ranking'],
       }
     }
     // Validate response
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json({
         message: 'Evidence enhancement service temporarily unavailable',
-        details: err instanceof Error ? err.message: 'Unknown error'
+        details: err instanceof Error ? err.message: 'Unknown error',
       },)
       { status: 500 }
     )
@@ -224,7 +224,7 @@ Consider:
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: CONFIG.ollama?.model || "unknown" // @ts-ignore - Model property access,
         prompt: analysisPrompt
         stream: false
@@ -326,7 +326,7 @@ ${evidenceText}`
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: CONFIG.ollama?.model || "unknown" // @ts-ignore - Model property access,
         prompt: entityPrompt
         stream: false
@@ -448,7 +448,7 @@ Focus on:
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: CONFIG.ollama?.model || "unknown" // @ts-ignore - Model property access,
         prompt: analysisPrompt
         stream: false
@@ -482,7 +482,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: CONFIG.ollama.embeddingModel,
         prompt: text
       })

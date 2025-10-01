@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Trigger cluster rebalancing
         const result = await rebalanceCluster(strategy)
         return json({
-          success: true
+          success: true,
           action: 'rebalance',
           strategy,
           result: {
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const modelOp: ModelOperation = body
         if (!modelOp?.model || !modelOp.operation) {
           return json({
-            success: false
+            success: false,
             error: 'Model and operation are required'
           }, { status: 400 })
         }
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Scale cluster up or down
         const result = await scaleCluster(instances, models)
         return json({
-          success: true
+          success: true,
           action: 'scale',
           result: {
             previousInstances: (result as { rebalanced?: any; distribution?: any; improvement?: any; success?: any; data?: any; instances?: any; previous?: any; current?: any; models?: any; failedOver?: any; newPrimary?: any; redistributed?: any }).previous,
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Force health check of all instances
         const health = await performClusterHealthCheck()
         return json({
-          success: true
+          success: true,
           action: 'health-check',
           health,
           timestamp: Date.now()
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`,
           availableActions: ['rebalance', 'model-operation', 'scale', 'failover', 'health-check']
         }, { status: 400 })
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     console.error('Ollama Cluster Management error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
@@ -178,12 +178,12 @@ export const GET: RequestHandler = async ({ url }) => {
       const instance = await getInstanceStatus(instanceId)
       if (!instance) {
         return json({
-          success: false
+          success: false,
           error: `Instance not found: ${instanceId}`
         }, { status: 404 })
       }
       return json({
-        success: true
+        success: true,
         instance,
         timestamp: Date.now()
       })
@@ -191,7 +191,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get cluster overview
     const clusterStatus = await getClusterStatus(detailed)
     return json({
-      success: true
+      success: true,
       cluster: clusterStatus
       service: 'ollama-cluster-management',
       capabilities: [
@@ -223,7 +223,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
@@ -459,7 +459,7 @@ async function executeModelOperation(operation: ModelOperation): Promise<any> {
       }
     })()
   return {
-    success: true
+    success: true,
     data: baseResult;
     instances: affectedInstances
   }
@@ -498,7 +498,7 @@ async function triggerFailover(instanceId: string, reason: string): Promise<any>
   const newPrimary = remaining[0]?.id ?? 'none'
   // Audited response
   return {
-    success: true
+    success: true,
       failedOver: remaining.length > 0,
       oldPrimary: instanceId
       newPrimary,

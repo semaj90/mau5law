@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		// Phase 3: Combine results
 		const result = {
-			success: true
+			success: true,
 			upload: {
 				document_id: uploadResult.id,
 				filename: uploadResult.filename || file.name,

@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: model.replace(':latest', ''),
         prompt: truncatedText
       })
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       embedding,
       dimensions: embedding?.length || 0,
       model,
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Embeddings API error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'Failed to generate embeddings',
         details: error instanceof Error ? error.message: String(error)
       },

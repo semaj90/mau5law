@@ -27,14 +27,14 @@ export async function POST({ request }): Promise<any> {
     }
     const transcript = await SpeechService.transcribe(audio)
     return json({
-      success: true
+      success: true,
       transcript,
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     console.error('Voice API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to transcribe audio',
       message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })

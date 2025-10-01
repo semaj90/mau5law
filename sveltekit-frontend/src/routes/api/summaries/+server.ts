@@ -114,7 +114,7 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
   })
   const totalTime = Date.now() - startTime
   return json({
-    success: true
+    success: true,
     result: synthesizedResult
     metadata: {
       processingTime: totalTime
@@ -132,7 +132,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
       try {
         // Send initial status
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({,
+          encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Starting AI summary generation...',
               progress: 0
@@ -142,7 +142,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         // Step 1: Local LLM (streaming)
         const llmOutput = await getLocalLLMOutputStreaming(request, (chunk) => {
           controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({,
+            encoder.encode(`data: ${JSON.stringify({
                 type: 'llm_chunk',
                 content: chunk
                 progress: 33
@@ -152,7 +152,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         })
         // Step 2: Enhanced RAG
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({,
+          encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Retrieving relevant documents...',
               progress: 50
@@ -162,7 +162,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         const ragOutput = request.includeRAG ? await getEnhancedRAGOutput(request) : null
         // Step 3: User Activity
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({,
+          encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Analyzing user activity patterns...',
               progress: 75
@@ -174,7 +174,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           : null
         // Step 4: Final synthesis
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({,
+          encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Synthesizing final summary...',
               progress: 90
@@ -189,7 +189,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         })
         // Send final result
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({,
+          encoder.encode(`data: ${JSON.stringify({
               type: 'complete',
               result: synthesizedResult
               progress: 100
@@ -199,7 +199,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.close()
       } catch (error: any) {
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({,
+          encoder.encode(`data: ${JSON.stringify({
               type: 'error',
               error: error.message
             })}\n\n`
