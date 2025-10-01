@@ -12,7 +12,7 @@ const ConnectionMappingSchema = z.object({
   focusTypes: z.array(z.enum(['people', 'evidence', 'locations', 'events', 'communications', 'financial'])).optional(),
   connectionStrength: z.number().min(0).max(1).default(0.5),
   maxDepth: z.number().min(1).max(5).default(3),
-  options: z.object({,
+  options: z.object({
     includeWeakConnections: z.boolean().default(false),
     includePredictedConnections: z.boolean().default(true),
     clusterSimilar: z.boolean().default(true),
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     })
     return json({
-      success: true
+      success: true,
       data: {
         caseId,
         connectionMap,
@@ -205,7 +205,7 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
       const response = await fetch(`${mcpEndpoint}/mcp/semantic-analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           text: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).content || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).title || '',
           analysisType: 'evidence_classification',
           useGemmaEmbeddings: true
@@ -382,7 +382,7 @@ async function generateConnections(nodes: any[], connectionStrength: number, opt
           const response = await fetch(`${mcpEndpoint}/mcp/vector-similarity`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({
               vector1: node1.metadata.embeddingVector,
               vector2: node2.metadata.embeddingVector,
               similarityType: 'cosine'

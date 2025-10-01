@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(400, `Unknown action: ${action}`)
     }
     return json({
-      success: true
+      success: true,
       data: result;
       timestamp: new Date().toISOString()
     })
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'status':
         const status = await documentUpdateLoop.getQueueStatus()
         return json({
-          success: true
+          success: true,
           data: {
             queue: status
             service: 'Document Update Loop',
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const healthStatus = await documentUpdateLoop.getQueueStatus()
         const isHealthy = !healthStatus.processing || healthStatus.queued < 100; // Arbitrary threshold
         return json({
-          success: true
+          success: true,
           healthy: isHealthy
           data: {
             status: isHealthy ? 'healthy' : 'overloaded',
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     console.error('❌ Update loop status error:', err)
     return json({
-      success: false
+      success: false,
       error: err instanceof Error ? err.message: 'Unknown error'
     }, { status: 500 })
   }
@@ -157,19 +157,19 @@ export const PATCH: RequestHandler = async ({ request }) => {
             const result = await documentUpdateLoop.forceReembedDocument(documentId)
             batchResults.push({
               documentId,
-              success: true
+              success: true,
               result
             })
           } catch (err: any) {
             batchResults.push({
               documentId,
-              success: false
+              success: false,
               error: err instanceof Error ? err.message: 'Unknown error'
             })
           }
         }
         return json({
-          success: true
+          success: true,
           data: {
             action: 'batch_reembed',
             processed: batchResults.length,
@@ -181,7 +181,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       case 'clear_queue':
         // This would require adding a method to clear the queue
         return json({
-          success: true
+          success: true,
           data: {
             action: 'clear_queue',
             message: 'Queue cleared (implementation needed in DocumentUpdateLoop class)'

@@ -113,7 +113,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
         'X-User-ID': userId
         'X-Case-ID': caseId
       },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         input_data: enhancedContext
         operation: 'legal_analysis',
         model: model
@@ -208,7 +208,7 @@ async function processWithDirectOllama(context: any, startTime: number): Promise
     const ollamaResponse = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: context?.model || "unknown" // @ts-ignore - Model property access,
         prompt,
         system: context.systemPrompt,

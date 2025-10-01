@@ -46,12 +46,12 @@ export const POST: RequestHandler = async ({ request }) => {
         break
       default:
         return json({ ,
-          success: false
+          success: false,
           error: `Unknown test type: ${testType}`
         }, { status: 400 })
     }
     return json({
-      success: true
+      success: true,
       testType,
       result: testResult
       timestamp: new Date().toISOString()
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Pipeline test error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Test failed',
       testType: body?.testType || 'unknown'
     }, { status: 500 })
@@ -83,7 +83,7 @@ async function testFullPipeline(testData?: any): Promise<any> {
   const computeResponse = await fetch('http://localhost:5173/api/compute', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       ownerType: 'evidence',
       ownerId: testEvidence.id,
       event: 'upsert',
@@ -225,7 +225,7 @@ async function testEvidenceProcessing(testData?: any): Promise<any> {
     evidenceCreated: testEvidenceList.length,
     evidenceTagged: updatedEvidence[0]?.tags?.length > 0,
     tags: updatedEvidence[0]?.tags || [],
-    success: true
+    success: true,
   }
 }
 // Test batch processing with k-means clustering
@@ -260,7 +260,7 @@ async function testBatchClustering(testData?: any): Promise<any> {
     batchSize,
     streamId,
     clustered: true, // Would check actual clustering results
-    success: true
+    success: true,
   }
 }
 // Test WebGPU with WASM fallback
@@ -271,7 +271,7 @@ async function testWebGPUFallback(testData?: any): Promise<any> {
     const webgpuResponse = await fetch('/api/webgpu/test', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         operation: 'generate_text',
         input: testText
         fallback: true
@@ -292,7 +292,7 @@ async function testWebGPUFallback(testData?: any): Promise<any> {
     return {
       testInput: testText
       error: error instanceof Error ? error.message: 'Unknown error',
-      success: false
+      success: false,
     }
   }
 }
@@ -314,7 +314,7 @@ async function testStressLoad(testData?: any): Promise<any> {
       const response = await fetch('http://localhost:5173/api/compute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           ownerType: 'evidence',
           ownerId: testEvidence.id,
           event: 'upsert',
@@ -332,7 +332,7 @@ async function testStressLoad(testData?: any): Promise<any> {
       return {
         index: i
         error: error instanceof Error ? error.message: 'Unknown error',
-        success: false
+        success: false,
       }
     }
   })
@@ -384,7 +384,7 @@ export const GET: RequestHandler = async () => {
       const computeTest = await fetch('http://localhost:5173/api/compute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           ownerType: 'evidence',
           ownerId: 'health-check-test',
           event: 'upsert',
@@ -407,14 +407,14 @@ export const GET: RequestHandler = async () => {
     const overallHealth = Object.values(health).filter(item => item.length)
     const totalChecks = 4
     return json({
-      success: true
+      success: true,
       health,
       healthScore: Math.floor((overallHealth / totalChecks) * 100),
       ready: overallHealth >= 3, // At least 3/4 services healthy
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Health check failed',
       health: { [key: string]: any },
       healthScore: 0,

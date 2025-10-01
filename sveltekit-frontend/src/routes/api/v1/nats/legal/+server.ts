@@ -37,14 +37,14 @@ export const POST: RequestHandler = async ({ request }) => {
 				return await handleSystemEvent(nats, body)
 			default:
 				return json({ ,
-					success: false
+					success: false,
 					error: `Unsupported event type: ${body.event_type}`
 				}, { status: 400 })
 		}
 	} catch (error: any) {
 		console.error('Legal NATS API Error:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'Legal AI event processing failed',
 			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 })
@@ -149,7 +149,7 @@ async function handleCaseEvent(nats: EnhancedNATSMessagingService, body: any): P
 	validateCaseData(data)
 	await nats.publishCaseEvent(action, data)
 	return json({
-		success: true
+		success: true,
 		event_type: 'case',
 		action,
 		case_id: data.case_id,
@@ -166,7 +166,7 @@ async function handleDocumentEvent(nats: EnhancedNATSMessagingService, body: any
 	validateDocumentData(data)
 	await nats.publishDocumentEvent(action, data)
 	return json({
-		success: true
+		success: true,
 		event_type: 'document',
 		action,
 		document_id: data.document_id,
@@ -183,7 +183,7 @@ async function handleAIAnalysisEvent(nats: EnhancedNATSMessagingService, body: a
 	validateAIAnalysisData(data)
 	await nats.publishAIAnalysisEvent(action, data)
 	return json({
-		success: true
+		success: true,
 		event_type: 'ai_analysis',
 		action,
 		analysis_id: data.analysis_id,
@@ -201,7 +201,7 @@ async function handleChatEvent(nats: EnhancedNATSMessagingService, body: any): P
 	const isStreaming = action === 'streaming'
 	await nats.publishChatMessage(data, isStreaming)
 	return json({
-		success: true
+		success: true,
 		event_type: 'chat',
 		action,
 		message_id: data.message_id,
@@ -223,7 +223,7 @@ async function handleSearchEvent(nats: EnhancedNATSMessagingService, body: any):
 		await nats.publish('legal.search.results', data)
 	}
 	return json({
-		success: true
+		success: true,
 		event_type: 'search',
 		action,
 		query_id: data.query_id,
@@ -243,7 +243,7 @@ async function handleSystemEvent(nats: EnhancedNATSMessagingService, body: any):
 		await nats.publish('system.metrics', data)
 	}
 	return json({
-		success: true
+		success: true,
 		event_type: 'system',
 		action,
 		component: data.component,

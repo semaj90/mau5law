@@ -604,7 +604,7 @@ async function generateEmbedding(parsedResult: any, content: string): Promise<an
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           model: "nomic-embed-text",
           prompt: embeddingText
         })
@@ -616,7 +616,7 @@ async function generateEmbedding(parsedResult: any, content: string): Promise<an
       await fetch("/api/qdrant/tag", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           embedding: embeddingData.embedding,
           metadata: parsedResult
           content: embeddingText

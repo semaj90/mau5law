@@ -1,8 +1,10 @@
 <script lang="ts">
   import { Dialog } from 'bits-ui';
   // Props are defined as $props() rune, no import needed
+  import type { Snippet } from 'svelte';
   interface Props {
-    trigger: unknown;
+    trigger?: Snippet;
+    children?: Snippet;
   }
   let { children, trigger }: Props = $props();
 </script>

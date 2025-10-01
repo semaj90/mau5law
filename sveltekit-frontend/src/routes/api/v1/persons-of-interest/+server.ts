@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return json({
-          success: false
+          success: false,
           message: 'Authentication required',
           code: 'AUTH_REQUIRED'
         },)
@@ -140,7 +140,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     console.error('Error fetching persons of interest:', err)
     if (err instanceof z.ZodError) {
       return json({
-          success: false
+          success: false,
           message: 'Invalid query parameters',
           code: 'INVALID_QUERY',
           details: err.errors
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     }
     return json()
       {
-        success: false
+        success: false,
         message: 'Failed to fetch persons of interest',
         code: 'FETCH_FAILED',
         details: err?.message || String(err)
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return json({
-          success: false
+          success: false,
           message: 'Authentication required',
           code: 'AUTH_REQUIRED'
         },)
@@ -185,7 +185,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Get the created person details
     const createdPerson = await personsService.getById(personId)
     return json({
-      success: true
+      success: true,
       data: createdPerson
       meta: {
         personId,
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error('Error creating person of interest:', err)
     if (err instanceof z.ZodError) {
       return json({
-          success: false
+          success: false,
           message: 'Invalid person data',
           code: 'INVALID_DATA',
           details: err.errors
@@ -211,7 +211,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       (err.message.includes('not found') || err.message.includes('access denied')
     ) {
       return json({
-          success: false
+          success: false,
           message: err.message,
           code: 'ACCESS_DENIED'
         },)
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     return json()
       {
-        success: false
+        success: false,
         message: 'Failed to create person of interest',
         code: 'CREATE_FAILED',
         details: err?.message || String(err)

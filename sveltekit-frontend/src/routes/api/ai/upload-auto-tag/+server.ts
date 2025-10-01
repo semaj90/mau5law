@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
       updatedAt: new Date().toISOString()
     })
     return json({
-      success: true
+      success: true,
       documentId,
       autoTags: result.tags,
       entities: result.entities,
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to auto-tag document',
       details: message
     }, { status: 500 })

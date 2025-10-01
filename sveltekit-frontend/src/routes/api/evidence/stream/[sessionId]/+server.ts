@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
       const stream = new ReadableStream({
         start(controller) {
           // Send initial connection event
-          const message = `data: ${JSON.stringify({,
+          const message = `data: ${JSON.stringify({
             type: 'connection-established',
             sessionId,
             timestamp: new Date().toISOString()

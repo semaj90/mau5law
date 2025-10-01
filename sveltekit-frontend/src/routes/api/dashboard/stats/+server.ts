@@ -128,7 +128,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       userId
     }
     return json({
-        success: true
+        success: true,
         data: dashboardStats
         // Legacy format for backward compatibility
         ...dashboardStats
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     console.error('Enhanced dashboard stats error:', error)
     // Return comprehensive fallback stats
     return json({
-        success: false
+        success: false,
         error: 'Failed to fetch dashboard statistics',
         details: error?.message || 'Unknown error',
         data: {

@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
               `data: ${JSON.stringify({
                 type: 'error',
                 message: `RAG processing error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-                error: true
+                error: true,
               })}\n\n`
             )
           );

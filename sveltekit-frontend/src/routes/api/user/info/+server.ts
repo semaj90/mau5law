@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const email = url.searchParams.get('email')
     if (!email) {
       return json({
-          success: false
+          success: false,
           error: 'Email parameter is required'
         },)
         { status: 400 }
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const user = await db.select().from(users).where(eq(users.email, email.toLowerCase())).limit(1)
     if (user.length === 0) {
       return json({
-          success: false
+          success: false,
           error: 'User not found'
         },)
         { status: 404 }
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Remove sensitive data
     const { hashedPassword: _, ...safeUserData } = userData
     return json({
-      success: true
+      success: true,
       user: {
         data: safeUserData
         profile: userProfile
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error("❌ Error fetching user info:", error)
     return json({
-      success: false
+      success: false,
       error: "Internal server error"
     }, { status: 500 })
   }

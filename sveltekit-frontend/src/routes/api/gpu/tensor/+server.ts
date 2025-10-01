@@ -320,7 +320,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       })
       const results = await Promise.all(clearPromises)
       return json({
-        success: true
+        success: true,
         message: `${clearType} cleared successfully`,
         details: {
           clearedType: clearType
@@ -329,7 +329,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       })
     }
     return json({
-      success: true
+      success: true,
       message: 'Operation completed'
     })
   } catch (err: any) {

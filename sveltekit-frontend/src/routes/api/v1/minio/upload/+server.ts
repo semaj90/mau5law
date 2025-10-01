@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return new Response(JSON.stringify({ error: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).error || 'Upload failed' }), { status: 500 })
     }
     return new Response(JSON.stringify({
-      success: true
+      success: true,
       fileId: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).fileId,
       fileName: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).fileName,
       bucket: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).bucket,

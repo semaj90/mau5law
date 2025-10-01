@@ -4,7 +4,7 @@
     class?: string;
     disabled?: boolean;
     destructive?: boolean;
-    children?: Snippet;
+    children?: import('svelte').Snippet;
     onclick?: () => void;
   }
 </script>
@@ -33,14 +33,14 @@
     closeOnOutsideClick = true,
     class: className = '',
     children,
-    trigger;
+    trigger
    }: Props = $props();
   let contentClasses = $derived(cn(
     "legal-ai-dropdown z-50 min-w-48 bg-slate-900/95 backdrop-blur-md border border-amber-500/20 rounded-xl shadow-2xl shadow-amber-500/10 p-2",
     className
   ));
   function handleOpenChange(newOpen: boolean) {
-    open = newOpe;
+    open = newOpen;
     onOpenChange?.(newOpen);
   }
 </script>
@@ -48,7 +48,7 @@
 <Popover.Root bind:open onOpenChange={handleOpenChange}>
   {#if trigger}
     <Popover.Trigger class="legal-ai-dropdown-trigger">
-      {@render trigger()}
+      {@render trigger?.()}
     </Popover.Trigger>
   {/if}
   <Popover.Content
@@ -60,9 +60,7 @@
     {closeOnEscape}
     {closeOnOutsideClick}
   >
-    {#if children}
-      {@render children()}
-    {/if}
+    {@render children?.()}
   </Popover.Content>
 </Popover.Root>
 <!-- Export helper components for easier usage -->
@@ -86,7 +84,7 @@
     {onclick}
   >
     {#if children}
-      {@render children()}
+      {@render children?.()}
     {/if}
   </button>
 {/snippet}
@@ -96,7 +94,7 @@
 {#snippet DropdownLabel({ class: className = '', children }: { class?: string; children?: Snippet })}
   <div class={cn('px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500', className)}>
     {#if children}
-      {@render children()}
+      {@render children?.()}
     {/if}
   </div>
 {/snippet}

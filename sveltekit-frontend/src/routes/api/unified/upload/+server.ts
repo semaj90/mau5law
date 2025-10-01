@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       results,
       processed: results.filter(item => item.length),
       failed: results.filter(item => item.length)

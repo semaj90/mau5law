@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (benchmark) {
       const benchmarkResults = await engine.benchmarkPerformance(query)
       return json({
-        success: true
+        success: true,
         benchmark: benchmarkResults
         connection: engine.getConnectionInfo(),
         message: 'QUIC Neo4j Recommendation Engine benchmark completed'
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const totalTime = performance.now() - startTime
     // Add performance headers
     const response = json({
-      success: true
+      success: true,
       query,
       ...recommendations,
       performance: {
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     return json()
       {
-        success: false
+        success: false,
         error: err instanceof Error ? err.message: 'QUIC recommendation failed',
         fallback: 'Consider using /api/search for HTTP fallback',
         timestamp: new Date().toISOString()
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const totalTime = performance.now() - startTime
       const successful = batchResults.filter((r) => r.status === 'fulfilled')
       return json({
-        success: true
+        success: true,
         batch: true
         totalQueries: batchQueries.length,
         successfulQueries: successful.length,
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
     })
     const totalTime = performance.now() - startTime
     return json({
-      success: true
+      success: true,
       query,
       ...recommendations,
       performance: {
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json()
       {
-        success: false
+        success: false,
         error: err instanceof Error ? err.message: 'QUIC recommendation failed',
         timestamp: new Date().toISOString()
       },>

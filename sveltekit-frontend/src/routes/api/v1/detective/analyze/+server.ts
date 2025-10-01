@@ -15,7 +15,7 @@ const DetectiveAnalysisSchema = z.object({
   analysisType: z.enum(['full', 'timeline', 'connections', 'patterns', 'anomalies']).default('full'),
   depth: z.enum(['surface', 'deep', 'comprehensive']).default('deep'),
   focusAreas: z.array(z.enum(['people', 'locations', 'times', 'evidence', 'motives', 'opportunities'])).optional(),
-  options: z.object({,
+  options: z.object({
     includeAI: z.boolean().default(true),
     confidenceThreshold: z.number().min(0).max(1).default(0.6),
     maxResults: z.number().min(1).max(100).default(20)
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     })
     return json({
-      success: true
+      success: true,
       data: {
         caseId,
         analysisType,
@@ -175,7 +175,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     // Generate insights based on case data and previous analyses
     const insights = await generateCaseInsights(caseData, locals.user.id)
     return json({
-      success: true
+      success: true,
       data: {
         caseId: validatedCaseId
         insights,

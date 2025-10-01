@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
         const responseData = await response.json()
         return json({
-          success: true
+          success: true,
           data: responseData
           protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2',
           gateway: 'quic-gateway',
@@ -148,7 +148,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       lastUpdated: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       message: 'Gateway configuration updated',
       config: updatedConfig
     })

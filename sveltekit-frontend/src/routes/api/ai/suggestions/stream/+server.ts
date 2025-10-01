@@ -49,7 +49,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       async start(controller) {
         const encoder = new TextEncoder()
         // Send initial connection message
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({
           type: 'connection',
           message: 'Streaming AI suggestions started',
           timestamp: new Date().toISOString()
@@ -70,7 +70,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                   })) {
                     if (suggestionCount >= maxTotal) break
                     suggestionCount++
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
                       type: 'suggestion',
                       source: 'ollama',
                       suggestion: {
@@ -91,7 +91,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                     })}\\n\\n`)
                   }
                 } catch (error: any) {
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({
                     type: 'error',
                     source: 'ollama',
                     message: 'Ollama streaming failed',
@@ -113,7 +113,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                   })) {
                     if (suggestionCount >= maxTotal) break
                     suggestionCount++
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
                       type: 'suggestion',
                       source: 'enhanced-rag',
                       suggestion: {
@@ -134,7 +134,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                     })}\\n\\n`)
                   }
                 } catch (error: any) {
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({
                     type: 'error',
                     source: 'enhanced-rag',
                     message: 'Enhanced RAG streaming failed',
@@ -147,7 +147,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
           // Wait for all streaming services to complete
           await Promise.allSettled(streamPromises)
           // Send completion message
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
             type: 'complete',
             message: 'All AI suggestion streams completed',
             totalSuggestions: suggestionCount
@@ -155,7 +155,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
           })}\\n\\n`)
         } catch (error: any) {
           // Send error message
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
             type: 'error',
             message: 'Streaming failed',
             error: error instanceof Error ? error.message: 'Unknown error',

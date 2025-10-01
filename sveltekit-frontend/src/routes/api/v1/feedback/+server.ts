@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           metadata: metadata || {}
         })
         return json({
-          success: true
+          success: true,
           ratingId,
           message: 'Rating collected successfully'
         })
@@ -63,14 +63,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
             results.push({ success: true, ratingId, rating: rating.interactionId })
           } catch (error: any) {
             results.push({
-              success: false
+              success: false,
               error: error instanceof Error ? error.message: 'Unknown error',
               rating: rating.interactionId
             })
           }
         }
         return json({
-          success: true
+          success: true,
           results,
           processed: results.length,
           successful: results.filter(item => item.length),
@@ -102,20 +102,20 @@ export const GET: RequestHandler = async ({ url }) => {
         }
         const recommendations = await feedbackLoopService.getUserRecommendations(userId)
         return json({
-          success: true
+          success: true,
           data: recommendations
         })
       }
       case 'metrics': {
         const metrics = await feedbackLoopService.getFeedbackMetrics()
         return json({
-          success: true
+          success: true,
           data: metrics
         })
       }
       case 'health': {
         return json({
-          success: true
+          success: true,
           service: 'feedback-loop',
           status: 'healthy',
           timestamp: new Date().toISOString(),

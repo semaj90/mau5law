@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       })
       .returning()
     return json({
-      success: true
+      success: true,
       result,
       evidenceId,
       fileName: (item as { hash?: any; fileName?: any }).fileName,

@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Log the connection creation for audit trail
     console.log(`Evidence connection created between ${connectionData.evidenceId1} and ${connectionData.evidenceId2} by user ${locals.user.id}`)
     return json({
-      success: true
+      success: true,
       data: {
         connection,
         evidence1: {
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       conn => conn.strength >= minStrength
     )
     return json({
-      success: true
+      success: true,
       data: filteredConnections
       meta: {
         userId: locals.user.id,

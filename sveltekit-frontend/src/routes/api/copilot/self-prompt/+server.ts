@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       options.outputFormat || "structured",
     )
     return json({
-      success: true
+      success: true,
       mode,
       timestamp: new Date().toISOString(),
       ...response

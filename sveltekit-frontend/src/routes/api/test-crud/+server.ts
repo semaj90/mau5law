@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
       .from(users)
       .limit(limit)
     return json({
-      success: true
+      success: true,
       message: 'PostgreSQL CRUD test successful',
       data: {
         connection_test: connectionTest
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     console.error('[CRUD Test] Database error:', err)
     return json({
-      success: false
+      success: false,
       message: 'Database connection failed',
       error: err.message,
       timestamp: new Date().toISOString()
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
         created_at: users.created_at
       })
     return json({
-      success: true
+      success: true,
       message: 'User created successfully',
       data: newUser[0]
       timestamp: new Date().toISOString()
@@ -91,14 +91,14 @@ export const POST: RequestHandler = async ({ request }) => {
     // Handle unique constraint violations
     if (err.code === '23505') {
       return json({
-        success: false
+        success: false,
         message: 'User with this email or username already exists',
         error: err.detail,
         timestamp: new Date().toISOString()
       }, { status: 409 })
     }
     return json({
-      success: false
+      success: false,
       message: 'Failed to create user',
       error: err.message,
       timestamp: new Date().toISOString()

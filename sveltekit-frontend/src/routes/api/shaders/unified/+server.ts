@@ -307,7 +307,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       message: `Cleaned ${cleanedCount} ${shaderType} shader(s) from cache`
     })
   } catch (error: any) {

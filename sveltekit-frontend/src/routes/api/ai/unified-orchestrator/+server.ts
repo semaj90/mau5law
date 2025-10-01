@@ -90,7 +90,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
     if (!requestData.content && !requestData.messages && !requestData.prompt) {
       return json()
         {
-          success: false
+          success: false,
           error: 'Missing required field: content, messages, or prompt',
           timestamp: new Date().toISOString()
         },
@@ -142,7 +142,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
   } catch (error) {
     logger.error('[Unified Orchestrator] Request failed:', error)
     const errorResponse = {
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       details: error instanceof Error ? error.stack : undefined
       orchestratorUsed: 'none',

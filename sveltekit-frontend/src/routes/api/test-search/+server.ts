@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const embeddingResponse = await fetch('http://localhost:11434/api/embed', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'nomic-embed-text',
         input: query
       })
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
       console.log('CUDA service not available:', error)
     }
     return json({
-      success: true
+      success: true,
       query,
       embedding_dimensions: queryEmbedding.length,
       embedding_sample: queryEmbedding.slice(0, 5),
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Test endpoint error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       stack: error.stack
     }, { status: 500 })

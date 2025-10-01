@@ -95,7 +95,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       context,
     )
     return json({
-      success: true
+      success: true,
       content: reportContent
       reportType,
       template: template.title,

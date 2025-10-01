@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Save to Loki.js (in production this would save to PostgreSQL)
     await loki.saveCanvasState(enhancedCanvasState)
     return json({
-      success: true
+      success: true,
       canvasState: enhancedCanvasState
     })
   } catch (error: any) {

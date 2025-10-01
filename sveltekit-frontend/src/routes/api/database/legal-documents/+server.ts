@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     }
     return json({
-      success: true
+      success: true,
       documentsStored: documentIds.length,
       documentIds: documentIds
       caseId: caseId
@@ -146,7 +146,7 @@ async function generateSearchEmbeddings(documentIds: string[]) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           model: 'mxbai-embed-large',
           prompt: textContent.slice(0, 2000) // Limit content for embedding
         })

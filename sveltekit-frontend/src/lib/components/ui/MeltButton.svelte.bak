@@ -60,7 +60,7 @@
 		loading?: boolean;
 		loadingText?: string;
 		className?: string;
-		children?: any | string;
+		children?: import('svelte').Snippet | string;
 		onclick?: (event: MouseEvent) => void;
 
 		// Enhanced modular properties
@@ -247,14 +247,14 @@
 				/>
 			</svg>
 			{loadingText}
-		{:else}
-			<slot />
-			{#if children}{children}{/if}
+			{#else}
+				{@render children?.()}
+				{#if children}{@render children?.()}{/if}
 		{/if}
 	</a>
-{:else}
-	<button
-		id={id}
+			{#else}
+				{@render children?.()}
+				{#if children}{@render children?.()}{/if}
 		type={type}
 		disabled={isDisabled}
 		class={buttonClass}

@@ -192,7 +192,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 				const response = await fetch('http://localhost:8225/api/v1/compile', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({,
+					body: JSON.stringify({
 						id: `compile_${Date.now()}`,
 						source_files: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).source_files || [],
 						compiler_flags: (data as { type?: any; prompt?: any; query?: any; max_tokens?: any; temperature?: any; input?: any; dimensions?: any; source_files?: any; compiler_flags?: any; payload?: any; metadata?: any }).compiler_flags || [],
@@ -212,7 +212,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 			} catch (error: any) {
 				// Fallback to local WASM bridge
 				result = {
-					success: false
+					success: false,
 					error: 'External WASM service unavailable',
 					fallback: 'Using local WASM processing'
 				}
@@ -240,7 +240,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 			}
 		}
 		return {
-			success: true
+			success: true,
 			operation: 'hybrid',
 			result,
 			serviceUsed,
@@ -258,7 +258,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 		}
 	} catch (error: any) {
 		return {
-			success: false
+			success: false,
 			operation: 'hybrid',
 			error: error instanceof Error ? error.message: 'Unknown error',
 			serviceUsed: 'error',
@@ -280,7 +280,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 		if (operation === 'health') {
 			const health = await checkGPUHealth()
 			return json({
-				success: true
+				success: true,
 				operation: 'health',
 				result: health
 				serviceUsed: 'health_aggregator',
@@ -303,13 +303,13 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 			})
 		}
 		return json({
-			success: false
+			success: false,
 			error: `Unsupported GET operation: ${operation}`
 		}, { status: 400 })
 	} catch (error: any) {
 		console.error('GPU API GET error:', error)
 		return json({
-			success: false
+			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 })
 	}
@@ -330,7 +330,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 						priority: options.priority || 'medium'
 					})
 					response = {
-						success: true
+						success: true,
 						operation,
 						result,
 						serviceUsed: 'nvidia_llama',
@@ -346,7 +346,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					}
 				} catch (error: any) {
 					response = {
-						success: false
+						success: false,
 						operation,
 						error: error instanceof Error ? error.message: 'LLaMA generation failed',
 						serviceUsed: 'nvidia_llama',
@@ -384,7 +384,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					}
 				} catch (error: any) {
 					response = {
-						success: false
+						success: false,
 						operation,
 						error: error instanceof Error ? error.message: 'WASM operation failed',
 						serviceUsed: 'wasm_llvm_service',
@@ -416,7 +416,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					}
 				} catch (error: any) {
 					response = {
-						success: false
+						success: false,
 						operation,
 						error: error instanceof Error ? error.message: 'GPU compute failed',
 						serviceUsed: 'gpu_service_integration',
@@ -431,7 +431,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			case 'health':
 				const health = await checkGPUHealth()
 				response = {
-					success: true
+					success: true,
 					operation,
 					result: health
 					serviceUsed: 'health_aggregator',
@@ -441,7 +441,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				break
 			default:
 				response = {
-					success: false
+					success: false,
 					operation: operation || 'unknown',
 					error: `Unsupported operation: ${operation}`,
 					serviceUsed: 'error',
@@ -455,7 +455,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 	} catch (error: any) {
 		console.error('GPU API POST error:', error)
 		return json({
-			success: false
+			success: false,
 			operation: 'unknown',
 			error: error instanceof Error ? error.message: 'Unknown error',
 			serviceUsed: 'error',

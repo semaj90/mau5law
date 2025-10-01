@@ -173,7 +173,7 @@ export const GET: RequestHandler = async () => {
   try {
     const stats = simdTextTilingEngine.getStats()
     return json({
-      success: true
+      success: true,
       service: 'simd-langextract',
       capabilities: {
         seven_bit_compression: true
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to get SIMD LangExtract status'
     }, { status: 500 })
   }
@@ -210,14 +210,14 @@ export const PUT: RequestHandler = async ({ request }) => {
     // Create new engine instance with updated config
     const updatedEngine = new (await import('$lib/ai/simd-text-tiling-engine.js')).SIMDTextTilingEngine(config)
     return json({
-      success: true
+      success: true,
       message: 'SIMD configuration updated',
       config,
       timestamp: Date.now()
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to update SIMD configuration'
     }, { status: 500 })
   }
@@ -246,7 +246,7 @@ async function getStandardEmbedding(
     const goResp = await fetch('/api/tensor', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         operation: 'vectorize',
         documentId: `temp-${Date.now()}`,
         data: [],

@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
       const summaryResponse = await fetch(langchainUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           text: `FOAF recommendations for ${personId}: ${foafData.people.map(p => p.name).join(', ')}`,
           context: 'professional network analysis',
           style: 'brief'

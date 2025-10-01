@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!content || !documentType || !caseId) {
       return json({
-        success: false
+        success: false,
         error: 'Missing required fields: content, documentType, caseId'
       }, { status: 400 })
     }
@@ -54,14 +54,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const published = await rabbitmqService.publishDocumentForAnalysis(documentMessage)
     if (!published) {
       return json({
-        success: false
+        success: false,
         error: 'Failed to queue document for processing'
       }, { status: 500 })
     }
     const responseTime = Date.now() - startTime
     logger.info(`[Legal Workflow API] Document ${documentMessage.id} queued for processing (${responseTime}ms)`)
     return json({
-      success: true
+      success: true,
       documentId: documentMessage.id,
       caseId: documentMessage.caseId,
       queuedAt: new Date().toISOString(),
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     logger.error('[Legal Workflow API] Error processing request:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Internal server error'
     }, { status: 500 })
   }

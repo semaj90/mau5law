@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
       cache_hit: (response as { _metadata?: any })._metadata?.cached || false
     })
     return json({
-      success: true
+      success: true,
       data: {
         results: finalResults.results || [],
         metadata: {
@@ -115,20 +115,20 @@ export const GET: RequestHandler = async ({ url }) => {
         }
         const history = await getSearchHistory(user_id, limit)
         return json({
-          success: true
+          success: true,
           data: { history }
         })
       case 'suggestions':
         const query = url.searchParams.get('query') || ''
         const suggestions = await getSearchSuggestions(query)
         return json({
-          success: true
+          success: true,
           data: { suggestions }
         })
       case 'trending':
         const trending = await getTrendingSearches(limit)
         return json({
-          success: true
+          success: true,
           data: { trending }
         })
       default:

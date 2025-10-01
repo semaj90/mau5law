@@ -50,14 +50,14 @@ export const POST: RequestHandler = async ({ request }) => {
 				return await handleCreateConsumer(nats, body)
 			default:
 				return json({ ,
-					success: false
+					success: false,
 					error: `Unsupported action: ${body.action}`
 				}, { status: 400 })
 		}
 	} catch (error: any) {
 		console.error('NATS API Error:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'NATS operation failed',
 			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 })
@@ -137,7 +137,7 @@ async function handlePublish(nats: EnhancedNATSMessagingService, body: any): Pro
 	}
 	await nats.publish(body.subject, body.data, body.options)
 	return json({
-		success: true
+		success: true,
 		action: 'publish',
 		subject: body.subject,
 		message_id: body.options?.correlation_id || 'auto-generated',
@@ -150,7 +150,7 @@ async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: any)
 	}
 	await nats.publishBatch(body.messages)
 	return json({
-		success: true
+		success: true,
 		action: 'publish_batch',
 		message_count: body.messages.length,
 		timestamp: new Date().toISOString()
@@ -163,7 +163,7 @@ async function handleRequest(nats: EnhancedNATSMessagingService, body: any): Pro
 	const timeout = body.timeout_ms || 5000
 	const response = await nats.request(body.subject, body.data, timeout)
 	return json({
-		success: true
+		success: true,
 		action: 'request',
 		subject: body.subject,
 		response,
@@ -177,7 +177,7 @@ async function handleSubscribe(nats: EnhancedNATSMessagingService, body: any): P
 	// For HTTP API, we can't maintain persistent subscriptions
 	// This would typically be used with WebSocket connections
 	return json({
-		success: false
+		success: false,
 		error: 'HTTP subscriptions not supported',
 		suggestion: 'Use WebSocket endpoint for real-time subscriptions',
 		websocket_url: '/api/v1/nats/ws'
@@ -189,7 +189,7 @@ async function handleUnsubscribe(nats: EnhancedNATSMessagingService, body: any):
 	}
 	await nats.unsubscribe(body.subject)
 	return json({
-		success: true
+		success: true,
 		action: 'unsubscribe',
 		subject: body.subject,
 		timestamp: new Date().toISOString()
@@ -201,7 +201,7 @@ async function handleCreateStream(nats: EnhancedNATSMessagingService, body: any)
 	}
 	await nats.createStream(body.stream_config)
 	return json({
-		success: true
+		success: true,
 		action: 'create_stream',
 		stream_name: body.stream_config.name,
 		subjects: body.stream_config.subjects,
@@ -214,7 +214,7 @@ async function handleCreateConsumer(nats: EnhancedNATSMessagingService, body: an
 	}
 	await nats.createConsumer(body.stream_name, body.consumer_config)
 	return json({
-		success: true
+		success: true,
 		action: 'create_consumer',
 		stream_name: body.stream_name,
 		consumer_name: body.consumer_config.name,

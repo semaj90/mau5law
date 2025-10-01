@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Continue anyway - document is uploaded and database record exists
       }
       return json({
-        success: true
+        success: true,
         documentId,
         message: 'File uploaded successfully and queued for processing',
         s3Key: uploadResult.s3Key,

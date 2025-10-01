@@ -59,14 +59,14 @@ async function handleRAGQuery(queryData: any, options: any) {
     }
     const result = await enhancedRAGQueryWithCache(ragQuery)
     return json({
-      success: true
+      success: true,
       data: result
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     console.error('RAG query failed:', error)
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }
@@ -91,7 +91,7 @@ async function handleDocumentIngestion(documents: any[], options: any) {
       totalProcessingTime: results.reduce((sum, r) => sum + r.processingTime, 0)
     }
     return json({
-      success: true
+      success: true,
       data: {
         results,
         summary
@@ -101,7 +101,7 @@ async function handleDocumentIngestion(documents: any[], options: any) {
   } catch (error: any) {
     console.error('Document ingestion failed:', error)
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }
@@ -120,14 +120,14 @@ async function handleCacheTest(_options: any) {
       results = await cachingTester.runAllTests()
     }
     return json({
-      success: true
+      success: true,
       data: results
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     console.error('Cache testing failed:', error)
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }
@@ -139,7 +139,7 @@ async function handleCacheMetrics() {
   try {
     const metrics = enhancedCachingService.getCacheMetrics()
     return json({
-      success: true
+      success: true,
       data: {
         metrics,
         timestamp: new Date().toISOString()
@@ -148,7 +148,7 @@ async function handleCacheMetrics() {
   } catch (error: any) {
     console.error('Cache metrics failed:', error)
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }
@@ -160,7 +160,7 @@ async function handleCacheWarmup() {
   try {
     await cachedRAGService.warmupCacheWithLegalQueries()
     return json({
-      success: true
+      success: true,
       data: {
         message: 'Cache warmup completed successfully',
         timestamp: new Date().toISOString()
@@ -169,7 +169,7 @@ async function handleCacheWarmup() {
   } catch (error: any) {
     console.error('Cache warmup failed:', error)
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }
@@ -180,7 +180,7 @@ export const GET: RequestHandler = async ({ url }) => {
     switch (action) {
       case 'status':
         return json({
-          success: true
+          success: true,
           data: {
             service: 'Cached RAG API',
             status: 'active',

@@ -48,7 +48,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
         const ragResponse = await fetch('http://localhost:8094/api/rag', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             query: message
             context: context || {},
             sessionId,
@@ -76,7 +76,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 vectorMatches: ragData.vectorMatches || 0
               }
             },
-            success: true
+            success: true,
             production: true
             service: 'enhanced-rag'
           })
@@ -131,7 +131,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 tokens: (ollamaData as any)?.eval_count || 0
               }
             },
-            success: true
+            success: true,
             production: true
             service: 'ollama'
           })
@@ -220,7 +220,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           patternMatched: true
         }
       },
-      success: true
+      success: true,
       production: false
       fallback: true
       message_note: 'AI services unavailable - using intelligent pattern matching'

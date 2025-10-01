@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     await saveObservabilityState(updatedState)
     return json({
-      success: true
+      success: true,
       updated_baselines: updatedBaselines
       timestamp: new Date().toISOString()
     })

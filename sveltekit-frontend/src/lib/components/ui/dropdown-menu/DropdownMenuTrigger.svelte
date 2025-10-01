@@ -12,7 +12,7 @@
     children,
     class: className = '',
     disabled = false,
-    asChild = false;
+    asChild = false,
   }: Props = $props();
   let triggerClasses = $derived(cn(
     "legal-ai-trigger inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors",

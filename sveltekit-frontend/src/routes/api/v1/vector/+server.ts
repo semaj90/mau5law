@@ -118,7 +118,7 @@ async function processCUDA(
     const response = await fetch(`${VECTOR_SERVICE_URL}/api/vector/jobs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         id: jobId
         owner_type: request.ownerType,
         owner_id: request.ownerId,

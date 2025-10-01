@@ -255,7 +255,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     console.error('❌ Test endpoint error:', error)
     return json({
-      success: false
+      success: false,
       message: 'Test workflow failed',
       error: error.message,
       correlationId
@@ -270,7 +270,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Check health of all services
         const health = await checkSystemHealth()
         return json({
-          success: true
+          success: true,
           message: 'System health check completed',
           data: health
         })
@@ -278,7 +278,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Get PostgreSQL statistics
         const stats = await getPostgreSQLStats()
         return json({
-          success: true
+          success: true,
           message: 'PostgreSQL statistics retrieved',
           data: stats
         })
@@ -286,13 +286,13 @@ export const GET: RequestHandler = async ({ url }) => {
         // Get Qdrant sync statistics
         const syncStats = postgresqlQdrantSync.getStats()
         return json({
-          success: true
+          success: true,
           message: 'Qdrant sync statistics retrieved',
           data: syncStats
         })
       default:
         return json({,
-          success: true
+          success: true,
           message: 'PostgreSQL-first test endpoint is ready',
           data: {
             endpoints: {
@@ -312,7 +312,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       message: 'Failed to process request',
       error: error.message
     }, { status: 500 })

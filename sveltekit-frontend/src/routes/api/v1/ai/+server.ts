@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       timeout: data.options?.streaming ? 60000 : 30000
     })
     return json({
-      success: true
+      success: true,
       data: result
       metadata: {
         timestamp: new Date().toISOString(),

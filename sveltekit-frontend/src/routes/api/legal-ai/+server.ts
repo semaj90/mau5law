@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
       console.log(`✅ Query ${query.id} completed in ${inference_time}ms using ${result.model_used}`)
       return json({
-        success: true
+        success: true,
         result: {
           query_id: query.id,
           response: result.text,
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
         .where(eq(legal_queries.id, query.id))
       return json({
-        success: false
+        success: false,
         error: 'Legal AI inference failed',
         query_id: query.id
       }, { status: 500 })
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error) {
     console.error('Legal AI API error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Internal server error'
     }, { status: 500 })
   }
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get total count
     const totalCount = await db.select({ count: sql`count(*)` }).from(legal_queries)
     return json({
-      success: true
+      success: true,
       queries,
       pagination: {
         limit,
@@ -186,7 +186,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const { query_text, limit = 5 } = await request.json()
     if (!query_text) {
       return json({
-        success: false
+        success: false,
         error: 'Query text is required'
       }, { status: 400 })
     }
@@ -207,7 +207,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       LIMIT ${limit}
     `)
     return json({
-      success: true
+      success: true,
       query: query_text
       results: similar_documents
       count: similar_documents.length
@@ -215,7 +215,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Vector search error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Vector search failed'
     }, { status: 500 })
   }

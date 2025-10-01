@@ -384,7 +384,9 @@
       "Bash(cp:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(cmd.exe:*)",
-      "Bash(powershell.exe:*)"
+      "Bash(powershell.exe:*)",
+      "Bash(docker-compose:*)",
+      "Bash(REDIS_PASSWORD=\"redis\" timeout 15s npm run dev:quic)"
     ],
     "deny": [],
     "ask": []

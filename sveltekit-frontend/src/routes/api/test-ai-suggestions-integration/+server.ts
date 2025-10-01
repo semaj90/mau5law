@@ -286,7 +286,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
     const response = await fetch('/api/ai/suggestions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         content: "Test legal analysis request for evidence authentication",
         reportType: 'prosecution_memo',
         maxSuggestions: 3,

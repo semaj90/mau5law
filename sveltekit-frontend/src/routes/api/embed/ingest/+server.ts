@@ -9,7 +9,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'nomic-embed-text:latest',
         prompt: text
       })
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     }
     return json({
-      success: true
+      success: true,
       message: `Successfully ingested ${chunks.length} chunks`,
       chunks: ingestedChunks
       metadata: {

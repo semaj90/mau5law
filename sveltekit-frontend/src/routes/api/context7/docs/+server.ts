@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       const libraries = await (response as { ok?: any; json?: any; statusText?: any }).json()
       return json({
-        success: true
+        success: true,
         libraries,
         timestamp: new Date().toISOString()
       })
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       const topics = await (response as { ok?: any; json?: any; statusText?: any }).json()
       return json({
-        success: true
+        success: true,
         topics,
         library,
         timestamp: new Date().toISOString()
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`)
     const health = await healthResponse.json()
     return json({
-      success: true
+      success: true,
       service: 'Context7 Documentation RAG',
       health,
       endpoints: {
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await listDocumentation()
       default:
         return json({,
-            success: false
+            success: false,
             error: `Unknown action: ${req.action}`
           },)
           { status: 400 }
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -132,7 +132,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           name: 'get_library_docs',
           arguments: {
             context7CompatibleLibraryID: library.id,
@@ -157,7 +157,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
       }
     }
     return json({
-      success: true
+      success: true,
       action: 'fetch',
       results,
       count: results.length,
@@ -172,7 +172,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
   try {
     if (!req.query) {
       return json({
-          success: false
+          success: false,
           error: 'Query parameter is required for search'
         },)
         { status: 400 }
@@ -220,7 +220,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       }
     }
     return json({
-      success: true
+      success: true,
       action: 'search',
       query: req.query,
       results: searchResults.results || searchResults,
@@ -246,7 +246,7 @@ async function listDocumentation(): Promise<Response> {
     const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`)
     const health = healthResponse.ok ? await healthResponse.json() : { status: 'unknown' }
     return json({
-      success: true
+      success: true,
       action: 'list',
       libraries,
       topics,

@@ -11,7 +11,7 @@ const TensorStoreSchema = z.object({
   data: z.array(z.number()),
   dimensions: z.array(z.number()),
   dtype: z.enum(['float32', 'float64', 'int32', 'int64']).default('float32'),
-  metadata: z.object({,
+  metadata: z.object({
     model: z.string(),
     source: z.string(),
     compression: z.enum(['none', 'gzip', 'brotli']).default('none'),
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     }
     const result = await response.json()
     return json({
-      success: true
+      success: true,
       data: {
         tensor_id: result.tensor_id,
         stored_bytes: result.stored_bytes,
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     }
     const metrics = await response.json()
     return json({
-      success: true
+      success: true,
       metrics: {
         cache_hit_rate: metrics.cache_hit_rate,
         total_tensors_stored: metrics.total_tensors_stored,

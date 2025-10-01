@@ -63,7 +63,7 @@ async function startDevQuic() {
         
         console.log('🔷 Starting Vite development server...');
         
-        const vite = spawn('npx', ['vite', 'dev', '--host', '0.0.0.0', '--config', 'vite.config.no-sveltekit.js'], {
+        const vite = spawn('npx', ['vite', 'dev', '--host', '0.0.0.0'], {
             cwd: projectRoot,
             stdio: 'pipe',
             shell: true,

@@ -17,20 +17,20 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'health':
         const health = await legalAIIntegration.getSystemHealth()
         return json({
-          success: true
+          success: true,
           data: health
           timestamp: new Date().toISOString()
         })
       case 'autosolve':
         const autosolveResult = await legalAIIntegration.runAutosolve()
         return json({
-          success: true
+          success: true,
           data: autosolveResult
           timestamp: new Date().toISOString()
         })
       default:
         return json({,
-          success: true
+          success: true,
           data: {
             message: 'QUIC-Enhanced Legal AI System',
             version: '1.0.0',
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('Legal AI Integration API error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { content, options = {} } = body
     if (!content || typeof content !== 'string') {
       return json({
-        success: false
+        success: false,
         error: 'Content is required and must be a string'
       }, { status: 400 })
     }
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ...options
     })
     return json({
-      success: true
+      success: true,
       data: {
         ...result,
         metadata: {
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Document processing error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Document processing failed',
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -100,7 +100,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     // In a full implementation, you'd update the integration config
     const currentStatus = legalAIIntegration.getStatus()
     return json({
-      success: true
+      success: true,
       data: {
         message: 'Configuration update received',
         current: currentStatus.config,
@@ -111,7 +111,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Config update error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Config update failed',
       timestamp: new Date().toISOString()
     }, { status: 500 })

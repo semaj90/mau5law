@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
           const testResponse = await fetch('http://localhost:11434/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({
               model: targetModel
               prompt: 'Connection test',
               stream: false
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
           })
           if (testResponse.ok) {
             return json({
-              success: true
+              success: true,
               model: targetModel
               availableModels,
               status: 'connected',
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         }
         return json({
-          success: false
+          success: false,
           error: 'Model not available',
           availableModels,
           requestedModel: targetModel
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
         })
         if (ragResponse.ok) {
           return json({
-            success: true
+            success: true,
             model: 'enhanced-rag-service',
             availableModels: ['enhanced-rag-legal', 'vector-search', 'semantic-analysis'],
             status: 'connected',
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } catch (ragError) {
         // Final fallback - development mode
         return json({
-          success: true
+          success: true,
           model: 'development-mode',
           availableModels: ['development-legal-ai'],
           status: 'development',
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'AI connection failed',
       message: (error as Error).message,
       timestamp: new Date().toISOString()

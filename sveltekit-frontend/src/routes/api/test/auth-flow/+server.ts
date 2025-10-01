@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     console.log(`✅ Authentication flow test completed: ${testSuite.overallSuccess ? 'PASSED' : 'FAILED'}`)
     console.log(`⏱️ Total duration: ${testSuite.totalDuration}ms`)
     return json({
-      success: true
+      success: true,
       testSuite,
       summary: {
         passed: testSuite.results.filter(item => item.length),
@@ -96,12 +96,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     testSuite.overallSuccess = false
     testSuite.results.push({
       step: 'test_execution',
-      success: false
+      success: false,
       duration: testSuite.totalDuration,
       error: error instanceof Error ? error.message: 'Unknown error'
     })
     return json({
-      success: false
+      success: false,
       error: 'Test execution failed',
       testSuite
     }, { status: 500 })
@@ -116,7 +116,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
     const loginResponse = await fetch('http://localhost:5173/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         email: testUser
         password: 'password'
       })
@@ -131,7 +131,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
     console.log('✅ Authentication system test passed')
     return {
       step: 'authentication_system',
-      success: true
+      success: true,
       duration: Date.now() - stepStart,
       data: {
         user: loginData.user,
@@ -142,7 +142,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
     console.error('❌ Authentication system test failed:', error)
     return {
       step: 'authentication_system',
-      success: false
+      success: false,
       duration: Date.now() - stepStart,
       error: error instanceof Error ? error.message: 'Unknown error'
     }
@@ -169,7 +169,7 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
     console.log('✅ Session management test passed')
     return {
       step: 'session_management',
-      success: true
+      success: true,
       duration: Date.now() - stepStart,
       data: {
         validation: sessionValidation
@@ -180,7 +180,7 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
     console.error('❌ Session management test failed:', error)
     return {
       step: 'session_management',
-      success: false
+      success: false,
       duration: Date.now() - stepStart,
       error: error instanceof Error ? error.message: 'Unknown error'
     }
@@ -206,7 +206,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
     console.log(`✅ Production services test passed (${healthyServices}/${totalServices} healthy)`)
     return {
       step: 'production_services',
-      success: true
+      success: true,
       duration: Date.now() - stepStart,
       data: {
         serviceHealth,
@@ -219,7 +219,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
     console.error('❌ Production services test failed:', error)
     return {
       step: 'production_services',
-      success: false
+      success: false,
       duration: Date.now() - stepStart,
       error: error instanceof Error ? error.message: 'Unknown error'
     }
@@ -251,7 +251,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
     console.log(`✅ AI assistant test passed (${healthyOllama}/3 Ollama instances healthy)`)
     return {
       step: 'ai_assistant',
-      success: true
+      success: true,
       duration: Date.now() - stepStart,
       data: {
         ollamaHealth: {
@@ -267,7 +267,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
     console.error('❌ AI assistant test failed:', error)
     return {
       step: 'ai_assistant',
-      success: false
+      success: false,
       duration: Date.now() - stepStart,
       error: error instanceof Error ? error.message: 'Unknown error'
     }
@@ -294,7 +294,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
     console.log('✅ GPU acceleration test passed')
     return {
       step: 'gpu_acceleration',
-      success: true
+      success: true,
       duration: Date.now() - stepStart,
       data: {
         gpuInfo,
@@ -306,7 +306,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
     console.error('❌ GPU acceleration test failed:', error)
     return {
       step: 'gpu_acceleration',
-      success: false
+      success: false,
       duration: Date.now() - stepStart,
       error: error instanceof Error ? error.message: 'Unknown error'
     }
@@ -335,7 +335,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
     console.log('✅ End-to-end integration test passed')
     return {
       step: 'end_to_end_integration',
-      success: true
+      success: true,
       duration: Date.now() - stepStart,
       data: {
         workflow,
@@ -348,7 +348,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
     console.error('❌ End-to-end integration test failed:', error)
     return {
       step: 'end_to_end_integration',
-      success: false
+      success: false,
       duration: Date.now() - stepStart,
       error: error instanceof Error ? error.message: 'Unknown error'
     }

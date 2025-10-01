@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const rerankedResults = rerankLegalResults(finalResults, query.trim()
     EmbeddingSearchCache.set(cacheKey, { results: rerankedResults, timestamp: Date.now() })
     return json({
-      success: true
+      success: true,
       results: rerankedResults
       query: query.trim(),
       total_results: rerankedResults.length,

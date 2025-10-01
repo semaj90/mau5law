@@ -22,13 +22,13 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'analytics':
         const analytics = unifiedVectorOrchestrator.getPerformanceAnalytics()
         return json({
-          success: true
+          success: true,
           analytics,
           timestamp: new Date().toISOString()
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: 'Unknown action. Available: health, analytics',
           availableActions: ['health', 'analytics']
         }, { status: 400 })
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Unified Vector API error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate request
     if (!body.type || !body.payload) {
       return json({
-        success: false
+        success: false,
         error: 'Request must include type and payload',
         example: {
           type: 'analyze',
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Unified Vector processing error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -102,13 +102,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       case 'retrain':
         // Trigger model retraining
         return json({
-          success: false
+          success: false,
           error: 'Model retraining not yet implemented',
           plannedFeature: true
         }, { status: 501 })
       default:
         return json({,
-          success: false
+          success: false,
           error: 'Unknown action. Available: feedback, retrain',
           availableActions: ['feedback', 'retrain']
         }, { status: 400 })
@@ -116,7 +116,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Unified Vector update error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -140,13 +140,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (cacheKey) {
       // Clear specific cache
       return json({
-        success: false
+        success: false,
         error: 'Cache clearing not yet implemented',
         plannedFeature: true
       }, { status: 501 })
     }
     return json({
-      success: false
+      success: false,
       error: 'Must specify documentId or cacheKey',
       examples: [
         '?documentId=doc123',
@@ -156,7 +156,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Unified Vector delete error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })

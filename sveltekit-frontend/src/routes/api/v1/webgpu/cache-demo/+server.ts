@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     return json()
       {
-        success: false
+        success: false,
         error: 'Failed to get WebGPU cache system status',
         details: error instanceof Error ? error.message: String(error)
       },
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         break
       default:
         return json({,
-            success: false
+            success: false,
             error: 'Invalid operation',
             validOperations: ['benchmark', 'tensor', 'batch', 'stats', 'stress-test']
           },)
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         )
     }
     return json({
-      success: true
+      success: true,
       operation,
       result,
       metadata: {
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     console.error('WebGPU Cache Demo error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'WebGPU cache demo failed',
         details: error instanceof Error ? error.message: String(error)
       },
@@ -526,13 +526,13 @@ export const DELETE: RequestHandler = async () => {
     // Clear demo cache entries
     // Note: Would need cache.clearPattern() method for production use
     return json({
-      success: true
+      success: true,
       message: 'WebGPU cache demo data cleared',
       timestamp: Date.now()
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to clear demo data',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })

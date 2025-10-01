@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
           type
         })
         return json({
-          success: true
+          success: true,
           data: Object.fromEntries(results),
           meta: {
             keysRequested: keys.length,
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { keyDataMap, type = 'generic', ttl } = body
         if (!keyDataMap || typeof keyDataMap !== 'object') {
           return json({
-            success: false
+            success: false,
             error: 'Key-data map is required for batch_set operation'
           }, { status: 400 })
         }
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
           responseTime
         })
         return json({
-          success: true
+          success: true,
           message: 'Batch data cached successfully',
           meta: {
             keysSet: dataMap.size,
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { keys, type = 'generic', dataUrl } = body
         if (!keys || !Array.isArray(keys) || !dataUrl) {
           return json({
-            success: false
+            success: false,
             error: 'Keys array and dataUrl are required for warm operation'
           }, { status: 400 })
         }
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async ({ request }) => {
           responseTime
         })
         return json({
-          success: true
+          success: true,
           message: 'Cache warming completed',
           meta: {
             keysWarmed: keys.length,
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { key, data, type = 'generic', ttl } = body
         if (!key || data === undefined) {
           return json({
-            success: false
+            success: false,
             error: 'Key and data parameters are required'
           }, { status: 400 })
         }
@@ -237,7 +237,7 @@ export const POST: RequestHandler = async ({ request }) => {
           dataSize: JSON.stringify(data).length
         })
         return json({
-          success: true
+          success: true,
           message: 'Data cached successfully',
           meta: {
             key,
@@ -254,7 +254,7 @@ export const POST: RequestHandler = async ({ request }) => {
       error: error instanceof Error ? error.message: 'Unknown error'
     })
     return json({
-      success: false
+      success: false,
       error: 'Cache storage failed',
       details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
@@ -270,13 +270,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString()
       })
       return json({
-        success: true
+        success: true,
         message: 'All caches cleared successfully',
         timestamp: new Date().toISOString()
       })
     } catch (error: any) {
       return json({
-        success: false
+        success: false,
         error: 'Failed to clear all caches',
         details: error instanceof Error ? error.message: 'Unknown error'
       }, { status: 500 })
@@ -295,7 +295,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     })
     return json({
-      success: true
+      success: true,
       message: `Cache key "${key}" deletion requested`,
       meta: {
         key,
@@ -304,7 +304,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Cache deletion failed',
       details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })

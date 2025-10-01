@@ -128,7 +128,7 @@ async function processWebGPUChat(
       }
     }
     return {
-      success: true
+      success: true,
       response,
       processingTime: performance.now() - startTime,
       gpuAccelerated: false
@@ -190,7 +190,7 @@ async function processWebGPUChat(
     const gpuStats = await webgpuRedisOptimizer.getOptimizationStats()
     const processingTime = performance.now() - startTime
     return {
-      success: true
+      success: true,
       response: response || 'WebGPU processing completed successfully.',
       processingTime,
       gpuAccelerated: true
@@ -224,7 +224,7 @@ async function processWebGPUChat(
       }
     }
     return {
-      success: true
+      success: true,
       response,
       processingTime: performance.now() - startTime,
       gpuAccelerated: false
@@ -241,7 +241,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       const capabilities = webgpuAI.getCapabilities()
       const optimizerStats = await webgpuRedisOptimizer.getOptimizationStats()
       return json({
-        success: true
+        success: true,
         service: 'webgpu-chat-v4',
         webgpuAvailable: capabilities.webgpu.isSupported,
         rtxOptimized: true
@@ -265,14 +265,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
       return json(webgpuAI.getCapabilities()
     }
     return json({
-        success: false
+        success: false,
         error: 'Invalid action. Use ?action=health or ?action=capabilities'
       },)
       { status: 400 }
     )
   } catch (error: any) {
     return json({
-        success: false
+        success: false,
         error: 'WebGPU health check failed',
         details: error.message
       },)
@@ -288,7 +288,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Input validation
     if (!body.message || typeof body.message !== 'string') {
       return json({
-          success: false
+          success: false,
           error: 'Message is required and must be a string'
         },)
         { status: 400 }
@@ -297,7 +297,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (body.message.length > 4000) {
       return json()
         {
-          success: false
+          success: false,
           error: 'Message too long (max 4000 characters for WebGPU optimization)'
         },
         { status: 400 }
@@ -312,7 +312,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: 'WebGPU chat processing failed',
         details: error.message,
         processingTime: performance.now() - startTime,

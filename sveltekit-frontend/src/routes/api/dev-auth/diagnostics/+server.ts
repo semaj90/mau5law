@@ -16,7 +16,7 @@ export const GET: RequestHandler = async () => {
       sessionCount = sessionsResult.length
     } catch (e: any) { joinOk = false; joinError = (joinError || '') + ' | sessions select failed: ' + e.message, }
     return json({
-      ok: true
+      ok: true,
       users: { count: userCount, sample },
       sessions: { count: sessionCount },
       joinOk,

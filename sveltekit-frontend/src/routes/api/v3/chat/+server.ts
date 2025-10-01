@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         const overallHealth = healthChecks.ollama && healthChecks.database
         const status = overallHealth ? 'healthy' : 'degraded'
         const response = {
-          success: true
+          success: true,
           status,
           service: 'enhanced-chat-v3',
           requestId,
@@ -212,7 +212,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         if (!query || query.length < 3) {
           requestLogger.warn('Invalid search query', 'chat-api-v3', { query })
           return json({
-            success: false
+            success: false,
             error: 'Query parameter "q" is required and must be at least 3 characters long',
             requestId
           }, { status: 400 })
@@ -224,7 +224,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           { query, resultCount: results.length, duration: Date.now() - startTime }
         )
         return json({
-          success: true
+          success: true,
           requestId,
           query,
           results,
@@ -237,7 +237,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       }
       requestLogger.warn('Invalid action requested', 'chat-api-v3', { action })
       return json({
-        success: false
+        success: false,
         error: 'Invalid action. Use ?action=health or ?action=search',
         requestId,
         availableActions: ['health', 'search']
@@ -248,7 +248,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         url: url.toString()
       })
       return json({
-        success: false
+        success: false,
         status: 'error',
         error: 'Internal server error',
         requestId,
@@ -271,7 +271,7 @@ export const POST: RequestHandler = async ({ request }) => {
       } catch (parseError) {
         requestLogger.warn('Invalid JSON in request body', 'chat-api-v3')
         return json({
-          success: false
+          success: false,
           error: 'Invalid JSON in request body',
           requestId,
           timestamp: new Date().toISOString()
@@ -282,7 +282,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!validation.valid) {
         requestLogger.warn('Request validation failed', 'chat-api-v3', { error: validation.error })
         return json({
-          success: false
+          success: false,
           error: validation.error,
           requestId,
           timestamp: new Date().toISOString()
@@ -448,7 +448,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       )
       const response: ChatResponse = {
-        success: true
+        success: true,
         response: fullResponse
         conversationId,
         requestId,
@@ -473,7 +473,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { duration: processingTime }
       )
       return json({
-        success: false
+        success: false,
         error: 'Internal server error occurred while processing your request',
         requestId,
         metadata: {

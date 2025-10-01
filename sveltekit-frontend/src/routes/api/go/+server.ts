@@ -228,7 +228,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const statusCode = err.status || 500
     const message = err.body?.message || err.message || 'Go service request failed'
     return json({
-      success: false
+      success: false,
       message,
       code: err.body?.code || 'GO_SERVICE_ERROR',
       meta: {
@@ -275,7 +275,7 @@ export const GET: RequestHandler = async () => {
     const healthyServices = serviceStatus.filter(item => item.length)
     const totalServices = serviceStatus.length
     return json({
-      success: true
+      success: true,
       message: `Go services proxy - ${healthyServices}/${totalServices} services healthy`,
       data: {
         proxy: {
@@ -306,7 +306,7 @@ export const GET: RequestHandler = async () => {
   } catch (err: any) {
     console.error('Go services status check failed:', err)
     return json({
-      success: false
+      success: false,
       message: 'Failed to check Go services status',
       code: 'STATUS_CHECK_FAILED',
       meta: {

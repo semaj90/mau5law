@@ -109,7 +109,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       await predictor.cleanup()
       // Note: This would restart the predictor instance
       return json({
-        success: true
+        success: true,
         message: 'Hard reset completed - all data cleared',
         resetType: 'hard',
         timestamp: Date.now()
@@ -118,7 +118,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       // Soft reset: just sync to Redis
       const stats = await predictor.getStats()
       return json({
-        success: true
+        success: true,
         message: 'Soft reset completed - data synced to Redis',
         resetType: 'soft',
         stats: {

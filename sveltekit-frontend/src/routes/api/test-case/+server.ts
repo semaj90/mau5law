@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       timestamp: createdCase.created_at
     })
     return json({
-      success: true
+      success: true,
       message: 'Case created successfully in PostgreSQL database',
       id: createdCase.id,
       case: {
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error('❌ PostgreSQL Case Creation Error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: 'Database error occurred',
         details: error instanceof Error ? error.stack : undefined
         timestamp: new Date().toISOString()

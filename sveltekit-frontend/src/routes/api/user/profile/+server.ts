@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ locals }) => {
     // Transform snake_case database fields to camelCase for frontend
     const frontendUser = transformUserForFrontend(user)
     return json({
-      success: true
+      success: true,
       user: {
         ...frontendUser,
         avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.png'
@@ -87,7 +87,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     // Transform snake_case database result to camelCase for frontend
     const frontendUser = transformUserForFrontend(updatedUser)
     return json({
-      success: true
+      success: true,
       user: {
         ...frontendUser,
         avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg'

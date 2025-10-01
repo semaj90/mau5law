@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       processedAt: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       results,
       stats,
       message: `Processed ${results.length} item(s) for bulk hash operations`

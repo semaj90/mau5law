@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Limit results
     filteredEvents = filteredEvents.slice(0, limit)
     return json({
-      success: true
+      success: true,
       events: filteredEvents
       count: filteredEvents.length,
       total_available: events.length,
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { eventType, data, metadata } = await request.json()
     if (!eventType) {
       return json({
-          success: false
+          success: false,
           error: 'Event type is required'
         },)
         { status: 400 }
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Emit the custom event
     databaseOrchestrator.emit(eventType, eventData)
     return json({
-      success: true
+      success: true,
       message: 'Event triggered successfully',
       event: eventData
       timestamp: new Date().toISOString()
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },

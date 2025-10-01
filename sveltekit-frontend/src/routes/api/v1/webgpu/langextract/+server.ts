@@ -46,7 +46,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to get WebGPU LangExtract status',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -78,14 +78,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         break
       default:
         return json({,
-          success: false
+          success: false,
           error: 'Invalid action',
           validActions: ['process', 'batch', 'benchmark', 'stats', 'config']
         }, { status: 400 })
     }
     const processingTime = Date.now() - startTime
     return json({
-      success: true
+      success: true,
       action,
       result,
       metadata: {
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   } catch (error) {
     console.error('WebGPU LangExtract error:', error)
     return json({
-      success: false
+      success: false,
       error: 'WebGPU LangExtract processing failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -267,14 +267,14 @@ export const PUT: RequestHandler = async ({ request }) => {
     const config = await request.json()
     webgpuLangChainBridge.updateConfig(config)
     return json({
-      success: true
+      success: true,
       message: 'WebGPU LangExtract configuration updated',
       config,
       timestamp: Date.now()
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to update configuration',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -295,13 +295,13 @@ export const DELETE: RequestHandler = async () => {
       documentType: 'general'
     })
     return json({
-      success: true
+      success: true,
       message: 'WebGPU LangExtract system reset successfully',
       timestamp: Date.now()
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to reset system',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })

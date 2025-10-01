@@ -10,14 +10,14 @@ export const GET: RequestHandler = async ({ fetch }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: 'test integration', mode: 'auto' })
       })
-        .then((r) => r.json()
+        .then((r) => r.json())
         .catch((e) => ({ error: e.message })),
       fetch('/api/test-context7')
-        .then((r) => r.json()
+        .then((r) => r.json())
         .catch((e) => ({ error: e.message }))
     ])
     const integrationStatus = {
-      success: true
+      success: true,
       timestamp: new Date().toISOString(),
       // Component Integration Status
       components: {
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
   } catch (error: any) {
     console.error('Integration status check failed:', error)
     return json({
-      success: false
+      success: false,
       error: error.message || 'Integration status check failed',
       timestamp: new Date().toISOString()
     }, { status: 500 })

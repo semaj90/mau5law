@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { userId, recommendationId, rating, feedback } = body
         if (!userId || !recommendationId || rating === undefined) {
           return json({
-            success: false
+            success: false,
             error: 'userId, recommendationId, and rating are required'
           }, { status: 400 })
         }
@@ -100,20 +100,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // In production, this would update ML models
         console.log('Recommendation feedback:', { userId, recommendationId, rating, feedback })
         return json({
-          success: true
+          success: true,
           message: 'Feedback recorded successfully',
           timestamp: Date.now()
         })
       }
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`
         }, { status: 400 })
     }
   } catch (error: any) {
     return json({
-        success: false
+        success: false,
         error: error.message || "Failed to generate recommendations"
       },)
       { status: 500 }
@@ -173,7 +173,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })

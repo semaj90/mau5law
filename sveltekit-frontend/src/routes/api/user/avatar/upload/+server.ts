@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       .where(eq(users.id, locals.user.id)
     console.log("Database updated successfully")
     return json({
-      success: true
+      success: true,
       avatarUrl,
       message: "Avatar uploaded successfully"
     })
@@ -99,7 +99,7 @@ export const DELETE: RequestHandler = async ({ locals }) => {
       .set({ avatarUrl: null })
       .where(eq(users.id, locals.user.id)
     return json({
-      success: true
+      success: true,
       message: "Avatar removed successfully"
     })
   } catch (error: any) {

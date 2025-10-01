@@ -51,7 +51,7 @@
     plasmaEffect = false,
     enableEnhancedSound = false,
     soundChannel = 1,
-    children,
+  children,
     class: className = '',
     onClick,
     onHover,
@@ -160,35 +160,27 @@
 </script>
 
 <BitsButton.Root
-  bind:el={buttonElement}
+  bind:this={buttonElement}
   {type}
   {disabled}
   {form}
   {name}
   {value}
-  onclick={handleClick}
-  onmouseenter={handleHover}
-  onmouseleave={handleUnhover}
-  onfocus={handleFocus}
-  class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7
-    ? 'mode7'
-    : ''} {plasmaEffect ? 'plasma' : ''}"
-  style=";
-    --button-gradient: {variantGradient}
-    --button-padding: {sizeStyles.padding}
-    --button-font-size: {sizeStyles.fontSize}
-    --button-min-height: {sizeStyles.minHeight}
-    --mode7-transform: {mode7Transform}
-  "
+  on:click={handleClick}
+  on:mouseenter={handleHover}
+  on:mouseleave={handleUnhover}
+  on:focus={handleFocus}
+  class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7 ? 'mode7' : ''} {plasmaEffect ? 'plasma' : ''}"
+  style="--button-gradient: {variantGradient}; --button-padding: {sizeStyles.padding}; --button-font-size: {sizeStyles.fontSize}; --button-min-height: {sizeStyles.minHeight}; --mode7-transform: {mode7Transform};"
 >
   {#if loading}
     <div class="loading-spinner" role="status" aria-label="Loading">
       <div class="enhanced-spinner"></div>
     </div>
   {:else}
-    <slot>{children}</slot>
+    <slot />
   {/if}
-</BitsButton>
+</BitsButton.Root>
 
 <style>
   :global(.snes-16bit-button) {
@@ -454,6 +446,18 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
       border-width: 2px;
       border-color: currentColor;
       text-shadow: none;
+    }
+  }
+/* Dark mode adjustments */ {}
+  @media (prefers-color-scheme: dark) {
+    :global(.snes-16bit-button) {
+box-shadow: {}
+0 2px 0px rgba(255, 255, 255, 0.1), {}
+inset 0 1px 0px rgba(255, 255, 255, 0.2), {}
+        inset 0 -1px 0px rgba(0, 0, 0, 0.4);
+    }
+  }
+</style>
     }
   }
 /* Dark mode adjustments */ {}

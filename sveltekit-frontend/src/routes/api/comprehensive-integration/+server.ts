@@ -128,7 +128,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         break
       case 'vector_search_test':
         // Simulate vector search test
-        await new Promise(resolve => setTimeout(resolve, 600)
+        await new Promise(resolve => setTimeout(resolve, 600));
         result = {
           vector_dimensions: 384,
           indexed_documents: 12450,
@@ -145,7 +145,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
     }
     const processingTime = Date.now() - startTime
     return {
-      success: true
+      success: true,
       operation,
       result,
       timestamp: new Date().toISOString(),
@@ -154,7 +154,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
   } catch (error) {
     console.error(`Operation ${operation} failed:`, error)
     return {
-      success: false
+      success: false,
       operation,
       result: {
         error: String(error),
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('API operation failed:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'Failed to process operation',
         timestamp: new Date().toISOString()
       },

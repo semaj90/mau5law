@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ params }) => {
     const activeJob = activeJobs.find((job: any) => job.id === jobId)
     if (activeJob) {
       return json({
-        success: true
+        success: true,
         jobId,
         status: 'processing',
         progress: {
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ params }) => {
         // Ignore JSON parse errors
       }
       return json({
-        success: true
+        success: true,
         jobId,
         status: 'completed',
         documentId: doc.id,
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ params }) => {
     // Check if job might be queued (if queue size > 0 and no active match)
     if (queuedJobs > 0) {
       return json({
-        success: true
+        success: true,
         jobId,
         status: 'queued',
         progress: {
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ params }) => {
     }
     // Job not found
     return json({
-      success: true
+      success: true,
       jobId,
       status: 'not-found',
       error: 'Job not found in queue or database'
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ params }) => {
   } catch (err) {
     console.error('Job status check error:', err)
     return json({
-      success: false
+      success: false,
       jobId: params.jobId || 'unknown',
       status: 'failed',
       error: err instanceof Error ? err.message: String(err)

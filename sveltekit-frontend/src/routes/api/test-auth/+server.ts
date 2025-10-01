@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ request }) => {
     const userCount = await db.select({ count: db.sql`count(*)` }).from(users)
     const sessionCount = await db.select({ count: db.sql`count(*)` }).from(sessions)
     return json({
-      success: true
+      success: true,
       message: 'Database connection and schema test successful',
       tests: {
         connection: 'OK',
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ request }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       stack: error.stack,
       details: {

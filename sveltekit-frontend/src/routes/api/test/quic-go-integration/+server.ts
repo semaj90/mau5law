@@ -21,7 +21,7 @@ const goServiceManager = {
     return {
       async ragQuery(query: string, options: any) {
         return {
-          success: true
+          success: true,
           results: [
             { id: '1', content: 'Mock legal document result', score: 0.95 },
             { id: '2', content: 'Mock case law result', score: 0.87 }
@@ -35,7 +35,7 @@ const goServiceManager = {
       },
       async semanticSearch(query: string, options: any) {
         return {
-          success: true
+          success: true,
           results: [
             { id: '1', content: 'Mock semantic search result', score: 0.92 },
             { id: '2', content: 'Mock legal context result', score: 0.84 }
@@ -52,7 +52,7 @@ const goServiceManager = {
     return {
       async uploadDocument(file: any, metadata: any) {
         return {
-          success: true
+          success: true,
           documentId: 'mock-doc-123',
           filename: file.name || 'test.pdf',
           size: file.size || 1024,
@@ -61,7 +61,7 @@ const goServiceManager = {
       },
       async health() {
         return {
-          success: true
+          success: true,
           status: 'healthy',
           uptime: '2h 15m',
           activeConnections: 5,
@@ -74,7 +74,7 @@ const goServiceManager = {
     return {
       async request(method: string, data: any) {
         return {
-          success: true
+          success: true,
           service,
           method,
           mockResponse: true
@@ -175,7 +175,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const ragProxyResponse = await fetch('/api/v1/quic/rag-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           query: 'test legal query',
           maxResults: 3,
           threshold: 0.7
@@ -224,7 +224,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     console.error('Integration test failed:', err)
     return json({
-      success: false
+      success: false,
       message: 'QUIC-Go Integration Test Failed',
       error: err instanceof Error ? err.message: 'Unknown error',
       timestamp: new Date().toISOString()
@@ -266,7 +266,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break
     }
     return json({
-      success: true
+      success: true,
       message: 'Custom integration test completed',
       service,
       endpoint,

@@ -9,14 +9,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     if (sessionId) {
       const messages = await ChatHistoryService.getMessages(sessionId)
       return json({
-        success: true
+        success: true,
         sessionId,
         messages: messages.reverse()
       })
     }
     const sessions = await ChatHistoryService.getSessionsByUser(user.id)
     return json({
-      success: true
+      success: true,
       sessions
     })
   } catch (error) {
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     // Return mock chat history on failure
     const sessionId = url.searchParams.get('sessionId')
     const mockData = sessionId ? {
-      success: false
+      success: false,
       error: 'failure default to mock',
       sessionId,
       messages: [
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         }
       ]
     } : {
-      success: false
+      success: false,
       error: 'failure default to mock',
       sessions: [
         {

@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   } catch (error: any) {
     console.error('Cache test failed:', error)
     return json({
-      success: false
+      success: false,
       error: error?.message || 'Unknown error',
       test: testType
     }, { status: 500 })
@@ -54,7 +54,7 @@ async function testBasicCaching() {
     keys: [testKey]
   })
   return json({
-    success: true
+    success: true,
     test: 'basic',
     cached: (result as { success?: any; cacheResults?: any; metrics?: any }).success && (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults.length > 0,
     hitRate: (result as { success?: any; cacheResults?: any; metrics?: any }).metrics.cacheHitRate,
@@ -104,7 +104,7 @@ async function testParallelCaching() {
   }
   const sequentialTime = performance.now() - sequentialStart
   return json({
-    success: true
+    success: true,
     test: 'parallel',
     results: {
       parallel: {
@@ -160,7 +160,7 @@ async function testRAGCaching() {
     { ragContext: true, userId: 'rag-test-user' }
   )
   return json({
-    success: true
+    success: true,
     test: 'rag',
     cached: cached !== null,
     ragContextPresent: cached?.data?.ragContext ? true : false
@@ -171,7 +171,7 @@ async function testRAGCaching() {
 async function testQuantizedCaching() {
   // Large response to test quantization
   const largeResponse = {
-    success: true
+    success: true,
     data: {
       cases: Array.from({ length: 100 }, (_, i) => ({
         id: `case-${i}`,
@@ -212,7 +212,7 @@ async function testQuantizedCaching() {
   const quantizedSize = JSON.stringify(quantized).length
   const compressionRatio = originalSize / quantizedSize
   return json({
-    success: true
+    success: true,
     test: 'quantized',
     originalSize: originalSize
     quantizedSize: quantizedSize
@@ -227,7 +227,7 @@ async function getCacheStats() {
     parallelCacheOrchestrator.getPerformanceStats()
   ])
   return json({
-    success: true
+    success: true,
     test: 'stats',
     ssr: ssrStats
     parallel: {
@@ -259,7 +259,7 @@ async function testLegalAPIIntegration(userId: string) {
       const responseTime = performance.now() - startTime
       results.push({
         endpoint,
-        success: true
+        success: true,
         responseTime: Math.round(responseTime),
         cached: response?.meta?.cached || false,
         cacheLayer: response?.meta?.cacheLayer,
@@ -268,7 +268,7 @@ async function testLegalAPIIntegration(userId: string) {
     } catch (error: any) {
       results.push({
         endpoint,
-        success: false
+        success: false,
         error: error?.message || 'Unknown error'
       })
     }
@@ -279,7 +279,7 @@ async function testLegalAPIIntegration(userId: string) {
     .filter(r => r.success)
     .reduce((sum, r) => sum + (r.responseTime || 0), 0) / (successfulCalls || 1)
   return json({
-    success: true
+    success: true,
     test: 'legal-api',
     summary: {
       totalEndpoints: testEndpoints.length,
@@ -296,12 +296,12 @@ export const DELETE: RequestHandler = async () => {
   try {
     await parallelCacheOrchestrator.clearAll()
     return json({
-      success: true
+      success: true,
       message: 'All caches cleared successfully'
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error?.message || 'Unknown error'
     }, { status: 500 })
   }

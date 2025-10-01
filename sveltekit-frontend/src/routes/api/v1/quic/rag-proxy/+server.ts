@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Handle 304 Not Modified (cached response)
     if (response.status === 304) {
       return json({
-        success: true
+        success: true,
         cached: true
         message: 'Response served from cache',
         protocol,
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       cached: responseData.cached || false
     }
     return json({
-      success: true
+      success: true,
       data: ragResponse
       protocol,
       source: 'rag-quic-proxy',
@@ -270,7 +270,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     }
     const result = await response.json()
     return json({
-      success: true
+      success: true,
       message: `Document '${document.id}' updated in RAG index`,
       result,
       timestamp: new Date().toISOString()
@@ -311,7 +311,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
     const result = await response.json()
     return json({
-      success: true
+      success: true,
       message: `Document '${documentId}' removed from RAG index`,
       result,
       timestamp: new Date().toISOString()

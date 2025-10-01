@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
       await triggerDomainSpecificDistillation(feedbackData.context.legalDomain, feedbackData.userId)
     }
     return json({
-      success: true
+      success: true,
       message: 'Feedback recorded successfully',
       training_examples: 1,
       distillation_ready: feedbackCount >= 50,

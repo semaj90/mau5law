@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Shader cache test endpoint error:', error)
     return json({
-        success: false
+        success: false,
         error: 'Test execution failed',
         details: dev ? error.message: undefined
       },)
@@ -169,7 +169,7 @@ async function testColdPath(testResults: any): Promise<any> {
       const latency = Date.now() - startTime
       testResults.results.coldPath.tests.push({
         shader: shader.key,
-        success: true
+        success: true,
         latency: latency
         details: `Shader cached successfully with ${(result as { metadata?: any }).metadata?.embedding?.length || 0} embedding dimensions`
       })
@@ -177,7 +177,7 @@ async function testColdPath(testResults: any): Promise<any> {
     } catch (error: any) {
       testResults.results.coldPath.tests.push({
         shader: shader.key,
-        success: false
+        success: false,
         error: error.message
       })
       testResults.metrics.failedTests++
@@ -201,7 +201,7 @@ async function testHotPath(testResults: any): Promise<any> {
       if (cached) {
         testResults.results.hotPath.tests.push({
           shader: shader.key,
-          success: true
+          success: true,
           latency: latency
           fromCache: true
           details: `Retrieved from cache in ${latency}ms, usage count: ${cached.metadata.usageCount}`
@@ -211,7 +211,7 @@ async function testHotPath(testResults: any): Promise<any> {
         // Not in cache, which is expected if cold path wasn't run first
         testResults.results.hotPath.tests.push({
           shader: shader.key,
-          success: true
+          success: true,
           latency: latency
           fromCache: false
           details: `Shader not in cache (expected if cold path not run)`
@@ -221,7 +221,7 @@ async function testHotPath(testResults: any): Promise<any> {
     } catch (error: any) {
       testResults.results.hotPath.tests.push({
         shader: shader.key,
-        success: false
+        success: false,
         error: error.message
       })
       testResults.metrics.failedTests++
@@ -246,14 +246,14 @@ async function testPredictivePreloading(testResults: any): Promise<any> {
     }
     testResults.results.predictivePreloading.tests.push({
       test: 'workflow_analysis',
-      success: true
+      success: true,
       details: `Analyzed ${workflowSequence.length} workflow steps for predictive patterns`
     })
     testResults.metrics.passedTests++
   } catch (error: any) {
     testResults.results.predictivePreloading.tests.push({
       test: 'workflow_analysis',
-      success: false
+      success: false,
       error: error.message
     })
     testResults.metrics.failedTests++
@@ -290,7 +290,7 @@ async function testMultiDimensionalSearch(testResults: any): Promise<any> {
       const results = await gpuShaderCacheOrchestrator.multiDimensionalSearch(searchQuery.query)
       testResults.results.multiDimensionalSearch.tests.push({
         query: searchQuery.name,
-        success: true
+        success: true,
         resultCount: results.length,
         details: `Found ${results.length} matching shaders`
       })
@@ -298,7 +298,7 @@ async function testMultiDimensionalSearch(testResults: any): Promise<any> {
     } catch (error: any) {
       testResults.results.multiDimensionalSearch.tests.push({
         query: searchQuery.name,
-        success: false
+        success: false,
         error: error.message
       })
       testResults.metrics.failedTests++
@@ -318,7 +318,7 @@ async function testReinforcementLearning(testResults: any): Promise<any> {
     const metrics = gpuShaderCacheOrchestrator.getMetrics()
     testResults.results.reinforcementLearning.tests.push({
       test: 'metrics_collection',
-      success: true
+      success: true,
       metrics: {
         cacheHits: metrics.cacheHits,
         cacheMisses: metrics.cacheMisses,
@@ -330,7 +330,7 @@ async function testReinforcementLearning(testResults: any): Promise<any> {
   } catch (error: any) {
     testResults.results.reinforcementLearning.tests.push({
       test: 'metrics_collection',
-      success: false
+      success: false,
       error: error.message
     })
     testResults.metrics.failedTests++
@@ -350,14 +350,14 @@ async function testCacheManagement(testResults: any): Promise<any> {
     await gpuShaderCacheOrchestrator.clearCache()
     testResults.results.cacheManagement.tests.push({
       test: 'cache_clearing',
-      success: true
+      success: true,
       details: 'Successfully cleared cache entries'
     })
     testResults.metrics.passedTests++
   } catch (error: any) {
     testResults.results.cacheManagement.tests.push({
       test: 'cache_clearing',
-      success: false
+      success: false,
       error: error.message
     })
     testResults.metrics.failedTests++
@@ -375,14 +375,14 @@ async function testDatabaseIntegration(testResults: any): Promise<any> {
     // This would test the actual database schema and operations
     testResults.results.databaseIntegration.tests.push({
       test: 'database_connection',
-      success: true
+      success: true,
       details: 'Database schema and operations functional'
     })
     testResults.metrics.passedTests++
   } catch (error: any) {
     testResults.results.databaseIntegration.tests.push({
       test: 'database_connection',
-      success: false
+      success: false,
       error: error.message
     })
     testResults.metrics.failedTests++

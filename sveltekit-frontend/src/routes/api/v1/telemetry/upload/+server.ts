@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Store events (placeholder - implement with your preferred storage)
     await storeTelemetryEvents(batch, getClientAddress()
     return json({
-      success: true
+      success: true,
       processed: batch.events.length,
       sessionId: batch.sessionId,
       stats

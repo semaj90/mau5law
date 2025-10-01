@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { text, context = [], analysisType = 'legal' } = body
     if (!text) {
       return json({
-        success: false
+        success: false,
         error: 'Text is required for FlashAttention2 processing'
       }, { status: 400 })
     }
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const result = await flashAttentionService.processLegalText(text, context, analysisType)
     const processingTime = performance.now() - startTime
     return json({
-      success: true
+      success: true,
       processingTime,
       memoryUsage: (result as { memoryUsage?: any; confidence?: any; embeddings?: any; attentionWeights?: any; legalAnalysis?: any; processingTime?: any }).memoryUsage,
       confidence: (result as { memoryUsage?: any; confidence?: any; embeddings?: any; attentionWeights?: any; legalAnalysis?: any; processingTime?: any }).confidence,
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async () => {
   try {
     const status = flashAttentionService.getServiceStatus()
     return json({
-      success: true
+      success: true,
       status,
       capabilities: {
         rtx_3060_ti_optimized: true
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })

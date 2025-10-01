@@ -57,8 +57,8 @@ export const GET: RequestHandler = async () => {
         sessions: cacheStats.sessions
       },
       performance: {
-        embedding_cache_efficiency: embeddingHitRate
-        query_cache_efficiency: queryHitRate
+        embedding_cache_efficiency: embeddingHitRate,
+        query_cache_efficiency: queryHitRate,
         total_requests: cacheStats.embeddings.hits + cacheStats.embeddings.misses +
                        cacheStats.queries.hits + cacheStats.queries.misses,
         cache_size_total: cacheStats.embeddings.size + cacheStats.queries.size

@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     }
     const processingTime = Date.now() - startTime
     return json({
-      success: true
+      success: true,
       analysis: analysisResult
       metadata: {
         processingTimeMs: processingTime
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
   } catch (error) {
     console.error('Case analysis error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to analyze case',
       details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })

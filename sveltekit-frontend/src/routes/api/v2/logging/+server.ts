@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       })
       storeLogEntry(entry)
       return json({
-        success: true
+        success: true,
         message: 'Log entry recorded',
         entryId: entry.requestId
       })
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       )
       processedEntries.forEach(storeLogEntry)
       return json({
-        success: true
+        success: true,
         message: 'Log batch recorded',
         entriesProcessed: processedEntries.length,
         entryIds: processedEntries.map(e => e.requestId)
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
   // Apply limit
   filteredLogs = filteredLogs.slice(0, limit)
   return json({
-    success: true
+    success: true,
     logs: filteredLogs
     totalCount: filteredLogs.length,
     filters: {
@@ -190,7 +190,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
   const originalCount = logStore.length
   logStore.splice(0, logStore.length)
   return json({
-    success: true
+    success: true,
     message: `Cleared ${originalCount} log entries`,
     clearedCount: originalCount
   })

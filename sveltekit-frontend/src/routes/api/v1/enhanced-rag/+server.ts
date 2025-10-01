@@ -242,7 +242,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       vectorResults: vectorResults || undefined
     }
     return json({
-      success: true
+      success: true,
       data: enhancedResponse
       source: responseData.fallback ? 'vector-fallback' : 'enhanced-rag',
       timestamp: new Date().toISOString(),
@@ -294,7 +294,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     }
     const uploadResult = await uploadResponse.json()
     return json({
-      success: true
+      success: true,
       message: 'Document uploaded and queued for RAG processing',
       data: uploadResult
       timestamp: new Date().toISOString()
@@ -328,7 +328,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
     const result = await deleteResponse.json()
     return json({
-      success: true
+      success: true,
       message: `Document '${documentId}' removed from RAG index`,
       result,
       timestamp: new Date().toISOString()

@@ -21,13 +21,13 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       const queryResult = await db.execute(sql`SELECT COUNT(*) as table_count FROM information_schema.tables WHERE table_schema = 'public'`)
       results.tests.simpleQuery = {
-        success: true
+        success: true,
         message: 'Simple query executed successfully',
         tableCount: queryResult[0]?.table_count
       }
     } catch (error) {
       results.tests.simpleQuery = {
-        success: false
+        success: false,
         message: `Query failed: ${(error as Error).message}`
       }
     }
@@ -36,13 +36,13 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       const casesResult = await db.execute(sql`SELECT COUNT(*) as count FROM cases`)
       results.tests.casesTable = {
-        success: true
+        success: true,
         message: 'Cases table accessible',
         count: casesResult[0]?.count || 0
       }
     } catch (error) {
       results.tests.casesTable = {
-        success: false
+        success: false,
         message: `Cases table error: ${(error as Error).message}`
       }
     }
@@ -51,13 +51,13 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       const evidenceResult = await db.execute(sql`SELECT COUNT(*) as count FROM evidence`)
       results.tests.evidenceTable = {
-        success: true
+        success: true,
         message: 'Evidence table accessible',
         count: evidenceResult[0]?.count || 0
       }
     } catch (error) {
       results.tests.evidenceTable = {
-        success: false
+        success: false,
         message: `Evidence table error: ${(error as Error).message}`
       }
     }
@@ -66,13 +66,13 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       const docsResult = await db.execute(sql`SELECT COUNT(*) as count FROM legal_documents`)
       results.tests.legalDocuments = {
-        success: true
+        success: true,
         message: 'Legal documents table accessible',
         count: docsResult[0]?.count || 0
       }
     } catch (error) {
       results.tests.legalDocuments = {
-        success: false
+        success: false,
         message: `Legal documents error: ${(error as Error).message}`
       }
     }
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     } catch (error) {
       results.tests.pgvector = {
-        success: false
+        success: false,
         message: `Vector test error: ${(error as Error).message}`
       }
     }
@@ -104,12 +104,12 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Database test error:', error)
     results.tests.connectionError = {
-      success: false
+      success: false,
       message: `Connection error: ${(error as Error).message}`,
       stack: (error as Error).stack
     }
     results.overall = {
-      success: false
+      success: false,
       message: 'Database connection failed',
       readyForCRUD: false
     }

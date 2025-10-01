@@ -252,7 +252,7 @@ async function handleProcessing(body: any): Promise<any> {
     }
   })
   return json({
-    success: true
+    success: true,
     taskId,
     status: 'queued',
     message: `Task ${taskId} submitted for ${type} processing`,
@@ -275,7 +275,7 @@ async function handleLegalAnalysis(body: any): Promise<any> {
       })
     ])
     const response: any = {
-      success: true
+      success: true,
       analysis: { [key: string]: any },
       processingTime: 0,
       sources: []
@@ -306,7 +306,7 @@ async function handleLegalAnalysis(body: any): Promise<any> {
     return json(response)
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Legal analysis failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -343,7 +343,7 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
       source = 'wasm-bridge'
     }
     return json({
-      success: true
+      success: true,
       embeddings: embeddings.map(emb => Array.from(emb)),
       dimensions,
       processingTime,
@@ -352,7 +352,7 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Embedding generation failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -373,7 +373,7 @@ async function handleErrorProcessing(body: any): Promise<any> {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Error processing failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -399,7 +399,7 @@ async function handleWASMCompilation(body: any): Promise<any> {
       throw new Error('Module compilation failed')
     }
     return json({
-      success: true
+      success: true,
       module: {
         id: module.id,
         name: module.name,
@@ -411,7 +411,7 @@ async function handleWASMCompilation(body: any): Promise<any> {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'WASM compilation failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
@@ -431,7 +431,7 @@ async function handleIntegrationTest(body: any): Promise<any> {
       results.tests.gpuService = gpuTest
     } catch (error: any) {
       results.tests.gpuService = {
-        success: false
+        success: false,
         details: error instanceof Error ? error.message: String(error)
       }
     }
@@ -442,12 +442,12 @@ async function handleIntegrationTest(body: any): Promise<any> {
         extractCitations: true
       })
       results.tests.wasmBridge = {
-        success: true
+        success: true,
         details: `Processed ${testText.length} characters in ${wasmTest.processingTime.toFixed(2)}ms`
       }
     } catch (error: any) {
       results.tests.wasmBridge = {
-        success: false
+        success: false,
         details: error instanceof Error ? error.message: String(error)
       }
     }
@@ -460,7 +460,7 @@ async function handleIntegrationTest(body: any): Promise<any> {
       }
     } catch (error: any) {
       results.tests.flashAttention = {
-        success: false
+        success: false,
         details: error instanceof Error ? error.message: String(error)
       }
     }
@@ -475,7 +475,7 @@ async function handleIntegrationTest(body: any): Promise<any> {
     return json(results)
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Integration test failed',
       details: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()

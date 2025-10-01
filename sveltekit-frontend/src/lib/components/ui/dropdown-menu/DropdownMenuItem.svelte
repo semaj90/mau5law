@@ -18,7 +18,7 @@
     disabled = false,
     destructive = false,
     onclick,
-    onselect;
+    onselect
   }: Props = $props();
   let itemClasses = $derived(cn(
     "legal-ai-dropdown-item relative flex cursor-default select-none items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",

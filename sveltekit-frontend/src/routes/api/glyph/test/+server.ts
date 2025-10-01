@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js'
 export const GET: RequestHandler = async () => {
   console.log('🎨 Glyph test endpoint accessed via GET')
   return json({
-    success: true
+    success: true,
     message: 'Glyph diffusion test endpoint is working',
     status: 'ok'
   })
@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log('🎨 Testing glyph generation:', body)
     // Simulate glyph generation without database/MinIO
     const mockGlyphResponse = {
-      success: true
+      success: true,
       data: {
         evidence_id: body.evidence_id || 123,
         glyph_url: `data:image/svg+xml,${encodeURIComponent(`
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('❌ Glyph test generation failed:', error)
     return json({
-      success: false
+      success: false,
       error: 'Glyph test generation failed: ' + error.message
     }, { status: 500 })
   }

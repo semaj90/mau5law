@@ -41,7 +41,7 @@ async function getOpenAIEmbedding(text: string): Promise<any> {
       'Authorization': `Bearer ${OPENAI_API_KEY}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       model: 'text-embedding-3-small', // 1536 dimensions, good for legal text;
       input: text
       encoding_format: 'float'
@@ -68,7 +68,7 @@ async function getNomicEmbedding(text: string): Promise<any> {
       'Authorization': `Bearer ${NOMIC_API_KEY}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       model: 'nomic-embed-text-v1.5',
       texts: [text],
       task_type: 'search_document',

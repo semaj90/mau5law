@@ -62,13 +62,13 @@ async function uploadToMinIO(file: File): Promise<MinIOUploadResult> {
 		formData.append('path', objectPath)
 		console.log(`[MinIO] Simulating upload to bucket: ${MINIO_BUCKET}, path: ${objectPath}`)
 		return {
-			success: true
+			success: true,
 			objectPath,
 			url: `${MINIO_ENDPOINT}/${MINIO_BUCKET}/${objectPath}`
 		}
 	} catch (error: any) {
 		return {
-			success: false
+			success: false,
 			error: error.message
 		}
 	}
@@ -106,7 +106,7 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
 	} catch (error: any) {
 		console.error('MCP processing error:', error)
 		return {
-			success: false
+			success: false,
 			error: error.message
 		}
 	}
@@ -123,7 +123,7 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({,
+				body: JSON.stringify({
 					model: 'embeddinggemma:latest',
 					prompt: chunk
 				})
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		// Return comprehensive result
 		return json({
-			success: true
+			success: true,
 			data: {
 				file: {
 					name: file.name,
@@ -235,7 +235,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error: any) {
 		console.error('[API] Processing error:', error)
 		return json({
-			success: false
+			success: false,
 			error: error.message || 'Internal server error'
 		}, { status: 500 })
 	}

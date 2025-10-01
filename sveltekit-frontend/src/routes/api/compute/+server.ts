@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
       } : null
     }
     return json({
-      success: true
+      success: true,
       job: {
         jobId: job.jobId,
         status: job.status,

@@ -11,7 +11,7 @@ export const GET: RequestHandler = async ({ request }) => {
       const result = await adapter.getSessionAndUser("test-session-id")
       console.log("Custom adapter result:", result)
       return json({
-        success: true
+        success: true,
         message: 'Custom adapter worked!',
         result: result
       })
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ request }) => {
       console.error("Custom adapter error:", error.message)
       console.error("Custom adapter query:", error.query)
       return json({
-        success: false
+        success: false,
         error: error.message,
         query: error.query || 'No query available'
       }, { status: 500 })
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error("Custom Adapter Test Error:", error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       stack: error.stack
     }, { status: 500 })

@@ -121,7 +121,7 @@ export const GET: RequestHandler = async () => {
     console.log(`   - nomic-embed-text: ${models.nomicEmbed ? '✅' : '❌'}`)
     console.log(`   - TypeScript errors: ${typeScriptCheck.total}`)
     return json({
-      success: true
+      success: true,
       status,
       timestamp: new Date().toISOString(),
       message: 'GPU processing status retrieved successfully',
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     console.error('❌ Status check failed:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
         console.log(`   - GPU utilization: ${mockProcessingResult.performance.gpu_utilization}%`)
         console.log(`   - Tokens/second: ${mockProcessingResult.performance.tokens_per_second}`)
         return json({
-          success: true
+          success: true,
           result: mockProcessingResult
           message: 'GPU error processing completed with gemma3-legal GGUF'
         })
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
           gpu_utilization: 78
         }
         return json({
-          success: true
+          success: true,
           benchmark: benchmarkResult
           message: 'FlashAttention2 benchmark completed'
         })
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }

@@ -11,7 +11,7 @@ export const GET: RequestHandler = async ({ getClientAddress }) => {
     // Test database connectivity through MCP health check
     const healthResult = await casesMCP.healthCheck()
     const response = {
-      success: true
+      success: true,
       timestamp: Date.now(),
       services: {
         mcp: 'operational',
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ getClientAddress }) => {
   } catch (error: any) {
     console.error('❌ MCP Health Check Failed:', error)
     return json({
-      success: false
+      success: false,
       timestamp: Date.now(),
       error: error instanceof Error ? error.message: 'Unknown error',
       services: {

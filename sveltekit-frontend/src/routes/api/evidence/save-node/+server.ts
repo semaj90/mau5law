@@ -13,7 +13,7 @@ const evidenceNodeSchema = z.object({
   fileType: z.string(),
   filePath: z.string().optional(),
   fileSize: z.number().optional(),
-  metadata: z.object({,
+  metadata: z.object({
     x: z.number(),
     y: z.number(),
     width: z.number(),
@@ -75,7 +75,7 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
       updatedAt: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       evidence: evidenceData
       message: "Evidence saved successfully"
     })
@@ -100,7 +100,7 @@ async function saveCanvasState(canvasData: any, userId: string): Promise<any> {
       updatedAt: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       canvasState: canvasStateData
       message: "Canvas state saved successfully"
     })

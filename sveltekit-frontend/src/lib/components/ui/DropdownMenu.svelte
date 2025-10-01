@@ -6,16 +6,22 @@
   import DropdownMenuItem from './dropdown-menu/DropdownMenuItem.svelte';
   import DropdownMenuSeparator from './dropdown-menu/DropdownMenuSeparator.svelte';
   // Component props
-  let { items = [],
+  let { items = [] as unknown[],
     trigger = 'Menu',
     ...props
-   }: { items = [],
-    trigger = 'Menu',
+   }: { items?: unknown[];
+    trigger?: string | import('svelte').Snippet;
     ...props: unknown } = $props();
 </script>
 
 <DropdownMenuRoot {...props}>
-  <DropdownMenuTrigger>{trigger}</DropdownMenuTrigger>
+  <DropdownMenuTrigger>
+    {#if typeof trigger === 'string'}
+      {trigger}
+    {:else}
+      {@render (trigger as import('svelte').Snippet)?.()}
+    {/if}
+  </DropdownMenuTrigger>
   <DropdownMenuContent>
     {#each items as item, index}
       {#if (item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }).separator}

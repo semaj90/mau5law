@@ -40,7 +40,7 @@ export const POST: RequestHandler = async (event) => {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           messages: messages
           model: model
           temperature: temperature

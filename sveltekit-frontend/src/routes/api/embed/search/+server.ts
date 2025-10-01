@@ -22,7 +22,7 @@ Response:`
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'legal:latest',
         prompt: prompt
         stream: false
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     })
     return json({
-      success: true
+      success: true,
       query,
       results: enhancedResults
       ragResponse,

@@ -102,7 +102,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
     await updateDeploymentReport(deploymentConfig)
     const status = await getOrchestrationStatus()
     return json({
-      success: true
+      success: true,
       message: 'GPU-accelerated orchestration system deployed successfully',
       config: deploymentConfig
       status,
@@ -111,7 +111,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
   } catch (deployError) {
     console.error('❌ Deployment failed:', deployError)
     return json({
-      success: false
+      success: false,
       error: deployError.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -291,7 +291,7 @@ async function startOrchestrationSystem(): Promise<any> {
       }
     }
     return json({
-      success: true
+      success: true,
       message: 'Orchestration system startup initiated',
       services: serviceStatus
       timestamp: new Date().toISOString()
@@ -299,7 +299,7 @@ async function startOrchestrationSystem(): Promise<any> {
   } catch (error: any) {
     console.error('❌ Failed to start orchestration system:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -311,7 +311,7 @@ async function startOrchestrationSystem(): Promise<any> {
 async function stopOrchestrationSystem(): Promise<any> {
   console.log('🛑 Stopping orchestration system...')
   return json({
-    success: true
+    success: true,
     message: 'Orchestration system stop initiated',
     timestamp: new Date().toISOString()
   })

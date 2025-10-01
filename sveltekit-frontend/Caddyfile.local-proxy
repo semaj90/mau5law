@@ -16,7 +16,7 @@
     }
 
     # Proxy to your existing local dev server on host
-    reverse_proxy host.docker.internal:5177 {
+    reverse_proxy host.docker.internal:5173 {
         header_up Host {host}
         header_up X-Real-IP {remote_host}
         header_up X-Forwarded-For {remote_host}
@@ -36,7 +36,7 @@
     handle /health {
         respond `{
             "status": "ready",
-            "proxy_target": "host.docker.internal:5177",
+            "proxy_target": "host.docker.internal:5173",
             "agent_demo": "http://localhost:5178/agent-demo",
             "quic_enabled": true,
             "local_dev": true

@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
             const mcpResponse = await fetch('http://localhost:3002/mcp/evidence-analyze', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({,
+              body: JSON.stringify({
                 evidenceId: evidence.id,
                 content: evidence.content,
                 title: evidence.title,
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       pending: enhancedEvidence.filter(item => item.length)
     }
     return json({
-      success: true
+      success: true,
       data: {
         evidence: enhancedEvidence
         pagination: {

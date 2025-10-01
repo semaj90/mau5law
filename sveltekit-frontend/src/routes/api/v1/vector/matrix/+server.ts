@@ -120,7 +120,7 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
   const clientHints = generateMatrixClientHints(operation, rowsA, colsA, matrixComplexity)
   const totalApiTime = performance.now() - apiStartTime
   const response: MatrixResponse = {
-    success: true
+    success: true,
     result,
     metadata: {
       operation,
@@ -203,7 +203,7 @@ async function handleBatchOperation(request: Request, _requestId: string, _apiSt
   }
   const processingTime = Date.now() - startTime
   const response: MatrixResponse = {
-    success: true
+    success: true,
     result,
     metadata: {
       operation,

@@ -1,7 +1,8 @@
 <script lang="ts">
   	import type {    Snippet    } from 'svelte';
-  	import { Dialog as BitsDialog } from 'bits-ui';
+		import { Dialog as BitsDialog } from 'bits-ui';
   	import { cn } from '$lib/utils';
+		import type { Snippet } from 'svelte';
   	interface Props {
   		open?: boolean;
   		onOpenChange?: (open: boolean) => void;
@@ -17,41 +18,31 @@
   		overlayClass?: string;
   		contentClass?: string;
   		// Snippets
-  		trigger?: Snippet;
-  		children?: Snippet;
-  		footer?: Snippet;
+		trigger?: Snippet;
+		children?: Snippet;
+		footer?: Snippet;
   		// Event handlers
   		onClose?: () => void;
   	}
-  	let {
-  		open = false,
-  		onOpenChange,
-  		preventScroll = true,
-  		closeOnOutsideClick = true,
-  		closeOnEscape = true,
-  		title,
-  		description,
-  		class: className = '',
-  		overlayClass = '',
-  		contentClass = '',
-  		trigger,
-  		children,
-  		footer,
-  		onClo;
-  	}: Props = $props();
+		let {
+			open = false,
+			onOpenChange,
+			preventScroll = true,
+			closeOnOutsideClick = true,
+			closeOnEscape = true,
+			title,
+			description,
+			class: className = '',
+			overlayClass = '',
+			contentClass = '',
+			trigger,
+			children,
+			footer,
+			onClose
+		}: Props = $props();
   	function handleOpenChange(newOpen: boolean) {
-  		if (onOpenChange) {
-  			onOpenChange(newOpen);
-  		}
-  		ondispatch?.({ open: newOpen });
-  		if (newOpen) {
-  			// ondispatch removed;
-  		} else {
-  			// ondispatch removed;
-  			if (onClose) {
-  				onClose();
-  			}
-  		}
+			if (onOpenChange) onOpenChange(newOpen);
+			if (!newOpen && onClose) onClose();
   	}
   	// Default overlay styles
   	const defaultOverlayClass = 'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0';

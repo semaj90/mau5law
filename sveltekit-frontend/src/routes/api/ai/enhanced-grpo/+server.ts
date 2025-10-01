@@ -225,7 +225,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (!query && !text) {
       return json({
         error: 'Query or text is required',
-        success: false
+        success: false,
       }, { status: 400 })
     }
     const inputText = query || text
@@ -437,7 +437,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
     if (!responseId || !userRating || userRating < 1 || userRating > 5) {
       return json({
         error: 'responseId and userRating (1-5) are required',
-        success: false
+        success: false,
       }, { status: 400 })
     }
     // Record feedback

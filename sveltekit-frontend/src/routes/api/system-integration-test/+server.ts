@@ -231,7 +231,7 @@ async function runStressTest(_options: any = {}): Promise<Response> {
   }
   const workerResults = await Promise.all(promises)
   return json({
-    success: true
+    success: true,
     stressTest: {
       iterations,
       concurrent,
@@ -275,7 +275,7 @@ async function runEndToEndTest(_options: any = {}): Promise<Response> {
   const results: { steps: string[]; errors: string[]; success: boolean } = {
     steps: [],
     errors: [],
-    success: true
+    success: true,
   }
   try {
     // Step 1: Create test document
@@ -305,7 +305,7 @@ async function runEndToEndTest(_options: any = {}): Promise<Response> {
     await db.delete(schema.legalDocuments).where(sql`id = ${testId}`)
     await db.delete(schema.documentChunks).where(sql`document_id = ${testId}`)
     return json({
-      success: true
+      success: true,
       endToEnd: {
         testId,
         steps: results.steps,
@@ -329,7 +329,7 @@ async function runEndToEndTest(_options: any = {}): Promise<Response> {
       console.warn('Cleanup failed:', cleanupError)
     }
     return json({
-      success: false
+      success: false,
       endToEnd: results
     })
   }
@@ -353,7 +353,7 @@ async function cleanupTestData(): Promise<Response> {
       }
     }
     return json({
-      success: true
+      success: true,
       cleanup: {
         deletedDocuments: deletedDocs.length,
         deletedChunks: deletedChunks.length,

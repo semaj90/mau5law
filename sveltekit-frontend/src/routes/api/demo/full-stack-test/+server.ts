@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       console.log('✅ Full Stack Demo completed successfully!')
       return json({
-        success: true
+        success: true,
         message: 'YoRHa Legal AI Full Stack Demo completed successfully',
         results: demoResults
         next_steps: [
@@ -181,7 +181,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       const avgProcessingTime = stressResults.reduce((sum, r) => sum + r.processing_time, 0) / stressResults.length
       return json({
-        success: true
+        success: true,
         stress_test_results: {
           documents_processed: testDocuments.length,
           average_processing_time: `${avgProcessingTime.toFixed(2)}ms`,
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('❌ Full stack demo failed:', error)
     return json({
-      success: false
+      success: false,
       error: 'Demo failed',
       message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {}
       )
       return json({
-        success: true
+        success: true,
         action: 'custom_document_processing',
         result: {
           documentId: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).documentId,
@@ -232,7 +232,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Perform custom search
       const searchResults = await unifiedLegalProcessor.semanticSearch(searchQuery)
       return json({
-        success: true
+        success: true,
         action: 'custom_semantic_search',
         query: searchQuery
         results: searchResults
@@ -246,7 +246,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('❌ Custom test failed:', error)
     return json({
-      success: false
+      success: false,
       error: 'Custom test failed',
       message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })

@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
 async function processEnhancedUpload(request: EnhancedUploadRequest, context: APIRequestContext): Promise<EnhancedUploadResponse> {
   // Implementation stub - full implementation would include all stages
   return {
-    success: true
+    success: true,
     documentId: crypto.randomUUID(),
     filename: request.filename,
     size: request.file.size,

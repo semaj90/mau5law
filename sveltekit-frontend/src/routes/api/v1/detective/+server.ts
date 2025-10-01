@@ -13,7 +13,7 @@ const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
   analysisType: z.enum(['pattern_detection', 'anomaly_detection', 'connection_analysis', 'timeline_gap', 'risk_assessment']),
   evidenceIds: z.array(z.string().uuid()).optional(),
-  options: z.object({,
+  options: z.object({
     confidenceThreshold: z.number().min(0).max(1).default(0.7),
     includeHypotheses: z.boolean().default(true),
     maxInsights: z.number().min(1).max(50).default(10)
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       }
     ]
     return json({
-      success: true
+      success: true,
       data: insights
       meta: {
         userId: locals.user.id,
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const detectiveService = new DetectiveModeService(locals.user.id)
     const result = await detectiveService.runAnalysis(validatedData)
     return json({
-      success: true
+      success: true,
       data: result
       meta: {
         userId: locals.user.id,

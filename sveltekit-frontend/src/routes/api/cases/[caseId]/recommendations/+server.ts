@@ -153,7 +153,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       })
     }
     return json({
-      success: true
+      success: true,
       recommendations: recommendations
         .sort((a, b) => b.confidence - a.confidence)
         .slice(0, 10)

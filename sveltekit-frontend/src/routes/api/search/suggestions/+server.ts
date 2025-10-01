@@ -52,7 +52,7 @@ class SuggestionsService {
     return this.fetchWithFallback(`${ENHANCED_RAG_URL}/api/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         partial: partialQuery
         category,
         limit,
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const processingTime = Date.now() - startTime
     // Enhanced response with legal AI platform optimization
     return json({
-      success: true
+      success: true,
       suggestions: suggestions.slice(0, limit),
       trending: trending.slice(0, 5),
       metadata: {

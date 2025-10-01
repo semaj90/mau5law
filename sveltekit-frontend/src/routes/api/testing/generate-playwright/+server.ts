@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const testFilePath = join(process.cwd(), 'tests', 'generated-legal-ai-workflow.spec.ts')
     writeFileSync(testFilePath, playwrightTestContent)
     const result = {
-      success: true
+      success: true,
       generatedAt: new Date().toISOString(),
       files: {
         todoFile: filename

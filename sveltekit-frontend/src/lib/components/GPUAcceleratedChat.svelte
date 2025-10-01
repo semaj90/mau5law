@@ -8,6 +8,9 @@
   const FALLBACK_PORTS = [5174, 5175, 8080, 8081];
   let currentPort = $state(PRIMARY_PORT);
   let wsPort = $state(PRIMARY_PORT + 2); // WebSocket on +2 offset
+  // Dev override: allow forcing a dev WS URL (useful when QUIC/Caddy isn't running)
+  const DEV_WS_URL = (import.meta.env && (import.meta.env.VITE_DEV_WS_URL as string)) || undefined;
+  const DEV_WS_PORT = (import.meta.env && (import.meta.env.VITE_DEV_WS_PORT as string)) ? Number(import.meta.env.VITE_DEV_WS_PORT) : undefined;
   // State management
   let messages = $state<GPUChatMessage[]>([]);
   let inputMessage = $state('');
@@ -15,6 +18,8 @@
   let isTyping = $state(false);
   let gpuStatus = $state<GPUProcessingStatus | null>(null);
   let ws = $state<WebSocket | null>(null);
+  let isWebTransport = $state(false);
+  let wt = $state<any | null>(null);
   let reconnectTimeout: NodeJS.Timeout;
   let healthCheckInterval: NodeJS.Timeout;
   let currentRoom = $state<string | null>(null);
@@ -28,25 +33,100 @@
   // Multi-user support
   let clientId = $state<string>('');
   let connectedUsers = $state<number>(0);
-  // Initialize WebSocket with port detection
-  async function connectWebSocket() {
+  // Derived GPU info for template-safe access
+  let gpuCudaVersion = $state<string | null>(null);
+  let tensorRTEnabled = $state<boolean | null>(null);
+  // Initialize realtime transport (WebTransport preferred → WebSocket → HTTP fallback)
+  async function connectRealtime() {
     // Try to detect available port
     const availablePort = await detectAvailablePort();
     currentPort = availablePort;
     wsPort = availablePort + 2;
-    const wsUrl = `ws://localhost:${wsPort}`
-    console.log(`Connecting to WebSocket at ${wsUrl}...`);
+    // Ensure clientId exists
+    if (!sessionStorage.getItem('clientId')) {
+      sessionStorage.setItem('clientId', generateClientId());
+    }
+
+    // Try WebTransport first (requires HTTP/3 + TLS)
+    if (typeof (window as any).WebTransport !== 'undefined') {
+      const wtHost = DEV_WS_URL ? DEV_WS_URL.replace(/^ws:\/\//, 'https://').replace(/^http:\/\//, 'https://') : `https://localhost:${wsPort}`;
+      const wtUrl = `${wtHost}/webtransport`;
+      try {
+        console.log(`Attempting WebTransport connection to ${wtUrl}...`);
+        wt = new (window as any).WebTransport(wtUrl);
+        await wt.ready;
+        isWebTransport = true;
+        isConnected = true;
+        console.log('✅ WebTransport ready', wtUrl);
+
+  // Send handshake over WebTransport
+  await sendRealtimeMessage({ type: 'handshake', clientId: sessionStorage.getItem('clientId') });
+
+        // Read incoming unidirectional streams (safe best-effort)
+        (async () => {
+          try {
+            for await (const stream of (wt as any).incomingUnidirectionalStreams) {
+              try {
+                const reader = stream.getReader();
+                const chunks: Uint8Array[] = [];
+                while (true) {
+                  const { value, done } = await reader.read();
+                  if (done) break;
+                  if (value) chunks.push(value);
+                }
+                // concatenate
+                let length = 0;
+                for (const c of chunks) length += c.length;
+                const joined = new Uint8Array(length);
+                let offset = 0;
+                for (const c of chunks) { joined.set(c, offset); offset += c.length; }
+                const text = new TextDecoder().decode(joined);
+                try { handleWebSocketMessage(JSON.parse(text)); } catch (e) { console.warn('Failed to parse WT message', e); }
+              } catch (err) {
+                console.warn('Error reading WT stream', err);
+              }
+            }
+          } catch (err) {
+            console.warn('WebTransport incoming stream loop ended', err);
+          }
+        })();
+
+        // Monitor closed state
+        wt.closed.then(() => {
+          console.log('WebTransport closed');
+          isConnected = false;
+          isWebTransport = false;
+          wt = null;
+          // Attempt reconnect
+          reconnectTimeout = setTimeout(connectRealtime, 3000);
+        }).catch((err: any) => {
+          console.warn('WebTransport closed with error', err);
+          isConnected = false;
+          isWebTransport = false;
+          wt = null;
+          reconnectTimeout = setTimeout(connectRealtime, 3000);
+        });
+
+        return; // we are connected via WebTransport
+      } catch (err) {
+        console.warn('WebTransport connection failed, falling back to WebSocket:', err);
+        wt = null;
+        isWebTransport = false;
+      }
+    }
+
+  // Fallback to WebSocket (respect DEV overrides)
+  const wsHost = DEV_WS_URL ? DEV_WS_URL : (DEV_WS_PORT ? `ws://localhost:${DEV_WS_PORT}` : `ws://localhost:${wsPort}`);
+  const wsUrl = wsHost;
     try {
+      console.log(`Connecting to WebSocket at ${wsUrl}...`);
       ws = new WebSocket(wsUrl);
       ws.onopen = () => {
         console.log('✅ WebSocket connected on port', wsPort);
         isConnected = true;
         clearTimeout(reconnectTimeout);
-        // Send handshake
-        ws?.send(JSON.stringify({
-          type: 'handshake',
-          clientId: sessionStorage.getItem('clientId') || generateClientId();
-        }));
+  // Send handshake
+  sendRealtimeMessage({ type: 'handshake', clientId: sessionStorage.getItem('clientId') });
       }
       ws.onmessage = (event) => {
         try {
@@ -65,12 +145,46 @@
         // Attempt reconnection
         reconnectTimeout = setTimeout(() => {
           console.log('Attempting to reconnect...');
-          connectWebSocket();
+          connectRealtime();
         }, 3000);
       }
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
       isConnected = false;
+    }
+  }
+
+  // Generic send helper: WebTransport -> WebSocket -> HTTP POST
+  async function sendRealtimeMessage(payload: unknown) {
+    const data = JSON.stringify(payload);
+    // Prefer WebTransport
+    if (isWebTransport && wt) {
+      try {
+        const stream = await wt.createUnidirectionalStream();
+        const writer = stream.writable.getWriter();
+        await writer.write(new TextEncoder().encode(data));
+        await writer.close();
+        return true;
+      } catch (err) {
+        console.warn('WebTransport send failed, falling back', err);
+        // fallthrough to websocket
+      }
+    }
+    // WebSocket
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      try { ws.send(data); return true; } catch (err) { console.warn('WebSocket send failed', err); }
+    }
+    // Final fallback: HTTP POST to API endpoint
+    try {
+      const resp = await fetch(`http://localhost:${currentPort}/api/realtime/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: data,
+      });
+      return (resp as { ok?: unknown }).ok ? true : false;
+    } catch (err) {
+      console.error('HTTP realtime fallback failed:', err);
+      return false;
     }
   }
   // Detect available port
@@ -105,54 +219,61 @@
   }
   // Generate client ID
   function generateClientId(): string {
-    const id = `client_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
+    // Fixed client id generation using Math.random properly
+    const id = `client_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     sessionStorage.setItem('clientId', id);
     return id;
   }
   // Handle WebSocket messages
   function handleWebSocketMessage(data: unknown) {
-    switch ((data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).type) {
+    const payload = data as any;
+    switch (payload.type) {
       case 'connected':
-        clientId = (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).clientId;
-        gpuStatus = (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).gpuConfig;
+        clientId = payload.clientId as string ?? clientId;
+        gpuStatus = payload.gpuConfig as any ?? gpuStatus;
+        // update derived GPU fields
+        gpuCudaVersion = (gpuStatus as any)?.cuda?.version ?? null;
+        tensorRTEnabled = !!(gpuStatus as any)?.tensorRT?.enabled;
         console.log('Connected with ID:', clientId);
         break;
       case 'chat_response':
-        const message: GPUChatMessage = {
-          id: crypto.randomUUID(),
-          role: 'assistant',
-          content: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response || (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).content,
-          timestamp: new Date(),
-          metadata: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).metadata
-        }
-        messages = [...messages, message];
-        isTyping = false;
-        // TTS if enabled
-        if (voiceEnabled && (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response) {
-          speakText((data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response);
+        {
+          const content = (payload.response ?? payload.content) as string;
+          const message: GPUChatMessage = {
+            id: crypto.randomUUID(),
+            role: 'assistant',
+            content: content,
+            timestamp: new Date(),
+            metadata: payload.metadata as any
+          }
+          messages = [...messages, message];
+          isTyping = false;
+          if (voiceEnabled && content) {
+            speakText(content as string);
+          }
         }
         break;
       case 'typing':
-        isTyping = (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).isTyping;
+        isTyping = Boolean(payload.isTyping);
         break;
       case 'user_joined':
         connectedUsers++;
-        showNotification(`User joined room: ${(data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).clientId}`, 'info');
+        showNotification(`User joined room: ${payload.clientId}`, 'info');
         break;
       case 'user_left':
         connectedUsers = Math.max(0, connectedUsers - 1);
         break;
       case 'document_processed':
         showNotification('Document processed successfully', 'success');
-        handleDocumentResult(data);
+        handleDocumentResult(payload);
         break;
       case 'batch_complete':
-        handleBatchResults((data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).results);
+        handleBatchResults(payload.results as any[]);
         batchMode = false;
         break;
       case 'error':
-        console.error(error);
-        showNotification('Error: ' + (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).error, 'error');
+        console.error(payload.error);
+        showNotification('Error: ' + payload.error, 'error');
         isTyping = false;
         break;
     }
@@ -171,47 +292,40 @@
     inputMessage = '';
     isTyping = true;
     // Send via WebSocket if connected
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
-        type: 'chat',
-        content: messageContent,
-        room: currentRoom,
-      }));
-    } else {
-      // Fallback to HTTP API
+      // Try the preferred realtime transport (WebTransport -> WebSocket -> HTTP POST)
       try {
-        const response = await fetch(`http://localhost:${currentPort}/api/gpu-chat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: messageContent,
-            sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID(),
-          })
-        });
-        if (!(response as { ok?: unknown; json?: unknown }).ok) throw new Error('API request failed');
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        const aiMessage: GPUChatMessage = {
-          id: crypto.randomUUID(),
-          role: 'assistant',
-          content: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response,
-          timestamp: new Date(),
-          metadata: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).metadata
-        }
-        messages = [...messages, aiMessage];
-        if (voiceEnabled && (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response) {
-          speakText((data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response);
+        const sent = await sendRealtimeMessage({ type: 'chat', content: messageContent, room: currentRoom, sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID() });
+        if (!sent) {
+          // Fall back to HTTP API if realtime send failed
+          const response = await fetch(`http://localhost:${currentPort}/api/gpu-chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: messageContent, sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID() })
+          });
+          if (!response.ok) throw new Error('API request failed');
+          const dataAny = await response.json() as any;
+          const aiMessage: GPUChatMessage = {
+            id: crypto.randomUUID(),
+            role: 'assistant',
+            content: dataAny.response as string,
+            timestamp: new Date(),
+            metadata: dataAny.metadata as any
+          }
+          messages = [...messages, aiMessage];
+          if (voiceEnabled && dataAny.response) {
+            speakText(dataAny.response as string);
+          }
         }
       } catch (error) {
-        console.error('Failed to send message:', error);
+        console.error('Failed to send message via realtime transport or HTTP fallback:', error);
         showNotification('Failed to send message', 'error');
       } finally {
         isTyping = false;
       }
     }
-  }
   // Handle document upload
   async function handleFileUpload(_event: Event) {
-    const input = event.target as HTMLInputElement;
+    const input = (event?.target ?? _event?.target) as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
     const file = input.files[0];
     uploadedFiles = [...uploadedFiles, file];
@@ -223,8 +337,8 @@
         method: 'POST',
         body: formData
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const result = await (response as { ok?: unknown; json?: unknown }).json();
+      if (response.ok) {
+        const result = await response.json() as any;
         // Add system message about upload
         messages = [...messages, {
           id: crypto.randomUUID(),
@@ -232,14 +346,12 @@
           content: `Document "${file.name}" uploaded and processed. ${(result as { summary?: unknown; content?: unknown; embeddings?: unknown }).summary || ''}`,
           timestamp: new Date(),
         }];
-        // Send to WebSocket for processing
-        if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({
+          // Send to realtime transport for processing (WebTransport -> WebSocket -> HTTP)
+          await sendRealtimeMessage({
             type: 'document_upload',
             content: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).content,
-            embeddings: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).embeddings
-          }));
-        }
+            embeddings: result.embeddings
+          });
       }
     } catch (error) {
       console.error('Upload failed:', error);
@@ -259,13 +371,9 @@
         isSpeaking = false;
       }
       speechSynthesis.speak(utterance);
-    } else if (ws && ws.readyState === WebSocket.OPEN) {
-      // Request TTS from server
-      ws.send(JSON.stringify({
-        type: 'tts_request',
-        text,
-        voice: selectedVoice,
-      }));
+    } else {
+      // Request TTS from server via realtime transport
+      await sendRealtimeMessage({ type: 'tts_request', text, voice: selectedVoice });
     }
   }
   // Batch processing
@@ -275,68 +383,133 @@
       inputMessage = '';
     }
   }
-  function processBatch() {
+  async function processBatch() {
     if (batchItems.length === 0) return;
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
-        type: 'batch',
-        items: batchItems,
-      }));
+    const sent = await sendRealtimeMessage({ type: 'batch', items: batchItems });
+    if (sent) {
       showNotification(`Processing ${batchItems.length} items in batch...`, 'info');
       batchItems = [];
+    } else {
+      showNotification('Failed to submit batch for processing', 'error');
     }
   }
   // Join/Leave room for multi-user
-  function joinRoom(roomId: string) {
+  async function joinRoom(roomId: string) {
     currentRoom = roomId;
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
-        type: 'join_room',
-        room: roomId,
-      }));
-    }
+    await sendRealtimeMessage({ type: 'join_room', room: roomId });
   }
-  function leaveRoom() {
-    if (currentRoom && ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
-        type: 'leave_room',
-      }));
+  async function leaveRoom() {
+    if (currentRoom) {
+      await sendRealtimeMessage({ type: 'leave_room' });
     }
     currentRoom = null;
     connectedUsers = 0;
   }
   // Handle document processing result
   function handleDocumentResult(data: unknown) {
+    const d = data as any;
     messages = [...messages, {
       id: crypto.randomUUID(),
       role: 'system',
-      content: `Document analysis complete:\n${(data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).summary || 'Processing complete'}`,
+      content: `Document analysis complete:\n${d.summary || 'Processing complete'}`,
       timestamp: new Date(),
       metadata: {
-        documentId: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).documentId,
-        embeddings: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).embeddings?.length || 0
+        // keep primary metadata fields compatible with GPUChatMessage
+        ...(d.model ? { model: d.model } : {}),
+        ...(typeof d.processingTime === 'number' ? { processingTime: d.processingTime } : {}),
+        ...(typeof d.gpuUsed === 'boolean' ? { gpuUsed: d.gpuUsed } : {}),
+        // place document-specific extras under extra to avoid type conflicts
+        extra: {
+          documentId: d.documentId,
+          embeddingsCount: Array.isArray(d.embeddings) ? d.embeddings.length : undefined
+        }
       }
-    }];
+    } as unknown as GPUChatMessage];
   }
   // Handle batch results
   function handleBatchResults(results: unknown[]) {
-    const summary = `Batch processing complete:\n${results.map.join('\n')}`;
+    // Convert each result into a readable line (support string, object with summary/content, or fallback JSON)
+    const lines = results.map(r => {
+      if (typeof r === 'string') return r;
+      if (r && typeof r === 'object') {
+        const obj = r as any;
+        return obj.summary ?? obj.content ?? JSON.stringify(obj);
+      }
+      return String(r);
+    });
+    const summary = `Batch processing complete:\n${lines.join('\n')}\n\nBatch size: ${results.length}`;
+
+    // Build metadata only from known fields to satisfy GPUChatMessage.metadata shape
+    const first = (results && results.length > 0) ? (results[0] as any) : null;
+    const metadata = first && typeof first === 'object'
+      ? {
+          ...(first.model ? { model: first.model } : {}),
+          ...(typeof first.processingTime === 'number' ? { processingTime: first.processingTime } : {}),
+          ...(typeof first.gpuUsed === 'boolean' ? { gpuUsed: first.gpuUsed } : {}),
+          ...(typeof first.tokenCount === 'number' ? { tokenCount: first.tokenCount } : {})
+        }
+      : undefined;
+
     messages = [...messages, {
       id: crypto.randomUUID(),
       role: 'system',
       content: summary,
       timestamp: new Date(),
-      metadata: {
-        batchSize: results.length
+      // only attach metadata if we found compatible fields
+      ...(metadata ? { metadata } : {})
+    } as unknown as GPUChatMessage];
+  }
+
+  // Resume a previous request from Redis Streams (token replay)
+  async function resumeLastRequest(requestId?: string) {
+    const id = requestId || sessionStorage.getItem('lastRequestId') || sessionStorage.getItem('sessionId');
+    if (!id) {
+      showNotification('No requestId available to resume', 'warning');
+      return;
+    }
+    try {
+      const from = sessionStorage.getItem(`lastStreamId:${id}`) || '0-0';
+      const resp = await fetch(`/api/realtime/resume?requestId=${encodeURIComponent(id)}&from=${encodeURIComponent(from)}`);
+      if (!resp.ok) throw new Error('Resume API failed');
+      const body = await resp.json() as any;
+      if (!body.ok || !Array.isArray(body.entries)) {
+        showNotification('No entries to resume', 'info');
+        return;
       }
-    }];
+      // Append a system/assistant message that will receive streamed tokens
+      const streamingMessage: GPUChatMessage = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: '',
+        timestamp: new Date(),
+      }
+      messages = [...messages, streamingMessage];
+      // Append tokens progressively
+      for (const e of body.entries) {
+        const chunk = e.chunk as string || '';
+        streamingMessage.content += chunk;
+        // update messages array reference so Svelte re-renders
+        messages = messages.map(m => m.id === streamingMessage.id ? streamingMessage : m);
+        await new Promise(r => setTimeout(r, 10)); // small yield to allow UI update
+      }
+      // persist last seen stream id for incremental resume
+      if (body.lastId) {
+        sessionStorage.setItem(`lastStreamId:${id}`, body.lastId);
+      }
+      showNotification('Resume complete', 'success');
+    } catch (err) {
+      console.error('Failed to resume request:', err);
+      showNotification('Failed to resume request', 'error');
+    }
   }
   // Check GPU status
   async function checkGPUStatus() {
     try {
       const response = await fetch(`http://localhost:${currentPort}/api/gpu-status`)
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        gpuStatus = await (response as { ok?: unknown; json?: unknown }).json();
+      if (response.ok) {
+        gpuStatus = await response.json() as GPUProcessingStatus;
+        gpuCudaVersion = (gpuStatus as any)?.cuda?.version ?? null;
+        tensorRTEnabled = !!(gpuStatus as any)?.tensorRT?.enabled;
       }
     } catch (error) {
       console.error('Failed to check GPU status:', error);
@@ -346,8 +519,8 @@
   async function performHealthCheck() {
     try {
       const response = await fetch(`http://localhost:${currentPort}/api/health`)
-      const health = await (response as { ok?: unknown; json?: unknown }).json();
-      if (!health.healthy) {
+      const health = await response.json() as any;
+      if (!health?.healthy) {
         showNotification('System health check failed', 'warning');
       }
     } catch (error) {
@@ -367,11 +540,11 @@
     // You could store notifications in state and display them
   }
   // Handle keyboard shortcuts
-  function handleKeyPress(_event: KeyboardEvent) {
-    if (event.key === 'Enter' && !event.shiftKey) {
+  function handleKeyPress(event: KeyboardEvent) {
+    if ((event as KeyboardEvent).key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
       sendMessage();
-    } else if (event.key === 'Enter' && event.shiftKey && batchMode) {
+    } else if ((event as KeyboardEvent).key === 'Enter' && (event as KeyboardEvent).shiftKey && batchMode) {
       event.preventDefault();
       addToBatch();
     }
@@ -382,8 +555,8 @@
     if (!sessionStorage.getItem('sessionId')) {
       sessionStorage.setItem('sessionId', crypto.randomUUID());
     }
-    // Connect WebSocket
-    connectWebSocket();
+  // Connect realtime transport (WebTransport preferred)
+  connectRealtime();
     // Check GPU status
     checkGPUStatus();
     // Set up health check interval
@@ -428,15 +601,26 @@
           {isConnected ? 'Connected' : 'Disconnected'}
           <span class="port-info">:{currentPort}</span>
         </div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <button
+            onclick={() => resumeLastRequest()}
+            class="process-batch-btn"
+            style="padding:0.25rem 0.5rem;font-size:0.75rem;"
+            disabled={!sessionStorage.getItem('lastRequestId') && !sessionStorage.getItem('sessionId')}
+            title={sessionStorage.getItem(`lastStreamId:${sessionStorage.getItem('lastRequestId') || sessionStorage.getItem('sessionId')}`) ?? 'Resume last request'}
+          >
+            Resume
+          </button>
+        </div>
         <!-- GPU Status -->
         {#if gpuStatus}
           <div class="gpu-status">
             <span class="gpu-icon">🎮</span>
             GPU: {gpuStatus.gpuAvailable ? 'Active' : 'Inactive'}
-            {#if gpuStatus.cuda}
-              <span class="cuda-info">CUDA {gpuStatus.cuda.version}</span>
+            {#if gpuCudaVersion}
+              <span class="cuda-info">CUDA {gpuCudaVersion}</span>
             {/if}
-            {#if gpuStatus.tensorRT?.enabled}
+            {#if tensorRTEnabled}
               <span class="tensorrt-badge">TensorRT</span>
             {/if}
           </div>
@@ -506,11 +690,11 @@
               {#if message.metadata.gpuUsed}
                 <span class="metadata-item gpu-used">GPU</span>
               {/if}
-              {#if message.metadata.tensorRT}
+              {#if (message.metadata as any)?.tensorRT}
                 <span class="metadata-item tensorrt">TensorRT</span>
               {/if}
-              {#if message.metadata.port}
-                <span class="metadata-item">Port: {message.metadata.port}</span>
+              {#if (message.metadata as any)?.port}
+                <span class="metadata-item">Port: {(message.metadata as any).port}</span>
               {/if}
             </div>
           {/if}

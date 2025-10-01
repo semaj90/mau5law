@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           metadata: metadata || {}
         })
         return json({
-          success: true
+          success: true,
           cached: result
           timestamp: Date.now()
         })
@@ -35,13 +35,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { key } = body
         if (!key) {
           return json({
-            success: false
+            success: false,
             error: 'Key is required'
           }, { status: 400 })
         }
         const cached = await dimensionalCache.get(key)
         return json({
-          success: true
+          success: true,
           found: !!cached,
           data: cached ? {,
             embeddings: Array.from(cached.embeddings.slice(0, 10)), // First 10 for demo
@@ -55,20 +55,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { pattern } = body
         const cleared = await dimensionalCache.clear(pattern)
         return json({
-          success: true
+          success: true,
           cleared,
           timestamp: Date.now()
         })
       }
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`
         }, { status: 400 })
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })

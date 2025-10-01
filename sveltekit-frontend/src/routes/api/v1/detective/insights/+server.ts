@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       locals.user.id
     )
     return json({
-      success: true
+      success: true,
       data: {
         caseId,
         insights,

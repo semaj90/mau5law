@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` })
         }
         return json({
-          success: true
+          success: true,
           data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
@@ -154,7 +154,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         }
         result = await query
         return json({
-          success: true
+          success: true,
           data: result
           metadata: {
             total,
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             .limit(limit)
         }
         return json({
-          success: true
+          success: true,
           data: searchResult
           metadata: {
             total: searchResult.length,
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             '/api/vector/search',)
             {
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({,
+              body: JSON.stringify({
                 query: searchQuery
                 entity: entity
                 limit: limit
@@ -228,7 +228,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           }
           const vectorData = await vectorResponse.json()
           return json({
-            success: true
+            success: true,
             data: vectorData.results || vectorData,
             metadata: {
               total: vectorData.total || vectorData.results?.length || 0,
@@ -240,7 +240,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           console.error('Vector search error:', vectorError)
           // Fallback to regular search if vector search fails
           return json({
-            success: true
+            success: true,
             data: [],
             error: 'Vector search unavailable, falling back to text search',
             metadata: {
@@ -290,7 +290,7 @@ export const POST: RequestHandler = async ({ request }) => {
               '/api/embeddings/generate',)
               {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({,
+                body: JSON.stringify({
                   id: result[0].id,
                   entity: entity;
                   content: (data as { content?: any; title?: any }).content,
@@ -304,7 +304,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         }
         return json({
-          success: true
+          success: true,
           data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
@@ -320,7 +320,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` })
         }
         return json({
-          success: true
+          success: true,
           data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
@@ -347,7 +347,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         }
         return json({
-          success: true
+          success: true,
           data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
@@ -385,7 +385,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     request: new Request(url.toString(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         action: 'delete',
         entity,
         id

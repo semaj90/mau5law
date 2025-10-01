@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           batch_enabled: true
         },
         // Follow your established success pattern
-        success: true
+        success: true,
         api_version: 'v1',
         batch_summary: {
           requested: requestData.documents.length,

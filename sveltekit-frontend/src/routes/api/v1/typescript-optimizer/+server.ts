@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Validate request
 		if (!body.errors || !Array.isArray(body.errors)) {
 			return json({
-				success: false
+				success: false,
 				error: 'Invalid request: errors array required'
 			}, { status: 400 })
 		}
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error: any) {
 		console.error('TypeScript Optimizer Error:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'Internal server error during TypeScript optimization',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()

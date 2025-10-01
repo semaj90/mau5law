@@ -91,7 +91,7 @@ async function generateEmbeddingsWithOllama(text: string): Promise<number[]> {
     const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'embeddinggemma:latest',
         prompt: text
       }),
@@ -117,7 +117,7 @@ async function processCudaAccelerated(content: string, options: any): Promise<an
       const indexResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/index/hnsw`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           vectors: [embedding],
           dimensions: embedding.length,
           max_elements: 10000
@@ -152,7 +152,7 @@ async function analyzeLegalDocument(content: string): Promise<any> {
     const response = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma3:legal-latest',
         prompt: `Analyze this legal document and provide:
 1. Document type classification
@@ -318,7 +318,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         const summaryResponse = await fetch(`${OLLAMA_URL}/api/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             model: 'gemma3:legal-latest',
             prompt: `Provide a concise summary of this legal document (max 200 words):\n\n${documentContent.substring(0, 2000)}`,
             stream: false
@@ -341,7 +341,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     ] : []
     const totalProcessingTime = Date.now() - startTime
     const response: ProcessingResult = {
-      success: true
+      success: true,
       documentId: docId
       summary: summaryResult || undefined
       entities: entities
@@ -369,7 +369,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Document processing error:', error)
     return json({
-      success: false
+      success: false,
       error: 'failure default to mock',
       documentId: documentId || `mock-doc-${Date.now()}`,
       summary: 'Mock document summary: This is a legal document that has been processed using fallback mock services due to processing system unavailability.',
@@ -426,13 +426,13 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       return json({ error: 'Document ID parameter required' }, { status: 400 })
     }
     return json({
-      success: true
+      success: true,
       status: 'completed',
       documentId
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'failure default to mock',
       status: 'mock_completed',
       documentId: documentId || 'mock-document-id',

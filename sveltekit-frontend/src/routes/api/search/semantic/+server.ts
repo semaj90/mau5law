@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const body = await request.json()
         if (!body || !body.query || body.query.trim().length === 0) {
             return json({
-                success: false
+                success: false,
                 error: 'Query is required'
             }, { status: 400 })
         }
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
             const errorText = await searchResponse.text()
             console.error('Go search service error:', errorText)
             return json({
-                success: false
+                success: false,
                 error: `Search service error: ${errorText}`
             }, { status: searchResponse.status })
         }
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } catch (error: any) {
         console.error('Semantic search API error:', error)
         return json({
-            success: false
+            success: false,
             error: `Semantic search failed: ${error instanceof Error ? error.message: 'Unknown error'}`
         }, { status: 500 })
     }

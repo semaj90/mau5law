@@ -6,19 +6,19 @@ export const GET: RequestHandler = async ({ locals }) => {
     const user = locals.user
     if (!user) {
       return json({
-        success: true
+        success: true,
         user: null
       })
     }
     return json({
-      success: true
+      success: true,
       user
     })
   } catch (error) {
     console.error('User profile API error:', error)
     // Return mock user data on failure
     const mockUser = {
-      success: false
+      success: false,
       error: 'failure default to mock',
       user: {
         id: 'mock-user-001',

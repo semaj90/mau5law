@@ -115,7 +115,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
     }
   }
   return json({
-    success: true
+    success: true,
     results,
     metadata: searchMetadata
     suggestions: [
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error('Unified search API error:', error)
     if (error instanceof z.ZodError) {
       return json({
-          success: false
+          success: false,
           error: 'Invalid search parameters',
           details: error.errors
         },)
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       )
     }
     return json({
-        success: false
+        success: false,
         error: 'Search failed',
         message: error instanceof Error ? error.message: 'Unknown error'
       },)
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     console.error('Unified search GET API error:', error)
     if (error instanceof z.ZodError) {
       return json({
-          success: false
+          success: false,
           error: 'Invalid search parameters',
           details: error.errors
         },)

@@ -23,7 +23,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
     const body = await request.json()
     if (!documentId) {
       return json({
-          success: false
+          success: false,
           error: "Document ID is required"
         },)
         { status: 400 },
@@ -33,7 +33,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
     // Validate required fields
     if (!content && !title) {
       return json({
-          success: false
+          success: false,
           error: "Content or title is required for auto-save"
         },)
         { status: 400 },
@@ -66,14 +66,14 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
         .returning()
       if (updatedDocument.length === 0) {
         return json({
-            success: false
+            success: false,
             error: "Document not found"
           },)
           { status: 404 },
         )
       }
       return json({
-        success: true
+        success: true,
         message: "Document auto-saved successfully",
         document: {
           id: updatedDocument[0].id,
@@ -88,7 +88,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
         dbError,
       )
       return json({
-        success: true
+        success: true,
         message: "Document auto-saved successfully (mock)",
         document: {
           id: documentId
@@ -101,7 +101,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
   } catch (error: any) {
     console.error("Error auto-saving document:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to auto-save document"
       },)
       { status: 500 },
@@ -114,7 +114,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
     const documentId = params.id
     if (!documentId) {
       return json({
-          success: false
+          success: false,
           error: "Document ID is required"
         },)
         { status: 400 },
@@ -134,14 +134,14 @@ export async function GET({ params }: RequestEvent): Promise<any> {
         .limit(1)
       if (document.length === 0) {
         return json({
-            success: false
+            success: false,
             error: "Document not found"
           },)
           { status: 404 },
         )
       }
       return json({
-        success: true
+        success: true,
         autoSaveStatus: {
           isDirty: !!(document[0].autoSaveData as any)?.isDirty,
           lastSavedAt: document[0].lastSavedAt,
@@ -152,7 +152,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
     } catch (dbError) {
       console.warn("Database query failed, returning mock response:", dbError)
       return json({
-        success: true
+        success: true,
         autoSaveStatus: {
           isDirty: false
           lastSavedAt: new Date().toISOString(),
@@ -164,7 +164,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
   } catch (error: any) {
     console.error("Error fetching auto-save status:", error)
     return json({
-        success: false
+        success: false,
         error: "Failed to fetch auto-save status"
       },)
       { status: 500 },

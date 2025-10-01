@@ -120,7 +120,7 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'nomic-embed-text',
         prompt: content.substring(0, 8000) // Limit content for embedding
       })
@@ -180,7 +180,7 @@ async function performLegalAnalysis(content: string): Promise<any> {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma3-legal',
         prompt: `Analyze this legal document and provide:
 1. Document type classification
@@ -309,7 +309,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       results,
       totalFiles: files.length,
       successfulUploads: results.filter(item => item.length),

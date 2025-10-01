@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     })
     if (!rateLimitResult.allowed) {
       return json({
-          success: false
+          success: false,
           error: 'Rate limit exceeded',
           retryAfter: rateLimitResult.retryAfter
         },)
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       }
       const executionTime = Date.now() - startTime
       return json({
-        success: true
+        success: true,
         data: {
           ...syncResults,
           executionTime,
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     console.error("Qdrant sync error:", error)
     if (error instanceof QdrantAPIError) {
       return json({
-          success: false
+          success: false,
           error: error.message,
           details: error.details
         },)
@@ -216,7 +216,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     }
     return json()
       {
-        success: false
+        success: false,
         error: "Failed to sync with Qdrant",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined
         timestamp: new Date().toISOString()
@@ -237,7 +237,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     })
     if (!rateLimitResult.allowed) {
       return json({
-          success: false
+          success: false,
           error: 'Rate limit exceeded',
           retryAfter: rateLimitResult.retryAfter
         },)
@@ -281,7 +281,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         }
         const searchResults = await qdrant.search(searchParams)
         return json({
-          success: true
+          success: true,
           data: {
             collection,
             query: {
@@ -327,7 +327,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           }
         }
         return json({
-          success: true
+          success: true,
           data: {
             status: "healthy",
             collections,
@@ -359,7 +359,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     console.error("Qdrant GET error:", error)
     if (error instanceof QdrantAPIError) {
       return json({
-          success: false
+          success: false,
           error: error.message,
           details: error.details
         },)
@@ -368,7 +368,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     }
     return json()
       {
-        success: false
+        success: false,
         error: "Failed to get Qdrant status",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined
         timestamp: new Date().toISOString()
@@ -389,7 +389,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     })
     if (!rateLimitResult.allowed) {
       return json({
-          success: false
+          success: false,
           error: 'Rate limit exceeded',
           retryAfter: rateLimitResult.retryAfter
         },)
@@ -399,7 +399,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     // Check admin permissions
     if (!locals.user || locals.user.role !== "admin") {
       return json({
-          success: false
+          success: false,
           error: "Admin privileges required for collection management"
         },)
         { status: 403 }
@@ -416,7 +416,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     } = body
     if (!name || name.trim().length === 0) {
       return json({
-          success: false
+          success: false,
           error: "Collection name is required"
         },)
         { status: 400 }
@@ -435,7 +435,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     collectionConfig.vectors.distance = distance
     const result = await qdrant.createCollection(name, collectionConfig)
     return json({
-      success: true
+      success: true,
       data: {
         message: `Collection '${name}' created successfully with Windows optimizations`,
         collection: name
@@ -461,7 +461,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     console.error("Qdrant collection creation error:", error)
     if (error instanceof QdrantAPIError) {
       return json({
-          success: false
+          success: false,
           error: error.message,
           details: error.details
         },)
@@ -470,7 +470,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     }
     return json()
       {
-        success: false
+        success: false,
         error: "Failed to create collection",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined
         timestamp: new Date().toISOString()
@@ -491,7 +491,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     })
     if (!rateLimitResult.allowed) {
       return json({
-          success: false
+          success: false,
           error: 'Rate limit exceeded for deletion operations',
           retryAfter: rateLimitResult.retryAfter
         },)
@@ -501,7 +501,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     // Check admin permissions
     if (!locals.user || locals.user.role !== "admin") {
       return json({
-          success: false
+          success: false,
           error: "Admin privileges required for collection deletion"
         },)
         { status: 403 }
@@ -511,7 +511,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     const { collection, forceDelete = false, confirmationToken } = await request.json()
     if (!collection || collection.trim().length === 0) {
       return json({
-          success: false
+          success: false,
           error: "Collection name is required"
         },)
         { status: 400 }
@@ -521,7 +521,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     const protectedCollections = ['legal_documents', 'default', 'production']
     if (protectedCollections.includes(collection) && !forceDelete) {
       return json({
-          success: false
+          success: false,
           error: `Cannot delete protected collection '${collection}'. Use forceDelete=true with confirmationToken to override.`,
           hint: 'Protected collections require explicit confirmation'
         },)
@@ -531,7 +531,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     // Additional confirmation for forced deletions
     if (forceDelete && !confirmationToken) {
       return json({
-          success: false
+          success: false,
           error: "Confirmation token required for force deletion",
           hint: 'Add confirmationToken with collection name to confirm'
         },)
@@ -540,7 +540,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     }
     if (forceDelete && confirmationToken !== collection) {
       return json({
-          success: false
+          success: false,
           error: "Invalid confirmation token"
         },)
         { status: 400 }
@@ -551,7 +551,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       await qdrant.getCollection(collection)
     } catch {
       return json({
-          success: false
+          success: false,
           error: `Collection '${collection}' does not exist`
         },)
         { status: 404 }
@@ -559,7 +559,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     }
     const result = await qdrant.deleteCollection(collection)
     return json({
-      success: true
+      success: true,
       data: {
         message: `Collection '${collection}' deleted successfully`,
         collection,
@@ -576,7 +576,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     console.error("Qdrant collection deletion error:", error)
     if (error instanceof QdrantAPIError) {
       return json({
-          success: false
+          success: false,
           error: error.message,
           details: error.details
         },)
@@ -585,7 +585,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     }
     return json()
       {
-        success: false
+        success: false,
         error: "Failed to delete collection",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined
         timestamp: new Date().toISOString()

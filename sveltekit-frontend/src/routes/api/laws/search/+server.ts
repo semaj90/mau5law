@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Limit results
     results = results.slice(0, limit)
     return json({
-      success: true
+      success: true,
       laws: results
       count: results.length,
       query,
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('Laws search error:', error)
     return json({
-        success: false
+        success: false,
         error: 'Search failed',
         laws: [],
         count: 0

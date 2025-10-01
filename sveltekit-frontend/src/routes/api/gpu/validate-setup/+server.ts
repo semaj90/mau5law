@@ -169,7 +169,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     console.error('GPU validation error:', error)
     return json({
-      ok: false
+      ok: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     })

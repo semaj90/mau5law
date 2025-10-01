@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		}
 		return json({
-			success: true
+			success: true,
 			documentsProcessed: documents.length,
 			results: processedDocuments
 			batchId: `batch_${Date.now()}`,
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error) {
 		console.error('Batch processing error:', error)
 		return json({
-			success: false
+			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 })
 	}

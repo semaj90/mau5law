@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		}
 		return json({
-			success: true
+			success: true,
 			canvasId,
 			analysisType,
 			jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error) {
 		console.error('Evidence canvas processing error:', error)
 		return json({
-			success: false
+			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 })
 	}

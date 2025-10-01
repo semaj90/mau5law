@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const planner = await getPlanner({ mctsIterations: iterations ?? 400 })
     const result = await planner.planOptimalPath(startNodeId, goal)
     return new Response(JSON.stringify({
-      ok: true
+      ok: true,
       startNodeId,
       bestPath: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).bestPath.map(n => ({ id: n.id, type: n.type, title: n.properties.title, importance: n.properties.importance })),
       value: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).pathValue,

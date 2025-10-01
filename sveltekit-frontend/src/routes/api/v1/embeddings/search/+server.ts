@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     if (searchRequest.documents.length === 0) {
       return json({
-        success: true
+        success: true,
         query: searchRequest.query,
         results: [],
         metadata: {
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Perform semantic search
     const results = await gpuEmbeddingService.semanticSearch(searchRequest)
     return json({
-      success: true
+      success: true,
       query: searchRequest.query,
       results: results.map(r => ({,
         document: r.document,

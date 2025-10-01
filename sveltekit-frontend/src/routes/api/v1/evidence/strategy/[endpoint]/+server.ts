@@ -22,7 +22,7 @@ const PrecedentSearchSchema = z.object({
   jurisdiction: z.string(),
   legalIssues: z.array(z.string()),
   factPattern: z.string(),
-  dateRange: z.object({,
+  dateRange: z.object({
     start: z.string(),
     end: z.string()
   }).optional(),
@@ -30,7 +30,7 @@ const PrecedentSearchSchema = z.object({
 })
 const RiskAssessmentSchema = z.object({
   caseId: z.string().uuid(),
-  scenarios: z.array(z.object({,
+  scenarios: z.array(z.object({
     name: z.string(),
     likelihood: z.number().min(0).max(1),
     description: z.string()
@@ -442,7 +442,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         clientGoals
       )
       return json({
-        success: true
+        success: true,
         data: {
           caseId,
           analysis: {
@@ -498,7 +498,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       // Analyze precedent relevance using AI
       const aiAnalysis = await analyzePrecedentRelevance(precedents, factPattern, legalIssues)
       return json({
-        success: true
+        success: true,
         data: {
           precedents,
           analysis: aiAnalysis
@@ -552,7 +552,7 @@ Keep response under 200 words and focus on actionable insights.`
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: LEGAL_MODEL
         prompt,
         stream: false

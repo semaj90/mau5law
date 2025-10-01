@@ -400,7 +400,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { workflow, action } = await request.json()
     if (!workflow) {
       return json({
-          success: false
+          success: false,
           error: 'Workflow parameter required',
           availableWorkflows: [
             'userManagement',
@@ -418,7 +418,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Simulate complete user workflow
         const result = await simulateUserWorkflow()
         return json({
-          success: true
+          success: true,
           message: 'User workflow simulation completed',
           data: result
           processingTime: Date.now() - startTime
@@ -428,7 +428,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Test document processing pipeline
         const result = await testDocumentProcessingPipeline()
         return json({
-          success: true
+          success: true,
           message: 'Document processing pipeline tested',
           data: result
           processingTime: Date.now() - startTime
@@ -436,7 +436,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default:
         return json({,
-            success: false
+            success: false,
             error: 'Invalid action',
             availableActions: ['test_user_flow', 'test_document_processing']
           },)
@@ -446,7 +446,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: 'Workflow test failed',
         details: error instanceof Error ? error.message: 'Unknown error',
         processingTime: Date.now() - startTime
@@ -470,7 +470,7 @@ async function simulateUserWorkflow(): Promise<any> {
     workflow: 'Complete User Journey',
     steps,
     totalDuration: steps.reduce((sum, step) => sum + step.duration, 0),
-    success: true
+    success: true,
   }
 }
 // Test document processing pipeline

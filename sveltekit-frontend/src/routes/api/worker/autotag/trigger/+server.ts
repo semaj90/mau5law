@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       data: {
         streamId,
         correlationId: triggerData.correlationId,
@@ -164,7 +164,7 @@ export const GET: RequestHandler = async ({ url }) => {
       retry: event.message.retry === '1'
     })
     return json({
-      success: true
+      success: true,
       data: {
         streamInfo: streamInfo
           ? {
@@ -187,7 +187,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('❌ Worker status check failed:', error)
     return json(
       {
-        success: false
+        success: false,
         error: {
           message: 'Worker status check failed',
           code: 'WORKER_STATUS_ERROR'
@@ -224,7 +224,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     await redisService.del(streamName)
     console.log(`🗑️ Worker event stream cleared: ${deletedCount} events deleted`)
     return json({
-      success: true
+      success: true,
       data: {
         deletedEvents: deletedCount
         streamName,
@@ -240,7 +240,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     console.error('❌ Worker stream clear failed:', error)
     return json(
       {
-        success: false
+        success: false,
         error: {
           message: 'Worker stream clear failed',
           code: 'STREAM_CLEAR_ERROR'

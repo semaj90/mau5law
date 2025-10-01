@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 			{ id: 'agent_orchestrate_autogen', name: 'AutoGen Agent', status: mcpServerStatus === 'online' ? 'available' : 'offline' }
 		]
 		return json({
-			success: true
+			success: true,
 			timestamp: new Date().toISOString(),
 			overallStatus,
 			integrationReadiness,
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 	} catch (error: any) {
 		console.error('MCP status check failed:', error)
 		return json({
-			success: false
+			success: false,
 			error: error.message,
 			timestamp: new Date().toISOString(),
 			overallStatus: 'error'

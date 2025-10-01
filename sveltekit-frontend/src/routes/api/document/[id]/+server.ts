@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         const gpuResponse = await fetch('http://localhost:5173/api/gpu/flash-attention', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             text: document.content.substring(0, 2000), // First 2000 chars
             context: relatedDocuments.map(d => d.title).slice(0, 3),
             analysisType: 'legal'
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     }
     // 8. Comprehensive response
     const response = {
-      success: true
+      success: true,
       document: {
         id: document.id,
         title: document.title,
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       // Return only relationship data for performance
       // Implementation would be similar but more focused
       return json({
-        success: true
+        success: true,
         relations: [],
         message: 'Relations-only endpoint not yet implemented'
       })

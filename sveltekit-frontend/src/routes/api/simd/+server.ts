@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'parse': {
         const result = await simdRedisClient.parseJSON(data)
         return json({
-          success: true
+          success: true,
           operation: 'simd_parse',
           result,
           metadata: {
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         const result = await simdRedisClient.cacheJSON(cache_key, data)
         return json({
-          success: true
+          success: true,
           operation: 'redis_cache',
           result,
           metadata: {
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'benchmark': {
         const result = await simdRedisClient.benchmark(data, iterations)
         return json({
-          success: true
+          success: true,
           operation: 'simd_benchmark',
           result,
           metadata: {
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async () => {
   try {
     const health = await simdRedisClient.healthCheck()
     return json({
-      success: true
+      success: true,
       service: 'simd-redis-microservice',
       status: health
       endpoints: {
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         service: 'simd-redis-microservice',
         status: 'unavailable',
         error: String(error),

@@ -5,7 +5,7 @@ import { enhancedRAGService } from '$lib/services/enhanced-rag-integration.js'
 import { dev } from '$app/environment'
 const StreamQuerySchema = z.object({
   query: z.string().min(1).max(2000),
-  options: z.object({,
+  options: z.object({
     maxResults: z.number().min(1).max(50).optional().default(10),
     includeGraph: z.boolean().optional().default(true),
     confidenceThreshold: z.number().min(0).max(1).optional().default(0.7)
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
       async start(controller) {
         try {
           // Send initial status
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({,
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'status',
             message: 'Processing query through Enhanced RAG pipeline...',
             timestamp: new Date().toISOString()
@@ -31,21 +31,21 @@ export const POST: RequestHandler = async ({ request }) => {
           // Process query and stream results
           const startTime = Date.now()
           // Stream progress updates
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({,
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'progress',
             stage: 'query_analysis',
             message: 'Analyzing query intent with ML classifier...',
             timestamp: new Date().toISOString()
           })}\n\n`)
           await new Promise(resolve => setTimeout(resolve, 100); // Brief pause for UX
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({,
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'progress',
             stage: 'vector_search',
             message: 'Searching multiple vector databases...',
             timestamp: new Date().toISOString()
           })}\n\n`)
           await new Promise(resolve => setTimeout(resolve, 150)
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({,
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'progress',
             stage: 'graph_analysis',
             message: 'Analyzing knowledge graph relationships...',
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
           const response = await enhancedRAGService.processLegalQuery(query, options)
           const processingTime = Date.now() - startTime
           // Stream the final response
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({,
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'response',
             response: response.response,
             confidence: response.confidence,
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
             }
           })}\n\n`)
           // Send completion signal
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({,
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'complete',
             message: 'Enhanced RAG processing complete',
             processingTime,
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.close()
         } catch (error: any) {
           console.error('❌ Enhanced RAG Stream Error:', error)
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({,
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'error',
             error: error.message || 'Enhanced RAG streaming failed',
             timestamp: new Date().toISOString()
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Enhanced RAG Stream Setup Error:', error)
     return new Response(JSON.stringify({
-      success: false
+      success: false,
       error: error.message || 'Enhanced RAG stream setup failed',
       timestamp: new Date().toISOString()
     }), {

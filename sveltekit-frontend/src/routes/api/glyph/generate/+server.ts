@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!glyphRequest.evidence_id || !glyphRequest.prompt) {
       return json({
-        success: false
+        success: false,
         error: 'evidence_id and prompt are required'
       }, { status: 400 })
     }
@@ -37,21 +37,21 @@ export const POST: RequestHandler = async ({ request }) => {
     const validStyles = ['detective', 'corporate', 'forensic', 'legal']
     if (!validStyles.includes(glyphRequest.style)) {
       return json({
-        success: false
+        success: false,
         error: `Invalid style. Must be one of: ${validStyles.join(', ')}`
       }, { status: 400 })
     }
     // Validate dimensions
     if (!Array.isArray(glyphRequest.dimensions) || glyphRequest.dimensions.length !== 2) {
       return json({
-        success: false
+        success: false,
         error: 'dimensions must be [width, height] array'
       }, { status: 400 })
     }
     const [width, height] = glyphRequest.dimensions
     if (width < 64 || width > 2048 || height < 64 || height > 2048) {
       return json({
-        success: false
+        success: false,
         error: 'dimensions must be between 64x64 and 2048x2048'
       }, { status: 400 })
     }
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
             ...(hasExtendedThinking ? [{
               step: 'grpmo_context_analysis',
               duration_ms: grpmoMetadata?.context_integration_time_ms || 0,
-              success: true
+              success: true,
               metadata: {
                 similar_contexts: grpmoMetadata?.similar_context_used || 0,
                 thinking_stages: grpmoMetadata?.thinking_stages?.length || 0,
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               step: 'prompt_embedding',
               duration_ms: Math.floor((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms * 0.1),
-              success: true
+              success: true,
               metadata: {
                 prompt: glyphRequest.prompt,
                 grpmo_enhanced: hasExtendedThinking
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               step: 'style_conditioning',
               duration_ms: Math.floor((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms * 0.1),
-              success: true
+              success: true,
               metadata: { style: glyphRequest.style }
             },
             {
@@ -230,7 +230,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Glyph generation error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error occurred',
       grpmo_context_provided: !!body.grpmo_context
     }, { status: 500 })
@@ -299,12 +299,12 @@ export const GET: RequestHandler = async () => {
       }
     }
     return json({
-      success: true
+      success: true,
       data: stats
     })
   } catch (error) {
     return json({
-      success: false
+      success: false,
       error: 'Service unavailable'
     }, { status: 503 })
   }

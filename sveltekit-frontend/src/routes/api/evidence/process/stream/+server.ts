@@ -66,7 +66,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     // Send event to xState machine
     session.actor.send(event)
     return new Response(JSON.stringify({
-        success: true
+        success: true,
         message: `Event ${event.type} sent to session ${evidenceId}`
       }),
       {
@@ -160,7 +160,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     session.actor.stop()
     activeSessions.delete(evidenceId)
     return new Response(JSON.stringify({
-        success: true
+        success: true,
         message: `Session ${evidenceId} cancelled and removed`
       }),
       {

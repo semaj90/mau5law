@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       case 'load_copilot':
         return json({
-          success: true
+          success: true,
           content: generateExampleCopilotContent(),
           analysis: {
             size: 2500,
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
     switch (action) {
       case 'optimize_index':
         return json({
-          success: true
+          success: true,
           optimizedIndex: {
             entries: [)
               {
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
         })
       case 'semantic_search':
         return json({
-          success: true
+          success: true,
           query: content
           results: [)
             {

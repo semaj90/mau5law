@@ -217,7 +217,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .limit(1)
       .execute()
     return json({
-      success: true
+      success: true,
       item: updatedItem[0]
       updated: Object.keys(updateFields)
     })
@@ -280,7 +280,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       deleted: {
         id: itemId
         fileName: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileName,

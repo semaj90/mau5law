@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     console.log(`✅ Orchestrator: ${body.action} completed successfully`)
     return json({
-      success: true
+      success: true,
       action: body.action,
       result,
       timestamp: new Date().toISOString(),
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Orchestration Error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'Service orchestration failed',
         details: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString()
@@ -131,7 +131,7 @@ export const POST_EMERGENCY: RequestHandler = async ({ request }) => {
 				throw new Error(`Unsupported emergency action: ${body.emergency_action}`)
 		}
 		return json({
-			success: true
+			success: true,
 			emergency_action: body.emergency_action,
 			result,
 			timestamp: new Date().toISOString()
@@ -139,7 +139,7 @@ export const POST_EMERGENCY: RequestHandler = async ({ request }) => {
 	} catch (error: any) {
 		console.error('Emergency Orchestration Error:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'Emergency orchestration failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()

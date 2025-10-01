@@ -8,7 +8,7 @@ export const GET: RequestHandler = async () => {
     const cudaAvailable = Math.random() > 0.3; // 70% success rate
     if (cudaAvailable) {
       return json({
-        success: true
+        success: true,
         cuda: {
           available: true
           version: '12.2',
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     console.error('CUDA status check failed:', error)
     return json({
-      success: false
+      success: false,
       error: 'failure default to mock',
       cuda: {
         available: false

@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
     })
     if (!rateLimitResult.allowed) {
       return json({
-        success: false
+        success: false,
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter
       }, { status: 429 })
@@ -50,13 +50,13 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
     // Input validation
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
       return json({
-        success: false
+        success: false,
         error: 'Query is required and must be a non-empty string'
       }, { status: 400 })
     }
     if (query.length > 1000) {
       return json({
-        success: false
+        success: false,
         error: 'Query too long. Maximum 1000 characters allowed.'
       }, { status: 400 })
     }
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
       const invalidTypes = documentTypes.filter(type => !validDocumentTypes.includes(type)
       if (invalidTypes.length > 0) {
         return json({
-          success: false
+          success: false,
           error: `Invalid document types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', ')}`
         }, { status: 400 })
       }
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
     })
     // Format response
     const response = {
-      success: true
+      success: true,
       data: {
         answer: ragResponse.answer,
         sources: includeMetadata ? ragResponse.sources: ragResponse.sources.map(source => ({,
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
       errorMessage = 'Query processing timeout'
     }
     return json({
-      success: false
+      success: false,
       error: errorMessage
       metadata: {
         processingTime: Date.now() - startTime,
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async () => {
   try {
     const stats = await enhancedRAGPipeline.getSystemStats()
     return json({
-      success: true
+      success: true,
       status: 'healthy',
       stats: {
         documentsIndexed: stats.documentsIndexed,
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       status: 'unhealthy',
       error: error.message
     }, { status: 503 })

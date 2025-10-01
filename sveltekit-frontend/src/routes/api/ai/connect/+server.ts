@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       model: model || modelList[0] || 'none',
       availableModels: modelList
       status: 'connected',

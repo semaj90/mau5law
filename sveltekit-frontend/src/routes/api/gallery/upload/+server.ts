@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       needsThumbnail: !thumbnailUrl
     })
     const response: UploadResponse = {
-      success: true
+      success: true,
       file: {
         id: fileId
         filename,

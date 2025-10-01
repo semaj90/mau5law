@@ -51,7 +51,7 @@ export const withRetry = async <T>(
     try {
       return await operation();
     } catch (error) {
-      lastError = error instanceof Error ? error : new Error(String(error);
+  lastError = error instanceof Error ? error : new Error(String(error));
       if (attempt < maxAttempts) {
         console.log(`Attempt ${attempt} failed, retrying in ${delayMs}ms...`);
         await delay(delayMs);

@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				console.log(`📊 Job ID: ${queueJobId}, Estimated: ${estimated}s`)
 				console.log(`📈 Queue stats: ${queueStats.waiting} waiting, ${queueStats.active} active`)
 				return json({
-					success: true
+					success: true,
 					queued: true
 					document_id: documentId
 					job_id: queueJobId
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({,
+				body: JSON.stringify({
 					document_id: documentId
 					content: body.content,
 					document_type: body.document_type || 'evidence',
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 			console.log(`✅ Document processed successfully: ${(result as { document_id?: any; processing_time?: any }).document_id}`)
 			console.log(`📊 Processing time: ${(result as { document_id?: any; processing_time?: any }).processing_time}`)
 			return json({
-				success: true
+				success: true,
 				queued: false
 				data: result
 				processed_by: 'go-legal-ai-server-direct',
@@ -191,7 +191,7 @@ export const GET: RequestHandler = async () => {
 		}
 		const healthData = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
 		return json({
-			success: true
+			success: true,
 			go_server_status: healthData
 			sveltekit_status: 'healthy',
 			integration_status: 'connected',

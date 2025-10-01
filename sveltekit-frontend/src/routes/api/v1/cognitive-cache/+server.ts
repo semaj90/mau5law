@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
     )
     if (success) {
       return json({
-        success: true
+        success: true,
         cached: true
         key,
         type,
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     } else {
       return json({
-          success: false
+          success: false,
           error: 'Failed to cache data',
           key
         },)
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const result = await (cognitiveIntegration.cognitiveCache as any).get(request)
     if (result && (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).data) {
       return json({
-        success: true
+        success: true,
         key,
         data: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).data,
         cacheInfo: {
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
       })
     } else {
       return json({
-          success: false
+          success: false,
           key,
           found: false
           suggestions: [
@@ -173,7 +173,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           }
         }
         return json({
-          success: true
+          success: true,
           analysis,
           timestamp: Date.now()
         })
@@ -187,7 +187,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           learningProgress: Math.random() * 0.1 + 0.02
         }
         return json({
-          success: true
+          success: true,
           optimization: optimizationResult
           message: 'Cognitive optimization completed',
           timestamp: Date.now()
@@ -209,7 +209,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           estimatedLatency: Math.random() * 50 + 10
         }
         return json({
-          success: true
+          success: true,
           predictions,
           timestamp: Date.now()
         })
@@ -240,7 +240,7 @@ export const DELETE: RequestHandler = async ({ url, request }) => {
         cognitiveStateReset: true
       }
       return json({
-        success: true
+        success: true,
         cleared: 'all',
         result: clearResult
         message: 'All cognitive caches cleared',
@@ -259,7 +259,7 @@ export const DELETE: RequestHandler = async ({ url, request }) => {
       cognitiveImpact: Math.random() * 0.1 + 0.02
     }
     return json({
-      success: true
+      success: true,
       invalidation: invalidationResult
       message: `Cache entry ${key} intelligently invalidated`,
       timestamp: Date.now()
@@ -333,7 +333,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       metrics: response
       timestamp: Date.now()
     })

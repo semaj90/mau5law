@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       const version = await healthCheck.json()
       return json({
-        success: true
+        success: true,
         status: 'healthy',
         service: 'ollama-chat',
         model: 'legal:latest',
@@ -35,20 +35,20 @@ export const GET: RequestHandler = async ({ url }) => {
       const modelsResponse = await fetch('http://localhost:11434/api/tags')
       const modelsData = await modelsResponse.json()
       return json({
-        success: true
+        success: true,
         models: modelsData.models || [],
         default: 'legal:latest',
         timestamp: new Date().toISOString()
       })
     }
     return json({
-      success: false
+      success: false,
       error: 'Invalid action. Use ?action=health or ?action=models'
     }, { status: 400 })
   } catch (error: any) {
     console.error('Ollama GET error:', error)
     return json({
-      success: false
+      success: false,
       status: 'unhealthy',
       error: error.message,
       timestamp: new Date().toISOString()
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       response: fullResponse
       metadata: {
         model,
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Chat API error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'Failed to process chat request',
         details: error instanceof Error ? error.message: String(error)
       },

@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Get system health for metadata
     const systemHealth = await vectorIntelligenceService.getSystemHealth()
     return json({
-      success: true
+      success: true,
       analysis,
       metadata: {
         contentLength: content.length,

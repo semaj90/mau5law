@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       metadata: { documentId }
     })
     return json({
-      success: true
+      success: true,
       response: response.text,
       responseTime,
       model: 'gemma3'
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error('Legal analysis API error:', error)
     // Return mock legal analysis on failure
     const mockResponse = {
-      success: false
+      success: false,
       error: 'failure default to mock',
       response: 'Mock legal analysis: Based on employment law precedents, this case shows potential for wrongful termination claims. Key factors include procedural violations and discriminatory patterns. Recommend document discovery for HR records and witness interviews.',
       responseTime: 1500,

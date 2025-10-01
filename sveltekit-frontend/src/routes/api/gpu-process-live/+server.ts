@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'start':
         const process = await gpuProcessor.startProcess(data)
         return json({
-          success: true
+          success: true,
           process
         })
       case 'stop':
@@ -77,19 +77,19 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'errors':
         const errors = await getLiveTypeScriptErrors()
         return json({
-          success: true
+          success: true,
           errors
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: 'Invalid action'
         }, { status: 400 })
     }
   } catch (error: any) {
     console.error('GPU Live Processing error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }
@@ -102,25 +102,25 @@ export const GET: RequestHandler = async ({ url }) => {
       const process = gpuProcessor.getProcess(processId)
       if (!process) {
         return json({
-          success: false
+          success: false,
           error: 'Process not found'
         }, { status: 404 })
       }
       return json({
-        success: true
+        success: true,
         process
       })
     } else {
       const processes = gpuProcessor.getAllProcesses()
       return json({
-        success: true
+        success: true,
         processes
       })
     }
   } catch (error: any) {
     console.error('GPU Live Processing GET error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }

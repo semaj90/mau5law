@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Save to mock storage
     canvasStorage.set(canvasId, savedCanvas)
     return json({
-      success: true
+      success: true,
       canvas_id: canvasId
       message: 'Canvas saved successfully',
       saved_at: savedCanvas.created_at

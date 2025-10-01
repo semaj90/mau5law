@@ -22,7 +22,7 @@ import type { RequestHandler } from './$types.js'
 const querySchema = z.object({
   query: z.string().min(1).max(5000),
   caseId: z.string().uuid().optional(),
-  options: z.object({,
+  options: z.object({
     model: z.string().optional(),
     temperature: z.number().min(0).max(2).optional(),
     maxTokens: z.number().min(1).max(4000).optional(),
@@ -47,7 +47,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       validatedData.options
     )
     return json({
-      success: true
+      success: true,
       data: {
         response: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).response,
         confidence: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).confidence,
@@ -92,7 +92,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       5
     )
     return json({
-      success: true
+      success: true,
       data: {
         suggestions: similarQueries
       }

@@ -206,7 +206,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const result = await response.json()
     const executionTime = performance.now() - startTime
     return json({
-      success: true
+      success: true,
       result,
       metadata: {
         service_used: serviceName
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ GPU hybrid operation error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -235,7 +235,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     // In production, you would persist this configuration
     console.log('🔧 Updating GPU routing configuration:', config)
     return json({
-      success: true
+      success: true,
       message: 'Routing configuration updated',
       config,
       timestamp: new Date().toISOString()
@@ -254,7 +254,7 @@ export const DELETE: RequestHandler = async () => {
     // In production, you would gracefully shutdown services
     // For now, just return a success response
     return json({
-      success: true
+      success: true,
       message: 'Hybrid GPU system shutdown initiated',
       timestamp: new Date().toISOString()
     })

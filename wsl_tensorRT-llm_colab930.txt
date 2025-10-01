@@ -22,3 +22,33 @@ ellent! Let me create an optimized Colab notebook incorporating NetEase's approa
   Ti (local inference). Both are Ampere but different compute capabilities. Let me add the
   cross-compatibility flags:
   ⎿  Interrupted · What should Claude do instead?
+
+**********************************************************
+fix vite errrors/
+
+pytorch, vllm might work....
+
+
+11:17:50 AM [vite] (ssr) page reload src/routes/(ai)/assistant-alt/+page.svelte
+11:17:51 AM [vite] (ssr) Error when evaluating SSR module /src/routes/+layout.svelte: src/lib/components/ui/Badge.svelte:22:4 Cannot use `<slot>` syntax and `{@render ...}` tags in the same component. Migrate towards `{@render ...}` tags completely
+https://svelte.dev/e/slot_snippet_conflict
+  Plugin: vite-plugin-svelte:compile
+  File: src/lib/components/ui/Badge.svelte:44:4
+   20 |      {@render children()}
+   21 |    {:else}
+   22 |      <slot />
+                     ^
+   23 |    {/if}
+   24 |  </span>
+
+   ment that was not open
+https://svelte.dev/e/element_invalid_closing_tag
+  Plugin: vite-plugin-svelte:compile
+  File: C:/Users/james/Videos/deeds-web-app/sveltekit-frontend/src/lib/components/ai/LegalDocumentDrafting.svelte:389:10
+   341 |                  </div>
+   342 |                {/if}
+   343 |            </section>
+                    ^
+   344 |          {/if}
+   345 |          <!-- Document Configuration -->
+

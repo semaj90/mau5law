@@ -314,7 +314,7 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
     const aiResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: aiPrompt
         stream: false
@@ -505,7 +505,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // Validate input
     if (!query?.trim()) {
       return json({
-        success: false
+        success: false,
         error: 'Query is required',
         results: [],
         metadata: {
@@ -524,7 +524,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const rateLimitResult = await checkRateLimit(rateLimitKey)
     if (!rateLimitResult.allowed) {
       return json({
-        success: false
+        success: false,
         error: 'Rate limit exceeded',
         results: [],
         metadata: {
@@ -661,7 +661,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     })
     // Step 8: Prepare response
     const response: AIFindResponse = {
-      success: true
+      success: true,
       results,
       metadata: {
         query,
@@ -700,7 +700,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     console.error('AI Find API error:', error)
     const processingTime = Date.now() - startTime
     return json({
-      success: false
+      success: false,
       error: 'Internal server error',
       results: [],
       metadata: {
@@ -724,7 +724,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
     const query = url.searchParams.get('q') || ''
     if (!query.trim() || query.length < 2) {
       return json({
-        success: true
+        success: true,
         suggestions: [],
         query: query.trim()
       })
@@ -734,7 +734,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
     const rateLimitResult = await checkRateLimit(rateLimitKey)
     if (!rateLimitResult.allowed) {
       return json({
-        success: false
+        success: false,
         suggestions: [],
         error: 'Rate limit exceeded'
       }, { status: 429 })
@@ -780,7 +780,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       suggestions: suggestions.slice(0, 5),
       query,
       metadata: {
@@ -791,7 +791,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
   } catch (error: any) {
     console.error('Suggestions API error:', error)
     return json({
-      success: false
+      success: false,
       suggestions: [],
       error: 'Failed to generate suggestions',
       metadata: {
@@ -808,7 +808,7 @@ async function generateAISuggestions(query: string): Promise<string[]> {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: `Generate 3 related legal search terms for: "${query}". Return only the terms, one per line, no explanations.`,
         stream: false

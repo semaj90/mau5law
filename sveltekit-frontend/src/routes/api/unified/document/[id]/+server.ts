@@ -10,7 +10,7 @@ export const GET: RequestHandler = async ({ params }) => {
     // Get complete document with all associated data
     const document = await legalAI.getDocument(id)
     return json({
-      success: true
+      success: true,
       document,
       meta: {
         documentId: id

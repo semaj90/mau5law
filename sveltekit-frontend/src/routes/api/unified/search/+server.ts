@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
       cacheResults
     })
     return json({
-      success: true
+      success: true,
       query,
       ...searchResults,
       meta: {

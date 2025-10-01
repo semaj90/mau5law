@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Simulate processing delay (Nintendo-style timing)
     await new Promise(resolve => setTimeout(resolve, 50)
     return json({
-      success: true
+      success: true,
       data: nesResponse
       processingTime: '50ms',
       architecture: 'Nintendo Entertainment System Inspired'
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('NES Chat API Error:', error)
     return json({
-      success: false
+      success: false,
       error: 'Internal processing error',
       nesStatus: 'MEMORY_BANK_OVERFLOW',
       architecture: 'Nintendo Entertainment System Inspired'

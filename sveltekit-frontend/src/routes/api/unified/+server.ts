@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { file, userId, metadata } = params
         if (!file || !file.buffer) {
           return json({
-              success: false
+              success: false,
               error: 'No file provided'
             },)
             { status: 400 }
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { query, filters, options } = params
         if (!query?.text && !query?.vector) {
           return json({
-              success: false
+              success: false,
               error: 'Query text or vector required'
             },)
             { status: 400 }
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           }
         }
         return json({
-          success: true
+          success: true,
           ...searchResult,
           processingTime: Date.now() - startTime
         })
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documentId, threshold, limit } = params
         if (!documentId) {
           return json({
-              success: false
+              success: false,
               error: 'Document ID required'
             },)
             { status: 400 }
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           await cache.set(cacheKey, similarDocs, 600); // 10 minutes
         }
         return json({
-          success: true
+          success: true,
           similar: similarDocs
           cached: similarDocs !== null,
           processingTime: Date.now() - startTime
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           await neo4jService.setCachedRecommendations(cacheKey, recommendations)
         }
         return json({
-          success: true
+          success: true,
           recommendations,
           cached: recommendations !== null,
           processingTime: Date.now() - startTime
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documentIds, analysisType } = params
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
-              success: false
+              success: false,
               error: 'Document IDs array required'
             },)
             { status: 400 }
@@ -230,7 +230,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
         const networkAnalysis = await neo4jService.getDocumentNetworkAnalysis(documentIds)
         return json({
-          success: true
+          success: true,
           analysis: networkAnalysis
           analysisType: analysisType || 'full',
           processingTime: Date.now() - startTime
@@ -240,7 +240,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       case 'get_workflow_status': {
         const dashboardData = ingestionService.getDashboardData()
         return json({
-          success: true
+          success: true,
           workflow: dashboardData.workflow,
           jobs: {
             active: dashboardData.jobs.active.length,
@@ -260,7 +260,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documents, priority, metadata } = params
         if (!documents || !Array.isArray(documents)) {
           return json({
-              success: false
+              success: false,
               error: 'Documents array required'
             },)
             { status: 400 }
@@ -281,7 +281,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             results.push(result)
           } catch (error) {
             results.push({
-              success: false
+              success: false,
               error: error instanceof Error ? error.message: String(error)
             })
           }
@@ -314,7 +314,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           performance: await getPerformanceMetrics(timeRange)
         }
         return json({
-          success: true
+          success: true,
           analytics,
           timeRange: timeRange || '1h',
           processingTime: Date.now() - startTime
@@ -337,14 +337,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const allHealthy = Object.values(health.services).every((s) => s === true)
         health.status = allHealthy ? 'healthy' : 'degraded'
         return json({
-          success: true
+          success: true,
           health,
           processingTime: Date.now() - startTime
         })
       }
       default:
         return json({,
-            success: false
+            success: false,
             error: `Unknown action: ${action}`,
             availableActions: [
               'ingest_document',
@@ -367,7 +367,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('❌ Unified API error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message: String(error),
         processingTime: Date.now() - startTime
@@ -390,7 +390,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     // API documentation
     return json({
-      success: true
+      success: true,
       api: {
         name: 'Unified Legal AI API',
         version: '1.0.0',
@@ -450,7 +450,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('❌ Unified API GET error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message: String(error)
       },

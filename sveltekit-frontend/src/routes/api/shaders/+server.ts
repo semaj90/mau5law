@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
       shader.metadata.tags
     )
     return json({
-      success: true
+      success: true,
       message: 'Shader cached with embedding',
       shader: {
         id: shader.id,
@@ -127,7 +127,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       const newIndex = index.filter(id => id !== shaderId)
       await cache.set('webgpu_shader_index', newIndex, 24 * 60 * 60 * 1000)
       return json({
-        success: true
+        success: true,
         message: `Shader ${shaderId} deleted`
       })
     } else {
@@ -140,7 +140,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       // Clear index
       await cache.delete('webgpu_shader_index')
       return json({
-        success: true
+        success: true,
         message: `Cleared ${index.length} shaders from cache`
       })
     }

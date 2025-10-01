@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       timestamp: new Date().toISOString(),
       service: 'optimized_qdrant_service',
       tests: results
@@ -223,7 +223,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -241,14 +241,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
       const syncResult = await optimizedQdrantService.syncFromPostgreSQL(options)
       return json({
-        success: true
+        success: true,
         action: 'postgresql_sync',
         result: syncResult
         timestamp: new Date().toISOString()
       })
     } catch (error: any) {
       return json({
-        success: false
+        success: false,
         action: 'postgresql_sync',
         error: error instanceof Error ? error.message: String(error),
         timestamp: new Date().toISOString()
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   }
   return json({
-    success: false
+    success: false,
     error: 'Invalid action. Supported actions: sync',
     timestamp: new Date().toISOString()
   }, { status: 400 })

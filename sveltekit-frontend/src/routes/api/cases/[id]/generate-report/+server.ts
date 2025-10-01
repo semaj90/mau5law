@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       })
       .returning()
     return json({
-      success: true
+      success: true,
       report: newReport[0]
     })
   } catch (error: any) {

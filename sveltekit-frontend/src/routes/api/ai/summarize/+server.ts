@@ -121,7 +121,7 @@ const originalGETHandler: RequestHandler = async () => {
     const res = await fetch(`${OLLAMA_BASE_URL}/api/tags`)
     const models = await res.json().catch(() => ({ models: [] })
     return json({
-      ok: true
+      ok: true,
       status: 'healthy',
       service: 'ai-summarization',
       models: models.models?.map((m: any) => m.name) || [],
@@ -132,7 +132,7 @@ const originalGETHandler: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      ok: false
+      ok: false,
       error: 'Ollama service unreachable',
       service: 'ai-summarization',
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
@@ -170,7 +170,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       const cached = await getCache(cacheKey)
       if (cached.entry) {
         return json({
-          success: true
+          success: true,
           summary: cached.entry.summary,
           model: cached.entry?.model || "unknown" // @ts-ignore - Model property access,
           type,
@@ -247,7 +247,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           const duration = Date.now() - startTime
           const meta: SummarizeResponseMeta = { duration, tokens: result?.eval_count || 0, promptTokens: result?.prompt_eval_count || 0, tokensPerSecond: 0, modelUsed: 'naive-local-fallback', fallbackUsed: true }
           return json({
-            success: true
+            success: true,
             summary: naive
             model: meta.modelUsed,
             type,
@@ -290,7 +290,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       await setCache(cacheKey, { summary, structured, model: modelUsed, mode, type, ts: Date.now(), perf: performance, ttlMs: CACHE_CONSTANTS.TTL_MS })
     }
     return json({
-      success: true
+      success: true,
       summary,
       model: modelUsed
       type,

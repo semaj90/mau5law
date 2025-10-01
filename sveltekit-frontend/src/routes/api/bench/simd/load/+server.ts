@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
   const envDefault = process.env.USE_SIMDJSON_NODE === '1' || process.env.ENABLE_SIMD_JSON === 'true'
   simdBodyParser.toggleSIMD(Boolean(envDefault)
   return json({
-    ok: true
+    ok: true,
     endpoint,
     iterations: iters
     off_ms: +offMs.toFixed(2),

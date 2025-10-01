@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     if (ragRequest.documents.length === 0) {
       return json({
-        success: true
+        success: true,
         query: ragRequest.query,
         context: {
           similarDocs: [],
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ragRequest.options || {}
     )
     return json({
-      success: true
+      success: true,
       query: ragRequest.query,
       context: {
         similarDocs: context.similarDocs.map((doc: any) => ({,

@@ -7,7 +7,6 @@
   let { open = $bindable(false), onOpenChange = undefined, children }: Props & { children?: unknown } = $props();
 </script>
 
-<Dialog.Root bind:open {onOpenChange}>
+<Dialog.Root bind:open onOpenChange={onOpenChange}>
   {@render children?.()}
 </Dialog.Root>
-;

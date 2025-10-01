@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Validate webhook event
     if (!webhookEvent.bucket || !webhookEvent.objectName) {
       return json({
-          success: false
+          success: false,
           error: 'Invalid webhook payload'
         },)
         { status: 400 }
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       webhookEvent.eventName !== 's3:ObjectCreated:Post'
     ) {
       return json({
-        success: true
+        success: true,
         message: 'Event ignored - not an object creation event'
       })
     }
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       })
     )
     const response = {
-      success: true
+      success: true,
       data: {
         jobId,
         uploadId,
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const err = error instanceof Error ? error : new Error('Unknown error')
     console.error('❌ POST /api/v1/upload/webhook error:', err)
     return json({
-        success: false
+        success: false,
         error: err.message
       },)
       { status: 500 }
@@ -274,7 +274,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     // Sort by creation time (newest first)
     jobs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     const response = {
-      success: true
+      success: true,
       data: {
         jobs: jobs.slice(0, limit),
         count: jobs.length,
@@ -291,7 +291,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     const err = error instanceof Error ? error : new Error('Unknown error')
     console.error('❌ GET /api/v1/upload/webhook/jobs error:', err)
     return json({
-        success: false
+        success: false,
         error: err.message
       },)
       { status: 500 }

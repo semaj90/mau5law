@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Get system health for response metadata
     const systemHealth = await vectorIntelligenceService.getSystemHealth()
     return json({
-      success: true
+      success: true,
       query,
       results,
       metadata: {
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const results =
       await vectorIntelligenceService.semanticSearch(searchOptions)
     return json({
-      success: true
+      success: true,
       query,
       results,
       metadata: {

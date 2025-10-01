@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           architecture: 'multi-protocol'
         },
         // Follow your established success pattern
-        success: true
+        success: true,
         api_version: 'v1'
       })
     } catch (fetchError: any) {

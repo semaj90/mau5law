@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const totalWarnings = results.reduce((sum, suite) => sum + suite.warnings, 0)
     const totalDuration = Date.now() - startTime
     return json({
-      success: true
+      success: true,
       summary: {
         totalTests,
         totalPassed,
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Test suite execution failed:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       duration: Date.now() - startTime
     }, { status: 500 })
@@ -204,7 +204,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: 'Test prompt: What is 2+2?',
         stream: false
@@ -236,7 +236,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt,
         stream: false
@@ -281,7 +281,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('/api/ai/find', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         query: 'test legal document',
         type: 'all',
         useAI: false
@@ -305,7 +305,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('/api/ai/find', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         query: 'contract liability evidence',
         type: 'all',
         useAI: true
@@ -334,7 +334,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('/api/ai/find', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         query: 'legal precedent analysis',
         type: 'all',
         useAI: true
@@ -378,7 +378,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       fetch('/api/ai/find', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           query: 'rate limit test',
           type: 'all',
           useAI: false
@@ -421,7 +421,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('/api/mcp/memory/read-graph', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         filters: {
           nodeTypes: ['ai-interaction', 'search'],
           limit: 10
@@ -443,7 +443,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('/api/mcp/memory/create-relations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         source: 'test-user',
         target: 'test-search',
         relationType: 'performed-search',
@@ -484,7 +484,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
     const response = await fetch('/api/semantic-search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         query: 'legal document contract analysis'
       })
     })

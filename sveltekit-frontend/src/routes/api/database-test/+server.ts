@@ -78,24 +78,24 @@ export const GET: RequestHandler = async () => {
         SELECT '[1,2,3]'::vector as test_vector
       `)
       results.vectorOperations = {
-        success: true
+        success: true,
         testVector: vectorTest[0]?.test_vector
       }
     } catch (error: any) {
       results.vectorOperations = {
-        success: false
+        success: false,
         error: error.message
       }
     }
     return json({
-      success: true
+      success: true,
       timestamp: new Date().toISOString(),
       database: 'legal_ai_db',
       results
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       stack: error.stack,
       timestamp: new Date().toISOString()
@@ -111,14 +111,14 @@ export const POST: RequestHandler = async ({ request }) => {
     // Execute custom query (with safety restrictions)
     const result = await db.execute(sql.raw(query)
     return json({
-      success: true
+      success: true,
       query,
       result,
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })

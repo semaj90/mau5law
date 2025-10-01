@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url }) => {
       })
     }
     return json({
-      success: true
+      success: true,
       bucket: bucketName
       prefix: searchPrefix
       recursive,
@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('MinIO list error:', error)
     return json(
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message : 'List operation failed'
       },
       { status: 500 }

@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		}
 		const data = await response.json()
 		return json({
-			success: true
+			success: true,
 			data: data.data || [],
 			count: data.count || 0,
 			timestamp: data.timestamp || new Date().toISOString(),
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			}
 		]
 		return json({
-			success: true
+			success: true,
 			data: mockTodos
 			count: mockTodos.length,
 			timestamp: new Date().toISOString(),
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error: any) {
 		console.error('Enhanced Semantic API POST Error:', error)
 		return json({
-			success: false
+			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 500 })

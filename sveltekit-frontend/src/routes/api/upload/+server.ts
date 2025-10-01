@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const buffer = Buffer.from(await file.arrayBuffer()
     await writeFile(filePath, buffer)
     return json({
-      success: true
+      success: true,
       fileId,
       fileName: file.name,
       filePath,

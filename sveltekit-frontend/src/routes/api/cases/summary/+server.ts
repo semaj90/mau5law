@@ -103,14 +103,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     // Calculate analytics
     const analytics = await calculateCaseAnalytics(caseId)
     return json({
-      success: true
+      success: true,
       summary,
       analytics
     } as CaseSummaryResponse)
   } catch (error: any) {
     console.error("Case summary generation error:", error)
     return json({
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: "Internal server error"
       } as CaseSummaryResponse,)
       { status: 500 }
@@ -138,14 +138,14 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     const analytics = await calculateCaseAnalytics(caseId)
     const summary = generateFallbackSummary({ caseId })
     return json({
-      success: true
+      success: true,
       summary,
       analytics
     } as CaseSummaryResponse)
   } catch (error: any) {
     console.error("Case summary retrieval error:", error)
     return json({
-        success: false
+        success: false,
         error: error instanceof Error ? error.message: "Internal server error"
       } as CaseSummaryResponse,)
       { status: 500 }

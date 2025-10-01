@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'status':
         const status = getIntegrationStatus()
         return json({
-          success: true
+          success: true,
           data: status
           timestamp: new Date().toISOString()
         })
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const healthStatus = getIntegrationStatus()
         const isHealthy = healthStatus.integrated && healthStatus.bridge.wasmReady
         return json({
-            success: true
+            success: true,
             healthy: isHealthy
             status: isHealthy ? 'healthy' : 'unhealthy',
             details: {
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
         )
       case 'ports':
         return json({
-          success: true
+          success: true,
           data: {
             services: WASM_SERVICE_PORTS
             description: 'Port configuration for WebAssembly services'
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       case 'queues':
         return json({
-          success: true
+          success: true,
           data: {
             routing: WASM_QUEUE_ROUTING
             description: 'Queue routing for WASM-accelerated jobs'
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'simd':
         const simdStatus = getSIMDStatus()
         return json({
-          success: true
+          success: true,
           data: {
             simd: simdStatus
             description: 'SIMD JSON parsing status and performance metrics'
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'benchmark':
         const benchmark = await benchmarkJSONParsing(1000)
         return json({
-          success: true
+          success: true,
           data: {
             benchmark,
             description: 'JSON parsing performance comparison (SIMD vs standard)'
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Default: Return comprehensive status
         const fullStatus = getIntegrationStatus()
         return json({
-          success: true
+          success: true,
           data: {
             integration: fullStatus
             endpoints: {
@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('❌ RabbitMQ-Tensor API Error:', error)
     return json(
       {
-        success: false
+        success: false,
         error: {
           message: error.message || 'RabbitMQ-Tensor API error',
           timestamp: new Date().toISOString()
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { jobType: submittedJobType, data, priority = 2 } = payload
         if (!submittedJobType || !data) {
           return json({
-              success: false
+              success: false,
               error: { message: 'jobType and data are required' }
             },
             { status: 400 }
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         const jobId = await submitDirectTensorJob(submittedJobType, data, priority)
         return json({
-          success: true
+          success: true,
           message: 'Tensor job submitted successfully',
           data: {
             jobId,
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { queryVector, candidateVectors, algorithm = 'cosine' } = payload
         if (!queryVector || !candidateVectors) {
           return json({
-              success: false
+              success: false,
               error: { message: 'queryVector and candidateVectors are required' }
             },
             { status: 400 }
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
           1
         ); // High priority
         return json({
-          success: true
+          success: true,
           message: 'Vector similarity computation submitted',
           data: {
             jobId: similarityJobId
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { vectors, batchProcess = false } = payload
         if (!vectors || !Array.isArray(vectors)) {
           return json({
-              success: false
+              success: false,
               error: { message: 'vectors array is required' }
             },
             { status: 400 }
@@ -211,7 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
           2
         )
         return json({
-          success: true
+          success: true,
           message: `Vector ${batchProcess ? 'batch ' : ''}normalization submitted`,
           data: {
             jobId: normalizeJobId
@@ -223,7 +223,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { embeddings, compressionRatio = 0.5 } = payload
         if (!embeddings) {
           return json({
-              success: false
+              success: false,
               error: { message: 'embeddings are required' }
             },
             { status: 400 }
@@ -238,7 +238,7 @@ export const POST: RequestHandler = async ({ request }) => {
           1
         )
         return json({
-          success: true
+          success: true,
           message: 'Embedding compression submitted',
           data: {
             jobId: compressJobId
@@ -263,7 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
           1
         )
         return json({
-          success: true
+          success: true,
           message: 'Performance benchmark submitted',
           data: {
             jobId: benchmarkJobId
@@ -274,7 +274,7 @@ export const POST: RequestHandler = async ({ request }) => {
         })
       default:
         return json({,
-            success: false
+            success: false,
             error: { message: `Unknown action: ${action}` }
           },
           { status: 400 }
@@ -284,7 +284,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ RabbitMQ-Tensor POST Error:', error)
     return json(
       {
-        success: false
+        success: false,
         error: {
           message: error.message || 'Tensor operation failed',
           timestamp: new Date().toISOString()
@@ -301,7 +301,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const { config } = body
     // For future implementation: Update integration configuration
     return json({
-      success: true
+      success: true,
       message: 'Integration configuration update received',
       data: {
         appliedConfig: config
@@ -313,7 +313,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('❌ RabbitMQ-Tensor PUT Error:', error)
     return json(
       {
-        success: false
+        success: false,
         error: {
           message: error.message || 'Configuration update failed',
           timestamp: new Date().toISOString()
@@ -331,7 +331,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       case 'shutdown':
         await rabbitMQTensorIntegration.shutdown()
         return json({
-          success: true
+          success: true,
           message: 'RabbitMQ-Tensor Integration shutdown initiated',
           data: {
             shutdown_at: new Date().toISOString()
@@ -340,7 +340,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       case 'clear_cache':
         // Future implementation: Clear WASM result cache
         return json({
-          success: true
+          success: true,
           message: 'Tensor cache clearing initiated (simulation)',
           data: {
             cleared_at: new Date().toISOString()
@@ -348,7 +348,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         })
       default:
         return json({,
-            success: false
+            success: false,
             error: { message: 'Action required for DELETE operation' }
           },
           { status: 400 }
@@ -358,7 +358,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     console.error('❌ RabbitMQ-Tensor DELETE Error:', error)
     return json(
       {
-        success: false
+        success: false,
         error: {
           message: error.message || 'Delete operation failed',
           timestamp: new Date().toISOString()

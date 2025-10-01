@@ -195,7 +195,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const cached = await multiLayerCache.get<WorkItem[]>(cacheKey)
     if (cached) {
       return json({
-        success: true
+        success: true,
         data: cached
         fromCache: true
         timestamp: new Date().toISOString()
@@ -241,7 +241,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Cache the results (2-minute TTL, high priority for active work)
     await multiLayerCache.set(cacheKey, recentWork, 120, 200)
     return json({
-      success: true
+      success: true,
       data: recentWork
       fromCache: false
       timestamp: new Date().toISOString(),
@@ -256,7 +256,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Error fetching work history:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to fetch work history',
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -268,7 +268,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { itemId, action, duration, description } = body
     if (!itemId || !action) {
       return json({
-        success: false
+        success: false,
         error: 'Missing required fields: itemId, action'
       }, { status: 400 })
     }
@@ -276,7 +276,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const workIndex = mockWorkHistory.findIndex(w => w.id === itemId)
     if (workIndex === -1) {
       return json({
-        success: false
+        success: false,
         error: 'Work item not found'
       }, { status: 404 })
     }
@@ -305,7 +305,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Clear cache
     await multiLayerCache.clear('memory')
     return json({
-      success: true
+      success: true,
       message: 'Work activity recorded successfully',
       data: workItem
       timestamp: new Date().toISOString()
@@ -313,7 +313,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Error recording work activity:', error)
     return json({
-      success: false
+      success: false,
       error: 'Failed to record work activity'
     }, { status: 500 })
   }

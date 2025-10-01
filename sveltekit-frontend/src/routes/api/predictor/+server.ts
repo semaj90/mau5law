@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Get current stats for response
     const stats = await predictor.getStats()
     return json({
-      success: true
+      success: true,
       action: body.action,
       userId: body.userId,
       context: body.context,

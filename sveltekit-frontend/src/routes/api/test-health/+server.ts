@@ -5,7 +5,7 @@ export const GET: RequestHandler = async () => {
   try {
     // Test basic functionality without touching the database
     return json({
-      success: true
+      success: true,
       timestamp: new Date().toISOString(),
       status: 'healthy',
       services: {
@@ -16,7 +16,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     console.error('Health check error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 })

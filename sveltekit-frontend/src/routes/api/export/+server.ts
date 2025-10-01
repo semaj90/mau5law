@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         .select()
         .from(cases)
         .where(caseFilters.length > 0 ? and(...caseFilters) : undefined)
-        .orderBy(desc(cases.createdAt)
+        .orderBy(desc(cases.createdAt));
       exportData.cases = casesData
     }
     // Export evidence

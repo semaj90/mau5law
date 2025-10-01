@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Performance predictions
     const predictions = generatePerformancePredictions(workflowContext, optimizationResult)
     return json({
-      success: true
+      success: true,
       workflowType: workflowContext.type,
       optimization: optimizationResult
       configuration,
@@ -129,7 +129,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const profile = getWorkflowProfile(workflowType)
       const metrics = includeMetrics ? await getWorkflowMetrics(workflowType) : null
       return json({
-        success: true
+        success: true,
         workflowType,
         profile,
         metrics,
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get all workflow profiles
     const profiles = getAllWorkflowProfiles()
     return json({
-      success: true
+      success: true,
       profiles,
       count: Object.keys(profiles).length,
       timestamp: new Date().toISOString()

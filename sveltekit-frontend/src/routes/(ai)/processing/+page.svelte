@@ -37,8 +37,8 @@
     documentId: '',
     analysisType: 'semantic',
     priority: 'normal',
-    useGPU: true;
-    errors: [];
+    useGPU: true,
+    errors: {} as Record<string, string[]>, // errors keyed by field name, e.g. { documentId: ['msg'], general: ['msg'] }
   });
   let selectedBankView = $state('RAM');
   let realTimeStats = $state(true);
@@ -158,18 +158,18 @@
         progress: 67,
         startedAt: new Date(Date.now() - 900000).toISOString(),
         bankId: 2,
-        gpuLayers: 23;
+        gpuLayers: 23,
       }
     ];
   }
   async function submitProcessingJob(event) {
     event.preventDefault();
     if (!newJobForm.documentId.trim()) {
-      newJobForm.errors = { documentId: ['Document ID is required'] }
+      newJobForm.errors = { documentId: ['Document ID is required'] };
       return;
     }
     isProcessing = true;
-    newJobForm.errors = {}
+    newJobForm.errors = {} as Record<string, string[]>;
     try {
       // Create processing job with NES-GPU optimization
       const job = {
@@ -181,11 +181,11 @@
         progress: 0,
         createdAt: new Date().toISOString(),
         useGPU: newJobForm.useGPU,
-        bankId: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null;
+        bankId: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
       }
       // Store in CHR-ROM pattern cache if high priority
       if (newJobForm.priority === 'high' && newJobForm.useGPU) {
-        await nesGPUBridge.storeCHRROMPattern(`job_${job.id}`, {/* JSX syntax converted to Svelte */});
+        await nesGPUBridge.storeCHRROMPattern(`job_${job.id}`, {});
       }
       processingQueue = [...processingQueue, job];
       showJobDialog = false;
@@ -194,11 +194,12 @@
         documentId: '',
         analysisType: 'semantic',
         priority: 'normal',
-        useGPU: true;
-        errors: [];
+        useGPU: true,
+        errors: {} as Record<string, string[]>
+      }
     } catch (error) {
       console.error('Failed to submit job:', error);
-      newJobForm.errors = { general: ['Failed to submit processing job'] }
+      newJobForm.errors = { general: ['Failed to submit processing job'] };
     } finally {
       isProcessing = false;
     }
@@ -226,7 +227,7 @@
   }
   function formatTimeAgo(timestamp: string) {
     const date = new Date(timestamp);
-    const now = new Date());
+    const now = new Date()),
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     if (diffMins < 60) return `${diffMins}m ago`;

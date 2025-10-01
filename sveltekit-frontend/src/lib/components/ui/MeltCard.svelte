@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  	import type {     Snippet     } from 'svelte';
+		import type { Snippet } from 'svelte';
   	import { cva, type VariantProps } from 'class-variance-authority';
   	import { cn } from '$lib/utils';
   	const cardVariants = cva(
@@ -17,13 +17,13 @@ https://svelte.dev/e/js_parse_error -->
   					legal: 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950',
   					evidence: 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950',
   					caseItem: 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950',
-  					yorha: 'border-yellow-400 bg-black/90 text-yellow-400';
+				yorha: 'border-yellow-400 bg-black/90 text-yellow-400',
   				},
   				size: {
   					default: 'p-6',
   					sm: 'p-4',
   					lg: 'p-8',
-  					xl: 'p-10';
+					xl: 'p-10',
   				}
   			},
   			defaultVariants: {
@@ -50,21 +50,21 @@ https://svelte.dev/e/js_parse_error -->
   		// Event handlers
   		onclick?: (_event: MouseEvent) => void;
   	}
-  	let {
-  		variant = 'default',
-  		size = 'default',
-  		class: className = '',
-  		title,
-  		description,
-  		children,
-  		header,
-  		content,
-  		footer,
-  		role = 'region',
-  		'data-testid': testId
-  		onclick;
-  	}: Props = $props();
-  	let cardClass = $derived(cn(cardVariants({ variant, size }), class));
+		let {
+			variant = 'default',
+			size = 'default',
+			class: className = '',
+			title,
+			description,
+			children,
+			header,
+			content,
+			footer,
+			role = 'region',
+			'data-testid': testId,
+			onclick
+		}: Props = $props();
+		let cardClass = $derived(cn(cardVariants({ variant, size }), className));
   	type $$Props = Prop;
 </script>
 

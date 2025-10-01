@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		}
 		return json({
-			success: true
+			success: true,
 			jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
 			jobStatuses,
 			aggregateStatusEndpoint: `/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error) {
 		console.error('Legal processing error:', error)
 		return json({
-			success: false
+			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 })
 	}

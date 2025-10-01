@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } = body
     if (!content) {
       return json({
-        success: false
+        success: false,
         error: 'Content is required'
       }, { status: 400 })
     }
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const dbHealth = await getDatabaseHealth()
     if (dbHealth.overall !== 'healthy') {
       return json({
-        success: false
+        success: false,
         error: 'Database temporarily unavailable',
         healthStatus: dbHealth
       }, { status: 503 })
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     console.log(`[Storage] Document stored successfully with ID: ${documentId}`)
     const responseData = {
-      success: true
+      success: true,
       documentId,
       message: 'Document stored successfully',
       document: {
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err: any) {
     console.error('[Storage] Error:', err)
     return json({
-      success: false
+      success: false,
       error: err.message || 'Storage failed'
     }, { status: err.status || 500 })
   }

@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ request }) => {
       .limit(1)
     console.log("Lucia-style SQL:", luciaQuery.toSQL()
     return json({
-      success: true
+      success: true,
       message: 'JOIN query tests completed successfully',
       tests: {
         sessionsFound: directSessions.length,
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error("JOIN Test Error:", error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       stack: error.stack
     }, { status: 500 })

@@ -345,7 +345,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (action === 'test') {
       const results = await tester.runFullTest(scenario)
       return json({
-        success: true
+        success: true,
         data: results
       })
     }
@@ -353,7 +353,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err: any) {
     console.error('❌ Update loop test error:', err)
     return json({
-      success: false
+      success: false,
       error: err instanceof Error ? err.message: 'Test failed'
     }, { status: 500 })
   }
@@ -363,7 +363,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action') || 'info'
     if (action === 'info') {
       return json({
-        success: true
+        success: true,
         data: {
           service: 'Document Update Loop Tester',
           scenarios: Object.keys(testScenarios),
@@ -377,7 +377,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     if (action === 'scenarios') {
       return json({
-        success: true
+        success: true,
         data: {
           scenarios: Object.entries(testScenarios).map(([key, scenario]) => ({
             key,
@@ -391,7 +391,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({ error: 'Unknown action' }, { status: 400 })
   } catch (err: any) {
     return json({
-      success: false
+      success: false,
       error: err instanceof Error ? err.message: 'Request failed'
     }, { status: 500 })
   }

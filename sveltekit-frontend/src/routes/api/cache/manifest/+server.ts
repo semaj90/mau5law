@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
       newestEntry: Math.max(...entries.map(e => e.timestamp)
     }
     return json({
-      success: true
+      success: true,
       manifest: {
         entries,
         pagination: {

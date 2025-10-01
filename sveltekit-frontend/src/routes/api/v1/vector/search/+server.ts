@@ -170,7 +170,7 @@ async function generateOllamaEmbedding(text: string): Promise<number[]> {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       model: 'embeddinggemma:latest',
       prompt: text
     })

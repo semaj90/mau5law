@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Create enhanced metadata
     const enhancedMetadata = createEnhancedMetadata(simdData, semanticAnalysis)
     const result = {
-      success: true
+      success: true,
       processedAt: new Date().toISOString(),
       documentId: `doc_${Date.now()}`,
       // Enhanced RAG results

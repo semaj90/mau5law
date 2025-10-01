@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       }
     }
     const response: EnhancedSearchResponse = {
-      success: true
+      success: true,
       query,
       results,
       langchain_results: results.filter((r) => r.source === 'langchain').length,
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     console.error('Enhanced RAG API error:', e)
     return json()
       {
-        success: false
+        success: false,
         error: e.message,
         processing_time: Date.now() - startTime
       },

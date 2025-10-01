@@ -12,7 +12,7 @@ const PatternDetectionSchema = z.object({
   evidenceIds: z.array(z.string().uuid()).optional(),
   patternTypes: z.array(z.enum(['temporal', 'location', 'behavior', 'communication', 'financial', 'digital'])).optional(),
   sensitivity: z.number().min(0).max(1).default(0.7),
-  options: z.object({,
+  options: z.object({
     includeAnomalies: z.boolean().default(true),
     includePredictions: z.boolean().default(false),
     minOccurrences: z.number().min(1).default(2),
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     })
     return json({
-      success: true
+      success: true,
       data: {
         caseId,
         analysis: patternResults

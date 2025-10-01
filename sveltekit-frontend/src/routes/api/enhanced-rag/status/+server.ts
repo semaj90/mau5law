@@ -75,13 +75,13 @@ export const GET: RequestHandler = async () => {
       console.log(`📊 Services: ${5 - failedServices}/5 operational`)
     }
     return json({
-      success: true
+      success: true,
       health: systemHealth
     })
   } catch (error: any) {
     console.error('❌ Enhanced RAG Status Check Error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message || 'System status check failed',
       timestamp: new Date().toISOString(),
       health: {

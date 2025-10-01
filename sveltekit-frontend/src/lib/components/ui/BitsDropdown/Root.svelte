@@ -14,7 +14,8 @@
     children?: Snippet;
   } = $props();
 
-  let dropdownRef = $state<Dropdown | null>(null);
+  // keep runtime ref but avoid importing the component type which can cause type-only issues
+  let dropdownRef = $state<any | null>(null);
 
   function handleItemClick(e: CustomEvent<any>) {
     // call the internal close() method on Dropdown via the bound instance
@@ -25,10 +26,10 @@
 
 <Dropdown bind:this={dropdownRef} {align} on:itemclick={handleItemClick}>
   {#if trigger}
-    {@render trigger()}
+    {@render trigger?.()}
   {/if}
 
   {#if children}
-    {@render children()}
+    {@render children?.()}
   {/if}
 </Dropdown>

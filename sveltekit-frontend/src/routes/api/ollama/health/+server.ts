@@ -19,7 +19,7 @@ export const GET: RequestHandler = async () => {
     if (response.ok) {
       const data = await response.json()
       return json({
-        success: true
+        success: true,
         status: 'connected',
         baseUrl: ollamaBaseUrl
         models: data.models || [],
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async () => {
       })
     } else {
       return json({
-        success: false
+        success: false,
         status: 'unavailable',
         error: `HTTP ${response.status}: ${response.statusText}`,
         baseUrl: ollamaBaseUrl
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     console.error('Ollama health check failed:', error)
     return json({
-      success: false
+      success: false,
       status: 'error',
       error: error.message || 'Connection failed',
       baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',

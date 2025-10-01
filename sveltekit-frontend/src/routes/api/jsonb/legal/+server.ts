@@ -24,23 +24,23 @@ import crypto from "crypto"
 const CreateDocumentSchema = z.object({
   title: z.string().min(1).max(500),
   content: z.string().min(1),
-  metadata: z.object({,
+  metadata: z.object({
     documentType: z.enum(['contract', 'brief', 'motion', 'pleading', 'evidence', 'citation', 'precedent', 'statute']),
     jurisdiction: z.string().optional(),
     practiceArea: z.enum(['corporate', 'litigation', 'criminal', 'intellectual_property', 'real_estate', 'family', 'tax', 'employment']).optional(),
     confidentialityLevel: z.enum(['public', 'confidential', 'privileged', 'classified']).default('public'),
     urgency: z.enum(['routine', 'priority', 'urgent', 'emergency']).default('routine'),
-    parties: z.array(z.object({,
+    parties: z.array(z.object({
       name: z.string(),
       role: z.enum(['plaintiff', 'defendant', 'witness', 'counsel', 'judge', 'expert', 'third_party']),
       entityType: z.enum(['individual', 'corporation', 'government', 'organization']).optional()
     })).optional(),
-    semantics: z.object({,
+    semantics: z.object({
       keyTerms: z.array(z.string()).optional(),
       legalConcepts: z.array(z.string()).optional(),
       precedentStrength: z.number().min(0).max(1).optional()
     }).optional(),
-    aiMetadata: z.object({,
+    aiMetadata: z.object({
       modelVersion: z.string().optional(),
       processingTimestamp: z.string().datetime().optional(),
       confidence: z.number().min(0).max(1).optional(),
@@ -48,7 +48,7 @@ const CreateDocumentSchema = z.object({
       humanVerified: z.boolean().default(false)
     }).optional()
   }),
-  embeddings: z.object({,
+  embeddings: z.object({
     title: z.array(z.number()).optional(),
     content: z.array(z.number()).optional()
   }).optional()
@@ -56,19 +56,19 @@ const CreateDocumentSchema = z.object({
 const CreateCaseSchema = z.object({
   title: z.string().min(1).max(500),
   description: z.string().optional(),
-  metadata: z.object({,
+  metadata: z.object({
     caseNumber: z.string(),
     status: z.enum(['active', 'pending', 'closed', 'on_hold', 'appealed']),
     filingDate: z.string().datetime().optional(),
-    timeline: z.array(z.object({,
+    timeline: z.array(z.object({
       date: z.string().datetime(),
       event: z.string(),
       significance: z.enum(['low', 'medium', 'high', 'critical']).default('medium')
     })).optional(),
-    strategy: z.object({,
+    strategy: z.object({
       approach: z.string().optional(),
       objectives: z.array(z.string()).optional(),
-      risks: z.array(z.object({,
+      risks: z.array(z.object({
         description: z.string(),
         probability: z.number().min(0).max(1),
         impact: z.enum(['low', 'medium', 'high', 'critical'])
@@ -83,27 +83,27 @@ const CreateEvidenceSchema = z.object({
   filePath: z.string().optional(),
   fileSize: z.number().int().positive().optional(),
   mimeType: z.string().optional(),
-  metadata: z.object({,
+  metadata: z.object({
     evidenceType: z.enum(['document', 'physical', 'digital', 'testimony', 'expert_opinion', 'demonstrative']),
-    authenticity: z.object({,
+    authenticity: z.object({
       verified: z.boolean().default(false),
       method: z.string().optional(),
       verifier: z.string().optional(),
       verificationDate: z.string().datetime().optional()
     }).optional(),
-    chainOfCustody: z.array(z.object({,
+    chainOfCustody: z.array(z.object({
       timestamp: z.string().datetime(),
       custodian: z.string(),
       action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']),
       location: z.string().optional(),
       condition: z.string().optional()
     })).optional(),
-    relevance: z.object({,
+    relevance: z.object({
       score: z.number().min(0).max(1),
       reasoning: z.string().optional(),
       relatedEvidence: z.array(z.string()).optional()
     }).optional(),
-    admissibility: z.object({,
+    admissibility: z.object({
       status: z.enum(['admissible', 'inadmissible', 'conditional', 'pending']),
       basis: z.string().optional(),
       objections: z.array(z.string()).optional()
@@ -118,12 +118,12 @@ const DocumentSearchSchema = z.object({
   confidentialityLevels: z.array(z.string()).optional(),
   minConfidence: z.number().min(0).max(1).optional(),
   hasHumanVerification: z.boolean().optional(),
-  dateRange: z.object({,
+  dateRange: z.object({
     start: z.string().datetime(),
     end: z.string().datetime()
   }).optional(),
   keyTerms: z.array(z.string()).optional(),
-  parties: z.array(z.object({,
+  parties: z.array(z.object({
     name: z.string(),
     role: z.string().optional()
   })).optional(),
@@ -155,10 +155,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
           statusCode: 200,
           responseSize: JSON.stringify(analytics).length,
           processingTime: duration
-          success: true
+          success: true,
         })
         return json({
-          success: true
+          success: true,
           data: analytics
           metadata: {
             requestId,
@@ -174,10 +174,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
           statusCode: 200,
           responseSize: JSON.stringify(performance_metrics).length,
           processingTime: perfDuration
-          success: true
+          success: true,
         })
         return json({
-          success: true
+          success: true,
           data: performance_metrics
           metadata: {
             requestId,
@@ -196,7 +196,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       statusCode: 500,
       responseSize: 0,
       processingTime: duration
-      success: false
+      success: false,
       error: errorMessage
     })
     await logger.logError({
@@ -247,10 +247,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           statusCode: 201,
           responseSize: JSON.stringify(document).length,
           processingTime: docDuration
-          success: true
+          success: true,
         })
         return json({
-          success: true
+          success: true,
           data: document
           metadata: {
             requestId,
@@ -272,10 +272,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           statusCode: 201,
           responseSize: JSON.stringify(caseRecord).length,
           processingTime: caseDuration
-          success: true
+          success: true,
         })
         return json({
-          success: true
+          success: true,
           data: caseRecord
           metadata: {
             requestId,
@@ -304,10 +304,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           statusCode: 201,
           responseSize: JSON.stringify(evidence).length,
           processingTime: evidenceDuration
-          success: true
+          success: true,
         })
         return json({
-          success: true
+          success: true,
           data: evidence
           metadata: {
             requestId,
@@ -332,10 +332,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           statusCode: 200,
           responseSize: JSON.stringify(searchResults).length,
           processingTime: searchDuration
-          success: true
+          success: true,
         })
         return json({
-          success: true
+          success: true,
           data: searchResults
           metadata: {
             requestId,
@@ -355,10 +355,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           statusCode: 200,
           responseSize: JSON.stringify(conceptAnalysis).length,
           processingTime: conceptDuration
-          success: true
+          success: true,
         })
         return json({
-          success: true
+          success: true,
           data: conceptAnalysis
           metadata: {
             requestId,
@@ -379,10 +379,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           statusCode: 200,
           responseSize: JSON.stringify(similarCases).length,
           processingTime: similarDuration
-          success: true
+          success: true,
         })
         return json({
-          success: true
+          success: true,
           data: similarCases
           metadata: {
             requestId,
@@ -403,10 +403,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           statusCode: 200,
           responseSize: JSON.stringify(citationNetwork).length,
           processingTime: networkDuration
-          success: true
+          success: true,
         })
         return json({
-          success: true
+          success: true,
           data: citationNetwork
           metadata: {
             requestId,
@@ -435,7 +435,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       statusCode,
       responseSize: 0,
       processingTime: duration
-      success: false
+      success: false,
       error: errorMessage
     })
     await logger.logError({
@@ -447,7 +447,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       category: 'api'
     })
     return json({
-      success: false
+      success: false,
       error: errorMessage
       metadata: {
         requestId,
@@ -479,7 +479,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       // Add timeline event to case
       const { caseId, event } = z.object({
         caseId: z.string().uuid(),
-        event: z.object({,
+        event: z.object({
           date: z.string().datetime(),
           event: z.string(),
           significance: z.enum(['low', 'medium', 'high', 'critical'])
@@ -492,10 +492,10 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         statusCode: 200,
         responseSize: JSON.stringify(updatedCase).length,
         processingTime: duration
-        success: true
+        success: true,
       })
       return json({
-        success: true
+        success: true,
         data: updatedCase
         metadata: {
           requestId,
@@ -507,7 +507,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       // Add custody transfer
       const { evidenceId, transfer } = z.object({
         evidenceId: z.string().uuid(),
-        transfer: z.object({,
+        transfer: z.object({
           timestamp: z.string().datetime(),
           custodian: z.string(),
           action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']),
@@ -522,10 +522,10 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         statusCode: 200,
         responseSize: JSON.stringify(updatedEvidence).length,
         processingTime: duration
-        success: true
+        success: true,
       })
       return json({
-        success: true
+        success: true,
         data: updatedEvidence
         metadata: {
           requestId,
@@ -545,10 +545,10 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         statusCode: 200,
         responseSize: JSON.stringify(verification).length,
         processingTime: duration
-        success: true
+        success: true,
       })
       return json({
-        success: true
+        success: true,
         data: verification
         metadata: {
           requestId,
@@ -577,7 +577,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       statusCode,
       responseSize: 0,
       processingTime: duration
-      success: false
+      success: false,
       error: errorMessage
     })
     await logger.logError({
@@ -589,7 +589,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       category: 'api'
     })
     return json({
-      success: false
+      success: false,
       error: errorMessage
       metadata: {
         requestId,
@@ -620,10 +620,10 @@ export const PATCH: RequestHandler = async ({ request }) => {
       statusCode: 200,
       responseSize: 0,
       processingTime: duration
-      success: true
+      success: true,
     })
     return json({
-      success: true
+      success: true,
       message: 'Case counters updated successfully',
       metadata: {
         requestId,
@@ -639,7 +639,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       statusCode: 500,
       responseSize: 0,
       processingTime: duration
-      success: false
+      success: false,
       error: errorMessage
     })
     await logger.logError({
@@ -650,7 +650,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       category: 'api'
     })
     return json({
-      success: false
+      success: false,
       error: errorMessage
       metadata: {
         requestId,

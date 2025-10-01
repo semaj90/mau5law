@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const body = await request.json() as ProcessingRequest
     if (!body.text || body.text.trim().length === 0) {
       return json({
-        success: false
+        success: false,
         error: 'Document text is required',
         processingTime: Date.now() - startTime
       }, { status: 400 })
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const initialized = await headlessLegalProcessorFactory.initializeHeadless()
       if (!initialized) {
         return json({
-          success: false
+          success: false,
           error: 'Failed to initialize headless WebGPU processor',
           processingTime: Date.now() - startTime,
           fallback: 'CPU processing available'
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     console.error('Headless processing error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message || 'Internal processing error',
       processingTime: Date.now() - startTime,
       system: {
@@ -150,7 +150,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const body = await request.json() as BatchProcessingRequest
     if (!body.documents || body.documents.length === 0) {
       return json({
-        success: false
+        success: false,
         error: 'Documents array is required for batch processing',
         processingTime: Date.now() - startTime
       }, { status: 400 })
@@ -210,7 +210,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Batch processing error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message || 'Batch processing failed',
       processingTime: Date.now() - startTime
     }, { status: 500 })
@@ -248,13 +248,13 @@ export const DELETE: RequestHandler = async () => {
   try {
     headlessLegalProcessorFactory.dispose()
     return json({
-      success: true
+      success: true,
       message: 'Headless processor resources cleaned up',
       timestamp: Date.now()
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: Date.now()
     }, { status: 500 })

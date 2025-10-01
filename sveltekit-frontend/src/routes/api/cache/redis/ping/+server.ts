@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const isConnected = process.env.REDIS_URL || process.env.NODE_ENV === 'development'
     if (isConnected) {
       return json({
-        success: true
+        success: true,
         message: 'Redis connection established',
         config: {
           host: config.host,
@@ -22,14 +22,14 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     } else {
       return json({
-        success: false
+        success: false,
         message: 'Redis connection failed',
         error: 'Redis not available'
       }, { status: 503 })
     }
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }

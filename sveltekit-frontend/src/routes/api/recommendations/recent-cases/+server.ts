@@ -137,7 +137,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const cached = await multiLayerCache.get<CaseRecommendation[]>(cacheKey)
     if (cached) {
       return json({
-        success: true
+        success: true,
         data: cached
         fromCache: true
         timestamp: new Date().toISOString()
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     // Cache the results (60-second TTL, high priority)
     await multiLayerCache.set(cacheKey, sortedCases, 60, 180)
     return json({
-      success: true
+      success: true,
       data: sortedCases
       fromCache: false
       timestamp: new Date().toISOString(),
@@ -233,7 +233,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       }
     ]
     return json({
-      success: false
+      success: false,
       error: 'failure default to mock',
       data: mockFallbackCases
       fromCache: false
@@ -254,7 +254,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { caseId, action } = body
     if (!caseId || !action) {
       return json({
-        success: false
+        success: false,
         error: 'Missing required fields: caseId, action'
       }, { status: 400 })
     }
@@ -262,7 +262,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const caseIndex = mockCases.findIndex(c => c.id === caseId)
     if (caseIndex === -1) {
       return json({
-        success: false
+        success: false,
         error: 'Case not found'
       }, { status: 404 })
     }
@@ -282,7 +282,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break
       default:
         return json({,
-          success: false
+          success: false,
           error: 'Invalid action'
         }, { status: 400 })
     }
@@ -290,7 +290,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const cacheKey = 'recent-cases-5'
     await multiLayerCache.clear('memory')
     return json({
-      success: true
+      success: true,
       message: `Case ${caseId} updated with action: ${action}`,
       updatedCase: caseItem
       timestamp: new Date().toISOString()
@@ -298,7 +298,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Error updating case:', error)
     return json({
-      success: false
+      success: false,
       error: 'failure default to mock - case update simulated',
       message: 'Mock update: Case action processed locally',
       updatedCase: null

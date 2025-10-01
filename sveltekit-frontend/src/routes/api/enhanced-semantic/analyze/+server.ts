@@ -5,7 +5,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		const text = url.searchParams.get('text')
 		if (!text) {
 			return json({
-				success: false
+				success: false,
 				error: 'Missing text parameter for semantic analysis'
 			}, { status: 400 })
 		}
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		}
 		const data = await response.json()
 		return json({
-			success: true
+			success: true,
 			data: {
 				embedding: data.data.embedding || [],
 				som_cluster: data.data.som_cluster || { x: 0, y: 0 },
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			priority = 2
 		}
 		return json({
-			success: true
+			success: true,
 			data: {
 				embedding,
 				som_cluster: { x: som_x, y: som_y },
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const { text, options } = await request.json()
 		if (!text) {
 			return json({
-				success: false
+				success: false,
 				error: 'Missing text for analysis'
 			}, { status: 400 })
 		}
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error: any) {
 		console.error('Enhanced Semantic Analysis POST Error:', error)
 		return json({
-			success: false
+			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 500 })

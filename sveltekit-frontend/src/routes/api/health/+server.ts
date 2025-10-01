@@ -44,7 +44,7 @@ async function httpCheck(url: string): Promise<HttpCheck> {
   } catch (e: any) {
     return {
       url,
-      ok: false
+      ok: false,
       error: e instanceof Error ? e.message: String(e)
     }
   }

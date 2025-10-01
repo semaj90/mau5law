@@ -28,7 +28,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         model: 'gemma3-legal:latest',
         prompt: `As a legal AI assistant for prosecutors, generate 4 helpful question suggestions for case ${caseId} in the ${currentPhase} phase.
 Context: ${context}
@@ -48,7 +48,7 @@ Return only 4 concise, actionable questions as a JSON array:
     try {
       const suggestions = JSON.parse((result as { response?: any }).response)
       return json({
-        success: true
+        success: true,
         suggestions: Array.isArray(suggestions) ? suggestions : [
           "Analyze evidence strength for this case",
           "Find similar cases with comparable evidence",
@@ -59,7 +59,7 @@ Return only 4 concise, actionable questions as a JSON array:
     } catch (parseError) {
       // Fallback suggestions
       return json({
-        success: true
+        success: true,
         suggestions: [
           "Analyze evidence strength for this case",
           "Find similar cases with comparable evidence",

@@ -44,14 +44,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       includeMetadata: true
     })
     return json({
-      success: true
+      success: true,
       result,
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     console.error('Unified AI API Error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message || 'Unknown error occurred',
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -63,7 +63,7 @@ const originalGETHandler: RequestHandler = async () => {
     const { unifiedAIService } = await import('$lib/ai/unified-ai-service.js')
     const stats = await unifiedAIService.getStats()
     return json({
-      success: true
+      success: true,
       stats,
       availableServices: {
         wasm: !!stats.wasm,
@@ -75,7 +75,7 @@ const originalGETHandler: RequestHandler = async () => {
   } catch (error: any) {
     console.error('Unified AI Stats Error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message || 'Failed to get stats',
       timestamp: new Date().toISOString()
     }, { status: 500 })

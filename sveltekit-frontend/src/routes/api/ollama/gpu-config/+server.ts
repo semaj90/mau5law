@@ -21,11 +21,11 @@ type GPUConfig = {
   [k: string]: any
 }
 type FetchResult = {
-  ok: true
+  ok: true,
   source: 'go'
   config: GPUConfig
 } | {
-  ok: false
+  ok: false,
   source: 'shim' | 'cache';
   config: GPUConfig
   reason?: string

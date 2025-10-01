@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
       logger.error('Missing documentId or caseId', payload)
       return json()
         {
-          success: false
+          success: false,
           error: 'documentId and caseId are required',
           processingTime: Date.now() - start
         },
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // TODO: enqueue the ingest job to your queue (RabbitMQ, Redis, etc.) or call your ingestion service here.
     logger.info('Received document ingest request', { documentId, caseId, task })
     return json({
-      success: true
+      success: true,
       documentId,
       caseId,
       task: task ?? 'ingest',

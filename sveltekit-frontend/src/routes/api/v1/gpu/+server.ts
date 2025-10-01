@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			throw err; // Re-throw SvelteKit errors
 		}
 		return json({
-			success: false
+			success: false,
 			error: 'GPU processing service unavailable',
 			details: err instanceof Error ? err.message: 'Unknown error',
 			fallback_available: true

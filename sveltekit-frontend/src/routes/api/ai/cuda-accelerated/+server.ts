@@ -91,7 +91,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		// Validate required fields
 		if (!requestData.query?.trim()) {
 			return json({
-				success: false
+				success: false,
 				error: 'Query is required',
 				processing_time_ms: Date.now() - startTime
 			}, { status: 400 })
@@ -100,7 +100,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		const isHealthy = await checkCudaServerHealth()
 		if (!isHealthy) {
 			return json({
-				success: false
+				success: false,
 				error: 'CUDA server is not available',
 				fallback_available: true
 				processing_time_ms: Date.now() - startTime
@@ -160,7 +160,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		const processingTime = Date.now() - performance.now()
 		console.error('CUDA-accelerated inference failed:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'CUDA inference failed',
 			details: error.message,
 			cuda_acceleration: false
@@ -178,7 +178,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 				const healthResponse = await fetch(`${CUDA_SERVER_URL}/health`)
 				const healthData = await healthResponse.json()
 				return json({
-					success: true
+					success: true,
 					cuda_server: {
 						available: healthResponse.ok,
 						...healthData
@@ -194,7 +194,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 				const metricsResponse = await fetch(`${CUDA_SERVER_URL}/metrics`)
 				const metricsData = await metricsResponse.json()
 				return json({
-					success: true
+					success: true,
 					...metricsData,
 					rtx_3060_ti_optimization: {
 						vram_total_gb: 8,
@@ -207,12 +207,12 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 				const gpuResponse = await fetch(`${CUDA_SERVER_URL}/api/gpu/status`)
 				const gpuData = await gpuResponse.json()
 				return json({
-					success: true
+					success: true,
 					...gpuData
 				})
 			default:
 				return json({,
-					success: true
+					success: true,
 					message: 'CUDA-accelerated Legal AI API',
 					available_operations: ['status', 'metrics', 'gpu-status'],
 					cuda_server_url: CUDA_SERVER_URL
@@ -226,7 +226,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 	} catch (error: any) {
 		console.error('CUDA status check failed:', error)
 		return json({
-			success: false
+			success: false,
 			error: 'Failed to get CUDA server status',
 			details: error.message,
 			cuda_available: false
@@ -239,13 +239,13 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 		const searchRequest: VectorSearchRequest = await request.json()
 		if (!searchRequest.query_vector || !Array.isArray(searchRequest.query_vector)) {
 			return json({
-				success: false
+				success: false,
 				error: 'query_vector array is required'
 			}, { status: 400 })
 		}
 		if (searchRequest.query_vector.length !== 768) {
 			return json({
-				success: false
+				success: false,
 				error: 'query_vector must be 768-dimensional for compatibility with nomic-embed-text'
 			}, { status: 400 })
 		}
@@ -274,7 +274,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 		})
 	} catch (error: any) {
 		return json({
-			success: false
+			success: false,
 			error: 'CUDA vector search failed',
 			details: error.message
 		}, { status: 500 })
@@ -286,13 +286,13 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 		const batchRequest: BatchInferenceRequest = await request.json()
 		if (!batchRequest.queries || !Array.isArray(batchRequest.queries)) {
 			return json({
-				success: false
+				success: false,
 				error: 'queries array is required'
 			}, { status: 400 })
 		}
 		if (batchRequest.queries.length > 16) {
 			return json({
-				success: false
+				success: false,
 				error: 'Maximum batch size is 16 queries for RTX 3060 Ti optimization'
 			}, { status: 400 })
 		}
@@ -330,7 +330,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 		})
 	} catch (error: any) {
 		return json({
-			success: false
+			success: false,
 			error: 'CUDA batch inference failed',
 			details: error.message
 		}, { status: 500 })
@@ -355,7 +355,7 @@ const originalDELETEHandler: RequestHandler = async () => {
 		})
 	} catch (error: any) {
 		return json({
-			success: false
+			success: false,
 			error: 'Memory optimization failed',
 			details: error.message
 		}, { status: 500 })

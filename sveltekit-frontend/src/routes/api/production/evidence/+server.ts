@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Apply pagination
     const paginatedEvidence = filteredEvidence.slice(offset, offset + limit)
     return json({
-      success: true
+      success: true,
       data: paginatedEvidence
       pagination: {
         total: filteredEvidence.length,
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
     for (const field of requiredFields) {
       if (!data[field]) {
         return json({
-          success: false
+          success: false,
           error: `Missing required field: ${field}`,
           timestamp: new Date().toISOString()
         }, { status: 400 })
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }, 500)
     }
     return json({
-      success: true
+      success: true,
       data: {
         evidence: newEvidence
         processing_job: processingJob
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }, { status: 201 })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -204,7 +204,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const evidenceId = url.searchParams.get('id')
     if (!evidenceId) {
       return json({
-        success: false
+        success: false,
         error: 'Evidence ID required',
         timestamp: new Date().toISOString()
       }, { status: 400 })
@@ -213,7 +213,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const evidenceIndex = mockEvidenceData.findIndex(e => e.id === evidenceId)
     if (evidenceIndex === -1) {
       return json({
-        success: false
+        success: false,
         error: 'Evidence not found',
         timestamp: new Date().toISOString()
       }, { status: 404 })
@@ -225,14 +225,14 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       updated_at: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       data: mockEvidenceData[evidenceIndex]
       message: 'Evidence updated successfully',
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })

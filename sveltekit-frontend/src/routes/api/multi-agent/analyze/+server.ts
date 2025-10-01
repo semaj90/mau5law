@@ -103,14 +103,14 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       analysis: analysisResult
       message: "Multi-agent analysis completed successfully"
     })
   } catch (error: any) {
     console.error("Multi-agent analysis error:", error)
     return json({
-        success: false
+        success: false,
         error: error.message,
         message: "Multi-agent analysis failed"
       },)
@@ -223,7 +223,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return tb - ta
       })
       return json({
-        success: true
+        success: true,
         analyses,
         caseId
       })
@@ -231,7 +231,7 @@ export const GET: RequestHandler = async ({ url }) => {
       console.error("Error retrieving analyses:", error)
       return json()
         {
-          success: false
+          success: false,
               error: error?.message ?? String(error)
             },
             { status: 500 }
@@ -241,7 +241,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error("GET handler error:", error)
     return json()
       {
-        success: false
+        success: false,
         error: error?.message ?? String(error),
         message: "Failed to retrieve analyses"
       },

@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
     const sustained = getSustainedP99Info()
     return new Response(JSON.stringify({
-        ok: true
+        ok: true,
         alerts,
         routedCount: routed.length,
         p99: quic.p99,

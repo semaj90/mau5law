@@ -13,7 +13,7 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
   // Check if user has an active session
   if (!typedLocals.session) {
     return json({
-      success: false
+      success: false,
       message: 'No active session to logout'
     }, { status: 400 })
   }
@@ -33,7 +33,7 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
       timestamp: new Date().toISOString()
     })
     return json({
-      success: true
+      success: true,
       message: 'Successfully logged out',
       sessionInvalidated: true
     })
@@ -46,7 +46,7 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
       ...sessionCookie.attributes
     })
     return json({
-      success: true
+      success: true,
       message: 'Logged out (with errors)',
       error: 'Session cleanup encountered issues'
     })

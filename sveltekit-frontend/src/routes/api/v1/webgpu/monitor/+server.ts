@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Monitoring API error:', error)
     return json()
       {
-        success: false
+        success: false,
         error: 'Failed to collect system metrics',
         details: error instanceof Error ? error.message: String(error)
       },
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({ success: true, data: exportData })
       default:
         return json({,
-            success: false
+            success: false,
             error: 'Invalid action',
             validActions: ['clear-cache', 'restart-workers', 'optimize-gpu', 'export-metrics']
           },)
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     return json()
       {
-        success: false
+        success: false,
         error: 'Action execution failed',
         details: error instanceof Error ? error.message: String(error)
       },
@@ -406,14 +406,14 @@ export const DELETE: RequestHandler = async () => {
     metricsHistory = []
     alertHistory = []
     return json({
-      success: true
+      success: true,
       message: 'Monitoring history cleared',
       timestamp: Date.now()
     })
   } catch (error) {
     return json()
       {
-        success: false
+        success: false,
         error: 'Failed to clear monitoring history',
         details: error instanceof Error ? error.message: String(error)
       },

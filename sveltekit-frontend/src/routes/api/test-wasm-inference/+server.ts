@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const totalTime = Date.now() - startTime
     // Comprehensive test results
     const testResults = {
-      success: true
+      success: true,
       processingTime: totalTime
       timestamp: new Date().toISOString(),
       request: {
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const errorTime = Date.now() - startTime
     return json()
       {
-        success: false
+        success: false,
         error: err.message,
         processingTime: errorTime
         timestamp: new Date().toISOString(),

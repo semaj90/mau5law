@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const title = formData.get('title') as string
     if (!file) {
       return json({
-        success: false
+        success: false,
         error: 'No file provided'
       }, { status: 400 })
     }
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const maxSize = 50 * 1024 * 1024
     if (file.size > maxSize) {
       return json({
-        success: false
+        success: false,
         error: 'File size exceeds 50MB limit'
       }, { status: 400 })
     }
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const allowedExtensions = /\.(pdf|doc|docx|txt|md|html|htm|rtf)$/i
     if (!allowedTypes.includes(file.type) && !file.name.match(allowedExtensions)) {
       return json({
-        success: false
+        success: false,
         error: 'Unsupported file type. Supported formats: PDF, DOC, DOCX, TXT, MD, HTML, RTF'
       }, { status: 400 })
     }
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if ((result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).success) {
       console.log(`✅ Document processed successfully: ${(result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).documentId} (${(result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).chunks} chunks)`)
       return json({
-        success: true
+        success: true,
         documentId: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).documentId,
         chunks: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).chunks,
         processingDetails: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).processingDetails,
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Enhanced document upload error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown upload error',
       details: 'An error occurred during document processing'
     }, { status: 500 })

@@ -12,7 +12,7 @@ export const GET: RequestHandler = async () => {
       })
     )
     return json({
-      success: true
+      success: true,
       conditions,
       active_count: conditions.filter((c) => c.isActive).length,
       total_count: conditions.length,
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields
     if (!conditionData.id || !conditionData.type || !conditionData.action) {
       return json({
-          success: false
+          success: false,
           error: 'Missing required fields: id, type, action'
         },)
         { status: 400 }
@@ -49,11 +49,11 @@ export const POST: RequestHandler = async ({ request }) => {
       condition: conditionData.condition || {},
       action: conditionData.action,
       isActive: conditionData.isActive !== false,
-      metadata: conditionData.metadata || {}
+      metadata: conditionData.metadata || {},
     }
     databaseOrchestrator.addCondition(condition)
     return json({
-      success: true
+      success: true,
       message: 'Condition added successfully',
       condition,
       timestamp: new Date().toISOString()
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -75,7 +75,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     const { id } = params
     if (!id) {
       return json({
-          success: false
+          success: false,
           error: 'Condition ID is required'
         },)
         { status: 400 }
@@ -83,7 +83,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     }
     databaseOrchestrator.removeCondition(id)
     return json({
-      success: true
+      success: true,
       message: 'Condition removed successfully',
       conditionId: id
       timestamp: new Date().toISOString()
@@ -91,7 +91,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },

@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata || {}
         )
         return json({
-          success: true
+          success: true,
           documentId: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).documentId,
           entities: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).parsedDocument.entities,
           suggestions: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).parsedDocument.suggestions,
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         const searchResults = await unifiedLegalProcessor.semanticSearch(query, options)
         return json({
-          success: true
+          success: true,
           query,
           results: searchResults
           totalResults: searchResults.length,
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'stats': {
         const systemStats = await unifiedLegalProcessor.getSystemStats()
         return json({
-          success: true
+          success: true,
           systemStats,
           timestamp: new Date().toISOString()
         })
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (action === 'stats') {
       const systemStats = await unifiedLegalProcessor.getSystemStats()
       return json({
-        success: true
+        success: true,
         systemStats,
         endpoints: {
           process: 'POST /api/legal/simd-process (action: "process")',
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (action === 'health') {
       // Basic health check
       return json({
-        success: true
+        success: true,
         status: 'healthy',
         services: {
           simd_parser: 'operational',
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('❌ Health check failed:', error)
     return json({
-      success: false
+      success: false,
       status: 'degraded',
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })

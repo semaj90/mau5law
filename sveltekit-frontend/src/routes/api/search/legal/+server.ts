@@ -197,7 +197,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const processingTime = Date.now() - startTime
     // Enhanced response with legal AI platform optimization
     return json({
-      success: true
+      success: true,
       results: enhancedResults
       metadata: {
         query,
@@ -228,14 +228,14 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Enhanced Legal AI Search error:', error)
     if (error instanceof z.ZodError) {
       return json({
-        success: false
+        success: false,
         error: 'Invalid search parameters',
         details: error.errors,
         timestamp: new Date().toISOString()
       }, { status: 400 })
     }
     return json({
-      success: false
+      success: false,
       error: 'Enhanced search failed',
       details: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString(),
@@ -802,17 +802,17 @@ export const POST: RequestHandler = async ({ request }) => {
         'DNA evidence analysis'
       ]
       return json({
-        success: true
+        success: true,
         suggestions: suggestions.slice(0, 5)
       })
     }
     return json({
-      success: false
+      success: false,
       error: 'Invalid action'
     }, { status: 400 })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: 'Failed to process request'
     }, { status: 500 })
   }

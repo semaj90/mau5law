@@ -24,14 +24,14 @@ export const GET: RequestHandler = async (event) => {
       timestamp: new Date().toISOString()
     }
     return json({
-      success: true
+      success: true,
       data: healthData
     })
   } catch (error: any) {
     console.error("Health API error:", error)
     return json(
       {
-        success: false
+        success: false,
         error: "Failed to fetch health data",
         data: {
           cpu: 0,

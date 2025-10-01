@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
   const initialMessage = url.searchParams.get('message')
   if (!userId || !sessionId) {
     return json({
-      success: false
+      success: false,
       error: 'Missing userId or sessionId parameters'
     }, { status: 400 })
   }
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
     // Get orchestrator stats for dashboard
     const orchestratorStats = qloraRLOrchestrator.getStats()
     return json({
-      success: true
+      success: true,
       ssrContext: {
         userId: ssrResult.ssrContext.userId,
         sessionId: ssrResult.ssrContext.sessionId,
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
   } catch (error: any) {
     console.error('❌ SSR Chat error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   const { sessionId, message, metadata } = await request.json()
   if (!sessionId || !message) {
     return json({
-      success: false
+      success: false,
       error: 'Missing sessionId or message'
     }, { status: 400 })
   }
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     console.error('❌ Chat streaming error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -101,7 +101,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   const { sessionId, interactionId, feedback, userDictionaryUpdates } = await request.json()
   if (!sessionId || !interactionId) {
     return json({
-      success: false
+      success: false,
       error: 'Missing required parameters'
     }, { status: 400 })
   }
@@ -115,7 +115,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       // Implement QLoRA retraining trigger
     }
     return json({
-      success: true
+      success: true,
       message: 'Feedback updated successfully',
       qloraRetrained: Math.abs(feedback) > 0.8,
       timestamp: new Date().toISOString()
@@ -123,7 +123,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Feedback update error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -135,7 +135,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action')
   if (!sessionId) {
     return json({
-      success: false
+      success: false,
       error: 'Missing sessionId parameter'
     }, { status: 400 })
   }
@@ -151,7 +151,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
           userSatisfaction: 0
         }
         return json({
-          success: true
+          success: true,
           sessionId,
           stats,
           timestamp: new Date().toISOString()
@@ -159,13 +159,13 @@ export const PATCH: RequestHandler = async ({ url }) => {
       case 'export':
         // Export conversation for analysis
         return json({
-          success: true
+          success: true,
           message: 'Export functionality not yet implemented',
           timestamp: new Date().toISOString()
         })
       default:
         return json({,
-          success: false
+          success: false,
           error: `Unknown action: ${action}`,
           availableActions: ['stats', 'export']
         }, { status: 400 })
@@ -173,7 +173,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Session analytics error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
@@ -185,7 +185,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   const cleanup = url.searchParams.get('cleanup') === 'true'
   if (!sessionId) {
     return json({
-      success: false
+      success: false,
       error: 'Missing sessionId parameter'
     }, { status: 400 })
   }
@@ -194,7 +194,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     // TODO: Implement session cleanup in SSR chat assistant
     // await ssrChatAssistant.deleteSession(sessionId, cleanup)
     return json({
-      success: true
+      success: true,
       sessionId,
       cleaned: cleanup
       message: 'Session deleted successfully',
@@ -203,7 +203,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Session deletion error:', error)
     return json({
-      success: false
+      success: false,
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
