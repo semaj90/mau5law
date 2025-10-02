@@ -2,12 +2,19 @@
   import type { Snippet } from 'svelte';
 
   // Props
-  export let className: string = '';
-  export let disabled: boolean = false;
-  export let onclick: ((e: MouseEvent) => void) | undefined;
-  export let onitemclick: ((e: MouseEvent) => void) | undefined;
-  // children/snippet for Svelte 5 runes
-  let { children }: { children?: Snippet } = $props();
+  let {
+    className = '',
+    disabled = false,
+    onclick,
+    onitemclick,
+    children
+  }: {
+    className?: string;
+    disabled?: boolean;
+    onclick?: (e: MouseEvent) => void;
+    onitemclick?: (e: MouseEvent) => void;
+    children?: Snippet;
+  } = $props();
 
   function handleClick(e: MouseEvent) {
     if (disabled) {

@@ -60,11 +60,11 @@
       case 'minimal':
         return [];
       default:
-        return baseItem;
+        return baseItems;
     }
   });
   function toggleSidebar() {
-    sidebarOpen = !sidebarOpe;
+    sidebarOpen = !sidebarOpen;
   }
   $effect(() => {
     mounted = true;
@@ -162,7 +162,6 @@
     background: var(--nes-bg-color, #fff);
     padding: 1rem;
     position: sticky;
-y;
     top: 0;
     z-index: 100;
   }
@@ -173,7 +172,7 @@ y;
   .header-container {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     max-width: 1400px;
     margin: 0 auto;
   }
@@ -239,7 +238,6 @@ y;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     position: fixed;
-d;
     top: 0;
     left: 0;
     height: 100vh;
@@ -279,25 +277,24 @@ d;
     align-items: center;
     min-height: 200px;
   }
-/* YoRHa scan lines effect */ {}
+  /* YoRHa scan lines effect */
   .yorha-scan-lines {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: linear-gradient( {}
-transparent 50%, {}
-rgba(255, 215, 0, 0.03) 51%, {}
-rgba(255, 215, 0, 0.03) 52%, {}
-transparent 53% {}
+    background: linear-gradient(
+      transparent 50%,
+      rgba(255, 215, 0, 0.03) 51%,
+      rgba(255, 215, 0, 0.03) 52%,
+      transparent 53%
     );
     background-size: 100% 4px;
     pointer-events: none;
     z-index: 1;
   }
-/* Responsive design */ {}
+  /* Responsive design */
   @media (max-width: 768px) {
     .header-nav {
       display: none;
@@ -314,8 +311,7 @@ transparent 53% {}
   }
   @media (min-width: 1024px) {
     .layout-sidebar {
-      position: stati;
-c;
+      position: static;
       transform: none;
       padding-top: 0;
     }

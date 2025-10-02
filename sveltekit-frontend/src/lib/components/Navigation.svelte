@@ -1,10 +1,22 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { getRoutes, type Route } from '$lib/utils/routes';
+  import { browser } from '$app/environment';
 
-  let navItems: Route[] = [];
-  let searchOpen = false;
-  let searchQuery = '';
+  interface Route {
+    name: string;
+    href: string;
+  }
+
+  // Svelte 5 runes with static nav items for production
+  let navItems = $state<Route[]>([
+    { name: 'Home', href: '/' },
+    { name: 'Cases', href: '/cases' },
+    { name: 'Evidence', href: '/evidence' },
+    { name: 'AI Chat', href: '/(ai)/chat' },
+    { name: 'RAG Search', href: '/(ai)/rag' },
+    { name: 'YoRHa', href: '/yorha' },
+  ]);
+  let searchOpen = $state(false);
+  let searchQuery = $state('');
 
   function toggleSearch() {
     searchOpen = !searchOpen;
@@ -16,13 +28,15 @@
     }
   }
 
-  onMount(() => {
-    navItems = getRoutes();
-    window.addEventListener('keydown', handleKeydown);
-  });
+  // SvelteKit 2 compatible - keyboard listener only in browser
+  $effect(() => {
+    if (browser) {
+      window.addEventListener('keydown', handleKeydown);
 
-  onDestroy(() => {
-    window.removeEventListener('keydown', handleKeydown);
+      return () => {
+        window.removeEventListener('keydown', handleKeydown);
+      };
+    }
   });
 </script>
 
@@ -37,18 +51,18 @@
 
   <!-- Search -->
   <div class="relative">
-    <button class="nes-btn is-warning" on:click={toggleSearch}>Search</button>
+    <button class="nes-btn is-warning" onclick={toggleSearch}>Search</button>
   </div>
 </nav>
 
-<!-- Search Modal -->
+<!-- Search Modal - Svelte 5 syntax -->
 {#if searchOpen}
   <div
     class="search-modal-overlay"
-    on:click={(e) => {
+    onclick={(e) => {
       if (e.currentTarget === e.target) toggleSearch();
     }}
-    on:keydown={(e) => {
+    onkeydown={(e) => {
       if (e.currentTarget === e.target && e.key === 'Enter') toggleSearch();
     }}
     role="dialog"
@@ -58,7 +72,7 @@
     <div class="search-modal">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold">Search</h2>
-        <button class="nes-btn is-error" on:click={toggleSearch} aria-label="Close">X</button>
+        <button class="nes-btn is-error" onclick={toggleSearch} aria-label="Close">X</button>
       </div>
       <input type="text" class="nes-input" placeholder="Search..." bind:value={searchQuery} />
     </div>

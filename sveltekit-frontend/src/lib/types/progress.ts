@@ -1,5 +1,5 @@
 // types/progress.ts
-export type ProgressMsg =;
+export type ProgressMsg =
   | {
       type: 'upload-progress';
       fileId: string;
@@ -20,9 +20,9 @@ export type ProgressMsg =;
   | {
       type: 'error';
       fileId: string;
-      error: { message: string; code?: string; meta?: unknown }
-    }
-}
+      error: { message: string; code?: string; meta?: unknown };
+    };
+
 export interface EvidenceProcessRequest {
   evidenceId: string;
   steps?: string[];
@@ -53,6 +53,16 @@ export interface EmbeddingResult {
 export interface RagResult {
   summary: string;
   snippets: string[];
-  relevantDocs: any[];
+  relevantDocs: RelevantDoc[]; // replaced any[] with a concrete type
   confidence: number;
 }
+
+// Add a small, flexible type for referenced documents
+export type RelevantDoc = {
+  id: string;
+  title?: string;
+  snippet?: string;
+  score?: number; // similarity / relevance score (0-1)
+  source?: string; // e.g., 'pgvector', 'qdrant', 'minio'
+  metadata?: Record<string, unknown>;
+};

@@ -22,7 +22,7 @@ const RAG_TIMEOUT = 30000
  * Forward request to Enhanced RAG Backend with error handling and logging
  */
 async function forwardToRAGBackend(
-  endpoint: string
+  endpoint: string,
   options: RequestInit = {}
 ): Promise<any> {
   const controller = new AbortController()

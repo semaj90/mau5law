@@ -125,8 +125,8 @@
 	// Generate unique ID for loading announcement
 	const loadingAnnouncementId = `loading-${id}`;
 	// className is already destructured; no need to remove it from restProps
-	let isDisabled = $derived(disabled || loading);
-	let buttonClass = $derived(cn(buttonVariants({ variant, size }), classAttr, className));
+	let isDisabled = $derived(() => disabled || loading);
+	let buttonClass = $derived(() => cn(buttonVariants({ variant, size }), classAttr, className));
 	// Lightweight manual event callbacks (avoids deprecated createEventDispatcher)
 	let onAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null;
 	let onCache: ((p: { key: string; action: string }) => void) | null = null;

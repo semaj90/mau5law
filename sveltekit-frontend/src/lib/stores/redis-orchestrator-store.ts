@@ -3,28 +3,27 @@
  * Provides reactive state management for Redis-optimized AI operations
  * Integrates with SvelteKit and provides real-time Redis statistics
  */
-import { writable, derived, get } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
-}
 export interface RedisStats {
   llm_cache: {
     total_keys: number;
     memory_usage: string;
     hit_rate_estimate: number;
-  }
+  };
   agent_memory: {
     active_sessions: number;
-  }
+  };
   task_queue: {
     queued_tasks: number;
     processing_tasks: number;
     completed_tasks_count: number;
-  }
+  };
   redis_memory: string;
   last_updated: string;
 }
 export interface RedisOptimizationResult {
-  response: any;
+  response: unknown;
   source: 'cache' | 'fresh' | 'queued';
   processing_time: number;
   cached: boolean;
@@ -35,7 +34,7 @@ export interface RedisOptimizationResult {
     memory_bank: string;
     session_id: string;
     timestamp: string;
-  }
+  };
 }
 export interface QueuedTask {
   taskId: string;
@@ -44,47 +43,41 @@ export interface QueuedTask {
   status: 'queued' | 'processing' | 'completed' | 'failed';
   estimatedTime: string;
   submittedAt: string;
-  result?: any;
+  result?: unknown;
 }
 // Core stores
 export const redisStats = writable<RedisStats | null>(null);
 export const isRedisHealthy = writable<boolean>(true);
-export const queuedTasks = writable<Map<string, QueuedTask>(new Map();
+// Fixed: initialize Map correctly
+export const queuedTasks = writable<Map<string, QueuedTask>>(new Map());
+// Fixed: processingTimes typed as array of entries
 export const cacheHitRate = writable<number>(0);
-export const processingTimes = writable<Array<any>([]);
+export const processingTimes = writable<Array<{ endpoint: string; time: number; timestamp: string }>>([]);
 // Derived stores for computed values
-export const averageProcessingTime = derived(
-  processingTimes,
-  ($times) => {
-    if ($times.length === 0) return 0;
-    const sum = $times.reduce((acc, t) => acc + t.time, 0);
-    return Math.round(sum / $times.length);
+export const averageProcessingTime = derived(processingTimes, $times => {
+  if ($times.length === 0) return 0;
+  const sum = $times.reduce((acc, t) => acc + t.time, 0);
+  return Math.round(sum / $times.length);
+});
+export const totalQueuedTasks = derived(redisStats, $stats => $stats?.task_queue?.queued_tasks || 0);
+export const memoryPressure = derived(redisStats, $stats => {
+  if (!$stats?.redis_memory) return 'low';
+  const memoryStr = $stats.redis_memory;
+  if (memoryStr.includes('GB')) {
+    const gb = parseInt(memoryStr);
+    if (gb > 4) return 'critical';
+    if (gb > 2) return 'high';
+    if (gb > 1) return 'medium';
   }
-);
-export const totalQueuedTasks = derived(
-  redisStats,
-  ($stats) => $stats?.task_queue?.queued_tasks || 0
-);
-export const memoryPressure = derived(
-  redisStats,
-  ($stats) => {
-    if (!$stats?.redis_memory) return 'low';
-    const memoryStr = $stats.redis_memory;
-    if (memoryStr.includes('GB')) {
-      const gb = parseInt(memoryStr);
-      if (gb > 4) return 'critical';
-      if (gb > 2) return 'high';
-      if (gb > 1) return 'medium';
-    }
-    return 'low';
-  }
-);
+  return 'low';
+});
 /**
  * Redis Orchestrator Client API
- */;
+ */
 export class RedisOrchestratorClient {
   private static instance: RedisOrchestratorClient;
-  private pollInterval: number | null = null;
+  // Use ReturnType<typeof setInterval> to match the runtime return type (number in browser, Timer in Node).
+  private pollInterval: ReturnType<typeof setInterval> | null = null;
   private baseUrl = '/api/redis-orchestrator';
   static getInstance(): RedisOrchestratorClient {
     if (!this.instance) {
@@ -94,7 +87,7 @@ export class RedisOrchestratorClient {
   }
   /**
    * Initialize Redis orchestrator client with real-time updates
-   */;
+   */
   async initialize(pollIntervalMs = 5000) {
     if (!browser) return;
     // Initial stats fetch
@@ -103,16 +96,17 @@ export class RedisOrchestratorClient {
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
     }
+    // Assign setInterval directly; type now matches pollInterval.
     this.pollInterval = setInterval(async () => {
       await this.updateStats();
-    }, pollIntervalMs) as any;
+    }, pollIntervalMs);
     console.log('🎮 Redis orchestrator client initialized');
   }
   /**
    * Process AI query through Redis orchestrator
    */
   async processQuery(
-    query: string;
+    query: string,
     context: {
       endpoint?: string;
       caseId?: string;
@@ -125,39 +119,52 @@ export class RedisOrchestratorClient {
       const response = await fetch(this.baseUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           query,
           sessionId: this.generateSessionId(context),
           context: {
             endpoint: context.endpoint || 'client-query',
-            ...context
+            ...context,
           },
-          useOrchestrator: context.useOrchestrator !== false
-        })
+          useOrchestrator: context.useOrchestrator !== false,
+        }),
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Redis orchestrator request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`Redis orchestrator request failed: ${response.statusText}`);
       }
-      const result: RedisOptimizationResult = await (response as { ok?: any; statusText?: any; json?: any }).json();
+
+      const rawResult: unknown = await response.json();
+
       // Update client-side metrics
-      this.recordProcessingTime(
-        context.endpoint || 'client-query',
-        performance.now() - startTime
-      );
-      // If task was queued, track it
-      if ((result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).task_id) {
+      this.recordProcessingTime(context.endpoint || 'client-query', performance.now() - startTime);
+
+      // If task was queued, track it using safe extractor
+      const taskId = extractTaskId(rawResult);
+      if (taskId) {
         this.trackQueuedTask({
-          taskId: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).task_id,
+          taskId,
           taskType: 'complex_legal',
           query,
           status: 'queued',
           estimatedTime: '30-45 seconds',
-          submittedAt: new Date().toISOString()
+          submittedAt: new Date().toISOString(),
         });
       }
-      return result;
+
+      // Try to coerce to expected shape via safe mapper; if not, return a minimal object to satisfy caller
+      if (isObject(rawResult)) {
+        const mapped = mapToRedisOptimizationResult(rawResult);
+        if (mapped) return mapped;
+      }
+      // fallback minimal shape
+      return {
+        response: rawResult as unknown,
+        source: 'fresh',
+        processing_time: Math.round(performance.now() - startTime),
+        cached: false,
+      } as RedisOptimizationResult;
     } catch (error) {
       console.error('🎮 Redis orchestrator query failed:', error);
       throw error;
@@ -165,27 +172,33 @@ export class RedisOrchestratorClient {
   }
   /**
    * Check task status and retrieve result
-   */;
-  async getTaskResult(taskId: string): Promise<any | null> {
+   */
+  async getTaskResult(taskId: string): Promise<unknown | null> {
     try {
-      // removed unused response assignment
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      const response = await fetch(`${this.baseUrl}/tasks/${encodeURIComponent(taskId)}`);
+      if (!response.ok) {
         return null;
       }
-      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      // Update task status
-      if ((result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).found) {
-        queuedTasks.update(tasks => {
-          const task = tasks.get(taskId);
-          if (task) {
-            task.status = 'completed';
-            task.result = (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).result;
-            tasks.set(taskId, task);
-          }
-          return tasks;
-        });
+      const raw = await response.json();
+
+      // Update task status if found (use safe checks)
+      if (isObject(raw)) {
+        const found = raw.found === true || raw['found'] === 1;
+        if (found) {
+          queuedTasks.update(tasks => {
+            const task = tasks.get(taskId);
+            if (task) {
+              task.status = 'completed';
+              task.result = extractResultField(raw, 'result') ?? undefined;
+              tasks.set(taskId, task);
+            }
+            return tasks;
+          });
+        }
+        return extractResultField(raw, 'result') ?? null;
       }
-      return (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).result;
+
+      return null;
     } catch (error) {
       console.error('🎮 Task result retrieval failed:', error);
       return null;
@@ -196,37 +209,52 @@ export class RedisOrchestratorClient {
    */
   async queueTask(
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
-    query: string;
-    metadata: any = {},
-    priority = 100;
+    query: string,
+    metadata: Record<string, unknown> = {},
+    priority = 100
   ): Promise<string> {
     try {
       const response = await fetch(`${this.baseUrl}/tasks`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           taskType,
           query,
           metadata,
-          priority
-        })
+          priority,
+        }),
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Task queuing failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`Task queuing failed: ${response.statusText}`);
       }
-      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      const raw: unknown = await response.json();
+
+      const taskId = extractTaskId(raw);
+      const estimated = (() => {
+        if (isObject(raw) && typeof raw.estimated_processing_time === 'string') return raw.estimated_processing_time;
+        return typeof raw === 'object' &&
+          isObject(raw) &&
+          typeof (raw as Record<string, unknown>).estimated_processing_time === 'string'
+          ? ((raw as Record<string, unknown>).estimated_processing_time as string)
+          : 'unknown';
+      })();
+
+      if (!taskId) {
+        throw new Error('Task queued but no task id returned by server');
+      }
+
       // Track the task
       this.trackQueuedTask({
-        taskId: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).taskId,
+        taskId,
         taskType,
         query,
         status: 'queued',
-        estimatedTime: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).estimated_processing_time,
-        submittedAt: new Date().toISOString()
+        estimatedTime: estimated,
+        submittedAt: new Date().toISOString(),
       });
-      return (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).taskId;
+      return taskId;
     } catch (error) {
       console.error('🎮 Task queuing failed:', error);
       throw error;
@@ -234,15 +262,15 @@ export class RedisOrchestratorClient {
   }
   /**
    * Get comprehensive Redis system health
-   */;
+   */
   async getSystemHealth() {
     try {
-      // removed unused response assignment
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      const response = await fetch(`${this.baseUrl}/health`);
+      if (!response.ok) {
         isRedisHealthy.set(false);
         return null;
       }
-      const health = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      const health = await response.json();
       isRedisHealthy.set(health.status === 'healthy');
       return health;
     } catch (error) {
@@ -253,16 +281,16 @@ export class RedisOrchestratorClient {
   }
   /**
    * Clear Redis cache
-   */;
+   */
   async clearCache(confirm = false): Promise<boolean> {
     if (!confirm) {
       throw new Error('Cache clear requires explicit confirmation');
     }
     try {
       const response = await fetch(`${this.baseUrl}/cache?confirm=true`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
-      return (response as { ok?: any; statusText?: any; json?: any }).ok;
+      return response.ok;
     } catch (error) {
       console.error('🎮 Cache clear failed:', error);
       return false;
@@ -270,22 +298,34 @@ export class RedisOrchestratorClient {
   }
   /**
    * Update Redis statistics
-   */;
+   */
   private async updateStats() {
     try {
-      // removed unused response assignment
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      const response = await fetch(`${this.baseUrl}/stats`);
+      if (!response.ok) {
         isRedisHealthy.set(false);
         return;
       }
-      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      const stats: RedisStats = {
-        ...data.redis_stats,
-        last_updated: new Date().toISOString()
+      const data: unknown = await response.json();
+
+      // Safely extract redis_stats or fall back to top-level fields
+      let statsSource: unknown = data;
+      if (isObject(data) && isObject(data.redis_stats)) {
+        statsSource = data.redis_stats;
       }
-      redisStats.set(stats);
-      cacheHitRate.set(stats.llm_cache?.hit_rate_estimate || 0);
-      isRedisHealthy.set((data as { redis_stats?: any; status?: any }).status === 'healthy');
+
+      if (isObject(statsSource)) {
+        const mapped = buildRedisStatsFromUnknown(statsSource);
+        if (mapped) {
+          redisStats.set(mapped);
+          cacheHitRate.set(mapped.llm_cache?.hit_rate_estimate ?? 0);
+        }
+      }
+
+      // Safely set health
+      if (isObject(data) && typeof data.status === 'string') {
+        isRedisHealthy.set(data.status === 'healthy');
+      }
     } catch (error) {
       console.error('🎮 Stats update failed:', error);
       isRedisHealthy.set(false);
@@ -293,34 +333,35 @@ export class RedisOrchestratorClient {
   }
   /**
    * Record processing time for metrics
-   */;
+   */
   private recordProcessingTime(endpoint: string, time: number) {
     processingTimes.update(times => {
       const newEntry = {
         endpoint,
         time: Math.round(time),
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      };
       const updated = [...times, newEntry].slice(-50); // Keep last 50 entries
       return updated;
     });
   }
   /**
    * Track queued task
-   */;
+   */
   private trackQueuedTask(_task: QueuedTask) {
+    // Use the provided task object to track
     queuedTasks.update(tasks => {
-      tasks.set(task.taskId, task);
+      tasks.set(_task.taskId, _task);
       return tasks;
     });
     // Auto-poll for task completion
-    this.pollTaskCompletion(task.taskId);
+    this.pollTaskCompletion(_task.taskId);
   }
   /**
    * Poll task completion
-   */;
+   */
   private async pollTaskCompletion(taskId: string) {
-    const maxAttempts = 20; // 10 minutes with 30s intervals
+    const maxAttempts = 20; // attempts count
     let attempts = 0;
     const poll = async () => {
       if (attempts++ >= maxAttempts) {
@@ -336,18 +377,25 @@ export class RedisOrchestratorClient {
       }
       const result = await this.getTaskResult(taskId);
       if (!result) {
-        setTimeout(poll, 30000); // Check again in 30 seconds
+        // Not ready yet, check again in 30 seconds
+        setTimeout(poll, 30000);
+      } else {
+        // result received, already handled in getTaskResult -> queuedTasks update
+        return;
       }
-    }
+    };
     // Start polling after a short delay
     setTimeout(poll, 5000);
   }
   /**
    * Generate session ID
-   */;
-  private generateSessionId(context: any): string {
-    if (context.userId) {
-      return `client_user_${context.userId}`;
+   */
+  private generateSessionId(context: Record<string, unknown> | undefined): string {
+    if (isObject(context)) {
+      const uid = (context as Record<string, unknown>)['userId'];
+      if (typeof uid === 'string' && uid.length > 0) {
+        return `client_user_${uid}`;
+      }
     }
     // Generate anonymous session based on browser fingerprint
     const fingerprint = this.generateBrowserFingerprint();
@@ -355,20 +403,15 @@ export class RedisOrchestratorClient {
   }
   /**
    * Generate simple browser fingerprint
-   */;
+   */
   private generateBrowserFingerprint(): string {
     if (!browser) return 'ssr';
-    const factors = [
-      navigator.userAgent,
-      screen.width,
-      screen.height,
-      new Date().getTimezoneOffset()
-    ];
+    const factors = [navigator.userAgent, screen.width, screen.height, new Date().getTimezoneOffset()];
     return btoa(factors.join('|')).substring(0, 12);
   }
   /**
    * Cleanup resources
-   */;
+   */
   destroy() {
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
@@ -378,3 +421,153 @@ export class RedisOrchestratorClient {
 }
 // Global client instance
 export const redisOrchestratorClient = RedisOrchestratorClient.getInstance();
+
+// --- new helpers to avoid `any` casts ---
+function isObject(v: unknown): v is Record<string, unknown> {
+  return v !== null && typeof v === 'object';
+}
+
+function extractTaskId(obj: unknown): string | undefined {
+  if (!isObject(obj)) return undefined;
+  const o = obj as Record<string, unknown>;
+  if (typeof o.task_id === 'string') return o.task_id;
+  if (typeof o.taskId === 'string') return o.taskId;
+  // support nested shapes
+  if (isObject(o._redis_optimization) && typeof o._redis_optimization.session_id === 'string') {
+    return o._redis_optimization.session_id;
+  }
+  // sometimes result object contains the task id
+  if (isObject(o.result)) {
+    const r = o.result as Record<string, unknown>;
+    if (typeof r.task_id === 'string') return r.task_id;
+    if (typeof r.taskId === 'string') return r.taskId;
+  }
+  return undefined;
+}
+
+function extractResultField<T = unknown>(obj: unknown, field: string): T | undefined {
+  if (!isObject(obj)) return undefined;
+  const o = obj as Record<string, unknown>;
+  if (field in o) {
+    return o[field] as T;
+  }
+  if (isObject(o.result) && field in o.result) {
+    return (o.result as Record<string, unknown>)[field] as T;
+  }
+  return undefined;
+}
+
+// New: safe mappers and converters for RedisStats
+function toNumber(v: unknown, fallback = 0): number {
+  if (typeof v === 'number' && Number.isFinite(v)) return v;
+  if (typeof v === 'string') {
+    const n = parseFloat(v);
+    return Number.isFinite(n) ? n : fallback;
+  }
+  return fallback;
+}
+function toString(v: unknown, fallback = ''): string {
+  if (typeof v === 'string') return v;
+  if (v === undefined || v === null) return fallback;
+  try { return String(v); } catch { return fallback; }
+}
+
+/**
+ * Safely map an unknown payload to RedisStats, returning null if input is not mappable.
+ */
+function buildRedisStatsFromUnknown(src: unknown): RedisStats | null {
+  if (!isObject(src)) return null;
+  const s = src as Record<string, unknown>;
+  const llm = isObject(s.llm_cache) ? (s.llm_cache as Record<string, unknown>) : {};
+  const agent = isObject(s.agent_memory) ? (s.agent_memory as Record<string, unknown>) : {};
+  const taskq = isObject(s.task_queue) ? (s.task_queue as Record<string, unknown>) : {};
+
+  const redisMem = s.redis_memory ?? s.memory ?? '';
+
+  const stats: RedisStats = {
+    llm_cache: {
+      total_keys: toNumber(llm.total_keys, 0),
+      memory_usage: toString(llm.memory_usage, ''),
+      hit_rate_estimate: toNumber(llm.hit_rate_estimate, 0),
+    },
+    agent_memory: {
+      active_sessions: toNumber(agent.active_sessions, 0),
+    },
+    task_queue: {
+      queued_tasks: toNumber(taskq.queued_tasks, 0),
+      processing_tasks: toNumber(taskq.processing_tasks, 0),
+      completed_tasks_count: toNumber(taskq.completed_tasks_count, 0),
+    },
+    redis_memory: toString(redisMem, ''),
+    last_updated: new Date().toISOString(),
+  };
+  return stats;
+}
+
+// New: safe mapper from unknown -> RedisOptimizationResult
+function mapToRedisOptimizationResult(src: unknown): RedisOptimizationResult | null {
+	if (!isObject(src)) return null;
+	const o = src as Record<string, unknown>;
+
+	// response can be any; prefer explicit field then fallback to whole object
+	const response = ('response' in o ? o.response : src) as unknown;
+
+	const sourceRaw = typeof o.source === 'string' ? o.source : undefined;
+	const source = sourceRaw === 'cache' || sourceRaw === 'fresh' || sourceRaw === 'queued' ? sourceRaw : 'fresh';
+
+	const processing_time = (() => {
+		if (typeof o.processing_time === 'number' && Number.isFinite(o.processing_time)) return o.processing_time;
+		if (typeof o.processing_time === 'string') {
+			const n = parseFloat(o.processing_time);
+			if (Number.isFinite(n)) return n;
+		}
+		// try nested _redis_optimization.processing_time
+		if (isObject(o._redis_optimization) && typeof (o._redis_optimization as Record<string, unknown>).processing_time === 'number') {
+			return (o._redis_optimization as Record<string, unknown>).processing_time as number;
+		}
+		return 0;
+	})();
+
+	const cached = (() => {
+		if (typeof o.cached === 'boolean') return o.cached;
+		if (typeof o.cached === 'string') {
+			return o.cached === 'true';
+		}
+		// sometimes source indicates cache
+		if (source === 'cache') return true;
+		return false;
+	})();
+
+	const task_id = (() => {
+		if (typeof o.task_id === 'string') return o.task_id;
+		if (typeof o.taskId === 'string') return o.taskId;
+		if (isObject(o._redis_optimization) && typeof (o._redis_optimization as Record<string, unknown>).session_id === 'string') {
+			return (o._redis_optimization as Record<string, unknown>).session_id as string;
+		}
+		return undefined;
+	})();
+
+	const _redis_optimization = (() => {
+		if (isObject(o._redis_optimization)) {
+			const r = o._redis_optimization as Record<string, unknown>;
+			return {
+				endpoint: toString(r.endpoint, ''),
+				cache_strategy: toString(r.cache_strategy, ''),
+				memory_bank: toString(r.memory_bank, ''),
+				session_id: toString(r.session_id, ''),
+				timestamp: toString(r.timestamp, ''),
+			};
+		}
+		return undefined;
+	})();
+
+	return {
+		response,
+		source,
+		processing_time,
+		cached,
+		...(task_id ? { task_id } : {}),
+		...(_redis_optimization ? { _redis_optimization } : {}),
+	};
+}
+// --- end helpers ---

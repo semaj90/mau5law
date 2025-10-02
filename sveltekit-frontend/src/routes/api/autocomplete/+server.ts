@@ -174,9 +174,9 @@ async function getCachedSuggestions(query: string): Promise<any> {
   return suggestions
 }
 async function getDatabaseSuggestions(
-  query: string
-  context: string;
-  jurisdiction: string | undefined
+  query: string,
+  context: string,
+  jurisdiction: string | undefined,
   maxResults: number
 ): Promise<any> {
   const db = getDB()

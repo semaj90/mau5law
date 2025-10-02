@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
-  let { className = '' }: { className?: string } = $props();
-  let { children }: { children?: Snippet } = $props();
+  let { className = '', children }: { className?: string; children?: Snippet } = $props();
 </script>
 +
 <div class={`dropdown-menu ${className}`} role="menu">

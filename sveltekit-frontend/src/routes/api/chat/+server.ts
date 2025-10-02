@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         },
         updatedAt: new Date()
       })
-      .where(eq(chatSessions.id, currentSessionId)
+      .where(eq(chatSessions.id, currentSessionId));
     if (!stream) {
       // Non-streaming response
       const personalization = useProfile

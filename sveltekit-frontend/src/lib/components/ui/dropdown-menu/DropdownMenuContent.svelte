@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DropdownMenu } from 'bits-ui';
+  import { DropdownMenuContent } from 'bits-ui';
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   import { scale } from 'svelte/transition';
@@ -40,7 +40,7 @@
   // Note: content uses Snippet-based children rendering: {@render children?.()}
 </script>
 
-<DropdownMenu.Content
+<DropdownMenuContent
   class={contentClasses}
   {side}
   {align}
@@ -54,4 +54,4 @@
   transitionConfig={{ duration: 200, start: 0.95 }}
 >
     {@render children?.()}
-  </DropdownMenu.Content>
+  </DropdownMenuContent>

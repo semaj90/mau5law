@@ -158,7 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }, { status: 400 })
         }
         const startTime = Date.now()
-        const dataMap = new Map(Object.entries(keyDataMap)
+        const dataMap = new Map(Object.entries(keyDataMap));
         await cacheManager.batchSet(dataMap, type, ttl)
         const responseTime = Date.now() - startTime
         logger.info('💾 Batch cache set', {

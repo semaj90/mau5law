@@ -15,8 +15,8 @@ export const load: PageLoad = async ({ params, url, route }) => {
     currentPath: url.pathname,
     features: {
       basicRouting: true;
-      navigation: true
-      routeConfig: true
+      navigation: true,
+      routeConfig: true,
     }
   }
 }
