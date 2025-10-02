@@ -1,11 +1,12 @@
 <script lang="ts">
-  // In Svelte 5, this component simply passes through its children
-</script>
-
-<script lang="ts">
   import type { Snippet } from 'svelte';
-  // In Svelte 5, this component accepts a children snippet
-  let { children }: { children?: Snippet } = $props();
+
+  // Accept an optional children snippet in Svelte 5
+  export let children: Snippet | undefined = undefined;
+
+  // No-op snippet fallback
+  const _noop: Snippet = (() => '') as Snippet;
 </script>
 
-{@render children?.()}
+<!-- Prefer explicit `children` prop; use optional chaining and a noop to avoid invalid_snippet -->
+{@render (children ?? _noop)?.()}

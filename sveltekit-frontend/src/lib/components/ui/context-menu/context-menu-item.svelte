@@ -1,17 +1,9 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import type { Snippet } from 'svelte';
 
-  let {
-    disabled = false,
-    onclick = () => {}
-  }: {
-    disabled?: boolean;
-    onclick?: (event?: unknown) => void;
-  } = $props();
-
-  // children Snippet for Svelte 5 runes
-  let { children }: { children?: Snippet } = $props();
+  // Expose props correctly for Svelte
+  export let disabled: boolean = false;
+  export let onClick: (event?: MouseEvent | unknown) => void = () => {};
 
   interface ContextMenuContext {
     close: () => void;
@@ -20,9 +12,9 @@
   const ctx = getContext<ContextMenuContext>('context-menu');
   const close = ctx?.close ?? (() => {});
 
-  function handleClick() {
+  function handleClick(event?: MouseEvent) {
     if (!disabled) {
-      onclick?.();
+      onClick?.(event);
       close();
     }
   }
@@ -33,10 +25,11 @@
   class:disabled={disabled}
   role="menuitem"
   tabindex={disabled ? -1 : 0}
-  onclick={handleClick}
+  on:click={handleClick}
   {disabled}
+  aria-disabled={disabled}
 >
-  {@render children?.()}
+  <slot />
 </button>
 
 <style>/* @unocss-include */
@@ -56,6 +49,15 @@
   .context-menu-item:hover:not(.disabled) {
     background-color: #f3f4f6;
   }
+  .context-menu-item:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: -2px;
+  }
+  .context-menu-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
   .context-menu-item:focus {
     outline: 2px solid #3b82f6;
     outline-offset: -2px;
