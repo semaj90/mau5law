@@ -9,6 +9,9 @@ declare global {
       'data-testid'?: string;
     }
   }
+  interface GlobalThis {
+    $$slot_def_default?: import('svelte').Snippet;
+  }
 }
 // Extend module declarations for better type safety
 declare module '@qdrant/js-client-rest' {
