@@ -1,16 +1,17 @@
 import { ensureLocalIndex, addOrUpdateDocuments } from './localSearch.js';
 import type { LocalLegalDoc } from './localSearch.js';
+
 let lokiDb: any = null;
 let lokiCollection: any = null;
 let lastRefresh = 0;
 let refreshing = false;
-}
+
 export interface HybridInitOptions {
   refreshIntervalMs?: number;
   maxDocs?: number;
 }
-export function getLastRefresh() { return lastRefresh, }
-export function isRefreshing() { return refreshing, }
+export function getLastRefresh() { return lastRefresh; }
+export function isRefreshing() { return refreshing; }
 export async function initHybridLayer(opts: HybridInitOptions = {}): Promise<any> {
   if (typeof window === 'undefined') return;
   const { refreshIntervalMs = 5 * 60_000, maxDocs = 750 } = opts;
@@ -22,10 +23,10 @@ export async function initHybridLayer(opts: HybridInitOptions = {}): Promise<any
   }
   await refreshRemote({ maxDocs });
   if (refreshIntervalMs > 0) {
-    setInterval(() => { void refreshRemote({ maxDocs }), }, refreshIntervalMs);
+    setInterval(() => { void refreshRemote({ maxDocs }); }, refreshIntervalMs);
   }
 }
-export interface RefreshOpts { maxDocs?: number, }
+export interface RefreshOpts { maxDocs?: number; }
 export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
   if (refreshing) return;
   refreshing = true;
@@ -35,14 +36,14 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
     if (res.ok) {
       const data = await res.json();
       const raw = (data as { results?: any; documents?: any; matches?: any }).results || (data as { results?: any; documents?: any; matches?: any }).documents || [];
-      const docs: LocalLegalDoc[] = raw.map((d: any, i: number) => ({,
+      const docs: LocalLegalDoc[] = raw.map((d: any, i: number) => ({
         id: d.id || d.uuid || i + 1,
         title: d.title || d.name || `Document ${i + 1}`,
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
         status: d.status || 'active',
         metadata: d
-      });
+      }));
       addOrUpdateDocuments(docs);
       if (lokiCollection) {
         lokiCollection.clear();
@@ -59,7 +60,7 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
 export async function reRankWithPgVector(query: string, current: any[], endpoint = '/api/ai/vector-search'): Promise<any> {
   if (!query.trim() || current.length === 0) return current;
   try {
-    const payload: any = { query, limit: current.length }
+    const payload: any = { query, limit: current.length };
     if (current[0]?.id) payload.documentIds = current.map(r => r.id).slice(0, 64);
     const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (!res.ok) return current;
@@ -74,15 +75,15 @@ export async function reRankWithPgVector(query: string, current: any[], endpoint
     return current.map(item => {
       const raw = scoreMap.get((item as { id?: any; source?: any }).id);
       if (raw == null) return item;
-      const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw);
-      return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid' }
+      const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw));
+      return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid' };
     }).sort((a, b) => b.relevance - a.relevance);
   } catch (e: any) {
     console.warn('[HybridSearch] re-rank failed', e);
     return current;
   }
 }
-export function getLokiCount() { return lokiCollection ? lokiCollection.count() : 0, }
+export function getLokiCount() { return lokiCollection ? lokiCollection.count() : 0; }
 export function queryLokiTitle(term: string, limit = 25) {
   if (!lokiCollection || !term.trim()) return [];
   const lower = term.toLowerCase();

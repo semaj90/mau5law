@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: 'No query provided' }, { status: 400 })
     }
     // Execute custom query (with safety restrictions)
-    const result = await db.execute(sql.raw(query)
+    const result = await db.execute(sql.raw(query));
     return json({
       success: true,
       query,

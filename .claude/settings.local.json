@@ -386,7 +386,8 @@
       "Bash(cmd.exe:*)",
       "Bash(powershell.exe:*)",
       "Bash(docker-compose:*)",
-      "Bash(REDIS_PASSWORD=\"redis\" timeout 15s npm run dev:quic)"
+      "Bash(REDIS_PASSWORD=\"redis\" timeout 15s npm run dev:quic)",
+      "Bash(REDIS_PASSWORD=\"redis\" DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npm run dev:gpu)"
     ],
     "deny": [],
     "ask": []

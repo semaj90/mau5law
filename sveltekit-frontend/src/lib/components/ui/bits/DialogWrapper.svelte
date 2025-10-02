@@ -8,52 +8,141 @@
     description?: string;
     analyticsLog?: (_event: unknown) => void;
     onClose?: () => void;
+    children?: any; // Svelte 5 render-prop for parent content
   }
-  let { children,
+  let {
+    children = null,
     open = $bindable(false),
     title = '',
     description = '',
-    analyticsLog = () => ,
-    onClose = () =>  }: Props = $props();
-  // Melt UI component creation removed - replace with bits-ui declarative components analyticsLog({ event: 'dialog_closed', timestamp: Date.now() }), } });
+    analyticsLog = () => {},
+    onClose = () => {}
+  }: Props = $props();
+  // Lightweight analytics effect when dialog opens
   $effect(() => {
     if (open) analyticsLog({ event: 'dialog_opened', title, timestamp: Date.now() });
   });
+
+  function handleClose() {
+    // prefer the provided onClose callback, then log
+    try {
+      onClose?.();
+    } finally {
+      analyticsLog({ event: 'dialog_closed', title, timestamp: Date.now() });
+    }
+  }
+
+  function handleOverlayKeydown(e: KeyboardEvent) {
+    const k = e.key;
+    if (k === 'Enter' || k === ' ' || k === 'Escape') {
+      e.preventDefault();
+      handleClose();
+    }
+  }
 </script>
 
-{#if $dialogOpen}
-  <div use:overlay class="modal-overlay"></div>
-  <div use:content class="modal-content">
+{#if open}
+  <!-- overlay is now an interactive button with keyboard handler and label -->
+  <button
+    type="button"
+    class="modal-overlay"
+    onclick={handleClose}
+    onkeydown={handleOverlayKeydown}
+    aria-label="Close dialog"
+  ></button>
+
+  <div class="modal-content" role="dialog" aria-modal="true" aria-label={title || 'dialog'}>
     {#if title}
-      <h2 use:titleEl class="modal-title">{title}</h2>
+      <h2 class="modal-title">{title}</h2>
     {/if}
     {#if description}
-      <p use:descEl class="modal-description">{description}</p>
+      <p class="modal-description">{description}</p>
     {/if}
     <div class="modal-body">
-      {@render children?.()}
+      <!-- render-prop style for Svelte 5: call the children if it's a function, otherwise render directly -->
+      {#if typeof children === 'function'}
+        {@render children()}
+      {:else}
+        {children}
+      {/if}
     </div>
-    <button use:close class="modal-close">×</button>
+    <button
+      type="button"
+      class="modal-close"
+      onclick={handleClose}
+      aria-label="Close dialog"
+    >×</button>
   </div>
 {/if}
 
 <style>
+  /* Replace @apply rules with explicit CSS to avoid unknown at-rule errors */
   .modal-overlay {
-    @apply fixed inset-0 bg-black/60 z-40;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 40;
+    border: none;
+    padding: 0;
+    margin: 0;
   }
+
   .modal-content {
-    @apply fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2;
-    @apply bg-nier-surface border border-nier-border rounded-lg p-6 shadow-2xl;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 50;
+    width: 100%;
+    max-width: 28rem; /* tailwind max-w-md */
+    transform: translate(-50%, -50%);
+    background-color: var(--nier-surface, #0b0b0b);
+    border: 1px solid var(--nier-border, rgba(255,255,255,0.06));
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);
+    box-sizing: border-box;
   }
+
   .modal-title {
-    @apply text-xl font-bold text-nier-accent mb-2;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--nier-accent, #9f7aea);
+    margin-bottom: 0.5rem;
   }
+
   .modal-description {
-    @apply text-nier-text-muted mb-4;
+    color: var(--nier-text-muted, rgba(255,255,255,0.7));
+    margin-bottom: 1rem;
   }
+
   .modal-close {
-    @apply absolute top-4 right-4 w-8 h-8 rounded-full bg-nier-surface-light;
-    @apply hover:bg-nier-surface-lighter transition-color;
-    @apply flex items-center justify-center text-nier-text-muted hover:text-nier-white;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    background-color: var(--nier-surface-light, #111);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nier-text-muted, rgba(255,255,255,0.7));
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .modal-close:hover {
+    background-color: var(--nier-surface-lighter, #222);
+    color: var(--nier-white, #fff);
+  }
+
+  /* optional: ensure focus outline for keyboard users */
+  .modal-overlay:focus,
+  .modal-close:focus {
+    outline: 2px solid rgba(150, 150, 250, 0.6);
+    outline-offset: 2px;
   }
 </style>

@@ -79,12 +79,13 @@ const processRabbitMQQueue = fromPromise(async ({ input }: {
       // Simulate processing queued computation
       const result = await new Promise((resolve) => {
         setTimeout(
-          () =>;
+          () => {
             resolve({
               computation,
-              processed: true;
+              processed: true,
               timestamp: Date.now()
-            }),
+            });
+          },
           500
         );
       });
@@ -97,7 +98,7 @@ const processRabbitMQQueue = fromPromise(async ({ input }: {
 });
 export const aiComputationMachine = createMachine({
   id: 'aiComputation',
-  types: { [key: string]: any } as {
+  types: {} as {
     context: AIComputationContext;
     events: AIComputationEvent;
   },
@@ -107,8 +108,8 @@ export const aiComputationMachine = createMachine({
     sessionId: '',
     queuedComputations: [],
     idleTime: 0,
-    isOnline: true
-    rabbitMQConnected: false
+    isOnline: true,
+    rabbitMQConnected: false,
     recommendations: {
       similar: [],
       suggestions: [],
@@ -119,11 +120,11 @@ export const aiComputationMachine = createMachine({
   },
   states: {
     idle: {
-      entry: assign({,
+      entry: assign({
         idleTime: () => Date.now()
       }),
       on: {
-        START_COMPUTATION: [;
+        START_COMPUTATION: [
           {
             target: 'computing',
             guard: ({ context }) => context.isOnline

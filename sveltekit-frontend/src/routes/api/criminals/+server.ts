@@ -115,8 +115,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       email: data.email?.trim() || null,
       socialSecurityNumber: data.socialSecurityNumber?.trim() || null,
       driversLicense: data.driversLicense?.trim() || null,
-      height: data.height ? Number(data.height) : null
-      weight: data.weight ? Number(data.weight) : null
+      height: data.height ? Number(data.height) : null,
+      weight: data.weight ? Number(data.weight) : null,
       eyeColor: data.eyeColor?.trim() || null,
       hairColor: data.hairColor?.trim() || null,
       distinguishingMarks: data.distinguishingMarks?.trim() || null,

@@ -1,9 +1,5 @@
 import type { PageServerLoad } from './$types.js';
 import type { Actions } from '@sveltejs/kit';
-// Server-only cognitive system modules
-import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache.server';
-import { multidimensionalRoutingMatrix } from '$lib/routing/multidimensional-routing-matrix.server';
-import { physicsAwareGPUOrchestrator } from '$lib/gpu/physics-aware-gpu-orchestrator.server';
 import type { CognitiveMetrics } from '$lib/types/metrics';
 import { redirect, fail } from '@sveltejs/kit';
 // Types for our API responses
@@ -105,16 +101,11 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       nodeVersion: '22.17.1',
       uptime: Date.now() - 1000 * 60 * 60,
     }
-    // Initialize server-only cognitive subsystems (lightweight stubs)
-    await Promise.all([
-      reinforcementLearningCache.initialize(),
-      multidimensionalRoutingMatrix.initialize(),
-      physicsAwareGPUOrchestrator.initialize(),
-    ]);
+    // Cognitive metrics - mock data for now
     const cognitiveMetrics: CognitiveMetrics = {
-      routingEfficiency: multidimensionalRoutingMatrix.getEfficiencyScore() * 100,
-      cacheHitRatio: reinforcementLearningCache.getHitRatio() * 100,
-      gpuUtilization: physicsAwareGPUOrchestrator.getGPUUtilization() * 100,
+      routingEfficiency: 95,
+      cacheHitRatio: 87,
+      gpuUtilization: 72,
       consciousnessLevel: 12,
       quantumCoherence: 50,
       timestamp: new Date().toISOString(),

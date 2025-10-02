@@ -225,7 +225,7 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
       })
     } catch (err: any) {
       logger.error('[API] Test error:', err)
-      return json()
+      return json(
         {
           success: false,
           error: err.message,

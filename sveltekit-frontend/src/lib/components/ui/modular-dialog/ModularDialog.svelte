@@ -9,6 +9,7 @@
   import { onMount  } from "svelte";
   import type { Snippet } from 'svelte';
   import { reactiveApiClient } from '$lib/services/api-client';
+  import { productionServiceClient } from '$lib/api/production-service-client';
   import type { ApiResponse, DialogDataProvider } from '$lib/types/api';
   interface Props {
     // Dialog configuration
@@ -91,15 +92,33 @@
     errorMessage = null;
     try {
       let result: any = null;
+      const client = reactiveApiClient as any; // runtime-checked wrapper
+
       switch (entityType) {
         case 'case':
-          result = await reactiveApiClient.fetchCase(entityId, cacheData);
+          if (typeof client?.fetchCase === 'function') {
+            result = await client.fetchCase(entityId, cacheData);
+          } else {
+            // Fallback to productionServiceClient for Go service endpoint
+            // include second arg and cast to any to avoid strict property errors
+            result = await productionServiceClient.makeRequest(`/cases/${entityId}`, { cache: cacheData } as any);
+          }
           break;
         case 'evidence':
-          result = await reactiveApiClient.getEvidence(entityId);
+          if (typeof client?.getEvidence === 'function') {
+            result = await client.getEvidence(entityId);
+          } else {
+            // Fallback endpoint - provide second argument (empty) cast to any
+            result = await productionServiceClient.makeRequest(`/evidence/${entityId}`, {} as any);
+          }
           break;
         case 'document':
-          // Implement document fetching
+          if (typeof client?.fetchDocument === 'function') {
+            result = await client.fetchDocument(entityId, cacheData);
+          } else {
+            // include second arg and cast to any for cache support
+            result = await productionServiceClient.makeRequest(`/documents/${entityId}`, { cache: cacheData } as any);
+          }
           break;
       }
       if (result) {
@@ -194,7 +213,7 @@
         <div class="flex items-center justify-between">
           <div class="flex-1">
             {#if header}
-              {@render header?.({ data, isLoading, error: errorMessage })}
+              {@render header?.()}         <!-- changed: call with no args -->
             {:else if title}
               <h2 class="text-lg font-semibold leading-none tracking-tight font-mono">
                 {title}
@@ -226,7 +245,10 @@
       </div>
       <!-- Close Button -->
       {#if showClose}
-        <Dialog.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none" on:click={() => handleOpenChange(false)}>
+        <Dialog.Close
+          class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+          on:click={() => handleOpenChange(false)}
+        >
           <X class="h-4 w-4" />
           <span class="sr-only">Close</span>
         </Dialog.Close>
@@ -247,7 +269,7 @@
         {:else if errorMessage}
           <div class="flex-1 flex items-center justify-center">
             {#if error}
-              {@render error?.({ error: errorMessage, refresh })}
+              {@render error?.()}            <!-- changed: call with no args -->
             {:else}
               <div class="flex flex-col items-center gap-3 text-center">
                 <AlertCircle class="h-8 w-8 text-destructive" />
@@ -266,27 +288,30 @@
           </div>
         {:else}
           <div class="flex-1">
-            {@render children?.({ data, refresh, entityType, entityId })}
+            {@render children?.()}         <!-- changed: call with no args -->
           </div>
         {/if}
       </div>
       <!-- Footer -->
       {#if footer}
         <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 modular-dialog-footer border-t pt-4">
-          {@render footer?.({ data, refresh, close: () => { open = false; handleOpenChange(false); } })}
+          {@render footer?.()}            <!-- changed: call with no args -->
         </div>
       {/if}
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
+
 <style>
   :global(.modular-dialog) {
-    @apply bg-yorha-bg-secondary border-yorha-border;
+    /* Replaced Tailwind @apply with safe CSS using CSS variables */
+    background-color: var(--yorha-bg-secondary, #0f1724);
+    border: 1px solid var(--yorha-border, rgba(255,255,255,0.06));
   }
   :global(.modular-dialog-content) {
-    @apply text-yorha-text-primary;
+    color: var(--yorha-text-primary, #e6eef8);
   }
   :global(.modular-dialog-footer) {
-    @apply border-yorha-border;
+    border-top: 1px solid var(--yorha-border, rgba(255,255,255,0.06));
   }
 </style>

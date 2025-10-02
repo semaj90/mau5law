@@ -1,32 +1,48 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+
 export const GET: RequestHandler = async () => {
   try {
-    // Check if Redis is accessible via the main health endpoint
-    const healthResponse = await fetch('http://localhost:5174/api/health')
-    const healthData = await healthResponse.json()
-    const redisStatus = healthData.services?.databases?.redis || healthData.redis
-    if (redisStatus) {
+    // Attempt to load Redis client with fallback
+    let redis: any = null;
+    let isAvailable = false;
+
+    try {
+      const redisModule = await import('$lib/server/redis');
+      redis = redisModule.redis || redisModule.default;
+
+      // Simple ping test
+      if (redis && typeof redis.ping === 'function') {
+        await redis.ping();
+        isAvailable = true;
+      }
+    } catch (redisError) {
+      console.warn('[Redis Health] Redis unavailable:', redisError);
+      isAvailable = false;
+    }
+
+    if (isAvailable) {
       return json({
         status: 'healthy',
-        redis: redisStatus
+        service: 'redis',
         port: 6379,
         host: 'localhost',
-        timestamp: new Date().toISOString(),
-        note: 'Redis connection verified via main health check'
-      })
+        timestamp: new Date().toISOString()
+      });
     } else {
       return json({
-        status: 'unknown',
-        error: 'Redis status not found in health check',
+        status: 'unavailable',
+        service: 'redis',
+        message: 'Redis not configured or unreachable',
         timestamp: new Date().toISOString()
-      }, { status: 503 })
+      }, { status: 503 });
     }
   } catch (error: any) {
     return json({
       status: 'error',
-      error: error.message || 'Failed to check Redis status',
+      service: 'redis',
+      error: error.message || 'Health check failed',
       timestamp: new Date().toISOString()
-    }, { status: 500 })
+    }, { status: 500 });
   }
-}
+};
