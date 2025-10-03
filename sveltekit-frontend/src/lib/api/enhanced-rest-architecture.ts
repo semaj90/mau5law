@@ -1,7 +1,6 @@
-
 // Enhanced REST Architecture for Legal AI
 // Provides type-safe API patterns and advanced clustering
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -9,7 +8,7 @@ export interface APIResponse<T = any> {
     timestamp: string;
     version: string;
     processing_time: number;
-  }
+  };
 }
 export interface ClusteringConfig {
   k: number;
@@ -42,7 +41,7 @@ export interface DocumentCluster {
   label?: string;
   // Additional properties for search results
   similarity?: number;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: unknown };
   // Additional properties for various search contexts
   documentId?: string;
   embedding?: number[];
@@ -56,28 +55,35 @@ export interface ClusterResult {
   converged: boolean;
 }
 export class KMeansClusterer {
-  constructor(public config: KMeansConfig) {}
-  cluster(data: number[][]): Promise<ClusterResult> {
-    throw new Error('Not implemented');
+  constructor(
+    public config: KMeansConfig,
+    private client: EnhancedRESTClient = restClient
+  ) {}
+  async cluster(data: number[][]): Promise<APIResponse<ClusterResult>> {
+    return this.client.cluster(data, this.config);
   }
 }
 export class SelfOrganizingMap {
-  constructor(public config: SOMConfig) {}
-  train(data: number[][]): Promise<ClusterResult> {
-    throw new Error('Not implemented');
+  constructor(
+    public config: SOMConfig,
+    private client: EnhancedRESTClient = restClient
+  ) {}
+  async train(data: number[][]): Promise<APIResponse<ClusterResult>> {
+    // Assuming the backend /clustering endpoint can handle SOMConfig and dispatch accordingly
+    return this.client.cluster(data, this.config);
   }
 }
 export interface ClusterResultDetails {
-  clusters: Array<any>;
+  clusters: DocumentCluster[];
   metrics: {
     silhouetteScore: number;
     inertia: number;
     converged: boolean;
-  }
+  };
 }
 export class EnhancedRESTClient {
   constructor(private baseURL: string = '/api') {}
-  async post<T>(endpoint: string, data: any): Promise<APIResponse<T>> {
+  async post<T, U = unknown>(endpoint: string, data: U): Promise<APIResponse<T>> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

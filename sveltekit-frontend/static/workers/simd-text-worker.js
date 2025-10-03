@@ -326,7 +326,7 @@ function segmentTextForCompression(text, tileSize) {
 /**
  * Compress text segments to 7-bit tiles
  */
-async function compressTextToTiles(segments, config) {
+async function compressTextToTiles(segments, _config) {
   const tiles = [];
 
   for (let i = 0; i < segments.length; i++) {
@@ -428,7 +428,7 @@ function classifyTextPattern(text) {
   let maxScore = 0;
   let patternId = 0;
 
-  Object.entries(patterns).forEach(([type, regex], index) => {
+  Object.entries(patterns).forEach(([_type, regex], index) => {
     const matches = (text.match(regex) || []).length;
     const score = matches / text.split(/\s+/).length;
     if (score > maxScore) {
@@ -456,7 +456,7 @@ function encodeWordFrequency(segment) {
   const words = segment.text.split(/\s+/);
   const wordFreq = {};
 
-  words.forEach((word) => {
+  words.forEach(word => {
     const clean = word.toLowerCase().replace(/[^\w]/g, '');
     wordFreq[clean] = (wordFreq[clean] || 0) + 1;
   });
@@ -483,9 +483,7 @@ function calculateSemanticDensity(text) {
   const meaningfulWords = text
     .split(/\s+/)
     .filter(
-      (word) =>
-        word.length > 3 &&
-        !/^(the|and|but|for|are|with|they|have|this|that|will|you|not|all|can)$/i.test(word)
+      word => word.length > 3 && !/^(the|and|but|for|are|with|they|have|this|that|will|you|not|all|can)$/i.test(word)
     );
 
   return Math.min(meaningfulWords.length / text.split(/\s+/).length, 1);
@@ -560,7 +558,7 @@ function generateTileCSS(tile, qualityTier, index) {
 }`;
 }
 
-function generateTileDOM(tile, componentType, index) {
+function generateTileDOM(tile, componentType, _index) {
   const className = `simd-tile-${tile.id}`;
   const content = tile.tileMetadata.categories.join(' ') || 'content';
 
@@ -609,7 +607,7 @@ function calculateSemanticPreservation(segments, tiles) {
     if (tiles[index]) {
       const originalCategories = categorizeContent(segment.text);
       const preservedCategories = tiles[index].tileMetadata.categories;
-      const overlap = originalCategories.filter((cat) => preservedCategories.includes(cat)).length;
+      const overlap = originalCategories.filter(cat => preservedCategories.includes(cat)).length;
       preservationScore += overlap / originalCategories.length;
     }
   });
@@ -624,8 +622,7 @@ function updateSIMDStats(totalTime, compressionTime, uiTime, compressionRatio) {
 
   // Rolling average for compression ratio
   simdStats.averageCompressionRatio =
-    (simdStats.averageCompressionRatio * (simdStats.totalProcessed - 1) + compressionRatio) /
-    simdStats.totalProcessed;
+    (simdStats.averageCompressionRatio * (simdStats.totalProcessed - 1) + compressionRatio) / simdStats.totalProcessed;
 }
 
 // Additional message handlers
@@ -681,10 +678,14 @@ async function handleBatchSIMDProcessing(payload, messageId) {
         const tempId = `batch-${i}-${Date.now()}`;
 
         // Set up temporary message handler
-        const handleBatchItem = (event) => {
-          if (event.data.id === tempId && event.data.type === 'simd_result') {
-            self.removeEventListener('message', handleBatchItem);
-            resolve(event.data.payload);
+        const handleBatchItem = event => {
+          if (event.data.id === tempId) {
+            self.removeEventListener('message', handleBatchItem); // Remove listener once handled
+            if (event.data.type === 'simd_result') {
+              resolve(event.data.payload);
+            } else if (event.data.type === 'error') {
+              reject(new Error(event.data.payload.error || 'Unknown SIMD processing error'));
+            }
           }
         };
 
@@ -730,7 +731,7 @@ async function handleBatchSIMDProcessing(payload, messageId) {
         totalTime: batchTime,
         itemsProcessed: results.length,
         avgTimePerItem: batchTime / results.length,
-        successRate: results.filter((r) => !r.error).length / results.length,
+        successRate: results.filter(r => !r.error).length / results.length,
       },
     },
     id: messageId,

@@ -1,7 +1,10 @@
 <script lang="ts">
-  import { DropdownMenu } from 'bits-ui';
+  import createDropdownMenu from 'bits-ui';
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
+
+  const { Trigger } = createDropdownMenu();
+
   interface Props {
     children?: Snippet;
     class?: string;
@@ -23,6 +26,6 @@
   ));
 </script>
 
-<DropdownMenu.Trigger class={triggerClasses} {disabled} {asChild}>
+<Trigger class={triggerClasses} {disabled} {asChild}>
   {@render children?.()}
-</DropdownMenu.Trigger>
+</Trigger>
