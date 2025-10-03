@@ -4,7 +4,6 @@
  */
 import { z } from 'zod';
 // import type { EvidenceMetadata } from '$lib/server/db/schema-unified-postgres.js'
-import { URL } from "url";
 // Define EvidenceMetadata type locally since schema-unified-postgres doesn't exist
 type EvidenceMetadata = {
   source?: string;
@@ -21,8 +20,8 @@ type EvidenceMetadata = {
   // Additional optional properties for different file types
   pageCount?: number;
   isEncrypted?: boolean;
-  resolution?: { width: number; height: number }
-  format?: any;
+  resolution?: { width: number; height: number };
+  format?: 'jpeg' | 'png' | 'gif' | 'webp' | 'unknown'; // Changed from 'any'
   hasAlphaChannel?: boolean;
   durationSeconds?: number;
   codec?: string;
@@ -31,7 +30,7 @@ type EvidenceMetadata = {
   channels?: number;
   wordCount?: number;
   characterCount?: number;
-}
+};
 // File validation constants
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -66,7 +65,7 @@ export const legacyEvidenceTypeEnum = z.enum([
   'video_recording',
   'audio_recording',
   'forensic_analysis',
-  'chain_of_custody'
+  'chain_of_custody',
 ]);
 // Chain of custody entry schema (from file-upload.ts)
 export const chainOfCustodyEntrySchema = z.object({
@@ -75,7 +74,7 @@ export const chainOfCustodyEntrySchema = z.object({
   action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'returned']),
   location: z.string().min(1, 'Location is required'),
   notes: z.string().optional(),
-  signature: z.string().optional()
+  signature: z.string().optional(),
 });
 // Base evidence upload schema (unified with file-upload.ts compatibility)
 export const evidenceUploadSchema = z.object({
@@ -127,7 +126,7 @@ export const pdfMetadataSchema = z.object({
   title: z.string().optional(),
   isEncrypted: z.boolean(),
   fileSize: z.number().optional(),
-  createdDate: z.string().optional()
+  createdDate: z.string().optional(),
 });
 // Image-specific metadata schema
 export const imageMetadataSchema = z.object({
@@ -162,7 +161,7 @@ export const audioMetadataSchema = z.object({
   sampleRate: z.number().int().positive(),
   channels: z.number().int().positive().max(8),
   fileSize: z.number().optional(),
-  bitrate: z.number().optional()
+  bitrate: z.number().optional(),
 });
 // Text-specific metadata schema
 export const textMetadataSchema = z.object({
@@ -171,7 +170,7 @@ export const textMetadataSchema = z.object({
   characterCount: z.number().int().nonnegative(),
   language: z.string().optional(),
   encoding: z.string().optional(),
-  fileSize: z.number().optional()
+  fileSize: z.number().optional(),
 });
 // Link-specific metadata schema
 export const linkMetadataSchema = z.object({
@@ -180,7 +179,7 @@ export const linkMetadataSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
   lastChecked: z.string().datetime().optional(),
-  status: z.enum(['active', 'broken', 'unknown']).default('unknown')
+  status: z.enum(['active', 'broken', 'unknown']).default('unknown'),
 });
 // Union schema for all metadata types
 export const evidenceMetadataSchema = z.discriminatedUnion('kind', [
@@ -190,11 +189,11 @@ export const evidenceMetadataSchema = z.discriminatedUnion('kind', [
   audioMetadataSchema,
   textMetadataSchema,
   linkMetadataSchema,
-  z.object({ kind: z.literal('UNKNOWN') })
+  z.object({ kind: z.literal('UNKNOWN') }),
 ]);
 // Enhanced evidence upload schema with typed metadata
 export const enhancedEvidenceUploadSchema = evidenceUploadSchema.extend({
-  metadata: evidenceMetadataSchema.optional()
+  metadata: evidenceMetadataSchema.optional(),
 });
 // File validation functions
 export function validateFileType(file: File, evidenceType: string): boolean {
@@ -217,42 +216,42 @@ export function getFileTypeFromMime(mimeType: string): string {
 export async function generateMetadataFromFile(file: File, evidenceType: string): Promise<EvidenceMetadata> {
   const baseMetadata = {
     fileSize: file.size,
-    uploadedAt: new Date().toISOString()
-  }
+    uploadedAt: new Date().toISOString(),
+  };
   switch (evidenceType) {
     case 'PDF':
       return {
         kind: 'PDF',
         pageCount: 0, // Will be determined by server-side processing
         isEncrypted: false, // Will be determined by server-side processing
-        ...baseMetadata
+        ...baseMetadata,
       } as EvidenceMetadata;
     case 'IMAGE':
       // For images, we can read dimensions client-side
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const img = new Image();
         img.onload = () => {
           resolve({
             kind: 'IMAGE',
             resolution: { width: img.width, height: img.height },
-            format: file.type.split('/')[1] as any,
+            format: file.type.split('/')[1] as ImageMetadata['format'], // Fix: Specific type assertion
             hasAlphaChannel: file.type === 'image/png' || file.type === 'image/gif',
-            ...baseMetadata
+            ...baseMetadata,
           } as EvidenceMetadata);
-        }
+        };
         img.onerror = () => {
           resolve({
             kind: 'IMAGE',
             resolution: { width: 0, height: 0 },
-            format: 'unknown' as any,
+            format: 'unknown' as ImageMetadata['format'], // Fix: Specific type assertion
             hasAlphaChannel: false,
             ...baseMetadata,
           } as EvidenceMetadata);
-        }
-        img.src = URL.createObjectURL(file as any);
+        };
+        img.src = URL.createObjectURL(file);
       });
     case 'VIDEO':
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const video = document.createElement('video');
         video.onloadedmetadata = () => {
           resolve({
@@ -261,23 +260,22 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             resolution: { width: video.videoWidth || 0, height: video.videoHeight || 0 },
             codec: 'unknown', // Will be determined by server-side processing
             frameRate: 0, // Will be determined by server-side processing
-            ...baseMetadata
+            ...baseMetadata,
           } as EvidenceMetadata);
-        }
+        };
         video.onerror = () => {
           resolve({
             kind: 'VIDEO',
             durationSeconds: 0,
-            resolution: { width: 0, height: 0 },
             codec: 'unknown',
             frameRate: 0,
-            ...baseMetadata
+            ...baseMetadata,
           } as EvidenceMetadata);
-        }
-        video.src = URL.createObjectURL(file as any);
+        };
+        video.src = URL.createObjectURL(file);
       });
     case 'AUDIO':
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const audio = document.createElement('audio');
         audio.onloadedmetadata = () => {
           resolve({
@@ -286,9 +284,9 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             codec: 'unknown', // Will be determined by server-side processing
             sampleRate: 44100, // Default, will be determined by server-side processing;
             channels: 2, // Default, will be determined by server-side processing
-            ...baseMetadata
+            ...baseMetadata,
           } as EvidenceMetadata);
-        }
+        };
         audio.onerror = () => {
           resolve({
             kind: 'AUDIO',
@@ -296,39 +294,41 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             codec: 'unknown',
             sampleRate: 44100,
             channels: 2,
-            ...baseMetadata
+            ...baseMetadata,
           } as EvidenceMetadata);
-        }
-        audio.src = URL.createObjectURL(file as any);
+        };
+        audio.src = URL.createObjectURL(file);
       });
     case 'TEXT':
       // For text files, we can read content client-side
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const reader = new FileReader();
-        reader.onload = (e: any) => {
-          const content = e.target?.result as string || '';
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          // Fix: Typed event
+          const content = (e.target?.result as string) || '';
+          const words = content.split(/\s+/).filter(item => item.length); // Explicitly get the array of words
           resolve({
             kind: 'TEXT',
-            wordCount: content.split(/\s+/).filter(item => item.length),
+            wordCount: words.length, // Now clearly a number
             characterCount: content.length,
             language: 'unknown', // Could be enhanced with language detection
-            ...baseMetadata
+            ...baseMetadata,
           } as EvidenceMetadata);
-        }
+        };
         reader.onerror = () => {
           resolve({
             kind: 'TEXT',
             wordCount: 0,
             characterCount: 0,
-            ...baseMetadata
+            ...baseMetadata,
           } as EvidenceMetadata);
-        }
+        };
         reader.readAsText(file);
       });
     default:
       return {
         kind: 'UNKNOWN',
-        ...baseMetadata
+        ...baseMetadata,
       } as EvidenceMetadata;
   }
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DropdownMenu } from 'bits-ui';
+  import createDropdownMenu from 'bits-ui';
   import type { Snippet } from 'svelte';
   interface Props {
     children?: Snippet;
@@ -13,6 +13,6 @@
   }
 </script>
 
-<DropdownMenu.Root bind:open onOpenChange={handleOpenChange}>
+<createDropdownMenu.Root bind:open onOpenChange={handleOpenChange}>
   {@render children?.()}
-</DropdownMenu.Root>
+</createDropdownMenu.Root>
