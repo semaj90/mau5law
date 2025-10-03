@@ -591,28 +591,3 @@
     </form>
   </div>
 </div>
-        <button
-          type="submit"
-          disabled={
-            $submitting ||
-            (
-              // Require a file for all types except LINK
-              ($form.evidence_type !== 'LINK' && !selectedFile)
-            ) ||
-            !$form.case_id ||
-            !$form.title
-          }
-          class="nes-btn is-success"
-          style="margin-left: 10px;"
-        >
-          {#if $submitting}
-            🔄 Uploading...
-          {:else}
-            📁 Upload Evidence
-          {/if}
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-

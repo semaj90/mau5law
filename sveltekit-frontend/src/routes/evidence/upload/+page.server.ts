@@ -15,7 +15,8 @@ import {
   validateFileSize,
   validateFileType,
 } from '$lib/schemas/evidence-upload';
-import { db, cases, evidence, helpers } from '$lib/server/db';
+import { db, cases, evidence } from '$lib/server/db';
+import { eq } from 'drizzle-orm';
 import type { PageServerLoad, Actions } from './$types.js';
 export const load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values
@@ -30,20 +31,20 @@ export const load: PageServerLoad = async ({ locals }) => {
         status: cases.status,
       })
       .from(cases)
-      .where(helpers.eq(cases.status, 'active') as any)
+      .where(eq(cases.status, 'active'))
       .orderBy(cases.created_at);
     return {
       form,
       cases: userCases,
-    }
+    };
   } catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
       cases: [],
-    }
+    };
   }
-}
+};
 export const actions: Actions = {
   upload: async ({ request, locals }) => {
     const formData = await request.formData();
@@ -87,11 +88,7 @@ export const actions: Actions = {
     try {
       // Verify the case exists (if case_id is provided)
       if (form.data.case_id) {
-        const caseRecord = await db
-          .select()
-          .from(cases)
-          .where(helpers.eq(cases.id, form.data.case_id) as any)
-          .limit(1);
+        const caseRecord = await db.select().from(cases).where(eq(cases.id, form.data.case_id)).limit(1);
         if (caseRecord.length === 0) {
           return fail(400, {
             form: {

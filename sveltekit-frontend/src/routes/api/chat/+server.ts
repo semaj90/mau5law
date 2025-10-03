@@ -14,6 +14,7 @@ type NewChatSession = InferInsertModel<typeof chatSessions>
 type NewChatMessage = InferInsertModel<typeof chatMessages>
 // Local ID helper to avoid missing import issues
 const generateId = () => randomUUID()
+const OLLAMA_URL = 'http://localhost:11434'
 const CUDA_SERVER_URL = 'http://localhost:8096'
 const TRITON_SERVER_URL = 'http://localhost:8000'
 const ENHANCED_GRPO_ENDPOINT = '/api/v1/submit'
@@ -75,55 +76,75 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!lastUserMessage) {
       return json({ error: 'No user message found' }, { status: 400 })
     }
-    // Get or create chat session
-    let currentSessionId = sessionId
-    if (!currentSessionId) {
-      currentSessionId = generateId()
-      const newSession: NewChatSession = {
-        id: currentSessionId,
-        userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747',
-        title: 'Chat Session',
-        context: {},
-        metadata: {
-          model,
-          userAgent: request.headers.get('user-agent'),
-          messageCount: 0
+    // Check if user is authenticated
+    const isAuthenticated = !!(locals.user as any)?.id;
+    const userId = isAuthenticated ? (locals.user as any).id : null;
+
+    // Get or create chat session (only if authenticated)
+    let currentSessionId = sessionId;
+    if (isAuthenticated) {
+      if (!currentSessionId) {
+        currentSessionId = generateId();
+        try {
+          const newSession: NewChatSession = {
+            id: currentSessionId,
+            userId: userId!,
+            title: 'Chat Session',
+            context: {},
+            metadata: {
+              model,
+              userAgent: request.headers.get('user-agent'),
+              messageCount: 0
+            }
+          };
+          await db.insert(chatSessions).values(newSession);
+        } catch (dbError) {
+          console.warn('⚠️ Failed to create session, continuing without DB:', dbError);
+          currentSessionId = generateId(); // Generate ID for response but don't save
         }
       }
-      await db.insert(chatSessions).values(newSession)
-    }
-    // Store user message in database
-    const userMessageId = generateId()
-    const newUserMessage: NewChatMessage = {
-      id: userMessageId,
-      sessionId: currentSessionId,
-      content: lastUserMessage.content,
-      role: 'user',
-      embedding: null, // Will be populated by embedding worker later
-      metadata: {
-        model,
-        userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747'
+
+      // Store user message in database (only if authenticated)
+      try {
+        const userMessageId = generateId();
+        const newUserMessage: NewChatMessage = {
+          id: userMessageId,
+          sessionId: currentSessionId,
+          content: lastUserMessage.content,
+          role: 'user',
+          embedding: null,
+          metadata: {
+            model,
+            userId
+          }
+        };
+        await db.insert(chatMessages).values(newUserMessage);
+
+        // Update session message count
+        await db
+          .update(chatSessions)
+          .set({
+            metadata: {
+              model,
+              messageCount: messages.length + 1,
+              userAgent: request.headers.get('user-agent')
+            },
+            updatedAt: new Date()
+          })
+          .where(eq(chatSessions.id, currentSessionId));
+      } catch (dbError) {
+        console.warn('⚠️ Failed to save message to DB, continuing:', dbError);
       }
+    } else {
+      console.log('👤 Anonymous user - skipping database save');
+      currentSessionId = 'anonymous-' + generateId();
     }
-    await db.insert(chatMessages).values(newUserMessage)
-    // Update session with new message count in metadata
-    await db
-      .update(chatSessions)
-      .set({
-        metadata: {
-          model,
-          messageCount: messages.length + 1,
-          userAgent: request.headers.get('user-agent')
-        },
-        updatedAt: new Date()
-      })
-      .where(eq(chatSessions.id, currentSessionId));
     if (!stream) {
       // Non-streaming response
       const personalization = useProfile
         ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
-            jurisdictionHint: true
-            practiceAreasHint: true
+            jurisdictionHint: true,
+            practiceAreasHint: true,
             tone: 'concise'
           })
         : ''
@@ -132,51 +153,68 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         : lastUserMessage.content
       let cudaResponse: CudaStreamResponse
       try {
-        // Try CUDA server first
-        cudaResponse = await fetchCudaResponse(enrichedQuery, false)
-      } catch (cudaError) {
-        console.log('🔄 CUDA failed, trying Triton server...')
+        // Try Ollama first (primary service)
+        cudaResponse = await fetchOllamaResponse(enrichedQuery)
+      } catch (ollamaError) {
+        console.log('🔄 Ollama failed, trying CUDA server...')
         try {
-          // Fallback to Triton server
-          cudaResponse = await fetchTritonResponse(enrichedQuery)
-        } catch (tritonError) {
-          console.error('❌ Both CUDA and Triton failed:', tritonError)
-          // Final fallback
-          cudaResponse = {
-            success: false,
-            response: 'I apologize, but our AI services are currently unavailable. Please try again later.',
-            confidence: 0,
-            tokensPerSecond: 0,
-            reasoning: 'All AI services offline',
-            recommendations: ['Try again later when services are restored']
+          // Fallback to CUDA server
+          cudaResponse = await fetchCudaResponse(enrichedQuery, false)
+        } catch (cudaError) {
+          console.log('🔄 CUDA failed, trying Triton server...')
+          try {
+            // Fallback to Triton server
+            cudaResponse = await fetchTritonResponse(enrichedQuery)
+          } catch (tritonError) {
+            console.error('❌ All AI services failed:', tritonError)
+            // Final fallback
+            cudaResponse = {
+              success: false,
+              response: 'I apologize, but our AI services are currently unavailable. Please try again later.',
+              confidence: 0,
+              tokensPerSecond: 0,
+              reasoning: 'All AI services offline',
+              recommendations: ['Try again later when services are restored']
+            }
           }
         }
       }
-      // Store AI response in database
-      const aiMessageId = generateId()
-      const newAiMessage: NewChatMessage = {
-        id: aiMessageId
-        sessionId: currentSessionId
-        content: cudaResponse.response,
-        role: 'assistant',
-        embedding: null, // Will be populated by embedding worker later
+      // Store AI response in database (only if authenticated)
+      if (isAuthenticated && currentSessionId && !currentSessionId.startsWith('anonymous-')) {
+        try {
+          const aiMessageId = generateId();
+          const newAiMessage: NewChatMessage = {
+            id: aiMessageId,
+            sessionId: currentSessionId,
+            content: cudaResponse.response,
+            role: 'assistant',
+            embedding: null,
+            metadata: {
+              model,
+              confidence: cudaResponse.confidence,
+              tokensPerSecond: cudaResponse.tokensPerSecond,
+              vectorSimilarity: cudaResponse.vectorSimilarity,
+              grpoScore: cudaResponse.grpoScore,
+              reasoning: cudaResponse.reasoning,
+              recommendations: cudaResponse.recommendations
+            }
+          };
+          await db.insert(chatMessages).values(newAiMessage);
+        } catch (dbError) {
+          console.warn('⚠️ Failed to save AI message to DB:', dbError);
+        }
+      }
+      return json({
+        sessionId: currentSessionId,
+        message: cudaResponse.response,
+        confidence: cudaResponse.confidence,
+        tokensPerSecond: cudaResponse.tokensPerSecond,
         metadata: {
           model,
           confidence: cudaResponse.confidence,
           tokensPerSecond: cudaResponse.tokensPerSecond,
-          vectorSimilarity: cudaResponse.vectorSimilarity,
-          grpoScore: cudaResponse.grpoScore,
-          reasoning: cudaResponse.reasoning,
-          recommendations: cudaResponse.recommendations
+          authenticated: isAuthenticated
         }
-      }
-      await db.insert(chatMessages).values(newAiMessage)
-      return json({
-        sessionId: currentSessionId
-        message: cudaResponse.response,
-        confidence: cudaResponse.confidence,
-        tokensPerSecond: cudaResponse.tokensPerSecond,
-        metadata: newAiMessage.metadata
       })
     }
     // HTTP Streaming response (preferred for AI chat)
@@ -191,7 +229,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           // Send initial session info
           const sessionInfo = {
             type: 'session',
-            sessionId: currentSessionId
+            sessionId: currentSessionId,
             model,
             timestamp: new Date().toISOString()
           }
@@ -199,33 +237,51 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           // Build contextual query again in stream scope
           const personalization = useProfile
             ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
-                jurisdictionHint: true
-                practiceAreasHint: true
+                jurisdictionHint: true,
+                practiceAreasHint: true,
                 tone: 'concise'
               })
             : ''
           const enrichedQuery = personalization
             ? `${personalization}\n\nUser: ${lastUserMessage.content}`
             : lastUserMessage.content
-          // Stream from CUDA server
-          const response = await fetch(`${CUDA_SERVER_URL}${ENHANCED_GRPO_ENDPOINT}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'text/event-stream'
-            },
-            body: JSON.stringify({
-              type: 'inference',
-              priority: 5,
-              payload: {
-                prompt: enrichedQuery
-                sessionId: currentSessionId
-                includeReasoning: true
-                includeRecommendations: true;
+          // Stream from Ollama first (primary)
+          let response: Response;
+          try {
+            response = await fetch(`${OLLAMA_URL}/api/generate`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                model: 'gemma3-legal:latest',
+                prompt: enrichedQuery,
                 stream: true
-              }
-            })
-          })
+              })
+            });
+            if (!response.ok) throw new Error('Ollama failed');
+          } catch (ollamaErr) {
+            console.log('🔄 Ollama stream failed, trying CUDA...');
+            // Fallback to CUDA server
+            response = await fetch(`${CUDA_SERVER_URL}${ENHANCED_GRPO_ENDPOINT}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'text/event-stream'
+              },
+              body: JSON.stringify({
+                type: 'inference',
+                priority: 5,
+                payload: {
+                  prompt: enrichedQuery,
+                  sessionId: currentSessionId,
+                  includeReasoning: true,
+                  includeRecommendations: true,
+                  stream: true
+                }
+              })
+            });
+          }
           if (!(response as { ok?: any; status?: any; body?: any }).ok) {
             throw new Error(`CUDA server error: ${(response as { ok?: any; status?: any; body?: any }).status}`)
           }
@@ -277,40 +333,45 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               }
             }
           }
-          // Store complete AI response in database
-          if (fullResponse) {
-            const newAiMessage: NewChatMessage = {
-              id: aiMessageId
-              sessionId: currentSessionId
-              content: fullResponse
-              role: 'assistant',
-              embedding: null, // Will be populated by embedding worker later
-              metadata: {
-                model,
-                confidence,
-                tokensPerSecond,
-                ...metadata
-              }
-            }
-            await db.insert(chatMessages).values(newAiMessage)
-            // Update session message count in metadata
-            await db
-              .update(chatSessions)
-              .set({
+          // Store complete AI response in database (only if authenticated)
+          if (fullResponse && isAuthenticated && currentSessionId && !currentSessionId.startsWith('anonymous-')) {
+            try {
+              const newAiMessage: NewChatMessage = {
+                id: aiMessageId,
+                sessionId: currentSessionId,
+                content: fullResponse,
+                role: 'assistant',
+                embedding: null,
                 metadata: {
                   model,
-                  messageCount: messages.length + 2, // User + AI message
-                  userAgent: headers?.['user-agent']
-                },
-                updatedAt: new Date()
-              })
-              .where(eq(chatSessions.id, currentSessionId)
+                  confidence,
+                  tokensPerSecond,
+                  ...metadata
+                }
+              };
+              await db.insert(chatMessages).values(newAiMessage);
+
+              // Update session message count
+              await db
+                .update(chatSessions)
+                .set({
+                  metadata: {
+                    model,
+                    messageCount: messages.length + 2,
+                    userAgent: request.headers.get('user-agent')
+                  },
+                  updatedAt: new Date()
+                })
+                .where(eq(chatSessions.id, currentSessionId));
+            } catch (dbError) {
+              console.warn('⚠️ Failed to save streaming message to DB:', dbError);
+            }
           }
           // Send completion signal
           const completion = {
             type: 'complete',
-            sessionId: currentSessionId
-            messageId: aiMessageId
+            sessionId: currentSessionId,
+            messageId: aiMessageId,
             fullResponse,
             confidence,
             tokensPerSecond,
@@ -322,7 +383,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           console.error('Streaming error:', error)
           const errorMessage = {
             type: 'error',
-            error: error instanceof Error ? error.message: 'Unknown streaming error'
+            error: error instanceof Error ? error.message : 'Unknown streaming error'
           }
           controller.enqueue(`data: ${JSON.stringify(errorMessage)}\n\n`)
         } finally {
@@ -344,10 +405,45 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error('Chat API error:', error)
     return json({
         error: 'Failed to process chat request',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },)
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
+  }
+}
+// Helper function for Ollama requests (primary AI service)
+async function fetchOllamaResponse(query: string): Promise<CudaStreamResponse> {
+  try {
+    console.log('🚀 Using Ollama with gemma3-legal:latest')
+    const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gemma3-legal:latest',
+        prompt: query,
+        stream: false
+      }),
+      signal: AbortSignal.timeout(30000)
+    });
+    if (!response.ok) {
+      throw new Error(`Ollama error: ${response.status}`)
+    }
+    const result = await response.json();
+    return {
+      success: true,
+      response: result.response || 'Generated response from Ollama',
+      confidence: 0.95,
+      tokensPerSecond: result.eval_count ? Math.round(result.eval_count / (result.eval_duration / 1e9)) : 15,
+      vectorSimilarity: 0.92,
+      grpoScore: 0.90,
+      reasoning: 'Ollama Gemma3-Legal model inference',
+      recommendations: ['Using Gemma3-Legal Q4_K_M via Ollama']
+    };
+  } catch (error) {
+    console.error('❌ Ollama failed:', error)
+    throw error
   }
 }
 // Helper function for Triton server requests (AWQ4 fallback)
@@ -360,7 +456,7 @@ async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        prompt: query
+        prompt: query,
         max_tokens: 150,
         temperature: 0.3
       }),
@@ -397,9 +493,9 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
       type: 'inference',
       priority: 5,
       payload: {
-        prompt: query
-        includeReasoning: true
-        includeRecommendations: true
+        prompt: query,
+        includeReasoning: true,
+        includeRecommendations: true,
         stream
       }
     })
@@ -413,21 +509,21 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
     throw new Error('No task ID returned from CUDA service')
   }
   // Poll for result (simple polling for now)
-  let attempts = 0
+  let attempts = 0;
   const maxAttempts = 30; // 30 seconds max wait
   while (attempts < maxAttempts) {
-    await new Promise((resolve) => setTimeout(resolve, 1000); // Wait 1 second
-    attempts++
-    const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`)
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
+    attempts++;
+    const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`);
     if (!resultResponse.ok) {
       continue; // Keep trying
     }
-    const resultData = await resultResponse.json()
+    const resultData = await resultResponse.json();
     if (resultData.completed_at && resultData.result) {
       // Task completed successfully
-      const result = resultData.result
+      const result = resultData.result;
       return {
-        success: true;
+        success: true,
         response: (result as { text?: any; tokens_per_second?: any }).text || 'Generated response',
         confidence: 0.8, // Mock confidence
         tokensPerSecond: (result as { text?: any; tokens_per_second?: any }).tokens_per_second || 0,
@@ -464,9 +560,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json({ error: 'Session ID required' }, { status: 400 })
     }
     // Delete all messages in session
-    await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId)
+    await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId));
     // Delete session
-    await db.delete(chatSessions).where(eq(chatSessions.id, sessionId)
+    await db.delete(chatSessions).where(eq(chatSessions.id, sessionId));
     return json({ success: true, sessionId })
   } catch (error) {
     console.error('Error deleting chat session:', error)

@@ -3,7 +3,57 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
-}
+
+// New: typed response and result shapes to avoid `any` casts
+type ResponseLike<T = unknown> = { ok: boolean; json: () => Promise<T> };
+type AuthApiResult = { user?: User; error?: string };
+
+// Added: explicit operation result for auth flows
+type AuthOperationResult = { success: boolean; error?: string; sessionId?: string };
+
+// New: explicit lightweight type for the orchestrator shape we expect
+type OrchestratorLike = {
+  makeRequest?: (path: string, body?: unknown, opts?: Record<string, unknown>) => Promise<unknown>;
+  request?: (path: string, body?: unknown, opts?: Record<string, unknown>) => Promise<unknown>;
+  processLegalDocument?: (content: string, opts?: Record<string, unknown>) => Promise<unknown>;
+};
+
+// New: small adapter to tolerate different orchestrator shapes and avoid TS errors
+const orchestratorAdapter = {
+  async makeRequest(path: string, body?: unknown, opts?: Record<string, unknown>) {
+    const anyOrch = mcpGPUOrchestrator as unknown as OrchestratorLike;
+    if (typeof anyOrch.makeRequest === 'function') {
+      return anyOrch.makeRequest(path, body, opts);
+    }
+    if (typeof anyOrch.request === 'function') {
+      return anyOrch.request(path, body, opts);
+    }
+    // Fallback: best-effort fire-and-forget POST to the path (keeps behavior safe)
+    try {
+      await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body, opts }),
+        credentials: 'include',
+      });
+      return { ok: true };
+    } catch {
+      return { ok: false };
+    }
+  },
+  async processLegalDocument(content: string, opts?: Record<string, unknown>) {
+    const anyOrch = mcpGPUOrchestrator as unknown as OrchestratorLike;
+    if (typeof anyOrch.processLegalDocument === 'function') {
+      return anyOrch.processLegalDocument(content, opts);
+    }
+    return this.makeRequest('/api/processing/process-legal-document', { content, opts });
+  },
+};
+
+// Declare the Svelte 5 $state rune for TS in this module (minimal, non-invasive)
+// Use `unknown` as the default generic instead of `any` to avoid implicit any lint errors.
+declare const $state: <T = unknown>(initial: T) => T;
+
 export interface User {
   id: string;
   email: string;
@@ -24,25 +74,30 @@ export interface AuthState {
   isAuthenticated: boolean;
 }
 // Reactive authentication state using $state rune (browser-only)
-const authState = browser ? $state<AuthState>({
-  user: null
-  loading: false
-  error: null
-  isAuthenticated: false
-}) : {
-  user: null
-  loading: false;
-  error: null
-  isAuthenticated: false
-}
+const authState = browser
+  ? $state<AuthState>({
+      user: null,
+      loading: false,
+      error: null,
+      isAuthenticated: false,
+    })
+  : {
+      user: null,
+      loading: false,
+      error: null,
+      isAuthenticated: false,
+    };
 // Derived state functions for common auth checks
 export function isAdmin(): boolean {
   return authState.user?.role === 'admin' || authState.user?.role === 'lead_prosecutor' || false;
 }
 export function canCreateCases(): boolean {
-  return authState.user?.role === 'admin' ||
-         authState.user?.role === 'lead_prosecutor' ||
-         authState.user?.role === 'prosecutor' || false;
+  return (
+    authState.user?.role === 'admin' ||
+    authState.user?.role === 'lead_prosecutor' ||
+    authState.user?.role === 'prosecutor' ||
+    false
+  );
 }
 export function canViewEvidence(): boolean {
   return authState.isAuthenticated;
@@ -60,23 +115,24 @@ export class AuthService {
     authState.error = null;
     try {
       const response = await fetch('/api/auth/me', {
-        credentials: 'include'
+        credentials: 'include',
       });
-      if ((response as { ok?: any; json?: any }).ok) {
-        const { user } = await (response as { ok?: any; json?: any }).json();
-        authState.user = user;
+      const res = response as ResponseLike<AuthApiResult>;
+      if (res.ok) {
+        const { user } = await res.json();
+        authState.user = user ?? null;
         authState.isAuthenticated = true;
-        // Log successful session restore with AI analytics
-        await mcpGPUOrchestrator.routeAPIRequest(
-          '/api/analytics/session-restore',)
-          { userId: user.id, timestamp: new Date().toISOString() },
-          { userId: user.id, analyticsLevel: 'session' }
+        // Log successful session restore with AI analytics (use adapter)
+        await orchestratorAdapter.makeRequest(
+          '/api/analytics/session-restore',
+          { userId: user!.id, timestamp: new Date().toISOString() },
+          { userId: user!.id, analyticsLevel: 'session' }
         );
       } else {
         authState.user = null;
         authState.isAuthenticated = false;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Auth initialization error:', error);
       authState.error = 'Failed to initialize authentication';
       authState.user = null;
@@ -86,66 +142,55 @@ export class AuthService {
     }
   }
   // Login with email and password
-  async login(email: string, password: string): Promise<any> {
+  async login(email: string, password: string): Promise<AuthOperationResult> {
     authState.loading = true;
     authState.error = null;
     try {
-      // Import session manager dynamically to avoid circular imports
       const { sessionManager } = await import('./sessionManager.svelte.js');
-      // Pre-login security analysis using GPU orchestrator
       const securityContext = {
         email,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
-        ipInfo: await this.getClientInfo()
-      }
-      await mcpGPUOrchestrator.routeAPIRequest(
-        '/api/security/pre-login-analysis',
-        securityContext,)
-        { securityLevel: 'authentication' }
-      );
+        ipInfo: await this.getClientInfo(),
+      };
+      await orchestratorAdapter.makeRequest('/api/security/pre-login-analysis', securityContext, {
+        securityLevel: 'authentication',
+      });
       const response = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        credentials: 'include'
+        credentials: 'include',
       });
-      const result = await (response as { ok?: any; json?: any }).json();
-      if ((response as { ok?: any; json?: any }).ok) {
-        authState.user = (result as { user?: any; error?: any }).user;
+      const res = response as ResponseLike<AuthApiResult>;
+      const result = await res.json();
+      if (res.ok) {
+        authState.user = result.user ?? null;
         authState.isAuthenticated = true;
         authState.error = null;
-        // Start session management with XState
-        const sessionId = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        await sessionManager.startSession((result as { user?: any; error?: any }).user, sessionId);
-        // Post-login AI analysis for user behavior patterns
-        await mcpGPUOrchestrator.processLegalDocument(
-          `Successful login: ${email} at ${new Date().toISOString()}`,
-          {
-            userId: (result as { user?: any; error?: any }).user.id,
-            includeRAG: false
-            includeGraph: true
-            generateSummary: false
-          }
-        );
-        return { success: true }
+        const sessionId = `sess_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+        await sessionManager.startSession(result.user, sessionId);
+        await orchestratorAdapter.processLegalDocument(`Successful login: ${email} at ${new Date().toISOString()}`, {
+          userId: result.user!.id,
+          includeRAG: false,
+          includeGraph: true,
+          generateSummary: false,
+        });
+        return { success: true, sessionId };
       } else {
-        authState.error = (result as { user?: any; error?: any }).error;
-        // Log failed login attempt for security monitoring
-        await mcpGPUOrchestrator.routeAPIRequest(
-          '/api/security/failed-login',)
-          { ...securityContext, error: (result as { user?: any; error?: any }).error },
+        authState.error = result.error ?? 'Login failed';
+        await orchestratorAdapter.makeRequest(
+          '/api/security/failed-login',
+          { ...securityContext, error: result.error },
           { securityLevel: 'high' }
         );
-        return { success: false, error: (result as { user?: any; error?: any }).error }
+        return { success: false, error: result.error };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = 'Network error during login';
       authState.error = errorMessage;
       console.error('Login error:', error);
-      return { success: false, error: errorMessage }
+      return { success: false, error: errorMessage };
     } finally {
       authState.loading = false;
     }
@@ -156,55 +201,47 @@ export class AuthService {
     password: string;
     firstName: string;
     lastName: string;
-  }): Promise<any> {
+  }): Promise<AuthOperationResult> {
     authState.loading = true;
     authState.error = null;
     try {
-      // Pre-registration analysis
       const registrationContext = {
         email: userData.email,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        timestamp: new Date().toISOString()
-      }
-      await mcpGPUOrchestrator.routeAPIRequest(
-        '/api/analytics/registration-attempt',
-        registrationContext,)
-        { analyticsLevel: 'registration' }
-      );
+        timestamp: new Date().toISOString(),
+      };
+      await orchestratorAdapter.makeRequest('/api/analytics/registration-attempt', registrationContext, {
+        analyticsLevel: 'registration',
+      });
       const response = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
-        credentials: 'include'
+        credentials: 'include',
       });
-      const result = await (response as { ok?: any; json?: any }).json();
-      if ((response as { ok?: any; json?: any }).ok) {
-        authState.user = (result as { user?: any; error?: any }).user;
+      const res = response as ResponseLike<AuthApiResult>;
+      const result = await res.json();
+      if (res.ok) {
+        authState.user = result.user ?? null;
         authState.isAuthenticated = true;
         authState.error = null;
-        // Log successful registration with AI context
-        await mcpGPUOrchestrator.processLegalDocument(
-          `New user registration: ${userData.email}`,);
-          {
-            userId: (result as { user?: any; error?: any }).user.id,
-            includeRAG: false
-            includeGraph: true
-            generateSummary: true
-          }
-        );
-        return { success: true }
+        await orchestratorAdapter.processLegalDocument(`New user registration: ${userData.email}`, {
+          userId: result.user!.id,
+          includeRAG: false,
+          includeGraph: true,
+          generateSummary: true,
+        });
+        return { success: true };
       } else {
-        authState.error = (result as { user?: any; error?: any }).error;
-        return { success: false, error: (result as { user?: any; error?: any }).error }
+        authState.error = result.error ?? 'Registration failed';
+        return { success: false, error: result.error };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = 'Network error during registration';
       authState.error = errorMessage;
       console.error('Registration error:', error);
-      return { success: false, error: errorMessage }
+      return { success: false, error: errorMessage };
     } finally {
       authState.loading = false;
     }
@@ -215,23 +252,24 @@ export class AuthService {
     try {
       // Import session manager dynamically
       const { sessionManager } = await import('./sessionManager.svelte.js');
-      // Log logout event for analytics
+      // Log logout event for analytics (use adapter to avoid direct orchestrator typing issues)
       if (authState.user) {
-        await mcpGPUOrchestrator.routeAPIRequest(
-          '/api/analytics/logout',);
+        await orchestratorAdapter.makeRequest(
+          '/api/analytics/logout',
           {
             userId: authState.user.id,
             timestamp: new Date().toISOString(),
-            sessionDuration: this.calculateSessionDuration()
+            sessionDuration: this.calculateSessionDuration(),
           },
           { userId: authState.user.id, analyticsLevel: 'session' }
         );
       }
       // End session management
       await sessionManager.endSession();
-      const response = await fetch('/api/auth/logout', {
+      // Perform logout request (no unused variable)
+      await fetch('/api/auth/logout', {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
       });
       // Clear state regardless of response
       authState.user = null;
@@ -239,7 +277,7 @@ export class AuthService {
       authState.error = null;
       // Redirect to login page
       await goto('/login');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Logout error:', error);
       // Still clear state on error
       authState.user = null;
@@ -249,41 +287,39 @@ export class AuthService {
     }
   }
   // Update user profile
-  async updateProfile(updates: Partial<User>): Promise<any> {
-    if (!authState.user) return { success: false, error: 'Not authenticated' }
+  async updateProfile(updates: Partial<User>): Promise<AuthOperationResult> {
+    if (!authState.user) return { success: false, error: 'Not authenticated' };
     authState.loading = true;
     try {
       const response = await fetch('/api/auth/profile', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
-        credentials: 'include'
+        credentials: 'include',
       });
-      const result = await (response as { ok?: any; json?: any }).json();
-      if ((response as { ok?: any; json?: any }).ok) {
-        authState.user = { ...authState.user, ...result.user }
-        // Log profile update for audit trail
-        await mcpGPUOrchestrator.routeAPIRequest(
-          '/api/analytics/profile-update',);
+      const res = response as ResponseLike<AuthApiResult>;
+      const result = await res.json();
+      if (res.ok) {
+        authState.user = { ...authState.user, ...(result.user ?? {}) };
+        await orchestratorAdapter.makeRequest(
+          '/api/analytics/profile-update',
           {
             userId: authState.user.id,
             changes: Object.keys(updates),
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
           { userId: authState.user.id, analyticsLevel: 'profile' }
         );
-        return { success: true }
+        return { success: true };
       } else {
-        authState.error = (result as { user?: any; error?: any }).error;
-        return { success: false, error: (result as { user?: any; error?: any }).error }
+        authState.error = result.error ?? 'Profile update failed';
+        return { success: false, error: result.error };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = 'Failed to update profile';
       authState.error = errorMessage;
       console.error('Profile update error:', error);
-      return { success: false, error: errorMessage }
+      return { success: false, error: errorMessage };
     } finally {
       authState.loading = false;
     }
@@ -297,8 +333,8 @@ export class AuthService {
       prosecutor: ['create_cases', 'manage_own_cases', 'view_evidence', 'generate_reports'],
       investigator: ['view_cases', 'add_evidence', 'view_evidence'],
       analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],
-      viewer: ['view_cases', 'view_evidence']
-    }
+      viewer: ['view_cases', 'view_evidence'],
+    };
     const userPermissions = rolePermissions[authState.user.role as keyof typeof rolePermissions] || [];
     return userPermissions.includes('all') || userPermissions.includes(permission);
   }
@@ -318,10 +354,10 @@ export class AuthService {
         screen: `${screen.width}x${screen.height}`,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         language: navigator.language,
-        platform: navigator.platform
-      }
+        platform: navigator.platform,
+      };
     } catch {
-      return {}
+      return {};
     }
   }
   private calculateSessionDuration(): number {

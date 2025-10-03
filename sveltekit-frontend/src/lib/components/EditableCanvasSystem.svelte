@@ -300,7 +300,7 @@ mounted = true;
   .toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 0.75rem 1rem;
     background: hsl(220 15% 98%);
     border-bottom: 1px solid hsl(220 13% 91%);
@@ -343,7 +343,7 @@ mounted = true;
     border-bottom: 1px solid hsl(220 13% 91%);
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
   }
   .count {
     font-weight: 400;
@@ -411,11 +411,11 @@ mounted = true;
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  button:hover:not(:disabled) {,
+  button:hover:not(:disabled) {
     background: hsl(220 13% 98%);
     border-color: hsl(220 13% 85%);
   }
-  button:active:not(:disabled) {,
+  button:active:not(:disabled) {
     background: hsl(220 13% 95%);
   }
   button:disabled {
@@ -462,7 +462,7 @@ mounted = true;
       border-color: hsl(220 15% 25%);
       color: hsl(220 15% 85%);
     }
-    button:hover:not(:disabled) {,
+    button:hover:not(:disabled) {
       background: hsl(220 15% 20%);
     }
     .node-counter,

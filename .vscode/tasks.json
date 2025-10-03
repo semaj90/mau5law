@@ -453,6 +453,247 @@
         "panel": "shared"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "🤖 Start LiteLLM Proxy (Ollama→Claude Code)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\start-litellm-proxy.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^(.*)$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting LiteLLM Proxy",
+          "endsPattern": "Application startup complete"
+        }
+      },
+      "detail": "Starts LiteLLM proxy to route Claude Code requests to Ollama gemma3-legal:latest (port 4000)",
+      "icon": {
+        "id": "robot",
+        "color": "terminal.ansiMagenta"
+      }
+    },
+    {
+      "label": "🔍 Check LiteLLM Status",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "try { $response = Invoke-RestMethod -Uri 'http://localhost:4000/v1/models' -Headers @{'Authorization'='Bearer sk-1234'} -Method Get; Write-Host '✅ LiteLLM Proxy is running' -ForegroundColor Green; Write-Host 'Available models:' -ForegroundColor Cyan; $response.data | ForEach-Object { Write-Host '  -' $_.id -ForegroundColor Yellow } } catch { Write-Host '❌ LiteLLM Proxy is not running' -ForegroundColor Red; Write-Host 'Run task: 🤖 Start LiteLLM Proxy' -ForegroundColor Yellow }"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Checks if LiteLLM proxy is running and shows available models"
+    },
+    {
+      "label": "🚀 Start MCP Context7 SIMD Server",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}\\scripts\\mcp-context7-optimized.mjs"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "MCP_PORT": "3002",
+          "MCP_WORKERS": "8",
+          "REDIS_PASSWORD": "redis",
+          "DATABASE_URL": "postgresql://legal_admin:123456@localhost:5432/legal_ai_db",
+          "RTX_3060_OPTIMIZATION": "true",
+          "CONTEXT7_MULTICORE": "true",
+          "CONTEXT7_SIMD": "true"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^(.*)$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting SIMD-Optimized MCP Context7 Server",
+          "endsPattern": "MCP Context7 Server ready"
+        }
+      },
+      "detail": "SIMD-optimized MCP server with Redis cache, PostgreSQL+pgvector (8 workers, port 3002)",
+      "icon": {
+        "id": "rocket",
+        "color": "terminal.ansiCyan"
+      }
+    },
+    {
+      "label": "📊 Check MCP Context7 Status",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "try { $health = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/health' -Method Get; Write-Host '✅ MCP Context7 Server is running' -ForegroundColor Green; Write-Host ('Workers: ' + $health.workers) -ForegroundColor Cyan; Write-Host ('Redis: ' + $health.redis) -ForegroundColor Yellow; Write-Host ('PostgreSQL: ' + $health.postgres) -ForegroundColor Magenta; Write-Host ('SIMD: ' + $health.simd) -ForegroundColor Blue; Write-Host ('Cache Hit Ratio: ' + [math]::Round($health.cacheStats.ratio * 100, 2) + '%') -ForegroundColor Green; $metrics = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/metrics' -Method Get; Write-Host ('Memory RSS: ' + [math]::Round($metrics.memory.rss/1MB, 2) + ' MB') -ForegroundColor Yellow } catch { Write-Host '❌ MCP Context7 Server is not running' -ForegroundColor Red; Write-Host 'Run task: 🚀 Start MCP Context7 SIMD Server' -ForegroundColor Yellow }"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Checks MCP Context7 server health, cache stats, and integrations"
+    },
+    {
+      "label": "🎯 Start Complete AI Stack (LiteLLM + MCP + Dev)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "🤖 Start LiteLLM Proxy (Ollama→Claude Code)",
+        "🚀 Start MCP Context7 SIMD Server",
+        "🔴 Start Redis Error Logger"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "detail": "Starts complete AI development stack: LiteLLM (Ollama) → MCP Context7 (SIMD) → Redis Error Logger"
+    },
+    {
+      "label": "🎨 Demo: SharedArrayBuffer + WebGPU Pattern",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}\\scripts\\mcp-webgpu-shared-buffer.mjs"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Demonstrates parallel CPU preparation → GPU upload pattern for legal document vectorization"
+    },
+    {
+      "label": "✅ Check for Errors (TypeScript + Svelte)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "check"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": ["$tsc"],
+      "detail": "Runs svelte-check to find TypeScript and Svelte errors (working directory: sveltekit-frontend)"
+    },
+    {
+      "label": "⚡ Quick Error Check (TypeScript only)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": ["$tsc"],
+      "detail": "Fast TypeScript error check (working directory: sveltekit-frontend)"
+    },
+    {
+      "label": "🔧 Fix Common Errors (Auto)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "lint", "--", "--fix"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Auto-fixes common linting errors (working directory: sveltekit-frontend)"
     }
   ]
 }

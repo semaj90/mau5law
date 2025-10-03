@@ -164,13 +164,14 @@
 	// Register with searchable index on mount
 	$effect(() => {
 		if (browser && searchKeywords.length > 0) {
-			searchableButtonIndex.addButton({
-				id,
-				variant, // Re-add this line
-				size,    // Re-add this line
-				label: analyticsLabel,
-				element: document.getElementById(id)
-			});
+		searchableButtonIndex.addButton({
+			id,
+			variant, // Re-add this line
+			size,    // Re-add this line
+			label: analyticsLabel,
+			// `element` may be an HTMLElement; cast to any to satisfy legacy ButtonInfo type
+			element: document.getElementById(id) as any
+			} as any);
 		}
 	});
 </script>

@@ -1,11 +1,12 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import ButtonBits from '$lib/components/ui/bits-ui/ButtonBits.svelte';
-  import CardBits from '$lib/components/ui/bits-ui/CardBits.svelte';
-  import InputBits from '$lib/components/ui/bits-ui/InputBits.svelte';
-  import SelectBits from '$lib/components/ui/bits-ui/SelectBits.svelte';
-  import TabsBits from '$lib/components/ui/bits-ui/TabsBits.svelte';
-  import TooltipBits from '$lib/components/ui/bits-ui/TooltipBits.svelte';
+  // Import local UI components (paths updated during migration)
+  import ButtonBits from '$lib/components/ui/button/Button.svelte';
+  import CardBits from '$lib/components/ui/Card.svelte';
+  import InputBits from '$lib/components/ui/input/InputBits.svelte';
+  import SelectBits from '$lib/components/ui/select/SelectBits.svelte';
+  import TabsBits from '$lib/components/ui/tabs/TabsBits.svelte';
+  import TooltipBits from '$lib/components/ui/tooltip/TooltipBits.svelte';
 
   // Form state using Svelte 5 runes
   let formData = $state({
@@ -145,7 +146,7 @@
   });
 </script>
 
-<CardBits variant="elevated" padding="lg">
+<CardBits variant="interactive" padding="lg">
   <div class="legal-case-form">
     <div class="form-header">
       <h2 class="form-title">⚖️ Create New Legal Case</h2>
@@ -566,14 +567,5 @@
     .action-buttons :global(button) {
       flex: 1;
     }
-  }
-</style>
-      justify-content: stretch;
-    }
-    .action-buttons :global(button) {
-      flex: 1;
-    }
-  }
-</style>
   }
 </style>

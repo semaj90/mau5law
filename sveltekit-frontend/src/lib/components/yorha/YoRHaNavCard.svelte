@@ -22,12 +22,13 @@ https://svelte.dev/e/js_parse_error -->
   tabindex="0"
   aria-label={ariaLabel}
   onclick={handleNavigate}
-  keydown={handleKey}
+  onkeydown={handleKey}
   data-path={path}
 >
   <div class="yorha-nav-header">
     {#if icon}
-      <svelte:component this={icon} size={28} />
+      {@const IconComponent = icon}
+      <IconComponent size={28} />
     {/if}
     <h3>{title}</h3>
   </div>

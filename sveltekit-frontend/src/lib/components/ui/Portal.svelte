@@ -1,8 +1,11 @@
 <!-- Portal component for rendering modals outside the component tree -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   let portal: HTMLDivElement;
   let target: HTMLElement;
+  // children snippet for Svelte 5 runes
+  export let children: Snippet | undefined = undefined;
   onMount(() => {
     // Create portal target if it doesn't exist
     target = document.getElementById('portal-target') as HTMLElement;
@@ -20,5 +23,5 @@
   });
 </script>
 <div bind:this={portal} style="display: contents;">
-  {#snippet children(/)}
+  {@render children?.()}
 </div>

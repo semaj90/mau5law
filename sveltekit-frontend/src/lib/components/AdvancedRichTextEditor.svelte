@@ -726,7 +726,6 @@ https://svelte.dev/e/js_parse_error -->
   }
   .advanced-editor.fullscreen {
     position: fixed;
-d;
     inset: 0;
     z-index: 50;
   }
@@ -756,7 +755,7 @@ d;
   .toolbar-btn:hover {
     background: #f3f4f6;
   }
-  .toolbar-btn: disabled
+  .toolbar-btn:disabled,
   .toolbar-btn.disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -856,8 +855,7 @@ d;
   }
   .editor-container {
     flex: 1;
-    overflow: aut;
-o;
+    overflow: auto;
     min-height: 400px;
   }
   .editor-container.show-grid {
@@ -873,7 +871,7 @@ o;
   :global(.ProseMirror) {
     outline: none;
   }
-  :global($1) {
+  :global(.ProseMirror p.is-editor-empty:first-child::before) {
     color: #9ca3af;
     content: attr(data-placeholder);
     float: left;

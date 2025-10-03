@@ -419,9 +419,9 @@ export const legacyRouteMapping: Record<string, string> = {
   '/gpu-chat': '/(ai)/assistant',
   '/cuda-streaming': '/(ai)/cuda-streaming',
   '/cases': '/(legal)/cases',
-  '/evidence': '/(legal)/evidence',
-  '/evidence-analysis': '/(legal)/evidence',
-  '/evidence-workspace': '/(legal)/evidence',
+  // '/evidence': Keep standalone route outside (legal) group
+  '/evidence-analysis': '/evidence',
+  '/evidence-workspace': '/evidence',
   '/documents': '/(legal)/documents',
   '/legal': '/(legal)/cases',
   '/detective': '/(legal)/detective',
