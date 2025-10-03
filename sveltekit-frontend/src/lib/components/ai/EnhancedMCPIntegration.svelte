@@ -5,7 +5,7 @@
 	export let enableClusterMode = true;
 
 	import { onMount, onDestroy } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { writable, derived } from 'svelte/store';
 
 	type Status = 'disconnected' | 'connecting' | 'connected' | 'error';
 
@@ -18,9 +18,40 @@
 		cacheHitRate: 0
 	});
 
-	const mcpTools = writable<any[]>([]);
-	const queryResults = writable<any[]>([]);
-	const contextualSuggestions = writable<any[]>([]);
+	// Derived store for success rate percentage
+	const successRatePercent = derived(clusterMetrics, ($clusterMetrics) =>
+		Math.round((($clusterMetrics.successRate || 0) * 100))
+	);
+
+	interface McpTool {
+		id: string;
+		name: string;
+		description: string;
+		status: 'available' | 'busy' | 'error';
+		successCount: number;
+		errorCount: number;
+		lastUsed?: Date;
+	}
+
+	interface QueryResult {
+		source?: string;
+		timestamp?: number;
+		query?: string;
+		success: boolean;
+		result?: any; // made optional to allow error entries without a payload
+		error?: string; // Add an explicit error property for failed results
+	}
+
+	interface ContextualSuggestion {
+		id: string;
+		title: string;
+		description: string;
+		priority: 'high' | 'medium' | 'low';
+	}
+
+	const mcpTools = writable<McpTool[]>([]);
+	const queryResults = writable<QueryResult[]>([]);
+	const contextualSuggestions = writable<ContextualSuggestion[]>([]);
 
 	let wsConnection: WebSocket | null = null;
 	let queryInput = '';
@@ -39,7 +70,7 @@
 		initializeMCPConnection();
 		if (enableRealtimeUpdates) setupWebSocketConnection();
 		loadInitialData();
-		startMetricsPolling();
+		if (enableClusterMode) startMetricsPolling();
 	});
 
 	onDestroy(() => {
@@ -53,7 +84,7 @@
 			const response = await fetch('/mcp/health');
 			if (response.ok) {
 				mcpStatus.set('connected');
-				mcpTools.set(availableMCPTools.map((tool) => ({ ...tool, status: 'available', successCount: 0, errorCount: 0 })));
+				mcpTools.set(availableMCPTools.map((tool) => ({ ...tool, status: 'available', successCount: 0, errorCount: 0 } as McpTool)));
 			} else {
 				throw new Error('MCP health check failed');
 			}
@@ -91,7 +122,13 @@
 		if (!data || !data.type) return;
 		switch (data.type) {
 			case 'cluster-metrics-update':
-				clusterMetrics.set(data.metrics || {});
+				clusterMetrics.set({
+					activeWorkers: data.metrics?.activeWorkers || 0,
+					totalRequests: data.metrics?.totalRequests || 0,
+					successRate: data.metrics?.successRate || 0,
+					averageResponseTime: data.metrics?.averageResponseTime || 0,
+					cacheHitRate: data.metrics?.cacheHitRate || 0
+				});
 				break;
 			case 'mcp-tool-status':
 				mcpTools.update((tools) => tools.map((tool) => (tool.id === data.toolId ? { ...tool, status: data.status, lastUsed: new Date() } : tool)));
@@ -137,7 +174,7 @@
 	}
 
 	async function executeMCPTool(toolId: string, args: any = {}) {
-		if (isProcessing) return;
+		if (isProcessing || !toolId) return; // Added !toolId check
 		isProcessing = true;
 		mcpTools.update((tools) => tools.map((t) => (t.id === toolId ? { ...t, status: 'busy' } : t)));
 		try {
@@ -147,9 +184,16 @@
 				body: JSON.stringify({ toolId, args })
 			});
 			const data = await resp.json();
-			queryResults.update((r) => [data, ...r].slice(0, 20));
-		} catch (e) {
+			if (resp.ok) {
+				queryResults.update((r) => [{ success: true, result: data, query: args.query, timestamp: Date.now() }, ...r].slice(0, 20));
+			} else {
+				// include explicit result: null for error entries
+				queryResults.update((r) => [{ success: false, result: null, error: data.error || 'Server error', query: args.query, timestamp: Date.now() }, ...r].slice(0, 20));
+			}
+		} catch (e: any) {
 			console.error('executeMCPTool failed', e);
+			// include explicit result: null for error entries
+			queryResults.update((r) => [{ success: false, result: null, error: e.message || 'Network error', query: args.query, timestamp: Date.now() }, ...r].slice(0, 20));
 		} finally {
 			isProcessing = false;
 			mcpTools.update((tools) => tools.map((t) => (t.id === toolId ? { ...t, status: 'available' } : t)));
@@ -163,11 +207,9 @@
 			<strong>Enhanced MCP</strong>
 			<span class="connection-status">{$mcpStatus}</span>
 		</div>
-		{#if showMetrics}
-			<div class="connection-indicator">
-				<span class="status-indicator" aria-hidden="true"></span>
-			</div>
-		{/if}
+		<div class="connection-indicator" class:show-metrics={showMetrics}>
+			<span class="status-indicator" aria-hidden="true"></span>
+		</div>
 	</div>
 
 	{#if showMetrics}
@@ -183,7 +225,7 @@
 				</div>
 				<div class="metric">
 					<div class="metric-label">Success Rate</div>
-					<div class="metric-value">{Math.round((($clusterMetrics.successRate || 0) * 100))}%</div>
+					<div class="metric-value">{$successRatePercent}%</div>
 				</div>
 			</div>
 		</div>
@@ -226,10 +268,10 @@
 						</div>
 						<div class="result-query">{result?.query}</div>
 						<div class="result-content">
-							{#if result?.success}
+							{#if result.success}
 								<pre>{JSON.stringify(result.result, null, 2)}</pre>
 							{:else}
-								<div class="error-message">Error: {result?.result?.error}</div>
+								<div class="error-message">Error: {result.error || 'Unknown error'}</div>
 							{/if}
 						</div>
 					</div>
@@ -258,6 +300,8 @@
 	}
 	.mcp-title { font-size: 1.25rem; font-weight: 600; color: #f3f4f6; }
 	.connection-status { font-size: 0.875rem; color: #9ca3af; margin-left: 8px; }
+	.connection-indicator { display: flex; align-items: center; }
+	.connection-indicator:not(.show-metrics) { display: none; }
 	.status-indicator { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
 	.cluster-metrics { margin-bottom: 24px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px; }
 	.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }

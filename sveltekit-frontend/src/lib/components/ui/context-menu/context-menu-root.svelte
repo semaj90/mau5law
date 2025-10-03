@@ -3,10 +3,8 @@
   import { writable } from 'svelte/store';
   import type { Snippet } from 'svelte';
 
-  let { onOpenChange }: { onOpenChange?: (open: boolean) => void } = $props();
-
-  // children Snippet for Svelte 5 runes
-  let { children }: { children?: Snippet } = $props();
+  // Destructure props once
+  let { onOpenChange, children }: { onOpenChange?: (open: boolean) => void; children?: Snippet } = $props();
 
   const isOpen = writable(false);
   const position = writable({ x: 0, y: 0 });

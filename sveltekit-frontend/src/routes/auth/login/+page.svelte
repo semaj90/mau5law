@@ -79,7 +79,7 @@
         <!-- Options -->
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <input type="checkbox" id="showPassword" ; bind:checked={showPassword} disabled={isLoading} class="mr-2" />
+            <input type="checkbox" id="showPassword" bind:checked={showPassword} disabled={isLoading} class="mr-2" />
             <label for="showPassword" class="text-sm text-gray-300"> Show password </label>
           </div>
           <div class="flex items-center">
@@ -127,4 +127,3 @@
     </div>
   </div>
 </div>
-;

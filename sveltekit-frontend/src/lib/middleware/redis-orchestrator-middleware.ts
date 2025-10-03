@@ -57,7 +57,6 @@ export const redisMiddleware = {
       memoryBank: 'INTERNAL_RAM',
       requiresFresh: true,
     }),
-;
   search: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
       endpointName: 'search',
@@ -66,4 +65,5 @@ export const redisMiddleware = {
     }),
 }
 
+export const redisOptimized = redisMiddleware;
 export default redisMiddleware;

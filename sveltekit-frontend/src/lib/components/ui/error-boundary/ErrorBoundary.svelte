@@ -2,13 +2,17 @@
   // Svelte 5 runes are auto-imported
   import { Card } from 'bits-ui';
   import Button from '$lib/components/ui/Button.svelte';
+  import type { Snippet } from 'svelte';
   interface Props {
     fallback?: unknown;
     onError?: (error: Error, errorInfo?: unknown) => void;
   }
-  // Use a type assertion on the returned props object instead of a trailing annotation
-  // which can confuse source-transform-based compilers (avoid zero-length range overwrite).
-  let { fallback, onError } = $props() as Props;
+  // Use a single $props() destructure (runes mode disallows multiple calls)
+  let { fallback, onError, children }:
+    { fallback?: unknown; onError?: (error: Error, errorInfo?: unknown) => void; children?: Snippet } = $props() as any;
+  // Create snippet-typed aliases for rendering
+  const fallbackSnippet: Snippet | undefined = (fallback as unknown) as Snippet | undefined;
+  const childrenSnippet: Snippet | undefined = (children as unknown) as Snippet | undefined;
   let hasError = $state(false);
   let error = $state<Error | null>(null);
   let errorId = $state<string>('');
@@ -119,7 +123,7 @@
               <span class="text-nier-text-secondary">Message:</span>
               <span class="col-span-3 text-nier-text-primary">{error?.message ?? 'Unknown error'}</span>
               <span class="text-nier-text-secondary">Location:</span>
-              <span class="col-span-3 text-nier-text-primary">{$page?.url?.pathname ?? 'unknown'}</span>
+              <span class="col-span-3 text-nier-text-primary">{globalThis.$page?.url?.pathname ?? 'unknown'}</span>
               <span class="text-nier-text-secondary">Location:</span>
               <span class="col-span-3 text-nier-text-primary">{globalThis.location?.pathname ?? 'unknown'}</span>
             </div>
@@ -137,8 +141,6 @@
               class="font-mono text-xs text-nier-text-primary mt-golden-sm overflow-x-auto whitespace-pre-wrap">{error.stack}</pre>
           </details>
         {/if}
-        <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
           <Button
@@ -163,26 +165,17 @@
             Go Home
           </Button>
         </div>
-          <p class="text-xs text-nier-text-muted">
-            If this error persists, please contact the YoRHa support team with error ID:
-            <code class="text-red-400 font-mono">{errorId}</code>
-          </p>
-        </div>
+        <p class="text-xs text-nier-text-muted">
+          If this error persists, please contact the YoRHa support team with error ID:
+          <code class="text-red-400 font-mono">{errorId}</code>
+        </p>
       </div>
     </Card>
   </div>
-{:else if fallback}
-  <script lang="ts">
-    import type { Snippet } from 'svelte';
-    let { fallback }: { fallback?: Snippet } = $props();
-  </script>
-  {@render fallback?.()}
+{:else if fallbackSnippet}
+  {@render fallbackSnippet?.()}
 {:else}
-  <script lang="ts">
-    import type { Snippet } from 'svelte';
-    let { children }: { children?: Snippet } = $props();
-  </script>
-  {@render children?.()}
+  {@render childrenSnippet?.()}
 {/if}
 
 <style>/* Ensure error boundary styles don't interfere with global styles */

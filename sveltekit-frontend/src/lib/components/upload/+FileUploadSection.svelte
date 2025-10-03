@@ -1,20 +1,20 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Dropdown from '$lib/components/+Dropdown.svelte';
-  import Checkbox from '$lib/components/+Checkbox.svelte';
+  import SelectBits from '$lib/components/ui/select/SelectBits.svelte';
+  import Checkbox from '$lib/components/ui/checkbox/Checkbox.svelte';
   let selectedCase: string = $state('');
   let selectedPoi: string = $state('');
   let file: File | null = null;
   let summarize: boolean = $state(false);
   let tag: boolean = $state(false);
-  const handleFileChange = (_event: Event) => {
+  const handleFileChange = (event: Event) => {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
+    if (input && input.files && input.files[0]) {
       file = input.files[0];
     } else {
       file = null;
     }
-  }
+  };
   const handleSubmit = async () => {
     if (!file) {
       alert('Please select a file to upload.');
@@ -69,43 +69,57 @@
   <div class="nier-bits-card-body">
     <div class="mb-3">
       <label for="caseSelect" class="form-label">Select Case:</label>
-      <Dropdown id="caseSelect" bind:selected={selectedCase} options={caseOptions} />
+  <SelectBits id="caseSelect" bind:selected={selectedCase} options={caseOptions} />
     </div>
     <div class="mb-3">
       <label for="poiSelect" class="form-label">Select POI (Optional):</label>
-      <Dropdown id="poiSelect" bind:selected={selectedPoi} options={poiOptions} />
+  <SelectBits id="poiSelect" bind:selected={selectedPoi} options={poiOptions} />
     </div>
     <div class="mb-3">
       <label for="fileInput" class="form-label">Upload File:</label>
-      <input type="file" id="fileInput" class="form-control" onchange={handleFileChange} />
+  <input type="file" id="fileInput" class="form-control" onchange={handleFileChange} />
     </div>
     <div class="mb-3 form-check">
-      <Checkbox id="summarizeCheckbox" bind:checked={summarize} label="Summarize with AI" />
+      <label class="flex items-center gap-2">
+        <Checkbox id="summarizeCheckbox" bind:checked={summarize} />
+        <span>Summarize with AI</span>
+      </label>
     </div>
     <div class="mb-3 form-check">
-      <Checkbox id="tagCheckbox" bind:checked={tag} label="Tag with AI" />
+      <label class="flex items-center gap-2">
+        <Checkbox id="tagCheckbox" bind:checked={tag} />
+        <span>Tag with AI</span>
+      </label>
     </div>
     <button class="btn nes-btn is-primary" onclick={handleSubmit}>Upload</button>
   </div>
 </div>
 
 <style>
-  .card {
+  /* Match the component's markup classes to avoid unused selector warnings */
+  .nier-bits-card {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
   }
-  .card-header {
-    border-bottom: 1px solid #ee;
+  .nier-bits-yorha-panel-header {
+    border-bottom: 1px solid #eee; /* fixed invalid color (#ee -> #eee) */
     padding-bottom: 1rem;
     margin-bottom: 1rem;
   }
-  .card-header h3 {
+  .nier-bits-yorha-panel-header h3 {
     margin: 0;
     font-size: 1.25rem;
     color: #333;
   }
+  .nier-bits-card-body {
+    padding: 1rem;      /* provide spacing inside the card body */
+    display: block;     /* explicit display to avoid empty ruleset */
+    gap: 0.75rem;       /* spacing if flex/grid used later */
+  }
+
+  /* Form controls (kept from original, applied to actual inputs) */
   .form-label {
     font-weight: bold;
     margin-bottom: 0.5rem;
@@ -118,7 +132,11 @@
     border-radius: 4px;
     font-size: 1rem;
   }
-  .btn-primary {
+
+  /* Button styles matching the classes used in markup:
+     markup used: "btn nes-btn is-primary" */
+  .nes-btn.is-primary,
+  .btn.nes-btn.is-primary {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -127,7 +145,8 @@
     cursor: pointer;
     font-size: 1rem;
   }
-  .btn-primary:hover {
+  .nes-btn.is-primary:hover,
+  .btn.nes-btn.is-primary:hover {
     background-color: #0056b3;
   }
 </style>

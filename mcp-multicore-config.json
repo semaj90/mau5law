@@ -40,7 +40,7 @@
     },
     "performance": {
       "cpuCores": 4,
-      "memoryLimit": "4GB",
+      "memoryLimit": "8GB",
       "workerTimeout": 30000,
       "batchSize": 10
     },
@@ -48,7 +48,7 @@
       "level": "info",
       "file": "logs/mcp-multicore.log",
       "console": true,
-      "timestamps": true
+      "timestamps": "YYYY-MM-DD HH:mm:ss"
     }
   }
 }

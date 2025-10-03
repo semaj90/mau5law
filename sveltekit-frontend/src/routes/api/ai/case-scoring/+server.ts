@@ -197,5 +197,5 @@ async function generateScoreReasoning(score: number, evidenceType: string): Prom
     return `Basic ${evidenceType} evidence requiring additional corroboration for optimal case strength.`;
   return `Limited ${evidenceType} evidence with significant admissibility concerns requiring review.`;
 }
-export const GET = redisOptimized.aiAnalysis(originalGETHandler);
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.caseScoring(originalGETHandler);
+export const POST = redisOptimized.caseScoring(originalPOSTHandler);

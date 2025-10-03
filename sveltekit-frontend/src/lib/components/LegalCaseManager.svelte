@@ -408,7 +408,6 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .loading-overlay {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;

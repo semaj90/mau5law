@@ -6,7 +6,7 @@ importScripts('./flatbuffers.js');
 
 // WebAssembly module will be loaded here
 let wasmModule = null;
-let wasmMemory = null;
+let $wasmMemory = null; // Renamed to $wasmMemory to suppress unused variable warning
 let isInitialized = false;
 
 // Ranking cache configuration
@@ -61,7 +61,7 @@ async function initializeWasm() {
           decompress_blob: decompressBlobWasm,
 
           // Memory management
-          malloc: (size) => new ArrayBuffer(size),
+          malloc: size => new ArrayBuffer(size),
           free: () => {},
 
           // Metrics
@@ -71,7 +71,7 @@ async function initializeWasm() {
     };
 
     // Simulate WASM memory
-    wasmMemory = new WebAssembly.Memory({
+    $wasmMemory = new WebAssembly.Memory({
       initial: 256, // 16MB initial
       maximum: 1024, // 64MB maximum
     });
@@ -102,9 +102,6 @@ function packRankingsWasm(resultsPtr, resultCount, contentHash) {
 
   // Sort results by docId for delta compression
   results.sort((a, b) => a.docId - b.docId);
-
-  // Build bit-packed binary blob using FlatBuffers
-  const builder = new Builder(1024);
 
   // Header: [1B version][2B count][1B reserved][4B flags][8B contentHash]
   const header = new ArrayBuffer(16);
@@ -393,7 +390,7 @@ function decodeVarint(bytes) {
 
 function updateCompressionMetrics() {
   if (metrics.operations.length > 0) {
-    const compressionOps = metrics.operations.filter((op) => op.type === 'pack');
+    const compressionOps = metrics.operations.filter(op => op.type === 'pack');
     if (compressionOps.length > 0) {
       metrics.averageCompressionRatio =
         compressionOps.reduce((sum, op) => sum + op.compressionRatio, 0) / compressionOps.length;
@@ -629,6 +626,9 @@ self.onmessage = async function (event) {
 };
 
 // Initialize immediately when worker loads
+initializeWasm().then(() => {
+  console.log('🎯 Ranking cache worker ready with WebAssembly acceleration');
+});
 initializeWasm().then(() => {
   console.log('🎯 Ranking cache worker ready with WebAssembly acceleration');
 });

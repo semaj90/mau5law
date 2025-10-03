@@ -31,7 +31,7 @@ type ChatEvent =
   | { type: 'UPDATE_SETTINGS'; settings: Partial<ChatSettings> }
   | { type: 'STREAM_CHUNK'; chunk: string }
   | { type: 'STREAM_DONE' }
-  | { type: 'RETRY' }
+  | { type: 'RETRY' };
 // Stream chat service
 const streamChatService = fromPromise(async ({ input }: { input: { messages: ChatMessage[]; settings: ChatSettings } }) => {
   const { messages, settings } = input;
@@ -42,7 +42,7 @@ const streamChatService = fromPromise(async ({ input }: { input: { messages: Cha
     },
     body: JSON.stringify({
       messages,
-      model: settings?.model || "unknown" // @ts-ignore - Model property access,
+      model: settings?.model || "unknown",
       temperature: settings.temperature,
       max_tokens: settings.maxTokens,
       stream: true
@@ -56,14 +56,14 @@ const streamChatService = fromPromise(async ({ input }: { input: { messages: Cha
 export const chatMachine = createMachine({
   id: 'chat',
   types: {
-    context: { [key: string]: any } as ChatContext,
-    events: { [key: string]: any } as ChatEvent
+    context: {} as ChatContext,
+    events: {} as ChatEvent
   },
   context: {
     messages: [],
-    error: null;
-    status: 'idle'
-    }); const settings = {
+    error: null,
+    status: 'idle',
+    settings: {
       model: 'gemma3-legal',
       temperature: 0.3,
       maxTokens: 500
@@ -81,14 +81,14 @@ export const chatMachine = createMachine({
               { role: 'user', content: event.message, timestamp: new Date().toISOString() },
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }, // Placeholder for streaming
             ],
-            error: null
+            error: null,
             status: 'loading'
           })
         },
         RESET: {
           actions: assign({
             messages: [],
-            error: null
+            error: null,
             status: 'idle'
           })
         },
@@ -104,7 +104,7 @@ export const chatMachine = createMachine({
     },
     loading: {
       invoke: {
-        src: streamChatService
+        src: streamChatService,
         input: ({ context }) => ({
           messages: context.messages.slice(0, -1), // Exclude the empty assistant message
           settings: context.settings
@@ -118,7 +118,7 @@ export const chatMachine = createMachine({
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message: 'Unknown error'}`,
+            error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message : 'Unknown error'}`,
             status: 'error'
           })
         }
@@ -154,14 +154,14 @@ export const chatMachine = createMachine({
               { role: 'user', content: event.message, timestamp: new Date().toISOString() },
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }
             ],
-            error: null
+            error: null,
             status: 'loading'
           })
         },
         RETRY: {
           target: 'loading',
           actions: assign({
-            error: null
+            error: null,
             status: 'loading'
           })
         },
@@ -169,7 +169,7 @@ export const chatMachine = createMachine({
           target: 'idle',
           actions: assign({
             messages: [],
-            error: null;
+            error: null,
             status: 'idle'
           })
         }

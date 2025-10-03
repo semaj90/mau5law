@@ -66,6 +66,21 @@ async function startRedis() {
     console.log('✅ Docker Redis detected (legal-ai-redis)');
     console.log('📍 Using Docker Redis on port 6379');
     console.log('🔗 Skipping local Redis startup');
+
+    // Keep the process alive to prevent concurrently from shutting down
+    // Listen for termination signals
+    process.on('SIGINT', () => {
+      console.log('\n🛑 Shutting down Redis monitor...');
+      process.exit(0);
+    });
+
+    process.on('SIGTERM', () => {
+      console.log('\n🛑 Shutting down Redis monitor...');
+      process.exit(0);
+    });
+
+    // Keep process alive
+    setInterval(() => {}, 1000);
     return;
   }
 

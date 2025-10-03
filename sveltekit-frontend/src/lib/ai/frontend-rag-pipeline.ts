@@ -48,8 +48,8 @@ class FrontendRAGPipeline {
   }
   private initializeLoki() {
     this.lokiDb = new Loki('frontend-rag.db', {
-      adapter: browser ? new (Loki as any).LokiMemoryAdapter() : undefined;
-      autoload: true
+      adapter: browser ? new (Loki as any).LokiMemoryAdapter() : undefined,
+      autoload: true,
       autoloadCallback: () => {
         this.semanticCollection = this.lokiDb.getCollection('semantic_chunks');
         if (!this.semanticCollection) {
@@ -59,7 +59,7 @@ class FrontendRAGPipeline {
           });
         }
       },
-      autosave: true
+      autosave: true,
       autosaveInterval: 2000
     });
   }
@@ -68,13 +68,13 @@ class FrontendRAGPipeline {
       // Initialize lightweight embedding pipeline
       this.embeddingPipeline = await pipeline(
         'feature-extraction',
-        'Xenova/all-MiniLM-L6-v2',)
+        'Xenova/all-MiniLM-L6-v2',
         { device: 'cpu', dtype: 'fp32' }
       );
       // Initialize text generation pipeline (lightweight)
       this.generationPipeline = await pipeline(
         'text-generation',
-        'Xenova/gpt2',)
+        'Xenova/gpt2',
         { device: 'cpu', dtype: 'fp16' }
       );
       console.log('✅ Frontend RAG pipelines initialized');
@@ -102,9 +102,9 @@ class FrontendRAGPipeline {
   }
   // Context-switched semantic search
   async semanticSearch(
-    query: string
+    query: string,
     context: 'legal' | 'technical' | 'general' = 'legal',
-    limit: number = 10;
+    limit: number = 10
   ): Promise<SemanticChunk[]> {
     const queryEmbedding = await this.generateEmbedding(query);
     const contextWeights = this.contextSwitcher.getWeights(context);
@@ -205,13 +205,13 @@ class SIMDProcessor {
   }
   private cosineDistance(a: Float32Array, b: Float32Array): number {
     const dotProd = this.dotProduct(a, b);
-    const normA = Math.sqrt(this.dotProduct(a, a);
-    const normB = Math.sqrt(this.dotProduct(b, b);
+    const normA = Math.sqrt(this.dotProduct(a, a));
+    const normB = Math.sqrt(this.dotProduct(b, b));
     if (normA === 0 || normB === 0) return 0;
     return dotProd / (normA * normB);
   }
   private normalize(vec: Float32Array): Float32Array {
-    const norm = Math.sqrt(this.dotProduct(vec, vec);
+    const norm = Math.sqrt(this.dotProduct(vec, vec));
     if (norm === 0) return vec;
     const normalized = new Float32Array(vec.length);
     for (let i = 0; i < vec.length; i++) {
@@ -243,8 +243,8 @@ class G0llamaService {
     }
   }
   async generate(
-    query: string
-    context: string;
+    query: string,
+    context: string,
     options: {
       maxTokens?: number;
       temperature?: number;
@@ -257,7 +257,7 @@ class G0llamaService {
       const response = await fetch(`${this.baseUrl}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
           max_tokens: options.maxTokens || 150,
           temperature: options.temperature || 0.7

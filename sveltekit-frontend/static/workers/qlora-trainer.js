@@ -4,7 +4,6 @@
  */
 
 // QLorA configuration and state
-let trainingConfig = null;
 let currentJob = null;
 let isTraining = false;
 let trainingState = {
@@ -112,7 +111,7 @@ class QLorATrainer {
 
       // Yield control periodically
       if (Math.random() < 0.1) {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise(resolve => setTimeout(resolve, 0));
       }
     }
 
@@ -137,7 +136,7 @@ class QLorATrainer {
     let hidden = embedding;
 
     // Apply LoRA modifications
-    for (const [module, lora] of this.model.loraLayers) {
+    for (const [$_module, lora] of this.model.loraLayers) {
       hidden = this.applyLoRA(hidden, lora);
     }
 
@@ -195,9 +194,9 @@ class QLorATrainer {
 
   softmax(logits) {
     const maxLogit = Math.max(...logits);
-    const exps = logits.map((x) => Math.exp(x - maxLogit));
+    const exps = logits.map(x => Math.exp(x - maxLogit));
     const sumExps = exps.reduce((a, b) => a + b, 0);
-    return exps.map((x) => x / sumExps);
+    return exps.map(x => x / sumExps);
   }
 
   calculateLoss(prediction, target) {
@@ -211,7 +210,7 @@ class QLorATrainer {
     return loss;
   }
 
-  calculateGradients(prediction, target, input) {
+  calculateGradients(prediction, target, _input) {
     // Simplified gradient calculation
     const gradients = new Map();
 
@@ -261,9 +260,7 @@ class QLorATrainer {
       momentum[i] = this.optimizer.beta1 * momentum[i] + (1 - this.optimizer.beta1) * gradients[i];
 
       // Update biased second raw moment estimate
-      variance[i] =
-        this.optimizer.beta2 * variance[i] +
-        (1 - this.optimizer.beta2) * gradients[i] * gradients[i];
+      variance[i] = this.optimizer.beta2 * variance[i] + (1 - this.optimizer.beta2) * gradients[i] * gradients[i];
 
       // Compute bias-corrected first moment estimate
       const mHat = momentum[i] / (1 - Math.pow(this.optimizer.beta1, trainingState.step + 1));
@@ -272,8 +269,7 @@ class QLorATrainer {
       const vHat = variance[i] / (1 - Math.pow(this.optimizer.beta2, trainingState.step + 1));
 
       // Update parameters
-      params[i] -=
-        (this.optimizer.learningRate * mHat) / (Math.sqrt(vHat) + this.optimizer.epsilon);
+      params[i] -= (this.optimizer.learningRate * mHat) / (Math.sqrt(vHat) + this.optimizer.epsilon);
 
       // Weight decay
       params[i] *= 1 - this.optimizer.learningRate * this.optimizer.weightDecay;
@@ -314,7 +310,7 @@ class QLorATrainer {
     return usage;
   }
 
-  saveModel(path) {
+  saveModel(_path) {
     // Simulate model saving
     const modelData = {
       config: this.config,
@@ -422,9 +418,7 @@ class ReinforcementLearningAgent {
   getStats() {
     const recentRewards = this.rewardHistory.slice(-100);
     const averageReward =
-      recentRewards.length > 0
-        ? recentRewards.reduce((a, b) => a + b, 0) / recentRewards.length
-        : 0;
+      recentRewards.length > 0 ? recentRewards.reduce((a, b) => a + b, 0) / recentRewards.length : 0;
 
     return {
       episodeCount: this.episodeCount,
@@ -440,7 +434,7 @@ class ReinforcementLearningAgent {
 let trainer = new QLorATrainer();
 
 // Worker message handlers
-self.addEventListener('message', async (event) => {
+self.addEventListener('message', async event => {
   const { type, data } = event.data;
 
   try {
@@ -472,7 +466,6 @@ self.addEventListener('message', async (event) => {
 });
 
 async function handleInit(config) {
-  trainingConfig = config;
   await trainer.initialize(config.modelPath);
 
   console.log('QLorA trainer initialized');

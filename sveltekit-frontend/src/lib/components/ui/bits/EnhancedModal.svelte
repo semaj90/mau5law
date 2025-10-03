@@ -101,39 +101,42 @@
   </div>
 {/if}
 
-<style>/* Modal Base Styles */ {}
+<style>
+  /* Modal Base Styles */
   .enhanced-modal {
     background: var(--enhanced-bg-primary);
     border: 2px solid var(--enhanced-border);
-box-shadow: {}
-0 20px 25px -5px rgba(0, 0, 0, 0.1), {}
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
       0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
-/* Default Modal */ {}
+
+  /* Default Modal */
   .enhanced-modal-default {
     background: var(--enhanced-bg-primary);
     border-color: var(--enhanced-border);
   }
-/* Gradient Modal */ {}
+
+  /* Gradient Modal */
   .enhanced-modal-gradient {
-background: linear-gradient( {}
-135deg, {}
-var(--enhanced-bg-primary) 0%, {}
-rgba(196, 30, 58, 0.1) 25%, {}
-rgba(255, 215, 0, 0.1) 50%, {}
-rgba(106, 106, 106, 0.1) 75%, {}
-var(--enhanced-bg-secondary) 100% {}
+    background: linear-gradient(
+      135deg,
+      var(--enhanced-bg-primary) 0%,
+      rgba(196, 30, 58, 0.1) 25%,
+      rgba(255, 215, 0, 0.1) 50%,
+      rgba(106, 106, 106, 0.1) 75%,
+      var(--enhanced-bg-secondary) 100%
     );
     border: 2px solid;
-border-image: linear-gradient( {}
-135deg, {}
-var(--enhanced-accent) 0%, {}
-var(--enhanced-accent-secondary) 50%, {}
-var(--enhanced-accent-grey) 100% {}
-) {}
-      1;
+    border-image: linear-gradient(
+      135deg,
+      var(--enhanced-accent) 0%,
+      var(--enhanced-accent-secondary) 50%,
+      var(--enhanced-accent-grey) 100%
+    ) 1;
   }
-/* Diamond Pattern Modal */ {}
+
+  /* Diamond Pattern Modal */
   .enhanced-modal-diamond {
     background: var(--enhanced-bg-primary);
     position: relative;
@@ -147,43 +150,46 @@ var(--enhanced-accent-grey) 100% {}
     left: 0;
     right: 0;
     bottom: 0;
-background-image: {}
-repeating-linear-gradient( {}
-45deg, {}
-transparent 0px, {}
-transparent 8px, {}
-rgba(196, 30, 58, 0.1) 8px, {}
-rgba(196, 30, 58, 0.1) 16px {}
-), {}
-repeating-linear-gradient( {}
--45deg, {}
-transparent 0px, {}
-transparent 8px, {}
-rgba(255, 215, 0, 0.1) 8px, {}
-rgba(255, 215, 0, 0.1) 16px {}
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(196, 30, 58, 0.1) 8px,
+        rgba(196, 30, 58, 0.1) 16px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(255, 215, 0, 0.1) 8px,
+        rgba(255, 215, 0, 0.1) 16px
       );
     z-index: -1;
   }
-/* Gaming Modal */ {}
+
+  /* Gaming Modal */
   .enhanced-modal-gaming {
-background: linear-gradient( {}
-135deg, {}
-var(--enhanced-bg-secondary) 0%, {}
-rgba(0, 255, 0, 0.05) 50%, {}
-var(--enhanced-bg-primary) 100% {}
+    background: linear-gradient(
+      135deg,
+      var(--enhanced-bg-secondary) 0%,
+      rgba(0, 255, 0, 0.05) 50%,
+      var(--enhanced-bg-primary) 100%
     );
     border: 2px solid var(--enhanced-accent);
-box-shadow: {}
-0 0 20px rgba(196, 30, 58, 0.3), {}
+    box-shadow:
+      0 0 20px rgba(196, 30, 58, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-/* Legal Modal */ {}
+
+  /* Legal Modal */
   .enhanced-modal-legal {
     background: linear-gradient(135deg, var(--enhanced-bg-primary) 0%, rgba(196, 30, 58, 0.05) 100%);
     border: 2px solid var(--enhanced-accent);
     box-shadow: 0 10px 40px rgba(196, 30, 58, 0.2);
   }
-/* NES Diamond Pattern */ {}
+
+  /* NES Diamond Pattern */
   .nes-diamond-pattern {
     font-family: 'Press Start 2P', monospace;
   }
@@ -194,7 +200,8 @@ box-shadow: {}
     text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
     color: var(--enhanced-accent);
   }
-/* Animation classes */ {}
+
+  /* Animation classes */
   .animate-in {
     animation-fill-mode: both;
   }
@@ -230,7 +237,8 @@ box-shadow: {}
       transform: scale(1);
     }
   }
-/* NES Button Styles for Close Button */ {}
+
+  /* NES Button Styles for Close Button */
   .nes-btn.is-small {
     font-size: 8px;
     padding: 4px 8px;

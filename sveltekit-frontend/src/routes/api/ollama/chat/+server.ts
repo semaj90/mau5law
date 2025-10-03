@@ -60,13 +60,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json()
     const {
       message,
-      model: reqModel
-      temperature: reqTemperature
-      maxTokens: reqMaxTokens
-      stream: reqStream
+      model: reqModel,
+      temperature: reqTemperature,
+      maxTokens: reqMaxTokens,
+      stream: reqStream,
       systemPrompt,
       conversationId,
-      useVectorSearch: reqUseVectorSearch
+      useVectorSearch: reqUseVectorSearch,
       context = []
     } = body
     // Environment-backed defaults (check your .env for these keys)
@@ -109,9 +109,9 @@ export const POST: RequestHandler = async ({ request }) => {
             })
             for await (const chunk of streamGenerator) {
               const data = `data: ${JSON.stringify(chunk)}\n\n`
-              controller.enqueue(encoder.encode(data)
+              controller.enqueue(encoder.encode(data));
             }
-            controller.enqueue(encoder.encode('data: [DONE]\n\n')
+            controller.enqueue(encoder.encode('data: [DONE]\n\n'));
             controller.close()
           } catch (error: any) {
             console.error('Streaming error:', error)
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
               text: 'An error occurred while processing your request.',
               metadata: { type: 'error', error: error.message }
             }
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`)
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
             controller.close()
           }
         }
@@ -157,7 +157,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json({
       success: true,
-      response: fullResponse
+      response: fullResponse,
       metadata: {
         model,
         confidence,
@@ -168,11 +168,11 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (error: any) {
     console.error('Chat API error:', error)
-    return json()
+    return json(
       {
         success: false,
         error: 'Failed to process chat request',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
     )

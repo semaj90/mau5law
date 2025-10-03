@@ -1,18 +1,35 @@
 <script lang="ts">
-  import createDropdownMenu from 'bits-ui';
-  import type { Snippet } from 'svelte';
+  import createDropdownMenu from 'bits-ui'; // Use named import if not default
+  // import type { Snippet } from 'svelte';
+  // Use a generic function type for renderable children
+  type Renderable = (() => any) | undefined;
+
+  // Destructure the Root component from the createDropdownMenu object (do not call it)
+  const { Root } = createDropdownMenu;
+
+  /**
+   * Props for DropdownMenuRoot.
+   * Usage (Svelte 5 runes):
+   * <DropdownMenuRoot open={$bindable(false)} onOpenChange={fn}>{...}</DropdownMenuRoot>
+   * - `open` is bindable and controls menu state.
+   * - `onOpenChange` is called with the new open state.
+   * - `children` should be a render function.
+   */
   interface Props {
-    children?: Snippet;
+    children?: Renderable;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
   }
-  let { children, open = $bindable(false), onOpenChange }: Props = $props();
+
+  // Destructure directly from $props() so $bindable() is used in the declaration
+  let { children, open = $bindable(false), onOpenChange }: Props = $props<Props>();
+
   function handleOpenChange(newOpen: boolean) {
     open = newOpen;
     onOpenChange?.(newOpen as boolean);
   }
 </script>
 
-<createDropdownMenu.Root bind:open onOpenChange={handleOpenChange}>
+<Root bind:open onOpenChange={handleOpenChange}>
   {@render children?.()}
-</createDropdownMenu.Root>
+</Root>
