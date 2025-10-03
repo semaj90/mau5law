@@ -136,7 +136,7 @@ export class NeuralMemoryManager extends EventEmitter {
    * Initialize memory pools based on current LOD level
    */;
   private initializeMemoryPools(): void {
-    const poolConfigs = [;
+    const poolConfigs = [
       {
         id: "json_pool",
         type: "high" as const,

@@ -136,23 +136,45 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
+
+// Based on node-redis types and usage in this file.
+interface RedisStreamInfo {
+  length: number
+  'first-entry': { id: string; message: Record<string, string> } | null
+  'last-entry': { id: string; message: Record<string, string> } | null
+}
+
+interface RedisStreamEvent {
+  id: string
+  message: {
+    timestamp: string
+    type: string
+    action: string
+    caseId: string
+    evidenceId: string
+    documentId: string
+    metadata: string
+    retry: '0' | '1'
+  }
+}
+
 /*
  * GET /api/worker/autotag/trigger
  * Get worker trigger status and recent events
  */
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async () => {
   try {
     // Ensure Redis connection
-    await redisService.initialize()
-    const streamName = 'autotag:requests'
+    await redisService.initialize();
+    const streamName = 'autotag:requests';
     // Get stream info
-    const streamInfo = await (redisService as any).xInfoStream(streamName).catch(() => null)
+    const streamInfo: RedisStreamInfo | null = await redisService.xInfoStream(streamName).catch(() => null);
     // Get recent events (last 10)
-    const recentEvents = await (redisService as any)
+    const recentEvents: RedisStreamEvent[] = await redisService
       .xRevRange(streamName, '+', '-', { COUNT: 10 })
-      .catch(() => [])
+      .catch(() => []);
     // Parse events
-    const events = (recentEvents as any[]).map((_event: any) => ({,
+    const events = recentEvents.map(event => ({
       id: event.id,
       timestamp: new Date(parseInt(event.message.timestamp)).toISOString(),
       type: event.message.type,
@@ -161,8 +183,8 @@ export const GET: RequestHandler = async ({ url }) => {
       evidenceId: event.message.evidenceId || null,
       documentId: event.message.documentId || null,
       metadata: JSON.parse(event.message.metadata || '{}'),
-      retry: event.message.retry === '1'
-    })
+      retry: event.message.retry === '1',
+    }));
     return json({
       success: true,
       data: {
@@ -170,33 +192,34 @@ export const GET: RequestHandler = async ({ url }) => {
           ? {
               length: streamInfo.length,
               firstEntry: streamInfo['first-entry'],
-              lastEntry: streamInfo['last-entry']
+              lastEntry: streamInfo['last-entry'],
             }
-          : null
-        recentEvents: events
+          : null,
+        recentEvents: events,
         workerStatus: 'active', // TODO: Implement actual worker health check
-        lastProcessed: events.length > 0 ? events[0].timestamp : null
+        lastProcessed: events.length > 0 ? events[0].timestamp : null,
       },
       metadata: {
         timestamp: new Date().toISOString(),
         worker: 'postgresql-first-autotag',
-        version: '2.0'
-      }
-    })
-  } catch (error: any) {
-    console.error('❌ Worker status check failed:', error)
+        version: '2.0',
+      },
+    });
+  } catch (e) {
+    const error = ensureError(e);
+    console.error('❌ Worker status check failed:', error);
     return json(
       {
         success: false,
         error: {
           message: 'Worker status check failed',
-          code: 'WORKER_STATUS_ERROR'
-        }
+          code: 'WORKER_STATUS_ERROR',
+        },
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 /*
  * DELETE /api/worker/autotag/trigger
  * Clear worker event stream (admin operation)
@@ -211,32 +234,27 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     await redisService.initialize()
     const streamName = 'autotag:requests'
     // Get current stream info
-    const streamInfo = await redisService.xInfoStream(streamName).catch(() => null)
-    // xInfoStream can return various structures; ensure numeric fallback
-    const deletedCount = Array.isArray(streamInfo)
-      ? streamInfo.length : typeof streamInfo === 'object' &&
-          streamInfo !== null &&
-          'length' in (streamInfo as any) &&
-          typeof (streamInfo as any).length === 'number'
-        ? (streamInfo as any).length
-        : 0
+    const streamInfo: RedisStreamInfo | null = await redisService.xInfoStream(streamName).catch(() => null);
+    // With RedisStreamInfo type, we can safely access length.
+    const deletedCount = streamInfo?.length ?? 0;
     // Delete the entire stream
     await redisService.del(streamName)
     console.log(`🗑️ Worker event stream cleared: ${deletedCount} events deleted`)
     return json({
       success: true,
       data: {
-        deletedEvents: deletedCount
+        deletedEvents: deletedCount,
         streamName,
-        clearedAt: new Date().toISOString()
+        clearedAt: new Date().toISOString(),
       },
       metadata: {
         timestamp: new Date().toISOString(),
         operation: 'stream-clear',
-        version: '2.0'
-      }
-    })
-  } catch (error: any) {
+        version: '2.0',
+      },
+    });
+  } catch (e) {
+    const error = ensureError(e)
     console.error('❌ Worker stream clear failed:', error)
     return json(
       {

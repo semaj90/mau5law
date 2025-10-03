@@ -90,7 +90,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			}, { status: 400 })
 		}
 		// Auto-detect dimensions if not provided
-		const dimensions = requestData.dimensions || requestData.vectors[0]?.length || 768
+		const dimensions = requestData.dimensions || requestData.vectors[0]?.length || 512
 		const indexType = requestData.index_type || 'hnsw'
 		// Check CUDA service health
 		const isHealthy = await checkCudaIndexingHealth()
@@ -349,7 +349,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 						endpoint = operation.index_type === 'hnsw' ? '/api/v1/index/hnsw' : '/api/v1/index/ivfpq'
 						requestBody = {
 							vectors: operation.vectors,
-							dimensions: operation.vectors?.[0]?.length || 768,
+							dimensions: operation.vectors?.[0]?.length || 512,
 							...operation.config
 						}
 						break

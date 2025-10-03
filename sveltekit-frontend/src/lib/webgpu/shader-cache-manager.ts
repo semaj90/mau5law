@@ -283,7 +283,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     // Create bind group
     const bindGroup = this.device.createBindGroup({
       layout: shader.bindGroupLayout,
-      entries: [;
+      entries: [
         ...inputs.map((buffer, index) => ({
           binding: index
           resource: { buffer }

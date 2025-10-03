@@ -40,7 +40,7 @@ export const canvasSystemMachine = setup({
         return [...context.nodes, event.node];
       }
     }),
-    removeNode: assign({,
+    removeNode: assign({
       nodes: ({ context, event }) => {
         if (event.type !== "REMOVE_NODE") return context.nodes;
         return context.nodes.filter((node) => node.id !== event.nodeId);
@@ -53,7 +53,7 @@ export const canvasSystemMachine = setup({
         );
       }
     }),
-    updateNode: assign({,
+    updateNode: assign({
       nodes: ({ context, event }) => {
         if (event.type !== "UPDATE_NODE") return context.nodes;
         return context.nodes.map((node) =>
@@ -61,28 +61,28 @@ export const canvasSystemMachine = setup({
         );
       }
     }),
-    selectNode: assign({,
+    selectNode: assign({
       selectedNode: ({ event }) => {
         if (event.type !== "SELECT_NODE") return null;
         return event.nodeId;
       }
     }),
-    startDrag: assign({,
+    startDrag: assign({
       draggedNode: ({ event }) => {
         if (event.type !== "START_DRAG") return null;
         return event.nodeId;
       }
     }),
-    endDrag: assign({,
+    endDrag: assign({
       draggedNode: () => null
     }),
-    addConnection: assign({,
+    addConnection: assign({
       connections: ({ context, event }) => {
         if (event.type !== "ADD_CONNECTION") return context.connections;
         return [...context.connections, event.connection];
       }
     }),
-    removeConnection: assign({,
+    removeConnection: assign({
       connections: ({ context, event }) => {
         if (event.type !== "REMOVE_CONNECTION") return context.connections;
         return context.connections.filter(
@@ -90,19 +90,19 @@ export const canvasSystemMachine = setup({
         );
       }
     }),
-    clearCanvas: assign({,
+    clearCanvas: assign({
       nodes: () => [],
       connections: () => [],
       selectedNode: () => null,
       draggedNode: () => null
     }),
-    setError: assign({,
+    setError: assign({
       error: ({ event }) => {
         if (event.type !== "ERROR") return null;
         return event.error;
       }
     }),
-    clearError: assign({,
+    clearError: assign({
       error: () => null
     })
   },
@@ -205,7 +205,7 @@ export const canvasSystemMachine = setup({
         input: ({ context }) => context,
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             canvasState: ({ event }) => event.output
           })
         },

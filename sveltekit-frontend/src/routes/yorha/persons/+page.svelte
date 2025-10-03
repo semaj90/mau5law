@@ -5,8 +5,8 @@
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Card from '$lib/components/ui/card';
   import Button from '$lib/components/ui/Button.svelte';
-  import Input from '$lib/components/ui/input.svelte';
-  import Badge from '$lib/components/ui/badge.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
+  import Badge from '$lib/components/ui/Badge.svelte';
   import { Search, Plus, Eye, Edit, Trash2, AlertTriangle, Shield } from 'lucide-svelte';
   // Persons of Interest data
   let persons = $state([
@@ -20,7 +20,7 @@
       location: 'Downtown District',
       description: 'Former cybersecurity expert turned corporate spy',
       cases: ['CASE-2024-087', 'CASE-2024-089'],
-      photo: null;
+      photo: null
     },
     {
       id: 'POI-002',
@@ -32,7 +32,7 @@
       location: 'Tech Quarter',
       description: 'Data analyst with suspicious financial transactions',
       cases: ['CASE-2024-088'],
-      photo: null;
+      photo: null
     },
     {
       id: 'POI-003',
@@ -44,25 +44,38 @@
       location: 'Multiple Networks',
       description: 'Advanced persistent threat actor, identity unknown',
       cases: ['CASE-2024-087', 'CASE-2024-090'],
-      photo: null;
+      photo: null
     }
   ]);
   let searchQuery = $state('');
   let selectedThreatLevel = $state('all');
   let showNewPersonModal = $state(false);
+  // New person form state for the modal
+  let newPerson = $state({
+    name: '',
+    alias: '',
+    threat_level: 'low',
+    status: 'surveillance',
+    description: '',
+    last_seen: '',
+    location: ''
+  });
   let isLoading = $state(false);
   let error = $state(null);
   // Filter persons based on search and threat level
-  let filteredPersons = $derived.by(() => {
-    let filtered = person;
-    if (searchQuery.trim()) {
-      filtered = filtered.filter(item => item.includes(searchQuery.toLowerCase()) ||
-        person.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        person.description.toLowerCase().includes(searchQuery.toLowerCase())
+  let filteredPersons = $derived(() => {
+    // make a shallow copy to avoid mutating original
+    let filtered = persons ? [...persons] : [];
+    const q = (searchQuery || '').trim().toLowerCase();
+    if (q) {
+      filtered = filtered.filter(item =>
+        (item.name || '').toLowerCase().includes(q) ||
+        (item.alias || '').toLowerCase().includes(q) ||
+        (item.description || '').toLowerCase().includes(q)
       );
     }
-    if (selectedThreatLevel !== 'all') {
-      filtered = filtered.filter(person => person.threat_level === selectedThreatLevel);
+    if (selectedThreatLevel && selectedThreatLevel !== 'all') {
+      filtered = filtered.filter(item => item.threat_level === selectedThreatLevel);
     }
     return filtered;
   });
@@ -89,10 +102,10 @@
     try {
       isLoading = true;
       error = null;
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        persons = (data as { persons?: unknown }).persons || persons; // Fallback to mock data
+      const response = await fetch('/api/persons-of-interest');
+      if (response && response.ok) {
+        const data = await response.json();
+        persons = data?.persons || persons; // Fallback to mock data
       }
     } catch (err) {
       error = 'Failed to load persons of interest';
@@ -107,16 +120,34 @@
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData);
+        body: JSON.stringify(personData) // removed stray semicolon here
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const newPerson = await (response as { ok?: unknown; json?: unknown }).json();
+      if (response.ok) {
+        const newPerson = await response.json();
         persons = [...persons, newPerson];
         showNewPersonModal = false;
       }
     } catch (err) {
       error = 'Failed to add person';
       console.error('Add person failed:', err);
+    }
+  }
+  // Handler wired to modal's ADD PERSON button
+  async function handleAddPerson() {
+    // minimal validation
+    if (!newPerson.name || newPerson.name.trim().length === 0) {
+      error = 'Name is required';
+      return;
+    }
+    try {
+      await addPerson(newPerson);
+      // reset newPerson and close modal
+      newPerson = { name: '', alias: '', threat_level: 'low', status: 'surveillance', description: '', last_seen: '', location: '' };
+      showNewPersonModal = false;
+      error = null;
+    } catch (err) {
+      console.error('Failed to add person from modal', err);
+      error = 'Failed to add person';
     }
   }
   $effect(() => {
@@ -222,11 +253,11 @@ showNewPersonModal = true}>
           <span class="stat-label">Total Persons</span>
         </div>
         <div class="stat-item critical">
-          <span class="stat-number">{persons.filter(item => item.length)}</span>
+          <span class="stat-number">{persons.filter(item => item.threat_level === 'critical').length}</span>
           <span class="stat-label">Critical</span>
         </div>
         <div class="stat-item high">
-          <span class="stat-number">{persons.filter(item => item.length)}</span>
+          <span class="stat-number">{persons.filter(item => item.status === 'wanted').length}</span>
           <span class="stat-label">Wanted</span>
         </div>
       </div>
@@ -247,71 +278,73 @@ showNewPersonModal = true}>
         </div>
       {:else}
         {#each filteredPersons as person (person.id)}
-          <div.Root class="person-nier-bits-card nes-container">
-          <div.Header class="person-header nes-container">
-            <div class="person-photo">
-              {#if person.photo}
-                <img src={person.photo} alt={person.name} />
-              {:else}
-                <div class="photo-placeholder">
-                  <Shield class="w-8 h-8" />
-                </div>
-              {/if}
+          <Card.Root class="person-nier-bits-card nes-container">
+            <Card.Header class="person-header nes-container">
+               <div class="person-photo">
+                 {#if person.photo}
+                   <img src={person.photo} alt={person.name} />
+                 {:else}
+                   <div class="photo-placeholder">
+                     <Shield class="w-8 h-8" />
+                   </div>
+                 {/if}
+               </div>
+               <div class="person-basic-info">
+                 <div class="person-name">{person.name}</div>
+                 <div class="person-alias">"{person.alias}"</div>
+                 <div class="person-id">{person.id}</div>
+               </div>
+               <div class="person-badges">
+                 <Badge class={getThreatLevelColor(person.threat_level)}>
+                   {person.threat_level.toUpperCase()}
+                 </Badge>
+                 <Badge class={getStatusColor(person.status)}>
+                   {person.status.toUpperCase()}
+                 </Badge>
+               </div>
+            </Card.Header>
+            <Card.Content class="person-content nes-container">
+               <div class="person-details">
+                 <div class="detail-row">
+                   <span class="detail-label">Last Seen:</span>
+                   <span class="detail-value">{person.last_seen}</span>
+                 </div>
+                 <div class="detail-row">
+                   <span class="detail-label">Location:</span>
+                   <span class="detail-value">{person.location}</span>
+                 </div>
+                 <div class="detail-row">
+                   <span class="detail-label">Cases:</span>
+                   <span class="detail-value">{person.cases.length} active</span>
+                 </div>
+               </div>
+               <div class="person-description">
+                 {person.description}
+               </div>
+               <div class="person-cases">
+                 {#each person.cases as caseId}
+                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseId}</span>
+                 {/each}
+               </div>
+            </Card.Content>
+
+            <!-- replaced Card.Footer (not exported) with a plain div -->
+            <div class="person-actions nes-container card-footer">
+               <Button class="bits-btn" size="sm" variant="ghost">
+                 <Eye class="w-4 h-4" />
+                 View
+               </Button>
+               <Button class="bits-btn" size="sm" variant="ghost">
+                 <Edit class="w-4 h-4" />
+                 Edit
+               </Button>
+               <Button class="bits-btn" size="sm" variant="destructive">
+                 <Trash2 class="w-4 h-4" />
+                 Remove
+               </Button>
             </div>
-            <div class="person-basic-info">
-              <div class="person-name">{person.name}</div>
-              <div class="person-alias">"{person.alias}"</div>
-              <div class="person-id">{person.id}</div>
-            </div>
-            <div class="person-badges">
-              <Badge class={getThreatLevelColor(person.threat_level)}>
-                {person.threat_level.toUpperCase()}
-              </Badge>
-              <Badge class={getStatusColor(person.status)}>
-                {person.status.toUpperCase()}
-              </Badge>
-            </div>
-          </div.Header>
-          <div.Content class="person-content nes-container">
-            <div class="person-details">
-              <div class="detail-row">
-                <span class="detail-label">Last Seen:</span>
-                <span class="detail-value">{person.last_seen}</span>
-              </div>
-              <div class="detail-row">
-                <span class="detail-label">Location:</span>
-                <span class="detail-value">{person.location}</span>
-              </div>
-              <div class="detail-row">
-                <span class="detail-label">Cases:</span>
-                <span class="detail-value">{person.cases.length} active</span>
-              </div>
-            </div>
-            <div class="person-description">
-              {person.description}
-            </div>
-            <div class="person-cases">
-              {#each person.cases as caseId}
-                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseId}</span>
-              {/each}
-            </div>
-          </div>
-          <div.Footer class="person-actions nes-container">
-            <Button class="bits-btn" size="sm" variant="ghost">
-<Eye class="w-4 h-4" />
-              View
-</Button>
-            <Button class="bits-btn" size="sm" variant="ghost">
-<Edit class="w-4 h-4" />
-              Edit
-</Button>
-            <Button class="bits-btn" size="sm" variant="error">
-<Trash2 class="w-4 h-4" />
-              Remove
-</Button>
-          </div.Footer>
-        </div>
-        {/each}
+          </Card.Root>
+         {/each}
       {/if}
     </div>
     {#if filteredPersons.length === 0}
@@ -328,21 +361,24 @@ showNewPersonModal = true}>
 <!-- Add Person Modal -->
 <Dialog.Root bind:open={showNewPersonModal}>
   <Dialog.Content class="yorha-modal">
-    <Dialog.Header>
+    <!-- Header: use a simple wrapper instead of Dialog.Header (not exported by the dialog module) -->
+    <div class="dialog-header">
       <Dialog.Title>ADD PERSON OF INTEREST</Dialog.Title>
-    </Dialog.Header>
+    </div>
+
     <div class="modal-form">
       <div class="form-grid">
         <div class="form-field">
-          <label class="form-label">FULL NAME</label>
-          <Input placeholder="Enter full name" class="yorha-input" />
+          <label class="form-label" for="full-name">FULL NAME</label>
+          <Input id="full-name" placeholder="Enter full name" class="yorha-input" bind:value={newPerson.name} />
         </div>
         <div class="form-field">
-          <label class="form-label">ALIAS / CODENAME</label>
-          <Input placeholder="Known alias or codename" class="yorha-input" />
+          <label class="form-label" for="alias">ALIAS / CODENAME</label>
+          <Input id="alias" placeholder="Known alias or codename" class="yorha-input" bind:value={newPerson.alias} />
         </div>
         <div class="form-field">
-          <label class="form-label" for="threat-level">THREAT LEVEL</label><select id="threat-level" class="yorha-select">
+          <label class="form-label" for="threat-level">THREAT LEVEL</label>
+          <select id="threat-level" class="yorha-select" bind:value={newPerson.threat_level}>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
@@ -350,31 +386,35 @@ showNewPersonModal = true}>
           </select>
         </div>
         <div class="form-field">
-          <label class="form-label" for="status">STATUS</label><select id="status" class="yorha-select">
+          <label class="form-label" for="status">STATUS</label>
+          <select id="status" class="yorha-select" bind:value={newPerson.status}>
             <option value="surveillance">Under Surveillance</option>
             <option value="wanted">Wanted</option>
             <option value="active">Active Investigation</option>
+            <option value="cleared">Cleared</option>
           </select>
         </div>
         <div class="form-field form-field-full">
-          <label class="form-label" for="description">DESCRIPTION</label><textarea id="description"
+          <label class="form-label" for="description">DESCRIPTION</label>
+          <textarea id="description"
             placeholder="Physical description, known activities, etc."
             rows="4"
             class="yorha-textarea"
+            bind:value={newPerson.description}
           ></textarea>
         </div>
       </div>
     </div>
-    <Dialog.Footer>
-      <Button class="bits-btn" variant="ghost" onclick={() =>
-showNewPersonModal = false}>
+
+    <!-- Footer: use a simple wrapper instead of Dialog.Footer (not exported by the dialog module) -->
+    <div class="dialog-footer">
+      <Button class="bits-btn" variant="ghost" onclick={() => { showNewPersonModal = false; newPerson = { name: '', alias: '', threat_level: 'low', status: 'surveillance', description: '', last_seen: '', location: '' }; }}>
         CANCEL
-</Button>
-      <Button class="bits-btn" onclick={() =>
-showNewPersonModal = false}>
+      </Button>
+      <Button class="bits-btn" onclick={handleAddPerson}>
         ADD PERSON
-</Button>
-    </Dialog.Footer>
+      </Button>
+    </div>
   </Dialog.Content>
 </Dialog.Root>
 <style>
@@ -415,7 +455,7 @@ showNewPersonModal = false}>
     padding: 15px 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-betwee;
+    justify-content: space-between;
   }
   .nav-section {
     display: flex;
@@ -434,14 +474,15 @@ showNewPersonModal = false}>
     font-family: inherit;
     font-size: 11px;
     cursor: pointer;
-    transition: all 0.2;
-    justify-content: space-betwee;
+    transition: all 0.2s;
+    justify-content: space-between;
   }
   .nav-item:hover {
     background: #2a2a2a;
     color: #d4af37;
   }
-  .nav-.persons-active {
+  /* selector matched to the markup: button.nav-item.persons-active */
+  .nav-item.persons-active {
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
@@ -474,7 +515,7 @@ showNewPersonModal = false}>
   }
   .persons-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid #3a3a3a;
@@ -505,7 +546,7 @@ showNewPersonModal = false}>
   }
   .search-toolbar {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
     background: #242424;
@@ -559,10 +600,11 @@ showNewPersonModal = false}>
     font-size: 10px;
     color: #888;
   }
-  .stat-.critical .stat-number {
+  /* fix stat selectors to match markup: <div class="stat-item critical"> */
+  .stat-item.critical .stat-number {
     color: #ef4444;
   }
-  .stat-.high .stat-number {
+  .stat-item.high .stat-number {
     color: #f97316;
   }
   .persons-grid {
@@ -605,7 +647,7 @@ showNewPersonModal = false}>
     color: #d4af37;
     margin-bottom: 2px;
   }
-  .person-ali.person-id {
+  .person-alias.person-id {
     font-size: 10px;
     color: #666;
     font-family: 'JetBrains Mono', monospace;
@@ -620,7 +662,7 @@ showNewPersonModal = false}>
   }
   .detail-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     margin-bottom: 5px;
     font-size: 11px;
   }
@@ -703,8 +745,8 @@ showNewPersonModal = false}>
     margin-bottom: 15px;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg), }
-    100% { transform: rotate(360deg), }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   .loading-text {
     font-size: 14px;

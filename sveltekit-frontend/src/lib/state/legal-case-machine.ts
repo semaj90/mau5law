@@ -580,7 +580,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             },
             onDone: {
               target: '#legalCase.idle',
-              actions: assign({,
+              actions: assign({
                 case: () => null,
                 caseId: () => null,
                 evidence: () => [],
@@ -600,7 +600,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
           invoke: {
             id: 'generateEmbedding',
             src: generateEmbeddingService
-            onDone: [;
+            onDone: [
               {
                 target: 'searchingRelatedEvidence',
                 actions: 'assignEmbedding'

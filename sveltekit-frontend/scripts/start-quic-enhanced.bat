@@ -45,7 +45,7 @@ if errorlevel 1 (
     timeout /t 2 >nul
     goto wait_postgres
 )
-echo ✅ PostgreSQL ready on port 5433
+echo ✅ PostgreSQL ready on port 5434
 
 REM Wait for Redis
 set /a attempts=0
@@ -65,7 +65,7 @@ echo ✅ Redis ready on port 6379
 
 echo.
 echo 🎯 Infrastructure Ready!
-echo    PostgreSQL: localhost:5433
+echo    PostgreSQL: localhost:5434
 echo    Redis: localhost:6379
 echo    MinIO: localhost:9000
 echo.
@@ -77,7 +77,7 @@ set RTX_3060_OPTIMIZATION=true
 set CONTEXT7_MULTICORE=true
 set OLLAMA_GPU_LAYERS=30
 set QUIC_ENABLED=true
-set DATABASE_URL=postgresql://legal_admin:123456@localhost:5433/legal_ai_db
+set DATABASE_URL=postgresql://legal_admin:123456@localhost:5434/legal_ai_db
 set REDIS_URL=redis://localhost:6379
 
 echo 🚀 Starting SvelteKit with QUIC optimization...

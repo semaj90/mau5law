@@ -164,7 +164,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       states: {
         determiningMode: {
           entry: ['analyzeMessage'],
-          always: [;
+          always: [
             {
               guard: 'hasInstantResponse',
               target: 'instantResponse'
@@ -300,15 +300,15 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     logInitialization: () => {
       console.log('🔄 SSR QLoRA Chat Machine initializing...');
     },
-    setUserSession: assign({,
+    setUserSession: assign({
       userId: (_, event) => event.type === 'INITIALIZE' ? event.userId: '',
       sessionId: (_, event) => event.type === 'INITIALIZE' ? event.sessionId : ''
     }),
-    loadContext: assign({,
+    loadContext: assign({
       userDictionary: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.userDictionary : { [key: string]: any },
       systemStatus: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.systemStatus : { [key: string]: any }
     }),
-    addUserMessage: assign({,
+    addUserMessage: assign({
       messages: (context, event) => {
         if (event.type === 'SEND_MESSAGE') {
           return [...context.messages, event.message];
@@ -320,7 +320,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         totalMessages: context.performanceMetrics.totalMessages + 1
       })
     }),
-    setProcessingMode: assign({,
+    setProcessingMode: assign({
       processingMode: (_, event) => {
         // Determine processing mode based on event context
         return 'qlora'; // Default, will be determined by guards
@@ -348,7 +348,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       console.log('🦎 Starting Gemma3 local processing...');
       // Trigger Gemma3 processing
     },
-    addInstantResponse: assign({,
+    addInstantResponse: assign({
       messages: (context, event) => {
         if (event.type === 'INSTANT_RESPONSE') {
           const lastMessage = context.messages[context.messages.length - 1];
@@ -366,7 +366,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         return context.messages;
       }
     }),
-    addCachedResponse: assign({,
+    addCachedResponse: assign({
       messages: (context, event) => {
         if (event.type === 'CACHE_HIT') {
           const lastMessage = context.messages[context.messages.length - 1];
@@ -393,7 +393,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         return context.performanceMetrics;
       }
     }),
-    addQLoRAResponse: assign({,
+    addQLoRAResponse: assign({
       messages: (context, event) => {
         if (event.type === 'QLORA_RESPONSE') {
           const lastMessage = context.messages[context.messages.length - 1];
@@ -415,7 +415,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         qloraJobsTriggered: context.performanceMetrics.qloraJobsTriggered + 1
       })
     }),
-    addGemma3Response: assign({,
+    addGemma3Response: assign({
       messages: (context, event) => {
         if (event.type === 'GEMMA3_RESPONSE') {
           const lastMessage = context.messages[context.messages.length - 1];
@@ -436,10 +436,10 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         gemma3Requests: context.performanceMetrics.gemma3Requests + 1
       })
     }),
-    startStreaming: assign({,
+    startStreaming: assign({
       streamingMessage: (context) => context.messages[context.messages.length - 1]
     }),
-    addStreamChunk: assign({,
+    addStreamChunk: assign({
       messages: (context, event) => {
         if (event.type === 'STREAM_CHUNK') {
           const lastMessage = context.messages[context.messages.length - 1];
@@ -456,7 +456,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         return context.messages;
       }
     }),
-    completeStreaming: assign({,
+    completeStreaming: assign({
       messages: (context, event) => {
         if (event.type === 'STREAM_COMPLETE') {
           const lastMessage = context.messages[context.messages.length - 1];
@@ -476,7 +476,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       console.log('✨ Generating neural sprite visualization...');
       // Trigger neural sprite generation
     },
-    attachNeuralSprite: assign({,
+    attachNeuralSprite: assign({
       messages: (context, event) => {
         if (event.type === 'NEURAL_SPRITE_GENERATED') {
           const lastMessage = context.messages[context.messages.length - 1];
@@ -491,7 +491,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         return context.messages;
       }
     }),
-    recordFeedback: assign({,
+    recordFeedback: assign({
       messages: (context, event) => {
         if (event.type === 'FEEDBACK_PROVIDED') {
           return context.messages.map(msg =>
@@ -523,12 +523,12 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         }
       }
     },
-    clearMessages: assign({,
+    clearMessages: assign({
       messages: [],
       streamingMessage: undefined
       errorMessage: undefined
     }),
-    updateUserDictionary: assign({,
+    updateUserDictionary: assign({
       userDictionary: (context, event) => {
         if (event.type === 'UPDATE_DICTIONARY') {
           return { ...context.userDictionary, ...event.updates }
@@ -536,7 +536,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         return context.userDictionary;
       }
     }),
-    updateSystemStatus: assign({,
+    updateSystemStatus: assign({
       systemStatus: (context, event) => {
         if (event.type === 'SYSTEM_STATUS_UPDATED') {
           return { ...context.systemStatus, ...event.status }
@@ -544,7 +544,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         return context.systemStatus;
       }
     }),
-    updatePerformanceMetrics: assign({,
+    updatePerformanceMetrics: assign({
       performanceMetrics: (context) => {
         const totalTime = context.messages.reduce((sum, msg) => sum + (msg.processingTime || 0), 0);
         const avgTime = totalTime / Math.max(context.messages.length, 1);
@@ -561,13 +561,13 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     updateIdleMetrics: () => {
       console.log('📊 Updating idle metrics...');
     },
-    setError: assign({,
+    setError: assign({
       errorMessage: (_, event) => event.type === 'ERROR' ? event.error: undefined
     }),
-    setTimeoutError: assign({,
+    setTimeoutError: assign({
       errorMessage: 'System initialization timed out'
     }),
-    clearError: assign({,
+    clearError: assign({
       errorMessage: undefined
     }),
     logError: (context) => {

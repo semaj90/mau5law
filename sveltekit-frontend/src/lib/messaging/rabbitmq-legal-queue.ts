@@ -79,7 +79,7 @@ export class RabbitMQLegalQueue {
     nesMemoryEvents: 0
   }
   // Legal AI specific queues
-  private readonly queueConfigs: Map<string, QueueConfiguration> = new Map([;
+  private readonly queueConfigs: Map<string, QueueConfiguration> = new Map([
     ['document.processing', {
       name: 'legal_document_processing',
       durable: true

@@ -6,7 +6,7 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import postgres from 'postgres'
 import { eq, desc } from 'drizzle-orm'
 import { evidenceTable } from '$lib/server/schema.js'
-const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db')
+const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db')
 const db = drizzle(sql)
 export const GET: RequestHandler = async ({ params }) => {
   try {

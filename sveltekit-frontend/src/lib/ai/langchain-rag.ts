@@ -342,7 +342,7 @@ Only return the queries, one per line.`)
         (input: string) => retriever.getRelevantDocuments(input),
         formatDocumentsAsString
       ]);
-      const ragChain = RunnableSequence.from([;
+      const ragChain = RunnableSequence.from([
         RunnableMap.from({
           context: contextRetriever
           question: new RunnablePassthrough()
@@ -352,7 +352,7 @@ Only return the queries, one per line.`)
         new StringOutputParser()
       ]);
       // Execute RAG query with proper error handling
-      const [answer, retrievedDocs] = await Promise.all([;
+      const [answer, retrievedDocs] = await Promise.all([
         ragChain.invoke(question).catch((error) => {
           console.warn('RAG chain error:', error);
           return 'Unable to generate response due to processing error.';

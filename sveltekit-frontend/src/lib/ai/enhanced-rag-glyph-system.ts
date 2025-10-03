@@ -279,7 +279,7 @@ class EnhancedRAGGlyphSystem {
     // Extract semantic intent
     const semanticIntent = query.toLowerCase()
       .split(/\s+/)
-      .filter(word => word.length > 3 && !this.isStopWord(word)
+      .filter(word => word.length > 3 && !this.isStopWord(word))
       .slice(0, 5);
     // Determine context requirements
     const contextRequirements = [];
@@ -315,12 +315,12 @@ class EnhancedRAGGlyphSystem {
     if (queryType === 'creative') predictedResponseLength *= 1.3;
     if (complexityScore > 0.7) predictedResponseLength *= 1.4;
     return {
-      query_type: queryType
-      semantic_intent: semanticIntent
-      context_requirements: contextRequirements
-      optimal_lod_level: optimalLodLevel
-      predicted_response_length: predictedResponseLength
-      complexity_score: complexityScore
+      query_type: queryType,
+      semantic_intent: semanticIntent,
+      context_requirements: contextRequirements,
+      optimal_lod_level: optimalLodLevel,
+      predicted_response_length: predictedResponseLength,
+      complexity_score: complexityScore,
       topic_categories: topicCategories
     }
   }
@@ -328,10 +328,10 @@ class EnhancedRAGGlyphSystem {
    * Retrieve relevant glyphs using multi-strategy approach
    */
   private async retrieveRelevantGlyphs(
-    query: string
-    queryAnalysis: QueryAnalysis
-    maxGlyphs: number
-    forceLodLevel?: string;
+    query: string,
+    queryAnalysis: QueryAnalysis,
+    maxGlyphs: number,
+    forceLodLevel?: string
   ): Promise<GlyphContext[]> {
     const retrievalStrategies = this.determineRetrievalStrategies(queryAnalysis);
     const allCandidateGlyphs = new Map<string, GlyphContext>();
@@ -386,7 +386,7 @@ class EnhancedRAGGlyphSystem {
       }
     }
     // Rank and select final glyphs
-    const rankedGlyphs = Array.from(allCandidateGlyphs.values()
+    const rankedGlyphs = Array.from(allCandidateGlyphs.values())
       .sort((a, b) => b.contextual_weight - a.contextual_weight)
       .slice(0, maxGlyphs);
     console.log(`📊 Retrieved ${rankedGlyphs.length} glyphs using strategies: ${retrievalStrategies.join(', ')}`);
@@ -413,8 +413,8 @@ class EnhancedRAGGlyphSystem {
    * Convert vector search result to glyph context
    */
   private async convertToGlyphContext(
-    result: any
-    retrievalMethod: string;
+    result: any,
+    retrievalMethod: string
   ): Promise<GlyphContext> {
     const glyphId = `glyph-${result.entry_id}-${Date.now()}`;
     // Extract compressed representation from result
@@ -432,8 +432,8 @@ class EnhancedRAGGlyphSystem {
       }
     }
     return {
-      glyph_id: glyphId
-      compressed_representation: compressedRep
+      glyph_id: glyphId,
+      compressed_representation: compressedRep,
       visual_signature: result.svg_visualization || this.generateDefaultSVG(compressedRep),
       semantic_summary: result.glyph_summary?.semantic_summary || 'Relevant context from vector search',
       contextual_weight: result.relevance_score || 0.5,
@@ -451,13 +451,13 @@ class EnhancedRAGGlyphSystem {
    * Convert LOD cache entry to glyph context
    */
   private async convertLODToGlyphContext(
-    lodEntry: LODCacheEntry
-    retrievalMethod: string;
+    lodEntry: LODCacheEntry,
+    retrievalMethod: string
   ): Promise<GlyphContext> {
     const glyphId = `glyph-lod-${lodEntry.id}`;
     return {
-      glyph_id: glyphId
-      compressed_representation: lodEntry.compressed_data.tile, // Use tile-level compression
+      glyph_id: glyphId,
+      compressed_representation: lodEntry.compressed_data.tile, // Use tile-level compression,
       visual_signature: lodEntry.svg_summaries.tile,
       semantic_summary: `Context from ${lodEntry.lod_level}: ${lodEntry.original_text.slice(0, 100)}...`,
       contextual_weight: lodEntry.cache_metadata.retrieval_priority * lodEntry.cache_metadata.prediction_confidence,
@@ -475,10 +475,10 @@ class EnhancedRAGGlyphSystem {
    * Build enhanced prompt with glyph context
    */
   private async buildGlyphEnhancedPrompt(
-    query: string
-    synthesizedContext: any
-    queryAnalysis: QueryAnalysis
-    contextHistory?: string[];
+    query: string,
+    synthesizedContext: any,
+    queryAnalysis: QueryAnalysis,
+    contextHistory?: string[]
   ): Promise<string> {
     const contextParts = [
       '# Enhanced Context from Compressed Glyphs',
@@ -551,9 +551,9 @@ class EnhancedRAGGlyphSystem {
    * Generate response using LLM with enhanced context
    */
   private async generateLLMResponse(
-    enhancedPrompt: string
-    queryAnalysis: QueryAnalysis
-    optimization: string;
+    enhancedPrompt: string,
+    queryAnalysis: QueryAnalysis,
+    optimization: string
   ): Promise<any> {
     try {
       // Use the existing Ollama service for response generation
@@ -621,7 +621,7 @@ class EnhancedRAGGlyphSystem {
    */;
   private isStopWord(word: string): boolean {
     const stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were'];
-    return stopWords.includes(word.toLowerCase();
+    return stopWords.includes(word.toLowerCase());
   }
   private generateDefaultSVG(compressed: Uint8Array): string {
     const hue = (compressed[0] / 127) * 360;
@@ -701,7 +701,7 @@ class GlyphContextSynthesizer {
   constructor(private config: GlyphRAGConfig) {}
   async synthesizeGlyphContext(glyphs: GlyphContext[], query: string, queryAnalysis: QueryAnalysis) {
     const glyphMap = new Map<string, GlyphContext>();
-    glyphs.forEach(glyph => glyphMap.set(glyph.glyph_id, glyph);
+    glyphs.forEach(glyph => glyphMap.set(glyph.glyph_id, glyph));
     // Extract primary glyphs (highest weight)
     const primaryGlyphs = glyphs
       .sort((a, b) => b.contextual_weight - a.contextual_weight)
@@ -727,16 +727,16 @@ class GlyphContextSynthesizer {
     // Generate cluster summaries
     const clusterSummaries: Record<number, string> = {}
     semanticClusters.forEach(cluster => {
-      const clusterGlyphs = glyphs.filter(g => g.retrieval_metadata.semantic_clusters.includes(cluster);
+      const clusterGlyphs = glyphs.filter(g => g.retrieval_metadata.semantic_clusters.includes(cluster));
       clusterSummaries[cluster] = this.generateClusterSummary(clusterGlyphs, query);
     });
     return {
-      glyph_map: glyphMap
-      primary_glyphs: primaryGlyphs
-      semantic_clusters: semanticClusters
-      topology_connections: topologyConnections
-      cluster_summaries: clusterSummaries
-      synthesis_quality: this.calculateSynthesisQuality(glyphs, topologyConnections)
+      glyph_map: glyphMap,
+      primary_glyphs: primaryGlyphs,
+      semantic_clusters: semanticClusters,
+      topology_connections: topologyConnections,
+      cluster_summaries: clusterSummaries,
+      synthesis_quality: this.calculateSynthesisQuality(glyphs, topologyConnections),
     }
   }
   private calculateGlyphSimilarity(glyph1: GlyphContext, glyph2: GlyphContext): number {
@@ -755,7 +755,7 @@ class GlyphContextSynthesizer {
       return 'structural_connected';
     }
     const sharedClusters = glyph1.retrieval_metadata.semantic_clusters
-      .filter(c => glyph2.retrieval_metadata.semantic_clusters.includes(c);
+      .filter(c => glyph2.retrieval_metadata.semantic_clusters.includes(c));
     if (sharedClusters.length > 0) {
       return 'semantic_similar';
     }
@@ -783,10 +783,10 @@ class GlyphVisualGenerator {
     const topologyGraphSVG = await this.generateTopologyGraph(synthesizedContext.topology_connections);
     const compressionStats = this.calculateCompressionStatistics(glyphs);
     return {
-      glyph_constellation_svg: constellationSVG
-      semantic_heatmap_svg: heatmapSVG
-      topology_graph_svg: topologyGraphSVG
-      compression_statistics: compressionStats
+      glyph_constellation_svg: constellationSVG,
+      semantic_heatmap_svg: heatmapSVG,
+      topology_graph_svg: topologyGraphSVG,
+      compression_statistics: compressionStats,
     }
   }
   private async generateGlyphConstellation(glyphs: GlyphContext[]): Promise<string> {
@@ -869,8 +869,8 @@ class GlyphVisualGenerator {
     const originalSize = glyphs.reduce((sum, g) => sum + (g.semantic_summary.length * 2), 0); // Estimate original size
     const compressedSize = glyphs.length * 7; // 7 bytes per glyph
     return {
-      original_context_size: originalSize
-      compressed_context_size: compressedSize
+      original_context_size: originalSize,
+      compressed_context_size: compressedSize,
       compression_ratio: originalSize / compressedSize,
       semantic_preservation: 0.9 // Estimated
     }
@@ -904,8 +904,8 @@ class GlyphTopologyNavigator {
       compressedRep[i] = (seedGlyph.compressed_representation[i] + (index * 10) + Math.random() * 20) & 0x7F;
     }
     return {
-      glyph_id: relatedId
-      compressed_representation: compressedRep
+      glyph_id: relatedId,
+      compressed_representation: compressedRep,
       visual_signature: seedGlyph.visual_signature.replace(/hsl\(\d+,/, `hsl(${(index * 60) % 360},`),
       semantic_summary: `Related to: ${seedGlyph.semantic_summary.slice(0, 50)}... (topology distance: ${index + 1})`,
       contextual_weight: Math.max(0.1, seedGlyph.contextual_weight - (index * 0.1)),
@@ -927,10 +927,10 @@ class GlyphTopologyNavigator {
 class GlyphPredictiveAnalyzer {
   constructor(private config: GlyphRAGConfig) {}
   async generateInsights(
-    query: string
-    glyphs: GlyphContext[]
-    synthesizedContext: any;
-    response: any;
+    query: string,
+    glyphs: GlyphContext[],
+    synthesizedContext: any,
+    response: any
   ): Promise<string[]> {
     const insights = [];
     // Extract predictive insights from glyph patterns
@@ -951,9 +951,9 @@ class GlyphPredictiveAnalyzer {
     return insights;
   }
   async suggestRelevantGlyphs(
-    query: string
-    existingGlyphs: GlyphContext[]
-    maxGlyphs: number;
+    query: string,
+    existingGlyphs: GlyphContext[],
+    maxGlyphs: number
   ): Promise<GlyphContext[]> {
     // Simple predictive glyph suggestion - would use ML model in production
     const suggestedGlyphs: GlyphContext[] = [];
@@ -969,7 +969,7 @@ class GlyphPredictiveAnalyzer {
     const termFreq = new Map<string, number>();
     glyphs.forEach(glyph => {
       const terms = glyph.semantic_summary.toLowerCase().split(/\s+/)
-        .filter(term => term.length > 3 && !this.isStopWord(term);
+        .filter(term => term.length > 3 && !this.isStopWord(term));
       terms.forEach(term => {
         termFreq.set(term, (termFreq.get(term) || 0) + 1);
       });
@@ -977,7 +977,7 @@ class GlyphPredictiveAnalyzer {
     return Array.from(termFreq.entries()
       .sort(([,a], [,b]) => b - a)
       .slice(0, 10)
-      .map(([term]) => term);
+      .map(([term]) => term));
   }
   private async generatePredictiveGlyph(baseGlyph: GlyphContext, predictiveId: string, query: string): Promise<GlyphContext> {
     // Generate predictive glyph based on base glyph and query
@@ -987,8 +987,8 @@ class GlyphPredictiveAnalyzer {
       compressedRep[i] = ((baseGlyph.compressed_representation[i] + queryInfluence * 30) % 127) & 0x7F;
     }
     return {
-      glyph_id: predictiveId
-      compressed_representation: compressedRep
+      glyph_id: predictiveId,
+      compressed_representation: compressedRep,
       visual_signature: baseGlyph.visual_signature,
       semantic_summary: `Predictive context related to: "${query}"`,
       contextual_weight: baseGlyph.contextual_weight * 0.8, // Slightly lower weight for predictive
@@ -1004,15 +1004,15 @@ class GlyphPredictiveAnalyzer {
   }
   private isStopWord(word: string): boolean {
     const stopWords = ['this', 'that', 'with', 'from', 'they', 'have', 'been', 'were', 'said', 'would', 'could', 'should'];
-    return stopWords.includes(word.toLowerCase();
+    return stopWords.includes(word.toLowerCase());
   }
 }
 class GlyphResponseOptimizer {
   constructor(private config: GlyphRAGConfig) {}
   async optimizeResponse(
-    llmResponse: any
-    synthesizedContext: any
-    queryAnalysis: QueryAnalysis;
+    llmResponse: any,
+    synthesizedContext: any,
+    queryAnalysis: QueryAnalysis
   ): Promise<any> {
     let optimizedText = llmResponse.text;
     // Apply optimization based on configuration
@@ -1031,7 +1031,7 @@ class GlyphResponseOptimizer {
         break;
     }
     return {
-      text: optimizedText;
+      text: optimizedText,
       confidence: Math.min(1.0, llmResponse.confidence * 1.1),
       semantic_accuracy: this.calculateSemanticAccuracy(optimizedText, synthesizedContext)
     }
@@ -1066,7 +1066,7 @@ class GlyphResponseOptimizer {
       Object.values(context.cluster_summaries).join(' ').toLowerCase().split(/\s+/) : [];
     const textTerms = text.toLowerCase().split(/\s+/);
     const overlap = contextTerms.filter(term => textTerms.includes(term)).length;
-    return Math.min(1.0, overlap / Math.max(1, contextTerms.length);
+    return Math.min(1.0, overlap / Math.max(1, contextTerms.length));
   }
 }
 // Export singleton instance

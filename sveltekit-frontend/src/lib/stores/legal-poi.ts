@@ -311,14 +311,14 @@ export const poiMachine = createMachine(
           input: ({ event }) => ({ poiId: (event as any).poiId }),
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               currentPOI: ({ event }) => event.output,
               error: null
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -331,7 +331,7 @@ export const poiMachine = createMachine(
           input: ({ event }) => ({ query: (event as any).query }),
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               searchResults: ({ event }) => event.output.results,
               filters: ({ event }) => event.output.appliedFilters,
               error: null
@@ -339,7 +339,7 @@ export const poiMachine = createMachine(
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -352,7 +352,7 @@ export const poiMachine = createMachine(
           input: ({ event }) => ({ poi: (event as any).poi }),
           onDone: {
             target: 'enhancing',
-            actions: assign({,
+            actions: assign({
               currentPOI: ({ event }) => event.output,
               enhancementQueue: ({ context, event }) => [
                 ...context.enhancementQueue,
@@ -367,7 +367,7 @@ export const poiMachine = createMachine(
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -383,14 +383,14 @@ export const poiMachine = createMachine(
           }),
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               currentPOI: ({ event }) => event.output,
               enhancementQueue: ({ context }) => context.enhancementQueue.slice(1)
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message,
               enhancementQueue: ({ context }) => context.enhancementQueue.slice(1)
             })
@@ -403,14 +403,14 @@ export const poiMachine = createMachine(
           src: 'loadPOIAnalytics',
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               analytics: ({ event }) => event.output,
               error: null
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -426,7 +426,7 @@ export const poiMachine = createMachine(
           }),
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               selectedPOIs: [],
               bulkOperation: {
                 type: null
@@ -438,7 +438,7 @@ export const poiMachine = createMachine(
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message,
               bulkOperation: {
                 type: null

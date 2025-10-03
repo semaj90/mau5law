@@ -27,14 +27,14 @@ const autoMemoryMachine = createMachine({
         src: "storeInteraction",
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             memories: ({ context, event }) => [...context.memories, event.data],
             loading: false
           }),
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.data,
             loading: false
           }),
@@ -47,14 +47,14 @@ const autoMemoryMachine = createMachine({
         src: "search4D",
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             memories: ({ event }) => event.data.results,
             loading: false
           }),
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.data,
             loading: false
           }),
@@ -67,14 +67,14 @@ const autoMemoryMachine = createMachine({
         src: "predictIntent",
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             predictions: ({ event }) => event.data.predictions,
             loading: false
           }),
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.data,
             loading: false
           }),

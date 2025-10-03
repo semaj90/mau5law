@@ -66,12 +66,12 @@ export const users = pgTable("users", {
   avatarUrl: text("avatar_url"),
   role: varchar("role", { length: 50 }).default("prosecutor").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
-  // Enhanced settings with proper typing;
+  // Enhanced settings with proper typing
   settings: jsonb("settings")
-    .$type<UserSettingsExtType>();
+    .$type<UserSettingsExtType>()
     .default({
       theme: "system",
-      notifications: true
+      notifications: true,
       language: "en",
       timezone: "UTC",
       preferences: {
@@ -124,7 +124,7 @@ export const themeConfigSchema = z.object({
 });
 export const userSettingsSchema = z.object({
   theme: z.enum(["light", "dark", "system"]).default("system"),
-  notifications: z.object({,
+  notifications: z.object({
     email: z.boolean().default(true)
   }),
   defaultDocumentType: z.string().default("brief"),
@@ -155,7 +155,7 @@ export const themes = pgTable("themes", {
   fontConfig: jsonb("font_config").notNull(), // Font family, sizes, weights
   colorPalette: jsonb("color_palette").notNull(), // Primary, secondary, accent colors
   spacing: jsonb("spacing").notNull(), // Padding, margin scales
-  borderRadius: jsonb("border_radius").notNull(), // Border radius values;
+  borderRadius: jsonb("border_radius").notNull(), // Border radius values
   shadows: jsonb("shadows").notNull(), // Box shadow definitions
   isSystem: boolean("is_system").default(false).notNull(), // Built-in vs user themes
   isPublic: boolean("is_public").default(false).notNull(), // Shareable themes
@@ -184,7 +184,7 @@ export const layoutComponents = pgTable("layout_components", {
   type: varchar("type", { length: 50 }).notNull(), // 'button', 'card', 'header', etc.
   htmlContent: text("html_content").notNull(),
   cssStyles: text("css_styles"),
-  jsInteractions: text("js_interactions"), // Optional JavaScript for interactions;
+  jsInteractions: text("js_interactions"), // Optional JavaScript for interactions
   position: jsonb("position").notNull(), // { x, y, width, height, zIndex }
   themeId: uuid("theme_id").references(() => themes.id, {
     onDelete: "cascade"
@@ -203,7 +203,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
     onDelete: "set null"
   }),
   layoutData: jsonb("layout_data").notNull(), // Complete layout configuration
-  components: jsonb("components").notNull(), // Array of component IDs and positions;
+  components: jsonb("components").notNull(), // Array of component IDs and positions
   metadata: jsonb("metadata").default({}),
   isTemplate: boolean("is_template").default(false).notNull(),
   createdBy: uuid("created_by").references(() => users.id, {
@@ -234,7 +234,7 @@ export const criminals = pgTable("criminals", {
   photoUrl: text("photo_url"),
   fingerprints: jsonb("fingerprints").default({}),
   threatLevel: varchar("threat_level", { length: 20 }).default("low").notNull(), // low, medium, high, extreme
-  status: varchar("status", { length: 20 }).default("active").notNull(), // active, deceased, incarcerated;
+  status: varchar("status", { length: 20 }).default("active").notNull(), // active, deceased, incarcerated
   notes: text("notes"),
   aiSummary: text("ai_summary"),
   aiTags: jsonb("ai_tags").default([]).notNull(),
@@ -244,7 +244,7 @@ export const criminals = pgTable("criminals", {
 });
 // === CASE MANAGEMENT ===
 export const cases = pgTable(
-  'cases',);
+  'cases',
   {
     id: uuid('id').primaryKey().defaultRandom(),
     caseNumber: varchar('case_number', { length: 50 }).notNull().unique(),
@@ -317,7 +317,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   aliases: jsonb("aliases").default([]).notNull(),
   profileImageUrl: text("profile_image_url"),
   // The structured "Who, What, Why, How" profile data
-  profileData: jsonb("profile_data");
+  profileData: jsonb("profile_data")
     .default({
       who: "",
       what: "",
@@ -342,7 +342,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
 });
 // === EVIDENCE MANAGEMENT ===
 export const evidence = pgTable(
-  "evidence",);
+  "evidence",
   {
     id: uuid("id").primaryKey().defaultRandom(),
     caseId: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
@@ -444,7 +444,7 @@ export const caseActivities = pgTable("case_activities", {
   priority: varchar("priority", { length: 20 }).default("medium").notNull(),
   assignedTo: uuid("assigned_to").references(() => users.id),
   relatedEvidence: jsonb("related_evidence").default([]).notNull(), // evidence IDs
-  relatedCriminals: jsonb("related_criminals").default([]).notNull(), // criminal IDs;
+  relatedCriminals: jsonb("related_criminals").default([]).notNull(), // criminal IDs
   metadata: jsonb("metadata").default({}).notNull(),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
@@ -534,7 +534,7 @@ export const reports = pgTable("reports", {
 });
 // === LEGAL DOCUMENTS ===
 export const legalDocuments = pgTable(
-  "legal_documents",);
+  "legal_documents",
   {
     id: text("id")
       .primaryKey()
@@ -548,18 +548,18 @@ export const legalDocuments = pgTable(
       .notNull(),
     status: varchar("status", { length: 20 }).default("draft").notNull(),
     version: integer("version").default(1).notNull(),
-    // Type-safe JSON fields with Zod validation;
+    // Type-safe JSON fields with Zod validation
     metadata: jsonb("metadata")
-      .$type<DocumentMetadataExt>();
+      .$type<DocumentMetadataExt>()
       .default({
         keywords: [],
-        customFields: { [key: string]: any },
+        customFields: {},
         confidentialityLevel: "restricted"
       })
       .notNull(),
     citations: jsonb("citations").$type<Citation[]>().default([]).notNull(),
     autoSaveData: jsonb("auto_save_data")
-      .$type<AutoSaveData>();
+      .$type<AutoSaveData>()
       .default({
         content: "",
         citations: [],
@@ -598,7 +598,7 @@ export const legalDocuments = pgTable(
 );
 // === NOTES ===
 export const notes = pgTable(
-  "notes",);
+  "notes",
   {
     id: text("id")
       .primaryKey()
@@ -612,7 +612,7 @@ export const notes = pgTable(
     // Type-safe JSON fields
     tags: jsonb("tags").$type<string[]>().default([]).notNull(),
     metadata: jsonb("metadata")
-      .$type<Record<string, unknown>()
+      .$type<Record<string, unknown>>()
       .default({})
       .notNull(),
     // References to other entities
@@ -646,7 +646,7 @@ export const notes = pgTable(
 );
 // === SAVED CITATIONS ===
 export const savedCitations = pgTable(
-  "saved_citations",);
+  "saved_citations",
   {
     id: text("id")
       .primaryKey()
@@ -662,10 +662,10 @@ export const savedCitations = pgTable(
     citationData: jsonb("citation_data").$type<Citation>().notNull(),
     tags: jsonb("tags").$type<string[]>().default([]).notNull(),
     metadata: jsonb("metadata")
-      .$type<Record<string, unknown>()
+      .$type<Record<string, unknown>>()
       .default({})
       .notNull(),
-    // Organization;
+    // Organization
     category: varchar("category", { length: 50 }).default("general").notNull(),
     isFavorite: boolean("is_favorite").default(false).notNull(),
     isArchived: boolean("is_archived").default(false).notNull(),
@@ -812,13 +812,13 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   legalDocuments: many(legalDocuments),
   notes: many(notes),
   savedCitations: many(savedCitations)
-});
+}));
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id]
   })
-});
+}));
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
@@ -836,7 +836,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   personsOfInterest: many(personsOfInterest),
   legalDocuments: many(legalDocuments),
   notes: many(notes)
-});
+}));
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
@@ -844,7 +844,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   }),
   cases: many(caseCriminals),
   evidence: many(evidence)
-});
+}));
 export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
   case: one(cases, {
     fields: [caseCriminals.caseId],
@@ -858,7 +858,7 @@ export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
     fields: [caseCriminals.addedBy],
     references: [users.id]
   })
-});
+}));
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
@@ -868,13 +868,13 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     fields: [evidence.caseId],
     references: [cases.id]
   })
-});
+}));
 export const themesRelations = relations(themes, ({ one }) => ({
   createdBy: one(users, {
     fields: [themes.createdBy],
     references: [users.id]
   })
-});
+}));
 export const reportsRelations = relations(reports, ({ one }) => ({
   createdBy: one(users, {
     fields: [reports.createdBy],
@@ -888,13 +888,13 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     fields: [reports.generatedBy],
     references: [users.id]
   })
-});
+}));
 export const citationPointsRelations = relations(citationPoints, ({ one }) => ({
   createdBy: one(users, {
     fields: [citationPoints.createdBy],
     references: [users.id]
   })
-});
+}));
 export const attachmentVerificationsRelations = relations(
   attachmentVerifications,
   ({ one }) => ({
@@ -926,7 +926,7 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
     fields: [legalDocuments.userId],
     references: [users.id]
   })
-});
+}));
 export const notesRelations = relations(notes, ({ one }) => ({
   case: one(cases, {
     fields: [notes.caseId],
@@ -936,10 +936,10 @@ export const notesRelations = relations(notes, ({ one }) => ({
     fields: [notes.userId],
     references: [users.id]
   })
-});
+}));
 // Pattern Analysis Tables - pgvector integration for user pattern discovery
 export const userDocuments = pgTable(
-  "user_documents",);
+  "user_documents",
   {
     id: serial("id").primaryKey(),
     userId: text("user_id").notNull(),
@@ -959,7 +959,7 @@ export const userDocuments = pgTable(
   })
 );
 export const userPatterns = pgTable(
-  "user_patterns",);
+  "user_patterns",
   {
     id: serial("id").primaryKey(),
     userId: text("user_id").notNull(),
@@ -981,7 +981,7 @@ export const userPatterns = pgTable(
   })
 );
 export const patternSessions = pgTable(
-  "pattern_sessions",);
+  "pattern_sessions",
   {
     id: serial("id").primaryKey(),
     userId: text("user_id").notNull(),
@@ -1002,7 +1002,7 @@ export const userDocumentsRelations = relations(userDocuments, ({ one, many }) =
     references: [users.id]
   }),
   patterns: many(userPatterns)
-});
+}));
 export const userPatternsRelations = relations(userPatterns, ({ one }) => ({
   user: one(users, {
     fields: [userPatterns.userId],
@@ -1012,10 +1012,10 @@ export const userPatternsRelations = relations(userPatterns, ({ one }) => ({
     fields: [userPatterns.representativeDocId],
     references: [userDocuments.id]
   })
-});
+}));
 export const patternSessionsRelations = relations(patternSessions, ({ one }) => ({
   user: one(users, {
     fields: [patternSessions.userId],
     references: [users.id]
   })
-});
+}));

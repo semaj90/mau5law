@@ -188,7 +188,7 @@ export class EvidenceCorrelationEngine {
         type: 'timeline',
         data: { timeA, timeB, timeDiff },
         layout: {
-          timeline: [;
+          timeline: [
             {
               id: evidenceA.id,
               timestamp: timeA

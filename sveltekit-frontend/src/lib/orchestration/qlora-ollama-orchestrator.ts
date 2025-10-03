@@ -77,7 +77,7 @@ export class QLoRAOllamaOrchestrator {
    * Initialize specialized legal agents (AutoGen pattern)
    */;
   private initializeAgents(): void {
-    const agents: LegalAgent[] = [;
+    const agents: LegalAgent[] = [
       {
         id: 'router',
         role: 'router',

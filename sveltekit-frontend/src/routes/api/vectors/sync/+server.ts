@@ -10,7 +10,7 @@ import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-po
 import { eq } from 'drizzle-orm';
 
 // Initialize connections
-const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db');
+const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db');
 const db = drizzle(sql);
 let redis: ReturnType<typeof createRedisInstance> | null = null;
 try {

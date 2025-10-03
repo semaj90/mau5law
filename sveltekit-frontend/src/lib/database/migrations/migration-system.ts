@@ -488,7 +488,7 @@ export class DatabaseMigrator {
 }
 // Example migration files generator
 export const generateInitialMigrations = async (migrator: DatabaseMigrator) => {
-  const migrations = [;
+  const migrations = [
     {
       name: 'create_enhanced_cases_table',
       sql: `-- Migration: create_enhanced_cases_table

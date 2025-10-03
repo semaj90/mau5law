@@ -1,7 +1,8 @@
-import crypto from "crypto";
+// removed unused Node 'crypto' import — the store uses globalThis.crypto.randomUUID at runtime
 // Real-time evidence store with WebSocket/SSE integration and local undo
-import { writable, derived, get } from "svelte/store";
-}
+import { writable, derived, get } from 'svelte/store';
+import { browser } from '$app/environment'; // <- ensure browser check works
+
 export interface Evidence {
   id: string;
   title: string;
@@ -9,39 +10,39 @@ export interface Evidence {
   type: string;
   caseId: string;
   fileUrl?: string;
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>;
   tags?: string[];
   location?: {
     latitude: number;
     longitude: number;
     address?: string;
-  }
+  };
   classification?: {
     category: string;
     relevance: number;
     confidence: number;
-  }
+  };
   timeline?: {
     createdAt: string;
     updatedAt: string;
     collectedAt?: string;
-  }
+  };
   analysis?: {
     summary: string;
     keyPoints: string[];
     relevance: number;
-    admissibility: "admissible" | "questionable" | "inadmissible";
+    admissibility: 'admissible' | 'questionable' | 'inadmissible';
     reasoning: string;
     suggestedTags: string[];
     // Additional legacy properties for compatibility
     aiSummary?: string;
     vectorSimilarity?: number;
     relatedEvidence?: string[];
-  }
+  };
 }
 export interface EvidenceOperation {
   id: string;
-  type: "CREATE" | "UPDATE" | "DELETE";
+  type: 'CREATE' | 'UPDATE' | 'DELETE';
   timestamp: string;
   userId?: string;
   evidenceId: string;
@@ -49,6 +50,60 @@ export interface EvidenceOperation {
   newState?: Evidence | null;
   changes?: Partial<Evidence>;
 }
+
+// New: typed shape for localStorage data
+type StoredEvidenceData = {
+  lastUpdated?: string;
+  evidence?: Evidence[];
+  operationHistory?: EvidenceOperation[];
+  currentHistoryIndex?: number;
+};
+
+// Helper: safe parser + error message helper
+function parseStoredData(obj: unknown): StoredEvidenceData | null {
+  if (typeof obj !== 'object' || obj === null) return null;
+  const anyObj = obj as Record<string, unknown>;
+  const result: StoredEvidenceData = {};
+  if (typeof anyObj.lastUpdated === 'string') result.lastUpdated = anyObj.lastUpdated;
+  if (Array.isArray(anyObj.evidence)) result.evidence = anyObj.evidence as Evidence[];
+  if (Array.isArray(anyObj.operationHistory)) result.operationHistory = anyObj.operationHistory as EvidenceOperation[];
+  if (typeof anyObj.currentHistoryIndex === 'number') result.currentHistoryIndex = anyObj.currentHistoryIndex;
+  return result;
+}
+function getErrorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+// New: typed shapes for realtime messages
+type RealtimeEventType = 'EVIDENCE_CREATED' | 'EVIDENCE_UPDATED' | 'EVIDENCE_DELETED';
+
+type RealtimePayload = {
+  type: RealtimeEventType;
+  evidenceId?: string;
+  data?: Evidence;
+  changes?: Partial<Evidence>;
+  userId?: string;
+};
+
+type RealtimeMessage = {
+  channel: string;
+  data: RealtimePayload;
+};
+
+// Simple runtime type-guards
+function isObject(x: unknown): x is Record<string, unknown> {
+  return typeof x === 'object' && x !== null;
+}
+function isRealtimeMessage(msg: unknown): msg is RealtimeMessage {
+  if (!isObject(msg)) return false;
+  const channel = (msg as Record<string, unknown>).channel;
+  const data = (msg as Record<string, unknown>).data;
+  if (typeof channel !== 'string' || !isObject(data)) return false;
+  const type = (data as Record<string, unknown>).type;
+  if (typeof type !== 'string') return false;
+  return ['EVIDENCE_CREATED', 'EVIDENCE_UPDATED', 'EVIDENCE_DELETED'].includes(type);
+}
+
 class RealTimeEvidenceStore {
   // Core stores
   public evidence = writable<Evidence[]>([]);
@@ -67,6 +122,17 @@ class RealTimeEvidenceStore {
   // Local cache and sync
   private localCache: Map<string, Evidence> = new Map();
   private pendingOperations: EvidenceOperation[] = [];
+  // Helper: use global crypto.randomUUID when available, fallback otherwise
+  private createUUID(): string {
+    // Use a narrow typed view of globalThis to avoid `any`
+    const g = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
+    const uuid = g.crypto?.randomUUID?.();
+    if (typeof uuid === 'string') {
+      return uuid;
+    }
+    // fallback: reasonably unique id
+    return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  }
   constructor() {
     if (browser) {
       this.initializeConnection();
@@ -78,39 +144,40 @@ class RealTimeEvidenceStore {
     try {
       // Try WebSocket first
       await this.connectWebSocket();
-    } catch (error: any) {
-      console.warn("WebSocket failed, falling back to SSE:", error);
+    } catch (err: unknown) {
+      console.warn('WebSocket failed, falling back to SSE:', getErrorMessage(err));
       this.connectSSE();
     }
   }
   private async connectWebSocket(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-        const wsUrl = `${protocol}//${window.location.hostname}:3030`
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.hostname}:3030`;
         this.websocket = new WebSocket(wsUrl);
         this.websocket.onopen = () => {
-          console.log("✅ WebSocket connected");
+          console.log('✅ WebSocket connected');
           this.isConnected.set(true);
           this.reconnectAttempts = 0;
           // Subscribe to evidence updates
-          this.websocket?.send(JSON.stringify({
-              type: "subscribe",
-              channels: ["evidence_update", "case_update"]
-            }),
+          this.websocket?.send(
+            JSON.stringify({
+              type: 'subscribe',
+              channels: ['evidence_update', 'case_update'],
+            })
           );
           resolve();
-        }
-        this.websocket.onmessage = (_event: any) => {
+        };
+        this.websocket.onmessage = (event: MessageEvent) => {
           try {
             const message = JSON.parse(event.data);
             this.handleRealtimeUpdate(message);
-          } catch (error: any) {
-            console.error("WebSocket message parse error:", error);
+          } catch (err: unknown) {
+            console.error('WebSocket message parse error:', getErrorMessage(err));
           }
-        }
+        };
         this.websocket.onclose = () => {
-          console.log("WebSocket disconnected");
+          console.log('WebSocket disconnected');
           this.isConnected.set(false);
           this.websocket = null;
           if (this.reconnectAttempts < this.maxReconnectAttempts) {
@@ -119,18 +186,16 @@ class RealTimeEvidenceStore {
               this.connectWebSocket();
             }, this.reconnectDelay * this.reconnectAttempts);
           } else {
-            console.warn(
-              "Max WebSocket reconnect attempts reached, falling back to SSE",
-            );
+            console.warn('Max WebSocket reconnect attempts reached, falling back to SSE');
             this.connectSSE();
           }
-        }
-        this.websocket.onerror = (error) => {
-          console.error("WebSocket error:", error);
-          reject(error);
-        }
-      } catch (error: any) {
-        reject(error);
+        };
+        this.websocket.onerror = event => {
+          console.error('WebSocket error:', event);
+          reject(new Error('WebSocket error'));
+        };
+      } catch (err: unknown) {
+        reject(err);
       }
     });
   }
@@ -140,20 +205,20 @@ class RealTimeEvidenceStore {
       const sseUrl = `/api/updates?userId=${userId}&subscriptions=evidence_update,case_update`;
       this.eventSource = new EventSource(sseUrl);
       this.eventSource.onopen = () => {
-        console.log("✅ SSE connected");
+        console.log('✅ SSE connected');
         this.isConnected.set(true);
         this.reconnectAttempts = 0;
-      }
-      this.eventSource.onmessage = (_event: any) => {
+      };
+      this.eventSource.onmessage = (event: MessageEvent) => {
         try {
           const message = JSON.parse(event.data);
           this.handleRealtimeUpdate(message);
-        } catch (error: any) {
-          console.error("SSE message parse error:", error);
+        } catch (err: unknown) {
+          console.error('SSE message parse error:', getErrorMessage(err));
         }
-      }
+      };
       this.eventSource.onerror = () => {
-        console.log("SSE disconnected");
+        console.log('SSE disconnected');
         this.isConnected.set(false);
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
           setTimeout(() => {
@@ -161,72 +226,73 @@ class RealTimeEvidenceStore {
             this.connectSSE();
           }, this.reconnectDelay * this.reconnectAttempts);
         }
-      }
-    } catch (error: any) {
-      console.error("SSE connection failed:", error);
+      };
+    } catch (err: unknown) {
+      console.error('SSE connection failed:', getErrorMessage(err));
     }
   }
-  // Real-time update handling
-  private handleRealtimeUpdate(message: any) {
-    if (message.channel === "evidence_update") {
+  // Real-time update handling (accept unknown and validate)
+  private handleRealtimeUpdate(message: unknown) {
+    if (!isRealtimeMessage(message)) {
+      console.warn('Ignored invalid realtime message:', message);
+      return;
+    }
+    if (message.channel === 'evidence_update') {
       const { type, evidenceId, data, changes, userId } = message.data;
       switch (type) {
-        case "EVIDENCE_CREATED":
-          this.handleEvidenceCreated(data, userId);
+        case 'EVIDENCE_CREATED':
+          // data is typed as Evidence | undefined; guard before calling
+          if (data) this.handleEvidenceCreated(data, userId);
           break;
-        case "EVIDENCE_UPDATED":
-          this.handleEvidenceUpdated(evidenceId, changes, userId);
+        case 'EVIDENCE_UPDATED':
+          if (evidenceId && changes) this.handleEvidenceUpdated(evidenceId, changes, userId);
           break;
-        case "EVIDENCE_DELETED":
-          this.handleEvidenceDeleted(evidenceId, userId);
+        case 'EVIDENCE_DELETED':
+          if (evidenceId) this.handleEvidenceDeleted(evidenceId, userId);
           break;
       }
     }
   }
   private handleEvidenceCreated(evidenceData: Evidence, userId?: string) {
-    this.evidence.update((items) => {
+    this.evidence.update(items => {
       // Check if evidence already exists (avoid duplicates)
-      if (items.find((item) => (item as { id?: any; caseId?: any }).id === evidenceData.id)) {
+      if (items.find(item => item.id === evidenceData.id)) {
         return items;
       }
       // Add to local cache
       this.localCache.set(evidenceData.id, evidenceData);
       // Add operation to history
       this.addToHistory({
-        id: crypto.randomUUID(),
-        type: "CREATE",
+        id: this.createUUID(),
+        type: 'CREATE',
         timestamp: new Date().toISOString(),
         userId,
         evidenceId: evidenceData.id,
-        previousState: null
-        newState: evidenceData
+        previousState: null,
+        newState: evidenceData,
       });
       return [...items, evidenceData];
     });
     this.saveToLocalStorage();
   }
-  private handleEvidenceUpdated(
-    evidenceId: string
-    changes: Partial<Evidence>
-    userId?: string
-  ) {
-    this.evidence.update((items) => {
-      const index = items.findIndex((item) => (item as { id?: any; caseId?: any }).id === evidenceId);
+  private handleEvidenceUpdated(evidenceId: string, changes: Partial<Evidence>, userId?: string) {
+    this.evidence.update(items => {
+      const index = items.findIndex(item => item.id === evidenceId);
       if (index === -1) return items;
-      const previousState = { ...items[index] }
-      const newState = { ...items[index], ...changes }
+      const previousState = { ...items[index] };
+      const newState = { ...items[index], ...changes };
       // Update local cache
       this.localCache.set(evidenceId, newState);
       // Add operation to history
       this.addToHistory({
-        id: crypto.randomUUID(),
-        type: "UPDATE",
+        id: this.createUUID(),
+        type: 'UPDATE',
         timestamp: new Date().toISOString(),
         userId,
         evidenceId,
         previousState,
         newState,
-        changes
+        changes,
       });
       items[index] = newState;
       return [...items];
@@ -234,118 +300,105 @@ class RealTimeEvidenceStore {
     this.saveToLocalStorage();
   }
   private handleEvidenceDeleted(evidenceId: string, userId?: string) {
-    this.evidence.update((items) => {
-      const index = items.findIndex((item) => (item as { id?: any; caseId?: any }).id === evidenceId);
+    this.evidence.update(items => {
+      const index = items.findIndex(item => item.id === evidenceId);
       if (index === -1) return items;
       const previousState = items[index];
       // Remove from local cache
       this.localCache.delete(evidenceId);
       // Add operation to history
       this.addToHistory({
-        id: crypto.randomUUID(),
-        type: "DELETE",
+        id: this.createUUID(),
+        type: 'DELETE',
         timestamp: new Date().toISOString(),
         userId,
         evidenceId,
         previousState,
-        newState: null
+        newState: null,
       });
-      return items.filter((item) => (item as { id?: any; caseId?: any }).id !== evidenceId);
+      return items.filter(item => item.id !== evidenceId);
     });
     this.saveToLocalStorage();
   }
   // CRUD Operations with optimistic updates
-  public async createEvidence(
-    evidenceData: Omit<Evidence, "id">,
-  ): Promise<string> {
-    const evidenceId = crypto.randomUUID();
+  public async createEvidence(evidenceData: Omit<Evidence, 'id'>): Promise<string> {
+    const evidenceId = this.createUUID();
     const newEvidence: Evidence = {
       ...evidenceData,
-      id: evidenceId;
+      id: evidenceId,
       timeline: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        ...evidenceData.timeline
-      }
-    }
+        ...evidenceData.timeline,
+      },
+    };
     // Optimistic update
-    this.handleEvidenceCreated(newEvidence, this.getCurrentUserId();
+    this.handleEvidenceCreated(newEvidence, this.getCurrentUserId());
     try {
       // Send to server
-      const response = await fetch("/api/evidence", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newEvidence)
+      const res: Response = await fetch('/api/evidence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newEvidence),
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Failed to create evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!res.ok) {
+        throw new Error(`Failed to create evidence: ${res.statusText}`);
       }
-      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      return (result as { id?: any }).id || evidenceId;
-    } catch (error: any) {
+      const result = (await res.json()) as { id?: string };
+      return result.id || evidenceId;
+    } catch (err: unknown) {
       // Revert optimistic update on error
       this.handleEvidenceDeleted(evidenceId);
-      throw error;
+      throw new Error(getErrorMessage(err));
     }
   }
-  public async updateEvidence(
-    evidenceId: string
-    changes: Partial<Evidence>
-  ): Promise<void> {
-    const currentEvidence = get(this.evidence).find(
-      (item) => (item as { id?: any; caseId?: any }).id === evidenceId,
-    );
+  public async updateEvidence(evidenceId: string, changes: Partial<Evidence>): Promise<void> {
+    const currentEvidence = get(this.evidence).find(item => item.id === evidenceId);
     if (!currentEvidence) {
       throw new Error(`Evidence ${evidenceId} not found`);
     }
     // Optimistic update
-    this.handleEvidenceUpdated(evidenceId, changes, this.getCurrentUserId();
+    this.handleEvidenceUpdated(evidenceId, changes, this.getCurrentUserId());
     try {
       // Send to server
-      const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(changes)
+      const res: Response = await fetch(`/api/evidence/${evidenceId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(changes),
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Failed to update evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!res.ok) {
+        throw new Error(`Failed to update evidence: ${res.statusText}`);
       }
-    } catch (error: any) {
+    } catch (err: unknown) {
       // Revert optimistic update on error
-      this.handleEvidenceUpdated(
-        evidenceId,
-        currentEvidence,
-        this.getCurrentUserId(),
-      );
-      throw error;
+      this.handleEvidenceUpdated(evidenceId, currentEvidence, this.getCurrentUserId());
+      throw new Error(getErrorMessage(err));
     }
   }
   public async deleteEvidence(evidenceId: string): Promise<void> {
-    const currentEvidence = get(this.evidence).find(
-      (item) => (item as { id?: any; caseId?: any }).id === evidenceId,
-    );
+    const currentEvidence = get(this.evidence).find(item => item.id === evidenceId);
     if (!currentEvidence) {
       throw new Error(`Evidence ${evidenceId} not found`);
     }
     // Optimistic update
-    this.handleEvidenceDeleted(evidenceId, this.getCurrentUserId();
+    this.handleEvidenceDeleted(evidenceId, this.getCurrentUserId());
     try {
       // Send to server
-      const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: "DELETE"
+      const res: Response = await fetch(`/api/evidence/${evidenceId}`, {
+        method: 'DELETE',
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Failed to delete evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!res.ok) {
+        throw new Error(`Failed to delete evidence: ${res.statusText}`);
       }
-    } catch (error: any) {
+    } catch (err: unknown) {
       // Revert optimistic update on error
-      this.handleEvidenceCreated(currentEvidence, this.getCurrentUserId();
-      throw error;
+      this.handleEvidenceCreated(currentEvidence, this.getCurrentUserId());
+      throw new Error(getErrorMessage(err));
     }
   }
   // Undo/Redo functionality
   private addToHistory(operation: EvidenceOperation) {
-    this.operationHistory.update((history) => {
+    this.operationHistory.update(history => {
       const currentIndex = get(this.currentHistoryIndex);
       // Remove any operations after current index (when undoing then doing new operation)
       if (currentIndex < history.length - 1) {
@@ -358,9 +411,7 @@ class RealTimeEvidenceStore {
       }
       return history;
     });
-    this.currentHistoryIndex.update(
-      (index) => get(this.operationHistory).length - 1,
-    );
+    this.currentHistoryIndex.update(_ => get(this.operationHistory).length - 1);
   }
   public canUndo(): boolean {
     return get(this.currentHistoryIndex) >= 0;
@@ -379,17 +430,13 @@ class RealTimeEvidenceStore {
     switch (operation.type) {
       case 'CREATE':
         if (operation.newState) {
-          this.evidence.update((items) =>
-            items.filter((item) => (item as { id?: any; caseId?: any }).id !== operation.evidenceId),
-          );
+          this.evidence.update(items => items.filter(item => item.id !== operation.evidenceId));
         }
         break;
       case 'UPDATE':
         if (operation.previousState) {
-          this.evidence.update((items) => {
-            const index = items.findIndex(
-              (item) => (item as { id?: any; caseId?: any }).id === operation.evidenceId,
-            );
+          this.evidence.update(items => {
+            const index = items.findIndex(item => item.id === operation.evidenceId);
             if (index !== -1) {
               items[index] = operation.previousState!;
             }
@@ -399,11 +446,11 @@ class RealTimeEvidenceStore {
         break;
       case 'DELETE':
         if (operation.previousState) {
-          this.evidence.update((items) => [...items, operation.previousState!]);
+          this.evidence.update(items => [...items, operation.previousState!]);
         }
         break;
     }
-    this.currentHistoryIndex.update((index) => index - 1);
+    this.currentHistoryIndex.update(index => index - 1);
     this.saveToLocalStorage();
     return true;
   }
@@ -416,15 +463,13 @@ class RealTimeEvidenceStore {
     switch (operation.type) {
       case 'CREATE':
         if (operation.newState) {
-          this.evidence.update((items) => [...items, operation.newState!]);
+          this.evidence.update(items => [...items, operation.newState!]);
         }
         break;
       case 'UPDATE':
         if (operation.newState) {
-          this.evidence.update((items) => {
-            const index = items.findIndex(
-              (item) => (item as { id?: any; caseId?: any }).id === operation.evidenceId,
-            );
+          this.evidence.update(items => {
+            const index = items.findIndex(item => item.id === operation.evidenceId);
             if (index !== -1) {
               items[index] = operation.newState!;
             }
@@ -432,13 +477,11 @@ class RealTimeEvidenceStore {
           });
         }
         break;
-      case "DELETE":
-        this.evidence.update((items) =>
-          items.filter((item) => (item as { id?: any; caseId?: any }).id !== operation.evidenceId),
-        );
+      case 'DELETE':
+        this.evidence.update(items => items.filter(item => item.id !== operation.evidenceId));
         break;
     }
-    this.currentHistoryIndex.update((index) => index + 1);
+    this.currentHistoryIndex.update(index => index + 1);
     this.saveToLocalStorage();
     return true;
   }
@@ -446,46 +489,48 @@ class RealTimeEvidenceStore {
   private saveToLocalStorage() {
     if (!browser) return;
     try {
-      const data = {
+      const data: StoredEvidenceData = {
         evidence: get(this.evidence),
         operationHistory: get(this.operationHistory),
         currentHistoryIndex: get(this.currentHistoryIndex),
-        lastUpdated: new Date().toISOString()
-      }
-      localStorage.setItem("evidenceStore", JSON.stringify(data);
-    } catch (error: any) {
-      console.error("Failed to save to localStorage:", error);
+        lastUpdated: new Date().toISOString(),
+      };
+      localStorage.setItem('evidenceStore', JSON.stringify(data));
+    } catch (err: unknown) {
+      console.error('Failed to save to localStorage:', getErrorMessage(err));
     }
   }
   private loadFromLocalStorage() {
     if (!browser) return;
     try {
-      const stored = localStorage.getItem("evidenceStore");
+      const stored = localStorage.getItem('evidenceStore');
       if (stored) {
-        const data = JSON.parse(stored);
+        const raw = JSON.parse(stored) as unknown;
+        const data = parseStoredData(raw);
+        if (!data) return;
         // Check if data is not too old (24 hours)
-        const lastUpdated = new Date((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).lastUpdated);
+        const lastUpdated = data.lastUpdated ? new Date(data.lastUpdated) : null;
         const now = new Date();
-        const hoursDiff =
-          (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60);
-        if (hoursDiff < 24) {
-          this.evidence.set((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).evidence || []);
-          this.operationHistory.set((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).operationHistory || []);
-          this.currentHistoryIndex.set((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).currentHistoryIndex || -1);
-          // Rebuild local cache
-          (data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).evidence?.forEach((item: Evidence) => {
-            this.localCache.set((item as { id?: any; caseId?: any }).id, item);
-          });
+        if (lastUpdated) {
+          const hoursDiff = (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60);
+          if (hoursDiff >= 24) return;
         }
+        this.evidence.set(data.evidence || []);
+        this.operationHistory.set(data.operationHistory || []);
+        this.currentHistoryIndex.set(typeof data.currentHistoryIndex === 'number' ? data.currentHistoryIndex : -1);
+        // Rebuild local cache
+        data.evidence?.forEach((item: Evidence) => {
+          this.localCache.set(item.id, item);
+        });
       }
-    } catch (error: any) {
-      console.error("Failed to load from localStorage:", error);
+    } catch (err: unknown) {
+      console.error('Failed to load from localStorage:', getErrorMessage(err));
     }
   }
   // Utility methods
   private getCurrentUserId(): string {
     // In a real app, get from auth store or session
-    return "current-user-id";
+    return 'current-user-id';
   }
   public disconnect() {
     if (this.websocket) {
@@ -499,18 +544,18 @@ class RealTimeEvidenceStore {
     this.isConnected.set(false);
   }
   // Derived stores for convenience
-  public evidenceById = derived(this.evidence, (items) => {
+  public evidenceById = derived(this.evidence, items => {
     const map = new Map<string, Evidence>();
-    items.forEach((item) => map.set((item as { id?: any; caseId?: any }).id, item);
+    items.forEach(item => map.set(item.id, item));
     return map;
   });
-  public evidenceByCase = derived(this.evidence, (items) => {
+  public evidenceByCase = derived(this.evidence, items => {
     const map = new Map<string, Evidence[]>();
-    items.forEach((item) => {
-      if (!map.has((item as { id?: any; caseId?: any }).caseId)) {
-        map.set((item as { id?: any; caseId?: any }).caseId, []);
+    items.forEach(item => {
+      if (!map.has(item.caseId)) {
+        map.set(item.caseId, []);
       }
-      map.get((item as { id?: any; caseId?: any }).caseId)!.push(item);
+      map.get(item.caseId)!.push(item);
     });
     return map;
   });

@@ -110,7 +110,7 @@ export const crewAIOrchestrationMachine = setup({
   },
   actions: {
     // Initialize context
-    initializeContext: assign({,
+    initializeContext: assign({
       startTime: () => Date.now(),
       lastActivity: () => new Date().toISOString(),
       userIntent: 'editing',
@@ -125,7 +125,7 @@ export const crewAIOrchestrationMachine = setup({
       taskQueue: []
     }),
     // Set current task
-    setCurrentTask: assign({,
+    setCurrentTask: assign({
       currentTask: ({ event }) => {
         if (event.type === 'START_REVIEW') {
           return event.task;
@@ -140,7 +140,7 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     // Record agent completion
-    recordAgentCompletion: assign({,
+    recordAgentCompletion: assign({
       agentResponses: ({ context, event }) => {
         if (event.type === 'AGENT_COMPLETED') {
           return [...context.agentResponses, event.response];
@@ -155,7 +155,7 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     // Record agent failure
-    recordAgentFailure: assign({,
+    recordAgentFailure: assign({
       failedAgents: ({ context, event }) => {
         if (event.type === 'AGENT_FAILED') {
           return [...context.failedAgents, event.agentId];
@@ -176,7 +176,7 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     // Update user activity
-    updateActivity: assign({,
+    updateActivity: assign({
       lastActivity: () => new Date().toISOString(),
       userIntent: ({ event }) => {
         if (event.type === 'USER_ACTIVITY') {
@@ -191,16 +191,16 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     // Set user to idle
-    setUserIdle: assign({,
+    setUserIdle: assign({
       userIntent: 'idle',
       focusSchema: 'idle_mode'
     }),
     // Set user to away
-    setUserAway: assign({,
+    setUserAway: assign({
       userIntent: 'away'
     }),
     // Change focus schema
-    changeFocusSchema: assign({,
+    changeFocusSchema: assign({
       focusSchema: ({ event }) => {
         if (event.type === 'FOCUS_CHANGED') {
           return event.schema;
@@ -209,7 +209,7 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     // Accept recommendation
-    acceptRecommendation: assign({,
+    acceptRecommendation: assign({
       currentRecommendations: ({ context, event }) => {
         if (event.type === 'ACCEPT_RECOMMENDATION') {
           return context.currentRecommendations.map((rec: any) => rec.id === event.recommendationId
@@ -221,15 +221,15 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     // Update last saved timestamp
-    updateLastSaved: assign({,
+    updateLastSaved: assign({
       lastSaved: () => new Date().toISOString()
     }),
     // Increment retry count
-    incrementRetryCount: assign({,
+    incrementRetryCount: assign({
       retryCount: ({ context }) => context.retryCount + 1
     }),
     // Reset for new task
-    resetForNewTask: assign({,
+    resetForNewTask: assign({
       currentTask: null
       agentResponses: [],
       failedAgents: [],
@@ -239,7 +239,7 @@ export const crewAIOrchestrationMachine = setup({
       processingTime: ({ context }) => Date.now() - context.startTime
     }),
     // Complete task
-    completeTask: assign({,
+    completeTask: assign({
       completedTasks: ({ context }) => {
         if (context.currentTask) {
           return [...context.completedTasks, context.currentTask.taskId];
@@ -331,7 +331,7 @@ export const crewAIOrchestrationMachine = setup({
             },
             onError: {
               target: 'failed',
-              actions: assign({,
+              actions: assign({
                 lastError: ({ event }) => `Failed to start agents: ${event.error}`
               })
             }
@@ -350,7 +350,7 @@ export const crewAIOrchestrationMachine = setup({
           },
           // Periodic user activity check;
           after: {
-            60000: [;
+            60000: [
               {
                 guard: 'userIdleTooLong',
                 actions: raise({ type: 'USER_IDLE' })
@@ -359,7 +359,7 @@ export const crewAIOrchestrationMachine = setup({
           }
         },
         checking_completion: {
-          always: [;
+          always: [
             {
               guard: 'allAgentsCompleted',
               target: 'synthesizing_results'
@@ -388,7 +388,7 @@ export const crewAIOrchestrationMachine = setup({
             input: ({ context }) => ({ context }),
             onDone: {
               target: 'applying_recommendations',
-              actions: assign({,
+              actions: assign({
                 currentRecommendations: ({ event }) => event.output.recommendations
               })
             },

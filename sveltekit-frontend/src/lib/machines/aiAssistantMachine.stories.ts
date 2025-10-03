@@ -113,7 +113,7 @@ export const Processing: Story = {
       currentQuery: 'Analyze the contractual obligations in this employment agreement',
       isProcessing: true;
       response: 'Analyzing legal document... Please wait.',
-      conversationHistory: [;
+      conversationHistory: [
         {
           id: '1',
           type: 'user',
@@ -121,7 +121,7 @@ export const Processing: Story = {
           timestamp: new Date(Date.now() - 5000)
         }
       ],
-      processingQueue: [;
+      processingQueue: [
         {
           id: 'job-1',
           type: 'legal_analysis',
@@ -151,7 +151,7 @@ export const StreamingMode: Story = {
       currentQuery: 'What are the key provisions in this merger agreement?',
       isProcessing: true;
       response: 'Based on my analysis of the merger agreement, I can identify several key provisions:\n\n1. **Purchase Price and Payment Terms**: The agreement specifies...',
-      conversationHistory: [;
+      conversationHistory: [
         {
           id: '1',
           type: 'user',
@@ -163,7 +163,7 @@ export const StreamingMode: Story = {
       streamBuffer: 'Based on my analysis of the merger agreement, I can identify several key provisions:\n\n1. **Purchase Price and Payment Terms**: The agreement specifies a total consideration of $50M, payable in cash and stock...\n\n2. **Representations and Warranties**: Both parties have made extensive representations covering...',
       preferredProtocol: 'websocket',
       activeProtocol: 'websocket',
-      collaborationUsers: [;
+      collaborationUsers: [
         {
           id: 'user-1',
           name: 'Sarah Chen',
@@ -191,7 +191,7 @@ export const MultiDocumentAnalysis: Story = {
       currentQuery: 'Compare these three contracts for common risk factors',
       isProcessing: true;
       response: 'Comparing 3 contracts for risk analysis...',
-      conversationHistory: [;
+      conversationHistory: [
         {
           id: '1',
           type: 'user',
@@ -199,7 +199,7 @@ export const MultiDocumentAnalysis: Story = {
           timestamp: new Date(Date.now() - 15000)
         }
       ],
-      currentDocuments: [;
+      currentDocuments: [
         {
           id: 'doc-1',
           filename: 'Service_Agreement_2024.pdf',
@@ -228,7 +228,7 @@ export const MultiDocumentAnalysis: Story = {
           // queued for analysis
         }
       ],
-      processingQueue: [;
+      processingQueue: [
         {
           id: 'compare-job',
           type: 'multi_document_analysis',
@@ -284,7 +284,7 @@ export const HighPerformanceMode: Story = {
         currentIndex: 0
       },
       gpuProcessingEnabled: true
-      processingQueue: [;
+      processingQueue: [
         {
           id: 'deep-analysis',
           type: 'semantic_analysis',
@@ -318,7 +318,7 @@ export const ErrorRecovery: Story = {
       currentQuery: 'Analyze this corrupted document',
       isProcessing: false;
       response: '',
-      conversationHistory: [;
+      conversationHistory: [
         {
           id: '1',
           type: 'user',
@@ -350,7 +350,7 @@ export const ErrorRecovery: Story = {
         ['ocr-service', { state: 'open', failures: 5, lastFailure: Date.now() - 5000 }],
         ['upload-service', { state: 'half-open', failures: 2, lastFailure: Date.now() - 15000 }]
       ]),
-      processingQueue: [;
+      processingQueue: [
         {
           id: 'retry-job',
           type: 'document_recovery',
@@ -379,7 +379,7 @@ export const CollaborativeMode: Story = {
       currentQuery: 'Draft a motion for summary judgment based on these case files',
       isProcessing: true;
       response: 'Analyzing case precedents and drafting motion...',
-      conversationHistory: [;
+      conversationHistory: [
         {
           id: '1',
           type: 'user',
@@ -401,7 +401,7 @@ export const CollaborativeMode: Story = {
       ],
       natsConnected: true
       activeStreaming: true
-      collaborationUsers: [;
+      collaborationUsers: [
         {
           id: 'user-1',
           name: 'Michael Torres',
@@ -446,7 +446,7 @@ export const Context7Integration: Story = {
       currentQuery: 'Help me implement a new Svelte 5 component for case management',
       isProcessing: true;
       response: 'Analyzing your SvelteKit architecture and generating Context7-compliant component...',
-      conversationHistory: [;
+      conversationHistory: [
         {
           id: '1',
           type: 'user',
@@ -470,7 +470,7 @@ export const Context7Integration: Story = {
         ['svelte-5-runes', { data: 'Cached Svelte 5 documentation...', timestamp: Date.now() - 3600000 }],
         ['bits-ui-components', { data: 'Cached Bits UI patterns...', timestamp: Date.now() - 1800000 }]
       ]),
-      processingQueue: [;
+      processingQueue: [
         {
           id: 'context7-analysis',
           type: 'code_generation',

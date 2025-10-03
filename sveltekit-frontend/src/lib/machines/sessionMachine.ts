@@ -1,6 +1,5 @@
 // XState Machine for Session Management with Production Services Integration
-import { createMachine, assign } from "xstate";
-import { productionServiceClient, services } from '../services/productionServiceClient.js';
+import { createMachine, assign } from 'xstate';
 import type { User } from '../stores/auth.svelte.js';
 // Session context interface
 export interface SessionContext {
@@ -16,436 +15,329 @@ export interface SessionContext {
     isValid: boolean;
     warningCount: number;
     lastHealthCheck: Date | null;
-  }
+  };
   analyticsData: {
     loginTime: Date | null;
     activityCount: number;
     featuresUsed: string[];
-  }
+  };
 }
 // Session events
 type SessionEvent =
-  | { type: "AUTHENTICATE"; user: User; sessionId: string }
-  | { type: "REFRESH_SESSION" }
-  | { type: "LOGOUT" }
-  | { type: "SESSION_EXPIRED" }
-  | { type: "ACTIVITY"; route: string; action: string }
-  | { type: "SECURITY_CHECK" }
-  | { type: "PERMISSION_CHECK"; permission: string }
-  | { type: "EXTEND_SESSION" }
-  | { type: "ELEVATE_SECURITY"; reason: string }
-  | { type: "HEALTH_CHECK" }
+  | { type: 'AUTHENTICATE'; user: User; sessionId: string }
+  | { type: 'REFRESH_SESSION' }
+  | { type: 'LOGOUT' }
+  | { type: 'SESSION_EXPIRED' }
+  | { type: 'ACTIVITY'; route: string; action: string }
+  | { type: 'SECURITY_CHECK' }
+  | { type: 'PERMISSION_CHECK'; permission: string }
+  | { type: 'EXTEND_SESSION' }
+  | { type: 'ELEVATE_SECURITY'; reason: string }
+  | { type: 'HEALTH_CHECK' };
+
+// Define expected return types for services
+interface AuthenticationResult {
+  expiresAt: string;
+  permissions: string[];
+  valid: boolean;
+}
+
+interface RefreshSessionResult {
+  expiresAt: string;
+}
+
+interface ExtendSessionResult {
+  expiresAt: string;
+}
+
+interface ElevateSecurityLevelResult {
+  newLevel: 'elevated';
+}
+
+interface PerformSecurityCheckResult {
+  warningCount: number;
+}
+
+interface PerformHealthCheckResult {
+  healthy: boolean;
+}
+
 export const sessionMachine = createMachine({
-  id: "sessionManager",
-  initial: "unauthenticated",
+  id: 'sessionManager',
+  initial: 'unauthenticated',
   context: {
-    user: null
-    sessionId: null
-    expiresAt: null
-    lastActivity: null
+    user: null,
+    sessionId: null,
+    expiresAt: null,
+    lastActivity: null,
     securityLevel: 'standard',
     permissions: [],
     currentRoute: '/',
     sessionHealth: {
-      isValid: false
+      isValid: false,
       warningCount: 0,
-      lastHealthCheck: null
+      lastHealthCheck: null,
     },
     analyticsData: {
-      loginTime: null
+      loginTime: null,
       activityCount: 0,
-      featuresUsed: []
-    }
+      featuresUsed: [],
+    },
   } as SessionContext,
-  types: { [key: string]: any } as {
-    context: SessionContext;
-    events: SessionEvent;
-  },
   states: {
     unauthenticated: {
-      entry: ["clearSessionData"],
+      entry: ['clearSessionData'],
       on: {
         AUTHENTICATE: {
-          target: "authenticating",
-          actions: assign({,
-            user: ({ event }) => (event as any).user,
-            sessionId: ({ event }) => (event as any).sessionId,
-            analyticsData: ({ context }) => ({
-              ...context.analyticsData,
-              loginTime: new Date()
-            })
-          })
-        }
-      }
+          target: 'authenticating',
+          actions: assign(authenticateAssign),
+        },
+      },
     },
     authenticating: {
       invoke: {
-        src: "validateSession",
-        input: ({ context }) => ({
-          user: context.user,
-          sessionId: context.sessionId
-        }),
-        onDone: {
-          target: "authenticated",
-          actions: assign({,
-            expiresAt: ({ event }) => new Date((event as any).data.expiresAt),
-            permissions: ({ event }) => (event as any).data.permissions,
-            lastActivity: () => new Date(),
-            sessionHealth: ({ context }) => ({
-              ...context.sessionHealth,
-              isValid: true
-              lastHealthCheck: new Date()
-            })
-          })
+        src: 'performAuthentication',
+        input: ({ event }) => {
+          const authEvent = event as Extract<SessionEvent, { type: 'AUTHENTICATE' }>;
+          return {
+            user: authEvent.user,
+            sessionId: authEvent.sessionId,
+          };
         },
-        onError: "unauthenticated"
-      }
+        onDone: {
+          target: 'authenticated',
+          actions: assign(({ context, event }) => {
+            const authResult = event.output as AuthenticationResult;
+            return {
+              permissions: authResult.permissions,
+              expiresAt: new Date(authResult.expiresAt),
+              lastActivity: new Date(),
+              sessionHealth: {
+                ...context.sessionHealth,
+                isValid: authResult.valid,
+                lastHealthCheck: new Date(),
+              },
+              analyticsData: {
+                ...context.analyticsData,
+                loginTime: new Date(),
+              },
+            };
+          }),
+        },
+        onError: 'unauthenticated',
+      },
     },
     authenticated: {
-      initial: "active",
-      entry: ["logSessionStart"],
+      initial: 'active',
+      entry: ['logSessionStart'],
       on: {
-        LOGOUT: "logging_out",
-        SESSION_EXPIRED: "expired",
-        SECURITY_CHECK: "security_validation",
-        HEALTH_CHECK: "health_checking"
+        LOGOUT: 'logging_out',
+        SESSION_EXPIRED: 'expired',
+        SECURITY_CHECK: 'security_validation',
+        HEALTH_CHECK: 'health_checking',
       },
       states: {
         active: {
           on: {
             ACTIVITY: {
-              actions: ["recordActivity", "updateLastActivity"]
+              actions: ['recordActivity', 'updateLastActivity'],
             },
-            REFRESH_SESSION: "refreshing",
-            EXTEND_SESSION: "extending",
-            PERMISSION_CHECK: "checking_permissions",
-            ELEVATE_SECURITY: "elevating_security"
+            REFRESH_SESSION: 'refreshing',
+            EXTEND_SESSION: 'extending',
+            PERMISSION_CHECK: 'checking_permissions',
+            ELEVATE_SECURITY: 'elevating_security',
           },
           // Automatic session timeout check every 5 minutes
           after: {
             300000: {
-              target: "checking_timeout",
-              actions: ["checkSessionTimeout"]
-            }
-          }
+              target: 'checking_timeout',
+              actions: ['checkSessionTimeout'],
+            },
+          },
         },
         refreshing: {
           invoke: {
-            src: "refreshSession",
+            src: 'refreshSession',
             input: ({ context }) => ({
               sessionId: context.sessionId,
-              user: context.user
+              user: context.user,
             }),
             onDone: {
-              target: "active",
-              actions: assign({,
-                expiresAt: ({ event }) => new Date((event as any).data.expiresAt),
-                lastActivity: () => new Date(),
-                sessionHealth: ({ context }) => ({
-                  ...context.sessionHealth,
-                  lastHealthCheck: new Date()
-                })
-              })
+              target: 'active',
+              actions: assign(({ context, event }) => {
+                const refreshResult = event.output as RefreshSessionResult;
+                return {
+                  expiresAt: new Date(refreshResult.expiresAt),
+                  lastActivity: new Date(),
+                  sessionHealth: {
+                    ...context.sessionHealth,
+                    lastHealthCheck: new Date(),
+                  },
+                };
+              }),
             },
-            onError: "expired"
-          }
+            onError: 'expired',
+          },
         },
         extending: {
           invoke: {
-            src: "extendSession",
+            src: 'extendSession',
             input: ({ context }) => ({
               sessionId: context.sessionId,
-              requestedDuration: 3600000 // 1 hour
+              requestedDuration: 3600000, // 1 hour
             }),
             onDone: {
-              target: "active",
-              actions: assign({,
-                expiresAt: ({ event }) => new Date((event as any).data.expiresAt)
-              })
+              target: 'active',
+              actions: assign(({ event }) => {
+                const extendResult = event.output as ExtendSessionResult;
+                return {
+                  expiresAt: new Date(extendResult.expiresAt),
+                };
+              }),
             },
-            onError: "active"
-          }
+            onError: 'active',
+          },
         },
         checking_permissions: {
           invoke: {
-            src: "validatePermissions",
-            input: ({ context, event }) => ({
-              user: context.user,
-              permission: (event as any).permission,
-              securityLevel: context.securityLevel
-            }),
-            onDone: "active",
-            onError: "permission_denied"
-          }
+            src: 'validatePermissions',
+            input: ({ context, event }) => {
+              const permissionEvent = event as Extract<SessionEvent, { type: 'PERMISSION_CHECK' }>;
+              return {
+                user: context.user,
+                permission: permissionEvent.permission,
+                securityLevel: context.securityLevel,
+              };
+            },
+            onDone: 'active',
+            onError: 'permission_denied',
+          },
         },
         permission_denied: {
           after: {
-            2000: "active"
-          }
+            2000: 'active',
+          },
         },
         elevating_security: {
           invoke: {
-            src: "elevateSecurityLevel",
-            input: ({ context, event }) => ({
-              sessionId: context.sessionId,
-              reason: (event as any).reason,
-              currentLevel: context.securityLevel
-            }),
-            onDone: {
-              target: "active",
-              actions: assign({,
-                securityLevel: ({ event }) => (event as any).data.newLevel
-              })
+            src: 'elevateSecurityLevel',
+            input: ({ context, event }) => {
+              const elevateEvent = event as Extract<SessionEvent, { type: 'ELEVATE_SECURITY' }>;
+              return {
+                sessionId: context.sessionId,
+                reason: elevateEvent.reason,
+                currentLevel: context.securityLevel,
+              };
             },
-            onError: "active"
-          }
+            onDone: {
+              target: 'active',
+              actions: assign(({ event }) => {
+                const elevateResult = event.output as ElevateSecurityLevelResult;
+                return {
+                  securityLevel: elevateResult.newLevel,
+                };
+              }),
+            },
+            onError: 'active',
+          },
         },
         checking_timeout: {
           invoke: {
-            src: "checkSessionValidity",
+            src: 'checkSessionValidity',
             input: ({ context }) => ({
               sessionId: context.sessionId,
               expiresAt: context.expiresAt,
-              lastActivity: context.lastActivity
+              lastActivity: context.lastActivity,
             }),
-            onDone: "active",
-            onError: "expired"
-          }
+            onDone: 'active',
+            onError: 'expired',
+          },
         },
         security_validation: {
           invoke: {
-            src: "performSecurityCheck",
+            src: 'performSecurityCheck',
             input: ({ context }) => ({
               user: context.user,
               deviceFingerprint: context.deviceFingerprint,
-              sessionHealth: context.sessionHealth
+              sessionHealth: context.sessionHealth,
             }),
             onDone: {
-              target: "active",
-              actions: assign({,
-                sessionHealth: ({ context, event }) => ({
-                  ...context.sessionHealth,
-                  warningCount: (event as any).data.warningCount,
-                  lastHealthCheck: new Date()
-                })
-              })
+              target: 'active',
+              actions: assign(({ context, event }) => {
+                const securityCheckResult = event.output as PerformSecurityCheckResult;
+                return {
+                  sessionHealth: {
+                    ...context.sessionHealth,
+                    warningCount: securityCheckResult.warningCount,
+                    lastHealthCheck: new Date(),
+                  },
+                };
+              }),
             },
             onError: {
-              target: "security_compromised",
-              actions: assign({,
-                sessionHealth: ({ context }) => ({
+              target: 'security_compromised',
+              actions: assign(({ context }) => ({
+                sessionHealth: {
                   ...context.sessionHealth,
-                  isValid: false
-                  warningCount: context.sessionHealth.warningCount + 1
-                })
-              })
-            }
-          }
+                  isValid: false,
+                  warningCount: context.sessionHealth.warningCount + 1,
+                },
+              })),
+            },
+          },
         },
         security_compromised: {
-          entry: ["alertSecurityBreach"],
+          entry: ['alertSecurityBreach'],
           after: {
-            5000: "logging_out"
-          }
+            5000: 'logging_out',
+          },
         },
         health_checking: {
           invoke: {
-            src: "performHealthCheck",
+            src: 'performHealthCheck',
             input: ({ context }) => ({
               sessionId: context.sessionId,
-              analyticsData: context.analyticsData
+              analyticsData: context.analyticsData,
             }),
             onDone: {
-              target: "active",
-              actions: assign({,
-                sessionHealth: ({ context, event }) => ({
-                  ...context.sessionHealth,
-                  lastHealthCheck: new Date(),
-                  isValid: (event as any).data.healthy
-                })
-              })
+              target: 'active',
+              actions: assign(({ context, event }) => {
+                const healthCheckResult = event.output as PerformHealthCheckResult;
+                return {
+                  sessionHealth: {
+                    ...context.sessionHealth,
+                    lastHealthCheck: new Date(),
+                    isValid: healthCheckResult.healthy,
+                  },
+                };
+              }),
             },
-            onError: "active"
-          }
-        }
-      }
+            onError: 'active',
+          },
+        },
+      },
     },
     logging_out: {
       invoke: {
-        src: "performLogout",
+        src: 'performLogout',
         input: ({ context }) => ({
           sessionId: context.sessionId,
           user: context.user,
-          sessionDuration: context.analyticsData.loginTime ?
-            Date.now() - context.analyticsData.loginTime.getTime() : 0
+          sessionDuration: context.analyticsData.loginTime ? Date.now() - context.analyticsData.loginTime.getTime() : 0,
         }),
-        onDone: "unauthenticated",
-        onError: "unauthenticated"
-      }
+        onDone: 'unauthenticated',
+        onError: 'unauthenticated',
+      },
     },
     expired: {
-      entry: ["logSessionExpired"],
+      entry: ['logSessionExpired'],
       after: {
-        3000: "unauthenticated"
-      }
-    }
-  }
+        3000: 'unauthenticated',
+      },
+    },
+  },
 });
-// Service implementations for session management
-export const sessionServices = {
-  validateSession: async ({ user, sessionId }: { user: User; sessionId: string }) => {
-    try {
-      // Use production service client for session validation
-      const result = await services.triggerXStateEvent('session.validate', {
-        userId: user.id,
-        sessionId
-      });
-      // Calculate expiration (24 hours from now)
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-      // Get user permissions based on role
-      const permissions = getUserPermissions(user.role);
-      return {
-        expiresAt: expiresAt.toISOString(),
-        permissions,
-        valid: true
-      }
-    } catch (error: any) {
-      console.error('Session validation failed:', error);
-      throw error;
-    }
-  },
-  refreshSession: async ({ sessionId, user }: { sessionId: string; user: User }) => {
-    try {
-      const result = await services.triggerXStateEvent('session.refresh', {
-        sessionId,
-        userId: user.id
-      });
-      return {
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-      }
-    } catch (error: any) {
-      console.error('Session refresh failed:', error);
-      throw error;
-    }
-  },
-  extendSession: async ({ sessionId, requestedDuration }: {
-    sessionId: string;
-    requestedDuration: number
-  }) => {
-    try {
-      const result = await services.triggerXStateEvent('session.extend', {
-        sessionId,
-        duration: requestedDuration
-      });
-      return {
-        expiresAt: new Date(Date.now() + requestedDuration).toISOString()
-      }
-    } catch (error: any) {
-      console.error('Session extension failed:', error);
-      throw error;
-    }
-  },
-  validatePermissions: async ({ user, permission, securityLevel }: {
-    user: User;
-    permission: string;
-    securityLevel: string;
-  }) => {
-    const userPermissions = getUserPermissions(user.role);
-    const hasPermission = userPermissions.includes(permission) || userPermissions.includes('all');
-    if (!hasPermission) {
-      throw new Error(`Permission denied: ${permission}`);
-    }
-    return { valid: true }
-  },
-  elevateSecurityLevel: async ({ sessionId, reason, currentLevel }: {
-    sessionId: string;
-    reason: string;
-    currentLevel: string;
-  }) => {
-    try {
-      const result = await services.triggerXStateEvent('security.elevate', {
-        sessionId,
-        reason,
-        currentLevel
-      });
-      return {
-        newLevel: 'elevated' as const
-      }
-    } catch (error: any) {
-      console.error('Security elevation failed:', error);
-      throw error;
-    }
-  },
-  checkSessionValidity: async ({ sessionId, expiresAt, lastActivity }: {
-    sessionId: string;
-    expiresAt: Date | null;
-    lastActivity: Date | null;
-  }) => {
-    const now = new Date();
-    if (expiresAt && now > expiresAt) {
-      throw new Error('Session expired');
-    }
-    if (lastActivity && (now.getTime() - lastActivity.getTime()) > 4 * 60 * 60 * 1000) {
-      throw new Error('Session inactive too long');
-    }
-    return { valid: true }
-  },
-  performSecurityCheck: async ({ user, deviceFingerprint, sessionHealth }: {
-    user: User;
-    deviceFingerprint?: string;
-    sessionHealth: any;
-  }) => {
-    try {
-      const result = await services.triggerXStateEvent('security.check', {
-        userId: user.id,
-        deviceFingerprint,
-        healthStatus: sessionHealth
-      });
-      return {
-        warningCount: 0,
-        secure: true
-      }
-    } catch (error: any) {
-      console.error('Security check failed:', error);
-      throw error;
-    }
-  },
-  performHealthCheck: async ({ sessionId, analyticsData }: {
-    sessionId: string;
-    analyticsData: any;
-  }) => {
-    try {
-      const result = await services.triggerXStateEvent('session.health', {
-        sessionId,
-        analytics: analyticsData
-      });
-      return {
-        healthy: true;
-        metrics: result
-      }
-    } catch (error: any) {
-      console.error('Health check failed:', error);
-      return { healthy: false }
-    }
-  },
-  performLogout: async ({ sessionId, user, sessionDuration }: {
-    sessionId: string;
-    user: User;
-    sessionDuration: number;
-  }) => {
-    try {
-      const result = await services.triggerXStateEvent('session.logout', {
-        sessionId,
-        userId: user.id,
-        duration: sessionDuration
-      });
-      return { success: true }
-    } catch (error: any) {
-      console.error('Logout failed:', error);
-      return { success: false }
-    }
-  }
-}
+
 // Action implementations
 export const sessionActions = {
   clearSessionData: () => {
@@ -458,25 +350,31 @@ export const sessionActions = {
   logSessionStart: ({ context }: { context: SessionContext }) => {
     console.log('Session started for user:', context.user?.email);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('sessionStartTime', Date.now().toString();
+      localStorage.setItem('sessionStartTime', Date.now().toString());
     }
   },
-  recordActivity: ({ context, event }: { context: SessionContext; event: any }) => {
+  recordActivity: ({
+    context: _context,
+    event,
+  }: {
+    context: SessionContext;
+    event: Extract<SessionEvent, { type: 'ACTIVITY' }>;
+  }) => {
     const activity = {
       route: event.route,
       action: event.action,
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    };
     // Log activity for analytics
     console.log('User activity:', activity);
   },
-  updateLastActivity: assign({,
+  updateLastActivity: assign({
     lastActivity: () => new Date(),
-    currentRoute: ({ event }) => (event as any).route,
+    currentRoute: ({ event }) => (event as Extract<SessionEvent, { type: 'ACTIVITY' }>).route,
     analyticsData: ({ context }) => ({
       ...context.analyticsData,
-      activityCount: context.analyticsData.activityCount + 1
-    })
+      activityCount: context.analyticsData.activityCount + 1,
+    }),
   }),
   checkSessionTimeout: ({ context }: { context: SessionContext }) => {
     const now = new Date();
@@ -490,8 +388,39 @@ export const sessionActions = {
   },
   logSessionExpired: ({ context }: { context: SessionContext }) => {
     console.log('Session expired for user:', context.user?.email);
-  }
+  },
+};
+// Assign function for AUTHENTICATE event
+function authenticateAssign({
+  context,
+  event,
+}: {
+  context: SessionContext;
+  event: SessionEvent;
+}): Partial<SessionContext> {
+  if (event.type !== 'AUTHENTICATE') return {};
+  return {
+    sessionId: event.sessionId,
+    user: event.user,
+    analyticsData: {
+      ...context.analyticsData,
+      loginTime: new Date(),
+      activityCount: 0,
+      featuresUsed: [],
+    },
+    lastActivity: new Date(),
+    currentRoute: '/',
+    securityLevel: 'standard',
+    permissions: getUserPermissions(event.user.role), // Use the helper function here
+    sessionHealth: {
+      ...context.sessionHealth,
+      isValid: false,
+      lastHealthCheck: null,
+      warningCount: 0,
+    },
+  };
 }
+
 // Helper function to get user permissions based on role
 function getUserPermissions(role: string): string[] {
   const permissions = {

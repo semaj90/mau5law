@@ -11,12 +11,14 @@ async function initializeAuth() {
   if (authEnabled) return { lucia, enabled: true };
 
   try {
+    console.log('🔍 [hooks.server] Attempting to load auth module...');
     const authModule = await import('$lib/server/auth');
     lucia = authModule.lucia;
     authEnabled = true;
     console.log('✅ [hooks.server] Lucia auth initialized');
     return { lucia, enabled: true };
   } catch (error) {
+    console.error('❌ [hooks.server] Auth module failed to load:', error);
     console.warn('⚠️ [hooks.server] Auth unavailable, continuing without authentication');
     return { lucia: null, enabled: false };
   }
@@ -25,10 +27,12 @@ async function initializeAuth() {
 // Load legacy route mappings
 async function loadRouteConfig() {
   try {
+    console.log('🔍 [hooks.server] Attempting to load route config...');
     const routeConfig = await import('$lib/data/route-groups-config');
     legacyRouteMapping = routeConfig.legacyRouteMapping || {};
     console.log('✅ [hooks.server] Route mappings loaded');
   } catch (error) {
+    console.error('❌ [hooks.server] Route config failed to load:', error);
     console.warn('⚠️ [hooks.server] Route config unavailable');
     legacyRouteMapping = {};
   }
@@ -38,11 +42,15 @@ async function loadRouteConfig() {
 let initialized = false;
 async function ensureInitialized() {
   if (!initialized) {
-    await Promise.all([
-      initializeAuth(),
-      loadRouteConfig()
-    ]);
-    initialized = true;
+    console.log('🚀 [hooks.server] Starting initialization...');
+    try {
+      await Promise.all([initializeAuth(), loadRouteConfig()]);
+      initialized = true;
+      console.log('✅ [hooks.server] All systems initialized successfully');
+    } catch (error) {
+      console.error('❌ [hooks.server] CRITICAL: Initialization failed:', error);
+      throw error; // Re-throw to see full stack trace
+    }
   }
 }
 
@@ -59,7 +67,15 @@ interface DatabaseUser {
 
 export const handle: Handle = async ({ event, resolve }) => {
   // Ensure all systems are initialized
-  await ensureInitialized();
+  try {
+    await ensureInitialized();
+  } catch (initError) {
+    console.error('❌ [hooks.server] FATAL: Cannot initialize hooks:', initError);
+    // Allow request to proceed even if initialization fails
+    event.locals.user = null;
+    event.locals.session = null;
+    return resolve(event);
+  }
 
   const url = event.url;
   const pathname = url.pathname;
@@ -74,7 +90,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
     return new Response(null, {
       status: 301,
-      headers: { location: redirectUrl }
+      headers: { location: redirectUrl },
     });
   }
 
@@ -153,19 +169,19 @@ export const handle: Handle = async ({ event, resolve }) => {
       ? {
           id: user.id,
           email: user.email,
-          role: ((user as DatabaseUser).role as
-            | 'admin'
-            | 'lead_prosecutor'
-            | 'prosecutor'
-            | 'paralegal'
-            | 'investigator'
-            | 'analyst'
-            | 'viewer'
-            | 'user') || 'user',
+          role:
+            ((user as DatabaseUser).role as
+              | 'admin'
+              | 'lead_prosecutor'
+              | 'prosecutor'
+              | 'paralegal'
+              | 'investigator'
+              | 'analyst'
+              | 'viewer'
+              | 'user') || 'user',
         }
       : null;
     event.locals.session = session;
-
   } catch (authError) {
     // Global auth error fallback - allow request to proceed
     console.error('❌ Auth system error, proceeding without authentication:', authError);

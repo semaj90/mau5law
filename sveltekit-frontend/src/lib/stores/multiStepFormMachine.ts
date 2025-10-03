@@ -337,7 +337,7 @@ export const multiStepFormMachine = setup({
       on: {
         NEXT: {
           target: "validating",
-          actions: assign({,
+          actions: assign({
             stepData: ({ event }) => event.stepData
           })
         },
@@ -403,7 +403,7 @@ export const multiStepFormMachine = setup({
         isValid: false
         errors: { [key: string]: any }
       }),
-      always: [;
+      always: [
         {
           target: "editing",
           guard: ({ context }) => {
@@ -442,7 +442,7 @@ export const multiStepFormMachine = setup({
               return false;
             }
           },
-          actions: assign({,
+          actions: assign({
             isValid: true
             formData: ({ context }) => ({
               ...context.formData,
@@ -510,13 +510,13 @@ export const multiStepFormMachine = setup({
         }),
         onDone: {
           target: "generating_embeddings",
-          actions: assign({,
+          actions: assign({
             submitResult: ({ event }) => event.output
           })
         },
         onError: {
           target: "submit_error",
-          actions: assign({,
+          actions: assign({
             submitResult: ({ event }) => ({
               success: false
               error: event.error
@@ -539,7 +539,7 @@ export const multiStepFormMachine = setup({
         }),
         onDone: {
           target: "success",
-          actions: assign({,
+          actions: assign({
             isSubmitting: false
             submitResult: ({ context, event }) => ({
               ...context.submitResult,
@@ -549,7 +549,7 @@ export const multiStepFormMachine = setup({
         },
         onError: {
           target: "success", // Continue even if embeddings fail
-          actions: assign({,
+          actions: assign({
             isSubmitting: false
             submitResult: ({ context, event }) => ({
               ...context.submitResult,
@@ -563,7 +563,7 @@ export const multiStepFormMachine = setup({
       on: {
         RESET: {
           target: "editing",
-          actions: assign({,
+          actions: assign({
             currentStep: 1,
             formData: { [key: string]: any },
             stepData: { [key: string]: any },
@@ -581,7 +581,7 @@ export const multiStepFormMachine = setup({
         },
         RESET: {
           target: "editing",
-          actions: assign({,
+          actions: assign({
             currentStep: 1,
             formData: { [key: string]: any },
             stepData: { [key: string]: any },

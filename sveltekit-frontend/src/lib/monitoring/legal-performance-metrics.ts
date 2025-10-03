@@ -64,7 +64,7 @@ export const performanceMetrics: Writable<PerformanceSnapshot[]> = writable([]);
 // Real-time metrics store
 export const currentMetrics: Writable<PerformanceSnapshot | null> = writable(null);
 // Alert thresholds configuration
-export const ALERT_THRESHOLDS: AlertThreshold[] = [;
+export const ALERT_THRESHOLDS: AlertThreshold[] = [
   {
     metric: 'cache_hits.overall',
     threshold: 0.7,

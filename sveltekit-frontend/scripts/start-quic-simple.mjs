@@ -33,7 +33,7 @@ try {
 
 // Check if PostgreSQL is available
 try {
-  await $`PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -c "SELECT 1" -t`;
+  await $`PGPASSWORD=123456 psql -h localhost -p 5434 -U legal_admin -d legal_ai_db -c "SELECT 1" -t`;
   echo`✅ PostgreSQL connection verified`;
 } catch (e) {
   echo`⚠️ PostgreSQL not available - using local SQLite fallback`;

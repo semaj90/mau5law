@@ -67,13 +67,13 @@
   					src: 'initializeSession',
   					onDone: {
   						target: 'idle',
-  						actions: assign({,
+  						actions: assign({
   							session: ({ event }) => event.data
   						})
   					},
   					onError: {
   						target: 'error',
-  						actions: assign({,
+  						actions: assign({
   							error: ({ event }) => event.data.message || 'Failed to initialize session'
   						})
   					}
@@ -105,7 +105,7 @@
   					},
   					onError: {
   						target: 'error',
-  						actions: assign({,
+  						actions: assign({
   							error: ({ event }) => event.data.message || 'Failed to send message',
   							isLoading: false
   						})
@@ -117,7 +117,7 @@
   					RETRY: 'sending',
   					CLEAR_ERROR: {
   						target: 'idle',
-  						actions: assign({,
+  						actions: assign({
   							error: null;
   						})
   					}

@@ -80,7 +80,7 @@ const serviceConfig: ServiceConfig = {
   },
   postgres: {
     host: import.meta.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(import.meta.env.POSTGRES_PORT || '5433'),
+    port: parseInt(import.meta.env.POSTGRES_PORT || '5434'),
     database: import.meta.env.POSTGRES_DB || 'legal_ai_db',
     user: import.meta.env.POSTGRES_USER || 'legal_admin',
     password: import.meta.env.POSTGRES_PASSWORD || '123456'
@@ -153,7 +153,7 @@ const orchestrationMachine = createMachine({
         checkingCache: {
           invoke: {
             src: 'checkCache',
-            onDone: [;
+            onDone: [
               {
                 guard: 'cacheHit',
                 target: 'complete',

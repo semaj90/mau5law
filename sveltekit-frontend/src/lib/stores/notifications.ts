@@ -1,5 +1,4 @@
 import { writable } from 'svelte/store';
-}
 export interface Notification {
   id: string;
   type: 'info' | 'success' | 'warning' | 'error' | 'system';
@@ -25,7 +24,7 @@ export interface NotificationOptions {
 function createNotificationStore() {
   const { subscribe, update } = writable<Notification[]>([]);
   function generateId(): string {
-    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+    return `notification-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
   }
   function add(message: string, options: NotificationOptions = {}): string {
     const id = generateId();
@@ -39,13 +38,20 @@ function createNotificationStore() {
       closable: options.closable ?? true,
       icon: options.icon,
       position: options.position || 'top-right',
-      showProgress: options.showProgress ?? true
-    }
+      showProgress: options.showProgress ?? true,
+    };
     update(notifications => [...notifications, notification]);
+    // Auto-remove if not persistent and has a positive duration
+    if (!notification.persistent && (notification.duration ?? 0) > 0) {
+      const timeout = notification.duration!;
+      setTimeout(() => {
+        remove(id);
+      }, timeout);
+    }
     return id;
   }
   function remove(id: string) {
-    update(notifications => notifications.filter(n => n.id !== id);
+    update(notifications => notifications.filter(n => n.id !== id));
   }
   function clear() {
     update(() => []);
@@ -68,7 +74,7 @@ function createNotificationStore() {
       ...options,
       type: 'system',
       persistent: options.persistent ?? true,
-      position: options.position || 'center'
+      position: options.position || 'center',
     });
   }
   // Legal AI specific notifications
@@ -78,7 +84,7 @@ function createNotificationStore() {
       type: 'info',
       title,
       icon: '📋',
-      duration: 7000
+      duration: 7000,
     });
   }
   function evidenceProcessed(message: string, evidenceId?: string): string {
@@ -87,7 +93,7 @@ function createNotificationStore() {
       type: 'success',
       title,
       icon: '🔍',
-      duration: 5000
+      duration: 5000,
     });
   }
   function aiAnalysisComplete(message: string, confidence?: number): string {
@@ -96,7 +102,7 @@ function createNotificationStore() {
       type: 'success',
       title: 'AI Analysis Complete',
       icon: '🤖',
-      duration: 8000
+      duration: 8000,
     });
   }
   function securityAlert(message: string): string {
@@ -104,8 +110,8 @@ function createNotificationStore() {
       type: 'error',
       title: 'Security Alert',
       icon: '🚨',
-      persistent: true;
-      position: 'center'
+      persistent: true,
+      position: 'center',
     });
   }
   function systemStatus(message: string, isOnline: boolean = true): string {
@@ -114,7 +120,7 @@ function createNotificationStore() {
       title: 'System Status',
       icon: isOnline ? '🟢' : '🔴',
       persistent: !isOnline,
-      position: 'top-left'
+      position: 'top-left',
     });
   }
   return {
@@ -132,9 +138,9 @@ function createNotificationStore() {
     evidenceProcessed,
     aiAnalysisComplete,
     securityAlert,
-    systemStatus
-  }
+    systemStatus,
+  };
 }
 export const notificationStore = createNotificationStore();
-// Export convenience functions for use throughout the app
 export const notify = notificationStore;
+export default notificationStore;

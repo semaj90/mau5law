@@ -180,7 +180,7 @@ class ConfigManager {
       environment: (env.NODE_ENV as any) || 'development',
       database: {
         postgres: {
-          url: env.DATABASE_URL || env.POSTGRES_URL || 'postgresql://localhost:5433/legal_ai_db',
+          url: env.DATABASE_URL || env.POSTGRES_URL || 'postgresql://localhost:5434/legal_ai_db',
           maxConnections: parseInt(env.POSTGRES_MAX_CONNECTIONS) || (isWindows ? 20 : 25),
           ssl: env.POSTGRES_SSL === 'true' || env.NODE_ENV === 'production',
           timeout: parseInt(env.POSTGRES_TIMEOUT) || (isWindows ? 30000 : 20000),

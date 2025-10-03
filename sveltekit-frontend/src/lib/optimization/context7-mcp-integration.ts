@@ -464,7 +464,7 @@ const dockerCompose = optimizer.generateOptimizedDockerCompose();`
     feature: string;
     context: NonNullable<Context7MCPRequest["optimization_context"]>;
   ): Promise<OptimizationRecommendation[]> {
-    return [;
+    return [
       {
         category: "performance",
         title: `${feature} Integration Optimization`,
@@ -542,7 +542,7 @@ const db = drizzle(pool, {
         expected_benefit: "Improve UI responsiveness by 30-50%"
       }
     }
-    return [;
+    return [
       libraryOptimizations[library] || {
         category: "performance",
         title: `${library} Optimization`,

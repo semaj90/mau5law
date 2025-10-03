@@ -194,13 +194,13 @@ export const caseManagementMachine = createMachine({
         LOAD_USER_CASES: 'loadingUserCases',
         SET_FILTERS: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             filters: ({ context, event }) => ({ ...context.filters, ...event.filters })
           })
         },
         SET_PAGE: {
           target: 'loadingUserCases',
-          actions: assign({,
+          actions: assign({
             pagination: ({ context, event }) => ({
               ...context.pagination,
               page: event.page
@@ -209,7 +209,7 @@ export const caseManagementMachine = createMachine({
         },
         SELECT_CASE: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             selectedCaseId: ({ event }) => event.caseId
           })
         },
@@ -226,7 +226,7 @@ export const caseManagementMachine = createMachine({
         input: ({ context, event }) => ({ context, event }),
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             currentCase: ({ event }) => event.output.result,
             selectedCaseId: ({ event }) => event.output.result?.id || null,
             isLoading: false
@@ -234,7 +234,7 @@ export const caseManagementMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to load case',
             isLoading: false
           })
@@ -246,18 +246,18 @@ export const caseManagementMachine = createMachine({
       invoke: {
         src: 'createCase',
         input: ({ context, event }) => ({ context, event }),
-        onDone: [;
+        onDone: [
           {
             target: 'loadingUserCases',
             guard: ({ event }) => event.output.success,
-            actions: assign({,
+            actions: assign({
               isLoading: false
               selectedCaseId: ({ event }) => event.output.caseId
             })
           },
           {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => event.output.error || 'Failed to create case',
               isLoading: false
             })
@@ -265,7 +265,7 @@ export const caseManagementMachine = createMachine({
         ],
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to create case',
             isLoading: false
           })
@@ -277,7 +277,7 @@ export const caseManagementMachine = createMachine({
       invoke: {
         src: 'updateCase',
         input: ({ context, event }) => ({ context, event }),
-        onDone: [;
+        onDone: [
           {
             target: 'loadingCase',
             guard: ({ event }) => event.output.success,
@@ -285,7 +285,7 @@ export const caseManagementMachine = createMachine({
           },
           {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => event.output.error || 'Failed to update case',
               isLoading: false
             })
@@ -293,7 +293,7 @@ export const caseManagementMachine = createMachine({
         ],
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to update case',
             isLoading: false
           })
@@ -305,7 +305,7 @@ export const caseManagementMachine = createMachine({
       invoke: {
         src: 'addEvidence',
         input: ({ context, event }) => ({ context, event }),
-        onDone: [;
+        onDone: [
           {
             target: 'loadingCase',
             guard: ({ event }) => event.output.success,
@@ -313,7 +313,7 @@ export const caseManagementMachine = createMachine({
           },
           {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => event.output.error || 'Failed to add evidence',
               isLoading: false
             })
@@ -321,7 +321,7 @@ export const caseManagementMachine = createMachine({
         ],
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to add evidence',
             isLoading: false
           })
@@ -339,7 +339,7 @@ export const caseManagementMachine = createMachine({
         input: ({ context, event }) => ({ context, event }),
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             searchResults: ({ event }) => event.output.cases || [],
             pagination: ({ context, event }) => ({
               ...context.pagination,
@@ -350,7 +350,7 @@ export const caseManagementMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Search failed',
             searchResults: [],
             isLoading: false
@@ -365,7 +365,7 @@ export const caseManagementMachine = createMachine({
         input: ({ context, event }) => ({ context, event }),
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             cases: ({ event }) => event.output.cases || [],
             pagination: ({ context, event }) => ({
               ...context.pagination,
@@ -376,7 +376,7 @@ export const caseManagementMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to load cases',
             cases: [],
             isLoading: false

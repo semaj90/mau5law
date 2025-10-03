@@ -97,7 +97,7 @@ export const legalDocuments = pgTable('legal_documents', {
   title: text('title').notNull(),
   content: text('content').notNull(),
   documentType: text('document_type').notNull(), // 'contract', 'brief', 'evidence', 'correspondence'
-  // Vector embeddings from gemma3-legal:latest (512 dimensions),
+  // Vector embeddings from gemma3-legal:latest (512 dimensions)
   embedding: vector('embedding', { dimensions: 512 }).notNull(),
   // Legal metadata
   practiceArea: text('practice_area'), // 'corporate', 'litigation', 'ip', 'employment'
@@ -128,7 +128,7 @@ export const legalDocuments = pgTable('legal_documents', {
   clientIdIndex: index('client_id_idx').on(table.clientId),
   createdAtIndex: index('created_at_idx').on(table.createdAt),
   documentHashIndex: index('document_hash_idx').on(table.documentHash)
-});
+}));
 // Vector similarity queries for analytics
 export const vectorSimilarityQueries = pgTable('vector_similarity_queries', {
   id: serial('id').primaryKey(),
@@ -154,7 +154,7 @@ export const vectorSimilarityQueries = pgTable('vector_similarity_queries', {
   sessionIdIndex: index('session_id_idx').on(table.sessionId),
   timestampIndex: index('timestamp_idx').on(table.timestamp),
   queryIntentIndex: index('query_intent_idx').on(table.queryIntent)
-});
+}));
 // Legal analysis results cache
 export const legalAnalysisCache = pgTable('legal_analysis_cache', {
   id: serial('id').primaryKey(),
@@ -181,7 +181,7 @@ export const legalAnalysisCache = pgTable('legal_analysis_cache', {
   analysisTypeIndex: index('analysis_type_idx').on(table.analysisType),
   lastAccessedIndex: index('last_accessed_idx').on(table.lastAccessedAt),
   expiresAtIndex: index('expires_at_idx').on(table.expiresAt)
-});
+}));
 // Document chunks for RAG (chunked documents with embeddings)
 export const document_chunks = pgTable("document_chunks", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -237,7 +237,7 @@ export const usersRelations = relations(users, ({ many }: any) => ({
   evidence: many(evidence),
   sessions: many(sessions),
   aiHistory: many(aiHistory)
-});
+}));
 export const documentsRelations = relations(documents, ({ one, many }: any) => ({
   user: one(users, {
     fields: [documents.user_id],
@@ -245,7 +245,7 @@ export const documentsRelations = relations(documents, ({ one, many }: any) => (
   }),
   chunks: many(document_chunks),
   citations: many(citations)
-});
+}));
 export const casesRelations = relations(cases, ({ one, many }: any) => ({
   user: one(users, {
     fields: [cases.user_id],
@@ -253,7 +253,7 @@ export const casesRelations = relations(cases, ({ one, many }: any) => ({
   }),
   evidence: many(evidence),
   citations: many(citations)
-});
+}));
 export const evidenceRelations = relations(evidence, ({ one, many }: any) => ({
   case: one(cases, {
     fields: [evidence.case_id],
@@ -264,7 +264,7 @@ export const evidenceRelations = relations(evidence, ({ one, many }: any) => ({
     references: [users.id]
   }),
   chunks: many(document_chunks)
-});
+}));
 export const documentChunksRelations = relations(document_chunks, ({ one }: any) => ({
   document: one(documents, {
     fields: [document_chunks.document_id],
@@ -274,7 +274,7 @@ export const documentChunksRelations = relations(document_chunks, ({ one }: any)
     fields: [document_chunks.evidence_id],
     references: [evidence.id]
   })
-});
+}));
 export const citationsRelations = relations(citations, ({ one }: any) => ({
   case: one(cases, {
     fields: [citations.case_id],
@@ -284,19 +284,19 @@ export const citationsRelations = relations(citations, ({ one }: any) => ({
     fields: [citations.document_id],
     references: [documents.id]
   })
-});
+}));
 export const sessionsRelations = relations(sessions, ({ one }: any) => ({
   user: one(users, {
     fields: [sessions.user_id],
     references: [users.id]
   })
-});
+}));
 export const aiHistoryRelations = relations(aiHistory, ({ one }: any) => ({
   user: one(users, {
     fields: [aiHistory.user_id],
     references: [users.id]
   })
-});
+}));
 // Type exports for TypeScript
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -326,7 +326,7 @@ export const profileRelations = relations(profileTable, ({ one }: any) => ({
     fields: [profileTable.id],
     references: [users.id]
   })
-});
+}));
 // Profile types
 export type Profile = typeof profileTable.$inferSelect;
 export type NewProfile = typeof profileTable.$inferInsert;

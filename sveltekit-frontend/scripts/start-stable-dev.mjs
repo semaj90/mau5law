@@ -20,7 +20,7 @@ const config = {
   },
   env: {
     NODE_OPTIONS: '--max-old-space-size=4096', // Increased memory
-    DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
+    DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
     REDIS_URL: 'redis://localhost:6379',
     // Disable complex features temporarily for stability
     ENABLE_GPU: 'false',
@@ -61,7 +61,7 @@ let pgReady = false;
 for (let i = 0; i < 20; i++) {
   try {
     await $`docker exec legal-ai-postgres pg_isready -U legal_admin -d legal_ai_db`;
-    echo`✅ PostgreSQL ready on port 5433`;
+    echo`✅ PostgreSQL ready on port 5434`;
     pgReady = true;
     break;
   } catch (e) {

@@ -21,8 +21,8 @@ export class EmbeddingService {
   private readonly dimensions: number;
   constructor(
     baseUrl = 'http://localhost:11434',
-    model = 'nomic-embed-text',
-    dimensions = 384;
+    model = 'embeddinggemma:latest',
+    dimensions = 512;
   ) {
     this.baseUrl = baseUrl;
     this?.model || "unknown" // @ts-ignore - Model property access = model

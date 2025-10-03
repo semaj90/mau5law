@@ -677,7 +677,7 @@ class TopologyPredictiveAnalyticsEngine {
     const hiddenDim = Math.floor(inputDim * 0.6);
     const outputDim = Math.floor(inputDim * 0.4);
     this.neuralNetwork = {
-      layers: [;
+      layers: [
         {
           neurons: inputDim
           activation: 'relu',
@@ -736,7 +736,7 @@ class TopologyPredictiveAnalyticsEngine {
   private async generateNeuralPredictions(topology: any, query: string, session: any, depth: number) {
     // Neural network forward pass for predictions
     const predictions = {
-      query_predictions: [;
+      query_predictions: [
         {
           query: `${query} analysis`,
           confidence: 0.85,
@@ -793,7 +793,7 @@ class TopologyPredictiveAnalyticsEngine {
   }
   private generateFallbackAnalyticsResult(query: string, glyphs: GlyphContext[], time: number, error: any): PredictiveAnalyticsResult {
     return {
-      predicted_queries: [;
+      predicted_queries: [
         {
           query: `Related to: ${query}`,
           confidence: 0.3,
@@ -858,7 +858,7 @@ class TopologyPredictiveAnalyticsEngine {
   }
   private async generateNeuralCompletions(partialQuery: string, topology: any, context: any) {
     // Neural completion generation
-    return [;
+    return [
       {
         completion: `${partialQuery} analysis`,
         confidence: 0.8,
@@ -895,7 +895,7 @@ class TopologyPatternRecognizer {
     console.log('📈 Pattern recognizer learning from feedback');
   }
   async generatePatternCompletions(partialQuery: string, history: UserInteractionPattern[], topology: any) {
-    return [;
+    return [
       {
         completion: `${partialQuery} patterns`,
         confidence: 0.6,

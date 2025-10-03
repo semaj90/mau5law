@@ -97,7 +97,7 @@ const authMachine = createMachine({
         src: checkAuthService
         onDone: {
           target: 'authenticated',
-          actions: [;
+          actions: [
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true
@@ -108,7 +108,7 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'unauthenticated',
-          actions: assign({,
+          actions: assign({
             user: null
             isAuthenticated: false
             isLoading: false
@@ -146,7 +146,7 @@ const authMachine = createMachine({
         }),
         onDone: {
           target: 'authenticated',
-          actions: [;
+          actions: [
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true
@@ -165,7 +165,7 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'unauthenticated',
-          actions: assign({,
+          actions: assign({
             isLoading: false
             error: ({ event }: { event: any }) => event.error?.message || 'Login failed'
           })
@@ -182,7 +182,7 @@ const authMachine = createMachine({
         input: ({ event }: { event: any }) => event.userData,
         onDone: {
           target: 'authenticated',
-          actions: [;
+          actions: [
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true
@@ -199,7 +199,7 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'unauthenticated',
-          actions: assign({,
+          actions: assign({
             isLoading: false
             error: ({ event }: { event: any }) => event.error?.message || 'Registration failed'
           })
@@ -218,7 +218,7 @@ const authMachine = createMachine({
         },
         UNAUTHENTICATED: {
           target: 'unauthenticated',
-          actions: assign({,
+          actions: assign({
             user: null
             isAuthenticated: false
           })
@@ -231,7 +231,7 @@ const authMachine = createMachine({
         src: logoutService
         onDone: {
           target: 'unauthenticated',
-          actions: [;
+          actions: [
             assign({
               user: null
               isAuthenticated: false
@@ -248,7 +248,7 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'authenticated',
-          actions: assign({,
+          actions: assign({
             isLoading: false
             error: 'Logout failed'
           })

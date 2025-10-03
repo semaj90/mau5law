@@ -37,120 +37,164 @@
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit",
       "source.organizeImports": "explicit"
+    {
+      // ========================================
+      // GPU-ACCELERATED VS CODE CONFIGURATION
+      // ========================================
+
+      // GPU Rendering & Hardware Acceleration
+      "window.titleBarStyle": "custom",
+      "workbench.experimental.useWebGL": true,
+      "terminal.integrated.gpuAcceleration": "on",
+      "editor.renderControlCharacters": false,
+      "editor.renderWhitespace": "none",
+
+      // Multi-Core TypeScript Server (28GB Memory + All Cores)
+      "typescript.tsserver.maxTsServerMemory": 28672,
+      "typescript.tsserver.useSeparateSyntaxServer": true,
+      "typescript.preferences.includePackageJsonAutoImports": "on",
+      "typescript.suggest.autoImports": true,
+      "typescript.updateImportsOnFileMove.enabled": "prompt",
+      "typescript.tsserver.watchOptions": {
+        "watchFile": "useFsEventsOnParentDirectory",
+        "watchDirectory": "useFsEventsOnParentDirectory"
+      },
+
+      // PRETTIER ENABLED + GPU-ACCELERATED FORMATTING
+      "prettier.enable": true,
+      "prettier.requireConfig": true,
+      "editor.formatOnSave": true,
+      "editor.formatOnPaste": true,
+      "editor.formatOnType": false,
+      "editor.formatOnSaveMode": "modifications",
+
+      // Multi-Core Prettier Processing
+      "[svelte]": {
+        "editor.defaultFormatter": "svelte.svelte-vscode",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll": "explicit",
+          "source.organizeImports": "explicit"
+        }
+      },
+      "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true
+      },
+      "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true
+      },
+      "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+      },
+
+      // Svelte 5 + Context7 Integration
+      "svelte.enable-ts-plugin": true,
+      "svelte.plugin.svelte.compilerWarnings": {
+        "css-unused-selector": "ignore",
+        "a11y-click-events-have-key-events": "ignore",
+        "a11y-no-static-element-interactions": "ignore"
+      },
+      "svelte.plugin.svelte.compilerOptions": {
+        "runes": true,
+        "modernAST": true,
+        "enableSourcemap": true
+      },
+
+      // ESLint Multi-Core Processing
+      "eslint.enable": true,
+      "eslint.workingDirectories": ["sveltekit-frontend"],
+      "eslint.options": {
+        "cache": true,
+        "cacheLocation": ".eslintcache"
+      },
+      "eslint.codeActionsOnSave.mode": "all",
+
+      // GPU-Accelerated Editor Features
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.parameterHints.enabled": true,
+      "editor.hover.enabled": true,
+      "editor.lightbulb.enabled": "onCode",
+      "editor.codeLens": true,
+      "editor.semanticHighlighting.enabled": true,
+      "editor.quickSuggestions": {
+        "other": "on",
+        "comments": "off",
+        "strings": "on"
+      },
+      "editor.suggestOnTriggerCharacters": true,
+      "editor.wordBasedSuggestions": "matchingDocuments",
+      "editor.suggest.localityBonus": true,
+      "editor.inlineSuggest.enabled": true,
+
+      // Memory Management - Optimized for 32GB System
+      "workbench.editor.limit.enabled": false,
+      "workbench.editor.limit.value": 100,
+      "workbench.editor.limit.perEditorGroup": false,
+      "workbench.editor.enablePreview": true,
+      "workbench.editor.enablePreviewFromQuickOpen": true,
+
+      // File System Performance
+      "files.autoSave": "afterDelay",
+      "files.autoSaveDelay": 500,
+      "files.watcherExclude": {
+        "**/node_modules/**": true,
+        "**/.svelte-kit/**": true,
+        "**/build/**": true,
+        "**/dist/**": true,
+        "**/.git/**": true,
+        "**/archived-**": true,
+        "**/*.log": true
+      },
+
+      // Search Performance - GPU Accelerated
+      "search.smartCase": true,
+      "search.useGlobalIgnoreFiles": true,
+      "search.useParentIgnoreFiles": true,
+      "search.followSymlinks": false,
+      "search.exclude": {
+        "**/node_modules": true,
+        "**/.svelte-kit": true,
+        "**/build": true,
+        "**/dist": true,
+        "**/archived-**": true
+      },
+
+      // Terminal GPU Acceleration
+      "terminal.integrated.minimumContrastRatio": 1,
+      "terminal.integrated.fastScrollSensitivity": 5,
+      "terminal.integrated.scrollback": 50000,
+      "terminal.integrated.renderer": "canvas",
+
+      // Ensure Ollama CLI is available in the integrated terminal
+      "terminal.integrated.env.windows": {
+        "PATH": "${env:PATH};C:\\Users\\james\\AppData\\Local\\Programs\\Ollama"
+      },
+
+      // Extension Performance
+      "extensions.autoUpdate": true,
+      "extensions.autoCheckUpdates": true,
+
+      // Context7 MCP Integration Readiness
+      "mcp.servers": {},
+      "mcp.logging.level": "info",
+      "context7.multicore.enabled": true,
+      "context7.gpu.acceleration": true,
+
+      // Development Features Re-enabled
+      "git.enabled": true,
+      "git.autofetch": true,
+      "emmet.showExpandedAbbreviation": "always",
+      "breadcrumbs.enabled": true,
+      "outline.showVariables": true,
+      "outline.showFunctions": true,
+      "problems.showCurrentInStatus": true,
+
+      // Telemetry (Optional - disable if privacy concerned)
+      "telemetry.telemetryLevel": "error"
     }
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true
-  },
-
-  // Svelte 5 + Context7 Integration
-  "svelte.enable-ts-plugin": true,
-  "svelte.plugin.svelte.compilerWarnings": {
-    "css-unused-selector": "ignore",
-    "a11y-click-events-have-key-events": "ignore",
-    "a11y-no-static-element-interactions": "ignore"
-  },
-  "svelte.plugin.svelte.compilerOptions": {
-    "runes": true,
-    "modernAST": true,
-    "enableSourcemap": true
-  },
-
-  // ESLint Multi-Core Processing
-  "eslint.enable": true,
-  "eslint.workingDirectories": ["sveltekit-frontend"],
-  "eslint.options": {
-    "cache": true,
-    "cacheLocation": ".eslintcache"
-  },
-  "eslint.codeActionsOnSave.mode": "all",
-
-  // GPU-Accelerated Editor Features
-  "editor.suggest.snippetsPreventQuickSuggestions": false,
-  "editor.parameterHints.enabled": true,
-  "editor.hover.enabled": true,
-  "editor.lightbulb.enabled": "onCode",
-  "editor.codeLens": true,
-  "editor.semanticHighlighting.enabled": true,
-  "editor.quickSuggestions": {
-    "other": "on",
-    "comments": "off",
-    "strings": "on"
-  },
-  "editor.suggestOnTriggerCharacters": true,
-  "editor.wordBasedSuggestions": "matchingDocuments",
-  "editor.suggest.localityBonus": true,
-  "editor.inlineSuggest.enabled": true,
-
-  // Memory Management - Optimized for 32GB System
-  "workbench.editor.limit.enabled": false,
-  "workbench.editor.limit.value": 100,
-  "workbench.editor.limit.perEditorGroup": false,
-  "workbench.editor.enablePreview": true,
-  "workbench.editor.enablePreviewFromQuickOpen": true,
-
-  // File System Performance
-  "files.autoSave": "afterDelay",
-  "files.autoSaveDelay": 500,
-  "files.watcherExclude": {
-    "**/node_modules/**": true,
-    "**/.svelte-kit/**": true,
-    "**/build/**": true,
-    "**/dist/**": true,
-    "**/.git/**": true,
-    "**/archived-**": true,
-    "**/*.log": true
-  },
-
-  // Search Performance - GPU Accelerated
-  "search.smartCase": true,
-  "search.useGlobalIgnoreFiles": true,
-  "search.useParentIgnoreFiles": true,
-  "search.followSymlinks": false,
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/.svelte-kit": true,
-    "**/build": true,
-    "**/dist": true,
-    "**/archived-**": true
-  },
-
-  // Terminal GPU Acceleration
-  "terminal.integrated.minimumContrastRatio": 1,
-  "terminal.integrated.fastScrollSensitivity": 5,
-  "terminal.integrated.scrollback": 50000,
-  "terminal.integrated.renderer": "canvas",
-
-  // Extension Performance
-  "extensions.autoUpdate": true,
-  "extensions.autoCheckUpdates": true,
-
-  // Context7 MCP Integration Readiness
-  "mcp.servers": {},
-  "mcp.logging.level": "info",
-  "context7.multicore.enabled": true,
-  "context7.gpu.acceleration": true,
-
-  // Development Features Re-enabled
-  "git.enabled": true,
-  "git.autofetch": true,
-  "emmet.showExpandedAbbreviation": "always",
-  "breadcrumbs.enabled": true,
-  "outline.showVariables": true,
-  "outline.showFunctions": true,
-  "problems.showCurrentInStatus": true,
-
-  // Telemetry (Optional - disable if privacy concerned)
-  "telemetry.telemetryLevel": "error"
-}

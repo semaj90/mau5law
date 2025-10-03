@@ -225,7 +225,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
         initial: 'monitoring',
         states: {
           monitoring: {
-            invoke: [;
+            invoke: [
               {
                 id: 'performanceMonitor',
                 src: 'monitorPerformance'
@@ -305,10 +305,10 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
       initializeOptimizationRules: assign({
         optimization_rules: () => createDefaultOptimizationRules()
       }),
-      updateSystemResources: assign({,
+      updateSystemResources: assign({
         system_resources: (_, event) => event?.data ?? undefined
       }),
-      queueJob: assign({,
+      queueJob: assign({
         job_queue: (context, event) => {
           if (!event || event.type !== 'SUBMIT_JOB') return context.job_queue;
           const job = optimizeJobForSystem((event as any).job, context);
@@ -318,7 +318,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
           return newQueue;
         }
       }),
-      updateWorkerMetrics: assign({,
+      updateWorkerMetrics: assign({
         worker_metrics: (context, event) => {
           if (!event || event.type !== 'WORKER_HEARTBEAT') return context.worker_metrics;
           const updated = new Map(context.worker_metrics);
@@ -326,7 +326,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
           return updated;
         }
       }),
-      completeJob: assign({,
+      completeJob: assign({
         active_jobs: (context, event) => {
           if (!event || event.type !== 'JOB_COMPLETED') return context.active_jobs;
           const updated = new Map(context.active_jobs);
@@ -334,7 +334,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
           return updated;
         }
       }),
-      updatePerformanceHistory: assign({,
+      updatePerformanceHistory: assign({
         performance_history: (context, event) => {
           if (!event || event.type !== 'JOB_COMPLETED') return context.performance_history;
           const job = context.active_jobs.get((event as any).jobId);
@@ -836,7 +836,7 @@ function getPriorityValue(priority: JobPriority): number {
   return values[priority];
 }
 function createDefaultOptimizationRules(): OptimizationRule[] {
-  return [;
+  return [
     {
       id: 'gpu_affinity',
       condition: (context) => context.job_queue.some((j) => j.optimization?.gpu_required),
@@ -853,7 +853,7 @@ async function discoverSystemCapabilities(): Promise<SystemResources> {
   return {
     total_cpu_cores: 8,
     total_memory_gb: 32,
-    available_gpus: [;
+    available_gpus: [
       {
         id: 'gpu0',
         model: 'RTX 3060 Ti',

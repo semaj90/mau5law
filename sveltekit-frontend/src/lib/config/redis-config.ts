@@ -17,13 +17,13 @@ export const REDIS_BASE_CONFIG: RedisOptions = {
   // Connection settings optimized for legal AI workloads
   connectTimeout: 10000,
   commandTimeout: 5000,
-  lazyConnect: true
+  lazyConnect: true,
   keepAlive: 30000,
   family: 4,
   // Performance optimization - reduced retries to prevent flooding
   maxRetriesPerRequest: 1,
   retryDelayOnFailover: 100,
-  enableReadyCheck: true
+  enableReadyCheck: true,
   // Connection pooling for high concurrency
   maxLoadingTimeout: 5000
 }
@@ -57,8 +57,8 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
     return delay;
   },
   // Production connection pooling
-  lazyConnect: false
-  enableAutoPipelining: true
+  lazyConnect: false,
+  enableAutoPipelining: true,
 }
 // Database assignments for different services
 export const REDIS_DATABASES = {
@@ -110,7 +110,7 @@ export const SERVICE_CONFIGS = {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.WORKER_QUEUE,
     keyPrefix: 'worker:',
-    enableReadyCheck: true
+    enableReadyCheck: true,
     maxLoadingTimeout: 10000
   },
   // Pub/Sub for real-time features
@@ -118,7 +118,7 @@ export const SERVICE_CONFIGS = {
     ...REDIS_BASE_CONFIG,
     db: 0, // Pub/Sub uses db 0
     lazyConnect: false, // Immediate connection for pub/sub
-    enableOfflineQueue: false
+    enableOfflineQueue: false,
   },
   // TensorRT-LLM caching
   TENSORRT_LLM: {
@@ -163,7 +163,7 @@ export function getRedisUrl(database?: number): string {
   const host = process.env.REDIS_HOST || 'localhost';
   const port = process.env.REDIS_PORT || '6379';
   const password = process.env.REDIS_PASSWORD;
-  // removed unused db assignment
+  const db = database ?? 0;
   const auth = password ? `:${password}@` : '';
   return `redis://${auth}${host}:${port}/${db}`
 }
@@ -211,7 +211,7 @@ export const KEY_PATTERNS = {
   WORKER_QUEUE: (type: string) => `worker:queue:${type}`,
   WORKER_STATUS: (workerId: string) => `worker:status:${workerId}`,
   // GPU cache orchestration
-  GPU_CACHE: (_key: string) => `gpu:cache:${key}`,
+  GPU_CACHE: (_key: string) => `gpu:cache:${_key}`,
   GPU_METRICS: (nodeId: string) => `gpu:metrics:${nodeId}`,
   // Analytics
   USER_BEHAVIOR: (userId: string) => `analytics:user:${userId}`,
@@ -298,8 +298,8 @@ export const MONITORING_CONFIG = {
   healthCheckInterval: 30000,     // 30 seconds
   metricsCollectionInterval: 5000, // 5 seconds
   slowLogThreshold: 10000,        // 10ms
-  enableLatencyMonitoring: true
-  enableMemoryMonitoring: true
+  enableLatencyMonitoring: true,
+  enableMemoryMonitoring: true,
   alertThresholds: {
     memoryUsage: 0.85,            // 85% memory usage alert
     connectionCount: 0.9,         // 90% max connections alert

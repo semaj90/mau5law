@@ -22,7 +22,7 @@ export interface Gemma3ModelConfig {
   size: string;
 }
 const projectRoot = process.cwd();
-export const GEMMA3_MODELS: Gemma3ModelConfig[] = [;
+export const GEMMA3_MODELS: Gemma3ModelConfig[] = [
   {
     modelId: "gemma3-legal-q4_k_m",
     name: "Gemma3 Legal (Q4_K_M)",

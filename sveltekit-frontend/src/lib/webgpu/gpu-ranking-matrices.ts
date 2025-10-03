@@ -95,7 +95,7 @@ export class GPURankingMatrices {
     if (!this.device) throw new Error('GPU device not initialized');
     // Create bind group layout for ranking compute shader
     this.bindGroupLayout = this.device.createBindGroupLayout({
-      entries: [;
+      entries: [
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,

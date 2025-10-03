@@ -11,7 +11,7 @@ import { vectorOutbox, vectorJobs, vectors } from '$lib/server/db/schema-postgre
 import { eq } from 'drizzle-orm'
 
 // Initialize connections
-const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db')
+const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db')
 const db = drizzle(sql)
 const redis = createClient({
   url: import.meta.env.REDIS_URL || 'redis://localhost:6379'

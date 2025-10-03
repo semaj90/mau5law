@@ -120,6 +120,54 @@
       }
     },
     {
+      "label": "🦙 Start Ollama Server",
+      "type": "shell",
+      "command": "ollama",
+      "args": ["serve"],
+      "isBackground": true,
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$",
+          "file": 1,
+          "line": 1,
+          "column": 1,
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "Listening on"
+        }
+      }
+    },
+    {
+      "label": "🦙 Test Ollama Model",
+      "type": "shell",
+      "command": "ollama",
+      "args": [
+        "run",
+        "gemma3-legal:latest",
+        "Provide a one-sentence legal summary"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+      },
+      "dependsOn": ["🦙 Start Ollama Server"]
+    },
+    {
       "label": "🔍 Agentic Code Repair - Dry Run",
       "type": "shell",
       "command": "node",
@@ -185,11 +233,7 @@
       "label": "🔧 Claude Code Repair Loop",
       "type": "shell",
       "command": "node",
-      "args": [
-        "scripts/claude-repair-loop.mjs",
-        "--watch",
-        "--auto-fix"
-      ],
+      "args": ["scripts/claude-repair-loop.mjs", "--watch", "--auto-fix"],
       "group": "build",
       "presentation": {
         "echo": true,
@@ -300,7 +344,11 @@
       "label": "⚡ Start TensorRT-LLM Service",
       "type": "shell",
       "command": "wsl",
-      "args": ["bash", "-c", "cd ~/legal-ai-ubuntu-deployment && source trt_env/bin/activate && python tensorrt_service.py"],
+      "args": [
+        "bash",
+        "-c",
+        "cd ~/legal-ai-ubuntu-deployment && source trt_env/bin/activate && python tensorrt_service.py"
+      ],
       "group": "test",
       "presentation": {
         "echo": true,
@@ -406,7 +454,10 @@
       "label": "📚 Upload Document to RAG",
       "type": "shell",
       "command": "node",
-      "args": ["-e", "require('./scripts/upload-to-rag.mjs').uploadFile('${input:filePath}')"],
+      "args": [
+        "-e",
+        "require('./scripts/upload-to-rag.mjs').uploadFile('${input:filePath}')"
+      ],
       "group": "test",
       "options": {
         "cwd": "${workspaceFolder}/sveltekit-frontend"
@@ -425,43 +476,10 @@
       "label": "📝 Upload Current File to RAG",
       "type": "shell",
       "command": "node",
-      "args": ["-e", `
-        const fs = require('fs');
-        const path = require('path');
-        const FormData = require('form-data');
-        const fetch = require('node-fetch');
-
-        async function uploadCurrentFile() {
-          const filePath = '${file}';
-          const fileName = path.basename(filePath);
-          const fileContent = fs.readFileSync(filePath, 'utf-8');
-
-          console.log('📚 Uploading current file to RAG:', fileName);
-
-          const formData = new FormData();
-          formData.append('file', fileContent, { filename: fileName });
-
-          try {
-            const response = await fetch('http://localhost:5173/api/rag/upload', {
-              method: 'POST',
-              body: formData
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-              console.log('✅ Upload successful:', result);
-              console.log(\`📊 Generated \${result.chunks} chunks and \${result.embeddings} embeddings\`);
-            } else {
-              console.error('❌ Upload failed:', result);
-            }
-          } catch (error) {
-            console.error('❌ Upload error:', error.message);
-          }
-        }
-
-        uploadCurrentFile();
-      `],
+      "args": [
+        "-e",
+        "const fs = require('fs'); const path = require('path'); const FormData = require('form-data'); const fetch = require('node-fetch'); async function uploadCurrentFile() { const filePath = '${file}'; const fileName = path.basename(filePath); const fileContent = fs.readFileSync(filePath, 'utf-8'); console.log('📚 Uploading current file to RAG:', fileName); const formData = new FormData(); formData.append('file', fileContent, { filename: fileName }); try { const response = await fetch('http://localhost:5173/api/rag/upload', { method: 'POST', body: formData }); const result = await response.json(); if (response.ok) { console.log('✅ Upload successful:', result); console.log(\`📊 Generated ${result.chunks} chunks and ${result.embeddings} embeddings\`); } else { console.error('❌ Upload failed:', result); } } catch (error) { console.error('❌ Upload error:', error.message); } } uploadCurrentFile();"
+      ],
       "group": "test",
       "options": {
         "cwd": "${workspaceFolder}/sveltekit-frontend"
@@ -480,43 +498,10 @@
       "label": "🔍 Search RAG Knowledge Base",
       "type": "shell",
       "command": "node",
-      "args": ["-e", `
-        const fetch = require('node-fetch');
-
-        async function searchRAG() {
-          const query = '\${input:searchQuery}';
-          console.log('🔍 Searching RAG knowledge base for:', query);
-
-          try {
-            const response = await fetch('http://localhost:5173/api/search/advanced', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                query: query,
-                filters: { chunk_type: 'rag_document' },
-                limit: 5
-              })
-            });
-
-            const results = await response.json();
-
-            if (response.ok && results.results) {
-              console.log(\`✅ Found \${results.results.length} relevant documents:\`);
-              results.results.forEach((result, index) => {
-                console.log(\`\n\${index + 1}. \${result.source_file}\`);
-                console.log(\`   Similarity: \${(result.similarity * 100).toFixed(1)}%\`);
-                console.log(\`   Content preview: \${result.content.slice(0, 200)}...\`);
-              });
-            } else {
-              console.log('❌ Search failed or no results found');
-            }
-          } catch (error) {
-            console.error('❌ Search error:', error.message);
-          }
-        }
-
-        searchRAG();
-      `],
+      "args": [
+        "-e",
+        "const fetch = require('node-fetch'); async function searchRAG() { const query = '${input:searchQuery}'; console.log('🔍 Searching RAG knowledge base for:', query); try { const response = await fetch('http://localhost:5173/api/search/advanced', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: query, filters: { chunk_type: 'rag_document' }, limit: 5 }) }); const results = await response.json(); if (response.ok && results.results) { console.log(\`✅ Found ${results.results.length} relevant documents:\`); results.results.forEach((result, index) => { console.log(\`\\\\n${index + 1}. ${result.source_file}\`); console.log(\`   Similarity: ${(result.similarity * 100).toFixed(1)}%\`); console.log(\`   Content preview: ${result.content.slice(0, 200)}...\`); }); } else { console.log('❌ Search failed or no results found'); } } catch (error) { console.error('❌ Search error:', error.message); } } searchRAG();"
+      ],
       "group": "test",
       "presentation": {
         "echo": true,
@@ -532,60 +517,10 @@
       "label": "🤖 AI Chat with RAG Context",
       "type": "shell",
       "command": "node",
-      "args": ["-e", `
-        const fetch = require('node-fetch');
-
-        async function chatWithRAG() {
-          const question = '\${input:aiQuestion}';
-          console.log('🤖 AI Chat with RAG context:', question);
-
-          try {
-            // First, search for relevant context
-            const searchResponse = await fetch('http://localhost:5173/api/search/advanced', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                query: question,
-                filters: { chunk_type: 'rag_document' },
-                limit: 3
-              })
-            });
-
-            const searchResults = await searchResponse.json();
-            let context = '';
-
-            if (searchResults.results && searchResults.results.length > 0) {
-              context = searchResults.results.map(r => r.content).join('\\n\\n');
-              console.log(\`📚 Using context from \${searchResults.results.length} documents\`);
-            }
-
-            // Then ask AI with context
-            const aiResponse = await fetch('http://localhost:11434/api/generate', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                model: 'gemma3:legal-latest',
-                prompt: \`Context from uploaded documents:\\n\${context}\\n\\nQuestion: \${question}\\n\\nAnswer based on the context:\`,
-                stream: false
-              })
-            });
-
-            const aiResult = await aiResponse.json();
-
-            if (aiResponse.ok) {
-              console.log('\\n🤖 AI Response:');
-              console.log(aiResult.response);
-            } else {
-              console.error('❌ AI request failed');
-            }
-
-          } catch (error) {
-            console.error('❌ Error:', error.message);
-          }
-        }
-
-        chatWithRAG();
-      `],
+      "args": [
+        "-e",
+        "const fetch = require('node-fetch'); async function chatWithRAG() { const question = '${input:aiQuestion}'; console.log('🤖 AI Chat with RAG context:', question); try { const searchResponse = await fetch('http://localhost:5173/api/search/advanced', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: question, filters: { chunk_type: 'rag_document' }, limit: 3 }) }); const searchResults = await searchResponse.json(); let context = ''; if (searchResults.results && searchResults.results.length > 0) { context = searchResults.results.map(r => r.content).join('\\\\n\\\\n'); console.log(\`📚 Using context from ${searchResults.results.length} documents\`); } const aiResponse = await fetch('http://localhost:11434/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gemma3:legal-latest', prompt: \`Context from uploaded documents:\\\\n${context}\\\\n\\\\nQuestion: ${question}\\\\n\\\\nAnswer based on the context:\`, stream: false }) }); const aiResult = await aiResponse.json(); if (aiResponse.ok) { console.log('\\\\n🤖 AI Response:'); console.log(aiResult.response); } else { console.error('❌ AI request failed'); } } catch (error) { console.error('❌ Error:', error.message); } } chatWithRAG();"
+      ],
       "group": "test",
       "presentation": {
         "echo": true,

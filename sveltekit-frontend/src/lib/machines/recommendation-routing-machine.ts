@@ -146,7 +146,7 @@ export const recommendationRoutingMachine = createMachine({
       on: {
         START_SESSION: {
           target: 'session_active',
-          actions: assign({,
+          actions: assign({
             sessionId: ({ event }) => `session_${Date.now()}`,
             userId: ({ event }) => event.userId,
             caseId: ({ event }) => event.caseId
@@ -161,7 +161,7 @@ export const recommendationRoutingMachine = createMachine({
           on: {
             ANALYZE_DOCUMENT: {
               target: 'routing_analysis',
-              actions: assign({,
+              actions: assign({
                 currentDocument: ({ event }) => ({
                   id: event.documentId,
                   type: event.documentType as any,
@@ -187,7 +187,7 @@ export const recommendationRoutingMachine = createMachine({
             }),
             onDone: {
               target: 'rabbitmq_routing',
-              actions: assign({,
+              actions: assign({
                 rabbitMQRouting: ({ context, event }) => ({
                   ...context.rabbitMQRouting,
                   routingKeys: event.output.routingKeys,
@@ -201,7 +201,7 @@ export const recommendationRoutingMachine = createMachine({
             },
             onError: {
               target: '#recommendation-routing.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `Routing analysis failed: ${(event.error as any)?.message}`
               })
             }
@@ -226,7 +226,7 @@ export const recommendationRoutingMachine = createMachine({
             }),
             onDone: {
               target: 'cache_check',
-              actions: assign({,
+              actions: assign({
                 rabbitMQRouting: ({ context, event }) => ({
                   ...context.rabbitMQRouting,
                   messageId: event.output.messageId
@@ -235,7 +235,7 @@ export const recommendationRoutingMachine = createMachine({
             },
             onError: {
               target: '#recommendation-routing.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `RabbitMQ routing failed: ${(event.error as any)?.message}`
               })
             }
@@ -255,7 +255,7 @@ export const recommendationRoutingMachine = createMachine({
               {
                 target: 'serving_cached_recommendations',
                 guard: ({ event }) => event.output.cacheHit,
-                actions: assign({,
+                actions: assign({
                   recommendations: ({ event }) => event.output.cachedData,
                   cache: ({ context, event }) => ({
                     ...context.cache,
@@ -267,7 +267,7 @@ export const recommendationRoutingMachine = createMachine({
               },
               {
                 target: 'processing_recommendations',
-                actions: assign({,
+                actions: assign({
                   cache: ({ context, event }) => ({
                     ...context.cache,
                     hitRate: event.output.hitRate,
@@ -309,7 +309,7 @@ export const recommendationRoutingMachine = createMachine({
             }),
             onDone: {
               target: 'caching_results',
-              actions: assign({,
+              actions: assign({
                 recommendations: ({ event }) => event.output.recommendations,
                 processingMetrics: ({ context, event }) => ({
                   ...context.processingMetrics,
@@ -320,7 +320,7 @@ export const recommendationRoutingMachine = createMachine({
             },
             onError: {
               target: '#recommendation-routing.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `Recommendation processing failed: ${(event.error as any)?.message}`
               })
             }
@@ -337,7 +337,7 @@ export const recommendationRoutingMachine = createMachine({
             }),
             onDone: {
               target: 'recommendations_ready',
-              actions: assign({,
+              actions: assign({
                 cache: ({ context, event }) => ({
                   ...context.cache,
                   redisKeys: [...context.cache.redisKeys, ...event.output.newKeys],
@@ -360,7 +360,7 @@ export const recommendationRoutingMachine = createMachine({
       on: {
         ANALYZE_DOCUMENT: {
           target: '.routing_analysis',
-          actions: assign({,
+          actions: assign({
             currentDocument: ({ event }) => ({
               id: event.documentId,
               type: event.documentType as any,
@@ -374,13 +374,13 @@ export const recommendationRoutingMachine = createMachine({
       on: {
         RETRY: {
           target: 'session_active.routing_analysis',
-          actions: assign({,
+          actions: assign({
             error: undefined
           })
         },
         RESET: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             sessionId: '',
             userId: '',
             caseId: undefined

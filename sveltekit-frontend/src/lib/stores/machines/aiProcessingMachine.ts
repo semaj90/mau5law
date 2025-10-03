@@ -42,7 +42,7 @@ export const aiProcessingMachine = createMachine({
         on: {
           START_PROCESSING: {
             target: "processing",
-            actions: assign({,
+            actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined
@@ -82,21 +82,21 @@ export const aiProcessingMachine = createMachine({
               }),
               onDone: {
                 target: "#aiProcessing.success",
-                actions: assign({,
+                actions: assign({
                   result: ({ event }) => event.output,
                   progress: 100
                 })
               },
         onError: {
                 target: "#aiProcessing.error",
-                actions: assign({,
+                actions: assign({
           error: ({ event }) => ((event as any)?.error?.message ?? 'Task failed')
                 })
               }
             },
             on: {
               PROCESSING_PROGRESS: {
-                actions: assign({,
+                actions: assign({
                   progress: ({ event }) => (event as ProcessingProgress).progress
                 })
               },
@@ -112,7 +112,7 @@ export const aiProcessingMachine = createMachine({
         on: {
           START_PROCESSING: {
             target: "processing",
-            actions: assign({,
+            actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined
@@ -124,11 +124,11 @@ export const aiProcessingMachine = createMachine({
       error: {
         entry: ["logError"],
         on: {
-          RETRY_PROCESSING: [;
+          RETRY_PROCESSING: [
             {
               target: "processing",
               guard: "canRetry",
-              actions: assign({,
+              actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
                 error: undefined
               })
@@ -140,7 +140,7 @@ export const aiProcessingMachine = createMachine({
           ],
           START_PROCESSING: {
             target: "processing",
-            actions: assign({,
+            actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined
@@ -155,7 +155,7 @@ export const aiProcessingMachine = createMachine({
         on: {
           START_PROCESSING: {
             target: "processing",
-            actions: assign({,
+            actions: assign({
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined

@@ -1,7 +1,6 @@
 
 // Enhanced REST Architecture for Legal AI
 // Provides type-safe API patterns and advanced clustering
-}
 export interface APIResponse<T = any> {
   success: boolean;
   data?: T;
@@ -78,19 +77,19 @@ export interface ClusterResultDetails {
 }
 export class EnhancedRESTClient {
   constructor(private baseURL: string = '/api') {}
-  async post<T>(endpoint: string, data: any): Promise<APIResponse<T> {
+  async post<T>(endpoint: string, data: any): Promise<APIResponse<T>> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
     return response.json();
   }
-  async get<T>(endpoint: string): Promise<APIResponse<T> {
-    // removed unused response assignment
+  async get<T>(endpoint: string): Promise<APIResponse<T>> {
+    const response = await fetch(`${this.baseURL}${endpoint}`);
     return response.json();
   }
-  async cluster(data: number[][], config: ClusteringConfig): Promise<APIResponse<ClusterResult> {
+  async cluster(data: number[][], config: ClusteringConfig): Promise<APIResponse<ClusterResult>> {
     return this.post('/clustering', { data, config });
   }
 }

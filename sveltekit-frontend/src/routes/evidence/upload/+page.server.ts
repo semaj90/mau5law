@@ -14,7 +14,7 @@ import {
   getFileTypeFromMime,
   validateFileSize,
   validateFileType,
-} from '$lib/schemas/evidence-upload.js';
+} from '$lib/schemas/evidence-upload';
 import { db, cases, evidence, helpers } from '$lib/server/db';
 import type { PageServerLoad, Actions } from './$types.js';
 export const load: PageServerLoad = async ({ locals }) => {

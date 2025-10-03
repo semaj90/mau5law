@@ -44,7 +44,7 @@ export const chatMachine = createMachine({
       },
       on: {
         STREAM_CHUNK: {
-          actions: assign({,
+          actions: assign({
             messages: ({ context, event }) => {
               const newMessages = [...context.messages];
               const lastMessage = newMessages[newMessages.length - 1];

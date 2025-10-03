@@ -64,7 +64,7 @@ export class VSCodeIntegration {
       this.sendNotification({
         message: `Vite: ${errorCount} error(s) detected`,
         type: 'error',
-        actions: [;
+        actions: [
           {
             title: 'View Errors',
             command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
@@ -79,7 +79,7 @@ export class VSCodeIntegration {
       this.sendNotification({
         message: `Vite: ${warningCount} warning(s) detected`,
         type: 'warning',
-        actions: [;
+        actions: [
           {
             title: 'View Warnings',
             command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
@@ -122,7 +122,7 @@ export class VSCodeIntegration {
     return {
       owner: 'vite-error-logger',
       fileLocation: ['relative', '${workspaceFolder}'],
-      pattern: [;
+      pattern: [
         {
           regexp: '^ERROR\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
           file: 1,
@@ -149,7 +149,7 @@ export class VSCodeIntegration {
         'vite-errors.json': 'json',
         'vite-diagnostics.json': 'json'
       },
-      'json.schemas': [;
+      'json.schemas': [
         {
           fileMatch: ['vite-errors.json'],
           schema: {

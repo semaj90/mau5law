@@ -68,11 +68,11 @@ export const uploadMachine = createMachine(
         on: {
           UPLOAD_FILES: {
             target: 'requesting_presign',
-            actions: assign({,
+            actions: assign({
               files: ({ event }) => event.files,
               caseId: ({ event }) => event.caseId,
               progress: 0,
-              error: undefined
+              error: undefined,
             }),
           },
         },
@@ -87,7 +87,7 @@ export const uploadMachine = createMachine(
           }),
           onDone: {
             target: 'uploading',
-            actions: assign({,
+            actions: assign({
               uploadId: ({ event }) => event.output.uploadId,
               presignedUrls: ({ event }) => event.output.presignedUrls,
               metadata: ({ event }) => event.output.metadata,
@@ -96,7 +96,7 @@ export const uploadMachine = createMachine(
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error)?.message || 'Unknown error',
             }),
           },
@@ -113,23 +113,22 @@ export const uploadMachine = createMachine(
           }),
           onDone: {
             target: 'processing',
-            actions: assign({,
+            actions: assign({
               progress: 100,
             }),
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error)?.message || 'Unknown error',
             }),
           },
         },
         on: {
           CHUNK_UPLOADED: {
-            actions: assign({,
+            actions: assign({
               uploadedChunks: ({ context, event }) => context.uploadedChunks + 1,
-              progress: ({ context, event }) =>
-                Math.round(((context.uploadedChunks + 1) / context.totalChunks) * 100),
+              progress: ({ context, event }) => Math.round(((context.uploadedChunks + 1) / context.totalChunks) * 100),
             }),
           },
         },
@@ -148,7 +147,7 @@ export const uploadMachine = createMachine(
               }),
               onDone: {
                 target: 'embedding',
-                actions: assign({,
+                actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
                     extraction: event.output.jobId,
@@ -161,16 +160,15 @@ export const uploadMachine = createMachine(
               },
               onError: {
                 target: '#upload.error',
-                actions: assign({,
-                  error: ({ event }) =>
-                    `Extraction failed: ${(event.error as any)?.message || 'Unknown error'}`,
+                actions: assign({
+                  error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error'}`,
                 }),
               },
             },
             on: {
               PROCESSING_PROGRESS: {
                 guard: ({ event }) => event.stage === 'extraction',
-                actions: assign({,
+                actions: assign({
                   progress: ({ event }) => event.progress,
                 }),
               },
@@ -186,7 +184,7 @@ export const uploadMachine = createMachine(
               }),
               onDone: {
                 target: 'tensor_processing',
-                actions: assign({,
+                actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
                     embedding: event.output.jobId,
@@ -199,16 +197,15 @@ export const uploadMachine = createMachine(
               },
               onError: {
                 target: '#upload.error',
-                actions: assign({,
-                  error: ({ event }) =>
-                    `Embedding failed: ${(event.error as any)?.message || 'Unknown error'}`,
+                actions: assign({
+                  error: ({ event }) => `Embedding failed: ${(event.error as Error)?.message || 'Unknown error'}`,
                 }),
               },
             },
             on: {
               PROCESSING_PROGRESS: {
                 guard: ({ event }) => event.stage === 'embedding',
-                actions: assign({,
+                actions: assign({
                   progress: ({ event }) => event.progress,
                 }),
               },
@@ -224,7 +221,7 @@ export const uploadMachine = createMachine(
               }),
               onDone: {
                 target: 'indexing',
-                actions: assign({,
+                actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
                     tensor: event.output.jobId,
@@ -237,16 +234,16 @@ export const uploadMachine = createMachine(
               },
               onError: {
                 target: '#upload.error',
-                actions: assign({,
+                actions: assign({
                   error: ({ event }) =>
-                    `Tensor processing failed: ${(event.error as any)?.message || 'Unknown error'}`,
+                    `Tensor processing failed: ${(event.error as Error)?.message || 'Unknown error'}`,
                 }),
               },
             },
             on: {
               PROCESSING_PROGRESS: {
                 guard: ({ event }) => event.stage === 'tensor',
-                actions: assign({,
+                actions: assign({
                   progress: ({ event }) => event.progress,
                 }),
               },
@@ -263,29 +260,28 @@ export const uploadMachine = createMachine(
               }),
               onDone: {
                 target: 'complete',
-                actions: assign({,
+                actions: assign({
                   jobIds: ({ context, event }) => ({
                     ...context.jobIds,
                     indexing: event.output.jobId,
                   }),
                   results: ({ context }) => ({
                     ...context.results,
-                    indexingComplete: true
+                    indexingComplete: true,
                   }),
                 }),
               },
               onError: {
                 target: '#upload.error',
-                actions: assign({,
-                  error: ({ event }) =>
-                    `Indexing failed: ${(event.error as any)?.message || 'Unknown error'}`,
+                actions: assign({
+                  error: ({ event }) => `Indexing failed: ${(event.error as Error)?.message || 'Unknown error'}`,
                 }),
               },
             },
             on: {
               PROCESSING_PROGRESS: {
                 guard: ({ event }) => event.stage === 'indexing',
-                actions: assign({,
+                actions: assign({
                   progress: ({ event }) => event.progress,
                 }),
               },
@@ -309,8 +305,8 @@ export const uploadMachine = createMachine(
         on: {
           RETRY: {
             target: 'idle',
-            actions: assign({,
-              error: undefined
+            actions: assign({
+              error: undefined,
               progress: 0,
               uploadedChunks: 0,
               jobIds: {},
@@ -319,15 +315,15 @@ export const uploadMachine = createMachine(
           },
           RESET: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               files: [],
               caseId: '',
               presignedUrls: [],
               uploadedChunks: 0,
               totalChunks: 0,
               progress: 0,
-              error: undefined
-              metadata: undefined
+              error: undefined,
+              metadata: undefined,
               jobIds: {},
               results: {},
             }),
@@ -339,36 +335,30 @@ export const uploadMachine = createMachine(
   {
     actors: {
       // Presigned URL request actor
-      requestPresignedUrls: fromPromise(
-        async ({ input }: { input: { files: File[]; caseId: string } }) => {
-          const { files, caseId } = input;
-          const file = files[0]; // Handle single file for now
-          const chunkSize = 10 * 1024 * 1024; // 10MB chunks
-          const chunkCount = Math.ceil(file.size / chunkSize);
-          const response = await fetch('/api/upload/presign', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
-              filename: file.name,
-              fileSize: file.size,
-              caseId,
-              contentType: file.type,
-              chunkCount,
-            }),
-          });
-          if (!response.ok) {
-            throw new Error(`Presign failed: ${response.statusText}`);
-          }
-          return await response.json();
+      requestPresignedUrls: fromPromise(async ({ input }: { input: { files: File[]; caseId: string } }) => {
+        const { files, caseId } = input;
+        const file = files[0]; // Handle single file for now
+        const chunkSize = 10 * 1024 * 1024; // 10MB chunks
+        const chunkCount = Math.ceil(file.size / chunkSize);
+        const response = await fetch('/api/upload/presign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: file.name,
+            fileSize: file.size,
+            caseId,
+            contentType: file.type,
+            chunkCount,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`Presign failed: ${response.statusText}`);
         }
-      ),
+        return await response.json();
+      }),
       // Chunk upload actor
       uploadFileChunks: fromPromise(
-        async ({
-          input,
-        }: {
-          input: { files: File[]; presignedUrls: string[]; uploadId: string }
-        }) => {
+        async ({ input }: { input: { files: File[]; presignedUrls: string[]; uploadId: string } }) => {
           const { files, presignedUrls, uploadId } = input;
           const file = files[0];
           const chunkSize = 10 * 1024 * 1024; // 10MB chunks
@@ -378,7 +368,7 @@ export const uploadMachine = createMachine(
             const chunk = file.slice(start, end);
             const response = await fetch(url, {
               method: 'PUT',
-              body: chunk;
+              body: chunk,
               headers: {
                 'Content-Type': file.type,
               },
@@ -407,7 +397,7 @@ export const uploadMachine = createMachine(
       ),
       // Document extraction actor
       startDocumentExtraction: fromPromise(
-        async ({ input }: { input: { uploadId: string; caseId: string; metadata: any } }) => {
+        async ({ input }: { input: { uploadId: string; caseId: string; metadata: UploadContext['metadata'] } }) => {
           const { uploadId, caseId, metadata } = input;
           const response = await fetch('/api/processing/extract', {
             method: 'POST',
@@ -426,60 +416,56 @@ export const uploadMachine = createMachine(
         }
       ),
       // Embedding generation actor
-      generateEmbeddings: fromPromise(
-        async ({ input }: { input: { uploadId: string; extractedText: string } }) => {
-          const { uploadId, extractedText } = input;
-          const response = await fetch('/api/processing/embed', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              uploadId,
-              text: extractedText
-            }),
-          });
-          if (!response.ok) {
-            throw new Error(`Embedding failed: ${response.statusText}`);
-          }
-          return await response.json();
+      generateEmbeddings: fromPromise(async ({ input }: { input: { uploadId: string; extractedText: string } }) => {
+        const { uploadId, extractedText } = input;
+        const response = await fetch('/api/processing/embed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            uploadId,
+            text: extractedText,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`Embedding failed: ${response.statusText}`);
         }
-      ),
+        return await response.json();
+      }),
       // Tensor processing actor
-      processTensorData: fromPromise(
-        async ({ input }: { input: { uploadId: string; embeddings: number[][] } }) => {
-          const { uploadId, embeddings } = input;
-          // Convert embeddings to 4D tensor format
-          const tensorData = embeddings.flat();
-          const batchSize = 1;
-          const depth = embeddings.length;
-          const height = Math.ceil(Math.sqrt(embeddings[0]?.length || 1));
-          const width = height;
-          const response = await fetch('https://localhost:4433/tensor/process', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
-              job_id: `tensor-${uploadId}`,
-              upload_id: uploadId
-              tensor_tile: {
-                tile_id: `${uploadId}-main`,
-                dimensions: [batchSize, depth, height, width],
-                halo_size: 2,
-                data: tensorData
-              },
-              operation: 'som_cluster',
-            }),
-          });
-          if (!response.ok) {
-            throw new Error(`Tensor processing failed: ${response.statusText}`);
-          }
-          return await response.json();
+      processTensorData: fromPromise(async ({ input }: { input: { uploadId: string; embeddings: number[][] } }) => {
+        const { uploadId, embeddings } = input;
+        // Convert embeddings to 4D tensor format
+        const tensorData = embeddings.flat();
+        const batchSize = 1;
+        const depth = embeddings.length;
+        const height = Math.ceil(Math.sqrt(embeddings[0]?.length || 1));
+        const width = height;
+        const response = await fetch('https://localhost:4433/tensor/process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            job_id: `tensor-${uploadId}`,
+            upload_id: uploadId,
+            tensor_tile: {
+              tile_id: `${uploadId}-main`,
+              dimensions: [batchSize, depth, height, width],
+              halo_size: 2,
+              data: tensorData,
+            },
+            operation: 'som_cluster',
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`Tensor processing failed: ${response.statusText}`);
         }
-      ),
+        return await response.json();
+      }),
       // Vector indexing actor
       indexVectors: fromPromise(
         async ({
           input,
         }: {
-          input: { uploadId: string; embeddings: number[][]; metadata: any }
+          input: { uploadId: string; embeddings: number[][]; metadata: UploadContext['metadata'] };
         }) => {
           const { uploadId, embeddings, metadata } = input;
           const response = await fetch('/api/processing/index', {

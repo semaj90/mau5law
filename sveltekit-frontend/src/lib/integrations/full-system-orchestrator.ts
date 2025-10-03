@@ -187,7 +187,7 @@ export class FullSystemOrchestrator {
         timestamp: new Date().toISOString(),
         analysis_method: 'context7_multicore_simulation',
         total_estimated_errors: 1962,
-        category_analysis: [;
+        category_analysis: [
           {
             category: 'svelte5_migration',
             status: 'analyzed',

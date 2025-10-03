@@ -42,7 +42,7 @@ export class Report {
     this.id = data.id || crypto.randomUUID();
     this.title = writable(data.title || "Untitled Report");
     // Initialize with default content if none provided
-    const initialContent: ContentNode[] = data.content || [;
+    const initialContent: ContentNode[] = data.content || [
       {
         type: "paragraph",
         children: [{ type: "text", text: "" }]

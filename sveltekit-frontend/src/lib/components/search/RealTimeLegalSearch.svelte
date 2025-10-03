@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!--
   Real-Time Legal Search Component
   Optimized for Svelte 5 + SvelteKit 2 + bits-ui v2
@@ -8,12 +5,9 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { derived } from 'svelte/store';
+  import { onDestroy } from 'svelte';
   import { debounce } from 'lodash-es';
-  // TODO: Replace with bits-ui equivalent when available
-  // import { Combobox } from 'bits-ui'
-  import * as Command from '$lib/components/ui/command/index.js';
+  import { Command as CommandPrimitive, CommandInput, CommandContent, CommandItem } from '$lib/components/ui/command';
   // Real-time search service
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
   // Icons
@@ -28,6 +22,26 @@ https://svelte.dev/e/js_parse_error -->
     Wifi,
     WifiOff
   } from 'lucide-svelte';
+
+  // Interface for Search Result Event Detail
+  export interface SearchResultEventDetail {
+    result: {
+      title?: string;
+      id?: string;
+      realTime?: boolean;
+      type?: string;
+      score?: number;
+      content?: string;
+      metadata?: {
+        jurisdiction?: string;
+        status?: string;
+        date?: string;
+      };
+      highlights?: string[];
+    };
+    query: string;
+  }
+
   // Props with enhanced configuration
   interface Props {
     placeholder?: string;
@@ -38,6 +52,8 @@ https://svelte.dev/e/js_parse_error -->
     maxResults?: number;
     autoSearch?: boolean;
     class?: string;
+    // Svelte 5: Events are now callback props
+    onselect?: (detail: SearchResultEventDetail) => void;
   }
   let {
     placeholder = 'Search cases, evidence, precedents, statutes...',
@@ -47,21 +63,21 @@ https://svelte.dev/e/js_parse_error -->
     enableAI = true,
     maxResults = 20,
     autoSearch = true,
-    class = ''
+    class: className = '', // Renamed 'class' to 'className' to avoid conflict with Svelte's reserved keyword
+    onselect
   }: Props = $props();
+
   // Real-time search hooks
-  const { state: searchState, isReady, hasResults, searchStatus, search, disconnect } = useRealTimeSearch();
+  const { state: searchState, searchStatus, search, disconnect } = useRealTimeSearch();
   // Local state
   let inputValue = $state('');
   let open = $state(false);
   let selectedResult: unknown = $state(null);
-  let showFilters = $state(false);
-  let searchHistory: string[] = $state([]);
   // Reactive computations
-  let filteredResults = $derived(searchState.results.slice(0, maxResults));
-  let isStreaming = $derived(searchStatus === 'searching' && enableRealTime);
-  let connectionStatus = $derived(searchState.connectionStatus);
-  let searchMetrics = $derived(searchState.searchMetrics);
+  let filteredResults = $derived($searchState.results.slice(0, maxResults));
+  let isStreaming = $derived($searchStatus === 'searching' && enableRealTime);
+  let connectionStatus = $derived($searchState.connectionStatus);
+  let searchMetrics = $derived($searchState.searchMetrics);
   // Enhanced debounced search
   const debouncedSearch = debounce(async (query: string) => {
     if (!query.trim() || query.length < 2) return;
@@ -82,34 +98,25 @@ https://svelte.dev/e/js_parse_error -->
   }, 300);
   // Handle input changes
   function handleInputChange(_value: string) {
-    inputValue = valu;
-    if (autoSearch && value.trim.length >= 2) {
-      debouncedSearch(value);
+    inputValue = _value;
+    if (autoSearch && _value.trim().length >= 2) {
+      debouncedSearch(_value);
     }
   }
   // Handle result selection
   function handleSelect(result: unknown) {
     selectedResult = result;
-    inputValue = (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).titl;
+    inputValue = (result as { title?: string }).title || ''; // Corrected 'titl' to 'title' and added fallback
     open = false;
-    // Dispatch custom event for parent components
-    const event = new CustomEvent('select', {
-      detail: { result, query: inputValue }
-    });
-    dispatchEvent(event);
+    // Call the onselect callback if provided (Svelte 5 pattern)
+    onselect?.({ result: result as SearchResultEventDetail['result'], query: inputValue });
   }
   // Manual search trigger
   function handleSearch() {
-    if (inputValue.trim.length >= 2) {
+    if (inputValue.trim().length >= 2) {
       debouncedSearch(inputValue);
       open = true;
     }
-  }
-  // Clear search
-  function handleClear() {
-    inputValue = '';
-    selectedResult = null;
-    open = false;
   }
   // Get result type icon
   function getResultTypeIcon(type: string) {
@@ -121,15 +128,6 @@ https://svelte.dev/e/js_parse_error -->
       case 'criminal': return '👤';
       case 'document': return '📄';
       default: return '📋';
-    }
-  }
-  // Get connection status color
-  function getConnectionStatusColor(status: string) {
-    switch (status) {
-      case 'connected': return 'text-green-500';
-      case 'connecting': return 'text-yellow-500';
-      case 'error': return 'text-red-500';
-      default: return 'text-gray-500';
     }
   }
   // Component lifecycle
@@ -179,10 +177,10 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
   <!-- Enhanced Search Input -->
-  <Combobox.Root bind:open bind:inputValue onInputValueChange={handleInputChange}>
+  <CommandPrimitive.Root bind:open bind:inputValue onInputValueChange={handleInputChange}>
     <div class="relative">
       <!-- Search Input with Enhanced Styling -->
-      <Combobox.Input
+      <CommandInput
         class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm;
                placeholder: text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 ;
                focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50
@@ -210,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
     <!-- Enhanced Search Results -->
-    <Combobox.Content
+    <CommandContent
       class="absolute z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-lg border border-gray-200
              bg-white shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out
              data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
@@ -229,7 +227,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Streaming Results -->
         {#each filteredResults as result, index ((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id)}
-          <Combobox.Item
+          <CommandItem
             value={(
               result as {
                 title?: unknown;
@@ -328,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
                     metadata?: unknown;
                     highlights?: unknown;
                   }
-                ).content.substring(0, 120)}...
+                ).content?.substring(0, 120)}...
               </div>
               <!-- Enhanced Metadata -->
               <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
@@ -346,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
                     }
                   ).type}
                 </span>
-                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.jurisdiction}
+                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata?.jurisdiction}
                   <span
                     >{(
                       result as {
@@ -362,7 +360,7 @@ https://svelte.dev/e/js_parse_error -->
                     ).metadata.jurisdiction}</span
                   >
                 {/if}
-                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.status}
+                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata?.status}
                   <span class="capitalize"
                     >{(
                       result as {
@@ -383,12 +381,12 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
             </div>
-          </Combobox.Item>
+          </CommandItem>
         {/each}
       {:else if filteredResults.length > 0}
         <!-- Standard Results -->
         {#each filteredResults as result ((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id)}
-          <Combobox.Item
+          <CommandItem
             value={(
               result as {
                 title?: unknown;
@@ -468,7 +466,7 @@ https://svelte.dev/e/js_parse_error -->
                     metadata?: unknown;
                     highlights?: unknown;
                   }
-                ).content.substring(0, 120)}...
+                ).content?.substring(0, 120)}...
               </div>
               <!-- Metadata Tags -->
               <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
@@ -486,7 +484,7 @@ https://svelte.dev/e/js_parse_error -->
                     }
                   ).type}
                 </span>
-                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.jurisdiction}
+                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata?.jurisdiction}
                   <span
                     >{(
                       result as {
@@ -502,7 +500,7 @@ https://svelte.dev/e/js_parse_error -->
                     ).metadata.jurisdiction}</span
                   >
                 {/if}
-                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata.date}
+                {#if (result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).metadata?.date}
                   <span
                     >{new Date(
                       (
@@ -536,11 +534,11 @@ https://svelte.dev/e/js_parse_error -->
                       metadata?: unknown;
                       highlights?: unknown;
                     }
-                  ).highlights[0].substring(0, 80)}...
+                  ).highlights[0]?.substring(0, 80)}...
                 </div>
               {/if}
             </div>
-          </Combobox.Item>
+          </CommandItem>
         {/each}
         <!-- Search Statistics -->
         <div class="border-t border-gray-200 px-3 py-2 text-xs text-gray-500">
@@ -548,7 +546,7 @@ https://svelte.dev/e/js_parse_error -->
           {searchMetrics.lastQueryTime}ms •
           {enableVectorSearch ? 'Vector' : 'Text'} + {enableAI ? 'AI' : 'Standard'} search
         </div>
-      {:else if inputValue.trim.length >= 2}
+      {:else if inputValue.trim().length >= 2}
         <!-- No Results -->
         <div class="p-4 text-center text-sm text-gray-500">
           <Search class="h-8 w-8 mx-auto mb-2 text-gray-300" />
@@ -570,8 +568,8 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       {/if}
-    </Combobox.Content>
-  </Combobox.Root>
+    </CommandContent>
+  </CommandPrimitive.Root>
   <!-- Search Status Bar -->
   {#if enableRealTime}
     <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
@@ -601,12 +599,21 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .real-time-search-container {
-    @apply relative w-full max-w-2xl mx-auto;
+    /* @apply relative w-full max-w-2xl mx-auto; */
+    /* The @apply rule typically requires PostCSS and Tailwind CSS to be configured in your build process. */
+    /* If you intend to use Tailwind CSS, ensure your svelte.config.js and postcss.config.js are set up correctly. */
+    /* For a direct fix within this file, we replace it with standard CSS: */
+    position: relative;
+    width: 100%;
+    max-width: 42rem; /* Equivalent to Tailwind's max-w-2xl */
+    margin-left: auto;
+    margin-right: auto;
   }
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    line-clamp: 2; /* Added for compatibility */
   }
 </style>

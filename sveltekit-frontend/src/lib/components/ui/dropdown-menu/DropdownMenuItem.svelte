@@ -1,26 +1,20 @@
 <script lang="ts">
-  import { DropdownMenu } from 'bits-ui';
-  import type { Snippet } from 'svelte';
+  import DropdownMenu from 'bits-ui';
+  // bits-ui does not export a named DropdownMenuItem; extract the Item component from the default export at runtime
+  const DropdownMenuItem = (DropdownMenu as any).Item;
+
   import { cn } from '$lib/utils';
-  interface Props {
-    children?: Snippet;
-    class?: string;
-    href?: string;
-    disabled?: boolean;
-    destructive?: boolean;
-    onclick?: () => void;
-    onselect?: () => void;
-  }
-  let {
-    children,
-    class: className = '',
-    href,
-    disabled = false,
-    destructive = false,
-    onclick,
-    onselect
-  }: Props = $props();
-  let itemClasses = $derived(cn(
+
+  // Replace rune-style $props and $derived with standard Svelte props + rest props
+  export let href: string | undefined;
+  export let disabled = false;
+  export let destructive = false;
+  export let onclick: (() => void) | undefined;
+  export let onselect: (() => void) | undefined;
+  export let className = ''; // optional explicit class prop if consumers use it
+
+  // compute classes reactively
+  $: itemClasses = cn(
     "legal-ai-dropdown-item relative flex cursor-default select-none items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
     "focus:outline-none focus:bg-slate-800/60 focus:text-amber-400",
     "data-[highlighted]:bg-slate-800/60 data-[highlighted]:text-amber-400",
@@ -28,26 +22,40 @@
       ? "text-red-400 hover:text-red-300 hover:bg-red-500/10 focus:bg-red-500/10 focus:text-red-300"
       : "text-slate-300 hover:text-amber-400 hover:bg-slate-800/60",
     disabled && "pointer-events-none opacity-50 cursor-not-allowed",
-    className
-  ));
-  function handleClick() {
-    if (!disabled) {
-      onclick?.();
-      onselect?.();
+    className // preserve explicit className prop if provided
+  );
+
+  function handleClick(event?: MouseEvent) {
+    if (disabled) {
+      event?.preventDefault?.();
+      return;
     }
+    onclick?.();
+    onselect?.();
   }
 </script>
 
 {#if href}
-  <DropdownMenu.Item asChild>
-    <a {href} class={itemClasses} data-disabled={disabled ? '' : undefined} onclick={handleClick}>
-      {@render children?.()}
+  <DropdownMenuItem asChild>
+    <a
+      href={href}
+      class={itemClasses}
+      data-disabled={disabled ? '' : undefined}
+      on:click|preventDefault={handleClick}
+      {...$$restProps}
+    >
+      <slot />
     </a>
-  </DropdownMenu.Item>
+  </DropdownMenuItem>
 {:else}
-  <DropdownMenu.Item class={itemClasses} {disabled} onSelect={onselect}>
-    <button type="button" class="flex w-full items-center gap-2 text-left" onclick={handleClick} {disabled}>
-      {@render children?.()}
+  <DropdownMenuItem class={itemClasses} {disabled} onSelect={onselect} {...$$restProps}>
+    <button
+      type="button"
+      class="flex w-full items-center gap-2 text-left"
+      on:click={handleClick}
+      disabled={disabled}
+    >
+      <slot />
     </button>
-  </DropdownMenu.Item>
+  </DropdownMenuItem>
 {/if}

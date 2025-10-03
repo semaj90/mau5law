@@ -2,7 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <script lang="ts">
-  let { title, description, path, icon: unknown, ariaLabel = title  }: { title, description, path, icon: unknown, ariaLabel = title : unknown } = $props();
+  let { title, description, path, icon, ariaLabel = title }: { title: string; description: string; path: string; icon?: unknown; ariaLabel?: string } = $props();
   import { goto } from '$app/navigation';
    // Svelte component constructor
   function handleNavigate() {
@@ -39,4 +39,4 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <!-- Styling inherits from parent page; only minimal overrides if needed -->
-<style>/*$$__STYLE_CONTENT__$$*/ {}</style>
+<style></style>

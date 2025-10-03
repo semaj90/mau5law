@@ -70,7 +70,7 @@ export class LegalBertONNXService extends EventEmitter {
   private getDefaultConfig(): ONNXModelConfig {
     return {
       modelPath: './models/legal-bert-onnx/model.onnx',
-      providerOptions: [;
+      providerOptions: [
         {
           name: 'CPUExecutionProvider',
           deviceType: 'CPU'

@@ -258,7 +258,7 @@ export const gpuProcessingMachine = setup({
           actions: ['checkServiceHealth']
         }
       },
-      always: [;
+      always: [
         {
           target: 'idle',
           guard: ({ context }) => !hasQueuedDocuments({ context }) && context.activeProcessing.size === 0

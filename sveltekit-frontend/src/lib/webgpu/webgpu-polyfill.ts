@@ -216,7 +216,7 @@ export class WebGPUPolyfill {
       code: shaderCode
     });
     const bindGroupLayout = this.device.createBindGroupLayout({
-      entries: [;
+      entries: [
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
@@ -306,7 +306,7 @@ export class WebGPUPolyfill {
       code: shaderCode
     });
     const bindGroupLayout = this.device.createBindGroupLayout({
-      entries: [;
+      entries: [
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,

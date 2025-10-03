@@ -1,7 +1,7 @@
 // XState Machine for AI Agent Shell with Production Go Services Integration
 import { createMachine, assign } from "xstate";
 import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
-import { productionServiceClient, services } from '../services/productionServiceClient.js';
+import productionServiceClient from '../services/production-service-client.js';
 // Define context and event types
 export interface AgentShellContext {
   input: string;
@@ -17,21 +17,21 @@ export interface AgentShellContext {
     enhancedRAG: boolean;
     uploadService: boolean;
     kratosServer: boolean;
-  }
+  };
 }
 type AgentShellEvent =
-  | { type: "PROMPT"; input: string; userId?: string; caseId?: string }
-  | { type: "xstate.done.actor.callAgent"; data: string }
-  | { type: "ACCEPT_PATCH"; jobId: string; userId: string; patchContent: string }
-  | { type: "RATE_SUGGESTION"; jobId: string; rating: number; userId: string; feedback?: string }
-  | { type: "SEMANTIC_SEARCH"; query: string; userId: string; caseId?: string }
-  | { type: "FILE_UPLOAD"; file: File; userId: string; caseId?: string }
-  | { type: "CHECK_HEALTH" }
+  | { type: 'PROMPT'; input: string; userId?: string; caseId?: string }
+  | { type: 'xstate.done.actor.callAgent'; data: string }
+  | { type: 'ACCEPT_PATCH'; jobId: string; userId: string; patchContent: string }
+  | { type: 'RATE_SUGGESTION'; jobId: string; rating: number; userId: string; feedback?: string }
+  | { type: 'SEMANTIC_SEARCH'; query: string; userId: string; caseId?: string }
+  | { type: 'FILE_UPLOAD'; file: File; userId: string; caseId?: string }
+  | { type: 'CHECK_HEALTH' };
 export const agentShellMachine = createMachine({
-  id: "agentShell",
-  initial: "idle",
-  context: { input: "", response: "" },
-  types: { [key: string]: any } as {
+  id: 'agentShell',
+  initial: 'idle',
+  context: { input: '', response: '' },
+  types: {} as {
     context: AgentShellContext;
     events: AgentShellEvent;
   },
@@ -39,125 +39,125 @@ export const agentShellMachine = createMachine({
     idle: {
       on: {
         PROMPT: {
-          target: "processing",
-          actions: assign({,
-            input: ({ event }) => (event as any).input || "",
+          target: 'processing',
+          actions: assign({
+            input: ({ event }) => (event as any).input || '',
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId
-          })
+            caseId: ({ event }) => (event as any).caseId,
+          }),
         },
         SEMANTIC_SEARCH: {
-          target: "searching",
-          actions: assign({,
+          target: 'searching',
+          actions: assign({
             searchQuery: ({ event }) => (event as any).query,
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId
-          })
+            caseId: ({ event }) => (event as any).caseId,
+          }),
         },
         FILE_UPLOAD: {
-          target: "uploading",
-          actions: assign({,
+          target: 'uploading',
+          actions: assign({
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId
-          })
+            caseId: ({ event }) => (event as any).caseId,
+          }),
         },
         CHECK_HEALTH: {
-          target: "checkingHealth"
-        }
-      }
+          target: 'checkingHealth',
+        },
+      },
     },
     processing: {
       invoke: {
-        src: "callAgent",
+        src: 'callAgent',
         input: ({ context }) => ({
           input: context.input,
           userId: context.userId,
-          caseId: context.caseId
+          caseId: context.caseId,
         }),
         onDone: {
-          target: "idle",
-          actions: assign({,
-            response: (_, e) => (e && "data" in e ? (e as any).data: "")
-          })
+          target: 'idle',
+          actions: assign({
+            response: (_, e) => (e && 'data' in e ? (e as any).data : ''),
+          }),
         },
-        onError: "idle"
+        onError: 'idle',
       },
       on: {
         ACCEPT_PATCH: {
-          actions: "acceptPatchAction"
+          actions: 'acceptPatchAction',
         },
         RATE_SUGGESTION: {
-          actions: "rateSuggestionAction"
-        }
-      }
+          actions: 'rateSuggestionAction',
+        },
+      },
     },
     searching: {
       invoke: {
-        src: "performSemanticSearch",
+        src: 'performSemanticSearch',
         input: ({ context }) => ({
           query: context.searchQuery,
           userId: context.userId,
-          caseId: context.caseId
+          caseId: context.caseId,
         }),
         onDone: {
-          target: "idle",
-          actions: assign({,
-            searchResults: (_, e) => (e && "data" in e ? (e as any).data : null)
-          })
+          target: 'idle',
+          actions: assign({
+            searchResults: (_, e) => (e && 'data' in e ? (e as any).data : null),
+          }),
         },
-        onError: "idle"
-      }
+        onError: 'idle',
+      },
     },
     uploading: {
       invoke: {
-        src: "performFileUpload",
+        src: 'performFileUpload',
         input: ({ context, event }) => ({
           file: (event as any).file,
           userId: context.userId,
-          caseId: context.caseId
+          caseId: context.caseId,
         }),
         onDone: {
-          target: "idle",
-          actions: assign({,
-            uploadResults: (_, e) => (e && "data" in e ? (e as any).data : null)
-          })
+          target: 'idle',
+          actions: assign({
+            uploadResults: (_, e) => (e && 'data' in e ? (e as any).data : null),
+          }),
         },
-        onError: "idle"
-      }
+        onError: 'idle',
+      },
     },
     checkingHealth: {
       invoke: {
-        src: "checkServiceHealth",
+        src: 'checkServiceHealth',
         onDone: {
-          target: "idle",
-          actions: assign({,
-            serviceHealth: (_, e) => (e && "data" in e ? (e as any).data : null)
-          })
+          target: 'idle',
+          actions: assign({
+            serviceHealth: (_, e) => (e && 'data' in e ? (e as any).data : null),
+          }),
         },
-        onError: "idle"
-      }
-    }
-  }
+        onError: 'idle',
+      },
+    },
+  },
 });
 // Service implementations for XState with Production Services
 export const agentShellServices = {
   callAgent: async ({ input, userId, caseId }: { input: string; userId?: string; caseId?: string }) => {
     try {
       // Use production service client with automatic protocol selection
-      // removed unused response assignment
+      const response = await productionServiceClient.query(input, { userId, caseId });
       return response.response || response.data?.response || 'No response';
     } catch (error: any) {
-      console.error("Production agent call failed, falling back to legacy:", error);
+      console.error('Production agent call failed, falling back to legacy:', error);
       // Fallback to legacy service
       try {
         const fallbackResponse = await goServiceClient.queryRAG({
-          query: input
+          query: input,
           userId,
-          caseId
+          caseId,
         });
         return fallbackResponse.response;
       } catch (fallbackError) {
-        console.error("All agent services failed:", fallbackError);
+        console.error('All agent services failed:', fallbackError);
         throw error;
       }
     }
@@ -165,14 +165,14 @@ export const agentShellServices = {
   performSemanticSearch: async ({ query, userId, caseId }: { query: string; userId: string; caseId?: string }) => {
     try {
       // Use production RAG service for semantic search
-      // removed unused response assignment
+      const response = await productionServiceClient.semanticSearch(query, { userId, caseId });
       return response;
     } catch (error: any) {
-      console.error("Production semantic search failed, falling back:", error);
+      console.error('Production semantic search failed, falling back:', error);
       try {
         return await goServiceClient.semanticSearch(query, userId, { caseId });
       } catch (fallbackError) {
-        console.error("All semantic search services failed:", fallbackError);
+        console.error('All semantic search services failed:', fallbackError);
         throw error;
       }
     }
@@ -180,18 +180,18 @@ export const agentShellServices = {
   performFileUpload: async ({ file, userId, caseId }: { file: File; userId: string; caseId?: string }) => {
     try {
       // Use production upload service
-      // removed unused response assignment
+      const response = await productionServiceClient.uploadFile(file, { userId, caseId });
       return response;
     } catch (error: any) {
-      console.error("Production upload failed, falling back:", error);
+      console.error('Production upload failed, falling back:', error);
       try {
         return await goServiceClient.uploadFile({
           file,
           userId,
-          caseId
+          caseId,
         });
       } catch (fallbackError) {
-        console.error("All upload services failed:", fallbackError);
+        console.error('All upload services failed:', fallbackError);
         throw error;
       }
     }
@@ -201,21 +201,21 @@ export const agentShellServices = {
       // Check production service health
       const productionHealth = await productionServiceClient.checkAllServicesHealth();
       return {
-        production: productionHealth
-        legacy: await goServiceClient.checkServiceHealth()
-      }
+        production: productionHealth,
+        legacy: await goServiceClient.checkServiceHealth(),
+      };
     } catch (error: any) {
-      console.error("Production health check failed:", error);
+      console.error('Production health check failed:', error);
       // Fallback to legacy health check
       try {
-        return { legacy: await goServiceClient.checkServiceHealth() }
+        return { legacy: await goServiceClient.checkServiceHealth() };
       } catch (fallbackError) {
-        console.error("All health checks failed:", fallbackError);
+        console.error('All health checks failed:', fallbackError);
         throw error;
       }
     }
-  }
-}
+  },
+};
 // Action implementations
 export const agentShellActions = {
   acceptPatchAction: async ({ event }: any) => {

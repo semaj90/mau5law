@@ -104,10 +104,10 @@ export const vectorPipelineMachine = setup({
   },
   actions: {
     // Job management actions
-    setCurrentJob: assign({,
+    setCurrentJob: assign({
       currentJob: ({ event }) => (event as any).job || null
     }),
-    addJobToBatch: assign({,
+    addJobToBatch: assign({
       batch: ({ context, event }) => {
         const jobs = (event as any).jobs || [(event as any).job];
         return {
@@ -117,7 +117,7 @@ export const vectorPipelineMachine = setup({
         }
       }
     }),
-    updateJobProgress: assign({,
+    updateJobProgress: assign({
       batch: ({ context, event }) => {
         const { jobId, progress, status } = event as any;
         const jobs = context.batch.jobs.map(job =>
@@ -137,7 +137,7 @@ export const vectorPipelineMachine = setup({
         }
       }
     }),
-    completeJob: assign({,
+    completeJob: assign({
       batch: ({ context, event }) => {
         const { jobId, result } = event as any;
         const jobs = context.batch.jobs.map(job =>
@@ -155,7 +155,7 @@ export const vectorPipelineMachine = setup({
         lastProcessedAt: new Date()
       })
     }),
-    failJob: assign({,
+    failJob: assign({
       batch: ({ context, event }) => {
         const { jobId, error } = event as any;
         const jobs = context.batch.jobs.map(job =>
@@ -170,33 +170,33 @@ export const vectorPipelineMachine = setup({
       errors: ({ context, event }) => [...context.errors, (event as any).error]
     }),
     // Pipeline status actions
-    updatePipelineStatus: assign({,
+    updatePipelineStatus: assign({
       pipeline: ({ event }) => (event as any).status || {}
     }),
-    enableWebGPU: assign({,
+    enableWebGPU: assign({
       pipeline: ({ context }) => ({
         ...context.pipeline,
         webgpu: true
       })
     }),
-    disableWebGPU: assign({,
+    disableWebGPU: assign({
       pipeline: ({ context }) => ({
         ...context.pipeline,
         webgpu: false
       })
     }),
     // Error handling actions
-    incrementRetry: assign({,
+    incrementRetry: assign({
       retryAttempts: ({ context }) => context.retryAttempts + 1
     }),
-    resetRetries: assign({,
+    resetRetries: assign({
       retryAttempts: () => 0
     }),
-    clearErrors: assign({,
+    clearErrors: assign({
       errors: () => []
     }),
     // Reset actions
-    resetBatch: assign({,
+    resetBatch: assign({
       batch: () => ({
         jobs: [],
         totalJobs: 0,
@@ -207,7 +207,7 @@ export const vectorPipelineMachine = setup({
     }),
     resetPipeline: assign(() => initialContext),
     // Metrics actions
-    updateMetrics: assign({,
+    updateMetrics: assign({
       metrics: ({ context }) => {
         const completedJobs = context.batch.jobs.filter(j => j.status === 'succeeded');
         const averageTime = completedJobs.length > 0
@@ -339,7 +339,7 @@ export const vectorPipelineMachine = setup({
           target: 'idle',
           actions: ['completeJob', 'updateMetrics']
         },
-        onError: [;
+        onError: [
           {
             target: 'retrying',
             guard: 'canRetry',
@@ -361,7 +361,7 @@ export const vectorPipelineMachine = setup({
       invoke: {
         src: 'submitBatch',
         input: ({ context }) => ({ jobs: context.batch.jobs }),
-        onDone: [;
+        onDone: [
           {
             target: 'idle',
             guard: 'allJobsCompleted',

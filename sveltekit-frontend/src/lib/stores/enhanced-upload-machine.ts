@@ -114,7 +114,7 @@ export const enhancedUploadMachine = createMachine({
       on: {
         UPLOAD_FILES: {
           target: 'requesting_presign',
-          actions: assign({,
+          actions: assign({
             files: ({ event }) => event.files,
             caseId: ({ event }) => event.caseId,
             progress: 0,
@@ -140,7 +140,7 @@ export const enhancedUploadMachine = createMachine({
         }),
         onDone: {
           target: 'uploading',
-          actions: assign({,
+          actions: assign({
             uploadId: ({ event }) => event.output.uploadId,
             presignedUrls: ({ event }) => event.output.presignedUrls,
             metadata: ({ event }) => event.output.metadata,
@@ -149,7 +149,7 @@ export const enhancedUploadMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Unknown error'
           })
         }
@@ -166,20 +166,20 @@ export const enhancedUploadMachine = createMachine({
         }),
         onDone: {
           target: 'processing',
-          actions: assign({,
+          actions: assign({
             progress: 100
           })
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Unknown error'
           })
         }
       },
       on: {
         CHUNK_UPLOADED: {
-          actions: assign({,
+          actions: assign({
             uploadedChunks: ({ context }) => context.uploadedChunks + 1,
             progress: ({ context }) =>
               Math.round(((context.uploadedChunks + 1) / context.totalChunks) * 100)
@@ -201,7 +201,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'ocr_extraction',
-              actions: assign({,
+              actions: assign({
                 rabbitMQ: ({ context, event }) => ({
                   ...context.rabbitMQ,
                   messageIds: event.output.messageIds,
@@ -212,7 +212,7 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `RabbitMQ queue failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
@@ -229,7 +229,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'text_extraction',
-              actions: assign({,
+              actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
                   ocr: event.output.jobId
@@ -244,14 +244,14 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `OCR failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
           },
           on: {
             OCR_PROGRESS: {
-              actions: assign({,
+              actions: assign({
                 progress: ({ event }) => event.progress
               })
             }
@@ -269,7 +269,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'gemma3_embedding',
-              actions: assign({,
+              actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
                   extraction: event.output.jobId
@@ -282,7 +282,7 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
@@ -300,7 +300,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'ai_analysis',
-              actions: assign({,
+              actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
                   embedding: event.output.jobId
@@ -314,7 +314,7 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `Gemma3 embedding failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
@@ -333,7 +333,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'neo4j_storage',
-              actions: assign({,
+              actions: assign({
                 aiAssistant: ({ context, event }) => ({
                   ...context.aiAssistant,
                   analysis: event.output.analysis,
@@ -344,7 +344,7 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `AI analysis failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
@@ -364,7 +364,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'postgresql_storage',
-              actions: assign({,
+              actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
                   neo4j: event.output.jobId
@@ -382,7 +382,7 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `Neo4j storage failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
@@ -403,7 +403,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'pgvector_indexing',
-              actions: assign({,
+              actions: assign({
                 database: ({ context, event }) => ({
                   ...context.database,
                   postgresqlId: event.output.documentId
@@ -412,7 +412,7 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `PostgreSQL storage failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
@@ -430,7 +430,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'rag_integration',
-              actions: assign({,
+              actions: assign({
                 results: ({ context, event }) => ({
                   ...context.results,
                   pgvectorId: event.output.vectorId
@@ -443,7 +443,7 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `pgvector indexing failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
@@ -463,7 +463,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'tensor_processing',
-              actions: assign({,
+              actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
                   rag: event.output.jobId
@@ -481,7 +481,7 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `RAG integration failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
@@ -497,7 +497,7 @@ export const enhancedUploadMachine = createMachine({
             }),
             onDone: {
               target: 'complete',
-              actions: assign({,
+              actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
                   tensor: event.output.jobId
@@ -511,7 +511,7 @@ export const enhancedUploadMachine = createMachine({
             },
             onError: {
               target: '#enhanced-upload.error',
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => `Tensor processing failed: ${(event.error as any)?.message || 'Unknown error'}`
               })
             }
@@ -535,7 +535,7 @@ export const enhancedUploadMachine = createMachine({
       on: {
         RETRY: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             error: undefined
             progress: 0,
             uploadedChunks: 0,
@@ -548,7 +548,7 @@ export const enhancedUploadMachine = createMachine({
         },
         RESET: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             files: [],
             caseId: '',
             presignedUrls: [],

@@ -238,7 +238,7 @@ export class LegalWorkflowOrchestrator {
   // INITIALIZATION AND CONFIGURATION
   // =============================================================================
   private initializeWorkflowProfiles(): void {
-    const profiles: Array<[string, LegalWorkflowStage]> = [;
+    const profiles: Array<[string, LegalWorkflowStage]> = [
       ['intake', {
         stage: 'intake',
         priority: 100,
@@ -305,7 +305,7 @@ export class LegalWorkflowOrchestrator {
     }
   }
   private initializeDocumentProfiles(): void {
-    const profiles: Array<[string, LegalDocumentProfile]> = [;
+    const profiles: Array<[string, LegalDocumentProfile]> = [
       ['contract:corporate', {
         type: 'contract',
         domain: 'corporate',

@@ -318,7 +318,7 @@ export function debugRoutes(): {
   routeList: Array<any> {
   const dynamicRoutes = getAllDynamicRoutes();
   const staticRoutesFromRegistry: Array<[string, RouteDefinition]> = [];
-  const routeList = [;
+  const routeList = [
     ...staticRoutesFromRegistry.map(([id, route]) => ({
       id,
       path: route.route || '',

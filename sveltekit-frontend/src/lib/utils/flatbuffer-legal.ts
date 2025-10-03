@@ -285,7 +285,7 @@ export class FlatBufferLegalProcessor {
     // Mock parsing - would use generated FlatBuffer classes
     return {
       documentId: 'parsed-doc-id',
-      entities: [;
+      entities: [
         {
           text: 'Sample Entity',
           type: 'ORGANIZATION',
@@ -298,7 +298,7 @@ export class FlatBufferLegalProcessor {
   }
   private parseSearchResultsFromFlatBuffer(buffer: Uint8Array): Array<any> {
     // Mock parsing - would use generated FlatBuffer classes
-    return [;
+    return [
       {
         documentId: 'result-doc-1',
         score: 0.89,

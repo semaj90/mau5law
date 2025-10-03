@@ -8,7 +8,7 @@ import * as schema from './schema.js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 // Environment configuration with fallbacks for legal_ai_db
 const DATABASE_URL = import.meta.env.DATABASE_URL ||
-  `postgresql://${import.meta.env.POSTGRES_USER || 'legal_admin'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5433'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db'}`
+  `postgresql://${import.meta.env.POSTGRES_USER || 'legal_admin'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5434'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db'}`
 // Create postgres client with enhanced configuration for vector operations
 const client = postgres(DATABASE_URL, {
   // Connection pool settings

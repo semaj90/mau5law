@@ -9,7 +9,7 @@ console.log(chalk.cyan('🔍 Legal AI Embedding Generation v1.0'));
 
 const config = {
   databaseUrl:
-    process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
+    process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
   ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11435', // Updated to use correct running port
   embeddingModel: process.env.LEGAL_EMBEDDING_MODEL || 'nomic-embed-text',
   batchSize: parseInt(process.env.BATCH_SIZE) || 32,
@@ -28,7 +28,7 @@ console.log(`   Dimensions: ${config.dimensions}`);
 // Database connection
 const sql = postgres(config.databaseUrl, {
   host: 'localhost',
-  port: 5433,
+  port: 5434,
   database: 'legal_ai_db',
   username: 'legal_admin',
   password: '123456',

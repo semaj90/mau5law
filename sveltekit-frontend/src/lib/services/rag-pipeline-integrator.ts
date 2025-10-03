@@ -431,7 +431,7 @@ export async function processLegalQueryStreaming(
 // Integration test helper
 export async function testRAGPipelineIntegration(): Promise<boolean> {
   try {
-    const mockDocuments: LegalDocument[] = [;
+    const mockDocuments: LegalDocument[] = [
       {
         id: 'doc1',
         title: 'Contract Formation Law',

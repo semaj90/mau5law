@@ -1,14 +1,14 @@
-import { randomUUID } from "crypto";
-import { writable } from "svelte/store";
-}
+import { writable } from 'svelte/store';
+
 export interface Citation {
   id: string;
   title: string;
   content: string;
   author?: string;
   date?: string;
+
   source?: string;
-  type: "case" | "statute" | "regulation" | "secondary" | "other";
+  type: 'case' | 'statute' | 'regulation' | 'secondary' | 'other';
   tags?: string[];
   url?: string;
   pageNumber?: number;
@@ -21,83 +21,91 @@ export interface CitationStore {
   searchQuery: string;
   selectedCategories: string[];
 }
+
+// small helper id generator (works in browser and node)
+function generateId(): string {
+  const maybeCrypto = (globalThis as unknown as { crypto?: Crypto }).crypto;
+  if (maybeCrypto) {
+    // Use a runtime check and a safe cast to a typed shape that may include randomUUID
+    const cryptoWithUUID = maybeCrypto as Crypto & { randomUUID?: () => string };
+    if (typeof cryptoWithUUID.randomUUID === 'function') {
+      // safe to call since the typeof check guarantees it's a function
+      return cryptoWithUUID.randomUUID();
+    }
+  }
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
+
 // Create the store
 function createCitationStore() {
   const { subscribe, set, update } = writable<CitationStore>({
     citations: [],
     recentCitations: [],
-    searchQuery: "",
-    selectedCategories: []
+    searchQuery: '',
+    selectedCategories: [],
   });
+
   return {
     subscribe,
     set,
     update,
     // Add a new citation
-    addCitation: (,
-      citation: Omit<Citation, "id" | "createdAt" | "updatedAt">,
-    ) => {
+    addCitation: (citation: Omit<Citation, 'id' | 'createdAt' | 'updatedAt'>) => {
       const newCitation: Citation = {
         ...citation,
-        id: randomUUID(),
+        id: generateId(),
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
-      update((store) => ({
+        updatedAt: new Date(),
+      };
+      update(store => ({
         ...store,
         citations: [...store.citations, newCitation],
-        recentCitations: [newCitation, ...store.recentCitations.slice(0, 9)], // Keep last 10
-      });
+        recentCitations: [newCitation, ...store.recentCitations].slice(0, 10), // keep up to 10
+      }));
       return newCitation;
     },
     // Update an existing citation
     updateCitation: (id: string, updates: Partial<Citation>) => {
-      update((store) => ({
+      update(store => ({
         ...store,
-        citations: store.citations.map((citation) =>
-          citation.id === id
-            ? { ...citation, ...updates, updatedAt: new Date() }
-            : citation
-        )
-      });
+        citations: store.citations.map(citation =>
+          citation.id === id ? { ...citation, ...updates, updatedAt: new Date() } : citation
+        ),
+      }));
     },
     // Delete a citation
     deleteCitation: (id: string) => {
-      update((store) => ({
+      update(store => ({
         ...store,
-        citations: store.citations.filter((citation) => citation.id !== id),
-        recentCitations: store.recentCitations.filter(
-          (citation) => citation.id !== id,
-        )
-      });
+        citations: store.citations.filter(citation => citation.id !== id),
+        recentCitations: store.recentCitations.filter(citation => citation.id !== id),
+      }));
     },
     // Search citations
     searchCitations: (query: string) => {
-      update((store) => ({
+      update(store => ({
         ...store,
-        searchQuery: query
-      });
+        searchQuery: query,
+      }));
     },
-    // Get filtered citations
+    // Get filtered citations (pure helper; not a subscriber)
     getFilteredCitations: (store: CitationStore) => {
       let filtered = store.citations;
       // Filter by search query
       if (store.searchQuery) {
         const query = store.searchQuery.toLowerCase();
         filtered = filtered.filter(
-          (citation) =>
+          citation =>
             citation.title.toLowerCase().includes(query) ||
             citation.content.toLowerCase().includes(query) ||
             citation.author?.toLowerCase().includes(query) ||
             citation.source?.toLowerCase().includes(query) ||
-            citation.tags?.some((tag) => tag.toLowerCase().includes(query)),
+            citation.tags?.some(tag => tag.toLowerCase().includes(query))
         );
       }
       // Filter by categories
       if (store.selectedCategories.length > 0) {
-        filtered = filtered.filter((citation) =>
-          store.selectedCategories.includes(citation.type),
-        );
+        filtered = filtered.filter(citation => store.selectedCategories.includes(citation.type));
       }
       return filtered;
     },
@@ -107,17 +115,14 @@ function createCitationStore() {
     },
     // Mark citation as recently used
     markAsRecentlyUsed: (id: string) => {
-      update((store) => {
-        const citation = store.citations.find((c) => c.id === id);
+      update(store => {
+        const citation = store.citations.find(c => c.id === id);
         if (citation) {
-          const updatedRecent = [
-            citation,
-            ...store.recentCitations.filter((c) => c.id !== id)
-          ].slice(0, 10);
+          const updatedRecent = [citation, ...store.recentCitations.filter(c => c.id !== id)].slice(0, 10);
           return {
             ...store,
-            recentCitations: updatedRecent
-          }
+            recentCitations: updatedRecent,
+          };
         }
         return store;
       });
@@ -125,95 +130,94 @@ function createCitationStore() {
     // Load citations from API
     loadCitations: async () => {
       try {
-        // removed unused response assignment
+        const response = await fetch('/api/citations');
         if (response.ok) {
           const data = await response.json();
-          update((store) => ({
+          update(store => ({
             ...store,
             citations: data.citations || [],
-            recentCitations: data.recentCitations || []
-          });
+            recentCitations: data.recentCitations || [],
+          }));
         }
-      } catch (error: any) {
-        console.error("Failed to load citations:", error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('Failed to load citations:', message);
       }
     },
     // Save citation to API
     saveCitation: async (citation: Citation) => {
       try {
-        const response = await fetch("/api/citations", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(citation)
+        const response = await fetch('/api/citations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(citation),
         });
         if (response.ok) {
           const savedCitation = await response.json();
-          update((store) => ({
+          update(store => ({
             ...store,
-            citations: store.citations.map((c) =>
-              c.id === citation.id ? savedCitation : c
-            )
-          });
+            citations: store.citations.map(c => (c.id === citation.id ? savedCitation : c)),
+          }));
           return savedCitation;
         }
-      } catch (error: any) {
-        console.error("Failed to save citation:", error);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('Failed to save citation:', message);
       }
       return null;
-    }
-  }
+    },
+  };
 }
 export const citationStore = createCitationStore();
+
 // Sample citations for development
-const sampleCitations: Citation[] = [;
+const sampleCitations: Citation[] = [
   {
-    id: "1",
-    title: "Miranda v. Arizona",
+    id: '1',
+    title: 'Miranda v. Arizona',
     content:
-      "The Court held that both inculpatory and exculpatory statements made in response to interrogation by a defendant in police custody will be admissible at trial only if the prosecution can show that the defendant was informed of the right to consult with an attorney.",
-    author: "U.S. Supreme Court",
-    date: "1966",
-    source: "384 U.S. 436",
-    type: "case",
-    tags: ["criminal procedure", "constitutional law", "miranda rights"],
-    createdAt: new Date("2024-01-15"),
-    updatedAt: new Date("2024-01-15")
+      'The Court held that both inculpatory and exculpatory statements made in response to interrogation by a defendant in police custody will be admissible at trial only if the prosecution can show that the defendant was informed of the right to consult with an attorney.',
+    author: 'U.S. Supreme Court',
+    date: '1966',
+    source: '384 U.S. 436',
+    type: 'case',
+    tags: ['criminal procedure', 'constitutional law', 'miranda rights'],
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15'),
   },
   {
-    id: "2",
-    title: "Federal Rules of Evidence Rule 404",
+    id: '2',
+    title: 'Federal Rules of Evidence Rule 404',
     content:
       "Evidence of a person's character or character trait is not admissible to prove that on a particular occasion the person acted in accordance with the character or trait.",
-    source: "Fed. R. Evid. 404",
-    type: "statute",
-    tags: ["evidence", "character evidence", "federal rules"],
-    createdAt: new Date("2024-01-16"),
-    updatedAt: new Date("2024-01-16")
+    source: 'Fed. R. Evid. 404',
+    type: 'statute',
+    tags: ['evidence', 'character evidence', 'federal rules'],
+    createdAt: new Date('2024-01-16'),
+    updatedAt: new Date('2024-01-16'),
   },
   {
-    id: "3",
-    title: "Daubert v. Merrell Dow Pharmaceuticals",
+    id: '3',
+    title: 'Daubert v. Merrell Dow Pharmaceuticals',
     content:
-      "The Federal Rules of Evidence, not Frye, provide the standard for admitting expert scientific testimony in federal court.",
-    author: "U.S. Supreme Court",
-    date: "1993",
-    source: "509 U.S. 579",
-    type: "case",
-    tags: ["expert testimony", "scientific evidence", "daubert standard"],
-    createdAt: new Date("2024-01-17"),
-    updatedAt: new Date("2024-01-17")
-  }
+      'The Federal Rules of Evidence, not Frye, provide the standard for admitting expert scientific testimony in federal court.',
+    author: 'U.S. Supreme Court',
+    date: '1993',
+    source: '509 U.S. 579',
+    type: 'case',
+    tags: ['expert testimony', 'scientific evidence', 'daubert standard'],
+    createdAt: new Date('2024-01-17'),
+    updatedAt: new Date('2024-01-17'),
+  },
 ];
+
 // Initialize with sample data in development
-if (
-  typeof window !== "undefined" &&
-  !localStorage.getItem("citations-initialized");
-) {
-  citationStore.update((store) => ({
+if (typeof window !== 'undefined' && !localStorage.getItem('citations-initialized')) {
+  citationStore.update(store => ({
     ...store,
-    citations: sampleCitations
-    recentCitations: sampleCitations.slice(0, 3)
-  });
-  localStorage.setItem("citations-initialized", "true");
+    citations: sampleCitations,
+    recentCitations: sampleCitations.slice(0, 3),
+  }));
+  localStorage.setItem('citations-initialized', 'true');
 }
 export default citationStore;

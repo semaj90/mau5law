@@ -3,32 +3,64 @@
  * Ensures proper data handling and reactivity
  */
 import type { APIResponse } from '$lib/types/api-schemas';
+
+// new helper to safely extract messages from unknown errors
+function extractErrorMessage(err: unknown): string {
+	// Error instance
+	if (err instanceof Error) return err.message;
+	// string error
+	if (typeof err === 'string') return err;
+	// object with message property
+	if (typeof err === 'object' && err !== null && 'message' in err && typeof (err as { message?: unknown }).message === 'string') {
+		return (err as { message: string }).message;
+	}
+	return 'Unknown error';
+}
+
 /**
  * Fetches SSR-optimized API data for Bits UI components
  */
 export async function fetchSSRData<T>(
-  endpoint: string
+  endpoint: string,
   options?: {
     params?: Record<string, string>;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-    body?: any;
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+    // use unknown so callers must be explicit; handle FormData separately
+    body?: unknown;
   }
 ): Promise<APIResponse<T>> {
-  const { params, method = 'GET', body } = options || {}
+  const { params, method = 'GET', body } = options || {};
   const url = new URL(endpoint, window.location.origin);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.set(key, value);
     });
   }
-  const response = await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
+
+  // Build headers and request init while properly handling FormData
+  const headers: Record<string, string> = {
+    'Accept': 'application/json',
+  };
+  const fetchInit: RequestInit = { method };
+
+  if (body !== undefined && body !== null) {
+    if (body instanceof FormData) {
+      // Let the browser set the Content-Type with boundary
+      fetchInit.body = body;
+    } else {
+      // Treat everything else as JSON-serializable
+      headers['Content-Type'] = 'application/json';
+      try {
+        fetchInit.body = JSON.stringify(body);
+      } catch (err) {
+        throw new Error('Failed to serialize request body');
+      }
+    }
+  }
+
+  fetchInit.headers = headers;
+
+  const response = await fetch(url.toString(), fetchInit);
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
   }
@@ -38,8 +70,8 @@ export async function fetchSSRData<T>(
  * Reactive store wrapper for SSR data
  */
 export function createSSRStore<T>(
-  endpoint: string
-  initialData?: T
+  endpoint: string,
+  initialData?: T,
   options?: {
     autoRefresh?: number; // ms
     params?: Record<string, string>;
@@ -53,20 +85,20 @@ export function createSSRStore<T>(
     error = null;
     try {
       const response = await fetchSSRData<T>(endpoint, {
-        params: options?.params
+        params: options?.params,
       });
       if (response.success) {
         data = response.data;
       } else {
         error = response.error || 'Request failed';
       }
-    } catch (err: any) {
-      error = err.message || 'Unknown error';
+    } catch (err: unknown) {
+      error = extractErrorMessage(err) || 'Unknown error';
       console.error('SSR Store Error:', err);
     } finally {
       loading = false;
     }
-  }
+  };
   // Auto-refresh setup
   let refreshInterval: ReturnType<typeof setInterval> | undefined;
   if (options?.autoRefresh) {
@@ -77,35 +109,42 @@ export function createSSRStore<T>(
     load();
   }
   return {
-    get data() { return data, },
-    get loading() { return loading, },
-    get error() { return error, },
+    get data() {
+      return data;
+    },
+    get loading() {
+      return loading;
+    },
+    get error() {
+      return error;
+    },
     load,
-    refresh: load;
+    refresh: load,
     destroy: () => {
       if (refreshInterval) {
         clearInterval(refreshInterval);
       }
-    }
-  }
+    },
+  };
 }
 /**
  * Form submission helper for Bits UI forms with SSR
  */
 export async function submitForm<T>(
-  endpoint: string
-  formData: { [key: string]: any },
+  endpoint: string,
+  // narrow type to avoid `any`. Allow plain object or FormData for file uploads.
+  formData: Record<string, unknown> | FormData,
   options?: {
     method?: 'POST' | 'PUT' | 'PATCH';
     onSuccess?: (data: T) => void;
     onError?: (error: string) => void;
   }
 ): Promise<APIResponse<T>> {
-  const { method = 'POST', onSuccess, onError } = options || {}
+  const { method = 'POST', onSuccess, onError } = options || {};
   try {
     const response = await fetchSSRData<T>(endpoint, {
       method,
-      body: formData
+      body: formData,
     });
     if (response.success && onSuccess) {
       onSuccess(response.data);
@@ -113,8 +152,8 @@ export async function submitForm<T>(
       onError(response.error || 'Form submission failed');
     }
     return response;
-  } catch (err: any) {
-    const errorMsg = err.message || 'Network error';
+  } catch (err: unknown) {
+    const errorMsg = extractErrorMessage(err) || 'Network error';
     if (onError) {
       onError(errorMsg);
     }
@@ -124,36 +163,31 @@ export async function submitForm<T>(
 /**
  * Batch data loader for complex Bits UI components
  */
-export async function loadBatchData<T extends { [key: string]: any }>(
+export async function loadBatchData<T extends Record<string, unknown>>(
   endpoints: Record<keyof T, string>
-): Promise<Record<keyof T, any>> {
+): Promise<Record<keyof T, unknown>> {
   const promises = Object.entries(endpoints).map(async ([key, endpoint]) => {
     try {
-      // removed unused response assignment
-      return [key, response.success ? response.data: null];
+      // treat fetched payload as unknown and preserve success/data shape
+      const response = await fetchSSRData<unknown>(endpoint, { method: 'GET' });
+      return [key, response && response.success ? response.data : null] as const;
     } catch {
-      return [key, null];
+      return [key, null] as const;
     }
   });
   const results = await Promise.all(promises);
-  return Object.fromEntries(results);
+  return Object.fromEntries(results) as Record<keyof T, unknown>;
 }
 /**
  * Type-safe data validator for runtime checks
  */
-export function validateSSRData<T>(
-  data: any;
-  validator: (data: any) => data is T
-): T | null {
+export function validateSSRData<T>(data: unknown, validator: (data: unknown) => data is T): T | null {
   return validator(data) ? data : null;
 }
 /**
  * Debounced search helper for Bits UI search components
  */
-export function createDebouncedSearch<T>(
-  searchFn: (query: string) => Promise<T[]>,
-  delay: number = 300
-) {
+export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[]>, delay: number = 300) {
   let searchTimeout: ReturnType<typeof setTimeout> | undefined;
   let currentQuery = $state('');
   let results = $state<T[]>([]);
@@ -180,23 +214,25 @@ export function createDebouncedSearch<T>(
         searching = false;
       }
     }, delay);
-  }
+  };
   return {
-    get query() { return currentQuery, },
-    get results() { return results, },
-    get searching() { return searching, },
-    search
-  }
+    get query() {
+      return currentQuery;
+    },
+    get results() {
+      return results;
+    },
+    get searching() {
+      return searching;
+    },
+    search,
+  };
 }
 /**
  * SSR-aware error boundary for Bits UI components
  */
-export function withSSRErrorBoundary<T>(
-  fn: () => Promise<T>,
-  fallback: T
-  onError?: (error: Error) => void
-): Promise<T> {
-  return fn().catch((error) => {
+export function withSSRErrorBoundary<T>(fn: () => Promise<T>, fallback: T, onError?: (error: Error) => void): Promise<T> {
+  return fn().catch(error => {
     console.error('SSR Error Boundary:', error);
     if (onError) {
       onError(error);
@@ -206,15 +242,12 @@ export function withSSRErrorBoundary<T>(
 }
 /**
  * Optimistic updates for Bits UI forms
- */;
+ */
 export function createOptimisticStore<T>(initialData: T) {
   let data = $state<T>(initialData);
   let pending = $state(false);
   let error = $state<string | null>(null);
-  const update = async (
-    optimisticData: T
-    updateFn: () => Promise<T>
-  ) => {
+  const update = async (optimisticData: T, updateFn: () => Promise<T>) => {
     const previousData = data;
     data = optimisticData;
     pending = true;
@@ -222,20 +255,28 @@ export function createOptimisticStore<T>(initialData: T) {
     try {
       const result = await updateFn();
       data = result;
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Revert to previous data on error
       data = previousData;
-      error = err.message || 'Update failed';
+      error = extractErrorMessage(err) || 'Update failed';
       throw err;
     } finally {
       pending = false;
     }
-  }
+  };
   return {
-    get data() { return data, },
-    get pending() { return pending, },
-    get error() { return error, },
+    get data() {
+      return data;
+    },
+    get pending() {
+      return pending;
+    },
+    get error() {
+      return error;
+    },
     update,
-    set: (newData: T) => { data = newData, }
-  }
+    set: (newData: T) => {
+      data = newData;
+    },
+  };
 }

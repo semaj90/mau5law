@@ -330,7 +330,7 @@ export const legalCaseManagementMachine = createMachine({
       on: {
         CREATE_CASE: {
           target: 'creating',
-          actions: assign({,
+          actions: assign({
             title: ({ event }) => event.title,
             description: ({ event }) => event.description,
             caseType: ({ event }) => event.caseType as any,
@@ -370,7 +370,7 @@ export const legalCaseManagementMachine = createMachine({
             },
             VALIDATION_ERROR: {
               target: '#legalCaseManagement.validationError',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
                   event.error?.message || 'Validation failed'
@@ -394,7 +394,7 @@ export const legalCaseManagementMachine = createMachine({
           on: {
             CREATION_COMPLETE: {
               target: '#legalCaseManagement.draft',
-              actions: [;
+              actions: [
                 assign({
                   caseId: ({ event }) => (event as any).output?.caseId || '',
                   progress: 20,
@@ -405,7 +405,7 @@ export const legalCaseManagementMachine = createMachine({
             },
             'xstate.error.actor.creationActor': {
               target: '#legalCaseManagement.creationError',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
                   `Case creation failed: ${event.error?.message || 'Unknown error'}`
@@ -417,7 +417,7 @@ export const legalCaseManagementMachine = createMachine({
       },
       on: {
         PROGRESS_UPDATE: {
-          actions: assign({,
+          actions: assign({
             progress: ({ event }) => event.progress
           })
         }
@@ -430,7 +430,7 @@ export const legalCaseManagementMachine = createMachine({
       },
       on: {
         ADD_EVIDENCE: {
-          actions: [;
+          actions: [
             assign({
               evidenceItems: ({ context, event }) => [...context.evidenceItems, event.evidenceId],
               lastModified: () => Date.now()
@@ -439,7 +439,7 @@ export const legalCaseManagementMachine = createMachine({
           ]
         },
         ADD_PERSON_OF_INTEREST: {
-          actions: [;
+          actions: [
             assign({
               personsOfInterest: ({ context, event }) => [
                 ...context.personsOfInterest,
@@ -451,7 +451,7 @@ export const legalCaseManagementMachine = createMachine({
           ]
         },
         ADD_TIMELINE_EVENT: {
-          actions: [;
+          actions: [
             assign({
               timeline: ({ context, event }) => [
                 ...context.timeline,
@@ -468,7 +468,7 @@ export const legalCaseManagementMachine = createMachine({
           ]
         },
         ASSIGN_LAWYER: {
-          actions: [;
+          actions: [
             assign({
               assignedLawyers: ({ context, event }) => [...context.assignedLawyers, event.lawyerId],
               lastModified: () => Date.now()
@@ -499,7 +499,7 @@ export const legalCaseManagementMachine = createMachine({
         CALCULATE_RISKS: {
           target: 'analyzing'
         },
-        UPDATE_STATUS: [;
+        UPDATE_STATUS: [
           {
             target: 'active',
             guard: ({ event }) => event.status === 'active',
@@ -509,7 +509,7 @@ export const legalCaseManagementMachine = createMachine({
             ]
           },
           {
-            actions: assign({,
+            actions: assign({
               status: ({ event }) => event.status as any,
               lastModified: () => Date.now()
             })
@@ -534,7 +534,7 @@ export const legalCaseManagementMachine = createMachine({
       on: {
         ANALYSIS_COMPLETE: {
           target: 'draft',
-          actions: [;
+          actions: [
             assign({
               analysis: ({ event }) => (event as any).output?.analysis || {},
               lastModified: () => Date.now()
@@ -544,7 +544,7 @@ export const legalCaseManagementMachine = createMachine({
         },
         ANALYSIS_ERROR: {
           target: 'draft',
-          actions: assign({,
+          actions: assign({
             errors: ({ context, event }) => [
               ...context.errors,
               `Risk analysis failed: ${event.error?.message || 'Unknown error'}`
@@ -558,12 +558,12 @@ export const legalCaseManagementMachine = createMachine({
         src: legalProgressTracker
         id: 'progressTracker'
       },
-      entry: assign({,
+      entry: assign({
         workflowStage: 'investigation'
       }),
       on: {
         ADD_EVIDENCE: {
-          actions: [;
+          actions: [
             assign({
               evidenceItems: ({ context, event }) => [...context.evidenceItems, event.evidenceId],
               lastModified: () => Date.now()
@@ -572,7 +572,7 @@ export const legalCaseManagementMachine = createMachine({
           ]
         },
         ADD_PERSON_OF_INTEREST: {
-          actions: [;
+          actions: [
             assign({
               personsOfInterest: ({ context, event }) => [
                 ...context.personsOfInterest,
@@ -584,7 +584,7 @@ export const legalCaseManagementMachine = createMachine({
           ]
         },
         ADD_TIMELINE_EVENT: {
-          actions: [;
+          actions: [
             assign({
               timeline: ({ context, event }) => [
                 ...context.timeline,
@@ -609,11 +609,11 @@ export const legalCaseManagementMachine = createMachine({
             lastModified: () => Date.now()
           })
         },
-        UPDATE_STATUS: [;
+        UPDATE_STATUS: [
           {
             target: 'underReview',
             guard: ({ event }) => event.status === 'under_review',
-            actions: assign({,
+            actions: assign({
               status: 'under_review',
               workflowStage: 'proceedings'
             })
@@ -621,7 +621,7 @@ export const legalCaseManagementMachine = createMachine({
           {
             target: 'completed',
             guard: ({ event }) => event.status === 'completed',
-            actions: [;
+            actions: [
               assign({
                 status: 'completed',
                 workflowStage: 'resolution'
@@ -630,7 +630,7 @@ export const legalCaseManagementMachine = createMachine({
             ]
           },
           {
-            actions: assign({,
+            actions: assign({
               status: ({ event }) => event.status as any,
               lastModified: () => Date.now()
             })
@@ -638,7 +638,7 @@ export const legalCaseManagementMachine = createMachine({
         ],
         ESCALATE: {
           target: 'escalated',
-          actions: assign({,
+          actions: assign({
             priority: 'urgent',
             notifications: ({ context }) => [
               ...context.notifications,
@@ -673,7 +673,7 @@ export const legalCaseManagementMachine = createMachine({
       on: {
         NOTIFICATION_COMPLETE: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             notifications: ({ context, event }) => [
               ...context.notifications,
               ...((event as any).output?.notifications?.map(
@@ -684,7 +684,7 @@ export const legalCaseManagementMachine = createMachine({
         },
         NOTIFICATION_ERROR: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             errors: ({ context, event }) => [
               ...context.errors,
               `Notification failed: ${event.error?.message || 'Unknown error'}`
@@ -698,11 +698,11 @@ export const legalCaseManagementMachine = createMachine({
         workflowStage: 'proceedings'
       }),
       on: {
-        UPDATE_STATUS: [;
+        UPDATE_STATUS: [
           {
             target: 'active',
             guard: ({ event }) => event.status === 'active',
-            actions: assign({,
+            actions: assign({
               status: 'active',
               workflowStage: 'investigation'
             })
@@ -710,7 +710,7 @@ export const legalCaseManagementMachine = createMachine({
           {
             target: 'completed',
             guard: ({ event }) => event.status === 'completed',
-            actions: assign({,
+            actions: assign({
               status: 'completed',
               workflowStage: 'resolution'
             })
@@ -726,7 +726,7 @@ export const legalCaseManagementMachine = createMachine({
       after: {
         2000: {
           target: 'underReview',
-          actions: assign({,
+          actions: assign({
             documents: ({ context }) => [
               ...context.documents,
               `case_report_${context.caseId}_${Date.now()}`
@@ -741,11 +741,11 @@ export const legalCaseManagementMachine = createMachine({
         workflowStage: 'proceedings'
       }),
       on: {
-        UPDATE_STATUS: [;
+        UPDATE_STATUS: [
           {
             target: 'active',
             guard: ({ event }) => event.status === 'active',
-            actions: assign({,
+            actions: assign({
               status: 'active',
               priority: 'high', // Keep elevated priority
             })
@@ -753,7 +753,7 @@ export const legalCaseManagementMachine = createMachine({
           {
             target: 'completed',
             guard: ({ event }) => event.status === 'completed',
-            actions: assign({,
+            actions: assign({
               status: 'completed',
               workflowStage: 'resolution'
             })
@@ -770,7 +770,7 @@ export const legalCaseManagementMachine = createMachine({
       on: {
         ARCHIVE_CASE: {
           target: 'archived',
-          actions: assign({,
+          actions: assign({
             status: 'archived'
           })
         }
@@ -778,7 +778,7 @@ export const legalCaseManagementMachine = createMachine({
     },
     archived: {
       type: 'final',
-      entry: assign({,
+      entry: assign({
         status: 'archived'
       })
     },
@@ -786,7 +786,7 @@ export const legalCaseManagementMachine = createMachine({
       on: {
         CREATE_CASE: {
           target: 'creating',
-          actions: assign({,
+          actions: assign({
             title: ({ event }) => event.title,
             description: ({ event }) => event.description,
             caseType: ({ event }) => event.caseType as any,
@@ -802,7 +802,7 @@ export const legalCaseManagementMachine = createMachine({
       on: {
         CREATE_CASE: {
           target: 'creating',
-          actions: assign({,
+          actions: assign({
             errors: []
           })
         }

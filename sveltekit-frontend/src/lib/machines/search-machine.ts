@@ -1,7 +1,6 @@
 // Search State Machine - XState v5 compatible
 // Manages legal document and case search with history and analytics
 import { createMachine, assign, fromPromise } from 'xstate';
-}
 export interface SearchContext {
   query: string;
   filters: {
@@ -28,20 +27,11 @@ export interface SearchContext {
 export const searchMachine = createMachine({
   id: 'search',
   initial: 'idle',
-  types: {
-    context: { [key: string]: any } as SearchContext,
-    events: { [key: string]: any } as
-      | { type: 'SEARCH'; data: any }
-      | { type: 'UPDATE_QUERY'; query: string }
-      | { type: 'UPDATE_FILTERS'; filters: any }
-      | { type: 'CLEAR_RESULTS' }
-      | { type: 'LOAD_HISTORY' }
-      | { type: 'SAVE_SEARCH' }
-      | { type: 'RETRY' }
-  },
+  // runtime-safe: TypeScript types are declared above (SearchContext/Search events)
+  types: {},
   context: {
     query: '',
-    filters: { [key: string]: any },
+    filters: {},
     results: [],
     searchHistory: [],
     analytics: {
@@ -49,8 +39,8 @@ export const searchMachine = createMachine({
       searchTime: 0,
       relevanceScore: 0
     },
-    validationErrors: { [key: string]: any },
-    error: null
+    validationErrors: {},
+    error: null,
     isLoading: false
   },
   states: {
@@ -58,7 +48,7 @@ export const searchMachine = createMachine({
       entry: assign({ isLoading: false }),
       on: {
         UPDATE_QUERY: {
-          actions: assign({,
+          actions: assign({
             query: ({ event }) => event.query,
             error: null
           })
@@ -89,13 +79,13 @@ export const searchMachine = createMachine({
         }),
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             searchHistory: ({ event }) => event.output || []
           })
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             error: 'Failed to load search history'
           })
         }
@@ -128,16 +118,16 @@ export const searchMachine = createMachine({
         input: ({ context }) => context,
         onDone: {
           target: 'searching',
-          actions: assign({,
-            validationErrors: { [key: string]: any },
-            error: null
+          actions: assign({
+            validationErrors: {},
+            error: null,
           })
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             validationErrors: ({ event }) => (event as any).error?.validationErrors || {},
-            error: 'Search validation failed'
+            error: 'Search validation failed',
           })
         }
       }
@@ -154,7 +144,7 @@ export const searchMachine = createMachine({
           // Add filters
           Object.entries(input.filters).forEach(([key, value]) => {
             if (Array.isArray(value)) {
-              searchParams.append(key, value.join(',');
+              searchParams.append(key, value.join(','));
             } else if (typeof value === 'object' && value !== null) {
               // Handle date range
               if (key === 'dateRange') {
@@ -162,7 +152,7 @@ export const searchMachine = createMachine({
                 if ((value as any).to) searchParams.append('dateEnd', (value as any).to);
               }
             } else if (value) {
-              searchParams.append(key, String(value);
+              searchParams.append(key, String(value));
             }
           });
           // Perform search API call
@@ -190,19 +180,19 @@ export const searchMachine = createMachine({
         input: ({ context }) => context,
         onDone: {
           target: 'results',
-          actions: [;
+          actions: [
             assign({
               results: ({ event }) => event.output.results,
               analytics: ({ event }) => event.output.analytics,
-              error: null
-              isLoading: false
+              error: null,
+              isLoading: false,
             }),
             // Save to search history
             ({ context }) => {
               if (context.query) {
                 const history = [...new Set([context.query, ...context.searchHistory])].slice(0, 10);
                 try {
-                  localStorage.setItem('legal-ai:search-history', JSON.stringify(history);
+                  localStorage.setItem('legal-ai:search-history', JSON.stringify(history));
                 } catch (e: any) {
                   console.warn('Failed to save search history:', e);
                 }
@@ -212,7 +202,7 @@ export const searchMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => (event as any).error?.message || 'Search failed',
             isLoading: false
           })
@@ -225,13 +215,13 @@ export const searchMachine = createMachine({
         SEARCH: 'validating',
         UPDATE_QUERY: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             query: ({ event }) => event.query
           })
         },
         UPDATE_FILTERS: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             filters: ({ context, event }) => ({
               ...context.filters,
               ...event.filters
@@ -240,10 +230,10 @@ export const searchMachine = createMachine({
         },
         CLEAR_RESULTS: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             results: [],
             query: '',
-            filters: { [key: string]: any },
+            filters: {},
             analytics: {
               totalResults: 0,
               searchTime: 0,
@@ -259,8 +249,8 @@ export const searchMachine = createMachine({
         SEARCH: 'validating',
         CLEAR_RESULTS: {
           target: 'idle',
-          actions: assign({,
-            error: null;
+          actions: assign({
+            error: null,
             results: []
           })
         }

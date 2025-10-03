@@ -278,7 +278,7 @@ export class PredictivePrefetcher {
    * Initialize legal workflow patterns for Phase 8
    */;
   private initializeLegalWorkflowPatterns(): void {
-    this.legalWorkflowPatterns = [;
+    this.legalWorkflowPatterns = [
       {
         name: "Evidence Review Workflow",
         sequence: ["/cases", "/evidence", "/evidence/viewer", "/analysis"],

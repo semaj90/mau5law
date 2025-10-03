@@ -1,15 +1,18 @@
 import { writable } from "svelte/store";
-}
+import type { SvelteComponent } from 'svelte';
+
+type Props = Record<string, unknown>;
+
 export interface ModalConfig {
   id: string;
-  component?: unknown; // Svelte component
-  props?: { [key: string]: any }
+  component?: string | typeof SvelteComponent; // Svelte component or built-in key
+  props?: Props;
   title?: string;
-  size?: "sm" | "md" | "lg" | "xl" | "full";
   closable?: boolean;
   persistent?: boolean; // Don't close on outside click
-  onClose?: (...args: any[]) => void;
-  onConfirm?: (...args: any[]) => void;
+  onClose?: (...args: unknown[]) => void;
+  onConfirm?: (...args: unknown[]) => void;
+  size?: 'sm' | 'md' | 'lg' | string; // added optional size
 }
 export interface ModalState {
   modals: ModalConfig[];
@@ -17,56 +20,53 @@ export interface ModalState {
 }
 const initialState: ModalState = {
   modals: [],
-  activeModal: null
-}
+  activeModal: null,
+};
 function createModalStore() {
-  const { subscribe, set, update } = writable<ModalState>(initialState);
+  const { subscribe, update } = writable<ModalState>(initialState);
   const store = {
     subscribe,
     // Open a modal
-    open: (config: Omit<ModalConfig, "id"> & { id?: string }) => {
+    open: (config: Omit<ModalConfig, 'id'> & { id?: string }) => {
       const id =
         config.id ||
-        `modal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        // replace deprecated substr(...) with slice(...)
+        `modal-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
       const modalConfig: ModalConfig = {
-        size: "md",
-        closable: true;
-        persistent: false
+        size: 'md',
+        closable: true,
+        persistent: false,
         ...config,
-        id
-      }
-      update((state) => ({
+        id,
+      };
+      update(state => ({
         modals: [...state.modals, modalConfig],
-        activeModal: id
-      });
+        activeModal: id,
+      }));
       return id;
     },
     // Close a modal
     close: (id?: string) => {
-      update((state) => {
+      update(state => {
         const modalToClose = id || state.activeModal;
         if (!modalToClose) return state;
-        const modal = state.modals.find((m) => m.id === modalToClose);
+        const modal = state.modals.find(m => m.id === modalToClose);
         if (modal?.onClose) {
           modal.onClose();
         }
-        const remainingModals = state.modals.filter(
-          (m) => m.id !== modalToClose,
-        );
-        const newActiveModal =
-          remainingModals.length > 0
-            ? remainingModals[remainingModals.length - 1].id: null;
+        const remainingModals = state.modals.filter(m => m.id !== modalToClose);
+        const newActiveModal = remainingModals.length > 0 ? remainingModals[remainingModals.length - 1].id : null;
         return {
-          modals: remainingModals
-          activeModal: newActiveModal
-        }
+          modals: remainingModals,
+          activeModal: newActiveModal,
+        };
       });
     },
     // Close all modals
     closeAll: () => {
-      update((state) => {
+      update(state => {
         // Call onClose for all modals
-        state.modals.forEach((modal) => {
+        state.modals.forEach(modal => {
           if (modal.onClose) {
             modal.onClose();
           }
@@ -75,15 +75,13 @@ function createModalStore() {
       });
     },
     // Update modal props
-    updateProps: (id: string, props: { [key: string]: any }) => {
-      update((state) => ({
+    updateProps: (id: string, props: Props) => {
+      update(state => ({
         ...state,
-        modals: state.modals.map((modal) =>
-          modal.id === id
-            ? { ...modal, props: { ...modal.props, ...props } }
-            : modal
-        )
-      });
+        modals: state.modals.map(modal =>
+          modal.id === id ? { ...modal, props: { ...modal.props, ...props } } : modal
+        ),
+      }));
     },
     // Convenience methods for common modal types
     confirm: (_options: {
@@ -95,33 +93,28 @@ function createModalStore() {
       onCancel?: () => void;
     }) => {
       return store.open({
-        title: options.title,
-        component: "ConfirmModal", // This would be a built-in component
+        title: _options.title,
+        component: 'ConfirmModal', // This would be a built-in component
         props: {
-          message: options.message,
-          confirmText: options.confirmText || "Confirm",
-          cancelText: options.cancelText || "Cancel"
+          message: _options.message,
+          confirmText: _options.confirmText || 'Confirm',
+          cancelText: _options.cancelText || 'Cancel',
         },
-        size: "sm",
-        onConfirm: options.onConfirm,
-        onClose: options.onCancel
+        size: 'sm',
+        onConfirm: _options.onConfirm,
+        onClose: _options.onCancel,
       });
     },
-    alert: (_options: {
-      title: string;
-      message: string;
-      buttonText?: string;
-      onClose?: () => void;
-    }) => {
+    alert: (_options: { title: string; message: string; buttonText?: string; onClose?: () => void }) => {
       return store.open({
-        title: options.title,
-        component: "AlertModal", // This would be a built-in component
+        title: _options.title,
+        component: 'AlertModal', // This would be a built-in component
         props: {
-          message: options.message,
-          buttonText: options.buttonText || "OK"
+          message: _options.message,
+          buttonText: _options.buttonText || 'OK',
         },
-        size: "sm",
-        onClose: options.onClose
+        size: 'sm',
+        onClose: _options.onClose,
       });
     },
     prompt: (_options: {
@@ -135,21 +128,21 @@ function createModalStore() {
       onCancel?: () => void;
     }) => {
       return store.open({
-        title: options.title,
-        component: "PromptModal", // This would be a built-in component
+        title: _options.title,
+        component: 'PromptModal', // This would be a built-in component
         props: {
-          message: options.message,
-          placeholder: options.placeholder,
-          defaultValue: options.defaultValue,
-          confirmText: options.confirmText || "OK",
-          cancelText: options.cancelText || "Cancel"
+          message: _options.message,
+          placeholder: _options.placeholder,
+          defaultValue: _options.defaultValue,
+          confirmText: _options.confirmText || 'OK',
+          cancelText: _options.cancelText || 'Cancel',
         },
-        size: "sm",
-        onConfirm: options.onConfirm,
-        onClose: options.onCancel
+        size: 'sm',
+        onConfirm: _options.onConfirm,
+        onClose: _options.onCancel,
       });
-    }
-  }
+    },
+  };
   return store;
 }
 export const modals = createModalStore();

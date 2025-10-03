@@ -74,7 +74,7 @@ This query involves several key legal considerations:
 *⚖️ Specialized legal analysis with enhanced contextual understanding*`
   }
   private generateEmbeddingResponse(prompt: string): string {
-    const dimensions = 768 + Math.floor(Math.random() * 256); // 768-1024 dimensions
+    const dimensions = 512; // embeddinggemma:latest standard dimensions
     return `Generated embedding vector with ${dimensions} dimensions for semantic analysis. Vector represents the conceptual meaning of the input text for similarity matching and retrieval operations. [EmbeddingGemma Model]`
   }
 }

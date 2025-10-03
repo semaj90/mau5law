@@ -253,7 +253,7 @@ export class UltimateNeuralTopologyOrchestrator {
     }
   }> {
     // Generate 3D neural topology visualization
-    const nodes = [;
+    const nodes = [
       {
         id: 'hmm_som_predictor',
         type: 'predictor' as const,
@@ -480,14 +480,14 @@ export class UltimateNeuralTopologyOrchestrator {
     }
     // Fallback prediction generation
     return {
-      nextStates: [;
+      nextStates: [
         {
           state: { userAction: 'continue_analysis', id: 'default' },
           probability: 0.7,
           timeEstimate: 2000
         }
       ],
-      recommendedAssets: [;
+      recommendedAssets: [
         {
           type: 'analysis_widget',
           priority: 80,

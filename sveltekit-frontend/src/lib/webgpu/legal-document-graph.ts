@@ -411,7 +411,7 @@ export class WebGPULegalDocumentGraph {
       vertex: {
         module: this.vertexShaderModule,
         entryPoint: 'vs_main',
-        buffers: [;
+        buffers: [
           {
             arrayStride: 12 + 4 + 16 + 4, // position + size + color + nodeType
             attributes: [

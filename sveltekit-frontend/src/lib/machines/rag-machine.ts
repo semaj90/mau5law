@@ -39,7 +39,7 @@ export const ragStateMachine = createMachine({
       on: {
         SEARCH_START: {
           target: "searching",
-          actions: assign({,
+          actions: assign({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
@@ -52,20 +52,20 @@ export const ragStateMachine = createMachine({
       on: {
         SEARCH_SUCCESS: {
           target: "success",
-          actions: assign({,
+          actions: assign({
             results: ({ event }) => event.results,
             cacheStatus: "miss"
           })
         },
         SEARCH_ERROR: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.error
           })
         },
         CACHE_HIT: {
           target: "success",
-          actions: assign({,
+          actions: assign({
             results: ({ event }) => event.results,
             cacheStatus: "hit"
           })
@@ -76,7 +76,7 @@ export const ragStateMachine = createMachine({
       on: {
         SEARCH_START: {
           target: "searching",
-          actions: assign({,
+          actions: assign({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
@@ -88,7 +88,7 @@ export const ragStateMachine = createMachine({
         },
         RESET: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             query: "",
             results: [],
             error: null
@@ -102,14 +102,14 @@ export const ragStateMachine = createMachine({
         RETRY: {
           target: "searching",
           guard: ({ context }) => context.retryCount < 3,
-          actions: assign({,
+          actions: assign({
             retryCount: ({ context }) => context.retryCount + 1,
             error: null
           })
         },
         SEARCH_START: {
           target: "searching",
-          actions: assign({,
+          actions: assign({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
@@ -118,7 +118,7 @@ export const ragStateMachine = createMachine({
         },
         RESET: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             query: "",
             results: [],
             error: null
@@ -131,7 +131,7 @@ export const ragStateMachine = createMachine({
       after: {
         2000: {
           target: "success",
-          actions: assign({,
+          actions: assign({
             optimizationLevel: ({ context }) =>
               context.optimizationLevel === "basic"
                 ? "enhanced"
@@ -144,7 +144,7 @@ export const ragStateMachine = createMachine({
       on: {
         SEARCH_START: {
           target: "searching",
-          actions: assign({,
+          actions: assign({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,

@@ -55,12 +55,18 @@ async function getNvidiaStats() {
         '--query-gpu=name,utilization.gpu,memory.used,memory.total,temperature.gpu,power.draw,power.limit',
         '--format=csv,noheader,nounits',
       ],
-      { shell: true }
+      { shell: true, timeout: 10000 } // Add a timeout of 10 seconds
     );
 
     let output = '';
+    let errorOutput = '';
+
     cmd.stdout.on('data', (data) => {
       output += data.toString();
+    });
+
+    cmd.stderr.on('data', data => {
+      errorOutput += data.toString();
     });
 
     cmd.on('close', (code) => {
@@ -77,16 +83,25 @@ async function getNvidiaStats() {
           powerLimit: parseFloat(powerLimit) || 0,
         });
       } else {
-        resolve({ success: false, error: 'nvidia-smi not available' });
+        console.error(
+          `[GPU-Monitor] nvidia-smi exited with code ${code}. Output: '${output.trim()}'. Error: '${errorOutput.trim()}'`
+        );
+        resolve({ success: false, error: `nvidia-smi exited with code ${code}` });
       }
     });
 
-    cmd.on('error', (err) => {
-      console.error('GPU Monitor Error:', err.message);
+    cmd.on('error', err => {
+      console.error('[GPU Monitor Error]:', err.message);
       resolve({
         success: false,
         error: 'nvidia-smi not available or NVIDIA drivers not installed',
       });
+    });
+
+    cmd.on('timeout', () => {
+      cmd.kill();
+      console.error('[GPU Monitor Error]: nvidia-smi command timed out.');
+      resolve({ success: false, error: 'nvidia-smi command timed out' });
     });
   });
 }

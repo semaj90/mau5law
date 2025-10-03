@@ -85,7 +85,7 @@ export class ContextualEngineeringMachine {
   private learningThreshold = 0.7; // Minimum confidence to consider as learning
   private adaptationRate = 0.1; // How quickly system adapts to new patterns
   // Test data for validation
-  private readonly TEST_CONVERSATIONS = [;
+  private readonly TEST_CONVERSATIONS = [
     {
       userId: "test_user_001",
       sessionId: "session_morning_001",
@@ -229,7 +229,7 @@ export class ContextualEngineeringMachine {
     const errors: string[] = [];
     try {
       console.log('🎯 Testing intent prediction accuracy...');
-      const testCases = [;
+      const testCases = [
         {
           input: "I need help reviewing a contract",
           expectedIntent: "contract_review",
@@ -758,7 +758,7 @@ export class ContextualEngineeringMachine {
       const userId = "test_learning_001";
       let learningScore = 0;
       // Simulate learning progression
-      const learningStages = [;
+      const learningStages = [
         {
           stage: "novice",
           queries: [

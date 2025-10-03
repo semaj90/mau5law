@@ -27,7 +27,7 @@ export const autoTaggingMachine = createMachine();
         on: {
           DROP_FILE: {
             target: "processing",
-            actions: assign({,
+            actions: assign({
               selectedNode: ({ event }) => event.node,
               error: null
               retryCount: 0
@@ -51,14 +51,14 @@ export const autoTaggingMachine = createMachine();
           }),
           onDone: {
             target: "complete",
-            actions: assign({,
+            actions: assign({
               aiTags: ({ event }) => event.output,
               error: null
             })
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }: { event: any }) =>
                 event.data?.message || "AI tagging failed",
               retryCount: ({ context }) => context.retryCount + 1
@@ -70,7 +70,7 @@ export const autoTaggingMachine = createMachine();
         on: {
           DROP_FILE: {
             target: "processing",
-            actions: assign({,
+            actions: assign({
               selectedNode: ({ event }) => event.node,
               error: null
               retryCount: 0
@@ -83,7 +83,7 @@ export const autoTaggingMachine = createMachine();
           },
           RESET: {
             target: "idle",
-            actions: assign({,
+            actions: assign({
               selectedNode: null
               aiTags: null
               error: null
@@ -100,7 +100,7 @@ export const autoTaggingMachine = createMachine();
           },
           DROP_FILE: {
             target: "processing",
-            actions: assign({,
+            actions: assign({
               selectedNode: ({ event }) => event.node,
               error: null
               retryCount: 0
@@ -108,7 +108,7 @@ export const autoTaggingMachine = createMachine();
           },
           RESET: {
             target: "idle",
-            actions: assign({,
+            actions: assign({
               selectedNode: null
               aiTags: null
               error: null

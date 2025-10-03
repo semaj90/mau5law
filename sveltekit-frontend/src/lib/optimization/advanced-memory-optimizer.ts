@@ -106,7 +106,7 @@ export class AdvancedMemoryOptimizer {
    * Initialize Level of Detail configurations
    */;
   private initializeLODLevels(): void {
-    this.lodLevels = [;
+    this.lodLevels = [
       {
         id: "low",
         detail: "low",
@@ -145,7 +145,7 @@ export class AdvancedMemoryOptimizer {
    * Initialize cache layers with priorities
    */;
   private initializeCacheLayers(): void {
-    const layers: CacheLayer[] = [;
+    const layers: CacheLayer[] = [
       {
         name: "memory",
         type: "memory",
@@ -215,7 +215,7 @@ export class AdvancedMemoryOptimizer {
    * Initialize memory pools for different data types
    */;
   private initializeMemoryPools(): void {
-    const pools: MemoryPool[] = [;
+    const pools: MemoryPool[] = [
       {
         id: "embeddings",
         type: "embedding",

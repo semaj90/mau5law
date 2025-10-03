@@ -380,7 +380,7 @@ export class YoRHaMipmapShaders {
     // Create bind group for source and target textures
     const bindGroup = this.device.createBindGroup({
       layout: pipeline.getBindGroupLayout(0),
-      entries: [;
+      entries: [
         {
           binding: 0,
           resource: sourceTexture.createView()

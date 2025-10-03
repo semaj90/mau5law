@@ -59,7 +59,7 @@ const services = [
     delay: 5000,
     env: {
       ...globalThis.process.env,
-      DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
+      DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
     },
   },
 ];

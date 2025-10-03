@@ -12,7 +12,7 @@ export interface LegalDocument {
   url?: string;
   sections?: string[];
 }
-export const legalDocuments: LegalDocument[] = [;
+export const legalDocuments: LegalDocument[] = [
   {
     id: "ca-pen-187",
     title: "California Penal Code Section 187 - Murder",

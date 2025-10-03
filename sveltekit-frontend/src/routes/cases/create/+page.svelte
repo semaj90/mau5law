@@ -12,19 +12,19 @@ https://svelte.dev/e/js_parse_error -->
   import { enhance } from '$app/forms';
   import { onMount } from 'svelte';
   import EnhancedCaseFormWithZod from '$lib/components/forms/EnhancedCaseFormWithZod.svelte';
-  import { toast } from '$lib/components/ui/toast';
-  import { Alert } from '$lib/components/ui/alert';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import toast from '$lib/components/ui/toast'; // Changed from named to default import
+  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import { ArrowLeft, Save, AlertCircle, CheckCircle } from 'lucide-svelte';
   import type { PageData } from './$types';
   import type { CaseForm } from '$lib/schemas/forms';
-  let { data }: { data: unknown } = $props(); // PageData
+  let { data }: { data: PageData } = $props(); // Corrected type from unknown to PageData
   let isSubmitting = $state(false);
   let showSuccess = $state(false);
   let errorMessage = $state('');
   // Handle form submission success
   function handleFormSuccess(_event: CustomEvent) {
-    const { caseItem: newCase } = event.detail;
+    const { caseItem: newCase } = _event.detail;
     showSuccess = true;
     toast.success(`Case ${newCase.caseNumber} created successfully!`);
     // Redirect to case view after 2 seconds
@@ -34,8 +34,8 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Handle form submission error
   function handleFormError(_event: CustomEvent) {
-    errorMessage = event.detail.messag;
-    toast.error(event.detail.message);
+    errorMessage = _event.detail.message;
+    toast.error(_event.detail.message);
   }
   // Handle draft save
   function handleDraftSave(_event: CustomEvent) {
@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(formData);
+          body: JSON.stringify(formData)
         });
         if (response.ok) {
           console.log('Auto-save successful');
@@ -94,14 +94,13 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
         <Button
-          class="bits-btn flex items-center space-x-2"
-          variant="ghost"
+          variant="secondary"
           size="sm"
-          onclick={() =>
-goto('/cases')}
+          onclick={() => goto('/cases')}
         >
           <ArrowLeft class="h-4 w-4" />
           <span>Back to Cases</span>
+        </Button>
         <div class="h-6 border-l border-muted-foreground/20"></div>
         <div>
           <h1 class="text-3xl font-bold tracking-tight">
@@ -119,37 +118,36 @@ goto('/cases')}
       <div class="flex items-center space-x-3">
         {#if !data.editMode}
           <Button
-            class="bits-btn flex items-center space-x-2"
-            variant="ghost"
-            onclick={() =>
-goto('/cases/templates')}
+            variant="secondary"
+            onclick={() => goto('/cases/templates')}
           >
             <Save class="h-4 w-4" />
             <span>Use Template</span>
+          </Button>
         {/if}
       </div>
     </div>
   </div>
   <!-- Success Alert -->
   {#if showSuccess}
-    <Alert.Root class="mb-6 border-green-200 bg-green-50">
+    <Alert class="mb-6 border-green-200 bg-green-50">
       <CheckCircle class="h-4 w-4 text-green-600" />
-      <Alert.Title class="text-green-800">Success!</Alert.Title>
-      <Alert.Description class="text-green-700">
+      <AlertTitle class="text-green-800">Success!</AlertTitle>
+      <AlertDescription class="text-green-700">
         Case has been {data.editMode ? 'updated' : 'created'} successfully.
         {#if !data.editMode}
           Redirecting to case view...
         {/if}
-      </Alert.Description>
-    </Alert.Root>
+      </AlertDescription>
+    </Alert>
   {/if}
   <!-- Error Alert -->
   {#if errorMessage}
-    <Alert.Root variant="error" class="mb-6">
+    <Alert variant="destructive" class="mb-6">
       <AlertCircle class="h-4 w-4" />
-      <Alert.Title>Error</Alert.Title>
-      <Alert.Description>{errorMessage}</Alert.Description>
-    </Alert.Root>
+      <AlertTitle>Error</AlertTitle>
+      <AlertDescription>{errorMessage}</AlertDescription>
+    </Alert>
   {/if}
   <!-- Form -->
   <EnhancedCaseFormWithZod
@@ -211,7 +209,7 @@ goto('/cases/templates')}
 <style>
   /* Ensure smooth transitions for state changes */
   .container {
-    @apply transition-all duration-200 ease-in-out;
+    transition: all 0.2s ease-in-out;
   }
   /* Form success animation */
   :global(.form-success) {

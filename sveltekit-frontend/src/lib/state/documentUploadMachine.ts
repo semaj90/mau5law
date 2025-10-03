@@ -186,7 +186,7 @@ export const documentUploadMachine = createMachine({
       on: {
         SELECT_FILE: {
           target: 'fileSelected',
-          actions: assign({,
+          actions: assign({
             file: ({ event }) => event.file,
             filename: ({ event }) => event.file.name,
             fileSize: ({ event }) => event.file.size,
@@ -213,24 +213,24 @@ export const documentUploadMachine = createMachine({
       invoke: {
         src: validateFileService;
         input: ({ context }) => context,
-        onDone: [;
+        onDone: [
           {
             target: 'calculatingHash',
             guard: ({ event }) => event.output.valid,
-            actions: assign({,
+            actions: assign({
               validationErrors: []
             })
           },
           {
             target: 'validationError',
-            actions: assign({,
+            actions: assign({
               validationErrors: ({ event }) => event.output.errors
             })
           }
         ],
         onError: {
           target: 'validationError',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => `Validation failed: ${event.error}`,
             validationErrors: ({ event }) => [`Validation error: ${event.error}`]
           })
@@ -241,7 +241,7 @@ export const documentUploadMachine = createMachine({
       on: {
         SELECT_FILE: {
           target: 'fileSelected',
-          actions: assign({,
+          actions: assign({
             file: ({ event }) => event.file,
             filename: ({ event }) => event.file.name,
             fileSize: ({ event }) => event.file.size,
@@ -262,13 +262,13 @@ export const documentUploadMachine = createMachine({
         input: ({ context }) => context,
         onDone: {
           target: 'extractingText',
-          actions: assign({,
+          actions: assign({
             fileHash: ({ event }) => event.output
           })
         },
         onError: {
           target: 'uploadReady', // Continue without hash
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => `Hash calculation failed: ${event.error}`
           })
         }
@@ -280,13 +280,13 @@ export const documentUploadMachine = createMachine({
         input: ({ context }) => context,
         onDone: {
           target: 'uploadReady',
-          actions: assign({,
+          actions: assign({
             extractedText: ({ event }) => event.output
           })
         },
         onError: {
           target: 'uploadReady', // Continue without extracted text
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => `Text extraction failed: ${event.error}`
           })
         }
@@ -298,7 +298,7 @@ export const documentUploadMachine = createMachine({
         CANCEL_UPLOAD: 'cancelled',
         SELECT_FILE: {
           target: 'fileSelected',
-          actions: assign({,
+          actions: assign({
             file: ({ event }) => event.file,
             filename: ({ event }) => event.file.name,
             fileSize: ({ event }) => event.file.size,
@@ -319,7 +319,7 @@ export const documentUploadMachine = createMachine({
         input: ({ context }) => context,
         onDone: {
           target: 'uploaded',
-          actions: assign({,
+          actions: assign({
             documentId: ({ event }) => event.output.documentId,
             evidenceId: ({ event }) => event.output.evidenceId,
             extractedText: ({ event, context }) => event.output.extractedText || context.extractedText,
@@ -329,7 +329,7 @@ export const documentUploadMachine = createMachine({
         },
         onError: {
           target: 'uploadError',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => `Upload failed: ${event.error}`
           })
         }
@@ -340,11 +340,11 @@ export const documentUploadMachine = createMachine({
     },
     uploadError: {
       on: {
-        RETRY_UPLOAD: [;
+        RETRY_UPLOAD: [
           {
             target: 'uploading',
             guard: ({ context }) => context.retryCount < context.maxRetries,
-            actions: assign({,
+            actions: assign({
               retryCount: ({ context }) => context.retryCount + 1,
               error: undefined
             })
@@ -360,7 +360,7 @@ export const documentUploadMachine = createMachine({
     uploaded: {
       always: {
         target: 'startingProcessing',
-        actions: assign({,
+        actions: assign({
           processingStartTime: Date.now()
         })
       }
@@ -398,7 +398,7 @@ export const documentUploadMachine = createMachine({
           after: {
             2000: 'embedding'
           },
-          entry: assign({,
+          entry: assign({
             uploadProgress: 25
           })
         },
@@ -406,7 +406,7 @@ export const documentUploadMachine = createMachine({
           after: {
             3000: 'indexing'
           },
-          entry: assign({,
+          entry: assign({
             uploadProgress: 50
           })
         },
@@ -414,7 +414,7 @@ export const documentUploadMachine = createMachine({
           after: {
             2000: 'caching'
           },
-          entry: assign({,
+          entry: assign({
             uploadProgress: 75
           })
         },
@@ -422,13 +422,13 @@ export const documentUploadMachine = createMachine({
           after: {
             1000: 'done'
           },
-          entry: assign({,
+          entry: assign({
             uploadProgress: 90
           })
         },
         done: {
           type: 'final',
-          entry: assign({,
+          entry: assign({
             uploadProgress: 100,
             processingEndTime: Date.now()
           })
@@ -437,13 +437,13 @@ export const documentUploadMachine = createMachine({
       onDone: 'completed',
       on: {
         PROCESSING_UPDATE: {
-          actions: assign({,
+          actions: assign({
             uploadProgress: ({ event }) => event.progress
           })
         },
         PROCESSING_FAILED: {
           target: 'processingError',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.error
           })
         },
@@ -454,7 +454,7 @@ export const documentUploadMachine = createMachine({
       on: {
         RETRY_UPLOAD: {
           target: 'processing',
-          actions: assign({,
+          actions: assign({
             error: undefined
             retryCount: ({ context }) => context.retryCount + 1
           })

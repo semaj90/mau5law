@@ -1,125 +1,69 @@
-/**
- * Dashboard Statistics API - Production Ready
- * SvelteKit 2 compatible with comprehensive error handling
- */
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ url, locals }) => {
+// Minimal stats endpoint: only raw COUNT queries. Returns safe defaults on any error.
+export const GET: RequestHandler = async ({ url }) => {
   try {
-    // Attempt to load database with fallback
     let db: any = null;
-    let cases: any = null;
-    let evidence: any = null;
-
     try {
-      const dbModule = await import('$lib/server/db');
-      db = dbModule.db;
-      cases = dbModule.cases;
-      evidence = dbModule.evidence;
-    } catch (dbError) {
-      console.warn('[Stats API] Database unavailable, returning mock data');
-
-      return json({
-        success: true,
-        data: {
-          totalCases: 0,
-          totalEvidence: 0,
-          activeCases: 0,
-          pendingAnalysis: 0,
-          completionRate: 0,
-          analysisRate: 0,
-          systemHealth: {
-            api: 'healthy',
-            database: 'unavailable',
-            aiServices: 'checking',
-            jobQueue: 'checking'
-          },
-          generatedAt: new Date().toISOString()
-        }
-      });
+      const mod = await import('$lib/server/db');
+      db = mod.db;
+    } catch (err) {
+      // If DB module not present (dev), return zeros so UI can render.
+      return json(
+        {
+          success: true,
+          data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() },
+        },
+        { status: 200 }
+      );
     }
 
-    const userId = locals.user?.id;
-    const timeRange = url.searchParams.get('timeRange') || '30d';
+    const totals = { totalCases: 0, totalEvidence: 0, activeCases: 0 };
 
-    // Simple query with Drizzle - production safe
-    let totalCases = 0;
-    let totalEvidence = 0;
-    let activeCases = 0;
-
-    try {
-      if (db && cases) {
-        const casesResult = await db.select().from(cases).limit(1000);
-        totalCases = casesResult.length;
-        activeCases = casesResult.filter((c: any) => c.status !== 'closed').length;
+    if (db) {
+      try {
+        if (typeof db.$queryRaw === 'function') {
+          const tc: any = await db.$queryRaw`SELECT COUNT(*)::int AS count FROM cases`;
+          totals.totalCases = Number(tc?.[0]?.count || 0);
+          const ac: any = await db.$queryRaw`SELECT COUNT(*)::int AS count FROM cases WHERE status != 'closed'`;
+          totals.activeCases = Number(ac?.[0]?.count || 0);
+          const te: any = await db.$queryRaw`SELECT COUNT(*)::int AS count FROM evidence`;
+          totals.totalEvidence = Number(te?.[0]?.count || 0);
+        } else if (typeof db.query === 'function') {
+          const tc: any = await db.query('SELECT COUNT(*)::int AS count FROM cases');
+          totals.totalCases = Number(tc?.rows?.[0]?.count || 0);
+          const ac: any = await db.query("SELECT COUNT(*)::int AS count FROM cases WHERE status != 'closed'");
+          totals.activeCases = Number(ac?.rows?.[0]?.count || 0);
+          const te: any = await db.query('SELECT COUNT(*)::int AS count FROM evidence');
+          totals.totalEvidence = Number(te?.rows?.[0]?.count || 0);
+        }
+      } catch (err) {
+        // swallow DB errors and keep zeros
+        console.warn('[Stats API] count queries failed, returning zeros', err);
       }
-
-      if (db && evidence) {
-        const evidenceResult = await db.select().from(evidence).limit(1000);
-        totalEvidence = evidenceResult.length;
-      }
-    } catch (queryError) {
-      console.warn('[Stats API] Query failed, using zeros:', queryError);
     }
 
     const dashboardStats = {
-      totalCases,
-      totalEvidence,
-      activeCases,
+      totalCases: totals.totalCases,
+      totalEvidence: totals.totalEvidence,
+      activeCases: totals.activeCases,
       pendingAnalysis: 0,
-      completionRate: totalCases > 0 ? Math.round((activeCases / totalCases) * 100) : 0,
-      analysisRate: totalEvidence > 0 ? Math.round((totalEvidence / (totalEvidence + 1)) * 100) : 0,
-      systemHealth: {
-        api: 'healthy',
-        database: db ? 'healthy' : 'unavailable',
-        aiServices: 'healthy',
-        jobQueue: 'healthy'
-      },
-      casesByStatus: {
-        open: activeCases,
-        closed: totalCases - activeCases
-      },
-      productivity: {
-        casesThisWeek: 0,
-        evidenceThisWeek: 0
-      },
+      completionRate: totals.totalCases > 0 ? Math.round((totals.activeCases / totals.totalCases) * 100) : 0,
+      analysisRate:
+        totals.totalEvidence > 0 ? Math.round((totals.totalEvidence / (totals.totalEvidence + 1)) * 100) : 0,
       generatedAt: new Date().toISOString(),
-      timeRange
+      timeRange: url.searchParams.get('timeRange') || '30d',
     };
 
-    return json(
-      {
-        success: true,
-        data: dashboardStats
-      },
-      {
-        status: 200,
-        headers: {
-          'Cache-Control': 'max-age=30'
-        }
-      }
-    );
-
-  } catch (error: any) {
-    console.error('[Stats API] Error:', error);
-
+    return json({ success: true, data: dashboardStats }, { status: 200, headers: { 'Cache-Control': 'max-age=30' } });
+  } catch (err) {
+    console.error('[Stats API] unexpected error', err);
     return json(
       {
         success: false,
-        error: 'Failed to fetch statistics',
-        data: {
-          totalCases: 0,
-          totalEvidence: 0,
-          activeCases: 0,
-          systemHealth: {
-            api: 'error',
-            database: 'error',
-            aiServices: 'error',
-            jobQueue: 'error'
-          },
-          generatedAt: new Date().toISOString()
-        }
+        error: 'Failed to fetch stats',
+        data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() },
       },
       { status: 500 }
     );

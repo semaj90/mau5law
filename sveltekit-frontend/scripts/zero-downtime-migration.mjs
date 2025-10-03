@@ -41,7 +41,7 @@ const MIGRATION_CONFIG = {
     { name: 'Frontend', port: 5173, path: '/' },
     { name: 'MCP Server', port: 3002, path: '/mcp/health' },
     { name: 'Redis', port: 6379, command: 'redis-cli ping' },
-    { name: 'PostgreSQL', port: 5433, command: 'pg_isready -h localhost -p 5433' },
+    { name: 'PostgreSQL', port: 5434, command: 'pg_isready -h localhost -p 5434' },
   ],
 };
 
