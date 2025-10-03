@@ -421,7 +421,7 @@ class UserIntentPredictionSystem {
     return Math.abs(hash);
   }
   private countComplexTerms(query: string): number {
-    const complexPatterns = [/\b\w{12}\b/g, /[;:(){}[\]]/g, /\b(pursuant|heretofore|whereas|notwithstanding)\b/gi];
+    const complexPatterns = [/\b\w{12}\b/g, /[:(){}[\]]/g, /\b(pursuant|heretofore|whereas|notwithstanding)\b/gi];
     return complexPatterns.reduce((count, pattern) => count + (query.match(pattern) || []).length, 0);
   }
   // Fallback methods for error cases

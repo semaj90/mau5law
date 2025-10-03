@@ -572,7 +572,7 @@ class EnhancedErrorHandler {
         complianceAlert: true
         requiresLegalReview: true
         timestamp: errorDetails.timestamp,
-        actions: [;
+        actions: [
           {
             label: "Contact Attorney",
             action: () => this.contactSupervisingAttorney(errorDetails),
@@ -600,7 +600,7 @@ class EnhancedErrorHandler {
         complianceAlert: true
         requiresLegalReview: true
         timestamp: errorDetails.timestamp,
-        actions: [;
+        actions: [
           {
             label: "Emergency Protocol",
             action: () => this.activatePrivilegeProtectionProtocol(errorDetails),

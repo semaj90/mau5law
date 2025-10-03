@@ -107,7 +107,7 @@ const services = {
   postgres: {
     host: process.env.POSTGRES_HOST || 'localhost',
     port: parseInt(
-      process.env.POSTGRES_PORT || getServicePortWithFallback('postgresql', 5433).toString())
+      process.env.POSTGRES_PORT || getServicePortWithFallback('postgresql', 5434).toString())
     ),
     database: process.env.POSTGRES_DB || 'legal_ai_db',
     user: process.env.POSTGRES_USER || 'legal_admin',
@@ -301,7 +301,7 @@ const orchestrationMachine = createMachine({
         checkingCache: {
           invoke: {
             src: 'checkCache',
-            onDone: [;
+            onDone: [
               {
                 target: 'complete',
                 guard: 'cacheHit',

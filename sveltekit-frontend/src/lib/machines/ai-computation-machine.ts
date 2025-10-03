@@ -173,16 +173,16 @@ export const aiComputationMachine = createMachine({
         PICK_UP_WHERE_LEFT_OFF: {
           target: 'resumingFromIdle'
         },
-        NETWORK_ONLINE: [;
+        NETWORK_ONLINE: [
           {
             target: 'processingQueue',
             guard: ({ context }) => context.queuedComputations.length > 0,
-            actions: assign({,
+            actions: assign({
               isOnline: true
             })
           },
           {
-            actions: assign({,
+            actions: assign({
               isOnline: true
             })
           }
@@ -205,7 +205,7 @@ export const aiComputationMachine = createMachine({
         },
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             currentComputation: ({ event }) => event.output.result,
             computationResults: ({ context, event }) => [
               ...context.computationResults,
@@ -215,7 +215,7 @@ export const aiComputationMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             errorMessage: ({ event }) => (event as any).error?.message || 'Computation failed'
           })
         }
@@ -226,7 +226,7 @@ export const aiComputationMachine = createMachine({
         },
         NETWORK_OFFLINE: {
           target: 'queueing',
-          actions: assign({,
+          actions: assign({
             isOnline: false
           })
         }
@@ -246,7 +246,7 @@ export const aiComputationMachine = createMachine({
         }),
         onDone: {
           target: 'userIdle',
-          actions: assign({,
+          actions: assign({
             computationResults: ({ context, event }) => [
               ...context.computationResults,
               { ...event.output, background: true }
@@ -273,7 +273,7 @@ export const aiComputationMachine = createMachine({
       on: {
         NETWORK_ONLINE: {
           target: 'processingQueue',
-          actions: assign({,
+          actions: assign({
             isOnline: true
           })
         },
@@ -295,7 +295,7 @@ export const aiComputationMachine = createMachine({
         }),
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             queuedComputations: [],
             computationResults: ({ context, event }) => [
               ...context.computationResults,
@@ -305,7 +305,7 @@ export const aiComputationMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             errorMessage: 'Failed to process queue'
           })
         }
@@ -325,7 +325,7 @@ export const aiComputationMachine = createMachine({
         },
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             recommendations: ({ event }) => event.output
           })
         }
@@ -338,7 +338,7 @@ export const aiComputationMachine = createMachine({
       after: {
         1000: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             idleTime: 0
           })
         }
@@ -346,7 +346,7 @@ export const aiComputationMachine = createMachine({
       on: {
         APPLY_RECOMMENDATION: {
           target: 'computing',
-          actions: assign({,
+          actions: assign({
             currentComputation: ({ event }) => event.recommendation
           })
         }
@@ -356,13 +356,13 @@ export const aiComputationMachine = createMachine({
       on: {
         START_COMPUTATION: {
           target: 'computing',
-          actions: assign({,
+          actions: assign({
             errorMessage: undefined
           })
         },
         USER_ACTIVE: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             errorMessage: undefined
           })
         }

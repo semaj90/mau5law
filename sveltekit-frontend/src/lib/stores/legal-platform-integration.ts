@@ -170,14 +170,14 @@ export const legalPlatformMachine = createMachine(
           input: ({ event }) => ({ caseId: (event as any).caseId }),
           onDone: {
             target: 'loading_related_entities',
-            actions: assign({,
+            actions: assign({
               currentCase: ({ event }) => event.output,
               error: null
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -190,7 +190,7 @@ export const legalPlatformMachine = createMachine(
           input: ({ context }) => ({ caseId: context.currentCase?.id }),
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               activeCitations: ({ event }) => event.output.citations,
               activeReports: ({ event }) => event.output.reports,
               activePOIs: ({ event }) => event.output.pois
@@ -198,7 +198,7 @@ export const legalPlatformMachine = createMachine(
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -211,14 +211,14 @@ export const legalPlatformMachine = createMachine(
           input: ({ event }) => ({ caseData: (event as any).caseData }),
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               currentCase: ({ event }) => event.output,
               allCases: ({ context, event }) => [...context.allCases, event.output]
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -235,13 +235,13 @@ export const legalPlatformMachine = createMachine(
           }),
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               currentCase: ({ event }) => event.output
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -253,13 +253,13 @@ export const legalPlatformMachine = createMachine(
           src: 'analyzeCrossSystemInsights',
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               crossSystemInsights: ({ event }) => event.output
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -271,7 +271,7 @@ export const legalPlatformMachine = createMachine(
           src: 'syncAllSystems',
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               syncStatus: {
                 citations: 'synced',
                 reports: 'synced',
@@ -282,7 +282,7 @@ export const legalPlatformMachine = createMachine(
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message
             })
           }
@@ -298,13 +298,13 @@ export const legalPlatformMachine = createMachine(
           }),
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               aiQueue: ({ context }) => context.aiQueue.slice(1)
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error).message,
               aiQueue: ({ context }) => context.aiQueue.slice(1)
             })

@@ -474,7 +474,7 @@ export const qloraWasmLoader = new QLoRAWasmLoader();
 export async function prepareDistilledModels(): Promise<void> {
   console.log('📦 Preparing distilled QLoRA models for browser execution...');
   // This would handle model downloading, caching, and preparation
-  const models = [;
+  const models = [
     {
       name: 'gemma3-legal-distilled-q4',
       url: '/models/gemma3-legal-distilled.q4_0.bin',

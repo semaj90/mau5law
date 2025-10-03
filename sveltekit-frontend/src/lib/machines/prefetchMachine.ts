@@ -74,7 +74,7 @@ export const prefetchMachine = createMachine({
         src: 'initializePredictionModel',
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             modelWeights: ({ event }) => event.type === 'xstate.done.actor.initializePredictionModel' ? (event as any).output?.weights: null
           })
         },
@@ -84,7 +84,7 @@ export const prefetchMachine = createMachine({
     idle: {
       on: {
         USER_ACTION: {
-          actions: [;
+          actions: [
             assign({
               userActions: ({ context, event }) => [
                 ...context.userActions.slice(-19), // Keep last 20 actions
@@ -139,7 +139,7 @@ export const prefetchMachine = createMachine({
         src: 'predictUserIntent',
         onDone: {
           target: 'idle',
-          actions: [;
+          actions: [
             assign({
               predictedIntent: ({ event }) => (event as any).output?.intent || null,
               confidence: ({ event }) => (event as any).output?.confidence || 0,
@@ -177,7 +177,7 @@ export const prefetchMachine = createMachine({
         src: 'trainPredictionModel',
         onDone: {
           target: 'idle',
-          actions: [;
+          actions: [
             assign({
               modelWeights: ({ event }) => (event as any).output?.weights || null,
               metrics: ({ context, event }) => ({
@@ -203,7 +203,7 @@ export const prefetchMachine = createMachine({
         // This would send PREDICT_INTENT event after delay
       }, 300);
     },
-    updatePredictionMetrics: assign({,
+    updatePredictionMetrics: assign({
       metrics: ({ context, event }) => {
         const predictionTime = (event as any).output?.processingTime || 0;
         return {

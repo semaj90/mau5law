@@ -4,12 +4,12 @@
  * Supporting global components and user session persistence
  */
 import { browser } from '$app/environment';
-import type { UserSession } from "$lib/stores/sessionStore.svelte";
 // Cache management for performance
-class DataCache {
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+class DataCache<T = unknown> {
+  // changed: avoid `any` by using a generic T (default unknown)
+  private cache = new Map<string, { data: T; timestamp: number; ttl: number }>();
   private maxSize = 100;
-  set(_key: string, data: any, ttlMs: number = 5 * 60 * 1000): void {
+  set(key: string, data: T, ttlMs: number = 5 * 60 * 1000): void {
     // Remove oldest entries if cache is full
     if (this.cache.size >= this.maxSize) {
       const oldestKey = Array.from(this.cache.keys())[0];
@@ -18,10 +18,10 @@ class DataCache {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
-      ttl: ttlMs
+      ttl: ttlMs,
     });
   }
-  get(_key: string): any | null {
+  get(key: string): T | null {
     const entry = this.cache.get(key);
     if (!entry) return null;
     const isExpired = Date.now() - entry.timestamp > entry.ttl;
@@ -37,9 +37,9 @@ class DataCache {
       return;
     }
     const regex = new RegExp(keyPattern);
-    for (const key of this.cache.keys()) {
-      if (regex.test(key)) {
-        this.cache.delete(key);
+    for (const k of this.cache.keys()) {
+      if (regex.test(k)) {
+        this.cache.delete(k);
       }
     }
   }
@@ -47,10 +47,10 @@ class DataCache {
     this.cache.clear();
   }
 }
-export const dataCache = new DataCache();
+export const dataCache = new DataCache(); // default generic = unknown
 // API request helpers with caching and error handling
 export interface ApiOptions {
-  cache?: boolean;
+  useCache?: boolean; // renamed from `cache` to avoid RequestInit.cache type conflict
   cacheTtl?: number;
   retries?: number;
   timeout?: number;
@@ -61,40 +61,70 @@ export class ApiClient {
   constructor(baseUrl: string = '/api/v1') {
     this.baseUrl = baseUrl;
   }
-  async request<T = any>(
-    endpoint: string
+
+  // helper to produce a stable string for the request body for cache keys
+  private serializeBody(body: BodyInit | null | undefined): string {
+    if (body === undefined || body === null) return '{}';
+    // primitives / string
+    if (typeof body === 'string') return body;
+    if (body instanceof URLSearchParams) return body.toString();
+    // Try to JSON stringify objects (FormData/Blob will fall back to String)
+    try {
+      // FormData/Blob will throw or produce non-JSON; for FormData convert to object
+      if (body instanceof FormData) {
+        const obj: Record<string, unknown> = {};
+        body.forEach((value, key) => {
+          if (obj[key] === undefined) obj[key] = value;
+          else if (Array.isArray(obj[key])) (obj[key] as unknown[]).push(value);
+          else obj[key] = [obj[key] as unknown, value];
+        });
+        return JSON.stringify(obj);
+      }
+      // Blob, ArrayBuffer etc -> fallback to string
+      return JSON.stringify(body as unknown) ?? String(body);
+    } catch {
+      return String(body);
+    }
+  }
+
+  async request<T = unknown>(
+    endpoint: string,
     options?: RequestInit & ApiOptions
   ): Promise<{ data: T; success: boolean; error?: string }> {
     const {
-      cache = false,
+      useCache = false,
       cacheTtl = 5 * 60 * 1000,
       retries = 1,
       timeout = 10000,
       signal,
       ...fetchOptions
-    } = options || {}
+    } = options || {};
     const url = `${this.baseUrl}${endpoint}`;
-    const cacheKey = `${fetchOptions.method || 'GET'}:${url}:${JSON.stringify(fetchOptions.body || {})}`;
+    const cacheKey = `${(fetchOptions.method as string) || 'GET'}:${url}:${this.serializeBody(fetchOptions.body)}`;
+
     // Check cache first
-    if (cache && !signal) {
+    if (useCache && !signal) {
       const cached = dataCache.get(cacheKey);
-      if (cached) {
-        return { data: cached, success: true }
+      if (cached !== null) {
+        return { data: cached as unknown as T, success: true }; // safe cast: cached came from prior successful response
       }
     }
-    let lastError: any;
+
+    let lastError: unknown = null;
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeout);
-        const finalSignal = signal || controller.signal;
+        const finalSignal = (signal || controller.signal) as AbortSignal;
+
+        // Build headers safely
+        const headers = new Headers(fetchOptions.headers as HeadersInit | undefined);
+        if (!headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+
         const response = await fetch(url, {
           ...fetchOptions,
-          signal: finalSignal;
-          headers: {
-            'Content-Type': 'application/json',
-            ...fetchOptions.headers
-          }
+          signal: finalSignal,
+          headers,
         });
         clearTimeout(timeoutId);
         if (!response.ok) {
@@ -103,47 +133,64 @@ export class ApiClient {
         }
         const data = await response.json();
         // Cache successful responses
-        if (cache) {
-          dataCache.set(cacheKey, data, cacheTtl);
+        if (useCache) {
+          dataCache.set(cacheKey, data as unknown as T, cacheTtl);
         }
-        return { data, success: true }
-      } catch (error: any) {
+        return { data: data as T, success: true };
+      } catch (error: unknown) {
         lastError = error;
         // Don't retry on abort
-        if (error.name === 'AbortError') {
+        const errName = (error as { name?: string } | null)?.name;
+        if (errName === 'AbortError') {
           break;
         }
         // Wait before retry
         if (attempt < retries) {
+          // exponential backoff
           await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
         }
       }
     }
     return {
-      data: null as T
-      success: false;
-      error: lastError?.message || 'Request failed'
-    }
+      data: null as T,
+      success: false,
+      error: (lastError as Error)?.message || 'Request failed',
+    };
   }
-  async get<T = any>(endpoint: string, options?: ApiOptions): Promise<{ data: T; success: boolean; error?: string }> {
-    return this.request<T>(endpoint, { method: 'GET', ...options });
+
+  async get<T = unknown>(
+    endpoint: string,
+    options?: ApiOptions
+  ): Promise<{ data: T; success: boolean; error?: string }> {
+    return this.request<T>(endpoint, { method: 'GET', ...(options as RequestInit & ApiOptions) });
   }
-  async post<T = any>(endpoint: string, body?: any, options?: ApiOptions): Promise<{ data: T; success: boolean; error?: string }> {
+  async post<T = unknown>(
+    endpoint: string,
+    body?: unknown,
+    options?: ApiOptions
+  ): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
       method: 'POST',
-      body: JSON.stringify(body),
-      ...options
+      body: typeof body === 'string' ? body : JSON.stringify(body),
+      ...(options as RequestInit & ApiOptions),
     });
   }
-  async put<T = any>(endpoint: string, body?: any, options?: ApiOptions): Promise<{ data: T; success: boolean; error?: string }> {
+  async put<T = unknown>(
+    endpoint: string,
+    body?: unknown,
+    options?: ApiOptions
+  ): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
       method: 'PUT',
-      body: JSON.stringify(body),
-      ...options
+      body: typeof body === 'string' ? body : JSON.stringify(body),
+      ...(options as RequestInit & ApiOptions),
     });
   }
-  async delete<T = any>(endpoint: string, options?: ApiOptions): Promise<{ data: T; success: boolean; error?: string }> {
-    return this.request<T>(endpoint, { method: 'DELETE', ...options });
+  async delete<T = unknown>(
+    endpoint: string,
+    options?: ApiOptions
+  ): Promise<{ data: T; success: boolean; error?: string }> {
+    return this.request<T>(endpoint, { method: 'DELETE', ...(options as RequestInit & ApiOptions) });
   }
 }
 export const apiClient = new ApiClient();
@@ -153,7 +200,7 @@ export interface ValidationRule {
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
-  custom?: (_value: any) => boolean | string;
+  custom?: (value: unknown) => boolean | string;
 }
 export interface ValidationSchema {
   [key: string]: ValidationRule;
@@ -162,8 +209,8 @@ export interface ValidationResult {
   isValid: boolean;
   errors: Record<string, string>;
 }
-export function validateData(data: any, schema: ValidationSchema): ValidationResult {
-  const errors: Record<string, string> = {}
+export function validateData(data: Record<string, unknown>, schema: ValidationSchema): ValidationResult {
+  const errors: Record<string, string> = {};
   for (const [field, rules] of Object.entries(schema)) {
     const value = data[field];
     if (rules.required && (value === undefined || value === null || value === '')) {
@@ -194,8 +241,8 @@ export function validateData(data: any, schema: ValidationSchema): ValidationRes
   }
   return {
     isValid: Object.keys(errors).length === 0,
-    errors
-  }
+    errors,
+  };
 }
 // Common validation schemas
 export const validationSchemas = {
@@ -203,41 +250,41 @@ export const validationSchemas = {
     title: { required: true, minLength: 3, maxLength: 200 },
     description: { maxLength: 2000 },
     category: { required: true },
-    priority: { required: true }
+    priority: { required: true },
   },
   evidence: {
     title: { required: true, minLength: 3, maxLength: 200 },
     type: { required: true },
-    caseId: { required: true }
+    caseId: { required: true },
   },
   report: {
     title: { required: true, minLength: 3, maxLength: 200 },
     type: { required: true },
-    content: { required: true, minLength: 10 }
+    content: { required: true, minLength: 10 },
   },
   user: {
     email: {
-      required: true
+      required: true,
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      custom: (_value: string) => value.includes('@') || 'Invalid email format'
+      custom: (_value: string) => (_value && _value.includes('@')) || 'Invalid email format',
     },
     name: { minLength: 2, maxLength: 100 },
-    role: { required: true }
-  }
-}
+    role: { required: true },
+  },
+};
 // Local storage helpers with error handling
 export const storage = {
-  get<T = any>(_key: string, defaultValue?: T): T | null {
+  get<T = unknown>(key: string, defaultValue?: T): T | null {
     if (!browser) return defaultValue || null;
     try {
       const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue || null;
+      return item ? (JSON.parse(item) as T) : defaultValue || null;
     } catch (error) {
       console.warn(`Failed to parse localStorage item "${key}":`, error);
       return defaultValue || null;
     }
   },
-  set(_key: string, value: any): boolean {
+  set(key: string, value: unknown): boolean {
     if (!browser) return false;
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -247,7 +294,7 @@ export const storage = {
       return false;
     }
   },
-  remove(_key: string): boolean {
+  remove(key: string): boolean {
     if (!browser) return false;
     try {
       localStorage.removeItem(key);
@@ -266,8 +313,8 @@ export const storage = {
       console.warn('Failed to clear localStorage:', error);
       return false;
     }
-  }
-}
+  },
+};
 // File handling utilities
 export function isValidFileType(file: File, allowedTypes: string[]): boolean {
   return allowedTypes.some(type => {
@@ -291,13 +338,14 @@ export function formatFileType(mimeType: string): string {
     'audio/mp3': 'MP3 Audio',
     'audio/wav': 'WAV Audio',
     'text/plain': 'Text File',
-    'application/json': 'JSON File'
-  }
+    'application/json': 'JSON File',
+  };
   return typeMap[mimeType] || mimeType.split('/')[1]?.toUpperCase() || 'Unknown';
 }
 // Data transformation helpers
-export function normalizeData<T>(data: any, schema: { [key: string]: any }): T {
-  const normalized: any = {}
+type FieldType = 'string' | 'number' | 'boolean' | 'date' | 'array' | string;
+export function normalizeData<T>(data: Record<string, unknown>, schema: Record<string, FieldType>): T {
+  const normalized: Record<string, unknown> = {};
   for (const [key, type] of Object.entries(schema)) {
     const value = data[key];
     if (value === undefined || value === null) {
@@ -315,7 +363,7 @@ export function normalizeData<T>(data: any, schema: { [key: string]: any }): T {
         normalized[key] = Boolean(value);
         break;
       case 'date':
-        normalized[key] = new Date(value);
+        normalized[key] = new Date(value as string | number);
         break;
       case 'array':
         normalized[key] = Array.isArray(value) ? value : [];
@@ -327,19 +375,19 @@ export function normalizeData<T>(data: any, schema: { [key: string]: any }): T {
   return normalized as T;
 }
 // Query parameter helpers
-export function buildQueryString(params: { [key: string]: any }): string {
+export function buildQueryString(params: Record<string, unknown>): string {
   const filtered = Object.entries(params)
     .filter(([_, value]) => value !== undefined && value !== null && value !== '')
     .map(([key, value]) => {
       if (Array.isArray(value)) {
-        return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
+        return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(String(v))}`).join('&');
       }
-      return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      return `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`;
     });
   return filtered.length > 0 ? `?${filtered.join('&')}` : '';
 }
 export function parseQueryString(search: string): Record<string, string | string[]> {
-  const params: Record<string, string | string[]> = {}
+  const params: Record<string, string | string[]> = {};
   const urlParams = new URLSearchParams(search);
   for (const [key, value] of urlParams.entries()) {
     if (params[key]) {
@@ -358,37 +406,38 @@ export function parseQueryString(search: string): Record<string, string | string
 export interface AppError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
   timestamp: Date;
 }
-export function createError(code: string, message: string, details?: any): AppError {
+export function createError(code: string, message: string, details?: unknown): AppError {
   return {
     code,
     message,
     details,
-    timestamp: new Date()
-  }
+    timestamp: new Date(),
+  };
 }
-export function handleApiError(error: any): AppError {
-  if (error.name === 'AbortError') {
+export function handleApiError(error: unknown): AppError {
+  const err = (error as { name?: string; message?: string } | undefined) || {};
+  if (err.name === 'AbortError') {
     return createError('REQUEST_CANCELLED', 'Request was cancelled');
   }
-  if (error.message?.includes('fetch')) {
+  if (err.message?.includes('fetch')) {
     return createError('NETWORK_ERROR', 'Network connection failed');
   }
-  if (error.message?.includes('HTTP 401')) {
+  if (err.message?.includes('HTTP 401')) {
     return createError('UNAUTHORIZED', 'Authentication required');
   }
-  if (error.message?.includes('HTTP 403')) {
+  if (err.message?.includes('HTTP 403')) {
     return createError('FORBIDDEN', 'Access denied');
   }
-  if (error.message?.includes('HTTP 404')) {
+  if (err.message?.includes('HTTP 404')) {
     return createError('NOT_FOUND', 'Resource not found');
   }
-  if (error.message?.includes('HTTP 500')) {
+  if (err.message?.includes('HTTP 500')) {
     return createError('SERVER_ERROR', 'Internal server error');
   }
-  return createError('UNKNOWN_ERROR', error.message || 'An unexpected error occurred');
+  return createError('UNKNOWN_ERROR', err.message || 'An unexpected error occurred');
 }
 // Performance monitoring
 export class PerformanceMonitor {
@@ -421,9 +470,9 @@ export class PerformanceMonitor {
 export const performanceMonitor = new PerformanceMonitor();
 // Data synchronization helpers
 export class DataSync {
-  private syncQueue = new Map<string, any>();
+  private syncQueue = new Map<string, { data: unknown; timestamp: number }>();
   private syncing = false;
-  queue(_key: string, data: any): void {
+  queue(key: string, data: unknown): void {
     this.syncQueue.set(key, { data, timestamp: Date.now() });
     this.processQueue();
   }

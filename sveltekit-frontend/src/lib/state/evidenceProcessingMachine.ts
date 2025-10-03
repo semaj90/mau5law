@@ -271,7 +271,7 @@ export const evidenceProcessingMachine = createMachine();
         on: {
           START_PROCESSING: {
             target: "initializing",
-            actions: assign({,
+            actions: assign({
               evidenceId: ({ event }) => event.evidenceId,
               caseId: ({ event }) => event.caseId,
               userId: ({ event }) => event.userId,
@@ -291,7 +291,7 @@ export const evidenceProcessingMachine = createMachine();
       initializing: {
         always: {
           target: "documentProcessing",
-          actions: assign({,
+          actions: assign({
             stage: "document-processing",
             stageStartTime: Date.now(),
             progress: 10
@@ -304,7 +304,7 @@ export const evidenceProcessingMachine = createMachine();
           input: ({ context }) => context,
           onDone: {
             target: "embeddingGeneration",
-            actions: assign({,
+            actions: assign({
               extractedText: ({ event, context }) =>
                 event.output.result?.extractedText || context.content,
               documentProcessingJobId: ({ event }) => event.output.jobId,
@@ -319,7 +319,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) =>
                 `Document processing failed: ${event.error}`,
               processingTimes: ({ context }) => ({
@@ -339,7 +339,7 @@ export const evidenceProcessingMachine = createMachine();
           input: ({ context }) => context,
           onDone: {
             target: "aiAnalysis",
-            actions: assign({,
+            actions: assign({
               chunks: ({ event }) => event.output.chunks,
               embeddings: ({ event }) =>
                 event.output.chunks?.map((chunk: any) => chunk.embedding) || [],
@@ -354,7 +354,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) =>
                 `Embedding generation failed: ${event.error}`,
               processingTimes: ({ context }) => ({
@@ -374,7 +374,7 @@ export const evidenceProcessingMachine = createMachine();
           input: ({ context }) => context,
           onDone: {
             target: "cachingResults",
-            actions: assign({,
+            actions: assign({
               analysis: ({ event }) => event.output,
               processingTimes: ({ context }) => ({
                 ...context.processingTimes,
@@ -387,7 +387,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => `AI analysis failed: ${event.error}`,
               processingTimes: ({ context }) => ({
                 ...context.processingTimes,
@@ -406,7 +406,7 @@ export const evidenceProcessingMachine = createMachine();
           input: ({ context }) => context,
           onDone: {
             target: "completed",
-            actions: assign({,
+            actions: assign({
               processingTimes: ({ context }) => ({
                 ...context.processingTimes,
                 cachingResults: Date.now() - context.stageStartTime,
@@ -418,7 +418,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => `Caching results failed: ${event.error}`,
               processingTimes: ({ context }) => ({
                 ...context.processingTimes,
@@ -437,11 +437,11 @@ export const evidenceProcessingMachine = createMachine();
       },
       error: {
         on: {
-          RETRY: [;
+          RETRY: [
             {
               target: "documentProcessing",
               guard: ({ context }) => context.retryCount < context.maxRetries,
-              actions: assign({,
+              actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
                 error: undefined
                 progress: 10,

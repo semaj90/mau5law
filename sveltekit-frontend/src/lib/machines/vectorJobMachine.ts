@@ -192,7 +192,7 @@ export const vectorJobMachine = createMachine({
 						processingTimeMs: Date.now() - (new Date().getTime()
 					})
 				},
-				onError: [;
+				onError: [
 					{
 						target: 'webgpuFallback',
 						guard: ({ context }) => context.webGPUAvailable && !context.useWebGPU,
@@ -314,7 +314,7 @@ export const vectorJobMachine = createMachine({
 			}
 		},
 		failed: {
-			entry: [;
+			entry: [
 				({ context }) => {
 					console.error(`❌ Vector job ${context.jobId} failed: ${context.error}`);
 					// Emit failure event
@@ -340,7 +340,7 @@ export const vectorJobMachine = createMachine({
 			}
 		},
 		cancelled: {
-			entry: [;
+			entry: [
 				({ context }) => {
 					console.log(`🚫 Vector job ${context.jobId} cancelled`);
 				}

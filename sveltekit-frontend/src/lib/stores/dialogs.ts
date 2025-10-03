@@ -1,6 +1,5 @@
 import { writable } from 'svelte/store';
-}
-export interface Dialog {
+export interface Dialog<T = unknown> {
   id: string;
   type: 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'prompt';
   title?: string;
@@ -8,33 +7,33 @@ export interface Dialog {
   value?: string;
   position?: 'center' | 'top' | 'bottom';
   persistent?: boolean;
-  resolve?: (result: any) => void;
+  resolve?: (result: T) => void;
   reject?: (reason?: unknown) => void;
 }
-export interface Modal {
+export interface Modal<T = unknown> {
   id: string;
   component?: unknown;
-  props?: { [key: string]: any }
+  props?: Record<string, unknown>;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
   type?: 'default' | 'confirm' | 'alert' | 'system';
   persistent?: boolean;
-  resolve?: (result: any) => void;
+  resolve?: (result: T) => void;
   reject?: (reason?: unknown) => void;
 }
 function createDialogStore() {
-  const { subscribe, update } = writable<Dialog[]>([]);
+  const { subscribe, update } = writable<Dialog<unknown>[]>([]);
   function generateId(): string {
     return Math.random().toString(36).substring(2) + Date.now().toString(36);
   }
-  function add(dialog: Omit<Dialog, 'id'>): Promise<any> {
+  function add<T = unknown>(dialog: Omit<Dialog<T>, 'id'>): Promise<T> {
     return new Promise((resolve, reject) => {
       const id = generateId();
-      const newDialog: Dialog = {
-        ...dialog,
+      const newDialog: Dialog<unknown> = {
+        ...(dialog as Dialog<unknown>),
         id,
-        resolve,
-        reject
-      }
+        resolve: (r: unknown) => resolve(r as T),
+        reject,
+      };
       update(dialogs => [...dialogs, newDialog]);
     });
   }
@@ -68,61 +67,62 @@ function createDialogStore() {
   }
   // Convenience methods
   function info(title: string, message?: string): Promise<void> {
-    return add({
+    return add<void>({
       type: 'info',
       title,
       message,
-      position: 'center'
+      position: 'center',
     });
   }
   function success(title: string, message?: string): Promise<void> {
-    return add({
+    return add<void>({
       type: 'success',
       title,
       message,
-      position: 'center'
+      position: 'center',
     });
   }
   function warning(title: string, message?: string): Promise<void> {
-    return add({
+    return add<void>({
       type: 'warning',
       title,
       message,
-      position: 'center'
+      position: 'center',
     });
   }
   function error(title: string, message?: string): Promise<void> {
-    return add({
+    return add<void>({
       type: 'error',
       title,
       message,
       position: 'center',
-      persistent: true
+      persistent: true,
     });
   }
   function confirm(title: string, message?: string): Promise<boolean> {
-    return add({
+    return add<boolean>({
       type: 'confirm',
       title,
       message,
-      position: 'center'
-    }).then(() => true).catch(() => false);
+      position: 'center',
+    })
+      .then(() => true)
+      .catch(() => false);
   }
   function prompt(title: string, message?: string, defaultValue?: string): Promise<string | null> {
-    return add({
+    return add<{ value?: string }>({
       type: 'prompt',
       title,
       message,
       value: defaultValue || '',
-      position: 'center'
-    }).then((result) => result?.value || null).catch(() => null);
+      position: 'center',
+    })
+      .then(result => result?.value || null)
+      .catch(() => null);
   }
   // Legal AI specific dialogs
   function confirmCaseDelete(caseId: string): Promise<boolean> {
-    return confirm(
-      'Delete Case',
-      `Are you sure you want to delete case ${caseId}? This action cannot be undone.`
-    );
+    return confirm('Delete Case', `Are you sure you want to delete case ${caseId}? This action cannot be undone.`);
   }
   function confirmEvidenceDelete(evidenceId: string): Promise<boolean> {
     return confirm(
@@ -131,19 +131,15 @@ function createDialogStore() {
     );
   }
   function promptCaseName(): Promise<string | null> {
-    return prompt(
-      'Create New Case',
-      'Enter a name for the new case:',
-      'Untitled Case'
-    );
+    return prompt('Create New Case', 'Enter a name for the new case:', 'Untitled Case');
   }
   function systemAlert(title: string, message: string): Promise<void> {
-    return add({
+    return add<void>({
       type: 'error',
       title,
       message,
       position: 'center',
-      persistent: true
+      persistent: true,
     });
   }
   return {
@@ -162,23 +158,23 @@ function createDialogStore() {
     confirmCaseDelete,
     confirmEvidenceDelete,
     promptCaseName,
-    systemAlert
-  }
+    systemAlert,
+  };
 }
 function createModalStore() {
-  const { subscribe, update } = writable<Modal[]>([]);
+  const { subscribe, update } = writable<Modal<unknown>[]>([]);
   function generateId(): string {
     return Math.random().toString(36).substring(2) + Date.now().toString(36);
   }
-  function add(modal: Omit<Modal, 'id'>): Promise<any> {
+  function add<T = unknown>(modal: Omit<Modal<T>, 'id'>): Promise<T> {
     return new Promise((resolve, reject) => {
       const id = generateId();
-      const newModal: Modal = {
-        ...modal,
+      const newModal: Modal<unknown> = {
+        ...(modal as Modal<unknown>),
         id,
-        resolve,
-        reject
-      }
+        resolve: (r: unknown) => resolve(r as T),
+        reject,
+      };
       update(modals => [...modals, newModal]);
     });
   }
@@ -211,13 +207,17 @@ function createModalStore() {
     });
   }
   // Convenience method for opening custom component modals
-  function open(component: any, props: { [key: string]: any } = {}, options: Partial<Modal> = {}): Promise<any> {
-    return add({
+  function open<T = unknown>(
+    component: unknown,
+    props: Record<string, unknown> = {},
+    options: Partial<Modal>
+  ): Promise<T> {
+    return add<T>({
       component,
       props,
       size: options.size || 'md',
       type: options.type || 'default',
-      persistent: options.persistent || false
+      persistent: options.persistent || false,
     });
   }
   return {
@@ -226,8 +226,8 @@ function createModalStore() {
     remove,
     reject,
     clear,
-    open
-  }
+    open,
+  };
 }
 export const dialogStore = createDialogStore();
 export const modalStore = createModalStore();

@@ -74,7 +74,7 @@ export const agentShellMachineMCP = createMachine({
       on: {
         PROMPT: {
           target: "processing",
-          actions: assign({,
+          actions: assign({
             input: ({ event }) => (event as any).input || "",
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
@@ -82,7 +82,7 @@ export const agentShellMachineMCP = createMachine({
         },
         SEMANTIC_SEARCH: {
           target: "searching",
-          actions: assign({,
+          actions: assign({
             searchQuery: ({ event }) => (event as any).query,
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
@@ -90,7 +90,7 @@ export const agentShellMachineMCP = createMachine({
         },
         FILE_UPLOAD: {
           target: "uploading",
-          actions: assign({,
+          actions: assign({
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
           })
@@ -101,49 +101,49 @@ export const agentShellMachineMCP = createMachine({
         // MCP operations
         MCP_LOAD_CASE: {
           target: "mcpLoadingCase",
-          actions: assign({,
+          actions: assign({
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_LOAD_CASES: {
           target: "mcpLoadingCases",
-          actions: assign({,
+          actions: assign({
             userId: ({ event }) => (event as any).userId
           })
         },
         MCP_CREATE_CASE: {
           target: "mcpCreatingCase",
-          actions: assign({,
+          actions: assign({
             userId: ({ event }) => (event as any).userId
           })
         },
         MCP_LOAD_EVIDENCE: {
           target: "mcpLoadingEvidence",
-          actions: assign({,
+          actions: assign({
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_CREATE_EVIDENCE: {
           target: "mcpCreatingEvidence",
-          actions: assign({,
+          actions: assign({
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_FIND_SIMILAR_CASES: {
           target: "mcpFindingSimilarCases",
-          actions: assign({,
+          actions: assign({
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_FIND_SIMILAR_EVIDENCE: {
           target: "mcpFindingSimilarEvidence",
-          actions: assign({,
+          actions: assign({
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_GET_ANALYTICS: {
           target: "mcpGettingAnalytics",
-          actions: assign({,
+          actions: assign({
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
           })
@@ -160,13 +160,13 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             response: (_, e) => (e && "data" in e ? (e as any).data: "")
           })
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Processing error" : "Unknown error")
           })
         }
@@ -190,13 +190,13 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             searchResults: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Search error" : "Unknown error")
           })
         }
@@ -212,13 +212,13 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             uploadResults: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Upload error" : "Unknown error")
           })
         }
@@ -229,13 +229,13 @@ export const agentShellMachineMCP = createMachine({
         src: "checkServiceHealthWithMCP",
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             serviceHealth: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Health check error" : "Unknown error")
           })
         }
@@ -248,7 +248,7 @@ export const agentShellMachineMCP = createMachine({
         input: ({ context }) => ({ caseId: context.caseId }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             currentCase: (_, e) => (e && "data" in e ? (e as any).data : null),
             mcpResults: ({ context, event }) => ({
               ...(context.mcpResults || {}),
@@ -258,7 +258,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP case load error" : "Unknown error")
           })
         }
@@ -270,7 +270,7 @@ export const agentShellMachineMCP = createMachine({
         input: ({ context }) => ({ userId: context.userId }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             mcpResults: ({ context, event }) => ({
               ...(context.mcpResults || {}),
               cases: event && "data" in event ? (event as any).data : null
@@ -279,7 +279,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP cases load error" : "Unknown error")
           })
         }
@@ -294,7 +294,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             currentCase: (_, e) => (e && "data" in e ? (e as any).data : null),
             mcpResults: ({ context, event }) => ({
               ...(context.mcpResults || {}),
@@ -304,7 +304,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP case creation error" : "Unknown error")
           })
         }
@@ -316,7 +316,7 @@ export const agentShellMachineMCP = createMachine({
         input: ({ context }) => ({ caseId: context.caseId }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             currentEvidence: (_, e) => (e && "data" in e ? (e as any).data : []),
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
@@ -326,7 +326,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP evidence load error" : "Unknown error")
           })
         }
@@ -341,7 +341,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
               evidence: e && "data" in e ? (e as any).data : null
@@ -350,7 +350,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP evidence creation error" : "Unknown error")
           })
         }
@@ -365,7 +365,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             mcpResults: ({ context, event }) => ({
               ...(context.mcpResults || {}),
               cases: event && "data" in event ? (event as any).data : null
@@ -374,7 +374,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP similar cases error" : "Unknown error")
           })
         }
@@ -389,7 +389,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
               evidence: e && "data" in e ? (e as any).data : null
@@ -398,7 +398,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP similar evidence error" : "Unknown error")
           })
         }
@@ -413,7 +413,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
               analytics: e && "data" in e ? (e as any).data : null
@@ -422,7 +422,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP analytics error" : "Unknown error")
           })
         }

@@ -79,7 +79,7 @@ export class MultiDimensionalImageCache {
   private imageEntries: Map<string, ImageCacheEntry> = new Map();
   private gpuTextures: Map<string, GPUTextureMatrix> = new Map();
   // Cache layers with different characteristics
-  private cacheLayers: CacheLayer[] = [;
+  private cacheLayers: CacheLayer[] = [
     {
       name: 'gpu_texture',
       capacity: 50, // Limited GPU memory

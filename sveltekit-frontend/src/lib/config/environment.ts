@@ -79,9 +79,9 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
       port: parseInt(process.env.REDIS_PORT || '6379')
     },
     postgres: {
-      url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
+      url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
       host: process.env.POSTGRES_HOST || 'localhost',
-      port: parseInt(process.env.POSTGRES_PORT || '5433')
+      port: parseInt(process.env.POSTGRES_PORT || '5434')
     },
     development: {
       isDev: process.env.NODE_ENV === 'development',
@@ -141,7 +141,7 @@ export const ENV_CONFIG = {
     return process.env.REDIS_URL || 'redis://localhost:6379'
   },
   get DATABASE_URL() {
-    return process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
+    return process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db'
   },
   get IS_DEVELOPMENT() {
     return process.env.NODE_ENV === 'development';

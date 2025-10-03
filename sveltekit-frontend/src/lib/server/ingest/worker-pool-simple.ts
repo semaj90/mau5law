@@ -12,6 +12,18 @@
 import { Worker } from "worker_threads";
 import path from "path";
 import os from "os";
+
+// Define the expected successful result structure from a worker job
+interface JobResult {
+  jobId: string;
+  documentId?: number;
+  content?: string;
+  contentType?: string;
+  embeddingStatus?: 'generated' | 'none';
+  metadata?: Record<string, unknown>;
+  // Add other properties that a successful worker message might contain
+}
+
 export type Job = {
   id: string;
   minioUrl?: string;
@@ -19,20 +31,21 @@ export type Job = {
   filename?: string;
   userId: string;
   contentType?: string;
-  metadata?: { [key: string]: any }
-}
+  metadata?: Record<string, unknown>; // Changed from any to Record<string, unknown>
+};
 export class WorkerPool {
   pool: Worker[] = [];
   queue: Job[] = [];
   free: boolean[] = [];
-  private jobCallbacks = new Map<string, { resolve: Function; reject: Function }>();
+  // Explicitly type resolve and reject functions
+  private jobCallbacks = new Map<string, { resolve: (value: JobResult) => void; reject: (reason?: Error) => void }>();
   constructor(num = Math.max(1, Math.floor(os.cpus().length / 2))) {
     for (let i = 0; i < num; i++) {
-      const workerPath = path.resolve(__dirname, "ingest-worker.js");
+      const workerPath = path.resolve(__dirname, 'ingest-worker.js');
       const w = new Worker(workerPath);
       this.pool.push(w);
       this.free.push(true);
-      w.on("message", (message) => {
+      w.on('message', message => {
         // Worker finished job -> mark free and resolve/reject promise
         const idx = this.pool.indexOf(w);
         this.free[idx] = true;
@@ -40,22 +53,23 @@ export class WorkerPool {
           const { resolve, reject } = this.jobCallbacks.get(message.jobId)!;
           this.jobCallbacks.delete(message.jobId);
           if (message.error) {
-            reject(new Error(message.error);
+            reject(new Error(message.error));
           } else {
-            resolve(message);
+            resolve(message as JobResult); // Cast message to JobResult
           }
         }
         this.maybeProcessQueue();
       });
-      w.on("error", (err) => {
-        console.error("Worker error:", err);
+      w.on('error', err => {
+        console.error('Worker error:', err);
         const idx = this.pool.indexOf(w);
         this.free[idx] = true;
         this.maybeProcessQueue();
       });
     }
   }
-  async processJob(job: Job): Promise<any> {
+  async processJob(job: Job): Promise<JobResult> {
+    // Changed return type to Promise<JobResult>
     return new Promise((resolve, reject) => {
       this.jobCallbacks.set(job.id, { resolve, reject });
       this.queue.push(job);
@@ -78,11 +92,21 @@ export class WorkerPool {
   getStats() {
     return {
       totalWorkers: this.pool.length,
-      busyWorkers: this.free.filter(item => item.length),
-      freeWorkers: this.free.filter(item => item.length),
+      busyWorkers: this.free.filter(isFree => !isFree).length, // Corrected logic
+      freeWorkers: this.free.filter(isFree => isFree).length, // Corrected logic
       queuedJobs: this.queue.length,
-      pendingCallbacks: this.jobCallbacks.size
-    }
+      pendingCallbacks: this.jobCallbacks.size,
+    };
+  }
+  /**
+   * Returns an array of IDs for jobs currently in the queue.
+   * Assumes each job object in the queue has an 'id' property.
+   */
+  getQueuedJobIds(): string[] {
+    // This implementation assumes a 'queue' property exists on the WorkerPool instance
+    // and that each item in the queue has an 'id' property.
+    // Adjust 'this.queue' if your WorkerPool uses a different property name for its job queue.
+    return this.queue.map(job => job.id);
   }
   async shutdown(): Promise<void> {
     // Terminate all workers

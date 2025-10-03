@@ -9,7 +9,7 @@ console.log(chalk.cyan('💬 Chat Session Persistence & Embeddings v1.0'));
 
 const config = {
   databaseUrl:
-    process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
+    process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
   redisUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
   ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11435',
   embeddingModel: 'nomic-embed-text',
@@ -27,7 +27,7 @@ console.log(`   Batch Size: ${config.batchSize}`);
 // Database connection
 const sql = postgres(config.databaseUrl, {
   host: 'localhost',
-  port: 5433,
+  port: 5434,
   database: 'legal_ai_db',
   username: 'legal_admin',
   password: '123456',

@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       {
         name: 'PostgreSQL',
-        url: 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
+        url: 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
         key: 'postgres'
       }
     ]

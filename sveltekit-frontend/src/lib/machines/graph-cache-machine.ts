@@ -96,7 +96,7 @@ export const graphCacheMachine = createMachine({
         ENABLE_BACKGROUND_REFRESH: { actions: 'enableBackgroundRefresh' },
         DISABLE_BACKGROUND_REFRESH: { actions: 'disableBackgroundRefresh' },
         INVALIDATE_CACHE: { actions: 'invalidateCache' },
-        IDLE_CALLBACK: [;
+        IDLE_CALLBACK: [
           {
             target: 'backgroundRefreshing',
             guard: 'shouldBackgroundRefresh'
@@ -121,7 +121,7 @@ export const graphCacheMachine = createMachine({
         cacheHit: {
           entry: ['notifyCacheHit', 'updateTelemetry'],
           after: {
-            100: [;
+            100: [
               {
                 target: '#graphCache.backgroundRefreshing',
                 guard: 'isStaleResult'
@@ -155,7 +155,7 @@ export const graphCacheMachine = createMachine({
                   target: '#graphCache.rehydrated',
                   actions: 'setAuthoritativeResult'
                 },
-                REFRESH_FAILED: [;
+                REFRESH_FAILED: [
                   {
                     target: 'authoritativeQuery',
                     guard: 'canRetry',
@@ -168,7 +168,7 @@ export const graphCacheMachine = createMachine({
                 ]
               },
               after: {
-                10000: [;
+                10000: [
                   {
                     target: 'authoritativeQuery',
                     guard: 'canRetry',
@@ -263,7 +263,7 @@ export const graphCacheMachine = createMachine({
         return null;
       }
     }),
-    setQuery: assign({,
+    setQuery: assign({
       query: ({ event }) => event.type === 'QUERY' ? event.query: null;
       params: ({ event }) => event.type === 'QUERY' ? (event.params || {}) : { [key: string]: any },
       queryHash: ({ event }) => {
@@ -282,13 +282,13 @@ export const graphCacheMachine = createMachine({
       },
       retryCount: 0
     }),
-    incrementQueryCount: assign({,
+    incrementQueryCount: assign({
       telemetry: ({ context }) => ({
         ...context.telemetry,
         totalQueries: context.telemetry.totalQueries + 1
       })
     }),
-    setCacheResult: assign({,
+    setCacheResult: assign({
       result: ({ event }) => event.type === 'CACHE_HIT' ? event.result: null
       source: ({ event }) => event.type === 'CACHE_HIT' ? event.source as any : 'indexeddb_cache',
       cacheHit: true
@@ -298,12 +298,12 @@ export const graphCacheMachine = createMachine({
         cacheHits: context.telemetry.cacheHits + 1
       })
     }),
-    setWasmResult: assign({,
+    setWasmResult: assign({
       result: ({ event }) => event.type === 'WASM_RESULT' ? event.result : null
       source: 'wasm' as const,
       latency: ({ event }) => event.type === 'WASM_RESULT' ? event.latency : 0
     }),
-    setAuthoritativeResult: assign({,
+    setAuthoritativeResult: assign({
       result: ({ event }) => {
         if (event.type === 'AUTHORITATIVE_RESULT') return event.result;
         if (event.type === 'REFRESH_COMPLETE') return event.result;
@@ -316,22 +316,22 @@ export const graphCacheMachine = createMachine({
       isAuthoritative: true
       lastRefresh: Date.now()
     }),
-    setRefreshJob: assign({,
+    setRefreshJob: assign({
       refreshJob: ({ context }) => `refresh_${context.queryHash}_${Date.now()}`
     }),
-    clearRefreshJob: assign({,
+    clearRefreshJob: assign({
       refreshJob: null
     }),
-    incrementRetry: assign({,
+    incrementRetry: assign({
       retryCount: ({ context }) => context.retryCount + 1
     }),
-    enableBackgroundRefresh: assign({,
+    enableBackgroundRefresh: assign({
       backgroundRefreshEnabled: true
     }),
-    disableBackgroundRefresh: assign({,
+    disableBackgroundRefresh: assign({
       backgroundRefreshEnabled: false
     }),
-    updateTelemetry: assign({,
+    updateTelemetry: assign({
       telemetry: ({ context }) => {
         const total = context.telemetry.cacheHits + context.telemetry.cacheMisses;
         return {
@@ -341,7 +341,7 @@ export const graphCacheMachine = createMachine({
         }
       }
     }),
-    resetTelemetry: assign({,
+    resetTelemetry: assign({
       telemetry: {
         totalQueries: 0,
         cacheHits: 0,

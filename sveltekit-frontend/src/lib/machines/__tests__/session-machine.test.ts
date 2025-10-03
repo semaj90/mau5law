@@ -42,7 +42,7 @@ const sessionMachine = createMachine({
         }),
         onDone: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             sessionId: ({ event }) => event.output.sessionId,
             userId: ({ event }) => event.output.userId,
             activeCase: ({ event }) => event.output.caseData,
@@ -54,7 +54,7 @@ const sessionMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.error.message
           })
         }
@@ -64,13 +64,13 @@ const sessionMachine = createMachine({
       on: {
         ADD_COLLABORATOR: {
           target: 'updating',
-          actions: assign({,
+          actions: assign({
             lastActivity: () => Date.now()
           })
         },
         UPDATE_CASE: {
           target: 'updating',
-          actions: assign({,
+          actions: assign({
             lastActivity: () => Date.now()
           })
         },
@@ -117,7 +117,7 @@ const sessionMachine = createMachine({
         }),
         onDone: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             collaborators: ({ event, context }) =>
               event.output.collaborators || context.collaborators,
             activeCase: ({ event, context }) =>
@@ -128,7 +128,7 @@ const sessionMachine = createMachine({
         },
         onError: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.error.message
           })
         }

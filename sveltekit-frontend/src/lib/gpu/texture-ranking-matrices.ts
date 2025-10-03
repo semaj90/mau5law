@@ -44,7 +44,7 @@ export class TextureRankingMatrices {
   private rankingTextures: Map<string, GPUTextureMatrix> = new Map();
   private resultBuffers: Map<string, GPUBuffer> = new Map();
   // Multi-dimensional ranking configurations
-  private rankingDimensions: RankingDimension[] = [;
+  private rankingDimensions: RankingDimension[] = [
     {
       name: 'semantic_similarity',
       weight: 0.4,
@@ -130,7 +130,7 @@ export class TextureRankingMatrices {
         });
         // Create bind group layout
         const bindGroupLayout = this.device.createBindGroupLayout({
-          entries: [;
+          entries: [
             {
               binding: 0,
               visibility: GPUShaderStage.COMPUTE,

@@ -426,7 +426,7 @@ export const evidenceCustodyMachine = createMachine();
         on: {
           START_CUSTODY_WORKFLOW: {
             target: "evidenceIntake",
-            actions: assign({,
+            actions: assign({
               evidenceId: ({ event }) => event.evidenceId,
               caseId: ({ event }) => event.caseId,
               userId: ({ event }) => event.userId,
@@ -447,7 +447,7 @@ export const evidenceCustodyMachine = createMachine();
           input: ({ context }) => context,
           onDone: {
             target: "integrityVerification",
-            actions: assign({,
+            actions: assign({
               evidenceData: ({ event }) => event.output.evidenceData,
               currentHash: ({ event }) => event.output.currentHash,
               integrityStatus: ({ event }) => event.output.integrityStatus,
@@ -466,7 +466,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => `Evidence intake failed: ${event.error}`,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
@@ -485,7 +485,7 @@ export const evidenceCustodyMachine = createMachine();
           input: ({ context }) => context,
           onDone: {
             target: "aiAnalysis",
-            actions: assign({,
+            actions: assign({
               verificationResults: ({ event }) =>
                 event.output.verificationResults,
               integrityStatus: ({ event }) => event.output.integrityStatus,
@@ -507,7 +507,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) =>
                 `Integrity verification failed: ${event.error}`,
               stageTimes: ({ context }) => ({
@@ -527,7 +527,7 @@ export const evidenceCustodyMachine = createMachine();
           input: ({ context }) => context,
           onDone: {
             target: "collaboration",
-            actions: assign({,
+            actions: assign({
               aiAnalysis: ({ event }) => event.output.aiAnalysis,
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
@@ -544,7 +544,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => `AI analysis failed: ${event.error}`,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
@@ -561,7 +561,7 @@ export const evidenceCustodyMachine = createMachine();
           START_AI_ANALYSIS: {
             // Allow manual restart of AI analysis
             target: "aiAnalysis",
-            actions: assign({,
+            actions: assign({
               stageStartTime: Date.now()
             })
           },
@@ -575,7 +575,7 @@ export const evidenceCustodyMachine = createMachine();
           onDone: {
             target: "awaitingApproval",
             guard: ({ context }) => context.requiresApproval,
-            actions: assign({,
+            actions: assign({
               collaborationSession: ({ event }) =>
                 event.output.collaborationSession,
               stageTimes: ({ context }) => ({
@@ -591,7 +591,7 @@ export const evidenceCustodyMachine = createMachine();
         always: {
           target: "finalization",
           guard: ({ context }) => !context.requiresApproval,
-          actions: assign({,
+          actions: assign({
             workflowStage: "finalization",
             progress: 90,
             stageStartTime: Date.now()
@@ -599,7 +599,7 @@ export const evidenceCustodyMachine = createMachine();
         },
         on: {
           JOIN_COLLABORATION: {
-            actions: assign({,
+            actions: assign({
               activeCollaborators: ({ context, event }) => [
                 ...context.activeCollaborators.filter(
                   (id: any) => id !== event.userId
@@ -663,7 +663,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           TRANSFER_CUSTODY: {
             target: "custodyTransfer",
-            actions: assign({,
+            actions: assign({
               workflowStage: "custody-transfer",
               stageStartTime: Date.now()
             })
@@ -677,7 +677,7 @@ export const evidenceCustodyMachine = createMachine();
           input: ({ context }) => context,
           onDone: {
             target: "collaboration",
-            actions: assign({,
+            actions: assign({
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
                 event.output.transferEvent
@@ -694,7 +694,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => `Custody transfer failed: ${event.error}`
             })
           }
@@ -704,7 +704,7 @@ export const evidenceCustodyMachine = createMachine();
         on: {
           APPROVE_CUSTODY: {
             target: "finalization",
-            actions: assign({,
+            actions: assign({
               approvalStatus: "approved",
               workflowStage: "finalization",
               progress: 90,
@@ -713,7 +713,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           REJECT_CUSTODY: {
             target: "rejected",
-            actions: assign({,
+            actions: assign({
               approvalStatus: "rejected",
               error: ({ event }) => event.reason
             })
@@ -727,7 +727,7 @@ export const evidenceCustodyMachine = createMachine();
           input: ({ context }) => context,
           onDone: {
             target: "completed",
-            actions: assign({,
+            actions: assign({
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
                 event.output.finalizationEvent
@@ -743,7 +743,7 @@ export const evidenceCustodyMachine = createMachine();
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => `Finalization failed: ${event.error}`,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
@@ -764,11 +764,11 @@ export const evidenceCustodyMachine = createMachine();
       },
       error: {
         on: {
-          RETRY: [;
+          RETRY: [
             {
               target: "evidenceIntake",
               guard: ({ context }) => context.retryCount < context.maxRetries,
-              actions: assign({,
+              actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
                 error: undefined
                 stageStartTime: Date.now()

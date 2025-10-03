@@ -234,7 +234,7 @@ export class Phase13IntegrationManager {
         fallbackMode: !this.serviceHealth.database
       },
       endpoints: {
-        primary: this.serviceHealth.database ? 'postgresql://localhost:5433/legal_ai_db' : 'development-mode',
+        primary: this.serviceHealth.database ? 'postgresql://localhost:5434/legal_ai_db' : 'development-mode',
         vector: this.serviceHealth.qdrant ? 'http://localhost:6333' : 'embedded-vector-store'
       }
     }
@@ -271,7 +271,7 @@ export class Phase13IntegrationManager {
       },
       vectorDB: {
         provider: this.serviceHealth.qdrant ? 'qdrant' : (this.serviceHealth.database ? 'pgvector' : 'memory'),
-        endpoint: this.serviceHealth.qdrant ? 'http://localhost:6333' : (this.serviceHealth.database ? 'postgresql://localhost:5433/legal_ai_db' : 'in-memory'),
+        endpoint: this.serviceHealth.qdrant ? 'http://localhost:6333' : (this.serviceHealth.database ? 'postgresql://localhost:5434/legal_ai_db' : 'in-memory'),
         collections: ['legal-documents', 'case-law', 'evidence', 'precedents'],
         capabilities: {
           similarity: this.serviceHealth.qdrant || this.serviceHealth.database,

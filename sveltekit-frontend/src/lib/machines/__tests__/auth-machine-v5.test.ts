@@ -32,7 +32,7 @@ const authMachine = createMachine({
         input: ({ event }) => ({ credentials: event.credentials }),
         onDone: {
           target: 'authenticated',
-          actions: assign({,
+          actions: assign({
             user: ({ event }) => event.output,
             authToken: ({ event }) => event.output.token,
             error: undefined
@@ -42,7 +42,7 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => {
               const err = event.error;
               return err && typeof err === 'object' && 'message' in err
@@ -73,7 +73,7 @@ const authMachine = createMachine({
         }),
         onDone: {
           target: 'authenticated',
-          actions: assign({,
+          actions: assign({
             authToken: ({ event }) => event.output.token,
             error: undefined
             performanceMetrics: ({ event }) => event.output.performanceMetrics
@@ -81,7 +81,7 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => {
               const err = event.error;
               return err && typeof err === 'object' && 'message' in err

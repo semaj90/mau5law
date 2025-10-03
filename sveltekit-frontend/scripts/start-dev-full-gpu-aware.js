@@ -231,7 +231,7 @@ class DevFullManager {
     this.log('Docker', '🐳 Checking Docker services...', 'cyan');
 
     const services = [
-      { name: 'PostgreSQL', container: 'legal-ai-postgres', port: '5433→5432' },
+      { name: 'PostgreSQL', container: 'legal-ai-postgres', port: '5434→5432' },
       { name: 'Redis', container: 'legal-ai-redis', port: '6379' },
       { name: 'RabbitMQ', container: 'legal-ai-rabbitmq', port: '5672,15672' },
       { name: 'MinIO', container: 'legal-ai-minio', port: '9000-9001' },
@@ -806,7 +806,7 @@ class DevFullManager {
       this.log('System', '⚡ GPU Cluster: Legal AI pipeline running', 'magenta');
       this.log('System', '', 'white');
       this.log('System', '🐳 Docker Services:', 'cyan');
-      this.log('System', '🐘 PostgreSQL: http://localhost:5433 (legal-ai-postgres)', 'blue');
+      this.log('System', '🐘 PostgreSQL: http://localhost:5434 (legal-ai-postgres)', 'blue');
       this.log('System', '🔴 Redis: http://localhost:6379 (legal-ai-redis)', 'red');
       this.log('System', '🐰 RabbitMQ: http://localhost:15672 (legal-ai-rabbitmq)', 'yellow');
       this.log('System', '📦 MinIO: http://localhost:9001 (legal-ai-minio)', 'green');

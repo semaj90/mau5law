@@ -170,7 +170,7 @@ export const aiSummaryMachine = createMachine({
         on: {
           LOAD_DOCUMENT: {
             target: "loading",
-            actions: assign({,
+            actions: assign({
               documentId: ({
                 event
               }: {
@@ -187,7 +187,7 @@ export const aiSummaryMachine = createMachine({
           },
           GENERATE_SUMMARY: {
             target: "generating",
-            actions: assign({,
+            actions: assign({
               originalContent: ({
                 event
               }: {
@@ -222,7 +222,7 @@ export const aiSummaryMachine = createMachine({
           src: "loadDocument",
           onDone: {
             target: "loaded",
-            actions: assign({,
+            actions: assign({
               originalContent: ({ event }) => event.output.content,
               documentType: ({ event }) => event.output.type,
               loading: false
@@ -230,7 +230,7 @@ export const aiSummaryMachine = createMachine({
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) =>
                 (event.error as Error)?.message || "Failed to load document",
               loading: false
@@ -246,7 +246,7 @@ export const aiSummaryMachine = createMachine({
           src: "generateSummary",
           onDone: {
             target: "ready",
-            actions: assign({,
+            actions: assign({
               summary: ({ event }) => event.output.summary,
               sections: ({ event }) => event.output.sections,
               keyInsights: ({ event }) => event.output.insights,
@@ -258,7 +258,7 @@ export const aiSummaryMachine = createMachine({
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) =>
                 (event.error as Error)?.message || "Failed to generate summary",
               loading: false
@@ -273,7 +273,7 @@ export const aiSummaryMachine = createMachine({
         on: {
           GENERATE_SUMMARY: {
             target: "generating",
-            actions: assign({,
+            actions: assign({
               loading: true
               error: null
             })
@@ -325,7 +325,7 @@ export const aiSummaryMachine = createMachine({
             },
             on: {
               NEXT_SECTION: {
-                actions: assign({,
+                actions: assign({
                   currentSection: ({ context }) =>
                     Math.min(
                       context.currentSection + 1,
@@ -370,14 +370,14 @@ export const aiSummaryMachine = createMachine({
           src: "analyzeDocument",
           onDone: {
             target: "ready",
-            actions: assign({,
+            actions: assign({
               analysisResults: ({ event }) => event.output.results,
               loading: false
             })
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error)?.message || "Analysis failed",
               loading: false
             })
@@ -389,14 +389,14 @@ export const aiSummaryMachine = createMachine({
           src: "synthesizeInsights",
           onDone: {
             target: "ready",
-            actions: assign({,
+            actions: assign({
               synthesisData: ({ event }) => event.output.synthesis,
               loading: false
             })
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event.error as Error)?.message || "Synthesis failed",
               loading: false
             })
@@ -407,7 +407,7 @@ export const aiSummaryMachine = createMachine({
         on: {
           RETRY: {
             target: "idle",
-            actions: assign({,
+            actions: assign({
               error: null
               loading: false
             })
@@ -434,7 +434,7 @@ export const aiSummaryMachine = createMachine({
         // Mock implementation - would call RAG/AI service
         return new Promise((resolve) => {
           setTimeout(() => {
-            const sections: SummarySection[] = [;
+            const sections: SummarySection[] = [
               {
                 id: "exec-summary",
                 title: "Executive Summary",
@@ -442,7 +442,7 @@ export const aiSummaryMachine = createMachine({
                   "This evidence report provides a comprehensive analysis of digital forensics findings in the case. Key evidence points to significant security violations and potential criminal activity.",
                 type: "executive_summary",
                 importance: "critical",
-                entities: [;
+                entities: [
                   {
                     text: "digital forensics",
                     type: "legal_term",
@@ -463,7 +463,7 @@ export const aiSummaryMachine = createMachine({
                   "Analysis of the digital evidence reveals unauthorized access attempts, data exfiltration, and potential insider threats. Timeline analysis shows coordinated activities over a 6-month period.",
                 type: "key_findings",
                 importance: "critical",
-                entities: [;
+                entities: [
                   {
                     text: "unauthorized access",
                     type: "legal_term",
@@ -485,7 +485,7 @@ export const aiSummaryMachine = createMachine({
                   "The evidence supports charges under the Computer Fraud and Abuse Act (CFAA) and state data protection laws. Recommended prosecution strategy includes focusing on the financial impact and systematic nature of the violations.",
                 type: "legal_implications",
                 importance: "high",
-                entities: [;
+                entities: [
                   {
                     text: "Computer Fraud and Abuse Act",
                     type: "legal_term",
@@ -524,7 +524,7 @@ export const aiSummaryMachine = createMachine({
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve({
-              results: [;
+              results: [
                 {
                   type: "relevance" as const,
                   score: 0.94,

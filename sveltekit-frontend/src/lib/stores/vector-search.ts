@@ -4,8 +4,15 @@
  */
 import { writable, derived } from 'svelte/store';
 // Local minimal types to satisfy compile; replace with real imports if available
-type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any }
-}
+type VectorSearchResult = { id: string; content: string; score: number; [k: string]: unknown };
+
+export type SearchHistoryItem = {
+  query: string;
+  timestamp: number;
+  resultCount: number;
+  latency: number;
+};
+
 export interface VectorSearchState {
   // Search State
   query: string;
@@ -19,32 +26,32 @@ export interface VectorSearchState {
   // Configuration
   searchThreshold: number;
   searchLimit: number;
-  embeddingModel: 'nomic-embed-text' | 'nvidia-llama';
+  embeddingModel: 'nomic-embed-text' | 'embeddinggemma:latest';
   // Performance Metrics
   searchLatency: number;
   ragLatency: number;
   vectorDbConnected: boolean;
   // History
-  searchHistory: Array<any>;
+  searchHistory: Array<SearchHistoryItem>;
   error: string | null;
 }
 const initialState: VectorSearchState = {
   query: '',
   results: [],
-  isSearching: false
-  lastSearchTime: null
+  isSearching: false, // Added comma
+  lastSearchTime: null, // Added comma
   ragContext: [],
-  ragResponse: null
-  isGeneratingResponse: false
+  ragResponse: null, // Added comma
+  isGeneratingResponse: false, // Added comma
   searchThreshold: 0.7,
   searchLimit: 10,
-  embeddingModel: 'nomic-embed-text',
+  embeddingModel: 'embeddinggemma:latest',
   searchLatency: 0,
   ragLatency: 0,
-  vectorDbConnected: false
+  vectorDbConnected: false,
   searchHistory: [],
-  error: null
-}
+  error: null,
+};
 // Core store
 export const vectorSearchStore = writable<VectorSearchState>(initialState);
 // Derived stores
@@ -52,31 +59,25 @@ export const isVectorSearchActive = derived(
   vectorSearchStore,
   $store => $store.isSearching || $store.isGeneratingResponse
 );
-export const hasSearchResults = derived(
-  vectorSearchStore,
-  $store => $store.results.length > 0
-);
-export const averageSearchLatency = derived(
-  vectorSearchStore,
-  $store => {
-    if ($store.searchHistory.length === 0) return 0;
-    const total = $store.searchHistory.reduce((sum, item) => sum + (item as { latency?: any }).latency, 0);
-    return total / $store.searchHistory.length;
-  }
-);
+export const hasSearchResults = derived(vectorSearchStore, $store => $store.results.length > 0);
+export const averageSearchLatency = derived(vectorSearchStore, $store => {
+  if ($store.searchHistory.length === 0) return 0;
+  const total = $store.searchHistory.reduce((sum, item) => sum + item.latency, 0);
+  return total / $store.searchHistory.length;
+});
 // Actions
 export const vectorSearchActions = {
   /**
    * Perform semantic vector search
-   */;
+   */
   async search(query: string, userId: string, caseId?: string): Promise<void> {
     if (!query.trim()) return;
     vectorSearchStore.update(state => ({
       ...state,
       query,
-      isSearching: true
-      error: null
-    });
+      isSearching: true,
+      error: null,
+    })); // Fixed closing parenthesis and semicolon
     const startTime = Date.now();
     try {
       // Call vector search API
@@ -88,50 +89,52 @@ export const vectorSearchActions = {
           userId,
           caseId,
           limit: initialState.searchLimit,
-          threshold: initialState.searchThreshold
-        })
+          threshold: initialState.searchThreshold,
+        }),
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!response.ok) {
+        // Simplified type assertion
+        throw new Error(`Search failed: ${response.statusText}`);
       }
-      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      const data = await response.json(); // Simplified type assertion
       const latency = Date.now() - startTime;
       vectorSearchStore.update(state => ({
         ...state,
-        results: (data as { results?: any; response?: any; context?: any; status?: any }).results || [],
-        searchLatency: latency
+        results: data.results || [],
+        searchLatency: latency,
         lastSearchTime: Date.now(),
-        isSearching: false
+        isSearching: false,
+        // Append to search history
         searchHistory: [
           ...state.searchHistory.slice(-9), // Keep last 10
           {
             query,
             timestamp: Date.now(),
-            resultCount: (data as { results?: any; response?: any; context?: any; status?: any }).results?.length || 0,
-            latency
-          }
-        ]
-      });
-    } catch (error: any) {
+            resultCount: data.results?.length || 0,
+            latency,
+          },
+        ],
+      })); // Fixed closing parenthesis and semicolon
+    } catch (error: unknown) {
       console.error('Vector search failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
-        isSearching: false
-        error: error instanceof Error ? error.message: 'Search failed'
-      });
+        isSearching: false, // Added comma
+        error: error instanceof Error ? error.message : 'Search failed',
+      })); // Fixed closing parenthesis and semicolon
     }
   },
   /**
    * Perform enhanced RAG query with context
-   */;
+   */
   async performRAG(query: string, userId: string, caseId?: string): Promise<void> {
     if (!query.trim()) return;
     vectorSearchStore.update(state => ({
       ...state,
-      isGeneratingResponse: true
-      ragResponse: null
-      error: null
-    });
+      isGeneratingResponse: true,
+      ragResponse: null,
+      error: null,
+    })); // Fixed closing parenthesis and semicolon
     const startTime = Date.now();
     try {
       // First perform vector search to get context
@@ -144,105 +147,118 @@ export const vectorSearchActions = {
           query,
           userId,
           caseId,
-          useContext: true;
-          model: 'gemma3-legal'
-        })
+          useContext: true, // Fixed semicolon to comma
+          model: 'gemma3-legal',
+        }),
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`RAG query failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!response.ok) {
+        // Simplified type assertion
+        throw new Error(`RAG query failed: ${response.statusText}`);
       }
-      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      const data = await response.json(); // Simplified type assertion
       const latency = Date.now() - startTime;
       vectorSearchStore.update(state => ({
         ...state,
-        ragResponse: (data as { results?: any; response?: any; context?: any; status?: any }).response,
-        ragContext: (data as { results?: any; response?: any; context?: any; status?: any }).context || state.results,
-        ragLatency: latency
-        isGeneratingResponse: false
-      });
-    } catch (error: any) {
+        ragResponse: data.response,
+        ragContext: data.context || state.results,
+        ragLatency: latency,
+        isGeneratingResponse: false,
+        // Optionally append to search history as a RAG event
+        searchHistory: [
+          ...state.searchHistory.slice(-9), // Keep last 10
+          {
+            query,
+            timestamp: Date.now(),
+            resultCount: 1, // RAG response count as 1
+            latency,
+          },
+        ],
+      })); // Added missing closing curly brace and parenthesis
+    } catch (error: unknown) {
       console.error('RAG query failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
-        isGeneratingResponse: false
-        error: error instanceof Error ? error.message: 'RAG query failed'
-      });
+        isGeneratingResponse: false, // Added comma
+        error: error instanceof Error ? error.message : 'RAG query failed',
+      })); // Fixed closing parenthesis and semicolon
     }
   },
   /**
    * Find similar cases using vector similarity
-   */;
+   */
   async findSimilarCases(caseId: string, userId: string, limit: number = 5): Promise<void> {
     vectorSearchStore.update(state => ({
       ...state,
-      isSearching: true;
-      error: null
-    });
+      isSearching: true, // Added comma
+      error: null,
+    })); // Fixed closing parenthesis and semicolon
     try {
       const response = await fetch('/api/v1/vector/similar-cases', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caseId, userId, limit })
+        body: JSON.stringify({ caseId, userId, limit }),
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Similar cases search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!response.ok) {
+        // Simplified type assertion
+        throw new Error(`Similar cases search failed: ${response.statusText}`);
       }
-      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      const data = await response.json(); // Simplified type assertion
       vectorSearchStore.update(state => ({
         ...state,
-        results: (data as { results?: any; response?: any; context?: any; status?: any }).results || [],
-        isSearching: false
-      });
-    } catch (error: any) {
+        results: data.results || [],
+        isSearching: false,
+      })); // Fixed closing parenthesis and semicolon
+    } catch (error: unknown) {
       console.error('Similar cases search failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
-        isSearching: false
-        error: error instanceof Error ? error.message: 'Similar cases search failed'
-      });
+        isSearching: false, // Added comma
+        error: error instanceof Error ? error.message : 'Similar cases search failed',
+      })); // Fixed closing parenthesis and semicolon
     }
   },
   /**
    * Update search configuration
-   */;
-  updateConfig(config: Partial): void {
+   */
+  updateConfig(config: Partial<VectorSearchState>): void {
+    // Fixed Partial type
     vectorSearchStore.update(state => ({
       ...state,
-      ...config
-    });
+      ...config,
+    })); // Fixed closing parenthesis and semicolon
   },
   /**
    * Clear search results and state
-   */;
+   */
   clear(): void {
     vectorSearchStore.update(state => ({
       ...state,
       query: '',
       results: [],
       ragContext: [],
-      ragResponse: null;
-      error: null
-    });
+      ragResponse: null, // Added comma
+      error: null,
+    })); // Fixed closing parenthesis and semicolon
   },
   /**
    * Check vector database connection
-   */;
+   */
   async checkConnection(): Promise<void> {
     try {
-      // removed unused response assignment
-      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      const response = await fetch('/api/v1/health/vector-db'); // Added missing fetch call
+      const data = await response.json(); // Simplified type assertion
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: (response as { ok?: any; statusText?: any; json?: any }).ok && (data as { results?: any; response?: any; context?: any; status?: any }).status === 'healthy'
-      });
-    } catch (error: any) {
+        vectorDbConnected: response.ok && data.status === 'healthy',
+      })); // Fixed closing parenthesis and semicolon
+    } catch (error: unknown) {
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: false
-      });
+        vectorDbConnected: false,
+      })); // Fixed closing parenthesis and semicolon
     }
-  }
-}
+  },
+};
 // Initialize connection check
 if (typeof window !== 'undefined') {
   vectorSearchActions.checkConnection();

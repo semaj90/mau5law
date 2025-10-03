@@ -7,16 +7,6 @@
   import TabsBits from '$lib/components/ui/bits-ui/TabsBits.svelte';
   import TooltipBits from '$lib/components/ui/bits-ui/TooltipBits.svelte';
 
-  // Cast imported Svelte components to constructor types so TS sees them as constructors
-  import type { SvelteComponent } from 'svelte';
-  type SvelteConstructor = new (...args: any) => SvelteComponent;
-  const CardBitsCtor = CardBits as unknown as SvelteConstructor;
-  const TabsBitsCtor = TabsBits as unknown as SvelteConstructor;
-  const InputBitsCtor = InputBits as unknown as SvelteConstructor;
-  const SelectBitsCtor = SelectBits as unknown as SvelteConstructor;
-  const TooltipBitsCtor = TooltipBits as unknown as SvelteConstructor;
-  const ButtonBitsCtor = ButtonBits as unknown as SvelteConstructor;
-
   // Form state using Svelte 5 runes
   let formData = $state({
     caseTitle: '',
@@ -139,7 +129,22 @@
       formData.clientName.trim() &&
       formData.practiceArea &&
       formData.jurisdiction &&
-{@const CardBits = CardBitsCtor}
+      formData.deadline
+    );
+  });
+
+  let formProgress = $derived(() => {
+    const totalFields = 5; // caseTitle, clientName, practiceArea, jurisdiction, deadline
+    let completedFields = 0;
+    if (formData.caseTitle.trim()) completedFields++;
+    if (formData.clientName.trim()) completedFields++;
+    if (formData.practiceArea) completedFields++;
+    if (formData.jurisdiction) completedFields++;
+    if (formData.deadline) completedFields++;
+    return Math.floor((completedFields / totalFields) * 100);
+  });
+</script>
+
 <CardBits variant="elevated" padding="lg">
   <div class="legal-case-form">
     <div class="form-header">
@@ -153,13 +158,11 @@
     </div>
 
     <div class="form-tabs">
-  {@const TabsBits = TabsBitsCtor}
-  <TabsBits tabs={tabItems} bind:value={activeTab} variant="underline" size="md">
+      <TabsBits tabs={tabItems} bind:value={activeTab} variant="underline" size="md">
         {#if activeTab === 'basic'}
           <div class="tab-content">
             <div class="form-grid">
               <div class="form-field">
-                {@const InputBits = InputBitsCtor}
                 <InputBits
                   label="📋 Case Title"
                   placeholder="Enter case title..."
@@ -171,7 +174,6 @@
                 />
               </div>
               <div class="form-field">
-                {@const InputBits = InputBitsCtor}
                 <InputBits
                   label="🔢 Case Number"
                   placeholder="CASE-2024-001"
@@ -180,7 +182,6 @@
                 />
               </div>
               <div class="form-field">
-                {@const InputBits = InputBitsCtor}
                 <InputBits
                   label="👤 Client Name"
                   placeholder="Enter client name..."
@@ -192,7 +193,6 @@
                 />
               </div>
               <div class="form-field">
-                {@const SelectBits = SelectBitsCtor}
                 <SelectBits
                   label="⚖️ Practice Area"
                   placeholder="Select practice area..."
@@ -209,7 +209,6 @@
           <div class="tab-content">
             <div class="form-grid">
               <div class="form-field">
-                {@const SelectBits = SelectBitsCtor}
                 <SelectBits
                   label="🏛️ Jurisdiction"
                   placeholder="Select jurisdiction..."
@@ -221,7 +220,6 @@
                 />
               </div>
               <div class="form-field">
-                {@const SelectBits = SelectBitsCtor}
                 <SelectBits
                   label="⚖️ Court Level"
                   placeholder="Select court level..."
@@ -231,7 +229,6 @@
                 />
               </div>
               <div class="form-field">
-                {@const SelectBits = SelectBitsCtor}
                 <SelectBits
                   label="🚨 Priority Level"
                   placeholder="Select priority..."
@@ -257,7 +254,6 @@
           <div class="tab-content">
             <div class="form-grid">
               <div class="form-field">
-                {@const SelectBits = SelectBitsCtor}
                 <SelectBits
                   label="👨‍💼 Assigned Attorney"
                   placeholder="Select attorney..."
@@ -267,7 +263,6 @@
                 />
               </div>
               <div class="form-field">
-                {@const InputBits = InputBitsCtor}
                 <InputBits
                   label="⏱️ Estimated Hours"
                   placeholder="Enter estimated hours..."
@@ -277,7 +272,6 @@
                 />
               </div>
               <div class="form-field">
-                {@const InputBits = InputBitsCtor}
                 <InputBits
                   label="💰 Budget"
                   placeholder="Enter budget amount..."
@@ -287,7 +281,6 @@
                 />
               </div>
               <div class="form-field">
-                {@const InputBits = InputBitsCtor}
                 <InputBits
                   label="📅 Deadline"
                   bind:value={formData.deadline}
@@ -346,13 +339,11 @@
             </div>
           </div>
         {/if}
-      </svelte:component>
+      </TabsBits>
     </div>
 
     <div class="form-actions">
       <div class="action-buttons">
-        {@const TooltipBits = TooltipBitsCtor}
-        {@const ButtonBits = ButtonBitsCtor}
         <TooltipBits content="Clear all form data">
           <ButtonBits
             variant="ghost"
@@ -371,8 +362,9 @@
                   estimatedHours: '',
                   budget: '',
                   deadline: '',
-                }
-                formErrors = {}
+                };
+                formErrors = {};
+                activeTab = 'basic'; // Reset to basic tab
               }
             }}
           >
@@ -574,5 +566,14 @@
     .action-buttons :global(button) {
       flex: 1;
     }
+  }
+</style>
+      justify-content: stretch;
+    }
+    .action-buttons :global(button) {
+      flex: 1;
+    }
+  }
+</style>
   }
 </style>

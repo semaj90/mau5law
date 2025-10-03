@@ -54,7 +54,7 @@ const config = {
   // Dynamic port configuration (base port + 0-10 range)
   portConfig: {
     ollama: getPortForService(11434, 0), // 11434-11444 range
-    postgres: getPortForService(5433, 0), // 5433-5443 range
+    postgres: getPortForService(5434, 0), // 5434-5443 range
     redis: getPortForService(6379, 0), // 6379-6389 range
     enhanced_rag: getPortForService(8094, 0), // 8094-8104 range
     upload_service: getPortForService(8093, 0), // 8093-8103 range

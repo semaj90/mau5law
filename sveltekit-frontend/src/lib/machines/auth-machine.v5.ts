@@ -100,50 +100,50 @@ export const authMachine = setup({
       isLoading: () => true,
       error: () => undefined
     }),
-    clearLoading: assign({,
+    clearLoading: assign({
       isLoading: () => false
     }),
-    setError: assign({,
+    setError: assign({
       error: ({ event }) => (event as any).data?.error || 'An error occurred',
       isLoading: () => false
     }),
-    setUser: assign({,
+    setUser: assign({
       user: ({ event }) => (event as any).data?.user || null,
       session: ({ event }) => (event as any).data?.session || null,
       isLoading: () => false,
       error: () => undefined,
       loginAttempts: () => 0
     }),
-    clearUser: assign({,
+    clearUser: assign({
       user: () => null,
       session: () => null,
       error: () => undefined
     }),
-    incrementLoginAttempts: assign({,
+    incrementLoginAttempts: assign({
       loginAttempts: ({ context }) => context.loginAttempts + 1,
       lastLoginAttempt: () => new Date()
     }),
-    resetLoginAttempts: assign({,
+    resetLoginAttempts: assign({
       loginAttempts: () => 0,
       lastLoginAttempt: () => undefined
     }),
-    setLockout: assign({,
+    setLockout: assign({
       lockoutUntil: () => new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
       loginAttempts: () => 0
     }),
-    clearLockout: assign({,
+    clearLockout: assign({
       lockoutUntil: () => undefined
     }),
-    setTwoFactorRequired: assign({,
+    setTwoFactorRequired: assign({
       twoFactorRequired: () => true
     }),
-    clearTwoFactor: assign({,
+    clearTwoFactor: assign({
       twoFactorRequired: () => false
     }),
-    setRegistrationData: assign({,
+    setRegistrationData: assign({
       registrationData: ({ event }) => (event as any).data
     }),
-    clearRegistrationData: assign({,
+    clearRegistrationData: assign({
       registrationData: () => undefined
     })
   },
@@ -250,7 +250,7 @@ export const authMachine = setup({
       invoke: {
         src: 'authenticate',
         input: ({ event }) => (event as any).data,
-        onDone: [;
+        onDone: [
           {
             target: 'requiresTwoFactor',
             guard: ({ event }) => (event as any).output?.requiresTwoFactor,
@@ -261,7 +261,7 @@ export const authMachine = setup({
             actions: ['setUser', 'resetLoginAttempts']
           }
         ],
-        onError: [;
+        onError: [
           {
             target: 'locked',
             guard: 'isMaxAttemptsReached',

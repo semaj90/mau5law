@@ -37,10 +37,10 @@ class DatabasePoolService {
   private readonly CONNECTION_STATS_PREFIX = 'db:stats:';
   constructor() {
     this.connectionString =
-      process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
+      process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db'
     this.config = {
       host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5433'),
+      port: parseInt(process.env.DB_PORT || '5434'),
       database: process.env.DB_NAME || 'legal_ai_db',
       username: process.env.DB_USER || 'legal_admin',
       password: process.env.DB_PASS || '123456',

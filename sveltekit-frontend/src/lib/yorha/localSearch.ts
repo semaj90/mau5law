@@ -1,6 +1,5 @@
 import Fuse from 'fuse.js';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
-}
 export interface LocalLegalDoc {
   id: string;
   title: string;
@@ -18,14 +17,14 @@ const options: any = {
     { name: 'title', weight: 0.4 },
     { name: 'content', weight: 0.3 },
     { name: 'metadata.summary', weight: 0.2 },
-    { name: 'type', weight: 0.1 }
+    { name: 'type', weight: 0.1 },
   ],
-  includeScore: true;
+  includeScore: true,
   threshold: 0.38,
-  ignoreLocation: true
+  ignoreLocation: true,
   minMatchCharLength: 3,
-  useExtendedSearch: true
-}
+  useExtendedSearch: true,
+};
 export function isLocalIndexReady() {
   return !!fuse;
 }
@@ -48,17 +47,21 @@ export async function ensureLocalIndex(fetcher: typeof fetch = fetch, limit = 75
     if (res.ok) {
       const data = await res.json();
       const raw = data.results || data.documents || [];
-      documents = raw.map((d: any, i: number) => ({,
+      documents = raw.map((d: any, i: number) => ({
         id: d.id || d.uuid || i + 1,
         title: d.title || d.name || `Document ${i + 1}`,
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
         status: d.status || 'active',
-        metadata: d
-      });
+        metadata: d,
+      }));
       fuse = new Fuse(documents, options);
       // Persist
-      try { await idbSet(cacheKey, documents), } catch (err: any) { console.warn('[LocalSearch] Cache save failed', err), }
+      try {
+        await idbSet(cacheKey, documents);
+      } catch (err: any) {
+        console.warn('[LocalSearch] Cache save failed', err);
+      }
     } else {
       fuse = new Fuse([], options);
     }
@@ -70,7 +73,10 @@ export async function ensureLocalIndex(fetcher: typeof fetch = fetch, limit = 75
 }
 export function localSearch(query: string, limit = 50) {
   if (!fuse || !query.trim()) return [] as LocalLegalDoc[];
-  return fuse.search(query).slice(0, limit).map(r => ({ ...r.item, relevance: Math.round((1 - (r.score ?? 0)) * 100) });
+  return fuse
+    .search(query)
+    .slice(0, limit)
+    .map(r => ({ ...r.item, relevance: Math.round((1 - (r.score ?? 0)) * 100) }));
 }
 export function addOrUpdateDocuments(newDocs: LocalLegalDoc[]) {
   // Simple replace strategy for now; could do incremental updates later
@@ -91,9 +97,14 @@ export function clearLocalIndex() {
   fuse = new Fuse([], options);
   void idbSet(cacheKey, documents);
 }
-export function wasLoadedFromCache() { return loadedFromCache, }
+export function wasLoadedFromCache() {
+  return loadedFromCache;
+}
 // Merge helper: combine local + remote results with weighting & dedupe
-export interface HybridResult extends LocalLegalDoc { relevance: number; source: 'local' | 'remote' | 'hybrid', }
+export interface HybridResult extends LocalLegalDoc {
+  relevance: number;
+  source: 'local' | 'remote' | 'hybrid';
+}
 export function mergeResults(local: any[], remote: any[], localWeight = 0.6, remoteWeight = 0.4): HybridResult[] {
   const byId = new Map<string | number, HybridResult>();
   for (const l of local) {

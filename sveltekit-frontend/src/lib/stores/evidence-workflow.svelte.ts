@@ -49,7 +49,7 @@ const evidenceProcessingMachine = createMachine({
       on: {
         START_PROCESSING: {
           target: 'validating',
-          actions: assign({,
+          actions: assign({
             file: ({ event }) => (event as StartProcessingEvent).file,
             evidenceId: ({ event }) => (event as StartProcessingEvent).evidenceId,
             caseId: ({ event }) => (event as StartProcessingEvent).caseId,
@@ -74,13 +74,13 @@ const evidenceProcessingMachine = createMachine({
         },
         onDone: {
           target: 'analyzing',
-          actions: assign({,
+          actions: assign({
             processingSteps: ({ context }) => [...context.processingSteps, 'File validated']
           })
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ((event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Validation failed')
           })
         }
@@ -105,14 +105,14 @@ const evidenceProcessingMachine = createMachine({
         },
         onDone: {
           target: 'embedding',
-          actions: assign({,
+          actions: assign({
             metadata: ({ event }) => (event as any).output ?? (event as any).data,
             processingSteps: ({ context }) => [...context.processingSteps, 'AI analysis completed']
           })
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ((event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Analysis failed')
           })
         }
@@ -132,14 +132,14 @@ const evidenceProcessingMachine = createMachine({
         },
         onDone: {
           target: 'uploading',
-          actions: assign({,
+          actions: assign({
             pngArtifact: ({ event }) => (event as any).output ?? (event as any).data,
             processingSteps: ({ context }) => [...context.processingSteps, 'Metadata embedded in PNG']
           })
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ((event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Embedding failed')
           })
         }
@@ -176,14 +176,14 @@ const evidenceProcessingMachine = createMachine({
         },
         onDone: {
           target: 'completed',
-          actions: assign({,
+          actions: assign({
             artifactUrl: ({ event }) => ((event as any).output ?? (event as any).data)?.downloadUrl,
             processingSteps: ({ context }) => [...context.processingSteps, 'Artifact uploaded and indexed']
           })
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ((event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Upload failed')
           })
         }

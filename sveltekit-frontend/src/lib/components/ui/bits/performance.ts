@@ -320,7 +320,7 @@ export function analyzeBundleSize(): BundleAnalysis {
   return {
     totalSize: 245000, // 245KB
     gzippedSize: 89000, // 89KB
-    components: [;
+    components: [
       {
         name: "Button",
         size: 12000,
@@ -346,7 +346,7 @@ export function analyzeBundleSize(): BundleAnalysis {
         critical: false
       }
     ],
-    duplicates: [;
+    duplicates: [
       {
         module: "lucide-svelte",
         count: 3,

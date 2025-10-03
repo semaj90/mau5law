@@ -116,7 +116,7 @@
 		...restProps
 	}: Props = $props();
 	// Build proper aria-describedby string including loading announcement
-	let finalAriaDescribedby = $derived(() => {
+	let finalAriaDescribedby = $derived.by(() => {
 		const ids = [];
 		if (ariaDescribedby) ids.push(ariaDescribedby);
 		if (loading) ids.push(loadingAnnouncementId);
@@ -166,9 +166,8 @@
 		if (browser && searchKeywords.length > 0) {
 			searchableButtonIndex.addButton({
 				id,
-				keywords: searchKeywords,
-				variant,
-				size,
+				variant, // Re-add this line
+				size,    // Re-add this line
 				label: analyticsLabel,
 				element: document.getElementById(id)
 			});
@@ -185,7 +184,7 @@
     tabindex="0"
     aria-disabled={isDisabled}
     aria-label={ariaLabel}
-    aria-describedby={finalAriaDescribedby()}
+    aria-describedby={finalAriaDescribedby}
     aria-expanded={ariaExpanded}
     aria-controls={ariaControls}
     aria-busy={loading}
@@ -221,7 +220,7 @@
     disabled={isDisabled}
     class={buttonClass}
     aria-label={ariaLabel}
-    aria-describedby={finalAriaDescribedby()}
+    aria-describedby={finalAriaDescribedby}
     aria-expanded={ariaExpanded}
     aria-controls={ariaControls}
     aria-busy={loading}

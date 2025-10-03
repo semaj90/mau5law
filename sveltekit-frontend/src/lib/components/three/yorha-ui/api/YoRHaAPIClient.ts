@@ -7,7 +7,6 @@ import type { YoRHaButton3DOptions } from '../components/YoRHaButton3D.js';
 import type { YoRHaPanel3DOptions } from '../components/YoRHaPanel3D.js';
 import type { YoRHaInput3DOptions } from '../components/YoRHaInput3D.js';
 import type { YoRHaModal3DOptions } from '../components/YoRHaModal3D.js';
-}
 export interface YoRHaAPIConfig {
   baseURL: string;
   apiKey?: string;
@@ -16,18 +15,18 @@ export interface YoRHaAPIConfig {
   enableWebSocket: boolean;
   enableSSE: boolean;
   // Optional callback when any data source pushes new data
-  onData?: (id: string, data: any) => void;
+  onData?: (id: string, data: unknown) => void;
 }
 export interface YoRHaComponentData {
   id: string;
   type: 'button' | 'panel' | 'input' | 'modal' | 'layout';
-  config: any;
+  config: Record<string, unknown>;
   data?: {
     loading?: boolean;
     value?: string;
     error?: boolean;
-    [key: string]: any;
-  }
+    [key: string]: unknown;
+  };
   metrics?: YoRHaMetrics;
   events?: YoRHaEvent[];
 }
@@ -59,34 +58,48 @@ export interface YoRHaSystemStatus {
     latency: number;
     activeConnections: number;
     queryCount: number;
-  }
+  };
   backend: {
     healthy: boolean;
     uptime: number;
     activeServices: number;
     cpuUsage: number;
     memoryUsage: number;
-  }
+  };
   frontend: {
     renderFPS: number;
     componentCount: number;
     activeComponents: number;
     webGPUEnabled: boolean;
-  }
+  };
 }
 export interface YoRHaGraphData {
-  nodes: Array<any>;
-  edges: Array<any>
+  nodes: Array<{ id: string; label: string; [key: string]: unknown }>;
+  edges: Array<{ source: string; target: string; [key: string]: unknown }>;
+}
+export interface YoRHaDataSource {
+  id: string;
+  name: string;
+  type: 'poll' | 'sse' | 'websocket' | 'mock' | 'rest';
+  endpoint?: string;
+  interval?: number;
+  intervalMs?: number;
+  [key: string]: unknown;
+}
+export interface YoRHaLayout {
+  dataSources?: YoRHaDataSource[];
+  [key: string]: unknown;
+}
 export class YoRHaAPIClient {
   private config: YoRHaAPIConfig;
   private websocket?: WebSocket;
   private wsAttempts = 0;
   private eventSource?: EventSource;
   private sseAttempts = 0;
-  private cache = new Map<string, any>();
-  private subscribers = new Map<string, Set<Function>();
-  private layout: any = null;
-  private dataSourceIntervals = new Map<string, ReturnType<typeof setInterval>();
+  private cache = new Map<string, unknown>();
+  private subscribers = new Map<string, Set<(data: unknown) => void>>();
+  private layout: YoRHaLayout | null = null;
+  private dataSourceIntervals = new Map<string, ReturnType<typeof setInterval>>();
   constructor(config: Partial<YoRHaAPIConfig> = {}) {
     this.config = {
       baseURL: config.baseURL || 'http://localhost:8443/api/yorha',
@@ -94,8 +107,8 @@ export class YoRHaAPIClient {
       retryAttempts: config.retryAttempts || 3,
       enableWebSocket: config.enableWebSocket ?? true,
       enableSSE: config.enableSSE ?? true,
-      ...config
-    }
+      ...config,
+    };
     if (this.config.enableWebSocket) {
       this.initWebSocket();
     }
@@ -107,8 +120,7 @@ export class YoRHaAPIClient {
   /**
    * Load a JSON layout definition from an endpoint (or absolute URL)
    * and store internally. Existing data streams are stopped before replacing.
-   */;
-  async loadLayout(layoutUrl: string): Promise<any> {
+   */ async loadLayout(layoutUrl: string): Promise<any> {
     // Stop existing streams if reloading
     this.stopDataStreams();
     const url = layoutUrl.startsWith('http') ? layoutUrl : layoutUrl;
@@ -119,8 +131,10 @@ export class YoRHaAPIClient {
     return this.layout;
   }
   /** Get the active layout object (if loaded). */
-  getLayout(): unknown { return this.layout, }
-  /** Start polling / mock generation for declared dataSources in the layout. */;
+  getLayout(): unknown {
+    return this.layout;
+  }
+  /** Start polling / mock generation for declared dataSources in the layout. */
   startDataStreams(): void {
     if (!this.layout?.dataSources) return;
     this.stopDataStreams();
@@ -146,8 +160,8 @@ export class YoRHaAPIClient {
             const data = {
               value: Math.random(),
               updatedAt: new Date().toISOString(),
-              name: ds.name
-            }
+              name: ds.name,
+            };
             this.pushData(ds.name, data);
           }, ds.intervalMs ?? 2000);
           this.dataSourceIntervals.set(ds.name, interval);
@@ -158,35 +172,41 @@ export class YoRHaAPIClient {
       }
     }
   }
-  /** Stop all active data source intervals. */;
+  /** Stop all active data source intervals. */
   stopDataStreams(): void {
-    Array.from(this.dataSourceIntervals.values()).forEach(interval => clearInterval(interval as any);
+    Array.from(this.dataSourceIntervals.values()).forEach(interval => clearInterval(interval as any));
     this.dataSourceIntervals.clear();
   }
-  /** Push data from a source into cache + notify watchers */;
+  /** Push data from a source into cache + notify watchers */
   private pushData(id: string, data: any) {
     this.cache.set(`ds:${id}`, data);
     this.notifySubscribers(`data:${id}`, data);
     if (this.config.onData) {
-      try { this.config.onData(id, data), } catch (e: any) { /* swallow */ }
+      try {
+        this.config.onData(id, data);
+      } catch (e: any) {
+        /* swallow */
+      }
     }
   }
   /** Retrieve last value for a data source */
-  getDataSourceValue(id: string): unknown { return this.cache.get(`ds:${id}`), }
+  getDataSourceValue(id: string): unknown {
+    return this.cache.get(`ds:${id}`);
+  }
   // Component Configuration API
-  async getComponentConfig(componentId: string, type: string): Promise<YoRHaComponentData> {
+  async getComponentConfig(componentId: string, _type: string): Promise<YoRHaComponentData> {
     const cacheKey = `config:${componentId}`;
     if (this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey);
+      return this.cache.get(cacheKey) as YoRHaComponentData;
     }
-    // removed unused response assignment
+    const response = await this.apiCall(`/components/${componentId}`);
     this.cache.set(cacheKey, response);
-    return response;
+    return response as YoRHaComponentData;
   }
-  async updateComponentConfig(componentId: string, config: any): Promise<void> {
+  async updateComponentConfig(componentId: string, config: Record<string, unknown>): Promise<void> {
     await this.apiCall(`/components/${componentId}`, {
       method: 'PUT',
-      body: JSON.stringify(config)
+      body: JSON.stringify(config),
     });
     // Clear cache
     this.cache.delete(`config:${componentId}`);
@@ -221,8 +241,8 @@ export class YoRHaAPIClient {
       size: data.config.size,
       icon: data.config.icon,
       loading: data.data?.loading || false,
-      ...data.config
-    }
+      ...data.config,
+    };
   }
   async createPanelFromAPI(componentId: string): Promise<YoRHaPanel3DOptions> {
     const data = await this.getComponentConfig(componentId, 'panel');
@@ -232,8 +252,8 @@ export class YoRHaAPIClient {
       width: data.config.width,
       height: data.config.height,
       scrollable: data.config.scrollable,
-      ...data.config
-    }
+      ...data.config,
+    };
   }
   async createInputFromAPI(componentId: string): Promise<YoRHaInput3DOptions> {
     const data = await this.getComponentConfig(componentId, 'input');
@@ -243,8 +263,8 @@ export class YoRHaAPIClient {
       variant: data.config.variant,
       value: data.data?.value || '',
       error: data.data?.error || false,
-      ...data.config
-    }
+      ...data.config,
+    };
   }
   async createModalFromAPI(componentId: string): Promise<YoRHaModal3DOptions> {
     const data = await this.getComponentConfig(componentId, 'modal');
@@ -253,40 +273,40 @@ export class YoRHaAPIClient {
       variant: data.config.variant,
       size: data.config.size,
       closable: data.config.closable,
-      ...data.config
-    }
+      ...data.config,
+    };
   }
   // Event Logging
   async logEvent(_event: Omit<YoRHaEvent, 'timestamp'>): Promise<void> {
     const fullEvent = {
       ...event,
-      timestamp: new Date().toISOString()
-    }
+      timestamp: new Date().toISOString(),
+    };
     await this.apiCall('/events', {
       method: 'POST',
-      body: JSON.stringify(fullEvent)
+      body: JSON.stringify(fullEvent),
     });
   }
   async getEvents(componentId?: string, limit = 100): Promise<YoRHaEvent[]> {
     const params = new URLSearchParams();
     if (componentId) params.set('componentId', componentId);
-    params.set('limit', limit.toString();
+    params.set('limit', limit.toString());
     return await this.apiCall(`/events?${params.toString()}`);
   }
   // Subscription System
-  subscribe<T = any>(_event: string, callback: (data: T) => void): () => void {
-    if (!this.subscribers.has(event)) {
-      this.subscribers.set(event, new Set();
+  subscribe<T = unknown>(eventName: string, callback: (data: T) => void): () => void {
+    if (!this.subscribers.has(eventName)) {
+      this.subscribers.set(eventName, new Set());
     }
-    this.subscribers.get(event)!.add(callback);
+    this.subscribers.get(eventName)!.add(callback);
     return () => {
-      this.subscribers.get(event)?.delete(callback);
-    }
+      this.subscribers.get(eventName)?.delete(callback);
+    };
   }
-  private notifySubscribers(_event: string, data: any): void {
-    const callbacks = this.subscribers.get(event);
+  private notifySubscribers(eventName: string, data: unknown): void {
+    const callbacks = this.subscribers.get(eventName);
     if (callbacks) {
-      callbacks.forEach(callback => callback(data);
+      callbacks.forEach(callback => callback(data));
     }
   }
   // WebSocket Integration with QUIC fallback
@@ -299,28 +319,30 @@ export class YoRHaAPIClient {
     const wsUrl = this.config.baseURL.replace(/^https?/, 'wss') + '/ws';
     try {
       this.websocket = new WebSocket(wsUrl);
-    } catch (e: any) {
+    } catch (e) {
       console.warn('WebSocket init failed', e);
       return;
     }
     this.websocket.onopen = () => {
       this.wsAttempts = 0;
       console.log('YoRHa WebSocket connected');
-    }
-    this.websocket.onmessage = (_event: any) => {
+    };
+    this.websocket.onmessage = (event: MessageEvent) => {
       try {
         const message = JSON.parse(event.data);
         this.handleWebSocketMessage(message);
       } catch (error: any) {
         console.error('Failed to parse WebSocket message:', error);
       }
-    }
+    };
     this.websocket.onclose = () => {
       const delay = Math.min(30000, Math.pow(2, this.wsAttempts) * 1000 + Math.random() * 500);
       this.wsAttempts++;
-      console.log(`YoRHa WebSocket disconnected, reconnecting in ${(delay / 1000).toFixed(1)}s (attempt ${this.wsAttempts})`);
+      console.log(
+        `YoRHa WebSocket disconnected, reconnecting in ${(delay / 1000).toFixed(1)}s (attempt ${this.wsAttempts})`
+      );
       setTimeout(() => this.initWebSocket(), delay);
-    }
+    };
   }
   private handleWebSocketMessage(message: any): void {
     switch (message.type) {
@@ -347,30 +369,30 @@ export class YoRHaAPIClient {
     }
     try {
       this.eventSource = new EventSource(`${this.config.baseURL}/events/stream`);
-    } catch (e: any) {
+    } catch (e) {
       console.warn('SSE init failed', e);
       return;
     }
-    this.eventSource.onmessage = (_event: any) => {
+    this.eventSource.onmessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
         this.notifySubscribers('sse:message', data);
         if (data && typeof data === 'object' && 'type' in data) {
-          const evtType = (data as any).type;
-          const payload = (data as any).data ?? data;
+          const evtType = (data as { type: string }).type;
+          const payload = (data as { data?: unknown }).data ?? data;
           this.notifySubscribers(evtType, payload);
         }
       } catch (error: any) {
         console.error('Failed to parse SSE message:', error);
       }
-    }
+    };
     this.eventSource.onerror = () => {
       this.eventSource?.close();
       const delay = Math.min(30000, Math.pow(2, this.sseAttempts) * 1000 + Math.random() * 500);
       this.sseAttempts++;
       console.error(`SSE connection error, retrying in ${(delay / 1000).toFixed(1)}s (attempt ${this.sseAttempts})`);
       setTimeout(() => this.initServerSentEvents(), delay);
-    }
+    };
   }
   // HTTP API Helper
   private async apiCall(endpoint: string, options: RequestInit = {}): Promise<any> {
@@ -378,10 +400,10 @@ export class YoRHaAPIClient {
     const defaultOptions: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
-        ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` })
+        ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` }),
       },
-      ...options
-    }
+      ...options,
+    };
     let lastError: Error | null = null;
     for (let attempt = 0; attempt < this.config.retryAttempts; attempt++) {
       try {
@@ -389,7 +411,7 @@ export class YoRHaAPIClient {
         const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
         const response = await fetch(url, {
           ...defaultOptions,
-          signal: controller.signal
+          signal: controller.signal,
         });
         clearTimeout(timeoutId);
         if (!response.ok) {
@@ -399,7 +421,7 @@ export class YoRHaAPIClient {
       } catch (error: any) {
         lastError = error as Error;
         if (attempt < this.config.retryAttempts - 1) {
-          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000);
+          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
         }
       }
     }

@@ -57,3 +57,8 @@
     color: var(--yorha-dark);
   }
 }
+
+/* Tailwind CSS imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

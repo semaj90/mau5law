@@ -92,7 +92,7 @@ export const selfPromptingMachine = createMachine({
         }),
         onDone: {
           target: 'connected',
-          actions: assign({,
+          actions: assign({
             rabbitMQConnection: ({ event }) => event.output.connection,
             isConnected: true
             reconnectAttempts: 0
@@ -100,7 +100,7 @@ export const selfPromptingMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             reconnectAttempts: ({ context }) => context.reconnectAttempts + 1
           })
         }
@@ -114,7 +114,7 @@ export const selfPromptingMachine = createMachine({
           on: {
             NEW_MESSAGE: {
               target: 'processing',
-              actions: assign({,
+              actions: assign({
                 pendingTasks: ({ context, event }) => [
                   ...context.pendingTasks,
                   event.message
@@ -152,7 +152,7 @@ export const selfPromptingMachine = createMachine({
             }),
             onDone: {
               target: 'idle',
-              actions: [;
+              actions: [
                 assign({
                   completedTasks: ({ context, event }) => [
                     ...context.completedTasks.slice(-50), // Keep last 50
@@ -169,7 +169,7 @@ export const selfPromptingMachine = createMachine({
             },
             onError: {
               target: 'idle',
-              actions: [;
+              actions: [
                 assign({
                   errorTasks: ({ context, event }) => [
                     ...context.errorTasks.slice(-20), // Keep last 20 errors
@@ -199,7 +199,7 @@ export const selfPromptingMachine = createMachine({
             }),
             onDone: {
               target: 'idle',
-              actions: [;
+              actions: [
                 assign({
                   pendingTasks: ({ context, event }) => [
                     ...context.pendingTasks,
@@ -219,7 +219,7 @@ export const selfPromptingMachine = createMachine({
       on: {
         CONNECTION_LOST: {
           target: 'reconnecting',
-          actions: assign({,
+          actions: assign({
             isConnected: false
           })
         },
@@ -252,13 +252,13 @@ export const selfPromptingMachine = createMachine({
     setupMessageHandlers: ({ context }) => {
       console.log('🔗 Setting up RabbitMQ message handlers');
     },
-    startHeartbeat: assign({,
+    startHeartbeat: assign({
       lastHeartbeat: Date.now()
     }),
     triggerSelfAnalysis: ({ context }) => {
       console.log('🧠 Triggering self-prompting analysis based on user history');
     },
-    updatePerformanceMetrics: assign({,
+    updatePerformanceMetrics: assign({
       performanceMetrics: ({ context }) => {
         const completed = context.completedTasks;
         const errors = context.errorTasks;

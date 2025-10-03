@@ -134,7 +134,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'updatedAt', desc: true },
             { type: 'limit', value: 50 }
           ],
-          needsProcessing: [;
+          needsProcessing: [
             {
               type: 'find',
               value: { processingStatus: { $in: ['pending', 'error'] } }

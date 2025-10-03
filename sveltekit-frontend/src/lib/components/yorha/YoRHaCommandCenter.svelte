@@ -2,19 +2,35 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Svelte 5 runes and modern imports
-  import { onMount } from 'svelte';
+  // onMount is not used, Svelte 5 $effect handles side effects
   import { goto } from "$app/navigation";
-  import Button from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  // Button is not used
+  // Badge is not used
+  // Card, CardHeader, CardTitle, CardContent are not used and reported as not exported from enhanced-bits
   import RealTimeLegalSearch from '$lib/components/search/RealTimeLegalSearch.svelte';
-  import YoRHaCaseForm from './YoRHaCaseForm.svelte';
+  import YoRHaCaseForm from './YoRHaCaseForm.svelte'; // Changed to default import
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
+  import type { SearchResultEventDetail } from '$lib/components/search/RealTimeLegalSearch.svelte'; // Import the interface
+
+  // Interface for Quick Actions
+  interface QuickAction {
+    id: string;
+    label: string;
+    icon: string;
+    action?: 'modal'; // Specific action type for 'new-case'
+    route?: string;
+    color: string;
+  }
+
+  // Interface for Case Created Event
+  interface CaseCreatedEventDetail {
+    ca: {
+      title?: string;
+      caseNumber?: string;
+    };
+  }
+  type CaseCreatedEvent = CustomEvent<CaseCreatedEventDetail>;
+
   // Props interface
   interface SystemData {
     activeCases?: number;
@@ -58,7 +74,7 @@
   // Real-time search integration
   const { state: searchState, search: performSearch } = useRealTimeSearch();
   // Quick actions
-  const quickActions = [
+  const quickActions: QuickAction[] = [ // Explicitly type the array
     { id: 'new-case', label: 'Create New Case', icon: '📁', action: 'modal', color: 'blue' },
     { id: 'upload-evidence', label: 'Upload Evidence', icon: '🔍', route: '/evidence/upload', color: 'green' },
     { id: 'ai-analysis', label: 'AI Analysis', icon: '🤖', route: '/ai-assistant', color: 'purple' },
@@ -86,17 +102,19 @@
       console.error('YoRHaCommandCenter animation error:', error);
     }
   });
-  function handleQuickAction(action: unknown) {
-    selectedCard = action?.id ?? null;
-    if (action?.action === 'modal' && action?.id === 'new-case') {
+
+  function handleQuickAction(action: QuickAction) {
+    selectedCard = action.id ?? null;
+    if (action.action === 'modal' && action.id === 'new-case') {
       showCaseModal = true;
-    } else if (action?.route) {
+    } else if (action.route) {
       setTimeout(() => {
         goto(action.route);
       }, 300);
     }
   }
-  function handleCaseCreated(_event: unknown) {
+
+  function handleCaseCreated(event: CaseCreatedEvent) {
     const newCase = event.detail.ca;
     showCaseModal = false;
     // Update recent activity
@@ -106,25 +124,26 @@
         action: 'New Case Created',
         target: newCase.title || `Case ${newCase.caseNumber}`,
         time: 'just now',
-        type: 'success';
+        type: 'success'
       },
       ...recentActivity.slice(0, 4)
     ];
     // Update system data (for reactive updates)
     systemData.activeCases = systemData.activeCases + 1;
   }
-  function handleCaseError(_event: unknown) {
+  function handleCaseError(event: CustomEvent<{ message: string }>) {
     console.error('Case creation error:', event.detail.message);
     // You could add a notification system here
   }
+
   // Modal event handlers for superforms integration
-  function handleCaseCreationSuccess(_event: unknown) {
+  function handleCaseCreationSuccess(event: CaseCreatedEvent) {
     return handleCaseCreated(event);
   }
-  function handleCaseCreationError(_event: unknown) {
+  function handleCaseCreationError(event: CustomEvent<{ message: string }>) {
     return handleCaseError(event);
   }
-  function handleModalBackdropClick(_event: unknown) {
+  function handleModalBackdropClick(event: MouseEvent) { // Changed type from unknown to MouseEvent
     if (event.target === event.currentTarget) {
       showCaseModal = false;
     }
@@ -165,7 +184,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-      onclick={() => { componentError = null, }}
+      onclick={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -304,7 +323,6 @@
         <button
           class="action-nier-bits-card border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(action.color)} {selectedCard === action.id ? 'scale-95' : ''}"
           onclick={() => handleQuickAction(action)}
-          role="button"
           tabindex="0"
           aria-label="{action.label} - {action.icon}"
           onkeydown={(e) => {
@@ -332,19 +350,29 @@
       </div>
     </div>
     <div class="search-panel bg-yorha-darker border border-yorha-accent-warm/30 rounded-lg p-6">
+      <!--
+        FIX: The 'select' event for RealTimeLegalSearch needs to be explicitly declared
+        within src/lib/components/search/RealTimeLegalSearch.svelte using Svelte 5's $events() rune.
+        Example in RealTimeLegalSearch.svelte:
+        <script lang="ts">
+          import type { SearchResultEventDetail } from '$lib/components/yorha/YoRHaCommandCenter.svelte'; // Or define it in RealTimeLegalSearch.svelte
+          // ...existing props...
+          let { select } = $events<{ select: SearchResultEventDetail }>();
+          // ...then dispatch it like: select(detail);
+        </script>
+      -->
       <RealTimeLegalSearch
         placeholder="Search cases, evidence, precedents, statutes..."
         categories={['cases', 'evidence', 'precedents', 'statutes', 'criminals']}
         enableVectorSearch={true}
-        aiSuggestions={true}
-        onselect={(result) => {
+        on:select={(result: CustomEvent<SearchResultEventDetail>) => { // Correctly type the event
           // Handle search result selection
           recentActivity = [{
             id: Date.now(),
             action: 'Search Query Executed',
-            target: `"${(result as { detail?: unknown }).detail.title}"`,
+            target: `"${result.detail.title}"`, // Access title directly
             time: 'just now',
-            type: 'ai';
+            type: 'ai'
           }, ...recentActivity.slice(0, 4)];
         }}
       />
@@ -383,10 +411,15 @@
 {#if showCaseModal}
   <div class="modal-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
        onclick={handleModalBackdropClick}
+       onkeydown={(e) => { if (e.key === 'Escape') showCaseModal = false; }}
        role="dialog"
        aria-modal="true"
-       aria-labelledby="case-modal-title">
-    <div class="modal-content max-w-4xl w-full" onclick={(e) => e.stopPropagation()}>
+       aria-labelledby="case-modal-title"
+       tabindex="-1">
+    <div class="modal-content max-w-4xl w-full"
+         onclick={(e) => e.stopPropagation()}
+         role="none"
+         tabindex="-1">
       <YoRHaCaseForm
         onsuccess={handleCaseCreationSuccess}
         onerror={handleCaseCreationError}

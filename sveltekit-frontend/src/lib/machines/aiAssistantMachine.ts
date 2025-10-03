@@ -1253,7 +1253,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             serviceHealth: ({ event }) => {
               const health = (event as any).output.healthStatus;
               return {
@@ -1306,7 +1306,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Initialization failed: ${(event as any).error}`,
               code: 'INIT_FAILED',
@@ -1355,7 +1355,7 @@ export const aiAssistantMachine = createMachine({
       on: {
         SEND_MESSAGE: {
           target: "processing",
-          actions: assign({,
+          actions: assign({
             currentQuery: ({ event }) => (event as any).message,
             isProcessing: () => true,
             currentCaseId: ({ event }) => (event as any).caseId
@@ -1363,13 +1363,13 @@ export const aiAssistantMachine = createMachine({
         },
         UPLOAD_DOCUMENT: {
           target: "processingDocument",
-          actions: assign({,
+          actions: assign({
             isProcessing: () => true
           })
         },
         UPLOAD_IMAGE: {
           target: "processingImage",
-          actions: assign({,
+          actions: assign({
             isProcessing: () => true
           })
         },
@@ -1405,7 +1405,7 @@ export const aiAssistantMachine = createMachine({
         },
         SET_CASE_CONTEXT: {
           target: "loadingCaseContext",
-          actions: assign({,
+          actions: assign({
             currentCaseId: ({ event }) => (event as any).caseId
           })
         },
@@ -1554,7 +1554,7 @@ export const aiAssistantMachine = createMachine({
             }),
             onDone: {
               target: "selectingOptimalService",
-              actions: assign({,
+              actions: assign({
                 conversationHistory: ({ context, event }) => [
                   ...context.conversationHistory,
                   (event as any).output.userEntry
@@ -1566,7 +1566,7 @@ export const aiAssistantMachine = createMachine({
             },
             onError: {
               target: "#enhancedAiAssistant.error",
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => ({
                   message: `Query preparation failed: ${(event as any).error}`,
                   code: 'QUERY_PREP_FAILED',
@@ -1628,13 +1628,13 @@ export const aiAssistantMachine = createMachine({
             }),
             onDone: {
               target: "generatingResponse",
-              actions: assign({,
+              actions: assign({
                 activeProtocol: ({ event }) => (event as any).output.protocol
               })
             },
             onError: {
               target: "#enhancedAiAssistant.error",
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => ({
                   message: `Service selection failed: ${(event as any).error}`,
                   code: 'SERVICE_SELECTION_FAILED',
@@ -1756,7 +1756,7 @@ export const aiAssistantMachine = createMachine({
             }),
             onDone: {
               target: "#enhancedAiAssistant.idle",
-              actions: [;
+              actions: [
                 assign({
                   response: ({ event }) => (event as any).output.response,
                   conversationHistory: ({ context, event }) => [
@@ -1792,7 +1792,7 @@ export const aiAssistantMachine = createMachine({
             },
             onError: {
               target: "#enhancedAiAssistant.error",
-              actions: assign({,
+              actions: assign({
                 error: ({ event }) => ({
                   message: `Response generation failed: ${(event as any).error}`,
                   code: 'RESPONSE_GENERATION_FAILED',
@@ -1810,7 +1810,7 @@ export const aiAssistantMachine = createMachine({
       on: {
         STOP_GENERATION: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             isProcessing: () => false,
             currentQuery: () => ""
           })
@@ -1855,7 +1855,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: [;
+          actions: [
             assign({
               currentDocuments: ({ context, event }) => [
                 ...context.currentDocuments,
@@ -1875,7 +1875,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Document processing failed: ${(event as any).error}`,
               code: 'DOCUMENT_PROCESSING_FAILED',
@@ -1939,7 +1939,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: [;
+          actions: [
             assign({
               currentImages: ({ context, event }) => [
                 ...context.currentImages,
@@ -1958,7 +1958,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Image processing failed: ${(event as any).error}`,
               code: 'IMAGE_PROCESSING_FAILED',
@@ -2033,7 +2033,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: [;
+          actions: [
             assign({
               semanticAnalysis: ({ event }) =>
                 (event as any).output.analysisType === 'semantic' || (event as any).output.analysisType === 'full'
@@ -2048,7 +2048,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Document analysis failed: ${(event as any).error}`,
               code: 'DOCUMENT_ANALYSIS_FAILED',
@@ -2084,7 +2084,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             response: ({ event }) => {
               const result = (event as any).output as RAGResponse;
               return `Found ${(result as { expires?: any; value?: any; totalFound?: any; results?: any; result?: any; precedents?: any; status?: any }).totalFound} relevant documents:\n\n${(result as { expires?: any; value?: any; totalFound?: any; results?: any; result?: any; precedents?: any; status?: any }).results.map((r, i) => `${i + 1}. ${r.title} (${(r.relevanceScore * 100).toFixed(1)}% relevant)\n${r.excerpt}\n`).join('\n')
@@ -2094,7 +2094,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Semantic search failed: ${(event as any).error}`,
               code: 'SEMANTIC_SEARCH_FAILED',
@@ -2136,7 +2136,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             response: ({ event }) => {
               const results = (event as any).output;
               return `Vector search found ${results.length} similar documents:\n\n${results.map((r: any, i: number) =>
@@ -2148,7 +2148,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Vector search failed: ${(event as any).error}`,
               code: 'VECTOR_SEARCH_FAILED',
@@ -2192,7 +2192,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             response: ({ event }) => {
               const result = (event as any).output;
               return `Legal search results:\n\n${(result as { expires?: any; value?: any; totalFound?: any; results?: any; result?: any; precedents?: any; status?: any }).precedents?.map((p: any, i: number) =>
@@ -2205,7 +2205,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Legal search failed: ${(event as any).error}`,
               code: 'LEGAL_SEARCH_FAILED',
@@ -2239,7 +2239,7 @@ export const aiAssistantMachine = createMachine({
             throw new Error(`Case not found: ${caseId}`);
           }
           // Build timeline from documents and evidence
-          const timeline = [;
+          const timeline = [
             ...documents.map((d: any) => ({,
               event: `Document uploaded: ${d.title}`,
               timestamp: new Date(d.createdAt),
@@ -2266,7 +2266,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             caseContext: ({ event }) => (event as any).output,
             currentDocuments: ({ event }) => (event as any).output.documents,
             evidenceChain: ({ event }) => (event as any).output.evidence
@@ -2274,7 +2274,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Case context loading failed: ${(event as any).error}`,
               code: 'CASE_CONTEXT_FAILED',
@@ -2336,13 +2336,13 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             serviceHealth: ({ event }) => (event as any).output
           })
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             serviceHealth: ({ context }) => ({
               ...context.serviceHealth,
             // Keep existing state on error
@@ -2393,13 +2393,13 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             context7Analysis: ({ event }) => (event as any).output
           })
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Context7 analysis failed: ${(event as any).error}`,
               code: 'CONTEXT7_ANALYSIS_FAILED',
@@ -2424,7 +2424,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: [;
+          actions: [
             assign({
               natsConnected: () => true,
               serviceHealth: ({ context }) => ({
@@ -2440,7 +2440,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             natsConnected: () => false,
             error: ({ event }) => ({
               message: `NATS connection failed: ${(event as any).error}`,
@@ -2463,7 +2463,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             natsConnected: () => false,
             collaborationUsers: () => [],
             serviceHealth: ({ context }) => ({
@@ -2477,7 +2477,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `NATS disconnection failed: ${(event as any).error}`,
               code: 'NATS_DISCONNECTION_FAILED',
@@ -2541,14 +2541,14 @@ export const aiAssistantMachine = createMachine({
       },
       on: {
         STREAM_CHUNK: {
-          actions: assign({,
+          actions: assign({
             streamBuffer: ({ context, event }) =>
               context.streamBuffer + (event as any).chunk
           })
         },
         STREAM_END: {
           target: "idle",
-          actions: [;
+          actions: [
             assign({
               response: ({ context }) => context.streamBuffer,
               conversationHistory: ({ context }) => [
@@ -2584,7 +2584,7 @@ export const aiAssistantMachine = createMachine({
         },
         STOP_GENERATION: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             activeStreaming: () => false,
             isProcessing: () => false,
             streamBuffer: () => ""
@@ -2673,13 +2673,13 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             benchmarkResults: ({ event }) => (event as any).output
           })
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Benchmark failed: ${(event as any).error}`,
               code: 'BENCHMARK_FAILED',
@@ -2722,7 +2722,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: [;
+          actions: [
             assign({
               performance: ({ context, event }) => ({
                 ...context.performance,
@@ -2740,7 +2740,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Resource optimization failed: ${(event as any).error}`,
               code: 'OPTIMIZATION_FAILED',
@@ -2801,7 +2801,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             performance: ({ context, event }) => ({
               ...context.performance,
               totalQueries: context.performance.totalQueries + (event as any).output.totalDocuments
@@ -2810,7 +2810,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Batch analysis failed: ${(event as any).error}`,
               code: 'BATCH_ANALYSIS_FAILED',
@@ -2859,7 +2859,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             garbageCollectionMetrics: ({ context, event }) => ({
               ...context.garbageCollectionMetrics,
               collections: context.garbageCollectionMetrics.collections + 1,
@@ -2874,7 +2874,7 @@ export const aiAssistantMachine = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               message: `Memory cleanup failed: ${(event as any).error}`,
               code: 'MEMORY_CLEANUP_FAILED',
@@ -2892,7 +2892,7 @@ export const aiAssistantMachine = createMachine({
       after: {
         5000: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: () => null,
             isProcessing: () => false
           })
@@ -2901,7 +2901,7 @@ export const aiAssistantMachine = createMachine({
       on: {
         RETRY_LAST: {
           target: "processing",
-          actions: assign({,
+          actions: assign({
             error: ({ context }) => context.error ? {
               ...context.error,
               retryCount: context.error.retryCount + 1
@@ -2910,14 +2910,14 @@ export const aiAssistantMachine = createMachine({
         },
         ERROR_RECOVER: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: () => null,
             isProcessing: () => false
           })
         },
         CLEAR_CONVERSATION: {
           target: "idle",
-          actions: assign({,
+          actions: assign({
             error: () => null,
             conversationHistory: () => [],
             isProcessing: () => false,
@@ -2930,7 +2930,7 @@ export const aiAssistantMachine = createMachine({
 });
 // Enhanced action implementations
 export const aiAssistantActions = {
-  clearError: assign({,
+  clearError: assign({
     error: () => null
   }),
   logError: ({ context }: { context: AIAssistantContext }) => {

@@ -87,7 +87,7 @@ export const legalFormMachine = setup({
       },
       on: {
         UPLOAD_EVIDENCE: {
-          actions: assign({,
+          actions: assign({
             evidenceFiles: ({ event }) => event.files,
             confidence: ({ context, event }) => {
               // AI confidence based on file types and count
@@ -134,14 +134,14 @@ export const legalFormMachine = setup({
         NEXT: {
           target: "caseDetails",
           guard: ({ context }) => context.evidenceFiles.length > 0,
-          actions: assign({,
+          actions: assign({
             currentStep: 2,
             confidence: ({ context }) => Math.min(context.confidence + 20, 100)
           })
         },
         REQUEST_AI_HELP: {
           actions: assign({
-            aiRecommendations: () => [;
+            aiRecommendations: () => [
               {
                 nextAction: "Upload evidence files",
                 reasoning: "Evidence is required to proceed with case analysis",
@@ -159,7 +159,7 @@ export const legalFormMachine = setup({
         requiredFields: ["caseTitle", "caseDescription", "priority"],
         suggestedHelp: "Provide case details for proper categorization"
       },
-      entry: assign({,
+      entry: assign({
         aiRecommendations: ({ context }) => {
           const recommendations = [];
           // AI recommendation based on evidence type
@@ -184,7 +184,7 @@ export const legalFormMachine = setup({
       }),
       on: {
         UPDATE_CASE_DETAILS: {
-          actions: assign({,
+          actions: assign({
             caseTitle: ({ event }) => {
               if (event.type === "UPDATE_CASE_DETAILS") {
                 return event.title;
@@ -248,7 +248,7 @@ export const legalFormMachine = setup({
             context.caseTitle.trim() &&
             context.caseDescription.trim() &&
             Object.keys(context.validationErrors).length === 0,
-          actions: assign({,
+          actions: assign({
             currentStep: 3,
             confidence: ({ context }) => Math.min(context.confidence + 25, 100)
           })
@@ -259,7 +259,7 @@ export const legalFormMachine = setup({
         },
         REQUEST_AI_HELP: {
           actions: assign({
-            aiRecommendations: ({ context }) => [;
+            aiRecommendations: ({ context }) => [
               {
                 nextAction: "Use case templates",
                 reasoning: `For ${context.evidenceType} evidence, consider using predefined templates`,
@@ -277,7 +277,7 @@ export const legalFormMachine = setup({
         requiredFields: [],
         suggestedHelp: "Review and verify all case information"
       },
-      entry: assign({,
+      entry: assign({
         confidence: ({ context }) => {
           // AI confidence calculation for complete case
           let confidence = 60; // Base confidence
@@ -314,7 +314,7 @@ export const legalFormMachine = setup({
       on: {
         SUBMIT: {
           target: "submitting",
-          actions: assign({,
+          actions: assign({
             currentStep: 4,
             confidence: ({ context }) => Math.min(context.confidence + 10, 100)
           })
@@ -345,7 +345,7 @@ export const legalFormMachine = setup({
         src: "submitCaseService",
         onDone: {
           target: "success",
-          actions: assign({,
+          actions: assign({
             confidence: 100,
             aiSuggestions: [
               "Case submitted successfully",
@@ -355,7 +355,7 @@ export const legalFormMachine = setup({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             validationErrors: {
               submit: "Case submission failed. Please try again."
             }
@@ -372,7 +372,7 @@ export const legalFormMachine = setup({
       on: {
         RESET_FORM: {
           target: "evidenceUpload",
-          actions: assign({,
+          actions: assign({
             evidenceFiles: [],
             caseTitle: "",
             caseDescription: "",
@@ -397,7 +397,7 @@ export const legalFormMachine = setup({
       on: {
         BACK: {
           target: "review",
-          actions: assign({,
+          actions: assign({
             currentStep: 3,
             validationErrors: { [key: string]: any }
           })

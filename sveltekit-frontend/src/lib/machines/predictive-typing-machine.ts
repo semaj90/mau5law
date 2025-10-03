@@ -241,7 +241,7 @@ export const predictiveTypingMachine = setup({
         return context.keystrokePattern;
       }
     }),
-    recordAnalyticsSuccess: assign({,
+    recordAnalyticsSuccess: assign({
       predictiveResults: ({ event }) =>
         event.type === 'ANALYTICS_SUCCESS' ? event.results: null
       predictionLatency: ({ event }) =>
@@ -253,13 +253,13 @@ export const predictiveTypingMachine = setup({
       error: null
       retryCount: 0
     }),
-    recordAnalyticsError: assign({,
+    recordAnalyticsError: assign({
       error: ({ event }) => event.type === 'ANALYTICS_ERROR' ? event.error : null
       retryCount: ({ context }) => context.retryCount + 1,
       lastErrorTime: () => Date.now(),
       predictiveResults: null
     }),
-    updateSuggestions: assign({,
+    updateSuggestions: assign({
       suggestions: ({ event, context }) => {
         if (event.type === 'ANALYTICS_SUCCESS' && event.results.predicted_queries) {
           return event.results.predicted_queries.map(query => ({
@@ -272,13 +272,13 @@ export const predictiveTypingMachine = setup({
         return context.suggestions;
       }
     }),
-    updateGlyphContext: assign({,
+    updateGlyphContext: assign({
       glyphContext: ({ event }) => {
         // This would be set by the glyph context actor
         return [];
       }
     }),
-    selectSuggestion: assign({,
+    selectSuggestion: assign({
       currentQuery: ({ event }) =>
         event.type === 'SELECT_SUGGESTION' ? event.suggestion: '',
       lastKeystroke: () => Date.now(),
@@ -286,7 +286,7 @@ export const predictiveTypingMachine = setup({
         event.type === 'SELECT_SUGGESTION' ?
         [...context.queryHistory, event.suggestion] : context.queryHistory
     }),
-    submitQuery: assign({,
+    submitQuery: assign({
       queryHistory: ({ context, event }) =>
         event.type === 'SUBMIT_QUERY' ?
         [...context.queryHistory, event.query] : context.queryHistory,
@@ -294,12 +294,12 @@ export const predictiveTypingMachine = setup({
       suggestions: [],
       predictiveResults: null
     }),
-    updateConfig: assign({,
+    updateConfig: assign({
       config: ({ context, event }) =>
         event.type === 'UPDATE_CONFIG' ?
         { ...context.config, ...event.config } : context.config
     }),
-    startSession: assign({,
+    startSession: assign({
       sessionId: ({ event }) =>
         event.type === 'SESSION_START' ? event.sessionData.sessionId : '',
       userId: ({ event }) =>
@@ -311,7 +311,7 @@ export const predictiveTypingMachine = setup({
       error: null
       retryCount: 0
     }),
-    resetState: assign({,
+    resetState: assign({
       currentQuery: '',
       previousQuery: '',
       suggestions: [],
@@ -322,7 +322,7 @@ export const predictiveTypingMachine = setup({
       predictionLatency: 0,
       analyticsAccuracy: 0
     }),
-    recordInteractionPattern: assign({,
+    recordInteractionPattern: assign({
       interactionPatterns: ({ context, event }) => {
         const pattern = {
           timestamp: Date.now(),
@@ -423,7 +423,7 @@ export const predictiveTypingMachine = setup({
         debouncing: {
           description: 'Debouncing typing input before predictions',
           after: {
-            200: [;
+            200: [
               {
                 guard: 'shouldGeneratePredictions',
                 target: 'analyzingContext'
@@ -466,7 +466,7 @@ export const predictiveTypingMachine = setup({
               }
             }),
             onDone: {
-              actions: [;
+              actions: [
                 assign({
                   glyphContext: ({ event }) => event.output
                 })
@@ -524,7 +524,7 @@ export const predictiveTypingMachine = setup({
               maxCompletions: context.config.maxSuggestions
             }),
             onDone: {
-              actions: [;
+              actions: [
                 assign({
                   suggestions: ({ event }) => event.output,
                   predictionLatency: () => Date.now() - Date.now() // Would track actual time
@@ -539,7 +539,7 @@ export const predictiveTypingMachine = setup({
         },
         suggestionsReady: {
           description: 'Predictions ready, displaying suggestions',
-          entry: [;
+          entry: [
             assign({
               cacheHitRate: ({ context }) => {
                 // Calculate cache hit rate from recent interactions
@@ -572,7 +572,7 @@ export const predictiveTypingMachine = setup({
           },
           // Auto-refresh suggestions after some time;
           after: {
-            5000: [;
+            5000: [
               {
                 guard: 'isTypingActivelyCheck',
                 target: 'waiting'
@@ -596,7 +596,7 @@ export const predictiveTypingMachine = setup({
               }
             }),
             onDone: {
-              actions: [;
+              actions: [
                 assign({
                   userSatisfactionScore: ({ context, event }) => {
                     // Update satisfaction score based on learning success
@@ -617,7 +617,7 @@ export const predictiveTypingMachine = setup({
         error: {
           description: 'Error state with retry capability',
           on: {
-            RETRY: [;
+            RETRY: [
               {
                 guard: 'shouldRetry',
                 target: 'analyzingContext'
@@ -637,7 +637,7 @@ export const predictiveTypingMachine = setup({
           },
           // Auto-retry after delay;
           after: {
-            2000: [;
+            2000: [
               {
                 guard: 'shouldRetry',
                 target: 'analyzingContext'

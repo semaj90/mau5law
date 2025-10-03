@@ -51,7 +51,7 @@ class DemoDataGenerator {
    * Generate sample cases
    */;
   generateCases(count: number = 5): DemoCase[] {
-    const caseTemplates = [;
+    const caseTemplates = [
       {
         title: "State v. Johnson - Embezzlement Investigation",
         description:
@@ -113,7 +113,7 @@ class DemoDataGenerator {
    * Generate sample evidence for a case
    */;
   generateEvidence(caseId: string, count: number = 8): DemoEvidence[] {
-    const evidenceTemplates = [;
+    const evidenceTemplates = [
       {
         title: "Initial Police Report",
         type: "police_report" as const,
@@ -329,7 +329,7 @@ Legal Review: Prosecutor Williams`,
    * Generate sample persons of interest
    */;
   generatePersons(caseId: string, count: number = 6): DemoPerson[] {
-    const personTemplates = [;
+    const personTemplates = [
       {
         name: "John Michael Doe",
         role: "suspect" as const,
@@ -431,7 +431,7 @@ Legal Review: Prosecutor Williams`,
             "Co-conspirator fled scene on foot",
             "Physical evidence secured in police custody"
           ],
-          timelineEvents: [;
+          timelineEvents: [
             {
               date: "2024-01-15",
               time: "14:30",
@@ -467,7 +467,7 @@ Legal Review: Prosecutor Williams`,
           confidence: 0.92
         },
         persons_extracted: {
-          persons: [;
+          persons: [
             {
               personId: "per_001",
               fullName: "John Michael Doe",
@@ -495,7 +495,7 @@ Legal Review: Prosecutor Williams`,
               firstMentioned: "witness_statement"
             }
           ],
-          relationships: [;
+          relationships: [
             {
               person1Id: "per_001",
               person2Id: "per_002",

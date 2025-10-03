@@ -163,7 +163,7 @@ export const evidenceProcessingMachine = createMachine();
         on: {
           UPLOAD_FILE: {
             target: 'uploading',
-            actions: assign({,
+            actions: assign({
               file: ({ event }) => event.file,
               evidenceId: ({ event }) => event.evidenceId,
               uploadProgress: 0,
@@ -189,7 +189,7 @@ export const evidenceProcessingMachine = createMachine();
           input: ({ context }) => ({ file: context.file! }),
           onDone: {
             target: 'analyzing',
-            actions: assign({,
+            actions: assign({
               uploadProgress: 100,
               streamingUpdates: ({ context }) => [
                 ...context.streamingUpdates,
@@ -212,7 +212,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `Upload failed: ${event.error}`
@@ -243,7 +243,7 @@ export const evidenceProcessingMachine = createMachine();
           }),
           onDone: {
             target: 'generatingGlyph',
-            actions: assign({,
+            actions: assign({
               analysisResults: ({ event }) => event.output,
               streamingUpdates: ({ context }) => [
                 ...context.streamingUpdates,
@@ -266,7 +266,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `Analysis failed: ${event.error}`
@@ -286,7 +286,7 @@ export const evidenceProcessingMachine = createMachine();
         },
         on: {
           ANALYSIS_PROGRESS: {
-            actions: assign({,
+            actions: assign({
               streamingUpdates: ({ context, event }) => [
                 ...context.streamingUpdates.slice(0, -1),
                 {
@@ -327,7 +327,7 @@ export const evidenceProcessingMachine = createMachine();
           }),
           onDone: {
             target: 'embeddingPNG',
-            actions: assign({,
+            actions: assign({
               glyphGeneration: ({ context, event }) => ({
                 ...context.glyphGeneration!,
                 result: event.output
@@ -353,7 +353,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `Glyph generation failed: ${event.error}`
@@ -373,7 +373,7 @@ export const evidenceProcessingMachine = createMachine();
         },
         on: {
           GLYPH_PROGRESS: {
-            actions: assign({,
+            actions: assign({
               streamingUpdates: ({ context, event }) => [
                 ...context.streamingUpdates.slice(0, -1),
                 {
@@ -399,7 +399,7 @@ export const evidenceProcessingMachine = createMachine();
           }),
           onDone: {
             target: 'storingInMinIO',
-            actions: assign({,
+            actions: assign({
               portableArtifact: ({ event }) => ({
                 enhancedPngUrl: event.output.enhancedPngUrl,
                 metadata: event.output.metadata,
@@ -426,7 +426,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `PNG embedding failed: ${event.error}`
@@ -458,7 +458,7 @@ export const evidenceProcessingMachine = createMachine();
           }),
           onDone: {
             target: 'completed',
-            actions: assign({,
+            actions: assign({
               minioStorage: ({ event }) => event.output,
               processingTimeMs: ({ context }) => Date.now() - context.processingTimeMs,
               streamingUpdates: ({ context }) => [
@@ -475,7 +475,7 @@ export const evidenceProcessingMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
                 `Storage failed: ${event.error}`
@@ -499,7 +499,7 @@ export const evidenceProcessingMachine = createMachine();
       },
       completed: {
         type: 'final',
-        entry: assign({,
+        entry: assign({
           processingTimeMs: ({ context }) => Date.now() - context.processingTimeMs
         }),
         on: {
@@ -510,7 +510,7 @@ export const evidenceProcessingMachine = createMachine();
         on: {
           RETRY_CURRENT_STEP: {
             target: 'analyzing', // Could be smarter about which state to retry
-            actions: assign({,
+            actions: assign({
               errors: []
             })
           },

@@ -109,7 +109,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
     connection_timeout: 10000,
     channel_max: 100
   },
-  exchanges: [;
+  exchanges: [
     {
       name: EXCHANGES.LEGAL_AI_MAIN,
       type: 'topic',

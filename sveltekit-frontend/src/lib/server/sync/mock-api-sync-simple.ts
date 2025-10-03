@@ -117,7 +117,7 @@ export const mockDataGenerators = {
             assetIds: [`asset_${i}_1`, `asset_${i}_2`]
           }
         ],
-        recommendedAssets: [;
+        recommendedAssets: [
           {
             assetId: `recommended_${i}`,
             assetType: assetTypes[Math.floor(Math.random() * assetTypes.length)],

@@ -140,7 +140,7 @@ https: //svelte.dev/e/js_parse_error -->
       idle: {
         on: {
           SELECT_ITEMS: {
-            actions: assign({,
+            actions: assign({
               selectedItems: ({ event }) => event.items,
               progressStage: 'analyzing'
             })
@@ -156,7 +156,7 @@ https: //svelte.dev/e/js_parse_error -->
           src: 'performSynthesis',
           onDone: {
             target: 'complete',
-            actions: assign({,
+            actions: assign({
               synthesisResult: ({ event }) => event.data,
               loading: false
               progressStage: 'complete';
@@ -164,7 +164,7 @@ https: //svelte.dev/e/js_parse_error -->
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => event.data.message,
               loading: false;
             })
@@ -175,7 +175,7 @@ https: //svelte.dev/e/js_parse_error -->
         on: {
           RESTART: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               selectedItems: [],
               synthesisResult: null
               progressStage: 'selecting',
@@ -192,7 +192,7 @@ https: //svelte.dev/e/js_parse_error -->
           },
           RESTART: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               selectedItems: [],
               synthesisResult: null
               progressStage: 'selecting',

@@ -303,7 +303,7 @@ const legalAIConfig = {
 // STATE MACHINE ACTIONS
 // ============================================================================
 const legalAIActions = {
-    initializeSession: assign({,
+    initializeSession: assign({
         sessionId: () => crypto.randomUUID(),
         userId: (context) => context.userId || `user_${Date.now()}`
     }),
@@ -314,22 +314,22 @@ const legalAIActions = {
     initializeGPUWorker: (context) => {
         console.log('Initializing GPU Worker...');
     },
-    setGPUStatus: assign({,
+    setGPUStatus: assign({
         gpuStatus: (_, event) => event.data.status
     }),
-    startSearch: assign({,
+    startSearch: assign({
         currentQuery: (_, event) => event.query || ''
     }),
-    setSearchResults: assign({,
+    setSearchResults: assign({
         searchResults: (_, event) => event.data.results || []
     }),
-    updateQuery: assign({,
+    updateQuery: assign({
         currentQuery: (_, event) => event.query
     }),
     startChat: (context) => {
         console.log('Starting chat session:', context.sessionId);
     },
-    addUserMessage: assign({,
+    addUserMessage: assign({
         chatHistory: (context, event) => [
             ...context.chatHistory,
             {
@@ -341,7 +341,7 @@ const legalAIActions = {
             }
         ]
     }),
-    addAIResponse: assign({,
+    addAIResponse: assign({
         chatHistory: (context, event) => [
             ...context.chatHistory,
             {
@@ -354,13 +354,13 @@ const legalAIActions = {
             }
         ]
     }),
-    clearChatHistory: assign({,
+    clearChatHistory: assign({
         chatHistory: [],
     }),
     startUpload: (context) => {
         console.log('Starting document upload...');
     },
-    setUploadResult: assign({,
+    setUploadResult: assign({
         evidenceUploads: (context, event) => [
             ...context.evidenceUploads,
             event.data
@@ -369,19 +369,19 @@ const legalAIActions = {
     startDocumentAnalysis: (context) => {
         console.log('Starting document analysis...');
     },
-    setDocumentAnalysis: assign({,
+    setDocumentAnalysis: assign({
         documentAnalysis: (_, event) => event.data
     }),
     startCaseAnalysis: (context) => {
         console.log('Starting case analysis...');
     },
-    setCaseAnalysis: assign({,
+    setCaseAnalysis: assign({
         currentCase: (_, event) => ({
             ...event.data,
             analysisTimestamp: new Date(),
         })
     }),
-    setError: assign({,
+    setError: assign({
         errors: (context, event) => [
             ...context.errors,
             {
@@ -392,7 +392,7 @@ const legalAIActions = {
             }
         ]
     }),
-    incrementRetry: assign({,
+    incrementRetry: assign({
         retryCount: (context) => context.retryCount + 1,
     }),
     logError: (context, event) => {
@@ -715,10 +715,10 @@ export function createWebSocketService(url) {
             setSocket: assign({
                 socket: (_, event) => event.data
             }),
-            incrementReconnectAttempts: assign({,
+            incrementReconnectAttempts: assign({
                 reconnectAttempts: (context) => context.reconnectAttempts + 1,
             }),
-            resetReconnectAttempts: assign({,
+            resetReconnectAttempts: assign({
                 reconnectAttempts: 0,
             }),
             sendMessage: (context, event) => {
@@ -726,7 +726,7 @@ export function createWebSocketService(url) {
                     context.socket.send(JSON.stringify(event.message);
                 }
             },
-            addSubscription: assign({,
+            addSubscription: assign({
                 subscriptions: (context, event) => [
                     ...context.subscriptions,
                     event.channel

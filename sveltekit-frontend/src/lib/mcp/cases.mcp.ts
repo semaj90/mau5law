@@ -10,7 +10,7 @@ import { cache } from '../server/cache/redis.js';
 import { minioService } from '../server/storage/minio-service.js';
 // Database connection
 const pool = new Pool({
-  connectionString: import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
+  connectionString: import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db'
 });
 // removed unused db assignment
 }

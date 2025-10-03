@@ -138,7 +138,7 @@ export const documentUploadMachine = createMachine();
         on: {
           VALIDATE_FORM: {
             target: 'validating',
-            actions: assign({,
+            actions: assign({
               formData: ({ event }) => event.data
             })
           }
@@ -151,13 +151,13 @@ export const documentUploadMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: {
             target: 'valid',
-            actions: assign({,
+            actions: assign({
               validationErrors: () => ({})
             })
           },
           onError: {
             target: 'invalid',
-            actions: assign({,
+            actions: assign({
               validationErrors: ({ event }) => (event as any)?.error ?? {}
             })
           }
@@ -167,7 +167,7 @@ export const documentUploadMachine = createMachine();
         on: {
           VALIDATE_FORM: {
             target: 'validating',
-            actions: assign({,
+            actions: assign({
               formData: ({ event }) => event.data
             })
           },
@@ -179,7 +179,7 @@ export const documentUploadMachine = createMachine();
           UPLOAD: 'uploading',
           VALIDATE_FORM: {
             target: 'validating',
-            actions: assign({,
+            actions: assign({
               formData: ({ event }) => event.data
             })
           }
@@ -192,28 +192,28 @@ export const documentUploadMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: {
             target: 'uploaded',
-            actions: assign({,
+            actions: assign({
               uploadedFile: ({ event }) => (event.output as any) ?? null,
               uploadProgress: () => 100
             })
           },
           onError: {
             target: 'uploadError',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error)
             })
           }
         },
         on: {
           UPLOAD_PROGRESS: {
-            actions: assign({,
+            actions: assign({
               uploadProgress: ({ event }) => event.progress
             })
           }
         }
       },
       uploaded: {
-        always: [;
+        always: [
           {
             target: 'processing',
             guard: ({ context }) =>
@@ -234,21 +234,21 @@ export const documentUploadMachine = createMachine();
           }),
           onDone: {
             target: 'completed',
-            actions: assign({,
+            actions: assign({
               aiResults: ({ event }) => (event.output as any) ?? null,
               processingProgress: () => 100
             })
           },
           onError: {
             target: 'processingError',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error)
             })
           }
         },
         on: {
           PROCESSING_PROGRESS: {
-            actions: assign({,
+            actions: assign({
               processingProgress: ({ event }) => event.progress
             })
           }
@@ -256,11 +256,11 @@ export const documentUploadMachine = createMachine();
       },
       uploadError: {
         on: {
-          RETRY: [;
+          RETRY: [
             {
               target: 'uploading',
               guard: ({ context }) => context.retryCount < context.maxRetries,
-              actions: assign({,
+              actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
                 error: () => null
               })
@@ -272,11 +272,11 @@ export const documentUploadMachine = createMachine();
       },
       processingError: {
         on: {
-          RETRY: [;
+          RETRY: [
             {
               target: 'processing',
               guard: ({ context }) => context.retryCount < context.maxRetries,
-              actions: assign({,
+              actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
                 error: () => null
               })
@@ -377,7 +377,7 @@ export const caseCreationMachine = createMachine();
           src: 'loadDraft',
           onDone: {
             target: 'editing',
-            actions: assign({,
+            actions: assign({
               formData: ({ event }) => event.output
             })
           },
@@ -388,7 +388,7 @@ export const caseCreationMachine = createMachine();
         on: {
           UPDATE_FORM: {
             target: 'editing',
-            actions: assign({,
+            actions: assign({
               formData: ({ event }) => event.data
             })
           }
@@ -416,19 +416,19 @@ export const caseCreationMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: {
             target: 'editing',
-            actions: assign({,
+            actions: assign({
               lastSaved: () => new Date(),
               isAutoSaving: () => false
             })
           },
           onError: {
             target: 'editing',
-            actions: assign({,
+            actions: assign({
               isAutoSaving: () => false
             })
           }
         },
-        entry: assign({,
+        entry: assign({
           isAutoSaving: () => true
         })
       },
@@ -440,7 +440,7 @@ export const caseCreationMachine = createMachine();
           onDone: 'submitting',
           onError: {
             target: 'editing',
-            actions: assign({,
+            actions: assign({
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
@@ -466,13 +466,13 @@ export const caseCreationMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: {
             target: 'completed',
-            actions: assign({,
+            actions: assign({
               createdCase: ({ event }) => event.output
             })
           },
           onError: {
             target: 'editing',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -564,7 +564,7 @@ export const searchMachine = createMachine();
           src: 'loadSearchHistory',
           onDone: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               searchHistory: ({ event }) => event.output
             })
           },
@@ -579,7 +579,7 @@ export const searchMachine = createMachine();
           onDone: 'searching',
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
@@ -605,7 +605,7 @@ export const searchMachine = createMachine();
           input: ({ context }) => context.query,
           onDone: {
             target: 'results',
-            actions: assign({,
+            actions: assign({
               results: ({ event }) => event.output.results,
               analytics: ({ event }) => event.output.analytics,
               pagination: ({ event }) => event.output.pagination,
@@ -618,7 +618,7 @@ export const searchMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -629,11 +629,11 @@ export const searchMachine = createMachine();
             })
           }
         },
-        entry: assign({,
+        entry: assign({
           isSearching: () => true,
           results: () => []
         }),
-        exit: assign({,
+        exit: assign({
           isSearching: () => false
         })
       },
@@ -641,7 +641,7 @@ export const searchMachine = createMachine();
         on: {
           SEARCH: {
             target: 'validating',
-            actions: assign({,
+            actions: assign({
               query: ({ event }) => event.data
             })
           },
@@ -660,7 +660,7 @@ export const searchMachine = createMachine();
           }),
           onDone: {
             target: 'results',
-            actions: assign({,
+            actions: assign({
               results: ({ context, event }) => [...context.results, ...event.output.results],
               pagination: ({ event }) => event.output.pagination
             })
@@ -762,7 +762,7 @@ export const aiAnalysisMachine = createMachine();
           onDone: 'analyzing',
           onError: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
@@ -788,7 +788,7 @@ export const aiAnalysisMachine = createMachine();
           input: ({ context }) => context.analysisData,
           onDone: {
             target: 'completed',
-            actions: assign({,
+            actions: assign({
               analysisResults: ({ event }) => event.output.results,
               confidence: ({ event }) => event.output.confidence,
               processingTime: ({ event }) => event.output.processingTime,
@@ -797,7 +797,7 @@ export const aiAnalysisMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -810,7 +810,7 @@ export const aiAnalysisMachine = createMachine();
         },
         on: {
           STREAM_CONTENT: {
-            actions: assign({,
+            actions: assign({
               streamedContent: ({ context, event }) => context.streamedContent + event.content,
               isStreaming: () => true
             })

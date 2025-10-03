@@ -3,18 +3,27 @@
   Rich metadata support with type-safe validation
 -->
 <script lang="ts">
+  import { get } from 'svelte/store';
   // Svelte 5 runes are auto-imported
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
-  import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from '$lib/schemas/evidence-upload.js';
+  import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile, type EvidenceMetadata } from '$lib/schemas/evidence-upload';
   import type { PageData } from './$types.js';
-  const { data }: { data: PageData } = $props();
+
+  // Add UI stylesheet imports so tooltip / nes / uno / enhanced bits styles are available
+  import 'nes.css/css/nes.min.css';
+  import 'uno.css';
+  import 'enhanced-bits-ui/dist/enhanced-bits-ui.css';
+  import 'bits-ui/tooltip.css';
+
+  let { data }: { data: PageData } = $props();
   // Initialize Superform with Zod validation
   const { form, errors, enhance, submitting, message } = superForm(data.form, {
     validators: zod(evidenceUploadSchema),
     resetForm: false,
     invalidateAll: true,
-    onError: ({ result, message }) => {
+    // onError receives an object; avoid reading properties that may not exist
+    onError: ({ result }) => {
       // Show fallback notice on upload failure
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Upload service temporarily unavailable';
@@ -24,109 +33,181 @@
       console.log('Upload failed, using mock fallback:', result);
     }
   });
+
   // File upload state
-  let selectedFile: File | null = $state(null);
-  let filePreview: string | null = $state(null);
+  let selectedFile = $state<File | null>(null);
+  let filePreview = $state<string | null>(null);
   let dragOver = $state(false);
   let uploading = $state(false);
   let progressPercent = $state(0);
-  let metadata = $state<any>(null);
+  let metadata = $state<EvidenceMetadata | null>(null);
+
+  // --- Add: typed alias and runtime guard for evidence types ---
+  type EvidenceType = 'PDF' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'TEXT' | 'LINK' | 'UNKNOWN';
+  function isEvidenceType(v: string): v is EvidenceType {
+    return ['PDF', 'IMAGE', 'VIDEO', 'AUDIO', 'TEXT', 'LINK', 'UNKNOWN'].includes(v);
+  }
+  // --- end added code ---
+
+  // Helpers to read validation errors from the superform errors store
+  function hasError(key: string): boolean {
+    const e = get(errors) as any;
+    return !!(e && e[key]);
+  }
+  function getError(key: string): string | null {
+    const e = get(errors) as any;
+    const val = e?.[key];
+    if (!val) return null;
+    // superforms may provide array of messages
+    return Array.isArray(val) ? String(val[0]) : String(val);
+  }
+
   // Handle file selection
   async function handleFileSelect(file: File) {
-    selectedFile = fil;
+    selectedFile = file;
+
     // Validate file size
     if (!validateFileSize(file)) {
-      $errors.file = ['File size exceeds 100MB limit'];
+      errors.update(errs => {
+        (errs as any).file = ['File size exceeds 100MB limit'];
+        return errs;
+      });
       selectedFile = null;
       return;
     }
+
     // Auto-detect evidence type from file
     const detectedType = getFileTypeFromMime(file.type);
-    if (detectedType !== 'UNKNOWN') {
-      $form.evidence_type = detectedType as any;
+    if (isEvidenceType(detectedType) && detectedType !== 'UNKNOWN') {
+      form.update(f => ({ ...f, evidence_type: detectedType }));
     }
-    // Validate file type against evidence type
-    if (!validateFileType(file, $form.evidence_type)) {
-      $errors.file = [`File type ${file.type} not supported for ${$form.evidence_type} evidence`];
+
+    // Read current evidence_type safely
+    const currentEvidenceType = (get(form) as any)?.evidence_type ?? 'UNKNOWN';
+
+    if (!validateFileType(file, currentEvidenceType)) {
+      errors.update(errs => {
+        (errs as any).file = [`File type ${file.type} not supported for ${currentEvidenceType} evidence`];
+        return errs;
+      });
       selectedFile = null;
       return;
     }
+
     // Generate file preview for images
     if (file.type.startsWith('image/')) {
       filePreview = URL.createObjectURL(file);
     } else {
       filePreview = null;
     }
+
     // Generate metadata preview with fallback
     try {
-      metadata = await generateMetadataFromFile(file, $form.evidence_type);
+      metadata = await generateMetadataFromFile(file, currentEvidenceType);
     } catch (error) {
       console.warn('Failed to generate metadata preview:', error);
-      // Provide mock metadata as fallback
-      metadata = {
-        mockData: true
-        error: 'failure default to mock',
-        fallbackMetadata: {
-          fileName: file.name,
-          fileSize: file.size,
-          mimeType: file.type,
-          detectedType: $form.evidence_type,
-          estimatedProcessingTime: '2-5 minutes',
-          suggestedTags: ['document', 'evidence'],
-          confidenceLevel: 'medium'
-        }
+      // Ensure file is not null before accessing its properties in fallback
+      if (file) {
+        metadata = {
+          mockData: true,
+          error: 'failure default to mock',
+          fallbackMetadata: {
+            fileName: file.name,
+            fileSize: file.size,
+            mimeType: file.type,
+            detectedType: currentEvidenceType,
+            estimatedProcessingTime: '2-5 minutes',
+            suggestedTags: ['document', 'evidence'],
+            confidenceLevel: 'medium'
+          }
+        };
+      } else {
+        // Generic fallback if file is unexpectedly null
+        metadata = {
+          mockData: true,
+          error: 'failure default to mock - no file selected',
+          fallbackMetadata: {
+            fileName: 'unknown',
+            fileSize: 0,
+            mimeType: 'application/octet-stream',
+            detectedType: 'UNKNOWN',
+            estimatedProcessingTime: 'N/A',
+            suggestedTags: [],
+            confidenceLevel: 'none'
+          }
+        };
       }
     }
-    // Clear any file errors
-    if ($errors.file) {
-      delete $errors.fil;
-      $errors = $error;
-    }
+
+    // Clear any file errors using store-safe update
+    errors.update(errs => {
+      if ((errs as any).file) {
+        delete (errs as any).file;
+      }
+      return errs;
+    });
   }
-  // File input change handler
-  function onFileChange(_event: Event) {
-    // removed unused target assignment
-    const file = target.files?.[0];
+
+  // --- Keep single onFileChange (consolidated) and single onEvidenceTypeChange ---
+  // Replace any duplicate declarations with these single definitions:
+
+  // File input change handler (single canonical definition)
+  function onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement | null;
+    dragOver = false;
+    // Prefer files from input change, fall back to dataTransfer (for drop events)
+    const file = input?.files?.[0] ?? (event as any).dataTransfer?.files?.[0];
     if (file) {
       handleFileSelect(file);
     }
   }
-  // Drag and drop handlers
-  function onDragOver(_event: DragEvent) {
+
+  // Consolidated Evidence type change handler (accepts optional string or Event)
+  function onEvidenceTypeChange(arg?: string | Event) {
+    const newType =
+      typeof arg === 'string'
+        ? arg
+        : (arg && (arg as any).target ? ((arg as Event)!.target as HTMLSelectElement).value : undefined);
+    const currentType = newType ?? (get(form) as any)?.evidence_type ?? 'UNKNOWN';
+    if (selectedFile) {
+      if (!validateFileType(selectedFile, currentType)) {
+        errors.update(errs => {
+          (errs as any).file = [`File type ${selectedFile.type} not supported for ${currentType} evidence`];
+          return errs;
+        });
+      } else {
+        errors.update(errs => {
+          if ((errs as any).file) delete (errs as any).file;
+          return errs;
+        });
+      }
+    }
+  }
+
+  // --- Add: missing drag-and-drop handlers referenced in template ---
+  function onDragOver(event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
-  function onDragLeave(_event: DragEvent) {
+  function onDragLeave(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
   }
-  function onDrop(_event: DragEvent) {
+  function onDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     const file = event.dataTransfer?.files?.[0];
-    if (file) {
-      handleFileSelect(file);
-    }
+    if (file) handleFileSelect(file);
   }
-  // Evidence type change handler
-  function onEvidenceTypeChange() {
-    if (selectedFile) {
-      // Re-validate file when evidence type changes
-      if (!validateFileType(selectedFile, $form.evidence_type)) {
-        $errors.file = [`File type ${selectedFile.type} not supported for ${$form.evidence_type} evidence`];
-      } else if ($errors.file) {
-        delete $errors.fil;
-        $errors = $error;
-      }
-    }
-  }
-  // Format file size for display
+
+  // Format file size for display (human readable)
   function formatFileSize(bytes: number): string {
+    if (!bytes && bytes !== 0) return '';
     if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    const units = ['B','KB','MB','GB','TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    const val = bytes / Math.pow(1024, i);
+    return `${val.toFixed(val < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
   }
 </script>
 
@@ -154,10 +235,11 @@
       </p>
     </div>
     {#if $message}
-      <div class="nes-container {$message.type === 'success' ? 'is-success' : 'is-error'}" style="margin: 10px 0;">
+      <div class={`nes-container ${$message.type === 'success' ? 'is-success' : 'is-error'}`} style="margin: 10px 0;">
         <p>{$message.text}</p>
       </div>
     {/if}
+
     <form method="POST" action="?/upload" enctype="multipart/form-data" use:enhance class="space-y-6">
       <!-- Case Selection -->
       <div class="nes-field" style="margin: 15px 0;">
@@ -187,12 +269,7 @@
           required
           disabled={$submitting}
           bind:value={$form.title}
-          class="nes-input"
-          placeholder="e.g., Signed Contract Document"
         />
-        {#if $errors.title}
-          <p class="nes-text is-error">{$errors.title}</p>
-        {/if}
       </div>
       <!-- Evidence Description -->
       <div class="nes-field" style="margin: 15px 0;">
@@ -234,16 +311,21 @@
       <!-- File Upload Area -->
       {#if $form.evidence_type !== 'LINK'}
         <div class="nes-field" style="margin: 15px 0;">
-          <label>📎 File Upload *</label>
+          <label for="file">
+            📎 File Upload
+            <span aria-label="required" title="Required unless evidence type is LINK" style="color: #dc3545;">*</span>
+          </label>
           <!-- Drag and Drop Zone -->
+          <!-- tooltip-friendly hint -->
           <div
-            class="nes-container {dragOver ? 'is-success' : ''} {$errors.file ? 'is-error' : ''}"
+            class={`nes-container ${dragOver ? 'is-success' : ''} ${hasError('file') ? 'is-error' : ''}`}
             style="padding: 30px; text-align: center; cursor: pointer;"
-            ondragover={onDragOver}
-            ondragleave={onDragLeave}
+            on:dragover={onDragOver}
+            on:dragleave={onDragLeave}
+            on:drop={onDrop}
             role="region"
             aria-label="Drop zone"
-            ondrop={onDrop}
+            title="Drop a file here or click to browse"
           >
             {#if selectedFile}
               <div class="space-y-4">
@@ -265,14 +347,16 @@
                   <p class="font-medium text-gray-900">{selectedFile.name}</p>
                   <p class="text-sm text-gray-500">{formatFileSize(selectedFile.size)} • {selectedFile.type}</p>
                 </div>
+                <!-- tooltip-friendly hint -->
                 <button
                   type="button"
-                  onclick={() => {
+                  on:click={() => {
                     selectedFile = null;
                     filePreview = null;
                     metadata = null;
                   }}
                   class="text-sm text-red-600 hover:text-red-800"
+                  title="Remove uploaded file"
                 >
                   Remove file
                 </button>
@@ -283,13 +367,11 @@
                   <path
                     d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                     stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
                   />
                 </svg>
+                <p class="text-gray-600">Drag and drop your file here, or</p>
                 <div>
-                  <p class="text-gray-600">Drag and drop your file here, or</p>
-                  <label for="file" class="cursor-pointer">
+                  <label for="file" class="cursor-pointer" title="Browse files">
                     <span class="text-blue-600 hover:text-blue-800 font-medium">click to browse</span>
                     <input
                       type="file"
@@ -297,7 +379,7 @@
                       id="file"
                       class="sr-only"
                       disabled={$submitting}
-                      onchange={onFileChange}
+                      on:change={onFileChange}
                     />
                   </label>
                 </div>
@@ -305,8 +387,8 @@
               </div>
             {/if}
           </div>
-          {#if $errors.file}
-            <p class="mt-1 text-sm text-red-600">{$errors.file}</p>
+          {#if hasError('file')}
+            <p class="mt-1 text-sm text-red-600">{getError('file')}</p>
           {/if}
         </div>
       {/if}
@@ -354,7 +436,7 @@
           </label>
           <select
             name="confidentialityLevel"
-            id="confidentialityLevel";
+            id="confidentialityLevel"
             bind:value={$form.confidentialityLevel}
             disabled={$submitting}
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -373,7 +455,6 @@
             type="text"
             name="collectedBy"
             id="collectedBy"
-            ;
             bind:value={$form.collectedBy}
             disabled={$submitting}
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -386,7 +467,6 @@
             type="text"
             name="location"
             id="location"
-            ;
             bind:value={$form.location}
             disabled={$submitting}
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -399,7 +479,6 @@
             type="datetime-local"
             name="collectedAt"
             id="collectedAt"
-            ;
             bind:value={$form.collectedAt}
             disabled={$submitting}
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -411,7 +490,6 @@
             type="checkbox"
             name="isAdmissible"
             id="isAdmissible"
-            ;
             bind:checked={$form.isAdmissible}
             disabled={$submitting}
             class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -427,7 +505,6 @@
                 type="checkbox"
                 name="enableOcr"
                 id="enableOcr"
-                ;
                 bind:checked={$form.enableOcr}
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -441,7 +518,6 @@
                 type="checkbox"
                 name="enableAiAnalysis"
                 id="enableAiAnalysis"
-                ;
                 bind:checked={$form.enableAiAnalysis}
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -455,7 +531,6 @@
                 type="checkbox"
                 name="enableEmbeddings"
                 id="enableEmbeddings"
-                ;
                 bind:checked={$form.enableEmbeddings}
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -469,7 +544,6 @@
                 type="checkbox"
                 name="enableSummarization"
                 id="enableSummarization"
-                ;
                 bind:checked={$form.enableSummarization}
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -478,9 +552,9 @@
                 Generate document summary
               </label>
             </div>
-          </div>
-        </div>
-      </div>
+          </div> <!-- Closes space-y-2 -->
+        </div> <!-- Closes border-t pt-4 -->
+      </div> <!-- Closes space-y-4 (Enhanced Evidence Fields) -->
       <!-- Metadata Preview -->
       {#if metadata}
         <div class="bg-gray-50 rounded-lg p-4">
@@ -492,10 +566,18 @@
       {/if}
       <!-- Submit Button -->
       <div style="text-align: center; margin: 20px 0;">
-        <button type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn"> ← Cancel </button>
+        <button type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn" title="Go back"> ← Cancel </button>
         <button
           type="submit"
-          disabled={$submitting || (!selectedFile && $form.evidence_type !== 'LINK') || !$form.case_id || !$form.title}
+          disabled={
+            $submitting ||
+            (
+              // Require a file for all types except LINK
+              ($form.evidence_type !== 'LINK' && !selectedFile)
+            ) ||
+            !$form.case_id ||
+            !$form.title
+          }
           class="nes-btn is-success"
           style="margin-left: 10px;"
         >
@@ -509,3 +591,28 @@
     </form>
   </div>
 </div>
+        <button
+          type="submit"
+          disabled={
+            $submitting ||
+            (
+              // Require a file for all types except LINK
+              ($form.evidence_type !== 'LINK' && !selectedFile)
+            ) ||
+            !$form.case_id ||
+            !$form.title
+          }
+          class="nes-btn is-success"
+          style="margin-left: 10px;"
+        >
+          {#if $submitting}
+            🔄 Uploading...
+          {:else}
+            📁 Upload Evidence
+          {/if}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+

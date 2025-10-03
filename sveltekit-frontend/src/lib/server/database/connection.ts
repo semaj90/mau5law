@@ -12,7 +12,7 @@ import {
 // Enhanced PostgreSQL connection with pgvector support
 const connectionString =
   process.env.DATABASE_URL ||
-  'postgres://legal_admin:123456@localhost:5433/legal_ai_db?sslmode=disable'
+  'postgres://legal_admin:123456@localhost:5434/legal_ai_db?sslmode=disable'
 // Create postgres client with pgvector extension
 const client = postgres(connectionString, {
   max: 10,

@@ -1,26 +1,31 @@
 // @ts-nocheck
-import { db, sql, pool } from './drizzle.js';
-export { db, sql, pool }
+import { db, sql, pool } from './drizzle';
+export { db, sql, pool };
 // Database type detection
 export const isPostgreSQL = true; // Since we're using PostgreSQL with pgvector
-// Re-export all database tables and relations from schema
-export * from './schema-postgres.js';
+// Re-export all database tables and relations from schema (using schema-actual to match production DB)
+export * from './schema-actual';
 // Explicitly export tables to ensure they're available
-import { users, sessions, cases, evidence, legalDocuments, caseActivities, statutes } from './schema-postgres.js';
-export { users, sessions, cases, evidence, legalDocuments, caseActivities, statutes }
+import { users, cases, documents, evidence } from './schema-actual';
+// Import sessions from schema-postgres (required for Lucia auth)
+import { sessions } from './schema-postgres';
+export { users, cases, documents, evidence, sessions };
+export const legalDocuments = documents; // Alias
+export const caseActivities = null;
+export const statutes = null;
+export const vectorSearchLogs = null;
 // Re-export performance optimizations (optional - may not exist)
 // export { OptimizedQueries, CacheService } from '$lib/performance/optimizations'
 // Type-safe database queries helper
 export function getTableByName(tableName: string) {
   const tableMap = {
     users,
-    sessions,
     cases,
+    documents,
     evidence,
-    legalDocuments,
-    caseActivities,
-    statutes,
-  }
+    // Aliases for compatibility
+    legalDocuments: documents,
+  };
   return tableMap[tableName as keyof typeof tableMap];
 }
 // Database connection health check with enhanced error handling
@@ -31,15 +36,15 @@ export async function healthCheck() {
         status: 'unhealthy' as const,
         error: 'Database not initialized',
         timestamp: new Date(),
-      }
+      };
     }
     // Test basic connectivity
     await db.execute(sql`SELECT 1`);
     // Test specific tables
     const tableTests = await Promise.allSettled([
       db.select().from(users).limit(1),
-      db.select().from(sessions).limit(1),
       db.select().from(cases).limit(1),
+      db.select().from(evidence).limit(1),
     ]);
     const failedTests = tableTests.filter((result: any) => (result as { status?: any }).status === 'rejected');
     if (failedTests.length > 0) {
@@ -47,19 +52,19 @@ export async function healthCheck() {
         status: 'degraded' as const,
         error: `${failedTests.length} table(s) inaccessible`,
         timestamp: new Date(),
-      }
+      };
     }
     return {
       status: 'healthy' as const,
       timestamp: new Date(),
       tablesAccessible: tableTests.length,
-    }
+    };
   } catch (error: any) {
     return {
       status: 'unhealthy' as const,
       error: error.message,
       timestamp: new Date(),
-    }
+    };
   }
 }
 // --- Context7, Bits UI, Melt UI, and Svelte 5 Integration Best Practices ---

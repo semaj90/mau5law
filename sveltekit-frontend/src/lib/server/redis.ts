@@ -5,17 +5,15 @@
 import Redis from 'ioredis';
 import { getRedisConfig } from '$lib/config/redis-config';
 // Get optimized Redis configuration
-const url = process.env.REDIS_URL ?? 'redis://127.0.0.1:4005'
+const url = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379'
 const baseConfig = getRedisConfig();
 function buildRedisOptions() {
   const password = process.env.REDIS_PASSWORD || baseConfig.password;
   return {
     ...baseConfig,
-    password: password || undefined
+    password: password || undefined,
     lazyConnect: true, // Changed to true to prevent immediate connection
     maxRetriesPerRequest: 1, // Limit retries to prevent flooding
-    // If URL was provided separately, include it in options form
-    ...(url ? { host: undefined } : { [key: string]: any })
   } as any;
 }
 // ioredis supports (url) or (options). We pass url via options for consistency.
@@ -91,7 +89,7 @@ export function createRedisClientSet(): RedisClientSet {
     publisher,
     async closeAll() {
       await Promise.all(
-        [primary.quit(), subscriber.quit(), publisher.quit()].map((p) => p.catch(() => {})
+        [primary.quit(), subscriber.quit(), publisher.quit()].map((p) => p.catch(() => {}))
       );
     }
   }
@@ -111,9 +109,9 @@ export async function getFromCache(_key: string): Promise<string | null> {
     return null;
   }
 }
-export async function setCache(_key: string
-  value: string
-  expireInSeconds?: number;
+export async function setCache(_key: string,
+  value: string,
+  expireInSeconds?: number
 ): Promise<boolean> {
   try {
     const client = await createRedisClient();

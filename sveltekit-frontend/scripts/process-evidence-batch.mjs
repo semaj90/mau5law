@@ -9,7 +9,7 @@ console.log(chalk.cyan('📄 Evidence Document Batch Processor v1.0'));
 
 const config = {
   databaseUrl:
-    process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
+    process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
   ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11435',
   minioUrl: process.env.MINIO_URL || 'http://localhost:9000',
   legalModel: process.env.LEGAL_MODEL || 'gemma3-legal',
@@ -31,7 +31,7 @@ console.log(`   Max File Size: ${Math.round(config.maxFileSize / 1024 / 1024)}MB
 // Database connection
 const sql = postgres(config.databaseUrl, {
   host: 'localhost',
-  port: 5433,
+  port: 5434,
   database: 'legal_ai_db',
   username: 'legal_admin',
   password: '123456',

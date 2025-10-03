@@ -381,7 +381,7 @@ export class MasterCognitiveHub {
     });
   }
   private setupAchievements(): void {
-    const achievements = [;
+    const achievements = [
       {
         id: 'first_boot',
         description: 'Successfully initialize the Master Cognitive Hub',

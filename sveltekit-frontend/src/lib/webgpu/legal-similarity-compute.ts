@@ -268,7 +268,7 @@ export class LegalSimilarityWebGPU {
     // Create bind group layout
     this.bindGroupLayout = this.device.createBindGroupLayout({
       label: 'Legal Similarity Bind Group Layout',
-      entries: [;
+      entries: [
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,

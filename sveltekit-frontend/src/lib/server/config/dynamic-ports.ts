@@ -27,8 +27,8 @@ export class DynamicPortManager {
       // Database Services (5430-5439)
       {
         name: 'postgresql',
-        basePort: 5433,
-        portRange: [5430, 5431, 5432, 5433, 5434, 5435, 5436, 5437, 5438, 5439]
+        basePort: 5434,
+        portRange: [5430, 5431, 5432, 5434, 5434, 5435, 5436, 5437, 5438, 5439]
       },
       // Redis Services (6370-6379)
       {

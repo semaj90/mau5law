@@ -19,7 +19,7 @@ export interface Shortcut {
   aiSummary?: string | null; // For AI summary/metadata
 }
 // Static essential shortcuts (always present)
-const staticShortcuts: Shortcut[] = [;
+const staticShortcuts: Shortcut[] = [
   {
     key: "Ctrl+I",
     description: "Open context menu",

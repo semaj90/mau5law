@@ -5,7 +5,7 @@ import * as schema from './schema.js';
 // Get DATABASE_URL from environment with fallback
 const DATABASE_URL = import.meta.env.VITE_DATABASE_URL ||
   import.meta.env.DATABASE_URL ||
-  'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
+  'postgresql://legal_admin:123456@localhost:5434/legal_ai_db'
 // Create PostgreSQL connection using postgres.js
 const sql = postgres(DATABASE_URL, {
   max: 10,

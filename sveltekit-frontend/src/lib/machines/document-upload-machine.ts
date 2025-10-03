@@ -1,7 +1,6 @@
 // Document Upload State Machine - XState v5 compatible
 // Manages file upload workflow with progress tracking and AI processing
 import { createMachine, assign, fromPromise } from 'xstate';
-}
 export interface DocumentUploadContext {
   files: File[];
   uploadProgress: number;
@@ -15,43 +14,34 @@ export interface DocumentUploadContext {
 export const documentUploadMachine = createMachine({
   id: 'documentUpload',
   initial: 'idle',
-  types: {
-    context: { [key: string]: any } as DocumentUploadContext,
-    events: { [key: string]: any } as
-      | { type: 'SELECT_FILES'; files: File[] }
-      | { type: 'UPDATE_FORM'; data: any }
-      | { type: 'VALIDATE_FORM'; data: any }
-      | { type: 'SUBMIT'; data: any }
-      | { type: 'RETRY' }
-      | { type: 'RESET' }
-  },
+  // removed `types` runtime-only block to be esbuild-compatible
   context: {
     files: [],
     uploadProgress: 0,
     processingProgress: 0,
-    validationErrors: { [key: string]: any },
+    validationErrors: {} as Record<string, string[]>,
     uploadedFiles: [],
-    aiResults: null
-    error: null
-    retryCount: 0
+    aiResults: null,
+    error: null,
+    retryCount: 0,
   },
   states: {
     idle: {
       on: {
         SELECT_FILES: {
           target: 'validating',
-          actions: assign({,
-            files: ({ event }) => event.files,
-            error: null
-          })
-        }
-      }
+          actions: assign({
+            files: ({ event }) => (event as any).files,
+            error: null,
+          }),
+        },
+      },
     },
     validating: {
       invoke: {
         id: 'validateFiles',
         src: fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
-          const errors: Record<string, string[]> = {}
+          const errors: Record<string, string[]> = {};
           if (input.files.length === 0) {
             errors.files = ['Please select at least one file'];
           }
@@ -69,42 +59,42 @@ export const documentUploadMachine = createMachine({
             }
           }
           if (Object.keys(errors).length > 0) {
-            throw { validationErrors: errors }
+            throw { validationErrors: errors };
           }
           return input.files;
         }),
         input: ({ context }) => context,
         onDone: {
           target: 'validated',
-          actions: assign({,
-            validationErrors: { [key: string]: any },
-            error: null
-          })
+          actions: assign({
+            validationErrors: {} as Record<string, string[]>,
+            error: null,
+          }),
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             validationErrors: ({ event }) => (event as any).error?.validationErrors || {},
-            error: 'File validation failed'
-          })
-        }
-      }
+            error: 'File validation failed',
+          }),
+        },
+      },
     },
     validated: {
       on: {
         SUBMIT: 'uploading',
         SELECT_FILES: {
           target: 'validating',
-          actions: assign({,
-            files: ({ event }) => event.files
-          })
-        }
-      }
+          actions: assign({
+            files: ({ event }) => (event as any).files,
+          }),
+        },
+      },
     },
     uploading: {
       entry: assign({
         uploadProgress: 0,
-        retryCount: ({ context }) => context.retryCount + 1
+        retryCount: ({ context }) => context.retryCount + 1,
       }),
       invoke: {
         id: 'uploadFiles',
@@ -120,7 +110,7 @@ export const documentUploadMachine = createMachine({
           try {
             const response = await fetch('/api/upload', {
               method: 'POST',
-              body: formData
+              body: formData,
             });
             clearInterval(progressInterval);
             if (!response.ok) {
@@ -136,28 +126,28 @@ export const documentUploadMachine = createMachine({
         input: ({ context }) => context,
         onDone: {
           target: 'processing',
-          actions: assign({,
-            uploadedFiles: ({ event }) => event.output.files || [],
+          actions: assign({
+            uploadedFiles: ({ event }) => (event as any).output?.files || [],
             uploadProgress: 100,
-            error: null
-          })
+            error: null,
+          }),
         },
-        onError: [;
+        onError: [
           {
             guard: ({ context }) => context.retryCount < 3,
             target: 'retrying',
-            actions: assign({,
-              error: ({ event }) => (event as any).error?.message || 'Upload failed'
-            })
+            actions: assign({
+              error: ({ event }) => (event as any).error?.message || 'Upload failed',
+            }),
           },
           {
             target: 'failed',
-            actions: assign({,
-              error: ({ event }) => (event as any).error?.message || 'Upload failed after retries'
-            })
-          }
-        ]
-      }
+            actions: assign({
+              error: ({ event }) => (event as any).error?.message || 'Upload failed after retries',
+            }),
+          },
+        ],
+      },
     },
     processing: {
       entry: assign({ processingProgress: 0 }),
@@ -172,12 +162,12 @@ export const documentUploadMachine = createMachine({
             const response = await fetch('/api/ai/process-document', {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
               },
-              body: JSON.stringify({,
-                fileId: file.id,
-                analysisType: 'full'
-              })
+              body: JSON.stringify({
+                fileId: (file as any).id,
+                analysisType: 'full',
+              }),
             });
             if (!response.ok) {
               throw new Error(`Processing failed for ${file.name}`);
@@ -188,69 +178,69 @@ export const documentUploadMachine = createMachine({
             // context.processingProgress = ((i + 1) / context.uploadedFiles.length) * 100
           }
           return {
-            processedFiles: processingResults
+            processedFiles: processingResults,
             summary: {
               totalFiles: input.uploadedFiles.length,
               successfulProcessing: processingResults.length,
-              extractedText: processingResults.reduce((acc, r) => acc + (r.extractedText?.length || 0), 0)
-            }
-          }
+              extractedText: processingResults.reduce((acc, r) => acc + ((r as any).extractedText?.length || 0), 0),
+            },
+          };
         }),
         input: ({ context }) => context,
         onDone: {
           target: 'completed',
-          actions: assign({,
-            aiResults: ({ event }) => event.output,
+          actions: assign({
+            aiResults: ({ event }) => (event as any).output,
             processingProgress: 100,
-            error: null
-          })
+            error: null,
+          }),
         },
         onError: {
           target: 'failed',
-          actions: assign({,
-            error: ({ event }) => (event as any).error?.message || 'Processing failed'
-          })
-        }
-      }
+          actions: assign({
+            error: ({ event }) => (event as any).error?.message || 'Processing failed',
+          }),
+        },
+      },
     },
     retrying: {
       after: {
-        2000: 'uploading'
+        2000: 'uploading',
       },
       on: {
-        RETRY: 'uploading'
-      }
+        RETRY: 'uploading',
+      },
     },
     completed: {
       type: 'final',
       on: {
         RESET: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             files: [],
             uploadProgress: 0,
             processingProgress: 0,
-            validationErrors: { [key: string]: any },
+            validationErrors: {} as Record<string, string[]>,
             uploadedFiles: [],
-            aiResults: null
-            error: null
-            retryCount: 0
-          })
-        }
-      }
+            aiResults: null,
+            error: null,
+            retryCount: 0,
+          }),
+        },
+      },
     },
     failed: {
       on: {
         RETRY: 'uploading',
         RESET: {
           target: 'idle',
-          actions: assign({,
-            error: null
-            retryCount: 0
-          })
-        }
-      }
-    }
-  }
+          actions: assign({
+            error: null,
+            retryCount: 0,
+          }),
+        },
+      },
+    },
+  },
 });
 export default documentUploadMachine;

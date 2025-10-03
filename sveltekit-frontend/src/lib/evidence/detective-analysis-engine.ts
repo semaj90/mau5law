@@ -479,7 +479,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     return {
       text: "Handwritten note detected: Meeting at 3pm tomorrow",
       confidence: 0.75,
-      boundingBoxes: [;
+      boundingBoxes: [
         {
           text: "Meeting at 3pm tomorrow",
           bbox: { x: 10, y: 20, width: 200, height: 30 },
@@ -869,7 +869,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   private async getSpellingCorrections(query: string): Promise<SearchSuggestion[]> {
     // Mock spelling corrections
-    return [;
+    return [
       {
         query: query + 's',
         score: 0.9,
@@ -880,7 +880,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   private async getSemanticSimilarities(query: string): Promise<SearchSuggestion[]> {
     // Mock semantic similarities
-    return [;
+    return [
       {
         query: 'related term',
         score: 0.8,
@@ -891,7 +891,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   private async getContextualSuggestions(query: string): Promise<SearchSuggestion[]> {
     // Mock contextual suggestions
-    return [;
+    return [
       {
         query: 'contextual match',
         score: 0.7,
@@ -902,7 +902,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
   private async getPatternSuggestions(query: string): Promise<SearchSuggestion[]> {
     // Mock pattern suggestions
-    return [;
+    return [
       {
         query: 'pattern match',
         score: 0.6,

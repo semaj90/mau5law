@@ -284,7 +284,7 @@ export const phase13StateMachine = setup({
         shaderPrograms: 0
       })
     }),
-    streamVertexData: assign({,
+    streamVertexData: assign({
       vertexBuffers: ({ context, event }) => {
         if (event.type === "STREAM_VERTEX_DATA") {
           return [...context.vertexBuffers, event.vertices];
@@ -296,7 +296,7 @@ export const phase13StateMachine = setup({
         frameRate: Math.min(context.performance.frameRate + 1, 60)
       })
     }),
-    updatePageRank: assign({,
+    updatePageRank: assign({
       pageRankScores: ({ context, event }) => {
         if (event.type === "PAGERANK_UPDATE") {
           const newScores = new Map(context.pageRankScores);
@@ -307,7 +307,7 @@ export const phase13StateMachine = setup({
         return context.pageRankScores;
       }
     }),
-    applyFeedback: assign({,
+    applyFeedback: assign({
       feedbackLoop: ({ context, event }) => {
         const current = context.feedbackLoop;
         if (event.type === "FEEDBACK_POSITIVE") {
@@ -328,7 +328,7 @@ export const phase13StateMachine = setup({
         return current;
       }
     }),
-    updateMCPContext: assign({,
+    updateMCPContext: assign({
       mcpContext: ({ context, event }) => {
         if (event.type === "MCP_SEMANTIC_SEARCH") {
           return {
@@ -344,7 +344,7 @@ export const phase13StateMachine = setup({
         return context.mcpContext;
       }
     }),
-    updatePerformanceMetrics: assign({,
+    updatePerformanceMetrics: assign({
       performance: ({ event }) => {
         if (event.type === "PERFORMANCE_METRIC_UPDATE") {
           return event.metrics;
@@ -488,7 +488,7 @@ export const phase13StateMachine = setup({
       },
       on: {
         API_COORDINATION_START: {
-          actions: assign({,
+          actions: assign({
             apiCoordination: ({ event }) => ({
               redisNodes: [`redis://localhost:6379`],
               natsChannels: [`legal.events`, `ai.recommendations`],
@@ -529,7 +529,7 @@ export const phase13StateMachine = setup({
         }),
         onDone: {
           target: "coordinating",
-          actions: assign({,
+          actions: assign({
             mcpContext: ({ context, event }) => ({
               ...context.mcpContext,
               semanticSearchResults: (event.output as any)?.results || [],
@@ -544,7 +544,7 @@ export const phase13StateMachine = setup({
         },
         onError: {
           target: "error",
-          actions: assign({,
+          actions: assign({
             aiState: ({ context }) => ({
               ...context.aiState,
               confidence: Math.max(context.aiState.confidence - 0.2, 0.0),

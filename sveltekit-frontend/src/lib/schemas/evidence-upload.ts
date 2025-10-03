@@ -41,14 +41,20 @@ const ALLOWED_AUDIO_TYPES = ['audio/mp3', 'audio/wav', 'audio/aac', 'audio/ogg']
 const ALLOWED_TEXT_TYPES = ['text/plain', 'text/csv', 'application/rtf'];
 // Evidence type to MIME types mapping (unified with existing file-upload.ts)
 const EVIDENCE_TYPE_MAPPINGS = {
-  PDF: ALLOWED_PDF_TYPES
-  IMAGE: ALLOWED_IMAGE_TYPES
-  VIDEO: ALLOWED_VIDEO_TYPES
-  AUDIO: ALLOWED_AUDIO_TYPES
-  TEXT: ALLOWED_TEXT_TYPES
+  PDF: ALLOWED_PDF_TYPES,
+  IMAGE: ALLOWED_IMAGE_TYPES,
+  VIDEO: ALLOWED_VIDEO_TYPES,
+  AUDIO: ALLOWED_AUDIO_TYPES,
+  TEXT: ALLOWED_TEXT_TYPES,
   LINK: [], // No file upload for links
-  UNKNOWN: [...ALLOWED_PDF_TYPES, ...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES, ...ALLOWED_AUDIO_TYPES, ...ALLOWED_TEXT_TYPES]
-}
+  UNKNOWN: [
+    ...ALLOWED_PDF_TYPES,
+    ...ALLOWED_IMAGE_TYPES,
+    ...ALLOWED_VIDEO_TYPES,
+    ...ALLOWED_AUDIO_TYPES,
+    ...ALLOWED_TEXT_TYPES,
+  ],
+};
 // Additional types from existing file-upload.ts for compatibility
 export const legacyEvidenceTypeEnum = z.enum([
   'physical_evidence',
@@ -103,13 +109,15 @@ export const evidenceUploadSchema = z.object({
   // Legacy evidence type support
   legacyEvidenceType: legacyEvidenceTypeEnum.optional(),
   // OCR and analysis results
-  ocrResult: z.object({,
-    extractedText: z.string().optional(),
-    confidence: z.number().min(0).max(100).optional(),
-    legalConcepts: z.array(z.string()).default([]),
-    citations: z.array(z.string()).default([]),
-    pageCount: z.number().optional()
-  }).optional()
+  ocrResult: z
+    .object({
+      extractedText: z.string().optional(),
+      confidence: z.number().min(0).max(100).optional(),
+      legalConcepts: z.array(z.string()).default([]),
+      citations: z.array(z.string()).default([]),
+      pageCount: z.number().optional(),
+    })
+    .optional(),
 });
 // PDF-specific metadata schema
 export const pdfMetadataSchema = z.object({
@@ -124,27 +132,27 @@ export const pdfMetadataSchema = z.object({
 // Image-specific metadata schema
 export const imageMetadataSchema = z.object({
   kind: z.literal('IMAGE'),
-  resolution: z.object({,
+  resolution: z.object({
     width: z.number().int().positive(),
-    height: z.number().int().positive()
+    height: z.number().int().positive(),
   }),
   format: z.enum(['jpeg', 'png', 'gif', 'webp']),
   hasAlphaChannel: z.boolean(),
   fileSize: z.number().optional(),
-  colorSpace: z.string().optional()
+  colorSpace: z.string().optional(),
 });
 // Video-specific metadata schema
 export const videoMetadataSchema = z.object({
   kind: z.literal('VIDEO'),
   durationSeconds: z.number().positive(),
-  resolution: z.object({,
+  resolution: z.object({
     width: z.number().int().positive(),
-    height: z.number().int().positive()
+    height: z.number().int().positive(),
   }),
   codec: z.string(),
   frameRate: z.number().positive(),
   fileSize: z.number().optional(),
-  bitrate: z.number().optional()
+  bitrate: z.number().optional(),
 });
 // Audio-specific metadata schema
 export const audioMetadataSchema = z.object({
@@ -237,8 +245,8 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             kind: 'IMAGE',
             resolution: { width: 0, height: 0 },
             format: 'unknown' as any,
-            hasAlphaChannel: false
-            ...baseMetadata
+            hasAlphaChannel: false,
+            ...baseMetadata,
           } as EvidenceMetadata);
         }
         img.src = URL.createObjectURL(file as any);

@@ -8,7 +8,7 @@ import { gemmaEmbeddingsService } from '$lib/services/gemma-embeddings-service'
 // Request validation schema
 const EmbeddingRequestSchema = z.object({
   text: z.string().min(1),
-  model: z.string().default('nomic-embed-text:latest'),
+  model: z.string().default('embeddinggemma:latest'),
   document_type: z.enum(['legal_document', 'evidence', 'case', 'note']).optional(),
   metadata: z.record(z.any()).optional(),
   normalize: z.boolean().default(true)
@@ -22,7 +22,7 @@ const VectorSearchSchema = z.object({
 })
 const BatchEmbeddingSchema = z.object({
   texts: z.array(z.string()).min(1).max(100),
-  model: z.string().default('nomic-embed-text:latest'),
+  model: z.string().default('embeddinggemma:latest'),
   document_type: z.enum(['legal_document', 'evidence', 'case', 'note']).optional(),
   metadata: z.record(z.any()).optional()
 })
@@ -148,9 +148,9 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             status: 'Gemma embeddings service available',
-            models: ['nomic-embed-text:latest'],
-            dimensions: 384,
-            features: ['caching', 'pgvector', 'batch_processing', 'vector_search']
+            models: ['embeddinggemma:latest', 'nomic-embed-text:latest'],
+            dimensions: 512,
+            features: ['caching', 'pgvector', 'batch_processing', 'vector_search', 'gpu_acceleration']
           }
         })
       case 'stats':

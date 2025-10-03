@@ -44,7 +44,7 @@ const evidenceCanvasMachine = createMachine({
         }),
         onDone: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             canvasId: ({ event }) => event.output.canvasId,
             sessionId: ({ event }) => event.output.sessionId,
             evidenceItems: ({ event }) => event.output.evidenceItems || [],
@@ -57,7 +57,7 @@ const evidenceCanvasMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.error.message
           })
         }
@@ -67,25 +67,25 @@ const evidenceCanvasMachine = createMachine({
       on: {
         ADD_EVIDENCE: {
           target: 'updating',
-          actions: assign({,
+          actions: assign({
             lastUpdate: () => Date.now()
           })
         },
         MOVE_EVIDENCE: {
           target: 'updating',
-          actions: assign({,
+          actions: assign({
             lastUpdate: () => Date.now()
           })
         },
         CREATE_CONNECTION: {
           target: 'updating',
-          actions: assign({,
+          actions: assign({
             lastUpdate: () => Date.now()
           })
         },
         UPDATE_FABRIC_STATE: {
           target: 'syncing',
-          actions: assign({,
+          actions: assign({
             lastUpdate: () => Date.now()
           })
         },
@@ -139,7 +139,7 @@ const evidenceCanvasMachine = createMachine({
         }),
         onDone: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             evidenceItems: ({ event, context }) =>
               event.output.evidenceItems || context.evidenceItems,
             connections: ({ event, context }) =>
@@ -150,7 +150,7 @@ const evidenceCanvasMachine = createMachine({
         },
         onError: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.error.message
           })
         }
@@ -177,7 +177,7 @@ const evidenceCanvasMachine = createMachine({
         }),
         onDone: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             fabricState: ({ event }) => event.output.fabricState,
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
             lastUpdate: () => Date.now()
@@ -185,7 +185,7 @@ const evidenceCanvasMachine = createMachine({
         },
         onError: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.error.message
           })
         }
@@ -209,14 +209,14 @@ const evidenceCanvasMachine = createMachine({
         input: ({ context }) => ({ canvasId: context.canvasId }),
         onDone: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
             lastUpdate: () => Date.now()
           })
         },
         onError: {
           target: 'active',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => event.error.message
           })
         }
@@ -389,7 +389,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       await new Promise(resolve => setTimeout(resolve, 100);
       // Update fabric state (simulating user interaction)
       const fabricState = {
-        objects: [;
+        objects: [
           {
             type: 'rect',
             left: 100,

@@ -183,7 +183,7 @@ export const mockDataGenerators = {
     const assetTypes = ['document', 'template', 'form', 'precedent', 'citation'];
     for (let i = 0; i < count; i++) {
       const prediction: AssetPrediction = {
-        nextStates: [;
+        nextStates: [
           {
             state: {
               id: `hmm_state_${i}`,

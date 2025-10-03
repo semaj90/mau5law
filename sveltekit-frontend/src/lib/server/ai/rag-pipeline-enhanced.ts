@@ -683,7 +683,7 @@ export class EnhancedLegalRAGPipeline {
         topK: 40,
         topP: 0.9,
         repeatPenalty: 1.1,
-        callbacks: [;
+        callbacks: [
           {
             handleLLMStart: async () => {
               console.debug(`[RAG] LLM Started: ${this.config.ollama.llmModel}`);
@@ -1325,7 +1325,7 @@ Limit to 10 most relevant tags.
       new StringOutputParser()
     ]);
     try {
-      const llmResponse = await Promise.race([;
+      const llmResponse = await Promise.race([
         chain.invoke({
           documentType,
           content: content.substring(0, 3000)

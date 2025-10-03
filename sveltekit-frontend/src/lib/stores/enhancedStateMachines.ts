@@ -302,7 +302,7 @@ export const evidenceProcessingMachine = setup({
       on: {
         ADD_EVIDENCE: {
           target: 'queueing',
-          actions: assign({,
+          actions: assign({
             evidenceQueue: ({ context, event }) => [...context.evidenceQueue, event.evidence],
             selectedEvidence: ({ event }) => event.evidence
           })
@@ -328,7 +328,7 @@ export const evidenceProcessingMachine = setup({
             input: ({ context }) => ({ evidence: context.evidenceQueue[0] }),
             onDone: {
               target: 'vectorSearch',
-              actions: assign({,
+              actions: assign({
                 processingResults: ({ context, event }) => {
                   const newResults = new Map(context.processingResults);
                   newResults.set(event.output.evidenceId, {
@@ -367,7 +367,7 @@ export const evidenceProcessingMachine = setup({
             },
             onError: {
               target: 'error',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
                   {
@@ -397,7 +397,7 @@ export const evidenceProcessingMachine = setup({
             },
             onDone: {
               target: 'relationshipDiscovery',
-              actions: assign({,
+              actions: assign({
                 vectorMatches: ({ event }) =>;
                   (event.output.matches || []).map((match: any, index: number) => ({
                     ...match,
@@ -407,7 +407,7 @@ export const evidenceProcessingMachine = setup({
             },
             onError: {
               target: 'relationshipDiscovery',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
                   {
@@ -433,7 +433,7 @@ export const evidenceProcessingMachine = setup({
             }),
             onDone: {
               target: 'complete',
-              actions: assign({,
+              actions: assign({
                 graphRelationships: ({ event }) => event.output.nodes || [],
                 connectionStrength: ({ event }) => {
                   const strengthMap = new Map();
@@ -446,7 +446,7 @@ export const evidenceProcessingMachine = setup({
             },
             onError: {
               target: 'complete',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
                   {
@@ -465,10 +465,10 @@ export const evidenceProcessingMachine = setup({
           }
         },
         complete: {
-          always: [;
+          always: [
             {
               target: '#evidenceProcessing.queueing',
-              actions: assign({,
+              actions: assign({
                 evidenceQueue: ({ context }) => context.evidenceQueue.slice(1),
                 retryAttempts: 0
               })
@@ -480,13 +480,13 @@ export const evidenceProcessingMachine = setup({
             RETRY_FAILED: {
               target: 'aiProcessing',
               guard: 'canRetry',
-              actions: assign({,
+              actions: assign({
                 retryAttempts: ({ context }) => context.retryAttempts + 1
               })
             },
             PROCESS_NEXT: {
               target: 'complete',
-              actions: assign({,
+              actions: assign({
                 evidenceQueue: ({ context }) => context.evidenceQueue.slice(1),
                 retryAttempts: 0
               })
@@ -500,13 +500,13 @@ export const evidenceProcessingMachine = setup({
         src: 'systemHealthCheck',
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             systemHealth: ({ event }) => event.output.health as 'healthy' | 'degraded' | 'critical'
           })
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             systemHealth: 'critical',
             errors: ({ context, event }) => [
               ...context.errors,
@@ -529,7 +529,7 @@ export const evidenceProcessingMachine = setup({
         src: 'syncCache',
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             lastSync: new Date(),
             cacheHits: ({ context, event }) =>
               context.cacheHits + (event.output.cacheOperations || 0)
@@ -537,7 +537,7 @@ export const evidenceProcessingMachine = setup({
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             errors: ({ context, event }) => [
               ...context.errors,
               {
@@ -557,7 +557,7 @@ export const evidenceProcessingMachine = setup({
   },
   on: {
     CLEAR_ERRORS: {
-      actions: assign({,
+      actions: assign({
         errors: ({ context }) => context.errors.map((error) => ({ ...error, resolved: true }))
       })
     },

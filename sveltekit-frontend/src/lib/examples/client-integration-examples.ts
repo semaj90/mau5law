@@ -12,7 +12,7 @@ import { quantizeForLegalAI, type LegalAIProfile } from '$lib/utils/typed-array-
 export async function integrateLegalChatWithWebGPU() {
   console.log('💬 Integrating legal chat with WebGPU buffer system...');
   // Simulate existing legal chat system with document embeddings
-  const legalDocuments = [;
+  const legalDocuments = [
     {
       id: 'contract-001',
       title: 'Software License Agreement',
@@ -112,7 +112,7 @@ export async function enhanceLegalSimilaritySearchWithQuantization() {
 export async function integrateLegalDocumentUploadWorkflow() {
   console.log('📤 Integrating legal document upload workflow...');
   // Simulate document upload with different types and priorities
-  const uploadedDocuments = [;
+  const uploadedDocuments = [
     {
       filename: 'merger-agreement.pdf',
       type: 'contract' as const,

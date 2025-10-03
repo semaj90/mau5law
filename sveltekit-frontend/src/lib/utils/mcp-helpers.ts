@@ -666,7 +666,7 @@ export async function mcpMemoryReadGraph(): Promise<any> {
   try {
     // TODO: Replace with real MCP memory server call when available
     // For now, return mock structure that matches expected format
-    return [;
+    return [
       {
         node: "legal-workflow-memory",
         relations: ["case-evidence", "document-analysis"],
@@ -682,7 +682,7 @@ export async function mcpCodebaseAnalyze(prompt: string): Promise<any> {
   // Node.js/ESM alias import is not supported in CJS build. Provide fallback for CJS/Node.js usage.
   try {
     // Fallback: Return a stub/mock result for Node.js/require usage
-    return [;
+    return [
       {
         analysis: `Codebase analysis for: ${prompt}`,
         context7LibraryId: "context7-sveltekit",

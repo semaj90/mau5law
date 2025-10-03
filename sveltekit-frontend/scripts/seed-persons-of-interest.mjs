@@ -10,8 +10,7 @@ import postgres from 'postgres';
 import { eq } from 'drizzle-orm';
 
 // Database connection
-const connectionString =
-  process.env.DATABASE_URL || 'postgres://legal_admin:123456@localhost:5433/legal_ai_db';
+const connectionString = process.env.DATABASE_URL || 'postgres://legal_admin:123456@localhost:5434/legal_ai_db';
 const sql = postgres(connectionString);
 const db = drizzle(sql);
 
@@ -19,45 +18,31 @@ async function seedPersonsOfInterest() {
   console.log('🌱 Seeding Persons of Interest data...');
 
   try {
-    // First, check if we have any cases to associate with
-    const existingCases = await db.select().from(cases).limit(1);
+    // This script uses raw SQL table names to avoid missing schema imports.
+    // Check for an existing case to associate with
+    const existingCases = await sql`SELECT id, title FROM cases LIMIT 1`;
     let caseId = null;
 
     if (existingCases.length > 0) {
       caseId = existingCases[0].id;
       console.log(`📁 Using existing case: ${existingCases[0].title}`);
     } else {
-      // Create a sample case first
-      const [newCase] = await db
-        .insert(cases)
-        .values({
-          caseNumber: 'CASE-2024-001',
-          title: 'Operation Digital Hunt',
-          description: 'High-profile cybercrime investigation involving multiple suspects',
-          priority: 'high',
-          status: 'active',
-        })
-        .returning();
-
-      caseId = newCase.id;
-      console.log(`📁 Created new case: ${newCase.title}`);
+      const insertedCase = await sql`
+        INSERT INTO cases (case_number, title, description, priority, status)
+        VALUES ('CASE-2024-001', 'Operation Digital Hunt', 'High-profile cybercrime investigation involving multiple suspects', 'high', 'active')
+        RETURNING id, title
+      `;
+      caseId = insertedCase[0].id;
+      console.log(`📁 Created new case: ${insertedCase[0].title}`);
     }
 
-    // Get or create a user for createdBy
-    let userId = null;
-    const existingUsers = await db.select().from(users).limit(1);
+    // Get an existing user id if any
+    const existingUsers = await sql`SELECT id, email FROM users LIMIT 1`;
+    let userId = existingUsers.length > 0 ? existingUsers[0].id : null;
+    if (userId) console.log(`👤 Using existing user: ${existingUsers[0].email}`);
 
-    if (existingUsers.length > 0) {
-      userId = existingUsers[0].id;
-      console.log(`👤 Using existing user: ${existingUsers[0].email}`);
-    }
-
-    // Check if persons of interest already exist
-    const existingPois = await db.select().from(personsOfInterest).limit(1);
-    if (existingPois.length > 0) {
-      console.log('⚠️ Persons of Interest already exist. Clearing existing data...');
-      await db.delete(personsOfInterest);
-    }
+    // Clear existing persons_of_interest entries to avoid duplicates
+    await sql`DELETE FROM persons_of_interest`;
 
     // Mock Persons of Interest data matching our FugitiveDx interface
     const mockPersons = [
@@ -80,16 +65,8 @@ async function seedPersonsOfInterest() {
           eyes: 'Blue',
           weight: '82 kg',
           distinguishingMarks: 'Scar on left cheek, tribal tattoo on right arm',
-          associates: [
-            'Maria "The Shadow" Smith',
-            'Carlos "El Lobo" Rodriguez',
-            'Unknown accomplices',
-          ],
-          habits: [
-            'Prefers night operations',
-            'Uses encrypted communications',
-            'Frequent coffee shop visitor',
-          ],
+          associates: ['Maria "The Shadow" Smith', 'Carlos "El Lobo" Rodriguez', 'Unknown accomplices'],
+          habits: ['Prefers night operations', 'Uses encrypted communications', 'Frequent coffee shop visitor'],
           lastKnownLocation: 'Downtown Tech District',
           vehicles: ['Black Honda Civic (stolen)', 'Red Yamaha motorcycle'],
           dangerLevel: 8.5,
@@ -219,9 +196,28 @@ async function seedPersonsOfInterest() {
     console.log('📝 Inserting persons of interest...');
 
     for (const person of mockPersons) {
-      const [inserted] = await db.insert(personsOfInterest).values(person).returning();
+      const res = await sql`
+        INSERT INTO persons_of_interest
+          (case_id, name, aliases, relationship, threat_level, status, profile_data, tags, position, created_by)
+        VALUES (
+          ${person.caseId},
+          ${person.name},
+          ${JSON.stringify(person.aliases)},
+          ${person.relationship},
+          ${person.threatLevel},
+          ${person.status},
+          ${JSON.stringify(person.profileData)},
+          ${JSON.stringify(person.tags)},
+          ${JSON.stringify(person.position)},
+          ${person.createdBy}
+        ) RETURNING id, name, threat_level;
+      `;
 
-      console.log(`✅ Added: ${inserted.name} (Threat: ${inserted.threatLevel.toUpperCase()})`);
+      if (res && res[0]) {
+        console.log(`✅ Added: ${res[0].name} (Threat: ${String(res[0].threat_level).toUpperCase()})`);
+      } else {
+        console.log(`⚠️ Insert may have failed for: ${person.name}`);
+      }
     }
 
     console.log(`🎉 Successfully seeded ${mockPersons.length} persons of interest!`);

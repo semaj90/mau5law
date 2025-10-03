@@ -11,7 +11,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
  */
 const appConnectionString =
   process.env.DATABASE_URL ||
-  "postgresql://legal_admin:123456@localhost:5433/legal_ai_db"
+  "postgresql://legal_admin:123456@localhost:5434/legal_ai_db"
 /**
  * 👑 Admin Connection (postgres - superuser)
  * Use this only for migrations, extensions, and administrative tasks
@@ -19,7 +19,7 @@ const appConnectionString =
 const adminConnectionString =
   process.env.ADMIN_DATABASE_URL ||
   process.env.MIGRATION_DATABASE_URL ||
-  "postgresql://legal_admin:123456@localhost:5433/legal_ai_db"
+  "postgresql://legal_admin:123456@localhost:5434/legal_ai_db"
 // App connection pool (for normal operations)
 export const appPool = isDevelopment;
   ? new Pool({

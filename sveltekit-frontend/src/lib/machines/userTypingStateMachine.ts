@@ -114,14 +114,14 @@ export const userTypingStateMachine = createMachine({
   initial: 'idle',
   states: {
     idle: {
-      entry: assign({,
+      entry: assign({
         mcpWorkerStatus: 'idle',
         lastActivity: () => Date.now()
       }),
       on: {
         USER_STARTED_TYPING: {
           target: 'typing',
-          actions: assign({,
+          actions: assign({
             typingStartTime: () => Date.now(),
             lastActivity: () => Date.now(),
             currentText: ({ event }) => event.text,
@@ -133,7 +133,7 @@ export const userTypingStateMachine = createMachine({
         },
         USER_RETURNED: {
           target: 'user_present',
-          actions: assign({,
+          actions: assign({
             lastActivity: () => Date.now(),
             analytics: ({ context }) => ({
               ...context.analytics,
@@ -153,7 +153,7 @@ export const userTypingStateMachine = createMachine({
       }),
       on: {
         USER_STARTED_TYPING: {
-          actions: [;
+          actions: [
             assign({
               currentText: ({ event }) => event.text,
               lastActivity: () => Date.now(),
@@ -179,7 +179,7 @@ export const userTypingStateMachine = createMachine({
         },
         USER_STOPPED_TYPING: {
           target: 'not_typing',
-          actions: assign({,
+          actions: assign({
             typingEndTime: () => Date.now(),
             typingDuration: ({ context }) => Date.now() - context.typingStartTime,
             wordsTyped: ({ event }) => event.text.split(/\s+/).filter(item => item.length),
@@ -206,7 +206,7 @@ export const userTypingStateMachine = createMachine({
         },
         USER_SUBMITTED: {
           target: 'processing_submission',
-          actions: assign({,
+          actions: assign({
             submissionsCount: ({ context }) => context.submissionsCount + 1,
             lastActivity: () => Date.now()
           })
@@ -231,7 +231,7 @@ export const userTypingStateMachine = createMachine({
       on: {
         USER_STARTED_TYPING: {
           target: 'typing',
-          actions: assign({,
+          actions: assign({
             typingStartTime: () => Date.now(),
             lastActivity: () => Date.now()
           })
@@ -247,7 +247,7 @@ export const userTypingStateMachine = createMachine({
         // After 5 seconds of not typing, show contextual prompts
         5000: {
           target: 'waiting_user',
-          actions: assign({,
+          actions: assign({
             contextualPrompts: ({ context }) => {
               // Generate contextual prompts based on current text
               const prompts = [];
@@ -280,7 +280,7 @@ export const userTypingStateMachine = createMachine({
       on: {
         USER_STARTED_TYPING: {
           target: 'typing',
-          actions: assign({,
+          actions: assign({
             contextualPrompts: [],
             lastActivity: () => Date.now()
           })
@@ -322,13 +322,13 @@ export const userTypingStateMachine = createMachine({
       on: {
         USER_RETURNED: {
           target: 'user_present',
-          actions: assign({,
+          actions: assign({
             lastActivity: () => Date.now()
           })
         },
         USER_STARTED_TYPING: {
           target: 'typing',
-          actions: assign({,
+          actions: assign({
             lastActivity: () => Date.now()
           })
         }
@@ -346,7 +346,7 @@ export const userTypingStateMachine = createMachine({
         }),
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             userBehavior: ({ context, event }) => ({
               ...context.userBehavior,
               contextualHints: event.output.contextualHints
@@ -362,7 +362,7 @@ export const userTypingStateMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             mcpWorkerStatus: 'idle',
             userBehavior: ({ context }) => ({
               ...context.userBehavior,
@@ -384,7 +384,7 @@ export const userTypingStateMachine = createMachine({
         }),
         onDone: {
           target: 'typing',
-          actions: assign({,
+          actions: assign({
             userBehavior: ({ context, event }) => ({
               ...context.userBehavior,
               contextualHints: event.output.contextualHints,
@@ -399,7 +399,7 @@ export const userTypingStateMachine = createMachine({
         },
         onError: {
           target: 'typing',
-          actions: assign({,
+          actions: assign({
             mcpWorkerStatus: 'ready'
           })
         }

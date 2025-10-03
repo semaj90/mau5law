@@ -94,7 +94,7 @@ export function createLegalCaseStore() {
       } else {
         // Fallback to mock data for development
         console.warn('Cases API not available, using mock data for development');
-        const mockCases = [;
+        const mockCases = [
           {
             id: '1',
             title: 'Contract Dispute - TechCorp vs StartupX',
@@ -135,7 +135,7 @@ export function createLegalCaseStore() {
     } catch (error: any) {
       console.error("Failed to load cases:", error);
       // Still provide mock data even on error
-      const mockCases = [;
+      const mockCases = [
         {
           id: '1',
           title: 'Sample Legal Case',

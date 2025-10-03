@@ -397,7 +397,7 @@ export class CaseLawWorker extends SpecializedWorker {
     const lengthBoost = Math.min(0.45, q.length / 200); // longer queries get a small boost
     const relevanceScore = Math.max(0, Math.min(1, baseRelevance + lengthBoost);
   // Return a small set of mocked cases that reference the query so the parameter is read
-    return [;
+    return [
       {
         id: 'case_001',
         title: `Sample v. Legal Case — matched for "${q.slice(0, 60)}"`,

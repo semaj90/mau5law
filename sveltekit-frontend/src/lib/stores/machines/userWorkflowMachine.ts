@@ -108,7 +108,7 @@ export const userWorkflowMachine = createMachine({
       on: {
         LOGIN: {
           target: 'authenticated',
-          actions: assign({,
+          actions: assign({
             user: ({ event }) => event.user,
             userId: ({ event }) => event.user.id
           })
@@ -117,7 +117,7 @@ export const userWorkflowMachine = createMachine({
     },
     authenticated: {
       initial: 'ready',
-      entry: assign({,
+      entry: assign({
         currentStep: 'authenticated'
       }),
       states: {
@@ -125,7 +125,7 @@ export const userWorkflowMachine = createMachine({
           on: {
             START_WORKFLOW: {
               target: 'workflowActive',
-              actions: assign({,
+              actions: assign({
                 workflow: ({ event, context }) => ({
                   ...context.workflow,
                   id: `workflow_${Date.now()}`,
@@ -170,7 +170,7 @@ export const userWorkflowMachine = createMachine({
         },
         workflowActive: {
           initial: 'executingStep',
-          entry: assign({,
+          entry: assign({
             currentStep: ({ context }) => context.workflow.steps[context.workflow.currentStepIndex] || 'unknown'
           }),
           states: {
@@ -178,7 +178,7 @@ export const userWorkflowMachine = createMachine({
               on: {
                 COMPLETE_STEP: {
                   target: 'stepCompleted',
-                  actions: assign({,
+                  actions: assign({
                     data: ({ context, event }) => ({ ...context.data, ...event.stepData }),
                     progress: ({ context }) =>
                       Math.round((context.workflow.currentStepIndex + 1) / context.workflow.totalSteps * 100)
@@ -186,18 +186,18 @@ export const userWorkflowMachine = createMachine({
                 },
                 ERROR: {
                   target: 'stepError',
-                  actions: assign({,
+                  actions: assign({
                     errors: ({ context, event }) => [...context.errors, event.error]
                   })
                 }
               }
             },
             stepCompleted: {
-              always: [;
+              always: [
                 {
                   target: '#userWorkflow.authenticated.workflowCompleted',
                   guard: ({ context }) => context.workflow.currentStepIndex >= context.workflow.totalSteps - 1,
-                  actions: assign({,
+                  actions: assign({
                     workflow: ({ context }) => ({
                       ...context.workflow,
                       status: 'completed' as const,
@@ -209,7 +209,7 @@ export const userWorkflowMachine = createMachine({
                 },
                 {
                   target: 'executingStep',
-                  actions: assign({,
+                  actions: assign({
                     workflow: ({ context }) => ({
                       ...context.workflow,
                       currentStepIndex: context.workflow.currentStepIndex + 1
@@ -226,13 +226,13 @@ export const userWorkflowMachine = createMachine({
               on: {
                 RETRY: {
                   target: 'executingStep',
-                  actions: assign({,
+                  actions: assign({
                     errors: []
                   })
                 },
                 NEXT_STEP: {
                   target: 'executingStep',
-                  actions: assign({,
+                  actions: assign({
                     workflow: ({ context }) => ({
                       ...context.workflow,
                       currentStepIndex: Math.min(context.workflow.currentStepIndex + 1, context.workflow.totalSteps - 1)
@@ -247,7 +247,7 @@ export const userWorkflowMachine = createMachine({
                 PREVIOUS_STEP: {
                   target: 'executingStep',
                   guard: ({ context }) => context.workflow.currentStepIndex > 0,
-                  actions: assign({,
+                  actions: assign({
                     workflow: ({ context }) => ({
                       ...context.workflow,
                       currentStepIndex: Math.max(context.workflow.currentStepIndex - 1, 0)
@@ -265,7 +265,7 @@ export const userWorkflowMachine = createMachine({
           on: {
             CANCEL_WORKFLOW: {
               target: 'workflowCancelled',
-              actions: assign({,
+              actions: assign({
                 workflow: ({ context }) => ({
                   ...context.workflow,
                   status: 'cancelled' as const
@@ -279,7 +279,7 @@ export const userWorkflowMachine = createMachine({
           on: {
             START_WORKFLOW: {
               target: 'workflowActive',
-              actions: assign({,
+              actions: assign({
                 workflow: ({ event, context }) => ({
                   ...context.workflow,
                   id: `workflow_${Date.now()}`,
@@ -299,7 +299,7 @@ export const userWorkflowMachine = createMachine({
             },
             RESET: {
               target: 'ready',
-              actions: assign({,
+              actions: assign({
                 workflow: ({ context }) => ({
                   ...context.workflow,
                   status: 'pending' as const,
@@ -319,7 +319,7 @@ export const userWorkflowMachine = createMachine({
           on: {
             START_WORKFLOW: {
               target: 'workflowActive',
-              actions: assign({,
+              actions: assign({
                 workflow: ({ event, context }) => ({
                   ...context.workflow,
                   id: `workflow_${Date.now()}`,
@@ -339,7 +339,7 @@ export const userWorkflowMachine = createMachine({
             },
             RESET: {
               target: 'ready',
-              actions: assign({,
+              actions: assign({
                 workflow: ({ context }) => ({
                   ...context.workflow,
                   status: 'pending' as const,
@@ -358,7 +358,7 @@ export const userWorkflowMachine = createMachine({
       },
       on: {
         ADD_NOTIFICATION: {
-          actions: assign({,
+          actions: assign({
             notifications: ({ context, event }) => [
               ...context.notifications,
               {
@@ -393,7 +393,7 @@ export const userWorkflowMachine = createMachine({
         },
         LOGOUT: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             user: undefined
             userId: '',
             activeCase: undefined

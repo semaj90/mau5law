@@ -12,6 +12,13 @@ https://svelte.dev/e/js_parse_error -->
     YoRHaModule,
     HolographicData
   } from '$lib/types/yorha-interface';
+
+  // Define a new interface for command responses
+  interface CommandResponse {
+    output: string;
+    data?: any; // Can be more specific if needed
+  }
+
   // Core system stores
   const systemStatus = writable<'ONLINE' | 'DEGRADED' | 'OFFLINE'>('ONLINE');
   const powerLevel = writable<number>(98.7);
@@ -19,9 +26,11 @@ https://svelte.dev/e/js_parse_error -->
   const commandHistory = writable<CommandResult[]>([]);
   const holographicData = writable<HolographicData[]>([]);
   // 3D visualization elements
-  let canvas3D = $state<HTMLCanvasElementlet glContext: WebGLRenderingContext  | null>(null); const data = null);
-  let animationId = $state<number// System metrics
-  let metrics  | null>(null); const data = writable<SystemMetrics>({
+  let canvas3D = $state<HTMLCanvasElement | null>(null);
+  let glContext: WebGLRenderingContext | null = null;
+  let animationId = $state<number | null>(null);
+  // System metrics
+  const metrics = writable<SystemMetrics>({
     cpu_usage: 45.2,
     memory_usage: 67.8,
     gpu_utilization: 89.3,
@@ -30,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
     security_level: 'MAXIMUM',
     quantum_state: 'COHERENT',
     neural_activity: 94.6,
-  }));
+  });
   // Command input
   let commandInput = $state('');
   let isProcessingCommand = $state(false);
@@ -47,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 96.8,
       description: 'Advanced Legal Document Analysis',
       icon: 'gavel',
-      color: '#00ff88';
+      color: '#00ff88', // Changed semicolon to comma
     },
     {
       id: 'evidence-processor',
@@ -56,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 78.2,
       description: 'Digital Evidence Processing Unit',
       icon: 'search',
-      color: '#ff6b35';
+      color: '#ff6b35', // Changed semicolon to comma
     },
     {
       id: 'neural-network',
@@ -65,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 94.1,
       description: 'Machine Learning Core System',
       icon: 'brain',
-      color: '#3b82f6';
+      color: '#3b82f6', // Changed semicolon to comma
     },
     {
       id: 'quantum-db',
@@ -74,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 89.7,
       description: 'High-Speed Data Storage Matrix',
       icon: 'database',
-      color: '#8b5cf6';
+      color: '#8b5cf6', // Changed semicolon to comma
     },
     {
       id: 'security-grid',
@@ -83,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 99.2,
       description: 'Perimeter Defense System',
       icon: 'shield',
-      color: '#ef4444';
+      color: '#ef4444', // Changed semicolon to comma
     },
     {
       id: 'comms-array',
@@ -92,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 87.4,
       description: 'Multi-Protocol Communication Hub',
       icon: 'radio',
-      color: '#06b6d4';
+      color: '#06b6d4', // Changed semicolon to comma
     }
   ];
   $effect(() => {
@@ -109,35 +118,32 @@ https://svelte.dev/e/js_parse_error -->
       {
         id: 'central-core',
         type: 'sphere',
-        position: ;
-{ x: 0, y: 0, z: 0 },
+        position: { x: 0, y: 0, z: 0 }, // Removed semicolon
         rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#00ff88',
         opacity: 0.8,
-        animation: 'rotate';
+        animation: 'rotate', // Changed semicolon to comma
       },
       {
         id: 'data-streams',
         type: 'lines',
-        position: ;
-{ x: 0, y: 0, z: 0 },
+        position: { x: 0, y: 0, z: 0 }, // Removed semicolon
         rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#3b82f6',
         opacity: 0.6,
-        animation: 'flow';
+        animation: 'flow', // Changed semicolon to comma
       },
       {
         id: 'neural-nodes',
         type: 'points',
-        position: ;
-{ x: 0, y: 0, z: 0 },
+        position: { x: 0, y: 0, z: 0 }, // Removed semicolon
         rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#8b5cf6',
         opacity: 0.9,
-        animation: 'pulse';
+        animation: 'pulse', // Changed semicolon to comma
       }
     ];
     holographicData.set(initialData);
@@ -184,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
         vec4 pos = positio;
         pos.y += sin(pos.x * 2.0 + time * 3.0) * 0.1;
         pos.x += cos(pos.z * 1.5 + time * 2.0) * 0.05;
-        gl_Position = projectionMatrix * modelViewMatrix * po;
+        gl_Position = projectionMatrix * modelViewMatrix * pos; // Changed 'po' to 'pos'
         vNormal = normal;
         vGlow = abs(sin(time * 4.0 + position.x)) * 0.5 + 0.5;
       }
@@ -225,9 +231,13 @@ https://svelte.dev/e/js_parse_error -->
     // 3D holographic rendering implementation
     const time = timestamp * 0.001;
     // Update holographic data rotations
-    holographicData.update.map-rotation.x + ((item as { rotation?: unknown; animation?: unknown }).animation === 'rotate' ? 0.01 : 0),
-          y: (item as { rotation?: unknown; animation?: unknown }).rotation.y + ((item as { rotation?: unknown; animation?: unknown }).animation === 'rotate' ? 0.02 : 0),
-          z: (item as { rotation?: unknown; animation?: unknown }).rotation.z + ((item as { rotation?: unknown; animation?: unknown }).animation === 'rotate' ? 0.005 : 0)
+    holographicData.update(currentData =>
+      currentData.map(item => ({
+        ...item,
+        rotation: {
+          x: item.rotation.x + (item.animation === 'rotate' ? 0.01 : 0),
+          y: item.rotation.y + (item.animation === 'rotate' ? 0.02 : 0),
+          z: item.rotation.z + (item.animation === 'rotate' ? 0.005 : 0)
         }
       }))
     );
@@ -242,26 +252,25 @@ https://svelte.dev/e/js_parse_error -->
       timestamp: new Date().toISOString(),
       status: 'PROCESSING',
       output: 'Executing command...',
-      module: 'YORHA-CORE';
+      module: 'YORHA-CORE',
     }
     commandHistory.update(history => [result, ...history.slice(0, 9)]);
     try {
       // Route command to appropriate system
-      // removed unused response assignment
-      (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status = 'SUCCESS';
-      (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).output = (response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).output;
-      (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).data = (response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).data;
+      const response: CommandResponse = await routeCommand(command); // Use CommandResponse interface
+      result.status = 'SUCCESS';
+      result.output = response.output || 'Command executed successfully.'; // Ensure output is string, with fallback
+      result.data = response.data;
     } catch (error) {
-      (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status = 'ERROR';
-      (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).output = error instanceof Error ? error.message: 'Unknown error';
+      result.status = 'ERROR';
+      result.output = error instanceof Error ? error.message: 'Unknown error';
     } finally {
       isProcessingCommand = false;
-      commandHistory.update.id ? result : cmd)
-      );
+      commandHistory.update(history => history.map(cmd => cmd.id === result.id ? result : cmd));
     }
   }
-  async function routeCommand(command: string) {
-    const cmd = command.toLowerCase.trim();
+  async function routeCommand(command: string): Promise<CommandResponse> { // Update return type
+    const cmd = command.toLowerCase().trim(); // Fix: call toLowerCase()
     if (cmd.startsWith('legal')) {
       return await executeLegalCommand(cmd);
     } else if (cmd.startsWith('analyze')) {
@@ -276,18 +285,18 @@ https://svelte.dev/e/js_parse_error -->
       return executeHelpCommand(cmd);
     }
   }
-  async function executeLegalCommand(cmd: string): Promise<any> {
+  async function executeLegalCommand(cmd: string): Promise<CommandResponse> { // Update return type
     // Integration with legal AI services
     const response = await fetch('/api/v1/legal-ai/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: cmd, source: 'yorha-interface' })
     });
-    if ((response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).ok) {
-      const data = await (response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).json();
+    if (response.ok) { // response.ok is a boolean, no need for casting
+      const data = await response.json(); // Fix: call json()
       return {
-        output: `Legal analysis complete. ${(data as { map?: unknown; summary?: unknown }).summary || 'Analysis processed.'}`,
-        data: data;
+        output: `Legal analysis complete. ${data.summary || 'Analysis processed.'}`,
+        data: data,
       }
     } else {
       throw new Error('Legal AI system unavailable');
@@ -310,12 +319,12 @@ https://svelte.dev/e/js_parse_error -->
     if (cmd.includes('status')) {
       return {
         output: 'All systems operational. YoRHa interface running at optimal parameters.',
-        data: $metric;
+        data: $metrics, // Changed '$metric' to '$metrics'
       }
     } else if (cmd.includes('modules')) {
       return {
         output: `${$activeModules.length} modules active`,
-        data: $activeModule;
+        data: $activeModules, // Changed '$activeModule' to '$activeModules'
       }
     } else {
       return {
@@ -345,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
     }, 200);
   }
   function handleKeyPress(_event: KeyboardEvent) {
-    if (event.key === 'Enter' && commandInput.trim()) {
+    if (_event.key === 'Enter' && commandInput.trim()) {
       executeCommand(commandInput.trim());
     }
   }
@@ -362,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- YoRHa Interface Styles -->
 <style>
   .yorha-container {
-    @apply min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900;
+    /* @apply min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900; */
     font-family: 'Courier New', 'Monaco', monospace;
     overflow: hidden;
     position: relative;
@@ -383,19 +392,19 @@ https://svelte.dev/e/js_parse_error -->
     z-index: 1;
   }
   @keyframes scanline-scroll {
-    0% { transform: translateY(0), }
-    100% { transform: translateY(2px), }
+    0% { transform: translateY(0) } /* Removed trailing comma */
+    100% { transform: translateY(2px) } /* Removed trailing comma */
   }
   .glitch-effect {
     animation: glitch 0.2s ease-in-out;
   }
   @keyframes glitch {
-    0% { transform: translateX(0); filter: hue-rotate(0deg), }
-    20% { transform: translateX(-2px); filter: hue-rotate(90deg), }
-    40% { transform: translateX(2px); filter: hue-rotate(180deg), }
-    60% { transform: translateX(-1px); filter: hue-rotate(270deg), }
-    80% { transform: translateX(1px); filter: hue-rotate(360deg), }
-    100% { transform: translateX(0); filter: hue-rotate(0deg), }
+    0% { transform: translateX(0); filter: hue-rotate(0deg) } /* Removed trailing comma */
+    20% { transform: translateX(-2px); filter: hue-rotate(90deg) } /* Removed trailing comma */
+    40% { transform: translateX(2px); filter: hue-rotate(180deg) } /* Removed trailing comma */
+    60% { transform: translateX(-1px); filter: hue-rotate(270deg) } /* Removed trailing comma */
+    80% { transform: translateX(1px); filter: hue-rotate(360deg) } /* Removed trailing comma */
+    100% { transform: translateX(0); filter: hue-rotate(0deg) } /* Removed trailing comma */
   }
   .cyber-border {
     border: 1px solid #00ff88;
@@ -409,9 +418,9 @@ https://svelte.dev/e/js_parse_error -->
     animation: hologram-flicker 2s ease-in-out infinite alternate;
   }
   @keyframes hologram-flicker {
-    0% { opacity: 0.8, }
-    50% { opacity: 1, }
-    100% { opacity: 0.9, }
+    0% { opacity: 0.8 } /* Removed trailing comma */
+    50% { opacity: 1 } /* Removed trailing comma */
+    100% { opacity: 0.9 } /* Removed trailing comma */
   }
   .module-panel {
     background: rgba(0, 20, 40, 0.8);
@@ -447,11 +456,11 @@ https://svelte.dev/e/js_parse_error -->
     animation: status-pulse 2s ease-in-out infinite;
   }
   @keyframes status-pulse {
-    0% { opacity: 1, }
-    50% { opacity: 0.5, }
-    100% { opacity: 1, }
+    0% { opacity: 1 } /* Removed trailing comma */
+    50% { opacity: 0.5 } /* Removed trailing comma */
+    100% { opacity: 1 } /* Removed trailing comma */
   }
-  .holographic-canv.data-stream {
+  .data-stream { /* Changed selector from .holographic-canv.data-stream to .data-stream */
     position: absolute;
     width: 2px;
     height: 100px;
@@ -459,23 +468,23 @@ https://svelte.dev/e/js_parse_error -->
     animation: data-flow 3s linear infinite;
   }
   @keyframes data-flow {
-    0% { transform: translateY(-100%); opacity: 0, }
-    50% { opacity: 1, }
-    100% { transform: translateY(100vh); opacity: 0, }
+    0% { transform: translateY(-100%); opacity: 0 } /* Removed trailing comma */
+    50% { opacity: 1 } /* Removed trailing comma */
+    100% { transform: translateY(100vh); opacity: 0 } /* Removed trailing comma */
   }
 </style>
 <!-- YoRHa Command Interface -->
-<div class="yorha-container" class:glitch-effect={glitchActive}>
+<div class="yorha-container min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900" class:glitch-effect={glitchActive}>
   <!-- Scanline overlay -->
   <div class="scanlines" style="opacity: {scanlineOpacity}"></div>
   <!-- Background holographic canvas -->
-  <canvas ;
+  <canvas
     bind:this={canvas3D}
     class="holographic-canvas"
     width="800"
     height="600"
     style="filter: {hologramFlicker ? 'brightness(1.5) hue-rotate(180deg)' : 'brightness(1)'}"
-  ></canvas>
+  ></canvas> <!-- Removed extraneous semicolon -->
   <!-- Animated data streams -->
   {#each Array(12) as _, i}
     <div
@@ -558,7 +567,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="command-terminal rounded-lg p-4 flex-1 flex flex-col">
         <div class="flex items-center mb-4">
           <span class="hologram-text text-sm mr-2">YORHA-CMD:</span>
-          <input;
+          <input
             bind:value={commandInput}
             onkeypress={handleKeyPress}
             class="command-input flex-1"
@@ -574,22 +583,22 @@ https://svelte.dev/e/js_parse_error -->
           {#each $commandHistory as result}
             <div class="border-b border-cyan-900 pb-2">
               <div class="flex justify-between items-center mb-1">
-                <span class="text-cyan-300 text-sm">$ {(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).command}</span>
+                <span class="text-cyan-300 text-sm">$ {result.command}</span>
                 <span
                   class="text-xs px-2 py-1 rounded"
-                  class:bg-green-900={(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status === 'SUCCESS'}
-                  class:bg-red-900={(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status === 'ERROR'}
-                  class:bg-yellow-900={(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status === 'PROCESSING'}
-                  class:text-green-300={(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status === 'SUCCESS'}
-                  class:text-red-300={(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status === 'ERROR'}
-                  class:text-yellow-300={(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status === 'PROCESSING'}
+                  class:bg-green-900={result.status === 'SUCCESS'}
+                  class:bg-red-900={result.status === 'ERROR'}
+                  class:bg-yellow-900={result.status === 'PROCESSING'}
+                  class:text-green-300={result.status === 'SUCCESS'}
+                  class:text-red-300={result.status === 'ERROR'}
+                  class:text-yellow-300={result.status === 'PROCESSING'}
                 >
-                  {(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status}
+                  {result.status}
                 </span>
               </div>
-              <div class="text-white text-sm font-mono">{(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).output}</div>
+              <div class="text-white text-sm font-mono">{result.output}</div>
               <div class="text-xs text-gray-500 mt-1">
-                [{(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).module}] {new Date((result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).timestamp).toLocaleTimeString()}
+                [{result.module}] {new Date(result.timestamp).toLocaleTimeString()}
               </div>
             </div>
           {/each}

@@ -95,7 +95,7 @@ export class ONNXApiClient {
       courtDecision: "The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.",
       legalBrief: "Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes..."
     }
-    const tests = [;
+    const tests = [
       {
         name: 'Entity Extraction - Contract',
         test: () => this.extractEntities(testData.contractText)

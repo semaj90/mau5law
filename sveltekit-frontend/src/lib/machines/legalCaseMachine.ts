@@ -380,7 +380,7 @@ export const legalCaseMachine = createMachine({
       on: {
         LOAD_CASE: {
           target: 'loading',
-          actions: assign({,
+          actions: assign({
             caseId: ({ event }) => event.caseId,
             isLoading: true
             error: null
@@ -388,7 +388,7 @@ export const legalCaseMachine = createMachine({
         },
         CREATE_CASE: {
           target: 'creating',
-          actions: assign({,
+          actions: assign({
             isLoading: true
             error: null
           })
@@ -408,7 +408,7 @@ export const legalCaseMachine = createMachine({
         input: ({ context }) => ({ caseId: context.caseId! }),
         onDone: {
           target: 'loaded',
-          actions: assign({,
+          actions: assign({
             currentCase: ({ event }) => event.output,
             isLoading: false
             lastUpdated: new Date(),
@@ -418,7 +418,7 @@ export const legalCaseMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             isLoading: false
             error: ({ event, context }) => ({
               code: 'LOAD_FAILED',
@@ -449,7 +449,7 @@ export const legalCaseMachine = createMachine({
         input: ({ event }) => ({ caseData: event.caseData }),
         onDone: {
           target: 'loaded',
-          actions: assign({,
+          actions: assign({
             currentCase: ({ event }) => event.output,
             caseId: ({ event }) => event.output.id,
             isLoading: false
@@ -459,7 +459,7 @@ export const legalCaseMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             isLoading: false
             error: ({ event }) => ({
               code: 'CREATE_FAILED',
@@ -475,7 +475,7 @@ export const legalCaseMachine = createMachine({
       on: {
         UPDATE_CASE: {
           target: 'updating',
-          actions: assign({,
+          actions: assign({
             isLoading: true
           })
         },
@@ -515,7 +515,7 @@ export const legalCaseMachine = createMachine({
         },
         START_AI_ANALYSIS: {
           target: 'analyzing',
-          actions: assign({,
+          actions: assign({
             isAnalyzing: true
             analysisProgress: 0
           })
@@ -560,7 +560,7 @@ export const legalCaseMachine = createMachine({
         }),
         onDone: {
           target: 'loaded',
-          actions: assign({,
+          actions: assign({
             currentCase: ({ event }) => event.output,
             isLoading: false
             lastUpdated: new Date()
@@ -568,7 +568,7 @@ export const legalCaseMachine = createMachine({
         },
         onError: {
           target: 'loaded',
-          actions: assign({,
+          actions: assign({
             isLoading: false
             error: ({ event }) => ({
               code: 'UPDATE_FAILED',
@@ -604,7 +604,7 @@ export const legalCaseMachine = createMachine({
         }),
         onDone: {
           target: 'loaded',
-          actions: assign({,
+          actions: assign({
             aiAnalysis: ({ event }) => event.output,
             isAnalyzing: false
             analysisProgress: 100
@@ -612,7 +612,7 @@ export const legalCaseMachine = createMachine({
         },
         onError: {
           target: 'loaded',
-          actions: assign({,
+          actions: assign({
             isAnalyzing: false
             analysisProgress: 0,
             error: ({ event }) => ({
@@ -627,7 +627,7 @@ export const legalCaseMachine = createMachine({
       on: {
         CANCEL_AI_ANALYSIS: {
           target: 'loaded',
-          actions: assign({,
+          actions: assign({
             isAnalyzing: false
             analysisProgress: 0
           })
@@ -649,7 +649,7 @@ export const legalCaseMachine = createMachine({
         input: ({ context }) => ({ caseId: context.caseId! }),
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             currentCase: null
             caseId: null
             evidence: [],
@@ -660,7 +660,7 @@ export const legalCaseMachine = createMachine({
         },
         onError: {
           target: 'loaded',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => ({
               code: 'DELETE_FAILED',
               message: (event.error as any)?.message || 'Failed to delete case',
@@ -673,17 +673,17 @@ export const legalCaseMachine = createMachine({
     },
     error: {
       on: {
-        RETRY: [;
+        RETRY: [
           {
             target: 'loading',
             guard: ({ context }) => context.retryCount < 3,
-            actions: assign({,
+            actions: assign({
               retryCount: ({ context }) => context.retryCount + 1,
               error: null
             })
           },
           {
-            actions: assign({,
+            actions: assign({
               error: {
                 code: 'MAX_RETRIES_EXCEEDED',
                 message: 'Maximum retry attempts exceeded',
@@ -695,7 +695,7 @@ export const legalCaseMachine = createMachine({
         ],
         RESET: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             currentCase: null
             caseId: null;
             error: null

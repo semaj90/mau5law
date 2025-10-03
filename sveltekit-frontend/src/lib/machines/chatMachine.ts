@@ -75,7 +75,7 @@ export const chatMachine = createMachine({
       on: {
         SUBMIT: {
           target: 'loading',
-          actions: assign({,
+          actions: assign({
             messages: ({ context, event }) => [
               ...context.messages,
               { role: 'user', content: event.message, timestamp: new Date().toISOString() },
@@ -111,13 +111,13 @@ export const chatMachine = createMachine({
         }),
         onDone: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             status: 'idle'
           })
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message: 'Unknown error'}`,
             status: 'error'
           })
@@ -125,7 +125,7 @@ export const chatMachine = createMachine({
       },
       on: {
         STREAM_CHUNK: {
-          actions: assign({,
+          actions: assign({
             messages: ({ context, event }) => {
               const newMessages = [...context.messages];
               const lastMessage = newMessages[newMessages.length - 1];
@@ -138,7 +138,7 @@ export const chatMachine = createMachine({
         },
         STREAM_DONE: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             status: 'idle'
           })
         }
@@ -148,7 +148,7 @@ export const chatMachine = createMachine({
       on: {
         SUBMIT: {
           target: 'loading',
-          actions: assign({,
+          actions: assign({
             messages: ({ context, event }) => [
               ...context.messages,
               { role: 'user', content: event.message, timestamp: new Date().toISOString() },
@@ -160,14 +160,14 @@ export const chatMachine = createMachine({
         },
         RETRY: {
           target: 'loading',
-          actions: assign({,
+          actions: assign({
             error: null
             status: 'loading'
           })
         },
         RESET: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             messages: [],
             error: null;
             status: 'idle'

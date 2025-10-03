@@ -15,33 +15,33 @@ interface RedisConnectionState {
 }
 interface RedisMessage {
   channel: string;
-  data: any;
+  data: unknown; // changed from any -> unknown
   timestamp: number;
   userId?: string;
 }
 class RedisStateStore {
   // Core connection state using runes
   private state = $state<RedisConnectionState>({
-    isConnected: false
+    isConnected: false,
     connectionAttempts: 0,
-    lastError: null
-    lastConnected: null
+    lastError: null,
+    lastConnected: null,
     clientCount: 0,
     activeChannels: new Set(),
     messageCount: 0,
     cacheHits: 0,
-    cacheMisses: 0
+    cacheMisses: 0,
   });
   // Recent messages buffer
   private recentMessages = $state<RedisMessage[]>([]);
   // Derived connection status
   connectionStatus = $derived(() => {
     if (this.state.isConnected) {
-      return { status: 'connected', color: 'green', text: 'Connected' }
+      return { status: 'connected', color: 'green', text: 'Connected' };
     } else if (this.state.connectionAttempts > 0) {
-      return { status: 'reconnecting', color: 'yellow', text: 'Reconnecting...' }
+      return { status: 'reconnecting', color: 'yellow', text: 'Reconnecting...' };
     } else {
-      return { status: 'disconnected', color: 'red', text: 'Disconnected' }
+      return { status: 'disconnected', color: 'red', text: 'Disconnected' };
     }
   });
   // Connection health indicator
@@ -64,9 +64,9 @@ class RedisStateStore {
   // Active channels summary
   channelsSummary = $derived(() => {
     return Array.from(this.state.activeChannels).map(channel => ({
-      name: channel
-      messageCount: this.recentMessages.filter(item => item.length)
-    });
+      name: channel,
+      messageCount: this.recentMessages.filter(item => item.channel === channel).length,
+    }));
   });
   // Recent activity summary
   recentActivity = $derived(() => {
@@ -76,8 +76,8 @@ class RedisStateStore {
     return {
       lastMinute: lastMinute.length,
       lastHour: lastHour.length,
-      total: this.recentMessages.length
-    }
+      total: this.recentMessages.length,
+    };
   });
   constructor() {
     this.setupReactiveEffects();
@@ -85,7 +85,7 @@ class RedisStateStore {
   private setupReactiveEffects(): void {
     // React to connection status changes
     $effect(() => {
-      const { status, text } = this.connectionStatus;
+      const { status } = this.connectionStatus;
       if (status === 'connected' && this.state.lastConnected) {
         console.log('✅ Redis connection established');
       } else if (status === 'disconnected' && this.state.lastError) {
@@ -148,13 +148,14 @@ class RedisStateStore {
     this.state.activeChannels = newChannels;
   }
   // Message handling
-  addMessage(channel: string, data: any, userId?: string): void {
+  addMessage(channel: string, data: unknown, userId?: string): void {
+    // data typed as unknown
     const message: RedisMessage = {
       channel,
       data,
       timestamp: Date.now(),
-      userId
-    }
+      userId,
+    };
     this.recentMessages = [...this.recentMessages.slice(-99), message]; // Keep last 100
     this.state.messageCount++;
   }
@@ -166,13 +167,27 @@ class RedisStateStore {
     this.state.cacheMisses++;
   }
   // Getters for external access
-  get isConnected(): boolean { return this.state.isConnected, }
-  get connectionAttempts(): number { return this.state.connectionAttempts, }
-  get lastError(): string | null { return this.state.lastError, }
-  get clientCount(): number { return this.state.clientCount, }
-  get activeChannels(): string[] { return Array.from(this.state.activeChannels), }
-  get messageCount(): number { return this.state.messageCount, }
-  get messages(): RedisMessage[] { return [...this.recentMessages], }
+  get isConnected(): boolean {
+    return this.state.isConnected;
+  }
+  get connectionAttempts(): number {
+    return this.state.connectionAttempts;
+  }
+  get lastError(): string | null {
+    return this.state.lastError;
+  }
+  get clientCount(): number {
+    return this.state.clientCount;
+  }
+  get activeChannels(): string[] {
+    return Array.from(this.state.activeChannels);
+  }
+  get messageCount(): number {
+    return this.state.messageCount;
+  }
+  get messages(): RedisMessage[] {
+    return [...this.recentMessages];
+  }
   // Reset all statistics
   resetStats(): void {
     this.state.messageCount = 0;
@@ -186,7 +201,7 @@ export const redisStateStore = new RedisStateStore();
 // Helper functions for components
 export function useRedisState() {
   return {
-    store: redisStateStore
+    store: redisStateStore,
     connectionStatus: redisStateStore.connectionStatus,
     connectionHealth: redisStateStore.connectionHealth,
     uptime: redisStateStore.uptime,
@@ -196,11 +211,12 @@ export function useRedisState() {
     isConnected: () => redisStateStore.isConnected,
     lastError: () => redisStateStore.lastError,
     activeChannels: () => redisStateStore.activeChannels,
-    messageCount: () => redisStateStore.messageCount
-  }
+    messageCount: () => redisStateStore.messageCount,
+  };
 }
 // Integration helper for existing Redis service
-export function createRedisStateIntegration(redisService: any) {
+export function createRedisStateIntegration(_redisService?: unknown) {
+  // renamed and typed to avoid unused/any
   return {
     // Call these methods from your existing Redis service
     onConnected: () => {
@@ -214,7 +230,9 @@ export function createRedisStateIntegration(redisService: any) {
       redisStateStore.setError(error.message);
       redisStateStore.incrementConnectionAttempts();
     },
-    onMessage: (channel: string, data: any, userId?: string) => {
+    onMessage: (channel: string, data: unknown, userId?: string) => {
+      // data typed as unknown
+      // forward raw payload (unknown) to the store; store keeps it as unknown
       redisStateStore.addMessage(channel, data, userId);
     },
     onChannelSubscribed: (channel: string) => {
@@ -228,6 +246,6 @@ export function createRedisStateIntegration(redisService: any) {
     },
     onCacheMiss: () => {
       redisStateStore.recordCacheMiss();
-    }
-  }
+    },
+  };
 }

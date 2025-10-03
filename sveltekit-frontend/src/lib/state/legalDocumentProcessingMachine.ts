@@ -175,7 +175,7 @@ export const legalDocumentProcessingMachine = createMachine({
       on: {
         START_PROCESSING: {
           target: 'initializing',
-          actions: assign({,
+          actions: assign({
             caseId: ({ event }) => event.document.caseId || '',
             content: ({ event }) => event.document.content || '',
             title: ({ event }) => event.document.title || '',
@@ -193,14 +193,14 @@ export const legalDocumentProcessingMachine = createMachine({
       }
     },
     initializing: {
-      always: [;
+      always: [
         {
           target: 'extractingContent',
           guard: ({ context }) => !!context.content && context.content.length > 0
         },
         {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             errors: ({ context }) => [...context.errors, 'No content provided for processing']
           })
         }
@@ -212,14 +212,14 @@ export const legalDocumentProcessingMachine = createMachine({
         src: services.extractContent,
         onDone: {
           target: 'analyzing',
-          actions: assign({,
+          actions: assign({
             content: ({ event }) => event.output.content,
             title: ({ event }) => event.output.title
           })
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             errors: ({ context, event }) => [...context.errors, `Content extraction failed: ${event.error}`]
           })
         }
@@ -237,13 +237,13 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.analyzeWithAI,
                 onDone: {
                   target: 'completed',
-                  actions: assign({,
+                  actions: assign({
                     aiAnalysis: ({ event }) => event.output
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({,
+                  actions: assign({
                     errors: ({ context, event }) => [...context.errors, `AI analysis failed: ${event.error}`]
                   })
                 }
@@ -268,13 +268,13 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.extractEntities,
                 onDone: {
                   target: 'completed',
-                  actions: assign({,
+                  actions: assign({
                     entities: ({ event }) => event.output
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({,
+                  actions: assign({
                     errors: ({ context, event }) => [...context.errors, `Entity extraction failed: ${event.error}`]
                   })
                 }
@@ -300,13 +300,13 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.generateSummary,
                 onDone: {
                   target: 'completed',
-                  actions: assign({,
+                  actions: assign({
                     summary: ({ event }) => event.output
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({,
+                  actions: assign({
                     errors: ({ context, event }) => [...context.errors, `Summary generation failed: ${event.error}`]
                   })
                 }
@@ -332,13 +332,13 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.generateEmbedding,
                 onDone: {
                   target: 'completed',
-                  actions: assign({,
+                  actions: assign({
                     embedding: ({ event }) => event.output
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({,
+                  actions: assign({
                     errors: ({ context, event }) => [...context.errors, `Embedding generation failed: ${event.error}`]
                   })
                 }
@@ -364,14 +364,14 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.assessRisk,
                 onDone: {
                   target: 'completed',
-                  actions: assign({,
+                  actions: assign({
                     riskScore: ({ event }) => event.output.riskScore,
                     confidenceScore: ({ event }) => event.output.confidenceScore
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({,
+                  actions: assign({
                     errors: ({ context, event }) => [...context.errors, `Risk assessment failed: ${event.error}`]
                   })
                 }
@@ -397,14 +397,14 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.analyzWithMCP,
                 onDone: {
                   target: 'completed',
-                  actions: assign({,
+                  actions: assign({
                     mcpAnalysis: ({ event }) => event.output.mcpAnalysis,
                     stackRecommendations: ({ event }) => event.output.recommendations
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({,
+                  actions: assign({
                     errors: ({ context, event }) => [...context.errors, `MCP analysis failed: ${event.error}`]
                   })
                 }
@@ -416,7 +416,7 @@ export const legalDocumentProcessingMachine = createMachine({
           }
         }
       },
-      onDone: [;
+      onDone: [
         {
           target: 'storing',
           guard: ({ context }) => context.options.storeInQdrant
@@ -432,7 +432,7 @@ export const legalDocumentProcessingMachine = createMachine({
         src: services.storeDocument,
         onDone: {
           target: 'completed',
-          actions: assign({,
+          actions: assign({
             documentId: ({ event }) => event.output.documentId,
             processingDuration: ({ context }) =>
               context.startTime ? Date.now() - context.startTime: 0
@@ -440,7 +440,7 @@ export const legalDocumentProcessingMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({,
+          actions: assign({
             errors: ({ context, event }) => [...context.errors, `Storage failed: ${event.error}`]
           })
         }
@@ -448,18 +448,18 @@ export const legalDocumentProcessingMachine = createMachine({
     },
     completed: {
       type: 'final',
-      entry: assign({,
+      entry: assign({
         processingDuration: ({ context }) =>
           context.startTime ? Date.now() - context.startTime : 0
       })
     },
     error: {
       on: {
-        RETRY: [;
+        RETRY: [
           {
             target: 'initializing',
             guard: ({ context }) => context.retryCount < context.maxRetries,
-            actions: assign({,
+            actions: assign({
               retryCount: ({ context }) => context.retryCount + 1,
               errors: ({ context }) => [...context.errors, `Retry attempt ${context.retryCount + 1}`]
             })

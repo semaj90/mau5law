@@ -166,7 +166,7 @@ export class Gemma3Client {
    * Helper: Ask a legal question with proper context
    */;
   async askLegalQuestion(question: string, context?: string): Promise<string> {
-    const messages: ChatMessage[] = [;
+    const messages: ChatMessage[] = [
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : ""}`
@@ -190,7 +190,7 @@ export class Gemma3Client {
     documentText: string
     analysisType: string = "general",
   ): Promise<string> {
-    const messages: ChatMessage[] = [;
+    const messages: ChatMessage[] = [
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant for document analysis. Analyze the provided legal document and provide insights on key terms, potential issues, recommendations, and legal compliance. Focus on ${analysisType} analysis.`
@@ -214,7 +214,7 @@ export class Gemma3Client {
     contractText: string
     reviewFocus?: string
   ): Promise<string> {
-    const messages: ChatMessage[] = [;
+    const messages: ChatMessage[] = [
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : ""}`
@@ -238,7 +238,7 @@ export class Gemma3Client {
     documentType: string
     requirements: string
   ): Promise<string> {
-    const messages: ChatMessage[] = [;
+    const messages: ChatMessage[] = [
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant for document generation. Create professional legal document templates with proper structure, standard clauses, and placeholders for customization.`
@@ -262,7 +262,7 @@ export class Gemma3Client {
     content: string;
     type: string = "general",
   ): Promise<string> {
-    const messages: ChatMessage[] = [;
+    const messages: ChatMessage[] = [
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant for content summarization. Provide concise, accurate summaries that capture the key points, legal implications, and important details. Focus on ${type} summarization.`

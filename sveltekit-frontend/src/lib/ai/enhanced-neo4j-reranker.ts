@@ -67,14 +67,14 @@ export class EnhancedNeo4jReranker {
   private isInitialized = false;
   constructor(config: Partial<EnhancedRerankerConfig> = {}) {
     this.config = {
-      enable_neo4j_paths: true
-      enable_boolean_patterns: true
+      enable_neo4j_paths: true,
+      enable_boolean_patterns: true,
       accuracy_threshold: 0.95,
       max_path_depth: 5,
       legal_weight_multiplier: 1.5,
-      audit_enabled: true
+      audit_enabled: true,
       ...config
-    }
+    };
   }
   async initialize(): Promise<void> {
     console.log("🚀 Initializing Enhanced Neo4j Reranker...");
@@ -91,8 +91,8 @@ export class EnhancedNeo4jReranker {
    * Enhanced reranking with Neo4j path context and 95% accuracy targeting
    */
   async enhancedRerank(
-    query: string
-    documents: DocumentEmbedding[]
+    query: string,
+    documents: DocumentEmbedding[],
     userContext: {
       user_id: string;
       case_id?: string;
@@ -111,10 +111,10 @@ export class EnhancedNeo4jReranker {
     // Audit log entry
     if (this.config.audit_enabled) {
       this.logAuditEntry({
-        timestamp: startTime
+        timestamp: startTime,
         action: "rerank",
         user_id: userContext.user_id,
-        query_hash: queryHash
+        query_hash: queryHash,
         reasoning: `Enhanced reranking initiated for ${documents.length} documents`
       });
     }
@@ -160,12 +160,12 @@ export class EnhancedNeo4jReranker {
         );
         results.push({
           document_id: document.id,
-          original_score: originalScore
-          enhanced_score: enhancedScore
-          neo4j_boost: neo4jBoost
-          boolean_pattern_match: booleanPattern
-          confidence_metrics: confidenceMetrics
-          path_context: pathContext
+          original_score: originalScore,
+          enhanced_score: enhancedScore,
+          neo4j_boost: neo4jBoost,
+          boolean_pattern_match: booleanPattern,
+          confidence_metrics: confidenceMetrics,
+          path_context: pathContext,
           explanation
         });
       } catch (error: any) {
@@ -200,8 +200,8 @@ export class EnhancedNeo4jReranker {
         timestamp: Date.now(),
         action: "rerank",
         user_id: userContext.user_id,
-        query_hash: queryHash
-        reasoning: `Reranking completed with ${filteredResults.length} high-accuracy results`
+        query_hash: queryHash,
+        reasoning: `Reranking completed with ${filteredResults.length} high-accuracy results`,
       });
     }
     return filteredResults;
@@ -209,8 +209,8 @@ export class EnhancedNeo4jReranker {
   /**
    * Get Neo4j path context for enhanced legal reasoning
    */
-  private async getNeo4jPathContext(_document: DocumentEmbedding
-    userContext: any
+  private async getNeo4jPathContext(_document: DocumentEmbedding,
+    userContext: any,
   ): Promise<Neo4jPathContext> {
     // Mock Neo4j query - in production, this would use actual Neo4j driver
     // MATCH (d:Document {id: $docId})-[r*1..5]-(related)
@@ -226,7 +226,7 @@ export class EnhancedNeo4jReranker {
       "Digital Evidence Standards Act",
       "Federal Rules of Evidence 902(14)"
     ];
-    const mockEntityRelationships: EntityRelationship[] = [;
+    const mockEntityRelationships: EntityRelationship[] = [
       {
         source_entity: "suspect_device",
         target_entity: "digital_evidence",
@@ -247,21 +247,21 @@ export class EnhancedNeo4jReranker {
     return {
       document_id: document.id,
       case_id: userContext.case_id || "UNKNOWN",
-      evidence_chain: mockEvidenceChain
-      legal_precedents: mockLegalPrecedents
-      entity_relationships: mockEntityRelationships
+      evidence_chain: mockEvidenceChain,
+      legal_precedents: mockLegalPrecedents,
+      entity_relationships: mockEntityRelationships,
       confidence_scores: this.getDefaultConfidenceScores(),
       audit_trail: this.auditLog.filter(
         (entry) => entry.query_hash === this.hashQuery("", userContext),
       )
-    }
+    };
   }
   /**
    * Calculate boolean pattern matching for 2x2 matrix accuracy
    */
   private async calculateBooleanPatterns(
-    query: string
-    document: DocumentEmbedding
+    query: string,
+    document: DocumentEmbedding,
   ): Promise<boolean[][]> {
     const queryTokens = query.toLowerCase().split(/\s+/);
     const docTokens = document.content.toLowerCase().split(/\s+/);
@@ -303,9 +303,9 @@ export class EnhancedNeo4jReranker {
   /**
    * Calculate comprehensive confidence scores
    */
-  private async calculateConfidenceScores(_document: DocumentEmbedding
-    pathContext: Neo4jPathContext
-    userContext: any
+  private async calculateConfidenceScores(_document: DocumentEmbedding,
+    pathContext: Neo4jPathContext,
+    userContext: any,
   ): Promise<ConfidenceScores> {
     // Legal relevance based on document metadata and case context
     const legalRelevance = this.calculateLegalRelevance(document, userContext);
@@ -325,21 +325,21 @@ export class EnhancedNeo4jReranker {
       chainOfCustody * 0.25 +
       precedentStrength * 0.2;
     return {
-      legal_relevance: legalRelevance
-      factual_accuracy: factualAccuracy
-      chain_of_custody: chainOfCustody
-      precedent_strength: precedentStrength
+      legal_relevance: legalRelevance,
+      factual_accuracy: factualAccuracy,
+      chain_of_custody: chainOfCustody,
+      precedent_strength: precedentStrength,
       overall_confidence: overallConfidence
-    }
+    };
   }
   /**
    * Apply enhanced scoring with legal context weights
    */
   private async applyEnhancedScoring(
-    originalScore: number
-    pathContext: Neo4jPathContext
-    confidenceMetrics: ConfidenceScores
-    userContext: any
+    originalScore: number,
+    pathContext: Neo4jPathContext,
+    confidenceMetrics: ConfidenceScores,
+    userContext: any,
   ): Promise<number> {
     let enhancedScore = originalScore;
     // Neo4j path boost (up to 0.3 points)
@@ -386,10 +386,10 @@ export class EnhancedNeo4jReranker {
    * Generate human-readable scoring explanation
    */
   private generateScoringExplanation(
-    originalScore: number
-    enhancedScore: number
-    pathContext: Neo4jPathContext
-    confidenceMetrics: ConfidenceScores
+    originalScore: number,
+    enhancedScore: number,
+    pathContext: Neo4jPathContext,
+    confidenceMetrics: ConfidenceScores,
   ): string {
     const boost = enhancedScore - originalScore;
     const boostPercentage = ((boost / originalScore) * 100).toFixed(1);
@@ -405,17 +405,17 @@ export class EnhancedNeo4jReranker {
    * Helper methods
    */
   private async calculateSemanticSimilarity(
-    query: string
-    document: DocumentEmbedding
+    query: string,
+    document: DocumentEmbedding,
   ): Promise<number> {
     // Mock implementation - would use actual embedding similarity
     const queryWords = query.toLowerCase().split(/\s+/);
     const docWords = document.content.toLowerCase().split(/\s+/);
-    const commonWords = queryWords.filter((word) => docWords.includes(word);
+    const commonWords = queryWords.filter((word) => docWords.includes(word));
     return Math.min(commonWords.length / queryWords.length, 1.0);
   }
-  private calculateLegalRelevance(_document: DocumentEmbedding
-    userContext: any
+  private calculateLegalRelevance(_document: DocumentEmbedding,
+    userContext: any,
   ): number {
     const legalTerms = [
       "evidence",
@@ -426,11 +426,11 @@ export class EnhancedNeo4jReranker {
       "court"
     ];
     const docWords = document.content.toLowerCase().split(/\s+/);
-    const legalMatches = docWords.filter((word) => legalTerms.includes(word);
+    const legalMatches = docWords.filter((word) => legalTerms.includes(word));
     return Math.min(legalMatches.length / 10, 1.0);
   }
-  private calculateFactualAccuracy(_document: DocumentEmbedding
-    pathContext: Neo4jPathContext
+  private calculateFactualAccuracy(_document: DocumentEmbedding,
+    pathContext: Neo4jPathContext,
   ): number {
     // Based on cross-references and verification chains
     return Math.min(
@@ -461,7 +461,7 @@ export class EnhancedNeo4jReranker {
       prosecutor: { evidence: 1.3, precedent: 1.2, analysis: 1.1 },
       detective: { evidence: 1.4, precedent: 1.0, analysis: 1.2 },
       admin: { evidence: 1.1, precedent: 1.1, analysis: 1.1 }
-    }
+    };
     return (
       multipliers[role as keyof typeof multipliers]?.[
         searchIntent as keyof typeof multipliers.prosecutor
@@ -475,7 +475,7 @@ export class EnhancedNeo4jReranker {
       chain_of_custody: 0.7,
       precedent_strength: 0.65,
       overall_confidence: 0.72
-    }
+    };
   }
   private getDefaultPathContext(_document: DocumentEmbedding): Neo4jPathContext {
     return {
@@ -486,7 +486,7 @@ export class EnhancedNeo4jReranker {
       entity_relationships: [],
       confidence_scores: this.getDefaultConfidenceScores(),
       audit_trail: []
-    }
+    };
   }
   private hashQuery(query: string, userContext: any): string {
     const data = `${query}-${userContext.user_id}-${userContext.case_id}-${Date.now()}`;
@@ -521,17 +521,17 @@ export class EnhancedNeo4jReranker {
       (entry) => entry.action === "rerank",
     ).length;
     return {
-      total_queries: totalQueries
+      total_queries: totalQueries,
       average_accuracy: this.config.accuracy_threshold,
       neo4j_enabled: this.config.enable_neo4j_paths,
       boolean_patterns_enabled: this.config.enable_boolean_patterns,
       accuracy_threshold: this.config.accuracy_threshold
-    }
+    };
   }
 }
 // Export factory function
 export function createEnhancedNeo4jReranker(
-  config?: Partial<EnhancedRerankerConfig>;
+  config?: Partial<EnhancedRerankerConfig>,
 ): EnhancedNeo4jReranker {
   return new EnhancedNeo4jReranker(config);
 }

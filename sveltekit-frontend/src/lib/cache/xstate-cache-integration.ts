@@ -271,7 +271,7 @@ export const createCachedMachineStates = () => ({
           key: context.cache.cacheKey,
           semanticQuery: context.cache.semanticQuery
         }),
-        onDone: [;
+        onDone: [
           {
             target: 'dataReady',
             guard: ({ event }: { event: any }) => event.output.hit,

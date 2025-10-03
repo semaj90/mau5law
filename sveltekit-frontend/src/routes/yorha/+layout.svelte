@@ -1,11 +1,12 @@
 <!-- YoRHa Interface Layout -->
 <script lang="ts">
+  import '../../app.css'; // Add this line to import the global Tailwind CSS
   // Svelte 5 runes are auto-imported
-  let { children }: { children: unknown } = $props();
+  let { children } = $props(); // Corrected: Removed explicit type annotation
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import {
     Home,
     Terminal,
@@ -20,6 +21,16 @@
     ChevronRight,
     ChevronLeft,
   } from 'lucide-svelte';
+  import type { ComponentType } from 'svelte'; // Added: Import ComponentType
+
+  // Added: Define NavItem interface
+  interface NavItem {
+    path: string;
+    label: string;
+    icon: ComponentType;
+    description: string;
+  }
+
   // System status and navigation
   let systemStatus = $state({
     connected: false,
@@ -29,7 +40,7 @@
   let sidebarOpen = $state(false);
   let currentPath = $state('');
   // Navigation structure
-  const navItems = [
+  const navItems: NavItem[] = [ // Modified: Applied NavItem interface
     {
       path: '/yorha',
       label: 'Command Center',
@@ -81,26 +92,31 @@
   ];
   // System status monitoring
   $effect(() => {
-    currentPath = $page.url.pathnam;
-    // Initialize YoRHa API and check system status
+    // reactive sync to current page url
+    currentPath = $page.url.pathname;
+
+    // Initialize YoRHa API and check system status (fire-and-forget inside effect)
     (async () => {
       try {
         const status = await yorhaAPI.getSystemStatus();
+        const services = (() => {
+          const s = status as any;
+          if (Array.isArray(s?.services)) return s.services.length;
+          if (typeof s?.serviceCount === 'number') return s.serviceCount;
+          if (typeof s?.servicesCount === 'number') return s.servicesCount;
+          return 0;
+        })();
+
         systemStatus = {
           connected: true,
-          services: Object.keys(errors).length,
+          services,
           errors: 0,
-        }
+        };
       } catch (error) {
         console.warn('YoRHa API not available:', error);
         systemStatus.connected = false;
       }
     })();
-    // Subscribe to route changes
-    const unsubscribe = page.subscribe($page => {
-      currentPath = $page.url.pathnam;
-    });
-    return unsubscrib;
   });
   onDestroy(() => {
     yorhaAPI.dispose();
@@ -172,25 +188,17 @@
       </div>
       <ul class="yorha-nav-list">
         {#each navItems as item}
-          {@const Icon = (item as { icon?: unknown; path?: unknown; label?: unknown; description?: unknown }).icon}
+          {@const Icon = item.icon}
           <li class="yorha-nav-item">
             <button
               class="yorha-nav-link"
-              class:yorha-nav-active={isActivePath(
-                (item as { icon?: unknown; path?: unknown; label?: unknown; description?: unknown }).path,
-              )}
-              onclick={() =>
-                navigateTo((item as { icon?: unknown; path?: unknown; label?: unknown; description?: unknown }).path)}
+              class:yorha-nav-active={isActivePath(item.path)}
+              onclick={() => navigateTo(item.path)}
             >
               <Icon size={18} />
               <div class="yorha-nav-content">
-                <span class="yorha-nav-label"
-                  >{(item as { icon?: unknown; path?: unknown; label?: unknown; description?: unknown }).label}</span
-                >
-                <span class="yorha-nav-desc"
-                  >{(item as { icon?: unknown; path?: unknown; label?: unknown; description?: unknown })
-                    .description}</span
-                >
+                <span class="yorha-nav-label">{item.label}</span>
+                <span class="yorha-nav-desc">{item.description}</span>
               </div>
               <ChevronRight size={16} class="yorha-nav-arrow" />
             </button>
@@ -217,136 +225,240 @@
 </div>
 
 <style>
-  .yorha-layout {
-    @apply min-h-screen bg-black text-amber-400 font-monone;
+  /* Rewritten plain CSS to replace Tailwind @apply usage and fix stray closing tags */
+  :global(.yorha-layout) {
+    min-height: 100vh;
+    background-color: #000;
+    color: #f59e0b; /* amber-400 */
     font-family: 'Courier New', monospace;
-background-image: {}
-radial-gradient(circle at 20% 50%, rgba(255, 191, 0, 0.03) 0%, transparent 50%), {}
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(255, 191, 0, 0.03) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, rgba(255, 191, 0, 0.03) 0%, transparent 50%);
   }
-/* Header */ {}
-  .yorha-header {
-    @apply fixed top-0 left-0 right-0 z-40 bg-black border-b border-amber-400 border-opacity-30;
+
+  /* Header */
+  :global(.yorha-header) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.3); /* amber-400 30% */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
     backdrop-filter: blur(8px);
   }
-  .yorha-header-content {
-    @apply flex items-center justify-between px-6 py-4;
+  :global(.yorha-header-content) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
   }
-  .yorha-brand {
-    @apply flex items-center gap-4;
+  :global(.yorha-brand) {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
-  .yorha-menu-toggle {
-    @apply p-2 text-amber-400 hover:text-amber-300 transition-color;
-    @apply border border-amber-400 border-opacity-30 hover:border-opacity-60;
+  :global(.yorha-menu-toggle) {
+    padding: 0.5rem;
+    color: #f59e0b;
+    background: transparent;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    transition: color .15s ease, border-color .15s ease;
+    cursor: pointer;
   }
-  .yorha-brand-title {
-    @apply text-xl font-bold tracking-wider flex items-center gap-2;
+  :global(.yorha-menu-toggle:hover) {
+    color: #fbbf24; /* amber-300 */
+    border-color: rgba(245, 158, 11, 0.6);
   }
-  .yorha-brand-icon {
-    @apply text-amber-400 text-2xl;
+  :global(.yorha-brand-title) {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
-  .yorha-status-bar {
-    @apply flex items-center gap-6;
+  :global(.yorha-brand-icon) {
+    color: #f59e0b;
+    font-size: 1.25rem;
   }
-  .yorha-status-item {
-    @apply flex items-center gap-2 text-xs text-amber-400 opacity-60;
+  :global(.yorha-status-bar) {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
   }
-  .yorha-status-connected {
-    @apply text-green-400 opacity-100;
+  :global(.yorha-status-item) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #f59e0b;
+    opacity: 0.6;
   }
-  .yorha-status-error {
-    @apply text-red-400 opacity-100;
+  :global(.yorha-status-connected) {
+    color: #10b981; /* green-400 */
+    opacity: 1;
   }
-  .yorha-quick-actions {
-    @apply flex items-center gap-2;
+  :global(.yorha-status-error) {
+    color: #f43f5e; /* red-400 */
+    opacity: 1;
   }
-  .yorha-quick-btn {
-    @apply px-3 py-2 bg-amber-400 text-black text-xs font-mono tracking-wider;
-    @apply hover:bg-amber-300 transition-colors flex items-center gap-2;
+  :global(.yorha-quick-actions) {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
   }
-/* Sidebar */ {}
-  .yorha-sidebar {
-    @apply fixed top-[73px] left-0 bottom-0 w-80 bg-gray-900 border-r border-amber-400 border-opacity-30;
-    @apply transform -translate-x-full transition-transform duration-300 z-30;
+  :global(.yorha-quick-btn) {
+    padding: 0.375rem 0.75rem;
+    background: #f59e0b;
+    color: #000;
+    font-size: 0.75rem;
+    font-family: monospace;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color .15s ease;
+  }
+  :global(.yorha-quick-btn:hover) {
+    background: #fbbf24;
+  }
+
+  /* Sidebar */
+  :global(.yorha-sidebar) {
+    position: fixed;
+    top: 73px;
+    left: 0;
+    bottom: 0;
+    width: 20rem; /* w-80 */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
+    border-right: 1px solid rgba(245, 158, 11, 0.3);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 30;
+    overflow: auto;
   }
-  .yorha-sidebar-open {
-    @apply translate-x-0;
+  :global(.yorha-sidebar-open) {
+    transform: translateX(0);
   }
-  .yorha-nav {
-    @apply h-full flex flex-col;
+  :global(.yorha-nav) {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
-  .yorha-nav-header {
-    @apply flex items-center justify-between p-6 border-b border-amber-400 border-opacity-30;
+  :global(.yorha-nav-header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.3);
   }
-  .yorha-nav-header h2 {
-    @apply text-lg font-bold text-amber-400 tracking-wider;
+  :global(.yorha-nav-header h2) {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #f59e0b;
+    letter-spacing: 0.04em;
+    margin: 0;
   }
-  .yorha-sidebar-close {
-    @apply p-2 text-amber-400 hover:text-amber-300 transition-color;
+  :global(.yorha-sidebar-close) {
+    padding: 0.5rem;
+    color: #f59e0b;
+    background: transparent;
+    border: none;
+    cursor: pointer;
   }
-  .yorha-nav-list {
-    @apply flex-1 py-4;
+  :global(.yorha-nav-list) {
+    flex: 1;
+    padding: 1rem 0;
+    margin: 0;
+    list-style: none;
   }
-  .yorha-nav-item {
-    @apply border-b border-amber-400 border-opacity-10;
+  :global(.yorha-nav-item) {
+    border-bottom: 1px solid rgba(245, 158, 11, 0.1);
   }
-  .yorha-nav-link {
-    @apply w-full p-4 text-left flex items-center gap-4;
-    @apply hover:bg-amber-400 hover:bg-opacity-10 transition-color;
-    @apply text-amber-300 hover:text-amber-400;
+  :global(.yorha-nav-link) {
+    width: 100%;
+    padding: 1rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: transparent;
+    color: #f59e0b;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
   }
-  .yorha-nav-active {
-    @apply bg-amber-400 bg-opacity-20 text-amber-400 border-r-2 border-amber-400;
+  :global(.yorha-nav-link:hover) {
+    background: rgba(245, 158, 11, 0.1);
+    color: #fbbf24;
   }
-  .yorha-nav-content {
-    @apply flex-1 min-w-0;
+  :global(.yorha-nav-active) {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border-right: 2px solid #f59e0b;
   }
-  .yorha-nav-label {
-    @apply block font-semibold text-sm;
+  :global(.yorha-nav-arrow) {
+    opacity: 0.4;
+    transition: opacity .15s ease;
   }
-  .yorha-nav-desc {
-    @apply block text-xs opacity-60 truncat;
+  :global(.yorha-nav-link:hover .yorha-nav-arrow) {
+    opacity: 1;
   }
-  .yorha-nav-arrow {
-    @apply opacity-40 transition-opacity;
+  :global(.yorha-nav-content) {
+    flex: 1;
+    min-width: 0;
   }
-  .yorha-nav-link:hover .yorha-nav-arrow {
-    @apply opacity-100;
+  :global(.yorha-nav-label) {
+    display: block;
+    font-weight: 600;
+    font-size: 0.875rem;
   }
-/* Main Content */ {}
-  .yorha-main {
-    @apply pt-[73px] min-h-screen transition-all duration-300;
+  :global(.yorha-nav-desc) {
+    display: block;
+    font-size: 0.75rem;
+    opacity: 0.6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .yorha-main-sidebar-open {
-    @apply lg:pl-80;
+
+  /* Main content */
+  :global(.yorha-main) {
+    display: block;
+    flex: 1 1 auto;
+    padding-top: 73px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 2rem;
+    transition: all 0.3s ease;
   }
-/* Overlay */ {}
-  .yorha-overlay {
-    @apply fixed inset-0 bg-black bg-opacity-50 z-20;
-  }
-/* Responsive */ {}
-  @media (max-width: 1024px) {
-    .yorha-main-sidebar-open {
-      @apply pl-0;
-    }
-  }
+
+  /* Responsive adjustments */
   @media (max-width: 768px) {
-    .yorha-header-content {
-      @apply px-4 py-3;
+    :global(.yorha-header-content) {
+      padding: 0.75rem 1rem;
     }
-    .yorha-brand-title {
-      @apply text-lg;
+    :global(.yorha-brand-title) {
+      font-size: 1rem;
     }
-    .yorha-status-bar {
-      @apply gap-4;
+    :global(.yorha-status-bar) {
+      gap: 1rem;
     }
-    .yorha-quick-actions {
-      @apply hidden;
+    :global(.yorha-quick-actions) {
+      display: none;
     }
-    .yorha-sidebar {
-      @apply w-full;
+    :global(.yorha-sidebar) {
+      width: 100%;
+    }
+    :global(.yorha-overlay) {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 20;
     }
   }
 </style>

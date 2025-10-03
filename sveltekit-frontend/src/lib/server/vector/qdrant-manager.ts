@@ -16,7 +16,7 @@ export class QdrantManager {
   }
   // Initialize all collections with proper vector configurations
   async initializeCollections() {
-    const collectionConfigs = [;
+    const collectionConfigs = [
       {
         name: this.collections.documents,
         vectors: {

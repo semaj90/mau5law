@@ -261,7 +261,7 @@ export const chatMachine = setup({
           input: ({ context }) => ({ context }),
           onDone: {
             target: "idle",
-            actions: assign({,
+            actions: assign({
               messages: ({ context, event }) => {
                 const response: ChatMessage = {
                   id: crypto.randomUUID(),
@@ -277,7 +277,7 @@ export const chatMachine = setup({
           },
           onError: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) =>
                 new Error((event as any).error?.message || "Unknown error")
             })
@@ -293,7 +293,7 @@ export const chatMachine = setup({
         }),
         on: {
           STREAM_CHUNK: {
-            actions: assign({,
+            actions: assign({
               messages: ({ context, event }) => {
                 if (event.type !== "STREAM_CHUNK") return context.messages;
                 const lastMessage = context.messages[context.messages.length - 1];
@@ -317,13 +317,13 @@ export const chatMachine = setup({
           },
           STREAM_COMPLETE: {
             target: "idle",
-            actions: assign({,
+            actions: assign({
               stream: () => null
             })
           },
           STREAM_ERROR: {
             target: "error",
-            actions: assign({,
+            actions: assign({
               error: ({ event }) =>
                 event.type === "STREAM_ERROR" ? event.error: null
               stream: () => null
@@ -336,13 +336,13 @@ export const chatMachine = setup({
           src: "checkModelService",
           onDone: {
             target: "idle",
-            actions: assign({,
+            actions: assign({
               modelStatus: () => "ready"
             })
           },
           onError: {
             target: "idle",
-            actions: assign({,
+            actions: assign({
               modelStatus: () => "error",
               error: ({ event }) =>
                 new Error((event as any).error?.message || "Model check failed")
@@ -354,7 +354,7 @@ export const chatMachine = setup({
         on: {
           CLEAR_ERROR: {
             target: "idle",
-            actions: assign({,
+            actions: assign({
               error: () => null
             })
           },

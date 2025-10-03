@@ -196,12 +196,12 @@ const idleDetectionServices = {
 // Actions for state transitions
 const idleDetectionActions = {
   // Update last activity timestamp
-  updateActivity: assign({,
+  updateActivity: assign({
     lastActivity: (_, event) =>
       event.type === 'USER_ACTIVITY' ? event.timestamp: Date.now()
   }),
   // Queue a new background job
-  queueBackgroundJob: assign({,
+  queueBackgroundJob: assign({
     jobQueue: (context, event) => {
       if (event.type !== 'QUEUE_BACKGROUND_JOB') return context.jobQueue;
       const newJob: BackgroundJob = {
@@ -219,12 +219,12 @@ const idleDetectionActions = {
     }
   }),
   // Start processing the next job
-  startJobProcessing: assign({,
+  startJobProcessing: assign({
     currentJob: (context) => context.jobQueue[0] || null,
     jobQueue: (context) => context.jobQueue.slice(1)
   }),
   // Mark job as completed
-  completeJob: assign({,
+  completeJob: assign({
     currentJob: () => null,
     performanceMetrics: (context, event) => {
       if (event.type !== 'JOB_COMPLETED') return context.performanceMetrics;
@@ -240,7 +240,7 @@ const idleDetectionActions = {
     }
   }),
   // Store self-prompt in history
-  storeSelfPrompt: assign({,
+  storeSelfPrompt: assign({
     selfPromptingHistory: (context, event) => {
       if (event.type !== 'SELF_PROMPT_COMPLETED') return context.selfPromptingHistory;
       const prompt: SelfPrompt = {
@@ -258,7 +258,7 @@ const idleDetectionActions = {
     }
   }),
   // Update service connection status
-  updateServiceConnections: assign({,
+  updateServiceConnections: assign({
     neo4jConnected: (context, event) => {
       if (event.type === 'NEO4J_CONNECTED') return event.connected;
       return context.neo4jConnected;
@@ -317,7 +317,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
         src: 'connectBackendServices',
         onDone: {
           target: 'monitoring',
-          actions: [;
+          actions: [
             assign({
               neo4jConnected: (_, event) => event.data.neo4j,
               minioConnected: (_, event) => event.data.minio,
@@ -358,7 +358,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
           initial: 'checking_services',
           states: {
             checking_services: {
-              always: [;
+              always: [
                 {
                   target: 'generating_prompts',
                   cond: 'allServicesConnected'
@@ -391,7 +391,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                 src: 'generateSelfPrompt',
                 onDone: {
                   target: 'processing_jobs',
-                  actions: [;
+                  actions: [
                     assign({
                       jobQueue: (context, event) => {
                         const selfPromptJob: BackgroundJob = {
@@ -417,7 +417,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
               }
             },
             processing_jobs: {
-              always: [;
+              always: [
                 {
                   target: 'job_execution',
                   cond: 'hasQueuedJobs'

@@ -404,7 +404,7 @@ export async function executeAgents(
 }
 // Helper function for error-focused analysis
 export async function analyzeAndFixErrors(errorData: any): Promise<any> {
-  const [orchestrationResult, errorAnalysis] = await Promise.all([;
+  const [orchestrationResult, errorAnalysis] = await Promise.all([
     comprehensiveOrchestrator.executeComprehensiveAnalysis({
       prompt: `Analyze and provide fixes for TypeScript/Svelte errors: ${JSON.stringify(errorData).substring(0, 500)}...`,
       options: {

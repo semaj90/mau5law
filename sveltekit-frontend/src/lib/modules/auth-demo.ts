@@ -6,7 +6,7 @@
 import { citationsManager, type AuthUser } from './citations-manager.js';
 export class AuthDemo {
   private static instance: AuthDemo;
-  private demoUsers: AuthUser[] = [;
+  private demoUsers: AuthUser[] = [
     {
       id: 'user-1',
       email: 'attorney@lawfirm.com',

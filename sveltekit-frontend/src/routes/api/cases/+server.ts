@@ -113,7 +113,7 @@ export const GET: RequestHandler = async (_event: any) => {
       // In development we may want a clearer hint rather than raw 401
       if (process.env.DEV_BYPASS_AUTH === 'true' || (import.meta as any).env?.DEV_BYPASS_AUTH === 'true') {
         console.warn('DEV_BYPASS_AUTH enabled but locals.user missing; returning empty case list');
-        return { cases: [], pagination: createPagination(1, 1, 0), search: null, devBypass: true }
+        return { cases: [], pagination: createPagination(1, 1, 0), search: null, devBypass: true };
       }
       throw CommonErrors.Unauthorized('User authentication required');
     }
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async (_event: any) => {
       page: parseInt(url.searchParams.get('page') || '1'),
       limit: Math.min(parseInt(url.searchParams.get('limit') || '50'), 100),
       useVectorSearch: url.searchParams.get('useVectorSearch') !== 'false',
-    }
+    };
     // Validate search parameters
     try {
       const validatedParams = searchCasesSchema.parse(searchParams);
@@ -156,14 +156,14 @@ export const GET: RequestHandler = async (_event: any) => {
               vectorSearchUsed: validatedParams.useVectorSearch,
             }
           : null,
-      }
+      };
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         throw CommonErrors.ValidationFailed('search parameters', error.errors[0]?.message || 'Invalid parameters');
       }
       throw error;
     }
-  }, event);
+  }, _event);
 }
 // POST - Create new case
 export const POST: RequestHandler = async (_event: any) => {

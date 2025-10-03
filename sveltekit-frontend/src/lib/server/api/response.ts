@@ -5,7 +5,6 @@ import { z } from 'zod';
 import type { ApiResponse, ApiError } from '../../types/api.js';
 import type { APIResponse as UnifiedAPIResponse } from '$lib/types';
 import path from 'path';
-;
 // Standard response interface
 export interface StandardApiResponse<T = any> {
   success: boolean;
@@ -32,7 +31,7 @@ export class ApiErrorClass extends Error {
   public readonly details?: { [key: string]: any }
   public readonly timestamp: Date;
   constructor(
-    message: string;
+    message: string,
     code: string = 'UNKNOWN_ERROR',
     statusCode: number = 500,
     details?: { [key: string]: any }
@@ -47,13 +46,13 @@ export class ApiErrorClass extends Error {
 }
 // Success response builder
 export function apiSuccess<T>(
-  data: T
+  data: T,
   requestId: string = generateRequestId(),
   processingTime: number = 0,
-  pagination?: StandardApiResponse<T>['meta']['pagination'];
+  pagination?: StandardApiResponse<T>['meta']['pagination']
 ): Response {
   const response: StandardApiResponse<T> = {
-    success: true
+    success: true,
     data,
     meta: {
       timestamp: new Date().toISOString(),
@@ -67,9 +66,9 @@ export function apiSuccess<T>(
 }
 // Error response builder
 export function apiError(
-  error: ApiErrorClass | Error | string
+  error: ApiErrorClass | Error | string,
   requestId: string = generateRequestId(),
-  processingTime: number = 0;
+  processingTime: number = 0
 ): Response {
   let apiErrorData: ApiError;
   let statusCode = 500;
@@ -96,7 +95,7 @@ export function apiError(
   }
   // Add fallback data for legal API endpoints
   const response: StandardApiResponse<any> = {
-    success: false
+    success: false,
     error: {
       ...apiErrorData,
       message: 'failure default to mock'
@@ -116,7 +115,7 @@ export function apiError(
 export function validationError(
   validationResult: z.ZodError,
   requestId: string = generateRequestId(),
-  processingTime: number = 0;
+  processingTime: number = 0
 ): Response {
   const details = validationResult.errors.reduce((acc, err) => {
       const path = err.path.join('.');
@@ -132,28 +131,28 @@ export function validationError(
 }
 // --- Unified Builders (Lightweight wrappers aligned with new shared types) ---
 export function buildSuccessResponse<T>(
-  data: T;
+  data: T,
   metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
-    success: true
+    success: true,
     data,
     metadata: { ...metadata, timestamp: new Date().toISOString() }
   }
 }
 export function buildErrorResponse(
-  code: string
-  message: string;
+  code: string,
+  message: string,
   metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
-    success: false
+    success: false,
     error: { code, message },
     metadata: { ...metadata, timestamp: new Date().toISOString() }
   } as UnifiedAPIResponse;
 }
 export function buildFormSubmissionResult<T>(
-  result: any;
+  result: any,
   metadata: { processingTimeMs: number; requestId: string }
 ): any {
   return {
@@ -168,7 +167,7 @@ function generateRequestId(): string {
 // Generate mock fallback data based on error context
 function generateMockFallbackData(errorCode: string): any {
   const baseData = {
-    mockData: true
+    mockData: true,
     fallbackReason: 'Service temporarily unavailable',
     timestamp: new Date().toISOString()
   }
@@ -197,7 +196,7 @@ function generateMockFallbackData(errorCode: string): any {
             title: 'Mock Evidence Document',
             description: 'Mock evidence provided during service fallback',
             evidenceType: 'document',
-            analyzed: false
+            analyzed: false,
             dateCreated: new Date().toISOString()
           }
         ],
@@ -205,7 +204,7 @@ function generateMockFallbackData(errorCode: string): any {
           page: 1,
           limit: 50,
           total: 1,
-          hasNext: false
+          hasNext: false,
           hasPrev: false
         }
       }
@@ -225,7 +224,7 @@ function generateMockFallbackData(errorCode: string): any {
     case 'FORBIDDEN':
       return {
         ...baseData,
-        demoMode: true
+        demoMode: true,
         availableFeatures: ['case-viewing', 'evidence-browsing'],
         restrictedFeatures: ['case-creation', 'evidence-upload', 'ai-analysis']
       }
@@ -236,7 +235,7 @@ function generateMockFallbackData(errorCode: string): any {
 // API wrapper function for consistent error handling
 export async function withApiHandler<T>(
   handler: (_event: RequestEvent) => Promise<T>,
-  event: RequestEvent;
+  event: RequestEvent
 ): Promise<Response> {
   const startTime = Date.now();
   const requestId = generateRequestId();
@@ -255,8 +254,8 @@ export async function withApiHandler<T>(
     const processingTime = Date.now() - startTime;
     // Log error for monitoring
     console.error(`API Error [${requestId}]:`, {
-      error: error instanceof Error ? error.message: error
-      stack: error instanceof Error ? error.stack : undefined
+      error: error instanceof Error ? error.message : error,
+      stack: error instanceof Error ? error.stack : undefined,
       url: event.url.pathname,
       method: event.request.method,
       processingTime
@@ -291,14 +290,14 @@ export const CommonErrors = {
     new ApiErrorClass(
       `Validation failed for field '${field}': ${reason}`,
       'VALIDATION_ERROR',
-      400,)
+      400,
       { field, reason }
     )
 } as const;
 // Type-safe request body parser with validation
 export async function parseRequestBody<T>(
-  request: Request;
-  schema: z.ZodSchema<T>;
+  request: Request,
+  schema: z.ZodSchema<T>
 ): Promise<T> {
   try {
     const body = await request.json();

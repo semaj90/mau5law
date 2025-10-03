@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  import { fade } from 'svelte/transition';
+  import type { Snippet } from 'svelte';
   interface Props {
     open?: boolean;
     title?: string;
@@ -18,24 +18,24 @@
     onclose,
     children,
     footer
-   }: Props & { children?: unknown, footer?: unknown } = $props();
+   }: Props & { children?: Snippet, footer?: Snippet } = $props();
   let modalElement: HTMLDivElement = $state();
   function handleClose() {
     open = false;
     onclose?.();
   }
   function handleKeydown(_event: KeyboardEvent) {
-    if (event.key === 'Escape' && closeOnEscape) {
+    if (_event.key === 'Escape' && closeOnEscape) {
       handleClose();
   }
   }
   function handleOutsideClick(_event: MouseEvent) {
-    if (closeOnOutsideClick && event.target === modalElement) {
+    if (closeOnOutsideClick && _event.target === modalElement) {
       handleClose();
   }
   }
   $effect(() => {
-    const handleGlobalKeydown = (e: CustomEvent<any>) => {
+    const handleGlobalKeydown = (e: KeyboardEvent) => {
       if (open) handleKeydown(e);
     }
     document.addEventListener('keydown', handleGlobalKeydown);
@@ -47,7 +47,7 @@
     sm: 'max-w-md',
     md: 'max-w-lg',
     lg: 'max-w-2xl',
-    xl: 'max-w-4xl';
+    xl: 'max-w-4xl'
   }[size]);
 </script>
 {#if open}
@@ -55,14 +55,12 @@
     bind:this={modalElement}
     class="modal-backdrop"
     onclick={handleOutsideClick}
-    keydown={(e) => { if (e.key === 'Escape') handleClose(), }}
     role="presentation"
     aria-hidden="true"
-    transitifade={{ duration: 200 }}
+    transition:fade={{ duration: 200 }}
   >
     <div
       class="modal-content {sizeClasses}"
-      /* transition removed */}
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
@@ -108,7 +106,6 @@
 {/if}
 <style>/* @unocss-include */ .modal-backdrop {
     position: fixed;
-d;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;

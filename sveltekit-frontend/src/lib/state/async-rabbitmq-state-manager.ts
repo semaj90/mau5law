@@ -375,7 +375,7 @@ const asyncStateMachine = createMachine();
       },
       connected: {
         entry: 'startStateSyncLoop',
-        invoke: [;
+        invoke: [
           {
             id: 'stateSyncMonitor',
             src: 'monitorStateSync'
@@ -444,7 +444,7 @@ const asyncStateMachine = createMachine();
       initializeStateSync: () => {
         console.log('🔄 Initializing async state management...');
       },
-      markConnected: assign({,
+      markConnected: assign({
         syncStatus: (context) => ({
           ...context.syncStatus,
           connected: true
@@ -453,14 +453,14 @@ const asyncStateMachine = createMachine();
           retryCount: 0
         })
       }),
-      markDisconnected: assign({,
+      markDisconnected: assign({
         syncStatus: (context) => ({
           ...context.syncStatus,
           connected: false
           syncHealth: 'failed' as const
         })
       }),
-      updateJobState: assign({,
+      updateJobState: assign({
         jobStates: (context, event) => {
           if (!event || event.type !== 'JOB_STATE_UPDATE') return context.jobStates;
           const updated = new Map(context.jobStates);
@@ -495,7 +495,7 @@ const asyncStateMachine = createMachine();
           return updated;
         }
       }),
-      updateQueueState: assign({,
+      updateQueueState: assign({
         queueStates: (context, event) => {
           if (!event || event.type !== 'QUEUE_STATE_UPDATE') return context.queueStates;
           const updated = new Map(context.queueStates);
@@ -535,7 +535,7 @@ const asyncStateMachine = createMachine();
           return updated;
         }
       }),
-      updateGlobalState: assign({,
+      updateGlobalState: assign({
         globalState: (context, event) => {
           if (!event || event.type !== 'GLOBAL_STATE_UPDATE') return context.globalState;
           return {
@@ -568,7 +568,7 @@ const asyncStateMachine = createMachine();
           }
         }
       },
-      recordStateHistory: assign({,
+      recordStateHistory: assign({
         stateHistory: (context, event) => {
           if (!event || !event.type) return context.stateHistory;
           const historyEntry: StateHistoryEntry = {
@@ -587,7 +587,7 @@ const asyncStateMachine = createMachine();
           return [historyEntry, ...context.stateHistory].slice(0, 1000); // Keep last 1000 entries
         }
       }),
-      addSubscription: assign({,
+      addSubscription: assign({
         subscriptions: (context, event) => {
           if (!event || event.type !== 'SUBSCRIBE_TO_STATE') return context.subscriptions;
           const updated = new Map(context.subscriptions);
@@ -595,7 +595,7 @@ const asyncStateMachine = createMachine();
           return updated;
         }
       }),
-      removeSubscription: assign({,
+      removeSubscription: assign({
         subscriptions: (context, event) => {
           if (!event || event.type !== 'UNSUBSCRIBE_FROM_STATE') return context.subscriptions;
           const updated = new Map(context.subscriptions);
@@ -607,7 +607,7 @@ const asyncStateMachine = createMachine();
         if (!event || event.type !== 'RESOLVE_CONFLICT') return;
         console.log(`🔧 Resolving state conflict: ${(event as any).conflictId}`);
       },
-      acquireDistributedLock: assign({,
+      acquireDistributedLock: assign({
         distributedLocks: (context, event) => {
           if (!event || event.type !== 'ACQUIRE_LOCK') return context.distributedLocks;
           const lockId = `lock-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -625,7 +625,7 @@ const asyncStateMachine = createMachine();
           return updated;
         }
       }),
-      releaseDistributedLock: assign({,
+      releaseDistributedLock: assign({
         distributedLocks: (context, event) => {
           if (!event || event.type !== 'RELEASE_LOCK') return context.distributedLocks;
           const updated = new Map(context.distributedLocks);

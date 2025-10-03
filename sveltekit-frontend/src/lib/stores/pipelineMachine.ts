@@ -60,7 +60,7 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
       },
       on: {
         CHUNK_EMBED_DONE: {
-          actions: assign({,
+          actions: assign({
             results: (ctx, e) => (e as any).result.chunkId.startsWith('meta:') ? ctx.results: [...ctx.results, (e as any).result],
             completed: (ctx) => ctx.completed + 1
           })

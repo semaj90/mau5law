@@ -68,7 +68,7 @@ export class LocalSearchPipeline {
     }
     // Seed with a tiny demo set if empty so first searches return something
     if (this.docs.size === 0) {
-      const seed: LocalDoc[] = [;
+      const seed: LocalDoc[] = [
         {
           id: 'seed-1',
           text: 'Contract indemnification clause and liability limitations for commercial agreements.',

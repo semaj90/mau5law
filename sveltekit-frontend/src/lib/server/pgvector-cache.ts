@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://legal_admin:123456@localhost:5432/legal_ai_db'
+  connectionString: process.env.DATABASE_URL || 'postgres://legal_admin:123456@localhost:5434/legal_ai_db',
 });
 
 export type EmbeddingRow = {

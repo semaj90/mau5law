@@ -110,7 +110,7 @@ export const ingestionWorkflowMachine = setup({
   },
   actions: {
     // Job queue management
-    queueJob: assign({,
+    queueJob: assign({
       jobQueue: ({ context, event }) => {
         const job = (event as any).job;
         job.state = 'queued';
@@ -121,13 +121,13 @@ export const ingestionWorkflowMachine = setup({
         totalJobs: context.stats.totalJobs + 1
       })
     }),
-    setCurrentJob: assign({,
+    setCurrentJob: assign({
       currentJob: ({ context }) => context.jobQueue[0] || null,
       jobQueue: ({ context }) => context.jobQueue.slice(1),
       currentChunk: () => 0,
       processedChunks: () => []
     }),
-    updateJobProgress: assign({,
+    updateJobProgress: assign({
       currentJob: ({ context, event }) => {
         if (!context.currentJob) return null;
         return {
@@ -137,7 +137,7 @@ export const ingestionWorkflowMachine = setup({
         }
       }
     }),
-    completeJob: assign({,
+    completeJob: assign({
       currentJob: ({ context, event }) => {
         if (!context.currentJob) return null;
         return {
@@ -157,7 +157,7 @@ export const ingestionWorkflowMachine = setup({
         totalEmbeddings: context.stats.totalEmbeddings + (context.processedChunks.length || 0)
       })
     }),
-    failJob: assign({,
+    failJob: assign({
       currentJob: ({ context, event }) => {
         if (!context.currentJob) return null;
         return {
@@ -176,24 +176,24 @@ export const ingestionWorkflowMachine = setup({
       }),
       error: ({ event }) => (event as any).error || 'Job failed'
     }),
-    addProcessedChunk: assign({,
+    addProcessedChunk: assign({
       processedChunks: ({ context, event }) => [...context.processedChunks, (event as any).chunk],
       currentChunk: ({ context }) => context.currentChunk + 1
     }),
-    updateStats: assign({,
+    updateStats: assign({
       stats: ({ context, event }) => ({
         ...context.stats,
         ...(event as any).stats
       })
     }),
-    setConcurrency: assign({,
+    setConcurrency: assign({
       concurrency: ({ event }) => (event as any).concurrency
     }),
-    clearError: assign({,
+    clearError: assign({
       error: () => null,
       isRetrying: () => false
     }),
-    setRetrying: assign({,
+    setRetrying: assign({
       isRetrying: () => true
     })
   },
@@ -396,7 +396,7 @@ export const ingestionWorkflowMachine = setup({
       }
     },
     checkingQueue: {
-      always: [;
+      always: [
         {
           target: 'processingJob',
           guard: 'hasJobsInQueue',
@@ -409,7 +409,7 @@ export const ingestionWorkflowMachine = setup({
     },
     processingJob: {
       initial: 'publishing',
-      entry: assign({,
+      entry: assign({
         currentJob: ({ context }) => context.currentJob ? {
           ...context.currentJob,
           state: 'processing' as const,
@@ -423,7 +423,7 @@ export const ingestionWorkflowMachine = setup({
             input: ({ context }) => ({ job: context.currentJob }),
             onDone: {
               target: 'chunking',
-              actions: assign({,
+              actions: assign({
                 currentJob: ({ context, event }) => context.currentJob ? {
                   ...context.currentJob,
                   metadata: {
@@ -435,7 +435,7 @@ export const ingestionWorkflowMachine = setup({
             },
             onError: {
               target: 'processing',
-              actions: assign({,
+              actions: assign({
                 currentJob: ({ context }) => context.currentJob ? {
                   ...context.currentJob,
                   metadata: {
@@ -456,7 +456,7 @@ export const ingestionWorkflowMachine = setup({
             }),
             onDone: {
               target: 'storing',
-              actions: assign({,
+              actions: assign({
                 processedChunks: ({ event }) => (event as any).output.chunks,
                 currentJob: ({ context, event }) => context.currentJob ? {
                   ...context.currentJob,
@@ -481,7 +481,7 @@ export const ingestionWorkflowMachine = setup({
           after: {
             100: 'processing'
           },
-          entry: assign({,
+          entry: assign({
             currentJob: ({ context }) => context.currentJob ? {
               ...context.currentJob,
               state: 'chunking' as const,
@@ -498,7 +498,7 @@ export const ingestionWorkflowMachine = setup({
             }),
             onDone: {
               target: 'findingSimilar',
-              actions: assign({,
+              actions: assign({
                 currentJob: ({ context }) => context.currentJob ? {
                   ...context.currentJob,
                   state: 'caching' as const,
@@ -518,7 +518,7 @@ export const ingestionWorkflowMachine = setup({
             input: ({ context }) => ({ chunks: context.processedChunks }),
             onDone: {
               target: 'completed',
-              actions: assign({,
+              actions: assign({
                 currentJob: ({ context, event }) => context.currentJob ? {
                   ...context.currentJob,
                   results: {
@@ -537,7 +537,7 @@ export const ingestionWorkflowMachine = setup({
           entry: 'completeJob',
           always: {
             target: '#ingestionWorkflow.checkingQueue',
-            actions: assign({,
+            actions: assign({
               currentJob: () => null
             })
           }
@@ -546,7 +546,7 @@ export const ingestionWorkflowMachine = setup({
       on: {
         CANCEL_JOB: {
           target: 'idle',
-          actions: assign({,
+          actions: assign({
             currentJob: () => null,
             jobQueue: ({ context, event }) => context.jobQueue.filter(item => item.jobId)
           })
@@ -555,7 +555,7 @@ export const ingestionWorkflowMachine = setup({
     },
     retrying: {
       entry: 'setRetrying',
-      always: [;
+      always: [
         {
           target: 'processingJob',
           guard: 'canRetry',

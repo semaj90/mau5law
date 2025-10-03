@@ -185,7 +185,7 @@ export function validateCaseData(data: any): ValidationResult {
       required: true
       minLength: 3,
       maxLength: 200,
-      custom: [;
+      custom: [
         {
           name: "title-format",
           validate: (_value: string) => !value.includes("<script>"),
@@ -200,7 +200,7 @@ export function validateCaseData(data: any): ValidationResult {
     },
     status: {
       required: true;
-      custom: [;
+      custom: [
         {
           name: "valid-status",
           validate: (_value: string) =>
@@ -211,7 +211,7 @@ export function validateCaseData(data: any): ValidationResult {
     },
     priority: {
       required: true;
-      custom: [;
+      custom: [
         {
           name: "valid-priority",
           validate: (_value: string) =>

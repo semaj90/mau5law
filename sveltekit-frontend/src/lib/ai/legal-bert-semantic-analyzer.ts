@@ -384,7 +384,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   ): Promise<RiskAssessment> {
     const riskFactors: RiskAssessment['riskFactors'] = [];
     // Risk factor detection patterns
-    const riskPatterns = [;
+    const riskPatterns = [
       {
         pattern: /indemnif\w+|liability|damages|breach|default/gi,
         factor: 'liability_risk',
@@ -484,7 +484,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   }
   private async extractContractTerms(text: string): Promise<SemanticAnalysis['contractTerms']> {
     const terms: SemanticAnalysis['contractTerms'] = [];
-    const termPatterns = [;
+    const termPatterns = [
       {
         pattern: /shall\s+(?:not\s+)?(\w+(?:\s+\w+)*)/gi,
         type: 'obligation' as const
@@ -525,7 +525,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   ): Promise<SemanticAnalysis['precedentMatches']> {
     // In a real implementation, this would search a precedent database
     // For now, return mock matches
-    const mockPrecedents = [;
+    const mockPrecedents = [
       {
         caseId: 'Smith v. Johnson Corp',
         similarity: 0.85,

@@ -503,7 +503,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
       on: {
         SELECT_FILES: {
           target: 'analyzingUser',
-          actions: assign({,
+          actions: assign({
             files: ({ event }) => event.files,
             caseId: ({ event }) => event.caseId,
             errors: []
@@ -527,20 +527,20 @@ export const comprehensiveUploadAnalyticsMachine = setup({
         input: ({ context }) => ({ userAnalytics: context.userAnalytics, context }),
         onDone: {
           target: 'generatingPrompts',
-          actions: assign({,
+          actions: assign({
             userAnalytics: ({ event }) => event.output.updatedAnalytics
           })
         },
         onError: {
           target: 'generatingPrompts',
-          actions: assign({,
+          actions: assign({
             errors: ({ context, event }) => [...context.errors, `User analysis failed: ${event.error}`]
           })
         }
       },
       on: {
         USER_TYPING: {
-          actions: assign({,
+          actions: assign({
             userAnalytics: ({ context, event }) => ({
               ...context.userAnalytics,
               interactionMetrics: {
@@ -592,13 +592,13 @@ export const comprehensiveUploadAnalyticsMachine = setup({
         input: ({ context }) => ({ context, timing: 'before-upload' }),
         onDone: {
           target: 'waitingForUpload',
-          actions: assign({,
+          actions: assign({
             contextualPrompts: ({ event }) => event.output
           })
         },
         onError: {
           target: 'waitingForUpload',
-          actions: assign({,
+          actions: assign({
             errors: ({ context, event }) => [...context.errors, `Prompt generation failed: ${event.error}`]
           })
         }
@@ -628,13 +628,13 @@ export const comprehensiveUploadAnalyticsMachine = setup({
         input: ({ context }) => ({ context, timing: new Date().toISOString() }),
         onDone: {
           target: 'waitingForUpload',
-          actions: assign({,
+          actions: assign({
             contextualPrompts: ({ context, event }) => [...context.contextualPrompts, ...event.output]
           })
         },
         onError: {
           target: 'waitingForUpload',
-          actions: assign({,
+          actions: assign({
             errors: ({ context, event }) => [...context.errors, `Additional prompt generation failed: ${event.error}`]
           })
         }
@@ -647,7 +647,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
       },
       states: {
         validatingFiles: {
-          entry: assign({,
+          entry: assign({
             pipeline: ({ context }) => ({
               ...context.pipeline,
               fileValidation: { status: 'processing', progress: 0 }
@@ -656,7 +656,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
           after: {
             500: {
               target: 'uploadingFiles',
-              actions: assign({,
+              actions: assign({
                 pipeline: ({ context }) => ({
                   ...context.pipeline,
                   fileValidation: { status: 'completed', progress: 100 }
@@ -675,7 +675,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
           after: {
             1000: {
               target: 'performingAIAnalysis',
-              actions: assign({,
+              actions: assign({
                 uploadProgress: 30,
                 pipeline: ({ context }) => ({
                   ...context.pipeline,
@@ -697,7 +697,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
             input: ({ context }) => ({ files: context.files, context }),
             onDone: {
               target: 'indexingDocuments',
-              actions: assign({,
+              actions: assign({
                 uploadResults: ({ event }) => event.output,
                 uploadProgress: 60,
                 pipeline: ({ context }) => ({
@@ -708,7 +708,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
             },
             onError: {
               target: '../error',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [...context.errors, `AI analysis failed: ${event.error}`],
                 pipeline: ({ context }) => ({
                   ...context.pipeline,
@@ -728,7 +728,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
           after: {
             800: {
               target: 'generatingEmbeddings',
-              actions: assign({,
+              actions: assign({
                 uploadProgress: 75,
                 pipeline: ({ context }) => ({
                   ...context.pipeline,
@@ -748,7 +748,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
           after: {
             1200: {
               target: 'savingToDatabase',
-              actions: assign({,
+              actions: assign({
                 uploadProgress: 90,
                 pipeline: ({ context }) => ({
                   ...context.pipeline,
@@ -770,7 +770,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
             input: ({ context }) => ({ results: context.uploadResults, context }),
             onDone: {
               target: '../completed',
-              actions: assign({,
+              actions: assign({
                 uploadProgress: 100,
                 pipeline: ({ context }) => ({
                   ...context.pipeline,
@@ -780,7 +780,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
             },
             onError: {
               target: '../error',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [...context.errors, `Database save failed: ${event.error}`],
                 pipeline: ({ context }) => ({
                   ...context.pipeline,
@@ -793,7 +793,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
       }
     },
     completed: {
-      entry: [;
+      entry: [
         assign({
           userAnalytics: ({ context }) => ({
             ...context.userAnalytics,

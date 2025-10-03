@@ -9,7 +9,7 @@ async function testPersonsOfInterestAPI() {
 
   // Set the DATABASE_URL if not set
   if (!process.env.DATABASE_URL) {
-    process.env.DATABASE_URL = 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
+    process.env.DATABASE_URL = 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
   }
 
   console.log('🔗 Database URL:', process.env.DATABASE_URL);

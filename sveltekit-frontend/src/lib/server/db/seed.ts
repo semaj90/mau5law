@@ -28,7 +28,7 @@ async function seed() {
       outputLen: 32,
       parallelism: 1
     });
-    const seedUsers = [;
+    const seedUsers = [
       {
         id: generateIdFromEntropySize(10),
         email: 'prosecutor@legal.ai',
@@ -61,7 +61,7 @@ async function seed() {
     console.log(`✅ Created ${insertedUsers.length} users`);
     // Create test cases
     console.log('📁 Creating cases...');
-    const seedCases = [;
+    const seedCases = [
       {
         id: generateIdFromEntropySize(10),
         caseNumber: 'CASE-2024-001',
@@ -106,7 +106,7 @@ async function seed() {
     console.log(`✅ Created ${insertedCases.length} cases`);
     // Create test evidence
     console.log('🔍 Creating evidence...');
-    const seedEvidence = [;
+    const seedEvidence = [
       {
         id: generateIdFromEntropySize(10),
         caseId: insertedCases[0].id,

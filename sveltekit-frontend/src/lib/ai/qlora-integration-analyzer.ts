@@ -386,7 +386,7 @@ export class QLoRAIntegrationAnalyzer {
         attention_heads: 12,
         intermediate_size: 3072
       },
-      specializationPoints: [;
+      specializationPoints: [
         {
           layer_index: 6,
           module_name: 'attention',

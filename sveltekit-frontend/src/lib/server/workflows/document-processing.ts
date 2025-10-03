@@ -211,7 +211,7 @@ export const documentProcessingMachine = createMachine({
       on: {
         START_PROCESSING: {
           target: 'processing',
-          actions: assign({,
+          actions: assign({
             documentId: ({ event }) => event.documentId,
             content: ({ event }) => event.content,
             metadata: ({ event }) => event.metadata || {},
@@ -245,7 +245,7 @@ export const documentProcessingMachine = createMachine({
           on: {
             CHUNKING_COMPLETE: {
               target: 'embedding',
-              actions: [;
+              actions: [
                 assign({
                   chunks: ({ event }) => (event as any).output?.chunks || [],
                   progress: 25,
@@ -256,7 +256,7 @@ export const documentProcessingMachine = createMachine({
             },
             CHUNKING_ERROR: {
               target: '#documentProcessing.error',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
                   `Chunking failed: ${(event as any).error?.message || 'Unknown error'}`
@@ -278,7 +278,7 @@ export const documentProcessingMachine = createMachine({
           on: {
             EMBEDDING_COMPLETE: {
               target: 'storing',
-              actions: [;
+              actions: [
                 assign({
                   embeddings: ({ event }) => (event as any).output?.embeddings || [],
                   progress: 60,
@@ -294,7 +294,7 @@ export const documentProcessingMachine = createMachine({
             },
             EMBEDDING_ERROR: {
               target: '#documentProcessing.error',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
                   `Embedding failed: ${(event as any).error?.message || 'Unknown error'}`
@@ -357,7 +357,7 @@ export const documentProcessingMachine = createMachine({
           },
           onDone: {
             target: '#documentProcessing.completed',
-            actions: [;
+            actions: [
               assign({
                 progress: 100,
                 status: 'completed',
@@ -370,7 +370,7 @@ export const documentProcessingMachine = createMachine({
           on: {
             STORAGE_ERROR: {
               target: '#documentProcessing.error',
-              actions: assign({,
+              actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
                   `Storage failed: ${(event as any)?.error?.message || 'Unknown error'}`
@@ -391,7 +391,7 @@ export const documentProcessingMachine = createMachine({
     },
     completed: {
       type: 'final',
-      entry: assign({,
+      entry: assign({
         status: 'completed',
         progress: 100
       })
@@ -401,11 +401,11 @@ export const documentProcessingMachine = createMachine({
         status: 'failed'
       }),
       on: {
-        RETRY: [;
+        RETRY: [
           {
             target: 'processing',
             guard: ({ context }) => context.retryCount < context.maxRetries,
-            actions: assign({,
+            actions: assign({
               retryCount: ({ context }) => context.retryCount + 1,
               status: 'processing',
               progress: 0,
@@ -414,7 +414,7 @@ export const documentProcessingMachine = createMachine({
           },
           {
             target: 'failed',
-            actions: assign({,
+            actions: assign({
               errors: ({ context }) => [
                 ...context.errors,
                 `Maximum retry attempts (${context.maxRetries}) exceeded`
@@ -426,13 +426,13 @@ export const documentProcessingMachine = createMachine({
     },
     failed: {
       type: 'final',
-      entry: assign({,
+      entry: assign({
         status: 'failed'
       })
     },
     cancelled: {
       type: 'final',
-      entry: assign({,
+      entry: assign({
         status: 'failed'
       })
     }
@@ -440,7 +440,7 @@ export const documentProcessingMachine = createMachine({
   on: {
     RESET: {
       target: 'idle',
-      actions: assign({,
+      actions: assign({
         documentId: '',
         content: '',
         metadata: { [key: string]: any },

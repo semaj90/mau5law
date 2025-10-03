@@ -42,23 +42,23 @@ export const documentWorkflowMachine = setup({
       documentId: ({ event }) => (event as any).documentId,
       fileName: ({ event }) => (event as any).fileName
     }),
-    setExtractedText: assign({,
+    setExtractedText: assign({
       extractedText: ({ event }) => (event as any).text,
       ocrConfidence: ({ event }) => (event as any).confidence
     }),
-    setEmbeddings: assign({,
+    setEmbeddings: assign({
       embeddings: ({ event }) => (event as any).embeddings
     }),
-    addError: assign({,
+    addError: assign({
       processingErrors: ({ context, event }) => [
         ...(context.processingErrors || []),
         (event as any).error
       ]
     }),
-    incrementRetry: assign({,
+    incrementRetry: assign({
       retryCount: ({ context }) => context.retryCount + 1
     }),
-    resetRetries: assign({,
+    resetRetries: assign({
       retryCount: 0
     })
   },
@@ -85,7 +85,7 @@ export const documentWorkflowMachine = setup({
       on: {
         UPLOAD_STARTED: {
           target: 'uploading',
-          actions: assign({,
+          actions: assign({
             fileName: ({ event }) => event.file.name,
             fileSize: ({ event }) => event.file.size,
             mimeType: ({ event }) => event.file.type,
@@ -113,7 +113,7 @@ export const documentWorkflowMachine = setup({
           target: 'generatingEmbeddings',
           actions: 'setExtractedText'
         },
-        TEXT_EXTRACTION_FAILED: [;
+        TEXT_EXTRACTION_FAILED: [
           {
             target: 'retrying',
             guard: 'canRetry',
@@ -132,7 +132,7 @@ export const documentWorkflowMachine = setup({
           target: 'indexing',
           actions: 'setEmbeddings'
         },
-        EMBEDDING_FAILED: [;
+        EMBEDDING_FAILED: [
           {
             target: 'retrying',
             guard: 'canRetry',
@@ -151,7 +151,7 @@ export const documentWorkflowMachine = setup({
           target: 'completed',
           actions: 'resetRetries'
         },
-        INDEXING_FAILED: [;
+        INDEXING_FAILED: [
           {
             target: 'retrying',
             guard: 'canRetry',
@@ -225,31 +225,31 @@ export const caseWorkflowMachine = setup({
       status: 'draft' as const,
       lastActivity: () => new Date()
     }),
-    addDocument: assign({,
+    addDocument: assign({
       documents: ({ context, event }) => [
         ...context.documents,
         (event as any).documentId
       ],
       lastActivity: () => new Date()
     }),
-    addEvidence: assign({,
+    addEvidence: assign({
       evidence: ({ context, event }) => [
         ...context.evidence,
         (event as any).evidenceId
       ],
       lastActivity: () => new Date()
     }),
-    setReviewers: assign({,
+    setReviewers: assign({
       reviewers: ({ event }) => (event as any).reviewers,
       requiredApprovals: ({ event }) => (event as any).reviewers?.length || 0,
       approvals: 0,
       lastActivity: () => new Date()
     }),
-    incrementApprovals: assign({,
+    incrementApprovals: assign({
       approvals: ({ context }) => context.approvals + 1,
       lastActivity: () => new Date()
     }),
-    updateActivity: assign({,
+    updateActivity: assign({
       lastActivity: () => new Date()
     })
   },
@@ -322,7 +322,7 @@ export const caseWorkflowMachine = setup({
     },
     under_review: {
       on: {
-        APPROVE: [;
+        APPROVE: [
           {
             target: 'closed',
             guard: 'hasRequiredApprovals',
@@ -404,17 +404,17 @@ export const ragWorkflowMachine = setup({
       caseId: ({ event }) => (event as any).caseId,
       processingTime: () => Date.now()
     }),
-    setCachedResponse: assign({,
+    setCachedResponse: assign({
       generatedResponse: ({ event }) => (event as any).response,
       sources: ({ event }) => (event as any).sources,
       cached: true
       confidence: 1.0,
       processingTime: ({ context }) => Date.now() - context.processingTime
     }),
-    setSearchResults: assign({,
+    setSearchResults: assign({
       searchResults: ({ event }) => (event as any).results
     }),
-    setGeneratedResponse: assign({,
+    setGeneratedResponse: assign({
       generatedResponse: ({ event }) => (event as any).response,
       confidence: ({ event }) => (event as any).confidence,
       tokens: ({ event }) => (event as any).tokens,

@@ -28,7 +28,7 @@
           QUERY: {
             target: 'querying',
             guard: ({ event }) => !!event.prompt?.trim(),
-            actions: assign({,
+            actions: assign({
               prompt: ({ event }) => event.prompt,
               error: null;
             })
@@ -41,7 +41,7 @@
           input: ({ context }) => ({ prompt: context.prompt }),
           onDone: {
             target: 'success',
-            actions: assign({,
+            actions: assign({
               response: ({ event }) => event.output.response,
               conversationHistory: ({ context, event }) => [
                 ...context.conversationHistory,
@@ -51,7 +51,7 @@
           },
           onError: {
             target: 'error',
-            actions: assign({,
+            actions: assign({
               error: ({ event }) => event.error?.message || 'Failed to connect to Legal AI'
             })
           }
@@ -62,14 +62,14 @@
           QUERY: {
             target: 'querying',
             guard: ({ event }) => !!event.prompt?.trim(),
-            actions: assign({,
+            actions: assign({
               prompt: ({ event }) => event.prompt,
               error: null;
             })
           },
           CLEAR: {
             target: 'idle',
-            actions: assign({,
+            actions: assign({
               prompt: '',
               response: '',
               error: null;
@@ -85,7 +85,7 @@
           QUERY: {
             target: 'querying',
             guard: ({ event }) => !!event.prompt?.trim(),
-            actions: assign({,
+            actions: assign({
               prompt: ({ event }) => event.prompt,
               error: null;
             })
