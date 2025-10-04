@@ -100,7 +100,7 @@
     padding-top: 1rem;
     margin-top: 1rem;
   }
-/* NES.css override for better spacing */ {}
+/* NES.css override for better spacing */
   :global(.nes-container.with-title) {
     margin: 1rem 0;
   }

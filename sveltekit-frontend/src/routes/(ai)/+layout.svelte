@@ -10,20 +10,20 @@
 
   let { data, children }: Props = $props();
 
-  // AI navigation items - updated with consolidated routes
+  // AI navigation items - route groups (ai) are invisible in URLs
   const aiRoutes = [
-    { name: 'AI Assistant', href: '/ai/assistant', icon: '🤖' },
-    { name: 'AI Chat', href: '/ai/chat', icon: '💬' },
-    { name: 'GPU Chat', href: '/ai/gpu-chat', icon: '⚡' },
-    { name: 'AI Dashboard', href: '/ai/dashboard', icon: '📊' },
-    { name: 'RAG System', href: '/ai/rag', icon: '🧠' },
-    { name: 'Vector Search', href: '/ai/vector-search', icon: '🔍' },
-    { name: 'Recommendations', href: '/ai/recommendations', icon: '💡' },
-    { name: 'Case Scoring', href: '/ai/case-scoring', icon: '⚖️' },
-    { name: 'Document Drafting', href: '/ai/document-drafting', icon: '📝' },
-    { name: 'Pattern Detection', href: '/ai/pattern-detection', icon: '🎯' },
-    { name: 'Orchestrator', href: '/ai/orchestrator', icon: '🎼' },
-    { name: 'Processing', href: '/ai/processing', icon: '⚙️' }
+    { name: 'AI Assistant', href: '/assistant', icon: '🤖' },
+    { name: 'AI Chat', href: '/chat', icon: '💬' },
+    { name: 'GPU Chat', href: '/gpu-chat', icon: '⚡' },
+    { name: 'AI Dashboard', href: '/dashboard', icon: '📊' },
+    { name: 'RAG System', href: '/rag', icon: '🧠' },
+    { name: 'Vector Search', href: '/vector-search', icon: '🔍' },
+    { name: 'Recommendations', href: '/recommendations', icon: '💡' },
+    { name: 'Case Scoring', href: '/case-scoring', icon: '⚖️' },
+    { name: 'Document Drafting', href: '/document-drafting', icon: '📝' },
+    { name: 'Pattern Detection', href: '/pattern-detection', icon: '🎯' },
+    { name: 'Orchestrator', href: '/orchestrator', icon: '🎼' },
+    { name: 'Processing', href: '/processing', icon: '⚙️' }
   ];
 
   // AI-focused console theme (cyberpunk for AI work)

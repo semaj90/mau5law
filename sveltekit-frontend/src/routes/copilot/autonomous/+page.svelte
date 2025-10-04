@@ -4,20 +4,13 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits'; // use default export for Button component
   import { Badge } from '$lib/components/ui/badge';
   import {
     Bot,
     Brain,
     Search,
-    Memory,
+    Database, // replaced missing 'Memory' icon with 'Database'
     Users,
     Cog,
     Zap,
@@ -26,10 +19,10 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     Settings,
     CheckCircle,
     Activity,
-    FileText,
     Workflow
   } from 'lucide-svelte';
   import AutonomousEngineeringDemo from '$lib/components/copilot/AutonomousEngineeringDemo.svelte';
+
   // System status state
   let systemStatus = $state({
     copilotIntegration: true,
@@ -41,22 +34,29 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   });
   let showArchitecture = $state(false);
   let showIntegration = $state(false);
+
+  function toggleArchitecture() {
+    showArchitecture = !showArchitecture;
+  }
+
+  // single effect to check system status
   $effect(() => {
     checkSystemStatus();
   });
+
   async function checkSystemStatus() {
     try {
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        systemStatus = {
-          copilotIntegration: (data as { status?: unknown; services?: unknown }).status === 'operational',
-          semanticSearch: (data as { status?: unknown; services?: unknown }).services?.semanticSearch || false,
-          memoryMCP: (data as { status?: unknown; services?: unknown }).services?.memoryMCP || false,
-          multiAgent: (data as { status?: unknown; services?: unknown }).services?.multiAgent || false,
-          autonomousEngineering: (data as { status?: unknown; services?: unknown }).services?.autonomousEngineering || false,
-          serviceWorkers: (data as { status?: unknown; services?: unknown }).services?.serviceWorkers || false
-        }
+      const response = await fetch('/api/system/status');
+      if (response.ok) {
+        const data = await response.json();
+        systemStatus.set({
+          copilotIntegration: data.status === 'operational',
+          semanticSearch: data.services?.semanticSearch || false,
+          memoryMCP: data.services?.memoryMCP || false,
+          multiAgent: data.services?.multiAgent || false,
+          autonomousEngineering: data.services?.autonomousEngineering || false,
+          serviceWorkers: data.services?.serviceWorkers || false
+        });
       }
     } catch (error) {
       console.error('Failed to check system status:', error);
@@ -65,82 +65,92 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   function getStatusColor(status: boolean) {
     return status ? 'text-green-500' : 'text-red-500';
   }
-  const architectureFeatures = [
+  // Define the type for architecture features to avoid 'unknown' errors
+  type ArchitectureFeature = {
+    name: string;
+    icon: typeof Search;
+    description: string;
+    status: boolean;
+    capabilities: string[];
+  };
+
+  // const architectureFeatures = [ ... ]  // replaced to avoid capturing initial systemStatus
+  const architectureFeatures: ArchitectureFeature[] = $derived(systemStatus, ($systemStatus) => [
     {
       name: 'Semantic Search',
-      icon: Search
+      icon: Search,
       description: 'Intelligent code and documentation search with context awareness',
-      status: systemStatus.semanticSearch,
-      capabilities: ['Code pattern matching', 'Documentation retrieval', 'Context-aware suggestions'];
+      status: $systemStatus.semanticSearch,
+      capabilities: ['Code pattern matching', 'Documentation retrieval', 'Context-aware suggestions']
     },
     {
       name: 'Memory MCP',
-      icon: Memory
+      icon: Database,
       description: 'Persistent memory and context management across sessions',
-      status: systemStatus.memoryMCP,
-      capabilities: ['Session memory', 'Context graphs', 'Historical insights'];
+      status: $systemStatus.memoryMCP,
+      capabilities: ['Session memory', 'Context graphs', 'Historical insights']
     },
     {
       name: 'Multi-Agent AI',
-      icon: Users
+      icon: Users,
       description: 'AutoGen and CrewAI orchestration for complex problem-solving',
-      status: systemStatus.multiAgent,
-      capabilities: ['Conversational agents', 'Task-based crews', 'Expert coordination'];
+      status: $systemStatus.multiAgent,
+      capabilities: ['Conversational agents', 'Task-based crews', 'Expert coordination']
     },
     {
       name: 'Autonomous Engineering',
-      icon: Cog
+      icon: Cog,
       description: 'Self-directed problem analysis and solution generation',
-      status: systemStatus.autonomousEngineering,
-      capabilities: ['Problem diagnosis', 'Solution planning', 'Execution strategies'];
+      status: $systemStatus.autonomousEngineering,
+      capabilities: ['Problem diagnosis', 'Solution planning', 'Execution strategies']
     },
     {
       name: 'Service Workers',
-      icon: Zap
+      icon: Zap,
       description: 'Multi-threaded AI processing for parallel execution',
-      status: systemStatus.serviceWorkers,
-      capabilities: ['Parallel processing', 'Load balancing', 'Real-time monitoring'];
+      status: $systemStatus.serviceWorkers,
+      capabilities: ['Parallel processing', 'Load balancing', 'Real-time monitoring']
     }
-  ];
+  ]);
   const integrationExamples = [
     {
       title: 'VS Code Copilot Integration',
       description: 'Direct integration with GitHub Copilot for enhanced suggestions',
       code: `// In VS Code, Copilot can now leverage our autonomous system
-  await copilotSelfPrompt("Fix TypeScript errors", {
-  useAutonomousEngineering: true;
+await copilotSelfPrompt("Fix TypeScript errors", {
+  useAutonomousEngineering: true,
   context: { platform: "webapp", urgency: "high" }
-  });`
+});`
     },
     {
       title: 'Cline Extension Integration',
       description: 'Autonomous engineering for Cline AI assistant',
       code: `// Cline can use our API for comprehensive analysis
-  const response = await fetch('/api/copilot/self-prompt', {
+const response = await fetch('/api/copilot/self-prompt', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({,
+  body: JSON.stringify({
     prompt: "Optimize performance across all platforms",
-    mode: "autonomous";
+    mode: "autonomous"
   })
-  });`
+});`
     },
     {
       title: 'Roo Extension Integration',
       description: 'Multi-agent coordination for Roo AI workflows',
       code: `// Roo can leverage multi-agent analysis
-  const analysis = await copilotSelfPrompt(userRequest, {
-  useMultiAgent: true
-  useSemanticSearch: true
+const analysis = await copilotSelfPrompt(userRequest, {
+  useMultiAgent: true,
+  useSemanticSearch: true,
   outputFormat: "structured"
-  });`
+});`
     },
     {
       title: 'Custom Extension Development',
       description: 'Build your own VS Code extension with our AI stack',
       code: `// Custom extension using our autonomous engineering
-  import { copilotSelfPrompt } from './autonomous-ai';
-  export function activate(context: vscode.ExtensionContext) {
+import { copilotSelfPrompt } from './autonomous-ai';
+export function activate(context: vscode.ExtensionContext) {
   const command = vscode.commands.registerCommand(
     'myext.analyzeCode',
     async () => {
@@ -150,33 +160,33 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
       // Process result...
     }
   );
-  }`
+}`
     }
   ];
   const useCases = [
     {
       title: 'Automated Bug Fixing',
       description: 'Autonomous identification and resolution of software bugs',
-      icon: Code;
-      benefits: ['Faster resolution', 'Pattern recognition', 'Preventive analysis'];
+      icon: Code,
+      benefits: ['Faster resolution', 'Pattern recognition', 'Preventive analysis']
     },
     {
       title: 'Performance Optimization',
       description: 'Cross-platform performance analysis and optimization',
-      icon: Zap;
-      benefits: ['Multi-threaded analysis', 'Comprehensive profiling', 'Automated tuning'];
+      icon: Zap,
+      benefits: ['Multi-threaded analysis', 'Comprehensive profiling', 'Automated tuning']
     },
     {
       title: 'Security Auditing',
       description: 'Multi-agent security analysis and vulnerability assessment',
-      icon: Globe;
-      benefits: ['Expert coordination', 'Comprehensive coverage', 'Risk prioritization'];
+      icon: Globe,
+      benefits: ['Expert coordination', 'Comprehensive coverage', 'Risk prioritization']
     },
     {
       title: 'Architecture Review',
       description: 'Intelligent architectural analysis and recommendations',
-      icon: Settings;
-      benefits: ['Best practices', 'Scalability analysis', 'Modernization guidance'];
+      icon: Settings,
+      benefits: ['Best practices', 'Scalability analysis', 'Modernization guidance']
     }
   ];
 </script>
@@ -228,11 +238,12 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
         <div class="nes-container">
           <div class="yorha-panel-content p-4">
             <div class="flex items-center justify-between mb-2">
-              <feature.icon
-                class="h-6 w-6 {getStatusColor(feature.status)}"
-              />
-              <div class="w-2 h-2 rounded-full {feature.status ? 'bg-green-500' : 'bg-red-500'}"></div>
-            </div>
+              <!-- render icon using svelte:component for dynamic components -->
+              <svelte:component this={feature.icon} class={"h-6 w-6 " + getStatusColor(feature.status)} aria-hidden="true" />
+              <span class="sr-only">{feature.name} {feature.status ? 'operational' : 'offline'}</span>
+
+              <div class={"w-2 h-2 rounded-full " + (feature.status ? 'bg-green-500' : 'bg-red-500')}></div>
+              <div class={"w-2 h-2 rounded-full " + (feature.status ? 'bg-green-500' : 'bg-red-500')}></div>
             <h3 class="font-semibold text-sm mb-1">{feature.name}</h3>
             <p class="text-xs text-gray-600 dark:text-gray-400">
               {feature.status ? 'Operational' : 'Offline'}
@@ -241,24 +252,25 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
         </div>
       {/each}
     </div>
+
     <!-- Main Demo Component -->
-    <AutonomousEngineeringDemo
-      showAdvancedOptions={true}
-      autoExecuteExamples={false}
-    />
-    <!-- Architecture Overview -->
+    <!-- Render demo component directly -->
+    <AutonomousEngineeringDemo showAdvancedOptions={true} autoExecuteExamples={false} />
+
+    <!-- System Architecture panel header (cleaned up, single toggle) -->
     <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           <span class="flex items-center gap-2">
-            <Settings class="h-5 w-5" />
+            <Code class="h-5 w-5" />
             System Architecture
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-showArchitecture = !showArchitecture}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showArchitecture = !showArchitecture)}>
             {showArchitecture ? 'Hide' : 'Show'} Details
+          </Button>
         </h3>
       </div>
+
       {#if showArchitecture}
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -266,11 +278,13 @@ showArchitecture = !showArchitecture}>
               <div class="border rounded-lg p-4">
                 <div class="flex items-center gap-3 mb-3">
                   <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                    <feature.icon class="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    {@const Icon = feature.icon}
+                    <Icon class="h-5 w-5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+                    <span class="sr-only">{feature.name} {feature.status ? 'online' : 'offline'}</span>
                   </div>
                   <div>
                     <h3 class="font-semibold">{feature.name}</h3>
-                    <p class="text-xs {getStatusColor(feature.status)}">
+                    <p class={"text-xs " + getStatusColor(feature.status)}>
                       {feature.status ? 'Online' : 'Offline'}
                     </p>
                   </div>
@@ -293,6 +307,7 @@ showArchitecture = !showArchitecture}>
         </div>
       {/if}
     </div>
+
     <!-- Integration Examples -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -301,9 +316,9 @@ showArchitecture = !showArchitecture}>
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
-showIntegration = !showIntegration}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showIntegration = !showIntegration)}>
             {showIntegration ? 'Hide' : 'Show'} Examples
+          </Button>
         </h3>
       </div>
       {#if showIntegration}
@@ -335,6 +350,7 @@ showIntegration = !showIntegration}>
         </div>
       {/if}
     </div>
+
     <!-- Use Cases -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -349,7 +365,10 @@ showIntegration = !showIntegration}>
             <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
               <div class="flex items-center gap-3 mb-3">
                 <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                  <useCase.icon class="h-5 w-5 text-green-600 dark:text-green-400" />
+                  <!-- dynamic component using svelte:component -->
+                  {@const Icon = useCase.icon}
+                  <Icon class="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
+                  <span class="sr-only">{useCase.title}</span>
                 </div>
                 <h3 class="font-semibold">{useCase.title}</h3>
               </div>
@@ -370,6 +389,7 @@ showIntegration = !showIntegration}>
         </div>
       </div>
     </div>
+
     <!-- Implementation Status -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -417,6 +437,7 @@ showIntegration = !showIntegration}>
       </div>
     </div>
   </div>
+</div> <!-- CLOSE: previously unclosed top-level wrapper -->
 <style>
   /* @unocss-include */
-</style>;
+</style>

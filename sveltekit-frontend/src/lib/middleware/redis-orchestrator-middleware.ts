@@ -25,7 +25,7 @@ export function withRedisOrchestrator(
 
     // Execute original handler (Redis integration disabled for now)
     return await originalHandler(event);
-  }
+  };
 }
 
 export const redisMiddleware = {
@@ -63,7 +63,7 @@ export const redisMiddleware = {
       cacheStrategy: 'aggressive',
       memoryBank: 'CHR_ROM',
     }),
-}
+};
 
 export const redisOptimized = redisMiddleware;
 export default redisMiddleware;

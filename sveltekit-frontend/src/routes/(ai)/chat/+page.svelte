@@ -1,16 +1,36 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+  /**
+   * Production-Ready Integrated AI Chat (Svelte 5)
+   * Features: File upload, RAG, embeddings, CUDA, Redis, self-prompting
+   * Fallbacks: TensorRT → Ollama → Mock AI
+   */
   import { onMount } from 'svelte';
   import NesTypewriterStream from '$lib/components/chat/nes-typewriter-stream.svelte';
-  // Svelte 5 runes - simplified for NES.css retro style
-  let messages = $state<Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date }>>([]);
+  import { chatStore, chatActions } from '$lib/stores/chatStore';
+
+  // Svelte 5 runes - production state management
+  let messages = $state<Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date; metadata?: any }>>([]);
   let currentMessage = $state('');
   let isLoading = $state(false);
   let chatContainer: HTMLElement;
-  // Enhanced UX state
+  let fileInput = $state<HTMLInputElement | null>(null);
+
+  // System status
   let typingIndicator = $state(false);
   let connectionStatus = $state<'connected' | 'disconnected' | 'connecting'>('disconnected');
-  let modelInfo = $state<{ name: string; status: string } | null>(null);
+  let modelInfo = $state<{ name: string; status: string; backend: string } | null>(null);
+  let cudaAvailable = $state(false);
+  let uploadedFiles = $state<Array<{ name: string; id: string }>>([]);
+  let recommendations = $state<string[]>([]);
+
+  // Service availability
+  let services = $state({
+    tensorrt: false,
+    ollama: false,
+    integrated: false,
+    redis: false,
+    qdrant: false
+  });
   // Check TensorRT service health
   async function checkServiceHealth() {
     try {

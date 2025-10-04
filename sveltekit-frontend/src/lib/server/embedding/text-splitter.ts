@@ -1,6 +1,5 @@
 
 // Lightweight local text splitter (word-based with overlap) – no heavy deps.
-}
 export interface SplitterOptions {
   chunkSize?: number;     // Approx words per chunk (default 350)
   overlap?: number;       // Word overlap between chunks (default 40)
@@ -28,9 +27,9 @@ export function splitText(raw: string, opts: SplitterOptions = {}): TextChunk[] 
     if (slice.length < minChunkSize) break;
     const chunkText = slice.join(' ').trim();
     chunks.push({
-      index: idx;
-      text: chunkText
-      startWord: start
+      index: idx,
+      text: chunkText,
+      startWord: start,
       endWord: start + slice.length - 1,
       tokenEstimate: Math.round(slice.length * 1.3)
     });

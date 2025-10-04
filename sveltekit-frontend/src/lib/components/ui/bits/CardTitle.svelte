@@ -6,7 +6,7 @@
   }
   let {
     class: className = '',
-    childre;
+    children
   }: CardTitleProps = $props();
 </script>
 

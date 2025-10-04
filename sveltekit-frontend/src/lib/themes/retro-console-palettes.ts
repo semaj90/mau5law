@@ -310,6 +310,61 @@ export const PS2_PALETTE: ConsolePalette = {
     '--ps2-priority': '#FC5C65',
   },
 }
+// Cyberpunk Theme - 2077
+export const CYBERPUNK_PALETTE: ConsolePalette = {
+  name: 'Cyberpunk 2077',
+  era: 'Neo-Noir',
+  colors: {
+    primary: '#00FFFF', // Electric Cyan
+    secondary: '#FF00FF', // Hot Pink
+    tertiary: '#FFFF00', // Neon Yellow
+    success: '#00FF00', // Bright Green
+    warning: '#FFA500', // Orange
+    error: '#FF0000', // Red
+    background: '#0A0A0A', // Near Black
+    foreground: '#E0E0E0', // Light Gray
+    evidence: '#9400D3', // Dark Violet
+    classification: '#FF69B4', // Hot Pink
+    confidence: '#00CED1', // Dark Turquoise
+    priority: '#FF4500', // Orange Red
+    accent: [
+      '#00FFFF', // Electric Cyan
+      '#FF00FF', // Hot Pink
+      '#FFFF00', // Neon Yellow
+      '#00FF00', // Bright Green
+      '#FFA500', // Orange
+      '#FF0000', // Red
+      '#9400D3', // Dark Violet
+      '#FF69B4', // Hot Pink
+    ],
+  },
+  gradients: {
+    main: 'linear-gradient(135deg, #0A0A0A, #00FFFF, #FF00FF)',
+    modal: 'linear-gradient(45deg, #0A0A0A 0%, #00FFFF 50%, #FF00FF 100%)',
+    card: 'linear-gradient(180deg, #0A0A0A, #1A1A1A)',
+    evidence: 'linear-gradient(90deg, #9400D3, #FF69B4)',
+    priority: 'linear-gradient(45deg, #FF4500, #FF0000)',
+  },
+  constraints: {
+    maxColors: 16777216,
+    bitDepth: 32,
+    memoryKB: 131072,
+  },
+  cssVariables: {
+    '--cyberpunk-primary': '#00FFFF',
+    '--cyberpunk-secondary': '#FF00FF',
+    '--cyberpunk-tertiary': '#FFFF00',
+    '--cyberpunk-success': '#00FF00',
+    '--cyberpunk-warning': '#FFA500',
+    '--cyberpunk-error': '#FF0000',
+    '--cyberpunk-background': '#0A0A0A',
+    '--cyberpunk-foreground': '#E0E0E0',
+    '--cyberpunk-evidence': '#9400D3',
+    '--cyberpunk-classification': '#FF69B4',
+    '--cyberpunk-confidence': '#00CED1',
+    '--cyberpunk-priority': '#FF4500',
+  },
+}
 // Legal AI Professional Theme
 export const LEGAL_AI_PALETTE: ConsolePalette = {
   name: 'Legal AI Professional',
@@ -373,6 +428,7 @@ export const CONSOLE_PALETTES = {
   n64: N64_PALETTE,
   ps2: PS2_PALETTE,
   legal: LEGAL_AI_PALETTE,
+  cyberpunk: CYBERPUNK_PALETTE, // Added cyberpunk palette
 } as const;
 export type ConsolePaletteName = keyof typeof CONSOLE_PALETTES;
 // Helper function to apply console palette to CSS variables

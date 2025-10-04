@@ -8,7 +8,7 @@ export const evidenceSchema = z.object({
   tags: z.array(z.string()).optional(),
   caseId: z.string().uuid().optional(),
   fileUrl: z.string().url().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.unknown()).optional(),
 });
 export type EvidenceFormData = z.infer<typeof evidenceSchema>;
 // Vector search result type (client-safe)
@@ -16,7 +16,7 @@ export interface VectorSearchResult {
   id: string;
   content: string;
   similarity: number;
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>;
   embedding?: number[];
 }
 // Export common form schemas

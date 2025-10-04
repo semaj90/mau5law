@@ -2,10 +2,49 @@
 // Maps all your existing API routes and provides service discovery
 import { existsSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
+import { Socket } from 'net';
+
+// Add explicit types to avoid `any`
+type HealthStatus = 'healthy' | 'unhealthy' | 'error' | 'unknown';
+
+export interface ServiceConfig {
+  name: string;
+  port: number;
+  host: string;
+  type: string;
+  required: boolean;
+  // healthCheck returns a Promise<boolean>
+  healthCheck: () => Promise<boolean>;
+  // allow extra properties used elsewhere
+  [key: string]: unknown;
+}
+
+export interface RouteConfig {
+  endpoints: string[];
+  description: string;
+  dependencies?: string[];
+  required?: boolean;
+  [key: string]: unknown;
+}
+
+export interface HealthCheckRecord {
+  status?: HealthStatus;
+  lastCheck?: string;
+  error?: string;
+  [key: string]: unknown;
+}
+
+type ServiceCheckResult = ServiceConfig & {
+  status: HealthStatus;
+  lastCheck: string;
+  error?: string;
+};
+
 export class ApiServiceRegistry {
-  routes: Map<string, any>;
-  services: Map<string, any>;
-  healthChecks: Map<string, any>;
+  // replace `any` with explicit types
+  routes: Map<string, RouteConfig>;
+  services: Map<string, ServiceConfig>;
+  healthChecks: Map<string, HealthCheckRecord>;
   constructor() {
     this.routes = new Map();
     this.services = new Map();
@@ -187,63 +226,63 @@ export class ApiServiceRegistry {
       port: 5434,
       host: 'localhost',
       type: 'database',
-      required: true
-      healthCheck: () => this.checkPort(5432)
+      required: true,
+      healthCheck: () => this.checkPort(5432),
     });
     this.services.set('redis', {
       name: 'Redis Cache',
       port: 6379,
       host: 'localhost',
       type: 'cache',
-      required: false
-      healthCheck: () => this.checkPort(6379)
+      required: false,
+      healthCheck: () => this.checkPort(6379),
     });
     this.services.set('ollama', {
       name: 'Ollama AI',
       port: 11434,
       host: 'localhost',
       type: 'ai',
-      required: true
-      healthCheck: () => this.checkHttp('http://localhost:11434/api/tags')
+      required: true,
+      healthCheck: () => this.checkHttp('http://localhost:11434/api/tags'),
     });
     this.services.set('qdrant', {
       name: 'Qdrant Vector DB',
       port: 6333,
       host: 'localhost',
       type: 'database',
-      required: false
-      healthCheck: () => this.checkHttp('http://localhost:6333/collections')
+      required: false,
+      healthCheck: () => this.checkHttp('http://localhost:6333/collections'),
     });
     this.services.set('minio', {
       name: 'MinIO Object Storage',
       port: 9000,
       host: 'localhost',
       type: 'storage',
-      required: false
-      healthCheck: () => this.checkHttp('http://localhost:9000/minio/health/live')
+      required: false,
+      healthCheck: () => this.checkHttp('http://localhost:9000/minio/health/live'),
     });
     this.services.set('enhanced_rag', {
       name: 'Enhanced RAG Service',
       port: 8094,
       host: 'localhost',
       type: 'microservice',
-      required: false
-      healthCheck: () => this.checkHttp('http://localhost:8094/health')
+      required: false,
+      healthCheck: () => this.checkHttp('http://localhost:8094/health'),
     });
     this.services.set('gpu_orchestrator', {
       name: 'GPU Orchestrator',
       port: 8095,
       host: 'localhost',
       type: 'microservice',
-      required: false
-      healthCheck: () => this.checkHttp('http://localhost:8095/health')
+      required: false,
+      healthCheck: () => this.checkHttp('http://localhost:8095/health'),
     });
   }
-  async checkPort(port, host = 'localhost', timeout = 5000) {
+  async checkPort(port: number, host = 'localhost', timeout = 5000): Promise<boolean> {
     return new Promise((resolve) => {
       const timeoutId = setTimeout(() => resolve(false), timeout);
       try {
-        const socket = new (require('net').Socket();
+        const socket = new Socket();
         socket.setTimeout(timeout);
         socket.on('connect', () => {
           clearTimeout(timeoutId);
@@ -260,14 +299,15 @@ export class ApiServiceRegistry {
           socket.destroy();
           resolve(false);
         });
-        socket.connect(port, host);
+        socket.connect({ port, host });
       } catch (e) {
         clearTimeout(timeoutId);
         resolve(false);
       }
     });
   }
-  async checkHttp(url, timeout = 5000) {
+  // add types to checkHttp
+  async checkHttp(url: string, timeout = 5000): Promise<boolean> {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -281,8 +321,8 @@ export class ApiServiceRegistry {
       return false;
     }
   }
-  async checkAllServices() {
-    const results = new Map();
+  async checkAllServices(): Promise<Map<string, ServiceCheckResult>> {
+    const results = new Map<string, ServiceCheckResult>();
     for (const [name, service] of this.services) {
       try {
         const isHealthy = await service.healthCheck();
@@ -290,51 +330,59 @@ export class ApiServiceRegistry {
           ...service,
           status: isHealthy ? 'healthy' : 'unhealthy',
           lastCheck: new Date().toISOString()
-        });
+        } as ServiceCheckResult);
       } catch (error) {
         results.set(name, {
           ...service,
           status: 'error',
-          error: error.message,
+          error: (error as Error).message,
           lastCheck: new Date().toISOString()
-        });
+        } as ServiceCheckResult);
       }
     }
     return results;
   }
-  getRoutesByService(serviceName) {
-    const routes = [];
+  getRoutesByService(serviceName: string): RouteConfig[] {
+    const routes: RouteConfig[] = [];
     for (const [routeName, config] of this.routes) {
       if (config.dependencies?.includes(serviceName)) {
-        routes.push({ name: routeName, ...config });
+        routes.push({ name: routeName, ...config } as RouteConfig);
       }
     }
     return routes;
   }
-  getRequiredServices() {
+  getRequiredServices(): ServiceConfig[] {
     return Array.from(this.services.values()).filter(service => service.required);
   }
-  getOptionalServices() {
+  getOptionalServices(): ServiceConfig[] {
     return Array.from(this.services.values()).filter(service => !service.required);
   }
-  getServiceDependencies(routeName) {
+  getServiceDependencies(routeName: string): ServiceConfig[] {
     const route = this.routes.get(routeName);
     if (!route?.dependencies) return [];
-    return route.dependencies.map(dep => this.services.get(dep)).filter(Boolean);
+    return route.dependencies.map(dep => this.services.get(dep)).filter(Boolean) as ServiceConfig[];
   }
   async validateApiRoutes() {
     const apiPath = './sveltekit-frontend/src/routes/api';
-    const results = {
+    const results: {
+      registered: string[];
+      existing: string[];
+      missing: string[];
+      extra: string[];
+      error?: string;
+    } = {
       registered: Array.from(this.routes.keys()),
       existing: [],
       missing: [],
-      extra: []
-    }
+      extra: [],
+    };
+
     if (!existsSync(apiPath)) {
-      return { ...results, error: 'API directory not found' }
+      return { ...results, error: 'API directory not found' };
     }
+
     // Scan existing API routes
-    const scanDir = (dir, prefix = '') => {
+    const scanDir = (dir: string, prefix = '') => {
       try {
         const entries = readdirSync(dir);
         for (const entry of entries) {
@@ -349,23 +397,29 @@ export class ApiServiceRegistry {
       } catch (error) {
         // Directory might not exist, skip
       }
-    }
+    };
     scanDir(apiPath);
-    // Find missing and extra routes
-    const registeredEndpoints = new Set();
+
+    // Build a set of registered endpoint paths (normalized)
+    const registeredEndpoints = new Set<string>();
     for (const config of this.routes.values()) {
-      config.endpoints.forEach(endpoint => {
+      (config.endpoints || []).forEach((endpoint: string) => {
         const routePath = endpoint.replace('/api', '').replace(/\[.*?\]/g, '[id]');
         registeredEndpoints.add(routePath);
       });
     }
-    results.missing = Array.from(registeredEndpoints).filter(endpoint =>
-      !results.existing.some(existing => existing === endpoint || existing.startsWith(endpoint)
+
+    // Missing: registered but not present on disk
+    results.missing = Array.from(registeredEndpoints).filter(
+      endpoint => !results.existing.some(existing => existing === endpoint || existing.startsWith(endpoint))
     );
-    results.extra = results.existing.filter(item => item.some)(registered =>
-        existing === registered || existing.startsWith((registered as string).split('/')[0])
-      )
+
+    // Extra: present on disk but not registered
+    results.extra = results.existing.filter(
+      existing =>
+        !Array.from(registeredEndpoints).some(endpoint => endpoint === existing || existing.startsWith(endpoint))
     );
+
     return results;
   }
   generateServiceReport() {

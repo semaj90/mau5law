@@ -5,7 +5,7 @@
 import { z } from 'zod';
 // import type { EvidenceMetadata } from '$lib/server/db/schema-unified-postgres.js'
 // Define EvidenceMetadata type locally since schema-unified-postgres doesn't exist
-type EvidenceMetadata = {
+export type EvidenceMetadata = {
   source?: string;
   type?: string;
   jurisdiction?: string;
@@ -30,6 +30,10 @@ type EvidenceMetadata = {
   channels?: number;
   wordCount?: number;
   characterCount?: number;
+  // --- Add: mock/error state fields for UI flexibility ---
+  mockData?: boolean;
+  error?: string;
+  fallbackMetadata?: Record<string, unknown>;
 };
 // File validation constants
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
@@ -135,7 +139,8 @@ export const imageMetadataSchema = z.object({
     width: z.number().int().positive(),
     height: z.number().int().positive(),
   }),
-  format: z.enum(['jpeg', 'png', 'gif', 'webp']),
+  // Allow 'unknown' here to match generateMetadataFromFile() and EvidenceMetadata type
+  format: z.enum(['jpeg', 'png', 'gif', 'webp', 'unknown']),
   hasAlphaChannel: z.boolean(),
   fileSize: z.number().optional(),
   colorSpace: z.string().optional(),
@@ -212,6 +217,15 @@ export function getFileTypeFromMime(mimeType: string): string {
   if (ALLOWED_TEXT_TYPES.includes(mimeType)) return 'TEXT';
   return 'UNKNOWN';
 }
+// Add: helper to derive image format from mime type (safe union, no casts)
+function getImageFormatFromMime(mime: string): 'jpeg' | 'png' | 'gif' | 'webp' | 'unknown' {
+  const subtype = (mime.split('/')[1] || '').toLowerCase();
+  if (subtype === 'jpeg' || subtype === 'jpg') return 'jpeg';
+  if (subtype === 'png') return 'png';
+  if (subtype === 'gif') return 'gif';
+  if (subtype === 'webp') return 'webp';
+  return 'unknown';
+}
 // Helper function to generate metadata based on file
 export async function generateMetadataFromFile(file: File, evidenceType: string): Promise<EvidenceMetadata> {
   const baseMetadata = {
@@ -234,7 +248,8 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
           resolve({
             kind: 'IMAGE',
             resolution: { width: img.width, height: img.height },
-            format: file.type.split('/')[1] as ImageMetadata['format'], // Fix: Specific type assertion
+            // Use helper instead of casting string[] to the union type
+            format: getImageFormatFromMime(file.type),
             hasAlphaChannel: file.type === 'image/png' || file.type === 'image/gif',
             ...baseMetadata,
           } as EvidenceMetadata);
@@ -243,7 +258,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
           resolve({
             kind: 'IMAGE',
             resolution: { width: 0, height: 0 },
-            format: 'unknown' as ImageMetadata['format'], // Fix: Specific type assertion
+            format: 'unknown',
             hasAlphaChannel: false,
             ...baseMetadata,
           } as EvidenceMetadata);
@@ -334,13 +349,13 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
 }
 // Form validation messages
 export const validationMessages = {
-  case_id: 'Please select a case for this evidence',
+  case_id: 'Please select a valid case',
   title: 'Evidence title is required',
   evidence_type: 'Please select the type of evidence',
   file: 'Please select a file to upload',
   file_size: `File size must be less than ${MAX_FILE_SIZE / 1024 / 1024}MB`,
-  file_type: 'File type is not supported for the selected evidence type'
-}
+  file_type: 'File type is not supported for the selected evidence type',
+};
 // Export types for use in components
 export type EvidenceUploadData = z.infer<typeof evidenceUploadSchema>;
 export type EnhancedEvidenceUploadData = z.infer<typeof enhancedEvidenceUploadSchema>;

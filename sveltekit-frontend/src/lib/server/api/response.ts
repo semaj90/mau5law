@@ -2,11 +2,11 @@
 // Production-ready response patterns with comprehensive error handling
 import { json, type RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
-import type { ApiResponse, ApiError } from '../../types/api.js';
+import type { ApiError } from '../../types/api.js';
 import type { APIResponse as UnifiedAPIResponse } from '$lib/types';
-import path from 'path';
+
 // Standard response interface
-export interface StandardApiResponse<T = any> {
+export interface StandardApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: ApiError;
@@ -21,20 +21,21 @@ export interface StandardApiResponse<T = any> {
       total: number;
       hasNext: boolean;
       hasPrev: boolean;
-    }
-  }
+    };
+    mockData?: boolean;
+  };
 }
 // Enhanced error class for API errors
 export class ApiErrorClass extends Error {
   public readonly code: string;
   public readonly statusCode: number;
-  public readonly details?: { [key: string]: any }
+  public readonly details?: Record<string, unknown>;
   public readonly timestamp: Date;
   constructor(
     message: string,
     code: string = 'UNKNOWN_ERROR',
     statusCode: number = 500,
-    details?: { [key: string]: any }
+    details?: Record<string, unknown>,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -49,7 +50,7 @@ export function apiSuccess<T>(
   data: T,
   requestId: string = generateRequestId(),
   processingTime: number = 0,
-  pagination?: StandardApiResponse<T>['meta']['pagination']
+  pagination?: StandardApiResponse<T>['meta']['pagination'],
 ): Response {
   const response: StandardApiResponse<T> = {
     success: true,
@@ -59,16 +60,16 @@ export function apiSuccess<T>(
       requestId,
       processingTime,
       version: '2.0',
-      ...(pagination && { pagination })
-    }
-  }
+      ...(pagination && { pagination }),
+    },
+  };
   return json(response);
 }
 // Error response builder
 export function apiError(
   error: ApiErrorClass | Error | string,
   requestId: string = generateRequestId(),
-  processingTime: number = 0
+  processingTime: number = 0,
 ): Response {
   let apiErrorData: ApiError;
   let statusCode = 500;
@@ -77,28 +78,28 @@ export function apiError(
       code: error.code,
       message: error.message,
       details: error.details,
-      timestamp: error.timestamp
-    }
+      timestamp: error.timestamp,
+    };
     statusCode = error.statusCode;
   } else if (error instanceof Error) {
     apiErrorData = {
       code: 'INTERNAL_ERROR',
       message: error.message,
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    };
   } else {
     apiErrorData = {
       code: 'UNKNOWN_ERROR',
       message: typeof error === 'string' ? error : 'Unknown error occurred',
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    };
   }
   // Add fallback data for legal API endpoints
-  const response: StandardApiResponse<any> = {
+  const response: StandardApiResponse<unknown> = {
     success: false,
     error: {
       ...apiErrorData,
-      message: 'failure default to mock'
+      message: 'failure default to mock',
     },
     data: generateMockFallbackData(apiErrorData.code),
     meta: {
@@ -106,71 +107,72 @@ export function apiError(
       requestId,
       processingTime,
       version: '2.0',
-      mockData: true
-    }
-  }
+      mockData: true,
+    },
+  };
   return json(response, { status: statusCode });
 }
 // Validation error response
 export function validationError(
   validationResult: z.ZodError,
   requestId: string = generateRequestId(),
-  processingTime: number = 0
+  processingTime: number = 0,
 ): Response {
-  const details = validationResult.errors.reduce((acc, err) => {
+  const details = validationResult.errors.reduce(
+    (acc, err) => {
       const path = err.path.join('.');
       acc[path] = err.message;
       return acc;
     },
-    {} as Record<string, string>
+    {} as Record<string, string>,
   );
   const apiErr = new ApiErrorClass('Validation failed', 'VALIDATION_ERROR', 400, {
-    fields: details
+    fields: details,
   });
   return apiError(apiErr, requestId, processingTime);
 }
 // --- Unified Builders (Lightweight wrappers aligned with new shared types) ---
 export function buildSuccessResponse<T>(
   data: T,
-  metadata: { processingTimeMs: number; requestId: string }
+  metadata: { processingTimeMs: number; requestId: string },
 ): UnifiedAPIResponse {
   return {
     success: true,
     data,
-    metadata: { ...metadata, timestamp: new Date().toISOString() }
-  }
+    metadata: { ...metadata, timestamp: new Date().toISOString() },
+  };
 }
 export function buildErrorResponse(
   code: string,
   message: string,
-  metadata: { processingTimeMs: number; requestId: string }
+  metadata: { processingTimeMs: number; requestId: string },
 ): UnifiedAPIResponse {
   return {
     success: false,
     error: { code, message },
-    metadata: { ...metadata, timestamp: new Date().toISOString() }
+    metadata: { ...metadata, timestamp: new Date().toISOString() },
   } as UnifiedAPIResponse;
 }
-export function buildFormSubmissionResult<T>(
-  result: any,
-  metadata: { processingTimeMs: number; requestId: string }
-): any {
+export function buildFormSubmissionResult(
+  result: unknown,
+  metadata: { processingTimeMs: number; requestId: string },
+): unknown {
   return {
-    ...result,
-    metadata: { ...metadata, timestamp: new Date().toISOString() }
-  }
+    ...(result as Record<string, unknown>),
+    metadata: { ...metadata, timestamp: new Date().toISOString() },
+  };
 }
 // Request ID generator
 function generateRequestId(): string {
   return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 // Generate mock fallback data based on error context
-function generateMockFallbackData(errorCode: string): any {
+function generateMockFallbackData(errorCode: string): unknown {
   const baseData = {
     mockData: true,
     fallbackReason: 'Service temporarily unavailable',
-    timestamp: new Date().toISOString()
-  }
+    timestamp: new Date().toISOString(),
+  };
   // Context-aware mock data generation
   switch (errorCode) {
     case 'DATABASE_ERROR':
@@ -187,8 +189,8 @@ function generateMockFallbackData(errorCode: string): any {
             priority: 'medium',
             createdBy: 'mock-user',
             createdAt: new Date(Date.now() - 86400000).toISOString(),
-            updatedAt: new Date().toISOString()
-          }
+            updatedAt: new Date().toISOString(),
+          },
         ],
         evidence: [
           {
@@ -197,17 +199,17 @@ function generateMockFallbackData(errorCode: string): any {
             description: 'Mock evidence provided during service fallback',
             evidenceType: 'document',
             analyzed: false,
-            dateCreated: new Date().toISOString()
-          }
+            dateCreated: new Date().toISOString(),
+          },
         ],
         pagination: {
           page: 1,
           limit: 50,
           total: 1,
           hasNext: false,
-          hasPrev: false
-        }
-      }
+          hasPrev: false,
+        },
+      };
     case 'NOT_FOUND':
       return {
         ...baseData,
@@ -216,31 +218,31 @@ function generateMockFallbackData(errorCode: string): any {
             id: 'mock-suggestion-1',
             title: 'Similar Legal Case',
             description: 'Mock suggestion for similar case',
-            relevance: 0.75
-          }
-        ]
-      }
+            relevance: 0.75,
+          },
+        ],
+      };
     case 'UNAUTHORIZED':
     case 'FORBIDDEN':
       return {
         ...baseData,
         demoMode: true,
         availableFeatures: ['case-viewing', 'evidence-browsing'],
-        restrictedFeatures: ['case-creation', 'evidence-upload', 'ai-analysis']
-      }
+        restrictedFeatures: ['case-creation', 'evidence-upload', 'ai-analysis'],
+      };
     default:
       return baseData;
   }
 }
 // API wrapper function for consistent error handling
 export async function withApiHandler<T>(
-  handler: (_event: RequestEvent) => Promise<T>,
-  event: RequestEvent
+  handler: (event: RequestEvent) => Promise<T>,
+  event: RequestEvent,
 ): Promise<Response> {
   const startTime = Date.now();
   const requestId = generateRequestId();
   // Add request ID to locals for tracking
-  (event.locals as any).requestId = requestId;
+  (event.locals as { requestId?: string }).requestId = requestId;
   try {
     const result = await handler(event);
     const processingTime = Date.now() - startTime;
@@ -250,7 +252,7 @@ export async function withApiHandler<T>(
     }
     // Otherwise wrap the result in a standard success response
     return apiSuccess(result, requestId, processingTime);
-  } catch (error: any) {
+  } catch (error) {
     const processingTime = Date.now() - startTime;
     // Log error for monitoring
     console.error(`API Error [${requestId}]:`, {
@@ -258,20 +260,18 @@ export async function withApiHandler<T>(
       stack: error instanceof Error ? error.stack : undefined,
       url: event.url.pathname,
       method: event.request.method,
-      processingTime
+      processingTime,
     });
     return apiError(error as Error, requestId, processingTime);
   }
 }
 // Common API errors
 export const CommonErrors = {
-  NotFound: (resource: string) =>
-    new ApiErrorClass(`${resource} not found`, 'NOT_FOUND', 404),
+  NotFound: (resource: string) => new ApiErrorClass(`${resource} not found`, 'NOT_FOUND', 404),
   Unauthorized: (message = 'Unauthorized access') =>
     new ApiErrorClass(message, 'UNAUTHORIZED', 401),
-  Forbidden: (message = 'Access forbidden') =>
-    new ApiErrorClass(message, 'FORBIDDEN', 403),
-  BadRequest: (message: string, details?: { [key: string]: any }) =>
+  Forbidden: (message = 'Access forbidden') => new ApiErrorClass(message, 'FORBIDDEN', 403),
+  BadRequest: (message: string, details?: Record<string, unknown>) =>
     new ApiErrorClass(message, 'BAD_REQUEST', 400, details),
   InternalError: (message = 'Internal server error') =>
     new ApiErrorClass(message, 'INTERNAL_ERROR', 500),
@@ -279,30 +279,30 @@ export const CommonErrors = {
     new ApiErrorClass(`${service} is currently unavailable`, 'SERVICE_UNAVAILABLE', 503),
   RateLimited: (message = 'Rate limit exceeded') =>
     new ApiErrorClass(message, 'RATE_LIMITED', 429),
-  DatabaseError: (operation: string, details?: any) =>
+  DatabaseError: (operation: string, details?: unknown) =>
     new ApiErrorClass(
       `Database operation failed: ${operation}`,
       'DATABASE_ERROR',
       500,
-      details
+      details as Record<string, unknown>,
     ),
   ValidationFailed: (field: string, reason: string) =>
     new ApiErrorClass(
       `Validation failed for field '${field}': ${reason}`,
       'VALIDATION_ERROR',
       400,
-      { field, reason }
-    )
+      { field, reason },
+    ),
 } as const;
 // Type-safe request body parser with validation
 export async function parseRequestBody<T>(
   request: Request,
-  schema: z.ZodSchema<T>
+  schema: z.ZodSchema<T>,
 ): Promise<T> {
   try {
     const body = await request.json();
     return schema.parse(body);
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof z.ZodError) {
       throw error; // Let the caller handle validation errors
     }
@@ -320,6 +320,6 @@ export function createPagination(page: number, limit: number, total: number) {
     total,
     hasNext,
     hasPrev,
-    offset
-  }
+    offset,
+  };
 }

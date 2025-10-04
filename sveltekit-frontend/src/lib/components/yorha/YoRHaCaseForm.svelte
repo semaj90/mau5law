@@ -4,7 +4,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
 <!-- Enhanced YoRHa Case Creation Form with Superforms + XState Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, createEventDispatcher } from "svelte";
   import { createCaseCreationForm, FormStatePersistence, FORM_STORAGE_KEYS } from '$lib/forms/superforms-xstate-integration';
   import { enhancedCaseAPI } from '$lib/api/enhanced-case-api';
   import { goto } from '$app/navigation';
@@ -30,11 +30,20 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Infer the type from the Zod schema
   type CaseCreationSchemaType = z.infer<typeof CaseCreationSchema>;
 
-  // Initialize form state persistence
-  const formStatePersistence = new FormStatePersistence(FORM_STORAGE_KEYS.CASE_CREATION);
-  // Use Svelte 5 runes: destructure props via $props()
-  // typed optional prop for the ondispatch callback
-  let { ondispatch = undefined }: { ondispatch?: (payload: Record<string, unknown>) => void } = $props();
+  // Handles saving and loading of case form state to local storage for draft persistence
+  // typed optional prop for the onDispatch callback (exported prop)
+  /**
+   * Optional callback prop for parent components to receive form state updates and events.
+   *
+   * @param payload - An object containing state and/or context information, e.g.:
+   *   { state: string, context?: unknown }
+   *   or for success: { caseItem: unknown }
+   *   or for error: { message: string }
+   *
+   * Usage: <YoRHaCaseForm onDispatch={(payload) => { ... }} />
+   */
+  // Svelte 5 runes: use $props() instead of `export let`
+  const { onDispatch } = $props<{ onDispatch?: (payload: Record<string, unknown>) => void }>();
 
   // --- Move declaration of formIntegration before derived usages to avoid "used before its declaration" ---
   // Minimal typing for the form integration used by the template
@@ -53,7 +62,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Form integration state
   let currentStep = $state(0);
   let totalSteps = $state(3); // Basic Info, Legal Details, Review
-  let unsubscribe = $state<(() => void) | null>(null);
+  // subscription cleanup function
+  let unsubscribe: (() => void) | null = null;
 
   // Derived reactive sources (use formIntegration now that it's declared)
   let formState = $derived(formIntegration ? formIntegration.state.get?.() ?? 'idle' : 'idle');
@@ -73,6 +83,13 @@ https://svelte.dev/e/rune_missing_parentheses -->
 
   // Derived variable for form errors to resolve JSON.stringify type issues
   let formErrors: ValidationErrors<CaseCreationSchemaType> = $derived(formIntegration ? get(formIntegration.form.errors) : {});
+
+  // Instantiate persistence helper for draft autosave/load.
+  // Use known key from FORM_STORAGE_KEYS if available, otherwise fall back to a safe default.
+  // Use the single, exported key that exists on FORM_STORAGE_KEYS.
+  // Optional chaining + nullish coalescing keeps this safe at runtime and satisfies TS types.
+  const STORAGE_KEY = FORM_STORAGE_KEYS?.CASE_CREATION ?? 'yorha:case:creation';
+  const formStatePersistence = new FormStatePersistence(STORAGE_KEY);
 
   // Initialize form integration on mount
   $effect(() => {
@@ -104,7 +121,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
 
     // Subscribe to state changes for debugging and events
     unsubscribe = formIntegration.state.subscribe((state: string) => {
-      ondispatch?.({
+      onDispatch?.({
         state,
         context: formIntegration?.context.get?.()
       });
@@ -141,7 +158,9 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Success handler
   function handleFormSuccess(result: unknown) {
     console.log('🎉 Form submission successful:', result);
-    ondispatch?.({ caseItem: result });
+    onDispatch?.({ caseItem: result });
+    // emit typed success event for parent components
+    dispatch('success', { ca: { title: (result as any)?.title, caseNumber: (result as any)?.caseNumber } });
     // Clear saved draft
     formStatePersistence.clear();
     // Navigate to the new case
@@ -156,7 +175,9 @@ https://svelte.dev/e/rune_missing_parentheses -->
       error && typeof error === 'object' && 'message' in error
         ? (error as any).message
         : String(error ?? 'Case creation failed');
-    ondispatch?.({ message });
+    onDispatch?.({ message });
+    // emit typed error event
+    dispatch('error', { message });
   }
   // Step navigation
   function nextStep() {
@@ -181,6 +202,17 @@ https://svelte.dev/e/rune_missing_parentheses -->
 
   // --- Removed: duplicate incorrect declaration ---
   // --- Added: minimal typing for the form integration used by the template ---
+  // Expose typed events to parents (Svelte 5 $events rune)
+  // success -> payload: { ca: { title?: string; caseNumber?: string } }
+  // error   -> payload: { message: string }
+  // close   -> no payload (void)
+  type CaseCreatedEventDetail = { ca: { title?: string; caseNumber?: string } };
+  // typed event dispatcher (replaces illegal $events usage)
+  const dispatch = createEventDispatcher<{
+    success: CaseCreatedEventDetail;
+    error: { message: string };
+    close: void;
+  }>();
 </script>
 <!-- Enhanced Multi-Step YoRHa Styled Form -->
 {#if formIntegration}
@@ -501,7 +533,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         <div class="final-actions flex space-x-4">
           <button
             type="button"
-            onclick={() => { /* cancelled by user — no-op */ }}
+            onclick={() => { dispatch('close'); }}
             disabled={isSubmitting}
             class="cancel-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
