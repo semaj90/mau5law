@@ -1,7 +1,10 @@
 <script lang="ts">
-  import DropdownMenu from 'bits-ui';
-  // bits-ui does not export a named DropdownMenuItem; extract the Item component from the default export at runtime
-  const DropdownMenuItem = (DropdownMenu as any).Item;
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+  let ItemCtor: any = null;
+  (async () => {
+    const ns = await getBitsNamespace();
+    ItemCtor = ns.DropdownMenu?.Item ?? ns.DropdownMenuItem ?? ns.Item ?? ns;
+  })();
 
   import { cn } from '$lib/utils';
 
@@ -36,7 +39,7 @@
 </script>
 
 {#if href}
-  <DropdownMenuItem asChild>
+  <svelte:component this={ItemCtor} asChild>
     <a
       href={href}
       class={itemClasses}
@@ -46,9 +49,9 @@
     >
       <slot />
     </a>
-  </DropdownMenuItem>
+  </svelte:component>
 {:else}
-  <DropdownMenuItem class={itemClasses} {disabled} onSelect={onselect} {...$$restProps}>
+  <svelte:component this={ItemCtor} class={itemClasses} {disabled} onSelect={onselect} {...$$restProps}>
     <button
       type="button"
       class="flex w-full items-center gap-2 text-left"
@@ -57,5 +60,5 @@
     >
       <slot />
     </button>
-  </DropdownMenuItem>
+  </svelte:component>
 {/if}

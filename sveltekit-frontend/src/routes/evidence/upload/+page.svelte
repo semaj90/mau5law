@@ -18,8 +18,15 @@
 
   import 'nes.css/css/nes.min.css';
   import 'uno.css';
-  import 'bits-ui/dist/enhanced-bits-ui.css';
-  import 'bits-ui/tooltip.css';
+  // bits-ui package sometimes misses the dist CSS file in some installs.
+  // Use a local shim to avoid build-time specifier errors while preserving layout.
+  import '$lib/styles/enhanced-bits-ui.css';
+
+  import { onMount, onDestroy } from 'svelte';
+  onMount(() => {
+    // runtime dynamic import; non-blocking and safe if package is missing
+    void import('bits-ui/tooltip.css').catch(() => {});
+  });
 
   let { data }: { data: PageData } = $props();
 
@@ -28,10 +35,11 @@
     resetForm: false
   });
 
-  let selectedFile: File | null = null;
-  let filePreview: string | null = null;
-  let dragOver = false;
-  let metadata: EvidenceMetadata | null = null;
+  // Svelte 5 reactive state wrappers so updates correctly trigger reactivity
+  let selectedFile = $state<File | null>(null);
+  let filePreview = $state<string | null>(null);
+  let dragOver = $state<boolean>(false);
+  let metadata = $state<EvidenceMetadata | null>(null);
 
   function updateFileError(msg: string | null) {
     errors.update(errs => {
@@ -42,6 +50,10 @@
   }
 
   async function handleFileSelect(file: File) {
+    // revoke previous preview if present
+    if (filePreview) {
+      try { URL.revokeObjectURL(filePreview); } catch { /* ignore */ }
+    }
     selectedFile = file;
     if (!validateFileSize(file)) {
       updateFileError('File size exceeds allowed limit');
@@ -99,6 +111,14 @@
     const file = e.dataTransfer?.files?.[0];
     if (file) handleFileSelect(file);
   }
+
+  // Revoke preview when user removes file or component is destroyed
+  onDestroy(() => {
+    if (filePreview) {
+      try { URL.revokeObjectURL(filePreview); } catch {}
+      filePreview = null;
+    }
+  });
 
   function hasError(field: string) {
     const e = get(errors) as any;

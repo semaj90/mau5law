@@ -8,7 +8,7 @@
     variant = 'default',
     class: className = '',
     children,
-    ...restProp;
+    ...restProps
   }: Props = $props();
   const variants = {
     default: 'bg-background text-foreground',

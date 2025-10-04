@@ -139,7 +139,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
 
   // Service health summary
   const healthyServices = serviceStatus.filter(
-    result => result.status === 'fulfilled' && ['healthy', 'no-http'].includes((result as any).value?.status)
+    result => result.status === 'fulfilled' && ['healthy', 'no-http'].includes(result.value.status)
   ).length;
 
   return {
@@ -163,9 +163,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
         last_updated: new Date().toISOString(),
       },
       services: serviceStatus.map(result =>
-        (result as any).status === 'fulfilled'
-          ? (result as any).value
-          : { name: 'Unknown', status: 'error', error: (result as any).reason }
+        result.status === 'fulfilled' ? result.value : { name: 'Unknown', status: 'error', error: result.reason }
       ),
       performance: {
         cpu_usage: Math.round(process.cpuUsage().user / 1000000),

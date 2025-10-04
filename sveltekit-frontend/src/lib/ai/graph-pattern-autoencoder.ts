@@ -21,7 +21,7 @@ import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
 import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.server.js';
-}
+
 export interface AutoEncoderConfig {
   inputDimension: number;
   hiddenLayers: number[];
@@ -45,7 +45,8 @@ export interface GraphNode {
     jurisdiction?: string;
     importance?: number;
     timestamp?: number;
-    [key: string]: any;
+    // Replaced `any` with a constrained union to avoid unexpected any while allowing practical values.
+    [key: string]: string | number | boolean | undefined;
   }
 }
 export interface GraphEdge {
@@ -54,7 +55,8 @@ export interface GraphEdge {
   target: string;
   type: 'cites' | 'references' | 'influenced_by' | 'related_to' | 'conflicts_with';
   weight: number;
-  metadata: { [key: string]: any }
+  // Replaced `any` with a constrained union type
+  metadata: { [key: string]: string | number | boolean | undefined }
 }
 export interface GraphData {
   nodes: GraphNode[];
@@ -106,16 +108,39 @@ export interface AutoEncoderTrainingMetrics {
   gpuUtilization: number;
   processingTime: number;
 }
+
+// Add a typed cache interface to avoid `any`
+type CacheLike = {
+  get?: <T = unknown>(key: string) => Promise<T | undefined> | T | undefined;
+  read?: <T = unknown>(key: string) => Promise<T | undefined> | T | undefined;
+  fetch?: <T = unknown>(key: string) => Promise<T | undefined> | T | undefined;
+  getItem?: <T = unknown>(key: string) => Promise<T | undefined> | T | undefined;
+  retrieve?: <T = unknown>(key: string) => Promise<T | undefined> | T | undefined;
+  set?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  write?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  put?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  setItem?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  store?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
+  cleanup?: () => void | Promise<void>;
+};
+
 export class GraphPatternAutoEncoder {
   private config: AutoEncoderConfig;
-  private encoder: any = null;
-  private decoder: any = null;
-  private autoencoder: any = null;
+  private encoder: LayersModel | null = null;
+  private decoder: LayersModel | null = null;
+  private autoencoder: LayersModel | null = null;
   private isInitialized = false;
   private trainingHistory: AutoEncoderTrainingMetrics[] = [];
   private gpuBackend: 'webgl' | 'webgpu' | 'cpu' = 'cpu';
   private cache: MultiLayerCache | null = null;
-  private rlCache = reinforcementLearningCache;
+  // typed view of the cache to avoid `any`
+  private cacheLike: CacheLike | null = null;
+  // Define a small typed surface for the RL cache to avoid `any`
+  private rlCache: {
+    initialize?: () => Promise<void>;
+    set?: (key: string, value: unknown) => Promise<void> | void;
+    getStats?: () => Record<string, unknown> | undefined;
+  } | null = null;
   private patternLibrary = new Map<string, EncodedGraphPattern>();
   constructor(config: Partial<AutoEncoderConfig> = {}) {
     this.config = {
@@ -125,21 +150,56 @@ export class GraphPatternAutoEncoder {
       learningRate: 0.001,
       batchSize: 32,
       epochs: 100,
-      enableGPU: true
+      enableGPU: true,
       compressionTarget: 0.1,
-      enableNormalization: true
-      enableDropout: true
+      enableNormalization: true,
+      enableDropout: true,
       dropoutRate: 0.2,
       ...config
-    }
+    };
     this.initializeCache();
   }
   private async initializeCache() {
     try {
       this.cache = new MultiLayerCache();
-      await this.rlCache.initialize();
+      // Populate the typed cacheLike from the concrete cache (avoid `any`)
+      this.cacheLike = (this.cache as unknown) as CacheLike;
+      // Assign imported cache to typed rlCache and call initialize safely if available
+      this.rlCache = (reinforcementLearningCache as unknown) as typeof this.rlCache;
+      if (this.rlCache?.initialize && typeof this.rlCache.initialize === 'function') {
+        await this.rlCache.initialize();
+      }
     } catch (error) {
       console.warn('Failed to initialize auto-encoder cache:', error);
+    }
+  }
+
+  // Added: safe cache access helpers to accommodate different MultiLayerCache APIs
+  private async cacheGet<T>(key: string): Promise<T | undefined> {
+    if (!this.cache) return undefined;
+    const c = this.cacheLike ?? ((this.cache as unknown) as CacheLike);
+    if (!c) return undefined;
+    // Try common method names used by various cache implementations
+    if (typeof c.get === 'function') return await Promise.resolve(c.get<T>(key));
+    if (typeof c.read === 'function') return await Promise.resolve(c.read<T>(key));
+    if (typeof c.fetch === 'function') return await Promise.resolve(c.fetch<T>(key));
+    if (typeof c.getItem === 'function') return await Promise.resolve(c.getItem<T>(key));
+    if (typeof c.retrieve === 'function') return await Promise.resolve(c.retrieve<T>(key));
+    return undefined;
+  }
+
+  private async cacheSet<T>(key: string, value: T, opts?: Record<string, unknown>): Promise<void> {
+    if (!this.cache) return;
+    const c = this.cacheLike ?? ((this.cache as unknown) as CacheLike);
+    if (!c) return;
+    if (typeof c.set === 'function') { await Promise.resolve(c.set<T>(key, value, opts)); return; }
+    if (typeof c.write === 'function') { await Promise.resolve(c.write<T>(key, value, opts)); return; }
+    if (typeof c.put === 'function') { await Promise.resolve(c.put<T>(key, value, opts)); return; }
+    if (typeof c.setItem === 'function') { await Promise.resolve(c.setItem<T>(key, value, opts)); return; }
+    if (typeof c.store === 'function') { await Promise.resolve(c.store<T>(key, value, opts)); return; }
+    // Fallback: mirror into RL cache if available (handle sync or Promise)
+    if (this.rlCache && typeof this.rlCache.set === 'function') {
+      await Promise.resolve(this.rlCache.set(key, value));
     }
   }
   async initialize(): Promise<void> {
@@ -178,99 +238,75 @@ export class GraphPatternAutoEncoder {
   }
   private buildAutoEncoderArchitecture(): void {
     // Build Encoder
-    const encoderInputs = layers.input({ shape: [this.config.inputDimension] });
-    let encoderLayer = encoderInputs;
+    const encoderInputs = layers.input({ shape: [this.config.inputDimension] }) as SymbolicTensor;
+    let encoderLayer: SymbolicTensor = encoderInputs;
     // Encoder hidden layers
     for (let i = 0; i < this.config.hiddenLayers.length; i++) {
       const units = this.config.hiddenLayers[i];
       // Dense layer
-      encoderLayer = layers;
-        .dense({
-          units,
-          activation: this.config.activationFunction,
-          kernelInitializer: 'glorotUniform',
-          biasInitializer: 'zeros',
-          name: `encoder_dense_${i}`
-        })
-        .apply(encoderLayer) as any;
+      encoderLayer = (layers.dense({
+        units,
+        activation: this.config.activationFunction,
+        kernelInitializer: 'glorotUniform',
+        biasInitializer: 'zeros',
+        name: `encoder_dense_${i}`
+      }).apply(encoderLayer) as SymbolicTensor);
       // Batch normalization
       if (this.config.enableNormalization) {
-        encoderLayer = layers;
-          .batchNormalization({
-            name: `encoder_bn_${i}`
-          })
-          .apply(encoderLayer) as any;
+        encoderLayer = (layers.batchNormalization({ name: `encoder_bn_${i}` }).apply(encoderLayer) as SymbolicTensor);
       }
       // Dropout
       if (this.config.enableDropout && i < this.config.hiddenLayers.length - 1) {
-        encoderLayer = layers;
-          .dropout({
-            rate: this.config.dropoutRate,
-            name: `encoder_dropout_${i}`
-          })
-          .apply(encoderLayer) as any;
+        encoderLayer = (layers.dropout({ rate: this.config.dropoutRate, name: `encoder_dropout_${i}` }).apply(encoderLayer) as SymbolicTensor);
       }
     }
     // Create encoder model
     this.encoder = model({
-      inputs: encoderInputs
-      outputs: encoderLayer;
+      inputs: encoderInputs,
+      outputs: encoderLayer,
       name: 'graph_pattern_encoder'
-    });
+    }) as LayersModel;
     // Build Decoder
     const latentDim = this.config.hiddenLayers[this.config.hiddenLayers.length - 1];
-    const decoderInputs = layers.input({ shape: [latentDim] });
-    let decoderLayer = decoderInputs;
+    const decoderInputs = layers.input({ shape: [latentDim] }) as SymbolicTensor;
+    let decoderLayer: SymbolicTensor = decoderInputs;
     // Decoder hidden layers (reverse of encoder)
     const decoderLayers = [...this.config.hiddenLayers].reverse().slice(1);
     for (let i = 0; i < decoderLayers.length; i++) {
       const units = decoderLayers[i];
-      decoderLayer = layers;
-        .dense({
-          units,
-          activation: this.config.activationFunction,
-          kernelInitializer: 'glorotUniform',
-          biasInitializer: 'zeros',
-          name: `decoder_dense_${i}`
-        })
-        .apply(decoderLayer) as any;
+      decoderLayer = (layers.dense({
+        units,
+        activation: this.config.activationFunction,
+        kernelInitializer: 'glorotUniform',
+        biasInitializer: 'zeros',
+        name: `decoder_dense_${i}`
+      }).apply(decoderLayer) as SymbolicTensor);
       if (this.config.enableNormalization) {
-        decoderLayer = layers;
-          .batchNormalization({
-            name: `decoder_bn_${i}`
-          })
-          .apply(decoderLayer) as any;
+        decoderLayer = (layers.batchNormalization({ name: `decoder_bn_${i}` }).apply(decoderLayer) as SymbolicTensor);
       }
       if (this.config.enableDropout && i < decoderLayers.length - 1) {
-        decoderLayer = layers;
-          .dropout({
-            rate: this.config.dropoutRate,
-            name: `decoder_dropout_${i}`
-          })
-          .apply(decoderLayer) as any;
+        decoderLayer = (layers.dropout({ rate: this.config.dropoutRate, name: `decoder_dropout_${i}` }).apply(decoderLayer) as SymbolicTensor);
       }
     }
     // Final decoder layer to original input dimension
-    decoderLayer = layers;
-      .dense({
-        units: this.config.inputDimension,
-        activation: 'sigmoid', // Output between 0 and 1;
-        name: 'decoder_output'
-      })
-      .apply(decoderLayer) as any;
+    decoderLayer = (layers.dense({
+      units: this.config.inputDimension,
+      activation: 'sigmoid', // Output between 0 and 1
+      name: 'decoder_output'
+    }).apply(decoderLayer) as SymbolicTensor);
     // Create decoder model
     this.decoder = model({
-      inputs: decoderInputs
-      outputs: decoderLayer;
+      inputs: decoderInputs,
+      outputs: decoderLayer,
       name: 'graph_pattern_decoder'
-    });
+    }) as LayersModel;
     // Build complete autoencoder
-    const autoencoderOutput = this.decoder.apply(this.encoder.apply(encoderInputs)) as any;
+    const autoencoderOutput = this.decoder.apply(this.encoder.apply(encoderInputs)) as SymbolicTensor;
     this.autoencoder = model({
-      inputs: encoderInputs
-      outputs: autoencoderOutput;
+      inputs: encoderInputs,
+      outputs: autoencoderOutput,
       name: 'graph_pattern_autoencoder'
-    });
+    }) as LayersModel;
     // Compile with custom loss function
     this.autoencoder.compile({
       optimizer: train.adam(this.config.learningRate),
@@ -284,31 +320,29 @@ export class GraphPatternAutoEncoder {
       `Compression ratio: ${((latentDim / this.config.inputDimension) * 100).toFixed(1)}%`
     );
   }
-  private customGraphLoss = (yTrue: any, yPred: any): any => {
+  private customGraphLoss = (yTrue: Tensor, yPred: Tensor): Tensor => {
     // Standard MSE loss
-    const mse = mean(square(sub(yTrue, yPred));
+    const mse = mean(square(sub(yTrue, yPred))) as Tensor;
     // Legal consistency loss
     const legalLoss = this.calculateLegalConsistencyLoss(yTrue, yPred);
     // Combine losses
-    const totalLoss = mul(mse, 0.8).add(mul(legalLoss, 0.2);
+    const totalLoss = (mul(mse, 0.8).add(mul(legalLoss, 0.2))) as Tensor;
     return totalLoss;
   }
-  private calculateLegalConsistencyLoss(yTrue: any, yPred: any): any {
+  private calculateLegalConsistencyLoss(yTrue: Tensor, yPred: Tensor): Tensor {
     // Simplified legal consistency - encourage similar patterns for similar legal concepts
-    const diff = sub(yTrue, yPred);
-    const squaredDiff = square(diff);
+    const diff = sub(yTrue, yPred) as Tensor;
+    const squaredDiff = square(diff) as Tensor;
     // Weight certain dimensions more heavily (e.g., legal importance features)
     const weights = tensor1d(
-      Array(this.config.inputDimension)
-        .fill(0);
-        .map((_, i) => {
-          if (i < this.config.inputDimension * 0.2) return 1.5; // Legal importance features
-          if (i < this.config.inputDimension * 0.4) return 1.2; // Citation features
-          return 1.0; // Other features
-        })
+      Array.from({ length: this.config.inputDimension }, (_, i) => {
+        if (i < this.config.inputDimension * 0.2) return 1.5; // Legal importance features
+        if (i < this.config.inputDimension * 0.4) return 1.2; // Citation features
+        return 1.0; // Other features
+      })
     );
-    const weightedDiff = mul(squaredDiff, expandDims(weights, 0);
-    return mean(weightedDiff);
+    const weightedDiff = mul(squaredDiff, expandDims(weights, 0)) as Tensor;
+    return mean(weightedDiff) as Tensor;
   }
   async encodeGraphPattern(graphData: GraphData): Promise<EncodedGraphPattern> {
     if (!this.isInitialized || !this.encoder) {
@@ -317,7 +351,7 @@ export class GraphPatternAutoEncoder {
     const cacheKey = `graph_encode_${this.generateGraphSignature(graphData)}`;
     // Check cache first
     if (this.cache) {
-      const cached = await this.cache.get<EncodedGraphPattern>(cacheKey);
+      const cached = await this.cacheGet<EncodedGraphPattern>(cacheKey);
       if (cached) {
         console.log('Auto-Encoder: Using cached encoding');
         return cached;
@@ -328,7 +362,7 @@ export class GraphPatternAutoEncoder {
     const graphFeatures = this.graphToFeatureVector(graphData);
     const inputTensor = tensor2d([graphFeatures]);
     // Encode with GPU acceleration
-    const encoded = this.encoder.predict(inputTensor) as any;
+    const encoded = this.encoder.predict(inputTensor) as Tensor;
     const encodedData = await encoded.data();
     const encodedFeatures = new Float32Array(encodedData);
     // Calculate compression metrics
@@ -337,7 +371,7 @@ export class GraphPatternAutoEncoder {
     const compressionRatio = encodedSize / originalSize;
     // Calculate reconstruction error
     // Decode for reconstruction error calculation
-    const reconstructed = this.decoder!.predict(encoded) as any;
+    const reconstructed = this.decoder!.predict(encoded) as Tensor;
     const reconstructionError = await this.calculateReconstructionError(inputTensor, reconstructed);
     // Extract legal patterns
     const legalPatterns = this.extractLegalPatterns(graphData, encodedFeatures);
@@ -351,21 +385,23 @@ export class GraphPatternAutoEncoder {
       reconstructionError,
       patternSignature,
       legalPatterns
-    }
+    };
     // Store in pattern library
     this.patternLibrary.set(patternSignature, result);
     // Cache the result
     if (this.cache) {
-      await this.cache.set(cacheKey, result, { type: 'query', ttl: 1800 }); // 30 minutes
+      await this.cacheSet(cacheKey, result, { type: 'query', ttl: 1800 }); // 30 minutes
     }
-    // Update RL cache
-    this.rlCache.set(cacheKey, result);
+    // Update RL cache (guarded, accept sync or Promise)
+    if (this.rlCache && typeof this.rlCache.set === 'function') {
+      await Promise.resolve(this.rlCache.set(cacheKey, result));
+    }
     // Cleanup tensors
     inputTensor.dispose();
     encoded.dispose();
     reconstructed.dispose();
     console.log(
-      `Graph encoded: ${compressionRatio.toFixed(1)}% compression, ${reconstructionError.toFixed(4)} error, ${performance.now() - startTime}ms`
+      `Graph encoded: ${(compressionRatio * 100).toFixed(1)}% compression, ${reconstructionError.toFixed(4)} error, ${performance.now() - startTime}ms`
     );
     return result;
   }
@@ -376,7 +412,7 @@ export class GraphPatternAutoEncoder {
     const cacheKey = `graph_decode_${encodedPattern.patternSignature}`;
     // Check cache first
     if (this.cache) {
-      const cached = await this.cache.get<DecodedGraphPattern>(cacheKey);
+      const cached = await this.cacheGet<DecodedGraphPattern>(cacheKey);
       if (cached) {
         console.log('Auto-Encoder: Using cached decoding');
         return cached;
@@ -385,8 +421,10 @@ export class GraphPatternAutoEncoder {
     const startTime = performance.now();
     // Decode features
     const encodedTensor = tensor2d([Array.from(encodedPattern.encodedFeatures)]);
-    const decoded = this.decoder.predict(encodedTensor) as any;
-    const decodedData = await decoded.data();
+    // decoder.predict returns a Tensor for a single-output model; type it explicitly
+    const decoded = this.decoder.predict(encodedTensor) as Tensor;
+    // decoded.data() yields a TypedArray (Float32Array for float tensors)
+    const decodedData = await decoded.data() as Float32Array;
     const decodedFeatures = Array.from(decodedData) as number[];
     // Reconstruct graph structure
     const reconstructedGraph = this.featureVectorToGraph(decodedFeatures, encodedPattern);
@@ -408,10 +446,12 @@ export class GraphPatternAutoEncoder {
     }
     // Cache the result
     if (this.cache) {
-      await this.cache.set(cacheKey, result, { type: 'query', ttl: 1800 });
+      await this.cacheSet(cacheKey, result, { type: 'query', ttl: 1800 });
     }
-    // Update RL cache
-    this.rlCache.set(cacheKey, result);
+    // Update RL cache (guarded)
+    if (this.rlCache && typeof this.rlCache.set === 'function') {
+      await Promise.resolve(this.rlCache.set(cacheKey, result));
+    }
     // Cleanup tensors
     encodedTensor.dispose();
     decoded.dispose();
@@ -428,7 +468,7 @@ export class GraphPatternAutoEncoder {
       `Starting auto-encoder training: ${trainingGraphs.length} graphs, ${this.config.epochs} epochs`
     );
     // Prepare training data
-    const trainingFeatures = trainingGraphs.map((graph) => this.graphToFeatureVector(graph);
+    const trainingFeatures = trainingGraphs.map((graph) => this.graphToFeatureVector(graph));
     const inputData = tensor2d(trainingFeatures);
     this.trainingHistory = [];
     // Training loop
@@ -478,16 +518,16 @@ export class GraphPatternAutoEncoder {
     const features: number[] = [];
     // Node features (first 256 dimensions)
     const nodeFeatures = this.extractNodeFeatures(graphData.nodes);
-    features.push(...nodeFeatures.slice(0, 256);
+    features.push(...nodeFeatures.slice(0, 256));
     // Edge features (next 128 dimensions)
     const edgeFeatures = this.extractEdgeFeatures(graphData.edges);
-    features.push(...edgeFeatures.slice(0, 128);
+    features.push(...edgeFeatures.slice(0, 128));
     // Graph-level features (next 64 dimensions)
     const graphFeatures = this.extractGraphLevelFeatures(graphData);
-    features.push(...graphFeatures.slice(0, 64);
+    features.push(...graphFeatures.slice(0, 64));
     // Legal domain features (remaining 64 dimensions)
     const legalFeatures = this.extractLegalDomainFeatures(graphData);
-    features.push(...legalFeatures.slice(0, 64);
+    features.push(...legalFeatures.slice(0, 64));
     // Pad or truncate to match input dimension
     while (features.length < this.config.inputDimension) {
       features.push(0);
@@ -506,9 +546,9 @@ export class GraphPatternAutoEncoder {
       precedent: 0,
       person: 0,
       organization: 0
-    }
-    nodes.forEach((node) => typeCount[node.type]++);
-    Object.values(typeCount).forEach((count) => features.push(count / nodes.length);
+    };
+    nodes.forEach((node) => (typeCount[node.type] = (typeCount[node.type] || 0) + 1));
+    Object.values(typeCount).forEach((count) => features.push(count / (nodes.length || 1)));
     // Spatial distribution (position analysis)
     if (nodes.length > 0) {
       const avgX = nodes.reduce((sum, node) => sum + node.position.x, 0) / nodes.length;
@@ -519,11 +559,11 @@ export class GraphPatternAutoEncoder {
     }
     // Feature statistics from node embeddings
     if (nodes.length > 0 && nodes[0].features) {
-      const allFeatures = nodes.flatMap((node) => Array.from(node.features);
-      const mean = allFeatures.reduce((sum, val) => sum + val, 0) / allFeatures.length;
-      const variance =
-        allFeatures.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / allFeatures.length;
-      features.push(mean, Math.sqrt(variance);
+      const allFeatures = nodes.flatMap((node) => Array.from(node.features));
+      const meanVal = allFeatures.reduce((sum, val) => sum + val, 0) / allFeatures.length;
+      const varianceVal =
+        allFeatures.reduce((sum, val) => sum + Math.pow(val - meanVal, 2), 0) / allFeatures.length;
+      features.push(meanVal, Math.sqrt(varianceVal));
     } else {
       features.push(0, 0);
     }
@@ -540,9 +580,9 @@ export class GraphPatternAutoEncoder {
       influenced_by: 0,
       related_to: 0,
       conflicts_with: 0
-    }
-    edges.forEach((edge) => typeCount[edge.type]++);
-    Object.values(typeCount).forEach((count) => features.push(count / edges.length || 0);
+    };
+    edges.forEach((edge) => (typeCount[edge.type] = (typeCount[edge.type] || 0) + 1));
+    Object.values(typeCount).forEach((count) => features.push((edges.length > 0) ? count / edges.length : 0));
     // Weight statistics
     if (edges.length > 0) {
       const weights = edges.map((edge) => edge.weight);
@@ -609,11 +649,11 @@ export class GraphPatternAutoEncoder {
     // Simplified legal complexity scoring
     let complexity = 0;
     // More complex if it has many different node types
-    const uniqueTypes = new Set(graphData.nodes.map((node) => node.type);
+    const uniqueTypes = new Set(graphData.nodes.map((node) => node.type));
     complexity += uniqueTypes.size / 6; // Normalize by max types
     // More complex if it has conflicting relationships
     const conflicts = graphData.edges.filter((edge) => edge.type === 'conflicts_with').length;
-    complexity += conflicts / graphData.edges.length;
+    complexity += graphData.edges.length > 0 ? conflicts / graphData.edges.length : 0;
     // More complex if it spans multiple jurisdictions or domains
     const jurisdictions = new Set(
       graphData.nodes.map((node) => node.metadata.jurisdiction).filter(Boolean)
@@ -622,16 +662,16 @@ export class GraphPatternAutoEncoder {
     return Math.min(complexity, 1.0); // Cap at 1.0
   }
   private featureVectorToGraph(
-    features: number[]
-    originalPattern: EncodedGraphPattern;
+    features: number[],
+    _originalPattern: EncodedGraphPattern
   ): {
     reconstructedNodes: GraphNode[];
     reconstructedEdges: GraphEdge[];
   } {
     // Reconstruct approximate graph structure from features
     // This is a simplified reconstruction - in practice would be more sophisticated
-    const nodeCount = Math.round(features[0] * 1000);
-    const edgeCount = Math.round(features[256] * 1000);
+    const nodeCount = Math.round((features[0] || 0) * 1000);
+    const edgeCount = Math.round((features[256] || 0) * 1000);
     const reconstructedNodes: GraphNode[] = [];
     const reconstructedEdges: GraphEdge[] = [];
     // Reconstruct nodes
@@ -641,8 +681,8 @@ export class GraphPatternAutoEncoder {
         label: `Reconstructed Node ${i}`,
         type: 'case', // Simplified - would infer from features
         position: {
-          x: features[6] * 1000 + i * 10,
-          y: features[7] * 1000 + i * 10
+          x: (features[6] || 0) * 1000 + i * 10,
+          y: (features[7] || 0) * 1000 + i * 10
         },
         features: new Float32Array(features.slice(8, 32)),
         metadata: { reconstructed: true }
@@ -661,11 +701,11 @@ export class GraphPatternAutoEncoder {
         metadata: { reconstructed: true }
       });
     }
-    return { reconstructedNodes, reconstructedEdges }
+    return { reconstructedNodes, reconstructedEdges };
   }
   private extractLegalPatterns(
-    graphData: GraphData
-    encodedFeatures: Float32Array;
+    graphData: GraphData,
+    encodedFeatures: Float32Array
   ): LegalPatternFeatures {
     // Extract legal-specific patterns from the graph and encoding
     const citationPaths = this.analyzeCitationPaths(graphData);
@@ -674,7 +714,7 @@ export class GraphPatternAutoEncoder {
     const authorityWeights = this.analyzeAuthorityWeights(graphData);
     // Calculate derived metrics
     const precedentStrength =
-      citationPaths.reduce((sum, val) => sum + val, 0) / citationPaths.length || 0;
+      citationPaths.length > 0 ? citationPaths.reduce((sum, val) => sum + val, 0) / citationPaths.length : 0;
     const conceptSimilarity = this.calculateConceptSimilarity(encodedFeatures);
     return {
       citationPaths,
@@ -683,7 +723,7 @@ export class GraphPatternAutoEncoder {
       authorityWeights,
       precedentStrength,
       conceptSimilarity
-    }
+    };
   }
   private analyzeCitationPaths(graphData: GraphData): number[] {
     // Analyze citation path patterns
@@ -727,7 +767,7 @@ export class GraphPatternAutoEncoder {
       const importance = node.metadata.importance || 0.5;
       const citations = graphData.edges.filter((edge) => edge.target === node.id).length;
       const authority = importance + citations / 10; // Simple authority calculation
-      weights.push(Math.min(authority, 1.0);
+      weights.push(Math.min(authority, 1.0));
     });
     return weights.slice(0, 20); // Limit to first 20
   }
@@ -748,25 +788,25 @@ export class GraphPatternAutoEncoder {
     return `${nodeSignature}_${edgeSignature}_${typeSignature}_${timestamp}`.substring(0, 32);
   }
   private generatePatternSignature(
-    encodedFeatures: Float32Array
-    legalPatterns: LegalPatternFeatures;
+    encodedFeatures: Float32Array,
+    legalPatterns: LegalPatternFeatures
   ): string {
     // Generate unique signature for pattern
-    const featureHash = Array.from(encodedFeatures.slice(0, 8)
-      .map((f) => Math.round(f * 1000).toString(16)
+    const featureHash = Array.from(encodedFeatures.slice(0, 8))
+      .map((f) => Math.round(f * 1000).toString(16))
       .join('');
     const patternHash = Math.round(legalPatterns.precedentStrength * 1000).toString(16);
     return `pattern_${featureHash}_${patternHash}`.substring(0, 32);
   }
-  private async calculateReconstructionError(original: any, reconstructed: any): Promise<number> {
-    const diff = sub(original, reconstructed);
-    const squaredDiff = square(diff);
-    const mse = mean(squaredDiff);
-    const error = await mse.data();
+  private async calculateReconstructionError(original: Tensor, reconstructed: Tensor): Promise<number> {
+    const diff = sub(original, reconstructed) as Tensor;
+    const squaredDiff = square(diff) as Tensor;
+    const mse = mean(squaredDiff) as Tensor;
+    const data = (await mse.data()) as Float32Array;
     diff.dispose();
     squaredDiff.dispose();
     mse.dispose();
-    return error[0];
+    return data && data.length > 0 ? data[0] : 0;
   }
   private calculateCompressionEfficiency(): number {
     const latentDim = this.config.hiddenLayers[this.config.hiddenLayers.length - 1];
@@ -818,27 +858,43 @@ export class GraphPatternAutoEncoder {
         ? decoded.reconstructedEdges.length / decoded.reconstructedNodes.length: 0;
     return Math.min(nodeEdgeRatio / 2, 1.0);
   }
-  private calculateSemanticFidelity(patterns: LegalPatternFeatures, decoded: any): number {
-    // Simplified semantic fidelity based on legal patterns
-    return patterns.conceptSimilarity * 0.8 + patterns.precedentStrength * 0.2;
+  private calculateSemanticFidelity(
+    patterns: LegalPatternFeatures,
+    decoded: { reconstructedNodes: GraphNode[]; reconstructedEdges: GraphEdge[] }
+  ): number {
+    // Use reconstructed graph structure to produce a small structural factor
+    const nodeCount = Array.isArray(decoded.reconstructedNodes) ? decoded.reconstructedNodes.length : 0;
+    const edgeCount = Array.isArray(decoded.reconstructedEdges) ? decoded.reconstructedEdges.length : 0;
+    // structureFactor ranges 0..1 (higher when edges scale reasonably with nodes)
+    const structureFactor = nodeCount > 0 ? Math.min(1, edgeCount / (nodeCount * 1.5)) : 0;
+    // Combine semantic measures: conceptSimilarity (dominant), precedentStrength, and a small contribution from structure
+    const score =
+      patterns.conceptSimilarity * 0.7 + patterns.precedentStrength * 0.2 + structureFactor * 0.1;
+    return Math.max(0, Math.min(1, score)); // clamp to [0,1]
   }
   getCompressionStats(): {
     patternCount: number;
     avgCompressionRatio: number;
     totalSavings: number;
-    cachingStats: any;
+    cachingStats: Record<string, unknown> | undefined;
   } {
-    const patterns = Array.from(this.patternLibrary.values();
+    const patterns = Array.from(this.patternLibrary.values());
     const avgCompressionRatio =
       patterns.length > 0
-        ? patterns.reduce((sum, p) => sum + p.compressionRatio, 0) / patterns.length: 0;
+        ? patterns.reduce((sum, p) => sum + p.compressionRatio, 0) / patterns.length
+        : 0;
     const totalSavings = patterns.reduce((sum, p) => sum + (p.originalSize - p.encodedSize), 0);
+    // Call getStats if the RL cache exposes it
+    const cachingStats =
+      this.rlCache && typeof this.rlCache.getStats === 'function'
+        ? this.rlCache.getStats()
+        : undefined;
     return {
       patternCount: patterns.length,
       avgCompressionRatio,
       totalSavings,
-      cachingStats: this.rlCache.getStats()
-    }
+      cachingStats
+    };
   }
   getTrainingHistory(): AutoEncoderTrainingMetrics[] {
     return [...this.trainingHistory];

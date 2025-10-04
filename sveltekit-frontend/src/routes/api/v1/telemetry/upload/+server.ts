@@ -32,10 +32,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     const batch: TelemetryBatch = await request.json()
     if (!batch.sessionId || !Array.isArray(batch.events)) {
-      return json(
-        { error: 'Invalid payload: sessionId and events array required' },)
-        { status: 400 }
-      )
+      return json({ error: 'Invalid payload: sessionId and events array required' }, { status: 400 });
     }
     // Process telemetry events
     const stats = processTelemetryBatch(batch)
@@ -46,7 +43,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       stats
     })
     // Store events (placeholder - implement with your preferred storage)
-    await storeTelemetryEvents(batch, getClientAddress()
+    await storeTelemetryEvents(batch, getClientAddress());
     return json({
       success: true,
       processed: batch.events.length,
@@ -64,15 +61,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
  */
 export const GET: RequestHandler = async ({ url }) => {
   const sessionId = url.searchParams.get('sessionId')
-  if (sessionId) {
-    // Return stats for specific session
-    const sessionStats = await getSessionStats(sessionId)
-    return json({
-      sessionId,
-      stats: sessionStats
-      timestamp: Date.now()
-    })
-  }
+    if (sessionId) {
+      // Return stats for specific session
+      const sessionStats = await getSessionStats(sessionId);
+      return json({
+        sessionId,
+        stats: sessionStats,
+        timestamp: Date.now(),
+      });
+    }
   // Return general telemetry service status
   return json({
     status: 'operational',
@@ -99,10 +96,10 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
     return {
       sessionId: batch.sessionId,
       eventCount: 0,
-      eventTypes: { [key: string]: any },
+      eventTypes: {} as Record<string, number>,
       timespan: { first: 0, last: 0, durationMs: 0 },
-      performance: { avgUploadTime: 0, successRate: 0, retryRate: 0 }
-    }
+      performance: { avgUploadTime: 0, successRate: 0, retryRate: 0 },
+    };
   }
   // Count event types
   const eventTypes = events.reduce((acc, event) => {
@@ -114,10 +111,10 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
   // Calculate timespan
   const timestamps = events.map((e) => e.timestamp).sort((a, b) => a - b)
   const timespan = {
-    first: timestamps[0]
+    first: timestamps[0],
     last: timestamps[timestamps.length - 1],
-    durationMs: timestamps[timestamps.length - 1] - timestamps[0]
-  }
+    durationMs: timestamps[timestamps.length - 1] - timestamps[0],
+  };
   // Calculate performance metrics
   const uploadCompletes = events.filter((e) => e.eventType === 'upload_complete')
   const uploadErrors = events.filter(

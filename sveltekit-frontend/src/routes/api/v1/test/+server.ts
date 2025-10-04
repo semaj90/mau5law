@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types.js'
+import { json, error } from '@sveltejs/kit'
 /*
  * Comprehensive Integration Test API - SvelteKit 2 Production
  * Tests all 37 Go microservices and unified API system
@@ -10,8 +11,6 @@ import { apiOrchestrator } from '$lib/services/api-orchestrator.js'
 import { embeddingService } from '$lib/server/embedding-service.js'
 import type { APIResponse, APIRequestContext } from '$lib/types/api.js'
 import crypto from "crypto"
-
-}
 export interface IntegrationTestResult {
   testName: string
   status: 'passed' | 'failed' | 'skipped'
@@ -49,7 +48,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const report = await runComprehensiveTests(testSuite, context)
     return json({
       success: report.passed === report.totalTests && report.failed === 0,
-      data: report
+      data: report,
       metadata: {
         testSuite,
         requestId,
@@ -66,7 +65,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       code: 'TEST_EXECUTION_ERROR',
       requestId,
       timestamp: new Date().toISOString()
-    })
+    }));
   }
 }
 /*
@@ -83,7 +82,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'history':
         return await handleTestHistory()
       default:
-        return json({,
+        return json({
           service: 'Integration Test API',
           version: '2.0.0',
           endpoints: {
@@ -113,14 +112,14 @@ export const GET: RequestHandler = async ({ url }) => {
     return error(500, ensureError({
       message: 'Test service unavailable',
       error: dev ? String(err) : 'Internal error'
-    })
+    }))
   }
 }
 /*
  * Run comprehensive integration tests
  */
 async function runComprehensiveTests(
-  testSuite: string
+  testSuite: string,
   context: APIRequestContext
 ): Promise<ComprehensiveTestReport> {
   const startTime = Date.now()
@@ -207,7 +206,7 @@ function getTestsForSuite(testSuite: string): string[] {
  * Run a single test
  */
 async function runSingleTest(
-  testName: string
+  testName: string,
   context: APIRequestContext
 ): Promise<IntegrationTestResult> {
   const testStartTime = Date.now()
@@ -327,12 +326,12 @@ async function testCoreServices(): Promise<any> {
         service,
         healthy: health.ok,
         status: health.status,
-        config: !!config
+        config: !!config,
       })
     } catch (error: any) {
       results.push({
         service,
-        healthy: false
+        healthy: false,
         error: String(error)
       })
     }
@@ -341,7 +340,7 @@ async function testCoreServices(): Promise<any> {
   return {
     success: healthyCount === coreServices.length,
     details: {
-      coreServices: results
+      coreServices: results,
       healthyCount,
       totalCount: coreServices.length
     }
@@ -361,7 +360,7 @@ async function testRAGAPI(): Promise<any> {
     }
   } catch (error: any) {
     return {
-      success: false;
+      success: false,
       error: String(error)
     }
   }
@@ -392,14 +391,14 @@ async function testDatabaseConnections(): Promise<any> {
     try {
       const config = apiOrchestrator.getServiceConfig(db as any)
       results.push({
-        database: db
+        database: db,
         configured: !!config,
         status: config?.status || 'unknown'
       })
     } catch (error: any) {
       results.push({
-        database: db
-        configured: false
+        database: db,
+        configured: false,
         error: String(error)
       })
     }
@@ -418,8 +417,8 @@ async function testEmbeddingService(): Promise<any> {
     return {
       success: isHealthy && models.length > 0,
       details: {
-        healthy: isHealthy
-        availableModels: models
+        healthy: isHealthy,
+        availableModels: models,
         modelCount: models.length
       }
     }
@@ -484,7 +483,8 @@ async function testAIModelAvailability(): Promise<any> {
  */
 function generateRecommendations(
   results: IntegrationTestResult[]
-  systemHealth: { [key: string]: any }): string[] {
+  systemHealth: { [key: string]: any }
+): string[] {
   const recommendations: string[] = []
   const failedTests = results.filter(r => r.status === 'failed')
   const passRate = (results.filter(item => item.length) / results.length) * 100
@@ -509,7 +509,7 @@ async function handleTestSystemHealth(): Promise<Response> {
   return json({
     service: 'Integration Test System',
     status: 'operational',
-    systemHealth: health
+    systemHealth: health,
     timestamp: new Date().toISOString()
   })
 }
@@ -518,7 +518,7 @@ async function handleTestSuites(): Promise<Response> {
     availableSuites: [
       { name: 'full', description: 'Complete system integration test', testCount: 15 },
       { name: 'core', description: 'Core services only', testCount: 5 },
-      { name: 'api', description: 'API endpoints and routing', testCount: 5 },)
+      { name: 'api', description: 'API endpoints and routing', testCount: 5 },
       { name: 'services', description: 'Go microservices health', testCount: 4 }
     ],
     timestamp: new Date().toISOString()

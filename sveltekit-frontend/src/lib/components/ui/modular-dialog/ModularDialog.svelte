@@ -1,8 +1,14 @@
 <!-- Modular Data-Driven Dialog Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Dialog as _Dialog } from 'bits-ui';
-  const Dialog: any = _Dialog;
+  // Use runtime adapter to normalize bits-ui shapes
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+  let Dialog: any = {};
+  (async () => {
+    const ns = await getBitsNamespace();
+    // Dialog may be available as ns.Dialog, ns.Dialog.Root, or ns.default.Dialog
+    Dialog = ns.Dialog?.Root ?? ns.Dialog ?? ns.default?.Dialog ?? ns.default ?? ns;
+  })();
 
   import { X, Loader2, AlertCircle, RefreshCw } from 'lucide-svelte';
   import { cn } from '$lib/utils';

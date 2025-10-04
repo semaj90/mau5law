@@ -1,6 +1,6 @@
 <script lang="ts">
-  // bits-ui default export is a namespace/object of components; import it and pick the ctor
-  import Bits from 'bits-ui';
+  import { onMount } from 'svelte';
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
 
   import { cn } from '$lib/utils';
   import { scale } from 'svelte/transition';
@@ -27,20 +27,34 @@
     "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
     className
   );
+
+  // Initialize the dynamic component on mount (avoid top-level await)
+  let ContentComponent: any = null;
+  onMount(async () => {
+    try {
+      const ns = await getBitsNamespace();
+      ContentComponent = ns?.DropdownMenuContent ?? ns?.DropdownMenu?.Content ?? ns?.DropdownMenu ?? ns;
+    } catch (err) {
+      // Fail gracefully: leave ContentComponent null so nothing renders
+      console.error('Failed to load bits namespace for DropdownMenuContent', err);
+    }
+  });
 </script>
 
 <!-- Render the imported constructor via svelte:component and use a slot for children -->
-<svelte:component
-  this={(Bits as any).DropdownMenuContent}
-  class={contentClasses}
-  {side}
-  {align}
-  {sideOffset}
-  {alignOffset}
-  {avoidCollisions}
-  {collisionBoundary}
-  {collisionPadding}
-  {sticky}
->
-  <slot />
-</svelte:component>
+{#if ContentComponent}
+  <svelte:component
+    this={ContentComponent}
+    class={contentClasses}
+    {side}
+    {align}
+    {sideOffset}
+    {alignOffset}
+    {avoidCollisions}
+    {collisionBoundary}
+    {collisionPadding}
+    {sticky}
+  >
+    <slot />
+  </svelte:component>
+{/if}

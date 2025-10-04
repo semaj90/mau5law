@@ -1,35 +1,58 @@
 <script lang="ts">
-  import createDropdownMenu from 'bits-ui'; // Use named import if not default
-  // import type { Snippet } from 'svelte';
-  // Use a generic function type for renderable children
-  type Renderable = (() => any) | undefined;
+	import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+	// note: bits-ui's exported types vary by version; avoid relying on a specific RootProps
+	import { cn } from '$lib/utils.js';
+	import type { Snippet } from 'svelte';
 
-  // Destructure the Root component from the createDropdownMenu object (do not call it)
-  const { Root } = createDropdownMenu;
+	// Minimal, permissive props shape used at runtime by the dropdown creator.
+	type Props = {
+		// arbitrary runtime props that the bits-ui factory may accept
+		[key: string]: unknown;
+		class?: string;
+		// Svelte 5 snippet for rendering children
+		children?: Snippet;
+	};
 
-  /**
-   * Props for DropdownMenuRoot.
-   * Usage (Svelte 5 runes):
-   * <DropdownMenuRoot open={$bindable(false)} onOpenChange={fn}>{...}</DropdownMenuRoot>
-   * - `open` is bindable and controls menu state.
-   * - `onOpenChange` is called with the new open state.
-   * - `children` should be a render function.
-   */
-  interface Props {
-    children?: Renderable;
-    open?: boolean;
-    onOpenChange?: (open: boolean) => void;
-  }
+	let { class: className, children, ...props }: Props = $props();
 
-  // Destructure directly from $props() so $bindable() is used in the declaration
-  let { children, open = $bindable(false), onOpenChange }: Props = $props<Props>();
+  $effect(() => {
+		console.log('Dropdown menu props changed:', props);
+	});
 
-  function handleOpenChange(newOpen: boolean) {
-    open = newOpen;
-    onOpenChange?.(newOpen as boolean);
-  }
+	let trigger: any = null;
+	let menu: any = null;
+	let open: any = $state(false);
+
+	(async () => {
+		const ns = await getBitsNamespace();
+		const factory = ns.createDropdownMenu ?? ns.DropdownMenu?.create ?? ns.DropdownMenu ?? null;
+		if (factory) {
+			try {
+				const result = typeof factory === 'function' ? factory(props) : factory;
+				trigger = result?.elements?.trigger ?? result?.trigger ?? null;
+				menu = result?.elements?.menu ?? result?.menu ?? null;
+				open = result?.states?.open ?? open;
+			} catch (err) {
+				// leave fallbacks null
+			}
+		}
+	})();
 </script>
 
-<Root bind:open onOpenChange={handleOpenChange}>
-  {@render children?.()}
-</Root>
+<button use:trigger {...$trigger} class={cn(className)}>
+	{#if children}
+		{@render children('trigger')}
+	{:else}
+		Open Menu
+	{/if}
+</button>
+
+<div class={cn(className)}>
+	{#if $open}
+		<div use:menu>
+			{#if children}
+				{@render children()}
+			{/if}
+		</div>
+	{/if}
+</div>

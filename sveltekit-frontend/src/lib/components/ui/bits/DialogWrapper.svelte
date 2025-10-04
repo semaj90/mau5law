@@ -1,7 +1,12 @@
 <!-- Dialog Wrapper: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import * as Dialog from 'bits-ui';
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+  let Dialog: any = {};
+  (async () => {
+    const ns = await getBitsNamespace();
+    Dialog = ns.Dialog?.Root ?? ns.Dialog ?? ns.default?.Dialog ?? ns.default ?? ns;
+  })();
   interface Props {
     open?: boolean;
     title?: string;

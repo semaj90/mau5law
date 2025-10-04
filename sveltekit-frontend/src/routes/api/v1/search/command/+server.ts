@@ -5,36 +5,67 @@ import { helpers } from '$lib/server/db'
 import { vectorOps } from '$lib/server/db/enhanced-vector-operations'
 import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api'
 import type { RequestHandler } from './$types.js'
+
+type CaseResult = typeof cases.$inferSelect & { similarity: number; content?: string };
+type EvidenceResult = typeof evidence.$inferSelect & {
+  caseTitle: string | null;
+  similarity: number;
+  content?: string;
+};
+type DocumentResult = typeof legalDocuments.$inferSelect & { similarity: number };
+type PersonResult = typeof users.$inferSelect & { similarity: number; content?: string };
+
+interface SearchResults {
+  cases: CaseResult[];
+  evidence: EvidenceResult[];
+  documents: DocumentResult[];
+  people: PersonResult[];
+}
+
+interface VectorSearchResult {
+  id: string;
+  content: string;
+  similarity: number;
+  metadata: {
+    type: keyof SearchResults;
+    [key: string]: unknown;
+  };
+}
+
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    const user = locals.user
+    const user = locals.user;
     if (!user) {
-      return json({
-        success: false,
-        error: 'Unauthorized'
-      }, { status: 401 })
-    }
-    const body: CommandSearchRequest = await request.json()
-    const query = body.query
-    const types = body.types ?? ['cases', 'evidence', 'documents', 'people']
-    const limit = body.limit ?? 10
-    const userId = body.userId
-    if (!query || query.trim().length < 2) {
-      return json({
+      return json(
+        {
           success: false,
-          error: 'Query must be at least 2 characters long'
-        },)>
+          error: 'Unauthorized',
+        },
+        { status: 401 }
+      );
+    }
+    const body: CommandSearchRequest = await request.json();
+    const query = body.query;
+    const types = body.types ?? ['cases', 'evidence', 'documents', 'people'];
+    const limit = body.limit ?? 10;
+    const userId = body.userId;
+    if (!query || query.trim().length < 2) {
+      return json(
+        {
+          success: false,
+          error: 'Query must be at least 2 characters long',
+        },
         { status: 400 }
-      )
+      );
     }
-    const searchQuery = query.trim()
-    const results = {
-      cases: [] as any[],
-      evidence: [] as any[],
-      documents: [] as any[],
-      people: [] as any[]
-    }
-    let totalResults = 0
+    const searchQuery = query.trim();
+    const results: SearchResults = {
+      cases: [],
+      evidence: [],
+      documents: [],
+      people: [],
+    };
+    let totalResults = 0;
     // Search Cases
     if (types.includes('cases')) {
       try {
@@ -42,28 +73,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .select()
           .from(cases)
           .where(
-            helpers.and?.(
-              helpers.eq?.(cases.userId, userId || user.id),
-              helpers.or?.(
-                helpers.ilike?.(cases.title, `%${searchQuery}%`),
-                helpers.ilike?.(cases.description, `%${searchQuery}%`),
-                helpers.ilike?.(cases.location, `%${searchQuery}%`),
-                helpers.ilike?.(cases.jurisdiction, `%${searchQuery}%`)
+            helpers.and(
+              helpers.eq(cases.userId, userId || user.id),
+              helpers.or(
+                helpers.ilike(cases.title, `%${searchQuery}%`),
+                helpers.ilike(cases.description, `%${searchQuery}%`),
+                helpers.ilike(cases.location, `%${searchQuery}%`),
+                helpers.ilike(cases.jurisdiction, `%${searchQuery}%`)
               )
-            ) as any
+            )
           )
-          .orderBy(helpers.desc?.(cases.updatedAt) as any)
-          .limit(limit)
-        results.cases = caseResults.map((case_: any) => ({
+          .orderBy(helpers.desc(cases.updatedAt))
+          .limit(limit);
+        results.cases = caseResults.map(case_ => ({
           ...case_,
-          similarity: calculateSimilarity(
-            searchQuery,
-            case_.title + ' ' + (case_.description || '')
-          )
-        })
-        totalResults += caseResults.length
-      } catch (error: any) {
-        console.error('Error searching cases:', error)
+          similarity: calculateSimilarity(searchQuery, case_.title + ' ' + (case_.description || '')),
+        }));
+        totalResults += caseResults.length;
+      } catch (error) {
+        console.error('Error searching cases:', error);
       }
     }
     // Search Evidence
@@ -72,33 +100,29 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const evidenceResults = await db
           .select({
             ...evidence,
-            caseTitle: cases.title
+            caseTitle: cases.title,
           })
           .from(evidence)
-          .leftJoin(cases, helpers.eq?.(evidence.caseId, cases.id) as any)
+          .leftJoin(cases, helpers.eq(evidence.caseId, cases.id))
           .where(
-            helpers.and?.(
-              helpers.eq?.(cases.userId, userId || user.id),
-              helpers.or?.(
-                helpers.ilike?.(evidence.title, `%${searchQuery}%`),
-                helpers.ilike?.(evidence.description, `%${searchQuery}%`),
+            helpers.and(
+              helpers.eq(cases.userId, userId || user.id),
+              helpers.or(
+                helpers.ilike(evidence.title, `%${searchQuery}%`),
+                helpers.ilike(evidence.description, `%${searchQuery}%`),
                 sql`${evidence.tags}::text ILIKE ${`%${searchQuery}%`}`
               )
-            ) as any
-          )
-          .orderBy(helpers.desc?.(evidence.updatedAt) as any)
-          .limit(limit)
-        results.evidence = evidenceResults.map((item: any & { title?: string; description?: string | null }) => ({
-            ...item,
-            similarity: calculateSimilarity(
-              searchQuery,
-              ((item as { title?: any; description?: any; id?: any }).title || '') + ' ' + ((item as { title?: any; description?: any; id?: any }).description || '')
             )
-          })
-        )
-        totalResults += evidenceResults.length
-      } catch (error: any) {
-        console.error('Error searching evidence:', error)
+          )
+          .orderBy(helpers.desc(evidence.updatedAt))
+          .limit(limit);
+        results.evidence = evidenceResults.map(item => ({
+          ...item,
+          similarity: calculateSimilarity(searchQuery, (item.title || '') + ' ' + (item.description || '')),
+        }));
+        totalResults += evidenceResults.length;
+      } catch (error) {
+        console.error('Error searching evidence:', error);
       }
     }
     // Search Documents
@@ -108,24 +132,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .select()
           .from(legalDocuments)
           .where(
-            helpers.or?.(
-              helpers.ilike?.(legalDocuments.title, `%${searchQuery}%`),
-              helpers.ilike?.(legalDocuments.content, `%${searchQuery}%`),
-              helpers.ilike?.(legalDocuments.documentType, `%${searchQuery}%`)
-            ) as any
+            helpers.or(
+              helpers.ilike(legalDocuments.title, `%${searchQuery}%`),
+              helpers.ilike(legalDocuments.content, `%${searchQuery}%`),
+              helpers.ilike(legalDocuments.documentType, `%${searchQuery}%`)
+            )
           )
-          .orderBy(helpers.desc?.(legalDocuments.updatedAt) as any)
-          .limit(limit)
-        results.documents = documentResults.map((doc: any) => ({
-    ...doc,
-    similarity: calculateSimilarity(
-      searchQuery,
-      doc.title + ' ' + (doc.content || '').substring(0, 500)
-    )
-  })
-        totalResults += documentResults.length
-      } catch (error: any) {
-        console.error('Error searching documents:', error)
+          .orderBy(helpers.desc(legalDocuments.updatedAt))
+          .limit(limit);
+        results.documents = documentResults.map(doc => ({
+          ...doc,
+          similarity: calculateSimilarity(searchQuery, doc.title + ' ' + (doc.content || '').substring(0, 500)),
+        }));
+        totalResults += documentResults.length;
+      } catch (error) {
+        console.error('Error searching documents:', error);
       }
     }
     // Search People
@@ -135,78 +156,96 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .select()
           .from(users)
           .where(
-            helpers.or?.(
-              helpers.ilike?.(users.name, `%${searchQuery}%`),
-              helpers.ilike?.(users.email, `%${searchQuery}%`),
-              helpers.ilike?.(users.firstName, `%${searchQuery}%`),
-              helpers.ilike?.(users.lastName, `%${searchQuery}%`),
-              helpers.ilike?.(users.department, `%${searchQuery}%`)
-            ) as any
+            helpers.or(
+              helpers.ilike(users.name, `%${searchQuery}%`),
+              helpers.ilike(users.email, `%${searchQuery}%`),
+              helpers.ilike(users.firstName, `%${searchQuery}%`),
+              helpers.ilike(users.lastName, `%${searchQuery}%`),
+              helpers.ilike(users.department, `%${searchQuery}%`)
+            )
           )
-          .orderBy(helpers.desc?.(users.updatedAt) as any)
-          .limit(limit)
-        results.people = userResults.map((person: any) => ({
+          .orderBy(helpers.desc(users.updatedAt))
+          .limit(limit);
+        results.people = userResults.map(person => ({
           ...person,
           similarity: calculateSimilarity(
             searchQuery,
             (person.name || '') + ' ' + (person.email || '') + ' ' + (person.department || '')
-          )
-        })
-        totalResults += userResults.length
-      } catch (error: any) {
-        console.error('Error searching people:', error)
+          ),
+        }));
+        totalResults += userResults.length;
+      } catch (error) {
+        console.error('Error searching people:', error);
       }
     }
     // Enhanced vector search (if available and requested)
     if (query.length >= 5) {
       try {
-        const vectorResults = await vectorOps.performRAGSearch({
-          query: searchQuery
+        const vectorResults = (await vectorOps.performRAGSearch({
+          query: searchQuery,
           userId: userId || user.id,
-          limit: 5
-        })
+          limit: 5,
+        })) as VectorSearchResult[];
         // Merge vector results with existing results
         for (const result of vectorResults) {
-          const type = (result as { metadata?: any; id?: any; content?: any; similarity?: any }).metadata?.type
-          if (type && results[type as keyof typeof results]) {
-            const existing = results[type as keyof typeof results] as any[]
-            const existingIds = existing.map((item) => (item as { title?: any; description?: any; id?: any }).id)
-            if (!existingIds.includes((result as { metadata?: any; id?: any; content?: any; similarity?: any }).id)) {
+          const type = result.metadata?.type;
+          if (type && results[type]) {
+            const existing = results[type];
+            const existingIds = existing.map(item => item.id);
+            if (!existingIds.includes(result.id)) {
               // Add vector result with high similarity score
-              existing.push({
-                id: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).id,
+              const newResult = {
                 ...result.metadata,
-                content: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).content,
-                similarity: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).similarity
-              })
+                id: result.id,
+                content: result.content,
+                similarity: result.similarity,
+              };
+              switch (type) {
+                case 'cases':
+                  results.cases.push(newResult as unknown as CaseResult);
+                  break;
+                case 'evidence':
+                  results.evidence.push(newResult as unknown as EvidenceResult);
+                  break;
+                case 'documents':
+                  results.documents.push(newResult as unknown as DocumentResult);
+                  break;
+                case 'people':
+                  results.people.push(newResult as unknown as PersonResult);
+                  break;
+              }
             }
           }
         }
-      } catch (error: any) {
-        console.warn('Vector search failed:', error)
+      } catch (error) {
+        console.warn('Vector search failed:', error);
       }
     }
     // Sort all results by similarity
-    Object.keys(results).forEach((key) => {
-      const resultArray = results[key as keyof typeof results] as any[]
-      resultArray.sort((a, b) => (b.similarity || 0) - (a.similarity || 0)
-    })
+    Object.keys(results).forEach(key => {
+      const typedKey = key as keyof SearchResults;
+      const resultArray = results[typedKey];
+      resultArray.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
+    });
     const response: CommandSearchResponse = {
       success: true,
       results,
       meta: {
         totalResults,
-        timestamp: new Date().toISOString()
-      }
-    }
-    return json(response as any)
-  } catch (error: any) {
-    console.error('Command search error:', error)
-    return json({
-      success: false,
-      error: 'Internal server error',
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+        timestamp: new Date().toISOString(),
+      },
+    };
+    return json(response);
+  } catch (error) {
+    console.error('Command search error:', error);
+    return json(
+      {
+        success: false,
+        error: 'Internal server error',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
 }
 // Simple similarity calculation (can be enhanced with more sophisticated algorithms)
@@ -217,7 +256,7 @@ function calculateSimilarity(query: string, text: string): number {
   if (textLower.includes(queryLower)) {
     const position = textLower.indexOf(queryLower)
     // Earlier matches get higher scores
-    return Math.max(0.8, 1 - (position / text.length * 0.2)
+    return Math.max(0.8, 1 - (position / text.length) * 0.2);
   }
   // Word-based matching
   const queryWords = queryLower.split(/\s+/)

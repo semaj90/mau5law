@@ -60,66 +60,66 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 }
 async function routeVectorRequest(
-  request: VectorOperationRequest
+  request: VectorOperationRequest,
   operation: string
 ): Promise<VectorOperationResponse> {
-  const jobId = `${request.ownerType}_${request.ownerId}_${operation}_${Date.now()}`
+  const jobId = `${request.ownerType}_${request.ownerId}_${operation}_${Date.now()}`;
   // Determine processing path based on configuration and availability
-  const processingPath = await determineProcessingPath(request, operation)
+  const processingPath = await determineProcessingPath(request, operation);
   switch (processingPath) {
     case 'cuda':
-      return await processCUDA(request, jobId, operation)
+      return await processCUDA(request, jobId, operation);
     case 'webgpu':
-      return await processWebGPU(request, jobId, operation)
+      return await processWebGPU(request, jobId, operation);
     case 'wasm':
-      return await processWASM(request, jobId, operation)
+      return await processWASM(request, jobId, operation);
     default:
-      return await processDefault(request, jobId, operation)
+      return await processDefault(request, jobId, operation);
   }
 }
 async function determineProcessingPath(
-  request: VectorOperationRequest;
+  request: VectorOperationRequest,
   operation: string
 ): Promise<'cuda' | 'webgpu' | 'wasm' | 'default'> {
   // Check service availability and request preferences
-  const preferences: { useWebGPU?: boolean; [k: string]: unknown } = (request as any).options || {}
+  const preferences: { useWebGPU?: boolean; [k: string]: unknown } = (request as any).options || {};
   // Priority order: CUDA > WebGPU > WASM > Default
   // Check CUDA availability
   try {
-    const cudaResponse = await fetch(`${VECTOR_SERVICE_URL}/health`)
+    const cudaResponse = await fetch(`${VECTOR_SERVICE_URL}/health`);
     if (cudaResponse.ok) {
-      const health = await cudaResponse.json()
+      const health = await cudaResponse.json();
       if (health.cuda) {
-        return 'cuda'
+        return 'cuda';
       }
     }
   } catch (error: any) {
-    console.log('CUDA service unavailable:', error)
+    console.log('CUDA service unavailable:', error);
   }
   // Check WebGPU preference and availability
   if (preferences.useWebGPU || USE_WEBGPU_FALLBACK) {
     // WebGPU check would be done client-side, but we can assume availability
-    return 'webgpu'
+    return 'webgpu';
   }
   // For text generation tasks, prefer WASM LLM
   if (operation === 'generate' || operation === 'analysis') {
-    return 'wasm'
+    return 'wasm';
   }
-  return 'default'
+  return 'default';
 }
 async function processCUDA(
-  request: VectorOperationRequest
-  jobId: string
+  request: VectorOperationRequest,
+  jobId: string,
   operation: string
 ): Promise<VectorOperationResponse> {
-  console.log(`🔥 Processing ${jobId} with CUDA acceleration`)
+  console.log(`🔥 Processing ${jobId} with CUDA acceleration`);
   try {
     // Submit job to vector Redis service
     const response = await fetch(`${VECTOR_SERVICE_URL}/api/vector/jobs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: jobId
+        id: jobId,
         owner_type: request.ownerType,
         owner_id: request.ownerId,
         event: request.operation,
@@ -127,33 +127,39 @@ async function processCUDA(
         payload: {
           operation: request.operation,
           data: request.data,
-          use_cuda: true
-          priority: request.options?.priority || 'medium'
+          use_cuda: true,
+          priority: request.options?.priority || 'medium',
         },
-        priority: request.options?.priority || 'medium'
-      })
-    })
+        priority: request.options?.priority || 'medium',
+      }),
+    });
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`CUDA service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`)
+      throw new Error(`CUDA service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
-    const result = await (response as { ok?: any; statusText?: any; json?: any }).json()
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
     return {
-      jobId: (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).job_id || jobId,
+      jobId:
+        (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any })
+          .job_id || jobId,
       status: 'queued',
-      queuePosition: (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).queue_position,
-      estimatedWaitTimeMs: (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).estimated_wait_time_ms
-    }
+      queuePosition: (
+        result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }
+      ).queue_position,
+      estimatedWaitTimeMs: (
+        result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }
+      ).estimated_wait_time_ms,
+    };
   } catch (error: any) {
-    console.error('CUDA processing failed:', error)
-    throw error
+    console.error('CUDA processing failed:', error);
+    throw error;
   }
 }
 async function processWebGPU(
-  request: VectorOperationRequest
-  jobId: string
+  request: VectorOperationRequest,
+  jobId: string,
   operation: string
 ): Promise<VectorOperationResponse> {
-  console.log(`⚡ Processing ${jobId} with WebGPU`)
+  console.log(`⚡ Processing ${jobId} with WebGPU`);
   // WebGPU processing would be handled client-side
   // This endpoint would coordinate with the client
   return {
@@ -164,21 +170,21 @@ async function processWebGPU(
       status: 'success',
       metadata: {
         processingTimeMs: 0,
-        cudaUsed: false
-        webgpuUsed: true
+        cudaUsed: false,
+        webgpuUsed: true,
         vectorDimension: 384,
-        operationType: operation
-        timestamp: Date.now()
-      }
-    }
-  }
+        operationType: operation,
+        timestamp: Date.now(),
+      },
+    },
+  };
 }
 async function processWASM(
-  request: VectorOperationRequest
-  jobId: string
+  request: VectorOperationRequest,
+  jobId: string,
   operation: string
 ): Promise<VectorOperationResponse> {
-  console.log(`🔧 Processing ${jobId} with WASM LLM`)
+  console.log(`🔧 Processing ${jobId} with WASM LLM`);
   // WASM processing coordination
   // Would involve client-side WASM execution
   return {
@@ -189,26 +195,26 @@ async function processWASM(
       status: 'success',
       metadata: {
         processingTimeMs: 0,
-        cudaUsed: false
-        webgpuUsed: false
+        cudaUsed: false,
+        webgpuUsed: false,
         vectorDimension: 384,
-        operationType: operation
-        timestamp: Date.now()
-      }
-    }
-  }
+        operationType: operation,
+        timestamp: Date.now(),
+      },
+    },
+  };
 }
 async function processDefault(
-  request: VectorOperationRequest
-  jobId: string
+  request: VectorOperationRequest,
+  jobId: string,
   operation: string
 ): Promise<VectorOperationResponse> {
-  console.log(`💻 Processing ${jobId} with default CPU processing`)
+  console.log(`💻 Processing ${jobId} with default CPU processing`);
   // Fallback to PostgreSQL-only processing
   try {
     // Store job in database outbox for eventual processing
-    const db = await import('$lib/server/db/drizzle')
-    const { vectorOutbox } = await import('$lib/server/db/schema-postgres')
+    const db = await import('$lib/server/db/drizzle');
+    const { vectorOutbox } = await import('$lib/server/db/schema-postgres');
     await db.default.insert(vectorOutbox).values({
       ownerType: request.ownerType,
       ownerId: request.ownerId,
@@ -217,17 +223,17 @@ async function processDefault(
       payload: {
         operation: request.operation,
         data: request.data,
-        use_cpu_only: true
-      }
-    })
+        use_cpu_only: true,
+      },
+    });
     return {
       jobId,
       status: 'queued',
       estimatedWaitTimeMs: 5000, // 5 seconds estimate for CPU processing
-    }
+    };
   } catch (error: any) {
-    console.error('Default processing failed:', error)
-    throw error
+    console.error('Default processing failed:', error);
+    throw error;
   }
 }
 async function getHealthStatus(): Promise<any> {

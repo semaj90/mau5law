@@ -50,27 +50,27 @@ export const GET: RequestHandler = async ({ url }) => {
         activeWorkers: stats.threadPoolStats.activeWorkers,
         cacheHitRatio: stats.cacheHitRatio,
         avgResponseTime: stats.averageResponseTime,
-        compressionEnabled: true
-        simdSupport: true
+        compressionEnabled: true,
+        simdSupport: true,
       },
       endpoints: {
         benchmark: 'POST /api/v1/webgpu/cache-demo - Run performance benchmarks',
         tensor: 'POST with operation: "tensor" - Test tensor compression',
         batch: 'POST with operation: "batch" - Batch processing demo',
-        stressTest: 'POST with operation: "stress-test" - Load testing'
+        stressTest: 'POST with operation: "stress-test" - Load testing',
       },
-      systemMetrics: stats
-      timestamp: Date.now()
-    })
+      systemMetrics: stats,
+      timestamp: Date.now(),
+    });
   } catch (error) {
-    return json()
+    return json(
       {
         success: false,
         error: 'Failed to get WebGPU cache system status',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
-    )
+    );
   }
 }
 // POST - Run WebGPU cache demonstrations and benchmarks
@@ -97,13 +97,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         result = await runStressTest(data, options)
         break
       default:
-        return json({,
+        return json(
+          {
             success: false,
             error: 'Invalid operation',
-            validOperations: ['benchmark', 'tensor', 'batch', 'stats', 'stress-test']
-          },)
+            validOperations: ['benchmark', 'tensor', 'batch', 'stats', 'stress-test'],
+          },
           { status: 400 }
-        )
+        );
     }
     return json({
       success: true,
@@ -117,14 +118,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     })
   } catch (error) {
     console.error('WebGPU Cache Demo error:', error)
-    return json()
+    return json(
       {
         success: false,
         error: 'WebGPU cache demo failed',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
-    )
+    );
   }
 }
 /**
@@ -133,30 +134,32 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 async function runPerformanceBenchmark(data: any, options: any): Promise<any> {
   const results: BenchmarkResult[] = []
   const iterations =
-    (data as {
-        iterations?: any
-        batchSize?: any
-        textSamples?: any
-        concurrency?: any
-        duration?: any
-        tensorSize?: any
+    (
+      data as {
+        iterations?: any;
+        batchSize?: any;
+        textSamples?: any;
+        concurrency?: any;
+        duration?: any;
+        tensorSize?: any;
       }
-    ).iterations || 100
+    ).iterations || 100;
   const tensorSize =
-    (data as {
-        iterations?: any
-        batchSize?: any
-        textSamples?: any
-        concurrency?: any
-        duration?: any
-        tensorSize?: any
+    (
+      data as {
+        iterations?: any;
+        batchSize?: any;
+        textSamples?: any;
+        concurrency?: any;
+        duration?: any;
+        tensorSize?: any;
       }
-    ).batchSize || 1024
+    ).batchSize || 1024;
   // Generate test data
-  const testTensors = Array.from()
+  const testTensors = Array.from(
     { length: iterations },
-    () => new Float32Array(Array.from({ length: tensorSize }, () => Math.random())
-  )
+    () => new Float32Array(Array.from({ length: tensorSize }, () => Math.random()))
+  );
   console.log(`🎯 Running benchmark: ${iterations} iterations, tensor size: ${tensorSize}`)
   // Benchmark 1: Tensor Compression
   const compressionBenchmark = await benchmarkTensorCompression(testTensors)
@@ -171,15 +174,15 @@ async function runPerformanceBenchmark(data: any, options: any): Promise<any> {
   const avgSpeedup = results.reduce((sum, r) => sum + r.speedupRatio, 0) / results.length
   const totalOpsPerSec = results.reduce((sum, r) => sum + r.throughput.opsPerSecond, 0)
   return {
-    benchmarks: results
+    benchmarks: results,
     summary: {
-      averageSpeedupRatio: avgSpeedup
-      totalThroughput: totalOpsPerSec
+      averageSpeedupRatio: avgSpeedup,
+      totalThroughput: totalOpsPerSec,
       recommendedConfiguration: avgSpeedup > 1.5 ? 'webgpu-enabled' : 'standard-cache',
       performanceGain: `${((avgSpeedup - 1) * 100).toFixed(1)}% improvement`,
-      processingTime: Date.now()
-    }
-  }
+      processingTime: Date.now(),
+    },
+  };
 }
 /**
  * Benchmark tensor compression operations
@@ -188,23 +191,25 @@ async function benchmarkTensorCompression(testTensors: Float32Array[]): Promise<
   const startMemory = process.memoryUsage().heapUsed
   // WebGPU-optimized compression
   const webgpuStart = Date.now()
-  const webgpuResults = await Promise.all(testTensors.map(async (tensor, i) => {
-      const key = `benchmark_webgpu_${i}`)
-      await optimizedCache.set(key, tensor, 300)
-      return await optimizedCache.get(key)
+  const webgpuResults = await Promise.all(
+    testTensors.map(async (tensor, i) => {
+      const key = `benchmark_webgpu_${i}`;
+      await optimizedCache.set(key, tensor, 300);
+      return await optimizedCache.get(key);
     })
-  )
+  );
   const webgpuTime = Date.now() - webgpuStart
   // Standard cache compression
   const standardStart = Date.now()
-  const standardResults = await Promise.all(testTensors.map(async (tensor, i) => {
-      const key = `benchmark_standard_${i}`)
-      const serialized = JSON.stringify(Array.from(tensor)
+  const standardResults = await Promise.all(
+    testTensors.map(async (tensor, i) => {
+      const key = `benchmark_standard_${i}`;
+      const serialized = JSON.stringify(Array.from(tensor));
       // Simulate standard cache operations
-      await new Promise((resolve) => setTimeout(resolve, 1)
-      return JSON.parse(serialized)
+      await new Promise(resolve => setTimeout(resolve, 1));
+      return JSON.parse(serialized);
     })
-  )
+  );
   const standardTime = Date.now() - standardStart
   const endMemory = process.memoryUsage().heapUsed
   const peakMemory = Math.max(startMemory, endMemory)
@@ -214,17 +219,16 @@ async function benchmarkTensorCompression(testTensors: Float32Array[]): Promise<
     standardTime,
     speedupRatio: standardTime / webgpuTime,
     memoryUsage: {
-      before: startMemory
-      after: endMemory
-      peak: peakMemory
+      before: startMemory,
+      after: endMemory,
+      peak: peakMemory,
     },
-    compressionRatio: 4.2, // Estimated compression ratio;
+    compressionRatio: 4.2, // Estimated compression ratio
     throughput: {
       opsPerSecond: testTensors.length / (webgpuTime / 1000),
-      mbPerSecond:
-        (testTensors.length * testTensors[0].byteLength) / (webgpuTime / 1000) / (1024 * 1024)
-    }
-  }
+      mbPerSecond: (testTensors.length * testTensors[0].byteLength) / (webgpuTime / 1000) / (1024 * 1024),
+    },
+  };
 }
 /**
  * Benchmark batch operations
@@ -239,18 +243,18 @@ async function benchmarkBatchOperations(testTensors: Float32Array[]): Promise<Be
     const operations = batch.map((tensor, j) => ({
       type: 'set' as const,
       key: `batch_webgpu_${i}_${j}`,
-      value: tensor
-      options: { ttl: 300, compress: true, parallel: true }
-    })
+      value: tensor,
+      options: { ttl: 300, compress: true, parallel: true },
+    }));
     await optimizedCache.batch(operations)
   }
   const webgpuTime = Date.now() - webgpuStart
   // Standard sequential processing
   const standardStart = Date.now()
-  for (const tensor of testTensors) {
-    // Simulate standard cache operation
-    await new Promise((resolve) => setTimeout(resolve, 0.5)
-  }
+    for (const tensor of testTensors) {
+      // Simulate standard cache operation
+      await new Promise(resolve => setTimeout(resolve, 0.5));
+    }
   const standardTime = Date.now() - standardStart
   return {
     operation: 'batch-processing',
@@ -284,7 +288,7 @@ async function benchmarkCacheThroughput(testTensors: Float32Array[]): Promise<Be
   // Standard sequential operations
   const standardStart = Date.now()
   for (let i = 0; i < concurrentOps; i++) {
-    await new Promise((resolve) => setTimeout(resolve, 2)
+    await new Promise(resolve => setTimeout(resolve, 2));
   }
   const standardTime = Date.now() - standardStart
   return {
@@ -373,7 +377,7 @@ function cosineSimilarity(a: Float32Array, b: Float32Array): number {
     normA += a[i] * a[i]
     normB += b[i] * b[i]
   }
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB)
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 /**
  * Demonstrate batch processing capabilities
@@ -401,35 +405,35 @@ async function demonstrateBatchProcessing(data: any, options: any) {
     ).iterations || 10
   const testData = Array.from({ length: batchSize }, (_, i) => ({
     id: `batch_item_${i}`,
-    data: new Float32Array(Array.from({ length: 768 }, () => Math.random()))
-  })
+    data: new Float32Array(Array.from({ length: 768 }, () => Math.random())),
+  }));
   const results = []
   const startTime = Date.now()
   for (let i = 0; i < iterations; i++) {
     const iterationStart = Date.now()
     // Batch set operations
-    const setOps = testData.map((item) => ({
+    const setOps = testData.map(item => ({
       type: 'set' as const,
       key: `${(item as { id?: any; data?: any }).id}_${i}`,
       value: (item as { id?: any; data?: any }).data,
-      options: { ttl: 300, compress: true, parallel: true, priority: 'high' as const }
-    })
+      options: { ttl: 300, compress: true, parallel: true, priority: 'high' as const },
+    }));
     await optimizedCache.batch(setOps)
     // Batch get operations
-    const getOps = testData.map((item) => ({
+    const getOps = testData.map(item => ({
       type: 'get' as const,
       key: `${(item as { id?: any; data?: any }).id}_${i}`,
-      options: { decompress: true, parallel: true }
-    })
+      options: { decompress: true, parallel: true },
+    }));
     const retrieved = await optimizedCache.batch(getOps)
     const iterationTime = Date.now() - iterationStart
     results.push({
       iteration: i + 1,
       itemsProcessed: batchSize * 2, // set + get
-      processingTime: iterationTime
+      processingTime: iterationTime,
       throughput: (batchSize * 2) / (iterationTime / 1000),
-      allRetrieved: retrieved.every((item) => item instanceof Float32Array)
-    })
+      allRetrieved: retrieved.every(item => item instanceof Float32Array),
+    });
   }
   const totalTime = Date.now() - startTime
   return {
@@ -455,16 +459,16 @@ async function getDetailedStatistics() {
   const stats = await webgpuRedisOptimizer.getOptimizationStats()
   const cacheStats = await embeddingCache.getCacheStats()
   return {
-    webgpuOptimizer: stats
-    embeddingCache: cacheStats
+    webgpuOptimizer: stats,
+    embeddingCache: cacheStats,
     systemInfo: {
       nodeVersion: process.version,
       memoryUsage: process.memoryUsage(),
       cpuUsage: process.cpuUsage(),
-      uptime: process.uptime()
+      uptime: process.uptime(),
     },
-    timestamp: Date.now()
-  }
+    timestamp: Date.now(),
+  };
 }
 /**
  * Run stress test with high concurrency
@@ -480,7 +484,7 @@ async function runStressTest(data: any, options: any) {
   const workers = Array.from({ length: concurrency }, async (_, workerId) => {
     while (Date.now() - startTime < duration) {
       try {
-        const tensor = new Float32Array(Array.from({ length: tensorSize }, () => Math.random())
+          const tensor = new Float32Array(Array.from({ length: tensorSize }, () => Math.random()));
         const key = `stress_${workerId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         await optimizedCache.set(key, tensor, 60)
         const retrieved = await optimizedCache.get(key)
@@ -490,7 +494,7 @@ async function runStressTest(data: any, options: any) {
           errors++
         }
         // Small delay to prevent overwhelming the system
-        await new Promise((resolve) => setTimeout(resolve, Math.random() * 10)
+        await new Promise(resolve => setTimeout(resolve, Math.random() * 10));
       } catch (error) {
         errors++
       }
@@ -501,23 +505,23 @@ async function runStressTest(data: any, options: any) {
   return {
     testConfiguration: {
       concurrency,
-      requestedDuration: duration
+      requestedDuration: duration,
       actualDuration,
-      tensorSize
+      tensorSize,
     },
     results: {
-      completedOperations: completedOps
+      completedOperations: completedOps,
       errors,
       successRate: (completedOps / (completedOps + errors)) * 100,
       opsPerSecond: completedOps / (actualDuration / 1000),
-      avgResponseTime: actualDuration / completedOps
+      avgResponseTime: actualDuration / completedOps,
     },
     recommendations: {
       systemStability: errors < completedOps * 0.01 ? 'excellent' : 'needs-optimization',
       throughputRating: completedOps / (actualDuration / 1000) > 100 ? 'high' : 'moderate',
-      suggestedMaxConcurrency: Math.floor(concurrency * 0.8) // 80% of tested concurrency
-    }
-  }
+      suggestedMaxConcurrency: Math.floor(concurrency * 0.8), // 80% of tested concurrency
+    },
+  };
 }
 // DELETE - Clear demonstration cache data
 export const DELETE: RequestHandler = async () => {
