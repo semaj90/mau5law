@@ -4,7 +4,7 @@
   import { getBitsOverrides } from './bits-overrides';
   let { children }: { children?: Snippet } = $props();
 
-  let DialogContent: any = null;
+  let DialogContent = $state<any>(null);
   const overrides = getBitsOverrides();
 
   onMount(async () => {

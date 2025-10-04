@@ -5,45 +5,60 @@
   import DropdownMenuContent from './dropdown-menu/DropdownMenuContent.svelte';
   import DropdownMenuItem from './dropdown-menu/DropdownMenuItem.svelte';
   import DropdownMenuSeparator from './dropdown-menu/DropdownMenuSeparator.svelte';
-  // Component props
-  let { items = [] as unknown[],
-    trigger = 'Menu',
-    ...props
-   }: { items?: unknown[];
-    trigger?: string | import('svelte').Snippet;
-    ...props: unknown } = $props();
+  import type { SvelteComponent } from 'svelte';
+
+  // typed item shape to avoid 'unknown' issues
+  type DropdownItem = {
+    separator?: boolean;
+    value?: any;
+    disabled?: boolean;
+    onClick?: (value?: any) => void;
+    label?: string | typeof SvelteComponent;
+    href?: string; // added optional href
+  };
+
+  // exported props + rest props
+  export let items: DropdownItem[] = [];
+  export let trigger: string | typeof SvelteComponent = 'Menu';
+
+  // Svelte automatically provides `$$restProps` for forwarding all unhandled props to the root element.
+  // No need to declare it manually; see usage below for prop forwarding.
 </script>
 
-<DropdownMenuRoot {...props}>
+<!-- Forward all unhandled props to the DropdownMenuRoot for flexibility -->
+<DropdownMenuRoot {...$$restProps}>
   <DropdownMenuTrigger>
     {#if typeof trigger === 'string'}
       {trigger}
+    {:else if typeof trigger === 'function'}
+      <svelte:component this={trigger} />
     {:else}
-      {@render (trigger as import('svelte').Snippet)?.()}
+      <!-- fallback if trigger is invalid -->
+      Menu
     {/if}
   </DropdownMenuTrigger>
-  <DropdownMenuContent>
-    {#each items as item, index}
-      {#if (item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }).separator}
+
+  <!-- pass a sensible default collisionBoundary -->
+  <DropdownMenuContent collisionBoundary={typeof document !== 'undefined' ? document.body : undefined as unknown as Element}>
+    {#each items as item}
+      {#if item.separator}
         <DropdownMenuSeparator />
       {:else}
+        <!-- pass callback props expected by DropdownMenuItem and include href only when present -->
         <DropdownMenuItem
-          value={(
-            item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }
-          ).value}
-          disabled={(
-            item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }
-          ).disabled || false}
-          onclick={() =>
-            (
-              item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }
-            ).onClick?.(
-              (item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown })
-                .value,
-            )}
+          value={item.value}
+          href={item.href ?? undefined}
+          disabled={item.disabled ?? false}
+          onclick={() => item.onClick?.(item.value)}
+          onselect={() => item.onClick?.(item.value)}
         >
-          {(item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown })
-            .label}
+          {#if typeof item.label === 'string'}
+            {item.label}
+          {:else if typeof item.label === 'function'}
+            <svelte:component this={item.label as any} />
+          {:else}
+            <!-- no label or unsupported label type -->
+          {/if}
         </DropdownMenuItem>
       {/if}
     {/each}

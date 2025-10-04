@@ -11,11 +11,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   import CardContent from '$lib/components/ui/bits/CardContent.svelte';
   import CardTitle from '$lib/components/ui/bits/CardTitle.svelte';
   import Dialog from '$lib/components/ui/bits/Dialog.svelte';
-  import DialogTrigger from '$lib/components/ui/bits/DialogTrigger.svelte';
-  import DialogContent from '$lib/components/ui/bits/DialogContent.svelte';
-  import DialogTitle from '$lib/components/ui/bits/DialogTitle.svelte';
-  import DialogDescription from '$lib/components/ui/bits/DialogDescription.svelte';
-  import DialogClose from '$lib/components/ui/bits/DialogClose.svelte';
+  import DialogTrigger from '$lib/components/ui/wrappers/bits/DialogTrigger.svelte';
+  import DialogContent from '$lib/components/ui/wrappers/bits/DialogContent.svelte';
+  import DialogTitle from '$lib/components/ui/dialog/DialogTitle.svelte';
+  import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
+  import DialogClose from '$lib/components/ui/dialog/DialogClose.svelte';
   interface Props {
     data: PageData;
   }

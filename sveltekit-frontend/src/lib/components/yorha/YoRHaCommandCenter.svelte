@@ -83,13 +83,48 @@
     { id: 'generate-report', label: 'Generate Report', icon: '📊', route: '/report-builder', color: 'teal' },
     { id: 'memory-dashboard', label: 'Memory Graph', icon: '🧠', route: '/memory-dashboard', color: 'cyan' }
   ];
-  // System health indicators using Svelte 5 $derived
+  // helpers to safely coerce numbers
+  function safeNumber(n: number | undefined | null) {
+    return typeof n === 'number' && !isNaN(n) ? n : 0;
+  }
+
+  // make $derived robust (use safeNumber to avoid NaN)
   let systemHealth = $derived(() => {
-    const avgLoad = (systemData.systemLoad + systemData.gpuUtilization + systemData.memoryUsage) / 3;
+    const load = safeNumber(systemData.systemLoad);
+    const gpu = safeNumber(systemData.gpuUtilization);
+    const mem = safeNumber(systemData.memoryUsage);
+    const avgLoad = Math.round((load + gpu + mem) / 3);
     if (avgLoad > 85) return { status: 'critical', color: 'red', message: 'System under heavy load' }
     if (avgLoad > 70) return { status: 'warning', color: 'yellow', message: 'Elevated resource usage' }
     return { status: 'optimal', color: 'green', message: 'All systems operational' }
   });
+
+  // computed classes for status display (avoid invalid "bg-{...}" usage)
+  function statusDotClass() {
+    switch (systemHealth?.color) {
+      case 'green': return 'w-4 h-4 rounded-full bg-green-400 animate-pulse';
+      case 'yellow': return 'w-4 h-4 rounded-full bg-yellow-400 animate-pulse';
+      case 'red': return 'w-4 h-4 rounded-full bg-red-400 animate-pulse';
+      default: return 'w-4 h-4 rounded-full bg-gray-400 animate-pulse';
+    }
+  }
+  function statusTextClass() {
+    switch (systemHealth?.color) {
+      case 'green': return 'text-green-400 font-bold uppercase';
+      case 'yellow': return 'text-yellow-400 font-bold uppercase';
+      case 'red': return 'text-red-400 font-bold uppercase';
+      default: return 'text-gray-400 font-bold uppercase';
+    }
+  }
+
+  // progress bar background class helper
+  function progressBarClass(value: number | undefined) {
+    const v = safeNumber(value);
+    if (v > 80) return 'h-full rounded-full transition-all duration-300 bg-red-500';
+    if (v > 60) return 'h-full rounded-full transition-all duration-300 bg-yellow-500';
+    return 'h-full rounded-full transition-all duration-300 bg-green-500';
+  }
+
   // Animation cycle with error handling
   $effect(() => {
     try {
@@ -148,12 +183,14 @@
       showCaseModal = false;
     }
   }
+  // ensure activity helpers always return a string
   function getActivityIcon(type: string): string {
     switch (type) {
       case 'success': return '✅';
       case 'info': return 'ℹ️';
       case 'ai': return '🤖';
       case 'warning': return '⚠️';
+      default: return '•';
     }
   }
   function getActivityColor(type: string): string {
@@ -162,6 +199,7 @@
       case 'info': return 'border-blue-400 bg-blue-400/10 text-blue-300';
       case 'ai': return 'border-purple-400 bg-purple-400/10 text-purple-300';
       case 'warning': return 'border-yellow-400 bg-yellow-400/10 text-yellow-300';
+      default: return 'border-gray-400 bg-gray-400/10 text-gray-300';
     }
   }
   function getActionColor(color: string): string {
@@ -173,8 +211,30 @@
       case 'teal': return 'border-teal-400 bg-teal-400/10 hover:bg-teal-400/20 text-teal-300';
       case 'pink': return 'border-pink-400 bg-pink-400/10 hover:bg-pink-400/20 text-pink-300';
       case 'cyan': return 'border-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 text-cyan-300';
+      default: return '';
     }
   }
+
+  // add a component ref to attach runtime event listeners (typed as any to avoid TS component-event coupling)
+  let searchComponent: any = null;
+
+  // attach the 'select' listener at runtime to avoid compile-time on: event type checks
+  $effect(() => {
+    if (!searchComponent) return;
+    const handler = (e: CustomEvent<SearchResultEventDetail>) => {
+      recentActivity = [{
+        id: Date.now(),
+        action: 'Search Query Executed',
+        target: `"${e.detail.title}"`,
+        time: 'just now',
+        type: 'ai'
+      }, ...recentActivity.slice(0, 4)];
+    };
+    searchComponent.addEventListener('select', handler as EventListener);
+    return () => {
+      searchComponent?.removeEventListener('select', handler as EventListener);
+    };
+  });
 </script>
 <!-- Command Center Dashboard -->
 {#if componentError}
@@ -204,9 +264,9 @@
         </p>
       </div>
       <div class="status-indicator flex items-center space-x-3">
-        <div class="w-4 h-4 rounded-full bg-{systemHealth.color}-400 animate-pulse"></div>
-        <span class="text-{systemHealth.color}-400 font-bold uppercase">
-          {systemHealth.status}
+        <div class={statusDotClass()} aria-hidden="true"></div>
+        <span class={statusTextClass()}>
+          {systemHealth?.status}
         </span>
       </div>
     </div>
@@ -271,8 +331,8 @@
           </div>
           <div class="progress-bar w-full h-2 bg-yorha-dark rounded-full overflow-hidden">
             <div
-              class="h-full rounded-full transition-all duration-300 {systemData.systemLoad > 80 ? 'bg-red-500' : systemData.systemLoad > 60 ? 'bg-yellow-500' : 'bg-green-500'}"
-              style="width: {systemData.systemLoad}%"
+              class={progressBarClass(systemData.systemLoad)}
+              style={"width: " + safeNumber(systemData.systemLoad) + "%"}
             ></div>
           </div>
         </div>
@@ -283,8 +343,8 @@
           </div>
           <div class="progress-bar w-full h-2 bg-yorha-dark rounded-full overflow-hidden">
             <div
-              class="h-full rounded-full transition-all duration-300 {systemData.gpuUtilization > 80 ? 'bg-red-500' : systemData.gpuUtilization > 60 ? 'bg-yellow-500' : 'bg-green-500'}"
-              style="width: {systemData.gpuUtilization}%"
+              class={progressBarClass(systemData.gpuUtilization)}
+              style={"width: " + safeNumber(systemData.gpuUtilization) + "%"}
             ></div>
           </div>
         </div>
@@ -295,8 +355,8 @@
           </div>
           <div class="progress-bar w-full h-2 bg-yorha-dark rounded-full overflow-hidden">
             <div
-              class="h-full rounded-full transition-all duration-300 {systemData.memoryUsage > 80 ? 'bg-red-500' : systemData.memoryUsage > 60 ? 'bg-yellow-500' : 'bg-green-500'}"
-              style="width: {systemData.memoryUsage}%"
+              class={progressBarClass(systemData.memoryUsage)}
+              style={"width: " + safeNumber(systemData.memoryUsage) + "%"}
             ></div>
           </div>
         </div>
@@ -362,19 +422,10 @@
         </script>
       -->
       <RealTimeLegalSearch
+        bind:this={searchComponent}
         placeholder="Search cases, evidence, precedents, statutes..."
         categories={['cases', 'evidence', 'precedents', 'statutes', 'criminals']}
         enableVectorSearch={true}
-        on:select={(result: CustomEvent<SearchResultEventDetail>) => { // Correctly type the event
-          // Handle search result selection
-          recentActivity = [{
-            id: Date.now(),
-            action: 'Search Query Executed',
-            target: `"${result.detail.title}"`, // Access title directly
-            time: 'just now',
-            type: 'ai'
-          }, ...recentActivity.slice(0, 4)];
-        }}
       />
     </div>
   </div>
@@ -421,9 +472,9 @@
          role="none"
          tabindex="-1">
       <YoRHaCaseForm
-        onsuccess={handleCaseCreationSuccess}
-        onerror={handleCaseCreationError}
-        onclose={() => showCaseModal = false}
+        on:success={handleCaseCreationSuccess}
+        on:error={handleCaseCreationError}
+        on:close={() => showCaseModal = false}
       />
     </div>
   </div>
@@ -485,8 +536,8 @@
     animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   @keyframes fadeIn {
-    from { opacity: 0, }
-    to { opacity: 1, }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
   @keyframes slideIn {
     from {

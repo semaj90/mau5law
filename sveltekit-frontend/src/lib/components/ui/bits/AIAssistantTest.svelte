@@ -7,19 +7,16 @@
 		CardHeader,
 		CardTitle,
 		Button,
-		AIChatMessage,
-		AISearchBar,
-		Alert,
-		AlertDescription
+		Alert
 	} from './index.js';
-	import { Bot, CheckCircle, AlertTriangle } from 'lucide-svelte';
+	import { Bot, CheckCircle } from 'lucide-svelte';
 	// Test data
 	let testMessages = $state([
 		{
 			role: 'user',
 			content: 'Can you analyze this contract for potential risks?',
 			timestamp: new Date().toLocaleTimeString(),
-			references: [];
+			references: []
 		},
 		{
 			role: 'assistant',
@@ -34,20 +31,19 @@
 			role: 'system',
 			content: 'Analysis completed with 94% confidence. 2 similar cases found in database.',
 			timestamp: new Date().toLocaleTimeString(),
-			references: [];
+			references: []
 		}
 	]);
 	let searchQuery = $state('');
 	let testStatus = $state('ready');
+	// Local replacement state for the search bar
+	let aiSearchTerm = $state('');
 	function handleAISearch(query: string) {
 		searchQuery = query;
 		testStatus = 'searching';
 		// Simulate AI search
 		setTimeout(() => {
 			testStatus = 'completed';
-			testMessages.push.toLocaleTimeString(),
-				references: [];
-			});
 			testMessages.push({
 				role: 'assistant',
 				content: `Based on your query "${query}", I found relevant legal precedents and can provide detailed analysis. This appears to be related to ${query.includes('contract') ? 'contract law' : 'general legal matters'}.`,
@@ -60,8 +56,10 @@
 		testMessages = [];
 		testStatus = 'ready';
 		searchQuery = '';
+		aiSearchTerm = '';
 	}
 </script>
+
 <div class="p-6 max-w-4xl mx-auto space-y-6">
 	<Card class="border-2 border-primary/20">
 		<CardHeader>
@@ -78,41 +76,48 @@
 		<CardContent class="space-y-4">
 			<!-- Status Alert -->
 			{#if testStatus === 'ready'}
-				<Alert class="border-green-200 bg-green-50">
-					<CheckCircle class="w-4 h-4 text-green-600" />
-					<AlertDescription class="text-green-800">
-						AI Assistant components loaded successfully. Ready for testing.
-					</AlertDescription>
-				</Alert>
+				<div class="border-green-200 bg-green-50 rounded">
+					<Alert>
+						<div class="flex items-center gap-2 p-2">
+							<CheckCircle class="w-4 h-4 text-green-600" />
+							<span class="text-green-800">AI Assistant components loaded successfully. Ready for testing.</span>
+						</div>
+					</Alert>
+				</div>
 			{:else if testStatus === 'searching'}
-				<Alert class="border-blue-200 bg-blue-50">
-					<Bot class="w-4 h-4 text-blue-600 animate-pulse" />
-					<AlertDescription class="text-blue-800">
-						Processing AI search query...
-					</AlertDescription>
-				</Alert>
+				<div class="border-blue-200 bg-blue-50 rounded">
+					<Alert>
+						<div class="flex items-center gap-2 p-2">
+							<Bot class="w-4 h-4 text-blue-600 animate-pulse" />
+							<span class="text-blue-800">Processing AI search query...</span>
+						</div>
+					</Alert>
+				</div>
 			{:else if testStatus === 'completed'}
-				<Alert class="border-purple-200 bg-purple-50">
-					<CheckCircle class="w-4 h-4 text-purple-600" />
-					<AlertDescription class="text-purple-800">
-						AI search completed. Results added to conversation.
-					</AlertDescription>
-				</Alert>
+				<div class="border-purple-200 bg-purple-50 rounded">
+					<Alert>
+						<div class="flex items-center gap-2 p-2">
+							<CheckCircle class="w-4 h-4 text-purple-600" />
+							<span class="text-purple-800">AI search completed. Results added to conversation.</span>
+						</div>
+					</Alert>
+				</div>
 			{/if}
-			<!-- AI Search Bar Test -->
+			<!-- AI Search Bar Test (local replacement) -->
 			<div class="space-y-2">
 				<h3 class="font-semibold text-sm">AI Search Bar Component</h3>
-				<AISearchBar
-					placeholder="Test AI search functionality..."
-					userContext={{
-						testMode: true
-						caseId: 'test-case-001'
-					}}
-					analyticsLog={(event) => console.log('AI Search Test:', event)}
-					onsearch={handleAISearch}
-				/>
+				<form on:submit|preventDefault={() => handleAISearch(aiSearchTerm)}>
+					<div class="flex gap-2">
+						<input
+							class="form-control"
+							placeholder="Test AI search functionality..."
+							bind:value={aiSearchTerm}
+						/>
+						<Button type="submit">Search</Button>
+					</div>
+				</form>
 			</div>
-			<!-- Chat Messages Test -->
+			<!-- Chat Messages Test (inline rendering instead of AIChatMessage component) -->
 			<div class="space-y-2">
 				<div class="flex items-center justify-between">
 					<h3 class="font-semibold text-sm">AI Chat Messages Component</h3>
@@ -133,10 +138,24 @@
 						</div>
 					{:else}
 						{#each testMessages as message}
-							<AIChatMessage
-								{message}
-								showReferences={true}
-							/>
+							<!-- inline representation -->
+							<div class="p-3 rounded bg-white/60 border">
+								<div class="flex justify-between items-center text-xs text-muted-foreground mb-1">
+									<strong class="capitalize">{message.role}</strong>
+									<span>{message.timestamp}</span>
+								</div>
+								<div class="text-sm">{message.content}</div>
+								{#if message.references && message.references.length}
+									<div class="mt-2 text-xs text-muted-foreground">
+										<strong>References:</strong>
+										<ul class="list-disc list-inside ml-4">
+											{#each message.references as ref}
+												<li>{ref.id} ({ref.score})</li>
+											{/each}
+										</ul>
+									</div>
+								{/if}
+							</div>
 						{/each}
 					{/if}
 				</div>

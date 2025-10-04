@@ -69,6 +69,7 @@ Upon deeper analysis, several concepts I labeled as "empty stubs" actually have 
   - MinIO integration
   - Evidence processing
   - Neural sprite data processing
+  to do: embeddinggemma:latest
 
 ### **7. Additional CUDA Services**
 - **`go-microservice/cmd/gpu_inference_server/main.go`** - **FUNCTIONAL**
@@ -170,6 +171,7 @@ find go-microservice/ -name "*.go" -size 0 -exec mv {} archive/empty-stubs/ \;
 ### **Chat Functionality:**
 - **Frontend:** Multiple AI chat components (ChatInterface.svelte, etc.)
 - **Backend:** `go-chat-service/main.go` (27KB) ← **MAJOR SERVICE**
+**Backend:** `artifact-indexing-service.go` (15KB) ← **FUNCTIONAL**
 - **Integration:** WebGPU → CUDA Workers → Go service
 
 ### **Evidence Indexing:**

@@ -44,13 +44,17 @@ async function initializeDB() {
         file_size INTEGER,
         content TEXT,
         metadata JSONB DEFAULT '{}',
-        embedding vector(384),
+        embedding vector(768),
+        embedding_384 vector(384),
         processed_at TIMESTAMP DEFAULT NOW(),
         created_at TIMESTAMP DEFAULT NOW()
       );
 
       CREATE INDEX IF NOT EXISTS idx_rag_embedding
       ON rag_documents USING hnsw (embedding vector_cosine_ops);
+
+      CREATE INDEX IF NOT EXISTS idx_rag_embedding_384
+      ON rag_documents USING hnsw (embedding_384 vector_cosine_ops);
 
       CREATE INDEX IF NOT EXISTS idx_rag_content_hash
       ON rag_documents(content_hash);
@@ -215,7 +219,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Store main document
     const documentResult = await pgClient.query(`
       INSERT INTO rag_documents (
-        filename, content_hash, file_type, file_size, content, metadata, embedding
+        filename, content_hash, file_type, file_size, content, metadata, embedding_384
       ) VALUES ($1, $2, $3, $4, $5, $6, $7::vector)
       RETURNING id
     `, [
@@ -229,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
         uploadedAt: new Date().toISOString(),
         extractionMethod: 'text_extraction'
       },
-      JSON.stringify(embeddings[0]) // Primary document embedding
+      JSON.stringify(embeddings[0]) // Primary document embedding (384-dim)
     ]);
 
     const documentId = documentResult.rows[0].id;
@@ -241,11 +245,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
       await pgClient.query(`
         INSERT INTO knowledge_base (
-          chunk_id, content, embedding, metadata, chunk_type, source_file
+          chunk_id, content, embedding_384, metadata, chunk_type, source_file
         ) VALUES ($1, $2, $3::vector, $4, $5, $6)
         ON CONFLICT (chunk_id) DO UPDATE SET
           content = $2,
-          embedding = $3::vector,
+          embedding_384 = $3::vector,
           metadata = $4
       `, [
         `rag:${file.name}:chunk${i}`,

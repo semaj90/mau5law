@@ -1,25 +1,30 @@
 import { z } from 'zod';
-import {
-  withApiHandler,
-  parseRequestBody,
-  apiSuccess,
-  validationError,
-  createPagination,
-  CommonErrors,
-} from '$lib/server/api/response';
+import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib/server/api/response';
 import { CaseOperations } from '$lib/server/db/enhanced-operations';
-import type { Case } from '$lib/server/db/schema-postgres';
 import { createClient } from 'redis';
 import type { RequestHandler } from './$types.js';
+import { dev } from '$app/environment';
+
+// add a small safe type for import.meta.env usage to avoid `any`
+type SafeImportMetaEnv = {
+  DEV_BYPASS_AUTH?: string;
+  REDIS_URL?: string;
+  [key: string]: string | undefined;
+};
+const metaEnv: SafeImportMetaEnv = (import.meta as unknown as { env?: SafeImportMetaEnv }).env ?? {};
+
 // Redis client for worker communication
-let redisClient: ReturnType<typeof createClient> | null = null;
+// Use an inferred client type to avoid relying on package-exported type names
+type LocalRedisClient = ReturnType<typeof createClient>;
+
+let redisClient: LocalRedisClient | null = null;
 let redisUnavailable = false;
-async function getRedisClient(): Promise<any> {
+async function getRedisClient(): Promise<LocalRedisClient | null> {
   if (redisUnavailable) return null;
   if (!redisClient) {
     try {
       redisClient = createClient({
-        url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+        url: metaEnv.REDIS_URL || 'redis://localhost:6379',
         socket: { connectTimeout: 5000 },
       });
       await redisClient.connect();
@@ -31,26 +36,34 @@ async function getRedisClient(): Promise<any> {
   }
   return redisClient;
 }
+
+// Resolve user with optional development bypass
+function resolveUser(locals: App.Locals) {
+  if (locals?.user) return locals.user;
+  const bypass =
+    process.env.DEV_BYPASS_AUTH === 'true' ||
+    (metaEnv.DEV_BYPASS_AUTH !== undefined && metaEnv.DEV_BYPASS_AUTH === 'true');
+  if (dev && bypass) {
+    console.warn('DEV_BYPASS_AUTH active — returning development stub user');
+    return { id: '1', email: 'dev@local', name: 'Developer' };
+  }
+  return null;
+}
+
 // Worker trigger function
 async function triggerWorkerProcessing(
   caseId: string,
-  options: {
-    priority: string;
-    caseType: string;
-    userId: string;
-    trigger: string;
-    metadata?: any;
-  },
-): Promise<any> {
+  options: { priority: string; caseType: string; userId: string; trigger: string; metadata?: Record<string, unknown> }
+): Promise<void> {
   const redis = await getRedisClient();
   if (!redis) return; // silently skip if unavailable in dev
   const correlationId = `case-${caseId}-${Date.now()}`;
   // Create Redis stream event for worker
-  const eventData = {
+  const eventData: Record<string, string> = {
     id: correlationId,
     type: 'case_created',
     action: 'process',
-    caseId: caseId,
+    caseId,
     evidenceId: '',
     documentId: '',
     metadata: JSON.stringify({
@@ -63,9 +76,10 @@ async function triggerWorkerProcessing(
     }),
     retry: '0',
     timestamp: Date.now().toString(),
-  }
+  };
   // Add to Redis stream for worker consumption
   const streamName = 'autotag:requests';
+  // Call xAdd with properly typed client & payload
   await redis.xAdd(streamName, '*', eventData);
   console.log(`📡 Worker event sent: ${streamName} -> ${correlationId}`);
 }
@@ -75,11 +89,11 @@ const createCaseSchema = z.object({
   description: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   status: z.enum(['open', 'investigating', 'pending', 'closed', 'archived']).default('open'),
-  incidentDate: z
-    .string()
-    .datetime()
-    .optional()
-    .transform(str => (str ? new Date(str) : undefined)),
+  // Accept either a string or Date and produce a Date | undefined
+  incidentDate: z.preprocess(val => {
+    if (typeof val === 'string' && val.length > 0) return new Date(val);
+    return val;
+  }, z.date().optional()),
   location: z.string().optional(),
   jurisdiction: z.string().optional(),
 });
@@ -88,16 +102,11 @@ const searchCasesSchema = z.object({
   status: z.array(z.string()).optional(),
   priority: z.array(z.string()).optional(),
   assignedTo: z.string().optional(),
+  // Accept string or Date for range boundaries
   dateRange: z
     .object({
-      start: z
-        .string()
-        .datetime()
-        .transform(str => new Date(str)),
-      end: z
-        .string()
-        .datetime()
-        .transform(str => new Date(str)),
+      start: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date()),
+      end: z.preprocess(val => (typeof val === 'string' ? new Date(val) : val), z.date()),
     })
     .optional(),
   page: z.number().min(1).default(1),
@@ -105,16 +114,11 @@ const searchCasesSchema = z.object({
   useVectorSearch: z.boolean().default(true),
 });
 // GET - List cases with advanced search and filtering
-export const GET: RequestHandler = async (_event: any) => {
+export const GET: RequestHandler = async event => {
   return withApiHandler(async ({ url, locals }) => {
-    // Get user from session
-    const user = locals.user;
+    // Resolve user (supports DEV_BYPASS_AUTH in dev)
+    const user = resolveUser(locals);
     if (!user) {
-      // In development we may want a clearer hint rather than raw 401
-      if (process.env.DEV_BYPASS_AUTH === 'true' || (import.meta as any).env?.DEV_BYPASS_AUTH === 'true') {
-        console.warn('DEV_BYPASS_AUTH enabled but locals.user missing; returning empty case list');
-        return { cases: [], pagination: createPagination(1, 1, 0), search: null, devBypass: true };
-      }
       throw CommonErrors.Unauthorized('User authentication required');
     }
     // Parse and validate query parameters
@@ -157,22 +161,21 @@ export const GET: RequestHandler = async (_event: any) => {
             }
           : null,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
-        throw CommonErrors.ValidationFailed('search parameters', error.errors[0]?.message || 'Invalid parameters');
+        const message = error.errors.map(e => e.message).join('; ');
+        throw CommonErrors.ValidationFailed('search parameters', message || 'Invalid parameters');
       }
       throw error;
     }
-  }, _event);
-}
+  }, event);
+};
 // POST - Create new case
-export const POST: RequestHandler = async (_event: any) => {
+export const POST: RequestHandler = async event => {
   return withApiHandler(async ({ request, locals }) => {
-    // Get authenticated user
-    const user = locals.user;
-    if (!user) {
-      throw CommonErrors.Unauthorized('User authentication required');
-    }
+    // Get authenticated user (or dev stub)
+    const user = resolveUser(locals);
+    if (!user) throw CommonErrors.Unauthorized('User authentication required');
     // Parse and validate request body
     const caseData = await parseRequestBody(request, createCaseSchema);
     try {
@@ -209,23 +212,21 @@ export const POST: RequestHandler = async (_event: any) => {
           workerTriggered: true,
           timestamp: new Date().toISOString(),
         },
-      }
-    } catch (error: any) {
+      };
+    } catch (error: unknown) {
       if (error instanceof Error && error.message.includes('duplicate')) {
         throw CommonErrors.BadRequest('Case with similar details already exists');
       }
       throw error;
     }
   }, event);
-}
+};
 // Additional endpoints
 // PUT - Update existing case
-export const PUT: RequestHandler = async (_event: any) => {
+export const PUT: RequestHandler = async event => {
   return withApiHandler(async ({ request, url, locals }) => {
-    const user = locals.user;
-    if (!user) {
-      throw CommonErrors.Unauthorized('User authentication required');
-    }
+    const user = resolveUser(locals);
+    if (!user) throw CommonErrors.Unauthorized('User authentication required');
     const caseId = url.searchParams.get('id');
     if (!caseId) {
       throw CommonErrors.BadRequest('Case ID is required');
@@ -238,23 +239,29 @@ export const PUT: RequestHandler = async (_event: any) => {
       return {
         case: updatedCase,
         message: 'Case updated successfully',
-      }
-    } catch (error: any) {
+      };
+    } catch (error: unknown) {
       if (error instanceof Error && error.message.includes('not found')) {
         throw CommonErrors.NotFound('Case');
       }
       throw error;
     }
   }, event);
-}
+};
 // OPTIONS - CORS preflight
 export const OPTIONS: RequestHandler = async () => {
-  return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+  // In development, allow all origins for easier testing.
+  // In production, restrict to your frontend domain for security.
+  const allowedOrigin = process.env.NODE_ENV === 'production' ? 'https://your-frontend-domain.com' : '*';
+
+  const headers = new Headers({
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   });
-}
+
+  // 204 No Content for preflight
+  return new Response(null, { status: 204, headers });
+};
+// Note: Using '*' for 'Access-Control-Allow-Origin' is only safe in development.
+// Replace 'https://your-frontend-domain.com' with your actual production domain.

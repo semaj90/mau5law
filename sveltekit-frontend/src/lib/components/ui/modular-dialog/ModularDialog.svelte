@@ -230,24 +230,35 @@
               </p>
             {/if}
           </div>
-          <!-- Refresh button -->
-          {#if entityType && entityId}
-            <button
-              on:click={refresh}
-              disabled={isLoading}
-              class="p-1 rounded-sm opacity-70 hover:opacity-100 transition-opacity disabled:opacity-50 mr-2"
-              title="Refresh data"
-            >
-              <RefreshCw class={cn("h-4 w-4", isLoading && "animate-spin")} />
-            </button>
-          {/if}
+          <!-- Action buttons (refresh, close) with consistent spacing -->
+          <div class="flex items-center gap-2">
+            {#if entityType && entityId}
+              <button
+                onclick={refresh}
+                disabled={isLoading}
+                class="p-1 rounded-sm opacity-70 hover:opacity-100 transition-opacity disabled:opacity-50"
+                title="Refresh data"
+              >
+                <RefreshCw class={cn("h-4 w-4", isLoading && "animate-spin")} />
+              </button>
+            {/if}
+            {#if showClose}
+              <Dialog.Close
+                class="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+                onclick={() => handleOpenChange(false)}
+              >
+                <X class="h-4 w-4" />
+                <span class="sr-only">Close</span>
+              </Dialog.Close>
+            {/if}
+          </div>
         </div>
       </div>
       <!-- Close Button -->
       {#if showClose}
         <Dialog.Close
           class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
-          on:click={() => handleOpenChange(false)}
+          onclick={() => handleOpenChange(false)}
         >
           <X class="h-4 w-4" />
           <span class="sr-only">Close</span>
@@ -278,7 +289,7 @@
                   <p class="font-mono text-xs nes-text is-disabled mt-1">{errorMessage}</p>
                 </div>
                 <button
-                  on:click={refresh}
+                  onclick={refresh}
                   class="px-3 py-1 text-xs bg-muted hover:bg-muted/80 rounded-md font-mono transition-colors"
                 >
                   Try Again

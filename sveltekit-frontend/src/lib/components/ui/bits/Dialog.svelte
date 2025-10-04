@@ -1,10 +1,7 @@
-<!-- SSR-optimized Dialog component for Legal AI Platform -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { Snippet } from 'svelte';
-  // import { Dialog as BitsDialog } from 'bits-ui'
-  import { fade, fly } from 'svelte/transition';
+  import * as BitsDialog from 'bits-ui';
   import { cn } from '$lib/utils/cn';
+
   interface DialogProps {
     /** Whether the dialog is open */
     open?: boolean;
@@ -24,12 +21,10 @@
     overlayClass?: string;
     /** Custom content class */
     contentClass?: string;
-    /** Children content */
-    children?: import('svelte').Snippet;
-    /** Content snippet for dialog content */
-    content?: import('svelte').Snippet;
   }
-  let { open = $bindable(false),
+
+  let {
+    open = $bindable(false),
     onOpenChange,
     size = 'md',
     legal = false,
@@ -37,103 +32,143 @@
     caseManagement = false,
     modal = true,
     overlayClass = '',
-    contentClass = '',
-    children,
-    content
-   }: DialogProps = $props();
-  // Reactive size classes using $derived
-  let sizeClasses = $derived({
-    'max-w-md': size === 'sm',
-    'max-w-lg': size === 'md',
-    'max-w-2xl': size === 'lg',
-    'max-w-4xl': size === 'xl',
-    'max-w-[95vw] max-h-[95vh]': size === 'full'
-  }[size] ? {
-    'max-w-md': size === 'sm',
-    'max-w-lg': size === 'md',
-    'max-w-2xl': size === 'lg',
-    'max-w-4xl': size === 'xl',
-    'max-w-[95vw] max-h-[95vh]': size === 'full'
-  } : 'max-w-lg');
-  // Reactive content classes using $derived
-  let dialogContentClasses = $derived(cn(
+    contentClass = ''
+  }: DialogProps = $props();
+
+  const dialogContentClasses = $derived(cn(
     'bits-dialog-content',
-    {
-      'max-w-md': size === 'sm',
-      'max-w-lg': size === 'md',
-      'max-w-2xl': size === 'lg',
-      'max-w-4xl': size === 'xl',
-      'max-w-[95vw] max-h-[95vh]': size === 'full',
-      'nier-bits-dialog': legal
-      'yorha-panel border-2 border-nier-border-primary': evidenceAnalysis
-      'yorha-card-elevated shadow-2xl': caseManagement
-      'font-gothic': legal
-    },
+    size === 'sm' && 'max-w-md',
+    size === 'md' && 'max-w-lg',
+    size === 'lg' && 'max-w-2xl',
+    size === 'xl' && 'max-w-4xl',
+    size === 'full' && 'max-w-full',
     contentClass
-  );
-  // Reactive overlay classes using $derived
-  let overlayClasses = $derived(cn(
+  ));
+
+  const overlayClasses = $derived(cn(
     'bits-dialog-overlay',
-    {
-      'backdrop-blur-md': legal
-      'bg-nier-overlay': evidenceAnalysis || caseManagement
-    },
+    legal && 'backdrop-blur-md',
+    evidenceAnalysis && 'bg-nier-evidence-overlay',
+    caseManagement && 'bg-nier-case-overlay',
+    (evidenceAnalysis || caseManagement) && 'bg-nier-overlay',
     overlayClass
   ));
-  // Handle open change
+
   function handleOpenChange(newOpen: boolean) {
-    open = newOpe;
     onOpenChange?.(newOpen);
   }
-  // Handle close dialog
-  function handleClose() {
-    handleOpenChange(false);
-  }
+
+  const BitsDialogRoot: any =
+    (BitsDialog as any).Root ??
+    (BitsDialog as any).Dialog ??
+    (BitsDialog as any).default ??
+    BitsDialog;
+
+  const BitsDialogPortal: any =
+    (BitsDialog as any).Portal ??
+    (BitsDialog as any).DialogPortal ??
+    null;
+
+  const BitsDialogOverlay: any =
+    (BitsDialog as any).Overlay ??
+    (BitsDialog as any).DialogOverlay ??
+    null;
+
+  const BitsDialogContent: any =
+    (BitsDialog as any).Content ??
+    (BitsDialog as any).DialogContent ??
+    null;
 </script>
 
-<!-- SSR-safe Dialog rendering with proper hydration -->
-{#if open}
-  <div class="dialog-overlay" onclick={handleClose} role="presentation">
-    <div class="dialog-content" onclick={e => e.stopPropagation()} role="dialog" aria-modal="true">
-      {@render children?.()}
-    </div>
-  </div>
+{#if BitsDialogRoot}
+	<BitsDialogRoot
+		open={open}
+		on:openChange={(e: CustomEvent) => handleOpenChange((e as any).detail ?? e)}
+	>
+		{#if BitsDialogPortal}
+			<BitsDialogPortal>
+				{#if BitsDialogOverlay}
+					<BitsDialogOverlay
+						class={overlayClasses}
+						data-ssr-dialog-overlay="true"
+						data-evidence-analysis={evidenceAnalysis}
+						data-case-management={caseManagement}
+					></BitsDialogOverlay>
+				{/if}
+
+				{#if BitsDialogContent}
+					<BitsDialogContent
+						class={dialogContentClasses}
+						data-ssr-dialog-content="true"
+						role="dialog"
+						aria-modal={modal}
+						tabindex="-1"
+						data-evidence-analysis={evidenceAnalysis}
+						data-case-management={caseManagement}
+					>
+						<div class="bits-dialog-accent"></div>
+						{#if $$slots.default}
+							{@render $$slots.default}
+						{/if}
+					</BitsDialogContent>
+				{/if}
+			</BitsDialogPortal>
+		{:else}
+			{#if BitsDialogOverlay}
+				<BitsDialogOverlay
+					class={overlayClasses}
+					data-ssr-dialog-overlay="true"
+					data-evidence-analysis={evidenceAnalysis}
+					data-case-management={caseManagement}
+				></BitsDialogOverlay>
+			{/if}
+
+			{#if BitsDialogContent}
+				<BitsDialogContent
+					class={dialogContentClasses}
+					data-ssr-dialog-content="true"
+					role="dialog"
+					aria-modal={modal}
+					tabindex="-1"
+					data-evidence-analysis={evidenceAnalysis}
+					data-case-management={caseManagement}
+				>
+					<div class="bits-dialog-accent"></div>
+					{#if $$slots.default}
+						{@render $$slots.default}
+					{/if}
+				</BitsDialogContent>
+			{/if}
+		{/if}
+	</BitsDialogRoot>
+{:else}
+	<div class={cn('bits-dialog-content', 'nier-bits-dialog', dialogContentClasses)} role="dialog" aria-modal={modal} hidden={!open} data-evidence-analysis={evidenceAnalysis} data-case-management={caseManagement}>
+		<div class="bits-dialog-accent"></div>
+		{#if $$slots.default}
+			{@render $$slots.default}
+		{/if}
+	</div>
 {/if}
 
-<!-- Portal rendering for dialog content with SSR compatibility -->
-<!-- <BitsDialog.Portal>
-    <BitsDialog.Overlay
-      class={overlayClasses}
-      data-ssr-dialog-overlay="true"
-    />
-    <BitsDialog.Content
-      class={dialogContentClasses}
-      data-ssr-dialog-content="true"
-      role="dialog"
-      aria-modal="true"
-      tabindex="-1"
-    >
-      {@render content?.()}
-    <!-- </BitsDialog.Content>
-  </BitsDialog.Portal>
-</BitsDialog.Root> -->
-<!-- Export sub-components for easy use -->
-<!-- <script lang="ts" module>
-  export { BitsDialog as Dialog }
-  // Re-export commonly used sub-components
-  export const DialogTrigger = BitsDialog.Trigger;
-  export const DialogPortal = BitsDialog.Portal;
-  export const DialogOverlay = BitsDialog.Overlay;
-  export const DialogContent = BitsDialog.Content;
-  export const DialogTitle = BitsDialog.Titl;
-  export const DialogDescription = BitsDialog.Descriptio;
-  export const DialogClose = BitsDialog.Clo;
-  // Create custom header and footer components since they don't exist in newer Bits UI
+<script lang="ts" module>
+  import * as BitsDialogModule from 'bits-ui';
+
+  export const Dialog = BitsDialogModule;
+  export const DialogTrigger = (BitsDialogModule as any).Trigger;
+  export const DialogPortal = (BitsDialogModule as any).Portal;
+  export const DialogOverlay = (BitsDialogModule as any).Overlay;
+  export const DialogContent = (BitsDialogModule as any).Content;
+  export const DialogTitle = (BitsDialogModule as any).Title;
+  export const DialogDescription = (BitsDialogModule as any).Description;
+  export const DialogClose = (BitsDialogModule as any).Close;
+
   export const DialogHeader = 'div';
   export const DialogFooter = 'div';
-</script> -->
+</script>
+
 <style>
-/* @unocss-include */ /* Enhanced dialog animations for legal AI context */ :global(.bits-dialog-overlay) {
+  /* @unocss-include */
+  :global(.bits-dialog-overlay) {
     animation: overlay-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   :global(.bits-dialog-content) {
@@ -157,81 +192,92 @@
       transform: translate(-50%, -50%) scale(1);
     }
   }
-/* Legal AI specific styling */ :global(.nier-bits-dialog) {
-background: linear-gradient( 135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100% );
+
+  :global(.nier-bits-dialog) {
+    background: linear-gradient(
+      135deg,
+      var(--color-nier-bg-primary) 0%,
+      var(--color-nier-bg-secondary) 100%
+    );
     border: 2px solid var(--color-nier-border-primary);
   }
-  :global($1) {
+
+  :global(.bits-dialog-accent) {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 4px;
-background: linear-gradient( 90deg, var(--color-nier-accent-warm), var(--color-nier-accent-cool), var(--color-nier-accent-warm) );
+    background: linear-gradient(
+      90deg,
+      var(--color-nier-accent-warm),
+      var(--color-nier-accent-cool),
+      var(--color-nier-accent-warm)
+    );
   }
-/* Evidence analysis specific styling */ :global([data-evidence-analysis] .bits-dialog-content) {
-background-image: linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%), linear-gradient(-45deg, transparent 25%, rgba(0,0,0,0.02) 25%), linear-gradient(45deg, rgba(0,0,0,0.02) 75%, transparent 75%), linear-gradient(-45deg, rgba(0,0,0,0.02) 75%, transparent 75%);
+
+  :global([data-evidence-analysis] .bits-dialog-content) {
+    background-image: linear-gradient(45deg, transparent 25%, rgba(0, 0, 0, 0.02) 25%),
+      linear-gradient(-45deg, transparent 25%, rgba(0, 0, 0, 0.02) 25%),
+      linear-gradient(45deg, rgba(0, 0, 0, 0.02) 75%, transparent 75%),
+      linear-gradient(-45deg, rgba(0, 0, 0, 0.02) 75%, transparent 75%);
     background-size: 20px 20px;
-    background-position:  0, 0 10px, 10px -10px, -10px 0px;
+    background-position: 0, 0 10px, 10px -10px, -10px 0px;
   }
-/* Case management specific styling */ :global([data-case-management] .bits-dialog-content) {
-box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  :global([data-case-management] .bits-dialog-content) {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-/* SSR-specific optimizations for dialog rendering */ {}
+
   :global([data-ssr-dialog-overlay]) {
-/* Ensure overlay renders properly during SSR */ {}
     position: fixed;
-d;
     inset: 0;
     z-index: 50;
     background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-/* Prevent layout shift during hydration */ {}
-    contain: layout styl;
+    contain: layout style;
     will-change: opacity;
   }
+
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    :global([data-ssr-dialog-overlay]) {
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+  }
+
   :global([data-ssr-dialog-content]) {
-/* Optimize dialog content for SSR */ {}
     position: fixed;
-d;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 51;
-/* Ensure consistent sizing across different screen sizes */ {}
     width: 90vw;
     max-width: 512px;
     max-height: 85vh;
-/* Background and styling */ {}
     background: white;
     border-radius: 0.5rem;
     border: 1px solid #e5e7eb;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-/* Prevent content overflow */ {}
     overflow-y: auto;
     padding: 1.5rem;
-/* Focus management */ {}
     outline: none;
   }
-/* Responsive adjustments for dialog content */ {}
-  @media (max-width: 640px) {
-    :global([data-ssr-dialog-content]) {
-      width: 95vw;
-      max-height: 90vh;
-      margin: 0;
-      border-radius: 0.25rem;
-    }
-  }
-/* Enhanced focus and accessibility */ :global($1) {
+
+  :global([data-bits-dialog-content]:focus-visible) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: 2px;
   }
-/* Responsive adjustments */ @media (max-width: 640px) {
-    :global(.bits-dialog-content) {
+
+  @media (max-width: 640px) {
+    :global(.bits-dialog-content),
+    :global([data-ssr-dialog-content]) {
       margin: 1rem;
+      width: 95vw;
       max-width: calc(100vw - 2rem);
       max-height: calc(100vh - 2rem);
+      border-radius: 0.25rem;
     }
   }
 </style>

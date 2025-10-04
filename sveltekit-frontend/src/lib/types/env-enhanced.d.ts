@@ -29,6 +29,8 @@ declare module '$env/dynamic/private' {
     ANTHROPIC_API_KEY?: string;
     GOOGLE_API_KEY?: string;
     NODE_ENV?: string;
+    SUPABASE_URL?: string;
+    SUPABASE_ANON_KEY?: string;
     [key: string]: string | undefined;
   }
 }

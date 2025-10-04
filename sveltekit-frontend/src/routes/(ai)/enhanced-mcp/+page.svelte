@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
 	import { get, writable } from 'svelte/store';
 
 	// Dynamically-loaded component (avoids TypeScript "no default export" error)
-	let EnhancedMCPIntegration: any = null;
+	let EnhancedMCPIntegration = $state<any>(null);
 
 	// load component on client mount
 	onMount(async () => {

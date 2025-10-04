@@ -3,6 +3,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
 <script lang="ts">
   import { X } from 'lucide-svelte';
+  import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -23,6 +24,8 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     children
   }: Props = $props();
 
+  let dialogEl: HTMLElement | null = null;
+
   function handleClose() {
     open = false;
   }
@@ -30,16 +33,46 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   function handleBackdropClick(e: MouseEvent) {
     if (e.target === e.currentTarget) handleClose();
   }
+
+  function handleBackdropKey(e: KeyboardEvent) {
+    // Support keyboard activation of the overlay: Enter / Space to close,
+    // Escape as a common close key as well.
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') {
+      handleClose();
+    }
+  }
+
+  function handleDialogKey(e: KeyboardEvent) {
+    // Close dialog on Escape
+    if (e.key === 'Escape') handleClose();
+  }
+
+  onMount(() => {
+    if (open && dialogEl) {
+      // focus the dialog so that keyboard interactions are available
+      dialogEl.focus();
+    }
+  });
 </script>
+
 {#if open}
   <div
     class="drawer-overlay"
+    tabindex="0"
+    aria-label={title ? `${title} overlay - click or press Enter/Space to close` : "Drawer overlay - press Enter/Space or click to close"}
+    onclick={handleBackdropClick}
+    onkeydown={handleBackdropKey}
+  >
+  <div
+    class="drawer drawer-{size} drawer-{side}"
     role="dialog"
     aria-modal="true"
     aria-label={title ? title : "Drawer"}
-    on:click={handleBackdropClick}
+    tabindex="0"
+    bind:this={dialogEl}
+    onclick={(e) => e.stopPropagation()}
+    onkeydown={handleDialogKey}
   >
-  <div class="drawer drawer-{size} drawer-{side}" on:click|stopPropagation>
       <div class="drawer-header">
         <div>
           {#if title}
@@ -52,13 +85,13 @@ https://svelte.dev/e/render_tag_invalid_expression -->
         <button
           class="drawer-close"
           aria-label="Close drawer"
-          on:click={handleClose}
+          onclick={handleClose}
         >
           <X size="24" />
         </button>
       </div>
       <div class="drawer-body">
-        {@render children?.()}
+        <slot />
       </div>
     </div>
   </div>

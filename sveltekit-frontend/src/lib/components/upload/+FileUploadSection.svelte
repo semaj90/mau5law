@@ -96,35 +96,37 @@
 </div>
 
 <style>
-  /* Match the component's markup classes to avoid unused selector warnings */
+  /* Use the actual classes present in the markup to avoid Svelte "unused selector" errors */
   .nier-bits-card {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
   }
+
   .nier-bits-yorha-panel-header {
-    border-bottom: 1px solid #eee; /* fixed invalid color (#ee -> #eee) */
+    border-bottom: 1px solid #eee; /* fixed invalid hex */
     padding-bottom: 1rem;
     margin-bottom: 1rem;
   }
+
   .nier-bits-yorha-panel-header h3 {
     margin: 0;
     font-size: 1.25rem;
     color: #333;
   }
+
   .nier-bits-card-body {
-    padding: 1rem;      /* provide spacing inside the card body */
-    display: block;     /* explicit display to avoid empty ruleset */
-    gap: 0.75rem;       /* spacing if flex/grid used later */
+    padding-top: 0.5rem; /* keep spacing, avoid empty ruleset */
+    display: block;      /* ensure predictable layout */
   }
 
-  /* Form controls (kept from original, applied to actual inputs) */
   .form-label {
     font-weight: bold;
     margin-bottom: 0.5rem;
     display: block;
   }
+
   .form-control {
     width: 100%;
     padding: 0.75rem;
@@ -133,10 +135,9 @@
     font-size: 1rem;
   }
 
-  /* Button styles matching the classes used in markup:
-     markup used: "btn nes-btn is-primary" */
-  .nes-btn.is-primary,
-  .btn.nes-btn.is-primary {
+  /* Match the actual button classes used in the markup */
+  .btn.nes-btn.is-primary,
+  .nes-btn.is-primary {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -145,8 +146,8 @@
     cursor: pointer;
     font-size: 1rem;
   }
-  .nes-btn.is-primary:hover,
-  .btn.nes-btn.is-primary:hover {
+  .btn.nes-btn.is-primary:hover,
+  .nes-btn.is-primary:hover {
     background-color: #0056b3;
   }
 </style>

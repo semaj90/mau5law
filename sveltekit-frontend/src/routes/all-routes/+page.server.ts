@@ -4,7 +4,7 @@ import path from 'path';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
   // Detect logged-in user (locals preferred) or session cookie as fallback
-  const isLoggedIn = Boolean((locals as any)?.user?.id) || Boolean(cookies.get('session'));
+  const isLoggedIn = Boolean((locals as { user?: { id: string } })?.user?.id) || Boolean(cookies.get('session'));
   const dashboardPath = isLoggedIn ? '/dashboard/activities' : '/dashboard';
 
   // Services to check (unchanged)

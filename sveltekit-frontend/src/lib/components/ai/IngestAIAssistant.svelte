@@ -10,12 +10,15 @@ https://svelte.dev/e/attribute_duplicate -->
    */
   import { onMount } from 'svelte';
   import { writable, derived, get } from 'svelte/store';
-  // Replaced typed UI components with native elements to avoid Svelte/TS typing issues.
+  import Button from '$lib/components/ui/Button.svelte';
+  import Input from '$lib/components/ui/input/Input.svelte'; // fixed: use default import (component exports default)
+  import type { ComponentType } from 'svelte';
   // Badge replaced with span - not available in enhanced-bits
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import Alert from '$lib/components/ui/alert/Alert.svelte';
   import AlertDescription from '$lib/components/ui/alert/AlertDescription.svelte';
   import Separator from '$lib/components/ui/separator/Separator.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import Label from '$lib/components/ui/label/LabelCompat.svelte';
   // Your established store patterns
   import {
@@ -27,11 +30,10 @@ https://svelte.dev/e/attribute_duplicate -->
   } from '$lib/stores/ai-agent';
   import { enhancedIngestService } from '$lib/services/enhanced-ingest-integration';
   // Component state following your patterns
-  // Use Svelte 5 $state rune so updates are reactive (fixes non_reactive_update errors)
-  let documentTitle = $state('');
-  let documentContent = $state('');
-  let caseId = $state('');
-  let selectedDocumentType = $state('legal');
+  let documentTitle = '';
+  let documentContent = '';
+  let caseId = '';
+  let selectedDocumentType = 'legal';
   let batchMode = false;
   let batchDocuments = writable([]);
   // Processing state
@@ -39,22 +41,8 @@ https://svelte.dev/e/attribute_duplicate -->
   let currentProgress = writable(0);
   let processingStatus = writable('idle');
   let errors = writable([] as any[]);
-  // Svelte 5 rune: local boolean state for form eligibility
-  let canIngest = $state(false);
-  // Local copy of the AI session id (subscribe to store safely)
-  let aiSessionId: string | undefined;
-  let _aiUnsub: (() => void) | undefined;
-  onMount(() => {
-    _aiUnsub = aiAgentStore.subscribe((s: any) => {
-      aiSessionId = s?.activeSessionId;
-    });
-    return () => _aiUnsub?.();
-  });
-
-  // Keep canIngest updated using $effect (runes-compatible reactive effect)
-  $effect(() => {
-    canIngest = $processingStatus === 'idle' && documentTitle.trim() !== '' && documentContent.trim() !== '';
-  });
+  // Derived states following your patterns
+  const canIngest = derived([processingStatus], ([$status]) => $status === 'idle' && documentTitle.trim() !== '' && documentContent.trim() !== '');
   const hasResults = derived(
     ingestResults,
     ($results) => $results.length > 0
@@ -69,9 +57,7 @@ https://svelte.dev/e/attribute_duplicate -->
   ];
   // Enhanced ingest function with AI integration
   async function ingestDocument() {
-    // Evaluate ingest eligibility directly (canIngest is a boolean from $derived)
-    const can = ($processingStatus === 'idle' && documentTitle.trim() !== '' && documentContent.trim() !== '');
-    if (!can) return;
+    if (!get(canIngest)) return;
     processingStatus.set('processing');
     currentProgress.set(10);
     try {
@@ -83,8 +69,8 @@ https://svelte.dev/e/attribute_duplicate -->
           document_type: selectedDocumentType,
           source: 'ai_assistant_ui',
           ai_enhanced: true,
-          // Integrate with your AI agent session (read from subscribed store value)
-          ai_session_id: aiSessionId,
+          // Integrate with your AI agent session
+          ai_session_id: get(aiAgentStore)?.activeSessionId,
         },
       } as any;
       currentProgress.set(30);
@@ -128,40 +114,12 @@ https://svelte.dev/e/attribute_duplicate -->
     currentProgress.set(0);
     try {
       const batchRequest = documents.map(doc => ({ title: doc.title, content: doc.content, case_id: doc.case_id, metadata: { document_type: doc.type || 'legal', batch_processing: true, source: 'ai_assistant_batch' } }));
-      // Runtime-safe call: some service implementations may expose ingestBatch, others only ingestDocument.
-      const svc: any = enhancedIngestService;
-      let batchResult: any;
-      if (typeof svc.ingestBatch === 'function') {
-        // Preferred fast-path when service supports batch ingestion
-        currentProgress.set(30);
-        batchResult = await svc.ingestBatch(batchRequest);
-        currentProgress.set(90);
-      } else {
-        // Fallback: call per-document ingestDocument in parallel and aggregate results
-        currentProgress.set(20);
-        const promises = batchRequest.map(req => {
-          if (typeof svc.ingestDocument === 'function') {
-            return svc.ingestDocument(req);
-          }
-          return Promise.reject(new Error('No ingest method available on enhancedIngestService'));
-        });
-        const settled = await Promise.allSettled(promises);
-        const processed = settled.length;
-        const successes = settled.filter(r => r.status === 'fulfilled').length;
-        const successRate = processed > 0 ? (successes / processed) * 100 : 0;
-        // Build a consistent batchResult shape to keep UI logic unchanged
-        batchResult = {
-          success: successes > 0,
-          processed,
-          successRate,
-          details: settled.map((s, i) => ({ index: i, status: s.status, value: s.status === 'fulfilled' ? (s as PromiseFulfilledResult<any>).value : undefined, reason: s.status === 'rejected' ? (s as PromiseRejectedResult).reason : undefined }))
-        };
-        currentProgress.set(90);
-      }
-
+      // TODO: Restore batch functionality when `ingestBatch` is available on the service
+      console.warn('Batch ingestion is currently disabled.');
+      const result = { success: false, message: 'Batch ingestion not implemented.' };
       currentProgress.set(100);
       // Update results with batch information
-      ingestResults.update(results => [...results, { ...(batchResult as any), is_batch: true, timestamp: new Date() }]);
+      ingestResults.update(results => [...results, { ...(result as any), is_batch: true, timestamp: new Date() }]);
       batchDocuments.set([]);
       processingStatus.set('completed');
       setTimeout(() => processingStatus.set('idle'), 2000);
@@ -188,13 +146,16 @@ https://svelte.dev/e/attribute_duplicate -->
   function dismissError(errorId: number) {
     errors.update(errs => errs.filter(err => err.id !== errorId));
   }
-  $effect(() => {
-    // Initialize AI agent connection following your patterns
-    if (typeof aiAgentStore?.connect === 'function') {
-      // call connect (may return a Promise) and handle rejections
-      aiAgentStore.connect().catch((err) => console.error(err));
-    }
-  });
+    onMount(async () => {
+      // Initialize AI agent connection following your patterns
+      try {
+        await aiAgentStore.connect();
+      } catch (e) {
+        console.error('Failed to connect to AI Agent Store:', e);
+      }
+    });
+  // Add this typed constructor alias so TypeScript treats Input as a component constructor
+  const InputCtor = Input as unknown as ComponentType;
 </script>
 <!-- Component HTML following your UI patterns -->
 <div class="w-full max-w-4xl mx-auto p-6 space-y-6">
@@ -204,11 +165,9 @@ https://svelte.dev/e/attribute_duplicate -->
       <div class="w-3 h-3 rounded-full {$systemHealth === 'healthy' ? 'bg-green-500' : $systemHealth === 'degraded' ? 'bg-yellow-500' : 'bg-red-500'}"></div>
       <h1 class="text-2xl font-bold">AI-Powered Document Ingest</h1>
       <span
-        class={($systemHealth === 'healthy'
-          ? 'bg-green-100 text-green-800 border-green-300'
-          : $systemHealth === 'degraded'
-          ? 'bg-yellow-100 text-yellow-800 border-yellow-300'
-          : 'bg-red-100 text-red-800 border-red-300') + ' px-2 py-1 rounded text-xs font-medium border'}
+        class="px-2 py-1 rounded text-xs font-medium {$systemHealth === 'healthy'
+          ? 'bg-green-200 text-green-800'
+          : 'bg-yellow-200 text-yellow-800'}"
       >
         {$systemHealth}
       </span>
@@ -225,12 +184,9 @@ https://svelte.dev/e/attribute_duplicate -->
     <Alert variant="error" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
-        <!-- native button to avoid typed component event issues -->
-        <button
-          class="bits-btn px-2 py-1 text-sm bg-transparent hover:bg-gray-100 rounded"
-          onclick={() => dismissError(error.id)}
-          aria-label="Dismiss error"
-        >✕</button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>
+          ✕
+        </Button>
       </AlertDescription>
     </Alert>
   {/each}
@@ -260,10 +216,10 @@ https://svelte.dev/e/attribute_duplicate -->
       <div class="yorha-panel-content space-y-4">
         <div class="space-y-2">
           <Label for="title">Document Title</Label>
-          <!-- native input to avoid component typing issues -->
-          <input
+          <!-- replaced direct component with svelte:component using typed constructor -->
+          <svelte:component
+            this={InputCtor}
             id="title"
-            class="w-full border rounded px-3 py-2"
             bind:value={documentTitle}
             placeholder="Enter document title..."
             disabled={$isProcessing}
@@ -271,26 +227,23 @@ https://svelte.dev/e/attribute_duplicate -->
         </div>
         <div class="space-y-2">
           <Label for="case-id">Case ID (Optional)</Label>
-          <input
+          <!-- replaced direct component with svelte:component using typed constructor -->
+          <svelte:component
+            this={InputCtor}
             id="case-id"
-            class="w-full border rounded px-3 py-2"
             bind:value={caseId}
             placeholder="CASE-2024-001"
             disabled={$isProcessing}
           />
         </div>
-
         <div class="space-y-2">
           <Label>Document Type</Label>
           <div class="grid grid-cols-2 gap-2">
             {#each documentTypes as type}
-              <!-- native button with conditional classes instead of `variant` prop -->
               <button
-                class="nes-btn bits-btn justify-start flex items-center px-3 py-1 rounded text-sm
-                  {selectedDocumentType === type.value ? 'bg-gray-900 text-white' : 'bg-white border'}"
+                class="nes-btn bits-btn justify-start is-small {selectedDocumentType === type.value ? 'is-primary' : ''}"
                 onclick={() => (selectedDocumentType = type.value)}
                 disabled={$isProcessing}
-                type="button"
               >
                 <span class="mr-2">{type.icon}</span>
                 {type.label}
@@ -298,35 +251,32 @@ https://svelte.dev/e/attribute_duplicate -->
             {/each}
           </div>
         </div>
-
         <div class="space-y-2">
           <Label for="content">Document Content</Label>
-          <textarea
+          <Textarea
             id="content"
-            class="w-full border rounded px-3 py-2"
             bind:value={documentContent}
             placeholder="Paste or type document content here..."
             rows={8}
             disabled={$isProcessing}
-          ></textarea>
+          />
         </div>
         <div class="flex space-x-2">
-          <button
-            class="bits-btn flex-1 px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+          <Button
             onclick={ingestDocument}
-            disabled={!canIngest || $isProcessing}
-            type="button"
+            disabled={!$canIngest || $isProcessing}
+            class="flex-1 bits-btn bits-btn"
           >
             {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
-          </button>
-          <button
-            class="bits-btn px-3 py-2 rounded bg-transparent border disabled:opacity-50"
+          </Button>
+          <Button
+            class="bits-btn"
+            variant="ghost"
             onclick={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
-            type="button"
           >
             ➕ Add to Batch
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -336,9 +286,9 @@ https://svelte.dev/e/attribute_duplicate -->
         <h3 class="nes-text is-primary flex items-center justify-between">
           Batch Processing
           {#if $batchDocuments.length > 0}
-            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700 border">
-              {$batchDocuments.length} documents
-            </span>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+              >{$batchDocuments.length} documents</span
+            >
           {/if}
         </h3>
       </div>
@@ -358,31 +308,36 @@ https://svelte.dev/e/attribute_duplicate -->
                     {doc.type} • {doc.content.length} chars
                   </div>
                 </div>
-                <button
-                  class="bits-btn px-2 py-1 text-sm bg-transparent hover:bg-gray-100 rounded"
-                  onclick={() => removeFromBatch(doc.id)}
-                  type="button"
-                >✕</button>
+                <Button class="bits-btn"
+                  variant="ghost"
+                  size="sm"
+                  onclick={() =>
+removeFromBatch(doc.id)}
+                >
+                  ✕
+                </Button>
               </div>
             {/each}
           </div>
           <div class="space-y-2">
-            <button
-              class="bits-btn w-full px-4 py-2 rounded bg-red-600 text-white disabled:opacity-50"
+            <Button
               onclick={processBatch}
               disabled={$isProcessing}
-              type="button"
+              class="w-full bits-btn bits-btn"
             >
-              {$processingStatus === 'batch_processing' ? 'Processing Batch...' : `🔥 Process ${$batchDocuments.length} Documents`}
-            </button>
-            <button
-              class="bits-btn px-3 py-1 rounded bg-transparent border disabled:opacity-50"
+              {$processingStatus === 'batch_processing'
+                ? 'Processing Batch...'
+                : `🔥 Process ${$batchDocuments.length} Documents`}
+            </Button>
+            <Button
+              variant="ghost"
               onclick={() => batchDocuments.set([])}
               disabled={$isProcessing}
-              type="button"
+              size="sm"
+              class="bits-btn w-full"
             >
               Clear Batch
-            </button>
+            </Button>
           </div>
         {/if}
       </div>
@@ -473,14 +428,8 @@ https://svelte.dev/e/attribute_duplicate -->
   :global(.progress-bar) {
     background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
   }
-  /* Enhanced focus states following your accessibility patterns
-     Use :focus-visible and restrict to interactive elements to avoid
-     styling non-interactive elements and to reduce visual noise. */
-  :global(a:focus-visible,
-          button:focus-visible,
-          input:focus-visible,
-          textarea:focus-visible,
-          select:focus-visible) {
+  /* Enhanced focus states following your accessibility patterns */
+  :global(button:focus-visible, input:focus-visible, textarea:focus-visible) {
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
   }

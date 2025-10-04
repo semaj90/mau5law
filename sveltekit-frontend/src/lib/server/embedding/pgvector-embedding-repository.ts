@@ -56,8 +56,8 @@ async function processNextJob(): Promise<IngestionJobStatus | null> {
       await db.insert(documentChunks).values({
         documentId: evidenceId, // reuse evidenceId as document linkage for now
         documentType: 'evidence',
-        chunkIndex: index
-        content: text
+        chunkIndex: index,
+        content: text,
         embedding
       });
       processed++;
@@ -76,14 +76,14 @@ async function querySimilar(query: string, options: SimilarityQueryOptions = {})
                                      FROM document_chunks
                                      ORDER BY embedding <=> ${queryEmbedding}
                                      LIMIT ${limit}`);
-  return rows.map((r: any) => ({,
+  return rows.map((r: any) => ({
     id: String(r.id),
     documentId: String(r.document_id),
     documentType: String(r.document_type),
     chunkIndex: Number(r.chunk_index),
     content: String(r.content),
     score: 1 - Number(r.distance)
-  });
+  }));
 }
 export const pgvectorEmbeddingRepository: EmbeddingRepository = {
   enqueueIngestion,

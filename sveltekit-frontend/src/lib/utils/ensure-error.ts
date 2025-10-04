@@ -9,6 +9,6 @@ export function ensureError(payload: any): Error {
     const msg = typeof payload === 'object' ? JSON.stringify(payload) : String(payload);
     return new Error(msg);
   } catch (e) {
-    return new Error(String(payload);
+    return new Error(String(payload));
   }
 }

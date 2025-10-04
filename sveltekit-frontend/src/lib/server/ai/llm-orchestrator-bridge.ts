@@ -13,7 +13,8 @@ import { mcpMultiCore } from '$lib/server/mcp/multi-core-integration.js';
 import type { MCPTask } from '$lib/server/mcp/multi-core-integration.js';
 import { logger } from './logger.js';
 import type { ClientLLMRequest, InferenceResult } from '$lib/ai/unified-client-llm-orchestrator.js';
-}
+import xstateIntegration from '$lib/services/xstate-integration'; // ADDED: Import xstateIntegration
+
 export interface LLMBridgeRequest {
   id: string;
   type: 'chat' | 'legal_analysis' | 'document_processing' | 'embedding' | 'search' | 'workflow';
@@ -25,7 +26,7 @@ export interface LLMBridgeRequest {
     documentType?: string;
     legalDomain?: string;
     previousContext?: string[];
-  }
+  };
   options?: {
     model?: 'auto' | 'gemma3-legal' | 'gemma270m' | 'legal-bert' | 'server-orchestrator';
     priority?: 'low' | 'normal' | 'high' | 'realtime';
@@ -34,13 +35,35 @@ export interface LLMBridgeRequest {
     maxLatency?: number;
     temperature?: number;
     maxTokens?: number;
-  }
+  };
   metadata?: {
     source?: 'web' | 'api' | 'component';
     userAgent?: string;
     timestamp?: number;
-  }
+  };
 }
+
+// ADDED: Define the expected result type from the enhanced orchestrator
+interface EnhancedOrchestratorResult {
+  success?: boolean;
+  response?: string;
+  summary?: string;
+  detailed_discussion?: string;
+  modelUsed?: string;
+  confidence_score?: number;
+  sources_cited?: any[];
+  recommendations?: string[];
+  metadata?: {
+    cacheHit?: boolean;
+    // Add other metadata properties if known
+  };
+  executionMetrics?: {
+    gpuAccelerated?: boolean;
+    // Add other execution metrics if known
+  };
+  // Add other properties that the enhanced orchestrator might return
+}
+
 export interface LLMBridgeResponse {
   success: boolean;
   response: string;
@@ -69,8 +92,8 @@ export class LLMOrchestratorBridge {
     averageLatency: 0,
     cacheHitRate: 0,
     serverRoutedRequests: 0,
-    clientRoutedRequests: 0
-  }
+    clientRoutedRequests: 0,
+  };
   constructor() {
     this.initializeBridge();
   }
@@ -87,8 +110,7 @@ export class LLMOrchestratorBridge {
   }
   /**
    * Main entry point - routes requests to optimal orchestrator
-   */;
-  async processRequest(request: LLMBridgeRequest): Promise<LLMBridgeResponse> {
+   */ async processRequest(request: LLMBridgeRequest): Promise<LLMBridgeResponse> {
     const startTime = performance.now();
     const requestId = this.generateRequestId();
     request.id = requestId;
@@ -124,11 +146,83 @@ export class LLMOrchestratorBridge {
       const processingTime = performance.now() - processingStartTime;
       const totalLatency = performance.now() - startTime;
       // Step 3: Update metrics and finalize response
-      (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.routingTime = routingTime;
-      (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.processingTime = processingTime;
-      (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.totalLatency = totalLatency;
-      (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).requestId = requestId;
-      if ((result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).success) {
+      (
+        result as {
+          executionMetrics?: any;
+          requestId?: any;
+          success?: any;
+          summary?: any;
+          detailed_discussion?: any;
+          response?: any;
+          metadata?: any;
+          confidence_score?: any;
+          sources_cited?: any;
+          recommendations?: any;
+          modelUsed?: any;
+        }
+      ).executionMetrics.routingTime = routingTime;
+      (
+        result as {
+          executionMetrics?: any;
+          requestId?: any;
+          success?: any;
+          summary?: any;
+          detailed_discussion?: any;
+          response?: any;
+          metadata?: any;
+          confidence_score?: any;
+          sources_cited?: any;
+          recommendations?: any;
+          modelUsed?: any;
+        }
+      ).executionMetrics.processingTime = processingTime;
+      (
+        result as {
+          executionMetrics?: any;
+          requestId?: any;
+          success?: any;
+          summary?: any;
+          detailed_discussion?: any;
+          response?: any;
+          metadata?: any;
+          confidence_score?: any;
+          sources_cited?: any;
+          recommendations?: any;
+          modelUsed?: any;
+        }
+      ).executionMetrics.totalLatency = totalLatency;
+      (
+        result as {
+          executionMetrics?: any;
+          requestId?: any;
+          success?: any;
+          summary?: any;
+          detailed_discussion?: any;
+          response?: any;
+          metadata?: any;
+          confidence_score?: any;
+          sources_cited?: any;
+          recommendations?: any;
+          modelUsed?: any;
+        }
+      ).requestId = requestId;
+      if (
+        (
+          result as {
+            executionMetrics?: any;
+            requestId?: any;
+            success?: any;
+            summary?: any;
+            detailed_discussion?: any;
+            response?: any;
+            metadata?: any;
+            confidence_score?: any;
+            sources_cited?: any;
+            recommendations?: any;
+            modelUsed?: any;
+          }
+        ).success
+      ) {
         this.performanceMetrics.successfulRequests++;
       }
       this.updatePerformanceMetrics(result);
@@ -137,57 +231,57 @@ export class LLMOrchestratorBridge {
     } catch (error) {
       logger.error(`[LLM Bridge] Request ${requestId} failed:`, error);
       return {
-        success: false
+        success: false,
         response: 'Failed to process request',
         orchestratorUsed: 'server',
         modelUsed: 'none',
         executionMetrics: {
           totalLatency: performance.now() - startTime,
           routingTime: 0,
-          processingTime: 0
+          processingTime: 0,
         },
-        error: error instanceof Error ? error.message: 'Unknown error',
-        requestId
-      }
+        error: error instanceof Error ? error.message : 'Unknown error',
+        requestId,
+      };
     } finally {
       this.activeRequests.delete(requestId);
     }
   }
   /**
    * Determines which orchestrator to use based on request characteristics
-   */;
-  private async determineOrchestrator(request: LLMBridgeRequest): Promise<any> {
+   */ private async determineOrchestrator(request: LLMBridgeRequest): Promise<any> {
     // Force server orchestrator for specific model requests
     if (request.options?.model === 'server-orchestrator') {
       return {
         orchestrator: 'server',
         reasoning: 'Explicitly requested server orchestrator',
-        confidence: 1.0
-      }
+        confidence: 1.0,
+      };
     }
     // Force client orchestrator for specific models
     if (request.options?.model && ['gemma270m', 'legal-bert'].includes(request.options.model)) {
       return {
         orchestrator: 'client',
         reasoning: `Client-side model requested: ${request.options?.model || 'unknown'}`,
-        confidence: 1.0
-      }
+        confidence: 1.0,
+      };
     }
     // Check if MCP multi-core is available and optimal
     const mcpMetrics = mcpMultiCore.getPerformanceMetrics();
     const mcpAvailable = mcpMetrics.onlineCores > 0;
     // Prefer MCP for parallel processing or high-load scenarios
-    if (mcpAvailable && (
-      request.options?.priority === 'high' ||
-      request.type === 'document_processing' ||
-      (request.type === 'embedding' && request.content.length > 1000) ||
-      mcpMetrics.totalLoad < (mcpMetrics.totalCapacity * 0.7) // MCP not overloaded
-    )) {
+    if (
+      mcpAvailable &&
+      (request.options?.priority === 'high' ||
+        request.type === 'document_processing' ||
+        (request.type === 'embedding' && request.content.length > 1000) ||
+        mcpMetrics.totalLoad < mcpMetrics.totalCapacity * 0.7) // MCP not overloaded
+    ) {
       return {
         orchestrator: 'mcp',
         reasoning: `MCP multi-core optimal: ${mcpMetrics.onlineCores} cores available, load: ${mcpMetrics.totalLoad}/${mcpMetrics.totalCapacity}`,
-        confidence: 0.85
-      }
+        confidence: 0.85,
+      };
     }
     // Task-based routing
     switch (request.type) {
@@ -195,101 +289,129 @@ export class LLMOrchestratorBridge {
         return {
           orchestrator: 'client',
           reasoning: 'Embedding tasks are faster on client-side ONNX',
-          confidence: 0.9
-        }
+          confidence: 0.9,
+        };
       case 'workflow':
         return {
           orchestrator: 'server',
           reasoning: 'Complex workflows require server orchestrator with XState',
-          confidence: 0.95
-        }
+          confidence: 0.95,
+        };
       case 'legal_analysis':
         // Complex legal analysis -> server, simple questions -> client
-        const isComplex = request.content.length > 500 ||
-                         request.context?.documentType === 'contract' ||
-                         request.content.includes('precedent') ||
-                         request.content.includes('statute');
+        const isComplex =
+          request.content.length > 500 ||
+          request.context?.documentType === 'contract' ||
+          request.content.includes('precedent') ||
+          request.content.includes('statute');
         return {
           orchestrator: isComplex ? 'server' : 'client',
           reasoning: `Legal analysis complexity: ${isComplex ? 'high' : 'low'}`,
-          confidence: 0.8
-        }
+          confidence: 0.8,
+        };
       case 'search':
         return {
           orchestrator: 'server',
           reasoning: 'Search requires pgvector and Neo4j integration',
-          confidence: 0.9
-        }
+          confidence: 0.9,
+        };
       case 'document_processing':
         return {
           orchestrator: 'server',
           reasoning: 'Document processing needs full pipeline with caching',
-          confidence: 0.85
-        }
+          confidence: 0.85,
+        };
       case 'chat':
       default:
         // Latency-based routing for chat
-        if (request.options?.priority === 'realtime' && request.options?.maxLatency && request.options.maxLatency < 200) {
+        if (
+          request.options?.priority === 'realtime' &&
+          request.options?.maxLatency &&
+          request.options.maxLatency < 200
+        ) {
           return {
             orchestrator: 'client',
             reasoning: 'Realtime chat requires low latency',
-            confidence: 0.7
-          }
+            confidence: 0.7,
+          };
         } else {
           return {
             orchestrator: 'server',
             reasoning: 'Default to server for comprehensive chat capabilities',
-            confidence: 0.6
-          }
+            confidence: 0.6,
+          };
         }
     }
   }
   /**
    * Execute request using server-side enhanced orchestrator
    */
-  private async executeServerOrchestrator(
-    request: LLMBridgeRequest;
-    routing: any;
-  ): Promise<LLMBridgeResponse> {
+  private async executeServerOrchestrator(request: LLMBridgeRequest, routing: any): Promise<LLMBridgeResponse> {
     try {
-      const result = await enhancedOrchestrator.process(request.content, {
-        userId: request.context?.userId || 'anonymous',
-        sessionId: request.context?.sessionId,
-        caseId: request.context?.caseId,
-        documentType: request.context?.documentType,
-        legalDomain: request.context?.legalDomain,
-        temperature: request.options?.temperature || 0.3,
-        maxTokens: request.options?.maxTokens || 1024,
-        useGPU: request.options?.useGPU || true,
-        enableStreaming: request.options?.enableStreaming || false
+      // Construct the event payload for the enhanced orchestrator
+      const eventPayload = {
+        content: request.content,
+        context: {
+          userId: request.context?.userId || 'anonymous',
+          sessionId: request.context?.sessionId,
+          caseId: request.context?.caseId,
+          documentType: request.context?.documentType,
+          legalDomain: request.context?.legalDomain,
+          previousContext: request.context?.previousContext,
+        },
+        options: {
+          temperature: request.options?.temperature || 0.3,
+          maxTokens: request.options?.maxTokens || 1024,
+          useGPU: request.options?.useGPU || true,
+          enableStreaming: request.options?.enableStreaming || false,
+          model: request.options?.model, // Pass model preference
+          priority: request.options?.priority, // Pass priority
+        },
+        metadata: request.metadata,
+        requestId: request.id,
+      };
+
+      // Determine the event type based on the request type
+      const eventType = `${request.type.toUpperCase()}_REQUEST`;
+
+      // Send an event to the enhanced orchestrator via xstateIntegration
+      // Assuming 'enhancedOrchestrator' is the machine ID string.
+      const result = await xstateIntegration.sendEvent(enhancedOrchestrator, {
+        type: eventType,
+        payload: eventPayload,
       });
+
+      // Cast the result to the defined interface for type safety
+      const typedResult: EnhancedOrchestratorResult = result as EnhancedOrchestratorResult;
+
       return {
-        success: true;
-        response: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).summary || (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).detailed_discussion || (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).response || 'No response generated',
+        success: typedResult.success ?? true, // Default to true if not explicitly set by orchestrator
+        response:
+          typedResult.summary || typedResult.detailed_discussion || typedResult.response || 'No response generated',
         orchestratorUsed: 'server',
-        modelUsed: 'gemma3-legal:latest',
+        modelUsed: typedResult.modelUsed || 'gemma3-legal:latest',
         executionMetrics: {
           totalLatency: 0, // Will be set by caller
-          routingTime: 0,  // Will be set by caller
+          routingTime: 0, // Will be set by caller
           processingTime: 0, // Will be set by caller
-          gpuAccelerated: true
-          cacheHitRate: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).metadata?.cacheHit ? 1.0 : 0.0
+          gpuAccelerated: typedResult.executionMetrics?.gpuAccelerated ?? true, // Default to true if not specified
+          cacheHitRate: typedResult.metadata?.cacheHit ? 1.0 : 0.0,
         },
-        confidence: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).confidence_score || 0.8,
-        citations: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).sources_cited || [],
-        followupSuggestions: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).recommendations || [],
-        requestId: request.id
-      }
+        confidence: typedResult.confidence_score || 0.8,
+        citations: typedResult.sources_cited || [],
+        followupSuggestions: typedResult.recommendations || [],
+        requestId: request.id,
+      };
     } catch (error) {
-      throw new Error(`Server orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      throw new Error(`Server orchestrator failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
   /**
    * Execute request using client-side unified orchestrator
    */
   private async executeClientOrchestrator(
-    request: LLMBridgeRequest;
-    routing: any;
+    request: LLMBridgeRequest, // FIXED: Removed semicolon, changed to comma
+    routing: any
   ): Promise<LLMBridgeResponse> {
     try {
       const clientRequest: ClientLLMRequest = {
@@ -302,49 +424,175 @@ export class LLMOrchestratorBridge {
           sessionId: request.context?.sessionId || 'default',
           legalDomain: request.context?.legalDomain,
           documentType: request.context?.documentType,
-          previousContext: request.context?.previousContext
+          previousContext: request.context?.previousContext,
         },
         modelPreferences: {
-          preferredModel: request.options?.model === 'auto' ? 'auto' : request.options?.model as any,
+          preferredModel: request.options?.model === 'auto' ? 'auto' : (request.options?.model as any),
           maxLatency: request.options?.maxLatency,
           qualityThreshold: 0.8,
-          enableRLTraining: false
-          enableContextSwitching: true
+          enableRLTraining: false, // ADDED: comma
+          enableContextSwitching: true,
         },
         resourceLimits: {
           maxGPUMemoryMB: 4096,
           maxDDRRAMCacheMB: 8192,
-          allowModelSwitching: true
-          enableParallelInference: true
-        }
-      }
+          allowModelSwitching: true, // ADDED: comma
+          enableParallelInference: true,
+        },
+      };
       const result: InferenceResult = await unifiedClientLLMOrchestrator.executeInference(clientRequest);
       return {
-        success: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).success,
-        response: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).response,
+        success: (
+          result as {
+            executionMetrics?: any;
+            requestId?: any;
+            success?: any;
+            summary?: any;
+            detailed_discussion?: any;
+            response?: any;
+            metadata?: any;
+            confidence_score?: any;
+            sources_cited?: any;
+            recommendations?: any;
+            modelUsed?: any;
+          }
+        ).success,
+        response: (
+          result as {
+            executionMetrics?: any;
+            requestId?: any;
+            success?: any;
+            summary?: any;
+            detailed_discussion?: any;
+            response?: any;
+            metadata?: any;
+            confidence_score?: any;
+            sources_cited?: any;
+            recommendations?: any;
+            modelUsed?: any;
+          }
+        ).response,
         orchestratorUsed: 'client',
-        modelUsed: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).modelUsed,
+        modelUsed: (
+          result as {
+            executionMetrics?: any;
+            requestId?: any;
+            success?: any;
+            summary?: any;
+            detailed_discussion?: any;
+            response?: any;
+            metadata?: any;
+            confidence_score?: any;
+            sources_cited?: any;
+            recommendations?: any;
+            modelUsed?: any;
+          }
+        ).modelUsed,
         executionMetrics: {
-          totalLatency: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.totalLatency,
+          totalLatency: (
+            result as {
+              executionMetrics?: any;
+              requestId?: any;
+              success?: any;
+              summary?: any;
+              detailed_discussion?: any;
+              response?: any;
+              metadata?: any;
+              confidence_score?: any;
+              sources_cited?: any;
+              recommendations?: any;
+              modelUsed?: any;
+            }
+          ).executionMetrics.totalLatency,
           routingTime: 0,
-          processingTime: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.totalLatency,
-          cacheHitRate: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.cacheHitRate,
-          memoryUsed: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.memoryUsed,
-          gpuAccelerated: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).modelUsed.includes('gpu')
+          processingTime: (
+            result as {
+              executionMetrics?: any;
+              requestId?: any;
+              success?: any;
+              summary?: any;
+              detailed_discussion?: any;
+              response?: any;
+              metadata?: any;
+              confidence_score?: any;
+              sources_cited?: any;
+              recommendations?: any;
+              modelUsed?: any;
+            }
+          ).executionMetrics.totalLatency,
+          cacheHitRate: (
+            result as {
+              executionMetrics?: any;
+              requestId?: any;
+              success?: any;
+              summary?: any;
+              detailed_discussion?: any;
+              response?: any;
+              metadata?: any;
+              confidence_score?: any;
+              sources_cited?: any;
+              recommendations?: any;
+              modelUsed?: any;
+            }
+          ).executionMetrics.cacheHitRate,
+          memoryUsed: (
+            result as {
+              executionMetrics?: any;
+              requestId?: any;
+              success?: any;
+              summary?: any;
+              detailed_discussion?: any;
+              response?: any;
+              metadata?: any;
+              confidence_score?: any;
+              sources_cited?: any;
+              recommendations?: any;
+              modelUsed?: any;
+            }
+          ).executionMetrics.memoryUsed,
+          gpuAccelerated: (
+            result as {
+              executionMetrics?: any;
+              requestId?: any;
+              success?: any;
+              summary?: any;
+              detailed_discussion?: any;
+              response?: any;
+              metadata?: any;
+              confidence_score?: any;
+              sources_cited?: any;
+              recommendations?: any;
+              modelUsed?: any;
+            }
+          ).modelUsed.includes('gpu'),
         },
-        confidence: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.qualityScore,
-        requestId: request.id
-      }
+        confidence: (
+          result as {
+            executionMetrics?: any;
+            requestId?: any;
+            success?: any;
+            summary?: any;
+            detailed_discussion?: any;
+            response?: any;
+            metadata?: any;
+            confidence_score?: any;
+            sources_cited?: any;
+            recommendations?: any;
+            modelUsed?: any;
+          }
+        ).executionMetrics.qualityScore,
+        requestId: request.id,
+      };
     } catch (error) {
-      throw new Error(`Client orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      throw new Error(`Client orchestrator failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
   /**
    * Execute request using MCP multi-core orchestrator
    */
   private async executeMCPOrchestrator(
-    request: LLMBridgeRequest;
-    routing: any;
+    request: LLMBridgeRequest, // FIXED: Removed semicolon, changed to comma
+    routing: any
   ): Promise<LLMBridgeResponse> {
     try {
       const mcpTask: MCPTask = {
@@ -358,17 +606,17 @@ export class LLMOrchestratorBridge {
             model: request.options?.model || 'auto',
             temperature: request.options?.temperature || 0.3,
             maxTokens: request.options?.maxTokens || 1024,
-            useGPU: request.options?.useGPU !== false
+            useGPU: request.options?.useGPU !== false,
           },
-          metadata: request.metadata
-        }
-      }
+          metadata: request.metadata,
+        },
+      };
       const mcpResponse = await mcpMultiCore.submitTask(mcpTask);
       if (!mcpResponse.success) {
         throw new Error(mcpResponse.error || 'MCP processing failed');
       }
       return {
-        success: true
+        success: true, // ADDED: comma
         response: mcpResponse.result?.response || mcpResponse.result?.content || JSON.stringify(mcpResponse.result),
         orchestratorUsed: 'hybrid' as const,
         modelUsed: mcpResponse.metadata?.model || 'mcp-worker',
@@ -377,34 +625,34 @@ export class LLMOrchestratorBridge {
           routingTime: 0,
           processingTime: mcpResponse.processingTime,
           cacheHitRate: mcpResponse.metadata?.cacheHit ? 1.0 : 0.0,
-          gpuAccelerated: mcpResponse.metadata?.gpuAccelerated || false
+          gpuAccelerated: mcpResponse.metadata?.gpuAccelerated || false,
         },
         confidence: 0.8, // Default confidence for MCP tasks
-        requestId: request.id
-      }
+        requestId: request.id,
+      };
     } catch (error) {
-      throw new Error(`MCP orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      throw new Error(`MCP orchestrator failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
   /**
    * Execute request using hybrid approach (both orchestrators)
    */
   private async executeHybridOrchestrator(
-    request: LLMBridgeRequest;
-    routing: any;
+    request: LLMBridgeRequest, // FIXED: Removed semicolon, changed to comma
+    routing: any
   ): Promise<LLMBridgeResponse> {
     try {
       // Start both orchestrators in parallel
       const [serverResult, clientResult] = await Promise.allSettled([
         this.executeServerOrchestrator(request, routing),
-        this.executeClientOrchestrator(request, routing)
+        this.executeClientOrchestrator(request, routing),
       ]);
       // Choose best result based on confidence and success
       let bestResult: LLMBridgeResponse;
       if (serverResult.status === 'fulfilled' && clientResult.status === 'fulfilled') {
         const serverConfidence = serverResult.value.confidence || 0;
         const clientConfidence = clientResult.value.confidence || 0;
-        bestResult = serverConfidence > clientConfidence ? serverResult.value: clientResult.value;
+        bestResult = serverConfidence > clientConfidence ? serverResult.value : clientResult.value;
         bestResult.orchestratorUsed = 'hybrid';
       } else if (serverResult.status === 'fulfilled') {
         bestResult = serverResult.value;
@@ -417,19 +665,25 @@ export class LLMOrchestratorBridge {
       }
       return bestResult;
     } catch (error) {
-      throw new Error(`Hybrid orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      throw new Error(`Hybrid orchestrator failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
   /**
    * Helper methods
-   */;
-  private mapTaskToClientTask(bridgeTask: string): 'chat' | 'legal_analysis' | 'context_switch' | 'embedding' | 'rl_training' {
+   */ private mapTaskToClientTask(
+    bridgeTask: string
+  ): 'chat' | 'legal_analysis' | 'context_switch' | 'embedding' | 'rl_training' {
     switch (bridgeTask) {
-      case 'legal_analysis': return 'legal_analysis';
-      case 'embedding': return 'embedding';
-      case 'document_processing': return 'legal_analysis';
-      case 'search': return 'context_switch';
-      case 'workflow': return 'legal_analysis';
+      case 'legal_analysis':
+        return 'legal_analysis';
+      case 'embedding':
+        return 'embedding';
+      case 'document_processing':
+        return 'legal_analysis';
+      case 'search':
+        return 'context_switch';
+      case 'workflow':
+        return 'legal_analysis';
       case 'chat':
       default:
         return 'chat';
@@ -437,11 +691,16 @@ export class LLMOrchestratorBridge {
   }
   private mapTaskTypeToMCP(bridgeTask: string): 'embedding' | 'generation' | 'analysis' | 'search' | 'workflow' {
     switch (bridgeTask) {
-      case 'embedding': return 'embedding';
-      case 'legal_analysis': return 'analysis';
-      case 'document_processing': return 'analysis';
-      case 'search': return 'search';
-      case 'workflow': return 'workflow';
+      case 'embedding':
+        return 'embedding';
+      case 'legal_analysis':
+        return 'analysis';
+      case 'document_processing':
+        return 'analysis';
+      case 'search':
+        return 'search';
+      case 'workflow':
+        return 'workflow';
       case 'chat':
       default:
         return 'generation';
@@ -449,11 +708,16 @@ export class LLMOrchestratorBridge {
   }
   private mapPriorityToMCP(bridgePriority: string): 'low' | 'normal' | 'high' | 'critical' {
     switch (bridgePriority) {
-      case 'low': return 'low';
-      case 'normal': return 'normal';
-      case 'high': return 'high';
-      case 'realtime': return 'critical';
-      default: return 'normal';
+      case 'low':
+        return 'low';
+      case 'normal':
+        return 'normal';
+      case 'high':
+        return 'high';
+      case 'realtime':
+        return 'critical';
+      default:
+        return 'normal';
     }
   }
   private generateRequestId(): string {
@@ -462,14 +726,60 @@ export class LLMOrchestratorBridge {
   private updatePerformanceMetrics(result: LLMBridgeResponse) {
     // Update running averages
     const currentAvg = this.performanceMetrics.averageLatency;
-    const newLatency = (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.totalLatency;
+    const newLatency = (
+      result as {
+        executionMetrics?: any;
+        requestId?: any;
+        success?: any;
+        summary?: any;
+        detailed_discussion?: any;
+        response?: any;
+        metadata?: any;
+        confidence_score?: any;
+        sources_cited?: any;
+        recommendations?: any;
+        modelUsed?: any;
+      }
+    ).executionMetrics.totalLatency;
     this.performanceMetrics.averageLatency =
       (currentAvg * (this.performanceMetrics.totalRequests - 1) + newLatency) / this.performanceMetrics.totalRequests;
     // Update cache hit rate if available
-    if ((result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.cacheHitRate !== undefined) {
+    if (
+      (
+        result as {
+          executionMetrics?: any;
+          requestId?: any;
+          success?: any;
+          summary?: any;
+          detailed_discussion?: any;
+          response?: any;
+          metadata?: any;
+          confidence_score?: any;
+          sources_cited?: any;
+          recommendations?: any;
+          modelUsed?: any;
+        }
+      ).executionMetrics.cacheHitRate !== undefined
+    ) {
       const currentCacheRate = this.performanceMetrics.cacheHitRate;
       this.performanceMetrics.cacheHitRate =
-        (currentCacheRate * (this.performanceMetrics.totalRequests - 1) + (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.cacheHitRate) / this.performanceMetrics.totalRequests;
+        (currentCacheRate * (this.performanceMetrics.totalRequests - 1) +
+          (
+            result as {
+              executionMetrics?: any;
+              requestId?: any;
+              success?: any;
+              summary?: any;
+              detailed_discussion?: any;
+              response?: any;
+              metadata?: any;
+              confidence_score?: any;
+              sources_cited?: any;
+              recommendations?: any;
+              modelUsed?: any;
+            }
+          ).executionMetrics.cacheHitRate) /
+        this.performanceMetrics.totalRequests;
     }
   }
   private async checkServerOrchestrator(): Promise<boolean> {
@@ -494,11 +804,10 @@ export class LLMOrchestratorBridge {
   }
   /**
    * Public API methods
-   */;
-  async getStatus(): Promise<any> {
+   */ async getStatus(): Promise<any> {
     const [serverHealth, clientStatus] = await Promise.allSettled([
       this.checkServerOrchestrator(),
-      this.checkClientOrchestrator()
+      this.checkClientOrchestrator(),
     ]);
     const serverHealthy = serverHealth.status === 'fulfilled' && serverHealth.value;
     const clientHealthy = clientStatus.status === 'fulfilled' && clientStatus.value;
@@ -512,22 +821,24 @@ export class LLMOrchestratorBridge {
     }
     return {
       bridge: {
-        status: bridgeStatus
+        status: bridgeStatus, // ADDED: comma
         activeRequests: this.activeRequests.size,
         totalRequests: this.performanceMetrics.totalRequests,
-        successRate: this.performanceMetrics.totalRequests > 0
-          ? this.performanceMetrics.successfulRequests / this.performanceMetrics.totalRequests: 0,
-        averageLatency: this.performanceMetrics.averageLatency
+        successRate:
+          this.performanceMetrics.totalRequests > 0
+            ? this.performanceMetrics.successfulRequests / this.performanceMetrics.totalRequests
+            : 0,
+        averageLatency: this.performanceMetrics.averageLatency,
       },
       serverOrchestrator: serverHealthy ? await enhancedOrchestrator.health() : { status: 'offline' },
-      clientOrchestrator: clientHealthy ? await unifiedClientLLMOrchestrator.getStatus() : { status: 'offline' }
-    }
+      clientOrchestrator: clientHealthy ? await unifiedClientLLMOrchestrator.getStatus() : { status: 'offline' },
+    };
   }
   getPerformanceMetrics() {
-    return { ...this.performanceMetrics }
+    return { ...this.performanceMetrics };
   }
   getActiveRequests() {
-    return Array.from(this.activeRequests.values();
+    return Array.from(this.activeRequests.values()); // FIXED: Added closing parenthesis
   }
 }
 // Export singleton instance

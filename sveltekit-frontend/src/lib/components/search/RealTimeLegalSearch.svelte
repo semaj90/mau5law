@@ -1,13 +1,13 @@
 <!--
   Real-Time Legal Search Component
   Optimized for Svelte 5 + SvelteKit 2 + bits-ui v2
-  Features: WebSocket streaming, NATS messaging, vector search
+  Features: WebSocket streaming, RabbitMQ messaging, vector search
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { debounce } from 'lodash-es';
-  import { Command as CommandPrimitive, CommandInput, CommandContent, CommandItem } from '$lib/components/ui/command';
+  import { Command as CommandPrimitive } from '$lib/components/ui/command';
   // Real-time search service
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
   // Icons
@@ -23,24 +23,16 @@
     WifiOff
   } from 'lucide-svelte';
 
-  // Interface for Search Result Event Detail
-  export interface SearchResultEventDetail {
-    result: {
-      title?: string;
-      id?: string;
-      realTime?: boolean;
-      type?: string;
-      score?: number;
-      content?: string;
-      metadata?: {
-        jurisdiction?: string;
-        status?: string;
-        date?: string;
-      };
-      highlights?: string[];
-    };
-    query: string;
-  }
+  // Export the event payload type so parents can import/use it
+  export type SearchResultEventDetail = {
+    id: string;
+    title: string;           // required so parent can access .title
+    snippet?: string;
+    category?: string;
+    score?: number;
+  };
+
+  // Svelte 5: events are exposed as callback props; onselect is defined in Props below
 
   // Props with enhanced configuration
   interface Props {
@@ -109,7 +101,7 @@
     inputValue = (result as { title?: string }).title || ''; // Corrected 'titl' to 'title' and added fallback
     open = false;
     // Call the onselect callback if provided (Svelte 5 pattern)
-    onselect?.({ result: result as SearchResultEventDetail['result'], query: inputValue });
+    onselect?.(result as SearchResultEventDetail);
   }
   // Manual search trigger
   function handleSearch() {
@@ -138,6 +130,13 @@
     disconnect();
     console.log('🔌 Real-Time Legal Search Component destroyed');
   });
+
+  // Example: when a result is clicked or selected, call `select(...)`
+  function handleResultClick(result: SearchResultEventDetail) {
+    // ...any internal logic...
+    // Use the onselect callback prop instead of createEventDispatcher
+    onselect?.(result);
+  }
 </script>
 
 <!-- Enhanced Real-Time Search Interface -->
@@ -177,17 +176,19 @@
     </div>
   </div>
   <!-- Enhanced Search Input -->
-  <CommandPrimitive.Root bind:open bind:inputValue onInputValueChange={handleInputChange}>
+  <CommandPrimitive.Root bind:open>
     <div class="relative">
       <!-- Search Input with Enhanced Styling -->
-      <CommandInput
-        class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm;
-               placeholder: text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 ;
+      <CommandPrimitive.Input
+        class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm
+               placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2
                focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50
                {isStreaming ? 'pr-12' : 'pr-10'}"
         {placeholder}
         autocomplete="off"
         spellcheck="false"
+        bind:value={inputValue}
+        onValueChange={handleInputChange}
       />
       <!-- Search Button & Status Indicators -->
       <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -208,7 +209,7 @@
       </div>
     </div>
     <!-- Enhanced Search Results -->
-    <CommandContent
+    <CommandPrimitive.Content
       class="absolute z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-lg border border-gray-200
              bg-white shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out
              data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
@@ -227,7 +228,7 @@
         </div>
         <!-- Streaming Results -->
         {#each filteredResults as result, index ((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id)}
-          <CommandItem
+          <CommandPrimitive.Item
             value={(
               result as {
                 title?: unknown;
@@ -381,12 +382,12 @@
                 {/if}
               </div>
             </div>
-          </CommandItem>
+          </CommandPrimitive.Item>
         {/each}
       {:else if filteredResults.length > 0}
         <!-- Standard Results -->
         {#each filteredResults as result ((result as { title?: unknown; id?: unknown; realTime?: unknown; type?: unknown; score?: unknown; content?: unknown; metadata?: unknown; highlights?: unknown }).id)}
-          <CommandItem
+          <CommandPrimitive.Item
             value={(
               result as {
                 title?: unknown;
@@ -538,7 +539,7 @@
                 </div>
               {/if}
             </div>
-          </CommandItem>
+          </CommandPrimitive.Item>
         {/each}
         <!-- Search Statistics -->
         <div class="border-t border-gray-200 px-3 py-2 text-xs text-gray-500">
@@ -568,7 +569,7 @@
           {/each}
         </div>
       {/if}
-    </CommandContent>
+    </CommandPrimitive.Content>
   </CommandPrimitive.Root>
   <!-- Search Status Bar -->
   {#if enableRealTime}
@@ -598,7 +599,7 @@
 </div>
 
 <style>
-  .real-time-search-container {
+  :global(.real-time-search-container) {
     /* @apply relative w-full max-w-2xl mx-auto; */
     /* The @apply rule typically requires PostCSS and Tailwind CSS to be configured in your build process. */
     /* If you intend to use Tailwind CSS, ensure your svelte.config.js and postcss.config.js are set up correctly. */
@@ -614,6 +615,8 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-clamp: 2; /* Added for compatibility */
+    /* Note: 'line-clamp' is not a standard CSS property; use '-webkit-line-clamp' for multi-line truncation */
   }
 </style>
+
+
