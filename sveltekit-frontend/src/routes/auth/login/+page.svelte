@@ -10,6 +10,19 @@
     form?: unknown;
   }
   let { data, form }: Props = $props();
+
+  // --- new: runtime type guard + reactive typed error value ---
+  function isFormWithError(obj: unknown): obj is { error?: string } {
+    return typeof obj === 'object' && obj !== null && 'error' in obj;
+  }
+  // Make formError reactive so assignments inside $effect trigger updates
+  let formError = $state<string | null>(null);
+  $effect(() => {
+    formError = isFormWithError(form) && typeof (form as any).error === 'string' && (form as any).error.length > 0
+      ? (form as any).error
+      : null;
+  });
+
   let isLoading = $state(false);
   let showPassword = $state(false);
   // Auto-fill demo credentials
@@ -31,9 +44,9 @@
     <div class="bg-gray-800 p-8 rounded-lg border border-gray-700 max-h-none overflow-visible">
       <h1 class="text-3xl font-bold text-center text-yellow-400 mb-8">Legal AI Platform</h1>
       <h2 class="text-xl text-center text-white mb-6">Sign In</h2>
-      {#if form?.error}
+      {#if formError}
         <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4">
-          {form.error}
+          {formError}
         </div>
       {/if}
       <form

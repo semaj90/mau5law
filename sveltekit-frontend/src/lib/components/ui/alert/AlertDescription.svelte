@@ -6,9 +6,8 @@
   }
   let { class: className = '',
     children,
-    ...restProps  }: { class: className = '',
-    children,
-    ...restProps: unknown } = $props();
+    ...restProps
+  }: Props = $props();
 </script>
 
 <div class="text-sm [&_p]:leading-relaxed {className}" {...restProps}>

@@ -1,6 +1,7 @@
 <script lang="ts">
-  import * as BitsDialog from 'bits-ui';
+  import { getBitsNamespace as getBitsNamespaceClient } from '$lib/utils/bits-ui-adapter';
   import { cn } from '$lib/utils/cn';
+  import type { Snippet } from 'svelte';
 
   interface DialogProps {
     /** Whether the dialog is open */
@@ -21,6 +22,7 @@
     overlayClass?: string;
     /** Custom content class */
     contentClass?: string;
+    children?: Snippet;
   }
 
   let {
@@ -32,7 +34,8 @@
     caseManagement = false,
     modal = true,
     overlayClass = '',
-    contentClass = ''
+    contentClass = '',
+    children
   }: DialogProps = $props();
 
   const dialogContentClasses = $derived(cn(
@@ -58,26 +61,19 @@
     onOpenChange?.(newOpen);
   }
 
-  const BitsDialogRoot: any =
-    (BitsDialog as any).Root ??
-    (BitsDialog as any).Dialog ??
-    (BitsDialog as any).default ??
-    BitsDialog;
+  let BitsDialogRoot: any = null;
+  let BitsDialogPortal: any = null;
+  let BitsDialogOverlay: any = null;
+  let BitsDialogContent: any = null;
+  (async () => {
+    const BitsDialog = await getBitsNamespaceClient();
+    BitsDialogRoot = BitsDialog?.Root ?? BitsDialog?.Dialog ?? BitsDialog?.default ?? BitsDialog;
+    BitsDialogPortal = BitsDialog?.Portal ?? BitsDialog?.DialogPortal ?? null;
+    BitsDialogOverlay = BitsDialog?.Overlay ?? BitsDialog?.DialogOverlay ?? null;
+    BitsDialogContent = BitsDialog?.Content ?? BitsDialog?.DialogContent ?? null;
+  })();
 
-  const BitsDialogPortal: any =
-    (BitsDialog as any).Portal ??
-    (BitsDialog as any).DialogPortal ??
-    null;
-
-  const BitsDialogOverlay: any =
-    (BitsDialog as any).Overlay ??
-    (BitsDialog as any).DialogOverlay ??
-    null;
-
-  const BitsDialogContent: any =
-    (BitsDialog as any).Content ??
-    (BitsDialog as any).DialogContent ??
-    null;
+  // Legacy direct-access consts removed — using adapter-resolved `BitsDialog*` lets above
 </script>
 
 {#if BitsDialogRoot}
@@ -107,8 +103,8 @@
 						data-case-management={caseManagement}
 					>
 						<div class="bits-dialog-accent"></div>
-						{#if $$slots.default}
-							{@render $$slots.default}
+						{#if children}
+							{@render children()}
 						{/if}
 					</BitsDialogContent>
 				{/if}
@@ -134,8 +130,8 @@
 					data-case-management={caseManagement}
 				>
 					<div class="bits-dialog-accent"></div>
-					{#if $$slots.default}
-						{@render $$slots.default}
+					{#if children}
+						{@render children()}
 					{/if}
 				</BitsDialogContent>
 			{/if}
@@ -144,23 +140,24 @@
 {:else}
 	<div class={cn('bits-dialog-content', 'nier-bits-dialog', dialogContentClasses)} role="dialog" aria-modal={modal} hidden={!open} data-evidence-analysis={evidenceAnalysis} data-case-management={caseManagement}>
 		<div class="bits-dialog-accent"></div>
-		{#if $$slots.default}
-			{@render $$slots.default}
+		{#if children}
+			{@render children()}
 		{/if}
 	</div>
 {/if}
 
 <script lang="ts" module>
-  import * as BitsDialogModule from 'bits-ui';
-
-  export const Dialog = BitsDialogModule;
-  export const DialogTrigger = (BitsDialogModule as any).Trigger;
-  export const DialogPortal = (BitsDialogModule as any).Portal;
-  export const DialogOverlay = (BitsDialogModule as any).Overlay;
-  export const DialogContent = (BitsDialogModule as any).Content;
-  export const DialogTitle = (BitsDialogModule as any).Title;
-  export const DialogDescription = (BitsDialogModule as any).Description;
-  export const DialogClose = (BitsDialogModule as any).Close;
+  // Module-level exports remain permissive; attempt to read from adapter at runtime
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+  const _ns = await getBitsNamespace();
+  export const Dialog = _ns ?? {};
+  export const DialogTrigger = (_ns as any)?.Trigger ?? (_ns as any)?.DialogTrigger ?? null;
+  export const DialogPortal = (_ns as any)?.Portal ?? (_ns as any)?.DialogPortal ?? null;
+  export const DialogOverlay = (_ns as any)?.Overlay ?? (_ns as any)?.DialogOverlay ?? null;
+  export const DialogContent = (_ns as any)?.Content ?? (_ns as any)?.DialogContent ?? null;
+  export const DialogTitle = (_ns as any)?.Title ?? null;
+  export const DialogDescription = (_ns as any)?.Description ?? null;
+  export const DialogClose = (_ns as any)?.Close ?? null;
 
   export const DialogHeader = 'div';
   export const DialogFooter = 'div';

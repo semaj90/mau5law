@@ -22,68 +22,116 @@ interface WebGPULangExtractRequest {
     compareStandard?: boolean
   }
 }
+
+// New typed result interfaces to avoid `any` casts
+type RecordObject = Record<string, unknown>
+
+interface PerformanceInfo {
+  webgpuUtilized?: boolean
+  throughput?: number
+  totalTime?: number
+  [key: string]: unknown
+}
+
+interface EmbeddingsInfo {
+  cacheHit?: boolean
+  compressionRatio?: number
+  [key: string]: unknown
+}
+
+interface ExtractionInfo {
+  summary?: string
+  keyTerms?: string[]
+  entities?: RecordObject[]
+  risks?: RecordObject[]
+  [key: string]: unknown
+}
+
+interface WebGPUResult {
+  performance?: PerformanceInfo
+  embeddings?: EmbeddingsInfo
+  extraction?: ExtractionInfo
+  [key: string]: unknown
+}
 // GET - System status and capabilities
 export const GET: RequestHandler = async () => {
   try {
-    const stats = await getLangChainWebGPUStats()
+    const stats = await getLangChainWebGPUStats();
+
+    // Cast the unknown stats to a local alias and read properties with safe checks.
+    const s = stats as any;
+
     return json({
       success: true,
       service: 'webgpu-langextract',
       capabilities: {
-        webgpuOptimization: stats.webgpuOptimizer.gpuMetrics.availableComputeUnits > 0,
-        embeddingCache: stats.embeddingCache.redisConnected,
-        langchainService: stats.langchainService.available,
-        availableModels: stats.langchainService.models || []
+        // Use optional chaining and boolean coercion to avoid "property does not exist on type 'unknown'" errors.
+        webgpuOptimization: !!(
+          s?.webgpuOptimizer?.gpuMetrics?.availableComputeUnits &&
+          s?.webgpuOptimizer?.gpuMetrics?.availableComputeUnits > 0
+        ),
+        embeddingCache: Boolean(s?.embeddingCache?.redisConnected),
+        langchainService: Boolean(s?.langchainService?.available),
+        availableModels: Array.isArray(s?.langchainService?.models) ? s.langchainService.models : [],
       },
-      systemStats: stats
+      systemStats: stats,
       endpoints: {
         process: 'POST with action: "process" - Single document processing',
         batch: 'POST with action: "batch" - Batch document processing',
         benchmark: 'POST with action: "benchmark" - Performance testing',
-        config: 'POST with action: "config" - Update configuration'
+        config: 'POST with action: "config" - Update configuration',
       },
-      timestamp: Date.now()
-    })
+      timestamp: Date.now(),
+    });
   } catch (error) {
-    return json({
-      success: false,
-      error: 'Failed to get WebGPU LangExtract status',
-      details: error instanceof Error ? error.message: String(error)
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: 'Failed to get WebGPU LangExtract status',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
-}
+};
 // POST - WebGPU-enhanced legal document processing
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
-    const requestData: WebGPULangExtractRequest = await request.json()
-    const { action, config = {} } = requestData
-    console.log(`🚀 WebGPU LangExtract: ${action} - Client: ${getClientAddress()}`)
-    let result: any
-    const startTime = Date.now()
+    const requestData: WebGPULangExtractRequest = await request.json();
+    // Provide an explicit typed default to avoid casting to `any`
+    const { action, config = {} as Partial<LangChainWebGPUConfig> } = requestData;
+    const typedConfig: Partial<LangChainWebGPUConfig> = config;
+
+    console.log(`🚀 WebGPU LangExtract: ${action} - Client: ${getClientAddress()}`);
+    let result: any;
+    const startTime = Date.now();
     switch (action) {
       case 'process':
-        result = await handleSingleDocumentProcessing(requestData)
-        break
+        result = await handleSingleDocumentProcessing(requestData);
+        break;
       case 'batch':
-        result = await handleBatchDocumentProcessing(requestData)
-        break
+        result = await handleBatchDocumentProcessing(requestData);
+        break;
       case 'benchmark':
-        result = await handleBenchmarkTesting(requestData)
-        break
+        result = await handleBenchmarkTesting(requestData);
+        break;
       case 'stats':
-        result = await getLangChainWebGPUStats()
-        break
+        result = await getLangChainWebGPUStats();
+        break;
       case 'config':
-        result = await handleConfigurationUpdate(requestData)
-        break
+        result = await handleConfigurationUpdate(requestData);
+        break;
       default:
-        return json({,
-          success: false,
-          error: 'Invalid action',
-          validActions: ['process', 'batch', 'benchmark', 'stats', 'config']
-        }, { status: 400 })
+        return json(
+          {
+            success: false,
+            error: 'Invalid action',
+            validActions: ['process', 'batch', 'benchmark', 'stats', 'config'],
+          },
+          { status: 400 }
+        );
     }
-    const processingTime = Date.now() - startTime
+    const processingTime = Date.now() - startTime;
     return json({
       success: true,
       action,
@@ -92,218 +140,326 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         processingTime,
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        webgpuEnabled: config.useWebGPUCache !== false
-      }
-    })
+        // Use the typed config instead of casting to `any`
+        webgpuEnabled: typedConfig.useWebGPUCache !== false,
+      },
+    });
   } catch (error) {
-    console.error('WebGPU LangExtract error:', error)
-    return json({
-      success: false,
-      error: 'WebGPU LangExtract processing failed',
-      details: error instanceof Error ? error.message: String(error)
-    }, { status: 500 })
+    console.error('WebGPU LangExtract error:', error);
+    return json(
+      {
+        success: false,
+        error: 'WebGPU LangExtract processing failed',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
-}
+};
 /**
  * Handle single document processing with WebGPU optimization
  */
 async function handleSingleDocumentProcessing(request: WebGPULangExtractRequest) {
   if (!request.text) {
-    throw new Error('Text is required for single document processing')
+    throw new Error('Text is required for single document processing');
   }
   const config = {
-    useWebGPUCache: true
-    cacheEmbeddings: true
-    compressVectors: true
+    useWebGPUCache: true,
+    cacheEmbeddings: true,
+    compressVectors: true,
     practiceArea: 'legal-ai',
     documentType: 'general' as const,
-    ...request.config
-  }
-  console.log(`📄 Processing single document: ${request.text.length} chars`)
-  const result = await processLegalDocumentWithWebGPU(request.text, config)
+    ...request.config,
+  };
+  console.log(`📄 Processing single document: ${request.text.length} chars`);
+  const result = await processLegalDocumentWithWebGPU(request.text, config);
+
+  // Safely convert through `unknown` to avoid unsafe direct casts between incompatible types,
+  // then normalize extraction.risks and extraction.entities which may be string[] in some results.
+  const typedResult = result as unknown as WebGPUResult;
+  const perf: PerformanceInfo = (typedResult.performance ?? {}) as PerformanceInfo;
+  const emb: EmbeddingsInfo = (typedResult.embeddings ?? {}) as EmbeddingsInfo;
+
+  const extRaw = (typedResult.extraction ?? {}) as ExtractionInfo;
+  // Normalize risks: string[] -> RecordObject[]
+  const risks: RecordObject[] = Array.isArray(extRaw.risks)
+    ? extRaw.risks.map((r: unknown) => (typeof r === 'string' ? { risk: r } : (r as RecordObject)))
+    : [];
+  // Normalize entities: string[] -> RecordObject[]
+  const entities: RecordObject[] = Array.isArray(extRaw.entities)
+    ? extRaw.entities.map((e: unknown) => (typeof e === 'string' ? { entity: e } : (e as RecordObject)))
+    : [];
+  const ext: ExtractionInfo = {
+    ...extRaw,
+    risks,
+    entities,
+  };
+
   return {
-    processing: result;
+    processing: result,
     optimizations: {
-      webgpuUtilized: (result as { performance?: any; embeddings?: any; extraction?: any }).performance.webgpuUtilized,
-      cacheHit: (result as { performance?: any; embeddings?: any; extraction?: any }).embeddings.cacheHit,
-      compressionRatio: (result as { performance?: any; embeddings?: any; extraction?: any }).embeddings.compressionRatio,
-      throughput: (result as { performance?: any; embeddings?: any; extraction?: any }).performance.throughput
+      webgpuUtilized: !!perf.webgpuUtilized,
+      cacheHit: Boolean(emb.cacheHit),
+      compressionRatio: typeof emb.compressionRatio === 'number' ? emb.compressionRatio : null,
+      throughput: perf.throughput ?? null,
     },
     extracted: {
-      summary: (result as { performance?: any; embeddings?: any; extraction?: any }).extraction.summary,
-      keyTerms: (result as { performance?: any; embeddings?: any; extraction?: any }).extraction.keyTerms,
-      entities: (result as { performance?: any; embeddings?: any; extraction?: any }).extraction.entities,
-      risks: (result as { performance?: any; embeddings?: any; extraction?: any }).extraction.risks
-    }
-  }
+      summary: ext.summary ?? null,
+      keyTerms: ext.keyTerms ?? [],
+      entities: ext.entities ?? [],
+      risks: ext.risks ?? [],
+    },
+  };
 }
 /**
  * Handle batch document processing with parallel optimization
  */
 async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) {
   if (!request.documents || request.documents.length === 0) {
-    throw new Error('Documents array is required for batch processing')
+    throw new Error('Documents array is required for batch processing');
   }
   const config = {
-    useWebGPUCache: true
+    useWebGPUCache: true,
     batchSize: 64, // Optimized for WebGPU
-    cacheEmbeddings: true
-    compressVectors: true
+    cacheEmbeddings: true,
+    compressVectors: true,
     practiceArea: 'legal-ai',
     documentType: 'general' as const,
-    ...request.config
-  }
-  console.log(`📦 Processing batch: ${request.documents.length} documents`)
-  const results = await processBatchDocumentsWithWebGPU(request.documents, config)
-  // Calculate aggregate statistics
-  const totalTime = results.reduce((sum, r) => sum + r.performance.totalTime, 0)
-  const avgThroughput = results.reduce((sum, r) => sum + r.performance.throughput, 0) / results.length
-  const cacheHitRatio = results.filter(item => item.length) / results.length
-  const webgpuUtilization = results.filter(item => item.length) / results.length
-  return {
-    batchResults: results.map(r => ({,
-      summary: r.extraction.summary,
-      keyTerms: r.extraction.keyTerms,
-      entities: r.extraction.entities,
-      risks: r.extraction.risks,
-      performance: {
-        processingTime: r.performance.totalTime,
-        webgpuUtilized: r.performance.webgpuUtilized,
-        cacheHit: r.embeddings.cacheHit
-      }
-    })),
-    aggregateStats: {
-      totalDocuments: results.length,
-      totalProcessingTime: totalTime
-      avgThroughput,
-      cacheHitRatio,
-      webgpuUtilization,
-      avgCompressionRatio: results.reduce((sum, r) => sum + r.embeddings.compressionRatio, 0) / results.length
+    ...request.config,
+  };
+  console.log(`📦 Processing batch: ${request.documents.length} documents`);
+  // processBatchDocumentsWithWebGPU may return a ProcessingResult[] where
+  // extraction.risks can be string[]. Normalize to WebGPUResult[].
+
+  // Use unknown[] and narrow to Record<string, unknown> instead of `any[]`
+  const rawResults = (await processBatchDocumentsWithWebGPU(request.documents, config)) as unknown[];
+  const results: WebGPUResult[] = rawResults.map((r: unknown): WebGPUResult => {
+    const rec = (r as Record<string, unknown>) || {};
+    const extraction = (rec['extraction'] ?? {}) as Record<string, unknown>;
+
+    // Normalize risks: string[] -> RecordObject[] (wrap strings as { risk: string })
+    let normalizedRisks: RecordObject[] = [];
+    if (Array.isArray(extraction['risks'])) {
+      normalizedRisks = (extraction['risks'] as unknown[]).map((risk: unknown) =>
+        typeof risk === 'string' ? { risk } : (risk as RecordObject)
+      );
     }
-  }
+
+    // Normalize entities similarly (sometimes returned as string[])
+    let normalizedEntities: RecordObject[] = [];
+    if (Array.isArray(extraction['entities'])) {
+      normalizedEntities = (extraction['entities'] as unknown[]).map((ent: unknown) =>
+        typeof ent === 'string' ? { entity: ent } : (ent as RecordObject)
+      );
+    }
+
+    return {
+      // spread the narrowed record and replace extraction with the normalized one
+      ...rec,
+      extraction: {
+        ...extraction,
+        risks: normalizedRisks,
+        entities: normalizedEntities,
+      },
+    } as WebGPUResult;
+  });
+
+  // Defensive reductions with safe accesses
+  // Filter out malformed results before aggregation
+  const totalTime = results.reduce((sum: number, r) => sum + (r.performance?.totalTime ?? 0), 0);
+  const avgThroughput = results.length
+    ? results.reduce((sum, r) => sum + (r.performance?.throughput ?? 0), 0) / results.length
+    : 0;
+  const cacheHitCount = results.reduce((sum, r) => sum + (r.embeddings?.cacheHit ? 1 : 0), 0);
+  const webgpuUtilizedCount = results.reduce((sum, r) => sum + (r.performance?.webgpuUtilized ? 1 : 0), 0);
+  // Filter out non-numeric compression ratios before averaging
+  const compressionRatios = results
+    .map(r => r.embeddings?.compressionRatio)
+    .filter((v): v is number => typeof v === 'number' && !isNaN(v));
+  const avgCompressionRatio = compressionRatios.length
+    ? compressionRatios.reduce((sum, v) => sum + v, 0) / compressionRatios.length
+    : 0;
+
+  return {
+    batchResults: results.map(
+      ({
+        extraction = {},
+        performance = {},
+        embeddings = {},
+      }: WebGPUResult): {
+        summary: string | null;
+        keyTerms: string[];
+        entities: RecordObject[];
+        risks: RecordObject[];
+        performance: {
+          processingTime: number | null;
+          webgpuUtilized: boolean;
+          cacheHit: boolean;
+        };
+      } => ({
+        summary: extraction.summary ?? null,
+        keyTerms: extraction.keyTerms ?? [],
+        entities: extraction.entities ?? [],
+        risks: extraction.risks ?? [],
+        performance: {
+          processingTime: performance.totalTime ?? null,
+          webgpuUtilized: !!performance.webgpuUtilized,
+          cacheHit: !!embeddings.cacheHit,
+        },
+      })
+    ),
+    aggregated: {
+      totalProcessingTime: totalTime,
+      avgThroughput,
+      cacheHitRatio: results.length ? cacheHitCount / results.length : 0,
+      webgpuUtilization: results.length ? webgpuUtilizedCount / results.length : 0,
+      avgCompressionRatio,
+    },
+  };
 }
 /**
  * Handle performance benchmark testing
  */
 async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
-  const iterations = request.benchmark?.iterations || 10
-  const compareStandard = request.benchmark?.compareStandard || false
+  const iterations = request.benchmark?.iterations || 10;
+  const compareStandard = request.benchmark?.compareStandard || false;
   // Sample legal documents for benchmarking
   const sampleDocuments = [
-    "This Employment Agreement is entered into between Company X and Employee Y. The employee agrees to perform duties as Software Engineer with annual compensation of $120,000. This agreement includes confidentiality clauses and non-compete restrictions.",
-    "Software License Agreement grants licensee non-exclusive rights to use proprietary software. The license fee is $50,000 annually with maintenance support included. Reverse engineering and redistribution are prohibited without written consent.",
-    "Real Estate Purchase Agreement for property located at 123 Main Street. Purchase price is $500,000 with 20% down payment required. Closing date is scheduled for March 15, 2024 with standard title insurance requirements."
-  ]
-  console.log(`🧪 Running WebGPU benchmark: ${iterations} iterations`)
+    'This Employment Agreement is entered into between Company X and Employee Y. The employee agrees to perform duties as Software Engineer with annual compensation of $120,000. This agreement includes confidentiality clauses and non-compete restrictions.',
+    'Software License Agreement grants licensee non-exclusive rights to use proprietary software. The license fee is $50,000 annually with maintenance support included. Reverse engineering and redistribution are prohibited without written consent.',
+    'Real Estate Purchase Agreement for property located at 123 Main Street. Purchase price is $500,000 with 20% down payment required. Closing date is scheduled for March 15, 2024 with standard title insurance requirements.',
+  ];
+  console.log(`🧪 Running WebGPU benchmark: ${iterations} iterations`);
   // WebGPU optimized processing
-  const webgpuStartTime = Date.now()
-  const webgpuResults = []
+  const webgpuStartTime = Date.now();
+  const webgpuResults: WebGPUResult[] = [];
   for (let i = 0; i < iterations; i++) {
-    const doc = sampleDocuments[i % sampleDocuments.length]
-    const result = await processLegalDocumentWithWebGPU(doc, {
-      useWebGPUCache: true
-      compressVectors: true
-    })
-    webgpuResults.push(result)
+    const doc = sampleDocuments[i % sampleDocuments.length];
+    const result = (await processLegalDocumentWithWebGPU(doc, {
+      useWebGPUCache: true,
+      compressVectors: true,
+    })) as unknown as WebGPUResult;
+    webgpuResults.push(result);
   }
-  const webgpuTime = Date.now() - webgpuStartTime
-  let standardResults = []
-  let standardTime = 0
+  const webgpuTime = Date.now() - webgpuStartTime;
+
+  // Prepare placeholders for standard comparison so `standardTime` is always defined
+  let standardResults: WebGPUResult[] = [];
+  let standardTime = 0;
+
   if (compareStandard) {
-    // Standard processing comparison
-    const standardStartTime = Date.now()
+    const standardStartTime = Date.now();
     for (let i = 0; i < iterations; i++) {
-      const doc = sampleDocuments[i % sampleDocuments.length]
-      const result = await processLegalDocumentWithWebGPU(doc, {
-        useWebGPUCache: false
-        compressVectors: false
-      })
-      standardResults.push(result)
+      const doc = sampleDocuments[i % sampleDocuments.length];
+      const result = (await processLegalDocumentWithWebGPU(doc, {
+        useWebGPUCache: false,
+        compressVectors: false,
+      })) as unknown as WebGPUResult;
+      standardResults.push(result);
     }
-    standardTime = Date.now() - standardStartTime
+    standardTime = Date.now() - standardStartTime;
   }
+
+  const avgCacheHitRatio = iterations
+    ? webgpuResults.reduce((sum, item) => sum + (item?.embeddings?.cacheHit ? 1 : 0), 0) / iterations
+    : 0;
+  const avgCompressionRatio = iterations
+    ? webgpuResults.reduce(
+        (sum, r) => sum + (typeof r?.embeddings?.compressionRatio === 'number' ? r.embeddings.compressionRatio : 0),
+        0
+      ) / iterations
+    : 0;
+
   return {
     benchmark: {
       iterations,
-      sampleDocumentLength: sampleDocuments[0].length
+      sampleDocumentLength: sampleDocuments[0].length,
     },
     webgpuResults: {
-      totalTime: webgpuTime
+      totalTime: webgpuTime,
       avgTimePerDoc: webgpuTime / iterations,
-      throughput: (iterations / webgpuTime) * 1000,
-      avgCacheHitRatio: webgpuResults.filter(item => item.length) / iterations,
-      avgCompressionRatio: webgpuResults.reduce((sum, r) => sum + r.embeddings.compressionRatio, 0) / iterations
+      throughput: iterations && webgpuTime ? (iterations / webgpuTime) * 1000 : 0,
+      avgCacheHitRatio,
+      avgCompressionRatio,
     },
-    standardResults: compareStandard ? {,
-      totalTime: standardTime
-      avgTimePerDoc: standardTime / iterations,
-      throughput: (iterations / standardTime) * 1000,
-      speedupRatio: standardTime / webgpuTime
-    } : null
+    standardResults: compareStandard
+      ? {
+          totalTime: standardTime,
+          avgTimePerDoc: standardTime / iterations,
+          throughput: iterations && standardTime ? (iterations / standardTime) * 1000 : 0,
+          speedupRatio: standardTime && webgpuTime ? standardTime / webgpuTime : null,
+        }
+      : null,
     recommendations: {
-      useWebGPU: webgpuTime < standardTime
+      useWebGPU: compareStandard ? webgpuTime < standardTime : true,
       optimalBatchSize: Math.min(128, Math.max(32, Math.floor(iterations / 4))),
-      compressionBenefit: webgpuResults[0]?.embeddings.compressionRatio > 2
-    }
-  }
+      compressionBenefit: (webgpuResults[0]?.embeddings?.compressionRatio ?? 0) > 2,
+    },
+  };
 }
 /**
  * Handle configuration updates
  */
 async function handleConfigurationUpdate(request: WebGPULangExtractRequest) {
   if (!request.config) {
-    throw new Error('Configuration object is required')
+    throw new Error('Configuration object is required');
   }
-  webgpuLangChainBridge.updateConfig(request.config)
+  webgpuLangChainBridge.updateConfig(request.config);
   return {
     message: 'Configuration updated successfully',
     newConfig: request.config,
-    timestamp: Date.now()
-  }
+    timestamp: Date.now(),
+  };
 }
 // PUT - Update system configuration
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const config = await request.json()
-    webgpuLangChainBridge.updateConfig(config)
+    const config = await request.json();
+    webgpuLangChainBridge.updateConfig(config);
     return json({
       success: true,
       message: 'WebGPU LangExtract configuration updated',
       config,
-      timestamp: Date.now()
-    })
+      timestamp: Date.now(),
+    });
   } catch (error) {
-    return json({
-      success: false,
-      error: 'Failed to update configuration',
-      details: error instanceof Error ? error.message: String(error)
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: 'Failed to update configuration',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
-}
+};
 // DELETE - Clear caches and reset system
 export const DELETE: RequestHandler = async () => {
   try {
     // Clear WebGPU optimizer caches
-    console.log('🗑️ Clearing WebGPU LangExtract caches')
+    console.log('🗑️ Clearing WebGPU LangExtract caches');
     // Reset to default configuration
     webgpuLangChainBridge.updateConfig({
-      useWebGPUCache: true
+      useWebGPUCache: true,
       batchSize: 128,
-      cacheEmbeddings: true
-      compressVectors: true
+      cacheEmbeddings: true,
+      compressVectors: true,
       practiceArea: 'legal-ai',
-      documentType: 'general'
-    })
+      documentType: 'general',
+    });
     return json({
       success: true,
       message: 'WebGPU LangExtract system reset successfully',
-      timestamp: Date.now()
-    })
+      timestamp: Date.now(),
+    });
   } catch (error) {
-    return json({
-      success: false,
-      error: 'Failed to reset system',
-      details: error instanceof Error ? error.message: String(error)
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: 'Failed to reset system',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
-}
+};

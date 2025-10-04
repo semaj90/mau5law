@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import type { Snippet } from 'svelte';
+  import type { Snippet, ComponentType } from 'svelte';
   import { cn } from '$lib/utils';
   import { buttonVariants, type ButtonVariantProps } from './button-variants';
 
@@ -38,15 +38,15 @@
   let isDisabled = $derived(disabled || loading);
   let buttonClass = $derived(cn(buttonVariants({ variant, size }), className));
 
-  // dynamic Bits-UI loader
-  // use unknown to avoid `any` lint errors, narrow before use
+  // dynamic Bits-UI loader using adapter
   let BitsComponent = $state<unknown>(null);
-  onMount(async () => {
+  import { onMount as _onMount } from 'svelte';
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+  _onMount(async () => {
     if (useBits) {
       try {
-        const mod = await import('bits-ui');
-        // prefer exported Button or Root
-        BitsComponent = (mod as any).Button?.Root ?? (mod as any).Button ?? (mod as any).default ?? null;
+        const ns = await getBitsNamespace();
+        BitsComponent = ns.Button?.Root ?? ns.Button ?? ns.default?.Button ?? ns;
       } catch {
         BitsComponent = null;
       }
@@ -65,7 +65,7 @@
 
 {#if useBits && BitsComponent && !href}
   {#if typeof BitsComponent === 'function' || (BitsComponent && typeof BitsComponent === 'object')}
-    {@const Bits = BitsComponent}
+    {@const Bits = BitsComponent as ComponentType}
     <Bits
       class={buttonClass}
       disabled={isDisabled}

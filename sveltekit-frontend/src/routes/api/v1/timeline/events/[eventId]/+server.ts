@@ -1,160 +1,217 @@
-import { json, error, type RequestHandler } from '@sveltejs/kit'
-import { lucia } from '$lib/server/auth'
-import { caseTimeline } from '$lib/server/db/schemas/cases-schema'
-import { db } from '$lib/server/database/connection'
-import { eq, and } from 'drizzle-orm'
-import { z } from 'zod'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { caseTimeline } from '$lib/server/db/schemas/cases-schema';
+import db from '$lib/server/db/unified-client';
+import { eq, and } from 'drizzle-orm';
+import { z } from 'zod';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+
 // Schema for updating timeline events
 const UpdateTimelineEventSchema = z.object({
-  title: z.string().min(1).max(200).optional(),
-  description: z.string().max(2000).optional(),
+  title: z.string().min(1).optional(),
+  description: z.string().optional(),
   eventDate: z.string().datetime().optional(),
   eventType: z
-    .enum(['witness', 'evidence', 'document', 'interview', 'court', 'investigation', 'other'])
+    .enum([
+      'case_created',
+      'evidence_added',
+      'interview_conducted',
+      'court_filing',
+      'hearing',
+      'investigation',
+      'analysis',
+      'decision',
+      'other',
+    ])
     .optional(),
-  location: z.string().max(500).optional(),
+  location: z.string().optional(),
   participants: z.array(z.string()).optional(),
-  metadata: z.record(z.any()).optional(),
-  severity: z.enum(['low', 'medium', 'high', 'critical']).optional()
-})
+  evidenceIds: z.array(z.string().uuid()).optional(),
+  notes: z.string().optional(),
+  importance: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+  isPublic: z.boolean().optional(),
+  metadata: z.record(z.unknown()).optional(),
+});
+
 /**
  * GET /api/v1/timeline/events/[eventId]
  * Retrieve a specific timeline event
  */
-export const GET: RequestHandler = async ({ params, cookies }) => {
+export const GET: RequestHandler = async ({ params, locals }) => {
   try {
-    const sessionId = cookies.get(lucia.sessionCookieName)
-    if (!sessionId) {
-      return error(401, 'No active session')
+    if (!locals.session || !locals.user) {
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
     }
-    const { session, user } = await lucia.validateSession(sessionId)
-    if (!session) {
-      return error(401, 'Invalid session')
-    }
-    const eventId = params.eventId
+    const { user } = locals;
+
+    const eventId = params.eventId;
     if (!eventId) {
-      return error(400, 'Event ID is required')
+      return error(400, makeHttpErrorPayload({ message: 'Event ID is required', code: 'MISSING_EVENT_ID' }));
     }
+
     // Get the timeline event
-    const timelineEvent = await db
+    const [timelineEvent] = await db
+      .runtime()
       .select()
       .from(caseTimeline)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
-      .limit(1)
-    if (timelineEvent.length === 0) {
-      return error(404, 'Timeline event not found')
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
+      .limit(1);
+
+    if (!timelineEvent) {
+      return error(404, makeHttpErrorPayload({ message: 'Timeline event not found', code: 'NOT_FOUND' }));
     }
+
     return json({
       success: true,
       data: {
-        event: timelineEvent[0]
-      }
-    })
-  } catch (err: any) {
-    console.error('Get timeline event error:', err)
-    return error(500, 'Failed to retrieve timeline event')
+        event: timelineEvent,
+      },
+    });
+  } catch (err: unknown) {
+    console.error('Get timeline event error:', err);
+    return error(
+      500,
+      makeHttpErrorPayload({
+        message: 'Failed to retrieve timeline event',
+        code: 'FETCH_FAILED',
+        details: err instanceof Error ? err.message : String(err),
+      })
+    );
   }
-}
+};
+
 /**
  * PUT /api/v1/timeline/events/[eventId]
  * Update a specific timeline event
  */
-export const PUT: RequestHandler = async ({ params, cookies, request }) => {
+export const PUT: RequestHandler = async ({ params, locals, request }) => {
   try {
-    const sessionId = cookies.get(lucia.sessionCookieName)
-    if (!sessionId) {
-      return error(401, 'No active session')
+    if (!locals.session || !locals.user) {
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
     }
-    const { session, user } = await lucia.validateSession(sessionId)
-    if (!session) {
-      return error(401, 'Invalid session')
-    }
-    const eventId = params.eventId
+    const { user } = locals;
+
+    const eventId = params.eventId;
     if (!eventId) {
-      return error(400, 'Event ID is required')
+      return error(400, makeHttpErrorPayload({ message: 'Event ID is required', code: 'MISSING_EVENT_ID' }));
     }
-    const body = await request.json()
-    const validatedData = UpdateTimelineEventSchema.parse(body)
+
+    const body = await request.json();
+    const validatedData = UpdateTimelineEventSchema.parse(body);
+
     // Check if the event exists and belongs to the user
-    const existingEvent = await db
-      .select()
+    const [existingEvent] = await db
+      .runtime()
+      .select({ id: caseTimeline.id })
       .from(caseTimeline)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
-      .limit(1)
-    if (existingEvent.length === 0) {
-      return error(404, 'Timeline event not found')
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
+      .limit(1);
+
+    if (!existingEvent) {
+      return error(
+        404,
+        makeHttpErrorPayload({ message: 'Timeline event not found or access denied', code: 'NOT_FOUND' })
+      );
     }
+
     // Prepare update data
-    const updateData: any = {
-      ...validatedData,
-      updatedAt: new Date()
-    }
-    // Convert eventDate string to Date if provided
-    if (validatedData.eventDate) {
-      updateData.eventDate = new Date(validatedData.eventDate)
-    }
+    const { eventDate, ...otherData } = validatedData;
+    const updateData = {
+      ...otherData,
+      updatedAt: new Date(),
+      ...(eventDate ? { eventDate: new Date(eventDate) } : {}),
+    };
+
     // Update the timeline event
-    const updatedEvent = await db
+    const [updatedEvent] = await db
+      .runtime()
       .update(caseTimeline)
       .set(updateData)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
-      .returning()
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
+      .returning();
+
     return json({
       success: true,
       message: 'Timeline event updated successfully',
       data: {
-        event: updatedEvent[0]
-      }
-    })
-  } catch (err: any) {
-    console.error('Update timeline event error:', err)
+        event: updatedEvent,
+      },
+    });
+  } catch (err: unknown) {
+    console.error('Update timeline event error:', err);
     if (err instanceof z.ZodError) {
-      return error(400, 'Invalid input data')
+      return error(
+        400,
+        makeHttpErrorPayload({
+          message: 'Invalid input data',
+          code: 'INVALID_DATA',
+          details: err.errors,
+        })
+      );
     }
-    return error(500, 'Failed to update timeline event')
+    return error(
+      500,
+      makeHttpErrorPayload({
+        message: 'Failed to update timeline event',
+        code: 'UPDATE_FAILED',
+        details: err instanceof Error ? err.message : String(err),
+      })
+    );
   }
-}
+};
+
 /**
  * DELETE /api/v1/timeline/events/[eventId]
  * Delete a specific timeline event
  */
-export const DELETE: RequestHandler = async ({ params, cookies }) => {
+export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
-    const sessionId = cookies.get(lucia.sessionCookieName)
-    if (!sessionId) {
-      return error(401, 'No active session')
+    if (!locals.session || !locals.user) {
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
     }
-    const { session, user } = await lucia.validateSession(sessionId)
-    if (!session) {
-      return error(401, 'Invalid session')
-    }
-    const eventId = params.eventId
+    const { user } = locals;
+
+    const eventId = params.eventId;
     if (!eventId) {
-      return error(400, 'Event ID is required')
+      return error(400, makeHttpErrorPayload({ message: 'Event ID is required', code: 'MISSING_EVENT_ID' }));
     }
+
     // Check if the event exists and belongs to the user
-    const existingEvent = await db
-      .select()
+    const [existingEvent] = await db
+      .runtime()
+      .select({ id: caseTimeline.id })
       .from(caseTimeline)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
-      .limit(1)
-    if (existingEvent.length === 0) {
-      return error(404, 'Timeline event not found')
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
+      .limit(1);
+
+    if (!existingEvent) {
+      return error(
+        404,
+        makeHttpErrorPayload({ message: 'Timeline event not found or access denied', code: 'NOT_FOUND' })
+      );
     }
+
     // Delete the timeline event
     await db
+      .runtime()
       .delete(caseTimeline)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)));
+
     return json({
       success: true,
       message: 'Timeline event deleted successfully',
       data: {
-        deletedEventId: eventId
-      }
-    })
-  } catch (err: any) {
-    console.error('Delete timeline event error:', err)
-    return error(500, 'Failed to delete timeline event')
+        deletedEventId: eventId,
+      },
+    });
+  } catch (err: unknown) {
+    console.error('Delete timeline event error:', err);
+    return error(
+      500,
+      makeHttpErrorPayload({
+        message: 'Failed to delete timeline event',
+        code: 'DELETE_FAILED',
+        details: err instanceof Error ? err.message : String(err),
+      })
+    );
   }
-}
+};

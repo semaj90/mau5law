@@ -1,6 +1,5 @@
 import type { RequestHandler } from './$types.js'
-// TypeScript Batch Processor - High-Performance Batch Processing
-// Optimized for processing large numbers of TypeScript errors
+import { json } from '@sveltejs/kit';
 import type {
 	OptimizedFixRequest,
 	OptimizedFixResponse,
@@ -11,91 +10,111 @@ const ENHANCED_API_BASE_URL = 'http://localhost:8094'
 /* POST /api/v1/typescript-optimizer/batch - Batch process TypeScript errors */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const body = await request.json() as OptimizedFixRequest
-		// Validate batch request
-		if (!body.errors || !Array.isArray(body.errors)) {
-			return json({
-				success: false,
-				error: 'Invalid batch request: errors array required'
-			}, { status: 400 })
-		}
-		if (body.errors.length === 0) {
-			return json({
-				success: true,
-				processed_count: 0,
-				successful_count: 0,
-				results: [],
-				processing_stats: {
-					total_time: 0,
-					processed_count: 0,
-					successful_count: 0
-				},
-				message: 'No errors to process'
-			})
-		}
-		const startTime = Date.now()
-		const errorCount = body.errors.length
-		console.log(`🚀 Batch Processor: Starting batch processing of ${errorCount} TypeScript errors`)
-		// Auto-configure optimal settings for batch processing
-		const optimizedRequest: OptimizedFixRequest = {
-			...body,
-			use_gpu: body.use_gpu ?? (errorCount >= 10), // Auto-enable GPU for large batches
-			use_llama: body.use_llama ?? (errorCount < 50 && errorCount >= 5), // Llama for medium batches
-			use_cache: body.use_cache ?? true,
-			max_concurrency: body.max_concurrency ?? Math.min(errorCount, 8),
-			target_latency: body.target_latency ?? (errorCount >= 20 ? 5 : 10), // ms per error
-			quality_threshold: body.quality_threshold ?? 0.8
-		}
-		// Choose optimal endpoint based on batch characteristics
-		const endpoint = selectOptimalEndpoint(optimizedRequest)
-		const apiUrl = `${ENHANCED_API_BASE_URL}${endpoint}`
-		console.log(`⚡ Batch Processor: Using ${endpoint} with GPU=${optimizedRequest.use_gpu}, Llama=${optimizedRequest.use_llama}`)
-		// Process batch with Go service
-		const response = await fetch(apiUrl, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(optimizedRequest)
-		})
-		if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-			throw new Error(`Go service error ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`)
-		}
-		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as OptimizedFixResponse
-		const processingTime = Date.now() - startTime
-		// Calculate batch processing statistics
-		const stats: BatchProcessingStats = {
-			total_processing_time_ms: processingTime
-			go_service_time_ms: (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processing_stats?.total_time || 0,
-			overhead_ms: processingTime - ((result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processing_stats?.total_time || 0),
-			throughput_errors_per_second: (errorCount / processingTime) * 1000,
-			success_rate: ((result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count / (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processed_count) * 100,
-			performance_grade: calculatePerformanceGrade(processingTime, errorCount, (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count)
-		}
-		console.log(`✅ Batch Processor: Completed in ${processingTime}ms, ${(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count}/${(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processed_count} successful (${stats.success_rate.toFixed(1)}%)`)
-		// Enhanced response with batch-specific metadata
-		const enhancedResult = {
-			...result,
-			batch_stats: stats
-			optimization_applied: {
-				gpu_acceleration: optimizedRequest.use_gpu,
-				llama_inference: optimizedRequest.use_llama,
-				caching_enabled: optimizedRequest.use_cache,
-				concurrency_level: optimizedRequest.max_concurrency,
-				endpoint_used: endpoint
-				auto_optimization: true
-			},
-			metadata: {
-				...result.optimization_meta,
-				batch_size: errorCount
-				processed_at: new Date().toISOString(),
-				api_version: '2.0.0',
-				performance_tier: getPerformanceTier(errorCount),
-				sveltekit_batch_processor: true
-			}
-		}
-		return json(enhancedResult)
-	} catch (error: any) {
+    const body = (await request.json()) as OptimizedFixRequest;
+    // Validate batch request
+    if (!body.errors || !Array.isArray(body.errors)) {
+      return json(
+        {
+          success: false,
+          error: 'Invalid batch request: errors array required',
+        },
+        { status: 400 }
+      );
+    }
+    if (body.errors.length === 0) {
+      return json({
+        success: true,
+        processed_count: 0,
+        successful_count: 0,
+        results: [],
+        processing_stats: {
+          total_time: 0,
+          processed_count: 0,
+          successful_count: 0,
+        },
+        message: 'No errors to process',
+      });
+    }
+    const startTime = Date.now();
+    const errorCount = body.errors.length;
+    console.log(`🚀 Batch Processor: Starting batch processing of ${errorCount} TypeScript errors`);
+    // Auto-configure optimal settings for batch processing
+    const optimizedRequest: OptimizedFixRequest = {
+      ...body,
+      use_gpu: body.use_gpu ?? errorCount >= 10, // Auto-enable GPU for large batches
+      use_llama: body.use_llama ?? (errorCount < 50 && errorCount >= 5), // Llama for medium batches
+      use_cache: body.use_cache ?? true,
+      max_concurrency: body.max_concurrency ?? Math.min(errorCount, 8),
+      target_latency: body.target_latency ?? (errorCount >= 20 ? 5 : 10), // ms per error
+      quality_threshold: body.quality_threshold ?? 0.8,
+    };
+    // Choose optimal endpoint based on batch characteristics
+    const endpoint = selectOptimalEndpoint(optimizedRequest);
+    const apiUrl = `${ENHANCED_API_BASE_URL}${endpoint}`;
+    console.log(
+      `⚡ Batch Processor: Using ${endpoint} with GPU=${optimizedRequest.use_gpu}, Llama=${optimizedRequest.use_llama}`
+    );
+    // Process batch with Go service
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(optimizedRequest),
+    });
+    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(
+        `Go service error ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`
+      );
+    }
+    const result = (await (
+      response as { ok?: any; status?: any; statusText?: any; json?: any }
+    ).json()) as OptimizedFixResponse;
+    const processingTime = Date.now() - startTime;
+
+    // Extract commonly used fields to avoid repeated casting and guard division
+    const goServiceTime = result.processing_stats?.total_time ?? 0;
+    const resultProcessedCount = result.processed_count ?? 0;
+    const resultSuccessfulCount = result.successful_count ?? 0;
+    const successRate = resultProcessedCount > 0 ? (resultSuccessfulCount / resultProcessedCount) * 100 : 0;
+
+    // Calculate batch processing statistics (fixed comma and simplified fields)
+    const stats: BatchProcessingStats = {
+      total_processing_time_ms: processingTime,
+      go_service_time_ms: goServiceTime,
+      overhead_ms: processingTime - goServiceTime,
+      throughput_errors_per_second: (errorCount / processingTime) * 1000,
+      success_rate: successRate,
+      performance_grade: calculatePerformanceGrade(processingTime, errorCount, resultSuccessfulCount),
+    };
+
+    console.log(
+      `✅ Batch Processor: Completed in ${processingTime}ms, ${resultSuccessfulCount}/${resultProcessedCount} successful (${stats.success_rate.toFixed(1)}%)`
+    );
+
+    // Enhanced response with batch-specific metadata
+    const enhancedResult = {
+      ...result,
+      batch_stats: stats,
+      optimization_applied: {
+        gpu_acceleration: optimizedRequest.use_gpu,
+        llama_inference: optimizedRequest.use_llama,
+        caching_enabled: optimizedRequest.use_cache,
+        concurrency_level: optimizedRequest.max_concurrency,
+        endpoint_used: endpoint,
+        auto_optimization: true,
+      },
+      metadata: {
+        ...result.optimization_meta,
+        batch_size: errorCount,
+        processed_at: new Date().toISOString(),
+        api_version: '2.0.0',
+        performance_tier: getPerformanceTier(errorCount),
+        sveltekit_batch_processor: true,
+      },
+    };
+    return json(enhancedResult);
+  } catch (error: any) {
 		console.error('Batch Processing Error:', error)
 		return json({
 			success: false,

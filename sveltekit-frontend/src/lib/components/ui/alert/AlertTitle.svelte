@@ -6,7 +6,7 @@
   let {
     children,
     class: className = '',
-    ...restProp;
+    ...restProps
   }: Props = $props();
 </script>
 

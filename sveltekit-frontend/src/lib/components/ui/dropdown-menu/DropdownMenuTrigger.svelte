@@ -1,9 +1,19 @@
 <script lang="ts">
-  import createDropdownMenu from 'bits-ui';
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
-
-  const { Trigger } = createDropdownMenu();
+  // Resolve factory at runtime via adapter
+  let Trigger: any = null;
+  (async () => {
+    const ns = await getBitsNamespace();
+    const factory = (ns as any).createDropdownMenu ?? ns.default?.createDropdownMenu ?? ns.createDropdownMenu ?? ns;
+    try {
+      const resolved = (typeof factory === 'function') ? factory() : factory;
+      Trigger = resolved?.Trigger ?? resolved?.trigger ?? resolved?.TriggerRoot ?? resolved;
+    } catch {
+      Trigger = null;
+    }
+  })();
 
   interface Props {
     children?: Snippet;

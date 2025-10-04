@@ -12,13 +12,13 @@ https://svelte.dev/e/js_parse_error -->
   import { zod } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
   import { writable } from 'svelte/store';
+  import type { Writable } from 'svelte/store';
   import Button from '$lib/components/ui/Button.svelte';
-  import Input from '$lib/components/ui/input/Input.svelte';
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Checkbox } from '$lib/components/ui/checkbox';
   import * as Card from '$lib/components/ui/card';
-  import * as Select from '$lib/components/ui/select';
+  // Removed broken select module import. Using native <select> instead.
   import {
     AlertCircle,
     Loader2,
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   // Enhanced form integration with XState
   const formIntegration = createCaseCreationForm(data, {
-    autoSave: enableAutoSave
+    autoSave: enableAutoSave,
     autoSaveDelay: 2000,
     resetOnSuccess: !editMode,
     onSubmit: async (formData) => {
@@ -73,8 +73,10 @@ https://svelte.dev/e/js_parse_error -->
       componentError = new Error(error);
     }
   });
-  const { form, errors, enhance: formEnhance, submitting, message, delayed } = formIntegration.form;
-  const { isValid, isSubmitting, progress } = formIntegratio;
+  const { form: rawForm, errors, enhance: formEnhance, submitting, message, delayed } = formIntegration.form;
+  const form = rawForm as unknown as Writable<CaseForm>;
+  // include additional keys from the form object and fix typo
+  const { isValid, isSubmitting, progress } = formIntegration.form;
   // Local state using Svelte 5 runes
   let showAdvanced = $state(false);
   let uploadedFiles = $state<File[]>([]);
@@ -107,14 +109,14 @@ https://svelte.dev/e/js_parse_error -->
   let lastSaved = $state<Date | null>(null);
   let isAutoSaving = $state(false);
   // Enhanced file upload handler
-  function handleFileUpload(_event: Event) {
-    // removed unused target assignment
-    if (target.files) {
-      uploadedFiles = [...uploadedFiles, ...Array.from(target.files)];)
+  function handleFileUpload(event: Event) {
+    const target = event.target as HTMLInputElement | null;
+    if (target?.files) {
+      uploadedFiles = [...uploadedFiles, ...Array.from(target.files)];
     }
   }
   // Remove uploaded file
-  function removeFile(_index: number) {
+  function removeFile(index: number) {
     uploadedFiles = uploadedFiles.filter((_, i) => i !== index);
   }
   // Format file size
@@ -126,36 +128,38 @@ https://svelte.dev/e/js_parse_error -->
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   // Enhanced form submission with progress tracking
-  function createEnhancedSubmit() {
-    return enhance(({ formData, action, cancel }) => {
+  // Svelte Action: accept node so Svelte can call the action with the form element
+  function createEnhancedSubmit(node?: HTMLFormElement) {
+    // When Svelte calls the action it will pass the node; pass node along to enhance
+    return enhance(node, ({ formData }) => {
       // Add uploaded files to form data
       uploadedFiles.forEach((file, index) => {
         formData.append(`attachments[${index}]`, file);
       });
-      // Add metadata
-      formData.append.toISOString(),
-        userAgent: navigator.userAgent,
-        validationStatus,
-        autoSaved: lastSaved !== null
-      }));
+      // Add metadata as a JSON string
+      formData.append(
+        'metadata',
+        JSON.stringify({
+          userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'server',
+          validationStatus,
+          autoSaved: lastSaved !== null
+        })
+      );
+
       return async ({ result, update }) => {
-        if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'success') {
-          // Handle success
-          if (onsuccess) onsuccess({ caseItem: (result as { type?: unknown; data?: unknown; error?: unknown }).data });
-          // Reset form if not in edit mode
+        if (result?.type === 'success') {
+          if (onsuccess) onsuccess({ caseItem: result.data });
           if (!editMode) {
             uploadedFiles = [];
             lastSaved = null;
           }
-        } else if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'error') {
-          // Handle error
-          const errorMsg = (result as { type?: unknown; data?: unknown; error?: unknown }).error?.message || 'Submission failed';
+        } else {
+          const errorMsg = result?.error?.message || 'Submission failed';
           if (onerror) onerror({ message: errorMsg });
           componentError = new Error(errorMsg);
         }
-        // Update the form
         await update();
-      }
+      };
     });
   }
 </script>
@@ -231,14 +235,13 @@ https://svelte.dev/e/js_parse_error -->
               <FileText class="h-4 w-4" />
               <span>Case Number *</span>
             </Label>
-            <Input
+            <input
               id="caseNumber"
               name="caseNumber"
               placeholder="ABC-2024-123456"
-              ;
               bind:value={$form.caseNumber}
               aria-invalid={$errors.caseNumber ? 'true' : undefined}
-              class={$errors.caseNumber ? 'border-destructive' : ''}
+              class={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring ${$errors.caseNumber ? 'border-destructive' : ''}`}
             />
             {#if $errors.caseNumber}
               <p class="text-sm text-destructive flex items-center space-x-1">
@@ -253,18 +256,17 @@ https://svelte.dev/e/js_parse_error -->
               <AlertCircle class="h-4 w-4" />
               <span>Priority Level *</span>
             </Label>
-            <Select.Root bind:selected={$form.priority} name="priority">
-              <Select.Trigger class={$errors.priority ? 'border-destructive' : ''}>
-                <Select.Value placeholder="Select priority" />
-              </Select.Trigger>
-              <Select.Content>
-                {#each priorityLevels as priority}
-                  <Select.Item value={priority.value} class={priority.color}>
-                    {priority.label}
-                  </Select.Item>
-                {/each}
-              </Select.Content>
-            </Select.Root>
+            <select
+              id="priority"
+              name="priority"
+              bind:value={$form.priority}
+              class={$errors.priority ? 'border-destructive' : ''}
+            >
+              <option value="" disabled selected hidden>Select priority</option>
+              {#each priorityLevels as priority}
+                <option value={priority.value} class={priority.color}>{priority.label}</option>
+              {/each}
+            </select>
             {#if $errors.priority}
               <p class="text-sm text-destructive">{$errors.priority[0]}</p>
             {/if}
@@ -273,13 +275,13 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Title -->
         <div class="space-y-2">
           <Label for="title">Case Title *</Label>
-          <Input
+          <input
             id="title"
             name="title"
             placeholder="Enter a descriptive case title"
             bind:value={$form.title}
             aria-invalid={$errors.title ? 'true' : undefined}
-            class={$errors.title ? 'border-destructive' : ''}
+            class={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring ${$errors.title ? 'border-destructive' : ''}`}
           />
           {#if $errors.title}
             <p class="text-sm text-destructive">{$errors.title[0]}</p>
@@ -288,15 +290,15 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Description -->
         <div class="space-y-2">
           <Label for="description">Description</Label>
-          <Textarea
+          <textarea
             id="description"
             name="description"
             placeholder="Provide detailed case description (optional)"
             bind:value={$form.description}
             rows="4"
             aria-invalid={$errors.description ? 'true' : undefined}
-            class={$errors.description ? 'border-destructive' : ''}
-          />
+            class={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring ${$errors.description ? 'border-destructive' : ''}`}
+          ></textarea>
           {#if $errors.description}
             <p class="text-sm text-destructive">{$errors.description[0]}</p>
           {/if}
@@ -316,21 +318,14 @@ https://svelte.dev/e/js_parse_error -->
                 <!-- Status -->
                 <div class="space-y-2">
                   <Label for="status">Case Status</Label>
-                  <Select.Root bind:selected={$form.status} name="status">
-                    <Select.Trigger>
-                      <Select.Value placeholder="Select status" />
-                    </Select.Trigger>
-                    <Select.Content>
-                      {#each statusOptions as status}
-                        <Select.Item value={status.value}>
-                          <div>
-                            <div class="font-medium">{status.label}</div>
-                            <div class="text-sm nes-text is-disabled">{status.description}</div>
-                          </div>
-                        </Select.Item>
-                      {/each}
-                    </Select.Content>
-                  </Select.Root>
+                  <select id="status" name="status" bind:value={$form.status}>
+                    <option value="" disabled selected hidden>Select status</option>
+                    {#each statusOptions as status}
+                      <option value={status.value}>
+                        {status.label} — {status.description}
+                      </option>
+                    {/each}
+                  </select>
                 </div>
                 <!-- Due Date -->
                 <div class="space-y-2">
@@ -338,13 +333,13 @@ https://svelte.dev/e/js_parse_error -->
                     <Calendar class="h-4 w-4" />
                     <span>Due Date</span>
                   </Label>
-                  <Input
+                  <input
                     id="dueDate"
                     name="dueDate"
-                    type="datetime-local";
+                    type="datetime-local"
                     bind:value={$form.dueDate}
                     aria-invalid={$errors.dueDate ? 'true' : undefined}
-                    class={$errors.dueDate ? 'border-destructive' : ''}
+                    class={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring ${$errors.dueDate ? 'border-destructive' : ''}`}
                   />
                   {#if $errors.dueDate}
                     <p class="text-sm text-destructive">{$errors.dueDate[0]}</p>
@@ -354,17 +349,26 @@ https://svelte.dev/e/js_parse_error -->
               <!-- Tags -->
               <div class="space-y-2">
                 <Label for="tags">Tags (max 10)</Label>
-                <Input id="tags" name="tags" placeholder="Enter tags separated by commas" bind:value={$form.tags} />
+                <!-- use native input to avoid SvelteComponentTyped constructor/type mismatch -->
+                <input
+                  id="tags"
+                  name="tags"
+                  type="text"
+                  placeholder="Enter tags separated by commas"
+                  bind:value={$form.tags}
+                  class="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring"
+                  aria-invalid={$errors.tags ? 'true' : undefined}
+                />
                 <p class="text-sm nes-text is-disabled">Use tags to categorize and organize cases</p>
               </div>
               <!-- Options -->
               <div class="flex flex-col space-y-3">
                 <div class="flex items-center space-x-2">
-                  <Checkbox id="isConfidential" name="isConfidential" bind:checked={$form.isConfidential} />
+                  <input id="isConfidential" name="isConfidential" type="checkbox" bind:checked={$form.isConfidential} class="h-4 w-4" />
                   <Label for="isConfidential">Mark as confidential</Label>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <Checkbox id="notifyAssignee" name="notifyAssignee" ; bind:checked={$form.notifyAssignee} />
+                  <input id="notifyAssignee" name="notifyAssignee" type="checkbox" bind:checked={$form.notifyAssignee} class="h-4 w-4" />
                   <Label for="notifyAssignee">Notify assignee when case is updated</Label>
                 </div>
               </div>
@@ -472,4 +476,3 @@ https://svelte.dev/e/js_parse_error -->
 <style lang="postcss">
   /*$$__STYLE_CONTENT__$$*/
 </style>
-;

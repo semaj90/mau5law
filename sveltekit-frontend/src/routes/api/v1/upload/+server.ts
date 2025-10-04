@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types.js'
+import { json, error } from '@sveltejs/kit';
 /*
  * Enhanced Upload API Endpoint - SvelteKit 2 Production
  * Integrates with Upload service (port 8093) with advanced file processing
@@ -73,28 +74,37 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const file = formData.get('file') as File
     // Validate file presence
     if (!file) {
-      return error(400, ensureError({
-        message: 'File is required',
-        code: 'MISSING_FILE',
-        requestId
-      })
+      return error(
+        400,
+        ensureError({
+          message: 'File is required',
+          code: 'MISSING_FILE',
+          requestId,
+        })
+      );
     }
     // Validate file size
     if (file.size > FILE_CONFIG.maxSize) {
-      return error(400, ensureError({
-        message: `File too large. Maximum size: ${FILE_CONFIG.maxSize / 1024 / 1024}MB`,
-        code: 'FILE_TOO_LARGE',
-        requestId
-      })
+      return error(
+        400,
+        ensureError({
+          message: `File too large. Maximum size: ${FILE_CONFIG.maxSize / 1024 / 1024}MB`,
+          code: 'FILE_TOO_LARGE',
+          requestId,
+        })
+      );
     }
     // Validate file type
     if (!FILE_CONFIG.allowedTypes.includes(file.type)) {
-      return error(400, ensureError({
-        message: `File type not supported: ${file.type}`,
-        code: 'UNSUPPORTED_FILE_TYPE',
-        requestId,
-        details: { supportedTypes: FILE_CONFIG.allowedTypes }
-      })
+      return error(
+        400,
+        ensureError({
+          message: `File type not supported: ${file.type}`,
+          code: 'UNSUPPORTED_FILE_TYPE',
+          requestId,
+          details: { supportedTypes: FILE_CONFIG.allowedTypes },
+        })
+      );
     }
     // Extract additional parameters
     const uploadRequest: EnhancedUploadRequest = {
@@ -109,8 +119,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       sessionId: formData.get('sessionId') as string,
       caseId: formData.get('caseId') as string,
       tags: formData.getAll('tags') as string[],
-      metadata: { [key: string]: any }
-    }
+      metadata: {} as Record<string, unknown>,
+    };
     const context: APIRequestContext = {
       requestId,
       startTime,
@@ -125,14 +135,17 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json(uploadResponse)
   } catch (err: any) {
     console.error('Upload API Error:', err)
-    return error(500, ensureError({
-      message: 'Upload processing failed',
-      error: dev ? String(err) : 'Internal server error',
-      code: 'UPLOAD_PROCESSING_ERROR',
-      requestId,
-      timestamp: new Date().toISOString(),
-      retryable: true
-    })
+    return error(
+      500,
+      ensureError({
+        message: 'Upload processing failed',
+        error: dev ? String(err) : 'Internal server error',
+        code: 'UPLOAD_PROCESSING_ERROR',
+        requestId,
+        timestamp: new Date().toISOString(),
+        retryable: true,
+      })
+    );
   }
 }
 /*
@@ -147,20 +160,20 @@ export const GET: RequestHandler = async ({ url }) => {
         return await handleHealthCheck()
       case 'status':
         if (!documentId) {
-          return error(400, ensureError({ message: 'Document ID required for status check' })
+          return error(400, ensureError({ message: 'Document ID required for status check' }));
         }
         return await handleStatusCheck(documentId)
       case 'config':
         return await handleConfigInfo()
       default:
-        return json({,
+        return json({
           service: 'Enhanced Upload API',
           version: '2.0.0',
           endpoints: {
             upload: 'POST /api/v1/upload',
             health: 'GET /api/v1/upload?action=health',
             status: 'GET /api/v1/upload?action=status&id={documentId}',
-            config: 'GET /api/v1/upload?action=config'
+            config: 'GET /api/v1/upload?action=config',
           },
           features: [
             'File Upload & Storage',
@@ -168,17 +181,20 @@ export const GET: RequestHandler = async ({ url }) => {
             'OCR Processing',
             'Embedding Generation',
             'Content Analysis',
-            'Metadata Extraction'
+            'Metadata Extraction',
           ],
-          timestamp: new Date().toISOString()
-        })
+          timestamp: new Date().toISOString(),
+        });
     }
   } catch (err: any) {
     console.error('Upload GET Error:', err)
-    return error(500, ensureError({
-      message: 'Service unavailable',
-      error: dev ? String(err) : 'Internal error'
-    })
+    return error(
+      500,
+      ensureError({
+        message: 'Service unavailable',
+        error: dev ? String(err) : 'Internal error',
+      })
+    );
   }
 }
 // Implementation functions would be added here...
@@ -193,10 +209,10 @@ async function processEnhancedUpload(request: EnhancedUploadRequest, context: AP
     contentType: request.contentType,
     uploadTime: new Date().toISOString(),
     processingStatus: 'completed',
-    metadata: { [key: string]: any },
+    metadata: {} as Record<string, unknown>,
     requestId: context.requestId,
-    timestamp: new Date().toISOString()
-  }
+    timestamp: new Date().toISOString(),
+  };
 }
 async function handleHealthCheck(): Promise<Response> {
   return json({

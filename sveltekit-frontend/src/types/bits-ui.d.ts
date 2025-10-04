@@ -16,6 +16,15 @@ declare module 'bits-ui' {
   export const Avatar: ComponentCtor;
   export const Menu: ComponentCtor;
   export const ScrollAreaViewport: ComponentCtor;
+  // Factory helpers (some bits-ui builds expose factories)
+  export function createDropdownMenu(): {
+    Trigger: ComponentCtor;
+    Root: ComponentCtor;
+    Content: ComponentCtor;
+    Item: ComponentCtor;
+  };
+  export function createSelect(): any;
+  export function createDialog(): any;
   const _default: {
     Dialog: ComponentCtor;
     Button: ComponentCtor;
@@ -30,6 +39,10 @@ declare module 'bits-ui' {
     Avatar: ComponentCtor;
     Menu: ComponentCtor;
     ScrollAreaViewport: ComponentCtor;
-  }
+  };
   export default _default;
+
+  // Also allow the module to be imported as a namespace with arbitrary keys
+  // to reduce type errors while migrating to precise typings.
+  export as namespace BitsUI;
 }

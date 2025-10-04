@@ -17,10 +17,10 @@ import IORedis from 'ioredis';
 // Load protobuf definitions
 const PROTO_PATH = __dirname + '/protos/gemma_embeddings.proto';
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
-  keepCase: true
-  longs: String
-  enums: String
-  defaults: true
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
   oneofs: true
 });
 const gemmaEmbeddingsProto = grpc.loadPackageDefinition(packageDefinition).gemma_embeddings as any;
