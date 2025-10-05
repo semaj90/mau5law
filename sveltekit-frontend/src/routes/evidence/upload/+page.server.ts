@@ -16,10 +16,9 @@ import {
 } from '$lib/schemas/evidence-upload';
 import { db, cases, evidence } from '$lib/server/db';
 import { eq } from 'drizzle-orm';
+import type { InferInsertModel } from 'drizzle-orm';
 import type { PageServerLoad, Actions } from './$types.js';
-import type { InferInsertModel } from 'drizzle-orm/pg-core'; // Corrected import path for InferInsertModel
 
-// Infer the type of the 'evidence_type' column from the Drizzle schema
 type EvidenceType = InferInsertModel<typeof evidence>['evidence_type'];
 
 // 1. Define the structure of the OCR service response
@@ -441,3 +440,4 @@ export const actions: Actions = {
     throw redirect(302, `/cases/${form.data.case_id}/evidence`);
   },
 };
+

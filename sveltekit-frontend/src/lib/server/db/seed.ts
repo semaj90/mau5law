@@ -28,7 +28,24 @@ async function seed() {
       outputLen: 32,
       parallelism: 1
     });
+    // Demo user password hash for 'demo123'
+    const demoPasswordHash = await hash('demo123', {
+      memoryCost: 19456,
+      timeCost: 2,
+      outputLen: 32,
+      parallelism: 1
+    });
+
     const seedUsers = [
+      {
+        id: generateIdFromEntropySize(10),
+        email: 'demo@legal-ai.com',
+        name: 'Demo User',
+        firstName: 'Demo',
+        lastName: 'User',
+        role: 'prosecutor',
+        hashedPassword: demoPasswordHash
+      },
       {
         id: generateIdFromEntropySize(10),
         email: 'prosecutor@legal.ai',

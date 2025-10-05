@@ -23,10 +23,6 @@
   import '$lib/styles/enhanced-bits-ui.css';
 
   import { onMount, onDestroy } from 'svelte';
-  onMount(() => {
-    // runtime dynamic import; non-blocking and safe if package is missing
-    void import('bits-ui/tooltip.css').catch(() => {});
-  });
 
   let { data }: { data: PageData } = $props();
 
