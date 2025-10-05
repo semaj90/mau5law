@@ -1,5 +1,31 @@
 import { dev } from '$app/environment';
 
+// Define interfaces for User, Session, and Case
+interface User {
+  id: string;
+  email?: string; // Made optional to match locals.user type
+  name?: string; // Made optional to match locals.user type
+  role: string;
+  // Add other user properties as needed from your authentication system
+}
+
+interface Session {
+  id: string;
+  userId: string;
+  expiresAt: Date;
+  // Add other session properties as needed
+}
+
+interface Case {
+  id: string;
+  name: string;
+  description?: string;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  // Add other case properties as returned by your /api/cases endpoint
+}
+
 /**
  * Server-side data loader for legal cases page
  * Supports DEV_BYPASS_AUTH for testing without authentication
@@ -8,28 +34,30 @@ export const load = (async ({ locals, fetch }) => {
   // Development bypass for testing
   const devBypass = dev && (process.env.DEV_BYPASS_AUTH === 'true' || import.meta.env.DEV_BYPASS_AUTH === 'true');
 
-  let user = locals.user;
-  let session = locals.session;
+  let user: User | undefined = locals.user;
+  let session: Session | undefined = locals.session;
 
   // Create development fallback user if no auth detected
   if (devBypass && !user) {
-    console.warn('🔓 DEV_BYPASS_AUTH: Creating stub user for development testing');
+    if (devBypass) {
+      console.warn('🔓 DEV_BYPASS_AUTH: Creating stub user for development testing');
+    }
     user = {
       id: 'dev-user-001',
       email: 'dev@localhost',
       name: 'Development Tester',
       role: 'prosecutor'
-    } as any;
+    };
 
     session = {
       id: 'dev-session-001',
       userId: 'dev-user-001',
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
-    } as any;
+    };
   }
 
   // Attempt to fetch cases (will use DEV_BYPASS_AUTH in API as well)
-  let cases: any[] = [];
+  let cases: Case[] = [];
   let error: string | null = null;
 
   try {

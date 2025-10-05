@@ -3,7 +3,7 @@
   // Svelte 5 runes are auto-imported
   // Use runtime adapter to normalize bits-ui shapes
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
-  let Dialog: any = {};
+  let Dialog: any = $state({}); // Changed: Declare Dialog as a reactive state variable
   (async () => {
     const ns = await getBitsNamespace();
     // Dialog may be available as ns.Dialog, ns.Dialog.Root, or ns.default.Dialog

@@ -12,7 +12,7 @@
     nesStyle?: boolean; // Enable NES.css retro styling
     nierStyle?: boolean; // Enable NieR: Automata styling
   }
-  let {
+    let {
     variant = 'default',
     size = 'md',
     loading = false,
@@ -24,7 +24,7 @@
     class: className = '',
     children,
     onclick,
-    ...restProp;
+    ...restProps
   }: ButtonProps = $props();
   // Get theme context
   const themeContext = getContext<any>('theme');
@@ -45,8 +45,8 @@
         nes: 'nes-btn',
         yorha: 'nes-btn is-primary',
         'yorha-primary': 'nes-btn is-primary',
-        nier: 'nes-btn is-primary';
-      }
+        nier: 'nes-btn is-primary',
+      };
       classes.push(nesVariants[variant] || nesVariants.default);
       if (disabled || loading) classes.push('is-disabled');
     } else if (nierStyle || variant.startsWith('yorha') || variant === 'nier') {
@@ -71,7 +71,7 @@
         sm: 'h-8 px-3 text-xs rounded',
         md: 'h-10 px-4 py-2 text-sm rounded-md',
         lg: 'h-12 px-6 text-base rounded-lg',
-        icon: 'h-10 w-10 rounded-md';
+        icon: 'h-10 w-10 rounded-md', // Changed semicolon to comma
       }
       classes.push(sizeClasses[size]);
       // Variant classes (UnoCSS)
@@ -86,7 +86,7 @@
         nes: 'bg-gaming-nes text-white hover:bg-gaming-retro font-nes',
         yorha: 'yorha-button',
         'yorha-primary': 'yorha-button-primary',
-        nier: 'bg-nier-bg-secondary border-2 border-nier-border-primary text-nier-text-primary hover:bg-nier-bg-tertiary';
+        nier: 'bg-nier-bg-secondary border-2 border-nier-border-primary text-nier-text-primary hover:bg-nier-bg-tertiary',
       }
       classes.push(variantClasses[variant] || variantClasses.default);
     }
@@ -109,28 +109,41 @@
   {/if}
 </button>
 
-<style>/* Import NES.css for retro styling option */ {}
-/* Custom NieR enhancements using UnoCSS theme colors */ {}
+<style>
+  /* Import NES.css for retro styling option */
+  /* Custom NieR enhancements using UnoCSS theme colors */
   button {
-    @apply relative overflow-hidden;
+    position: relative;
+    overflow: hidden;
   }
-/* NieR-style shimmer effect */ {}
-.yorha-button:: before {}
-  .yorha-button-primary::before {
+
+  /* NieR-style shimmer effect (fixed selectors and removed theme() call)
+     Using CSS variable fallback or hex to avoid preprocessing theme() errors */
+  .yorha-button::before {
     content: '';
-    @apply absolute top-0 left-[-100%] w-full h-full;
-    background: linear-gradient(90deg, transparent, theme('colors.nier-accent-warm') / 20%, transparent);
-    transition: left 0.5s ease;
   }
-.yorha-button:hover:: before {}
+
+    .yorha-button-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(var(--color-nier-accent-warm-rgba), 0.18), transparent);
+      transition: left 0.5s ease;
+    }
+
   .yorha-button-primary:hover::before {
     left: 100%;
   }
-/* Legal variant glow effect */ {}
+
+  /* Legal variant glow effect */
   .bg-justice-600:hover {
-    box-shadow: 0 0 20px theme('colors.justice.600') / 30%;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.12);
   }
-/* Gaming variant pixelated effect */ {}
+
+  /* Gaming variant pixelated effect */
   .font-nes {
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;

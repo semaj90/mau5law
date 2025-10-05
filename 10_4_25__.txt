@@ -31,6 +31,10 @@ PS C:\Users\james\Videos\deeds-web-app> Test-Path "C:\Users\james\Videos\deeds-w
 False
 PS C:\Users\james\Videos\deeds-web-app> Get-ChildItem "C:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\routes" | Select-Object Name, Mode
 
+
+● Bash("C:/Users/james/Music/deeds-web-app/web-app/Ollama/ollama.exe" list)  
+  ⎿  Running…
+
 Name                      Mode
 ----                      ---- 
 .well-known               d----

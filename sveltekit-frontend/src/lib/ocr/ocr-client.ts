@@ -1,7 +1,7 @@
 // Lightweight OCR client module for browser-side text extraction
 // Tries Tesseract.js (dynamic import) if present; falls back to server OCR endpoint if configured
 export type ImageSource = HTMLImageElement | HTMLCanvasElement | Blob | File | ImageBitmap;
-}
+
 export interface OCRResult {
   text: string;
   confidence?: number;
@@ -48,17 +48,17 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
   // Try Tesseract.js
   try {
     // @ts-ignore dynamic optional dep
-    const Tesseract = (await import('tesseract.js')).default || (await import('tesseract.js');
+    const Tesseract = (await import('tesseract.js')).default || (await import('tesseract.js'));
     const imageData = await toImageData(source);
     const { data } = await Tesseract.recognize(imageData, lang);
-    return { text: data?.text || '', confidence: data?.confidence, engine: 'tesseract' }
+    return { text: data?.text || '', confidence: data?.confidence, engine: 'tesseract' };
   } catch {
     // ignore, try server
   }
   // Optional server OCR fallback
   try {
     const blob = source instanceof Blob || source instanceof File
-      ? source;
+      ? source
       : await (async () => {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
@@ -67,7 +67,7 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
           canvas.width = imgData.width;
           canvas.height = imgData.height;
           ctx.putImageData(imgData, 0, 0);
-          const b = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png');
+          const b = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
           if (!b) throw new Error('Failed to create blob from canvas');
           return b;
         })();
@@ -76,11 +76,11 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
     form.append('lang', lang);
     const res = await fetch('/api/ocr', { method: 'POST', body: form });
     if (res.ok) {
-      const json = (await res.json()) as { text: string; confidence?: number }
-      return { text: json.text || '', confidence: json.confidence, engine: 'server' }
+      const json = (await res.json()) as { text: string; confidence?: number };
+      return { text: json.text || '', confidence: json.confidence, engine: 'server' };
     }
   } catch {
     // ignore
   }
-  return { text: '', engine: 'none' }
+  return { text: '', engine: 'none' };
 }

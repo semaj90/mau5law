@@ -257,20 +257,20 @@ export async function parseCacheEntry(jsonString: string): Promise<any> {
 }
 /**
  * Get SIMD JSON status and configuration
- */;
+ */
 export function getSIMDStatus() {
   return {
     enabled: USE_SIMDJSON && parseJSONSIMD !== null,
     available: parseJSONSIMD !== null,
-    environmentFlag: USE_SIMDJSON;
+    environmentFlag: USE_SIMDJSON,
     metrics: simdMetrics.getStats(),
     integrationPoints: Object.keys(SIMD_INTEGRATION_POINTS).length,
     optimizedPayloads: Object.keys(SIMD_OPTIMIZED_PAYLOADS).length
-  }
+  };
 }
 /**
  * Benchmark SIMD vs standard JSON parsing
- */;
+ */
 export async function benchmarkJSONParsing(iterations: number = 1000): Promise<any> {
   // Create test data similar to real payloads
   const testObj = {
@@ -278,7 +278,7 @@ export async function benchmarkJSONParsing(iterations: number = 1000): Promise<a
     type: 'wasm_vector_operations',
     payload: {
       vectors: Array.from({ length: 100 }, () =>
-        Array.from({ length: 768 }, () => Math.random()
+        Array.from({ length: 768 }, () => Math.random())
       ),
       metadata: {
         userId: 'user-123',

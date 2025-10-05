@@ -1,3 +1,6 @@
+/* Import theme variable mappings (UnoCSS tokens -> CSS variables) */
+@import './lib/styles/theme-vars.css';
+
 /* ✅ LOCAL FONT LOADING - No Network Dependency */
 @import '/fonts/fonts.css';
 
@@ -24,7 +27,7 @@
     font-family: 'JetBrains Mono', 'Press Start 2P', monospace;
     background: var(--yorha-dark);
     color: white;
-    antialiased: true;
+    @apply antialiased; /* Apply Tailwind CSS utility for text anti-aliasing */
   }
 
   /* UnoCSS compatibility helpers */
@@ -57,6 +60,8 @@
     color: var(--yorha-dark);
   }
 }
+
+/* (theme-vars already imported at top) */
 
 /* Tailwind CSS imports */
 @tailwind base;

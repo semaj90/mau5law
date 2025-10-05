@@ -1,0 +1,1 @@
+{"error":"Failed","details":"Failed query: SELECT COUNT(*) as count FROM test_rag_documents\nparams: "}

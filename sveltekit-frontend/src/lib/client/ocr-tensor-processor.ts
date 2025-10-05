@@ -6,16 +6,23 @@
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
 import { browser } from '$app/environment';
 import { PREDICTIVE_UI_ANALYTICS, ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
-// OCR.js types (install via: npm install ocr-js @types/ocr-js)
+// OCR.js types (install via: npm install tesseract.js @types/tesseract.js)
+import type { Tesseract, RecognizeResult, BBox, Word, LoggerMessage } from 'tesseract.js';
+
 declare global {
   interface Window {
-    Tesseract?: any;
+    Tesseract?: Tesseract;
   }
 }
+
 export interface OCRResult {
   text: string;
   confidence: number;
-  boundingBoxes: Array<any>;
+  boundingBoxes: Array<{
+    text: string;
+    bbox: BBox;
+    confidence: number;
+  }>;
 }
 export interface TensorData {
   embeddings: Float32Array;
@@ -25,7 +32,7 @@ export interface TensorData {
     processed_at: number;
     tensor_id: string;
     confidence: number;
-  }
+  };
 }
 export interface ProcessingResult {
   ocr: OCRResult;
@@ -34,6 +41,35 @@ export interface ProcessingResult {
   processingTime: number;
   cacheHit: boolean;
 }
+
+// New interfaces for API responses and options
+export interface EmbeddingAPIResponse {
+  embedding: number[]; // API returns array of numbers, convert to Float32Array
+  fromCache?: boolean;
+  model?: string;
+  type?: string;
+  result?: any; // Define more specifically if known
+  error?: string;
+  tensor_id?: string;
+}
+
+export interface OCRProcessOptions {
+  language?: string;
+  oem?: number;
+  psm?: number;
+  useCache?: boolean;
+  logger?: (m: LoggerMessage) => void;
+  tessjs_create_pdf?: boolean;
+  tessjs_create_hocr?: boolean;
+  tessjs_create_tsv?: boolean;
+}
+
+export interface BatchProcessingItem {
+  image: ImageData | HTMLCanvasElement | File;
+  priority: number;
+  options: OCRProcessOptions;
+}
+
 export class OCRTensorProcessor {
   private worker?: Worker;
   private ocrInitialized = false;
@@ -57,22 +93,22 @@ export class OCRTensorProcessor {
     // Monitor memory pressure using gaming era specs
     this.updateMemoryPressure();
     // Set initial LOD level based on device capabilities
-    const memoryInfo = (performance as any).memory;
+    const memoryInfo = performance.memory; // Removed 'as any' cast
     if (memoryInfo) {
-      const usedMemoryMB = memoryInfo.usedJSHeapSize / (1024 * 1024);
+      // const usedMemoryMB = memoryInfo.usedJSHeapSize / (1024 * 1024); // Removed unused variable
       const totalMemoryMB = memoryInfo.totalJSHeapSize / (1024 * 1024);
       if (totalMemoryMB < GAMING_ERA_SPECS.n64.memoryMB) {
-        this.currentLODLevel = 'low';  // Use 8-bit NES level optimization
+        this.currentLODLevel = 'low'; // Use 8-bit NES level optimization
       } else if (totalMemoryMB < 512) {
         this.currentLODLevel = 'medium'; // Use 16-bit SNES level optimization
       } else {
-        this.currentLODLevel = 'high';   // Use N64 level optimization
+        this.currentLODLevel = 'high'; // Use N64 level optimization
       }
     }
     console.log(`🎮 LOD Level set to: ${this.currentLODLevel}`);
   }
   private updateMemoryPressure(): void {
-    const memoryInfo = (performance as any).memory;
+    const memoryInfo = performance.memory; // Removed 'as any' cast
     if (memoryInfo) {
       this.memoryPressure = memoryInfo.usedJSHeapSize / memoryInfo.totalJSHeapSize;
       // Adapt LOD based on memory pressure using gaming thresholds
@@ -88,7 +124,7 @@ export class OCRTensorProcessor {
     try {
       // Load Tesseract.js dynamically
       const tesseract = await import('tesseract.js');
-      window.Tesseract = tesseract;
+      window.Tesseract = tesseract.default; // Tesseract.js exports default
       this.ocrInitialized = true;
       console.log('✅ OCR.js loaded');
     } catch (error) {
@@ -110,11 +146,9 @@ export class OCRTensorProcessor {
   private async initializeServiceWorker(): Promise<void> {
     if (!browser || !('serviceWorker' in navigator)) return;
     try {
-      const registration = await navigator.serviceWorker.register(
-        '/tensor-simd-worker.js',)
-        { scope: '/api/tensor/' }
-      );
-      this.worker = (registration.active || registration.installing || registration.waiting) as any;
+      const registration = await navigator.serviceWorker.register('/tensor-simd-worker.js', { scope: '/api/tensor/' });
+      const activeWorker = registration.active || registration.installing || registration.waiting;
+      this.worker = activeWorker ?? undefined;
       console.log('✅ SIMD Service Worker initialized');
     } catch (error) {
       console.warn('Service Worker initialization failed:', error);
@@ -124,7 +158,7 @@ export class OCRTensorProcessor {
    * Process image with OCR and convert to embeddings
    */
   async processImage(
-    imageData: ImageData | HTMLCanvasElement | File
+    imageData: ImageData | HTMLCanvasElement | File,
     options: {
       language?: string;
       oem?: number;
@@ -144,20 +178,20 @@ export class OCRTensorProcessor {
       const searchIndex = await this.createSearchIndex(tensorData);
       const totalTime = performance.now() - startTime;
       return {
-        ocr: ocrResult
-        embeddings: tensorData
+        ocr: ocrResult,
+        embeddings: tensorData,
         searchIndex,
-        processingTime: totalTime
-        cacheHit: embeddingResult.fromCache
-      }
+        processingTime: totalTime,
+        cacheHit: embeddingResult.fromCache,
+      };
     } catch (error) {
       console.error('OCR Tensor processing failed:', error);
       throw error;
     }
   }
   private async performOCR(
-    imageData: ImageData | HTMLCanvasElement | File
-    options: any;
+    imageData: ImageData | HTMLCanvasElement | File,
+    options: OCRProcessOptions // Use OCRProcessOptions
   ): Promise<OCRResult> {
     if (!this.ocrInitialized || !window.Tesseract) {
       throw new Error('OCR.js not initialized');
@@ -168,23 +202,25 @@ export class OCRTensorProcessor {
       const { recognize } = window.Tesseract;
       // Apply LOD-based OCR optimization
       const ocrOptions = this.getOCROptionsForLOD();
-      const result = await recognize(imageData, options.language || 'eng', {
-        logger: (m: any) => console.log(`OCR [${this.currentLODLevel}]:`, m),
-        ...ocrOptions
+      const result: RecognizeResult = await recognize(imageData, options.language || 'eng', {
+        // Type result as RecognizeResult
+        logger: (m: LoggerMessage) => console.log(`OCR [${this.currentLODLevel}]:`, m), // Type logger message
+        ...ocrOptions,
       });
       const ocrResult: OCRResult = {
-        text: (result as { data?: any; status?: any; value?: any }).data.text,
-        confidence: (result as { data?: any; status?: any; value?: any }).data.confidence,
-        boundingBoxes: (result as { data?: any; status?: any; value?: any }).data.words.map((word: any) => ({,
+        text: result.data.text,
+        confidence: result.data.confidence,
+        boundingBoxes: result.data.words.map((word: Word) => ({
+          // Type word as Word
           text: word.text,
           bbox: word.bbox,
-          confidence: word.confidence
-        })
-      }
+          confidence: word.confidence,
+        })),
+      };
       console.log('📝 OCR completed:', {
         textLength: ocrResult.text.length,
         confidence: ocrResult.confidence,
-        wordsFound: ocrResult.boundingBoxes.length
+        wordsFound: ocrResult.boundingBoxes.length,
       });
       return ocrResult;
     } catch (error) {
@@ -200,37 +236,37 @@ export class OCRTensorProcessor {
         return {
           psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8,
           oem: 1, // Original tesseract only
-          tessjs_create_pdf: false
-          tessjs_create_hocr: false
-          tessjs_create_tsv: false
-        }
+          tessjs_create_pdf: false,
+          tessjs_create_hocr: false,
+          tessjs_create_tsv: false,
+        };
       case 'medium':
         // 16-bit SNES level optimization
         return {
           psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8,
           oem: 2, // LSTM + Original tesseract
-          tessjs_create_pdf: false
-          tessjs_create_hocr: true
-          tessjs_create_tsv: false
-        }
+          tessjs_create_pdf: false,
+          tessjs_create_hocr: true,
+          tessjs_create_tsv: false,
+        };
       case 'high':
         // N64 level optimization with DNN LOD system
         return {
           psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13,
           oem: 3, // Default tesseract (best quality)
-          tessjs_create_pdf: true
-          tessjs_create_hocr: true
-          tessjs_create_tsv: true
-        }
+          tessjs_create_pdf: true,
+          tessjs_create_hocr: true,
+          tessjs_create_tsv: true,
+        };
       default:
-        return {}
+        return {};
     }
   }
   private async selectOptimalModel(): Promise<any> {
     try {
       // Check Ollama GPU memory availability and status
       const ollamaStatus = await fetch('/api/ai/status', {
-        signal: AbortSignal.timeout(3000)
+        signal: AbortSignal.timeout(3000),
       });
       const statusData = await ollamaStatus.json();
       // Smart fallback to Gemma 270MB for OOM prevention and better UX
@@ -241,61 +277,66 @@ export class OCRTensorProcessor {
       if (!isGPURecognized || isGPUBusy || availableMemory < 512) {
         console.log('🎮 GPU not recognized/busy, using Gemma 270MB for optimal UX');
         return {
-          model: 'gemma:270m',                // Gemma 270MB fits in cache + parallelism
+          model: 'gemma:270m', // Gemma 270MB fits in cache + parallelism
           fallback: ['nomic-embed-text', 'client-autogen'],
-          useCrewAI: false
-          parallelism: 4,                     // 4 parallel requests to prevent OOM
-          cacheSize: 128                      // 128MB cache for fast responses
-        }
+          useCrewAI: false,
+          parallelism: 4, // 4 parallel requests to prevent OOM
+          cacheSize: 128, // 128MB cache for fast responses
+        };
       }
       // Determine model based on available GPU memory
-      if (availableMemory > 2048) { // 2GB+ GPU memory
+      if (availableMemory > 2048) {
+        // 2GB+ GPU memory
         return {
-          model: 'gemma3:legal-latest',       // Primary: Gemma 3 legal for best quality
+          model: 'gemma3:legal-latest', // Primary: Gemma 3 legal for best quality
           fallback: ['gemma:270m', 'nomic-embed-text'],
-          useCrewAI: false
-          parallelism: 8,                     // High parallelism for powerful GPU
-          cacheSize: 512                      // Large cache for complex models
-        }
-      } else if (availableMemory > 1024) { // 1GB+ GPU memory
+          useCrewAI: false,
+          parallelism: 8, // High parallelism for powerful GPU
+          cacheSize: 512, // Large cache for complex models
+        };
+      } else if (availableMemory > 1024) {
+        // 1GB+ GPU memory
         return {
-          model: 'gemma:270m',                // Gemma 270MB optimal for this range
+          model: 'gemma:270m', // Gemma 270MB optimal for this range
           fallback: ['nomic-embed-text'],
-          useCrewAI: false
-          parallelism: 6,                     // Balanced parallelism
-          cacheSize: 256                      // Medium cache size
-        }
-      } else if (availableMemory > 512) { // 512MB+ GPU memory
+          useCrewAI: false,
+          parallelism: 6, // Balanced parallelism
+          cacheSize: 256, // Medium cache size
+        };
+      } else if (availableMemory > 512) {
+        // 512MB+ GPU memory
         return {
-          model: 'gemma:270m',                // Still use 270MB - it fits with cache
+          model: 'gemma:270m', // Still use 270MB - it fits with cache
           fallback: ['nomic-embed-text', 'client-autogen'],
-          useCrewAI: false
-          parallelism: 3,                     // Conservative parallelism
-          cacheSize: 128                      // Smaller cache to prevent OOM
-        }
+          useCrewAI: false,
+          parallelism: 3, // Conservative parallelism
+          cacheSize: 128, // Smaller cache to prevent OOM
+        };
       } else {
         // Very low GPU memory - use lightweight model with CrewAI fallback
         return {
-          model: 'nomic-embed-text',          // Lightweight model
+          model: 'nomic-embed-text', // Lightweight model
           fallback: ['client-autogen'],
-          useCrewAI: true
-          parallelism: 2,                     // Minimal parallelism
-          cacheSize: 64                       // Small cache
-        }
+          useCrewAI: true,
+          parallelism: 2, // Minimal parallelism
+          cacheSize: 64, // Small cache
+        };
       }
     } catch (error) {
       console.warn('Failed to check Ollama status, using Gemma 270MB fallback:', error);
       // Always fallback to Gemma 270MB - reliable and fits in memory
       return {
-        model: 'gemma:270m',                  // Safe default - fits in cache with parallelism
+        model: 'gemma:270m', // Safe default - fits in cache with parallelism
         fallback: ['nomic-embed-text', 'client-autogen'],
-        useCrewAI: true
-        parallelism: 4,                       // Safe parallelism level
-        cacheSize: 128                        // Safe cache size for 270MB model
-      }
+        useCrewAI: true,
+        parallelism: 4, // Safe parallelism level
+        cacheSize: 128, // Safe cache size for 270MB model
+      };
     }
   }
-  private async generateEmbeddings(text: string): Promise<any> {
+  private async generateEmbeddings(
+    text: string
+  ): Promise<{ embeddings: Float32Array; fromCache: boolean; model: string }> {
     try {
       // Intelligent model selection based on Ollama GPU memory and system state
       const modelConfig = await this.selectOptimalModel();
@@ -304,27 +345,27 @@ export class OCRTensorProcessor {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text,
-          model: modelConfig?.model || "unknown" // @ts-ignore - Model property access,
+          model: modelConfig?.model || 'unknown', // @ts-expect-error - Model property access,
           source: 'ocr',
-          save: false
+          save: false,
           fallback: modelConfig.fallback,
           crewai_enabled: modelConfig.useCrewAI,
           // OOM prevention and UX optimization
           parallelism: modelConfig.parallelism,
           cache_size_mb: modelConfig.cacheSize,
-          prevent_oom: true
-          gpu_fallback_strategy: 'gemma270m'  // Always fallback to 270MB for stability
-        })
+          prevent_oom: true,
+          gpu_fallback_strategy: 'gemma270m', // Always fallback to 270MB for stability
+        }),
       });
-      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-        throw new Error(`Embedding API failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      if (!response.ok) {
+        throw new Error(`Embedding API failed: ${response.status}`); // No need for 'as { ok?: any; ... }'
       }
-      const data = await (response as { ok?: any; status?: any; json?: any }).json();
+      const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
       return {
-        embeddings: new Float32Array((data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).embedding),
-        fromCache: (data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).fromCache || false,
-        model: data?.model || "unknown" // @ts-ignore - Model property access
-      }
+        embeddings: new Float32Array(data.embedding), // Access properties directly
+        fromCache: data.fromCache || false, // Access properties directly
+        model: data?.model || 'unknown', // @ts-expect-error - Model property access
+      };
     } catch (error) {
       console.error('Embedding generation failed:', error);
       throw error;
@@ -340,9 +381,9 @@ export class OCRTensorProcessor {
           source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          confidence: 0.8
-        }
-      }
+          confidence: 0.8,
+        },
+      };
     }
     try {
       // Get SIMD parsing shader
@@ -350,7 +391,7 @@ export class OCRTensorProcessor {
       // Create input buffer
       const inputBuffer = this.webgpuDevice.createBuffer({
         size: embeddings.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
       });
       this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, embeddings.buffer);
       // Execute SIMD processing
@@ -362,13 +403,13 @@ export class OCRTensorProcessor {
       // Read results back
       const resultBuffer = this.webgpuDevice.createBuffer({
         size: embeddings.byteLength,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
       });
       const commandEncoder = this.webgpuDevice.createCommandEncoder();
       commandEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, embeddings.byteLength);
       this.webgpuDevice.queue.submit([commandEncoder.finish()]);
       await resultBuffer.mapAsync(GPUMapMode.READ);
-      const processedData = new Float32Array(resultBuffer.getMappedRange();
+      const processedData = new Float32Array(resultBuffer.getMappedRange());
       resultBuffer.unmap();
       return {
         embeddings: processedData.slice(),
@@ -377,9 +418,9 @@ export class OCRTensorProcessor {
           source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          confidence: 0.9
-        }
-      }
+          confidence: 0.9,
+        },
+      };
     } catch (error) {
       console.warn('WebGPU tensor processing failed, using CPU fallback:', error);
       return {
@@ -389,14 +430,14 @@ export class OCRTensorProcessor {
           source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          confidence: 0.8
-        }
-      }
+          confidence: 0.8,
+        },
+      };
     }
   }
   private async createSearchIndex(tensorData: TensorData): Promise<Float32Array> {
     // Create quantized search index for Fuse.js client-side search
-    const quantized = new Float32Array(Math.ceil(tensorData.dimensions / 4);
+    const quantized = new Float32Array(Math.ceil(tensorData.dimensions / 4));
     for (let i = 0; i < quantized.length; i++) {
       const baseIdx = i * 4;
       let sum = 0;
@@ -411,27 +452,28 @@ export class OCRTensorProcessor {
    * Asynchronous batch processing with intelligent scheduling
    */
   async batchProcessImages(
-    images: Array<ImageData | HTMLCanvasElement | File>
-    options: any = {}
+    images: Array<ImageData | HTMLCanvasElement | File>,
+    options: OCRProcessOptions = {} // Use OCRProcessOptions
   ): Promise<ProcessingResult[]> {
     const results: ProcessingResult[] = [];
     // Adaptive chunk size based on LOD level and memory pressure
     const chunkSize = this.getOptimalChunkSize();
     // Create processing queue with priority scheduling
-    const processingQueue: Array<any> = images.map((image, index) => ({
+    const processingQueue: Array<BatchProcessingItem> = images.map((image, index) => ({
+      // Type processingQueue
       image,
       priority: this.calculateProcessingPriority(image, index),
-      options
-    });
+      options,
+    }));
     // Sort by priority (higher priority first)
     processingQueue.sort((a, b) => b.priority - a.priority);
     // Process asynchronously with Web Workers when available
     for (let i = 0; i < processingQueue.length; i += chunkSize) {
       const chunk = processingQueue.slice(i, i + chunkSize);
       // Asynchronous processing with Promise.allSettled for error resilience
-      const chunkPromises = chunk.map(async (item) => {
+      const chunkPromises = chunk.map(async item => {
         try {
-          return await this.processImageAsync((item as { image?: any; options?: any }).image, (item as { image?: any; options?: any }).options);
+          return await this.processImageAsync(item.image, item.options); // Access properties directly
         } catch (error) {
           console.warn(`Failed to process image ${i}:`, error);
           return null;
@@ -440,14 +482,16 @@ export class OCRTensorProcessor {
       const chunkResults = await Promise.allSettled(chunkPromises);
       // Extract successful results
       const successfulResults = chunkResults
-        .filter((result): result is PromiseFulfilledResult<ProcessingResult | null> =>
-          (result as { data?: any; status?: any; value?: any }).status === 'fulfilled' && (result as { data?: any; status?: any; value?: any }).value !== null)
-        .map(result => (result as { data?: any; status?: any; value?: any }).value!);
+        .filter(
+          (result): result is PromiseFulfilledResult<ProcessingResult | null> =>
+            result.status === 'fulfilled' && result.value !== null
+        ) // Use PromiseFulfilledResult directly
+        .map(result => result.value!); // Use PromiseFulfilledResult directly
       results.push(...successfulResults);
       // Adaptive delay based on memory pressure and system load
       const delay = this.calculateAdaptiveDelay();
       if (delay > 0) {
-        await new Promise(resolve => setTimeout(resolve, delay);
+        await new Promise(resolve => setTimeout(resolve, delay));
       }
       // Update memory pressure after each chunk
       this.updateMemoryPressure();
@@ -458,8 +502,8 @@ export class OCRTensorProcessor {
    * Asynchronous single image processing with Web Workers
    */
   private async processImageAsync(
-    imageData: ImageData | HTMLCanvasElement | File
-    options: any = {}
+    imageData: ImageData | HTMLCanvasElement | File,
+    options: OCRProcessOptions = {} // Use OCRProcessOptions
   ): Promise<ProcessingResult> {
     // Try Web Worker processing for better performance
     if (this.worker && 'transferControlToOffscreen' in HTMLCanvasElement.prototype) {
@@ -476,23 +520,23 @@ export class OCRTensorProcessor {
    * Process image in Web Worker for non-blocking execution
    */
   private async processImageInWorker(
-    imageData: ImageData | HTMLCanvasElement | File
-    options: any;
+    imageData: ImageData | HTMLCanvasElement | File,
+    options: OCRProcessOptions // Use OCRProcessOptions
   ): Promise<ProcessingResult> {
     return new Promise((resolve, reject) => {
       if (!this.worker) {
-        reject(new Error('Web Worker not available');
+        reject(new Error('Web Worker not available'));
         return;
       }
       const messageHandler = (_event: MessageEvent) => {
-        if (event.data.type === 'ocr-result') {
+        if (_event.data.type === 'ocr-result') {
           this.worker!.removeEventListener('message', messageHandler);
-          resolve(event.data.result);
-        } else if (event.data.type === 'ocr-error') {
+          resolve(_event.data.result);
+        } else if (_event.data.type === 'ocr-error') {
           this.worker!.removeEventListener('message', messageHandler);
-          reject(new Error(event.data.error);
+          reject(new Error(_event.data.error));
         }
-      }
+      };
       this.worker.addEventListener('message', messageHandler);
       // Send processing task to worker
       this.worker.postMessage({
@@ -500,12 +544,12 @@ export class OCRTensorProcessor {
         imageData,
         options,
         lodLevel: this.currentLODLevel,
-        memoryPressure: this.memoryPressure
+        memoryPressure: this.memoryPressure,
       });
       // Timeout after 30 seconds
       setTimeout(() => {
         this.worker!.removeEventListener('message', messageHandler);
-        reject(new Error('OCR processing timeout');
+        reject(new Error('OCR processing timeout'));
       }, 30000);
     });
   }
@@ -522,10 +566,7 @@ export class OCRTensorProcessor {
         return 3;
     }
   }
-  private calculateProcessingPriority(
-    image: ImageData | HTMLCanvasElement | File
-    index: number;
-  ): number {
+  private calculateProcessingPriority(image: ImageData | HTMLCanvasElement | File, index: number): number {
     let priority = 1.0;
     // Boost priority for legal documents (larger files typically)
     if (image instanceof File) {
@@ -547,37 +588,36 @@ export class OCRTensorProcessor {
     if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.criticalMemory) {
       return 1000; // 1 second delay under critical memory pressure
     } else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.lowMemory) {
-      return 500;  // 500ms delay under moderate memory pressure
+      return 500; // 500ms delay under moderate memory pressure
     } else {
-      return 100;  // 100ms delay under normal conditions
+      return 100; // 100ms delay under normal conditions
     }
   }
   /**
    * Store results in database via Node API
-   */;
-  async storeResults(results: ProcessingResult[], metadata: any = {}): Promise<void> {
+   */ async storeResults(results: ProcessingResult[], metadata: any = {}): Promise<void> {
     try {
       const response = await fetch('/api/tensor/store', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           results: results.map(r => ({
             text: r.ocr.text,
             embeddings: Array.from(r.embeddings.embeddings),
             dimensions: r.embeddings.dimensions,
             confidence: r.ocr.confidence,
             tensor_id: r.embeddings.metadata.tensor_id,
-            search_index: Array.from(r.searchIndex)
+            search_index: Array.from(r.searchIndex),
           })),
           metadata: {
             ...metadata,
             processed_at: Date.now(),
-            batch_size: results.length
-          }
-        })
+            batch_size: results.length,
+          },
+        }),
       });
-      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-        throw new Error(`Storage API failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      if (!response.ok) {
+        throw new Error(`Storage API failed: ${response.status}`);
       }
       console.log('✅ Results stored successfully');
     } catch (error) {

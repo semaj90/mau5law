@@ -201,23 +201,59 @@ class OCRServiceWorker {
       // For production, you might call out to the main thread or use a WASM embedding model
 
       // Simple word-based embedding (placeholder)
-      const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+      const words = text
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(w => w.length > 2);
       const vocab = Array.from(new Set(words));
 
-      // Create a simple 384-dimensional embedding
-      const embedding = new Array(384).fill(0);
+      // Create a simple 384-dimensional embedding using a deterministic
+      // FNV-1a hash + lightweight LCG PRNG per token. This is faster than
+      // calling Math.sin repeatedly and produces deterministic, well-spread
+      // values suitable for small-scale semantic comparisons in the browser.
+      const dim = 384;
+      const embedding = new Float32Array(dim);
 
-      vocab.forEach((word, index) => {
-        const hash = this.simpleHash(word);
-        for (let i = 0; i < 384; i++) {
-          embedding[i] += Math.sin(hash * (i + 1)) * 0.1;
+      // FNV-1a 32-bit hash implementation
+      const fnv1a = str => {
+        let h = 0x811c9dc5;
+        for (let i = 0; i < str.length; i++) {
+          h ^= str.charCodeAt(i);
+          h = Math.imul(h, 16777619);
         }
-      });
+        return h >>> 0; // unsigned
+      };
 
-      // Normalize
-      const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-      return magnitude > 0 ? embedding.map(val => val / magnitude) : embedding;
+      // Lightweight LCG: x_{n+1} = (a * x_n + c) mod 2^32
+      const lcg = seed => {
+        let state = seed >>> 0;
+        return () => {
+          state = (Math.imul(1664525, state) + 1013904223) >>> 0;
+          return state / 0x100000000; // normalize to [0,1)
+        };
+      };
 
+      for (let w = 0; w < vocab.length; w++) {
+        const word = vocab[w];
+        const seed = fnv1a(word + '::ocr');
+        const rnd = lcg(seed);
+        // add small contributions from this token into the vector
+        for (let i = 0; i < dim; i++) {
+          // jitter each dimension with a deterministic pseudo-random value in [-0.5,0.5]
+          embedding[i] += (rnd() - 0.5) * 0.2;
+        }
+      }
+
+      // Normalize to unit length (Float32Array)
+      let sumSq = 0.0;
+      for (let i = 0; i < dim; i++) {
+        sumSq += embedding[i] * embedding[i];
+      }
+      const mag = Math.sqrt(sumSq) || 1.0;
+      for (let i = 0; i < dim; i++) embedding[i] = embedding[i] / mag;
+
+      // Return as a plain Array<number> (existing consumers expect a regular array)
+      return Array.from(embedding);
     } catch (error) {
       console.warn('Worker embedding generation failed:', error);
       return null;
