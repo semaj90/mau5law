@@ -133,13 +133,11 @@
 
 <!-- Mobile backdrop -->
 {#if open}
-  <div
+  <button
     class="fixed inset-0 z-40 bg-black/50 lg:hidden"
     onclick={closeSidebar}
-    role="button"
-    tabindex="0"
-    keydown={e => e.key === 'Enter' && closeSidebar()}
-  ></div>
+    aria-label="Close sidebar"
+  ></button>
 {/if}
 <!-- Sidebar -->
 <aside
@@ -460,5 +458,5 @@
       opacity: 0;
       pointer-events: none;
     }
-  }
+}
 </style>

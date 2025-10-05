@@ -32,6 +32,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 
   // Dialog open state per cluster for API service dialogs
   let openClusterDialog = $state<boolean[]>([]);
+  let openClusterDialogs = $state<{ [key: string]: boolean }>({}); // Declare openClusterDialogs here
   // K-means clustering logic for API endpoints
   function clusterAPIEndpoints(routes: any[]) {
     const apiRoutes = routes.filter(route => route.path.startsWith('/api/'));
@@ -428,9 +429,10 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       <div class="flex flex-col lg:flex-row gap-4">
         <!-- Search -->
         <div class="flex-1">
-          <label class="block text-sm font-medium text-gray-700 mb-2">🔍 Search Routes</label>
+          <label for="search-routes" class="block text-sm font-medium text-gray-700 mb-2">🔍 Search Routes</label>
           <input
             type="text"
+            id="search-routes"
             bind:value={searchTerm}
             placeholder="Search by path, name, or description..."
             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
@@ -438,8 +440,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         </div>
         <!-- Section Filter -->
         <div class="lg:w-48">
-          <label class="block text-sm font-medium text-gray-700 mb-2">📂 Section</label>
+          <label for="section-filter" class="block text-sm font-medium text-gray-700 mb-2">📂 Section</label>
           <select
+            id="section-filter"
             bind:value={selectedSection}
             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
           >
@@ -453,8 +456,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         </div>
         <!-- Category Filter -->
         <div class="lg:w-64">
-          <label class="block text-sm font-medium text-gray-700 mb-2">🎯 Category</label>
+          <label for="category-filter" class="block text-sm font-medium text-gray-700 mb-2">🎯 Category</label>
           <select
+            id="category-filter"
             bind:value={selectedCategory}
             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
           >
@@ -470,8 +474,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       </div>
       <!-- Quick Filter Buttons -->
       <div class="mt-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">⚡ Quick Filters</label>
-        <div class="flex flex-wrap gap-2">
+        <span id="quick-filters-label" class="block text-sm font-medium text-gray-700 mb-2">⚡ Quick Filters</span>
+        <div class="flex flex-wrap gap-2" aria-labelledby="quick-filters-label">
           <button
             onclick={() => {
               selectedSection = 'core';
@@ -702,60 +706,47 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                     {/if}
                   </div>
                   <div class="action-buttons">
-                    {#if !$$self['openClusterDialogs']} {@html ''} {/if}
-                    {#if !$$self['openClusterDialogs']}
-                      {@html ''}
-                      {@const openClusterDialogs = $state({})}
-                      {@html ''}
-                    {/if}
-                    <button
-                      class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
-                      onclick={() => (openClusterDialogs[serviceName] = true)}
-                    >
-                      📋 View All ({endpoints.length})
-                    </button>
-                    {#if openClusterDialogs[serviceName]}
-                      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onclick={() => (openClusterDialogs[serviceName] = false)}>
-                        <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto mx-4" onclick={e => e.stopPropagation()}>
-                          <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold flex items-center gap-2">
-                              {serviceIcon}
-                              {serviceName.replace('-', ' ')} Service
-                            </h3>
-                            <button onclick={() => (openClusterDialogs[serviceName] = false)} class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
-                          </div>
-                          <div class="grid gap-3">
-                            {#each endpoints as endpoint}
-                              <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <div class="flex-1">
-                                  <code class="text-sm font-mono text-gray-800">{endpoint.path}</code>
-                                  {#if endpoint.description}
-                                    <p class="text-xs text-gray-600 mt-1">{endpoint.description}</p>
-                                  {/if}
-                                </div>
-                                <div class="flex gap-2">
-                                  <button
-                                    onclick={() => visitRoute(endpoint.path)}
-                                    class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs"
-                                  >
-                                    🚀 Visit
-                                  </button>
-                                  <button
-                                    onclick={() => navigator.clipboard.writeText(endpoint.path)}
-                                    class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 text-xs"
-                                  >
-                                    📋
-                                  </button>
-                                </div>
+                    <Dialog bind:open={openClusterDialogs[serviceName]}>
+                      <DialogTrigger>
+                        <button
+                          class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
+                        >
+                          📋 View All ({endpoints.length})
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogTitle>
+                          {serviceIcon}
+                          {serviceName.replace('-', ' ')} Service
+                        </DialogTitle>
+                        <DialogDescription>
+                          List of all endpoints for the {serviceName.replace('-', ' ')} service.
+                        </DialogDescription>
+                        <div class="grid gap-3 mt-4">
+                          {#each endpoints as endpoint}
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                              <div class="flex-1">
+                                <code class="text-sm font-mono text-gray-800">{endpoint.path}</code>
+                                {#if endpoint.description}
+                                  <p class="text-xs text-gray-600 mt-1">{endpoint.description}</p>
+                                {/if}
                               </div>
-                            {/each}
-                          </div>
-                        </div>
-                      </div>
-                    {/if}
-                  </div>
-                            {/each}
-                          </div>
+                              <div class="flex gap-2">
+                                <button
+                                  onclick={() => visitRoute(endpoint.path)}
+                                  class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs"
+                                >
+                                  🚀 Visit
+                                </button>
+                                <button
+                                  onclick={() => navigator.clipboard.writeText(endpoint.path)}
+                                  class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 text-xs"
+                                >
+                                  📋
+                                </button>
+                              </div>
+                            </div>
+                          {/each}
                         </div>
                       </DialogContent>
                     </Dialog>
@@ -774,10 +765,14 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           {@const categoryInfo = routeCategories[route.category]}
           {@const columnClass =
             index % 3 === 0 ? 'flex-basis-31' : index % 3 === 1 ? 'flex-basis-33' : 'flex-basis-35'}
-          <Card
-            class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group cursor-pointer border-2"
+          <button
+            type="button"
+            class="w-full h-full p-0 border-none bg-transparent text-left"
             onclick={() => openRouteModal(route)}
           >
+            <Card
+              class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group border-2"
+            >
             {#snippet children()}
               <CardHeader>
                 {#snippet children()}
@@ -803,6 +798,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
               </CardContent>
             {/snippet}
           </Card>
+          </button>
         {/each}
       </div>
     {:else if !showClustered}
@@ -810,10 +806,14 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {#each filteredRoutes as route}
           {@const categoryInfo = routeCategories[route.category]}
-          <Card
-            class="hover:border-{categoryInfo.color}-400 group cursor-pointer"
+          <button
+            type="button"
+            class="w-full h-full p-0 border-none bg-transparent text-left"
             onclick={() => openRouteModal(route)}
           >
+            <Card
+              class="hover:border-{categoryInfo.color}-400 group"
+            >
             {#snippet children()}
               <CardContent class="p-4">
                 <!-- Route Header -->
@@ -883,6 +883,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
               </CardContent>
             {/snippet}
           </Card>
+          </button>
         {/each}
       </div>
     {/if}
@@ -983,19 +984,21 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 </div>
 <!-- Route Modal -->
 {#if showModal && selectedRoute}
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onclick={closeModal}>
-    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4" onclick={e => e.stopPropagation()}>
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold">{selectedRoute.icon} {selectedRoute.name}</h2>
-        <button onclick={closeModal} class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
-      </div>
+  <Dialog bind:open={showModal}>
+    <DialogContent>
+      <DialogTitle>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">{selectedRoute.icon} {selectedRoute.name}</h2>
+          <button onclick={() => (showModal = false)} class="text-gray-500 hover:text-gray-700 text-2xl" aria-label="Close modal">×</button>
+        </div>
+      </DialogTitle>
       <div class="space-y-4">
         <div>
-          <label class="font-semibold text-gray-700">URL:</label>
+          <span class="font-semibold text-gray-700">URL:</span>
           <code class="block mt-1 p-2 bg-gray-100 rounded text-sm">{selectedRoute.path}</code>
         </div>
         <div>
-          <label class="font-semibold text-gray-700">Type:</label>
+          <span class="font-semibold text-gray-700">Type:</span>
           <span
             class="ml-2 px-2 py-1 rounded text-xs {selectedRoute.type === 'configured'
               ? 'bg-green-100 text-green-800'
@@ -1006,7 +1009,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         </div>
         {#if selectedRoute.description}
           <div>
-            <label class="font-semibold text-gray-700">Description:</label>
+            <span class="font-semibold text-gray-700">Description:</span>
             <p class="mt-1 text-gray-600">{selectedRoute.description}</p>
           </div>
         {/if}
@@ -1025,14 +1028,14 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           </button>
         </div>
       </div>
-    </div>
-  </div>
+    </DialogContent>
+  </Dialog>
 {/if}
 
 <style>
   /* Enhanced SSR-optimized 3-Column Flexbox Layout */
   .ssr-flexbox-container {
-    /* Ensure proper layout calculation on server-side rendering */;
+    /* Ensure proper layout calculation on server-side rendering */
     min-height: 400px;
     width: 100%;
     box-sizing: border-box;
@@ -1190,14 +1193,14 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     font-weight: 600;
   }
   /* Improved typography and spacing for SSR */
-  .ssr-card h3 {
+  /* .ssr-card h3 {
     line-height: 1.3;
     margin-bottom: 0.5rem;
-  }
-  .ssr-card code {
+  } */
+  /* .ssr-card code {
     word-break: break-all;
     font-size: 0.85rem;
-  }
+  } */
   /* Enhanced focus states for accessibility */
   .ssr-card:focus-within {
     outline: 2px solid #3b82f6;
