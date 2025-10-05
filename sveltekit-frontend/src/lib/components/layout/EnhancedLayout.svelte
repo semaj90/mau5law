@@ -4,13 +4,22 @@
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
+
+  // Define User interface to match +page.server.ts
+  interface User {
+    id: string;
+    email?: string;
+    name?: string;
+    role: string;
+  }
+
   interface Props {
     children?: Snippet;
     title?: string;
     showNavigation?: boolean;
     showSidebar?: boolean;
     variant?: 'legal' | 'yorha' | 'minimal' | 'admin';
-    user?: unknown;
+    user?: User | null; // Update user type to be more specific
     hideHeader?: boolean;
     fullWidth?: boolean;
   }
@@ -35,19 +44,27 @@
     if (currentPath.startsWith('/auth')) return 'minimal';
     return variant;
   });
+  // Define a type alias for navigation items
+  type NavItem = {
+    href: string;
+    label: string;
+    icon: string;
+    active?: boolean;
+  };
+
   // Navigation items based on layout variant
-  let navigationItems = $derived(() => {
-    const baseItems = [
+  let navigationItems = $derived<NavItem[]>(() => {
+    const baseItems: NavItem[] = [
       { href: '/', label: 'Home', icon: '🏠' },
       { href: '/cases', label: 'Cases', icon: '📋' },
       { href: '/evidence', label: 'Evidence', icon: '🔍' },
     ];
-    const yorhaItems = [
+    const yorhaItems: NavItem[] = [
       { href: '/yorha', label: 'YoRHa Terminal', icon: '⚡' },
       { href: '/yorha/dashboard', label: 'Command Center', icon: '🎮' },
       { href: '/demo', label: 'Demos', icon: '🚀' },
     ];
-    const adminItems = [
+    const adminItems: NavItem[] = [
       { href: '/admin', label: 'Admin', icon: '⚙️' },
       { href: '/admin/users', label: 'Users', icon: '👥' },
       { href: '/admin/performance', label: 'Performance', icon: '📊' },
@@ -76,32 +93,32 @@
     <header class="layout-header">
       <div class="header-container">
         <div class="header-brand">
-          <h1 class="nes-text is-primary">{title}</h1>
+          <h1>{title}</h1>
           {#if layoutVariant === 'yorha'}
-            <span class="yorha-subtitle">YoRHa Command Interface</span>
+            <span class="yorha-subtitle">YoRHa Legal AI System</span>
           {/if}
         </div>
-        <nav class="header-nav" class:yorha-nav={layoutVariant === 'yorha'}>
-          {#each navigationItems as item ((item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).href)}
+        <nav class="header-nav">
+          {#each navigationItems as item (item.href)}
             <a
-              href={(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).href}
+              href={item.href}
               class="nav-item"
-              class:active={currentPath ===
-                (item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).href}
-              aria-label={(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).label}
+              class:active={currentPath === item.href}
+              aria-label={item.label}
             >
-              <span class="nav-icon"
-                >{(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).icon}</span
-              >
-              <span class="nav-label"
-                >{(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).label}</span
-              >
+              <span class="nav-icon">{item.icon}</span>
+              <span class="nav-label">{item.label}</span>
             </a>
           {/each}
         </nav>
-        {#if showSidebar}
-          <button class="sidebar-toggle nes-btn" onclick={toggleSidebar} aria-label="Toggle sidebar"> ☰ </button>
-        {/if}
+        <div class="header-actions">
+          {#if user?.name}
+            <span class="user-greeting nes-text is-primary">Hello, {user.name}!</span>
+          {/if}
+          {#if showSidebar}
+            <button class="sidebar-toggle nes-btn" onclick={toggleSidebar} aria-label="Toggle sidebar"> ☰ </button>
+          {/if}
+        </div>
       </div>
     </header>
   {/if}
@@ -190,6 +207,15 @@
     display: flex;
     gap: 1rem;
     align-items: center;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .user-greeting {
+    font-size: 0.9rem;
+    font-weight: 500;
   }
   .nav-item {
     display: flex;

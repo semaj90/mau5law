@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const result = await gemmaEmbeddingsService.generateEmbedding(validatedData.data)
         return json({
           success: result.success,
-          data: result.success ? {,
+          data: result.success ? {
             embedding: result.embedding,
             dimensions: result.dimensions,
             model: result.model,

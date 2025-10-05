@@ -11,8 +11,9 @@
     { name: 'Home', href: '/' },
     { name: 'Cases', href: '/cases' },
     { name: 'Evidence', href: '/evidence' },
-    { name: 'AI Chat', href: '/(ai)/chat' },
-    { name: 'RAG Search', href: '/(ai)/rag' },
+    // Use public-facing URLs without SvelteKit route-group parentheses
+    { name: 'AI Chat', href: '/ai/chat' },
+    { name: 'RAG Search', href: '/ai/rag' },
     { name: 'YoRHa', href: '/yorha' },
   ]);
   let searchOpen = $state(false);

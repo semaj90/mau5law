@@ -170,14 +170,14 @@
         <span class="card-button">Manage Evidence →</span>
       </a>
 
-      <a href="/(ai)/chat" class="action-card">
+  <a href="/ai/chat" class="action-card">
         <div class="card-icon">💬</div>
         <h3>AI Assistant</h3>
         <p>Interactive legal AI chat with Gemma3 Legal model</p>
         <span class="card-button">Start Chat →</span>
       </a>
 
-      <a href="/(ai)/rag" class="action-card">
+  <a href="/ai/rag" class="action-card">
         <div class="card-icon">🔍</div>
         <h3>RAG Search</h3>
         <p>Semantic search across legal documents with GPU acceleration</p>
@@ -206,7 +206,7 @@
     <div class="action-buttons">
       <a href="/cases/create" class="quick-button success">+ New Case</a>
       <a href="/evidence/upload" class="quick-button legal">📤 Upload Evidence</a>
-      <a href="/(ai)/chat" class="quick-button neural">💬 Ask AI</a>
+  <a href="/ai/chat" class="quick-button neural">💬 Ask AI</a>
     </div>
   </div>
 </div>

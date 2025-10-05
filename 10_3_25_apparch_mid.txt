@@ -45,6 +45,10 @@
   NATS port not detected     |
 
   ---
+ Fixed {@const} Placement Errors
+The Issue
+Svelte 5 has strict rules about where {@const} can be placed. It must be the immediate child of specific
+
   🔧 WHAT NEEDS WIRING
 
   1. Integrated Upload API Missing Service
@@ -168,6 +172,12 @@ ext Steps to Complete
   5. Auto-tagging: Legal domain keywords (contract, evidence, litigation,        
   statute, filing)
 
+  Then create src/lib/components/ai/IntegratedAIChat.svelte with:
+  - Drag & drop file upload
+  - Real-time chat with gemma3-legal:latest
+  - Self-prompting recommendations from pgvector
+  - CUDA status indicator
+  - File attachment display
 
 art the Full Stack:
   # Terminal 1: SvelteKit frontend

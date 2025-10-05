@@ -118,6 +118,18 @@ export const GET: RequestHandler = async event => {
   return withApiHandler(async ({ url, locals }) => {
     // Resolve user (supports DEV_BYPASS_AUTH in dev)
     const user = resolveUser(locals);
+    // If dev bypass is enabled and no user, return demo payload to unblock frontend dev flows
+    if (!user && dev && (process.env.DEV_BYPASS_AUTH === 'true' || metaEnv.DEV_BYPASS_AUTH === 'true')) {
+      console.warn('DEV_BYPASS_AUTH: returning demo cases for GET /api/cases');
+      return {
+        cases: [
+          { id: 'dev-case-001', caseNumber: 'DEV-0001', title: 'Development Case (demo)', status: 'open' },
+          { id: 'dev-case-002', caseNumber: 'DEV-0002', title: 'Sample Evidence Case', status: 'investigating' },
+        ],
+        pagination: { page: 1, limit: 50, total: 2 },
+        search: null,
+      };
+    }
     if (!user) {
       throw CommonErrors.Unauthorized('User authentication required');
     }

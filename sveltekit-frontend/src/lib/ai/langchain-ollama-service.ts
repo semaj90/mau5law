@@ -43,18 +43,18 @@ export interface QueryResult {
   confidence: number;
   processingTime: number;
 }
-// Default configuration optimized for legal AI
+// Default configuration optimized for legal AI with GPU acceleration
 const DEFAULT_CONFIG: LangChainConfig = {
   ollamaBaseUrl: "http://localhost:11434",
-  model: "gemma3-legal:latest",
-  embeddingModel: "nomic-embed-text:latest",
+  model: "gemma3-legal-optimized:latest", // Updated to optimized model
+  embeddingModel: "embeddinggemma:latest", // GPU-accelerated embeddings
   temperature: 0.3,
   maxTokens: 2048,
   chunkSize: 1000,
   chunkOverlap: 200,
   maxRetrieverResults: 10,
-  useCuda: true
-  vectorDimensions: 384
+  useCuda: true,
+  vectorDimensions: 768 // embeddinggemma uses 768 dimensions (BF16)
 }
 // ============================================================================
 // ENHANCED LANGCHAIN + OLLAMA SERVICE

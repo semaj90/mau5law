@@ -1,23 +1,53 @@
 model_list:
   - model_name: claude-sonnet-4-5
     litellm_params:
-      model: ollama/gemma3-legal
+      model: ollama/gemma3-legal-optimized
       api_base: http://localhost:11434
+      num_gpu: 30
+      flash_attention: true
 
   - model_name: claude-3-5-sonnet-20241022
     litellm_params:
-      model: ollama/gemma3-legal
+      model: ollama/gemma3-legal-optimized
       api_base: http://localhost:11434
+      num_gpu: 30
+      flash_attention: true
 
   - model_name: claude-3-5-sonnet-20240620
     litellm_params:
-      model: ollama/gemma3-legal
+      model: ollama/gemma3-legal-optimized
       api_base: http://localhost:11434
+      num_gpu: 30
+      flash_attention: true
+
+  # Explicitly define local Ollama models for direct use
+  - model_name: gemma3:legal-latest
+    litellm_params:
+      model: ollama/gemma3-legal-optimized
+      api_base: http://localhost:11434
+      num_gpu: 30
+      flash_attention: true
+
+  - model_name: gemma-270m-context
+    litellm_params:
+      model: ollama/gemma-270m-context # Assuming this is the actual Ollama model name
+      api_base: http://localhost:11434
+      num_gpu: 30
+      flash_attention: true
+
+
 
 litellm_settings:
   drop_params: true
   success_callback: []
   failure_callback: []
+  cache: true
+  cache_params:
+    type: redis
+    host: localhost
+    port: 6379
+    password: redis
+    ttl: 3600  # 1 hour cache
 
 general_settings:
   master_key: sk-1234

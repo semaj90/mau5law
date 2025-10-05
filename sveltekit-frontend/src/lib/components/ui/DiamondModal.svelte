@@ -27,9 +27,15 @@
     children,
     footer
   }: Props = $props();
-  const dispatch = createEventDispatcher();
-  let modalElement: HTMLDivElement;
-  let canvasElement: HTMLCanvasElement;
+
+  interface DiamondModalEvents {
+    close: void; // No payload for the close event
+  }
+
+  const dispatch = createEventDispatcher<DiamondModalEvents>();
+
+  let modalElement: HTMLDivElement | null = $state(null);
+  let canvasElement: HTMLCanvasElement | null = $state(null);
   let animationFrame: number;
   const sizeClasses = {
     small: 'max-w-md',
@@ -121,10 +127,12 @@
         class="modal-container {sizeClasses[size]}"
         class:glass-effect={glassEffect}
         onclick={(e) => e.stopPropagation()}
+        onkeydown={(e) => e.stopPropagation()}
         transition:scale={{ duration: 300, easing: backOut }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        tabindex="-1"
       >
         <!-- Diamond pattern background -->
         {#if diamondPattern}

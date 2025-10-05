@@ -1,18 +1,17 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
-  // Removed unused onMount import
+  import { page } from '$app/stores'; // Import the page store
   import {
-    Home, Search, Database, Eye, Folder, BarChart, // Changed BarChart3 to BarChart, removed Users
+    Home, Search, Database, Eye, Folder, // Removed BarChart
     Terminal, Settings, Bell, Menu, X, Zap,
-    ChevronDown, LogOut, User, Calendar, Activity, MessageSquare
+    ChevronDown, LogOut, User, Calendar, Activity, MessageSquare, BarChart3 // Add BarChart3 here
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import { authStore } from '$lib/stores/auth-store.svelte.js';
   // Client-side AI assistant chat widget
-  import ClientSideAIChat from '$lib/components/ai/ClientSideAIChat.svelte';
+  import { ClientSideAIChat } from '$lib/components/ai/ClientSideAIChat.svelte'; // Changed to named import
   interface Props {
     children: any;
     title?: string; // Added missing title property
@@ -69,7 +68,7 @@
     {
       id: 'analysis',
       href: '/analysis',
-      icon: BarChart, // Changed BarChart3 to BarChart
+      icon: BarChart3, // Reverted to BarChart3 as BarChart is deprecated
       label: 'Analytics',
       description: 'Data insights and trend analysis',
     }
@@ -117,8 +116,8 @@
     gpu: false, // Changed semicolon to comma
   });
   // Derived state
-  const { url } = $page; // Destructure url from $page to address deprecation warning
-  let currentPath = $derived(browser && url ? url.pathname : '/'); // Corrected to use destructured url
+  // const { url } = $page; // Removed problematic $page destructuring
+  let currentPath = $derived(browser && $page.url ? $page.url.pathname : '/'); // Corrected to use $page.url directly
   // Removed currentNavItem as it was unused
   // Update time every second
   $effect(() => {
