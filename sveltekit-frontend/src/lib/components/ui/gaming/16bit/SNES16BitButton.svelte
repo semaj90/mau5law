@@ -37,7 +37,7 @@
   let {
     era = '16bit',
     variant = 'primary',
-    size = 'medium',
+    size = 'md', // Changed from 'medium' to 'md'
     disabled = false,
     loading = false,
     pixelPerfect = false, // SNES had smoother graphics
@@ -75,13 +75,15 @@
     setTimeout(() => {
       isPressed = false;
     }, 120);
-    onClick?.();
+    // call only if a function was provided to avoid TS "not callable" error
+    if (typeof onClick === 'function') onClick();
   };
 
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
-    onHover?.();
+    // call only if a function was provided
+    if (typeof onHover === 'function') onHover();
   };
 
   const handleUnhover = () => {
@@ -90,7 +92,8 @@
 
   const handleFocus = () => {
     if (disabled) return;
-    onFocus?.();
+    // call only if a function was provided
+    if (typeof onFocus === 'function') onFocus();
   };
 
   // Derived state using modular utilities
@@ -103,7 +106,7 @@
   const mode7Transform = $derived(getMode7Transform(isPressed, isHovered, enableMode7));
 </script>
 
-<BitsButton.Root
+<BitsButton
   bind:el={buttonElement}
   {type}
   {disabled}
@@ -122,9 +125,11 @@
       <div class="enhanced-spinner"></div>
     </div>
   {:else if children}
-    {@render children()}
+    {#if typeof children === 'function'}
+      {@render children()}
+    {/if}
   {/if}
-</BitsButton.Root>
+</BitsButton>
 
 <style>
   :global(.snes-16bit-button) {

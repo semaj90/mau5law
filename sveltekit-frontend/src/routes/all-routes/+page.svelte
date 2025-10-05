@@ -15,7 +15,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   import DialogContent from '$lib/components/ui/wrappers/bits/DialogContent.svelte';
   import DialogTitle from '$lib/components/ui/dialog/DialogTitle.svelte';
   import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
-  import DialogClose from '$lib/components/ui/dialog/DialogClose.svelte';
   interface Props {
     data: PageData;
   }
@@ -31,8 +30,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   let layoutMode = $state<'grid' | 'flexbox'>('grid');
   let showClustered = $state(false);
 
-  // Dialog open state (bind to Dialog). Using a single state for cluster dialogs; adjust if you need per-cluster dialog state.
-  let dialogOpen = $state(false);
+  // Dialog open state per cluster for API service dialogs
+  let openClusterDialog = $state<boolean[]>([]);
   // K-means clustering logic for API endpoints
   function clusterAPIEndpoints(routes: any[]) {
     const apiRoutes = routes.filter(route => route.path.startsWith('/api/'));
@@ -703,20 +702,28 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                     {/if}
                   </div>
                   <div class="action-buttons">
-                    <Dialog open={false}>
-                      {#snippet children()}
-                        <button
-                          class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
-                        >
-                          📋 View All ({endpoints.length})
-                        </button>
-                      {/snippet}
-                      {#snippet content()}
-                        <div class="p-6 max-w-4xl max-h-[80vh] overflow-y-auto">
-                          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                            {serviceIcon}
-                            {serviceName.replace('-', ' ')} Service
-                          </h3>
+                    {#if !$$self['openClusterDialogs']} {@html ''} {/if}
+                    {#if !$$self['openClusterDialogs']}
+                      {@html ''}
+                      {@const openClusterDialogs = $state({})}
+                      {@html ''}
+                    {/if}
+                    <button
+                      class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
+                      onclick={() => (openClusterDialogs[serviceName] = true)}
+                    >
+                      📋 View All ({endpoints.length})
+                    </button>
+                    {#if openClusterDialogs[serviceName]}
+                      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onclick={() => (openClusterDialogs[serviceName] = false)}>
+                        <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto mx-4" onclick={e => e.stopPropagation()}>
+                          <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold flex items-center gap-2">
+                              {serviceIcon}
+                              {serviceName.replace('-', ' ')} Service
+                            </h3>
+                            <button onclick={() => (openClusterDialogs[serviceName] = false)} class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                          </div>
                           <div class="grid gap-3">
                             {#each endpoints as endpoint}
                               <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -744,7 +751,13 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                             {/each}
                           </div>
                         </div>
-                      {/snippet}
+                      </div>
+                    {/if}
+                  </div>
+                            {/each}
+                          </div>
+                        </div>
+                      </DialogContent>
                     </Dialog>
                   </div>
                 </CardContent>

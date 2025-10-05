@@ -11,6 +11,15 @@ export const GET: RequestHandler = async () => {
       const redisModule = await import('$lib/server/redis');
       redis = redisModule.redis || redisModule.default;
 
+      // Ensure connection before ping
+      if (redis && typeof redis.connect === 'function') {
+        const status = redis.status;
+        if (status === 'end' || status === 'close') {
+          console.log('[Redis Health] Reconnecting closed Redis client...');
+          await redis.connect();
+        }
+      }
+
       // Simple ping test
       if (redis && typeof redis.ping === 'function') {
         await redis.ping();

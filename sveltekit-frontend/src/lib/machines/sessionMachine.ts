@@ -133,8 +133,8 @@ export const sessionMachine = createMachine({
       on: {
         LOGOUT: 'logging_out',
         SESSION_EXPIRED: 'expired',
-        SECURITY_CHECK: 'security_validation',
-        HEALTH_CHECK: 'health_checking',
+        SECURITY_CHECK: '.security_validation',
+        HEALTH_CHECK: '.health_checking',
       },
       states: {
         active: {
@@ -176,7 +176,7 @@ export const sessionMachine = createMachine({
                 };
               }),
             },
-            onError: 'expired',
+            onError: '#sessionManager.expired',
           },
         },
         extending: {
@@ -250,7 +250,7 @@ export const sessionMachine = createMachine({
               lastActivity: context.lastActivity,
             }),
             onDone: 'active',
-            onError: 'expired',
+            onError: '#sessionManager.expired',
           },
         },
         security_validation: {

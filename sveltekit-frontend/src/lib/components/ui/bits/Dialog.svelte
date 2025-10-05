@@ -61,10 +61,11 @@
     onOpenChange?.(newOpen);
   }
 
-  let BitsDialogRoot: any = null;
-  let BitsDialogPortal: any = null;
-  let BitsDialogOverlay: any = null;
-  let BitsDialogContent: any = null;
+  // Replace plain lets with Svelte $state so updates are reactive
+  let BitsDialogRoot: any = $state(null);
+  let BitsDialogPortal: any = $state(null);
+  let BitsDialogOverlay: any = $state(null);
+  let BitsDialogContent: any = $state(null);
   (async () => {
     const BitsDialog = await getBitsNamespaceClient();
     BitsDialogRoot = BitsDialog?.Root ?? BitsDialog?.Dialog ?? BitsDialog?.default ?? BitsDialog;

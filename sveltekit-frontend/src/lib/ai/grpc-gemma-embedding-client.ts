@@ -9,11 +9,11 @@
  * - Connection pooling and multiplexing
  * - Automatic retry and circuit breaker
  */
-import grpc from '@grpc/grpc-js';
+import * as grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
-import { Pool, PoolClient } from 'pg';
+import { Pool, type PoolConfig } from 'pg';
 import { performance } from 'perf_hooks';
-import IORedis from 'ioredis';
+import Redis, { type RedisOptions } from 'ioredis';
 // Load protobuf definitions
 const PROTO_PATH = __dirname + '/protos/gemma_embeddings.proto';
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
@@ -21,7 +21,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   longs: String,
   enums: String,
   defaults: true,
-  oneofs: true
+  oneofs: true,
 });
 const gemmaEmbeddingsProto = grpc.loadPackageDefinition(packageDefinition).gemma_embeddings as any;
 // =============================================================================
@@ -30,7 +30,7 @@ const gemmaEmbeddingsProto = grpc.loadPackageDefinition(packageDefinition).gemma
 interface EmbeddingRequest {
   document_id: string;
   text_content: string;
-  metadata: any;
+  metadata: Record<string, unknown>;
   batch_id?: string;
   priority: number;
   options: EmbeddingOptions;
@@ -49,7 +49,7 @@ interface EmbeddingResponse {
   model_version: string;
   processing_time: number;
   confidence_score: number;
-  metadata: any;
+  metadata: Record<string, unknown>;
   status: EmbeddingStatus;
 }
 interface EmbeddingStatus {
@@ -88,13 +88,33 @@ interface PostgreSQLBatchResult {
   jsonb_compression_ratio: number;
   index_update_time: number;
 }
+// Define a client interface matching the methods we call on the gRPC client
+interface GemmaEmbeddingServiceClient extends grpc.Client {
+  GenerateEmbedding(
+    request: EmbeddingRequest,
+    callback: (error: grpc.ServiceError | null, response?: EmbeddingResponse) => void
+  ): void;
+  GenerateBatchEmbeddings(
+    request: BatchEmbeddingRequest,
+    callback: (error: grpc.ServiceError | null, response?: BatchEmbeddingResponse) => void
+  ): void;
+  StreamBatchEmbeddings(): grpc.ClientDuplexStream<EmbeddingRequest, EmbeddingResponse>;
+  Check(
+    request: { service: string },
+    options: grpc.CallOptions | object | undefined,
+    callback: (error: grpc.ServiceError | null, response?: { status?: string }) => void
+  ): void;
+  close(): void;
+}
 // =============================================================================
 // GRPC EMBEDDING CLIENT
 // =============================================================================
-export class GRPCGemmaEmbeddingClient {
-  private client: any;
+class GRPCGemmaEmbeddingClient {
+  // typed client instead of `any`
+  private client: GemmaEmbeddingServiceClient;
   private db: Pool;
-  private redis: IORedis;
+  // typed redis instance
+  private redis: Redis;
   private connectionPool: grpc.ChannelCredentials[] = [];
   private circuitBreaker: CircuitBreaker;
   // Performance metrics
@@ -104,21 +124,23 @@ export class GRPCGemmaEmbeddingClient {
     failedRequests: 0,
     avgLatency: 0,
     throughput: 0,
-    connectionRetries: 0
-  }
+    connectionRetries: 0,
+  };
   constructor(config: {
     grpcEndpoint: string;
-    dbConfig: any;
-    redisConfig: any;
+    dbConfig: PoolConfig;
+    // use explicit RedisOptions type
+    redisConfig?: string | RedisOptions;
     maxConnections?: number;
     timeoutMs?: number;
   }) {
     this.initializeGRPCClient(config.grpcEndpoint, config.maxConnections);
     this.db = new Pool(config.dbConfig);
-    this.redis = new IORedis(config.redisConfig);
+    // construct Redis using the imported Redis class
+    this.redis = new Redis(config.redisConfig as any);
     this.circuitBreaker = new CircuitBreaker({
       failureThreshold: 5,
-      recoveryTimeout: 30000
+      recoveryTimeout: 30000,
     });
     console.log(`🚀 gRPC Gemma Embedding Client initialized:`);
     console.log(`   - Endpoint: ${config.grpcEndpoint}`);
@@ -127,32 +149,27 @@ export class GRPCGemmaEmbeddingClient {
   }
   /**
    * Initialize gRPC client with connection pooling
-   */;
-  private initializeGRPCClient(endpoint: string, maxConnections: number = 10): void {
+   */ private initializeGRPCClient(endpoint: string, maxConnections: number = 10): void {
     // Create connection pool
     for (let i = 0; i < maxConnections; i++) {
       const credentials = grpc.credentials.createSsl();
       this.connectionPool.push(credentials);
     }
-    // Create primary client
-    this.client = new gemmaEmbeddingsProto.GemmaEmbeddingService(
-      endpoint,
-      grpc.credentials.createSsl(),>;
-      {
-        'grpc.keepalive_time_ms': 30000,
-        'grpc.keepalive_timeout_ms': 5000,
-        'grpc.keepalive_permit_without_calls': true
-        'grpc.http2.max_pings_without_data': 0,
-        'grpc.max_concurrent_streams': 100,
-        'grpc.max_receive_message_length': 16 * 1024 * 1024, // 16MB
-        'grpc.max_send_message_length': 16 * 1024 * 1024,    // 16MB
-      }
-    );
+    // Create primary client and cast to our typed interface
+    const raw = new gemmaEmbeddingsProto.GemmaEmbeddingService(endpoint, grpc.credentials.createSsl(), {
+      'grpc.keepalive_time_ms': 30000,
+      'grpc.keepalive_timeout_ms': 5000,
+      'grpc.keepalive_permit_without_calls': true,
+      'grpc.http2.max_pings_without_data': 0,
+      'grpc.max_concurrent_streams': 100,
+      'grpc.max_receive_message_length': 16 * 1024 * 1024, // 16MB
+      'grpc.max_send_message_length': 16 * 1024 * 1024, // 16MB
+    });
+    this.client = raw as unknown as GemmaEmbeddingServiceClient;
   }
   /**
    * Generate single embedding with gRPC
-   */;
-  async generateEmbedding(request: EmbeddingRequest): Promise<EmbeddingResponse> {
+   */ async generateEmbedding(request: EmbeddingRequest): Promise<EmbeddingResponse> {
     return this.circuitBreaker.execute(async () => {
       const startTime = performance.now();
       try {
@@ -165,10 +182,11 @@ export class GRPCGemmaEmbeddingClient {
           return cached;
         }
         // Make gRPC call
-        // removed unused response assignment
+        const response = await this.grpcGenerateEmbedding(request);
+
         // Cache result if requested
         if (request.options.cache_result && response.status.code === 0) {
-          await this.redis.setex(cacheKey, 3600, JSON.stringify(response); // 1 hour TTL
+          await this.redis.set(cacheKey, JSON.stringify(response), 'EX', 3600); // 1 hour TTL
         }
         // Update metrics
         const latency = performance.now() - startTime;
@@ -182,35 +200,61 @@ export class GRPCGemmaEmbeddingClient {
   }
   /**
    * Internal gRPC call wrapper
-   */;
-  private grpcGenerateEmbedding(request: EmbeddingRequest): Promise<EmbeddingResponse> {
+   */ private grpcGenerateEmbedding(request: EmbeddingRequest): Promise<EmbeddingResponse> {
     return new Promise((resolve, reject) => {
-      this.client.GenerateEmbedding(request, (error: any, response: EmbeddingResponse) => {
-        if (error) {
-          console.error('gRPC embedding error:', error);
-          reject(error);
-        } else {
+      this.client.GenerateEmbedding(
+        request,
+        (error: grpc.ServiceError | null, response: EmbeddingResponse | undefined) => {
+          if (error) {
+            console.error('gRPC embedding error:', error);
+            reject(error);
+            return;
+          }
+          if (!response) {
+            const err = new Error('gRPC GenerateEmbedding returned empty response');
+            console.error(err);
+            reject(err);
+            return;
+          }
           resolve(response);
         }
-      });
+      );
     });
   }
   /**
    * Generate batch embeddings with streaming and PostgreSQL optimization
    */
-  async generateBatchEmbeddings(
-    batchRequest: BatchEmbeddingRequest;
-  ): Promise<BatchEmbeddingResponse> {
+  async generateBatchEmbeddings(batchRequest: BatchEmbeddingRequest): Promise<BatchEmbeddingResponse> {
     const startTime = performance.now();
     const batchId = batchRequest.batch_id;
     console.log(`🔄 Starting batch embedding: ${batchId} (${batchRequest.requests.length} documents)`);
     try {
+      let result: BatchEmbeddingResponse;
       if (batchRequest.batch_options.enable_streaming) {
-        return await this.streamingBatchEmbeddings(batchRequest);
+        result = await this.streamingBatchEmbeddings(batchRequest);
       } else {
-        return await this.regularBatchEmbeddings(batchRequest);
+        result = await this.regularBatchEmbeddings(batchRequest);
       }
+
+      // Use startTime to compute total elapsed and update returned statistics & metrics
+      const elapsed = performance.now() - startTime;
+
+      if (result && result.batch_statistics) {
+        // override total_batch_time with measured elapsed and recalc throughput
+        result.batch_statistics.total_batch_time = elapsed;
+        const totalRequests = result.batch_statistics.total_requests || batchRequest.requests.length || 1;
+        result.batch_statistics.throughput_per_second = totalRequests / (elapsed / 1000);
+      }
+
+      // Update client metrics using average per-request latency (guard divide-by-zero)
+      const avgLatencyPerRequest = elapsed / Math.max(1, batchRequest.requests.length);
+      this.updateMetrics(true, avgLatencyPerRequest);
+
+      return result;
     } catch (error) {
+      const elapsed = performance.now() - startTime;
+      // Update failure metrics with elapsed time
+      this.updateMetrics(false, elapsed);
       console.error(`❌ Batch embedding failed: ${batchId}`, error);
       throw error;
     }
@@ -218,12 +262,11 @@ export class GRPCGemmaEmbeddingClient {
   /**
    * Streaming batch embeddings for real-time processing
    */
-  private async streamingBatchEmbeddings(
-    batchRequest: BatchEmbeddingRequest;
-  ): Promise<BatchEmbeddingResponse> {
+  private async streamingBatchEmbeddings(batchRequest: BatchEmbeddingRequest): Promise<BatchEmbeddingResponse> {
     const startTime = performance.now();
     const responses: EmbeddingResponse[] = [];
-    const errors: any[] = [];
+    // changed: use a typed error array and actually record errors so the variable is used
+    const errors: Array<grpc.ServiceError | Error> = [];
     return new Promise((resolve, reject) => {
       // Create bidirectional streaming call
       const call = this.client.StreamBatchEmbeddings();
@@ -234,24 +277,33 @@ export class GRPCGemmaEmbeddingClient {
         if (batchRequest.batch_options.postgresql_optimization) {
           this.streamToPostgreSQL(response).catch(error => {
             console.warn('PostgreSQL streaming error:', error);
+            // record the error for diagnostics
+            errors.push(error instanceof Error ? error : new Error(String(error)));
           });
         }
-        console.log(`📨 Received embedding: ${response.document_id} (${responses.length}/${batchRequest.requests.length})`);
+        console.log(
+          `📨 Received embedding: ${response.document_id} (${responses.length}/${batchRequest.requests.length})`
+        );
       });
       // Handle stream completion
       call.on('end', () => {
         const batchTime = performance.now() - startTime;
         const batchStats = this.calculateBatchStatistics(batchRequest.requests, responses, batchTime);
+        if (errors.length > 0) {
+          console.warn(`Streaming completed with ${errors.length} error(s). Example:`, errors[0]);
+        }
         resolve({
           batch_id: batchRequest.batch_id,
           responses,
-          batch_statistics: batchStats
-          postgresql_results: undefined // Would be filled by PostgreSQL optimization
+          batch_statistics: batchStats,
+          postgresql_results: undefined, // Would be filled by PostgreSQL optimization
         });
       });
       // Handle errors
-      call.on('error', (error: any) => {
+      call.on('error', (error: grpc.ServiceError) => {
         console.error('Streaming batch error:', error);
+        // record the stream error for diagnostics
+        errors.push(error);
         reject(error);
       });
       // Send all requests through the stream
@@ -265,28 +317,31 @@ export class GRPCGemmaEmbeddingClient {
   /**
    * Regular batch embeddings (non-streaming)
    */
-  private async regularBatchEmbeddings(
-    batchRequest: BatchEmbeddingRequest;
-  ): Promise<BatchEmbeddingResponse> {
-    const startTime = performance.now();
+  private async regularBatchEmbeddings(batchRequest: BatchEmbeddingRequest): Promise<BatchEmbeddingResponse> {
     return new Promise((resolve, reject) => {
-      this.client.GenerateBatchEmbeddings(batchRequest, async (error: any, response: BatchEmbeddingResponse) => {
-        if (error) {
-          reject(error);
-        } else {
+      this.client.GenerateBatchEmbeddings(
+        batchRequest,
+        async (error: grpc.ServiceError | null, response: BatchEmbeddingResponse | undefined) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          if (!response) {
+            reject(new Error('gRPC GenerateBatchEmbeddings returned empty response'));
+            return;
+          }
           // Optimize PostgreSQL insertion if requested
           if (batchRequest.batch_options.postgresql_optimization) {
             response.postgresql_results = await this.optimizedPostgreSQLInsertion(response.responses);
           }
           resolve(response);
         }
-      });
+      );
     });
   }
   /**
    * Stream embedding directly to PostgreSQL JSONB
-   */;
-  private async streamToPostgreSQL(embedding: EmbeddingResponse): Promise<void> {
+   */ private async streamToPostgreSQL(embedding: EmbeddingResponse): Promise<void> {
     const client = await this.db.connect();
     try {
       // Optimized JSONB insertion with ON CONFLICT handling
@@ -300,7 +355,7 @@ export class GRPCGemmaEmbeddingClient {
           processing_time,
           confidence_score,
           created_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
         ON CONFLICT (document_id) DO UPDATE SET
           gemma_embedding = EXCLUDED.gemma_embedding,
           embedding_norm = EXCLUDED.embedding_norm,
@@ -318,7 +373,7 @@ export class GRPCGemmaEmbeddingClient {
         norm,
         embedding.model_version,
         embedding.processing_time,
-        embedding.confidence_score
+        embedding.confidence_score,
       ]);
     } finally {
       client.release();
@@ -327,9 +382,7 @@ export class GRPCGemmaEmbeddingClient {
   /**
    * Optimized PostgreSQL batch insertion with JSONB compression
    */
-  private async optimizedPostgreSQLInsertion(
-    embeddings: EmbeddingResponse[];
-  ): Promise<PostgreSQLBatchResult> {
+  private async optimizedPostgreSQLInsertion(embeddings: EmbeddingResponse[]): Promise<PostgreSQLBatchResult> {
     const startTime = performance.now();
     const client = await this.db.connect();
     try {
@@ -351,9 +404,9 @@ export class GRPCGemmaEmbeddingClient {
         const confidenceScores: number[] = [];
         batch.forEach(embedding => {
           documentIds.push(embedding.document_id);
-          metadataJsons.push(JSON.stringify(embedding.metadata);
+          metadataJsons.push(JSON.stringify(embedding.metadata));
           embeddingVectors.push(`[${embedding.embedding.join(',')}]`);
-          norms.push(this.calculateVectorNorm(embedding.embedding);
+          norms.push(this.calculateVectorNorm(embedding.embedding));
           modelVersions.push(embedding.model_version);
           processingTimes.push(embedding.processing_time);
           confidenceScores.push(embedding.confidence_score);
@@ -365,8 +418,8 @@ export class GRPCGemmaEmbeddingClient {
             model_version, processing_time, confidence_score, created_at
           )
           SELECT * FROM UNNEST(
-            $1::text[], $2::jsonb[], $3::vector[], $4:: float8[]
-            $5::text[], $6::float8[], $7:: float8[]
+            $1::text[], $2::jsonb[], $3::vector[], $4::float8[],
+            $5::text[], $6::float8[], $7::float8[],
             array_fill(NOW(), ARRAY[${batch.length}])
           ) AS t(document_id, document_metadata, gemma_embedding, embedding_norm,
                   model_version, processing_time, confidence_score, created_at)
@@ -387,7 +440,7 @@ export class GRPCGemmaEmbeddingClient {
           norms,
           modelVersions,
           processingTimes,
-          confidenceScores
+          confidenceScores,
         ]);
         // Count insertions vs updates
         result.rows.forEach(row => {
@@ -399,17 +452,17 @@ export class GRPCGemmaEmbeddingClient {
       await client.query('COMMIT');
       const insertTime = performance.now() - startTime;
       // Calculate JSONB compression ratio
-      const originalSize = embeddings.reduce((sum, emb) =>
-        sum + JSON.stringify(emb).length, 0
-      );
+      const originalSize = embeddings.reduce((sum, emb) => sum + JSON.stringify(emb).length, 0);
       const compressedSize = originalSize * 0.7; // Estimate JSONB compression
-      console.log(`📊 PostgreSQL Batch Insert: ${insertedRows} inserted, ${updatedRows} updated in ${insertTime.toFixed(2)}ms`);
+      console.log(
+        `📊 PostgreSQL Batch Insert: ${insertedRows} inserted, ${updatedRows} updated in ${insertTime.toFixed(2)}ms`
+      );
       return {
-        inserted_rows: insertedRows
-        updated_rows: updatedRows
+        inserted_rows: insertedRows,
+        updated_rows: updatedRows,
         jsonb_compression_ratio: originalSize / compressedSize,
-        index_update_time: insertTime
-      }
+        index_update_time: insertTime,
+      };
     } catch (error) {
       await client.query('ROLLBACK');
       throw error;
@@ -419,8 +472,7 @@ export class GRPCGemmaEmbeddingClient {
   }
   /**
    * Calculate vector L2 norm
-   */;
-  private calculateVectorNorm(vector: number[]): number {
+   */ private calculateVectorNorm(vector: number[]): number {
     const sum = vector.reduce((acc, val) => acc + val * val, 0);
     return Math.sqrt(sum);
   }
@@ -428,27 +480,26 @@ export class GRPCGemmaEmbeddingClient {
    * Calculate batch statistics
    */
   private calculateBatchStatistics(
-    requests: EmbeddingRequest[]
-    responses: EmbeddingResponse[]
-    batchTime: number;
+    requests: EmbeddingRequest[],
+    responses: EmbeddingResponse[],
+    batchTime: number
   ): BatchStatistics {
-    const successful = responses.filter(item => item.length);
+    const successful = responses.filter(r => r.status.code === 0).length;
     const failed = responses.length - successful;
     const avgProcessingTime = responses.reduce((sum, r) => sum + r.processing_time, 0) / responses.length;
     const throughput = responses.length / (batchTime / 1000);
     return {
       total_requests: requests.length,
-      successful_embeddings: successful
-      failed_embeddings: failed
-      avg_processing_time: avgProcessingTime
-      total_batch_time: batchTime
-      throughput_per_second: throughput
-    }
+      successful_embeddings: successful,
+      failed_embeddings: failed,
+      avg_processing_time: avgProcessingTime,
+      total_batch_time: batchTime,
+      throughput_per_second: throughput,
+    };
   }
   /**
    * Update performance metrics
-   */;
-  private updateMetrics(success: boolean, latency: number): void {
+   */ private updateMetrics(success: boolean, latency: number): void {
     this.metrics.totalRequests++;
     if (success) {
       this.metrics.successfulRequests++;
@@ -456,38 +507,41 @@ export class GRPCGemmaEmbeddingClient {
       this.metrics.failedRequests++;
     }
     // Update rolling average latency
-    this.metrics.avgLatency = (this.metrics.avgLatency * (this.metrics.totalRequests - 1) + latency) / this.metrics.totalRequests;
+    this.metrics.avgLatency =
+      (this.metrics.avgLatency * (this.metrics.totalRequests - 1) + latency) / this.metrics.totalRequests;
     // Calculate throughput (requests per second)
     this.metrics.throughput = this.metrics.successfulRequests / (this.metrics.avgLatency / 1000);
   }
   /**
    * Get client performance metrics
-   */;
-  getMetrics(): any {
+   */ getMetrics(): any {
     return {
       ...this.metrics,
       successRate: this.metrics.successfulRequests / this.metrics.totalRequests,
       connectionPoolSize: this.connectionPool.length,
-      circuitBreakerState: this.circuitBreaker.getState()
-    }
+      circuitBreakerState: this.circuitBreaker.getState(),
+    };
   }
   /**
    * Health check for gRPC service
-   */;
-  async healthCheck(): Promise<boolean> {
+   */ async healthCheck(): Promise<boolean> {
     try {
       const healthRequest = {
-        service: 'GemmaEmbeddingService'
-      }
-      return new Promise((resolve) => {
-        this.client.Check(healthRequest, { deadline: Date.now() + 5000 }, (error: any, response: any) => {
-          if (error) {
-            console.warn('gRPC health check failed:', error);
-            resolve(false);
-          } else {
-            resolve(response.status === 'SERVING');
+        service: 'GemmaEmbeddingService',
+      };
+      return new Promise(resolve => {
+        this.client.Check(
+          healthRequest,
+          { deadline: Date.now() + 5000 },
+          (error: grpc.ServiceError | null, response: { status?: string } | undefined) => {
+            if (error) {
+              console.warn('gRPC health check failed:', error);
+              resolve(false);
+              return;
+            }
+            resolve(response?.status === 'SERVING');
           }
-        });
+        );
       });
     } catch (error) {
       console.warn('gRPC health check error:', error);
@@ -496,14 +550,13 @@ export class GRPCGemmaEmbeddingClient {
   }
   /**
    * Cleanup resources
-   */;
-  async cleanup(): Promise<void> {
+   */ async cleanup(): Promise<void> {
     // Close gRPC client
     this.client.close();
     // Close database connections
     await this.db.end();
-    // Close Redis connection
-    this.redis.disconnect();
+    // Close Redis connection (Redis has quit())
+    await this.redis.quit();
     console.log('🧹 gRPC Gemma Embedding Client cleanup completed');
   }
 }
@@ -517,7 +570,7 @@ class CircuitBreaker {
   private config: {
     failureThreshold: number;
     recoveryTimeout: number;
-  }
+  };
   constructor(config: { failureThreshold: number; recoveryTimeout: number }) {
     this.config = config;
   }
@@ -549,13 +602,14 @@ class CircuitBreaker {
     return this.state;
   }
 }
+
 export {
   GRPCGemmaEmbeddingClient,
-  EmbeddingRequest,
-  EmbeddingResponse,
-  BatchEmbeddingRequest,
-  BatchEmbeddingResponse,
-  EmbeddingOptions,
-  BatchOptions,
-  PostgreSQLBatchResult
-}
+  type EmbeddingRequest,
+  type EmbeddingResponse,
+  type BatchEmbeddingRequest,
+  type BatchEmbeddingResponse,
+  type EmbeddingOptions,
+  type BatchOptions,
+  type PostgreSQLBatchResult,
+};
