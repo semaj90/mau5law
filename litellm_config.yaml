@@ -15,7 +15,7 @@ model_list:
 
   - model_name: claude-3-5-sonnet-20240620
     litellm_params:
-      model: ollama/gemma3-legal-optimized
+      model: ollama/gemma3-legal:latest
       api_base: http://localhost:11434
       num_gpu: 30
       flash_attention: true
@@ -23,7 +23,7 @@ model_list:
   # Explicitly define local Ollama models for direct use
   - model_name: gemma3:legal-latest
     litellm_params:
-      model: ollama/gemma3-legal-optimized
+      model: ollama/gemma3-legal:latest
       api_base: http://localhost:11434
       num_gpu: 30
       flash_attention: true

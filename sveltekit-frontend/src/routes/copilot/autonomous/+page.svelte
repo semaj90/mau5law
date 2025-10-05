@@ -4,7 +4,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits'; // use default export for Button component
+  import { Button } from '$lib/components/ui/enhanced-bits'; // use default export for Button component
   import { Badge } from '$lib/components/ui/badge';
   import {
     Bot,
@@ -21,7 +21,9 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     Activity,
     Workflow
   } from 'lucide-svelte';
-  import AutonomousEngineeringDemo from '$lib/components/copilot/AutonomousEngineeringDemo.svelte';
+  import AutonomousEngineeringDemo_ from '$lib/components/copilot/AutonomousEngineeringDemo.svelte';
+  // Workaround for Svelte 5 component type inference issues
+  const AutonomousEngineeringDemo = AutonomousEngineeringDemo_ as any;
 
   // System status state
   let systemStatus = $state({
@@ -49,14 +51,13 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
       const response = await fetch('/api/system/status');
       if (response.ok) {
         const data = await response.json();
-        systemStatus.set({
-          copilotIntegration: data.status === 'operational',
-          semanticSearch: data.services?.semanticSearch || false,
-          memoryMCP: data.services?.memoryMCP || false,
-          multiAgent: data.services?.multiAgent || false,
-          autonomousEngineering: data.services?.autonomousEngineering || false,
-          serviceWorkers: data.services?.serviceWorkers || false
-        });
+        // Directly assign to state properties instead of using .set()
+        systemStatus.copilotIntegration = data.status === 'operational';
+        systemStatus.semanticSearch = data.services?.semanticSearch || false;
+        systemStatus.memoryMCP = data.services?.memoryMCP || false;
+        systemStatus.multiAgent = data.services?.multiAgent || false;
+        systemStatus.autonomousEngineering = data.services?.autonomousEngineering || false;
+        systemStatus.serviceWorkers = data.services?.serviceWorkers || false;
       }
     } catch (error) {
       console.error('Failed to check system status:', error);
@@ -75,40 +76,41 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   };
 
   // const architectureFeatures = [ ... ]  // replaced to avoid capturing initial systemStatus
-  const architectureFeatures: ArchitectureFeature[] = $derived(systemStatus, ($systemStatus) => [
+  // $derived takes a single callback function. Access systemStatus directly within the callback.
+  const architectureFeatures: ArchitectureFeature[] = $derived(() => [
     {
       name: 'Semantic Search',
       icon: Search,
       description: 'Intelligent code and documentation search with context awareness',
-      status: $systemStatus.semanticSearch,
+      status: systemStatus.semanticSearch, // Access directly
       capabilities: ['Code pattern matching', 'Documentation retrieval', 'Context-aware suggestions']
     },
     {
       name: 'Memory MCP',
       icon: Database,
       description: 'Persistent memory and context management across sessions',
-      status: $systemStatus.memoryMCP,
+      status: systemStatus.memoryMCP, // Access directly
       capabilities: ['Session memory', 'Context graphs', 'Historical insights']
     },
     {
       name: 'Multi-Agent AI',
       icon: Users,
       description: 'AutoGen and CrewAI orchestration for complex problem-solving',
-      status: $systemStatus.multiAgent,
+      status: systemStatus.multiAgent, // Access directly
       capabilities: ['Conversational agents', 'Task-based crews', 'Expert coordination']
     },
     {
       name: 'Autonomous Engineering',
       icon: Cog,
       description: 'Self-directed problem analysis and solution generation',
-      status: $systemStatus.autonomousEngineering,
+      status: systemStatus.autonomousEngineering, // Access directly
       capabilities: ['Problem diagnosis', 'Solution planning', 'Execution strategies']
     },
     {
       name: 'Service Workers',
       icon: Zap,
       description: 'Multi-threaded AI processing for parallel execution',
-      status: $systemStatus.serviceWorkers,
+      status: systemStatus.serviceWorkers, // Access directly
       capabilities: ['Parallel processing', 'Load balancing', 'Real-time monitoring']
     }
   ]);
@@ -244,12 +246,13 @@ export function activate(context: vscode.ExtensionContext) {
 
               <div class={"w-2 h-2 rounded-full " + (feature.status ? 'bg-green-500' : 'bg-red-500')}></div>
               <div class={"w-2 h-2 rounded-full " + (feature.status ? 'bg-green-500' : 'bg-red-500')}></div>
+            </div> <!-- Added missing closing div for the flex container -->
             <h3 class="font-semibold text-sm mb-1">{feature.name}</h3>
             <p class="text-xs text-gray-600 dark:text-gray-400">
               {feature.status ? 'Operational' : 'Offline'}
             </p>
-          </div>
-        </div>
+          </div> <!-- Added missing closing div for yorha-panel-content -->
+        </div> <!-- Added missing closing div for nes-container -->
       {/each}
     </div>
 
@@ -278,8 +281,9 @@ export function activate(context: vscode.ExtensionContext) {
               <div class="border rounded-lg p-4">
                 <div class="flex items-center gap-3 mb-3">
                   <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                    {@const Icon = feature.icon}
-                    <Icon class="h-5 w-5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+                    <!-- Fix: Use svelte:component directly instead of {@const} -->
+                    <!-- dynamic component using svelte:component -->
+                    <svelte:component this={feature.icon} class="h-5 w-5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
                     <span class="sr-only">{feature.name} {feature.status ? 'online' : 'offline'}</span>
                   </div>
                   <div>
@@ -366,8 +370,7 @@ export function activate(context: vscode.ExtensionContext) {
               <div class="flex items-center gap-3 mb-3">
                 <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                   <!-- dynamic component using svelte:component -->
-                  {@const Icon = useCase.icon}
-                  <Icon class="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
+                  <svelte:component this={useCase.icon} class="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
                   <span class="sr-only">{useCase.title}</span>
                 </div>
                 <h3 class="font-semibold">{useCase.title}</h3>

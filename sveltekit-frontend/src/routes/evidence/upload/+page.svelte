@@ -177,7 +177,7 @@
     <div class="nes-field" style="margin: 15px 0;">
       <label for="evidence_type">🗂️ Evidence Type</label>
       <div class="nes-select">
-        <select id="evidence_type" name="evidence_type" disabled={$submitting} bind:value={$form.evidence_type} on:change={onEvidenceTypeChange}>
+        <select id="evidence_type" name="evidence_type" disabled={$submitting} bind:value={$form.evidence_type} onchange={onEvidenceTypeChange}>
           <option value="UNKNOWN">🔍 Auto-detect from file</option>
           <option value="PDF">📄 PDF Document</option>
           <option value="IMAGE">🖼️ Image/Photo</option>
@@ -199,9 +199,9 @@
         <div
           class={`nes-container ${dragOver ? 'is-success' : ''} ${hasError('file') ? 'is-error' : ''}`}
           style="padding: 30px; text-align: center; cursor: pointer;"
-          on:dragover={onDragOver}
-          on:dragleave={onDragLeave}
-          on:drop={onDrop}
+          ondragover={onDragOver}
+          ondragleave={onDragLeave}
+          ondrop={onDrop}
           role="region"
           aria-label="Drop zone"
           title="Drop a file here or click to browse"
@@ -221,14 +221,14 @@
                 <p style="font-weight:600;margin:0">{selectedFile.name}</p>
                 <p style="color:#6b7280;margin:0;font-size:0.9rem;">{formatFileSize(selectedFile.size)} • {selectedFile.type}</p>
               </div>
-              <button type="button" on:click={() => { selectedFile = null; filePreview = null; metadata = null; }} class="nes-btn is-error" title="Remove uploaded file">Remove file</button>
+              <button type="button" onclick={() => { selectedFile = null; filePreview = null; metadata = null; }} class="nes-btn is-error" title="Remove uploaded file">Remove file</button>
             </div>
           {:else}
             <div class="space-y-4">
               <svg class="mx-auto" width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor">
                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <p class="text-gray-600">Drag and drop your file here, or <label for="file" style="color:#00a0ff;cursor:pointer">click to browse<input id="file" name="file" type="file" class="sr-only" on:change={onFileChange} disabled={$submitting} /></label></p>
+              <p class="text-gray-600">Drag and drop your file here, or <label for="file" style="color:#00a0ff;cursor:pointer">click to browse<input id="file" name="file" type="file" class="sr-only" onchange={onFileChange} disabled={$submitting} /></label></p>
               <p style="font-size:0.85rem;color:#6b7280;margin:0;">Maximum file size: 100MB</p>
             </div>
           {/if}
@@ -262,7 +262,7 @@
     {/if}
 
     <div style="text-align: center; margin: 20px 0;">
-      <button type="button" on:click={() => history.back()} disabled={$submitting} class="nes-btn">← Cancel</button>
+      <button type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn">← Cancel</button>
       <button
         type="submit"
         disabled={$submitting || ($form.evidence_type !== 'LINK' && !selectedFile) || !$form.case_id || !$form.title}
