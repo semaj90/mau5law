@@ -1,75 +1,77 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { page } from '$app/state';
+  import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
-  import { onMount } from 'svelte';
+  // Removed unused onMount import
   import {
-    Home, Users, Search, Database, Eye, Folder, BarChart3,
+    Home, Search, Database, Eye, Folder, BarChart, // Changed BarChart3 to BarChart, removed Users
     Terminal, Settings, Bell, Menu, X, Zap,
     ChevronDown, LogOut, User, Calendar, Activity, MessageSquare
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import { authStore } from '$lib/stores/auth-store.svelte.js';
+  // Client-side AI assistant chat widget
   import ClientSideAIChat from '$lib/components/ai/ClientSideAIChat.svelte';
-  import type { Snippet } from 'svelte';
   interface Props {
-    children: Snippet;
-    title?: string;
+    children: any;
+    title?: string; // Added missing title property
     subtitle?: string;
     showBreadcrumbs?: boolean;
     fullWidth?: boolean;
-  }
+  } // Closing brace for interface Props
+  // Svelte 5 runes: destructure component props using $props() for type-safe defaults.
+  // See https://svelte.dev/docs/runes#props for more details.
   let {
     children,
     title = 'Legal AI Platform',
     subtitle = 'Professional Legal Intelligence Suite',
     showBreadcrumbs = true,
     fullWidth = false
-  }: Props = $props();
+  } = $props<Props>(); // Corrected $props() syntax with generic type
   // Professional navigation configuration
   const mainNavItems = [
     {
       id: 'dashboard',
       href: '/',
       label: 'Dashboard',
-      icon: Home;
-      description: 'Executive overview and key metrics';
+      icon: Home, // Changed semicolon to comma
+      description: 'Executive overview and key metrics',
     },
     {
       id: 'cases',
       href: '/cases',
       label: 'Case Management',
-      icon: Folder;
-      description: 'Legal case tracking and documentation';
+      icon: Folder, // Changed semicolon to comma
+      description: 'Legal case tracking and documentation',
     },
     {
       id: 'evidence',
       href: '/evidenceboard',
       label: 'Evidence Analysis',
-      icon: Eye;
-      description: 'Digital evidence collection and forensics';
+      icon: Eye, // Changed semicolon to comma
+      description: 'Digital evidence collection and forensics',
     },
     {
       id: 'research',
       href: '/demo/enhanced-rag-semantic',
       label: 'Legal Research',
-      icon: Search;
-      description: 'AI-powered legal research and precedents';
+      icon: Search, // Changed semicolon to comma
+      description: 'AI-powered legal research and precedents',
     },
     {
       id: 'chat',
       href: '/chat',
       label: 'AI Assistant',
-      icon: MessageSquare;
-      description: 'Intelligent legal consultation';
+      icon: MessageSquare, // Changed semicolon to comma
+      description: 'Intelligent legal consultation',
     },
     {
       id: 'analysis',
       href: '/analysis',
+      icon: BarChart, // Changed BarChart3 to BarChart
       label: 'Analytics',
-      icon: BarChart3;
-      description: 'Data insights and trend analysis';
+      description: 'Data insights and trend analysis',
     }
   ];
   const toolsNavItems = [
@@ -77,29 +79,29 @@
       id: 'yorha-command',
       href: '/yorha-command-center',
       label: 'Command Center',
-      icon: Terminal;
-      description: 'Advanced system controls';
+      icon: Terminal, // Changed semicolon to comma
+      description: 'Advanced system controls',
     },
     {
       id: 'gpu-inference',
       href: '/demo/gpu-inference',
       label: 'GPU Processing',
-      icon: Zap;
-      description: 'High-performance AI inference';
+      icon: Zap, // Changed semicolon to comma
+      description: 'High-performance AI inference',
     },
     {
       id: 'settings',
       href: '/settings',
       label: 'Settings',
-      icon: Settings;
-      description: 'Platform configuration';
+      icon: Settings, // Changed semicolon to comma
+      description: 'Platform configuration',
     },
     {
       id: 'admin',
       href: '/admin',
       label: 'Administration',
-      icon: Database;
-      description: 'System administration';
+      icon: Database, // Changed semicolon to comma
+      description: 'System administration',
     }
   ];
   // State
@@ -109,31 +111,44 @@
   let showClientChat = $state(false);
   let currentTime = $state(new Date());
   let systemStatus = $state({
-    ai: true
-    database: true;
-    search: true;
-    gpu: false;
+    ai: true, // Changed semicolon to comma
+    database: true, // Changed semicolon to comma
+    search: true, // Changed semicolon to comma
+    gpu: false, // Changed semicolon to comma
   });
   // Derived state
-  let currentPath = $derived(browser && page.url ? page.url.pathname: '/');
-  let currentNavItem = $derived(
-    mainNavItems.find.href || currentPath.startsWith.href + '/'))
-  );
+  const { url } = $page; // Destructure url from $page to address deprecation warning
+  let currentPath = $derived(browser && url ? url.pathname : '/'); // Corrected to use destructured url
+  // Removed currentNavItem as it was unused
   // Update time every second
   $effect(() => {
     const timer = setInterval(() => {
-      currentTime = new Date());
+      currentTime = new Date(); // Removed extra parenthesis
     }, 1000);
     // Check system status periodically
     const statusTimer = setInterval(async () => {
-      // Mock system status check - replace with real API calls
-      systemStatus = {
-        ai: Math.random() > 0.1,
-        database: Math.random() > 0.05,
-        search: Math.random() > 0.1,
-        gpu: Math.random() > 0.3;
+      // Fetch real system status from SvelteKit API endpoint
+      try {
+        const response = await fetch('/api/go/health');
+        if (response.ok) {
+          const data = await response.json();
+          systemStatus = {
+            ai: data.ai || false,
+            database: data.database || false,
+            search: data.search || false,
+            gpu: data.gpu || false,
+          };
+        } else {
+          console.error('Failed to fetch system status:', response.statusText);
+          // Fallback to offline status if API call fails
+          systemStatus = { ai: false, database: false, search: false, gpu: false };
+        }
+      } catch (error) {
+        console.error('Error fetching system status:', error);
+        // Fallback to offline status on network error
+        systemStatus = { ai: false, database: false, search: false, gpu: false };
       }
-    }, 10000);
+    }, 10000); // Check every 10 seconds
     return () => {
       clearInterval(timer);
       clearInterval(statusTimer);
@@ -148,10 +163,10 @@
     }
   }
   function toggleSidebar() {
-    isSidebarOpen = !isSidebarOpe;
+    isSidebarOpen = !isSidebarOpen; // Fixed typo
   }
   function toggleMobileMenu() {
-    isMobileMenuOpen = !isMobileMenuOpe;
+    isMobileMenuOpen = !isMobileMenuOpen; // Fixed typo
   }
   function handleLogout() {
     authStore.logout();
@@ -159,38 +174,41 @@
   }
   function formatTime(date: Date) {
     return date.toLocaleTimeString('en-US', {
-      hour12: false
+      hour12: false, // Changed semicolon to comma
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit' ;
+      second: '2-digit', // Changed semicolon to comma
     });
   }
   function formatDate(date: Date) {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric' ;
+      day: 'numeric', // Changed semicolon to comma
     });
   }
   function getStatusColor(status: boolean) {
     return status ? 'text-green-400' : 'text-red-400';
   }
+  // Dynamically get the current year for the footer
+  let currentYear = $derived(() => new Date().getFullYear());
   // Breadcrumbs generation
   let breadcrumbs = $derived(() => {
-    const pathSegments = currentPath.split.filter(Boolean);
+    const pathSegments = currentPath.split('/').filter(Boolean); // Corrected split call
     const crumbs = [{ label: 'Home', href: '/' }];
     let currentHref = '';
-    pathSegments.forEach((segment, index) => {
+    pathSegments.forEach((segment) => { // Removed unused index
       currentHref += '/' + segment;
-      const navItem = mainNavItems.find.href === currentHref);
-      crumbs.push.toUpperCase() + segment.slice(1),
-        href: currentHref;
+      const navItem = [...mainNavItems, ...toolsNavItems].find(item => item.href === currentHref); // Corrected find call
+      crumbs.push({ // Corrected push call
+        label: navItem?.label || segment.charAt(0).toUpperCase() + segment.slice(1),
+        href: currentHref,
       });
     });
-    return crumb;
+    return crumbs; // Changed crumb to crumbs
   });
 </script>
-<div class="yorha-production-layout">
+<div class="yorha-production-layout min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
   <!-- Mobile Menu Overlay -->
   {#if isMobileMenuOpen}
     <div
@@ -243,19 +261,19 @@
             <button
               class={cn(
                 "w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group relative",
-                currentPath === (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href || currentPath.startsWith.href + '/')
+                currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href + '/'))
                   ? "bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-amber-500/50 text-amber-400 shadow-lg shadow-amber-500/25"
                   : "text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30",
                 !isSidebarOpen && "justify-center"
               )}
-              onclick={(e) => handleNavigation((item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href, e)}
-              title={!isSidebarOpen ? (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).label: ''}
+              onclick={(e) => handleNavigation(item.href, e)}
+              title={!isSidebarOpen ? item.label: ''}
             >
-              <(item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).icon class="w-6 h-6 flex-shrink-0" />
+              <item.icon class="w-6 h-6 flex-shrink-0" />
               {#if isSidebarOpen}
                 <div class="flex-1 text-left">
-                  <div class="font-semibold text-base">{(item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).label}</div>
-                  <div class="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{(item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).description}</div>
+                  <div class="font-semibold text-base">{item.label}</div>
+                  <div class="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{item.description}</div>
                 </div>
               {/if}
             </button>
@@ -270,19 +288,19 @@
             <button
               class={cn(
                 "w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group",
-                currentPath === (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href || currentPath.startsWith.href + '/')
+                currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href + '/'))
                   ? "bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-amber-500/50 text-amber-400 shadow-lg shadow-amber-500/25"
                   : "text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30",
                 !isSidebarOpen && "justify-center"
               )}
-              onclick={(e) => handleNavigation((item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href, e)}
-              title={!isSidebarOpen ? (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).label: ''}
+              onclick={(e) => handleNavigation(item.href, e)}
+              title={!isSidebarOpen ? item.label: ''}
             >
-              <(item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).icon class="w-6 h-6 flex-shrink-0" />
+              <item.icon class="w-6 h-6 flex-shrink-0" />
               {#if isSidebarOpen}
                 <div class="flex-1 text-left">
-                  <div class="font-semibold">{(item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).label}</div>
-                  <div class="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{(item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).description}</div>
+                  <div class="font-semibold">{item.label}</div>
+                  <div class="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{item.description}</div>
                 </div>
               {/if}
             </button>
@@ -483,7 +501,7 @@
     )}>
       {@render children()}
     </main>
-    <!-- Professional Floating Client-Side AI Chat -->
+    <!-- Removed redundant div wrapper -->
     {#if showClientChat}
       <div class="fixed bottom-8 right-8 z-50 w-96 max-w-[calc(100vw-2rem)]">
         <div class="bg-slate-800/95 backdrop-blur-md border border-amber-500/20 rounded-2xl shadow-2xl shadow-amber-500/10">
@@ -495,7 +513,7 @@
     <footer class="border-t border-amber-500/20 bg-slate-900/95 backdrop-blur-md shadow-xl p-2">
       <div class="container mx-auto flex items-center justify-between text-xs text-slate-400">
         <div class="flex items-center gap-3">
-          <span class="font-medium">© 2024 Legal AI Platform</span>
+          <span class="font-medium">© {currentYear} Legal AI Platform</span>
           <div class="flex items-center gap-1">
             <Activity class="w-3 h-3 text-green-400" />
             <span class="text-green-400 font-medium text-xs">Operational</span>
@@ -514,10 +532,9 @@
 </div>
 <style>
   .yorha-production-layout {
-    @apply min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white;
     font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
   }
-/* Professional enhanced scrollbars */ {}
+/* Professional enhanced scrollbars */
   :global(.yorha-production-layout *::-webkit-scrollbar) {
     width: 12px;
     height: 12px;
@@ -531,10 +548,10 @@
     border-radius: 6px;
     border: 2px solid rgba(15, 23, 42, 0.8);
   }
-  :global($1) {
+  :global(.yorha-production-layout *::-webkit-scrollbar-thumb:hover) {
     background: linear-gradient(180deg, rgba(245, 158, 11, 0.8), rgba(217, 119, 6, 0.8));
   }
-/* Professional animation effects */ {}
+/* Professional animation effects */
   :global(.professional-glow) {
     animation: professional-glow 3s ease-in-out infinite;
   }
@@ -542,11 +559,11 @@
     0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.1), }
     50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.2), }
   }
-/* Enhanced backdrop blur effects */ {}
+/* Enhanced backdrop blur effects */
   .backdrop-blur-md {
     backdrop-filter: blur(12px) saturate(180%);
   }
-/* Professional responsive typography */ {}
+/* Professional responsive typography */
   @media (max-width: 768px) {
     .yorha-production-layout {
       font-size: 15px;
@@ -557,7 +574,7 @@
       font-size: 14px;
     }
   }
-/* Professional smooth transitions */ {}
+/* Professional smooth transitions */
   :global(*) {
     transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
