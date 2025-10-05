@@ -14,7 +14,9 @@
   const overrides = getBitsOverrides();
 
   if (overrides && overrides.Dialog) {
-    DialogRoot = overrides.Dialog.Root ?? overrides.Dialog;
+    // Cast overrides.Dialog to any to safely access .Root
+    const dialogOverride = overrides.Dialog as any;
+    DialogRoot = dialogOverride.Root ?? dialogOverride;
     isLoading = false;
   } else if (browser) {
     // Only attempt dynamic import in browser
@@ -51,8 +53,29 @@
   {:else}
     <!-- SvelteKit 2 Fallback: simple dialog markup for SSR/browser compatibility -->
     {#if open}
-      <div class="fallback-dialog-overlay" onclick={() => handleOpenChange(false)} role="presentation">
-        <div class="fallback-dialog" onclick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+      <div
+        class="fallback-dialog-overlay"
+        onclick={() => handleOpenChange(false)}
+        onkeydown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            handleOpenChange(false);
+          }
+        }}
+        tabindex="0"
+        role="button"
+      >
+        <div
+          class="fallback-dialog"
+          onclick={(e) => e.stopPropagation()}
+          onkeydown={(e) => {
+            if (e.key === 'Escape') {
+              handleOpenChange(false);
+            }
+          }}
+          role="dialog"
+          aria-modal="true"
+          tabindex="-1"
+        >
           {@render children?.()}
         </div>
       </div>

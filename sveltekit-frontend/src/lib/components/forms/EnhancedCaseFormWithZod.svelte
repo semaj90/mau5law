@@ -17,7 +17,8 @@ https://svelte.dev/e/js_parse_error -->
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Checkbox } from '$lib/components/ui/checkbox';
-  import * as Card from '$lib/components/ui/card';
+  // Import Card component constructors (named exports — module has no default export)
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
   // Removed broken select module import. Using native <select> instead.
   import {
     AlertCircle,
@@ -68,15 +69,53 @@ https://svelte.dev/e/js_parse_error -->
     onSuccess: (result) => {
       if (onsuccess) onsuccess({ caseItem: result });
     },
-    onError: (error) => {
-      if (onerror) onerror({ message: error });
-      componentError = new Error(error);
+    // Replace onError to normalize unknown -> string
+    onError: (error: unknown) => {
+      const message = formatError(error);
+      if (onerror) onerror({ message });
+      componentError = new Error(message);
     }
   });
   const { form: rawForm, errors, enhance: formEnhance, submitting, message, delayed } = formIntegration.form;
   const form = rawForm as unknown as Writable<CaseForm>;
-  // include additional keys from the form object and fix typo
-  const { isValid, isSubmitting, progress } = formIntegration.form;
+  // SuperForm may not expose isValid/isSubmitting/progress — derive locals instead
+  // replace the invalid destructure:
+  // const { isValid, isSubmitting, progress } = formIntegration.form;
+
+  // local reactive values (Svelte 5 runes) — not Svelte stores
+  let isValid = $state(true);
+  let progress = $state(0);
+
+  // keep validation in sync: consider the real-time validation status and errors
+  $effect(() => {
+    // if real-time validation is enabled use validationStatus
+    if (enableRealTimeValidation) {
+      isValid = validationStatus === 'valid';
+    } else {
+      // fallback: treat as valid when there are no reported errors
+      isValid = Object.keys($errors || {}).length === 0;
+    }
+  });
+
+  // animate a simple progress indicator while submitting
+  $effect(() => {
+    if ($submitting) {
+      // start a lightweight progress animation
+      progress = 5;
+      const iv = setInterval(() => {
+        if (progress < 90) progress = Math.min(90, progress + Math.random() * 12);
+      }, 300);
+      return () => clearInterval(iv);
+    } else {
+      // when submission ends, show completion briefly then reset
+      if (progress > 0) {
+        const to = setTimeout(() => {
+          progress = 0;
+        }, 600);
+        return () => clearTimeout(to);
+      }
+    }
+  });
   // Local state using Svelte 5 runes
   let showAdvanced = $state(false);
   let uploadedFiles = $state<File[]>([]);
@@ -154,13 +193,53 @@ https://svelte.dev/e/js_parse_error -->
             lastSaved = null;
           }
         } else {
-          const errorMsg = result?.error?.message || 'Submission failed';
+          // Safely construct an error message by narrowing on the discriminant 'type'
+          let errorMsg = 'Submission failed';
+          if (result?.type === 'error') {
+            // result is narrowed to { type: 'error'; error: any }
+            const err = result.error;
+            errorMsg = err?.message ?? String(err) ?? errorMsg;
+          } else if (result?.type === 'failure') {
+            // result is narrowed to { type: 'failure'; data?: Record<string, unknown> }
+            const data = result.data;
+            // Prefer a 'message' property in data, otherwise stringify the payload
+            if (data && typeof data === 'object' && 'message' in data) {
+              // @ts-ignore - runtime check above ensures access is safe
+              errorMsg = (data as any).message ?? JSON.stringify(data) ?? errorMsg;
+            } else {
+              errorMsg = JSON.stringify(data) ?? errorMsg;
+            }
+          } else if (result?.type === 'redirect') {
+            // result is narrowed to { type: 'redirect'; location: string }
+            // Provide a helpful message when a redirect occurs
+            // @ts-ignore - access for runtime info
+            errorMsg = `Redirected to ${(result as any).location}`;
+          } else {
+            // Fallback for unknown shapes
+            try {
+              errorMsg = JSON.stringify(result) || String(result) || errorMsg;
+            } catch {
+              errorMsg = String(result) || errorMsg;
+            }
+          }
+
           if (onerror) onerror({ message: errorMsg });
           componentError = new Error(errorMsg);
         }
         await update();
       };
     });
+  }
+
+  // Add a safe error formatter for unknown values
+  function formatError(e: unknown): string {
+    if (e instanceof Error) return e.message;
+    if (typeof e === 'string') return e;
+    try {
+      return JSON.stringify(e) || String(e);
+    } catch {
+      return String(e);
+    }
   }
 </script>
 
@@ -180,12 +259,12 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
         <!-- Progress indicator -->
-        {#if $progress > 0}
+        {#if progress > 0}
           <div class="flex items-center space-x-2">
             <div class="w-20 bg-gray-200 rounded-full h-2">
-              <div class="bg-primary h-2 rounded-full transition-all duration-300" style="width: {$progress}%"></div>
+              <div class="bg-primary h-2 rounded-full transition-all duration-300" style="width: {progress}%"></div>
             </div>
-            <span class="text-sm nes-text is-disabled">{Math.round($progress)}%</span>
+            <span class="text-sm nes-text is-disabled">{Math.round(progress)}%</span>
           </div>
         {/if}
       </div>
@@ -442,7 +521,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <div class="flex items-center space-x-3">
             <Button type="button" variant="ghost">Cancel</Button>
-            <Button type="submit" disabled={$submitting || !$isValid} class="min-w-[120px]">
+            <Button type="submit" disabled={$submitting || !isValid} class="min-w-[120px]">
               {#if $submitting}
                 <Loader2 class="mr-2 h-4 w-4 animate-spin" />
                 {editMode ? 'Updating...' : 'Creating...'}

@@ -36,65 +36,65 @@ export const routeGroups: RouteGroupDefinition[] = [
       {
         id: 'legal-cases',
         label: 'Cases',
-        route: '/(legal)/cases',
+        route: '/cases',
         icon: '📁',
         description: 'Legal case management with AI analysis',
         status: 'active',
-        tags: ['legal', 'cases', 'management']
+        tags: ['legal', 'cases', 'management'],
       },
       {
         id: 'legal-evidence',
         label: 'Evidence',
-        route: '/(legal)/evidence',
+        route: '/evidence',
         icon: '🔍',
         description: 'Digital evidence processing and analysis',
         status: 'active',
-        tags: ['evidence', 'analysis', 'forensics']
+        tags: ['evidence', 'analysis', 'forensics'],
       },
       {
         id: 'legal-documents',
         label: 'Documents',
-        route: '/(legal)/documents',
+        route: '/documents',
         icon: '📄',
         description: 'Legal document management and processing',
         status: 'active',
-        tags: ['documents', 'legal', 'processing']
+        tags: ['documents', 'legal', 'processing'],
       },
       {
         id: 'legal-detective',
         label: 'Detective',
-        route: '/(legal)/detective',
+        route: '/detective',
         icon: '🔎',
         description: 'Advanced investigative analysis tools',
         status: 'active',
-        tags: ['detective', 'investigation', 'analysis']
+        tags: ['detective', 'investigation', 'analysis'],
       },
       {
         id: 'legal-research',
         label: 'Legal Research',
-        route: '/(legal)/research',
+        route: '/research',
         icon: '📚',
         description: 'Legal precedent and statute research',
         status: 'active',
-        tags: ['research', 'precedent', 'law']
+        tags: ['research', 'precedent', 'law'],
       },
       {
         id: 'legal-citations',
         label: 'Citations',
-        route: '/(legal)/citations',
+        route: '/citations',
         icon: '📝',
         description: 'Legal citation management and validation',
         status: 'active',
-        tags: ['citations', 'bluebook', 'references']
+        tags: ['citations', 'bluebook', 'references'],
       },
       {
         id: 'legal-laws',
         label: 'Laws & Statutes',
-        route: '/(legal)/laws',
+        route: '/laws',
         icon: '⚖️',
         description: 'Statute lookup and legal precedent search',
         status: 'active',
-        tags: ['statutes', 'laws', 'jurisdiction']
+        tags: ['statutes', 'laws', 'jurisdiction'],
       },
       {
         id: 'legal-evidence-board',
@@ -103,7 +103,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '📌',
         description: 'Visual evidence organization and analysis',
         status: 'active',
-        tags: ['evidence', 'canvas', 'visualization']
+        tags: ['evidence', 'canvas', 'visualization'],
       },
       {
         id: 'legal-persons-of-interest',
@@ -112,9 +112,9 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '👤',
         description: 'Person tracking and profile management',
         status: 'active',
-        tags: ['poi', 'profiles', 'tracking']
-      }
-    ]
+        tags: ['poi', 'profiles', 'tracking'],
+      },
+    ],
   },
   {
     id: 'ai',
@@ -131,7 +131,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '💬',
         description: 'AI-powered legal assistant chat interface',
         status: 'active',
-        tags: ['ai', 'chat', 'assistant']
+        tags: ['ai', 'chat', 'assistant'],
       },
       {
         id: 'ai-analysis',
@@ -140,7 +140,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🧠',
         description: 'Advanced AI document and case analysis',
         status: 'active',
-        tags: ['ai', 'analysis', 'intelligence']
+        tags: ['ai', 'analysis', 'intelligence'],
       },
       {
         id: 'ai-cuda',
@@ -149,7 +149,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '⚡',
         description: 'GPU-accelerated AI processing',
         status: 'active',
-        tags: ['cuda', 'gpu', 'streaming']
+        tags: ['cuda', 'gpu', 'streaming'],
       },
       {
         id: 'ai-rag',
@@ -158,7 +158,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🎯',
         description: 'Retrieval Augmented Generation system',
         status: 'active',
-        tags: ['rag', 'retrieval', 'generation']
+        tags: ['rag', 'retrieval', 'generation'],
       },
       {
         id: 'ai-embeddings',
@@ -167,7 +167,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🌐',
         description: 'Vector embeddings and similarity search',
         status: 'active',
-        tags: ['embeddings', 'vectors', 'search']
+        tags: ['embeddings', 'vectors', 'search'],
       },
       {
         id: 'ai-search',
@@ -176,7 +176,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🔍',
         description: 'Semantic and hybrid search capabilities',
         status: 'active',
-        tags: ['search', 'semantic', 'hybrid']
+        tags: ['search', 'semantic', 'hybrid'],
       },
       {
         id: 'ai-vector-search',
@@ -185,7 +185,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🎯',
         description: 'Advanced vector similarity search',
         status: 'active',
-        tags: ['vector', 'similarity', 'pgvector']
+        tags: ['vector', 'similarity', 'pgvector'],
       },
       {
         id: 'ai-recommendations',
@@ -194,9 +194,9 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '💡',
         description: 'AI-powered case recommendations',
         status: 'active',
-        tags: ['recommendations', 'ml', 'scoring']
-      }
-    ]
+        tags: ['recommendations', 'ml', 'scoring'],
+      },
+    ],
   },
   {
     id: 'admin',
@@ -213,7 +213,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '📊',
         description: 'System overview and metrics dashboard',
         status: 'active',
-        tags: ['dashboard', 'metrics', 'overview']
+        tags: ['dashboard', 'metrics', 'overview'],
       },
       {
         id: 'admin-health',
@@ -222,7 +222,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '💚',
         description: 'System health monitoring and diagnostics',
         status: 'active',
-        tags: ['health', 'monitoring', 'diagnostics']
+        tags: ['health', 'monitoring', 'diagnostics'],
       },
       {
         id: 'admin-users',
@@ -231,7 +231,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '👥',
         description: 'User accounts and permissions management',
         status: 'active',
-        tags: ['users', 'permissions', 'management']
+        tags: ['users', 'permissions', 'management'],
       },
       {
         id: 'admin-performance',
@@ -240,7 +240,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '⚡',
         description: 'Performance monitoring and optimization',
         status: 'active',
-        tags: ['performance', 'optimization', 'monitoring']
+        tags: ['performance', 'optimization', 'monitoring'],
       },
       {
         id: 'admin-redis',
@@ -249,7 +249,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🔴',
         description: 'Redis cache monitoring and management',
         status: 'active',
-        tags: ['redis', 'cache', 'monitoring']
+        tags: ['redis', 'cache', 'monitoring'],
       },
       {
         id: 'admin-user-analytics',
@@ -258,9 +258,9 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '📈',
         description: 'User behavior and query analytics',
         status: 'active',
-        tags: ['analytics', 'users', 'metrics']
-      }
-    ]
+        tags: ['analytics', 'users', 'metrics'],
+      },
+    ],
   },
   {
     id: 'core',
@@ -277,7 +277,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🔐',
         description: 'User login and authentication',
         status: 'active',
-        tags: ['auth', 'login', 'security']
+        tags: ['auth', 'login', 'security'],
       },
       {
         id: 'core-register',
@@ -286,7 +286,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '📝',
         description: 'New user registration',
         status: 'active',
-        tags: ['auth', 'register', 'signup']
+        tags: ['auth', 'register', 'signup'],
       },
       {
         id: 'core-profile',
@@ -295,7 +295,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '👤',
         description: 'User profile and account management',
         status: 'active',
-        tags: ['profile', 'user', 'account']
+        tags: ['profile', 'user', 'account'],
       },
       {
         id: 'core-reports',
@@ -304,7 +304,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '📊',
         description: 'System reports and analytics',
         status: 'active',
-        tags: ['reports', 'analytics', 'data']
+        tags: ['reports', 'analytics', 'data'],
       },
       {
         id: 'core-settings',
@@ -313,9 +313,9 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '⚙️',
         description: 'Application settings and preferences',
         status: 'active',
-        tags: ['settings', 'preferences', 'config']
-      }
-    ]
+        tags: ['settings', 'preferences', 'config'],
+      },
+    ],
   },
   {
     id: 'dev',
@@ -332,7 +332,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🧪',
         description: 'Automated testing and validation tools',
         status: 'active',
-        tags: ['testing', 'validation', 'qa']
+        tags: ['testing', 'validation', 'qa'],
       },
       {
         id: 'dev-examples',
@@ -341,7 +341,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '📚',
         description: 'Code examples and demonstrations',
         status: 'active',
-        tags: ['examples', 'demo', 'education']
+        tags: ['examples', 'demo', 'education'],
       },
       {
         id: 'dev-showcase',
@@ -350,7 +350,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '✨',
         description: 'Feature showcase and component gallery',
         status: 'active',
-        tags: ['showcase', 'components', 'gallery']
+        tags: ['showcase', 'components', 'gallery'],
       },
       {
         id: 'dev-metrics',
@@ -359,7 +359,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '📈',
         description: 'Development and build metrics',
         status: 'active',
-        tags: ['metrics', 'development', 'build']
+        tags: ['metrics', 'development', 'build'],
       },
       {
         id: 'dev-gpu',
@@ -368,7 +368,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🎮',
         description: 'GPU and WebGPU diagnostic tools',
         status: 'beta',
-        tags: ['gpu', 'webgpu', 'diagnostics']
+        tags: ['gpu', 'webgpu', 'diagnostics'],
       },
       {
         id: 'dev-cuda',
@@ -377,7 +377,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '⚡',
         description: 'CUDA GPU acceleration demos',
         status: 'active',
-        tags: ['cuda', 'gpu', 'streaming']
+        tags: ['cuda', 'gpu', 'streaming'],
       },
       {
         id: 'dev-webasm',
@@ -386,7 +386,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🔧',
         description: 'WebAssembly and WASM integration examples',
         status: 'active',
-        tags: ['webassembly', 'wasm', 'performance']
+        tags: ['webassembly', 'wasm', 'performance'],
       },
       {
         id: 'dev-nes-bits',
@@ -395,7 +395,7 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🎮',
         description: 'Nintendo-style UI components and demos',
         status: 'active',
-        tags: ['nes', 'retro', 'ui-components']
+        tags: ['nes', 'retro', 'ui-components'],
       },
       {
         id: 'dev-shader-cache',
@@ -404,10 +404,10 @@ export const routeGroups: RouteGroupDefinition[] = [
         icon: '🎨',
         description: 'WebGPU shader caching and optimization',
         status: 'beta',
-        tags: ['webgpu', 'shaders', 'cache']
-      }
-    ]
-  }
+        tags: ['webgpu', 'shaders', 'cache'],
+      },
+    ],
+  },
 ];
 
 // Legacy routes that need migration
@@ -418,12 +418,12 @@ export const legacyRouteMapping: Record<string, string> = {
   '/ai-chat-simple': '/(ai)/assistant',
   '/gpu-chat': '/(ai)/assistant',
   '/cuda-streaming': '/(ai)/cuda-streaming',
-  '/cases': '/(legal)/cases',
+  // '/cases': Already at correct path (route groups don't affect URLs)
   // '/evidence': Keep standalone route outside (legal) group
   '/evidence-analysis': '/evidence',
   '/evidence-workspace': '/evidence',
   '/documents': '/(legal)/documents',
-  '/legal': '/(legal)/cases',
+  // '/legal': Redirect removed - route groups don't create URL paths
   '/detective': '/(legal)/detective',
   '/detectivemode': '/(legal)/detective',
   '/investigation': '/(legal)/detective',

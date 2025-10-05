@@ -181,7 +181,7 @@ https://svelte.dev/e/attribute_duplicate -->
   </div>
   <!-- Error Display -->
   {#each $errors as error (error.id)}
-    <Alert variant="error" class="mb-4">
+    <Alert variant="destructive" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>

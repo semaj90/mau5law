@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/bits/Button.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface User {
@@ -205,6 +205,7 @@
         <!-- Main navigation -->
         <div class="space-y-1">
           {#each navigation as item}
+            {@const IconComponent = item.icon}
             <a
               href={item.href}
               class={cn(
@@ -216,8 +217,7 @@
               onclick={closeSidebar}
             >
               <div class="flex items-center">
-                <svelte:component
-                  this={item.icon}
+                <IconComponent
                   class={cn(
                     'mr-3 h-5 w-5 flex-shrink-0',
                     item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground',
@@ -246,6 +246,7 @@
           <h3 class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">Analytics</h3>
           <div class="mt-2 space-y-1">
             {#each analytics as item}
+              {@const IconComponent = item.icon}
               <a
                 href={item.href}
                 class={cn(
@@ -256,8 +257,7 @@
                 )}
                 onclick={closeSidebar}
               >
-                <svelte:component
-                  this={item.icon}
+                <IconComponent
                   class={cn(
                     'mr-3 h-5 w-5 flex-shrink-0',
                     item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground',
@@ -274,6 +274,7 @@
             <h3 class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">🛡️ Administration</h3>
             <div class="mt-2 space-y-1">
               {#each adminFeatures as item}
+                {@const IconComponent = item.icon}
                 <a
                   href={item.href}
                   class={cn(
@@ -285,8 +286,7 @@
                   onclick={closeSidebar}
                 >
                   <div class="flex items-center">
-                    <svelte:component
-                      this={item.icon}
+                    <IconComponent
                       class={cn(
                         'mr-3 h-5 w-5 flex-shrink-0',
                         item.current ? 'text-white' : 'text-console-error group-hover:text-foreground',
@@ -315,6 +315,7 @@
           <h3 class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">⚙️ System</h3>
           <div class="mt-2 space-y-1">
             {#each settings as item}
+              {@const IconComponent = item.icon}
               <a
                 href={item.href}
                 class={cn(
@@ -325,8 +326,7 @@
                 )}
                 onclick={closeSidebar}
               >
-                <svelte:component
-                  this={item.icon}
+                <IconComponent
                   class={cn(
                     'mr-3 h-5 w-5 flex-shrink-0',
                     item.current ? 'text-console-bg' : 'text-muted-foreground group-hover:text-foreground',
