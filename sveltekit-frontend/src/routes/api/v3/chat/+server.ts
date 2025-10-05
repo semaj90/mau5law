@@ -18,14 +18,19 @@ const logger = {
   error: (message: string, component: string, error?: Error, metadata?: any) =>
     console.error(`[${new Date().toLocaleTimeString()}] ERROR [${component}] ${message}`, error?.message || '', metadata ? JSON.stringify(metadata) : ''),
   withRequestId: function(requestId: string) {
+    return this.child({ requestId });
+  },
+  child: function(bindings: Record<string, any>) {
+    const parent = this;
     return {
       info: (message: string, component: string, metadata?: any) =>
-        this.info(message, component, { ...metadata, requestId }),
+        parent.info(message, component, { ...bindings, ...metadata }),
       warn: (message: string, component: string, metadata?: any) =>
-        this.warn(message, component, { ...metadata, requestId }),
+        parent.warn(message, component, { ...bindings, ...metadata }),
       error: (message: string, component: string, error?: Error, metadata?: any) =>
-        this.error(message, component, error, { ...metadata, requestId })
-    }
+        parent.error(message, component, error, { ...bindings, ...metadata }),
+      child: (newBindings: Record<string, any>) => parent.child({ ...bindings, ...newBindings })
+    };
   }
 }
 import { createHash } from 'node:crypto'
@@ -199,7 +204,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         }
         requestLogger.info(
           `Health check completed: ${status}`,
-          'chat-api-v3',)
+          'chat-api-v3',
           { duration: Date.now() - startTime, health: healthChecks }
         )
         return json(response, {
@@ -220,7 +225,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         const results = await searchSimilarChats(query, limit, 0.6)
         requestLogger.info(
           `Search completed: ${results.length} results`,
-          'chat-api-v3',)>
+          'chat-api-v3',
           { query, resultCount: results.length, duration: Date.now() - startTime }
         )
         return json({
@@ -303,12 +308,12 @@ export const POST: RequestHandler = async ({ request }) => {
         enableThinkingCapture = true,  // Enable thinking response capture
         thinkingType = 'analysis'      // Default thinking type
       } = body
-      const userMessage = message || messages?.filter(item => item.pop()?.content || ''
+      const userMessage = message || (messages && messages.length > 0 ? messages[messages.length - 1].content : '');
       // Use requestLogger directly since withConversation might not be available
-    const conversationLogger = requestLogger
+      const conversationLogger = requestLogger.child({ conversationId })
       conversationLogger.info(
         'Chat request started',
-        'chat-api-v3',)
+        'chat-api-v3',
         {
           messageLength: userMessage.length,
           model,
@@ -325,8 +330,8 @@ export const POST: RequestHandler = async ({ request }) => {
           async start(controller) {
             try {
               conversationLogger.info('Starting streaming response', 'chat-api-v3')
-              const streamGenerator = ollamaChatStream({
-                message: userMessage
+              const streamGenerator = ollamaChatStream()({
+                message: userMessage,
                 model,
                 temperature,
                 maxTokens,
@@ -349,7 +354,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     requestId,
                     timestamp: new Date().toISOString()
                   }
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`)
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`))
                 } else if (chunk.metadata?.type === 'recommendations') {
                   const recommendations = (chunk.metadata.recommendations as any) || []
                   const recommendationsChunk = {
@@ -359,7 +364,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     requestId,
                     timestamp: new Date().toISOString()
                   }
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`)
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`))
                 } else if (chunk.metadata?.type === 'text') {
                   const textChunk = {
                     type: 'text',
@@ -367,21 +372,21 @@ export const POST: RequestHandler = async ({ request }) => {
                     confidence: chunk.metadata.confidence || 0.9,
                     requestId
                   }
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`)
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`))
                 } else if (chunk.metadata?.type === 'final') {
                   const finalChunk = {
                     type: 'final',
                     conversationId,
                     requestId,
                     processingTimeMs: Date.now() - startTime,
-                    vectorSearchUsed: useVectorSearch
-                    sources
+                    vectorSearchUsed: useVectorSearch,
+                    sources,
                   }
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`)
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`))
                 }
               }
-              controller.enqueue(encoder.encode('data: [DONE]\n\n')
-              controller.close()
+              controller.enqueue(encoder.encode('data: [DONE]\n\n'))
+              controller.close();
               conversationLogger.info('Streaming completed', 'chat-api-v3', {
                 duration: Date.now() - startTime
               })
@@ -393,7 +398,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 requestId,
                 timestamp: new Date().toISOString()
               }
-              controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`)
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`))
               controller.close()
             }
           }
@@ -414,8 +419,8 @@ export const POST: RequestHandler = async ({ request }) => {
       let fullResponse = ''
       let sources: VectorSearchResult[] = []
       let vectorSearchUsed = false
-      const streamGenerator = ollamaChatStream({
-        message: userMessage
+      const streamGenerator = ollamaChatStream()({
+        message: userMessage,
         model,
         temperature,
         maxTokens,
@@ -439,7 +444,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const processingTime = Date.now() - startTime
       conversationLogger.info(
         'Chat response completed',
-        'chat-api-v3',)
+        'chat-api-v3',
         {
           responseLength: fullResponse.length,
           vectorSearchUsed,
@@ -449,14 +454,14 @@ export const POST: RequestHandler = async ({ request }) => {
       )
       const response: ChatResponse = {
         success: true,
-        response: fullResponse
+        response: fullResponse,
         conversationId,
         requestId,
-        sources: sources.length > 0 ? sources : undefined
+        sources: sources.length > 0 ? sources : undefined,
         metadata: {
           model,
           temperature,
-          processingTimeMs: processingTime
+          processingTimeMs: processingTime,
           vectorSearchUsed,
           sourcesCount: sources.length,
           requestId,
@@ -469,7 +474,7 @@ export const POST: RequestHandler = async ({ request }) => {
       requestLogger.error(
         'Chat request failed',
         'chat-api-v3',
-        error,)
+        error,
         { duration: processingTime }
       )
       return json({
@@ -477,7 +482,7 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Internal server error occurred while processing your request',
         requestId,
         metadata: {
-          processingTimeMs: processingTime
+          processingTimeMs: processingTime,
           timestamp: new Date().toISOString()
         }
       }, { status: 500 })

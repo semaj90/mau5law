@@ -46,7 +46,6 @@ litellm_settings:
     type: redis
     host: localhost
     port: 6379
-    password: redis
     ttl: 3600  # 1 hour cache
 
 general_settings:

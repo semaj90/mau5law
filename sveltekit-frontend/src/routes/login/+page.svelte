@@ -52,6 +52,12 @@
     {/if}
   </div>
   <button type="submit">Login</button>
+  <button type="button" class="demo-login" onclick={() => {
+    $form.email = 'demo@legal-ai.com';
+    $form.password = 'demo123';
+  }}>
+    🎯 Fill Demo Credentials
+  </button>
 </form>
 
 <style>
@@ -99,5 +105,12 @@
   }
   button:hover {
     background: #0056b3;
+  }
+  .demo-login {
+    background: #6c757d;
+    margin-left: 0.5rem;
+  }
+  .demo-login:hover {
+    background: #5a6268;
   }
 </style>

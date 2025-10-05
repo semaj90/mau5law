@@ -1,19 +1,31 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import type { User } from '$lib/database/schema';
-import { EventEmitter } from "events";
+
+export interface AuthSession {
+  id: string;
+  [key: string]: unknown;
 }
+
+export interface ApiResponse {
+  success: boolean;
+  user?: User;
+  session?: AuthSession;
+  error?: string;
+  requiresVerification?: boolean;
+}
+
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  session: any | null;
+  session: AuthSession | null;
   lastActivity: Date | null;
   securitySettings: {
     sessionTimeoutMinutes: number;
     requireReauth: boolean;
     enable2FA: boolean;
-  }
+  };
 }
 export interface LoginCredentials {
   email: string;
@@ -29,29 +41,31 @@ export interface RegisterData {
 }
 class EnhancedAuthStore {
   // Svelte 5 reactive state
-  private _state = browser ? $state<AuthState>({
-    user: null
-    isAuthenticated: false
-    isLoading: true
-    session: null
-    lastActivity: null
-    securitySettings: {
-      sessionTimeoutMinutes: 30,
-      requireReauth: false
-      enable2FA: false
-    }
-  }) : {
-    user: null
-    isAuthenticated: false
-    isLoading: false;
-    session: null
-    lastActivity: null
-    securitySettings: {
-      sessionTimeoutMinutes: 30,
-      requireReauth: false
-      enable2FA: false
-    }
-  }
+  private _state = browser
+    ? $state<AuthState>({
+        user: null,
+        isAuthenticated: false,
+        isLoading: true,
+        session: null,
+        lastActivity: null,
+        securitySettings: {
+          sessionTimeoutMinutes: 30,
+          requireReauth: false,
+          enable2FA: false,
+        },
+      })
+    : {
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        session: null,
+        lastActivity: null,
+        securitySettings: {
+          sessionTimeoutMinutes: 30,
+          requireReauth: false,
+          enable2FA: false,
+        },
+      };
   private _error = browser ? $state<string | null>(null) : null;
   private _sessionCheckInterval: NodeJS.Timeout | null = null;
   private _activityTimeout: NodeJS.Timeout | null = null;
@@ -103,28 +117,28 @@ class EnhancedAuthStore {
     const elapsed = Date.now() - this._state.lastActivity.getTime();
     const timeout = this._state.securitySettings.sessionTimeoutMinutes * 60 * 1000;
     const remaining = timeout - elapsed;
-    return Math.max(0, Math.floor(remaining / 1000);
+    return Math.max(0, Math.floor(remaining / 1000));
   }
   // Authentication methods
-  async login(credentials: LoginCredentials): Promise<any> {
+  async login(credentials: LoginCredentials): Promise<{ success: boolean; error?: string }> {
     this._state.isLoading = true;
     this._error = null;
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...credentials,
           ipAddress: await this.getClientIP(),
-          userAgent: navigator.userAgent
-        })
+          userAgent: navigator.userAgent,
+        }),
       });
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
-        this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
-        this._state.session = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).session;
+      const result: ApiResponse = await response.json();
+      if (response.ok && result.success) {
+        this._state.user = result.user ?? null;
+        this._state.session = result.session ?? null;
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
         // Store session info
@@ -132,54 +146,54 @@ class EnhancedAuthStore {
           localStorage.setItem('auth:rememberMe', 'true');
         }
         this.trackActivity();
-        return { success: true }
+        return { success: true };
       } else {
-        this._error = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).error || 'Login failed';
-        return { success: false, error: this._error }
+        this._error = result.error || 'Login failed';
+        return { success: false, error: this._error };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       this._error = 'Network error. Please try again.';
       console.error('Login error:', error);
-      return { success: false, error: this._error }
+      return { success: false, error: this._error };
     } finally {
       this._state.isLoading = false;
     }
   }
-  async register(data: RegisterData): Promise<any> {
+  async register(data: RegisterData): Promise<{ success: boolean; requiresVerification?: boolean; error?: string }> {
     this._state.isLoading = true;
     this._error = null;
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...data,
           ipAddress: await this.getClientIP(),
-          userAgent: navigator.userAgent
-        })
+          userAgent: navigator.userAgent,
+        }),
       });
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
-        if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).requiresVerification) {
-          return { success: true, requiresVerification: true }
+      const result: ApiResponse = await response.json();
+      if (response.ok && result.success) {
+        if (result.requiresVerification) {
+          return { success: true, requiresVerification: true };
         }
         // Auto-login after registration
-        this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
-        this._state.session = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).session;
+        this._state.user = result.user ?? null;
+        this._state.session = result.session ?? null;
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
         this.trackActivity();
-        return { success: true }
+        return { success: true };
       } else {
-        this._error = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).error || 'Registration failed';
-        return { success: false, error: this._error }
+        this._error = result.error || 'Registration failed';
+        return { success: false, error: this._error };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       this._error = 'Network error. Please try again.';
       console.error('Registration error:', error);
-      return { success: false, error: this._error }
+      return { success: false, error: this._error };
     } finally {
       this._state.isLoading = false;
     }
@@ -191,114 +205,114 @@ class EnhancedAuthStore {
         await fetch('/api/auth/logout', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({,
-            sessionId: this._state.session.id
-          })
+          body: JSON.stringify({
+            sessionId: this._state.session.id,
+          }),
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Logout error:', error);
     } finally {
       this.clearAuthState();
       await goto('/');
     }
   }
-  async verifyEmail(token: string): Promise<any> {
+  async verifyEmail(token: string): Promise<ApiResponse> {
     try {
       const response = await fetch('/api/auth/verify-email', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token })
+        body: JSON.stringify({ token }),
       });
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
-        this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
+      const result: ApiResponse = await response.json();
+      if (result.success) {
+        this._state.user = result.user ?? null;
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
       }
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Email verification error:', error);
-      return { success: false, error: 'Verification failed' }
+      return { success: false, error: 'Verification failed' };
     }
   }
-  async requestPasswordReset(email: string): Promise<any> {
+  async requestPasswordReset(email: string): Promise<{ success: boolean; error?: string }> {
     try {
       const response = await fetch('/api/auth/request-password-reset', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email }),
       });
-      return await (response as { json?: any; ok?: any }).json();
-    } catch (error: any) {
+      return await response.json();
+    } catch (error: unknown) {
       console.error('Password reset request error:', error);
-      return { success: false, error: 'Request failed' }
+      return { success: false, error: 'Request failed' };
     }
   }
-  async resetPassword(token: string, newPassword: string): Promise<any> {
+  async resetPassword(token: string, newPassword: string): Promise<ApiResponse> {
     try {
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token, newPassword })
+        body: JSON.stringify({ token, newPassword }),
       });
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
+      const result: ApiResponse = await response.json();
+      if (result.success) {
         // Clear any existing session and redirect to login
         this.clearAuthState();
       }
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Password reset error:', error);
-      return { success: false, error: 'Reset failed' }
+      return { success: false, error: 'Reset failed' };
     }
   }
-  async updateProfile(updates: Partial<User>): Promise<any> {
+  async updateProfile(updates: Partial<User>): Promise<ApiResponse> {
     if (!this._state.isAuthenticated) {
-      return { success: false, error: 'Not authenticated' }
+      return { success: false, error: 'Not authenticated' };
     }
     try {
       const response = await fetch('/api/auth/update-profile', {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updates)
+        body: JSON.stringify(updates),
       });
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
-        this._state.user = { ...this._state.user!, ...result.user }
+      const result: ApiResponse = await response.json();
+      if (result.success) {
+        this._state.user = { ...this._state.user!, ...result.user };
       }
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Profile update error:', error);
-      return { success: false, error: 'Update failed' }
+      return { success: false, error: 'Update failed' };
     }
   }
-  async changePassword(currentPassword: string, newPassword: string): Promise<any> {
+  async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
     if (!this._state.isAuthenticated) {
-      return { success: false, error: 'Not authenticated' }
+      return { success: false, error: 'Not authenticated' };
     }
     try {
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ currentPassword, newPassword })
+        body: JSON.stringify({ currentPassword, newPassword }),
       });
-      return await (response as { json?: any; ok?: any }).json();
-    } catch (error: any) {
+      return await response.json();
+    } catch (error: unknown) {
       console.error('Password change error:', error);
-      return { success: false, error: 'Password change failed' }
+      return { success: false, error: 'Password change failed' };
     }
   }
   // Security and session management
@@ -306,13 +320,13 @@ class EnhancedAuthStore {
     try {
       const response = await fetch('/api/auth/refresh', {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
       });
-      if ((response as { json?: any; ok?: any }).ok) {
-        const result = await (response as { json?: any; ok?: any }).json();
-        if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user) {
-          this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
-          this._state.session = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).session;
+      if (response.ok) {
+        const result: ApiResponse = await response.json();
+        if (result.success && result.user) {
+          this._state.user = result.user;
+          this._state.session = result.session ?? null;
           this._state.isAuthenticated = true;
           this._state.lastActivity = new Date();
           return true;
@@ -320,7 +334,7 @@ class EnhancedAuthStore {
       }
       this.clearAuthState();
       return false;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Session refresh error:', error);
       this.clearAuthState();
       return false;
@@ -337,14 +351,14 @@ class EnhancedAuthStore {
       this.handleSessionTimeout();
     }, timeoutMs);
   }
-  async getSecuritySummary(): Promise<any> {
+  async getSecuritySummary(): Promise<unknown> {
     if (!this._state.isAuthenticated) return null;
     try {
-      // removed unused response assignment
-      if ((response as { json?: any; ok?: any }).ok) {
-        return await (response as { json?: any; ok?: any }).json();
+      const response = await fetch('/api/auth/security-summary');
+      if (response.ok) {
+        return await response.json();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Security summary error:', error);
     }
     return null;
@@ -359,12 +373,12 @@ class EnhancedAuthStore {
       admin: ['*'],
       prosecutor: ['case:read', 'case:write', 'evidence:read', 'evidence:write', 'document:read', 'document:write'],
       detective: ['case:read', 'evidence:read', 'evidence:write', 'document:read'],
-      user: ['case:read', 'document:read']
-    }
+      user: ['case:read', 'document:read'],
+    };
     const userPermissions = rolePermissions[this._state.user.role as keyof typeof rolePermissions] || [];
     return userPermissions.includes('*') || userPermissions.includes(permission);
   }
-  canAccessCase(caseId: string): boolean {
+  canAccessCase(_caseId: string): boolean {
     // TODO: Implement case-specific access control
     return this.hasPermission('case:read');
   }
@@ -376,7 +390,7 @@ class EnhancedAuthStore {
       if (!isValid) {
         this.clearAuthState();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Auth initialization error:', error);
       this.clearAuthState();
     } finally {
@@ -390,7 +404,7 @@ class EnhancedAuthStore {
       if (this._state.isAuthenticated) {
         this.trackActivity();
       }
-    }
+    };
     events.forEach(event => {
       document.addEventListener(event, activityHandler, { passive: true });
     });
@@ -399,14 +413,17 @@ class EnhancedAuthStore {
     if (this._sessionCheckInterval) {
       clearInterval(this._sessionCheckInterval);
     }
-    this._sessionCheckInterval = setInterval(async () => {
-      if (this._state.isAuthenticated) {
-        const isValid = await this.refreshSession();
-        if (!isValid) {
-          this.handleSessionTimeout();
+    this._sessionCheckInterval = setInterval(
+      async () => {
+        if (this._state.isAuthenticated) {
+          const isValid = await this.refreshSession();
+          if (!isValid) {
+            this.handleSessionTimeout();
+          }
         }
-      }
-    }, 5 * 60 * 1000); // Check every 5 minutes
+      },
+      5 * 60 * 1000
+    ); // Check every 5 minutes
   }
   private handleSessionTimeout(): void {
     this.clearAuthState();
@@ -429,9 +446,9 @@ class EnhancedAuthStore {
   }
   private async getClientIP(): Promise<string> {
     try {
-      // removed unused response assignment
-      const data = await (response as { json?: any; ok?: any }).json();
-      return (data as { ip?: any }).ip || 'unknown';
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data: { ip: string } = await response.json();
+      return data.ip || 'unknown';
     } catch {
       return 'unknown';
     }

@@ -20,6 +20,23 @@ import { ollamaService } from "$lib/services/ollama-service"
 import type { RequestHandler } from './$types.js'
 
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+
+interface SearchResultItem {
+  id: string;
+  title: string;
+  content: string;
+  score: number;
+  type: string;
+}
+
+export interface Source {
+  id: string;
+  title: string;
+  content: string; // Truncated
+  score: number;
+  type: string;
+}
+
 // Environment variables fallback
 const env = process.env || {}
 // Fallback imports with error handling
@@ -30,7 +47,7 @@ let tauriLLM: any = null
 try {
   const vectorSearchModule = await import("../../../../lib/server/search/vector-search.js")
   vectorSearch = vectorSearchModule.vectorSearch
-} catch (error: any) {
+} catch (error: unknown) {
   console.warn("Vector search not available:", error)
   vectorSearch = {
     search: async () => ({ results: [] })
@@ -38,8 +55,8 @@ try {
 }
 try {
   const aiServiceModule = await import("../../../../lib/services/ai-service.js")
-  aiService = aiServiceModule.aiService || aiServiceModule.default
-} catch (error: any) {
+  aiService = (aiServiceModule as any).default
+} catch (error: unknown) {
   console.warn("AI service not available:", error)
   aiService = {
     generateResponse: async () => "AI service not available"
@@ -51,7 +68,7 @@ try {
     get: async () => null,
     set: async () => {}
   }
-} catch (error: any) {
+} catch (error: unknown) {
   console.warn("Cache not available:", error)
   cache = {
     get: async () => null,
@@ -60,8 +77,8 @@ try {
 }
 try {
   const tauriModule = await import("../../../../lib/services/tauri-llm.js")
-  tauriLLM = tauriModule.tauriLLM || tauriModule.default
-} catch (error: any) {
+  tauriLLM = tauriModule.tauriLLM
+} catch (error: unknown) {
   console.warn("Tauri LLM not available:", error)
   tauriLLM = {
     isAvailable: () => false
@@ -70,7 +87,7 @@ try {
 // Enhanced AI response interface with Gemma3 support
 export interface AIResponse {
   answer: string
-  sources: Array<any>
+  sources: Source[]
   query: string
   executionTime: number
   fromCache: boolean
@@ -78,7 +95,7 @@ export interface AIResponse {
   model: string
   confidence: number
 }
-const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
   try {
     const {
@@ -90,10 +107,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       useCache = true
     } = await request.json()
     if (!query || query.trim().length === 0) {
-      return json({
+      return json(
+        {
           success: false,
           error: "Query is required"
-        },)
+        },
         { status: 400 }
       )
     }
@@ -106,21 +124,21 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           success: true,
           data: {
             ...cached,
-            fromCache: true
+            fromCache: true,
             executionTime: Date.now() - startTime
           }
         })
       }
     }
     // Perform vector search to get relevant context
-    let searchResults: any = { results: [] }
+    let searchResults: { results: SearchResultItem[] } = { results: [] }
     try {
       if (vectorSearch && typeof vectorSearch === "function") {
         searchResults = await vectorSearch(query, {
           limit: maxSources * 2, // Get more to filter down
-          threshold: searchThreshold
-          useCache: true
-          fallbackToQdrant: true
+          threshold: searchThreshold,
+          useCache: true,
+          fallbackToQdrant: true,
           searchType: "hybrid"
         })
       } else {
@@ -156,8 +174,9 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     // Prepare context for LLM
     const relevantSources = searchResults.results.slice(0, maxSources)
     const contextText = relevantSources
-      .map((source: any) =>
-        `Title: ${source.title}\nContent: ${source.content}\nType: ${source.type}`
+      .map(
+        (source: SearchResultItem) =>
+          `Title: ${source.title}\nContent: ${source.content}\nType: ${source.type}`
       )
       .join("\n\n---\n\n")
     // Generate AI response with Gemma3 Local LLM priority
@@ -167,9 +186,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     let confidence: number
     try {
       // Try Ollama Gemma3 first (web environment)
-      if (ollamaService.checkAvailability()) {
-        console.log("Using Ollama Gemma3 for inference")
-        const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.
+      console.log("Using Ollama Gemma3 for inference")
+      const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.
 Context Documents:
 ${contextText}
 Instructions:
@@ -178,19 +196,23 @@ Instructions:
 - If information is insufficient, state this clearly
 - Use appropriate legal terminology
 - Be concise but thorough`
-        const response = await ollamaService.generate(query, {
-          system: systemPrompt;
-          temperature: 0.7,
-          maxTokens: 512
-        })
-        aiAnswer = response
-        provider = "local"
-        model = "gemma2:2b"
-        confidence = 0.85; // High confidence for local processing
-      } else if (tauriLLM && tauriLLM.isAvailable()) {
-        // Try Tauri LLM (desktop environment)
-        await tauriLLM.initialize()
-        console.log("Using Tauri Gemma3 local LLM for inference")
+      const response = await ollamaService.generate(query, {
+        system: systemPrompt,
+        temperature: 0.7,
+        maxTokens: 512
+      })
+      aiAnswer = response
+      provider = "local"
+      model = "gemma2:2b"
+      confidence = 0.85
+    } catch (ollamaError) {
+      console.warn("Ollama Gemma3 inference failed, trying fallbacks:", ollamaError)
+
+      // Try Tauri LLM
+      if (tauriLLM && tauriLLM.isAvailable()) {
+        try {
+          await tauriLLM.initialize()
+          console.log("Using Tauri Gemma3 local LLM for inference")
         const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.
 Context Documents:
 ${contextText}
@@ -214,8 +236,8 @@ Instructions:
           if (aiService && typeof aiService.generateResponse === "function") {
             aiAnswer = await aiService.generateResponse(query, {
               provider: "auto",
-              legalContext: true
-              context: relevantSources.map((s: any) => s.content),
+              legalContext: true,
+              context: relevantSources.map((s: SearchResultItem) => s.content),
               temperature: 0.7,
               maxTokens: 512
             })
@@ -237,7 +259,7 @@ Instructions:
           confidence = 0.5
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("AI inference failed:", error)
       aiAnswer = generateFallbackResponse(query, relevantSources)
       provider = "hybrid"
@@ -245,8 +267,8 @@ Instructions:
       confidence = 0.4
     }
     const response: AIResponse = {
-      answer: aiAnswer
-      sources: relevantSources.map((source: any) => ({,
+      answer: aiAnswer,
+      sources: relevantSources.map((source: SearchResultItem) => ({
         id: source.id,
         title: source.title,
         content: source.content.substring(0, 200) + "...", // Truncate for UI
@@ -255,7 +277,7 @@ Instructions:
       })),
       query,
       executionTime: Date.now() - startTime,
-      fromCache: false
+      fromCache: false,
       provider,
       model,
       confidence
@@ -268,26 +290,27 @@ Instructions:
       success: true,
       data: response
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("AI endpoint error:", error)
-    return json({
+    return json(
+      {
         success: false,
         error: "Failed to process AI request",
-        details: error instanceof Error ? error.message: "Unknown error"
-      },)
+        details: error instanceof Error ? error.message : "Unknown error"
+      },
       { status: 500 }
     )
   }
 }
 // Helper functions for Gemma3 integration
-function generateFallbackResponse(query: string, sources: any[]): string {
+function generateFallbackResponse(query: string, sources: SearchResultItem[]): string {
   if (sources.length === 0) {
     return `I couldn't find any relevant information to answer your question: "${query}". Please try rephrasing your query or ensure the relevant documents have been uploaded to the system.`
   }
   let response = `# Legal Analysis for: "${query}"\n\n`
   response += `## Document Summary\n`
   response += `I've identified ${sources.length} relevant documents from your case files:\n\n`
-  sources.slice(0, 3).forEach((source: any, index: number) => {
+  sources.slice(0, 3).forEach((source: SearchResultItem, index: number) => {
     response += `**Document ${index + 1}** (${source.type})\n`
     response += `- Title: ${source.title}\n`
     response += `- Relevance Score: ${(source.score * 100).toFixed(1)}%\n`
@@ -313,18 +336,18 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     const searchResults = await vectorSearch(query, {
       limit,
       threshold: 0.5,
-      useCache: true
+      useCache: true,
       searchType: "similarity"
     })
-    const suggestions = searchResults.results.map((result: any) => ({,
-      id: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).id,
-      title: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).title,
-      type: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).type,
-      score: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).score,
-      preview: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).content.substring(0, 100) + "..."
-    })
+    const suggestions = searchResults.results.map((result: SearchResultItem) => ({
+      id: result.id,
+      title: result.title,
+      type: result.type,
+      score: result.score,
+      preview: result.content.substring(0, 100) + "..."
+    }))
     return json({ suggestions })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Autocomplete error:", error)
     return json({ suggestions: [] })
   }

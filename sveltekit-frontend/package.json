@@ -321,7 +321,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "node simple-seed.mjs",
-  "seed:persons": "node ./scripts/seed-persons.mjs",
+    "seed:persons": "node ./scripts/seed-persons.mjs",
     "db:studio": "drizzle-kit studio",
     "db:reset": "npm run db:migrate && npm run db:seed",
     "monitor": "node scripts/system-monitor.mjs",
@@ -526,8 +526,8 @@
     "chalk": "^5.5.0",
     "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
-    "drizzle-kit": "^0.31.4",
-    "drizzle-orm": "^0.44.5",
+    "drizzle-kit": "^0.31.5",
+    "drizzle-orm": "^0.44.6",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-markdown": "^5.1.0",
@@ -689,5 +689,3 @@
     "esbuild": "^0.25.10"
   }
 }
-
-

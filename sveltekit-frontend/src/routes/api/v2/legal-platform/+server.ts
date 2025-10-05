@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types.js';
 /*
  * Legal AI Platform API Router v2
  * Centralized endpoint routing to Go microservices for the full-stack legal AI platform
  * Integrates: Enhanced RAG, Upload Service, Vector Search, Case Management, Evidence Processing
  */
-import { json, error } from '@sveltejs/kit'
-import { db } from '$lib/server/db/unified-client'
-import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres'
-import { eq, or, desc, ilike, and, SQL } from 'drizzle-orm';
+import { json, error } from '@sveltejs/kit';
+import { db } from '$lib/server/db/unified-client';
+import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres';
+import { eq, or, desc, ilike, and, SQL, sql } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
 
 // Go Microservice Configuration
@@ -88,6 +88,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const req: LegalPlatformRequest = await request.json();
     // Handle health check
     if (req.action === ('health' as any)) {
+      let dbHealthy = false;
+      try {
+        // Simple query to check database connectivity
+        await db.execute(sql`SELECT 1`);
+        dbHealthy = true;
+      } catch (e) {
+        console.error('Database health check failed:', e);
+        dbHealthy = false;
+      }
       const healthChecks = await Promise.allSettled([
         callGoService('enhanced_rag', '/api/health'),
         callGoService('upload_service', '/health'),
@@ -95,7 +104,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const services = {
         enhanced_rag: healthChecks[0].status === 'fulfilled',
         upload_service: healthChecks[1].status === 'fulfilled',
-        database: true, // Assume database is healthy if we got this far
+        database: dbHealthy,
       };
       return json({
         success: true,
@@ -468,19 +477,28 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> 
 }
 // Health Check endpoint
 export const OPTIONS: RequestHandler = async () => {
+  let dbHealthy = false;
+  try {
+    // Simple query to check database connectivity
+    await db.execute(sql`SELECT 1`);
+    dbHealthy = true;
+  } catch (e) {
+    console.error('Database health check failed:', e);
+    dbHealthy = false;
+  }
   const healthChecks = await Promise.allSettled([
     callGoService('enhanced_rag', '/api/health'),
-    callGoService('upload_service', '/health')
-  ])
+    callGoService('upload_service', '/health'),
+  ]);
   const services = {
     enhanced_rag: healthChecks[0].status === 'fulfilled',
     upload_service: healthChecks[1].status === 'fulfilled',
-    database: true // Assume database is healthy if we got this far
-  }
+    database: dbHealthy,
+  };
   return json({
     success: true,
     services,
     timestamp: new Date().toISOString(),
-    message: 'Health check completed'
-  })
-}
+    message: 'Health check completed',
+  });
+};
