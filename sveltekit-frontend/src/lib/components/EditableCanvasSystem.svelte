@@ -182,7 +182,7 @@ mounted = true;
     const rect = canvasElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    if (event.detail === 2) { // Double click
+    if (e(vent as CustomEvent).detail === 2) { // Double click
       createNode(x, y);
     }
   }

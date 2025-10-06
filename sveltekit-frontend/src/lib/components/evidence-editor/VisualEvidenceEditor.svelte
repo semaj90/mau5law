@@ -27,11 +27,11 @@ https://svelte.dev/e/js_parse_error -->
   });
   });
   function handleNodeSelect(_event: CustomEvent) {
-    selectedNode.set(event.detail);
+    selectedNode.set(e(vent as CustomEvent).detail);
   }
   function handleNodeSave(_event: CustomEvent) {
     // Handle saving node data
-    const nodeData = event.detail;
+    const nodeData = e(vent as CustomEvent).detail;
     console.log('Saving node:', nodeData);
     // TODO: Implement actual save to database
     // await fetch('/api/evidence', { method: 'POST', body: JSON.stringify(nodeData) })
@@ -61,8 +61,8 @@ https://svelte.dev/e/js_parse_error -->
         selectedNode={currentSelectedNode}
         ontagsupdate={e => {
           if (currentSelectedNode) {
-            currentSelectedNode.aiTags = e.detail;
-            selectedNode.update(n => ({ ...n, aiTags: e.detail }));
+            currentSelectedNode.aiTags = (e as CustomEvent).detail;
+            selectedNode.update(n => ({ ...n, aiTags: (e as CustomEvent).detail }));
           }
         }}
       />

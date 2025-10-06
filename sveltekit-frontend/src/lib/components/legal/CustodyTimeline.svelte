@@ -59,42 +59,42 @@ Displays the chronological chain of custody events with detailed audit trail
       case 'intake':
         return {
           primary: `Evidence taken into custody`,
-          secondary: `Hash verified: ${event.details.hashMatch ? 'Yes' : 'No'}`,
-          extra: event.details.originalHash ? `Hash: ${event.details.originalHash.substring(0, 8)}...` : ''
+          secondary: `Hash verified: ${e(vent as CustomEvent).details.hashMatch ? 'Yes' : 'No'}`,
+          extra: e(vent as CustomEvent).details.originalHash ? `Hash: ${e(vent as CustomEvent).details.originalHash.substring(0, 8)}...` : ''
         }
       case 'transfer':
         return {
           primary: `Custody transferred`,
-          secondary: `From: ${event.details.fromCustodian} → To: ${event.details.toCustodian}`,
-          extra: `Reason: ${event.details.transferReason}`
+          secondary: `From: ${e(vent as CustomEvent).details.fromCustodian} → To: ${e(vent as CustomEvent).details.toCustodian}`,
+          extra: `Reason: ${e(vent as CustomEvent).details.transferReason}`
         }
       case 'verification':
         return {
           primary: `Integrity verification completed`,
-          secondary: `Status: ${event.details.integrityStatus}`,
-          extra: event.details.verificationResults ?
-            `AI Score: ${(event.details.verificationResults.aiAnalysisScore * 100).toFixed(0)}%` : ''
+          secondary: `Status: ${e(vent as CustomEvent).details.integrityStatus}`,
+          extra: e(vent as CustomEvent).details.verificationResults ?
+            `AI Score: ${(e(vent as CustomEvent).details.verificationResults.aiAnalysisScore * 100).toFixed(0)}%` : ''
         }
       case 'analysis':
         return {
           primary: `AI analysis completed`,
-          secondary: `Risk Level: ${event.details.aiAnalysis?.riskLevel || 'Unknown'}`,
-          extra: event.details.aiAnalysis ?
-            `Models: ${event.details.models?.join(', ') || 'Multiple'}` : ''
+          secondary: `Risk Level: ${e(vent as CustomEvent).details.aiAnalysis?.riskLevel || 'Unknown'}`,
+          extra: e(vent as CustomEvent).details.aiAnalysis ?
+            `Models: ${e(vent as CustomEvent).details.models?.join(', ') || 'Multiple'}` : ''
         }
       case 'approval':
         return {
           primary: `Custody approved`,
-          secondary: `Approval status: ${event.details.approvalStatus}`,
-          extra: event.details.finalIntegrityStatus ?
-            `Final status: ${event.details.finalIntegrityStatus}` : ''
+          secondary: `Approval status: ${e(vent as CustomEvent).details.approvalStatus}`,
+          extra: e(vent as CustomEvent).details.finalIntegrityStatus ?
+            `Final status: ${e(vent as CustomEvent).details.finalIntegrityStatus}` : ''
         }
       case 'finalization':
         return {
           primary: `Custody workflow finalized`,
-          secondary: `Total events: ${event.details.custodyReport?.totalEvents || 0}`,
-          extra: event.details.custodyReport?.totalProcessingTime ?
-            `Duration: ${Math.round(event.details.custodyReport.totalProcessingTime / 1000)}s` : ''
+          secondary: `Total events: ${e(vent as CustomEvent).details.custodyReport?.totalEvents || 0}`,
+          extra: e(vent as CustomEvent).details.custodyReport?.totalProcessingTime ?
+            `Duration: ${Math.round(e(vent as CustomEvent).details.custodyReport.totalProcessingTime / 1000)}s` : ''
         }
       default:
         return {
@@ -169,14 +169,14 @@ Displays the chronological chain of custody events with detailed audit trail
               </div>
             {/if}
             <!-- Detailed information (expandable) -->
-            {#if event.details && Object.keys(errors).length > 0}
+            {#if e(vent as CustomEvent).details && Object.keys(errors).length > 0}
               <details class="mt-2 pt-2 border-t border-gray-100">
                 <summary class="cursor-pointer text-xs text-blue-600 hover:text-blue-800">
                   View detailed information
                 </summary>
                 <div class="mt-2 p-2 bg-gray-50 rounded text-xs">
                   <pre class="whitespace-pre-wrap text-gray-700 font-mono text-xs overflow-auto max-h-32">
-{JSON.stringify(event.details, null, 2)}
+{JSON.stringify(e(vent as CustomEvent).details, null, 2)}
                   </pre>
                 </div>
               </details>

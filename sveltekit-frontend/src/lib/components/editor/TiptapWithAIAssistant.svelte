@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>
+<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
   // Svelte 5 runes are auto-imported
 ` element and/or a single top-level `<script module>` element;
 https://svelte.dev/e/script_duplicate -->

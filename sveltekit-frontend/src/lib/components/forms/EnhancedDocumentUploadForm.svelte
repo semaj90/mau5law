@@ -584,40 +584,40 @@ Reset Form
 </div>
 <style>
   .enhanced-document-upload-form {
-    @apply max-w-4xl mx-auto;
+/* @apply max-w-4xl mx-auto; */
   }
   .file-upload-card {
-    @apply border-2 border-dashed border-gray-300 border-opacity-25 transition-color;
+/* @apply border-2 border-dashed border-gray-300 border-opacity-25 transition-color; */
   }
   .file-upload-card:hover {
-    @apply border-blue-500 border-opacity-50;
+/* @apply border-blue-500 border-opacity-50; */
   }
   .drop-zone {
-    @apply min-h-32 rounded-lg flex items-center justify-center cursor-pointer transition-color;
+/* @apply min-h-32 rounded-lg flex items-center justify-center cursor-pointer transition-color; */
   }
   .drop-zone.drag-active {
-    @apply bg-blue-500 bg-opacity-5 border-blue-500;
+/* @apply bg-blue-500 bg-opacity-5 border-blue-500; */
   }
   .drop-zone-content {
-    @apply text-center space-y-3;
+/* @apply text-center space-y-3; */
   }
   .drop-zone-title {
-    @apply text-lg font-semibold;
+/* @apply text-lg font-semibold; */
   }
   .drop-zone-description {
-    @apply text-sm text-muted-foreground;
+/* @apply text-sm text-muted-foreground; */
   }
   .selected-file {
-    @apply flex items-center gap-4 p-4 bg-muted bg-opacity-50 rounded-lg;
+/* @apply flex items-center gap-4 p-4 bg-muted bg-opacity-50 rounded-lg; */
   }
   .file-info {
-    @apply flex-1 text-left;
+/* @apply flex-1 text-left; */
   }
   .file-name {
-    @apply font-medium truncat;
+/* @apply font-medium truncat; */
   }
   .file-details {
-    @apply text-sm text-muted-foreground;
+/* @apply text-sm text-muted-foreground; */
   }
 </style>
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

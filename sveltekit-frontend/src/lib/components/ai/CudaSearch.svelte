@@ -469,7 +469,7 @@ function getDocumentTypeColor(type: string): string {
 
 <style>
   .cuda-search-container {
-    @apply max-w-4xl mx-auto;
+/* @apply max-w-4xl mx-auto; */
   }
   .line-clamp-3 {
     display: -webkit-box;

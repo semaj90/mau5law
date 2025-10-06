@@ -227,7 +227,7 @@
       </div>
       <p>Loading optimized components... {Math.round(loadingProgress)}%</p>
       {#if LoadingSpinner}
-        <svelte:component this={LoadingSpinner} />
+        <LoadingSpinner />
       {/if}
     </div>
   {:else}
@@ -238,8 +238,7 @@
         <p>Powered by Redis caching and optimized component loading</p>
         <div class="board-controls">
           {#if SearchInput}
-            <svelte:component
-              this={SearchInput}
+            <SearchInput
               placeholder="Search evidence..."
               value={$searchQuery}
               oninput={e => handleSearch(e.target.value)}
@@ -253,8 +252,7 @@
         {#each filteredEvidence as evidence (evidence.id)}
           <div class="evidence-item">
             {#if EvidenceCard}
-              <svelte:component
-                this={EvidenceCard}
+              <EvidenceCard
                 {evidence}
                 onclick={() => selectedEvidence.set(evidence)}
                 onAnalyze={() => analyzeEvidence(evidence)}

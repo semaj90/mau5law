@@ -123,13 +123,13 @@ https://svelte.dev/e/js_parse_error -->
                   {person.role?.toUpperCase()}
                 </Badge>
               </div>
-              {#if person.details}
+              {#if pe(rson as CustomEvent).details}
                 <div class="text-sm text-gray-600 space-y-1">
-                  {#if person.details.age}
-                    <p>Age: {person.details.age}</p>
+                  {#if pe(rson as CustomEvent).details.age}
+                    <p>Age: {pe(rson as CustomEvent).details.age}</p>
                   {/if}
-                  {#if person.details.occupation}
-                    <p>Occupation: {person.details.occupation}</p>
+                  {#if pe(rson as CustomEvent).details.occupation}
+                    <p>Occupation: {pe(rson as CustomEvent).details.occupation}</p>
                   {/if}
                 </div>
               {/if}

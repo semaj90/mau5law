@@ -1,4 +1,3 @@
-
 // LangChain.js RAG Implementation for Legal AI Platform
 // Advanced RAG with Ollama integration and legal domain specialization
 import type { Document as LangChainDocumentType } from "@langchain/core/documents";
@@ -19,12 +18,12 @@ type QdrantVectorStore = any;
 type QdrantClient = any;
 // Import types
 interface LegalDocumentMetadata {
-  id: string;
+  id?: string;
   title: string;
   documentType: string;
   jurisdiction?: string;
   practiceArea?: string;
-  createdAt: string;
+  createdAt?: string;
   [key: string]: any;
 }
 export interface LegalRAGConfig {
@@ -210,7 +209,7 @@ Only return the queries, one per line.`)
       documentType,
       jurisdiction,
       practiceArea,
-      useEnhancedSemanticSearch = true, // New option for enhanced search
+      useEnhancedSemanticSearch = true,
     } = options;
     try {
       // NEW: Try enhanced semantic search first (preferred method)
@@ -221,13 +220,13 @@ Only return the queries, one per line.`)
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({,
-              query: question
-              limit: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs
-              threshold: confidenceThreshold
+            body: JSON.stringify({
+              query: question,
+              limit: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
+              threshold: confidenceThreshold,
               filters: {
-                category: documentType
-                jurisdiction: jurisdiction
+                category: documentType,
+                jurisdiction,
                 practice_area: practiceArea
               }
             })
@@ -235,32 +234,28 @@ Only return the queries, one per line.`)
           if (semanticResponse.ok) {
             const semanticData = await semanticResponse.json();
             if (semanticData.success && semanticData.results?.length > 0) {
-              // Convert semantic search results to LangChain document format
-              const enhancedRetrievedDocs = semanticData.results.map((result: any) => ({,
+              const enhancedRetrievedDocs = semanticData.results.map((result: any) => ({
                 pageContent:
-                  (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).content ||
-                  `${(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).title}\n\n${(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).metadata?.summary || 'No content available'}`,
+                  result?.content ||
+                  `${result?.title || 'Untitled'}\n\n${result?.metadata?.summary || 'No content available'}`,
                 metadata: {
                   ...result.metadata,
-                  title: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).title,
-                  score: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).semantic_score || 1 - (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).distance,
-                  document_type: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).document_type,
+                  title: result?.title,
+                  score: result?.semantic_score ?? (result?.distance ? 1 - result.distance : 1),
+                  document_type: result?.document_type,
                   source: 'enhanced_semantic_search'
                 }
-              });
-              // Generate answer using enhanced RAG with semantic context
+              }));
               const contextText = formatDocumentsAsString(enhancedRetrievedDocs);
-              // Select appropriate prompt template
               let promptTemplate = this.LEGAL_PROMPTS.STANDARD_RAG;
               if (thinkingMode) {
                 promptTemplate = this.LEGAL_PROMPTS.THINKING_MODE_RAG;
               } else if (verbose) {
                 promptTemplate = this.LEGAL_PROMPTS.VERBOSE_RAG;
               }
-              // Generate answer using LLM with semantic context
               const formattedPrompt = await promptTemplate.format({
-                context: contextText
-                question: question
+                context: contextText,
+                question
               });
               const llmResponse = await this.llm.invoke(formattedPrompt);
               const enhancedAnswer =
@@ -269,44 +264,42 @@ Only return the queries, one per line.`)
                   : typeof llmResponse === 'object' && llmResponse?.content
                     ? String(llmResponse.content)
                     : String(llmResponse);
-              // Calculate confidence based on semantic scores
               const avgSemanticScore =
-                semanticData.results.reduce(
-                  (sum: number, result: any) =>
-                    sum + ((result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).semantic_score || 1 - (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).distance),
-                  0
-                ) / semanticData.results.length;
+                semanticData.results.reduce((sum: number, r: any) => sum + (r?.semantic_score ?? (r?.distance ? 1 - r.distance : 1)), 0) / semanticData.results.length;
               const confidence = Math.min(avgSemanticScore, 1.0);
               const processingTime = Date.now() - startTime;
               return {
-                answer: enhancedAnswer
-                sourceDocuments: enhancedRetrievedDocs
+                answer: enhancedAnswer,
+                sourceDocuments: enhancedRetrievedDocs,
                 confidence,
                 reasoning: thinkingMode
                   ? `Applied enhanced semantic search with ${semanticData.results.length} relevant documents. Average semantic score: ${avgSemanticScore.toFixed(3)}`
-                  : undefined
+                  : undefined,
                 metadata: {
                   retrievedChunks: enhancedRetrievedDocs.length,
                   processingTime,
-                  usedThinkingMode: thinkingMode
-                  usedCompression: useCompression
-                  enhancedSemanticSearch: true
+                  usedThinkingMode: thinkingMode,
+                  usedCompression: useCompression,
+                  enhancedSemanticSearch: true,
                   semanticProcessingTime: semanticData.processingTime || 0
                 }
-              }
+              };
             }
           }
         } catch (error) {
           console.warn('Enhanced semantic search failed, falling back to traditional RAG:', error);
         }
       }
+
       // Fallback to traditional LangChain RAG if enhanced semantic search fails
       await this.ensureVectorStoreInitialized();
+
       // Create retriever with legal-specific filtering
-      let retriever: any = this.vectorStore.asRetriever({,
-        k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs
+      let retriever: any = this.vectorStore.asRetriever({
+        k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
         filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea)
       });
+
       // Use MultiQueryRetriever for thinking mode
       // TODO: Fix MultiQueryRetriever import issue
       // if (thinkingMode) {
@@ -337,21 +330,22 @@ Only return the queries, one per line.`)
       } else if (verbose) {
         promptTemplate = this.LEGAL_PROMPTS.VERBOSE_RAG;
       }
-      // Build RAG chain with proper type handling
+
       const contextRetriever = RunnableSequence.from([
         (input: string) => retriever.getRelevantDocuments(input),
         formatDocumentsAsString
       ]);
+
       const ragChain = RunnableSequence.from([
         RunnableMap.from({
-          context: contextRetriever
+          context: contextRetriever,
           question: new RunnablePassthrough()
         }),
         promptTemplate,
         this.llm,
         new StringOutputParser()
       ]);
-      // Execute RAG query with proper error handling
+
       const [answer, retrievedDocs] = await Promise.all([
         ragChain.invoke(question).catch((error) => {
           console.warn('RAG chain error:', error);
@@ -362,23 +356,21 @@ Only return the queries, one per line.`)
           return [];
         })
       ]);
-      // Calculate confidence based on document relevance scores
+
       const confidence = this.calculateConfidence(retrievedDocs, confidenceThreshold);
       const processingTime = Date.now() - startTime;
       return {
-        answer: typeof answer === 'string' ? answer : answer?.parse || String(answer),
-        sourceDocuments: retrievedDocs
+        answer: typeof answer === 'string' ? answer : (answer?.parse ?? String(answer)),
+        sourceDocuments: retrievedDocs,
         confidence,
-        reasoning: thinkingMode
-          ? 'Applied multi-query retrieval with comprehensive analysis'
-          : undefined
+        reasoning: thinkingMode ? 'Applied multi-query retrieval with comprehensive analysis' : undefined,
         metadata: {
           retrievedChunks: retrievedDocs.length,
           processingTime,
-          usedThinkingMode: thinkingMode
+          usedThinkingMode: thinkingMode,
           usedCompression: useCompression
         }
-      }
+      };
     } catch (error: any) {
       console.error('Error in RAG query:', error);
       return {
@@ -388,11 +380,10 @@ Only return the queries, one per line.`)
         metadata: {
           retrievedChunks: 0,
           processingTime: Date.now() - startTime,
-          usedThinkingMode: thinkingMode
-          usedCompression: useCompression
-          // Note: error property not included in interface
+          usedThinkingMode: options.thinkingMode ?? false,
+          usedCompression: options.useCompression ?? false
         }
-      }
+      };
     }
   }
   /**
@@ -404,26 +395,23 @@ Only return the queries, one per line.`)
       throw new Error('Vector store not initialized');
     }
     try {
-      // Split document into chunks
       const chunks = await this.textSplitter.splitText(text);
-      // Create documents with metadata
       const documents = chunks.map((chunk, index) => ({
-        pageContent: chunk
+        pageContent: chunk,
         metadata: {
           ...metadata,
-          chunkIndex: index
+          chunkIndex: index,
           totalChunks: chunks.length,
           chunkSize: chunk.length
         }
-      });
-      // Add to vector store
+      }));
       const ids = await this.vectorStore.addDocuments(documents);
-      console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId}`);
+      console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown'}`);
       return (ids as any as string[]) || [];
     } catch (error: any) {
       console.error('Error indexing document:', error);
       throw new Error(
-        `Document indexing failed: ${error instanceof Error ? error.message: 'Unknown error'}`
+        `Document indexing failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -536,14 +524,14 @@ Only return the queries, one per line.`)
    * Upload and index a document file with real file processing
    */
   async uploadDocument(
-    filePath: string
+    filePath: string,
     options?: {
       caseId?: string;
       documentType?: string;
       title?: string;
-      metadata?: { [key: string]: any }
-      file?: File; // Browser File object for client-side uploads
-      content?: string; // Direct content for server-side processing
+      metadata?: { [key: string]: any };
+      file?: File;
+      content?: string;
     }
   ): Promise<any> {
     const startTime = Date.now();
@@ -551,20 +539,15 @@ Only return the queries, one per line.`)
       let documentContent: string;
       let fileSize = 0;
       let fileName = '';
-      // Handle different input types
       if (options?.file) {
-        // Browser File object processing
         fileName = options.file.name;
         fileSize = options.file.size;
-        // Extract text based on file type
         documentContent = await this.extractTextFromFile(options.file);
       } else if (options?.content) {
-        // Direct content provided
         documentContent = options.content;
         fileSize = new Blob([documentContent]).size;
         fileName = filePath.split('/').pop() || filePath;
       } else {
-        // Server-side file processing
         const fs = await import('fs').catch(() => null);
         const path = await import('path').catch(() => null);
         if (!fs || !path) {
@@ -576,30 +559,31 @@ Only return the queries, one per line.`)
         try {
           const fileBuffer = await fs.promises.readFile(filePath);
           fileSize = fileBuffer.length;
-          // Determine file type and extract text
           const fileExtension = path.extname(filePath).toLowerCase();
           documentContent = await this.extractTextFromBuffer(fileBuffer, fileExtension);
         } catch (error: any) {
           throw new Error(`Failed to read file: ${error.message}`);
         }
       }
-      // Validate extracted content
+
       if (!documentContent || documentContent.trim().length === 0) {
         throw new Error('No readable content found in the document');
       }
-      // Generate unique document ID
-      const documentId = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      // Prepare comprehensive metadata
+
+      const documentId = `doc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+
       const metadata: LegalDocumentMetadata = {
-        documentId,
-        filename: fileName
+        id: documentId,
+        title: options?.title || this.generateDocumentTitle(documentContent, fileName),
+        documentId, // keep legacy field if other code expects it
+        filename: fileName,
         documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
         uploadedBy: 'system',
         uploadedAt: new Date().toISOString(),
         fileMetadata: {
-          size: fileSize
+          size: fileSize,
           mimeType: this.getMimeType(fileName),
-          wordCount: documentContent.split(/\s+/).length,
+          wordCount: documentContent.split(/\s+/).filter(Boolean).length,
           language: 'en'
         },
         classification: {
@@ -616,27 +600,27 @@ Only return the queries, one per line.`)
         },
         ...options?.metadata,
         filePath,
-        caseId: options?.caseId,
-        title: options?.title || this.generateDocumentTitle(documentContent, fileName)
-      }
-      // Index the document using enhanced processing
+        caseId: options?.caseId
+      };
+
       const chunkIds = await this.indexDocument(documentContent, metadata);
       const processingTime = Date.now() - startTime;
-      // Try to enhance with semantic search integration
+
       if (chunkIds.length > 0) {
         try {
           await this.notifySemanticSearchAPI(documentId, {
             title: metadata.title,
-            content: documentContent.substring(0, 1000), // Preview for API
-            metadata: metadata
+            content: documentContent.substring(0, 1000),
+            metadata,
             chunks: chunkIds.length
           });
         } catch (error) {
           console.warn('Failed to notify semantic search API:', error);
         }
       }
+
       return {
-        success: true
+        success: true,
         documentId,
         chunks: chunkIds.length,
         processingDetails: {
@@ -645,18 +629,18 @@ Only return the queries, one per line.`)
           processingTime,
           chunksCreated: chunkIds.length
         }
-      }
+      };
     } catch (error: any) {
       return {
-        success: false
-        error: error instanceof Error ? error.message: 'Unknown error during document processing',
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error during document processing',
         processingDetails: {
           fileSize: 0,
           extractedLength: 0,
           processingTime: Date.now() - startTime,
           chunksCreated: 0
         }
-      }
+      };
     }
   }
   /**
@@ -676,9 +660,8 @@ Only return the queries, one per line.`)
         return await this.extractTextFromWord(file);
       case 'html':
       case 'htm':
-        return this.extractTextFromHTML(await file.text();
+        return this.extractTextFromHTML(await file.text());
       default:
-        // Try to read as plain text
         const text = await file.text();
         if (this.isValidText(text)) {
           return text;
@@ -702,9 +685,8 @@ Only return the queries, one per line.`)
         return await this.extractTextFromWordBuffer(buffer);
       case '.html':
       case '.htm':
-        return this.extractTextFromHTML(buffer.toString('utf-8');
+        return this.extractTextFromHTML(buffer.toString('utf-8'));
       default:
-        // Try to read as plain text
         const text = buffer.toString('utf-8');
         if (this.isValidText(text)) {
           return text;
@@ -829,11 +811,9 @@ Only return the queries, one per line.`)
     // Check content patterns
     const contentLower = content.toLowerCase();
     if (contentLower.includes('whereas') && contentLower.includes('therefore')) return 'contract';
-    if (contentLower.includes('plaintiff') && contentLower.includes('defendant')
-      return 'litigation';
+    if (contentLower.includes('plaintiff') && contentLower.includes('defendant')) return 'litigation';
     if (contentLower.includes('patent') && contentLower.includes('claim')) return 'patent';
-    if (contentLower.includes('trademark') || contentLower.includes('service mark')
-      return 'trademark';
+    if (contentLower.includes('trademark') || contentLower.includes('service mark')) return 'trademark';
     if (contentLower.includes('motion') && contentLower.includes('court')) return 'motion';
     // Fallback based on extension
     switch (extension) {
@@ -855,14 +835,14 @@ Only return the queries, one per line.`)
       contentLower.includes('intellectual property') ||
       contentLower.includes('patent') ||
       contentLower.includes('trademark') ||
-      contentLower.includes('copyright');
+      contentLower.includes('copyright')
     ) {
       return 'intellectual-property';
     }
     if (
       contentLower.includes('contract') ||
       contentLower.includes('agreement') ||
-      contentLower.includes('terms and conditions');
+      contentLower.includes('terms and conditions')
     ) {
       return 'contract-law';
     }
@@ -870,14 +850,14 @@ Only return the queries, one per line.`)
       contentLower.includes('litigation') ||
       contentLower.includes('plaintiff') ||
       contentLower.includes('defendant') ||
-      contentLower.includes('motion');
+      contentLower.includes('motion')
     ) {
       return 'litigation';
     }
     if (
       contentLower.includes('employment') ||
       contentLower.includes('labor') ||
-      contentLower.includes('workplace');
+      contentLower.includes('workplace')
     ) {
       return 'employment-law';
     }
@@ -885,7 +865,7 @@ Only return the queries, one per line.`)
       contentLower.includes('real estate') ||
       contentLower.includes('property') ||
       contentLower.includes('lease') ||
-      contentLower.includes('deed');
+      contentLower.includes('deed')
     ) {
       return 'real-estate';
     }
@@ -901,7 +881,7 @@ Only return the queries, one per line.`)
       contentLower.includes('federal') ||
       contentLower.includes('united states') ||
       contentLower.includes('u.s.') ||
-      contentLower.includes('supreme court');
+      contentLower.includes('supreme court')
     ) {
       return 'federal';
     }
@@ -949,17 +929,15 @@ Only return the queries, one per line.`)
    * Generate document title from content and filename
    */;
   private generateDocumentTitle(content: string, fileName: string): string {
-    // Try to extract title from content
-    // removed unused lines assignment
+    const lines = content.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
     if (lines.length > 0) {
       const firstLine = lines[0].trim();
       if (firstLine.length > 10 && firstLine.length < 100) {
         return firstLine;
       }
     }
-    // Fallback to cleaned filename
-    const baseName = fileName.replace(/\.[^/.]+$/, ''); // Remove extension
-    return baseName.replace(/[-_]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase();
+    const baseName = fileName.replace(/\.[^/.]+$/, '');
+    return baseName.replace(/[-_]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
   }
   /**
    * Get MIME type from filename

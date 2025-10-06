@@ -217,8 +217,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <div class="space-y-2">
           <Label for="title">Document Title</Label>
           <!-- replaced direct component with svelte:component using typed constructor -->
-          <svelte:component
-            this={InputCtor}
+          <InputCtor
             id="title"
             bind:value={documentTitle}
             placeholder="Enter document title..."
@@ -228,8 +227,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <div class="space-y-2">
           <Label for="case-id">Case ID (Optional)</Label>
           <!-- replaced direct component with svelte:component using typed constructor -->
-          <svelte:component
-            this={InputCtor}
+          <InputCtor
             id="case-id"
             bind:value={caseId}
             placeholder="CASE-2024-001"

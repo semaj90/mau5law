@@ -39,7 +39,7 @@
   })();
   function handleInteraction(_event: CustomEvent) {
     // Pure event handling logic
-    console.log('User interaction:', event.detail);
+    console.log('User interaction:', e(vent as CustomEvent).detail);
   }
 </script>
 <!--

@@ -72,7 +72,7 @@ class EnhancedLokiDB {
       misses: 0,
       evictions: 0,
       syncOperations: 0,
-      lastSync: null;
+      lastSync: null,
       collections: new Map()
     }
     // Default cache configurations
@@ -100,9 +100,9 @@ class EnhancedLokiDB {
     try {
       const Loki = (await import('lokijs')).default;
       this.db = new Loki('enhanced-legal-ai-cache.db', {
-        autoload: true
+        autoload: true,
         autoloadCallback: () => this.setupEnhancedCollections(),
-        autosave: true
+        autosave: true,
         autosaveInterval: 10000, // More frequent saves
       } as any);
       // Setup real-time sync
@@ -112,14 +112,15 @@ class EnhancedLokiDB {
       // Start background sync process
       this.startBackgroundSync();
     } catch (error: any) {
-      console.error('Enhanced Loki initialization failed:', error);
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('Enhanced Loki initialization failed:', message);
       throw error;
     }
   }
   private setupEnhancedCollections() {
     // Evidence collection with advanced indexing
     const evidenceCol =
-      this.db.getCollection('evidence') ||;
+      this.db.getCollection('evidence') ||
       this.db.addCollection('evidence', {
         indices: ['id', 'caseId', 'type', 'confidence', 'processingStatus'],
         unique: ['id'],
@@ -135,10 +136,7 @@ class EnhancedLokiDB {
             { type: 'limit', value: 50 }
           ],
           needsProcessing: [
-            {
-              type: 'find',
-              value: { processingStatus: { $in: ['pending', 'error'] } }
-            },)
+            { type: 'find', value: { processingStatus: { $in: ['pending', 'error'] } } },
             { type: 'simplesort', property: 'createdAt', desc: false }
           ]
         },
@@ -146,7 +144,7 @@ class EnhancedLokiDB {
       });
     // AI Analysis with vector embeddings
     const aiAnalysisCol =
-      this.db.getCollection('aiAnalysis') ||;
+      this.db.getCollection('aiAnalysis') ||
       this.db.addCollection('aiAnalysis', {
         indices: ['evidenceId', 'analysisType', 'model', 'confidence', 'timestamp'],
         transforms: {
@@ -155,7 +153,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'timestamp', desc: true }
           ],
           byModel: [
-            { type: 'find', value: { model: { $aeq: '[%lktxp]model' } } },)
+            { type: 'find', value: { model: { $aeq: '[%lktxp]model' } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ]
         },
@@ -163,14 +161,14 @@ class EnhancedLokiDB {
       });
     // Vector embeddings cache
     const embeddingsCol =
-      this.db.getCollection('embeddings') ||;
+      this.db.getCollection('embeddings') ||
       this.db.addCollection('embeddings', {
         indices: ['contentHash', 'model', 'type', 'dimension'],
         unique: ['contentHash'],
         transforms: {
           byModel: [{ type: 'find', value: { model: { $aeq: '[%lktxp]model' } } }],
           recentEmbeddings: [
-            { type: 'simplesort', property: 'createdAt', desc: true },)
+            { type: 'simplesort', property: 'createdAt', desc: true },
             { type: 'limit', value: 100 }
           ]
         },
@@ -178,7 +176,7 @@ class EnhancedLokiDB {
       });
     // Graph relationships cache
     const relationshipsCol =
-      this.db.getCollection('relationships') ||;
+      this.db.getCollection('relationships') ||
       this.db.addCollection('relationships', {
         indices: ['fromId', 'toId', 'type', 'strength', 'confidence'],
         transforms: {
@@ -187,7 +185,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'strength', desc: true }
           ],
           byType: [
-            { type: 'find', value: { type: { $aeq: '[%lktxp]type' } } },)
+            { type: 'find', value: { type: { $aeq: '[%lktxp]type' } } },
             { type: 'simplesort', property: 'confidence', desc: true }
           ],
           bidirectional: [{ type: 'find', value: { bidirectional: true } }]
@@ -195,7 +193,7 @@ class EnhancedLokiDB {
       });
     // Vector similarity matches cache
     const similarityCol =
-      this.db.getCollection('vectorMatches') ||;
+      this.db.getCollection('vectorMatches') ||
       this.db.addCollection('vectorMatches', {
         indices: ['queryHash', 'targetId', 'similarity', 'timestamp'],
         transforms: {
@@ -204,7 +202,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'similarity', desc: true }
           ],
           recentMatches: [
-            { type: 'simplesort', property: 'timestamp', desc: true },)
+            { type: 'simplesort', property: 'timestamp', desc: true },
             { type: 'limit', value: 200 }
           ]
         },
@@ -212,7 +210,7 @@ class EnhancedLokiDB {
       });
     // Streaming results cache
     const streamingCol =
-      this.db.getCollection('streamingResults') ||;
+      this.db.getCollection('streamingResults') ||
       this.db.addCollection('streamingResults', {
         indices: ['type', 'status', 'priority', 'timestamp'],
         transforms: {
@@ -221,7 +219,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'priority', desc: true }
           ],
           completed: [
-            { type: 'find', value: { status: 'completed' } },)
+            { type: 'find', value: { status: 'completed' } },
             { type: 'simplesort', property: 'timestamp', desc: true }
           ]
         },
@@ -331,15 +329,14 @@ class EnhancedLokiDB {
   async getAIAnalysis(evidenceId: string, analysisType?: string, model?: string) {
     const col = this.collections.get('aiAnalysis');
     if (!col) return null;
-    const query: any = { evidenceId }
+    const query: any = { evidenceId };
     if (analysisType) query.analysisType = analysisType;
-    if (model) query?.model || "unknown" // @ts-ignore - Model property access = model
+    if (model) query.model = model;
     const analyses = col
       .find(query)
-      .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     if (analyses.length > 0) {
       this.cacheStats.hits++;
-      // Update access count
       analyses[0].accessCount = (analyses[0].accessCount || 0) + 1;
       col.update(analyses[0]);
       return analyses[0];
@@ -406,14 +403,14 @@ class EnhancedLokiDB {
       similarity: match.similarity,
       metadata: match.metadata || {},
       timestamp: new Date()
-    });
+    }));
     col.insert(cacheEntries);
     this.cacheStats.hits++;
   }
   async getCachedVectorMatches(queryHash: string, minSimilarity: number = 0.5) {
     const col = this.collections.get('vectorMatches');
     if (!col) return [];
-    const matches = col;
+    const matches = col
       .find({
         queryHash,
         similarity: { $gte: minSimilarity }
@@ -437,7 +434,7 @@ class EnhancedLokiDB {
       id: rel.id || randomUUID(),
       createdAt: rel.createdAt || new Date(),
       accessCount: 0
-    });
+    }));
     for (const rel of enhancedRelationships) {
       const existing = col.findOne({
         fromId: rel.fromId,
@@ -493,14 +490,16 @@ class EnhancedLokiDB {
     if (!browser) return;
     try {
       const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${wsProtocol}//${window.location.host}/ws/cache-sync`
+      const wsUrl = `${wsProtocol}//${window.location.host}/ws/cache-sync`;
       this.websocket = new WebSocket(wsUrl);
       this.websocket.onopen = () => {
         console.log('Cache sync WebSocket connected');
       }
-      this.websocket.onmessage = (_event: any) => {
-        const data = JSON.parse(event.data);
-        this.handleRealtimeUpdate(data);
+      this.websocket.onmessage = (event: any) => {
+        try {
+          const data = JSON.parse(event.data);
+          this.handleRealtimeUpdate(data);
+        } catch (_) {}
       }
       this.websocket.onerror = () => {
         console.warn('WebSocket error; switching to SSE fallback');
@@ -588,7 +587,6 @@ class EnhancedLokiDB {
   private async maybeRegisterServiceWorker() {
     if (!browser || !('serviceWorker' in navigator)) return;
     try {
-      // Register only if the file exists to avoid noisy errors in dev
       const swPath = '/service-worker.js';
       try {
         const head = await fetch(swPath, { method: 'HEAD' });
@@ -598,34 +596,35 @@ class EnhancedLokiDB {
       }
       const reg = await navigator.serviceWorker.register(swPath);
       console.log('Cache sync Service Worker registered', reg.scope);
-      navigator.serviceWorker.addEventListener('message', (_event: MessageEvent) => {
-        const data = (event as any).data;
-        if (data && (data.type || data.event)) {
-          this.handleRealtimeUpdate(data);
-        }
+      navigator.serviceWorker.addEventListener('message', (evt: MessageEvent) => {
+        try {
+          const data = (evt as any).data;
+          if (data && (data.type || data.event)) {
+            this.handleRealtimeUpdate(data);
+          }
+        } catch (_) {}
       });
     } catch (e) {
       console.warn('Service Worker registration skipped:', e);
-    }
-  }
-  private handleRealtimeUpdate(update: any) {
+          const message = error instanceof Error ? error.message : String(error);
+          console.error('Enhanced Loki initialization failed:', message);
+          throw error;
     switch (update.type) {
       case 'evidence_updated':
         this.invalidateCache('evidence', update.evidenceId);
         break;
       case 'analysis_complete':
-        this.cacheAIAnalysis(update.evidenceId, update.analysis, update?.model || "unknown" // @ts-ignore - Model property access)
+        this.cacheAIAnalysis(update.evidenceId, update.analysis, update?.model || "unknown");
         break;
       case 'relationships_discovered':
         this.cacheRelationships(update.relationships);
         break;
       case 'embedding_created':
-        // Invalidate any embedding caches related to this job; actual mapping to contentHash depends on your backend
-        // For now, clear most recent cached vector matches to avoid stale UI
         console.log('[LokiStore] Invalidating cache for', update.jobId);
         this.invalidateCache('embeddings', update.jobId);
-        // Optionally trim storage right away after bursts
         this.enforceStorageQuota();
+        break;
+      default:
         break;
     }
   }
@@ -639,24 +638,24 @@ class EnhancedLokiDB {
   }
   private queueSync(
     operation: 'create' | 'update' | 'delete',
-    collection: string
-    data: any;
-    priority: number = 1;
+    collection: string,
+    data: any,
+    priority: number = 1
   ) {
     const syncOp: SyncOperation = {
       id: randomUUID(),
-      type: operation
+      type: operation,
       collection,
       data,
       timestamp: new Date(),
       priority,
       retries: 0
-    }
+    };
     this.syncQueue.set(syncOp.id, syncOp);
   }
   private async processSyncQueue() {
     if (this.syncQueue.size === 0) return;
-    const operations = Array.from(this.syncQueue.values()
+    const operations = Array.from(this.syncQueue.values())
       .sort((a, b) => b.priority - a.priority)
       .slice(0, 10); // Process up to 10 operations at a time
     for (const op of operations) {
@@ -679,7 +678,7 @@ class EnhancedLokiDB {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         operation: operation.type,
         data: operation.data,
         timestamp: operation.timestamp
@@ -718,36 +717,32 @@ class EnhancedLokiDB {
   }
   private enforceStorageQuota() {
     try {
-      // Approximate current total
       let total = 0;
       const sizes: Array<any> = [];
-      for (const [name, stats] of this.cacheStats.collections) {
-        const size = stats.memoryUsage || 0;
+      for (const [, stats] of this.cacheStats.collections) {
+        const size = (stats.memoryUsage as unknown as number) || 0;
         total += size;
-        sizes.push({ name, size });
+        sizes.push({ name: stats.name, size });
       }
       if (total <= this.maxBytes) return;
-      // Sort collections by size desc and evict least-recently-used docs first
       sizes.sort((a, b) => b.size - a.size);
       for (const { name } of sizes) {
         if (total <= this.maxBytes) break;
         const col = this.collections.get(name);
         if (!col) continue;
-        // Evict 10% oldest (by lastAccess or createdAt)
         const docs = col.find().sort((a: any, b: any) => {
           const atA = new Date(a.lastAccess || a.createdAt || 0).getTime();
           const atB = new Date(b.lastAccess || b.createdAt || 0).getTime();
           return atA - atB;
         });
-        const removeCount = Math.max(1, Math.floor(docs.length * 0.1);
+        const removeCount = Math.max(1, Math.floor(docs.length * 0.1));
         const toRemove = docs.slice(0, removeCount);
         if (toRemove.length) {
-          toRemove.forEach((d: any) => col.remove(d);
-          // Recompute sizes after eviction
+          toRemove.forEach((d: any) => col.remove(d));
           this.updateCollectionStats();
           total = 0;
           for (const [, stats] of this.cacheStats.collections) {
-            total += stats.memoryUsage || 0;
+            total += (stats.memoryUsage as unknown as number) || 0;
           }
         }
       }
@@ -769,9 +764,9 @@ class EnhancedLokiDB {
     const encoder = new TextEncoder();
     const data = encoder.encode(content);
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray
-      .map((b) => b.toString(16).padStart(2, '0')
+      .map((b) => b.toString(16).padStart(2, '0'))
       .join('')
       .slice(0, 16);
   }
@@ -779,7 +774,7 @@ class EnhancedLokiDB {
   // PUBLIC API & UTILITIES
   // ======================================================================
   getCacheStats(): CacheStats {
-    return { ...this.cacheStats }
+    return { ...this.cacheStats };
   }
   clearCache(collection?: string) {
     if (collection && this.collections.has(collection)) {
@@ -794,9 +789,9 @@ class EnhancedLokiDB {
       misses: 0,
       evictions: 0,
       syncOperations: 0,
-      lastSync: null;
+      lastSync: null,
       collections: new Map()
-    }
+    };
   }
   destroy() {
     if (this.syncInterval) {
@@ -815,13 +810,13 @@ class EnhancedLokiDB {
 // ======================================================================
 export const enhancedLokiDB = new EnhancedLokiDB();
 export const enhancedLokiStore = writable({
-  initialized: false
+  initialized: false,
   stats: {
     hits: 0,
     misses: 0,
     evictions: 0,
     syncOperations: 0,
-    lastSync: null as Date | null;
+    lastSync: null as Date | null,
     collections: new Map()
   }
 });
@@ -835,8 +830,9 @@ export const cacheStatsStore = derived(
   ($store) => $store.stats
 );
 export const cacheHealthStore = derived(enhancedLokiStore, ($store) => {
-  const hitRate =
-    $store.stats.hits / ($store.stats.hits + $store.stats.misses) || 0;
+  const hits = $store?.stats?.hits || 0;
+  const misses = $store?.stats?.misses || 0;
+  const hitRate = hits + misses > 0 ? hits / (hits + misses) : 0;
   return {
     hitRate,
     health:
@@ -849,7 +845,7 @@ export const cacheHealthStore = derived(enhancedLokiStore, ($store) => {
             : "poor",
     lastSync: $store.stats.lastSync,
     syncOperations: $store.stats.syncOperations
-  }
+  };
 });
 // ======================================================================
 // ENHANCED LOKI SERVICE API
@@ -858,11 +854,11 @@ export const enhancedLoki = {
   // Initialize the enhanced system
   async init() {
     await enhancedLokiDB.initialize();
-    enhancedLokiStore.update((state) => ({ ...state, initialized: true });
+    enhancedLokiStore.update((state) => ({ ...state, initialized: true }));
     // Start periodic stats updates
     setInterval(() => {
       const stats = enhancedLokiDB.getCacheStats();
-      enhancedLokiStore.update((state) => ({ ...state, stats });
+      enhancedLokiStore.update((state) => ({ ...state, stats }));
     }, 5000);
   },
   // Evidence operations
@@ -874,7 +870,7 @@ export const enhancedLoki = {
       return await enhancedLokiDB.getEvidence(id);
     },
     async getByCaseId(
-      caseId: string
+      caseId: string,
       options?: { limit?: number; minConfidence?: number }
     ) {
       return await enhancedLokiDB.searchEvidenceByCaseId(caseId, options);
@@ -893,9 +889,9 @@ export const enhancedLoki = {
       return await enhancedLokiDB.getAIAnalysis(evidenceId, type, model);
     },
     async cacheEmbeddings(
-      contentHash: string
-      embeddings: number[]
-      metadata?: unknown;
+      contentHash: string,
+      embeddings: number[],
+      metadata?: unknown
     ) {
       return await enhancedLokiDB.cacheEmbeddings(
         contentHash,
@@ -938,7 +934,7 @@ export const enhancedLoki = {
   destroy() {
     enhancedLokiDB.destroy();
   }
-}
+};
 // Export the original API for backward compatibility
 export { loki } from './lokiStore.js';
 export const lokiStore = enhancedLokiStore;

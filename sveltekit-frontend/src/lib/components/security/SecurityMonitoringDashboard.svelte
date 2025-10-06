@@ -415,10 +415,10 @@
                     </div>
                     {#if showDetails.has(index)}
                       <div class="container mx-auto px-4">
-                        {#if event.details}
+                        {#if e(vent as CustomEvent).details}
                           <div>
                             <strong>Details:</strong>
-                            <pre class="container mx-auto px-4">{JSON.stringify(event.details, null, 2)}</pre>
+                            <pre class="container mx-auto px-4">{JSON.stringify(e(vent as CustomEvent).details, null, 2)}</pre>
                           </div>
                         {/if}
                         {#if event.ipAddress}

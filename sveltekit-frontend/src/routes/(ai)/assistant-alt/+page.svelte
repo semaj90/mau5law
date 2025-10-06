@@ -636,7 +636,7 @@
                     <div class="flex-1">
                       <div class="font-medium">{activity.action}</div>
                       <div class="text-sm text-gray-600">
-                        {activity.description || activity.details}
+                        {activity.description || acti(vity as CustomEvent).details}
                       </div>
                     </div>
                     <div class="text-xs text-gray-500">
@@ -869,7 +869,7 @@
                   <div class="flex-1">
                     <div class="font-medium">{activity.description || activity.type}</div>
                     <div class="text-sm text-gray-600 mt-1">
-                      {activity.details || 'Activity details from evidence analysis'}
+                      {acti(vity as CustomEvent).details || 'Activity details from evidence analysis'}
                     </div>
                     <div class="text-xs text-gray-500 mt-2">
                       {new Date(activity.timestamp).toLocaleString()}

@@ -1,5 +1,5 @@
-<script>
-  // Svelte 5 runes are auto-imported
+<script lang="ts">
+	// updated imports & typed animation id
 	import { onMount, onDestroy } from 'svelte';
 	import '../lib/components/yorha/ps1.css';
 	let container;
@@ -12,30 +12,30 @@
 	let enableDithering = $state(true);
 	let lightingModel = $state('flat');
 	let textureQuality = $state('low');
-	let animationId = null;
-	// PS1 surface configurations
+	let animationId: number | null = null;
+	// PS1 surface configurations (cleaned labels)
 	let surfaceConfigs = [
 		{
 			id: 'wireframe',
-			name: '= Wireframe',
+			name: 'Wireframe',
 			desc: 'Classic PS1 wireframe rendering',
 			className: 'ps1-wireframe'
 		},
 		{
 			id: 'flat',
-			name: '=7 Flat Shaded',
+			name: 'Flat Shaded',
 			desc: 'Flat polygon surfaces, no smoothing',
 			className: 'ps1-flat-shaded'
 		},
 		{
 			id: 'textured',
-			name: '<� Low-Res Textured',
+			name: 'Low-Res Textured',
 			desc: 'Pixelated textures with UV mapping',
 			className: 'ps1-textured-low'
 		},
 		{
 			id: 'vertex',
-			name: '< Vertex Colored',
+			name: 'Vertex Colored',
 			desc: 'Per-vertex color interpolation',
 			className: 'ps1-vertex-colored'
 		}
@@ -55,7 +55,8 @@
 		startRenderLoop();
 	});
 	onDestroy(() => {
-		if (animationId) cancelAnimationFrame(animationId);
+		if (animationId !== null) cancelAnimationFrame(animationId);
+		animationId = null;
 	});
 	function generateSurfaceMesh() {
 		vertices = [];
@@ -95,11 +96,11 @@
 				// Two triangles per quad
 				faces.push({
 					vertices: [topLeft, bottomLeft, topRight],
-					normal: calculateNormal(vertices[topLeft], vertices[bottomLeft], vertices[topRight]);
+					normal: calculateNormal(vertices[topLeft], vertices[bottomLeft], vertices[topRight])
 				});
 				faces.push({
 					vertices: [topRight, bottomLeft, bottomRight],
-					normal: calculateNormal(vertices[topRight], vertices[bottomLeft], vertices[bottomRight]);
+					normal: calculateNormal(vertices[topRight], vertices[bottomLeft], vertices[bottomRight])
 				});
 			}
 		}
@@ -123,22 +124,57 @@
 		perfMetrics.vertexOperations = vertices.length * 4; // Transform, project, light, clip
 		perfMetrics.fillRate = (perfMetrics.polygonsPerFrame * 60) / 1000; // K-polys/sec estimate
 	}
+	// Helper to produce a valid inline style string for a face
+	function faceStyle(face, i) {
+		const avgZ = face.vertices.reduce((sum, vi) => sum + (vertices[vi]?.z ?? 0), 0) / 3;
+		const zIndex = enableZBuffer ? Math.floor(100 - avgZ * 0.1) : 'auto';
+		// ensure animation-delay has unit 's' and CSS custom properties separated by semicolons
+		return `--face-index: ${i}; --normal-x: ${face.normal.x}; --normal-y: ${face.normal.y}; --normal-z: ${face.normal.z}; animation-delay: ${i * 0.001}s; z-index: ${zIndex};`;
+	}
+
+	// Single controlled render loop: start on mount, cancel on destroy
+	onMount(() => {
+		generateSurfaceMesh();
+		startRenderLoop();
+		// set a sane baseline for frame timing
+		perfMetrics.lastFrameTime = performance.now();
+		return () => {
+			if (animationId !== null) cancelAnimationFrame(animationId);
+			animationId = null;
+		};
+	});
+	onDestroy(() => {
+		if (animationId !== null) cancelAnimationFrame(animationId);
+		animationId = null;
+	});
+
+	// startRenderLoop - guard against multiple loops and keep timing accurate
 	function startRenderLoop() {
+		if (animationId !== null) {
+			cancelAnimationFrame(animationId);
+			animationId = null;
+		}
+		perfMetrics.lastFrameTime = performance.now();
 		function animate() {
 			updatePerformanceMetrics();
-			// Simulate PS1 vertex wobble due to fixed-point precision
 			const time = performance.now() * 0.001 * animationSpeed;
 			vertices.forEach((vertex, i) => {
-				// Add subtle vertex jitter to simulate PS1 precision limits
-				const jitterX = (Math.sin(time * 2 + i * 0.1) * 0.5) / vertexPrecisio;
-				const jitterY = (Math.cos(time * 1.5 + i * 0.1) * 0.3) / vertexPrecisio;
+				const jitterX = (Math.sin(time * 2 + i * 0.1) * 0.5) / Math.max(1, vertexPrecision);
+				const jitterY = (Math.cos(time * 1.5 + i * 0.1) * 0.3) / Math.max(1, vertexPrecision);
 				vertex.screenX = vertex.x + jitterX;
 				vertex.screenY = vertex.y + jitterY;
 			});
 			animationId = requestAnimationFrame(animate);
 		}
-		animate();
+		animationId = requestAnimationFrame(animate);
 	}
+
+	// Reactive: regenerate mesh only when these key params change
+	$effect(() => {
+		// explicitly read deps so the runes tracker knows to re-run when they change
+		const _deps = [polygonCount, vertexPrecision];
+		generateSurfaceMesh();
+	});
 	function resetSurface() {
 		generateSurfaceMesh();
 	}
@@ -175,39 +211,42 @@
 			</div>
 		</div>
 		<div class="control-row">
-			<label>Polygon Count:</label>
+			<label for="polygonCount">Polygon Count:</label>
 			<input
+				id="polygonCount"
 				type="range"
 				bind:value={polygonCount}
 				min="50"
 				max="2000"
 				step="50"
 				class="ps1-slider"
-			>
+			/>
 			<span class="value">{polygonCount}</span>
 		</div>
 		<div class="control-row">
-			<label>Vertex Precision:</label>
+			<label for="vertexPrecision">Vertex Precision:</label>
 			<input
+				id="vertexPrecision"
 				type="range"
 				bind:value={vertexPrecision}
 				min="1"
 				max="16"
 				step="1"
 				class="ps1-slider"
-			>
+			/>
 			<span class="value">{vertexPrecision}px</span>
 		</div>
 		<div class="control-row">
-			<label>Animation Speed:</label>
+			<label for="animationSpeed">Animation Speed:</label>
 			<input
+				id="animationSpeed"
 				type="range"
 				bind:value={animationSpeed}
 				min="0"
 				max="3"
 				step="0.1"
 				class="ps1-slider"
-			>
+			/>
 			<span class="value">{animationSpeed.toFixed(1)}x</span>
 		</div>
 		<div class="checkbox-row">
@@ -264,14 +303,7 @@
 				{#each faces.slice(0, Math.min(faces.length, 800)) as face, i}
 					<div
 						class="surface-polygon {lightingModel}"
-						style=";
-							--face-index: {i}
-							--normal-x: {face.normal.x}
-							--normal-y: {face.normal.y}
-							--normal-z: {face.normal.z}
-							animation-delay: {i * 0.001}
-							z-index: {enableZBuffer ? Math.floor(100 - (face.vertices.reduce((sum, vi) => sum + vertices[vi].z, 0) / 3) * 0.1) : 'auto'}
-						"
+						style={faceStyle(face, i)}
 					>
 						<!-- Triangle visualization -->
 						<div class="triangle-face"></div>
@@ -677,8 +709,8 @@
 		color: #ff6600;
 		font-weight: bold;
 	}
-	.hud-value.status-ok { color: #00ff88, }
-	.hud-value.status-off { color: #888, }
+	.hud-value.status-ok { color: #00ff88; }
+	.hud-value.status-off { color: #888; }
 	.info-panel {
 		background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #ff6600;

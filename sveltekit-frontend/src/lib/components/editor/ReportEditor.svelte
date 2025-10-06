@@ -355,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
         selectedEvidence = null;
       }}
       error={(e) => {
-        console.error("Evidence form error:", e.detail);
+        console.error("Evidence form error:", (e as CustomEvent).detail);
         alert("Error saving evidence");
       }}
       cancel={() => {
@@ -368,7 +368,7 @@ https://svelte.dev/e/js_parse_error -->
         selectedEvidence = null;
       }}
       error={(e) => {
-        console.error("Evidence form error:", e.detail);
+        console.error("Evidence form error:", (e as CustomEvent).detail);
         alert("Error saving evidence");
       }}
       cancel={() => {

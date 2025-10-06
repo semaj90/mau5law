@@ -18,10 +18,10 @@
   let urgentCaseOnly = $state(false);
   // Event handlers
   function handleSearch(_event: CustomEvent<string>) {
-    console.log('Search query:', event.detail);
+    console.log('Search query:', e(vent as CustomEvent).detail);
   }
   function handleFilter(_event: CustomEvent) {
-    console.log('Filter applied:', event.detail);
+    console.log('Filter applied:', e(vent as CustomEvent).detail);
   }
   // Computed validation
   // TODO: Convert to $derived: isFormValid = selectedCaseType && acceptTerms && searchQuery.length > 0

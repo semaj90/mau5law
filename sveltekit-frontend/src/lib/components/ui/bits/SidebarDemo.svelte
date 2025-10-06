@@ -101,8 +101,8 @@
     }
   ];
   function handleSidebarItemClick(_event: CustomEvent) {
-    currentPage = event.detail.item.id;
-    console.log('Navigation to:', event.detail.item.label);
+    currentPage = e(vent as CustomEvent).detail.item.id;
+    console.log('Navigation to:', e(vent as CustomEvent).detail.item.label);
   }
   function handleHomeClick() {
     currentPage = 'home';

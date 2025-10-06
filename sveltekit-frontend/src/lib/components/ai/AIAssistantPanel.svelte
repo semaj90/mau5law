@@ -366,86 +366,86 @@
 </div>
 <style>
 	.ai-assistant-panel {
-		@apply w-full h-full;
+/* @apply w-full h-full; */
 	}
 	/* Cleaned up - using AIChatMessage component styles */
 	.quick-actions {
-		@apply border-t pt-2;
+/* @apply border-t pt-2; */
 	}
 	.input-area {
-		@apply border-t pt-2;
+/* @apply border-t pt-2; */
 	}
 	.acceleration-toggle {
-		@apply p-1.5 rounded border hover:bg-muted transition-colors text-muted-foreground;
+/* @apply p-1.5 rounded border hover:bg-muted transition-colors text-muted-foreground; */
 	}
 	.acceleration-toggle.enabled {
-		@apply bg-green-500/10 text-green-600 border-green-500/20;
+/* @apply bg-green-500/10 text-green-600 border-green-500/20; */
 	}
 	.acceleration-toggle.initializing {
-		@apply bg-yellow-500/10 text-yellow-600 border-yellow-500/20;
+/* @apply bg-yellow-500/10 text-yellow-600 border-yellow-500/20; */
 		animation: pulse 2s infinite;
 	}
 	.acceleration-toggle.error {
-		@apply bg-red-500/10 text-red-600 border-red-500/20;
+/* @apply bg-red-500/10 text-red-600 border-red-500/20; */
 	}
 	.acceleration-panel {
-		@apply border-t pt-2;
+/* @apply border-t pt-2; */
 	}
 	.acceleration-header {
-		@apply flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-color;
+/* @apply flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-color; */
 	}
 	.acceleration-content {
-		@apply space-y-3 mt-2;
+/* @apply space-y-3 mt-2; */
 	}
 	.performance-metrics {
-		@apply grid grid-cols-2 gap-2 text-x;
+/* @apply grid grid-cols-2 gap-2 text-x; */
 	}
 	.metric {
-		@apply flex justify-between p-1.5 bg-green-50 rounded border border-green-200;
+/* @apply flex justify-between p-1.5 bg-green-50 rounded border border-green-200; */
 	}
 	.metric-label {
-		@apply text-muted-foreground;
+/* @apply text-muted-foreground; */
 	}
 	.metric-value {
-		@apply font-medium text-green-700;
+/* @apply font-medium text-green-700; */
 	}
 	.recommendation-list {
-		@apply space-y-2;
+/* @apply space-y-2; */
 	}
 	.recommendation-item {
-		@apply p-2 bg-blue-50 rounded border border-blue-200;
+/* @apply p-2 bg-blue-50 rounded border border-blue-200; */
 	}
 	.rec-type {
-		@apply text-xs font-medium text-blue-600 capitaliz;
+/* @apply text-xs font-medium text-blue-600 capitaliz; */
 	}
 	.rec-description {
-		@apply text-sm mt-1;
+/* @apply text-sm mt-1; */
 	}
 	.rec-confidence {
-		@apply text-xs text-blue-500 mt-1;
+/* @apply text-xs text-blue-500 mt-1; */
 	}
 	.insights-panel {
-		@apply border-t pt-2;
+/* @apply border-t pt-2; */
 	}
 	.insights-header {
-		@apply flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-color;
+/* @apply flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-color; */
 	}
 	.insights-content {
-		@apply space-y-2 mt-2;
+/* @apply space-y-2 mt-2; */
 	}
 	.insight-item {
-		@apply w-full text-left p-2 bg-muted/50 rounded border hover:bg-muted transition-color;
+/* @apply w-full text-left p-2 bg-muted/50 rounded border hover:bg-muted transition-color; */
 	}
 	.insight-type {
-		@apply text-xs font-medium text-primary capitaliz;
+/* @apply text-xs font-medium text-primary capitaliz; */
 	}
 	.insight-description {
-		@apply text-sm mt-1;
+/* @apply text-sm mt-1; */
 	}
 	.insight-confidence {
-		@apply text-xs text-muted-foreground mt-1;
+/* @apply text-xs text-muted-foreground mt-1; */
 	}
 	.hidden {
-		@apply hidden;
+/* @apply hidden; */
 	}
 </style>

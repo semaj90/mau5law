@@ -53,6 +53,14 @@
     previewTitle = title;
     previewSnippet = snippet;
     previewOpen = true;
+    // Ensure markdown libs are ready if user wants to render markdown
+    ensureMarkdownLibs().then(() => {
+      // focus trap will be applied in the DOM after the modal mounts
+      setTimeout(() => {
+        const modalRoot = document.querySelector('[role="dialog"]') as HTMLElement | null;
+        trapFocus(modalRoot);
+      }, 0);
+    });
   }
   async function copyId(id: string) {
     try {
@@ -78,31 +86,35 @@
 
   // Modal markdown rendering toggle + tiny sanitizer
   let previewRenderMarkdown = false;
-  function sanitizeHtml(html: string) {
-    // very small sanitizer: escape angle brackets and remove script tags
-    if (!html) return '';
-    // avoid emitting the literal closing-script token so the Svelte parser doesn't see it
-    const endScript = '<' + '/script>';
-    const scriptRegex = new RegExp('<script[\\s\\S]*?>[\\s\\S]*?' + endScript, 'gi');
-    html = html.replace(scriptRegex, '');
-    // escape angle brackets
-    return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  let purified: ((html: string) => string) | null = null;
+  let markdownToHtml: ((md: string) => string) | null = null;
+  async function ensureMarkdownLibs() {
+    if (!purified || !markdownToHtml) {
+      try {
+        const [DOMPurifyMod, markedMod] = await Promise.all([
+          import('dompurify').then(m => m.default ?? m),
+          import('marked').then(m => m.default ?? m),
+        ]);
+        purified = (html: string) => DOMPurifyMod.sanitize(html);
+        markdownToHtml = (md: string) => markedMod.parse(md || '');
+      } catch (err) {
+        // If dynamic import fails (no node_modules), keep the simple sanitizer
+        purified = (html: string) => html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        markdownToHtml = (md: string) => md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
+      }
+    }
   }
-  function renderMarkdownToHtml(md: string) {
-    // Minimal markdown -> HTML: headers, bold, italics, links, line breaks
+  function sanitizeHtml(html: string) {
+    if (!html) return '';
+    if (purified) return purified(html);
+    // fallback
+    return html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function renderMarkdownToHtmlAsync(md: string) {
     if (!md) return '';
-    let out = md
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/^### (.*)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.*)$/gm, '<h2>$1</h2>')
-      .replace(/^# (.*)$/gm, '<h1>$1</h1>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>')
-      .replace(/\n/g, '<br/>');
-    return out;
+    if (markdownToHtml) return markdownToHtml(md);
+    // synchronous fallback
+    return md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
   }
 
   function escHandler(e: KeyboardEvent) {
@@ -111,6 +123,20 @@
 
   onMount(() => { runQuery(); window.addEventListener('keydown', escHandler); });
   onDestroy(() => { window.removeEventListener('keydown', escHandler); });
+
+  // Focus trap state
+  let lastActiveElement: Element | null = null;
+  function trapFocus(modalRoot: HTMLElement | null) {
+    if (!modalRoot) return;
+    lastActiveElement = document.activeElement;
+    // focus first focusable element
+    const focusable = modalRoot.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    (focusable[0] as HTMLElement | undefined)?.focus?.();
+  }
+  function restoreFocus() {
+    (lastActiveElement as HTMLElement | null)?.focus?.();
+    lastActiveElement = null;
+  }
 </script>
 
 <div class="p-4 max-w-4xl mx-auto">
@@ -121,7 +147,7 @@
       <label class="text-sm">Page <input type="number" min="1" bind:value={page} class="ml-1 w-20" /></label>
       <label class="text-sm">CaseId <input type="text" bind:value={caseId} placeholder="case-123" class="ml-1" /></label>
       <label class="text-sm">Tag <input type="text" bind:value={tag} placeholder="contract" class="ml-1" /></label>
-      <button class="bits-btn" on:click={runQuery} disabled={loading}>{loading ? 'Running...' : 'Run Query'}</button>
+      <button class="bits-btn" onclick={runQuery} disabled={loading}>{loading ? 'Running...' : 'Run Query'}</button>
     </div>
   </div>
   {#if error}
@@ -146,9 +172,9 @@
                 </div>
                 <div class="flex flex-col items-end gap-2">
                   <div class="relative">
-                    <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy ID" on:click={() => copyId(item.id)}>{copiedId === item.id ? 'Copied' : 'Copy ID'}</button>
+                    <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy ID" onclick={() => copyId(item.id)}>{copiedId === item.id ? 'Copied' : 'Copy ID'}</button>
                   </div>
-                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Preview" on:click={() => openPreview(extractTitle(item.payload), extractSnippet(item.payload))}>Preview</button>
+                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Preview" onclick={() => openPreview(extractTitle(item.payload), extractSnippet(item.payload))}>Preview</button>
                   <a class="text-primary hover:underline text-xs" href={`/api/evidence-files?download=${item.id}`} target="_blank">Download</a>
                   <a class="text-primary hover:underline text-xs" href={`/evidence/${item.id}`} target="_blank">Open</a>
                 </div>
@@ -174,8 +200,8 @@
                   {/if}
                 </div>
                 <div class="flex flex-col items-end gap-2">
-                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy ID" on:click={() => copyId(row.id)}>{copiedId === row.id ? 'Copied' : 'Copy ID'}</button>
-                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Preview" on:click={() => openPreview(row.title || row.payload?.title || row.metadata?.title || 'Preview', (row.payload?.snippet || row.metadata?.snippet || row.snippet || '') )}>Preview</button>
+                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy ID" onclick={() => copyId(row.id)}>{copiedId === row.id ? 'Copied' : 'Copy ID'}</button>
+                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Preview" onclick={() => openPreview(row.title || row.payload?.title || row.metadata?.title || 'Preview', (row.payload?.snippet || row.metadata?.snippet || row.snippet || '') )}>Preview</button>
                   <a class="text-primary hover:underline text-xs" href={`/evidence/${row.id}`} target="_blank">Open</a>
                 </div>
               </li>
@@ -183,9 +209,9 @@
           </ul>
           {#if result.pgvector?.page}
             <div class="mt-2 flex items-center gap-2">
-              <button class="bits-btn bits-ghost" on:click={() => { if (page>1) { page--; runQuery(); } }} disabled={page<=1}>Prev</button>
+              <button class="bits-btn bits-ghost" onclick={() => { if (page>1) { page--; runQuery(); } }} disabled={page<=1}>Prev</button>
               <div>Page {result.pgvector.page} (limit {result.pgvector.limit})</div>
-              <button class="bits-btn bits-ghost" on:click={() => { page++; runQuery(); }}>Next</button>
+              <button class="bits-btn bits-ghost" onclick={() => { page++; runQuery(); }}>Next</button>
             </div>
           {/if}
         {:else}
@@ -193,7 +219,7 @@
         {/if}
       </div>
   {#if previewOpen}
-    <div class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center" tabindex="-1" on:click={() => previewOpen = false} aria-hidden={!previewOpen}>
+  <div class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center" tabindex="-1" onclick={() => { previewOpen = false; restoreFocus(); }} aria-hidden={!previewOpen}>
       <div in:fade out:fade class="absolute inset-0"></div>
       <div
         role="dialog"
@@ -201,21 +227,20 @@
         aria-label={previewTitle || 'Preview'}
         class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative z-10"
         tabindex="-1"
-        on:click|stopPropagation
-        on:keydown={() => {}}
+        onclick={() => {}}
         in:scale={{ duration: 160 }}
         out:scale={{ duration: 120 }}
       >
-        <button class="absolute top-2 right-2 text-gray-500 hover:text-black" on:click={() => previewOpen = false} aria-label="Close">✕</button>
+        <button class="absolute top-2 right-2 text-gray-500 hover:text-black" onclick={() => { previewOpen = false; restoreFocus(); }} aria-label="Close">✕</button>
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-lg font-bold">{previewTitle || 'Preview'}</h3>
           <div class="flex items-center gap-2">
             <label class="text-xs text-muted flex items-center gap-1"><input type="checkbox" bind:checked={previewRenderMarkdown}/> Render Markdown</label>
-            <button class="bits-btn bits-ghost text-xs px-2 py-1" on:click={() => copyId(previewTitle || '')}>Copy Title</button>
+            <button class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => copyId(previewTitle || '')}>Copy Title</button>
           </div>
         </div>
         {#if previewRenderMarkdown}
-          <div class="text-sm whitespace-pre-wrap text-muted">{@html sanitizeHtml(renderMarkdownToHtml(previewSnippet))}</div>
+          <div class="text-sm whitespace-pre-wrap text-muted">{@html sanitizeHtml(renderMarkdownToHtmlAsync(previewSnippet))}</div>
         {:else}
           <div class="text-sm whitespace-pre-wrap text-muted">{previewSnippet || 'No snippet available.'}</div>
         {/if}

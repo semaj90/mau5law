@@ -365,15 +365,15 @@ loadCase('demo-case-003')}
 <style>
   /* Component-specific styles */
   :global(.card) {
-    @apply border border-gray-200 rounded-lg shadow-sm;
+/* @apply border border-gray-200 rounded-lg shadow-sm; */
   }
   :global(.card-header) {
-    @apply p-4 pb-2;
+/* @apply p-4 pb-2; */
   }
   :global(.card-content) {
-    @apply p-4 pt-0;
+/* @apply p-4 pt-0; */
   }
   :global(.card-title) {
-    @apply text-lg font-semibold;
+/* @apply text-lg font-semibold; */
   }
 </style>

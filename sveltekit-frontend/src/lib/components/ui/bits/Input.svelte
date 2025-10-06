@@ -117,7 +117,7 @@
 
 <style>
   .input-wrapper {
-    @apply space-y-1;
+/* @apply space-y-1; */
   }
   /* Additional NES.css enhancements */
   :global(.nes-field) {

@@ -651,7 +651,7 @@ https: //svelte.dev/e/js_parse_error -->
                   {Math.round(area.score * 100)}%
                 </span>
               </div>
-              <p class="text-gray-700 text-sm">{area.details}</p>
+              <p class="text-gray-700 text-sm">{a(rea as CustomEvent).details}</p>
             </div>
           {/each}
         </div>

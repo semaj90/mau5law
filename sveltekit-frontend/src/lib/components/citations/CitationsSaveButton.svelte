@@ -118,7 +118,7 @@
 </script>
 
 {#if !isAuthenticated}
-  <svelte:component this={ButtonCtor}
+  <ButtonCtor
     {variant}
     {size}
     class="citation-save-btn disabled"
@@ -126,10 +126,10 @@
     title="Sign in to save citations"
   >
     🔒 {showText ? 'Sign in to Save' : ''}
-  </svelte:component>
+  </ButtonCtor>
 {:else}
   <div class="citation-save-container">
-    <svelte:component this={ButtonCtor}
+    <ButtonCtor
       {variant}
       {size}
       class={`citation-save-btn ${isSaved ? 'saved' : ''}`}
@@ -144,10 +144,9 @@
       {:else}
         💾 {showText ? 'Save' : ''}
       {/if}
-    </svelte:component>
+    </ButtonCtor>
 
-    <svelte:component
-      this={ButtonCtor}
+    <ButtonCtor
       variant="ghost"
       {size}
       class="collection-selector-btn"
@@ -155,7 +154,7 @@
       title="Save to collection"
     >
       📁
-    </svelte:component>
+    </ButtonCtor>
 
     {#if showCollectionSelector}
       <div class="collection-selector">

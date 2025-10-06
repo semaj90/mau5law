@@ -7,7 +7,13 @@
   import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
   import { submitWithProgress } from '$lib/api/submitWithProgress';
   import { isAuthenticated, currentUser } from '$lib/stores/authStore';
+  import { get } from 'svelte/store';
   import unsyncedUploads from '$lib/services/unsynced-uploads';
+  import type { ComponentType } from 'svelte';
+
+  // Cast imports to a generic ComponentType so TS treats them as constructors
+  const CardComponent: ComponentType = Card as unknown as ComponentType;
+  const ButtonComponent: ComponentType = Button as unknown as ComponentType;
 
   let pageLoaded = $state(false);
   let showWelcome = $state(true);
@@ -61,42 +67,44 @@
   <title>Evidence Board - Legal AI Assistant</title>
   <meta name="description" content="AI-powered evidence management with Ollama integration" />
 </svelte:head>
+
 <div class="evidence-page-container">
-  {#if showWelcome && pageLoaded}
-    <div class="welcome-banner animate-fade-in">
-      <Card variant="evidence" hoverable fullWidth class="nes-container"> <!-- Changed to Card component -->
-        <div class="nier-bits-yorha-panel-header">
-          <h3 class="nier-bits-nes-text is-primary">🎯 Evidence Board Ready</h3>
-          <p class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
-        </div>
-        <div class="nier-bits-yorha-panel-content">
-          <div class="welcome-stats">
-            <div class="stat">
-              <span class="stat-label">GPU</span>
-              <span class="stat-value">Active</span>
-            </div>
-            <div class="stat">
-              <span class="stat-label">WebGPU</span>
-              <span class="stat-value">Ready</span>
-            </div>
-            <div class="stat">
-              <span class="stat-label">pgvector</span>
-              <span class="stat-value">Connected</span>
+  {#if pageLoaded}
+    {#if showWelcome}
+      <div class="welcome-banner animate-fade-in">
+        <svelte:component this={CardComponent} variant="evidence" hoverable fullWidth class="nes-container">
+          <div class="nier-bits-yorha-panel-header">
+            <h3 class="nier-bits-nes-text is-primary">🎯 Evidence Board Ready</h3>
+            <p class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
+          </div>
+          <div class="nier-bits-yorha-panel-content">
+            <div class="welcome-stats">
+              <div class="stat">
+                <span class="stat-label">GPU</span>
+                <span class="stat-value">Active</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">WebGPU</span>
+                <span class="stat-value">Ready</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">pgvector</span>
+                <span class="stat-value">Connected</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="nier-bits-yorha-panel-content">
-          <Button variant="ghost" size="sm" onclick={() => (showWelcome = false)} class="nes-btn"> <!-- Changed to Button component -->
-            Get Started →
-          </Button>
-        </div>
-      </Card> <!-- Changed to Card component -->
-    </div>
-  {/if}
-  {#if pageLoaded}
-    <section class="dev-upload-panel" style="margin-bottom:1.5rem;">
+          <div class="nier-bits-yorha-panel-content">
+            <svelte:component this={ButtonComponent} variant="ghost" size="sm" class="nes-btn" on:click={() => (showWelcome = false)}>
+              Get Started →
+            </svelte:component>
+          </div>
+        </svelte:component>
+      </div>
+    {/if}
+
+    <section>
       <h3 style="margin:0 0 8px 0">Upload evidence (dev)</h3>
-      <UploadProgress uploadUrl="/api/upload" fieldName="file" maxBytes={200 * 1024 * 1024} on:done={(e) => handleUploadDone(e.detail)} />
+      <UploadProgress uploadUrl="/api/upload" fieldName="file" maxBytes={200 * 1024 * 1024} on:done={(e) => handleUploadDone((e as CustomEvent).detail)} />
       {#if savedLocally}
         <div class="local-save-notice">Saved locally — will sync when you log in</div>
       {/if}

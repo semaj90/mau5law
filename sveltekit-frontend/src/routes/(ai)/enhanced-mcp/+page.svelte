@@ -289,7 +289,7 @@ let passedTests = 0;
   </div>
   <div class="main-integration">
     {#if EnhancedMCPIntegration}
-      <svelte:component this={EnhancedMCPIntegration} caseId={selectedCaseId} {enableRealtimeUpdates} {showMetrics} {enableClusterMode} />
+      <EnhancedMCPIntegration caseId={selectedCaseId} {enableRealtimeUpdates} {showMetrics} {enableClusterMode} />
     {:else}
       <div class="loading-component">Loading integration component...</div>
     {/if}

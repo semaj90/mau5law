@@ -106,7 +106,7 @@
 			<!-- AI Search Bar Test (local replacement) -->
 			<div class="space-y-2">
 				<h3 class="font-semibold text-sm">AI Search Bar Component</h3>
-				<form on:submit|preventDefault={() => handleAISearch(aiSearchTerm)}>
+				<form onsubmit={() => handleAISearch(aiSearchTerm)}>
 					<div class="flex gap-2">
 						<input
 							class="form-control"

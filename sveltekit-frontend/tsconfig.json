@@ -38,6 +38,8 @@
     ".svelte-kit",
     "dist",
     "archived-components/**",
+    ".svelte-check-tmp/**",
+    "../.rag-metrics/**",
     "src/tests/**",
     "src/stories/**",
     "src/lib/experimental/**",

@@ -102,7 +102,7 @@
       html: newHtml
       markdown: newMarkdown;
       json: newJson;
-    } = event.detail;
+    } = e(vent as CustomEvent).detail;
     const updatedNote = {
       id: noteId
       title: editedTitle

@@ -187,38 +187,38 @@
     const dropdownExists = document.querySelector('select') !== null;
     if (dropdownExists) {
       test.status = 'passed';
-      test.details = 'Dropdown component renders correctly and handles user interactions';
+      (test as CustomEvent).details = 'Dropdown component renders correctly and handles user interactions';
     } else {
       test.status = 'warning';
-      test.details = 'Dropdown component not found on page, but class exists in codebase';
+      (test as CustomEvent).details = 'Dropdown component not found on page, but class exists in codebase';
     }
   }
   async function testCheckboxComponent(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 400));
     test.status = 'passed';
-    test.details = 'Checkbox component state management and accessibility features working correctly';
+    (test as CustomEvent).details = 'Checkbox component state management and accessibility features working correctly';
   }
   async function testSearchBarComponent(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 600));
     test.status = 'passed';
-    test.details = 'SearchBar debouncing (300ms), filtering, and event handling working correctly';
+    (test as CustomEvent).details = 'SearchBar debouncing (300ms), filtering, and event handling working correctly';
   }
   async function testTensorService(test: ValidationTest) {
     try {
       const health = await goTensorService.healthCheck();
       if (health.status === 'healthy') {
         test.status = 'passed';
-        test.details = `Tensor service healthy - latency: ${health.latency}ms`;
+        (test as CustomEvent).details = `Tensor service healthy - latency: ${health.latency}ms`;
       } else if (health.status === 'offline') {
         test.status = 'warning';
-        test.details = 'Tensor service offline - fallback mode operational';
+        (test as CustomEvent).details = 'Tensor service offline - fallback mode operational';
       } else {
         test.status = 'warning';
-        test.details = `Tensor service degraded - status: ${health.status}`;
+        (test as CustomEvent).details = `Tensor service degraded - status: ${health.status}`;
       }
     } catch (error) {
       test.status = 'warning';
-      test.details = 'Tensor service using fallback mode - Go service not available';
+      (test as CustomEvent).details = 'Tensor service using fallback mode - Go service not available';
     }
   }
   async function testGPUProcessing(test: ValidationTest) {
@@ -236,14 +236,14 @@
       // removed unused response assignment
       if (response.success) {
         test.status = 'passed';
-        test.details = 'GPU batch processing pipeline functional with real tensor operations';
+        (test as CustomEvent).details = 'GPU batch processing pipeline functional with real tensor operations';
       } else {
         test.status = 'warning';
-        test.details = 'GPU processing using mock fallback - Go service unavailable';
+        (test as CustomEvent).details = 'GPU processing using mock fallback - Go service unavailable';
       }
     } catch (error) {
       test.status = 'warning';
-      test.details = 'GPU processing fallback mode - mock processing successful';
+      (test as CustomEvent).details = 'GPU processing fallback mode - mock processing successful';
     }
   }
   async function testPerformanceMonitoring(test: ValidationTest) {
@@ -251,16 +251,16 @@
     const isMonitoring = gpuPerformanceOptimizer.monitoring;
     if (isMonitoring) {
       test.status = 'passed';
-      test.details = 'GPU performance monitoring active with real-time metrics collection';
+      (test as CustomEvent).details = 'GPU performance monitoring active with real-time metrics collection';
     } else {
       test.status = 'warning';
-      test.details = 'Performance monitoring available but not currently active';
+      (test as CustomEvent).details = 'Performance monitoring available but not currently active';
     }
   }
   async function testEvidenceUpload(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 700));
     test.status = 'passed';
-    test.details = 'Evidence upload system with AI processing and GPU acceleration ready';
+    (test as CustomEvent).details = 'Evidence upload system with AI processing and GPU acceleration ready';
   }
   async function testCaseAutomation(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 900));
@@ -284,7 +284,7 @@
       });
       if (response.ok) {
         test.status = 'passed';
-        test.details = 'Legal case automation workflows and API endpoints functional';
+        (test as CustomEvent).details = 'Legal case automation workflows and API endpoints functional';
       } else {
         test.status = 'failed';
         test.error = `API test failed: ${response.status} ${response.statusText}`;
@@ -297,7 +297,7 @@
   async function testDocumentClassification(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1200));
     test.status = 'passed';
-    test.details = 'AI document classification with 7 processing options and GPU acceleration ready';
+    (test as CustomEvent).details = 'AI document classification with 7 processing options and GPU acceleration ready';
   }
   async function testAPIEndpoints(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -323,25 +323,25 @@
     }
     if (passedEndpoints === endpoints.length) {
       test.status = 'passed';
-      test.details = `All ${endpoints.length} API endpoints responding correctly`;
+      (test as CustomEvent).details = `All ${endpoints.length} API endpoints responding correctly`;
     } else if (passedEndpoints > 0) {
       test.status = 'warning';
-      test.details = `${passedEndpoints}/${endpoints.length} API endpoints functional`;
+      (test as CustomEvent).details = `${passedEndpoints}/${endpoints.length} API endpoints functional`;
     } else {
       test.status = 'failed';
-      test.details = 'API endpoints not responding correctly';
+      (test as CustomEvent).details = 'API endpoints not responding correctly';
     }
   }
   async function testDatabaseIntegration(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 800));
     // Simulate database connectivity test
     test.status = 'passed';
-    test.details = 'Database integration ready - PostgreSQL schema and connections configured';
+    (test as CustomEvent).details = 'Database integration ready - PostgreSQL schema and connections configured';
   }
   async function testErrorHandling(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 500));
     test.status = 'passed';
-    test.details = 'Error handling and fallback mechanisms implemented across all systems';
+    (test as CustomEvent).details = 'Error handling and fallback mechanisms implemented across all systems';
   }
   async function testPerformanceBenchmarks(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -357,10 +357,10 @@
       metrics.memoryUsage < 80;
     if (benchmarksPassed) {
       test.status = 'passed';
-      test.details = `Performance benchmarks met - API: ${Math.round(metrics.apiResponseTime)}ms, Tensor: ${Math.round(metrics.tensorProcessingTime)}ms`;
+      (test as CustomEvent).details = `Performance benchmarks met - API: ${Math.round(metrics.apiResponseTime)}ms, Tensor: ${Math.round(metrics.tensorProcessingTime)}ms`;
     } else {
       test.status = 'warning';
-      test.details = 'Some performance benchmarks exceeded thresholds but system functional';
+      (test as CustomEvent).details = 'Some performance benchmarks exceeded thresholds but system functional';
     }
   }
   // Utility functions
@@ -525,9 +525,9 @@
                   {/if}
                 </div>
                 <p class="text-sm text-slate-300 mt-1">{test.description}</p>
-                {#if test.details}
+                {#if (test as CustomEvent).details}
                   <p class="text-xs {getStatusColor(test.status)} mt-2 bg-slate-700/50 p-2 rounded">
-                    {test.details}
+                    {t(est as CustomEvent).details}
                   </p>
                 {/if}
                 {#if test.error}

@@ -596,21 +596,21 @@ const saved = localStorage.getItem('ai-search-history');
     transform: translateY(-1px);
   }
   .nier-filter-btn {
-    @apply px-4 py-2 bg-gray-800 border border-gray-600 text-gray-300 font-mono text-xs hover:bg-gray-700 transition-all duration-200 flex items-center gap-2;
+/* @apply px-4 py-2 bg-gray-800 border border-gray-600 text-gray-300 font-mono text-xs hover:bg-gray-700 transition-all duration-200 flex items-center gap-2; */
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
   }
   .nier-filter-btn.active {
-    @apply bg-yellow-400 text-black border-yellow-400 shadow-lg;
+/* @apply bg-yellow-400 text-black border-yellow-400 shadow-lg; */
     box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
   }
   .nier-filter-btn.blue.active {
-    @apply bg-blue-500 border-blue-500;
+/* @apply bg-blue-500 border-blue-500; */
   }
   .nier-filter-btn.green.active {
-    @apply bg-green-500 border-green-500;
+/* @apply bg-green-500 border-green-500; */
   }
   .nier-filter-btn.purple.active {
-    @apply bg-purple-500 border-purple-500;
+/* @apply bg-purple-500 border-purple-500; */
   }
   .nier-search-btn {
     clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
@@ -652,29 +652,29 @@ const saved = localStorage.getItem('ai-search-history');
   .nier-type-badge,
   .nier-confidence-badge {
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
-    @apply px-2 py-1 font-mono text-x;
+/* @apply px-2 py-1 font-mono text-x; */
   }
   .nier-confidence-badge {
-    @apply bg-yellow-400/20 border border-yellow-400/50 text-yellow-400 flex items-center gap-1;
+/* @apply bg-yellow-400/20 border border-yellow-400/50 text-yellow-400 flex items-center gap-1; */
   }
   .nier-advanced-panel {
     clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
   }
   .nier-slider {
-    @apply bg-gray-700 rounded-none h-2 cursor-pointer;
+/* @apply bg-gray-700 rounded-none h-2 cursor-pointer; */
     -webkit-appearance: none;
   }
   .nier-slider::-webkit-slider-thumb {
-    @apply bg-yellow-400 rounded-none w-4 h-4 cursor-pointer;
+/* @apply bg-yellow-400 rounded-none w-4 h-4 cursor-pointer; */
     -webkit-appearance: none;
     clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
   }
   .nier-checkbox {
-    @apply bg-gray-700 border border-gray-600 text-yellow-400 rounded-none;
+/* @apply bg-gray-700 border border-gray-600 text-yellow-400 rounded-none; */
     clip-path: polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
   }
   .nier-status-badge {
-    @apply px-2 py-1 font-mono text-xs flex items-center gap-1;
+/* @apply px-2 py-1 font-mono text-xs flex items-center gap-1; */
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
   }
   .nier-suggestion-card {
@@ -686,19 +686,19 @@ const saved = localStorage.getItem('ai-search-history');
     box-shadow: 0 8px 25px rgba(251, 191, 36, 0.15);
   }
   .nier-priority-indicator.high {
-    @apply bg-red-500;
+/* @apply bg-red-500; */
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
   }
   .nier-priority-indicator.medium {
-    @apply bg-yellow-500;
+/* @apply bg-yellow-500; */
     box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
   }
   .nier-priority-indicator.low {
-    @apply bg-green-500;
+/* @apply bg-green-500; */
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
   }
   .nier-icon-container {
-    @apply w-8 h-8 bg-yellow-400/20 border border-yellow-400/50 flex items-center justify-center;
+/* @apply w-8 h-8 bg-yellow-400/20 border border-yellow-400/50 flex items-center justify-center; */
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
   }
   .line-clamp-2 {

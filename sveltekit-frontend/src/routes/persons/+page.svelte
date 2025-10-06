@@ -541,7 +541,7 @@
 </div>
 <style>
   .yorha-detective-interface {
-    @apply min-h-screen p-6;
+/* @apply min-h-screen p-6; */
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
   }
   .person-card {

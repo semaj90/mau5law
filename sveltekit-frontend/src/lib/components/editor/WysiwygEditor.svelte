@@ -155,7 +155,7 @@ await initializeEditor();
       }
       // Listen to content changes from Hugerte
       hugerte.$on('input', (_event: unknown) => {
-        content = event.detail.content;
+        content = e(vent as CustomEvent).detail.content;
         updateCounts(content);
       });
       isInitialized = true;

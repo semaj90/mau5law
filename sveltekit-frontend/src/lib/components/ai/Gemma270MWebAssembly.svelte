@@ -3,7 +3,7 @@
   Function: Offload lightweight AI operations to client-side WebAssembly for reduced server load,
   Architecture: WebAssembly + WebGL + Shared Memory for real-time legal document processing
 -->
-<script>
+<script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Button, Card, CardContent, CardHeader, CardTitle, Alert } from '$lib/components/ui/enhanced-bits';

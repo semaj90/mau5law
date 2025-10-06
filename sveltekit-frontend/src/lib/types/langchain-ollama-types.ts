@@ -1,4 +1,3 @@
-
 /**
  * Comprehensive TypeScript Types for LangChain-Ollama Integration
  * Production-ready types for legal AI system with advanced features
@@ -54,6 +53,7 @@ export interface ModelMetadata {
   created: string;
   updated: string;
   tags: string[];
+}
 }
 // Embedding Types
 export interface EmbeddingModel extends AIModel {

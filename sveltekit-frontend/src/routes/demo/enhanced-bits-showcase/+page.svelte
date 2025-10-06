@@ -33,7 +33,7 @@
     { id: 'integration', title: 'Integration', icon: '🔧' },
   ];
   function handleSearchDemo(_event: CustomEvent) {
-    const { query } = event.detail;
+    const { query } = e(vent as CustomEvent).detail;
     console.log('Search demo:', query);
   }
 </script>

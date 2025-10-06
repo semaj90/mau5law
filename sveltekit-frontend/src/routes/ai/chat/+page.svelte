@@ -615,7 +615,7 @@ $effect(() => {
                   <div class="flex-1">
                     <div class="font-medium">{activity.action}</div>
                     <div class="text-sm text-gray-600">
-                      {activity.description || activity.details}
+                      {activity.description || acti(vity as CustomEvent).details}
                     </div>
                   </div>
                   <div class="text-xs text-gray-500">

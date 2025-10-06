@@ -800,6 +800,6 @@ testResults.set([])}
 </div>
 <style>
   .cache-demo {
-    @apply max-w-7xl mx-auto p-4;
+/* @apply max-w-7xl mx-auto p-4; */
   }
 </style>

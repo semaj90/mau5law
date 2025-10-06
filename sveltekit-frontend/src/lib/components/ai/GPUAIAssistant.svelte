@@ -471,18 +471,18 @@ await initializeAssistant();
 </Card>
 <style>
   .prose {
-    @apply text-current;
+/* @apply text-current; */
   }
   .prose p {
-    @apply my-2;
+/* @apply my-2; */
   }
   .prose ul, .prose ol {
-    @apply my-2 pl-4;
+/* @apply my-2 pl-4; */
   }
   .prose strong {
-    @apply font-semibold;
+/* @apply font-semibold; */
   }
   .prose code {
-    @apply bg-current/10 px-1 rounded text-sm;
+/* @apply bg-current/10 px-1 rounded text-sm; */
   }
 </style>

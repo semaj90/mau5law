@@ -6,13 +6,13 @@
   let metadata = { title: 'My upload', tags: ['demo'] };
 
   function onDone(e: CustomEvent) {
-    last = `Done: status=${e.detail.status}`;
+    last = `Done: status=${(e as CustomEvent).detail.status}`;
   }
   function onProgress(e: CustomEvent) {
-    last = `Progress: ${e.detail.percent}%`;
+    last = `Progress: ${(e as CustomEvent).detail.percent}%`;
   }
   function onError(e: CustomEvent) {
-    last = `Error: ${e.detail?.message ?? 'unknown'}`;
+    last = `Error: ${(e as CustomEvent).detail?.message ?? 'unknown'}`;
   }
 
   async function saveMetadata() {
@@ -33,4 +33,4 @@
 <hr />
 <h3>Save metadata (JSON example)</h3>
 <pre>{JSON.stringify(metadata, null, 2)}</pre>
-<button on:click={saveMetadata}>Save metadata</button>
+<button onclick={saveMetadata}>Save metadata</button>

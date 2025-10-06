@@ -394,12 +394,12 @@ https://svelte.dev/e/expected_token -->
 </div>
 <style>
   .glyph-config-panel {
-    @apply max-w-none;
+/* @apply max-w-none; */
   }
   input[type="range"] {
-    @apply accent-blue-500;
+/* @apply accent-blue-500; */
   }
   input[type="range"]:disabled {
-    @apply opacity-50 cursor-not-allowed;
+/* @apply opacity-50 cursor-not-allowed; */
   }
 </style>

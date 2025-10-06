@@ -295,7 +295,7 @@
                 <div class="w-2 h-2 bg-nier-accent rounded-full"></div>
                 <div>
                   <p class="font-medium text-nier-white">{activity.action}</p>
-                  <p class="text-sm text-nier-text-muted">{activity.details}</p>
+                  <p class="text-sm text-nier-text-muted">{acti(vity as CustomEvent).details}</p>
                 </div>
                 <span class="ml-auto text-xs text-nier-text-muted">{activity.time}</span>
               </div>

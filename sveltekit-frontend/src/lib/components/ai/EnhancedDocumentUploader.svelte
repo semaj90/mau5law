@@ -1,70 +1,51 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  // Updated to use bits-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import Select from '$lib/components/ui/MeltSelect.svelte';
-  import Card from '$lib/components/ui/MeltCard.svelte';
-  // TODO: Replace with bits-ui equivalents when available
-  // import {
-  //   Badge,
-  //   CardContent,
-  //   CardHeader,
-  //   CardTitle,
-  //   Checkbox,
-  //   DialogContent,
-  //   DialogHeader,
-  //   DialogTitle,
-  //   Input,
-  //   Label,
-  //   Progress,
-  //   SelectContent,
-  //   SelectItem,
-  //   SelectTrigger,
-  //   SelectValue,
-  //   Textarea,
-  // } from "bits-ui"
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import Badge from '$lib/components/ui/Badge.svelte';
+  import Progress from '$lib/components/ui/Progress.svelte';
   import {
     AlertTriangle,
     CheckCircle,
-    File,
+    File as FileIcon,
     FileImage,
     FileText,
     Loader2,
     Upload,
     X,
-  } from "lucide-svelte";
-  import { onMount  } from "svelte";
-  import { derived, writable } from "svelte/store";
-  // Props with Svelte 5 syntax
-  let { acceptedTypes = ".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp",
-    maxFileSize = 50 * 1024 * 1024, // 50MB
-    maxFiles = 10,
-    caseId = "",
-    userId = "",
-    autoProcess = true,
-    showMetadataForm = true,
-    class: className = "",
-   }: { acceptedTypes = ".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp",
-    maxFileSize = 50 * 1024 * 1024, // 50MB
-    maxFiles = 10,
-    caseId = "",
-    userId = "",
-    autoProcess = true,
-    showMetadataForm = true,
-    class: className = "",
-  : any } = $props();
-  // Event dispatcher
+  } from 'lucide-svelte';
+  import { onMount, createEventDispatcher } from 'svelte';
+  import { derived, get, writable } from 'svelte/store';
+  import Checkbox from '$lib/components/ui/Checkbox.svelte';
+
+  import Label from '$lib/components/ui/Label.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
+  import Textarea from '$lib/components/ui/Textarea.svelte';
+
+  // Public props
+  export let acceptedTypes: string = '.pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp';
+  export let maxFileSize: number = 50 * 1024 * 1024; // 50MB
+  export let maxFiles: number = 10;
+  export let caseId: string = '';
+  export let userId: string = '';
+  export let autoProcess: boolean = true;
+  export let showMetadataForm: boolean = true;
+  export let className = '';
+
+  const dispatch = createEventDispatcher<{
+    'file-processed': { fileId: string; result: ProcessingResult };
+    'files-updated': { files: ProcessedFile[] };
+    'upload-error': { fileId: string; error: string };
+    'file-progress': { fileId: string; progress: number };
+  }>();
+
   // Types
   interface UploadFile {
     id: string;
-    file: Fil;
+    file: File;
     preview?: string;
-    status: "pending" | "uploading" | "processing" | "completed" | "error";
+    status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error';
     progress: number;
     error?: string;
     metadata: {
@@ -75,8 +56,9 @@ https://svelte.dev/e/js_parse_error -->
       tags?: string[];
       autoSummarize?: boolean;
       extractEntities?: boolean;
-    }
+    };
   }
+
   interface ProcessedFile {
     id: string;
     documentId: string;
@@ -86,194 +68,179 @@ https://svelte.dev/e/js_parse_error -->
     url?: string;
     thumbnail?: string;
   }
+
   interface ProcessingResult {
     summary?: string;
-    entities?: Array;
+    entities?: any[];
     chunks?: number;
-    embeddings?: boolean;
+    embeddings?: number[];
   }
-  // State management
+
+  // State
   const files = writable<UploadFile[]>([]);
   const isDragging = writable(false);
   const isProcessing = writable(false);
   const showMetadata = writable(false);
   const selectedFile = writable<UploadFile | null>(null);
-  // Derived state
+
   const totalProgress = derived(files, ($files) => {
     if ($files.length === 0) return 0;
     return $files.reduce((acc, file) => acc + file.progress, 0) / $files.length;
   });
-  const completedFiles = derived(files, ($files) =>
-    $files.filter((file) => file.status === "completed")
-  );
-  const hasErrors = derived(files, ($files) =>
-    $files.some((file) => file.status === "error")
-  );
-  // File input reference
-  let fileInput = $state<HTMLInputElement;
-  let dropZone = $state<HTMLDivElement// Document types for legal AI
-  const documentTypes | null>(null) => [
-    { value: "contract", label: "Contract" },
-    { value: "motion", label: "Motion" },
-    { value: "brief", label: "Brief" },
-    { value: "evidence", label: "Evidence" },
-    { value: "correspondence", label: "Correspondence" },
-    { value: "statute", label: "Statute" },
-    { value: "regulation", label: "Regulation" },
-    { value: "case_law", label: "Case Law" },
-    { value: "other", label: "Other" },
-  ]);
-  const jurisdictions >([
-    { value: "federal", label: "Federal" },
-    { value: "state", label: "State" },
-    { value: "local", label: "Local" },
-    { value: "international", label: "International" },
-  ]);
-  // ============================================================================
-  // DRAG & DROP HANDLERS
-  // ============================================================================
-  function handleDragOver(_event: DragEvent) {
-    event.preventDefault();
+  const completedFiles = derived(files, ($files) => $files.filter((f) => f.status === 'completed'));
+  const hasErrors = derived(files, ($files) => $files.some((f) => f.status === 'error'));
+
+  // DOM refs
+  let fileInput: HTMLInputElement | null = null;
+  let dropZone: HTMLDivElement | null = null;
+
+  const documentTypes = [
+    { value: 'contract', label: 'Contract' },
+    { value: 'motion', label: 'Motion' },
+    { value: 'brief', label: 'Brief' },
+    { value: 'evidence', label: 'Evidence' },
+    { value: 'correspondence', label: 'Correspondence' },
+    { value: 'statute', label: 'Statute' },
+    { value: 'regulation', label: 'Regulation' },
+    { value: 'case_law', label: 'Case Law' },
+    { value: 'other', label: 'Other' },
+  ];
+
+  const jurisdictions = [
+    { value: 'federal', label: 'Federal' },
+    { value: 'state', label: 'State' },
+    { value: 'local', label: 'Local' },
+    { value: 'international', label: 'International' },
+  ];
+
+  // Drag & drop handlers
+  function handleDragOver(e: DragEvent) {
+    e.preventDefault();
     isDragging.set(true);
   }
-  function handleDragLeave(_event: DragEvent) {
-    if (
-      !event.relatedTarget ||
-      !dropZone?.contains(event.relatedTarget as Node)
-    ) {
+
+  function handleDragLeave(e: DragEvent) {
+    if (!e.relatedTarget || !dropZone?.contains(e.relatedTarget as Node)) {
       isDragging.set(false);
     }
   }
-  function handleDrop(_event: DragEvent) {
-    event.preventDefault();
+
+  function handleDrop(e: DragEvent) {
+    e.preventDefault();
     isDragging.set(false);
-    const droppedFiles = Array.from(event.dataTransfer?.files || []);
-    processSelectedFiles(droppedFiles);
+    const droppedFiles = Array.from(e.dataTransfer?.files || []);
+    processSelectedFiles(droppedFiles as File[]);
   }
-  function handleFileSelect(_event: Event) {
-    // removed unused target assignment
+
+  function handleFileSelect(e: Event) {
+    const target = e.target as HTMLInputElement;
     const selectedFiles = Array.from(target.files || []);
-    processSelectedFiles(selectedFiles);
-    target.value = ""; // Reset input
+    processSelectedFiles(selectedFiles as File[]);
+    target.value = '';
   }
-  // ============================================================================
-  // FILE PROCESSING
-  // ============================================================================
+
   function processSelectedFiles(selectedFiles: File[]) {
     const validFiles = selectedFiles.filter((file) => {
-      // Check file type
-      const extension = "." + file.name.split.pop()?.toLowerCase();
-      if (!acceptedTypes.includes(extension)) {
-        console.warn(`File type ${extension} not accepted`);
+      const ext = '.' + (file.name.split('.')?.pop() || '').toLowerCase();
+      if (!acceptedTypes.includes(ext)) {
+        console.warn(`File type ${ext} not accepted`);
         return false;
       }
-      // Check file size
       if (file.size > maxFileSize) {
         console.warn(`File ${file.name} exceeds maximum size`);
         return false;
       }
       return true;
     });
-    // Check total file count
+
     files.update((currentFiles) => {
       if (currentFiles.length + validFiles.length > maxFiles) {
         console.warn(`Maximum ${maxFiles} files allowed`);
-        return currentFile;
+        return currentFiles;
       }
-      const newFiles: UploadFile[] = validFiles.map((file) => ({,
+      const newFiles: UploadFile[] = validFiles.map((file) => ({
         id: crypto.randomUUID(),
         file,
-        status: "pending",
+        status: 'pending',
         progress: 0,
         metadata: {
-          title: file.name.replace(/\.[^/.]+$/, ""),
-          documentType: "other",
-          autoSummarize: true
-          extractEntities: true;
+          title: file.name.replace(/\.[^/.]+$/, ''),
+          documentType: 'other',
+          autoSummarize: true,
+          extractEntities: true,
           tags: [],
         },
       }));
+
       // Generate previews for images
       newFiles.forEach((uploadFile) => {
-        if (uploadFile.file.type.startsWith("image/")) {
+        if (uploadFile.file.type.startsWith('image/')) {
           const reader = new FileReader();
-          reader.onload = (e) => {
-            uploadFile.preview = e.target?.result as string;
-            files.update((f) => [...f]); // Trigger reactivity
-          }
+          reader.onload = (ev) => {
+            uploadFile.preview = ev.target?.result as string;
+            files.update((f) => [...f]);
+          };
           reader.readAsDataURL(uploadFile.file);
         }
       });
+
       return [...currentFiles, ...newFiles];
     });
-    // Auto-upload if enabled
+
     if (autoProcess) {
       uploadFiles();
     }
   }
-  // ============================================================================
-  // UPLOAD & AI PROCESSING
-  // ============================================================================
+
+  // Upload & processing
   async function uploadFiles() {
     isProcessing.set(true);
-    const currentFiles = $files.filter((file) => file.status === "pending");
+    const currentFiles = get(files).filter((file) => file.status === 'pending');
     for (const uploadFile of currentFiles) {
       try {
         await uploadSingleFile(uploadFile);
-      } catch (error) {
-        console.error("Upload error:", error);
-        updateFileStatus(uploadFile.id, "error", 0, String(error));
+      } catch (err) {
+        console.error('Upload error:', err);
+        updateFileStatus(uploadFile.id, 'error', 0, String(err));
       }
     }
     isProcessing.set(false);
   }
+
   async function uploadSingleFile(uploadFile: UploadFile) {
-    updateFileStatus(uploadFile.id, "uploading", 10);
-    // Create FormData
+    updateFileStatus(uploadFile.id, 'uploading', 10);
     const formData = new FormData();
-    formData.append("file", uploadFile.file);
-    formData.append("caseId", caseId);
-    formData.append("userId", userId);
-    formData.append("metadata", JSON.stringify(uploadFile.metadata));
+    formData.append('file', uploadFile.file);
+    formData.append('caseId', caseId);
+    formData.append('userId', userId);
+    formData.append('metadata', JSON.stringify(uploadFile.metadata));
+
     try {
-      // Upload file
-      const uploadResponse = await fetch("/api/documents/upload", {
-        method: "POST",
-        body: formData
+      const uploadResponse = await fetch('/api/documents/upload', {
+        method: 'POST',
+        body: formData,
       });
-      if (!uploadResponse.ok) {
-        throw new Error(`Upload failed: ${uploadResponse.statusText}`);
-      }
+      if (!uploadResponse.ok) throw new Error(`Upload failed: ${uploadResponse.statusText}`);
       const uploadResult = await uploadResponse.json();
-      updateFileStatus(uploadFile.id, "processing", 50);
-      // Start AI processing
-      if (
-        uploadFile.metadata.autoSummarize ||
-        uploadFile.metadata.extractEntities
-      ) {
-        const processingResponse = await fetch("/api/ai/process-document", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({,
+      updateFileStatus(uploadFile.id, 'processing', 50);
+
+      if (uploadFile.metadata.autoSummarize || uploadFile.metadata.extractEntities) {
+        const processingResponse = await fetch('/api/ai/process-document', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
             documentId: uploadResult.documentId,
             extractEntities: uploadFile.metadata.extractEntities,
             generateSummary: uploadFile.metadata.autoSummarize,
-            riskAssessment: true
+            riskAssessment: true,
           }),
         });
-        if (!processingResponse.ok) {
-          throw new Error(
-            `AI processing failed: ${processingResponse.statusText}`
-          );
-        }
-        const processingResult = await processingResponse.json();
-        updateFileStatus(uploadFile.id, "completed", 100);
-        // Emit events
-        ondispatch?.({
-          fileId: uploadFile.id,
-          result: processingResult;
-        });
-        ondispatch?.({
+        if (!processingResponse.ok) throw new Error(`AI processing failed: ${processingResponse.statusText}`);
+        const processingResult: ProcessingResult = await processingResponse.json();
+        updateFileStatus(uploadFile.id, 'completed', 100);
+
+        dispatch('file-processed', { fileId: uploadFile.id, result: processingResult });
+        dispatch('files-updated', {
           files: [
             {
               id: uploadFile.id,
@@ -283,104 +250,80 @@ https://svelte.dev/e/js_parse_error -->
               type: uploadFile.file.type,
               url: uploadResult.url,
               thumbnail: uploadFile.preview,
-            },
+            } as ProcessedFile,
           ],
         });
       } else {
-        updateFileStatus(uploadFile.id, "completed", 100);
+        updateFileStatus(uploadFile.id, 'completed', 100);
       }
-    } catch (error) {
-      updateFileStatus(uploadFile.id, "error", 0, String(error));
-      ondispatch?.({
-        fileId: uploadFile.id,
-        error: String(error),
-      });
+    } catch (err) {
+      updateFileStatus(uploadFile.id, 'error', 0, String(err));
+      dispatch('upload-error', { fileId: uploadFile.id, error: String(err) });
     }
   }
-  function updateFileStatus(
-    fileId: string
-    status: UploadFile["status"],
-    progress: number
-    error?: string
-  ) {
+
+  function updateFileStatus(fileId: string, status: UploadFile['status'], progress: number, error?: string) {
     files.update((currentFiles) =>
-      currentFiles.map((file) =>
-        file.id === fileId
-          ? { ...file, status, progress, ...(error && { error }) }
-          : file
-      )
+      currentFiles.map((file) => (file.id === fileId ? { ...file, status, progress, ...(error ? { error } : {}) } : file))
     );
-    if (status === "processing") {
-      ondispatch?.({ fileId, progress });
-    }
+    if (status === 'processing') dispatch('file-progress', { fileId, progress });
   }
-  // ============================================================================
-  // FILE MANAGEMENT
-  // ============================================================================
+
   function removeFile(fileId: string) {
-    files.update((currentFiles) =>
-      currentFiles.filter((file) => file.id !== fileId)
-    );
+    files.update((currentFiles) => currentFiles.filter((f) => f.id !== fileId));
   }
+
   function openMetadataDialog(file: UploadFile) {
     selectedFile.set(file);
     showMetadata.set(true);
   }
-  function updateFileMetadata(
-    fileId: string
-    metadata: Partial<UploadFile["metadata"]>
-  ) {
-    files.update((currentFiles) =>
-      currentFiles.map((file) =>
-        file.id === fileId
-          ? { ...file, metadata: { ...file.metadata, ...metadata } }
-          : file
-      )
-    );
+
+  function updateFileMetadata(fileId: string, metadata: Partial<UploadFile['metadata']>) {
+    files.update((currentFiles) => currentFiles.map((file) => (file.id === fileId ? { ...file, metadata: { ...file.metadata, ...metadata } } : file)));
   }
+
   function getFileIcon(file: File) {
-    if (file.type.startsWith("image/")) return FileImag;
-    if (file.type.includes("pdf")) return FileText;
-    return Fil;
+    if (file.type.startsWith('image/')) return FileImage;
+    if (file.type.includes('pdf')) return FileText;
+    return FileIcon;
   }
+
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return "0 Bytes";
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  function getStatusColor(status: UploadFile["status"]): string {
+
+  function getStatusColor(status: UploadFile['status']): string {
     switch (status) {
-      case "completed":
-        return "green";
-      case "error":
-        return "red";
-      case "processing":
-        return "blue";
-      case "uploading":
-        return "yellow";
+      case 'completed':
+        return 'green';
+      case 'error':
+        return 'red';
+      case 'processing':
+        return 'blue';
+      case 'uploading':
+        return 'yellow';
       default:
-        return "gray";
+        return 'gray';
     }
   }
-  // ============================================================================
-  // LIFECYCLE
-  // ============================================================================
-  $effect(() => {
-    // Set up global drag and drop prevention
+
+  onMount(() => {
     const preventDefaults = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
-    }
-    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+    };
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
       document.addEventListener(eventName, preventDefaults, false);
     });
     return () => {
-      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
         document.removeEventListener(eventName, preventDefaults, false);
       });
-    }
+    };
   });
 </script>
 <!-- Main Upload Interface -->
@@ -501,7 +444,7 @@ https://svelte.dev/e/js_parse_error -->
                 </Badge>
                 <div class="action-buttons">
                   {#if showMetadataForm && file.status === "pending"}
-                    <Button class="bits-btn"
+                    <Button className="bits-btn"
                       variant="ghost"
                       size="sm"
                       onclick={() =>
@@ -510,7 +453,7 @@ openMetadataDialog(file)}
                       Edit
 </Button>
                   {/if}
-                  <Button class="bits-btn"
+                  <Button className="bits-btn"
                     variant="ghost"
                     size="sm"
                     onclick={() =>
@@ -529,11 +472,11 @@ removeFile(file.id)}
     </div>
     <!-- Upload Actions -->
     <div class="upload-actions mt-6">
-      <Button class="bits-btn"
+      <Button
+        className="bits-btn mr-4"
         onclick={uploadFiles}
         disabled={$isProcessing || $files.every((f) =>
 f.status !== "pending")}
-        class="mr-4"
       >
         {#if $isProcessing}
           <Loader2 class="mr-2 animate-spin" size={16} />
@@ -544,7 +487,7 @@ f.status !== "pending")}
             .length} files)
         {/if}
 </Button>
-      <Button class="bits-btn"
+      <Button className="bits-btn"
         variant="ghost"
         onclick={() =>
 files.set([])}
@@ -553,59 +496,58 @@ files.set([])}
         Clear All
 </Button>
     </div>
-  {/if}
   <!-- Metadata Dialog -->
-  <Dialog.Root bind:open={$showMetadata}>
-    <Dialog.RootContent class="max-w-md">
+  <Dialog.Root bind:open={showMetadata}>
+    <Dialog.Content class="max-w-md">
       <Dialog.Header>
         <Dialog.Title>Document Metadata</Dialog.Title>
       </Dialog.Header>
       {#if $selectedFile}
         <div class="metadata-form space-y-4">
           <div>
-            <Label for="title">Title</Label>
+            <Label htmlFor="title">Title</Label>
             <Input
-              id="title";
+              id="title"
               bind:value={$selectedFile.metadata.title}
               placeholder="Document title"
             />
           </div>
           <div>
-            <Label for="description">Description</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
-              id="description";
+              id="description"
               bind:value={$selectedFile.metadata.description}
               placeholder="Brief description"
               rows={3}
             />
           </div>
           <div>
-            <Label for="document-type">Document Type</Label>
-            <Select bind:value={$selectedFile.metadata.documentType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
+            <Label htmlFor="document-type">Document Type</Label>
+            <Select.Root bind:value={$selectedFile.metadata.documentType}>
+              <Select.Trigger>
+                <Select.Value placeholder="Select type" />
+              </Select.Trigger>
+              <Select.Content>
                 {#each documentTypes as type}
-                  <SelectItem value={type.value}>{type.label}</SelectItem>
+                  <Select.Item value={type.value}>{type.label}</Select.Item>
                 {/each}
-              </SelectContent>
-            </Select>
+              </Select.Content>
+            </Select.Root>
           </div>
           <div>
-            <Label for="jurisdiction">Jurisdiction</Label>
-            <Select bind:value={$selectedFile.metadata.jurisdiction}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select jurisdiction" />
-              </SelectTrigger>
-              <SelectContent>
+            <Label htmlFor="jurisdiction">Jurisdiction</Label>
+            <Select.Root bind:value={$selectedFile.metadata.jurisdiction}>
+              <Select.Trigger>
+                <Select.Value placeholder="Select jurisdiction" />
+              </Select.Trigger>
+              <Select.Content>
                 {#each jurisdictions as jurisdiction}
-                  <SelectItem value={jurisdiction.value}
-                    >{jurisdiction.label}</SelectItem
+                  <Select.Item value={jurisdiction.value}
+                    >{jurisdiction.label}</Select.Item
                   >
                 {/each}
-              </SelectContent>
-            </Select>
+              </Select.Content>
+            </Select.Root>
           </div>
           <div class="ai-options">
             <Label>AI Processing Options</Label>
@@ -642,75 +584,127 @@ showMetadata.set(false)}>
 </div>
 <style>
   .enhanced-document-uploader {
-    @apply w-full;
+    width: 100%;
   }
   .drop-zone {
-    @apply border-2 border-dashed border-muted-foreground border-opacity-25 rounded-lg p-8 text-center cursor-pointer transition-colors hover:border-primary hover:border-opacity-50 hover:bg-muted hover:bg-opacity-50;
+    border: 2px dashed #d1d5db;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: #f9fafb;
   }
   .drop-zone.dragging {
-    @apply border-primary bg-primary bg-opacity-5;
+    border-color: #2563eb;
+    background: rgba(37, 99, 235, 0.05);
   }
   .drop-zone-content {
-    @apply space-y-2;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   .drop-zone-icon {
-    @apply mx-auto text-muted-foreground;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    color: #6b7280;
   }
   .drop-zone-title {
-    @apply text-lg font-semibold;
+    font-size: 1.125rem;
+    font-weight: 600;
   }
   .drop-zone-description {
-    @apply text-sm text-muted-foreground;
+    font-size: 0.875rem;
+    color: #6b7280;
   }
   .drop-zone-specs {
-    @apply text-xs text-muted-foreground;
+    font-size: 0.75rem;
+    color: #6b7280;
   }
   .file-list {
-    @apply space-y-3;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
   }
   .file-item {
-    @apply transition-shadow hover:shadow-md;
+    transition: box-shadow 0.2s;
+  }
+  .file-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .file-info {
-    @apply flex items-center space-x-4;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
   .file-preview {
-    @apply flex-shrink-0 w-12 h-12 rounded-lg bg-muted flex items-center justify-center overflow-hidden;
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
   }
   .preview-image {
-    @apply w-full h-full object-cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .file-details {
-    @apply flex-1 min-w-0;
+    flex: 1 1 0%;
+    min-width: 0;
   }
   .file-name {
-    @apply font-medium truncat;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .file-meta {
-    @apply text-sm text-muted-foreground;
+    font-size: 0.875rem;
+    color: #6b7280;
   }
   .file-progress {
-    @apply mt-2;
+    margin-top: 0.5rem;
   }
   .error-message {
-    @apply text-sm text-destructive flex items-center mt-2;
+    font-size: 0.875rem;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
   }
   .file-actions {
-    @apply flex flex-col items-end space-y-2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
   }
   .action-buttons {
-    @apply flex space-x-2;
+    display: flex;
+    gap: 0.5rem;
   }
   .upload-actions {
-    @apply flex items-center justify-center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .metadata-form {
-    @apply p-1;
+    padding: 0.25rem;
   }
   .checkbox-group {
-    @apply space-y-2 mt-2;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
   .dialog-actions {
-    @apply flex justify-end space-x-2 mt-6;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
   }
 </style>

@@ -596,7 +596,7 @@ try {
   relatedDocumentsLoaded={event => {
     // Update graph visualization when related documents are loaded
     if ($documentDetailsState.selectedDocumentId) {
-      updateGraphWithRelations($documentDetailsState.selectedDocumentId, event.detail.relatedDocuments);
+      updateGraphWithRelations($documentDetailsState.selectedDocumentId, e(vent as CustomEvent).detail.relatedDocuments);
     }
   }}
 />

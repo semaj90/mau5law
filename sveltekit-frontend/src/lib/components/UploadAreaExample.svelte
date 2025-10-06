@@ -9,36 +9,36 @@
   let maxFiles = $state(5);
   let maxFileSize = $state(10 * 1024 * 1024); // 10MB
   function handleUploadStart(_event: CustomEvent) {
-    uploadStatus = `Starting upload of ${event.detail.files.length} files...`;
-    console.log('Upload started:', event.detail);
+    uploadStatus = `Starting upload of ${e(vent as CustomEvent).detail.files.length} files...`;
+    console.log('Upload started:', e(vent as CustomEvent).detail);
   }
   function handleUploadProgress(_event: CustomEvent) {
-    uploadStatus = `Upload progress: ${Math.round(event.detail.progress)}%`;
-    console.log('Upload progress:', event.detail);
+    uploadStatus = `Upload progress: ${Math.round(e(vent as CustomEvent).detail.progress)}%`;
+    console.log('Upload progress:', e(vent as CustomEvent).detail);
   }
   function handleUploadComplete(_event: CustomEvent) {
-    uploadStatus = `Successfully uploaded ${event.detail.files.length} files!`;
-    uploadedFiles = [...uploadedFiles, ...event.detail.results];
-    console.log('Upload completed:', event.detail);
+    uploadStatus = `Successfully uploaded ${e(vent as CustomEvent).detail.files.length} files!`;
+    uploadedFiles = [...uploadedFiles, ...e(vent as CustomEvent).detail.results];
+    console.log('Upload completed:', e(vent as CustomEvent).detail);
   }
   function handleUploadError(_event: CustomEvent) {
-    uploadStatus = `Upload failed: ${event.detail.error}`;
-    console.error('Upload error:', event.detail);
+    uploadStatus = `Upload failed: ${e(vent as CustomEvent).detail.error}`;
+    console.error('Upload error:', e(vent as CustomEvent).detail);
   }
   function handleFileStart(_event: CustomEvent) {
-    console.log('File upload started:', event.detail.file.name);
+    console.log('File upload started:', e(vent as CustomEvent).detail.file.name);
   }
   function handleFileSuccess(_event: CustomEvent) {
-    console.log('File uploaded successfully:', event.detail.file.name);
+    console.log('File uploaded successfully:', e(vent as CustomEvent).detail.file.name);
   }
   function handleFileError(_event: CustomEvent) {
-    console.error('File upload failed:', event.detail.file.name, event.detail.error);
+    console.error('File upload failed:', e(vent as CustomEvent).detail.file.name, e(vent as CustomEvent).detail.error);
   }
   function handleFilesSelected(_event: CustomEvent) {
-    console.log('Files selected:', event.detail.files.length);
+    console.log('Files selected:', e(vent as CustomEvent).detail.files.length);
   }
   function handleValidationError(_event: CustomEvent) {
-    console.warn('Validation errors:', event.detail.errors);
+    console.warn('Validation errors:', e(vent as CustomEvent).detail.errors);
   }
   function clearStatus() {
     uploadStatus = '';

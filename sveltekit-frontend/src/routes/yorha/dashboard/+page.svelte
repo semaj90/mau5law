@@ -427,147 +427,147 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .yorha-dashboard-page {
-    @apply space-y-8 pb-16;
+/* @apply space-y-8 pb-16; */
   }
   /* Page Header */
   .yorha-page-header {
-    @apply py-12 px-6 border-b border-amber-400 border-opacity-30;
+/* @apply py-12 px-6 border-b border-amber-400 border-opacity-30; */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%);
   }
   .yorha-header-content {
-    @apply max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6;
+/* @apply max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6; */
   }
   .yorha-header-title {
-    @apply text-center md:text-left space-y-2;
+/* @apply text-center md:text-left space-y-2; */
   }
   .yorha-header-title h1 {
-    @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center gap-4;
+/* @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center gap-4; */
     text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
   }
   .yorha-header-subtitle {
-    @apply text-lg text-amber-300 tracking-wide opacity-80;
+/* @apply text-lg text-amber-300 tracking-wide opacity-80; */
   }
   .yorha-header-status {
-    @apply flex items-center gap-4;
+/* @apply flex items-center gap-4; */
   }
   .yorha-status-item {
-    @apply flex items-center gap-2 text-xs text-amber-400 opacity-60;
+/* @apply flex items-center gap-2 text-xs text-amber-400 opacity-60; */
   }
   /* Loading */
   .yorha-loading {
-    @apply flex flex-col items-center justify-center py-32 space-y-4;
+/* @apply flex flex-col items-center justify-center py-32 space-y-4; */
   }
   .yorha-loading-spinner {
-    @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full;
+/* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */
     animation: spin 1s linear infinite;
   }
   /* Overview Metrics */
   .yorha-overview {
-    @apply px-6;
+/* @apply px-6; */
   }
   .yorha-metrics-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto;
+/* @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto; */
   }
   .yorha-metric-card {
-    @apply bg-gray-900 border-2 p-6 space-y-4;
+/* @apply bg-gray-900 border-2 p-6 space-y-4; */
   }
   .yorha-card-database {
-    @apply border-blue-400;
+/* @apply border-blue-400; */
   }
   .yorha-card-backend {
-    @apply border-green-400;
+/* @apply border-green-400; */
   }
   .yorha-card-frontend {
-    @apply border-purple-400;
+/* @apply border-purple-400; */
   }
   .yorha-card-health {
-    @apply border-orange-400;
+/* @apply border-orange-400; */
   }
   .yorha-metric-header {
-    @apply flex items-center justify-betwee;
+/* @apply flex items-center justify-betwee; */
   }
   .yorha-metric-header h3 {
-    @apply font-bold tracking-wider text-lg;
+/* @apply font-bold tracking-wider text-lg; */
   }
   .yorha-metric-stats {
-    @apply grid grid-cols-3 gap-2 text-center;
+/* @apply grid grid-cols-3 gap-2 text-center; */
   }
   .yorha-stat-value {
-    @apply block text-xl font-bold;
+/* @apply block text-xl font-bold; */
   }
   .yorha-stat-label {
-    @apply block text-xs opacity-60 mt-1;
+/* @apply block text-xs opacity-60 mt-1; */
   }
   /* Charts */
   .yorha-charts {
-    @apply px-6 space-y-6;
+/* @apply px-6 space-y-6; */
   }
   .yorha-section-title {
-    @apply text-2xl font-bold text-amber-400 tracking-wider flex items-center gap-3 max-w-6xl mx-auto;
+/* @apply text-2xl font-bold text-amber-400 tracking-wider flex items-center gap-3 max-w-6xl mx-auto; */
   }
   .yorha-charts-grid {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto;
+/* @apply grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto; */
   }
   .yorha-chart-card {
-    @apply bg-gray-900 border border-amber-400 border-opacity-30 p-6;
+/* @apply bg-gray-900 border border-amber-400 border-opacity-30 p-6; */
   }
   .yorha-chart-card h3 {
-    @apply text-sm font-bold text-amber-400 mb-4 tracking-wider;
+/* @apply text-sm font-bold text-amber-400 mb-4 tracking-wider; */
   }
   .yorha-chart {
-    @apply relative h-32 bg-black border border-amber-400 border-opacity-20 flex items-end justify-center;
+/* @apply relative h-32 bg-black border border-amber-400 border-opacity-20 flex items-end justify-center; */
   }
   .yorha-chart-line {
-    @apply w-full bg-gradient-to-t from-amber-400 to-amber-300 transition-all duration-1000;
+/* @apply w-full bg-gradient-to-t from-amber-400 to-amber-300 transition-all duration-1000; */
     height: var(--height);
   }
   .yorha-chart-value {
-    @apply absolute top-2 right-2 text-xs text-amber-400 font-monone;
+/* @apply absolute top-2 right-2 text-xs text-amber-400 font-monone; */
   }
   /* System Status */
   .yorha-system-status {
-    @apply px-6;
+/* @apply px-6; */
   }
   .yorha-data-viz {
-    @apply px-6;
+/* @apply px-6; */
   }
   /* Graph */
   .yorha-graph {
-    @apply px-6 space-y-6;
+/* @apply px-6 space-y-6; */
   }
   .yorha-graph-container {
-    @apply relative bg-gray-900 border border-amber-400 border-opacity-30 p-8 max-w-6xl mx-auto;
+/* @apply relative bg-gray-900 border border-amber-400 border-opacity-30 p-8 max-w-6xl mx-auto; */
     min-height: 400px;
   }
   .yorha-graph-node {
-    @apply absolute flex flex-col items-center space-y-2 p-3 border border-opacity-60;
+/* @apply absolute flex flex-col items-center space-y-2 p-3 border border-opacity-60; */
   }
   .yorha-node-database {
-    @apply border-blue-400 bg-blue-400 bg-opacity-10;
+/* @apply border-blue-400 bg-blue-400 bg-opacity-10; */
   }
   .yorha-node-service {
-    @apply border-green-400 bg-green-400 bg-opacity-10;
+/* @apply border-green-400 bg-green-400 bg-opacity-10; */
   }
   .yorha-node-component {
-    @apply border-purple-400 bg-purple-400 bg-opacity-10;
+/* @apply border-purple-400 bg-purple-400 bg-opacity-10; */
   }
   .yorha-node-icon {
-    @apply text-current;
+/* @apply text-current; */
   }
   .yorha-node-label {
-    @apply text-xs font-mono text-current;
+/* @apply text-xs font-mono text-current; */
   }
   .yorha-node-status {
-    @apply w-2 h-2 rounded-full;
+/* @apply w-2 h-2 rounded-full; */
   }
   .yorha-status-healthy {
-    @apply bg-green-400;
+/* @apply bg-green-400; */
   }
   .yorha-status-warning {
-    @apply bg-yellow-400;
+/* @apply bg-yellow-400; */
   }
   .yorha-status-error {
-    @apply bg-red-400;
+/* @apply bg-red-400; */
   }
   @keyframes spin {
     to {
@@ -577,13 +577,13 @@ https://svelte.dev/e/js_parse_error -->
   /* Responsive */
   @media (max-width: 768px) {
     .yorha-header-title h1 {
-      @apply text-2xl flex-col;
+/* @apply text-2xl flex-col; */
     }
     .yorha-metrics-grid {
-      @apply grid-cols-1 gap-4;
+/* @apply grid-cols-1 gap-4; */
     }
     .yorha-charts-grid {
-      @apply grid-cols-1 gap-4;
+/* @apply grid-cols-1 gap-4; */
     }
   }
 </style>

@@ -12,136 +12,171 @@
  * 5. Loki.js collection methods (remove, removeCollection)
  */
 // ===== TESTING FRAMEWORK BARREL STORE =====
+const _globals = globalThis as unknown as {
+  describe?: (name: string, fn: () => void) => void;
+  it?: (name: string, fn: () => void) => void;
+  test?: (name: string, fn: () => void) => void;
+  expect?: (value: unknown) => {
+    toBe?: (expected: unknown) => boolean;
+    toEqual?: (expected: unknown) => boolean;
+    toBeTruthy?: () => boolean;
+    toBeFalsy?: () => boolean;
+    toContain?: (expected: unknown) => boolean;
+    toHaveLength?: (expected: number) => boolean;
+    toThrow?: () => boolean;
+  };
+  beforeEach?: (fn: () => void) => void;
+  afterEach?: (fn: () => void) => void;
+  beforeAll?: (fn: () => void) => void;
+  afterAll?: (fn: () => void) => void;
+};
 export const testingFramework = {
-  describe: (globalThis as any).describe || ((name: string, fn: () => void) => fn()),
-  it: (globalThis as any).it || ((name: string, fn: () => void) => fn()),
-  expect: (globalThis as any).expect || ((_value: any) => ({,
-    toBe: (expected: any) => value === expected,
-    toEqual: (expected: any) => JSON.stringify(value) === JSON.stringify(expected),
-    toBeTruthy: () => !!value,
-    toBeFalsy: () => !value,
-    toContain: (expected: any) => value.includes?.(expected),
-    toHaveLength: (expected: number) => value?.length === expected,
-    toThrow: () => {
-      try { value(); return false, } catch { return true, }
-    }
-  })),
-  beforeEach: (globalThis as any).beforeEach || ((fn: () => void) => fn()),
-  afterEach: (globalThis as any).afterEach || ((fn: () => void) => fn()),
-  beforeAll: (globalThis as any).beforeAll || ((fn: () => void) => fn()),
-  afterAll: (globalThis as any).afterAll || ((fn: () => void) => fn()),
-  test: (globalThis as any).test || (globalThis as any).it || ((name: string, fn: () => void) => fn()
-}
+  describe: _globals.describe || ((name: string, fn: () => void) => fn()),
+  it: _globals.it || ((name: string, fn: () => void) => fn()),
+  // Provide a simple expect shim that accepts a value parameter
+  expect:
+    _globals.expect ||
+    ((value: unknown) => ({
+      toBe: (expected: unknown) => value === expected,
+      toEqual: (expected: unknown) => JSON.stringify(value) === JSON.stringify(expected),
+      toBeTruthy: () => !!value,
+      toBeFalsy: () => !value,
+      toContain: (expected: unknown) => {
+        try {
+          if (Array.isArray(value)) return (value as unknown[]).includes(expected);
+          if (typeof value === 'string') return (value as string).includes(String(expected));
+        } catch {
+          /* ignore */
+        }
+        return false;
+      },
+      toHaveLength: (expected: number) => (value as { length?: number })?.length === expected,
+      toThrow: () => {
+        try {
+          if (typeof value === 'function') (value as Function)();
+          return false;
+        } catch {
+          return true;
+        }
+      },
+    })),
+  beforeEach: _globals.beforeEach || ((fn: () => void) => fn()),
+  afterEach: _globals.afterEach || ((fn: () => void) => fn()),
+  beforeAll: _globals.beforeAll || ((fn: () => void) => fn()),
+  afterAll: _globals.afterAll || ((fn: () => void) => fn()),
+  // Fixed: ensure the inline function expression is properly closed
+  test: _globals.test || _globals.it || ((name: string, fn: () => void) => fn()),
+};
 // ===== CACHE LAYER METHODS BARREL STORE =====
 export const cacheLayerMethods = {
   memory: {
-    get: async (_key: string) => null,
-    set: async (_key: string, value: any) => true,
+    get: async (_key: string) => null as unknown,
+    set: async (_key: string, _value: unknown) => true,
     delete: async (_key: string) => true,
     clear: async () => true,
     size: () => 0,
-    keys: () => [],
+    keys: () => [] as string[],
     priority: 1,
     capacity: 1000,
-    ttl: 3600
+    ttl: 3600,
   },
   redis: {
-    get: async (_key: string) => null,
-    set: async (_key: string, value: any) => true,
+    get: async (_key: string) => null as unknown,
+    set: async (_key: string, _value: unknown) => true,
     delete: async (_key: string) => true,
     exists: async (_key: string) => false,
-    expire: async (_key: string, seconds: number) => true,
+    expire: async (_key: string, _seconds: number) => true,
     priority: 2,
     capacity: 10000,
-    ttl: 7200
+    ttl: 7200,
   },
   postgres: {
-    query: async (sql: string, params?: any[]) => ({ rows: [], rowCount: 0 }),
-    execute: async (sql: string, params?: any[]) => true,
-    transaction: async (callback: (tx: any) => Promise<any>) => callback({}),
-    close: async () => true
+    query: async (_sql: string, _params?: unknown[]) => ({ rows: [] as unknown[], rowCount: 0 }),
+    execute: async (_sql: string, _params?: unknown[]) => true,
+    transaction: async (callback: (tx: unknown) => Promise<unknown>) => callback({} as unknown),
+    close: async () => true,
   },
   vector: {
-    search: async (query: number[], k: number) => [],
-    insert: async (vector: number[], metadata: any) => true,
-    delete: async (id: string) => true,
-    update: async (id: string, vector: number[], metadata: any) => true,
-    similarity: (v1: number[], v2: number[]) => 0
+    search: async (_query: number[], _k: number) => [] as unknown[],
+    insert: async (_vector: number[], _metadata: Record<string, unknown>) => true,
+    delete: async (_id: string) => true,
+    update: async (_id: string, _vector: number[], _metadata: Record<string, unknown>) => true,
+    similarity: (_v1: number[], _v2: number[]) => 0,
   },
   filesystem: {
-    read: async (path: string) => null,
-    write: async (path: string, content: any) => true,
-    delete: async (path: string) => true,
-    exists: async (path: string) => false,
-    list: async (path: string) => [],
-    stat: async (path: string) => null
+    read: async (_path: string) => null as unknown,
+    write: async (_path: string, _content: unknown) => true,
+    delete: async (_path: string) => true,
+    exists: async (_path: string) => false,
+    list: async (_path: string) => [] as string[],
+    stat: async (_path: string) => null as unknown,
   },
   cdn: {
-    get: async (url: string) => null,
-    put: async (url: string, content: any) => true,
-    delete: async (url: string) => true,
-    purge: async (pattern: string) => true
+    get: async (_url: string) => null as unknown,
+    put: async (_url: string, _content: unknown) => true,
+    delete: async (_url: string) => true,
+    purge: async (_pattern: string) => true,
   },
   browser: {
     localStorage: {
-      get: (_key: string) => globalThis.localStorage?.getItem(key) || null,
-      set: (_key: string, value: string) => globalThis.localStorage?.setItem(key, value),
-      delete: (_key: string) => globalThis.localStorage?.removeItem(key),
-      clear: () => globalThis.localStorage?.clear()
+      get: (_key: string) => globalThis.localStorage?.getItem(_key) || null,
+      set: (_key: string, value: string) => globalThis.localStorage?.setItem(_key, value),
+      delete: (_key: string) => globalThis.localStorage?.removeItem(_key),
+      clear: () => globalThis.localStorage?.clear(),
     },
     sessionStorage: {
-      get: (_key: string) => globalThis.sessionStorage?.getItem(key) || null,
-      set: (_key: string, value: string) => globalThis.sessionStorage?.setItem(key, value),
-      delete: (_key: string) => globalThis.sessionStorage?.removeItem(key),
-      clear: () => globalThis.sessionStorage?.clear()
+      get: (_key: string) => globalThis.sessionStorage?.getItem(_key) || null,
+      set: (_key: string, value: string) => globalThis.sessionStorage?.setItem(_key, value),
+      delete: (_key: string) => globalThis.sessionStorage?.removeItem(_key),
+      clear: () => globalThis.sessionStorage?.clear(),
     },
     indexedDB: {
-      open: async (name: string) => null,
-      get: async (_key: string) => null,
-      set: async (_key: string, value: any) => true,
-      delete: async (_key: string) => true
-    }
-  }
-}
+      open: async (_name: string) => null as unknown,
+      get: async (_key: string) => null as unknown,
+      set: async (_key: string, _value: unknown) => true,
+      delete: async (_key: string) => true,
+    },
+  },
+};
 // ===== DATABASE ENTITY PROPERTIES BARREL STORE =====
 export const databaseEntityProperties = {
   // Common database entity properties that are missing in type definitions
-  withProperty: (obj: any, property: string, defaultValue: any = null) => {
+  withProperty: (obj: Record<string, unknown> | null, property: string, defaultValue: unknown = null) => {
     if (obj && typeof obj === 'object' && !(property in obj)) {
-      obj[property] = defaultValue;
+      (obj as Record<string, unknown>)[property] = defaultValue;
     }
     return obj;
   },
   // Ensure common properties exist
-  ensureProperties: (obj: any, properties: { [key: string]: any }) => {
+  ensureProperties: (obj: Record<string, unknown> | null, properties: { [key: string]: unknown }) => {
     if (!obj || typeof obj !== 'object') return obj;
     for (const [prop, defaultValue] of Object.entries(properties)) {
       if (!(prop in obj)) {
-        obj[prop] = defaultValue;
+        (obj as Record<string, unknown>)[prop] = defaultValue;
       }
     }
     return obj;
   },
   // Common legal document properties
   legalDocumentProperties: {
-    case_id: null
-    document_id: null
+    case_id: null,
+    document_id: null,
     content: '',
-    metadata: { [key: string]: any },
+    metadata: {} as Record<string, unknown>,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    user_id: null
+    user_id: null,
     status: 'pending',
-    type: 'document'
+    type: 'document',
   },
   // Chat/message properties
   messageProperties: {
     message: '',
     role: 'user',
     timestamp: new Date().toISOString(),
-    sources: [],
-    id: null
-    user_id: null
+    sources: [] as unknown[],
+    id: null,
+    user_id: null,
   },
   // Cache entry properties
   cacheEntryProperties: {
@@ -150,122 +185,132 @@ export const databaseEntityProperties = {
     createdAt: Date.now(),
     expiresAt: Date.now() + 3600000, // 1 hour
     size: 0,
-    version: 1
-  }
-}
+    version: 1,
+  },
+};
 // ===== WEBGPU EXTENDED METHODS BARREL STORE =====
 export const webGPUExtendedMethods = {
   // Enhanced GPUDevice with missing methods
-  enhanceGPUDevice: (device: any) => {
+  enhanceGPUDevice: (device: unknown) => {
     if (!device || typeof device !== 'object') return device;
+    const dev = device as DeviceLike;
     // Add missing destroy method
-    if (!device.destroy) {
-      device.destroy = () => {
+    if (!dev.destroy) {
+      dev.destroy = () => {
         // Graceful cleanup for GPU device
-        console.log('GPUDevice.destroy() called');
-      }
+        // no-op by default
+        // console.log intentionally omitted to reduce noise in production
+      };
     }
-    // Add EventTarget methods for GPU error handling
-    if (!device.addEventListener) {
-      const eventListeners = new Map();
-      device.addEventListener = (type: string, listener: (_event: any) => void) => {
+    // Add EventTarget-like methods for GPU error handling
+    if (!dev.addEventListener) {
+      const eventListeners = new Map<string, Set<EventListenerFn>>();
+      dev.addEventListener = (type: string, listener: EventListenerFn) => {
         if (!eventListeners.has(type)) {
-          eventListeners.set(type, new Set();
+          eventListeners.set(type, new Set());
         }
-        eventListeners.get(type).add(listener);
-      }
-      device.removeEventListener = (type: string, listener: (_event: any) => void) => {
+        eventListeners.get(type)!.add(listener);
+      };
+      dev.removeEventListener = (type: string, listener: EventListenerFn) => {
         const listeners = eventListeners.get(type);
         if (listeners) {
           listeners.delete(listener);
         }
-      }
-      device.dispatchEvent = (_event: any) => {
+      };
+      dev.dispatchEvent = (event: { type: string; [k: string]: unknown }) => {
         const listeners = eventListeners.get(event.type);
         if (listeners) {
-          for (const listener of listeners) {
-            listener(event);
+          for (const listener of Array.from(listeners)) {
+            try {
+              listener(event);
+            } catch {
+              /* ignore listener errors */
+            }
           }
         }
-      }
+      };
     }
-    return device;
+    return dev;
   },
   // GPU error event types
   createGPUError: (type: string, message: string) => ({
     type,
     message,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   }),
   // GPU uncaptured error event
-  createGPUUncapturedErrorEvent: (error: any) => ({,
+  createGPUUncapturedErrorEvent: (error: unknown) => ({
     type: 'uncapturederror',
     error,
-    timestamp: Date.now()
-  })
-}
+    timestamp: Date.now(),
+  }),
+};
 // ===== LOKI.JS COLLECTION METHODS BARREL STORE =====
 export const lokiCollectionMethods = {
   // Enhanced collection with missing methods
-  enhanceCollection: (collection: any) => {
+  enhanceCollection: (collection: unknown) => {
     if (!collection || typeof collection !== 'object') return collection;
+    const coll = collection as CollectionLike;
     // Add missing remove method
-    if (!collection.remove) {
-      collection.remove = (doc: any) => {
-        if (collection.data && Array.isArray(collection.data)) {
-          const index = collection.data.indexOf(doc);
+    if (!coll.remove) {
+      coll.remove = (doc: unknown) => {
+        if (coll.data && Array.isArray(coll.data)) {
+          const index = coll.data.indexOf(doc);
           if (index > -1) {
-            collection.data.splice(index, 1);
+            coll.data.splice(index, 1);
             return true;
           }
         }
         return false;
-      }
+      };
     }
     // Add missing removeWhere method
-    if (!collection.removeWhere) {
-      collection.removeWhere = (query: any) => {
-        if (collection.data && Array.isArray(collection.data)) {
-          const toRemove = collection.find(query);
-          toRemove.forEach((doc: any) => collection.remove(doc);
-          return toRemove.length;
+    if (!coll.removeWhere) {
+      coll.removeWhere = (query: unknown) => {
+        if (coll.data && Array.isArray(coll.data) && typeof coll.find === 'function') {
+          const toRemove = coll.find ? coll.find(query) : [];
+          (toRemove as unknown[]).forEach(doc => coll.remove && coll.remove(doc));
+          return (toRemove as unknown[]).length;
         }
         return 0;
-      }
+      };
     }
-    return collection;
+    return coll;
   },
   // Enhanced Loki database with missing methods
-  enhanceLoki: (loki: any) => {
+  enhanceLoki: (loki: unknown) => {
     if (!loki || typeof loki !== 'object') return loki;
+    const l = loki as LokiLike;
     // Add missing removeCollection method
-    if (!loki.removeCollection) {
-      loki.removeCollection = (name: string) => {
-        if (loki.collections && Array.isArray(loki.collections)) {
-          const index = loki.collections.findIndex((c: any) => c.name === name);
+    if (!l.removeCollection) {
+      l.removeCollection = (name: string) => {
+        if (l.collections && Array.isArray(l.collections)) {
+          const index = l.collections.findIndex(c => c.name === name);
           if (index > -1) {
-            loki.collections.splice(index, 1);
+            l.collections.splice(index, 1);
             return true;
           }
         }
         return false;
-      }
+      };
     }
     // Add missing LokiMemoryAdapter
-    if (!loki.LokiMemoryAdapter) {
-      loki.LokiMemoryAdapter = class LokiMemoryAdapter {
+    if (!l.LokiMemoryAdapter) {
+      l.LokiMemoryAdapter = class LokiMemoryAdapter {
         constructor() {}
-        loadDatabase(dbname: string, callback: (data: any) => void) {
+        loadDatabase(_dbname: string, callback: (data: unknown | null) => void) {
+          // pass `null` to signal "no data"
           callback(null);
         }
-        saveDatabase(dbname: string, dbstring: string, callback: (err: any) => void) {
-          callback(null);
+        saveDatabase(_dbname: string, _dbstring: string, callback: (err?: unknown) => void) {
+          // success -> invoke callback without error
+          callback(undefined);
         }
-      }
+      };
     }
-    return loki;
-  }
-}
+    return l;
+  },
+};
 // ===== CONFIGURATION PROPERTIES BARREL STORE =====
 export const configurationProperties = {
   // Cache configuration with missing properties
@@ -273,29 +318,29 @@ export const configurationProperties = {
     layers: [],
     defaultTtl: 3600000, // 1 hour
     maxMemoryUsage: 1024 * 1024 * 100, // 100MB
-    enableCompression: true
-    enableIntelligentTierSelection: true
-    enableAnalytics: true
-    enablePredictiveLoading: true
-    enableCoherence: true
+    enableCompression: true,
+    enableIntelligentTierSelection: true,
+    enableAnalytics: true,
+    enablePredictiveLoading: true,
+    enableCoherence: true,
     compressionThreshold: 1000,
     metricsInterval: 30000,
     analyticsInterval: 60000,
-    defaultTTL: 3600000  // alias for defaultTtl to handle both naming conventions
+    defaultTTL: 3600000, // alias for defaultTtl to handle both naming conventions
   },
   // Cache strategy properties
   cacheStrategy: {
     readStrategy: 'cache-first',
     writeStrategy: 'write-through',
     evictionStrategy: 'lru',
-    replicationStrategy: 'none'
+    replicationStrategy: 'none',
   },
   // Cache policy properties
   cachePolicy: {
     evictionStrategy: 'lru',
     maxSize: 1000,
     ttl: 3600000,
-    compressionEnabled: false
+    compressionEnabled: false,
   },
   // Cache metrics with missing properties
   cacheMetrics: {
@@ -307,47 +352,49 @@ export const configurationProperties = {
     deletes: 0,
     totalOperations: 0,
     totalOperationTime: 0,
-    hitsByLayer: { [key: string]: any },
-    writesByLayer: { [key: string]: any },
+    // Fixed: use runtime empty objects with type assertion instead of invalid index-signature literals
+    hitsByLayer: {} as Record<string, any>,
+    writesByLayer: {} as Record<string, any>,
     hitRate: 0,
-    averageOperationTime: 0
+    averageOperationTime: 0,
   },
   // Cache analytics with missing properties
   cacheAnalytics: {
     accessPatterns: new Map(),
     hotKeys: new Set(),
     coldKeys: new Set(),
-    performanceMetrics: { [key: string]: any },
-    usageStats: { [key: string]: any }
+    // Use runtime empty objects with type assertions instead of TS-only index-signature syntax
+    performanceMetrics: {} as Record<string, any>,
+    usageStats: {} as Record<string, any>,
   },
   // Cache entry with missing properties
   cacheEntry: {
-    value: null
-    metadata: { [key: string]: any },
+    value: null,
+    metadata: {} as { [key: string]: any },
     ttl: 3600000,
     createdAt: Date.now(),
     lastAccessed: Date.now(),
     accessCount: 0,
     size: 0,
-    compressed: false
+    compressed: false,
   },
   // Cache stats with missing properties
   cacheStats: {
     totalEntries: 0,
     memoryUsage: 0,
     hitRate: 0,
-    size: 0
-  }
-}
+    size: 0,
+  },
+};
 // ===== UTILITY FUNCTIONS BARREL STORE =====
 export const utilityFunctions = {
   // Safe property access
-  safeAccess: (obj: any, path: string, defaultValue: any = null) => {
+  safeAccess: (obj: unknown, path: string, defaultValue: unknown = null) => {
     const keys = path.split('.');
-    let current = obj;
+    let current: unknown = obj;
     for (const key of keys) {
-      if (current && typeof current === 'object' && key in current) {
-        current = current[key];
+      if (current && typeof current === 'object' && key in (current as Record<string, unknown>)) {
+        current = (current as Record<string, unknown>)[key];
       } else {
         return defaultValue;
       }
@@ -355,37 +402,35 @@ export const utilityFunctions = {
     return current;
   },
   // Type assertion with fallback
-  assertType: <T>(_value: any, fallback: T): T => {
-    return value !== null && value !== undefined ? value : fallback;
+  assertType: <T>(_value: unknown, fallback: T): T => {
+    return _value !== null && _value !== undefined ? (_value as unknown as T) : fallback;
   },
   // Promise with timeout
   withTimeout: <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
     return Promise.race([
       promise,
-      new Promise<T>((_, reject) =>
-        setTimeout(() => reject(new Error('Timeout')), timeoutMs)
-      )
+      new Promise<T>((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeoutMs)),
     ]);
   },
-  // Debounce function
-  debounce: (func: (...args: any[]) => void, wait: number) => {
-    let timeout: any;
-    return (...args: any[]) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(null, args), wait);
-    }
-  }
-}
+  // Debounce function (use spread operator; typed timeout handle)
+  debounce: (func: (...args: unknown[]) => void, wait: number) => {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    return (...args: unknown[]) => {
+      if (timeout !== null) clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), wait);
+    };
+  },
+};
 // ===== MAIN BARREL STORE EXPORT =====
 export const barrelStore = {
-  testing: testingFramework
-  cache: cacheLayerMethods
-  database: databaseEntityProperties
-  webgpu: webGPUExtendedMethods
-  loki: lokiCollectionMethods
-  config: configurationProperties;
-  utils: utilityFunctions
-}
+  testing: testingFramework,
+  cache: cacheLayerMethods,
+  database: databaseEntityProperties,
+  webgpu: webGPUExtendedMethods,
+  loki: lokiCollectionMethods,
+  config: configurationProperties,
+  utils: utilityFunctions,
+};
 // Export everything for easy access
 export default barrelStore;
 // Type definitions for barrel store
@@ -400,5 +445,7 @@ export interface BarrelStore {
 }
 // Global augmentation for missing types
 declare global {
-  interface Window { barrelStore?: BarrelStore, }
+	interface Window {
+    barrelStore?: BarrelStore;
+  }
 }

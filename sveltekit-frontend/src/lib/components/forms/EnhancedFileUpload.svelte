@@ -4,7 +4,7 @@ https://svelte.dev/e/expected_token -->
 <!--
   Enhanced File Upload Component with Superforms and Zod Validation
   Features: Drag & drop, progress tracking, AI processing, validation, preview
-  Cleaned: removed duplicated script/markup and ensured single <script>
+  Cleaned: removed duplicated script/markup and ensured single <script lang="ts">
   // Svelte 5 runes are auto-imported
 // Auto-generated default export
 export default ;
