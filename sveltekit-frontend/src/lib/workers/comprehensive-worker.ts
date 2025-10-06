@@ -7,9 +7,9 @@ import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
 import { consumeFromQueue } from '$lib/server/rabbitmq';
 import { ingestionService } from '$lib/server/workflows/ingestion-service';
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-// removed unused db assignment
+const db = drizzle(pool);
 let shuttingDown = false;
-let workerId = `worker_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+const workerId = `worker_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 interface ChunkJob {
   jobId: string;
   documentId: string;
@@ -21,6 +21,19 @@ interface ChunkJob {
     priority: string;
     userId?: string;
     timestamp: string;
+  };
+}
+// Helper: safely format unknown errors to strings
+function formatError(err: unknown): string {
+  // Prefer Error.message for Error instances
+  if (err instanceof Error) return err.message;
+  // Strings are fine
+  if (typeof err === 'string') return err;
+  // Try JSON stringify for objects
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
   }
 }
 async function processChunkJob(job: ChunkJob) {
@@ -32,34 +45,50 @@ async function processChunkJob(job: ChunkJob) {
   }
   try {
     // Generate embedding
-    const result = await getEmbeddingViaGate(fetch, text, {
-      model: job.metadata.priority === 'high' ? 'nomic-embed-text' : undefined
-    });
-    const embedding = (result as { embedding?: any; backend?: any }).embedding;
-    console.log(`📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || "unknown" // @ts-ignore - Model property access}`)
-    // Store in database
+    const result = (await getEmbeddingViaGate(fetch, text, {
+      model: job.metadata.priority === 'high' ? 'embeddinggemma:latest' : undefined,
+    })) as { embedding?: number[] | Float32Array; backend?: string; model?: string };
+
+    // Ensure we have an embedding and normalize to number[]
+    let embedding = result.embedding;
+    if (!embedding) {
+      throw new Error('Embedding not returned from gateway');
+    }
+    if (embedding instanceof Float32Array) {
+      embedding = Array.from(embedding);
+    } else if (!Array.isArray(embedding)) {
+      throw new Error('Unexpected embedding type returned from gateway');
+    }
+
+    // Log embedding backend and model
+    console.log(`📍 Embedding created via ${result.backend} using model ${result.model || 'unknown'}`);
+
+    // Prepare typed metadata (avoid `any`)
+    const metadata: Record<string, unknown> = {
+      source: 'comprehensive_pipeline',
+      jobId: job.jobId,
+      documentId: job.documentId,
+      priority: job.metadata.priority,
+      workerId,
+      processingTime: Date.now() - startTime,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Insert into DB with proper types (embedding: number[], metadata: Record<string, unknown>)
     await db.insert(document_chunks).values({
-      chunk_text: text
+      chunk_text: text,
       chunk_index: job.chunkIndex,
-      embedding: embedding as unknown as any
-      metadata: {
-        source: 'comprehensive_pipeline',
-        jobId: job.jobId,
-        documentId: job.documentId,
-        priority: job.metadata.priority,
-        workerId,
-        processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString()
-      } as any
-    } as any);
+      embedding,
+      metadata,
+    });
     console.log(`✅ Stored embedding for ${job.jobId}:${job.chunkIndex}`);
     // Report progress to ingestion service
     await reportProgress(job.jobId, job.chunkIndex, job.metadata.totalChunks);
     return {
-      success: true
+      success: true,
       processingTime: Date.now() - startTime,
-      chunkIndex: job.chunkIndex
-    }
+      chunkIndex: job.chunkIndex,
+    };
   } catch (error) {
     console.error(`❌ Error processing chunk ${job.jobId}:${job.chunkIndex}:`, error);
     // Report error to ingestion service
@@ -72,13 +101,17 @@ async function reportProgress(jobId: string, chunkIndex: number, totalChunks: nu
     // Calculate progress
     const progress = Math.round(((chunkIndex + 1) / totalChunks) * 100);
     // Cache progress update
-    await cache.set(`job:${jobId}:progress`, {
-      chunkIndex,
-      totalChunks,
-      progress,
-      lastUpdate: new Date().toISOString(),
-      workerId
-    }, 300); // 5 minute TTL
+    await cache.set(
+      `job:${jobId}:progress`,
+      {
+        chunkIndex,
+        totalChunks,
+        progress,
+        lastUpdate: new Date().toISOString(),
+        workerId,
+      },
+      300
+    ); // 5 minute TTL
     // Send progress to workflow if this is the last chunk
     if (chunkIndex === totalChunks - 1) {
       console.log(`🎉 Completed all chunks for job ${jobId}`);
@@ -87,16 +120,20 @@ async function reportProgress(jobId: string, chunkIndex: number, totalChunks: nu
     console.error(`❌ Error reporting progress for ${jobId}:`, error);
   }
 }
-async function reportError(jobId: string, chunkIndex: number, error: any) {
+async function reportError(jobId: string, chunkIndex: number, error: unknown) {
   try {
-    await cache.set(`job:${jobId}:error`, {
-      chunkIndex,
-      error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString(),
-      workerId
-    }, 3600); // 1 hour TTL for error debugging
+    await cache.set(
+      `job:${jobId}:error`,
+      {
+        chunkIndex,
+        error: error instanceof Error ? error.message : formatError(error),
+        timestamp: new Date().toISOString(),
+        workerId,
+      },
+      3600
+    ); // 1 hour TTL for error debugging
   } catch (cacheError) {
-    console.error(`❌ Error reporting error for ${jobId}:`, cacheError);
+    console.error(`❌ Error reporting error for ${jobId}:`, formatError(cacheError));
   }
 }
 async function runRabbitConsumer() {
@@ -105,18 +142,22 @@ async function runRabbitConsumer() {
     await ingestionService.initialize();
     console.log('✅ Ingestion service initialized');
     // Register this worker
-    await cache.set(`worker:${workerId}`, {
-      id: workerId
-      startedAt: new Date().toISOString(),
-      status: 'active',
-      queues: ['evidence.embedding.queue', 'evidence.embedding.priority'],
-      pid: process.pid
-    }, 300); // 5 minute TTL, renewed by heartbeat
+    await cache.set(
+      `worker:${workerId}`,
+      {
+        id: workerId,
+        startedAt: new Date().toISOString(),
+        status: 'active',
+        queues: ['evidence.embedding.queue', 'evidence.embedding.priority'],
+        pid: process.pid,
+      },
+      300
+    ); // 5 minute TTL, renewed by heartbeat
     // Start heartbeat
     const heartbeatInterval = setInterval(async () => {
       if (!shuttingDown) {
         try {
-          await cache.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString();
+          await cache.set(`worker:${workerId}:heartbeat`, new Date().toISOString(), 30);
         } catch (e) {
           console.warn('❌ Heartbeat failed:', e);
         }
@@ -127,8 +168,8 @@ async function runRabbitConsumer() {
       try {
         await processChunkJob(payload as ChunkJob);
         ack();
-      } catch (err: any) {
-        console.error('❌ Error processing priority job:', err?.message || err);
+      } catch (err: unknown) {
+        console.error('❌ Error processing priority job:', formatError(err));
         nack(); // Don't requeue to avoid hot loops
       }
     });
@@ -137,8 +178,8 @@ async function runRabbitConsumer() {
       try {
         await processChunkJob(payload as ChunkJob);
         ack();
-      } catch (err: any) {
-        console.error('❌ Error processing regular job:', err?.message || err);
+      } catch (err: unknown) {
+        console.error('❌ Error processing regular job:', formatError(err));
         nack(); // Don't requeue to avoid hot loops
       }
     });
@@ -166,18 +207,22 @@ async function runRedisLoop() {
     await ingestionService.initialize();
     console.log('✅ Ingestion service initialized');
     // Register this worker
-    await cache.set(`worker:${workerId}`, {
-      id: workerId
-      startedAt: new Date().toISOString(),
-      status: 'active',
-      queues: ['embedding:jobs'],
-      pid: process.pid
-    }, 300);
+    await cache.set(
+      `worker:${workerId}`,
+      {
+        id: workerId,
+        startedAt: new Date().toISOString(),
+        status: 'active',
+        queues: ['embedding:jobs'],
+        pid: process.pid,
+      },
+      300
+    );
     console.log('🚀 Redis BLPOP loop started on embedding:jobs');
     const heartbeatInterval = setInterval(async () => {
       if (!shuttingDown) {
         try {
-          await cache.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString();
+          await cache.set(`worker:${workerId}:heartbeat`, new Date().toISOString(), 30);
         } catch (e) {
           console.warn('❌ Heartbeat failed:', e);
         }
@@ -191,12 +236,12 @@ async function runRedisLoop() {
         const job = JSON.parse(raw) as ChunkJob;
         try {
           await processChunkJob(job);
-        } catch (err: any) {
-          console.error('❌ Error processing redis job:', err?.message || err);
+        } catch (err: unknown) {
+          console.error('❌ Error processing redis job:', formatError(err));
         }
-      } catch (e: any) {
-        console.error('❌ Worker error (redis loop):', e?.message || e);
-        await new Promise((r) => setTimeout(r, 500);
+      } catch (e: unknown) {
+        console.error('❌ Worker error (redis loop):', formatError(e));
+        await new Promise(r => setTimeout(r, 500));
       }
     }
     clearInterval(heartbeatInterval);

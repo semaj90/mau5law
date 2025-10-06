@@ -1,9 +1,24 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { legalAI } from '$lib/server/unified/legal-ai-service'
+
+// Helper to safely extract an error message from unknown
+function getErrorMessage(err: unknown): string {
+	// Prefer Error instances
+	if (err instanceof Error) return err.message
+	// Strings are fine
+	if (typeof err === 'string') return err
+	// Try JSON stringify fallback
+	try {
+		return JSON.stringify(err)
+	} catch {
+		return 'Unknown error'
+	}
+}
+
 export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const body = await request.json()
+	try {
+    const body = await request.json();
     const {
       query,
       type = 'all',
@@ -11,10 +26,10 @@ export const POST: RequestHandler = async ({ request }) => {
       threshold = 0.7,
       caseId,
       useRecommendations = true,
-      cacheResults = true
-    } = body
+      cacheResults = true,
+    } = body;
     if (!query || query.trim().length === 0) {
-      return json({ error: 'Query is required' }, { status: 400 })
+      return json({ error: 'Query is required' }, { status: 400 });
     }
     // Use unified search across all systems
     const searchResults = await legalAI.searchDocuments({
@@ -24,8 +39,8 @@ export const POST: RequestHandler = async ({ request }) => {
       threshold,
       caseId,
       useRecommendations,
-      cacheResults
-    })
+      cacheResults,
+    });
     return json({
       success: true,
       query,
@@ -35,17 +50,20 @@ export const POST: RequestHandler = async ({ request }) => {
         type,
         limit,
         threshold,
-        caseId: caseId || null
-        timestamp: new Date().toISOString()
-      }
-    })
-  } catch (error) {
-    console.error('Unified search error:', error)
-    return json({
+        caseId: caseId || null,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error: unknown) {
+    // Use the safe extractor to avoid `any`
+    const message = getErrorMessage(error);
+    console.error('Unified search error:', message);
+    return json(
+      {
         error: 'Search failed',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      }, )
+        details: message,
+      },
       { status: 500 }
-    )
+    );
   }
 }

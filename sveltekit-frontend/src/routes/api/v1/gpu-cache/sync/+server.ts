@@ -5,63 +5,75 @@ import { dev } from '$app/environment'
 type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number; errors: string[] }
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    await gpuCacheOrchestrator.initialize()
-    const body = await request.json()
-    const { databases = ['postgresql', 'qdrant', 'neo4j', 'indexeddb'] } = body as { databases?: string[] }
+    await gpuCacheOrchestrator.initialize();
+    const body = await request.json();
+    const { databases = ['postgresql', 'qdrant', 'neo4j', 'indexeddb'] } = body as { databases?: string[] };
     const syncResults: Record<'postgresql' | 'qdrant' | 'neo4j' | 'indexeddb', SyncResult> = {
       postgresql: { status: 'pending', entries: 0, errors: [] },
       qdrant: { status: 'pending', entries: 0, errors: [] },
       neo4j: { status: 'pending', entries: 0, errors: [] },
-      indexeddb: { status: 'pending', entries: 0, errors: [] }
-    }
+      indexeddb: { status: 'pending', entries: 0, errors: [] },
+    };
     for (const db of databases) {
       try {
         switch (db) {
           case 'postgresql':
-            await simulatePostgreSQLSync()
-            syncResults.postgresql = { status: 'completed', entries: 150, errors: [] }
-            break
+            await simulatePostgreSQLSync();
+            syncResults.postgresql = { status: 'completed', entries: 150, errors: [] };
+            break;
           case 'qdrant':
-            await simulateQdrantSync()
-            syncResults.qdrant = { status: 'completed', entries: 75, errors: [] }
-            break
+            await simulateQdrantSync();
+            syncResults.qdrant = { status: 'completed', entries: 75, errors: [] };
+            break;
           case 'neo4j':
-            await simulateNeo4jSync()
-            syncResults.neo4j = { status: 'completed', entries: 45, errors: [] }
-            break
+            await simulateNeo4jSync();
+            syncResults.neo4j = { status: 'completed', entries: 45, errors: [] };
+            break;
           case 'indexeddb':
-            await simulateIndexedDBSync()
-            syncResults.indexeddb = { status: 'completed', entries: 200, errors: [] }
-            break
+            await simulateIndexedDBSync();
+            syncResults.indexeddb = { status: 'completed', entries: 200, errors: [] };
+            break;
         }
-      } catch (error: any) {
-        const errMsg = error instanceof Error ? error.message: String(error)
+      } catch (error: unknown) {
+        const errMsg = formatError(error);
         if (db in syncResults) {
-          // @ts-ignore
-          syncResults[db] = { status: 'failed', entries: 0, errors: [errMsg] }
+          // narrow the type to avoid TS errors
+          syncResults[db as keyof typeof syncResults] = { status: 'failed', entries: 0, errors: [errMsg] };
         }
       }
     }
-    return json({ success: true, synchronization: syncResults, timestamp: Date.now() })
-  } catch (error: any) {
-    return json()
+    return json({ success: true, synchronization: syncResults, timestamp: Date.now() });
+  } catch (error: unknown) {
+    return json(
       {
         error: 'Failed to synchronize databases',
-        details: dev ? (error instanceof Error ? error.message: String(error)) : undefined
+        details: dev ? formatError(error) : undefined,
       },
       { status: 500 }
-    )
+    );
+  }
+};
+
+// Add helper to safely extract error messages
+function formatError(error: unknown): string {
+  if (typeof error === 'string') return error;
+  if (error instanceof Error) return error.message;
+  try {
+    return JSON.stringify(error) ?? String(error);
+  } catch {
+    return String(error);
   }
 }
+
 async function simulatePostgreSQLSync(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 200)
+  await new Promise(resolve => setTimeout(resolve, 200));
 }
 async function simulateQdrantSync(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 150)
+  await new Promise(resolve => setTimeout(resolve, 150));
 }
 async function simulateNeo4jSync(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 120)
+  await new Promise(resolve => setTimeout(resolve, 120));
 }
 async function simulateIndexedDBSync(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 80)
+  await new Promise(resolve => setTimeout(resolve, 80));
 }

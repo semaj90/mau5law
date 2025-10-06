@@ -305,21 +305,21 @@
         </div>
         <!-- Header Controls -->
         <div class="flex items-center gap-2">
-          <button
+          <button type="button"
             onclick={() => currentTheme = currentTheme === 'yorha' ? 'cyberpunk' : currentTheme === 'cyberpunk' ? 'matrix' : 'yorha'}
-            class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+            class="p-2 rounded-lg hover:bg_gray-700/50 transition-colors"
             title="Switch Theme"
           >
             <Settings class="w-5 h-5 {theme.secondary}" />
           </button>
-          <button
+            <button type="button"
             onclick={openNierAssistant}
             class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
             title="Open Full Assistant"
           >
             <Maximize2 class="w-5 h-5 {theme.secondary}" />
           </button>
-          <button
+            <button type="button"
             onclick={() => showAIInterface = false}
             class="p-2 rounded-lg hover:bg-red-500/20 transition-colors"
           >

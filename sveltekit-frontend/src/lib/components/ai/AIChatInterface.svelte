@@ -19,11 +19,11 @@ https://svelte.dev/e/attribute_invalid_name -->
   		streaming?: boolean;
   		error?: boolean;
   	}
-  	interface ChatSettings {
-  		model: string;
-  		temperature: number;
-  		maxTokens: number;
-  		topP: number;
+				<button type="button" class="close-btn" on:click={close} aria-label="Close chat">
+					<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+						<path d="M6 6l12 12M6 18L18 6" />
+					</svg>
+				</button>
   		systemPrompt: string;
   	}
   	// Props
@@ -504,7 +504,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 							</div>
 							{#if message.error}
 								<div class="mt-2 text-xs text-red-400" role="alert">
-									Failed to get response. <button onclick={(_event: MouseEvent) => sendMessage} class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-400/50" aria-label="Retry sending message">Retry</button>
+									Failed to get response. <button type="button" onclick={(_event: MouseEvent) => sendMessage} class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-400/50" aria-label="Retry sending message">Retry</button>
 								</div>
 							{/if}
 							<time class="mt-2 text-xs text-yorha-text-muted" datetime={message.timestamp.toISOString()}>

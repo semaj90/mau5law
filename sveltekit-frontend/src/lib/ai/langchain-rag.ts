@@ -14,8 +14,41 @@ const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
 // import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant"
 // import { QdrantClient } from "@qdrant/js-client-rest"
 // Temporary type placeholders until proper imports are available
-type QdrantVectorStore = any;
-type QdrantClient = any;
+// (Removed the duplicate and unsafe `type QdrantVectorStore = any;` alias)
+
+// Replace loose any with a small typed interface for the parts we use
+interface QdrantCollectionInfo {
+  result?: {
+    points_count?: number;
+  } | null;
+  [key: string]: unknown;
+}
+interface QdrantClient {
+  url?: string;
+  getCollection(collectionName: string): Promise<QdrantCollectionInfo>;
+}
+
+// --- REPLACED: previously `type QdrantVectorStore = any;` ---
+// Provide a minimal typed interface for the vector store surface we use.
+interface QdrantVectorStore {
+  embeddings?: OpenAIEmbeddings;
+  client?: QdrantClient;
+  collectionName?: string;
+  contentPayloadKey?: string;
+  metadataPayloadKey?: string;
+
+  // Add documents and return their IDs
+  addDocuments(docs: LangChainDocumentType[]): Promise<string[]>;
+
+  // Perform a similarity search, returning documents
+  similaritySearch(query: string, k: number): Promise<LangChainDocumentType[]>;
+
+  // Provide a retriever adapter used later in the code
+  asRetriever(opts: { k?: number; filter?: MetadataFilter }): {
+    getRelevantDocuments(query: string): Promise<LangChainDocumentType[]>;
+  };
+}
+
 // Import types
 interface LegalDocumentMetadata {
   id?: string;
@@ -26,6 +59,7 @@ interface LegalDocumentMetadata {
   createdAt?: string;
   [key: string]: any;
 }
+
 export interface LegalRAGConfig {
   qdrantUrl: string;
   ollamaGenerationUrl: string;
@@ -60,10 +94,11 @@ export interface RAGResult {
     semanticProcessingTime?: number; // Processing time from semantic search API
   }
 }
+
 /**
  * Advanced Legal RAG System with LangChain.js
  * Implements sophisticated retrieval and generation patterns for legal document analysis
- */;
+ */
 export class LegalRAGService {
   private llm: ChatOpenAI;
   private embeddings: OpenAIEmbeddings;
@@ -72,6 +107,13 @@ export class LegalRAGService {
   private textSplitter: RecursiveCharacterTextSplitter;
   private config: LegalRAGConfig;
   private vectorStoreInitPromise: Promise<void> | null = null;
+
+  // --- NEW: lightweight runtime statistics for dynamic getSystemStats() ---
+  private queryCount = 0;
+  private totalQueryTime = 0; // ms
+  private totalIndexedChunks = 0;
+  private totalIndexBytes = 0; // approximate bytes (sum of chunk lengths)
+
   // Legal-specific prompt templates
   private readonly LEGAL_PROMPTS = {
     STANDARD_RAG: ChatPromptTemplate.fromTemplate(`
@@ -122,8 +164,8 @@ Generate 3 different search queries that would help find relevant legal informat
 1. A query focusing on legal concepts and principles
 2. A query focusing on specific legal terms and definitions
 3. A query focusing on practical applications and implications
-Only return the queries, one per line.`)
-  }
+Only return the queries, one per line.`),
+  };
   constructor(config: LegalRAGConfig) {
     this.config = config;
     this.llm = new ChatOpenAI({
@@ -132,20 +174,25 @@ Only return the queries, one per line.`)
       // Note: baseURL may not be supported in this version
       temperature: 0.1, // Low temperature for legal accuracy
       maxTokens: 4096,
-      timeout: 120000
+      timeout: 120000,
     } as any);
     // Initialize embeddings
     this.embeddings = new OpenAIEmbeddings({
       model: 'nomic-embed-legal',
       apiKey: config.apiKey,
       // Note: baseURL may not be supported in this version
-      dimensions: config.embeddingDimensions
+      dimensions: config.embeddingDimensions,
     } as any);
-    // Initialize Qdrant client (mocked for now)
+    // Initialize Qdrant client (typed minimal mock for runtime and tests)
     this.qdrantClient = {
       url: config.qdrantUrl,
-      // Mock Qdrant client implementation
+      // minimal mock implementation to satisfy typed interface;
+      // real client should implement getCollection with actual HTTP call
+      async getCollection(_: string) {
+        return { result: { points_count: 0 } };
+      },
     } as QdrantClient;
+
     // Initialize text splitter optimized for legal documents
     this.textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1200, // Larger chunks for legal context
@@ -156,40 +203,64 @@ Only return the queries, one per line.`)
         '. ', // Sentence endings
         ', ', // Clause separators
         ' ', // Word breaks
-      ]
+      ],
     });
     this.initializeVectorStore();
   }
   /**
    * Initialize Qdrant vector store
    */
-  /**
-   * Initialize Qdrant vector store
-   */;
+  // Initialize Qdrant vector store (improved mock with functional retriever)
   private async initializeVectorStore(): Promise<void> {
     if (this.vectorStore) return;
     try {
-      // Mock vector store initialization
-      this.vectorStore = {
+      // Build a local mock store so retriever closures can reference similaritySearch
+      const mockStore: QdrantVectorStore = {
         embeddings: this.embeddings,
         client: this.qdrantClient,
         collectionName: this.config.collectionName,
         contentPayloadKey: 'content',
         metadataPayloadKey: 'metadata',
-        // Mock methods
-        similaritySearch: async (query: string, k: number) => [],
-        addDocuments: async (docs: LangChainDocumentType[]) => {}
+        // Mock similarity search - returns empty array for now (can be replaced with real client logic)
+        async similaritySearch(_: string, __: number) {
+          return [] as LangChainDocumentType[];
+        },
+        // Return deterministic string ids for indexed chunks
+        async addDocuments(docs: LangChainDocumentType[]) {
+          const base = Date.now();
+          return docs.map((_, i) => `vec_${base}_${i}_${Math.random().toString(36).slice(2, 8)}`);
+        },
+        // Minimal retriever adapter that delegates to mockStore.similaritySearch
+        asRetriever(opts: { k?: number; filter?: MetadataFilter } = {}) {
+          const baseK = opts.k ?? 5;
+          return {
+            async getRelevantDocuments(query: string) {
+              try {
+                // Prefer calling the store's similaritySearch if available
+                if (typeof mockStore.similaritySearch === 'function') {
+                  return await mockStore.similaritySearch(query, baseK);
+                }
+                return [] as LangChainDocumentType[];
+              } catch (err) {
+                console.warn('Mock retriever similaritySearch failed:', err);
+                return [] as LangChainDocumentType[];
+              }
+            },
+          };
+        },
       } as QdrantVectorStore;
+
+      this.vectorStore = mockStore;
       console.log('✅ Legal RAG vector store initialized');
-    } catch (error: any) {
-      console.error('❌ Failed to initialize vector store:', error);
-      throw error;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('❌ Failed to initialize vector store:', msg);
+      throw error instanceof Error ? error : new Error(msg);
     }
   }
   /**
    * Ensure vector store is initialized before use
-   */;
-  private async ensureVectorStoreInitialized(): Promise<void> {
+   */ private async ensureVectorStoreInitialized(): Promise<void> {
     if (!this.vectorStore) {
       await this.initializeVectorStore();
     }
@@ -197,8 +268,7 @@ Only return the queries, one per line.`)
   /**
    * Main query method with enhanced legal RAG capabilities
    * Now includes integration with new semantic search API
-   */;
-  async query(question: string, options: RAGQueryOptions = {}): Promise<RAGResult> {
+   */ async query(question: string, options: RAGQueryOptions = {}): Promise<RAGResult> {
     const startTime = Date.now();
     const {
       thinkingMode = false,
@@ -218,7 +288,7 @@ Only return the queries, one per line.`)
           const semanticResponse = await fetch('/api/rag/semantic-search', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               query: question,
@@ -227,24 +297,24 @@ Only return the queries, one per line.`)
               filters: {
                 category: documentType,
                 jurisdiction,
-                practice_area: practiceArea
-              }
-            })
+                practice_area: practiceArea,
+              },
+            }),
           });
           if (semanticResponse.ok) {
             const semanticData = await semanticResponse.json();
             if (semanticData.success && semanticData.results?.length > 0) {
-              const enhancedRetrievedDocs = semanticData.results.map((result: any) => ({
+              const enhancedRetrievedDocs = semanticData.results.map((result: SemanticSearchResult) => ({
                 pageContent:
                   result?.content ||
                   `${result?.title || 'Untitled'}\n\n${result?.metadata?.summary || 'No content available'}`,
                 metadata: {
                   ...result.metadata,
                   title: result?.title,
-                  score: result?.semantic_score ?? (result?.distance ? 1 - result.distance : 1),
+                  score: result?.semantic_score ?? (result?.distance ? 1 - (result.distance as number) : 1),
                   document_type: result?.document_type,
-                  source: 'enhanced_semantic_search'
-                }
+                  source: 'enhanced_semantic_search',
+                },
               }));
               const contextText = formatDocumentsAsString(enhancedRetrievedDocs);
               let promptTemplate = this.LEGAL_PROMPTS.STANDARD_RAG;
@@ -255,7 +325,7 @@ Only return the queries, one per line.`)
               }
               const formattedPrompt = await promptTemplate.format({
                 context: contextText,
-                question
+                question,
               });
               const llmResponse = await this.llm.invoke(formattedPrompt);
               const enhancedAnswer =
@@ -265,9 +335,15 @@ Only return the queries, one per line.`)
                     ? String(llmResponse.content)
                     : String(llmResponse);
               const avgSemanticScore =
-                semanticData.results.reduce((sum: number, r: any) => sum + (r?.semantic_score ?? (r?.distance ? 1 - r.distance : 1)), 0) / semanticData.results.length;
+                semanticData.results.reduce(
+                  (sum: number, r: SemanticSearchResult) =>
+                    sum + (r?.semantic_score ?? (r?.distance ? 1 - (r.distance as number) : 1)),
+                  0
+                ) / semanticData.results.length;
               const confidence = Math.min(avgSemanticScore, 1.0);
               const processingTime = Date.now() - startTime;
+              // record metrics for this query
+              this.recordQueryMetrics(processingTime);
               return {
                 answer: enhancedAnswer,
                 sourceDocuments: enhancedRetrievedDocs,
@@ -281,8 +357,8 @@ Only return the queries, one per line.`)
                   usedThinkingMode: thinkingMode,
                   usedCompression: useCompression,
                   enhancedSemanticSearch: true,
-                  semanticProcessingTime: semanticData.processingTime || 0
-                }
+                  semanticProcessingTime: semanticData.processingTime || 0,
+                },
               };
             }
           }
@@ -295,9 +371,10 @@ Only return the queries, one per line.`)
       await this.ensureVectorStoreInitialized();
 
       // Create retriever with legal-specific filtering
-      let retriever: any = this.vectorStore.asRetriever({
+      // Use the strongly-typed QdrantVectorStore.asRetriever to avoid `any`
+      const retriever = (this.vectorStore as QdrantVectorStore).asRetriever({
         k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
-        filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea)
+        filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
       });
 
       // Use MultiQueryRetriever for thinking mode
@@ -333,32 +410,34 @@ Only return the queries, one per line.`)
 
       const contextRetriever = RunnableSequence.from([
         (input: string) => retriever.getRelevantDocuments(input),
-        formatDocumentsAsString
+        formatDocumentsAsString,
       ]);
 
       const ragChain = RunnableSequence.from([
         RunnableMap.from({
           context: contextRetriever,
-          question: new RunnablePassthrough()
+          question: new RunnablePassthrough(),
         }),
         promptTemplate,
         this.llm,
-        new StringOutputParser()
+        new StringOutputParser(),
       ]);
 
       const [answer, retrievedDocs] = await Promise.all([
-        ragChain.invoke(question).catch((error) => {
+        ragChain.invoke(question).catch((error: unknown) => {
           console.warn('RAG chain error:', error);
           return 'Unable to generate response due to processing error.';
         }),
-        retriever.getRelevantDocuments(question).catch((error: any) => {
+        retriever.getRelevantDocuments(question).catch((error: unknown) => {
           console.warn('Document retrieval error:', error);
           return [];
-        })
+        }),
       ]);
 
       const confidence = this.calculateConfidence(retrievedDocs, confidenceThreshold);
       const processingTime = Date.now() - startTime;
+      // record metrics for fallback query
+      this.recordQueryMetrics(processingTime);
       return {
         answer: typeof answer === 'string' ? answer : (answer?.parse ?? String(answer)),
         sourceDocuments: retrievedDocs,
@@ -368,11 +447,15 @@ Only return the queries, one per line.`)
           retrievedChunks: retrievedDocs.length,
           processingTime,
           usedThinkingMode: thinkingMode,
-          usedCompression: useCompression
-        }
+          usedCompression: useCompression,
+        },
       };
-    } catch (error: any) {
-      console.error('Error in RAG query:', error);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Error in RAG query:', msg);
+      // record metrics even on error
+      const processingTime = Date.now() - startTime;
+      this.recordQueryMetrics(processingTime);
       return {
         answer: 'I apologize, but I encountered an error processing your query. Please try again.',
         sourceDocuments: [],
@@ -381,15 +464,14 @@ Only return the queries, one per line.`)
           retrievedChunks: 0,
           processingTime: Date.now() - startTime,
           usedThinkingMode: options.thinkingMode ?? false,
-          usedCompression: options.useCompression ?? false
-        }
+          usedCompression: options.useCompression ?? false,
+        },
       };
     }
   }
   /**
    * Index a legal document into the vector store
-   */;
-  async indexDocument(text: string, metadata: LegalDocumentMetadata): Promise<string[]> {
+   */ async indexDocument(text: string, metadata: LegalDocumentMetadata): Promise<string[]> {
     await this.ensureVectorStoreInitialized();
     if (!this.vectorStore) {
       throw new Error('Vector store not initialized');
@@ -402,37 +484,45 @@ Only return the queries, one per line.`)
           ...metadata,
           chunkIndex: index,
           totalChunks: chunks.length,
-          chunkSize: chunk.length
-        }
+          chunkSize: chunk.length,
+        },
       }));
       const ids = await this.vectorStore.addDocuments(documents);
+      // Update lightweight index statistics
+      try {
+        this.totalIndexedChunks = (this.totalIndexedChunks || 0) + chunks.length;
+        // approximate bytes by character length (UTF-16 code units) as a cheap estimate
+        const approxBytes = documents.reduce((sum, d) => sum + (d.pageContent?.length || 0), 0);
+        this.totalIndexBytes = (this.totalIndexBytes || 0) + approxBytes;
+      } catch {
+        // ignore stats collection failures
+      }
       console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown'}`);
-      return (ids as any as string[]) || [];
-    } catch (error: any) {
-      console.error('Error indexing document:', error);
-      throw new Error(
-        `Document indexing failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-      );
+      return ids || [];
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Error indexing document:', msg);
+      throw new Error(`Document indexing failed: ${msg}`);
     }
   }
   /**
    * Perform legal document summarization with RAG context
-   */;
-  async summarizeWithContext(documentId: string, options: RAGQueryOptions = {}): Promise<string> {
+   */ async summarizeWithContext(documentId: string, options: RAGQueryOptions = {}): Promise<string> {
     const summaryQuery = `Provide a comprehensive summary of the key legal points, parties, obligations, and risks in this document.`;
-    const filter = { documentId }
-    const result = await this.query(summaryQuery, {
+    // Use the strongly-typed RAGResult returned by query()
+    const result: RAGResult = await this.query(summaryQuery, {
       ...options,
       maxRetrievedDocs: 10, // Get more context for summarization
     });
-    return (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).answer;
+    // Return the answer with a safe fallback
+    return result?.answer ?? '';
   }
   /**
    * Compare multiple legal documents
    */
   async compareDocuments(
-    documentIds: string[]
-    comparisonFocus: string
+    documentIds: string[],
+    comparisonFocus: string,
     options: RAGQueryOptions = {}
   ): Promise<RAGResult> {
     const query = `Compare and contrast the following aspects across the provided documents: ${comparisonFocus}.
@@ -449,27 +539,19 @@ Only return the queries, one per line.`)
   /**
    * Extract specific legal information
    */
-  async extractLegalEntities(
-    query: string
-    documentType?: string
-    options: RAGQueryOptions = {}
-  ): Promise<RAGResult> {
+  async extractLegalEntities(query: string, documentType?: string, options: RAGQueryOptions = {}): Promise<RAGResult> {
     const entityQuery = `Extract and list all ${query} mentioned in the legal documents.
     Provide specific references to where each item is mentioned.`;
     return await this.query(entityQuery, {
       ...options,
-      documentType
+      documentType,
     });
   }
   /**
    * Build metadata filter for Qdrant queries
    */
-  private buildMetadataFilter(
-    documentType?: string
-    jurisdiction?: string
-    practiceArea?: string;
-  ): { [key: string]: any } {
-    const must: any[] = [];
+  private buildMetadataFilter(documentType?: string, jurisdiction?: string, practiceArea?: string): MetadataFilter {
+    const must: MetadataCondition[] = [];
     if (documentType) {
       must.push({ key: 'documentType', match: { value: documentType } });
     }
@@ -479,61 +561,69 @@ Only return the queries, one per line.`)
     if (practiceArea) {
       must.push({
         key: 'classification.practiceArea',
-        match: { value: practiceArea }
+        match: { value: practiceArea },
       });
     }
-    return must.length ? { must } : { [key: string]: any }
+    // Return a valid empty object as the fallback
+    return must.length ? { must } : {};
   }
   /**
    * Calculate confidence score based on retrieved documents
-   */;
-  private calculateConfidence(documents: LangChainDocumentType[], threshold: number): number {
+   */ private calculateConfidence(documents: LangChainDocumentType[], threshold: number): number {
     if (documents.length === 0) return 0;
     // Use metadata scores if available, otherwise use heuristics
-    const scores = documents.map((doc) => {
+    const scores = documents.map(doc => {
       const score = doc.metadata?.score;
       if (typeof score === 'number') return score;
       // Fallback: estimate based on content length and overlap
       return Math.min(1.0, doc.pageContent.length / 1000);
     });
     const averageScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-    return Math.min(1.0, averageScore);
+
+    // Use threshold to penalize low-confidence retrievals.
+    // If the average is below the threshold, scale it down proportionally to emphasize low confidence.
+    let finalConfidence = averageScore;
+    if (typeof threshold === 'number' && threshold > 0) {
+      if (averageScore < threshold) {
+        finalConfidence = averageScore * (averageScore / threshold);
+      }
+    }
+
+    // Clamp to valid range [0, 1]
+    return Math.max(0, Math.min(1, finalConfidence));
   }
   /**
    * Health check for the RAG service
-   */;
-  async healthCheck(): Promise<any> {
+   */
+  async healthCheck(): Promise<HealthCheckResult> {
     try {
       const info = await this.qdrantClient.getCollection(this.config.collectionName);
-      const collectionExists = !!(info as any)?.result;
+      const collectionExists = Boolean(info?.result);
+      const documentsCount = typeof info?.result?.points_count === 'number' ? info!.result!.points_count! : 0;
       return {
         status: 'healthy',
-        vectorStoreConnected: !!this.vectorStore,
+        vectorStoreConnected: Boolean(this.vectorStore),
         collectionExists,
-        documentsCount: (info as any)?.result?.points_count || 0
-      }
-    } catch (error: any) {
+        documentsCount,
+      };
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.warn('Health check failed:', msg);
       return {
         status: 'unhealthy',
-        vectorStoreConnected: !!this.vectorStore,
-        collectionExists: false
-      }
+        vectorStoreConnected: Boolean(this.vectorStore),
+        collectionExists: false,
+        documentsCount: 0,
+        errorMessage: msg,
+      };
     }
   }
+
   /**
    * Upload and index a document file with real file processing
    */
-  async uploadDocument(
-    filePath: string,
-    options?: {
-      caseId?: string;
-      documentType?: string;
-      title?: string;
-      metadata?: { [key: string]: any };
-      file?: File;
-      content?: string;
-    }
-  ): Promise<any> {
+  // replaced inline any types with UploadOptions / UploadResult
+  async uploadDocument(filePath: string, options?: UploadOptions): Promise<UploadResult> {
     const startTime = Date.now();
     try {
       let documentContent: string;
@@ -561,8 +651,9 @@ Only return the queries, one per line.`)
           fileSize = fileBuffer.length;
           const fileExtension = path.extname(filePath).toLowerCase();
           documentContent = await this.extractTextFromBuffer(fileBuffer, fileExtension);
-        } catch (error: any) {
-          throw new Error(`Failed to read file: ${error.message}`);
+        } catch (error: unknown) {
+          const msg = error instanceof Error ? error.message : String(error);
+          throw new Error(`Failed to read file: ${msg}`);
         }
       }
 
@@ -584,23 +675,24 @@ Only return the queries, one per line.`)
           size: fileSize,
           mimeType: this.getMimeType(fileName),
           wordCount: documentContent.split(/\s+/).filter(Boolean).length,
-          language: 'en'
+          language: 'en',
         },
         classification: {
           documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
           practiceArea: this.inferPracticeArea(documentContent),
           jurisdiction: this.inferJurisdiction(documentContent),
           confidentialityLevel: 'public',
-          tags: []
+          tags: [],
         },
         extraction: {
           extractedAt: new Date().toISOString(),
           extractedLength: documentContent.length,
-          confidence: this.calculateExtractionConfidence(documentContent, fileName)
+          confidence: this.calculateExtractionConfidence(documentContent, fileName),
         },
-        ...options?.metadata,
+        // cast the incoming metadata to a partial LegalDocumentMetadata to avoid `any`
+        ...((options?.metadata as Partial<LegalDocumentMetadata>) || {}),
         filePath,
-        caseId: options?.caseId
+        caseId: options?.caseId,
       };
 
       const chunkIds = await this.indexDocument(documentContent, metadata);
@@ -612,7 +704,7 @@ Only return the queries, one per line.`)
             title: metadata.title,
             content: documentContent.substring(0, 1000),
             metadata,
-            chunks: chunkIds.length
+            chunks: chunkIds.length,
           });
         } catch (error) {
           console.warn('Failed to notify semantic search API:', error);
@@ -627,157 +719,247 @@ Only return the queries, one per line.`)
           fileSize,
           extractedLength: documentContent.length,
           processingTime,
-          chunksCreated: chunkIds.length
-        }
+          chunksCreated: chunkIds.length,
+        },
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error during document processing',
+        error: msg,
         processingDetails: {
           fileSize: 0,
           extractedLength: 0,
           processingTime: Date.now() - startTime,
-          chunksCreated: 0
-        }
+          chunksCreated: 0,
+        },
       };
     }
   }
   /**
    * Extract text from a File object (browser environment)
-   */;
-  private async extractTextFromFile(file: File): Promise<string> {
+   */ private async extractTextFromFile(file: File): Promise<string> {
     const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
     switch (fileExtension) {
       case 'txt':
       case 'md':
-      case 'rtf':
+      case 'rtf': {
         return await file.text();
-      case 'pdf':
+      }
+      case 'pdf': {
         return await this.extractTextFromPDF(file);
+      }
       case 'doc':
-      case 'docx':
+      case 'docx': {
         return await this.extractTextFromWord(file);
+      }
       case 'html':
-      case 'htm':
+      case 'htm': {
         return this.extractTextFromHTML(await file.text());
-      default:
+      }
+      default: {
         const text = await file.text();
         if (this.isValidText(text)) {
           return text;
         }
         throw new Error(`Unsupported file type: ${fileExtension}`);
+      }
     }
   }
   /**
    * Extract text from a buffer (server environment)
-   */;
-  private async extractTextFromBuffer(buffer: Buffer, extension: string): Promise<string> {
+   */ private async extractTextFromBuffer(buffer: Buffer, extension: string): Promise<string> {
     switch (extension) {
       case '.txt':
       case '.md':
-      case '.rtf':
+      case '.rtf': {
         return buffer.toString('utf-8');
-      case '.pdf':
+      }
+      case '.pdf': {
         return await this.extractTextFromPDFBuffer(buffer);
+      }
       case '.doc':
-      case '.docx':
+      case '.docx': {
         return await this.extractTextFromWordBuffer(buffer);
+      }
       case '.html':
-      case '.htm':
+      case '.htm': {
         return this.extractTextFromHTML(buffer.toString('utf-8'));
-      default:
+      }
+      default: {
         const text = buffer.toString('utf-8');
         if (this.isValidText(text)) {
           return text;
         }
         throw new Error(`Unsupported file type: ${extension}`);
+      }
     }
   }
   /**
    * Extract text from PDF file (browser)
-   */;
-  private async extractTextFromPDF(file: File): Promise<string> {
+   */ private async extractTextFromPDF(file: File): Promise<string> {
+    // Local small types to avoid `any`
+    type PDFTextItem = { str?: string };
+
+    // Minimal text content shape returned by getTextContent()
+    type PDFTextContent = { items: PDFTextItem[] };
+
+    // Minimal page proxy used to read text content
+    interface PDFPageProxy {
+      getTextContent(): Promise<PDFTextContent>;
+    }
+
+    // Minimal document proxy exposing page count and page accessor
+    interface PDFDocumentProxy {
+      numPages?: number;
+      getPage(pageNumber: number): Promise<PDFPageProxy>;
+    }
+
+    // Loading task that may expose a promise for the document (pdfjs returns either a LoadingTask or the document)
+    interface PDFLoadingTask {
+      promise?: Promise<PDFDocumentProxy>;
+    }
+
+    // Narrow module shape for pdfjs-dist (supports both default export and top-level functions)
+    type PDFJSModule = {
+      default?: {
+        getDocument(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
+        GlobalWorkerOptions?: { workerSrc?: string };
+      };
+      getDocument?(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
+      GlobalWorkerOptions?: { workerSrc?: string };
+    };
+
     try {
-      // Try to use PDF.js if available
-      const pdfjsLib = await import('pdfjs-dist').catch(() => null);
-      if (pdfjsLib) {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        let fullText = '';
-        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-          const page = await pdf.getPage(pageNum);
-          const textContent = await page.getTextContent();
-          const pageText = textContent.items.map((item: any) => (item as { str?: any }).str).join(' ');
-          fullText += pageText + '\n';
-        }
-        return fullText.trim();
+      // Prefer the legacy build which provides the classic API (getDocument, GlobalWorkerOptions)
+      // Replace `any` with a narrow local type capturing only the members we use.
+      let pdfjsModule: PDFJSModule | null = null;
+      try {
+        pdfjsModule = (await import('pdfjs-dist/legacy/build/pdf')) as PDFJSModule;
+      } catch {
+        // Fallback to main package if legacy build isn't present
+        pdfjsModule = (await import('pdfjs-dist').catch(() => null)) as PDFJSModule | null;
       }
-      // Fallback: notify that PDF processing requires additional setup
-      throw new Error('PDF processing requires PDF.js library. Please install pdfjs-dist package.');
-    } catch (error: any) {
-      throw new Error(`PDF extraction failed: ${error.message}`);
+      if (!pdfjsModule) {
+        throw new Error('PDF.js not found. Install pdfjs-dist (e.g. npm i pdfjs-dist).');
+      }
+
+      const pdfjs = pdfjsModule?.default ?? pdfjsModule;
+
+      // Attempt to set workerSrc if available to avoid worker-loading issues in browser
+      try {
+        if (pdfjs?.GlobalWorkerOptions && !pdfjs.GlobalWorkerOptions.workerSrc) {
+          // Use a CDN fallback for the worker if no bundler-provided worker is available.
+          // Adjust the version/URL if your project pins pdfjs-dist to a specific release.
+          pdfjs.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js';
+        }
+      } catch {
+        // Non-fatal if worker configuration isn't possible in the runtime.
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+      // loadingTask may be:
+      // - a LoadingTask with a `.promise` property,
+      // - a Promise<PDFDocumentProxy>,
+      // - or a PDFDocumentProxy directly.
+      // Normalize these possibilities in a small helper to satisfy TypeScript.
+      const resolvePDFDocument = async (
+        task: PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy
+      ): Promise<PDFDocumentProxy> => {
+        // If it's an object that exposes a `.promise` property, treat it as a LoadingTask.
+        if (typeof task === 'object' && task !== null && 'promise' in task) {
+          const maybeLoading = task as PDFLoadingTask;
+          const maybePromise = maybeLoading.promise as unknown;
+          if (
+            maybePromise &&
+            typeof maybePromise === 'object' &&
+            typeof (maybePromise as { then?: unknown }).then === 'function'
+          ) {
+            // await the loading task's promise
+            return (await (maybePromise as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
+          }
+        }
+
+        // If it looks like a Promise (has a then function), await it.
+        if (typeof task === 'object' && task !== null && typeof (task as { then?: unknown }).then === 'function') {
+          return (await (task as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
+        }
+
+        // Otherwise assume it's already a PDFDocumentProxy
+        return task as PDFDocumentProxy;
+      };
+
+      const pdf = await resolvePDFDocument(loadingTask);
+      let fullText = '';
+      for (let pageNum = 1; pageNum <= (pdf.numPages || 0); pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
+        const pageText = (textContent.items as PDFTextItem[]).map(item => item?.str ?? '').join(' ');
+        fullText += pageText + '\n';
+      }
+      return fullText.trim();
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      throw new Error(`PDF extraction failed: ${msg}`);
     }
   }
   /**
    * Extract text from PDF buffer (server)
-   */;
-  private async extractTextFromPDFBuffer(buffer: Buffer): Promise<string> {
+   */ private async extractTextFromPDFBuffer(buffer: Buffer): Promise<string> {
+    // Small typed result for pdf-parse to avoid `any`
+    type PDFParseResult = { documentId?: string; title?: string; text?: string };
     try {
       // Try to use pdf-parse if available
       const pdfParse = await import('pdf-parse').catch(() => null);
       if (pdfParse) {
-        const data = await pdfParse.default(buffer);
-        return (data as { documentId?: any; title?: any; text?: any }).text;
+        const data = (await pdfParse.default(buffer)) as PDFParseResult;
+        return data.text ?? '';
       }
-      throw new Error(
-        'PDF processing requires pdf-parse library. Please install pdf-parse package.'
-      );
-    } catch (error: any) {
-      throw new Error(`PDF extraction failed: ${error.message}`);
+      throw new Error('PDF processing requires pdf-parse library. Please install pdf-parse package.');
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      throw new Error(`PDF extraction failed: ${msg}`);
     }
   }
   /**
    * Extract text from Word document (browser)
-   */;
-  private async extractTextFromWord(file: File): Promise<string> {
+   */ private async extractTextFromWord(file: File): Promise<string> {
+    type MammothResult = { value?: string };
     try {
       // Try to use mammoth.js if available
       const mammoth = await import('mammoth').catch(() => null);
       if (mammoth) {
         const arrayBuffer = await file.arrayBuffer();
-        const result = await mammoth.extractRawText({ arrayBuffer });
-        return (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).value;
+        const result = (await mammoth.extractRawText({ arrayBuffer })) as MammothResult;
+        return result.value ?? '';
       }
-      throw new Error(
-        'Word document processing requires mammoth library. Please install mammoth package.'
-      );
-    } catch (error: any) {
-      throw new Error(`Word document extraction failed: ${error.message}`);
+      throw new Error('Word document processing requires mammoth library. Please install mammoth package.');
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      throw new Error(`Word document extraction failed: ${msg}`);
     }
   }
   /**
    * Extract text from Word document buffer (server)
-   */;
-  private async extractTextFromWordBuffer(buffer: Buffer): Promise<string> {
+   */ private async extractTextFromWordBuffer(buffer: Buffer): Promise<string> {
+    type MammothResult = { value?: string };
     try {
       // Try to use mammoth.js if available
       const mammoth = await import('mammoth').catch(() => null);
       if (mammoth) {
-        const result = await mammoth.extractRawText({ buffer });
-        return (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).value;
+        const result = (await mammoth.extractRawText({ buffer })) as MammothResult;
+        return result.value ?? '';
       }
-      throw new Error(
-        'Word document processing requires mammoth library. Please install mammoth package.'
-      );
-    } catch (error: any) {
-      throw new Error(`Word document extraction failed: ${error.message}`);
+      throw new Error('Word document processing requires mammoth library. Please install mammoth package.');
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      throw new Error(`Word document extraction failed: ${msg}`);
     }
   }
   /**
    * Extract text from HTML content
-   */;
-  private extractTextFromHTML(htmlContent: string): string {
+   */ private extractTextFromHTML(htmlContent: string): string {
     // Simple HTML tag removal - in production, use a proper HTML parser
     return htmlContent
       .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // Remove scripts
@@ -788,18 +970,17 @@ Only return the queries, one per line.`)
   }
   /**
    * Check if text content is valid and readable
-   */;
-  private isValidText(text: string): boolean {
+   */ private isValidText(text: string): boolean {
     if (!text || text.trim().length < 10) return false;
     // Check for reasonable ratio of printable characters
-    const printableChars = text.match(/[a-zA-Z0-9\s\.,:!?\-()]/g)?.length || 0;
+    // Place '-' at the end of the class so no escape is necessary
+    const printableChars = text.match(/[a-zA-Z0-9\s.,:!?()-]/g)?.length || 0;
     const ratio = printableChars / text.length;
     return ratio > 0.7; // At least 70% printable characters
   }
   /**
    * Infer document type from filename and content
-   */;
-  private inferDocumentType(fileName: string, content: string): string {
+   */ private inferDocumentType(fileName: string, content: string): string {
     const extension = fileName.split('.').pop()?.toLowerCase();
     // Check filename patterns
     if (fileName.toLowerCase().includes('contract')) return 'contract';
@@ -828,8 +1009,7 @@ Only return the queries, one per line.`)
   }
   /**
    * Infer practice area from content
-   */;
-  private inferPracticeArea(content: string): string {
+   */ private inferPracticeArea(content: string): string {
     const contentLower = content.toLowerCase();
     if (
       contentLower.includes('intellectual property') ||
@@ -854,11 +1034,7 @@ Only return the queries, one per line.`)
     ) {
       return 'litigation';
     }
-    if (
-      contentLower.includes('employment') ||
-      contentLower.includes('labor') ||
-      contentLower.includes('workplace')
-    ) {
+    if (contentLower.includes('employment') || contentLower.includes('labor') || contentLower.includes('workplace')) {
       return 'employment-law';
     }
     if (
@@ -873,8 +1049,7 @@ Only return the queries, one per line.`)
   }
   /**
    * Infer jurisdiction from content
-   */;
-  private inferJurisdiction(content: string): string {
+   */ private inferJurisdiction(content: string): string {
     const contentLower = content.toLowerCase();
     // Federal indicators
     if (
@@ -896,7 +1071,7 @@ Only return the queries, one per line.`)
       'ohio',
       'georgia',
       'north carolina',
-      'michigan'
+      'michigan',
     ];
     for (const state of states) {
       if (contentLower.includes(state)) {
@@ -907,8 +1082,7 @@ Only return the queries, one per line.`)
   }
   /**
    * Calculate extraction confidence score
-   */;
-  private calculateExtractionConfidence(content: string, fileName: string): number {
+   */ private calculateExtractionConfidence(content: string, fileName: string): number {
     let confidence = 0.5; // Base confidence
     // Content length bonus
     if (content.length > 1000) confidence += 0.2;
@@ -927,9 +1101,11 @@ Only return the queries, one per line.`)
   }
   /**
    * Generate document title from content and filename
-   */;
-  private generateDocumentTitle(content: string, fileName: string): string {
-    const lines = content.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+   */ private generateDocumentTitle(content: string, fileName: string): string {
+    const lines = content
+      .split(/\r?\n/)
+      .map(l => l.trim())
+      .filter(Boolean);
     if (lines.length > 0) {
       const firstLine = lines[0].trim();
       if (firstLine.length > 10 && firstLine.length < 100) {
@@ -937,12 +1113,11 @@ Only return the queries, one per line.`)
       }
     }
     const baseName = fileName.replace(/\.[^/.]+$/, '');
-    return baseName.replace(/[-_]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+    return baseName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
   /**
    * Get MIME type from filename
-   */;
-  private getMimeType(fileName: string): string {
+   */ private getMimeType(fileName: string): string {
     const extension = fileName.split('.').pop()?.toLowerCase();
     const mimeTypes: Record<string, string> = {
       pdf: 'application/pdf',
@@ -952,14 +1127,16 @@ Only return the queries, one per line.`)
       md: 'text/markdown',
       html: 'text/html',
       htm: 'text/html',
-      rtf: 'application/rtf'
-    }
+      rtf: 'application/rtf',
+    };
     return mimeTypes[extension || ''] || 'application/octet-stream';
   }
   /**
    * Notify semantic search API about new document
-   */;
-  private async notifySemanticSearchAPI(documentId: string, documentInfo: any): Promise<void> {
+   */ private async notifySemanticSearchAPI(
+    documentId: string,
+    documentInfo: SemanticSearchDocumentInfo
+  ): Promise<void> {
     try {
       if (typeof fetch !== 'undefined') {
         await fetch('/api/documents/indexed', {
@@ -968,29 +1145,38 @@ Only return the queries, one per line.`)
           body: JSON.stringify({
             documentId,
             action: 'indexed',
-            ...documentInfo
-          })
+            ...documentInfo,
+          }),
         });
       }
     } catch (error) {
       console.warn('Failed to notify semantic search API:', error);
     }
   }
-  async getSystemStats(): Promise<any> {
+  async getSystemStats(): Promise<SystemStats> {
     try {
       const health = await this.healthCheck();
-      // Mock statistics - in production, these would come from actual system metrics
+      // Use a safe helper that works in both Node and browser without relying on Node types
+      const uptimeMs = this.getUptimeMs();
+
+      // Return dynamic statistics derived from health check and runtime counters
+      const documentCount = health.documentsCount || this.totalIndexedChunks || 0;
+      const indexSizeEstimate =
+        this.totalIndexBytes && this.totalIndexBytes > 0 ? this.totalIndexBytes : Math.max(0, documentCount * 1200); // fallback estimate: avg chunk length ≈ 1200 chars
+      const averageQueryTime = this.queryCount > 0 ? Math.round(this.totalQueryTime / this.queryCount) : 0;
+
       return {
-        documentCount: 100, // Would query from vector store
-        queryCount: 50, // Would track actual queries
-        indexSize: 1024 * 1024, // Would get actual index size
-        averageQueryTime: 150, // Would calculate from query logs
-        averageResponseTime: 200, // Would track response times
+        documentCount,
+        queryCount: this.queryCount || 0,
+        indexSize: indexSizeEstimate,
+        averageQueryTime,
+        averageResponseTime: averageQueryTime, // don't have separate response tracking; reuse query time
         indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
-        uptime: Date.now() - process.uptime() * 1000
-      }
-    } catch (error: any) {
-      console.error('Failed to get system stats:', error);
+        uptime: Math.max(0, uptimeMs),
+      };
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Failed to get system stats:', msg);
       return {
         documentCount: 0,
         queryCount: 0,
@@ -998,11 +1184,124 @@ Only return the queries, one per line.`)
         averageQueryTime: 0,
         averageResponseTime: 0,
         indexStatus: 'error',
-        uptime: 0
+        uptime: 0,
+      };
+    }
+  }
+
+  // Helper: obtain uptime in milliseconds in a cross-environment safe way.
+  // Uses globalThis.process.uptime() in Node if available, otherwise falls back to performance.now() in browsers.
+  private getUptimeMs(): number {
+    try {
+      // Define a minimal process-like shape to avoid using `any`
+      type ProcessLike = { uptime?: () => number };
+      // Cast globalThis to a typed object that may contain `process`
+      const g = globalThis as unknown as { process?: ProcessLike };
+      const maybeProcess = g?.process;
+      if (maybeProcess && typeof maybeProcess.uptime === 'function') {
+        return Math.floor(maybeProcess.uptime() * 1000);
       }
+      if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+        return Math.floor(performance.now());
+      }
+    } catch {
+      // swallow and return 0 as a safe fallback
+    }
+    return 0;
+  }
+
+  // Added: record lightweight query metrics so calls to this.recordQueryMetrics(...) compile
+  private recordQueryMetrics(processingTimeMs: number): void {
+    try {
+      const ms = Number(processingTimeMs) || 0;
+      this.queryCount = (this.queryCount || 0) + 1;
+      this.totalQueryTime = (this.totalQueryTime || 0) + ms;
+    } catch {
+      // intentionally swallow metric collection failures
     }
   }
 }
+
+// --- MOVED TYPES: place these above the class so they are available when referenced ---
+// Add HealthCheckResult at top-level so class methods can reference it
+type HealthCheckResult = {
+  status: 'healthy' | 'unhealthy';
+  vectorStoreConnected: boolean;
+  collectionExists: boolean;
+  documentsCount: number;
+  errorMessage?: string;
+};
+
+type MetadataMatch = { value: string | number | boolean };
+type MetadataCondition = { key: string; match: MetadataMatch };
+type MetadataFilter = { must?: MetadataCondition[] } | Record<string, never>;
+
+type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string, unknown>;
+
+interface UploadOptions {
+  caseId?: string;
+  documentType?: string;
+  title?: string;
+  metadata?: UploadMetadata;
+  file?: File;
+  content?: string;
+}
+
+type ProcessingDetails = {
+  fileSize: number;
+  extractedLength: number;
+  processingTime: number;
+  chunksCreated: number;
+};
+
+type UploadResultSuccess = {
+  success: true;
+  documentId: string;
+  chunks: number;
+  processingDetails: ProcessingDetails;
+};
+
+type UploadResultFailure = {
+  success: false;
+  error: string;
+  processingDetails: ProcessingDetails;
+};
+
+type UploadResult = UploadResultSuccess | UploadResultFailure;
+
+// Add SystemStats type near the other top-level types
+type SystemStats = {
+  documentCount: number;
+  queryCount: number;
+  indexSize: number; // bytes
+  averageQueryTime: number; // ms
+  averageResponseTime: number; // ms
+  indexStatus: 'healthy' | 'degraded' | 'error';
+  uptime: number; // ms
+};
+
+// New type: strongly-typed payload for semantic search notifications
+type SemanticSearchDocumentInfo = {
+  title: string;
+  content: string;
+  metadata?: Partial<LegalDocumentMetadata> | Record<string, unknown>;
+  chunks?: number;
+  summary?: string;
+  sourceUrl?: string;
+  [key: string]: unknown;
+};
+
+// Add a concrete type for enhanced semantic search results
+type SemanticSearchResult = {
+  content?: string;
+  title?: string;
+  metadata?: Record<string, unknown> | null;
+  semantic_score?: number | null;
+  distance?: number | null;
+  document_type?: string | null;
+  [key: string]: unknown;
+};
+
 // Export singleton instance with environment configuration
 export const legalRAG = new LegalRAGService({
   qdrantUrl: import.meta.env.QDRANT_URL || "http://localhost:6333",

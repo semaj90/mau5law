@@ -279,7 +279,7 @@
             </Tooltip.Root>
           {/if}
           {/if}
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat}>
+    <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat} aria-label="Clear chat">
             Clear
           </Button>
         </div>

@@ -3,8 +3,14 @@ import { db } from '$lib/server/db';
 import * as schema from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
-import fs from "fs";
-const schemaAny = schema as any;
+// Add: LangChain text splitter for semantic chunking
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+
+// New imports for real download/temp file handling
+import { promises as fs } from 'fs';
+import path from 'path';
+import os from 'os';
+
 export interface DocumentProcessingJob {
   documentId: string | number;
   s3Key: string;
@@ -41,6 +47,18 @@ export interface EmbeddingResult {
   embedding: number[];
   model: string;
 }
+
+// Add: explicit type for records read from document_processing table
+export interface DocumentProcessingRecord {
+  id?: number | string; // primary key of the processing row (optional)
+  document_id: number | string;
+  status?: string;
+  status_message?: string | null;
+  created_at?: Date | string | null;
+  updated_at?: Date | string | null;
+  // include other fields you expect to exist on the record as optional properties
+}
+
 class DocumentProcessingWorker {
   private isRunning = false;
   private processedCount = 0;
@@ -77,7 +95,32 @@ class DocumentProcessingWorker {
       clearInterval(this.intervalHandle);
       this.intervalHandle = null;
     }
-    await rabbitMQService.close();
+    // Safely attempt to shut down the RabbitMQ service.
+    // The RabbitMQService type may not declare 'close', so check common method names at runtime.
+    try {
+      const svc: unknown = rabbitMQService;
+      type RabbitMQShutdownable = {
+        close?: () => Promise<void> | void;
+        disconnect?: () => Promise<void> | void;
+        shutdown?: () => Promise<void> | void;
+      };
+      const shutdowner = svc as RabbitMQShutdownable;
+
+      if (shutdowner.close) {
+        await Promise.resolve(shutdowner.close());
+        console.log('✅ RabbitMQ service close() invoked');
+      } else if (shutdowner.disconnect) {
+        await Promise.resolve(shutdowner.disconnect());
+        console.log('✅ RabbitMQ service disconnect() invoked');
+      } else if (shutdowner.shutdown) {
+        await Promise.resolve(shutdowner.shutdown());
+        console.log('✅ RabbitMQ service shutdown() invoked');
+      } else {
+        console.warn('⚠️ rabbitMQService has no close/disconnect/shutdown method; skipping shutdown');
+      }
+    } catch (err) {
+      console.warn('⚠️ Error while shutting down rabbitMQService:', err);
+    }
   }
   private startConsuming(): void {
     console.log('📥 Worker ready to consume document processing jobs (polling every 5s)');
@@ -90,11 +133,12 @@ class DocumentProcessingWorker {
         return;
       }
       try {
-        const queuedRecords = await db
+        const queuedRecords = (await db
           .select()
-          .from(schemaAny.document_processing)
-          .where(eq(schemaAny.document_processing.status, 'queued'))
-          .limit(5);
+          .from(schema.document_processing)
+          .where(eq(schema.document_processing.status, 'queued'))
+          .limit(5)) as DocumentProcessingRecord[]; // typed cast
+
         for (const record of queuedRecords) {
           await this.processDocumentFromDB(record);
         }
@@ -104,7 +148,7 @@ class DocumentProcessingWorker {
       }
     }, 5000);
   }
-  private async processDocumentFromDB(processingRecord: any): Promise<void> {
+  private async processDocumentFromDB(processingRecord: DocumentProcessingRecord | null): Promise<void> {
     if (!processingRecord || !processingRecord.document_id) {
       console.warn('Invalid processing record, skipping');
       return;
@@ -112,8 +156,8 @@ class DocumentProcessingWorker {
     // Fetch document details
     const docs = await db
       .select()
-      .from(schemaAny.documents)
-      .where(eq(schemaAny.documents.id, processingRecord.document_id))
+      .from(schema.documents)
+      .where(eq(schema.documents.id, processingRecord.document_id))
       .limit(1);
     const document = docs && docs.length > 0 ? docs[0] : null;
     if (!document) {
@@ -176,19 +220,41 @@ class DocumentProcessingWorker {
       }
     }
   }
+  // Add: typed fetch accessor to avoid using `any`
+  private getFetch(): typeof fetch {
+    return (globalThis as unknown as { fetch: typeof fetch }).fetch;
+  }
   private async downloadDocument(context: ProcessingContext): Promise<void> {
     console.log(`⬇️  Downloading document from S3: ${context.job.s3Key}`);
-    // Simulate S3 download - in production, implement actual MinIO/S3 client
-    const response = await (globalThis as any).fetch(
-      `http://localhost:9000/${context.job.s3Bucket}/${context.job.s3Key}`
-    );
+
+    // Build safe URL
+    const bucket = encodeURIComponent(String(context.job.s3Bucket || 'legal-documents'));
+    const key = encodeURIComponent(String(context.job.s3Key || ''));
+
+    const url = `http://localhost:9000/${bucket}/${key}`;
+
+    const response = await this.getFetch()(url);
     if (!response.ok) {
-      throw new Error(`Failed to download document: ${response.statusText}`);
+      throw new Error(`Failed to download document: ${response.status} ${response.statusText}`);
     }
-    // Save to temp file (simplified - in production use proper temp file handling)
-    const tempFilePath = `/tmp/${context.job.documentId}_${Date.now()}.${this.getFileExtension(context.job.originalName)}`;
-    context.tempFilePath = tempFilePath;
-    console.log(`💾 Document downloaded to: ${tempFilePath}`);
+
+    // Read response as binary and write to a real temp file (cross-platform)
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const tmpDir = os.tmpdir();
+    const ext = this.getFileExtension(context.job.originalName || '');
+    const safeExt = ext ? `.${String(ext).replace(/[^a-zA-Z0-9]/g, '')}` : '';
+    const tempFileName = `${String(context.job.documentId)}_${Date.now()}${safeExt}`;
+    const tempFilePath = path.join(tmpDir, tempFileName);
+
+    try {
+      await fs.writeFile(tempFilePath, buffer);
+      context.tempFilePath = tempFilePath;
+      console.log(`💾 Document downloaded to: ${tempFilePath}`);
+    } catch (fsErr) {
+      throw new Error(`Failed to write temp file: ${fsErr instanceof Error ? fsErr.message : String(fsErr)}`);
+    }
   }
   private async extractText(context: ProcessingContext): Promise<void> {
     console.log(`🔍 Extracting text from: ${context.job.originalName}`);
@@ -232,24 +298,32 @@ class DocumentProcessingWorker {
     console.log('✂️  Chunking document for embeddings');
     const { extractedText } = context;
     if (!extractedText) throw new Error('No text to chunk');
-    // Simple chunking algorithm (in production, use a proper text splitter)
-    const chunkSize = 1000; // characters
-    const overlap = 200;
-    const chunks: DocumentChunk[] = [];
-    for (let i = 0; i < extractedText.length; i += chunkSize - overlap) {
-      const chunkContent = extractedText.slice(i, i + chunkSize);
-      const chunkId = uuidv4();
-      chunks.push({
-        id: chunkId,
+
+    // Use LangChain RecursiveCharacterTextSplitter for semantic chunking
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 750, // tuned for embedding model context
+      chunkOverlap: 100, // small overlap to preserve context across chunks
+    });
+
+    const textChunks = await splitter.splitText(extractedText);
+
+    const chunks: DocumentChunk[] = textChunks.map((chunkContent, idx) => {
+      const startPosition = Math.max(
+        0,
+        idx === 0 ? 0 : extractedText.indexOf(chunkContent, Math.max(0, idx * (750 - 100)))
+      );
+      return {
+        id: uuidv4(),
         content: chunkContent,
         metadata: {
-          chunkIndex: chunks.length,
-          startPosition: i,
-          endPosition: Math.min(i + chunkSize, extractedText.length),
+          chunkIndex: idx,
+          startPosition,
+          endPosition: startPosition + chunkContent.length,
           wordCount: chunkContent.split(/\s+/).filter(item => item.length).length,
         },
-      });
-    }
+      };
+    });
+
     context.chunks = chunks;
     console.log(`📝 Created ${chunks.length} document chunks`);
   }
@@ -260,13 +334,13 @@ class DocumentProcessingWorker {
     const embeddings: EmbeddingResult[] = [];
     for (const chunk of chunks) {
       try {
-        const embeddingResponse = await (globalThis as any).fetch('http://localhost:11434/api/embeddings', {
+        const embeddingResponse = await this.getFetch()('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'nomic-embed-text',
+            model: 'embeddinggemma:latest',
             prompt: chunk.content,
           }),
         });
@@ -292,22 +366,23 @@ class DocumentProcessingWorker {
     const { job, chunks, embeddings } = context;
     if (!chunks || !embeddings) throw new Error('No chunks or embeddings to store');
     for (const chunk of chunks) {
-      const embedding = embeddings.find(e => e.chunkId === chunk.id);
+      // renamed variable to avoid shadowing / unused-variable lint issues
+      const foundEmbedding = embeddings.find(e => e.chunkId === chunk.id);
       const values = {
         id: chunk.id,
-        document_id: job.documentId,
+        document_id: typeof job.documentId === 'string' ? Number(job.documentId) : job.documentId,
         chunk_index: chunk.metadata.chunkIndex,
         content: chunk.content,
         start_position: chunk.metadata.startPosition,
         end_position: chunk.metadata.endPosition,
         word_count: chunk.metadata.wordCount,
-        embedding: embedding ? embedding.embedding : null,
-        embedding_model: embedding ? embedding?.model || 'unknown' : null,
+        embedding: foundEmbedding ? foundEmbedding.embedding : null,
+        embedding_model: foundEmbedding ? foundEmbedding.model || 'unknown' : null,
         created_at: new Date(),
         updated_at: new Date(),
       };
       try {
-        await db.insert(schemaAny.document_chunks).values(values);
+        await db.insert(schema.document_chunks).values(values);
       } catch (err) {
         console.warn('Failed to insert document chunk:', err);
       }
@@ -319,7 +394,7 @@ class DocumentProcessingWorker {
     const { job, extractedText } = context;
     if (!extractedText) throw new Error('No text to summarize');
     try {
-      const summaryResponse = await (globalThis as any).fetch('http://localhost:11434/api/generate', {
+      const resp = await this.getFetch()('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -335,12 +410,13 @@ class DocumentProcessingWorker {
           },
         }),
       });
-      if (!summaryResponse.ok) {
-        throw new Error(`Failed to generate summary: ${summaryResponse.statusText}`);
+      if (!resp.ok) {
+        throw new Error(`Failed to generate summary: ${resp.status} ${resp.statusText}`);
       }
-      const summaryResult = await summaryResponse.json();
-      context.summary = summaryResult.response ?? String(summaryResult);
-      await db.insert(schemaAny.document_summaries).values({
+      const summaryResult = await resp.json();
+      // defensive: prefer known property 'response' else stringified fallback
+      context.summary = (summaryResult && (summaryResult.response ?? summaryResult.text ?? summaryResult.summary)) ?? String(summaryResult);
+      await db.insert(schema.document_summaries).values({
         id: uuidv4(),
         document_id: typeof job.documentId === 'string' ? Number(job.documentId) : job.documentId,
         summary_text: context.summary ?? '',
@@ -359,21 +435,21 @@ class DocumentProcessingWorker {
   private async updateProcessingStatus(documentId: string | number, status: string, message?: string): Promise<void> {
     try {
       await db
-        .update(schemaAny.document_processing)
+        .update(schema.document_processing)
         .set({
           status,
           status_message: message,
           updated_at: new Date(),
         })
-        .where(eq(schemaAny.document_processing.document_id, documentId));
+        .where(eq(schema.document_processing.document_id, documentId));
       // Also update main document status
       await db
-        .update(schemaAny.documents)
+        .update(schema.documents)
         .set({
           status: status === 'completed' ? 'processed' : status,
           updated_at: new Date(),
         })
-        .where(eq(schemaAny.documents.id, documentId));
+        .where(eq(schema.documents.id, documentId));
     } catch (err) {
       console.warn('Failed to update processing status:', err);
     }
@@ -384,6 +460,13 @@ class DocumentProcessingWorker {
   private async cleanupTempFile(filePath: string): Promise<void> {
     // In production, implement proper file cleanup
     console.log(`🗑️  Cleaning up temp file: ${filePath}`);
+    try {
+      await fs.unlink(filePath);
+      console.log(`🗑️  Temp file removed: ${filePath}`);
+    } catch (err) {
+      // Non-fatal: log and continue
+      console.warn('Failed to remove temp file:', err);
+    }
   }
 }
 // Export singleton instance

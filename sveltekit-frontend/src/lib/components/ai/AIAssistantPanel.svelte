@@ -1,16 +1,23 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 	import Button from '$lib/components/ui/Button.svelte';
-	import Card from '$lib/components/ui/Card/Card.svelte';
-	import CardContent from '$lib/components/ui/Card/CardContent.svelte';
-	import CardHeader from '$lib/components/ui/Card/CardHeader.svelte';
-	import CardTitle from '$lib/components/ui/Card/CardTitle.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
+	// Use existing lowercase 'card' folder to avoid casing conflicts on disk
+	import Card from '$lib/components/ui/card/Card.svelte';
+	import CardContent from '$lib/components/ui/card/CardContent.svelte';
+	import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
+	import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
 	import AIChatMessage from '$lib/components/ai/AIChatMessage.svelte';
 	import AISearchBar from '$lib/components/ui/enhanced-bits/AISearchBar.svelte';
 	import { aiAssistant } from '$lib/stores/ai-assistant-unified.svelte';
-	import { acceleratedLegalAssistant, enhanceAIResponse } from '$lib/ai/accelerated-legal-assistant';
+	import { acceleratedLegalAssistant } from '$lib/ai/accelerated-legal-assistant';
 	import { MessageSquare, Bot, User, Loader, Lightbulb, Link, FileText, Search, Zap } from 'lucide-svelte';
+	// lightweight message type to help TypeScript infer ids and timestamps
+	type ChatMsg = {
+		role: 'system' | 'user' | 'assistant';
+		content: string;
+		timestamp: number;
+		evidenceIds?: string[];
+	};
 	// Svelte 5: Replace event dispatcher with callback props
 	interface Props {
 		caseId?: string;
@@ -38,7 +45,8 @@
 	let accelerationStatus = $state<'initializing' | 'ready' | 'error' | 'disabled'>('disabled');
 	let lastAccelerationResults = $state<any>(null);
 	// Reactive values using Svelte 5 $derived - properly connected to unified store
-	const messages = $derived(aiAssistant.currentMessages);
+	// annotate messages so .map((id: string) => ...) won't have implicit any
+	const messages = $derived(aiAssistant.currentMessages) as ChatMsg[];
 	const caseContext = $derived(aiAssistant.currentCase);
 	const insights = $derived(caseContext?.insights || []);
 	const isAssistantLoading = $derived(aiAssistant.isLoading);
@@ -77,7 +85,7 @@
 			// Use the unified store's sendMessage method with acceleration support
 			await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, {
 				useAcceleration: useAcceleration && accelerationStatus === 'ready',
-				includeHistory: true
+				includeHistory: true,
 				legalContext: `Evidence IDs: ${selectedEvidenceIds.join(', ')}`
 			});
 		} catch (error) {
@@ -113,9 +121,9 @@
 				legalContext: 'Investigation planning'
 			});
 			// Trigger action suggestions in parent component
-			ondispatch?.({
+			onActionTrigger?.({
 				type: 'suggestions',
-				data: response.metadata?.suggestions || [];
+				data: response?.metadata?.suggestions || []
 			});
 		} catch (error) {
 			console.error('Failed to get suggestions:', error);
@@ -124,8 +132,8 @@
 		}
 	}
 	function handleKeydown(_event: KeyboardEvent) {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
+		if (_event.key === 'Enter' && !_event.shiftKey) {
+			_event.preventDefault();
 			handleSendMessage();
 		}
 	}
@@ -134,12 +142,15 @@
 	}
 	function handleInsightClick(insight: any) {
 		if (insight.evidenceIds && insight.evidenceIds.length > 0) {
-			ondispatch?.({ evidenceIds: insight.evidenceIds });
+			onEvidenceHighlight?.({ evidenceIds: insight.evidenceIds });
 		}
 	}
 	function setContext(context: typeof currentContext) {
 		currentContext = context;
 	}
+
+	// provide a runtime-safe reference to the imported component to avoid constructor-type errors
+	const AISearchBarComponent: any = AISearchBar as unknown as any;
 </script>
 <div class="ai-assistant-panel" class:hidden={!isVisible}>
 	<Card class="h-full flex flex-col">
@@ -159,16 +170,17 @@
 						</span>
 					{/if}
 					<!-- Acceleration Toggle -->
-					<button
+					<button type="button"
 						class="acceleration-toggle {useAcceleration && accelerationStatus === 'ready' ? 'enabled' : ''} {accelerationStatus === 'initializing' ? 'initializing' : ''} {accelerationStatus === 'error' ? 'error' : ''}"
 						onclick={() => {
-							useAcceleration = !useAcceleratio;
+							useAcceleration = !useAcceleration;
 							if (useAcceleration && accelerationStatus === 'disabled') {
 								initializeAcceleration();
 							}
 						}}
+						aria-label="Toggle GPU acceleration"
 					>
-						<Zap class="w-3 h-3" />
+						<Zap class="w-3 h-3" aria-hidden="true" />
 						<span class="sr-only">Toggle GPU Acceleration</span>
 					</button>
 				</div>
@@ -224,8 +236,10 @@
 							message={{
 								role: message.role,
 								content: message.content,
-								timestamp: formatTimestamp(message.timestamp),
-								references: message.evidenceIds?.map(id => ({ id, score: 1.0 })) || []
+								// pass a Date object (AIChatMessage expects Date)
+								timestamp: new Date(message.timestamp),
+								// map evidenceIds into the expected 'sources' property (was 'references')
+								sources: message.evidenceIds?.map((id: string) => ({ id, score: 1.0 })) || []
 							}}
 							showReferences={true}
 						/>
@@ -234,9 +248,10 @@
 								<span class="text-xs text-muted-foreground">Evidence References:</span>
 								<div class="flex flex-wrap gap-1 mt-1">
 									{#each message.evidenceIds as evidenceId}
-										<button
+										<button type="button"
 											class="evidence-ref-btn text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition-colors"
-											onclick={() => ondispatch?.({ evidenceId })}
+											onclick={() => onEvidenceSelect?.({ evidenceId })}
+											aria-label={`Select evidence ${evidenceId}`}
 										>
 											{evidenceId}
 										</button>
@@ -274,19 +289,23 @@
 			</div>
 			<!-- AI Search Input Area -->
 			<div class="input-area">
-				<AISearchBar
-					placeholder={`Ask about ${currentContext === 'general' ? 'the case' : currentContext}...`}
-					userContext={{
-						caseId,
-						selectedEvidenceIds,
-						context: currentContext;
-					}}
-					analyticsLog={(event) => console.log('AI Search Analytics:', event)}
-					onsearch={async (query) => {
-						userInput = query;
-						await handleSendMessage();
-					}}
-				/>
+				{#if AISearchBarComponent}
+					<!-- Dynamic components are supported by default in Svelte runes - use direct element and on:search -->
+					<AISearchBarComponent
+						placeholder={`Ask about ${currentContext === 'general' ? 'the case' : currentContext}...`}
+						userContext={{
+							caseId,
+							selectedEvidenceIds,
+							context: currentContext
+						}}
+						analyticsLog={(event: CustomEvent) => console.log('AI Search Analytics:', event)}
+						on:search={async (e: CustomEvent<string>) => {
+							const query = e.detail;
+							userInput = query;
+							await handleSendMessage();
+						}}
+					/>
+				{/if}
 			</div>
 			<!-- Acceleration Results Panel -->
 			{#if useAcceleration && lastAccelerationResults}
@@ -366,86 +385,177 @@
 </div>
 <style>
 	.ai-assistant-panel {
-/* @apply w-full h-full; */
+		/* @apply w-full h-full; */
+		width: 100%;
+		height: 100%;
 	}
 	/* Cleaned up - using AIChatMessage component styles */
 	.quick-actions {
-/* @apply border-t pt-2; */
+		/* @apply border-t pt-2; */
+		border-top: 1px solid transparent;
+		padding-top: 0.5rem;
 	}
 	.input-area {
-/* @apply border-t pt-2; */
+		/* @apply border-t pt-2; */
+		border-top: 1px solid transparent;
+		padding-top: 0.5rem;
 	}
 	.acceleration-toggle {
-/* @apply p-1.5 rounded border hover:bg-muted transition-colors text-muted-foreground; */
+		/* @apply p-1.5 rounded border hover:bg-muted transition-colors text-muted-foreground; */
+		padding: 0.375rem;
+		border-radius: 0.375rem;
+		border: 1px solid transparent;
+		color: inherit;
+		cursor: pointer;
 	}
 	.acceleration-toggle.enabled {
-/* @apply bg-green-500/10 text-green-600 border-green-500/20; */
+		/* @apply bg-green-500/10 text-green-600 border-green-500/20; */
+		background-color: rgba(16, 185, 129, 0.08); /* green-500/10 */
+		color: #16a34a; /* green-600 */
+		border-color: rgba(16,185,129,0.12);
 	}
 	.acceleration-toggle.initializing {
-/* @apply bg-yellow-500/10 text-yellow-600 border-yellow-500/20; */
+		/* @apply bg-yellow-500/10 text-yellow-600 border-yellow-500/20; */
+		background-color: rgba(234,179,8,0.08); /* yellow-500/10 */
+		color: #b45309; /* yellow-600 */
+		border-color: rgba(234,179,8,0.12);
 		animation: pulse 2s infinite;
 	}
 	.acceleration-toggle.error {
-/* @apply bg-red-500/10 text-red-600 border-red-500/20; */
+		/* @apply bg-red-500/10 text-red-600 border-red-500/20; */
+		background-color: rgba(239,68,68,0.08); /* red-500/10 */
+		color: #dc2626; /* red-600 */
+		border-color: rgba(239,68,68,0.12);
 	}
 	.acceleration-panel {
-/* @apply border-t pt-2; */
+		/* @apply border-t pt-2; */
+		border-top: 1px solid transparent;
+		padding-top: 0.5rem;
 	}
 	.acceleration-header {
-/* @apply flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-color; */
+		/* @apply flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-color; */
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: #16a34a;
+		cursor: pointer;
 	}
 	.acceleration-content {
-/* @apply space-y-3 mt-2; */
+		/* @apply space-y-3 mt-2; */
+		margin-top: 0.5rem;
+		row-gap: 0.75rem;
 	}
 	.performance-metrics {
-/* @apply grid grid-cols-2 gap-2 text-x; */
+		/* @apply grid grid-cols-2 gap-2 text-x; */
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0,1fr));
+		gap: 0.5rem;
+		font-size: 0.875rem;
 	}
 	.metric {
-/* @apply flex justify-between p-1.5 bg-green-50 rounded border border-green-200; */
+		/* @apply flex justify-between p-1.5 bg-green-50 rounded border border-green-200; */
+		display: flex;
+		justify-content: space-between;
+		padding: 0.375rem;
+		background-color: #ecfdf5; /* green-50 */
+		border-radius: 0.375rem;
+		border: 1px solid #bbf7d0; /* green-200-ish */
 	}
 	.metric-label {
-/* @apply text-muted-foreground; */
+		/* @apply text-muted-foreground; */
+		opacity: 0.75;
+		font-size: 0.8125rem;
 	}
 	.metric-value {
-/* @apply font-medium text-green-700; */
+		/* @apply font-medium text-green-700; */
+		font-weight: 600;
+		color: #166534; /* green-700 */
 	}
 	.recommendation-list {
-/* @apply space-y-2; */
+		/* @apply space-y-2; */
+		row-gap: 0.5rem;
 	}
 	.recommendation-item {
-/* @apply p-2 bg-blue-50 rounded border border-blue-200; */
+		/* @apply p-2 bg-blue-50 rounded border border-blue-200; */
+		padding: 0.5rem;
+		background-color: #eff6ff; /* blue-50 */
+		border-radius: 0.375rem;
+		border: 1px solid #bfdbfe; /* blue-200 */
 	}
 	.rec-type {
-/* @apply text-xs font-medium text-blue-600 capitaliz; */
+		/* @apply text-xs font-medium text-blue-600 capitaliz; */
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: #1d4ed8; /* blue-600 */
+		text-transform: capitalize;
 	}
 	.rec-description {
-/* @apply text-sm mt-1; */
+		/* @apply text-sm mt-1; */
+		font-size: 0.875rem;
+		margin-top: 0.25rem;
 	}
 	.rec-confidence {
-/* @apply text-xs text-blue-500 mt-1; */
+		/* @apply text-xs text-blue-500 mt-1; */
+		font-size: 0.75rem;
+		color: #3b82f6; /* blue-500 */
+		margin-top: 0.25rem;
 	}
 	.insights-panel {
-/* @apply border-t pt-2; */
+		padding-top: 0.5rem;
 	}
 	.insights-header {
-/* @apply flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-color; */
+		/* @apply flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-color; */
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: inherit;
+		cursor: pointer;
 	}
 	.insights-content {
-/* @apply space-y-2 mt-2; */
+		/* @apply space-y-2 mt-2; */
+		margin-top: 0.5rem;
+		row-gap: 0.5rem;
 	}
 	.insight-item {
-/* @apply w-full text-left p-2 bg-muted/50 rounded border hover:bg-muted transition-color; */
+		/* @apply w-full text-left p-2 bg-muted/50 rounded border hover:bg-muted transition-color; */
+		width: 100%;
+		text-align: left;
+		padding: 0.5rem;
+		background-color: rgba(15,23,42,0.03); /* muted-ish */
+		border-radius: 0.375rem;
+		border: 1px solid rgba(15,23,42,0.04);
+		cursor: pointer;
 	}
 	.insight-type {
-/* @apply text-xs font-medium text-primary capitaliz; */
+		/* @apply text-xs font-medium text-primary capitaliz; */
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: #0ea5a4; /* primary-ish */
+		text-transform: capitalize;
 	}
 	.insight-description {
-/* @apply text-sm mt-1; */
+		/* @apply text-sm mt-1; */
+		font-size: 0.875rem;
+		margin-top: 0.25rem;
 	}
 	.insight-confidence {
-/* @apply text-xs text-muted-foreground mt-1; */
+		/* @apply text-xs text-muted-foreground mt-1; */
+		font-size: 0.75rem;
+		opacity: 0.75;
+		margin-top: 0.25rem;
 	}
 	.hidden {
-/* @apply hidden; */
+		/* @apply hidden; */
+		display: none !important;
+	}
+
+	@keyframes pulse {
+		0% { opacity: 1; }
+		50% { opacity: 0.6; }
+		100% { opacity: 1; }
 	}
 </style>

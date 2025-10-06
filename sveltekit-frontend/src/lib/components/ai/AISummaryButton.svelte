@@ -43,7 +43,8 @@
   }
 </script>
 <button
-  aria-label="Action button"
+  type="button"
+  aria-label="Get AI summary"
   class="space-y-4"
   onclick={() => getSummary(text)}
   disabled={loading}

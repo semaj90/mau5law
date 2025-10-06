@@ -106,7 +106,7 @@
 
 <!-- Floating Variant -->
 {#if variant === 'floating'}
-  <button class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled} aria-label="Open AI Assistant">
+    <button type="button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled} aria-label="Open assistant">
     <div class="relative p-4">
       <Brain class="w-8 h-8" />
       {#if showStatus}
@@ -123,7 +123,7 @@
   </button>
   <!-- Inline Variant -->
 {:else if variant === 'inline'}
-  <button aria-label="Action button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled}>
+  <button type="button" aria-label="Action button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled}>
     <div class="flex items-center gap-3 px-4 py-3">
       <div class="relative">
         <Brain class="w-6 h-6" />
@@ -178,6 +178,7 @@
   <!-- Compact Variant with Tooltip -->
 {:else if variant === 'compact'}
   <button
+    type="button"
     class={buttonClasses}
     data-status={aiStatus}
     onclick={handleClick}
@@ -194,7 +195,7 @@
   </button>
   <!-- Full Variant -->
 {:else if variant === 'full'}
-  <button aria-label="Action button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled}>
+  <button type="button" aria-label="Action button" class={buttonClasses} data-status={aiStatus} onclick={handleClick} {disabled}>
     <div class="flex items-center justify-between w-full">
       <div class="flex items-center gap-4">
         <div class="relative">

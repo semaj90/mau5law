@@ -392,7 +392,7 @@ $effect(() => {
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            onclick={() => handleQuickQuery('Explain contract formation requirements')}
+            on:click={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
             ariaLabel="Explain contract formation requirements"
           >
@@ -401,7 +401,7 @@ $effect(() => {
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
             ariaLabel="What is the chain of custody for evidence?"
           >
@@ -410,7 +410,7 @@ $effect(() => {
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
+            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
             ariaLabel="Explain liability limitations in contracts"
           >
@@ -419,7 +419,7 @@ $effect(() => {
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            onclick={() => handleQuickQuery('What are the elements of negligence?')}
+            on:click={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
             ariaLabel="What are the elements of negligence?"
           >
@@ -439,7 +439,7 @@ $effect(() => {
               <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
                 {isStreaming ? 'Streaming...' : 'Ready'}
               </span>
-              <Button variant="secondary" class="bits-btn bits-nes-btn" onclick={clearChat} disabled={isStreaming} ariaLabel="Clear chat">
+              <Button variant="secondary" class="bits-btn bits-nes-btn" on:click={clearChat} disabled={isStreaming} ariaLabel="Clear chat">
                 Clear
               </Button>
             </div>
@@ -521,7 +521,7 @@ $effect(() => {
               </CardTitle>
               <Button
                 variant="secondary"
-                onclick={() => showTimeline = false}
+                on:click={() => showTimeline = false}
                 class="nes-btn bits-btn"
                 ariaLabel="Close timeline"
               >
@@ -544,7 +544,7 @@ $effect(() => {
                     </div>
                     <Button
                       variant="secondary"
-                      onclick={() => selectPOI(poi)}
+                      on:click={() => selectPOI(poi)}
                       class="nes-btn bits-btn"
                       ariaLabel={`View details for ${poi.name}`}
                     >
@@ -691,7 +691,7 @@ $effect(() => {
             <CardContent class="space-y-3">
               <Button
                 variant="secondary"
-                onclick={checkSystemStatus}
+                on:click={checkSystemStatus}
                 class="w-full justify-start bits-btn"
                 aria-label="Refresh system status"
               >
@@ -704,7 +704,7 @@ $effect(() => {
               <Button
                 class="bits-btn w-full justify-start"
                 variant="secondary"
-                onclick={() => window.open('/api/v1/cluster/health', '_blank')}
+                on:click={() => window.open('/api/v1/cluster/health', '_blank')}
                 aria-label="Open health report in new tab"
               >
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -716,7 +716,7 @@ $effect(() => {
               <Button
                 variant="secondary"
                 class="w-full justify-start bits-btn"
-                onclick={analyzePersonsOfInterest}
+                on:click={analyzePersonsOfInterest}
                 disabled={timelineLoading}
                 aria-label="Analyze evidence"
               >
@@ -734,7 +734,7 @@ $effect(() => {
 
               <Button
                 variant="secondary"
-                onclick={generateUserActivityTimeline}
+                on:click={generateUserActivityTimeline}
                 disabled={activityLoading}
                 class="w-full justify-start bits-btn"
                 aria-label="Generate user activity timeline"
@@ -807,7 +807,7 @@ $effect(() => {
       <Button
         variant="secondary"
         size="sm"
-        onclick={closePOIDetails}
+        on:click={closePOIDetails}
         class="bits-btn"
         ariaLabel="Close"
       >
@@ -900,14 +900,14 @@ $effect(() => {
     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
       <Button
         variant="secondary"
-        onclick={closePOIDetails}
+        on:click={closePOIDetails}
         class="bits-btn"
         ariaLabel="Close person of interest details"
       >
         Close
       </Button>
       <Button
-        onclick={() => {
+        on:click={() => {
           handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
           closePOIDetails();
         }}
